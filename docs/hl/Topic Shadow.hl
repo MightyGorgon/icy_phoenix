@@ -1,0 +1,7 @@
+Name = "Topic Shadow Manager"
+Description = "Admin Control Panel Plug-in to let you view all shadow topic links, some info about them, and optionally remove any or all."
+Author = "Nivisec"
+Version = "2.13"
+Download_URL = "http://www.nivisec.com/phpbb.php?l=p"
+Author_EMAIL = "support@nivisec.com"
+Author_WEB = "http://www.nivisec.com"

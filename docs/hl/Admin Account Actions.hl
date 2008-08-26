@@ -1,0 +1,8 @@
+Name = "Admin Account Actions"
+Description = "Displays all users which a) expect an account activation (admin activation or user activation) or b) are already active members. You can (de)activate or delete them."
+Author = "Acid"
+
+Version = "1.3.3"
+Download_URL = "http://www.phpbbhacks.com/download/483"
+Author_EMAIL = ""
+Author_WEB = ""

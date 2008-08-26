@@ -1,0 +1,8 @@
+Name = "Edit Notes"
+Description = " When editing a post, you will have an option to leave a short note saying the reason why the post was edited. This MOD is fully configurable with admin panel options for enabling/disabling the edit notes, edit notes permissions, and the total edit notes per post."
+Author = "pentapenguin"
+
+Version = "0.1.0"
+Download_URL = "http://www.pentapenguin.com"
+Author_EMAIL = "pentapenguin@bluebottle.com"
+Author_WEB = "http://www.pentapenguin.com"

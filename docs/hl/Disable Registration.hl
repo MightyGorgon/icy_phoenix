@@ -1,0 +1,8 @@
+Name = "Disable Registration"
+Description = "This MOD allows you to disable registrations to your board, manageable in the ACP. You can set an explanation that appears to the users that would want to register. It can be set in the ACP, if not, a default texte will appear."
+Author = "Poupoune"
+
+Version = "1.1.0"
+Download_URL = "http://www.phpbb-fr.com"
+Author_EMAIL = "kristff@hotmail.com"
+Author_WEB = "http://www.phpbb-fr.com"

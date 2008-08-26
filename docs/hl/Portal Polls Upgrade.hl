@@ -1,0 +1,7 @@
+Name = "Portal Polls Upgrade"
+Description = "Alters the display and behavior of the Poll Block. If a user has already voted, graphic bars are shown with results similar to the normal Topic View."
+Author = "vgan  (Steve Cvar)"
+Version = "2.0"
+Download_URL = ""
+Author_EMAIL = "transflux@msn.com"
+Author_WEB = ""

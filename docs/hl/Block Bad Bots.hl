@@ -1,0 +1,8 @@
+Name = "Block Bad Bots"
+Description = "This simple robots.txt file will help deter some of the unwanted bots that spider your site for email addresses and things of that nature that result in spam"
+Author = "FuNEnD3R"
+Version = "1.0.1"
+Download_URL = ""
+Author_EMAIL = "admin@funender.com "
+Author_WEB = "http://www.funender.com"
+

@@ -1,0 +1,8 @@
+Name = "Restrict Username Charachters"
+Description = "This mod will only allow a-z, 0-9 and -_ in usernames, when someone registers."
+Author = "mosymuis (Rens van Dongen)"
+
+Version = "1.0.2"
+Download_URL = "http://mods.mosymuis.nl/"
+Author_EMAIL = "mods@mosymuis.nl"
+Author_WEB = "http://mods.mosymuis.nl"

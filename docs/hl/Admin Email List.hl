@@ -1,0 +1,8 @@
+Name = "Admin Email List"
+Description = "This mod will list all email addresses from your phpbb database, within the admin cp."
+Author = "Jamer (Colin James)"
+
+Version = "1.0.2"
+Download_URL = "http://www.phpbbhacks.com/download/704"
+Author_EMAIL = ""
+Author_WEB = "http://www.jamer.co.uk/scripts/phpbb2"

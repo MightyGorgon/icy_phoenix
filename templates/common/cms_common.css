@@ -1,0 +1,209 @@
+/* CMS Content And Buttons */
+.cms-content {
+	border: solid 1px #aaaaaa;
+	background-color: #f8f8f8;
+	/*
+	border: solid 1px #e8eef8;
+	background-color: #e8eef8;
+	*/
+	margin: 5px 0;
+}
+
+.cms-content th {
+	background: #ffffff url(images/bg_th.gif) top left repeat-x;
+	color: #225566;
+	font-weight: bold;
+	font-size: 11px;
+	height: 24px;
+	padding: 0 5px;
+	border: solid 1px #ffffff;
+	border-right-color: #bbbbbb;
+	border-bottom-color: #bbbbbb;
+	white-space: nowrap;
+}
+
+.cms-button {
+	background-color: #f8f8f8;
+	border: 1px solid #aaaaaa;
+	color: #888888;
+	padding: 2px;
+}
+
+.cms-button:hover {
+	background-color: #eeeeee;
+	border: solid 1px #228844;
+	color: #cc3333;
+	position: relative;
+	top: 1px;
+	left: 1px;
+	padding: 2px;
+}
+
+/* Dropdown menu */
+
+.chromestyle {
+	width: 100%;
+	font: 11px verdana;
+	font-weight: bold;
+}
+
+.chromestyle ul {
+	border: 1px solid #bbb;
+	height: 14px;
+	width: 100%;
+	background: url(cms/images/bg_menu.gif) center repeat-x;
+	padding: 4px 0px;
+	margin: 0px;
+	text-align: left;
+}
+
+.chromestyle ul li {
+	display: inline;
+	margin: 0px;
+	padding: 0px;
+}
+.chromestyle ul li a {
+	color: #000000;
+	padding: 4px;
+	text-decoration: none;
+	border: solid 1px transparent;
+}
+
+.chromestyle ul li a:hover {
+	text-decoration: none;
+	background: url(cms/images/bg_menu_hover.gif) center center repeat-x;
+	border: solid 1px #cc3333;
+}
+
+.chromestyle ul li a:visited {
+	text-decoration: none;
+	border: solid 1px transparent;
+}
+
+.chromestyle ul li a[rel]:after {
+	/*content: " v";
+	content: " " url(downimage.gif); */
+	border: solid 1px transparent;
+}
+
+.dropmenudiv {
+	position:absolute;
+	top: 0;
+	border: 1px solid #cccccc;
+	font: normal 11px Verdana;
+	line-height: 16px;
+	z-index: 100;
+	background-color: #eafadc;
+	filter: alpha(opacity=90);
+	opacity: .90;
+	-moz-opacity: .90;
+	width: 200px;
+	visibility: hidden;
+}
+
+.dropmenudiv a {
+	width: 100%;
+	display: block;
+	text-indent: 3px;
+	padding: 2px 0;
+	text-decoration: none;
+	color: black;
+}
+
+.dropmenudiv a:hover {
+	text-decoration: none;
+	background-color: white;
+}
+
+.dropmenudiv a:visited {
+	text-decoration: none;
+	color: black;
+}
+
+.dropmenudiv hr {
+	margin: 2px;
+	border: none;
+	border-top: 1px solid #CCCCCC;
+}
+
+.dropmenudiv img {
+	vertical-align: middle;
+	height: 16px;
+	width: 16px;
+}
+
+/* SORTABLE LIST SCRIPT */
+
+.sortable-list-div {
+	border: solid 1px #aaaaaa;
+	background: #eef8ff;
+	padding-top: 3px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.sortable-invalid-list-div {
+	border: solid 1px #000000;
+	background: #ff0000;
+	padding-top: 3px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.sortable-invalid-list-div span{
+	color: yellow;
+	font-weight: bold;
+}
+
+ul.sortable-list {
+	list-style-type:none;
+	min-height:30px;
+	color:black;
+}
+
+/* CMS ADV */
+
+.infobox {
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	z-index: 1;
+	width: 380px;
+	text-align: center;
+	margin: 0px;
+	padding: 5px;
+	background-color: #ccffcc;
+	border: solid 1px #00ff00;
+	overflow: hidden;
+}
+
+.infobox-container {
+	float: left;
+	padding-top: 1px;
+	padding-left: 10px;
+}
+
+.container {
+	position: relative;
+	height: auto !important;  /* FF2 & IE7 */
+	height: 100%;      /* IE5.x & IE6 */
+	min-height: 100%;  /* FF2 & IE7 */
+	margin: 0 auto;
+}
+
+.left {
+	float: left;
+	width: 60%;
+}
+
+.right {
+	float: right;
+	text-align: right;
+	width: 40%;
+	padding-top: 3px;
+}
+
+.clearCol {
+	clear: both;
+	height: 1px;
+}

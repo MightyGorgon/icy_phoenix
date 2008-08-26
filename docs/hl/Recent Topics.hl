@@ -1,0 +1,8 @@
+Name = "Recent Topics"
+Description = "Shows recent topics on an extra site (today, yesterday, last 24 hour,last week, last x days)."
+Author = "Acid"
+
+Version = "2.2.3"
+Download_URL = "http://www.phpbbhacks.com/download/589"
+Author_EMAIL = ""
+Author_WEB = ""

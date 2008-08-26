@@ -1,0 +1,68 @@
+<!-- BEGIN switch_ajax_features -->
+<script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
+<!-- END switch_ajax_features -->
+
+<script type="text/javascript">
+<!--
+function add_username(selected_username)
+{
+	if (document.forms['post'].add.value == '')
+	{
+		document.forms['post'].add.value = selected_username;
+	}
+	else
+	{
+		document.forms['post'].add.value = document.forms['post'].add.value + "\n" + selected_username;
+	}
+}
+//-->
+</script>
+
+{IMG_TBL}<div class="forumline nav-div">
+	<p class="nav-header">
+		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}<a href="#" class="nav-current">{L_CPL_ZEBRA}</a>
+	</p>
+	<div class="nav-links">
+		<div class="nav-links-left">{CURRENT_TIME}</div>
+		&nbsp;
+	</div>
+</div>{IMG_TBR}
+
+<!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
+
+<form action="{S_PROFILE_ACTION}" name="post" method="post">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_FRIENDS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- <tr><th colspan="2"><span class="genmed"><b>{L_FRIENDS}</b></span></th></tr> -->
+<tr>
+	<td class="row1" width="40%"><b class="genmed">{L_YOUR_FRIENDS}:</b><br /><span class="gensmall">{L_YOUR_FRIENDS_EXPLAIN}</span></td>
+	<td class="row2 row-center">
+		<!-- IF S_USERNAME_OPTIONS -->
+		<select name="usernames[]" multiple="multiple" size="5">{S_USERNAME_OPTIONS}</select>
+		<!-- ELSE -->
+		<b class="genmed">{L_NO_FRIENDS}</b>
+		<!-- ENDIF -->
+	</td>
+</tr>
+<tr>
+	<td class="row1">
+		<b class="genmed">{L_ADD_FRIENDS}:</b><br /><span class="gensmall">{L_ADD_FRIENDS_EXPLAIN}</span>
+	</td>
+	<td class="row2 row-center">
+		<input type="text" class="post" name="username" id="username" maxlength="50" size="20" {S_AJAX_USER_CHECK} />&nbsp;
+		<span id="username_list" style="display:none;">&nbsp;<span id="username_select">&nbsp;</span></span>
+		<input type="button" value="{L_ADD_MEMBER}" class="mainoption" onClick="add_username(this.form.username.value);return false;" />&nbsp;
+		<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onClick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes'); return false;" /><br /><br />
+		<textarea name="add" rows="5" cols="30">{USERNAMES}</textarea><br />
+	</td>
+</tr>
+<tr>
+	<td class="cat" colspan="2">
+		{S_HIDDEN_FIELDS}
+		<input type="submit" name="submit" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
+		<input type="submit" name="reset" class="liteoption" value="{L_RESET}" />
+	</td>
+</tr>
+</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+</form>
+
+<!-- INCLUDE profile_cpl_menu_inc_end.tpl -->

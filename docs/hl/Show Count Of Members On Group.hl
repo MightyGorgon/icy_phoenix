@@ -1,0 +1,8 @@
+Name = "Group Member Count"
+Description = "Show the count of members of a group on the usergroup page.Can include group moderator."
+Author = "Clone (Christin Tietjen)"
+
+Version = "1.0.0"
+Download_URL = "http://www.phpbbhacks.com/download/5503"
+Author_EMAIL = "webmaster@clonezero.de"
+Author_WEB = "http://clonezero.de"

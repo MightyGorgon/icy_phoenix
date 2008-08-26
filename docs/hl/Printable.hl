@@ -1,0 +1,8 @@
+Name = "Printable Page"
+Description = "Gives the option of a printable version which has no non-message graphics and has a more compact display format. All messages	in a thread are displayed."
+Author = "Adam Ismay"
+Version = "1.0.0"
+Download_URL = ""
+Author_EMAIL = "admin@boardz.tk"
+Author_WEB = ""
+

@@ -1,0 +1,8 @@
+Name = "Download Topics and Posts"
+Description = "Insert links on viewtopic to save the whole topic or one post of it in a textfile"
+Author = "OXPUS (Karsten Ude)"
+
+Version = "1.0.0"
+Download_URL = "http://www.oxpus.de"
+Author_EMAIL = "webmaster@oxpus.de"
+Author_WEB = "http://www.oxpus.de"

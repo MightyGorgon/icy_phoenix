@@ -1,0 +1,8 @@
+Name = "Acronym Mod"
+Description = "Provides automatic acronym additions to posts."
+Author = "CodeMonkeyX"
+
+Version = "0.9.5"
+Download_URL = "http://www.phpbb2.de/dload.php?action=file&file_id=413"
+Author_EMAIL = "nickyoungso@yahoo.com"
+Author_WEB = "http://www.codemonkeyx.net"

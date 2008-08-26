@@ -1,0 +1,8 @@
+Name = "Block DNSBL Blacklisted Registrants"
+Description = "Prevents those whose IP address is listed on DNSBLs from registering."
+Author = "TerraFrost (Jim Wigginton)"
+
+Version = "1.0.1"
+Download_URL = "http://www.frostjedi.com/phpbb"
+Author_EMAIL = "no.pubblic@email"
+Author_WEB = "http://www.frostjedi.com/phpbb "

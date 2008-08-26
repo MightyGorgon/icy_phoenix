@@ -1,0 +1,8 @@
+Name = "Unread Post Information 2 Database"
+Description = "This Mod saves additional informations about postings needed to compute the not-yet-read postings in the database."
+Author = "BigRib (Sven) "
+
+Version = "3.0.4"
+Download_URL = "http://forum.bigrib.de/"
+Author_EMAIL = "bigrib@gmx.de"
+Author_WEB = "http://www.bigrib.de/"

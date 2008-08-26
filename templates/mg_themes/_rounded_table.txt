@@ -1,0 +1,40 @@
+td img { display: block; }
+
+{IMG_THL}{IMG_THC}<span class="forumlink">{}</span>{IMG_THR}
+{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+{IMG_THL}{IMG_THC}<a href="{}" class="forumlink">{}</a>{IMG_THR}
+{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+
+<table class="forumline" width="100%" cellspacing="0">
+<tr><td class="row-header"><span>{}</span></td></tr>
+
+<table class="forumlinenb" width="100%" cellspacing="0">
+<tr><td class="row-header"><span>{}</span></td></tr>
+
+<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	<tr><td>{IMG_THL}{IMG_THC}<a href="{}" class="forumlink">{}</a>{IMG_THR}</td></tr>
+	<tr>
+		<td class="row6">
+			<table width="100%" cellspacing="0" cellpadding="0">
+
+			</table>
+		</td>
+	</tr>
+	<tr><td>{IMG_TFL}{IMG_TFC}{IMG_TFR}</td></tr>
+</table>
+
+
+
+<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	<tr><td>{IMG_THL}{IMG_THC}<span class="forumlink">{}</span>{IMG_THR}</td></tr>
+	<tr>
+		<td class="row6">
+			<table width="100%" cellspacing="0" cellpadding="0">
+
+			</table>
+		</td>
+	</tr>
+	<tr><td>{IMG_TFL}{IMG_TFC}{IMG_TFR}</td></tr>
+</table>

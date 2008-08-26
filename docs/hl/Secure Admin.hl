@@ -1,0 +1,8 @@
+Name = "Secure the first admin before changes"
+Description = "Secure the first admin before changes of other admins.With this mod you can disallow other admins to delete or edit the first admin with the userid 2. The first admin gets a little bit more security if another admin wants to kick him."
+Author = "AWSW"
+Version = "2.0.0"
+Download_URL = "http://www.awsw.de"
+Author_EMAIL = ""
+Author_WEB = "http://www.awsw.de"
+

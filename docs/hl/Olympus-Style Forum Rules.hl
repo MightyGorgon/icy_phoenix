@@ -1,0 +1,8 @@
+Name = "Olympus-Style Forum Rules"
+Description = "This MOD allows the admin to select more than one special rank for each user."
+Author = "mad-manne (Manfred Hoffmann)"
+
+Version = "0.7.0"
+Download_URL = "http://www.phpbb.com/phpBB/viewtopic.php?t=264482"
+Author_EMAIL = "phpbb@mad-manne.de"
+Author_WEB = "http://phpbb.mad-manne.de"

@@ -1,0 +1,78 @@
+@import url("common.css");
+@import url("fap.css");
+@import url("dock.css");
+@import url("style_gray_common.css");
+@import url("style_gray_xmas_colors.css");
+
+#global-wrapper {
+/*
+	width: 980px;
+	clear: both;
+	margin: 0 auto;
+*/
+}
+
+#top_logo{
+	border: 7px solid #ffffff;
+	background: url('images/gray/xmas/xmas_header.png');
+	height: 150px;
+}
+
+.forumline .row-header span, .forumlinenb .row-header span {
+	background: url('images/gray/xmas/little_box.png') top left no-repeat;
+	padding-left: 27px;
+	color: #444444;
+	display: block;
+	padding-top: 4px;
+	font-weight: bold;
+	font-size: 12px;
+	height: 24px;
+	/*line-height: 1.2em;*/
+}
+
+.forumline .catHead span, .forumlinenb .catHead span {
+	background: url('images/gray/xmas/little_box.png') top left no-repeat;
+	padding-left: 27px;
+	color: #444444;
+	display: block;
+	padding-top: 4px;
+	font-weight: bold;
+	font-size: 12px;
+	height: 24px;
+	/*line-height: 1.2em;*/
+}
+
+.roundedhc {
+	background: url('images/gray/xmas/tbl_h_c.gif') bottom left repeat-x;
+}
+
+/* navigation */
+.nav-header {
+	background: #e8eef8 url('images/gray/xmas/bg_nav1_gray.gif');
+	color: #888888;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: left;
+	padding: 4px 5px;
+}
+
+.row-post-author, .row-post {
+	background: #ffffff url('images/gray/xmas/bg_post.gif') top left repeat-x;
+	border: solid 1px #ffffff;
+	border-right-color: #dddddd;
+	border-bottom-color: #dddddd;
+	vertical-align: top;
+	padding: 3px;
+}
+
+.forumline .news-header span, .forumlinenb .news-header span {
+	background: url('images/gray/xmas/little_box.png') top left no-repeat;
+	padding-left: 17px;
+	color: #444444;
+	display: block;
+	padding-top: 2px;
+	font-weight: bold;
+	font-size: 12px;
+	line-height: 1.5em;
+}
+

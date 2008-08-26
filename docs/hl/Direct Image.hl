@@ -1,0 +1,8 @@
+Name = "Direct Image Link"
+Description = "Makes all user posted images hyperlinked to their direct file path."
+Author = "Disturbed One (Anthony Coy)"
+Version = "1.0.0 "
+Download_URL = "http://anthonycoy.com"
+Author_EMAIL = "anthony@anthonycoy.com"
+Author_WEB = "http://anthonycoy.com"
+

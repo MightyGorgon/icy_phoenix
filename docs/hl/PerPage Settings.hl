@@ -1,0 +1,8 @@
+Name = "PerPage Settings"
+Description = "every user can adjust how much posts/topics should be displayed and hot threshold."
+Author = "Acid"
+
+Version = "1.0.0"
+Download_URL = ""
+Author_EMAIL = "acid_junky@web.de"
+Author_WEB = ""

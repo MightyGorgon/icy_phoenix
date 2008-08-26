@@ -1,0 +1,7 @@
+Name = "Remote Avatar Resize"
+Description = "A simple MOD to resize user's remote avatar if it is larger than the maximum size set in the admin panel."
+Author = "tomlevens (Tom Levens)"
+Version = "1.1.3"
+Download_URL = "http://www.tomlevens.co.uk/"
+Author_EMAIL = "tom@tomlevens.co.uk"
+Author_WEB = "http://www.tomlevens.co.uk/"

@@ -1,0 +1,7 @@
+Name = "Admin Private Message Manager"
+Description = "An Admin panel plug-in that allows the management of Private Messages on the board."
+Author = "Nivisec"
+Version = "1.6.0"
+Download_URL = "http://www.nivisec.com/phpbb.php?l=p"
+Author_EMAIL = "support@nivisec.com"
+Author_WEB = "http://www.nivisec.com"

@@ -1,0 +1,8 @@
+Name = "Yellow card"
+Description = "Also known as "card system" This mod will make 4 colored buttons beside users post (red,yellow,green and blue) ADMIN can in ACP configure inside witch forum the buttons are visible Red = ban, Yelow = warn, Green = unban, Blue = report to moderators."
+Author = "Niels (Niels Chr. Rød)"
+
+Version = "1.4.12"
+Download_URL = "http://mods.db9.dk"
+Author_EMAIL = "ncr@db9.dk"
+Author_WEB = "http://mods.db9.dk"

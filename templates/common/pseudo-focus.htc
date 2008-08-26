@@ -1,0 +1,25 @@
+<attach event="onfocus" handler="focusOn" />
+<attach event="onblur" handler="focusOff" />
+
+<script type="text/javascript">
+//
+// Simple behaviour for IE5+ to emulate CSS pseudo-classes.
+// Extended to enable the :focus event
+//
+// Manual at: http://www.hszk.bme.hu/~hj130/css/list_menu/hover/
+//
+function focusOn() {
+	element.origFocusClassName = (element.origHoverClassName) ? element.origHoverClassName : element.className;
+	var tempClassStr = element.className;
+	tempClassStr += "Focus";
+	tempClassStr = tempClassStr.replace(/\s/g,"Focus ");
+	tempClassStr += " focus";
+	element.className = element.className + " " + tempClassStr;
+	element.focusOn = true;
+}
+function focusOff() {
+	element.focusOn = false;
+	element.className = element.origFocusClassName;
+}
+
+</script>

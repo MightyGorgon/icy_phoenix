@@ -1,0 +1,8 @@
+Name = "Admin ignore board disabled"
+Description = "The admin could access the board even if it is disabled."
+Author = "Leuchte"
+
+Version = "1.0.0"
+Download_URL = "http://www.phpbbhacks.com/download/3311"
+Author_EMAIL = "mail@leuchte.net"
+Author_WEB = "http://www.leuchte.net"

@@ -1,0 +1,8 @@
+Name = "Lock/Unlock in Posting Body"
+Description = "This Mod allows the Admin/Mod to lock/unlock a topic direct after submitting the post."
+Author = "Meik Sievertsen"
+
+Version = "1.0.1"
+Download_URL = "http://www.phpbbhacks.com/download/248"
+Author_EMAIL = "acyd.burn@gmx.de"
+Author_WEB = "http://www.opentools.de"

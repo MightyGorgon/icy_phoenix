@@ -1,0 +1,8 @@
+Name = "Prune users"
+Description = "Admin plug-in that makes it posible to delete users who are inactive/haven't posted or like."
+Author = "Niels (Niels Chr. Rød)"
+
+Version = "1.4.3"
+Download_URL = "http://mods.db9.dk"
+Author_EMAIL = "ncr@db9.dk"
+Author_WEB = "http://mods.db9.dk"

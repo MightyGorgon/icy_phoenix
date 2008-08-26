@@ -1,0 +1,8 @@
+Name = "Custom Profile Fields"
+Description = "Allows administrators to add fields to registration/profile/memberlist/topics, plus admin-only fields (though to get use out of them, you may have to write your own MOD based on them)"
+Author = "Blankety Blank Man (Brian Shields)"
+
+Version = "1.0.6"
+Download_URL = "http://edos.siteburg.com/phpBB2/index.php"
+Author_EMAIL = "blanketyblankman@gmail.com"
+Author_WEB = "http://edos.siteburg.com/phpBB2/index.php"

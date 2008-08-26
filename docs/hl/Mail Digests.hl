@@ -1,0 +1,7 @@
+Name = "Mail Digests"
+Description = "Sends customized email digests of forum messages to subscribers"
+Author = "MarkDHamill (Mark D. Hamill)"
+Version = "1.0.13"
+Download_URL = ""
+Author_EMAIL = "mhamill@computer.org"
+Author_WEB = "http://www.potomactavern.org"

@@ -1,0 +1,7 @@
+Name = "Default avatar"
+Description = "Lets the administrator choose a default avatar, if a user hasn't already selected one. The default avatar can be changed through the ACP. You can also select wheather you want to display the default avatar for guests, registered users or both, and choose a different default avatar for guests and users."
+Author = "Manipe "
+Version = " 1.1.0"
+Download_URL = ""
+Author_EMAIL = "admin@manipef1.com"
+Author_WEB = "http://www.manipef1.com"

@@ -1,0 +1,8 @@
+Name = "Custom Joined Date Format"
+Description = "This will add an entry to the language file(s) to allow a different date format for the joined date in view topic and view profile."
+Author = "Matthijs"
+Version = "1.0.0"
+Download_URL = "http://www.phpbbhacks.com/download/506"
+Author_EMAIL = "phpbb@matthijs.net"
+Author_WEB = ""
+

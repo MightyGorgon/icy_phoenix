@@ -1,0 +1,8 @@
+Name = "Admin Register User"
+Description = "This hack allows administrations to register a new account through the administration control panel."
+Author = "OXPUS (Karsten Ude)"
+
+Version = "1.0.5"
+Download_URL = "http://www.phpbbhacks.com/download/2901"
+Author_EMAIL = "webmaster@oxpus.de"
+Author_WEB = "http://www.oxpus.de"

@@ -1,0 +1,8 @@
+Name = "Guest Sessions MOD"
+Description = "This mod removes session id for guests from url and this way guests who don't have cookies like different robots will use correct urls. It can be used to allow googlebot and other search engines to spider your forum correctly."
+Author = "CyberAlien (Vjacheslav Trushkin)"
+Version = "0.0.4"
+Download_URL = "http://www.phpbbstyles.com"
+Author_EMAIL = "no@public_email"
+Author_WEB = "http://www.phpbbstyles.com"
+

@@ -1,0 +1,8 @@
+Name = "Enhanced ModPanel"
+Description = "The Enhanced ModPanel displays all stickies, announcements (including global announcements), normal, locked/unlocked, unread/unanswered topics and topics with polls per forum so you can perform any action like sticky/normalize/globalize/announce, lock/unlock, move, delete to the listed topics. Further you can remove the polls from the topics."
+Author = "Acid"
+
+Version = "1.0.1"
+Download_URL = "http://www.phpbbhacks.com/download/3786"
+Author_EMAIL = ""
+Author_WEB = ""

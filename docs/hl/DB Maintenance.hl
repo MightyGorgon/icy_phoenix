@@ -1,0 +1,8 @@
+Name = "DB Maintenance"
+Description = "This Mod checks and fixes inconsistencies and errors in the database"
+Author = "PhilippK (Philipp Kordowich)"
+
+Version = "1.3.6"
+Download_URL = "http://phpbb.kordowich.net/"
+Author_EMAIL = "phpBB2005@kordowich.net"
+Author_WEB = "http://phpbb.kordowich.net/"

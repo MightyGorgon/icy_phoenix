@@ -1,0 +1,8 @@
+Name = "Lo-Fi Mod"
+Description = "This Mod will add a Textual/Low Graphic Layout to your Board. It's Ideal for Google Bot and for all Search Engine that spider your site, and also for printing in an easy way."
+Author = "Bicet (Nicola Tonon)"
+
+Version = "1.0.0"
+Download_URL = "http://www.phpbbxs.com"
+Author_EMAIL = "bicets@gmail.com"
+Author_WEB = "http://www.phpbbxs.com"

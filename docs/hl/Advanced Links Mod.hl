@@ -1,0 +1,8 @@
+Name = "Advanced Links Mod"
+Description = "This Mod let's you add Link-Banners to your Site and display them on the Index-Page. People can submit Links and the Admin can choose to add them or not in the Admin Panel."
+Author = "stefan2k1 (Stefan Paulus)"
+
+Version = "1.2.2"
+Download_URL = "http://www.phpbb2.de/dload.php?action=download&file_id=361"
+Author_EMAIL = "sp@phpbb2.de"
+Author_WEB = "http://www.phpbb2.de"

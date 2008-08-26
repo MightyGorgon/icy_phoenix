@@ -1,0 +1,8 @@
+Name = "Admin phpinfo"
+Description = "This hack displays the phpinfo() in your admin panel. This could be useful when you are asking for support."
+Author = "AbelaJohnB (John B. Abela)"
+
+Version = "1.0.0"
+Download_URL = "http://www.phpbbhacks.com/download/1584"
+Author_EMAIL = "abela@johnabela.com"
+Author_WEB = "http://www.phpbb2mods.com/"

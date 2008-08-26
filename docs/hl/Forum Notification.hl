@@ -1,0 +1,8 @@
+Name = "Forum notification mod"
+Description = "This Mod adds forum notification functionality to phpBB"
+Author = "David Herrmann"
+
+Version = "1.4.0"
+Download_URL = "http://www.phpbbhacks.com/download/293"
+Author_EMAIL = "david.herrmann@gmx.net"
+Author_WEB = ""

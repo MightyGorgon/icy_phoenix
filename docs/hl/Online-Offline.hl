@@ -1,0 +1,8 @@
+Name = "Online/Offline/Hidden"
+Description = "This mod will show the Online status of a user, stating if he is Online, Offline or Hidden (with image or text) within viewtopic as well his profile, in memberlist, groupcp, ...Only Admin, Mod (and Group Mod) and the user himself can view if a user is hidden"
+Author = "kooky"
+Version = "2.2.6"
+Download_URL = "http://kooky06.free.fr/board/"
+Author_EMAIL = "[nospam]kooky@altern.org"
+Author_WEB = "http://kooky06.free.fr/board/"
+

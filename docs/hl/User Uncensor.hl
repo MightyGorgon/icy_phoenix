@@ -1,0 +1,8 @@
+Name = "User UnCensor"
+Description = "Allows a user to Enable / Disable forum censor."
+Author = "netclectic (Adrian Cockburn)"
+
+Version = "1.1.0"
+Download_URL = "http://www.netclectic.com"
+Author_EMAIL = "adrian@netclectic.com"
+Author_WEB = "http://www.netclectic.com"

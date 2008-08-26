@@ -1,0 +1,28 @@
+# This file will contain the information about your module
+# for the statistics parser to use.
+#
+# You can make comments by using #
+# Note that the text must be on a single line for the parser
+# to read it!  Excluding the extra install info area.
+#
+
+# Module Name
+[name] Number of new posts by month
+
+# your name
+[author] Tommy Jensen
+
+# your email
+[email] tommy_jensen67@hotmail.com
+
+# your webpage url
+[url] http://www.sc-resources.net
+
+# module version
+[version] 1.0.0
+
+# extra info for the user, everything below
+# this block will be included, regardless if
+# you use a # even.
+[extra_info]
+No extra information on this module.

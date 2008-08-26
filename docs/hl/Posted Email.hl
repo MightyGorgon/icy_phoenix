@@ -1,0 +1,8 @@
+Name = "Posted email js"
+Description = "Fight spam by modifying all e-mail addresses in posts to javascripts."
+Author = "lcn (Lars Nygard)"
+Version = "1.0.3"
+Download_URL = "http://www.phpbb.com/phpBB/viewtopic.php?t=206542"
+Author_EMAIL = "lars@snart.com"
+Author_WEB = "http://www.snart.com/"
+

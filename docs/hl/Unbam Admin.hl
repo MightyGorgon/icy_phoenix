@@ -1,0 +1,8 @@
+Name = "Auto Un-ban Main Admin"
+Description = "This will not prevent the banning of the first super admin, but will unban this user (if banned) on each page load."
+Author = "Nivisec"
+
+Version = "1.0.0"
+Download_URL = "http://www.phpbbhacks.com/download/340"
+Author_EMAIL = "nivisec@hotmail.com"
+Author_WEB = "http://nivisec.com/mods/"

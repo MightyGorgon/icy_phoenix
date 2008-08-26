@@ -1,0 +1,7 @@
+Name = "View Attachments"
+Description = "Display all of your Attachments on a forums basis. It's similar to the memberlist. Of course, only those Attachments are displayed the User have Permission to download/view."
+Author = "Acyd Burn (Meik Sievertsen)"
+Version = "1.0.2"
+Download_URL = "http://www.opentools.de/"
+Author_EMAIL = "acyd.burn@gmx.de"
+Author_WEB = "http://www.opentools.de/"

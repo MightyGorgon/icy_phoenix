@@ -1,0 +1,8 @@
+Name = "Invision View Profile"
+Description = "Replaces phpBB's default profile with IPB's clean layout."
+Author = "Disturbed One (Anthony Coy)"
+Version = "1.1.3"
+Download_URL = "http://anthonycoy.com"
+Author_EMAIL = "anthony@anthonycoy.com"
+Author_WEB = "http://anthonycoy.com"
+

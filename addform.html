@@ -1,0 +1,18 @@
+<html>
+<head>
+</head>
+<body>
+<script type="text/javascript">
+<!--
+function add_code()
+{
+	var text = unescape(document.location.search.substring(1));
+	opener.document.forms['post'].message.value = opener.document.forms['post'].message.value + text;
+	opener.focus();
+	window.close();
+}
+add_code();
+//-->
+</script>
+</body>
+</html>

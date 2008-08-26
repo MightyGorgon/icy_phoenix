@@ -1,0 +1,8 @@
+Name = "Download Manager (mxBB pafiledb) integration"
+Description = "Integration of pafiledb (Database download manager) with phpBB."
+Author = "_Haplo (Manfred Hoffmann)"
+
+Version = "0.0.9d"
+Download_URL = "http://www.mx-system.com"
+Author_EMAIL = "jonohlsson@hotmail.com"
+Author_WEB = "http://www.mx-system.com"

@@ -1,0 +1,8 @@
+Name = "Downloads"
+Description = "Very powerful downloads feature"
+Author = "Hotschi, OXPUS, Demolition FABI"
+
+Version = "5.3.0"
+Download_URL = "http://phpbb.hotschi.de"
+Author_EMAIL = "webmaster@oxpus.de"
+Author_WEB = "http://phpbb.hotschi.de"

@@ -1,0 +1,8 @@
+Name = "Quick Administrator User Options and Information"
+Description = "This MOD will add "Edit User's Profile" and "Edit User's Permissions" links along with if the user is active (activated), if the user has been banned, or if the user's email has been banned."
+Author = "pentapenguin"
+
+Version = "0.1.1"
+Download_URL = "http://www.pentapenguin.com"
+Author_EMAIL = "pentapenguin@bluebottle.com"
+Author_WEB = "http://www.pentapenguin.com"

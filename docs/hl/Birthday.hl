@@ -1,0 +1,8 @@
+Name = "Birthday"
+Description = "This mod will add a birthday field into your user's profile and make users age viewable to others when viewing posts."
+Author = "Niels (Niels Chr. Rød)"
+
+Version = "1.5.7"
+Download_URL = "http://www.phpbbhacks.com/download/187"
+Author_EMAIL = "ncr@db9.dk"
+Author_WEB = "http://mods.db9.dk"

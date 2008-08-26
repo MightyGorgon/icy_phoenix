@@ -1,0 +1,8 @@
+Name = "Advanced User Search"
+Description = "This is an admin module for the ACP system. It allows Searching for users based on their	username, email address, date registered, usergroup, permission status (mod/admin), post count, userfields (ICQ/Yahoo/Website/Interests/e.t.c.), Language, Last Visit, Timezone, Moderators (of a specific forum), banned users, IP address (used to post), disabled accounts and disabled PM priviliges."
+Author = "R45 (Adam Alkins)"
+
+Version = "1.0.2"
+Download_URL = "http://www.phpbbhacks.com/download/3958"
+Author_EMAIL = "phpbb@rasadam.com"
+Author_WEB = "http://phpbb.rasadam.com"

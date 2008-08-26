@@ -1,0 +1,8 @@
+Name = "Enhanced Sig Char Counter"
+Description = "This MOD alters the signiture validation so that html and bbcode tags are NOT counted against the max_length of the sig"
+Author = "Hades (Lee Conlin)"
+
+Version = "1.0.1"
+Download_URL = ""
+Author_EMAIL = "phpbb@hades.me.uk"
+Author_WEB = "http://www.celestialvault.com/blast"

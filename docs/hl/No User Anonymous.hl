@@ -1,0 +1,8 @@
+Name = "Redirect anonymous users to login"
+Description = "This very simple MOD redirects anonymous users to the login page instead of showing member, groups, or profile pages. That way anonymous users can't see registered user's data."
+Author = "StefanKausL (Stefan Kuhlins)"
+
+Version = "1.0.7"
+Download_URL = "http://www.phpbb.com"
+Author_EMAIL = "stefan@kuhlins.de"
+Author_WEB = "http://kuhlins.de/"

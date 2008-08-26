@@ -1,0 +1,8 @@
+Name = "phpBB Wordgraph MOD"
+Description = "This MOD displays a listing of the most frequently used words on your site in relative font sizes so that you can see which words are the most common."
+Author = "pentapenguin  (Jeremy Conley)"
+
+Version = "0.1.0"
+Download_URL = "http://www.pentapenguin.com"
+Author_EMAIL = "pentapenguin@bluebottle.com"
+Author_WEB = "http://www.pentapenguin.com"

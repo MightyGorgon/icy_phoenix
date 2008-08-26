@@ -1,0 +1,8 @@
+Name = "Limit login attempts"
+Description = "Deters people from guessing users' passwords by locking him/her out of login.php after a number of wrong guesses for a certain amount of time. Both the number and the time can be set in the admin panel. Includes cookie and ip tracking for maximum security."
+Author = "Manipe"
+
+Version = "1.0.1"
+Download_URL = "http://www.phpbb.com/phpBB/viewtopic.php?t=341442"
+Author_EMAIL = "admin@manipef1.com"
+Author_WEB = "http://www.manipef1.com"

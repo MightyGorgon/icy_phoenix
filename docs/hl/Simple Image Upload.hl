@@ -1,0 +1,12 @@
+Name = "Simple image upload"
+Description = "This mod enables image uploading. All images are stored on image hosting server, not on your forum. Image uploading is very simple and requires no skill. This mod is perfect solution for forums where visitors are not tech savvy and don't know how to upload image or don't know how to use [img] bbcode. Image hosting script creates thumbnails of images and posts thumbnails instead of full images, so large images will be shown as small."
+Author = "CyberAlien"
+
+
+
+Version = "1.0.0"
+Download_URL = "http://www.phpbbstyles.com/viewtopic.php?t=8121"
+Author_EMAIL = ""
+Author_WEB = "http://www.phpbbstyles.com"
+
+

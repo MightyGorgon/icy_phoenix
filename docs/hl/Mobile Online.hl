@@ -1,0 +1,8 @@
+Name = "Mobile Online phpBB"
+Description = "Mobile Online phpBB (mophpbb) is a phpBB2 add-on module.  It enables users to access your phpBB from a mobile/cellular phone or PDA through WAP, xHTML (xHTML-MP) and HTML (simple text only) interfaces."
+Author = "Rickey"
+
+Version = "1.6"
+Download_URL = "http://www.mobileonlinestyle.com/"
+Author_EMAIL = "rickey29@gmail.com"
+Author_WEB = "http://www.mobileonlinestyle.com/"

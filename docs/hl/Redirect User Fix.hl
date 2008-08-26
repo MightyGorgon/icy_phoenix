@@ -1,0 +1,7 @@
+Name = "Redirect User Fix"
+Description = "Redirect users directly to their message after making a new post, instead of the "Click here to view your message, here for Forum index" message screen."
+Author = "Solo Forever"
+Version = " 1.0.0"
+Download_URL = ""
+Author_EMAIL = "solarent@excite.com"
+Author_WEB = "http://foreversilent.net"

@@ -1,0 +1,7 @@
+Name = "Bantron Mod"
+Description = "Adds many features to the ban system including private/public ban reasons and expiring bans. Bans are also presented in a more browsable paginated list style."
+Author = "Disclosed"
+Version = "1.0.0"
+Download_URL = ""
+Author_EMAIL = "no@pubblic.email"
+Author_WEB = ""

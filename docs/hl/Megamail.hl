@@ -1,0 +1,8 @@
+Name = "Megamail"
+Description = "This MOD relates to the Admin-Mass-Mail function. Instead of sending a single email with all recipients as BCC, it will split the mail up in several emails "
+Author = "R. U. Serious"
+
+Version = " 0.9.6"
+Download_URL = "http://www.phpbb.com/phpBB/viewtopic.php?p=561729#561729"
+Author_EMAIL = "r.u.serious@handykoelsch.de"
+Author_WEB = "http://www.handykoelsch.de"

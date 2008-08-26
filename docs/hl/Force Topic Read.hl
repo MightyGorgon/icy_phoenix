@@ -1,0 +1,8 @@
+Name = "Force Topic Read"
+Description = "Forces users to read a specific topic once, such as site rules, etc.."
+Author = "Austin"
+
+Version = "1.0.1"
+Download_URL = "http://www.phpbb-tweaks.com"
+Author_EMAIL = "austin_inc@hotmail.com"
+Author_WEB = "http://www.phpbb-tweaks.com"

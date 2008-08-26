@@ -1,0 +1,7 @@
+Name = "Google keyword URLs Sitemap generator"
+Description = "Generates a dynamic listing of all topics in Google's sitemap xml format"
+Author = "webmedic (Brook Hyumphrey)"
+Version = "1.6.1"
+Download_URL = "http://www.webmedic.net/released-phpbb-google-keyword-urls-200-vt2577.html"
+Author_EMAIL = "bah@webmedic.net"
+Author_WEB = "http://www.webmedic.net/"

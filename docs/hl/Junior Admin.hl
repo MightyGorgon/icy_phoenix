@@ -1,0 +1,8 @@
+Name = "Junior Admin"
+Description = "This will allow you to define any and all user you'd like to have access to whatever admin modules you'd like. "
+Author = "Nivisec (Nivisec)"
+
+Version = "2.0.5b"
+Download_URL = "http://nivisec.com"
+Author_EMAIL = "support@nivisec.com"
+Author_WEB = "http://nivisec.com"

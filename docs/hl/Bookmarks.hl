@@ -1,0 +1,8 @@
+Name = "Bookmarks"
+Description = "Keeps an internal list of bookmarks set by the user"
+Author = "PhilippK (Philipp Kordowich)"
+
+Version = "1.1.1i"
+Download_URL = "http://phpbb.kordowich.net/"
+Author_EMAIL = "phpBB2006@kordowich.net"
+Author_WEB = "http://phpbb.kordowich.net/"

@@ -1,0 +1,7 @@
+Name = "db_update generator"
+Description = "Creates a form into which you enter your SQL and a db_update.php file is then created. You can either copy/paste the file, or download it onto your computer."
+Author = "Freakin' Booty ;-P & Antony Bailey"
+Version = "1.0.2"
+Download_URL = "http://sourceforge.net/projects/dbgenerator"
+Author_EMAIL = "antony_bailey@lycos.co.uk"
+Author_WEB = "http://www.rapiddr3am.net"

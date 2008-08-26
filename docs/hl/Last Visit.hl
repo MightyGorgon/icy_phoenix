@@ -1,0 +1,8 @@
+Name = "Last visit"
+Description = "This mod will register when the user last logged in, allong with the info about how many users have visited the board."
+Author = "Niels (Niels Chr. Rød)"
+
+Version = "1.2.8"
+Download_URL = "http://mods.db9.dk"
+Author_EMAIL = "ncr@db9.dk"
+Author_WEB = "http://mods.db9.dk"

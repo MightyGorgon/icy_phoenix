@@ -1,0 +1,8 @@
+Name = "Staff Site"
+Description = "An external site to display who is Mod or Admin on your board."
+Author = "Acid"
+
+Version = "2.2.0"
+Download_URL = "http://www.phpbbhacks.com/forums/"
+Author_EMAIL = "no@public.email"
+Author_WEB = "http://www.phpbbhacks.com/forums/"

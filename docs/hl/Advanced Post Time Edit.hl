@@ -1,0 +1,8 @@
+Name = "Advanced Post Time Edit"
+Description = "Allows Moderators and Admins to edit the post time for each post or topic."
+Author = "OXPUS (Karsten Ude)"
+
+Version = "1.0.0"
+Download_URL = "http://www.oxpus.de"
+Author_EMAIL = "webmaster@oxpus.de"
+Author_WEB = "http://www.oxpus.de"

@@ -1,0 +1,8 @@
+Name = "Avatar Generator"
+Description = "Allow users to create their own avatar from a selection of templates "
+Author = "MrBass (modified by Mighty Gorgon)"
+
+Version = "2.0.2"
+Download_URL = "http://www.petesplace-online.co.uk"
+Author_EMAIL = "no.public@email"
+Author_WEB = "http://www.petesplace-online.co.uk "

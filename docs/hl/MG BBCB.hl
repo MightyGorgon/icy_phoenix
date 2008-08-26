@@ -1,0 +1,7 @@
+Name = "BBCodes Box"
+Description = "Enhanced BBCodes functions based on CyberAlien's BBCodes parsing function"
+Author = "Mighty Gorgon (Luca Libralato)"
+Version = "1.4.0"
+Download_URL = ""
+Author_EMAIL = "mightygorgon@mightygorgon.com"
+Author_WEB = "http://www.mightygorgon.com/"

@@ -1,0 +1,8 @@
+Name = "Admin Voting"
+Description = "Allows forum administrators, via the Admin Control Panel, to see who voted in a poll and, optionally, HOW they voted. "
+Author = "ErDrRon"
+
+Version = "1.1.8"
+Download_URL = "http://www.phpbbhacks.com/download/608"
+Author_EMAIL = "ErDrRon@aol.com"
+Author_WEB = "http://www.ErDrRon.com/phpBB2/"

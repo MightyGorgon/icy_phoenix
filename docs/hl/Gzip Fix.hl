@@ -1,0 +1,7 @@
+Name = "Gzip fix"
+Description = "This mod fixes a serious issue with phpBB not working properly when gzip is enabled."
+Author = "webmedic"
+Version = "1.0.0"
+Download_URL = "http://www.webmedic.net/released-phpbb-gzip-fix-vt25588.html"
+Author_EMAIL = "bah@webmedic.net"
+Author_WEB = "http://www.webmedic.net/"

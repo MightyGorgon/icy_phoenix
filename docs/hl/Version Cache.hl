@@ -1,0 +1,7 @@
+Name = "Version Cache mod"
+Description = "This mod caches phpBB version update information so phpBB checks for update only once a day instead of checking it every time you open admin control panel index."
+Author = "CyberAlien (Vjacheslav Trushkin)"
+Version = "0.0.3"
+Download_URL = "http://www.phpbbstyles.com"
+Author_EMAIL = "no@public_email"
+Author_WEB = "http://www.phpbbstyles.com"

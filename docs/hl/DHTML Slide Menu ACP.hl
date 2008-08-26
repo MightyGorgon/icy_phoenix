@@ -1,0 +1,8 @@
+Name = "DHTML Slide Menu for ACP"
+Description = "This MOD turns your ACP left pane into a Dynamic HTML Slide Menu (roll-in/roll-out effects), making it easier to navigate."
+Author = "markus_petrux (Markus)"
+
+Version = "1.0.0"
+Download_URL = "http://www.phpbbhacks.com/download/3770"
+Author_EMAIL = "phpbb.mods@phpmix.com"
+Author_WEB = "http://www.phpmix.com"
