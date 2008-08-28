@@ -15,8 +15,8 @@
 *
 */
 
+// CTracker_Ignore: File Checked By Human
 define('IN_SEARCH', true);
-// CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
 define('IN_PHPBB', true);

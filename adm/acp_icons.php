@@ -8,6 +8,11 @@
 *
 */
 
+if (!defined('IN_PHPBB'))
+{
+	die('Hacking attempt');
+}
+
 $acp_icon['default'] = '../images/menu/blocks.png';
 
 $acp_icon['1000_Configuration'] = '../images/menu/config.png';

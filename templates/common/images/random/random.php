@@ -1,4 +1,5 @@
 <?php
+// CTracker_Ignore: File Checked By Human
 
 $folder = '.';
 $extList = array();

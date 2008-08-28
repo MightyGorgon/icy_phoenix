@@ -9,9 +9,10 @@
 */
 
 /*
-Modified version of the one created by: Vic D'Elfant <vic@phpbb.com>
+* Modified version of the one created by: Vic D'Elfant <vic@phpbb.com>
 */
 
+// CTracker_Ignore: File Checked By Human
 define('IN_PHPBB', true);
 //$phpbb_root_path = './../';
 $phpbb_root_path = './';

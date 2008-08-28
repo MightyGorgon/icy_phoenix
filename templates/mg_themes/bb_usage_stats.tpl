@@ -18,10 +18,8 @@
 <!-- BEGIN bb_usage_section_row -->
 <tr>
 	<td class="cat" align="left" valign="middle">
-		<form name="section_form_{bb_usage_section_row.SECTION_ID}" action="{bb_usage_section_row.U_SECTION}" method="post">
-			<input name="search_cat" type="hidden" value="{bb_usage_section_row.SECTION_ID}"/>
-		</form>
-		<b><a style="cursor: pointer" onclick="document.section_form_{bb_usage_section_row.SECTION_ID}.submit()">{bb_usage_section_row.SECTION_NAME}</a></b>
+		<a style="cursor: pointer" onclick="document.section_form_{bb_usage_section_row.SECTION_ID}.submit()"><b>{bb_usage_section_row.SECTION_NAME}</b></a>
+		<form name="section_form_{bb_usage_section_row.SECTION_ID}" action="{bb_usage_section_row.U_SECTION}" method="post"><input name="search_cat" type="hidden" value="{bb_usage_section_row.SECTION_ID}" /></form>
 	</td>
 	<td class="cat" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_POST_COUNT}</b></td>
 	<td class="cat" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_POSTRATE}</b></td>
@@ -35,16 +33,14 @@
 	<!-- END bb_usage_switch_pctutup_section -->
 	<td class="cat" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_NEWTOPICS}</b></td>
 	<td class="cat" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_TOPICRATE}</b></td>
-	<td class="catRight" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_TOPICS_WATCHED}&nbsp;</b></td>
+	<td class="cat" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_TOPICS_WATCHED}&nbsp;</b></td>
 </tr>
 
 <!-- BEGIN bb_usage_forum_row -->
 <tr>
 	<td class="row1" width="100%">
-		<form name="forum_form_{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}" action="{bb_usage_section_row.bb_usage_forum_row.FORUM_URL}" method="post">
-			<input name="search_forum" type="hidden" value="{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}"/>
-		</form>
 		<span class="topiclink"><a style="cursor: pointer" onclick="document.forum_form_{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}.submit()">{bb_usage_section_row.bb_usage_forum_row.FORUM_NAME}</a></span>
+		<form name="forum_form_{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}" action="{bb_usage_section_row.bb_usage_forum_row.FORUM_URL}" method="post"><input name="search_forum" type="hidden" value="{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}" /></form>
 	</td>
 	<td class="row2 row-center" valign="middle"><span class="gen">{bb_usage_section_row.bb_usage_forum_row.FORUM_POST_COUNT}</span></td>
 	<td class="row2 row-center" valign="middle"><span class="gen">{bb_usage_section_row.bb_usage_forum_row.FORUM_POSTRATE}</span></td>
@@ -65,11 +61,9 @@
 
 <!-- BEGIN bb_usage_switch_scaling_row -->
 <tr>
-	<td class="cat" align="right" valign="middle"><b><span class="genmed" style="font-weight: bold;">{bb_usage_switch_scaling_row.SCALE_TEXT}</span></b></td>
+	<td class="cat" align="right" valign="middle">{bb_usage_switch_scaling_row.SCALE_TEXT}</td>
 	<td class="cat" align="right" valign="middle">&nbsp;</td>
-	<td class="cat" align="center" valign="middle">
-		<form method="post" name="scale_form" action="{bb_usage_switch_scaling_row.U_SCALE}">{bb_usage_switch_scaling_row.PRSCALE_SELECT_LIST}</form>
-	</td>
+	<td class="cat" align="center" valign="middle"><form method="post" name="scale_form" action="{bb_usage_switch_scaling_row.U_SCALE}">{bb_usage_switch_scaling_row.PRSCALE_SELECT_LIST}</form></td>
 	<td class="cat" align="right" valign="middle">&nbsp;</td>
 	<!-- BEGIN pctutup_filler_cell -->
 	<!--
@@ -77,9 +71,7 @@
 	-->
 	<!-- END bb_usage_scaling_filler_cell -->
 	<td class="cat" align="right" valign="middle">&nbsp;</td>
-	<td class="cat" align="center" valign="middle">
-		<form method="post" name="scale_form" action="{bb_usage_switch_scaling_row.U_SCALE}">{bb_usage_switch_scaling_row.TRSCALE_SELECT_LIST}</form>
-	</td>
+	<td class="cat" align="center" valign="middle"><form method="post" name="scale_form" action="{bb_usage_switch_scaling_row.U_SCALE}">{bb_usage_switch_scaling_row.TRSCALE_SELECT_LIST}</form></td>
 	<td class="cat" align="right" valign="middle">&nbsp;</td>
 	<td class="cat" align="right" valign="middle">&nbsp;</td>
 </tr>

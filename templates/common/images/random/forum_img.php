@@ -1,4 +1,5 @@
 <?php
+// CTracker_Ignore: File Checked By Human
 
 $bg_id = (isset($_GET['f']) ? intval($_GET['f']) : (isset($_POST['f']) ? intval($_POST['f']) : 0));
 $bg_id = ($f < 0) ? 0 : $bg_id;

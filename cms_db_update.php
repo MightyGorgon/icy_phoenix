@@ -8,6 +8,7 @@
 *
 */
 
+// CTracker_Ignore: File Checked By Human
 define('IN_PHPBB', true);
 $phpbb_root_path = './';
 include($phpbb_root_path . 'extension.inc');

@@ -43,11 +43,13 @@
 #########################################################
 */
 
-define('IN_PHPBB', true);
+// CTracker_Ignore: File Checked By Human
+define('MG_KILL_CTRACK', true);
 // to enable email notification to the user, after deletion, enable this
 define('NOTIFY_USERS', true);
 // to disable confirmation when executing PRUNE_MG
 define('KILL_CONFIRM', false);
+define('IN_PHPBB', true);
 $phpbb_root_path = './';
 include($phpbb_root_path . 'extension.inc');
 include($phpbb_root_path . 'common.' . $phpEx);

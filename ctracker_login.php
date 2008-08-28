@@ -103,7 +103,6 @@ if ( $ctracker_config->settings['loginfeature'] == 1 )
 $template->assign_vars(array(
 	'CONFIRM_IMAGE'   => $confirm_image,
 	'PAGE_ICON'       => $images['ctracker_key_icon'],
-	'PI_ICON'         => $images['ctracker_easter_egg'],
 	'S_FORM_ACTION'   => append_sid('ctracker_login.' . $phpEx . '?mode=check&uid=' . $user_id),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'L_HEADER_TEXT'   => $lang['ctracker_login_title'],

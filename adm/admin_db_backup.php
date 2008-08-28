@@ -10,6 +10,7 @@
 
 define('IN_PHPBB', true);
 
+// CTracker_Ignore: File Checked By Human
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
@@ -18,14 +19,13 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-
 // If download action is enabled, don't load header
 if ($_GET['action'] == 'download')
 {
 	$no_page_header = true;
 }
+$phpbb_root_path = './../';
+require($phpbb_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 
 // Request some vars

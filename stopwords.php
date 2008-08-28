@@ -9,8 +9,8 @@
 */
 
 /*
-This script is meant to remove from search tables all stopwords and smileys
-to reduce table size but also to allow better tags indexing
+* This script is meant to remove from search tables all stopwords and smileys
+* to reduce table size but also to allow better tags indexing
 */
 
 define('IN_PHPBB', true);
