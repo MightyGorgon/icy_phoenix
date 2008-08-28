@@ -167,10 +167,6 @@ function board_display_new($unread)
 	$max_perm_read = $board_config['upi2db_max_permanent_topics'];
 	$max_mark = $board_config['upi2db_max_mark_posts'];
 
-	$icon_mini_upi2db_u = $images['mini_upi2db_u'];
-	$icon_mini_upi2db_p = $images['mini_upi2db_p'];
-	$icon_mini_upi2db_m = $images['mini_upi2db_m'];
-
 	$u_display_new = '';
 	$u_display_new .= ($count_new_posts) ? $count_new_posts . ' ' . $lang['Neue_Beitraege'] : '';
 	$u_display_new .= ($u_display_new && $count_edit_posts) ? ' | ' : '';

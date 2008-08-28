@@ -125,7 +125,7 @@ if (isset($_POST['groupstatus']) && $group_id)
 
 	$message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
-	$db->clear_cache();
+	$db->clear_cache('groups_');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -140,7 +140,6 @@ elseif (isset($_POST['colorize_all']) && $group_id)
 		message_die(GENERAL_ERROR, $lang['Session_invalid']);
 	}
 
-	empty_cache_folder('./', true);
 	update_all_users_colors_ranks($group_id);
 
 	$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $group_id) . '">'));
@@ -201,8 +200,6 @@ elseif (isset($_POST['joingroup']) && $group_id)
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_groups_exist']);
 	}
-
-	empty_cache_folder('./', true);
 
 	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 		VALUES ($group_id, " . $userdata['user_id'] . ",'" . (($is_autogroup_enable) ? 0 : 1) . "')";
@@ -307,8 +304,6 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 
 	if ($confirm)
 	{
-		empty_cache_folder('./', true);
-
 		$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 			WHERE user_id = " . $userdata['user_id'] . "
 				AND group_id = '" . $group_id . "'";
@@ -479,7 +474,6 @@ elseif ($group_id)
 
 				if (!($db->sql_fetchrow($result)))
 				{
-					empty_cache_folder('./', true);
 					$sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
 						VALUES (" . $row['user_id'] . ", $group_id, 0)";
 					if (!$db->sql_query($sql))
@@ -568,11 +562,11 @@ elseif ($group_id)
 					for($i = 0; $i < count($members); $i++)
 					{
 						$sql_in .= (($sql_in != '') ? ', ' : '') . intval($members[$i]);
+						@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . 'u_' . $members[$i] . '.' . $phpEx);
 					}
 
 					if (isset($_POST['approve']))
 					{
-						empty_cache_folder('./', true);
 						if ($group_info['auth_mod'])
 						{
 							$sql = "UPDATE " . USERS_TABLE . "
@@ -622,8 +616,6 @@ elseif ($group_id)
 					}
 					elseif (isset($_POST['mass_colorize']))
 					{
-						empty_cache_folder('./', true);
-
 						$sql_users = "UPDATE " . USERS_TABLE . "
 							SET user_color_group = '" . $group_id . "', user_color = '" . $group_color . "', user_rank = '" . $group_rank . "'
 							WHERE user_id IN ($sql_in)";
@@ -640,7 +632,6 @@ elseif ($group_id)
 					}
 					elseif (isset($_POST['deny']) || isset($_POST['remove']))
 					{
-						empty_cache_folder('./', true);
 						if ($group_info['auth_mod'])
 						{
 							$sql = "SELECT ug.user_id, ug.group_id

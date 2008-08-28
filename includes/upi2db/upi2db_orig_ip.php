@@ -47,10 +47,6 @@ if(!function_exists(index_display_new))
 		$max_perm_read = $board_config['upi2db_max_permanent_topics'];
 		$max_mark = $board_config['upi2db_max_mark_posts'];
 
-		$icon_u = $images['mini_upi2db_u'];
-		$icon_p = $images['mini_upi2db_p'];
-		$icon_m = $images['mini_upi2db_m'];
-
 		$u_display_new['all'] = '<a href="' . append_sid(SEARCH_MG . '?search_id=upi2db&s2=new') . '" class="mainmenu" title="' . $lang['Neue_Beitraege'] . ' (' . $new_posts . ') / ' . $lang['Editierte_Beitraege'] . ' (' . $edit_posts . ')" alt="' . $lang['Neue_Beitraege'] . ' (' . $new_posts . ') / ' . $lang['Editierte_Beitraege'] . ' (' . $edit_posts . ')"> U: ' . $unread_posts . '</a>';
 		$u_display_new['all'] .= '<a href="' . append_sid(SEARCH_MG . '?search_id=upi2db&s2=mark') . '" class="mainmenu" title="' . $lang['Ungelesen_Markiert'] . ' (' . $mark_unread . '/' . $max_mark . ')" alt="' . $lang['Ungelesen_Markiert'] . ' (' . $mark_unread . '/' . $max_mark . ')"> M: ' . $mark_unread . '</a>';
 		$u_display_new['all'] .= '<a href="' . append_sid(SEARCH_MG . '?search_id=upi2db&s2=perm') . '" class="mainmenu" title="' . $lang['Permanent_Gelesen'] . ' (' . $always_read . '/' . $max_perm_read . ')" alt="' . $lang['Permanent_Gelesen'] . ' (' . $always_read . '/' . $max_perm_read . ')"> P: ' . $always_read . '</a>';

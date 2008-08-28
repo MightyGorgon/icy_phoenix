@@ -194,6 +194,7 @@ function count_active_users()
 function update_all_users_colors_ranks($group_id)
 {
 	global $db, $board_config;
+	global $phpbb_root_path, $phpEx;
 	$group_color = get_group_color($group_id);
 	$group_rank = get_group_rank($group_id);
 	$sql = "SELECT user_id
@@ -223,6 +224,7 @@ function update_all_users_colors_ranks($group_id)
 		{
 			message_die(GENERAL_ERROR, 'Could not update user color', '', __LINE__, __FILE__, $sql_users);
 		}
+		@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . 'u_' . $row['user_id'] . '.' . $phpEx);
 	}
 	$db->sql_freeresult($result);
 
@@ -240,6 +242,7 @@ function update_all_users_colors_ranks($group_id)
 function update_user_color($user_id, $user_color, $user_color_group = false)
 {
 	global $db, $board_config;
+	global $phpbb_root_path, $phpEx;
 	$sql = "SELECT u.user_color, u.user_color_group
 					FROM " . USERS_TABLE . " as u
 					WHERE u.user_id = '" . $user_id . "'
@@ -276,6 +279,7 @@ function update_user_color($user_id, $user_color, $user_color_group = false)
 		}
 	}
 
+	@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . 'u_' . $user_id . '.' . $phpEx);
 	return true;
 }
 
@@ -290,6 +294,7 @@ function update_user_color($user_id, $user_color, $user_color_group = false)
 function clear_user_color($user_id, $user_color, $user_color_group = false)
 {
 	global $db, $board_config;
+	global $phpbb_root_path, $phpEx;
 	$sql = "SELECT u.user_color, u.user_color_group
 					FROM " . USERS_TABLE . " as u
 					WHERE u.user_id = '" . $user_id . "'
@@ -326,6 +331,7 @@ function clear_user_color($user_id, $user_color, $user_color_group = false)
 		}
 	}
 
+	@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . 'u_' . $user_id . '.' . $phpEx);
 	return true;
 }
 

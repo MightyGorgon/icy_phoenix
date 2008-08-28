@@ -182,10 +182,6 @@ $template->assign_vars(array(
 	'IMG_ALBUM_FOLDER_SS' => $images['pm_sentbox'],
 	'IMG_SLIDESHOW' => $images['icon_latest_reply'],
 	'IMG_SLIDESHOW_NEW' => $images['icon_newest_reply'],
-	'IMG_DOT_ORANGE' => '<img src="' . $images['orange_dot'] . '" align="middle" />',
-	'IMG_DOT_BLUE' => '<img src="' . $images['blue_dot'] . '" align="middle" />',
-	'IMG_DOT_GREEN' => '<img src="' . $images['green_dot'] . '" align="middle" />',
-	'IMG_DOT_YELLOW' => '<img src="' . $images['yellow_dot'] . '" align="middle" />',
 
 	'ALBUM_SEARCH_BOX' => $album_search_box,
 
