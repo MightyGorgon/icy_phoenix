@@ -98,6 +98,7 @@ function toggle_check_all()
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
 <table class="empty-table" width="100%" align="center" cellspacing="0">
 <tr>
 	<td align="left" valign="middle"><span class="gensmall">{PAGE_NUMBER}</span></td>

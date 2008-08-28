@@ -631,7 +631,10 @@ switch($mode)
 				$type = substr($fid, 0, 1);
 				$new_forum_id = ($type == POST_FORUM_URL) ? intval(substr($fid, 1)) : 0;
 			}
-			if ($new_forum_id <= 0) message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+			if ($new_forum_id <= 0)
+			{
+				message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+			}
 			$old_forum_id = $forum_id;
 			if($new_forum_id != $old_forum_id)
 			{
@@ -1003,12 +1006,8 @@ switch($mode)
 				$hidden_fields .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" />';
 			}
 
-			//
 			// Set template files
-			//
-			$template->set_filenames(array(
-				'mergetopic' => 'modcp_merge.tpl')
-			);
+			$template->set_filenames(array('mergetopic' => 'modcp_merge.tpl'));
 
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
@@ -1031,7 +1030,7 @@ switch($mode)
 		}
 		break;
 	case 'split':
-		$page_title = $lang['Mod_CP'] .' ('. $lang['Split'] .')';
+		$page_title = $lang['Mod_CP'] . ' (' . $lang['Split'] . ')';
 		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
 
 		$post_id_sql = '';
@@ -1100,7 +1099,11 @@ switch($mode)
 					$type = substr($fid, 0, 1);
 					$new_forum_id = ($type == POST_FORUM_URL) ? intval(substr($fid, 1)) : 0;
 				}
-				if ($new_forum_id <= 0) message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+
+				if ($new_forum_id <= 0)
+				{
+					message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+				}
 
 				$topic_time = time();
 

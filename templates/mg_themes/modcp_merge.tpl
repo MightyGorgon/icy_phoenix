@@ -10,6 +10,7 @@
 </div>{IMG_TBR}
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{MESSAGE_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<tr><th>&nbsp;</th></tr>
 <tr>
 	<td class="row1">
 		<table width="100%" border="0" cellspacing="0" cellpadding="1">
@@ -31,5 +32,6 @@
 		</table>
 	</td>
 </tr>
+<tr><td class="cat">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>

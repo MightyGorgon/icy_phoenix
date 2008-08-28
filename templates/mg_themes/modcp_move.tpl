@@ -14,13 +14,13 @@
 		<form action="{S_MODCP_ACTION}" method="post">
 			{L_MOVE_TO_FORUM} &nbsp; {S_FORUM_SELECT}<br /><br />
 			<label><input type="checkbox" name="move_leave_shadow" />&nbsp;{L_LEAVESHADOW}</label><br />
-				<br />
-				{MESSAGE_TEXT}<br />
-				<br />
-				{S_HIDDEN_FIELDS}
-				<input class="mainoption" type="submit" name="confirm" value="{L_YES}" />
-				&nbsp;&nbsp;
-				<input class="liteoption" type="submit" name="cancel" value="{L_NO}" />
+			<br />
+			{MESSAGE_TEXT}<br />
+			<br />
+			{S_HIDDEN_FIELDS}
+			<input class="mainoption" type="submit" name="confirm" value="{L_YES}" />
+			&nbsp;&nbsp;
+			<input class="liteoption" type="submit" name="cancel" value="{L_NO}" />
 		</form>
 	</div>
 </div>{IMG_TBR}
