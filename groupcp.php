@@ -562,7 +562,7 @@ elseif ($group_id)
 					for($i = 0; $i < count($members); $i++)
 					{
 						$sql_in .= (($sql_in != '') ? ', ' : '') . intval($members[$i]);
-						@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . 'u_' . $members[$i] . '.' . $phpEx);
+						clear_user_color_cache($members[$i]);
 					}
 
 					if (isset($_POST['approve']))

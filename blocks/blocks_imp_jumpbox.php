@@ -62,7 +62,8 @@ if(!function_exists(imp_jumpbox_block_func))
 		$cat_item = array();
 		$menu_item = array();
 		$print_cat= array();
-		$jumpbox = '<select name="jumpbox">';
+		$jumpbox_id = 'jumpbox' . $block_id;
+		$jumpbox = '<select name="' . $jumpbox_id . '">';
 
 		while ($menu_item = $db->sql_fetchrow($result))
 		{
@@ -202,6 +203,7 @@ if(!function_exists(imp_jumpbox_block_func))
 		}
 
 		$template->assign_vars(array(
+			'JUMPBOX_ID' => $jumpbox_id,
 			'MAIN_MENU_NAME' => $main_menu_name,
 			'MENU_JUMPBOX_ALIGN' => $temp_align,
 			'MENU_JUMPBOX_GO' => $lang['Go'],

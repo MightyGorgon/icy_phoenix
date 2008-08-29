@@ -7,7 +7,7 @@
 	</td>
 	<td nowrap="nowrap" align="left">
 		<input type="hidden" name="domains" value="{GSEARCH_SITE};www.icyphoenix.com" />
-		<input type="text" name="q" size="40" maxlength="255" value="{GSEARCH_TEXT}" />
+		<input type="text" name="q" size="40" maxlength="255" class="post" value="{GSEARCH_TEXT}" />
 		<input type="submit" name="sa" class="mainoption" value="{L_SEARCH}" />
 	</td>
 </tr>
