@@ -31,11 +31,12 @@ function create_property($property_name, $property_value)
 	$sql = "INSERT INTO . " . CONFIG_TABLE . "(config_name, config_value) VALUES ('" . $property_name . "', '" . $property_value . "')";
 	//$sql = "UPDATE . " . CONFIG_TABLE . " SET config_value = '" . $property_value . "' WHERE config_name = '" . $property_name . "'";
 
-	if( !$db->sql_query($sql) )
+	if(!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, "Function create_property(): Failed to insert $property_name property into " . CONFIG_TABLE, "", __LINE__, __FILE__, $sql);
 	}
 
+	$db->clear_cache('config_');
 	return true;
 }
 
@@ -51,12 +52,12 @@ function set_bb_usage_stats_property($property_name, $property_value)
 	/* First, determine if the $property_name row exists in the config table. */
 	$db_value = $db_not_found;
 	$sql = "SELECT config_name, config_value FROM " . CONFIG_TABLE . " WHERE config_name = '$property_name'";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Function set_bb_usage_stats_property(): Unable to obtain $property_name information from the' . CONFIG_TABLE . 'table', '', __LINE__, __FILE__, $sql);
 	}
 
-	if ( $row = $db->sql_fetchrow($result) )
+	if ($row = $db->sql_fetchrow($result))
 	{
 		$db_value = $row['config_value'];
 	}
@@ -66,16 +67,16 @@ function set_bb_usage_stats_property($property_name, $property_value)
 	/* Second, if no value was retrieved from the DB, property needs to be created
 	 * (i.e., row needs to be inserted).
 	 */
-	if ( $db_value == $db_not_found )
+	if ($db_value == $db_not_found)
 	{
 		create_property($property_name, $property_value);
 	}
 	/* OR, if retrieved value is different than specified $property_value, update DB with new property value */
-	elseif ( $db_value != $property_value )
+	elseif ($db_value != $property_value)
 	{
 		$sql = 'UPDATE ' . CONFIG_TABLE . " SET config_value = $property_value WHERE config_name = '" . $property_name . "'";
 
-		if( !$db->sql_query($sql) )
+		if(!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR,
 				'Function set_bb_usage_stats_property(): Failed to update the $property_name row info in the' . CONFIG_TABLE . 'table', '', __LINE__, __FILE__, $sql);
@@ -97,7 +98,7 @@ function scaleby_select($form_name, $select_name, $scale_start, $scale_end, $val
 
 	if ($form_name != '')
 	{
-		$select_text .= " onchange=\"if(this.options[this.selectedIndex].value != $value_selected ){ forms['$form_name'].submit() }\">";
+		$select_text .= " onchange=\"if(this.options[this.selectedIndex].value != $value_selected){ forms['$form_name'].submit() }\">";
 	}
 	else
 	{
@@ -105,9 +106,9 @@ function scaleby_select($form_name, $select_name, $scale_start, $scale_end, $val
 	}
 
 	/* Add factor-of-ten scale values to pull-down list */
-	for ($scale = $scale_start; $scale < ($scale_end * 10); )
+	for ($scale = $scale_start; $scale < ($scale_end * 10);)
 	{
-		$selected = ( $scale == $value_selected ) ? $selected_attribute : '';
+		$selected = ($scale == $value_selected) ? $selected_attribute : '';
 		$select_text .= "<option value=\"$scale\" $selected>$scale</option>";
 		$scale *= 10;
 	}
@@ -127,13 +128,13 @@ function is_user_member_of_group($user_id, $group_id)
 	/* Retrieve forum topic start data from database */
 	$sql = 'SELECT group_id, user_id FROM ' . USER_GROUP_TABLE . " WHERE group_id = $group_id AND user_id = $user_id";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Function is_user_member_of_group(): Could not obtain user/group membership data.', '', __LINE__, __FILE__, $sql);
 	}
 
 	$retval = false;
-	if ( $row = $db->sql_fetchrow($result) )
+	if ($row = $db->sql_fetchrow($result))
 	{
 		$retval = true;
 	}
