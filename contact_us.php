@@ -163,7 +163,10 @@ if (isset($_POST['submit']))
 	if (!empty($_POST['message']))
 	{
 		$message = trim(stripslashes($_POST['message']));
-		$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $userdata['username']) . "<br />\r\<hr /><br />\r\n<br />\r\n" . $message;
+		if ($account_delete == true)
+		{
+			$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $userdata['username']) . "<br />\r\n<hr /><br />\r\n<br />\r\n" . $message;
+		}
 		$message = preg_replace(array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/"), array("\r\n", "\r\n", "<br />\r\n"), $message);
 	}
 	else
