@@ -180,6 +180,9 @@ if ( substr($mode, 0, 5) == 'clean')
 				$files_array[] = 'templates/' . $template_array[$i] . '/images/' . $template_color_array[$j] . '/post_new_posted.' . $extension_array[$k];
 				$files_array[] = 'templates/' . $template_array[$i] . '/images/' . $template_color_array[$j] . '/post_posted.' . $extension_array[$k];
 
+				$files_array[] = 'templates/' . $template_array[$i] . '/images/' . $template_color_array[$j] . '/control_fastforward_blue.gif';
+				$files_array[] = 'templates/' . $template_array[$i] . '/images/' . $template_color_array[$j] . '/control_rewind_blue.gif';
+
 				if ($template_array[$i] == 'mg_themes')
 				{
 					$files_array[] = 'templates/' . $template_array[$i] . '/images/' . $template_color_array[$j] . '/icon_left_arrow3.gif';
