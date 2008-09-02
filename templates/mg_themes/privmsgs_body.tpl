@@ -25,8 +25,7 @@ function select_switch(status)
 //-->
 </script>
 
-
-<div class="forumline" style="padding-left:3px;padding-right:3px">
+<div class="forumline" style="padding-left:3px;padding-right:3px;margin-top:5px;margin-bottom:5px;">
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td style="vertical-align:top;width:190px;" width="190">

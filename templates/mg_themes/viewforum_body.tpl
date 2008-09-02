@@ -3,12 +3,13 @@
 		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}
 	</p>
 	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}<!-- BEGIN switch_user_logged_in --><br />{MARKED_READ}<!-- END switch_user_logged_in --></div>
-		<!-- BEGIN switch_user_logged_in -->
+		<div class="nav-links-left">{CURRENT_TIME}<!-- IF S_LOGGED_IN --><br />{MARKED_READ}<!-- ENDIF --></div>
+		<!-- IF S_LOGGED_IN -->
 		<!-- IF U_MARK_READ -->{U_MARK_READ}<!-- ENDIF --><!-- IF S_WATCH_FORUM --><!-- IF U_MARK_READ -->&nbsp;|&nbsp;<!-- ENDIF -->{S_WATCH_FORUM}<!-- ENDIF --><br />
 		<!-- IF U_MARK_ALWAYS_READ -->{U_MARK_ALWAYS_READ}<!-- ENDIF -->
-		<!-- END switch_user_logged_in -->
-		<!-- BEGIN switch_user_logged_out -->&nbsp;<!-- END switch_user_logged_out -->
+		<!-- ELSE -->
+		&nbsp;
+		<!-- ENDIF -->
 	</div>
 </div>{IMG_TBR}
 
@@ -39,6 +40,7 @@
 <tr><td align="left" valign="middle"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></td></tr>
 </table>
 {BOARD_INDEX}
+
 <form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
 {IMG_THL}{IMG_THC}<a href="{U_VIEW_FORUM}" class="forumlink">{FORUM_NAME}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -92,6 +94,13 @@
 		</table>
 	</td>
 </tr>
+<!-- IF S_SHOW_ALPHA_BAR -->
+<tr>
+	<td class="cat" align="center" valign="middle" colspan="7">
+	<span class="gensmall">{L_SORT_TOPICS}:{DIVIDER}<a href="{U_NEWEST}">{L_SORT_TOPICS_NEWEST}</a>{DIVIDER}<a href="{U_OLDEST}">{L_SORT_TOPICS_OLDEST}</a>{DIVIDER}<a href="{U_AZ}">A-Z</a>{DIVIDER}<a href="{U_ZA}" >Z-A</a>{DIVIDER}<!-- BEGIN alphabetical_sort --><a href="{alphabetical_sort.U_LETTER}" >{alphabetical_sort.LETTER}</a>{alphabetical_sort.DIVIDER}<!-- END alphabetical_sort -->{DIVIDER}</span>
+	</td>
+</tr>
+<!-- ENDIF -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <br />

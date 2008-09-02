@@ -155,7 +155,7 @@ if(!defined('SQL_LAYER'))
 				{
 					$hash = $cache . $hash;
 				}
-				$filename = $phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $hash . '.php';
+				$filename = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
 				if(@file_exists($filename))
 				{
 					$set = array();
@@ -394,7 +394,7 @@ if(!defined('SQL_LAYER'))
 				return count($this->cache) ? array_shift($this->cache) : false;
 			}
 			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
+			$mtime = explode(" ", $mtime);
 			$mtime = $mtime[1] + $mtime[0];
 			$starttime = $mtime;
 
@@ -442,7 +442,7 @@ if(!defined('SQL_LAYER'))
 				return $this->cache;
 			}
 			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
+			$mtime = explode(" ", $mtime);
 			$mtime = $mtime[1] + $mtime[0];
 			$starttime = $mtime;
 
@@ -698,11 +698,22 @@ if(!defined('SQL_LAYER'))
 				return;
 			}
 			global $phpbb_root_path;
-			$f = fopen($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $this->caching . '.php', 'w');
+			$cache_file_name = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
+			@unlink($cache_file_name);
+			$f = fopen($cache_file_name, 'w');
+			@flock($f, LOCK_EX);
 			$data = var_export($this->cache, true);
-			@fputs($f, '<' . '?php $set = ' . $data . ';' . "\n" . 'return;' . "\n" . '?' . '>');
+			//$f_content = '<' . '?php' . "\n" . '$sql_time_c = \'' . time() . '\';' . "\n\n" . '$sql_string_c = \'' . addslashes($this->query_string) . '\';' . "\n\n" . '$set = ' . $data . ';' . "\n" . 'return;' . "\n" . '?' . '>';
+			$f_content = '<' . '?php' . "\n";
+			$f_content .= '/* SQL: ' . str_replace('*/', '*\/', $this->query_string) . ' */' . "\n\n";
+			$f_content .= '/* TIME: ' . time() . ' */' . "\n\n";
+			//$f_content .= '$expired = (time() > ' . (time() + 86400) . ') ? true : false;' . "\n" . 'if ($expired) { return; }' . "\n\n";
+			$f_content .= '$set = ' . $data . ';' . "\n" . 'return;' . "\n";
+			$f_content .= '?' . '>';
+			@fputs($f, $f_content);
+			@flock($f, LOCK_UN);
 			@fclose($f);
-			@chmod($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $this->caching . '.php', 0777);
+			@chmod($cache_file_name, 0666);
 			$this->caching = false;
 			$this->cached = false;
 			$this->cache = array();
@@ -716,14 +727,14 @@ if(!defined('SQL_LAYER'))
 			$this->cache = array();
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
-			$res = opendir($phpbb_root_path . 'cache');
+			$res = opendir($phpbb_root_path . SQL_CACHE_FOLDER);
 			if($res)
 			{
 				while(($file = readdir($res)) !== false)
 				{
 					if(substr($file, 0, $prefix_len) === $prefix)
 					{
-						@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . $file);
+						@unlink($phpbb_root_path . SQL_CACHE_FOLDER . $file);
 					}
 				}
 			}

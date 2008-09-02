@@ -1,4 +1,4 @@
-<!-- BEGIN switch_user_logged_in -->
+<!-- IF S_LOGGED_IN -->
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="center">
@@ -9,8 +9,7 @@
 	</td>
 </tr>
 </table>
-<!-- END switch_user_logged_in -->
-<!-- BEGIN switch_user_logged_out -->
+<!-- ELSE -->
 <form method="post" action="{S_LOGIN_ACTION}">
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
@@ -37,4 +36,4 @@
 </tr>
 </table>
 </form>
-<!-- END switch_user_logged_out -->
+<!-- ENDIF -->

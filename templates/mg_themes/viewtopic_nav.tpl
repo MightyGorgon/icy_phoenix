@@ -8,9 +8,9 @@
 		{S_MARK_AR_IMG}
 		{S_KB_MODE_IMG}
 		<a href="{DOWNLOAD_TOPIC}" title="{L_DOWNLOAD_TOPIC}"><img src="{IMG_FLOPPY}" alt="{L_DOWNLOAD_TOPIC}" title="{L_DOWNLOAD_TOPIC}" /></a>
-		<!-- BEGIN switch_user_logged_in -->
+		<!-- IF S_LOGGED_IN -->
 		<a href="{U_BOOKMARK_ACTION}"><img src="{IMG_BOOKMARK}" alt="{L_BOOKMARK_ACTION}" title="{L_BOOKMARK_ACTION}" /></a>
-		<!-- END switch_user_logged_in -->
+		<!-- ENDIF -->
 		<a href="{U_PRINT}" title="{L_PRINT}"><img src="{IMG_PRINT}" alt="{L_PRINT}" title="{L_PRINT}" /></a>
 		<a href="{U_TELL}" title="{L_TELL}"><img src="{IMG_EMAIL}" alt="{L_TELL}" title="{L_TELL}" /></a>
 		<a href="{U_VIEW_NEWER_TOPIC}"><img src="{IMG_RIGHT}" alt="{L_VIEW_NEXT_TOPIC}" title="{L_VIEW_NEXT_TOPIC}" /></a>

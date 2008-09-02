@@ -115,10 +115,12 @@ $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . $pos
 
 $kb_mode = false;
 $kb_mode_append = '';
+$kb_mode_append_red = '';
 if ((!empty($_GET['kb']) || !empty($_POST['kb'])) && ($userdata['bot_id'] == false))
 {
 	$kb_mode = true;
-	$kb_mode_append = 'kb=true';
+	$kb_mode_append = '&amp;kb=true';
+	$kb_mode_append_red = '&kb=true';
 }
 
 $download = (isset($_GET['download'])) ? $_GET['download'] : '';
@@ -167,7 +169,7 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 				{
 					if ($topic_id != 0)
 					{
-						redirect(VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : ''));
+						redirect(VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red);
 					}
 					else
 					{
@@ -188,11 +190,11 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 				{
 					$session_id_append = '';
 				}
-				redirect(VIEWTOPIC_MG . '?' . $session_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '') . $forum_id_append . '&' . $topic_id_append . '&' . $post_id_append . $post_id_append_url);
+				redirect(VIEWTOPIC_MG . '?' . $session_id_append . $kb_mode_append_red . $forum_id_append . '&' . $topic_id_append . '&' . $post_id_append . $post_id_append_url);
 			}
 		}
 
-		redirect(append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : ''), true));
+		redirect(append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red, true));
 	}
 	elseif (($_GET['view'] == 'next') || ($_GET['view'] == 'previous'))
 	{
@@ -219,7 +221,7 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 			$forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : '');
 			$topic_id = intval($row['topic_id']);
 			$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
-			redirect($phpbb_root_path . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : ''));
+			redirect($phpbb_root_path . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red);
 		}
 		else
 		{
@@ -321,7 +323,7 @@ else
 //
 if (isset($_GET['setbm']) || isset($_GET['removebm']))
 {
-	$redirect = VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '') . '&start=' . $start . '&postdays=' . $post_days . '&postorder=' . $post_order . '&highlight=' . $_GET['highlight'];
+	$redirect = VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&start=' . $start . '&postdays=' . $post_days . '&postorder=' . $post_order . '&highlight=' . $_GET['highlight'];
 	if ($userdata['session_logged_in'])
 	{
 		if (isset($_GET['setbm']) && $_GET['setbm'])
@@ -540,7 +542,7 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 		$ftr_topic = $row['topic_number'];
 		$msg = $row['message'];
 		InsertReadTopic($userdata['user_id']);
-		redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . ($kb_mode ? ('&' . $kb_mode_append) : '') . '&mode=reading'), true);
+		redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append_red . '&mode=reading'), true);
 	}
 	else
 	{
@@ -553,7 +555,7 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 			$db->sql_freeresult($r);
 			$ftr_topic = $row['topic_number'];
 			$msg = $row['message'];
-			$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;mode=read_this') . '">', '</a>');
+			$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append . '&amp;mode=read_this') . '">', '</a>');
 			message_die(GENERAL_ERROR, $msg . $lng_msg, 'Error');
 			include_once($phpbb_root_path . 'includes/page_tail.' . $phpEx);
 		}
@@ -582,7 +584,7 @@ if ($bypass)
 	{
 		if (!$userdata['session_logged_in'])
 		{
-			$redirect = $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '');
+			$redirect = $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red;
 			$redirect .= ($post_id) ? '&' . $post_id_append : '';
 			$redirect .= ($start) ? '&start=' . $start : '';
 			redirect(append_sid(LOGIN_MG . '?redirect=' . VIEWTOPIC_MG . '&' . $redirect, true));
@@ -659,11 +661,11 @@ if ($bypass)
 				}
 
 				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')) . '">'
+					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start . $kb_mode_append) . '">'
 					)
 				);
 
-				$message = $lang['No_longer_watching'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')) . '">', '</a>');
+				$message = $lang['No_longer_watching'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start . $kb_mode_append) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -701,11 +703,11 @@ if ($bypass)
 				}
 
 				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;' . 'start=' . $start) . '">'
+					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . 'start=' . $start) . '">'
 					)
 				);
 
-				$message = $lang['You_are_watching'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;' . '&amp;start=' . $start) . '">', '</a>');
+				$message = $lang['You_are_watching'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . '&amp;start=' . $start) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -720,7 +722,7 @@ if ($bypass)
 		{
 			if ($_GET['unwatch'] == 'topic')
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=' . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '') . '&unwatch=topic', true));
+				redirect(append_sid(LOGIN_MG . '?redirect=' . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&unwatch=topic', true));
 			}
 		}
 		else
@@ -1110,9 +1112,9 @@ if ($bypass)
 	// Post, reply and other URL generation for templating vars
 	$new_topic_url = append_sid('posting.' . $phpEx . '?mode=newtopic&amp;' . $forum_id_append);
 	$reply_topic_url = append_sid('posting.' . $phpEx . '?mode=reply&amp;' . $forum_id_append . '&amp;' . $topic_id_append);
-	$view_forum_url = append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . ($kb_mode ? ('&amp;' . $kb_mode_append) : ''));
-	$view_prev_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;view=previous');
-	$view_next_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;view=next');
+	$view_forum_url = append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . $kb_mode_append);
+	$view_prev_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;view=previous');
+	$view_next_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;view=next');
 
 	// Begin Thanks Mod
 	$thank_topic_url = append_sid('posting.' . $phpEx . '?mode=thank&amp;' . $forum_id_append . '&amp;' . $topic_id_append);
@@ -1364,13 +1366,13 @@ if ($bypass)
 	{
 		if ($is_watching_topic)
 		{
-			$s_watching_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;unwatch=topic&amp;start=' . $start);
+			$s_watching_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;unwatch=topic&amp;start=' . $start);
 			$s_watching_topic = '<a href="' . $s_watching_topic_url . '">' . $lang['Stop_watching_topic'] . '</a>';
 			$s_watching_topic_img = (isset($images['topic_un_watch'])) ? '<a href="' . $s_watching_topic_url . '"><img src="' . $images['topic_un_watch'] . '" alt="' . $lang['Stop_watching_topic'] . '" title="' . $lang['Stop_watching_topic'] . '" /></a>' : '';
 		}
 		else
 		{
-			$s_watching_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;watch=topic&amp;start=' . $start);
+			$s_watching_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;watch=topic&amp;start=' . $start);
 			$s_watching_topic = '<a href="' . $s_watching_topic_url . '">' . $lang['Start_watching_topic'] . '</a>';
 			$s_watching_topic_img = (isset($images['topic_watch'])) ? '<a href="' . $s_watching_topic_url . '"><img src="' . $images['topic_watch'] . '" alt="' . $lang['Start_watching_topic'] . '" title="' . $lang['Start_watching_topic'] . '" /></a>' : '';
 		}
@@ -1396,7 +1398,7 @@ if ($bypass)
 		$template->assign_vars(array(
 			'L_BOOKMARK_ACTION' => $set_rem_bookmark,
 			'IMG_BOOKMARK' => $bookmark_img,
-			'U_BOOKMARK_ACTION' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;start=' . $start . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . $_GET['highlight'] . $bm_action)
+			'U_BOOKMARK_ACTION' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . $_GET['highlight'] . $bm_action)
 			)
 		);
 	}
@@ -1422,7 +1424,7 @@ if ($bypass)
 		$template->assign_block_vars('extended_pagination', array());
 	}
 
-	$pagination = ($highlight != '') ? generate_pagination(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . $highlight, $total_replies, $board_config['posts_per_page'], $start) : generate_pagination(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order, $total_replies, $board_config['posts_per_page'], $start);
+	$pagination = ($highlight != '') ? generate_pagination(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . $highlight, $total_replies, $board_config['posts_per_page'], $start) : generate_pagination(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order, $total_replies, $board_config['posts_per_page'], $start);
 	$current_page = get_page($total_replies, $board_config['posts_per_page'], $start);
 	$watch_topic_url = 'topic_view_users.' . $phpEx . '?' . $forum_id_append . '&amp;' . $topic_id_append;
 	if ($forum_topic_data['rules_in_viewtopic'])
@@ -1447,10 +1449,6 @@ if ($bypass)
 	if ($board_config['show_icons'] == true)
 	{
 		$template->assign_block_vars('switch_show_icons', array());
-		if ($userdata['session_logged_in'])
-		{
-			$template->assign_block_vars('switch_show_icons.switch_user_logged_in', array());
-		}
 	}
 	else
 	{
@@ -1471,8 +1469,8 @@ if ($bypass)
 	}
 	else
 	{
-		$topic_url_ltt = htmlspecialchars(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '')));
-		$topic_url_enc = urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '')));
+		$topic_url_ltt = htmlspecialchars(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
+		$topic_url_enc = urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
 	}
 	// URL Rewrite - END
 	$template->assign_vars(array(
@@ -1549,7 +1547,7 @@ if ($bypass)
 		'S_TOPIC_LINK' => POST_TOPIC_URL,
 		'S_SELECT_POST_DAYS' => $select_post_days,
 		'S_SELECT_POST_ORDER' => $select_post_order,
-		'S_POST_DAYS_ACTION' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;start=' . $start),
+		'S_POST_DAYS_ACTION' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start),
 		'S_AUTH_LIST' => $s_auth_can,
 		'S_TOPIC_ADMIN' => $topic_mod,
 		'S_KB_MODE' => $s_kb_mode,
@@ -1557,7 +1555,7 @@ if ($bypass)
 		'S_WATCH_TOPIC' => $s_watching_topic,
 		'S_WATCH_TOPIC_IMG' => $s_watching_topic_img,
 
-		'U_VIEW_TOPIC' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . (!empty($start) ? ('&amp;start=' . $start) : '') . (!empty($post_days) ? ('&amp;postdays=' . $post_days) : '') . (!empty($post_order) ? ('&amp;postorder=' . $post_order) : '') . (!empty($highlight) ? ('&amp;highlight=' . $highlight) : '') . (($kb_mode == true) ? '&amp;kb=true' : '')),
+		'U_VIEW_TOPIC' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . (!empty($start) ? ('&amp;start=' . $start) : '') . (!empty($post_days) ? ('&amp;postdays=' . $post_days) : '') . (!empty($post_order) ? ('&amp;postorder=' . $post_order) : '') . (!empty($highlight) ? ('&amp;highlight=' . $highlight) : '') . (($kb_mode == true) ? '&amp;kb=true' : '')),
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		'U_MARK_ALWAYS_READ' => $mark_always_read,
 		'S_MARK_AR' => $s_mark_ar,
@@ -1711,7 +1709,7 @@ if ($bypass)
 				$template->assign_vars(array(
 					'L_SUBMIT_VOTE' => $lang['Submit_vote'],
 					'L_VIEW_RESULTS' => $lang['View_results'],
-					'U_VIEW_RESULTS' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;vote=viewresult')
+					'U_VIEW_RESULTS' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;vote=viewresult')
 					)
 				);
 
@@ -1919,7 +1917,7 @@ if ($bypass)
 		}
 		else
 		{
-			$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']) . '#p' . $postrow[$i]['post_id'];
+			$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']) . '#p' . $postrow[$i]['post_id'];
 		}
 
 		// Mighty Gorgon - Multiple Ranks - BEGIN
@@ -2694,7 +2692,7 @@ if ($bypass)
 			'L_MINI_POST_ALT' => $mini_post_alt,
 			'NOTES_COUNT' => count($notes_list),
 			'NOTES_DATA' => $postrow[$i]['edit_notes'],
-			'DOWNLOAD_POST' => append_sid(VIEWTOPIC_MG . '?download=' . $postrow[$i]['post_id'] . '&amp;' . $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')),
+			'DOWNLOAD_POST' => append_sid(VIEWTOPIC_MG . '?download=' . $postrow[$i]['post_id'] . '&amp;' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
 			'SINGLE_POST' => $single_post,
 			'POSTER_NO' => $poster_number,
 			//'POSTER_NO' => $postrow[$i]['poster_id'],

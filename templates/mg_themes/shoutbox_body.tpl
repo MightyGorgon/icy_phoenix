@@ -37,6 +37,6 @@
 	</td>
 </tr>
 </table>
-<iframe src="{U_SHOUTBOX_VIEW}" align="left" width="100%" height="145" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+<iframe src="{U_SHOUTBOX_VIEW}" align="left" width="100%" height="162" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 </form>
 </body>

@@ -257,7 +257,8 @@ $lang['Rules_vote_can'] = 'You <b>can</b> vote in polls';
 $lang['Rules_vote_cannot'] = 'You <b>cannot</b> vote in polls';
 $lang['Rules_moderate'] = 'You <b>can</b> %smoderate this forum%s'; // %s replaced by a href links, do not remove!
 
-$lang['No_topics_post_one'] = 'There are no posts in this forum.<br />Click on the <b>Post New Topic</b> link on this page to post one.';
+//$lang['No_topics_post_one'] = 'There are no posts in this forum.<br />Click on the <b>Post New Topic</b> link on this page to post one.';
+$lang['No_topics_post_one'] = 'Either there are no posts in this forum, or there are no matches for the letter you selected.<br />Click on the <b>Post New Topic</b> link on this page to start a new post or select another letter.';
 
 
 //
@@ -2297,6 +2298,10 @@ $lang['TOPICS_POSTED'] = 'Search topics started';
 $lang['POSTS_POSTED'] = 'Search all user posts';
 
 $lang['ACCOUNT_DELETION_REQUEST'] = 'User %s requested to delete the account.';
+
+$lang['SORT_TOPICS'] = 'Sort topics';
+$lang['SORT_TOPICS_NEWEST'] = 'Newest';
+$lang['SORT_TOPICS_OLDEST'] = 'Oldest';
 
 //$lang[''] = '';
 

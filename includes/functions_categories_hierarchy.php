@@ -1598,7 +1598,7 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 	global $tree, $board_config, $userdata, $phpbb_root_path, $phpEx, $db, $nav_separator;
 	global $global_orig_word, $global_replacement_word;
 	$kb_mode_append = '';
-	if ((!empty($_GET['kb']) || !empty($_POST['kb'])) && ($userdata['bot_id'] != false))
+	if ((!empty($_GET['kb']) || !empty($_POST['kb'])) && ($userdata['bot_id'] == false))
 	{
 		$kb_mode_append = '&amp;kb=true';
 	}

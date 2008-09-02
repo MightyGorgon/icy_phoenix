@@ -11,7 +11,7 @@
 <!-- {GREETING_POPUP} -->
 
 {PAGE_BEGIN}
-<table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
+<table id="forumtable" cellspacing="0" cellpadding="0">
 <!-- IF GT_BLOCK -->
 <tr><td width="100%" colspan="3"><!-- BEGIN ghtop_blocks_row -->{ghtop_blocks_row.CMS_BLOCK}<!-- END ghtop_blocks_row --></td></tr>
 <!-- ENDIF -->

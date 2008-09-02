@@ -1,12 +1,11 @@
 {IMG_TBL}<div class="forumline nav-div">
 	<p class="nav-header">
 		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}
-		<!-- BEGIN switch_user_logged_in -->
+		<!-- IF S_LOGGED_IN -->
 			<a href="{U_PROFILE2}">{L_CPL_NAV2}</a>{NAV_SEP}<a href="#" class="nav-current">{L_AVATAR_GENERATOR}</a>
-		<!-- END switch_user_logged_in -->
-		<!-- BEGIN switch_user_logged_out -->
+		<!-- ELSE -->
 			<a href="{U_REGISTER}" class="nav-current">{L_REGISTER}</a>
-		<!-- END switch_user_logged_out -->
+		<!-- ENDIF -->
 	</p>
 	<div class="nav-links">
 		<div class="nav-links-left">{CURRENT_TIME}</div>
@@ -116,7 +115,7 @@
 		</td>
 	</tr>
 	<tr><td class="spaceRow" colspan="5"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-	<!-- BEGIN switch_user_logged_in -->
+	<!-- IF S_LOGGED_IN -->
 	<tr>
 		<td class="catBottom" colspan="5">{S_HIDDEN_FIELDS}
 			<input type="submit" name="submitgenava" value="{L_SUBMIT_AVATAR}" class="mainoption" />
@@ -124,15 +123,14 @@
 			<input type="submit" name="cancelavatar" value="{L_RETURN_PROFILE}" class="liteoption" />
 		</td>
 	</tr>
-	<!-- END switch_user_logged_in -->
-	<tr>
-		<td colspan="5" id="partners">
-			Powered by <a href="http://www.petesplace-online.co.uk/viewtopic.php?t=155">Avatar Generator</a> v{AVATAR_VERSION} &copy 2005 rewritten by Mighty Gorgon<br />
-			Some images &copy; <a href="http://www.phpbbstyles.com" target="_blank">phpBBStyles</a>
-		</td>
-	</tr>
+	<!-- ENDIF -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+<div class="gensmall">
+Powered by <a href="http://www.petesplace-online.co.uk/viewtopic.php?t=155">Avatar Generator</a> v{AVATAR_VERSION} &copy 2005 rewritten by Mighty Gorgon<br />
+Some images &copy; <a href="http://www.phpbbstyles.com" target="_blank">phpBBStyles</a>
+</div>
+
 	</td>
 	</tr>
 </table>

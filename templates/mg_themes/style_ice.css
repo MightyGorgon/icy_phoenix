@@ -93,16 +93,6 @@ hr {
 }
 
 /* header */
-.forum-header {
-	background: #e8eef8 url('images/ice/bg_top_100.jpg') top left repeat-x;
-	padding: 0;
-}
-
-.forum-header2 {
-	background: #e8eef8;
-	padding: 0;
-}
-
 .forum-buttons {
 	text-align: center;
 	vertical-align: middle;
@@ -358,9 +348,9 @@ hr {
 .forumline p.row-header, .forumlinenb p.row-header { height: 25px; }
 
 .forumline .row-header span, .forumlinenb .row-header span {
-	background: url('images/ice/little_box.png') no-repeat left;
+	background: url('images/ice/little_box.gif') no-repeat left;
 /* MG XMas */
-	/*background: url('images/ice/xmas/little_box.png') top left no-repeat;*/
+	/*background: url('images/ice/xmas/little_box.gif') top left no-repeat;*/
 /* MG XMas */
 	padding-left: 24px;
 	color: #225566;
@@ -967,9 +957,9 @@ select option {
 }
 
 .forumline .news-header span, .forumlinenb .news-header span {
-	background: url('images/ice/little_box.png') no-repeat left;
+	background: url('images/ice/little_box.gif') no-repeat left;
 /* MG XMas */
-	/*background: url('images/ice/xmas/little_box.png') top left no-repeat;*/
+	/*background: url('images/ice/xmas/little_box.gif') top left no-repeat;*/
 /* MG XMas */
 	padding-left: 24px;
 	color: #225566;

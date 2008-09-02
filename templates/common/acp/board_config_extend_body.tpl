@@ -35,7 +35,8 @@
 </div>
 
 <form action="{S_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<!-- removed width=100% for incompatibility with the above div set to float -->
+<table class="forumline" cellspacing="0" cellpadding="0">
 <tr><th colspan="2">{L_MOD_NAME}</th></tr>
 <!-- BEGIN field -->
 <tr>
@@ -43,11 +44,6 @@
 	<td class="row2" width="50%"><span class="gen">{field.INPUT}</span><span class="gensmall">{field.OVERRIDE}</span></td>
 </tr>
 <!-- END field -->
-<tr>
-	<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}
-		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
-		<input type="reset" value="{L_RESET}" class="liteoption" />
-	</td>
-</tr>
+<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 </form>

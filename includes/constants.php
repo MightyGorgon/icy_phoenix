@@ -70,6 +70,8 @@ define('PA_FILE_DB_PATH', 'pafiledb/');
 define('POSTED_IMAGES_PATH', 'files/posted_images/');
 define('POSTED_IMAGES_THUMBS_PATH', 'files/thumbs/');
 define('MAIN_CACHE_FOLDER', 'cache/');
+define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
+define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
 define('BACKUP_PATH', 'backup/');
 define('TPL_EXTENSION', 'tpl');
 // Mighty Gorgon - Constants Pages And Paths - END

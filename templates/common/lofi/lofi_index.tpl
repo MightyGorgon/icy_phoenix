@@ -1,12 +1,8 @@
 <div class="nav"><a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}</div>
 <span class="pagination">{CURRENT_TIME}</span><br />
 <div class="pagination">
-	<!-- BEGIN switch_user_logged_in -->
-	<a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a><br />
-	<!-- END switch_user_logged_in -->
-	<!-- BEGIN switch_user_logged_out -->
+	<!-- IF S_LOGGED_IN --><a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a><br /><!-- ENDIF -->
 	<a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a>
-	<!-- END switch_user_logged_out -->
 </div>
 <div class="index">
 <!-- BEGIN catrow -->

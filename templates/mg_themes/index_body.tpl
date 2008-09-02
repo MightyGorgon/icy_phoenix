@@ -17,19 +17,15 @@
 	</p>
 	<div class="nav-links">
 		<div class="nav-links-left">
-			<!-- BEGIN switch_user_logged_in -->
-			<a href="{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a><br />
-			<!-- END switch_user_logged_in -->
+			<!-- IF S_LOGGED_IN --><a href="{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a><br /><!-- ENDIF -->
 			{CURRENT_TIME}
 		</div>
-		<!-- BEGIN switch_user_logged_in -->
+		<!-- IF S_LOGGED_IN -->
 		<a href="{U_MARK_READ}">{L_MARK_FORUMS_READ}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a><br />
 		<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a>&nbsp;|&nbsp;<a href="{U_RECENT}" class="gensmall">{L_RECENT}</a>
-		<!-- END switch_user_logged_in -->
+		<!-- ENDIF -->
 
-		<!-- BEGIN switch_user_logged_out -->
-		<a href="{U_RECENT}" class="gensmall">{L_RECENT}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a>
-		<!-- END switch_user_logged_out -->
+		<!-- IF not S_LOGGED_IN --><a href="{U_RECENT}" class="gensmall">{L_RECENT}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a><!-- ENDIF -->
 	</div>
 </div>{IMG_TBR}
 

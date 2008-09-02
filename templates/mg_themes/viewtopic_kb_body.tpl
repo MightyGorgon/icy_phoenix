@@ -168,21 +168,8 @@ if(GetCookie(tmp) == '2')
 	</td>
 </tr>
 </table>
-<div class="forumline nav-div">
-	<p class="nav-header"><a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}&nbsp;|&nbsp;{S_TIMEZONE}</div>
-		<a href="{U_VIEW_OLDER_TOPIC}"><img src="{IMG_LEFT}" alt="{L_VIEW_PREVIOUS_TOPIC}" title="{L_VIEW_PREVIOUS_TOPIC}" /></a>
-		{S_WATCH_TOPIC_IMG}
-		<a href="{DOWNLOAD_TOPIC}" title="{L_DOWNLOAD_TOPIC}"><img src="{IMG_FLOPPY}" alt="{L_DOWNLOAD_TOPIC}" title="{L_DOWNLOAD_TOPIC}" /></a>
-		<!-- BEGIN switch_user_logged_in -->
-		<a href="{U_BOOKMARK_ACTION}"><img src="{IMG_BOOKMARK}" alt="{L_BOOKMARK_ACTION}" title="{L_BOOKMARK_ACTION}" /></a>
-		<!-- END switch_user_logged_in -->
-		<a href="{U_PRINT}" title="{L_PRINT}"><img src="{IMG_PRINT}" alt="{L_PRINT}" title="{L_PRINT}" /></a>
-		<a href="{U_TELL}" title="{L_TELL}"><img src="{IMG_EMAIL}" alt="{L_TELL}" title="{L_TELL}" /></a>
-		<a href="{U_VIEW_NEWER_TOPIC}"><img src="{IMG_RIGHT}" alt="{L_VIEW_NEXT_TOPIC}" title="{L_VIEW_NEXT_TOPIC}" /></a>
-	</div>
-</div>
+
+<!-- INCLUDE viewtopic_nav.tpl -->
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>

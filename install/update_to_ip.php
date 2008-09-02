@@ -37,7 +37,7 @@ $older_update = false;
 
 if (substr($mode, 0, 6) == 'update')
 {
-	echo '<table width="100%" cellspacing="0" cellpadding="2" border="0" class="forumline">';
+	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">';
 	echo '<tr><th>Updating the database</th></tr>';
 	echo '<tr><td class="row1">';
 	echo '<div class="post-text"><div class="genmed"><ul type="circle">';
@@ -3188,10 +3188,11 @@ if (substr($mode, 0, 6) == 'update')
 	if (($older_update == true) || ($mode == 'update_12431'))
 	{
 		$older_update = true;
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('show_alpha_bar', '0')";
 	}
 
 	// Versioning
-	$ip_version = '1.2.6.33';
+	$ip_version = '1.2.7.34';
 	$phpbb_version = '23';
 	$fap_version = '1.4.2';
 
@@ -3245,13 +3246,15 @@ include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
 function apply_chmod()
 {
 	global $phpEx;
-	echo '<table width="100%" cellspacing="1" cellpadding="2" border="0" class="forumline">';
+	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">';
 	echo '<tr><th>Applying CHMOD</th></tr><tr><td class="row1"><div class="post-text"><div class="genmed"><ul type="circle">';
 
 	// Executing CHMOD
 	$chmod_777 = array();
 	$chmod_777[] = 'backup';
 	$chmod_777[] = 'cache';
+	$chmod_777[] = 'cache/sql';
+	$chmod_777[] = 'cache/users';
 	$chmod_777[] = 'ctracker/logfiles/logfile_attempt_counter.txt';
 	$chmod_777[] = 'ctracker/logfiles/logfile_blocklist.txt';
 	$chmod_777[] = 'ctracker/logfiles/logfile_debug_mode.txt';
@@ -3272,7 +3275,7 @@ function apply_chmod()
 	$chmod_777[] = 'pafiledb/uploads';
 	$chmod_777[] = 'pafiledb/cache';
 	$chmod_777[] = 'pafiledb/cache/templates';
-	$chmod_777[] = 'pafiledb/cache/templates/ca_aphrodite';
+	//$chmod_777[] = 'pafiledb/cache/templates/ca_aphrodite';
 	$chmod_777[] = 'pafiledb/cache/templates/mg_themes';
 	$chmod_777[] = 'pafiledb/images/screenshots';
 
@@ -3319,7 +3322,7 @@ function show_main_options()
 {
 	global $phpEx;
 
-	echo '<table width="100%" cellspacing="0" cellpadding="2" border="0" class="forumline">';
+	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">';
 	echo '<tr><th>Upgrading your Icy Phoenix</th></tr>';
 	echo '<tr><td class="row1">';
 	echo '<div class="post-text">';

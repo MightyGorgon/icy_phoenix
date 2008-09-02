@@ -4,12 +4,7 @@
 	<td align="center" valign="middle" style="padding-top:2px;"><!-- IF S_HEADER_BANNER --><center><br />{HEADER_BANNER_CODE}</center><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
 	<td align="right" valign="top">
 	<!-- <div class="sitedes"><h1>{SITENAME}</h1><h2>{SITE_DESCRIPTION}</h2></div> -->
-	<!-- BEGIN switch_user_logged_in -->
-	&nbsp;
-	<!-- END switch_user_logged_in -->
-	<!-- BEGIN switch_user_logged_out -->
-	&nbsp;
-	<!-- END switch_user_logged_out -->
+	<!-- IF S_LOGGED_IN -->&nbsp;<!-- ELSE -->&nbsp;<!-- ENDIF -->
 	</td>
 </tr>
 </table>

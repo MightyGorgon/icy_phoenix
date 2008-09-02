@@ -155,7 +155,7 @@ function open_postreview(ref)
 		</div>
 		<div class="post-subject {postrow.UNREAD_COLOR}"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
 		&nbsp;
-		<div class="post-text-container">
+		<div class="post-text-topics">
 		<div class="post-text">
 			{postrow.MESSAGE}<br />
 			{postrow.ATTACHMENTS}

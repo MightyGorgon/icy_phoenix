@@ -24,7 +24,7 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 	{
 		// Change following two variables if you need to:
 		$cache_update = COLORIZE_CACHE_REFRESH; // set in constants
-		$cache_file = $phpbb_root_path . MAIN_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . $phpEx;
+		$cache_file = $phpbb_root_path . USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . $phpEx;
 		$update_cache = true;
 
 		if(@file_exists($cache_file))
@@ -341,7 +341,7 @@ function clear_user_color($user_id, $user_color, $user_color_group = false)
 function clear_user_color_cache($user_id)
 {
 	global $phpbb_root_path, $phpEx;
-	@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . 'u_' . $user_id . '.' . $phpEx);
+	@unlink($phpbb_root_path . USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . $phpEx);
 	return true;
 }
 

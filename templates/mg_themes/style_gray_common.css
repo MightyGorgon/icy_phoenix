@@ -352,7 +352,7 @@ hr {
 .forumline p.row-header, .forumlinenb p.row-header { height: 25px; }
 
 /*.forumline .row-header span, .forumlinenb .row-header span {
-	background: url('images/gray/little_box.png') top left no-repeat;
+	background: url('images/gray/little_box.gif') top left no-repeat;
 	padding-left: 27px;
 	color: #444444;
 	display: block;
@@ -940,7 +940,7 @@ select option {
 }
 
 /*.forumline .news-header span, .forumlinenb .news-header span {
-	background: url('images/gray/little_box.png') top left no-repeat;
+	background: url('images/gray/little_box.gif') top left no-repeat;
 	padding-left: 17px;
 	color: #444444;
 	display: block;

@@ -122,10 +122,12 @@ $lang['BBC_Fresh_Installation'] = '
 <li>Unpack Icy Phoenix package to one folder on your HD.</li>
 <li>Copy all Icy Phoenix files in one folder on your webserver (i.e. /icyphoenix/)</li>
 <li>
-Set the permissions to <span class="text_red">CHMOD 777</span> to the following files and folders:<br />
+Set the permissions to <span class="text_red">CHMOD 777</span> to the following files and folders (please note that you may not have all of them in your setup):<br />
 <ul>
 <li><b>backup/</b></li>
 <li><b>cache/</b></li>
+<li><b>cache/sql/</b></li>
+<li><b>cache/users/</b></li>
 <li><b>ctracker/logfiles/logfile_attempt_counter.txt</b></li>
 <li><b>ctracker/logfiles/logfile_blocklist.txt</b></li>
 <li><b>ctracker/logfiles/logfile_debug_mode.txt</b></li>
@@ -146,7 +148,6 @@ Set the permissions to <span class="text_red">CHMOD 777</span> to the following 
 <li><b>pafiledb/uploads/</b></li>
 <li><b>pafiledb/cache/</b></li>
 <li><b>pafiledb/cache/templates/</b></li>
-<li><b>pafiledb/cache/templates/ca_aphrodite/</b></li>
 <li><b>pafiledb/cache/templates/mg_themes/</b></li>
 <li><b>pafiledb/images/screenshots/</b></li>
 </ul>

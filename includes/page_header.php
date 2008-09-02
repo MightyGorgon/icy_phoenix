@@ -193,7 +193,6 @@ if (!$userdata['session_logged_in'])
 	if (!isset($board_config['allow_autologin']) || $board_config['allow_autologin'])
 	{
 		$template->assign_block_vars('switch_allow_autologin', array());
-		$template->assign_block_vars('switch_user_logged_out.switch_allow_autologin', array());
 	}
 
 	/*

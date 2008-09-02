@@ -42,12 +42,12 @@ if(GetCookie(tmp) == '2')
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_PORTAL}">{L_HOME}</a></td>
 				</tr>
-				<!-- BEGIN switch_user_logged_in -->
+				<!-- IF S_LOGGED_IN -->
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_PROFILE}">{L_CPL_NAV}</a></td>
 				</tr>
-				<!-- END switch_user_logged_in -->
+				<!-- ENDIF -->
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_INDEX}">{L_FORUM}</a></td>
@@ -76,7 +76,7 @@ if(GetCookie(tmp) == '2')
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_DOWNLOADS_NAV}">{L_DOWNLOADS}</a></td>
 				</tr>
-				<!-- BEGIN switch_user_logged_in -->
+				<!-- IF S_LOGGED_IN -->
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_BOOKMARKS}">{L_BOOKMARKS}</a></td>
@@ -95,7 +95,7 @@ if(GetCookie(tmp) == '2')
 					<td class="genmed" align="left"><a href="javascript:void(0);" onClick="window.open('chatbox_mod/chatbox.php','_chatbox','resizable=yes,scrollbars=yes,width=600,height=460')">Chat</a></td>
 				</tr>
 				-->
-				<!-- END switch_user_logged_in -->
+				<!-- ENDIF -->
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_AJAX_SHOUTBOX}">{L_AJAX_SHOUTBOX}</a></td>
@@ -122,12 +122,12 @@ if(GetCookie(tmp) == '2')
 					<td class="genmed" align="left"><a href="{U_DB_GEN}">{L_DB_GEN}</a></td>
 				</tr>
 				<!-- ENDIF -->
-				<!-- BEGIN switch_user_logged_in -->
+				<!-- IF S_LOGGED_IN -->
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_SUDOKU}">{L_SUDOKU}</a></td>
 				</tr>
-				<!-- END switch_user_logged_in -->
+				<!-- ENDIF -->
 			</table>
 		</div>
 		<div id="main_links" style="display:'';position:relative;">
@@ -161,12 +161,12 @@ if(GetCookie(tmp) == '2')
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_PORTAL_NEWS_ARC}" title="{L_NEWS_ARC}">{L_ARCHIVES}</a></td>
 				</tr>
-				<!-- BEGIN switch_user_logged_in -->
+				<!-- IF S_LOGGED_IN -->
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_SEARCH_NEW}">{L_NEW3}</a></td>
 				</tr>
-				<!-- END switch_user_logged_in -->
+				<!-- ENDIF -->
 				<!-- BEGIN switch_upi2db_on -->
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>

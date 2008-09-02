@@ -103,6 +103,14 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'show_alpha_bar' => array(
+		'lang_key' => 'IP_show_alpha_bar',
+		'explain' => 'IP_show_alpha_bar_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
 	'show_rss_forum_icon' => array(
 		'lang_key' => 'IP_show_rss_forum_icon',
 		'explain' => 'IP_show_rss_forum_icon_explain',

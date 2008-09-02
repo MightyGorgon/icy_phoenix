@@ -62,7 +62,10 @@ if ( $lang_extend_admin )
 	$lang['IP_page_gen'] = 'Show Page Generation Time on Footer';
 
 	$lang['IP_switch_header_dropdown'] = 'Activate Dropdown Menu in Header';
-	$lang['IP_switch_header_dropdown_explain'] = 'This will activate a dropdown menu in the forum header for search and for posts';
+	$lang['IP_switch_header_dropdown_explain'] = 'This will activate a dropdown menu in the forum header for search and for posts.';
+
+	$lang['IP_show_alpha_bar'] = 'Show Alphabetical Sort Bar In View Forum';
+	$lang['IP_show_alpha_bar_explain'] = 'This option will show an alphabetical sort bar on top of viewforum page.';
 
 	$lang['IP_show_rss_forum_icon'] = 'Forum Index Icons';
 	$lang['IP_show_rss_forum_icon_explain'] = 'This option will show icons on the right of every forum title (on Forum Index): RSS, New Topic...';

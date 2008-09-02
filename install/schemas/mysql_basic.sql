@@ -774,6 +774,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('write_digest
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('no_bump', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('link_this_topic', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_style', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_alpha_bar', '0');
 ## CASH - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_disable', 0);
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_display_after_posts', 1);
@@ -790,7 +791,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('points_name'
 ## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('similar_topicdesc', '0');
 ## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_calendar_box_index', '0');
 ## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.22');
-## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.1.0.0');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.0.0');
 
 ## `phpbb_ctracker_config`
 ##
@@ -1712,5 +1713,5 @@ INSERT INTO phpbb_dl_ext_blacklist (extention) VALUES
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.2.6.33');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.2.7.34');
 

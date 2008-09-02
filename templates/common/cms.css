@@ -99,7 +99,7 @@ a:hover, a:active { color: #cc3333; text-decoration: none; }
 }
 
 .forumline .row-header span, .forumlinenb .row-header span {
-	background: url(images/little_box.png) no-repeat left;
+	background: url(images/little_box.gif) no-repeat left;
 	padding-left: 24px;
 	color: #225566;
 	display: block;

@@ -19,7 +19,7 @@
 }
 
 .forumline .row-header span, .forumlinenb .row-header span {
-	background: url('images/gray/xmas/little_box.png') top left no-repeat;
+	background: url('images/gray/xmas/little_box.gif') top left no-repeat;
 	padding-left: 27px;
 	color: #444444;
 	display: block;
@@ -31,7 +31,7 @@
 }
 
 .forumline .catHead span, .forumlinenb .catHead span {
-	background: url('images/gray/xmas/little_box.png') top left no-repeat;
+	background: url('images/gray/xmas/little_box.gif') top left no-repeat;
 	padding-left: 27px;
 	color: #444444;
 	display: block;
@@ -66,7 +66,7 @@
 }
 
 .forumline .news-header span, .forumlinenb .news-header span {
-	background: url('images/gray/xmas/little_box.png') top left no-repeat;
+	background: url('images/gray/xmas/little_box.gif') top left no-repeat;
 	padding-left: 17px;
 	color: #444444;
 	display: block;

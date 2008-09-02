@@ -17,13 +17,12 @@
 		</tr>
 		<tr>
 			<td align="center">
-				<!-- BEGIN switch_user_logged_in -->
+				<!-- IF S_LOGGED_IN -->
 				{B_S_HIDDEN_FIELDS}
 				{B_L_SUBMIT_VOTE}
-				<!-- END switch_user_logged_in -->		
-				<!-- BEGIN switch_user_logged_out -->
+				<!-- ELSE -->
 				<span class="gensmall">{B_LOGIN_TO_VOTE}</span>
-				<!-- END switch_user_logged_out -->
+				<!-- ENDIF -->
 			</td>
 		</tr>
 		</table>

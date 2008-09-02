@@ -79,10 +79,12 @@ init_userprefs($userdata);
 
 $kb_mode = false;
 $kb_mode_append = '';
+$kb_mode_append_red = '';
 if ((!empty($_GET['kb']) || !empty($_POST['kb'])) && ($userdata['bot_id'] == false))
 {
 	$kb_mode = true;
-	$kb_mode_append = 'kb=true';
+	$kb_mode_append = '&amp;kb=true';
+	$kb_mode_append_red = '&kb=true';
 }
 
 $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
@@ -128,9 +130,9 @@ if ($userdata['upi2db_access'])
 		}
 
 		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')) . '">')
+			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">')
 		);
-		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?'. $forum_id_append . '&amp;' . $topic_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')) . '">', '</a>');
+		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?'. $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -207,7 +209,7 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 		$ftr_topic = $row['topic_number'];
 		$msg = $row['message'];
 		InsertReadTopic($userdata['user_id']);
-		redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . ($kb_mode ? ('&' . $kb_mode_append) : '') . '&mode=reading'), true);
+		redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append_red . '&mode=reading'), true);
 	}
 	else
 	{
@@ -220,7 +222,7 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 			$db->sql_freeresult($r);
 			$ftr_topic = $row['topic_number'];
 			$msg = $row['message'];
-			$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;mode=read_this') . '">', '</a>');
+			$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append . '&amp;mode=read_this') . '">', '</a>');
 			message_die(GENERAL_ERROR, $msg . $lng_msg, 'Error');
 			include_once($phpbb_root_path . 'includes/page_tail.' . $phpEx);
 		}
@@ -231,6 +233,42 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 	}
 }
 // Force Topic Read - END
+
+// Sort Topics - BEGIN
+$letters_array = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+$start_letter = (isset($_GET['start_letter'])) ? $_GET['start_letter'] : '';
+$start_letter = (in_array($start_letter, $letters_array) ? $start_letter : '');
+
+$asort_order = (isset($_GET['asort_order'])) ? $_GET['asort_order'] : '';
+
+if ($asort_order == 'AZ')
+{
+	$sort_order = "t.topic_title ASC";
+}
+elseif ($asort_order == 'ZA')
+{
+	$sort_order = "t.topic_title DESC";
+}
+elseif ($asort_order == 'oldest')
+{
+	$sort_order = "t.topic_last_post_id ASC";
+}
+else
+{
+	$sort_order = "t.topic_last_post_id DESC";
+}
+
+if (!in_array($start_letter, $letters_array))
+{
+	$start_letter = '';
+	$start_letter_sql = '';
+}
+else // we have a single letter, so lets sort alphabetically...
+{
+	$sort_order = "topic_title ASC";
+	$start_letter_sql = "AND t.topic_title LIKE '" . $start_letter . "%'";
+}
+// Sort Topics - END
 
 if ($bypass)
 {
@@ -294,7 +332,7 @@ if ($bypass)
 	{
 		if (!$userdata['session_logged_in'])
 		{
-			$redirect = $forum_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '') . ((isset($start)) ? '&start=' . $start : '');
+			$redirect = $forum_id_append . $kb_mode_append_red . ((isset($start)) ? '&start=' . $start : '');
 			redirect(append_sid(LOGIN_MG . '?redirect=' . VIEWFORUM_MG . '&' . $redirect, true));
 		}
 
@@ -349,11 +387,11 @@ if ($bypass)
 			//<!-- END Unread Post Information to Database Mod -->
 
 			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')) . '">')
+				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">')
 			);
 		}
 
-		$message = $lang['Topics_marked_read'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')) . '">', '</a> ');
+		$message = $lang['Topics_marked_read'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">', '</a> ');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	// End handle marking posts
@@ -445,10 +483,10 @@ if ($bypass)
 				}
 
 				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;start=' . $start) . '">')
+					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">')
 				);
 
-				$message = $lang['No_longer_watching_forum'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;start=' . $start) . '">', '</a>');
+				$message = $lang['No_longer_watching_forum'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -487,11 +525,11 @@ if ($bypass)
 				}
 
 				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;start=' . $start) . '">'
+					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">'
 					)
 				);
 
-				$message = $lang['You_are_watching_forum'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;start=' . $start) . '">', '</a>');
+				$message = $lang['You_are_watching_forum'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -506,7 +544,7 @@ if ($bypass)
 		{
 			if($_GET['unwatch'] == 'forum')
 			{
-				header('Location: ' . append_sid(LOGIN_MG . '?redirect=' . VIEWFORUM_MG . '&' . $forum_id_append . ($kb_mode ? ('&' . $kb_mode_append) : '') . '&unwatch=forum', true));
+				header('Location: ' . append_sid(LOGIN_MG . '?redirect=' . VIEWFORUM_MG . '&' . $forum_id_append . $kb_mode_append_red . '&unwatch=forum', true));
 			}
 		}
 		else
@@ -532,7 +570,6 @@ if ($bypass)
 			WHERE t.forum_id = $forum_id
 				AND p.post_id = t.topic_last_post_id
 				AND p.post_time >= $min_topic_time";
-
 		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not obtain limited topics count information', '', __LINE__, __FILE__, $sql);
@@ -549,8 +586,29 @@ if ($bypass)
 	}
 	else
 	{
-		$topics_count = ($forum_row['forum_topics']) ? $forum_row['forum_topics'] : 1;
-
+		// Sort Topics - BEGIN
+		if (!empty($start_letter))
+		{
+			$sql = "SELECT COUNT(topic_id) AS forum_topics
+				FROM " . TOPICS_TABLE . "
+				WHERE forum_id = '" . $forum_id . "'
+					AND topic_title LIKE '" . $start_letter . "%'
+				ORDER BY " . $sort_order;
+			if (!($result = $db->sql_query($sql)))
+			{
+				message_die(GENERAL_ERROR, 'Could not get topic counts for letter search', '', __LINE__, __FILE__, $sql);
+			}
+			$row = $db->sql_fetchrow($result);
+			$topics_count = ($row['forum_topics']) ? $row['forum_topics'] : 1;
+			$db->sql_freeresult($result);
+		}
+		else
+		{
+		// Sort Topics - END
+			$topics_count = ($forum_row['forum_topics']) ? $forum_row['forum_topics'] : 1;
+		// Sort Topics - BEGIN
+		}
+		// Sort Topics - END
 		$limit_topics_time = '';
 		$topic_days = 0;
 	}
@@ -575,8 +633,8 @@ if ($bypass)
 							AND p.post_id = t.topic_last_post_id
 							AND p.poster_id = u2.user_id
 							AND t.topic_type = " . POST_GLOBAL_ANNOUNCE . "
-						ORDER BY t.topic_last_post_id DESC";
-
+							" . $start_letter_sql . "
+						ORDER BY " . $sort_order;
 		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, "Couldn't obtain topic information", "", __LINE__, __FILE__, $sql);
@@ -605,7 +663,8 @@ if ($bypass)
 							AND p.post_id = t.topic_last_post_id
 							AND p.poster_id = u2.user_id
 							AND t.topic_type = " . POST_ANNOUNCE . "
-						ORDER BY t.topic_last_post_id DESC ";
+							" . $start_letter_sql . "
+						ORDER BY " . $sort_order;
 		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
@@ -651,8 +710,8 @@ if ($bypass)
 						AND u2.user_id = p2.poster_id
 						$self_sql
 						$upi2db_post_announce
-						$limit_topics_time
-					ORDER BY t.topic_type DESC, t.topic_last_post_id DESC
+						$start_letter_sql
+					ORDER BY t.topic_type DESC, " . $sort_order . "
 					LIMIT $start, " . $board_config['topics_per_page'];
 // UPI2DB DELETE
 //#AND t.topic_type <> " . POST_GLOBAL_ANNOUNCE . "
@@ -824,7 +883,7 @@ if ($bypass)
 		'L_DISPLAY_TOPICS' => $lang['Display_topics'],
 		'U_POST_NEW_TOPIC' => append_sid(POSTING_MG . '?mode=newtopic&amp;' . $forum_id_append),
 		'S_SELECT_TOPIC_DAYS' => $select_topic_days,
-		'S_POST_DAYS_ACTION' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;start=' . $start)
+		'S_POST_DAYS_ACTION' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start . '&amp;start_letter=' . $start_letter . '&amp;asort_order=' . $asort_order)
 		)
 	);
 
@@ -869,13 +928,13 @@ if ($bypass)
 	{
 		if($is_watching_forum)
 		{
-			$s_watching_forum = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;unwatch=forum&amp;start=' . $start) . '">' . $lang['Stop_watching_forum'] . '</a>';
-			$s_watching_forum_img = (isset($images['Forum_un_watch'])) ? '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;unwatch=forum&amp;start=' . $start) . '"><img src="' . $images['Forum_un_watch'] . '" alt="' . $lang['Stop_watching_forum'] . '" title="' . $lang['Stop_watching_forum'] . '" border="0"></a>' : '';
+			$s_watching_forum = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;unwatch=forum&amp;start=' . $start) . '">' . $lang['Stop_watching_forum'] . '</a>';
+			$s_watching_forum_img = (isset($images['Forum_un_watch'])) ? '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;unwatch=forum&amp;start=' . $start) . '"><img src="' . $images['Forum_un_watch'] . '" alt="' . $lang['Stop_watching_forum'] . '" title="' . $lang['Stop_watching_forum'] . '" border="0"></a>' : '';
 		}
 		else
 		{
-			$s_watching_forum = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;watch=forum&amp;start=' . $start) . '">' . $lang['Start_watching_forum'] . '</a>';
-			$s_watching_forum_img = (isset($images['Forum_watch'])) ? '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;watch=forum&amp;start=' . $start) . '"><img src="' . $images['Forum_watch'] . '" alt="' . $lang['Stop_watching_forum'] . '" title="' . $lang['Start_watching_forum'] . '" border="0"></a>' : '';
+			$s_watching_forum = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;watch=forum&amp;start=' . $start) . '">' . $lang['Start_watching_forum'] . '</a>';
+			$s_watching_forum_img = (isset($images['Forum_watch'])) ? '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;watch=forum&amp;start=' . $start) . '"><img src="' . $images['Forum_watch'] . '" alt="' . $lang['Stop_watching_forum'] . '" title="' . $lang['Start_watching_forum'] . '" border="0"></a>' : '';
 		}
 	}
 	// End add - Forum notification MOD
@@ -885,22 +944,22 @@ if ($bypass)
 	{
 		if(!in_array($forum_id, $unread['always_read']['forums']))
 		{
-			$mark_as_read = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
+			$mark_as_read = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
 			$marked_as_read = '&nbsp;';
-			$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;always_read=set') . '">' . $lang['upi2db_always_read_forum_short'] . '</a>';
+			$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . $kb_mode_append . '&amp;always_read=set') . '">' . $lang['upi2db_always_read_forum_short'] . '</a>';
 		}
 		else
 		{
 			$mark_as_read = '';
 			$marked_as_read = $lang['upi2db_forum_is_always_read'];
-			$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;always_read=unset') . '">' . $lang['upi2db_always_read_forum_unset_short'] . '</a>';
+			$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . $kb_mode_append . '&amp;always_read=unset') . '">' . $lang['upi2db_always_read_forum_unset_short'] . '</a>';
 		}
 	}
 	else
 	{
 		$mark_always_read = '';
 		$marked_as_read = '';
-		$mark_as_read = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
+		$mark_as_read = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
 	}
 	//<!-- END Unread Post Information to Database Mod -->
 
@@ -1017,7 +1076,7 @@ if ($bypass)
 		'L_PERMISSIONS_LIST' => $lang['Permissions_List'],
 		'S_AUTH_LIST' => $s_auth_can,
 		'S_WATCH_FORUM' => $s_watching_forum,
-		'U_VIEW_FORUM' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '')),
+		'U_VIEW_FORUM' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append),
 		//<!-- BEGIN Unread Post Information to Database Mod -->
 		//'U_MARK_READ' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;mark=topics'),
 		'MARKED_READ' => $marked_as_read,
@@ -1225,7 +1284,7 @@ if ($bypass)
 		}
 
 		$template->assign_vars(array(
-			'PAGINATION' => generate_pagination(VIEWFORUM_MG . '?' . $forum_id_append . ($kb_mode ? ('&amp;' . $kb_mode_append) : '') . '&amp;topicdays=' . $topic_days, $topics_count, $board_config['topics_per_page'], $start),
+			'PAGINATION' => generate_pagination(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;topicdays=' . $topic_days . '&amp;start_letter=' . $start_letter . '&amp;asort_order=' . $asort_order, $topics_count, $board_config['topics_per_page'], $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), $number_of_page),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)
@@ -1249,6 +1308,42 @@ if ($bypass)
 	{
 		$template->assign_block_vars('switch_show_news', array());
 	}
+
+	// Sort Topics - BEGIN
+	if ($board_config['show_alpha_bar'])
+	{
+		// Begin Configuration Section
+		// Change this to whatever you want the divider to be. Be sure to keep both apostrophies.
+		$divider = ' &bull ';
+		$divider_letters = ' ';
+		// End Configuration Section
+
+		// Do not change anything below this line.
+		$total_letters_count = count($letters_array);
+		$this_letter_number = 0;
+
+		$template->assign_vars(array(
+			'S_SHOW_ALPHA_BAR' => true,
+			'DIVIDER' => $divider,
+			'U_NEWEST' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=newest&amp;topicdays=' . $topic_days . $kb_mode_append),
+			'U_OLDEST' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=oldest&amp;topicdays=' . $topic_days . $kb_mode_append),
+			'U_AZ' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=AZ&amp;topicdays=' . $topic_days . $kb_mode_append),
+			'U_ZA' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=ZA&amp;topicdays=' . $topic_days . $kb_mode_append),
+			)
+		);
+
+		foreach ($letters_array as $letter)
+		{
+			$this_letter_number++;
+			$template->assign_block_vars('alphabetical_sort', array(
+				'LETTER' => $letter,
+				'U_LETTER' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=' . $letter . '&amp;topicdays=' . $topic_days . $kb_mode_append),
+				'DIVIDER' => ($this_letter_number != $total_letters_count) ? $divider_letters : '',
+				)
+			);
+		}
+	}
+	// Sort Topics - END
 
 	// Parse the page and print
 	$template->pparse('body');

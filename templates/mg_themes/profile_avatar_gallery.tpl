@@ -1,12 +1,11 @@
 {IMG_TBL}<div class="forumline nav-div">
 	<p class="nav-header">
 		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}
-		<!-- BEGIN switch_user_logged_in -->
+		<!-- IF S_LOGGED_IN -->
 			<a href="{U_PROFILE2}">{L_CPL_NAV2}</a>{NAV_SEP}<a href="#" class="nav-current">{L_AVATAR_GALLERY}</a>
-		<!-- END switch_user_logged_in -->
-		<!-- BEGIN switch_user_logged_out -->
+		<!-- ELSE -->
 			<a href="{U_REGISTER}" class="nav-current">{L_REGISTER}</a>
-		<!-- END switch_user_logged_out -->
+		<!-- ENDIF -->
 	</p>
 	<div class="nav-links">
 		<div class="nav-links-left">{CURRENT_TIME}</div>

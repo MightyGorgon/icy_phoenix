@@ -2474,36 +2474,33 @@ function empty_cache_folder($phpbb_root_path = './', $cg = false)
 		'index.htm',
 		'index.html',
 		'index.' . $phpEx,
-		'attach_config.' . $phpEx,
 	);
 
 	$sql_prefix = 'sql_';
 	$tpl_prefix = 'tpl_';
 	$phpbb_update_prefix = 'phpbb_';
 	$cache_prefix = 'cache_';
-	$cg_prefix = 'u_';
+	$cg_prefix = POST_USERS_URL . '_';
 	$dat_extension = '.dat';
 
-	$dir = $phpbb_root_path . MAIN_CACHE_FOLDER;
-	$res = @opendir($dir);
-	while(($file = readdir($res)) !== false)
+	$dirs_array = array($phpbb_root_path . USERS_CACHE_FOLDER, $phpbb_root_path . MAIN_CACHE_FOLDER, $phpbb_root_path . SQL_CACHE_FOLDER);
+	for ($i = 0; $i < count($dirs_array); $i++)
 	{
-		if ($cg == true)
-		{
-			if (preg_match('/' . $cg_prefix . '/', $file) && !in_array($file, $skip_files))
-			{
-				$res2 = @unlink($dir . $file);
-			}
-		}
-		else
+		$dir = $dirs_array[$i];
+		$res = @opendir($dir);
+		while(($file = readdir($res)) !== false)
 		{
 			if (!in_array($file, $skip_files))
 			{
 				$res2 = @unlink($dir . $file);
 			}
 		}
+		closedir($res);
+		if ($cg == true)
+		{
+			return true;
+		}
 	}
-	closedir($res);
 	return true;
 }
 

@@ -584,8 +584,9 @@ $default_config = array(
 	'no_bump' => '0',
 	'link_this_topic' => '0',
 	'cms_style' => '0',
+	'show_alpha_bar' => '0',
 	// IP Version
-	'ip_version' => '1.2.6.33',
+	'ip_version' => '1.2.7.34',
 	// Cash
 	'cash_disable' => 0,
 	'cash_display_after_posts' => 1,

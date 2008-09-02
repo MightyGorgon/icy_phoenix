@@ -67,6 +67,7 @@ body {
 }
 
 #forumtable {
+	width: 100%;
 	margin: 0;
 	padding: 0;
 }
@@ -170,7 +171,7 @@ hr.dashed {
 
 .extra-top-padding { }
 
-.post-text-container {
+.post-text-container, .post-text-topics {
 	width: 99%;
 	float: left;
 	/*overflow: hidden;*/
@@ -178,6 +179,10 @@ hr.dashed {
 	clear: both;
 	/* to avoid vertical scrollbar with acronyms in last line */
 	padding-bottom: 3px;
+	/* this is set to avoid one line post being hidden by scrollers in IE */
+	height: auto !important; /* modern browsers */
+	height: 40px; /* IE5.x and IE6 */
+	min-height: 40px; /* modern browsers */
 }
 
 .post-text {

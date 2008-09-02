@@ -48,14 +48,14 @@ if(!defined('SQL_LAYER'))
 
 			$this->db_connect_id = ($this->persistency) ? mysql_pconnect($this->server, $this->user, $this->password) : mysql_connect($this->server, $this->user, $this->password);
 
-			if( $this->db_connect_id )
+			if($this->db_connect_id)
 			{
-				if( $database != "" )
+				if($database != "")
 				{
 					$this->dbname = $database;
 					$dbselect = mysql_select_db($this->dbname);
 
-					if( !$dbselect )
+					if(!$dbselect)
 					{
 						mysql_close($this->db_connect_id);
 						$this->db_connect_id = $dbselect;
@@ -94,12 +94,12 @@ if(!defined('SQL_LAYER'))
 			$mtime = $mtime[1] + $mtime[0];
 			$starttime = $mtime;
 
-			if( $this->db_connect_id )
+			if($this->db_connect_id)
 			{
 				//
 				// Commit any remaining transactions
 				//
-				if( $this->in_transaction )
+				if($this->in_transaction)
 				{
 					mysql_query('COMMIT', $this->db_connect_id);
 				}
@@ -139,14 +139,14 @@ if(!defined('SQL_LAYER'))
 			$starttime = $mtime;
 
 			// Mighty Gorgon - Extra Debug - BEGIN
-			if ( defined('DEBUG_EXTRA') && ($query != ''))
+			if (defined('DEBUG_EXTRA') && ($query != ''))
 			{
 				$this->sql_report('start', $query);
 			}
 			// Mighty Gorgon - Extra Debug - END
 
 			// Mighty Gorgon - Extra Debug - BEGIN
-			if ( CACHE_SQL == false)
+			if (CACHE_SQL == false)
 			{
 				$cache = false;
 			}
@@ -159,7 +159,7 @@ if(!defined('SQL_LAYER'))
 			$this->caching = false;
 			$this->cache = array();
 			$this->cached = false;
-			if( ($query !== '') && $cache)
+			if(($query !== '') && $cache)
 			{
 				global $phpbb_root_path;
 				$hash = md5($query);
@@ -167,7 +167,7 @@ if(!defined('SQL_LAYER'))
 				{
 					$hash = $cache . $hash;
 				}
-				$filename = $phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $hash . '.php';
+				$filename = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
 				if(@file_exists($filename))
 				{
 					$set = array();
@@ -201,24 +201,24 @@ if(!defined('SQL_LAYER'))
 			if (defined('DEBUG_EXTRA_LOG'))
 			{
 				/*
-				$f = fopen($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $hash . '_.php', 'w');
+				$f = fopen($phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $hash . '_.php', 'w');
 				@fputs($f, '\'' . $query . '\'');
 				@fclose($f);
 				*/
 				// Cache SQL history in a file
-				if ( !defined('IN_ADMIN') )
+				if (!defined('IN_ADMIN'))
 				{
-					$f = fopen($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_history.php', 'a+');
+					$f = fopen($phpbb_root_path . SQL_CACHE_FOLDER . 'sql_history.php', 'a+');
 					@fputs($f, date('Y/m/d - H:i:s') . ' => ' . $hash . "\n\n" . $query . "\n\n\n=========================\n\n");
 					@fclose($f);
 				}
 			}
 			// Mighty Gorgon - Debug SQL Cache - END
 
-			if( $query != '' )
+			if($query != '')
 			{
 				$this->num_queries++;
-				if( $transaction == BEGIN_TRANSACTION && !$this->in_transaction )
+				if($transaction == BEGIN_TRANSACTION && !$this->in_transaction)
 				{
 					$result = mysql_query('BEGIN', $this->db_connect_id);
 					if(!$result)
@@ -232,22 +232,22 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				if( $transaction == END_TRANSACTION && $this->in_transaction )
+				if($transaction == END_TRANSACTION && $this->in_transaction)
 				{
 					$result = mysql_query('COMMIT', $this->db_connect_id);
 				}
 			}
 
-			if( $this->query_result )
+			if($this->query_result)
 			{
 				unset($this->row[$this->query_result]);
 				unset($this->rowset[$this->query_result]);
 
-				if( $transaction == END_TRANSACTION && $this->in_transaction )
+				if($transaction == END_TRANSACTION && $this->in_transaction)
 				{
 					$this->in_transaction = false;
 
-					if ( !mysql_query('COMMIT', $this->db_connect_id) )
+					if (!mysql_query('COMMIT', $this->db_connect_id))
 					{
 						mysql_query('ROLLBACK', $this->db_connect_id);
 						return false;
@@ -272,7 +272,7 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				if( $this->in_transaction )
+				if($this->in_transaction)
 				{
 					mysql_query('ROLLBACK', $this->db_connect_id);
 					$this->in_transaction = false;
@@ -339,7 +339,7 @@ if(!defined('SQL_LAYER'))
 
 			$this->sql_time += $endtime - $starttime;
 
-			return ( $this->db_connect_id ) ? mysql_affected_rows($this->db_connect_id) : false;
+			return ($this->db_connect_id) ? mysql_affected_rows($this->db_connect_id) : false;
 		}
 
 		function sql_numfields($query_id = 0)
@@ -532,26 +532,26 @@ if(!defined('SQL_LAYER'))
 
 			if($query_id)
 			{
-				if( $rownum > -1 )
+				if($rownum > -1)
 				{
 					$result = mysql_result($query_id, $rownum, $field);
 				}
 				else
 				{
-					if( empty($this->row[$query_id]) && empty($this->rowset[$query_id]) )
+					if(empty($this->row[$query_id]) && empty($this->rowset[$query_id]))
 					{
-						if( $this->sql_fetchrow() )
+						if($this->sql_fetchrow())
 						{
 							$result = $this->row[$query_id][$field];
 						}
 					}
 					else
 					{
-						if( $this->rowset[$query_id] )
+						if($this->rowset[$query_id])
 						{
 							$result = $this->rowset[$query_id][0][$field];
 						}
-						else if( $this->row[$query_id] )
+						else if($this->row[$query_id])
 						{
 							$result = $this->row[$query_id][$field];
 						}
@@ -616,7 +616,7 @@ if(!defined('SQL_LAYER'))
 
 			$this->sql_time += $endtime - $starttime;
 
-			return ( $this->db_connect_id ) ? mysql_insert_id($this->db_connect_id) : false;
+			return ($this->db_connect_id) ? mysql_insert_id($this->db_connect_id) : false;
 		}
 
 		function sql_freeresult($query_id = 0)
@@ -696,16 +696,22 @@ if(!defined('SQL_LAYER'))
 				return;
 			}
 			global $phpbb_root_path;
-			@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $this->caching . '.php');
-			$f = fopen($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $this->caching . '.php', 'w');
+			$cache_file_name = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
+			@unlink($cache_file_name);
+			$f = fopen($cache_file_name, 'w');
+			@flock($f, LOCK_EX);
 			$data = var_export($this->cache, true);
-			//$time_check = "\n" . '$expired = (time() > ' . (time() + 86400) . ') ? true : false;' . "\n" . 'if ($expired) { return; }' . "\n\n";
 			//$f_content = '<' . '?php' . "\n" . '$sql_time_c = \'' . time() . '\';' . "\n\n" . '$sql_string_c = \'' . addslashes($this->query_string) . '\';' . "\n\n" . '$set = ' . $data . ';' . "\n" . 'return;' . "\n" . '?' . '>';
-			$f_content = '<' . '?php' . "\n" . '$set = ' . $data . ';' . "\n" . 'return;' . "\n" . '?' . '>';
+			$f_content = '<' . '?php' . "\n";
+			$f_content .= '/* SQL: ' . str_replace('*/', '*\/', $this->query_string) . ' */' . "\n\n";
+			$f_content .= '/* TIME: ' . time() . ' */' . "\n\n";
+			//$f_content .= '$expired = (time() > ' . (time() + 86400) . ') ? true : false;' . "\n" . 'if ($expired) { return; }' . "\n\n";
+			$f_content .= '$set = ' . $data . ';' . "\n" . 'return;' . "\n";
+			$f_content .= '?' . '>';
 			@fputs($f, $f_content);
+			@flock($f, LOCK_UN);
 			@fclose($f);
-			//@chmod($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $this->caching . '.php', 0775);
-			@chmod($phpbb_root_path . MAIN_CACHE_FOLDER . 'sql_' . $this->caching . '.php', 0777);
+			@chmod($cache_file_name, 0666);
 			$this->caching = false;
 			$this->cached = false;
 			$this->cache = array();
@@ -719,14 +725,14 @@ if(!defined('SQL_LAYER'))
 			$this->cache = array();
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
-			$res = opendir($phpbb_root_path . 'cache');
+			$res = opendir($phpbb_root_path . SQL_CACHE_FOLDER);
 			if($res)
 			{
 				while(($file = readdir($res)) !== false)
 				{
 					if(substr($file, 0, $prefix_len) === $prefix)
 					{
-						@unlink($phpbb_root_path . MAIN_CACHE_FOLDER . $file);
+						@unlink($phpbb_root_path . SQL_CACHE_FOLDER . $file);
 					}
 				}
 			}

@@ -27,6 +27,13 @@
 
 <form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
 {IMG_THL}{IMG_THC}<a href="{U_VIEW_FORUM}" class="forumlink">{FORUM_NAME}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- IF S_SHOW_ALPHA_BAR -->
+<tr>
+	<td class="cat" align="center" valign="middle" colspan="5">
+	<span class="gensmall">{L_SORT_TOPICS}:{DIVIDER}<a href="{U_NEWEST}">{L_SORT_TOPICS_NEWEST}</a>{DIVIDER}<a href="{U_OLDEST}">{L_SORT_TOPICS_OLDEST}</a>{DIVIDER}<a href="{U_AZ}">A-Z</a>{DIVIDER}<a href="{U_ZA}" >Z-A</a>{DIVIDER}<!-- BEGIN alphabetical_sort --><a href="{alphabetical_sort.U_LETTER}" >{alphabetical_sort.LETTER}</a>{alphabetical_sort.DIVIDER}<!-- END alphabetical_sort -->{DIVIDER}</span>
+	</td>
+</tr>
+<!-- ENDIF -->
 <tr>
 	<th colspan="2">{L_TOPICS}</th>
 	<th width="150">{L_AUTHOR}</th>
@@ -67,6 +74,13 @@
 		</table>
 	</td>
 </tr>
+<!-- IF S_SHOW_ALPHA_BAR -->
+<tr>
+	<td class="cat" align="center" valign="middle" colspan="5">
+	<span class="gensmall">{L_SORT_TOPICS}:{DIVIDER}<a href="{U_NEWEST}">{L_SORT_TOPICS_NEWEST}</a>{DIVIDER}<a href="{U_OLDEST}">{L_SORT_TOPICS_OLDEST}</a>{DIVIDER}<a href="{U_AZ}">A-Z</a>{DIVIDER}<a href="{U_ZA}" >Z-A</a>{DIVIDER}<!-- BEGIN alphabetical_sort --><a href="{alphabetical_sort.U_LETTER}" >{alphabetical_sort.LETTER}</a>{alphabetical_sort.DIVIDER}<!-- END alphabetical_sort -->{DIVIDER}</span>
+	</td>
+</tr>
+<!-- ENDIF -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 
