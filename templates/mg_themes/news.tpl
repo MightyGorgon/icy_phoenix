@@ -29,18 +29,14 @@
 		<!-- END arch -->
 		<!-- BEGIN articles -->
 		<br />
-		<div style="border: #DDDDDD solid 1px;padding:10px;margin-bottom:10px;clear:both;">
+		<div style="border: #dddddd solid 1px;padding:10px;margin-bottom:10px;clear:both;">
 			<div style="float: right; padding: 5px; margin: 5px;">
 				<a href="{INDEX_FILE}?cat_id={articles.CAT_ID}"><img src="{articles.CAT_IMG}" alt="{articles.CATEGORY}" style="border: 0" /></a>
 			</div>
 			<div class="forumlink"><a href="{INDEX_FILE}?topic_id={articles.ID}">{articles.L_TITLE}</a></div>
 			<div class="post-details">{articles.POST_DATE} by {articles.L_POSTER} | <a href="{articles.U_COMMENTS}">{articles.L_COMMENTS}</a></div>
 			<hr />
-			<div class="post-text-container">
-			<div class="post-text">
-				{articles.BODY}{articles.ATTACHMENTS}{articles.READ_MORE_LINK}
-			</div>
-			</div>
+			<div class="post-text">{articles.BODY}{articles.ATTACHMENTS}{articles.READ_MORE_LINK}</div>
 		</div>
 		<br />
 		<!-- END articles -->
@@ -51,7 +47,7 @@
 			<div class="forumlink">{comments.L_TITLE}</div>
 			<div class="post-details">{comments.POST_DATE} by {comments.L_POSTER}</div>
 			<hr />
-			<div class="post-text-container"><div class="post-text">{comments.BODY}</div></div>
+			<div class="post-text">{comments.BODY}</div>
 		</div>
 		<br />
 		<!-- END comments -->

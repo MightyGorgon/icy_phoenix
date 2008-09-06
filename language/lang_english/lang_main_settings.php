@@ -56,6 +56,7 @@ $lang['LEFT'] = 'left';
 $lang['RIGHT'] = 'right';
 $lang['DATE_FORMAT'] = 'd F y H:i'; // This should be changed to the default date format for your language, php date() format
 $lang['DATE_FORMAT_MG'] = 'Y/m/d - H:i';
+$lang['DATE_FORMAT_VF'] = 'd M Y';
 $lang['DATE_FORMAT_BIRTHDAY'] = 'd F Y';
 $lang['DATE_FORMAT2'] = 'd F Y'; // This should be changed to the default date format for your language, php date() format
 $lang['JOINED_DATE_FORMAT'] = 'F Y'; // Date format of Joined date, php date() format

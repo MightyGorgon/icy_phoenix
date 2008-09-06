@@ -36,11 +36,9 @@
 	<td class="row-post" width="100%" height="100%">
 		<div class="post-buttons-top post-buttons">{postrow.ARROWS} {postrow.QUOTE_IMG} <a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}"></a>{postrow.EDIT_IMG} {postrow.DELETE_IMG} {postrow.IP_IMG} {postrow.TOPIC_VIEW_IMG} {postrow.U_R_CARD} {postrow.U_Y_CARD} {postrow.U_G_CARD} {postrow.U_B_CARD}</div>
 		<div class="post-subject"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
-		<div class="post-text-container">
 		<div class="post-text">
 			{postrow.MESSAGE}<br />
 			{postrow.ATTACHMENTS}
-		</div>
 		</div>
 		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
 		<div class="post-text">

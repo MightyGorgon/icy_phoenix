@@ -297,6 +297,21 @@ while ($row = $db->sql_fetchrow($result))
 $db->sql_freeresult($result);
 //END Getting Board Configuration
 
+// Time Management - BEGIN
+// PARSE DATEFORMAT TO GET TIME FORMAT
+$time_reg = '([gh][[:punct:][:space:]]{1,2}[i][[:punct:][:space:]]{0,2}[a]?[[:punct:][:space:]]{0,2}[S]?)';
+eregi($time_reg, $board_config['default_dateformat'], $regs);
+$board_config['default_timeformat'] = $regs[1];
+unset($time_reg);
+unset($regs);
+
+// GET THE TIME TODAY AND YESTERDAY
+$today_ary = explode('|', create_date('m|d|Y', time(), $board_config['board_timezone']));
+$board_config['time_today'] = gmmktime(0 - $board_config['board_timezone'] - $board_config['summer_time'], 0, 0, $today_ary[0], $today_ary[1], $today_ary[2]);
+$board_config['time_yesterday'] = $board_config['time_today'] - 86400;
+unset($today_ary);
+// Time Management - END
+
 include($phpbb_root_path . ATTACH_MOD_PATH . 'attachment_mod.' . $phpEx);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->

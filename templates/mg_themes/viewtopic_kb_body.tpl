@@ -51,11 +51,7 @@ function open_postreview(ref)
 	<!-- <td class="row-post-author"></td> -->
 	<td class="row-post" width="100%" height="100%" colspan="2">
 		&nbsp;
-		<div class="post-text-container">
-		<div class="post-text">
-			{postrow.MESSAGE}<br />
-			{postrow.ATTACHMENTS}
-		</div>
+		<div class="post-text">{postrow.MESSAGE}<br />{postrow.ATTACHMENTS}</div>
 		</div>
 		<br /><br /><br />
 		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
@@ -98,7 +94,7 @@ function open_postreview(ref)
 		<img src="images/ranks/rank_sponsor.png" alt="" /><br />
 		<img src="images/avatars/default_avatars/sponsor.gif" alt="" />
 	</td>
-	<td class="row-post-ads" align="center"><div class="center-block-text">{VIEWTOPIC_BANNER_CODE}</div></td>
+	<td class="row-post" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_CODE}</div></td>
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <!-- END switch_viewtopic_banner -->

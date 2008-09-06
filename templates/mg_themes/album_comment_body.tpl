@@ -71,7 +71,7 @@
 				<td align="right"><span class="genmed">{commentrow.EDIT}&nbsp;{commentrow.DELETE}&nbsp;{commentrow.IP}</span></td>
 			</tr>
 			<tr><td colspan="2"><hr /></td></tr>
-			<tr><td><div class="post-text-container"><div class="post-text">{commentrow.TEXT}</div></div></td></tr>
+			<tr><td><div class="post-text">{commentrow.TEXT}</div></td></tr>
 		</table>
 	</td>
 </tr>

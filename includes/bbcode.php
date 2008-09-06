@@ -544,6 +544,11 @@ class BBCode {
 					'nested' => false,
 					'inurl' => false,
 					),
+			'language' => array(
+					'nested' => true,
+					'inurl' => false,
+					'allow_empty' => false,
+					),
 	);
 	var $allowed_html = array(
 			'b' => array(
@@ -2824,7 +2829,7 @@ class BBCode {
 			);
 		}
 
-		//HIDE
+		// HIDE
 		if($tag === 'hide')
 		{
 			if($this->is_sig)
@@ -2880,7 +2885,7 @@ class BBCode {
 			}
 		}
 
-		//SPOILER
+		// SPOILER
 		if($tag === 'spoiler')
 		{
 			if($this->is_sig)
@@ -2903,7 +2908,7 @@ class BBCode {
 			);
 		}
 
-		//TEX
+		// TEX
 		if($tag === 'tex')
 		{
 			if($this->is_sig)
@@ -2947,7 +2952,7 @@ class BBCode {
 			}
 			if (valid_hex_color($color2) == false)
 			{
-				$color2 = '#AACCEE';
+				$color2 = '#aaccee';
 			}
 
 			if(isset($item['params']['mode']))
@@ -3002,7 +3007,7 @@ class BBCode {
 					}
 					else
 					{
-							$width = '320';
+						$width = '320';
 					}
 				}
 				else
@@ -3071,7 +3076,7 @@ class BBCode {
 		}
 		// --- Disable Active Content Switch END ---
 
-		//SEARCH
+		// SEARCH
 		if($tag === 'search')
 		{
 			if($content == '')
@@ -3083,6 +3088,35 @@ class BBCode {
 				'valid' => true,
 				'start' => $str,
 				'end' => '</a>'
+			);
+		}
+
+		// LANGUAGE
+		// Parse the content only if in the same language of the user viewing it!!!
+		if($tag === 'language')
+		{
+			if($content == '')
+			{
+				return $error;
+			}
+
+			if(isset($item['params']['param']))
+			{
+				$language = $item['params']['param'];
+			}
+
+			if ($userdata['user_lang'] != $language)
+			{
+				$html = '';
+			}
+			else
+			{
+				$html = $content;
+			}
+
+			return array(
+				'valid' => true,
+				'html' => $html
 			);
 		}
 

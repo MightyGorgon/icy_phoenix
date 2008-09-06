@@ -658,23 +658,11 @@ else
 $l_timezone = explode('.', $board_config['board_timezone']);
 $l_timezone = ((count($l_timezone) > 1) && ($l_timezone[count($l_timezone)-1] != 0)) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
 
-// PARSE DATEFORMAT TO GET TIME FORMAT
-$time_reg = '([gh][[:punct:][:space:]]{1,2}[i][[:punct:][:space:]]{0,2}[a]?[[:punct:][:space:]]{0,2}[S]?)';
-eregi($time_reg, $board_config['default_dateformat'], $regs);
-$board_config['default_timeformat'] = $regs[1];
-unset($time_reg);
-unset($regs);
-
-// GET THE TIME TODAY AND YESTERDAY
-$today_ary = explode('|', create_date('m|d|Y', time(),$board_config['board_timezone']));
-$board_config['time_today'] = gmmktime(0 - $board_config['board_timezone'] - $board_config['summer_time'], 0, 0, $today_ary[0], $today_ary[1], $today_ary[2]);
-$board_config['time_yesterday'] = $board_config['time_today'] - 86400;
-unset($today_ary);
-
 if (!$userdata['session_logged_in'])
 {
 	$userdata['user_time_mode'] = $board_config['default_time_mode'];
 }
+
 switch ($userdata['user_time_mode'])
 {
 	case MANUAL_DST:

@@ -2,7 +2,7 @@
 {IMG_THL}{IMG_THC}<a href="{articles_fp.U_VIEW_COMMENTS}" class="forumlink">{articles_fp.TITLE}</a>&nbsp;{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td class="row-post">
-		<div class="post-text-container"><div class="post-text">{articles_fp.TEXT}</div></div><br /><br />
+		<div class="post-text">{articles_fp.TEXT}</div><br /><br />
 		<span class="gensmall">{articles_fp.OPEN}<a href="{articles_fp.U_VIEW_COMMENTS}">{articles_fp.L_READ_FULL}</a>{articles_fp.CLOSE}</span>
 		<br /><br />
 		<center>&nbsp;{articles_fp.ATTACHMENTS}&nbsp;</center>

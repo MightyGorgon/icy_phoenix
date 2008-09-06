@@ -390,7 +390,7 @@ function delete_layout($layout_table, $block_pos_table, $l_id)
 	return true;
 }
 
-function count_blocks_in_layout($table_name, $l_id_list, $only_active = true)
+function count_blocks_in_layout($table_name, $l_id_list, $is_special = false, $only_active = true)
 {
 	global $db, $lang;
 	$only_active_sql = '';
@@ -398,7 +398,12 @@ function count_blocks_in_layout($table_name, $l_id_list, $only_active = true)
 	{
 		$only_active_sql = ' AND active = \'1\'';
 	}
-	$sql = "SELECT count(bid) blocks_counter FROM " . $table_name . " WHERE layout IN (" . $l_id_list . ")" . $only_active_sql;
+	$layout_field = 'layout';
+	if ($is_special == true)
+	{
+		$layout_field = 'layout_special';
+	}
+	$sql = "SELECT count(bid) blocks_counter FROM " . $table_name . " WHERE " . $layout_field . " IN (" . $l_id_list . ")" . $only_active_sql;
 	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);

@@ -31,7 +31,7 @@
 			<a href="{searchresults.U_POST}"><img src="{searchresults.MINI_POST_IMG}" alt="{searchresults.L_MINI_POST_ALT}" title="{searchresults.L_MINI_POST_ALT}" /></a>
 			<span class="post-details">{L_FORUM}:&nbsp;<b><a href="{searchresults.U_FORUM}">{searchresults.FORUM_NAME}</a></b>&nbsp; &nbsp;{L_POSTED}: {searchresults.POST_DATE}&nbsp; &nbsp;{L_SUBJECT}: <b><a href="{searchresults.U_POST}">{searchresults.POST_SUBJECT}</a></b></span>
 		</div>
-		<div class="post-text-container"><div class="post-text"><br />{searchresults.MESSAGE}</div></div>
+		<div class="post-text"><br />{searchresults.MESSAGE}</div>2008/09/02
 	</td>
 	<!-- BEGIN switch_upi2db_on -->
 	<td valign="top" class="row-post">{searchresults.UNREAD_IMG}</td>

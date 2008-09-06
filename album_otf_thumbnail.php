@@ -26,11 +26,11 @@ require($album_root_path . 'album_image_class.' . $phpEx);
 // ------------------------------------
 // Check the request
 // ------------------------------------
-if( isset($_GET['pic_id']) )
+if(isset($_GET['pic_id']))
 {
 	$pic_id = $_GET['pic_id'];
 }
-elseif( isset($_POST['pic_id']) )
+elseif(isset($_POST['pic_id']))
 {
 	$pic_id = $_POST['pic_id'];
 }
@@ -39,11 +39,11 @@ else
 	message_die(GENERAL_MESSAGE, 'No pics specified');
 }
 
-if( isset($_GET['pic_cat']) )
+if(isset($_GET['pic_cat']))
 {
 	$pic_cat = $_GET['pic_cat'];
 }
-elseif( isset($_POST['pic_cat']) )
+elseif(isset($_POST['pic_cat']))
 {
 	$pic_cat = $_POST['pic_cat'];
 }
@@ -81,7 +81,7 @@ switch ($pic_filetype)
 // Check thumbnail cache. If cache is available we will SEND & EXIT
 // --------------------------------
 
-if( ($album_config['thumbnail_cache'] == 1) && file_exists($pic_thumbnail_fullpath) )
+if(($album_config['thumbnail_cache'] == 1) && file_exists($pic_thumbnail_fullpath))
 {
 	/*
 	$Image = new ImgObj();
@@ -114,7 +114,7 @@ if( ($album_config['thumbnail_cache'] == 1) && file_exists($pic_thumbnail_fullpa
 	exit;
 }
 
-if( !file_exists($pic_fullpath) )
+if(!file_exists($pic_fullpath))
 {
 	message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
 }
@@ -123,7 +123,7 @@ $pic_size = @getimagesize($pic_fullpath);
 $pic_width = $pic_size[0];
 $pic_height = $pic_size[1];
 
-if( ($pic_width < $album_config['thumbnail_size']) && ($pic_height < $album_config['thumbnail_size']) )
+if(($pic_width < $album_config['thumbnail_size']) && ($pic_height < $album_config['thumbnail_size']))
 {
 	$copy_success = @copy($pic_fullpath, $pic_thumbnail_fullpath);
 	/*
@@ -174,7 +174,7 @@ else
 
 	// Old Thumbnails - BEGIN
 	// Old thumbnail generation functions, for GD1 and some strange servers...
-	if ( ($album_config['gd_version'] == 1) || ($album_config['use_old_pics_gen'] == 1) )
+	if (($album_config['gd_version'] == 1) || ($album_config['use_old_pics_gen'] == 1))
 	{
 		switch ($pic_filetype)
 		{
@@ -185,7 +185,7 @@ else
 				exit;
 				break;
 		}
-		if( $album_config['show_pic_size_on_thumb'] == 1)
+		if($album_config['show_pic_size_on_thumb'] == 1)
 		{
 			$thumbnail = ($album_config['gd_version'] == 1) ? @imagecreate($thumbnail_width, $thumbnail_height + 16) : @imagecreatetruecolor($thumbnail_width, $thumbnail_height + 16);
 		}
@@ -198,7 +198,7 @@ else
 
 		@$resize_function($thumbnail, $pic_fullpath, 0, 0, 0, 0, $thumbnail_width, $thumbnail_height, $pic_width, $pic_height);
 
-		if( $album_config['show_pic_size_on_thumb'] == 1)
+		if($album_config['show_pic_size_on_thumb'] == 1)
 		{
 			$dimension_font = 1;
 			$dimension_filesize = filesize(ALBUM_UPLOAD_PATH . $pic_filename);
@@ -262,7 +262,7 @@ else
 
 	$Image->Resize($thumbnail_width, $thumbnail_height);
 
-	if( $album_config['show_pic_size_on_thumb'] == 1)
+	if($album_config['show_pic_size_on_thumb'] == 1)
 	{
 		$dimension_string = intval($pic_width) . 'x' . intval($pic_height) . '(' . intval(filesize($pic_fullpath) / 1024) . 'KB)';
 		$Image->Text($dimension_string);
@@ -291,7 +291,7 @@ else
 		$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $album_config['thumbnail_quality']);
 	}
 
-	if ( $Image == true )
+	if ($Image == true)
 	{
 		$Image->Destroy();
 		exit;

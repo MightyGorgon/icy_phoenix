@@ -202,15 +202,8 @@ function checkFormRate()
 	<td class="row-post" width="100%" height="100%">
 		<div class="post-buttons-top post-buttons">{commentrow.EDIT} {commentrow.DELETE} {commentrow.IP_IMG}</div>
 		<div class="post-subject">&nbsp;</div>
-		<div class="post-text-container">
-		<div class="post-text">
-			{commentrow.TEXT}<br />
-		</div>
-		</div>
-		<div class="post-text">
-			<br /><br /><br />_______________<br />
-			{commentrow.POSTER_SIGNATURE}
-		</div>
+		<div class="post-text">{commentrow.TEXT}<br /></div>
+		<div class="post-text"><br /><br /><br />_______________<br />{commentrow.POSTER_SIGNATURE}</div>
 	</td>
 </tr>
 <tr>

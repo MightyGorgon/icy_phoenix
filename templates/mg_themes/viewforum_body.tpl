@@ -71,13 +71,13 @@
 		<!-- END switch_topic_desc -->
 		{topicrow.GOTO_PAGE}
 	</td>
-	<td class="row3 row-center-small" nowrap="nowrap" style="padding-left:2px;padding-right:2px;">{topicrow.TOPIC_AUTHOR}</td>
+	<td class="row3 row-center-small" nowrap="nowrap" style="padding-top:0;padding-left:2px;padding-right:2px;">{topicrow.FIRST_POST_TIME}<br />{topicrow.TOPIC_AUTHOR}</td>
 	<td class="row2 row-center-small">{topicrow.VIEWS}</td>
 	<td class="row2 row-center-small">{topicrow.REPLIES}</td>
 	<!-- BEGIN rate_switch_msg -->
 	<td class="row2 row-center-small"><img src="images/rates/rate_{topicrow.TOPIC_RATING}.png" alt="{topicrow.TOPIC_RATING}" /></td>
 	<!-- END rate_switch_msg -->
-	<td class="row3 row-center-small" style="padding-top:0;" nowrap="nowrap">{topicrow.LAST_POST_TIME}<br />{topicrow.LAST_POST_AUTHOR} {topicrow.LAST_POST_IMG}</td>
+	<td class="row3 row-center-small" style="padding-top:0;padding-left:2px;padding-right:2px;" nowrap="nowrap">{topicrow.LAST_POST_TIME}<br />{topicrow.LAST_POST_AUTHOR} {topicrow.LAST_POST_IMG}</td>
 </tr>
 <!-- END topicrow -->
 <!-- BEGIN switch_no_topics -->

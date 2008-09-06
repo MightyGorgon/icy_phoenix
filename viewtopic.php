@@ -1779,7 +1779,7 @@ if ($bypass)
 			$thanker_id[$i] = $thanksrow[$i]['user_id'];
 			$thanks_date[$i] = $thanksrow[$i]['thanks_time'];
 			// Get thanks date
-			$thanks_date[$i] = create_date_thanks($timeformat, $thanks_date[$i], $board_config['board_timezone']);
+			$thanks_date[$i] = create_date_simple($timeformat, $thanks_date[$i], $board_config['board_timezone']);
 			// Make thanker profile link
 			$thanks .= '<span class="gensmall">' . (($thanks != '') ? ', ' : '') . colorize_username($thanker_id[$i]) . ' (' . $thanks_date[$i] . ')</span>';
 		}

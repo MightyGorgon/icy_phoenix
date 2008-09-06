@@ -439,6 +439,7 @@ $lang['Date_error'] = 'day %d, month %d, year %d is not a valid date';
 $lang['Event_time'] = 'Event time';
 $lang['Minutes'] = 'Minutes';
 $lang['Today'] = 'Today';
+$lang['Yesterday'] = 'Yesterday';
 $lang['All_events'] = 'All events';
 
 /*

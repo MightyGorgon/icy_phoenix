@@ -374,7 +374,7 @@ function jr_admin_make_left_pane()
 	//-MOD: DHTML Menu for ACP
 	foreach ($module as $cat => $module_array)
 	{
-		$cat_icon = ((isset($acp_icon[$cat])) ? ('<img src="' . $acp_icon[$cat] . '" alt="' . $cat_name . '" />&nbsp;') : ('<img src="' . $acp_icon['default'] . '" alt="' . $cat_name . '" />&nbsp;'));
+		$cat_icon = '<img src="' . (isset($acp_icon[$cat]) ? $acp_icon[$cat] : $acp_icon['default']) . '" alt="' . $cat_name . '" style="vertical-align:middle;" />&nbsp;';
 		$cat_name = ((isset($lang[$cat])) ? $lang[$cat] : preg_replace("/_/", ' ', $cat));
 		$template->assign_block_vars('catrow', array(
 			//+MOD: DHTML Menu for ACP

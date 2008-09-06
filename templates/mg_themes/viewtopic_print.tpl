@@ -17,7 +17,7 @@
 	<div class="forumline" style="margin:10px;padding5px;width=100%">
 	<b>{postrow.POSTER_NAME}</b>&nbsp;[&nbsp;{postrow.POST_DATE}&nbsp;]<br />
 	<b>{L_POST_SUBJECT}:&nbsp;</b>{postrow.POST_SUBJECT}<hr width="95%" class="sep"/>
-	<div class="post-text-container"><div class="post-text">{postrow.MESSAGE}</div></div>
+	<div class="post-text">{postrow.MESSAGE}</div>
 	</div>
 	<!-- END postrow -->
 	<br />

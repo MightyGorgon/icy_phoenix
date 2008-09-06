@@ -4,7 +4,7 @@
 <tr><td class="row2" align="left"><span class="gensmall">{L_POSTED}: <b>{fetchpost_row.POSTER}</b> @ {fetchpost_row.TIME}</span></td></tr>
 <tr>
 	<td class="row1">
-		<div class="post-text-container"><div class="post-text">{fetchpost_row.TEXT}</div></div><br /><br />
+		<div class="post-text">{fetchpost_row.TEXT}</div><br /><br />
 		<div class="post-text">{fetchpost_row.OPEN}<a href="{fetchpost_row.U_READ_FULL}">{fetchpost_row.L_READ_FULL}</a>{fetchpost_row.CLOSE}</div>
 	</td>
 </tr>

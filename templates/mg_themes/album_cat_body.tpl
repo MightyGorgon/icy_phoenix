@@ -269,7 +269,7 @@
 	<td align="left" valign="top" class="gensmall" width="40%">
 		<div class="forumline nav-div">
 			<!-- <p class="nav-header">{L_PERMISSIONS_LIST}</p> -->
-			<div class="nav-links2">{S_AUTH_LIST}</div>
+			<div class="nav-links" style="text-align: left !important;">{S_AUTH_LIST}</div>
 		</div>
 		<!--
 		<div class="quote">

@@ -144,14 +144,12 @@ function addquote(privmsgs_id, tag)
 		<td class="row-post" width="100%">
 			<div class="post-buttons-top post-buttons">{QUOTE_PM_IMG}&nbsp;{EDIT_PM_IMG}</div>
 			<div class="post-subject">{POST_SUBJECT}&nbsp;</div>
-			<div class="post-text-container">
 			<div class="post-text">
 				{MESSAGE}
 				<!-- BEGIN postrow -->
 				<br />
 				{ATTACHMENTS}
 				<!-- END postrow -->
-			</div>
 			</div>
 			<div class="post-text"><br /><br /><br />{SIGNATURE}</div>
 		</td>

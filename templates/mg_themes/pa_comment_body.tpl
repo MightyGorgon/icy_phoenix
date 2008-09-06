@@ -31,7 +31,7 @@
 		</div>
 		<div class="post-subject"><a href="{text.U_MINI_POST}"><img src="{text.ICON_MINIPOST_IMG}" alt="{text.L_MINI_POST_ALT}" title="{text.L_MINI_POST_ALT}" /></a> {text.TITLE}&nbsp;</div>
 		&nbsp;
-		<div class="post-text-container"><div class="post-text">{text.TEXT}</div></div>
+		<div class="post-text">{text.TEXT}</div>
 		<br /><br /><br />
 	</td>
 </tr>

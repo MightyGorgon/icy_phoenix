@@ -2,14 +2,12 @@
 <tr>
 	<td class="row-post" width="100%">
 		<div class="post-subject">{POST_SUBJECT}&nbsp;</div>
-		<div class="post-text-container">
 		<div class="post-text">
 			{MESSAGE}
 			<!-- BEGIN postrow -->
 			<br />
 			{ATTACHMENTS}
 			<!-- END postrow -->
-		</div>
 		</div>
 	</td>
 </tr>

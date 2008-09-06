@@ -110,6 +110,9 @@ hr {
 	/*white-space: nowrap;*/
 }
 
+.forum-buttons a, .forum-buttons a:visited { color: #880000; font-weight: bold; text-decoration: none; vertical-align: top; }
+.forum-buttons a:hover, .forum-buttons a:active { color: #660066; font-weight: bold; text-decoration: none; vertical-align: top; }
+
 .gh-border {
 	border-left: solid 1px #880000;
 	border-right: solid 1px #880000;
@@ -128,31 +131,8 @@ hr {
 	white-space: nowrap;
 }
 
-.forum-buttons2 a, .forum-buttons2 a:visited {
-	color: #880000;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.forum-buttons2 a:hover, .forum-buttons2 a:active {
-	color: #660066;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.forum-buttons a, .forum-buttons a:visited {
-	color: #880000;
-	font-weight: bold;
-	text-decoration: none;
-	vertical-align: top;
-}
-
-.forum-buttons a:hover, .forum-buttons a:active {
-	color: #660066;
-	font-weight: bold;
-	text-decoration: none;
-	vertical-align: top;
-}
+.forum-buttons2 a, .forum-buttons2 a:visited { color: #880000; font-weight: bold; text-decoration: none; }
+.forum-buttons2 a:hover, .forum-buttons2 a:active { color: #660066; font-weight: bold; text-decoration: none; }
 
 .header-search { padding: 5px; }
 
@@ -472,27 +452,9 @@ hr {
 	padding: 4px 5px;
 }
 
-.nav-header3 {
-	background-image: url('images/gray/bg_nav1_gray.gif');
-	color: #888888;
-	font-size: 12px;
-	font-weight: bold;
-	text-align: center;
-	padding: 4px 5px;
-}
-
 .nav-links {
 	color: #888888;
 	text-align: right;
-	background: #ffffff url('images/gray/bg_nav2.gif') top left repeat-x;
-	padding: 3px 5px;
-	font-size: 10px;
-	line-height: 1.4em;
-}
-
-.nav-links2 {
-	color: #888888;
-	text-align: left;
 	background: #ffffff url('images/gray/bg_nav2.gif') top left repeat-x;
 	padding: 3px 5px;
 	font-size: 10px;
@@ -503,13 +465,6 @@ hr {
 	position: relative;
 	float: left;
 	text-align: left;
-}
-
-.nav-links-left2 {
-	position: relative;
-	float: left;
-	text-align: left;
-	vertical-align: bottom;
 }
 
 .nav-header, .nav-links {
@@ -547,11 +502,6 @@ hr {
 	color: #880000;
 }
 
-a.forumlink, a.forumlink:visited { color: #880000; text-decoration: none; }
-a.forumlink:hover, a.forumlink:active { color: #660066; text-decoration: underline; }
-a.forumlink-new, a.forumlink-new:visited { color: #ff5522; text-decoration: none; }
-a.forumlink-new:hover, a.forumlink-new:active { color: #660066; text-decoration: underline; }
-
 .forumlink2, .forumlink2-new {
 	font-size: 10px;
 	font-weight: bold;
@@ -559,20 +509,18 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #660066; text-decoration:
 	color: #880000;
 }
 
+a.forumlink, a.forumlink:visited { color: #880000; text-decoration: none; }
+a.forumlink:hover, a.forumlink:active { color: #660066; text-decoration: underline; }
+a.forumlink-new, a.forumlink-new:visited { color: #ff5522; text-decoration: none; }
+a.forumlink-new:hover, a.forumlink-new:active { color: #660066; text-decoration: underline; }
+
 .moderators {
 	font-size: 10px;
 	color: #888888;
 }
 
-.moderators a, .moderators a:visited {
-	color: #777777;
-	text-decoration: underline;
-}
-
-.moderators a:hover, .moderators a:active {
-	color: #880000;
-	text-decoration: underline;
-}
+.moderators a, .moderators a:visited { color: #777777; text-decoration: underline; }
+.moderators a:hover, .moderators a:active { color: #880000; text-decoration: underline; }
 
 /* viewforum */
 .topiclink b, .topiclink-new b {
@@ -644,24 +592,6 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #660066; text-decoration:
 	padding: 3px;
 }*/
 
-.row-post-author2, .row-post2 {
-	background-color: #f8f8f8;
-	border: solid 1px #ffffff;
-	border-bottom: none;
-	border-right-color: #dddddd;
-	vertical-align: top;
-	padding: 3px;
-}
-
-.row-post-ads {
-	background: #ffffff url('images/gray/bg_post.gif') top left repeat-x;
-	border: solid 1px #ffffff;
-	border-right-color: #dddddd;
-	border-bottom-color: #dddddd;
-	vertical-align: middle;
-	padding: 3px;
-}
-
 .row-post-author {
 	text-align: center;
 	width: 150px;
@@ -669,15 +599,6 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #660066; text-decoration:
 
 .row-post {
 	text-align: left;
-}
-
-.row-post2 {
-	text-align: left;
-}
-
-.row-post-author2 {
-	text-align: center;
-	width: 150px;
 }
 
 .post-name {
@@ -949,31 +870,6 @@ select option {
 	font-size: 12px;
 	line-height: 1.5em;
 }*/
-
-.newsrow {
-	margin: 2px 0 5px 0;
-	padding: 1px 3px;
-	color: #444444;
-	font-size: 10px;
-	line-height: 1.5em;
-	text-align: left;
-}
-
-.newsdate {
-	margin: 2px 0 5px 0;
-	padding: 1px 3px;
-	color: #444444;
-	font-size: 10px;
-	line-height: 1.5em;
-	text-align: center;
-}
-
-.newsversion {
-	font-size: 10px;
-	color: #ffffff;
-	margin: 5px;
-	vertical-align: middle;
-}
 
 .row-news-tickers b { color: #444444; }
 

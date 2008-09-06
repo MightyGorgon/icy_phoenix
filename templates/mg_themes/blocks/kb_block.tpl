@@ -51,7 +51,7 @@
 <!-- {IMG_THL}{IMG_THC}<span class="forumlink">{TITLE}</span>{IMG_THR}
 <table cellspacing="0" width="100%" class="forumlinenb"> -->
 <tr><th>{TOPIC_DESC}</th></tr>
-<tr><td class="row-post"><div class="post-text-container"><div class="post-text">{TEXT}</div></div><br /><br /></td></tr>
+<tr><td class="row-post"><div class="post-text">{TEXT}</div><br /><br /></td></tr>
 <tr>
 	<td class="cat">
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">

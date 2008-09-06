@@ -1033,32 +1033,17 @@ function create_date2($format, $gmepoch, $tz)
 	return $str;
 }
 
-function create_date_thanks($format, $gmepoch, $tz)
+function create_date_simple($format, $gmepoch, $tz)
 {
 	global $board_config, $lang;
 	$date_day = create_date($format, $gmepoch, $tz);
 	if ($board_config['time_today'] < $gmepoch)
 	{
-		$date_day = $lang['Today_thanks'];
+		$date_day = $lang['TODAY'];
 	}
 	elseif ($board_config['time_yesterday'] < $gmepoch)
 	{
-		$date_day = $lang['Yesterday_thanks'];
-	}
-	return $date_day;
-}
-
-function create_date_news($format, $gmepoch, $tz)
-{
-	global $board_config, $lang;
-	$date_day = create_date($format, $gmepoch, $tz);
-	if ($board_config['time_today'] < $gmepoch)
-	{
-		$date_day = $lang['Today_thanks'];
-	}
-	elseif ($board_config['time_yesterday'] < $gmepoch)
-	{
-		$date_day = $lang['Yesterday_thanks'];
+		$date_day = $lang['YESTERDAY'];
 	}
 	return $date_day;
 }

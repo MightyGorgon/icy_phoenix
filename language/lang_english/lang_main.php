@@ -1110,6 +1110,8 @@ $lang['Warn_new_post'] = 'There is at least one new reply in this thread. Please
 
 $lang['Today_at'] = '<b class="date-today">Today</b> at ';
 $lang['Yesterday_at'] = '<b class="date-yesterday">Yesterday</b> at ';
+$lang['TODAY'] = '<b class="date-today">Today</b>';
+$lang['YESTERDAY'] = '<b class="date-yesterday">Yesterday</b>';
 
 // Start add - Birthday MOD
 $lang['Birthday'] = 'Birthday';
@@ -1302,9 +1304,6 @@ $lang['thanks_not_logged'] = 'You need to log in to thank someone\'s post';
 $lang['thanks2'] = 'Thank you very much!<br />';
 // End Thanks Mod
 
-
-$lang['Today_thanks'] = '<b class="date-today">Today</b>';
-$lang['Yesterday_thanks'] = '<b class="date-yesterday">Yesterday</b>';
 // Default Subject on Reply
 $lang['RE'] = 'Re';
 
