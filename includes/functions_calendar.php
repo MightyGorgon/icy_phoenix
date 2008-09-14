@@ -15,13 +15,13 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include_once($phpbb_root_path . './includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . './includes/bbcode.' . $phpEx);
+include_once(IP_ROOT_PATH . './includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . './includes/bbcode.' . PHP_EXT);
 
 // function select
 function calendar_get_tree_option($cur='')
@@ -122,7 +122,7 @@ function date_dsp($format, $date)
 
 function get_calendar_title_date($calendar_start, $calendar_duration)
 {
-	global $lang, $images, $phpbb_root_path, $phpEx, $board_config, $userdata;
+	global $lang, $images, $board_config, $userdata;
 	global $bbcode;
 	if (empty($calendar_start)) return '';
 
@@ -182,7 +182,7 @@ function get_calendar_title_date($calendar_start, $calendar_duration)
 	$date_end = date_dsp($fmt_end, $calendar_start + $calendar_duration);
 
 	// add period to the title
-	$calendar_icon = '<a href="' . append_sid($phpbb_root_path . "./calendar.$phpEx?start=" . date('Ymd', $calendar_start)). '"><img src="' . $images['icon_calendar'] . '" hspace="3" border="0" valign="top" alt="' . $lang['Calendar_event'] . '" /></a>';
+	$calendar_icon = '<a href="' . append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?start=' . date('Ymd', $calendar_start)). '"><img src="' . $images['icon_calendar'] . '" hspace="3" border="0" valign="top" alt="' . $lang['Calendar_event'] . '" /></a>';
 	if (empty($calendar_duration))
 	{
 		$res = sprintf($lang['Calendar_time'], $date_start);
@@ -250,7 +250,7 @@ function get_calendar_title($calendar_start, $calendar_duration)
 //
 function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=false, $start=0, $max_limit=-1, $fid='')
 {
-	global $template, $lang, $images, $userdata, $board_config, $db, $phpbb_root_path, $phpEx;
+	global $template, $lang, $images, $userdata, $board_config, $db;
 	global $tree;
 	global $bbcode;
 
@@ -421,7 +421,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		$bbcode_uid = $row['bbcode_uid'];
 		$topic_calendar_time = $row['topic_calendar_time'];
 		$topic_calendar_duration = $row['topic_calendar_duration'];
-		$topic_link = append_sid($phpbb_root_path . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id']);
+		$topic_link = append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id']);
 
 		// censor topic_title
 		if (count($orig_word))
@@ -430,7 +430,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 			$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
 		}
 		global $bbcode, $board_config;
-		include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		if ($board_config['smilies_topic_title'] == true)
 		{
 			//Start BBCode Parsing for title
@@ -501,7 +501,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		}
 		else
 		{
-			$nav_desc = '<a href="' . append_sid($phpbb_root_path . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $row['forum_id']) . '" class="gensmall">' . $row['forum_name'] . '</a>';
+			$nav_desc = '<a href="' . append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $row['forum_id']) . '" class="gensmall">' . $row['forum_name'] . '</a>';
 		}
 		$template->assign_vars(array(
 			'L_CALENDAR_EVENT' => $lang['Calendar_event'],
@@ -570,7 +570,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 //
 function get_birthday(&$events, &$number, $start_date, $end_date, $limit=false, $start=0, $max_limit=-1)
 {
-	global $template, $lang, $images, $userdata, $board_config, $db, $phpbb_root_path, $phpEx;
+	global $template, $lang, $images, $userdata, $board_config, $db;
 	global $bbcode;
 		$sql = "SELECT u.*
 					FROM " . USERS_TABLE . " AS u
@@ -598,7 +598,7 @@ function get_birthday(&$events, &$number, $start_date, $end_date, $limit=false, 
 		$friend = $row['user_friend'];
 		$always_visible = $row['user_visible'];
 
-		$username_link = append_sid($phpbb_root_path . './' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id);
+		$username_link = append_sid(IP_ROOT_PATH . './' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id);
 
 
 		$event_day = realdate('d',$row['user_birthday']);
@@ -654,7 +654,7 @@ function get_birthday(&$events, &$number, $start_date, $end_date, $limit=false, 
 
 function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 {
-	global $template, $lang, $images, $userdata, $board_config, $db, $phpbb_root_path, $phpEx, $bbcode, $tree;
+	global $template, $lang, $images, $userdata, $board_config, $db, $bbcode, $tree;
 	static $handler;
 	if (empty($handler))
 	{
@@ -765,7 +765,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	// topics
 	get_event_topics($events, $number, $start_date, $end_date, false, 0, -1, $fid);
 
-	$pages_array = array('calendar.' . $phpEx, FORUM_MG, VIEWFORUM_MG);
+	$pages_array = array('calendar.' . PHP_EXT, FORUM_MG, VIEWFORUM_MG);
 	//$current_page = $_SERVER['PHP_SELF'];
 	$current_page = basename($_SERVER['PHP_SELF']);
 
@@ -873,16 +873,16 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	$prec = (date('Ym', $start_date) > 197101) ? date('Ymd', mktime(0,0,0, date('m', $start_date)-1, 01, date('Y', $start_date))) : date('Ymd', $start_date);
 	$next = date('Ymd', mktime(0,0,0, date('m', $start_date)+1, 01, date('Y', $start_date)));
 	$template->assign_block_vars('_calendar_box', array(
-		'L_CALENDAR' => '<a href="' . append_sid($phpbb_root_path . './calendar.' . $phpEx . '?start=' . date('Ymd', cal_date(time(),$board_config['board_timezone']))) . '"><img src="' . $images['icon_calendar'] . '" hspace="3" border="0" align="top" alt="' . $lang['Calendar_event'] . '" /></a>' . $lang['Calendar'],
+		'L_CALENDAR' => '<a href="' . append_sid(IP_ROOT_PATH . './calendar.' . PHP_EXT . '?start=' . date('Ymd', cal_date(time(),$board_config['board_timezone']))) . '"><img src="' . $images['icon_calendar'] . '" hspace="3" border="0" align="top" alt="' . $lang['Calendar_event'] . '" /></a>' . $lang['Calendar'],
 		'L_CALENDAR_TXT' => $lang['Calendar'],
 		'SPAN_ALL' => $nb_cells,
 		'S_MONTH' => $s_month,
 		'S_YEAR' => $s_year,
 		'S_FORUM_LIST' => $s_forum_list,
 		'L_GO' => $lang['Go'],
-		'ACTION' => append_sid($phpbb_root_path . './calendar.' . $phpEx),
-		'U_PREC' => append_sid('./calendar.' . $phpEx . '?start=' . $prec . '&fid=' . $fid),
-		'U_NEXT' => append_sid('./calendar.' . $phpEx . '?start=' . $next . '&fid=' . $fid),
+		'ACTION' => append_sid(IP_ROOT_PATH . './calendar.' . PHP_EXT),
+		'U_PREC' => append_sid('./calendar.' . PHP_EXT . '?start=' . $prec . '&fid=' . $fid),
+		'U_NEXT' => append_sid('./calendar.' . PHP_EXT . '?start=' . $next . '&fid=' . $fid),
 		)
 	);
 	if ($full_month)
@@ -936,7 +936,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 				'WIDTH' => floor(100 / $nb_cells),
 				'SPAN' => $span,
 				'DATE' => sprintf($format, date_dsp(($full_month ? '' : 'D ') . $lang['DATE_FORMAT2'], $offset_date)),
-				'U_DATE' => append_sid($phpbb_root_path . "./calendar_scheduler.$phpEx?d=" . $offset_date . "&fid=$fid"),
+				'U_DATE' => append_sid(IP_ROOT_PATH . 'calendar_scheduler.' . PHP_EXT . '?d=' . $offset_date . '&amp;fid=' . $fid),
 				)
 			);
 			// blank cells

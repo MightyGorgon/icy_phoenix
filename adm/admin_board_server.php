@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -18,9 +18,9 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // Pull all config data
 $sql = "SELECT *
@@ -71,7 +71,7 @@ else
 
 	if( isset($_POST['submit']) )
 	{
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_server.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_server.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -128,7 +128,7 @@ $new['sig_line'] = str_replace('"', '&quot;', $new['sig_line']);
 
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid('admin_board_server.' . $phpEx),
+	'S_CONFIG_ACTION' => append_sid('admin_board_server.' . PHP_EXT),
 	'L_YES' => $lang['Yes'],
 	'L_NO' => $lang['No'],
 	'L_CONFIGURATION_TITLE' => $lang['General_Config'],
@@ -262,6 +262,6 @@ $template->assign_vars(array(
 );
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

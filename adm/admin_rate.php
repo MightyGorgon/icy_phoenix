@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,11 +25,11 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_rate.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_rate.php');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_rate.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_rate.php');
 
 if( isset($_POST['mode']) || isset($_GET['mode']) )
 {
@@ -316,6 +316,6 @@ $template->assign_vars(array(
 );
 
 $template->pparse('body');
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

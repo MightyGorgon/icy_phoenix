@@ -8,11 +8,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start user modifiable variables
 
@@ -77,7 +77,7 @@ $cms_global_blocks = ($board_config['wide_blocks_site_hist'] == 1) ? true : fals
 $page_title = $lang['Site_history'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Getting voting bar info
 if(!$board_config['override_user_style'])
@@ -469,7 +469,7 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 
 ?>

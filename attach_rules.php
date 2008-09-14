@@ -16,16 +16,16 @@
 */
 
 // CTracker_Ignore: File checked by human
-if (defined('IN_PHPBB'))
+if (defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
 }
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 $forum_id = request_var('f', 0);
 $privmsg = (!$forum_id) ? true : false;
@@ -127,7 +127,7 @@ $gen_simple_header = true;
 $page_title = $lang['Attach_rules_title'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->assign_vars(array(
 	'L_RULES_TITLE'			=> $lang['Attach_rules_title'],

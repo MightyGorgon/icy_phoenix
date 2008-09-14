@@ -85,7 +85,7 @@ class digest_emailer
 
 	function use_template($template_file, $template_lang = '')
 	{
-		global $board_config, $phpbb_root_path;
+		global $board_config;
 
 		if (trim($template_file) == '')
 		{
@@ -100,11 +100,11 @@ class digest_emailer
 		{
 			if (empty($this->tpl_msg[$template_lang . $template_file]))
 			{
-				$tpl_file = $phpbb_root_path . 'language/lang_' . $template_lang . '/email/html/' . $template_file . '.tpl';
+				$tpl_file = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/' . $template_file . '.tpl';
 
 				if (!@file_exists(@phpbb_realpath($tpl_file)))
 				{
-					$tpl_file = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/html/' . $template_file . '.tpl';
+					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/' . $template_file . '.tpl';
 
 					if (!@file_exists(@phpbb_realpath($tpl_file)))
 					{
@@ -121,11 +121,11 @@ class digest_emailer
 				fclose($fd);
 			}
 
-			$tpl_header = $phpbb_root_path . 'language/lang_' . $template_lang . '/email/html/html_mail_header.tpl';
+			$tpl_header = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_header.tpl';
 
 			if (!@file_exists(@phpbb_realpath($tpl_header)))
 			{
-				$tpl_header = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_header.tpl';
+				$tpl_header = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_header.tpl';
 			}
 
 			if (!($fd = @fopen($tpl_header, 'r')))
@@ -146,11 +146,11 @@ class digest_emailer
 			$mail_header = str_replace('{SITENAME}', $board_config['sitename'], $mail_header);
 			// Mighty Gorgon - Add Site Url - END
 
-			$tpl_footer = $phpbb_root_path . 'language/lang_' . $template_lang . '/email/html/html_mail_footer.tpl';
+			$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_footer.tpl';
 
 			if (!@file_exists(@phpbb_realpath($tpl_footer)))
 			{
-				$tpl_footer = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_footer.tpl';
+				$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_footer.tpl';
 			}
 
 			if (!($fd = @fopen($tpl_footer, 'r')))
@@ -169,11 +169,11 @@ class digest_emailer
 		{
 			if (empty($this->tpl_msg[$template_lang . $template_file]))
 			{
-				$tpl_file = $phpbb_root_path . 'language/lang_' . $template_lang . '/email/txt/' . $template_file . '.tpl';
+				$tpl_file = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/txt/' . $template_file . '.tpl';
 
 				if (!@file_exists(@phpbb_realpath($tpl_file)))
 				{
-					$tpl_file = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/txt/' . $template_file . '.tpl';
+					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/txt/' . $template_file . '.tpl';
 
 					if (!@file_exists(@phpbb_realpath($tpl_file)))
 					{
@@ -205,7 +205,7 @@ class digest_emailer
 	// Send the mail out to the recipients set previously in var $this->address
 	function send($is_html)
 	{
-		global $board_config, $lang, $phpEx, $phpbb_root_path, $db;
+		global $board_config, $lang, $db;
 		// Escape all quotes, else the eval will fail.
 		$this->msg = str_replace ("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
@@ -276,7 +276,7 @@ class digest_emailer
 		{
 			if ( !defined('SMTP_INCLUDED') )
 			{
-				include($phpbb_root_path . 'includes/smtp.' . $phpEx);
+				include(IP_ROOT_PATH . 'includes/smtp.' . PHP_EXT);
 			}
 
 			$result = smtpmail($to, $this->subject, $this->msg, $this->extra_headers);

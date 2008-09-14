@@ -10,10 +10,10 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -27,12 +27,12 @@ if (($userdata['user_level'] != ADMIN))
 
 if (!$userdata['session_admin'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cms_auth.' . $phpEx . '&admin=1', true));
+	redirect(append_sid(LOGIN_MG . '?redirect=cms_auth.' . PHP_EXT . '&admin=1', true));
 }
 
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 // Pull all config data
 $sql = "SELECT * FROM " . CONFIG_TABLE;
@@ -66,7 +66,7 @@ else
 
 	if(isset($_POST['submit']))
 	{
-		$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid('cms_auth.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid('cms.' . $phpEx) . '">', '</a>') . '<br /><br />';
+		$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid('cms_auth.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid('cms.' . PHP_EXT) . '">', '</a>') . '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -159,7 +159,7 @@ $page_title = $lang['Home'];
 $meta_description = '';
 $meta_keywords = '';
 $template->assign_vars(array('S_CMS_AUTH' => true));
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 if ($board_config['cms_dock'] == true)
 {
@@ -174,7 +174,7 @@ $template->set_filenames(array('body' => CMS_TPL . 'cms_pages_auth_body.tpl'));
 $template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Page_Permissions']);
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid('cms_auth.' . $phpEx),
+	'S_CONFIG_ACTION' => append_sid('cms_auth.' . PHP_EXT),
 
 	'L_CONFIGURATION_TITLE' => $lang['CMS_Page_Permissions'],
 	'L_CONFIGURATION_EXPLAIN' => $lang['CMS_Page_Permissions_Explain'],
@@ -310,6 +310,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

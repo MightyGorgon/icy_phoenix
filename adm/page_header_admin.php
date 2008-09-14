@@ -15,56 +15,29 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 define('HEADER_INC', true);
 
-$sql = "SELECT * FROM " . CONFIG_TABLE . " WHERE config_name = 'allow_only_main_admin_id'";
-if(!($result = $db->sql_query($sql)))
+if (defined('ONLY_FOUNDER_ACP') && (ONLY_FOUNDER_ACP == true))
 {
-	message_die(CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
-}
-if ($row = $db->sql_fetchrow($result))
-{
-	$allow_only_main_admin_id = $row['config_value'];
-}
-$db->sql_freeresult($result);
-
-$sql = "SELECT * FROM " . CONFIG_TABLE . " WHERE config_name = 'main_admin_id'";
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
-}
-if ($row = $db->sql_fetchrow($result))
-{
-	$main_admin_id = $row['config_value'];
-}
-$db->sql_freeresult($result);
-
-if ($allow_only_main_admin_id == true)
-{
-	$main_admin_id = (intval($main_admin_id) >= 2) ? $main_admin_id : '2';
-	$sql = "SELECT user_id
-		FROM " . USERS_TABLE . "
-		WHERE user_id = '" . $main_admin_id . "'
-		LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
+	if (defined('FOUNDER_ID'))
 	{
-		message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
+		$founder_id = FOUNDER_ID;
+	}
+	else
+	{
+		$db->clear_cache('founder_id_');
+		$founder_id = get_founder_id();
 	}
 
-	if ($row = $db->sql_fetchrow($result))
+	if ($userdata['user_id'] != $founder_id)
 	{
-		$main_admin_id = $row['user_id'];
-		$db->sql_freeresult($result);
-		if ($userdata['user_id'] != $main_admin_id)
-		{
-			die($lang['Not_Auth_View']);
-			//message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
+		die($lang['Not_Auth_View']);
+		//message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 	}
 }
 
@@ -159,8 +132,8 @@ if(is_array($js_include))
 // should all S_x_ACTIONS for forms.
 //
 $template->assign_vars(array(
-	'PHPBB_ROOT_PATH' => $phpbb_root_path,
-	'PHPEX' => $phpEx,
+	'IP_ROOT_PATH' => IP_ROOT_PATH,
+	'PHP_EXT' => PHP_EXT,
 	'S_SID' => $userdata['session_id'],
 	'POST_FORUM_URL' => POST_FORUM_URL,
 	'POST_TOPIC_URL' => POST_TOPIC_URL,

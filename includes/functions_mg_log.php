@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -16,18 +16,17 @@ if (!defined('IN_PHPBB'))
 function mg_log($content)
 {
 	global $REQUEST_URI, $REMOTE_ADDR, $HTTP_USER_AGENT, $SERVER_NAME, $HTTP_REFERER;
-	global $board_config, $lang, $phpbb_root_path, $userdata;
+	global $board_config, $lang, $userdata;
 
 	$datecode = date('Ymd');
 	$logs_path = !empty($board_config['logs_path']) ? $board_config['logs_path'] : 'logs';
-	$log_file = $phpbb_root_path . $logs_path . '/mg_log_' . $datecode . '.txt';
+	$log_file = IP_ROOT_PATH . $logs_path . '/mg_log_' . $datecode . '.txt';
 
-	$phpbb_root_path = ($phpbb_root_path == '') ? '.' : $phpbb_root_path;
-	$page_array = extract_current_page($phpbb_root_path);
+	$page_array = extract_current_page(IP_ROOT_PATH);
 
 	switch($page_array['page_name'])
 	{
-		case 'memberlist.' . $phpEx:
+		case 'memberlist.' . PHP_EXT:
 			return true;
 			break;
 		case POSTING_MG:

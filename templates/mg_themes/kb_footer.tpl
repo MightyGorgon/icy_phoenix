@@ -37,7 +37,7 @@
 <div align="center">
 <span class="copyright">
 <br />
-Powered by Knowledge Base MOD, {L_MODULE_ORIG_AUTHOR} & <a href="http://www.mx-system.com/" target="_blank">{L_MODULE_AUTHOR}</a> © 2002-2005 <br />
+Powered by Knowledge Base MOD, {L_MODULE_ORIG_AUTHOR} & <a href="http://www.mx-system.com/" target="_blank">{L_MODULE_AUTHOR}</a> © 2002-2005<br />
 <a href="http://www.phpbb.com/phpBB/viewtopic.php?t=200195" target="_blank">PHPBB.com MOD</a><br />
 </span>
 </div>

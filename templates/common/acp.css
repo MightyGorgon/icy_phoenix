@@ -753,9 +753,18 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 	vertical-align: middle;
 }
 
+/* phpbbstyles.com bbcode */
+blockquote {
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+
 .post-text blockquote {
 	color: #444444;
 	display: block;
+	/*overflow: hidden;*/
+	overflow: auto;
 	margin: 5px 20px;
 	width: auto;
 	border: solid 1px #cccccc;
@@ -776,7 +785,7 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 	border-bottom: dotted 1px #113355;
 }
 
-.post-text blockquote h6 {
+.post-text blockquote h6, .post-text blockquote .quote-user, .post-text blockquote .quote-nouser {
 	margin: 0;
 	margin-bottom: 5px;
 	padding-left: 18px;
@@ -802,7 +811,7 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 	font-family: 'Courier New', sans-serif;
 }
 
-.post-text .code h6 {
+.post-text .code h6, .post-text .code-header {
 	margin: 0;
 	margin-bottom: 5px;
 	padding-left: 18px;
@@ -826,6 +835,39 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 	color: #113355;
 	text-decoration: none;
 	border-bottom: dotted 1px #113355;
+}
+.code-header a:link, .code-header a:visited  { color: #666666; text-decoration: none; border-bottom: dotted 1px #666666; }
+.code-header a:hover, .code-header a:active { color: #113355; text-decoration: none; border-bottom: dotted 1px #113355; }
+.code-content { padding: 0; }
+
+.code-list {
+	margin-top: 3px;
+	margin-right: 0;
+	margin-bottom: 3px;
+}
+
+li.code-row {
+	white-space: normal;
+	border-top: 1px #dddddd solid;
+	color: #bbbbbb;
+	wrap-option: emergency;
+}
+
+.code-row-text {
+	color: #225566;
+}
+
+div.code li.code-row-highlight {
+	color: #ff5500;
+	border-color: #d8d8d8;
+}
+
+div.code li.code-row-highlight .code-row-text, div.code span.code-row-highlight {
+	color: #ff5500;
+}
+
+li.code-row-first {
+	border-top: none;
 }
 
 /* inputs */
@@ -982,77 +1024,6 @@ b.date-today, .last-post b { color: #dd2222; font-weight: bold; }
 b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style: italic; }
 
 .row-news-tickers b { color: #225566; }
-
-/* phpbbstyles.com bbcode */
-blockquote {
-	margin: 0;
-	padding: 0;
-	display: block;
-}
-
-.post-text blockquote .quote-user, .post-text blockquote .quote-nouser {
-	margin: 0;
-	margin-bottom: 5px;
-	padding-left: 18px;
-	padding-bottom: 3px;
-	border-bottom: solid 1px #dddddd;
-	font-size: 11px;
-	line-height: 1.2em;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-weight: normal;
-	color: #808080;
-	background: #ffffff url(images/bg_quote_header.gif) top left no-repeat;
-}
-
-.post-text .code-header {
-	margin: 0;
-	margin-bottom: 5px;
-	padding-left: 18px;
-	padding-bottom: 3px;
-	border-bottom: solid 1px #dddddd;
-	font-size: 11px;
-	line-height: 1.2em;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-weight: normal;
-	color: #808080;
-	background: #ffffff url(images/bg_code_header.gif) top left no-repeat;
-}
-
-.code-header a:link, .code-header a:visited  { color: #666666; text-decoration: none; border-bottom: dotted 1px #666666; }
-
-.code-header a:hover, .code-header a:active { color: #113355; text-decoration: none; border-bottom: dotted 1px #113355; }
-
-.code-content { padding: 0; }
-
-.code-list {
-	margin-top: 3px;
-	margin-right: 0;
-	margin-bottom: 3px;
-}
-
-li.code-row {
-	white-space: normal;
-	border-top: 1px #dddddd solid;
-	color: #bbbbbb;
-	wrap-option: emergency;
-}
-
-.code-row-text {
-	color: #225566;
-}
-
-div.code li.code-row-highlight {
-	color: #ff5500;
-	border-color: #d8d8d8;
-}
-
-div.code li.code-row-highlight .code-row-text, div.code span.code-row-highlight {
-	color: #ff5500;
-}
-
-li.code-row-first {
-	border-top: none;
-}
 
 .copyright {
 	padding-left: 2px;

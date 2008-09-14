@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -26,7 +26,7 @@ if (!defined('IN_MINI_CAL'))
 	die('Hacking attempt');
 }
 
-include_once($phpbb_root_path . 'cal_settings.' . $phpEx);
+include_once(IP_ROOT_PATH . 'cal_settings.' . PHP_EXT);
 
 /***************************************************************************
 	getMiniCalForumsAuth
@@ -118,7 +118,7 @@ function getMiniCalEventDays($auth_view_forums)
  ***************************************************************************/
 function getMiniCalEvents($mini_cal_auth)
 {
-	global $template, $db, $phpEx, $lang;
+	global $template, $db, $lang;
 
 	// initialise some sql bits
 	if ($mini_cal_auth['view'])
@@ -195,7 +195,7 @@ function getMiniCalEvents($mini_cal_auth)
 					$template->assign_block_vars('mini_cal_events', array(
 							'MINI_CAL_EVENT_DATE' => $cal_date,
 							'S_MINI_CAL_EVENT' => $row['subject'],
-							'U_MINI_CAL_EVENT' => append_sid( $phpbb_root_path . 'calendar.' . $phpEx . '?id=' . $row['id'] . '&mode=display' )
+							'U_MINI_CAL_EVENT' => append_sid( IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?id=' . $row['id'] . '&mode=display' )
 							)
 					);
 				}
@@ -239,10 +239,7 @@ function getMiniCalSearchURL($search_date)
 	$s_yy = substr($search_date, 0, 4);
 	$s_mm = substr($search_date, 4, 2);
 	$s_dd = substr($search_date, 6, 2);
-
-	global $phpEx;
-	$url = append_sid($phpbb_root_path . "calendar.$phpEx?day=$s_dd&?month=$s_mm&year=$s_yy&mode=display");
-
+	$url = append_sid(IP_ROOT_PATH . 'calendar.' PHP_EXT . '?day=' . $s_dd . '&amp;month=' . $s_mm . '&amp;year=' . $s_yy . '&amp;mode=display');
 	return $url;
 }
 
@@ -307,8 +304,8 @@ function getMiniCalPostForumsList($mini_cal_post_auth)
 
 
 $template->assign_vars(array(
-	'U_MINI_CAL_CALENDAR' => append_sid($phpbb_root_path . 'calendar.' . $phpEx),
-	'U_MINI_CAL_ADD_EVENT' => append_sid($phpbb_root_path . 'calendar.' . $phpEx . '?action=Cal_add_event')
+	'U_MINI_CAL_CALENDAR' => append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT),
+	'U_MINI_CAL_ADD_EVENT' => append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?action=Cal_add_event')
 	)
 );
 

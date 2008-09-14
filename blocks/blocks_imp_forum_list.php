@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if(!function_exists(imp_forum_list_block_func))
 {
 	function imp_forum_list_block_func()
 	{
-		global $template, $cms_config_vars, $block_id, $table_prefix, $phpEx, $db, $lang, $board_config, $theme, $images, $userdata;
+		global $template, $cms_config_vars, $block_id, $table_prefix, $db, $lang, $board_config, $theme, $images, $userdata;
 
 		$template->_tpldata['cat_row.'] = array();
 		//reset($template->_tpldata['cat_row.']);

@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,15 +24,15 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 $def_wait = 10;
 $def_size = 100;
 define('MEGAMAIL_TABLE', $table_prefix . 'megamail');
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 // Increase maximum execution time in case of a lot of users, but don't complain about it if it isn't allowed.
 @set_time_limit(1200);
@@ -75,7 +75,7 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 		message_die(GENERAL_ERROR, 'Could not insert the data into '. MEGAMAIL_TABLE, '', __LINE__, __FILE__, $sql);
 	}
 	$mail_id = $db->sql_nextid();
-	$url= append_sid('admin_megamail.' . $phpEx . '?mail_id=' . $mail_id . '&amp;mail_session_id=' .$mail_session_id);
+	$url= append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' .$mail_session_id);
 	$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="'.$batchwait.';url=' . $url . '">'));
 	$message = sprintf($lang['megamail_created_message'], '<a href="' . $url . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
@@ -222,7 +222,7 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 
 	if ( !$error )
 	{
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		// Let's do some checking to make sure that mass mail functions are working in win32 versions of php.
 		if ( preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
 		{
@@ -261,7 +261,7 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 
 		if ($is_done == '')
 		{
-			$url= append_sid('admin_megamail.' . $phpEx . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
+			$url= append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
 			$template->assign_vars(array(
 				'META' => '<meta http-equiv="refresh" content="' . $mail_data['batch_wait'] . ';url=' . $url . '">'
 				)
@@ -270,7 +270,7 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 		}
 		else
 		{
-			$url= append_sid('admin_megamail.' . $phpEx);
+			$url= append_sid('admin_megamail.' . PHP_EXT);
 			$template->assign_vars(array(
 				'META' => '<meta http-equiv="refresh" content="'.$mail_data['batch_wait'].';url=' . $url . '">'
 				)
@@ -279,7 +279,7 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 		}
 		message_die(GENERAL_MESSAGE, $message);
 
-//		message_die(GENERAL_MESSAGE, $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_admin_index'],  '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>'));
+//		message_die(GENERAL_MESSAGE, $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_admin_index'],  '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
 }
 
@@ -300,14 +300,14 @@ $sql = "SELECT m.*, u.username, g.group_name
 	LEFT JOIN " . GROUPS_TABLE . " g ON (m.group_id = g.group_id)";
 if ( !($result = $db->sql_query($sql)) )
 {
-	message_die(GENERAL_MESSAGE, sprintf('Could not obtain list of email-sessions. If you want to create the table, click <a href="%s">here to install</a>', append_sid('admin_megamail.' . $phpEx . '?mode=install')), '', __LINE__, __FILE__, $sql);
+	message_die(GENERAL_MESSAGE, sprintf('Could not obtain list of email-sessions. If you want to create the table, click <a href="%s">here to install</a>', append_sid('admin_megamail.' . PHP_EXT . '?mode=install')), '', __LINE__, __FILE__, $sql);
 }
 $row_class = 0;
 if ( $mail_data = $db->sql_fetchrow($result) )
 {
 	do
 	{
-		$url = append_sid('admin_megamail.' . $phpEx . '?mail_id=' . $mail_data['mail_id'] . '&amp;mail_session_id=' . $mail_data['mailsession_id']);
+		$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_data['mail_id'] . '&amp;mail_session_id=' . $mail_data['mailsession_id']);
 
 		$look_up_array = array(
 			"<",
@@ -377,7 +377,7 @@ $select_list .= '</select>';
 //
 // Generate page
 //
-include('./page_header_admin.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
 
 $template->set_filenames(array('body' => ADM_TPL . 'megamail.tpl'));
 
@@ -394,7 +394,7 @@ $template->assign_vars(array(
 	'L_EMAIL' => $lang['Email'],
 	'L_NOTICE' => $notice,
 
-	'S_USER_ACTION' => append_sid('admin_megamail.' . $phpEx),
+	'S_USER_ACTION' => append_sid('admin_megamail.' . PHP_EXT),
 	'S_GROUP_SELECT' => $select_list,
 
 	'L_MAIL_SESSION_HEADER' => $lang['megamail_header'],
@@ -412,6 +412,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -15,18 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_attach.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_attach.' . PHP_EXT);
 
 $cms_page_id = '11';
 $cms_page_name = 'download';
@@ -137,7 +137,7 @@ $select_sort_order .= '</select>';
 $page_title = $lang['Downloads'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 if ($attach_id > 0)
 {
@@ -183,12 +183,12 @@ if ($attach_id > 0)
 		'L_DATE' => $lang['Date'],
 		'L_USER' => $lang['Memberlist_User'],
 
-		'U_ATTACHMENTS' => append_sid('attachments.' . $phpEx),
+		'U_ATTACHMENTS' => append_sid('attachments.' . PHP_EXT),
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'S_MODE_SELECT' => $select_sort_mode,
 		'S_ORDER_SELECT' => $select_sort_order,
-		'S_MODE_ACTION' => append_sid('attachments.' . $phpEx)
+		'S_MODE_ACTION' => append_sid('attachments.' . PHP_EXT)
 		)
 	);
 
@@ -361,7 +361,7 @@ else
 		'S_MODE_SELECT' => $select_sort_mode,
 		'S_ORDER_SELECT' => $select_sort_order,
 		'S_FORUM_SELECT' => $select_forums,
-		'S_MODE_ACTION' => append_sid('attachments.' . $phpEx)
+		'S_MODE_ACTION' => append_sid('attachments.' . PHP_EXT)
 		)
 	);
 
@@ -446,7 +446,7 @@ else
 			$filename_2 = substr($filename, 0, 30) . '...';
 		}
 
-		$view_attachment = append_sid($phpbb_root_path . 'download.' . $phpEx . '?id=' . intval($attachments[$i]['attach_id']));
+		$view_attachment = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . intval($attachments[$i]['attach_id']));
 		if ($filename_2 != '')
 		{
 			$filename_link = '<a href="' . $view_attachment . '" class="gen" title="' . $filename . '" target="_blank">' . $filename_2 . '</a>';
@@ -458,7 +458,7 @@ else
 
 		if (($attachments[$i]['download_count'] > 0) && ($userdata['user_level'] == ADMIN))
 		{
-			$download_count_link = '<a href="' . append_sid('attachments.' . $phpEx . '?attach_id=' . intval($attachments[$i]['attach_id'])) . '">' . $attachments[$i]['download_count'] . '</a>';
+			$download_count_link = '<a href="' . append_sid('attachments.' . PHP_EXT . '?attach_id=' . intval($attachments[$i]['attach_id'])) . '">' . $attachments[$i]['download_count'] . '</a>';
 		}
 		else
 		{
@@ -512,7 +512,7 @@ if ($gen_pagination == true)
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total = $total['total'];
-		$pagination = generate_pagination(append_sid('attachments.' . $phpEx . '?' . $pagination_append . 'mode=' . $mode . '&amp;order=' . $sort_order), $total, $board_config['topics_per_page'], $start) . '&nbsp;';
+		$pagination = generate_pagination(append_sid('attachments.' . PHP_EXT . '?' . $pagination_append . 'mode=' . $mode . '&amp;order=' . $sort_order), $total, $board_config['topics_per_page'], $start) . '&nbsp;';
 	}
 	$db->sql_freeresult($result);
 
@@ -526,6 +526,6 @@ if ($gen_pagination == true)
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

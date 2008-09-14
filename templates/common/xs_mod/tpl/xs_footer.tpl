@@ -5,7 +5,7 @@
  *   copyright            : (C) 2003 - 2007 Vjacheslav Trushkin
  *   support              : http://www.stsoftware.biz/forum
  *
- *   version              : 2.4.0
+ *   version              : 2.4.1
  *
  *   file revision        : 80
  *   project revision     : 83
@@ -30,7 +30,7 @@ cannot remove anything from copyright.
 
 ?>
 <tr>
-	<td valign="bottom" align="center" style="padding: 5px;"><span class="copyright"><br />Powered by <a href="http://www.phpbb.com/" target="_blank">phpBB</a> &copy; phpBB Group and by <a href="http://www.stsoftware.biz/forum/showthread.php?t=94" target="_blank">eXtreme Styles mod</a> &copy; <a href="http://www.stsoftware.biz/">Vjacheslav Trushkin</a>.</span></td>
+	<td valign="bottom" align="center" style="padding: 5px;"><span class="copyright"><br />Powered by <a href="http://www.phpbb.com/" target="_blank">phpBB</a> and by <a href="http://www.stsoftware.biz/forum/showthread.php?t=94" target="_blank">eXtreme Styles mod</a> &copy; <a href="http://www.stsoftware.biz/">Vjacheslav Trushkin</a>.</span></td>
 </tr>
 </table>
 </body></html>

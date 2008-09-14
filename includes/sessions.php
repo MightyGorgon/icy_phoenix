@@ -21,7 +21,7 @@
 //
 function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin = 0, $admin = 0)
 {
-	global $db, $board_config, $lang, $phpbb_root_path;
+	global $db, $board_config, $lang;
 	global $SID;
 	global $user_agent;
 
@@ -43,7 +43,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		$sessionmethod = SESSION_METHOD_GET;
 	}
 
-	$page_array = extract_current_page($phpbb_root_path);
+	$page_array = extract_current_page(IP_ROOT_PATH);
 	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : ((isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : '');
 	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';
@@ -391,7 +391,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 		$parse_session = true;
 	}
 
-	$page_array = extract_current_page($phpbb_root_path);
+	$page_array = extract_current_page(IP_ROOT_PATH);
 	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : ((isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : '');
 	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';

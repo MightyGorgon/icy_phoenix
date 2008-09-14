@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 if (!defined('IN_ADMIN'))
 {
 	define('IN_ADMIN', true);
@@ -28,38 +28,30 @@ if (!defined('IN_ADMIN'))
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		$module['2200_Photo_Album']['110_Album_Config'] = $filename;
-	}
-	else
-	{
-		$module['Photo_Album']['Configuration'] = $filename;
-	}
+	$module['2200_Photo_Album']['110_Album_Config'] = $filename;
 	return;
 }
 //------------------------------------------------------------------------
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH . '';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // the language files....
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . $phpEx);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
 // the debugging functions and the actual ACP helper functions...
-require_once($album_root_path . 'album_hierarchy_debug.' . $phpEx);
-require_once($album_root_path . 'album_acp_functions.' . $phpEx);
+require_once(ALBUM_MOD_PATH . 'album_hierarchy_debug.' . PHP_EXT);
+require_once(ALBUM_MOD_PATH . 'album_acp_functions.' . PHP_EXT);
 
 //------------------------------------------------------------------------
 // If you want to user an alternative template layout,
 // then comment out the first define and remove the
 // comment from the second one
 // This will enable a virtical layout of the acp....
-define('ALBUM_ACP_TEMPLATE', $acp_prefix . 'album_config_body_extended.tpl' );
-//define('ALBUM_ACP_TEMPLATE', $acp_prefix . 'album_config_body_extended_vert.tpl');
+define('ALBUM_ACP_TEMPLATE', ADM_TPL . 'album_config_body_extended.tpl' );
+//define('ALBUM_ACP_TEMPLATE', ADM_TPL . 'album_config_body_extended_vert.tpl');
 //------------------------------------------------------------------------
 
 // Mighty Gorgon - Clear Cache - Begin
@@ -133,7 +125,7 @@ $dir = @opendir(".");
 $config_tabs_index = 0;
 while( $config_file = @readdir($dir) )
 {
-	if( preg_match('/^admin_album_config_.*?\.' . $phpEx . '$/', $config_file) && strcmp("admin_album_config_extended.$phpEx",$config_file) != 0)
+	if( preg_match('/^admin_album_config_.*?\.' . PHP_EXT . '$/', $config_file) && strcmp("admin_album_config_extended." . PHP_EXT,$config_file) != 0)
 	{
 		//------------------------------------------------------------------------
 		// include the configuration file
@@ -211,7 +203,7 @@ elseif (isset ($_GET['tab']))
 //------------------------------------------------------------------------
 // get the selected sub tab selection from the submitted form
 // NOTE : a sub tab, is a tab in the left or right side of a configuration
-// for alittle hint see the template file $acp_prefix . 'album_config_sub_body.tpl'
+// for alittle hint see the template file ADM_TPL . 'album_config_sub_body.tpl'
 //------------------------------------------------------------------------
 if (isset ($_POST['subtab']))
 {
@@ -387,7 +379,7 @@ if( strcmp($_POST['save_config'], 'true') == 0 )
 				//$db->sql_freeresult($result);
 			}
 			$message = $lang['Album_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_album_config'], '<a href="' . append_sid(basename(__FILE__) . '?tab=' . $selected_tab . '&amp;subtab=' . $selected_subtab) . '">', '</a>');
-			$message .= '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message .= '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
@@ -447,7 +439,7 @@ $template->assign_vars(array(
 	'H_SELECTED_TAB' => $selected_tab,
 	'V_SELECTED_TAB' => $selected_subtab,
 	'CONFIG_TABLE' => $selected_tab_data['selection'],
-	'S_ALBUM_CONFIG_ACTION' => append_sid('admin_album_config_extended.' . $phpEx),
+	'S_ALBUM_CONFIG_ACTION' => append_sid('admin_album_config_extended.' . PHP_EXT),
 
 	'L_CONFIG_TAB' => $selected_tab_data['title'],
 	'L_ALBUM_CONFIG' => $lang['Album_config'],
@@ -463,6 +455,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

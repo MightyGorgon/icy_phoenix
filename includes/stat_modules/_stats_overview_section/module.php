@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -37,6 +37,9 @@ if (!($result = $db->sql_query($sql)))
 $module_count = $db->sql_numrows($result);
 $module_data = $db->sql_fetchrowset($result);
 
+$template->_tpldata['stats_row_link.'] = array();
+//reset($template->_tpldata['stats_row_link.']);
+
 //
 // for all installed modules output an inpage link
 //
@@ -63,7 +66,7 @@ for ($i = 0; $i < $module_count; $i++)
 			'START' => ((($num_modules % $num_columns) == 0) ? '<tr>' : ''),
 			'END' => ((($num_modules % $num_columns) == ($num_columns - 1)) ? '</tr>' : ''),
 			'COL_WIDTH' => ($num_modules % $num_columns == $num_columns - 1 ? '*' : floor(100 / $num_columns) . '%'),
-			'U_STATS_LINK' => $phpbb_root_path . 'statistics.' . $phpEx . '#s' . $module_data[$i]['module_id'],
+			'U_STATS_LINK' => IP_ROOT_PATH . 'statistics.' . PHP_EXT . '#s' . $module_data[$i]['module_id'],
 			'STATS_LINK' => $mod_name . $width
 			)
 		);

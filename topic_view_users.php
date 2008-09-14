@@ -8,11 +8,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -40,12 +40,7 @@ else
 
 if (!$userdata['session_logged_in'])
 {
-	/*
-	$header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
-	header($header_location . append_sid(LOGIN_MG . "?redirect=topic_view_users.$phpEx&" . POST_TOPIC_URL . "=$topic_id", true));
-	exit;
-	*/
-	redirect(append_sid(LOGIN_MG . '?redirect=topic_view_users.' . $phpEx . '&' . POST_TOPIC_URL . '=' . $topic_id, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=topic_view_users.' . PHP_EXT . '&' . POST_TOPIC_URL . '=' . $topic_id, true));
 }
 
 // find the forum, in witch the topic are located
@@ -131,7 +126,7 @@ $select_sort_order .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value=
 $page_title = $lang['who_viewed'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'whoviewed_body.tpl'));
 make_jumpbox(VIEWFORUM_MG);
@@ -156,7 +151,7 @@ $template->assign_vars(array(
 	'L_PM' => $lang['Private_Message'],
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order,
-	'S_MODE_ACTION' => append_sid('topic_view_users.' . $phpEx)
+	'S_MODE_ACTION' => append_sid('topic_view_users.' . PHP_EXT)
 	)
 );
 
@@ -240,7 +235,7 @@ while ($row = $db->sql_fetchrow($result))
 	$profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
 	$profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
 
-	$temp_url = append_sid('privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
+	$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
 	$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 	$pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -270,11 +265,11 @@ while ($row = $db->sql_fetchrow($result))
 	{
 		if ($row['user_allow_viewonline'])
 		{
-			$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
+			$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
 		}
 		elseif ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $user_id)
 		{
-			$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
+			$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
 		}
 		else
 		{
@@ -344,7 +339,7 @@ if ($mode != 'topten' || $board_config['topics_per_page'] < 10)
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total_members = $total['total'];
-		$pagination = generate_pagination('topic_view_users.' . $phpEx . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $board_config['topics_per_page'], $start) . '&nbsp;';
+		$pagination = generate_pagination('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $board_config['topics_per_page'], $start) . '&nbsp;';
 	}
 }
 else
@@ -362,6 +357,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

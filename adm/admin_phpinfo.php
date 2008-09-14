@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -25,9 +25,9 @@ if (!empty($setmodules))
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // Get the PHP Info
 ob_start();
@@ -85,6 +85,6 @@ echo '<h1>PHP Info</h1>';
 echo $lang['Php_Info_Explain'] . '<br /><br />';
 echo $output;
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

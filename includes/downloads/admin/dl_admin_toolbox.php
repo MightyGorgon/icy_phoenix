@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -170,7 +170,7 @@ if ($action == 'check_file_sizes')
 		$check_message = $lang['Dl_check_filesizes_result'];
 	}
 
-	$check_message .= '<br /><br />' . sprintf($lang['Click_return_file_management'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=toolbox') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$check_message .= '<br /><br />' . sprintf($lang['Click_return_file_management'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $check_message);
 }
@@ -183,19 +183,19 @@ if ($action == 'check_thumbnails')
 	{
 		for ($i = 0; $i < count($thumbs); $i++)
 		{
-			@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $thumbs[$i]);
+			@unlink(POSTED_IMAGES_THUMBS_PATH . $thumbs[$i]);
 		}
 	}
 
 	$real_thumbnails = array();
-	@$dir = opendir($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH);
+	@$dir = opendir(POSTED_IMAGES_THUMBS_PATH);
 
 	while (false !== ($file=@readdir($dir)))
 	{
 		if ($file{0} != "." && !is_dir($file))
 		{
 			$real_thumbnails['file_name'][] = $file;
-			$real_thumbnails['file_size'][] = sprintf("%u", @filesize($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $file));
+			$real_thumbnails['file_size'][] = sprintf("%u", @filesize(POSTED_IMAGES_THUMBS_PATH . $file));
 		}
 	}
 
@@ -226,7 +226,7 @@ if ($action == 'check_thumbnails')
 			'L_DL_THUMBNAILS' => $lang['Dl_thumb'],
 			'L_MARK_ALL' => $lang['Dl_mark_all'],
 			'L_UNMARK_ALL' => $lang['Dl_unmark'],
-			'S_MANAGE_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=check_thumbnails'))
+			'S_MANAGE_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=check_thumbnails'))
 		);
 
 		for ($i = 0; $i < count($real_thumbnails['file_name']); $i++)
@@ -244,7 +244,7 @@ if ($action == 'check_thumbnails')
 			$template->assign_block_vars('thumbnails', array(
 				'CHECKBOX' => $checkbox,
 				'REAL_FILE' => $real_file,
-				'U_REAL_FILE' => $phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $real_file,
+				'U_REAL_FILE' => POSTED_IMAGES_THUMBS_PATH . $real_file,
 				'FILE_SIZE' => $dl_mod->dl_size($real_thumbnails['file_size'][$i])
 				)
 			);
@@ -323,8 +323,8 @@ if ($action == 'browse' || $action == '' || $action == 'unassigned')
 		$temp_dir = array();
 
 		$dl_navi = $dl_config['dl_path'];
-		$dl_navi = str_replace($phpbb_root_path, '', $dl_navi);
-		$dl_navi = '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=browse') . '">' . $dl_navi;
+		$dl_navi = str_replace(IP_ROOT_PATH, '', $dl_navi);
+		$dl_navi = '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=browse') . '">' . $dl_navi;
 		$dl_navi = substr($dl_navi, 0, strlen($dl_navi)-1).'</a>/';
 
 		if ($path)
@@ -337,7 +337,7 @@ if ($action == 'browse' || $action == '' || $action == 'unassigned')
 				{
 					$temp_url .= '/'.$temp_dir[$i];
 					$temp_path = preg_replace('#[/]*#', '', $temp_dir[$i]);
-					$dl_navi .= '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=browse&amp;path=' . $temp_url) . '">' . $temp_path . '</a>/';
+					$dl_navi .= '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=browse&amp;path=' . $temp_url) . '">' . $temp_path . '</a>/';
 				}
 			}
 		}
@@ -356,7 +356,7 @@ if ($action == 'browse' || $action == '' || $action == 'unassigned')
 				if (is_dir($dl_config['dl_path'] . $path . '/' . $file))
 				{
 					$slash = ($path) ? '/' : '';
-					$dirs[] = '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=browse&amp;path=' . $path . $slash . $file) . '">' . $file . '</a>/';
+					$dirs[] = '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=browse&amp;path=' . $path . $slash . $file) . '">' . $file . '</a>/';
 
 					$sh = @opendir($dl_config['dl_path'] . $path . '/' . $file);
 
@@ -372,7 +372,7 @@ if ($action == 'browse' || $action == '' || $action == 'unassigned')
 
 					@closedir($sh);
 
-					$dirs_delete[] = ($content_count == 0) ? '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=dirdelete&amp;path=' . $path . $slash . $file) . '"><img src="../' . $images['icon_delpost'] . '" border="0" alt="" title="" /></a>' : sprintf($lang['Dl_manage_content_count'], $content_count);
+					$dirs_delete[] = ($content_count == 0) ? '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=dirdelete&amp;path=' . $path . $slash . $file) . '"><img src="../' . $images['icon_delpost'] . '" border="0" alt="" title="" /></a>' : sprintf($lang['Dl_manage_content_count'], $content_count);
 				}
 				else
 				{
@@ -408,15 +408,15 @@ if ($action == 'browse' || $action == '' || $action == 'unassigned')
 
 		'DL_NAVI' => $dl_navi,
 
-		'S_MANAGE_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;path=' . $path),
+		'S_MANAGE_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;path=' . $path),
 
-		'U_DOWNLOADS_CHECK_FILES' => append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=check_file_sizes'),
-		'U_DOWNLOADS_CHECK_THUMB' => append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=check_thumbnails')
+		'U_DOWNLOADS_CHECK_FILES' => append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=check_file_sizes'),
+		'U_DOWNLOADS_CHECK_THUMB' => append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=check_thumbnails')
 		)
 	);
 
 	$existing_thumbs = 0;
-	@$dir = opendir($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH);
+	@$dir = opendir(POSTED_IMAGES_THUMBS_PATH);
 
 	while (false !== ($file=@readdir($dir)))
 	{
@@ -446,7 +446,7 @@ if ($action == 'browse' || $action == '' || $action == 'unassigned')
 	{
 		$template->assign_block_vars('unassigned_files', array(
 			'L_UNASSIGNED_FILES' => $lang['Dl_unassigned_files'],
-			'U_UNASSIGNED_FILES' => append_sid('admin_downloads.' . $phpEx . '?submod=toolbox&amp;action=unassigned')
+			'U_UNASSIGNED_FILES' => append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox&amp;action=unassigned')
 			)
 		);
 	}

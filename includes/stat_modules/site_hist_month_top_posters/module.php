@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -69,6 +69,9 @@ for ($i = 0; $i < $user_count; $i++)
 	$total_posts_thismonth += $user_data[$i]['user_posts'];
 }
 
+$template->_tpldata['top_posters.'] = array();
+//reset($template->_tpldata['top_posters.']);
+
 for ($i = 0; $i < $user_count; $i++)
 {
 	$class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
@@ -81,7 +84,7 @@ for ($i = 0; $i < $user_count; $i++)
 		'USERNAME' => $user_data[$i]['username'],
 		'PERCENTAGE' => $statistics->percentage,
 		'BAR' => $statistics->bar_percent,
-		'URL' => append_sid($phpbb_root_path . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_data[$i]['user_id']),
+		'URL' => append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_data[$i]['user_id']),
 		'POSTS' => $user_data[$i]['user_posts'])
 	);
 }

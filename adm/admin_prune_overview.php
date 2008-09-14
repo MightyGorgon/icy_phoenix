@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,9 +24,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if ( $board_config['prune_enable'] )
 {
@@ -50,7 +50,7 @@ $template->assign_vars(array(
 	'L_ENABLE_PRUNE' => $lang['Enable_prune'],
 	'L_SUBMIT' => $lang['Submit'],
 	'ENABLE_PRUNE' => $board_prune_enabled,
-	'S_PRUNE_ACTION' => append_sid("admin_prune_overview.$phpEx")
+	'S_PRUNE_ACTION' => append_sid("admin_prune_overview." . PHP_EXT)
 	)
 );
 
@@ -88,7 +88,7 @@ for ($i = 0; $i < $nums; $i++)
 		$prune_freq = 1;
 	}
 
-	$forum_url = append_sid($phpbb_root_path .'/admin/admin_forums.' . $phpEx . '?mode=editforum&f=' . $forums[$i]['forum_id']);
+	$forum_url = append_sid(IP_ROOT_PATH . '/admin/admin_forums.' . PHP_EXT . '?mode=editforum&f=' . $forums[$i]['forum_id']);
 	$forum = '<a href="'. $forum_url .'">'. $forums[$i]['forum_name'] .'</a>';
 
 	$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
@@ -175,7 +175,7 @@ if ( isset($_POST['submit']) )
 		message_die(GENERAL_ERROR, "Failed to update prune config", "", __LINE__, __FILE__, $sql);
 	}
 
-	$message = $lang['Prune_update'] . '<br /><br />' . sprintf($lang['Click_return_admin_po'], "<a href=\"" . append_sid("admin_prune_overview.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+	$message = $lang['Prune_update'] . '<br /><br />' . sprintf($lang['Click_return_admin_po'], "<a href=\"" . append_sid("admin_prune_overview." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 	message_die(GENERAL_MESSAGE, $message);
 } // End if ( isset($_POST['submit']...
 
@@ -183,6 +183,6 @@ $template->set_filenames(array('body' => ADM_TPL . 'admin_prune_overview_body.tp
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

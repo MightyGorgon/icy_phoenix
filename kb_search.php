@@ -8,27 +8,26 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc' );
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-define('PAGE_KB', -500);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs( $userdata );
 // End session management
 
-include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
-include_once($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
 
 // Define initial vars
 
@@ -107,8 +106,8 @@ switch ( $mode )
 			if ( $search_id == '' || $search_keywords != '' )
 			{
 
-				$stopword_array = @file( $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt' );
-				$synonym_array = @file( $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt' );
+				$stopword_array = @file( IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt' );
+				$synonym_array = @file( IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt' );
 
 				$split_search = array();
 				$split_search = ( !strstr( $multibyte_charset, $lang['ENCODING'] ) ) ? split_words( clean_words( 'search', stripslashes( $search_keywords ), $stopword_array, $synonym_array ), 'search' ) : split( ' ', $search_keywords );
@@ -330,10 +329,10 @@ switch ( $mode )
 			$meta_keywords = '';
 			if ( !$is_block )
 			{
-				include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+				include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			}
 
-			// include($phpbb_root_path . 'includes/kb_header.' . $phpEx);
+			// include(IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 
 			$template->set_filenames(array('body' => 'kb_search_results.tpl'));
 
@@ -394,7 +393,7 @@ switch ( $mode )
 					$article_title = preg_replace( $orig_word, $replacement_word, $searchset[$i]['article_title'] );
 				}
 
-				//$article_author = '<a href="' . append_sid( $phpbb_root_path . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $searchset[$i]['user_id'] ) . '" class="name">';
+				//$article_author = '<a href="' . append_sid( IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $searchset[$i]['user_id'] ) . '" class="name">';
 				//$article_author .= $searchset[$i]['username'];
 				//$article_author .= '</a>';
 				$article_author = colorize_username ($searchset[$i]['user_id']);
@@ -433,10 +432,10 @@ switch ( $mode )
 		$meta_keywords = '';
 		if ( !$is_block )
 		{
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 		}
 
-		//include($phpbb_root_path . 'includes/kb_header.' . $phpEx);
+		//include(IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 
 		$template->set_filenames( array( 'body' => 'kb_search_body.tpl' ));
 
@@ -456,11 +455,11 @@ switch ( $mode )
 
 $template->pparse( 'body' );
 // load footer
-//include($phpbb_root_path . 'includes/kb_footer.' . $phpEx);
+//include(IP_ROOT_PATH . 'includes/kb_footer.' . PHP_EXT);
 
 if ( !$is_block )
 {
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 ?>

@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -83,7 +83,7 @@ if ($submit)
 					message_die(GENERAL_MESSAGE, ' <b>' . $lang['Username'] . ' '.$username.'</b><br /><br />' . $lang['Admin_user_fail']);
 				}
 
-				$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_user_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+				$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_user_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -128,7 +128,7 @@ if ($submit)
 					message_die(GENERAL_MESSAGE, $lang['Admin_user_fail']);
 				}
 
-				$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_user_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+				$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_user_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -198,7 +198,7 @@ if ($submit)
 						message_die(GENERAL_ERROR, 'Could not update user traffic', '', __LINE__, __FILE__, $sql);
 					}
 
-					$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_usergroup_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+					$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_usergroup_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -285,7 +285,7 @@ if ($submit)
 				message_die(GENERAL_ERROR, 'Could not update user auto traffic', '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_usergroup_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_usergroup_traffic_admin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -436,10 +436,10 @@ $template->assign_vars(array(
 
 	'S_GROUP_SELECT' => $s_select_list,
 
-	'S_PROFILE_ACTION_ALL' => append_sid('admin_downloads.' . $phpEx . '?submod=traffic&amp;action=all'),
-	'S_PROFILE_ACTION_USER' => append_sid('admin_downloads.' . $phpEx . '?submod=traffic&amp;action=single'),
-	'S_PROFILE_ACTION_GROUP' => append_sid('admin_downloads.' . $phpEx . '?submod=traffic&amp;action=group'),
-	'S_CONFIG_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=traffic&amp;action=auto')
+	'S_PROFILE_ACTION_ALL' => append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic&amp;action=all'),
+	'S_PROFILE_ACTION_USER' => append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic&amp;action=single'),
+	'S_PROFILE_ACTION_GROUP' => append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic&amp;action=group'),
+	'S_CONFIG_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=traffic&amp;action=auto')
 	)
 );
 

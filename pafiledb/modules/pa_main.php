@@ -19,13 +19,13 @@ class pafiledb_main extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $pafiledb_config, $debug, $lang, $board_config, $phpEx, $phpbb_root_path, $theme, $images;
+		global $pafiledb_template, $pafiledb_config, $debug, $lang, $board_config, $theme, $images;
 		$pafiledb_template->assign_vars(array(
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 			'TPL_COLOR' => $theme['body_background'],
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD' => append_sid('dload.' . $phpEx),
+			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 
 			'CAT_BLOCK_IMG' => $images['category_block'],
 			'SPACER' => $images['spacer'],

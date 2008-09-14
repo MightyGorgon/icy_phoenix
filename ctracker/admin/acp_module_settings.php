@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -192,14 +192,14 @@ $template->assign_vars(array(
 		'L_MOD_36'     => $lang['ctracker_settings_m36'],
 		'L_EXP_36'	   => $lang['ctracker_settings_e36'],
 
-		'CAT_ICON_1'   => $phpbb_root_path . $images['ctracker_icon_set_1'],
-		'CAT_ICON_2'   => $phpbb_root_path . $images['ctracker_icon_set_2'],
-		'CAT_ICON_3'   => $phpbb_root_path . $images['ctracker_icon_set_3'],
-		'CAT_ICON_4'   => $phpbb_root_path . $images['ctracker_icon_set_4'],
-		'CAT_ICON_5'   => $phpbb_root_path . $images['ctracker_icon_set_5'],
-		'CAT_ICON_6'   => $phpbb_root_path . $images['ctracker_icon_set_6'],
-		'CAT_ICON_7'   => $phpbb_root_path . $images['ctracker_icon_set_7'],
-		'CAT_ICON_8'   => $phpbb_root_path . $images['ctracker_icon_set_8'],
+		'CAT_ICON_1'   => IP_ROOT_PATH . $images['ctracker_icon_set_1'],
+		'CAT_ICON_2'   => IP_ROOT_PATH . $images['ctracker_icon_set_2'],
+		'CAT_ICON_3'   => IP_ROOT_PATH . $images['ctracker_icon_set_3'],
+		'CAT_ICON_4'   => IP_ROOT_PATH . $images['ctracker_icon_set_4'],
+		'CAT_ICON_5'   => IP_ROOT_PATH . $images['ctracker_icon_set_5'],
+		'CAT_ICON_6'   => IP_ROOT_PATH . $images['ctracker_icon_set_6'],
+		'CAT_ICON_7'   => IP_ROOT_PATH . $images['ctracker_icon_set_7'],
+		'CAT_ICON_8'   => IP_ROOT_PATH . $images['ctracker_icon_set_8'],
 
 		'S_OUTPUT_1'   => $configuration['ipblock_enabled'],
 		'S_OUTPUT_2'   => $configuration['ipblock_logsize'],
@@ -237,7 +237,7 @@ $template->assign_vars(array(
 		'S_OUTPUT_35'  => $configuration['spam_attack_boost'],
 		'S_OUTPUT_36'  => $configuration['spam_keyword_det'],
 
-		'S_FORM_ACTION' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=9'))
+		'S_FORM_ACTION' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=9'))
 	);
 
 // Generate the page

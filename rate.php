@@ -9,23 +9,23 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
 define('CM_POSTING', true);
 // MG Cash MOD For IP - END
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_rate.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_rate.' . $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_rate.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_rate.' . PHP_EXT);
 
 $params = array('rate_mode', 'forum_top', 'topic_id', 'rating');
 
@@ -76,7 +76,7 @@ switch($rate_mode)
 /*******************************************************************************************
 /** Include Header (It Contains Rate Functions).
 /******************************************************************************************/
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 /*******************************************************************************************
 /** Display modes, for if the page is called seperately
@@ -101,6 +101,6 @@ switch($rate_mode)
 	}
 }
 nivisec_copyright();
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

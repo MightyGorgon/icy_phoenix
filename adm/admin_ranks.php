@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -25,14 +25,14 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $cancel = isset($_POST['cancel']) ? true : false;
 $no_page_header = $cancel;
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 if ($cancel)
 {
-	redirect(ADM . '/' . append_sid('admin_ranks.' . $phpEx, true));
+	redirect(ADM . '/' . append_sid('admin_ranks.' . PHP_EXT, true));
 }
 
 if(isset($_GET['mode']) || isset($_POST['mode']))
@@ -192,7 +192,7 @@ if($mode != "")
 			"L_YES" => $lang['Yes'],
 			"L_NO" => $lang['No'],
 
-			"S_RANK_ACTION" => append_sid('admin_ranks.' . $phpEx),
+			"S_RANK_ACTION" => append_sid('admin_ranks.' . PHP_EXT),
 			"S_HIDDEN_FIELDS" => $s_hidden_fields
 			)
 		);
@@ -272,7 +272,7 @@ if($mode != "")
 			message_die(GENERAL_ERROR, "Couldn't update/insert into ranks table", "", __LINE__, __FILE__, $sql);
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+		$message .= '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid("admin_ranks." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 
@@ -322,7 +322,7 @@ if($mode != "")
 				message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Rank_removed'] . '<br /><br />' . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Rank_removed'] . '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid("admin_ranks." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -341,7 +341,7 @@ if($mode != "")
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid("admin_ranks.$phpEx"),
+				'S_CONFIRM_ACTION' => append_sid("admin_ranks." . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields)
 			);
 		}
@@ -353,7 +353,7 @@ if($mode != "")
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 }
 
 //
@@ -384,7 +384,7 @@ $template->assign_vars(array(
 	"L_ADD_RANK" => $lang['Add_new_rank'],
 	"L_ACTION" => $lang['Action'],
 
-	"S_RANKS_ACTION" => append_sid("admin_ranks.$phpEx"))
+	"S_RANKS_ACTION" => append_sid("admin_ranks." . PHP_EXT))
 );
 
 for($i = 0; $i < $rank_count; $i++)
@@ -411,21 +411,22 @@ for($i = 0; $i < $rank_count; $i++)
 	$rank_is_special = ($special_rank > 0) ? $lang['Yes'] : $lang['No'];
 	// Mighty Gorgon - Multiple Ranks - END
 
-	$template->assign_block_vars("ranks", array(
-		"ROW_COLOR" => "#" . $row_color,
-		"ROW_CLASS" => $row_class,
-		"RANK" => $rank,
-		"SPECIAL_RANK" => $rank_is_special,
-		"RANK_MIN" => $rank_min,
+	$template->assign_block_vars('ranks', array(
+		'ROW_COLOR' => '#' . $row_color,
+		'ROW_CLASS' => $row_class,
+		'RANK' => $rank,
+		'SPECIAL_RANK' => $rank_is_special,
+		'RANK_MIN' => $rank_min,
 
-		"U_RANK_EDIT" => append_sid("admin_ranks.$phpEx?mode=edit&amp;id=$rank_id"),
-		"U_RANK_DELETE" => append_sid("admin_ranks.$phpEx?mode=delete&amp;id=$rank_id"))
+		'U_RANK_EDIT' => append_sid('admin_ranks.' . PHP_EXT . '?mode=edit&amp;id=' . $rank_id),
+		'U_RANK_DELETE' => append_sid('admin_ranks.' . PHP_EXT . '?mode=delete&amp;id=' . $rank_id)
+		)
 	);
 
 }
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

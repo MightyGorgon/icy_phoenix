@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -30,7 +30,7 @@ $album_config_tabs[] =  array(
 	),
 	'config_table_name' => ALBUM_CONFIG_TABLE,
 	'generate_function' => 'album_generate_config_gd_info',
-	'template_file' => $acp_prefix . 'album_config_gd_info_body.tpl'
+	'template_file' => ADM_TPL . 'album_config_gd_info_body.tpl'
 );
 
 function album_generate_config_gd_info($config_data)

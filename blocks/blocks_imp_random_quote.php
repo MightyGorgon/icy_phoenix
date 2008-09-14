@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,8 +24,8 @@ if(!function_exists(imp_random_quote_func))
 {
 	function imp_random_quote_func()
 	{
-		global $lang, $template, $phpbb_root_path, $phpEx;
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . $phpEx);
+		global $lang, $template;
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
 		$randomquote_phrase = $randomquote[rand(0, count($randomquote) - 1)];
 		$template->assign_vars(array(
 			'RANDOM_QUOTE' => $randomquote_phrase,

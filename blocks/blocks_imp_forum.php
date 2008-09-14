@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,12 +24,12 @@ if(!function_exists(imp_forum_block_func))
 {
 	function imp_forum_block_func()
 	{
-		global $phpbb_root_path, $template, $phpEx, $lang, $cms_config_vars, $block_id, $board_config, $images, $_GET;
+		global $template, $lang, $cms_config_vars, $block_id, $board_config, $images, $_GET;
 
 		$template->_tpldata['fetchpost_row.'] = array();
 		//reset($template->_tpldata['fetchpost_row.']);
 
-		include_once($phpbb_root_path . 'fetchposts.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 
 		$template->assign_vars(array(
 			'L_COMMENTS' => $lang['Comments'],
@@ -68,7 +68,7 @@ if(!function_exists(imp_forum_block_func))
 					'TEXT' => $fetchposts[$i]['post_text'],
 					'REPLIES' => $fetchposts[$i]['topic_replies'],
 					'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
-					'U_POST_COMMENT' => append_sid('posting.' . $phpEx . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
+					'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 					'U_READ_FULL' => append_sid(PORTAL_MG . '?article=' . $i),
 					'L_READ_FULL' => $read_full,
 					'OPEN' => $open_bracket,
@@ -89,7 +89,7 @@ if(!function_exists(imp_forum_block_func))
 				'TEXT' => $fetchposts[$i]['post_text'],
 				'REPLIES' => $fetchposts[$i]['topic_replies'],
 				'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
-				'U_POST_COMMENT' => append_sid('posting.' . $phpEx . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'])
+				'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'])
 				)
 			);
 		}

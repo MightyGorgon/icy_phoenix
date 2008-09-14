@@ -15,51 +15,48 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 define('IN_ALBUM', true);
 
-if (defined('IS_ICYPHOENIX'))
+if (!defined('IMG_THUMB'))
 {
-	if (!defined('IMG_THUMB'))
+	$cms_page_id = '12';
+	$cms_page_name = 'album';
+	$auth_level_req = $board_config['auth_view_album'];
+	if ($auth_level_req > AUTH_ALL)
 	{
-		$cms_page_id = '12';
-		$cms_page_name = 'album';
-		$auth_level_req = $board_config['auth_view_album'];
-		if ($auth_level_req > AUTH_ALL)
+		if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
 		{
-			if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
+			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+		}
+		if ($userdata['user_level'] != ADMIN)
+		{
+			if ($auth_level_req == AUTH_ADMIN)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 			}
-			if ($userdata['user_level'] != ADMIN)
+			if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
 			{
-				if ($auth_level_req == AUTH_ADMIN)
-				{
-					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-				}
-				if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-				{
-					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-				}
+				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 			}
 		}
-		$cms_global_blocks = ($board_config['wide_blocks_album'] == 1) ? true : false;
 	}
+	$cms_global_blocks = ($board_config['wide_blocks_album'] == 1) ? true : false;
 }
 
 // Include Language
 $language = $board_config['default_lang'];
 
-if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_album_main.' . $phpEx))
+if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_album_main.' . PHP_EXT))
 {
 	$language = 'english';
 }
 
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_album_main.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_album_main.' . PHP_EXT);
 
 // Get Album Config
 $album_config = array();
@@ -135,7 +132,7 @@ if ($album_config['lb_preview'] == 0)
 }
 else
 {
-	$preview_lb_div = '<script type="text/javascript" src="' . ALBUM_MOD_PATH . 'fap_loader.js"></script>';
+	$preview_lb_div = '<script type="text/javascript" src="' . COMMON_TPL . 'album/fap_loader.js"></script>';
 	$preview_lb_div .= '<div id="preview_div" style="display: none; position: absolute; z-index: 110; left: -600px; top: -600px;">';
 	$preview_lb_div .= '	<div class="border_preview" style="width: ' . $album_config['midthumb_width'] . 'px; height: ' . $album_config['midthumb_height'] . 'px;">';
 	$preview_lb_div .= '		<div id="loader_container" style="display: none; visibility: hidden;">';
@@ -155,10 +152,10 @@ else
 	$preview_lb_div .= '<br /><br />';
 }
 
-include_once($album_root_path . 'album_functions.' . $phpEx);
-include_once($album_root_path . 'album_hierarchy_functions.' . $phpEx);
+include_once(ALBUM_MOD_PATH . 'album_functions.' . PHP_EXT);
+include_once(ALBUM_MOD_PATH . 'album_hierarchy_functions.' . PHP_EXT);
 
-$album_search_box = '<form name="search" action="' . append_sid(album_append_uid('album_search.' . $phpEx)) . '">';
+$album_search_box = '<form name="search" action="' . append_sid(album_append_uid('album_search.' . PHP_EXT)) . '">';
 $album_search_box .= '	<span class="gensmall">' . $lang['Search'] . ':&nbsp;</span>';
 $album_search_box .= '	<select name="mode">';
 $album_search_box .= '		<option value="user">' . $lang['Username'] . '</option>';
@@ -174,8 +171,8 @@ $album_search_box .= '</form>';
 $template->assign_vars(array(
 	'IMG_ALBUM_FOLDER' => $images['pm_outbox'],
 	'IMG_ALBUM_SUBFOLDER' => $images['pm_inbox'],
-	'IMG_ALBUM_FOLDER_SMALL' => defined('IS_ICYPHOENIX') ? $images['topic_nor_read'] : $images['folder'],
-	'IMG_ALBUM_FOLDER_SMALL_NEW' => defined('IS_ICYPHOENIX') ? $images['topic_nor_unread'] : $images['folder_new'],
+	'IMG_ALBUM_FOLDER_SMALL' => $images['topic_nor_read'],
+	'IMG_ALBUM_FOLDER_SMALL_NEW' => $images['topic_nor_unread'],
 	'IMG_ALBUM_SUBFOLDER_SMALL' => $images['icon_minipost'],
 	'IMG_ALBUM_SUBFOLDER_SMALL_NEW' => $images['icon_minipost_new'],
 	'IMG_ALBUM_FOLDER_NEW' => $images['pm_savebox'],
@@ -190,22 +187,12 @@ $template->assign_vars(array(
 	'MIDTHUMB_H' => $album_config['midthumb_height'],
 	'PREVIEW_LB_DIV' => $preview_lb_div,
 
-	'U_ALBUM_SEARCH' => append_sid(album_append_uid('album_search.' . $phpEx)),
-	'U_ALBUM_UPLOAD' => append_sid(album_append_uid('album_upload.' . $phpEx)),
+	'U_ALBUM_SEARCH' => append_sid(album_append_uid('album_search.' . PHP_EXT)),
+	'U_ALBUM_UPLOAD' => append_sid(album_append_uid('album_upload.' . PHP_EXT)),
 
 	'ALBUM_VERSION' => '2' . $album_config['album_version'],
 	'ALBUM_COPYRIGHT' => $preview_lb_div . $album_copyright
 	)
 );
-
-if (!defined('IS_ICYPHOENIX'))
-{
-	$template->assign_vars(array(
-		'NAV_SEP' => $lang['Nav_Separator'],
-		'NAV_DOT' => '&#8226;',
-		'SPACER' => $images['spacer'],
-		)
-	);
-}
 
 ?>

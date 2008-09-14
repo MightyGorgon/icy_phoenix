@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
@@ -24,12 +24,12 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-include($phpbb_root_path.'language/lang_' . $board_config['default_lang'] . '/lang_user_search.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_user_search.' . PHP_EXT);
 
 $page_title = $lang['Search_users_advanced'];
 
@@ -164,7 +164,7 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 		'STYLE_LIST' => $styles_list,
 		'LASTVISITED_LIST' => $lastvisited_list,
 
-		'S_SEARCH_ACTION' => append_sid('admin_user_search.' . $phpEx)
+		'S_SEARCH_ACTION' => append_sid('admin_user_search.' . PHP_EXT)
 		)
 	);
 }
@@ -350,7 +350,7 @@ else
 			}
 	}
 
-	$base_url = 'admin_user_search.' . $phpEx . '?dosearch=true';
+	$base_url = 'admin_user_search.' . PHP_EXT . '?dosearch=true';
 
 	$select_sql = "SELECT u.user_id, u.username, u.user_email, u.user_posts, u.user_regdate, u.user_level, u.user_active, u.user_lastvisit
 						FROM ".USERS_TABLE." AS u";
@@ -1235,7 +1235,7 @@ else
 
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], $page, $num_pages),
 		'PAGINATION' => $pagination,
-		'NEW_SEARCH' => sprintf($lang['Search_users_new'],$text, $total_pages['total'],append_sid('admin_user_search.' . $phpEx)),
+		'NEW_SEARCH' => sprintf($lang['Search_users_new'],$text, $total_pages['total'],append_sid('admin_user_search.' . PHP_EXT)),
 
 		'U_USERNAME' => ( ( $sort == 'username' ) ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=username&order=$order") ),
 		'U_EMAIL' => ( ( $sort == 'user_email' ) ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=user_email&order=$order") ),
@@ -1295,8 +1295,8 @@ else
 
 			'U_VIEWPROFILE' => append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
 			'U_VIEWPOSTS' => append_sid('../' . SEARCH_MG . '?search_author=' . rawurlencode($rowset[$i]['username'])),
-			'U_MANAGE' => append_sid('admin_users.' . $phpEx . '?mode=edit&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
-			'U_PERMISSIONS' => append_sid('admin_ug_auth.' . $phpEx . '?mode=user&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
+			'U_MANAGE' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
+			'U_PERMISSIONS' => append_sid('admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
 		));
 	}
 }
@@ -1304,6 +1304,6 @@ else
 // Spit out the page.
 $template->pparse('body');
 
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

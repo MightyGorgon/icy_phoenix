@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -17,9 +17,9 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 $unhtml_specialchars_match = array('#>#', '#<#', '#"#', '#&#');
 $unhtml_specialchars_replace = array('>', '<', '"', '&');
@@ -43,9 +43,9 @@ $db->sql_freeresult($result);
 // Check and initialize some variables if needed
 if (isset($_POST['submit']) || ($mode == 'register'))
 {
-	include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
-	include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-	include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 	$strip_var_list = array('username' => 'username', 'email' => 'email', 'new_password' => 'new_password', 'password_confirm' => 'password_confirm');
 
@@ -232,7 +232,7 @@ if ($error)
 //
 // Default pages
 //
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 $coppa = FALSE;
 
@@ -296,12 +296,12 @@ $template->assign_vars(array(
 	'L_VALIDATION_EXPLAIN' => $lang['Validation_explain'],
 
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
-	'S_PROFILE_ACTION' => append_sid("admin_user_register.$phpEx"))
+	'S_PROFILE_ACTION' => append_sid("admin_user_register." . PHP_EXT))
 );
 
 $template->pparse('body');
 
-include($phpbb_root_path . ADM .'/page_footer_admin.' . $phpEx);
+include(IP_ROOT_PATH . ADM .'/page_footer_admin.' . PHP_EXT);
 
 function dateformatselect($default, $timezone, $select_name = 'dateformat')
 {

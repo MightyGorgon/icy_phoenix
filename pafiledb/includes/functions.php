@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -52,7 +52,7 @@ class pafiledb_functions
 
 	function post_icons($file_posticon = '')
 	{
-		global $lang, $phpbb_root_path;
+		global $lang;
 		$curicons = 1;
 
 		if ($file_posticon == 'none' || $file_posticon == 'none.gif' or empty($file_posticon))
@@ -64,7 +64,7 @@ class pafiledb_functions
 			$posticons .= '<input type="radio" name="posticon" value="none"><a class="gensmall">' . $lang['None'] . '</a>&nbsp;';
 		}
 
-		$handle = @opendir($phpbb_root_path . ICONS_DIR);
+		$handle = @opendir(IP_ROOT_PATH . ICONS_DIR);
 
 		while ($icon = @readdir($handle))
 		{
@@ -72,11 +72,11 @@ class pafiledb_functions
 			{
 				if ($file_posticon == $icon)
 				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" checked><img src="' . $phpbb_root_path . ICONS_DIR . $icon . '">&nbsp;';
+					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" checked><img src="' . IP_ROOT_PATH . ICONS_DIR . $icon . '">&nbsp;';
 				}
 				else
 				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '"><img src="' . $phpbb_root_path . ICONS_DIR . $icon . '">&nbsp;';
+					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '"><img src="' . IP_ROOT_PATH . ICONS_DIR . $icon . '">&nbsp;';
 				}
 
 				$curicons++;
@@ -153,14 +153,14 @@ class pafiledb_functions
 
 	function upload_file($userfile, $userfile_name, $userfile_size, $upload_dir = '', $local = false)
 	{
-		global $phpbb_root_path, $lang, $phpEx, $board_config, $pafiledb_config, $userdata;
+		global $lang, $board_config, $pafiledb_config, $userdata;
 
 		@set_time_limit(0);
 		$file_info = array();
 
 		$file_info['error'] = false;
 
-		if(file_exists($phpbb_root_path . $upload_dir . $userfile_name))
+		if(file_exists(IP_ROOT_PATH . $upload_dir . $userfile_name))
 		{
 			$userfile_name = time() . $userfile_name;
 		}
@@ -190,7 +190,7 @@ class pafiledb_functions
 			$upload_mode = (@$ini_val('open_basedir') || @$ini_val('safe_mode')) ? 'move' : 'copy';
 			$upload_mode = ($local) ? 'local' : $upload_mode;
 
-			if($this->do_upload_file($upload_mode, $userfile, $phpbb_root_path . $upload_dir . $userfile_name))
+			if($this->do_upload_file($upload_mode, $userfile, IP_ROOT_PATH . $upload_dir . $userfile_name))
 			{
 				$file_info['error'] = true;
 				if(!empty($file_info['message']))
@@ -268,9 +268,9 @@ class pafiledb_functions
 
 	function get_file_size($file_id, $file_data = '')
 	{
-		global $db, $lang, $phpbb_root_path, $pafiledb_config;
+		global $db, $lang, $pafiledb_config;
 
-		$directory = $phpbb_root_path . $pafiledb_config['upload_dir'];
+		$directory = IP_ROOT_PATH . $pafiledb_config['upload_dir'];
 
 		if(empty($file_data))
 		{
@@ -300,7 +300,7 @@ class pafiledb_functions
 			$file_url = basename($file_url) ;
 			$file_name = basename($file_url);
 
-			if((!empty($file_data['unique_name'])) && (!file_exists($phpbb_root_path . $file_data['file_dir'] . $file_data['unique_name'])))
+			if((!empty($file_data['unique_name'])) && (!file_exists(IP_ROOT_PATH . $file_data['file_dir'] . $file_data['unique_name'])))
 			{
 				return $lang['Not_available'];
 			}
@@ -311,7 +311,7 @@ class pafiledb_functions
 			}
 			else
 			{
-				$file_size = @filesize($phpbb_root_path . $file_data['file_dir'] . $file_data['unique_name']);
+				$file_size = @filesize(IP_ROOT_PATH . $file_data['file_dir'] . $file_data['unique_name']);
 			}
 
 			$update_filesize = true;
@@ -405,7 +405,7 @@ class pafiledb_functions
 	//===================================================
 	function pa_generate_smilies($mode)
 	{
-		global $db, $board_config, $pafiledb_template, $lang, $images, $theme, $phpEx, $phpbb_root_path, $user_ip, $session_length, $starttime, $userdata;
+		global $db, $board_config, $pafiledb_template, $lang, $images, $theme, $user_ip, $session_length, $starttime, $userdata;
 
 		$inline_columns = 4;
 		$inline_rows = 5;
@@ -421,7 +421,7 @@ class pafiledb_functions
 			$gen_simple_header = true;
 
 			$page_title = $lang['Review_topic'] . " - $topic_title";
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$pafiledb_template->set_filenames(array(
 				'smiliesbody' => 'posting_smilies.tpl')
@@ -489,7 +489,7 @@ class pafiledb_functions
 
 					$pafiledb_template->assign_vars(array(
 						'L_MORE_SMILIES' => $lang['More_emoticons'],
-						'U_MORE_SMILIES' => append_sid('posting.' . $phpEx . '?mode=smilies')
+						'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies')
 						)
 					);
 				}
@@ -506,7 +506,7 @@ class pafiledb_functions
 		{
 			$pafiledb_template->display('smiliesbody');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 	}
 	*/
@@ -563,9 +563,8 @@ class pafiledb_functions
 
 	function pafiledb_realpath($path)
 	{
-		global $phpbb_root_path, $phpEx;
 
-		return (!@function_exists('realpath') || !@realpath($phpbb_root_path . 'includes/functions.' . $phpEx)) ? $path : @realpath($path);
+		return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
 	}
 
 	function sql_query_limit($query, $total, $offset = 0)
@@ -596,26 +595,26 @@ function get_formated_url()
 function pafiledb_page_header($page_title)
 {
 	global $pafiledb_config, $lang, $pafiledb_template, $userdata, $images, $action, $pafiledb;
-	global $template, $db, $theme, $gen_simple_header, $starttime, $phpEx, $board_config, $user_ip, $phpbb_root_path, $table_prefix;
+	global $template, $db, $theme, $gen_simple_header, $starttime, $board_config, $user_ip, $table_prefix;
 	global $admin_level, $level_prior, $tree, $do_gzip_compress;
 	global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars, $var_cache;
 
 	if($action != 'download')
 	{
-		include_once($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	}
 
 	if($action == 'category')
 	{
-		$upload_url = append_sid('dload.' . $phpEx . "?action=user_upload&amp;cat_id={$_REQUEST['cat_id']}");
+		$upload_url = append_sid('dload.' . PHP_EXT . "?action=user_upload&amp;cat_id={$_REQUEST['cat_id']}");
 		$upload_auth = $pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_upload'];
-		$mcp_url = append_sid('dload.' . $phpEx . "?action=mcp&amp;cat_id={$_REQUEST['cat_id']}");
+		$mcp_url = append_sid('dload.' . PHP_EXT . "?action=mcp&amp;cat_id={$_REQUEST['cat_id']}");
 		$mcp_auth = $pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_mod'];
 
 	}
 	else
 	{
-		$upload_url = append_sid('dload.' . $phpEx . '?action=user_upload');
+		$upload_url = append_sid('dload.' . PHP_EXT . '?action=user_upload');
 		$cat_list = $pafiledb->modules[$pafiledb->module_name]->jumpmenu_option(0, 0, '', true, true);
 		//$upload_auth = (empty($cat_list)) ? false : true;
 		$upload_auth = false;
@@ -649,11 +648,11 @@ function pafiledb_page_header($page_title)
 		'UPLOAD_IMG' => $images['pa_upload'],
 		'VIEW_ALL_IMG' => $images['pa_viewall'],
 
-		'U_TOPLIST' => append_sid('dload.' . $phpEx . '?action=toplist'),
-		'U_PASEARCH' => append_sid('dload.' . $phpEx . '?action=search'),
+		'U_TOPLIST' => append_sid('dload.' . PHP_EXT . '?action=toplist'),
+		'U_PASEARCH' => append_sid('dload.' . PHP_EXT . '?action=search'),
 		'U_UPLOAD' => $upload_url,
-		'U_VIEW_ALL' => append_sid('dload.' . $phpEx . '?action=viewall'),
-		'U_PASTATS' => append_sid('dload.' . $phpEx . '?action=stats')
+		'U_VIEW_ALL' => append_sid('dload.' . PHP_EXT . '?action=viewall'),
+		'U_PASTATS' => append_sid('dload.' . PHP_EXT . '?action=stats')
 		)
 	);
 
@@ -663,15 +662,15 @@ function pafiledb_page_header($page_title)
 //===================================================
 function pafiledb_page_footer()
 {
-	global $cache, $lang, $pafiledb_template, $board_config, $pafiledb, $userdata, $phpbb_root_path;
-	global $phpEx, $template, $do_gzip_compress, $debug, $db, $starttime, $gen_simple_header, $images;
+	global $cache, $lang, $pafiledb_template, $board_config, $pafiledb, $userdata;
+	global $template, $do_gzip_compress, $debug, $db, $starttime, $gen_simple_header, $images;
 	//global $cms_config_vars, $var_cache;
 	global $head_foot_ext, $cms_global_blocks, $cms_page_id;
 
 	$pafiledb_template->assign_vars(array(
 		'JUMPMENU' => $pafiledb->modules[$pafiledb->module_name]->jumpmenu_option(),
 		'L_JUMP' => $lang['jump'],
-		'S_JUMPBOX_ACTION' => append_sid('dload.' . $phpEx),
+		'S_JUMPBOX_ACTION' => append_sid('dload.' . PHP_EXT),
 		'S_TIMEZONE' => sprintf($lang['All_times'], $lang[number_format($board_config['board_timezone'])]))
 	);
 	$pafiledb->modules[$pafiledb->module_name]->_pafiledb();
@@ -683,7 +682,7 @@ function pafiledb_page_footer()
 
 	if($action != 'download')
 	{
-		include_once($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 }
 

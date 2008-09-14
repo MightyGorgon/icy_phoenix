@@ -149,13 +149,12 @@ if(!defined('SQL_LAYER'))
 			$this->cached = false;
 			if($query !== '' && $cache)
 			{
-				global $phpbb_root_path;
-				$hash = md5($query);
+								$hash = md5($query);
 				if(strlen($cache))
 				{
 					$hash = $cache . $hash;
 				}
-				$filename = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
+				$filename = SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
 				if(@file_exists($filename))
 				{
 					$set = array();
@@ -697,8 +696,7 @@ if(!defined('SQL_LAYER'))
 			{
 				return;
 			}
-			global $phpbb_root_path;
-			$cache_file_name = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
+						$cache_file_name = SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
 			@unlink($cache_file_name);
 			$f = fopen($cache_file_name, 'w');
 			@flock($f, LOCK_EX);
@@ -721,20 +719,19 @@ if(!defined('SQL_LAYER'))
 
 		function clear_cache($prefix = '')
 		{
-			global $phpbb_root_path;
-			$this->caching = false;
+						$this->caching = false;
 			$this->cached = false;
 			$this->cache = array();
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
-			$res = opendir($phpbb_root_path . SQL_CACHE_FOLDER);
+			$res = opendir(SQL_CACHE_FOLDER);
 			if($res)
 			{
 				while(($file = readdir($res)) !== false)
 				{
 					if(substr($file, 0, $prefix_len) === $prefix)
 					{
-						@unlink($phpbb_root_path . SQL_CACHE_FOLDER . $file);
+						@unlink(SQL_CACHE_FOLDER . $file);
 					}
 				}
 			}

@@ -10,10 +10,10 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IMG_THUMB', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -26,7 +26,7 @@ init_userprefs($userdata);
 $prog_name = 'Sitemap IP 1.0.0';
 $verinfo = 'V100';
 
-$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'sitemap.xml';
+$cache_data_file = MAIN_CACHE_FOLDER . 'sitemap.xml';
 $cache_update = true;
 $cache_file_time = time();
 if (@is_file($cache_data_file))
@@ -234,7 +234,7 @@ else
 	// MG SITEMAP - FORUM - END
 
 	// MG SITEMAP - DOWNLOADS - BEGIN
-		include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . $phpEx);
+		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . PHP_EXT);
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
 							ORDER BY file_time DESC";
@@ -253,7 +253,7 @@ else
 			*/
 			$xml_sitemap_body .= '
 	<url>
-		<loc>' . $server_url . 'dload.' . $phpEx . '?action=file&amp;file_id=' . $dl_sitemap['file_id'] . '</loc>
+		<loc>' . $server_url . 'dload.' . PHP_EXT . '?action=file&amp;file_id=' . $dl_sitemap['file_id'] . '</loc>
 		<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $dl_sitemap['file_time']) . '</lastmod>
 		<changefreq>' . $dl_change . '</changefreq>
 		<priority>' . $dl_priority . '</priority>
@@ -264,8 +264,7 @@ else
 
 	// MG SITEMAP - ALBUM - BEGIN
 	// Get general album information
-	$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH . '';
-	include($album_root_path . 'album_common.' . $phpEx);
+	include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 	$album_user_id = ALBUM_PUBLIC_GALLERY;
 	//$album_user_id = ALBUM_ROOT_CATEGORY;
 	$catrows = array ();
@@ -333,7 +332,7 @@ else
 			$pic_change = 'never';
 			$xml_sitemap_body .= '
 	<url>
-		<loc>' . $server_url . 'album_showpage.' . $phpEx . '?pic_id=' . $row['pic_id'] . '</loc>
+		<loc>' . $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'] . '</loc>
 		<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
 		<changefreq>' . $pic_change . '</changefreq>
 		<priority>' . $pic_priority . '</priority>

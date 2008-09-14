@@ -23,14 +23,12 @@ class acm
 
 	function acm()
 	{
-		global $phpbb_root_path;
-		$this->cache_dir = $phpbb_root_path . PA_FILE_DB_PATH . 'cache/';
+				$this->cache_dir = IP_ROOT_PATH . PA_FILE_DB_PATH . 'cache/';
 	}
 
 	function load()
 	{
-		global $phpEx;
-		@include($this->cache_dir . 'data_global.' . $phpEx);
+				@include($this->cache_dir . 'data_global.' . PHP_EXT);
 	}
 
 	function unload()
@@ -47,10 +45,9 @@ class acm
 			return;
 		}
 
-		global $phpEx;
-		$file = '<?php $this->vars=' . $this->format_array($this->vars) . ";\n\$this->vars_ts=" . $this->format_array($this->vars_ts) . ' ?>';
+				$file = '<?php $this->vars=' . $this->format_array($this->vars) . ";\n\$this->vars_ts=" . $this->format_array($this->vars_ts) . ' ?>';
 		/*
-		if ($fp = @fopen($this->cache_dir . 'data_global.' . $phpEx, 'wb'))
+		if ($fp = @fopen($this->cache_dir . 'data_global.' . PHP_EXT, 'wb'))
 		{
 			@flock($fp, LOCK_EX);
 			fwrite($fp, $file);
@@ -58,19 +55,17 @@ class acm
 			fclose($fp);
 		}
 		*/
-		if(@$f = fopen($this->cache_dir . 'data_global.' . $phpEx, 'w'))
+		if(@$f = fopen($this->cache_dir . 'data_global.' . PHP_EXT, 'w'))
 		{
 			fwrite($f, $file);
 			fclose($f);
-			@chmod($this->cache_dir . 'data_global.' . $phpEx, 0666);
+			@chmod($this->cache_dir . 'data_global.' . PHP_EXT, 0666);
 		}
 
 	}
 
 	function tidy($expire_time = 0)
 	{
-		global $phpEx;
-
 		$skip_files = array(
 			'.',
 			'..',
@@ -95,7 +90,7 @@ class acm
 			}
 		}
 
-		if (file_exists($this->cache_dir . 'data_global.' . $phpEx))
+		if (file_exists($this->cache_dir . 'data_global.' . PHP_EXT))
 		{
 			foreach ($this->vars_ts as $varname => $timestamp)
 			{

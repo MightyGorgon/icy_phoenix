@@ -15,10 +15,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -27,7 +27,7 @@ init_userprefs($userdata);
 
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=profile_options.' . $phpEx, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=profile_options.' . PHP_EXT, true));
 }
 
 // constant
@@ -104,6 +104,7 @@ if ($user_level == MOD)
 		{
 			$user_level = USER;
 		}
+		$db->sql_freeresult($result);
 	}
 }
 
@@ -127,12 +128,12 @@ while (list($key, $data) = each($view_userdata))
 // get all the mods settings
 //
 $mods = array();
-$dir = @opendir($phpbb_root_path . 'includes/mods_settings');
+$dir = @opendir(IP_ROOT_PATH . 'includes/mods_settings');
 while($file = @readdir($dir))
 {
-	if(preg_match("/^mod_.*?\." . $phpEx . "$/", $file))
+	if(preg_match("/^mod_.*?\." . PHP_EXT . "$/", $file))
 	{
-		include($phpbb_root_path . 'includes/mods_settings/' . $file);
+		include(IP_ROOT_PATH . 'includes/mods_settings/' . $file);
 	}
 }
 @closedir($dir);
@@ -317,7 +318,7 @@ if ($submit)
 			}
 			if ($error)
 			{
-				$ret_link = append_sid('./profile_options.' . $phpEx . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
+				$ret_link = append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
 				$template->assign_vars(array(
 					'META' => '<meta http-equiv="refresh" content="3;url=' . $ret_link . '">')
 				);
@@ -346,7 +347,7 @@ if ($submit)
 	}
 
 	// send an update message
-	$ret_link = append_sid('./profile_options.' . $phpEx . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
+	$ret_link = append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
 	$template->assign_vars(array(
 		'META' => '<meta http-equiv="refresh" content="3;url=' . $ret_link . '">'
 		)
@@ -360,8 +361,8 @@ else
 	$page_title = $lang['Preferences'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include_once($phpbb_root_path . 'includes/users_zebra_block.' . $phpEx);
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	// template
 	$template->set_filenames(array('body' => 'profile_options_body.tpl'));
@@ -369,7 +370,7 @@ else
 	// header
 	$template->assign_vars(array(
 		'L_OPTION' => $page_title,
-		'U_OPTION' => append_sid('./profile_options.' . $phpEx . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
+		'U_OPTION' => append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
 		'L_MOD_NAME' => mods_settings_get_lang($mod_name) . (!empty($sub_name) ? ' - ' . mods_settings_get_lang($sub_name) : ''),
 		'U_USER' => append_sid('./' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $view_user_id),
 		'L_USER' => $view_userdata['username'],
@@ -384,7 +385,7 @@ else
 		$template->assign_block_vars('mod', array(
 			'CLASS' => ($mod_id == $i) ? $theme['td_class1'] : $theme['td_class2'],
 			'ALIGN' => (($mod_id == $i) && (count($sub_keys[$i]) > 1)) ? 'left' : 'center',
-			'U_MOD' => append_sid('./profile_options.' . $phpEx . '?sub=' . $menu_name . '&mod=' . $i . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
+			'U_MOD' => append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&mod=' . $i . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
 			'L_MOD' => sprintf((($mod_id == $i) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($mod_keys[$i])),
 			)
 		);
@@ -397,7 +398,7 @@ else
 				{
 					$template->assign_block_vars('mod.sub.row', array(
 						'CLASS' => ($sub_id == $j) ? $theme['td_class1'] : $theme['td_class2'],
-						'U_MOD' => append_sid('./profile_options.' . $phpEx . '?sub=' . $menu_name . '&amp;mod=' . $i . '&amp;msub=' . $j . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
+						'U_MOD' => append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $i . '&amp;msub=' . $j . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
 						'L_MOD' => sprintf((($sub_id == $j) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($sub_keys[$i][$j])),
 						)
 					);
@@ -493,7 +494,7 @@ else
 	$s_hidden_fields .= '<input type="hidden" name="mod_sub_id" value="' . $sub_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="set" value="add" />';
 	$template->assign_vars(array(
-		'S_PROFILCP_ACTION' => append_sid('./profile_options.' . $phpEx),
+		'S_PROFILCP_ACTION' => append_sid('./profile_options.' . PHP_EXT),
 		'NAV_SEPARATOR' => $nav_separator,
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		)
@@ -501,7 +502,7 @@ else
 
 	// page
 	$template->pparse('body');
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 ?>

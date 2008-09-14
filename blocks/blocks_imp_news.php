@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,9 +24,9 @@ if(!function_exists(imp_news_block_func))
 {
 	function imp_news_block_func()
 	{
-		global $phpbb_root_path, $phpEx, $lang, $template, $board_config, $db, $bbcode, $block_id, $cms_config_var, $cms_config_vars;
-		@include_once($phpbb_root_path . ATTACH_MOD_PATH . 'displaying.' . $phpEx);
-		@include_once($phpbb_root_path . 'includes/news.' . $phpEx);
+		global $lang, $template, $board_config, $db, $bbcode, $block_id, $cms_config_var, $cms_config_vars;
+		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/news.' . PHP_EXT);
 
 		$template->_tpldata['no_news.'] = array();
 		//reset($template->_tpldata['no_news.']);
@@ -82,7 +82,7 @@ if(!function_exists(imp_news_block_func))
 
 		$template->set_filenames(array('news' => 'blocks/news_block.tpl'));
 
-		$content =& new NewsModule($phpbb_root_path);
+		$content =& new NewsModule(IP_ROOT_PATH);
 
 		$content->setVariables(array(
 			'INDEX_FILE' => htmlspecialchars(urldecode($index_file)),
@@ -102,7 +102,7 @@ if(!function_exists(imp_news_block_func))
 			'L_REPLY_NEWS' => $lang['News_Reply'],
 			'L_PRINT_NEWS' => $lang['News_Print'],
 			'L_EMAIL_NEWS' => $lang['News_Email'],
-			'PHP_EXT' => $phpEx,
+			'PHP_EXT' => PHP_EXT,
 			'S_COLS' => 4,
 			'L_ARCHIVES' => $lang['Archives']
 			)
@@ -111,7 +111,7 @@ if(!function_exists(imp_news_block_func))
 		if(isset($_GET['news']) && ($_GET['news'] == 'categories'))
 		{
 			// View the news categories.
-			$data_access = new NewsDataAccess($phpbb_root_path);
+			$data_access = new NewsDataAccess(IP_ROOT_PATH);
 			$news_cats = $data_access->fetchCategories();
 			$template->assign_block_vars('news_categories', array());
 			$cats = count($news_cats);

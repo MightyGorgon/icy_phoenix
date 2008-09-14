@@ -19,7 +19,7 @@ class pafiledb_email extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $userdata, $phpbb_root_path, $debug;
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata, $debug;
 
 		if ( isset($_REQUEST['file_id']))
 		{
@@ -50,7 +50,7 @@ class pafiledb_email extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=email&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=email&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_email'], $this->auth[$file_data['file_catid']]['auth_email_type']);
@@ -82,7 +82,7 @@ class pafiledb_email extends pafiledb_public
 
 			if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && $sender_name != $userdata['username']))
 			{
-				include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+				include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 				$result = validate_username($username);
 				if ($result['error'])
@@ -136,7 +136,7 @@ class pafiledb_email extends pafiledb_public
 
 			if ( !$error )
 			{
-				include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+				include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 				$emailer = new emailer($board_config['smtp_delivery']);
 
@@ -164,7 +164,7 @@ class pafiledb_email extends pafiledb_public
 				$emailer->send();
 				$emailer->reset();
 
-				$message = $lang['Econf'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(PORTAL_MG) . '">', '</a>');
+				$message = $lang['Econf'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(PORTAL_MG) . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -184,7 +184,7 @@ class pafiledb_email extends pafiledb_public
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
-			'S_EMAIL_ACTION' => append_sid('dload.' . $phpEx),
+			'S_EMAIL_ACTION' => append_sid('dload.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />',
 
 			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
@@ -203,14 +203,14 @@ class pafiledb_email extends pafiledb_public
 			'L_EMPTY_MESSAGE_EMAIL' => $lang['Empty_message_email'],
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD_HOME' => append_sid('dload.' . $phpEx),
-			'U_FILE_NAME' => append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id),
+			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
+			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 
 			'FILE_NAME' => $file_data['file_name'],
 			'SNAME' => $userdata['username'],
 			'SEMAIL' => $userdata['user_email'],
 			'DOWNLOAD' => $pafiledb_config['settings_dbname'],
-			'FILE_URL' => get_formated_url() . '/dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id,
+			'FILE_URL' => get_formated_url() . '/dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id,
 			'ID' => $file_id)
 		);
 		$this->display($lang['Download'], 'pa_email_body.tpl');

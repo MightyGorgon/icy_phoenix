@@ -13,14 +13,14 @@ class pafiledb_user_upload extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_config, $phpbb_root_path;
-		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $phpEx, $pafiledb_functions, $board_config;
+		global $pafiledb_config;
+		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $board_config;
 
 		// =======================================================
 		// Get Vars
 		// =======================================================
 
-		include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_field.' . $phpEx);
+		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_field.' . PHP_EXT);
 
 		$custom_field = new custom_field();
 		$custom_field->init();
@@ -40,7 +40,7 @@ class pafiledb_user_upload extends pafiledb_public
 			{
 				if ( !$userdata['session_logged_in'] )
 				{
-					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=user_upload&cat_id=' . $cat_id, true));
+					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=user_upload&cat_id=' . $cat_id, true));
 				}
 
 				$message = sprintf($lang['Sorry_auth_upload'], $this->auth[$cat_id]['auth_upload_type']);
@@ -53,7 +53,7 @@ class pafiledb_user_upload extends pafiledb_public
 			{
 				if ( !$userdata['session_logged_in'] )
 				{
-					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=user_upload', true));
+					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=user_upload', true));
 				}
 
 				$message = sprintf($lang['Sorry_auth_upload'], $this->auth[$cat_id]['auth_upload_type']);
@@ -102,11 +102,11 @@ class pafiledb_user_upload extends pafiledb_public
 				$this->_pafiledb();
 				if ( $pafiledb_config['need_validation'] == '0')
 				{
-					$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $temp_id) . '">', '</a>');
+					$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $temp_id) . '">', '</a>');
 				}
 				else
 				{
-					$message = $lang['Fileadded_not_validated'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $cat_id) . '">', '</a>');
+					$message = $lang['Fileadded_not_validated'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $cat_id) . '">', '</a>');
 				}
 //				$mode = 'edit';
 			}
@@ -115,10 +115,10 @@ class pafiledb_user_upload extends pafiledb_public
 				$file_id = $this->update_add_file($file_id);
 				$custom_field->file_update_data($file_id);
 				$this->_pafiledb();
-				$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
+				$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
 //				$mode = 'edit';
 			}
-			$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=user_upload') . '">', '</a>');
+			$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=user_upload') . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
@@ -201,7 +201,7 @@ class pafiledb_user_upload extends pafiledb_public
 
 
 			$pafiledb_template->assign_vars(array(
-				'S_ADD_FILE_ACTION' => append_sid('dload.' . $phpEx),
+				'S_ADD_FILE_ACTION' => append_sid('dload.' . PHP_EXT),
 				'L_HOME' => $lang['Home'],
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 				'FILESIZE' => intval($pafiledb_config['max_file_size']),
@@ -278,7 +278,7 @@ class pafiledb_user_upload extends pafiledb_public
 				'MODE' => $mode,
 
 				'U_INDEX' => append_sid(PORTAL_MG),
-				'U_DOWNLOAD' => append_sid('dload.' . $phpEx)
+				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT)
 				)
 			);
 

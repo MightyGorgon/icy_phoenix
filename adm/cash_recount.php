@@ -16,17 +16,17 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (isset($_POST['cancel']) || empty($_POST['confirm']))
 {
-	message_die(GENERAL_MESSAGE, '<br />' . sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . $phpEx) . '">', '</a>') . '<br /><br />');
+	message_die(GENERAL_MESSAGE, '<br />' . sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . PHP_EXT) . '">', '</a>') . '<br /><br />');
 }
 
 if (isset($_POST['cids']))
@@ -150,7 +150,7 @@ if (isset($_POST['cids']))
 		message_die(GENERAL_ERROR, 'Error updating config data', '', __LINE__, __FILE__, $sql);
 	}
 	ignore_user_abort($old_user_abort);
-	message_die(GENERAL_MESSAGE, '<br />' . sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . $phpEx) . '">', '</a>') . '<br /><br />');
+	message_die(GENERAL_MESSAGE, '<br />' . sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . PHP_EXT) . '">', '</a>') . '<br /><br />');
 }
 
 ?>

@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -20,35 +20,6 @@ define('FEMALE', 2);
 //Vote Images based on the theme path, (i.e. templates/CURRNT_THEME/ is already inserted below)
 
 $rank = 0;
-//
-// Getting voting bar info from template
-//
-if(!$board_config['override_user_style'])
-{
-	if(($userdata['user_id'] != ANONYMOUS) && (isset($userdata['user_style'])))
-	{
-		$style = $userdata['user_style'];
-		if(!$theme)
-		$style = $board_config['default_style'];
-	}
-	else
-	$style = $board_config['default_style'];
-}
-else
-$style = $board_config['default_style'];
-
-$sql = 'SELECT *
-FROM ' . THEMES_TABLE . "
-WHERE themes_id = $style";
-
-if(!$result = $db->sql_query($sql))
-{
-	message_die(CRITICAL_ERROR, "Couldn't query database for theme info.");
-}
-if(!$row = $db->sql_fetchrow($result))
-{
-	message_die(CRITICAL_ERROR, "Couldn't get theme data for themes_id=$style.");
-}
 
 // Gender SQL
 $sql = 'SELECT COUNT(user_gender) used_counter, user_gender
@@ -69,6 +40,9 @@ $usercount = $board_config['max_users'];
 
 $firstcount = $user_data[0]['used_counter'];
 $cst = ($firstcount > 0) ? 90 / $firstcount : 90;
+
+$template->_tpldata['gender.'] = array();
+//reset($template->_tpldata['gender.']);
 
 for ($i = 0; $i < $user_count; $i++)
 {

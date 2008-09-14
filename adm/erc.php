@@ -15,14 +15,13 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'config.' . $phpEx);
-include($phpbb_root_path . 'includes/constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_dbmtnc.' . $phpEx);
-include($phpbb_root_path . 'includes/db.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
 //
 // addslashes to vars if magic_quotes_gpc is off
@@ -118,7 +117,7 @@ if ($mode == 'download')
 	$data = "<?php\n" .
 		"\n" .
 		"//\n" .
-		"// phpBB 2.x auto-generated config file\n" .
+		"// Icy Phoenix auto-generated config file\n" .
 		"// Do not change anything in this file!\n" .
 		"//\n" .
 		"\n" .
@@ -131,11 +130,11 @@ if ($mode == 'download')
 		"\n" .
 		"\$table_prefix = '$new_table_prefix';\n" .
 		"\n" .
-		"define('PHPBB_INSTALLED', true);\n" .
+		"define('IP_INSTALLED', true);\n" .
 		"\n" .
 		"?>";
 	header('Content-type: text/plain');
-	header("Content-Disposition: attachment; filename=config.$phpEx");
+	header("Content-Disposition: attachment; filename=config." . PHP_EXT);
 	echo $data;
 	exit;
 }
@@ -144,11 +143,11 @@ if ($mode == 'download')
 if (isset($_POST['lg']) || isset($_GET['lg']))
 {
 	$lg = (isset($_POST['lg'])) ? htmlspecialchars($_POST['lg']) : htmlspecialchars($_GET['lg']);
-	if (file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $lg . '/lang_dbmtnc.' . $phpEx)))
+	if (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_dbmtnc.' . PHP_EXT)))
 	{
-		include($phpbb_root_path . 'language/lang_' . $lg . '/lang_dbmtnc.' . $phpEx);
-		include($phpbb_root_path . 'language/lang_' . $lg . '/lang_main.' . $phpEx);
-		include($phpbb_root_path . 'language/lang_' . $lg . '/lang_main_settings.' . $phpEx);
+		include(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_dbmtnc.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_main.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_main_settings.' . PHP_EXT);
 	}
 	else
 	{
@@ -164,11 +163,11 @@ else
 if ($lg == '')
 {
 	$dirname = 'language';
-	$dir = opendir($phpbb_root_path . $dirname);
+	$dir = opendir(IP_ROOT_PATH . $dirname);
 	$lang_list = Array();
 	while ($file = readdir($dir))
 	{
-		if (preg_match('#^lang_#i', $file) && !is_file(@phpbb_realpath($phpbb_root_path . $dirname . '/' . $file)) && !is_link(@phpbb_realpath($phpbb_root_path . $dirname . '/' . $file)) && is_file(@phpbb_realpath($phpbb_root_path . $dirname . '/' . $file . '/lang_dbmtnc.' . $phpEx)))
+		if (preg_match('#^lang_#i', $file) && !is_file(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)) && is_file(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file . '/lang_dbmtnc.' . PHP_EXT)))
 		{
 			$filename = trim(str_replace("lang_", "", $file));
 			$lang_list[] = $filename;
@@ -178,17 +177,17 @@ if ($lg == '')
 	if (count($lang_list) == 1)
 	{
 		$lg = $lang_list[0];
-		include($phpbb_root_path . 'language/lang_' . $lg . '/lang_dbmtnc.' . $phpEx);
-		include($phpbb_root_path . 'language/lang_' . $lg . '/lang_main.' . $phpEx);
-		include($phpbb_root_path . 'language/lang_' . $lg . '/lang_main_settings.' . $phpEx);
+		include(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_dbmtnc.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_main.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_main_settings.' . PHP_EXT);
 	}
 	else // Try to load english language
 	{
-		if (file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_english/lang_dbmtnc.' . $phpEx)))
+		if (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_english/lang_dbmtnc.' . PHP_EXT)))
 		{
-			include($phpbb_root_path . 'language/lang_english/lang_dbmtnc.' . $phpEx);
-			include($phpbb_root_path . 'language/lang_english/lang_main.' . $phpEx);
-			include($phpbb_root_path . 'language/lang_english/lang_main_settings.' . $phpEx);
+			include(IP_ROOT_PATH . 'language/lang_english/lang_dbmtnc.' . PHP_EXT);
+			include(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT);
+			include(IP_ROOT_PATH . 'language/lang_english/lang_main_settings.' . PHP_EXT);
 			$mode = 'select_lang';
 		}
 		else
@@ -728,21 +727,21 @@ switch($mode)
 				break;
 			case 'ecf': // Empty Cache
 				$db->clear_cache();
-				empty_cache_folder('./../', false);
+				empty_cache_folders(false);
 				success_message($lang['ecf_success']);
 				break;
 			case 'fdt': // Fix def_tree.php
 				$db->clear_cache();
-				empty_cache_folder('./../', false);
+				empty_cache_folders(false);
 				$res = '<' . '?' . 'php' . "\n\n" . '?' . '>';
 
-				$fname = $phpbb_root_path . './includes/def_themes.' . $phpEx;
+				$fname = IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT;
 				@chmod($fname, 0666);
 				$handle = @fopen($fname, 'w');
 				@fwrite($handle, $res);
 				@fclose($handle);
 
-				$fname = $phpbb_root_path . './includes/def_tree.' . $phpEx;
+				$fname = IP_ROOT_PATH . './includes/def_tree.' . PHP_EXT;
 				@chmod($fname, 0666);
 				$handle = @fopen($fname, 'w');
 				@fwrite($handle, $res);
@@ -975,7 +974,7 @@ switch($mode)
 				$board_user = substr(str_replace("\\'", "'", $board_user), 0, 25);
 				$board_user = str_replace("'", "\\'", $board_user);
 
-				if (is_file(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $new_lang . '/lang_main.' . $phpEx)) && is_file(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $new_lang . '/lang_admin.' . $phpEx)))
+				if (is_file(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $new_lang . '/lang_main.' . PHP_EXT)) && is_file(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $new_lang . '/lang_admin.' . PHP_EXT)))
 				{
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_lang = '$new_lang'
@@ -1201,7 +1200,7 @@ switch($mode)
 				&lt;?php<br />
 				<br />
 				//<br />
-				// phpBB 2.x auto-generated config file<br />
+				// Icy Phoenix auto-generated config file<br />
 				// Do not change anything in this file!<br />
 				//<br />
 				<br />
@@ -1214,7 +1213,7 @@ switch($mode)
 				<br />
 				$table_prefix = '<?php echo htmlspecialchars(str_replace("'", "\\'", str_replace("\\", "\\\\", $new_table_prefix))); ?>';<br />
 				<br />
-				define('PHPBB_INSTALLED', true);<br />
+				define('IP_INSTALLED', true);<br />
 				<br />
 				?&gt;
 			</td>

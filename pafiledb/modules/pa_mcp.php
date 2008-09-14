@@ -19,7 +19,7 @@ class pafiledb_mcp extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $debug, $phpbb_root_path, $userdata, $pafiledb_functions;
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $debug, $userdata, $pafiledb_functions;
 
 //		$custom_field = new custom_field();
 //		$custom_field->init();
@@ -59,7 +59,7 @@ class pafiledb_mcp extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=file&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_mcp'], $this->auth[$cat_id]['auth_mod']);
@@ -183,7 +183,7 @@ class pafiledb_mcp extends pafiledb_public
 					'L_ADD_FILE' => $lang['Afiletitle'],
 
 					'S_HIDDEN_FIELDS' => $s_hidden_fields,
-					'S_FILE_ACTION' => append_sid('dload.' . $phpEx . '?action=mcp'))
+					'S_FILE_ACTION' => append_sid('dload.' . PHP_EXT . '?action=mcp'))
 		);
 
 		if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove', 'file_cat', 'all_file')))
@@ -400,7 +400,7 @@ class pafiledb_mcp extends pafiledb_public
 				'L_UNAPPROVE_FILE' => $lang['Unapprove_selected'],
 				'L_NO_FILES' => $lang['No_file'],
 
-				'PAGINATION' => generate_pagination(append_sid('dload.' . $phpEx . '?action=mcp&amp;mode=' . $mode . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . '&amp;cat_id=' . $cat_id), $total_files, $pafiledb_config['settings_file_page'], $start),
+				'PAGINATION' => generate_pagination(append_sid('dload.' . PHP_EXT . '?action=mcp&amp;mode=' . $mode . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . '&amp;cat_id=' . $cat_id), $total_files, $pafiledb_config['settings_file_page'], $start),
 				'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pafiledb_config['settings_file_page'] ) + 1 ), ceil( $total_files / $pafiledb_config['settings_file_page'] )),
 
 				'S_CAT_LIST' => $cat_list,
@@ -467,7 +467,7 @@ class pafiledb_mcp extends pafiledb_public
 		//$cache->unload();
 
 		/* Original
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 		*/
 	}
 }

@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -57,7 +57,7 @@ if ( isset($_POST['submit']) )
 	$adminfunctions->set_global_message();
 	unset($adminfunctions);
 
-	$message = sprintf($lang['ctracker_glob_msg_saved'], append_sid('admin_cracker_tracker.' . $phpEx . '?modu=4'));
+	$message = sprintf($lang['ctracker_glob_msg_saved'], append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=4'));
 	message_die(GENERAL_MESSAGE, $message);
 }
 else if ( isset($_POST['pull_back']) )
@@ -66,7 +66,7 @@ else if ( isset($_POST['pull_back']) )
 	$adminfunctions->unset_global_message();
 	unset($adminfunctions);
 
-	$message = sprintf($lang['ctracker_glob_msg_reset_ok'], append_sid('admin_cracker_tracker.' . $phpEx . '?modu=4'));
+	$message = sprintf($lang['ctracker_glob_msg_reset_ok'], append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=4'));
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -107,13 +107,13 @@ $template->assign_vars(array(
 	'L_MSG_LINK'		=> $lang['ctracker_glob_msg_link'],
 	'L_FIELD_DESC'		=> $checked_mode,
 
-	'IMG_ICON_GLOB_MSG' => $phpbb_root_path . $images['ctracker_global_msg'],
-	'IMG_ICON_GLOB_RES' => $phpbb_root_path . $images['ctracker_global_res'],
+	'IMG_ICON_GLOB_MSG' => IP_ROOT_PATH . $images['ctracker_global_msg'],
+	'IMG_ICON_GLOB_RES' => IP_ROOT_PATH . $images['ctracker_global_res'],
 
 	'S_CHK_STATUS_1'	=> $check_status_1,
 	'S_CHK_STATUS_2'	=> $check_status_2,
 	'S_CURRENT_TEXT'	=> $ctracker_config->settings['global_message'],
-	'S_FORM_ACTION'		=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=4') )
+	'S_FORM_ACTION'		=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=4') )
   );
 
 

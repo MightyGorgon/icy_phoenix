@@ -17,10 +17,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -50,7 +50,7 @@ if ($auth_level_req > AUTH_ALL)
 }
 $cms_global_blocks = ($board_config['wide_blocks_links'] == 1) ? true : false;
 
-require($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . $phpEx);
+require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 
 // Count and forwrad
 if(($_GET['action'] == 'go') && ($_GET['link_id']))
@@ -92,7 +92,7 @@ if(($_GET['action'] == 'go') && ($_GET['link_id']))
 $page_title = $lang['Site_links'];
 $meta_description = '';
 $meta_keywords = '';
-include('includes/page_header.' . $phpEx);
+include('includes/page_header.' . PHP_EXT);
 
 // Define initial vars
 $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
@@ -184,7 +184,7 @@ else
 }
 
 $template->assign_vars(array(
-	'U_LINK_REG' => append_sid('link_register.' . $phpEx),
+	'U_LINK_REG' => append_sid('link_register.' . PHP_EXT),
 	'L_LINK_REGISTER_RULE' => $lang['Link_register_rule'],
 	'L_LINK_REGISTER_GUEST_RULE' => $lang['Link_register_guest_rule'],
 	'L_LINK_TITLE' => $lang['Link_title'],
@@ -198,11 +198,11 @@ $template->assign_vars(array(
 	'L_SITE_LINKS' => $lang['Site_links'],
 	'L_LINK_US' => $lang['Link_us'] . $board_config['sitename'],
 	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], $board_config['sitename']),'L_SUBMIT' => $lang['Submit'],
-	'U_SITE_LINKS' => append_sid('links.' . $phpEx),
+	'U_SITE_LINKS' => append_sid('links.' . PHP_EXT),
 	'L_LINK_CATEGORY' => $lang['Link_category'],
-	'U_SITE_SEARCH' => append_sid('links.' . $phpEx . '?t=search'),
-	'U_SITE_TOP' => append_sid('links.' . $phpEx . '?t=pop'),
-	'U_SITE_NEW' => append_sid('links.' . $phpEx . '?t=new'),
+	'U_SITE_SEARCH' => append_sid('links.' . PHP_EXT . '?t=search'),
+	'U_SITE_TOP' => append_sid('links.' . PHP_EXT . '?t=pop'),
+	'U_SITE_NEW' => append_sid('links.' . PHP_EXT . '?t=new'),
 	'U_SITE_LOGO' => $link_config['site_logo'],
 	'LINK_US_SYNTAX' => str_replace(' ', '&nbsp;', sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $link_config['site_url'], $link_config['site_logo'], $link_config['width'],$link_config['height'], $board_config['sitename'])),
 	'LINKS_HOME' => $lang['Links_home'],
@@ -273,7 +273,7 @@ if ($t == 'pop' || $t == 'new')
 			{
 				if ($row['link_logo_src'])
 				{
-					$tmp = '<a href=' . append_sid('links.' . $phpEx . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
+					$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
 				}
 				else
 				{
@@ -289,7 +289,7 @@ if ($t == 'pop' || $t == 'new')
 
 			$template->assign_block_vars('linkrow', array(
 				'ROW_CLASS' => $row_class,
-				'LINK_URL' => append_sid('links.' . $phpEx . '?action=go&link_id=' . $row['link_id']),
+				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']),
 				'LINK_TITLE' => $row['link_title'],
 				'LINK_DESC' => $row['link_desc'],
 				'LINK_LOGO_SRC' => $row['link_logo_src'],
@@ -317,7 +317,7 @@ if ($t == 'pop' || $t == 'new')
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$total_links = $row['total'];
-		$pagination = generate_pagination('links.' . $phpEx . '?t=' . $t, $total_links, $linkspp, $start) . '&nbsp;';
+		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t, $total_links, $linkspp, $start) . '&nbsp;';
 	}
 	else
 	{
@@ -342,7 +342,7 @@ if ($t == 'pop' || $t == 'new')
 
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	exit;
 }
 
@@ -403,7 +403,7 @@ if ($t == 'sub_pages')
 		'L_ORDER' => $lang['Order'],
 		'L_SORT' =>  $lang['Sort'],
 		//'L_SUBMIT' => 'Submit',
-		'U_SITE_LINKS_CAT' => append_sid('links.' . $phpEx . '?t=' . $t . '&amp;cat=' . $cat),
+		'U_SITE_LINKS_CAT' => append_sid('links.' . PHP_EXT . '?t=' . $t . '&amp;cat=' . $cat),
 		'S_MODE_SELECT' => $select_sort_mode,
 		'S_ORDER_SELECT' => $select_sort_order
 		)
@@ -446,7 +446,7 @@ if ($t == 'sub_pages')
 			{
 				if ($row['link_logo_src'])
 				{
-					$tmp = '<a href="' . append_sid('links.' . $phpEx . '?action=go&amp;link_id=' . $row['link_id']) . '" alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
+					$tmp = '<a href="' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . '" alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
 				}
 				else
 				{
@@ -462,7 +462,7 @@ if ($t == 'sub_pages')
 
 			$template->assign_block_vars('linkrow', array(
 				'ROW_CLASS' => $row_class,
-				'LINK_URL' => append_sid('links.' . $phpEx . '?action=go&link_id=' . $row['link_id']),
+				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']),
 				'LINK_TITLE' => $row['link_title'],
 				'LINK_DESC' => $row['link_desc'],
 				'LINK_LOGO_SRC' => $row['link_logo_src'],
@@ -491,7 +491,7 @@ if ($t == 'sub_pages')
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$total_links = $row['total'];
-		$pagination = generate_pagination('links.' . $phpEx . '?t=' . $t . '&amp;cat=' . $cat . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_links, $linkspp, $start). '&nbsp;';
+		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;cat=' . $cat . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_links, $linkspp, $start). '&nbsp;';
 	}
 	else
 	{
@@ -515,7 +515,7 @@ if ($t == 'sub_pages')
 
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	exit;
 }
 
@@ -577,7 +577,7 @@ if ($t == 'search')
 				{
 					if ($row['link_logo_src'])
 					{
-						$tmp = '<a href=' . append_sid('links.' . $phpEx . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
+						$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
 					}
 					else
 					{
@@ -593,7 +593,7 @@ if ($t == 'search')
 
 				$template->assign_block_vars('linkrow', array(
 					'ROW_CLASS' => $row_class,
-					'LINK_URL' => append_sid('links.' . $phpEx . '?action=go&amp;link_id=' . $row['link_id']),
+					'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']),
 					'LINK_TITLE' => $row['link_title'],
 					'LINK_DESC' => $row['link_desc'],
 					'LINK_LOGO_SRC' => $row['link_logo_src'],
@@ -622,7 +622,7 @@ if ($t == 'search')
 		if ($row = $db->sql_fetchrow($result))
 		{
 			$total_links = $row['total'];
-			$pagination = generate_pagination('links.' . $phpEx . '?t=' . $t . '&amp;search_keywords=' . $search_keywords, $total_links, $linkspp, $start). '&nbsp;';
+			$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;search_keywords=' . $search_keywords, $total_links, $linkspp, $start). '&nbsp;';
 		}
 		else
 		{
@@ -647,7 +647,7 @@ if ($t == 'search')
 
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	exit;
 }
 
@@ -679,7 +679,7 @@ if ($row = $db->sql_fetchrow($result))
 			message_die(GENERAL_ERROR, 'Could not query links list', '', __LINE__, __FILE__, $sql);
 		}
 		$template->assign_block_vars('linkrow' . $i, array(
-			'LINK_URL' => append_sid('links.' . $phpEx . '?t=sub_pages&amp;cat=' . $row['cat_id']),
+			'LINK_URL' => append_sid('links.' . PHP_EXT . '?t=sub_pages&amp;cat=' . $row['cat_id']),
 			'LINK_TITLE' => $row['cat_title'],
 			'LINK_NUMBER' => $db->sql_numrows($linknum)
 			)
@@ -701,6 +701,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

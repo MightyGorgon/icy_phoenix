@@ -9,25 +9,22 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IMG_THUMB', true);
 define('CT_SECLEVEL', 'MEDIUM');
 $ct_ignoregvar = array('');
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$create_users_subfolders = true;
-
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH . '';
-include($album_root_path . 'album_common.' . $phpEx);
-require($album_root_path . 'album_image_class.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request
@@ -88,7 +85,7 @@ else
 
 $pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $pic_thumbnail;
 
-if ($create_users_subfolders == true)
+if (USERS_SUBFOLDERS_IMG == true)
 {
 	if ((count($pic_path) > 4) && (strpos($pic_id, $board_config['server_name']) !== false))
 	{

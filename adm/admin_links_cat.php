@@ -17,7 +17,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -29,9 +29,9 @@ if( !empty($setmodules) )
 //
 // Let's set the root dir for phpBB
 //
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 
 // --------------------------
@@ -77,7 +77,7 @@ if( !isset($_POST['mode']) )
 		$template->assign_vars(array(
 			'L_LINK_CAT_TITLE' => $lang['Link_Categories_Title'],
 			'L_LINK_CAT_EXPLAIN' => $lang['Link_Categories_Explain'],
-			'L_LINK_ACTION' => append_sid('admin_links_cat.' . $phpEx),
+			'L_LINK_ACTION' => append_sid('admin_links_cat.' . PHP_EXT),
 			'L_MOVE_UP' => $lang['Move_up'],
 			'L_MOVE_DOWN' => $lang['Move_down'],
 			'L_EDIT' => $lang['Edit'],
@@ -103,17 +103,17 @@ if( !isset($_POST['mode']) )
 			$template->assign_block_vars('catrow', array(
 				'COLOR' => ($i % 2) ? 'row1' : 'row2',
 				'TITLE' => $catrow[$i]['cat_title'],
-				'S_MOVE_UP' => append_sid("admin_links_cat.$phpEx?action=move&amp;move=-15&amp;cat_id=" . $catrow[$i]['cat_id']),
-				'S_MOVE_DOWN' => append_sid("admin_links_cat.$phpEx?action=move&amp;move=15&amp;cat_id=" . $catrow[$i]['cat_id']),
-				'S_EDIT_ACTION' => append_sid("admin_links_cat.$phpEx?action=edit&amp;cat_id=" . $catrow[$i]['cat_id']),
-				'S_DELETE_ACTION' => append_sid("admin_links_cat.$phpEx?action=delete&amp;cat_id=" . $catrow[$i]['cat_id'])
+				'S_MOVE_UP' => append_sid('admin_links_cat.' . PHP_EXT . '?action=move&amp;move=-15&amp;cat_id=' . $catrow[$i]['cat_id']),
+				'S_MOVE_DOWN' => append_sid('admin_links_cat.' . PHP_EXT . '?action=move&amp;move=15&amp;cat_id=' . $catrow[$i]['cat_id']),
+				'S_EDIT_ACTION' => append_sid('admin_links_cat.' . PHP_EXT . '?action=edit&amp;cat_id=' . $catrow[$i]['cat_id']),
+				'S_DELETE_ACTION' => append_sid('admin_links_cat.' . PHP_EXT . '?action=delete&amp;cat_id=' . $catrow[$i]['cat_id'])
 				)
 			);
 		}
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -141,7 +141,7 @@ if( !isset($_POST['mode']) )
 			$template->assign_vars(array(
 				'L_LINK_CAT_TITLE' => $lang['Link_Categories_Title'],
 				'L_LINK_CAT_EXPLAIN' => $lang['Link_Categories_Explain'],
-				'S_LINK_ACTION' => append_sid("admin_links_cat.$phpEx?cat_id=$cat_id"),
+				'S_LINK_ACTION' => append_sid('admin_links_cat.' . PHP_EXT . '?cat_id=' . $cat_id),
 				'L_CAT_TITLE' => $lang['Category_Title'],
 
 				'L_DISABLED' => $lang['Disabled'],
@@ -157,7 +157,7 @@ if( !isset($_POST['mode']) )
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 		}
 		else if( $_GET['action'] == 'delete' )
 		{
@@ -201,7 +201,7 @@ if( !isset($_POST['mode']) )
 			);
 
 			$template->assign_vars(array(
-				'S_LINK_ACTION' => append_sid("admin_links_cat.$phpEx?cat_id=$cat_id"),
+				'S_LINK_ACTION' => append_sid('admin_links_cat.' . PHP_EXT . '?cat_id=' . $cat_id),
 				'L_CAT_DELETE' => $lang['Delete_Category'],
 				'L_CAT_DELETE_EXPLAIN' => $lang['Delete_Category_Explain'],
 				'L_CAT_TITLE' => $lang['Category_Title'],
@@ -213,7 +213,7 @@ if( !isset($_POST['mode']) )
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 		}
 		else if( $_GET['action'] == 'move' )
 		{
@@ -231,7 +231,7 @@ if( !isset($_POST['mode']) )
 			reorder_cat();
 
 			// Return a message...
-			$message = $lang['Category_changed_order'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_changed_order'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -250,7 +250,7 @@ else
 			$template->assign_vars(array(
 				'L_LINK_CAT_TITLE' => $lang['Link_Categories_Title'],
 				'L_LINK_CAT_EXPLAIN' => $lang['Link_Categories_Explain'],
-				'S_LINK_ACTION' => append_sid("admin_links_cat.$phpEx"),
+				'S_LINK_ACTION' => append_sid("admin_links_cat." . PHP_EXT),
 				'L_CAT_TITLE' => $lang['Category_Title'],
 				'L_DISABLED' => $lang['Disabled'],
 				'S_MODE' => 'new',
@@ -259,7 +259,7 @@ else
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 		}
 		else
 		{
@@ -288,7 +288,7 @@ else
 			}
 
 			// Return a message...
-			$message = $lang['New_category_created'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['New_category_created'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -310,7 +310,7 @@ else
 		}
 
 		// Return a message...
-		$message = $lang['Category_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+		$message = $lang['Category_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -360,7 +360,7 @@ else
 			reorder_cat();
 
 			// Return a message...
-			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -386,7 +386,7 @@ else
 			reorder_cat();
 
 			// Return a message...
-			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 		}

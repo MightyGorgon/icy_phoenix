@@ -8,9 +8,43 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+// Mighty Gorgon - ACP Privacy - BEGIN
+if (defined('MAIN_ADMINS_ID'))
+{
+	if (defined('JA_PARSING') && (JA_PARSING == true))
+	{
+		return;
+	}
+	$is_allowed = false;
+	$allowed_admins = explode(',', MAIN_ADMINS_ID);
+	if (defined('FOUNDER_ID'))
+	{
+		if ($userdata['user_id'] == FOUNDER_ID)
+		{
+			$is_allowed = true;
+		}
+	}
+	if ($is_allowed == false)
+	{
+		for ($i = 0; $i < count($allowed_admins); $i++)
+		{
+			if ($userdata['user_id'] == $allowed_admins[$i])
+			{
+				$is_allowed = true;
+				break;
+			}
+		}
+	}
+	if ($is_allowed == false)
+	{
+		return;
+	}
+}
+// Mighty Gorgon - ACP Privacy - END
+
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	//$module['1400_DB_Maintenance']['100_Backup_DB'] = $filename . '?perform=backup';
@@ -24,11 +58,11 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/sql_parse.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/sql_parse.' . PHP_EXT);
 
 //
 // Set VERBOSE to 1  for debugging info..
@@ -311,7 +345,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 	{
 		//Start Optimize Database 1.2.2 by Sko22 < sko22@quellicheilpc.it >
 		case 'optimize':
-			include('./page_header_admin.' . $phpEx);
+			include('./page_header_admin.' . PHP_EXT);
 			$current_time = time();
 			// If has been clicked the button reset
 			if( isset( $_POST['reset'] ) )
@@ -579,7 +613,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 					'L_UNCHECKALL' => $lang['Optimize_UncheckAll'],
 					'L_INVERTCHECKED' => $lang['Optimize_InvertChecked'],
 					'L_START_OPTIMIZE' => $lang['Optimize'],
-					'S_DBUTILS_ACTION' => append_sid('admin_db_utilities.' . $phpEx),
+					'S_DBUTILS_ACTION' => append_sid('admin_db_utilities.' . PHP_EXT),
 					'S_ENABLE_CRON_YES' => $enable_cron_yes,
 					'S_ENABLE_CRON_NO' => $enable_cron_no,
 					'S_SHOW_BEGIN_FOR' => $opt_conf['show_begin_for'],
@@ -624,14 +658,14 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 				if ( $optimize_notablechecked == true )
 				{
 					$message = $lang['Optimize_NoTableChecked'] . '.' .
-					'<br /><br />' . sprintf($lang['Optimize_return'], '<a href="' . append_sid('admin_db_utilities.' . $phpEx . '?perform=optimize') . '">', '</a>') .
-					'<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+					'<br /><br />' . sprintf($lang['Optimize_return'], '<a href="' . append_sid('admin_db_utilities.' . PHP_EXT . '?perform=optimize') . '">', '</a>') .
+					'<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				}
 				else
 				{
 					$message = $message = $lang['Optimize_success'] . '.' .
-					'<br /><br />' . sprintf($lang['Optimize_return'], '<a href="' . append_sid('admin_db_utilities.' . $phpEx . '?perform=optimize') . '">', '</a>') .
-					'<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+					'<br /><br />' . sprintf($lang['Optimize_return'], '<a href="' . append_sid('admin_db_utilities.' . PHP_EXT . '?perform=optimize') . '">', '</a>') .
+					'<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				}
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -659,7 +693,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 
 			if ($error)
 			{
-				include('./page_header_admin.' . $phpEx);
+				include('./page_header_admin.' . PHP_EXT);
 
 				$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 
@@ -670,7 +704,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 				);
 
 				$template->pparse('body');
-				include('./page_footer_admin.' . $phpEx);
+				include('./page_footer_admin.' . PHP_EXT);
 			}
 
 			$phpbb_only = (!empty($_POST['phpbb_only'])) ? $_POST['phpbb_only'] : ( (!empty($_GET['phpbb_only'])) ? $_GET['phpbb_only'] : 0 );
@@ -718,7 +752,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 
 			if( !isset($_POST['backupstart']) && !isset($_GET['backupstart']))
 			{
-				include('./page_header_admin.' . $phpEx);
+				include('./page_header_admin.' . PHP_EXT);
 
 				$template->set_filenames(array('body' => ADM_TPL . 'db_utils_backup_body.tpl'));
 				$s_hidden_fields = '<input type="hidden" name="perform" value="backup" /><input type="hidden" name="drop" value="1" /><input type="hidden" name="perform" value="' . $perform . '" />';
@@ -737,7 +771,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 					'L_NO' => $lang['No'],
 					'L_YES' => $lang['Yes'],
 					'S_HIDDEN_FIELDS' => $s_hidden_fields,
-					'S_DBUTILS_ACTION' => append_sid('admin_db_utilities.' . $phpEx)
+					'S_DBUTILS_ACTION' => append_sid('admin_db_utilities.' . PHP_EXT)
 					)
 				);
 				$template->pparse('body');
@@ -752,16 +786,16 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 				$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 
 				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="2;url=' . append_sid('admin_db_utilities.' . $phpEx . '?perform=backup&amp;additional_tables=' . quotemeta($additional_tables) . '&amp;backup_type=' . $backup_type . '&amp;drop=1&amp;backupstart=1&amp;phpbb_only=' . $phpbb_only . '&amp;gzipcompress=' . $gzipcompress . '&amp;startdownload=1') . '">',
+					'META' => '<meta http-equiv="refresh" content="2;url=' . append_sid('admin_db_utilities.' . PHP_EXT . '?perform=backup&amp;additional_tables=' . quotemeta($additional_tables) . '&amp;backup_type=' . $backup_type . '&amp;drop=1&amp;backupstart=1&amp;phpbb_only=' . $phpbb_only . '&amp;gzipcompress=' . $gzipcompress . '&amp;startdownload=1') . '">',
 
 					'MESSAGE_TITLE' => $lang['Database_Utilities'] . ': ' . $lang['Backup'],
 					'MESSAGE_TEXT' => $lang['Backup_download']
 					)
 				);
 
-				include('./page_header_admin.' . $phpEx);
+				include('./page_header_admin.' . PHP_EXT);
 				$template->pparse('body');
-				include('./page_footer_admin.' . $phpEx);
+				include('./page_footer_admin.' . PHP_EXT);
 			}
 			header('Pragma: no-cache');
 			$do_gzip_compress = false;
@@ -833,7 +867,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 				//
 				// Define Template files...
 				//
-				include('./page_header_admin.' . $phpEx);
+				include('./page_header_admin.' . PHP_EXT);
 				$template->set_filenames(array('body' => ADM_TPL . 'db_utils_restore_body.tpl'));
 
 				$s_hidden_fields = "<input type=\"hidden\" name=\"perform\" value=\"restore\" /><input type=\"hidden\" name=\"perform\" value=\"$perform\" />";
@@ -844,7 +878,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 					'L_SELECT_FILE' => $lang['Select_file'],
 					'L_START_RESTORE' => $lang['Start_Restore'],
 
-					'S_DBUTILS_ACTION' => append_sid('admin_db_utilities.' . $phpEx),
+					'S_DBUTILS_ACTION' => append_sid('admin_db_utilities.' . PHP_EXT),
 					'S_HIDDEN_FIELDS' => $s_hidden_fields
 					)
 				);
@@ -948,7 +982,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 						}
 					}
 				}
-				include('./page_header_admin.' . $phpEx);
+				include('./page_header_admin.' . PHP_EXT);
 				$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 				$message = $lang['Restore_success'];
 				$template->assign_vars(array(
@@ -963,6 +997,6 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 	}
 }
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

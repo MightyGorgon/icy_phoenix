@@ -15,9 +15,9 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
-	define('IN_PHPBB', true);
+	define('IN_ICYPHOENIX', true);
 }
 $aprvmUtil = new aprvmUtils();
 $aprvmUtil->modVersion = '1.6.0';
@@ -27,11 +27,46 @@ $aprvmUtil->copyrightYear = '2001-2005';
 /** Module Setup
 /***************************************************************************/
 define('PRIVMSGS_ALL_MAIL', -1);
-$phpbb_root_path = './../';
-include($phpbb_root_path . 'extension.inc');
-include_once('pagestart.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+include_once('pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+
 //$aprvmUtil->find_lang_file('lang_admin_priv_msgs');
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+if (defined('MAIN_ADMINS_ID'))
+{
+	if (defined('JA_PARSING') && (JA_PARSING == true))
+	{
+		return;
+	}
+	$is_allowed = false;
+	$allowed_admins = explode(',', MAIN_ADMINS_ID);
+	if (defined('FOUNDER_ID'))
+	{
+		if ($userdata['user_id'] == FOUNDER_ID)
+		{
+			$is_allowed = true;
+		}
+	}
+	if ($is_allowed == false)
+	{
+		for ($i = 0; $i < count($allowed_admins); $i++)
+		{
+			if ($userdata['user_id'] == $allowed_admins[$i])
+			{
+				$is_allowed = true;
+				break;
+			}
+		}
+	}
+	if ($is_allowed == false)
+	{
+		return;
+	}
+}
+// Mighty Gorgon - ACP Privacy - END
+
 if (!empty($setmodules))
 {
 	$filename = basename(__FILE__);
@@ -48,9 +83,17 @@ if (!empty($setmodules))
 /**    class structured.  Maybe some day when phpBB moves to php5 I will.
 /******************************************************************************************/
 //Normal sections.
-$params = array('mode' => '', 'order' => 'DESC',
-'sort' => 'privmsgs_date', 'pmaction' => 'none',
-'filter_from' => '', 'filter_to' => '', 'filter_from_text' => '', 'filter_to_text' => '');
+$params = array(
+	'mode' => '',
+	'order' => 'DESC',
+	'sort' => 'privmsgs_date',
+	'pmaction' => 'none',
+	'filter_from' => '',
+	'filter_to' => '',
+	'filter_from_text' => '',
+	'filter_to_text' => ''
+);
+
 foreach($params as $var => $default)
 {
 	$$var = $default;
@@ -425,7 +468,7 @@ switch($pmaction)
 
 		$template->pparse('body');
 		$aprvmUtil->copyright($page_title, '2001-2003');
-		include('page_footer_admin.' . $phpEx);
+		include('page_footer_admin.' . PHP_EXT);
 		break;
 	}
 }
@@ -458,7 +501,7 @@ class aprvmUtils
 	function makeURLStart()
 	{
 		global $filter_from, $filter_to, $order;
-		global $mode, $pmtype, $sort, $pmtype_text, $start, $phpEx;
+		global $mode, $pmtype, $sort, $pmtype_text, $start;
 
 		$this->urlBase = basename(__FILE__). "?order=$order&amp;sort=$sort&amp;pmtype=$pmtype&filter_from=$filter_from&filter_to=$filter_to";
 		$this->urlPage = $this->urlBase. "&mode=$mode";
@@ -665,7 +708,7 @@ class aprvmUtils
 	function do_pagination($mode = 'normal')
 	{
 		global $db, $filter_from_text, $filter_to_text, $filter_from, $filter_to, $lang, $template, $order;
-		global $mode, $pmtype, $sort, $pmtype_text, $archive_text, $start, $archive_start, $topics_per_pg, $phpEx;
+		global $mode, $pmtype, $sort, $pmtype_text, $archive_text, $start, $archive_start, $topics_per_pg;
 
 		$sql = 'SELECT count(*) AS total FROM ' . PRIVMSGS_TABLE . $this->inArchiveText." pm
 			WHERE 1
@@ -697,15 +740,15 @@ class aprvmUtils
 	*/
 	function find_lang_file($filename)
 	{
-		global $lang, $phpbb_root_path, $board_config, $phpEx;
+		global $lang, $board_config;
 
-		if (file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx"))
+		if (file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $filename . '.' . PHP_EXT))
 		{
-			include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx");
+			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $filename . '.' . PHP_EXT);
 		}
-		elseif (file_exists($phpbb_root_path . "language/lang_english/$filename.$phpEx"))
+		elseif (file_exists(IP_ROOT_PATH . 'language/lang_english/' . $filename . '.' . PHP_EXT))
 		{
-			include_once($phpbb_root_path . "language/lang_english/$filename.$phpEx");
+			include_once(IP_ROOT_PATH . 'language/lang_english/' . $filename . '.' . PHP_EXT);
 		}
 		else
 		{

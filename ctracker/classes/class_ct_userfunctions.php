@@ -219,7 +219,7 @@ class ct_userfunctions
 	 */
 	function handle_postings()
 	{
-		global $lang, $db, $ctracker_config, $userdata, $phpbb_root_path, $phpEx;
+		global $lang, $db, $ctracker_config, $userdata;
 
 		// MOD or ADMIN? - No Action please.
 		if ( $userdata['user_level'] > 0 )
@@ -295,7 +295,7 @@ class ct_userfunctions
 				// file!
 				$ct_spammer_def = array();
 
-				include_once($phpbb_root_path . 'ctracker/constants.' . $phpEx);
+				include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
 
 				for($i = 0; $i < count($ct_spammer_def); $i++)
 				{
@@ -321,7 +321,7 @@ class ct_userfunctions
 	 */
 	function block_handler()
 	{
-		global $db, $lang, $ctracker_config, $userdata, $phpbb_root_path, $phpEx;
+		global $db, $lang, $ctracker_config, $userdata;
 
 		if ( $userdata['user_id'] == ANONYMOUS )
 		{
@@ -355,7 +355,7 @@ class ct_userfunctions
 		}
 
 		// Log it
-		include_once($phpbb_root_path . 'ctracker/classes/class_log_manager.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
 		$logfile = new log_manager();
 		$logfile->prepare_log($userdata['username']);
 		$logfile->write_general_logfile($ctracker_config->settings['logsize_spammer'], 5);
@@ -386,7 +386,7 @@ class ct_userfunctions
 	 */
 	function handle_profile()
 	{
-		global $ctracker_config, $phpbb_root_path, $phpEx, $mode, $lang, $userdata;
+		global $ctracker_config, $mode, $lang, $userdata;
 
 		/*
 		 * Done this that Eclipse or another Code-Checker does not output
@@ -399,7 +399,7 @@ class ct_userfunctions
 		$ct_userspm_def = array();
 
 		// We need the constants file so we include it now
-		include_once($phpbb_root_path . 'ctracker/constants.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
 
 		// Register Protection (TIME)
 		if ( intval($ctracker_config->settings['reg_protection']) == 1 && $mode == 'register')

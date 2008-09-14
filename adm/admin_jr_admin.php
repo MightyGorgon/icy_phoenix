@@ -18,7 +18,7 @@
 // CTracker_Ignore: File Checked By Human
 // Tell the Security Scanner that reachable code in this file is not a security issue
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('MOD_VERSION', '2.0.5');
 define('MOD_CODE', 1);
 
@@ -29,11 +29,11 @@ if (!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-include($phpbb_root_path . 'extension.inc');
-include_once($phpbb_root_path . 'includes/functions_jr_admin.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-include_once('pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include_once('pagestart.' . PHP_EXT);
 find_lang_file_nivisec('lang_jr_admin');
 /****************************************************************************
 /** Module Actual Start
@@ -117,10 +117,10 @@ function jr_admin_make_rank_list($user_id, $user_rank)
 
 function jr_admin_make_bookmark_heading($letters_list, $start)
 {
-	global $lang, $order, $phpEx;
+	global $lang, $order;
 
 	$seperator = ' | ';
-	$startb = '[ <a href="' . append_sid('admin_jr_admin.' . $phpEx . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($first_link))) . '" class="nav">All</a> | ';
+	$startb = '[ <a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($first_link))) . '" class="nav">All</a> | ';
 	$end = ' ]';
 
 	$list = '';
@@ -149,7 +149,7 @@ function jr_admin_make_bookmark_heading($letters_list, $start)
 			}
 			if ($make_link)
 			{
-				$list .= '<a href="' . append_sid('admin_jr_admin.' . $phpEx . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=0') . '" class="nav">0 - 9</a>';
+				$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=0') . '" class="nav">0 - 9</a>';
 			}
 			else
 			{
@@ -165,7 +165,7 @@ function jr_admin_make_bookmark_heading($letters_list, $start)
 			{
 				if (isset($letters_list[$i]))
 				{
-					$list .= '<a href="' . append_sid('admin_jr_admin.' . $phpEx . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($i))) . '" class="nav">' . strtoupper(chr($i)) . '</a>';
+					$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($i))) . '" class="nav">' . strtoupper(chr($i)) . '</a>';
 				}
 				else
 				{
@@ -178,7 +178,7 @@ function jr_admin_make_bookmark_heading($letters_list, $start)
 		{
 			if (isset($letters_list[$ord_value]))
 			{
-				$list .= '<a href="' . append_sid('admin_jr_admin.' . $phpEx . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($ord_value))) . '" class="nav">' . strtoupper(chr($ord_value)) . '</a>';
+				$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($ord_value))) . '" class="nav">' . strtoupper(chr($ord_value)) . '</a>';
 			}
 			else
 			{
@@ -311,7 +311,7 @@ if (!empty($user_id) && !isset($_POST['update_user']))
 }
 else
 {
-	empty_cache_folder('./../', true);
+	empty_cache_folders(true);
 	//Update info like module list and color groups
 	if (isset($_POST['update_user']) && !empty($user_id))
 	{
@@ -351,7 +351,7 @@ else
 			message_die(GENERAL_ERROR, $lang['Error_User_Table'], '', __LINE__, __FILE__, $sql);
 		}
 		$status_message .= $lang['Updated_Permissions'];
-		empty_cache_folder('./../', true);
+		empty_cache_folders(true);
 	}
 
 	//No user_id was found or we are done updating, take them to the info page
@@ -442,7 +442,7 @@ else
 	$total_users_count = $row;
 
 	$template->assign_vars(array(
-		'PAGINATION' => generate_pagination('admin_jr_admin.' . $phpEx . '?sort_item=' . $sort_item . '&amp;order=' . $order . '&amp;alphanum=' . $alphanum, $total_users_count, $per_page, $start),
+		'PAGINATION' => generate_pagination('admin_jr_admin.' . PHP_EXT . '?sort_item=' . $sort_item . '&amp;order=' . $order . '&amp;alphanum=' . $alphanum, $total_users_count, $per_page, $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), ceil($total_users_count / $per_page))
 		)
 	);
@@ -450,8 +450,8 @@ else
 	//Make sort image choice and sorting links
 	$base_order = ($order == 'ASC') ? 'order=DESC' : 'order=ASC';
 	$base_filename = append_sid(basename(__FILE__) . '?' . $base_order);
-	$desc_img = '<img src="' . $phpbb_root_path.$lang['DESC_Image'] . '" border="0">';
-	$asc_img = '<img src="' . $phpbb_root_path.$lang['ASC_Image'] . '" border="0">';
+	$desc_img = '<img src="' . IP_ROOT_PATH . $lang['DESC_Image'] . '" border="0" />';
+	$asc_img = '<img src="' . IP_ROOT_PATH . $lang['ASC_Image'] . '" border="0" />';
 	$template->assign_vars(array(
 		'IMG_USERNAME' => ($sort_item == 'username') ? ($order == 'ASC') ? $asc_img : $desc_img : '',
 		'IMG_MODULES' => ($sort_item == 'user_modules') ? ($order == 'ASC') ? $asc_img : $desc_img : '',
@@ -496,9 +496,9 @@ else
 //Common Variables
 $template->assign_vars(array(
 	'S_ACTION' => append_sid(basename(__FILE__)),
-	'S_USER_PERM' => append_sid('admin_ug_auth.' . $phpEx),
-	'S_PROFILE' => append_sid($phpbb_root_path . PROFILE_MG),
-	'S_MANAGEMENT' => append_sid('admin_users.' . $phpEx),
+	'S_USER_PERM' => append_sid('admin_ug_auth.' . PHP_EXT),
+	'S_PROFILE' => append_sid(IP_ROOT_PATH . PROFILE_MG),
+	'S_MANAGEMENT' => append_sid('admin_users.' . PHP_EXT),
 	'S_USER_POST_URL' => POST_USERS_URL,
 	'L_SEARCH' => $lang['Search'],
 	'L_NONE' => $lang['None'],
@@ -554,9 +554,9 @@ if ($status_message != '')
 /************************************************************************
 ** Begin The Version Check Feature
 ************************************************************************/
-if (file_exists($phpbb_root_path . 'nivisec_version_check.' . $phpEx) && !DISABLE_VERSION_CHECK)
+if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_VERSION_CHECK)
 {
-	include($phpbb_root_path . 'nivisec_version_check.' . $phpEx);
+	include(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT);
 }
 /************************************************************************
 ** End The Version Check Feature
@@ -564,6 +564,6 @@ if (file_exists($phpbb_root_path . 'nivisec_version_check.' . $phpEx) && !DISABL
 
 $template->pparse('body');
 copyright_nivisec($page_title, '2002-2003');
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

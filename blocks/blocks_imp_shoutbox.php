@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,10 +24,10 @@ if(!function_exists(imp_shoutbox_block_func))
 {
 	function imp_shoutbox_block_func()
 	{
-		global $template, $phpEx;
+		global $template;
 
 		$template->assign_vars(array(
-			'U_SHOUTBOX' => append_sid('shoutbox.' . $phpEx),
+			'U_SHOUTBOX' => append_sid('shoutbox.' . PHP_EXT),
 			)
 		);
 	}

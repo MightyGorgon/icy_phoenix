@@ -19,13 +19,13 @@ class pafiledb_post_comment extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $theme, $userdata, $phpbb_root_path, $bbcode_tpl;
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $theme, $userdata, $bbcode_tpl;
 		global $html_entities_match, $html_entities_replace, $unhtml_specialchars_match, $unhtml_specialchars_replace;
 		global $pafiledb_functions, $bbcode, $template, $view_pic_upload, $user_ip, $session_length, $starttime, $post_image_lang;
 
-		include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-		include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-		include_once($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_comment.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_comment.' . PHP_EXT);
 		if ( isset($_REQUEST['file_id']) )
 		{
 			$file_id = intval($_REQUEST['file_id']);
@@ -36,14 +36,14 @@ class pafiledb_post_comment extends pafiledb_public
 		}
 
 		define('IN_PA_POSTING', true);
-		define('IN_PHPBB', true);
+		define('IN_ICYPHOENIX', true);
 		// BBCBMG - BEGIN
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-		include($phpbb_root_path . 'includes/bbcb_mg.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 		// BBCBMG - END
 		// BBCBMG SMILEYS - BEGIN
 		generate_smilies('inline');
-		include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 		// BBCBMG SMILEYS - END
 
 // MX Addon
@@ -81,7 +81,7 @@ class pafiledb_post_comment extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=post_comment&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=post_comment&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_download'], $this->auth[$file_data['file_catid']]['auth_post_comment_type']);
@@ -118,7 +118,7 @@ class pafiledb_post_comment extends pafiledb_public
 			}
 
 			$this->_pafiledb();
-			$message = $lang['Comment_deleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
+			$message = $lang['Comment_deleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -146,7 +146,7 @@ class pafiledb_post_comment extends pafiledb_public
 
 			$pafiledb_template->assign_vars(array(
 				'HTML_STATUS' => $html_status,
-				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . $phpEx . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
 				'SMILIES_STATUS' => $smilies_status,
 				'LINKS_STATUS' => $links_status,
 				'IMAGES_STATUS' => $images_status,
@@ -174,10 +174,10 @@ class pafiledb_post_comment extends pafiledb_public
 				'L_MSG_LENGTH_6' => $lang['Msg_length_6'],
 
 				'U_INDEX' => append_sid(PORTAL_MG),
-				'U_DOWNLOAD_HOME' => append_sid('dload.' . $phpEx),
-				'U_FILE_NAME' => append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id),
+				'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
+				'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 
-				'S_POST_ACTION' => append_sid('dload.' . $phpEx),
+				'S_POST_ACTION' => append_sid('dload.' . PHP_EXT),
 				'S_HIDDEN_FORM_FIELDS' => $hidden_form_fields
 				)
 			);
@@ -240,7 +240,7 @@ class pafiledb_post_comment extends pafiledb_public
 				message_die(GENERAL_ERROR, 'Couldnt insert comments', '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Comment_posted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
+			$message = $lang['Comment_posted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		$this->display($lang['Download'], 'pa_comment_posting.tpl');

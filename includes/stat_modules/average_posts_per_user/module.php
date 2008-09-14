@@ -8,12 +8,10 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
-
-// setup
 
 // start template
 $template->assign_vars(array(
@@ -43,11 +41,12 @@ if (!($result = $stat_db->sql_query($sql)))
 $row = $stat_db->sql_fetchrow($result);
 $total_users = $row['total_users'];
 
-$avposts = round($total_posts/$total_users);
+$avposts = round($total_posts / $total_users);
 
 $template->assign_block_vars('av_posts', array(
 	'CLASS' => $class,
 	'AVPOSTS' => $avposts
 	)
 );
+
 ?>

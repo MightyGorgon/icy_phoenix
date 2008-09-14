@@ -16,14 +16,14 @@
 *
 */
 
-define('IN_PHPBB',true);
+define('IN_ICYPHOENIX', true);
 
 // start script
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 if ( !defined('XS_TPL_PATH') )
 {
@@ -42,7 +42,7 @@ if ( $mode == 'smilies' )
 // Borrowed from functions_post.php
 function generate_smilies($mode)
 {
-	global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path;
+	global $db, $board_config, $template, $lang, $images, $theme;
 	global $user_ip, $session_length, $starttime;
 	global $userdata, $user;
 
@@ -60,7 +60,7 @@ function generate_smilies($mode)
 		$gen_simple_header = true;
 
 		$page_title = $lang['Emoticons'] . ' - ' . $topic_title;
-		include($phpbb_root_path . ADM . '/page_header_admin.' . $phpEx);
+		include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 		$template->set_filenames(array('smiliesbody' => XS_TPL_PATH . 'news_smilies.tpl'));
 	}
@@ -125,7 +125,7 @@ function generate_smilies($mode)
 
 				$template->assign_vars(array(
 					'L_MORE_SMILIES' => $lang['More_emoticons'],
-					'U_MORE_SMILIES' => append_sid('posting.' . $phpEx . '?mode=smilies'))
+					'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies'))
 				);
 			}
 
@@ -144,7 +144,7 @@ function generate_smilies($mode)
 	{
 		$template->pparse('smiliesbody');
 
-		include($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+		include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	}
 }
 // End Functions

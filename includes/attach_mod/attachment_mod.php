@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -36,46 +36,46 @@ while ($row = $db->sql_fetchrow($result))
 // We assign the original default board language here, because it gets overwritten later with the users default language
 $attach_config['board_lang'] = trim($board_config['default_lang']);
 
-include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/constants.' . $phpEx);
-include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_attach.' . $phpEx);
-include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . $phpEx);
+include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
+include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_attach.' . PHP_EXT);
+include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . PHP_EXT);
 if(defined('IN_DOWNLOAD') || defined('IN_ADMIN') || defined('ATTACH_DISPLAY') || defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_includes.' . $phpEx);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_includes.' . PHP_EXT);
 }
 if(defined('IN_DOWNLOAD') || defined('IN_ADMIN') || defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_posting.' . $phpEx);
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_delete.' . $phpEx);
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . $phpEx);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_posting.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
 }
 if(defined('IN_ADMIN'))
 {
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_selects.' . $phpEx);
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_admin.' . $phpEx);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_selects.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
 }
 if(defined('ATTACH_PROFILE'))
 {
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_profile.' . $phpEx);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_profile.' . PHP_EXT);
 }
 
 // Please do not change the include-order, it is valuable for proper execution.
 // Functions for displaying Attachment Things
 if(defined('IN_DOWNLOAD') || defined('ATTACH_DISPLAY') || defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'displaying.' . $phpEx);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
 }
 
 // Posting Attachments Class (HAS TO BE BEFORE PM)
 if(defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'posting_attachments.' . $phpEx);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'posting_attachments.' . PHP_EXT);
 }
 
 if(defined('ATTACH_PM'))
 {
 	// PM Attachments Class
-	include($phpbb_root_path . ATTACH_MOD_PATH . 'pm_attachments.' . $phpEx);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'pm_attachments.' . PHP_EXT);
 }
 /*
 */

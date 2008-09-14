@@ -9,7 +9,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_ADMIN', true);
 // to enable email notification to the user, after deletion, enable this
 define('NOTIFY_USERS', true);
@@ -21,12 +21,12 @@ if (empty($_POST['mode']) && empty($_GET['mode']))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/digest_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_mg_users.' . $phpEx);
-include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 @set_time_limit(180);
 
@@ -75,31 +75,31 @@ if(!isset($_POST['confirm']) && !KILL_CONFIRM)
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 
-		'S_CONFIRM_ACTION' => append_sid('admin_prune_users_loop.' . $phpEx),
+		'S_CONFIRM_ACTION' => append_sid('admin_prune_users_loop.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
 	$template->pparse('confirm');
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 	exit();
 }
 
 // Recall kill script!
-include($phpbb_root_path . 'includes/users_delete_inc.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/users_delete_inc.' . PHP_EXT);
 
 $message = '<b>Mode</b>: [ <span class="topic_glo">' . $mode_des . '</span> ]<br />' . (($i) ? sprintf($lang['Prune_users_number'], $i) . $name_list : $lang['Prune_no_users']);
 
 if (($mode == 'prune_mg') && ($users_number == $i))
 {
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('delete_users.' . $phpEx . '?mode=' . $mode . '&amp;users_number=' . $users_number . '&amp;days=' . $days) . '">'
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('delete_users.' . PHP_EXT . '?mode=' . $mode . '&amp;users_number=' . $users_number . '&amp;days=' . $days) . '">'
 		)
 	);
 	$message = '<span class="topic_glo">IN PROGRESS...</span><br /><br />' . $message;
 }
 else
 {
-	$message .= '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx) . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 }
 
 message_die(GENERAL_MESSAGE, $message);

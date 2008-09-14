@@ -14,7 +14,7 @@
 * Javier B (kinfule@lycos.es)
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,9 +24,9 @@ if (!defined('MG_CTRACK_FLAG'))
 	define('MG_CTRACK_FLAG', true);
 }
 
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 $action = false;
 // Lets see what we do, if nothing define show the shoutbox
@@ -255,7 +255,7 @@ if($action)
 				$shouter = substr($shouter, 0, 30);
 
 				// Check the username
-				include_once($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+				include_once(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 				$check_name = validate_username($shouter);
 				// Username is invalid so tell the user and die
 				if ($check_name['error'])
@@ -364,7 +364,7 @@ if ($shoutbox_template_parse == true)
 	$meta_description = '';
 	$meta_keywords = '';
 	$gen_simple_header = true;
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 }
 
 // Load templates
@@ -399,7 +399,7 @@ $template->assign_vars(array(
 	'L_SUMBIT' => $lang['Submit'],
 	'L_ARCHIVE' => $lang['Ajax_Archive'],
 	'L_UNABLE' => $lang['Shoutbox_unable'],
-	'U_ARCHIVE' => append_sid('ajax_chat.' . $phpEx . '?mode=archive')
+	'U_ARCHIVE' => append_sid('ajax_chat.' . PHP_EXT . '?mode=archive')
 	)
 );
 
@@ -414,7 +414,7 @@ if($board_config['shout_allow_guest'] > 0)
 		'TABLE_WIDTH' => $shoutbox_table_width,
 		'TABLE_HEIGHT' => $shoutbox_table_height,
 		'REFRESH_TIME' => $board_config['shoutbox_refreshtime'],
-		'U_ACTION' => append_sid($phpbb_root_path . 'ajax_shoutbox.' . $phpEx)
+		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
 	if($board_config['shout_allow_guest'] == 1)
@@ -449,7 +449,7 @@ else
 			'TABLE_WIDTH' => $shoutbox_table_width,
 			'TABLE_HEIGHT' => $shoutbox_table_height,
 			'REFRESH_TIME' => $board_config['shoutbox_refreshtime'],
-			'U_ACTION' => append_sid($phpbb_root_path . 'ajax_shoutbox.' . $phpEx)
+			'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 			)
 		);
 		$template->assign_block_vars('view_shoutbox.shout_allowed', array());
@@ -469,15 +469,15 @@ if($userdata['user_level'] == ADMIN)
 }
 
 // BBCBMG - BEGIN
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcb_mg_small.' . $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcb_mg_small.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG_SMALL', 'bbcb_mg_small');
 // BBCBMG - END
 
 if($shoutbox_template_parse)
 {
 	$template->pparse('shoutbox');
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {

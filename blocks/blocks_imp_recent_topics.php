@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,9 +24,9 @@ if(!function_exists(imp_recent_topics_block_func))
 {
 	function imp_recent_topics_block_func()
 	{
-		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $phpEx, $var_cache, $lang, $bbcode;
-		@include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-		@include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $var_cache, $lang, $bbcode;
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$template->_tpldata['recent_topic_row.'] = array();
 		//reset($template->_tpldata['recent_topic_row.']);
@@ -89,7 +89,7 @@ if(!function_exists(imp_recent_topics_block_func))
 				'L_BY' => $lang['By'],
 				'L_ON' => $lang['On'],
 				'U_POSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $recent_topic_row[$i]['user_id']),
-				'S_POSTER' => $recent_topic_row[$i]['post_username'],
+				'S_POSTER' => $recent_topic_row[$i]['username'],
 				'S_POSTTIME' => create_date2($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
 				)
 			);

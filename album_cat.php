@@ -15,19 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM_PICTURE);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request
@@ -52,19 +51,9 @@ $sql = "SELECT cat_user_id
 				FROM " . ALBUM_CAT_TABLE . "
 				WHERE cat_id = '" . $cat_id . "'
 				LIMIT 1";
-if ( defined('IS_ICYPHOENIX') )
+if ( !($result = $db->sql_query($sql, false, 'album_cat_')) )
 {
-	if ( !($result = $db->sql_query($sql, false, 'album_cat_')) )
-	{
-		message_die(GENERAL_ERROR, 'Could not query cat information', '', __LINE__, __FILE__, $sql);
-	}
-}
-else
-{
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not query cat information', '', __LINE__, __FILE__, $sql);
-	}
+	message_die(GENERAL_ERROR, 'Could not query cat information', '', __LINE__, __FILE__, $sql);
 }
 // if no user_id was supplied then we aren't going to show a personal gallery category
 $album_user_id = ALBUM_PUBLIC_GALLERY;
@@ -120,14 +109,14 @@ if (($cat_id <= (ALBUM_ROOT_CATEGORY + 1)) || (album_get_personal_root_id($album
 {
 	if ($cat_id == ALBUM_JUMPBOX_PUBLIC_GALLERY)
 	{
-		redirect(append_sid(album_append_uid('album.' . $phpEx)));
+		redirect(append_sid(album_append_uid('album.' . PHP_EXT)));
 	}
 
 	if ($cat_id == ALBUM_JUMPBOX_USERS_GALLERY)
 	{
-		redirect(append_sid(album_append_uid('album_personal_index.' . $phpEx)));
+		redirect(append_sid(album_append_uid('album_personal_index.' . PHP_EXT)));
 	}
-	redirect(append_sid(album_append_uid('album.' . $phpEx)));
+	redirect(append_sid(album_append_uid('album.' . PHP_EXT)));
 }
 
 // ------------------------------------
@@ -139,7 +128,7 @@ $auth_data = array(); // the authothentication data for current category for cur
 
 if ( ($album_user_id != ALBUM_PUBLIC_GALLERY) && !album_check_user_exists($album_user_id) )
 {
-	redirect(append_sid(album_append_uid('album.' . $phpEx)));
+	redirect(append_sid(album_append_uid('album.' . PHP_EXT)));
 }
 
 $read_options = ($album_view_mode == ALBUM_VIEW_LIST ) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
@@ -164,8 +153,7 @@ if( !$auth_data['view'] )
 {
 	if (!$userdata['session_logged_in'])
 	{
-		//redirect(append_sid(LOGIN_MG . "?redirect=album_cat.$phpEx&cat_id=$cat_id"));
-		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_cat.' . $phpEx . '&cat_id=' . $cat_id)));
+		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_cat.' . PHP_EXT . '&cat_id=' . $cat_id)));
 	}
 	else
 	{
@@ -229,7 +217,7 @@ if ( ($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups
 	{
 		for ($j = 0; $j < count($grouprows); $j++)
 		{
-			$group_link = '<a href="' . append_sid('groupcp.' . $phpEx . '?'. POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
+			$group_link = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?'. POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
 
 			$moderators_list .= ($moderators_list == '') ? $group_link : ', ' . $group_link;
 		}
@@ -238,7 +226,7 @@ if ( ($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups
 // END Moderator List
 
 // Update the naVigation tree
-$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . $phpEx, 'nav' , $album_user_id);
+$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav' , $album_user_id);
 if ($album_nav_cat_desc != '')
 {
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
@@ -363,19 +351,19 @@ $album_jumpbox = album_build_jumpbox($cat_id, $album_user_id);
 // END build jumpbox
 
 $upload_img = $images['upload_pic'];
-$upload_link = append_sid(album_append_uid('album_upload.' . $phpEx . '?cat_id=' . $cat_id));
+$upload_link = append_sid(album_append_uid('album_upload.' . PHP_EXT . '?cat_id=' . $cat_id));
 $upload_full_link = '<a href="' . $upload_link . '"><img src="' . $upload_img .'" alt="' . $lang['Upload_Pic'] . '" title="' . $lang['Upload_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>';
 
 $jupload_img = $images['jupload_pic'];
-$jupload_link = append_sid(album_append_uid('album_jupload.' . $phpEx . '?cat_id=' . $cat_id));
+$jupload_link = append_sid(album_append_uid('album_jupload.' . PHP_EXT . '?cat_id=' . $cat_id));
 $jupload_full_link = '<a href="' . $jupload_link . '"><img src="' . $jupload_img .'" alt="' . $lang['JUpload_Pic'] . '" title="' . $lang['Jupload_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>';
 
 $download_img = $images['download_pic'];
-$download_link = append_sid(album_append_uid('album_download.' . $phpEx . '?cat_id=' . $cat_id . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . ( ($start != '') ? '&start=' . $start : '' )));
+$download_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . $cat_id . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . ( ($start != '') ? '&start=' . $start : '' )));
 $download_full_link = '<a href="' . $download_link . '"><img src="' . $download_img . '" alt="' . $lang['Download_page'] . '" title="' . $lang['Download_page'] . '" style="border:0px;vertical-align:middle;" /></a>';
 
 $download_all_img = $images['download_all_pic'];
-$download_all_link = append_sid(album_append_uid('album_download.' . $phpEx . '?cat_id=' . $cat_id . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . '&amp;download_all_pics=true'));
+$download_all_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . $cat_id . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . '&amp;download_all_pics=true'));
 $download_all_full_link = '<a href="' . $download_all_link . '"><img src="' . $download_all_img . '" alt="' . $lang['Download_page'] . '" title="' . $lang['Download_page'] . '" style="border:0px;vertical-align:middle;" /></a>';
 
 if( $auth_data['upload'] == true )
@@ -406,7 +394,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		$moderators_list = $lang['None'];
 	}
 
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_cat_body.tpl'));
 
@@ -453,7 +441,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	// END thumbnails table
 
 	album_read_tree($album_user_id);
-	$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . $phpEx, 'nav', $album_user_id);
+	$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav', $album_user_id);
 	if ($album_nav_cat_desc != '')
 	{
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
@@ -466,7 +454,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		'ALBUM_NAV' => $album_nav_cat_desc,
 		'L_ALBUM' => $lang['Album'],
 
-		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)),
+		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'CAT_TITLE' => $thiscat['cat_title'],
 		'CAT_DESC' => $cat_desc,
 		//'CAT_DESC' => $thiscat['cat_des'],
@@ -483,7 +471,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		'UPLOAD_FULL_LINK' => $upload_full_link,
 
 		'JUPLOAD_FULL_LINK' => $jupload_full_link,
-		'U_JUPLOAD_PIC' => append_sid(album_append_uid('album_jupload.' . $phpEx . '?cat_id=' . $cat_id)),
+		'U_JUPLOAD_PIC' => append_sid(album_append_uid('album_jupload.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'JUPLOAD_PIC_IMG' => $images['jupload_pic'],
 		'L_JUPLOAD_PIC' => $lang['JUpload_Pic'],
 
@@ -492,11 +480,11 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		'L_ALBUM_HON' => $lang['Hot_Or_Not'],
 		'L_ALBUM_RDF' => $lang['Pic_RDF'],
 		'L_ALBUM_RSS' => $lang['Pic_RSS'],
-		'U_ALBUM_ALLPICS' => append_sid(album_append_uid('album_allpics.' . $phpEx . '?cat_id=' . $cat_id)),
-		'U_ALBUM_OTF' => append_sid(album_append_uid('album_otf.' . $phpEx)),
-		'U_ALBUM_HON' => append_sid(album_append_uid('album_hotornot.' . $phpEx)),
-		'U_ALBUM_RDF' => append_sid(album_append_uid('album_rdf.' . $phpEx)),
-		'U_ALBUM_RSS' => append_sid(album_append_uid('album_rss.' . $phpEx)),
+		'U_ALBUM_ALLPICS' => append_sid(album_append_uid('album_allpics.' . PHP_EXT . '?cat_id=' . $cat_id)),
+		'U_ALBUM_OTF' => append_sid(album_append_uid('album_otf.' . PHP_EXT)),
+		'U_ALBUM_HON' => append_sid(album_append_uid('album_hotornot.' . PHP_EXT)),
+		'U_ALBUM_RDF' => append_sid(album_append_uid('album_rdf.' . PHP_EXT)),
+		'U_ALBUM_RSS' => append_sid(album_append_uid('album_rss.' . PHP_EXT)),
 
 		'L_DOWNLOAD_PICS' => $lang['Download_pics'],
 		'L_DOWNLOAD_PAGE' => $lang['Download_page'],
@@ -526,7 +514,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 
 		'ALBUM_JUMPBOX' => $album_jumpbox,
 
-		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)),
+		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
 
 		'TARGET_BLANK' => ($album_config['fullpic_popup']) ? 'target="_blank"' : '',
 
@@ -561,7 +549,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 }
 else
 {
-	include($album_root_path . 'album_personal.' . $phpEx);
+	include(ALBUM_MOD_PATH . 'album_personal.' . PHP_EXT);
 }
 
 //$template->assign_block_vars('index_pics_block.enable_gallery_title', array());
@@ -575,6 +563,6 @@ if (empty($album_view_mode))
 // Generate the page
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

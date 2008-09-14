@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -415,7 +415,7 @@ function count_blocks_in_layout($table_name, $l_id_list, $is_special = false, $o
 
 function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $cms_type)
 {
-	global $db, $lang, $images, $phpEx;
+	global $db, $lang, $images;
 
 	if ($cms_type == 'cms_standard')
 	{
@@ -489,8 +489,8 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	$u_local = '<img src="' . $img_local . '" alt="' . $lang['TURN_LOCAL'] . '" title="' . $lang['TURN_LOCAL'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 3, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 	$u_background = '<img src="' . $img_background . '" alt="' . $lang['TURN_BACKGROUND'] . '" title="' . $lang['TURN_BACKGROUND'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 4, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 
-	$u_edit = '<a href="' . append_sid('cms_adv.' . $phpEx . '?mode=blocks' . $type_append_url . '&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';
-	$u_delete = '<a href="' . append_sid('cms_adv.' . $phpEx . '?mode=blocks' . $type_append_url . '&amp;action=delete&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CMS_Delete'] . '" title="' . $lang['CMS_Delete'] . '"/></a>';
+	$u_edit = '<a href="' . append_sid('cms_adv.' . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';
+	$u_delete = '<a href="' . append_sid('cms_adv.' . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=delete&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CMS_Delete'] . '" title="' . $lang['CMS_Delete'] . '"/></a>';
 
 	$block_class = (!$invalid) ? 'sortable-list-div' : 'sortable-invalid-list-div';
 

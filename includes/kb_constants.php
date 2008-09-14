@@ -15,7 +15,7 @@
 *
 */
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -36,7 +36,6 @@ $is_block = false;
 // ---------------------------------------------------------------------START
 // This file defines specific constants for the module
 // -------------------------------------------------------------------------
-define('PAGE_KB', -500);
 define('KB_ARTICLES_TABLE', $table_prefix . 'kb_articles');
 define('KB_CATEGORIES_TABLE', $table_prefix . 'kb_categories');
 define('KB_CONFIG_TABLE', $table_prefix . 'kb_config');
@@ -60,14 +59,14 @@ define('CHECKBOX', 5);
 // **********************************************************************
 // Read language definition
 // **********************************************************************
-if ( !file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_kb.' . $phpEx ) )
+if ( !file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_kb.' . PHP_EXT ) )
 {
-	include($phpbb_root_path . 'language/lang_english/lang_kb.' . $phpEx);
+	include(IP_ROOT_PATH . 'language/lang_english/lang_kb.' . PHP_EXT);
 	$link_language = 'lang_english';
 }
 else
 {
-	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_kb.' . $phpEx);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_kb.' . PHP_EXT);
 	$link_language = 'lang_' . $board_config['default_lang'];
 }
 

@@ -15,19 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // ------------------------------------
 // Check $album_user_id
@@ -84,18 +83,18 @@ if ($album_user_id != ALBUM_PUBLIC_GALLERY)
 	{
 		if (!$userdata['session_logged_in'])
 		{
-			redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album.' . $phpEx, true)));
+			redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album.' . PHP_EXT, true)));
 		}
 		else
 		{
 			$album_user_id = $userdata['user_id'];
-			redirect(append_sid(album_append_uid('album.' . $phpEx, true)));
+			redirect(append_sid(album_append_uid('album.' . PHP_EXT, true)));
 		}
 	}
 
 	if ( ($cat_id != ALBUM_ROOT_CATEGORY) && ($cat_id != album_get_personal_root_id($album_user_id)) )
 	{
-		redirect(append_sid(album_append_uid('album_cat.' . $phpEx . album_build_url_parameters($_GET), false)));
+		redirect(append_sid(album_append_uid('album_cat.' . PHP_EXT . album_build_url_parameters($_GET), false)));
 	}
 }
 
@@ -104,7 +103,7 @@ $options = ($album_view_mode == ALBUM_VIEW_LIST ) ? ALBUM_READ_ALL_CATEGORIES|AL
 $catrows = album_read_tree($album_user_id, $options);
 
 album_read_tree($album_user_id);
-$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . $phpEx, 'nav' , $album_user_id);
+$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav' , $album_user_id);
 if ($album_nav_cat_desc != '')
 {
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
@@ -269,7 +268,7 @@ $meta_keywords = '';
 // is it a public gallery ?
 if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 {
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_index_body.tpl'));
 
@@ -327,11 +326,11 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		'L_ALBUM_HON' => $lang['Hot_Or_Not'],
 		'L_ALBUM_RDF' => $lang['Pic_RDF'],
 		'L_ALBUM_RSS' => $lang['Pic_RSS'],
-		'U_ALBUM_ALLPICS' => append_sid(album_append_uid('album_allpics.' . $phpEx)),
-		'U_ALBUM_OTF' => append_sid(album_append_uid('album_otf.' . $phpEx)),
-		'U_ALBUM_HON' => append_sid(album_append_uid('album_hotornot.' . $phpEx)),
-		'U_ALBUM_RDF' => append_sid(album_append_uid('album_rdf.' . $phpEx)),
-		'U_ALBUM_RSS' => append_sid(album_append_uid('album_rss.' . $phpEx)),
+		'U_ALBUM_ALLPICS' => append_sid(album_append_uid('album_allpics.' . PHP_EXT)),
+		'U_ALBUM_OTF' => append_sid(album_append_uid('album_otf.' . PHP_EXT)),
+		'U_ALBUM_HON' => append_sid(album_append_uid('album_hotornot.' . PHP_EXT)),
+		'U_ALBUM_RDF' => append_sid(album_append_uid('album_rdf.' . PHP_EXT)),
+		'U_ALBUM_RSS' => append_sid(album_append_uid('album_rss.' . PHP_EXT)),
 		)
 	);
 }
@@ -340,14 +339,14 @@ else
 {
 	if ($album_view_mode == ALBUM_VIEW_LIST)
 	{
-		include ($album_root_path . 'album_memberlist.' . $phpEx);
+		include (ALBUM_MOD_PATH . 'album_memberlist.' . PHP_EXT);
 	}
 	else
 	{
 		// include our special personal gallery files
 		// this file holds all the code to handle personal galleries
 		// except moderation and management of personal gallery categories.
-		include ($album_root_path . 'album_personal.' . $phpEx);
+		include (ALBUM_MOD_PATH . 'album_personal.' . PHP_EXT);
 	}
 }
 
@@ -359,6 +358,6 @@ if (empty($album_view_mode))
 // Generate the page
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

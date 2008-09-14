@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,10 +24,10 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
 
 $pafiledb->init();
 
@@ -42,7 +42,7 @@ if($mode == 'do_add' && !$cat_id)
 	if(!count($pafiledb->error))
 	{
 		$pafiledb->_pafiledb();
-		$message = $lang['Catadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . $phpEx . '?cat_id=' . $cat_id) . '">', '</a>');
+		$message = $lang['Catadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $cat_id) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -52,7 +52,7 @@ elseif($mode == 'do_add' && $cat_id)
 	if(!count($pafiledb->error))
 	{
 		$pafiledb->_pafiledb();
-		$message = $lang['Catedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . $phpEx . '?cat_id=' . $cat_id) . '">', '</a>');
+		$message = $lang['Catedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $cat_id) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -62,7 +62,7 @@ elseif($mode == 'do_delete')
 	if(!count($pafiledb->error))
 	{
 		$pafiledb->_pafiledb();
-		$message = $lang['Catsdeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Catsdeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -119,7 +119,7 @@ $pafiledb_template->assign_vars(array(
 	'ERROR' => (count($pafiledb->error)) ? implode('<br />', $pafiledb->error) : '',
 
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
-	'S_CAT_ACTION' => append_sid('admin_pa_category.' . $phpEx)
+	'S_CAT_ACTION' => append_sid('admin_pa_category.' . PHP_EXT)
 	)
 );
 
@@ -265,11 +265,11 @@ $pafiledb_template->display('admin');
 $pafiledb->_pafiledb();
 $cache->unload();
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 function admin_cat_main($cat_parent = 0, $depth = 0)
 {
-	global $pafiledb, $phpbb_root_path, $pafiledb_template, $phpEx;
+	global $pafiledb, $pafiledb_template;
 
 	$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
 	if(isset($pafiledb->subcat_rowset[$cat_parent]))
@@ -279,11 +279,11 @@ function admin_cat_main($cat_parent = 0, $depth = 0)
 			$pafiledb_template->assign_block_vars('cat_row', array(
 				'IS_HIGHER_CAT' => ($cat_data['cat_allow_file'] == PA_CAT_ALLOW_FILE) ? false : true,
 				'U_CAT' => append_sid('admin_pa_category.php?cat_id=' . $subcat_id),
-				'U_CAT_EDIT' => append_sid('admin_pa_category.' . $phpEx . '?mode=edit&amp;cat_id=' . $subcat_id),
-				'U_CAT_DELETE' => append_sid('admin_pa_category.' . $phpEx . '?mode=delete&amp;cat_id=' . $subcat_id),
-				'U_CAT_MOVE_UP' => append_sid('admin_pa_category.' . $phpEx . '?mode=cat_order&amp;move=-15&amp;cat_id_other=' . $subcat_id),
-				'U_CAT_MOVE_DOWN' => append_sid('admin_pa_category.' . $phpEx . '?mode=cat_order&amp;move=15&amp;cat_id_other=' . $subcat_id),
-				'U_CAT_RESYNC' => append_sid('admin_pa_category.' . $phpEx . '?mode=sync&amp;cat_id_other=' . $subcat_id),
+				'U_CAT_EDIT' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=edit&amp;cat_id=' . $subcat_id),
+				'U_CAT_DELETE' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=delete&amp;cat_id=' . $subcat_id),
+				'U_CAT_MOVE_UP' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=cat_order&amp;move=-15&amp;cat_id_other=' . $subcat_id),
+				'U_CAT_MOVE_DOWN' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=cat_order&amp;move=15&amp;cat_id_other=' . $subcat_id),
+				'U_CAT_RESYNC' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=sync&amp;cat_id_other=' . $subcat_id),
 				'CAT_NAME' => $cat_data['cat_name'],
 				'PRE' => $pre
 				)

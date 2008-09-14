@@ -9,21 +9,21 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_ADMIN', true);
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require($phpbb_root_path . 'common.' . $phpEx);
+require(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include_once($phpbb_root_path . 'includes/functions_jr_admin.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 $jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 
 if(!$userdata['session_logged_in'])
@@ -48,7 +48,7 @@ $errstr = $version_info = '';
 // Version cache mod start
 // Change following two variables if you need to:
 $cache_update = 86400; // 24 hours cache timeout. change it to whatever you want
-$cache_file = '../' . MAIN_CACHE_FOLDER . 'ip_update_' . $board_config['default_lang'] . $board_config['ip_version'] . '.php'; // file where to store cache
+$cache_file = MAIN_CACHE_FOLDER . 'ip_update_' . $board_config['default_lang'] . $board_config['ip_version'] . '.php'; // file where to store cache
 
 //global $board_config;
 $do_update = true;
@@ -157,8 +157,8 @@ $template->assign_vars(array(
 
 	'U_FORUM_INDEX' => append_sid('../' . FORUM_MG),
 	'U_PORTAL' => append_sid('../' . PORTAL_MG),
-	'U_ADMIN_INDEX' => append_sid('index.' . $phpEx . '?pane=right'),
-	'U_CMS' => append_sid('../cms.' . $phpEx),
+	'U_ADMIN_INDEX' => append_sid('index.' . PHP_EXT . '?pane=right'),
+	'U_CMS' => append_sid('../cms.' . PHP_EXT),
 	'U_MSQD' => append_sid('../msqd/'),
 
 	'U_IP_MAIN' => '<a href="http://www.icyphoenix.com" target="_blank">' . $lang['IcyPhoenix_Main'] . '</a>',

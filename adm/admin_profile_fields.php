@@ -15,22 +15,22 @@
 *
 */
 
-define('IN_PHPBB',true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1610_Users']['260_CPF_Add'] = "$filename?mode=add&pfid=x";
-	$module['1610_Users']['270_CPF_Edit'] = "$filename?mode=edit&pfid=x";
+	$module['1610_Users']['260_CPF_Add'] = $filename . '?mode=add&pfid=x';
+	$module['1610_Users']['270_CPF_Edit'] = $filename . '?mode=edit&pfid=x';
 	return;
 }
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = false;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
 
 if(!isset($_GET['mode']) || !isset($_GET['pfid']))
 {
@@ -466,5 +466,5 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 ?>

@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,11 +28,11 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_import.' . $phpEx) . '">' . $lang['xs_import_styles'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_import.' . PHP_EXT) . '">' . $lang['xs_import_styles'] . '</a>'));
 
-$lang['xs_import_back'] = str_replace('{URL}', append_sid('xs_import.' . $phpEx), $lang['xs_import_back']);
+$lang['xs_import_back'] = str_replace('{URL}', append_sid('xs_import.' . PHP_EXT), $lang['xs_import_back']);
 
 $return_url = isset($_POST['return']) ? stripslashes($_POST['return']) : (isset($_GET['return']) ? stripslashes($_GET['return']) : '');
 $return = $return_url ? '&return=' . urlencode($return_url) : '';
@@ -55,13 +55,13 @@ $cache_filename = $template->make_filename_cache($tpl_filename);
 $str = '';
 if(!xs_check_cache($cache_filename))
 {
-	xs_error(str_replace(array('{URL1}', '{URL2}'), array(append_sid('xs_chmod.' . $phpEx), append_sid('xs_import.' . $phpEx)), $lang['xs_import_nowrite_cache']));
+	xs_error(str_replace(array('{URL1}', '{URL2}'), array(append_sid('xs_chmod.' . PHP_EXT), append_sid('xs_import.' . PHP_EXT)), $lang['xs_import_nowrite_cache']));
 }
 
 //
 // include all functions
 //
-include_once('xs_include_import.' . $phpEx);
+include_once('xs_include_import.' . PHP_EXT);
 
 // remove timeout
 @set_time_limit(XS_MAX_TIMEOUT);
@@ -114,18 +114,18 @@ if(isset($_GET['import']) || isset($_POST['import']))
 		{
 			$params['return'] = $return_url;
 		}
-		if(!get_ftp_config(append_sid('xs_import.' . $phpEx), $params, true))
+		if(!get_ftp_config(append_sid('xs_import.' . PHP_EXT), $params, true))
 		{
 			xs_exit();
 		}
-		xs_ftp_connect(append_sid('xs_import.' . $phpEx), $params, true);
+		xs_ftp_connect(append_sid('xs_import.' . PHP_EXT), $params, true);
 		if($ftp === XS_FTP_LOCAL)
 		{
 			$write_local = true;
 			$write_local_dir = '../templates/';
 		}
 	}
-	include('xs_include_import2.' . $phpEx);
+	include('xs_include_import2.' . PHP_EXT);
 }
 
 //
@@ -161,7 +161,7 @@ if(isset($_POST['action']) && $_POST['action'] === 'web' && !defined('DEMO_MODE'
 	}
 	fwrite($f, $str);
 	fclose($f);
-	xs_message($lang['Information'], str_replace('{URL}', append_sid('xs_import.' . $phpEx . '?importstyle=' . urlencode($dst) . $return), $lang['xs_import_uploaded2']) . '<br /><br />' . $lang['xs_import_back']);
+	xs_message($lang['Information'], str_replace('{URL}', append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($dst) . $return), $lang['xs_import_uploaded2']) . '<br /><br />' . $lang['xs_import_back']);
 }
 
 //
@@ -196,7 +196,7 @@ if(isset($_POST['action']) && $_POST['action'] === 'copy' && !defined('DEMO_MODE
 	}
 	fwrite($f, $str);
 	fclose($f);
-	xs_message($lang['Information'], str_replace('{URL}', append_sid('xs_import.' . $phpEx . '?importstyle=' . urlencode($dst)), $lang['xs_import_uploaded3']) . '<br /><br />' . $lang['xs_import_back']);
+	xs_message($lang['Information'], str_replace('{URL}', append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($dst)), $lang['xs_import_uploaded3']) . '<br /><br />' . $lang['xs_import_back']);
 }
 
 
@@ -236,8 +236,8 @@ if(isset($_POST['action']) && $_POST['action'] === 'upload' && !defined('DEMO_MO
 	}
 	fwrite($f, $str);
 	fclose($f);
-	//xs_error(str_replace('{URL}', append_sid('xs_import.' . $phpEx . '?importstyle=' . urlencode($dst)), $lang['xs_import_uploaded4']) . '<br /><br />' . $lang['xs_import_back']);
-	xs_message($lang['Information'], str_replace('{URL}', append_sid('xs_import.' . $phpEx . '?importstyle=' . urlencode($dst)), $lang['xs_import_uploaded4']) . '<br /><br />' . $lang['xs_import_back']);
+	//xs_error(str_replace('{URL}', append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($dst)), $lang['xs_import_uploaded4']) . '<br /><br />' . $lang['xs_import_back']);
+	xs_message($lang['Information'], str_replace('{URL}', append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($dst)), $lang['xs_import_uploaded4']) . '<br /><br />' . $lang['xs_import_back']);
 }
 
 
@@ -258,7 +258,7 @@ if(!empty($_GET['importstyle']))
 	}
 	$template->set_filenames(array('import' => XS_TPL_PATH . 'import2.tpl'));
 	$template->assign_vars(array(
-		'FORM_ACTION'			=> append_sid('xs_import.' . $phpEx),
+		'FORM_ACTION'			=> append_sid('xs_import.' . PHP_EXT),
 		'S_RETURN'				=> $return_url ? '<input type="hidden" name="return" value="' . htmlspecialchars($return_url) . '" />' : '',
 		'IMPORT_FILENAME'		=> htmlspecialchars($file),
 		'STYLE_TEMPLATE'		=> htmlspecialchars($header['template']),
@@ -349,10 +349,10 @@ if(count($files))
 			'TEMPLATE'		=> htmlspecialchars($item['template']),
 			'DATE'			=> create_date($board_config['default_dateformat'], $item['date'], $board_config['board_timezone']),
 			'COMMENT'		=> htmlspecialchars($item['comment']),
-			'U_DELETE'		=> append_sid('xs_import.' . $phpEx . '?del=' . urlencode($item['file'])),
-			'U_IMPORT'		=> append_sid('xs_import.' . $phpEx . '?importstyle=' . urlencode($item['file'])),
-			'U_DOWNLOAD'	=> append_sid('xs_download.' . $phpEx),
-			'U_LIST'		=> append_sid('xs_import.' . $phpEx . '?list=1&import=' . urlencode($item['file'])),
+			'U_DELETE'		=> append_sid('xs_import.' . PHP_EXT . '?del=' . urlencode($item['file'])),
+			'U_IMPORT'		=> append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($item['file'])),
+			'U_DOWNLOAD'	=> append_sid('xs_download.' . PHP_EXT),
+			'U_LIST'		=> append_sid('xs_import.' . PHP_EXT . '?list=1&import=' . urlencode($item['file'])),
 			));
 		if(empty($item['error']))
 		{
@@ -375,7 +375,7 @@ else
 	$template->assign_block_vars('nostyles', array());
 }
 $template->assign_vars(array(
-	'U_SCRIPT'	=> append_sid('xs_import.' . $phpEx),
+	'U_SCRIPT'	=> append_sid('xs_import.' . PHP_EXT),
 	));
 
 $template->pparse('body');

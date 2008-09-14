@@ -5,7 +5,7 @@
  *   copyright            : (C) 2003 - 2007 Vjacheslav Trushkin
  *   support              : http://www.stsoftware.biz/forum
  *
- *   version              : 2.4.0
+ *   version              : 2.4.1
  *
  *   file revision        : 57
  *   project revision     : 83

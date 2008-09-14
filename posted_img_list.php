@@ -8,17 +8,15 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
-
-$create_users_subfolders = true;
 
 $cms_page_id = '12';
 $cms_page_name = 'album';
@@ -48,8 +46,7 @@ if (!$userdata['session_logged_in'])
 }
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 $pic_id = (isset($_GET['pic_id']) ? $_GET['pic_id'] : (isset($_POST['pic_id']) ? $_POST['pic_id'] : ''));
 $mode_array = array('show', 'delete', 'full');
@@ -77,9 +74,9 @@ if ($userdata['user_level'] == ADMIN)
 				@unlink(POSTED_IMAGES_PATH . $pic_id);
 				$pic_user_id_array = explode('/', $pic_id);
 				$pic_user_id = $pic_user_id_array[0];
-				$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'posted_img_list_' . $pic_user_id . '.dat';
+				$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $pic_user_id . '.dat';
 				@unlink($cache_data_file);
-				redirect(append_sid('posted_img_list.' . $phpEx));
+				redirect(append_sid('posted_img_list.' . PHP_EXT));
 			}
 		}
 	}
@@ -94,15 +91,15 @@ $pic_images = array();
 $pic_names = array();
 $total_pics = 0;
 
-if ($create_users_subfolders == true)
+if (USERS_SUBFOLDERS_IMG == true)
 {
 	if ($mode == 'full')
 	{
-		$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'posted_img_list_full.dat';
+		$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_full.dat';
 	}
 	else
 	{
-		$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'posted_img_list_' . $pic_user_id . '.dat';
+		$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $pic_user_id . '.dat';
 	}
 
 	$cache_update = true;
@@ -197,7 +194,7 @@ if ($create_users_subfolders == true)
 	$page_title = $lang['Uploaded_Images_Local'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'posted_img_list_body.tpl'));
 
@@ -240,13 +237,13 @@ if ($create_users_subfolders == true)
 		}
 		else
 		{
-			$pic_img_thumb = append_sid('posted_img_list_thumbnail.' . $phpEx . '?pic_id=' . urlencode($pic_images[$i]));
+			$pic_img_thumb = append_sid('posted_img_list_thumbnail.' . PHP_EXT . '?pic_id=' . urlencode($pic_images[$i]));
 		}
 
 		$pic_delete_url = '';
 		if ($userdata['user_level'] == ADMIN)
 		{
-			$pic_delete_url = '<br /><span class="gensmall"><a href="' . append_sid('posted_img_list.' . $phpEx . '?mode=delete&amp;pic_id=' . urlencode($pic_images[$i])) . '">' . $lang['Delete'] . '</a></span>';
+			$pic_delete_url = '<br /><span class="gensmall"><a href="' . append_sid('posted_img_list.' . PHP_EXT . '?mode=delete&amp;pic_id=' . urlencode($pic_images[$i])) . '">' . $lang['Delete'] . '</a></span>';
 		}
 
 		if(strlen($pic_names[$i]) > 25)
@@ -275,11 +272,11 @@ else
 {
 	if ($userdata['user_level'] != ADMIN)
 	{
-		$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'posted_img_list_' . $userdata['user_id'] . '.dat';
+		$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $userdata['user_id'] . '.dat';
 	}
 	else
 	{
-		$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'posted_img_list_admins.dat';
+		$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_admins.dat';
 	}
 	$cache_update = true;
 	$cache_file_time = time();
@@ -349,7 +346,7 @@ else
 	$page_title = $lang['Uploaded_Images_Local'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'posted_img_list_body.tpl'));
 
@@ -385,13 +382,13 @@ else
 		}
 		else
 		{
-			$pic_img_thumb = append_sid('posted_img_list_thumbnail.' . $phpEx . '?pic_id=' . $pic_images[$i]);
+			$pic_img_thumb = append_sid('posted_img_list_thumbnail.' . PHP_EXT . '?pic_id=' . $pic_images[$i]);
 		}
 
 		$pic_delete_url = '';
 		if ($userdata['user_level'] == ADMIN)
 		{
-			$pic_delete_url = '<br /><span class="gensmall"><a href="' . append_sid('posted_img_list.' . $phpEx . '?mode=delete&amp;pic_id=' . urlencode($pic_images[$i])) . '">' . $lang['Delete'] . '</a></span>';
+			$pic_delete_url = '<br /><span class="gensmall"><a href="' . append_sid('posted_img_list.' . PHP_EXT . '?mode=delete&amp;pic_id=' . urlencode($pic_images[$i])) . '">' . $lang['Delete'] . '</a></span>';
 		}
 
 		if(strlen($pic_names[$i]) > 25)
@@ -429,20 +426,20 @@ $template->assign_vars(array(
 	'L_PIC_GALLERY' => $lang['Uploaded_Images_Local'],
 	'L_BBCODE' => $lang['BBCode'],
 	'L_BBCODE_DES' => $lang['Uploaded_Image_BBC'],
-	'S_ACTION' => append_sid('posted_img_list.' . $phpEx),
+	'S_ACTION' => append_sid('posted_img_list.' . PHP_EXT),
 	'S_COLSPAN' => $s_colspan,
 	'S_COLWIDTH' => $s_colwidth,
 	)
 );
 
 $template->assign_vars(array(
-	'PAGINATION' => generate_pagination(append_sid('posted_img_list.' . $phpEx . '?sort=standard'), $total_pics, $pics_per_page, $start),
+	'PAGINATION' => generate_pagination(append_sid('posted_img_list.' . PHP_EXT . '?sort=standard'), $total_pics, $pics_per_page, $start),
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 	)
 );
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

@@ -8,13 +8,10 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
-
-$phpbb_root_path = ( ($phpbb_root_path == './../') ? './../' : './' );
-//$phpbb_root_path = './';
 
 function build_default_link_array()
 {
@@ -80,7 +77,7 @@ function build_default_link_name($default_id)
 
 function build_complete_url($default_id, $block_id, $link, $menu_icon)
 {
-	global $phpbb_root_path, $template, $phpEx, $lang, $board_config, $theme, $images, $userdata, $db;
+	global $template, $lang, $board_config, $theme, $images, $userdata, $db;
 	switch ($default_id)
 	{
 		case '1':
@@ -138,13 +135,13 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 				$unread = unread();
 				$u_display_new = index_display_new($unread);
 				$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
-				$menu_url = $menu_icon . $lang['Posts2'] . ': <a href="search.' . $phpEx . '?search_id=newposts">' . $lang['New2'] . '</a>';
+				$menu_url = $menu_icon . $lang['Posts2'] . ': <a href="search.' . PHP_EXT . '?search_id=newposts">' . $lang['New2'] . '</a>';
 				$menu_url .= '&nbsp;&#8226;&nbsp;' . $u_display_new['u'] . '&nbsp;&#8226;&nbsp;' . $u_display_new['m'] . '&nbsp;&#8226;&nbsp;' . $u_display_new['p'];
 				//$menu_url .= $u_display_new['u'] . $u_display_new['m'] . $u_display_new['p'];
 			}
 			else
 			{
-				$menu_url = '<a href="search.' . $phpEx . '?search_id=newposts">' . $menu_icon . $lang['New2'] . '</a>';
+				$menu_url = '<a href="search.' . PHP_EXT . '?search_id=newposts">' . $menu_icon . $lang['New2'] . '</a>';
 			}
 			break;
 		case '29':
@@ -191,13 +188,13 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			if ( ($board_config['select_lang'] == true) )
 			{
 				$menu_url = '';
-				include_once($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+				include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 				$lang_installed = language_select_h($board_config['default_lang'], 'language');
 				while ( list($displayname) = @each($lang_installed) )
 				{
 					$lang_value = $displayname;
 					$lang_name = ucwords($displayname);
-					$lang_url = append_sid('changelang.' . $phpEx . '?' . LANG_URL . '=' . $lang_value);
+					$lang_url = append_sid('changelang.' . PHP_EXT . '?' . LANG_URL . '=' . $lang_value);
 					$lang_icon = '<img src="language/lang_' . $displayname . '/flag.png" alt="" title="" style="vertical-align:middle;" />&nbsp;';
 					$menu_url .= '<a href="' . $lang_url . '">' . $lang_icon . $lang_name . '&nbsp;<br /></a>';
 				}
@@ -213,12 +210,12 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 		case '44':
 			if ( !$userdata['session_logged_in'] )
 			{
-				$menu_link = 'login_ip.' . $phpEx . '?redirect=forum.' . $phpEx;
+				$menu_link = 'login_ip.' . PHP_EXT . '?redirect=forum.' . PHP_EXT;
 				$menu_name = $lang['Login'];
 			}
 			else
 			{
-				$menu_link = 'login_ip.' . $phpEx . '?logout=true&amp;sid=' . $userdata['session_id'];
+				$menu_link = 'login_ip.' . PHP_EXT . '?logout=true&amp;sid=' . $userdata['session_id'];
 				$menu_name = $lang['Logout'];
 			}
 			$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';

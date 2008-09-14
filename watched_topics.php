@@ -18,12 +18,12 @@
 // CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_topics.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -36,7 +36,7 @@ $start = ($start < 0) ? 0 : $start;
 if ( !$userdata['session_logged_in'] )
 {
 	$redirect = ( isset($start) ) ? ('&start=' . $start) : '';
-	redirect(append_sid(LOGIN_MG . '?redirect=watched_topics.' . $phpEx . $redirect, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=watched_topics.' . PHP_EXT . $redirect, true));
 }
 
 // are we un-watching some topics?
@@ -56,13 +56,13 @@ if ( isset($_POST['unwatch_list']) )
 $page_title = $lang['Watched_Topics'];
 $meta_description = '';
 $meta_keywords = '';
-include_once($phpbb_root_path . 'includes/users_zebra_block.' . $phpEx);
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'watched_topics_body.tpl'));
 
 $template->assign_vars(array(
-	'S_FORM_ACTION' => append_sid($phpbb_root_path . 'watched_topics.' . $phpEx),
+	'S_FORM_ACTION' => append_sid(IP_ROOT_PATH . 'watched_topics.' . PHP_EXT),
 	'L_NO_WATCHED_TOPICS' => $lang['No_Watched_Topics'],
 	'L_FORUM' => $lang['Forum'],
 	'L_REPLIES' => $lang['Replies'],
@@ -140,7 +140,7 @@ if ($watch_count > 0)
 			$user_replied = ( !empty($user_topics) && isset($user_topics[$topic_id]) );
 
 			$last_poster = ($watch_rows[$i]['poster_id'] == ANONYMOUS ) ? ( ($watch_rows[$i]['last_username'] != '' ) ? $watch_rows[$i]['last_username'] . ' ' : $lang['Guest'] . ' ' ) : colorize_username($watch_rows[$i]['poster_id']);
-			$last_poster .= '<a href="' . append_sid($phpbb_root_path . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $watch_rows[$i]['topic_last_post_id']) . '#p' . $watch_rows[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+			$last_poster .= '<a href="' . append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $watch_rows[$i]['topic_last_post_id']) . '#p' . $watch_rows[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 			$topic_poster = ($watch_rows[$i]['topic_poster'] == ANONYMOUS ) ? ( ($watch_rows[$i]['author_username'] != '' ) ? $watch_rows[$i]['author_username'] . ' ' : $lang['Guest'] . ' ' ) : colorize_username($watch_rows[$i]['topic_poster']);
 
 			$news_label = ( $watch_rows[$i]['news_id'] > 0 ) ? $lang['News_Cmx'] . '' : '';
@@ -157,7 +157,7 @@ if ($watch_count > 0)
 				$times = 1;
 				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 				{
-					$goto_page .= '<a href="' . append_sid($phpbb_root_path . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '">' . $times . '</a>';
+					$goto_page .= '<a href="' . append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '">' . $times . '</a>';
 					if( $times == 1 && $total_pages > 4 )
 					{
 						$goto_page .= ' ... ';
@@ -203,13 +203,13 @@ if ($watch_count > 0)
 				'LAST_POSTER' => $last_poster,
 				'GOTO_PAGE' => ( ($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>' ),
 
-				'U_VIEW_FORUM' => append_sid($phpbb_root_path . VIEWFORUM_MG . '?' . $forum_id_append),
-				'U_VIEW_TOPIC' => append_sid($phpbb_root_path . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append),
+				'U_VIEW_FORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . $forum_id_append),
+				'U_VIEW_TOPIC' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append),
 				)
 			);
 		}
 
-		$pagination = generate_pagination('watched_topics.' . $phpEx . '?mode=watched_topics', $watch_count, $board_config['topics_per_page'], $start);
+		$pagination = generate_pagination('watched_topics.' . PHP_EXT . '?mode=watched_topics', $watch_count, $board_config['topics_per_page'], $start);
 
 		$template->assign_vars(array(
 			'PAGINATION' => $pagination,
@@ -227,6 +227,6 @@ else
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

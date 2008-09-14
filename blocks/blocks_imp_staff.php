@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -25,9 +25,9 @@ if(!function_exists(imp_staff_func))
 {
 	function imp_staff_func()
 	{
-		global $template, $lang, $db, $theme, $phpEx, $lang, $board_config, $userdata, $phpbb_root_path, $table_prefix, $var_cache, $images;
+		global $template, $lang, $db, $theme, $lang, $board_config, $userdata, $table_prefix, $var_cache, $images;
 
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$sql = "SELECT * FROM " . USERS_TABLE."
 			WHERE user_level <> 0

@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,12 +28,12 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_uninstall.' . $phpEx) . '">' . $lang['xs_uninstall_styles'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_uninstall.' . PHP_EXT) . '">' . $lang['xs_uninstall_styles'] . '</a>'));
 
-$lang['xs_uninstall_back'] = str_replace('{URL}', append_sid('xs_uninstall.' . $phpEx), $lang['xs_uninstall_back']);
-$lang['xs_goto_default'] = str_replace('{URL}', append_sid('xs_styles.' . $phpEx), $lang['xs_goto_default']);
+$lang['xs_uninstall_back'] = str_replace('{URL}', append_sid('xs_uninstall.' . PHP_EXT), $lang['xs_uninstall_back']);
+$lang['xs_goto_default'] = str_replace('{URL}', append_sid('xs_styles.' . PHP_EXT), $lang['xs_goto_default']);
 
 //
 // uninstall style
@@ -43,7 +43,7 @@ if(isset($_GET['remove']) && !defined('DEMO_MODE'))
 	$remove_id = intval($_GET['remove']);
 	if($board_config['default_style'] == $remove_id)
 	{
-		xs_error(str_replace('{URL}', append_sid('xs_styles.' . $phpEx), $lang['xs_uninstall_default']) . '<br /><br />' . $lang['xs_uninstall_back']);
+		xs_error(str_replace('{URL}', append_sid('xs_styles.' . PHP_EXT), $lang['xs_uninstall_default']) . '<br /><br />' . $lang['xs_uninstall_back']);
 	}
 	$sql = "SELECT themes_id, template_name, style_name FROM " . THEMES_TABLE . " WHERE themes_id='{$remove_id}'";
 	if(!$result = $db->sql_query($sql))
@@ -71,7 +71,7 @@ if(isset($_GET['remove']) && !defined('DEMO_MODE'))
 		$sql = "DELETE FROM " . CONFIG_TABLE . " WHERE config_name='" . addslashes("xs_style_{$row['template_name']}") . "'";
 		$db->sql_query($sql);
 		$template->assign_block_vars('left_refresh', array(
-				'ACTION'	=> append_sid('index.' . $phpEx . '?pane=left')
+				'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
 			));
 		// recache config table for cat_hierarchy 2.1.0
 		if(isset($GLOBALS['config']) && is_object($GLOBALS['config']))
@@ -127,11 +127,11 @@ if(isset($_POST['remove']) && !defined('DEMO_MODE'))
 {
 	$remove = stripslashes($_POST['remove']);
 	$params = array('remove' => $remove);
-	if(!get_ftp_config(append_sid('xs_uninstall.' . $phpEx), $params, true))
+	if(!get_ftp_config(append_sid('xs_uninstall.' . PHP_EXT), $params, true))
 	{
 		xs_exit();
 	}
-	xs_ftp_connect(append_sid('xs_uninstall.' . $phpEx), $params, true);
+	xs_ftp_connect(append_sid('xs_uninstall.' . PHP_EXT), $params, true);
 	$write_local = false;
 	if($ftp === XS_FTP_LOCAL)
 	{
@@ -221,7 +221,7 @@ foreach($tpl as $tpl => $styles)
 			$template->assign_block_vars('styles.item', array(
 					'ID'		=> $styles[$i]['themes_id'],
 					'THEME'		=> htmlspecialchars($styles[$i]['style_name']),
-					'U_DELETE'	=> append_sid('xs_uninstall.' . $phpEx . '?remove='.$styles[$i]['themes_id'].'&nocfg=1'),
+					'U_DELETE'	=> append_sid('xs_uninstall.' . PHP_EXT . '?remove='.$styles[$i]['themes_id'].'&nocfg=1'),
 				)
 			);
 			$template->assign_block_vars('styles.item.nodelete', array());
@@ -233,11 +233,11 @@ foreach($tpl as $tpl => $styles)
 		$template->assign_block_vars('styles.item', array(
 				'ID'		=> $styles[$i]['themes_id'],
 				'THEME'		=> htmlspecialchars($styles[$i]['style_name']),
-				'U_DELETE'	=> append_sid('xs_uninstall.' . $phpEx . '?remove='.$styles[$i]['themes_id']),
+				'U_DELETE'	=> append_sid('xs_uninstall.' . PHP_EXT . '?remove='.$styles[$i]['themes_id']),
 			)
 		);
 		$template->assign_block_vars('styles.item.delete', array(
-				'U_DELETE'	=> append_sid('xs_uninstall.' . $phpEx . '?dir=1&remove='.$styles[$i]['themes_id']),
+				'U_DELETE'	=> append_sid('xs_uninstall.' . PHP_EXT . '?dir=1&remove='.$styles[$i]['themes_id']),
 			)
 		);
 	}

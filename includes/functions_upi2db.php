@@ -15,25 +15,21 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-//################################### Config ##########################################
-
-$upi2db_file_path = $phpbb_root_path . '/includes/upi2db';
-
 //################################### include AddOn Modules ##########################################
 //Removed by Mighty Gorgon
 /*
-$dir = @opendir($upi2db_file_path);
+$dir = @opendir(UPI2DB_PATH);
 
 while( $file = @readdir($dir) )
 {
-	if( preg_match("/^upi2db_add_.*?\." . $phpEx . "$/", $file) )
+	if( preg_match("/^upi2db_add_.*?\." . PHP_EXT . "$/", $file) )
 	{
-		include($upi2db_file_path . '/' . $file);
+		include(UPI2DB_PATH . '/' . $file);
 	}
 }
 
@@ -43,13 +39,16 @@ while( $file = @readdir($dir) )
 //################################### include Orig Modules ##########################################
 //Modified by Mighty Gorgon
 
+define('UPI2DB_VERSION', 'Full');
+//define('UPI2DB_VERSION', 'IP');
+
 if(UPI2DB_VERSION == 'IP')
 {
-	include($upi2db_file_path . '/upi2db_orig_ip.' . $phpEx);
+	include(UPI2DB_PATH . '/upi2db_orig_ip.' . PHP_EXT);
 }
 
-include($upi2db_file_path . '/upi2db_orig_full.' . $phpEx);
-include($upi2db_file_path . '/upi2db_orig_all.' . $phpEx);
+include(UPI2DB_PATH . '/upi2db_orig_full.' . PHP_EXT);
+include(UPI2DB_PATH . '/upi2db_orig_all.' . PHP_EXT);
 
 //################################### check_condition ##########################################
 function check_group_auth($userdata)
@@ -132,7 +131,7 @@ function check_upi2db_on($userdata)
 */
 function display_new_txt($unread)
 {
-	global $lang, $phpEx, $images, $board_config, $unread_new_posts, $unread_edit_posts;
+	global $lang, $images, $board_config, $unread_new_posts, $unread_edit_posts;
 
 	$edit_posts = count($unread['edit_posts']) - $unread_edit_posts;
 	$new_posts = count($unread['new_posts']) - $unread_new_posts;
@@ -156,7 +155,7 @@ function display_new_txt($unread)
 */
 function board_display_new($unread)
 {
-	global $lang, $phpEx, $images, $board_config, $unread_new_posts, $unread_edit_posts;
+	global $lang, $images, $board_config, $unread_new_posts, $unread_edit_posts;
 
 	$count_edit_posts = count($unread['edit_posts']);
 	$count_new_posts = count($unread['new_posts']);

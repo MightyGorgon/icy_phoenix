@@ -49,7 +49,7 @@ if (!defined('ADMIN_MENU'))
 	}
 }
 
-if (!empty($navbar) && defined('IN_PHPBB'))
+if (!empty($navbar) && defined('IN_ICYPHOENIX'))
 {
 	$menu = array();
 	if (!defined('CASH_INCLUDE'))
@@ -70,7 +70,7 @@ if (!empty($navbar) && defined('IN_PHPBB'))
 		);
 		for ($j = 0; $j < $menu[$i]->num(); $j++)
 		{
-			$template->assign_block_vars('navitem', $menu[$i]->items[$j]->data($phpEx, $class + 1, ''));
+			$template->assign_block_vars('navitem', $menu[$i]->items[$j]->data($class + 1, ''));
 			$class = ($class + 1) % 2;
 		}
 	}
@@ -78,7 +78,7 @@ if (!empty($navbar) && defined('IN_PHPBB'))
 	return;
 }
 
-if (!empty($setmodules) && defined('IN_PHPBB'))
+if (!empty($setmodules) && defined('IN_ICYPHOENIX'))
 {
 	if (empty($table_prefix))
 	{
@@ -88,17 +88,16 @@ if (!empty($setmodules) && defined('IN_PHPBB'))
 			and we require these base-scope variables, we
 			copy them in from the global scope
 		*/
-		global $table_prefix, $phpbb_root_path, $phpEx, $board_config, $lang;
+		global $table_prefix, $board_config, $lang;
 		/*
 		$table_prefix = $GLOBALS['table_prefix'];
-		$phpbb_root_path = $GLOBALS['phpbb_root_path'];
-		$phpEx = $GLOBALS['phpEx'];
 		$board_config = $GLOBALS['board_config'];
 		$lang = $GLOBALS['lang'];
 		*/
 	}
-	$phpbb_root_path = './../';
-	include($phpbb_root_path . 'includes/functions_cash.' . $phpEx);
+	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+	include(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
 	$menu = array();
 	admin_menu($menu);
 
@@ -108,7 +107,7 @@ if (!empty($setmodules) && defined('IN_PHPBB'))
 		{
 			for ($j = 0; $j < $menu[$i]->num(); $j++)
 			{
-				$module['Cash Mod'][$menu[$i]->items[$j]->title] = $menu[$i]->items[$j]->linkage($phpEx);
+				$module['Cash Mod'][$menu[$i]->items[$j]->title] = $menu[$i]->items[$j]->linkage();
 				if (($j == $menu[$i]->num() - 1) && !($i == count($menu) - 1))
 				{
 					$lang[$menu[$i]->items[$j]->title] = $lang[$menu[$i]->items[$j]->title] . '</a></span></td></tr><tr><td class="row2" height="7"><span class="genmed"><a name="cm' . $menu[$i]->num() . '">';
@@ -120,20 +119,20 @@ if (!empty($setmodules) && defined('IN_PHPBB'))
 	{
 		$file = basename(__FILE__);
 		//$module['Cash Mod']['Cash_Admin'] = $file;
-		$module['Cash Mod']['Cash_Admin'] = 'cash_main.' . $phpEx;;
-		$module['Cash Mod']['Cash_Help'] = 'cash_help.' . $phpEx;
+		$module['Cash Mod']['Cash_Admin'] = 'cash_main.' . PHP_EXT;;
+		$module['Cash Mod']['Cash_Help'] = 'cash_help.' . PHP_EXT;
 	}
 	return;
 }
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-include_once($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (!defined('CASH_MOD'))
 {
@@ -144,7 +143,7 @@ if (!defined('CASH_MOD'))
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 
 //$menu = array();
@@ -160,13 +159,13 @@ for ($i = 0; $i < count($menu); $i++)
 	);
 	for ($j = 0; $j < $menu[$i]->num(); $j++)
 	{
-		$template->assign_block_vars('menucat.menuitem', $menu[$i]->items[$j]->data($phpEx, 1, ''));
+		$template->assign_block_vars('menucat.menuitem', $menu[$i]->items[$j]->data(1, ''));
 	}
 }
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 */
 
 ?>

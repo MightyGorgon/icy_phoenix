@@ -424,7 +424,7 @@ class ct_database
 	 */
 	function check_login_status($username)
 	{
-		global $lang, $db, $phpEx;
+		global $lang, $db;
 
 		// Secure submitted username
 		$username = phpbb_clean_username($username);
@@ -439,7 +439,7 @@ class ct_database
 			{
 				if ( $row['ct_login_vconfirm'] == 1 )
 				{
-					redirect(append_sid("ctracker_login.$phpEx?uid=" . $row['user_id'], true));
+					redirect(append_sid('ctracker_login.' . PHP_EXT . '?uid=' . $row['user_id'], true));
 				}
 			}
 		}
@@ -454,11 +454,11 @@ class ct_database
 	 */
 	function first_admin_protection($user_id)
 	{
-		global $lang, $userdata, $phpbb_root_path, $phpEx;
+		global $lang, $userdata;
 
 		if ( $user_id != $userdata['user_id'] )
 		{
-			include_once($phpbb_root_path . 'ctracker/constants.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
 
 			if ( $user_id == CT_FIRST_ADMIN_UID )
 			{

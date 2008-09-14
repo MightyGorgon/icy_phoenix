@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -24,17 +24,17 @@ if (!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'config.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-include($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 function get_forums($sel_id = 0)
 {
@@ -127,7 +127,7 @@ switch ($mode)
 					'L_FORUM_ID_EXPLAIN' => $lang['Forum_id_explain'],
 					'FORUM_LIST' => get_forums(),
 
-					'S_ACTION' => append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=create"),
+					'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=create'),
 					'CAT_NAME' => $new_cat_name,
 					'DESC' => '',
 					'NUMBER_ARTICLES' => '0',
@@ -211,7 +211,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not create category", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Cat_created'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid("admin_kb_cat.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . "admin/index.$phpEx?pane=right") . '">', '</a>');
+			$message = $lang['Cat_created'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid("admin_kb_cat." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -259,7 +259,7 @@ switch ($mode)
 
 					'PARENT_LIST' => get_kb_cat_list('', $parent, $parent, true, 0, true),
 
-					'S_ACTION' => append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=edit"),
+					'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=edit'),
 					'CAT_NAME' => $cat_name,
 					'CAT_DESCRIPTION' => $cat_desc,
 					'NUMBER_ARTICLES' => $number_articles,
@@ -369,7 +369,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not update category", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Cat_edited'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid("admin_kb_cat.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . "admin/index.$phpEx?pane=right") . '">', '</a>');
+			$message = $lang['Cat_edited'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid('admin_kb_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			mx_message_die(GENERAL_MESSAGE, $message);
 		}
@@ -410,12 +410,12 @@ switch ($mode)
 
 					'S_HIDDEN_FIELDS' => '<input type="hidden" name="catid" value="' . $cat_id . '">',
 					'S_SELECT_TO' => get_kb_cat_list('', $cat_id, 0, true, 0, true),
-					'S_ACTION' => append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=delete"),
+					'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=delete'),
 
 					'CAT_NAME' => $cat_name)
 				);
 		}
-		else if ($_POST['submit'])
+		elseif ($_POST['submit'])
 		{
 			$new_category = $_POST['move_id'];
 			$old_category = $_POST['catid'];
@@ -482,7 +482,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not delete category", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Cat_deleted'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid("admin_kb_cat.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . "admin/index.$phpEx?pane=right") . '">', '</a>');
+			$message = $lang['Cat_deleted'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid('admin_kb_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			mx_message_die(GENERAL_MESSAGE, $message);
 		}
@@ -583,7 +583,7 @@ switch ($mode)
 				'L_ARTICLES' => $lang['Articles'],
 				'L_ORDER' => $lang['Update_order'],
 
-				'S_ACTION' => append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=create"))
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=create'))
 			);
 		// get categories
 		$sql = "SELECT *
@@ -603,19 +603,19 @@ switch ($mode)
 
 			$category_id = $category['category_id'];
 			$category_name = $category['category_name'];
-			$temp_url = append_sid($phpbb_root_path . "kb.$phpEx?mode=cat&amp;cat=$category_id");
+			$temp_url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=cat&amp;cat=' . $category_id);
 			$category_link = '<a href="' . $temp_url . '" class="gen">' . $category_name . '</a>';
 
-			$temp_url = append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=edit&amp;cat=$category_id");
-			$edit = '<a href="' . $temp_url . '"><img src="' . $phpbb_root_path . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=edit&amp;cat=' . $category_id);
+			$edit = '<a href="' . $temp_url . '"><img src="' . IP_ROOT_PATH . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
 
-			$temp_url = append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=delete&amp;cat=$category_id");
-			$delete = '<a href="' . $temp_url . '" class="gen"><img src="' . $phpbb_root_path . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=delete&amp;cat=' . $category_id);
+			$delete = '<a href="' . $temp_url . '" class="gen"><img src="' . IP_ROOT_PATH . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
 
-			$temp_url = append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=up&amp;cat=$category_id");
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=up&amp;cat=' . $category_id);
 			$up = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_up'] . '</a>';
 
-			$temp_url = append_sid($phpbb_root_path . ADM . "/admin_kb_cat.$phpEx?mode=down&amp;cat=$category_id");
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=down&amp;cat=' . $category_id);
 			$down = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_down'] . '</a>';
 
 			$row_color = (!($ss % 2)) ? $theme['td_color1'] : $theme['td_color2'];
@@ -642,6 +642,6 @@ switch ($mode)
 }
 
 $template->pparse('body');
-include_once($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+include_once(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

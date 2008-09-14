@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -118,7 +118,7 @@ function InsertReadTopic($user)
 function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_replies, $topic_news_id, $topic_vote, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
 {
 	//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
-	global $board_config, $phpEx, $lang, $images, $userdata, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
+	global $board_config, $lang, $images, $userdata, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
 
 	$topic_link = array();
 	$topic_link['forum_id_append'] = $forum_id_append;

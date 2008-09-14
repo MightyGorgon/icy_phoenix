@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -64,10 +64,10 @@ $template->assign_vars(array(
 	'L_INFO'			=> $lang['ctracker_credits_info'],
 	'L_INFO_TEXT'		=> $lang['ctracker_credits_info_text'],
 
-	'IMG_ICON_1'		=> $phpbb_root_path . $images['ctracker_icon_cred_1'],
-	'IMG_ICON_2'		=> $phpbb_root_path . $images['ctracker_icon_cred_2'],
-	'IMG_ICON_3'		=> $phpbb_root_path . $images['ctracker_icon_cred_3'],
-	'IMG_ICON_4'		=> $phpbb_root_path . $images['ctracker_icon_cred_4'])
+	'IMG_ICON_1'		=> IP_ROOT_PATH . $images['ctracker_icon_cred_1'],
+	'IMG_ICON_2'		=> IP_ROOT_PATH . $images['ctracker_icon_cred_2'],
+	'IMG_ICON_3'		=> IP_ROOT_PATH . $images['ctracker_icon_cred_3'],
+	'IMG_ICON_4'		=> IP_ROOT_PATH . $images['ctracker_icon_cred_4'])
   );
 
 

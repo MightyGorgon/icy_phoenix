@@ -8,10 +8,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -103,7 +103,7 @@ if ($submit)
 	$meta_description = '';
 	$meta_keywords = '';
 	$gen_simple_header = true;
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'edit_post_time_body.tpl'));
 
@@ -123,7 +123,7 @@ if ($submit)
 
 	$template->pparse('body');
 
-	include($phpbb_root_path.'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {
@@ -291,7 +291,7 @@ else
 	$meta_description = '';
 	$meta_keywords = '';
 	$gen_simple_header = true;
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->assign_block_vars('entry_page', array());
 	$template->set_filenames(array('body' => 'edit_post_time_body.tpl'));
@@ -304,14 +304,14 @@ else
 
 		'POST_EDIT_STRING' => $post_edit_string,
 
-		'S_ACTION' => append_sid('edit_post_time.' . $phpEx),
+		'S_ACTION' => append_sid('edit_post_time.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
 
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 ?>

@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,12 +28,12 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_install.' . $phpEx) . '">' . $lang['xs_install_styles'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_install.' . PHP_EXT) . '">' . $lang['xs_install_styles'] . '</a>'));
 
-$lang['xs_install_back'] = str_replace('{URL}', append_sid('xs_install.' . $phpEx), $lang['xs_install_back']);
-$lang['xs_goto_default'] = str_replace('{URL}', append_sid('xs_styles.' . $phpEx), $lang['xs_goto_default']);
+$lang['xs_install_back'] = str_replace('{URL}', append_sid('xs_install.' . PHP_EXT), $lang['xs_install_back']);
+$lang['xs_goto_default'] = str_replace('{URL}', append_sid('xs_styles.' . PHP_EXT), $lang['xs_goto_default']);
 
 // remove timeout. useful for forum with 100+ styles
 @set_time_limit(XS_MAX_TIMEOUT);
@@ -47,7 +47,7 @@ if(!empty($_GET['style']) && !defined('DEMO_MODE'))
 	if(defined('REFRESH_NAVBAR'))
 	{
 		$template->assign_block_vars('left_refresh', array(
-			'ACTION' => append_sid('index.' . $phpEx . '?pane=left')
+			'ACTION' => append_sid('index.' . PHP_EXT . '?pane=left')
 			)
 		);
 	}
@@ -82,7 +82,7 @@ if(!empty($_POST['total']) && !defined('DEMO_MODE'))
 		if(defined('REFRESH_NAVBAR'))
 		{
 			$template->assign_block_vars('left_refresh', array(
-					'ACTION'	=> append_sid('index.' . $phpEx . '?pane=left')
+					'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
 				));
 		}
 		if(defined('XS_MODS_CATEGORY_HIERARCHY'))
@@ -149,7 +149,7 @@ foreach($styles as $var => $value)
 			'ROW_CLASS'	=> $row_class,
 			'STYLE'		=> htmlspecialchars($value['template_name']),
 			'THEME'		=> htmlspecialchars($value['style_name']),
-			'U_INSTALL'	=> append_sid('xs_install.' . $phpEx . '?style='.urlencode($value['template_name']).'&num='.$value['num']),
+			'U_INSTALL'	=> append_sid('xs_install.' . PHP_EXT . '?style='.urlencode($value['template_name']).'&num='.$value['num']),
 			'CB_NAME'	=> 'install_'.$j,
 			'NUM'		=> $value['num'],
 		)
@@ -158,7 +158,7 @@ foreach($styles as $var => $value)
 }
 
 $template->assign_vars(array(
-	'U_INSTALL'		=> append_sid('xs_install.' . $phpEx),
+	'U_INSTALL'		=> append_sid('xs_install.' . PHP_EXT),
 	'TOTAL'			=> count($styles)
 	));
 

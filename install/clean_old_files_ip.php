@@ -8,11 +8,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-//$phpbb_root_path = './../';
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+//if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip, 0);
@@ -34,7 +34,7 @@ if ( isset($_POST['mode']) || isset($_GET['mode']) )
 }
 
 $page_title = 'Cleaning Icy Phoenix Files';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $older_update = false;
 
@@ -44,23 +44,87 @@ if ( substr($mode, 0, 5) == 'clean')
 	echo '<tr><th>Cleaning Unused Files</th></tr><tr><td class="row1"><div class="post-text"><span class="genmed"><ul type="circle">';
 
 	$files_array = array(
+		'extension.inc',
 		'cpl_menu.php',
+		'db_generator.php',
 		'subscp.php',
 		'uptime.php',
 		'usercp.php',
+
+		'adm/xs_avatar_generator.cfg',
+		'adm/xs_direct_img.cfg',
+		'adm/xs_ipb_profile.cfg',
+		'adm/xs_lo_fi_mod.cfg',
+		'adm/xs_news.cfg',
 
 		'adm/admin_board_main.php',
 		'adm/admin_board_posting.php',
 		'adm/admin_board_queries.php',
 		'adm/admin_color_groups.php',
+		'adm/admin_db_generator.php',
 		'adm/admin_lang_extend.php',
 		'adm/admin_mass_email.php',
 		'adm/admin_similar_topics.php',
 		'adm/pa_block_config.php',
 
 		'docs/hl/Color Groups.hl',
+		'docs/hl/DB Generator.hl',
 
+		'images/fap/fap_blank.gif',
+		'images/fap/fap_info.gif',
+		'images/fap/fap_loading.gif',
+		'images/fap/fap_next.gif',
+		'images/fap/fap_prev.gif',
+		'images/fap/fap_nothumbnail.jpg',
 		'images/smiles/makepak.php',
+
+		'includes/album_mod/album_bbcode.php',
+		'includes/album_mod/fap_loader.js',
+		'includes/album_mod/moo.ajax.js',
+		'includes/album_mod/moo.fx.js',
+		'includes/album_mod/moo.fx.pack.js',
+		'includes/album_mod/mooshow.1.04.js',
+		'includes/album_mod/prototype.lite.js',
+
+		'includes/album_mod/fap_alpha.png',
+		'includes/album_mod/fap_blank.gif',
+		'includes/album_mod/fap_blur.png',
+		'includes/album_mod/fap_bw.png',
+		'includes/album_mod/fap_flip.png',
+		'includes/album_mod/fap_info.gif',
+		'includes/album_mod/fap_infrared.png',
+		'includes/album_mod/fap_interlace.png',
+		'includes/album_mod/fap_loading.gif',
+		'includes/album_mod/fap_mirror.png',
+		'includes/album_mod/fap_next.gif',
+		'includes/album_mod/fap_normal.png',
+		'includes/album_mod/fap_nothumbnail.jpg',
+		'includes/album_mod/fap_pixelate.png',
+		'includes/album_mod/fap_prev.gif',
+		'includes/album_mod/fap_recompress.png',
+		'includes/album_mod/fap_resize.png',
+		'includes/album_mod/fap_rotate.png',
+		'includes/album_mod/fap_scatter.png',
+		'includes/album_mod/fap_screen.png',
+		'includes/album_mod/fap_sepia.png',
+		'includes/album_mod/fap_stereogram.png',
+		'includes/album_mod/fap_tint.png',
+		'includes/album_mod/fap_watermark.png',
+		'includes/album_mod/index.html',
+		'includes/album_mod/mark.png',
+		'includes/album_mod/mark_.png',
+		'includes/album_mod/mark_fap.png',
+		'includes/album_mod/mark_fap_big.png',
+		'includes/album_mod/nothumbnail.jpg',
+		'includes/album_mod/rank.gif',
+		'includes/album_mod/rank_big.gif',
+		'includes/album_mod/rank_old.gif',
+		'includes/album_mod/rank_small.gif',
+		'includes/album_mod/rating_star.png',
+		'includes/album_mod/rating_star_blue.png',
+		'includes/album_mod/rating_star_red.png',
+		'includes/album_mod/rating_star_yellow.png',
+		'includes/album_mod/spacer.gif',
 
 		'includes/functions_color_groups.php',
 		'includes/functions_portal.php',
@@ -69,6 +133,7 @@ if ( substr($mode, 0, 5) == 'clean')
 		'includes/upi2db/upi2db_orig_xs.php',
 
 		'templates/common/acp/admin_similar_topics_body.tpl',
+		'templates/common/acp/admin_db_generator_body.tpl',
 		'templates/common/acp/board_config_main_body.tpl',
 		'templates/common/acp/board_config_posting_body.tpl',
 		'templates/common/acp/board_config_queries.tpl',
@@ -93,7 +158,9 @@ if ( substr($mode, 0, 5) == 'clean')
 	$language_array = array('dutch', 'catala', 'german', 'english', 'italian', 'spanish');
 	for ($i = 0; $i < count($language_array); $i++)
 	{
-		$files_array[] = 'language/lang_' . $language_array[$i] . '/lang_admin_db_backup.phpp';
+		$files_array[] = 'language/lang_' . $language_array[$i] . '/db_generator.tpl';
+
+		$files_array[] = 'language/lang_' . $language_array[$i] . '/lang_admin_db_backup.php';
 		$files_array[] = 'language/lang_' . $language_array[$i] . '/lang_cback_ctracker.php';
 		$files_array[] = 'language/lang_' . $language_array[$i] . '/lang_color_groups.php';
 		$files_array[] = 'language/lang_' . $language_array[$i] . '/lang_extend.php';
@@ -207,9 +274,9 @@ if ( substr($mode, 0, 5) == 'clean')
 	$not_found_counter = 0;
 	for ($i = 0; $i < $tot_items; $i++)
 	{
-		if (file_exists($phpbb_root_path . $files_array[$i]))
+		if (file_exists(IP_ROOT_PATH . $files_array[$i]))
 		{
-			$killed = @unlink($phpbb_root_path . $files_array[$i]);
+			$killed = @unlink(IP_ROOT_PATH . $files_array[$i]);
 			if ($killed)
 			{
 				$killed_counter++;
@@ -241,13 +308,13 @@ else
 	echo '<br /><span class="topic_ann"><b><span class="gen">This file helps you in cleaning your Icy Phoenix installation of unused old files. This process can\'t be undone so you should have a backup of your files before going on. If you have a backup and you want to proceed, please click on the link below, otherwise delete this file.</span></b></span><br /><br /><br />';
 
 	echo '<span class="genmed"><ul type="circle">';
-	echo '<li><a href="' . append_sid('clean_old_files_ip.' . $phpEx . '?mode=clean') . '"><b>Remove unused Icy Phoenix files</b></a></li><br />';
+	echo '<li><a href="' . append_sid('clean_old_files_ip.' . PHP_EXT . '?mode=clean') . '"><b>Remove unused Icy Phoenix files</b></a></li><br />';
 	echo '</ul></span>';
 
 	echo '</div></td>';
 	echo '<tr><td class="cat" height="28" align="center"><span class="genmed"><a href="' . append_sid(FORUM_MG) . '">Return to Forum Index</a></span></td></table>';
 }
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

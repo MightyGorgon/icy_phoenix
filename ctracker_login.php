@@ -33,11 +33,11 @@
  */
 
 // CTracker_Ignore: File Checked By Human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_LOGIN', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -82,7 +82,7 @@ $easter_egg_link = $easter_egg_array[$rnd];
 $page_title = $lang['ctracker_login_title'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 
 // Define the Template for this file
@@ -96,14 +96,14 @@ if ( $ctracker_config->settings['loginfeature'] == 1 )
 {
 	define('CRACKER_TRACKER_VCONFIRM', true);
 	define('CTRACKER_ACCOUNT_FREE', true);
-	include_once( $phpbb_root_path . 'ctracker/engines/ct_visual_confirm.' . $phpEx );
+	include_once( IP_ROOT_PATH . 'ctracker/engines/ct_visual_confirm.' . PHP_EXT );
 }
 
 // Send some vars to the template
 $template->assign_vars(array(
 	'CONFIRM_IMAGE'   => $confirm_image,
 	'PAGE_ICON'       => $images['ctracker_key_icon'],
-	'S_FORM_ACTION'   => append_sid('ctracker_login.' . $phpEx . '?mode=check&uid=' . $user_id),
+	'S_FORM_ACTION'   => append_sid('ctracker_login.' . PHP_EXT . '?mode=check&uid=' . $user_id),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'L_HEADER_TEXT'   => $lang['ctracker_login_title'],
 	'L_DESCRIPTION'   => $lang['ctracker_login_confim'],
@@ -116,6 +116,6 @@ $template->assign_vars(array(
 $template->pparse('body');
 
 // Include the page_tail.php file
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

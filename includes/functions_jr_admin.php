@@ -8,14 +8,14 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 define('EXPLODE_SEPERATOR_CHAR', '|');
 //define('JR_ADMIN_DIR', ADM .'/');
-define('COPYRIGHT_NIVISEC_FORMAT', '<br /><div class="copyright" style="text-align:center;"> %s &copy; %s <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.</div>');
+define('COPYRIGHT_NIVISEC_FORMAT', '<br /><div class="copyright" style="text-align:center;"> %s &copy; %s <a href="http://www.nivisec.com">Nivisec.com</a></div>');
 
 
 if (!function_exists('copyright_nivisec'))
@@ -39,15 +39,15 @@ if (!function_exists('find_lang_file_nivisec'))
 	*/
 	function find_lang_file_nivisec($filename)
 	{
-		global $lang, $phpbb_root_path, $board_config, $phpEx;
+		global $lang, $board_config;
 
-		if (file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx"))
+		if (file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $filename . '.' . PHP_EXT))
 		{
-			include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/$filename.$phpEx");
+			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $filename . '.' . PHP_EXT);
 		}
-		elseif (file_exists($phpbb_root_path . "language/lang_english/$filename.$phpEx"))
+		elseif (file_exists(IP_ROOT_PATH . "language/lang_english/$filename." . PHP_EXT))
 		{
-			include_once($phpbb_root_path . "language/lang_english/$filename.$phpEx");
+			include_once(IP_ROOT_PATH . "language/lang_english/$filename." . PHP_EXT);
 		}
 		else
 		{
@@ -175,11 +175,11 @@ if (!function_exists('sql_query_nivisec'))
 
 function jr_admin_check_file_hashes($file)
 {
-	global $phpbb_root_path, $phpEx, $userdata;
+	global $userdata;
 
 	//Include the file to get the module list
 	$setmodules = 1;
-	include($phpbb_root_path . ADM . '/' . $file);
+	include(IP_ROOT_PATH . ADM . '/' . $file);
 	unset($setmodules);
 
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
@@ -208,7 +208,7 @@ function jr_admin_check_file_hashes($file)
 
 function jr_admin_get_module_list($user_module_list = false)
 {
-	global $db, $phpbb_root_path, $lang, $phpEx, $board_config, $userdata;
+	global $db, $lang, $board_config, $userdata;
 
 	/* Debugging for this function. Debugging in this function causes changes to the way ADMIN users
 	are interpreted.  You are warned */
@@ -216,16 +216,21 @@ function jr_admin_get_module_list($user_module_list = false)
 	/* Even more debug info! */
 	$verbose = false;
 
+	// We need this for regular expressions... to avoid errors!!!
+	$phpEx = PHP_EXT;
+
+	define('JA_PARSING', true);
+
 	//Read all the modules
 	$setmodules = 1;
-	$dir = @opendir($phpbb_root_path . ADM . '/');
+	$dir = @opendir(IP_ROOT_PATH . ADM . '/');
 	$pattern = "/^admin_.+\.$phpEx$/";
 	while (($file = @readdir($dir)) !== false)
 	{
 		if (preg_match($pattern, $file))
 		{
-			//include($phpbb_root_path.ADM.'/'.$file);
-			include_once($phpbb_root_path . ADM . '/' . $file);
+			//include(IP_ROOT_PATH . ADM . '/' . $file);
+			include_once(IP_ROOT_PATH . ADM . '/' . $file);
 		}
 	}
 	@closedir($dir);
@@ -248,10 +253,10 @@ function jr_admin_get_module_list($user_module_list = false)
 			$filename = preg_replace("/(\?|&|&amp;)sid=[A-Z,a-z,0-9]{32}/", '', $filename);
 			if ($debug && $verbose) print "<span class=\"gensmall\"><span class=\"text_red\">DEBUG - filename = $filename</span></span><br />";
 			//Note the md5 function compilation here to make a unique id
-			$file_hash = md5($cat.$module_name.$filename);
+			$file_hash = md5($cat . $module_name . $filename);
 
 			//Wee a 3-D array of our info!
-			if ($user_module_list && ($userdata['user_level'] != ADMIN || $debug))
+			if ($user_module_list && (($userdata['user_level'] != ADMIN) || $debug))
 			{
 				//If we were passed a list of valid modules, make sure we are sending the correct list back
 				$user_modules = explode(EXPLODE_SEPERATOR_CHAR, $user_module_list);
@@ -280,6 +285,9 @@ function jr_admin_secure($file)
 	/* Debugging in this function causes changes to the way ADMIN users
 	are interpreted.  You are warned */
 	$debug = false;
+
+	// We need this for regular expressions... to avoid errors!!!
+	$phpEx = PHP_EXT;
 
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 
@@ -346,15 +354,18 @@ function jr_admin_secure($file)
 
 function jr_admin_include_all_lang_files()
 {
-	global $lang, $phpbb_root_path, $board_config, $phpEx;
+	global $lang, $board_config;
 
-	$dir = @opendir($phpbb_root_path . 'language/lang_' . $board_config['default_lang']);
+	// We need this for regular expressions... to avoid errors!!!
+	$phpEx = PHP_EXT;
+
+	$dir = @opendir(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang']);
 	$pattern = "/^lang.+\.$phpEx$/";
 	while (($file = @readdir($dir)) !== false)
 	{
 		if (preg_match($pattern, $file))
 		{
-			include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/' . $file);
+			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $file);
 		}
 	}
 	@closedir($dir);
@@ -362,10 +373,13 @@ function jr_admin_include_all_lang_files()
 
 function jr_admin_make_left_pane()
 {
-	global $template, $lang, $module, $phpbb_root_path, $phpEx, $userdata, $theme;
+	global $template, $lang, $module, $userdata, $theme;
 
 	jr_admin_include_all_lang_files();
-	include_once($phpbb_root_path . ADM . '/acp_icons.' . $phpEx);
+	include_once(IP_ROOT_PATH . ADM . '/acp_icons.' . PHP_EXT);
+
+	// We need this for regular expressions... to avoid errors!!!
+	$phpEx = PHP_EXT;
 
 	@ksort($module);
 	//Loop through and set up all the nice form names, etc
@@ -393,7 +407,7 @@ function jr_admin_make_left_pane()
 			//Compile our module url with lots of options
 			$module_url = $data_array['filename'];
 			$module_url .= (preg_match("/^.*\.$phpEx\?/", $module_url)) ? '&amp;' : '?';
-			$module_url .= "sid=" . $userdata['session_id'] . "&amp;module=" . $data_array['file_hash'];
+			$module_url .= 'sid=' . $userdata['session_id'] . '&amp;module=' . $data_array['file_hash'];
 
 			$template->assign_block_vars('catrow.modulerow', array(
 				'ROW_CLASS' => (++$i % 2) ? $theme['td_class1'] : $theme['td_class2'],
@@ -465,7 +479,7 @@ function jr_admin_get_user_info($user_id)
 
 function jr_admin_make_admin_link()
 {
-	global $lang, $userdata, $phpEx;
+	global $lang, $userdata;
 
 	if (!$userdata['session_logged_in'])
 	{
@@ -474,14 +488,14 @@ function jr_admin_make_admin_link()
 
 	if ($userdata['user_level'] == ADMIN)
 	{
-		return '<a href="'. ADM . '/index.' . $phpEx . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
+		return '<a href="'. ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
 	}
 
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 
 	if (!empty($jr_admin_userdata['user_jr_admin']))
 	{
-		return '<a href="'. ADM . '/index.' . $phpEx . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
+		return '<a href="'. ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
 	}
 	else
 	{

@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -23,7 +23,7 @@ if (!defined('IN_PHPBB'))
 /*
 * extract_current_page
 * function backported from phpBB3 - Olympus
-* @param string $root_path current root path (phpbb_root_path)
+* @param string $root_path current root path (IP_ROOT_PATH)
 */
 function extract_current_page($root_path)
 {
@@ -389,7 +389,7 @@ function get_userdata_notifications($user, $force_str = false)
 
 function make_jumpbox($action, $match_forum_id = 0)
 {
-	global $template, $userdata, $lang, $db, $nav_links, $phpEx, $SID;
+	global $template, $userdata, $lang, $db, $nav_links, $SID;
 
 	return jumpbox($action, $match_forum_id);
 
@@ -445,19 +445,17 @@ function make_jumpbox($action, $match_forum_id = 0)
 //					{
 						$selected = ($forum_rows[$j]['forum_id'] == $match_forum_id) ? 'selected="selected"' : '';
 						$boxstring_forums .=  '<option value="' . $forum_rows[$j]['forum_id'] . '"' . $selected . '>' . $forum_rows[$j]['forum_name'] . '</option>';
-
 						//
 						// Add an array to $nav_links for the Mozilla navigation bar.
 						// 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
 						//
 						$nav_links['chapter forum'][$forum_rows[$j]['forum_id']] = array (
 							//SEO TOLKIT BEGIN
-							//'url' => append_sid("viewforum.$phpEx?" . POST_FORUM_URL . "=" . $forum_rows[$j]['forum_id']),
-							'url' => append_sid(make_url_friendly($forum_rows[$j]['forum_name']) . "-vf" . $forum_rows[$j]['forum_id'] . ".html") ,
+							//'url' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_rows[$j]['forum_id']),
+							'url' => append_sid(make_url_friendly($forum_rows[$j]['forum_name']) . '-vf' . $forum_rows[$j]['forum_id'] . '.html') ,
 							//SEO TOLKIT END
 							'title' => $forum_rows[$j]['forum_name']
 						);
-
 					}
 				}
 
@@ -505,16 +503,16 @@ function make_jumpbox($action, $match_forum_id = 0)
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
-	global $board_config, $theme, $images, $template, $lang, $phpEx, $phpbb_root_path, $db, $nav_links;
+	global $board_config, $theme, $images, $template, $lang, $db, $nav_links;
 	global $mods, $list_yes_no, $tree;
 
 	// Get all the mods settings
-	$dir = @opendir($phpbb_root_path . 'includes/mods_settings');
+	$dir = @opendir(IP_ROOT_PATH . 'includes/mods_settings');
 	while($file = @readdir($dir))
 	{
-		if(preg_match("/^mod_.*?\." . $phpEx . "$/", $file))
+		if(preg_match("/^mod_.*?\." . PHP_EXT . "$/", $file))
 		{
-			include_once($phpbb_root_path . 'includes/mods_settings/' . $file);
+			include_once(IP_ROOT_PATH . 'includes/mods_settings/' . $file);
 		}
 	}
 	@closedir($dir);
@@ -540,7 +538,7 @@ function init_userprefs($userdata)
 		$board_config['hot_threshold'] = !empty($userdata['user_hot_threshold']) ? $userdata['user_hot_threshold'] : $board_config['hot_threshold'];
 	}
 
-	if (!file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.' . $phpEx)))
+	if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.' . PHP_EXT)))
 	{
 		if ($userdata['user_id'] != ANONYMOUS)
 		{
@@ -555,7 +553,7 @@ function init_userprefs($userdata)
 			$default_lang = 'english';
 		}
 
-		if (!file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $default_lang . '/lang_main.' . $phpEx)))
+		if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.' . PHP_EXT)))
 		{
 			message_die(CRITICAL_ERROR, 'Could not locate valid language pack');
 		}
@@ -589,47 +587,47 @@ function init_userprefs($userdata)
 	}
 	$board_config['default_lang'] = $default_lang;
 
-	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . $phpEx);
-	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . $phpEx);
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_upi2db.' . $phpEx);
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_news.' . $phpEx);
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_attach.' . $phpEx);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_upi2db.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_news.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_attach.' . PHP_EXT);
 	// CrackerTracker v5.x
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_cback_ctracker.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_cback_ctracker.' . PHP_EXT);
 	// CrackerTracker v5.x
 	// MG Logs - BEGIN
 	if ($board_config['mg_log_actions'] == true)
 	{
-		include($phpbb_root_path . 'includes/log_http_cmd.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/log_http_cmd.' . PHP_EXT);
 	}
 	// MG Logs - END
 
 	// MG Cash MOD For IP - BEGIN
 	if (defined('CASH_MOD') && defined('IN_CASHMOD'))
 	{
-		include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_cash.' . $phpEx);
+		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cash.' . PHP_EXT);
 	}
 	// MG Cash MOD For IP - END
 
 	if (defined('IN_ADMIN'))
 	{
-		if(!file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx)))
+		if(!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT)))
 		{
 			$board_config['default_lang'] = 'english';
 		}
-		include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx);
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_cback_ctracker.' . $phpEx);
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_upi2db.' . $phpEx);
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_attach.' . $phpEx);
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_kb.' . $phpEx);
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_jr_admin.' . $phpEx);
+		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_cback_ctracker.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_upi2db.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_attach.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_kb.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_jr_admin.' . PHP_EXT);
 	}
 
 	if (empty($tree['auth']))
 	{
 		get_user_tree($userdata);
 	}
-	include($phpbb_root_path . './includes/lang_extend_mac.' . $phpEx);
+	include(IP_ROOT_PATH . './includes/lang_extend_mac.' . PHP_EXT);
 
 	// Set up style
 	$old_default_style = $board_config['default_style'];
@@ -692,11 +690,11 @@ function init_userprefs($userdata)
 		'title' => $lang['Search']
 	);
 	$nav_links['help'] = array (
-		'url' => append_sid('faq.' . $phpEx),
+		'url' => append_sid('faq.' . PHP_EXT),
 		'title' => $lang['FAQ']
 	);
 	$nav_links['author'] = array (
-		'url' => append_sid('memberlist.' . $phpEx),
+		'url' => append_sid('memberlist.' . PHP_EXT),
 		'title' => $lang['Memberlist']
 	);
 	// Add bookmarks to Navigation bar
@@ -786,19 +784,19 @@ function init_userprefs($userdata)
 
 function setup_style($style, $old_default_style, $old_style = false)
 {
-	global $db, $board_config, $template, $images, $phpbb_root_path, $phpEx, $themes_style;
+	global $db, $board_config, $template, $images, $themes_style;
 
 	if (defined('CACHE_THEMES'))
 	{
-		include($phpbb_root_path . './includes/def_themes.' . $phpEx);
+		include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
 		if (empty($themes_style))
 		{
 			if (!@function_exists('cache_themes'))
 			{
-				@include_once($phpbb_root_path . 'includes/functions_extra.' . $phpEx);
+				@include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
 			}
 			cache_themes();
-			@include($phpbb_root_path . './includes/def_themes.' . $phpEx);
+			@include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
 		}
 	}
 
@@ -860,7 +858,7 @@ function setup_style($style, $old_default_style, $old_style = false)
 	$template_path = 'templates/';
 	$template_name = $row['template_name'];
 
-	$template = new Template($phpbb_root_path . $template_path . $template_name);
+	$template = new Template(IP_ROOT_PATH . $template_path . $template_name);
 
 	if ($template)
 	{
@@ -874,7 +872,7 @@ function setup_style($style, $old_default_style, $old_style = false)
 			$cfg_name = 'style';
 		}
 		// Mighty Gorgon - Common TPL - END
-		$current_template_cfg = $phpbb_root_path . $template_path . $cfg_path . '/' . $cfg_name . '.cfg';
+		$current_template_cfg = IP_ROOT_PATH . $template_path . $cfg_path . '/' . $cfg_name . '.cfg';
 		@include($current_template_cfg);
 
 		if (!defined('TEMPLATE_CONFIG'))
@@ -882,7 +880,7 @@ function setup_style($style, $old_default_style, $old_style = false)
 			message_die(CRITICAL_ERROR, "Could not open $current_template_cfg", '', __LINE__, __FILE__);
 		}
 
-		$img_lang = (file_exists(@phpbb_realpath($phpbb_root_path . $current_template_path . '/images/lang_' . $board_config['default_lang']))) ? $board_config['default_lang'] : 'english';
+		$img_lang = (file_exists(@phpbb_realpath(IP_ROOT_PATH . $current_template_path . '/images/lang_' . $board_config['default_lang']))) ? $board_config['default_lang'] : 'english';
 
 		while(list($key, $value) = @each($images))
 		{
@@ -898,19 +896,19 @@ function setup_style($style, $old_default_style, $old_style = false)
 
 function check_style_exists($style_id)
 {
-	global $db, $board_config, $template, $images, $phpbb_root_path, $phpEx, $themes_style;
+	global $db, $board_config, $template, $images, $themes_style;
 
 	if (defined('CACHE_THEMES'))
 	{
-		include($phpbb_root_path . './includes/def_themes.' . $phpEx);
+		include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
 		if (empty($themes_style))
 		{
 			if (!@function_exists('cache_themes'))
 			{
-				@include_once($phpbb_root_path . 'includes/functions_extra.' . $phpEx);
+				@include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
 			}
 			cache_themes();
-			@include($phpbb_root_path . './includes/def_themes.' . $phpEx);
+			@include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
 		}
 	}
 
@@ -1189,8 +1187,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 {
 	global $db;
 	global $global_orig_word, $global_replacement_word;
-	global $phpbb_root_path, $phpEx;
-	if (isset($global_orig_word))
+		if (isset($global_orig_word))
 	{
 		$orig_word = $global_orig_word;
 		$replacement_word = $global_replacement_word;
@@ -1201,13 +1198,13 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 		{
 			if (!@function_exists('cache_words'))
 			{
-				@include_once($phpbb_root_path . 'includes/functions_extra.' . $phpEx);
+				@include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
 			}
-			@include($phpbb_root_path . './includes/def_words.' . $phpEx);
+			@include(IP_ROOT_PATH . './includes/def_words.' . PHP_EXT);
 			if (!isset($word_replacement))
 			{
 				cache_words();
-				@include($phpbb_root_path . './includes/def_words.' . $phpEx);
+				@include(IP_ROOT_PATH . './includes/def_words.' . PHP_EXT);
 			}
 		}
 		if (isset($word_replacement))
@@ -1281,7 +1278,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $template, $board_config, $theme, $lang, $phpEx, $phpbb_root_path, $nav_links, $gen_simple_header, $images;
+	global $db, $template, $board_config, $theme, $lang, $nav_links, $gen_simple_header, $images;
 	global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars;
 	global $userdata, $user_ip, $session_length, $starttime, $tree;
 
@@ -1386,13 +1383,13 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	{
 		if (empty($lang))
 		{
-			if(!file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . $phpEx))
+			if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT))
 			{
 				$board_config['default_lang'] = 'english';
 			}
-			include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . $phpEx);
-			include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . $phpEx);
-			include($phpbb_root_path . './includes/lang_extend_mac.' . $phpEx);
+			include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
+			include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
+			include(IP_ROOT_PATH . './includes/lang_extend_mac.' . PHP_EXT);
 		}
 
 		if (empty($template) || empty($theme))
@@ -1403,11 +1400,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		// Load the Page Header
 		if (!defined('IN_ADMIN'))
 		{
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 		}
 		else
 		{
-			include($phpbb_root_path . ADM . '/page_header_admin.' . $phpEx);
+			include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 		}
 	}
 
@@ -1444,8 +1441,8 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			// Critical errors mean we cannot rely on _ANY_ DB information being
 			// available so we're going to dump out a simple echo'd statement
 			//
-			include($phpbb_root_path . 'language/lang_english/lang_main.' . $phpEx);
-			include($phpbb_root_path . 'language/lang_english/lang_main_settings.' . $phpEx);
+			include(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT);
+			include(IP_ROOT_PATH . 'language/lang_english/lang_main_settings.' . PHP_EXT);
 
 			if ($msg_text == '')
 			{
@@ -1509,11 +1506,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 		if (!defined('IN_ADMIN'))
 		{
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
-			include($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 		}
 	}
 	else
@@ -1532,9 +1529,8 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 // dougk_ff7 <October 5, 2002>
 function phpbb_realpath($path)
 {
-	global $phpbb_root_path, $phpEx;
 
-	return (!@function_exists('realpath') || !@realpath($phpbb_root_path . 'includes/functions.' . $phpEx)) ? $path : @realpath($path);
+	return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
 }
 
 function redirect($url)
@@ -2448,9 +2444,8 @@ function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false)
 	return $im_link;
 }
 
-function empty_cache_folder($phpbb_root_path = './', $cg = false)
+function empty_cache_folders($cg = false)
 {
-	global $phpEx;
 
 	$skip_files = array(
 		'.',
@@ -2458,7 +2453,7 @@ function empty_cache_folder($phpbb_root_path = './', $cg = false)
 		'.htaccess',
 		'index.htm',
 		'index.html',
-		'index.' . $phpEx,
+		'index.' . PHP_EXT,
 	);
 
 	$sql_prefix = 'sql_';
@@ -2468,16 +2463,17 @@ function empty_cache_folder($phpbb_root_path = './', $cg = false)
 	$cg_prefix = POST_USERS_URL . '_';
 	$dat_extension = '.dat';
 
-	$dirs_array = array($phpbb_root_path . USERS_CACHE_FOLDER, $phpbb_root_path . MAIN_CACHE_FOLDER, $phpbb_root_path . SQL_CACHE_FOLDER);
+	$dirs_array = array(USERS_CACHE_FOLDER, MAIN_CACHE_FOLDER, SQL_CACHE_FOLDER);
 	for ($i = 0; $i < count($dirs_array); $i++)
 	{
 		$dir = $dirs_array[$i];
 		$res = @opendir($dir);
 		while(($file = readdir($res)) !== false)
 		{
+			$file_full_path = $dir . $file;
 			if (!in_array($file, $skip_files))
 			{
-				$res2 = @unlink($dir . $file);
+				$res2 = @unlink($file_full_path);
 			}
 		}
 		closedir($res);
@@ -2489,11 +2485,88 @@ function empty_cache_folder($phpbb_root_path = './', $cg = false)
 	return true;
 }
 
+function empty_images_cache_folders()
+{
+
+	$skip_files = array(
+		'.',
+		'..',
+		'.htaccess',
+		'index.htm',
+		'index.html',
+		'index.' . PHP_EXT,
+	);
+
+	$dirs_array = array(POSTED_IMAGES_THUMBS_PATH, IP_ROOT_PATH . ALBUM_CACHE_PATH, IP_ROOT_PATH . ALBUM_MED_CACHE_PATH, IP_ROOT_PATH . ALBUM_WM_CACHE_PATH);
+	for ($i = 0; $i < count($dirs_array); $i++)
+	{
+		$dir = $dirs_array[$i];
+		$res = @opendir($dir);
+		while(($file = readdir($res)) !== false)
+		{
+			$file_full_path = $dir . $file;
+			if (!in_array($file, $skip_files))
+			{
+				if (is_dir($file_full_path))
+				{
+					$subres = @opendir($file_full_path);
+					while(($subfile = readdir($subres)) !== false)
+					{
+						$subfile_full_path = $file_full_path . '/' . $subfile;
+						if (!in_array($subfile, $skip_files))
+						{
+							if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $subfile))
+							{
+								$res2 = @unlink($subfile_full_path);
+							}
+						}
+					}
+					closedir($subres);
+				}
+				elseif(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $file))
+				{
+					$res2 = @unlink($file_full_path);
+				}
+			}
+		}
+		closedir($res);
+		if ($cg == true)
+		{
+			return true;
+		}
+	}
+	return true;
+}
+
+function get_founder_id()
+{
+	global $db, $board_config;
+	$founder_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : '2';
+	if ($founder_id != '2')
+	{
+		$sql = "SELECT user_id
+			FROM " . USERS_TABLE . "
+			WHERE user_id = '" . $founder_id . "'
+			LIMIT 1";
+		if (!($result = $db->sql_query($sql, false, 'founder_id_')))
+		{
+			message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
+		}
+		$founder_id = '2';
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$founder_id = $row['user_id'];
+		}
+		$db->sql_freeresult($result);
+	}
+	return $founder_id;
+}
+
 // Activity - BEGIN
 //if (defined('ACTIVITY_MOD'))
 if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 {
-	include_once($phpbb_root_path . ACTIVITY_MOD_PATH . 'includes/functions_amod_includes_functions.' . $phpEx);
+	include_once(IP_ROOT_PATH . ACTIVITY_MOD_PATH . 'includes/functions_amod_includes_functions.' . PHP_EXT);
 }
 // Activity - END
 

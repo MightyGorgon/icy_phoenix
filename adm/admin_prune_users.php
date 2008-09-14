@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -25,11 +25,11 @@ if(!empty($setmodules))
 	return;
 }
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // ********************************************************************************
 // from here you can define you own delete criterias, if you makes more, then you shall also
@@ -81,7 +81,7 @@ $options = '<option value="1">&nbsp;' . $lang['1_Day'] . '</option>
 </select>';
 
 // Generate page
-include('page_header_admin.' . $phpEx);
+include('page_header_admin.' . PHP_EXT);
 $template->set_filenames(array('body' => ADM_TPL . 'prune_users_body.tpl'));
 $n = 0;
 while (!empty($sql_up[$n]))
@@ -121,10 +121,10 @@ while (!empty($sql_up[$n]))
 			'USER_COUNT' => $user_count,
 			'L_PRUNE' => $lang['Prune_commands'][$n],
 			'L_PRUNE_EXPLAIN' => sprintf($lang['Prune_explain'][$n], $days[$n]),
-			'S_PRUNE_USERS' => append_sid('admin_prune_users.' . $phpEx),
+			'S_PRUNE_USERS' => append_sid('admin_prune_users.' . PHP_EXT),
 			'S_DAYS' => $select[$n],
-			//'U_PRUNE' => '<a href="' . append_sid($phpbb_root_path . 'delete_users.' . $phpEx . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onClick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
-			'U_PRUNE' => '<a href="' . append_sid($phpbb_root_path . ADM . '/admin_prune_users_loop.' . $phpEx . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onClick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
+			//'U_PRUNE' => '<a href="' . append_sid(IP_ROOT_PATH . 'delete_users.' . PHP_EXT . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onClick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
+			'U_PRUNE' => '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_prune_users_loop.' . PHP_EXT . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onClick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
 		)
 	);
 	$n++;
@@ -140,6 +140,6 @@ $template->assign_vars(array(
 );
 
 $template->pparse('body');
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

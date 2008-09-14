@@ -138,8 +138,8 @@ Set the permissions to <span class="text_red">CHMOD 777</span> to the following 
 <li><b>files/</b></li>
 <li><b>files/album/</b></li>
 <li><b>files/album/cache/</b></li>
-<li><b>files/album/jupload/</b></li>
 <li><b>files/album/med_cache/</b></li>
+<li><b>files/album/users/</b></li>
 <li><b>files/album/wm_cache/</b></li>
 <li><b>files/posted_images/</b></li>
 <li><b>files/thumbs/</b></li>
@@ -159,7 +159,7 @@ Set the permissions to <span class="text_red">CHMOD 666</span> to the following 
 <li><b>includes/def_themes.php</b></li>
 <li><b>includes/def_tree.php</b></li>
 <li><b>includes/def_words.php</b></li>
-<li><b>language/lang_*/lang_extend.php</b></li>
+<!-- <li><b>language/lang_*/lang_extend.php</b></li> -->
 </ul>
 <br />
 </li>

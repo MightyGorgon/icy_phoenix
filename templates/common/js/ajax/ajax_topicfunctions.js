@@ -32,9 +32,9 @@ function AJAXTitleEdit(post_id, viewtopic_topictitle)
 	{
 		return;
 	}
-	
+
 	is_viewtopic_topictitle = viewtopic_topictitle;
-	
+
 	var topic = getElementById('title_'+post_id);
 	var topictitle = getElementById('topictitle_'+post_id);
 	var topiclink = getElementById('topiclink_'+post_id);
@@ -42,7 +42,7 @@ function AJAXTitleEdit(post_id, viewtopic_topictitle)
 	{
 		var top_topiclink = getElementById('topiclink_top');
 	}
-	
+
 	if ((topictitle == null) || (topiclink == null) || (topic == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -51,10 +51,10 @@ function AJAXTitleEdit(post_id, viewtopic_topictitle)
 		}
 		return;
 	}
-	
+
 	topic.style.display = '';
 	topiclink.style.display = 'none';
-	
+
 	topictitle.focus();
 }
 
@@ -64,11 +64,11 @@ function AJAXEndTitleEdit(post_id)
 	{
 		return;
 	}
-	
+
 	var topictitle = getElementById('topictitle_'+post_id);
 	var orig_topictitle = getElementById('orig_topictitle_'+post_id);
 	var topiclink = getElementById('topiclink_'+post_id);
-	
+
 	if ((topictitle == null) || (orig_topictitle == null) || (topiclink == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -77,10 +77,10 @@ function AJAXEndTitleEdit(post_id)
 		}
 		return;
 	}
-	
+
 	if (orig_topictitle.value != topictitle.value)
 	{
-		var url = 'ajax.' + phpEx;
+		var url = 'ajax.' + php_ext;
 		var params = 'mode=edit_post_subject';
 		if (S_SID != '')
 		{
@@ -104,7 +104,7 @@ function AJAXCancelTitleEdit(post_id)
 	{
 		return;
 	}
-	
+
 	AJAXFinishTitleEdit(AJAX_ERROR, post_id, '', '', '');
 }
 
@@ -114,7 +114,7 @@ function AJAXTitleEditKeyUp(eventvar, post_id)
 	{
 		return;
 	}
-	
+
 	if (!eventvar)
 	{
 		if (!window.event)
@@ -124,7 +124,7 @@ function AJAXTitleEditKeyUp(eventvar, post_id)
 		eventvar = window.event;
 	}
 	var code = 0;
-	
+
 	if (eventvar.keyCode)
 	{
 		code = eventvar.keyCode;
@@ -133,7 +133,7 @@ function AJAXTitleEditKeyUp(eventvar, post_id)
 	{
 		code = eventvar.which;
 	}
-	
+
 	if (code == 13)
 	{
 		AJAXEndTitleEdit(post_id);
@@ -168,7 +168,7 @@ function post_subject_change()
 			{
 				result_code = getFirstTagValue('result', response);
 				post_id = getFirstTagValue('postid', response);
-				
+
 				if (result_code == AJAX_POST_SUBJECT_EDITED)
 				{
 					subject = getFirstTagValue('subject', response);
@@ -185,7 +185,7 @@ function post_subject_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishTitleEdit(result_code, post_id, subject, raw_subject, editmessage);
 		delete request;
 	}
@@ -196,7 +196,7 @@ function AJAXFinishTitleEdit(result_code, post_id, new_subject, raw_subject, new
 	{
 		return;
 	}
-	
+
 	var topic = getElementById('title_'+post_id);
 	var topictitle = getElementById('topictitle_'+post_id);
 	var orig_topictitle = getElementById('orig_topictitle_'+post_id);
@@ -214,7 +214,7 @@ function AJAXFinishTitleEdit(result_code, post_id, new_subject, raw_subject, new
 	{
 		var top_topiclink = (is_viewtopic) ? getElementById('topiclink_top') : getElementById('topiclink_top_'+post_id);
 	}
-	
+
 	if ((topictitle == null) || (orig_topictitle == null) || editmessage_not_found || (topiclink == null) || (topic == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -223,7 +223,7 @@ function AJAXFinishTitleEdit(result_code, post_id, new_subject, raw_subject, new
 		}
 		return;
 	}
-	
+
 	if (result_code != AJAX_POST_SUBJECT_EDITED)
 	{
 		topictitle.value = orig_topictitle.value;
@@ -242,7 +242,7 @@ function AJAXFinishTitleEdit(result_code, post_id, new_subject, raw_subject, new
 			setInnerText(top_topiclink, new_subject);
 		}
 	}
-	
+
 	topic.style.display = 'none';
 	topiclink.style.display = '';
 }
@@ -256,13 +256,13 @@ function AJAXPostEdit(post_id)
 	{
 		return true;
 	}
-	
+
 	var postmessage = getElementById('postmessage_'+post_id);
 	var posttext = getElementById('posttext_'+post_id);
 	var post = getElementById('post_'+post_id);
-	
+
 	var editlink = getElementById('editlink_'+post_id);
-	
+
 	if ((postmessage == null) || (posttext == null) || (post == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -271,18 +271,18 @@ function AJAXPostEdit(post_id)
 		}
 		return true;
 	}
-	
+
 	posttext.setAttribute('rows', '15', 'false');
 	post.style.display = '';
 	postmessage.style.display = 'none';
-	
+
 	if (editlink != null)
 	{
 		editlink.style.display = 'none';
 	}
-	
+
 	posttext.focus();
-	
+
 	return false;
 }
 
@@ -292,10 +292,10 @@ function AJAXEndPostEdit(post_id, return_chars)
 	{
 		return;
 	}
-	
+
 	var posttext = getElementById('posttext_'+post_id);
 	var orig_posttext = getElementById('orig_posttext_'+post_id);
-	
+
 	if ((posttext == null) || (orig_posttext == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -304,10 +304,10 @@ function AJAXEndPostEdit(post_id, return_chars)
 		}
 		return;
 	}
-	
+
 	if ((orig_posttext.value != posttext.value) && (trim(posttext.value) != ''))
 	{
-		var url = 'ajax.' + phpEx;
+		var url = 'ajax.' + php_ext;
 		var params = 'mode=edit_post_text';
 		if (S_SID != '')
 		{
@@ -335,7 +335,7 @@ function AJAXCancelPostEdit(post_id)
 	{
 		return;
 	}
-	
+
 	AJAXFinishPostEdit(AJAX_ERROR, post_id, '', '', '');
 }
 
@@ -345,9 +345,9 @@ function AJAXEnlargePostArea(post_id)
 	{
 		return;
 	}
-	
+
 	var posttext = getElementById('posttext_'+post_id);
-	
+
 	if (posttext == null)
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -356,7 +356,7 @@ function AJAXEnlargePostArea(post_id)
 		}
 		return;
 	}
-	
+
 	var size = parseInt(posttext.getAttribute('rows', 'false'));
 	posttext.setAttribute('rows', size+5, 'false');
 }
@@ -367,9 +367,9 @@ function AJAXShortenPostArea(post_id)
 	{
 		return;
 	}
-	
+
 	var posttext = getElementById('posttext_'+post_id);
-	
+
 	if (posttext == null)
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -378,7 +378,7 @@ function AJAXShortenPostArea(post_id)
 		}
 		return;
 	}
-	
+
 	var size = parseInt(posttext.getAttribute('rows', 'false'));
 	if (size > 5)
 	{
@@ -392,7 +392,7 @@ function AJAXPostEditkeyUp(eventvar, post_id)
 	{
 		return;
 	}
-	
+
 	if (!eventvar)
 	{
 		if (!window.event)
@@ -402,7 +402,7 @@ function AJAXPostEditkeyUp(eventvar, post_id)
 		eventvar = window.event;
 	}
 	var code = 0;
-	
+
 	if (eventvar.which)
 	{
 		code = eventvar.which;
@@ -411,7 +411,7 @@ function AJAXPostEditkeyUp(eventvar, post_id)
 	{
 		code = eventvar.keyCode;
 	}
-	
+
 	if (code == 27)
 	{
 		AJAXFinishPostEdit(AJAX_ERROR, post_id, '', '', '');
@@ -442,7 +442,7 @@ function post_edit_change()
 				var str = (result_data[i][0] + ' = result_data[i][1];');
 				eval(str);
 			}
-			
+
 			if ((result != AJAX_POST_TEXT_EDITED) && (error_msg != ''))
 			{
 				if (AJAX_DEBUG_REQUEST_ERRORS)
@@ -451,7 +451,7 @@ function post_edit_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishPostEdit(result, postid, message, rawmessage, editmessage);
 		delete request;
 	}
@@ -463,9 +463,9 @@ function AJAXFinishPostEdit(result_code, post_id, new_message, raw_message, new_
 	{
 		return;
 	}
-	
+
 	raw_message = utf8_decode(raw_message);
-	
+
 	var postmessage = getElementById('postmessage_'+post_id);
 	var preview_box = getElementById('preview_box_'+post_id);
 	var editmessage_not_found = 0;
@@ -480,9 +480,9 @@ function AJAXFinishPostEdit(result_code, post_id, new_message, raw_message, new_
 	var posttext = getElementById('posttext_'+post_id);
 	var orig_posttext = getElementById('orig_posttext_'+post_id);
 	var post = getElementById('post_'+post_id);
-	
+
 	var editlink = getElementById('editlink_'+post_id);
-	
+
 	if ((postmessage == null) || editmessage_not_found || (posttext == null) || (post == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -491,7 +491,7 @@ function AJAXFinishPostEdit(result_code, post_id, new_message, raw_message, new_
 		}
 		return;
 	}
-	
+
 	if (result_code != AJAX_POST_TEXT_EDITED)
 	{
 		posttext.value = orig_posttext.value;
@@ -507,7 +507,7 @@ function AJAXFinishPostEdit(result_code, post_id, new_message, raw_message, new_
 			editmessage.innerHTML = new_editmessage;
 		}
 	}
-	
+
 	post.style.display = 'none';
 	postmessage.style.display = '';
 	if (editlink != null)
@@ -532,7 +532,7 @@ function AJAXSelPollOption(vote_option_id)
 	{
 		return;
 	}
-	
+
 	var poll_option = getElementById(vote_option_id);
 	if (poll_option.type == 'checkbox')
 	{
@@ -560,9 +560,9 @@ function AJAXVotePoll(topic_id)
 	{
 		return true;
 	}
-	
+
 	error_handler = 'AJAXShowPollResult';
-	var url = 'ajax.' + phpEx;
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=vote_poll';
 	var sel_poll_option = 0;
 
@@ -592,7 +592,7 @@ function AJAXVotePoll(topic_id)
 	else
 	{
 		return false;
-	}	
+	}
 }
 
 function AJAXViewPollResult(topic_id)
@@ -602,9 +602,9 @@ function AJAXViewPollResult(topic_id)
 		// Have to return true, that way the link will be used. This will keep the link working just in case something goes wrong
 		return true;
 	}
-	
+
 	error_handler = 'AJAXShowPollResult';
-	url = 'ajax.' + phpEx;
+	url = 'ajax.' + php_ext;
 	params = 'mode=view_poll';
 	if (S_SID != '')
 	{
@@ -635,7 +635,7 @@ function view_poll_result()
 				var str = (result_data[i][0] + ' = result_data[i][1];');
 				eval(str);
 			}
-			
+
 			if (result != AJAX_POLL_RESULT)
 			{
 				if (AJAX_DEBUG_REQUEST_ERRORS)
@@ -657,9 +657,9 @@ function AJAXViewPollBallot(topic_id)
 		// Have to return true, that way the link will be used. This will keep the link working just in case something goes wrong
 		return true;
 	}
-	
+
 	error_handler = 'AJAXShowPollResult';
-	url = 'ajax.' + phpEx;
+	url = 'ajax.' + php_ext;
 	params = 'mode=view_ballot';
 	if (S_SID != '')
 	{
@@ -675,7 +675,7 @@ function AJAXShowPollResult(result_code, code)
 	{
 		return;
 	}
-	
+
 	var pollbox_table = getElementById('pollbox');
 	if (pollbox_table == null)
 	{
@@ -698,8 +698,8 @@ function AJAXWatchTopic(topic_id, start, watch_status)
 		// Have to return true, that way the link will be used. This will keep the link working just in case something goes wrong
 		return true;
 	}
-	
-	var url = 'ajax.' + phpEx;
+
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=watch_topic';
 	if (S_SID != '')
 	{
@@ -734,7 +734,7 @@ function watch_topic_change()
 			if (response != null)
 			{
 				result_code = getFirstTagValue('result', response);
-				
+
 				if (result_code == AJAX_WATCH_TOPIC)
 				{
 					topic_id = getFirstTagValue('topicid', response);
@@ -754,7 +754,7 @@ function watch_topic_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishWatchTopic(result_code, topic_id, linkurl, linktext, imgurl, start, watching);
 		delete request;
 	}
@@ -766,7 +766,7 @@ function AJAXFinishWatchTopic(result_code, topic_id, linkurl, linktext, imgurl, 
 	{
 		return;
 	}
-	
+
 	var watch_link = getElementById('watchlink');
 	var watch_link_img = getElementById('watchlink_img');
 	var watch_link_img_2 = getElementById('watchlink_img_2');
@@ -780,12 +780,12 @@ function AJAXFinishWatchTopic(result_code, topic_id, linkurl, linktext, imgurl, 
 		}
 		return;
 	}
-	
+
 	setInnerText(watch_link, linktext);
 	watch_link.setAttribute('href', linkurl, 'false');
 	var js_event = 'return AJAXWatchTopic(' + topic_id + ', ' + start + ', ' + (1-watching) + ');';
 	setClickEventHandler(watch_link, js_event);
-	
+
 	if (watch_link_img != null)
 	{
 		watch_link_img.setAttribute('href', linkurl, 'false');
@@ -816,8 +816,8 @@ function AJAXLockTopic(topic_id, lock_status)
 		// Have to return true, that way the link will be used. This will keep the link working just in case something goes wrong
 		return true;
 	}
-	
-	var url = 'ajax.' + phpEx;
+
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=lock_topic';
 	if (S_SID != '')
 	{
@@ -853,7 +853,7 @@ function lock_topic_change()
 			if (response != null)
 			{
 				result_code = getFirstTagValue('result', response);
-				
+
 				if (result_code == AJAX_LOCK_TOPIC)
 				{
 					topic_id = getFirstTagValue('topicid', response);
@@ -874,7 +874,7 @@ function lock_topic_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishLockTopic(result_code, topic_id, linkurl, imgurl, imgtext, replyurl, replytext, locked);
 		delete request;
 	}
@@ -886,7 +886,7 @@ function AJAXFinishLockTopic(result_code, topic_id, linkurl, imgurl, imgtext, re
 	{
 		return;
 	}
-	
+
 	var lock_link = getElementById('topic_locklink');
 	var lock_img = getElementById('topic_lockimg');
 	var reply_img_top = getElementById('replyimg_top');
@@ -899,22 +899,22 @@ function AJAXFinishLockTopic(result_code, topic_id, linkurl, imgurl, imgtext, re
 		}
 		return;
 	}
-	
+
 	lock_link.setAttribute('href', linkurl, 'false');
 	var js_event = 'return AJAXLockTopic(' + topic_id + ', ' + (1-locked) + ');';
 	setClickEventHandler(lock_link, js_event);
-	
+
 	lock_img.setAttribute('src', imgurl, 'false');
 	lock_img.setAttribute('alt', imgtext, 'false');
 	lock_img.setAttribute('title', imgtext, 'false');
-	
+
 	if (reply_img_top != null)
 	{
 		reply_img_top.setAttribute('src', replyurl, 'false');
 		reply_img_top.setAttribute('alt', replytext, 'false');
 		reply_img_top.setAttribute('title', replytext, 'false');
 	}
-	
+
 	if (reply_img_bottom != null)
 	{
 		reply_img_bottom.setAttribute('src', replyurl, 'false');
@@ -932,8 +932,8 @@ function AJAXMarkTopic(topic_id)
 	{
 		return true;
 	}
-	
-	var url = 'ajax.' + phpEx;
+
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=mark_topic';
 	if (S_SID != '')
 	{
@@ -965,7 +965,7 @@ function mark_topic_change()
 			if (response != null)
 			{
 				result_code = getFirstTagValue('result', response);
-				
+
 				if (result_code == AJAX_MARK_TOPIC)
 				{
 					topic_id = getFirstTagValue('topicid', response);
@@ -982,7 +982,7 @@ function mark_topic_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishMarkTopic(result_code, topic_id, topicimage, imagetext);
 		delete request;
 	}
@@ -994,7 +994,7 @@ function AJAXFinishMarkTopic(result_code, topic_id, topicimage, imagetext)
 	{
 		return;
 	}
-	
+
 	var topic_image = getElementById('topicimage_'+topic_id);
 	var topic_newest = getElementById('topicnewest_'+topic_id);
 	if (topic_image == null)
@@ -1005,11 +1005,11 @@ function AJAXFinishMarkTopic(result_code, topic_id, topicimage, imagetext)
 		}
 		return;
 	}
-	
+
 	topic_image.setAttribute('src', topicimage, 'false');
 	topic_image.setAttribute('alt', imagetext, 'false');
 	topic_image.setAttribute('title', imagetext, 'false');
-	
+
 	if (topic_newest != null)
 	{
 		topic_newest.style.display = 'none';
@@ -1026,7 +1026,7 @@ function AJAXQuickPreview(post_id)
 		return true;
 	}
 
-	var url = 'ajax.' + phpEx;
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=quick_preview';
 	var posttext = getElementById('posttext_'+post_id);
 	var orig_posttext = getElementById('orig_posttext_'+post_id);
@@ -1039,7 +1039,7 @@ function AJAXQuickPreview(post_id)
 		}
 		return;
 	}
-	
+
 	if (S_SID != '')
 	{
 		params += '&sid=' + S_SID;
@@ -1070,7 +1070,7 @@ function quick_post_preview_change()
 				var str = (result_data[i][0] + ' = result_data[i][1];');
 				eval(str);
 			}
-			
+
 			if (result != AJAX_PREVIEW)
 			{
 				if (AJAX_DEBUG_REQUEST_ERRORS)
@@ -1079,7 +1079,7 @@ function quick_post_preview_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishQuickPreview(result, error_msg, post_id);
 		delete request;
 	}
@@ -1091,7 +1091,7 @@ function AJAXFinishQuickPreview(result_code, code, post_id)
 	{
 		return true;
 	}
-	
+
 	var preview = getElementById('preview_box_'+post_id);
 
 	if (preview)
@@ -1120,7 +1120,7 @@ function AJAXPostDelete(post_id, confirm_text)
 		return false;
 	}
 
-	var url = 'ajax.' + phpEx;
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=delete_post&' + POST_POST_URL + '=' + post_id;
 
 	if (S_SID != '')
@@ -1151,7 +1151,7 @@ function quick_delete_post()
 				var str = (result_data[i][0] + ' = result_data[i][1];');
 				eval(str);
 			}
-			
+
 			if (result != AJAX_DELETE_POST)
 			{
 				if (AJAX_DEBUG_REQUEST_ERRORS)
@@ -1160,7 +1160,7 @@ function quick_delete_post()
 				}
 			}
 		}
-		
+
 		AJAXFinishDeletePost(result, error_msg);
 		delete request;
 	}
@@ -1172,7 +1172,7 @@ function AJAXFinishDeletePost(result_code, code)
 	{
 		return true;
 	}
-	
+
 	if (result_code == AJAX_DELETE_POST && code != null)
 	{
 		window.location.href = code;
@@ -1191,7 +1191,7 @@ function AJAXTopicDelete(topic_id, confirm_text)
 		return false;
 	}
 
-	var url = 'ajax.' + phpEx;
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=delete_topic&' + POST_TOPIC_URL + '=' + topic_id;
 
 	if (S_SID != '')
@@ -1222,7 +1222,7 @@ function quick_delete_topic()
 				var str = (result_data[i][0] + ' = result_data[i][1];');
 				eval(str);
 			}
-			
+
 			if (result != AJAX_DELETE_TOPIC)
 			{
 				if (AJAX_DEBUG_REQUEST_ERRORS)
@@ -1231,7 +1231,7 @@ function quick_delete_topic()
 				}
 			}
 		}
-		
+
 		AJAXFinishDeleteTopic(result, error_msg);
 		delete request;
 	}
@@ -1243,7 +1243,7 @@ function AJAXFinishDeleteTopic(result_code, code)
 	{
 		return true;
 	}
-	
+
 	if (result_code == AJAX_DELETE_TOPIC && code != null)
 	{
 		window.location.href = code;
@@ -1259,8 +1259,8 @@ function AJAXTopicTypeChange(topic_id, status)
 	{
 		return true;
 	}
-	
-	var url = 'ajax.' + phpEx;
+
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=change_topic_type';
 	if (S_SID != '')
 	{
@@ -1302,7 +1302,7 @@ function topic_type_change()
 			if (response != null)
 			{
 				result_code = getFirstTagValue('result', response);
-				
+
 				if (result_code == AJAX_TOPIC_TYPE)
 				{
 					topic_id = getFirstTagValue('topicid', response);
@@ -1325,7 +1325,7 @@ function topic_type_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishTopicType(result_code, topic_id, announceurl, announcetext, announceimg, announcestatus, stickyurl, stickytext, stickyimg, stickystatus);
 		delete request;
 	}
@@ -1337,7 +1337,7 @@ function AJAXFinishTopicType(result_code, topic_id, announceurl, announcetext, a
 	{
 		return;
 	}
-	
+
 	var announce_link = getElementById('announce_link');
 	var announce_img = getElementById('announce_img');
 	var sticky_link = getElementById('sticky_link');
@@ -1352,7 +1352,7 @@ function AJAXFinishTopicType(result_code, topic_id, announceurl, announcetext, a
 		}
 		return;
 	}
-	
+
 	announce_link.setAttribute('href', announceurl, 'false');
 	js_event = 'return AJAXTopicTypeChange(' + topic_id + ', ' + announcestatus + ');';
 	setClickEventHandler(announce_link, js_event);
@@ -1360,7 +1360,7 @@ function AJAXFinishTopicType(result_code, topic_id, announceurl, announcetext, a
 	sticky_link.setAttribute('href', stickyurl, 'false');
 	js_event = 'return AJAXTopicTypeChange(' + topic_id + ', ' + stickystatus + ');';
 	setClickEventHandler(sticky_link, js_event);
-	
+
 	announce_img.setAttribute('src', announceimg, 'false');
 	announce_img.setAttribute('alt', announcetext, 'false');
 	announce_img.setAttribute('title', announcetext, 'false');
@@ -1439,7 +1439,7 @@ function AJAXTopicMove(topic_id, forum_id)
 		shadow.value = 1;
 	}
 
-	var url = 'ajax.' + phpEx;
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=move_topic';
 	if (S_SID != '')
 	{
@@ -1482,7 +1482,7 @@ function topic_move()
 				}
 			}
 		}
-		
+
 		AJAXFinishTopicMove(result_code, error_msg);
 		delete request;
 	}
@@ -1494,7 +1494,7 @@ function AJAXFinishTopicMove(result_code, code)
 	{
 		return;
 	}
-	
+
 	var move_topic = getElementById('move_topic');
 
 	if (move_topic == null)
@@ -1505,7 +1505,7 @@ function AJAXFinishTopicMove(result_code, code)
 		}
 		return;
 	}
-	
+
 	move_topic.style.display = 'none';
 
 	if (result_code == AJAX_TOPIC_MOVE && code != null)

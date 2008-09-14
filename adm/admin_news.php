@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -18,10 +18,10 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 //
 // Pull all news config data only
@@ -75,7 +75,7 @@ else
 
 	if( isset($_POST['submit']) )
 	{
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -105,7 +105,7 @@ $new['news_rss_cat'] = str_replace( '"', '&quot;', $new['news_rss_cat'] );
 $new['news_rss_image_desc'] = str_replace( '"', '&quot;', $new['news_rss_image_desc'] );
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid("admin_news.$phpEx"),
+	'S_CONFIG_ACTION' => append_sid("admin_news." . PHP_EXT),
 
 	'L_YES' => $lang['Yes'],
 	'L_NO' => $lang['No'],
@@ -190,6 +190,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

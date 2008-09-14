@@ -15,15 +15,15 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-$phpbb_root_path = './../';
-include($phpbb_root_path . 'includes/bb_usage_stats_constants.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . $phpEx);
-include($phpbb_root_path . 'includes/bb_usage_stats_functions.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+include(IP_ROOT_PATH . 'includes/bb_usage_stats_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bb_usage_stats_functions.' . PHP_EXT);
 
 
 /******************************************************************************

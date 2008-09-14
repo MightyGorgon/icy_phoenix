@@ -16,10 +16,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -30,7 +30,7 @@ $page_title = $lang['Acronyms'];
 $meta_description = '';
 $meta_keywords = '';
 
-include('includes/page_header.' . $phpEx);
+include('includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'acronym_body.tpl'));
 
@@ -65,5 +65,5 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('includes/page_tail.' . $phpEx);
+include('includes/page_tail.' . PHP_EXT);
 ?>

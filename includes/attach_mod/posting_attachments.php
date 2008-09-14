@@ -15,7 +15,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -842,8 +842,7 @@ class attach_parent
 	*/
 	function display_attachment_bodies()
 	{
-		global $attach_config, $db, $is_auth, $lang, $mode, $phpEx, $template, $upload_dir, $userdata, $forum_id;
-		global $phpbb_root_path;
+		global $attach_config, $db, $is_auth, $lang, $mode, $template, $upload_dir, $userdata, $forum_id;
 
 		// Choose what to display
 		$value_add = $value_posted = 0;
@@ -979,7 +978,7 @@ class attach_parent
 				}
 				else
 				{
-					$download_link = append_sid($phpbb_root_path . 'download.' . $phpEx . '?id=' . $this->attachment_id_list[$i]);
+					$download_link = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $this->attachment_id_list[$i]);
 				}
 
 				$template->assign_block_vars('attach_row', array(

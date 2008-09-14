@@ -8,20 +8,19 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip, false) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
-require($album_root_path . 'album_image_class.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request
@@ -53,7 +52,7 @@ else
 }
 
 $pic_filename = $pic_id;
-$pic_fullpath = ALBUM_UPLOAD_PATH . 'otf/' . $pic_cat . '/' . $pic_filename;
+$pic_fullpath = ALBUM_OTF_PATH . $pic_cat . '/' . $pic_filename;
 $pic_thumbnail = $pic_cat . '_' . $pic_filename;
 $pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
 $file_part = explode('.', strtolower($pic_filename));
@@ -201,7 +200,7 @@ else
 		if($album_config['show_pic_size_on_thumb'] == 1)
 		{
 			$dimension_font = 1;
-			$dimension_filesize = filesize(ALBUM_UPLOAD_PATH . $pic_filename);
+			$dimension_filesize = filesize($pic_fullpath);
 			$dimension_string = intval($pic_width) . 'x' . intval($pic_height) . '(' . intval($dimension_filesize / 1024) . 'KB)';
 			$dimension_colour = ImageColorAllocate($thumbnail, 255, 255, 255);
 			$dimension_height = imagefontheight($dimension_font);

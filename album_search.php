@@ -15,23 +15,23 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+// Get general album information
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 $page_title = $lang['Search'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_search_body.tpl'));
 
@@ -163,7 +163,7 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 				}
 				else
 				{
-					$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $row['pic_id'])) . '\',\'' . addslashes($row[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+					$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) . '\',\'' . addslashes($row[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
 				//if( !$auth_data['view'] )
@@ -174,13 +174,14 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 						'U_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&u=' . $row['pic_user_id']),
 
 						'L_CAT' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY ) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
-						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . $phpEx)),
+						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
 
 						'L_PIC' => $row['pic_title'],
-						'U_PIC' => ($album_config['fullpic_popup'] == 1) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $row['pic_id'])) : append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $row['pic_id'])),
-						'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $row['pic_id'])),
+						'U_PIC' => ($album_config['fullpic_popup'] == 1) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
+						'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
 						'PIC_PREVIEW' => $pic_preview,
-						'DESC' => $row['pic_desc'],
+						'PIC_TITLE' => htmlspecialchars($row['pic_title']),
+						'DESC' => htmlspecialchars($row['pic_desc']),
 						'L_TIME' => create_date($board_config['default_dateformat'], $row['pic_time'], $board_config['board_timezone'])
 						)
 					);
@@ -195,7 +196,7 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 		$template->assign_vars(array(
 			'L_NRESULTS' => $numres,
 			'L_TRESULTS' => $total_pics,
-			'IMG_FOLDER' => defined('IS_ICYPHOENIX') ? $images['topic_nor_read'] : $images['folder'],
+			'IMG_FOLDER' => $images['topic_nor_read'],
 			'L_TCATEGORY' => $lang['Pic_Cat'],
 			'L_TTITLE' => $lang['Pic_Image'],
 			'L_TSUBMITER' => $lang['Author'],
@@ -219,12 +220,12 @@ else
 // --------------------------------
 
 $template->assign_vars(array(
-	'PAGINATION' => generate_pagination(append_sid(album_append_uid('album_search.' . $phpEx . '?mode=' . $m . '&amp;search=' . $s)), $total_pics, $pics_per_page, $start),
+	'PAGINATION' => generate_pagination(append_sid(album_append_uid('album_search.' . PHP_EXT . '?mode=' . $m . '&amp;search=' . $s)), $total_pics, $pics_per_page, $start),
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 	)
 );
 
 $template->pparse('body');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

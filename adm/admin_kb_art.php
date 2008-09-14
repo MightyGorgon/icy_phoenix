@@ -18,7 +18,7 @@
 // CTracker_Ignore: File Checked By Human
 // Tell the Security Scanner that reachable code in this file is not a security issue
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -27,20 +27,20 @@ if (!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'config.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-include($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
-include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 // Pull all config data
 
@@ -140,7 +140,7 @@ switch ($mode)
 		kb_notify($kb_config['notify'], $kb_message, $kb_config['admin_id'], $kb_comment['article_editor_id'], 'approved');
 		mx_add_search_words('single', $article_id, stripslashes($kb_row['article_body']), stripslashes($kb_row['article_title']), 'kb');
 
-		$message = $lang['Article_approved'] . '<br /><br />' . sprintf($lang['Click_return_article_manager'], '<a href="' . append_sid('admin_kb_art.' . $phpEx) . '&amp;start=' . $start . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . '/index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Article_approved'] . '<br /><br />' . sprintf($lang['Click_return_article_manager'], '<a href="' . append_sid('admin_kb_art.' . PHP_EXT) . '&amp;start=' . $start . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 
 		break;
@@ -172,7 +172,7 @@ switch ($mode)
 		update_kb_number($article_category_id, '- 1');
 		mx_remove_search_post($article_id, 'kb');
 
-		$message = $lang['Article_unapproved'] . '<br /><br />' . sprintf($lang['Click_return_article_manager'], '<a href="' . append_sid('admin_kb_art.' . $phpEx) . '&amp;start=' . $start  . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . '/index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Article_unapproved'] . '<br /><br />' . sprintf($lang['Click_return_article_manager'], '<a href="' . append_sid('admin_kb_art.' . PHP_EXT) . '&amp;start=' . $start  . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 		break;
 
@@ -331,12 +331,12 @@ switch ($mode)
 
 			mx_remove_search_post($article_id, 'kb');
 
-			$message = $lang['Article_deleted'] . '<br /><br />' . sprintf($lang['Click_return_article_manager'], '<a href="' . append_sid('admin_kb_art.' . $phpEx) . '&amp;start=' . $start . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . '/index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['Article_deleted'] . '<br /><br />' . sprintf($lang['Click_return_article_manager'], '<a href="' . append_sid('admin_kb_art.' . PHP_EXT) . '&amp;start=' . $start . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
 		{
-			$message = $lang['Confirm_art_delete'] . '<br /><br />' . sprintf($lang['Confirm_art_delete_yes'], '<a href="' . append_sid('admin_kb_art.' . $phpEx) . '&amp;mode=delete&amp;c=yes&amp;a=' . $article_id . '&amp;start=' . $start . '">', '</a>') . '<br /><br />' . sprintf($lang['Confirm_art_delete_no'], '<a href="' . append_sid('admin_kb_art.' . $phpEx) . '&amp;start=' . $start . '">', '</a>');
+			$message = $lang['Confirm_art_delete'] . '<br /><br />' . sprintf($lang['Confirm_art_delete_yes'], '<a href="' . append_sid('admin_kb_art.' . PHP_EXT) . '&amp;mode=delete&amp;c=yes&amp;a=' . $article_id . '&amp;start=' . $start . '">', '</a>') . '<br /><br />' . sprintf($lang['Confirm_art_delete_no'], '<a href="' . append_sid('admin_kb_art.' . PHP_EXT) . '&amp;start=' . $start . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		break;
@@ -369,7 +369,7 @@ switch ($mode)
 		if ($total = $db->sql_fetchrow($result))
 		{
 			$total_articles = $total['total'];
-			$pagination = generate_pagination(append_sid('admin_kb_art.' . $phpEx), $total_articles, $kb_config['art_pagination'], $start) . '&nbsp;';
+			$pagination = generate_pagination(append_sid('admin_kb_art.' . PHP_EXT), $total_articles, $kb_config['art_pagination'], $start) . '&nbsp;';
 		}
 
 		if ($total_articles > 0)
@@ -401,6 +401,6 @@ switch ($mode)
 
 $template->pparse('body');
 
-include_once($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+include_once(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

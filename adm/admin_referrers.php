@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -24,9 +24,9 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if (isset($_POST['clear']))
 {
@@ -35,7 +35,7 @@ if (isset($_POST['clear']))
 	{
 		message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
 	}
-	$message = $lang['Referrers_Cleared'] . '<br /><br />' . sprintf($lang['Click_Return_Referrers'], "<a href=\"" . append_sid("admin_referrers.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+	$message = $lang['Referrers_Cleared'] . '<br /><br />' . sprintf($lang['Click_Return_Referrers'], "<a href=\"" . append_sid("admin_referrers." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -152,7 +152,7 @@ $template->assign_vars(array(
 	'L_UNMARK_ALL'=> $lang['Unmark_all'],
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order,
-	'S_MODE_ACTION' => append_sid('admin_referrers.' . $phpEx)
+	'S_MODE_ACTION' => append_sid('admin_referrers.' . PHP_EXT)
 	)
 );
 
@@ -229,7 +229,7 @@ while($row = $db->sql_fetchrow($result))
 {
 	$total_referrers = $total['total'];
 
-	$pagination = generate_pagination('admin_referrers.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_referrers , $board_config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_referrers.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_referrers , $board_config['topics_per_page'], $start). '&nbsp;';
 }
 $db->sql_freeresult($result);
 
@@ -242,6 +242,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

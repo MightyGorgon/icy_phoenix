@@ -30,7 +30,7 @@
 *
 */
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt!');
 }
@@ -53,7 +53,7 @@ unset($sql);						// Unset maybe injected SQL Commands in this var
  * we load the CrackerTracker Configuration from Database in our Settings-Object
  * to use it all over the board where we need it.
  */
-include($phpbb_root_path . 'ctracker/classes/class_ct_database.' . $phpEx);
+include(IP_ROOT_PATH . 'ctracker/classes/class_ct_database.' . PHP_EXT);
 $ctracker_config = new ct_database();
 
 // Tell the self test that this file was included correctly

@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -59,11 +59,11 @@ if (!$rating_access)
 {
 	if ($dlo == 1 && $action)
 	{
-		redirect(append_sid('downloads.' . $phpEx . '?view=overall'));
+		redirect(append_sid('downloads.' . PHP_EXT . '?view=overall'));
 	}
 	elseif (!$dlo && $action)
 	{
-		redirect(append_sid('downloads.' . $phpEx . '?cat=' . $cat_id));
+		redirect(append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id));
 	}
 
 	$action = '';
@@ -101,7 +101,7 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 
 	$template->assign_block_vars('comment_block.complete', array(
 		'L_LAST_COMMENT' => $lang['Dl_last_comment'],
-		'S_COMMENT_ACTION' => append_sid('downloads.' . $phpEx),
+		'S_COMMENT_ACTION' => append_sid('downloads.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -238,7 +238,7 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 		$template->assign_block_vars('comment_block.post', array(
 			'L_POST_COMMENT' => $lang['Dl_comment_write'],
 
-			'S_COMMENT_ACTION' => append_sid('downloads.' . $phpEx),
+			'S_COMMENT_ACTION' => append_sid('downloads.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -400,7 +400,7 @@ if ($index[$cat_id]['bug_tracker'])
 	$template->assign_block_vars('bug_tracker', array(
 		'L_BUG_TRACKER' => $lang['Dl_bug_tracker'],
 		'L_BUG_TRACKER_FILE' => $lang['Dl_bug_tracker_file'],
-		'U_BUG_TRACKER' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id)
+		'U_BUG_TRACKER' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id)
 		)
 	);
 	$rowspan++;
@@ -536,14 +536,14 @@ if ($file_load)
 
 		$template->assign_block_vars('download_button', array(
 			'S_HOTLINK_ID' => $hotlink_id,
-			'U_DOWNLOAD' => append_sid('downloads.' . $phpEx . '?view=load&amp;df_id=' . $df_id . '&amp;modcp=' . $modcp . '&amp;cat_id=' . $cat_id)
+			'U_DOWNLOAD' => append_sid('downloads.' . PHP_EXT . '?view=load&amp;df_id=' . $df_id . '&amp;modcp=' . $modcp . '&amp;cat_id=' . $cat_id)
 			)
 		);
 
 		if ($dl_config['download_vc'])
 		{
 			$template->assign_block_vars('download_button.vc', array(
-				'VC' => append_sid('downloads.' . $phpEx . '?view=code&amp;code=d')
+				'VC' => append_sid('downloads.' . PHP_EXT . '?view=code&amp;code=d')
 				)
 			);
 		}
@@ -559,7 +559,7 @@ if ($dl_config['report_broken'] && !$dl_files['broken'])
 	{
 		$template->assign_block_vars('report_broken_dl', array(
 			'L_BROKEN_DOWNLOAD' => $lang['Dl_broken'],
-			'U_BROKEN_DOWNLOAD' => append_sid('downloads.' . $phpEx . '?view=broken&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id)
+			'U_BROKEN_DOWNLOAD' => append_sid('downloads.' . PHP_EXT . '?view=broken&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id)
 			)
 		);
 	}
@@ -580,7 +580,7 @@ if ($dl_files['broken'])
 	{
 		$template->assign_block_vars('dl_broken_mod', array(
 			'L_REPORT' => $lang['Dl_broken_mod'],
-			'U_REPORT' => append_sid('downloads.' . $phpEx . '?view=unbroken&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id)
+			'U_REPORT' => append_sid('downloads.' . PHP_EXT . '?view=unbroken&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id)
 			)
 		);
 	}
@@ -619,11 +619,11 @@ $template->assign_block_vars('downloads', array(
 */
 if ($index[$cat_id]['allow_thumbs'] && $dl_config['thumb_fsize'] && $dl_files['thumbnail'])
 {
-	if (@file_exists($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $dl_files['thumbnail']))
+	if (@file_exists(POSTED_IMAGES_THUMBS_PATH . $dl_files['thumbnail']))
 	{
 		$template->assign_block_vars('downloads.thumbnail', array(
 			'L_THUMBNAIL' => $lang['Dl_thumb'],
-			'THUMBNAIL' => $phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $dl_files['thumbnail']
+			'THUMBNAIL' => POSTED_IMAGES_THUMBS_PATH . $dl_files['thumbnail']
 			)
 		);
 	}
@@ -654,7 +654,7 @@ $l_rating_text = $u_rating_text = '';
 if ((!$rating_points || $rating_access) && $userdata['session_logged_in'])
 {
 	$l_rating_text = $lang['Dl_klick_to_rate'];
-	$u_rating_text = append_sid('downloads.' . $phpEx . '?view=detail&amp;action=rate&amp;df_id=' . $df_id . '&amp;dlo=2');
+	$u_rating_text = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;action=rate&amp;df_id=' . $df_id . '&amp;dlo=2');
 }
 
 if ($ratings)
@@ -711,12 +711,12 @@ if ($userdata['session_logged_in'] && !$dl_config['disable_email'])
 	if ($fav_id)
 	{
 		$l_favorite = $lang['Dl_favorite_drop'];
-		$u_favorite = append_sid('downloads.' . $phpEx . '?view=unfav&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id . '&amp;fav_id=' . $fav_id);
+		$u_favorite = append_sid('downloads.' . PHP_EXT . '?view=unfav&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id . '&amp;fav_id=' . $fav_id);
 	}
 	else
 	{
 		$l_favorite = $lang['Dl_favorite_add'];
-		$u_favorite = append_sid('downloads.' . $phpEx . '?view=fav&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id);
+		$u_favorite = append_sid('downloads.' . PHP_EXT . '?view=fav&amp;df_id=' . $df_id . '&amp;cat_id=' . $cat_id);
 	}
 }
 else
@@ -735,7 +735,7 @@ if ($dl_mod->user_auth($dl_files['cat'], 'auth_mod') || ($dl_config['edit_own_do
 {
 	$template->assign_block_vars('edit_button', array(
 		'EDIT_IMG' => '<img src="' . $images['icon_edit'] . '" border="0" alt="" title="" />',
-		'U_EDIT' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id)
+		'U_EDIT' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id)
 		)
 	);
 }
@@ -771,13 +771,13 @@ $template->assign_vars(array(
 	'ROW_CLASS2' => $theme['td_class2'],
 	'ROWSPAN' => $rowspan,
 
-	'S_ACTION' => append_sid('downloads.' . $phpEx),
+	'S_ACTION' => append_sid('downloads.' . PHP_EXT),
 	'S_HIDDEN_FIELDS_RATE' => $s_hidden_fields_rate,
 
 	'U_FAVORITE' => $u_favorite,
-	'U_SEARCH' => '<a href="' . append_sid('downloads.' . $phpEx . '?view=search') . '"><img src="' . $images['icon_search'] . '" border="0" title="' . $lang['Search'] . '" alt="' . $lang['Search'] . '" /></a>',
+	'U_SEARCH' => '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=search') . '"><img src="' . $images['icon_search'] . '" border="0" title="' . $lang['Search'] . '" alt="' . $lang['Search'] . '" /></a>',
 	'U_DL_CAT' => $dl_mod->dl_nav($cat_id, 'url'),
-	'U_DL_TOP' => append_sid('downloads.' . $phpEx))
+	'U_DL_TOP' => append_sid('downloads.' . PHP_EXT))
 );
 
 /*

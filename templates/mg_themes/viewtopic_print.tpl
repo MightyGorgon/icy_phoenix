@@ -21,7 +21,7 @@
 	</div>
 	<!-- END postrow -->
 	<br />
-<div align="center"><br />Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a> &copy; phpBB Group</div>
+<div align="center"><br />Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></div>
 </div>
 </div>
 </body>

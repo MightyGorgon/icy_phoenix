@@ -16,18 +16,18 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 
 if (!$cash->currency_count())
@@ -101,7 +101,7 @@ if (isset($_POST['submit']))
 $template->set_filenames(array('body' => ADM_TPL . 'cash_forum.tpl'));
 
 $template->assign_vars(array(
-	'S_FORUM_ACTION' => append_sid('cash_forums.' . $phpEx),
+	'S_FORUM_ACTION' => append_sid('cash_forums.' . PHP_EXT),
 	'L_FORUM_SETTINGS_TITLE' => $lang['Forum_cm_settings'],
 	'L_FORUM_SETTINGS_EXPLAIN' => $lang['Forum_cm_settings_explain'],
 	'L_SUBMIT' => $lang['Submit'],
@@ -162,7 +162,7 @@ if ($total_categories = $db->sql_numrows($q_categories))
 			'CAT_ID' => $cat_id,
 			'CAT_DESC' => $category_rows[$i]['cat_title'],
 
-			'U_VIEWCAT' => append_sid($phpbb_root_path . FORUM_MG . '?' . POST_CAT_URL . '=' . $cat_id)
+			'U_VIEWCAT' => append_sid(IP_ROOT_PATH . FORUM_MG . '?' . POST_CAT_URL . '=' . $cat_id)
 			)
 		);
 
@@ -179,7 +179,7 @@ if ($total_categories = $db->sql_numrows($q_categories))
 					'NUM_TOPICS' => $forum_rows[$j]['forum_topics'],
 					'NUM_POSTS' => $forum_rows[$j]['forum_posts'],
 
-					'U_VIEWFORUM' => append_sid($phpbb_root_path . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id))
+					'U_VIEWFORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id))
 				);
 
 				while ($c_cur = &$cash->currency_next($cm_i))
@@ -201,6 +201,6 @@ if ($total_categories = $db->sql_numrows($q_categories))
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

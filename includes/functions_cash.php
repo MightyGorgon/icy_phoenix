@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -90,7 +90,7 @@ if (!defined('CASH_INCLUDE'))
 // Previous versions, this was higher up, but for CASH EVENTS, CASH_EVENTS_TABLE needs to be defined, this was causing errors with people who had tried to get them working.
 if (defined('CM_EVENT') || defined('CM_MEMBERLIST') || defined('CM_VIEWTOPIC') || defined('CM_VIEWPROFILE') || defined('CM_VIEWPROFILE') || defined('CM_POSTING'))
 {
-	include($phpbb_root_path . 'includes/classes_cash.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/classes_cash.' . PHP_EXT);
 }
 
 if (defined('CASH_INCLUDE2'))
@@ -391,15 +391,15 @@ function cash_quotematch(&$message, $bbcode_uid)
 
 function cash_pm(&$targetdata, $privmsg_subject, &$message)
 {
-	global $db, $board_config, $lang, $userdata, $phpbb_root_path, $phpEx, $html_entities_match, $html_entities_replace;
+	global $db, $board_config, $lang, $userdata, $html_entities_match, $html_entities_replace;
 	global $bbcode;
 	//
 	// It looks like we're sending a PM!
 	// NOTE: most of the following code is shamelessly "reproduced" from privmsg.php
 	//
 
-	include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-	include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 	//
 	// Toggles
@@ -536,12 +536,12 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 	if ($targetdata['user_notify_pm'] && !empty($targetdata['user_email']) && $targetdata['user_active'])
 	{
 		$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
-		$script_name = ($script_name != '') ? $script_name . '/privmsg.' . $phpEx : 'privmsg.' . $phpEx;
+		$script_name = ($script_name != '') ? $script_name . '/privmsg.' . PHP_EXT : 'privmsg.' . PHP_EXT;
 		$server_name = trim($board_config['server_name']);
 		$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer($board_config['smtp_delivery']);
 
 		$emailer->from($board_config['board_email']);
@@ -635,30 +635,26 @@ class cash_menuitem
 		$this->title = $this->id . $title;
 	}
 
-	function data($phpEx, $class, $target, $append_sid = true)
+	function data($class, $target, $append_sid = true)
 	{
 		return array(
 			'L_TITLE' => $this->name(),
-			'U_ADMIN' => $this->linkage($phpEx, $append_sid),
+			'U_ADMIN' => $this->linkage($append_sid),
 			'L_DESCRIPTION' => $this->desc,
-			'CLASS' => sprintf("row%s",$class),
+			'CLASS' => sprintf("row%s", $class),
 			'S_TARGET' => $target
 		);
 	}
 
-	function linkage($phpEx,$append_sid = true)
+	function linkage($append_sid = true)
 	{
-		if ($phpEx != '')
-		{
-			$phpEx = '.' . $phpEx;
-		}
 		if (!$append_sid)
 		{
-			return sprintf($this->url,$phpEx);
+			return sprintf($this->url, PHP_EXT);
 		}
 		else
 		{
-			return append_sid(sprintf($this->url,$phpEx));
+			return append_sid(sprintf($this->url, PHP_EXT));
 		}
 	}
 
@@ -856,10 +852,9 @@ class cash_currency
 
 	function name($surpress_image = false,$quotes = false)
 	{
-		global $phpbb_root_path;
-		if ($this->mask(CURRENCY_IMAGE) && !$surpress_image)
+				if ($this->mask(CURRENCY_IMAGE) && !$surpress_image)
 		{
-			return '<img src="' . $phpbb_root_path . $this->currency['cash_imageurl'] . '" alt="' . quoteslash($this->currency['cash_name'],'"') . '" />';
+			return '<img src="' . IP_ROOT_PATH . $this->currency['cash_imageurl'] . '" alt="' . quoteslash($this->currency['cash_name'],'"') . '" />';
 		}
 		else
 		{

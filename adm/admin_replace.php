@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', 1);
+define('IN_ICYPHOENIX', true);
 
 if(!empty ($setmodules))
 {
@@ -24,9 +24,9 @@ if(!empty ($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 $str_old = trim(htmlspecialchars($HTTP_POST_VARS['str_old']));
 $str_new = trim(htmlspecialchars($HTTP_POST_VARS['str_new']));
@@ -85,7 +85,7 @@ if ( $HTTP_POST_VARS['submit'] && !empty($str_old) && $str_old != $str_new )
 $template->set_filenames(array('body' => ADM_TPL . 'replace_body.tpl'));
 
 $template->assign_vars(array(
-	'S_FORM_ACTION' => append_sid('admin_replace.' . $phpEx),
+	'S_FORM_ACTION' => append_sid('admin_replace.' . PHP_EXT),
 
 	'L_REPLACE_TITLE' => $lang['Replace_title'],
 	'L_REPLACE_TEXT' => $lang['Replace_text'],
@@ -108,6 +108,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

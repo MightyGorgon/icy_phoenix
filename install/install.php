@@ -79,11 +79,11 @@ if (!get_magic_quotes_gpc())
 }
 
 // Begin main prog
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 // Uncomment the following line to completely disable the ftp option...
 // define('NO_FTP', true);
-$phpbb_root_path = './../';
-include($phpbb_root_path . 'extension.inc');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 
 // Initialise some basic arrays
 $userdata = array();
@@ -91,9 +91,9 @@ $lang = array();
 $error = false;
 
 // Include some required functions
-include($phpbb_root_path . 'includes/constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions.' . $phpEx);
-include($phpbb_root_path . 'includes/sessions.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
 
 // Define schema info
 $available_dbms = array(
@@ -196,22 +196,22 @@ else
 }
 
 // Open config.php... if it exists
-if (@file_exists(@phpbb_realpath('config.' . $phpEx)))
+if (@file_exists(@phpbb_realpath('config.' . PHP_EXT)))
 {
-	include($phpbb_root_path . 'config.' . $phpEx);
+	include(IP_ROOT_PATH . 'config.' . PHP_EXT);
 }
 
-// Is phpBB already installed? Yes? Redirect to the index
-if (defined('PHPBB_INSTALLED'))
+// Is Icy Phoenix already installed? Yes? Redirect to the index
+if (defined('IP_INSTALLED'))
 {
-	redirect('../index.' . $phpEx);
+	redirect('../index.' . PHP_EXT);
 }
 
 // Import language file, setup template ...
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_bbc_tags.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_main.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_main_settings.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_admin.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_bbc_tags.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_main.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_main_settings.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin.' . PHP_EXT);
 
 if ($install_step == 0)
 {
@@ -225,15 +225,15 @@ if ($install_step == 0)
 // better integration of the install with upgrade as per Bart's request JLH
 if ($upgrade == 1)
 {
-	// require('upgrade.' . $phpEx);
+	// require('upgrade.' . PHP_EXT);
 	$install_step = 1;
 }
 
 // What do we need to do?
 if ( !empty($_POST['send_file']) && ($_POST['send_file'] == 1) && empty($_POST['upgrade_now']) )
 {
-	header('Content-Type: text/x-delimtext; name="config.' . $phpEx . '"');
-	header('Content-disposition: attachment; filename="config.' . $phpEx . '"');
+	header('Content-Type: text/x-delimtext; name="config.' . PHP_EXT . '"');
+	header('Content-disposition: attachment; filename="config.' . PHP_EXT . '"');
 
 	// We need to stripslashes no matter what the setting of magic_quotes_gpc is
 	// because we add slashes at the top if its off, and they are added automatically if it is on.
@@ -340,7 +340,7 @@ elseif (!empty($_POST['ftp_file']))
 		// Now ftp it across.
 		@ftp_chdir($conn_id, $ftp_dir);
 
-		$res = ftp_put($conn_id, 'config.' . $phpEx, $tmpfname, FTP_ASCII);
+		$res = ftp_put($conn_id, 'config.' . PHP_EXT, $tmpfname, FTP_ASCII);
 
 		@ftp_quit($conn_id);
 
@@ -348,7 +348,7 @@ elseif (!empty($_POST['ftp_file']))
 
 		if ($upgrade == 1)
 		{
-			require('upgrade.' . $phpEx);
+			require('upgrade.' . PHP_EXT);
 			exit;
 		}
 
@@ -357,7 +357,7 @@ elseif (!empty($_POST['ftp_file']))
 		// this by calling the admin_board.php from the normal board admin section.
 		$s_hidden_fields = '<input type="hidden" name="username" value="' . $admin_name . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="password" value="' . $admin_pass1 . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="redirect" value="../adm/index.' . $phpEx . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="redirect" value="../adm/index.' . PHP_EXT . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="submit" value="' . $lang['Login'] . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="lang" value="' . $language. '" />';
 
@@ -431,7 +431,7 @@ else
 			exit;
 		}
 
-		include($phpbb_root_path . 'includes/db.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 	}
 
 	$dbms_schema = 'schemas/' . $available_dbms[$dbms]['SCHEMA'] . '_schema.sql';
@@ -446,7 +446,7 @@ else
 		if ($upgrade != 1)
 		{
 			// Load in the sql parser
-			include($phpbb_root_path . 'includes/sql_parse.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/sql_parse.' . PHP_EXT);
 
 			// Ok we have the db info go ahead and read in the relevant schema
 			// and work on building the table.. probably ought to provide some
@@ -591,14 +591,14 @@ else
 			$config_data .= '$dbuser = \'' . $dbuser . '\';' . "\n";
 			$config_data .= '$dbpasswd = \'' . $dbpasswd . '\';' . "\n\n";
 			$config_data .= '$table_prefix = \'' . $table_prefix . '\';' . "\n\n";
-			$config_data .= 'define(\'PHPBB_INSTALLED\', true);' . "\n\n";
+			$config_data .= 'define(\'IP_INSTALLED\', true);' . "\n\n";
 			$config_data .= '?' . '>'; // Done this to prevent highlighting editors getting confused!
 
 			@umask(0111);
 			$no_open = false;
 
 			// Unable to open the file writeable do something here as an attempt to get around that...
-			if (!($fp = @fopen($phpbb_root_path . 'config.' . $phpEx, 'w')))
+			if (!($fp = @fopen(IP_ROOT_PATH . 'config.' . PHP_EXT, 'w')))
 			{
 				$s_hidden_fields = '<input type="hidden" name="config_data" value="' . htmlspecialchars($config_data) . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="lang" value="' . $language. '" />';
@@ -673,7 +673,7 @@ else
 		if ( ($upgrade == 1) && ($upgrade_now == $lang['upgrade_submit']) )
 		{
 			define('INSTALLING', true);
-			//require('update_to_ip.' . $phpEx);
+			//require('update_to_ip.' . PHP_EXT);
 			exit;
 		}
 
@@ -682,11 +682,11 @@ else
 		// this by calling the admin_board.php from the normal board admin section.
 		$s_hidden_fields = '<input type="hidden" name="username" value="' . $admin_name . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="password" value="' . $admin_pass1 . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="redirect" value="adm/index.' . $phpEx . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="redirect" value="adm/index.' . PHP_EXT . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="login" value="true" />';
 		$s_hidden_fields .= '<input type="hidden" name="lang" value="' . $language. '" />';
 
-		page_header('<center>' . $lang['BBC_IP_CREDITS'] . '</center>', '../login_ip.' . $phpEx);
+		page_header('<center>' . $lang['BBC_IP_CREDITS'] . '</center>', '../login_ip.' . PHP_EXT);
 		finish_install($s_hidden_fields);
 		page_footer();
 		exit;
@@ -700,7 +700,7 @@ else
 
 function page_header($text, $form_action = false, $write_form = true)
 {
-	global $phpEx, $lang;
+	global $lang;
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -726,7 +726,7 @@ function page_header($text, $form_action = false, $write_form = true)
 if ($write_form == true)
 {
 ?>
-	<form action="<?php echo ($form_action) ? $form_action : 'install.' . $phpEx; ?>" name="install" method="post">
+	<form action="<?php echo ($form_action) ? $form_action : 'install.' . PHP_EXT; ?>" name="install" method="post">
 <?php
 }
 ?>
@@ -953,7 +953,7 @@ function finish_install($hidden_fields)
 
 function apply_chmod()
 {
-	global $phpEx, $lang, $language;
+	global $lang, $language;
 
 	$chmod_777 = array();
 	$chmod_777[] = '../backup';
@@ -970,8 +970,9 @@ function apply_chmod()
 	$chmod_777[] = '../files';
 	$chmod_777[] = '../files/album';
 	$chmod_777[] = '../files/album/cache';
-	$chmod_777[] = '../files/album/jupload';
+	//$chmod_777[] = '../files/album/jupload';
 	$chmod_777[] = '../files/album/med_cache';
+	$chmod_777[] = '../files/album/users';
 	$chmod_777[] = '../files/album/wm_cache';
 	$chmod_777[] = '../files/posted_images';
 	$chmod_777[] = '../files/thumbs';
@@ -1069,7 +1070,7 @@ function apply_chmod()
 	}
 
 
-	$table_start = '<tr><td width="100%" colspan="3" style="padding-left: 10px; padding-right: 10px;"><form action="install.' . $phpEx . '" name="lang" method="post"><table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row-header" colspan="3"><span>' . $lang['CHMOD_Files'] . '</span></td></tr>';
+	$table_start = '<tr><td width="100%" colspan="3" style="padding-left: 10px; padding-right: 10px;"><form action="install.' . PHP_EXT . '" name="lang" method="post"><table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row-header" colspan="3"><span>' . $lang['CHMOD_Files'] . '</span></td></tr>';
 
 	$s_hidden_fields = '<input type="hidden" name="install_step" value="1" />';
 	$s_hidden_fields .= '<input type="hidden" name="lang" value="' . $language. '" />';
@@ -1089,7 +1090,7 @@ function apply_chmod()
 	}
 
 	$lang_select = build_lang_select($language);
-	$table_lang_select = '<tr><td width="100%" colspan="3" style="padding-left: 10px; padding-right: 10px;"><form action="install.' . $phpEx . '" name="install" method="post"><table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row-header" colspan="2"><span>' . $lang['Default_lang'] . '</span></td></tr>';
+	$table_lang_select = '<tr><td width="100%" colspan="3" style="padding-left: 10px; padding-right: 10px;"><form action="install.' . PHP_EXT . '" name="install" method="post"><table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row-header" colspan="2"><span>' . $lang['Default_lang'] . '</span></td></tr>';
 	$table_lang_select .= '<tr><td class="row1" align="right"><span class="gen">' . $lang['Default_lang'] .':</span></td><td class="row2">' . $lang_select . '</td></tr>';
 	$table_lang_select .= '</table></form></td></tr>';
 
@@ -1100,9 +1101,8 @@ function apply_chmod()
 
 function build_lang_select($language = 'english')
 {
-	global $phpbb_root_path;
 	$language = ($language == '') ? 'english' : $language;
-	$dirname = $phpbb_root_path . 'language';
+	$dirname = IP_ROOT_PATH . 'language';
 	$dir = opendir($dirname);
 
 	$lang_options = array();
@@ -1138,7 +1138,6 @@ function build_lang_select($language = 'english')
 // match on a second pass instead of a straight "fuzzy" match.
 function guess_lang()
 {
-	global $phpbb_root_path;
 
 	// The order here _is_ important, at least for major_minor matches.
 	// Don't go moving these around without checking with me first - psoTFX
@@ -1203,7 +1202,7 @@ function guess_lang()
 			{
 				if (preg_match('#' . $match . '#i', trim($accept_lang_ary[$i])))
 				{
-					if (file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $lang)))
+					if (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $lang)))
 					{
 						return $lang;
 					}

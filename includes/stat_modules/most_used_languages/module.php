@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -36,6 +36,9 @@ if (!($result = $stat_db->sql_query($sql)))
 
 $lang_count = $stat_db->sql_numrows($result);
 $lang_data = $stat_db->sql_fetchrowset($result);
+
+$template->_tpldata['lang.'] = array();
+//reset($template->_tpldata['lang.']);
 
 for ($i = 0; $i < $lang_count; $i++)
 {

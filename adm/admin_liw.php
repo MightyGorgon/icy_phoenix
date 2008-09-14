@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,9 +24,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // Attempt to get the configuration values
 $sql = "SELECT config_name, config_value FROM " . CONFIG_TABLE . " WHERE config_name LIKE 'liw_%' OR config_name = 'liw_max_width'";
@@ -101,7 +101,7 @@ if ( isset($_POST['submit']) )
 		}
 	}
 
-	$message = $lang['LIW_config_updated'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], "<a href=\"" . append_sid("admin_liw.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+	$message = $lang['LIW_config_updated'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], "<a href=\"" . append_sid("admin_liw." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -118,7 +118,7 @@ if ( isset($_POST['empty_cache']) )
 		message_die(GENERAL_MESSAGE, "Could not empty cache table", "", __LINE__, __FILE__, $sql);
 	}
 
-	$message = $lang['LIW_cache_emptied'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], "<a href=\"" . append_sid("admin_liw.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+	$message = $lang['LIW_cache_emptied'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], "<a href=\"" . append_sid("admin_liw." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -179,7 +179,7 @@ if ( defined('ATTACH_CONFIG_TABLE') && isset($config['liw_attach_enabled']) )
 
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid("admin_liw.$phpEx"),
+	'S_CONFIG_ACTION' => append_sid("admin_liw." . PHP_EXT),
 
 	// Configuration
 	'S_ENABLED_YES' => ( ($config['liw_enabled']) ? 'checked="checked"' : '' ),
@@ -230,6 +230,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

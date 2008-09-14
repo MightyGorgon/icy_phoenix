@@ -16,18 +16,18 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 
 if (!$cash->currency_count())
@@ -51,7 +51,7 @@ switch ($mode)
 			{
 				message_die(GENERAL_ERROR, "Could add event", "", __LINE__, __FILE__, $sql);
 			}
-			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . $phpEx) . '">', '</a>') . '<br /><br />');
+			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />');
 		}
 		break;
 //
@@ -85,7 +85,7 @@ switch ($mode)
 			{
 				message_die(CRITICAL_ERROR, "Could not update event", "", __LINE__, __FILE__, $sql);
 			}
-			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>'));
+			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 		}
 		break;
 //
@@ -102,7 +102,7 @@ switch ($mode)
 				{
 					message_die(CRITICAL_ERROR, "Could not delete event", "", __LINE__, __FILE__, $sql);
 				}
-				message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>'));
+				message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 			}
 			$sql = "SELECT *
 					FROM " . CASH_EVENTS_TABLE . "
@@ -122,7 +122,7 @@ switch ($mode)
 
 			$hidden_fields = '<input type="hidden" name="event_name" value="' . $event_name . '" /><input type="hidden" name="mode" value="update" />';
 			$template->assign_vars(array(
-				'S_CASH_EVENTS_ACTION' => append_sid('cash_events.' . $phpEx),
+				'S_CASH_EVENTS_ACTION' => append_sid('cash_events.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields,
 
 				'L_CASH_EVENTS_TITLE' => $lang['Cash_events'],
@@ -150,7 +150,7 @@ switch ($mode)
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 
 		}
 		break;
@@ -173,7 +173,7 @@ switch ($mode)
 		$template->set_filenames(array('body' => ADM_TPL . 'cash_events.tpl'));
 
 		$template->assign_vars(array(
-			'S_CASH_GROUPS_ACTION' => append_sid('cash_events.' . $phpEx),
+			'S_CASH_GROUPS_ACTION' => append_sid('cash_events.' . PHP_EXT),
 
 			'L_CASH_EVENTS_TITLE' => $lang['Cash_events'],
 			'L_CASH_EVENTS_EXPLAIN' => $lang['Cash_events_explain'],
@@ -199,7 +199,7 @@ switch ($mode)
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 
 		break;
 }

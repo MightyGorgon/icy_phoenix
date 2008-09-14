@@ -187,7 +187,7 @@ $mtnc[] = array('unlock_db',
 
 // statistic
 $lang['Statistic_title'] = 'Site and database statistics';
-$lang['Database_table_info'] = 'Database statistics will deliver three different values: these for all tables of the database, these of all tables deliverd by phpBB by default (core tables) and these starting with the prefix of the board tables (advanced tables).';
+$lang['Database_table_info'] = 'Database statistics will deliver three different values: these for all tables of the database, these of all tables deliverd by Icy Phoenix by default (core tables) and these starting with the prefix of the board tables (advanced tables).';
 $lang['Board_statistic'] = 'Site statistics';
 $lang['Database_statistic'] = 'Database statistics';
 $lang['Version_info'] = 'Version information';
@@ -198,8 +198,8 @@ $lang['Users_with_Admin_Privileges'] = 'Users with administrator privileges';
 $lang['Number_tables'] = 'Number of tables';
 $lang['Number_records'] = 'Number of records';
 $lang['DB_size'] = 'Size of the database';
-$lang['Thereof_phpbb_core'] = 'thereof phpBB core tables';
-$lang['Thereof_phpbb_advanced'] = 'thereof advanced phpBB tables';
+$lang['Thereof_phpbb_core'] = 'thereof Icy Phoenix core tables';
+$lang['Thereof_phpbb_advanced'] = 'thereof advanced Icy Phoenix tables';
 $lang['Version_of_board'] = 'Version of Icy Phoenix';
 $lang['Version_of_mod'] = 'Version of DB Maintenance';
 $lang['Version_of_PHP'] = 'Version of PHP';
@@ -479,7 +479,7 @@ $lang['DB_Name'] = 'Your Database Name';
 $lang['DB_Username'] = 'Database Username';
 $lang['DB_Password'] = 'Database Password';
 $lang['Table_Prefix'] = 'Prefix for tables in database';
-$lang['New_config_php'] = 'This is your new config.' . $phpEx;
+$lang['New_config_php'] = 'This is your new config.' . PHP_EXT;
 // Options
 $lang['cls'] = 'Clear all sessions';
 $lang['ecf'] = 'Empty cache folder';
@@ -520,7 +520,7 @@ $lang['rpd_success'] = 'Site configuration updated successfully.';
 $lang['cct_success'] = 'Config table checked successfully.';
 $lang['rcd_success'] = 'Cookie data updated successfully.';
 $lang['rld_success'] = 'The language data was updated successfully.';
-$lang['rld_failed'] = 'The required language files (lang_main.' . $phpEx . ' and lang_admin.' . $phpEx . ') do not exist.';
+$lang['rld_failed'] = 'The required language files (lang_main.' . PHP_EXT . ' and lang_admin.' . PHP_EXT . ') do not exist.';
 $lang['rtd_restore_success'] = 'The default style was restored successfully.';
 $lang['rtd_success'] = 'The style data was updated successfully.';
 $lang['dgc_success'] = 'The GZip compression was disabled successfully.';
@@ -529,7 +529,7 @@ $lang['cbl_success_anonymous'] = 'The ban list and the disallowed users were cle
 $lang['raa_success'] = 'All admins were removed successfully.';
 $lang['mua_success'] = 'The selected user has now admin privileges.';
 $lang['mua_failed'] = '<b>Error:</b> The selected user does not exist or already has admin privileges.';
-$lang['rcp_success'] = "Copy the text to a text file, rename it to <b>config.$phpEx</b> and upload it to the root directory of the forum. Please ensure that there is no character (including spaces and line feeds) before the <b>&lt;?php</b> and after the <b>?&gt;</b>.<br />
+$lang['rcp_success'] = "Copy the text to a text file, rename it to <b>config." . PHP_EXT . "</b> and upload it to the root directory of the forum. Please ensure that there is no character (including spaces and line feeds) before the <b>&lt;?php</b> and after the <b>?&gt;</b>.<br />
 You can also %sdownload%s the file to your computer.";
 // Text for success messages
 $lang['Removing_admins'] = 'Removing admins';

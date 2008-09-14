@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,9 +24,9 @@ if(!function_exists(imp_jumpbox_block_func))
 {
 	function imp_jumpbox_block_func()
 	{
-		global $phpbb_root_path, $template, $cms_config_vars, $block_id, $table_prefix, $phpEx, $db, $lang, $board_config, $theme, $images, $userdata;
+		global $template, $cms_config_vars, $block_id, $table_prefix, $db, $lang, $board_config, $theme, $images, $userdata;
 
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'

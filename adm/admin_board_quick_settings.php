@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -17,9 +17,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if ( isset($_POST['mode']) || isset($_GET['mode']) )
 {
@@ -390,7 +390,7 @@ if ( substr($mode, 0, 3) == 'set')
 
 	$output_message .= '</ul></span>';
 
-	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config_mg'], '<a href="' . append_sid('admin_board_quick_settings.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config_mg'], '<a href="' . append_sid('admin_board_quick_settings.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $output_message . '<br /><br />' . $message);
 
@@ -399,7 +399,7 @@ if ( substr($mode, 0, 3) == 'set')
 $template->set_filenames(array('body' => ADM_TPL . 'board_config_quick_settings.tpl'));
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid('admin_board_quick_settings.' . $phpEx),
+	'S_CONFIG_ACTION' => append_sid('admin_board_quick_settings.' . PHP_EXT),
 
 	'L_CONFIGURATION_TITLE' => $lang['MG_FNF_Header'],
 	'L_CONFIGURATION_EXPLAIN' => $lang['MG_FNF_Header_Explain'],
@@ -426,14 +426,14 @@ $template->assign_vars(array(
 	'L_FNF__EXPLAIN' => $lang['MG_FNF__Explain'],
 	*/
 
-	'U_FNF_FNF' => append_sid('admin_board_quick_settings.' . $phpEx . '?mode=set_fnf'),
-	'U_FNF_MGS' => append_sid('admin_board_quick_settings.' . $phpEx . '?mode=set_mg_fav'),
-	'U_FNF_FULL_FEATURES' => append_sid('admin_board_quick_settings.' . $phpEx . '?mode=set_all'),
+	'U_FNF_FNF' => append_sid('admin_board_quick_settings.' . PHP_EXT . '?mode=set_fnf'),
+	'U_FNF_MGS' => append_sid('admin_board_quick_settings.' . PHP_EXT . '?mode=set_mg_fav'),
+	'U_FNF_FULL_FEATURES' => append_sid('admin_board_quick_settings.' . PHP_EXT . '?mode=set_all'),
 	)
 );
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

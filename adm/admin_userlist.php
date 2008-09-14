@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -17,12 +17,12 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/digest_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_mg_users.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Set mode
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
@@ -139,7 +139,7 @@ switch($mode)
 		//
 		if ($cancel)
 		{
-			redirect($phpbb_root_path . ADM . '/admin_userlist.' . $phpEx);
+			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
 		}
 
 		//
@@ -170,7 +170,7 @@ switch($mode)
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_userlist.' . $phpEx . '?mode=delete'),
+				'S_CONFIRM_ACTION' => append_sid('admin_userlist.' . PHP_EXT . '?mode=delete'),
 				'S_HIDDEN_FIELDS' => $hidden_fields
 				)
 			);
@@ -191,7 +191,7 @@ switch($mode)
 				$i++;
 			}
 
-			$message = $lang['User_deleted_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['User_deleted_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -206,7 +206,7 @@ switch($mode)
 		//
 		if ($cancel)
 		{
-			redirect($phpbb_root_path . ADM . '/admin_userlist.' . $phpEx);
+			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
 		}
 
 		//
@@ -236,7 +236,7 @@ switch($mode)
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_userlist.' . $phpEx . '?mode=ban'),
+				'S_CONFIRM_ACTION' => append_sid('admin_userlist.' . PHP_EXT . '?mode=ban'),
 				'S_HIDDEN_FIELDS' => $hidden_fields)
 			);
 		}
@@ -268,7 +268,7 @@ switch($mode)
 				$i++;
 			}
 
-			$message = $lang['User_banned_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['User_banned_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -304,7 +304,7 @@ switch($mode)
 			$i++;
 		}
 
-		$message = $lang['User_status_updated'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['User_status_updated'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 		break;
@@ -337,7 +337,7 @@ switch($mode)
 				'L_GROUP' => $lang['Group'],
 
 				'S_GROUP_VARIABLE' => POST_GROUPS_URL,
-				'S_ACTION' => append_sid($phpbb_root_path . ADM . '/admin_userlist.' . $phpEx . '?mode=group'),
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?mode=group'),
 				'L_GO' => $lang['Go'],
 				'L_CANCEL' => $lang['Cancel'],
 				'L_SELECT' => $lang['Select_one'],
@@ -368,7 +368,7 @@ switch($mode)
 			// add the users to the selected group
 			$group_id = intval($_POST[POST_GROUPS_URL]);
 
-			include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer($board_config['smtp_delivery']);
 
 			$i = 0;
@@ -442,7 +442,7 @@ switch($mode)
 					$group_name = $group_name_row['group_name'];
 
 					$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
-					$script_name = ($script_name != '') ? $script_name . '/groupcp.' . $phpEx : 'groupcp.' . $phpEx;
+					$script_name = ($script_name != '') ? $script_name . '/groupcp.' . PHP_EXT : 'groupcp.' . PHP_EXT;
 					$server_name = trim($board_config['server_name']);
 					$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 					$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
@@ -472,7 +472,7 @@ switch($mode)
 				$i++;
 			}
 
-			$message = $lang['User_add_group_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['User_add_group_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -506,11 +506,11 @@ switch($mode)
 				{
 					$temp = 'num';
 				}
-				$alphanum_search_url = append_sid($phpbb_root_path . ADM . '/admin_userlist.' . $phpEx . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show . '&amp;alphanum=' . $temp);
+				$alphanum_search_url = append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show . '&amp;alphanum=' . $temp);
 			}
 			else
 			{
-				$alphanum_search_url = append_sid($phpbb_root_path . ADM . '/admin_userlist.' . $phpEx . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show);
+				$alphanum_search_url = append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show);
 			}
 
 			if (($alphanum == $temp) || ($alpha_range[$i] == $lang['All'] && empty($alphanum)))
@@ -578,7 +578,7 @@ switch($mode)
 			'L_STYLE' => $lang['Board_style'],
 
 			'S_USER_VARIABLE' => POST_USERS_URL,
-			'S_ACTION' => append_sid($phpbb_root_path . ADM . '/admin_userlist.' . $phpEx),
+			'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT),
 			'L_GO' => $lang['Go'],
 			'L_SELECT' => $lang['Select_one'],
 			'L_DELETE' => $lang['Delete'],
@@ -642,7 +642,7 @@ switch($mode)
 					if ($row['user_rank'] == $ranksrow[$ji]['rank_id'] && $ranksrow[$ji]['rank_special'])
 					{
 						$poster_rank = $ranksrow[$ji]['rank_title'];
-						$rank_image = ($ranksrow[$ji]['rank_image']) ? '<img src="' . $phpbb_root_path . $ranksrow[$ji]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" /><br />' : '';
+						$rank_image = ($ranksrow[$ji]['rank_image']) ? '<img src="' . IP_ROOT_PATH . $ranksrow[$ji]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" /><br />' : '';
 					}
 				}
 			}
@@ -653,7 +653,7 @@ switch($mode)
 					if ($row['user_posts'] >= $ranksrow[$ji]['rank_min'] && !$ranksrow[$ji]['rank_special'])
 					{
 						$poster_rank = $ranksrow[$ji]['rank_title'];
-						$rank_image = ($ranksrow[$ji]['rank_image']) ? '<img src="' . $phpbb_root_path . $ranksrow[$ji]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" /><br />' : '';
+						$rank_image = ($ranksrow[$ji]['rank_image']) ? '<img src="' . IP_ROOT_PATH . $ranksrow[$ji]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" /><br />' : '';
 					}
 				}
 			}
@@ -666,7 +666,7 @@ switch($mode)
 				'USER_ID' => $row['user_id'],
 				'ACTIVE' => ($row['user_active'] == true) ? $lang['Yes'] : $lang['No'],
 				'USERNAME' => colorize_username($row['user_id']),
-				'U_PROFILE' => append_sid($phpbb_root_path . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+				'U_PROFILE' => append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 				'RANK' => $poster_rank,
 				'I_RANK' => $rank_image,
 				'I_AVATAR' => $avatar_img,
@@ -674,14 +674,14 @@ switch($mode)
 				'BIRTHDAY' => ($row['user_birthday'] != 999999) ? realdate($lang['DATE_FORMAT_BIRTHDAY'], $row['user_birthday']) : '',
 				'LAST_ACTIVITY' => (!empty($row['user_session_time'])) ? create_date('d M Y @ h:ia', $row['user_session_time'], $board_config['board_timezone']) : $lang['Never'],
 				'POSTS' => ($row['user_posts']) ? $row['user_posts'] : 0,
-				'U_SEARCH' => append_sid($phpbb_root_path . SEARCH_MG.'?search_author=' . urlencode(strip_tags($row['username'])) . '&amp;showresults=posts'),
+				'U_SEARCH' => append_sid(IP_ROOT_PATH . SEARCH_MG.'?search_author=' . urlencode(strip_tags($row['username'])) . '&amp;showresults=posts'),
 				'U_WEBSITE' => ($row['user_website']) ? $row['user_website'] : '',
 				'USER_LANG' => $row['user_lang'],
 				'USER_STYLE' => $row['user_style'],
 				'EMAIL' => $row['user_email'],
-				'U_PM' => append_sid($phpbb_root_path . 'privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL . '='. $row['user_id']),
-				'U_MANAGE' => append_sid($phpbb_root_path . ADM . '/admin_users.' . $phpEx . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
-				'U_PERMISSIONS' => append_sid($phpbb_root_path . ADM . '/admin_ug_auth.' . $phpEx . '?mode=user&amp;' . POST_USERS_URL . '=' . $row['user_id'])
+				'U_PM' => append_sid(IP_ROOT_PATH . 'privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '='. $row['user_id']),
+				'U_MANAGE' => append_sid(IP_ROOT_PATH . ADM . '/admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+				'U_PERMISSIONS' => append_sid(IP_ROOT_PATH . ADM . '/admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $row['user_id'])
 				)
 			);
 
@@ -719,7 +719,7 @@ switch($mode)
 				$template->assign_block_vars('user_row.group_row', array(
 					'GROUP_NAME' => $group_row['group_name'],
 					'GROUP_STATUS' => $group_status,
-					'U_GROUP' => $phpbb_root_path . 'groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
+					'U_GROUP' => IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
 				);
 				$g++;
 			}
@@ -748,7 +748,7 @@ switch($mode)
 		{
 			$total_members = $total['total'];
 
-			$pagination = generate_pagination($phpbb_root_path . ADM . '/admin_userlist.' . $phpEx . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $show, $start);
+			$pagination = generate_pagination(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $show, $start);
 		}
 
 		$template->assign_vars(array(
@@ -764,6 +764,6 @@ switch($mode)
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

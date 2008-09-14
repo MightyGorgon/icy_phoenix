@@ -161,13 +161,12 @@ if(!defined('SQL_LAYER'))
 			$this->cached = false;
 			if(($query !== '') && $cache)
 			{
-				global $phpbb_root_path;
-				$hash = md5($query);
+								$hash = md5($query);
 				if(strlen($cache))
 				{
 					$hash = $cache . $hash;
 				}
-				$filename = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
+				$filename = SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
 				if(@file_exists($filename))
 				{
 					$set = array();
@@ -201,14 +200,14 @@ if(!defined('SQL_LAYER'))
 			if (defined('DEBUG_EXTRA_LOG'))
 			{
 				/*
-				$f = fopen($phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $hash . '_.php', 'w');
+				$f = fopen(SQL_CACHE_FOLDER . 'sql_' . $hash . '_.php', 'w');
 				@fputs($f, '\'' . $query . '\'');
 				@fclose($f);
 				*/
 				// Cache SQL history in a file
 				if (!defined('IN_ADMIN'))
 				{
-					$f = fopen($phpbb_root_path . SQL_CACHE_FOLDER . 'sql_history.php', 'a+');
+					$f = fopen(SQL_CACHE_FOLDER . 'sql_history.php', 'a+');
 					@fputs($f, date('Y/m/d - H:i:s') . ' => ' . $hash . "\n\n" . $query . "\n\n\n=========================\n\n");
 					@fclose($f);
 				}
@@ -695,8 +694,7 @@ if(!defined('SQL_LAYER'))
 			{
 				return;
 			}
-			global $phpbb_root_path;
-			$cache_file_name = $phpbb_root_path . SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
+						$cache_file_name = SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
 			@unlink($cache_file_name);
 			$f = fopen($cache_file_name, 'w');
 			@flock($f, LOCK_EX);
@@ -719,20 +717,19 @@ if(!defined('SQL_LAYER'))
 
 		function clear_cache($prefix = '')
 		{
-			global $phpbb_root_path;
-			$this->caching = false;
+						$this->caching = false;
 			$this->cached = false;
 			$this->cache = array();
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
-			$res = opendir($phpbb_root_path . SQL_CACHE_FOLDER);
+			$res = opendir(SQL_CACHE_FOLDER);
 			if($res)
 			{
 				while(($file = readdir($res)) !== false)
 				{
 					if(substr($file, 0, $prefix_len) === $prefix)
 					{
-						@unlink($phpbb_root_path . SQL_CACHE_FOLDER . $file);
+						@unlink(SQL_CACHE_FOLDER . $file);
 					}
 				}
 			}
@@ -744,7 +741,7 @@ if(!defined('SQL_LAYER'))
 		*/
 		function sql_report($mode, $query = '')
 		{
-			global $starttime, $phpbb_root_path;
+			global $starttime;
 
 			if (empty($_REQUEST['explain']))
 			{
@@ -766,11 +763,11 @@ if(!defined('SQL_LAYER'))
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-	<link rel="stylesheet" href="' . $phpbb_root_path . 'templates/common/acp.css" type="text/css" />
+	<link rel="stylesheet" href="' . IP_ROOT_PATH . 'templates/common/acp.css" type="text/css" />
 	<meta name="author" content="Mighty Gorgon" />
 	<title>Icy Phoenix</title>
 	<!--[if lt IE 7]>
-	<script type="text/javascript" src="' . $phpbb_root_path . 'templates/common/js/pngfix.js"></script>
+	<script type="text/javascript" src="' . IP_ROOT_PATH . 'templates/common/js/pngfix.js"></script>
 	<![endif]-->
 </head>
 
@@ -778,7 +775,7 @@ if(!defined('SQL_LAYER'))
 <a name="top"></a>
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="leftshadow" width="9" valign="top"><img src="' . $phpbb_root_path . 'images/spacer.gif" alt="" width="9" height="1" /></td>
+		<td class="leftshadow" width="9" valign="top"><img src="' . IP_ROOT_PATH . 'images/spacer.gif" alt="" width="9" height="1" /></td>
 		<td width="100%" valign="top">
 <div style="text-align:center;">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
@@ -788,7 +785,7 @@ if(!defined('SQL_LAYER'))
 	<table class="" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 	<td height="150" align="left" valign="middle">
-		<a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="' . $phpbb_root_path . 'images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" border="0" /></a>
+		<a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="' . IP_ROOT_PATH . 'images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" border="0" /></a>
 	</td>
 	</tr>
 	</table>
@@ -832,7 +829,7 @@ if(!defined('SQL_LAYER'))
 </table>
 </div>
 		</td>
-		<td class="rightshadow" width="9" valign="top"><img src="' . $phpbb_root_path . 'images/spacer.gif" alt="" width="9" height="1" /></td>
+		<td class="rightshadow" width="9" valign="top"><img src="' . IP_ROOT_PATH . 'images/spacer.gif" alt="" width="9" height="1" /></td>
 	</tr>
 </table>
 </body>

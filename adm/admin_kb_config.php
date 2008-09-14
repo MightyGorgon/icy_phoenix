@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -24,17 +24,17 @@ if (!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'config.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-include($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 // Pull all config data
 
@@ -68,7 +68,7 @@ else
 
 	if (isset($_POST['submit']))
 	{
-		$message = $lang['KB_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_kb_config'], "<a href=\"" . append_sid("admin_kb_config.$phpEx?mode=config") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid($phpbb_root_path .  ADM . "/index.$phpEx?pane=right") . "\">", "</a>");
+		$message = $lang['KB_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_kb_config'], "<a href=\"" . append_sid('admin_kb_config.' . PHP_EXT . '?mode=config') . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -182,7 +182,8 @@ $news_sort_par_list .= '</select>';
 $template->set_filenames(array('body' => ADM_TPL . 'kb_config_body.tpl')
 	);
 
-$template->assign_vars(array('S_ACTION' => append_sid("admin_kb_config.$phpEx?mode=config"),
+$template->assign_vars(array(
+		'S_ACTION' => append_sid('admin_kb_config.' . PHP_EXT . '?mode=config'),
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
 
@@ -325,7 +326,7 @@ $template->assign_vars(array('S_ACTION' => append_sid("admin_kb_config.$phpEx?mo
 	);
 
 $template->pparse('body');
-// include('./page_footer_admin.' . $phpEx);
-include_once($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+// include('./page_footer_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

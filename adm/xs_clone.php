@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,11 +28,11 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_clone.' . $phpEx) . '">' . $lang['xs_clone_styles'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_clone.' . PHP_EXT) . '">' . $lang['xs_clone_styles'] . '</a>'));
 
-$lang['xs_clone_back'] = str_replace('{URL}', append_sid('xs_clone.' . $phpEx), $lang['xs_clone_back']);
+$lang['xs_clone_back'] = str_replace('{URL}', append_sid('xs_clone.' . PHP_EXT), $lang['xs_clone_back']);
 
 //
 // Check required functions
@@ -155,11 +155,11 @@ if(!empty($_POST['clone_tpl']) && !defined('DEMO_MODE'))
 	}
 	// get ftp configuration
 	$write_local = false;
-	if(!get_ftp_config(append_sid('xs_clone.' . $phpEx), $request, true))
+	if(!get_ftp_config(append_sid('xs_clone.' . PHP_EXT), $request, true))
 	{
 		xs_exit();
 	}
-	xs_ftp_connect(append_sid('xs_clone.' . $phpEx), $request, true);
+	xs_ftp_connect(append_sid('xs_clone.' . PHP_EXT), $request, true);
 	if($ftp === XS_FTP_LOCAL)
 	{
 		$write_local = true;
@@ -225,8 +225,8 @@ if(!empty($_POST['clone_tpl']) && !defined('DEMO_MODE'))
 	$get_file = '';
 	define('XS_CLONING', true);
 	$lang['xs_import_back'] = $lang['xs_clone_back'];
-	include('xs_include_import.' . $phpEx);
-	include('xs_include_import2.' . $phpEx);
+	include('xs_include_import.' . PHP_EXT);
+	include('xs_include_import2.' . PHP_EXT);
 }
 
 
@@ -249,7 +249,7 @@ if(!empty($_GET['clone']))
 	$template->set_filenames(array('body' => XS_TPL_PATH . 'clone2.tpl'));
 	// clone template
 	$template->assign_vars(array(
-			'FORM_ACTION'		=> append_sid('xs_clone.' . $phpEx),
+			'FORM_ACTION'		=> append_sid('xs_clone.' . PHP_EXT),
 			'CLONE_TEMPLATE'	=> htmlspecialchars($style),
 			'STYLE_ID'			=> $theme_rowset[0]['themes_id'],
 			'STYLE_NAME'		=> htmlspecialchars($theme_rowset[0]['style_name']),
@@ -325,7 +325,7 @@ for($i=0; $i<count($style_rowset); $i++)
 					'ROW_CLASS'	=> $row_class,
 					'TPL'		=> $prev_tpl,
 					'STYLES'	=> $str,
-					'U_CLONE'	=> "xs_clone.{$phpEx}?clone={$str2}&sid={$userdata['session_id']}",
+					'U_CLONE'	=> "xs_clone." . PHP_EXT . "?clone={$str2}&sid={$userdata['session_id']}",
 				)
 			);
 		}
@@ -345,7 +345,7 @@ if($prev_id > 0)
 			'ROW_CLASS'	=> $row_class,
 			'TPL'		=> $prev_tpl,
 			'STYLES'	=> $str,
-			'U_CLONE'	=> "xs_clone.{$phpEx}?clone={$str2}&sid={$userdata['session_id']}",
+			'U_CLONE'	=> "xs_clone." . PHP_EXT . "?clone={$str2}&sid={$userdata['session_id']}",
 		)
 	);
 }

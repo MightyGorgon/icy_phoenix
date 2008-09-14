@@ -18,7 +18,7 @@
 // CTracker_Ignore: File Checked By Human
 
 // Set constants
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('CTRACKER_ACP', true);
 
 /**
@@ -57,25 +57,25 @@ if( !empty($setmodules) )
 }
 
 // phpBB Adminsite
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header  = true;
 
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // Get module number from URL
 $module_number = $_GET['modu'];
 
 // Include CrackerTracker Class Files
-include($phpbb_root_path . 'ctracker/classes/class_ct_adminfunctions.' . $phpEx);
-include($phpbb_root_path . 'ctracker/classes/class_ct_userfunctions.' . $phpEx);
-include($phpbb_root_path . 'ctracker/constants.' . $phpEx);
-include_once($phpbb_root_path . 'ctracker/classes/class_log_manager.' . $phpEx);
+include(IP_ROOT_PATH . 'ctracker/classes/class_ct_adminfunctions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
 
 // Download Debug Log?
 if ( $module_number == 99 )
 {
-	$log_filepath = $phpbb_root_path . 'ctracker/logfiles/logfile_debug_mode.txt';
+	$log_filepath = IP_ROOT_PATH . 'ctracker/logfiles/logfile_debug_mode.txt';
 	$size = filesize($log_filepath);
 	header('Content-Type: text/plain');
 	header('Content-disposition: attachment; filename=logfile_debug_mode.txt');
@@ -86,47 +86,47 @@ if ( $module_number == 99 )
 }
 
 // Include default & CrackerTracker Admin Header
-include('./page_header_admin.' . $phpEx);
-include($phpbb_root_path . 'ctracker/admin/acp_header.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'ctracker/admin/acp_header.' . PHP_EXT);
 
 // Include requested modules
 switch ( $module_number )
 {
 	case 1:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_changedfiles.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_changedfiles.' . PHP_EXT);
 		break;
 	case 2:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_credits.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_credits.' . PHP_EXT);
 		break;
 	case 3:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_filescanner.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_filescanner.' . PHP_EXT);
 		break;
 	case 4:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_globalmessage.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_globalmessage.' . PHP_EXT);
 		break;
 	case 5:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_ipblocker.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_ipblocker.' . PHP_EXT);
 		break;
 	case 6:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_logmanager.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_logmanager.' . PHP_EXT);
 		break;
 	case 7:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_maintenance.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_maintenance.' . PHP_EXT);
 		break;
 	case 8:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_miserableuser.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_miserableuser.' . PHP_EXT);
 		break;
 	case 9:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_settings.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_settings.' . PHP_EXT);
 		break;
 	case 10:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_systemrestore.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_systemrestore.' . PHP_EXT);
 		break;
 	case 11:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_footer.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_footer.' . PHP_EXT);
 		break;
 	case 99:
-		include($phpbb_root_path . 'ctracker/admin/acp_module_logmanager.' . $phpEx);
+		include(IP_ROOT_PATH . 'ctracker/admin/acp_module_logmanager.' . PHP_EXT);
 		break;
 	default:
 		message_die(GENERAL_MESSAGE, $lang['ctracker_wrong_module']);
@@ -134,7 +134,7 @@ switch ( $module_number )
 }
 
 // Include default & CrackerTracker Admin Footer
-include($phpbb_root_path . 'ctracker/admin/acp_footer.' . $phpEx);
-include('./page_footer_admin.' . $phpEx);
+include(IP_ROOT_PATH . 'ctracker/admin/acp_footer.' . PHP_EXT);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

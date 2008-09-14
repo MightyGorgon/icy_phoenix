@@ -15,14 +15,19 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-// Mighty Gorgon - Main Icy Phoenix Constant - BEGIN
-define('IS_ICYPHOENIX', true);
-// Mighty Gorgon - Main Icy Phoenix Constant - END
+// FOUNDER ID, this is the ID used to send Welcome and Birthday PM
+define('FOUNDER_ID', '2');
+// ALLOW ONLY FOUNDER ACP, by setting this to true only the FOUNDER will be able to access ACP
+define('ONLY_FOUNDER_ACP', false);
+// Insert here the IDs of the main admins separated by commas, they will be able to access special features in ACP
+// Allowed features: Private Messages, DB Tools, Templates Edit (XS Style)
+// If the constant is deleted then every admin is able to access the Full ACP
+define('MAIN_ADMINS_ID', '2');
 
 // Debug Level
 define('DEBUG', true); // Debugging on
@@ -46,19 +51,19 @@ define('ONLINE_REFRESH', 300); // Online Refresh Time (Seconds)
 define('COLORIZE_CACHE_REFRESH', 2592000); // Caching time for colorize cache (seconds) (60*60*24=86400) (86400*30=2592000)
 
 // Mighty Gorgon - Constants Pages And Paths - BEGIN
-define('LOGIN_MG', 'login_ip.' . $phpEx);
-//define('LOGIN_MG', 'login.' . $phpEx);
-define('PORTAL_MG', 'index.' . $phpEx);
-//define('PORTAL_MG', 'portal.' . $phpEx);
-define('FORUM_MG', 'forum.' . $phpEx);
-//define('FORUM_MG', 'index.' . $phpEx);
-define('VIEWFORUM_MG', 'viewforum.' . $phpEx);
-define('VIEWTOPIC_MG', 'viewtopic.' . $phpEx);
-define('PROFILE_MG', 'profile.' . $phpEx);
-define('POSTING_MG', 'posting.' . $phpEx);
-define('SEARCH_MG', 'search.' . $phpEx);
-define('DOWNLOADS_MG', 'dload.' . $phpEx);
-//define('DOWNLOADS_MG', 'downloads.' . $phpEx);
+define('LOGIN_MG', 'login_ip.' . PHP_EXT);
+//define('LOGIN_MG', 'login.' . PHP_EXT);
+define('PORTAL_MG', 'index.' . PHP_EXT);
+//define('PORTAL_MG', 'portal.' . PHP_EXT);
+define('FORUM_MG', 'forum.' . PHP_EXT);
+//define('FORUM_MG', 'index.' . PHP_EXT);
+define('VIEWFORUM_MG', 'viewforum.' . PHP_EXT);
+define('VIEWTOPIC_MG', 'viewtopic.' . PHP_EXT);
+define('PROFILE_MG', 'profile.' . PHP_EXT);
+define('POSTING_MG', 'posting.' . PHP_EXT);
+define('SEARCH_MG', 'search.' . PHP_EXT);
+define('DOWNLOADS_MG', 'dload.' . PHP_EXT);
+//define('DOWNLOADS_MG', 'downloads.' . PHP_EXT);
 define('ADM', 'adm');
 define('COMMON_TPL', '../common/');
 define('ADM_TPL', COMMON_TPL . 'acp/');
@@ -67,20 +72,24 @@ define('STYLES_PATH', 'styles/');
 define('ATTACH_MOD_PATH', 'includes/attach_mod/');
 define('DL_ROOT_PATH', 'includes/downloads/');
 define('PA_FILE_DB_PATH', 'pafiledb/');
-define('POSTED_IMAGES_PATH', 'files/posted_images/');
-define('POSTED_IMAGES_THUMBS_PATH', 'files/thumbs/');
-define('MAIN_CACHE_FOLDER', 'cache/');
+define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
+define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
 define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
 define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
 define('BACKUP_PATH', 'backup/');
 define('TPL_EXTENSION', 'tpl');
+define('UPI2DB_PATH', IP_ROOT_PATH . 'includes/upi2db/');
 // Mighty Gorgon - Constants Pages And Paths - END
 
 // Mighty Gorgon - FAP - BEGIN
-define('ALBUM_MOD_PATH', 'includes/album_mod/');
+define('USERS_SUBFOLDERS_IMG', true); // Creates users subfolders for posted images
+define('USERS_SUBFOLDERS_ALBUM', true); // Creates users subfolders for images in album
+define('ALBUM_MOD_PATH', IP_ROOT_PATH . 'includes/album_mod/');
+define('ALBUM_MOD_IMG_PATH', IP_ROOT_PATH . 'images/album/');
 define('ALBUM_FILES_PATH', 'files/album/');
 //define('ALBUM_FILES_PATH', 'album_mod/upload/');
-include_once($phpbb_root_path . ALBUM_MOD_PATH . 'album_constants.' . $phpEx);
+include_once(ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
 // Mighty Gorgon - FAP - END
 
 // Mighty Gorgon - ACTIVITY - BEGIN
@@ -197,58 +206,6 @@ define('LANG_URL', 'l');
 define('SESSION_METHOD_COOKIE', 100);
 define('SESSION_METHOD_GET', 101);
 
-// Page numbers for session handling
-// MG: Not used anymore... but left here for backward compatibility!
-define('PAGE_INDEX', 0);
-define('PAGE_LOGIN', -1);
-define('PAGE_SEARCH', -2);
-define('PAGE_REGISTER', -3);
-define('PAGE_PROFILE', -4);
-define('PAGE_VIEWONLINE', -6);
-define('PAGE_VIEWMEMBERS', -7);
-define('PAGE_FAQ', -8);
-define('PAGE_POSTING', -9);
-define('PAGE_PRIVMSGS', -10);
-define('PAGE_GROUPCP', -11);
-define('PAGE_CARD', -12);
-define('PAGE_PORTAL', -13);
-define('PAGE_LINKS', -14);
-define('PAGE_RANKING', -15);
-define('PAGE_STATISTICS', -16);
-define('PAGE_ATTACHMENTS', -17);
-define('PAGE_CALENDAR', -18);
-define('PAGE_RATING', -19);
-define('PAGE_RATINGS', -20);
-define('PAGE_KB', -21);
-define('PAGE_STAFF', -22);
-define('PAGE_ALBUM', -23);
-define('PAGE_ALBUM_PERSONAL', -24);
-define('PAGE_ALBUM_PICTURE', -25);
-define('PAGE_ALBUM_SEARCH', -26);
-// Activity - BEGIN
-define('PAGE_ACTIVITY', -27);
-define('PAGE_PLAYING_GAMES', -28);
-// Activity - END
-define('PAGE_RECENT', -33);
-define('PAGE_SITE_HIST', -66);
-define('PAGE_CUSTOM_PAGE', -69);
-define('PAGE_TOPIC_VIEW', -1032);
-// Ajax Shoutbox - BEGIN
-define('PAGE_AJAX_SHOUTBOX', -1310);
-// Ajax Shoutbox - END
-define('PAGE_SHOUTBOX', -1035);
-define('PAGE_SHOUTBOX_MAX', -1036);
-define('PAGE_RSS', -1169);
-define('PAGE_HACKSLIST', -1199);
-// Attachments - BEGIN
-define('PAGE_UACP', -1210);
-define('PAGE_RULES', -1214);
-// Attachments - END
-define('PAGE_SUDOKU', -1700);
-define('PAGE_REFERRERS', -1968);
-//define('PAGE_WORDGRAPH', -2499);
-define('PAGE_TOPIC_OFFSET', 5000);
-
 // Auth settings - Levels
 define('AUTH_NONE', -1);
 define('AUTH_LIST_ALL', 0);
@@ -352,20 +309,16 @@ define('AJAX_TOPIC_TYPE', 16);
 define('AJAX_TOPIC_MOVE', 17);
 // Ajaxed - END
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
-define('UPI2DB_VERSION', 'Full');
-//define('UPI2DB_VERSION', 'IP');
-//<!-- END Unread Post Information to Database Mod -->
-
 // Do not insert anything but tables below!
 // Table names
 define('ACRONYMS_TABLE', $table_prefix . 'acronyms');
 define('ADMINEDIT_TABLE', $table_prefix . 'adminedit');
+define('ALBUM_TABLE', $table_prefix . 'album');
 define('ALBUM_CAT_TABLE', $table_prefix . 'album_cat');
 define('ALBUM_COMMENT_TABLE', $table_prefix . 'album_comment');
+define('ALBUM_COMMENT_WATCH_TABLE', $table_prefix . 'album_comment_watch');
 define('ALBUM_CONFIG_TABLE', $table_prefix . 'album_config');
 define('ALBUM_RATE_TABLE', $table_prefix . 'album_rate');
-define('ALBUM_TABLE', $table_prefix . 'album');
 define('AUTH_ACCESS_TABLE', $table_prefix . 'auth_access');
 define('AUTOLINKS', $table_prefix . 'autolinks');
 define('BANLIST_TABLE', $table_prefix . 'banlist');

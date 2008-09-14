@@ -15,33 +15,26 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		$module['2200_Photo_Album']['140_Personal_Galleries'] = $filename;
-	}
-	else
-	{
-		$module['Photo_Album']['Personal_Galleries'] = $filename;
-	}
+	$module['2200_Photo_Album']['140_Personal_Galleries'] = $filename;
 	return;
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
 if( !isset($_POST['submit']) )
 {
 	$template->set_filenames(array(
-		'body' => $acp_prefix . 'album_personal_body.tpl')
+		'body' => ADM_TPL . 'album_personal_body.tpl')
 	);
 
 	// Get the list of phpBB usergroups
@@ -129,13 +122,13 @@ if( !isset($_POST['submit']) )
 		'L_DELETE' => $lang['Delete'],
 		'L_IS_MODERATOR' => $lang['Is_Moderator'],
 		'L_PRIVATE_ACCESS' => $lang['Private_access'],
-		'S_ALBUM_ACTION' => append_sid('admin_album_personal.' . $phpEx)
+		'S_ALBUM_ACTION' => append_sid('admin_album_personal.' . PHP_EXT)
 		)
 	);
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 }
 else
 {
@@ -168,7 +161,7 @@ else
 	}
 
 	// okay, return a message...
-	$message = $lang['Album_personal_successfully'] . '<br /><br />' . sprintf($lang['Click_return_album_personal'], '<a href="' . append_sid("admin_album_personal.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Album_personal_successfully'] . '<br /><br />' . sprintf($lang['Click_return_album_personal'], '<a href="' . append_sid("admin_album_personal." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }

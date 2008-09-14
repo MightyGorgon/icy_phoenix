@@ -24,10 +24,10 @@
 // Warning: this was only tested with MySQL. I don't have access to other databases. Consequently,
 // the SQL may need tweaking for other relational databases.
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -37,9 +37,9 @@ init_userprefs($userdata);
 $page_title = $lang['digest_page_title'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
-include($phpbb_root_path . 'includes/digest_constants.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
 
 if ( empty($board_config['enable_digests']) || ($board_config['enable_digests'] == 0) )
 {
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			'PAGE_TITLE' => $lang['digest_subject_line'],
 			'NO_FORUMS_SELECTED' => $lang['digest_no_forums_selected'],
 			'DIGEST_EXPLANATION' => $lang['digest_explanation'],
-			'S_POST_ACTION' => append_sid('digests.' . $phpEx),
+			'S_POST_ACTION' => append_sid('digests.' . PHP_EXT),
 			'DIGEST_CREATE_NEW_VALUE' => ($create_new) ? '1' : '0',
 			'L_DIGEST_TYPE' => $lang['digest_wanted'],
 			'L_NONE' => $lang['digest_none'],
@@ -466,6 +466,6 @@ else
 
 }
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

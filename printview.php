@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 // gzip_compression
 $do_gzip_compress = false;
@@ -104,7 +104,7 @@ if(!$is_auth['auth_read'])
 	if (!$userdata['session_logged_in'])
 	{
 		$redirect = POST_TOPIC_URL . '=' . $topic_id;
-		header('Location: ' . append_sid(LOGIN_MG . '?redirect=printview.' . $phpEx . '&' . $redirect, true));
+		header('Location: ' . append_sid(LOGIN_MG . '?redirect=printview.' . PHP_EXT . '&' . $redirect, true));
 	}
 
 	$message = sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);

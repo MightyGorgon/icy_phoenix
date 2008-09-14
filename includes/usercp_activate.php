@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -66,7 +66,7 @@ if ($row = $db->sql_fetchrow($result))
 
 		if (intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN && $sql_update_pass == '')
 		{
-			include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer($board_config['smtp_delivery']);
 
 			$emailer->from($board_config['board_email']);

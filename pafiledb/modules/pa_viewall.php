@@ -13,8 +13,8 @@ class pafiledb_viewall extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template,$lang, $phpEx, $pafiledb_config, $userdata;
-		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $phpEx, $pafiledb_functions, $board_config;
+		global $pafiledb_template,$lang, $pafiledb_config, $userdata;
+		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $board_config;
 		$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
 		$start = ($start < 0) ? 0 : $start;
 
@@ -73,7 +73,7 @@ class pafiledb_viewall extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=viewall', true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=viewall', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_viewall'], $this->auth_global['auth_viewall_type']);
@@ -87,7 +87,7 @@ class pafiledb_viewall extends pafiledb_public
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD' => append_sid('dload.' . $phpEx),
+			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 
 			'DOWNLOAD' => $pafiledb_config['settings_dbname']
 			)

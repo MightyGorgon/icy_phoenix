@@ -8,13 +8,13 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_zebra.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
 
 $friends_list = user_get_zebra_list();
 $friends_online_list = user_get_friends_online_list();

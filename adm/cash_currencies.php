@@ -16,18 +16,18 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 
 if (isset($_POST['submit']))
@@ -151,11 +151,11 @@ if (isset($_POST['set']))
 						'MESSAGE_TEXT' => $l_confirm,
 						'L_YES' => $lang['Yes'],
 						'L_NO' => $lang['No'],
-						'S_CONFIRM_ACTION' => append_sid('cash_currencies.' . $phpEx),
+						'S_CONFIRM_ACTION' => append_sid('cash_currencies.' . PHP_EXT),
 						'S_HIDDEN_FIELDS' => $s_hidden_fields)
 					);
 					$template->pparse('confirm_body');
-					include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+					include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 				}
 				else
 				{
@@ -250,11 +250,11 @@ if (isset($_POST['set']))
 						'MESSAGE_TEXT' => $l_confirm,
 						'L_YES' => $lang['Yes'],
 						'L_NO' => $lang['No'],
-						'S_CONFIRM_ACTION' => append_sid('cash_currencies.' . $phpEx),
+						'S_CONFIRM_ACTION' => append_sid('cash_currencies.' . PHP_EXT),
 						'S_HIDDEN_FIELDS' => $s_hidden_fields)
 					);
 					$template->pparse('confirm_body');
-					include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+					include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 				}
 				else
 				{
@@ -396,7 +396,7 @@ if (isset($_POST['set']))
 
 if (isset($_POST['submit']))
 {
-	$message = $lang['Cash_currencies_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_currencies'], '<a href="' . append_sid('cash_currencies.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Cash_currencies_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_currencies'], '<a href="' . append_sid('cash_currencies.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -442,7 +442,7 @@ $cash->reorder();
 $template->set_filenames(array('body' => ADM_TPL . 'cash_currencies.tpl'));
 
 $template->assign_vars(array(
-	'S_CASH_CURRENCY_ACTION' => append_sid('cash_currency.' . $phpEx),
+	'S_CASH_CURRENCY_ACTION' => append_sid('cash_currency.' . PHP_EXT),
 
 	'L_CASH_CURRENCIES_TITLE' => $lang['Cash_currencies'],
 	'L_CASH_CURRENCIES_EXPLAIN' => $lang['Cash_currencies_explain'],
@@ -476,8 +476,8 @@ $c_cur = 0;
 while ($c_cur = &$cash->currency_next($cm_i))
 {
 	$template->assign_block_vars('cashrow',array(
-		'U_MOVE_UP' => append_sid('cash_currencies.' . $phpEx . '?set=up&cord=' . $c_cur->data('cash_order')),
-		'U_MOVE_DOWN' => append_sid('cash_currencies.' . $phpEx . '?set=down&cord=' . $c_cur->data('cash_order')),
+		'U_MOVE_UP' => append_sid('cash_currencies.' . PHP_EXT . '?set=up&cord=' . $c_cur->data('cash_order')),
+		'U_MOVE_DOWN' => append_sid('cash_currencies.' . PHP_EXT . '?set=down&cord=' . $c_cur->data('cash_order')),
 
 		'CASH_INDEX' => $c_cur->id(),
 		'DBFIELD' => $c_cur->db(),
@@ -492,6 +492,6 @@ while ($c_cur = &$cash->currency_next($cm_i))
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

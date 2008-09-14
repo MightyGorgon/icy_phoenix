@@ -15,31 +15,23 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		$module['2200_Photo_Album']['120_Album_Categories'] = $filename;
-	}
-	else
-	{
-		$module['Photo_Album']['Categories'] = $filename;
-	}
+	$module['2200_Photo_Album']['120_Album_Categories'] = $filename;
 	return;
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH . '';
-require($album_root_path. 'album_common.' . $phpEx);
+require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 $album_user_id = ALBUM_PUBLIC_GALLERY;
 
@@ -52,9 +44,9 @@ if( isset($_POST['sync_pics_counter']) )
 
 function showResultMessage($in_message)
 {
-	global $lang, $album_user_id, $phpEx;
+	global $lang, $album_user_id;
 
-	$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_album_category'], "<a href=\"" . append_sid("admin_album_cat.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+	$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_album_category'], "<a href=\"" . append_sid("admin_album_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -67,13 +59,13 @@ if( !isset($_POST['mode']) )
 
 		/*
 		if we still get layout issues then replace the template file with this
-		$acp_prefix . 'album_cat_body_debug.tpl', BUT ONLY FOR DEBUGGING PURPOSE, and send me a screenshot of it
-		then go back to this template file $acp_prefix . 'album_cat_body.tpl'.
+		ADM_TPL . 'album_cat_body_debug.tpl', BUT ONLY FOR DEBUGGING PURPOSE, and send me a screenshot of it
+		then go back to this template file ADM_TPL . 'album_cat_body.tpl'.
 		*/
-		$template->set_filenames(array('body' => $acp_prefix . 'album_cat_body.tpl'));
+		$template->set_filenames(array('body' => ADM_TPL . 'album_cat_body.tpl'));
 
 		$template->assign_vars(array(
-			'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . $phpEx),
+			'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . PHP_EXT),
 			'L_CREATE_CATEGORY' => $lang['Create_category'],
 			'L_SYNC_PICS_COUNTER' => $lang['Cat_Pics_Synchronize'],
 			'L_ALBUM_INDEX' => $lang['Album_Categories_Title']
@@ -96,7 +88,7 @@ if( !isset($_POST['mode']) )
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -121,7 +113,7 @@ if( !isset($_POST['mode']) )
 			album_read_tree();
 			$s_album_cat_list = album_get_tree_option($catrow['cat_parent_id'], ALBUM_AUTH_VIEW, ALBUM_SELECTBOX_INCLUDE_ALL | ALBUM_SELECTBOX_INCLUDE_ROOT);
 
-			$template->set_filenames(array('body' => $acp_prefix . 'album_cat_new_body.tpl'));
+			$template->set_filenames(array('body' => ADM_TPL . 'album_cat_new_body.tpl'));
 
 			$template->assign_block_vars('acp', array(
 				'L_ALBUM_CAT_TITLE' => $lang['Album_Categories_Title'],
@@ -130,7 +122,7 @@ if( !isset($_POST['mode']) )
 			);
 
 			$template->assign_vars(array(
-				'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . $phpEx . '?cat_id=' . $cat_id),
+				'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . PHP_EXT . '?cat_id=' . $cat_id),
 				'L_CAT_TITLE' => $lang['Category_Title'],
 				'L_CAT_DESC' => $lang['Category_Desc'],
 				'L_CAT_PARENT_TITLE' => $lang['Parent_Category'],
@@ -207,7 +199,7 @@ if( !isset($_POST['mode']) )
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 		}
 		elseif( $_GET['action'] == 'delete' )
 		{
@@ -244,10 +236,10 @@ if( !isset($_POST['mode']) )
 			$select_to .= album_get_tree_option($catrow['cat_parent_id'], ALBUM_AUTH_VIEW, ALBUM_SELECTBOX_ALL);
 			$select_to .= '</select>';
 
-			$template->set_filenames(array('body' => $acp_prefix . 'album_cat_delete_body.tpl'));
+			$template->set_filenames(array('body' => ADM_TPL . 'album_cat_delete_body.tpl'));
 
 			$template->assign_vars(array(
-				'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . $phpEx . '?cat_id=' . $cat_id),
+				'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . PHP_EXT . '?cat_id=' . $cat_id),
 				'L_CAT_DELETE' => $lang['Delete_Category'],
 				'L_CAT_DELETE_EXPLAIN' => $lang['Delete_Category_Explain'],
 				'L_CAT_TITLE' => $lang['Category_Title'],
@@ -260,7 +252,7 @@ if( !isset($_POST['mode']) )
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 		}
 		elseif( $_GET['action'] == 'move' )
 		{
@@ -291,12 +283,12 @@ else
 			album_read_tree();
 			$s_album_cat_list = album_get_tree_option($cat_parent, ALBUM_AUTH_VIEW, ALBUM_SELECTBOX_INCLUDE_ALL);
 
-			$template->set_filenames(array('body' => $acp_prefix . 'album_cat_new_body.tpl'));
+			$template->set_filenames(array('body' => ADM_TPL . 'album_cat_new_body.tpl'));
 
 			$template->assign_vars(array(
 				'L_ALBUM_CAT_TITLE' => $lang['Album_Categories_Title'],
 				'L_ALBUM_CAT_EXPLAIN' => $lang['Album_Categories_Explain'],
-				'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . $phpEx),
+				'S_ALBUM_ACTION' => append_sid('admin_album_cat.' . PHP_EXT),
 
 				'L_CAT_TITLE' => $lang['Category_Title'],
 				'L_CAT_DESC' => $lang['Category_Desc'],
@@ -343,7 +335,7 @@ else
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 		}
 		else
 		{
@@ -504,7 +496,7 @@ else
 				message_die(GENERAL_ERROR, 'Could not query Album information', '', __LINE__, __FILE__, $sql);
 			}
 			$picrow = array();
-			while( $row = $db ->sql_fetchrow($result) )
+			while($row = $db ->sql_fetchrow($result))
 			{
 				$picrow[] = $row;
 				$pic_id_row[] = $row['pic_id'];
@@ -515,10 +507,51 @@ else
 				// Delete all physical pic & cached thumbnail files
 				for ($i = 0; $i < count($picrow); $i++)
 				{
-					@unlink('../' . ALBUM_CACHE_PATH . $picrow[$i]['pic_thumbnail']);
-					@unlink('../' . ALBUM_UPLOAD_PATH . $picrow[$i]['pic_filename']);
-					@unlink('../' . ALBUM_MED_CACHE_PATH . $picrow[$i]['pic_filename']);
-					@unlink('../' . ALBUM_WM_CACHE_PATH . $picrow[$i]['pic_filename']);
+					$pic_filename = $picrow[$i]['pic_filename'];
+
+					if (USERS_SUBFOLDERS_ALBUM == true)
+					{
+						if (strpos($pic_filename, '/') !== false)
+						{
+							$pic_path[] = array();
+							$pic_path = explode('/', $pic_filename);
+							$pic_filename = $pic_path[count($pic_path) - 1];
+						}
+					}
+
+					$file_part = explode('.', strtolower($pic_filename));
+					$pic_filetype = $file_part[count($file_part) - 1];
+					$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
+					$pic_base_path = ALBUM_UPLOAD_PATH;
+					$pic_extra_path = '';
+					$pic_new_filename = $pic_extra_path . $pic_filename;
+					$pic_fullpath = $pic_base_path . $pic_new_filename;
+					$pic_thumbnail = $picrow[$i]['pic_thumbnail'];
+					$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
+
+					if (USERS_SUBFOLDERS_ALBUM == true)
+					{
+						if (count($pic_path) == 2)
+						{
+							$pic_extra_path = $pic_path[0] . '/';
+							$pic_thumbnail_path = ALBUM_CACHE_PATH . $pic_extra_path;
+							if (is_dir($pic_path_only))
+							{
+								$pic_new_filename = $pic_extra_path . $pic_filename;
+								$pic_fullpath = $pic_base_path . $pic_new_filename;
+								$pic_thumbnail_fullpath = $pic_thumbnail_path . $pic_thumbnail;
+							}
+							else
+							{
+								message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
+							}
+						}
+					}
+
+					@unlink($pic_thumbnail_fullpath);
+					@unlink(ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink(ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink($pic_fullpath);
 				}
 
 				$pic_id_sql = '(' . implode(',', $pic_id_row) . ')';

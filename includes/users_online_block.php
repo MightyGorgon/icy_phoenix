@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
 if ($board_config['show_chat_online'] == true)
 {
 	//$template->assign_block_vars('switch_ac_online', array());
-	include_once($phpbb_root_path . 'includes/functions_ajax_chat.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 	$sql = "SELECT u.user_id, u.username, u.user_level
 	FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
 	WHERE s.session_time >= " . (time() - ONLINE_REFRESH) . "

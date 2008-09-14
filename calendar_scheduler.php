@@ -18,12 +18,12 @@
 // CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_topics_list.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_topics_list.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -160,7 +160,7 @@ get_event_topics($events, $topics_count, $start_date, $end_date, true, $local_st
 $page_title = $lang['Calendar_scheduler'];
 $meta_description = '';
 $meta_keywords = '';
-include ($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include (IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // template name
 $template->set_filenames(array('body' => 'calendar_scheduler_body.tpl'));
@@ -169,7 +169,7 @@ make_jumpbox(VIEWFORUM_MG);
 // Header
 $template->assign_vars(array(
 	'L_CALENDAR_SCHEDULER' => $lang['Calendar_scheduler'],
-	'U_CALENDAR_SCHEDULER' => append_sid('calendar_scheduler.' . $phpEx . '?d=' . $date . '&mode=' . $mode . '&start=' . $start),
+	'U_CALENDAR_SCHEDULER' => append_sid('calendar_scheduler.' . PHP_EXT . '?d=' . $date . '&mode=' . $mode . '&start=' . $start),
 	)
 );
 
@@ -205,7 +205,7 @@ for($i = 0; $i <= 24; $i++)
 	$template->assign_block_vars('hour', array(
 		'CLASS' => $color,
 		'HOUR' => $l_hour,
-		'U_HOUR' => append_sid('calendar_scheduler.' . $phpEx . '?' . (($i==0) ? '' : 'mode=hour&') . 'd=' . mktime((($i == 0) ? 0 : $i - 1), 0, 0, $month, $day, $year)),
+		'U_HOUR' => append_sid('calendar_scheduler.' . PHP_EXT . '?' . (($i==0) ? '' : 'mode=hour&') . 'd=' . mktime((($i == 0) ? 0 : $i - 1), 0, 0, $month, $day, $year)),
 		)
 	);
 }
@@ -252,9 +252,9 @@ $next = mktime(0,0,0, $month + 1, $day, $year);
 $template->assign_vars(array(
 	'S_MONTH'			=> $s_month,
 	'S_YEAR'			=> $s_year,
-	'U_PREC'			=> append_sid('./calendar_scheduler.' . $phpEx . '?d=' . $prec . '&fid=' . $fid),
-	'U_NEXT'			=> append_sid('./calendar_scheduler.' . $phpEx . '?d=' . $next . '&fid=' . $fid),
-	'U_CALENDAR'		=> append_sid('./calendar.' . $phpEx . '?start=' . $year . $month . '01&fid=' . $fid),
+	'U_PREC'			=> append_sid('./calendar_scheduler.' . PHP_EXT . '?d=' . $prec . '&fid=' . $fid),
+	'U_NEXT'			=> append_sid('./calendar_scheduler.' . PHP_EXT . '?d=' . $next . '&fid=' . $fid),
+	'U_CALENDAR'		=> append_sid('./calendar.' . PHP_EXT . '?start=' . $year . $month . '01&fid=' . $fid),
 	'L_CALENDAR'		=> $lang['Calendar'],
 	'IMG_CALENDAR'		=> $images['icon_calendar'],
 	)
@@ -295,7 +295,7 @@ for ($j = 0; $j < $nb_rows; $j++)
 		}
 		if ($days[$cur])
 		{
-			$url = append_sid('./calendar_scheduler.' . $phpEx . '?d=' . $offset . '&fid=' . $fid);
+			$url = append_sid('./calendar_scheduler.' . PHP_EXT . '?d=' . $offset . '&fid=' . $fid);
 			$cur = sprintf('<a href="%s" class="gen"><b>%s</b></a>', $url, $cur);
 		}
 		$template->assign_block_vars('row.cell', array(
@@ -358,18 +358,18 @@ if (!isset($nav_separator))
 $total = $topics_count + $birthdays_count;
 if ($total == 0) $total++;
 $template->assign_vars(array(
-	'PAGINATION' => generate_pagination('calendar_scheduler.' . $phpEx . '?d=' . $date . '&mode=' . $mode, $total, $board_config['topics_per_page'], $start),
+	'PAGINATION' => generate_pagination('calendar_scheduler.' . PHP_EXT . '?d=' . $date . '&mode=' . $mode, $total, $board_config['topics_per_page'], $start),
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), ceil( $topics_count / $board_config['topics_per_page'] )),
 	'L_GOTO_PAGE' => $lang['Goto_page'],
 
 	'NAV_SEPARATOR'		=> $nav_separator,
-	'S_ACTION'			=> append_sid('./calendar_scheduler.' . $phpEx),
+	'S_ACTION'			=> append_sid('./calendar_scheduler.' . PHP_EXT),
 	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 	)
 );
 
 // send to browser
 $template->pparse('body');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

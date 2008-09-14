@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if(!function_exists(imp_album_block_func))
 {
 	function imp_album_block_func()
 	{
-		global $template, $phpbb_root_path, $phpEx, $db, $board_config, $lang, $images, $userdata;
+		global $template, $db, $board_config, $lang, $images, $userdata;
 		global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars, $block_id;
 
 		/*
@@ -68,10 +68,9 @@ if(!function_exists(imp_album_block_func))
 		echo($cms_config_vars[$block_id . '_' . 'md_pics_all']);
 		exit;
 		*/
-		$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH . '';
-		include_once($album_root_path . 'album_common.' . $phpEx);
+		include_once(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 		global $album_config;
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$sql = "SELECT c.*, COUNT(p.pic_id) AS count
 				FROM " . ALBUM_CAT_TABLE . " AS c
@@ -254,26 +253,14 @@ if(!function_exists(imp_album_block_func))
 									$recent_poster = colorize_username($recentrow[$image_counter]['user_id']);
 								}
 
-								$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $recentrow[$image_counter]['pic_id']));
+								$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']));
 								if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 								{
-									$pic_filename = $recentrow[$image_counter]['pic_filename'];
-									$file_part = explode('.', strtolower($pic_filename));
-									$pic_filetype = $file_part[count($file_part) - 1];
-									$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-									//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-									//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-									$pic_thumbnail = ($recentrow[$image_counter]['pic_thumbnail'] == '') ? md5($pic_filename) . '.' . $pic_filetype : $recentrow[$image_counter]['pic_thumbnail'];
-									//$pic_thumbnail = ($recentrow[$image_counter]['pic_thumbnail'] == '') ? $pic_filename : $recentrow[$image_counter]['pic_thumbnail'];
-									$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-									if (file_exists($pic_thumbnail_fullpath))
-									{
-										$thumbnail_file = $pic_thumbnail_fullpath;
-									}
+									$thumbnail_file = picture_quick_thumb($recentrow[$image_counter]['pic_filename'], $recentrow[$image_counter]['pic_thumbnail'], $thumbnail_file);
 								}
 
 								$template->assign_block_vars('recent_pics.recent_detail', array(
-									'U_PIC' => ($album_config['fullpic_popup']) ? append_sid('album_pic.' . $phpEx . '?pic_id=' . $recentrow[$image_counter]['pic_id']) : append_sid('album_showpage.' . $phpEx . '?pic_id=' . $recentrow[$image_counter]['pic_id']),
+									'U_PIC' => ($album_config['fullpic_popup']) ? append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']) : append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']),
 									'THUMBNAIL' => $thumbnail_file,
 									'DESC' => $recentrow[$image_counter]['pic_desc'],
 									'TITLE' => $recentrow[$image_counter]['pic_title'],
@@ -311,7 +298,7 @@ if(!function_exists(imp_album_block_func))
 			'L_VIEW' => $lang['View'],
 			'L_POSTER' => $lang['Poster'],
 			'L_POSTED' => $lang['Posted'],
-			'U_ALBUM' => append_sid('album.' . $phpEx),
+			'U_ALBUM' => append_sid('album.' . PHP_EXT),
 			'L_ALBUM' => $lang['Album']
 			)
 		);

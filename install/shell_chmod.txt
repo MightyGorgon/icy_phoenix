@@ -12,6 +12,7 @@ chmod 777 files
 chmod 777 files/album
 chmod 777 files/album/cache
 chmod 777 files/album/med_cache
+chmod 777 files/album/users
 chmod 777 files/album/wm_cache
 chmod 777 files/posted_images
 chmod 777 files/thumbs

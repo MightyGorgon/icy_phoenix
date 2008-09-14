@@ -15,19 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 
 $start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
@@ -90,7 +89,7 @@ $select_sort_order .= '</select>';
 $page_title = $lang['Album'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_personal_index_body.tpl'));
 
@@ -103,7 +102,7 @@ $template->assign_vars(array(
 	'L_USERS_PERSONAL_GALLERIES' => $lang['Users_Personal_Galleries'],
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order,
-	'S_MODE_ACTION' => append_sid(album_append_uid('album_personal_index.' . $phpEx))
+	'S_MODE_ACTION' => append_sid(album_append_uid('album_personal_index.' . PHP_EXT))
 	)
 );
 
@@ -151,8 +150,8 @@ for ($i = 0; $i < count($memberrow); $i++)
 	$template->assign_block_vars('memberrow', array(
 		'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
 		'USERNAME' => $memberrow[$i]['username'],
-		'U_VIEWGALLERY' => append_sid(album_append_uid('album.' . $phpEx . '?user_id=' . $memberrow[$i]['user_id'])),
-		//'U_VIEWGALLERY' => append_sid(album_append_uid("album_cat.$phpEx?cat_id=" . album_get_personal_root_id($memberrow[$i]['user_id']) . "user_id=" . $memberrow[$i]['user_id'])),
+		'U_VIEWGALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $memberrow[$i]['user_id'])),
+		//'U_VIEWGALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($memberrow[$i]['user_id']) . 'user_id=' . $memberrow[$i]['user_id'])),
 		'JOINED' => create_date($lang['DATE_FORMAT'], $memberrow[$i]['user_regdate'], $board_config['board_timezone']),
 		'PICS' => $memberrow[$i]['pics']
 		)
@@ -174,7 +173,7 @@ if ( $total = $db->sql_fetchrow($result) )
 {
 	$total_galleries = $total['total'];
 
-	$pagination = generate_pagination('album_personal_index.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $board_config['topics_per_page'], $start) . '&nbsp;';
+	$pagination = generate_pagination('album_personal_index.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $board_config['topics_per_page'], $start) . '&nbsp;';
 }
 
 $template->assign_vars(array(
@@ -188,6 +187,6 @@ $template->assign_vars(array(
 //
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

@@ -15,21 +15,20 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-if ( !$userdata['session_logged_in'] )
+if (!$userdata['session_logged_in'])
 {
 	message_die(GENERAL_MESSAGE, $lang['Login_To_Vote']);
 }
@@ -38,11 +37,11 @@ if ( !$userdata['session_logged_in'] )
 $album_config['hon_rate_sep'] = false;
 // Force to use the same table for backward compatibility - END
 
-if ( isset($_POST['hon_rating']) )
+if (isset($_POST['hon_rating']))
 {
 	$rate_point = intval($_POST['hon_rating']);
 }
-elseif ( isset($_GET['hon_rating']) )
+elseif (isset($_GET['hon_rating']))
 {
 	$rate_point = intval($_GET['hon_rating']);
 }
@@ -52,7 +51,7 @@ else
 }
 
 //if user havent rated a picture, show page, else update database
-if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
+if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 {
 	// ------------------------------------
 	// get a random pic from album
@@ -71,7 +70,7 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 						ORDER BY RAND() LIMIT 1";
 	}
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
 	}
@@ -90,7 +89,7 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 	}
 
 	$sql = "SELECT p.*, cat.*,  u.user_id, u.username, r.rate_pic_id, " . $rating_from . ", COUNT(DISTINCT c.comment_id) AS comments
-			FROM ". ALBUM_CAT_TABLE ."  AS cat, ". ALBUM_TABLE ." AS p
+			FROM " . ALBUM_CAT_TABLE . "  AS cat, " . ALBUM_TABLE . " AS p
 				LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 				LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
 				LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
@@ -99,7 +98,7 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 			" . $sql_where . "
 			GROUP BY p.pic_id";
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
 	}
@@ -108,7 +107,12 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 	$cat_id = $thispic['pic_cat_id'];
 	$album_user_id = $thispic['cat_user_id'];
 
-	if( empty($thispic) || !file_exists(ALBUM_UPLOAD_PATH . $pic_filename) )
+	$pic_base_path = ALBUM_UPLOAD_PATH;
+	$pic_extra_path = '';
+	$pic_new_filename = $pic_extra_path . $pic_filename;
+	$pic_fullpath = $pic_base_path . $pic_new_filename;
+
+	if(empty($thispic) || !file_exists($pic_fullpath))
 	{
 		message_die(GENERAL_ERROR, $lang['Pic_not_exist']);
 	}
@@ -124,7 +128,7 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=album_hotornot.' . $phpEx));
+				redirect(append_sid(LOGIN_MG . '?redirect=album_hotornot.' . PHP_EXT));
 			}
 			else
 			{
@@ -139,7 +143,7 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 
 	if ($userdata['user_level'] != ADMIN)
 	{
-		if( ($thiscat['cat_approval'] == ADMIN) || (($thiscat['cat_approval'] == MOD) && !$album_user_access['moderator']) )
+		if(($thiscat['cat_approval'] == ADMIN) || (($thiscat['cat_approval'] == MOD) && !$album_user_access['moderator']))
 		{
 			if ($thispic['pic_approval'] != 1)
 			{
@@ -158,11 +162,11 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 	$page_title = $lang['Album'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_hon.tpl'));
 
-	if( ($thispic['pic_user_id'] == ALBUM_GUEST) or ($thispic['username'] == '') )
+	if(($thispic['pic_user_id'] == ALBUM_GUEST) or ($thispic['username'] == ''))
 	{
 		$poster = ($thispic['pic_username'] == '') ? $lang['Guest'] : $thispic['pic_username'];
 	}
@@ -175,7 +179,7 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 	$image_rating = ImageRating($thispic['rating']);
 
 	//hot or not rating
-	if ( CanRated($pic_id, $userdata['user_id']))
+	if (CanRated($pic_id, $userdata['user_id']))
 	{
 		$template->assign_block_vars('hon_rating', array());
 
@@ -203,13 +207,13 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 		'L_COMMENTS' => $lang['Comments'],
 
 		'CAT_TITLE' => $thiscat['cat_title'],
-		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)),
-		'U_PIC' => append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $pic_id)),
-		'U_COMMENT' => append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $pic_id)),
-		'S_ACTION' => append_sid(album_append_uid('album_hotornot.' . $phpEx)),
+		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
+		'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $pic_id)),
+		'U_COMMENT' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id)),
+		'S_ACTION' => append_sid(album_append_uid('album_hotornot.' . PHP_EXT)),
 
-		'PIC_TITLE' => $thispic['pic_title'],
-		'PIC_DESC' => nl2br($thispic['pic_desc']),
+		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
+		'PIC_DESC' => nl2br(htmlspecialchars($thispic['pic_desc'])),
 		'POSTER' => $poster,
 		'PIC_TIME' => create_date($board_config['default_dateformat'], $thispic['pic_time'], $board_config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
@@ -234,19 +238,19 @@ if ( ($rate_point < 1) || ($rate_point > $album_config['rate_scale']) )
 	// Generate the page
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {
-	if ( !$userdata['session_logged_in'] )
+	if (!$userdata['session_logged_in'])
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 	}
 
 	$rate_user_id = $userdata['user_id'];
 	$rate_user_ip = $userdata['session_ip'];
-	$pic_id = ( isset($_POST['pic_id']) || isset($_GET['pic_id']) ) ? (isset($_POST['pic_id'])) ? $_POST['pic_id'] : $_GET['pic_id'] : 0;
-	if( $pic_id == 0 )
+	$pic_id = (isset($_POST['pic_id']) || isset($_GET['pic_id'])) ? (isset($_POST['pic_id'])) ? $_POST['pic_id'] : $_GET['pic_id'] : 0;
+	if($pic_id == 0)
 	{
 		message_die(GENERAL_ERROR, 'Wrong Pic ID');
 	}
@@ -264,17 +268,17 @@ else
 					WHERE rate_pic_id = '" . $pic_id . "'
 						AND rate_user_id = '" . $rate_user_id . "'
 						AND " . $rating_field . " > '0'";
-	if( !$result = $db->sql_query($sql) )
+	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Could not query rating table', '', __LINE__, __FILE__, $sql);
 	}
 
-	if ( !($rated = $db->sql_fetchrow($result)) )
+	if (!($rated = $db->sql_fetchrow($result)))
 	{
 		$sql = "INSERT INTO " . ALBUM_RATE_TABLE . " (rate_pic_id, rate_user_id, rate_user_ip, " . $rating_field . ")
 				VALUES ('$pic_id', '$rate_user_id', '$rate_user_ip', '$rate_point')";
 
-		if( !$result = $db->sql_query($sql) )
+		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not insert new rating', '', __LINE__, __FILE__, $sql);
 		}
@@ -290,11 +294,11 @@ else
 	// --------------------------------
 
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_hotornot.' . $phpEx)) . '">'
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_hotornot.' . PHP_EXT)) . '">'
 		)
 	);
 
-	$message = $rate_string . '<br /><br />' . sprintf($lang['Click_rate_more'], '<a href="' . append_sid(album_append_uid('album_hotornot.' . $phpEx)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+	$message = $rate_string . '<br /><br />' . sprintf($lang['Click_rate_more'], '<a href="' . append_sid(album_append_uid('album_hotornot.' . PHP_EXT)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }

@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,10 +24,10 @@ if(!function_exists(imp_recent_topics_wide_block_func))
 {
 	function imp_recent_topics_wide_block_func()
 	{
-		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $phpEx, $var_cache, $lang, $bbcode;
+		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $var_cache, $lang, $bbcode;
 		global $html_on, $bbcode_on, $smilies_on;
-		@include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-		@include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$template->_tpldata['recent_topic_row.'] = array();
 		//reset($template->_tpldata['recent_topic_row.']);

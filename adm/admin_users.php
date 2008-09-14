@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,35 +24,43 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
-include($phpbb_root_path . 'includes/digest_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_mg_users.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_profile.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 $html_entities_match = array('#<#', '#>#');
 $html_entities_replace = array('&lt;', '&gt;');
 
-// Disallow other admins to delete or edit the first admin MOD START
-if ( intval($_POST['id']) == '2' && $userdata['user_id'] != '2' )
+// Disallow other admins to delete or edit the first admin - BEGIN
+if (defined('FOUNDER_ID'))
+{
+	$founder_id = FOUNDER_ID;
+}
+else
+{
+	$founder_id = get_founder_id();
+}
+if ((intval($_POST['id']) == $founder_id) && ($userdata['user_id'] != $founder_id))
+{
+	$edituser = $userdata['username'];
+	$editok = $userdata['user_id'];
+	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . str_replace("\'", "''", $edituser) . "','" . $editok . "')";
+	if( !($result = $db->sql_query($sql)) )
 	{
-		$edituser = $userdata['username'];
-		$editok = $userdata['user_id'];
-		$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . str_replace("\'", "''", $edituser) . "','" . $editok . "')";
-		if( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain adminedit information for this user', '', __LINE__, __FILE__, $sql);
-		}
-		message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG'] );
+		message_die(GENERAL_ERROR, 'Could not obtain adminedit information for this user', '', __LINE__, __FILE__, $sql);
 	}
-// Disallow other admins to delete or edit the first admin MOD END
+	message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG'] );
+}
+// Disallow other admins to delete or edit the first admin - END
 
 // Set mode
 if( isset( $_POST['mode'] ) || isset( $_GET['mode'] ) )
@@ -104,7 +112,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 		{
 			$killed = mg_kill_user($user_id);
 
-			$message = $lang['User_deleted'] . '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid('admin_users.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['User_deleted'] . '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid('admin_users.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -269,7 +277,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 
 	if( isset( $_POST['submit'] ) )
 	{
-		include($phpbb_root_path . 'includes/usercp_avatar.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
 		$error = false;
 
@@ -819,11 +827,11 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 
 			}
 
-			$message .= '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid('admin_users.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message .= '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid('admin_users.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 			//Start Quick Administrator User Options and Information MOD
 			if( $redirect != '' )
 			{
-				$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx) . '">', '</a>');
+				$message = $lang['Admin_user_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 			}
 			//End Quick Administrator User Options and Information MOD
 
@@ -1133,7 +1141,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 
 				'S_OPTIONS_CATEGORIES' => $s_categories,
 				'S_COLSPAN' => $s_colspan,
-				'S_PROFILE_ACTION' => append_sid('admin_users.' . $phpEx . '?mode=' . $mode),
+				'S_PROFILE_ACTION' => append_sid('admin_users.' . PHP_EXT . '?mode=' . $mode),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -1736,7 +1744,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 			'S_FORM_ENCTYPE' => $form_enctype,
 
 			'HTML_STATUS' => $html_status,
-			'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_sid('faq.' . $phpEx . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+			'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
 			'SMILIES_STATUS' => $smilies_status,
 
 			'L_DELETE_USER' => $lang['User_delete'],
@@ -1755,7 +1763,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 			'L_USER_COLOR_EXPLAIN' => $lang['User_Color_Explain'],
 
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
-			'S_PROFILE_ACTION' => append_sid('admin_users.' . $phpEx)
+			'S_PROFILE_ACTION' => append_sid('admin_users.' . PHP_EXT)
 			)
 		);
 
@@ -1801,13 +1809,13 @@ else
 
 		'U_SEARCH_USER' => append_sid('../' . SEARCH_MG . '?mode=searchuser'),
 
-		'S_USER_ACTION' => append_sid('admin_users.' . $phpEx),
+		'S_USER_ACTION' => append_sid('admin_users.' . PHP_EXT),
 		'S_USER_SELECT' => $select_list)
 	);
 	$template->pparse('body');
 
 }
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

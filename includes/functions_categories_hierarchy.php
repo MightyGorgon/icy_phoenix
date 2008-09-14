@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -217,7 +217,7 @@ function get_object_lang($cur, $field, $all=false)
 //--------------------------------------------------------------------------------------------------
 function cache_tree_output()
 {
-	global $tree, $phpbb_root_path, $phpEx, $userdata;
+	global $tree, $userdata;
 
 	if (!defined('CACHE_TREE'))
 	{
@@ -225,8 +225,8 @@ function cache_tree_output()
 	}
 
 	// template
-	include_once($phpbb_root_path . 'includes/template.' . $phpEx);
-	$template = new Template($phpbb_root_path);
+	include_once(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
+	$template = new Template(IP_ROOT_PATH);
 
 	$template->set_filenames(array('def_tree' => 'includes/cache_tpls/def_tree_def.tpl'));
 
@@ -344,7 +344,7 @@ function cache_tree_output()
 	$template->assign_var_from_handle('def_tree', 'def_tree');
 	$res = '<' . '?' . 'php' . "\n" . $template->_tpldata['.'][0]['def_tree'] . "\n" . 'return;' . "\n" . '?' . '>';
 	// output to file
-	$fname = $phpbb_root_path . './includes/def_tree.' . $phpEx;
+	$fname = IP_ROOT_PATH . './includes/def_tree.' . PHP_EXT;
 	@chmod($fname, 0666);
 	$handle = @fopen($fname, 'w');
 	@fwrite($handle, $res);
@@ -401,7 +401,7 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 
 function cache_tree($write = false)
 {
-	global $db, $tree, $userdata, $phpbb_root_path, $phpEx, $board_config;
+	global $db, $tree, $userdata, $board_config;
 
 	// extended auth compliancy
 	$sql_extend_auth = '';
@@ -513,7 +513,7 @@ function cache_tree($write = false)
 function read_tree($force = false)
 {
 
-	global $db, $userdata, $board_config, $tree, $phpbb_root_path, $phpEx;
+	global $db, $userdata, $board_config, $tree;
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if($userdata['upi2db_access'])
@@ -546,7 +546,7 @@ function read_tree($force = false)
 	$use_cache_file = false;
 	if (defined('CACHE_TREE'))
 	{
-		$cache_file = $phpbb_root_path . 'includes/def_tree.' . $phpEx;
+		$cache_file = IP_ROOT_PATH . 'includes/def_tree.' . PHP_EXT;
 		@include($cache_file);
 		if (empty($tree) || $force)
 		{
@@ -1033,12 +1033,12 @@ function get_max_depth($cur = 'Root', $all = false, $level = -1, &$keys, $max = 
 //--------------------------------------------------------------------------------------------------
 function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $real_level = -1, $max_level = -1, &$keys)
 {
-	global $template, $phpEx, $board_config, $lang, $images, $theme;
+	global $template, $board_config, $lang, $images, $theme;
 	global $tree, $bbcode, $lofi;
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	global $userdata, $unread;
 //<!-- END Unread Post Information to Database Mod -->
-	include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 	//
 	// init
@@ -1412,7 +1412,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				{
 					$rss_feed_icon .= '&nbsp;<a href="' . append_sid(POSTING_MG . '?mode=newtopic&amp;' . POST_FORUM_URL . '=' . $id) . '"><img src="' . $images['vf_topic_nor'] . '" alt="' . $lang['Post_new_topic'] . '" title="' . $lang['Post_new_topic'] . '" /></a>';
 				}
-				$rss_feed_icon .= '&nbsp;<a href="' . append_sid('rss.' . $phpEx . '?' . POST_FORUM_URL . '=' . $id) . '"><img src="' . $images['nav_menu_feed'] . '" alt="' . $lang['Rss_news_feeds'] . '" title="' . $lang['Rss_news_feeds'] . '" /></a>';
+				$rss_feed_icon .= '&nbsp;<a href="' . append_sid('rss.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $id) . '"><img src="' . $images['nav_menu_feed'] . '" alt="' . $lang['Rss_news_feeds'] . '" title="' . $lang['Rss_news_feeds'] . '" /></a>';
 			}
 			else
 			{
@@ -1543,7 +1543,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 //--------------------------------------------------------------------------------------------------
 function display_index($cur = 'Root')
 {
-	global $board_config, $template, $userdata, $lang, $db, $nav_links, $phpEx;
+	global $board_config, $template, $userdata, $lang, $db, $nav_links;
 	global $images, $nav_separator, $nav_cat_desc;
 	global $tree;
 
@@ -1562,7 +1562,7 @@ function display_index($cur = 'Root')
 			}
 			for ($i = 0; $i < count($data['group_id']); $i++)
 			{
-				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('./groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
+				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('./groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
 			}
 		}
 	}
@@ -1595,7 +1595,7 @@ function display_index($cur = 'Root')
 //--------------------------------------------------------------------------------------------------
 function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 {
-	global $tree, $board_config, $userdata, $phpbb_root_path, $phpEx, $db, $nav_separator;
+	global $tree, $board_config, $userdata, $db, $nav_separator;
 	global $global_orig_word, $global_replacement_word;
 	$kb_mode_append = '';
 	if ((!empty($_GET['kb']) || !empty($_POST['kb'])) && ($userdata['bot_id'] == false))
@@ -1714,7 +1714,7 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 				$pgm_name = FORUM_MG;
 				break;
 		}
-		if ($pgm != '') $pgm_name = $pgm . '.' . $phpEx;
+		if ($pgm != '') $pgm_name = $pgm . '.' . PHP_EXT;
 
 		//Dynamic Class Assignment - BEGIN
 		$k = $k + 1;
@@ -1824,7 +1824,7 @@ function get_tree_option($cur = '', $all = false)
 //--------------------------------------------------------------------------------------------------
 function jumpbox($action, $match_forum_id = 0)
 {
-	global $template, $userdata, $lang, $db, $nav_links, $phpEx, $SID;
+	global $template, $userdata, $lang, $db, $nav_links, $SID;
 	global $links;
 
 	// build the jumpbox

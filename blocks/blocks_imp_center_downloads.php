@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,9 +24,9 @@ if(!function_exists(imp_center_downloads_block_func))
 {
 	function imp_center_downloads_block_func()
 	{
-		global $template, $phpbb_root_path, $cms_config_vars, $block_id, $table_prefix, $phpEx, $db, $lang, $board_config, $theme;
+		global $template, $cms_config_vars, $block_id, $table_prefix, $db, $lang, $board_config, $theme;
 
-		include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . $phpEx);
+		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . PHP_EXT);
 
 		$template->_tpldata['dlrow.'] = array();
 		//reset($template->_tpldata['dlrow.']);
@@ -48,7 +48,7 @@ if(!function_exists(imp_center_downloads_block_func))
 			$template->assign_block_vars('dlrow', array(
 				'NUMBER_MOST' => strval($i),
 				'ROW_CLASS' => $row_class,
-				'FILELINK_MOST' => append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_most['file_id']),
+				'FILELINK_MOST' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_most['file_id']),
 				'FILENAME_MOST' => $file_most['file_name'],
 				'DESCRIP_MOST' => $file_most['file_desc'],
 				'INFO_MOST' => $file_most['file_dls'] . ' ' . $lang['Dls']
@@ -72,7 +72,7 @@ if(!function_exists(imp_center_downloads_block_func))
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 			$template->assign_block_vars('dlrow2', array(
 				'NUMBER_LATEST' => strval($i),
-				'FILELINK_LATEST' => append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_latest['file_id']),
+				'FILELINK_LATEST' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_latest['file_id']),
 				'ROW_CLASS' => $row_class,
 				'FILENAME_LATEST' => $file_latest['file_name'],
 				'DESCRIP_LATEST' => $file_latest['file_desc'],

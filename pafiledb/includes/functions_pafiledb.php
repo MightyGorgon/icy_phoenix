@@ -33,11 +33,9 @@ class pafiledb_public extends pafiledb
 	{
 		if (!class_exists('pafiledb_' . $module_name))
 		{
-			global $phpbb_root_path, $phpEx;
-
 			$this->module_name = $module_name;
 
-			require_once($phpbb_root_path . PA_FILE_DB_PATH . 'modules/pa_' . $module_name . '.' . $phpEx);
+			require_once(IP_ROOT_PATH . PA_FILE_DB_PATH . 'modules/pa_' . $module_name . '.' . PHP_EXT);
 			eval('$this->modules[' . $module_name . '] = new pafiledb_' . $module_name . '();');
 
 			if (method_exists($this->modules[$module_name], 'init'))
@@ -225,7 +223,7 @@ class pafiledb
 
 	function get_sub_cat($cat_id)
 	{
-		global $images, $phpEx;
+		global $images;
 		$mini_img = $images['icon_minicat'];
 		$cat_sub .= '';
 		if(!empty($this->subcat_rowset[$cat_id]))
@@ -234,7 +232,7 @@ class pafiledb
 			{
 				if($cat_row['cat_allow_file'])
 				{
-					$cat_sub .= '<img src="' . $mini_img . '" />&nbsp;<a href="' . append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $cat_row['cat_id']) . '" class="forumlink2">' . $cat_row['cat_name'] . '</a> ';
+					$cat_sub .= '<img src="' . $mini_img . '" />&nbsp;<a href="' . append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $cat_row['cat_id']) . '" class="forumlink2">' . $cat_row['cat_name'] . '</a> ';
 				}
 				else
 				{
@@ -244,7 +242,7 @@ class pafiledb
 						{
 							if($sub_cat_row['cat_allow_file'])
 							{
-								$cat_sub .= '<img src="' . $mini_img . '" />&nbsp;<a href="' . append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $sub_cat_row['cat_id']) . '" class="forumlink2">' . $sub_cat_row['cat_name'] . '</a> ';
+								$cat_sub .= '<img src="' . $mini_img . '" />&nbsp;<a href="' . append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $sub_cat_row['cat_id']) . '" class="forumlink2">' . $sub_cat_row['cat_name'] . '</a> ';
 							}
 						}
 					}
@@ -301,7 +299,7 @@ class pafiledb
 
 	function generate_category_nav($cat_id)
 	{
-		global $pafiledb_template, $db, $phpEx;
+		global $pafiledb_template, $db;
 
 		if($this->cat_rowset[$cat_id]['parents_data'] == '')
 		{
@@ -331,7 +329,7 @@ class pafiledb
 				$pafiledb_template->assign_block_vars('navlinks', array(
 					'CLASS' => 'nav',
 					'CAT_NAME' => $parent_name,
-					'U_VIEW_CAT' => append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $parent_cat_id))
+					'U_VIEW_CAT' => append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $parent_cat_id))
 				);
 
 			}
@@ -341,7 +339,7 @@ class pafiledb
 		$pafiledb_template->assign_block_vars('navlinks', array(
 			'CAT_NAME' => $this->cat_rowset[$cat_id]['cat_name'],
 			'CLASS' => 'nav-current',
-			'U_VIEW_CAT' => append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $this->cat_rowset[$cat_id]['cat_id'])
+			'U_VIEW_CAT' => append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $this->cat_rowset[$cat_id]['cat_id'])
 			)
 		);
 
@@ -710,14 +708,14 @@ class pafiledb
 
 	function category_display($cat_id = PA_ROOT_CAT)
 	{
-		global $db, $pafiledb_template, $lang, $userdata, $phpEx, $images;
-		global $pafiledb_config, $board_config, $debug, $phpbb_root_path;
+		global $db, $pafiledb_template, $lang, $userdata, $images;
+		global $pafiledb_config, $board_config, $debug;
 
 		if($this->cat_empty())
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				$redirect = ($cat_id != PA_ROOT_CAT) ? 'dload.' . $phpEx . '?action=category&amp;cat_id=' . $cat_id : 'dload.' . $phpEx;
+				$redirect = ($cat_id != PA_ROOT_CAT) ? 'dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $cat_id : 'dload.' . PHP_EXT;
 				redirect(append_sid( LOGIN_MG. '?redirect=' . $redirect, true));
 			}
 			message_die(GENERAL_ERROR, 'Either you are not allowed to view any category, or there is no category in the database');
@@ -747,8 +745,8 @@ class pafiledb
 						$last_file_time = create_date2($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
 						$last_file = $last_file_time . '<br />';
 						$last_file_name = (strlen(stripslashes($last_file_info['file_name'])) > 20) ? substr(stripslashes($last_file_info['file_name']), 0, 20) . '...' : stripslashes($last_file_info['file_name']);
-						$last_file .= '<a href="' . append_sid('dload.' . $phpEx . '?action=file&file_id=' . $last_file_info['file_id']) . '" alt="' . stripslashes($last_file_info['file_name']) . '" title="' . stripslashes($last_file_info['file_name']) . '">' . $last_file_name . '</a> ';
-						$last_file .= '<a href="' . append_sid('dload.' . $phpEx . '?action=file&file_id=' . $last_file_info['file_id']) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_file'] . '" title="' . $lang['View_latest_file'] . '" /></a>';
+						$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $last_file_info['file_id']) . '" alt="' . stripslashes($last_file_info['file_name']) . '" title="' . stripslashes($last_file_info['file_name']) . '">' . $last_file_name . '</a> ';
+						$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $last_file_info['file_id']) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_file'] . '" title="' . $lang['View_latest_file'] . '" /></a>';
 					}
 					else
 					{
@@ -771,7 +769,7 @@ class pafiledb
 					}
 					else
 					{
-						$url_cat = append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $subcat_id);
+						$url_cat = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $subcat_id);
 					}
 
 					//XS 2 End
@@ -818,7 +816,7 @@ class pafiledb
 						}
 						else
 						{
-							$url_cat = append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $subcat_id);
+							$url_cat = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $subcat_id);
 						}
 
 						$pafiledb_template->assign_block_vars('no_cat_parent', array(
@@ -840,8 +838,8 @@ class pafiledb
 								$last_file_time = create_date2($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
 								$last_file = $last_file_time . '<br />';
 								$last_file_name = (strlen(stripslashes($last_file_info['file_name'])) > 20) ? substr(stripslashes($last_file_info['file_name']), 0, 20) . '...' : stripslashes($last_file_info['file_name']);
-								$last_file .= '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $last_file_info['file_id']) . '">' . $last_file_name . '</a> ';
-								$last_file .= '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $last_file_info['file_id']) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_file'] . '" title="' . $lang['View_latest_file'] . '" /></a>';
+								$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $last_file_info['file_id']) . '">' . $last_file_name . '</a> ';
+								$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $last_file_info['file_id']) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_file'] . '" title="' . $lang['View_latest_file'] . '" /></a>';
 							}
 							else
 							{
@@ -863,7 +861,7 @@ class pafiledb
 							}
 							else
 							{
-								$url_cat = append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $sub_cat_rowset[$k]['cat_id']);
+								$url_cat = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $sub_cat_rowset[$k]['cat_id']);
 							}
 
 							$pafiledb_template->assign_block_vars('no_cat_parent', array(
@@ -889,7 +887,7 @@ class pafiledb
 	function display_files($sort_method, $sort_order, $start, $show_file_message, $cat_id = false)
 	{
 		global $db, $pafiledb_config, $pafiledb_template, $board_config;
-		global $images, $lang, $phpEx, $pafiledb_functions, $phpbb_root_path, $board_config;
+		global $images, $lang, $pafiledb_functions, $board_config;
 
 		$filelist = false;
 
@@ -1037,7 +1035,7 @@ class pafiledb
 			}
 
 			$cat_name = (empty($cat_id)) ? $this->cat_rowset[$file_rowset[$i]['file_catid']]['cat_name'] : '';
-			$cat_url = append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $file_rowset[$i]['file_catid']);
+			$cat_url = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $file_rowset[$i]['file_catid']);
 
 
 			//===================================================
@@ -1047,16 +1045,16 @@ class pafiledb
 			{
 				if ($file_rowset[$i]['file_posticon'] == 'none' || $file_rowset[$i]['file_posticon'] == 'none.gif')
 				{
-					$posticon = $phpbb_root_path . ICONS_DIR .'default.png';
+					$posticon = IP_ROOT_PATH . ICONS_DIR .'default.png';
 				}
 				else
 				{
-					$posticon = $phpbb_root_path . ICONS_DIR . $file_rowset[$i]['file_posticon'];
+					$posticon = IP_ROOT_PATH . ICONS_DIR . $file_rowset[$i]['file_posticon'];
 				}
 			}
 			else
 			{
-				$posticon = $phpbb_root_path . $images['forum_link'];
+				$posticon = IP_ROOT_PATH . $images['forum_link'];
 			}
 			//echo $posticon;
 			//===================================================
@@ -1070,18 +1068,18 @@ class pafiledb
 			}
 			else
 			{
-				$url_file = append_sid('dload.' . $phpEx . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
+				$url_file = append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
 			}
 
-			//$url_file = append_sid('dload.' . $phpEx . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
+			//$url_file = append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
 			$pafiledb_template->assign_block_vars('file_rows', array(
 				'L_NEW_FILE' => $lang['New_file'],
 				'PIN_IMAGE' => $posticon,
-				'FILE_NEW_IMAGE' => $phpbb_root_path . $images['pa_file_new'],
+				'FILE_NEW_IMAGE' => IP_ROOT_PATH . $images['pa_file_new'],
 				'HAS_SCREENSHOTS' => (!empty($file_rowset[$i]['file_ssurl'])) ? true : false,
 				'SS_AS_LINK' => ($file_rowset[$i]['file_sshot_link']) ? true : false,
 				'FILE_SCREENSHOT' => $file_rowset[$i]['file_ssurl'],
-				'FILE_SCREENSHOT_URL' => $phpbb_root_path . PA_FILE_DB_PATH . 'images/lwin.gif',
+				'FILE_SCREENSHOT_URL' => IP_ROOT_PATH . PA_FILE_DB_PATH . 'images/lwin.gif',
 				'FILE_NAME' => $file_rowset[$i]['file_name'],
 				'FILE_DESC' => $file_rowset[$i]['file_desc'],
 				'DATE' => $date,
@@ -1125,13 +1123,13 @@ class pafiledb
 
 				'SORT_ASC' => ($sort_order == 'ASC') ? 'selected="selected"' : '',
 				'SORT_DESC' => ($sort_order == 'DESC') ? 'selected="selected"' : '',
-				'PAGINATION' => generate_pagination(append_sid('dload.' . $phpEx . '?action=' . $action . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order), $total_file, $pafiledb_config['settings_file_page'], $start),
+				'PAGINATION' => generate_pagination(append_sid('dload.' . PHP_EXT . '?action=' . $action . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order), $total_file, $pafiledb_config['settings_file_page'], $start),
 				'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pafiledb_config['settings_file_page']) + 1), ceil($total_file / $pafiledb_config['settings_file_page'])),
 				'FILELIST' => $filelist,
 				'ID' => $cat_id,
 				'START' => $start,
 
-				'S_ACTION_SORT' => append_sid('dload.' . $phpEx . '?action=' . $action)
+				'S_ACTION_SORT' => append_sid('dload.' . PHP_EXT . '?action=' . $action)
 				)
 			);
 		}
@@ -1298,7 +1296,7 @@ class pafiledb
 
 	function delete_files($id, $mode = 'file')
 	{
-		global $db, $phpbb_root_path, $pafiledb_functions;
+		global $db, $pafiledb_functions;
 
 		if($mode == 'category')
 		{
@@ -1371,7 +1369,7 @@ class pafiledb
 			{
 				if(!empty($file_data['unique_name']))
 				{
-					$pafiledb_functions->pafiledb_unlink($phpbb_root_path . $file_data['file_dir'] . $file_data['unique_name']);
+					$pafiledb_functions->pafiledb_unlink(IP_ROOT_PATH . $file_data['file_dir'] . $file_data['unique_name']);
 
 				}
 			}
@@ -1380,7 +1378,7 @@ class pafiledb
 		{
 			if(!empty($file_data['unique_name']))
 			{
-				$pafiledb_functions->pafiledb_unlink($phpbb_root_path . $file_data['file_dir'] . $file_data['unique_name']);
+				$pafiledb_functions->pafiledb_unlink(IP_ROOT_PATH . $file_data['file_dir'] . $file_data['unique_name']);
 			}
 		}
 
@@ -1552,7 +1550,7 @@ class pafiledb
 
 	function update_add_file($file_id = false)
 	{
-		global $db, $board_config, $phpbb_root_path, $userdata, $pafiledb_config, $pafiledb_functions, $user_ip;
+		global $db, $board_config, $userdata, $pafiledb_config, $pafiledb_functions, $user_ip;
 
 		$ss_upload = empty($_POST['screen_shot_url']) ? true : false;
 		$ss_remote_url = !empty($_POST['screen_shot_url']) ? $_POST['screen_shot_url'] : '';
@@ -1664,7 +1662,7 @@ class pafiledb
 				$file_time_sql = 'file_time = \'' . time() . '\',';
 				if(!empty($file_data['unique_name']))
 				{
-					$pafiledb_functions->pafiledb_unlink($phpbb_root_path . $file_data['file_dir'] . $file_data['unique_name']);
+					$pafiledb_functions->pafiledb_unlink(IP_ROOT_PATH . $file_data['file_dir'] . $file_data['unique_name']);
 				}
 			}
 			else
@@ -1712,7 +1710,7 @@ class pafiledb
 				if(in_array($ss_extension, $forbidden_extensions))
 				{
 					// block unwanted screenshots
-					//echo($phpbb_root_path . $pafiledb_config['screenshots_dir'] . $ss_name . ' - FORBIDDEN');
+					//echo(IP_ROOT_PATH . $pafiledb_config['screenshots_dir'] . $ss_name . ' - FORBIDDEN');
 					$screen_shot_url = '';
 				}
 				else
@@ -1740,7 +1738,7 @@ class pafiledb
 					if($is_image === false)
 					{
 						// remove unwanted screenshots
-						@unlink($phpbb_root_path . $pafiledb_config['screenshots_dir'] . $ss_name);
+						@unlink(IP_ROOT_PATH . $pafiledb_config['screenshots_dir'] . $ss_name);
 						$screen_shot_url = '';
 					}
 				}
@@ -1822,7 +1820,7 @@ class pafiledb
 
 	function mirror_add_update($file_id, $file_upload, $file_remote_url, $file_local, $file_realname, $file_size, $file_type, $mirror_location, $mirror_id = false)
 	{
-		global $db, $phpbb_root_path, $db, $userdata, $pafiledb_config, $pafiledb_functions;
+		global $db, $db, $userdata, $pafiledb_config, $pafiledb_functions;
 
 		if(empty($file_remote_url) && empty($file_local) && !$file_id)
 		{
@@ -1865,7 +1863,7 @@ class pafiledb
 			{
 				if(!empty($mirror_data['unique_name']))
 				{
-					$pafiledb_functions->pafiledb_unlink($phpbb_root_path . $mirror_data['file_dir'] . $mirror_data['unique_name']);
+					$pafiledb_functions->pafiledb_unlink(IP_ROOT_PATH . $mirror_data['file_dir'] . $mirror_data['unique_name']);
 
 				}
 			}

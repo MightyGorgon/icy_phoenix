@@ -19,8 +19,8 @@ class pafiledb_download extends pafiledb_public
 {
 	function main($action)
 	{
-		global $lang, $db, $pafiledb_user, $pafiledb_config, $phpEx, $userdata;
-		global $phpbb_root_path, $pafiledb_functions;
+		global $lang, $db, $pafiledb_user, $pafiledb_config, $userdata;
+		global $pafiledb_functions;
 		global $template, $theme, $gen_simple_header, $starttime, $pafiledb_template, $debug;
 		global $board_config, $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars;
 
@@ -69,7 +69,7 @@ class pafiledb_download extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=download&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=download&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_download'], $this->auth[$file_data['file_catid']]['auth_download_type']);
@@ -153,7 +153,7 @@ class pafiledb_download extends pafiledb_public
 				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
 				'U_INDEX' => append_sid(PORTAL_MG),
-				'U_DOWNLOAD_HOME' => append_sid('dload.' . $phpEx),
+				'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 
 				'FILE_NAME' => $file_data['file_name'],
 				'DOWNLOAD' => $pafiledb_config['settings_dbname']
@@ -161,21 +161,21 @@ class pafiledb_download extends pafiledb_public
 			);
 
 			$pafiledb_template->assign_block_vars('mirror_row', array(
-				'U_DOWNLOAD' => append_sid('dload.' . $phpEx . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=-1'),
+				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=-1'),
 				'MIRROR_LOCATION' => $board_config['sitename'])
 			);
 
 			foreach($mirrors_data as $mir_id => $mirror_data)
 			{
 				$pafiledb_template->assign_block_vars('mirror_row', array(
-					'U_DOWNLOAD' => append_sid('dload.' . $phpEx . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=' . $mir_id),
+					'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=' . $mir_id),
 					'MIRROR_LOCATION' => $mirror_data['mirror_location'])
 				);
 			}
 
-			include_once($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			$this->display($lang['Download'], 'pa_mirrors_body.tpl');
-			include_once($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		elseif((!empty($mirrors_data) && $mirror_id == -1) || (empty($mirrors_data)))
 		{
@@ -222,7 +222,7 @@ class pafiledb_download extends pafiledb_public
 
 		if (!empty($file_url))
 		{
-			$file_url = ((!strstr($file_url, '://')) && (strpos($file_url, PA_FILE_DB_PATH . 'uploads') === false)) ? 'http://' . $file_url : ((strpos($file_url, PA_FILE_DB_PATH . 'uploads') && (!strstr($file_url, '://'))) ? $phpbb_root_path . $file_url : $file_url);
+			$file_url = ((!strstr($file_url, '://')) && (strpos($file_url, PA_FILE_DB_PATH . 'uploads') === false)) ? 'http://' . $file_url : ((strpos($file_url, PA_FILE_DB_PATH . 'uploads') && (!strstr($file_url, '://'))) ? IP_ROOT_PATH . $file_url : $file_url);
 			pa_redirect($file_url);
 		}
 		else
@@ -234,12 +234,12 @@ class pafiledb_download extends pafiledb_public
 			/*
 			if($pafiledb_functions->get_extension($physical_filename) == 'pdf')
 			{
-				$file_url = $phpbb_root_path . $upload_dir . $physical_filename;
+				$file_url = IP_ROOT_PATH . $upload_dir . $physical_filename;
 				pa_redirect($file_url);
 			}
-			elseif(!send_file_to_browser($real_filename, 'application/force-download', $physical_filename, $phpbb_root_path . $upload_dir))
+			elseif(!send_file_to_browser($real_filename, 'application/force-download', $physical_filename, IP_ROOT_PATH . $upload_dir))
 			{
-				$file_url = $phpbb_root_path . $upload_dir . $physical_filename;
+				$file_url = IP_ROOT_PATH . $upload_dir . $physical_filename;
 				pa_redirect($file_url);
 			}
 		*/
@@ -252,7 +252,7 @@ class pafiledb_download extends pafiledb_public
 				$mimetype = 'application/force-download';
 			}
 
-			if(!send_file_to_browser($real_filename, $mimetype, $physical_filename, $phpbb_root_path . $upload_dir))
+			if(!send_file_to_browser($real_filename, $mimetype, $physical_filename, IP_ROOT_PATH . $upload_dir))
 			{
 				message_die(GENERAL_ERROR, $lang['Error_no_download'] . '<br /><br /><b>404 File Not Found:</b> The File <i>' . $real_filename . '</i> does not exist.');
 			}

@@ -19,21 +19,21 @@ class pafiledb_search extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $phpbb_root_path, $userdata;
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		if(!$this->auth_global['auth_search'])
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=stats', true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_search'], $this->auth_global['auth_search_type']);
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
-		include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 		if ( isset($_REQUEST['search_keywords']) )
 		{
@@ -182,8 +182,8 @@ class pafiledb_search extends pafiledb_public
 				}
 				else if ( $search_keywords != '' )
 				{
-					$stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
-					$synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
+					$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
+					$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
 
 					$split_search = array();
 					$split_search = ( !strstr($multibyte_charset, $lang['ENCODING']) ) ?  split_words(clean_words('search', stripslashes($search_keywords), $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
@@ -521,8 +521,8 @@ class pafiledb_search extends pafiledb_public
 
 				for($i = 0; $i < count($searchset); $i++)
 				{
-					$cat_url = append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $searchset[$i]['cat_id']);
-					$file_url = append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $searchset[$i]['file_id']);
+					$cat_url = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $searchset[$i]['cat_id']);
+					$file_url = append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $searchset[$i]['file_id']);
 					//===================================================
 					// Format the date for the given file
 					//===================================================
@@ -553,7 +553,7 @@ class pafiledb_search extends pafiledb_public
 					{
 						if ($searchset[$i]['file_posticon'] == 'none' || $searchset[$i]['file_posticon'] == 'none.gif')
 						{
-							$posticon = '<img src="' .$phpbb_root_path . ICONS_DIR . 'default.png" />';
+							$posticon = '<img src="' .IP_ROOT_PATH . ICONS_DIR . 'default.png" />';
 							//$posticon = '&nbsp;';
 						}
 						else
@@ -586,7 +586,7 @@ class pafiledb_search extends pafiledb_public
 						'U_CAT' => $cat_url)
 					);
 				}
-				$base_url = append_sid('dload.' . $phpEx . '?action=search&amp;search_id=' . $search_id);
+				$base_url = append_sid('dload.' . PHP_EXT . '?action=search&amp;search_id=' . $search_id);
 
 				$pafiledb_template->assign_vars(array(
 					'PAGINATION' => generate_pagination($base_url, $total_match_count, $pafiledb_config['settings_file_page'], $start),
@@ -594,7 +594,7 @@ class pafiledb_search extends pafiledb_public
 					'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 					'L_HOME' => $lang['Home'],
 					'U_INDEX' => append_sid(PORTAL_MG),
-					'U_DOWNLOAD' => append_sid('dload.' . $phpEx),
+					'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 					'L_HOME' => $lang['Home'],
    				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 					'XS_NEW' => $xs_new,
@@ -627,7 +627,7 @@ class pafiledb_search extends pafiledb_public
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 
 				'U_INDEX' => append_sid(PORTAL_MG),
-				'U_DOWNLOAD' => append_sid('dload.' . $phpEx),
+				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 				'L_HOME' => $lang['Home'],
    			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 				'XS_NEW' => $xs_new,

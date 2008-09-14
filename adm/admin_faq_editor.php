@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -26,13 +26,13 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 define('Q', 0);
 define('A', 1);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 /* this function takes the FAQ array generated as a result
  * of including the lang_faq.php file and turns it into
@@ -140,7 +140,7 @@ if(!isset($_GET['language']) && !isset($_POST['language']))
 	$template->assign_vars(array(
 		'L_LANGUAGE' => $lang['faq_select_language'],
 		'LANGUAGE_SELECT' => language_select($board_config['default_lang'], 'language', $phpbb_realpath . 'language'),
-		'S_ACTION' => append_sid('admin_faq_editor.' . $phpEx . '?file=' . $file),
+		'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file),
 		'L_SUBMIT' => $lang['faq_retrieve'],
 		'L_TITLE' => $lang['faq_editor'],
 		'L_EXPLAIN' => $lang['faq_editor_explain']
@@ -148,7 +148,7 @@ if(!isset($_GET['language']) && !isset($_POST['language']))
 	);
 
 	$template->pparse('body');
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 	exit;
 }
 
@@ -156,13 +156,13 @@ if(!isset($_GET['language']) && !isset($_POST['language']))
 $language = isset($_GET['language']) ? $_GET['language'] : $_POST['language'];
 $language = phpbb_ltrim(basename(phpbb_rtrim($language)), "'");
 
-if(!is_writable($phpbb_root_path . 'language/lang_' . $language . '/lang_' . $file . '.' . $phpEx))
+if(!is_writable(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_' . $file . '.' . PHP_EXT))
 {
 	message_die(GENERAL_ERROR, $lang['faq_write_file_explain'], $lang['faq_write_file'], __LINE__, __FILE__);
 }
 
 // the FAQ which will generate our $faq array
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_' . $file . '.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_' . $file . '.' . PHP_EXT);
 
 // change into our array
 list($blocks, $quests) = faq_to_array($faq);
@@ -197,13 +197,13 @@ if(isset($_GET['mode']) || isset($_POST['mode']))
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . $phpEx . '?file=' . $file . '&language=' . $language),
+				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 
 			$template->pparse('confirm');
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 
 			exit;
 
@@ -238,12 +238,12 @@ if(isset($_GET['mode']) || isset($_POST['mode']))
 				'BLOCK_TITLE' => $blocks[$block_no],
 
 				'S_HIDDEN_FIELDS' => '<input type="hidden" name="mode" value="block_do_edit" /><input type="hidden" name="block" value="' . $block_no . '" />',
-				'S_ACTION' => append_sid('admin_faq_editor.' . $phpEx . '?file=' . $file . '&language=' . $language)
+				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language)
 				)
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 
 			exit;
 
@@ -315,13 +315,13 @@ if(isset($_GET['mode']) || isset($_POST['mode']))
 				'ANSWER' => '',
 
 				'S_BLOCK_LIST' => $s_block_list,
-				'S_ACTION' => append_sid('admin_faq_editor.' . $phpEx . '?file=' . $file . '&language=' . $language),
+				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
 				'S_HIDDEN_FIELDS' => '<input name="mode" type="hidden" value="quest_create">'
 				)
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 			exit;
 
 		// actually create the question when the user submits the new question form
@@ -360,13 +360,13 @@ if(isset($_GET['mode']) || isset($_POST['mode']))
 				'ANSWER' => htmlspecialchars(str_replace('<br />', "\n", $quests[$block_no][$quest_no][A])),
 
 				'S_BLOCK_LIST' => $s_block_list,
-				'S_ACTION' => append_sid('admin_faq_editor.' . $phpEx . '?file=' . $file . '&language=' . $language),
+				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
 				'S_HIDDEN_FIELDS' => '<input name="quest" type="hidden" value="' . $quest_no . '"><input name="old_block" type="hidden" value="' . $block_no . '"><input name="mode" type="hidden" value="quest_do_edit">'
 				)
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 			exit;
 
 		case 'quest_do_edit':
@@ -415,13 +415,13 @@ if(isset($_GET['mode']) || isset($_POST['mode']))
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . $phpEx . '?file=' . $file . '&language=' . $language),
+				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 
 			$template->pparse('confirm');
-			include('./page_footer_admin.' . $phpEx);
+			include('./page_footer_admin.' . PHP_EXT);
 			exit;
 
 		// delete is confirmed or rejected
@@ -462,7 +462,7 @@ if(isset($_GET['mode']) || isset($_POST['mode']))
 
 	// write these changes back to the FAQ file
 
-	$fp = fopen($phpbb_root_path . 'language/lang_' . $language . '/lang_' . $file . '.' . $phpEx, 'w');
+	$fp = fopen(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_' . $file . '.' . PHP_EXT, 'w');
 
 	if($fp)
 	{
@@ -488,7 +488,7 @@ $template->assign_vars(array(
 	'L_TITLE' => $lang['faq_editor'],
 	'L_EXPLAIN' => $lang['faq_editor_explain'],
 
-	'S_ACTION' => append_sid('admin_faq_editor.' . $phpEx . '?file=' . $file . '&language=' . $language),
+	'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
 
 	'L_ADD_BLOCK' => $lang['faq_block_add'],
 	'L_ADD_QUESTION' => $lang['faq_quest_add'],
@@ -514,10 +514,10 @@ if(count($blocks) > 0)
 			'BLOCK_NUMBER' => $i,
 			'BLOCK_ANCHOR' => $anchor_code,
 
-			'U_BLOCK_EDIT' => append_sid('admin_faq_editor.' . $phpEx . '?mode=block_edit&block=' . $i . '&file=' . $file . '&language=' . $language),
-			'U_BLOCK_MOVE_UP' => append_sid('admin_faq_editor.' . $phpEx . '?mode=block_up&block=' . $i . '&file=' . $file . '&language=' . $language),
-			'U_BLOCK_MOVE_DOWN' => append_sid('admin_faq_editor.' . $phpEx . '?mode=block_dn&block=' . $i . '&file=' . $file . '&language=' . $language),
-			'U_BLOCK_DELETE' => append_sid('admin_faq_editor.' . $phpEx . '?mode=block_del&block=' . $i . '&file=' . $file . '&language=' . $language)
+			'U_BLOCK_EDIT' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_edit&block=' . $i . '&file=' . $file . '&language=' . $language),
+			'U_BLOCK_MOVE_UP' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_up&block=' . $i . '&file=' . $file . '&language=' . $language),
+			'U_BLOCK_MOVE_DOWN' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_dn&block=' . $i . '&file=' . $file . '&language=' . $language),
+			'U_BLOCK_DELETE' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_del&block=' . $i . '&file=' . $file . '&language=' . $language)
 			)
 		);
 
@@ -527,12 +527,12 @@ if(count($blocks) > 0)
 			{
 				$template->assign_block_vars('blockrow.questrow', array(
 					'QUEST_TITLE' => $quests[$i][$j][Q],
-					'U_QUEST' => append_sid($phpbb_root_path . 'faq.' . $phpEx . '?mode=' . $file) . '#f' . $k,
+					'U_QUEST' => append_sid(IP_ROOT_PATH . 'faq.' . PHP_EXT . '?mode=' . $file) . '#f' . $k,
 
-					'U_QUEST_EDIT' => append_sid('admin_faq_editor.' . $phpEx . '?mode=quest_edit&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language),
-					'U_QUEST_MOVE_UP' => append_sid('admin_faq_editor.' . $phpEx . '?mode=quest_up&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language),
-					'U_QUEST_MOVE_DOWN' => append_sid('admin_faq_editor.' . $phpEx . '?mode=quest_dn&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language),
-					'U_QUEST_DELETE' => append_sid('admin_faq_editor.' . $phpEx . '?mode=quest_del&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language)
+					'U_QUEST_EDIT' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=quest_edit&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language),
+					'U_QUEST_MOVE_UP' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=quest_up&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language),
+					'U_QUEST_MOVE_DOWN' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=quest_dn&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language),
+					'U_QUEST_DELETE' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=quest_del&block=' . $i . '&quest=' . $j . '&file=' . $file . '&language=' . $language)
 					)
 				);
 
@@ -552,6 +552,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

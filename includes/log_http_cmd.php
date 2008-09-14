@@ -8,7 +8,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -19,7 +19,7 @@ if ( !defined('IN_PHPBB') )
 
 // Grab page data
 $page_array = array();
-$page_array = extract_current_page($phpbb_root_path);
+$page_array = extract_current_page(IP_ROOT_PATH);
 //dump_ary($page_array);
 
 // Temp vars
@@ -90,21 +90,21 @@ if($page_array['page_dir'] == ADM)
 	// ACP Logging
 	switch($page_array['page_name'])
 	{
-		case 'admin_forums.' . $phpEx:
+		case 'admin_forums.' . PHP_EXT:
 			if(isset($_POST['addcategory']) && !empty($_POST['categoryname']))
 			{
 				$content .= '[Category: ' . $_POST['categoryname'] . ']';
 				mg_log($content);
 			}
 			break;
-		case 'admin_forumauth.' . $phpEx:
+		case 'admin_forumauth.' . PHP_EXT:
 			if( isset($_POST['simpleauth']) && $_forum)
 			{
 				$content .= '[Forum Auth: ' . $_forum . ']';
 				mg_log($content);
 			}
 			break;
-		case 'admin_db_utilities.' . $phpEx:
+		case 'admin_db_utilities.' . PHP_EXT:
 			if(isset($_POST['perform']))
 			{
 				if($_POST['perform'] == 'backup')
@@ -119,14 +119,14 @@ if($page_array['page_dir'] == ADM)
 				}
 			}
 			break;
-		case ( ('admin_board.' . $phpEx) || ('admin_board_extend.' . $phpEx) || ('admin_board_headers_banners.' . $phpEx) || ('admin_board_main.' . $phpEx) || ('admin_board_posting.' . $phpEx) || ('admin_board_queries.' . $phpEx) || ('admin_board_quick_settings.' . $phpEx) || ('admin_board_server.' . $phpEx) ):
+		case ( ('admin_board.' . PHP_EXT) || ('admin_board_extend.' . PHP_EXT) || ('admin_board_headers_banners.' . PHP_EXT) || ('admin_board_main.' . PHP_EXT) || ('admin_board_posting.' . PHP_EXT) || ('admin_board_queries.' . PHP_EXT) || ('admin_board_quick_settings.' . PHP_EXT) || ('admin_board_server.' . PHP_EXT) ):
 			if(isset($_POST['submit']))
 			{
 					$content .= '[Board Config]';
 					mg_log($content);
 			}
 			break;
-		case 'admin_groups.' . $phpEx:
+		case 'admin_groups.' . PHP_EXT:
 			if($_mode == 'newgroup')
 			{
 				$content .= '[Group Name: ' . $_POST['group_name'] . ']';
@@ -143,7 +143,7 @@ if($page_array['page_dir'] == ADM)
 				mg_log($content);
 			}
 			break;
-		case 'admin_ug_auth.' . $phpEx:
+		case 'admin_ug_auth.' . PHP_EXT:
 			if( $_mode == 'user' && isset($_POST['submit']) )
 			{
 				$content .= '[User Auth: ' . $_POST['u'] . ' ==> . ' . $_POST['userlevel'] . ']';
@@ -155,7 +155,7 @@ if($page_array['page_dir'] == ADM)
 				mg_log($content);
 			}
 			break;
-		case 'admin_user_ban.' . $phpEx:
+		case 'admin_user_ban.' . PHP_EXT:
 			if($_mode == 'edit')
 			{
 				$_data = '';
@@ -215,7 +215,7 @@ if($page_array['page_dir'] == ADM)
 				}
 			}
 			break;
-		case 'admin_users.' . $phpEx:
+		case 'admin_users.' . PHP_EXT:
 			if( $_mode == 'save' && isset($_POST['id']) && isset($_POST['deleteuser']) )
 			{
 				$content .= '[User Delete: ' . $_POST['id'] . ' ==> ' . $_POST['username'] . ']';
@@ -248,7 +248,7 @@ elseif($page_array['page_dir'] == '')
 				mg_log($content);
 			}
 			break;
-		case 'groupcp.' . $phpEx:
+		case 'groupcp.' . PHP_EXT:
 			if(( isset($_GET['g']) || isset($_POST['g']) ))
 			{
 				// both the POST and the GET 'g' var should be set
@@ -309,7 +309,7 @@ elseif($page_array['page_dir'] == '')
 			}
 			break;
 		*/
-		case 'modcp.' . $phpEx:
+		case 'modcp.' . PHP_EXT:
 			if( ($_mode == 'move') || ($_mode == 'delete') || ($_mode == 'lock') || ($_mode == 'unlock') || ($_mode == 'merge') || ($_mode == 'recycle') )
 			{
 				if($_confirm)
@@ -362,11 +362,11 @@ elseif($page_array['page_dir'] == '')
 				}
 			}
 			break;
-		case 'bin.' . $phpEx:
+		case 'bin.' . PHP_EXT:
 			$content .= '[Topic Recycle: ' . $_topic . ']';
 			mg_log($content);
 			break;
-		case 'viewtopic.' . $phpEx:
+		case 'viewtopic.' . PHP_EXT:
 			// Log hackattacks to warnings log
 			if (isset($_GET['highlight']) )
 			{

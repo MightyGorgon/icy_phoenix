@@ -15,13 +15,13 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
 }
 
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 global $bbcode, $board_config;
 
 // Is send through board enabled? No, return to index
@@ -123,7 +123,7 @@ if ($result = $db->sql_query($sql))
 					*/
 					if ($result = $db->sql_query($sql))
 					{
-						include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+						include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 						$emailer = new emailer($board_config['smtp_delivery']);
 
 						$email_headers = 'X-AntiAbuse: Board servername - ' . trim($board_config['server_name']) . "\n";
@@ -184,7 +184,7 @@ if ($result = $db->sql_query($sql))
 				}
 			}
 
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('body' => 'profile_send_email.tpl'));
 			make_jumpbox(VIEWFORUM_MG);
@@ -221,7 +221,7 @@ if ($result = $db->sql_query($sql))
 
 			$template->pparse('body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{

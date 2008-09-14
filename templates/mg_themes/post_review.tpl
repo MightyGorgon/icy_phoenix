@@ -53,17 +53,12 @@
 			<span class="post-details"><br />{postrow.below_sig.BELOW_VAL}</span>
 			<!-- END below_sig -->
 		</div>
-		<?php
-			global $board_config;
-			if ($board_config['edit_notes'] == 1)
-			{
-		?>
+		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
+		<!-- IF S_EDIT_NOTES -->
 		<!-- IF postrow.EDITED_MESSAGE -->
 		<div class="post-notes"><div class="post-note"><span class="gensmall">{postrow.EDITED_MESSAGE}&nbsp;</span></div></div>
 		<!-- ENDIF -->
-		<?php
-		}
-		?>
+		<!-- ENDIF -->
 	</td>
 </tr>
 <tr>

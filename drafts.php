@@ -8,10 +8,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -38,7 +38,7 @@ $start = ($start < 0) ? 0 : $start;
 if ( !$userdata['session_logged_in'] )
 {
 	$redirect = ( isset($start) ) ? ('&start=' . $start) : '';
-	redirect(append_sid(LOGIN_MG . '?redirect=drafts.' . $phpEx . $redirect, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=drafts.' . PHP_EXT . $redirect, true));
 }
 
 $draft_id = ( isset($_POST['d']) ? intval($_POST['d']) : ( isset($_GET['d']) ? intval($_GET['d']) : 0 ) );
@@ -56,7 +56,7 @@ if ( ($draft_id > 0) || !empty($_POST['kill_drafts']) )
 	}
 	elseif ($mode == 'loadp')
 	{
-		redirect(append_sid('privmsg.' . $phpEx . '?d=' . $draft_id . '&mode=post' . '&draft_mode=draft_load', true));
+		redirect(append_sid('privmsg.' . PHP_EXT . '?d=' . $draft_id . '&mode=post' . '&draft_mode=draft_load', true));
 	}
 	elseif ($mode == 'delete')
 	{
@@ -65,7 +65,7 @@ if ( ($draft_id > 0) || !empty($_POST['kill_drafts']) )
 			$page_title = $lang['Drafts'];
 			$meta_description = '';
 			$meta_keywords = '';
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$ref_url = explode('/', $_SERVER['HTTP_REFERER']);
 
@@ -93,12 +93,12 @@ if ( ($draft_id > 0) || !empty($_POST['kill_drafts']) )
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('drafts.' . $phpEx),
+				'S_CONFIRM_ACTION' => append_sid('drafts.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 			$template->pparse('confirm');
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 			exit();
 		}
 		else
@@ -128,13 +128,13 @@ if ( ($draft_id > 0) || !empty($_POST['kill_drafts']) )
 $page_title = $lang['Drafts'];
 $meta_description = '';
 $meta_keywords = '';
-include_once($phpbb_root_path . 'includes/users_zebra_block.' . $phpEx);
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'drafts_body.tpl'));
 
 $template->assign_vars(array(
-	'S_FORM_ACTION' => append_sid('drafts.' . $phpEx),
+	'S_FORM_ACTION' => append_sid('drafts.' . PHP_EXT),
 	'L_NO_DRAFTS' => $lang['Drafts_No_Drafts'],
 	'L_DRAFTS_CATEGORY' => $lang['Category'],
 	'L_DRAFTS_TYPE' => $lang['Drafts_Type'],
@@ -204,8 +204,8 @@ if ($no_drafts == false)
 			$draft_image = '<img src="' . $images['topic_nor_read'] . '" alt="" />';
 			$draft_type = $lang['Drafts_NM'];
 			$draft_load = 'loadr';
-			$draft_cat_link = append_sid($phpbb_root_path . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
-			$draft_title_link = append_sid($phpbb_root_path . VIEWTOPIC_MG . '?'  . POST_TOPIC_URL . '=' . $draft_row[$i]['topic_id']);
+			$draft_cat_link = append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
+			$draft_title_link = append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?'  . POST_TOPIC_URL . '=' . $draft_row[$i]['topic_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $draft_row_data['forum_name'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row_data['topic_title'] . '</a>';
 		}
@@ -224,8 +224,8 @@ if ($no_drafts == false)
 			$draft_image = '<img src="' . $images['topic_nor_unread'] . '" alt="" />';
 			$draft_type = $lang['Drafts_NT'];
 			$draft_load = 'loadn';
-			$draft_cat_link = append_sid($phpbb_root_path . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
-			$draft_title_link = append_sid($phpbb_root_path . 'drafts.' . $phpEx . '?mode=load&amp;d=' . $draft_row[$i]['draft_id']);
+			$draft_cat_link = append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
+			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=load&amp;d=' . $draft_row[$i]['draft_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $draft_row_data['forum_name'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
 		}
@@ -234,8 +234,8 @@ if ($no_drafts == false)
 			$draft_image = '<img src="' . $images['topic_nor_read'] . '" alt="" />';
 			$draft_type = $lang['Drafts_NPM'];
 			$draft_load = 'loadp';
-			$draft_cat_link = append_sid($phpbb_root_path . 'privmsg.' . $phpEx);
-			$draft_title_link = append_sid($phpbb_root_path . 'drafts.' . $phpEx . '?mode=load&amp;d=' . $draft_row[$i]['draft_id']);
+			$draft_cat_link = append_sid(IP_ROOT_PATH . 'privmsg.' . PHP_EXT);
+			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=load&amp;d=' . $draft_row[$i]['draft_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $lang['Drafts_NPM'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
 		}
@@ -251,12 +251,12 @@ if ($no_drafts == false)
 			'DRAFT_TITLE_LINK' => $draft_title_link,
 			'DRAFT_TITLE' => stripslashes($draft_row[$i]['draft_title']),
 			'DRAFT_TIME' => create_date2($board_config['default_dateformat'], $draft_row[$i]['save_time'], $board_config['board_timezone']),
-			'U_DRAFT_LOAD' => append_sid($phpbb_root_path . 'drafts.' . $phpEx . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']),
-			'U_DRAFT_DELETE' => append_sid($phpbb_root_path . 'drafts.' . $phpEx . '?mode=delete&amp;d=' . $draft_row[$i]['draft_id']),
+			'U_DRAFT_LOAD' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']),
+			'U_DRAFT_DELETE' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=delete&amp;d=' . $draft_row[$i]['draft_id']),
 			)
 		);
 	}
-	$pagination = generate_pagination('drafts.' . $phpEx . '?mode=list', $drafts_count, $board_config['topics_per_page'], $start);
+	$pagination = generate_pagination('drafts.' . PHP_EXT . '?mode=list', $drafts_count, $board_config['topics_per_page'], $start);
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
@@ -272,6 +272,6 @@ else
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

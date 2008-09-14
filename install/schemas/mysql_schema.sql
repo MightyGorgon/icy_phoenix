@@ -31,6 +31,7 @@ CREATE TABLE `phpbb_adminedit` (
 CREATE TABLE `phpbb_album` (
 	`pic_id` int(11) unsigned NOT NULL auto_increment,
 	`pic_filename` varchar(255) NOT NULL default '',
+	`pic_size` int(15) unsigned NOT NULL default '0',
 	`pic_thumbnail` varchar(255) default '',
 	`pic_title` varchar(255) NOT NULL default '',
 	`pic_desc` text,

@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -35,7 +35,7 @@ if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
 /*
  * Include footer file
  */
-include($phpbb_root_path . 'ctracker/engines/ct_footer.' . $phpEx);
+include(IP_ROOT_PATH . 'ctracker/engines/ct_footer.' . PHP_EXT);
 
 
 /*
@@ -79,7 +79,7 @@ $template->assign_vars(array(
 		'L_SELECT_FOOTER' 	=> $lang['ctracker_select_footer'],
 		'L_SUBMIT_BUTTON'	=> $lang['ctracker_footer_saveit'],
 		'L_MESSAGE_TEXT'	=> $lang['ctracker_footer_done'],
-		'S_FORM_ACTION'		=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=11'))
+		'S_FORM_ACTION'		=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=11'))
   );
 
 

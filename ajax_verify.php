@@ -8,19 +8,19 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 $mode = isset($_GET['mode']) ? $_GET['mode'] : '';
 $verify = isset($_GET['verify']) ? $_GET['verify'] : '';
 
-if ( $mode == 'username' )
+if ($mode == 'username')
 {
 	$result_validation = validate_username($verify);
-	if ( $result_validation['error'] )
+	if ($result_validation['error'])
 	{
 		echo '1';
 	}
@@ -29,10 +29,10 @@ if ( $mode == 'username' )
 		echo '2';
 	}
 }
-elseif ( $mode == 'password' )
+elseif ($mode == 'password')
 {
 	$result_validation = validate_password($verify);
-	if ( $result_validation['error'] )
+	if ($result_validation['error'])
 	{
 		echo '1';
 	}
@@ -41,10 +41,10 @@ elseif ( $mode == 'password' )
 		echo '2';
 	}
 }
-elseif ( $mode == 'email' )
+elseif ($mode == 'email')
 {
 	$result_validation = validate_email($verify);
-	if ( $result_validation['error'] )
+	if ($result_validation['error'])
 	{
 		echo '1';
 	}

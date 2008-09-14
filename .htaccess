@@ -26,7 +26,7 @@
 ##################################
 
 RewriteEngine On
-#This may cause isues with subdirs and so I have not enabled it.
+#This may cause issues with subdirs and so it is not enabled by default.
 #RewriteBase /
 
 #Make sure the whole site goes to www.mysite.com instead of mysite.com. This is good for the search engines
@@ -38,31 +38,6 @@ RewriteEngine On
 #Permanent redirection (the first line is the old domain, the second one is the new domain)
 #RewriteCond %{HTTP_HOST} ^icyphoenix.com [NC]
 #RewriteRule ^(.*)$ http://www.icyphoenix.com/$1 [R=301,L]
-
-#SetEnvIfNoCase User-Agent "^libwww-perl*" block_bad_bots
-#Deny from env=block_bad_bots
-
-##################################
-# Block Hacking Attempts - BEGIN #
-##################################
-##################################
-# CONDITIONS
-##################################
-# STRICT CONDITION
-#RewriteCond %{QUERY_STRING} ^.*(phpbb_root_path|album_root_path|upi2db_file_path|thispath|PP_PATH).*$
-# LESS STRICT CONDITION
-RewriteCond %{QUERY_STRING} ^.*(phpbb_root_path\=|album_root_path\=|upi2db_file_path\=|thispath\=|PP_PATH\=).*$
-##################################
-# REWRITE
-##################################
-# FORBIDDEN
-#RewriteRule ^.*$ - [F,L]
-# REDIRECT TO LOCALHOST
-RewriteRule ^.*$ http://127.0.0.1/ [redirect,last]
-##################################
-##################################
-# Block Hacking Attempts - END   #
-##################################
 
 ########## Rewrite rules to block out some common exploits - BEGIN
 #
@@ -108,40 +83,24 @@ RewriteRule ^.+-pa([0-9]*) ./kb.php?%{QUERY_STRING}mode=article&k=$1 [L]
 RewriteRule ^.+-psmp ./kb.php?mode=stats&stats=mostpopular [L]
 RewriteRule ^.+-pstr ./kb.php?mode=stats&stats=toprated [L]
 RewriteRule ^.+-pbsl ./kb.php?mode=stats&stats=latest [L]
-
-### OLD URL REWRITE
-#RewriteRule [.]*-vc([0-9]*) ./forum.php?%{QUERY_STRING}&c=$1 [L]
-#RewriteRule [.]*-vf([0-9]*) ./viewforum.php?%{QUERY_STRING}&f=$1 [L]
-#RewriteRule [.]*-vt([0-9]*) ./viewtopic.php?%{QUERY_STRING}&t=$1 [L]
-#RewriteRule [.]*-vp([0-9]*) ./viewtopic.php?%{QUERY_STRING}&p=$1 [L]
-#RewriteRule [.]*-ac([0-9]*) ./album_cat.php?%{QUERY_STRING}&cat_id=$1 [L]
-#RewriteRule [.]*-at([0-9]*) ./album_thumbnail.php?%{QUERY_STRING}&pic_id=$1 [L]
-#RewriteRule [.]*-apic([0-9]*) ./album_pic.php?%{QUERY_STRING}&pic_id=$1 [L]
-#RewriteRule [.]*-apm([0-9]*) ./album_picm.php?%{QUERY_STRING}&pic_id=$1 [L]
-#RewriteRule [.]*-full-asp([0-9]*) ./album_showpage.php?full=&pic_id=$1 [L]
-#RewriteRule [.]*-asp([0-9]*) ./album_showpage.php?%{QUERY_STRING}&pic_id=$1 [L]
-#RewriteRule [.]*-aper([0-9]*) ./album_personal.php?%{QUERY_STRING}&user_id=$1 [L]
-#RewriteRule [.]*-dc([0-9]*) ./dload.php?%{QUERY_STRING}action=category&cat_id=$1 [L]
-#RewriteRule [.]*-df([0-9]*) ./dload.php?%{QUERY_STRING}action=file&file_id=$1 [L]
-#RewriteRule [.]*-kbc([0-9]*) ./kb.php?%{QUERY_STRING}mode=cat&cat=$1 [L]
-#RewriteRule [.]*-kba([0-9]*) ./kb.php?%{QUERY_STRING}mode=article&k=$1 [L]
-#RewriteRule [.]*-kbsmp ./kb.php?mode=stats&stats=mostpopular [L]
-#RewriteRule [.]*-kbstr ./kb.php?mode=stats&stats=toprated [L]
-#RewriteRule [.]*-kbsl ./kb.php?mode=stats&stats=latest [L]
-#RewriteRule [.]*-pbc([0-9]*) ./kb.php?%{QUERY_STRING}mode=cat&cat=$1 [L]
-#RewriteRule [.]*-pa([0-9]*) ./kb.php?%{QUERY_STRING}mode=article&k=$1 [L]
-#RewriteRule [.]*-psmp ./kb.php?mode=stats&stats=mostpopular [L]
-#RewriteRule [.]*-pstr ./kb.php?mode=stats&stats=toprated [L]
-#RewriteRule [.]*-pbsl ./kb.php?mode=stats&stats=latest [L]
 ########## URL Rewrite - END
 
+# Block if useragent and referer are unknown.
+# the referer string can cause some problems with mozilla so it has been disabled
+#RewriteCond %{HTTP_REFERER} ^.*$ [OR]
+#RewriteCond %{HTTP_REFERER} ^-$ [OR]
+RewriteCond %{HTTP_USER_AGENT} ^-$ [OR]
 
-# Mighty Gorgon Check
-RewriteRule ^.*xmlrpc.php.*$ http://127.0.0.1/ [redirect,last]
-RewriteCond %{QUERY_STRING} ^.*(dir\[inc\]\=).*$
-RewriteRule ^.*$ http://127.0.0.1/ [redirect,last]
+# You may want to enable these lines below to disallow php and perl scripts to access your site
+#RewriteCond %{HTTP_USER_AGENT} ^.*PHP.*$ [OR]
+RewriteCond %{HTTP_USER_AGENT} ^.*libwww-perl [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} ^libwww.* [NC]
+RewriteRule .* - [F,L]
 
+#SetEnvIfNoCase User-Agent "^libwww-perl*" block_bad_bots
+#Deny from env=block_bad_bots
 
+### VIRUS - EXPLOITS - BEGIN
 # SANTY
 RewriteCond %{HTTP_REFERER} ^.*$
 RewriteRule ^.*%27.*$ http://127.0.0.1/ [redirect,last]
@@ -152,25 +111,25 @@ RewriteRule ^.*esystem.*$ http://127.0.0.1/ [redirect,last]
 RewriteRule ^.*wget.*$ http://127.0.0.1/ [redirect,last]
 RewriteCond %{HTTP_COOKIE}% s:(.*):%22test1%22%3b
 RewriteRule ^.*$ http://127.0.0.1/ [R,L]
+
 # Prevent perl user agent (most often used by santy)
 RewriteCond %{HTTP_USER_AGENT} ^lwp.* [NC]
 RewriteRule ^.*$ http://127.0.0.1/ [R,L]
-RewriteCond %{HTTP_REFERER} ^.*$
 
 # This ruleset is to "stop" stupid attempts to use MS IIS expolits on us
 # NIMDA
 RewriteCond %{REQUEST_URI} /(admin圭md多ttpodbc好siislog字oot存hell)\.(dll圯xe) [NC]
 RewriteRule !(error\.php|robots\.txt) /error.php?mode=nimda [L,E=HTTP_USER_AGENT:NIMDA_EXPLOIT,T=application/x-httpd-cgi]
-#RewriteRule .* - [F,L]
 
 # CODERED
 RewriteCond %{REQUEST_URI} /default\.(ida夷dq)$ [NC,OR]
 RewriteCond %{REQUEST_URI} /.*\.printer$ [NC]
 RewriteRule !(error\.php|robots\.txt) /error.php?mode=codered [L,E=HTTP_USER_AGENT:CODERED_EXPLOIT,T=application/x-httpd-cgi]
-#RewriteRule .* - [F,L]
+### VIRUS - EXPLOITS - END
 
 # User-Agents with no privileges (mostly spambots/spybots/offline downloaders that ignore robots.txt)
 # These bots are anoying website harvesting tools, webdownloaders, and a few misc annoyances.
+# Bots ignoring robots.txt - BEGIN
 #RewriteCond %{HTTP_USER_AGENT} ia_archiver [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^[A-Z]+$ [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^(AcoiRobot|FlickBot|webcollage) [NC,OR]
@@ -227,6 +186,7 @@ RewriteCond %{HTTP_USER_AGENT} fastlwspider [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} FEZhead [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Fetch [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Fetch\ API\ Request [OR]
+RewriteCond %{HTTP_USER_AGENT} ^.*FileHound.*$ [OR]
 RewriteCond %{HTTP_USER_AGENT} ^(Flash|Leech)Get [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Franklin\ Locator [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^(Fresh|Lightning|Mass|Real|Smart|Speed|Star).?Download(er)? [NC,OR]
@@ -279,6 +239,7 @@ RewriteCond %{HTTP_USER_AGENT} Mozilla.*NEWT [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Mozilla\/3\.0\.\+Indy\ Library [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Mozilla\/3.Mozilla\/2\.01 [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Mozilla\/4\.0$ [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "^Mozilla/4.0$" [OR]
 RewriteCond %{HTTP_USER_AGENT} Mozzilla [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} MSIECrawler [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^NASA\ Search\ 1\.0$ [NC,OR]
@@ -334,6 +295,7 @@ RewriteCond %{HTTP_USER_AGENT} ^Teleport.* [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Templeton [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} UtilMind [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^.*Vacuum.*$ [OR]
+RewriteCond %{HTTP_USER_AGENT} vayala [OR]
 RewriteCond %{HTTP_USER_AGENT} VoidEYE [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^Web.?(Auto|Cop|dup|Fetch|Filter|Gather|Go|Leach|Mine|Mirror|Pix|QL|RACE|Sauger) [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} web.?(bandit|collector|devil|downloader|hook|mole|reaper|sucker|site|snake|stripper|weasel) [NC,OR]
@@ -353,33 +315,9 @@ RewriteCond %{HTTP_USER_AGENT} XGET [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} Yandex [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} zeus [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} ^Zeus.*Webster [OR]
+# Bots ignoring robots.txt - END
 
-# IE's "make available offline" mode
-RewriteCond %{HTTP_USER_AGENT} MSIECrawler [OR]
-
-# Unknown bot
-RewriteCond %{HTTP_USER_AGENT} ^NG [OR]
-
-# You may want to enable these lines below to disallow php and perl scripts to access your site
-#RewriteCond %{HTTP_USER_AGENT} ^.*PHP.*$ [OR]
-RewriteCond %{HTTP_USER_AGENT} ^.*libwww-perl [NC,OR]
-RewriteCond %{HTTP_USER_AGENT} ^libwww.* [NC,OR]
-
-# Ignorant user trying to edit my site
-RewriteCond %{HTTP_USER_AGENT} FrontPage [OR]
-#This one will ban everything microsoft. Use with caution.
-#RewriteCond %{HTTP_USER_AGENT} ^(Microsoft|MFC).(Data|URL|WebDAV|Foundation).(Access|Control|MiniRedir|Class) [NC,OR]
-
-# MSOffice
-#RewriteCond %{REQUEST_URI} ^/(MSOffice|_vti) [NC,OR]
-
-# Various
-RewriteCond %{REQUEST_URI} ^/(bin/|cgi/|cgi\-local/|cgi\-bin/|sumthin) [NC,OR]
-RewriteCond %{THE_REQUEST} ^GET\ http [NC,OR]
-RewriteCond %{REQUEST_URI} /sensepost\.exe [NC,OR]
-RewriteCond %{REQUEST_METHOD}!^(GET|HEAD|POST) [NC,OR]
-
-# Rude bot
+# Rude Bots - BEGIN
 RewriteCond %{HTTP_USER_AGENT} Atomz [OR]
 RewriteCond %{HTTP_USER_AGENT} FlickBot [OR]
 RewriteCond %{HTTP_USER_AGENT} "efp@gmx\.net" [OR]
@@ -389,17 +327,109 @@ RewriteCond %{HTTP_USER_AGENT} "mister pix" [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} PersonaPilot [OR]
 RewriteCond %{HTTP_USER_AGENT} Sqworm [OR]
 RewriteCond %{HTTP_USER_AGENT} SurveyBot [OR]
+# Rude Bots - END
 
-# Dumb bot, doesn't know how to follow links, generates lots of 404s
-RewriteCond %{HTTP_USER_AGENT} vayala [OR]
+# SPAM Referers - BEGIN
+RewriteCond %{HTTP_REFERER} ^(.*)4ap.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)9cy.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)allinternal.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)andipink.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)anonym.to(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)appraiserseek.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)asstraffic.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)atspace.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)bablover.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)beyonddc.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)bigcatllc.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)bikinibabes.tv(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)blog.cz(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)bramjnet.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)brutalblowjobs.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)buddy4u.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)cel-blogs.org(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)crossporn.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)dmost.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)dwgn.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)elkam.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)emore.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)estranky.cz(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)ever.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)fateback.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)feelor.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)fest.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)forumw.org(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)fuckherthroat.wildpass.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)fun.org(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)funpic.de(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)gfxgfx.net(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)ies.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)infobox.ru(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)ize.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)jeeran.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)jvl.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)kokoom.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)leenow.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)lynx.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)mail.live.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)map.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)mature-lessons.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)mb.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)mem.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)netster.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)nflook.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)now.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)pages.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)pertest.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)pills.ru(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)porndors.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)qmost.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)qway.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)secure.snatches.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)semiwolf.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)sexy-babes.tv(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)sites.ws(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)skynet.be(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)soltyra.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)sun.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)thecanalgallery.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)this.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)ting.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)town.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)vipsefeed.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)voila.fr(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)volny.cz(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)vy.nu(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)way.org(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)wp.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)wrongsideoftown.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)ymore.info(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)yu.com(.*)$ [OR]
+RewriteCond %{HTTP_REFERER} ^(.*)zless.info(.*)$ [OR]
+# SPAM Referers - END
 
-# Dumb bot
-RewriteCond %{HTTP_USER_AGENT} "^Mozilla/4.0$" [OR]
+# IE's "make available offline" mode
+RewriteCond %{HTTP_USER_AGENT} MSIECrawler [OR]
+
+# Unknown bot
+RewriteCond %{HTTP_USER_AGENT} ^NG [OR]
+
+# Microsoft Software - BEGIN
+RewriteCond %{HTTP_USER_AGENT} FrontPage [OR]
+#This one will ban everything microsoft. Use with caution.
+#RewriteCond %{HTTP_USER_AGENT} ^(Microsoft|MFC).(Data|URL|WebDAV|Foundation).(Access|Control|MiniRedir|Class) [NC,OR]
+# MSOffice
+#RewriteCond %{REQUEST_URI} ^/(MSOffice|_vti) [NC,OR]
+# Microsoft Software - END
+
+# Various
+RewriteCond %{REQUEST_URI} ^/(bin/|cgi/|cgi\-local/|cgi\-bin/|sumthin) [NC,OR]
+RewriteCond %{THE_REQUEST} ^GET\ http [NC,OR]
+RewriteCond %{REQUEST_URI} /sensepost\.exe [NC,OR]
+RewriteCond %{REQUEST_METHOD}!^(GET|HEAD|POST) [NC,OR]
 
 # Cyveillance is a spybot that scours the web for copyright violations and ?damaging information? on
 # behalf of clients such as the RIAA and MPAA. Their robot spoofs its User-Agent to look like Internet
-# Explorer, and it completely ignores robots.txt. I have
-# banned it by IP address.
+# Explorer, and it completely ignores robots.txt. I have banned it by IP address.
 RewriteCond %{REMOTE_ADDR} ^63\.148\.99\.2(2[4-9]|[34][0-9]|5[0-5])$ [OR]
 RewriteCond %{REMOTE_ADDR} ^63\.226\.3[34]\. [OR]
 RewriteCond %{REMOTE_ADDR} ^63\.212\.171\.161$ [OR]
@@ -411,7 +441,7 @@ RewriteCond %{REMOTE_ADDR} ^65\.118\.41\.(19[2-9]|2[01][0-9]|22[0-3])$ [OR]
 # I have banned them by User-Agent and IP address.
 RewriteCond %{REMOTE_ADDR} ^12\.148\.196\.(12[8-9]|1[3-9][0-9]|2[0-4][0-9]|25[0-5])$ [OR]
 RewriteCond %{REMOTE_ADDR} ^12\.148\.209\.(19[2-9]|2[0-4][0-9]|25[0-5])$ [OR]
-RewriteCond %{HTTP_USER_AGENT} ^NPBot	[NC,OR]
+RewriteCond %{HTTP_USER_AGENT} ^NPBot [NC,OR]
 
 # Web Content International
 RewriteCond %{REMOTE_ADDR} ^65\.102\.12\.2(2[4-9]|3[01])$ [OR]
@@ -432,110 +462,15 @@ RewriteCond %{REMOTE_ADDR} ^65\.223\.250\.25[0-3]$ [OR]
 RewriteCond %{REMOTE_ADDR} ^64\.140\.49\.6([6-9])$ [OR]
 RewriteCond %{HTTP_USER_AGENT} TurnitinBot [OR]
 
-RewriteCond %{HTTP_USER_AGENT} ^.*FileHound.*$
-
-# Used to send these bots to someplace else you can change the url to whatever you would like
-#RewriteRule /* http://www.geocities.com/WestHollywood/Heights/3204/1home.html [L,R]
-#RewriteRule !(errors\.php|robots\.txt) /errors.php?code=404 [L,E=HTTP_USER_AGENT:BAD_USER_AGENT]
-# This could also be used to simply deny access to your site instead of the one above
-RewriteRule .* - [F,L]
-
-# Block if useragent and referer are unknown.
-# the referer string will cause some problems with mozilla so it has been diabled
-RewriteCond %{HTTP_REFERER} ^-$ [OR]
-RewriteCond %{HTTP_USER_AGENT} ^-$
-
-# Used to send these bots to someplace else you can change the url to whatever you would like
-#RewriteRule /* http://www.geocities.com/WestHollywood/Heights/3204/1home.html [L,R]
-#RewriteRule !(errors\.php|robots\.txt) /errors.php?code=404 [L,T=application/x-httpd-cgi]
-# This could also be used to simply deny access to your site instead of the one above
-RewriteRule .* - [F,L]
-
 # This ruleset is for formmail script abusers...
 # We don't use Perl for Postnuke so this is not really needed.
 RewriteCond %{REQUEST_URI} (mail.?form|form|form.?mail|mail|mailto)\.(cgi圯xe如l)$ [NC]
-RewriteRule !(errors\.php|robots\.txt) /errors.php?code=404 [L,E=HTTP_USER_AGENT:FORMMAIL_EXPLOIT,T=application/x-httpd-cgi]
 
-# Other Spam Bots
-RewriteCond %{HTTP_REFERER} ^(.*)nflook.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)qmost.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)zless.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)pertest.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)bablover.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)semiwolf.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)dwgn.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)qway.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)elkam.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)ymore.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)feelor.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)emore.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)leenow.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)fun.org(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)wp.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)dmost.info(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)way.org(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)sun.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)jvl.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)4ap.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)mem.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)netster.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)map.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)ize.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)9cy.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)pages.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)fest.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)crossporn.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)pills.ru(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)ever.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)this.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)now.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)mb.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)ies.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)ting.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)sites.ws(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)lynx.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)town.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)mb.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)vy.nu(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)yu.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)buddy4u.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)allinternal.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)asstraffic.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)bikinibabes.tv(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)andipink.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)cel-blogs.org(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)sexy-babes.tv(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)wrongsideoftown.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)thecanalgallery.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)secure.snatches.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)mail.live.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)brutalblowjobs.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)appraiserseek.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)beyonddc.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)soltyra.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)wrongsideoftown.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)estranky.cz(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)bramjnet.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)voila.fr(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)anonym.to(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)infobox.ru(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)porndors.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)atspace.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)funpic.de(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)skynet.be(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)kokoom.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)jeeran.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)blog.cz(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)forumw.org(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)gfxgfx.net(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)fateback.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)volny.cz(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)thecanalgallery.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)vipsefeed.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)bigcatllc.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)mature-lessons.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)fuckherthroat.wildpass.com(.*)$ [OR]
-RewriteCond %{HTTP_REFERER} ^(.*)asstraffic.com(.*)$
+# Used to send these bots to someplace else you can change the url to whatever you would like
 #RewriteRule .* http://www.microsoft.com/ [F,R,L]
+#RewriteRule /* http://www.geocities.com/WestHollywood/Heights/3204/1home.html [L,R]
 #RewriteRule !(errors\.php|robots\.txt) /errors.php?code=404 [L,E=HTTP_USER_AGENT:BAD_USER_AGENT]
+#RewriteRule !(errors\.php|robots\.txt) /errors.php?code=404 [L,E=HTTP_USER_AGENT:FORMMAIL_EXPLOIT,T=application/x-httpd-cgi]
+# This could also be used to simply deny access to your site instead of the one above
 RewriteRule .* - [F,L]
+

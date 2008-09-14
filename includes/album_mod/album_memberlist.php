@@ -15,7 +15,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -64,7 +64,7 @@ switch (strtolower($album_view_type))
 		$album_view_type = ALBUM_LISTTYPE_RATINGS;
 
 		// default sorting if not specified directly
-		if ( !isset($_GET['sort_method']) && !isset($_POST['sort_method']) )
+		if (!isset($_GET['sort_method']) && !isset($_POST['sort_method']))
 		{
 			$sort_method = 'rating';
 			$sort_order = 'ASC';
@@ -92,7 +92,7 @@ switch (strtolower($album_view_type))
 		$album_view_type = ALBUM_LISTTYPE_COMMENTS;
 
 		// default sorting if not specified directly
-		if ( !isset($_GET['sort_method']) && !isset($_POST['sort_method']) )
+		if (!isset($_GET['sort_method']) && !isset($_POST['sort_method']))
 		{
 			$sort_method = 'comments';
 			$sort_order = 'ASC';
@@ -140,7 +140,7 @@ switch (strtolower($album_view_type))
 // Count pics, comments or ratings
 // ------------------------------------
 
-if( !($result = $db->sql_query($count_sql)) )
+if(!($result = $db->sql_query($count_sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not count ' . $album_view_type. 's', '', __LINE__, __FILE__, $count_sql);
 }
@@ -158,14 +158,14 @@ $album_view_type_param = (!empty($album_view_type)) ? '&type=' . $album_view_typ
 
 if ($total_pics > 0 && !empty($allowed_cat))
 {
-	if( !($result = $db->sql_query($list_sql)) )
+	if(!($result = $db->sql_query($list_sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query memberlist information', '', __LINE__, __FILE__, $list_sql);
 	}
 
 	$picrow = array();
 
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$picrow[] = $row;
 	}
@@ -174,7 +174,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 	// Thumbnails table
 	// --------------------------------
 
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
 	$album_comment_pic_url = $album_show_pic_url;
 
@@ -184,26 +184,15 @@ if ($total_pics > 0 && !empty($allowed_cat))
 
 		for ($j = $i; $j < ($i + $album_config['cols_per_page']); $j++)
 		{
-			if( $j >= count($picrow) )
+			if($j >= count($picrow))
 			{
 				break;
 			}
 
-			if ( ($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true) )
+			$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']));
+			if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 			{
-				$pic_filename = $picrow[$j]['pic_filename'];
-				$file_part = explode('.', strtolower($pic_filename));
-				$pic_filetype = $file_part[count($file_part) - 1];
-				$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-				//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-				//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-				$pic_thumbnail = ( $picrow[$j]['pic_thumbnail'] == '' ) ? md5($pic_filename) . '.' . $pic_filetype : $picrow[$j]['pic_thumbnail'];
-				//$pic_thumbnail = ( $picrow[$j]['pic_thumbnail'] == '' ) ? $pic_filename : $picrow[$j]['pic_thumbnail'];
-				$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-				if ( file_exists($pic_thumbnail_fullpath) )
-				{
-					$thumbnail_file = $pic_thumbnail_fullpath;
-				}
+				$thumbnail_file = picture_quick_thumb($picrow[$j]['pic_filename'], $picrow[$j]['pic_thumbnail'], $thumbnail_file);
 			}
 			if ($album_config['lb_preview'] == 0)
 			{
@@ -211,14 +200,15 @@ if ($total_pics > 0 && !empty($allowed_cat))
 			}
 			else
 			{
-				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) . '\',\'' . addslashes($picrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '\',\'' . addslashes($picrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 			}
 
 			$template->assign_block_vars('picrow.piccol', array(
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])),
-				'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])),
+				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])),
+				'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])),
 				'PIC_PREVIEW' => $pic_preview,
-				'DESC' => $picrow[$j]['pic_desc']
+				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'DESC' => htmlspecialchars($picrow[$j]['pic_desc'])
 				)
 			);
 
@@ -231,19 +221,20 @@ if ($total_pics > 0 && !empty($allowed_cat))
 			// is it the main category in the personal gallery ?
 			if ($picrow[$j]['cat_user_id'] != 0 && $picrow[$j]['cat_id'] == album_get_personal_root_id($picrow[$j]['cat_user_id']))
 			{
-				$album_page_url = "album.$phpEx";
+				$album_page_url = 'album.' . PHP_EXT;
 			}
 			else
 			{
-				$album_page_url = "album_cat.$phpEx";
+				$album_page_url = 'album_cat.' . PHP_EXT;
 			}
 
-			$image_cat_url = append_sid(album_append_uid("$album_page_url?cat_id=". $picrow[$j]['cat_id'] . '&user_id=' . $picrow[$j]['cat_user_id']));
+			$image_cat_url = append_sid(album_append_uid($album_page_url . '?cat_id=' . $picrow[$j]['cat_id'] . '&amp;user_id=' . $picrow[$j]['cat_user_id']));
 
 			$template->assign_block_vars('picrow.pic_detail', array(
 				'PIC_ID' => $picrow[$j]['pic_id'],
-				'TITLE' => $picrow[$j]['pic_title'],
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid("$album_show_pic_url?pic_id=" . $picrow[$j]['pic_id'])),
+				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])),
 
 				'CATEGORY' => $picrow[$j]['cat_title'],
 				'U_PIC_CAT' => $image_cat_url,
@@ -252,19 +243,19 @@ if ($total_pics > 0 && !empty($allowed_cat))
 
 				'VIEW' => $picrow[$j]['pic_view_count'],
 
-				'RATING' => ($album_config['rate'] == 1) ?( $lang['Rating'] . ' : <a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $image_rating . '</a><br />') : '',
+				'RATING' => ($album_config['rate'] == 1) ?($lang['Rating'] . ' : <a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $image_rating . '</a><br />') : '',
 
 				'COMMENTS' => ($album_config['comment'] == 1) ? ($lang['Comments'] . ' : <a href="'. append_sid(album_append_uid($album_comment_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '">' . $image_comment . '</a><br />') : '',
 
-				'EDIT' => ( ($userdata['user_level'] == ADMIN) or ($userdata['user_id'] == $picrow[$j]['pic_user_id']) ) ? '<a href="'. append_sid(album_append_uid('album_edit.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '',
+				'EDIT' => (($userdata['user_level'] == ADMIN) or ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<a href="'. append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '',
 
-				'DELETE' => ( ($userdata['user_level'] == ADMIN) or ($userdata['user_id'] == $picrow[$j]['pic_user_id']) ) ? '<a href="'. append_sid(album_append_uid('album_delete.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '',
+				'DELETE' => (($userdata['user_level'] == ADMIN) or ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<a href="'. append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '',
 
-				'LOCK' => ($userdata['user_level'] == ADMIN) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=lock&pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Lock'] . '</a>' : '',
+				'LOCK' => ($userdata['user_level'] == ADMIN) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=lock&pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Lock'] . '</a>' : '',
 
-				'MOVE' => ($userdata['user_level'] == ADMIN) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=move&pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Move'] . '</a>' : '',
+				'MOVE' => ($userdata['user_level'] == ADMIN) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Move'] . '</a>' : '',
 
-				'COPY' => ($userdata['user_level'] == ADMIN) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=copy&pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Copy'] . '</a>' : '',
+				'COPY' => ($userdata['user_level'] == ADMIN) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Copy'] . '</a>' : '',
 
 				'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) . '</a><br />' : ''
 				)
@@ -277,8 +268,8 @@ if ($total_pics > 0 && !empty($allowed_cat))
 	// --------------------------------
 
 	$template->assign_vars(array(
-		'PAGINATION' => generate_pagination(append_sid(album_append_uid("album.$phpEx?user_id=$album_user_id&amp;sort_method=$sort_method&amp;sort_order=$sort_order$album_view_mode_param$album_view_type_param")), $total_pics, $pics_per_page, $start),
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pics_per_page ) + 1 ), ceil( $total_pics / $pics_per_page ))
+		'PAGINATION' => generate_pagination(append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $album_user_id . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . $album_view_mode_param . $album_view_type_param)), $total_pics, $pics_per_page, $start),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 		)
 	);
 }
@@ -300,13 +291,13 @@ else
 
 $sort_rating_option = '';
 $sort_comments_option = '';
-if( $album_config['rate'] == 1 )
+if($album_config['rate'] == 1)
 {
 	$sort_rating_option = '<option value="rating" ';
 	$sort_rating_option .= ($sort_method == 'rating') ? 'selected="selected"' : '';
 	$sort_rating_option .= '>' . $lang['Rating'] .'</option>';
 }
-if( $album_config['comment'] == 1 )
+if($album_config['comment'] == 1)
 {
 	$sort_comments_option = '<option value="comments" ';
 	$sort_comments_option .= ($sort_method == 'comments') ? 'selected="selected"' : '';
@@ -321,7 +312,7 @@ if( $album_config['comment'] == 1 )
 $page_title = $lang['Album'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_memberlist_body.tpl'));
 
@@ -352,18 +343,18 @@ $template->assign_vars(array(
 	'S_COL_WIDTH' => (100/$album_config['cols_per_page']) . '%',
 
 	'L_NO_PICTURES_BY_USER' => $lang['No_Pics'],
-	'U_MEMBERLIST_GALLERY' => append_sid(album_append_uid("album.$phpEx?user_id=$album_user_id&mode=$album_view_mode&type=$album_view_type")),
+	'U_MEMBERLIST_GALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $album_user_id . '&amp;mode=' . $album_view_mode . '&amp;type=' . $album_view_type)),
 	'L_MEMBERLIST_GALLERY_EXPLAIN' => $lang['Member_Picture_List_Explain'],
 
-	'U_SHOW_ALL_PICS' => append_sid(album_append_uid("album.$phpEx?user_id=$album_user_id$album_view_mode_param&type=pic")),
+	'U_SHOW_ALL_PICS' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $album_user_id . $album_view_mode_param . '&amp;type=pic')),
 	'L_SHOW_ALL_PICS' => sprintf($lang['Show_All_Pictures_Of_user'], $username),
 	'SHOW_ALL_PICS_IMG' => $images['show_all_pics'],
 
-	'U_SHOW_ALL_RATINGS' => append_sid(album_append_uid("album.$phpEx?user_id=$album_user_id$album_view_mode_param&type=rating")),
+	'U_SHOW_ALL_RATINGS' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $album_user_id . $album_view_mode_param . '&amp;type=rating')),
 	'L_SHOW_ALL_RATINGS' => sprintf($lang['Show_All_Ratings_Of_user'], $username),
 	'SHOW_ALL_RATINGS_IMG' => $images['show_all_ratings'],
 
-	'U_SHOW_ALL_COMMENTS' => append_sid(album_append_uid("album.$phpEx?user_id=$album_user_id$album_view_mode_param&type=comment")),
+	'U_SHOW_ALL_COMMENTS' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $album_user_id . $album_view_mode_param . '&amp;type=comment')),
 	'L_SHOW_ALL_COMMENTS' => sprintf($lang['Show_All_Comments_Of_user'], $username),
 	'SHOW_ALL_COMMENTS_IMG' => $images['show_all_comments'],
 
@@ -398,6 +389,6 @@ $template->assign_vars(array(
 // Generate the page
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

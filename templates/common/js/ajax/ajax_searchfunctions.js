@@ -36,7 +36,7 @@ function AJAXUsernameSearch(username, is_search)
 		clearTimeout(timer_id);
 		timer_id = 0;
 	}
-	
+
 	timer_id = setTimeout('AJAXSubmitUsernameSearch(\''+username+'\', '+is_search+')', KEYUP_TIMEOUT);
 }
 
@@ -46,15 +46,15 @@ function AJAXSubmitUsernameSearch(username, is_search)
 	{
 		return;
 	}
-	
+
 	last_username = username;
 	timer_id = 0;
-	
+
 	//Send search results
 	if (((username != '') || !is_search) && (username != '*'))
 	{
 		error_handler = 'AJAXFinishUsernameSearch';
-		var url = phpbb_root_path + 'ajax.' + phpEx;
+		var url = ip_root_path + 'ajax.' + php_ext;
 		var params = 'mode=search_user&search=' + is_search + '&username=' + ajax_escape(username);
 		if (S_SID != '')
 		{
@@ -77,12 +77,12 @@ function AJAXFinishUsernameSearch(result_code, code)
 	{
 		return;
 	}
-	
+
 	var userlist = getElementById('username_list');
 	var userselect = getElementById('username_select');
 	var error_text = getElementById('username_error_text');
 	var error_tbl = getElementById('username_error_tbl');
-	
+
 	if ((userlist == null) || (userselect == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -91,7 +91,7 @@ function AJAXFinishUsernameSearch(result_code, code)
 		}
 		return;
 	}
-	
+
 	userlist.style.display = 'none';
 	userselect.innerHTML = '';
 	if (error_tbl)
@@ -103,7 +103,7 @@ function AJAXFinishUsernameSearch(result_code, code)
 		setInnerText(error_text, '&nbsp;');
 		error_text.style.display = 'none';
 	}
-	
+
 	if (result_code == AJAX_PM_USERNAME_SELECT)
 	{
 		userselect.innerHTML = code;
@@ -131,11 +131,11 @@ function AJAXSelectUsername(selectfield)
 	{
 		return;
 	}
-	
+
 	var usernamelist = getElementById('username_list');
 	var usernameselect = getElementById('username_select');
 	var username_field = getElementById('username');
-	
+
 	if ((usernamelist == null) || (usernameselect == null) || (username_field == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -144,9 +144,9 @@ function AJAXSelectUsername(selectfield)
 		}
 		return;
 	}
-	
+
 	username_field.value = selectfield.value;
-	
+
 	usernameselect.innerHTML = '';
 	usernamelist.style.display = 'none';
 }
@@ -161,7 +161,7 @@ function AJAXQuickSearch(keywords)
 	{
 		return;
 	}
-	
+
 	//Send search results
 	if (keywords != '')
 	{
@@ -182,13 +182,13 @@ function AJAXQuickSearch(keywords)
 	}
 }
 
-function quicksearch_req_change() 
+function quicksearch_req_change()
 {
 	if (!ajax_core_defined)
 	{
 		return;
 	}
-	
+
 	//Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
@@ -223,7 +223,7 @@ function AJAXFinishQuickSearch(results, error_msg)
 	var restable = getElementById('searchresults_tbl');
 	var reslink = getElementById('searchresults_lnk');
 	var restext = getElementById('searchresults_txt');
-	
+
 	if ((restable == null) || (reslink == null) || (restext == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -232,7 +232,7 @@ function AJAXFinishQuickSearch(results, error_msg)
 		}
 		return;
 	}
-	
+
 	if (results == 0)
 	{
 		restable.style.display = 'none';

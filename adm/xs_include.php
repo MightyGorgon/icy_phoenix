@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB') || !defined('IN_XS'))
+if (!defined('IN_ICYPHOENIX') || !defined('IN_XS'))
 {
 	die('Hacking attempt');
 }
@@ -32,11 +32,11 @@ define('XS_INCLUDED', true);
 // include language file
 if(!defined('XS_LANG_INCLUDED'))
 {
-	global $phpbb_root_path, $board_config, $phpEx, $lang;
-	$xs_lang_file = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_xs.' . $phpEx;
+	global $board_config, $lang;
+	$xs_lang_file = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_xs.' . PHP_EXT;
 	if( !@file_exists($xs_lang_file) )
 	{	// load english version if there is no translation to current language
-		$xs_lang_file = $phpbb_root_path . 'language/lang_english/lang_xs.' . $phpEx;
+		$xs_lang_file = IP_ROOT_PATH . 'language/lang_english/lang_xs.' . PHP_EXT;
 	}
 	include($xs_lang_file);
 	define('XS_LANG_INCLUDED', true);
@@ -83,7 +83,7 @@ function xs_admin_override($modded = false)
 		return;
 	}
 	define('XS_ADMIN_OVERRIDE_FINISHED', true);
-	global $module, $phpEx, $xs_shownav_action, $board_config, $lang;
+	global $module, $xs_shownav_action, $board_config, $lang;
 	// remove default phpBB styles management
 	if(isset($module['Styles']))
 	{
@@ -95,17 +95,17 @@ function xs_admin_override($modded = false)
 				unset($module['Styles'][$unset[$i]]);
 			}
 		}
-		$module['Styles']['Menu'] = 'xs_frameset.' . $phpEx . '?action=menu&showwarning=1';
+		$module['Styles']['Menu'] = 'xs_frameset.' . PHP_EXT . '?action=menu&showwarning=1';
 	}
 	// add new menu
 	$module_name = '1300_Extreme_Styles';
-	$module[$module_name]['Styles_Management'] = 'xs_frameset.' . $phpEx . '?action=menu';
+	$module[$module_name]['Styles_Management'] = 'xs_frameset.' . PHP_EXT . '?action=menu';
 	for($i = 0; $i < XS_SHOWNAV_MAX; $i++)
 	{
 		$num = pow(2, $i);
 		if($i != XS_SHOWNAV_DOWNLOAD && ($board_config['xs_shownav'] & $num) > 0)
 		{
-			$module[$module_name][$lang['xs_config_shownav'][$i]] = 'xs_frameset.' . $phpEx . '?action=' . $xs_shownav_action[$i];
+			$module[$module_name][$lang['xs_config_shownav'][$i]] = 'xs_frameset.' . PHP_EXT . '?action=' . $xs_shownav_action[$i];
 		}
 	}
 	// add menu for style configuration
@@ -114,7 +114,7 @@ function xs_admin_override($modded = false)
 		if(substr($var, 0, 9) === 'xs_style_')
 		{
 			$str = substr($var, 9);
-			$module['Template_Config'][$str] = 'xs_frameset.' . $phpEx . '?action=style_config&tpl='.urlencode($str);
+			$module['Template_Config'][$str] = 'xs_frameset.' . PHP_EXT . '?action=style_config&tpl='.urlencode($str);
 		}
 	}
 }
@@ -175,7 +175,7 @@ if(!defined('NO_XS_HEADER'))
 	);
 	$template->preparse = 'xs_header';
 	$template->postparse = 'xs_footer';
-	$template->assign_block_vars('nav_left',array('ITEM' => '<a href="' . append_sid('xs_index.' . $phpEx) . '">' . $lang['xs_menu'] . '</a>'));
+	$template->assign_block_vars('nav_left',array('ITEM' => '<a href="' . append_sid('xs_index.' . PHP_EXT) . '">' . $lang['xs_menu'] . '</a>'));
 }
 
 
@@ -311,7 +311,7 @@ function get_ftp_config($action, $post = array(), $allow_local = false, $show_er
 // connect ftp
 function xs_ftp_connect($action, $post = array(), $allow_local = false)
 {
-	global $ftp, $board_config, $phpEx, $lang, $template;
+	global $ftp, $board_config, $lang, $template;
 	$_POST['get_ftp_config'] = '';
 	if($allow_local && !empty($board_config['xs_ftp_local']))
 	{
@@ -341,11 +341,11 @@ function xs_ftp_connect($action, $post = array(), $allow_local = false)
 		$list[$i] = strtolower(basename($list[$i]));
 	}
 	// check few files
-	$check = array('extension.inc', 'templates', 'xs_mod');
-	$found = array(false, false, false);
+	$check = array('templates', 'xs_mod');
+	$found = array(false, false);
 	for($i = 0; $i < count($list); $i++)
 	{
-		for($j=0; $j<count($check); $j++)
+		for($j = 0; $j < count($check); $j++)
 		{
 			if($list[$i] === $check[$j])
 			{
@@ -1018,8 +1018,8 @@ function pack_style($name, $newname, $themes, $comment)
       - comment
 	  - style names
 	*/
-	global $phpbb_root_path, $template_dir;
-	$data = gzcompress(pack_dir($phpbb_root_path . $template_dir . $name, '', $name, $newname));
+	global $template_dir;
+	$data = gzcompress(pack_dir(IP_ROOT_PATH . $template_dir . $name, '', $name, $newname));
 	$items_data = chr(strlen($newname)) . chr(strlen($comment));
 	$items_str = $newname . $comment;
 	for($i = 0; $i < count($themes); $i++)

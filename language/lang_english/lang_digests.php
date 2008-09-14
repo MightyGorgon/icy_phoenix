@@ -16,11 +16,7 @@
 *
 */
 
-//
-// Written by Mark D. Hamill, mhamill@computer.org
-// This software is designed to work with phpBB Version 2.0.20
-
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -30,7 +26,7 @@ $lang['digest_introduction'] = 'As you requested, here is the latest digest of m
 $lang['digest_from_text_name'] = $board_config['sitename'] . ' Digest Robot';
 $lang['digest_from_email_address'] = $board_config['board_email'];
 $lang['digest_subject_line'] = $board_config['sitename'] . ' Digests';
-$lang['digest_disclaimer_html'] = "\r\n" . 'This digest is being sent to registered members of <a href="' . DIGEST_SITE_URL . '">' . $board_config['sitename'] . '</a> forums and only because you explicitly requested it. ' . $board_config['sitename'] . ' is completely commercial free. Your email address is never disclosed to outside parties. See our <a href="' . DIGEST_SITE_URL . 'faq.' . $phpEx . '">FAQ</a> for more information on our privacy policies. You can change or delete your subscription by logging into ' . $board_config['sitename'] . ' from the <a href="' . DIGEST_SITE_URL . 'digests.' . $phpEx . '">Digest Page</a>. (You must be logged in to change your digest settings.) If you have questions or feedback on the format of this digest please send it to the <a href="mailto:' . $board_config['board_email'] . '">' . $board_config['sitename'] . ' Webmaster</a>.';
+$lang['digest_disclaimer_html'] = "\r\n" . 'This digest is being sent to registered members of <a href="' . DIGEST_SITE_URL . '">' . $board_config['sitename'] . '</a> forums and only because you explicitly requested it. ' . $board_config['sitename'] . ' is completely commercial free. Your email address is never disclosed to outside parties. See our <a href="' . DIGEST_SITE_URL . 'faq.' . PHP_EXT . '">FAQ</a> for more information on our privacy policies. You can change or delete your subscription by logging into ' . $board_config['sitename'] . ' from the <a href="' . DIGEST_SITE_URL . 'digests.' . PHP_EXT . '">Digest Page</a>. (You must be logged in to change your digest settings.) If you have questions or feedback on the format of this digest please send it to the <a href="mailto:' . $board_config['board_email'] . '">' . $board_config['sitename'] . ' Webmaster</a>.';
 $lang['digest_disclaimer_text'] = "\r\n" . 'This digest is being sent to registered members of ' . $board_config['sitename'] . ' forums and only because you explicitly requested it. ' . $board_config['sitename'] . ' is completely commercial free. Your email address is never disclosed to outside parties. See our FAQ for more information on our privacy policies. You can change or delete your subscription by logging into ' . $board_config['sitename'] . ' from the Digest Page. (You must be logged in to change your digest settings.) If you have questions or feedback on the format of this digest please send it to the ' . $board_config['board_email'] . '.';
 $lang['digest_forum'] = 'Forum: ';
 $lang['digest_topic'] = 'Topic: ';

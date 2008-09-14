@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -51,6 +51,9 @@ $user_data = $stat_db->sql_fetchrowset($result);
 
 $firstcount = $user_data[0]['user_totaltime'];
 
+$template->_tpldata['users.'] = array();
+//reset($template->_tpldata['users.']);
+
 for ($i = 0; $i < $user_count; $i++)
 {
 	$class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
@@ -63,7 +66,7 @@ for ($i = 0; $i < $user_count; $i++)
 		'USERNAME' => $user_data[$i]['username'],
 		'PERCENTAGE' => $statistics->percentage,
 		'BAR' => $statistics->bar_percent,
-		'URL' => append_sid($phpbb_root_path . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_data[$i]['user_id']),
+		'URL' => append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_data[$i]['user_id']),
 		'TIME' => make_hours($user_data[$i]['user_totaltime'])
 		)
 	);

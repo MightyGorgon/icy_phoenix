@@ -15,13 +15,46 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 //error_reporting(E_ALL ^ E_NOTICE); // Report all errors, except notices
 error_reporting(E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
+
+// OLD extension.inc - BEGIN
+//@ini_set('memory_limit', '24M');
+
+$starttime = 0;
+
+// Page generation time
+$mtime = microtime();
+$mtime = explode(' ', $mtime);
+$mtime = $mtime[1] + $mtime[0];
+$starttime = $mtime;
+
+// Change this if your extension is not .php!
+//@define('PHP_EXT', 'php');
+//$phpbb_root_path = IP_ROOT_PATH;
+//$phpEx = PHP_EXT;
+
+// Mighty Gorgon - Extra Debug - BEGIN
+@define('DEBUG_EXTRA', true);
+//@define('DEBUG_EXTRA_LOG', true);
+// Mighty Gorgon - Extra Debug - END
+
+// Mighty Gorgon - Extra Debug - BEGIN
+if (defined('DEBUG_EXTRA'))
+{
+	$base_memory_usage = 0;
+	if (function_exists('memory_get_usage'))
+	{
+		$base_memory_usage = memory_get_usage();
+	}
+}
+// Mighty Gorgon - Extra Debug - END
+// OLD extension.inc - END
 
 // The following code (unsetting globals)
 // Thanks to Matt Kavanagh and Stefan Esser for providing feedback as well as patch files
@@ -42,8 +75,6 @@ function deregister_globals()
 		'_SESSION'		=> true,
 		'_ENV'				=> true,
 		'_FILES'			=> true,
-		'phpbb_root_path'	=> true,
-		'phpEx'				=> true,
 		'no_page_header'	=> true,
 		'starttime'		=> true,
 		'base_memory_usage'	=> true,
@@ -119,7 +150,7 @@ else
 // CrackerTracker v5.x
 // Uncomment the following define to disable CT GET and POST parsing.
 //define('MG_KILL_CTRACK', true);
-include($phpbb_root_path . 'ctracker/engines/ct_security.' . $phpEx);
+include(IP_ROOT_PATH . 'ctracker/engines/ct_security.' . PHP_EXT);
 // CrackerTracker v5.x
 
 // Protect against GLOBALS tricks
@@ -220,36 +251,36 @@ $gen_simple_header = false;
 $unread = array();
 //<!-- END Unread Post Information to Database Mod -->
 
-include($phpbb_root_path . 'config.' . $phpEx);
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
 
-if(!defined('PHPBB_INSTALLED'))
+if(!defined('IP_INSTALLED'))
 {
-	header('Location: ' . $phpbb_root_path . 'install/install.' . $phpEx);
+	header('Location: ' . IP_ROOT_PATH . 'install/install.' . PHP_EXT);
 	exit;
 }
 
-include($phpbb_root_path . 'includes/constants.' . $phpEx);
-if ($non_xs)
+include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+if (defined('PHPBB_TEMPLATE'))
 {
-	include($phpbb_root_path . 'includes/phpbb_template.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/phpbb_template.' . PHP_EXT);
 }
 else
 {
-	include($phpbb_root_path . 'includes/template.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 }
-include($phpbb_root_path . 'includes/sessions.' . $phpEx);
-include($phpbb_root_path . 'includes/auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_categories_hierarchy.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_categories_hierarchy.' . PHP_EXT);
 if (defined('IN_ADMIN'))
 {
-	include_once($phpbb_root_path . 'includes/functions_extra.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
 }
-include($phpbb_root_path . 'includes/functions.' . $phpEx);
-include($phpbb_root_path . 'includes/db.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 // MG Cash MOD For IP - BEGIN
 if (defined('CASH_MOD') && defined('IN_CASHMOD'))
 {
-	include($phpbb_root_path . 'includes/functions_cash.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
 }
 // MG Cash MOD For IP - END
 // We do not need this any longer, unset for safety purposes
@@ -268,8 +299,8 @@ $user_ip = encode_ip($client_ip);
 $user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
 
 // CrackerTracker v5.x
-include($phpbb_root_path . 'ctracker/engines/ct_varsetter.' . $phpEx);
-include($phpbb_root_path . 'ctracker/engines/ct_ipblocker.' . $phpEx);
+include(IP_ROOT_PATH . 'ctracker/engines/ct_varsetter.' . PHP_EXT);
+include(IP_ROOT_PATH . 'ctracker/engines/ct_ipblocker.' . PHP_EXT);
 // CrackerTracker v5.x
 
 // Setup site wide options, if this fails then we output a CRITICAL_ERROR since basic forum information is not available
@@ -312,12 +343,12 @@ $board_config['time_yesterday'] = $board_config['time_today'] - 86400;
 unset($today_ary);
 // Time Management - END
 
-include($phpbb_root_path . ATTACH_MOD_PATH . 'attachment_mod.' . $phpEx);
+include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 if ($board_config['global_disable_upi2db'] == false)
 {
-	include($phpbb_root_path . 'includes/functions_upi2db.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 }
 else
 {
@@ -327,19 +358,19 @@ else
 
 if ($board_config['disable_referrers'] == false)
 {
-	include_once($phpbb_root_path . 'includes/functions_referrers.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_referrers.' . PHP_EXT);
 }
 
 // MG Logs - BEGIN
 if ($board_config['mg_log_actions'] == true)
 {
-	include($phpbb_root_path . 'includes/functions_mg_log.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_mg_log.' . PHP_EXT);
 }
 // MG Logs - END
 
 if (($board_config['url_rw'] == true) || ($board_config['url_rw_guests'] == true))
 {
-	include($phpbb_root_path . 'includes/functions_rewrite.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
 // Mighty Gorgon - Change Lang/Style - Begin
@@ -382,31 +413,19 @@ if (file_exists('install'))
 
 if ($board_config['admin_protect'] == true)
 {
-	$main_admin_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : '2';
-	if ($main_admin_id != '2')
+	if (defined('FOUNDER_ID'))
 	{
-		$sql = "SELECT user_id
-			FROM " . USERS_TABLE . "
-			WHERE user_id = '" . $main_admin_id . "'
-			LIMIT 1";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
-		}
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$main_admin_id = $row['user_id'];
-			$db->sql_freeresult($result);
-		}
-		else
-		{
-			$main_admin_id = '2';
-		}
+		$founder_id = FOUNDER_ID;
 	}
+	else
+	{
+		$founder_id = get_founder_id();
+	}
+
 	// Activate Main Admin Account
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_active = 1
-	WHERE user_id = '" . $main_admin_id . "'";
+	WHERE user_id = '" . $founder_id . "'";
 	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_MESSAGE, 'Unable to access the Users Table.');
@@ -414,7 +433,7 @@ if ($board_config['admin_protect'] == true)
 
 	// Delete Main Admin Ban
 	$sql = "DELETE FROM " . BANLIST_TABLE . "
-		WHERE ban_userid = '" . $main_admin_id . "'";
+		WHERE ban_userid = '" . $founder_id . "'";
 	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_MESSAGE, 'Unable to access the Banlist Table.');

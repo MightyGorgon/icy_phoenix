@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if (!defined('IN_PHPBB'))
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 set_magic_quotes_runtime(0);
 
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 {

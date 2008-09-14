@@ -9,13 +9,13 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('CT_SECLEVEL', 'MEDIUM');
 $ct_ignoregvar = array('');
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 $topic = (isset($_POST['topic'])) ? $_POST['topic'] : $_GET['topic'];
 $friendname = $_POST['friendname'];
@@ -30,10 +30,10 @@ init_userprefs($userdata);
 
 if ( !$userdata['session_logged_in'] )
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=tellafriend.' . $phpEx . '&topic=' . $topic . '&link=' . $link, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=tellafriend.' . PHP_EXT . '&topic=' . $topic . '&link=' . $link, true));
 }
 
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $mail_body = str_replace("{TOPIC}", trim(stripslashes($topic)), $lang['Tell_Friend_Body']);
 $mail_body = str_replace("{LINK}", $link, $mail_body);
@@ -81,7 +81,7 @@ if ( isset($_POST['submit']) )
 
 	if ( !$error )
 	{
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer($board_config['smtp_delivery']);
 
 		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($board_config['server_name']) . "\n";
@@ -131,6 +131,6 @@ if ( isset($_POST['submit']) )
 $template->set_filenames(array('body' => 'tellafriend_body.tpl'));
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

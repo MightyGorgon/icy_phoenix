@@ -15,7 +15,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -28,7 +28,7 @@ if ( !defined('IN_PHPBB') )
 */
 function display_upload_attach_box_limits($user_id, $group_id = 0)
 {
-	global $attach_config, $board_config, $phpbb_root_path, $lang, $db, $template, $phpEx, $userdata, $profiledata, $images;
+	global $attach_config, $board_config, $lang, $db, $template, $userdata, $profiledata, $images;
 
 	if (intval($attach_config['disable_mod']))
 	{
@@ -58,7 +58,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 	$group_id = (int) $group_id;
 
 	$attachments = new attach_posting();
-	$attachments->page = PAGE_INDEX;
+	$attachments->page = 0;
 
 	// Get the assigned Quota Limit. For Groups, we are directly getting the value, because this Quota can change from user to user.
 	if ($group_id)
@@ -237,7 +237,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 	$template->assign_vars(array(
 		'L_UACP' => $lang['UACP'],
 		'L_UPLOAD_QUOTA' => $lang['Upload_quota'],
-		'U_UACP' => $phpbb_root_path . 'uacp.' . $phpEx . '?u=' . $user_id . '&amp;sid=' . $userdata['session_id'],
+		'U_UACP' => IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?u=' . $user_id . '&amp;sid=' . $userdata['session_id'],
 		'UPLOADED' => sprintf($lang['User_uploaded_profile'], $user_uploaded),
 		'QUOTA' => sprintf($lang['User_quota_profile'], $user_quota),
 		'UPLOAD_LIMIT_IMG_WIDTH' => $upload_limit_img_length,

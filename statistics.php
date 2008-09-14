@@ -9,11 +9,11 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-//$non_xs = true;
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+//define('PHPBB_TEMPLATE', true);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Prepend all Variables with '__' to prevent conflicts with Variables from included Variables.
 $__stats_config = array();
@@ -29,8 +29,8 @@ while ($row = $db->sql_fetchrow($result))
 	$__stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'includes/functions_stats.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_module.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_module.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -38,11 +38,11 @@ init_userprefs($userdata);
 // End session management
 
 $language = $board_config['default_lang'];
-if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_statistics.' . $phpEx))
+if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT))
 {
 	$language = 'english';
 }
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_statistics.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT);
 
 $cms_page_id = '14';
 $cms_page_name = 'statistics';
@@ -70,7 +70,7 @@ $cms_global_blocks = ($board_config['wide_blocks_statistics'] == 1) ? true : fal
 $page_title = $lang['Statistics_title'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'statistics.tpl'));
 
@@ -105,7 +105,7 @@ for ($__count = 0; $__count < count($__stat_module_rows); $__count++)
 		$__module_info = generate_module_info($__stat_module_data[$__module_id]);
 
 		$__tpl_name = 'module_tpl_' . $__module_id;
-		$__module_root_path = './../../' . $phpbb_root_path;
+		$__module_root_path = './../../' . IP_ROOT_PATH;
 		$__module_data = $__stat_module_data[$__module_id];
 		$mod_lang = 'module_language_parse';
 
@@ -127,7 +127,7 @@ for ($__count = 0; $__count < count($__stat_module_rows); $__count++)
 					$result_cache->begin_cached_results(true, trim($__module_data['module_result_cache']));
 				}
 
-				include($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.' . $phpEx);
+				include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.' . PHP_EXT);
 
 				if (trim($__module_data['module_db_cache']) != '')
 				{
@@ -155,7 +155,7 @@ for ($__count = 0; $__count < count($__stat_module_rows); $__count++)
 
 			$stat_db->begin_cached_query();
 			$result_cache->begin_cached_results();
-			include($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.' . $phpEx);
+			include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.' . PHP_EXT);
 			$stat_db->end_cached_query($__module_id);
 			$result_cache->end_cached_query($__module_id);
 		}
@@ -195,6 +195,6 @@ $template->assign_block_vars('main_bottom',array());
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

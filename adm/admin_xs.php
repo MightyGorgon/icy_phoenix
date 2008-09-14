@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -27,7 +27,7 @@ if(empty($setmodules))
 
 define('IN_XS', true);
 define('XS_ADMIN_OVERRIDE', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 return;
 
 ?>

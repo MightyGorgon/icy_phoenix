@@ -19,7 +19,7 @@
 // Written by Mark D. Hamill, mhamill@computer.org
 // This software is designed to work with phpBB Version 2.0.20
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }

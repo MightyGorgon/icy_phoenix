@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -26,18 +26,18 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // get all the mods settings
 $mods = array();
-$dir = @opendir($phpbb_root_path . 'includes/mods_settings');
+$dir = @opendir(IP_ROOT_PATH . 'includes/mods_settings');
 while( $file = @readdir($dir) )
 {
-	if( preg_match("/^mod_.*?\." . $phpEx . "$/", $file) )
+	if( preg_match("/^mod_.*?\." . PHP_EXT . "$/", $file) )
 	{
-		include($phpbb_root_path . 'includes/mods_settings/' . $file);
+		include(IP_ROOT_PATH . 'includes/mods_settings/' . $file);
 	}
 }
 @closedir($dir);
@@ -268,7 +268,7 @@ if ($submit)
 			}
 			if ($error)
 			{
-				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('./admin_board_extend.' . $phpEx . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . $phpEx . '?pane=right') . '">', '</a>');
+				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 		}
@@ -303,7 +303,7 @@ if ($submit)
 	}
 
 	// send an update message
-	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('./admin_board_extend.' . $phpEx . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -339,7 +339,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 	}
 	$template->assign_block_vars('menu', array(
 		'CLASS'		=> ($menu_id == $i) ? ( (count($mod_keys[$i]) > 1) ? 'row3' : 'row1' ) : 'row2',
-		'U_MENU'	=> append_sid('./admin_board_extend.' . $phpEx . '?menu=' . $i),
+		'U_MENU'	=> append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $i),
 		'L_MENU'	=> sprintf( ( ($menu_id == $i) ? '<b>%s</b>' : '%s' ), mods_settings_get_lang($l_menu) ),
 		)
 	);
@@ -366,7 +366,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			$template->assign_block_vars('menu.mod', array(
 				'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) ) ? 'row1' : 'row2',
 				'ALIGN'	=> ( ($menu_id == $i) && ($mod_id == $j) && (count($sub_keys[$i][$j]) > 1) ) ? 'left' : 'center',
-				'U_MOD'	=> append_sid('./admin_board_extend.' . $phpEx . '?menu=' . $i . '&amp;mod=' . $j),
+				'U_MOD'	=> append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j),
 				'L_MOD'	=> sprintf( ( ( ($menu_id == $i) && ($mod_id == $j) ) ? '<b>%s</b>' : '%s' ), mods_settings_get_lang($l_mod) ),
 				)
 			);
@@ -379,7 +379,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 					{
 						$template->assign_block_vars('menu.mod.sub.row', array(
 							'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) && ($sub_id == $k) ) ? 'row1' : 'row2',
-							'U_MOD' => append_sid('./admin_board_extend.' . $phpEx . '?menu=' . $i . '&amp;mod=' . $j . '&amp;msub=' . $k),
+							'U_MOD' => append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j . '&amp;msub=' . $k),
 							'L_MOD'	=> sprintf( (($sub_id == $k) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($sub_keys[$i][$j][$k]) ),
 							)
 						);
@@ -486,13 +486,13 @@ $s_hidden_fields .= '<input type="hidden" name="menu_id" value="' . $menu_id . '
 $s_hidden_fields .= '<input type="hidden" name="mod_id" value="' . $mod_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="sub_id" value="' . $sub_id . '" />';
 $template->assign_vars(array(
-	'S_ACTION' => append_sid('./admin_board_extend.' . $phpEx),
+	'S_ACTION' => append_sid('./admin_board_extend.' . PHP_EXT),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	)
 );
 
 // footer
 $template->pparse('body');
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -1206,6 +1206,13 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_alpha_b
 
 
 
+########################################
+##              BUILD 035             ##
+########################################
+ALTER TABLE `phpbb_album` ADD COLUMN `pic_size` int(15) unsigned default '0' NOT NULL AFTER `pic_filename`;
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '1' WHERE config_name = 'allow_only_main_admin_id';
@@ -1213,6 +1220,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_alpha_b
 
 #-- DB CHANGES FOR VERSIONING
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
-UPDATE phpbb_album_config SET config_value = '1.4.2' WHERE config_name = 'fap_version';
+UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '1.2.7.34' WHERE config_name = 'ip_version';

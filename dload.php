@@ -9,13 +9,13 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_DOWNLOAD', true);
 //define('MG_KILL_CTRACK', true);
 define('MG_CTRACK_FLAG', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -50,7 +50,7 @@ $cms_global_blocks = ($board_config['wide_blocks_download'] == 1) ? true : false
 // Include the common file
 //===================================================
 
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
 
 //===================================================
 // Get action variable other wise set it to the main

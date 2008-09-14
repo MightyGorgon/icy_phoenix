@@ -51,10 +51,9 @@ die("<img src=\"admin/console/console_pic.png\" border=\"0\" alt=\"ECON\" title=
 /*
  * Define some vars & constants we need
  */
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
-$phpbb_root_path = './../';
-include($phpbb_root_path . 'extension.inc');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 
 error_reporting  (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
 set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
@@ -94,7 +93,7 @@ if (isset($HTTP_SESSION_VARS) && !is_array($HTTP_SESSION_VARS))
 if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on')
 {
 	// PHP4+ path
-	$not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES', 'phpEx', 'phpbb_root_path');
+	$not_unset = array('HTTP_GET_VARS', 'HTTP_POST_VARS', 'HTTP_COOKIE_VARS', 'HTTP_SERVER_VARS', 'HTTP_SESSION_VARS', 'HTTP_ENV_VARS', 'HTTP_POST_FILES');
 
 	// Not only will array_merge give a warning if a parameter
 	// is not an array, it will actually fail. So we check if
@@ -195,9 +194,9 @@ if( !get_magic_quotes_gpc() )
 /*
  * Include some files we need for the Emergency Console
  */
-include($phpbb_root_path . 'config.' . $phpEx);
-include($phpbb_root_path . 'includes/db/' . $dbms . '.' . $phpEx);
-include($phpbb_root_path . 'includes/template.' . $phpEx);
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/db/' . $dbms . '.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 define('PREFIX', $table_prefix);
 
 
@@ -219,8 +218,7 @@ unset($sql);						// Unset maybe injected SQL Commands in this var
 
 function phpbb_realpath($path)
 {
-	global $phpbb_root_path, $phpEx;
-	return (!@function_exists('realpath') || !@realpath($phpbb_root_path . 'includes/functions.' . $phpEx)) ? $path : @realpath($path);
+	return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
 }
 
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
@@ -232,7 +230,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 /*
  * The script itself :)
  */
-$template->set_filenames(array('ct_body' => $phpbb_root_path . 'ctracker/admin/console/emergency.tpl'));
+$template->set_filenames(array('ct_body' => IP_ROOT_PATH . 'ctracker/admin/console/emergency.tpl'));
 
 /*
  * Console Operations
@@ -382,7 +380,7 @@ else
 $template->assign_vars(array(
 		'YEAR'			 => date(Y),
 		'BACKUP' 		 => $save_status,
-		'PHPEX'			 => $phpEx,
+		'PHP_EXT'			 => PHP_EXT,
 		'RESTORE_OUTPUT' => ($saved_now)? '<a href="emergency.php?mode=restore" style="color:#FDFF00">&raquo; Click here to restore configuration table now! &laquo;</a>': '')
 	);
 

@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,10 +24,10 @@ if(!function_exists(imp_ads_block_func))
 {
 	function imp_ads_block_func()
 	{
-		global $template, $phpbb_root_path, $phpEx, $db, $board_config, $lang, $images, $userdata;
+		global $template, $db, $board_config, $lang, $images, $userdata;
 		global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars, $block_id;
 
-		include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_ads.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_ads.' . PHP_EXT);
 
 		$banner_var_all = '';
 		$banner_var_guests = '';

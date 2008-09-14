@@ -16,18 +16,18 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 
 if (!$cash->currency_count())
@@ -67,7 +67,7 @@ switch ($mode)
 				{
 					message_die(CRITICAL_ERROR, "Could not reset user Cash information", "", __LINE__, __FILE__, $sql);
 				}
-				message_die(GENERAL_MESSAGE, '<br />' . $lang['Update_successful'] . '<br /><br />' .  sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid("cash_reset.$phpEx") . '">', '</a>') . '<br /><br />');
+				message_die(GENERAL_MESSAGE, '<br />' . $lang['Update_successful'] . '<br /><br />' .  sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid("cash_reset." . PHP_EXT) . '">', '</a>') . '<br /><br />');
 			}
 		}
 		break;
@@ -101,12 +101,12 @@ switch ($mode)
 								'MESSAGE_TEXT' => $l_confirm,
 								'L_YES' => $lang['Yes'],
 								'L_NO' => $lang['No'],
-								'S_CONFIRM_ACTION' => append_sid('cash_reset.' . $phpEx),
+								'S_CONFIRM_ACTION' => append_sid('cash_reset.' . PHP_EXT),
 								'S_HIDDEN_FIELDS' => $s_hidden_fields
 								)
 							);
 							$template->pparse('confirm_body');
-							include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+							include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 						}
 					}
 					break;
@@ -122,18 +122,18 @@ switch ($mode)
 					if (count($c_ids))
 					{
 						$s_hidden_fields = '<input type="hidden" name="cids" value="' . implode(',',$c_ids) . '" />';
-						$l_confirm = sprintf($lang['Cash_confirm_recount'],'<a href="' . append_sid('admin_board.' . $phpEx) . '">','</a>');
+						$l_confirm = sprintf($lang['Cash_confirm_recount'],'<a href="' . append_sid('admin_board.' . PHP_EXT) . '">','</a>');
 						$template->set_filenames(array('confirm_body' => 'confirm_body.tpl'));
 						$template->assign_vars(array(
 							'MESSAGE_TITLE' => $lang['Information'],
 							'MESSAGE_TEXT' => $l_confirm,
 							'L_YES' => $lang['Yes'],
 							'L_NO' => $lang['No'],
-							'S_CONFIRM_ACTION' => append_sid('cash_recount.' . $phpEx),
+							'S_CONFIRM_ACTION' => append_sid('cash_recount.' . PHP_EXT),
 							'S_HIDDEN_FIELDS' => $s_hidden_fields)
 						);
 						$template->pparse('confirm_body');
-						include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+						include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 					}
 					break;
@@ -141,7 +141,7 @@ switch ($mode)
 		}
 		else
 		{
-			message_die(GENERAL_MESSAGE, '<br />' .  sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . $phpEx) . '">', '</a>') . '<br /><br />');
+			message_die(GENERAL_MESSAGE, '<br />' .  sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . PHP_EXT) . '">', '</a>') . '<br /><br />');
 
 		}
 		break;
@@ -164,7 +164,7 @@ switch ($mode)
 			$hidden_fields = '<input type="hidden" name="mode" value="submitted" />';
 
 			$template->assign_vars(array(
-				'S_RESET_ACTION' => append_sid('cash_reset.' . $phpEx),
+				'S_RESET_ACTION' => append_sid('cash_reset.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields,
 
 				'L_CASH_RESET_TITLE' => $lang['Cash_reset_title'],
@@ -197,7 +197,7 @@ switch ($mode)
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 
 		break;
 }

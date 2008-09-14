@@ -15,10 +15,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -29,7 +29,7 @@ $confirm = ( $_POST['confirm'] ) ? true : 0;
 
 if ( isset($_POST['cancel']) )
 {
-	redirect(append_sid('index.' . $phpEx));
+	redirect(append_sid('index.' . PHP_EXT));
 }
 
 if ($confirm)
@@ -51,7 +51,7 @@ else
 	$page_title = $lang['Delete_cookies'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	// Not confirmed, show confirmation message
 	$template->set_filenames(array('confirm' => 'confirm_body.tpl'));
@@ -60,13 +60,13 @@ else
 		'MESSAGE_TEXT' => $lang['cookies_confirm'],
 		'L_YES' =>  $lang['Yes'],
 		'L_NO' => $lang['No'],
-		'S_CONFIRM_ACTION' => append_sid('remove_cookies.' . $phpEx)
+		'S_CONFIRM_ACTION' => append_sid('remove_cookies.' . PHP_EXT)
 		)
 	);
 
 	$template->pparse('confirm');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 ?>

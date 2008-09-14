@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -25,16 +25,16 @@ if(!function_exists(imp_calendar_block_func))
 {
 	function imp_calendar_block_func()
 	{
-		global $phpbb_root_path, $phpEx, $template, $images, $lang, $board_config, $userdata, $db;
+		global $template, $images, $lang, $board_config, $userdata, $db;
 		global $mini_cal_today, $mini_cal_this_month, $mini_cal_this_year, $mini_cal_this_day;
 		//global $birthday_week_list, $birthday_today_list;
 
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		// Birthday Mod, Show users with birthday
 		if (($board_config['birthday_check_day'] > 0) && ($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_config['display_viewonline'] == 1)))
 		{
-			$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'birthday_' . $board_config['board_timezone'] . '.dat';
+			$cache_data_file = MAIN_CACHE_FOLDER . 'birthday_' . $board_config['board_timezone'] . '.dat';
 			$cache_update = true;
 			$cache_file_time = time();
 			if (@is_file($cache_data_file))
@@ -113,7 +113,7 @@ if(!function_exists(imp_calendar_block_func))
 		$birthday_today_list = stripslashes($birthday_today_list);
 		$birthday_week_list = stripslashes($birthday_week_list);
 
-		include($phpbb_root_path . 'includes/mini_cal/mini_cal.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/mini_cal/mini_cal.' . PHP_EXT);
 	}
 }
 

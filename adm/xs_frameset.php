@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -29,7 +29,7 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 
 define('IN_XS', true);
 define('NO_XS_HEADER', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $get_data = array();
@@ -52,24 +52,24 @@ if(isset($_POST['action']) && $_POST['action'] === 'web')
 	}
 }
 
-$get_data = count($get_data) ? $phpEx . '?' . implode('&', $get_data) : $phpEx;
+$get_data = PHP_EXT . (count($get_data) ? ('?' . implode('&', $get_data)) : '');
 
 $content_url = array(
-	'config'		=> append_sid('xs_config.'.$get_data),
-	'install'		=> append_sid('xs_install.'.$get_data),
-	'uninstall'		=> append_sid('xs_uninstall.'.$get_data),
-	'default'		=> append_sid('xs_styles.'.$get_data),
-	'cache'			=> append_sid('xs_cache.'.$get_data),
-	'import'		=> append_sid('xs_import.'.$get_data),
-	'export'		=> append_sid('xs_export.'.$get_data),
-	'clone'			=> append_sid('xs_clone.'.$get_data),
-	'download'		=> append_sid('xs_download.'.$get_data),
-	'edittpl'		=> append_sid('xs_edit.'.$get_data),
-	'editdb'		=> append_sid('xs_edit_data.'.$get_data),
-	'exportdb'		=> append_sid('xs_export_data.'.$get_data),
-	'updates'		=> append_sid('xs_update.'.$get_data),
-	'portal'		=> append_sid('xs_portal.'.$get_data),
-	'style_config'	=> append_sid('xs_style_config.'.$get_data),
+	'config'		=> append_sid('xs_config.' . $get_data),
+	'install'		=> append_sid('xs_install.' . $get_data),
+	'uninstall'		=> append_sid('xs_uninstall.' . $get_data),
+	'default'		=> append_sid('xs_styles.' . $get_data),
+	'cache'			=> append_sid('xs_cache.' . $get_data),
+	'import'		=> append_sid('xs_import.' . $get_data),
+	'export'		=> append_sid('xs_export.' . $get_data),
+	'clone'			=> append_sid('xs_clone.' . $get_data),
+	'download'		=> append_sid('xs_download.' . $get_data),
+	'edittpl'		=> append_sid('xs_edit.' . $get_data),
+	'editdb'		=> append_sid('xs_edit_data.' . $get_data),
+	'exportdb'		=> append_sid('xs_export_data.' . $get_data),
+	'updates'		=> append_sid('xs_update.' . $get_data),
+	'portal'		=> append_sid('xs_portal.' . $get_data),
+	'style_config'	=> append_sid('xs_style_config.' . $get_data),
 	);
 
 if(isset($content_url[$action]))
@@ -83,7 +83,7 @@ else
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'frameset.tpl'));
 $template->assign_vars(array(
-	'FRAME_TOP'		=> append_sid('xs_frame_top.' . $phpEx),
+	'FRAME_TOP'		=> append_sid('xs_frame_top.' . PHP_EXT),
 	'FRAME_MAIN'	=> $content,
 	)
 );

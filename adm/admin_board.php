@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,10 +25,10 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 // Pull all config data
 $sql = "SELECT * FROM " . CONFIG_TABLE;
@@ -74,7 +74,7 @@ else
 	if ( isset($_POST['submit']) && $ctracker_config->settings['auto_recovery'] == 1 )
 	{
 		define('CTRACKER_ACP', true);
-		include_once($phpbb_root_path . 'ctracker/classes/class_ct_adminfunctions.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_adminfunctions.' . PHP_EXT);
 		$backup_system = new ct_adminfunctions();
 		$backup_system->recover_configuration();
 		unset($backup_system);
@@ -114,7 +114,7 @@ else
 		if ($config_name == 'avatar_path')
 		{
 			$new['avatar_path'] = trim($new['avatar_path']);
-			if (strstr($new['avatar_path'], "\0") || !is_dir($phpbb_root_path . $new['avatar_path']) || !is_writable($phpbb_root_path . $new['avatar_path']))
+			if (strstr($new['avatar_path'], "\0") || !is_dir(IP_ROOT_PATH . $new['avatar_path']) || !is_writable(IP_ROOT_PATH . $new['avatar_path']))
 			{
 				$new['avatar_path'] = $default_config['avatar_path'];
 			}
@@ -142,7 +142,7 @@ else
 
 	if( isset($_POST['submit']) )
 	{
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -313,7 +313,7 @@ $shoutguest_no = ( $new['shout_allow_guest'] == 0 ) ? 'checked="checked"' : '';
 // Ajax Shoutbox - END
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid('admin_board.' . $phpEx),
+	'S_CONFIG_ACTION' => append_sid('admin_board.' . PHP_EXT),
 	'L_YES' => $lang['Yes'],
 	'L_NO' => $lang['No'],
 	'L_DEFAULT_AVATAR' => $lang['Default_avatar'],
@@ -668,9 +668,9 @@ $template->assign_vars(array(
 	// Ajax Shoutbox - END
 	)
 );
-include($phpbb_root_path . ADM . '/bb_usage_stats_admin.' . $phpEx);
+include(IP_ROOT_PATH . ADM . '/bb_usage_stats_admin.' . PHP_EXT);
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

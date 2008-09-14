@@ -17,25 +17,24 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 if ($album_config['switch_nuffload'] == 1)
 {
 	$template->assign_block_vars('switch_nuffload_enabled', array());
-	include($phpbb_root_path . 'album_nuffload.' . $phpEx);
+	include(IP_ROOT_PATH . 'album_nuffload.' . PHP_EXT);
 }
 else
 {
@@ -162,8 +161,7 @@ if ($album_user_access['upload'] == 0)
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_upload.' . $phpEx . '?cat_id=' . $cat_id), true));
-		//redirect(append_sid(LOGIN_MG . "?redirect=album_upload.$phpEx?cat_id=$cat_id"), true);
+		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_upload.' . PHP_EXT . '?cat_id=' . $cat_id), true));
 	}
 	else
 	{
@@ -318,7 +316,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	$page_title = $lang['Album'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_upload_body.tpl'));
 
@@ -330,7 +328,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	}
 
 	$template->assign_vars(array(
-		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)),
+		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'CAT_TITLE' => $thiscat['cat_title'],
 
 		'L_UPLOAD_PIC' => $lang['Upload_Pic'],
@@ -392,7 +390,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		'L_RESET' => $lang['Reset'],
 		'L_SUBMIT' => $lang['Submit'],
 
-		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_upload.' . $phpEx . '?cat_id=' . $cat_id)),
+		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_upload.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'S_ON_SUBMIT' => 'return(checkAlbumForm())',
 		)
 	);
@@ -448,7 +446,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	//
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {
@@ -826,16 +824,40 @@ else
 
 		srand((double)microtime() * 1000000); // for older than version 4.2.0 of PHP
 
+		$pic_base_path = ALBUM_UPLOAD_PATH;
+		$pic_extra_path = '';
+		$upload_path = $pic_base_path . $pic_extra_path;
+		if (USERS_SUBFOLDERS_ALBUM == true)
+		{
+			$pic_extra_path = $userdata['user_id'] . '/';
+			$upload_path = $pic_base_path . $pic_extra_path;
+			if (!is_dir($upload_path))
+			{
+				$dir_creation = @mkdir($upload_path, 0777);
+				if ($dir_creation == true)
+				{
+					@copy($pic_base_path . 'index.html', $upload_path . 'index.html');
+				}
+				else
+				{
+					$pic_extra_path = '';
+					$upload_path = $pic_base_path . $pic_extra_path;
+				}
+			}
+		}
+
 		do
 		{
 			$pic_filename = md5(uniqid(rand())) . '.' . $pic_filetype;
 		}
-		while(file_exists(ALBUM_UPLOAD_PATH . $pic_filename));
+		while(file_exists($upload_path . $pic_filename));
+		$pic_fullpath = $upload_path . $pic_filename;
 
 		if ($album_config['gd_version'] == 0)
 		{
 			$pic_thumbnail = $pic_filename;
 		}
+		$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
 
 
 		// --------------------------------
@@ -865,27 +887,26 @@ else
 			$move_file = 'copy';
 		}
 
-		$move_file($filetmp, ALBUM_UPLOAD_PATH . $pic_filename);
+		$move_file($filetmp, $pic_fullpath);
 		if ($album_config['switch_nuffload'] == 1)
 		{
 			@unlink($filetmp);
 		}
 
-		@chmod(ALBUM_UPLOAD_PATH . $pic_filename, 0777);
+		@chmod($pic_fullpath, 0777);
 
 		if ($album_config['gd_version'] == 0)
 		{
-			$move_file($thumbtmp, ALBUM_CACHE_PATH . $pic_thumbnail);
+			$move_file($thumbtmp, $pic_thumbnail_fullpath);
 			@unlink($thumbtmp);
-			@chmod(ALBUM_CACHE_PATH . $pic_thumbnail, 0777);
+			@chmod($pic_thumbnail_fullpath, 0777);
 		}
-
 
 		// --------------------------------
 		// Well, it's an image. Check its image size
 		// --------------------------------
 
-		$pic_size = getimagesize(ALBUM_UPLOAD_PATH . $pic_filename);
+		$pic_size = getimagesize($pic_fullpath);
 
 		$pic_width = $pic_size[0];
 		$pic_height = $pic_size[1];
@@ -893,11 +914,11 @@ else
 		/*
 		if (($pic_width > $album_config['max_width']) || ($pic_height > $album_config['max_height']))
 		{
-			@unlink(ALBUM_UPLOAD_PATH . $pic_filename);
+			@unlink($pic_fullpath);
 
 			if ($album_config['gd_version'] == 0)
 			{
-				@unlink(ALBUM_CACHE_PATH . $pic_thumbnail);
+				@unlink($pic_thumbnail_fullpath);
 			}
 
 			message_die(GENERAL_ERROR, $lang['Upload_image_size_too_big']);
@@ -909,8 +930,8 @@ else
 		{
 			if ($album_config['gd_version'] == 0)
 			{
-				@unlink(ALBUM_UPLOAD_PATH . $pic_filename);
-				@unlink(ALBUM_CACHE_PATH . $pic_thumbnail);
+				@unlink($pic_fullpath);
+				@unlink($pic_thumbnail_fullpath);
 				message_die(GENERAL_ERROR, $lang['Upload_image_size_too_big'] . " Error code: 001");
 			}
 			$gd_errored = false;
@@ -925,7 +946,7 @@ else
 					break;
 			}
 
-			$src = @$read_function(ALBUM_UPLOAD_PATH . $pic_filename);
+			$src = @$read_function($pic_fullpath);
 
 			if (!$src)
 			{
@@ -961,29 +982,29 @@ else
 			{
 				// print $recompress ."<br />".$pic_filename; exit;
 				// overwrite old image
-				@unlink(ALBUM_UPLOAD_PATH . $pic_filename);
+				@unlink($pic_fullpath);
 
 				switch ($pic_filetype)
 				{
 					case 'jpg':
-						@imagejpeg($new_pic, ALBUM_UPLOAD_PATH . $pic_filename, $album_config['thumbnail_quality']);
+						@imagejpeg($new_pic, $pic_fullpath, $album_config['thumbnail_quality']);
 						break;
 					case 'png':
-						@imagepng($new_pic, ALBUM_UPLOAD_PATH . $pic_filename);
+						@imagepng($new_pic, $pic_fullpath);
 						break;
 				}
 
-				@chmod(ALBUM_CACHE_PATH . $pic_thumbnail, 0777);
+				@chmod($pic_thumbnail_fullpath, 0777);
 				$pic_width = $new_width;
 				$pic_height = $new_height;
 			} // End IF $gd_errored
 			else
 			{
-				@unlink(ALBUM_UPLOAD_PATH . $pic_filename);
+				@unlink($pic_fullpath);
 
 				if ($album_config['gd_version'] == 0)
 				{
-					@unlink(ALBUM_CACHE_PATH . $pic_thumbnail);
+					@unlink($pic_thumbnail_fullpath);
 				}
 
 				message_die(GENERAL_ERROR, $lang['Upload_image_size_too_big']." Error code: 002");
@@ -992,16 +1013,16 @@ else
 
 		if ($album_config['gd_version'] == 0)
 		{
-			$thumb_size = getimagesize(ALBUM_CACHE_PATH . $pic_thumbnail);
+			$thumb_size = getimagesize($pic_thumbnail_fullpath);
 
 			$thumb_width = $thumb_size[0];
 			$thumb_height = $thumb_size[1];
 
 			if (($thumb_width > $album_config['thumbnail_size']) || ($thumb_height > $album_config['thumbnail_size']))
 			{
-				@unlink(ALBUM_UPLOAD_PATH . $pic_filename);
+				@unlink($pic_fullpath);
 
-				@unlink(ALBUM_CACHE_PATH . $pic_thumbnail);
+				@unlink($pic_thumbnail_fullpath);
 
 				message_die(GENERAL_ERROR, $lang['Upload_thumbnail_size_too_big']);
 			}
@@ -1028,7 +1049,7 @@ else
 					break;
 			}
 
-			$src = @$read_function(ALBUM_UPLOAD_PATH  . $pic_filename);
+			$src = @$read_function($pic_fullpath);
 
 			if (!$src)
 			{
@@ -1045,17 +1066,17 @@ else
 				switch ($pic_filetype)
 				{
 					case 'jpg':
-						@unlink(ALBUM_UPLOAD_PATH . $pic_rotate);
-						@imagejpeg($rotate, ALBUM_UPLOAD_PATH . $pic_filename, $album_config['thumbnail_size']);
+						@unlink($upload_path . $pic_rotate);
+						@imagejpeg($rotate, $pic_fullpath, $album_config['thumbnail_size']);
 						break;
 					case 'png':
-						@unlink(ALBUM_UPLOAD_PATH . $pic_rotate);
-						@imagepng($rotate, ALBUM_UPLOAD_PATH . $pic_resize);
+						@unlink($upload_path . $pic_rotate);
+						@imagepng($rotate, $upload_path . $pic_resize);
 						break;
 				}
 
-				@chmod(ALBUM_UPLOAD_PATH . $pic_filename, 0777);
-				$pic_size = getimagesize(ALBUM_UPLOAD_PATH . $pic_filename);
+				@chmod($pic_fullpath, 0777);
+				$pic_size = getimagesize($pic_fullpath);
 				$pic_width = $pic_size[0];
 				$pic_height = $pic_size[1];
 			}
@@ -1084,7 +1105,7 @@ else
 					break;
 			}
 
-			$src = @$read_function(ALBUM_UPLOAD_PATH . $pic_filename);
+			$src = @$read_function($pic_fullpath);
 
 			if (!$src)
 			{
@@ -1097,12 +1118,12 @@ else
 				if ($pic_width > $pic_height)
 				{
 					$thumbnail_width = $album_config['thumbnail_size'];
-					$thumbnail_height = $album_config['thumbnail_size'] * ($pic_height/$pic_width);
+					$thumbnail_height = $album_config['thumbnail_size'] * ($pic_height / $pic_width);
 				}
 				else
 				{
 					$thumbnail_height = $album_config['thumbnail_size'];
-					$thumbnail_width = $album_config['thumbnail_size'] * ($pic_width/$pic_height);
+					$thumbnail_width = $album_config['thumbnail_size'] * ($pic_width / $pic_height);
 				}
 
 				if($album_config['show_pic_size_on_thumb'] == 1)
@@ -1121,8 +1142,8 @@ else
 				if($album_config['show_pic_size_on_thumb'] == '1')
 				{
 					$dimension_font = 1;
-					$dimension_filesize = filesize(ALBUM_UPLOAD_PATH . $pic_filename);
-					$dimension_string = $pic_width . "x" . $pic_height . "(" . intval($dimension_filesize/1024) . "KB)";
+					$dimension_filesize = filesize($pic_fullpath);
+					$dimension_string = $pic_width . 'x' . $pic_height . '(' . intval($dimension_filesize/1024) . 'KB)';
 					$dimension_colour = ImageColorAllocate($thumbnail,255,255,255);
 					$dimension_height = imagefontheight($dimension_font);
 					$dimension_width = imagefontwidth($dimension_font) * strlen($dimension_string);
@@ -1144,17 +1165,17 @@ else
 				switch ($pic_filetype)
 				{
 					case 'jpg':
-						@imagejpeg($thumbnail, ALBUM_CACHE_PATH . $pic_thumbnail, $album_config['thumbnail_quality']);
+						@imagejpeg($thumbnail, $pic_thumbnail_fullpath, $album_config['thumbnail_quality']);
 						break;
 					case 'png':
-						@imagepng($thumbnail, ALBUM_CACHE_PATH . $pic_thumbnail);
+						@imagepng($thumbnail, $pic_thumbnail_fullpath);
 						break;
 					case '.gif':
-						@imagegif($thumbnail, ALBUM_CACHE_PATH . $pic_thumbnail);
+						@imagegif($thumbnail, $pic_thumbnail_fullpath);
 						break;
 				}
 
-				@chmod(ALBUM_CACHE_PATH . $pic_thumbnail, 0777);
+				@chmod($pic_thumbnail_fullpath, 0777);
 
 			} // End IF $gd_errored
 
@@ -1199,54 +1220,49 @@ else
 		// --------------------------------
 
 		$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_thumbnail, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
-				VALUES ('$pic_filename', '$pic_thumbnail', '$pic_title', '$pic_desc', '$pic_user_id', '$pic_user_ip', '$pic_username', '$pic_time', '$cat_id', '$pic_approval')";
+				VALUES ('" . $pic_extra_path . $pic_filename . "', '" . $pic_thumbnail . "', '" . $pic_title . "', '" . $pic_desc . "', '" . $pic_user_id . "', '" . $pic_user_ip . "', '" . $pic_username . "', '" . $pic_time . "', '" . $cat_id . "', '" . $pic_approval . "')";
 		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not insert new entry', '', __LINE__, __FILE__, $sql);
 		}
 
-		// Smart Album Button - BEGIN
-		if (defined('IS_ICYPHOENIX'))
+		if ($is_personal_gallery == true)
 		{
-			if ($is_personal_gallery == true)
+			$sql = "SELECT COUNT(pic_id) AS count
+				FROM " . ALBUM_TABLE . "
+				WHERE pic_user_id = '". $userdata['user_id'] ."'
+				AND pic_cat_id = '" . $cat_id . "'";
+			if(!$result = $db->sql_query($sql))
 			{
-				$sql = "SELECT COUNT(pic_id) AS count
-					FROM ". ALBUM_TABLE ."
-					WHERE pic_user_id = '". $userdata['user_id'] ."'
-					AND pic_cat_id = '$cat_id'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query personal pic count', '', __LINE__, __FILE__, $sql);
-				}
-				$personal_pics_count = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
-				$userpics = $personal_pics_count['count'];
-
-				// Check which users category we are in so we don't update the wrong users pic count
-				$sql = 'SELECT cat_user_id FROM ' . ALBUM_CAT_TABLE . ' WHERE cat_id = (' . $cat_id . ') LIMIT 1';
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not get the cat user id of this category ', '', __LINE__, __FILE__, $sql);
-				}
-				$usercat = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
-				$cat_user_id = $usercat['cat_user_id'];
-
-				// Update the users personal_pics_count
-				if (!empty ($userpics) || $userpics == 0)
-				{
-					$sql = "UPDATE " . USERS_TABLE . "
-						SET user_personal_pics_count = '$userpics'
-						WHERE user_id = $cat_user_id";
-					if (!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
-					}
-				}
-				unset($personal_pics_count);
+				message_die(GENERAL_ERROR, 'Could not query personal pic count', '', __LINE__, __FILE__, $sql);
 			}
+			$personal_pics_count = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+			$userpics = $personal_pics_count['count'];
+
+			// Check which users category we are in so we don't update the wrong users pic count
+			$sql = 'SELECT cat_user_id FROM ' . ALBUM_CAT_TABLE . ' WHERE cat_id = (' . $cat_id . ') LIMIT 1';
+			if(!($result = $db->sql_query($sql)))
+			{
+				message_die(GENERAL_ERROR, 'Could not get the cat user id of this category ', '', __LINE__, __FILE__, $sql);
+			}
+			$usercat = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+			$cat_user_id = $usercat['cat_user_id'];
+
+			// Update the users personal_pics_count
+			if (!empty ($userpics) || $userpics == 0)
+			{
+				$sql = "UPDATE " . USERS_TABLE . "
+					SET user_personal_pics_count = '" . $userpics . "'
+					WHERE user_id = '" . $cat_user_id . "'";
+				if (!($result = $db->sql_query($sql)))
+				{
+					message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
+				}
+			}
+			unset($personal_pics_count);
 		}
-		// Smart Album Button - END
 
 		// Mighty Gorgon - Send email to admin for notification/approval - BEGIN
 		if ($album_config['email_notification'])
@@ -1263,7 +1279,7 @@ else
 
 			//$db->sql_freeresult($result);
 
-			include_once($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 			$email_headers = 'From: ' . $board_config['board_email'] . "\nReturn-Path: " . $board_config['board_email'] . "\r\n";
 
@@ -1306,7 +1322,7 @@ else
 						'PIC_APPROVAL' => ($pic_approval ? $lang['Approvation_OK'] : $lang['Approvation_NO']),
 						'DATE' => create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']),
 						'SUBJECT' => $lang['Email_Notification'],
-						'U_PIC' => $server_path . 'album_showpage.' . $phpEx . '?pic_id=' . $new_pic_id['pic_id'])
+						'U_PIC' => $server_path . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id'])
 					);
 
 					$emailer->send();
@@ -1317,28 +1333,26 @@ else
 		}
 		// Mighty Gorgon - Send email to admin for notification/approval - END
 		// Watch pic for comments - BEGIN
-		if (isset($HTTP_POST_VARS['comment_watch']))
+		if (isset($_POST['comment_watch']))
 		{
-			if ($HTTP_POST_VARS['comment_watch'] == 0)
+			if ($_POST['comment_watch'] == 0)
 			{
-				if (!$album_config['email_notification'])
+				//Get the pic id for this pic
+				$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
+						WHERE pic_filename = '" . $pic_filename . "'
+						AND pic_time = '" . $pic_time . "'
+						LIMIT 1";
+				if(!$result = $db->sql_query($sql))
 				{
-					//Get the pic id for this pic
-					$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
-							WHERE pic_filename = '" . $pic_filename . "'
-							AND pic_time = '" . $pic_time . "'
-							LIMIT 1";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not query new pic', '', __LINE__, __FILE__, $sql);
-					}
-					$new_pic_id = $db->sql_fetchrow($result);
+					message_die(GENERAL_ERROR, 'Could not query new pic', '', __LINE__, __FILE__, $sql);
 				}
+				$new_pic_id = $db->sql_fetchrow($result);
+				$db->sql_freeresult($result);
 				$pic_id = $new_pic_id['pic_id'];
 
 				$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
 				$sql = "INSERT $sql_priority INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
-					VALUES ($pic_id, " . $userdata['user_id'] . ", 0)";
+					VALUES ('" . $pic_id . "', '" . $userdata['user_id'] . "', 0)";
 				if (!($result = $db->sql_query($sql)))
 				{
 					message_die(GENERAL_ERROR, "Could not insert comment watch information", '', __LINE__, __FILE__, $sql);
@@ -1382,21 +1396,21 @@ else
 		if (album_is_debug_enabled() == false)
 		{
 			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">'
+				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">'
 				)
 			);
 		}
 	}
 	if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{
-		$message .= '<br /><br />' . sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 	}
 	else
 	{
-		$message .= '<br /><br />' . sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 	}
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 	synchronize_cat_pics_counter($cat_id);
 	if ($album_config['switch_nuffload'] == 1)

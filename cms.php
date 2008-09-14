@@ -10,12 +10,12 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-$common_cms_template = $phpbb_root_path . 'templates/common/cms/';
-include_once($phpbb_root_path . 'includes/functions_cms_admin.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+$common_cms_template = IP_ROOT_PATH . 'templates/common/cms/';
+include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
 $js_temp =  array('js/cms.js', 'scriptaculous/unittest.js');
 
@@ -100,24 +100,24 @@ else
 
 if (!$userdata['session_admin'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cms.' . $phpEx . '&admin=1' . $redirect_append, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=cms.' . PHP_EXT . '&admin=1' . $redirect_append, true));
 }
 
 if(isset($_POST['block_reset']))
 {
 	if ($ls_id == false)
 	{
-		redirect(append_sid('cms.' . $phpEx . '?mode=blocks&action=list&l_id=' . $l_id, true));
+		redirect(append_sid('cms.' . PHP_EXT . '?mode=blocks&action=list&l_id=' . $l_id, true));
 	}
 	else
 	{
-		redirect(append_sid('cms.' . $phpEx . '?mode=blocks&action=list&ls_id=' . $ls_id, true));
+		redirect(append_sid('cms.' . PHP_EXT . '?mode=blocks&action=list&ls_id=' . $ls_id, true));
 	}
 }
 
 if(isset($_POST['cancel']))
 {
-	redirect(append_sid('cms.' . $phpEx, true));
+	redirect(append_sid('cms.' . PHP_EXT, true));
 }
 
 if(isset($_POST['hascontent']))
@@ -134,15 +134,15 @@ else
 }
 $block_content_file = $block_content;
 
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-if(!file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . $phpEx))
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT))
 {
 	$board_config['default_lang'] = 'english';
 }
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx);
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . $phpEx);
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . PHP_EXT);
 
 if ($mode == 'smilies')
 {
@@ -154,7 +154,7 @@ $page_title = $lang['Home'];
 $meta_description = '';
 $meta_keywords = '';
 $template->assign_vars(array('S_CMS_AUTH' => true));
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 if ($board_config['cms_dock'] == true)
 {
@@ -244,7 +244,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : $b_info['bposition'];
 				$position = get_block_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
 
-				$block_dir = $phpbb_root_path . 'blocks';
+				$block_dir = IP_ROOT_PATH . 'blocks';
 				$blocks = opendir($block_dir);
 
 				$block_content_file_old = $b_info['blockfile'];
@@ -255,10 +255,10 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$pos = strpos($file, 'blocks_imp_');
 					if (($pos == 0) && ($pos !== false))
 					{
-						$pos = strpos($file, '.' . $phpEx);
+						$pos = strpos($file, '.' . PHP_EXT);
 						if ($pos !== false)
 						{
-							$temp = ereg_replace('\.' . $phpEx, '', $file);
+							$temp = ereg_replace('\.' . PHP_EXT, '', $file);
 							$temp1 = ereg_replace('blocks_imp_', '', $temp);
 							$temp2 = !empty($lang['cms_block_' . $temp1]) ? ('&nbsp;[' . $lang['cms_block_' . $temp1] . ']') : '';
 							$temp1 = ereg_replace('_', ' ', $temp1);
@@ -314,7 +314,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : '';
 			$position = get_block_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
 
-			$block_dir = $phpbb_root_path . 'blocks';
+			$block_dir = IP_ROOT_PATH . 'blocks';
 			$blocks = opendir($block_dir);
 
 			$block_content_file_old = $b_info['blockfile'];
@@ -325,10 +325,10 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				$pos = strpos($file, 'blocks_imp_');
 				if (($pos == 0) && ($pos !== false))
 				{
-					$pos = strpos($file, '.' . $phpEx);
+					$pos = strpos($file, '.' . PHP_EXT);
 					if ($pos !== false)
 					{
-						$temp = ereg_replace('\.' . $phpEx, '', $file);
+						$temp = ereg_replace('\.' . PHP_EXT, '', $file);
 						$temp1 = ereg_replace('blocks_imp_', '', $temp);
 						$temp2 = !empty($lang['cms_block_' . $temp1]) ? ('&nbsp;[' . $lang['cms_block_' . $temp1] . ']') : '';
 						$temp1 = ereg_replace('_', ' ', $temp1);
@@ -484,10 +484,10 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 			else
 			{
-				if(file_exists($phpbb_root_path . '/blocks/' . $block_content_file . '.cfg'))
+				if(file_exists(IP_ROOT_PATH . '/blocks/' . $block_content_file . '.cfg'))
 				{
 					$block_count_variables = 0;
-					include($phpbb_root_path . '/blocks/' . $block_content_file . '.cfg');
+					include(IP_ROOT_PATH . '/blocks/' . $block_content_file . '.cfg');
 					if ($block_count_variables > 0)
 					{
 						for($i = 0; $i < $block_count_variables; $i++)
@@ -624,30 +624,31 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			'L_EDIT_BLOCK' => $lang['Block_Edit'],
 			'L_SUBMIT' => $lang['Submit'],
 			'L_PREVIEW' => $lang['Preview'],
-			'S_BLOCKS_ACTION' => append_sid('cms.' . $phpEx . $s_append_url),
+			'S_BLOCKS_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		// BBCBMG - BEGIN
 		//$bbcbmg_in_acp = true;
-		include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-		include($phpbb_root_path . 'includes/bbcb_mg.' . $phpEx);
+		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 		$template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 		// BBCBMG - END
 		// BBCBMG SMILEYS - BEGIN
 		generate_smilies('inline');
-		include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 		$template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 		// BBCBMG SMILEYS - END
 
 		$template->pparse('body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 	elseif($action == 'save')
 	{
 		$b_title = (isset($_POST['title'])) ? trim($_POST['title']) : '';
+		$b_title = ((STRIP) ? stripslashes($b_title) : $b_title);
 		$b_bposition = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : '';
 		$b_active = (isset($_POST['active'])) ? intval($_POST['active']) : 0;
 		$b_type = (isset($_POST['type'])) ? intval($_POST['type']) : 0;
@@ -702,7 +703,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 
 		$bbcode_uid = '';
-		$b_content = addslashes($b_content);
+		$b_content = ((STRIP) ? addslashes($b_content) : $b_content);
 		if($b_type == true)
 		{
 			if(!empty($b_content))
@@ -739,9 +740,9 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				message_die(GENERAL_ERROR, 'Could not insert data into blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
 			}
 
-			if(file_exists($phpbb_root_path . '/blocks/' . $b_blockfile . '.cfg'))
+			if(file_exists(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg'))
 			{
-				include($phpbb_root_path . '/blocks/' . $b_blockfile . '.cfg');
+				include(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg');
 
 				// let's empty the previously created config vars...
 				$sql = "SELECT * FROM " . CMS_CONFIG_TABLE . " WHERE bid = '" . $b_id . "'";
@@ -775,9 +776,9 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 			if(!empty($b_blockfile))
 			{
-				if(file_exists($phpbb_root_path . '/blocks/' . $b_blockfile . '.cfg'))
+				if(file_exists(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg'))
 				{
-					include($phpbb_root_path . '/blocks/' . $b_blockfile . '.cfg');
+					include(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg');
 
 					//$message .= '<br /><br />' . $lang['B_BV_added'];
 
@@ -834,9 +835,9 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 			if(!empty($b_blockfile))
 			{
-				if(file_exists($phpbb_root_path . '/blocks/' . $b_blockfile . '.cfg'))
+				if(file_exists(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg'))
 				{
-					include($phpbb_root_path . '/blocks/' . $b_blockfile . '.cfg');
+					include(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg');
 
 					//$message .= '<br /><br />' . $lang['B_BV_added'];
 
@@ -866,7 +867,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		fix_weight_blocks($id_var_value, $table_name);
 		$db->clear_cache('cms_');
-		$message .= '<br /><br />' . $lang['Block_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . $phpEx . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
+		$message .= '<br /><br />' . $lang['Block_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
@@ -881,12 +882,12 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
-				'S_CONFIRM_ACTION' => append_sid('cms.' . $phpEx),
+				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 			$template->pparse('confirm');
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 			exit();
 		}
 		else
@@ -905,7 +906,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 				$db->clear_cache('cms_');
 
-				$message = $lang['Block_removed'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . $phpEx . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value . $redirect_action) . '">', '</a>') . '<br />';
+				$message = $lang['Block_removed'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value . $redirect_action) . '">', '</a>') . '<br />';
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -991,7 +992,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 			fix_weight_blocks($id_var_value, $table_name);
 			$db->clear_cache('cms_');
-			$message = '<br /><br />' . $lang['Blocks_duplicated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . $phpEx . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value) . '">', '</a>') . '<br />';
+			$message = '<br /><br />' . $lang['Blocks_duplicated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value) . '">', '</a>') . '<br />';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
@@ -1007,26 +1008,26 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			{
 				$page_url = append_sid(PORTAL_MG);
 				$l_id_list = "'0'";
-				$l_name = $l_filename . '.' . $phpEx;
+				$l_name = $l_filename . '.' . PHP_EXT;
 			}
 			else
 			{
 				if ($id_var_name == 'l_id')
 				{
-					if (($l_filename != '') && file_exists($l_filename . '.' . $phpEx))
+					if (($l_filename != '') && file_exists($l_filename . '.' . PHP_EXT))
 					{
-						$page_url = append_sid($l_filename . '.' . $phpEx);
+						$page_url = append_sid($l_filename . '.' . PHP_EXT);
 					}
 					else
 					{
-						$page_url = (substr($l_name, strlen($l_name) - (strlen($phpEx) + 1), (strlen($phpEx) + 1)) == ('.' . $phpEx)) ? append_sid($l_name) : append_sid(PORTAL_MG . '?page=' . $id_var_value);
+						$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(PORTAL_MG . '?page=' . $id_var_value);
 					}
 					$l_name = ($l_name == '') ? $lang['Portal'] : $l_name;
 				}
 				else
 				{
-					$page_url = append_sid($l_filename . '.' . $phpEx);
-					$l_name = $l_filename . '.' . $phpEx;
+					$page_url = append_sid($l_filename . '.' . PHP_EXT);
+					$l_name = $l_filename . '.' . PHP_EXT;
 				}
 				$l_id_list = "'" . $id_var_value . "'";
 			}
@@ -1090,7 +1091,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				'L_PREVIEW' => $lang['CMS_Preview'],
 				'L_MOVE_UP' => $lang['B_Move_Up'],
 				'L_MOVE_DOWN' => $lang['B_Move_Down'],
-				'S_BLOCKS_ACTION' => append_sid('cms.' . $phpEx),
+				'S_BLOCKS_ACTION' => append_sid('cms.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -1160,10 +1161,10 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					'GROUPS' => $groups,
 					'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
 					'VIEW' => $b_view,
-					'U_EDIT' => append_sid('cms.' . $phpEx . '?mode=blocks&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-					'U_DELETE' => append_sid('cms.' . $phpEx . '?mode=blocks&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-					'U_MOVE_UP' => append_sid('cms.' . $phpEx . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-					'U_MOVE_DOWN' => append_sid('cms.' . $phpEx . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
+					'U_EDIT' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+					'U_DELETE' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+					'U_MOVE_UP' => append_sid('cms.' . PHP_EXT . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
+					'U_MOVE_DOWN' => append_sid('cms.' . PHP_EXT . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
 					)
 				);
 			}
@@ -1208,7 +1209,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				}
 				fix_weight_blocks($id_var_value, $table_name);
 				$db->clear_cache('cms_');
-				$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . $phpEx . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
+				$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -1243,7 +1244,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					}
 				}
 				$db->clear_cache('cms_');
-				redirect(append_sid('cms.' . $phpEx . '?mode=blocks_adv&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
+				redirect(append_sid('cms.' . PHP_EXT . '?mode=blocks_adv&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
 			}
 		}
 
@@ -1305,18 +1306,18 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		{
 			if ($id_var_name == 'l_id')
 			{
-				if (($l_filename != '') && file_exists($l_filename . '.' . $phpEx))
+				if (($l_filename != '') && file_exists($l_filename . '.' . PHP_EXT))
 				{
-					$page_url = append_sid($l_filename . '.' . $phpEx);
+					$page_url = append_sid($l_filename . '.' . PHP_EXT);
 				}
 				else
 				{
-					$page_url = (substr($l_name, strlen($l_name) - (strlen($phpEx) + 1), (strlen($phpEx) + 1)) == ('.' . $phpEx)) ? append_sid($l_name) : append_sid(PORTAL_MG . '?page=' . $id_var_value);
+					$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(PORTAL_MG . '?page=' . $id_var_value);
 				}
 			}
 			else
 			{
-				$page_url = append_sid($l_filename . '.' . $phpEx);
+				$page_url = append_sid($l_filename . '.' . PHP_EXT);
 			}
 			$l_id_list = "'" . $id_var_value . "'";
 		}
@@ -1327,7 +1328,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		else
 		{
-			$l_name = $l_filename . '.' . $phpEx;
+			$l_name = $l_filename . '.' . PHP_EXT;
 		}
 
 		if (($id_var_name == 'l_id') && ($id_var_value > 0))
@@ -1369,7 +1370,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			'L_PREVIEW' => $lang['CMS_Preview'],
 			'L_MOVE_UP' => $lang['B_Move_Up'],
 			'L_MOVE_DOWN' => $lang['B_Move_Down'],
-			'S_BLOCKS_ACTION' => append_sid('cms.' . $phpEx),
+			'S_BLOCKS_ACTION' => append_sid('cms.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1463,10 +1464,10 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 						'GROUPS' => $groups,
 						'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
 						'VIEW' => $b_view,
-						'U_EDIT' => append_sid('cms.' . $phpEx . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-						'U_DELETE' => append_sid('cms.' . $phpEx . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-						'U_MOVE_UP' => append_sid('cms.' . $phpEx . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-						'U_MOVE_DOWN' => append_sid('cms.' . $phpEx . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
+						'U_EDIT' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+						'U_DELETE' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+						'U_MOVE_UP' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
+						'U_MOVE_DOWN' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
 						)
 					);
 				}
@@ -1678,7 +1679,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 		}
 
 		$template_name = get_template_name($board_config['default_style']);
-		$template_dir = $phpbb_root_path . '/templates/' . $template_name . '/layout';
+		$template_dir = IP_ROOT_PATH . '/templates/' . $template_name . '/layout';
 
 		if ($mode == 'layouts')
 		{
@@ -1757,7 +1758,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 		{
 			@unlink('testing_write_access_permissions.test');
 		}
-		$write_test = @copy('index_empty.' . $phpEx, 'testing_write_access_permissions.test');
+		$write_test = @copy('index_empty.' . PHP_EXT, 'testing_write_access_permissions.test');
 		if (file_exists('testing_write_access_permissions.test'))
 		{
 			@unlink('testing_write_access_permissions.test');
@@ -1806,7 +1807,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'NOT_PAGE_NAV' => (!$l_info['page_nav']) ? 'checked="checked"' : '',
 			'L_EDIT_LAYOUT' => $lang['Layout_Edit'],
 			'L_SUBMIT' => $lang['Submit'],
-			'S_LAYOUT_ACTION' => append_sid('cms.' . $phpEx),
+			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1857,16 +1858,16 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			{
 				@unlink($l_filename_old);
 
-				if (substr($l_filename, strlen($l_filename) - (strlen($phpEx) + 1), (strlen($phpEx) + 1)) == ('.' . $phpEx))
+				if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
 				{
-					$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen($phpEx) + 1))) . ('.' . $phpEx);
+					$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
 					if (file_exists($l_filename))
 					{
 						message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);
 					}
 					else
 					{
-						$creation_success = @copy('index_empty.' . $phpEx, $l_filename);
+						$creation_success = @copy('index_empty.' . PHP_EXT, $l_filename);
 						if ($creation_success)
 						{
 							@chmod($l_filename, 0755);
@@ -1899,9 +1900,9 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 
 			$template_name = get_template_name($board_config['default_style']);
 
-			if(file_exists($phpbb_root_path . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
+			if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
 			{
-				include($phpbb_root_path . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
+				include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
 
 				$sql_test = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = '" . $l_id . "'";
 				if(!$result_test = $db->sql_query($sql_test))
@@ -1962,16 +1963,16 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			{
 				@unlink($l_filename_old);
 			}
-			if (substr($l_filename, strlen($l_filename) - (strlen($phpEx) + 1), (strlen($phpEx) + 1)) == ('.' . $phpEx))
+			if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
 			{
-				$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen($phpEx) + 1))) . ('.' . $phpEx);
+				$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
 				if (file_exists($l_filename))
 				{
 					message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);
 				}
 				else
 				{
-					$creation_success = @copy('index_empty.' . $phpEx, $l_filename);
+					$creation_success = @copy('index_empty.' . PHP_EXT, $l_filename);
 					if ($creation_success)
 					{
 						@chmod($l_filename, 0755);
@@ -1995,9 +1996,9 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 
 			$template_name = get_template_name($board_config['default_style']);
 
-			if(file_exists($phpbb_root_path . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
+			if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
 			{
-				include($phpbb_root_path . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
+				include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
 
 				$layout_id = get_max_layout_id(CMS_LAYOUT_TABLE);
 
@@ -2012,13 +2013,13 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				}
 
 				$message .= '<br /><br />' . $lang['Layout_BP_added'];
-				$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . $phpEx . '?mode=blocks&amp;l_id=' . $layout_id) . '">', '</a>');
+				$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout_id) . '">', '</a>');
 
 			}
 		}
 
 		$db->clear_cache('cms_');
-		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . $phpEx) . '">', '</a>') . '<br /><br />';
+		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . PHP_EXT) . '">', '</a>') . '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
@@ -2047,19 +2048,19 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				'L_ENABLED' => $lang['Enabled'],
 				'L_DISABLED' => $lang['Disabled'],
 
-				'S_CONFIRM_ACTION' => append_sid('cms.' . $phpEx),
+				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 			$template->pparse('confirm');
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 			exit();
 		}
 		else
 		{
 			if($l_id != 0)
 			{
-				if ((substr($l_filename, strlen($l_filename) - (strlen($phpEx) + 1), (strlen($phpEx) + 1)) == ('.' . $phpEx)) && (file_exists($l_filename)))
+				if ((substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) && (file_exists($l_filename)))
 				{
 					@unlink($l_filename);
 				}
@@ -2079,7 +2080,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				}
 				$db->sql_freeresult($result_list);
 
-				$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . $phpEx) . '">', '</a>') . '<br /><br />';
+				$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . PHP_EXT) . '">', '</a>') . '<br /><br />';
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -2114,7 +2115,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'L_DELETE' => $lang['CSM_Delete'],
 			'L_PREVIEW' => $lang['CMS_Preview'],
 			'L_LAYOUT_ADD' => $lang['Layout_Add'],
-			'S_LAYOUT_ACTION' => append_sid('cms.' . $phpEx),
+			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -2156,9 +2157,9 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lid'] . '\'', false, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lid'] . '\'', false, false),
 				'LAYOUT_TEMPLATE' => $l_rows[$i]['template'],
 				'U_PREVIEW_LAYOUT' => append_sid(($l_rows[$i]['filename'] == '') ? PORTAL_MG . '?page=' . $l_rows[$i]['lid'] : $l_rows[$i]['filename']),
-				'U_EDIT_LAYOUT' => append_sid('cms.' . $phpEx . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=edit'),
-				'U_DELETE_LAYOUT' => append_sid('cms.' . $phpEx . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=delete'),
-				'U_LAYOUT' => append_sid('cms.' . $phpEx . '?mode=' . (($mode == 'layouts') ? 'blocks' : 'blocks_adv') . '&amp;l_id=' . $l_rows[$i]['lid'])
+				'U_EDIT_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=edit'),
+				'U_DELETE_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=delete'),
+				'U_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=' . (($mode == 'layouts') ? 'blocks' : 'blocks_adv') . '&amp;l_id=' . $l_rows[$i]['lid'])
 				)
 			);
 		}
@@ -2218,7 +2219,7 @@ if ($mode == 'layouts_special')
 			'L_DELETE' => $lang['CSM_Delete'],
 			'L_PREVIEW' => $lang['CMS_Preview'],
 			'L_LAYOUT_ADD' => $lang['Layout_Add'],
-			'S_LAYOUT_ACTION' => append_sid('cms.' . $phpEx),
+			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -2246,13 +2247,13 @@ if ($mode == 'layouts_special')
 				'ROW_CLASS' => $row_class,
 				'LAYOUT_ID' => $l_rows[$i]['lsid'],
 				'LAYOUT_NAME' => $lang[$lang_var],
-				'LAYOUT_FILENAME' => ($l_rows[$i]['filename'] != '') ? append_sid($l_rows[$i]['filename'] . '.' . $phpEx) : $lang['None'],
+				'LAYOUT_FILENAME' => ($l_rows[$i]['filename'] != '') ? append_sid($l_rows[$i]['filename'] . '.' . PHP_EXT) : $lang['None'],
 				'LAYOUT_TEMPLATE' => '',
 				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE,'\'' . $l_rows[$i]['lsid'] . '\'', true, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lsid'] . '\'', true, false),
-				'U_PREVIEW_LAYOUT' => append_sid(($l_rows[$i]['filename'] != '') ? ($l_rows[$i]['filename'] . '.' . $phpEx) : '#'),
+				'U_PREVIEW_LAYOUT' => append_sid(($l_rows[$i]['filename'] != '') ? ($l_rows[$i]['filename'] . '.' . PHP_EXT) : '#'),
 				'U_EDIT_LAYOUT' => '#',
 				'U_DELETE_LAYOUT' => '#',
-				'U_LAYOUT' => append_sid('cms.' . $phpEx . '?mode=blocks&amp;ls_id=' . $l_rows[$i]['lsid'])
+				'U_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;ls_id=' . $l_rows[$i]['lsid'])
 				)
 			);
 		}
@@ -2327,14 +2328,14 @@ if($mode == 'config')
 		if(isset($_POST['save']))
 		{
 			$db->clear_cache('cms_');
-			$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid('cms.' . $phpEx . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid('cms.' . $phpEx) . '">', '</a>') . '<br /><br />';
+			$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid('cms.' . PHP_EXT) . '">', '</a>') . '<br /><br />';
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
 
 	$template->assign_vars(array(
-		'S_CONFIG_ACTION' => append_sid('cms.' . $phpEx),
+		'S_CONFIG_ACTION' => append_sid('cms.' . PHP_EXT),
 		'L_CONFIGURATION_TITLE' => $lang['CMS_Config'],
 		'L_CONFIGURATION_EXPLAIN' => $lang['Portal_Explain'],
 		'L_GENERAL_CONFIG' => $lang['Portal_General_Config'],
@@ -2365,7 +2366,7 @@ if (($mode == false))
 		'L_DELETE' => $lang['CSM_Delete'],
 		'L_PREVIEW' => $lang['CMS_Preview'],
 		'L_LAYOUT_ADD' => $lang['Layout_Add'],
-		'S_LAYOUT_ACTION' => append_sid('cms.' . $phpEx),
+		'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -2374,6 +2375,6 @@ if (($mode == false))
 $db->clear_cache('cms_');
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

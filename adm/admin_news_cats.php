@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 //
 // First we do the setmodules stuff for the admin cp.
@@ -21,11 +21,11 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
-include_once ($phpbb_root_path . 'includes/news_data.' . $phpEx );
+include_once (IP_ROOT_PATH . 'includes/news_data.' . PHP_EXT );
 
 //
 // Check to see what mode we should operate in.
@@ -39,7 +39,7 @@ else
 	$mode = "";
 }
 
-$dir = @opendir($phpbb_root_path . $board_config['news_path'] );
+$dir = @opendir(IP_ROOT_PATH . $board_config['news_path'] );
 
 if( !$dir )
 {
@@ -48,9 +48,9 @@ if( !$dir )
 
 while($file = @readdir($dir))
 {
-	if( !@is_dir($phpbb_root_path . $board_config['news_path'] . '/' . $file) )
+	if( !@is_dir(IP_ROOT_PATH . $board_config['news_path'] . '/' . $file) )
 	{
-		$img_size = @getimagesize($phpbb_root_path . $board_config['news_path'] . '/' . $file);
+		$img_size = @getimagesize(IP_ROOT_PATH . $board_config['news_path'] . '/' . $file);
 
 		if( $img_size[0] && $img_size[1] )
 		{
@@ -94,12 +94,12 @@ if( isset($_POST['add']) || isset($_GET['add']) )
 		"L_SUBMIT" => $lang['Submit'],
 		"L_RESET" => $lang['Reset'],
 
-		"I_NEWS_IMG" => $phpbb_root_path . $board_config['news_path'] . '/' . $category_images[0],
+		"I_NEWS_IMG" => IP_ROOT_PATH . $board_config['news_path'] . '/' . $category_images[0],
 
-		"S_NEWS_ACTION" => append_sid("admin_news_cats.$phpEx"),
+		"S_NEWS_ACTION" => append_sid("admin_news_cats." . PHP_EXT),
 		"S_HIDDEN_FIELDS" => $s_hidden_fields,
 		"S_FILENAME_OPTIONS" => $filename_list,
-		"S_SMILEY_BASEDIR" => $phpbb_root_path . $board_config['news_path']
+		"S_SMILEY_BASEDIR" => IP_ROOT_PATH . $board_config['news_path']
 		)
 	);
 
@@ -133,7 +133,7 @@ elseif ( $mode != "" )
 				message_die(GENERAL_ERROR, "Couldn't update topics news category", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Category_Deleted'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news_cats.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_Deleted'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news_cats." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 			break;
@@ -181,7 +181,7 @@ elseif ( $mode != "" )
 
 			$template->assign_vars(array(
 				"NEWS_CATEGORY" => $category_data['news_category'],
-				"NEWS_ICON" => $phpbb_root_path . $board_config['news_path'] . '/' . $category_data['news_image'],
+				"NEWS_ICON" => IP_ROOT_PATH . $board_config['news_path'] . '/' . $category_data['news_image'],
 
 				"L_NEWS_TITLE" => $lang['News_Editing_Utility'],
 				"L_NEWS_CONFIG" => $lang['News_Config'],
@@ -191,12 +191,12 @@ elseif ( $mode != "" )
 				"L_SUBMIT" => $lang['Submit'],
 				"L_RESET" => $lang['Reset'],
 
-				"I_NEWS_IMG" => $phpbb_root_path . $board_config['news_path'] . '/'. $category_edit_img,
+				"I_NEWS_IMG" => IP_ROOT_PATH . $board_config['news_path'] . '/'. $category_edit_img,
 
-				"S_SMILEY_ACTION" => append_sid("admin_news_cats.$phpEx"),
+				"S_SMILEY_ACTION" => append_sid("admin_news_cats." . PHP_EXT),
 				"S_HIDDEN_FIELDS" => $s_hidden_fields,
 				"S_FILENAME_OPTIONS" => $filename_list,
-				"S_SMILEY_BASEDIR" => $phpbb_root_path . $board_config['news_path'] )
+				"S_SMILEY_BASEDIR" => IP_ROOT_PATH . $board_config['news_path'] )
 			);
 
 			$template->pparse('body');
@@ -232,7 +232,7 @@ elseif ( $mode != "" )
 				message_die(GENERAL_ERROR, "Couldn't update news info", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Category_Updated'] . '<br /><br />' . sprintf( $lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news_cats.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_Updated'] . '<br /><br />' . sprintf( $lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news_cats." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 			break;
@@ -266,7 +266,7 @@ elseif ( $mode != "" )
 				message_die(GENERAL_ERROR, "Couldn't insert	new	category", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Category_Added'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news_cats.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_Added'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news_cats." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 			break;
@@ -277,7 +277,7 @@ else
 	//
 	// This is the main display of the page	before the admin has selected any options.
 	//
-	$data_access = new NewsDataAccess( $phpbb_root_path	);
+	$data_access = new NewsDataAccess(IP_ROOT_PATH);
 	$news_cats = $data_access->fetchCategories();
 
 	$template->set_filenames(array(
@@ -296,7 +296,7 @@ else
 		'L_TOPICS' => $lang['Topics'],
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_NEWS_ACTION' => append_sid("admin_news_cats.$phpEx"))
+		'S_NEWS_ACTION' => append_sid("admin_news_cats." . PHP_EXT))
 	);
 
 	//
@@ -317,21 +317,21 @@ else
 
 			'TOPIC_COUNT' => $news_cats[$i]['topic_count'],
 
-			'CATEGORY_IMG' => $phpbb_root_path . $board_config['news_path']	.	'/'	.	$news_cats[$i]['news_image'],
+			'CATEGORY_IMG' => IP_ROOT_PATH . $board_config['news_path']	.	'/'	.	$news_cats[$i]['news_image'],
 			'L_CATEGORY' => $news_cats[$i]['news_category'],
 
-			'U_NEWS_EDIT' => append_sid("admin_news_cats.$phpEx?mode=edit&amp;id=" . $news_cats[$i]['news_id']),
-			'U_NEWS_DELETE' => append_sid("admin_news_cats.$phpEx?mode=delete&amp;id=" . $news_cats[$i]['news_id']))
+			'U_NEWS_EDIT' => append_sid('admin_news_cats.' . PHP_EXT . '?mode=edit&amp;id=' . $news_cats[$i]['news_id']),
+			'U_NEWS_DELETE' => append_sid('admin_news_cats.' . PHP_EXT . '?mode=delete&amp;id=' . $news_cats[$i]['news_id']))
 		);
 	}
 
 	//
-	// Spit	out	the	page.
+	// Spit out the page.
 	//
 	$template->pparse('body');
 }
 
 // Page	Footer
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

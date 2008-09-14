@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -47,6 +47,9 @@ if (!($result = $db->sql_query($sql)))
 
 $user_count = $db->sql_numrows($result);
 $user_data = $db->sql_fetchrowset($result);
+
+$template->_tpldata['signup.'] = array();
+//reset($template->_tpldata['signup.']);
 
 for ($i = 0; $i < $user_count; $i=$i+$k)
 {

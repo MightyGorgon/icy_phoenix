@@ -15,46 +15,45 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
-include($album_root_path . 'archive.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+include(ALBUM_MOD_PATH . 'archive.' . PHP_EXT);
 
 // ------------------------------------
 // Get the request
 // ------------------------------------
 
 $auth_view = 0;
-if( isset($_GET['cat_id']) )
+if(isset($_GET['cat_id']))
 {
 	$cat_id = intval($_GET['cat_id']);
 	$album_user_access = album_user_access($cat_id, $thiscat, 1, 0, 0, 0, 0, 0); // VIEW
 	$auth_view = $album_user_access['view'];
 	//$auth_view = ($userdata['user_level'] == ADMIN);
 }
-elseif( isset($_GET['user_id']) )
+elseif(isset($_GET['user_id']))
 {
 	$user_id = intval($_GET['user_id']);
 	$cat_id = PERSONAL_GALLERY . " AND pic_user_id = $user_id";
 	$personal_gallery_access = personal_gallery_access(1, 0);
 	$auth_view = $personal_gallery_access['view'];
-	//$auth_view = ( ($userdata['user_id'] == $user_id) || ($userdata['user_level'] > 0) ) ? 1 : 0;
+	//$auth_view = (($userdata['user_id'] == $user_id) || ($userdata['user_level'] > 0)) ? 1 : 0;
 }
 
 $start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
 $start = ($start < 0) ? 0 : $start;
 
-if( isset($_GET['sort_method']) )
+if(isset($_GET['sort_method']))
 {
 	switch ($_GET['sort_method'])
 	{
@@ -77,7 +76,7 @@ if( isset($_GET['sort_method']) )
 			$sort_method = $album_config['sort_method'];
 	}
 }
-elseif( isset($_POST['sort_method']) )
+elseif(isset($_POST['sort_method']))
 {
 	switch ($_POST['sort_method'])
 	{
@@ -105,7 +104,7 @@ else
 	$sort_method = $album_config['sort_method'];
 }
 
-if( isset($_GET['sort_order']) )
+if(isset($_GET['sort_order']))
 {
 	switch ($_GET['sort_order'])
 	{
@@ -119,7 +118,7 @@ if( isset($_GET['sort_order']) )
 			$sort_order = $album_config['sort_order'];
 	}
 }
-elseif( isset($_POST['sort_order']) )
+elseif(isset($_POST['sort_order']))
 {
 	switch ($_POST['sort_order'])
 	{
@@ -144,7 +143,7 @@ $pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page']
 // Check authorization
 // ------------------------------------
 
-if ( (!$auth_view) || (($album_config['show_download'] == 0) && ($userdata['user_level'] != ADMIN)))
+if ((!$auth_view) || (($album_config['show_download'] == 0) && ($userdata['user_level'] != ADMIN)))
 {
 	message_die(GENERAL_ERROR, $lang['No_Download_auth']);
 }
@@ -157,9 +156,9 @@ if ( (!$auth_view) || (($album_config['show_download'] == 0) && ($userdata['user
 // ------------------------------------
 
 $sql = "SELECT COUNT(pic_id) AS count
-		FROM ". ALBUM_TABLE ."
+		FROM " . ALBUM_TABLE . "
 		WHERE pic_cat_id = $cat_id";
-if( !($result = $db->sql_query($sql)) )
+if(!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not count pics', '', __LINE__, __FILE__, $sql);
 }
@@ -188,7 +187,7 @@ if ($total_pics > 0)
 			WHERE pic_cat_id = $cat_id
 			ORDER BY $sort_method $sort_order
 			$limit_sql";
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query pics information', '', __LINE__, __FILE__, $sql);
 	}
@@ -203,7 +202,7 @@ if ($total_pics > 0)
 
 	$archive->set_options(array('inmemory'=>1,'storepaths'=>0,'comment'=>'Archived photos from ' . $board_config['sitename']));
 	$DLpics = array();
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$DLpics[] = $row;
 	}
@@ -214,7 +213,6 @@ if ($total_pics > 0)
 	}
 	$archive->create_archive();
 	$archive->download_file();
-
 }
 else
 {

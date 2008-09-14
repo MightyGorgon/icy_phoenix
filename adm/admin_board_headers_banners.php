@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -17,9 +17,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // Pull all config data
 $sql = "SELECT * FROM " . CONFIG_TABLE;
@@ -55,7 +55,7 @@ else
 
 	if( isset($_POST['submit']) )
 	{
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config_mg'], '<a href="' . append_sid('admin_board_headers_banners.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config_mg'], '<a href="' . append_sid('admin_board_headers_banners.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -87,7 +87,7 @@ $new['viewtopic_banner_text'] = stripslashes($new['viewtopic_banner_text']);
 $template->set_filenames(array('body' => ADM_TPL . 'board_config_headers_banners.tpl'));
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid('admin_board_headers_banners.' . $phpEx),
+	'S_CONFIG_ACTION' => append_sid('admin_board_headers_banners.' . PHP_EXT),
 
 	'L_CONFIGURATION_TITLE' => $lang['MG_Configuration'],
 	'L_CONFIGURATION_EXPLAIN' => $lang['MG_Configuration_Explain'],
@@ -152,6 +152,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

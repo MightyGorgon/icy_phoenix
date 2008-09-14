@@ -8,7 +8,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -16,15 +16,15 @@ if ( !defined('IN_PHPBB') )
 // ------------------------------------
 // NUFFIMAGE SWITCHES
 // ------------------------------------
-require($album_root_path . 'album_image_class.' . $phpEx);
+require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
 $nuff_http = nuff_http_vars();
 
-//include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . $phpEx);
+//include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
 
 /*
 if ($album_config['enable_nuffimage'] == 1)
 {
-	include($album_root_path . 'album_nuffimage_box.' . $phpEx);
+	include(ALBUM_MOD_PATH . 'album_nuffimage_box.' . PHP_EXT);
 	$template->assign_var_from_handle('NUFFIMAGE_BOX', 'nuffimage_box');
 }
 */
@@ -107,24 +107,24 @@ $template->assign_vars(array(
 	'L_NUFF_WATERMARK' => $lang['Nuff_Watermark'],
 	'L_NUFF_WATERMARK_EXPLAIN' => $lang['Nuff_Watermark_Explain'],
 
-	'IMG_NORMAL' => $album_root_path . 'fap_normal.png',
-	'IMG_RESIZE' => $album_root_path . 'fap_resize.png',
-	'IMG_RECOMPRESS' => $album_root_path . 'fap_recompress.png',
-	'IMG_BW' => $album_root_path . 'fap_bw.png',
-	'IMG_SEPIA' => $album_root_path . 'fap_sepia.png',
-	'IMG_FLIP' => $album_root_path . 'fap_flip.png',
-	'IMG_MIRROR' => $album_root_path . 'fap_mirror.png',
-	'IMG_ROTATE' => $album_root_path . 'fap_rotate.png',
-	'IMG_ALPHA' => $album_root_path . 'fap_alpha.png',
-	'IMG_BLUR' => $album_root_path . 'fap_blur.png',
-	'IMG_PIXELATE' => $album_root_path . 'fap_pixelate.png',
-	'IMG_SCATTER' => $album_root_path . 'fap_scatter.png',
-	'IMG_INFRARED' => $album_root_path . 'fap_infrared.png',
-	'IMG_TINT' => $album_root_path . 'fap_tint.png',
-	'IMG_INTERLACE' => $album_root_path . 'fap_interlace.png',
-	'IMG_SCREEN' => $album_root_path . 'fap_screen.png',
-	'IMG_STEREOGRAM' => $album_root_path . 'fap_stereogram.png',
-	'IMG_WATERMARK' => $album_root_path . 'fap_watermark.png',
+	'IMG_NORMAL' => ALBUM_MOD_IMG_PATH . 'fap_normal.png',
+	'IMG_RESIZE' => ALBUM_MOD_IMG_PATH . 'fap_resize.png',
+	'IMG_RECOMPRESS' => ALBUM_MOD_IMG_PATH . 'fap_recompress.png',
+	'IMG_BW' => ALBUM_MOD_IMG_PATH . 'fap_bw.png',
+	'IMG_SEPIA' => ALBUM_MOD_IMG_PATH . 'fap_sepia.png',
+	'IMG_FLIP' => ALBUM_MOD_IMG_PATH . 'fap_flip.png',
+	'IMG_MIRROR' => ALBUM_MOD_IMG_PATH . 'fap_mirror.png',
+	'IMG_ROTATE' => ALBUM_MOD_IMG_PATH . 'fap_rotate.png',
+	'IMG_ALPHA' => ALBUM_MOD_IMG_PATH . 'fap_alpha.png',
+	'IMG_BLUR' => ALBUM_MOD_IMG_PATH . 'fap_blur.png',
+	'IMG_PIXELATE' => ALBUM_MOD_IMG_PATH . 'fap_pixelate.png',
+	'IMG_SCATTER' => ALBUM_MOD_IMG_PATH . 'fap_scatter.png',
+	'IMG_INFRARED' => ALBUM_MOD_IMG_PATH . 'fap_infrared.png',
+	'IMG_TINT' => ALBUM_MOD_IMG_PATH . 'fap_tint.png',
+	'IMG_INTERLACE' => ALBUM_MOD_IMG_PATH . 'fap_interlace.png',
+	'IMG_SCREEN' => ALBUM_MOD_IMG_PATH . 'fap_screen.png',
+	'IMG_STEREOGRAM' => ALBUM_MOD_IMG_PATH . 'fap_stereogram.png',
+	'IMG_WATERMARK' => ALBUM_MOD_IMG_PATH . 'fap_watermark.png',
 
 	'NUFF_RESIZE_CHECKED' => ($nuff_http['nuff_resize'] == 0) ? '' : ' checked="checked"',
 	'NUFF_RECOMPRESS_CHECKED' => ($nuff_http['nuff_recompress'] == 0) ? '' : ' checked="checked"',
@@ -144,10 +144,10 @@ $template->assign_vars(array(
 
 	'NUFF_PIC_ID' => $pic_id,
 
-	//'HIDDEN_FIELDS_NUFF' => append_sid(album_append_uid(('album_pic_nuffed.' . $phpEx . '?pic_id=' . $pic_id . $nuff_mode)),
-	'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $pic_id . $full_size_param . '&amp;nuffimage=true&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method)),
+	//'HIDDEN_FIELDS_NUFF' => append_sid(album_append_uid(('album_pic_nuffed.' . PHP_EXT . '?pic_id=' . $pic_id . $nuff_mode)),
+	'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;nuffimage=true&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method)),
 
-	//'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . $phpEx)),
+	//'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT)),
 	// This would be required in tpl if you want to hide pic id and nuffimage var.
 	/*
 	<input type="hidden" name="pic_id" value="{NUFF_PIC_ID}" class="mainoption" />

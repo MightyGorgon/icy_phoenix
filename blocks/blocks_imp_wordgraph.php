@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -25,7 +25,7 @@ if(!function_exists(imp_wordgraph))
 {
 	function imp_wordgraph()
 	{
-		global $lang, $template, $board_config, $db, $cms_config_vars, $phpEx, $block_id;
+		global $lang, $template, $board_config, $db, $cms_config_vars, $block_id;
 
 		$template->_tpldata['wordgraph_loop.'] = array();
 		//reset($template->_tpldata['wordgraph_loop.']);

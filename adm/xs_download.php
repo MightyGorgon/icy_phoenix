@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,10 +28,10 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_import.' . $phpEx) . '">' . $lang['xs_import_styles'] . '</a>'));
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_download.' . $phpEx) . '">' . $lang['xs_download_styles'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_import.' . PHP_EXT) . '">' . $lang['xs_import_styles'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_download.' . PHP_EXT) . '">' . $lang['xs_download_styles'] . '</a>'));
 
 // submit url
 if(isset($_GET['url']) && !defined('DEMO_MODE'))
@@ -47,7 +47,7 @@ if(isset($_GET['url']) && !defined('DEMO_MODE'))
 		'style'		=> STYLE_HEADER_VERSION,
 	);
 	$str = '<form action="' . $board_config[$var] . '" method="post" style="display: inline;" target="main"><input type="hidden" name="data" value="' . htmlspecialchars(serialize($import_data)) . '" /><input type="submit" value="' . $lang['xs_continue'] . '" class="post" /></form>';
-	$message = $lang['xs_import_download_warning'] . '<br /><br />' . $str . '<br /><br />' . str_replace('{URL}', append_sid('xs_download.' . $phpEx), $lang['xs_download_back']);
+	$message = $lang['xs_import_download_warning'] . '<br /><br />' . $str . '<br /><br />' . str_replace('{URL}', append_sid('xs_download.' . PHP_EXT), $lang['xs_download_back']);
 	xs_message($lang['Information'], $message);
 }
 
@@ -143,13 +143,13 @@ for($i=0; $i<$board_config['xs_downloads_count']; $i++)
 		'NUM1'			=> $i + 1,
 		'URL'			=> htmlspecialchars($board_config['xs_downloads_'.$i]),
 		'TITLE'			=> htmlspecialchars($board_config['xs_downloads_title_'.$i]),
-		'U_DOWNLOAD'	=> append_sid('xs_download.' . $phpEx . '?url='.$i),
-		'U_EDIT'		=> append_sid('xs_download.' . $phpEx . '?edit='.$i),
+		'U_DOWNLOAD'	=> append_sid('xs_download.' . PHP_EXT . '?url='.$i),
+		'U_EDIT'		=> append_sid('xs_download.' . PHP_EXT . '?edit='.$i),
 		));
 }
 
 $template->assign_vars(array(
-	'U_POST'		=> append_sid('xs_download.' . $phpEx)
+	'U_POST'		=> append_sid('xs_download.' . PHP_EXT)
 	));
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'downloads.tpl'));

@@ -17,11 +17,11 @@
 
 function display_comments(&$file_data)
 {
-	global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images;
-	global $phpbb_root_path, $userdata, $db, $pafiledb, $pafiledb_functions, $bbcode, $comment_bbcode_uid;
-	include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-	include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	require_once($phpbb_root_path . 'includes/functions_mg_ranks.' . $phpEx);
+	global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images;
+	global $userdata, $db, $pafiledb, $pafiledb_functions, $bbcode, $comment_bbcode_uid;
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+	require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
 	$ranks_sql = query_ranks();
 	//
 	// Define censored word matches
@@ -136,8 +136,8 @@ function display_comments(&$file_data)
 			'U_COMMENT_DELETE' => ( ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $userdata['user_id']) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? append_sid("dload.php?action=post_comment&cid={$comments_row['comments_id']}&delete=do&file_id={$file_data['file_id']}") : '',
 			'AUTH_COMMENT_DELETE' => ( ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $userdata['user_id']) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? TRUE : FALSE,
 			'DELETE_IMG' => ( ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $userdata['user_id']) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? $images['icon_delpost'] : '',
-			'ICON_MINIPOST_IMG' => $phpbb_root_path . $images['icon_minipost'],
-			'ICON_SPACER' => $phpbb_root_path . 'images/spacer.gif',
+			'ICON_MINIPOST_IMG' => IP_ROOT_PATH . $images['icon_minipost'],
+			'ICON_SPACER' => IP_ROOT_PATH . 'images/spacer.gif',
 			'USER_RANK_01' => $user_rank_01,
 			'USER_RANK_01_IMG' => $user_rank_01_img,
 			'USER_RANK_02' => $user_rank_02,

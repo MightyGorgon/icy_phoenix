@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,9 +28,9 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_styles.' . $phpEx) . '">' . $lang['xs_default_style'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_styles.' . PHP_EXT) . '">' . $lang['xs_default_style'] . '</a>'));
 
 //
 // set new default style
@@ -163,10 +163,10 @@ for($i=0; $i<count($style_rowset); $i++)
 		'TEMPLATE'			=> $style_rowset[$i]['template_name'],
 		'ID'				=> $id,
 		'TOTAL'				=> $total,
-		'U_TOTAL'			=> append_sid('xs_styles.' . $phpEx . '?list=' . $id),
-		'U_DEFAULT'			=> append_sid('xs_styles.' . $phpEx . '?setdefault=' . $id),
-		'U_OVERRIDE'		=> append_sid('xs_styles.' . $phpEx . '?setoverride=' . ($style_override ? '0' : '1')),
-		'U_SWITCHALL'		=> append_sid('xs_styles.' . $phpEx . '?moveusers=' . $id),
+		'U_TOTAL'			=> append_sid('xs_styles.' . PHP_EXT . '?list=' . $id),
+		'U_DEFAULT'			=> append_sid('xs_styles.' . PHP_EXT . '?setdefault=' . $id),
+		'U_OVERRIDE'		=> append_sid('xs_styles.' . PHP_EXT . '?setoverride=' . ($style_override ? '0' : '1')),
+		'U_SWITCHALL'		=> append_sid('xs_styles.' . PHP_EXT . '?moveusers=' . $id),
 		)
 	);
 	if($total > 0)
@@ -193,13 +193,13 @@ for($i=0; $i<count($style_rowset); $i++)
 			if($style_rowset[$i]['theme_public'])
 			{
 				$template->assign_block_vars('styles.nodefault.admin_only', array(
-					'U_CHANGE'	=> append_sid('xs_styles.' . $phpEx . '?setadmin='.$id.'&admin=0')
+					'U_CHANGE'	=> append_sid('xs_styles.' . PHP_EXT . '?setadmin='.$id.'&admin=0')
 				));
 			}
 			else
 			{
 				$template->assign_block_vars('styles.nodefault.public', array(
-					'U_CHANGE'	=> append_sid('xs_styles.' . $phpEx . '?setadmin='.$id.'&admin=1')
+					'U_CHANGE'	=> append_sid('xs_styles.' . PHP_EXT . '?setadmin='.$id.'&admin=1')
 				));
 			}
 		}
@@ -238,7 +238,7 @@ else
 }
 
 $template->assign_vars(array(
-	'U_SCRIPT'		=> 'xs_styles.' . $phpEx,
+	'U_SCRIPT'		=> 'xs_styles.' . PHP_EXT,
 	'NUM_DEFAULT'	=> $num_default
 	)
 );

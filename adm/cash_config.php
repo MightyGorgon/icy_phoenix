@@ -16,19 +16,17 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
-
-// Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 $new = array();
 $new_cash = array();
@@ -80,7 +78,7 @@ while ($row = $db->sql_fetchrow($result))
 
 if (isset($_POST['submit']))
 {
-	$message = $lang['Cash_config_updated'] . $reset_navbar . '<br /><br />' . sprintf($lang['Click_return_cash_config'], '<a href="' . append_sid('cash_config.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Cash_config_updated'] . $reset_navbar . '<br /><br />' . sprintf($lang['Click_return_cash_config'], '<a href="' . append_sid('cash_config.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -100,7 +98,7 @@ $display_after_posts_no = (!$new['cash_display_after_posts']) ? 'checked="checke
 $template->set_filenames(array('body' => ADM_TPL . 'cash_config.tpl'));
 
 $template->assign_vars(array(
-	'S_CASH_CONFIG_ACTION' => append_sid('cash_config.' . $phpEx),
+	'S_CASH_CONFIG_ACTION' => append_sid('cash_config.' . PHP_EXT),
 
 	'L_CASH_SETTINGS' => $lang['Cash_settings'],
 	'L_MESSAGES' => $lang['Messages'],
@@ -145,6 +143,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

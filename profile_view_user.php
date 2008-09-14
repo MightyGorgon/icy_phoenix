@@ -8,19 +8,19 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include_once($phpbb_root_path . 'includes/users_zebra_block.' . $phpEx);
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $user_id = (isset($_POST[POST_USERS_URL])) ? intval($_POST[POST_USERS_URL]) : intval($_GET[POST_USERS_URL]);
 $page_title = $lang['Profile'] . ' - ' . $lang['Views'];
@@ -53,7 +53,7 @@ if (!($result = $db->sql_query($sql)))
 $total = $db->sql_numrows($result);
 $db->sql_freeresult($result);
 
-$pagination = generate_pagination('profile_view_user.' . $phpEx . '?' . POST_USERS_URL . '=' . $user_id, $total, $board_config['posts_per_page'], $page_start);
+$pagination = generate_pagination('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $user_id, $total, $board_config['posts_per_page'], $page_start);
 
 $sql = "SELECT p.*, u.user_avatar_type, u.user_allowavatar, u.user_avatar FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u
 				WHERE p.viewer_id = u.user_id
@@ -89,6 +89,6 @@ $template->assign_vars(array(
 );
 
 $template->pparse('body');
-include ($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include (IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

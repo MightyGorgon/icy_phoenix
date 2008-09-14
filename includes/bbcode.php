@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -27,7 +27,7 @@ if (!defined('IN_PHPBB'))
 Includes
 =================
 
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 =================
 Globals
@@ -115,12 +115,14 @@ define('BBCODE_UID_LEN', 10);
 define('BBCODE_NOSMILIES_START', '<!-- no smilies start -->');
 define('BBCODE_NOSMILIES_END', '<!-- no smilies end -->');
 define('AUTOURL', time());
-global $db, $board_config, $phpbb_root_path, $phpEx, $lang;
+global $db, $board_config, $lang;
 
+// To use this file outside Icy Phoenix you need to comment the define below and remove the check on top of the file.
+define('IS_ICYPHOENIX', true);
 if (defined('IS_ICYPHOENIX'))
 {
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbc_tags.' . $phpEx);
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbc_tags.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 }
 else
 {
@@ -157,7 +159,13 @@ $urls_local = array(
 	'http://' . $board_config['server_name'] . $board_config['script_path']
 );
 
-class BBCode {
+if (function_exists('create_server_url'))
+{
+	array_merge(array(create_server_url()), $urls_local);
+}
+
+class BBCode
+{
 	var $text = '';
 	var $html = '';
 	var $tag = '';
@@ -724,7 +732,7 @@ class BBCode {
 	*/
 	function process_tag(&$item)
 	{
-		global $lang, $board_config, $userdata, $phpEx;
+		global $lang, $board_config, $userdata;
 		//Added in 033 -LIW -BEGIN
 		$max_image_width = intval($board_config['liw_max_width']);
 		//Added in 033 -LIW -END
@@ -847,7 +855,7 @@ class BBCode {
 			}
 			$max_n = ($max_n <= '0') ? '6' : $max_n;
 			/*
-			include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
 			$randomquote_phrase = $randomquote[rand(0, count($randomquote) - 1)];
 			*/
 			$html = rand(1, $max_n);
@@ -1045,8 +1053,8 @@ class BBCode {
 				$shieldshadow = 0;
 			}
 
-			//$html = '<img src="text2shield.' . $phpEx . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . $text . '" alt="Smiley" title="Smiley" />';
-			$html = '<img src="text2shield.' . $phpEx . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . urlencode(utf8_decode($text)) . '" alt="'. $text . '" title="' . $text . '" />';
+			//$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . $text . '" alt="Smiley" title="Smiley" />';
+			$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . urlencode(utf8_decode($text)) . '" alt="'. $text . '" title="' . $text . '" />';
 			return array(
 				'valid' => true,
 				'html' => $html,
@@ -1397,10 +1405,17 @@ class BBCode {
 					$thumb_ext_array = array('gif', 'jpg', 'png');
 					if (in_array($pic_filetype, $thumb_ext_array))
 					{
+						$user_dir = '';
+						$users_images_path = str_replace('http://', '', str_replace('https://', '', create_server_url() . POSTED_IMAGES_PATH));
 						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
 						$pic_title_reg = ereg_replace("[^A-Za-z0-9]", '_', $pic_title);
 						$pic_thumbnail = 'mid_' . md5($pic_id) . '_' . $pic_filename;
-						$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $pic_thumbnail;
+						if (strpos($pic_id, $users_images_path) !== false)
+						{
+							$user_dir = str_replace($pic_filename, '', str_replace($users_images_path, '', $pic_id));
+							$pic_thumbnail = $pic_filename;
+						}
+						$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $user_dir . $pic_thumbnail;
 						if(file_exists($pic_thumbnail_fullpath))
 						{
 							$thumb_exists = true;
@@ -1424,7 +1439,7 @@ class BBCode {
 				}
 				if (($thumb_exists == false) || ($cache_image == false))
 				{
-					$params['src'] = 'posted_img_thumbnail.' . $phpEx . '?' . $cache_append . 'pic_id=' . $img_url_enc;
+					$params['src'] = 'posted_img_thumbnail.' . PHP_EXT . '?' . $cache_append . 'pic_id=' . $img_url_enc;
 				}
 			}
 
@@ -1540,22 +1555,22 @@ class BBCode {
 				}
 			}
 			// generate html
-			$pic_url = 'album_showpage.' . $phpEx . '?pic_id=' . $pic_url;
+			$pic_url = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_url;
 			if(isset($item['params']['mode']))
 			{
 				$pic_mode = $item['params']['mode'];
 				if ($pic_mode === 'full')
 				{
-					$params['src'] = 'album_picm.' . $phpEx . '?pic_id=' . $params['src'];
+					$params['src'] = 'album_picm.' . PHP_EXT . '?pic_id=' . $params['src'];
 				}
 				else
 				{
-					$params['src'] = 'album_thumbnail.' . $phpEx . '?pic_id=' . $params['src'];
+					$params['src'] = 'album_thumbnail.' . PHP_EXT . '?pic_id=' . $params['src'];
 				}
 			}
 			else
 			{
-				$params['src'] = 'album_thumbnail.' . $phpEx . '?pic_id=' . $params['src'];
+				$params['src'] = 'album_thumbnail.' . PHP_EXT . '?pic_id=' . $params['src'];
 			}
 			$html = '<img';
 			foreach($params as $var => $value)
@@ -2348,7 +2363,7 @@ class BBCode {
 				if($can_download)
 				{
 					//$download_text = ' [<a href="download.php?post=' . $can_download;
-					$download_text = ' [<a href="download_post.' . $phpEx . '?post=' . $can_download;
+					$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
 					if($this->code_counter)
 					{
 						$download_text .= '&amp;item=' . $this->code_counter;
@@ -2467,7 +2482,7 @@ class BBCode {
 				$can_download = !empty($GLOBALS['code_post_id']) ? $GLOBALS['code_post_id'] : 0;
 				if($can_download)
 				{
-					$download_text = ' [<a href="download_post.' . $phpEx . '?post=' . $can_download;
+					$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
 					if($this->code_counter)
 					{
 						$download_text .= '&amp;item=' . $this->code_counter;
@@ -2566,7 +2581,7 @@ class BBCode {
 			$can_download = !empty($GLOBALS['code_post_id']) ? $GLOBALS['code_post_id'] : 0;
 			if($can_download)
 			{
-				$download_text = ' [<a href="download_post.' . $phpEx . '?post=' . $can_download;
+				$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
 				if($this->code_counter)
 				{
 					$download_text .= '&amp;item=' . $this->code_counter;
@@ -3801,7 +3816,7 @@ class BBCode {
 	// Converts text to html code
 	function parse($text, $id = false, $light = false, $clean_tags = false)
 	{
-		if(defined('IN_PHPBB'))
+		if(defined('IN_ICYPHOENIX'))
 		{
 			$search = array(
 				$id ? ':' . $id : '',
@@ -3900,23 +3915,6 @@ if (defined('SMILIES_TABLE'))
 	{
 		message_die(GENERAL_ERROR, 'Couldn\'t retrieve smilies list', '', __LINE__, __FILE__, $sql);
 	}
-
-	/*
-	$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE;
-	if(($result = $db->sql_query($sql)) !== false)
-	{
-		$smilies = $db->sql_fetchrowset($result);
-		$bbcode->allowed_smilies = array();
-		for($i = 0; $i < count($smilies); $i++)
-		{
-			$arr = array(
-				'code' => $smilies[$i]['code'],
-				'replace' => '<img src="http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . 'images/smiles/' . $smilies[$i]['smile_url'] . '" alt="' . htmlspecialchars($smilies[$i]['emoticon']) . '" />'
-			);
-			$bbcode->allowed_smilies[] = $arr;
-		}
-	}
-	*/
 }
 
 function undo_htmlspecialchars($input, $full_undo = false)

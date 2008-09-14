@@ -19,7 +19,7 @@ class pafiledb_rate extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $userdata, $phpbb_root_path, $pafiledb_functions, $pafiledb_user;
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $userdata, $pafiledb_functions, $pafiledb_user;
 
 
 		if ( isset($_REQUEST['file_id']) )
@@ -54,7 +54,7 @@ class pafiledb_rate extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=rate&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=rate&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_rate'], $this->auth[$file_data['file_catid']]['auth_rate_type']);
@@ -69,8 +69,8 @@ class pafiledb_rate extends pafiledb_public
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD_HOME' => append_sid('dload.' . $phpEx),
-			'U_FILE_NAME' => append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id),
+			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
+			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 
 			'FILE_NAME' => $file_data['file_name'],
 			'DOWNLOAD' => $pafiledb_config['settings_dbname'])
@@ -93,7 +93,7 @@ class pafiledb_rate extends pafiledb_public
 
 			$result_msg = str_replace("{newrating}", $rate_info, $result_msg);
 
-			$message = $result_msg . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid('index.' . $phpEx) . '">', '</a>');
+			$message = $result_msg . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 
 		}
@@ -102,7 +102,7 @@ class pafiledb_rate extends pafiledb_public
 			$rate_info = str_replace("{filename}", $file_data['file_name'], $lang['Rateinfo']);
 
 			$pafiledb_template->assign_vars(array(
-				'S_RATE_ACTION' => append_sid('dload.' . $phpEx . '?action=rate&amp;file_id=' . $file_id),
+				'S_RATE_ACTION' => append_sid('dload.' . PHP_EXT . '?action=rate&amp;file_id=' . $file_id),
 				'L_RATE' => $lang['Rate'],
 				'L_RERROR' => $lang['Rerror'],
 				'L_R1' => $lang['R1'],

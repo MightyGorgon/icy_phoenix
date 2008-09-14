@@ -8,12 +8,12 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include_once($phpbb_root_path . 'includes/functions_mods_settings.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_mods_settings.' . PHP_EXT);
 $mod_name = '20_SQL_Charge';
 
 $config_fields = array(

@@ -38,7 +38,7 @@ $lang['upi2db_always_read_is_unset'] = 'Topic is no longer marked as permanent r
 $lang['no_always_read'] = 'No topics marked as permanent read';
 $lang['x_always_read'] = 'View as permanent read marked topics ';
 $lang['upi2db_which_system'] = 'Which system do you want to use to handle new posts?';
-$lang['upi2db_which_system_explain'] = 'Detailed information about the different systems can be found in the <a href="faq.' . $phpEx . '">FAQ\'s</a>.';
+$lang['upi2db_which_system_explain'] = 'Detailed information about the different systems can be found in the <a href="faq.' . PHP_EXT . '">FAQ\'s</a>.';
 $lang['cookie_system'] = 'Cookie System';
 $lang['upi2db_system'] = 'UPI2DB System';
 $lang['upi2db_mark_post'] = 'Mark this post';

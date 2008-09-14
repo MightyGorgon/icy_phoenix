@@ -43,7 +43,7 @@
  */
 
 // CTracker_Ignore: File checked by human
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -135,8 +135,8 @@ class Template {
 	// counter for include
 	var $include_count = 0;
 
-	// php extension. will be replaced by $phpEx in Template() function unless you disable it there
-	var $php = 'php';
+	// php extension. will be replaced by PHP_EXT in Template() function unless you disable it there
+	var $php = PHP_EXT;
 
 	// True if check switches
 	var $xs_check_switches = 1;
@@ -144,7 +144,7 @@ class Template {
 	// eXtreme Styles variables
 	var $xs_started = 0;
 	var $xs_version = 8; // number version. internal. do not change.
-	var $xs_versiontxt = '2.4.0'; // text version
+	var $xs_versiontxt = '2.4.1'; // text version
 
 	// These handles will be parsed if pparse() is executed.
 	// Can be used to automatically include header/footer if there is any content.
@@ -187,7 +187,7 @@ class Template {
 	*/
 	function load_config($root, $edit_db)
 	{
-		global $board_config, $phpbb_root_path, $phpEx;
+		global $board_config;
 		// getting mod version from config and comparing with real data
 		$ver = isset($board_config['xs_version']) ? $board_config['xs_version'] : 0;
 		// check configuration
@@ -208,7 +208,7 @@ class Template {
 			'xs_auto_compile'				=> 1,
 			'xs_auto_recompile'			=> 1,
 			'xs_use_cache'					=> 1,
-			'xs_php'								=> $phpEx,
+			'xs_php'								=> PHP_EXT,
 			'xs_def_template'				=> 'mg_themes',
 			'xs_check_switches'			=> 1,
 			'xs_warn_includes'			=> 1,
@@ -328,16 +328,16 @@ class Template {
 	*/
 	function set_rootdir($dir)
 	{
-		global $board_config, $phpbb_root_path;
+		global $board_config;
 		if (!@is_dir($dir))
 		{
 			return false;
 		}
 		$dir = str_replace('\\', '/', $dir);
 		// creating absolute path for cache
-		$this->cachedir = $phpbb_root_path . XS_DIR_CACHE . '/';
+		$this->cachedir = IP_ROOT_PATH . XS_DIR_CACHE . '/';
 		// creating absolute path for current template and root dir
-		$this->tpldir = $phpbb_root_path . 'templates/';
+		$this->tpldir = IP_ROOT_PATH . 'templates/';
 		$this->tpldir_len = strlen($this->tpldir);
 		$this->root = $dir;
 		$this->tpl = $this->template_name($dir);
@@ -1785,14 +1785,14 @@ class Template {
 
 	function xs_startup()
 	{
-		global $phpEx, $board_config, $phpbb_root_path;
+		global $board_config;
 		if(empty($this->xs_started))
 		{	// adding predefined variables
 			$this->xs_started = 1;
 			// file extension with session ID (eg: "php?sid=123&" or "php?")
 			// can be used to make custom URLs without modding phpbb
 			// contains "&" or "?" at the end so you can easily append paramenters
-			$php = append_sid($phpEx);
+			$php = append_sid(PHP_EXT);
 			if(strpos($php, '?'))
 			{
 				$php .= '&';
@@ -1806,7 +1806,7 @@ class Template {
 			// can be used to make truly multi-lingual templates
 			$this->vars['LANG'] = isset($this->vars['LANG']) ? $this->vars['LANG'] : $board_config['default_lang'];
 			// adding current template
-			$tpl = $this->root . '/'; // $phpbb_root_path . 'templates/' . $this->tpl . '/';
+			$tpl = $this->root . '/'; // IP_ROOT_PATH . 'templates/' . $this->tpl . '/';
 			if(substr($tpl, 0, 2) === './')
 			{
 				$tpl = substr($tpl, 2, strlen($tpl));
@@ -1913,11 +1913,10 @@ class Template {
 	*/
 	function _add_config($tpl, $add_vars = true)
 	{
-		global $phpbb_root_path;
-		if(@file_exists($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg'))
+				if(@file_exists(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg'))
 		{
 			$style_config = array();
-			include($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg');
+			include(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg');
 			if(count($style_config))
 			{
 				global $board_config, $db;
@@ -1965,11 +1964,10 @@ class Template {
 	*/
 	function _refresh_config($tpl, $add_vars = false)
 	{
-		global $phpbb_root_path;
-		if(@file_exists($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg'))
+				if(@file_exists(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg'))
 		{
 			$style_config = array();
-			include($phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg');
+			include(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg');
 			if(count($style_config))
 			{
 				global $board_config, $db;

@@ -15,15 +15,15 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_mg_online.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // ---------------
 // Begin functions
@@ -43,7 +43,7 @@ function inarray($needle, $haystack)
 // End functions
 // -------------
 
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_pafiledb.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
 
 // Generate relevant output
 if( isset($_GET['pane']) && $_GET['pane'] == 'left' )
@@ -51,14 +51,14 @@ if( isset($_GET['pane']) && $_GET['pane'] == 'left' )
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 	$module = jr_admin_get_module_list($jr_admin_userdata['user_jr_admin']);
 
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'index_navigate.tpl'));
 
 	$template->assign_vars(array(
-		'U_FORUM_INDEX' => append_sid('../' . FORUM_MG),
-		'U_PORTAL' => append_Sid('../' . PORTAL_MG),
-		'U_ADMIN_INDEX' => append_sid('index.' . $phpEx . '?pane=right'),
+		'U_FORUM_INDEX' => append_sid(IP_ROOT_PATH . FORUM_MG),
+		'U_PORTAL' => append_sid(IP_ROOT_PATH . PORTAL_MG),
+		'U_ADMIN_INDEX' => append_sid('index.' . PHP_EXT . '?pane=right'),
 
 		//+MOD: DHTML Menu for ACP
 		'COOKIE_NAME' => $board_config['cookie_name'],
@@ -79,12 +79,12 @@ if( isset($_GET['pane']) && $_GET['pane'] == 'left' )
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 }
 elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 {
 
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'index_body.tpl'));
 
@@ -133,35 +133,43 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 	);
 
 	// Disallow other admins to delete or edit the first admin - BEGIN
+	if (defined('FOUNDER_ID'))
+	{
+		$founder_id = FOUNDER_ID;
+	}
+	else
+	{
+		$founder_id = get_founder_id();
+	}
 	$sql = "SELECT COUNT(*) AS total FROM " . ADMINEDIT_TABLE;
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_MESSAGE, 'SQL ERROR IN ADMINEDIT_TABLE - MODE = QUERY 0', '', __LINE__, __FILE__, $sql);
 	}
 	$row = $db->sql_fetchrow($result);
-	if(($userdata['user_id'] == '2') && ($row['total'] > 0))
+	if(($userdata['user_id'] == $founder_id) && ($row['total'] > 0))
 	{
 		$template->assign_block_vars('switch_firstadmin', array());
 	}
 
-	if( isset($_POST['deleteedituser']) )
+	if(isset($_POST['deleteedituser']))
 	{
-		$mode = "deleteedituser";
+		$mode = 'deleteedituser';
 	}
-	if( $mode == "deleteedituser" )
+	if($mode == 'deleteedituser')
 	{
 		$sql = "DELETE FROM " . ADMINEDIT_TABLE;
 		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, "SQL ERROR IN ADMINEDIT_TABLE - MODE = DELETE", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
-		$message = $lang['L_DELETESUCMSG'] . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['L_DELETESUCMSG'] . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 
 	}
 	$sql = "SELECT COUNT(*) AS total FROM " . ADMINEDIT_TABLE;
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_MESSAGE, 'SQL ERROR IN ADMINEDIT_TABLE - MODE = QUERY 1', '', __LINE__, __FILE__, $sql);
 	}
@@ -171,7 +179,7 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 		$template->assign_block_vars('switch_adminedit', array());
 	}
 	$sql = "SELECT * FROM " . ADMINEDIT_TABLE;
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_MESSAGE, 'SQL ERROR IN ADMINEDIT_TABLE - MODE = QUERY 2', '', __LINE__, __FILE__, $sql);
 	}
@@ -340,13 +348,13 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 
 	$avatar_dir_size = 0;
 
-	if ($avatar_dir = @opendir($phpbb_root_path . $board_config['avatar_path']))
+	if ($avatar_dir = @opendir(IP_ROOT_PATH . $board_config['avatar_path']))
 	{
 		while( $file = @readdir($avatar_dir) )
 		{
 			if( ($file != '.') && ($file != '..') )
 			{
-				$avatar_dir_size += @filesize($phpbb_root_path . $board_config['avatar_path'] . '/' . $file);
+				$avatar_dir_size += @filesize(IP_ROOT_PATH . $board_config['avatar_path'] . '/' . $file);
 			}
 		}
 		@closedir($avatar_dir);
@@ -635,7 +643,7 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 					}
 				}
 
-				$location['url'] = append_sid($phpbb_root_path . $location['url']);
+				$location['url'] = append_sid(IP_ROOT_PATH . $location['url']);
 
 				$row_color = ( $registered_users % 2 ) ? $theme['td_color1'] : $theme['td_color2'];
 				$row_class = ( $registered_users % 2 ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -652,7 +660,7 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 					'IP_ADDRESS' => $reg_ip,
 
 					'U_WHOIS_IP' => 'http://whois.sc/' . $reg_ip,
-					'U_USER_PROFILE' => append_sid('admin_users.' . $phpEx . '?mode=edit&amp;' . POST_USERS_URL . '=' . $onlinerow_reg[$i]['user_id']),
+					'U_USER_PROFILE' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $onlinerow_reg[$i]['user_id']),
 					'U_FORUM_LOCATION' => $location['url']
 					)
 				);
@@ -728,7 +736,7 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 				}
 			}
 
-			$location['url'] = append_sid($phpbb_root_path . $location['url']);
+			$location['url'] = append_sid(IP_ROOT_PATH . $location['url']);
 
 			$row_color = ( $guest_users % 2 ) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = ( $guest_users % 2 ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -771,6 +779,8 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 		);
 	}
 	jr_admin_make_info_box();
+	// phpBB version check disabled since phpBB 2 is not supported any more!!!
+	/*
 	// Check for new version
 	$current_version = explode('.', '2' . $board_config['version']);
 	$minor_revision = (int) $current_version[2];
@@ -780,7 +790,7 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 	// Version cache mod start
 	// Change following two variables if you need to:
 	$cache_update = 86400 * 30; // 24 hours cache timeout. change it to whatever you want
-	$cache_file = '../' . MAIN_CACHE_FOLDER . 'phpbb_update_' . $board_config['default_lang'] . $board_config['version'] . '.php'; // file where to store cache
+	$cache_file = MAIN_CACHE_FOLDER . 'phpbb_update_' . $board_config['default_lang'] . $board_config['version'] . '.php'; // file where to store cache
 
 	$do_update = true;
 	if(@file_exists($cache_file))
@@ -863,7 +873,10 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 		}
 	}
 	// Version cache mod end
+	*/
 
+	$version_info = '<p style="color:green">' . $lang['Version_up_to_date'] . '</p>';
+	$version_info .= '<p>' . $lang['Mailing_list_subscribe_reminder'] . '</p>';
 	$template->assign_vars(array(
 		'VERSION_INFO' => $version_info,
 		'L_VERSION_INFORMATION' => $lang['Version_information']
@@ -872,7 +885,7 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 
 }
 else
@@ -882,9 +895,9 @@ else
 	$template->set_filenames(array('body' => ADM_TPL . 'index_frameset.tpl'));
 
 	$template->assign_vars(array(
-		'S_FRAME_HEADER' => append_sid('xs2_head.' . $phpEx),
-		'S_FRAME_NAV' => append_sid('index.' . $phpEx . '?pane=left'),
-		'S_FRAME_MAIN' => append_sid('index.' . $phpEx . '?pane=right')
+		'S_FRAME_HEADER' => append_sid('xs2_head.' . PHP_EXT),
+		'S_FRAME_NAV' => append_sid('index.' . PHP_EXT . '?pane=left'),
+		'S_FRAME_MAIN' => append_sid('index.' . PHP_EXT . '?pane=right')
 		)
 	);
 

@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -111,7 +111,7 @@ function getMiniCalEventDays($auth_view_forums)
  ***************************************************************************/
 function getMiniCalEvents($mini_cal_auth)
 {
-	global $template, $db, $phpEx, $lang;
+	global $template, $db, $lang;
 
 	// initialise some sql bits
 	$mini_cal_auth_sql = ($mini_cal_auth['view'] != '') ? ' AND t.forum_id in (' . $mini_cal_auth['view'] . ') ' : '';
@@ -172,7 +172,7 @@ function getMiniCalEvents($mini_cal_auth)
 				$template->assign_block_vars('mini_cal_events', array(
 						'MINI_CAL_EVENT_DATE' => $cal_date,
 						'S_MINI_CAL_EVENT' => $row['topic_title'],
-						'U_MINI_CAL_EVENT' => append_sid( $phpbb_root_path . VIEWTOPIC_MG ."?" . POST_TOPIC_URL . '=' . $row['topic_id'] )
+						'U_MINI_CAL_EVENT' => append_sid( IP_ROOT_PATH . VIEWTOPIC_MG ."?" . POST_TOPIC_URL . '=' . $row['topic_id'] )
 						)
 				);
 			}
@@ -218,9 +218,7 @@ function getMiniCalSearchSql($search_id, $search_date)
  ***************************************************************************/
 function getMiniCalSearchURL($search_date)
 {
-	global $phpEx;
-	$url = append_sid($phpbb_root_path . SEARCH_MG . '?search_id=mini_cal_events&amp;d=' . $search_date);
-
+	$url = append_sid(IP_ROOT_PATH . SEARCH_MG . '?search_id=mini_cal_events&amp;d=' . $search_date);
 	return $url;
 }
 
@@ -241,8 +239,8 @@ function getMiniCalPostForumsList($mini_cal_post_auth)
 }
 
 $template->assign_vars(array(
-	'U_MINI_CAL_CALENDAR' => append_sid($phpbb_root_path . 'mycalendar.' . $phpEx),
-	'U_MINI_CAL_ADD_EVENT' => append_sid($phpbb_root_path . 'posting.' . $phpEx . '?mode=newtopic&f=' . MINI_CAL_EVENTS_FORUM )
+	'U_MINI_CAL_CALENDAR' => append_sid(IP_ROOT_PATH . 'mycalendar.' . PHP_EXT),
+	'U_MINI_CAL_ADD_EVENT' => append_sid(IP_ROOT_PATH . 'posting.' . PHP_EXT . '?mode=newtopic&f=' . MINI_CAL_EVENTS_FORUM )
 	)
 );
 

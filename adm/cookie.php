@@ -15,12 +15,12 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_ADMIN', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 $lang['Clear_browser'] = 'You need to clear your browser cookies and cache and restart it for the settings to take effect.';
 $lang['Delete_file'] = 'Please delete this script and the install directory now!';

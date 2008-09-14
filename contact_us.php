@@ -8,11 +8,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 $enable_visual_confirm = true;
 
@@ -60,14 +60,14 @@ $cms_global_blocks = ($board_config['wide_blocks_contact_us'] == 1) ? true : fal
 
 // Set default email variables
 $script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-$script_name = ($script_name != '') ? $script_name . '/contact_us.' . $phpEx : 'contact_us.' . $phpEx;
+$script_name = ($script_name != '') ? $script_name . '/contact_us.' . PHP_EXT : 'contact_us.' . PHP_EXT;
 $server_name = trim($board_config['server_name']);
 $server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 $server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
 $server_url = $server_protocol . $server_name . $server_port . $script_name;
 
 $server_url = create_server_url();
-$contact_us_server_url = $server_url . 'contact_us.' . $phpEx;
+$contact_us_server_url = $server_url . 'contact_us.' . PHP_EXT;
 
 // CrackerTracker v5.x
 if (($userdata['ct_last_mail'] >= time()) && ($ctracker_config->settings['massmail_protection'] == 1))
@@ -194,7 +194,7 @@ if (isset($_POST['submit']))
 		*/
 		if ($result = $db->sql_query($sql))
 		{
-			include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer($board_config['smtp_delivery']);
 
 			$email_headers = 'X-AntiAbuse: Board servername - ' . trim($board_config['server_name']) . "\n";
@@ -264,7 +264,7 @@ if (isset($_POST['submit']))
 	}
 }
 
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'contact_us_body.tpl'));
 
@@ -350,7 +350,7 @@ $template->assign_vars(array(
 	'SENDER' => $sender,
 	'SUBJECT' => $subject,
 	'MESSAGE' => $message,
-	'S_POST_ACTION' => append_sid('contact_us.' . $phpEx),
+	'S_POST_ACTION' => append_sid('contact_us.' . PHP_EXT),
 	'CONFIRM_IMG' => $confirm_image,
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
@@ -377,6 +377,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
@@ -24,10 +24,10 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 $start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
@@ -70,7 +70,7 @@ while($row = $db->sql_fetchrow($result))
 		'COLOR' => $row_color,
 		'NUMBER' => ($start + $i + 1),
 		'USERNAME' => colorize_username($row['user_id']),
-		'U_ADMIN_USER' => append_sid('admin_users.' . $phpEx . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+		'U_ADMIN_USER' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 		'EMAIL' => $row['user_email']
 		)
 	);
@@ -89,7 +89,7 @@ if ( !($count_result = $db->sql_query($count_sql)) )
 if ($total = $db->sql_fetchrow($count_result))
 {
 	$total_members = $total['total'];
-	$pagination = generate_pagination($phpbb_root_path . ADM . '/admin_email_list.' . $phpEx . '?show=' . $show, $total_members, $show, $start);
+	$pagination = generate_pagination(IP_ROOT_PATH . ADM . '/admin_email_list.' . PHP_EXT . '?show=' . $show, $total_members, $show, $start);
 }
 
 $template->assign_vars(array(
@@ -99,6 +99,6 @@ $template->assign_vars(array(
 );
 
 $template->pparse('body');
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

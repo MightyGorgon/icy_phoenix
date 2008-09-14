@@ -16,7 +16,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -292,7 +292,7 @@ if ($action == 'save' && $submit)
 			$server_url = $server_name . $server_port . $script_path;
 			$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-			include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -332,8 +332,8 @@ if ($action == 'save' && $submit)
 					'DOWNLOAD' => $description,
 					'DESCRIPTION' => $long_desc,
 					'CATEGORY' => str_replace("&nbsp;&nbsp;|___&nbsp;", '', $index[$cat_id]['cat_name']),
-					'U_APPROVE' => $server_url.'downloads.' . $phpEx . '?view=modcp&action=approve',
-					'U_CATEGORY' => $server_url.'downloads.' . $phpEx . '?cat=' . $cat_id
+					'U_APPROVE' => $server_url.'downloads.' . PHP_EXT . '?view=modcp&action=approve',
+					'U_CATEGORY' => $server_url.'downloads.' . PHP_EXT . '?cat=' . $cat_id
 					)
 				);
 
@@ -368,11 +368,11 @@ if ($action == 'save' && $submit)
 
 		if ($thumb_name)
 		{
-			@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
-			@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
-			$move_file($thumb_temp, $phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
+			@unlink(POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
+			@unlink(POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
+			$move_file($thumb_temp, POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
 
-			@chmod($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name, 0777);
+			@chmod(POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name, 0777);
 
 			$thumb_message = '<br />' . $lang['Dl_thumb_upload'];
 
@@ -394,7 +394,7 @@ if ($action == 'save' && $submit)
 				message_die(GENERAL_ERROR, 'Could not write thumbnail information', '', __LINE__, __FILE__, $sql);
 			}
 
-			@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
+			@unlink(POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
 
 			$thumb_message = '<br />' . $lang['Dl_thumb_del'];
 		}
@@ -429,14 +429,14 @@ if ($action == 'save' && $submit)
 
 		if ($own_edit)
 		{
-			$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '">';
-			$message = $lang['Download_updated'] . $thumb_message . '<br /><br />' . sprintf($lang['Click_return_download_details'], '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '">', '</a>');
+			$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '">';
+			$message = $lang['Download_updated'] . $thumb_message . '<br /><br />' . sprintf($lang['Click_return_download_details'], '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '">', '</a>');
 		}
 		else
 		{
-			$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=manage&amp;cat_id=' . $cat_id) . '">';
+			$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;cat_id=' . $cat_id) . '">';
 			$return_string = ($action == 'approve') ? $lang['Click_return_modcp_approve'] : $lang['Click_return_modcp_manage'];
-			$message = $lang['Download_updated'] . $thumb_message . '<br /><br />' . sprintf($return_string, '<a href="' . append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=manage&amp;cat_id=' . $cat_id) . '">', '</a>');
+			$message = $lang['Download_updated'] . $thumb_message . '<br /><br />' . sprintf($return_string, '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;cat_id=' . $cat_id) . '">', '</a>');
 		}
 
 		$template->assign_vars(array(
@@ -473,7 +473,7 @@ if ($action == 'delete' && $cat_id)
 			/*
 			* output confirmation page
 			*/
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('confirm_body' => 'dl_confirm_body.tpl'));
 
@@ -498,14 +498,14 @@ if ($action == 'delete' && $cat_id)
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('downloads.' . $phpEx . '?view=modcp'),
+				'S_CONFIRM_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=modcp'),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 
 			$template->pparse('confirm_body');
 
-			include($phpbb_root_path.'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
@@ -529,7 +529,7 @@ if ($action == 'delete' && $cat_id)
 				$path = $row['path'];
 				$file_name = $row['file_name'];
 
-				@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $row['thumbnail']);
+				@unlink(POSTED_IMAGES_THUMBS_PATH . $row['thumbnail']);
 				if ($del_file)
 				{
 					@unlink($dl_config['dl_path'] . $path . $file_name);
@@ -636,7 +636,7 @@ if ($action == 'edit')
 		if ($thumbnail)
 		{
 			$template->assign_block_vars('allow_thumbs.thumbnail', array(
-				'THUMBNAIL' => $phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $thumbnail)
+				'THUMBNAIL' => POSTED_IMAGES_THUMBS_PATH . $thumbnail)
 			);
 		}
 	}
@@ -706,7 +706,7 @@ if ($action == 'edit')
 		$select_code = '';
 	}
 
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_edit_body.tpl'));
 
@@ -856,10 +856,10 @@ if ($action == 'edit')
 
 		'L_NAV1' => $lang['Dl_cat_title'],
 		'L_NAV2' => $lang['Dl_modcp_edit'],
-		'U_NAV1' => append_sid('downloads.' . $phpEx),
-		'U_NAV2' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;cat_id=' . $cat_id),
+		'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+		'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;cat_id=' . $cat_id),
 
-		'S_DOWNLOADS_ACTION' => append_sid('downloads.' . $phpEx . '?view=modcp'),
+		'S_DOWNLOADS_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=modcp'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -989,10 +989,10 @@ if ($action == 'approve')
 
 	if (!$total_approve)
 	{
-		redirect(append_sid('downloads.' . $phpEx));
+		redirect(append_sid('downloads.' . PHP_EXT));
 	}
 
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_modcp_approve.tpl'));
 
@@ -1028,8 +1028,8 @@ if ($action == 'approve')
 			'EDIT_IMG' => '<img src="' . $images['icon_edit'] . '" border="0" alt="" title="" />',
 
 			'U_CAT_VIEW' => $cat_view,
-			'U_EDIT' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id . '&amp;modcp=1'),
-			'U_DOWNLOAD' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id . '&amp;modcp=1'))
+			'U_EDIT' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id . '&amp;modcp=1'),
+			'U_DOWNLOAD' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id . '&amp;modcp=1'))
 		);
 
 		$i++;
@@ -1040,7 +1040,7 @@ if ($action == 'approve')
 	$s_hidden_fields .= '<input type="hidden" name="cat_id" value="' . $cat_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="start" value="'.$start.'" />';
 
-	$pagination = generate_pagination('downloads.' . $phpEx . '?view=modcp&amp;action=approve&amp;cat_id=' . $cat_id, $total_approve, $dl_config['dl_links_per_page'], $start);
+	$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=modcp&amp;action=approve&amp;cat_id=' . $cat_id, $total_approve, $dl_config['dl_links_per_page'], $start);
 
 	$template->assign_vars(array(
 		'L_APPROVE' => $lang['Dl_approve'],
@@ -1055,10 +1055,10 @@ if ($action == 'approve')
 
 		'L_NAV1' => $lang['Dl_cat_title'],
 		'L_NAV2' => $lang['Dl_modcp_approve'],
-		'U_NAV1' => append_sid('downloads.' . $phpEx),
-		'U_NAV2' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;cat_id=' . $cat_id),
+		'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+		'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;cat_id=' . $cat_id),
 
-		'S_DL_MODCP_ACTION' => append_sid('downloads.' . $phpEx . '?view=modcp'),
+		'S_DL_MODCP_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=modcp'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -1098,10 +1098,10 @@ if ($action == 'capprove')
 
 	if (!$total_approve)
 	{
-		redirect(append_sid('downloads.' . $phpEx));
+		redirect(append_sid('downloads.' . PHP_EXT));
 	}
 
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_modcp_capprove.tpl'));
 
@@ -1150,8 +1150,8 @@ if ($action == 'capprove')
 
 			'U_CAT_VIEW' => $cat_view,
 			'U_USER_LINK' => $comment_user_link,
-			'U_EDIT' => append_sid('downloads.' . $phpEx . '?view=comment&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id . '&amp;dl_id=' . $comment_id),
-			'U_DOWNLOAD' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id)
+			'U_EDIT' => append_sid('downloads.' . PHP_EXT . '?view=comment&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id . '&amp;dl_id=' . $comment_id),
+			'U_DOWNLOAD' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id)
 			)
 		);
 
@@ -1163,7 +1163,7 @@ if ($action == 'capprove')
 	$s_hidden_fields .= '<input type="hidden" name="cat_id" value="' . $cat_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="start" value="'.$start.'" />';
 
-	$pagination = generate_pagination('downloads.' . $phpEx . '?view=modcp&amp;action=capprove&amp;cat_id=' . $cat_id, $total_approve, $dl_config['dl_links_per_page'], $start);
+	$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=modcp&amp;action=capprove&amp;cat_id=' . $cat_id, $total_approve, $dl_config['dl_links_per_page'], $start);
 
 	$template->assign_vars(array(
 		'L_APPROVE' => $lang['Dl_approve'],
@@ -1179,10 +1179,10 @@ if ($action == 'capprove')
 
 		'L_NAV1' => $lang['Dl_cat_title'],
 		'L_NAV2' => $lang['Dl_modcp_capprove'],
-		'U_NAV1' => append_sid('downloads.' . $phpEx),
-		'U_NAV2' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=capprove'),
+		'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+		'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=capprove'),
 
-		'S_DL_MODCP_ACTION' => append_sid('downloads.' . $phpEx . '?view=modcp'),
+		'S_DL_MODCP_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=modcp'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -1214,10 +1214,10 @@ if ($action == 'manage' && $cat_id)
 
 	if (!$total_downloads)
 	{
-		redirect(append_sid('downloads.' . $phpEx));
+		redirect(append_sid('downloads.' . PHP_EXT));
 	}
 
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_modcp_manage.tpl'));
 
@@ -1249,10 +1249,10 @@ if ($action == 'manage' && $cat_id)
 			'DESCRIPTION' => $description,
 			'EDIT_IMG' => '<img src="' . $images['icon_edit'] . '" border="0" alt="" title="" />',
 
-			'U_UP' => ($userdata['user_level'] == ADMIN) ? append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=manage&amp;fmove=-1&amp;sort=1&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id) : '',
-			'U_DOWN' => ($userdata['user_level'] == ADMIN) ? append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=manage&amp;fmove=1&amp;sort=1&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id) : '',
-			'U_EDIT' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id),
-			'U_DOWNLOAD' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id)
+			'U_UP' => ($userdata['user_level'] == ADMIN) ? append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;fmove=-1&amp;sort=1&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id) : '',
+			'U_DOWN' => ($userdata['user_level'] == ADMIN) ? append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;fmove=1&amp;sort=1&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id) : '',
+			'U_EDIT' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=edit&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id),
+			'U_DOWNLOAD' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id)
 			)
 		);
 
@@ -1274,7 +1274,7 @@ if ($action == 'manage' && $cat_id)
 
 	if ($total_downloads > $per_page)
 	{
-		$pagination = generate_pagination('downloads.' . $phpEx . '?view=modcp&amp;cat_id=' . $cat_id, $total_downloads, $per_page, $start);
+		$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=modcp&amp;cat_id=' . $cat_id, $total_downloads, $per_page, $start);
 	}
 	else
 	{
@@ -1303,13 +1303,13 @@ if ($action == 'manage' && $cat_id)
 		'L_NAV1' => $lang['Dl_cat_title'],
 		'L_NAV2' => $cat_name,
 		'L_NAV3' => $lang['Dl_modcp_manage'],
-		'U_NAV1' => append_sid('downloads.' . $phpEx),
-		'U_NAV2' => append_sid('downloads.' . $phpEx . '?cat=' . $cat_id),
-		'U_NAV3' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;cat_id=' . $cat_id),
+		'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+		'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id),
+		'U_NAV3' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;cat_id=' . $cat_id),
 
-		'U_SORT_ASC' => ($userdata['user_level'] == ADMIN) ? append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=manage&amp;fmove=ABC&amp;sort=' . (($sort) ? 1 : '') . '&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id) : '',
+		'U_SORT_ASC' => ($userdata['user_level'] == ADMIN) ? append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;fmove=ABC&amp;sort=' . (($sort) ? 1 : '') . '&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id) : '',
 		'S_CAT_SELECT' => $s_cat_select,
-		'S_DL_MODCP_ACTION' => append_sid('downloads.' . $phpEx . '?view=modcp'),
+		'S_DL_MODCP_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=modcp'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);

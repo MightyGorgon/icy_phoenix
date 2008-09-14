@@ -14,11 +14,11 @@
 * alcaeus (mods@alcaeus.org)
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Define constant to keep page_header.php from sending headers
 define('AJAX_HEADERS', true);
@@ -61,7 +61,7 @@ AJAX_headers();
 
 if ($mode == 'checkusername_post')
 {
-	include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 	if (isset($_GET['username']) || isset($_POST['username']))
 	{
@@ -100,7 +100,7 @@ if ($mode == 'checkusername_post')
 }
 elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 {
-	include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 	// Get username
 	if (isset($_GET['username']) || isset($_POST['username']))
@@ -241,7 +241,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 }
 elseif ($mode == 'checkemail')
 {
-	include($phpbb_root_path .'includes/functions_validate.'. $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 	if (isset($_GET['email']) || isset($_POST['email']))
 	{

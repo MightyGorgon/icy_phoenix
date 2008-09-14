@@ -19,7 +19,7 @@ class pafiledb_license extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $userdata, $phpbb_root_path;
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
 
 		if ( isset($_REQUEST['license_id']) )
 		{
@@ -60,7 +60,7 @@ class pafiledb_license extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=license&license_id=' . $license_id . '&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=license&license_id=' . $license_id . '&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_download'], $this->auth[$file_data['file_catid']]['auth_download_type']);
@@ -97,9 +97,9 @@ class pafiledb_license extends pafiledb_public
 			'L_NOT_AGREE' => $lang['Dontagree'],
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD_HOME' => append_sid('dload.' . $phpEx),
-			'U_FILE_NAME' => append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_id),
-			'U_DOWNLOAD' => append_sid('dload.' . $phpEx . '?action=download&amp;file_id=' . $file_id),
+			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
+			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
+			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id),
 
 			'L_PREVIEW' => $lang['Preview'],
 			'LE_NAME' => $license['license_name'],

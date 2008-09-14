@@ -18,10 +18,10 @@
 // CTracker_Ignore: File Checked By Human
 // Added to optimize memory for attachments
 define('ATTACH_POSTING', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // session id check
 $sid = request_var('sid', '');
@@ -55,16 +55,16 @@ if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] !
 $page_title = $lang['User_acp_title'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $language = $board_config['default_lang'];
 
-if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx))
+if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT))
 {
 	$language = $attach_config['board_lang'];
 }
 
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT);
 
 $start = request_var('start', 0);
 $sort_order = request_var('order', 'ASC');
@@ -205,13 +205,13 @@ else if ($delete && count($delete_id_list) > 0)
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 
-		'S_CONFIRM_ACTION' => append_sid($phpbb_root_path . 'uacp.' . $phpEx),
+		'S_CONFIRM_ACTION' => append_sid(IP_ROOT_PATH . 'uacp.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $hidden_fields)
 	);
 
 	$template->pparse('confirm');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 	exit;
 }
@@ -248,7 +248,7 @@ $template->assign_vars(array(
 	'USERNAME' => $profiledata['username'],
 
 	'S_USER_HIDDEN' => $s_hidden,
-	'S_MODE_ACTION' => append_sid($phpbb_root_path . 'uacp.' . $phpEx),
+	'S_MODE_ACTION' => append_sid(IP_ROOT_PATH . 'uacp.' . PHP_EXT),
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order)
 );
@@ -343,7 +343,7 @@ if (count($attachments) > 0)
 					$post_title = substr($post_title, 0, 30) . '...';
 				}
 
-				$view_topic = append_sid($phpbb_root_path . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '#p' . $ids[$j]['post_id']);
+				$view_topic = append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '#p' . $ids[$j]['post_id']);
 
 				$post_titles[] = '<a href="' . $view_topic . '" class="gen" target="_blank">' . $post_title . '</a>';
 			}
@@ -440,8 +440,8 @@ if (count($attachments) > 0)
 
 				'S_DELETE_BOX' => $delete_box,
 				'S_HIDDEN' => $hidden_field,
-				'U_VIEW_ATTACHMENT' => append_sid($phpbb_root_path . 'download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']))
-	//			'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
+				'U_VIEW_ATTACHMENT' => append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments[$i]['attach_id']))
+	//			'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . PHP_EXT . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
 			);
 		}
 	}
@@ -450,7 +450,7 @@ if (count($attachments) > 0)
 // Generate Pagination
 if ($do_pagination && $total_rows > $board_config['topics_per_page'])
 {
-	$pagination = generate_pagination($phpbb_root_path . 'uacp.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
+	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
@@ -461,6 +461,6 @@ if ($do_pagination && $total_rows > $board_config['topics_per_page'])
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

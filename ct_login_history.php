@@ -20,10 +20,10 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 
 // Start session management
@@ -53,7 +53,7 @@ if ( !$userdata['session_logged_in'] )
 $page_title = $lang['ctracker_lhistory_nav'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 
 // Define the Template for this file
@@ -107,7 +107,7 @@ if ( $ctracker_config->settings['login_ip_check'] == 1 )
 	($userdata['ct_enable_ip_warn'] == 1)? $sel1 = ' checked="checked"' : $sel2 = ' checked';
 
 	$template->assign_block_vars('log_set', array(
-			'S_FORM_ACTION'	=> append_sid('ct_login_history.' . $phpEx),
+			'S_FORM_ACTION'	=> append_sid('ct_login_history.' . PHP_EXT),
 			'L_HEADER_TEXT'	=> $lang['ctracker_ipwarn_prof'],
 			'L_DESC'				=> $lang['ctracker_ipwarn_pdes'],
 			'L_ON'					=> $lang['ctracker_settings_on'],
@@ -134,7 +134,7 @@ $template->pparse('body');
 
 
 // Include the page_tail.php file
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 
 ?>

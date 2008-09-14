@@ -29,7 +29,7 @@ function ChangeStatus(current, type, b_id, cms_type)
 			break;
 	}
 
-	var url = phpbb_root_path + 'cms_db_update.' + phpEx;
+	var url = ip_root_path + 'cms_db_update.' + php_ext;
 	var params = 'mode=update_block&type=' + type + '&b_id=' + b_id + '&status=' + document.getElementById(field + b_id).value + '&cms_type=' + cms_type;
 	if (S_SID != '')
 	{
@@ -61,7 +61,7 @@ function ChangeMenuOrder(m_id)
 		return;
 	}
 
-	var url = phpbb_root_path + 'cms_db_update.' + phpEx;
+	var url = ip_root_path + 'cms_db_update.' + php_ext;
 	var params = 'mode=update_menu_order';
 	if (S_SID != '')
 	{

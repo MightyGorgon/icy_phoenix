@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -19,10 +19,10 @@ $result_cache->init_result_cache();
 $attachment_mod_installed = (defined('ATTACH_VERSION')) ? true : false;
 $attachment_version = ($attachment_mod_installed) ? ATTACH_VERSION : '';
 
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 if ($attachment_mod_installed)
 {
-	@include_once($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_admin.' . $phpEx);
+	@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
 }
 
 $total_topics = $board_config['max_topics'];
@@ -42,13 +42,13 @@ $users_per_day = sprintf('%.2f', $total_users / $boarddays);
 
 $avatar_dir_size = 0;
 
-if ($avatar_dir = @opendir($phpbb_root_path . $board_config['avatar_path']))
+if ($avatar_dir = @opendir(IP_ROOT_PATH . $board_config['avatar_path']))
 {
 	while($file = @readdir($avatar_dir))
 	{
 		if($file != '.' && $file != '..')
 		{
-			$avatar_dir_size += @filesize($phpbb_root_path . $board_config['avatar_path'] . '/' . $file);
+			$avatar_dir_size += @filesize(IP_ROOT_PATH . $board_config['avatar_path'] . '/' . $file);
 		}
 	}
 	@closedir($avatar_dir);
@@ -266,6 +266,9 @@ $template->assign_vars(array(
 	'L_VALUE' => $lang['Value']
 	)
 );
+
+$template->_tpldata['adminrow.'] = array();
+//reset($template->_tpldata['adminrow.']);
 
 for ($i = 0; $i < count($statistic_array); $i += 2)
 {

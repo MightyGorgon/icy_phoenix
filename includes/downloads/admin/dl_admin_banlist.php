@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -81,14 +81,14 @@ elseif($action == 'delete')
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=banlist'),
+			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=banlist'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -108,7 +108,7 @@ elseif($action == 'delete')
 				message_die(GENERAL_ERROR, "Couldn't delete banlist value(s)", "", __LINE__, __FILE__, $sql);
 			}
 
-			message_die(GENERAL_MESSAGE, $lang['Dl_banlist_updated'] . '<br /><br />' . sprintf($lang['Click_return_banlistadmin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=banlist') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>'));
+			message_die(GENERAL_MESSAGE, $lang['Dl_banlist_updated'] . '<br /><br />' . sprintf($lang['Click_return_banlistadmin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=banlist') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 		}
 
 		$action = '';
@@ -214,7 +214,7 @@ if ($action == '' || $action == 'edit')
 		'CHECKED_NO' => (!$guests) ? 'checked="checked"' : '',
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=banlist')
+		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=banlist')
 		)
 	);
 }

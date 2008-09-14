@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,9 +28,9 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_update.' . $phpEx) . '">' . $lang['xs_check_for_updates'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_update.' . PHP_EXT) . '">' . $lang['xs_check_for_updates'] . '</a>'));
 
 $updates = array();
 
@@ -107,42 +107,42 @@ function include_update_txt($filename, $dir = false)
 }
 
 // read template files
-if(($dir = @opendir($phpbb_root_path. 'templates/')) !== false)
+if(($dir = @opendir(IP_ROOT_PATH . 'templates/')) !== false)
 {
 	while($sub_dir = @readdir($dir))
 	if(($sub_dir !== '.') && ($sub_dir !== '..') && ($sub_dir !== 'CVS'))
 	{
 		$lower = strtolower($sub_dir) === $sub_dir ? false : true;
 		// check old format xs.cfg
-		$file = $phpbb_root_path . 'templates/' . $sub_dir . '/xs.cfg';
+		$file = IP_ROOT_PATH . 'templates/' . $sub_dir . '/xs.cfg';
 		if(@file_exists($file))
 		{
 			include_update($file, $sub_dir);
 		}
 		// check contrib/xs_{file}.txt
-		$file = $phpbb_root_path . 'contrib/xs_' . $sub_dir . '.txt';
+		$file = IP_ROOT_PATH . 'contrib/xs_' . $sub_dir . '.txt';
 		if(@file_exists($file))
 		{
 			include_update_txt($file, $sub_dir);
 		}
-		$file = $phpbb_root_path . 'contrib/xs_' . strtolower($sub_dir) . '.txt';
+		$file = IP_ROOT_PATH . 'contrib/xs_' . strtolower($sub_dir) . '.txt';
 		if($lower && @file_exists($file))
 		{
 			include_update_txt($file, $sub_dir);
 		}
 		// check templates/contrib/xs_{file}.txt
-		$file = $phpbb_root_path . 'templates/contrib/xs_' . $sub_dir . '.txt';
+		$file = IP_ROOT_PATH . 'templates/contrib/xs_' . $sub_dir . '.txt';
 		if(@file_exists($file))
 		{
 			include_update_txt($file, $sub_dir);
 		}
-		$file = $phpbb_root_path . 'templates/contrib/xs_' . strtolower($sub_dir) . '.txt';
+		$file = IP_ROOT_PATH . 'templates/contrib/xs_' . strtolower($sub_dir) . '.txt';
 		if($lower && @file_exists($file))
 		{
 			include_update_txt($file, $sub_dir);
 		}
 		// check templates/{file}/xs.txt
-		$file = $phpbb_root_path . 'templates/' . $sub_dir . '/xs.txt';
+		$file = IP_ROOT_PATH . 'templates/' . $sub_dir . '/xs.txt';
 		if(@file_exists($file))
 		{
 			include_update_txt($file, $sub_dir);
@@ -174,7 +174,7 @@ if(!isset($_GET['doupdate']))
 {
 	$template->set_filenames(array('body' => XS_TPL_PATH . 'update.tpl'));
 	$template->assign_vars(array(
-		'UPDATE_URL' => append_sid('xs_update.' . $phpEx . '?doupdate=1'),
+		'UPDATE_URL' => append_sid('xs_update.' . PHP_EXT . '?doupdate=1'),
 		'L_XS_UPDATE_TOTAL1' => str_replace('{NUM}', count($updates), $lang['xs_update_total1']),
 		)
 	);
@@ -219,15 +219,15 @@ foreach($updates as $var1 => $item)
 {
 	$i++;
 	$var = 'item_'.$i.'_';
-	if(!empty($_POST[$var.'item']) && !empty($_POST[$var.'checked']) && $_POST[$var.'checked'])
+	if(!empty($_POST[$var . 'item']) && !empty($_POST[$var . 'checked']) && $_POST[$var . 'checked'])
 	{
-		$item = $_POST[$var.'item'];
+		$item = $_POST[$var . 'item'];
 		if(!empty($updates[$item]['update_url']))
 		{
 			$items[] = $var1;
 			$found = false;
 			$url = $updates[$item]['update_url'];
-			for($j=0; $j<count($urls) && !$found; $j++)
+			for($j = 0; $j < count($urls) && !$found; $j++)
 			{
 				if($urls[$j] === $url)
 				{
@@ -255,14 +255,14 @@ if(!count($urls))
 @set_time_limit(intval($_POST['timeout']));
 
 // getting data
-for($i=0; $i<count($urls); $i++)
+for($i = 0; $i < count($urls); $i++)
 {
 	$arr = @file($urls[$i]);
 	if(empty($arr))
 	{
 		// cannot connect. show it as error message
 		@reset($items);
-		for($j=0; $j<count($items); $j++)
+		for($j = 0; $j < count($items); $j++)
 		{
 			$item = $updates[$items[$j]];
 			if($item['update_url'] === $urls[$i])
@@ -289,12 +289,12 @@ for($i=0; $i<count($urls); $i++)
 				$begin_pos = -1;
 				$end_pos = -1;
 				// getting begin and end tags for it
-				for($k=0; ($k<count($arr)-1) && ($begin_pos < 0); $k++)
+				for($k = 0; ($k < count($arr) - 1) && ($begin_pos < 0); $k++)
 				{
 					if($arr[$k] === $begin_text)
 					{
 						$begin_pos = $k;
-						for(; ($k<count($arr)) && ($end_pos < 0); $k++)
+						for(; ($k < count($arr)) && ($end_pos < 0); $k++)
 						{
 							if($arr[$k] === $end_text)
 							{
@@ -312,7 +312,7 @@ for($i=0; $i<count($urls); $i++)
 				if($begin_pos >= 0)
 				{
 					// getting all data for this item in array
-					for($k=$begin_pos+1; $k<$end_pos; $k++)
+					for($k = $begin_pos + 1; $k < $end_pos; $k++)
 					{
 						$arr2 = explode(' ', $arr[$k], 2);
 						if(count($arr2) == 2)
@@ -361,7 +361,7 @@ foreach($updates as $var => $item)
 			if($ver2 !== $ver1 && (!empty($item['data']['update']) || !empty($item['data']['autoupdate'])))
 			{
 				$count_update++;
-				$u_import = (isset($item['data']['style']) && substr($item['data']['style'], 0, 7) === 'http://') ? append_sid('xs_import.' . $phpEx . '?get_web=' . urlencode($item['data']['style'])) : '';
+				$u_import = (isset($item['data']['style']) && substr($item['data']['style'], 0, 7) === 'http://') ? append_sid('xs_import.' . PHP_EXT . '?get_web=' . urlencode($item['data']['style'])) : '';
 				$template->assign_block_vars('row.update',
 					array(
 						'NUM'			=> $count_total,

@@ -15,13 +15,13 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
 }
 
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -54,7 +54,7 @@ if ($auth_level_req > AUTH_ALL)
 //$cms_global_blocks = ($board_config['wide_blocks_custom_pages'] == 1) ? true : false;
 
 define('PORTAL_INIT', true);
-include($phpbb_root_path . 'includes/functions_cms.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);
 cms_config_init($cms_config_vars);
 
 $page_filename = mysql_real_escape_string(basename($_SERVER['PHP_SELF']));
@@ -148,7 +148,7 @@ $page_title = $board_config['sitename'];
 $meta_description = '';
 $meta_keywords = '';
 //define('SHOW_ONLINE', true);
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Tell the template class which template to use.
 $template->set_filenames(array('body' => 'layout/' . $layout_template));
@@ -156,7 +156,7 @@ $template->set_filenames(array('body' => 'layout/' . $layout_template));
 if (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] >= CMS_CONTENT_MANAGER))
 {
 	$cms_acp_url = '<br /><br /><div style="text-align:center;">';
-	$cms_acp_url .= '<a href="' . append_sid('cms.' . $phpEx . '?mode=blocks&amp;l_id=' . $layout) . '">' . $lang['CMS_ACP'] . '</a>';
+	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout) . '">' . $lang['CMS_ACP'] . '</a>';
 	$cms_acp_url .= '</div>';
 }
 else
@@ -186,5 +186,5 @@ cms_parse_blocks($layout, false, false, '');
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 ?>

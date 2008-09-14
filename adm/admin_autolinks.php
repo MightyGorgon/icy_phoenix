@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,9 +25,9 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if( isset($_GET['mode']) || isset($_POST['mode']) )
 {
@@ -57,7 +57,7 @@ if( $mode == 'save' )
 			message_die(GENERAL_ERROR, "Could not remove data from autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
-		$message = $lang['Autolink_removed'] . '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], "<a href=\"" . append_sid("admin_autolinks.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+		$message = $lang['Autolink_removed'] . '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], "<a href=\"" . append_sid("admin_autolinks." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -89,7 +89,7 @@ if( $mode == 'save' )
 			message_die(GENERAL_ERROR, "Could not insert data into autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], "<a href=\"" . append_sid("admin_autolinks.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+		$message .= '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], "<a href=\"" . append_sid("admin_autolinks." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -208,7 +208,7 @@ else
 		'L_SUBMIT' => ( $mode == 'edit' ) ? $lang['Edit_keyword'] : $lang['Add_keyword'],
 		'L_ACTION' => $lang['Action'],
 
-		'S_AUTOLINKS_ACTION' => append_sid('admin_autolinks.' . $phpEx),
+		'S_AUTOLINKS_ACTION' => append_sid('admin_autolinks.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => ( $mode == 'edit' ) ? '<input type="hidden" name="mode" value="save" /><input type="hidden" name="id" value="' . $link_id_edit . '" /><input type="hidden" name="forum_id" value="' . $forum_id . '" />' : '<input type="hidden" name="mode" value="save" />'
 		)
 	);
@@ -252,7 +252,7 @@ else
 				'FORUM' => $forum_names[$forum_id2],
 				'INTERNAL' => ( $link_int == '1' ) ? $lang['Yes'] : $lang['No'],
 
-				'U_KEYWORD_EDIT' => append_sid('admin_autolinks.' . $phpEx . '?mode=edit&amp;id=' . $link_id . '&amp;forum_id=' . $forum_id) . '#edit'
+				'U_KEYWORD_EDIT' => append_sid('admin_autolinks.' . PHP_EXT . '?mode=edit&amp;id=' . $link_id . '&amp;forum_id=' . $forum_id) . '#edit'
 				)
 			);
 		}
@@ -267,6 +267,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

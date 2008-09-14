@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -401,7 +401,6 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$icq, &$aim, &$msn, &$yim, &$skype, &$website, &$location, &$user_flag, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
 {
 	global $board_config, $db, $template, $lang, $images, $theme;
-	global $phpbb_root_path, $phpEx;
 
 	$my_counter = 0;
 	$my_checker = 0;
@@ -541,7 +540,6 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$avatar_text, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$icq, &$aim, &$msn, &$yim, &$skype, &$website, &$location, &$user_flag, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
 {
 	global $board_config, $db, $template, $lang, $images, $theme;
-	global $phpbb_root_path, $phpEx;
 
 	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'icq', 'aim', 'msn', 'yim', 'skype', 'website', 'location', 'user_flag', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatar_filename" value="' . $avatar_filename . '" />';

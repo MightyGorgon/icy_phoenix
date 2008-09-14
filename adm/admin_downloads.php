@@ -16,7 +16,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -26,12 +26,12 @@ if(!empty($setmodules))
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_downloads.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_downloads.' . PHP_EXT);
 
 /*
 * include and create the main class
@@ -40,7 +40,7 @@ if ($_GET['action'] == 'edit')
 {
 	$enable_desc = $enable_rule = true;
 }
-include($phpbb_root_path . DL_ROOT_PATH . 'classes/class_dlmod.' . $phpEx);
+include(IP_ROOT_PATH . DL_ROOT_PATH . 'classes/class_dlmod.' . PHP_EXT);
 $dl_mod = new dlmod();
 $dl_config = array();
 $dl_config = $dl_mod->get_config();
@@ -53,7 +53,7 @@ $template->set_filenames(array('body' => ADM_TPL . 'downloads_main.tpl'));
 /*
 * init mod config
 */
-$dl_admin_path = $phpbb_root_path . DL_ROOT_PATH . 'admin/';
+$dl_admin_path = IP_ROOT_PATH . DL_ROOT_PATH . 'admin/';
 
 /*
 * build download management page
@@ -115,7 +115,7 @@ else
 		$template->assign_block_vars('toolbox', array(
 			'L_TOOLBOX' => $lang['Dl_manage'],
 			'TOOLBOX_IMG' => $images['Dl_acp_toolbox'],
-			'U_TOOLBOX' => append_sid('admin_downloads.' . $phpEx . '?submod=toolbox')
+			'U_TOOLBOX' => append_sid('admin_downloads.' . PHP_EXT . '?submod=toolbox')
 			)
 		);
 
@@ -124,7 +124,7 @@ else
 			$template->assign_block_vars('ext_blacklist', array(
 				'L_EXT_BLACKLIST' => $lang['Dl_ext_blacklist'],
 				'EXT_BLACKLIST_IMG' => $images['Dl_acp_ext_blacklist'],
-				'U_EXT_BLACKLIST' => append_sid('admin_downloads.' . $phpEx . '?submod=ext_blacklist')
+				'U_EXT_BLACKLIST' => append_sid('admin_downloads.' . PHP_EXT . '?submod=ext_blacklist')
 				)
 			);
 		}
@@ -140,16 +140,16 @@ $template->assign_vars(array(
 	'DL_MOD_RELEASE' => sprintf($lang['Dl_mod_version'], $dl_config['dl_mod_version']),
 	'L_BANLIST' => $lang['Dl_acp_banlist'],
 	'BANLIST_IMG' => $images['Dl_acp_banlist'],
-	'U_BANLIST' => append_sid('admin_downloads.' . $phpEx . '?submod=banlist')
+	'U_BANLIST' => append_sid('admin_downloads.' . PHP_EXT . '?submod=banlist')
 	)
 );
 
 for ($i = 0; $i < $menu_width; $i++)
 {
 	$template->assign_block_vars('management_menu_row', array(
-		'I_MODULE_IMG' => $phpbb_root_path . $i_dl_modules[$i],
+		'I_MODULE_IMG' => IP_ROOT_PATH . $i_dl_modules[$i],
 		'L_MODULE_TITLE' => $l_dl_modules[$i],
-		'U_MODULE_URL' => append_sid('admin_downloads.' . $phpEx . '?submod=' . $u_dl_modules[$i])
+		'U_MODULE_URL' => append_sid('admin_downloads.' . PHP_EXT . '?submod=' . $u_dl_modules[$i])
 		)
 	);
 }
@@ -202,7 +202,7 @@ else
 * initiate the help system
 */
 $template->assign_vars(array(
-	'U_HELP_POPUP' => $phpbb_root_path . 'dl_help.' . $phpEx . '?help_key='
+	'U_HELP_POPUP' => IP_ROOT_PATH . 'dl_help.' . PHP_EXT . '?help_key='
 	)
 );
 
@@ -303,48 +303,48 @@ $del_file = ($del_file < 0) ? 0 : $del_file;
 switch($submod)
 {
 	case 'config':
-		include($dl_admin_path . 'dl_admin_config.' . $phpEx);
+		include($dl_admin_path . 'dl_admin_config.' . PHP_EXT);
 		break;
 
 	case 'traffic':
-		include($dl_admin_path . 'dl_admin_traffic.' . $phpEx);
+		include($dl_admin_path . 'dl_admin_traffic.' . PHP_EXT);
 		break;
 
 	case 'categories':
-		include($dl_admin_path . 'dl_admin_categories.' . $phpEx);
+		include($dl_admin_path . 'dl_admin_categories.' . PHP_EXT);
 		break;
 
 	case 'files':
 		if ($file_manage)
 		{
-			include($dl_admin_path . 'dl_admin_files.' . $phpEx);
+			include($dl_admin_path . 'dl_admin_files.' . PHP_EXT);
 		}
 		break;
 
 	case 'toolbox':
 		if ($file_manage)
 		{
-			include($dl_admin_path . 'dl_admin_toolbox.' . $phpEx);
+			include($dl_admin_path . 'dl_admin_toolbox.' . PHP_EXT);
 		}
 		break;
 
 	case 'stats':
 		if ($stat_manage)
 		{
-			include($dl_admin_path . 'dl_admin_stats.' . $phpEx);
+			include($dl_admin_path . 'dl_admin_stats.' . PHP_EXT);
 		}
 		break;
 	case 'ext_blacklist':
 		if ($dl_config['use_ext_blacklist'])
 		{
-			include($dl_admin_path . 'dl_admin_ext_blacklist.' . $phpEx);
+			include($dl_admin_path . 'dl_admin_ext_blacklist.' . PHP_EXT);
 		}
 		break;
 	case 'banlist':
-		include($dl_admin_path . 'dl_admin_banlist.' . $phpEx);
+		include($dl_admin_path . 'dl_admin_banlist.' . PHP_EXT);
 		break;
 }
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

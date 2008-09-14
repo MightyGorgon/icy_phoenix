@@ -32,7 +32,7 @@
 *
 */
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt!');
 }
@@ -67,12 +67,12 @@ define('CT_DEBUG_MODE', false);
 /*
 
 /*
- * The first thing we do now is checking the integrity of the $phpbb_root_path
+ * The first thing we do now is checking the integrity of the IP_ROOT_PATH
  * because CrackerTracker will need it later. With this step we prevent that
- * scripts without the $phpbb_root_path or without a validated $phpbb_root_path
+ * scripts without the IP_ROOT_PATH or without a validated IP_ROOT_PATH
  * can be executed.
  */
-if (!isset($phpbb_root_path) || empty($phpbb_root_path))
+if (!defined('IP_ROOT_PATH'))
 {
 	/*
 	 * Create a HTML error Message output
@@ -91,8 +91,8 @@ if (!isset($phpbb_root_path) || empty($phpbb_root_path))
 	<td bgcolor="#FFF4BF" align="left">
 		<font face="Tahoma, Arial, Helvetica" size="2" color="#000000">
 			CBACK CrackerTracker stopped your script because the engine detected
-			that the script you want to execute has not initialized the var
-			<b>\$phpbb_root_path</b> correctly.
+			that the script you want to execute has not initialized the constant
+			<b>IP_ROOT_PATH</b> correctly.
 			<br /><br />
 			This could be a potential security risk for this board.
 			<br /><br />
@@ -358,7 +358,7 @@ if ($ct_attack_detection)
 	if (CT_DEBUG_MODE !== true)
 	{
 		// include class for Logfile Management
-		include_once($phpbb_root_path . 'ctracker/classes/class_log_manager.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
 
 		// write data into logfile
 		$logfile = new log_manager();
@@ -412,7 +412,7 @@ function ct_debugger($checkstring, $checkmode)
 	{
 		return;
 	}
-	global $ct_rules, $phpbb_root_path, $unchecked_post_fields;
+	global $ct_rules, $unchecked_post_fields;
 
 	$dbgunchecked_post_fields = implode('|', $unchecked_post_fields);
 
@@ -458,7 +458,7 @@ function ct_debugger($checkstring, $checkmode)
 	if (count($matching_vars))
 	{
 		// let's open the debug file and write in some stuff ;)
-		$debugstream = @fopen($phpbb_root_path . 'ctracker/logfiles/logfile_debug_mode.txt', 'ab');
+		$debugstream = @fopen(IP_ROOT_PATH . 'ctracker/logfiles/logfile_debug_mode.txt', 'ab');
 		$scriptname = str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']);
 		$scriptname = ((substr($scriptname, 0, 1) == '/') ? '' : '/') . $scriptname;
 		$scriptname = str_replace('//', '/', $scriptname);
@@ -474,11 +474,11 @@ function ct_debugger($checkstring, $checkmode)
 		modcommand($debugstream, 'FIND');
 		if (preg_match('#^/admin/(admin_|index\.php)#', $scriptname))
 		{
-			@fputs($debugstream, "require('./pagestart.' . \$phpEx);\n\n");
+			@fputs($debugstream, "require('./pagestart.' . " . PHP_EXT . ");\n\n");
 		}
 		else
 		{
-			@fputs($debugstream, "include(\$phpbb_root_path . 'common.'.\$phpEx);\n\n");
+			@fputs($debugstream, "include(IP_ROOT_PATH . 'common.' . " . PHP_EXT . ");\n\n");
 		}
 		modcommand($debugstream, 'BEFORE, ADD');
 		@fputs($debugstream, "define('CT_SECLEVEL', 'MEDIUM');\n");

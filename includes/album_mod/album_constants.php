@@ -15,35 +15,10 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
-
-$table_prefix = ($table_prefix === false) ? 'fap_' : $table_prefix;
-
-$acp_prefix = (defined('IS_ICYPHOENIX')) ? ADM_TPL : 'admin/';
-
-// Login Page
-!defined('LOGIN_MG') ? define('LOGIN_MG', 'login.' . $phpEx) : false;
-// Profile Page
-!defined('PROFILE_MG') ? define('PROFILE_MG', 'profile.' . $phpEx) : false;
-// Search Page
-!defined('SEARCH_MG') ? define('SEARCH_MG', 'search.' . $phpEx) : false;
-
-// Album Tables
-!defined('ALBUM_TABLE') ? define('ALBUM_TABLE', $table_prefix . 'album') : false;
-!defined('ALBUM_CAT_TABLE') ? define('ALBUM_CAT_TABLE', $table_prefix . 'album_cat') : false;
-!defined('ALBUM_CONFIG_TABLE') ? define('ALBUM_CONFIG_TABLE', $table_prefix . 'album_config') : false;
-!defined('ALBUM_COMMENT_TABLE') ? define('ALBUM_COMMENT_TABLE', $table_prefix . 'album_comment') : false;
-!defined('ALBUM_RATE_TABLE') ? define('ALBUM_RATE_TABLE', $table_prefix . 'album_rate') : false;
-!defined('ALBUM_COMMENT_WATCH_TABLE') ? define('ALBUM_COMMENT_WATCH_TABLE', $table_prefix . 'album_comment_watch') : false;
-
-// Album Pages
-define('PAGE_ALBUM', -50); // for Session Handling
-define('PAGE_ALBUM_PERSONAL', -51);
-define('PAGE_ALBUM_PICTURE', -52);
-define('PAGE_ALBUM_SEARCH', -53);
 
 //define('PERSONAL_GALLERY', 0); // pic_cat_id <- do NOT change this value
 define('ALBUM_NAV_ARROW','&nbsp;&raquo;&nbsp;');
@@ -103,13 +78,20 @@ define('ALBUM_MOD', 2);
 define('ALBUM_PRIVATE', 3);
 
 // Path (trailing slash required)
-define('ALBUM_UPLOAD_PATH', ALBUM_FILES_PATH . '');
+if (USERS_SUBFOLDERS_ALBUM == true)
+{
+	define('ALBUM_UPLOAD_PATH', ALBUM_FILES_PATH . 'users/');
+}
+else
+{
+	define('ALBUM_UPLOAD_PATH', ALBUM_FILES_PATH);
+}
 define('ALBUM_JUPLOAD_PATH', ALBUM_FILES_PATH . 'jupload/');
 define('ALBUM_OTF_PATH', ALBUM_FILES_PATH . 'otf/');
 define('ALBUM_CACHE_PATH', ALBUM_FILES_PATH . 'cache/');
 define('ALBUM_MED_CACHE_PATH', ALBUM_FILES_PATH . 'med_cache/');
 define('ALBUM_WM_CACHE_PATH', ALBUM_FILES_PATH . 'wm_cache/');
-define('ALBUM_WM_FILE', ALBUM_MOD_PATH . 'mark_fap.png');
+define('ALBUM_WM_FILE', ALBUM_MOD_IMG_PATH . 'mark_fap.png');
 
 // Pic watch
 define('COMMENT_WATCH_UN_NOTIFIED', 0);

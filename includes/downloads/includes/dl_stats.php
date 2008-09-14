@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -28,7 +28,7 @@ if (!defined('IN_PHPBB'))
 $stats_view = $dl_mod->stats_perm();
 if (!$stats_view)
 {
-	redirect(append_sid('downloads.' . $phpEx));
+	redirect(append_sid('downloads.' . PHP_EXT));
 }
 
 if (count($index))
@@ -73,7 +73,7 @@ if (count($index))
 				$dl_time = $row['last_time'];
 				$dl_time = create_date($board_config['default_dateformat'], $dl_time, $board_config['board_timezone']);
 
-				$file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 				//$user_link = ($row['down_user'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['down_user']);
 				$user_link = colorize_username($row['down_user']);
@@ -130,7 +130,7 @@ if (count($index))
 				$dl_time = $row['add_time'];
 				$dl_time = create_date($board_config['default_dateformat'], $dl_time, $board_config['board_timezone']);
 
-				$file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 				//$user_link = ($row['add_user'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['add_user']);
 				$user_link = colorize_username($row['add_user']);
@@ -184,7 +184,7 @@ if (count($index))
 
 				$dl_klicks = $row['klicks'];
 
-				$file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -231,7 +231,7 @@ if (count($index))
 
 				$dl_klicks = $row['overall_klicks'];
 
-				$file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -279,7 +279,7 @@ if (count($index))
 
 				$dl_traffic = $dl_mod->dl_size($row['month_traffic']);
 
-				$file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -327,7 +327,7 @@ if (count($index))
 
 				$dl_traffic = $dl_mod->dl_size($row['overall_traffic']);
 
-				$file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -528,12 +528,12 @@ if (count($index))
 	}
 	else
 	{
-		redirect(append_sid('downloads.' . $phpEx));
+		redirect(append_sid('downloads.' . PHP_EXT));
 	}
 }
 else
 {
-	redirect(append_sid('downloads.' . $phpEx));
+	redirect(append_sid('downloads.' . PHP_EXT));
 }
 
 $template->set_filenames(array('body' => 'dl_stat_body.tpl'));
@@ -562,7 +562,7 @@ $template->assign_vars(array(
 	'L_KLICKS' => $lang['Dl_klicks'],
 	'L_KLICKS_OVERALL' => $lang['Dl_overall_klicks'],
 	'L_KL_M_T' => $lang['Dl_klicks_total'],
-	'U_DL_TOP' => append_sid('downloads.' . $phpEx)
+	'U_DL_TOP' => append_sid('downloads.' . PHP_EXT)
 	)
 );
 

@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -43,8 +43,8 @@ $template->set_filenames(array('ct_header' => ADM_TPL . 'acp_header.tpl'));
 
 // Send some vars to the template
 $template->assign_vars(array(
-	'HEADER_BACKGROUND_IMAGE' => $phpbb_root_path . $images['ctracker_acp_bg'],
-	'HEADER_LOGO'			  => $phpbb_root_path . $images['ctracker_acp_logo'],
+	'HEADER_BACKGROUND_IMAGE' => IP_ROOT_PATH . $images['ctracker_acp_bg'],
+	'HEADER_LOGO'			  => IP_ROOT_PATH . $images['ctracker_acp_logo'],
 	'L_PICTURE'				  => $lang['ctracker_img_descriptions']
 	)
 );

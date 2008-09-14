@@ -15,7 +15,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -70,27 +70,27 @@ if (!get_magic_quotes_gpc())
 //===================================================
 $language = $board_config['default_lang'];
 
-if( !file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_pafiledb.' . $phpEx) )
+if( !file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_pafiledb.' . PHP_EXT) )
 {
 	$language = 'english';
 }
 
-if( !file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_pafiledb.' . $phpEx) )
+if( !file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_pafiledb.' . PHP_EXT) )
 {
 	$language = 'english';
 }
 
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_pafiledb.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_pafiledb.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_pafiledb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_pafiledb.' . PHP_EXT);
 
 //===================================================
 // Include pafiledb data file
 //===================================================
-include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_cache.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/template.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_pafiledb.' . $phpEx);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_cache.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/template.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_pafiledb.' . PHP_EXT);
 
 $cache = new acm();
 $pafiledb_functions = new pafiledb_functions();
@@ -114,7 +114,7 @@ $pafiledb = new pafiledb_public();
 $template_path = 'templates/';
 $template_name = $theme['template_name'];
 $current_template_path = $template_path . $template_name;
-$current_template_cfg_pa = $phpbb_root_path . $template_path . $template_name . '/' . $template_name . '_pa.cfg';
+$current_template_cfg_pa = IP_ROOT_PATH . $template_path . $template_name . '/' . $template_name . '_pa.cfg';
 if (file_exists($current_template_cfg_pa))
 {
 	@include_once($current_template_cfg_pa);

@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,11 +28,11 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_edit_data.' . $phpEx) . '">' . $lang['xs_edit_styles_data'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_edit_data.' . PHP_EXT) . '">' . $lang['xs_edit_styles_data'] . '</a>'));
 
-$lang['xs_edittpl_back_list'] = str_replace('{URL}', append_sid('xs_edit_data.' . $phpEx), $lang['xs_edittpl_back_list']);
+$lang['xs_edittpl_back_list'] = str_replace('{URL}', append_sid('xs_edit_data.' . PHP_EXT), $lang['xs_edittpl_back_list']);
 
 function xs_empty_name()
 {
@@ -192,7 +192,7 @@ function xs_get_vars($theme)
 if(!empty($_POST['edit']) && !defined('DEMO_MODE'))
 {
 	$id = intval($_POST['edit']);
-	$lang['xs_edittpl_back_edit'] = str_replace('{URL}', append_sid('xs_edit_data.' . $phpEx . '?edit='.$id), $lang['xs_edittpl_back_edit']);
+	$lang['xs_edittpl_back_edit'] = str_replace('{URL}', append_sid('xs_edit_data.' . PHP_EXT . '?edit='.$id), $lang['xs_edittpl_back_edit']);
 	$data_item = array();
 	$data_item_update = array();
 	$data_name = array();
@@ -284,7 +284,7 @@ if(!empty($_GET['edit']))
 	$vars = xs_get_vars($item);
 	// show variables
 	$template->assign_vars(array(
-		'U_ACTION'	=> append_sid('xs_edit_data.' . $phpEx),
+		'U_ACTION'	=> append_sid('xs_edit_data.' . PHP_EXT),
 		'TPL'		=> htmlspecialchars($item['template-name']),
 		'STYLE'		=> htmlspecialchars($item['style_name']),
 		'ID'		=> $id
@@ -374,7 +374,7 @@ for($i=0; $i<count($style_rowset); $i++)
 		'ROW_CLASS'		=> $row_class,
 		'TPL'			=> htmlspecialchars($item['template_name']),
 		'STYLE'			=> htmlspecialchars($item['style_name']),
-		'U_EDIT'		=> append_sid('xs_edit_data.' . $phpEx . '?edit='.$item['themes_id'])
+		'U_EDIT'		=> append_sid('xs_edit_data.' . PHP_EXT . '?edit='.$item['themes_id'])
 		)
 	);
 }

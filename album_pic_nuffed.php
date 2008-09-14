@@ -8,29 +8,28 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip, false) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
-require($album_root_path . 'album_image_class.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request
 // ------------------------------------
-if( isset($_GET['pic_id']) )
+if(isset($_GET['pic_id']))
 {
 	$pic_id = intval($_GET['pic_id']);
 }
-elseif( isset($_POST['pic_id']) )
+elseif(isset($_POST['pic_id']))
 {
 	$pic_id = intval($_POST['pic_id']);
 }
@@ -43,29 +42,24 @@ else
 // Get this pic info and current category info
 // ------------------------------------
 $sql = "SELECT p.*, c.*
-		FROM ". ALBUM_TABLE ." AS p, ". ALBUM_CAT_TABLE ." AS c
-		WHERE pic_id = '$pic_id'
-			AND c.cat_id = p.pic_cat_id";
-
-if( !$result = $db->sql_query($sql) )
+		FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
+		WHERE pic_id = '" . $pic_id . "'
+			AND c.cat_id = p.pic_cat_id
+		LIMIT 1";
+if(!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
 }
-
 $thispic = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 
 $cat_id = $thispic['pic_cat_id'];
 $album_user_id = $thispic['cat_user_id'];
 
-$pic_filename = $thispic['pic_filename'];
-$file_part = explode('.', strtolower($pic_filename));
-$pic_filetype = $file_part[count($file_part) - 1];
-$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-$pic_title = $thispic['pic_title'];
-$pic_thumbnail = $thispic['pic_thumbnail'];
+$pic_info = array();
+$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
 
-if( empty($thispic) || !file_exists(ALBUM_UPLOAD_PATH . $pic_filename) )
+if(empty($thispic) || ($pic_info['exists'] == false) || !file_exists($pic_info['fullpath']))
 {
 	message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
 }
@@ -74,7 +68,7 @@ if( empty($thispic) || !file_exists(ALBUM_UPLOAD_PATH . $pic_filename) )
 // Check the permissions
 // ------------------------------------
 $album_user_access = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_VIEW, $thispic);
-if( $album_user_access['view'] == false )
+if($album_user_access['view'] == false)
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
@@ -83,11 +77,11 @@ if( $album_user_access['view'] == false )
 // Check Pic Approval
 // ------------------------------------
 
-if( $userdata['user_level'] != ADMIN )
+if($userdata['user_level'] != ADMIN)
 {
-	if( ($thispic['cat_approval'] == ADMIN) || (($thispic['cat_approval'] == MOD) && !$album_user_access['moderator']) )
+	if(($thispic['cat_approval'] == ADMIN) || (($thispic['cat_approval'] == MOD) && !$album_user_access['moderator']))
 	{
-		if( $thispic['pic_approval'] != 1 )
+		if($thispic['pic_approval'] != 1)
 		{
 			message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
 		}
@@ -97,7 +91,7 @@ if( $userdata['user_level'] != ADMIN )
 // ------------------------------------
 // Check hotlink
 // ------------------------------------
-if( ($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'])) )
+if(($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'])))
 {
 	$check_referer = explode('?', $_SERVER['HTTP_REFERER']);
 	$check_referer = trim($check_referer[0]);
@@ -117,18 +111,18 @@ if( ($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 	{
 		$good_referers[$i] = trim($good_referers[$i]);
 
-		if( (strstr($check_referer, $good_referers[$i])) && ($good_referers[$i] != '') )
+		if((strstr($check_referer, $good_referers[$i])) && ($good_referers[$i] != ''))
 		{
 			$errored = false;
 		}
 	}
 
-	if( $errored )
+	if($errored)
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
 		/*
 		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_title_reg . '.' . $pic_filetype);
+		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		readfile($images['no_thumbnail']);
 		exit;
 		*/
@@ -138,13 +132,13 @@ if( ($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 $nuff_http = nuff_http_vars();
 
 $Image = new ImgObj();
-$Image->ReadSourceFile(ALBUM_UPLOAD_PATH . $pic_filename);
+$Image->ReadSourceFile($pic_info['fullpath']);
 
-if( (($nuff_http['nuff_sepia'] == true) || ($nuff_http['nuff_bw'] == true) || ($nuff_http['nuff_blur'] == true) || ($nuff_http['nuff_scatter'] == true)) && ($album_config['enable_sepia_bw'] == true) )
+if((($nuff_http['nuff_sepia'] == true) || ($nuff_http['nuff_bw'] == true) || ($nuff_http['nuff_blur'] == true) || ($nuff_http['nuff_scatter'] == true)) && ($album_config['enable_sepia_bw'] == true))
 {
 
-	( ($nuff_http['nuff_resize_w'] == 0) || ($nuff_http['nuff_resize_w'] > 200) ) ? ($nuff_http['nuff_resize_w'] = 200) : false;
-	( ($nuff_http['nuff_resize_h'] == 0) || ($nuff_http['nuff_resize_h'] > 150) ) ? ($nuff_http['nuff_resize_h'] = 150) : false;
+	(($nuff_http['nuff_resize_w'] == 0) || ($nuff_http['nuff_resize_w'] > 200)) ? ($nuff_http['nuff_resize_w'] = 200) : false;
+	(($nuff_http['nuff_resize_h'] == 0) || ($nuff_http['nuff_resize_h'] > 150)) ? ($nuff_http['nuff_resize_h'] = 150) : false;
 
 	$Image->Resize($nuff_http['nuff_resize_w'], $nuff_http['nuff_resize_h']);
 
@@ -194,18 +188,18 @@ else
 ($nuff_http['nuff_flip'] == true) ? $Image->Flip(2) : false;
 
 //Rotate anti-clockwise degrees (transparency lost)
-if( $nuff_http['nuff_rotation_d'] > 0 )
+if($nuff_http['nuff_rotation_d'] > 0)
 {
 	($nuff_http['nuff_rotation'] == true) ? $Image->Rotate($nuff_http['nuff_rotation_d']) : false;
 }
 
 //WatermarkPos(File, Pos, Size, Transition)
-if( ($pic_filetype != 'gif') && ($album_config['use_watermark'] == true) && ($userdata['user_level'] != ADMIN) &&
-	( (!$userdata['session_logged_in']) || ($album_config['wut_users'] == 1)) )
+if(($pic_info['filetype'] != 'gif') && ($album_config['use_watermark'] == true) && ($userdata['user_level'] != ADMIN) &&
+	((!$userdata['session_logged_in']) || ($album_config['wut_users'] == 1)))
 {
 	//$wm_file = ALBUM_WM_FILE;
 	$wm_file = (file_exists($thispic['cat_wm']) ? $thispic['cat_wm'] : ALBUM_WM_FILE);
-	$wm_position = ( ($album_config['disp_watermark_at'] > 0) && ($album_config['disp_watermark_at'] < 10) ) ? $album_config['disp_watermark_at'] : 5;
+	$wm_position = (($album_config['disp_watermark_at'] > 0) && ($album_config['disp_watermark_at'] < 10)) ? $album_config['disp_watermark_at'] : 5;
 	$wm_maxsize = 50;
 	$wm_transition = 100;
 	$Image->WatermarkPos($wm_file, $wm_position, $wm_maxsize, $wm_transition);
@@ -214,9 +208,9 @@ if( ($pic_filetype != 'gif') && ($album_config['use_watermark'] == true) && ($us
 //$Image->SendToFile("cache/test2"); //Write image to file
 
 //JPG Compression
-( ($nuff_http['nuff_recompress'] == false) || ($nuff_http['nuff_recompress_r'] == 0) ) ? ($nuff_http['nuff_recompress_r'] = 75) : false;
+(($nuff_http['nuff_recompress'] == false) || ($nuff_http['nuff_recompress_r'] == 0)) ? ($nuff_http['nuff_recompress_r'] = 75) : false;
 
-$Image->SendToBrowser($pic_title, $pic_filetype, '', '_nuffed', $nuff_http['nuff_recompress_r']);
+$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '_nuffed', $nuff_http['nuff_recompress_r']);
 $Image->Destroy(); //Destroy whole class including GD image in memory.
 
 ?>

@@ -34,11 +34,10 @@ if ( !defined('PHP_DIGESTS_CRON') )
 	// Decomment it to block the execution
 	die('Hacking attempt');
 
-	define('IN_PHPBB', true);
-	$phpbb_root_path = './';
-
-	include($phpbb_root_path . 'extension.inc');
-	include($phpbb_root_path . 'common.' . $phpEx);
+	define('IN_ICYPHOENIX', true);
+	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+	include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 	// Start session management
 	$userdata = session_pagestart($user_ip);
@@ -51,7 +50,7 @@ if ( !defined('PHP_DIGESTS_CRON') )
 	}
 }
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -65,11 +64,12 @@ if (!$userdata)
 }
 
 // Comment this if you run it outside phpBB
-$phpbb_root_path = './';
-include($phpbb_root_path . 'includes/digest_emailer.' . $phpEx);
-include($phpbb_root_path . 'includes/digest_constants.' . $phpEx);
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'includes/digest_emailer.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 ignore_user_abort();
 
 $link_tag = '';

@@ -1329,7 +1329,7 @@ $lang['new_pm_lofi'] = 'Send a PM';
 
 // Retroactive Signature MOD
 $lang['Retro_sig'] = 'Attach my signature to my prior posts';
-$lang['Retro_sig_explain'] = 'If adding/editing your signature, phpBB normally applies this only to future posts';
+$lang['Retro_sig_explain'] = 'If adding/editing your signature, Icy Phoenix normally applies this only to future posts';
 $lang['Retro_sig_checkbox'] = 'Check here to attach your signature to your previous posts as well';
 // End Retro Sig MOD
 

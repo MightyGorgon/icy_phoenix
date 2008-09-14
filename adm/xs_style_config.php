@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,10 +28,10 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
 $tpl = isset($_POST['tpl']) ? $_POST['tpl'] : (isset($_GET['tpl']) ? $_GET['tpl'] : '');
-$filename = $phpbb_root_path . 'templates/' . $tpl . '/xs_config.cfg';
+$filename = IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg';
 
 if(empty($tpl))
 {
@@ -50,7 +50,7 @@ if(!@file_exists($filename))
 		$config->read(true);
 	}
 	$template->assign_block_vars('left_refresh', array(
-			'ACTION'	=> append_sid('index.' . $phpEx . '?pane=left')
+			'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
 		));
 	xs_error($lang['xs_invalid_style_name']);
 }
@@ -169,10 +169,10 @@ for($i=0; $i<count($style_config); $i++)
 
 $template->assign_vars(array(
 	'TPL'		=> htmlspecialchars($tpl),
-	'U_FORM'	=> 'xs_style_config.' . $phpEx . '?sid='.$userdata['session_id'],
+	'U_FORM'	=> 'xs_style_config.' . PHP_EXT . '?sid='.$userdata['session_id'],
 	));
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_style_config.' . $phpEx . '?tpl='.urlencode($tpl)) . '">' . $lang['xs_style_configuration'] . ': ' . $tpl . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_style_config.' . PHP_EXT . '?tpl='.urlencode($tpl)) . '">' . $lang['xs_style_configuration'] . ': ' . $tpl . '</a>'));
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'style_config.tpl'));
 $template->pparse('body');

@@ -8,12 +8,12 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 define ('NUM_SHOUT', 20);
 
 // Start session management
@@ -137,7 +137,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	);
 }
 $template->assign_vars(array(
-	'U_SHOUTBOX_VIEW' => append_sid('shoutbox_view.' . $phpEx . '?' . $start),
+	'U_SHOUTBOX_VIEW' => append_sid('shoutbox_view.' . PHP_EXT . '?' . $start),
 	'T_NAME' => $theme['template_name'],
 	'T_URL' => 'templates/' . $theme['template_name'],
 	'T_HEAD_STYLESHEET' => $theme['head_stylesheet'],

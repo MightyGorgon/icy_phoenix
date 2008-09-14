@@ -15,12 +15,12 @@
 *
 */
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 $category_id = ( isset( $_GET['cat'] ) ) ? intval ( $_GET['cat'])  : intval ( $_POST['cat'] );
 $article_id = ( isset( $_GET['a'] ) ) ? intval ( $_GET['a'])  : intval ( $_POST['a'] );
@@ -39,7 +39,7 @@ $start = ($start < 0) ? 0 : $start;
 
 if ( !( ($kb_is_auth['auth_delete'] || $kb_is_auth['auth_mod']) && $userdata['session_logged_in'] ) )
 {
-	$message = $lang['No_add'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+	$message = $lang['No_add'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 	mx_message_die( GENERAL_MESSAGE, $message );
 }
 
@@ -318,7 +318,7 @@ switch ( $action )
 		{
 			$category_id = ( $ref_stats ? 1 : $category_id );
 
-			$message = $lang['Confirm_art_delete'] . '<br /><br />' . sprintf( $lang['Confirm_art_delete_yes'], '<a href="' . append_sid( this_kb_mxurl( "mode=moderate&action=delete&page=$page_id&cat=$category_id&c=yes&a=$article_id&start=$start" ) ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Confirm_art_delete_no'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG . "?page=$page_id&mode=cat&cat=$category_id&start=$start" ) . '">', '</a>' );
+			$message = $lang['Confirm_art_delete'] . '<br /><br />' . sprintf( $lang['Confirm_art_delete_yes'], '<a href="' . append_sid( this_kb_mxurl( "mode=moderate&action=delete&page=$page_id&cat=$category_id&c=yes&a=$article_id&start=$start" ) ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Confirm_art_delete_no'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG . "?page=$page_id&mode=cat&cat=$category_id&start=$start" ) . '">', '</a>' );
 			mx_message_die( GENERAL_MESSAGE, $message );
 		}
 		break;

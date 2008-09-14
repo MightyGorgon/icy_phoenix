@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -81,11 +81,11 @@ if ( $kb_config['use_comments'] && $category['comments_forum_id'] < 1 )
 
 if(!$is_block)
 {
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 }
 
 // load header
-include($phpbb_root_path . 'includes/kb_header.' . $phpEx );
+include(IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT );
 $kb_news_sort_par = $kb_config['news_sort_par'];
 
 switch ( $kb_config['news_sort'] )
@@ -117,7 +117,7 @@ $template->set_filenames(array('body' => 'kb_cat_body.tpl'));
 
 if ( !$category_name )
 {
-	$message = $lang['Category_not_exsist'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid(this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>');
+	$message = $lang['Category_not_exsist'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid(this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>');
 
 	mx_message_die( GENERAL_MESSAGE, $message );
 }

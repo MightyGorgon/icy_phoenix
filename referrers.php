@@ -15,10 +15,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -143,7 +143,7 @@ if (count($_POST))
 $page_title = $lang['Referrers'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'referrers_body.tpl'));
 make_jumpbox(VIEWFORUM_MG);
@@ -165,7 +165,7 @@ $template->assign_vars(array(
 	'L_UNMARK_ALL'=> $lang['Unmark_all'],
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order,
-	'S_MODE_ACTION' => append_sid('referrers.' . $phpEx)
+	'S_MODE_ACTION' => append_sid('referrers.' . PHP_EXT)
 	)
 );
 
@@ -240,7 +240,7 @@ if ($total = $db->sql_fetchrow($result))
 {
 	$total_referrers = $total['total'];
 
-	$pagination = generate_pagination('referrers.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_referrers , $board_config['topics_per_page'], $start) . '&nbsp;';
+	$pagination = generate_pagination('referrers.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_referrers , $board_config['topics_per_page'], $start) . '&nbsp;';
 }
 $db->sql_freeresult($result);
 
@@ -252,6 +252,6 @@ $template->assign_vars(array(
 );
 
 $template->pparse('body');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

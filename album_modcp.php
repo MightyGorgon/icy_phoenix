@@ -15,19 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // ------------------------------------
 // Get the $pic_id from GET method then query out the category
@@ -45,7 +44,7 @@ else
 
 if (isset($_POST['cancel']))
 {
-	$redirect = 'album_modcp.' . $phpEx . '?cat_id=' . $cat_id;
+	$redirect = 'album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id;
 	redirect(append_sid($redirect, true));
 }
 
@@ -53,7 +52,7 @@ if($pic_id != false)
 {
 	// Get this pic info
 	$sql = "SELECT p.*, c.*
-			FROM ". ALBUM_TABLE ." AS p, ". ALBUM_CAT_TABLE ."  AS c
+			FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . "  AS c
 			WHERE p.pic_id = '$pic_id'
 				AND c.cat_id = p.pic_cat_id";
 
@@ -92,7 +91,7 @@ else
 	// Get the cat info
 	// ------------------------------------
 	$sql = "SELECT *
-			FROM ". ALBUM_CAT_TABLE ."
+			FROM " . ALBUM_CAT_TABLE . "
 			WHERE cat_id = '$cat_id'";
 
 	if(!($result = $db->sql_query($sql)))
@@ -174,7 +173,7 @@ if (!album_check_permission($auth_data, ALBUM_AUTH_MODERATOR))
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_modcp.' . $phpEx . '&amp;cat_id=' . $cat_id)));
+		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_modcp.' . PHP_EXT . '&amp;cat_id=' . $cat_id)));
 	}
 	else
 	{
@@ -285,7 +284,7 @@ if ($mode == '')
 
 	// Count Pics
 	$sql = "SELECT COUNT(pic_id) AS count
-			FROM ". ALBUM_TABLE ."
+			FROM " . ALBUM_TABLE . "
 			WHERE pic_cat_id = '$cat_id'";
 	if(!($result = $db->sql_query($sql)))
 	{
@@ -339,7 +338,7 @@ if ($mode == '')
 
 
 		$sql = "SELECT p.pic_id, p.pic_title, p.pic_user_id, p.pic_user_ip, p.pic_username, p.pic_time, p.pic_cat_id, p.pic_view_count, p.pic_lock, p.pic_approval, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(c.comment_id) AS comments, MAX(c.comment_id) AS new_comment
-				FROM ". ALBUM_TABLE ." AS p
+				FROM " . ALBUM_TABLE . " AS p
 					LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 					LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
 					LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
@@ -372,7 +371,7 @@ if ($mode == '')
 
 			$template->assign_block_vars('picrow', array(
 				'PIC_ID' => $picrow[$i]['pic_id'],
-				'PIC_TITLE' => '<a href="'. append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $picrow[$i]['pic_id'])) . '" target="_blank">' . $picrow[$i]['pic_title'] . '</a>',
+				'PIC_TITLE' => '<a href="'. append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$i]['pic_id'])) . '" target="_blank">' . htmlspecialchars($picrow[$i]['pic_title']) . '</a>',
 				'POSTER' => $pic_poster,
 				'TIME' => create_date($board_config['default_dateformat'], $picrow[$i]['pic_time'], $board_config['board_timezone']),
 				'RATING' => ($picrow[$i]['rating'] == 0) ? $lang['Not_rated'] : round($picrow[$i]['rating'], 2),
@@ -384,7 +383,7 @@ if ($mode == '')
 		}
 
 		$template->assign_vars(array(
-			'PAGINATION' => generate_pagination(append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order)), $total_pics, $pics_per_page, $start),
+			'PAGINATION' => generate_pagination(append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order)), $total_pics, $pics_per_page, $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 			)
 		);
@@ -399,7 +398,7 @@ if ($mode == '')
 	$page_title = $lang['Album'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_modcp_body.tpl'));
 
@@ -430,7 +429,7 @@ if ($mode == '')
 	}
 
 	$template->assign_vars(array(
-		'U_VIEW_CAT' => append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)),
+		'U_VIEW_CAT' => append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'CAT_TITLE' => $thiscat['cat_title'],
 
 		'L_CATEGORY' => $lang['Category'],
@@ -442,7 +441,7 @@ if ($mode == '')
 		'L_POSTER' => $lang['Pic_Poster'],
 		'L_POSTED' => $lang['Posted'],
 
-		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)),
+		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)),
 
 		'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
 		'L_ORDER' => $lang['Order'],
@@ -493,7 +492,7 @@ if ($mode == '')
 	// Generate the page (ModCP)
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {
@@ -558,14 +557,14 @@ else
 			$page_title = $lang['Album'];
 			$meta_description = '';
 			$meta_keywords = '';
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array(
 				'body' => 'album_move_body.tpl')
 			);
 
 			$template->assign_vars(array(
-				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=move&amp;cat_id=' . $cat_id)),
+				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;cat_id=' . $cat_id)),
 				'L_MOVE' => $lang['Move'],
 				'L_MOVE_TO_CATEGORY' => $lang['Move_to_Category'],
 				'S_CATEGORY_SELECT' => $category_select
@@ -575,7 +574,7 @@ else
 			// Generate the page
 			$template->pparse('body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
@@ -609,7 +608,7 @@ else
 			// well, we got the array of pic_id but we must do a check to make sure all these
 			// pics are in this category (prevent some naughty moderators to access un-authorised pics)
 			$sql = "SELECT pic_id
-					FROM ". ALBUM_TABLE ."
+					FROM " . ALBUM_TABLE . "
 					WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
 			if(!$result = $db->sql_query($sql))
 			{
@@ -621,7 +620,7 @@ else
 			}
 
 			// Update the DB
-			$sql = "UPDATE ". ALBUM_TABLE ."
+			$sql = "UPDATE " . ALBUM_TABLE . "
 					SET pic_cat_id = ". intval($_POST['target']) ."
 					WHERE pic_id IN ($pic_id_sql)";
 			if(!$result = $db->sql_query($sql))
@@ -629,7 +628,7 @@ else
 				message_die(GENERAL_ERROR, 'Could not update album information', '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Pics_moved_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+			$message = $lang['Pics_moved_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -669,7 +668,7 @@ else
 		// well, we got the array of pic_id but we must do a check to make sure all these
 		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
 		$sql = "SELECT pic_id
-				FROM ". ALBUM_TABLE ."
+				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
 		if(!$result = $db->sql_query($sql))
 		{
@@ -681,7 +680,7 @@ else
 		}
 
 		// update the DB
-		$sql = "UPDATE ". ALBUM_TABLE ."
+		$sql = "UPDATE " . ALBUM_TABLE . "
 				SET pic_lock = 1
 				WHERE pic_id IN ($pic_id_sql)";
 		if(!$result = $db->sql_query($sql))
@@ -693,14 +692,14 @@ else
 
 		if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		{
-			$message .= sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />';
+			$message .= sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />';
 		}
 		else
 		{
-			$message .= sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid("album.$phpEx?cat_id=$cat_id")) . '">', '</a>');
+			$message .= sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -739,7 +738,7 @@ else
 		// well, we got the array of pic_id but we must do a check to make sure all these
 		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
 		$sql = "SELECT pic_id
-				FROM ". ALBUM_TABLE ."
+				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
 		if(!$result = $db->sql_query($sql))
 		{
@@ -751,7 +750,7 @@ else
 		}
 
 		// update the DB
-		$sql = "UPDATE ". ALBUM_TABLE ."
+		$sql = "UPDATE " . ALBUM_TABLE . "
 				SET pic_lock = 0
 				WHERE pic_id IN ($pic_id_sql)";
 		if(!$result = $db->sql_query($sql))
@@ -763,14 +762,14 @@ else
 
 		if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		{
-			$message .= sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />';
+			$message .= sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />';
 		}
 		else
 		{
-			$message .= sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid("album.$phpEx?cat_id=$cat_id")) . '">', '</a>');
+			$message .= sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -809,7 +808,7 @@ else
 		// well, we got the array of pic_id but we must do a check to make sure all these
 		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
 		$sql = "SELECT pic_id
-				FROM ". ALBUM_TABLE ."
+				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
 		if(!$result = $db->sql_query($sql))
 		{
@@ -821,7 +820,7 @@ else
 		}
 
 		// update the DB
-		$sql = "UPDATE ". ALBUM_TABLE ."
+		$sql = "UPDATE " . ALBUM_TABLE . "
 				SET pic_approval = 1
 				WHERE pic_id IN ($pic_id_sql)";
 		if(!$result = $db->sql_query($sql))
@@ -829,7 +828,7 @@ else
 			message_die(GENERAL_ERROR, 'Could not update album information', '', __LINE__, __FILE__, $sql);
 		}
 
-		$message = $lang['Pics_approved_successfully'] . '<br /><br />' . sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+		$message = $lang['Pics_approved_successfully'] . '<br /><br />' . sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -868,7 +867,7 @@ else
 		// well, we got the array of pic_id but we must do a check to make sure all these
 		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
 		$sql = "SELECT pic_id
-				FROM ". ALBUM_TABLE ."
+				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
 		if(!$result = $db->sql_query($sql))
 		{
@@ -880,7 +879,7 @@ else
 		}
 
 		// update the DB
-		$sql = "UPDATE ". ALBUM_TABLE ."
+		$sql = "UPDATE " . ALBUM_TABLE . "
 				SET pic_approval = 0
 				WHERE pic_id IN ($pic_id_sql)";
 		if(!$result = $db->sql_query($sql))
@@ -888,7 +887,7 @@ else
 			message_die(GENERAL_ERROR, 'Could not update album information', '', __LINE__, __FILE__, $sql);
 		}
 
-		$message = $lang['Pics_unapproved_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+		$message = $lang['Pics_unapproved_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -952,12 +951,12 @@ else
 			$page_title = $lang['Album'];
 			$meta_description = '';
 			$meta_keywords = '';
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('body' => 'album_copy_body.tpl'));
 
 			$template->assign_vars(array(
-				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=copy&amp;cat_id=' . $cat_id)),
+				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;cat_id=' . $cat_id)),
 				'L_COPY' => $lang['Copy'],
 				'L_COPY_TO_CATEGORY' => $lang['Copy_to_Category'],
 				'S_CATEGORY_SELECT' => $category_select
@@ -967,7 +966,7 @@ else
 			// Generate the page
 			$template->pparse('body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
@@ -991,7 +990,7 @@ else
 				message_die(GENERAL_ERROR, 'No pics specified');
 			}
 			// if we are trying to copy picture(s) to root category or a
-			// personal gallary (shouldn't be possible), but better safe than sorry
+			// personal gallery (shouldn't be possible), but better safe than sorry
 			// ...then return an error
 			if (intval($_POST['target']) <= 0)
 			{
@@ -1000,8 +999,8 @@ else
 
 			// we have the array of pic_id but we must do a query to get each pics info
 			$sql = "SELECT *
-					FROM ". ALBUM_TABLE ."
-					WHERE pic_id IN ($pic_id_sql)"; // AND pic_cat_id = $cat_id";
+					FROM " . ALBUM_TABLE . "
+					WHERE pic_id IN (" . $pic_id_sql . ")"; // AND pic_cat_id = '" . $cat_id . "'";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not obtain album information', '', __LINE__, __FILE__, $sql);
@@ -1015,19 +1014,54 @@ else
 			for ($i = 0; $i <count($picrow); $i++)
 			{
 				// Though each cat entry would work off of the same pic_filename
-				// we need an actual copy of the pic with a different filename in case of deletetions
+				// we need an actual copy of the pic with a different filename in case of deletions
 				$pic_filename = $picrow[$i]['pic_filename'];
-				$file_split = explode('.', $pic_filename);
-				$pic_extension = $file_split[count($file_split) - 1];
-				$pic_filename = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_extension) -1);
-				$pic_thumbnail = ($album_config['gd_version'] == 0) ? $pic_filename . '.' . $pic_extension : '';
 
-				while (file_exists(ALBUM_UPLOAD_PATH . $pic_filename . '.' . $pic_extension))
+				if (USERS_SUBFOLDERS_ALBUM == true)
 				{
-					$pic_filename = $pic_filename . '_' . time() . '_' . mt_rand(100000, 999999);
+					if (strpos($pic_filename, '/') !== false)
+					{
+						$pic_path[] = array();
+						$pic_path = explode('/', $pic_filename);
+						$pic_filename = $pic_path[count($pic_path) - 1];
+					}
 				}
 
-				if (!copy(ALBUM_UPLOAD_PATH . $picrow[$i]['pic_filename'], ALBUM_UPLOAD_PATH . $pic_filename . '.' . $pic_extension))
+				$file_part = explode('.', strtolower($pic_filename));
+				$pic_filetype = $file_part[count($file_part) - 1];
+				$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
+				$pic_base_path = ALBUM_UPLOAD_PATH;
+				$pic_extra_path = '';
+				$pic_new_filename = $pic_extra_path . $pic_filename;
+				$pic_fullpath = $pic_base_path . $pic_new_filename;
+				$pic_title = $picrow[$i]['pic_title'];
+				$pic_title_reg = ereg_replace("[^A-Za-z0-9]", "_", $pic_title);
+				$pic_thumbnail = '';
+
+				if (USERS_SUBFOLDERS_ALBUM == true)
+				{
+					if (count($pic_path) == 2)
+					{
+						$pic_extra_path = $pic_path[0] . '/';
+						if (is_dir($pic_path_only))
+						{
+							$pic_new_filename = $pic_extra_path . $pic_filename;
+							$pic_fullpath = $pic_base_path . $pic_new_filename;
+						}
+						else
+						{
+							message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
+						}
+					}
+				}
+
+				while (file_exists($pic_fullpath))
+				{
+					$pic_new_filename = $pic_extra_path . $pic_filename_only . '_' . time() . '_' . mt_rand(100000, 999999) . '.' . $pic_filetype;
+					$pic_fullpath = $pic_base_path . $pic_new_filename;
+				}
+
+				if (!copy($pic_base_path . $picrow[$i]['pic_filename'], $pic_fullpath))
 				{
 					message_die(GENERAL_ERROR, 'Could not copy image');
 				}
@@ -1036,8 +1070,8 @@ else
 				$pic_desc = addslashes($picrow[$i]['pic_title']);
 				$pic_time = time() + $i; // Gives each pic a different timestamp
 
-				$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_thumbnail, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
-				VALUES ('" . $pic_filename . '.' . $pic_extension . "', '$pic_thumbnail', '$pic_title', '$pic_desc', '".$picrow[$i]['pic_user_id']."', '".$picrow[$i]['pic_user_ip']."', '".$picrow[$i]['pic_username']."', '$pic_time', '".intval($_POST['target'])."', '".$picrow[$i]['pic_approval']."')";
+				$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
+				VALUES ('" . $pic_new_filename . "', '" . $pic_title . "', '" . $pic_desc . "', '" . $picrow[$i]['pic_user_id'] . "', '" . $picrow[$i]['pic_user_ip'] . "', '" . $picrow[$i]['pic_username'] . "', '" . $pic_time . "', '" . intval($_POST['target']) . "', '" . $picrow[$i]['pic_approval'] . "')";
 
 				if(!$result = $db->sql_query($sql))
 				{
@@ -1045,7 +1079,7 @@ else
 				}
 			}
 
-			$message = $lang['Pics_copied_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+			$message = $lang['Pics_copied_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
@@ -1096,7 +1130,7 @@ else
 			$page_title = $lang['Album'];
 			$meta_description = '';
 			$meta_keywords = '';
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('body' => 'confirm_body.tpl'));
 
@@ -1106,14 +1140,14 @@ else
 				'S_HIDDEN_FIELDS' => $hidden_field,
 				'L_NO' => $lang['No'],
 				'L_YES' => $lang['Yes'],
-				'S_CONFIRM_ACTION' => append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=delete&amp;cat_id=' . $cat_id)),
+				'S_CONFIRM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=delete&amp;cat_id=' . $cat_id)),
 				)
 			);
 
 			// Generate the page
 			$template->pparse('body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
@@ -1138,7 +1172,7 @@ else
 			// well, we got the array of pic_id but we must do a check to make sure all these
 			// pics are in this category (prevent some naughty moderators to access un-authorised pics)
 			$sql = "SELECT pic_id
-					FROM ". ALBUM_TABLE ."
+					FROM " . ALBUM_TABLE . "
 					WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
 			if(!$result = $db->sql_query($sql))
 			{
@@ -1168,7 +1202,7 @@ else
 			// Delete Physical Files
 			// first we need filenames
 			$sql = "SELECT pic_filename, pic_thumbnail
-					FROM ". ALBUM_TABLE ."
+					FROM " . ALBUM_TABLE . "
 					WHERE pic_id IN ($pic_id_sql)";
 			if(!$result = $db->sql_query($sql))
 			{
@@ -1181,25 +1215,63 @@ else
 			}
 			for ($i = 0; $i < count($filerow); $i++)
 			{
-				if(($filerow[$i]['pic_thumbnail'] != '') && (@file_exists(ALBUM_CACHE_PATH . $filerow[$i]['pic_thumbnail'])))
+
+				$pic_filename = $filerow[$i]['pic_filename'];
+
+				if (USERS_SUBFOLDERS_ALBUM == true)
 				{
-					@unlink(ALBUM_CACHE_PATH . $filerow[$i]['pic_thumbnail']);
+					if (strpos($pic_filename, '/') !== false)
+					{
+						$pic_path[] = array();
+						$pic_path = explode('/', $pic_filename);
+						$pic_filename = $pic_path[count($pic_path) - 1];
+					}
 				}
-				@unlink(ALBUM_CACHE_PATH . $filerow[$i]['pic_filename']);
-				@unlink(ALBUM_MED_CACHE_PATH . $filerow[$i]['pic_filename']);
-				@unlink(ALBUM_WM_CACHE_PATH . $filerow[$i]['pic_filename']);
-				@unlink(ALBUM_UPLOAD_PATH . $filerow[$i]['pic_filename']);
+
+				$file_part = explode('.', strtolower($pic_filename));
+				$pic_filetype = $file_part[count($file_part) - 1];
+				$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
+				$pic_base_path = ALBUM_UPLOAD_PATH;
+				$pic_extra_path = '';
+				$pic_new_filename = $pic_extra_path . $pic_filename;
+				$pic_fullpath = $pic_base_path . $pic_new_filename;
+				$pic_thumbnail = $filerow[$i]['pic_thumbnail'];
+				$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
+
+				if (USERS_SUBFOLDERS_ALBUM == true)
+				{
+					if (count($pic_path) == 2)
+					{
+						$pic_extra_path = $pic_path[0] . '/';
+						$pic_thumbnail_path = ALBUM_CACHE_PATH . $pic_extra_path;
+						if (is_dir($pic_path_only))
+						{
+							$pic_new_filename = $pic_extra_path . $pic_filename;
+							$pic_fullpath = $pic_base_path . $pic_new_filename;
+							$pic_thumbnail_fullpath = $pic_thumbnail_path . $pic_thumbnail;
+						}
+						else
+						{
+							message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
+						}
+					}
+				}
+
+				@unlink($pic_thumbnail_fullpath);
+				@unlink(ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+				@unlink(ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+				@unlink($pic_fullpath);
 			}
 
 			// Delete DB entry
-			$sql = "DELETE FROM ". ALBUM_TABLE ."
-					WHERE pic_id IN ($pic_id_sql)";
+			$sql = "DELETE FROM " . ALBUM_TABLE . "
+					WHERE pic_id IN (" . $pic_id_sql . ")";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete DB entry', '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Pics_deleted_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+			$message = $lang['Pics_deleted_successfully'] .'<br /><br />'. sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}

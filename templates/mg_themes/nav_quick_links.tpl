@@ -116,12 +116,6 @@ if(GetCookie(tmp) == '2')
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_BOARDRULES}">{L_BOARDRULES}</a></td>
 				</tr>
-				<!-- IF S_ADMIN -->
-				<tr>
-					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="{U_DB_GEN}">{L_DB_GEN}</a></td>
-				</tr>
-				<!-- ENDIF -->
 				<!-- IF S_LOGGED_IN -->
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>

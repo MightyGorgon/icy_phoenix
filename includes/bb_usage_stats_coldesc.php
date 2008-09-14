@@ -15,21 +15,19 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
-
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-
-include($phpbb_root_path . 'includes/bb_usage_stats_constants.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bb_usage_stats_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include($phpbb_root_path . ADM . '/page_header_admin.' . $phpEx);
+include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 /* Set the file handles to include bb_usage_stats.tpl */
 $template->set_filenames(array('bbus_coldesc_template' => 'bb_usage_stats_coldesc.tpl'));

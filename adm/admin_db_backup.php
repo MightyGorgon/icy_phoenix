@@ -8,7 +8,41 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+if (defined('MAIN_ADMINS_ID'))
+{
+	if (defined('JA_PARSING') && (JA_PARSING == true))
+	{
+		return;
+	}
+	$is_allowed = false;
+	$allowed_admins = explode(',', MAIN_ADMINS_ID);
+	if (defined('FOUNDER_ID'))
+	{
+		if ($userdata['user_id'] == FOUNDER_ID)
+		{
+			$is_allowed = true;
+		}
+	}
+	if ($is_allowed == false)
+	{
+		for ($i = 0; $i < count($allowed_admins); $i++)
+		{
+			if ($userdata['user_id'] == $allowed_admins[$i])
+			{
+				$is_allowed = true;
+				break;
+			}
+		}
+	}
+	if ($is_allowed == false)
+	{
+		return;
+	}
+}
+// Mighty Gorgon - ACP Privacy - END
 
 // CTracker_Ignore: File Checked By Human
 if(!empty($setmodules))
@@ -24,9 +58,9 @@ if ($_GET['action'] == 'download')
 {
 	$no_page_header = true;
 }
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // Request some vars
 $mode = request_var('mode', '');
@@ -54,7 +88,7 @@ switch ($mode)
 
 				if (!count($table))
 				{
-					message_die(GENERAL_ERROR, $lang['Table_Select_Error'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid($phpbb_root_path . ADM . '/admin_db_backup.' . $phpEx . '?mode=backup') . '">', '</a>'), $lang['Error']);
+					message_die(GENERAL_ERROR, $lang['Table_Select_Error'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=backup') . '">', '</a>'), $lang['Error']);
 				}
 
 				$store = $download = $structure = $schema_data = false;
@@ -115,7 +149,7 @@ switch ($mode)
 					exit;
 				}
 
-				message_die(GENERAL_MESSAGE, $lang['Backup_Success'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid($phpbb_root_path . ADM . '/admin_db_backup.'.$phpEx.'?mode=backup') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . '/index.' . $phpEx . '?pane=right') . '">', '</a>'), $lang['Information']);
+				message_die(GENERAL_MESSAGE, $lang['Backup_Success'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=backup') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>'), $lang['Information']);
 			break;
 
 			default:
@@ -181,14 +215,14 @@ switch ($mode)
 
 				if (!preg_match('#^backup_\d{10,}_[a-z\d]{8}_[a-z\d]{16}\.(sql(?:\.(?:gz|bz2))?)$#', $file, $matches))
 				{
-					message_die(GENERAL_ERROR, $lang['No_Backup_Selected'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid($phpbb_root_path . ADM . '/admin_db_backup.' . $phpEx . '?mode=restore') . '">', '</a>'), $lang['Error']);
+					message_die(GENERAL_ERROR, $lang['No_Backup_Selected'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=restore') . '">', '</a>'), $lang['Error']);
 				}
 
-				$file_name = $phpbb_root_path . BACKUP_PATH . $matches[0];
+				$file_name = IP_ROOT_PATH . BACKUP_PATH . $matches[0];
 
 				if (!file_exists($file_name) || !is_readable($file_name))
 				{
-					message_die(GENERAL_ERROR, $lang['Backup_Invalid'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid($phpbb_root_path . ADM . '/admin_db_backup.' . $phpEx . '?mode=restore') . '">', '</a>'), $lang['Error']);
+					message_die(GENERAL_ERROR, $lang['Backup_Invalid'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=restore') . '">', '</a>'), $lang['Error']);
 				}
 
 				if ($delete)
@@ -207,7 +241,7 @@ switch ($mode)
 							'L_YES' => $lang['Yes'],
 							'L_NO' => $lang['No'],
 
-							'S_CONFIRM_ACTION' => append_sid('admin_db_backup.' . $phpEx . '?mode=restore'),
+							'S_CONFIRM_ACTION' => append_sid('admin_db_backup.' . PHP_EXT . '?mode=restore'),
 							'S_HIDDEN_FIELDS' => $hidden_fields
 							)
 						);
@@ -215,7 +249,7 @@ switch ($mode)
 					else
 					{
 						@unlink($file_name);
-						message_die(GENERAL_MESSAGE, $lang['Backup_Deleted'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid($phpbb_root_path . ADM . '/admin_db_backup.' . $phpEx . '?mode=restore') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . '/index.' . $phpEx . '?pane=right').'">', '</a>'), $lang['Information']);
+						message_die(GENERAL_MESSAGE, $lang['Backup_Deleted'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=restore') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right').'">', '</a>'), $lang['Information']);
 					}
 				}
 				else
@@ -296,7 +330,7 @@ switch ($mode)
 					}
 
 					$close($fp);
-					message_die(GENERAL_MESSAGE, $lang['Restore_Success'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid($phpbb_root_path . ADM . '/admin_db_backup.' . $phpEx . '?mode=restore') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . '/index.' . $phpEx . '?pane=right').'">', '</a>'), $lang['Information']);
+					message_die(GENERAL_MESSAGE, $lang['Restore_Success'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=restore') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right').'">', '</a>'), $lang['Information']);
 					break;
 				}
 
@@ -313,7 +347,7 @@ switch ($mode)
 					$methods[] = $type;
 				}
 
-				$dir = $phpbb_root_path . BACKUP_PATH;
+				$dir = IP_ROOT_PATH . BACKUP_PATH;
 				$dh = @opendir($dir);
 
 				if ($dh)
@@ -347,7 +381,7 @@ switch ($mode)
 }
 
 $template->pparse('body');
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 /**
 * @package db
@@ -424,8 +458,7 @@ class base_extractor
 
 		if ($store == true)
 		{
-			global $phpbb_root_path;
-			$file = $phpbb_root_path . BACKUP_PATH . $filename . $ext;
+						$file = IP_ROOT_PATH . BACKUP_PATH . $filename . $ext;
 
 			$this->fp = $open($file, 'w');
 

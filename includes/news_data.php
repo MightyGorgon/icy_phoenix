@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -76,13 +76,6 @@ class NewsDataAccess
 	var $root_path;
 
 	/**
-	* Php extension used on this server. i.e. .php, .php3.
-	*
-	* @var string
-	*/
-	var $phpEx;
-
-	/**
 	* The configuration array of phpBB.
 	*
 	* @var string
@@ -107,11 +100,10 @@ class NewsDataAccess
 	**/
 	function NewsDataAccess($phpbb_root)
 	{
-		global $db, $phpEx, $board_config;
+		global $db, $board_config;
 
 		$this->db = &$db;
 		$this->root_path = $phpbb_root;
-		$this->phpEx = $phpEx;
 		$this->config = &$board_config;
 
 		$this->setItemCount(DEFAULT_NUM_ITEMS);

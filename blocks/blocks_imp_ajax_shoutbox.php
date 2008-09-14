@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,15 +24,15 @@ if(!function_exists(imp_ajax_shoutbox_block_func))
 {
 	function imp_ajax_shoutbox_block_func()
 	{
-		global $phpbb_root_path, $phpEx, $template, $images, $lang, $board_config, $userdata, $db;
+		global $template, $images, $lang, $board_config, $userdata, $db;
 		$shoutbox_template_parse = false;
 		if(($board_config['shout_allow_guest'] <= 0) && !($userdata['session_logged_in']))
 		{
-			//include($phpbb_root_path . 'ajax_shoutbox.' . $phpEx);
+			//include(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT);
 		}
 		else
 		{
-			include($phpbb_root_path . 'includes/ajax_shoutbox_inc.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/ajax_shoutbox_inc.' . PHP_EXT);
 		}
 	}
 }

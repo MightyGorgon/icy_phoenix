@@ -29,7 +29,7 @@
 
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -184,7 +184,7 @@ class ct_adminfunctions
 	 */
 	function do_filechk()
 	{
-		global $db, $lang, $phpbb_root_path, $phpEx;
+		global $db, $lang;
 
 		// First we truncate the Database Table
 		$sql = 'TRUNCATE TABLE ' . CTRACKER_FILECHK;
@@ -195,7 +195,7 @@ class ct_adminfunctions
 		}
 
 		// Checksum checker ;)
-		$this->recursive_filechk($phpbb_root_path, '', $phpEx);
+		$this->recursive_filechk(IP_ROOT_PATH, '', PHP_EXT);
 	}
 
 
@@ -269,7 +269,7 @@ class ct_adminfunctions
 	*/
 	function ScanFile()
 	{
-		global $db, $phpbb_root_path, $lang;
+		global $db, $lang;
 
 		$sql = 'SELECT id, filepath FROM ' . CTRACKER_FILESCANNER;
 
@@ -323,24 +323,26 @@ class ct_adminfunctions
 				{
 					$action_counter++;
 
-					if(preg_match('/define\\(\'in_phpbb\'./m', $scanline) && $action_counter == 1)
+					if(preg_match('/define\\(\'in_icyphoenix\'./m', $scanline) && $action_counter == 1)
 					{
 						$constant_set = true;
 					}
-					elseif(preg_match('/if\\(!defined\\(\'in_phpbb\'./m', $scanline) && $action_counter == 1)
+					elseif(preg_match('/if\\(!defined\\(\'in_icyphoenix\'./m', $scanline) && $action_counter == 1)
 					{
 						$constant_check = true;
 						break;
 					}
-					elseif($constant_set && preg_match('/\\$phpbb_root_path=./m', $scanline) && $action_counter == 2)
+					elseif($constant_set && preg_match('/define\\(\'ip_root_path\'./m', $scanline) && $action_counter == 2)
 					{
 						$root_path = true;
 					}
-					elseif($constant_set && preg_match('/include\\(\\$phpbb_root_path\\.\'extension\\.inc|require\\(\\$phpbb_root_path\\.\'extension\\.inc/', $scanline) && $action_counter == 3)
+					// OLD extension.inc
+					//elseif($constant_set && preg_match('/include\\(ip_root_path\\.\'extension\\.inc|require\\(ip_root_path\\.\'extension\\.inc/', $scanline) && $action_counter == 3)
+					elseif($constant_set && preg_match('/define\\(\'php_ext\'./m', $scanline) && $action_counter == 3)
 					{
 						$extension_inc = true;
 					}
-					elseif($constant_set && preg_match('/include\\(\\$phpbb_root_path\\.\'common\\.|include\\(\'\\.\/common\\.|require\\(\'\\.\/common\\.|require\\(\\$phpbb_root_path\\.\'common\\.|require\\(\'\\.\/pagestart\\./', $scanline) && ($action_counter == 4 || $action_counter == 5))
+					elseif($constant_set && preg_match('/include\\(ip_root_path\\.\'common\\.|include\\(\'\\.\/common\\.|require\\(\'\\.\/common\\.|require\\(ip_root_path\\.\'common\\.|require\\(\'\\.\/pagestart\\./', $scanline) && ($action_counter == 4 || $action_counter == 5))
 					{
 						$common_included = true;
 						break;

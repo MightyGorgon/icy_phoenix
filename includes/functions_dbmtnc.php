@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -586,7 +586,7 @@ $default_config = array(
 	'cms_style' => '0',
 	'show_alpha_bar' => '0',
 	// IP Version
-	'ip_version' => '1.2.7.34',
+	'ip_version' => '1.2.8.35',
 	// Cash
 	'cash_disable' => 0,
 	'cash_display_after_posts' => 1,
@@ -661,7 +661,7 @@ function update_config($name, $value)
 //
 function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $template, $lang, $phpEx, $phpbb_root_path, $theme;
+	global $db, $template, $lang, $theme;
 	global $list_open;
 
 	$sql_store = $sql;
@@ -710,8 +710,8 @@ function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
 	echo('<p class="gen"><b><span class="text_red">' . $lang['Error'] . ":</span></b> $msg_text$debug_text</p>\n");
 
 	// Include Tail and exit
-	echo("<p class=\"gen\"><a href=\"" . append_sid("admin_db_maintenance.$phpEx") . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
-	include('./page_footer_admin.' . $phpEx);
+	echo("<p class=\"gen\"><a href=\"" . append_sid("admin_db_maintenance." . PHP_EXT) . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
+	include('./page_footer_admin.' . PHP_EXT);
 	exit;
 }
 
@@ -1120,7 +1120,7 @@ function catch_error($errno, $errstr)
 // Gets the ID of a word or creates it
 function get_word_id($word)
 {
-	global $board_config, $db, $lang, $phpEx, $template, $theme;
+	global $board_config, $db, $lang, $template, $theme;
 	global $stopword_array, $synonym_array;
 
 	// Check whether word is in stopword array
@@ -1140,7 +1140,7 @@ function get_word_id($word)
 	$result = $db->sql_query($sql);
 	if ( !$result )
 	{
-		include('./page_header_admin.' . $phpEx);
+		include('./page_header_admin.' . PHP_EXT);
 		throw_error("Couldn't get search word data!", __LINE__, __FILE__, $sql);
 	}
 	if ( $row = $db->sql_fetchrow($result) ) // Word was found
@@ -1160,7 +1160,7 @@ function get_word_id($word)
 			VALUES ('$word', 0)";
 		if ( !$db->sql_query($sql) )
 		{
-			include('./page_header_admin.' . $phpEx);
+			include('./page_header_admin.' . PHP_EXT);
 			throw_error("Couldn't insert search word data!", __LINE__, __FILE__, $sql);
 		}
 		return $db->sql_nextid();
@@ -1262,14 +1262,14 @@ function erc_throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = 
 
 function language_select($default, $select_name = "language", $file_to_check = "main", $dirname="language")
 {
-	global $phpEx, $phpbb_root_path, $lang;
+	global $lang;
 
-	$dir = opendir($phpbb_root_path . $dirname);
+	$dir = opendir(IP_ROOT_PATH . $dirname);
 
 	$lg = array();
 	while ( $file = readdir($dir) )
 	{
-		if (preg_match('#^lang_#i', $file) && !is_file(@phpbb_realpath($phpbb_root_path . $dirname . '/' . $file)) && !is_link(@phpbb_realpath($phpbb_root_path . $dirname . '/' . $file)) && is_file(@phpbb_realpath($phpbb_root_path . $dirname . '/' . $file . '/lang_' . $file_to_check . '.' . $phpEx)) )
+		if (preg_match('#^lang_#i', $file) && !is_file(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)) && is_file(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file . '/lang_' . $file_to_check . '.' . PHP_EXT)) )
 		{
 			$filename = trim(str_replace("lang_", "", $file));
 			$displayname = preg_replace("/^(.*?)_(.*)$/", "\\1 [ \\2 ]", $filename);

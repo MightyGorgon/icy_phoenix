@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -83,7 +83,7 @@ else
 if ( $board_config['use_captcha'] == true )
 {
 	srand((double)microtime()*1000000);
-	//include($phpbb_root_path . 'includes/functions_captcha.' . $phpEx);
+	//include(IP_ROOT_PATH . 'includes/functions_captcha.' . PHP_EXT);
 
 	// Read the config table
 	$sql = "SELECT *
@@ -99,7 +99,7 @@ if ( $board_config['use_captcha'] == true )
 	$db->sql_freeresult($result);
 
 	// For better compatibility with some servers which need absolute path to load TTFonts
-	$phpbb_root_path = str_replace('index.' . $phpEx, '', realpath($phpbb_root_path . 'index.' . $phpEx));
+	$absolute_root_path = realpath(IP_ROOT_PATH);
 
 	// Prefs
 	$total_width = $captcha_config['width'];
@@ -134,7 +134,7 @@ if ( $board_config['use_captcha'] == true )
 	if ($image)
 	{
 		$bg_imgs = array();
-		if ($img_dir = opendir($phpbb_root_path . 'images/captcha/pics/'))
+		if ($img_dir = opendir(IP_ROOT_PATH . 'images/captcha/pics/'))
 		{
 			while (true == ($file = @readdir($img_dir)))
 			{
@@ -150,7 +150,7 @@ if ( $board_config['use_captcha'] == true )
 	}
 
 	$fonts = array();
-	if ($fonts_dir = opendir($phpbb_root_path . 'images/captcha/fonts/'))
+	if ($fonts_dir = opendir(IP_ROOT_PATH . 'images/captcha/fonts/'))
 	{
 		while (true == ($file = @readdir($fonts_dir)))
 		{
@@ -239,7 +239,7 @@ if ( $board_config['use_captcha'] == true )
 		$angle = mt_rand(-30, 30);
 
 		$char_pos = array();
-		$char_pos = imagettfbbox($size, $angle, $phpbb_root_path . 'images/captcha/fonts/'.$fonts[$font], $char);
+		$char_pos = imagettfbbox($size, $angle, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
 		$letter_width = abs($char_pos[0]) + abs($char_pos[4]);
 		$letter_height = abs($char_pos[1]) + abs($char_pos[5]);
 
@@ -257,9 +257,9 @@ if ( $board_config['use_captcha'] == true )
 			$text_color = explode(",", $text_color);
 			$textcolor = imagecolorallocate($image, $text_color[0], $text_color[1], $text_color[2]);
 
-			imagettftext($image, $size, $pre_angle, $x_pos, $y_pos-2, $white, $phpbb_root_path . 'images/captcha/fonts/'.$fonts[$font], $char);
-			imagettftext($image, $size, $pre_angle, $x_pos+2, $y_pos, $black, $phpbb_root_path . 'images/captcha/fonts/'.$fonts[$font], $char);
-			imagettftext($image, $size, $pre_angle, $x_pos+1, $y_pos-1, $textcolor, $phpbb_root_path . 'images/captcha/fonts/'.$fonts[$font], $char);
+			imagettftext($image, $size, $pre_angle, $x_pos, $y_pos-2, $white, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
+			imagettftext($image, $size, $pre_angle, $x_pos+2, $y_pos, $black, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
+			imagettftext($image, $size, $pre_angle, $x_pos+1, $y_pos-1, $textcolor, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
 
 			$size = ($pre_letter_great) ? $size - 2 : $size + 2;
 		}
@@ -269,9 +269,9 @@ if ( $board_config['use_captcha'] == true )
 		$text_color = explode(",", $text_color);
 		$textcolor = imagecolorallocate($image, $text_color[0], $text_color[1], $text_color[2]);
 
-		imagettftext($image, $size, $angle, $x_pos, $y_pos-2, $white, $phpbb_root_path . 'images/captcha/fonts/'.$fonts[$font], $char);
-		imagettftext($image, $size, $angle, $x_pos+2, $y_pos, $black, $phpbb_root_path . 'images/captcha/fonts/'.$fonts[$font], $char);
-		imagettftext($image, $size, $angle, $x_pos+1, $y_pos-1, $textcolor, $phpbb_root_path . 'images/captcha/fonts/'.$fonts[$font], $char);
+		imagettftext($image, $size, $angle, $x_pos, $y_pos-2, $white, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
+		imagettftext($image, $size, $angle, $x_pos+2, $y_pos, $black, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
+		imagettftext($image, $size, $angle, $x_pos+1, $y_pos-1, $textcolor, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
 	}
 
 

@@ -8,13 +8,10 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
-
-$phpbb_root_path = (($phpbb_root_path == './../') ? './../' : './');
-//$phpbb_root_path = './';
 
 function cms_assign_var_from_handle($template_var, $handle)
 {
@@ -116,7 +113,7 @@ function cms_groups($user_id)
 
 function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 {
-	global $db, $template, $userdata, $phpbb_root_path, $phpEx, $board_config, $lang, $cms_config_vars, $bbcode, $block_id;
+	global $db, $template, $userdata, $board_config, $lang, $cms_config_vars, $bbcode, $block_id;
 
 	if(!$is_special)
 	{
@@ -141,11 +138,11 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 		$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 	}
 
-	if(!file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . $phpEx))
+	if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . PHP_EXT))
 	{
 		$board_config['default_lang'] = 'english';
 	}
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . PHP_EXT);
 
 	if(!$global_blocks && !$is_special)
 	{
@@ -317,7 +314,7 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 				$block_handle = $block_name . '_block_' . $block_info[$b_counter]['bid'];
 				$template->set_filenames(array($block_handle => 'blocks/' . $block_name . '_block.tpl'));
 				$output_block = '';
-				include($phpbb_root_path . 'blocks/' . $block_info[$b_counter]['blockfile'] . '.' . $phpEx);
+				include(IP_ROOT_PATH . 'blocks/' . $block_info[$b_counter]['blockfile'] . '.' . PHP_EXT);
 				$output_block = cms_assign_var_from_handle($template, $block_handle);
 			}
 			else
@@ -325,7 +322,7 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 				$message = stripslashes($block_info[$b_counter]['content']);
 				if($block_info[$b_counter]['type'] == true)
 				{
-					@include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+					@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 					$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
 					$bbcode_uid = $block_info[$b_counter]['block_bbcode_uid'];
 					//$bbcode->allow_html = true;

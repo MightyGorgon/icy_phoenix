@@ -529,12 +529,12 @@ do_stuff($str);
 
 	<p class="bad">// Sometimes single quotes are just not right</p>
 	<blockquote><pre>
-$post_url = $phpbb_root_path . 'posting.' . $phpEx . '?mode=' . $mode . '&amp;amp;start=' . $start;
+$post_url = IP_ROOT_PATH . 'posting.' . PHP_EXT . '?mode=' . $mode . '&amp;amp;start=' . $start;
 	</pre></blockquote>
 
-	<p class="good">// Double quotes are sometimes needed to not overcroud the line with concentinations</p>
+	<p class="good">// Double quotes are sometimes needed to not overcrowd the line with concatenations</p>
 	<blockquote><pre>
-$post_url = "{$phpbb_root_path}posting.$phpEx?mode=$mode&amp;amp;start=$start";
+$post_url = "posting." . PHP_EXT . "?mode=$mode&amp;amp;start=$start";
 	</pre></blockquote>
 
 	<p>In SQL Statements mixing single and double quotes is partly allowed (following the guidelines listed here about SQL Formatting), else it should be tryed to only use one method - mostly single quotes.</p>
@@ -893,7 +893,7 @@ trigger_error('NO_FORUM');
 
 	<h3>Url formatting</h3>
 
-	<p>All urls pointing to internal files need to be prepended by the <code>$phpbb_root_path</code> variable. Within the administration control panel all urls pointing to internal files need to be prepended by the <code>$phpbb_admin_path</code> variable. This makes sure the path is always correct and users being able to just rename the admin folder and the acp still working as intended.</p>
+	<p>All urls pointing to internal files need to be prepended by the <code>IP_ROOT_PATH</code> constant. Within the administration control panel all urls pointing to internal files need to be prepended by the <code>$phpbb_admin_path</code> variable. This makes sure the path is always correct and users being able to just rename the admin folder and the acp still working as intended.</p>
 	
 	<h3>General function usage: </h3>
 

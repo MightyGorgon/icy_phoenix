@@ -15,15 +15,15 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 // Mighty Gorgon - HTTP AGENTS - BEGIN
-include($phpbb_root_path . 'includes/functions_mg_http.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_mg_http.' . PHP_EXT);
 // Mighty Gorgon - HTTP AGENTS - END
-include($phpbb_root_path . 'includes/functions_mg_online.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -65,16 +65,16 @@ $cms_global_blocks = ($board_config['wide_blocks_viewonline'] == 1) ? true : fal
 $page_title = $lang['Who_is_Online'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'viewonline_body.tpl'));
 make_jumpbox(VIEWFORUM_MG);
 
 $template->assign_vars(array(
 	// Start add - Fully integrated shoutbox MOD
-	'U_SHOUTBOX' => append_sid('shoutbox.' . $phpEx),
+	'U_SHOUTBOX' => append_sid('shoutbox.' . PHP_EXT),
 	'L_SHOUTBOX' => $lang['Shoutbox'],
-	'U_SHOUTBOX_MAX' => append_sid('shoutbox_max.' . $phpEx),
+	'U_SHOUTBOX_MAX' => append_sid('shoutbox_max.' . PHP_EXT),
 	// End add - Fully integrated shoutbox MOD
 
 	'L_WHOSONLINE' => $lang['Who_is_Online'],
@@ -260,7 +260,7 @@ while($row = $db->sql_fetchrow($result))
 			}
 		}
 
-		$location['url'] = append_sid($phpbb_root_path . $location['url']);
+		$location['url'] = append_sid(IP_ROOT_PATH . $location['url']);
 
 		$row_color = ($$which_counter % 2) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ($$which_counter % 2) ? $theme['td_class1'] : $theme['td_class2'];
@@ -282,7 +282,7 @@ while($row = $db->sql_fetchrow($result))
 			// Start Advanced IP Tools Pack MOD
 			'IP' => htmlspecialchars($ip),
 			'USER_AGENT' => htmlspecialchars($row['session_user_agent']) . '<br />' . $row['session_page'],
-			'U_HOSTNAME_LOOKUP' => ($mode != 'lookup') ? append_sid('viewonline.' . $phpEx . '?mode=lookup&amp;ip=' . decode_ip($row['session_ip'])) : append_sid('viewonline.' . $phpEx . '?mode=ip&amp;ip=' . decode_ip($row['session_ip'])),
+			'U_HOSTNAME_LOOKUP' => ($mode != 'lookup') ? append_sid('viewonline.' . PHP_EXT . '?mode=lookup&amp;ip=' . decode_ip($row['session_ip'])) : append_sid('viewonline.' . PHP_EXT . '?mode=ip&amp;ip=' . decode_ip($row['session_ip'])),
 			'U_WHOIS' => 'http://whois.sc/' . decode_ip($row['session_ip']),
 			// End Advanced IP Tools Pack MOD
 
@@ -460,6 +460,6 @@ if ($board_config['online_last_msgs'] == 1)
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

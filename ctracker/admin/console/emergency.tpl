@@ -23,7 +23,7 @@
 	<br /><br />
 	<br /><br />
 
-	<form action="emergency.{PHPEX}?mode=psrt" method="post">
+	<form action="emergency.{PHP_EXT}?mode=psrt" method="post">
 	<font face="Verdana" size="3" color="#FFFFFF">
 	Manually override Board Configuration Settings<br /><br />
 	</font>

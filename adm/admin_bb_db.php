@@ -15,7 +15,41 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+if (defined('MAIN_ADMINS_ID'))
+{
+	if (defined('JA_PARSING') && (JA_PARSING == true))
+	{
+		return;
+	}
+	$is_allowed = false;
+	$allowed_admins = explode(',', MAIN_ADMINS_ID);
+	if (defined('FOUNDER_ID'))
+	{
+		if ($userdata['user_id'] == FOUNDER_ID)
+		{
+			$is_allowed = true;
+		}
+	}
+	if ($is_allowed == false)
+	{
+		for ($i = 0; $i < count($allowed_admins); $i++)
+		{
+			if ($userdata['user_id'] == $allowed_admins[$i])
+			{
+				$is_allowed = true;
+				break;
+			}
+		}
+	}
+	if ($is_allowed == false)
+	{
+		return;
+	}
+}
+// Mighty Gorgon - ACP Privacy - END
 
 if (!empty($setmodules))
 {
@@ -23,11 +57,11 @@ if (!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_db_admin.'. $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_db_admin.' . PHP_EXT);
 
 
 if (isset( $_POST['mode'] ) || isset( $_GET['mode'] ))
@@ -124,7 +158,7 @@ else
 	}
 //==== End: Functions
 
-	$images = $phpbb_root_path .'images/bb_admin/';
+	$images = IP_ROOT_PATH . 'images/bb_admin/';
 	echo '<table align="center" valign="top" class="forumline">';
 	echo '	<tr>';
 	echo '		<td align="left" valign="middle" class="row2" colspan="15">';
@@ -190,7 +224,7 @@ else
 		echo '		<th width="100%">&nbsp;</th>';
 		echo '	</tr>';
 		echo '</table>';
-		include_once('page_footer_admin.' . $phpEx);
+		include_once('page_footer_admin.' . PHP_EXT);
 	}
 
 	if ($mode == 'sql_change')
@@ -853,6 +887,6 @@ else
 		}
 
 	echo '<br clear="all">';
-	include_once('page_footer_admin.' . $phpEx);
+	include_once('page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -66,9 +66,9 @@ $lang['xs_install_styles_lc'] = 'install styles';
 * index.tpl
 */
 
-$lang['xs_main_comment1'] = 'eXtreme Styles mod main menu. There are quite a few functions within this interface, so this page is here as a guide. There is a short explanation of every function below the function name.<br /><br />Note: This mod replaces the phpBB styles management. You will find the default phpBB functions in this list, but these functions are now optimized and have extra features.<br /><br />If you have any questions please visit <a href="http://www.stsoftware.biz/forum" target="_blank">support forum</a> where you can get assistance for this mod.';
+$lang['xs_main_comment1'] = 'eXtreme Styles mod main menu. There are quite a few functions within this interface, so this page is here as a guide. There is a short explanation of every function below the function name.<br /><br />Note: This mod replaces the Icy Phoenix styles management. You will find the default Icy Phoenix functions in this list, but these functions are now optimized and have extra features.<br /><br />If you have any questions please visit <a href="http://www.stsoftware.biz/forum" target="_blank">support forum</a> where you can get assistance for this mod.';
 $lang['xs_main_comment2'] = 'The eXtreme Styles mod allows an admin to store entire styles in .style files. Styles are stored in a small compressed file and by doing so this saves the trouble of downloading/uploading many files. Style files are compressed so download/upload is much more efficient than downloading/uploading usual style files.';
-$lang['xs_main_comment3'] = 'All functions of phpBB styles management are replaced with eXtreme Styles mod.<br /><br /><a href="{URL}">Click here</a> to see menu.';
+$lang['xs_main_comment3'] = 'All functions of Icy Phoenix styles management are replaced with eXtreme Styles mod.<br /><br /><a href="{URL}">Click here</a> to see menu.';
 $lang['xs_main_title'] = 'eXtreme Styles Navigation Menu';
 $lang['xs_menu'] = 'eXtreme Styles Menu';
 
@@ -132,7 +132,7 @@ $lang['xs_ftp_error_fatal'] = 'FTP functions are disabled on this server. Cannot
 $lang['xs_ftp_error_connect'] = 'FTP error: cannot connect to {HOST}';
 $lang['xs_ftp_error_login'] = 'FTP error: cannot login';
 $lang['xs_ftp_error_chdir'] = 'FTP error: cannot change directory to {DIR}';
-$lang['xs_ftp_error_nonphpbbdir'] = 'FTP error: you have set an invalid directory. There are no phpBB files in that directory';
+$lang['xs_ftp_error_nonphpbbdir'] = 'FTP error: you have set an invalid directory. There are no Icy Phoenix files in that directory';
 $lang['xs_ftp_error_noconnect'] = 'Cannot connect to ftp server';
 $lang['xs_ftp_error_login2'] = 'Invalid ftp login or password';
 
@@ -193,7 +193,7 @@ $lang['xs_config_navbar'] = 'Show on left frame:';
 $lang['xs_config_navbar_explain'] = 'You can select what items to show on left frame in the Admin Control Panel.';
 
 $lang['xs_config_def_template'] = 'Default template directory';
-$lang['xs_config_def_template_explain'] = 'If a required tpl file is not found in the current template directory (that might happen if you modded phpBB incorrectly) then the template system will look for the same file in a related directory (like if current template is "myTemplate" and script requires file "myTemplate/myfile.tpl" and that file isn\'t there the template system will look for that file as "ice/myfile.tpl"). Set to empty to disable this feature.';
+$lang['xs_config_def_template_explain'] = 'If a required tpl file is not found in the current template directory (that might happen if you modded Icy Phoenix incorrectly) then the template system will look for the same file in a related directory (like if current template is "myTemplate" and script requires file "myTemplate/myfile.tpl" and that file isn\'t there the template system will look for that file as "mg_themes/myfile.tpl"). Set to empty to disable this feature.';
 
 $lang['xs_config_check_switches'] = 'Check switches while compiling';
 $lang['xs_config_check_switches_explain'] = 'This feature checks for errors in templates. Turning it off will speed up compilation, but the compiler may skip some errors in templates if it contains errors.<br /><br />Smart check will check templates for errors and automatically fix all known errors (there are few known typos in different mods). Works a little bit slower than simple check.<br /><br />But sometimes templates look proper only when error checking is disabled; this happens because of bad html coding - contact whoever wrote the tpl file if you want to fix errors.<br /><br />If the cache feature is disabled, then turn this off for faster compilation.';
@@ -577,7 +577,8 @@ $lang['xs_update_types'] = array(
 		0 => 'Unknown',
 		1 => 'Style',
 		2 => 'Mod',
-		3 => 'phpBB'
+		3 => 'phpBB',
+		4 => 'Icy Phoenix'
 		);
 $lang['xs_update_fileinfo'] = 'More info';
 $lang['xs_update_nothing'] = 'There is nothing to update.';

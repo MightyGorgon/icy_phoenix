@@ -8,11 +8,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 define ('NUM_SHOUT', 20);
 
 // Start session management
@@ -109,7 +109,7 @@ else
 	$smilies_on = ($submit || $refresh || preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_smilies'] : $userdata['user_allowsmile']);
 	if ($smilies_on)
 	{
-		include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 		generate_smilies('inline');
 		if ($mode == 'smilies')
 		{
@@ -153,7 +153,7 @@ elseif ($submit || isset($_POST['message']))
 
 		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($username != $userdata['username'])))
 		{
-			include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 			$result = validate_username($username);
 			if ($result['error'])
 			{
@@ -165,7 +165,7 @@ elseif ($submit || isset($_POST['message']))
 	// insert shout !
 	if (!empty($message) && $is_auth['auth_post'] && !$error)
 	{
-		include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 		$bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
 		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
 		if ($board_config['img_shoutbox'] == true)
@@ -222,8 +222,8 @@ $template->set_filenames(array('body' => 'shoutbox_body.tpl'));
 
 
 $template->assign_vars(array(
-	'U_SHOUTBOX' => append_sid('shoutbox.' . $phpEx . '?start=' . $start),
-	'U_SHOUTBOX_VIEW' => append_sid('shoutbox_view.' . $phpEx . '?start=' . $start),
+	'U_SHOUTBOX' => append_sid('shoutbox.' . PHP_EXT . '?start=' . $start),
+	'U_SHOUTBOX_VIEW' => append_sid('shoutbox_view.' . PHP_EXT . '?start=' . $start),
 	'T_HEAD_STYLESHEET' => $theme['head_stylesheet'],
 	'T_NAME' => $theme['template_name'],
 

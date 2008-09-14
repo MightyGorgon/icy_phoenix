@@ -11,12 +11,12 @@
 // CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_topics.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -148,7 +148,7 @@ if (!in_array($psort, $psort_types))
 $page_title = $lang['Recent_topics'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $except_forums = build_exclusion_forums_list();
 
@@ -296,7 +296,7 @@ switch($mode)
 		break;
 
 	default:
-		$message = $lang['Recent_wrong_mode'] . '<br /><br />' . sprintf($lang['Recent_click_return'], '<a href="' . append_sid('recent.' . $phpEx) . '">', '</a>') . '<br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
+		$message = $lang['Recent_wrong_mode'] . '<br /><br />' . sprintf($lang['Recent_click_return'], '<a href="' . append_sid('recent.' . PHP_EXT) . '">', '</a>') . '<br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 		break;
 }
@@ -454,7 +454,7 @@ if ($total_topics == 0)
 	}
 }
 
-$base_url = 'recent.' . $phpEx . '?mode=' . $mode . $mode_pagination;
+$base_url = 'recent.' . PHP_EXT . '?mode=' . $mode . $mode_pagination;
 if ($psort != $psort_types[0])
 {
 	$base_url .= '&amp;psort=' . $psort;
@@ -478,16 +478,16 @@ $template->assign_vars(array(
 	'L_SHOWING_POSTS' => $lang['Recent_showing_posts'],
 	'L_LASTPOST' => $lang['Last_Post'],
 	'L_NO_TOPICS' => $lang['Recent_no_topics'],
-	'U_SORT_CAT' => append_sid('recent.' . $phpEx . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=cat&amp;start=' . $start),
-	'U_SORT_TIME' => append_sid('recent.' . $phpEx . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=time&amp;start=' . $start),
+	'U_SORT_CAT' => append_sid('recent.' . PHP_EXT . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=cat&amp;start=' . $start),
+	'U_SORT_TIME' => append_sid('recent.' . PHP_EXT . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=time&amp;start=' . $start),
 	'AMOUNT_DAYS' => $amount_days,
-	'FORM_ACTION' => append_sid('recent.' . $phpEx),
+	'FORM_ACTION' => append_sid('recent.' . PHP_EXT),
 	'PAGINATION' => ($total_topics != '0') ? $pagination : '&nbsp;',
 	'PAGE_NUMBER' => ($total_topics != '0') ? sprintf($lang['Page_of'], (floor($start / $topic_limit) + 1), ceil($total_topics / $topic_limit)) : '&nbsp;',
 	)
 );
 
 $template->pparse('body');
-include($phpbb_root_path .'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

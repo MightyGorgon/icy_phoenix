@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if ( !empty( $setmodules ) )
 {
@@ -24,18 +24,18 @@ if ( !empty( $setmodules ) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 $start_time = time ();
 $time_limit = $_GET['time_limit'];
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-include($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 $page_title = $lang['Page_title'];
 
@@ -98,25 +98,26 @@ if (isset ($_GET['start']))
 	$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 
 	if (($start + $num_rows) != $total_num_rows) {
-		$form_action = append_sid ("admin_kb_rebuild_search.$phpEx?start=". ($start + $num_rows) ."&total_num_rows=$total_num_rows&post_limit=". $_GET['post_limit'] ."&time_limit=$time_limit&refresh_rate=". $_GET['refresh_rate']);
+		$form_action = append_sid('admin_kb_rebuild_search.' . PHP_EXT . '?start=' . ($start + $num_rows) . '&amp;total_num_rows=' . $total_num_rows . '&amp;post_limit=' . $_GET['post_limit'] . '&amp;time_limit=' . $time_limit . '&amp;refresh_rate=' . $_GET['refresh_rate']);
 		$next = $lang['Next'];
 		$template->assign_vars(array(
 			"META" => '<meta http-equiv="refresh" content="'. $_GET['refresh_rate'] .';url='. $form_action .'">')
 		);
 	} else {
 		$next = $lang['Finished'];
-		$form_action = append_sid ("admin_kb_rebuild_search.$phpEx");
+		$form_action = append_sid('admin_kb_rebuild_search.' . PHP_EXT);
 	}
 
-	$template->assign_vars (array (
+	$template->assign_vars(array(
 		'PERCENT' => round ((($start + $num_rows) / $total_num_rows) * 100),
 		'L_NEXT' => $next,
 		'START' => $start + $num_rows,
 		'TOTAL_NUM_ROWS' => $total_num_rows,
-		'S_REBUILD_SEARCH_ACTION' => $form_action)
+		'S_REBUILD_SEARCH_ACTION' => $form_action
+		)
 	);
 
-	$template->set_filenames (array ('body' => ADM_TPL . 'kb_rebuild_search_progress.tpl'));
+	$template->set_filenames(array('body' => ADM_TPL . 'kb_rebuild_search_progress.tpl'));
 }
 else
 {
@@ -128,7 +129,7 @@ else
 		'L_REFRESH_RATE' => $lang['Refresh_rate'],
 		'SESSION_ID' => $userdata['session_id'],
 
-		'S_REBUILD_SEARCH_ACTION' => append_sid ("admin_kb_rebuild_search.$phpEx"))
+		'S_REBUILD_SEARCH_ACTION' => append_sid ("admin_kb_rebuild_search." . PHP_EXT))
 	);
 
 	$template->set_filenames (array ('body' => ADM_TPL . 'kb_rebuild_search.tpl'));
@@ -139,7 +140,7 @@ $template->pparse ('body');
 //
 // Page Footer
 //
-// include('./page_footer_admin.' . $phpEx);
-include($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+// include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

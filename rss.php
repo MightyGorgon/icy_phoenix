@@ -15,24 +15,24 @@
 *
 */
 
-define ('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 $ProgName = 'RSS Feed 2.2.4';
 $verinfo = 'V224';
-include($phpbb_root_path . 'includes/rss_config.' . $phpEx);
-include($phpbb_root_path . 'includes/rss_functions.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/rss_config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/rss_functions.' . PHP_EXT);
 // END Includes of phpBB scripts
 
 // MG: not all modes implemented yet
 $mode_types = array('all', 'ann', 'cats', 'glo', 'imp', 'news');
 
-if( isset($_GET['mode']) || isset($_POST['mode']) )
+if(isset($_GET['mode']) || isset($_POST['mode']))
 {
-	$mode = ( isset($_GET['mode']) ) ? htmlspecialchars($_GET['mode']) : htmlspecialchars($_POST['mode']);
+	$mode = (isset($_GET['mode'])) ? htmlspecialchars($_GET['mode']) : htmlspecialchars($_POST['mode']);
 }
 else
 {
@@ -44,10 +44,6 @@ if (!in_array($mode, $mode_types))
 	$mode = $mode_types[0];
 }
 
-if(!defined('PAGE_RSS'))
-{
-	define('PAGE_RSS', PAGE_INDEX);
-}
 $deadline = 0;
 
 if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
@@ -60,12 +56,12 @@ if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 }
 $sql= "SELECT MAX(post_time) as pt FROM ". POSTS_TABLE;
 
-if( !($result = $db->sql_query($sql)) )
+if(!($result = $db->sql_query($sql)))
 {
 	ExitWithHeader('500 Internal Server Error', 'Error in obtaining post data');
 }
 
-if( $row = $db->sql_fetchrow($result) )
+if($row = $db->sql_fetchrow($result))
 {
 	if($row['pt'] <= $deadline)
 	{
@@ -77,10 +73,10 @@ if( $row = $db->sql_fetchrow($result) )
 // BEGIN Cache Mod
 $use_cached = false;
 $cache_file = '';
-if( CACHE_TO_FILE && (CACHE_TIME > 0) )
+if(CACHE_TO_FILE && (CACHE_TIME > 0))
 {
-	$cache_file = $phpbb_root_path . $cache_root . $cache_filename;
-	if( ($cache_root != '') && empty($_GET) )
+	$cache_file = IP_ROOT_PATH . $cache_root . $cache_filename;
+	if(($cache_root != '') && empty($_GET))
 	{
 		$cachefiletime = @filemtime($cache_file);
 		$timedif = ($deadline - $cachefiletime);
@@ -100,21 +96,21 @@ if($use_cached && AUTOSTYLED && strpos($useragent,'MSIE'))
 	$use_cached = false;
 }
 
-if( $board_config['gzip_compress'] )
+if($board_config['gzip_compress'])
 {
 	$phpver = phpversion();
-	if( $phpver >= '4.0.4pl1' && ( strstr($useragent,'compatible') || strstr($useragent,'Gecko') ) )
+	if($phpver >= '4.0.4pl1' && (strstr($useragent,'compatible') || strstr($useragent,'Gecko')))
 	{
-		if( extension_loaded('zlib') )
+		if(extension_loaded('zlib'))
 		{
 			ob_start('ob_gzhandler');
 		}
 	}
-	elseif( $phpver > '4.0' )
+	elseif($phpver > '4.0')
 	{
-		if( strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') )
+		if(strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
 		{
-			if( extension_loaded('zlib') )
+			if(extension_loaded('zlib'))
 			{
 				$do_gzip_compress = true;
 				ob_start();
@@ -128,21 +124,21 @@ if( $board_config['gzip_compress'] )
 
 // How many posts do you want to returnd (count)?
 // Specified in the URL with "c=".  Defaults to 25, upper limit of 50.
-$count = ( isset($_GET['c']) ) ? intval($_GET['c']) : DEFAULT_ITEMS;
-$count = ( $count == 0 ) ? DEFAULT_ITEMS : $count;
-$count = ( $count > MAX_ITEMS ) ? MAX_ITEMS : $count;
+$count = (isset($_GET['c'])) ? intval($_GET['c']) : DEFAULT_ITEMS;
+$count = ($count == 0) ? DEFAULT_ITEMS : $count;
+$count = ($count > MAX_ITEMS) ? MAX_ITEMS : $count;
 // Which forum do you want posts from (forum_id)?  specified in the url with "f=".  Defaults to all (public) forums.
-$forum_id = ( isset($_GET['f']) ) ? intval($_GET['f']) : '';
-$no_limit = ( isset($_GET['nolimit']) ) ? true : false;
-$needlogin = ( isset($_GET['login']) or isset($_GET['uid'])) ? true : false;
+$forum_id = (isset($_GET['f'])) ? intval($_GET['f']) : '';
+$no_limit = (isset($_GET['nolimit'])) ? true : false;
+$needlogin = (isset($_GET['login']) or isset($_GET['uid'])) ? true : false;
 
-$sql_forum_where = ( !empty($forum_id) ) ? ' AND f.forum_id = ' . $forum_id : ' ';
+$sql_forum_where = (!empty($forum_id)) ? ' AND f.forum_id = ' . $forum_id : ' ';
 
 // Return topics only, or all posts?  Specified in the URL with "t=".  Defaults to all posts (0).
-$topics_only = (isset($_GET['t']) ) ? intval($_GET['t']) : 0;
-$topics_view = (isset($_GET['topic']) ) ? intval($_GET['topic']) : 0;
+$topics_only = (isset($_GET['t'])) ? intval($_GET['t']) : 0;
+$topics_view = (isset($_GET['topic'])) ? intval($_GET['topic']) : 0;
 $sql_topics_only_where = '';
-if( $topics_only == 1 )
+if($topics_only == 1)
 {
 	$sql_topics_only_where = 'AND p.post_id = t.topic_first_post_id';
 }
@@ -154,21 +150,21 @@ if($topics_view != 0)
 // BEGIN Session management
 // Check user
 $user_id = ($needlogin)? rss_get_user() : ANONYMOUS;
-if( ($user_id == ANONYMOUS) && AUTOLOGIN)
+if(($user_id == ANONYMOUS) && AUTOLOGIN)
 {
 	$userdata = session_pagestart($user_ip);
 	$user_id = $userdata['user_id'];
 }
 else
 {
-	$userdata = rss_session_begin($user_id, $user_ip, PAGE_RSS);
+	$userdata = rss_session_begin($user_id, $user_ip, 0);
 }
 
 init_userprefs($userdata);
 $username = $userdata['username'];
 // END session management
 
-if( strpos($useragent, 'MSIE') )
+if(strpos($useragent, 'MSIE'))
 {
 	$encoding_charset = $lang['ENCODING'];
 }
@@ -178,7 +174,7 @@ else
 }
 
 // BEGIN Cache Mod
-if( ($user_id == ANONYMOUS) && $use_cached)
+if(($user_id == ANONYMOUS) && $use_cached)
 {
 	$MyETag='"RSS' . gmdate('YmdHis', $cachefiletime) . $verinfo . '"';
 	$MyGMTtime = gmdate('D, d M Y H:i:s', $cachefiletime) . ' GMT';
@@ -208,14 +204,14 @@ else
 	// BEGIN Create main board information (some code borrowed from functions_post.php)
 	// Build URL components
 	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-	$viewpost = ( $script_name != '' ) ? $script_name . '/viewtopic.' . $phpEx : 'viewtopic.'. $phpEx;
-	$replypost = ( $script_name != '' ) ? $script_name . '/posting.' . $phpEx.'?mode=quote' : 'posting.'. $phpEx.'?mode=quote';
-	$index = ( $script_name != '' ) ? $script_name . '/index.' . $phpEx : 'index.'. $phpEx;
+	$viewpost = ($script_name != '') ? $script_name . '/viewtopic.' . PHP_EXT : 'viewtopic.' . PHP_EXT;
+	$replypost = ($script_name != '') ? $script_name . '/posting.' . PHP_EXT . '?mode=quote' : 'posting.' . PHP_EXT . '?mode=quote';
+	$index = ($script_name != '') ? $script_name . '/index.' . PHP_EXT : 'index.' . PHP_EXT;
 	$server_name = trim($board_config['server_name']);
-	$server_protocol = ( $board_config['cookie_secure'] ) ? 'https://' : 'http://';
-	$server_port = ( $board_config['server_port'] <> 80 ) ? ':' . trim($board_config['server_port']) . '/' : '/';
+	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
 	// Assemble URL components
-	$index_url = $server_protocol . $server_name . $server_port . (( $script_name != '' )? $script_name . '/':'');
+	$index_url = $server_protocol . $server_name . $server_port . (($script_name != '')? $script_name . '/':'');
 	$viewpost_url = $server_protocol . $server_name . $server_port . $viewpost;
 	$replypost_url =$server_protocol . $server_name . $server_port . $replypost;
 	// Reformat site name and description
@@ -235,9 +231,9 @@ else
 		$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
 		if($forum_id=='')
 		{
-			while ( list($forumId, $auth_mode) = each($is_auth) )
+			while (list($forumId, $auth_mode) = each($is_auth))
 			{
-				if( !$auth_mode['auth_read'] )
+				if(!$auth_mode['auth_read'])
 				{
 					$unauthed .= ',' . $forumId;
 				}
@@ -254,7 +250,7 @@ else
 				}
 				else
 				{
-					header('Location: ' . $index_url . 'rss.' . $phpEx . '?' . POST_FORUM_URL . '=' . $forum_id . (($no_limit) ? '&nolimit' : '') . (isset($_GET['atom']) ? '&atom' : '') . (isset($_GET['c']) ? '&c=' . $count : '') . (isset($_GET['t']) ? '&t=' . $topics_only : '') . (isset($_GET['styled']) ? '&styled' : '') . '&login');
+					header('Location: ' . $index_url . 'rss.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . (($no_limit) ? '&nolimit' : '') . (isset($_GET['atom']) ? '&atom' : '') . (isset($_GET['c']) ? '&c=' . $count : '') . (isset($_GET['t']) ? '&t=' . $topics_only : '') . (isset($_GET['styled']) ? '&styled' : '') . '&login');
 					ExitWithHeader('301 Moved Permanently');
 				}
 			}
@@ -301,7 +297,7 @@ else
 			$NotModifiedSince = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			if(SEE_MODIFYED)
 			{
-				$sql_limit_by_http =  "AND (p.post_time > " . $NotModifiedSince . " OR p.post_edit_time >" . $NotModifiedSince . " )";
+				$sql_limit_by_http =  "AND (p.post_time > " . $NotModifiedSince . " OR p.post_edit_time >" . $NotModifiedSince . ")";
 			}
 			elseif($NotModifiedSince > $MaxRecordAge)
 			{
@@ -334,7 +330,7 @@ else
 	// END SQL statement to fetch active posts of public forums
 
 	// BEGIN Query failure check
-	if( !$posts_query )
+	if(!$posts_query)
 	{
 		ExitWithHeader("500 Internal Server Error","Could not query list of active posts");
 	}
@@ -371,7 +367,7 @@ else
 	);
 	// END Assign static variabless to template
 	$LastPostTime = 0;
-	if( count($allposts) == 0 )
+	if(count($allposts) == 0)
 	{
 		if($NotErrorFlag) ExitWithHeader('304 Not Modified');
 	}
@@ -382,11 +378,11 @@ else
 		$SeenTopics = array();
 		foreach ($allposts as $post)
 		{
-			if( $post['post_time'] > $LastPostTime )
+			if($post['post_time'] > $LastPostTime)
 			{
 				$LastPostTime = $post['post_time'];
 			}
-			if( $post['post_edit_time'] > $LastPostTime)
+			if($post['post_edit_time'] > $LastPostTime)
 			{
 				$LastPostTime = $post['post_edit_time'];
 			}
@@ -395,21 +391,21 @@ else
 			$SeenTopics[$topic_id]++;
 			// Variable reassignment and reformatting for post text
 			$post_id=$post['post_id'];
-			$post_subject = ( $post['post_subject'] != '' ) ? $post['post_subject'] : '';
+			$post_subject = ($post['post_subject'] != '') ? $post['post_subject'] : '';
 			$message = $post['post_text'];
 			$bbcode_uid = $post['bbcode_uid'];
-			$user_sig = ( $post['enable_sig'] && $post['user_sig'] != '' && $board_config['allow_sig'] ) ? $post['user_sig'] : '';
+			$user_sig = ($post['enable_sig'] && $post['user_sig'] != '' && $board_config['allow_sig']) ? $post['user_sig'] : '';
 			$user_sig_bbcode_uid = $post['user_sig_bbcode_uid'];
 			// If the board has HTML off but the post has HTML on then we process it, else leave it alone
-			$html_on = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? 1 : 0 ;
-			$bbcode_on = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? 1 : 0 ;
-			$smilies_on = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? 1 : 0 ;
+			$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
+			$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
+			$smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? 1 : 0 ;
 
 			$bbcode->allow_html = $html_on;
 			$bbcode->allow_bbcode = $bbcode_on;
 			$bbcode->allow_smilies = $smilies_on;
 			$text = $bbcode->parse($text, $bbcode_uid);
-			$bbcode->is_sig = ( $board_config['allow_all_bbcode'] == 0 ) ? true : false;
+			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
 			$user_sig = $bbcode->parse($user_sig, $bbcode_uid);
 			$bbcode->is_sig = false;
 			$message = $bbcode->parse($message, $bbcode_uid);
@@ -428,27 +424,27 @@ else
 			}
 
 			// Replace newlines (we use this rather than nl2br because till recently it wasn't XHTML compliant)
-			if( $user_sig != '' )
+			if($user_sig != '')
 			{
 				$user_sig = '<br />' . $board_config['sig_line'] . '<br />' . str_replace("\n", "\n<br />\n", $user_sig);
 				//$user_sig = '<br />_________________<br />' . str_replace("\n", "\n<br />\n", $user_sig);
 			}
 
 			$message = str_replace("\n", "\n<br />\n", $message);
-			if( $post_subject != '' )
+			if($post_subject != '')
 			{
 				$post_subject = htmlspecialchars($lang['Subject'].': '.$post_subject.'<br />');
 			}
 			// Variable reassignment for topic title, and show whether it is the start of topic, or a reply
 			$topic_title = $post['topic_title'];
-			if( $post['post_id'] != $post['topic_first_post_id'] )
+			if($post['post_id'] != $post['topic_first_post_id'])
 			{
 				$topic_title = 'RE: ' . $topic_title;
 			}
 			// Variable reassignment and reformatting for author
 			$author = $post['username'];
 			$author0 =$author;
-			if( $post['user_id'] != -1 )
+			if($post['user_id'] != -1)
 			{
 				$author = '<a href="' . $index_url . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $post['user_id'] . '" target="_blank">' . $author . '</a>';
 			}
@@ -470,7 +466,7 @@ else
 				'AUTHOR' => htmlspecialchars($author),
 				'POST_TIME' => create_date($board_config['default_dateformat'], $post['post_time'], $board_config['board_timezone']) . ' (GMT ' . $board_config['board_timezone'] . ')',
 				'ATOM_TIME' => gmdate('Y-m-d\TH:i:s', $post['post_time']) . 'Z',
-				'ATOM_TIME_M' => ( ($post['post_edit_time'] <> '') ? gmdate('Y-m-d\TH:i:s', $post['post_edit_time']) . 'Z' : gmdate('Y-m-d\TH:i:s', $post['post_time']) . 'Z'),
+				'ATOM_TIME_M' => (($post['post_edit_time'] <> '') ? gmdate('Y-m-d\TH:i:s', $post['post_edit_time']) . 'Z' : gmdate('Y-m-d\TH:i:s', $post['post_time']) . 'Z'),
 				'POST_SUBJECT' => $post_subject,
 				'FORUM_NAME' => htmlspecialchars($post['forum_name']),
 				'UTF_TIME' => RSSTimeFormat($post['post_time'],$userdata['user_timezone']),
@@ -488,14 +484,14 @@ else
 			foreach ($SeenTopics as $topic_id=>$tcount)
 			{
 				$updlist .= (empty($updlist)) ? $topic_id : ',' . $topic_id;
-				if ( ($board_config['disable_topic_view'] == false) && AUTO_WVT_MOD )
+				if (($board_config['disable_topic_view'] == false) && AUTO_WVT_MOD)
 				{
 					$sql = 'UPDATE ' . TOPIC_VIEW_TABLE . ' SET topic_id = "' . $topic_id . '", view_time = "' . time() . '", view_count = view_count + 1 WHERE topic_id = ' . $topic_id . ' AND user_id = ' . $user_id;
-					if( !$db->sql_query($sql) || !$db->sql_affectedrows() )
+					if(!$db->sql_query($sql) || !$db->sql_affectedrows())
 					{
 						$sql = 'INSERT IGNORE INTO ' . TOPIC_VIEW_TABLE . ' (topic_id, user_id, view_time, view_count)
 						VALUES (' . $topic_id . ', "' . $user_id . '", "' . time() . '", "1")';
-						if( !($db->sql_query($sql)) )
+						if(!($db->sql_query($sql)))
 						{
 							ExitWithHeader('500 Internal Server Error', 'Error create user view topic information');
 						}
@@ -508,7 +504,7 @@ else
 				$sql = "UPDATE " . TOPICS_TABLE . "
 				SET topic_views = topic_views + 1
 				WHERE topic_id IN ($updlist)";
-				if( !$db->sql_query($sql) )
+				if(!$db->sql_query($sql))
 				{
 					ExitWithHeader('500 Internal Server Error', 'Could not update topic views');
 				}
@@ -519,7 +515,7 @@ else
 			$sql = "UPDATE " . USERS_TABLE . "
 			SET user_totalpages = user_totalpages + $PostCount
 			WHERE user_id = $user_id";
-			if( !$db->sql_query($sql) )
+			if(!$db->sql_query($sql))
 			{
 				ExitWithHeader('500 Internal Server Error', 'Error updating user totalpages ');
 			}
@@ -558,7 +554,7 @@ else
 
 	// BEGIN Output XML page
 	// BEGIN Cache Mod
-	if( ($user_id == ANONYMOUS) && CACHE_TO_FILE && ($cache_root!='') && empty($_GET) && !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && !(AUTOSTYLED && strpos($useragent,'MSIE')))
+	if(($user_id == ANONYMOUS) && CACHE_TO_FILE && ($cache_root!='') && empty($_GET) && !isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && !(AUTOSTYLED && strpos($useragent,'MSIE')))
 	{
 		ob_start();
 		$template->pparse('body');

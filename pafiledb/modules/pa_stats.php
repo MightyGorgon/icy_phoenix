@@ -19,14 +19,14 @@ class pafiledb_stats extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $phpbb_root_path, $userdata;
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
 
 
 		if(!$this->auth_global['auth_stats'])
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=stats', true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_stats'], $this->auth_global['auth_stats_type']);
@@ -153,27 +153,27 @@ class pafiledb_stats extends pafiledb_public
 
 		$avgdls = @round($totaldls/$num['files']);
 
-		require($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_pafiledb.' . $phpEx);
+		require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_pafiledb.' . PHP_EXT);
 
 		$lang['Stats_text'] = str_replace("{total_files}", $num['files'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{total_categories}", $num['cats'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{total_downloads}", $totaldls, $lang['Stats_text']);
-		$lang['Stats_text'] = str_replace("{u_newest_file}", append_sid('dload.' . $phpEx . '?action=file&file_id=' . $newest['file_id']), $lang['Stats_text']);
+		$lang['Stats_text'] = str_replace("{u_newest_file}", append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $newest['file_id']), $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{newest_file}", $newest['file_name'], $lang['Stats_text']);
-		$lang['Stats_text'] = str_replace("{u_oldest_file}", append_sid('dload.' . $phpEx . '?action=file&file_id=' . $oldest['file_id']), $lang['Stats_text']);
+		$lang['Stats_text'] = str_replace("{u_oldest_file}", append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $oldest['file_id']), $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{oldest_file}", $oldest['file_name'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{average}", $avg, $lang['Stats_text']);
-		$lang['Stats_text'] = str_replace("{u_popular}", append_sid('dload.' . $phpEx . '?action=file&file_id=' . $popular['file_id']), $lang['Stats_text']);
+		$lang['Stats_text'] = str_replace("{u_popular}", append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $popular['file_id']), $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{popular}", $popular['file_name'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{most}", round($popular['rating'], 2), $lang['Stats_text']);
-		$lang['Stats_text'] = str_replace("{u_lpopular}", append_sid('dload.' . $phpEx . '?action=file&file_id=' . $lpopular['file_id']), $lang['Stats_text']);
+		$lang['Stats_text'] = str_replace("{u_lpopular}", append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $lpopular['file_id']), $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{lpopular}", $lpopular['file_name'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{least}", round($lpopular['rating'], 2), $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{avg_dls}", $avgdls, $lang['Stats_text']);
-		$lang['Stats_text'] = str_replace("{u_most_dl}", append_sid('dload.' . $phpEx . '?action=file&file_id=' . $mostdl['file_id']), $lang['Stats_text']);
+		$lang['Stats_text'] = str_replace("{u_most_dl}", append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $mostdl['file_id']), $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{most_dl}", $mostdl['file_name'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{most_no}", $mostdl['file_dls'], $lang['Stats_text']);
-		$lang['Stats_text'] = str_replace("{u_least_dl}", append_sid('dload.' . $phpEx . '?action=file&file_id=' . $leastdl['file_id']), $lang['Stats_text']);
+		$lang['Stats_text'] = str_replace("{u_least_dl}", append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $leastdl['file_id']), $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{least_dl}", $leastdl['file_name'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{least_no}", $leastdl['file_dls'], $lang['Stats_text']);
 
@@ -296,7 +296,7 @@ class pafiledb_stats extends pafiledb_public
 		}
 
 		$pafiledb_template->assign_vars(array(
-			'S_ACTION_CHART' => append_sid('dload.' . $phpEx . '?action=stats'),
+			'S_ACTION_CHART' => append_sid('dload.' . PHP_EXT . '?action=stats'),
 
 		 	'L_STATISTICS' => $lang['Statistics'],
 			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
@@ -309,7 +309,7 @@ class pafiledb_stats extends pafiledb_public
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD' => append_sid('dload.' . $phpEx),
+			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 
 
 			'U_VOTE_LCAP' => $images['voting_graphic_left'],

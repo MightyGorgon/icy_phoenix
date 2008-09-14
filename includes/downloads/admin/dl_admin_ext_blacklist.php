@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -76,14 +76,14 @@ elseif($action == 'delete')
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=ext_blacklist'),
+			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=ext_blacklist'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -103,7 +103,7 @@ elseif($action == 'delete')
 				message_die(GENERAL_ERROR, "Couldn't delete file extention(s)", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = ((count($extention) == 1) ? $lang['Extention_removed'] : $lang['Extentions_removed']) . '<br /><br />' . sprintf($lang['Click_return_extblacklistadmin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=ext_blacklist') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = ((count($extention) == 1) ? $lang['Extention_removed'] : $lang['Extentions_removed']) . '<br /><br />' . sprintf($lang['Click_return_extblacklistadmin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=ext_blacklist') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -151,7 +151,7 @@ if ($action == '')
 		'L_MARK_ALL' => $lang['Mark_all'],
 		'L_UNMARK_ALL' => $lang['Unmark_all'],
 
-		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=ext_blacklist')
+		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=ext_blacklist')
 		)
 	);
 }

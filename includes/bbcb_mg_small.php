@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -16,15 +16,15 @@ if (!defined('IN_PHPBB'))
 // Usage
 /*
 // BBCBMG - BEGIN
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 //$bbcbmg_in_acp = true;
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcb_mg_small.' . $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcb_mg_small.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG_SMALL', 'bbcb_mg_small');
 // BBCBMG - END
 */
 
-//include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
+//include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
 if ( defined('IN_PA_POSTING') )
 {
@@ -50,14 +50,14 @@ $parsing_template = array(
 	'BBCB_MG_IMG_EXT' => '.gif',
 
 	'L_MORE_SMILIES' => $lang['More_emoticons'],
-	'U_MORE_SMILIES' => append_sid('posting.' . $phpEx . '?mode=smilies'),
+	'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies'),
 
 	'L_BBCODE_HELP' => $lang['bbcode_help'],
-	'U_BBCODE_HELP' => append_sid('faq.' . $phpEx . '?mode=bbcode'),
+	'U_BBCODE_HELP' => append_sid('faq.' . PHP_EXT . '?mode=bbcode'),
 
-	'U_BBCODE_COLORPICKER' => append_sid('bbcb_mg_cp.' . $phpEx),
+	'U_BBCODE_COLORPICKER' => append_sid('bbcb_mg_cp.' . PHP_EXT),
 	'U_BBCODE_POSTIMAGE' => $post_image_lang,
-	'U_BBCODE_POSTICYIMAGE' => append_sid('upload.' . $phpEx),
+	'U_BBCODE_POSTICYIMAGE' => append_sid('upload.' . PHP_EXT),
 
 	'L_BBCODE_B_HELP' => $lang['bbcode_b_help'],
 	'L_BBCODE_I_HELP' => $lang['bbcode_i_help'],

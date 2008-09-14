@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -271,7 +271,7 @@ if($action == 'edit' || $action == 'add')
 
 		'S_COMMENT_VIEW' => $s_auth_cread,
 		'S_COMMENT_POST' => $s_auth_cpost,
-		'S_CATEGORY_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=categories'),
+		'S_CATEGORY_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=categories'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -333,7 +333,7 @@ if($action == 'edit' || $action == 'add')
 
 	$template->pparse('category');
 
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 }
 elseif($action == 'save_cat')
 {
@@ -463,7 +463,7 @@ elseif($action == 'save_cat')
 
 	$db->sql_freeresult($result);
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_categoryadmin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=categories') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_categoryadmin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=categories') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -548,7 +548,7 @@ elseif($action == 'delete')
 			message_die(GENERAL_ERROR, "Could not delete category data", "", __LINE__, __FILE__, $sql);
 		}
 
-		$message = $lang['Dl_category_removed'] . '<br /><br />' . sprintf($lang['Click_return_categoryadmin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=categories') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Dl_category_removed'] . '<br /><br />' . sprintf($lang['Click_return_categoryadmin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=categories') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -584,14 +584,14 @@ elseif($action == 'delete')
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=categories'),
+			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=categories'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -618,14 +618,14 @@ elseif($action == 'delete_stats')
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=categories'),
+			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=categories'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 
 	if($cat_id == 'all')
@@ -671,14 +671,14 @@ elseif($action == 'delete_comments')
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=categories'),
+			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=categories'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 
 	if($cat_id == 'all')
@@ -821,16 +821,16 @@ foreach (array_keys($index) as $key)
 	$cat_id = $key;
 	$cat_name = $index[$cat_id]['cat_name'];
 
-	$cat_edit = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=edit&amp;cat_id=' . $cat_id);
-	$cat_delete = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=delete&amp;cat_id=' . $cat_id);
+	$cat_edit = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=edit&amp;cat_id=' . $cat_id);
+	$cat_delete = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=delete&amp;cat_id=' . $cat_id);
 
-	$dl_move_up = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=category_order&amp;move=0&amp;cat_id=' . $cat_id);
-	$dl_move_down = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=category_order&amp;move=1&amp;cat_id=' . $cat_id);
+	$dl_move_up = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=category_order&amp;move=0&amp;cat_id=' . $cat_id);
+	$dl_move_down = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=category_order&amp;move=1&amp;cat_id=' . $cat_id);
 
 	if ($dl_mod->count_sublevel($cat_id) > 1)
 	{
 		$l_sort_asc = $lang['Dl_sub_sort_asc'];
-		$dl_sort_asc = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=asc_sort&amp;cat_id=' . $cat_id);
+		$dl_sort_asc = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=asc_sort&amp;cat_id=' . $cat_id);
 	}
 	else
 	{
@@ -846,14 +846,14 @@ foreach (array_keys($index) as $key)
 	if ($stats_cats[$cat_id] > 0)
 	{
 		$l_delete_stats = '<br />' . $lang['Dl_stats_delete'];
-		$u_delete_stats = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=delete_stats&amp;cat_id=' . $cat_id);
+		$u_delete_stats = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=delete_stats&amp;cat_id=' . $cat_id);
 		$stats_total++;
 	}
 
 	if ($comments_cats[$cat_id] > 0)
 	{
 		$l_delete_comments = '<br />' . $lang['Dl_comments_delete'];
-		$u_delete_comments = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=delete_comments&amp;cat_id=' . $cat_id);
+		$u_delete_comments = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=delete_comments&amp;cat_id=' . $cat_id);
 		$comments_total++;
 	}
 
@@ -882,13 +882,13 @@ foreach (array_keys($index) as $key)
 if ($stats_total)
 {
 	$l_delete_stats_all = $lang['Dl_stats_delete_all'];
-	$u_delete_stats_all = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=delete_stats&amp;cat_id=all');
+	$u_delete_stats_all = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=delete_stats&amp;cat_id=all');
 }
 
 if ($comments_total)
 {
 	$l_delete_comments_all = $lang['Dl_comments_delete_all'];
-	$u_delete_comments_all = append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=delete_comments&amp;cat_id=all');
+	$u_delete_comments_all = append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=delete_comments&amp;cat_id=all');
 }
 
 $template->assign_vars(array(
@@ -909,9 +909,9 @@ $template->assign_vars(array(
 	'CAT_PATH' => $cat_path,
 	'CAT_NAME' => $cat_name,
 
-	'S_CATEGORY_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=categories'),
+	'S_CATEGORY_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=categories'),
 
-	'U_SORT_LEVEL_ZERO' => append_sid('admin_downloads.' . $phpEx . '?submod=categories&amp;action=asc_sort&amp;cat_id=0'),
+	'U_SORT_LEVEL_ZERO' => append_sid('admin_downloads.' . PHP_EXT . '?submod=categories&amp;action=asc_sort&amp;cat_id=0'),
 	'U_DELETE_STATS_ALL' => $u_delete_stats_all,
 	'U_DELETE_COMMENTS_ALL' => $u_delete_comments_all
 	)

@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if(!function_exists(imp_top_posters_func))
 {
 	function imp_top_posters_func()
 	{
-		global $lang, $template, $cms_config_vars, $block_id, $board_config, $db, $phpEx;
+		global $lang, $template, $cms_config_vars, $block_id, $board_config, $db;
 
 		$show_admin = true;
 		$show_mod = true;

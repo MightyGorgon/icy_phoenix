@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -58,7 +58,7 @@ if ($board_config['gzip_compress'])
 // CMS
 if(!defined('PORTAL_INIT'))
 {
-	include($phpbb_root_path . 'includes/functions_cms.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);
 	cms_config_init($cms_config_vars);
 	define('PORTAL_INIT', true);
 }
@@ -88,10 +88,10 @@ $meta_description = !empty($meta_description) ? $meta_description : '';
 $meta_keywords = !empty($meta_keywords) ? $meta_keywords : '';
 
 $page_url = pathinfo($_SERVER['PHP_SELF']);
-$no_meta_pages_array = array('privmsg.' . $phpEx, POSTING_MG);
+$no_meta_pages_array = array('privmsg.' . PHP_EXT, POSTING_MG);
 if (!in_array($page_url['basename'], $no_meta_pages_array) && (!empty($meta_post_id) || !empty($meta_topic_id) || !empty($meta_forum_id) || !empty($meta_cat_id)))
 {
-	include($phpbb_root_path . 'includes/meta_parsing.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/meta_parsing.' . PHP_EXT);
 }
 
 $phpbb_meta = '<meta name="title" content="' . $page_title . '" />' . "\n";
@@ -122,7 +122,7 @@ $doctype_html .= '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIR
 $xhtml_doc_type = true;
 if ($board_config['smart_header'] == true)
 {
-	$html_pages_array = array(PORTAL_MG, VIEWTOPIC_MG, 'album_showpage.' . $phpEx, POSTING_MG);
+	$html_pages_array = array(PORTAL_MG, VIEWTOPIC_MG, 'album_showpage.' . PHP_EXT, POSTING_MG);
 	if (in_array($page_url['basename'], $html_pages_array))
 	{
 		$xhtml_doc_type = false;
@@ -148,9 +148,9 @@ if ($board_config['smart_header'] == true)
 	}
 }
 
-if ($page_url['basename'] == 'viewonline.' . $phpEx)
+if ($page_url['basename'] == 'viewonline.' . PHP_EXT)
 {
-	$phpbb_meta .= '<meta http-equiv="refresh" content="180;url=viewonline.' . $phpEx . '" />' . "\n";
+	$phpbb_meta .= '<meta http-equiv="refresh" content="180;url=viewonline.' . PHP_EXT . '" />' . "\n";
 }
 // Mighty Gorgon - Smart Header - End
 
@@ -260,14 +260,14 @@ else
 		if ($userdata['user_dl_note_type'])
 		{
 			$template->assign_block_vars('switch_new_download', array(
-				'U_NEW_DOWNLOAD_POPUP' => append_sid('downloads.' . $phpEx . '?view=popup')
+				'U_NEW_DOWNLOAD_POPUP' => append_sid('downloads.' . PHP_EXT . '?view=popup')
 				)
 			);
 		}
 		else
 		{
 			$template->assign_block_vars('switch_new_download_message', array(
-				'NEW_DOWNLOAD_POPUP' => sprintf($lang['New_download'], '<a href="' . append_sid('downloads.' . $phpEx) . '">', '</a>'))
+				'NEW_DOWNLOAD_POPUP' => sprintf($lang['New_download'], '<a href="' . append_sid('downloads.' . PHP_EXT) . '">', '</a>'))
 			);
 		}
 	}
@@ -282,7 +282,7 @@ else
 	{
 		$template->assign_block_vars('bug_tracker_head', array(
 			'L_BUG_TRACKER' => $lang['Dl_bug_tracker'],
-			'U_BUG_TRACKER' => append_sid('downloads.' . $phpEx . '?view=bug_tracker')
+			'U_BUG_TRACKER' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker')
 			)
 		);
 	}
@@ -322,26 +322,16 @@ else
 
 			$pm_text = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], $user_age) : sprintf($lang['Birthday_greeting_prev'], $user_age, realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $userdata['user_birthday']) . ((!empty($userdata['user_next_birthday_greeting']) ? ($userdata['user_next_birthday_greeting']) : '')));
 
-			$main_admin_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : '2';
-			if ($main_admin_id != '2')
+			if (defined('FOUNDER_ID'))
 			{
-				$sql = "SELECT user_id
-					FROM " . USERS_TABLE . "
-					WHERE user_id = '" . $main_admin_id . "'
-					LIMIT 1";
-				if (!($result = $db->sql_query($sql, false, 'main_admin_id_')))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
-				}
-				$main_admin_id = '2';
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$main_admin_id = $row['user_id'];
-				}
-				$db->sql_freeresult($result);
+				$founder_id = FOUNDER_ID;
+			}
+			else
+			{
+				$founder_id = get_founder_id();
 			}
 
-			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($pm_subject, $board_config['sitename']))) . "', '" . $main_admin_id . "', '" . $userdata['user_id'] . "', " . $pm_date . ", '0', '1', '1', '0')";
+			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($pm_subject, $board_config['sitename']))) . "', '" . $founder_id . "', '" . $userdata['user_id'] . "', " . $pm_date . ", '0', '1', '1', '0')";
 			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
@@ -368,7 +358,7 @@ else
 			$template->assign_var('GREETING_POPUP',
 				'<script type="text/javascript">
 				<!--
-				window.open(\'' . append_sid('birthday_popup.' . $phpEx) . '\',\'_phpbbprivmsg\',\'height=225,width=400,resizable=yes\');
+				window.open(\'' . append_sid('birthday_popup.' . PHP_EXT) . '\',\'_phpbbprivmsg\',\'height=225,width=400,resizable=yes\');
 				//-->
 				</script>'
 			);
@@ -381,7 +371,7 @@ else
 			$template->assign_var('PROFILE_VIEW',
 				'<script type="text/javascript">
 				<!--
-				window.open(\'' . append_sid('profile_view_popup.' . $phpEx) . '\',\'_phpbbprivmsg\',\'height=800,width=250,resizable=yes\');
+				window.open(\'' . append_sid('profile_view_popup.' . PHP_EXT) . '\',\'_phpbbprivmsg\',\'height=800,width=250,resizable=yes\');
 				//-->
 				</script>'
 			);
@@ -467,14 +457,14 @@ else
 //die($board_config['db_cron']);
 if (($board_config['db_cron'] == true) && (!$userdata['session_logged_in']))
 {
-	include($phpbb_root_path . 'includes/optimize_database_cron.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/optimize_database_cron.' . PHP_EXT);
 }
 // DB Cron - END
 
 // Digests - BEGIN
 if ($board_config['enable_digests'] == true)
 {
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
 	// MG PHP Cron Emulation For Digests - BEGIN
 	// Requires 1 extra SQL per page
 	// Let's assign the extra SQL charge to a non registered users... ;-)
@@ -499,7 +489,7 @@ if ($board_config['enable_digests'] == true)
 				$db->clear_cache('config_');
 
 				define('PHP_DIGESTS_CRON', true);
-				include_once($phpbb_root_path . 'mail_digests.' . $phpEx);
+				include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
 			}
 		}
 	}
@@ -527,7 +517,7 @@ if ($board_config['visit_counter_switch'] == true)
 // Mighty Gorgon - Random Quote - Begin
 if ($board_config['show_random_quote'] == true)
 {
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
 	$randomquote_phrase = $randomquote[rand(0, count($randomquote) - 1)];
 }
 else
@@ -541,7 +531,7 @@ $style_select = '';
 $lang_select = '';
 if (($board_config['select_theme'] == true) || (($board_config['select_lang'] == true) && (!$userdata['session_logged_in'])))
 {
-	include_once($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 	if ($board_config['select_theme'] == true)
 	{
@@ -562,7 +552,7 @@ if (($board_config['select_theme'] == true) || (($board_config['select_lang'] ==
 				'LANG_FLAG' => 'language/lang_' . $displayname . '/flag.png',
 				'LANG_NAME' => $lang_name,
 				'LANG_VALUE'=> $lang_value,
-				'U_LANG_CHANGE'=> append_sid('changelang.' . $phpEx . '?' . LANG_URL . '=' . $lang_value),
+				'U_LANG_CHANGE'=> append_sid('changelang.' . PHP_EXT . '?' . LANG_URL . '=' . $lang_value),
 				)
 			);
 		}
@@ -594,8 +584,8 @@ $ac_online_text = '';
 $ac_username_lists = '';
 if (defined('SHOW_ONLINE'))
 {
-	include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	include($phpbb_root_path . 'includes/users_online_block.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/users_online_block.' . PHP_EXT);
 }
 // Show Online Block - END
 
@@ -623,7 +613,7 @@ while(list($nav_item, $nav_array) = @each($nav_links))
 }
 
 // RSS Autodiscovery - BEGIN
-$rss_url = $nav_base_url . 'rss.' . $phpEx;
+$rss_url = $nav_base_url . 'rss.' . PHP_EXT;
 $rss_forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]): 0;
 $rss_url_append = '';
 $rss_a_url_append = '';
@@ -704,7 +694,7 @@ if (($_GET['marknow'] == 'ipfeature') && $userdata['session_logged_in'])
 
 if (($ctracker_config->settings['login_ip_check'] == 1) && ($userdata['ct_enable_ip_warn'] == 1) && $userdata['session_logged_in'])
 {
-	include_once($phpbb_root_path . '/ctracker/classes/class_ct_userfunctions.' . $phpEx);
+	include_once(IP_ROOT_PATH . '/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 	$ctracker_user = new ct_userfunctions();
 	$check_ip_range = $ctracker_user->check_ip_range();
 
@@ -715,7 +705,7 @@ if (($ctracker_config->settings['login_ip_check'] == 1) && ($userdata['ct_enable
 			'ICON_GLOB' => $images['ctracker_note'],
 			'L_MESSAGE_TEXT' => $check_ip_range,
 			'L_MARK_MESSAGE' => $lang['ctracker_gmb_markip'],
-			'U_MARK_MESSAGE' => append_sid('index.' . $phpEx . '?marknow=ipfeature')
+			'U_MARK_MESSAGE' => append_sid('index.' . PHP_EXT . '?marknow=ipfeature')
 			)
 		);
 	}
@@ -760,7 +750,7 @@ if (($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && 
 		'ICON_GLOB' => $images['ctracker_note'],
 		'L_MESSAGE_TEXT' => $global_message_output,
 		'L_MARK_MESSAGE' => $lang['ctracker_gmb_mark'],
-		'U_MARK_MESSAGE' => append_sid('index.' . $phpEx . '?marknow=globmsg')
+		'U_MARK_MESSAGE' => append_sid('index.' . PHP_EXT . '?marknow=globmsg')
 		)
 	);
 }
@@ -854,8 +844,8 @@ if(is_array($js_include))
 // The following assigns all _common_ variables that may be used at any point in a template.
 $template->assign_vars(array(
 	'DOCTYPE_HTML' => $doctype_html,
-	'PHPBB_ROOT_PATH' => $phpbb_root_path,
-	'PHPEX' => $phpEx,
+	'IP_ROOT_PATH' => IP_ROOT_PATH,
+	'PHP_EXT' => PHP_EXT,
 	'S_SID' => $userdata['session_id'],
 	'POST_FORUM_URL' => POST_FORUM_URL,
 	'POST_TOPIC_URL' => POST_TOPIC_URL,
@@ -878,7 +868,7 @@ $template->assign_vars(array(
 	'PAGE_TITLE' => ($board_config['page_title_simple'] == true ? $page_title_simple : $page_title),
 	'L_PAGE_TITLE' => $page_title_simple,
 	'META_TAG' => $phpbb_meta,
-	'U_ACP' => '<a href="' . ADM . '/index.' . $phpEx . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>',
+	'U_ACP' => '<a href="' . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>',
 	'S_LOGIN_ACTION' => append_sid(LOGIN_MG),
 	'NAV_SEP' => $lang['Nav_Separator'],
 	'NAV_DOT' => '&#8226;',
@@ -911,7 +901,7 @@ $template->assign_vars(array(
 
 	// CrackerTracker v5.x
 	'L_LOGIN_SEC' => $lang['ctracker_gmb_loginlink'],
-	'U_LOGIN_SEC' => append_sid('ct_login_history.' . $phpEx),
+	'U_LOGIN_SEC' => append_sid('ct_login_history.' . PHP_EXT),
 	// CrackerTracker v5.x
 
 	'L_USERNAME' => $lang['Username'],
@@ -978,34 +968,34 @@ $template->assign_vars(array(
 	'U_PORTAL' => append_sid(PORTAL_MG),
 	'U_INDEX' => append_sid(FORUM_MG),
 	'U_REGISTER' => append_sid(PROFILE_MG . '?mode=register'),
-	'U_BOARDRULES' => append_sid('rules.' . $phpEx),
-	'U_PROFILE' => append_sid('profile_main.' . $phpEx),
-	'U_PRIVATEMSGS' => append_sid('privmsg.' . $phpEx . '?folder=inbox'),
-	'U_PRIVATEMSGS_POPUP' => append_sid('privmsg.' . $phpEx . '?mode=newpm'),
+	'U_BOARDRULES' => append_sid('rules.' . PHP_EXT),
+	'U_PROFILE' => append_sid('profile_main.' . PHP_EXT),
+	'U_PRIVATEMSGS' => append_sid('privmsg.' . PHP_EXT . '?folder=inbox'),
+	'U_PRIVATEMSGS_POPUP' => append_sid('privmsg.' . PHP_EXT . '?mode=newpm'),
 	'U_SEARCH' => append_sid(SEARCH_MG),
 
-	'U_MEMBERLIST' => append_sid('memberlist.' . $phpEx),
-	'U_MODCP' => append_sid('modcp.' . $phpEx),
-	'U_FAQ' => append_sid('faq.' . $phpEx),
-	'U_REFERRERS' => append_sid('referrers.' . $phpEx),
-	'U_KB' => append_sid('kb.' . $phpEx),
+	'U_MEMBERLIST' => append_sid('memberlist.' . PHP_EXT),
+	'U_MODCP' => append_sid('modcp.' . PHP_EXT),
+	'U_FAQ' => append_sid('faq.' . PHP_EXT),
+	'U_REFERRERS' => append_sid('referrers.' . PHP_EXT),
+	'U_KB' => append_sid('kb.' . PHP_EXT),
 	'U_NEWS' => append_sid($board_config['news_base_url'] . $board_config['news_index_file']),
-	'U_WATCHED_TOPICS' => append_sid($phpbb_root_path . 'watched_topics.' . $phpEx),
+	'U_WATCHED_TOPICS' => append_sid(IP_ROOT_PATH . 'watched_topics.' . PHP_EXT),
 
-	'U_VIEWONLINE' => append_sid('viewonline.' . $phpEx),
+	'U_VIEWONLINE' => append_sid('viewonline.' . PHP_EXT),
 	'U_LOGIN_LOGOUT' => append_sid($u_login_logout),
-	'U_GROUP_CP' => append_sid('groupcp.' . $phpEx),
-	'U_SUDOKU' => append_sid('sudoku.' . $phpEx),
+	'U_GROUP_CP' => append_sid('groupcp.' . PHP_EXT),
+	'U_SUDOKU' => append_sid('sudoku.' . PHP_EXT),
 	'U_BOOKMARKS' => append_sid(SEARCH_MG . '?search_id=bookmarks'),
-	'U_RECENT' => append_sid('recent.' . $phpEx),
-	'U_DIGESTS' => append_sid('digests.' . $phpEx),
-	'U_DRAFTS' => append_sid('drafts.' . $phpEx),
+	'U_RECENT' => append_sid('recent.' . PHP_EXT),
+	'U_DIGESTS' => append_sid('digests.' . PHP_EXT),
+	'U_DRAFTS' => append_sid('drafts.' . PHP_EXT),
 	// Activity - BEGIN
 	/*
-	'L_WHOSONLINE_GAMES' => '<a href="'. append_sid('activity.'. $phpEx) .'"><span style="color:#'. str_replace('#', '', $board_config['ina_online_list_color']) . ';">' . $board_config['ina_online_list_text'] . '</span></a>',
+	'L_WHOSONLINE_GAMES' => '<a href="'. append_sid('activity.' . PHP_EXT) .'"><span style="color:#'. str_replace('#', '', $board_config['ina_online_list_color']) . ';">' . $board_config['ina_online_list_text'] . '</span></a>',
 	*/
 	'P_ACTIVITY_MOD_PATH' => ACTIVITY_MOD_PATH,
-	'U_ACTIVITY' => append_sid('activity.' . $phpEx),
+	'U_ACTIVITY' => append_sid('activity.' . PHP_EXT),
 	'L_ACTIVITY' => $lang['Activity'],
 	// Activity - END
 
@@ -1016,8 +1006,8 @@ $template->assign_vars(array(
 
 	// Ajax Shoutbox - BEGIN
 	'L_AJAX_SHOUTBOX' => $lang['Ajax_Chat'],
-	'U_AJAX_SHOUTBOX' => append_sid('ajax_chat.' . $phpEx),
-	'U_AJAX_SHOUTBOX_PP' => append_sid('ajax_shoutbox.' . $phpEx),
+	'U_AJAX_SHOUTBOX' => append_sid('ajax_chat.' . PHP_EXT),
+	'U_AJAX_SHOUTBOX_PP' => append_sid('ajax_shoutbox.' . PHP_EXT),
 	// Ajax Shoutbox - END
 
 	'L_BACK_TOP' => $lang['Back_to_top'],
@@ -1032,9 +1022,7 @@ $template->assign_vars(array(
 	'L_DOWNLOADS_ADV' => $lang['Downloads_ADV'],
 	'L_HACKS_LIST' => $lang['Hacks_List'],
 	'L_SUDOKU' => $lang['Sudoku'],
-	'L_HELPDESK' => $lang['HelpDesk'],
 	'L_AVATAR_GEN' => $lang['AvatarGenerator'],
-	'L_DB_GEN' => $lang['DBGenerator'],
 	'L_SITE_HIST' => $lang['Site_Hist'],
 	'L_LINKS' => $lang['Links'],
 	'L_RSS_FEEDS' => $lang['Rss_news_feeds'],
@@ -1044,40 +1032,38 @@ $template->assign_vars(array(
 	'L_SITEMAP' => $lang['Sitemap'],
 	//'L_' => $lang[''],
 
-	'U_CALENDAR' => append_sid('calendar.' . $phpEx),
+	'U_CALENDAR' => append_sid('calendar.' . PHP_EXT),
 	'U_DOWNLOADS_NAV' => append_sid(DOWNLOADS_MG),
-	'U_DOWNLOADS' => append_sid('dload.' . $phpEx),
-	'U_DOWNLOADS_ADV' => append_sid('downloads.' . $phpEx),
-	'U_HACKS_LIST' => append_sid('credits.' . $phpEx),
-	'U_STATISTICS' => append_sid('statistics.' . $phpEx),
-	//'U_HELPDESK' => append_sid('helpdesk.' . $phpEx),
-	'U_DB_GEN' => append_sid('db_generator.' . $phpEx),
+	'U_DOWNLOADS' => append_sid('dload.' . PHP_EXT),
+	'U_DOWNLOADS_ADV' => append_sid('downloads.' . PHP_EXT),
+	'U_HACKS_LIST' => append_sid('credits.' . PHP_EXT),
+	'U_STATISTICS' => append_sid('statistics.' . PHP_EXT),
 	'U_PORTAL_NEWS_CAT' => append_sid(PORTAL_MG . '?news=categories'),
 	'U_PORTAL_NEWS_ARC' => append_sid(PORTAL_MG . '?news=archives'),
-	'U_SITE_HIST' => append_sid('site_hist.' . $phpEx),
-	'U_LINKS' => append_sid('links.' . $phpEx),
-	'U_WORDGRAPH' => append_sid('wordgraph.' . $phpEx),
-	'U_ACRONYMS' => append_sid('acronyms.' . $phpEx),
-	'U_DELETE_COOKIES' => append_sid('remove_cookies.' . $phpEx),
-	'U_SITEMAP' => append_sid('sitemap.' . $phpEx),
-	//'U_' => append_sid('.' . $phpEx),
+	'U_SITE_HIST' => append_sid('site_hist.' . PHP_EXT),
+	'U_LINKS' => append_sid('links.' . PHP_EXT),
+	'U_WORDGRAPH' => append_sid('wordgraph.' . PHP_EXT),
+	'U_ACRONYMS' => append_sid('acronyms.' . PHP_EXT),
+	'U_DELETE_COOKIES' => append_sid('remove_cookies.' . PHP_EXT),
+	'U_SITEMAP' => append_sid('sitemap.' . PHP_EXT),
+	//'U_' => append_sid('.' . PHP_EXT),
 	// Mighty Gorgon - Nav Links - END
 	// Mighty Gorgon - Multiple Ranks - BEGIN
 	'L_RANKS' => $lang['Rank_Header'],
 	'L_STAFF' => $lang['Staff'],
-	'U_RANKS' => append_sid('ranks.' . $phpEx),
-	'U_STAFF' => append_sid('memberlist.' . $phpEx . '?mode=staff'),
+	'U_RANKS' => append_sid('ranks.' . PHP_EXT),
+	'U_STAFF' => append_sid('memberlist.' . PHP_EXT . '?mode=staff'),
 	// Mighty Gorgon - Multiple Ranks - END
-	//'U_STAFF' => append_sid('staff.' . $phpEx),
+	//'U_STAFF' => append_sid('staff.' . PHP_EXT),
 	'L_CONTACT_US' => $lang['Contact_us'],
-	'U_CONTACT_US' => append_sid('contact_us.' . $phpEx),
+	'U_CONTACT_US' => append_sid('contact_us.' . PHP_EXT),
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
-	'U_UPLOAD_IMAGE' => append_sid('upload.' . $phpEx),
+	'U_UPLOAD_IMAGE' => append_sid('upload.' . PHP_EXT),
 	'L_UPLOADED_IMAGES' => $lang['Uploaded_Images_Local'],
-	'U_UPLOADED_IMAGES' => append_sid('posted_img_list.' . $phpEx),
+	'U_UPLOADED_IMAGES' => append_sid('posted_img_list.' . PHP_EXT),
 	// Mighty Gorgon - Full Album Pack - BEGIN
 	'L_ALBUM' => $lang['Album'],
-	'U_ALBUM' => append_sid('album.' . $phpEx),
+	'U_ALBUM' => append_sid('album.' . PHP_EXT),
 	'L_PIC_NAME' => $lang['Pic_Name'],
 	'L_DESCRIPTION' => $lang['Description'],
 	'L_GO' => $lang['Go'],
@@ -1092,15 +1078,15 @@ $template->assign_vars(array(
 	// Mighty Gorgon - CMS - Begin
 	'L_CMS' => $lang['CMS_Title'],
 	'L_CMS_MANAGEMENT' => $lang['CMS_Management'],
-	'U_CMS' => append_sid('cms.' . $phpEx),
+	'U_CMS' => append_sid('cms.' . PHP_EXT),
 	'L_CMS_CONFIG' => $lang['CMS_Config'],
-	'U_CMS_CONFIG' => append_sid('cms.' . $phpEx . '?mode=config'),
+	'U_CMS_CONFIG' => append_sid('cms.' . PHP_EXT . '?mode=config'),
 	'L_CMS_PAGES_PERMISSIONS' => $lang['CMS_Page_Permissions'],
-	'U_CMS_PAGES_PERMISSIONS' => append_sid('cms_auth.' . $phpEx),
+	'U_CMS_PAGES_PERMISSIONS' => append_sid('cms_auth.' . PHP_EXT),
 	'L_CMS_MENU' => $lang['CMS_Menu_Page'],
-	'U_CMS_MENU' => append_sid('cms_menu.' . $phpEx),
+	'U_CMS_MENU' => append_sid('cms_menu.' . PHP_EXT),
 	'L_CMS_ACP' => $lang['Admin_panel'],
-	'U_CMS_ACP' => ADM . '/index.' . $phpEx . '?sid=' . $userdata['session_id'],
+	'U_CMS_ACP' => ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'],
 	'L_CMS_GUEST' => $lang['CMS_Guest'],
 	'L_CMS_REG' => $lang['CMS_Reg'],
 	'L_CMS_VIP' => $lang['CMS_VIP'],
@@ -1108,13 +1094,13 @@ $template->assign_vars(array(
 	'L_CMS_REV' => $lang['CMS_Reviewer'],
 	'L_CMS_CM' => $lang['CMS_Content_Manager'],
 	'L_CMS_GLOBAL_BLOCKS' => $lang['CMS_Global_Blocks'],
-	'U_CMS_GLOBAL_BLOCKS' => append_sid('cms.' . $phpEx . '?mode=blocks&amp;l_id=0&amp;action=editglobal'),
+	'U_CMS_GLOBAL_BLOCKS' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=0&amp;action=editglobal'),
 	'L_CMS_STANDARD_PAGES' => $lang['Standard_Pages'],
-	'U_CMS_STANDARD_PAGES' => append_sid('cms.' . $phpEx . '?mode=layouts_special'),
+	'U_CMS_STANDARD_PAGES' => append_sid('cms.' . PHP_EXT . '?mode=layouts_special'),
 	'L_CMS_CUSTOM_PAGES' => $lang['Custom_Pages'],
-	'U_CMS_CUSTOM_PAGES' => append_sid('cms.' . $phpEx . '?mode=layouts'),
+	'U_CMS_CUSTOM_PAGES' => append_sid('cms.' . PHP_EXT . '?mode=layouts'),
 	'L_CMS_CUSTOM_PAGES_ADV' => $lang['Custom_Pages_ADV'],
-	'U_CMS_CUSTOM_PAGES_ADV' => append_sid('cms.' . $phpEx . '?mode=layouts_adv'),
+	'U_CMS_CUSTOM_PAGES_ADV' => append_sid('cms.' . PHP_EXT . '?mode=layouts_adv'),
 	'IMG_LAYOUT_BLOCKS_EDIT' => $images['layout_blocks_edit'],
 	'IMG_LAYOUT_PREVIEW' => $images['layout_preview'],
 	'IMG_BLOCK_EDIT' => $images['block_edit'],
@@ -1132,7 +1118,7 @@ $template->assign_vars(array(
 	'L_SELECT_LANG' => $lang['Change_Lang'],
 	// Mighty Gorgon - Change Lang/Style - End
 
-	'U_PREFERENCES' => append_sid('profile_options.' . $phpEx),
+	'U_PREFERENCES' => append_sid('profile_options.' . PHP_EXT),
 	'L_PREFERENCES' => $lang['Preferences'],
 	'I_PREFERENCES' => $images['Preferences'],
 
@@ -1171,28 +1157,28 @@ $template->assign_vars(array(
 
 	'L_CPL_ZEBRA_EXPLAIN' => $lang['FRIENDS_EXPLAIN'],
 
-	'U_CPL_PROFILE_VIEWED' => append_sid('profile_view_user.' . $phpEx . '?' . POST_USERS_URL . '=' . $userdata['user_id']),
-	'U_CPL_NEWMSG' => append_sid('privmsg.' . $phpEx . '?mode=post'),
+	'U_CPL_PROFILE_VIEWED' => append_sid('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $userdata['user_id']),
+	'U_CPL_NEWMSG' => append_sid('privmsg.' . PHP_EXT . '?mode=post'),
 	'U_CPL_REGISTRATION_INFO' => append_sid(PROFILE_MG . '?mode=editprofile&amp;cpl_mode=reg_info'),
-	'U_CPL_DELETE_ACCOUNT' => append_sid('contact_us.' . $phpEx . '?account_delete=' . $userdata['user_id']),
+	'U_CPL_DELETE_ACCOUNT' => append_sid('contact_us.' . PHP_EXT . '?account_delete=' . $userdata['user_id']),
 	'U_CPL_PROFILE_INFO' => append_sid(PROFILE_MG . '?mode=editprofile&amp;cpl_mode=profile_info'),
 	'U_CPL_PREFERENCES' => append_sid(PROFILE_MG . '?mode=editprofile&amp;cpl_mode=preferences'),
 	'U_CPL_BOARD_SETTINGS' => append_sid(PROFILE_MG . '?mode=editprofile&amp;cpl_mode=board_settings'),
 	'U_CPL_AVATAR_PANEL' => append_sid(PROFILE_MG . '?mode=editprofile&amp;cpl_mode=avatar'),
 	'U_CPL_SIGNATURE' => append_sid(PROFILE_MG . '?mode=signature'),
 	'U_CPL_OWN_POSTS' => append_sid(SEARCH_MG. '?search_author=' . urlencode($userdata['username']) . '&amp;showresults=posts'),
-	'U_CPL_OWN_PICTURES' => append_sid('album.' . $phpEx . '?user_id=' . $userdata['user_id']),
-	'U_CPL_CALENDAR_SETTINGS' => append_sid('profile_options.' . $phpEx . '?sub=preferences&amp;mod=1&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
-	'U_CPL_SUBFORUM_SETTINGS' => append_sid('profile_options.' . $phpEx . '?sub=preferences&amp;mod=0&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
-	'U_CPL_SUBSCFORUMS' => append_sid('subsc_forums.' . $phpEx),
-	'U_WATCHED_TOPICS' => append_sid('watched_topics.' . $phpEx),
+	'U_CPL_OWN_PICTURES' => append_sid('album.' . PHP_EXT . '?user_id=' . $userdata['user_id']),
+	'U_CPL_CALENDAR_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;mod=1&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
+	'U_CPL_SUBFORUM_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;mod=0&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
+	'U_CPL_SUBSCFORUMS' => append_sid('subsc_forums.' . PHP_EXT),
+	'U_WATCHED_TOPICS' => append_sid('watched_topics.' . PHP_EXT),
 	'U_CPL_BOOKMARKS' => append_sid(SEARCH_MG . '?search_id=bookmarks'),
-	'U_PRIVATEMSGS' => append_sid('privmsg.' . $phpEx . '?folder=inbox'),
-	'U_CPL_INBOX' => append_sid('privmsg.' . $phpEx . '?folder=inbox'),
-	'U_CPL_OUTBOX' => append_sid('privmsg.' . $phpEx . '?folder=outbox'),
-	'U_CPL_SAVEBOX' => append_sid('privmsg.' . $phpEx . '?folder=savebox'),
-	'U_CPL_SENTBOX' => append_sid('privmsg.' . $phpEx . '?folder=sentbox'),
-	'U_CPL_DRAFTS' => append_sid('drafts.' . $phpEx),
+	'U_PRIVATEMSGS' => append_sid('privmsg.' . PHP_EXT . '?folder=inbox'),
+	'U_CPL_INBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=inbox'),
+	'U_CPL_OUTBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=outbox'),
+	'U_CPL_SAVEBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=savebox'),
+	'U_CPL_SENTBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=sentbox'),
+	'U_CPL_DRAFTS' => append_sid('drafts.' . PHP_EXT),
 	'U_CPL_ZEBRA' => append_sid(PROFILE_MG . '?mode=zebra&amp;zmode=friends'),
 	// Mighty Gorgon - CPL - END
 
@@ -1318,7 +1304,7 @@ if ($board_config['show_calendar_box_index'] == true)
 			if (intval($board_config['calendar_header_cells']) > 0)
 			{
 				$template->assign_block_vars('switch_calendar_box', array());
-				include_once($phpbb_root_path . './includes/functions_calendar.' . $phpEx);
+				include_once(IP_ROOT_PATH . './includes/functions_calendar.' . PHP_EXT);
 				display_calendar('CALENDAR_BOX', intval($board_config['calendar_header_cells']));
 			}
 		}

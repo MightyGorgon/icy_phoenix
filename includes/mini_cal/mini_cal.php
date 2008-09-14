@@ -17,16 +17,16 @@
 
 // CTracker_Ignore: File checked by human
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 define('IN_MINI_CAL', 1);
 
-include_once($phpbb_root_path . 'includes/mini_cal/mini_cal_config.' . $phpEx);
-include_once($phpbb_root_path . 'includes/mini_cal/mini_cal_common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/mini_cal/calendarSuite.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/mini_cal/mini_cal_config.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/mini_cal/mini_cal_common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/mini_cal/calendarSuite.' . PHP_EXT);
 
 // get the mode (if any)
 if( isset($_GET['mode']) || isset($_POST['mode']) )
@@ -54,8 +54,8 @@ $mini_cal = new calendarSuite();
 // initialise the mini_cal lang files
 // for maximum efficiency you might want to move the mini_cal lang variables into lang_main
 // and remove these lines
-$use_lang = ( !@file_exists($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_mini_cal.' . $phpEx) ) ? 'english' : $board_config['default_lang'];
-include($phpbb_root_path . 'language/lang_' . $use_lang . '/lang_main_mini_cal.' . $phpEx);
+$use_lang = ( !@file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_mini_cal.' . PHP_EXT) ) ? 'english' : $board_config['default_lang'];
+include(IP_ROOT_PATH . 'language/lang_' . $use_lang . '/lang_main_mini_cal.' . PHP_EXT);
 
 // setup our mini_cal template
 $template->set_filenames(array('mini_cal_body' => 'mini_cal_body.tpl'));
@@ -74,7 +74,7 @@ if ( MINI_CAL_CALENDAR_VERSION != 'NONE' )
 {
 	// include the required events calendar support
 	$mini_cal_inc = 'mini_cal_' . MINI_CAL_CALENDAR_VERSION;
-	include_once($phpbb_root_path . 'includes/mini_cal/' . $mini_cal_inc . '.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/mini_cal/' . $mini_cal_inc . '.' . PHP_EXT);
 
 	// include the required events calendar support
 	$mini_cal_auth = getMiniCalForumsAuth($userdata);
@@ -110,7 +110,7 @@ for($i=0; $i < $mini_cal_month_days;)
 		else
 		{
 			$nix_mini_cal_today = gmmktime($board_config['board_timezone'], 0, 0, $mini_cal_this_month, $mini_cal_this_day, $mini_cal_this_year);
-			$mini_cal_day_link = '<a href="' . append_sid($phpbb_root_path . SEARCH_MG . '?search_id=mini_cal&amp;d=' . $nix_mini_cal_today) . '" class="' . MINI_CAL_DAY_LINK_CLASS . '">' . ( $mini_cal_day ) . '</a>';
+			$mini_cal_day_link = '<a href="' . append_sid(IP_ROOT_PATH . SEARCH_MG . '?search_id=mini_cal&amp;d=' . $nix_mini_cal_today) . '" class="' . MINI_CAL_DAY_LINK_CLASS . '">' . ( $mini_cal_day ) . '</a>';
 			$mini_cal_day = ( $mini_cal_today >= $d_mini_cal_today ) ? $mini_cal_day_link : $mini_cal_day;
 		}
 

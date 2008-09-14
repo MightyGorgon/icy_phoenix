@@ -15,12 +15,12 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('MG_CTRACK_FLAG', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_ajax_chat.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip, false);
@@ -57,6 +57,6 @@ $cms_global_blocks = ($board_config['wide_blocks_ajax_chat'] == 1) ? true : fals
 $cms_global_blocks = false;
 
 $shoutbox_template_parse = true;
-include($phpbb_root_path . 'includes/ajax_shoutbox_inc.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/ajax_shoutbox_inc.' . PHP_EXT);
 
 ?>

@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -26,10 +26,10 @@ if( !empty($setmodules) )
 
 // Load default header
 $no_page_header = true;
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/def_auth.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
 
 // build an indexed array on field names
 /*
@@ -127,9 +127,9 @@ if( isset($_POST['submit']) )
 	cache_tree(true);
 
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('admin_forumauth.' . $phpEx . '?' . POST_FORUM_URL . '=' . $forum_id) . '">')
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id) . '">')
 	);
-	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid('admin_forumauth.' . $phpEx) . '">', '</a>');
+	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid('admin_forumauth.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 
 } // End of submit
@@ -153,7 +153,7 @@ if( empty($forum_id) )
 		'L_AUTH_SELECT' => $lang['Select_a_Forum'],
 		'L_LOOK_UP' => $lang['Look_up_Forum'],
 
-		'S_AUTH_ACTION' => append_sid('admin_forumauth.' . $phpEx),
+		'S_AUTH_ACTION' => append_sid('admin_forumauth.' . PHP_EXT),
 		'S_AUTH_SELECT' => $select_list)
 	);
 
@@ -263,7 +263,7 @@ else
 	}
 
 	$adv_mode = ( empty($adv) ) ? '1' : '0';
-	$switch_mode = append_sid('admin_forumauth.' . $phpEx . '?' . POST_FORUM_URL . '=f' . $forum_id . '&adv=' . $adv_mode);
+	$switch_mode = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=f' . $forum_id . '&adv=' . $adv_mode);
 	$switch_mode_text = ( empty($adv) ) ? $lang['Advanced_mode'] : $lang['Simple_mode'];
 	$u_switch_mode = '<a href="' . $switch_mode . '">' . $switch_mode_text . '</a>';
 	$s_hidden_fields = '<input type="hidden" name="' . POST_FORUM_URL . '" value="f' . $forum_id . '">';
@@ -279,7 +279,7 @@ else
 
 		'U_SWITCH_MODE' => $u_switch_mode,
 
-		'S_FORUMAUTH_ACTION' => append_sid('admin_forumauth.' . $phpEx),
+		'S_FORUMAUTH_ACTION' => append_sid('admin_forumauth.' . PHP_EXT),
 		'S_COLUMN_SPAN' => $s_column_span,
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
@@ -287,10 +287,10 @@ else
 
 }
 
-include('./page_header_admin.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

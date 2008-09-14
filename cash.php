@@ -16,11 +16,11 @@
 */
 
 // CTracker_Ignore: File Checked By Human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -29,7 +29,7 @@ init_userprefs($userdata);
 
 if ( !$userdata['session_logged_in'] )
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cash.' . $phpEx, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=cash.' . PHP_EXT, true));
 }
 
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : (''));
@@ -47,7 +47,7 @@ switch( $mode )
 		{
 			if ( ($ref == 'viewtopic') && ($post != 0) )
 			{
-				redirect(append_sid('viewtopic.' . $phpEx . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid('viewtopic.' . PHP_EXT . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
@@ -63,7 +63,7 @@ switch( $mode )
 		$page_title = $lang['Donate'];
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$hidden = '<input type="hidden" name="ref" value="' . $ref . '" />';
 		$hidden .= '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $target . '" />';
@@ -73,7 +73,7 @@ switch( $mode )
 		}
 
 		$template->assign_vars(array(
-			'S_DONATE_ACTION' => append_sid('cash.' . $phpEx . '?mode=donated'),
+			'S_DONATE_ACTION' => append_sid('cash.' . PHP_EXT . '?mode=donated'),
 			'S_HIDDEN_FIELDS' => $hidden,
 			'L_DONATE' => $lang['Donate'],
 			'L_FROM' => $lang['From'],
@@ -108,7 +108,7 @@ switch( $mode )
 
 		$template->pparse('body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 		break;
 //
@@ -122,7 +122,7 @@ switch( $mode )
 		{
 			if ( ($ref == 'viewtopic') && ($post != 0) )
 			{
-				redirect(append_sid('viewtopic.' . $phpEx . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid('viewtopic.' . PHP_EXT . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
@@ -238,7 +238,7 @@ switch( $mode )
 		$page_title = sprintf($lang['Mod_usercash'],$profiledata['username']);
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 
 		$hidden = '<input type="hidden" name="ref" value="' . $ref . '" />';
@@ -249,7 +249,7 @@ switch( $mode )
 		}
 
 		$template->assign_vars(array(
-			'S_MODEDIT_ACTION' => append_sid('cash.' . $phpEx . '?mode=modedited'),
+			'S_MODEDIT_ACTION' => append_sid('cash.' . PHP_EXT . '?mode=modedited'),
 			'S_HIDDEN_FIELDS' => $hidden,
 			'L_DONATE' => $lang['Donate'],
 			'L_FROM' => $lang['From'],
@@ -296,7 +296,7 @@ switch( $mode )
 
 		$template->pparse('body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 		break;
 //
@@ -473,7 +473,7 @@ switch( $mode )
 		$page_title = $lang['Exchange'];
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE) < 2)
 		{
@@ -516,7 +516,7 @@ switch( $mode )
 		}
 
 		$template->assign_vars(array(
-			'S_EXCHANGE_ACTION' => append_sid('cash.' . $phpEx . '?mode=exchange'),
+			'S_EXCHANGE_ACTION' => append_sid('cash.' . PHP_EXT . '?mode=exchange'),
 			'S_HIDDEN_FIELDS' => '<input type="hidden" name="exchange" value="1" />',
 			'L_EXCHANGE' => $lang['Exchange'],
 			'L_FROM' => $lang['From'],
@@ -580,7 +580,7 @@ switch( $mode )
 
 		$template->pparse('body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 		break;
 	}

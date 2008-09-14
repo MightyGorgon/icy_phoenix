@@ -11,13 +11,13 @@
 // CTracker_Ignore: File Checked By Human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -214,12 +214,12 @@ $gen_simple_header = true;
 $page_title =  $topic_title;
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('reviewbody' => 'post_review.tpl'));
 
-$view_prev_post_url = append_sid('show_post.' . $phpEx . '?p=' . $post_id . '&amp;view=previous');
-$view_next_post_url = append_sid('show_post.' . $phpEx . '?p=' . $post_id . '&amp;view=next');
+$view_prev_post_url = append_sid('show_post.' . PHP_EXT . '?p=' . $post_id . '&amp;view=previous');
+$view_next_post_url = append_sid('show_post.' . PHP_EXT . '?p=' . $post_id . '&amp;view=next');
 
 $template->assign_vars(array(
 	'L_AUTHOR' => $lang['Author'],
@@ -230,7 +230,7 @@ $template->assign_vars(array(
 	'L_VIEW_PREVIOUS_POST' => $lang['View_previous_post'],
 	'L_DOWNLOAD_POST' => $lang['Download_post'],
 	'L_DOWNLOAD_TOPIC' => $lang['Download_topic'],
-	'DOWNLOAD_TOPIC' => append_sid('show_post.' . $phpEx . '?download=-1&amp;' . POST_TOPIC_URL . '=' . $topic_id),
+	'DOWNLOAD_TOPIC' => append_sid('show_post.' . PHP_EXT . '?download=-1&amp;' . POST_TOPIC_URL . '=' . $topic_id),
 	'CLOSE_WINDOW' => $lang['Close_window'],
 	'IMG_LEFT' => $images['icon_previous'],
 	'IMG_RIGHT' => $images['icon_next'],
@@ -240,8 +240,16 @@ $template->assign_vars(array(
 	)
 );
 
+if ($board_config['edit_notes'] == 1)
+{
+	$template->assign_vars(array(
+		'S_EDIT_NOTES' => true,
+		)
+	);
+}
+
 // Mighty Gorgon - Multiple Ranks - BEGIN
-require_once($phpbb_root_path . 'includes/functions_mg_ranks.' . $phpEx);
+require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
 $ranks_sql = query_ranks();
 // Mighty Gorgon - Multiple Ranks - END
 
@@ -322,7 +330,7 @@ if ( $row = $db->sql_fetchrow($result) )
 			$profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
 			$profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
 
-			$temp_url = append_sid('privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
+			$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
 			$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 			$pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -362,11 +370,11 @@ if ( $row = $db->sql_fetchrow($result) )
 			{
 				if ( $row['user_allow_viewonline'] )
 				{
-					$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
+					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
 				}
 				else if ( $is_auth['auth_mod'] || $userdata['user_id'] == $poster_id )
 				{
-					$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
+					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
 				}
 				else
 				{
@@ -404,7 +412,7 @@ if ( $row = $db->sql_fetchrow($result) )
 			// End add - Online/Offline/Hidden Mod
 		}
 
-		$temp_url = append_sid('posting.' . $phpEx . '?mode=quote&amp;' . POST_POST_URL . '=' . $row['post_id']);
+		$temp_url = append_sid('posting.' . PHP_EXT . '?mode=quote&amp;' . POST_POST_URL . '=' . $row['post_id']);
 		$quote_img = '<a href="' . $temp_url . '" target="_parent"><img src="' . $images['icon_quote'] . '" alt="' . $lang['Reply_with_quote'] . '" title="' . $lang['Reply_with_quote'] . '" /></a>';
 		$quote = '<a href="' . $temp_url . '" target="_parent">' . $lang['Reply_with_quote'] . '</a>';
 
@@ -563,6 +571,6 @@ else
 }
 
 $template->pparse('reviewbody');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

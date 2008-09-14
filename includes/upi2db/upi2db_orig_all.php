@@ -32,7 +32,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -211,7 +211,7 @@ if(!function_exists(viewforum_calc_unread))
 {
 	function viewforum_calc_unread($unread, $topic_id, $topic_rowset, $i, $folder_new, $folder, &$folder_alt, &$folder_image, &$newest_post_img, &$upi2db_status)
 	{
-		global $board_config, $userdata, $lang, $phpEx, $images;
+		global $board_config, $userdata, $lang, $images;
 
 		$upi2db_status = '';
 		if (in_array($topic_id, $unread['new_topics']) || in_array($topic_id, $unread['edit_topics']))
@@ -295,7 +295,7 @@ if(!function_exists(auth_forum_read))
 {
 	function auth_forum_read($userdata)
 	{
-		global $board_config, $db, $lang, $phpbb_root_path, $phpEx;
+		global $board_config, $db, $lang;
 
 		$sql = "SELECT * FROM ". FORUMS_TABLE;
 		if (!$result = $db->sql_query($sql, false, 'forums_'))
@@ -336,7 +336,7 @@ if(!function_exists(upi2db_faq_include))
 {
 	function upi2db_faq_include($lang_file)
 	{
-		global $phpbb_root_path, $board_config, $phpEx, $faq;
+		global $board_config, $faq;
 
 		$unread_days = $board_config['upi2db_auto_read'];
 		$del_mark = $board_config['upi2db_del_mark'];
@@ -351,13 +351,13 @@ if(!function_exists(upi2db_faq_include))
 
 		if ($lang_file == 'lang_faq')
 		{
-			if (!@file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_faq_upi2db.' . $phpEx)))
+			if (!@file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_faq_upi2db.' . PHP_EXT)))
 			{
-				include($phpbb_root_path . 'language/lang_english/lang_faq_upi2db.' . $phpEx);
+				include(IP_ROOT_PATH . 'language/lang_english/lang_faq_upi2db.' . PHP_EXT);
 			}
 			else
 			{
-				include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_faq_upi2db.' . $phpEx);
+				include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_faq_upi2db.' . PHP_EXT);
 			}
 		}
 	}

@@ -17,7 +17,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -27,9 +27,9 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 
 //
@@ -64,7 +64,7 @@ else
 
 	if( isset($_POST['submit']) )
 	{
-		$message = $lang['Link_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_config'], "<a href=\"" . append_sid("admin_links_config.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+		$message = $lang['Link_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_config'], "<a href=\"" . append_sid("admin_links_config." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -90,7 +90,7 @@ $pm_no = ( !$new['pm_notify'] ) ? "checked=\"checked\"" : "";
 $template->assign_vars(array(
 	'L_LINK_CONFIG' => $lang['Link_Config'],
 	'L_LINK_CONFIG_EXPLAIN' => $lang['Link_config_explain'],
-	'S_LINK_CONFIG_ACTION' => append_sid('admin_links_config.' . $phpEx),
+	'S_LINK_CONFIG_ACTION' => append_sid('admin_links_config.' . PHP_EXT),
 
 	'LOCK_SUBMIT_SITE_YES' => $lock_submit_site_yes,
 	'LOCK_SUBMIT_SITE_NO' => $lock_submit_site_no,
@@ -133,6 +133,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

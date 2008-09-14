@@ -15,7 +15,41 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+if (defined('MAIN_ADMINS_ID'))
+{
+	if (defined('JA_PARSING') && (JA_PARSING == true))
+	{
+		return;
+	}
+	$is_allowed = false;
+	$allowed_admins = explode(',', MAIN_ADMINS_ID);
+	if (defined('FOUNDER_ID'))
+	{
+		if ($userdata['user_id'] == FOUNDER_ID)
+		{
+			$is_allowed = true;
+		}
+	}
+	if ($is_allowed == false)
+	{
+		for ($i = 0; $i < count($allowed_admins); $i++)
+		{
+			if ($userdata['user_id'] == $allowed_admins[$i])
+			{
+				$is_allowed = true;
+				break;
+			}
+		}
+	}
+	if ($is_allowed == false)
+	{
+		return;
+	}
+}
+// Mighty Gorgon - ACP Privacy - END
 
 if (!empty($setmodules))
 {
@@ -25,10 +59,10 @@ if (!empty($setmodules))
 }
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true; // We do not send the page header right here to prevent problems with GZIP-compression
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 define('DBMTNC_VERSION', '1.3.6');
 // CONFIG_LEVEL = 0: configuration is disabled
@@ -37,17 +71,17 @@ define('DBMTNC_VERSION', '1.3.6');
 // CONFIG_LEVEL = 3: also configuration of current rebuilding available
 define('CONFIG_LEVEL', 3); // Level of configuration available (see above)
 define('HEAP_SIZE', 500); // Limit of Heap-Table for session data
-require($phpbb_root_path . 'includes/functions_dbmtnc.' . $phpEx);
+require(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
 
 // Set up timer
 $timer = getmicrotime();
 
 // Get language file for this mod
-if (!file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_dbmtnc.' . $phpEx)))
+if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT)))
 {
 	$board_config['default_lang'] = 'english';
 }
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_dbmtnc.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT);
 
 //
 // Set up variables and constants
@@ -85,7 +119,7 @@ if ($mode_id == 'start' || $mode_id == 'perform')
 }
 if ($function != 'perform_rebuild') // Don't send header when rebuilding the search index
 {
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 }
 
 //
@@ -132,7 +166,7 @@ switch($mode_id)
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_db_maintenance.' . $phpEx),
+				'S_CONFIRM_ACTION' => append_sid('admin_db_maintenance.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -370,14 +404,14 @@ switch($mode_id)
 								update_config('dbmtnc_disallow_postcounter', $disallow_postcounter);
 							}
 					}
-					$message = $lang['Dbmtnc_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_dbmtnc_config'], '<a href="' . append_sid('admin_db_maintenance.' . $phpEx . '?mode=start&function=config') . '">', '</a>');
+					$message = $lang['Dbmtnc_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_dbmtnc_config'], '<a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=start&function=config') . '">', '</a>');
 					message_die(GENERAL_MESSAGE, $message);
 				}
 
 				$template->set_filenames(array('body' => ADM_TPL . 'dbmtnc_config_body.tpl'));
 
 				$template->assign_vars(array(
-					'S_CONFIG_ACTION' => append_sid('admin_db_maintenance.' . $phpEx . '?mode=start&function=config'),
+					'S_CONFIG_ACTION' => append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=start&function=config'),
 
 					'L_DBMTNC_TITLE' => $lang['DB_Maintenance'],
 					'L_DBMTNC_SUB_TITLE' => $lang['Config_title'],
@@ -1092,7 +1126,7 @@ switch($mode_id)
 				}
 				while ($row = $db->sql_fetchrow($result))
 				{
-					if (!file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $row['user_lang'] . '/lang_main.' . $phpEx)))
+					if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $row['user_lang'] . '/lang_main.' . PHP_EXT)))
 					{
 						$result_array[] = $row['user_lang'];
 					}
@@ -1120,16 +1154,16 @@ switch($mode_id)
 					$db->sql_freeresult($result);
 
 					// Getting default language
-					if (file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $boad_language . '/lang_main.' . $phpEx)))
+					if (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $boad_language . '/lang_main.' . PHP_EXT)))
 					{
 						$default_lang = $boad_language;
 					}
-					elseif (file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_' . $userdata['user_lang'] . '/lang_main.' . $phpEx)))
+					elseif (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $userdata['user_lang'] . '/lang_main.' . PHP_EXT)))
 					{
 						echo("<p class=\"gen\">" . $lang['Default_language_invalid'] . "</p>\n");
 						$default_lang = $userdata['user_lang'];
 					}
-					elseif (file_exists(@phpbb_realpath($phpbb_root_path . 'language/lang_english/lang_main.' . $phpEx)))
+					elseif (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT)))
 					{
 						echo("<p class=\"gen\">" . $lang['Default_language_invalid'] . "</p>\n");
 						$default_lang = 'english';
@@ -2051,10 +2085,10 @@ switch($mode_id)
 				// If post or topic data has been updated, we interrupt here and add a link to resync the data
 				if ($update_post_data)
 				{
-					echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . $phpEx . "?mode=perform&amp;function=synchronize_post_direct&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Must_synchronize'] . "</a></p>\n");
+					echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=synchronize_post_direct&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Must_synchronize'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-					include('./page_footer_admin.' . $phpEx);
+					include('./page_footer_admin.' . PHP_EXT);
 					exit;
 				}
 				else
@@ -3102,10 +3136,10 @@ switch($mode_id)
 				update_config('dbmtnc_rebuild_end', intval($row['max_post_id']));
 				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
 
-				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . $phpEx . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Can_start_rebuilding'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
+				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Can_start_rebuilding'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . $phpEx);
+				include('./page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 			case 'proceed_rebuilding': // Proceed rebuilding search index
@@ -3128,17 +3162,17 @@ switch($mode_id)
 				}
 				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
 
-				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . $phpEx . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Can_start_rebuilding'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
+				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Can_start_rebuilding'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . $phpEx);
+				include('./page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 			case 'perform_rebuild': // Rebuild search index (perform part)
 				// ATTENTION: page_header not sent yet!
 				$db_state = (isset($_GET['db_state'])) ? intval($_GET['db_state']) : 0;
 				// Load functions
-				include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+				include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 				// Identify PHP version and time limit configuration
 				if (phpversion() >= '4.0.5' && ($board_config['dbmtnc_rebuildcfg_php3only'] == 0)) // Handle PHP beffore 4.0.5 as PHP 3 since array_search is not available
 				{
@@ -3184,7 +3218,7 @@ switch($mode_id)
 				$result = $db->sql_query($sql);
 				if (!$result)
 				{
-					include('./page_header_admin.' . $phpEx);
+					include('./page_header_admin.' . PHP_EXT);
 					throw_error("Couldn't get post data!", __LINE__, __FILE__, $sql);
 				}
 				// Get first record
@@ -3192,7 +3226,7 @@ switch($mode_id)
 				if (!$row) // Yeah! we reached the end of the posts - finish actions and exit
 				{
 					$db->sql_freeresult($result);
-					include('./page_header_admin.' . $phpEx);
+					include('./page_header_admin.' . PHP_EXT);
 					update_config('dbmtnc_rebuild_pos', '-1');
 					update_config('dbmtnc_rebuild_end', '0');
 
@@ -3208,10 +3242,10 @@ switch($mode_id)
 						echo('<p class="gen">' . $lang['Ignore_unlock_command'] . "</p>\n");
 					}
 
-					echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . $phpEx) . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
+					echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT) . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-					include('./page_footer_admin.' . $phpEx);
+					include('./page_footer_admin.' . PHP_EXT);
 					exit;
 				}
 				$last_post = 0;
@@ -3228,8 +3262,8 @@ switch($mode_id)
 					case 4: // use advanced method if we have PHP 4+ (we can make use of the advanced array functions)
 						$post_size = strlen($row['post_text']) + strlen($row['post_subject']); // needed for controlling array size
 						// get stopword and synonym array
-						$stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
-						$synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
+						$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
+						$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
 						if (!is_array($stopword_array))
 						{
 							$stopword_array = array();
@@ -3310,7 +3344,7 @@ switch($mode_id)
 								$sql = "INSERT INTO " . SEARCH_MATCH_TABLE . " (post_id, word_id, title_match) VALUES ($last_post_id, $last_word_id, $last_title_match)";
 								if (!$db->sql_query($sql))
 								{
-									include('./page_header_admin.' . $phpEx);
+									include('./page_header_admin.' . PHP_EXT);
 									throw_error("Couldn't insert into search match!", __LINE__, __FILE__, $sql);
 								}
 							}
@@ -3325,9 +3359,9 @@ switch($mode_id)
 				update_config('dbmtnc_rebuild_pos', $last_post);
 				// OK, all actions are done - send headers
 				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="1;url=' . append_sid('admin_db_maintenance.' . $phpEx . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . '">')
+					'META' => '<meta http-equiv="refresh" content="1;url=' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . '">')
 				);
-				include('./page_header_admin.' . $phpEx);
+				include('./page_header_admin.' . PHP_EXT);
 				$db->sql_freeresult($result);
 				// Get Statistics
 				$posts_total = 0;
@@ -3356,10 +3390,10 @@ switch($mode_id)
 				}
 
 				echo("<p class=\"gen\">" . sprintf($lang['Indexing_progress'], $posts_indexed, $posts_total, ($posts_indexed / $posts_total) * 100, $last_post) . "</p>\n");
-				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . $phpEx . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . "\">" . $lang['Click_or_wait_to_proceed'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
+				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . "\">" . $lang['Click_or_wait_to_proceed'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . $phpEx);
+				include('./page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 			case 'synchronize_post': // Synchronize post data
@@ -3492,7 +3526,7 @@ switch($mode_id)
 					}
 					else
 					{
-						throw_error(sprintf($lang['Inconsistencies_found'], "<a href=\"" . append_sid('admin_db_maintenance.' . $phpEx . "?mode=perform&amp;function=check_post") . "\">", '</a>'));
+						throw_error(sprintf($lang['Inconsistencies_found'], "<a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=check_post") . "\">", '</a>'));
 					}
 					$db->sql_freeresult($result2);
 				}
@@ -4340,7 +4374,7 @@ switch($mode_id)
 			default:
 				echo("<p class=\"gen\">" . $lang['function_unknown'] . "</p>\n");
 		}
-		echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . $phpEx) . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
+		echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT) . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
 		// Send Information about processing time
 		echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 		ob_start();
@@ -4372,7 +4406,7 @@ switch($mode_id)
 						'FUNCTION_NAME' => $mtnc[$i][1],
 						'FUNCTION_DESCRIPTION' => $mtnc[$i][2],
 
-						'U_FUNCTION_URL' => append_sid('admin_db_maintenance.' . $phpEx . '?mode=start&function=' . $mtnc[$i][0]))
+						'U_FUNCTION_URL' => append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=start&function=' . $mtnc[$i][0]))
 					);
 				}
 			};
@@ -4382,6 +4416,6 @@ switch($mode_id)
 		break;
 }
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

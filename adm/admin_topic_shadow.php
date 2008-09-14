@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,9 +24,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 /* If for some reason preference cookie saving needs to be disabled, you
 can do so by setting this to true */
@@ -70,7 +70,7 @@ foreach($params as $var => $default)
 setting.  If this is disabled, settings will NEVER be saved */
 if(!DISABLE_PREFERENCE_SAVING && !$board_config['gzip_compress']) ob_start();
 
-require($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+require(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 @setcookie(MOD_COOKIE_PREF_NAME, serialize($preference_cookie), time() + 31536000, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
 
 /* Flush the output buffer to display the page header, if the ob_start() is
@@ -168,7 +168,7 @@ if (!function_exists('copyright_nivisec'))
 	*/
 	function copyright_nivisec($name, $year)
 	{
-		print '<br /><div class="copyright" style="text-align:center;">'.$name.' '.MOD_VERSION.' &copy; '.$year.' <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.</div>';
+		print '<br /><div class="copyright" style="text-align:center;">' . $name . ' ' . MOD_VERSION . ' &copy; ' . $year . ' <a href="http://www.nivisec.com">Nivisec.com</a></div>';
 	}
 }
 
@@ -340,9 +340,9 @@ else
 /************************************************************************
 ** Begin The Version Check Feature
 ************************************************************************/
-if (file_exists($phpbb_root_path . 'nivisec_version_check.' . $phpEx) && !DISABLE_VERSION_CHECK)
+if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_VERSION_CHECK)
 {
-	include($phpbb_root_path . 'nivisec_version_check.' . $phpEx);
+	include(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT);
 }
 /************************************************************************
 ** End The Version Check Feature
@@ -350,6 +350,6 @@ if (file_exists($phpbb_root_path . 'nivisec_version_check.' . $phpEx) && !DISABL
 
 $template->pparse('body');
 copyright_nivisec($page_title, '2001-2003');
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

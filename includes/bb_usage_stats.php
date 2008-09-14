@@ -15,14 +15,14 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include($phpbb_root_path . 'includes/bb_usage_stats_constants.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . $phpEx);
-include($phpbb_root_path . 'includes/bb_usage_stats_functions.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bb_usage_stats_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bb_usage_stats_functions.' . PHP_EXT);
 
 
 /******************************************************************************
@@ -660,7 +660,7 @@ if ( $view_bb_usage_allowed )
 		'L_BBUS_COLHEADER_TOPICRATE' => $lang['BBUS_ColHeader_TopicRate'] . get_scale_suffix($trscale),
 		'L_BBUS_COLHEADER_TOPICS_WATCHED' => $lang['BBUS_ColHeader_Topics_Watched'],
 
-		'URL_COLDESC' => append_sid('includes/bb_usage_stats_coldesc.' . $phpEx)
+		'URL_COLDESC' => append_sid('includes/bb_usage_stats_coldesc.' . PHP_EXT)
 		)
 	);
 

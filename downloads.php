@@ -17,15 +17,15 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('CT_SECLEVEL', 'MEDIUM');
 $ct_ignorepvar = array('mod_desc', 'long_desc', 'description', 'warning', 'todo', 'require', 'hack_author', 'hack_author_email', 'hack_author_website', 'hack_dl_url', 'dl_name', 'file_name');
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Session management
 $userdata = session_pagestart($user_ip);
@@ -36,7 +36,7 @@ if ($auth_level_req > AUTH_ALL)
 {
 	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
 	{
-		redirect(append_sid(LOGIN_MG . '?redirect=downloads.' . $phpEx, true));
+		redirect(append_sid(LOGIN_MG . '?redirect=downloads.' . PHP_EXT, true));
 	}
 	if ($userdata['user_level'] != ADMIN)
 	{
@@ -53,7 +53,7 @@ if ($auth_level_req > AUTH_ALL)
 $cms_global_blocks = ($board_config['wide_blocks_download'] == 1) ? true : false;
 
 
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_downloads.' . $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_downloads.' . PHP_EXT);
 
 /*
 * init and get various values
@@ -180,7 +180,7 @@ elseif($view == 'code' && !$code)
 */
 if ($cat && $df_id && (($view == 'detail') && ($action != 'rate')))
 {
-	redirect(append_sid('downloads.' . $phpEx . '?view=' . $view . '&cat=' . $cat . '&df_id=' . $df_id . '&dlo=' . $dlo, true));
+	redirect(append_sid('downloads.' . PHP_EXT . '?view=' . $view . '&cat=' . $cat . '&df_id=' . $df_id . '&dlo=' . $dlo, true));
 }
 
 /*
@@ -194,7 +194,7 @@ if ($cat)
 {
 	$enable_rule = true;
 }
-include($phpbb_root_path . DL_ROOT_PATH . 'classes/class_dlmod.' . $phpEx);
+include(IP_ROOT_PATH . DL_ROOT_PATH . 'classes/class_dlmod.' . PHP_EXT);
 $dl_mod = new dlmod();
 $dl_config = array();
 $dl_config = $dl_mod->get_config();
@@ -316,7 +316,7 @@ if ($view == 'todo')
 		$page_title = $lang['Dl_mod_todo'];
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('body' => 'dl_todo_body.tpl'));
 
@@ -324,7 +324,7 @@ if ($view == 'todo')
 			'L_DESCRIPTION' => $lang['Dl_file_description'],
 			'L_DL_TOP' => $lang['Dl_cat_title'],
 			'L_DL_TODO' => $lang['Dl_mod_todo'],
-			'U_DL_TOP' => append_sid('downloads.' . $phpEx)
+			'U_DL_TOP' => append_sid('downloads.' . PHP_EXT)
 			)
 		);
 
@@ -388,7 +388,7 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 				message_die(GENERAL_ERROR, 'Could not save confirmation code for this download', '', __LINE__, __FILE__, $sql);
 			}
 
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('code_body' => 'dl_report_code_body.tpl'));
 
@@ -402,16 +402,16 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 
 				'MESSAGE_TITLE' => $lang['Information'],
 				'MESSAGE_TEXT' => $lang['Dl_report_confirm_code'],
-				'CONFIRM_CODE' => append_sid('downloads.' . $phpEx . '?view=code&amp;code=r'),
+				'CONFIRM_CODE' => append_sid('downloads.' . PHP_EXT . '?view=code&amp;code=r'),
 
-				'S_CONFIRM_ACTION' => append_sid('downloads.' . $phpEx),
+				'S_CONFIRM_ACTION' => append_sid('downloads.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 
 			$template->pparse('code_body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
@@ -474,7 +474,7 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 		$server_url = $server_name . $server_port . $script_path;
 		$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -510,7 +510,7 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 				'SITENAME' => $board_config['sitename'],
 				'REPORTER' => $username,
 				'USERNAME' => $row['username'],
-				'U_DOWNLOAD' => $server_url . 'downloads.' . $phpEx . '?view=detail&cat_id=' . $cat_id . '&df_id=' . $df_id
+				'U_DOWNLOAD' => $server_url . 'downloads.' . PHP_EXT . '?view=detail&cat_id=' . $cat_id . '&df_id=' . $df_id
 				)
 			);
 
@@ -519,7 +519,7 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 		}
 	}
 
-	redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
+	redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
 }
 
 //reset reported broken download if allowed
@@ -539,7 +539,7 @@ if ($view == 'unbroken' && $df_id && $cat_id)
 		}
 	}
 
-	redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
+	redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
 }
 
 //set favorite for the choosen download
@@ -568,7 +568,7 @@ if (($view == 'fav') && $df_id && $cat_id && $userdata['session_logged_in'])
 		}
 	}
 
-	redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
+	redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
 }
 
 //drop favorite for the choosen download
@@ -583,7 +583,7 @@ if (($view == 'unfav') && $fav_id && $df_id && $cat_id && $userdata['session_log
 		message_die(GENERAL_ERROR, 'Could not drop favorites for download', '', __LINE__, __FILE__, $sql);
 	}
 
-	redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
+	redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id . '&cat_id=' . $cat_id));
 }
 
 /*
@@ -600,8 +600,8 @@ if ($view == 'bug_tracker')
 			$page_title = $lang['Dl_bug_tracker'];
 			$meta_description = '';
 			$meta_keywords = '';
-			include($phpbb_root_path . 'includes/page_header.' . $phpEx);
-			include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_bug_tracker.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+			include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_bug_tracker.' . PHP_EXT);
 		}
 		else
 		{
@@ -625,8 +625,8 @@ if ($view == 'stat')
 	$page_title = $lang['Dl_stats'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
-	include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_stats.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_stats.' . PHP_EXT);
 }
 elseif ($view == 'user_config')
 {
@@ -658,8 +658,8 @@ elseif ($view == 'user_config')
 	$page_title = $lang['Dl_config'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
-	include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_user_config.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_user_config.' . PHP_EXT);
 }
 elseif ($view == 'detail')
 {
@@ -723,15 +723,15 @@ elseif ($view == 'detail')
 
 		if ($dlo == 1)
 		{
-			redirect(append_sid('downloads.' . $phpEx . '?view=overall'));
+			redirect(append_sid('downloads.' . PHP_EXT . '?view=overall'));
 		}
 		elseif ($dlo == 2 && $df_id)
 		{
-			redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id, true));
+			redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id, true));
 		}
 		elseif (!$dlo)
 		{
-			redirect(append_sid('downloads.' . $phpEx . '?cat=' . $cat . '&start=' . $start, true));
+			redirect(append_sid('downloads.' . PHP_EXT . '?cat=' . $cat . '&start=' . $start, true));
 		}
 	}
 
@@ -739,8 +739,8 @@ elseif ($view == 'detail')
 	$page_title = $lang['Download'] . ' - ' . $dl_files['description'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
-	include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_details.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_details.' . PHP_EXT);
 }
 elseif ($view == 'search')
 {
@@ -749,27 +749,27 @@ elseif ($view == 'search')
 	$page_title = $lang['Search'] . ' ' . $lang['Downloads'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
-	include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_search.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_search.' . PHP_EXT);
 }
 elseif ($view == 'popup')
 {
 	//display the popup for a new or changed download
 	$gen_simple_header = true;
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'privmsgs_popup.tpl'));
 
 	$template->assign_vars(array(
 		'L_CLOSE_WINDOW' => $lang['Close_window'],
 		'L_MESSAGE' => sprintf($lang['New_download'], '<a href="javascript:jump_to_inbox();">', '</a>'),
-		'U_PRIVATEMSGS' => append_sid('downloads.' . $phpEx)
+		'U_PRIVATEMSGS' => append_sid('downloads.' . PHP_EXT)
 		)
 	);
 
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 	exit;
 }
@@ -814,7 +814,7 @@ elseif ($view == 'load')
 		{
 			if ($dl_config['hotlink_action'])
 			{
-				redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id, true));
+				redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id, true));
 			}
 			else
 			{
@@ -1145,21 +1145,21 @@ elseif ($view == 'comment')
 		$page_title = $lang['Dl_comments'];
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_comments.' . $phpEx);
+		include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_comments.' . PHP_EXT);
 	}
 	else
 	{
 		if ($df_id)
 		{
-			redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id, true));
+			redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id, true));
 		}
 		elseif ($cat_id)
 		{
-			redirect(append_sid('downloads.' . $phpEx . '?cat=' . $cat_id));
+			redirect(append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id));
 		}
 		else
 		{
-			redirect(append_sid('downloads.' . $phpEx));
+			redirect(append_sid('downloads.' . PHP_EXT));
 		}
 	}
 }
@@ -1183,8 +1183,8 @@ elseif ($view == 'upload')
 	$page_title = $lang['Dl_upload'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
-	include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_upload.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_upload.' . PHP_EXT);
 }
 elseif ($view == 'modcp')
 {
@@ -1338,7 +1338,7 @@ elseif ($view == 'modcp')
 		$fmove = '';
 
 		$inc_module = true;
-		include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_modcp.' . $phpEx);
+		include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_modcp.' . PHP_EXT);
 	}
 }
 
@@ -1426,7 +1426,7 @@ if ($view == 'overall' && count($index))
 	$page_title = $lang['Dl_overview'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$sql = "SELECT dl_id, user_id FROM " . DL_RATING_TABLE;
 	if (!$result = $db->sql_query($sql))
@@ -1464,8 +1464,8 @@ if ($view == 'overall' && count($index))
 		'S_SORT_BY' => $s_sort_by,
 		'S_ORDER' => $s_order,
 
-		'U_DOWNLOADS_ADV' => append_sid('downloads.' . $phpEx . '?view=overall'),
-		'U_DL_INDEX' => append_sid('downloads.' . $phpEx),
+		'U_DOWNLOADS_ADV' => append_sid('downloads.' . PHP_EXT . '?view=overall'),
+		'U_DL_INDEX' => append_sid('downloads.' . PHP_EXT),
 
 		'COLSPAN' => $colspan,
 		'PAGE_NAME' => $page_title
@@ -1493,7 +1493,7 @@ if ($view == 'overall' && count($index))
 
 	if ($total_files > $board_config['topics_per_page'])
 	{
-		$pagination = generate_pagination('downloads.' . $phpEx . '?view=overall&amp;sort_by=' . $sort_by . '&amp;order=' . $order, $total_files, $board_config['topics_per_page'], $start);
+		$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=overall&amp;sort_by=' . $sort_by . '&amp;order=' . $order, $total_files, $board_config['topics_per_page'], $start);
 		$template->assign_vars(array(
 			'PAGINATION' => $pagination
 			)
@@ -1523,7 +1523,7 @@ if ($view == 'overall' && count($index))
 				$mini_file_icon = $dl_mod->mini_status_file($cat_id, $file_id);
 
 				$description = $dl_files[$i]['description'];
-				$dl_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+				$dl_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 				$hack_version = '&nbsp;' . $dl_files[$i]['hack_version'];
 
@@ -1550,7 +1550,7 @@ if ($view == 'overall' && count($index))
 				$u_rating_link = '';
 				if (($rating_points == 0 || !@in_array($userdata['user_id'], $ratings[$file_id])) && $userdata['session_logged_in'])
 				{
-					$u_rating_link = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;action=rate&amp;df_id=' . $file_id . '&amp;dlo=1') . '">' . $lang['Dl_klick_to_rate'] . '</a>';
+					$u_rating_link = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;action=rate&amp;df_id=' . $file_id . '&amp;dlo=1') . '">' . $lang['Dl_klick_to_rate'] . '</a>';
 				}
 
 				if (count($ratings[$file_id]))
@@ -1603,7 +1603,7 @@ if (empty($view) && !$inc_module)
 
 		if (!$cat_auth['auth_view'] && !$index_auth[$cat]['auth_view'] && $userdata['user_level'] != ADMIN)
 		{
-			redirect(append_sid('downloads.' . $phpEx));
+			redirect(append_sid('downloads.' . PHP_EXT));
 		}
 
 		$template->set_filenames(array('body' => 'downloads_body.tpl'));
@@ -1626,7 +1626,7 @@ if (empty($view) && !$inc_module)
 	$page_title = $lang['Downloads'] . (($cat) ? ' ' . $dl_mod->dl_nav($cat, 'text') : '');
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	$path_dl_array = array();
 
 	$user_id = $userdata['user_id'];
@@ -1656,7 +1656,7 @@ if (empty($view) && !$inc_module)
 			$last_dl[$last_id]['desc'] = $row['description'];
 			$last_dl[$last_id]['user'] = ($row['username'] == '') ? $lang['Guest'] : $row['username'];
 			$last_dl[$last_id]['time'] = create_date($board_config['default_dateformat'], $row['change_time'], $board_config['board_timezone']);
-			$last_dl[$last_id]['link'] = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $row['id']);
+			$last_dl[$last_id]['link'] = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $row['id']);
 			//$last_dl[$last_id]['user_link'] = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['change_user']);
 			$last_dl[$last_id]['user_link'] = colorize_username($row['change_user']);
 		}
@@ -1713,7 +1713,7 @@ if (empty($view) && !$inc_module)
 				$page = 1;
 				for ($j = 0; $j < $index[$cat_id]['total']; $j += $dl_config['dl_links_per_page'])
 				{
-					$cat_pages .= '&nbsp;<a href="' . append_sid('downloads.' . $phpEx . '?cat=' . $cat_id . '&amp;start=' . $j) . '">' . $page . '</a>';
+					$cat_pages .= '&nbsp;<a href="' . append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id . '&amp;start=' . $j) . '">' . $page . '</a>';
 					if ($page < ceil($index[$cat_id]['total'] / $dl_config['dl_links_per_page']))
 					{
 						$cat_pages .= ',';
@@ -1836,7 +1836,7 @@ if (empty($view) && !$inc_module)
 
 		if ($total_downloads)
 		{
-			$pagination = generate_pagination('downloads.' . $phpEx . '?cat=' . $cat . '&amp;sort_by=' . $sort_by . '&amp;order=' . $order, $total_downloads, $dl_config['dl_links_per_page'], $start) . '&nbsp;';
+			$pagination = generate_pagination('downloads.' . PHP_EXT . '?cat=' . $cat . '&amp;sort_by=' . $sort_by . '&amp;order=' . $order, $total_downloads, $dl_config['dl_links_per_page'], $start) . '&nbsp;';
 
 			$template->assign_vars(array(
 				'PAGINATION' => $pagination,
@@ -1869,7 +1869,7 @@ if (empty($view) && !$inc_module)
 		if ($dl_mod->user_auth($cat, 'auth_mod'))
 		{
 			$template->assign_block_vars('modcp', array(
-				'DL_MODCP' => ($total_downloads) ? sprintf($lang['Dl_modcp_mod_auth'], '<a href="' . append_sid('downloads.' . $phpEx . '?view=modcp&amp;cat_id=' . $cat) . '">', '</a>') : ''
+				'DL_MODCP' => ($total_downloads) ? sprintf($lang['Dl_modcp_mod_auth'], '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;cat_id=' . $cat) . '">', '</a>') : ''
 				)
 			);
 		}
@@ -1880,7 +1880,7 @@ if (empty($view) && !$inc_module)
 			if ($dl_mod->user_auth($cat, 'auth_up'))
 			{
 				$template->assign_vars(array(
-					'DL_UPLOAD' => '<a href="' . append_sid('downloads.' . $phpEx . '?view=upload&amp;cat_id=' . $cat) . '"><img src="' . $images['Dl_upload'] . '" border="0" alt="' . $lang['Dl_upload'] . '"  title="' . $lang['Dl_upload'] . '" /></a>&nbsp;&nbsp;&nbsp;'
+					'DL_UPLOAD' => '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=upload&amp;cat_id=' . $cat) . '"><img src="' . $images['Dl_upload'] . '" border="0" alt="' . $lang['Dl_upload'] . '"  title="' . $lang['Dl_upload'] . '" /></a>&nbsp;&nbsp;&nbsp;'
 					)
 				);
 			}
@@ -1931,7 +1931,7 @@ if (empty($view) && !$inc_module)
 			$mini_file_icon = $dl_mod->mini_status_file($cat, $file_id);
 
 			$description = $dl_files[$i]['description'];
-			$file_url = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+			$file_url = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 			$hack_version = '&nbsp;' . $dl_files[$i]['hack_version'];
 
@@ -1978,7 +1978,7 @@ if (empty($view) && !$inc_module)
 				if ((!$rating_points || !@in_array($userdata['user_id'], $ratings[$file_id])) && $userdata['session_logged_in'])
 				{
 					$l_rating_text = $lang['Dl_klick_to_rate'];
-					$u_rating_text = append_sid('downloads.' . $phpEx . '?view=detail&amp;action=rate&amp;df_id=' . $file_id . '&amp;dlo=2&amp;start=' . $start);
+					$u_rating_text = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;action=rate&amp;df_id=' . $file_id . '&amp;dlo=2&amp;start=' . $start);
 				}
 
 				if (count($ratings[$file_id]))
@@ -2021,8 +2021,8 @@ if (empty($view) && !$inc_module)
 						'L_COMMENT_POST' => ($dl_mod->cat_auth_comment_post($cat)) ? $lang['Dl_post_comment'] : '',
 						'L_COMMENT_SHOW' => $lang['Dl_view_comments'],
 						'BREAK' => ($dl_mod->cat_auth_comment_post($cat)) ? '<br />' : '',
-						'U_COMMENT_POST' => ($dl_mod->cat_auth_comment_post($cat)) ? append_sid('downloads.' . $phpEx . '?view=comment&amp;action=post&amp;cat_id=' . $cat . '&amp;df_id=' . $file_id) : '',
-						'U_COMMENT_SHOW' => append_sid('downloads.' . $phpEx . '?view=comment&amp;action=view&amp;cat_id=' . $cat . '&amp;df_id=' . $file_id)
+						'U_COMMENT_POST' => ($dl_mod->cat_auth_comment_post($cat)) ? append_sid('downloads.' . PHP_EXT . '?view=comment&amp;action=post&amp;cat_id=' . $cat . '&amp;df_id=' . $file_id) : '',
+						'U_COMMENT_SHOW' => append_sid('downloads.' . PHP_EXT . '?view=comment&amp;action=view&amp;cat_id=' . $cat . '&amp;df_id=' . $file_id)
 						)
 					);
 				}
@@ -2030,7 +2030,7 @@ if (empty($view) && !$inc_module)
 				{
 					$template->assign_block_vars('downloads.comments', array(
 						'L_COMMENT_POST' => $lang['Dl_post_comment'],
-						'U_COMMENT_POST' => append_sid('downloads.' . $phpEx . '?view=comment&amp;action=post&amp;cat_id=' . $cat . '&amp;df_id=' . $file_id)
+						'U_COMMENT_POST' => append_sid('downloads.' . PHP_EXT . '?view=comment&amp;action=post&amp;cat_id=' . $cat . '&amp;df_id=' . $file_id)
 						)
 					);
 				}
@@ -2107,11 +2107,11 @@ if (empty($view) && !$inc_module)
 
 		'T_DL_CAT' => ($cat) ? $index[$cat]['cat_name'] : $lang['Dl_cat_name'],
 
-		'U_DOWNLOADS' => append_sid('downloads.' . $phpEx . '?start=' . $start . '&amp;cat=' . $cat),
-		'U_SEARCH' => (count($index) || $cat) ? '<a href="' . append_sid('downloads.' . $phpEx . '?view=search') . '"><img src="' . $images['icon_search'] . '" border="0" alt="' . $lang['Search'] . '" title="' . $lang['Search'] . '" /></a>' : '&nbsp;',
+		'U_DOWNLOADS' => append_sid('downloads.' . PHP_EXT . '?start=' . $start . '&amp;cat=' . $cat),
+		'U_SEARCH' => (count($index) || $cat) ? '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=search') . '"><img src="' . $images['icon_search'] . '" border="0" alt="' . $lang['Search'] . '" title="' . $lang['Search'] . '" /></a>' : '&nbsp;',
 		'U_DL_CAT' => ($cat) ? $dl_mod->dl_nav($cat, 'url') : '',
 
-		'U_DL_TOP' => append_sid('downloads.' . $phpEx)
+		'U_DL_TOP' => append_sid('downloads.' . PHP_EXT)
 		)
 	);
 }
@@ -2123,7 +2123,7 @@ if (!in_array($view, $view_check))
 }
 
 $template->assign_vars(array(
-	'U_HELP_POPUP' => $phpbb_root_path . 'dl_help.' . $phpEx . '?help_key='
+	'U_HELP_POPUP' => IP_ROOT_PATH . 'dl_help.' . PHP_EXT . '?help_key='
 	)
 );
 
@@ -2133,9 +2133,9 @@ $template->pparse('body');
 /*
 * include the mod footer
 */
-include($phpbb_root_path . DL_ROOT_PATH . 'includes/dl_footer.' . $phpEx);
+include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_footer.' . PHP_EXT);
 
 //include the phpBB footer
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

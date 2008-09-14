@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -25,12 +25,12 @@ if(!function_exists(imp_birthdays_func))
 {
 	function imp_birthdays_func()
 	{
-		global $phpbb_root_path, $lang, $template, $portal_config, $block_id, $board_config, $db, $phpEx, $images;
+		global $lang, $template, $portal_config, $block_id, $board_config, $db, $images;
 
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		// Birthday Mod, Show users with birthday
-		$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'birthday_' . $board_config['board_timezone'] . '.dat';
+		$cache_data_file = MAIN_CACHE_FOLDER . 'birthday_' . $board_config['board_timezone'] . '.dat';
 		$cache_update = true;
 		$cache_file_time = time();
 		if (@is_file($cache_data_file))

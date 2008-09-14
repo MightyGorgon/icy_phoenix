@@ -16,18 +16,18 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 $current_time = time();
 
@@ -149,7 +149,7 @@ if (!($row = $db->sql_fetchrow($result)))
 
 $total = $row['log_items'];
 
-$pagination = generate_pagination('cash_log.' . $phpEx . '?saction=' . $saction . '&amp;stime=' . $stime . '&amp;scount=' . $scount, max(1, $total), $ar_count[$scount], $start);
+$pagination = generate_pagination('cash_log.' . PHP_EXT . '?saction=' . $saction . '&amp;stime=' . $stime . '&amp;scount=' . $scount, max(1, $total), $ar_count[$scount], $start);
 
 
 //
@@ -158,7 +158,7 @@ $pagination = generate_pagination('cash_log.' . $phpEx . '?saction=' . $saction 
 $template->set_filenames(array('body' => ADM_TPL . 'cash_log.tpl'));
 
 $template->assign_vars(array(
-	'S_FORUM_ACTION' => append_sid('cash_forums.' . $phpEx),
+	'S_FORUM_ACTION' => append_sid('cash_forums.' . PHP_EXT),
 	'L_LOG_TITLE' => $lang['Logs'],
 	'L_LOG_EXPLAIN' => $lang['Logs_explain'],
 	'L_LOG' => $lang['Log'],
@@ -185,9 +185,9 @@ while (list($key,) = each ($ar_action))
 		'ROW_CLASS' => ((!($i % 2)) ? $theme['td_class1'] : $theme['td_class2']),
 		'ROW_COLOR' => ((!($i % 2)) ? $theme['td_color1'] : $theme['td_color2']),
 		'NAME' => $lang['Cash_' . $key],
-		'LINK' => append_sid('cash_log.' . $phpEx . '?saction=' . $key . '&amp;stime=' . $stime . '&amp;scount=' . $scount . '&amp;sindex=0'),
+		'LINK' => append_sid('cash_log.' . PHP_EXT . '?saction=' . $key . '&amp;stime=' . $stime . '&amp;scount=' . $scount . '&amp;sindex=0'),
 		'DELETE' => $lang['Delete_' . ' . $key . ' . '_logs'],
-		'DELETECOMMAND' => append_sid('cash_log.' . $phpEx . '?delete=' . $key)
+		'DELETECOMMAND' => append_sid('cash_log.' . PHP_EXT . '?delete=' . $key)
 		)
 	);
 	if ($key != $saction)
@@ -207,7 +207,7 @@ while (list($key,) = each ($ar_time))
 		'ROW_CLASS' => ((!($i % 2)) ? $theme['td_class1'] : $theme['td_class2']),
 		'ROW_COLOR' => ((!($i % 2)) ? $theme['td_color1'] : $theme['td_color2']),
 		'NAME' => $lang[ucfirst($key)],
-		'LINK' => append_sid('cash_log.' . $phpEx . '?saction=' . $saction . '&amp;stime=' . $key . '&amp;scount=' . $scount . '&amp;sindex=0')
+		'LINK' => append_sid('cash_log.' . PHP_EXT . '?saction=' . $saction . '&amp;stime=' . $key . '&amp;scount=' . $scount . '&amp;sindex=0')
 		)
 	);
 	if ($key != $stime)
@@ -223,7 +223,7 @@ while (list($key,) = each ($ar_time))
 reset ($ar_time);
 while (list($key,$number) = each ($ar_count))
 {
-	$template->assign_block_vars("countfilter",array('NAME' => $number, 'LINK' => append_sid('cash_log.' . $phpEx . '?saction=' . $saction . '&amp;stime=' . $stime . '&amp;scount=' . $key . '&sindex=0')));
+	$template->assign_block_vars("countfilter",array('NAME' => $number, 'LINK' => append_sid('cash_log.' . PHP_EXT . '?saction=' . $saction . '&amp;stime=' . $stime . '&amp;scount=' . $key . '&sindex=0')));
 	if ($key != $scount)
 	{
 		$template->assign_block_vars('countfilter.switch_linkpage_on', array());
@@ -275,6 +275,6 @@ for ($i = 0; $i < count($data_log); $i++)
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

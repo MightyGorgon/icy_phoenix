@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,11 +24,11 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_field.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_field.' . PHP_EXT);
 
 $custom_field = new custom_field();
 $custom_field->init();
@@ -66,14 +66,14 @@ if($submit)
 	{
 		$custom_field->update_add_field($field_type);
 
-		$message = $lang['Fieldadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Fieldadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($mode == 'do_add' && $field_id)
 	{
 		$custom_field->update_add_field($field_type, $field_id);
 
-		$message = $lang['Fieldedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Fieldedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($mode == 'delete')
@@ -83,7 +83,7 @@ if($submit)
 			$custom_field->delete_field($key);
 		}
 
-		$message = $lang['Fieldsdel'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Fieldsdel'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -135,7 +135,7 @@ $pafiledb_template->assign_vars(array(
 	'L_FIELD_EXPLAIN' => $lang['Fieldexplain'],
 
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
-	'S_FIELD_ACTION' => append_sid("admin_pa_custom.$phpEx"))
+	'S_FIELD_ACTION' => append_sid("admin_pa_custom." . PHP_EXT))
 );
 
 
@@ -200,6 +200,6 @@ $pafiledb_template->display('admin');
 $pafiledb->_pafiledb();
 $cache->unload();
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

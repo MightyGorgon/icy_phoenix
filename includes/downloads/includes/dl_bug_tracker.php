@@ -16,12 +16,12 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 /*
 * clean up bug tracker for unset categories
@@ -122,7 +122,7 @@ if ($action == 'save' && $userdata['session_logged_in'])
 		message_die(GENERAL_ERROR, 'Could not write report history!!', '', __LINE__, __FILE__, $sql);
 	}
 
-	$message = $lang['Dl_bug_report_added'] . '<br /><br />' . sprintf($lang['Click_return_bug_tracker'], '<a href="' . append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id) . '">', '</a>');
+	$message = $lang['Dl_bug_report_added'] . '<br /><br />' . sprintf($lang['Click_return_bug_tracker'], '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -200,7 +200,7 @@ if ($action == 'status' && $fav_id && $allow_bug_mod)
 		$server_url = $server_name . $server_port . $script_path;
 		$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 		if ( preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
 		{
@@ -233,7 +233,7 @@ if ($action == 'status' && $fav_id && $allow_bug_mod)
 			'REPORT_TITLE' => $report_title,
 			'STATUS' => $lang['Dl_report_status'][$report_status],
 			'STATUS_TEXT' => $status_text,
-			'U_BUG_REPORT' => $server_url.'downloads.' . $phpEx . '?view=bug_tracker&action=detail&fav_id=' . $fav_id
+			'U_BUG_REPORT' => $server_url.'downloads.' . PHP_EXT . '?view=bug_tracker&action=detail&fav_id=' . $fav_id
 			)
 		);
 
@@ -296,7 +296,7 @@ if ($action == 'assign' && $df_id && $fav_id && $allow_bug_mod)
 		$server_url = $server_name . $server_port . $script_path;
 		$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 		if ( preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
 		{
@@ -326,7 +326,7 @@ if ($action == 'assign' && $df_id && $fav_id && $allow_bug_mod)
 			'SITENAME' => $board_config['sitename'],
 			'BOARD_EMAIL' => $board_config['board_email_sig'],
 			'USERNAME' => $userdata['username'],
-			'U_BUG_REPORT' => $server_url.'downloads.' . $phpEx . '?view=bug_tracker&action=detail&fav_id=' . $fav_id
+			'U_BUG_REPORT' => $server_url.'downloads.' . PHP_EXT . '?view=bug_tracker&action=detail&fav_id=' . $fav_id
 			)
 		);
 
@@ -400,7 +400,7 @@ if ($action == 'detail' && $fav_id)
 		}
 	}
 
-	$u_report_file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $report_file_id);
+	$u_report_file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $report_file_id);
 	//$u_report_author_link = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $report_author_id);
 	$u_report_author_link = colorize_username($report_author_id);
 
@@ -431,11 +431,11 @@ if ($action == 'detail' && $fav_id)
 
 	if (@function_exists('obtain_autolink_list'))
 	{
-		// Start Autolinks For phpBB Mod
+		// Autolinks - BEGIN
 		$orig_autolink = array();
 		$replacement_autolink = array();
 		obtain_autolink_list($orig_autolink, $replacement_autolink, $forum_id = 'pm');
-		// End Autolinks For phpBB Mod
+		// Autolinks - END
 	}
 
 	if (count($orig_word))
@@ -452,7 +452,7 @@ if ($action == 'detail' && $fav_id)
 	$report_text = make_clickable($report_text);
 	$report_text = str_replace("\n", "<br />", $report_text);
 
-	// Start Autolinks For phpBB2 MOD
+	// Autolinks - BEGIN
 	if (@function_exists('obtain_autolink_list'))
 	{
 		if( count($orig_autolink) )
@@ -464,7 +464,7 @@ if ($action == 'detail' && $fav_id)
 			$report_text = autolink_return_empty($report_text);
 		}
 	}
-	// End Autolinks For phpBB2 MOD
+	// Autolinks - END
 
 	$template->set_filenames(array('body' => 'dl_bt_detail.tpl'));
 
@@ -503,8 +503,8 @@ if ($action == 'detail' && $fav_id)
 
 		'U_DOWNLOAD_FILE' => $u_report_file_link,
 		'U_AUTHOR_LINK' => $u_report_author_link,
-		'U_DOWNLOADS_ADV' => append_sid('downloads.' . $phpEx),
-		'U_BUG_TRACKER' => append_sid('downloads.' . $phpEx . '?view=bug_tracker')
+		'U_DOWNLOADS_ADV' => append_sid('downloads.' . PHP_EXT),
+		'U_BUG_TRACKER' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker')
 		)
 	);
 
@@ -565,7 +565,7 @@ if ($action == 'detail' && $fav_id)
 	{
 		$template->assign_block_vars('delete', array(
 			'L_DELETE' => $lang['Dl_delete'],
-			'U_DELETE' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $report_file_id . '&amp;fav_id=' . $report_id . '&amp;action=delete')
+			'U_DELETE' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $report_file_id . '&amp;fav_id=' . $report_id . '&amp;action=delete')
 			)
 		);
 
@@ -594,7 +594,7 @@ if ($action == 'detail' && $fav_id)
 			$s_select_assign_member = str_replace('<option value="'.$userdata['user_id'] . '">', '<option value="'.$userdata['user_id'] . '" selected="selected">', $s_select_assign_member);
 
 			$template->assign_vars(array(
-				'S_FORM_ASSIGN_ACTION' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;action=assign&amp;df_id=' . $report_file_id . '&amp;fav_id=' . $fav_id),
+				'S_FORM_ASSIGN_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;action=assign&amp;df_id=' . $report_file_id . '&amp;fav_id=' . $fav_id),
 				'S_SELECT_ASSIGN_USER' => $s_select_assign_member
 				)
 			);
@@ -621,7 +621,7 @@ if ($action == 'detail' && $fav_id)
 		{
 			$s_select_status = '<select name="new_status">' . $s_select_status . '</select>';
 			$template->assign_block_vars('status_select', array(
-				'S_FORM_STATUS_ACTION' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;action=status&amp;df_id=' . $report_file_id . '&amp;fav_id=' . $fav_id),
+				'S_FORM_STATUS_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;action=status&amp;df_id=' . $report_file_id . '&amp;fav_id=' . $fav_id),
 				'S_SELECT_STATUS' => $s_select_status
 				)
 			);
@@ -694,18 +694,18 @@ if ($action == 'add' && $userdata['session_logged_in'])
 		'L_FONT_COLOR' => $lang['Font_color'],
 		'L_BBCODE_CLOSE_TAGS' => $lang['Close_Tags'],
 
-		'S_FORM_ACTION' => append_sid('downloads.' . $phpEx . '?view=bug_tracker'),
+		'S_FORM_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'S_SELECT_DOWNLOAD' => $s_select_download,
 
-		'U_DOWNLOADS_ADV' => append_sid('downloads.' . $phpEx),
-		'U_BUG_TRACKER' => append_sid('downloads.' . $phpEx . '?view=bug_tracker')
+		'U_DOWNLOADS_ADV' => append_sid('downloads.' . PHP_EXT),
+		'U_BUG_TRACKER' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker')
 		)
 	);
 
 	$template->pparse('body');
 
-	include($phpbb_root_path.'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 /*
@@ -732,14 +732,14 @@ if ($action == 'delete' && $df_id && $fav_id && $allow_bug_mod)
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('downloads.' . $phpEx),
+			'S_CONFIRM_ACTION' => append_sid('downloads.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 	elseif (!$cancel)
 	{
@@ -807,14 +807,14 @@ if (!$action)
 		'L_BUG_TRACKER' => $lang['Dl_bug_tracker'],
 
 		'S_SELECT_FILTER' => $s_select_filter,
-		'S_FORM_ACTION' => append_sid('downloads.' . $phpEx . '?view=bug_tracker'),
-		'S_FORM_FILTER_ACTION' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id),
-		'S_FORM_OWN_ACTION' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;bt_show=own'),
-		'S_FORM_ASSIGN_ACTION' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;bt_show=assign'),
+		'S_FORM_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker'),
+		'S_FORM_FILTER_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id),
+		'S_FORM_OWN_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;bt_show=own'),
+		'S_FORM_ASSIGN_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;bt_show=assign'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
-		'U_DOWNLOADS_ADV' => append_sid('downloads.' . $phpEx),
-		'U_BUG_TRACKER' => append_sid('downloads.' . $phpEx . '?view=bug_tracker')
+		'U_DOWNLOADS_ADV' => append_sid('downloads.' . PHP_EXT),
+		'U_BUG_TRACKER' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker')
 		)
 	);
 
@@ -865,7 +865,7 @@ if (!$action)
 
 		if ($total_reports > $dl_config['dl_links_per_page'])
 		{
-			$pagination = generate_pagination('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id, $total_reports, $dl_config['dl_links_per_page'], $start);
+			$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id, $total_reports, $dl_config['dl_links_per_page'], $start);
 		}
 		else
 		{
@@ -960,7 +960,7 @@ if (!$action)
 
 					'REPORT_FILE' => $report_file,
 					'REPORT_FILE_VER' => $report_file_ver,
-					'REPORT_FILE_LINK' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id),
+					'REPORT_FILE_LINK' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id),
 
 					//'REPORT_AUTHOR_LINK' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $report_author_id),
 					'REPORT_AUTHOR_LINK' => colorize_username($report_author_id),
@@ -969,7 +969,7 @@ if (!$action)
 					'REPORT_STATUS' => $lang['Dl_report_status'][$report_status],
 					'REPORT_STATUS_DATE' => create_date($board_config['default_dateformat'], $report_status_date, $board_config['board_timezone']),
 
-					'REPORT_DETAIL' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;fav_id=' . $report_id . '&amp;action=detail'))
+					'REPORT_DETAIL' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;fav_id=' . $report_id . '&amp;action=detail'))
 				);
 
 				if ($report_assign_id)
@@ -994,12 +994,12 @@ if (!$action)
 				{
 					$template->assign_block_vars('bug_tracker_file.mod', array(
 						'L_DELETE' => $lang['Dl_delete'],
-						'U_DELETE' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=delete')
+						'U_DELETE' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=delete')
 						)
 					);
 
 					$template->assign_block_vars('bug_tracker_file.status_mod', array(
-						'U_STATUS' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=status')
+						'U_STATUS' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=status')
 						)
 					);
 				}
@@ -1067,7 +1067,7 @@ if (!$action)
 
 		if ($total_reports > $dl_config['dl_links_per_page'])
 		{
-			$pagination = generate_pagination('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id, $total_reports, $dl_config['dl_links_per_page'], $start);
+			$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id, $total_reports, $dl_config['dl_links_per_page'], $start);
 		}
 		else
 		{
@@ -1163,7 +1163,7 @@ if (!$action)
 
 					'REPORT_FILE' => $report_file,
 					'REPORT_FILE_VER' => $report_file_ver,
-					'REPORT_FILE_LINK' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id),
+					'REPORT_FILE_LINK' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id),
 
 					//'REPORT_AUTHOR_LINK' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $report_author_id),
 					'REPORT_AUTHOR_LINK' => colorize_username($report_author_id),
@@ -1172,7 +1172,7 @@ if (!$action)
 					'REPORT_STATUS' => $lang['Dl_report_status'][$report_status],
 					'REPORT_STATUS_DATE' => create_date($board_config['default_dateformat'], $report_status_date, $board_config['board_timezone']),
 
-					'REPORT_DETAIL' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;fav_id=' . $report_id . '&amp;action=detail')
+					'REPORT_DETAIL' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;fav_id=' . $report_id . '&amp;action=detail')
 					)
 				);
 
@@ -1196,12 +1196,12 @@ if (!$action)
 				{
 					$template->assign_block_vars('bug_tracker_list.mod', array(
 						'L_DELETE' => $lang['Dl_delete'],
-						'U_DELETE' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=delete')
+						'U_DELETE' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=delete')
 						)
 					);
 
 					$template->assign_block_vars('bug_tracker_list.status_mod', array(
-						'U_STATUS' => append_sid('downloads.' . $phpEx . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=status')
+						'U_STATUS' => append_sid('downloads.' . PHP_EXT . '?view=bug_tracker&amp;df_id=' . $df_id . '&amp;fav_id=' . $report_id . '&amp;action=status')
 						)
 					);
 				}

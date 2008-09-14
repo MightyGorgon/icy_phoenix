@@ -16,17 +16,17 @@
 */
 
 // CTracker_Ignore: File checked by human
-if (defined('IN_PHPBB'))
+if (defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
 }
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_DOWNLOAD', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 //
 // Delete the / * to uncomment the block, and edit the values (read the comments) to

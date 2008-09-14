@@ -24,7 +24,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -36,7 +36,7 @@ if(!function_exists(index_display_new))
 {
 	function index_display_new($unread)
 	{
-		global $lang, $phpEx, $images, $board_config, $unread_new_posts, $unread_edit_posts;
+		global $lang, $images, $board_config, $unread_new_posts, $unread_edit_posts;
 
 		$edit_posts = count($unread['edit_posts']) - $unread_edit_posts;
 		$new_posts = count($unread['new_posts']) - $unread_new_posts;

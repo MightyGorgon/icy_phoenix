@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if ( !empty($setmodules) )
 {
@@ -26,11 +26,11 @@ if ( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require($phpbb_root_path . 'includes/prune.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/prune.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 //
 // Get the forum ID for pruning
@@ -196,7 +196,7 @@ else
 			'L_SELECT_FORUM' => $lang['Select_a_Forum'],
 			'L_LOOK_UP' => $lang['Look_up_Forum'],
 
-			'S_FORUMPRUNE_ACTION' => append_sid("admin_forum_prune.$phpEx"),
+			'S_FORUMPRUNE_ACTION' => append_sid("admin_forum_prune." . PHP_EXT),
 			'S_FORUMS_SELECT' => $select_list)
 		);
 	}
@@ -247,7 +247,7 @@ else
 			'L_FORUM_PRUNE_EXPLAIN' => $lang['Forum_Prune_explain'],
 			'L_DO_PRUNE' => $lang['Do_Prune'],
 
-			'S_FORUMPRUNE_ACTION' => append_sid("admin_forum_prune.$phpEx"),
+			'S_FORUMPRUNE_ACTION' => append_sid("admin_forum_prune." . PHP_EXT),
 			'S_PRUNE_DATA' => $prune_data,
 			'S_HIDDEN_VARS' => $hidden_input)
 		);
@@ -258,6 +258,6 @@ else
 //
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

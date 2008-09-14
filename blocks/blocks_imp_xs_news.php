@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,9 +24,9 @@ if(!function_exists(imp_xs_news_func))
 {
 	function imp_xs_news_func()
 	{
-		global $lang, $template, $board_config, $db, $phpbb_root_path, $phpEx;
+		global $lang, $template, $board_config, $db;
 		global $rss_channel, $currently_writing, $main, $item_counter;
-		include($phpbb_root_path . 'includes/xs_news.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/xs_news.' . PHP_EXT);
 	}
 }
 

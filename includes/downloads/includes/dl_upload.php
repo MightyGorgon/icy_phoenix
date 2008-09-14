@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -248,9 +248,9 @@ if ($submit)
 
 		if ($thumb_name)
 		{
-			$move_file($thumb_temp, $phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $next_id . '_' . $thumb_name);
+			$move_file($thumb_temp, POSTED_IMAGES_THUMBS_PATH . $next_id . '_' . $thumb_name);
 
-			@chmod($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $next_id . '_' . $thumb_name, 0777);
+			@chmod(POSTED_IMAGES_THUMBS_PATH . $next_id . '_' . $thumb_name, 0777);
 
 			$thumb_message = '<br />' . $lang['Dl_thumb_upload'];
 		}
@@ -312,7 +312,7 @@ if ($submit)
 			$server_url = $server_name . $server_port . $script_path;
 			$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-			include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -352,8 +352,8 @@ if ($submit)
 					'DOWNLOAD' => $description,
 					'DESCRIPTION' => $long_desc,
 					'CATEGORY' => str_replace("&nbsp;&nbsp;|___&nbsp;", '', $index[$cat_id]['cat_name']),
-					'U_APPROVE' => $server_url.'downloads.' . $phpEx . '?view=modcp&action=approve',
-					'U_CATEGORY' => $server_url.'downloads.' . $phpEx . '?cat=' . $cat_id)
+					'U_APPROVE' => $server_url.'downloads.' . PHP_EXT . '?view=modcp&action=approve',
+					'U_CATEGORY' => $server_url.'downloads.' . PHP_EXT . '?cat=' . $cat_id)
 				);
 
 				$emailer->send();
@@ -387,10 +387,10 @@ if ($submit)
 		$approve_message = ($approve) ? '' : '<br />' . $lang['Dl_must_be_approved'];
 
 		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . $phpEx . '?cat=' . $cat_id) . '">')
+			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id) . '">')
 		);
 
-		$message = $lang['Download_added'] . $thumb_message . $approve_message . '<br /><br />' . sprintf($lang['Click_return_downloads'], '<a href="' . append_sid('downloads.' . $phpEx . '?cat=' . $cat_id) . '">', '</a>');
+		$message = $lang['Download_added'] . $thumb_message . $approve_message . '<br /><br />' . sprintf($lang['Click_return_downloads'], '<a href="' . append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -548,10 +548,10 @@ $template->assign_vars(array(
 
 	'L_NAV1' => $lang['Dl_cat_title'],
 	'L_NAV2' => $lang['Dl_upload'],
-	'U_NAV1' => append_sid('downloads.' . $phpEx),
-	'U_NAV2' => append_sid('downloads.' . $phpEx . '?view=upload&amp;cat_id=' . $cat_id),
+	'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+	'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?view=upload&amp;cat_id=' . $cat_id),
 
-	'S_DOWNLOADS_ACTION' => append_sid('downloads.' . $phpEx . '?view=upload'),
+	'S_DOWNLOADS_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=upload'),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields . (($dl_config['disable_email']) ? '<input type="hidden" name="send_notify" value="0" />' : '')
 	)
 );

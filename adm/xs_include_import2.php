@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB') || !defined('IN_XS'))
+if (!defined('IN_ICYPHOENIX') || !defined('IN_XS'))
 {
 	die('Hacking attempt');
 }
@@ -41,7 +41,7 @@ if(empty($list_only))
 	$list_only = false;
 }
 
-$lang['xs_import_back'] = str_replace('{URL}', append_sid('xs_import.' . $phpEx), $lang['xs_import_back']);
+$lang['xs_import_back'] = str_replace('{URL}', append_sid('xs_import.' . PHP_EXT), $lang['xs_import_back']);
 
 // list of text types. only last 4 characters of filename
 $text_types = array('.tpl', '.htm', 'html', '.txt', '.css', '.cfg', '.php', '.xml');
@@ -196,7 +196,7 @@ while($pos < strlen($str))
 				if(empty($_GET['get_content']) && xs_in_array($ext, $text_types))
 				{
 					// show as text
-					$str = '<div align="left">' . $lang['xs_import_list_contents'] . $f . ' [<a href="' . append_sid('xs_import.' . $phpEx . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($f) . '&get_content=1') . '">' . $lang['xs_import_download_lc'] . '</a>]<br /><br />';
+					$str = '<div align="left">' . $lang['xs_import_list_contents'] . $f . ' [<a href="' . append_sid('xs_import.' . PHP_EXT . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($f) . '&get_content=1') . '">' . $lang['xs_import_download_lc'] . '</a>]<br /><br />';
 					$str .= '<textarea cols="120" rows="30" style="width: 100%">' . htmlspecialchars($contents) . '</textarea>';
 					$str .= '</div>';
 					xs_message($lang['Information'], $str);
@@ -272,9 +272,9 @@ if($list_only)
 			$ext = strtolower(substr($var, strlen($var) - 4));
 			if(xs_in_array($ext, $text_types) || xs_in_array($ext, $img_types))
 			{
-				$str .= '[<a href="' . append_sid('xs_import.' . $phpEx . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($var)) . '">' . $lang['xs_import_view_lc'] . '</a>] ';
+				$str .= '[<a href="' . append_sid('xs_import.' . PHP_EXT . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($var)) . '">' . $lang['xs_import_view_lc'] . '</a>] ';
 			}
-			$str .= '[<a href="' . append_sid('xs_import.' . $phpEx . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($var)) . '&get_content=1">' . $lang['xs_import_download_lc'] . '</a>] ';
+			$str .= '[<a href="' . append_sid('xs_import.' . PHP_EXT . '?list=1&import=' . urlencode($filename) . '&get_file=' . urlencode($var)) . '&get_content=1">' . $lang['xs_import_download_lc'] . '</a>] ';
 		}
 		$str .= str_replace('{NUM}', $value['size'], $lang['xs_import_file_size']) . '</td></tr>';
 	}

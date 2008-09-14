@@ -501,9 +501,8 @@ class dlmod
 
 	function get_config()
 	{
-		global $phpbb_root_path;
 
-		$this->dl_config['dl_path'] = $phpbb_root_path.$this->dl_config['download_dir'];
+		$this->dl_config['dl_path'] = IP_ROOT_PATH . $this->dl_config['download_dir'];
 
 		return $this->dl_config;
 	}
@@ -634,7 +633,6 @@ class dlmod
 
 	function index($parent = 0)
 	{
-		global $phpEx;
 
 		$tree_dl = array();
 
@@ -646,7 +644,7 @@ class dlmod
 				$tree_dl[$cat_id]['rules'] = $this->dl_index[$cat_id]['rules'];
 				$tree_dl[$cat_id]['cat_name'] = $this->dl_index[$cat_id]['cat_name'];
 				$tree_dl[$cat_id]['bbcode_uid'] = $this->dl_index[$cat_id]['bbcode_uid'];
-				$tree_dl[$cat_id]['nav_path'] = append_sid('downloads.' . $phpEx . '?cat=' . $cat_id);
+				$tree_dl[$cat_id]['nav_path'] = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
 				$tree_dl[$cat_id]['cat_path'] = $this->dl_index[$cat_id]['path'];
 				$tree_dl[$cat_id]['total'] = $this->dl_index[$cat_id]['total'];
 
@@ -684,7 +682,7 @@ class dlmod
 
 	function full_index($only_cat = 0, $parent = 0, $level = 0, $auth_level = 0)
 	{
-		global $phpEx, $tree_dl;
+		global $tree_dl;
 
 		if ($only_cat)
 		{
@@ -692,7 +690,7 @@ class dlmod
 			$tree_dl[$only_cat]['rules'] = $this->dl_index[$only_cat]['rules'];
 			$tree_dl[$only_cat]['cat_name'] = $this->dl_index[$only_cat]['cat_name'];
 			$tree_dl[$only_cat]['bbcode_uid'] = $this->dl_index[$only_cat]['bbcode_uid'];
-			$tree_dl[$only_cat]['nav_path'] = append_sid('downloads.' . $phpEx . "?cat=$only_cat");
+			$tree_dl[$only_cat]['nav_path'] = append_sid('downloads.' . PHP_EXT . "?cat=$only_cat");
 			$tree_dl[$only_cat]['cat_path'] = $this->dl_index[$only_cat]['path'];
 			$tree_dl[$only_cat]['total'] = $this->dl_index[$only_cat]['total'];
 
@@ -760,7 +758,7 @@ class dlmod
 						$tree_dl[$cat_id]['rules'] = $this->dl_index[$cat_id]['rules'];
 						$tree_dl[$cat_id]['cat_name'] = $seperator.$this->dl_index[$cat_id]['cat_name'];
 						$tree_dl[$cat_id]['bbcode_uid'] = $this->dl_index[$cat_id]['bbcode_uid'];
-						$tree_dl[$cat_id]['nav_path'] = append_sid('downloads.' . $phpEx . '?cat=' . $cat_id);
+						$tree_dl[$cat_id]['nav_path'] = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
 						$tree_dl[$cat_id]['cat_path'] = $this->dl_index[$cat_id]['path'];
 						$tree_dl[$cat_id]['total'] = intval($this->dl_index[$cat_id]['total']);
 						$tree_dl[$cat_id]['parent'] = intval($this->dl_index[$cat_id]['parent']);
@@ -804,7 +802,6 @@ class dlmod
 
 	function get_todo()
 	{
-		global $phpEx;
 
 		$todo = array();
 
@@ -816,7 +813,7 @@ class dlmod
 			$cat_id = $dl_files[$i]['cat'];
 			if (in_array($cat_id, $dl_cats))
 			{
-				$file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id='.$dl_files[$i]['id']);
+				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id='.$dl_files[$i]['id']);
 				$file_name = $dl_files[$i]['description'];
 				$hack_version = ( $dl_files[$i]['hack_version'] != '' ) ? ' ' . $dl_files[$i]['hack_version'] : '';
 
@@ -835,7 +832,6 @@ class dlmod
 
 	function get_dl_overall_size()
 	{
-		global $phpEx;
 
 		$overall_size = 0;
 
@@ -951,7 +947,6 @@ class dlmod
 
 	function get_sublevel($parent)
 	{
-		global $phpEx;
 
 		$sublevel = array();
 		$i = 0;
@@ -963,7 +958,7 @@ class dlmod
 				$sublevel['cat_name'][$i] = $this->dl_index[$cat_id]['cat_name'];
 				$sublevel['total'][$i] = $this->dl_index[$cat_id]['total'];
 				$sublevel['cat_id'][$i] = $this->dl_index[$cat_id]['id'];
-				$sublevel['cat_path'][$i] = append_sid('downloads.' . $phpEx . '?cat=' . $cat_id);
+				$sublevel['cat_path'][$i] = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
 				$sublevel['cat_sub'][$i] = $cat_id;
 				$i++;
 			}
@@ -1005,10 +1000,10 @@ class dlmod
 
 	function dl_nav($parent, $disp_art)
 	{
-		global $phpEx, $board_config, $path_dl_array, $bbcode;
+		global $board_config, $path_dl_array, $bbcode;
 
 		$cat_id = $this->dl_index[$parent]['id'];
-		$temp_url = append_sid('downloads.' . $phpEx . '?cat=' . $cat_id);
+		$temp_url = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
 		$temp_title = $this->dl_index[$parent]['cat_name'];
 		$temp_title = str_replace('&nbsp;&nbsp;|', '', $temp_title);
 		$temp_title = str_replace('___&nbsp;', '', $temp_title);
@@ -1398,7 +1393,7 @@ class dlmod
 
 	function read_dl_dirs($download_dir, $path = '')
 	{
-		global $lang, $cur, $unas_files, $phpbb_root_path;
+		global $lang, $cur, $unas_files;
 
 		$folders = '';
 
@@ -1413,7 +1408,7 @@ class dlmod
 				if(is_dir($download_dir . $path . '/' . $file))
 				{
 					$temp_dir = $dl_dir . $path . '/' . $file;
-					$temp_dir = str_replace($phpbb_root_path, '', $temp_dir);
+					$temp_dir = str_replace(IP_ROOT_PATH, '', $temp_dir);
 					$folders .= ('/'.$cur != $path . '/' . $file) ? '<option value="' . $dl_dir . $path . '/' . $file . '/">' . $lang['Dl_move'] . ' &raquo; ' . $temp_dir . '/</option>' : '';
 					$folders .= $this->read_dl_dirs($download_dir, $path . '/' . $file);
 				}
@@ -1506,7 +1501,7 @@ class dlmod
 
 	function dl_status($df_id)
 	{
-		global $images, $lang, $phpEx;
+		global $images, $lang;
 
 		$lang['Dl_red_explain_alt'] = sprintf($lang['Dl_red_explain_alt'], $this->dl_config['dl_posts']);
 
@@ -1519,12 +1514,12 @@ class dlmod
 		$file_name = '';
 		$auth_dl = 0;
 
-		$file_name = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '">'.$this->dl_file[$df_id]['file_name'] . '</a>';
+		$file_name = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '">'.$this->dl_file[$df_id]['file_name'] . '</a>';
 		$file_detail = $this->dl_file[$df_id]['file_name'];
 
 		if ($this->user_banned)
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_acp_banlist'] . '" border="0" alt="' . $lang['Dl_banned'] . '" title="' . $lang['Dl_banned'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_acp_banlist'] . '" border="0" alt="' . $lang['Dl_banned'] . '" title="' . $lang['Dl_banned'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_acp_banlist'] . '" border="0" alt="' . $lang['Dl_banned'] . '" title="' . $lang['Dl_banned'] . '" />';
 			$auth_dl = 0;
 			return array('status' => $status, 'file_name' => $file_detail, 'auth_dl' => $auth_dl, 'file_detail' => $file_detail, 'status_detail' => $status_detail);
@@ -1544,27 +1539,27 @@ class dlmod
 
 		if ($dl_traffic_flag == true)
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_yellow'] . '" border="0" alt="' . $lang['Dl_yellow_explain'] . '" title="' . $lang['Dl_yellow_explain'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_yellow'] . '" border="0" alt="' . $lang['Dl_yellow_explain'] . '" title="' . $lang['Dl_yellow_explain'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_yellow'] . '" border="0" alt="' . $lang['Dl_yellow_explain'] . '" title="' . $lang['Dl_yellow_explain'] . '" />';
 			$auth_dl = true;
 		}
 		else
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_alt'] . '" title="' . $lang['Dl_red_explain_alt'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_alt'] . '" title="' . $lang['Dl_red_explain_alt'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_alt'] . '" title="' . $lang['Dl_red_explain_alt'] . '" />';
 			$auth_dl = 0;
 		}
 
 		if ($this->user_posts < $this->dl_config['dl_posts'] && !$this->dl_file[$df_id]['extern'] && !$this->dl_file[$df_id]['free'])
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_alt'] . '" title="' . $lang['Dl_red_explain_alt'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_alt'] . '" title="' . $lang['Dl_red_explain_alt'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_alt'] . '" title="' . $lang['Dl_red_explain_alt'] . '" />';
 			$auth_dl = 0;
 		}
 
 		if ($this->dl_file[$df_id]['free'] == 1)
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_green'] . '" border="0" alt="' . $lang['Dl_green_explain'] . '" title="' . $lang['Dl_green_explain'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_green'] . '" border="0" alt="' . $lang['Dl_green_explain'] . '" title="' . $lang['Dl_green_explain'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_green'] . '" border="0" alt="' . $lang['Dl_green_explain'] . '" title="' . $lang['Dl_green_explain'] . '" />';
 			$auth_dl = true;
 		}
@@ -1573,7 +1568,7 @@ class dlmod
 		{
 			if ($this->dl_config['icon_free_for_reg'] || (!$this->dl_config['icon_free_for_reg'] && $this->user_logged_in))
 			{
-				$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_white'] . '" border="0" alt="' . $lang['Dl_white_explain'] . '" title="' . $lang['Dl_white_explain'] . '" /></a>';
+				$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_white'] . '" border="0" alt="' . $lang['Dl_white_explain'] . '" title="' . $lang['Dl_white_explain'] . '" /></a>';
 				$status_detail = '<img src="' . $images['Dl_white'] . '" border="0" alt="' . $lang['Dl_white_explain'] . '" title="' . $lang['Dl_white_explain'] . '" />';
 			}
 
@@ -1589,30 +1584,30 @@ class dlmod
 
 		if (!$cat_auth['auth_dl'] && !$index[$cat_id]['auth_dl'] && $this->user_level != ADMIN)
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_perm'] . '" title="' . $lang['Dl_red_explain_perm'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_perm'] . '" title="' . $lang['Dl_red_explain_perm'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_red'] . '" border="0" alt="' . $lang['Dl_red_explain_perm'] . '" title="' . $lang['Dl_red_explain_perm'] . '" />';
 			$auth_dl = 0;
 		}
 
 		if ($this->dl_file[$df_id]['file_traffic'] && $this->dl_file[$df_id]['klicks'] * $this->dl_file[$df_id]['file_size'] >= $this->dl_file[$df_id]['file_traffic'])
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_blue'] . '" border="0" alt="' . $lang['Dl_blue_explain_file'] . '" title="' . $lang['Dl_blue_explain_file'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_blue'] . '" border="0" alt="' . $lang['Dl_blue_explain_file'] . '" title="' . $lang['Dl_blue_explain_file'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_blue'] . '" border="0" alt="' . $lang['Dl_blue_explain_file'] . '" title="' . $lang['Dl_blue_explain_file'] . '" />';
 			$auth_dl = 0;
 		}
 
 		if (($this->dl_config['overall_traffic'] - $this->dl_config['remain_traffic'] <= 0) || ($index[$cat_id]['cat_traffic'] && ($index[$cat_id]['cat_traffic'] - $index[$cat_id]['cat_traffic_use'] <= 0)))
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_blue'] . '" border="0" alt="' . $lang['Dl_blue_explain'] . '" title="' . $lang['Dl_blue_explain'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '"><img src="' . $images['Dl_blue'] . '" border="0" alt="' . $lang['Dl_blue_explain'] . '" title="' . $lang['Dl_blue_explain'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_blue'] . '" border="0" alt="' . $lang['Dl_blue_explain'] . '" title="' . $lang['Dl_blue_explain'] . '" />';
 			$auth_dl = 0;
 		}
 
 		if ($this->dl_file[$df_id]['extern'])
 		{
-			$status = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id).'" target="_'.$this->dl_file[$df_id]['file_name'] . '"><img src="' . $images['Dl_grey'] . '" border="0" alt="' . $lang['Dl_grey_explain'] . '" title="' . $lang['Dl_grey_explain'] . '" /></a>';
+			$status = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id).'" target="_'.$this->dl_file[$df_id]['file_name'] . '"><img src="' . $images['Dl_grey'] . '" border="0" alt="' . $lang['Dl_grey_explain'] . '" title="' . $lang['Dl_grey_explain'] . '" /></a>';
 			$status_detail = '<img src="' . $images['Dl_grey'] . '" border="0" alt="' . $lang['Dl_grey_explain'] . '" title="' . $lang['Dl_grey_explain'] . '" />';
-			$file_name = '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id).'" target="_blank">' . $lang['Dl_extern'] . '</a>';
+			$file_name = '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id).'" target="_blank">' . $lang['Dl_extern'] . '</a>';
 			$auth_dl = TRUE;
 		}
 

@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -80,6 +80,9 @@ else
 	$topic_data = array();
 }
 
+$template->_tpldata['topics.'] = array();
+//reset($template->_tpldata['topics.']);
+
 for ($i = 0; $i < $topic_count; $i++)
 {
 	$class = (!($i+1 % 2)) ? $theme['td_class2'] : $theme['td_class1'];
@@ -91,7 +94,7 @@ for ($i = 0; $i < $topic_count; $i++)
 		'CLASS' => $class,
 		'POSTTIME' => $posttime,
 		'TITLE' => $topic_data[$i]['topic_title'],
-		'URL' => append_sid($phpbb_root_path . VIEWTOPIC_MG .'?t=' . $topic_data[$i]['topic_id'])
+		'URL' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG .'?t=' . $topic_data[$i]['topic_id'])
 		)
 	);
 }

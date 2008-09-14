@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -88,15 +88,15 @@ else
  * Send some vars to the template
  */
 $template->assign_vars(array(
-		'IMG_RECOVERY'		=> $phpbb_root_path . $images['ctracker_recovery'],
+		'IMG_RECOVERY'		=> IP_ROOT_PATH . $images['ctracker_recovery'],
 		'L_HEADLINE'		=> $lang['ctracker_rec_head'],
 		'L_SUBHEADLINE'		=> $lang['ctracker_rec_subhead'],
 		'L_BACKUP'			=> $lang['ctracker_rec_backup'],
 		'L_RESTORE'			=> ($saved_now)? $lang['ctracker_rec_restore'] : $lang['ctracker_rec_pab'],
 		'L_SAVE_STATUS'		=> $save_status,
 
-		'U_LINK_BACKUP'		=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=10&mode=backup'),
-		'U_LINK_RESTORE'	=> ($saved_now)? append_sid('admin_cracker_tracker.' . $phpEx . '?modu=10&mode=restore') : ''
+		'U_LINK_BACKUP'		=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=10&mode=backup'),
+		'U_LINK_RESTORE'	=> ($saved_now)? append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=10&mode=restore') : ''
 		)
 	);
 

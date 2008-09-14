@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if(!function_exists(imp_random_attach_block_func))
 {
 	function imp_random_attach_block_func()
 	{
-		global $template, $cms_config_vars, $block_id, $db, $lang, $phpEx, $tree, $attach_config, $phpbb_root_path;
+		global $template, $cms_config_vars, $block_id, $db, $lang, $tree, $attach_config;
 
 		$template->_tpldata['images.'] = array();
 		//reset($template->_tpldata['images.']);
@@ -87,7 +87,7 @@ if(!function_exists(imp_random_attach_block_func))
 			while($imgrow = $db->sql_fetchrow($result))
 			{
 				$img = trim($attach_config['upload_dir']) . '/' . THUMB_DIR . '/t_' . $imgrow['physical_filename'];
-				include_once($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . $phpEx);
+				include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . PHP_EXT);
 				$dim = image_getdimension($img);
 				$width = $dim[0];
 				$height = $dim[1];

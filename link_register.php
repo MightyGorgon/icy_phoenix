@@ -17,17 +17,17 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
-require($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . $phpEx);
+require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 // End session management
 
 $cms_page_id = '13';
@@ -92,10 +92,10 @@ while($row = $db->sql_fetchrow($result))
 if($link_config['lock_submit_site'] && $userdata['user_level'] != ADMIN)
 {
 	$message = $lang['Link_lock_submit_site'];
-	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links.$phpEx") . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links." . PHP_EXT) . '">', '</a>');
 
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links.$phpEx") . '">'
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links." . PHP_EXT) . '">'
 	));
 
 	message_die(GENERAL_MESSAGE, $message);
@@ -105,11 +105,11 @@ if(!$link_config['allow_no_logo'] && !$link_logo_src)
 {
 	$message = $lang['Link_incomplete'];
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links.$phpEx") . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links." . PHP_EXT) . '">', '</a>');
 	$message .= '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links.$phpEx") . '">'
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links." . PHP_EXT) . '">'
 	));
 
 	message_die(GENERAL_MESSAGE, $message);
@@ -163,7 +163,7 @@ if($link_title && $link_desc && $link_category && $link_url)
 
 				if ($link_config['email_notify'])
 				{
-					include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+					include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 					while($to_userdata = $db->sql_fetchrow($admin_result))
 					{
 						if ($to_userdata['user_email'])
@@ -300,11 +300,11 @@ else
 	$message = $lang['Link_incomplete'];
 }
 
-$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links.$phpEx") . '">', '</a>');
+$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links." . PHP_EXT) . '">', '</a>');
 $message .= '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
 $template->assign_vars(array(
-	'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links.$phpEx") . '">'
+	'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links." . PHP_EXT) . '">'
 ));
 
 message_die(GENERAL_MESSAGE, $message);

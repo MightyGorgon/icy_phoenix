@@ -8,11 +8,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -164,9 +164,9 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 					'S_LAST_POST_TIME' => $forum_last_post_time,
 					'S_LAST_POST' => $last_post,
 
-					'U_FORUM' => append_sid($phpbb_root_path . VIEWFORUM_MG ."?" . POST_FORUM_URL . '=' . $subs_forum_id),
-					'U_NEWTOPIC' => append_sid($phpbb_root_path . POSTING_MG . "?mode=newtopic&" . POST_FORUM_URL . '=' . $subs_forum_id),
-					'U_UNSUBSCRIBE' => append_sid($phpbb_root_path . VIEWFORUM_MG . "?" . POST_FORUM_URL . '=' . $subs_forum_id . '&unwatch=forum&start=0'),
+					'U_FORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG ."?" . POST_FORUM_URL . '=' . $subs_forum_id),
+					'U_NEWTOPIC' => append_sid(IP_ROOT_PATH . POSTING_MG . "?mode=newtopic&" . POST_FORUM_URL . '=' . $subs_forum_id),
+					'U_UNSUBSCRIBE' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . "?" . POST_FORUM_URL . '=' . $subs_forum_id . '&unwatch=forum&start=0'),
 					)
 				);
 			$subscribed_forums_count++;
@@ -178,8 +178,8 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 $page_title = $lang['UCP_SubscForums'];
 $meta_description = '';
 $meta_keywords = '';
-include_once($phpbb_root_path . 'includes/users_zebra_block.' . $phpEx);
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'subsc_forums_body.tpl'));
 if ( $subscribed_forums_count != 0 )
 {
@@ -207,6 +207,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

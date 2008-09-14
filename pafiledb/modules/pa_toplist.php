@@ -19,14 +19,14 @@ class pafiledb_toplist extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $phpbb_root_path, $userdata;
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		if(!$this->auth_global['auth_toplist'])
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=stats', true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_toplist'], $this->auth_global['auth_toplist_type']);
@@ -62,10 +62,10 @@ class pafiledb_toplist extends pafiledb_public
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD' => append_sid('dload.' . $phpEx),
-			'U_NEWEST_FILE' => append_sid('dload.' . $phpEx . '?action=toplist&mode=newest'),
-			'U_MOST_POPULAR' => append_sid('dload.' . $phpEx . '?action=toplist&mode=downloads'),
-			'U_TOP_RATED' => append_sid('dload.' . $phpEx . '?action=toplist&mode=rating'),
+			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
+			'U_NEWEST_FILE' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=newest'),
+			'U_MOST_POPULAR' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=downloads'),
+			'U_TOP_RATED' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=rating'),
 			'XS_NEW' => $xs_new,
 			'L_CURRENT_TOPLIST' => $l_current_toplist,
 			'L_NEWEST_FILE' => $lang['Latest_downloads'],
@@ -137,9 +137,9 @@ class pafiledb_toplist extends pafiledb_public
 					'L_30_DAYS' => $lang['30_days'],
 					'L_NEW_FILES' => sprintf($lang['New_Files'], $days),
 
-					'U_ONE_WEEK' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=newest&amp;days=7'),
-					'U_TWO_WEEK' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=newest&amp;days=14'),
-					'U_30_DAYS' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=newest&amp;days=30')
+					'U_ONE_WEEK' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest&amp;days=7'),
+					'U_TWO_WEEK' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest&amp;days=14'),
+					'U_30_DAYS' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest&amp;days=30')
 					)
 				);
 
@@ -160,7 +160,7 @@ class pafiledb_toplist extends pafiledb_public
 						}
 
 						$pafiledb_template->assign_block_vars('files_date', array(
-							'U_DATES' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=newest&amp;days=7&amp;selected_date=' . $day_time),
+							'U_DATES' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest&amp;days=7&amp;selected_date=' . $day_time),
 							'DATES' => date('F d, Y', $day_time),
 							'TOTAL_DOWNLOADS' => $file_num)
 						);
@@ -245,8 +245,8 @@ class pafiledb_toplist extends pafiledb_public
 					for ($i = 0; $i < count($file_rowset); $i++)
 					{
 
-						$cat_url = append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $file_rowset[$i]['file_catid']);
-						$file_url = append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $file_rowset[$i]['file_id']);
+						$cat_url = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $file_rowset[$i]['file_catid']);
+						$file_url = append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_rowset[$i]['file_id']);
 						//===================================================
 						// Format the date for the given file
 						//===================================================
@@ -281,7 +281,7 @@ class pafiledb_toplist extends pafiledb_public
 						{
 							if ($file_rowset[$i]['file_posticon'] == 'none' || $file_rowset[$i]['file_posticon'] == 'none.gif')
 							{
-								$posticon = '<img src="' .$phpbb_root_path . ICONS_DIR . 'default.png" />';
+								$posticon = '<img src="' .IP_ROOT_PATH . ICONS_DIR . 'default.png" />';
 							}
 							else
 							{
@@ -380,13 +380,13 @@ class pafiledb_toplist extends pafiledb_public
 					'L_CATEGORY' => $lang['Category'],
 
 
-					'U_TOP_10' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=num&amp;most_num=10'),
-					'U_TOP_25' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=num&amp;most_num=25'),
-					'U_TOP_50' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=num&amp;most_num=50'),
+					'U_TOP_10' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=num&amp;most_num=10'),
+					'U_TOP_25' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=num&amp;most_num=25'),
+					'U_TOP_50' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=num&amp;most_num=50'),
 
-					'U_TOP_PER_1' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=per&amp;most_num=1'),
-					'U_TOP_PER_5' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=per&amp;most_num=5'),
-					'U_TOP_PER_10' => append_sid('dload.' . $phpEx . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=per&amp;most_num=10')
+					'U_TOP_PER_1' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=per&amp;most_num=1'),
+					'U_TOP_PER_5' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=per&amp;most_num=5'),
+					'U_TOP_PER_10' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=per&amp;most_num=10')
 					)
 				);
 				if ($limit)
@@ -441,8 +441,8 @@ class pafiledb_toplist extends pafiledb_public
 						}
 					}
 
-					$cat_url = append_sid('dload.' . $phpEx . '?action=category&amp;cat_id=' . $searchset[$i]['cat_id']);
-					$file_url = append_sid('dload.' . $phpEx . '?action=file&amp;file_id=' . $searchset[$i]['file_id']);
+					$cat_url = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $searchset[$i]['cat_id']);
+					$file_url = append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $searchset[$i]['file_id']);
 					//===================================================
 					// Format the date for the given file
 					//===================================================

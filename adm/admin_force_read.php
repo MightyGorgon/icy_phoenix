@@ -15,18 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
-	$module['1100_General']['150_FTR_Config'] = append_sid('admin_force_read.' . $phpEx . '?mode=config');
-	$module['1100_General']['160_FTR_Users'] = append_sid('admin_force_read.' . $phpEx . '?mode=users');
+	$module['1100_General']['150_FTR_Config'] = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
+	$module['1100_General']['160_FTR_Users'] = append_sid('admin_force_read.' . PHP_EXT . '?mode=users');
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if(isset($_POST['mode']) || isset($_GET['mode']))
 {
@@ -45,7 +45,7 @@ else
 	$mode = '';
 }
 
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_ftr.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_ftr.' . PHP_EXT);
 
 $update = $_POST['update'];
 
@@ -85,7 +85,7 @@ if($mode == 'users')
 	if($total = $db->sql_fetchrow($result))
 	{
 		$total_users = $total['total'];
-		$pagination = generate_pagination('admin_force_read.' . $phpEx . '?mode=users', $total_users, $show, $start) . '&nbsp;';
+		$pagination = generate_pagination('admin_force_read.' . PHP_EXT . '?mode=users', $total_users, $show, $start) . '&nbsp;';
 	}
 	else
 	{
@@ -235,7 +235,7 @@ elseif($mode == 'config')
 		echo "	</tr>";
 		echo "</table>";
 		echo '<br /><br />';
-		$change_config_2 = append_sid("admin_force_read.$phpEx?mode=config");
+		$change_config_2 = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
 		echo "<form name=\"change_settings_2\" method=\"post\" action=\"$change_config_2\">";
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
@@ -286,7 +286,7 @@ elseif($mode == 'config')
 		echo "</table>";
 		echo '<br /><br />';
 		$forum_to_use = $_POST['change_config_2'];
-		$save_config = append_sid('admin_force_read.' . $phpEx . '?mode=config');
+		$save_config = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
 		echo "<form name=\"save\" method=\"post\" action=\"$save_config\">";
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
@@ -364,7 +364,7 @@ elseif($mode == 'config')
 		$row1 		= $db -> sql_fetchrow($r1);
 		$topic_name	= $row1['topic_title'];
 
-		$delete = append_sid('admin_force_read.' . $phpEx . '?mode=config');
+		$delete = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
 		echo "<form name=\"delete_u\" method=\"post\" action=\"$delete\">";
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
@@ -381,7 +381,7 @@ elseif($mode == 'config')
 		echo "</table>";
 		echo "</form>";
 		echo "<br />";
-		$change_config = append_sid("admin_force_read.$phpEx?mode=config");
+		$change_config = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
 		echo "<form name=\"change_settings\" method=\"post\" action=\"$change_config\">";
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
@@ -502,5 +502,5 @@ echo "		</td>";
 echo "	</tr>";
 echo "</table>";
 
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 ?>

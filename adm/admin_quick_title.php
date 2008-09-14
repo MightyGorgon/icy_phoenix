@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,9 +25,9 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 $start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
 if( isset($_GET['mode']) || isset($_POST['mode']) )
@@ -91,7 +91,7 @@ if( $mode != '' )
 			'POSTER_CHECKED' => ($title_info['poster_auth']==1) ? 'CHECKED' : '',
 			'ADMIN_TITLE' => $lang['Title_infos'],
 			'ADMIN_TITLE_EXPLAIN' => $lang['Quick_title_explain'],
-			'S_TITLE_ACTION' => append_sid('admin_quick_title.' . $phpEx),
+			'S_TITLE_ACTION' => append_sid('admin_quick_title.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 			'ADMIN' => $lang['Administrator'],
 			'MODERATOR' => $lang['Moderator'],
@@ -146,7 +146,7 @@ if( $mode != '' )
 			message_die(GENERAL_ERROR, "Couldn't update/insert into title_infos table", "", __LINE__, __FILE__, $sql);
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 
@@ -171,7 +171,7 @@ if( $mode != '' )
 			{
 				message_die(GENERAL_ERROR, "Couldn't delete title data", "", __LINE__, __FILE__, $sql);
 			}
-			$message = $lang['Title_removed'] . '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['Title_removed'] . '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
@@ -194,7 +194,7 @@ if( $mode != '' )
 		$title_count = count($title_rows);
 
 		$template->assign_vars(array(
-			'S_TITLE_ACTION' => append_sid('admin_quick_title.' . $phpEx),
+			'S_TITLE_ACTION' => append_sid('admin_quick_title.' . PHP_EXT),
 			'ADMIN_TITLE' => $lang['Title_infos'],
 			'ADMIN_TITLE_EXPLAIN' => $lang['Quick_title_explain'],
 			'HEAD_TITLE' => $lang['Title_head'],
@@ -220,8 +220,8 @@ if( $mode != '' )
 				'TITLE' => $title_rows[$i]['title_info'],
 				'PERMISSIONS' => $perm,
 				'DATE_FORMAT' => $title_rows[$i]['date_format'],
-				'U_TITLE_EDIT' => append_sid('admin_quick_title.' . $phpEx . '?mode=edit&amp;id=' . $title_id),
-				'U_TITLE_DELETE' => append_sid('admin_quick_title.' . $phpEx . '?mode=delete&amp;id=' . $title_id)
+				'U_TITLE_EDIT' => append_sid('admin_quick_title.' . PHP_EXT . '?mode=edit&amp;id=' . $title_id),
+				'U_TITLE_DELETE' => append_sid('admin_quick_title.' . PHP_EXT . '?mode=delete&amp;id=' . $title_id)
 				)
 			);
 		}
@@ -252,7 +252,7 @@ else
 	if ( $total = $db->sql_fetchrow($result) )
 	{
 		$total_records = $total['total'];
-		$pagination = generate_pagination('admin_quick_title.' . $phpEx . '?mode=' . $mode, $total_records, 40, $start). ' ';
+		$pagination = generate_pagination('admin_quick_title.' . PHP_EXT . '?mode=' . $mode, $total_records, 40, $start). ' ';
 	}
 
 	$template->assign_vars(array(
@@ -265,7 +265,7 @@ else
 		'L_DELETE' => $lang['Delete'],
 		'PAGINATION' => $pagination,
 		'ADD_NEW' => $lang['Add_new'],
-		'S_TITLE_ACTION' => append_sid('admin_quick_title.' . $phpEx)
+		'S_TITLE_ACTION' => append_sid('admin_quick_title.' . PHP_EXT)
 		)
 	);
 
@@ -285,8 +285,8 @@ else
 			'PERMISSIONS' => $perm,
 			'DATE_FORMAT' => $title_rows[$i]['date_format'],
 
-			'U_TITLE_EDIT' => append_sid('admin_quick_title.' . $phpEx . '?mode=edit&amp;id=' . $title_id),
-			'U_TITLE_DELETE' => append_sid('admin_quick_title.' . $phpEx . '?mode=delete&amp;id=' . $title_id)
+			'U_TITLE_EDIT' => append_sid('admin_quick_title.' . PHP_EXT . '?mode=edit&amp;id=' . $title_id),
+			'U_TITLE_DELETE' => append_sid('admin_quick_title.' . PHP_EXT . '?mode=delete&amp;id=' . $title_id)
 			)
 		);
 	}
@@ -294,6 +294,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

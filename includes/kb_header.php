@@ -15,7 +15,7 @@
 *
 */
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -96,7 +96,7 @@ if (preg_match("/mode=edit/", $query) || preg_match("/mode=add/", $query))
 //$path_kb .=
 if ( preg_match("/article/", $_SERVER['QUERY_STRING']) )
 {
-	$print_url = append_sid('./kb.' . $phpEx . '?mode=article&amp;k=' . $article_id . '&amp;page_num=' . ($page_num + 1) . '&amp;start=' . $start . '&amp;print=true', true);
+	$print_url = append_sid('./kb.' . PHP_EXT . '?mode=article&amp;k=' . $article_id . '&amp;page_num=' . ($page_num + 1) . '&amp;start=' . $start . '&amp;print=true', true);
 	$l_print = $lang['Print_version'];
 	$template->assign_block_vars('switch_print_article', array());
 }
@@ -108,7 +108,7 @@ else
 //Bicet - NavBox on header END
 
 $template->assign_vars(array(
-	'U_PORTAL' => $phpbb_root_path,
+	'U_PORTAL' => IP_ROOT_PATH,
 	'L_PORTAL' => '<<',
 	'L_KB_TITLE' => $block_title,
 	'L_ADD_ARTICLE' => $add_article,

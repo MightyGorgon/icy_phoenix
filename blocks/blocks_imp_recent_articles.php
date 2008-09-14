@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -29,13 +29,13 @@ if(!function_exists(imp_recent_articles_func))
 		the article has been approved, else it is not
 		approved, so don't show it.
 		*/
-		global $style_row, $lang, $template, $cms_config_vars, $block_id, $board_config, $db, $phpbb_root_path, $table_prefix, $phpEx, $userdata, $var_cache;
+		global $style_row, $lang, $template, $cms_config_vars, $block_id, $board_config, $db, $table_prefix, $userdata, $var_cache;
 
 		$template->_tpldata['recent_articles.'] = array();
 		//reset($template->_tpldata['recent_articles.']);
 
-		//include_once($phpbb_root_path. 'includes/kb_constants.' . $phpEx);
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		//include_once(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		$sql = "SELECT * FROM " . KB_ARTICLES_TABLE . " ORDER BY article_id DESC LIMIT " . $cms_config_vars['md_total_articles'][$block_id];
 
 		if(!($result = $db->sql_query($sql)))
@@ -55,7 +55,7 @@ if(!function_exists(imp_recent_articles_func))
 					$author_id = $row['article_author_id'];
 					$author = colorize_username ($author_id);
 					$article_category_id = $row['article_id'];
-					$url = append_sid($phpbb_root_path . 'kb.' . $phpEx . '?mode=article&amp;k=' . $article_category_id);
+					$url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=article&amp;k=' . $article_category_id);
 					if($cms_config_vars['md_recent_articles_style'][$block_id] == '1')
 					{
 						$style_row = 'articles_scroll';

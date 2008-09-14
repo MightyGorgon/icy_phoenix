@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -25,9 +25,9 @@ if (!empty($setmodules))
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if (!intval($attach_config['allow_ftp_upload']))
 {
@@ -229,14 +229,14 @@ else if ($delete && count($delete_id_list) > 0)
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 
-		'S_CONFIRM_ACTION' => append_sid('admin_attach_cp.' . $phpEx),
+		'S_CONFIRM_ACTION' => append_sid('admin_attach_cp.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $hidden_fields
 		)
 	);
 
 	$template->pparse('confirm');
 
-	include('page_footer_admin.' . $phpEx);
+	include('page_footer_admin.' . PHP_EXT);
 
 	exit;
 }
@@ -249,7 +249,7 @@ $template->assign_vars(array(
 	'L_CONTROL_PANEL_EXPLAIN'	=> $lang['Control_panel_explain'],
 
 	'S_VIEW_SELECT'	=> $select_view,
-	'S_MODE_ACTION'	=> append_sid('admin_attach_cp.' . $phpEx))
+	'S_MODE_ACTION'	=> append_sid('admin_attach_cp.' . PHP_EXT))
 );
 
 if ($submit_change && $view == 'attachments')
@@ -580,7 +580,7 @@ if ($view == 'username')
 				'USERNAME'			=> $username,
 				'TOTAL_ATTACHMENTS'	=> $total_attachments,
 				'TOTAL_SIZE'		=> round(($total_size / MEGABYTE), 2),
-				'U_VIEW_MEMBER'		=> append_sid('admin_attach_cp.' . $phpEx . '?view=attachments&amp;uid=' . $members[$i]['user_id']))
+				'U_VIEW_MEMBER'		=> append_sid('admin_attach_cp.' . PHP_EXT . '?view=attachments&amp;uid=' . $members[$i]['user_id']))
 			);
 		}
 	}
@@ -776,7 +776,7 @@ if ($view == 'attachments')
 						$post_title = substr($post_title, 0, 30) . '...';
 					}
 
-					$view_topic = append_sid($phpbb_root_path . 'viewtopic.' . $phpEx . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '#p' . $ids[$j]['post_id']);
+					$view_topic = append_sid(IP_ROOT_PATH . 'viewtopic.' . PHP_EXT . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '#p' . $ids[$j]['post_id']);
 
 					$post_titles[] = '<a href="' . $view_topic . '" class="gen" target="_blank">' . $post_title . '</a>';
 				}
@@ -805,8 +805,8 @@ if ($view == 'attachments')
 
 				'S_DELETE_BOX'	=> $delete_box,
 				'S_HIDDEN'		=> $hidden_field,
-				'U_VIEW_ATTACHMENT'	=> append_sid($phpbb_root_path . 'download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']))
-//				'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . $phpEx . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
+				'U_VIEW_ATTACHMENT'	=> append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments[$i]['attach_id']))
+//				'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . PHP_EXT . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
 			);
 
 		}
@@ -832,7 +832,7 @@ if ($view == 'attachments')
 // Generate Pagination
 if ($do_pagination && $total_rows > $board_config['topics_per_page'])
 {
-	$pagination = generate_pagination('admin_attach_cp.' . $phpEx . '?view=' . $view . '&amp;mode=' . $mode . '&amp;order=' . $sort_order . '&amp;uid=' . $uid, $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
+	$pagination = generate_pagination('admin_attach_cp.' . PHP_EXT . '?view=' . $view . '&amp;mode=' . $mode . '&amp;order=' . $sort_order . '&amp;uid=' . $uid, $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION'	=> $pagination,
@@ -848,6 +848,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

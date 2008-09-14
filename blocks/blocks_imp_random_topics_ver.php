@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,8 +24,8 @@ if(!function_exists(imp_random_topics_ver_block_func))
 {
 	function imp_random_topics_ver_block_func()
 	{
-		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $phpEx, $var_cache, $lang, $bbcode;
-		@include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $var_cache, $lang, $bbcode;
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 		$template->_tpldata['random_topic_ver_row.'] = array();
 		//reset($template->_tpldata['random_topic_ver_row.']);

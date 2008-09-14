@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if(!function_exists(imp_news_posters_func))
 {
 	function imp_news_posters_func()
 	{
-		global $lang, $images, $template, $cms_config_vars, $block_id, $board_config, $db, $phpEx;
+		global $lang, $images, $template, $cms_config_vars, $block_id, $board_config, $db;
 
 		$page_link = htmlspecialchars($cms_config_vars['md_news_posters_page_link'][$block_id]);
 		//0 = alphabetical || 1 = News
@@ -73,7 +73,7 @@ if(!function_exists(imp_news_posters_func))
 			$poster_from_flag = ($row['user_from_flag']) ? ('&nbsp;<img src="images/flags/' . $row['user_from_flag'] . '" alt="' . $row['user_from_flag'] . '" title="' . $row['user_from'] . '" />') : '';
 			$poster_joined = $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']);
 
-			$temp_url = append_sid('privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
+			$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
 			$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 			$pm = '<a href="' . $temp_url . '">' . $lang['PM'] . '</a>';
 

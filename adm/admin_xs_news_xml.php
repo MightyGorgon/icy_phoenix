@@ -16,7 +16,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,11 +25,11 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require_once($phpbb_root_path . 'includes/functions_xs_admin.' . $phpEx);
-require_once($phpbb_root_path . 'includes/functions_xs_useless.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'includes/functions_xs_admin.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 
 // define the path to the admin news templates
 define('XS_TPL_PATH', '../../templates/common/xs_mod/tpl_news/');
@@ -52,7 +52,7 @@ while ( $row = $db->sql_fetchrow($result) )
 }
 
 // load the admin language file
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_xs_news.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
 
 //
 // Mode setting
@@ -147,7 +147,7 @@ if( !empty($mode) )
 			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $xml_id . '" />';
 
 			$template->assign_vars(array(
-				'S_FORUM_ACTION' => append_sid("admin_xs_news_xml.$phpEx"),
+				'S_FORUM_ACTION' => append_sid("admin_xs_news_xml." . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_SUBMIT_VALUE' => $buttonvalue,
 
@@ -196,7 +196,7 @@ if( !empty($mode) )
 			//
 			if( trim($_POST['xml_feed']) == "" )
 			{
-				$message = $lang['n_xml_create_item_null'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news_xml.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = $lang['n_xml_create_item_null'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
@@ -220,7 +220,7 @@ if( !empty($mode) )
 				message_die(GENERAL_ERROR, "Couldn't insert row in news table", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['n_xml_news_item_added'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news_xml.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['n_xml_news_item_added'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -240,7 +240,7 @@ if( !empty($mode) )
 				message_die(GENERAL_ERROR, "Couldn't update XML Feed information", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['n_xml_news_updated'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news_xml.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['n_xml_news_updated'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -268,7 +268,7 @@ if( !empty($mode) )
 					message_die(GENERAL_ERROR, "Couldn't delete XML Feed", "", __LINE__, __FILE__, $sql);
 				}
 
-				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news_xml.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -290,9 +290,10 @@ if( !empty($mode) )
 					'L_YES' => $lang['Yes'],
 					'L_NO' => $lang['No'],
 
-					'S_CONFIRM_ACTION' => append_sid("admin_xs_news_xml.$phpEx?id=$xml_id"),
+					'S_CONFIRM_ACTION' => append_sid('admin_xs_news_xml.' . PHP_EXT . '?id=' . $xml_id),
 					'S_HIDDEN_FIELDS' => $s_hidden_fields
-				));
+					)
+				);
 
 				$template->pparse('confirm');
 			}
@@ -305,7 +306,7 @@ if( !empty($mode) )
 
 	if ($show_index != true)
 	{
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 		exit;
 	}
 }
@@ -318,7 +319,7 @@ $template->set_filenames(array('body' => XS_TPL_PATH . 'news_ticker_list_body.tp
 $master_switch = ( ($xs_news_config['xs_show_ticker'] == 1) ? true : false);
 
 $template->assign_vars(array(
-	'S_FORUM_ACTION' => append_sid("admin_xs_news_xml.$phpEx"),
+	'S_FORUM_ACTION' => append_sid("admin_xs_news_xml." . PHP_EXT),
 	'L_MENU_TITLE' => $lang['n_xml_title'],
 	'L_MENU_EXPLAIN' => $lang['n_xml_title_explain'],
 	'L_MENU_EXPLAINS' => $lang['n_xml_title_explain_0'],
@@ -356,10 +357,10 @@ if( $total_xml = $db->sql_numrows($q_xml) )
 			'XML_TITLE' => $xml_title,
 			'XML_FEED_DISPLAY' => $show_item,
 
-			'U_XML_EDIT' => append_sid("admin_xs_news_xml.$phpEx?mode=editxml&amp;id=$xml_id"),
-			'U_XML_DELETE' => append_sid("admin_xs_news_xml.$phpEx?mode=deletexml&amp;id=$xml_id")
-		));
-
+			'U_XML_EDIT' => append_sid('admin_xs_news_xml.' . PHP_EXT . '?mode=editxml&amp;id=' . $xml_id),
+			'U_XML_DELETE' => append_sid('admin_xs_news_xml.' . PHP_EXT . '?mode=deletexml&amp;id=' . $xml_id)
+			)
+		);
 	}
 
 }
@@ -367,11 +368,12 @@ elseif($db->sql_numrows($q_xml) == 0)
 {
 	$template->assign_block_vars('xml_no_feeds', array(
 		'XML_TITLE' => $lang['n_xml_no_feeds']
-	));
+		)
+	);
 }
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

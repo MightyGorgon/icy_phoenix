@@ -38,8 +38,8 @@
 <tr>
 	<td class="row1" nowrap="nowrap" colspan="3">{L_IP_VERSION}:</td>
 	<td class="row2"><b>{IP_VERSION}</b></td>
-	<td class="row1" nowrap="nowrap">{L_PHPBB_VERSION}:</td>
-	<td class="row2"><b>{PHPBB_VERSION}</b></td>
+	<td class="row1" nowrap="nowrap">&nbsp;<!-- {L_PHPBB_VERSION}: --></td>
+	<td class="row2">&nbsp;<!-- <b>{PHPBB_VERSION}</b> --></td>
 </tr>
 <tr>
 	<td class="row1" nowrap="nowrap" colspan="3">{L_PHP_VERSION}:</td>
@@ -60,16 +60,16 @@
 	<td class="row2"><b>{GZIP_COMPRESSION}</b></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_NUMBER_POSTS}:</td>
-	<td class="row2"><b>{NUMBER_OF_POSTS}</b></td>
-	<td class="row1" nowrap="nowrap">{L_POSTS_PER_DAY}:</td>
-	<td class="row2"><b>{POSTS_PER_DAY}</b></td>
-</tr>
-<tr>
 	<td class="row1" nowrap="nowrap" colspan="3">{L_NUMBER_TOPICS}:</td>
 	<td class="row2"><b>{NUMBER_OF_TOPICS}</b></td>
 	<td class="row1" nowrap="nowrap">{L_TOPICS_PER_DAY}:</td>
 	<td class="row2"><b>{TOPICS_PER_DAY}</b></td>
+</tr>
+<tr>
+	<td class="row1" nowrap="nowrap" colspan="3">{L_NUMBER_POSTS}:</td>
+	<td class="row2"><b>{NUMBER_OF_POSTS}</b></td>
+	<td class="row1" nowrap="nowrap">{L_POSTS_PER_DAY}:</td>
+	<td class="row2"><b>{POSTS_PER_DAY}</b></td>
 </tr>
 <tr>
 	<td class="row1" nowrap="nowrap" colspan="3">{L_NUMBER_USERS}:</td>
@@ -123,9 +123,11 @@
 </tr>
 </table>
 
+<!--
 <br />
 <h1>{L_VERSION_INFORMATION}</h1>
 {VERSION_INFO}<br /><br />
+-->
 
 <br />
 <h1>{L_WHO_IS_ONLINE}</h1>

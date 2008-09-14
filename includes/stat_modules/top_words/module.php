@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -19,35 +19,6 @@ if (!defined('IN_PHPBB'))
 //Vote Images based on the theme path, (i.e. templates/CURRNT_THEME/ is already inserted below)
 
 $rank = 0;
-//
-// Getting voting bar info from template
-//
-if(!$board_config['override_user_style'])
-{
-	if($userdata['user_id'] != ANONYMOUS && isset($userdata['user_style']))
-	{
-		$style = $userdata['user_style'];
-		if(!$theme)
-		$style =  $board_config['default_style'];
-	}
-	else
-	$style =  $board_config['default_style'];
-}
-else
-$style =  $board_config['default_style'];
-
-$sql = "SELECT *
-FROM " . THEMES_TABLE . "
-WHERE themes_id = $style";
-
-if(!$result = $db->sql_query($sql))
-{
-	message_die(CRITICAL_ERROR, "Couldn't query database for theme info.");
-}
-if(!$row = $db->sql_fetchrow($result))
-{
-	message_die(CRITICAL_ERROR, "Couldn't get theme data for themes_id=$style.");
-}
 
 // Total words
 $sql = "SELECT COUNT(word_id) total_words FROM ".SEARCH_MATCH_TABLE;
@@ -72,8 +43,11 @@ $words_data = $db->sql_fetchrowset($result);
 $percentage = 0;
 $bar_percent = 0;
 
-$stopwords_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
+$stopwords_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
 @array_push($stopwords_array, 'quot');
+
+$template->_tpldata['words.'] = array();
+//reset($template->_tpldata['words.']);
 
 $j = 1;
 for ($i = 0; $i < $words_count && $j<=($return_limit); $i++)

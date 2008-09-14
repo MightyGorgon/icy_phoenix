@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -148,7 +148,7 @@ while (isset($users_list[$i]['user_id']))
 		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
 		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
 
-		$emailer->use_template('delete_users', (file_exists($phpbb_root_path . 'language/lang_' . $user_lang . '/email/delete_users.tpl')) ? $user_lang : 'english');
+		$emailer->use_template('delete_users', (file_exists(IP_ROOT_PATH . 'language/lang_' . $user_lang . '/email/delete_users.tpl')) ? $user_lang : 'english');
 		$emailer->email_address($user_email);
 		$emailer->from($board_config['board_email']);
 		$emailer->replyto($board_config['board_email']);

@@ -15,20 +15,9 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
-}
-
-if ( !defined('IS_ICYPHOENIX') )
-{
-	if(!function_exists(create_date2))
-	{
-		function create_date2($format, $gmepoch, $tz)
-		{
-			return create_date($format, $gmepoch, $tz);
-		}
-	}
 }
 
 // ----------------------------------------------------------------------------
@@ -173,7 +162,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	// If everything is empty
 	// --------------------------------
-	if( empty($access_type) && (!$moderator_check) )
+	if(empty($access_type) && (!$moderator_check))
 	{
 		//
 		// Function EXIT here
@@ -202,7 +191,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	}
 
 	$sql .= "
-			FROM ". ALBUM_CAT_TABLE ."
+			FROM " . ALBUM_CAT_TABLE . "
 			WHERE cat_id = '$cat_id'";
 	//
 	// END SQL query generating
@@ -212,9 +201,9 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	// Query the $sql then Fetchrow if $passed_auth == 0
 	// --------------------------------
-	if( !is_array($passed_auth) )
+	if(!is_array($passed_auth))
 	{
-		if( !$result = $db->sql_query($sql) )
+		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not query Album Category information' ,'' , __LINE__, __FILE__, $sql);
 		}
@@ -251,7 +240,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 				break;
 
 			case ALBUM_PRIVATE:
-				if( ($thiscat['cat_'. $access_type[$i] .'_groups'] != '') and ($userdata['session_logged_in']) )
+				if(($thiscat['cat_'. $access_type[$i] .'_groups'] != '') and ($userdata['session_logged_in']))
 				{
 					$groups_access[] = $access_type[$i];
 				}
@@ -279,7 +268,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	// We can return now if $groups_access is empty AND $moderator_check == 0
 	// --------------------------------
-	if( ($moderator_check == 1) && ($thiscat['cat_moderator_groups'] != '') )
+	if(($moderator_check == 1) && ($thiscat['cat_moderator_groups'] != ''))
 	{
 		// We can merge them now
 		$groups_access[] = 'moderator';
@@ -307,12 +296,12 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 				FROM ". USER_GROUP_TABLE ."
 				WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
 					AND group_id IN (". $thiscat['cat_'. $groups_access[$i] .'_groups'] .")";
-		if( !$result = $db->sql_query($sql) )
+		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not query User-Group information' ,'' , __LINE__, __FILE__, $sql);
 		}
 
-		if( $db->sql_numrows($result) > 0 )
+		if($db->sql_numrows($result) > 0)
 		{
 			$album_user_access[$groups_access[$i]] = 1;
 		}
@@ -326,11 +315,11 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// If $moderator_check was called and this user is a MODERATOR he
 	// will be authorised for all accesses which were not set to ADMIN
 	// --------------------------------
-	if( ($album_user_access['moderator'] == 1) && ($moderator_check == 1) )
+	if(($album_user_access['moderator'] == 1) && ($moderator_check == 1))
 	{
 		for ($i = 0; $i < count($album_user_access); $i++)
 		{
-			if( $thiscat['cat_'. $album_user_access_keys[$i] .'_level'] != ALBUM_ADMIN )
+			if($thiscat['cat_'. $album_user_access_keys[$i] .'_level'] != ALBUM_ADMIN)
 			{
 				$album_user_access[$album_user_access_keys[$i]] = 1;
 			}
@@ -380,7 +369,7 @@ function personal_gallery_access($check_view, $check_upload)
 				break;
 
 			case ALBUM_PRIVATE:
-				if( ($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN) )
+				if(($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN))
 				{
 					$personal_gallery_access['upload'] = 1;
 				}
@@ -390,12 +379,12 @@ function personal_gallery_access($check_view, $check_upload)
 							FROM ". USER_GROUP_TABLE ."
 							WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
 								AND group_id IN (". $album_config['personal_gallery_private'] .")";
-					if( !$result = $db->sql_query($sql) )
+					if(!$result = $db->sql_query($sql))
 					{
 						message_die(GENERAL_ERROR, 'Could not query User-Group information' ,'' , __LINE__, __FILE__, $sql);
 					}
 
-					if( $db->sql_numrows($result) > 0 )
+					if($db->sql_numrows($result) > 0)
 					{
 						$personal_gallery_access['upload'] = 1;
 					}
@@ -403,7 +392,7 @@ function personal_gallery_access($check_view, $check_upload)
 				break;
 
 			case ALBUM_ADMIN:
-				if( ($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN) )
+				if(($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN))
 				{
 					$personal_gallery_access['upload'] = 1;
 				}
@@ -430,7 +419,7 @@ function personal_gallery_access($check_view, $check_upload)
 				break;
 
 			case ALBUM_PRIVATE:
-				if( ($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN) )
+				if(($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN))
 				{
 					$personal_gallery_access['view'] = 1;
 				}
@@ -440,12 +429,12 @@ function personal_gallery_access($check_view, $check_upload)
 							FROM ". USER_GROUP_TABLE ."
 							WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
 								AND group_id IN (". $album_config['personal_gallery_private'] .")";
-					if( !$result = $db->sql_query($sql) )
+					if(!$result = $db->sql_query($sql))
 					{
 						message_die(GENERAL_ERROR, 'Could not query User-Group information' ,'' , __LINE__, __FILE__, $sql);
 					}
 
-					if( $db->sql_numrows($result) > 0 )
+					if($db->sql_numrows($result) > 0)
 					{
 						$personal_gallery_access['view'] = 1;
 					}
@@ -474,11 +463,11 @@ function init_personal_gallery_cat($user_id = 0)
 	}
 
 	$sql = "SELECT COUNT(pic_id) AS count
-			FROM ". ALBUM_TABLE .", ". ALBUM_CAT_TABLE . "
+			FROM " . ALBUM_TABLE . ", ". ALBUM_CAT_TABLE . "
 			WHERE pic_cat_id = cat_id
 				AND cat_user_id = ". $user_id;
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not count pics for this personal gallery', '', __LINE__, __FILE__, $sql);
 	}
@@ -493,7 +482,7 @@ function init_personal_gallery_cat($user_id = 0)
 				FROM ". USERS_TABLE ."
 				WHERE user_id = $user_id";
 
-		if( !($result = $db->sql_query($sql)) )
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not obtain user information', '', __LINE__, __FILE__, $sql);
 		}
@@ -557,13 +546,13 @@ function album_end()
 // ----------------------------------------------------------------
 function was_file_uploaded($files_array, $index)
 {
-	if ( @phpversion() < '4.2.0' )
+	if (@phpversion() < '4.2.0')
 	{
-		return ( (empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') || $files_array['size'][$index] == 0 ) ? false : true;
+		return ((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') || $files_array['size'][$index] == 0) ? false : true;
 	}
 	else
 	{
-		return ( ((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') || $files_array['size'][$index] == 0) || $files_array['error'][$index] == 4) ? false : true;
+		return (((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') || $files_array['size'][$index] == 0) || $files_array['error'][$index] == 4) ? false : true;
 	}
 }
 
@@ -587,7 +576,7 @@ function file_uploaded_exceeds_max_size($files_array, $index)
 		//
 		// if 'name' isn't empty BUT 'tmp_name' and 'size' are empty (or for size = 0)
 		// then we must have exceeded our max file size (or another error occured)
-		return ( !empty($files_array['name'][$index]) && ( (empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') &&  $files_array['size'][$index] == 0 ) ) ? true : false;
+		return (!empty($files_array['name'][$index]) && ((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') &&  $files_array['size'][$index] == 0)) ? true : false;
 	}
 }
 
@@ -602,7 +591,7 @@ function generate_picture_title($file_name, $pic_title, $pic_filetype)
 
 	// if the user didn't supply a picture title then generate it from the
 	// picture filename..and clean it up (remove trailing space, underscores and propercase it)
-	if ( empty($pic_title) )
+	if (empty($pic_title))
 	{
 		// remove file extension,
 		// NOTE : were do a lowecase of the filename, to ensure that extension with in BIG or misc cApS get removed also
@@ -662,7 +651,7 @@ function generate_single_pic_title($file_name, $pic_title, $pic_filetype)
 
 	// if the user didn't supply a picture title then generate it from the
 	// picture filename and clean it up (remove trailing space, underscores and propercase it)
-	if ( empty($pic_title) )
+	if (empty($pic_title))
 	{
 		// remove file extension,
 		// NOTE : were do a lowecase of the filename, to ensure that extension with in BIG or misc cApS get removed also
@@ -711,7 +700,7 @@ function ImageRating($rating, $css_style = 'border-style:none')
 	//decide how user wants to show their rating
 	if ($album_config['rate_type'] == 0) //display only images
 	{
-		if ( !$rating )
+		if (!$rating)
 		{
 			return $lang['Not_rated'];
 		}
@@ -720,15 +709,15 @@ function ImageRating($rating, $css_style = 'border-style:none')
 			$r = "";
 			for ($temp = 1; $temp <= $rating; $temp++)
 			{
-				//$r .= '<img src="' . ALBUM_MOD_PATH . 'rank.gif" style="' . $css_style . '" align="middle" />&nbsp;';
-				$r .= '<img src="' . ALBUM_MOD_PATH . 'rating_star.png" style="' . $css_style . '" align="middle" />&nbsp;';
+				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" align="middle" />&nbsp;';
+				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" align="middle" />&nbsp;';
 			}
 			return ($r);
 		}
 	}
 	elseif ($album_config['rate_type'] == 1) //display just text
 	{
-		if ( !$rating )
+		if (!$rating)
 		{
 			return $lang['Not_rated'];
 		}
@@ -739,7 +728,7 @@ function ImageRating($rating, $css_style = 'border-style:none')
 	}
 	else //display both images and text
 	{
-		if ( !$rating )
+		if (!$rating)
 		{
 			return $lang['Not_rated'];
 		}
@@ -748,8 +737,8 @@ function ImageRating($rating, $css_style = 'border-style:none')
 			$r = "";
 			for ($temp = 1; $temp <= $rating; $temp++)
 			{
-				//$r .= '<img src="' . ALBUM_MOD_PATH . 'rank.gif" style="' . $css_style . '" align="middle" />&nbsp;';
-				$r .= '<img src="' . ALBUM_MOD_PATH . 'rating_star.png" style="' . $css_style . '" align="middle" />&nbsp;';
+				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" align="middle" />&nbsp;';
+				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" align="middle" />&nbsp;';
 			}
 		}
 		return (round($rating, 2) . '&nbsp;' . $r);
@@ -759,7 +748,7 @@ function ImageRating($rating, $css_style = 'border-style:none')
 //to have smilies window popup
 function generate_smilies_album($mode, $page_id = 0) //borrowed from phpbbforums...modified to work with album
 {
-	global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path;
+	global $db, $board_config, $template, $lang, $images, $theme;
 	global $user_ip, $session_length, $starttime, $userdata;
 	// Vars needed for CH 2.1.4
 	global $config, $user, $censored_words, $icons, $navigation, $themes, $smilies;
@@ -770,13 +759,13 @@ function generate_smilies_album($mode, $page_id = 0) //borrowed from phpbbforums
 
 	if ($mode == 'window')
 	{
-		$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, $page_id);
+		$userdata = session_pagestart($user_ip);
 		init_userprefs($userdata);
 
 		$gen_simple_header = true;
 
 		$page_title = $lang['Emoticons'];
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('smiliesbody' => 'album_posting_smilies.tpl'));
 	}
@@ -823,7 +812,7 @@ function generate_smilies_album($mode, $page_id = 0) //borrowed from phpbbforums
 
 				if ($col == $smilies_split_row)
 				{
-					if ( ($mode == 'inline') && ($row == $inline_rows - 1) )
+					if (($mode == 'inline') && ($row == $inline_rows - 1))
 					{
 						break;
 					}
@@ -836,13 +825,13 @@ function generate_smilies_album($mode, $page_id = 0) //borrowed from phpbbforums
 				}
 			}
 
-			if ( ($mode == 'inline') && ($num_smilies > $inline_rows * $inline_columns) )
+			if (($mode == 'inline') && ($num_smilies > $inline_rows * $inline_columns))
 			{
 				$template->assign_block_vars('switch_smilies_extra', array());
 
 				$template->assign_vars(array(
 					'L_MORE_SMILIES' => $lang['More_emoticons'],
-					'U_MORE_SMILIES' => append_sid('posting.' . $phpEx . '?mode=smilies'))
+					'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies'))
 				);
 			}
 
@@ -857,7 +846,7 @@ function generate_smilies_album($mode, $page_id = 0) //borrowed from phpbbforums
 	if ($mode == 'window')
 	{
 		$template->pparse('smiliesbody');
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 }
 
@@ -878,7 +867,7 @@ function CanRated ($picID, $userID)
 						AND rate_user_id = $userID
 					LIMIT 1";
 
-		if( !$result = $db->sql_query($sql) )
+		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not query rating information', '', __LINE__, __FILE__, $sql);
 		}
@@ -902,7 +891,7 @@ function CanRated ($picID, $userID)
 
 function album_comment_notify($pic_id)
 {
-	global $db, $board_config, $album_config, $lang, $phpbb_root_path, $phpEx, $userdata;
+	global $db, $board_config, $album_config, $lang, $userdata;
 
 	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE;
 	if (!($result = $db->sql_query($sql)))
@@ -921,7 +910,7 @@ function album_comment_notify($pic_id)
 
 	$sql = "SELECT u.user_id, u.user_email, u.user_lang, p.pic_title
 				FROM " . ALBUM_COMMENT_WATCH_TABLE . " cw, " . USERS_TABLE . " u
-				LEFT JOIN ". ALBUM_TABLE ." AS p ON p.pic_id = $pic_id
+				LEFT JOIN " . ALBUM_TABLE . " AS p ON p.pic_id = $pic_id
 				WHERE cw.pic_id = $pic_id
 					AND cw.user_id NOT IN (" . $userdata['user_id'] . ", " . ANONYMOUS . $user_id_sql . ")
 					AND cw.notify_status = " . COMMENT_WATCH_UN_NOTIFIED . "
@@ -967,11 +956,11 @@ function album_comment_notify($pic_id)
 
 		if (count($bcc_list_ary))
 		{
-			include($phpbb_root_path . 'includes/emailer.'.$phpEx);
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer($board_config['smtp_delivery']);
 
 			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-			$script_name = ($script_name != '') ? $script_name . '/album_showpage.'.$phpEx : 'album_showpage.'.$phpEx;
+			$script_name = ($script_name != '') ? $script_name . '/album_showpage.' . PHP_EXT : 'album_showpage.' . PHP_EXT;
 			$server_name = trim($board_config['server_name']);
 			$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 			$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
@@ -1029,10 +1018,10 @@ function fap_create_server_url()
 
 	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
 	$server_name = trim($board_config['server_name']);
-	$server_protocol = ( $board_config['cookie_secure'] ) ? 'https://' : 'http://';
-	$server_port = ( $board_config['server_port'] <> 80 ) ? ':' . trim($board_config['server_port']) . '/' : '/';
+	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
 	$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
-	$server_url = ( substr($server_url, strlen($server_url) - 2, 2) == '//' ) ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
+	$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
 
 	return $server_url;
 }
@@ -1055,6 +1044,145 @@ function mx_album_uploadfiletype($UploadFile)
 	$y = count($UploadFileTypeTmp) - 1;
 	$r = $UploadFileTypeTmp[$y];
 	return $r;
+}
+
+function picture_quick_thumb($pic_filename, $pic_thumbnail, $thumbnail_file)
+{
+	if (USERS_SUBFOLDERS_ALBUM == true)
+	{
+		if (strpos($pic_filename, '/') !== false)
+		{
+			$pic_path[] = array();
+			$pic_path = explode('/', $pic_filename);
+			$pic_filename = $pic_path[count($pic_path) - 1];
+		}
+	}
+
+	$file_part = explode('.', strtolower($pic_filename));
+	$pic_filetype = $file_part[count($file_part) - 1];
+	$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
+	$pic_base_path = ALBUM_UPLOAD_PATH;
+	$pic_extra_path = '';
+	$pic_new_filename = $pic_extra_path . $pic_filename;
+	$pic_fullpath = $pic_base_path . $pic_new_filename;
+	$pic_thumbnail = ($pic_thumbnail != '') ? $pic_thumbnail : (md5($pic_filename) . '.' . $pic_filetype);
+	$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
+
+	if (USERS_SUBFOLDERS_ALBUM == true)
+	{
+		if (count($pic_path) == 2)
+		{
+			$pic_extra_path = $pic_path[0] . '/';
+			$pic_thumbnail_path = ALBUM_CACHE_PATH . $pic_extra_path;
+			if (is_dir($pic_thumbnail_path))
+			{
+				$pic_new_filename = $pic_extra_path . $pic_filename;
+				$pic_fullpath = $pic_base_path . $pic_new_filename;
+				$pic_thumbnail_fullpath = $pic_thumbnail_path . $pic_thumbnail;
+			}
+		}
+	}
+
+	if (file_exists($pic_thumbnail_fullpath))
+	{
+		$thumbnail_file = $pic_thumbnail_fullpath;
+	}
+	return $thumbnail_file;
+}
+
+function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
+{
+	$pic_info = array();
+	$pic_info['exists'] = false;
+	$pic_info['filename'] = $pic_filename;
+	$pic_info['thumbnail'] = $pic_thumbnail;
+	$pic_info['title'] = $pic_title;
+	if (USERS_SUBFOLDERS_ALBUM == true)
+	{
+		if (strpos($pic_info['filename'], '/') !== false)
+		{
+			$pic_path[] = array();
+			$pic_path = explode('/', $pic_info['filename']);
+			$pic_info['filename'] = $pic_path[count($pic_path) - 1];
+		}
+	}
+
+	$file_part = explode('.', strtolower($pic_info['filename']));
+	$pic_info['filetype'] = $file_part[count($file_part) - 1];
+	$pic_info['filename_only'] = substr($pic_info['filename'], 0, strlen($pic_info['filename']) - strlen($pic_info['filetype']) - 1);
+	$pic_info['base_path'] = ALBUM_UPLOAD_PATH;
+	$pic_info['base_t_s_path'] = ALBUM_CACHE_PATH;
+	$pic_info['base_t_m_path'] = ALBUM_MED_CACHE_PATH;
+	$pic_info['base_t_w_path'] = ALBUM_WM_CACHE_PATH;
+	$pic_info['extra_path'] = '';
+	$pic_info['new_filename'] = $pic_info['extra_path'] . $pic_info['filename'];
+	$pic_info['fullpath'] = $pic_info['base_path'] . $pic_info['new_filename'];
+	$pic_info['thumbnail_new'] = md5($pic_info['filename']) . '.' . $pic_info['filetype'];
+	$pic_info['thumbnail'] = ($pic_info['thumbnail'] == '') ? $pic_info['thumbnail_new'] : $pic_info['thumbnail'];
+	$thumbs_prefixes = array('s', 'm', 'w');
+	for ($i = 0; $i < count($thumbs_prefixes); $i++)
+	{
+		$cp = $thumbs_prefixes[$i];
+		$pic_info['thumbnail_' . $cp . '_fullpath'] = $pic_info['base_t_' . $cp . '_path'] . $pic_info['thumbnail'];
+		$pic_info['thumbnail_new_' . $cp . '_fullpath'] = $pic_info['base_t_' . $cp . '_path'] . $pic_info['thumbnail_new'];
+		if ($cp == 'w')
+		{
+			$pic_info['thumbnail_' . $cp . '_f_fullpath'] = $pic_info['base_t_' . $cp . '_path'] . 'full_' . $pic_info['thumbnail'];
+			$pic_info['thumbnail_new_' . $cp . '_f_fullpath'] = $pic_info['base_t_' . $cp . '_path'] . 'full_' . $pic_info['thumbnail_new'];
+		}
+	}
+	$pic_info['title_reg'] = ereg_replace("[^A-Za-z0-9]", "_", $pic_info['title']);
+
+	if (USERS_SUBFOLDERS_ALBUM == true)
+	{
+		if (count($pic_path) == 2)
+		{
+			$pic_info['extra_path'] = $pic_path[0] . '/';
+			if (is_dir($pic_info['base_path'] . $pic_info['extra_path']))
+			{
+				$pic_info['new_filename'] = $pic_info['extra_path'] . $pic_info['filename'];
+				$pic_info['fullpath'] = $pic_info['base_path'] . $pic_info['new_filename'];
+			}
+			else
+			{
+				$pic_info['exists'] = false;
+				return $pic_info;
+			}
+
+			for ($i = 0; $i < count($thumbs_prefixes); $i++)
+			{
+				$cp = $thumbs_prefixes[$i];
+				$dir_exists = false;
+				$current_t_path = $pic_info['base_t_' . $cp . '_path'] . $pic_info['extra_path'];
+				if (is_dir($current_t_path))
+				{
+					$dir_exists = true;
+				}
+				else
+				{
+					$dir_creation = @mkdir($current_t_path, 0777);
+					if ($dir_creation == true)
+					{
+						@copy($pic_info['base_path'] . 'index.html', $current_t_path . 'index.html');
+						$dir_exists = true;
+					}
+				}
+
+				if ($dir_exists == true)
+				{
+					$pic_info['thumbnail_' . $cp . '_fullpath'] = $current_t_path . $pic_info['thumbnail'];
+					$pic_info['thumbnail_new_' . $cp . '_fullpath'] = $current_t_path . $pic_info['thumbnail_new'];
+					if ($cp == 'w')
+					{
+						$pic_info['thumbnail_' . $cp . '_f_fullpath'] = $current_t_path . 'full_' . $pic_info['thumbnail'];
+						$pic_info['thumbnail_new_' . $cp . '_f_fullpath'] = $current_t_path . 'full_' . $pic_info['thumbnail_new'];
+					}
+				}
+			}
+		}
+	}
+	$pic_info['exists'] = true;
+	return $pic_info;
 }
 
 if (!function_exists(setFlag))

@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -72,9 +72,9 @@ $page_title = $lang['Signature'];
 $meta_description = '';
 $meta_keywords = '';
 
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // save new signature
 if ($submit)
@@ -224,7 +224,7 @@ $template->assign_vars(array(
 	'L_SIGNATURE' => $lang['Signature'],
 	'L_SIGNATURE_EXPLAIN' => sprintf($lang['Signature_explain'], $board_config['max_sig_chars']),
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . $phpEx . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
 	'SMILIES_STATUS' => $smilies_status,
 
 	'SIGNATURE' => stripslashes($signature),
@@ -237,19 +237,19 @@ $template->assign_vars(array(
 
 // BBCBMG - BEGIN
 //$bbcbmg_in_acp = true;
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcb_mg.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END
 // BBCBMG SMILEYS - BEGIN
-include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 generate_smilies('inline');
-include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

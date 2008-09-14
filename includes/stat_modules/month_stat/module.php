@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -73,6 +73,9 @@ $topic_con = 0;
 $topic_sum = 0;
 
 
+$template->_tpldata['news.'] = array();
+//reset($template->_tpldata['news.']);
+
 for ($i = 0; $i < $nyear; $i=$i+1)
 {
 	$class = (!($i % 2)) ? 'row2' : 'row1';
@@ -94,9 +97,13 @@ for ($i = 0; $i < $nyear; $i=$i+1)
 		}
 	}
 	if ($f)
+	{
 		$f = 0;
+	}
 	else
+	{
 		$post = '-';
+	}
 
 	// Topics.
 	for ($j = 0; $j < $nyear; $j=$j+1)
@@ -153,21 +160,21 @@ for ($i = 0; $i < $nyear; $i=$i+1)
 	);
 }
 
-	$template->assign_block_vars('news', array(
-		'CLASS' => 'row2',
-		'DATE' => $lang['Sum_Table'],
-		'USER' => $user_sum,
-		'TOPIC' => $topic_sum,
-		'POST' => $post_sum));
+$template->assign_block_vars('news', array(
+	'CLASS' => 'row2',
+	'DATE' => $lang['Sum_Table'],
+	'USER' => $user_sum,
+	'TOPIC' => $topic_sum,
+	'POST' => $post_sum));
 
-	$template->assign_block_vars('news', array(
-		'CLASS' => 'row2',
-		'DATE' => $lang['Avg_Table'],
-		'USER' => round($user_sum/$user_con,2),
-		'TOPIC' => (!$topic_sum == 0) ? round($topic_sum/$topic_con,2) : 0,
-		'POST' => (!$post_sum == 0) ? round($post_sum/$post_con,2) : 0,
-		)
-	);
+$template->assign_block_vars('news', array(
+	'CLASS' => 'row2',
+	'DATE' => $lang['Avg_Table'],
+	'USER' => round($user_sum/$user_con,2),
+	'TOPIC' => (!$topic_sum == 0) ? round($topic_sum/$topic_con,2) : 0,
+	'POST' => (!$post_sum == 0) ? round($post_sum/$post_con,2) : 0,
+	)
+);
 
 $template->assign_vars(array(
 	'L_DATE' => $lang['Date'],

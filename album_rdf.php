@@ -16,19 +16,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // XML and nocaching headers
 // header ('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
@@ -39,9 +38,9 @@ header ('Content-Type: text/xml');
 // Create main board url
 $fap_full_url = fap_create_server_url();
 
-$index_site = $fap_full_url . 'album.' . $phpEx;
-$index_url = $fap_full_url . 'album_showpage.' . $phpEx;
-$thumb_url = $fap_full_url . 'album_thumbnail.' . $phpEx;
+$index_site = $fap_full_url . 'album.' . PHP_EXT;
+$index_url = $fap_full_url . 'album_showpage.' . PHP_EXT;
+$thumb_url = $fap_full_url . 'album_thumbnail.' . PHP_EXT;
 
 // If not set, set the output count to 50
 $count = ( isset($_GET['np']) ) ? intval($_GET['np']) : 25;

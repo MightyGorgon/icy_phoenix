@@ -13,11 +13,11 @@
 * to reduce table size but also to allow better tags indexing
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -26,10 +26,10 @@ init_userprefs($userdata);
 
 if(!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=stopwords.' . $phpEx, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=stopwords.' . PHP_EXT, true));
 	/*
 	$header_location = (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE'))) ? 'Refresh: 0; URL=' : 'Location: ';
-	header($header_location . append_sid(LOGIN_MG . "?redirect=stopwords.$phpEx", true));
+	header($header_location . append_sid(LOGIN_MG . "?redirect=stopwords." . PHP_EXT, true));
 	exit;
 	*/
 }
@@ -39,7 +39,7 @@ if($userdata['user_level'] != ADMIN)
 	message_die(GENERAL_MESSAGE, 'You are not authorised to access this page');
 }
 
-$stopwords_array = file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
+$stopwords_array = file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
 
 $exclude_list = '';
 foreach($stopwords_array as $curr_word)

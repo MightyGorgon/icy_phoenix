@@ -26,11 +26,11 @@ if ((isset($_GET['mode']) && ($_GET['mode'] == 'viewprofile')) || (isset($_POST[
 	define('ATTACH_PROFILE', true);
 	define('ATTACH_POSTING', true);
 }
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_profile.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 
 // Adding CPL_NAV only if needed
 define('PARSE_CPL_NAV', true);
@@ -82,7 +82,7 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 
 	if ($mode != 'viewprofile')
 	{
-		include_once($phpbb_root_path . 'includes/users_zebra_block.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 	}
 
 	if ($mode == 'viewprofile')
@@ -111,10 +111,9 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 		$cms_global_blocks = ($board_config['wide_blocks_profile'] == 1) ? true : false;
 
 		// Mighty Gorgon - Full Album Pack - BEGIN
-		$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-		include ($album_root_path . 'album_constants.' . $phpEx);
+		include (ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
 		// Mighty Gorgon - Full Album Pack - END
-		include($phpbb_root_path . 'includes/usercp_viewprofile.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_viewprofile.' . PHP_EXT);
 		exit;
 	}
 	elseif (($mode == 'editprofile') || ($mode == 'register'))
@@ -124,7 +123,7 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 			redirect(append_sid(LOGIN_MG . '?redirect=' . PROFILE_MG . '&mode=editprofile', true));
 			//redirect(append_sid(LOGIN_MG . '?redirect=' . PROFILE_MG . '&mode=editprofile&cpl_mode=reg_info', true));
 		}
-		include($phpbb_root_path . 'includes/usercp_register.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_register.' . PHP_EXT);
 		exit;
 	}
 	elseif ($mode == 'signature')
@@ -136,7 +135,7 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 			exit;
 		}
 
-		include($phpbb_root_path . 'includes/usercp_signature.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_signature.' . PHP_EXT);
 		exit;
 	}
 	elseif ($mode == 'confirm')
@@ -146,32 +145,32 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 		{
 			exit;
 		}
-		include($phpbb_root_path . 'includes/usercp_confirm.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_confirm.' . PHP_EXT);
 		exit;
 	}
 	elseif ($mode == 'sendpassword')
 	{
-		include($phpbb_root_path . 'includes/usercp_sendpasswd.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_sendpasswd.' . PHP_EXT);
 		exit;
 	}
 	elseif ($mode == 'activate')
 	{
-		include($phpbb_root_path . 'includes/usercp_activate.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_activate.' . PHP_EXT);
 		exit;
 	}
 	elseif ($mode == 'resend')
 	{
-		include($phpbb_root_path . 'includes/usercp_resend.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_resend.' . PHP_EXT);
 		exit;
 	}
 	elseif ($mode == 'email')
 	{
-		include($phpbb_root_path . 'includes/usercp_email.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_email.' . PHP_EXT);
 		exit;
 	}
 	elseif ($mode == 'zebra')
 	{
-		include($phpbb_root_path . 'includes/usercp_zebra.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/usercp_zebra.' . PHP_EXT);
 		exit;
 	}
 }

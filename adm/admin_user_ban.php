@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if ( !empty($setmodules) )
 {
@@ -26,9 +26,9 @@ if ( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 //
 // Start program
@@ -146,7 +146,7 @@ if ( isset($_POST['submit']) )
 		// CrackerTracker v5.x
 		if ( !empty($_POST['ban_email']) )
 		{
-			include_once($phpbb_root_path . 'ctracker/constants.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
 			$temp_userdata = get_userdata(CT_FIRST_ADMIN_UID, false);
 			if( !$temp_userdata )
 			{
@@ -360,7 +360,7 @@ if (! empty($where_sql))
 		}
 	}
 
-	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid("admin_user_ban.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid("admin_user_ban." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 
@@ -380,7 +380,7 @@ else
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
 
-		'S_BANLIST_ACTION' => append_sid("admin_user_ban.$phpEx"))
+		'S_BANLIST_ACTION' => append_sid("admin_user_ban." . PHP_EXT))
 	);
 
 	$template->assign_vars(array(
@@ -483,12 +483,12 @@ else
 		'S_UNBAN_USERLIST_SELECT' => $select_userlist,
 		'S_UNBAN_IPLIST_SELECT' => $select_iplist,
 		'S_UNBAN_EMAILLIST_SELECT' => $select_emaillist,
-		'S_BAN_ACTION' => append_sid('admin_user_ban.' . $phpEx))
+		'S_BAN_ACTION' => append_sid('admin_user_ban.' . PHP_EXT))
 	);
 }
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

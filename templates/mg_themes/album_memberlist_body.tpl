@@ -43,7 +43,7 @@
 	<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{picrow.piccol.U_PIC}" {TARGET_BLANK}><img src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.DESC}" title="{picrow.piccol.DESC}" vspace="10" border="0" {picrow.piccol.PIC_PREVIEW} /></a>
+			<a href="{picrow.piccol.U_PIC}" {TARGET_BLANK}><img src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.PIC_TITLE}" title="{picrow.piccol.PIC_TITLE}" vspace="10" border="0" {picrow.piccol.PIC_PREVIEW} /></a>
 		</div></div></td></tr></table>
 		</center>
 	</td>

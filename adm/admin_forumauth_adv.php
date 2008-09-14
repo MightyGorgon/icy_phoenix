@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -19,10 +19,10 @@ if( !empty($setmodules) )
 
 // Load default header
 $no_page_header = true;
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . './includes/def_auth.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . './includes/def_auth.' . PHP_EXT);
 
 if( isset($_POST['submit']) )
 {
@@ -69,8 +69,8 @@ if( isset($_POST['submit']) )
 
 	cache_tree(true);
 
-	$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('admin_forumauth_adv.' . $phpEx) . '">'));
-	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'], '<a href="' . append_sid('admin_forumauth_adv.' . $phpEx) . '">', '</a>');
+	$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('admin_forumauth_adv.' . PHP_EXT) . '">'));
+	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'], '<a href="' . append_sid('admin_forumauth_adv.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 
 } // End of submit
@@ -116,16 +116,16 @@ $template->assign_vars(array(
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 
-	'S_FORUMAUTH_ACTION' => append_sid('admin_forumauth_adv.' . $phpEx),
+	'S_FORUMAUTH_ACTION' => append_sid('admin_forumauth_adv.' . PHP_EXT),
 	'S_COLUMN_SPAN' => $s_column_span,
 	'S_HIDDEN_FIELDS' => $s_hidden_fields
 	)
 );
 
-include('./page_header_admin.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

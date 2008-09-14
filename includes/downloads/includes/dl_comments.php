@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -113,7 +113,7 @@ if ($action == 'save' && !$deny_post)
 		$server_url = $server_name . $server_port . $script_path;
 		$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -152,8 +152,8 @@ if ($action == 'save' && !$deny_post)
 				'CATEGORY' => $index[$cat_id]['cat_name'],
 				'USERNAME' => $row['username'],
 				'DOWNLOAD' => $description,
-				'U_APPROVE' => $server_url.'downloads.' . $phpEx . '?view=modcp&amp;action=capprove',
-				'U_DOWNLOAD' => $server_url.'downloads.' . $phpEx . '?view=comment&action=view&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id)
+				'U_APPROVE' => $server_url.'downloads.' . PHP_EXT . '?view=modcp&amp;action=capprove',
+				'U_DOWNLOAD' => $server_url.'downloads.' . PHP_EXT . '?view=comment&action=view&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id)
 			);
 
 			$emailer->send();
@@ -163,7 +163,7 @@ if ($action == 'save' && !$deny_post)
 
 	$approve_message = ($approve) ? '' : '<br />' . $lang['Dl_must_be_approve_comment'];
 
-	$message = $lang['Dl_comment_added'] . $approve_message . '<br /><br />' . sprintf($lang['Click_return_download_details'], '<a href="' . append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id) . '">', '</a>');
+	$message = $lang['Dl_comment_added'] . $approve_message . '<br /><br />' . sprintf($lang['Click_return_download_details'], '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -182,7 +182,7 @@ if ($action == 'delete' && $allow_manage)
 
 		$l_confirm = $lang['Confirm_delete'];
 
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('confirm_body' => 'confirm_body.tpl'));
 
@@ -193,14 +193,14 @@ if ($action == 'delete' && $allow_manage)
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('downloads.' . $phpEx),
+			'S_CONFIRM_ACTION' => append_sid('downloads.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 
 	$sql = "DELETE FROM " . DL_COMMENTS_TABLE . "
@@ -224,7 +224,7 @@ if ($action == 'delete' && $allow_manage)
 
 	if (!$total_comments)
 	{
-		redirect(append_sid('downloads.' . $phpEx . '?view=detail&df_id=' . $df_id, true));
+		redirect(append_sid('downloads.' . PHP_EXT . '?view=detail&df_id=' . $df_id, true));
 	}
 	else
 	{
@@ -286,7 +286,7 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 
 	if ( $board_config['allow_smilies'] )
 	{
-		$u_smilies = append_sid('downloads.' . $phpEx . '?view=comment&amp;action=smilies');
+		$u_smilies = append_sid('downloads.' . PHP_EXT . '?view=comment&amp;action=smilies');
 		$l_smilies = $lang['Emoticons'];
 	}
 	else
@@ -295,7 +295,7 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 		$l_smilies = '';
 	}
 
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_edit_comments_body.tpl'));
 
@@ -339,12 +339,12 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 		'CAT_NAME' => $cat_name,
 		'DESCRIPTION' => $description,
 
-		'S_FORM_ACTION' => append_sid('downloads.' . $phpEx . '?view=comment'),
+		'S_FORM_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=comment'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
-		'U_DL_LINK' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id),
-		'U_CAT_LINK' => append_sid('downloads.' . $phpEx . '?cat=' . $cat_id),
-		'U_DL_TOP' => append_sid('downloads.' . $phpEx),
+		'U_DL_LINK' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id),
+		'U_CAT_LINK' => append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id),
+		'U_DL_TOP' => append_sid('downloads.' . PHP_EXT),
 		'U_SMILIES' => $u_smilies
 		)
 	);
@@ -356,13 +356,13 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 
 	// BBCBMG - BEGIN
 	//$bbcbmg_in_acp = true;
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-	include($phpbb_root_path . 'includes/bbcb_mg.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 	$template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 	// BBCBMG - END
 	// BBCBMG SMILEYS - BEGIN
 	generate_smilies('inline');
-	include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 	$template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 	// BBCBMG SMILEYS - END
 }
@@ -407,7 +407,7 @@ if ($action == 'view' || !$action)
 
 		if ($total_comments > $board_config['posts_per_page'])
 		{
-			$pagination = generate_pagination('downloads.' . $phpEx . '?view=comment&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id, $total_comments, $board_config['posts_per_page'], $start);
+			$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=comment&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id, $total_comments, $board_config['posts_per_page'], $start);
 		}
 		else
 		{
@@ -428,7 +428,7 @@ if ($action == 'view' || !$action)
 		$cat_name = $index[$cat_id]['cat_name'];
 		$cat_name = str_replace("&nbsp;&nbsp;|___&nbsp;", "", $cat_name);
 
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('body' => 'dl_view_comments_body.tpl'));
 
@@ -450,11 +450,11 @@ if ($action == 'view' || !$action)
 			'PAGINATION' => $pagination,
 
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
-			'S_FORM_ACTION' => append_sid('downloads.' . $phpEx . '?view=comment'),
+			'S_FORM_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=comment'),
 
-			'U_DL_LINK' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $df_id),
-			'U_CAT_LINK' => append_sid('downloads.' . $phpEx . '?cat=' . $cat_id),
-			'U_DL_TOP' => append_sid('downloads.' . $phpEx)
+			'U_DL_LINK' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id),
+			'U_CAT_LINK' => append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id),
+			'U_DL_TOP' => append_sid('downloads.' . PHP_EXT)
 			)
 		);
 
@@ -532,8 +532,8 @@ if ($action == 'view' || !$action)
 
 			$post_time = create_date($board_config['default_dateformat'], $comment_time, $board_config['board_timezone']);
 
-			$u_delete_comment = append_sid('downloads.' . $phpEx . '?view=comment&amp;action=delete&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id . '&amp;dl_id=' . $dl_id);
-			$u_edit_comment = append_sid('downloads.' . $phpEx . '?view=comment&amp;action=edit&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id . '&amp;dl_id=' . $dl_id);
+			$u_delete_comment = append_sid('downloads.' . PHP_EXT . '?view=comment&amp;action=delete&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id . '&amp;dl_id=' . $dl_id);
+			$u_edit_comment = append_sid('downloads.' . PHP_EXT . '?view=comment&amp;action=edit&amp;cat_id=' . $cat_id . '&amp;df_id=' . $df_id . '&amp;dl_id=' . $dl_id);
 
 			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 

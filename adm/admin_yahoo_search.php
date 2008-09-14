@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,10 +24,10 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 if ( ! strtolower(@ini_get('safe_mode')) )
 {
@@ -35,7 +35,7 @@ if ( ! strtolower(@ini_get('safe_mode')) )
 }
 
 // Generate page
-include('./page_header_admin.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
 
 $template->set_filenames(array('body' => ADM_TPL . 'yahoo_search_body.tpl'));
 
@@ -122,14 +122,14 @@ if ( isset($_POST['submit']) )
 					$viewtopic_url = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
 				}
 				//URL REWRITE MOD END
-				//$viewtopic_url = 'viewtopic.' . $phpEx . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
+				//$viewtopic_url = 'viewtopic.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
 
 				$out .= $protocol . $server_name . $server_port . $script_path . $viewtopic_url . "\r\n";
 			}
 
 			$out .= ( $_POST['additional_urls'] ) ? trim($_POST['additional_urls']) : '';
 
-			$filename = $phpbb_root_path . '/' . $_POST['search_savepath'] . '/urllist.txt.gz';
+			$filename = IP_ROOT_PATH . '/' . $_POST['search_savepath'] . '/urllist.txt.gz';
 
 			if ( preg_match('#^[0-9]$#', $_POST['compression_level']) )
 			{
@@ -243,14 +243,14 @@ if ( isset($_POST['submit']) )
 			}
 			//URL REWRITE MOD END
 
-			//$viewtopic_url = 'viewtopic.' . $phpEx . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
+			//$viewtopic_url = 'viewtopic.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
 
 			$out .= $protocol . $server_name . $server_port . $script_path . $viewtopic_url . "\r\n";
 		}
 
 		$out .= ( $_POST['additional_urls'] ) ? trim($_POST['additional_urls']) : '';
 
-		$filename = $phpbb_root_path . $_POST['search_savepath'] . '/urllist.txt';
+		$filename = IP_ROOT_PATH . $_POST['search_savepath'] . '/urllist.txt';
 
 		if ( !$file_handle = fopen($filename, 'w') )
 		{
@@ -411,7 +411,7 @@ else
 
 		'SEARCH_SAVEPATH' => $config['yahoo_search_savepath'],
 		'ADDITIONAL_URLS' => $config['yahoo_search_additional_urls'],
-		'S_USER_ACTION' => append_sid('admin_yahoo_search.' . $phpEx),
+		'S_USER_ACTION' => append_sid('admin_yahoo_search.' . PHP_EXT),
 		'S_FORUMS_SELECT' => $forums_select,
 		'S_COMPRESS_FILE_YES' => ( $config['yahoo_search_compress'] ) ? 'checked="checked"' : '',
 		'S_COMPRESS_FILE_NO' => ( !$config['yahoo_search_compress'] ) ? 'checked="checked"' : '',
@@ -421,6 +421,6 @@ else
 	$template->pparse('body');
 }
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

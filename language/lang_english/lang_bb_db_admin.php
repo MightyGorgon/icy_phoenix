@@ -64,6 +64,6 @@ $lang['db_aff_total'] = 'Successfully Completed. Affected Rows: %s';
 $lang['db_no_query'] = 'You did not enter a query!';
 $lang['db_sql_field_changed'] = 'Field Name Changed.';
 $lang['db_sql_query_db'] = 'Query Your Database: ';
-$lang['DB_Admin'] = 'phpBBMyAdmin';
+$lang['DB_Admin'] = 'IP MyAdmin';
 
 ?>

@@ -9,11 +9,11 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_LOGIN', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -32,11 +32,11 @@ else
 
 if (!empty($_POST['redirect']))
 {
-	$redirect_url = str_replace($phpEx . '&', $phpEx . '?', str_replace('?', '&', str_replace('&amp;', '&', urldecode($_POST['redirect']))));
+	$redirect_url = str_replace(PHP_EXT . '&', PHP_EXT . '?', str_replace('?', '&', str_replace('&amp;', '&', urldecode($_POST['redirect']))));
 }
 elseif (!empty($_GET['redirect']))
 {
-	$redirect_url = str_replace($phpEx . '&', $phpEx . '?', str_replace('?', '&', str_replace('&amp;', '&', urldecode($_GET['redirect']))));
+	$redirect_url = str_replace(PHP_EXT . '&', PHP_EXT . '?', str_replace('?', '&', str_replace('&amp;', '&', urldecode($_GET['redirect']))));
 }
 else
 {
@@ -157,7 +157,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 					if ($row['user_id'] != ANONYMOUS)
 					{
 						// CrackerTracker v5.x
-						include_once($phpbb_root_path . 'ctracker/classes/class_log_manager.' . $phpEx);
+						include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
 						$logfile = new log_manager();
 						$logfile->prepare_log($row['username']);
 						$logfile->write_general_logfile($ctracker_config->settings['logsize_logins'], 4);
@@ -220,7 +220,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 else
 {
 	// Do a full login page dohickey if user not already logged in
-	include_once($phpbb_root_path . 'includes/functions_jr_admin.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 
 	if(!$userdata['session_logged_in'] || (isset($_GET['admin']) && $userdata['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($userdata['user_level'] == ADMIN) || (($userdata['user_cms_level'] >= CMS_PUBLISHER)))))
@@ -228,7 +228,7 @@ else
 		$page_title = $lang['Login'];
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('body' => 'login_body.tpl'));
 
@@ -300,7 +300,7 @@ else
 
 		$template->pparse('body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 	else
 	{

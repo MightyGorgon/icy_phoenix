@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -59,12 +59,12 @@ function cryptize_hl_email($email)
 
 function scan_hl_files()
 {
-	global $board_config, $lang, $hl_cache_list, $phpbb_root_path;
+	global $board_config, $lang, $hl_cache_list;
 
 	if (DEBUG_THIS_MOD) $board_config['hacks_list_hl_dir'] = 'hl/';
 
 	// The list of dirs to scan.  By default this is the main phpbb root path and the dir set in the options.
-	$scan_dir_list = array($phpbb_root_path, $phpbb_root_path . HL_DIR);
+	$scan_dir_list = array(IP_ROOT_PATH, IP_ROOT_PATH . HL_DIR);
 
 	foreach($scan_dir_list as $dir_item)
 	{
@@ -185,7 +185,7 @@ if (!function_exists('copyright_nivisec'))
 	*/
 	function copyright_nivisec($name, $year)
 	{
-		print '<br /><div class="copyright" style="text-align:center;">' . $name . ' &copy; ' . $year . ' <a href="http://www.nivisec.com">Nivisec.com</a>.</div>';
+		print '<br /><div class="copyright" style="text-align:center;">' . $name . ' &copy; ' . $year . ' <a href="http://www.nivisec.com">Nivisec.com</a></div>';
 	}
 }
 

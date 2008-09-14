@@ -20,7 +20,7 @@
 * Some functions have been removed by Mighty Gorgon...
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -40,7 +40,7 @@ function attach_setup_viewtopic_auth(&$order_sql, &$sql)
 */
 function attach_build_auth_levels($is_auth, &$s_auth_can)
 {
-	global $lang, $attach_config, $phpEx, $forum_id;
+	global $lang, $attach_config, $forum_id;
 
 	if (intval($attach_config['disable_mod']))
 	{
@@ -48,7 +48,7 @@ function attach_build_auth_levels($is_auth, &$s_auth_can)
 	}
 
 	// If you want to have the rules window link within the forum view too, comment out the two lines, and comment the third line
-//	$rules_link = '(<a href="' . $phpbb_root_path . 'attach_rules.' . $phpEx . '?f=' . $forum_id . '" target="_blank">Rules</a>)';
+//	$rules_link = '(<a href="' . IP_ROOT_PATH . 'attach_rules.' . PHP_EXT . '?f=' . $forum_id . '" target="_blank">Rules</a>)';
 //	$s_auth_can .= ( ( $is_auth['auth_attachments'] ) ? $rules_link . ' ' . $lang['Rules_attach_can'] : $lang['Rules_attach_cannot'] ) . '<br />';
 	$s_auth_can .= (($is_auth['auth_attachments']) ? $lang['Rules_attach_can'] : $lang['Rules_attach_cannot'] ) . '<br />';
 	$s_auth_can .= (($is_auth['auth_download']) ? $lang['Rules_download_can'] : $lang['Rules_download_cannot'] ) . '<br />';

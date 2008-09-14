@@ -36,30 +36,30 @@
 //   but if one is there then all should be there (not fool proof)
 //-----------------------------------------------------------------
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 if (!defined('ALBUM_PUBLIC_GALLERY') || !defined('ALBUM_AUTH_CREATE_PERSONAL'))
 {
-	message_die(GENERAL_ERROR, 'Could not find the needed defines<br />Has they been implemented in ' . ALBUM_MOD_PATH . 'album_constants.' . $phpEx . ' ?', '', __LINE__, __FILE__);
+	message_die(GENERAL_ERROR, 'Could not find the needed defines<br />Has they been implemented in ' . ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT . ' ?', '', __LINE__, __FILE__);
 }
 
 // this is a album_category_hierarchy global variable...
 // man I hate global variables, I really should code this in the OOP maner instead
 $album_data = array();
 
-require_once($album_root_path . 'album_hierarchy_debug.' . $phpEx);
-require_once($album_root_path . 'album_hierarchy_auth.' . $phpEx);
-require_once($album_root_path . 'album_hierarchy_sql.' . $phpEx);
+require_once(ALBUM_MOD_PATH . 'album_hierarchy_debug.' . PHP_EXT);
+require_once(ALBUM_MOD_PATH . 'album_hierarchy_auth.' . PHP_EXT);
+require_once(ALBUM_MOD_PATH . 'album_hierarchy_sql.' . PHP_EXT);
 
 //-----------------------------------------------
 // build the album category administration panel
 //-----------------------------------------------
 function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_level = -1, $column_offset=1)
 {
-	global $db, $template, $phpEx, $lang, $images, $album_data, $userdata, $user_id;
+	global $db, $template, $lang, $images, $album_data, $userdata, $user_id;
 
 	static $username = '';
 
@@ -68,12 +68,12 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 
 	if (defined('IN_ADMIN'))
 	{
-		$admin_url = "admin_album_cat." .$phpEx;
+		$admin_url = 'admin_album_cat.' . PHP_EXT;
 		$is_root = false;
 	}
 	else
 	{
-		$admin_url = "album_personal_cat_admin." .$phpEx;
+		$admin_url = 'album_personal_cat_admin.' . PHP_EXT;
 		$is_root = (($AH_this == ALBUM_ROOT_CATEGORY || $AH_this == 0)) ? true : false;
 	}
 
@@ -208,7 +208,7 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 // --------------------------------
 function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, $real_level = ALBUM_ROOT_CATEGORY, $max_level = ALBUM_ROOT_CATEGORY, $newestpic = NULL)
 {
-	global $phpEx, $template, $db, $board_config, $album_config, $lang, $images, $userdata, $album_data;
+	global $template, $db, $board_config, $album_config, $lang, $images, $userdata, $album_data;
 
 	// init some variables
 	$display = false;
@@ -216,7 +216,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 	$last_pic_info = '';
 	$cat_total_comments = 0;
 
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 
 	// display the level
 	$AH_this = isset($album_data['keys'][$cur_cat_id]) ? $album_data['keys'][$cur_cat_id] : ALBUM_ROOT_CATEGORY;
@@ -280,7 +280,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 			// get the description of the category
 			$subdesc = album_get_object_lang($subcur, 'desc');
 
-			$subpgm = append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $album_data['id'][$subthis]));
+			$subpgm = append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $album_data['id'][$subthis]));
 
 			// the number of picture for the sub category (only one level down)
 			$sub_cats = array();
@@ -321,96 +321,48 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 				{
 					$total = $total + $newestpic[ $sub_cats[$i] ];
 				}
-				if (defined('IS_ICYPHOENIX'))
-				{
-					//$last_pic_id = album_get_last_pic_id($album_data['sub'][$cur_cat_id][$j]);
-					$new_images_class = ($total > 0) ? '-new' : '';
-					$xs_new = ($total > 0) ? '-new' : '';
-					$slideshow_img_xs = ($xs_new) ? $images['icon_minipost_new'] : $images['icon_minipost'];
-					$link_spacer = '<img src="' . $images['spacer'] . '" width="1" height="0" />';
-					$subfolder_img = '<img src="' . $slideshow_img_xs . '" valign="middle" title="' . $sub_total_pics . '" alt="' . $sub_total_pics . '"/>';
-					$sub_cat_separator = ( $i != count ($sub_cats) ) ? ',':'';
-					//$slideshow_link = append_sid(album_append_uid("album_showpage." . $phpEx . "?pic_id=" . $last_pic_id . "&amp;slideshow=5"));
-					$link = $link_spacer . $subfolder_img . '&nbsp;<a href="' . $subpgm . '" title="' . $subdesc . '" class="forumlink2' . $new_images_class . '"><b>' . $subname . '</b></a><b>' . $sub_cat_separator .'</b>&nbsp;';
-				}
-				else
-				{
-					$new_images = ($total > 0) ? true : false;
-					$new_images_img = ($new_images == true) ? $images['icon_minipost_new'] : $images['icon_minipost'];
-					$link_spacer = '<img src="' . $images['spacer'] . '" width="1" height="0" />';
-					$subfolder_img = '<img src="' . $new_images_img . '" valign="middle" title="' . $sub_total_pics . '" alt="' . $sub_total_pics . '"/>';
-					$subfolder_dot = '&#8226;&nbsp;';
-					$link = $link_spacer . $subfolder_img . '<a href="' . $subpgm . '" title="' . $subdesc . '" class="gensmall"><b>' . $subname . '</b></a>&nbsp;';
-				}
+				//$last_pic_id = album_get_last_pic_id($album_data['sub'][$cur_cat_id][$j]);
+				$new_images_class = ($total > 0) ? '-new' : '';
+				$xs_new = ($total > 0) ? '-new' : '';
+				$slideshow_img_xs = ($xs_new) ? $images['icon_minipost_new'] : $images['icon_minipost'];
+				$link_spacer = '<img src="' . $images['spacer'] . '" width="1" height="0" />';
+				$subfolder_img = '<img src="' . $slideshow_img_xs . '" valign="middle" title="' . $sub_total_pics . '" alt="' . $sub_total_pics . '"/>';
+				$sub_cat_separator = ( $i != count ($sub_cats) ) ? ',':'';
+				//$slideshow_link = append_sid(album_append_uid("album_showpage." . PHP_EXT . "?pic_id=" . $last_pic_id . "&amp;slideshow=5"));
+				$link = $link_spacer . $subfolder_img . '&nbsp;<a href="' . $subpgm . '" title="' . $subdesc . '" class="forumlink2' . $new_images_class . '"><b>' . $subname . '</b></a><b>' . $sub_cat_separator .'</b>&nbsp;';
 			}
 
 			if ($link != '')
 			{
-				if (defined('IS_ICYPHOENIX'))
+				$total = 0;
+				// calculate for all the subcats in this branch
+				for ($i = 0; $i < count($sub_cats); $i++)
 				{
-					$total = 0;
-					// calculate for all the subcats in this branch
-					for ($i = 0; $i < count($sub_cats); $i++)
-					{
-						$total = $total + $newestpic[ $sub_cats[$i] ];
-					}
+					$total = $total + $newestpic[ $sub_cats[$i] ];
+				}
 
-					// Mighty Gorgon - Slideshow - BEGIN
-					$ss_cat_id = $album_data['sub'][$cur_cat_id][$j];
-					if ( (album_get_total_pic_cat($ss_cat_id) > 0) && ($album_config['show_slideshow'] == 1) )
-					{
-						//$xs_new = ($total > 0)  ? '-new' : '';
-						$first_pic_id = album_get_first_pic_id($cur_cat_id);
-						$last_pic_id = album_get_last_pic_id($ss_cat_id);
-						$slideshow_link = append_sid(album_append_uid("album_showpage." . $phpEx . "?pic_id=" . $last_pic_id . "&amp;slideshow=5"));
-						$slideshow_link_full = '[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]';
-						//$slideshow_link_full = '<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '&nbsp;' . $slideshow_img . '</a>';
-					}
-					else
-					{
-						$slideshow_link_full = '';
-					}
-					// Mighty Gorgon - Slideshow - END
-					if ( $total > 0 )
-					{
-						$new_text = ($total == 1) ? sprintf($lang['One_new_picture'], $total) : sprintf($lang['Multiple_new_pictures'], $total);
-						$newpics_sub_link = '&nbsp;<img src="' . $images['mini_new_pictures'] . '" alt="' . $new_text .'" title="' . $new_text .'">&nbsp;';
-						$link = $link . $slideshow_link_full;
-					}
+				// Mighty Gorgon - Slideshow - BEGIN
+				$ss_cat_id = $album_data['sub'][$cur_cat_id][$j];
+				if ( (album_get_total_pic_cat($ss_cat_id) > 0) && ($album_config['show_slideshow'] == 1) )
+				{
+					//$xs_new = ($total > 0)  ? '-new' : '';
+					$first_pic_id = album_get_first_pic_id($cur_cat_id);
+					$last_pic_id = album_get_last_pic_id($ss_cat_id);
+					$slideshow_link = append_sid(album_append_uid("album_showpage." . PHP_EXT . "?pic_id=" . $last_pic_id . "&amp;slideshow=5"));
+					$slideshow_link_full = '[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]';
+					//$slideshow_link_full = '<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '&nbsp;' . $slideshow_img . '</a>';
 				}
 				else
 				{
-					// Mighty Gorgon - Slideshow - BEGIN
-					$ss_cat_id = $album_data['sub'][$cur_cat_id][$j];
-					if ( (album_get_total_pic_cat($ss_cat_id) > 0) && ($album_config['show_slideshow'] == 1) )
-					{
-						$first_pic_id = album_get_first_pic_id($ss_cat_id);
-						$last_pic_id = album_get_last_pic_id($ss_cat_id);
-						$slideshow_img = '<img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['Slideshow'] . '" title="' . $lang['Slideshow'] . '" border="0" align="middle" />';
-						$slideshow_link = append_sid(album_append_uid("album_showpage." . $phpEx . "?pic_id=" . $first_pic_id . "&amp;slideshow=5"));
-						$slideshow_link_full = '[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]';
-						//$slideshow_link_full = '<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '&nbsp;' . $slideshow_img . '</a>';
-					}
-					else
-					{
-						$slideshow_link_full = '';
-					}
-					// Mighty Gorgon - Slideshow - END
-					if ( $new_images == true )
-					{
-						$new_text = ($total == 1) ? sprintf($lang['One_new_picture'], $total) : sprintf($lang['Multiple_new_pictures'], $total);
-						$newpics_sub_link = '&nbsp;<img src="' . $images['mini_new_pictures'] . '" alt="' . $new_text .'" title="' . $new_text .'">&nbsp;';
-						$link = $link . $slideshow_link_full;
-						//$link = $link . '[' . $sub_total_pics . $newpics_sub_link . $slideshow_link_full . ']';
-					}
-					else
-					{
-						$link = $link . $slideshow_link_full;
-						//$link = $link . '[' . $sub_total_pics . $slideshow_link_full . ']';
-					}
+					$slideshow_link_full = '';
 				}
-
-
+				// Mighty Gorgon - Slideshow - END
+				if ( $total > 0 )
+				{
+					$new_text = ($total == 1) ? sprintf($lang['One_new_picture'], $total) : sprintf($lang['Multiple_new_pictures'], $total);
+					$newpics_sub_link = '&nbsp;<img src="' . $images['mini_new_pictures'] . '" alt="' . $new_text .'" title="' . $new_text .'">&nbsp;';
+					$link = $link . $slideshow_link_full;
+				}
 
 				if ($album_config['line_break_subcats'] == 1)
 				{
@@ -442,38 +394,18 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 
 		// Mighty Gorgon - Slideshow - BEGIN
 		$new_images = ((intval(($newestpic[$cur_cat_id])) != 0 ) || $new_images_flag) ? true : false;
-		if (defined('IS_ICYPHOENIX'))
-		{
-			$xs_new = ((intval(($newestpic[$cur_cat_id])) != 0 ) || $new_images_flag)  ? '-new' : '';
-		}
-		else
-		{
-		}
-		if ( (album_get_total_pic_cat($cur_cat_id) > 0) && ($album_config['show_slideshow'] == 1) )
-		{
-			if (defined('IS_ICYPHOENIX'))
-			{
-				$first_pic_id = album_get_first_pic_id($cur_cat_id);
-				// Bicet - XS Support - BEGIN
-				$slideshow_img_xs = ($xs_new) ? $images['icon_newest_reply'] : $images['icon_latest_reply'];
-				$slideshow_img = '<img src="' . $slideshow_img_xs . '" alt="' . $lang['Slideshow'] . '" title="' . $lang['Slideshow'] . '" />';
-				// Bicet - XS Support - END
-				$slideshow_link = append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
-				//$slideshow_link_full = '&nbsp;(<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>)&nbsp;';
-				$slideshow_link_full = '&nbsp;[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]&nbsp;';
-			}
-			else
-			{
-				$first_pic_id = album_get_first_pic_id($cur_cat_id);
-				$last_pic_id = album_get_last_pic_id($cur_cat_id);
-				$slideshow_icon = ($new_images == true) ? $images['icon_newest_reply'] : $images['icon_latest_reply'];
-				$slideshow_img = '<img src="' . $slideshow_icon . '" alt="' . $lang['Slideshow'] . '" title="' . $lang['Slideshow'] . '" border="0" align="middle" />';
+		$xs_new = ((intval(($newestpic[$cur_cat_id])) != 0 ) || $new_images_flag)  ? '-new' : '';
 
-				$slideshow_link = append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
-
-				$slideshow_link_full = '&nbsp;[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]&nbsp;';
-				//$slideshow_link_full = '&nbsp;[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '&nbsp;' . $slideshow_img . '</a>]&nbsp;';
-			}
+		if ((album_get_total_pic_cat($cur_cat_id) > 0) && ($album_config['show_slideshow'] == 1))
+		{
+			$first_pic_id = album_get_first_pic_id($cur_cat_id);
+			// Bicet - XS Support - BEGIN
+			$slideshow_img_xs = ($xs_new) ? $images['icon_newest_reply'] : $images['icon_latest_reply'];
+			$slideshow_img = '<img src="' . $slideshow_img_xs . '" alt="' . $lang['Slideshow'] . '" title="' . $lang['Slideshow'] . '" />';
+			// Bicet - XS Support - END
+			$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
+			//$slideshow_link_full = '&nbsp;(<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>)&nbsp;';
+			$slideshow_link_full = '&nbsp;[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]&nbsp;';
 		}
 		else
 		{
@@ -481,38 +413,23 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		}
 		// Mighty Gorgon - Slideshow - END
 
-		if (defined('IS_ICYPHOENIX'))
+		if ($xs_new)
 		{
-			if ($xs_new)
-			{
-				$cat_img = ( intval(count($sub_cats)) >0 ) ? $images['forum_sub_unread'] : $cat_img = $images['forum_nor_unread'];
-			}
-			else
-			{
-				$cat_img = ( intval(count($sub_cats)) >0 ) ? $images['forum_sub_read'] : $cat_img = $images['forum_nor_read'];
-			}
-			if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
-			{
-				$cat_url = append_sid(str_replace ('--', '-', make_url_friendly(album_get_object_lang($cur_cat_id, 'name')) . '-ac' . $cat_id . '.html'));
-			}
-			else
-			{
-				$cat_url = append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id));
-			}
+			$cat_img = ( intval(count($sub_cats)) >0 ) ? $images['forum_sub_unread'] : $cat_img = $images['forum_nor_unread'];
 		}
 		else
 		{
-			if ($new_images == true)
-			{
-				$cat_img = $images['forum_new'];
-			}
-			else
-			{
-				$cat_img = $images['forum'];
-			}
-			$xs_new = '';
-			$cat_url = append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id));
+			$cat_img = ( intval(count($sub_cats)) >0 ) ? $images['forum_sub_read'] : $cat_img = $images['forum_nor_read'];
 		}
+		if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
+		{
+			$cat_url = append_sid(str_replace ('--', '-', make_url_friendly(album_get_object_lang($cur_cat_id, 'name')) . '-ac' . $cat_id . '.html'));
+		}
+		else
+		{
+			$cat_url = append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id));
+		}
+
 		// send all the data to the template, except for the sub categories links
 		$template->assign_block_vars('catmain', array());
 		$template->assign_block_vars('catmain.catrow', array(
@@ -522,7 +439,6 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 			'CAT_DESC' => $cat_desc,
 			'XS_NEW' => $xs_new,
 			'U_VIEWCAT' => $cat_url,
-			//'U_VIEWCAT' => append_sid(album_append_uid("album_cat.$phpEx?cat_id=$cat_id")),
 			'L_MODERATORS' => empty($moderators) ? '' : $lang['Moderators'] . ' :',
 			'MODERATORS' => $moderators,
 			)
@@ -531,14 +447,8 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		if ( intval(($newestpic[ $cur_cat_id ])) != 0 )
 		{
 			$new_text = ($newestpic[ $cur_cat_id ] > 1) ? sprintf($lang['Multiple_new_pictures'], $newestpic[ $cur_cat_id ]) : sprintf($lang['One_new_picture'], $newestpic[ $cur_cat_id ]);
-			if (defined('IS_ICYPHOENIX'))
-			{
-				$xs_new = (intval(($newestpic[ $cur_cat_id ])) != 0)  ? '-new' : '';
-			}
-			else
-			{
-				$new_images = (intval(($newestpic[ $cur_cat_id ])) != 0) ? true : false;
-			}
+			$xs_new = (intval(($newestpic[ $cur_cat_id ])) != 0)  ? '-new' : '';
+
 			$template->assign_block_vars('catmain.catrow.newpics', array(
 				'I_NEWEST_PICS' => $images['mini_new_pictures'],
 				'L_NEWEST_PICS' => $new_text
@@ -610,15 +520,15 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 
 			if ($album_config['fullpic_popup'] == 0)
 			{
-				$pic_url_sid = append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $last_pic_id));
+				$pic_url_sid = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id));
 				$pic_target = '_self';
 			}
 			else
 			{
-				$pic_url_sid = append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $last_pic_id));
+				$pic_url_sid = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $last_pic_id));
 				$pic_target = '_blank';
 			}
-			$pic_thumb_sid = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $last_pic_id));
+			$pic_thumb_sid = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $last_pic_id));
 
 			if ($last_pic_id == 0)
 			{
@@ -929,26 +839,15 @@ function album_make_nav_tree($cur_cat_id, $pgm, $nav_class = 'nav', $user_id = A
 		{
 			$pgm_name = $pgm;
 		}
-		if (defined('IS_ICYPHOENIX'))
+		$k = $k + 1;
+		if (!empty($field_name) && ( $album_data['auth'][$param_value]['view']==1) && $k == 1 )
 		{
-			$k = $k + 1;
-			if (!empty($field_name) && ( $album_data['auth'][$param_value]['view']==1) && $k == 1 )
-			{
-				$res = '<a href="' . append_sid(album_append_uid('./' . $pgm_name . (($field_name != '') ? "?$param_type=$param_value" : ''))) . '" class="nav-current">' . $field_name . '</a>' . (($res != '') ? ALBUM_NAV_ARROW . $res : '');
-			}
-			elseif (!empty($field_name) && ( $album_data['auth'][$param_value]['view']==1) )
-			{
-				$res = '<a href="' . append_sid(album_append_uid('./' . $pgm_name . (($field_name != '') ? "?$param_type=$param_value" : ''))) . '" class="nav">' . $field_name . '</a>' . (($res != '') ? ALBUM_NAV_ARROW . $res : '');
-			}
+			$res = '<a href="' . append_sid(album_append_uid('./' . $pgm_name . (($field_name != '') ? "?$param_type=$param_value" : ''))) . '" class="nav-current">' . $field_name . '</a>' . (($res != '') ? ALBUM_NAV_ARROW . $res : '');
 		}
-		else
+		elseif (!empty($field_name) && ( $album_data['auth'][$param_value]['view']==1) )
 		{
-			if (!empty($field_name) && ( $album_data['auth'][$param_value]['view'] == 1) )
-			{
-				$res = '<a href="' . append_sid(album_append_uid('./' . $pgm_name . (($field_name != '') ? "?$param_type=$param_value" : ''))) . '" class="' . $nav_class . '">' . $field_name . '</a>' . (($res != '') ? ALBUM_NAV_ARROW . $res : '');
-			}
+			$res = '<a href="' . append_sid(album_append_uid('./' . $pgm_name . (($field_name != '') ? "?$param_type=$param_value" : ''))) . '" class="nav">' . $field_name . '</a>' . (($res != '') ? ALBUM_NAV_ARROW . $res : '');
 		}
-
 
 		// find parent object
 		if ($fcur != '')
@@ -1246,7 +1145,7 @@ function album_validate_jumpbox_selection($cat_id)
 //-----------------------------------------------
 function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key = ALBUM_AUTH_VIEW)
 {
-	global $phpEx, $lang, $album_data , $userdata;
+	global $lang, $album_data , $userdata;
 
 	if ( count($album_data['data']) == 0 )
 	{
@@ -1267,7 +1166,7 @@ function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key
 
 	$res = $javascript;
 
-	$res .= '<form name="jumpbox" action="'. append_sid(album_append_uid("album_cat.$phpEx")) .'" method="get">';
+	$res .= '<form name="jumpbox" action="'. append_sid(album_append_uid("album_cat." . PHP_EXT)) .'" method="get">';
 	$res .= $lang['Jump_to'] . ':&nbsp;<select name="cat_id" onChange="onChangeCheck()">';
 	$res .= album_get_tree_option($cat_id, $auth_key, ALBUM_SELECTBOX_INCLUDE_ROOT);
 	$res .= '</select>';
@@ -1360,7 +1259,7 @@ function album_build_url_parameters($parameters)
 //-----------------------------------------------
 function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_header = false, $show_public_footer = false, $force_display = false)
 {
-	global $lang, $board_config, $template, $images, $album_data, $album_config, $phpEx, $userdata;
+	global $lang, $board_config, $template, $images, $album_data, $album_config, $userdata;
 	$keys = array();
 
 	// for testing ONLY
@@ -1389,22 +1288,11 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 	if (($force_display) && (!$is_personal_gallery) && (count($album_data) == 0))
 	{
 		$template->assign_block_vars('catmain', array());
-		if (defined('IS_ICYPHOENIX'))
-		{
-			$template->assign_block_vars('catmain.catrow', array(
-				'CAT_TITLE' => $lang['No_Public_Galleries'],
-				'CAT_IMG' => $images['forum_nor_locked_read']
-				)
-			);
-		}
-		else
-		{
-			$template->assign_block_vars('catmain.catrow', array(
-				'CAT_TITLE' => $lang['No_Public_Galleries'],
-				'CAT_IMG' => $images['forum_locked']
-				)
-			);
-		}
+		$template->assign_block_vars('catmain.catrow', array(
+			'CAT_TITLE' => $lang['No_Public_Galleries'],
+			'CAT_IMG' => $images['forum_nor_locked_read']
+			)
+		);
 
 		$display = true;
 	}
@@ -1424,11 +1312,11 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 			$template->assign_block_vars('catheader', array(
 					'L_CATEGORY' => $lang['Category'],
 					'L_PUBLIC_CATS' => (!$is_personal_gallery) ? $lang['Public_Categories'] : sprintf($lang['Personal_Gallery_Of_User'], album_get_user_name($user_id)),
-					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . $phpEx . '?user_id=' . $userdata['user_id'])),
-					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . album_get_personal_root_id($userdata['user_id']) . 'user_id=' . $userdata['user_id'])),
+					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $userdata['user_id'])),
+					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($userdata['user_id']) . 'user_id=' . $userdata['user_id'])),
 					'L_YOUR_PERSONAL_GALLERY' => $lang['Your_Personal_Gallery'],
 
-					'U_USERS_PERSONAL_GALLERIES' => append_sid(album_append_uid('album_personal_index.' . $phpEx)),
+					'U_USERS_PERSONAL_GALLERIES' => append_sid(album_append_uid('album_personal_index.' . PHP_EXT)),
 					'L_USERS_PERSONAL_GALLERIES' => $lang['Users_Personal_Galleries']
 				)
 			);
@@ -1439,11 +1327,11 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 			if ($show_public_footer == true)
 			{
 				$template->assign_block_vars('catfooter.cat_public_footer', array(
-					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . $phpEx . '?user_id=' . $userdata['user_id'])),
-					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . album_get_personal_root_id($userdata['user_id']) . 'user_id=' . $userdata['user_id'])),
+					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $userdata['user_id'])),
+					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($userdata['user_id']) . 'user_id=' . $userdata['user_id'])),
 					'L_YOUR_PERSONAL_GALLERY' => $lang['Your_Personal_Gallery'],
 
-					'U_USERS_PERSONAL_GALLERIES' => append_sid(album_append_uid('album_personal_index.' . $phpEx)),
+					'U_USERS_PERSONAL_GALLERIES' => append_sid(album_append_uid('album_personal_index.' . PHP_EXT)),
 					'L_USERS_PERSONAL_GALLERIES' => $lang['Users_Personal_Galleries'],
 
 					'FOOTER_COL_SPAN' => $cols_span

@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -47,6 +47,9 @@ if (!($result = $db->sql_query($sql)))
 $topic_count = $db->sql_numrows($result);
 $topic_data = $db->sql_fetchrowset($result);
 
+$template->_tpldata['topicviews.'] = array();
+//reset($template->_tpldata['topicviews.']);
+
 for ($i = 0; $i < $topic_count; $i++)
 {
 	$class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
@@ -56,7 +59,7 @@ for ($i = 0; $i < $topic_count; $i++)
 		'CLASS' => $class,
 		'TITLE' => $topic_data[$i]['topic_title'],
 		'VIEWS' => $topic_data[$i]['topic_views'],
-		'URL' => append_sid($phpbb_root_path . VIEWTOPIC_MG .'?t=' . $topic_data[$i]['topic_id']))
+		'URL' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG .'?t=' . $topic_data[$i]['topic_id']))
 	);
 }
 

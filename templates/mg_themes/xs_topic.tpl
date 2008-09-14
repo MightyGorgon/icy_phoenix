@@ -13,7 +13,7 @@ function openAllSmiles()
 <?php
 
 // check if quick reply is enabled
-global $userdata, $board_config, $topic_id, $is_auth, $forum_topic_data, $lang, $phpEx, $images;
+global $userdata, $board_config, $topic_id, $is_auth, $forum_topic_data, $lang, $images;
 
 $can_reply = $userdata['session_logged_in'] ? true : false;
 //$can_reply = true;

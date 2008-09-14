@@ -17,7 +17,7 @@
 
 // CTracker_Ignore: File checked by human
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }

@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -77,7 +77,7 @@ if ( !album_check_permission($auth_data, ALBUM_AUTH_VIEW) )
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . '?redirect=album.' . $phpEx . '&user_id=' . $album_user_id));
+		redirect(append_sid(LOGIN_MG . '?redirect=album.' . PHP_EXT . '&user_id=' . $album_user_id));
 	}
 	else
 	{
@@ -123,15 +123,15 @@ $has_parent_cats = album_has_parent_cats($cat_id);
 // ------------------------------------------------------------------------
 if ($is_root_cat)
 {
-	$album_page_url = 'album.' . $phpEx;
+	$album_page_url = 'album.' . PHP_EXT;
 }
 else
 {
-	$album_page_url = 'album_cat.' . $phpEx;
+	$album_page_url = 'album_cat.' . PHP_EXT;
 }
 
 
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_cat_body.tpl'));
 
@@ -275,7 +275,7 @@ if ($row['count'] == 0)
 {
 	if ( !strstr($album_nav_cat_desc, sprintf($lang['Personal_Gallery_Of_User'], $username)) )
 	{
-		$album_nav_cat_desc .= ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . $phpEx . '?cat_id=' . $cat_id)) . '" class="nav">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>';
+		$album_nav_cat_desc .= ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT . '?cat_id=' . $cat_id)) . '" class="nav">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>';
 	}
 
 	// ------------------------------------------------------------------------
@@ -326,7 +326,7 @@ if ($row['count'] == 0)
 		{
 			$no_personal_gallery = true;
 			$no_picture_message = sprintf($lang['Personal_gallery_not_created'], $username);
-			$create_personal_cat_link = '<a href="' . append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?action=create&amp;user_id=' . $album_user_id)) . '">' . $lang['Create_Personal_Categories'] . '</a><br />';
+			$create_personal_cat_link = '<a href="' . append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?action=create&amp;user_id=' . $album_user_id)) . '">' . $lang['Create_Personal_Categories'] . '</a><br />';
 			if ( album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) == true )
 			{
 				$template->assign_block_vars('index_pics_block.no_pics.manage_personal_gal_folders', array());
@@ -358,11 +358,11 @@ else
 // Check if we should show the upload picture image/icon
 // ------------------------------------------------------------------------
 $upload_img = $images['upload_pic'];
-$upload_link = append_sid(album_append_uid('album_upload.' . $phpEx . '?cat_id=' . intval($cat_id)));
+$upload_link = append_sid(album_append_uid('album_upload.' . PHP_EXT . '?cat_id=' . intval($cat_id)));
 $upload_full_link = '<a href="' . $upload_link . '"><img src="' . $upload_img .'" alt="' . $lang['Upload_Pic'] . '" title="' . $lang['Upload_Pic'] . '" align="middle" border="0" /></a>';
 
 $download_img = $images['download_pic'];
-$download_link = append_sid(album_append_uid('album_download.' . $phpEx . '?cat_id=' . intval($cat_id) . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . ( ($start != '') ? '&amp;start=' . $start : '' )));
+$download_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . intval($cat_id) . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . ( ($start != '') ? '&amp;start=' . $start : '' )));
 $download_full_link = '<a href="' . $download_link . '"><img src="' . $download_img . '" alt="' . $lang['Download_page'] . '" title="' . $lang['Download_page'] . '" align="middle" border="0" /></a>';
 
 if( ((album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) == true) && ($enable_picture_upload_switch == false)) || ($no_personal_gallery = false) )
@@ -425,11 +425,11 @@ $template->assign_vars(array(
 	'L_ALBUM_HON' => $lang['Hot_Or_Not'],
 	'L_ALBUM_RDF' => $lang['Pic_RDF'],
 	'L_ALBUM_RSS' => $lang['Pic_RSS'],
-	'U_ALBUM_ALLPICS' => append_sid(album_append_uid('album_allpics.' . $phpEx)),
-	'U_ALBUM_OTF' => append_sid(album_append_uid('album_otf.' . $phpEx)),
-	'U_ALBUM_HON' => append_sid(album_append_uid('album_hotornot.' . $phpEx)),
-	'U_ALBUM_RDF' => append_sid(album_append_uid('album_rdf.' . $phpEx)),
-	'U_ALBUM_RSS' => append_sid(album_append_uid('album_rss.' . $phpEx)),
+	'U_ALBUM_ALLPICS' => append_sid(album_append_uid('album_allpics.' . PHP_EXT)),
+	'U_ALBUM_OTF' => append_sid(album_append_uid('album_otf.' . PHP_EXT)),
+	'U_ALBUM_HON' => append_sid(album_append_uid('album_hotornot.' . PHP_EXT)),
+	'U_ALBUM_RDF' => append_sid(album_append_uid('album_rdf.' . PHP_EXT)),
+	'U_ALBUM_RSS' => append_sid(album_append_uid('album_rss.' . PHP_EXT)),
 
 	'L_UPLOAD_PIC' => $lang['Upload_Pic'],
 	'U_UPLOAD_PIC' => $upload_link,
@@ -446,7 +446,7 @@ $template->assign_vars(array(
 	'U_CREATE_PERSONAL_GALLERY' => $create_personal_cat_link,
 	'CREATE_CATEGORY_IMG' => $images['manage_pic'],
 
-	'U_MANAGE_PIC' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?cat_id=' . $cat_id)),
+	'U_MANAGE_PIC' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)),
 	'MANAGE_PIC_IMG' => $images['manage_pic'],
 	'L_MANAGE_PIC' => $lang['manage_Pic'],
 

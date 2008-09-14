@@ -15,7 +15,7 @@
 *
 */
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -91,7 +91,7 @@ if ( $submit )
 
 		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && $username != $userdata['username']))
 		{
-			include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 			$result = validate_username($username);
 			if ($result['error'])
@@ -123,7 +123,7 @@ if ( $submit )
 
 			if ( !($kb_is_auth['auth_edit'] || $kb_is_auth['auth_mod']) )
 			{
-				$message = $lang['No_edit'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+				$message = $lang['No_edit'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 				mx_message_die( GENERAL_MESSAGE, $message );
 			}
 
@@ -200,7 +200,7 @@ if ( $submit )
 
 			if ( !($kb_is_auth['auth_post'] || $kb_is_auth['auth_mod']) )
 			{
-				$message = $lang['No_add'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+				$message = $lang['No_add'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 				mx_message_die( GENERAL_MESSAGE, $message );
 			}
 
@@ -271,12 +271,12 @@ if ( $submit )
 	{
 		mx_add_search_words( 'single', $article_id, stripslashes( $article_text ), stripslashes( $article_title ), 'kb' );
 
-		// $message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
-		$message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf($lang['Click_return_article'], '<a href="' . append_sid(this_kb_mxurl("mode=article&amp;k=" . $article_id)). '">', '</a>') . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+		// $message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
+		$message = $lang['Article_submitted'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf($lang['Click_return_article'], '<a href="' . append_sid(this_kb_mxurl("mode=article&amp;k=" . $article_id)). '">', '</a>') . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 	}
 	else
 	{
-		$message = $lang['Article_submitted_Approve'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+		$message = $lang['Article_submitted_Approve'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 	}
 
 	mx_message_die( GENERAL_MESSAGE, $message );
@@ -308,13 +308,13 @@ if ( !$kb_is_auth['auth_mod'] )
 {
 	if ( $kb_post_mode == 'edit' && !$kb_is_auth['auth_edit'] )
 	{
-		$message = $lang['No_edit'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+		$message = $lang['No_edit'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 		mx_message_die( GENERAL_MESSAGE, $message );
 	}
 
 	if ( $kb_post_mode == 'add' && ( !$kb_is_auth['auth_post'] || $kb_config['allow_new'] == 0 ) )
 	{
-		$message = $lang['No_add'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid($phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+		$message = $lang['No_add'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid(IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 		mx_message_die( GENERAL_MESSAGE, $message );
 	}
 }
@@ -436,7 +436,7 @@ $kb_text = str_replace('<br />', "\n", $kb_text);
 
 if ( !$is_block )
 {
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx );
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT );
 }
 
 // HTML toggle selection
@@ -480,7 +480,7 @@ if ( $bbcode_on )
 	$template->assign_block_vars('switch_bbcodes', array());
 }
 // load header
-include($phpbb_root_path . 'includes/kb_header.' . $phpEx );
+include(IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT );
 
 // set up page
 $template->set_filenames(array('body' => 'kb_post_body.tpl'));
@@ -523,7 +523,7 @@ $template->assign_vars( array(
 	'L_NAME' => $lang['Username'],
 
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf( $bbcode_status, '<a href="' . append_sid('faq.' . $phpEx . '?mode=bbcode' ) . '" target="_phpbbcode">', '</a>' ),
+	'BBCODE_STATUS' => sprintf( $bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode' ) . '" target="_phpbbcode">', '</a>' ),
 	'SMILIES_STATUS' => $smilies_status,
 
 	'L_EMPTY_MESSAGE' => $lang['Empty_message'],
@@ -553,17 +553,17 @@ $template->assign_vars( array(
 
 get_kb_type_list( $type_id );
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 // BBCBMG - BEGIN
 //$bbcbmg_in_acp = true;
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcb_mg.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END
 // BBCBMG SMILEYS - BEGIN
-include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 generate_smilies('inline');
-include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 

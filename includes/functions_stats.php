@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -35,7 +35,7 @@ function sql_quote($data)
 
 function generate_module_info($module_data, $install = false)
 {
-	global $db, $phpbb_root_path, $__stats_config;
+	global $db, $__stats_config;
 
 	$module_dir = trim($module_data['name']);
 
@@ -46,7 +46,7 @@ function generate_module_info($module_data, $install = false)
 	$ret_array['condition_result'] = true;
 	$condition = '';
 
-	if ($module_data['module_info_time'] == filemtime($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $module_dir . '/info.txt'))
+	if ($module_data['module_info_time'] == filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '/info.txt'))
 	{
 		$ret_array = unserialize(stripslashes($module_data['module_info_cache']));
 	}
@@ -54,7 +54,7 @@ function generate_module_info($module_data, $install = false)
 	{
 		$extra_info_mode = false;
 		$ret_array['default_update_time'] = 0;
-		$data_file = @file($phpbb_root_path . trim($__stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
+		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
 
 		while (list($key, $data) = @each($data_file))
 		{
@@ -112,7 +112,7 @@ function generate_module_info($module_data, $install = false)
 
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET module_info_cache = '" . addslashes(serialize($ret_array)) . "',
-		module_info_time = " . filemtime($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $module_dir . '/info.txt') . "
+		module_info_time = " . filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '/info.txt') . "
 		WHERE module_id = " . intval($module_data['module_id']);
 
 		if (!$db->sql_query($sql))
@@ -129,7 +129,7 @@ function generate_module_info($module_data, $install = false)
 
 	if ($install)
 	{
-		$data_file = @file($phpbb_root_path . trim($__stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
+		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
 
 		while (list($key, $data) = @each($data_file))
 		{
@@ -169,23 +169,23 @@ function generate_module_info($module_data, $install = false)
 // Get and update Module List
 function update_module_list()
 {
-	global $phpbb_root_path, $db, $__stats_config;
+	global $db, $__stats_config;
 
 	// Returns a list of modules found by directory and updates the database as needed
 	$ret_list = array();
 
-	$handle = @opendir($phpbb_root_path . $__stats_config['modules_dir']);
+	$handle = @opendir(IP_ROOT_PATH . $__stats_config['modules_dir']);
 
 	if (!$handle)
 	{
-		message_die(GENERAL_ERROR, "Unable to open directory " . $phpbb_root_path . $__stats_config['modules_dir']);
+		message_die(GENERAL_ERROR, "Unable to open directory " . IP_ROOT_PATH . $__stats_config['modules_dir']);
 	}
 
 	$dir_list = '';
 
 	while ($file = readdir($handle))
 	{
-		if ($file != '.' && $file != '..' && is_dir($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $file) && ($file != '_vti_cnf') && ($file != 'CVS'))
+		if ($file != '.' && $file != '..' && is_dir(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $file) && ($file != '_vti_cnf') && ($file != 'CVS'))
 		{
 			$dir_list .= ($dir_list == '') ? "'$file'" : ", '$file'";
 
@@ -263,7 +263,7 @@ function update_module_list()
 // Get complete Module List from Database
 function get_module_list_from_db()
 {
-	global $phpbb_root_path, $db, $__stats_config;
+	global $db, $__stats_config;
 
 	// Returns a list of modules stored in the database
 	$ret_list = array();
@@ -294,7 +294,7 @@ function get_module_list_from_db()
 // Get complete Module Data from Database
 function get_module_data_from_db()
 {
-	global $phpbb_root_path, $db, $__stats_config;
+	global $db, $__stats_config;
 
 	// Returns a list of modules stored in the database
 	$ret_list = array();

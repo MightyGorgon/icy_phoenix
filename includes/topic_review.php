@@ -15,14 +15,14 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 function topic_review($topic_id, $is_inline_review)
 {
-	global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path, $bbcode;
+	global $db, $board_config, $template, $lang, $images, $theme, $bbcode;
 	global $userdata, $user_ip;
 	global $orig_word, $replacement_word;
 	global $orig_autolink, $replacement_autolink;
@@ -105,7 +105,7 @@ function topic_review($topic_id, $is_inline_review)
 		$page_title = $lang['Topic_review'] . ' - ' . $topic_title;
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('reviewbody' => 'posting_topic_review.tpl'));
 	}
@@ -278,7 +278,7 @@ function topic_review($topic_id, $is_inline_review)
 	if ( !$is_inline_review )
 	{
 		$template->pparse('reviewbody');
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 }
 

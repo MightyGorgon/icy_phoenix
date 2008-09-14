@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -72,7 +72,7 @@ function sudoku_starting_data($game_pack, $game_num, $db_table, $and_clause)
 //
 function sudoku_grid_build()
 {
-	global $template, $images, $lang, $line, $pack, $num, $level, $phpEx, $mode, $co_ord, $input_box;
+	global $template, $images, $lang, $line, $pack, $num, $level, $mode, $co_ord, $input_box;
 	//
 	// build lines for template
 	//
@@ -91,22 +91,22 @@ function sudoku_grid_build()
 				if ( $tile[$tile_key] == 'x' || ( $tile[$tile_key] > 9 && $tile[$tile_key] < 20 ) )
 				{
 					$tile_text=( $tile[$tile_key] == 'x' ) ? $lang['suduko_blank_tile'] : $lang['suduko_user_tile'];
-					$tile_url=( $tile[$tile_key] == 'x' ) ? append_sid("sudoku.$phpEx?&amp;mode=insert&amp;tile=" . $line_key . "_" . $key . "&amp;p=$pack&amp;n=$num&amp;l=$level#grid") : append_sid("sudoku.$phpEx?&amp;mode=edit&amp;tile=" . $line_key . "_" . $key . "&amp;p=$pack&amp;n=$num&amp;l=$level&amp;val=" . ($tile[$tile_key]-10) . "#grid");
-					$on_click=( $tile[$tile_key] == 'x' )  ?"sudoku('" .  append_sid("sudoku.$phpEx?&amp;tile=" . $line_key . "_" . $key . "&amp;p=$pack&amp;n=$num&amp;type=insert#grid") . "','','?')" : "sudoku('" . append_sid("sudoku.$phpEx?&amp;tile=" . $line_key . "_" . $key . "&amp;p=$pack&amp;n=$num&amp;type=edit#grid") . "','" . ($tile[$tile_key]) . "','" . ($tile[$tile_key]-10) . "')";
-					$tile_object='<a href="' . $tile_url . '" onClick="' . $on_click . '; return false;"><img src="' . $phpbb_root_path . $images[$tile_image] . '" alt="' . $tile_text . '" title="' . $tile_text . '" hspace="0" vspace="0" border="0"></a>';
+					$tile_url=( $tile[$tile_key] == 'x' ) ? append_sid('sudoku.' . PHP_EXT . '?mode=insert&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '#grid') : append_sid('sudoku.' . PHP_EXT . '?mode=edit&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '&amp;val=' . ($tile[$tile_key]-10) . '#grid');
+					$on_click = ($tile[$tile_key] == 'x') ? 'sudoku(\'' . append_sid('sudoku.' . PHP_EXT . '?tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;type=insert#grid') . "','','?')" : 'sudoku(\'' . append_sid('sudoku.' . PHP_EXT . '?tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;type=edit#grid') . "','" . ($tile[$tile_key]) . "','" . ($tile[$tile_key]-10) . "')";
+					$tile_object='<a href="' . $tile_url . '" onClick="' . $on_click . '; return false;"><img src="' . IP_ROOT_PATH . $images[$tile_image] . '" alt="' . $tile_text . '" title="' . $tile_text . '" hspace="0" vspace="0" border="0"></a>';
 				}
 				else
 				{
-					$tile_object='<img src="' . $phpbb_root_path . $images[$tile_image] . '" hspace="0" vspace="0" border="0">';
+					$tile_object='<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">';
 				}
 			}
 			//else if ( $mode == 'insert' )
 			//{
-			//	$tile_object=( $line_key != $co_ord[0] || $key != $co_ord[1] ) ? '<img src="' . $phpbb_root_path . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
+			//	$tile_object=( $line_key != $co_ord[0] || $key != $co_ord[1] ) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
 			//}
 			//else if ( $mode == 'edit' )
 			//{
-			//	$tile_object=( $line_key != $co_ord[0] || $key != $co_ord[1] ) ? '<img src="' . $phpbb_root_path . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
+			//	$tile_object=( $line_key != $co_ord[0] || $key != $co_ord[1] ) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
 			//}
 			//
 			// set the template var

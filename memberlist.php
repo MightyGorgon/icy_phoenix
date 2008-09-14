@@ -16,15 +16,15 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
 define('CM_MEMBERLIST', true);
 // MG Cash MOD For IP - END
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -138,7 +138,7 @@ $select_sort_order .= '</select>';
 $page_title = $lang['Memberlist'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'memberlist_body.tpl'));
 make_jumpbox(VIEWFORUM_MG);
@@ -183,7 +183,7 @@ $template->assign_vars(array(
 
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order,
-	'S_MODE_ACTION' => append_sid('memberlist.' . $phpEx)
+	'S_MODE_ACTION' => append_sid('memberlist.' . PHP_EXT)
 	)
 );
 
@@ -193,7 +193,7 @@ $alphanum_range = array_merge(array('' => 'All'),array('%23' => '#'),$alpha_rang
 foreach ($alphanum_range as $key => $alpha)
 {
 	if (in_array($alpha,$alpha_range)) $key = $alpha;
-	$alphanum_search_url = append_sid('memberlist.' . $phpEx . '?mode=' . ((isset($_GET['mode']) || isset($_POST['mode'])) ? $mode : 'username') . '&amp;sort=' . $sort_order . '&amp;alphanum=' . strtolower($key));
+	$alphanum_search_url = append_sid('memberlist.' . PHP_EXT . '?mode=' . ((isset($_GET['mode']) || isset($_POST['mode'])) ? $mode : 'username') . '&amp;sort=' . $sort_order . '&amp;alphanum=' . strtolower($key));
 	$template->assign_block_vars('alphanumsearch', array(
 		'SEARCH_SIZE' => floor(100 / count($alphanum_range)) . '%',
 		'SEARCH_TERM' => $alpha,
@@ -203,7 +203,7 @@ foreach ($alphanum_range as $key => $alpha)
 // Mighty Gorgon - Power Memberlist - END
 
 // Mighty Gorgon - Multiple Ranks - BEGIN
-require_once($phpbb_root_path . 'includes/functions_mg_ranks.' . $phpEx);
+require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
 $ranks_sql = query_ranks();
 // Mighty Gorgon - Multiple Ranks - END
 
@@ -334,7 +334,7 @@ if(!($result = $db->sql_query($sql)))
 if ($row = $db->sql_fetchrow($result))
 {
 	// Custom Profile Fields MOD - BEGIN
-	include_once($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
 	$profile_data = get_fields('WHERE view_in_memberlist = ' . VIEW_IN_MEMBERLIST . ' AND users_can_view = ' . ALLOW_VIEW);
 
 	foreach($profile_data as $field)
@@ -471,7 +471,7 @@ if ($row = $db->sql_fetchrow($result))
 			$profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
 			$profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
 
-			$temp_url = append_sid('privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
+			$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
 			$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 			$pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -503,13 +503,13 @@ if ($row = $db->sql_fetchrow($result))
 			{
 				if ($row['user_allow_viewonline'])
 				{
-					$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
-					$online_status = '<strong><a href="' . append_sid('viewonline.' . $phpEx) . '" title="' . sprintf($lang['is_online'], $username) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>';
+					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
+					$online_status = '<strong><a href="' . append_sid('viewonline.' . PHP_EXT) . '" title="' . sprintf($lang['is_online'], $username) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>';
 				}
 				else if ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $user_id)
 				{
-					$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
-					$online_status = '<strong><em><a href="' . append_sid('viewonline.' . $phpEx) . '" title="' . sprintf($lang['is_hidden'], $username) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>';
+					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
+					$online_status = '<strong><em><a href="' . append_sid('viewonline.' . PHP_EXT) . '" title="' . sprintf($lang['is_hidden'], $username) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>';
 				}
 				else
 				{
@@ -559,13 +559,13 @@ if ($row = $db->sql_fetchrow($result))
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$template->assign_block_vars('memberrow', array(
 			'ROW_NUMBER' => $i + ($start + 1),
-			//'ROW_NUMBER' => $i + ($_GET['start'] + 1) . (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid("delete_users.$phpEx?mode=user_id&amp;del_user=$user_id") . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
+			//'ROW_NUMBER' => $i + ($_GET['start'] + 1) . (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
 			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => colorize_username($user_id),
 			'FROM' => $from,
 			'JOINED' => $joined,
-			'DELETE' => (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . $phpEx . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
+			'DELETE' => (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
 
 			// Start add - Last visit MOD
 			'LAST_LOGON' => ($userdata['user_level'] == ADMIN || (!$board_config['hidde_last_logon'] && $row['user_allow_viewonline'])) ? (($row['user_lastlogon'])? create_date($board_config['default_dateformat'], $row['user_lastlogon'], $board_config['board_timezone']) : $lang['Never_last_logon']) : $lang['Hidde_last_logon'],
@@ -678,8 +678,8 @@ if (($mode != 'topten') || ($users_per_page < 10))
 	{
 		$total_members = $total['total'];
 
-		//$pagination = generate_pagination("memberlist.$phpEx?mode=$mode&amp;order=$sort_order", $total_members, $users_per_page, $start). '&nbsp;';
-		$pagination = generate_pagination('memberlist.' . $phpEx . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;users_per_page=' . $users_per_page . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $users_per_page, $start);
+		//$pagination = generate_pagination('memberlist.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $users_per_page, $start). '&nbsp;';
+		$pagination = generate_pagination('memberlist.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;users_per_page=' . $users_per_page . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $users_per_page, $start);
 	}
 	$db->sql_freeresult($result);
 }
@@ -697,6 +697,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

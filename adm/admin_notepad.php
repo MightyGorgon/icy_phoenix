@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -26,10 +26,10 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 //
 // Output the authorisation details
@@ -54,7 +54,7 @@ if(!$sql)
 }
 $note = mysql_fetch_array($sql);
 
-include('./page_header_admin.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
 
 $template->assign_vars(array(
 	"L_TITLE" => $lang['Admin_notepad_title'],
@@ -64,6 +64,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

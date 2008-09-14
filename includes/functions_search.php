@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -105,10 +105,10 @@ function split_words($entry, $mode = 'post')
 
 function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
-	global $db, $phpbb_root_path, $board_config, $lang;
+	global $db, $board_config, $lang;
 
-	$stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
-	$synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
+	$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
+	$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
 
 	$search_raw_words = array();
 	$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopword_array, $synonym_array));
@@ -438,7 +438,7 @@ function remove_search_post($post_id_sql, $remove_subject = true, $remove_messag
 //
 function username_search($search_match, $ajax_search = false)
 {
-	global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path, $userdata;
+	global $db, $board_config, $template, $lang, $images, $theme, $userdata;
 	global $starttime, $gen_simple_header;
 
 	$gen_simple_header = true;
@@ -475,7 +475,7 @@ function username_search($search_match, $ajax_search = false)
 	$page_title = $lang['Search'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('search_user_body' => 'search_username.tpl'));
 
@@ -511,7 +511,7 @@ function username_search($search_match, $ajax_search = false)
 
 	$template->pparse('search_user_body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 	return;
 }

@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -134,7 +134,6 @@ if (!$statistics->result_cache_used)
 		$smile_group[$smile_urls[$rows[$i]['smile_url']]]['url'][] = $rows[$i]['smile_url'];
 
 		$all_smilies[$smile_urls[$rows[$i]['smile_url']]]['count'] = 0;
-
 	}
 
 	$sql = "SELECT post_text
@@ -198,6 +197,9 @@ if (!$statistics->result_cache_used)
 	$all_smilies = smilies_sort_multi_array_attachment($all_smilies, 'count', 'DESC');
 
 	$limit = ($return_limit > count($all_smilies)) ? count($all_smilies) : $return_limit;
+
+	$template->_tpldata['topsmilies.'] = array();
+	//reset($template->_tpldata['topsmilies.']);
 
 	for ($i = 0; $i < $limit; $i++)
 	{

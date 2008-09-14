@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -18,11 +18,11 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
 
 //Start Quick Administrator User Options and Information MOD
 if( isset( $_POST['redirect'] ) || isset( $_GET['redirect'] ) )
@@ -68,14 +68,14 @@ if ( $posted_user_cms_level != false )
 		message_die(GENERAL_ERROR, 'Could not update user cms level', '', __LINE__, __FILE__, $sql);
 	}
 
-	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="' . append_sid('admin_cms_auth.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="' . append_sid('admin_cms_auth.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
 //Start Quick Administrator User Options and Information MOD
 if( $redirect != '' )
 {
-	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx) . '">', '</a>');
+	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 }
 //End Quick Administrator User Options and Information MOD
 elseif ( $user_id != false )
@@ -113,7 +113,7 @@ elseif ( $user_id != false )
 	$s_hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="cms_level" value="true" />';
 
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_cms_body.tpl'));
 
@@ -125,8 +125,8 @@ elseif ( $user_id != false )
 		'L_PERMISSIONS' => $lang['Permissions'],
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
-		'U_USER' => append_sid('admin_cms_auth.' . $phpEx),
-		'S_AUTH_ACTION' => append_sid('admin_cms_auth.' . $phpEx),
+		'U_USER' => append_sid('admin_cms_auth.' . PHP_EXT),
+		'S_AUTH_ACTION' => append_sid('admin_cms_auth.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -134,7 +134,7 @@ elseif ( $user_id != false )
 else
 {
 	// Select a user/group
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'user_select_body.tpl'));
 	$template->assign_vars(array(
@@ -149,12 +149,12 @@ else
 	$template->assign_vars(array(
 		'L_LOOK_UP' => $lang['Look_up_User'],
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_' . $l_type . '_ACTION' => append_sid('admin_cms_auth.' . $phpEx))
+		'S_' . $l_type . '_ACTION' => append_sid('admin_cms_auth.' . PHP_EXT))
 	);
 }
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

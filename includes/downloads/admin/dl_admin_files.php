@@ -16,7 +16,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -156,7 +156,7 @@ if($action == 'edit' || $action == 'add')
 		if ($thumbnail)
 		{
 			$template->assign_block_vars('allow_thumbs.thumbnail', array(
-				'THUMBNAIL' => $phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $thumbnail
+				'THUMBNAIL' => POSTED_IMAGES_THUMBS_PATH . $thumbnail
 				)
 			);
 		}
@@ -284,7 +284,7 @@ if($action == 'edit' || $action == 'add')
 		'SELECT_CAT' => $select_code,
 		'ENCTYPE' => $enctype,
 
-		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=files'),
+		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=files'),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -528,11 +528,11 @@ elseif($action == 'save')
 				if (!$thumb_error)
 				{
 					$df_id = ($df_id) ? $df_id : $db->sql_nextid();
-					@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
-					@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
-					$move_file($thumb_temp, $phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
+					@unlink(POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
+					@unlink(POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
+					$move_file($thumb_temp, POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name);
 
-					@chmod($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name, 0777);
+					@chmod(POSTED_IMAGES_THUMBS_PATH . $df_id . '_' . $thumb_name, 0777);
 
 					$thumb_message = '<br />' . $lang['Dl_thumb_upload'];
 				}
@@ -556,7 +556,7 @@ elseif($action == 'save')
 				message_die(GENERAL_ERROR, 'Could not write thumbnail information', '', __LINE__, __FILE__, $sql);
 			}
 
-			@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
+			@unlink(POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
 
 			$thumb_message = '<br />' . $lang['Dl_thumb_del'];
 		}
@@ -613,7 +613,7 @@ elseif($action == 'save')
 		$server_url = $server_name . $server_port . $script_path;
 		$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -653,8 +653,8 @@ elseif($action == 'save')
 				'DOWNLOAD' => $description,
 				'DESCRIPTION' => $long_desc,
 				'CATEGORY' => str_replace("&nbsp;&nbsp;|___&nbsp;", '', $index[$cat_id]['cat_name']),
-				'U_APPROVE' => $server_url.'downloads.' . $phpEx . '?view=modcp&amp;action=approve',
-				'U_CATEGORY' => $server_url.'downloads.' . $phpEx . '?cat=' . $cat_id
+				'U_APPROVE' => $server_url.'downloads.' . PHP_EXT . '?view=modcp&amp;action=approve',
+				'U_CATEGORY' => $server_url.'downloads.' . PHP_EXT . '?cat=' . $cat_id
 				)
 			);
 
@@ -680,7 +680,7 @@ elseif($action == 'save')
 		$server_url = $server_name . $server_port . $script_path;
 		$server_url = $server_protocol . str_replace('//', '/', $server_url);
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -720,8 +720,8 @@ elseif($action == 'save')
 				'DOWNLOAD' => $description,
 				'DESCRIPTION' => $long_desc,
 				'CATEGORY' => $index[$cat_id]['cat_name'],
-				'U_APPROVE' => $server_url.'downloads.' . $phpEx . '?view=modcp&amp;action=approve',
-				'U_CATEGORY' => $server_url.'downloads.' . $phpEx . '?cat=' . $cat_id
+				'U_APPROVE' => $server_url.'downloads.' . PHP_EXT . '?view=modcp&amp;action=approve',
+				'U_CATEGORY' => $server_url.'downloads.' . PHP_EXT . '?cat=' . $cat_id
 				)
 			);
 
@@ -758,7 +758,7 @@ elseif($action == 'save')
 		}
 	}
 
-	$message .= $thumb_message . '<br /><br />' . sprintf($lang['Click_return_downloadadmin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=files&amp;cat_id=' . $cat_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message .= $thumb_message . '<br /><br />' . sprintf($lang['Click_return_downloadadmin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=files&amp;cat_id=' . $cat_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -787,14 +787,14 @@ elseif($action == 'delete')
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 
-			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=files'),
+			'S_CONFIRM_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=files'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('confirm_body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -806,7 +806,7 @@ elseif($action == 'delete')
 			@unlink($dl_config['dl_path'] . $path . $file_name);
 		}
 
-		@unlink($phpbb_root_path . POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
+		@unlink(POSTED_IMAGES_THUMBS_PATH . $dl_file['thumbnail']);
 
 		$sql = "DELETE FROM " . DOWNLOADS_TABLE . "
 			WHERE id = $df_id";
@@ -839,7 +839,7 @@ elseif($action == 'delete')
 			message_die(GENERAL_ERROR, "Couldn't delete download traffic marks", "", __LINE__, __FILE__, $sql);
 		}
 
-		$message = $lang['Download_removed'] . '<br /><br />' . sprintf($lang['Click_return_downloadadmin'], '<a href="' . append_sid('admin_downloads.' . $phpEx . "?submod=files&amp;cat_id=$cat_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Download_removed'] . '<br /><br />' . sprintf($lang['Click_return_downloadadmin'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . "?submod=files&amp;cat_id=$cat_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 
@@ -975,11 +975,11 @@ if ($action == '')
 
 		$unapprove = ($row['approve']) ? '' : $lang['Dl_unapproved'];
 
-		$dl_edit = append_sid('admin_downloads.' . $phpEx . '?submod=files&amp;action=edit&amp;df_id=' . $file_id);
-		$dl_delete = append_sid('admin_downloads.' . $phpEx . '?submod=files&amp;action=delete&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id);
+		$dl_edit = append_sid('admin_downloads.' . PHP_EXT . '?submod=files&amp;action=edit&amp;df_id=' . $file_id);
+		$dl_delete = append_sid('admin_downloads.' . PHP_EXT . '?submod=files&amp;action=delete&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id);
 
-		$dl_move_up = append_sid('admin_downloads.' . $phpEx . '?submod=files&amp;action=downloads_order&amp;move=15&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id);
-		$dl_move_down = append_sid('admin_downloads.' . $phpEx . '?submod=files&amp;action=downloads_order&amp;move=-15&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id);
+		$dl_move_up = append_sid('admin_downloads.' . PHP_EXT . '?submod=files&amp;action=downloads_order&amp;move=15&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id);
+		$dl_move_down = append_sid('admin_downloads.' . PHP_EXT . '?submod=files&amp;action=downloads_order&amp;move=-15&amp;df_id=' . $file_id . '&amp;cat_id=' . $cat_id);
 
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -1043,9 +1043,9 @@ if ($action == '')
 		'CATEGORIES' => $categories,
 		'DL_COUNT' => $i.'&nbsp;' . $lang['Downloads'],
 
-		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=files&amp;cat_id=' . $cat_id),
+		'S_DOWNLOADS_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=files&amp;cat_id=' . $cat_id),
 
-		'U_DOWNLOAD_ORDER_ALL' => append_sid('admin_downloads.' . $phpEx . '?submod=files&amp;action=downloads_order_all&amp;cat_id=' . $cat_id)
+		'U_DOWNLOAD_ORDER_ALL' => append_sid('admin_downloads.' . PHP_EXT . '?submod=files&amp;action=downloads_order_all&amp;cat_id=' . $cat_id)
 		)
 	);
 }

@@ -15,10 +15,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Find what we are to do
 $mode = (isset($_POST['report_x'])) ? 'report' :
@@ -167,11 +167,11 @@ elseif ($mode == 'report')
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_moderators'].'<br /><br />');
 	}
-	(($board_config['report_forum'])? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . $phpEx . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL .'=' . $allready_reported : 'newtopic&amp' . POST_FORUM_URL . '=' . $board_config['report_forum']) . '&amp;postreport=' . $post_id). '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>');
+	(($board_config['report_forum'])? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL .'=' . $allready_reported : 'newtopic&amp' . POST_FORUM_URL . '=' . $board_config['report_forum']) . '&amp;postreport=' . $post_id). '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>');
 	if (($blue_card >= $board_config['bluecard_limit_2'] && (!(($blue_card-$board_config['bluecard_limit_2']) % $board_config['bluecard_limit']))) || ($blue_card == $board_config['bluecard_limit_2']))
 	{
 		$mods_rowset = $db->sql_fetchrowset($result_mods);
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$server_url = create_server_url();
 		$viewtopic_server_url = $server_url . VIEWTOPIC_MG;
 		while ($i < $total_mods)
@@ -183,7 +183,7 @@ elseif ($mode == 'report')
 			$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
 			$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
 
-			$emailer->use_template('repport_post', (file_exists($phpbb_root_path . 'language/lang_' . $mods_rowset[$i]['user_lang'] . '/email/html/repport_post.tpl')) ? $mods_rowset[$i]['user_lang'] : 'english');
+			$emailer->use_template('repport_post', (file_exists(IP_ROOT_PATH . 'language/lang_' . $mods_rowset[$i]['user_lang'] . '/email/html/repport_post.tpl')) ? $mods_rowset[$i]['user_lang'] : 'english');
 			$emailer->email_address($mods_rowset[$i]['user_email']);
 			$emailer->from($board_config['board_email']);
 			$emailer->replyto($board_config['board_email']);
@@ -203,7 +203,7 @@ elseif ($mode == 'report')
 			$i++;
 		}
 	}
-	message_die(GENERAL_MESSAGE, (($total_mods) ? sprintf($lang['Post_repported'], $total_mods) : $lang['Post_repported_1']) . '<br /><br />' . (($board_config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . $phpEx . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $board_config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>'));
+	message_die(GENERAL_MESSAGE, (($total_mods) ? sprintf($lang['Post_repported'], $total_mods) : $lang['Post_repported_1']) . '<br /><br />' . (($board_config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $board_config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>'));
 }
 elseif ($mode == 'unban')
 {
@@ -231,7 +231,7 @@ elseif ($mode == 'unban')
 	{
 		message_die(GENERAL_ERROR, "Couldn't update user status information", "", __LINE__, __FILE__, $sql);
 	}
-	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . $phpEx . '?mode=post&u=' . $poster_id) . '">', '</a>');
+	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?mode=post&u=' . $poster_id) . '">', '</a>');
 	$e_temp = 'ban_reactivated';
 	//$e_subj = $lang['Ban_reactivate'];
 	$no_error_ban = true;
@@ -332,7 +332,7 @@ elseif ($mode == 'block')
 
 	$no_error_ban=true;
 	$block_time = make_time_text ($board_config['RY_block_time']);
-	$message = sprintf($lang['Block_update'],$block_time) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL .'=' . $poster_id) . '">', '</a>');
+	$message = sprintf($lang['Block_update'],$block_time) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL .'=' . $poster_id) . '">', '</a>');
 	$e_temp = 'card_block';
 	//$e_subj = sprintf($lang['Card_blocked'], $block_time);
 	$db->clear_cache('ban_');
@@ -402,7 +402,7 @@ elseif ($mode == 'warn')
 	else
 	{
 		// the user shall not be baned this time, update the counter
-		$message = sprintf($lang['Ban_update_yellow'], ($the_user['user_warnings'] + 1), $board_config['max_user_bancard']) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . $phpEx . '?mode=post&u=' . $poster_id) . '">', '</a>');
+		$message = sprintf($lang['Ban_update_yellow'], ($the_user['user_warnings'] + 1), $board_config['max_user_bancard']) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?mode=post&u=' . $poster_id) . '">', '</a>');
 		$no_error_ban = true;
 		$e_temp = 'ban_warning';
 		// $e_subj = $lang['Ban_warning'];
@@ -424,7 +424,7 @@ if ($no_error_ban)
 		$viewtopic_server_url = $server_url . VIEWTOPIC_MG;
 		$from_email = ($userdata['user_email'] && $userdata['user_viewemail']) ? $userdata['user_email'] : $board_config['board_email'];
 
-		include_once($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer($board_config['smtp_delivery']);
 
 		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($board_config['server_name']) . "\n";
@@ -464,6 +464,6 @@ else
 
 $message .= ($post_id != '-1') ? '<br /><br />' . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>') : '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG). '">', '</a>');
 message_die(GENERAL_MESSAGE, $message);
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

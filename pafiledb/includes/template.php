@@ -63,10 +63,9 @@ class pafiledb_Template
 
 	function set_template($template = '', $static_lang = false, $force_recompile = false)
 	{
-		global $phpbb_root_path;
 
-		$this->root = $phpbb_root_path . 'templates/' . $template;
-		$this->cachedir = $phpbb_root_path . PA_FILE_DB_PATH . $this->cache_root . $template . '/';
+		$this->root = IP_ROOT_PATH . 'templates/' . $template;
+		$this->cachedir = IP_ROOT_PATH . PA_FILE_DB_PATH . $this->cache_root . $template . '/';
 
 		$this->static_lang = $static_lang;
 		$this->force_recompile = $force_recompile;
@@ -140,9 +139,9 @@ class pafiledb_Template
 	// Load a compiled template if possible, if not, recompile it
 	function _tpl_load(&$handle)
 	{
-		global $phpEx, $userdata;
+		global $userdata;
 
-		$filename = $this->cachedir . $this->filename[$handle] . '.' . (($this->static_lang) ? $userdata['user_lang'] . '.' : '') . $phpEx;
+		$filename = $this->cachedir . $this->filename[$handle] . '.' . (($this->static_lang) ? $userdata['user_lang'] . '.' : '') . PHP_EXT;
 		// Recompile page if the original template is newer, otherwise load the compiled version
 
 		if (file_exists($filename) && !$this->force_recompile && @filemtime($filename) == @filemtime($this->files[$handle]))
@@ -714,10 +713,8 @@ class pafiledb_Template
 
 	function compile_write(&$handle, $data)
 	{
-		global $phpEx, $user;
-
-		$filename = $this->cachedir . $this->filename[$handle] . '.' . (($this->static_lang) ? $userdata['user_lang'] . '.' : '') . $phpEx;
-
+		global $user;
+		$filename = $this->cachedir . $this->filename[$handle] . '.' . (($this->static_lang) ? $userdata['user_lang'] . '.' : '') . PHP_EXT;
 		if ($fp = @fopen($filename, 'w+'))
 		{
 			@flock($fp, LOCK_EX);
@@ -729,22 +726,20 @@ class pafiledb_Template
 			@touch($filename, filemtime($this->files[$handle]));
 			@chmod($filename, 0644);
 		}
-
 		return;
 	}
 
 	function compile_cache_clear($template = false)
 	{
-		global $phpbb_root_path;
 
 		$template_list = array();
 
 		if (!$template)
 		{
-			$dp = opendir($phpbb_root_path . PA_FILE_DB_PATH . $this->cache_root);
+			$dp = opendir(IP_ROOT_PATH . PA_FILE_DB_PATH . $this->cache_root);
 			while ($dir = readdir($dp))
 			{
-				$template_dir = $phpbb_root_path . PA_FILE_DB_PATH . $this->cache_root . $dir;
+				$template_dir = IP_ROOT_PATH . PA_FILE_DB_PATH . $this->cache_root . $dir;
 				if (!is_file($template_dir) && !is_link($template_dir) && $dir != '.' && $dir != '..')
 				{
 					array_push($template_list, $dir);
@@ -759,10 +754,10 @@ class pafiledb_Template
 
 		foreach ($template_list as $template)
 		{
-			$dp = opendir($phpbb_root_path . PA_FILE_DB_PATH . $this->cache_root . $template);
+			$dp = opendir(IP_ROOT_PATH . PA_FILE_DB_PATH . $this->cache_root . $template);
 			while ($file = readdir($dp))
 			{
-				@unlink($phpbb_root_path . PA_FILE_DB_PATH . $this->cache_root . $template . '/' . $file);
+				@unlink(IP_ROOT_PATH . PA_FILE_DB_PATH . $this->cache_root . $template . '/' . $file);
 			}
 			closedir($dp);
 		}

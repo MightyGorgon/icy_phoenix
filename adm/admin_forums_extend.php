@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -25,11 +25,11 @@ if (!empty($setmodules))
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/def_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 //--------------------------------
 //	constants
@@ -134,10 +134,10 @@ if ($db->sql_query($sql) && function_exists(get_forum_display_sort_option))
 }
 
 // prune functions
-include($phpbb_root_path . './includes/prune.' . $phpEx);
+include(IP_ROOT_PATH . './includes/prune.' . PHP_EXT);
 
 // return message after update
-$return_msg .= '<br /><br />' . sprintf($lang['Click_return_forumadmin'], '<a href="' . append_sid('./admin_forums_extend.' . $phpEx . '?selected_id=' . $selected_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . $phpEx . '?pane=right') . '">', '</a>');
+$return_msg .= '<br /><br />' . sprintf($lang['Click_return_forumadmin'], '<a href="' . append_sid('./admin_forums_extend.' . PHP_EXT . '?selected_id=' . $selected_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 //--------------------------------
 //	get parms
@@ -1087,7 +1087,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		$s_move_opt = '<option value="" selected="selected">' . $lang['Delete_all_posts'] . '</option>' . $s_move_opt;
 
 		// icon
-		$icon_img = empty($item['icon']) ? '' : '<br /><img src="' . (isset($images[ $item['icon'] ]) ? $phpbb_root_path . $images[ $item['icon'] ] : $item['icon']) . '" alt="' . $item['icon'] . '" title="' . $item['icon'] . '" />';
+		$icon_img = empty($item['icon']) ? '' : '<br /><img src="' . (isset($images[ $item['icon'] ]) ? IP_ROOT_PATH . $images[ $item['icon'] ] : $item['icon']) . '" alt="' . $item['icon'] . '" title="' . $item['icon'] . '" />';
 
 		$icon = $item['icon'];
 		// Mighty Gorgon - Forum Icons Select - BEGIN
@@ -1325,8 +1325,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
 			'NAV_CAT_DESC' => admin_get_nav_cat_desc($selected_id),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
-			'U_INDEX' => append_sid('./admin_forums_extend.' . $phpEx),
-			'S_ACTION' => append_sid('./admin_forums_extend.' . $phpEx),
+			'U_INDEX' => append_sid('./admin_forums_extend.' . PHP_EXT),
+			'S_ACTION' => append_sid('./admin_forums_extend.' . PHP_EXT),
 			)
 		);
 	}
@@ -1354,8 +1354,8 @@ if ($mode == '')
 		'L_DELETE' => $lang['Delete'],
 		'L_MOVEUP' => $lang['Move_up'],
 		'L_MOVEDW' => $lang['Move_down'],
-		'IMG_MOVEUP' => $phpbb_root_path . $images['acp_up_arrow2'],
-		'IMG_MOVEDW' => $phpbb_root_path . $images['acp_down_arrow2'],
+		'IMG_MOVEUP' => IP_ROOT_PATH . $images['acp_up_arrow2'],
+		'IMG_MOVEDW' => IP_ROOT_PATH . $images['acp_down_arrow2'],
 		'L_RESYNC' => $lang['Resync'],
 
 		'L_CREATE_FORUM' => $lang['Create_forum'],
@@ -1438,8 +1438,8 @@ if ($mode == '')
 			}
 
 			// sub level link
-			$sub_folder = $phpbb_root_path . $sub_folder;
-			$link = '<a href="' . append_sid('./admin_forums_extend.' . $phpEx . '?selected_id=' . $sub_this) . '" class="gensmall" title="' . ereg_replace('<[^>]+>', '', get_object_lang($sub_this, 'desc', true)) . '">';
+			$sub_folder = IP_ROOT_PATH . $sub_folder;
+			$link = '<a href="' . append_sid('./admin_forums_extend.' . PHP_EXT . '?selected_id=' . $sub_this) . '" class="gensmall" title="' . ereg_replace('<[^>]+>', '', get_object_lang($sub_this, 'desc', true)) . '">';
 			$link .= '<img src="' . $sub_folder . '" alt="' . $sub_l_folder . '" title="' . $sub_l_folder . '" align="middle" />';
 			$link .= '&nbsp;' . get_object_lang($sub_this, 'name', true) . '</a>';
 			$links .= (empty($links) ? '' : ', ') . $link;
@@ -1452,13 +1452,13 @@ if ($mode == '')
 			$icon_img = $icon;
 			if (isset($images[$icon_img]))
 			{
-				$icon_img = $phpbb_root_path . $images[$icon_img];
+				$icon_img = IP_ROOT_PATH . $images[$icon_img];
 			}
 		}
 		$color = !$color;
 		$template->assign_block_vars('row', array(
 			'COLOR' => $color ? 'row1' : 'row2',
-			'FOLDER' => $phpbb_root_path . $folder,
+			'FOLDER' => IP_ROOT_PATH . $folder,
 			'L_FOLDER' => $l_folder,
 			//'ICON_IMG' => $icon_img,
 			'ICON_IMG' => ($icon_img != "") ? '../' . $icon_img : '../images/spacer.gif',
@@ -1469,12 +1469,12 @@ if ($mode == '')
 			'POSTS' => $tree['data'][$idx]['tree.forum_posts'],
 			'LINKS' => empty($links) ? '' : '<br /><b>' . $lang['Subforums'] . ':&nbsp;</b>' . $links,
 
-			'U_FORUM' => append_sid('./admin_forums_extend.' . $phpEx . '?selected_id=' . $CH_this),
-			'U_EDIT' => append_sid('./admin_forums_extend.' . $phpEx . '?mode=edit&fid=' . $CH_this),
-			'U_DELETE' => append_sid('./admin_forums_extend.' . $phpEx . '?mode=delete&fid=' . $CH_this),
-			'U_RESYNC' => append_sid('./admin_forums_extend.' . $phpEx . '?mode=resync&fid=' . $CH_this),
-			'U_MOVEUP' => append_sid('./admin_forums_extend.' . $phpEx . '?mode=moveup&fid=' . $CH_this),
-			'U_MOVEDW' => append_sid('./admin_forums_extend.' . $phpEx . '?mode=movedw&fid=' . $CH_this),
+			'U_FORUM' => append_sid('./admin_forums_extend.' . PHP_EXT . '?selected_id=' . $CH_this),
+			'U_EDIT' => append_sid('./admin_forums_extend.' . PHP_EXT . '?mode=edit&fid=' . $CH_this),
+			'U_DELETE' => append_sid('./admin_forums_extend.' . PHP_EXT . '?mode=delete&fid=' . $CH_this),
+			'U_RESYNC' => append_sid('./admin_forums_extend.' . PHP_EXT . '?mode=resync&fid=' . $CH_this),
+			'U_MOVEUP' => append_sid('./admin_forums_extend.' . PHP_EXT . '?mode=moveup&fid=' . $CH_this),
+			'U_MOVEDW' => append_sid('./admin_forums_extend.' . PHP_EXT . '?mode=movedw&fid=' . $CH_this),
 			)
 		);
 
@@ -1497,15 +1497,15 @@ if ($mode == '')
 		'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
 		'NAV_CAT_DESC' => admin_get_nav_cat_desc($selected_id),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'U_INDEX' => append_sid('./admin_forums_extend.' . $phpEx),
-		'S_ACTION' => append_sid('./admin_forums_extend.' . $phpEx),
+		'U_INDEX' => append_sid('./admin_forums_extend.' . PHP_EXT),
+		'S_ACTION' => append_sid('./admin_forums_extend.' . PHP_EXT),
 		)
 	);
 }
 
 // dump
 $template->pparse('body');
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 // ------------------
 // Functions - BEGIN

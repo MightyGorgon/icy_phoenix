@@ -10,11 +10,11 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_cms_menu.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -28,11 +28,11 @@ if ($userdata['user_level'] != ADMIN)
 
 if (!$userdata['session_admin'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cms_menu.' . $phpEx . '&admin=1', true));
+	redirect(append_sid(LOGIN_MG . '?redirect=cms_menu.' . PHP_EXT . '&admin=1', true));
 }
 
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
 
 if(!empty($_GET['mode']) || !empty($_POST['mode']))
 {
@@ -107,14 +107,14 @@ if(isset($_POST['cancel']) || isset($_POST['reset']))
 {
 	$s_append_url = ($m_id != false) ? '&mode=menu_block&m_id=' . $m_id : '';
 	$s_append_url = '?action=nothing' . $s_append_url;
-	redirect(append_sid('cms_menu.' . $phpEx . $s_append_url, true));
+	redirect(append_sid('cms_menu.' . PHP_EXT . $s_append_url, true));
 }
 
 $page_title = $lang['Home'];
 $meta_description = '';
 $meta_keywords = '';
 $template->assign_vars(array('S_CMS_AUTH' => true));
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 if($board_config['cms_dock'] == true)
 {
@@ -261,7 +261,7 @@ if($mode == 'menu_item')
 				$mi_menu_status_no = ($mi_menu_status == '0') ? 'checked="checked"' : '';
 				$mi_menu_order = $m_info['menu_order'];
 				//$mi_menu_icon = $m_info['menu_icon'];
-				$mi_menu_icon = build_icons_list($mi_menu_icon_sel_name, $mi_menu_icon_input_name, $m_info['menu_icon'], ($phpbb_root_path . 'images/menu/'), ($phpbb_root_path . $images['menu_sep']));
+				$mi_menu_icon = build_icons_list($mi_menu_icon_sel_name, $mi_menu_icon_input_name, $m_info['menu_icon'], (IP_ROOT_PATH . 'images/menu/'), (IP_ROOT_PATH . $images['menu_sep']));
 
 				//$mi_menu_name_lang = $m_info['menu_name_lang'];
 				$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
@@ -347,7 +347,7 @@ if($mode == 'menu_item')
 			$mi_menu_id = '0';
 			$mi_menu_parent_id = $m_id;
 			$mi_cat_id = '0';
-			$mi_menu_icon = build_icons_list($mi_menu_icon_sel_name, $mi_menu_icon_input_name, '', ($phpbb_root_path . 'images/menu/'), ($phpbb_root_path . $images['menu_sep']));
+			$mi_menu_icon = build_icons_list($mi_menu_icon_sel_name, $mi_menu_icon_input_name, '', (IP_ROOT_PATH . 'images/menu/'), (IP_ROOT_PATH . $images['menu_sep']));
 
 			if($item_type != 'category_item')
 			{
@@ -479,7 +479,7 @@ if($mode == 'menu_item')
 			'L_SUBMIT' => $lang['Submit'],
 			'L_PREVIEW' => $lang['Preview'],
 			'L_MENU_UPDATE' => $lang['CMS_Menu_Update'],
-			'S_MENU_ACTION' => append_sid('cms_menu.' . $phpEx . $s_append_url),
+			'S_MENU_ACTION' => append_sid('cms_menu.' . PHP_EXT . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
 			'L_LINK_NAME' => $link_name . $is_default_link,
@@ -648,7 +648,7 @@ if($mode == 'menu_item')
 			adjust_item_order($mi_menu_parent_id, $mi_cat_parent_id);
 		}
 		$db->clear_cache('dyn_menu_');
-		$message .= '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block&amp;m_id=' . $mi_menu_id) . '">', '</a>') . '<br />';
+		$message .= '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block&amp;m_id=' . $mi_menu_id) . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
@@ -690,12 +690,12 @@ if($mode == 'menu_item')
 				'L_ENABLED' => $lang['Enabled'],
 				'L_DISABLED' => $lang['Disabled'],
 
-				'S_CONFIRM_ACTION' => append_sid('cms_menu.' . $phpEx . '?' . $s_append_url),
+				'S_CONFIRM_ACTION' => append_sid('cms_menu.' . PHP_EXT . '?' . $s_append_url),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 			$template->pparse('confirm');
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 			exit();
 		}
 		else
@@ -706,7 +706,7 @@ if($mode == 'menu_item')
 				{
 					if($cat_id > 0)
 					{
-						$message = $lang['Cat_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block&amp;m_id=' . $m_id) . '">', '</a>') . '<br /><br />';
+						$message = $lang['Cat_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block&amp;m_id=' . $m_id) . '">', '</a>') . '<br /><br />';
 						$sql = "DELETE FROM " . CMS_NAV_MENU_TABLE . "
 							WHERE menu_item_id = '" . $mi_id . "'
 								OR (menu_parent_id = '" . $m_id . "' AND cat_parent_id = '" . $cat_id . "')";
@@ -718,7 +718,7 @@ if($mode == 'menu_item')
 				}
 				else
 				{
-					$message = $lang['Link_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block&amp;m_id=' . $m_id) . '">', '</a>') . '<br /><br />';
+					$message = $lang['Link_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block&amp;m_id=' . $m_id) . '">', '</a>') . '<br /><br />';
 					$sql = "DELETE FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_item_id = '" . $mi_id . "'";
 				}
@@ -761,7 +761,7 @@ elseif($mode == 'menu_block')
 				}
 			}
 			$db->clear_cache('cms_');
-			$message = '<br /><br />' . $lang['Menu_updated'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block&amp;m_id=' . $m_id) . '">', '</a>') . '<br />';
+			$message = '<br /><br />' . $lang['Menu_updated'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block&amp;m_id=' . $m_id) . '">', '</a>') . '<br />';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
@@ -842,10 +842,10 @@ elseif($mode == 'menu_block')
 
 				$append_url = '&amp;mi_id=' . $cat_item_data['menu_item_id'] . '&amp;m_id=' . $m_id . '&amp;item_type=category_item';
 
-				$b_move_up = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
-				$b_move_down = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
-				$b_edit = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_Edit'] . '" title="' . $lang['CMS_Edit'] . '" /></a>&nbsp;';
-				$b_delete = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_item&amp;action=delete&amp;cat_id=' . $cat_item_data['cat_id'] . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_Delete'] . '" title="' . $lang['CSM_Delete'] . '" /></a>';
+				$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
+				$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
+				$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_Edit'] . '" title="' . $lang['CMS_Edit'] . '" /></a>&nbsp;';
+				$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete&amp;cat_id=' . $cat_item_data['cat_id'] . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_Delete'] . '" title="' . $lang['CSM_Delete'] . '" /></a>';
 
 				if ((count($cat_item) == 1) && ($cat_counter == 1))
 				{
@@ -912,10 +912,10 @@ elseif($mode == 'menu_block')
 
 						$append_url = '&amp;mi_id=' . $menu_cat_item_data['menu_item_id'] . '&amp;m_id=' . $m_id . '&amp;cat_parent_id=' . $menu_cat_item_data['cat_parent_id'];
 
-						$b_move_up = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
-						$b_move_down = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
-						$b_edit = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_Edit'] . '" title="' . $lang['CMS_Edit'] . '" /></a>&nbsp;';
-						$b_delete = '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_item&amp;action=delete' . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_Delete'] . '" title="' . $lang['CSM_Delete'] . '" /></a>';
+						$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
+						$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
+						$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_Edit'] . '" title="' . $lang['CMS_Edit'] . '" /></a>&nbsp;';
+						$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete' . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_Delete'] . '" title="' . $lang['CSM_Delete'] . '" /></a>';
 
 						if ((count($menu_cat[$cat_id]) == 1) && ($item_counter == 1))
 						{
@@ -965,8 +965,8 @@ elseif($mode == 'menu_block')
 			'L_MENU_ADD' => $lang['CMS_Menu_New_link'],
 			'L_MENU_UPDATE' => $lang['CMS_Menu_Update'],
 			'L_MENU_UPDATED' => $lang['Menu_updated'],
-			'S_CAT_ADD_ACTION' => append_sid('cms_menu.' . $phpEx . '?mode=menu_item&amp;action=add&amp;m_id=' . $m_id . '&amp;item_type=category_item'),
-			'S_MENU_ACTION' => append_sid('cms_menu.' . $phpEx . '?mode=menu_item&amp;action=add&amp;m_id=' . $m_id),
+			'S_CAT_ADD_ACTION' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=add&amp;m_id=' . $m_id . '&amp;item_type=category_item'),
+			'S_MENU_ACTION' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=add&amp;m_id=' . $m_id),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1038,7 +1038,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 
 			'L_SUBMIT' => $lang['Submit'],
 			'L_PREVIEW' => $lang['Preview'],
-			'S_MENU_ACTION' => append_sid('cms_menu.' . $phpEx . '?mode=menu_list&amp;action=' . $action),
+			'S_MENU_ACTION' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list&amp;action=' . $action),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
 			'L_MENU_NAME' => $lang['CMS_Menu_New_menu_name'],
@@ -1092,7 +1092,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 			}
 		}
 		$db->clear_cache('dyn_menu_');
-		$message .= '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_list') . '">', '</a>') . '<br />';
+		$message .= '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list') . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
@@ -1118,12 +1118,12 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				'L_ENABLED' => $lang['Enabled'],
 				'L_DISABLED' => $lang['Disabled'],
 
-				'S_CONFIRM_ACTION' => append_sid('cms_menu.' . $phpEx . '?mode=menu_list'),
+				'S_CONFIRM_ACTION' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list'),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
 			$template->pparse('confirm');
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 			exit();
 		}
 		else
@@ -1139,7 +1139,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				message_die(GENERAL_ERROR, "Could not remove data from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Menu_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . $phpEx . '?mode=menu_list') . '">', '</a>') . '<br /><br />';
+			$message = $lang['Menu_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list') . '">', '</a>') . '<br /><br />';
 			message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -1172,9 +1172,9 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				'MENU_ID' => $menu_item['menu_id'],
 				'MENU_NAME' => stripslashes($menu_item['menu_name']),
 				'MENU_DESCRIPTION' => stripslashes($menu_item['menu_desc']),
-				'U_ITEMS_EDIT' => append_sid('cms_menu.' . $phpEx . '?mode=menu_block' . $append_url),
-				'U_EDIT' => append_sid('cms_menu.' . $phpEx . '?mode=menu_list&amp;action=edit' . $append_url),
-				'U_DELETE' => append_sid('cms_menu.' . $phpEx . '?mode=menu_list&amp;action=delete' . $append_url),
+				'U_ITEMS_EDIT' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url),
+				'U_EDIT' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list&amp;action=edit' . $append_url),
+				'U_DELETE' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list&amp;action=delete' . $append_url),
 				)
 			);
 		}
@@ -1193,7 +1193,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 			'L_SUBMIT' => $lang['Submit'],
 			'L_PREVIEW' => $lang['Preview'],
 			'L_MENU_ADD' => $lang['CMS_Menu_New_Menu'],
-			'S_MENU_ACTION' => append_sid('cms_menu.' . $phpEx . '?mode=menu_list'),
+			'S_MENU_ACTION' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list'),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1204,7 +1204,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 $db->clear_cache('dyn_menu_');
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 /*
 =====================================
@@ -1434,7 +1434,7 @@ function build_menu_item_list($m_id, $c_id)
 
 function build_icons_list($select_name = 'icon_img_sel', $input_name = 'icon_img_path', $selected_icon = '', $icons_path = '', $standard_icon = '')
 {
-	global $lang, $images, $phpbb_root_path;
+	global $lang, $images;
 	$icons_list = '';
 	if ($icons_path == '')
 	{
@@ -1555,53 +1555,52 @@ function build_default_link_auth($default_id)
 
 function build_default_link_url($default_id)
 {
-	global $phpEx;
 	$link_url_array = '';
 	$link_url_array = array(
 		'0' => '',
-		'1' => 'adm/index.' . $phpEx,
-		'2' => 'cms.' . $phpEx,
-		'3' => 'index.' . $phpEx,
-		'4' => 'profile_main.' . $phpEx,
-		'5' => 'forum.' . $phpEx,
-		'6' => 'faq.' . $phpEx,
-		'7' => 'search.' . $phpEx,
-		'8' => 'sitemap.' . $phpEx,
-		'9' => 'album.' . $phpEx,
-		'10' => 'calendar.' . $phpEx,
-		'11' => 'dload.' . $phpEx,
-		'12' => 'search.' . $phpEx . '?search_id=bookmarks',
-		'13' => 'drafts.' . $phpEx,
-		'14' => 'posted_img_list.' . $phpEx,
-		'15' => 'ajax_chat.' . $phpEx,
-		'16' => 'links.' . $phpEx,
-		'17' => 'kb.' . $phpEx,
-		'18' => 'contact_us.' . $phpEx,
-		'19' => 'rules.' . $phpEx,
-		'20' => 'db_generator.' . $phpEx,
-		'21' => 'sudoku.' . $phpEx,
-		'22' => 'index.' . $phpEx . '?news=categories',
-		'23' => 'index.' . $phpEx . '?news=archives',
-		'24' => 'search.' . $phpEx . '?search_id=newposts',
-		'25' => 'search.' . $phpEx . '?search_id=upi2db&s2=new',
-		'26' => 'search.' . $phpEx . '?search_id=upi2db&s2=mark',
-		'27' => 'search.' . $phpEx . '?search_id=upi2db&s2=perm',
+		'1' => 'adm/index.' . PHP_EXT,
+		'2' => 'cms.' . PHP_EXT,
+		'3' => 'index.' . PHP_EXT,
+		'4' => 'profile_main.' . PHP_EXT,
+		'5' => 'forum.' . PHP_EXT,
+		'6' => 'faq.' . PHP_EXT,
+		'7' => 'search.' . PHP_EXT,
+		'8' => 'sitemap.' . PHP_EXT,
+		'9' => 'album.' . PHP_EXT,
+		'10' => 'calendar.' . PHP_EXT,
+		'11' => 'dload.' . PHP_EXT,
+		'12' => 'search.' . PHP_EXT . '?search_id=bookmarks',
+		'13' => 'drafts.' . PHP_EXT,
+		'14' => 'posted_img_list.' . PHP_EXT,
+		'15' => 'ajax_chat.' . PHP_EXT,
+		'16' => 'links.' . PHP_EXT,
+		'17' => 'kb.' . PHP_EXT,
+		'18' => 'contact_us.' . PHP_EXT,
+		'19' => 'rules.' . PHP_EXT,
+		//'20' => 'db_generator.' . PHP_EXT,
+		'21' => 'sudoku.' . PHP_EXT,
+		'22' => 'index.' . PHP_EXT . '?news=categories',
+		'23' => 'index.' . PHP_EXT . '?news=archives',
+		'24' => 'search.' . PHP_EXT . '?search_id=newposts',
+		'25' => 'search.' . PHP_EXT . '?search_id=upi2db&s2=new',
+		'26' => 'search.' . PHP_EXT . '?search_id=upi2db&s2=mark',
+		'27' => 'search.' . PHP_EXT . '?search_id=upi2db&s2=perm',
 		'28' => '',
-		'29' => 'digests.' . $phpEx,
-		'30' => 'credits.' . $phpEx,
-		'31' => 'referrers.' . $phpEx,
-		'32' => 'viewonline.' . $phpEx,
-		'33' => 'statistics.' . $phpEx,
-		'34' => 'site_hist.' . $phpEx,
-		'35' => 'remove_cookies.' . $phpEx,
-		'36' => 'memberlist.' . $phpEx,
-		'37' => 'groupcp.' . $phpEx,
-		'38' => 'ranks.' . $phpEx,
-		'39' => 'memberlist.' . $phpEx . '?mode=staff',
+		'29' => 'digests.' . PHP_EXT,
+		'30' => 'credits.' . PHP_EXT,
+		'31' => 'referrers.' . PHP_EXT,
+		'32' => 'viewonline.' . PHP_EXT,
+		'33' => 'statistics.' . PHP_EXT,
+		'34' => 'site_hist.' . PHP_EXT,
+		'35' => 'remove_cookies.' . PHP_EXT,
+		'36' => 'memberlist.' . PHP_EXT,
+		'37' => 'groupcp.' . PHP_EXT,
+		'38' => 'ranks.' . PHP_EXT,
+		'39' => 'memberlist.' . PHP_EXT . '?mode=staff',
 		'40' => '',
 		'41' => '',
 		'42' => '',
-		'43' => 'profile.' . $phpEx . '?mode=register',
+		'43' => 'profile.' . PHP_EXT . '?mode=register',
 		'44' => ''
 	);
 	return $link_url_array[$default_id];

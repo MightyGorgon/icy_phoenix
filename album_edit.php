@@ -15,19 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request
@@ -79,7 +78,7 @@ if ($album_user_access['edit'] == 0)
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . "?redirect=album_edit.$phpEx?pic_id=$pic_id"));
+		redirect(append_sid(LOGIN_MG . '?redirect=album_edit.' . PHP_EXT . '?pic_id=' . $pic_id));
 	}
 	else
 	{
@@ -110,7 +109,7 @@ if( !isset($_POST['pic_title']) )
 	$page_title = $lang['Album'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_edit_body.tpl'));
 
@@ -118,7 +117,7 @@ if( !isset($_POST['pic_title']) )
 		'L_EDIT_PIC_INFO' => $lang['Edit_Pic_Info'],
 
 		'CAT_TITLE' => $thispic['cat_title'],
-		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)),
+		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
 
 		'L_PIC_ID' => $lang['Pic_ID'],
 		'L_PIC_TITLE' => $lang['Pic_Image'],
@@ -137,14 +136,14 @@ if( !isset($_POST['pic_title']) )
 		'L_RESET' => $lang['Reset'],
 		'L_SUBMIT' => $lang['Submit'],
 
-		'S_ALBUM_ACTION' => append_sid(album_append_uid("album_edit.$phpEx?pic_id=$pic_id")),
+		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $pic_id)),
 		)
 	);
 
 	// Generate the page
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {
@@ -179,12 +178,12 @@ else
 	$message = $lang['Pics_updated_successfully'];
 
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">')
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">')
 	);
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_category'], '<a href="' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 

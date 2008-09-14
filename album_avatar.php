@@ -16,19 +16,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // Load up pic_id.
 if( isset($_POST['pic_id']) )
@@ -47,7 +46,7 @@ else
 // Is the user logged in.
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . "?redirect=album_avatar.$phpEx?pic_id=$pic_id"));
+	redirect(append_sid(LOGIN_MG . '?redirect=album_avatar.' . PHP_EXT . '?pic_id=' . $pic_id));
 }
 
 // Is the user allowed avatars
@@ -58,7 +57,7 @@ if (!$userdata['user_allowavatar'])
 
 // Get this pic info
 $sql = "SELECT *
-		FROM ". ALBUM_TABLE ."
+		FROM " . ALBUM_TABLE . "
 		WHERE pic_id = '$pic_id'";
 if( !($result = $db->sql_query($sql)) )
 {
@@ -83,7 +82,7 @@ if( empty($thispic) )
 if ($cat_id != PERSONAL_GALLERY)
 {
 	$sql = "SELECT *
-			FROM ". ALBUM_CAT_TABLE ."
+			FROM " . ALBUM_CAT_TABLE . "
 			WHERE cat_id = '$cat_id'";
 	if( !($result = $db->sql_query($sql)) )
 	{
@@ -126,7 +125,11 @@ if ($userdata['user_level'] != ADMIN)
 $avatar_filename = uniqid(rand()) . '.' . $pic_filetype;
 
 // Get image size
-$pic_size = getimagesize(ALBUM_UPLOAD_PATH . $pic_filename);
+$pic_base_path = ALBUM_UPLOAD_PATH;
+$pic_extra_path = '';
+$pic_new_filename = $pic_extra_path . $pic_filename;
+$pic_fullpath = $pic_base_path . $pic_new_filename;
+$pic_size = getimagesize($pic_fullpath);
 $pic_width = $pic_size[0];
 $pic_height = $pic_size[1];
 
@@ -147,7 +150,7 @@ if($album_config['gd_version'] > 0)
 			break;
 	}
 
-	$src = @$read_function(ALBUM_UPLOAD_PATH  . $pic_filename);
+	$src = @$read_function($pic_fullpath);
 	if (!$src)
 	{
 		$gd_errored = true;
@@ -202,7 +205,7 @@ if( !($result = $db->sql_query($sql)) )
 
 @unlink(@phpbb_realpath('./' . $board_config['avatar_path']) . '/' . $userdata['user_avatar']);
 
-$message = 'Your profile avatar has been updated.<br />Click <a href="album_cat.' . $phpEx . '?cat_id=' . $cat_id . '&amp;user_id=' . $user_id . '">here</a> to go to image category.<br />Click <a href="album_showpage.' . $phpEx . '?pic_id=' . $pic_id . '&amp;user_id=' . $user_id . '">here</a> to go to image.<br />';
+$message = 'Your profile avatar has been updated.<br />Click <a href="album_cat.' . PHP_EXT . '?cat_id=' . $cat_id . '&amp;user_id=' . $user_id . '">here</a> to go to image category.<br />Click <a href="album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;user_id=' . $user_id . '">here</a> to go to image.<br />';
 message_die(GENERAL_MESSAGE, $message);
 
 ?>

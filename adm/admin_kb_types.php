@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if ( !empty( $setmodules ) )
 {
@@ -24,17 +24,17 @@ if ( !empty( $setmodules ) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'config.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-include($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 
 function get_list_kb( $id, $select )
@@ -111,7 +111,7 @@ switch ( $mode )
 			mx_message_die( GENERAL_ERROR, "Could not create type", '', __LINE__, __FILE__, $sql );
 		}
 
-		$message = $lang['Type_created'] . '<br /><br />' . sprintf( $lang['Click_return_type_manager'], '<a href="' . append_sid( "admin_kb_types.$phpEx" ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . "admin/index.$phpEx?pane=right" ) . '">', '</a>' );
+		$message = $lang['Type_created'] . '<br /><br />' . sprintf( $lang['Click_return_type_manager'], '<a href="' . append_sid( "admin_kb_types." . PHP_EXT ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right' ) . '">', '</a>' );
 
 		mx_message_die( GENERAL_MESSAGE, $message );
 		break;
@@ -142,7 +142,7 @@ switch ( $mode )
 				'L_CAT_SETTINGS' => $lang['Cat_settings'],
 				'L_CREATE' => $lang['Edit'],
 
-				'S_ACTION' => append_sid($phpbb_root_path . ADM . "/admin_kb_types.$phpEx?mode=edit" ),
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=edit' ),
 				'CAT_NAME' => $type,
 
 				'S_HIDDEN' => '<input type="hidden" name="typeid" value="' . $type_id . '">'
@@ -167,7 +167,7 @@ switch ( $mode )
 				mx_message_die( GENERAL_ERROR, "Could not update type", '', __LINE__, __FILE__, $sql );
 			}
 
-			$message = $lang['Type_edited'] . '<br /><br />' . sprintf( $lang['Click_return_type_manager'], '<a href="' . append_sid( "admin_kb_types.$phpEx" ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . "/index.$phpEx?pane=right" ) . '">', '</a>' );
+			$message = $lang['Type_edited'] . '<br /><br />' . sprintf( $lang['Click_return_type_manager'], '<a href="' . append_sid( "admin_kb_types." . PHP_EXT ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right' ) . '">', '</a>' );
 
 			mx_message_die( GENERAL_MESSAGE, $message );
 		}
@@ -207,7 +207,7 @@ switch ( $mode )
 
 				'S_HIDDEN_FIELDS' => '<input type="hidden" name="typeid" value="' . $type_id . '">',
 				'S_SELECT_TO' => get_list_kb( $type_id, 0 ),
-				'S_ACTION' => append_sid($phpbb_root_path . ADM . "/admin_kb_types.$phpEx?mode=delete" ),
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=delete' ),
 
 				'CAT_NAME' => $type_name
 				)
@@ -234,7 +234,7 @@ switch ( $mode )
 				mx_message_die( GENERAL_ERROR, "Could not delete type", '', __LINE__, __FILE__, $sql );
 			}
 
-			$message = $lang['Type_deleted'] . '<br /><br />' . sprintf( $lang['Click_return_type_manager'], '<a href="' . append_sid( "admin_kb_types.$phpEx" ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid($phpbb_root_path . ADM . "/index.$phpEx?pane=right" ) . '">', '</a>' );
+			$message = $lang['Type_deleted'] . '<br /><br />' . sprintf( $lang['Click_return_type_manager'], '<a href="' . append_sid( "admin_kb_types." . PHP_EXT ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right' ) . '">', '</a>' );
 
 			mx_message_die( GENERAL_MESSAGE, $message );
 		}
@@ -255,7 +255,7 @@ switch ( $mode )
 				'L_TYPE' => $lang['Article_type'],
 				'L_ACTION' => $lang['Art_action'],
 
-				'S_ACTION' => append_sid($phpbb_root_path . ADM . "/admin_kb_types.$phpEx?mode=create" ) )
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=create' ) )
 			);
 		// get categories
 		$sql = "SELECT *
@@ -271,29 +271,30 @@ switch ( $mode )
 			$type_id = $type['id'];
 			$type_name = $type['type'];
 
-			$temp_url = append_sid($phpbb_root_path . ADM . "/admin_kb_types.$phpEx?mode=edit&amp;cat=$type_id" );
-			$edit = '<a href="' . $temp_url . '"><img src="' . $phpbb_root_path . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=edit&amp;cat=' . $type_id);
+			$edit = '<a href="' . $temp_url . '"><img src="' . IP_ROOT_PATH . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
 
-			$temp_url = append_sid($phpbb_root_path . ADM . "/admin_kb_types.$phpEx?mode=delete&amp;cat=$type_id" );
-			$delete = '<a href="' . $temp_url . '"><img src="' . $phpbb_root_path . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=delete&amp;cat=' . $type_id);
+			$delete = '<a href="' . $temp_url . '"><img src="' . IP_ROOT_PATH . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
 
 			$row_color = ( !( $i % 2 ) ) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = ( !( $i % 2 ) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-			$template->assign_block_vars( 'typerow', array( 'TYPE' => $type_name,
+			$template->assign_block_vars('typerow', array(
+					'TYPE' => $type_name,
 					'U_EDIT' => $edit,
 					'U_DELETE' => $delete,
-
 					'ROW_COLOR' => '#' . $row_color,
-					'ROW_CLASS' => $row_class )
+					'ROW_CLASS' => $row_class
+					)
 				);
 			$i++;
 		}
 		break;
 }
 
-$template->pparse( 'body' );
-// include('./page_footer_admin.' . $phpEx);
-include_once($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+$template->pparse('body');
+// include('./page_footer_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

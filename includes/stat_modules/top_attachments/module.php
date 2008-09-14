@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -45,12 +45,12 @@ else
 
 $language = $board_config['default_lang'];
 
-if(!file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx))
+if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT))
 {
 	$language = 'english';
 }
 
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_admin_attach.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT);
 
 $order_by = 'download_count DESC LIMIT ' . $return_limit;
 
@@ -102,6 +102,9 @@ else
 	$num_attachments = 0;
 }
 
+$template->_tpldata['attachrow.'] = array();
+//reset($template->_tpldata['attachrow.']);
+
 for ($i = 0; $i < $num_attachments; $i++)
 {
 	$class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
@@ -149,7 +152,7 @@ for ($i = 0; $i < $num_attachments; $i++)
 		$filename_2 = substr($filename, 0, 30) . '...';
 	}
 
-	$view_attachment = append_sid('download.' . $phpEx . '?id=' . $attachments[$i]['attach_id']);
+	$view_attachment = append_sid('download.' . PHP_EXT . '?id=' . $attachments[$i]['attach_id']);
 	if ($filename_2 != '')
 	{
 		$filename_link = '<a href="' . $view_attachment . '" class="gen" title="' . $filename . '" target="_blank">' . $filename_2 . '</a>';

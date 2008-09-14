@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -30,7 +30,7 @@ init_userprefs($userdata);
 //if (defined('ACTIVITY_MOD'))
 if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 {
-	include($phpbb_root_path . ACTIVITY_MOD_PATH . 'includes/functions_amod_index.' . $phpEx);
+	include(IP_ROOT_PATH . ACTIVITY_MOD_PATH . 'includes/functions_amod_index.' . PHP_EXT);
 }
 // Activity - END
 
@@ -78,7 +78,7 @@ if ($auth_level_req > AUTH_ALL)
 }
 $cms_global_blocks = ($board_config['wide_blocks_forum'] == 1) ? true : false;
 
-require($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . $phpEx);
+require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 
 $viewcat = (!empty($_GET[POST_CAT_URL])) ? $_GET[POST_CAT_URL] : -1;
 $viewcat = intval($viewcat);
@@ -163,7 +163,7 @@ if($mark_read == 'forums')
 }
 // End handle marking posts
 
-include_once($phpbb_root_path . 'includes/mods_settings/mod_categories_hierarchy.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/mods_settings/mod_categories_hierarchy.' . PHP_EXT);
 if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_config['display_viewonline'] == 1)))
 {
 	define('SHOW_ONLINE', true);
@@ -200,7 +200,7 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 	}
 
 	// Last Visit - BEGIN
-	$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'last_visit_' . $userdata['user_level'] . '_' . $board_config['board_timezone'] . '.dat';
+	$cache_data_file = MAIN_CACHE_FOLDER . 'last_visit_' . $userdata['user_level'] . '_' . $board_config['board_timezone'] . '.dat';
 	$cache_update = true;
 	$cache_file_time = time();
 	if (@is_file($cache_data_file))
@@ -363,7 +363,7 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 		// Birthday Mod, Show users with birthday
 		$template->assign_block_vars('switch_show_birthday', array());
 
-		$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'birthday_' . $board_config['board_timezone'] . '.dat';
+		$cache_data_file = MAIN_CACHE_FOLDER . 'birthday_' . $board_config['board_timezone'] . '.dat';
 		$cache_update = true;
 		$cache_file_time = time();
 		if (@is_file($cache_data_file))
@@ -552,7 +552,7 @@ build_groups_list_template();
 $page_title = $lang['Forum'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'index_body.tpl'));
 
 $template->assign_vars(array(
@@ -573,9 +573,9 @@ $template->assign_vars(array(
 	'FOLDER_AR_BIG' => $images['forum_nor_ar'],
 //<!-- END Unread Post Information to Database Mod -->
 	// Start add - Fully integrated shoutbox MOD
-	'U_SHOUTBOX' => append_sid('shoutbox.' . $phpEx),
+	'U_SHOUTBOX' => append_sid('shoutbox.' . PHP_EXT),
 	'L_SHOUTBOX' => $lang['Shoutbox'],
-	'U_SHOUTBOX_MAX' => append_sid('shoutbox_max.' . $phpEx),
+	'U_SHOUTBOX_MAX' => append_sid('shoutbox_max.' . PHP_EXT),
 	// End add - Fully integrated shoutbox MOD
 	'AVATAR_IMG' => $avatar_img,
 	'STATS_IMG' => $images['stats_image'],
@@ -613,8 +613,8 @@ $template->assign_vars(array(
 	'L_ONLINE_EXPLAIN' => $lang['Online_explain'],
 
 	'L_LINKS' => $lang['Site_links'],
-	'U_LINKS' => append_sid('links.' . $phpEx),
-	'U_LINKS_JS' => 'links.js.' . $phpEx,
+	'U_LINKS' => append_sid('links.' . PHP_EXT),
+	'U_LINKS_JS' => 'links.js.' . PHP_EXT,
 	'U_SITE_LOGO' => $link_self_img,
 	'SITE_LOGO_WIDTH' => $site_logo_width,
 	'SITE_LOGO_HEIGHT' => $site_logo_height,
@@ -714,7 +714,7 @@ if (!$display)
 }
 
 // Should the news banner be shown?
-include($phpbb_root_path . 'includes/xs_news.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/xs_news.' . PHP_EXT);
 if($xs_news_config['xs_show_news'])
 {
 	$template->assign_block_vars('switch_show_news', array());
@@ -724,6 +724,6 @@ if($xs_news_config['xs_show_news'])
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

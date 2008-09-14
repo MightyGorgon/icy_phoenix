@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,11 +25,11 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require_once($phpbb_root_path . 'includes/functions_xs_admin.' . $phpEx);
-require_once($phpbb_root_path . 'includes/functions_xs_useless.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'includes/functions_xs_admin.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 
 // define the path to the admin news templates
 define('XS_TPL_PATH', '../../templates/common/xs_mod/tpl_news/');
@@ -57,7 +57,7 @@ while ( $row = $db->sql_fetchrow($result) )
 }
 
 // load the admin language file
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_xs_news.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
 
 // Set Date format based on the admin choice
 switch ($xs_news_config['xs_news_dateformat']) {
@@ -172,7 +172,7 @@ if( !empty($mode) )
 
 				if( isset($_POST['submit']) )
 				{
-					$message = $lang['n_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], "<a href=\"" . append_sid("admin_xs_news.$phpEx?mode=config") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+					$message = $lang['n_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -182,16 +182,16 @@ if( !empty($mode) )
 			$newmode = 'config';
 			$buttonvalue = $lang['Update'];
 
-			$show_xs_news_yes = ( $new['xs_show_news'] ) ? "checked=\"checked\"" : "";
-			$show_xs_news_no = ( !$new['xs_show_news'] ) ? "checked=\"checked\"" : "";
+			$show_xs_news_yes = ( $new['xs_show_news'] ) ? 'checked="checked"' : '';
+			$show_xs_news_no = ( !$new['xs_show_news'] ) ? 'checked="checked"' : '';
 
-			$show_xs_ticker_yes = ( $new['xs_show_ticker'] ) ? "checked=\"checked\"" : "";
-			$show_xs_ticker_no = ( !$new['xs_show_ticker'] ) ? "checked=\"checked\"" : "";
+			$show_xs_ticker_yes = ( $new['xs_show_ticker'] ) ? 'checked="checked"' : '';
+			$show_xs_ticker_no = ( !$new['xs_show_ticker'] ) ? 'checked="checked"' : '';
 
-			$show_xs_ticker_subtitle_yes = ( $new['xs_show_ticker_subtitle'] ) ? "checked=\"checked\"" : "";
-			$show_xs_ticker_subtitle_no = ( !$new['xs_show_ticker_subtitle'] ) ? "checked=\"checked\"" : "";
-			$show_xs_news_subtitle_yes = ( $new['xs_show_news_subtitle'] ) ? "checked=\"checked\"" : "";
-			$show_xs_news_subtitle_no = ( !$new['xs_show_news_subtitle'] ) ? "checked=\"checked\"" : "";
+			$show_xs_ticker_subtitle_yes = ( $new['xs_show_ticker_subtitle'] ) ? 'checked="checked"' : '';
+			$show_xs_ticker_subtitle_no = ( !$new['xs_show_ticker_subtitle'] ) ? 'checked="checked"' : '';
+			$show_xs_news_subtitle_yes = ( $new['xs_show_news_subtitle'] ) ? 'checked="checked"' : '';
+			$show_xs_news_subtitle_no = ( !$new['xs_show_news_subtitle'] ) ? 'checked="checked"' : '';
 
 			$xs_news_dateformat_select = '<select name="xs_news_dateformat">';
 			$xs_news_dateformat_select .= '<option value="0">' . create_date("d M Y", time(), $board_config['board_timezone']) . '</option>';
@@ -211,7 +211,7 @@ if( !empty($mode) )
 			$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode .'" />';
 
 			$template->assign_vars(array(
-				'S_FORUM_ACTION' => append_sid('admin_xs_news.' . $phpEx),
+				'S_FORUM_ACTION' => append_sid('admin_xs_news.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_SUBMIT_VALUE' => $buttonvalue,
 
@@ -291,8 +291,8 @@ if( !empty($mode) )
 			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $news_id . '" />';
 
 			$template->assign_vars(array(
-				'U_MORE_SMILIES' => append_sid('../posting.' . $phpEx . '?mode=smilies'),
-				'S_FORUM_ACTION' => append_sid('admin_xs_news.' . $phpEx),
+				'U_MORE_SMILIES' => append_sid('../posting.' . PHP_EXT . '?mode=smilies'),
+				'S_FORUM_ACTION' => append_sid('admin_xs_news.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_SUBMIT_VALUE' => $buttonvalue,
 
@@ -326,7 +326,7 @@ if( !empty($mode) )
 			//
 			if( trim($_POST['news_text']) == "" )
 			{
-				$message = $lang['n_create_item_null'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = $lang['n_create_item_null'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
@@ -341,7 +341,7 @@ if( !empty($mode) )
 
 			if( !checkdate($date_month, $date_day, $date_split[2]) )
 			{
-				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
@@ -366,7 +366,7 @@ if( !empty($mode) )
 				message_die(GENERAL_ERROR, "Couldn't insert row in news table", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['n_news_item_added'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['n_news_item_added'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -387,7 +387,7 @@ if( !empty($mode) )
 
 			if( !checkdate($date_month, $date_day, $date_split[2]) )
 			{
-				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
@@ -401,7 +401,7 @@ if( !empty($mode) )
 				message_die(GENERAL_ERROR, "Couldn't update news information", "", __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -429,7 +429,7 @@ if( !empty($mode) )
 					message_die(GENERAL_ERROR, "Couldn't delete news item", "", __LINE__, __FILE__, $sql);
 				}
 
-				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], "<a href=\"" . append_sid("admin_xs_news.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -449,7 +449,7 @@ if( !empty($mode) )
 					'L_YES' => $lang['Yes'],
 					'L_NO' => $lang['No'],
 
-					'S_CONFIRM_ACTION' => append_sid('admin_xs_news.' . $phpEx . '?id=' . $news_id),
+					'S_CONFIRM_ACTION' => append_sid('admin_xs_news.' . PHP_EXT . '?id=' . $news_id),
 					'S_HIDDEN_FIELDS' => $s_hidden_fields
 					)
 				);
@@ -465,7 +465,7 @@ if( !empty($mode) )
 
 	if ($show_index != true)
 	{
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 		exit;
 	}
 }
@@ -476,7 +476,7 @@ if( !empty($mode) )
 $template->set_filenames(array('body' => XS_TPL_PATH . 'news_list_body.tpl'));
 
 $template->assign_vars(array(
-	'S_FORUM_ACTION' => append_sid('admin_xs_news.' . $phpEx),
+	'S_FORUM_ACTION' => append_sid('admin_xs_news.' . PHP_EXT),
 	'L_MENU_TITLE' => $lang['n_title'],
 	'L_MENU_EXPLAIN' => $lang['n_main_title_explain'],
 	'L_MENU_SETTINGS' => $lang['n_main_title'],
@@ -518,8 +518,8 @@ if($total_news = $db->sql_numrows($q_news))
 			'NEWS_ITEM' => $news_text,
 			'NEWS_ITEM_DISPLAY' => $show_item,
 
-			'U_NEWS_EDIT' => append_sid("admin_xs_news.$phpEx?mode=editnews&amp;id=$news_id"),
-			'U_NEWS_DELETE' => append_sid("admin_xs_news.$phpEx?mode=deletenews&amp;id=$news_id")
+			'U_NEWS_EDIT' => append_sid('admin_xs_news.' . PHP_EXT . '?mode=editnews&amp;id=' . $news_id),
+			'U_NEWS_DELETE' => append_sid('admin_xs_news.' . PHP_EXT . '?mode=deletenews&amp;id=' . $news_id)
 			)
 		);
 
@@ -530,12 +530,13 @@ elseif($db->sql_numrows($q_news) == 0)
 {
 	$template->assign_block_vars('no_news', array(
 		'NEWS_DATE' => create_date($date_format_display, time(), $board_config['board_timezone']),
-		'NEWS_ITEM' => $lang['xs_no_news'])
+		'NEWS_ITEM' => $lang['xs_no_news']
+		)
 	);
 }
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

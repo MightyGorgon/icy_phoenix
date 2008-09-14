@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -192,7 +192,7 @@ if ($total_data)
 
 	if ($total_data > $dl_config['dl_links_per_page'])
 	{
-		$pagination = generate_pagination('admin_downloads.' . $phpEx . '?submod=stats&sorting=' . $sorting . '&sort_order=' . $sort_order . '&show_guests=' . $show_guests, $total_data, $dl_config['dl_links_per_page'], $start);
+		$pagination = generate_pagination('admin_downloads.' . PHP_EXT . '?submod=stats&sorting=' . $sorting . '&sort_order=' . $sort_order . '&show_guests=' . $show_guests, $total_data, $dl_config['dl_links_per_page'], $start);
 	}
 	else
 	{
@@ -230,7 +230,7 @@ if ($total_data)
 		$template->assign_block_vars('dl_stat_row', array(
 			'CAT_NAME' => $row['cat_name'],
 			'DESCRIPTION' => $row['description'],
-			'USERNAME' => ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : '<a href="' . append_sid($phpbb_root_path.PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '">' . $row['username'] . '</a>',
+			'USERNAME' => ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : '<a href="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '">' . $row['username'] . '</a>',
 			'TRAFFIC' => ($row['traffic'] == -1) ? $lang['Dl_extern'] : $dl_mod->dl_size($row['traffic']),
 			'DIRECTION' => $direction,
 			'USER_IP' => decode_ip($row['user_ip']),
@@ -240,8 +240,8 @@ if ($total_data)
 
 			'ROW_CLASS' => ($i % 2) ? $theme['td_class1'] : $theme['td_class2'],
 
-			'U_CAT_LINK' => append_sid($phpbb_root_path.'downloads.' . $phpEx . '?cat=' . $row['cat_id']),
-			'U_DL_LINK' => append_sid($phpbb_root_path.'downloads.' . $phpEx . '?view=detail&amp;df_id='.$row['id'])
+			'U_CAT_LINK' => append_sid(IP_ROOT_PATH . 'downloads.' . PHP_EXT . '?cat=' . $row['cat_id']),
+			'U_DL_LINK' => append_sid(IP_ROOT_PATH . 'downloads.' . PHP_EXT . '?view=detail&amp;df_id='.$row['id'])
 			)
 		);
 		$i++;
@@ -286,7 +286,7 @@ $template->assign_vars(array(
 
 	'S_FILTER' => $s_filter,
 	'S_SHOW_GUESTS' => ($show_guests) ? 'checked="checked"' : '',
-	'S_FORM_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=stats'),
+	'S_FORM_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=stats'),
 	'S_SORT_ORDER' => $s_sort_order,
 	'S_SORT_DIR' => $s_sort_dir
 	)

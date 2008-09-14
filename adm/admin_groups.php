@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -25,10 +25,10 @@ if (!empty($setmodules))
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+require('./pagestart.' . PHP_EXT);
 
 if (isset($_POST[POST_GROUPS_URL]) || isset($_GET[POST_GROUPS_URL]))
 {
@@ -201,7 +201,7 @@ if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
 		'S_GROUP_OPEN_CHECKED' => $group_open,
 		'S_GROUP_CLOSED_CHECKED' => $group_closed,
 		'S_GROUP_HIDDEN_CHECKED' => $group_hidden,
-		'S_GROUP_ACTION' => append_sid('admin_groups.' . $phpEx),
+		'S_GROUP_ACTION' => append_sid('admin_groups.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -289,9 +289,9 @@ elseif (isset($_POST['group_update']))
 			message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
 		}
 
-		empty_cache_folder('./../', true);
+		empty_cache_folders(true);
 
-		$message = $lang['Deleted_group'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Deleted_group'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -441,9 +441,9 @@ elseif (isset($_POST['group_update']))
 				message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
 			}
 
-			empty_cache_folder('./../', true);
+			empty_cache_folders(true);
 
-			$message = $lang['Updated_group'] . '<br />' . sprintf($lang['group_count_updated'], $group_count_remove, $group_count_added) . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['Updated_group'] . '<br />' . sprintf($lang['group_count_updated'], $group_count_remove, $group_count_added) . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -511,9 +511,9 @@ elseif (isset($_POST['group_update']))
 				}
 			}
 
-			empty_cache_folder('./../', true);
+			empty_cache_folders(true);
 
-			$message = $lang['Added_new_group'] . '<br />' . sprintf($lang['group_count_updated'], $group_count_remove, $group_count_added). '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');;
+			$message = $lang['Added_new_group'] . '<br />' . sprintf($lang['group_count_updated'], $group_count_remove, $group_count_added). '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');;
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -610,9 +610,9 @@ elseif (isset($_POST['mass_update']))
 		message_die(GENERAL_ERROR, "Failed to update general configuration for bots_color", "", __LINE__, __FILE__, $sql);
 	}
 
-	empty_cache_folder('./../', true);
+	empty_cache_folders(true);
 
-	$message = $lang['Groups_Updated'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');;
+	$message = $lang['Groups_Updated'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');;
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -660,8 +660,8 @@ else
 			$counting_list = array();
 			$counting_list = count_users_in_group($row['group_id']);
 
-			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . $phpEx . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="../' . $images['arrows_cms_up'] . '" alt="' . $lang['Move_Up'] . '" title="' . $lang['Move_Up'] . '" /></a>';
-			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . $phpEx . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="../' . $images['arrows_cms_down'] . '" alt="' . $lang['Move_Down'] . '" title="' . $lang['Move_Down'] . '" /></a>';
+			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="../' . $images['arrows_cms_up'] . '" alt="' . $lang['Move_Up'] . '" title="' . $lang['Move_Up'] . '" /></a>';
+			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="../' . $images['arrows_cms_down'] . '" alt="' . $lang['Move_Down'] . '" title="' . $lang['Move_Down'] . '" /></a>';
 
 			$template->assign_block_vars('group_row', array(
 				'GROUP_ID' => $row['group_id'],
@@ -673,8 +673,8 @@ else
 				'GROUP_LEGEND' => $row['group_legend'],
 				'GROUP_LEGEND_CHECKED' => ($row['group_legend'] == '1') ? ' checked="checked"' : '',
 				'GROUP_LEGEND_MOVE' => $g_move,
-				'U_GROUP_EDIT' => append_sid('admin_groups.' . $phpEx . '?edit=true&amp;' . POST_GROUPS_URL . '=' . $row['group_id']),
-				'U_GROUP_PERMISSIONS' => append_sid('admin_ug_auth.' . $phpEx . '?mode=group&amp;' . POST_GROUPS_URL . '=' . $row['group_id'])
+				'U_GROUP_EDIT' => append_sid('admin_groups.' . PHP_EXT . '?edit=true&amp;' . POST_GROUPS_URL . '=' . $row['group_id']),
+				'U_GROUP_PERMISSIONS' => append_sid('admin_ug_auth.' . PHP_EXT . '?mode=group&amp;' . POST_GROUPS_URL . '=' . $row['group_id'])
 				)
 			);
 		}
@@ -720,7 +720,7 @@ else
 		'BOTS_COLOR' => str_replace('#', '', $board_config['bots_color']),
 		'BOTS_COLOR_STYLE' => ($board_config['bots_color'] ? ' style="color:' . $board_config['bots_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"'),
 		'BOTS_LEGEND_CHECKED' => ($board_config['bots_legend'] == 1) ? ' checked="checked"' : '',
-		'S_GROUP_ACTION' => append_sid('admin_groups.' . $phpEx),
+		'S_GROUP_ACTION' => append_sid('admin_groups.' . PHP_EXT),
 		'S_GROUP_SELECT' => $select_list
 		)
 	);
@@ -733,6 +733,6 @@ else
 	$template->pparse('body');
 }
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

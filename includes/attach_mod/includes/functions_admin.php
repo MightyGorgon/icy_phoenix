@@ -145,10 +145,10 @@ function thumbnail_exists($filename)
 */
 function attachment_quota_settings($admin_mode, $submit = false, $mode)
 {
-	global $template, $db, $lang, $lang, $phpbb_root_path, $phpEx, $attach_config;
+	global $template, $db, $lang, $lang, $attach_config;
 
 	// Make sure constants got included
-	include_once($phpbb_root_path . ATTACH_MOD_PATH . 'includes/constants.' . $phpEx);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
 
 	if (!intval($attach_config['allow_ftp_upload']))
 	{
@@ -158,7 +158,7 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 		}
 		else
 		{
-			$upload_dir = $phpbb_root_path . $attach_config['upload_dir'];
+			$upload_dir = IP_ROOT_PATH . $attach_config['upload_dir'];
 		}
 	}
 	else

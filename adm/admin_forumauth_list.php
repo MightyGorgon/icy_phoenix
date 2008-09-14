@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,13 +25,13 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // Start program - define vars
-include($phpbb_root_path . './includes/def_auth.' . $phpEx);
+include(IP_ROOT_PATH . './includes/def_auth.' . PHP_EXT);
 
 // Get required information, for all forums
 /*
@@ -83,10 +83,10 @@ if($_POST['submit'])
 	}
 	cache_tree(true);
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3; url=' . append_sid('admin_forumauth_list.' . $phpEx) . '" />'
+		'META' => '<meta http-equiv="refresh" content="3; url=' . append_sid('admin_forumauth_list.' . PHP_EXT) . '" />'
 		)
 	);
-	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid('admin_forumauth_list.' . $phpEx) . '">', '</a>');
+	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid('admin_forumauth_list.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -103,7 +103,7 @@ $template->assign_vars(array(
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 	'COLSPAN' => $colspan,
-	'S_FORM_ACTION' => append_sid('admin_forumauth_list.' . $phpEx)
+	'S_FORM_ACTION' => append_sid('admin_forumauth_list.' . PHP_EXT)
 	)
 );
 
@@ -122,7 +122,7 @@ for( $i = 0; $i < count($forum_auth_fields); $i++ )
 
 for ($i = 0; $i < count($forum_rows); $i++)
 {
-	$temp_url = append_sid('admin_forumauth.' . $phpEx . '?' . POST_FORUM_URL . '=' . $forum_rows[$i]['forum_id']);
+	$temp_url = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_rows[$i]['forum_id']);
 	$s_forum = '<a href="' . $temp_url . '">' . $forum_rows[$i]['forum_name'] . '</a>';
 
 	$template->assign_block_vars('forum_row', array(
@@ -151,10 +151,10 @@ for ($i = 0; $i < count($forum_rows); $i++)
 	}
 }
 
-include('./page_header_admin.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

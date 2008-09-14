@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -36,6 +36,9 @@ if (!($result = $stat_db->sql_query($sql)))
 
 $themes_count = $stat_db->sql_numrows($result);
 $themes_data = $stat_db->sql_fetchrowset($result);
+
+$template->_tpldata['style.'] = array();
+//reset($template->_tpldata['style.']);
 
 for ($i = 0; $i < $themes_count; $i++)
 {

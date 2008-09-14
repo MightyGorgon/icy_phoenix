@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -193,6 +193,11 @@ function get_user_browser($http_user_agent_str)
 	{
 		$user_browser_ver = 'Konqueror ' . $log_version[1];
 		$user_browser_img .= 'konqueror.png';
+	}
+	elseif (ereg('Chrome/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
+	{
+		$user_browser_ver = 'Chrome ' . $log_version[1];
+		$user_browser_img .= 'chrome.png';
 	}
 	else
 	{

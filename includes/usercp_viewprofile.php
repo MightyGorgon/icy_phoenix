@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -75,7 +75,7 @@ if (!$profiledata)
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
 // Mighty Gorgon - Multiple Ranks - BEGIN
-require_once($phpbb_root_path . 'includes/functions_mg_ranks.' . $phpEx);
+require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
 $ranks_sql = query_ranks();
 // Mighty Gorgon - Multiple Ranks - END
 
@@ -114,15 +114,15 @@ if (($board_config['show_thanks_profile'] == true) && ($board_config['disable_th
 // Mighty Gorgon - Thanks Received - END
 
 // Mighty Gorgon - HTTP AGENTS - BEGIN
-include($phpbb_root_path . 'includes/functions_mg_http.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_mg_http.' . PHP_EXT);
 $user_os = get_user_os($profiledata['user_http_agents']);
 $user_browser = get_user_browser($profiledata['user_http_agents']);
 // Mighty Gorgon - HTTP AGENTS - END
 
 // Mighty Gorgon - Full Album Pack - BEGIN
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
 
-$album_show_pic_url = 'album_showpage.' . $phpEx;
+$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 $album_rate_pic_url = $album_show_pic_url;
 $album_comment_pic_url = $album_show_pic_url;
 
@@ -166,7 +166,7 @@ $db->sql_freeresult($result);
 
 if ($totalpicrow > 0)
 {
-	$temp_url = append_sid('album.' . $phpEx . '?user_id=' . $profiledata['user_id']);
+	$temp_url = append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']);
 	$album_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_album'] . '" alt="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" title="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" /></a>';
 	$album = '<a href="' . $temp_url . '">' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '</a>';
 
@@ -183,8 +183,8 @@ if ($totalpicrow > 0)
 			}
 
 			$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid('album_pic.' . $phpEx . '?pic_id=' . $recentrow[$j]['pic_id']) : append_sid($album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id']),
-				'THUMBNAIL' => append_sid('album_thumbnail.' . $phpEx . '?pic_id=' . $recentrow[$j]['pic_id']),
+				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']) : append_sid($album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id']),
+				'THUMBNAIL' => append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']),
 				'DESC' => $recentrow[$j]['pic_desc']
 				)
 			);
@@ -224,7 +224,7 @@ $user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . 
 $user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
 // Mighty Gorgon - Multiple Ranks - END
 
-$temp_url = append_sid('privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
+$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
 $pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 $pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -283,7 +283,7 @@ $hostname = ($profiledata['user_registered_hostname'] == '') ? $lang['Not_record
 // End Advanced IP Tools Pack MOD
 
 // BBCode - BEGIN
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 global $bbcode;
 $bbcode->allow_html = $board_config['allow_html'];
 $bbcode->allow_bbcode = $board_config['allow_bbcode'];
@@ -395,12 +395,12 @@ $location .= '&nbsp;' . $flag ;
 //if (defined('ACTIVITY_MOD'))
 if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 {
-	include_once($phpbb_root_path . ACTIVITY_MOD_PATH . 'includes/functions_amod_plus.' . $phpEx);
+	include_once(IP_ROOT_PATH . ACTIVITY_MOD_PATH . 'includes/functions_amod_plus.' . PHP_EXT);
 	unset($trophy_count, $trophy_holder, $trophy);
 	if (($board_config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
 	{
 		$template->assign_block_vars('trophy', array(
-			'PROFILE_TROPHY' => '<a href="javascript:Trophy_Popup(\'' . $phpbb_root_path . 'activity_trophy_popup.' . $phpEx . '?user=' . $profiledata['user_id'] . '&sid=' . $userdata['session_id'] . '\', \'New_Window\', \'400\', \'380\', \'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
+			'PROFILE_TROPHY' => '<a href="javascript:Trophy_Popup(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&sid=' . $userdata['session_id'] . '\', \'New_Window\', \'400\', \'380\', \'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
 			'TROPHY_TITLE' => $lang['Trohpy']
 			)
 		);
@@ -414,7 +414,7 @@ if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 
 	if (($board_config['ina_char_show_viewprofile']) && ($profiledata['ina_char_name']) && ($profile_data['user_id'] != ANONYMOUS))
 	{
-		//include_once($phpbb_root_path .'includes/bbcode.'. $phpEx);
+		//include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		$template->assign_block_vars('profile_char', array(
 			'CHAR_PROFILE' => AMP_Profile_Char($profiledata['user_id'], '')
 			)
@@ -429,18 +429,18 @@ if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 $page_title = $lang['Viewing_profile'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Start add - Online/Offline/Hidden Mod
 if ($profiledata['user_session_time'] >= (time() - $board_config['online_time']))
 {
 	if ($profiledata['user_allow_viewonline'])
 	{
-		$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $profiledata['username']) . '" title="' . sprintf($lang['is_online'], $profiledata['username']) . '" /></a>';
+		$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $profiledata['username']) . '" title="' . sprintf($lang['is_online'], $profiledata['username']) . '" /></a>';
 	}
 	elseif ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $profiledata['user_id'])
 	{
-		$online_status_img = '<a href="' . append_sid('viewonline.' . $phpEx) . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $profiledata['username']) . '" title="' . sprintf($lang['is_hidden'], $profiledata['username']) . '" /></a>';
+		$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $profiledata['username']) . '" title="' . sprintf($lang['is_hidden'], $profiledata['username']) . '" /></a>';
 	}
 	else
 	{
@@ -466,18 +466,18 @@ else
 // Mighty Gorgon - Feedbacks - BEGIN
 if (defined('MG_FEEDBACKS'))
 {
-	$mg_root_path = $phpbb_root_path . 'mg/';
-	include_once($mg_root_path . 'includes/mg_functions_feedbacks.' . $phpEx);
-	include_once($mg_root_path . 'mg_common.' . $phpEx);
-	include_once($mg_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . $phpEx);
+	$mg_root_path = IP_ROOT_PATH . 'mg/';
+	include_once($mg_root_path . 'includes/mg_functions_feedbacks.' . PHP_EXT);
+	include_once($mg_root_path . 'mg_common.' . PHP_EXT);
+	include_once($mg_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
 
 	$feedbacks_received = '';
 	$feedbacks_details = get_user_feedbacks_received($profiledata['user_id']);
 	if ($feedbacks_details['feedbacks_count'] > 0)
 	{
 		$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
-		$feedbacks_average_img = $phpbb_root_path . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid('mg_feedbacks.' . $phpEx . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align:middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
+		$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
+		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid('mg_feedbacks.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align:middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
 	}
 }
 // Mighty Gorgon - Feedbacks - END
@@ -554,7 +554,7 @@ $template->assign_vars(array(
 	'PHONE' => ($profiledata['user_phone']) ? $profiledata['user_phone'] : '&nbsp;',
 	'SELFDES' => $selfdes,
 
-	'U_VISITS' => '<a href="' . append_sid('profile_view_user.' . $phpEx . '?' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;' . POST_POST_URL . '=0') . '"><img src="' . $images['icon_view'] . '" alt="' . $lang['Views'] . '" /></a>',
+	'U_VISITS' => '<a href="' . append_sid('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;' . POST_POST_URL . '=0') . '"><img src="' . $images['icon_view'] . '" alt="' . $lang['Views'] . '" /></a>',
 
 	// Start add - Gender MOD
 	'GENDER' => $gender,
@@ -600,12 +600,12 @@ $template->assign_vars(array(
 	// Mighty Gorgon - Full Album Pack - BEGIN
 	'ALBUM_IMG' => $album_img,
 	'ALBUM' => $album,
-	'U_PERSONAL_GALLERY' => append_sid('album.' . $phpEx . '?user_id=' . $profiledata['user_id']),
+	'U_PERSONAL_GALLERY' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']),
 	'L_PERSONAL_GALLERY' => sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow),
-	'U_TOGGLE_VIEW_ALL' => append_sid('album.' . $phpEx . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_ALL),
+	'U_TOGGLE_VIEW_ALL' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_ALL),
 	'TOGGLE_VIEW_ALL_IMG' => $images['mini_all_pic_view_mode'],
 	'L_TOGGLE_VIEW_ALL' => sprintf($lang['Show_All_Pic_View_Mode_Profile'], $profiledata['username']),
-	'U_ALL_IMAGES_BY_USER' => append_sid('album.' . $phpEx . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST),
+	'U_ALL_IMAGES_BY_USER' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST),
 	'L_ALL_IMAGES_BY_USER' => sprintf($lang['Picture_List_Of_User'], $profiledata['username']),
 	'L_PERSONAL_ALBUM' => $lang['Your_Personal_Gallery'],
 	'L_PIC_TITLE' => $lang['Pic_Image'],
@@ -666,9 +666,9 @@ $template->assign_vars(array(
 	'USER_REGISTERED_HOSTNAME' => $hostname,
 	// End Advanced IP Tools Pack MOD
 
-	'U_USER_RECENT_TOPICS' => append_sid('recent.' . $phpEx . '?mode=utopics&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
-	'U_USER_RECENT_POSTS' => append_sid('recent.' . $phpEx . '?mode=uposts&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
-	'U_USER_RECENT_TOPICS_VIEW' => append_sid('recent.' . $phpEx . '?mode=utview&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
+	'U_USER_RECENT_TOPICS' => append_sid('recent.' . PHP_EXT . '?mode=utopics&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
+	'U_USER_RECENT_POSTS' => append_sid('recent.' . PHP_EXT . '?mode=uposts&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
+	'U_USER_RECENT_TOPICS_VIEW' => append_sid('recent.' . PHP_EXT . '?mode=utview&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
 
 	'S_PROFILE_ACTION' => append_sid(PROFILE_MG)
 	)
@@ -678,13 +678,13 @@ $template->assign_vars(array(
 // Custom Profile Fields - BEGIN
 // Include Language
 $language = $board_config['default_lang'];
-if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_profile_fields.' . $phpEx))
+if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT))
 {
 	$language = 'english';
 }
-include($phpbb_root_path . 'language/lang_' . $language . '/lang_profile_fields.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT);
 
-include_once($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
 $profile_data = get_fields('WHERE view_in_profile = ' . VIEW_IN_PROFILE . ' AND users_can_view = ' . ALLOW_VIEW);
 $profile_names = array();
 
@@ -794,7 +794,7 @@ if (count($groups) > 0)
 		// groupe visible : afficher
 		if ($is_ok)
 		{
-			$u_group_name = append_sid('groupcp.' . $phpEx . '?g=' . $groups[$i]['group_id']);
+			$u_group_name = append_sid('groupcp.' . PHP_EXT . '?g=' . $groups[$i]['group_id']);
 			$l_group_name = $groups[$i]['group_name'];
 			$l_group_desc = $groups[$i]['group_description'];
 			$template->assign_block_vars('groups',array(
@@ -1051,13 +1051,13 @@ $template->assign_vars(array(
 	'L_BANNED_USERNAME' => ($banned_username == '') ? $lang['Username_not_banned'] : $lang['Username_banned'],
 	'L_BANNED_EMAIL' => ($banned_email == '') ? $lang['User_email_not_banned'] : sprintf($lang['User_email_banned'], $profiledata['user_email']),
 
-	'U_ADMIN_EDIT_PROFILE' => ADM . '/admin_users.' . $phpEx . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=edit&amp;redirect=yes',
-	'U_ADMIN_EDIT_PERMISSIONS' => ADM . '/admin_ug_auth.' . $phpEx . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=user'
+	'U_ADMIN_EDIT_PROFILE' => ADM . '/admin_users.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=edit&amp;redirect=yes',
+	'U_ADMIN_EDIT_PERMISSIONS' => ADM . '/admin_ug_auth.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=user'
 	)
 );
 
 //End Quick Administrator User Options and Information MOD
-include($phpbb_root_path . 'includes/bb_usage_stats.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bb_usage_stats.' . PHP_EXT);
 // MG Cash MOD For IP - BEGIN
 if (defined('CASH_MOD'))
 {
@@ -1066,6 +1066,6 @@ if (defined('CASH_MOD'))
 // MG Cash MOD For IP - END
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

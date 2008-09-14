@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -35,13 +35,12 @@ while ( $row = $db->sql_fetchrow($result) )
 
 if( $xs_news_config['xs_show_news'] != false )
 {
-	$phpbb_root_path = './';
+	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 	/*
 	$tempstarttime = $starttime;
-	require($phpbb_root_path . 'extension.inc');
-	$starttime = $tempstarttime;
+		$starttime = $tempstarttime;
 	*/
-	include_once($phpbb_root_path . 'includes/functions_xs_useless.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 
 	// Start script
 

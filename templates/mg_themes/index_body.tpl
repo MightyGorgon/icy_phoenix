@@ -111,7 +111,7 @@ if(GetCookie(tmp) == '2')
 	<td class="row-recent" nowrap="nowrap" align="left">
 		<span class="gensmall">
 			<b>{L_RECENT_TOPICS}:</b>
-			<marquee id="recent_topics" behavior="scroll" direction="left" width="900px" height="10" scrolldelay="100" scrollamount="4" loop="true" onmouseover="this.stop()" onmouseout="this.start()">|
+			<marquee id="recent_topics" behavior="scroll" direction="left" width="90%" height="12" scrolldelay="100" scrollamount="4" loop="true" onmouseover="this.stop()" onmouseout="this.start()">|
 				<!-- BEGIN recent_topic_row -->
 				<a href="{recent_topic_row.U_TITLE}" title ="{recent_topic_row.L_TITLE}" onmouseover="document.all.recent_topics.stop()" onmouseout="document.all.recent_topics.start()">{recent_topic_row.L_TITLE}</a>&nbsp;|&nbsp;
 				<!-- END recent_topic_row -->

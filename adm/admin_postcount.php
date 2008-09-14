@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,9 +25,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if( isset($_POST['username']) || isset($_GET['username']) )
 {
@@ -51,7 +51,7 @@ if( isset($_POST['username']) || isset($_GET['username']) )
 			message_die(GENERAL_ERROR, "Unable to update the database", "Error", __LINE__, __FILE__, $sql);
 		}
 
-		$message = $lang['Post_count_changed'] . '<br /><br />' . sprintf($lang['Click_return_posts_config'], '<a href="' . append_sid('admin_postcount.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid('index.' . $phpEx) . '">', '</a>');
+		$message = $lang['Post_count_changed'] . '<br /><br />' . sprintf($lang['Click_return_posts_config'], '<a href="' . append_sid('admin_postcount.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 
@@ -70,7 +70,7 @@ if( isset($_POST['username']) || isset($_GET['username']) )
 
 		'POSTS' => $this_userdata['user_posts'],
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_USER_ACTION' => append_sid('admin_postcount.' . $phpEx),
+		'S_USER_ACTION' => append_sid('admin_postcount.' . PHP_EXT),
 		'S_USER_SELECT' => $select_list
 		)
 	);
@@ -88,7 +88,7 @@ else
 
 		'U_SEARCH_USER' => append_sid('./../' . SEARCH_MG . '?mode=searchuser'),
 
-		'S_USER_ACTION' => append_sid('admin_postcount.' . $phpEx),
+		'S_USER_ACTION' => append_sid('admin_postcount.' . PHP_EXT),
 		'S_USER_SELECT' => $select_list
 		)
 	);
@@ -96,6 +96,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

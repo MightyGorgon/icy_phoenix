@@ -25,15 +25,15 @@ define('ATTACH_DISPLAY', true);
 define('ATTACH_POSTING', true);
 define('CT_SECLEVEL', 'MEDIUM');
 $ct_ignorepvar = array('helpbox');
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_topics.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 
 // Check and set various parameters
 // UI2DB ADD
@@ -185,7 +185,7 @@ if (!empty($topic_calendar_time) && !empty($d_dur))
 // If the mode is set to topic review then output that review...
 if ($mode == 'topicreview')
 {
-	require($phpbb_root_path . 'includes/topic_review.' . $phpEx);
+	require(IP_ROOT_PATH . 'includes/topic_review.' . PHP_EXT);
 
 	topic_review($topic_id, false);
 	exit;
@@ -599,7 +599,7 @@ if (!$is_auth[$is_auth_type] || (!empty($is_auth_type_cal) && !$is_auth[$is_auth
 			break;
 	}
 	$redirect .= ($post_reportid) ? '&post_reportid=' . $post_reportid : '';
-	redirect(append_sid(LOGIN_MG . '?redirect=posting.' . $phpEx . '?' . $redirect, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=posting.' . PHP_EXT . '?' . $redirect, true));
 }
 // Self AUTH - BEGIN
 elseif (intval($is_auth[$is_auth_type]) == AUTH_SELF)
@@ -772,7 +772,7 @@ if (($delete || $poll_delete || ($mode == 'delete')) && !$confirm)
 	$l_confirm = ($delete || $mode == 'delete') ? $lang['Confirm_delete'] : $lang['Confirm_delete_poll'];
 
 	// Output confirmation page
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('confirm_body' => 'confirm_body.tpl'));
 
@@ -783,14 +783,14 @@ if (($delete || $poll_delete || ($mode == 'delete')) && !$confirm)
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 
-		'S_CONFIRM_ACTION' => append_sid('posting.' . $phpEx),
+		'S_CONFIRM_ACTION' => append_sid('posting.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
 
 	$template->pparse('confirm_body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 elseif ($mode == 'thank')
 {
@@ -971,7 +971,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				define('CRACKER_TRACKER_VCONFIRM', true);
 				define('POST_CONFIRM_CHECK', true);
-				include_once($phpbb_root_path . 'ctracker/engines/ct_visual_confirm.' . $phpEx);
+				include_once(IP_ROOT_PATH . 'ctracker/engines/ct_visual_confirm.' . PHP_EXT);
 			}
 			// CrackerTracker v5.x
 			$username = (!empty($_POST['username'])) ? $_POST['username'] : '';
@@ -1060,7 +1060,13 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET edit_notes='" . addslashes(serialize($notes_list)) . "' WHERE post_id='" . $post_id . "'";
 					$db->sql_query($sql);
 
-					$edited_sql = "post_edit_time = '" . time() . "', post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "'";
+					// We need this, otherwise editing for normal users will be account twice!
+					$edit_count_sql = '';
+					if($userdata['user_level'] == ADMIN)
+					{
+						$edit_count_sql = ", post_edit_count = (post_edit_count + 1)";
+					}
+					$edited_sql = "post_edit_time = '" . time() . "'" . $edit_count_sql . ", post_edit_id = '" . $userdata['user_id'] . "'";
 					$sql = "UPDATE " . POSTS_TABLE . " SET " . $edited_sql . " WHERE post_id='" . $post_id . "'";
 					$db->sql_query($sql);
 				}
@@ -1785,7 +1791,7 @@ $meta_keywords = '';
 //generate_smilies('inline');
 
 // Include page header
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array(
 	'body' => 'posting_body.tpl',
@@ -1848,7 +1854,7 @@ if (($ctracker_config->settings['vconfirm_guest'] == 1) && !$userdata['session_l
 {
 	define('CRACKER_TRACKER_VCONFIRM', true);
 	$template->assign_block_vars('switch_confirm', array());
-	include_once($phpbb_root_path . 'ctracker/engines/ct_visual_confirm.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'ctracker/engines/ct_visual_confirm.' . PHP_EXT);
 }
 // CrackerTracker v5.x
 
@@ -1882,7 +1888,7 @@ $template->assign_vars(array(
 	'SUBJECT' => $subject,
 	'MESSAGE' => $message,
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . $phpEx . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
 	'SMILIES_STATUS' => $smilies_status,
 
 	'L_SUBJECT' => $lang['Subject'],
@@ -1915,9 +1921,9 @@ $template->assign_vars(array(
 	'L_POST_HIGHLIGHT' => $lang['PostHighlight'],
 	'L_TOPIC_DESCRIPTION' => $lang['Topic_description'],
 
-	'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . $phpEx . '?mode=text2shield'),
+	'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . PHP_EXT . '?mode=text2shield'),
 	'U_VIEWTOPIC' => ($mode == 'reply') ? append_sid(VIEWTOPIC_MG . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append . '&amp;postorder=desc') : '',
-	'U_REVIEW_TOPIC' => ($mode == 'reply') ? append_sid('posting.' . $phpEx . '?mode=topicreview&amp;' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) : '',
+	'U_REVIEW_TOPIC' => ($mode == 'reply') ? append_sid('posting.' . PHP_EXT . '?mode=topicreview&amp;' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) : '',
 	'TOPIC_DESCRIPTION' => $topic_desc,
 
 	// AJAX Features - BEGIN
@@ -1979,7 +1985,7 @@ $template->assign_vars(array(
 
 	'S_TYPE_TOGGLE' => $topic_type_toggle,
 	'S_TOPIC_ID' => $topic_id,
-	'S_POST_ACTION' => append_sid('posting.' . $phpEx),
+	'S_POST_ACTION' => append_sid('posting.' . PHP_EXT),
 	'S_HIDDEN_FORM_FIELDS' => $hidden_form_fields
 	)
 );
@@ -2027,7 +2033,7 @@ if(($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && 
 // Topic review
 if($mode == 'reply' && $is_auth['auth_read'])
 {
-	require($phpbb_root_path . 'includes/topic_review.' . $phpEx);
+	require(IP_ROOT_PATH . 'includes/topic_review.' . PHP_EXT);
 	topic_review($topic_id, true);
 
 	$template->assign_block_vars('switch_inline_mode', array());
@@ -2035,17 +2041,17 @@ if($mode == 'reply' && $is_auth['auth_read'])
 }
 
 // BBCBMG - BEGIN
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcb_mg.' . $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END
 // BBCBMG SMILEYS - BEGIN
 generate_smilies('inline');
-include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 
 $template->pparse('body');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

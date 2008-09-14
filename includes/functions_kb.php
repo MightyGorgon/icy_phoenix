@@ -17,21 +17,14 @@
 
 // CTracker_Ignore: File checked by human
 
-if (!defined('IN_PHPBB'))
-{
-	die('Hacking attempt');
-}
-
-//$valid_phpbb_root_path = ($phpbb_root_path == './') || (!$phpbb_root_path == '../') || (!$phpbb_root_path == './../') || (!$phpbb_root_path == '../../');
-$valid_phpbb_root_path = ($phpbb_root_path == './') || ($phpbb_root_path == '../') || ($phpbb_root_path == './../') || ($phpbb_root_path == '../../');
-if (!$valid_phpbb_root_path)
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
 // get_quick_stats();
 // gets number of articles
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 function get_quick_stats($category_id = '')
 {
 	global $db, $template, $lang, $kb_config;
@@ -178,7 +171,7 @@ function get_kb_cat($id)
 
 function get_kb_nav($parent)
 {
-	global $db, $phpbb_root_path, $phpEx;
+	global $db;
 	global $path_kb, $path_kb_array,$path_kb_array3, $path_kb_array4, $is_block, $page_id;
 	$sql = "SELECT * FROM " . KB_CATEGORIES_TABLE . "
 					WHERE category_id = $parent";
@@ -243,7 +236,7 @@ function get_kb_nav($parent)
 
 function get_kb_articles($id = false, $approve, $block_name, $start = -1, $articles_in_cat = 0, $kb_is_auth = '')
 {
-	global $db, $template, $images, $phpEx, $phpbb_root_path, $board_config, $lang, $is_block, $page_id, $is_admin, $userdata;
+	global $db, $template, $images, $board_config, $lang, $is_block, $page_id, $is_admin, $userdata;
 	global $kb_news_sort_method_extra, $kb_news_sort_method, $kb_news_sort_par, $kb_config, $kb_is_auth, $userdata, $board_config;
 
 	$server_url = create_server_url();
@@ -325,9 +318,9 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 		}
 		else
 		{
-			$temp_url = append_sid($phpbb_root_path . 'kb.' . $phpEx . '?mode=article&amp;k=' . $article_id);
+			$temp_url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=article&amp;k=' . $article_id);
 		}
-		//$temp_url = append_sid($phpbb_root_path . 'kb.' . $phpEx . '?mode=article&amp;k=' . $article_id);
+		//$temp_url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=article&amp;k=' . $article_id);
 		$article = '<a href="' . $temp_url . '" class="gen">' . $article_title . '</a>';
 
 		$approve = '';
@@ -342,17 +335,17 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 			if (($article_approved == 2) || ($article_approved == 0))
 			{
 				// approve
-				$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_art.' . $phpEx . '?mode=approve&amp;a=' . $article_id . '&amp;start=' . $start);
+				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id . '&amp;start=' . $start);
 				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
 			}
 			elseif ($article_approved == 1)
 			{
 				// unapprove
-				$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_art.' . $phpEx . '?mode=unapprove&amp;a=' . $article_id . '&amp;start=' . $start);
+				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id . '&amp;start=' . $start);
 				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
 			}
 			// delete
-			$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_art.' . $phpEx . '?mode=delete&amp;a=' . $article_id . '&amp;start=' . $start);
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id . '&amp;start=' . $start);
 			$delete = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
 		}
 		else
@@ -425,7 +418,7 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 
 function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articles_in_cat = 0, $kb_is_auth)
 {
-	global $db, $template, $images, $phpEx, $phpbb_root_path, $board_config, $lang, $is_block, $page_id, $is_admin, $userdata;
+	global $db, $template, $images, $board_config, $lang, $is_block, $page_id, $is_admin, $userdata;
 
 	$server_url = create_server_url();
 
@@ -514,17 +507,17 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 			if ($article_approved == 2 || $article_approved == 0)
 			{
 				// approve
-				$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_art.' . $phpEx . '?mode=approve&amp;a=' . $article_id);
+				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id);
 				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
 			}
 			elseif ($article_approved == 1)
 			{
 				// unapprove
-				$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_art.' . $phpEx . '?mode=unapprove&amp;a=' . $article_id);
+				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id);
 				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
 			}
 			// delete
-			$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_art.' . $phpEx . '?mode=delete&amp;a=' . $article_id);
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id);
 			$delete = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
 		}
 
@@ -600,7 +593,7 @@ function update_kb_number($id, $change)
 
 function kb_notify($action, $message, $to_id, $from_id, $info = 'new')
 {
-	global $lang, $board_config, $kb_config, $db, $phpbb_root_path, $phpEx, $userdata;
+	global $lang, $board_config, $kb_config, $db, $userdata;
 
 	switch ($info)
 	{
@@ -641,7 +634,7 @@ function kb_notify($action, $message, $to_id, $from_id, $info = 'new')
 // wgErics good old insert_pm function
 function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_auto_on = 1, $bbcode_on = 1, $smilies_on = 1)
 {
-	global $db, $lang, $user_ip, $board_config, $userdata, $phpbb_root_path, $phpEx;
+	global $db, $lang, $user_ip, $board_config, $userdata;
 
 	if (empty($from_id))
 	{
@@ -780,12 +773,12 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 	if ($to_userdata['user_notify_pm'] && !empty($to_userdata['user_email']) && $to_userdata['user_active'])
 	{
 		$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
-		$script_name = ($script_name != '') ? $script_name . '/privmsg.' . $phpEx : 'privmsg.' . $phpEx;
+		$script_name = ($script_name != '') ? $script_name . '/privmsg.' . PHP_EXT : 'privmsg.' . PHP_EXT;
 		$server_name = trim($board_config['server_name']);
 		$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
 
-		include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer($board_config['smtp_delivery']);
 
 		$emailer->from($board_config['board_email']);
@@ -810,7 +803,7 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 
 	return;
 
-	$msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid("privmsg.$phpEx?folder=inbox") . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
+	$msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $msg);
 
@@ -818,7 +811,7 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 
 function kb_mailer($to_id, $message, $subject, $from_id, $html_on = 0, $acro_auto_on = 1, $bbcode_on = 1, $smilies_on = 1)
 {
-	global $db, $lang, $user_ip, $board_config, $userdata, $phpbb_root_path, $phpEx;
+	global $db, $lang, $user_ip, $board_config, $userdata;
 
 	if (!$from_id)
 	{
@@ -873,12 +866,12 @@ function kb_mailer($to_id, $message, $subject, $from_id, $html_on = 0, $acro_aut
 
 
 	$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
-	$script_name = ($script_name != '') ? $script_name . '/privmsg.' . $phpEx : 'privmsg.' . $phpEx;
+	$script_name = ($script_name != '') ? $script_name . '/privmsg.' . PHP_EXT : 'privmsg.' . PHP_EXT;
 	$server_name = trim($board_config['server_name']);
 	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
 
-	include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 	$emailer = new emailer($board_config['smtp_delivery']);
 
 	$emailer->from($board_config['board_email']);
@@ -895,7 +888,7 @@ function kb_mailer($to_id, $message, $subject, $from_id, $html_on = 0, $acro_aut
 
 function get_kb_cat_index($parent = 0)
 {
-	global $db, $template, $phpbb_root_path, $phpEx, $is_block, $page_id, $kb_config, $userdata, $kb_quick_nav;
+	global $db, $template, $is_block, $page_id, $kb_config, $userdata, $kb_quick_nav;
 
 	$sql = "SELECT *
 		 		FROM " . KB_CATEGORIES_TABLE . "
@@ -948,7 +941,7 @@ function get_kb_cat_index($parent = 0)
 
 function get_kb_cat_subs($parent, $kb_is_auth_all = false)
 {
-	global $db, $template, $phpbb_root_path, $phpEx, $is_block, $page_id, $kb_config;
+	global $db, $template, $is_block, $page_id, $kb_config;
 
 	$sql = "SELECT *
 			FROM " . KB_CATEGORIES_TABLE . "
@@ -1018,7 +1011,7 @@ function get_kb_cat_subs($parent, $kb_is_auth_all = false)
 
 function get_kb_cat_subs_admin($parent, $select = 1, $indent, $ss)
 {
-	global $db, $template, $phpbb_root_path, $phpEx, $images, $row_color, $row_class, $theme, $i, $lang, $board_config;
+	global $db, $template, $images, $row_color, $row_class, $theme, $i, $lang, $board_config;
 
 	$server_url = create_server_url();
 
@@ -1048,19 +1041,19 @@ function get_kb_cat_subs_admin($parent, $select = 1, $indent, $ss)
 
 		$category_id2 = $category2['category_id'];
 		$category_name2 = $category2['category_name'];
-		$temp_url = append_sid($phpbb_root_path . 'kb.' . $phpEx . '?mode=cat&amp;cat=' . $category_id2);
+		$temp_url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=cat&amp;cat=' . $category_id2);
 		$category2 = '<a href="' . $temp_url . '" class="gen">' . $category_name2 . '</a>';
 
-		$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_cat.' . $phpEx . '?mode=edit&amp;cat=' . $category_id2);
+		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=edit&amp;cat=' . $category_id2);
 		$edit2 = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
 
-		$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_cat.' . $phpEx . '?mode=delete&amp;cat=' . $category_id2);
+		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=delete&amp;cat=' . $category_id2);
 		$delete2 = '<a href="' . $temp_url . '" class="gen"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
 
-		$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_cat.' . $phpEx . '?mode=up&amp;cat=' . $category_id2);
+		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=up&amp;cat=' . $category_id2);
 		$up2 = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_up'] . '</a>';
 
-		$temp_url = append_sid($phpbb_root_path . ADM . '/admin_kb_cat.' . $phpEx . '?mode=down&amp;cat=' . $category_id2);
+		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=down&amp;cat=' . $category_id2);
 		$down2 = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_down'] . '</a>';
 
 		$row_color = (!($ss % 2)) ? $theme['td_color1'] : $theme['td_color2'];
@@ -1307,7 +1300,7 @@ function get_kb_article_list($sel_id)
 
 function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $user_attach_sig, $topic_id = '', $message_update_text = '', $topic_type = POST_NORMAL, $do_notification = false, $notify_user = false, $current_time = 0, $error_die_function = '', $html_on = 0, $acro_auto_on = 1, $bbcode_on = 1, $smilies_on = 1)
 {
-	global $db, $phpbb_root_path, $phpEx, $board_config, $user_ip, $kb_config, $lang, $userdata;
+	global $db, $board_config, $user_ip, $kb_config, $lang, $userdata;
 	// initialise some variables
 
 	$topic_vote = 0;
@@ -1454,8 +1447,8 @@ function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $us
 // ...function based on original function written by Markus :-)
 function this_kb_mxurl($args = '', $force_standalone_mode = false)
 {
-	global $phpbb_root_path, $page_id, $phpEx, $is_block;
-	$mxurl = $phpbb_root_path . 'kb.' . $phpEx . ($args == '' ? '' : '?' . $args);
+	global $page_id, $is_block;
+	$mxurl = IP_ROOT_PATH . 'kb.' . PHP_EXT . ($args == '' ? '' : '?' . $args);
 	return $mxurl;
 }
 
@@ -1464,8 +1457,8 @@ function this_kb_mxurl($args = '', $force_standalone_mode = false)
 // ...function based on original function written by Markus :-)
 function this_kb_mxurl_search($args = '', $force_standalone_mode = false)
 {
-	global $phpbb_root_path, $page_id, $phpEx, $is_block;
-	$mxurl = $phpbb_root_path . 'kb_search.' . $phpEx . ($args == '' ? '' : '?' . $args);
+	global $page_id, $is_block;
+	$mxurl = IP_ROOT_PATH . 'kb_search.' . PHP_EXT . ($args == '' ? '' : '?' . $args);
 	return $mxurl;
 }
 
@@ -1473,7 +1466,7 @@ function this_kb_mxurl_search($args = '', $force_standalone_mode = false)
 
 function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 {
-	global $db, $board_config, $template, $phpbb_root_path, $phpEx, $is_block, $page_id;
+	global $db, $board_config, $template, $is_block, $page_id;
 	global $bbcode, $userdata, $lang, $images;
 
 	if ($topic_id == '')
@@ -1516,8 +1509,8 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 	}
 	else
 	{
-		include_once($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_delete.' . $phpEx);
-		include_once($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+		include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 		sync('topic', $topic_id);
 		mx_message_die(GENERAL_MESSAGE, $lang['No_posts_topic']);
 	}
@@ -1526,8 +1519,8 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 	// and it goes like this ...
 
 	/*
-	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . $phpEx);
-	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . $phpEx);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
 	*/
 	$start == 0 ? $i_init = 1: $i_init = 0;
 
@@ -1750,7 +1743,7 @@ function kb_get_data($row = '', $userdata = '', $kb_post_mode = 'add')
 // Compose phpbb comment header
 function kb_compose_comment($kb_comment)
 {
-	global $lang, $phpEx, $kb_custom_field;
+	global $lang, $kb_custom_field;
 
 		$search = array ("'&(quot|#34);'i", // Replace HTML entities
 			"'&(amp|#38);'i",

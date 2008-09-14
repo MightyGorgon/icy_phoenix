@@ -15,31 +15,23 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		$module['2200_Photo_Album']['130_Album_Permissions'] = $filename;
-	}
-	else
-	{
-		$module['Photo_Album']['Permissions'] = $filename;
-	}
+	$module['2200_Photo_Album']['130_Album_Permissions'] = $filename;
 	return;
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH . '';
-require($album_root_path. 'album_common.' . $phpEx);
+require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 $album_user_id = ALBUM_PUBLIC_GALLERY;
 
 if( !isset($_POST['submit']) )
@@ -47,20 +39,20 @@ if( !isset($_POST['submit']) )
 	album_read_tree();
 	$s_album_cat_list = album_get_tree_option(ALBUM_ROOT_CATEGORY, ALBUM_AUTH_VIEW, ALBUM_SELECTBOX_INCLUDE_ALL | ALBUM_SELECTBOX_INCLUDE_ROOT);
 
-	$template->set_filenames(array('body' => $acp_prefix . 'album_cat_select_body.tpl'));
+	$template->set_filenames(array('body' => ADM_TPL . 'album_cat_select_body.tpl'));
 
 	$template->assign_vars(array(
 		'L_ALBUM_AUTH_TITLE' => $lang['Album_Auth_Title'],
 		'L_ALBUM_AUTH_EXPLAIN' => $lang['Album_Auth_Explain'],
 		'L_SELECT_CAT' => $lang['Select_a_Category'],
-		'S_ALBUM_ACTION' => append_sid("admin_album_auth.$phpEx"),
+		'S_ALBUM_ACTION' => append_sid("admin_album_auth." . PHP_EXT),
 		'L_LOOK_UP_CAT' => $lang['Look_up_Category'],
 		'CAT_SELECT_TITLE' => $s_album_cat_list)
 	);
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 }
 else
 {
@@ -69,7 +61,7 @@ else
 		$cat_id = intval($_POST['cat_id']);
 
 		$template->set_filenames(array(
-			'body' => $acp_prefix . 'album_auth_body.tpl')
+			'body' => ADM_TPL . 'album_auth_body.tpl')
 		);
 
 		$template->assign_vars(array(
@@ -88,7 +80,7 @@ else
 			'L_DELETE' => $lang['Delete'],
 
 			'L_IS_MODERATOR' => $lang['Is_Moderator'],
-			'S_ALBUM_ACTION' => append_sid("admin_album_auth.$phpEx?cat_id=$cat_id"),
+			'S_ALBUM_ACTION' => append_sid('admin_album_auth.' . PHP_EXT . '?cat_id=' . $cat_id),
 			)
 		);
 
@@ -152,7 +144,7 @@ else
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -176,7 +168,7 @@ else
 		}
 
 		// okay, return a message...
-		$message = $lang['Album_Auth_successfully'] . '<br /><br />' . sprintf($lang['Click_return_album_auth'], '<a href="' . append_sid("admin_album_auth.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Album_Auth_successfully'] . '<br /><br />' . sprintf($lang['Click_return_album_auth'], '<a href="' . append_sid("admin_album_auth." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}

@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -46,6 +46,9 @@ if (!($result = $db->sql_query($sql)))
 
 $topics_count = $db->sql_numrows($result);
 $topics_data = $db->sql_fetchrowset($result);
+
+$template->_tpldata['newtopics.'] = array();
+//reset($template->_tpldata['newtopics.']);
 
 for ($i = 0; $i < $topics_count; $i=$i+$k)
 {

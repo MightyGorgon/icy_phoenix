@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,9 +24,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 /*
 If for some reason you need to disable the version check in THIS HACK ONLY,
@@ -41,7 +41,7 @@ if (!$userdata['user_level'] == ADMIN)
 	message_die(GENERAL_ERROR, 'Not Authorized');
 }
 
-include($phpbb_root_path . 'includes/functions_credits.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_credits.' . PHP_EXT);
 
 /****************************************************************************
 /** Constants and Main Vars.
@@ -295,10 +295,10 @@ if ($status_message != '')
 /************************************************************************
 ** Begin The Version Check Feature
 ************************************************************************/
-if (file_exists($phpbb_root_path . 'nivisec_version_check.' . $phpEx) && !DISABLE_VERSION_CHECK)
+if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_VERSION_CHECK)
 {
 	define('MOD_CODE', 17);
-	include($phpbb_root_path . 'nivisec_version_check.' . $phpEx);
+	include(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT);
 }
 /************************************************************************
 ** End The Version Check Feature
@@ -306,6 +306,6 @@ if (file_exists($phpbb_root_path . 'nivisec_version_check.' . $phpEx) && !DISABL
 
 $template->pparse('body');
 copyright_nivisec($lang['Hacks_List'], '2003');
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

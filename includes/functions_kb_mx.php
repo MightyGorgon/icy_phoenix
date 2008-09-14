@@ -17,7 +17,7 @@
 
 // CTracker_Ignore: File checked by human
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -56,13 +56,13 @@ if (!function_exists(mx_generate_smilies))
 {
 	function mx_generate_smilies($mode)
 	{
-		global $board_config, $template, $phpEx;
+		global $board_config, $template;
 		$smilies_path = $board_config['smilies_path'];
 		$board_config['smilies_path'] = PHPBB_URL . $board_config['smilies_path'];
 		generate_smilies($mode);
 		$board_config['smilies_path'] = $smilies_path;
 		$template->assign_vars(array(
-			'U_MORE_SMILIES' => append_sid(PHPBB_URL . 'posting.' . $phpEx . '?mode=smilies')
+			'U_MORE_SMILIES' => append_sid(PHPBB_URL . 'posting.' . PHP_EXT . '?mode=smilies')
 			)
 		);
 	}
@@ -73,7 +73,7 @@ if (!function_exists(mx_message_die))
 
 	function mx_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 	{
-		global $db, $template, $board_config, $theme, $lang, $phpEx, $phpbb_root_path, $nav_links, $gen_simple_header, $images;
+		global $db, $template, $board_config, $theme, $lang, $nav_links, $gen_simple_header, $images;
 		global $userdata, $user_ip, $session_length;
 		global $starttime;
 		global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars;
@@ -160,7 +160,7 @@ if (!function_exists(mx_add_search_words))
 	// Add search words for blocks
 	function mx_add_search_words($mode, $post_id, $post_text, $post_title = '', $mx_mode = 'mx')
 	{
-		global $db, $phpbb_root_path, $board_config, $lang;
+		global $db, $board_config, $lang;
 
 		// $search_match_table = SEARCH_MATCH_TABLE;
 		// $search_word_table = SEARCH_WORD_TABLE;
@@ -179,8 +179,8 @@ if (!function_exists(mx_add_search_words))
 			break;
 		}
 
-		$stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
-		$synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
+		$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
+		$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
 
 		$search_raw_words = array();
 		$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopword_array, $synonym_array));
@@ -442,7 +442,7 @@ if (!function_exists(mx_do_install_upgrade))
 
 	function mx_do_install_upgrade($sql = '', $main_install = false)
 	{
-		global $table_prefix, $mx_table_prefix, $userdata, $phpEx, $template, $lang, $db, $board_config, $_POST;
+		global $table_prefix, $mx_table_prefix, $userdata, $template, $lang, $db, $board_config, $_POST;
 
 		$inst_error = false;
 		$n = 0;

@@ -10,11 +10,11 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS_PAGE', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -47,7 +47,7 @@ if ($auth_level_req > AUTH_ALL)
 //$cms_global_blocks = ($board_config['wide_blocks_portal'] == 1) ? true : false;
 
 define('PORTAL_INIT', true);
-include($phpbb_root_path . 'includes/functions_cms.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);
 cms_config_init($cms_config_vars);
 
 if(!empty($_GET['page']))
@@ -135,7 +135,7 @@ $page_title = $board_config['sitename'];
 $meta_description = '';
 $meta_keywords = '';
 //define('SHOW_ONLINE', true);
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Tell the template class which template to use.
 $template->set_filenames(array('body' => 'layout/' . $layout_template));
@@ -143,7 +143,7 @@ $template->set_filenames(array('body' => 'layout/' . $layout_template));
 if (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] >= CMS_CONTENT_MANAGER))
 {
 	$cms_acp_url = '<br /><br /><div style="text-align:center;">';
-	$cms_acp_url .= '<a href="' . append_sid('cms.' . $phpEx . '?mode=blocks&amp;l_id=' . $layout) . '">' . $lang['CMS_ACP'] . '</a>';
+	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout) . '">' . $lang['CMS_ACP'] . '</a>';
 	$cms_acp_url .= '</div>';
 }
 else
@@ -185,6 +185,6 @@ cms_parse_blocks($layout, false, false, '');
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

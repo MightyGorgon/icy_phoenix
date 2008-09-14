@@ -17,7 +17,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 // Admin Panel
 if( !empty($setmodules) )
@@ -30,9 +30,9 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // Check link_id
 $link_id = trim($_GET['link_id']);
@@ -89,7 +89,7 @@ switch ($mode)
 		$template->assign_vars(array(
 			'PAGE_TITLE' => $lang['Add_link'],
 			'PAGE_EXPLAIN' => $lang['Add_link_explain'],
-			'PAGE_ACTION' => append_sid ('admin_links.' . $phpEx . '?mode=update&action=add'),
+			'PAGE_ACTION' => append_sid ('admin_links.' . PHP_EXT . '?mode=update&action=add'),
 			'LINK_ACTIVE_YES' => 'checked="checked"',
 			'LINK_CAT_OPTION' => $link_cat_option,
 			'L_SUBMIT' => $lang['Add_link']
@@ -130,9 +130,9 @@ switch ($mode)
 		$template->assign_vars(array(
 			'PAGE_TITLE' => $lang['Links'],
 			'PAGE_EXPLAIN' => $lang['Links_explain'],
-			'PAGE_ACTION' => append_sid ('admin_links.' . $phpEx . '?mode=view'),
+			'PAGE_ACTION' => append_sid ('admin_links.' . PHP_EXT . '?mode=view'),
 			'L_SEARCH_SITE_TITLE' => $lang['Search_site_title'],
-			'U_LINK' => 'admin_links.' . $phpEx,
+			'U_LINK' => 'admin_links.' . PHP_EXT,
 			'L_EDIT' => $lang['Edit_link'],
 			'L_DELETE' => $lang['Delete_link'],
 			'L_SUBMIT' => $lang['Submit']
@@ -208,7 +208,7 @@ switch ($mode)
 		if ( $row = $db->sql_fetchrow($result) )
 		{
 			$total_links = $row['total'];
-			$pagination = generate_pagination('admin_links.' . $phpEx . '?mode=' . $mode . '&amp;search_keywords=' . $search_keywords, $total_links, $linkspp, $start). '&nbsp;';
+			$pagination = generate_pagination('admin_links.' . PHP_EXT . '?mode=' . $mode . '&amp;search_keywords=' . $search_keywords, $total_links, $linkspp, $start). '&nbsp;';
 		}
 		else
 		{
@@ -245,8 +245,8 @@ switch ($mode)
 
 			$template->assign_vars(array(
 				'PAGE_TITLE' => ($mode == 'edit' ? $lang['Edit_link'] : $lang['Delete_link']),
-				'PAGE_EXPLAIN' => ($mode == 'edit' ? $lang['Edit_link_explain'] . (' <a href="' . append_sid('admin_links.' . $phpEx . '?mode=delete&amp;link_id=' . $link_id) . '">' . $lang['Delete_link'] . '</a>') : $lang['Delete_link_explain'] . (' <a href="' . append_sid('admin_links.' . $phpEx . '?mode=edit&amp;link_id=' . $link_id) . '">' . $lang['Edit_link'] . '</a>')),
-				'PAGE_ACTION' => ($mode == 'edit' ? 'admin_links.' . $phpEx . '?mode=update&amp;action=modify&amp;link_id=' . $link_id . '&amp;sid=' . $userdata['session_id'] : 'admin_links.' . $phpEx . '?mode=update&amp;action=delete&amp;link_id=' . $link_id . '&amp;sid=' . $userdata['session_id']),
+				'PAGE_EXPLAIN' => ($mode == 'edit' ? $lang['Edit_link_explain'] . (' <a href="' . append_sid('admin_links.' . PHP_EXT . '?mode=delete&amp;link_id=' . $link_id) . '">' . $lang['Delete_link'] . '</a>') : $lang['Delete_link_explain'] . (' <a href="' . append_sid('admin_links.' . PHP_EXT . '?mode=edit&amp;link_id=' . $link_id) . '">' . $lang['Edit_link'] . '</a>')),
+				'PAGE_ACTION' => ($mode == 'edit' ? 'admin_links.' . PHP_EXT . '?mode=update&amp;action=modify&amp;link_id=' . $link_id . '&amp;sid=' . $userdata['session_id'] : 'admin_links.' . PHP_EXT . '?mode=update&amp;action=delete&amp;link_id=' . $link_id . '&amp;sid=' . $userdata['session_id']),
 
 				'L_SUBMIT' => ($mode == 'edit' ? $lang['Link_update'] : $lang['Link_delete']),
 
@@ -349,7 +349,7 @@ switch ($mode)
 			$message .= '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . $HTTP_REFERER . '">', '</a>');
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_admin_links'], '<a href="' . append_sid('admin_links.' . $phpEx . '?mode=view') . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_admin_links'], '<a href="' . append_sid('admin_links.' . PHP_EXT . '?mode=view') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 
 		break;
@@ -358,6 +358,6 @@ switch ($mode)
 $template->pparse('body');
 
 // Page Footer
-include('page_footer_admin.' . $phpEx);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

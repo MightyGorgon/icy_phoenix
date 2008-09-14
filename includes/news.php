@@ -15,14 +15,14 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-require_once($phpbb_root_path . 'includes/news_data.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+require_once(IP_ROOT_PATH . 'includes/news_data.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 /**
  * Class which displays news content.
@@ -42,11 +42,8 @@ class NewsModule
 	var $root_path;
 
 	/**
-	* default file extension.
 	* @var object
 	*/
-	var $phpEx;
-
 	var $template;
 	var $config;
 	var $name;
@@ -63,10 +60,9 @@ class NewsModule
 	*/
 	function NewsModule($root_path)
 	{
-		global $db, $phpEx, $template, $board_config;
+		global $db, $template, $board_config;
 
 		$this->root_path = 'http://' . $board_config['server_name'] . $board_config['script_path'];
-		$this->phpEx = $phpEx;
 		$this->template = &$template;
 		$this->config = &$board_config;
 		$this->name = 'news';
@@ -101,7 +97,7 @@ class NewsModule
 	*/
 	function prepareArticles($articles, $show_abstract = false, $show_attachments = true)
 	{
-		global $lang, $board_config, $images, $phpEx, $is_auth, $theme, $userdata, $block_id, $cms_config_var;
+		global $lang, $board_config, $images, $is_auth, $theme, $userdata, $block_id, $cms_config_var;
 
 		if (isset($cms_config_var['md_news_length']))
 		{
@@ -188,10 +184,10 @@ class NewsModule
 					'L_COMMENTS' => $article['topic_replies'],
 					'U_COMMENTS' => $this->root_path . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
 					'U_COMMENT' => $this->root_path . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
-					'U_VIEWS' => $this->root_path . 'topic_view_users.' . $this->phpEx . '?' . POST_TOPIC_URL . '=' . $article['topic_id'],
-					'U_POST_COMMENT' => append_sid('posting.' . $this->phpEx . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
-					'U_PRINT_TOPIC' => append_sid('printview.' . $this->phpEx . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'] . '&amp;start=0'),
-					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . $this->phpEx . '?topic=' . urlencode(utf8_decode($article['topic_title'])) . '&amp;link=' . urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']))),
+					'U_VIEWS' => $this->root_path . 'topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $article['topic_id'],
+					'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
+					'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'] . '&amp;start=0'),
+					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic=' . urlencode(utf8_decode($article['topic_title'])) . '&amp;link=' . urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']))),
 					'L_TITLE_HTML' => urlencode(utf8_decode($article['topic_title'])),
 					//'TELL_LINK' => urlencode(utf8_decode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?topic_id=' . $article['topic_id'])),
 					'COUNT_COMMENTS' => $article['topic_replies'],

@@ -19,7 +19,7 @@
 * All Attachment Functions needed to create Thumbnails
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;

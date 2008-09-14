@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,11 +24,11 @@ if(!function_exists(imp_forum_attach_block_func))
 {
 	function imp_forum_attach_block_func()
 	{
-		global $phpbb_root_path, $template, $phpEx, $lang, $cms_config_vars, $block_id, $board_config, $bbcode, $images;
-		@include_once($phpbb_root_path . ATTACH_MOD_PATH . 'displaying.' . $phpEx);
-		@include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-		@include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-		@include_once($phpbb_root_path . 'fetchposts.' . $phpEx);
+		global $template, $lang, $cms_config_vars, $block_id, $board_config, $bbcode, $images;
+		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 
 		$template->_tpldata['articles_fp.'] = array();
 		//reset($template->_tpldata['articles_fp.']);
@@ -101,9 +101,9 @@ if(!function_exists(imp_forum_attach_block_func))
 				'TEXT' => $fetchposts[$i]['post_text'],
 				'REPLIES' => $fetchposts[$i]['topic_replies'],
 				'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $fetchposts[$i]['post_id'] . '#p' . $fetchposts[$i]['post_id'], true),
-				'U_POST_COMMENT' => append_sid('posting.' . $phpEx . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
-				'U_PRINT_TOPIC' => append_sid('printview.' . $phpEx . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
-				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . $phpEx . '?topic=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;link=' . urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $fetchposts[$i]['post_id'] . '#p' . $fetchposts[$i]['post_id']))),
+				'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
+				'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
+				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;link=' . urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $fetchposts[$i]['post_id'] . '#p' . $fetchposts[$i]['post_id']))),
 				'U_READ_FULL' => append_sid($index_file . '?article=' . $i),
 				'L_READ_FULL' => $read_full,
 				'OPEN' => $open_bracket,

@@ -15,12 +15,12 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx );
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT );
 $article_id = !isset( $article_id ) ? intval( $_GET['k'] ) : $article_id;
 $start = ( isset( $_GET['start'] ) ) ? intval( $_GET['start'] ) : 0;
 $start = ($start < 0) ? 0 : $start;
@@ -243,12 +243,12 @@ $meta_keywords = '';
 if ( $print_version )
 {
 	$gen_simple_header = true;
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 }
 
 if ( !$is_block && !$print_version)
 {
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 }
 
 // fixup (truncates) urls, images and words for a narrow column layout
@@ -266,7 +266,7 @@ if ( $kb_config['formatting_fixup'] )
 
 if ( !$print_version && !$reader_mode )
 {
-	include($phpbb_root_path . 'includes/kb_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 }
 
 // edit
@@ -274,7 +274,7 @@ if ( !$print_version && !$reader_mode )
 if ( ( $userdata['user_id'] == $author_id && $kb_is_auth['auth_edit'] ) || $kb_is_auth['auth_mod'] )
 {
 	$temp_url = append_sid( this_kb_mxurl( "mode=edit&amp;k=" . $article_id ) );
-	$edit_img = '<a href="' . $temp_url . '"><img src="' . $phpbb_root_path . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" /></a>';
+	$edit_img = '<a href="' . $temp_url . '"><img src="' . IP_ROOT_PATH . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" /></a>';
 	$edit = '<a href="' . $temp_url . '">' . $lang['Edit_delete_post'] . '</a>';
 }
 else
@@ -303,7 +303,7 @@ else
 
 if ( !$kb_is_auth['auth_view'] || !$article_title || ( !$approved && !$kb_is_auth['auth_mod'] ) || ( !ns_auth_cat( $article_category_id ) && !$print_version ) )
 {
-	$message = $lang['Article_not_exsist'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid( $phpbb_root_path . FORUM_MG ) . '">', '</a>' );
+	$message = $lang['Article_not_exsist'] . '<br /><br />' . sprintf( $lang['Click_return_kb'], '<a href="' . append_sid( this_kb_mxurl() ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_index'], '<a href="' . append_sid( IP_ROOT_PATH . FORUM_MG ) . '">', '</a>' );
 	mx_message_die( GENERAL_MESSAGE, $message );
 }
 else
@@ -371,7 +371,7 @@ else
 		$topic = $db->sql_fetchrow( $result4 );
 		$num_of_replies = intval( $topic['topic_replies'] );
 
-		$temp_url = append_sid( $phpbb_root_path . VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=" . $topic['topic_id'] );
+		$temp_url = append_sid( IP_ROOT_PATH . VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=" . $topic['topic_id'] );
 		$comments = $lang['Comments'];
 		//$comments_img = '<a href="' . $temp_url . '">[' . $num_of_replies . ' - ' . $lang['Post_comments'] . ']</a>';
 		$comments_num = $num_of_replies;

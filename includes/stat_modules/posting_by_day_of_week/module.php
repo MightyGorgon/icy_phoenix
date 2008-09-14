@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -62,6 +62,9 @@ for ($i = 0; $i < 7; $i++)
 {
 	$max_post_ct = max($max_post_ct, $posts_data[$i]['ct']);
 }
+
+$template->_tpldata['traffic.'] = array();
+//reset($template->_tpldata['traffic.']);
 
 // build rows
 for ($i = 1; $i < 8; $i++)

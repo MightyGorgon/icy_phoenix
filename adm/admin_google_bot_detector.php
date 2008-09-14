@@ -11,7 +11,7 @@
 // CTracker_Ignore: File Checked By Human
 // Tell the Security Scanner that reachable code in this file is not a security issue
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -21,9 +21,9 @@ if (!empty($setmodules))
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if (isset($_POST['clear']))
 {
@@ -32,7 +32,7 @@ if (isset($_POST['clear']))
 	{
 		message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
 	}
-	$message = $lang['Detector_Cleared'] . '<br /><br />' . sprintf($lang['Click_Return_Detector'], '<a href="' . append_sid('admin_google_bot_detector.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Detector_Cleared'] . '<br /><br />' . sprintf($lang['Click_Return_Detector'], '<a href="' . append_sid('admin_google_bot_detector.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -56,7 +56,7 @@ else
 
 if (isset($total_row))
 {
-	$pagination = generate_pagination(append_sid('admin_google_bot_detector.' . $phpEx), $total_row, $board_config['posts_per_page'], $start).'&nbsp;';
+	$pagination = generate_pagination(append_sid('admin_google_bot_detector.' . PHP_EXT), $total_row, $board_config['posts_per_page'], $start).'&nbsp;';
 }
 
 $db->sql_freeresult($result);
@@ -99,7 +99,7 @@ $l_timezone = explode('.', $board_config['board_timezone']);
 $l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone)-1] != 0) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
 
 $template->assign_vars(array(
-	'S_ACTION' => append_sid('admin_google_bot_detector.' . $phpEx),
+	'S_ACTION' => append_sid('admin_google_bot_detector.' . PHP_EXT),
 
 	'L_YES' => $lang['Yes'],
 	'L_NO' => $lang['No'],
@@ -115,6 +115,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

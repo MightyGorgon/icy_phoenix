@@ -15,11 +15,11 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('MG_CTRACK_FLAG', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -105,7 +105,7 @@ if (($mode == false) || ($mode != 'archive'))
 	$page_title = $lang['Ajax_Chat'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'ajax_chat_body.tpl'));
 
@@ -119,7 +119,7 @@ if (($mode == false) || ($mode != 'archive'))
 	);
 
 	$shoutbox_template_parse = false;
-	include($phpbb_root_path . 'includes/ajax_shoutbox_inc.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/ajax_shoutbox_inc.' . PHP_EXT);
 }
 else
 {
@@ -151,19 +151,19 @@ else
 	$page_title = $lang['Ajax_Chat'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-	include_once($phpbb_root_path . 'includes/functions_ajax_chat.' . $phpEx);
-	include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 	// Include Post functions and BBCodes
-	include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-	include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'ajax_chat_archive.tpl'));
 
 	$template->assign_block_vars('view_shoutbox', array(
 		'REFRESH_TIME' => $board_config['shoutbox_refreshtime'],
-		'U_ACTION' => append_sid($phpbb_root_path . 'ajax_shoutbox.' . $phpEx)
+		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
 
@@ -184,7 +184,7 @@ else
 
 	$num_items = $db->sql_fetchrow($result);
 
-	$pagination = generate_pagination('ajax_chat.' . $phpEx . '?mode=archive', $num_items['stored_shouts'], $board_config['posts_per_page'], $start);
+	$pagination = generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $board_config['posts_per_page'], $start);
 
 	if($pagination != '')
 	{
@@ -216,7 +216,7 @@ else
 	$today = $db->sql_fetchrow($result);
 
 	$template->assign_vars(array(
-		'U_ACTION' => append_sid('ajax_shoutbox.' . $phpEx . '?act=del'),
+		'U_ACTION' => append_sid('ajax_shoutbox.' . PHP_EXT . '?act=del'),
 		'L_AUTHOR' => $lang['Author'],
 		'L_SHOUTS' => $lang['Shouts'],
 		'L_STATS' =>$lang['Statistics'],
@@ -396,6 +396,6 @@ else
 }
 
 $template->pparse('body');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

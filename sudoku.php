@@ -16,11 +16,11 @@
 */
 
 // standard hack prevent
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -33,20 +33,20 @@ $meta_description = '';
 $meta_keywords = '';
 
 // Get language Variables and page specific functions
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_sudoku.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_sudoku.' . $phpEx);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_sudoku.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_sudoku.' . PHP_EXT);
 
  // Make sure the player is registered
 $user_id = $userdata['user_id'];
 if (!$userdata['session_logged_in'])
 {
 	$header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
-	header($header_location . append_sid(LOGIN_MG . "?redirect=sudoku.$phpEx", true));
+	header($header_location . append_sid(LOGIN_MG . "?redirect=sudoku." . PHP_EXT, true));
 	exit;
 }
 
 // standard page header
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // assign default template
 $template->set_filenames(array('body' => 'sudoku.tpl'));
@@ -66,10 +66,10 @@ $pack=intval($_GET['p']);
 $num=intval($_GET['n']);
 $level=intval($_GET['l']);
 $num_insert=intval($_POST['num_input']);
-$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid("sudoku.$phpEx?") . '">';
+$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid('sudoku.' . PHP_EXT) . '">';
 $games=array();
 $points=array();
-$admin_tools=( $userdata['user_level'] == ADMIN ) ? '|| <a href="' . append_sid("sudoku.$phpEx?&amp;mode=resynch") . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid("sudoku.$phpEx?&amp;mode=reset_game") . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
+$admin_tools=( $userdata['user_level'] == ADMIN ) ? '|| <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=resynch') . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=reset_game') . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
 // Set template Vars
 $template->assign_vars(array(
 'SUDOKU_VERSION'=>sprintf($lang['Sudoku_Version'], $board_config['sudoku_version'], $latest_pack),
@@ -89,7 +89,7 @@ $template->assign_vars(array(
 'LEAD_CURRENT_GAME'=>$lang['sudoku_lead_current_game'],
 'PLACE'=>$lang['sudoku_place'],
 // navigation
-'RESET'=>'<a href="' . append_sid("sudoku.$phpEx?&amp;mode=reset") . '" class="nav">' . $lang['sudoku_reset_grid'] . '</a>',
+'RESET'=>'<a href="' . append_sid('sudoku.' . PHP_EXT . '?mode=reset') . '" class="nav">' . $lang['sudoku_reset_grid'] . '</a>',
 'ADMIN_TOOLS' => $admin_tools
 ));
 //
@@ -119,7 +119,7 @@ if ( $mode == 'reset_game' )
 
 		$template->assign_vars(array(
 			'MESSAGE_TITLE' => $lang['sudoku_reset_game'],
-			'S_CONFIRM_ACTION' => append_sid("sudoku.$phpEx?&amp;mode=reset_game"),
+			'S_CONFIRM_ACTION' => append_sid('sudoku.' . PHP_EXT . '?mode=reset_game'),
 			'MESSAGE_TEXT' => $lang['sudoku_reset_game_text'],
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
@@ -129,7 +129,7 @@ if ( $mode == 'reset_game' )
 		$template->pparse('body');
 
 		// standard page footer
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		exit;
 	}
 	if ( isset($_POST['cancel']) )
@@ -163,7 +163,7 @@ if ( $mode == 'reset_game' )
 		message_die(GENERAL_ERROR, 'Error resetting game', '', __LINE__, __FILE__, $sql);
 	}
 	// let them know the good news
-	$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid("sudoku.$phpEx?#grid") . '">';
+	$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid('sudoku.' . PHP_EXT . '?#grid') . '">';
 	message_die(GENERAL_MESSAGE,$lang['sudoku_rest_game_success'] . $redirect);
 }
 
@@ -175,7 +175,7 @@ if ( $mode == 'buy' )
 
 		$template->assign_vars(array(
 			'MESSAGE_TITLE' => $lang['sudoku_buy_number'],
-			'S_CONFIRM_ACTION' => append_sid("sudoku.$phpEx?&amp;mode=buy&amp;p=" . $pack . "&amp;n=" . $num),
+			'S_CONFIRM_ACTION' => append_sid('sudoku.' . PHP_EXT . '?mode=buy&amp;p=' . $pack . '&amp;n=' . $num),
 			'MESSAGE_TEXT' => $lang['sudoku_confirm_buy_text'],
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
@@ -185,7 +185,7 @@ if ( $mode == 'buy' )
 		$template->pparse('body');
 
 		// standard page footer
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		exit;
 	}
 	if ( isset($_POST['cancel']) )
@@ -250,7 +250,7 @@ if ( $mode == 'buy' )
 	{
 		message_die(GENERAL_ERROR, 'Error in updating Sudoku grid data', '', __LINE__, __FILE__, $sql);
 	}
-	$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid("sudoku.$phpEx?#grid") . '">';
+	$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid('sudoku.' . PHP_EXT . '?#grid') . '">';
 	message_die(GENERAL_MESSAGE,$lang['sudoku_ran_success'] . $redirect);
 }
 
@@ -417,7 +417,7 @@ if ( $mode == 'reset' )
 
 		$template->assign_vars(array(
 		'MESSAGE_TITLE' => $lang['sudoku_confirm_reset'],
-		'S_CONFIRM_ACTION' => append_sid("sudoku.$phpEx?&amp;mode=reset"),
+		'S_CONFIRM_ACTION' => append_sid('sudoku.' . PHP_EXT . '?mode=reset'),
 		'MESSAGE_TEXT' => $lang['sudoku_confirm_reset_text'],
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
@@ -426,7 +426,7 @@ if ( $mode == 'reset' )
 		$template->pparse('body');
 
 		// standard page footer
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		exit;
 	}
 	if ( isset($_POST['cancel']) )
@@ -624,7 +624,7 @@ if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $lin
 		{
 			message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 		}
-		$new_redirect='<meta http-equiv="refresh" content="6;url=' . append_sid("sudoku.$phpEx?") . '">';
+		$new_redirect='<meta http-equiv="refresh" content="6;url=' . append_sid('sudoku.' . PHP_EXT) . '">';
 		$message=sprintf($lang['sudoku_wrong_numbers'], $bad_numbers, $points_minus) . $new_redirect;
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -762,13 +762,13 @@ $template->assign_vars(array(
 	'SUDOKU_GAME_STATS' => sprintf($lang['sudoku_game_stats'], number_format($alltime_players), number_format($alltime_played)),
 	'TODAY_USER_LIST' => $s_users_today_disp,
 	'ACTIVE_USER_LIST' => $s_users_active_disp,
-	'BUY_NUMBER'=>'<a href="' . append_sid('sudoku.' . $phpEx . '?&amp;mode=buy&amp;p=' . $pack . '&amp;n=' . $num) . '" class="nav">' . $lang['sudoku_buy_number'] . '</a>',
+	'BUY_NUMBER'=>'<a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=buy&amp;p=' . $pack . '&amp;n=' . $num) . '" class="nav">' . $lang['sudoku_buy_number'] . '</a>',
 	)
 );
 
 $template->pparse('body');
 
 // standard page footer
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

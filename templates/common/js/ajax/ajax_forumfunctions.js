@@ -28,8 +28,8 @@ function AJAXMarkForum(forum_id)
 	{
 		return true;
 	}
-	
-	var url = 'ajax.' + phpEx;
+
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=mark_forum';
 	if (S_SID != '')
 	{
@@ -61,7 +61,7 @@ function mark_forum_change()
 			if (response != null)
 			{
 				result_code = getFirstTagValue('result', response);
-				
+
 				if (result_code == AJAX_MARK_FORUM)
 				{
 					forum_id = getFirstTagValue('forumid', response);
@@ -78,7 +78,7 @@ function mark_forum_change()
 				}
 			}
 		}
-		
+
 		AJAXFinishMarkForum(result_code, forum_id, forumimage, imagetext);
 		delete request;
 	}
@@ -90,7 +90,7 @@ function AJAXFinishMarkForum(result_code, forum_id, forumimage, imagetext)
 	{
 		return;
 	}
-	
+
 	var forum_image = getElementById('forumimage_'+forum_id);
 	if (forum_image == null)
 	{
@@ -100,7 +100,7 @@ function AJAXFinishMarkForum(result_code, forum_id, forumimage, imagetext)
 		}
 		return;
 	}
-	
+
 	forum_image.setAttribute('src', forumimage, 'false');
 	forum_image.setAttribute('alt', imagetext, 'false');
 	forum_image.setAttribute('title', imagetext, 'false');

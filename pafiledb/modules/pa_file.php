@@ -19,8 +19,8 @@ class pafiledb_file extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $phpEx, $pafiledb_config, $db, $images, $phpbb_root_path, $userdata, $pafiledb_functions;
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata, $pafiledb_functions;
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		if ( isset($_REQUEST['file_id']))
 		{
 			$file_id = intval($_REQUEST['file_id']);
@@ -87,7 +87,7 @@ class pafiledb_file extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=file&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_view'], $this->auth[$file_data['file_catid']]['auth_view_file_type']);
@@ -102,7 +102,7 @@ class pafiledb_file extends pafiledb_public
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD_HOME' => append_sid('dload.' . $phpEx),
+			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 
 			'FILE_NAME' => $file_data['file_name'],
 			'DOWNLOAD' => $pafiledb_config['settings_dbname']
@@ -130,7 +130,7 @@ class pafiledb_file extends pafiledb_public
 		//$file_rating = ($file_data['rating'] != 0) ? round($file_data['rating'], 2) . ' / 10' : $lang['Not_rated'];
 		//$file_rating2 = ($file_data['rating'] != 0) ? sprintf("%.1f", round(($file_data['rating']), 2)/2) : '0.0';
 		$file_rating2 = ($file_data['rating'] != 0) ? sprintf("%.1f", round(($file_data['rating']), 0)/2) : '0.0';
-		$file_download_link = ($file_data['file_license'] > 0) ? append_sid('dload.' . $phpEx . '?action=license&amp;license_id=' . $file_data['file_license'] . '&amp;file_id=' . $file_id) : append_sid('dload.' . $phpEx . '?action=download&amp;file_id=' . $file_id);
+		$file_download_link = ($file_data['file_license'] > 0) ? append_sid('dload.' . PHP_EXT . '?action=license&amp;license_id=' . $file_data['file_license'] . '&amp;file_id=' . $file_id) : append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id);
 
 
 		$file_size = $pafiledb_functions->get_file_size($file_id, $file_data);
@@ -201,16 +201,16 @@ class pafiledb_file extends pafiledb_public
 			'LAST' => $file_last_download,
 
 // MX Addon
-			'U_DELETE' => append_sid('dload.' . $phpEx . '?action=user_upload&amp;do=delete&amp;file_id=' . $file_id),
-			'U_EDIT' => append_sid('dload.' . $phpEx . '?action=user_upload&amp;file_id=' . $file_id),
+			'U_DELETE' => append_sid('dload.' . PHP_EXT . '?action=user_upload&amp;do=delete&amp;file_id=' . $file_id),
+			'U_EDIT' => append_sid('dload.' . PHP_EXT . '?action=user_upload&amp;file_id=' . $file_id),
 
 			'U_DOWNLOAD' => $file_download_link,
-			'U_RATE' => append_sid('dload.' . $phpEx . '?action=rate&amp;file_id=' . $file_id),
-			'U_EMAIL' => append_sid('dload.' . $phpEx . '?action=email&amp;file_id=' . $file_id)
+			'U_RATE' => append_sid('dload.' . PHP_EXT . '?action=rate&amp;file_id=' . $file_id),
+			'U_EMAIL' => append_sid('dload.' . PHP_EXT . '?action=email&amp;file_id=' . $file_id)
 			)
 		);
 
-		include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_field.' . $phpEx);
+		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_field.' . PHP_EXT);
 		$custom_field = new custom_field();
 		$custom_field->init();
 		$custom_field->display_data($file_id);
@@ -218,7 +218,7 @@ class pafiledb_file extends pafiledb_public
 
 		if($this->auth[$file_data['file_catid']]['auth_view_comment'])
 		{
-			include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_comment.' . $phpEx);
+			include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_comment.' . PHP_EXT);
 			display_comments($file_data);
 		}
 		$this->display($lang['Download'], 'pa_file_body.tpl');

@@ -10,7 +10,7 @@
 		<td align="center" width="{S_COL_WIDTH}" class="row1g row-center">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{personal_picrow.piccol.U_PIC}" {TARGET_BLANK}><img src="{personal_picrow.piccol.THUMBNAIL}" alt="{personal_picrow.piccol.DESC}" title="{personal_picrow.piccol.DESC}" vspace="10" border="0" {personal_picrow.piccol.PIC_PREVIEW} /></a>
+				<a href="{personal_picrow.piccol.U_PIC}" {TARGET_BLANK}><img src="{personal_picrow.piccol.THUMBNAIL}" alt="{personal_picrow.piccol.PIC_TITLE}" title="{personal_picrow.piccol.PIC_TITLE}" vspace="10" border="0" {personal_picrow.piccol.PIC_PREVIEW} /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -47,7 +47,7 @@
 		<td class="row1 row-center" valign="middle">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{recent_comments_block.comment_row.U_PIC}" {TARGET_BLANK}><img src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.DESC}" title="{recent_comments_block.comment_row.DESC}" vspace="10" border="0" {recent_comments_block.comment_row.PIC_PREVIEW} /></a>
+				<a href="{recent_comments_block.comment_row.U_PIC}" {TARGET_BLANK}><img src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" vspace="10" border="0" {recent_comments_block.comment_row.PIC_PREVIEW} /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -81,7 +81,7 @@
 		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{recent_pics_block.recent_pics.recent_col.U_PIC}" {TARGET_BLANK}><img src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.DESC}" title="{recent_pics_block.recent_pics.recent_col.DESC}" vspace="10" border="0" {recent_pics_block.recent_pics.recent_col.PIC_PREVIEW} /></a>
+				<a href="{recent_pics_block.recent_pics.recent_col.U_PIC}" {TARGET_BLANK}><img src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" vspace="10" border="0" {recent_pics_block.recent_pics.recent_col.PIC_PREVIEW} /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -119,7 +119,7 @@
 		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{highest_pics_block.highest_pics.highest_col.U_PIC}" {TARGET_BLANK}><img src="{highest_pics_block.highest_pics.highest_col.THUMBNAIL}" {THUMB_SIZE} alt="{highest_pics_block.highest_pics.highest_col.DESC}" title="{highest_pics_block.highest_pics.highest_col.DESC}" vspace="10" border="0" {highest_pics_block.highest_pics.highest_col.PIC_PREVIEW} /></a>
+				<a href="{highest_pics_block.highest_pics.highest_col.U_PIC}" {TARGET_BLANK}><img src="{highest_pics_block.highest_pics.highest_col.THUMBNAIL}" {THUMB_SIZE} alt="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" title="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" vspace="10" border="0" {highest_pics_block.highest_pics.highest_col.PIC_PREVIEW} /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -157,7 +157,7 @@
 		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC}" {TARGET_BLANK}><img src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.DESC}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.DESC}" vspace="10" border="0" {mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW} /></a>
+				<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC}" {TARGET_BLANK}><img src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" vspace="10" border="0" {mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW} /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -195,7 +195,7 @@
 		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{random_pics_block.rand_pics.rand_col.U_PIC}" {TARGET_BLANK}><img src="{random_pics_block.rand_pics.rand_col.THUMBNAIL}" {THUMB_SIZE} alt="{random_pics_block.rand_pics.rand_col.DESC}" title="{random_pics_block.rand_pics.rand_col.DESC}" vspace="10" border="0" {random_pics_block.rand_pics.rand_col.PIC_PREVIEW} /></a>
+				<a href="{random_pics_block.rand_pics.rand_col.U_PIC}" {TARGET_BLANK}><img src="{random_pics_block.rand_pics.rand_col.THUMBNAIL}" {THUMB_SIZE} alt="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" title="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" vspace="10" border="0" {random_pics_block.rand_pics.rand_col.PIC_PREVIEW} /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>

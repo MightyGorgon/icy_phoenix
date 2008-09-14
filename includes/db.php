@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -23,10 +23,10 @@ if (!defined('IN_PHPBB'))
 switch($dbms)
 {
 	case 'mysql':
-		include($phpbb_root_path . 'includes/db/mysql.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/db/mysql.' . PHP_EXT);
 		break;
 	case 'mysql4':
-		include($phpbb_root_path . 'includes/db/mysql4.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/db/mysql4.' . PHP_EXT);
 		break;
 }
 

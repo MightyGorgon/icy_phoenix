@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -18,9 +18,9 @@ if( !empty($setmodules) )
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if( isset($_GET['mode']) || isset($_POST['mode']) )
 {
@@ -90,14 +90,14 @@ if( $mode != '' )
 			'L_DESCRIPTION' => $lang['Description'],
 			'L_SUBMIT' => $lang['Submit'],
 
-			'S_ACRONYMS_ACTION' => append_sid('admin_acronyms.' . $phpEx),
+			'S_ACRONYMS_ACTION' => append_sid('admin_acronyms.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	elseif( $mode == 'save' )
 	{
@@ -129,7 +129,7 @@ if( $mode != '' )
 			if( $db->sql_fetchrow( $result ) )
 			{
 				$message = 'Acronym already in Database.';
-				$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+				$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				$db->sql_freeresult( $result );
 
@@ -149,7 +149,7 @@ if( $mode != '' )
 			message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -174,7 +174,7 @@ if( $mode != '' )
 				message_die(GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Acronym_removed'] . '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['Acronym_removed'] . '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -208,7 +208,7 @@ else
 		'L_DELETE' => $lang['Delete'],
 		'L_ADD_ACRONYM' => $lang['Add_new_acronym'],
 		'L_ACTION' => $lang['Action'],
-		'S_ACRONYM_ACTION' => append_sid('admin_acronyms.' . $phpEx),
+		'S_ACRONYM_ACTION' => append_sid('admin_acronyms.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => ''
 		)
 	);
@@ -227,8 +227,8 @@ else
 			'ROW_CLASS' => $row_class,
 			'ACRONYM' => $acronym,
 			'DESCRIPTION' => $description,
-			'U_ACRONYM_EDIT' => append_sid('admin_acronyms.' . $phpEx . '?mode=edit&amp;id=' . $acronym_id),
-			'U_ACRONYM_DELETE' => append_sid('admin_acronyms.' . $phpEx . '?mode=delete&amp;id=' . $acronym_id)
+			'U_ACRONYM_EDIT' => append_sid('admin_acronyms.' . PHP_EXT . '?mode=edit&amp;id=' . $acronym_id),
+			'U_ACRONYM_DELETE' => append_sid('admin_acronyms.' . PHP_EXT . '?mode=delete&amp;id=' . $acronym_id)
 			)
 		);
 	}
@@ -236,6 +236,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

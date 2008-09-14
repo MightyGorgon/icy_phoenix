@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -78,17 +78,17 @@ else
 	$bottom_html_block_text = '';
 }
 
-include_once($phpbb_root_path . 'includes/functions_jr_admin.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 $admin_link = jr_admin_make_admin_link();
 
 // CrackerTracker v5.x
-include_once($phpbb_root_path . 'ctracker/engines/ct_footer.' . $phpEx);
+include_once(IP_ROOT_PATH . 'ctracker/engines/ct_footer.' . PHP_EXT);
 $output_login_status = ($userdata['ct_enable_ip_warn'] ? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off']);
 // CrackerTracker v5.x
 
 //Begin Lo-Fi Mod
 $path_parts = pathinfo($_SERVER['PHP_SELF']);
-$lofi = '<a href="' . append_sid($phpbb_root_path . $path_parts['basename'] . '?' . htmlspecialchars($_SERVER['QUERY_STRING']) . '&amp;lofi=' . (empty($_COOKIE['lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE['lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a><br />';
+$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars($_SERVER['QUERY_STRING']) . '&amp;lofi=' . (empty($_COOKIE['lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE['lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a><br />';
 $template->assign_vars(array(
 	'L_LOFI' => $lang['Lofi'],
 	'L_FULL_VERSION' => $lang['Full_Version'],
@@ -146,7 +146,7 @@ if ($board_config['page_gen'] == 1)
 		if (defined('DEBUG_EXTRA'))
 		{
 			$tmp_query_string = htmlspecialchars(str_replace(array('&explain=1', 'explain=1'), array('', ''), $_SERVER['QUERY_STRING']));
-			$gzip_text .= ' - <a href="' . append_sid($phpbb_root_path . $path_parts['basename'] . (!empty($tmp_query_string) ? ('?' . $tmp_query_string . '&amp;explain=1') : '?explain=1')) . '">Extra ' . $lang['Debug_On'] . '</a>';
+			$gzip_text .= ' - <a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . (!empty($tmp_query_string) ? ('?' . $tmp_query_string . '&amp;explain=1') : '?explain=1')) . '">Extra ' . $lang['Debug_On'] . '</a>';
 		}
 	}
 
@@ -178,7 +178,7 @@ if ($board_config['page_gen'] == 1)
 	$template->assign_block_vars('generation_time_switch', array());
 
 	/*
-	$gen_log_file = $phpbb_root_path . 'cache/gen_log.txt';
+	$gen_log_file = IP_ROOT_PATH . 'cache/gen_log.txt';
 	$fp = fopen ($gen_log_file, "a+");
 	fwrite($fp, $gentime . "\t" . $memory_usage . "\n");
 	fclose($fp);

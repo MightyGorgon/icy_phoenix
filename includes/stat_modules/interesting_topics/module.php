@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -25,7 +25,8 @@ if (!$result = $db->sql_query($sql))
 	message_die(GENERAL_ERROR, "Couldn't retrieve forum_id data", '', __LINE__, __FILE__, $sql);
 }
 
-while ($row = $db->sql_fetchrow($result)) {
+while ($row = $db->sql_fetchrow($result))
+{
 	$is_auth = auth('auth_view', $row['forum_id'], $userdata);
 	if ($is_auth['auth_view'])
 	{
@@ -47,6 +48,9 @@ if (!$result = $db->sql_query($sql))
 
 $topic_data = $db->sql_fetchrowset($result);
 
+$template->_tpldata['mosttopics.'] = array();
+//reset($template->_tpldata['mosttopics.']);
+
 for ($i = 0; $i < count($topic_data); $i++)
 {
 	$rate = round (($topic_data[$i]['k']),0);
@@ -55,7 +59,7 @@ for ($i = 0; $i < count($topic_data); $i++)
 	'CLASS' => (!(($i+1) % 2)) ? $theme['td_class2'] : $theme['td_class1'],
 	'TITLE' => $topic_data[$i]['topic_title'],
 	'RATE' => ($rate > 100) ? '100' : $rate,
-	'URL' => append_sid($phpbb_root_path . VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=" . $topic_data[$i]['topic_id']))
+	'URL' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=" . $topic_data[$i]['topic_id']))
 	);
 }
 
@@ -71,6 +75,9 @@ $least_first_place = $board_config['max_topics'] - count($topic_data) + 1;
 
 $topic_data = $db->sql_fetchrowset($result);
 
+$template->_tpldata['leasttopics.'] = array();
+//reset($template->_tpldata['leasttopics.']);
+
 for ($i = 0; $i < count($topic_data); $i++)
 {
 	$least_first_place++;
@@ -79,7 +86,7 @@ for ($i = 0; $i < count($topic_data); $i++)
 		'CLASS' => (!(($i+1) % 2)) ? $theme['td_class2'] : $theme['td_class1'],
 		'TITLE' => $topic_data[$i]['topic_title'],
 		'RATE' => $topic_data[$i]['k'],
-		'URL' => append_sid($phpbb_root_path . VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=" . $topic_data[$i]['topic_id'])
+		'URL' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=" . $topic_data[$i]['topic_id'])
 		)
 	);
 }

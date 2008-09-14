@@ -91,7 +91,7 @@ function ExitWithHeader($output,$message='')
 function rss_session_begin($user_id, $user_ip)
 {
 	global $db, $board_config;
-	$page_array = extract_current_page($phpbb_root_path);
+	$page_array = extract_current_page(IP_ROOT_PATH);
 	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : ((isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : '');
 	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';

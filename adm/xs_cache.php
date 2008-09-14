@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,9 +28,9 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo;&nbsp;<a href="' . append_sid('xs_cache.' . $phpEx) . '">' . $lang['xs_manage_cache'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo;&nbsp;<a href="' . append_sid('xs_cache.' . PHP_EXT) . '">' . $lang['xs_manage_cache'] . '</a>'));
 
 $data = '';
 
@@ -40,8 +40,8 @@ $skip_files = array(
 	'.htaccess',
 	'index.htm',
 	'index.html',
-	'index.' . $phpEx,
-	'attach_config.' . $phpEx,
+	'index.' . PHP_EXT,
+	'attach_config.' . PHP_EXT,
 );
 
 // clear cache
@@ -212,8 +212,8 @@ for($i=0; $i<count($style_rowset); $i++)
 					'ROW_CLASS'	=> $row_class,
 					'TPL'		=> $prev_tpl,
 					'STYLES'	=> $str,
-					'U_CLEAR'	=> "xs_cache.{$phpEx}?clear={$str2}&sid={$userdata['session_id']}",
-					'U_COMPILE'	=> "xs_cache.{$phpEx}?compile={$str2}&sid={$userdata['session_id']}",
+					'U_CLEAR'	=> "xs_cache." . PHP_EXT . "?clear={$str2}&sid={$userdata['session_id']}",
+					'U_COMPILE'	=> "xs_cache." . PHP_EXT . "?compile={$str2}&sid={$userdata['session_id']}",
 				)
 			);
 		}
@@ -232,15 +232,15 @@ if($prev_id > 0)
 			'ROW_CLASS'	=> $row_class,
 			'TPL'		=> $prev_tpl,
 			'STYLES'	=> $str,
-			'U_CLEAR'	=> "xs_cache.{$phpEx}?clear={$str2}&sid={$userdata['session_id']}",
-			'U_COMPILE'	=> "xs_cache.{$phpEx}?compile={$str2}&sid={$userdata['session_id']}",
+			'U_CLEAR'	=> "xs_cache." . PHP_EXT . "?clear={$str2}&sid={$userdata['session_id']}",
+			'U_COMPILE'	=> "xs_cache." . PHP_EXT . "?compile={$str2}&sid={$userdata['session_id']}",
 		)
 	);
 }
 
 $template->assign_vars(array(
-	'U_CLEAR_ALL'	=> "xs_cache.{$phpEx}?clear=&sid={$userdata['session_id']}",
-	'U_COMPILE_ALL'	=> "xs_cache.{$phpEx}?compile=&sid={$userdata['session_id']}",
+	'U_CLEAR_ALL'	=> "xs_cache." . PHP_EXT . "?clear=&sid={$userdata['session_id']}",
+	'U_COMPILE_ALL'	=> "xs_cache." . PHP_EXT . "?compile=&sid={$userdata['session_id']}",
 	'RESULT'		=> '<br /><br />' . $data
 	)
 );

@@ -396,7 +396,7 @@ $lang['Wysiwyg'] = 'Use wysiwyg editor';
 $lang['Wysiwyg_explain'] = 'If enabled, the standard bbcode/html/smileys input dialogue is replaced by a wysiwyg editor.';
 
 $lang['Wysiwyg_path'] = 'Path to wysiwyg software';
-$lang['Wysiwyg_path_explain'] = 'This is the path (from mxBB/phpBB root) to the wysiwyg software folder, eg \'modules/\' if you have uploaded for example tinemce in modules/tinymce.';
+$lang['Wysiwyg_path_explain'] = 'This is the path (from mxBB/ip root) to the wysiwyg software folder, eg \'modules/\' if you have uploaded for example tinemce in modules/tinymce.';
 
 $lang['Formatting_fixup'] = 'Fix up formatting';
 $lang['Formatting_fixup_explain'] = 'If enabled, the article text is reformatted: word-wrapping, url truncates, img resizing and some bbcode reformatting etc';

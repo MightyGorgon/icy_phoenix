@@ -13,11 +13,12 @@
 */
 
 // CTracker_Ignore: File Checked By Human
-define('IN_PHPBB', true);
-//$phpbb_root_path = './../';
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+//if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Language
 $lang['title'] = 'Clean Icy Phoenix SQL tables';
@@ -35,7 +36,7 @@ $lang['cleaned_explain'] = '<b>Your tables have successfully been cleaned</b></s
 
 $cleaned = false;
 
-if ( $dbms != 'mysql' && $dbms != 'mysql4' )
+if ($dbms != 'mysql' && $dbms != 'mysql4')
 {
 	message_die(GENERAL_MESSAGE, $lang['incompatible_dbms']);
 	exit;
@@ -65,11 +66,11 @@ class html
 
 	function right_row($type, $title)
 	{
-		if ( $type == 'field' )
+		if ($type == 'field')
 		{
 			print '<tr><td width="15"><input type="checkbox" name="' . $this->table_name . '__' . $title . '" checked="checked" value="1" /></td><td><span class="genmed">' . $title . '</span></td></tr>';
 		}
-		elseif ( $type == 'config' )
+		elseif ($type == 'config')
 		{
 			print '<tr><td width="15"><input type="checkbox" name="' . 'config__' . $title . '" checked="checked" value="1" /></td><td><span class="genmed">' . $title . '</span></td></tr>';
 		}
@@ -88,56 +89,56 @@ class html
 $html = new html();
 
 // Did the user submitted the form?
-if ( isset($HTTP_POST_VARS['submit']) )
+if (isset($HTTP_POST_VARS['submit']))
 {
 	reset($HTTP_POST_VARS);
-	while ( list($key, $value) = each($HTTP_POST_VARS) )
+	while (list($key, $value) = each($HTTP_POST_VARS))
 	{
 		$key = htmlspecialchars(addslashes($key));
 		$key = str_replace("\'", "''", $key);
 
 		$value = intval($value);
 
-		if ( $key != 'submit' )
+		if ($key != 'submit')
 		{
 			// Drop a config setting
-			if ( strstr($key, 'config__') && $value == 1 )
+			if (strstr($key, 'config__') && $value == 1)
 			{
 				$field = substr($key, 8);
 
 				$sql = "DELETE FROM " . CONFIG_TABLE . " WHERE config_name = '" . $field . "'";
 				$result = $db->sql_query($sql);
 
-				if ( !$result )
+				if (!$result)
 				{
 					message_die(GENERAL_ERROR, "Failed dropping configuration setting '$field'", '', __LINE__, __FILE__, $sql);
 				}
 			}
 
 			// Drop a field
-			elseif ( strstr($key, '__') && $value == 1 )
+			elseif (strstr($key, '__') && $value == 1)
 			{
 				$table = substr($key, 0, strpos($key, '__'));
-				$field = substr($key, ( strpos($key, '__') + 2 ));
+				$field = substr($key, (strpos($key, '__') + 2));
 
 				$sql = "ALTER TABLE " . $table . " DROP " . $field;
 				$result = $db->sql_query($sql);
 
-				if ( !$result )
+				if (!$result)
 				{
 					message_die(GENERAL_ERROR, "Failed dropping $table.$field", '', __LINE__, __FILE__, $sql);
 				}
 			}
 
 			// Drop a table
-			elseif ( $value == 1 )
+			elseif ($value == 1)
 			{
 				$table = $key;
 
 				$sql = "DROP TABLE " . $table;
 				$result = $db->sql_query($sql);
 
-				if ( !$result )
+				if (!$result)
 				{
 					message_die(GENERAL_ERROR, "Failed dropping $table", '', __LINE__, __FILE__, $sql);
 				}
@@ -157,7 +158,7 @@ $valid_fields = array(
 	$table_prefix . 'adminedit' => array('edit_id', 'edituser', 'editok'),
 	$table_prefix . 'ajax_shoutbox' => array('shout_id', 'user_id', 'shouter_name', 'shout_text', 'shouter_ip', 'shout_uid', 'shout_time'),
 	$table_prefix . 'ajax_shoutbox_sessions' => array('session_id', 'session_user_id', 'session_username', 'session_ip', 'session_start', 'session_time'),
-	$table_prefix . 'album' => array('pic_id', 'pic_filename', 'pic_thumbnail', 'pic_title', 'pic_desc', 'pic_user_id', 'pic_username', 'pic_user_ip', 'pic_time', 'pic_cat_id', 'pic_view_count', 'pic_lock', 'pic_approval'),
+	$table_prefix . 'album' => array('pic_id', 'pic_filename', 'pic_size', 'pic_thumbnail', 'pic_title', 'pic_desc', 'pic_user_id', 'pic_username', 'pic_user_ip', 'pic_time', 'pic_cat_id', 'pic_view_count', 'pic_lock', 'pic_approval'),
 	$table_prefix . 'album_cat' => array('cat_id', 'cat_title', 'cat_desc', 'cat_wm', 'cat_pics', 'cat_order', 'cat_view_level', 'cat_upload_level', 'cat_rate_level', 'cat_comment_level', 'cat_edit_level', 'cat_delete_level', 'cat_view_groups', 'cat_upload_groups', 'cat_rate_groups', 'cat_comment_groups', 'cat_edit_groups', 'cat_delete_groups', 'cat_moderator_groups', 'cat_approval', 'cat_parent', 'cat_user_id'),
 	$table_prefix . 'album_comment' => array('comment_id', 'comment_pic_id', 'comment_cat_id', 'comment_user_id', 'comment_username', 'comment_user_ip', 'comment_time', 'comment_text', 'comment_edit_time', 'comment_edit_count', 'comment_edit_user_id'),
 	$table_prefix . 'album_comment_watch' => array('pic_id', 'user_id', 'notify_status'),
@@ -308,15 +309,15 @@ $valid_fields = array(
 reset($valid_fields);
 $unknown_fields = array();
 
-while ( list($table_name, $fields) = each($valid_fields) )
+while (list($table_name, $fields) = each($valid_fields))
 {
 	$result = $db->sql_query("SHOW FIELDS FROM $table_name");
 
-	while ( $record = $db->sql_fetchrow($result) )
+	while ($record = $db->sql_fetchrow($result))
 	{
-		if ( !in_array($record['Field'], $fields) )
+		if (!in_array($record['Field'], $fields))
 		{
-			if ( !is_array($unknown_fields[$table_name]) )
+			if (!is_array($unknown_fields[$table_name]))
 			{
 				$unknown_fields[$table_name] = array();
 			}
@@ -331,12 +332,12 @@ $unknown_tables = array();
 
 $result = $db->sql_query('SHOW TABLES');
 
-while ( $row = $db->sql_fetchrow($result) )
+while ($row = $db->sql_fetchrow($result))
 {
 	$current_table = $row['Tables_in_' . $dbname];
 	$current_prefix = substr($current_table, 0, strlen($table_prefix));
 
-	if ( $current_prefix == $table_prefix )
+	if ($current_prefix == $table_prefix)
 	{
 		array_push($tables, $current_table);
 	}
@@ -345,20 +346,20 @@ while ( $row = $db->sql_fetchrow($result) )
 reset($tables);
 reset($valid_fields);
 
-while ( list(, $table_name) = each($tables) )
+while (list(, $table_name) = each($tables))
 {
 	$match_found = false;
 
 	reset($valid_fields);
-	while ( list($valid_table_name) = each($valid_fields) )
+	while (list($valid_table_name) = each($valid_fields))
 	{
-		if ( $valid_table_name == $table_name )
+		if ($valid_table_name == $table_name)
 		{
 			$match_found = true;
 		}
 	}
 
-	if ( !$match_found )
+	if (!$match_found)
 	{
 		array_push($unknown_tables, $table_name);
 	}
@@ -368,12 +369,12 @@ while ( list(, $table_name) = each($tables) )
 $unknown_config = array();
 
 $sql = "SELECT config_name FROM " . CONFIG_TABLE . " WHERE config_name NOT IN ('" . implode("', '", $config_records) . "')";
-if ( !( $result = $db->sql_query($sql) ) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, "Failed getting configuration records", '', __LINE__, __FILE__, $sql);
 }
 
-while ( $config_data = $db->sql_fetchrow($result) )
+while ($config_data = $db->sql_fetchrow($result))
 {
 	$unknown_config[] = $config_data['config_name'];
 }
@@ -416,7 +417,7 @@ while ( $config_data = $db->sql_fetchrow($result) )
 	<td width="100%" colspan="3" style="padding-left: 10px; padding-right: 10px;">
 
 <?php
-if ( !$cleaned )
+if (!$cleaned)
 {
 	?>
 		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
@@ -427,11 +428,11 @@ if ( !$cleaned )
 	<?php
 }
 ?>
-		<form action="clean_tables_ip.<?php echo $phpEx; ?>" name="clean" method="post">
+		<form action="clean_tables_ip.<?php echo PHP_EXT; ?>" name="clean" method="post">
 		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr><td class="row-header" colspan="2"><span><?php echo $lang['title']; ?></span></td></tr>
 <?php
-if ( $cleaned )
+if ($cleaned)
 {
 	$html->title($lang['cleaned_title']);
 	print '<tr><td class="row1 row-center" colspan="2"><span class="genmed"><br /><span class="text_green">' . $lang['cleaned_explain'] . '<br />&nbsp;</span></td></tr>';
@@ -441,16 +442,16 @@ else
 	// Unknown fields
 	$html->title($lang['unknown_fields']);
 
-	if ( count($unknown_fields) > 0 )
+	if (count($unknown_fields) > 0)
 	{
 		reset($unknown_fields);
 
-		while ( list($table_name, $data) = each($unknown_fields) )
+		while (list($table_name, $data) = each($unknown_fields))
 		{
 			$html->header();
 			$html->table_name($table_name);
 
-			while ( list(, $fieldname) = each($data) )
+			while (list(, $fieldname) = each($data))
 			{
 				$html->right_row('field', $fieldname);
 			}
@@ -466,14 +467,14 @@ else
 	// Unknown tables
 	$html->title($lang['unknown_tables']);
 
-	if ( count($unknown_tables) > 0 )
+	if (count($unknown_tables) > 0)
 	{
 		reset($unknown_tables);
 
 		$html->header();
 		$html->table_name($lang['unknown_tables']);
 
-		while ( list(, $table_name) = each($unknown_tables) )
+		while (list(, $table_name) = each($unknown_tables))
 		{
 			$html->right_row('table', $table_name);
 		}
@@ -488,14 +489,14 @@ else
 	// Unknown config settings
 	$html->title($lang['unknown_config']);
 
-	if ( count($unknown_config) > 0 )
+	if (count($unknown_config) > 0)
 	{
 		reset($unknown_config);
 
 		$html->header();
 		$html->table_name($lang['unknown_config']);
 
-		while ( list(, $table_name) = each($unknown_config) )
+		while (list(, $table_name) = each($unknown_config))
 		{
 			$html->right_row('config', $table_name);
 		}
@@ -507,7 +508,7 @@ else
 		print '<tr><td class="row1 row-center" colspan="2"><span class="genmed"><br /><span class="text_green"><b>' . $lang['no_config_found'] . '</b></span><br />&nbsp;</span></td></tr>';
 	}
 
-	print '<tr><td class="cat" colspan="2"><input class="mainoption" name="submit" type="submit" value="' . $lang['submit_button_caption'] . '"' . ( ( count($unknown_fields) == 0 && count($unknown_tables) == 0 && count($unknown_config) == 0 ) ? ' disabled="disabled"' : '') .  '/></td></tr>';
+	print '<tr><td class="cat" colspan="2"><input class="mainoption" name="submit" type="submit" value="' . $lang['submit_button_caption'] . '"' . ((count($unknown_fields) == 0 && count($unknown_tables) == 0 && count($unknown_config) == 0) ? ' disabled="disabled"' : '') .  '/></td></tr>';
 }
 ?>
 			</td>

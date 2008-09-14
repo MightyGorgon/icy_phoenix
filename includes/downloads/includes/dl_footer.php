@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -32,7 +32,7 @@ if (count($index) || $cat)
 		$approve_string = ($total_approve == 1) ? $lang['Dl_approve_overview_one'] : $lang['Dl_approve_overview'];
 		$template->assign_block_vars('approve', array(
 			'L_APPROVE_DOWNLOADS' => sprintf($approve_string, $total_approve),
-			'U_APPROVE_DOWNLOADS' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=approve')
+			'U_APPROVE_DOWNLOADS' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=approve')
 			)
 		);
 	}
@@ -46,7 +46,7 @@ if (count($index) || $cat)
 		$approve_comment_string = ($total_comment_approve == 1) ? $lang['Dl_approve_overview_one_comment'] : $lang['Dl_approve_overview_comments'];
 		$template->assign_block_vars('approve_comments', array(
 			'L_APPROVE_COMMENTS' => sprintf($approve_comment_string, $total_comment_approve),
-			'U_APPROVE_COMMENTS' => append_sid('downloads.' . $phpEx . '?view=modcp&amp;action=capprove')
+			'U_APPROVE_COMMENTS' => append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=capprove')
 			)
 		);
 	}
@@ -61,7 +61,7 @@ if (count($index) || $cat)
 	{
 		$template->assign_block_vars('switch_stats_view_on', array(
 			'L_DL_STATS' => $lang['Dl_stats'],
-			'U_STATS' => append_sid('downloads.' . $phpEx . '?view=stat')
+			'U_STATS' => append_sid('downloads.' . PHP_EXT . '?view=stat')
 			)
 		);
 	}
@@ -98,7 +98,7 @@ if (count($index) || $cat)
 	/*
 	* create the overall dl mod jumpbox
 	*/
-	$dl_jumpbox = '<form method="get" name="dl_jumpbox" action="' . append_sid('downloads.' . $phpEx . '?sort_by=' . $sort_by . '&amp;order=' . $order).'" onsubmit="if(this.options[this.selectedIndex].value == -1){ return false; }"><select name="cat" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'dl_jumpbox\'].submit() }">';
+	$dl_jumpbox = '<form method="get" name="dl_jumpbox" action="' . append_sid('downloads.' . PHP_EXT . '?sort_by=' . $sort_by . '&amp;order=' . $order).'" onsubmit="if(this.options[this.selectedIndex].value == -1){ return false; }"><select name="cat" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'dl_jumpbox\'].submit() }">';
 	$dl_jumpbox .= '<option value="-1">' . $lang['Dl_cat_name'] . '</option>';
 	$dl_jumpbox .= '<option value="-1">----------</option>';
 	$dl_jumpbox .= $dl_mod->dl_dropdown(0, 0, $cat, 'auth_view');
@@ -107,7 +107,7 @@ if (count($index) || $cat)
 	/*
 	* create the overall board jumpbox
 	*/
-	make_jumpbox('viewforum.' . $phpEx);
+	make_jumpbox('viewforum.' . PHP_EXT);
 
 	/*
 	* check if users can config something
@@ -116,7 +116,7 @@ if (count($index) || $cat)
 	{
 		$template->assign_block_vars('switch_config_on', array(
 			'L_CONFIG' => $lang['Dl_config'],
-			'U_CONFIG' => append_sid('downloads.' . $phpEx . '?view=user_config')
+			'U_CONFIG' => append_sid('downloads.' . PHP_EXT . '?view=user_config')
 			)
 		);
 	}
@@ -129,7 +129,7 @@ if (count($index) || $cat)
 	{
 		$template->assign_block_vars('switch_todo_on', array(
 			'L_TODOLIST' => $lang['Dl_mod_todo'],
-			'U_TODOLIST' => append_sid('downloads.' . $phpEx . '?view=todo')
+			'U_TODOLIST' => append_sid('downloads.' . PHP_EXT . '?view=todo')
 			)
 		);
 	}
@@ -181,7 +181,7 @@ if (count($index) || $cat)
 
 		'WIDTH' => $width,
 
-		'U_OVERALL_VIEW' => append_sid('downloads.' . $phpEx . '?view=overall')
+		'U_OVERALL_VIEW' => append_sid('downloads.' . PHP_EXT . '?view=overall')
 		)
 	);
 

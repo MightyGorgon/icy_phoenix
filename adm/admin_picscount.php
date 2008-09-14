@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -17,9 +17,9 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if( isset($_POST['confirm_sync']) )
 {
@@ -71,7 +71,7 @@ else
 	$template->set_filenames(array('body' => ADM_TPL . 'sync_pics_count.tpl'));
 
 	$template->assign_vars(array(
-		'U_ACTION' => append_sid('admin_picscount.' . $phpEx),
+		'U_ACTION' => append_sid('admin_picscount.' . PHP_EXT),
 		'SYNC_PICS_COUNT_TEXT' => $lang['Sync_Pics_Count'],
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No']
@@ -81,6 +81,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

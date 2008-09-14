@@ -17,10 +17,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // gzip_compression
 $do_gzip_compress = false;
@@ -98,8 +98,8 @@ if( $result = $db->sql_query($sql) )
 		//if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
 		if ($row['link_logo_src'])
 		{
-			//$links_logo .= ('"<a href=\"' . append_sid('links.' . $phpEx . '?action=go&link_id=' . $row['link_id']) . '\" target=\"_blank\"><img src=\"' . $row['link_logo_src'] . '\" alt=\"' . stripslashes($row['link_title']) . '\" width=\"' . $site_logo_width . '\" height=\"' . $site_logo_height . '\" border=\"0\" hspace=\"1\" \/><\/a>\",' . "\n");
-			$links_logo .= ('\'<a href="' . append_sid('links.' . $phpEx . '?action=go&link_id=' . $row['link_id']) . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . stripslashes($row['link_title']) . '" width="' . $site_logo_width . '" height="' . $site_logo_height . '" border="0" hspace="1" \/><\/a>\',' . "\n");
+			//$links_logo .= ('"<a href=\"' . append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']) . '\" target=\"_blank\"><img src=\"' . $row['link_logo_src'] . '\" alt=\"' . stripslashes($row['link_title']) . '\" width=\"' . $site_logo_width . '\" height=\"' . $site_logo_height . '\" border=\"0\" hspace=\"1\" \/><\/a>\",' . "\n");
+			$links_logo .= ('\'<a href="' . append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']) . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . stripslashes($row['link_title']) . '" width="' . $site_logo_width . '" height="' . $site_logo_height . '" border="0" hspace="1" \/><\/a>\',' . "\n");
 		}
 	}
 

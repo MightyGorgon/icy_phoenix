@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,14 +25,14 @@ if( !empty($setmodules) )
 	return;
 }
 
-// Include required files, get $phpEx and check permissions
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+// Include required files, get PHP_EXT and check permissions
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if( isset($_POST['add_name']) )
 {
-	include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 	$disallowed_user = ( isset($_POST['disallowed_user']) ) ? trim($_POST['disallowed_user']) : trim($_GET['disallowed_user']);
 
@@ -56,7 +56,7 @@ if( isset($_POST['add_name']) )
 		$message = $lang['Disallow_successful'];
 	}
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+	$message .= '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -72,7 +72,7 @@ else if( isset($_POST['delete_name']) )
 		message_die(GENERAL_ERROR, "Couldn't removed disallowed user.", "",__LINE__, __FILE__, $sql);
 	}
 
-	$message .= $lang['Disallowed_deleted'] . '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+	$message .= $lang['Disallowed_deleted'] . '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 	message_die(GENERAL_MESSAGE, $message);
 
@@ -118,7 +118,7 @@ $template->set_filenames(array(
 
 $template->assign_vars(array(
 	"S_DISALLOW_SELECT" => $disallow_select,
-	"S_FORM_ACTION" => append_sid("admin_disallow.$phpEx"),
+	"S_FORM_ACTION" => append_sid("admin_disallow." . PHP_EXT),
 
 	"L_INFO" => $output_info,
 	"L_DISALLOW_TITLE" => $lang['Disallow_control'],
@@ -134,6 +134,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

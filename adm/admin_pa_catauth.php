@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,17 +24,17 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
 
 if (!function_exists('admin_display_cat_auth'))
 {
 	function admin_display_cat_auth($cat_parent = 0, $depth = 0)
 	{
-		global $pafiledb, $phpbb_root_path, $pafiledb_template, $phpEx;
+		global $pafiledb, $pafiledb_template;
 		global $cat_auth_fields, $cat_auth_const, $cat_auth_levels, $lang;
 		$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
 		if(isset($pafiledb->subcat_rowset[$cat_parent]))
@@ -45,7 +45,7 @@ if (!function_exists('admin_display_cat_auth'))
 					'CATEGORY_NAME' => $cat_data['cat_name'],
 					'IS_HIGHER_CAT' => ($cat_data['cat_allow_file']) ? false : true,
 					'PRE' => $pre,
-					'U_CAT' => append_sid("admin_pa_catauth.$phpEx?cat_parent=$sub_cat_id"))
+					'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_parent=' . $sub_cat_id))
 				);
 
 				for($j = 0; $j < count($cat_auth_fields); $j++)
@@ -145,7 +145,7 @@ if( isset($_POST['submit']) )
 		}
 	}
 
-	$message = $lang['Category_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_catauth'],  '<a href="' . append_sid("admin_pa_catauth.$phpEx") . '">', "</a>");
+	$message = $lang['Category_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_catauth'],  '<a href="' . append_sid("admin_pa_catauth." . PHP_EXT) . '">', "</a>");
 	message_die(GENERAL_MESSAGE, $message);
 } // End of submit
 
@@ -159,11 +159,13 @@ $pafiledb_template->set_filenames(array(
 	'body' => ADM_TPL . 'pa_auth_cat_body.tpl')
 );
 
-$permissions_menu = array(append_sid("admin_pa_catauth.$phpEx") => $lang['Cat_Permissions'],
-						  append_sid("admin_pa_ug_auth.$phpEx?mode=user") => $lang['User_Permissions'],
-						  append_sid("admin_pa_ug_auth.$phpEx?mode=group") => $lang['Group_Permissions'],
-						  append_sid("admin_pa_ug_auth.$phpEx?mode=glob_user") => $lang['User_Global_Permissions'],
-						  append_sid("admin_pa_ug_auth.$phpEx?mode=glob_group") => $lang['Group_Global_Permissions']);
+$permissions_menu = array(
+	append_sid('admin_pa_catauth.' . PHP_EXT) => $lang['Cat_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=user') => $lang['User_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=group') => $lang['Group_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=glob_user') => $lang['User_Global_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=glob_group') => $lang['Group_Global_Permissions']
+);
 
 foreach($permissions_menu as $url => $l_name)
 {
@@ -195,7 +197,7 @@ elseif(!empty($cat_id))
 	$pafiledb_template->assign_block_vars('cat_row', array(
 		'CATEGORY_NAME' => $pafiledb->cat_rowset[$cat_id]['cat_name'],
 		'IS_HIGHER_CAT' => ($pafiledb->cat_rowset[$cat_id]) ? false : true,
-		'U_CAT' => append_sid("admin_pa_catauth.$phpEx?cat_parent={$pafiledb->cat_rowset[$cat_id]['cat_parent']}"))
+		'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . "?cat_parent={$pafiledb->cat_rowset[$cat_id]['cat_parent']}"))
 	);
 
 	for($j = 0; $j < count($cat_auth_fields); $j++)
@@ -227,20 +229,20 @@ $pafiledb_template->assign_vars(array(
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 
-	'S_CATAUTH_ACTION' => append_sid("admin_pa_catauth.$phpEx"),
+	'S_CATAUTH_ACTION' => append_sid("admin_pa_catauth." . PHP_EXT),
 	'S_COLUMN_SPAN' => $s_column_span,
 	'S_HIDDEN_FIELDS' => $s_hidden_fields)
 );
 
 
 
-include('./page_header_admin.' . $phpEx);
+include('./page_header_admin.' . PHP_EXT);
 
 $pafiledb_template->display('body');
 
 $pafiledb->_pafiledb();
 $cache->unload();
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

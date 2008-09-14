@@ -49,13 +49,13 @@ define('MG_KILL_CTRACK', true);
 define('NOTIFY_USERS', true);
 // to disable confirmation when executing PRUNE_MG
 define('KILL_CONFIRM', false);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/digest_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_mg_users.' . $phpEx);
-include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 @set_time_limit(180);
 
@@ -64,7 +64,15 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ($userdata['user_level'] != ADMIN)
+$sql = 'SELECT user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $userdata['user_id'] . '" LIMIT 1';
+if(!$result = $db->sql_query($sql))
+{
+	message_die(GENERAL_ERROR, "Couldn't obtain judge information.", "", __LINE__, __FILE__, $sql);
+}
+$user_row = $db->sql_fetchrow($result);
+$db->sql_freeresult($result);
+
+if ($user_row['user_level'] != ADMIN)
 {
 	message_die(GENERAL_ERROR, $lang['Not_Authorised']);
 }
@@ -89,7 +97,7 @@ if(!isset($_POST['confirm']) && !KILL_CONFIRM)
 	$page_title = $lang['Home'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$ref_url = explode('/', $_SERVER['HTTP_REFERER']);
 
@@ -109,24 +117,24 @@ if(!isset($_POST['confirm']) && !KILL_CONFIRM)
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 
-		'S_CONFIRM_ACTION' => append_sid('delete_users.' . $phpEx),
+		'S_CONFIRM_ACTION' => append_sid('delete_users.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
 	$template->pparse('confirm');
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	exit();
 }
 
 // Recall kill script!
-include($phpbb_root_path . 'includes/users_delete_inc.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/users_delete_inc.' . PHP_EXT);
 
 $message = '<b>Mode</b>: [ <span class="topic_glo">' . $mode_des . '</span> ]<br />' . (($i) ? sprintf($lang['Prune_users_number'], $i) . $name_list : $lang['Prune_no_users']);
 
 if (($mode == 'prune_mg') && ($users_number == $i))
 {
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('delete_users.' . $phpEx . '?mode=' . $mode . '&amp;users_number=' . $users_number . '&amp;days=' . $days) . '">'
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('delete_users.' . PHP_EXT . '?mode=' . $mode . '&amp;users_number=' . $users_number . '&amp;days=' . $days) . '">'
 		)
 	);
 	$message = '<span class="topic_glo">IN PROGRESS...</span><br /><br />' . $message;

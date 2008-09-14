@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -24,7 +24,7 @@ if (!defined('IN_PHPBB'))
 
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid('downloads.' . $phpEx));
+	redirect(append_sid('downloads.' . PHP_EXT));
 }
 
 //
@@ -88,7 +88,7 @@ if ($submit)
 		$db->sql_freeresult($result);
 	}
 
-	$message = sprintf($lang['Dl_user_config_saved'], '<a href="' . append_sid('downloads.' . $phpEx) . '">', '</a>');
+	$message = sprintf($lang['Dl_user_config_saved'], '<a href="' . append_sid('downloads.' . PHP_EXT) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -200,7 +200,7 @@ if ($total_favorites)
 		'L_MARK_ALL' => $lang['Dl_mark_all'],
 		'L_UNMARK_ALL' => $lang['Dl_unmark'],
 
-		'S_FORM_ACTION' => append_sid('downloads.' . $phpEx . '?view=user_config')
+		'S_FORM_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=user_config')
 		)
 	);
 
@@ -215,7 +215,7 @@ if ($total_favorites)
 			'DL_ID' => $row['fav_id'],
 			'DL_CAT' => $dl_nav,
 			'DOWNLOAD' => $row['description'],
-			'U_DOWNLOAD' => append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id='.$row['id'] . '&amp;cat_id=' . $row['cat'])
+			'U_DOWNLOAD' => append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id='.$row['id'] . '&amp;cat_id=' . $row['cat'])
 			)
 		);
 		$i++;
@@ -275,9 +275,9 @@ $template->assign_vars(array(
 	'USER_DL_NOTE_TYPE_MESSAGE' => $user_dl_note_type_message,
 
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
-	'S_CONFIG_ACTION' => append_sid('downloads.' . $phpEx . '?view=user_config'),
+	'S_CONFIG_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=user_config'),
 
-	'U_DOWNLOADS_ADV' => append_sid('downloads.' . $phpEx)
+	'U_DOWNLOADS_ADV' => append_sid('downloads.' . PHP_EXT)
 	)
 );
 

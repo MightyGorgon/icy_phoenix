@@ -16,12 +16,12 @@
 */
 
 // CTracker_Ignore: File Checked By Human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CALENDAR', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -59,7 +59,7 @@ $cms_global_blocks = ($board_config['wide_blocks_calendar'] == 1) ? true : false
 $page_title = $lang['Calendar'];
 $meta_description = '';
 $meta_keywords = '';
-include ($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include (IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // get paramters
 $start_date = 0;
@@ -121,7 +121,7 @@ $template->set_filenames(array('body' => 'calendar_body.tpl'));
 // Header
 $template->assign_vars(array(
 	'L_CALENDAR' => $lang['Calendar'],
-	'U_CALENDAR' => append_sid('calendar.' . $phpEx),
+	'U_CALENDAR' => append_sid('calendar.' . PHP_EXT),
 	)
 );
 
@@ -135,13 +135,13 @@ if (!isset($nav_separator))
 }
 $template->assign_vars(array(
 	'NAV_SEPARATOR' => $nav_separator,
-	'S_ACTION' => append_sid('calendar.' . $phpEx),
+	'S_ACTION' => append_sid('calendar.' . PHP_EXT),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	)
 );
 
 // send to browser
 $template->pparse('body');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

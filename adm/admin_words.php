@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -25,14 +25,14 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $cancel = (isset($_POST['cancel'])) ? true : false;
 $no_page_header = $cancel;
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 if ($cancel)
 {
-	redirect(ADM . '/' . append_sid('admin_words.' . $phpEx, true));
+	redirect(ADM . '/' . append_sid('admin_words.' . PHP_EXT, true));
 }
 
 if(isset($_GET['mode']) || isset($_POST['mode']))
@@ -101,14 +101,14 @@ if($mode != '')
 			'L_REPLACEMENT' => $lang['Replacement'],
 			'L_SUBMIT' => $lang['Submit'],
 
-			'S_WORDS_ACTION' => append_sid('admin_words.' . $phpEx),
+			'S_WORDS_ACTION' => append_sid('admin_words.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	elseif($mode == 'save')
 	{
@@ -140,7 +140,7 @@ if($mode != '')
 			message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		cache_words();
 		message_die(GENERAL_MESSAGE, $message);
@@ -169,7 +169,7 @@ if($mode != '')
 				message_die(GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
 			}
 			cache_words();
-			$message = $lang['Word_removed'] . '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+			$message = $lang['Word_removed'] . '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 			}
@@ -187,7 +187,7 @@ if($mode != '')
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_words.' . $phpEx),
+				'S_CONFIRM_ACTION' => append_sid('admin_words.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields)
 			);
 		}
@@ -223,7 +223,7 @@ else
 		'L_ADD_WORD' => $lang['Add_new_word'],
 		'L_ACTION' => $lang['Action'],
 
-		'S_WORDS_ACTION' => append_sid('admin_words.' . $phpEx),
+		'S_WORDS_ACTION' => append_sid('admin_words.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => ''
 		)
 	);
@@ -243,8 +243,8 @@ else
 			'WORD' => htmlspecialchars($word),
 			'REPLACEMENT' => htmlspecialchars($replacement),
 
-			'U_WORD_EDIT' => append_sid('admin_words.' . $phpEx . '?mode=edit&amp;id=' . $word_id),
-			'U_WORD_DELETE' => append_sid('admin_words.' . $phpEx . '?mode=delete&amp;id=' . $word_id)
+			'U_WORD_EDIT' => append_sid('admin_words.' . PHP_EXT . '?mode=edit&amp;id=' . $word_id),
+			'U_WORD_DELETE' => append_sid('admin_words.' . PHP_EXT . '?mode=delete&amp;id=' . $word_id)
 			)
 		);
 	}
@@ -252,6 +252,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

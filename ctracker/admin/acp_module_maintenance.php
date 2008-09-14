@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -359,11 +359,11 @@ $template->assign_vars(array(
 		'L_SEC_INFO_OV5' => $uplink_values[0],
 		'L_SEC_INFO_D5' => (CTRACKER_VERSION >= $uplink_values[0])? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
 
-		'S_BUILD_LINK_1' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=7&mode=1'),
-		'S_BUILD_LINK_2' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=7&mode=2'),
-		'S_BUILD_LINK_3' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=7&mode=3'),
-		'S_BUILD_LINK_4' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=7&mode=4'),
-		'S_BUILD_LINK_5' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=7&mode=5'),
+		'S_BUILD_LINK_1' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=7&mode=1'),
+		'S_BUILD_LINK_2' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=7&mode=2'),
+		'S_BUILD_LINK_3' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=7&mode=3'),
+		'S_BUILD_LINK_4' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=7&mode=4'),
+		'S_BUILD_LINK_5' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=7&mode=5'),
 
 		'L_DESC_1' => $lang['ctracker_ma_desc1'],
 		'L_DESC_2' => $lang['ctracker_ma_desc2'],

@@ -131,28 +131,27 @@ class log_manager
 	 */
 	function create_ct_path($file_id)
 	{
-		global $phpbb_root_path;
 
 		$ct_filepath = '';
 
 		switch($file_id)
 		{
-			case 1: $ct_filepath = $phpbb_root_path . 'ctracker/logfiles/logfile_attempt_counter.txt';
+			case 1: $ct_filepath = IP_ROOT_PATH . 'ctracker/logfiles/logfile_attempt_counter.txt';
 					break;
 
-			case 2: $ct_filepath = $phpbb_root_path . 'ctracker/logfiles/logfile_worms.txt';
+			case 2: $ct_filepath = IP_ROOT_PATH . 'ctracker/logfiles/logfile_worms.txt';
 					break;
 
-			case 3: $ct_filepath = $phpbb_root_path . 'ctracker/logfiles/logfile_blocklist.txt';
+			case 3: $ct_filepath = IP_ROOT_PATH . 'ctracker/logfiles/logfile_blocklist.txt';
 					break;
 
-			case 4: $ct_filepath = $phpbb_root_path . 'ctracker/logfiles/logfile_malformed_logins.txt';
+			case 4: $ct_filepath = IP_ROOT_PATH . 'ctracker/logfiles/logfile_malformed_logins.txt';
 					break;
 
-			case 5: $ct_filepath = $phpbb_root_path . 'ctracker/logfiles/logfile_spammer.txt';
+			case 5: $ct_filepath = IP_ROOT_PATH . 'ctracker/logfiles/logfile_spammer.txt';
 					break;
 
-			case 6: $ct_filepath = $phpbb_root_path . 'ctracker/logfiles/logfile_debug_mode.txt';
+			case 6: $ct_filepath = IP_ROOT_PATH . 'ctracker/logfiles/logfile_debug_mode.txt';
 					break;
 		}
 

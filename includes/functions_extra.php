@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB'))
 //--------------------------------------------------------------------------------------------------
 function cache_words()
 {
-	global $tree, $phpbb_root_path, $phpEx, $userdata, $db;
+	global $tree, $userdata, $db;
 
 	if ( !defined('CACHE_WORDS') )
 	{
@@ -26,8 +26,8 @@ function cache_words()
 	}
 
 	// template
-	include_once($phpbb_root_path . 'includes/template.' . $phpEx);
-	$template = new Template($phpbb_root_path);
+	include_once(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
+	$template = new Template(IP_ROOT_PATH);
 
 	$template->set_filenames(array('def_words' => 'includes/cache_tpls/def_words_def.tpl'));
 
@@ -55,7 +55,7 @@ function cache_words()
 	$template->assign_var_from_handle('def_words', 'def_words');
 	$res = '<' . '?' . 'php' . "\n" . $template->_tpldata['.'][0]['def_words'] . "\n" . 'return;' . "\n" . '?' . '>';
 	// output to file
-	$fname = $phpbb_root_path . './includes/def_words.' . $phpEx;
+	$fname = IP_ROOT_PATH . './includes/def_words.' . PHP_EXT;
 	@chmod($fname, 0666);
 	$handle = @fopen($fname, 'w');
 	@fwrite($handle, $res);
@@ -67,7 +67,7 @@ function cache_words()
 //--------------------------------------------------------------------------------------------------
 function cache_themes()
 {
-	global $tree, $phpbb_root_path, $phpEx, $userdata, $db;
+	global $tree, $userdata, $db;
 
 	if ( !defined('CACHE_THEMES') )
 	{
@@ -75,8 +75,8 @@ function cache_themes()
 	}
 
 	// template
-	include_once($phpbb_root_path . 'includes/template.' . $phpEx);
-	$template = new Template($phpbb_root_path);
+	include_once(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
+	$template = new Template(IP_ROOT_PATH);
 
 	$template->set_filenames(array('def_themes' => 'includes/cache_tpls/def_themes_def.tpl'));
 
@@ -117,7 +117,7 @@ function cache_themes()
 	$template->assign_var_from_handle('def_themes', 'def_themes');
 	$res = '<' . '?' . 'php' . "\n" . $template->_tpldata['.'][0]['def_themes'] . "\n" . 'return;' . "\n" . '?' . '>';
 	// output to file
-	$fname = $phpbb_root_path . './includes/def_themes.' . $phpEx;
+	$fname = IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT;
 	@chmod($fname, 0666);
 	$handle = @fopen($fname, 'w');
 	@fwrite($handle, $res);

@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -292,8 +292,8 @@ if ( $lang_extend_admin )
 	// forum links type
 	$lang['Forum_link_url'] = 'Link URL';
 	$lang['Forum_link_url_explain'] = 'Set a URI to an Icy Phoenix prog, or a full URL to an external server';
-	$lang['Forum_link_internal'] = 'phpBB prog';
-	$lang['Forum_link_internal_explain'] = 'Choose yes if you invoke a program that stands in the phpBB dirs';
+	$lang['Forum_link_internal'] = 'Icy Phoenix prog';
+	$lang['Forum_link_internal_explain'] = 'Choose yes if you invoke a program that stands in the Icy Phoenix dirs';
 	$lang['Forum_link_hit_count'] = 'Hit count';
 	$lang['Forum_link_hit_count_explain'] = 'Choose yes if you want the board to count and display the number of hits using this link';
 	$lang['Forum_link_with_attachment_deny'] = 'You can\'t set a forum as a link if it has existing sub-levels';

@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -28,8 +28,8 @@ define('USER_REPLIED_ICON', true); // activate this line if you are using differ
 // define('USER_REPLIED_CLASS', 'quote'); // activate this line and set the class you prefer for the the topic the user replied too
 
 // various includes
-@include_once($phpbb_root_path . './includes/functions_post.' . $phpEx);
-@include_once($phpbb_root_path . './includes/bbcode.' . $phpEx);
+@include_once(IP_ROOT_PATH . './includes/functions_post.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . './includes/bbcode.' . PHP_EXT);
 
 //--------------------------------------------------
 // topic_list() : display a list of topic
@@ -65,7 +65,7 @@ define('USER_REPLIED_ICON', true); // activate this line if you are using differ
 //--------------------------------------------------
 function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = false, $display_nav_tree = true, $footer='', $inbox = true, $select_field='', $select_type = 0, $select_formname = '', $select_values = array())
 {
-	global $db, $template, $board_config, $userdata, $phpEx, $lang, $images, $theme;
+	global $db, $template, $board_config, $userdata, $lang, $images, $theme;
 	global $tree, $bbcode, $userdata;
 	//<!-- BEGIN Unread Post Information to Database Mod -->
 	global $unread;

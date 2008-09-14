@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -25,10 +25,10 @@ if( !empty($setmodules) )
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 //
 // Pull all config data
@@ -39,13 +39,13 @@ if($result = $db->sql_query($sql))
 {
 	$message = '<b><u>UPI2DB Datenbank Installation</u></b>';
 	$message .= '<br /><br />';
-	$message .= 'A table from UPI2DB 2.x.x found.<br />You can update this now to use it later on or install a new one.<br /><br /> <a href="' . append_sid("../upi2db_db_update.$phpEx") . '" class="mainmenu">Update UPI2DB Database</a>';
+	$message .= 'A table from UPI2DB 2.x.x found.<br />You can update this now to use it later on or install a new one.<br /><br /> <a href="' . append_sid("../upi2db_db_update." . PHP_EXT) . '" class="mainmenu">Update UPI2DB Database</a>';
 	$message .= '<br /><br />';
-	$message .= '<a href="' . append_sid("../upi2db_db_install.$phpEx") . '" class="mainmenu">Install NEW UPI2DB tables</a>';
+	$message .= '<a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">Install NEW UPI2DB tables</a>';
 	$message .= '<br /><hr><br />';
-	$message .= 'Es wurde eine UPI2DB Mod 2.x.x Datenbank gefunden.<br />Du kannst diese nun updaten und weiter verwenden oder eine neue installieren.<br /><br /> <a href="' . append_sid("../upi2db_db_update.$phpEx") . '" class="mainmenu">UPI2DB Datenbank Updaten</a>';
+	$message .= 'Es wurde eine UPI2DB Mod 2.x.x Datenbank gefunden.<br />Du kannst diese nun updaten und weiter verwenden oder eine neue installieren.<br /><br /> <a href="' . append_sid("../upi2db_db_update." . PHP_EXT) . '" class="mainmenu">UPI2DB Datenbank Updaten</a>';
 	$message .= '<br /><br />';
-	$message .= '<a href="' . append_sid("../upi2db_db_install.$phpEx") . '" class="mainmenu">UPI2DB Datenbank NEU Installieren</a>';
+	$message .= '<a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">UPI2DB Datenbank NEU Installieren</a>';
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -61,11 +61,11 @@ if($counts == 0)
 {
 	$message = '<b><u>UPI2DB Database installation</u></b>';
 	$message .= '<br /><br />';
-	$message .= 'The needed table installation was yet not done.<br /><br /> <a href="' . append_sid("../upi2db_db_install.$phpEx") . '" class="mainmenu">Install UPI2DB tables</a>';
+	$message .= 'The needed table installation was yet not done.<br /><br /> <a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">Install UPI2DB tables</a>';
 	$message .= '<br /><hr><br />';
 	$message .= '<b><u>UPI2DB Datenbank Installation</u></b>';
 	$message .= '<br /><br />';
-	$message .= 'Die notwendige Datenbank Installation wurde noch nicht durchgeführt.<br /><br /> <a href="' . append_sid("../upi2db_db_install.$phpEx") . '" class="mainmenu">UPI2DB Datenbank Installieren</a>';
+	$message .= 'Die notwendige Datenbank Installation wurde noch nicht durchgeführt.<br /><br /> <a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">UPI2DB Datenbank Installieren</a>';
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -89,7 +89,7 @@ $dir = @opendir("../");
 
 while( $file = @readdir($dir) )
 {
-	if( preg_match("/^upi2db_db_.*?\." . $phpEx . "$/", $file) )
+	if( preg_match("/^upi2db_db_.*?\." . PHP_EXT . "$/", $file) )
 	{
 		$file_found = 1;
 	}
@@ -196,7 +196,7 @@ else
 
 if( isset($HTTP_POST_VARS['submit']) )
 {
-	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_upi2db.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_upi2db.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -284,6 +284,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

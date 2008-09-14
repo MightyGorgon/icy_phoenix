@@ -33,7 +33,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt!');
 }
@@ -77,7 +77,7 @@ if ( $ctracker_config->settings['ipblock_enabled'] == 1 )
 		if ( preg_match('/^' . $current_value . '$/is', $ct_client_ip) || preg_match('/^' . $current_value . '$/is', $ct_user_agent) || preg_match('/^' . $current_value . '$/is', $ct_remote_host) )
 		{
 			// We have a match, so write the log
-			include_once($phpbb_root_path . 'ctracker/classes/class_log_manager.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
 
 			// write data into logfile
 			$logfile = new log_manager();

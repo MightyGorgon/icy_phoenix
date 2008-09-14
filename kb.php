@@ -15,12 +15,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-
-define('PAGE_KB', -500); // If this id generates a conflict with other mods, change it ;)
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -50,14 +48,14 @@ if ($auth_level_req > AUTH_ALL)
 }
 $cms_global_blocks = ($board_config['wide_blocks_kb'] == 1) ? true : false;
 
-include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 
 
@@ -131,35 +129,35 @@ $reader_mode = false;
 
 if ($mode == 'article')
 {
-	include($phpbb_root_path . 'includes/kb_article.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_article.' . PHP_EXT);
 }
 elseif ($mode == 'cat')
 {
-	include($phpbb_root_path . 'includes/kb_cat.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_cat.' . PHP_EXT);
 }
 elseif ($mode == 'add')
 {
-	include($phpbb_root_path . 'includes/kb_post.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_post.' . PHP_EXT);
 }
 elseif ($mode == 'search')
 {
-	include($phpbb_root_path . 'includes/kb_search.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_search.' . PHP_EXT);
 }
 elseif ($mode == 'edit')
 {
-	include($phpbb_root_path . 'includes/kb_post.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_post.' . PHP_EXT);
 }
 elseif ($mode == 'rate')
 {
-	include($phpbb_root_path . 'includes/kb_rate.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_rate.' . PHP_EXT);
 }
 elseif ($mode == 'stats')
 {
-	include($phpbb_root_path . 'includes/kb_stats.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_stats.' . PHP_EXT);
 }
 elseif ($mode == 'moderate')
 {
-	include($phpbb_root_path . 'includes/kb_moderator.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_moderator.' . PHP_EXT);
 }
 else
 {
@@ -169,10 +167,10 @@ else
 	$meta_keywords = '';
 	if (!$is_block)
 	{
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	}
 	// load header
-	include($phpbb_root_path . 'includes/kb_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'kb_index_body.tpl'));
 
@@ -190,12 +188,12 @@ $template->pparse('body');
 // load footer
 if (!$print_version)
 {
-	include($phpbb_root_path . 'includes/kb_footer.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/kb_footer.' . PHP_EXT);
 }
 
 if (!$is_block && !$print_version)
 {
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 ?>

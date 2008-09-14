@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,11 +28,11 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_export.' . $phpEx) . '">' . $lang['xs_export_styles'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_export.' . PHP_EXT) . '">' . $lang['xs_export_styles'] . '</a>'));
 
-$lang['xs_export_back'] = str_replace('{URL}', append_sid('xs_export.' . $phpEx), $lang['xs_export_back']);
+$lang['xs_export_back'] = str_replace('{URL}', append_sid('xs_export.' . PHP_EXT), $lang['xs_export_back']);
 
 //
 // Check required functions
@@ -48,7 +48,7 @@ if(!@function_exists('gzcompress'))
 //
 $export = isset($_GET['export']) ? $_GET['export'] : '';
 $export = xs_tpl_name($export);
-if(!empty($export) && @file_exists($phpbb_root_path . $template_dir . $export . '/theme_info.cfg'))
+if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/theme_info.cfg'))
 {
 	// Get list of styles
 	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " WHERE template_name = '$export' ORDER BY style_name ASC";
@@ -66,7 +66,7 @@ if(!empty($export) && @file_exists($phpbb_root_path . $template_dir . $export . 
 	$xs_send = @unserialize($xs_send_method);
 	$xs_send_method = $xs_send['method'] == 'ftp' ? 'ftp' : ($xs_send['method'] == 'file' ? 'file' : 'save');
 	$template->assign_vars(array(
-			'FORM_ACTION'		=> append_sid('xs_export.' . $phpEx),
+			'FORM_ACTION'		=> append_sid('xs_export.' . PHP_EXT),
 			'EXPORT_TEMPLATE'	=> htmlspecialchars($export),
 			'STYLE_ID'			=> $theme_rowset[0]['themes_id'],
 			'STYLE_NAME'		=> htmlspecialchars($theme_rowset[0]['style_name']),
@@ -103,7 +103,7 @@ if(!empty($export) && @file_exists($phpbb_root_path . $template_dir . $export . 
 //
 $export = isset($_POST['export']) ? $_POST['export'] : '';
 $export = xs_tpl_name($export);
-if(!empty($export) && @file_exists($phpbb_root_path . $template_dir . $export . '/theme_info.cfg') && !defined('DEMO_MODE'))
+if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/theme_info.cfg') && !defined('DEMO_MODE'))
 {
 	$total = intval($_POST['total']);
 	$comment = substr(stripslashes($_POST['export_comment']), 0, 255);
@@ -281,7 +281,7 @@ for($i=0; $i<count($style_rowset); $i++)
 					'ROW_CLASS'	=> $row_class,
 					'TPL'		=> $prev_tpl,
 					'STYLES'	=> $str,
-					'U_EXPORT'	=> "xs_export.{$phpEx}?export={$str2}&sid={$userdata['session_id']}",
+					'U_EXPORT'	=> "xs_export." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
 				)
 			);
 		}
@@ -301,7 +301,7 @@ if($prev_id > 0)
 			'ROW_CLASS'	=> $row_class,
 			'TPL'		=> $prev_tpl,
 			'STYLES'	=> $str,
-			'U_EXPORT'	=> "xs_export.{$phpEx}?export={$str2}&sid={$userdata['session_id']}",
+			'U_EXPORT'	=> "xs_export." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
 		)
 	);
 }

@@ -36,7 +36,7 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -241,7 +241,7 @@ if(!function_exists(mark_always_read))
 {
 	function mark_always_read($topic_type, $topic_id, $forum_id, $file, $art, $unread, $start = false, $folder_image = false, $search_mode = false, $s2 = false)
 	{
-		global $board_config, $userdata, $phpEx, $lang, $images;
+		global $board_config, $userdata, $lang, $images;
 
 		// Edited By Mighty Gorgon - BEGIN
 		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
@@ -263,7 +263,7 @@ if(!function_exists(mark_always_read))
 		{
 			if(count($ar_t) && in_array($topic_id, $ar_t))
 			{
-				$mark_always_url = append_sid($file . '.' . $phpEx . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_mode . '&amp;s2=' . $s2 . '&amp;always_read=unset');
+				$mark_always_url = append_sid($file . '.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_mode . '&amp;s2=' . $s2 . '&amp;always_read=unset');
 				$mark_always_icon = '<a href="' . $mark_always_url . '">' . mar_icon($folder_image_ar, $lang['upi2db_always_read_unset']) . '</a>';
 				$mark_always_txt = '<a href="' . $mark_always_url . '">' . $lang['upi2db_always_read_unset'] . '</a>';
 			}
@@ -276,7 +276,7 @@ if(!function_exists(mark_always_read))
 				}
 				else
 				{
-					$mark_always_url = append_sid($file . '.' . $phpEx . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_mode . '&amp;s2=' . $s2 . '&amp;always_read=set');
+					$mark_always_url = append_sid($file . '.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_mode . '&amp;s2=' . $s2 . '&amp;always_read=set');
 					$mark_always_icon = '<a href="' . $mark_always_url . '">' . mar_icon($folder_image, $lang['upi2db_always_read']) . '</a>';
 					$mark_always_txt = '<a href="' . $mark_always_url . '">' . $lang['upi2db_always_read'] . '</a>';
 				}
@@ -307,7 +307,7 @@ if(!function_exists(mark_always_read_vt_ip))
 {
 	function mark_always_read_vt_ip($topic_type, $topic_id, $forum_id, $art, $unread)
 	{
-		global $board_config, $userdata, $phpEx, $lang, $images;
+		global $board_config, $userdata, $lang, $images;
 
 		// Edited By Mighty Gorgon - BEGIN
 		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
@@ -382,7 +382,7 @@ if(!function_exists(mark_post_viewtopic))
 {
 	function mark_post_viewtopic($post_time_max, $unread, $topic_id, $forum_id, $post_id, $except_time, $topic_type)
 	{
-		global $board_config, $userdata, $phpEx, $lang, $images;
+		global $board_config, $userdata, $lang, $images;
 
 		if(!in_array($forum_id, $unread['always_read']['forums']) && !in_array($topic_id, $unread['always_read']['topics']) && $post_time_max > $except_time)
 		{
@@ -423,7 +423,7 @@ if(!function_exists(index_display_new))
 {
 	function index_display_new($unread)
 	{
-		global $lang, $phpEx, $images, $board_config, $unread_new_posts, $unread_edit_posts;
+		global $lang, $images, $board_config, $unread_new_posts, $unread_edit_posts;
 
 		$edit_posts = count($unread['edit_posts']) - $unread_edit_posts;
 		$new_posts = count($unread['new_posts']) - $unread_new_posts;
@@ -539,7 +539,7 @@ if(!function_exists(viewtopic_calc_unread))
 {
 	function viewtopic_calc_unread($unread, $topic_id, $post_id, $forum_id, &$mini_post_img, &$mini_post_alt, &$unread_color, &$read_posts)
 	{
-		global $board_config, $userdata, $lang, $phpEx, $images;
+		global $board_config, $userdata, $lang, $images;
 
 		if ((in_array($post_id, $unread['edit_posts']) || in_array($post_id, $unread['new_posts']) || in_array($post_id, $unread['mark_posts'])) && !in_array($forum_id, $unread['always_read']['forums']))
 		{
@@ -600,7 +600,7 @@ if(!function_exists(search_calc_unread))
 {
 	function search_calc_unread($unread, $topic_id, $searchset, $i, $folder_new, $folder, &$newest_post_img, &$topic_type, &$folder_image, &$folder_alt)
 	{
-		global $board_config, $userdata, $lang, $phpEx, $images;
+		global $board_config, $userdata, $lang, $images;
 
 		if ((in_array($topic_id, $unread['new_topics']) || in_array($topic_id, $unread['edit_topics'])) && (!in_array($forum_id, $unread['always_read']['forums']) || !in_array($topic_id, $unread['always_read']['topics'])))
 		{
@@ -647,7 +647,7 @@ if(!function_exists(search_calc_unread2))
 {
 	function search_calc_unread2($unread, $topic_id, $searchset, $i, &$mini_post_img, &$mini_post_alt, &$unread_color, &$folder_image, &$folder_alt)
 	{
-		global $board_config, $userdata, $lang, $phpEx, $images;
+		global $board_config, $userdata, $lang, $images;
 
 		$post_id = $searchset[$i]['post_id'];
 		$unread_color  = '';

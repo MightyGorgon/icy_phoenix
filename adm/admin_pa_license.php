@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,10 +24,10 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
 
 if( isset($_GET['license']) || isset($_POST['license']) )
 {
@@ -62,7 +62,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
 				}
 
-				$message = $lang['Licenseadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+				$message = $lang['Licenseadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -70,7 +70,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 			if (empty($add))
 			{
 				$template->assign_vars(array(
-					'S_ADD_LIC_ACTION' => append_sid("admin_pa_license.$phpEx"),
+					'S_ADD_LIC_ACTION' => append_sid("admin_pa_license." . PHP_EXT),
 					'L_ALICENSETITLE' => $lang['Alicensetitle'],
 					'L_LICENSEEXPLAIN' => $lang['Licenseexplain'],
 					'L_LNAME' => $lang['Lname'],
@@ -115,7 +115,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
 				}
 
-				$message = $lang['Licenseedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+				$message = $lang['Licenseedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -141,7 +141,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 				$template->assign_block_vars("license_form", array());
 
 				$template->assign_vars(array(
-					'S_EDIT_LIC_ACTION' => append_sid("admin_pa_license.$phpEx"),
+					'S_EDIT_LIC_ACTION' => append_sid("admin_pa_license." . PHP_EXT),
 					'L_ELICENSETITLE' => $lang['Elicensetitle'],
 					'L_LICENSEEXPLAIN' => $lang['Licenseexplain'],
 					'L_LNAME' => $lang['Lname'],
@@ -169,7 +169,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 				$template->assign_block_vars("license", array());
 
 				$template->assign_vars(array(
-					'S_EDIT_LIC_ACTION' => append_sid("admin_pa_license.$phpEx"),
+					'S_EDIT_LIC_ACTION' => append_sid("admin_pa_license." . PHP_EXT),
 					'L_ELICENSETITLE' => $lang['Elicensetitle'],
 					'L_LICENSEEXPLAIN' => $lang['Licenseexplain'],
 					'ROW' => $row)
@@ -201,7 +201,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 
 				if (empty($select))
 				{
-					$message = $lang['lderror'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license.$phpEx?license=delete") . '">', '</a>');
+					$message = $lang['lderror'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_license.' . PHP_EXT . '?license=delete') . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -224,7 +224,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 						}
 					}
 
-					$message = $lang['Ldeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+					$message = $lang['Ldeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -245,7 +245,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 				}
 
 				$template->assign_vars(array(
-					'S_DELETE_LIC_ACTION' => append_sid("admin_pa_license.$phpEx"),
+					'S_DELETE_LIC_ACTION' => append_sid("admin_pa_license." . PHP_EXT),
 					'L_DLICENSETITLE' => $lang['Dlicensetitle'],
 					'L_LICENSEEXPLAIN' => $lang['Licenseexplain'],
 					'ROW' => $row)
@@ -280,7 +280,7 @@ else
 				}
 
 				$template->assign_vars(array(
-					'S_DELETE_LIC_ACTION' => append_sid("admin_pa_license.$phpEx"),
+					'S_DELETE_LIC_ACTION' => append_sid("admin_pa_license." . PHP_EXT),
 					'L_LICENSETITLE' => $lang['License_title'],
 					'L_ALICENSETITLE' => $lang['Alicensetitle'],
 					'L_ELICENSETITLE' => $lang['Elicensetitle'],
@@ -291,5 +291,5 @@ else
 			$template->pparse('admin');
 }
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 ?>

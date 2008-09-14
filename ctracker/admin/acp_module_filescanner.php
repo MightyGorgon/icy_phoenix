@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -50,7 +50,7 @@ if( $action == 'scan' )
 {
 	// scan files
 	$admin_filescan->DropData();
-	$admin_filescan->CreateFileList($phpbb_root_path, '', $phpEx);
+	$admin_filescan->CreateFileList(IP_ROOT_PATH, '', PHP_EXT);
 	$admin_filescan->ScanFile();
 
 	$timestamp = time();
@@ -164,11 +164,11 @@ $template->assign_vars(array(
 	'L_TABLEHEAD_1' => $lang['ctracker_fchk_tablehead1'],
 	'L_TABLEHEAD_2' => $lang['ctracker_fchk_tablehead2'],
 
-	'U_LINK_OPTION_1' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=3&action=scan'),
-	'U_LINK_OPTION_2' => append_sid('admin_cracker_tracker.' . $phpEx . '?modu=3&action=display'),
+	'U_LINK_OPTION_1' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=3&action=scan'),
+	'U_LINK_OPTION_2' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=3&action=display'),
 
-	'IMG_ICON_1' => $phpbb_root_path . $images['ctracker_fc_icon_1'],
-	'IMG_ICON_2' => $phpbb_root_path . $images['ctracker_fc_icon_2']
+	'IMG_ICON_1' => IP_ROOT_PATH . $images['ctracker_fc_icon_1'],
+	'IMG_ICON_2' => IP_ROOT_PATH . $images['ctracker_fc_icon_2']
 	)
 );
 

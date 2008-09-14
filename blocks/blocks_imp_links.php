@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if(!function_exists(imp_links_block_func))
 {
 	function imp_links_block_func()
 	{
-		global $template, $lang, $board_config, $phpbb_root_path, $phpEx, $db, $cms_config_vars, $block_id, $var_cache;
+		global $template, $lang, $board_config, $db, $cms_config_vars, $block_id, $var_cache;
 
 		$template->_tpldata['links_row.'] = array();
 		//reset($template->_tpldata['links_row.']);
@@ -116,7 +116,7 @@ if(!function_exists(imp_links_block_func))
 				if ($row['link_logo_src'])
 				{
 					$template->assign_block_vars($style_row . '.links_row', array(
-						'LINK_HREF' => 'links.' . $phpEx . '?action=go&amp;link_id=' . $row['link_id'],
+						'LINK_HREF' => 'links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id'],
 						'LINK_LOGO_SRC' => $row['link_logo_src'],
 						'LINK_TITLE' => $row['link_title']
 						)

@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -17,14 +17,14 @@ define('RGB_COLOR_LIST', 'aqua,black,blue,brown,cadetblue,chocolate,crimson,cyan
 
 function colorize_username($user_id, $no_profile = false, $get_only_color_style = false)
 {
-	global $board_config, $phpEx, $db, $phpbb_root_path;
+	global $board_config, $db;
 
 	// First check if user logged in
 	if($user_id != ANONYMOUS)
 	{
 		// Change following two variables if you need to:
 		$cache_update = COLORIZE_CACHE_REFRESH; // set in constants
-		$cache_file = $phpbb_root_path . USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . $phpEx;
+		$cache_file = USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . PHP_EXT;
 		$update_cache = true;
 
 		if(@file_exists($cache_file))
@@ -86,7 +86,7 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 
 		if ($no_profile == false)
 		{
-			$user_link = '<a href="' . append_sid($phpbb_root_path . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" ' . $style_color .'>' . $username . '</a>';
+			$user_link = '<a href="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" ' . $style_color .'>' . $username . '</a>';
 		}
 		else
 		{
@@ -340,8 +340,7 @@ function clear_user_color($user_id, $user_color, $user_color_group = false)
 */
 function clear_user_color_cache($user_id)
 {
-	global $phpbb_root_path, $phpEx;
-	@unlink($phpbb_root_path . USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . $phpEx);
+	@unlink(USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . PHP_EXT);
 	return true;
 }
 
@@ -353,7 +352,7 @@ function clear_user_color_cache($user_id)
 */
 function build_groups_list_array()
 {
-	global $db, $phpEx;
+	global $db;
 	$sql = "SELECT group_id, group_name, group_color
 		FROM " . GROUPS_TABLE . "
 		WHERE group_single_user <> " . TRUE . "
@@ -371,7 +370,7 @@ function build_groups_list_array()
 		$i++;
 		$groups_list[$i]['group_id'] = $row['group_id'];
 		$groups_list[$i]['group_name'] = $row['group_name'];
-		$groups_list[$i]['group_url'] = append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']);
+		$groups_list[$i]['group_url'] = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']);
 		$groups_list[$i]['group_color'] = check_valid_color_mg($row['group_color']);
 		$groups_list[$i]['group_color_style'] = ($groups_list[$i]['group_color'] ? ' style="color:' . $row['group_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"');
 	}
@@ -394,7 +393,7 @@ function build_groups_list_array()
 */
 function build_groups_list_template()
 {
-	global $db, $template, $phpEx, $board_config, $lang;
+	global $db, $template, $board_config, $lang;
 	$sql = "SELECT group_id, group_name, group_color
 		FROM " . GROUPS_TABLE . "
 		WHERE group_single_user <> " . TRUE . "
@@ -409,12 +408,12 @@ function build_groups_list_template()
 	$groups_list = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color_mg($row['group_color']) ? ('color:' . check_valid_color_mg($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
+		$groups_list .= '&nbsp;<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color_mg($row['group_color']) ? ('color:' . check_valid_color_mg($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
 	}
 	$db->sql_freeresult($result);
 	if ($board_config['active_users_legend'] == true)
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid('memberlist.' . $phpEx) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color_mg($board_config['active_users_color']) ? ('color:' . check_valid_color_mg($board_config['active_users_color']) . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
+		$groups_list .= '&nbsp;<a href="' . append_sid('memberlist.' . PHP_EXT) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color_mg($board_config['active_users_color']) ? ('color:' . check_valid_color_mg($board_config['active_users_color']) . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
 	}
 	if ($board_config['bots_legend'] == true)
 	{
@@ -435,7 +434,7 @@ function build_groups_list_template()
 */
 function build_groups_user($user_id, $show_hidden = true)
 {
-	global $db, $phpEx, $lang;
+	global $db, $lang;
 	$sql = "SELECT g.group_id, g.group_name, g.group_type
 					FROM " . USER_GROUP_TABLE . " as l, " . GROUPS_TABLE . " as g
 					WHERE l.user_pending = 0

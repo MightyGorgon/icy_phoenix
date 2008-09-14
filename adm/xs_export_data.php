@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,11 +28,11 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_export_data.' . $phpEx) . '">' . $lang['xs_edit_styles_data'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_export_data.' . PHP_EXT) . '">' . $lang['xs_edit_styles_data'] . '</a>'));
 
-$lang['xs_export_data_back'] = str_replace('{URL}', append_sid('xs_export_data.' . $phpEx), $lang['xs_export_data_back']);
+$lang['xs_export_data_back'] = str_replace('{URL}', append_sid('xs_export_data.' . PHP_EXT), $lang['xs_export_data_back']);
 
 //
 // export style
@@ -64,7 +64,7 @@ if(isset($_GET['export']))
 		$template->assign_vars(array(
 			'TOTAL'		=> count($theme_rowset),
 			'EXPORT'	=> htmlspecialchars($export),
-			'U_ACTION'	=> append_sid("xs_export_data.{$phpEx}")
+			'U_ACTION'	=> append_sid("xs_export_data." . PHP_EXT)
 			)
 		);
 		for($i=0; $i<count($theme_rowset); $i++)
@@ -105,11 +105,11 @@ if(!empty($_POST['export']) && !defined('DEMO_MODE'))
 		xs_error($lang['xs_export_noselect_themes'] . '<br /><br />' . $lang['xs_export_data_back']);
 	}
 	$write_local = false;
-	if(!get_ftp_config(append_sid('xs_export_data.' . $phpEx), $params, true))
+	if(!get_ftp_config(append_sid('xs_export_data.' . PHP_EXT), $params, true))
 	{
 		xs_exit();
 	}
-	xs_ftp_connect(append_sid('xs_export_data.' . $phpEx), $params, true);
+	xs_ftp_connect(append_sid('xs_export_data.' . PHP_EXT), $params, true);
 	if($ftp === XS_FTP_LOCAL)
 	{
 		$write_local = true;
@@ -220,7 +220,7 @@ for($i=0; $i<count($style_rowset); $i++)
 					'ROW_CLASS'	=> $row_class,
 					'TPL'		=> $prev_tpl,
 					'STYLES'	=> $str,
-					'U_EXPORT'	=> "xs_export_data.{$phpEx}?export={$str2}&sid={$userdata['session_id']}",
+					'U_EXPORT'	=> "xs_export_data." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
 				)
 			);
 		}
@@ -240,7 +240,7 @@ if($prev_id > 0)
 			'ROW_CLASS'	=> $row_class,
 			'TPL'		=> $prev_tpl,
 			'STYLES'	=> $str,
-			'U_EXPORT'	=> "xs_export_data.{$phpEx}?export={$str2}&sid={$userdata['session_id']}",
+			'U_EXPORT'	=> "xs_export_data." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
 		)
 	);
 }

@@ -19,7 +19,7 @@ class pafiledb_category extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $phpEx, $pafiledb_config, $userdata, $board_config, $phpbb_root_path;
+		global $pafiledb_template, $lang, $pafiledb_config, $userdata, $board_config;
 
 		// =======================================================
 		// Get the id
@@ -112,7 +112,7 @@ class pafiledb_category extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . $phpEx . '&action=category&cat_id=' . $cat_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=category&cat_id=' . $cat_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_view'], $this->auth[$cat_id]['auth_read_type']);
@@ -135,7 +135,7 @@ class pafiledb_category extends pafiledb_public
 
 
 			'U_INDEX' => append_sid(PORTAL_MG),
-			'U_DOWNLOAD' => append_sid('dload.' . $phpEx),
+			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 
 			'DOWNLOAD' => $pafiledb_config['settings_dbname']
 			)

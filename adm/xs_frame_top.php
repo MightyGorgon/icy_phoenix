@@ -15,32 +15,32 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 define('IN_XS', true);
 define('NO_XS_HEADER', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'frame_top.tpl'));
 
 $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_index.' . $phpEx),
+	'URL'	=> append_sid('xs_index.' . PHP_EXT),
 	'TEXT'	=> $lang['xs_menu_lc']
 	));
 /* $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_download.' . $phpEx),
+	'URL'	=> append_sid('xs_download.' . PHP_EXT),
 	'TEXT'	=> $lang['xs_download_styles_lc']
 	)); */
 $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_import.' . $phpEx),
+	'URL'	=> append_sid('xs_import.' . PHP_EXT),
 	'TEXT'	=> $lang['xs_import_styles_lc']
 	));
 $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_install.' . $phpEx),
+	'URL'	=> append_sid('xs_install.' . PHP_EXT),
 	'TEXT'	=> $lang['xs_install_styles_lc']
 	));
 $template->assign_block_vars('left_nav', array(

@@ -8,13 +8,13 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_post.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 define('NUM_SHOUT', 20);
 
 // Start session management
@@ -81,7 +81,6 @@ if(!$is_auth['auth_read'])
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
 }
 
-$forum_id=PAGE_SHOUTBOX_MAX;
 $refresh = (isset($_POST['auto_refresh']) || isset($_POST['refresh'])) ? 1 : 0;
 $preview = (isset($_POST['preview'])) ? 1 : 0;
 $submit = (isset($_POST['shout']) && isset($_POST['message'])) ? 1 : 0;
@@ -133,7 +132,7 @@ if (!empty($username))
 	$username = phpbb_clean_username($username);
 	if (!$userdata['session_logged_in'])
 	{
-		require_once($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+		require_once(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 		$result = validate_username($username);
 		if ($result['error'])
 		{
@@ -324,7 +323,7 @@ elseif ($mode=='ip')
 	$page_title = $lang['Shoutbox'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	// Set template files
 	$template->set_filenames(array('viewip' => 'modcp_viewip.tpl'));
@@ -337,7 +336,7 @@ elseif ($mode=='ip')
 		'L_SEARCH' => $lang['Search'],
 		'SEARCH_IMG' => $images['icon_search'],
 		'IP' => $ip_this_post,
-		'U_LOOKUP_IP' => append_sid('shoutbox_max.' . $phpEx . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . $ip_this_post)
+		'U_LOOKUP_IP' => append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . $ip_this_post)
 		)
 	);
 
@@ -376,7 +375,7 @@ elseif ($mode=='ip')
 				'IP' => $ip,
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
 
-				'U_LOOKUP_IP' => append_sid('shoutbox_max.' . $phpEx . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . $row['shout_ip'])
+				'U_LOOKUP_IP' => append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . $row['shout_ip'])
 				)
 			);
 
@@ -431,7 +430,7 @@ elseif ($mode=='ip')
 
 
 	$template->pparse('viewip');
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	exit;
 }
 
@@ -440,7 +439,7 @@ elseif ($mode=='ip')
 $page_title = $lang['Shoutbox'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Was a highlight request part of the URI?
 $highlight_match = $highlight = '';
@@ -638,15 +637,15 @@ while ($shout_row = $db->sql_fetchrow($result))
 	//$shout = kb_word_wrap_pass ($shout);
 	if ($is_auth['auth_mod'] && $is_auth['auth_delete'])
 	{
-		$temp_url = append_sid('shoutbox_max.' . $phpEx . '?mode=ip&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+		$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
 		$ip_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_ip'] . '" alt="' . $lang['View_IP'] . '" title="' . $lang['View_IP'] . '" /></a>';
 		$ip = '<a href="' . $temp_url . '">' . $lang['View_IP'] . '</a>';
 
-		$temp_url = append_sid('shoutbox_max.' . $phpEx . '?mode=delete&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+		$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=delete&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
 		$delshout_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>&nbsp;';
 		$delshout = '<a href="' . $temp_url . '">' . $lang['Delete_post'] . '</a>';
 
-		$temp_url = append_sid('shoutbox_max.' . $phpEx . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+		$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
 		$censorshout_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_censor'] . '" alt="' . $lang['Censor'] . '" title="' . $lang['Censor'] . '" /></a>&nbsp;';
 		$censorshout = '<a href="' . $temp_url . '">' . $lang['Delete_post'] . '</a>';
 	}
@@ -657,7 +656,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 
 		if (($userdata['user_id'] == $user_id && $is_auth['auth_delete']) && ($userdata['user_id'] != ANONYMOUS || ($userdata['user_id'] == ANONYMOUS && $userdata['session_ip'] == $shout_row['shout_ip'])))
 		{
-			$temp_url = append_sid('shoutbox_max.' . $phpEx . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+			$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
 			$censorshout_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_censor'] . '" alt="' . $lang['Censor'] . '" title="' . $lang['Censor'] . '" /></a>&nbsp;';
 			$censorshout = '<a href="' . $temp_url . '">' . $lang['Delete_post'] . '</a>';
 		}
@@ -708,12 +707,12 @@ $template->assign_vars(array(
 	'USERNAME' => $username,
 	'NUMBER_OF_SHOUTS' => $total_shouts,
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . $phpEx . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
 	'L_SHOUTBOX_LOGIN' => $lang['Login_join'],
 	'L_POSTED' => $lang['Posted'],
 	'L_AUTHOR' => $lang['Author'],
 	'L_MESSAGE' => $lang['Message'],
-	'U_SHOUTBOX' => append_sid('shoutbox_max.' . $phpEx . '?start=' . $start),
+	'U_SHOUTBOX' => append_sid('shoutbox_max.' . PHP_EXT . '?start=' . $start),
 	'T_NAME' => $theme['template_name'],
 	'T_URL' => 'templates/' . $theme['template_name'],
 	'L_SHOUTBOX' => $lang['Shoutbox'],
@@ -748,18 +747,18 @@ if($error_msg != '')
 }
 
 // BBCBMG - BEGIN
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcb_mg.' . $phpEx);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END
 // BBCBMG SMILEYS - BEGIN
 generate_smilies('inline');
-include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 
 // Generate pagination for shoutbox view
-$pagination = ($highlight_match) ? generate_pagination('shoutbox_max.' . $phpEx . '?highlight=' . $highlight, $total_shouts, $board_config['posts_per_page'], $start) : generate_pagination('shoutbox_max.' . $phpEx . '?dummy=1', $total_shouts, $board_config['posts_per_page'], $start);
+$pagination = ($highlight_match) ? generate_pagination('shoutbox_max.' . PHP_EXT . '?highlight=' . $highlight, $total_shouts, $board_config['posts_per_page'], $start) : generate_pagination('shoutbox_max.' . PHP_EXT . '?dummy=1', $total_shouts, $board_config['posts_per_page'], $start);
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
@@ -770,6 +769,6 @@ $template->assign_vars(array(
 $template->pparse('body');
 
 // Include page tail
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

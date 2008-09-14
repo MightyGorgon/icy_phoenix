@@ -8,7 +8,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -16,10 +16,10 @@ if (!defined('IN_PHPBB'))
 // Usage
 /*
 // BBCBMG SMILEYS - BEGIN
-define('IN_PHPBB', true);
-include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 generate_smilies('inline');
-include($phpbb_root_path . 'includes/bbcb_smileys_mg.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 */
@@ -55,13 +55,13 @@ $parsing_template = array(
 	'BBCB_MG_PATH_PREFIX' => $bbcbmg_path_prefix,
 
 	'L_MORE_SMILIES' => $lang['More_emoticons'],
-	'U_MORE_SMILIES' => append_sid('posting.' . $phpEx . '?mode=smilies'),
+	'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies'),
 
 	'L_SMILEY_CREATOR' => $lang['Smiley_creator'],
-	'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . $phpEx . '?mode=text2shield'),
+	'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . PHP_EXT . '?mode=text2shield'),
 
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
-	'U_UPLOAD_IMAGE' => append_sid('upload.' . $phpEx),
+	'U_UPLOAD_IMAGE' => append_sid('upload.' . PHP_EXT),
 );
 
 if ( defined('IN_PA_POSTING') )

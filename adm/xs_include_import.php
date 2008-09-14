@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB') || !defined('IN_XS'))
+if (!defined('IN_ICYPHOENIX') || !defined('IN_XS'))
 {
 	die('Hacking attempt');
 }

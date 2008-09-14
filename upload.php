@@ -15,10 +15,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -53,12 +53,11 @@ $gen_simple_header = true;
 $page_title = $lang['Upload_Image_Local'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $upload_dir = POSTED_IMAGES_PATH;
 $filetypes = 'jpg,gif,png';
 $maxsize = (1000 * 1024);
-$create_users_subfolders = true;
 
 if(isset($_FILES['userfile']))
 {
@@ -84,7 +83,7 @@ if(isset($_FILES['userfile']))
 	else
 	{
 		$filename = ereg_replace("[^a-z0-9]", "_", $filename);
-		if ($create_users_subfolders == true)
+		if (USERS_SUBFOLDERS_IMG == true)
 		{
 			if (is_dir($upload_dir . $userdata['user_id']))
 			{
@@ -126,12 +125,12 @@ if(isset($_FILES['userfile']))
 	}
 
 	// Purge Cache File - BEGIN
-	$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'posted_img_list_full.dat';
+	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_full.dat';
 	if(@is_file($cache_data_file))
 	{
 		@unlink($cache_data_file);
 	}
-	$cache_data_file = $phpbb_root_path . MAIN_CACHE_FOLDER . 'posted_img_list_' . $userdata['user_id'] . '.dat';
+	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $userdata['user_id'] . '.dat';
 	if(@is_file($cache_data_file))
 	{
 		@unlink($cache_data_file);
@@ -152,7 +151,7 @@ if(isset($_FILES['userfile']))
 	}
 
 	$template->assign_vars(array(
-		'S_ACTION' => append_sid('upload.' . $phpEx),
+		'S_ACTION' => append_sid('upload.' . PHP_EXT),
 		'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 		'L_BBCODE' => $lang['BBCode'],
 		'L_BBCODE_DES' => $lang['Uploaded_Image_BBC'],
@@ -169,7 +168,7 @@ else
 	$template->set_filenames(array('body' => 'upload_image_popup.tpl'));
 
 	$template->assign_vars(array(
-		'S_ACTION' => append_sid('upload.' . $phpEx),
+		'S_ACTION' => append_sid('upload.' . PHP_EXT),
 		'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 		'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
 		'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.',
@@ -181,6 +180,6 @@ else
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

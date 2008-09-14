@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,8 +24,8 @@ if(!function_exists(imp_user_block_block_func))
 {
 	function imp_user_block_block_func()
 	{
-		global $userdata, $template, $board_config, $lang, $db, $phpEx, $phpbb_root_path;
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		global $userdata, $template, $board_config, $lang, $db;
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		/*if($userdata['session_logged_in'])
 		{

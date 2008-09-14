@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -76,7 +76,7 @@ function unprepare_message($message)
 // Prepare a message for posting
 function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$bbcode_uid, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
-	global $board_config, $userdata, $lang, $phpEx, $phpbb_root_path;
+	global $board_config, $userdata, $lang;
 	global $topic_id;
 	global $db;
 
@@ -87,7 +87,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($username != $userdata['username'])))
 		{
-			include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 			$result = validate_username($username);
 			if ($result['error'])
@@ -234,14 +234,14 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 // Post a new topic/reply/poll or edit existing post/poll
 function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, &$bbcode_uid, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0, &$news_category, &$topic_show_portal)
 {
-	global $board_config, $lang, $db, $phpbb_root_path, $phpEx;
+	global $board_config, $lang, $db;
 	global $userdata, $user_ip, $post_data;
 	// CrackerTracker v5.x
 	global $ctracker_config;
 
 	if ( ($mode == 'newtopic' || $mode == 'reply') && ($ctracker_config->settings['spammer_blockmode'] > 0 || $ctracker_config->settings['spam_attack_boost'] == 1) && $userdata['user_level'] != ANONYMOUS )
 	{
-		include_once($phpbb_root_path . 'ctracker/classes/class_ct_userfunctions.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 		$login_functions = new ct_userfunctions();
 		$login_functions->handle_postings();
 		unset($login_functions);
@@ -259,7 +259,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	}
 	// END cmx_slash_news_mod
 
-	include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 	$current_time = time();
 
@@ -327,13 +327,14 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		// we cannot know if the post has been modified by the poster or a mod... so add only modifications by the poster (first modification by MG)
 		//$edited_sql = ($mode == 'editpost' && $post_data['poster_post']) ? ", post_edit_time = $current_time, post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "' " : "";
 
+		$edited_sql = ", post_edit_time = '" . $current_time . "', post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "' ";
 		if ($board_config['always_show_edit_by'] == true)
 		{
-			$edited_sql = ($mode == 'editpost') ? ", post_edit_time = $current_time, post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "' " : '';
+			$edited_sql = ($mode == 'editpost') ? $edited_sql : '';
 		}
 		else
 		{
-			$edited_sql = ($mode == 'editpost' && !$post_data['last_post']) ? ", post_edit_time = $current_time, post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "' " : '';
+			$edited_sql = (($mode == 'editpost') && !$post_data['last_post']) ? $edited_sql : '';
 		}
 	}
 
@@ -412,8 +413,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	add_search_words('single', $post_id, stripslashes($post_message), stripslashes($post_subject));
 
 	// DOWNLOADS - BEGIN
-	include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_downloads.' . $phpEx);
-	include($phpbb_root_path . DL_ROOT_PATH . 'classes/class_dlmod.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_downloads.' . PHP_EXT);
+	include(IP_ROOT_PATH . DL_ROOT_PATH . 'classes/class_dlmod.' . PHP_EXT);
 	$dl_mod = new dlmod();
 	$dl_config = $dl_mod->get_config();
 
@@ -558,9 +559,9 @@ function save_draft($draft_id, $user_id, $forum_id, $topic_id, $subject, $messag
 //
 function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$user_id)
 {
-	global $db, $phpbb_root_path, $board_config, $phpEx;
+	global $db, $board_config;
 
-	include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$sign = ($mode == 'delete') ? '- 1' : '+ 1';
 	$forum_update_sql = "forum_posts = forum_posts $sign";
@@ -732,7 +733,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		if ($user_add && !$user_already_added)
 		{
 			update_user_color($user_id, $group_data['group_color'], $group_data['g_id']);
-			empty_cache_folder('./', true);
+			empty_cache_folders(true);
 			//user join a autogroup
 			$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 				VALUES (" . $group_data['g_id'] . ", $user_id, '0')";
@@ -744,7 +745,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		elseif ( $user_already_added && $user_remove)
 		{
 			clear_user_color($user_id, $group_data['group_color'], $group_data['g_id']);
-			empty_cache_folder('./', true);
+			empty_cache_folders(true);
 			//remove user from auto group
 			$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 				WHERE group_id = '" . $group_data['g_id'] . "'
@@ -765,7 +766,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 //
 function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id)
 {
-	global $board_config, $lang, $db, $phpbb_root_path, $phpEx;
+	global $board_config, $lang, $db;
 	global $userdata, $user_ip;
 
 	if ($mode != 'poll_delete')
@@ -776,7 +777,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			$GLOBALS['cm_posting']->update_delete($mode, $post_data, $forum_id, $topic_id, $post_id);
 		}
 		// MG Cash MOD For IP - END
-		include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 		$sql = "DELETE FROM " . POSTS_TABLE . "
 			WHERE post_id = $post_id";
@@ -902,11 +903,11 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //
 function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topic_id, &$post_id, &$notify_user)
 {
-	global $board_config, $lang, $db, $phpbb_root_path, $phpEx;
+	global $board_config, $lang, $db;
 	global $userdata, $user_ip;
 	global $bbcode, $bbcode_uid;
 	$current_time = time();
-	include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 	if ($mode != 'delete')
 	{
@@ -977,7 +978,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 				if (count($bcc_list_ary))
 				{
-					include_once($phpbb_root_path . 'includes/emailer.' . $phpEx);
+					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 					$emailer = new emailer($board_config['smtp_delivery']);
 
 					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
@@ -1102,7 +1103,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 				if (count($bcc_list_ary))
 				{
-					include_once($phpbb_root_path . 'includes/emailer.' . $phpEx);
+					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 					$emailer = new emailer($board_config['smtp_delivery']);
 
 					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
@@ -1268,7 +1269,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 				if (count($bcc_list_ary))
 				{
-					include_once($phpbb_root_path . 'includes/emailer.' . $phpEx);
+					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 					$emailer = new emailer($board_config['smtp_delivery']);
 
 					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
@@ -1393,7 +1394,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 //
 function generate_smilies($mode)
 {
-	global $db, $board_config, $template, $lang, $images, $theme, $phpEx, $phpbb_root_path;
+	global $db, $board_config, $template, $lang, $images, $theme;
 	global $user_ip, $session_length, $starttime;
 	global $userdata;
 
@@ -1423,7 +1424,7 @@ function generate_smilies($mode)
 		$page_title = $lang['Emoticons'];
 		$meta_description = '';
 		$meta_keywords = '';
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		if ( defined('IN_PA_POSTING') )
 		{
@@ -1527,7 +1528,7 @@ function generate_smilies($mode)
 			{
 				$parsing_template = array(
 					'L_MORE_SMILIES' => $lang['More_emoticons'],
-					'U_MORE_SMILIES' => append_sid('posting.' . $phpEx . '?mode=smilies')
+					'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies')
 				);
 				if ( defined('IN_PA_POSTING') )
 				{
@@ -1541,7 +1542,7 @@ function generate_smilies($mode)
 				}
 			}
 
-			$pagination = generate_pagination('posting.' . $phpEx . '?mode=smilies', $num_smilies, $per_page, $start, false);
+			$pagination = generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false);
 
 			$select_smileys_pp = '<select name="smilies_per_page" onchange="SetSmileysPerPage();" class="gensmall">';
 			$select_smileys_pp .= '<option value="' . ($window_columns * $window_rows) . '"' . (( $smilies_per_page == ($window_columns * $window_rows) ) ? ' selected="selected"' : '') . '>' . ($window_columns * $window_rows) . '</option>';
@@ -1559,7 +1560,7 @@ function generate_smilies($mode)
 				'L_CLOSE_WINDOW' => $lang['Close_window'],
 				'L_SMILEYS_PER_PAGE' => $lang['Smileys_Per_Page'],
 				'DEFAULT_SMILEYS_PER_PAGE' => $window_columns * $window_rows,
-				'REQUEST_URI' => append_sid('posting.' . $phpEx . '?mode=smilies'),
+				'REQUEST_URI' => append_sid('posting.' . PHP_EXT . '?mode=smilies'),
 				'SELECT_SMILEYS_PP' => $select_smileys_pp,
 				'PAGINATION' => $pagination,
 				'S_SMILIES_COLSPAN' => $s_colspan
@@ -1585,7 +1586,7 @@ function generate_smilies($mode)
 		{
 			$template->pparse('smiliesbody');
 		}
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 }
 

@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 // First we do the setmodules stuff for the admin cp.
 if(!empty($setmodules))
@@ -27,9 +27,9 @@ if(!empty($setmodules))
 }
 
 // Let's set the root dir for phpBB
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 // Pull config data
 $sql = "SELECT * FROM " . CAPTCHA_CONFIG_TABLE;
@@ -61,7 +61,7 @@ else
 
 	if(isset($_POST['submit']))
 	{
-		$message = $lang['captcha_config_updated'] . "<br />" . sprintf($lang['Click_return_captcha_config'], "<a href=\"" . append_sid("admin_captcha_config.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>") . '<br /><br />';
+		$message = $lang['captcha_config_updated'] . "<br />" . sprintf($lang['Click_return_captcha_config'], "<a href=\"" . append_sid("admin_captcha_config." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>") . '<br /><br />';
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -120,7 +120,7 @@ $template->assign_vars(array(
 	'GAMMACORRECT' => $new['gammacorrect'],
 	'JPEG_QUALITY' => $new['jpeg_quality'],
 
-	'CAPTCHA_IMG' => '<img src="' . append_sid($phpbb_root_path . PROFILE_MG . '?mode=confirm&amp;id=Admin') . '">',
+	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=confirm&amp;id=Admin') . '">',
 
 	'S_GREAT_PRE_LETTERS_YES' => ($new['pre_letters_great'] == 1) ? 'checked="checked"' : '',
 	'S_GREAT_PRE_LETTERS_NO' => ($new['pre_letters_great'] == 0) ? 'checked="checked"' : '',
@@ -144,13 +144,13 @@ $template->assign_vars(array(
 	'S_JPEG_IMAGE_NO' => ($new['jpeg'] == 0) ? 'checked="checked"' : '',
 
 	'S_HIDDEN_FIELDS' => '',
-	'S_CAPTCHA_CONFIG_ACTION' => append_sid('admin_captcha_config.' . $phpEx)
+	'S_CAPTCHA_CONFIG_ACTION' => append_sid('admin_captcha_config.' . PHP_EXT)
 	)
 );
 
 $template->pparse('body');
 
 echo '<div align="center"><span class="copyright">Advanced Visual Confirmation &copy; 2006 <a href="http://www.amigalink.de" target="_blank">AmigaLink</a></span></div>';
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

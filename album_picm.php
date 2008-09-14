@@ -16,20 +16,19 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip, false) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
-require($album_root_path . 'album_image_class.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request
@@ -52,45 +51,34 @@ else
 // Get this pic info and current Category Info
 // ------------------------------------
 $sql = "SELECT p.*, c.*
-		FROM ". ALBUM_TABLE ." AS p, ". ALBUM_CAT_TABLE ." AS c
-		WHERE p.pic_id = '$pic_id'
-			AND c.cat_id = p.pic_cat_id";
-
+		FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
+		WHERE p.pic_id = '" . $pic_id . "'
+			AND c.cat_id = p.pic_cat_id
+		LIMIT 1";
 if(!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
 }
-
 $thispic = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 
 $cat_id = $thispic['pic_cat_id'];
 $album_user_id = $thispic['cat_user_id'];
 
-$pic_filename = $thispic['pic_filename'];
-$file_part = explode('.', strtolower($pic_filename));
-$pic_filetype = $file_part[count($file_part) - 1];
-$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-$pic_fullpath = ALBUM_UPLOAD_PATH . $pic_filename;
-$pic_thumbnail_new = md5($pic_filename) . '.' . $pic_filetype;
-$pic_thumbnail = ($thispic['pic_thumbnail'] == '') ? $pic_thumbnail_new : $thispic['pic_thumbnail'];
-$pic_thumbnail_fullpath = ALBUM_MED_CACHE_PATH . $pic_thumbnail;
-$pic_thumbnail_new_fullpath = ALBUM_MED_CACHE_PATH . $pic_thumbnail_new;
-$pic_thumbnail_wm_fullpath = ALBUM_WM_CACHE_PATH . $pic_thumbnail;
-$pic_thumbnail_wm_new_fullpath = ALBUM_WM_CACHE_PATH . $pic_thumbnail_new;
-$pic_title = $thispic['pic_title'];
-$pic_title_reg = ereg_replace("[^A-Za-z0-9]", "_", $pic_title);
+$pic_info = array();
+$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
+
 $apply_wm = false;
-$wm_file = ALBUM_WM_FILE;
+$wm_file = (file_exists($thispic['cat_wm']) ? $thispic['cat_wm'] : ALBUM_WM_FILE);
 
 if(($album_config['use_watermark'] == true) && ($userdata['user_level'] != ADMIN) && ((!$userdata['session_logged_in']) || ($album_config['wut_users'] == 1)))
 {
-	$pic_thumbnail_fullpath = $pic_thumbnail_wm_fullpath;
+	$pic_info['thumbnail_m_fullpath'] = $pic_info['thumbnail_w_fullpath'];
+	$pic_info['thumbnail_new_m_fullpath'] = $pic_info['thumbnail_new_w_fullpath'];
 	$apply_wm = true;
-	$wm_file = (file_exists($thispic['cat_wm']) ? $thispic['cat_wm'] : ALBUM_WM_FILE);
 }
 
-if(empty($thispic) || !file_exists($pic_fullpath))
+if(empty($thispic) || ($pic_info['exists'] == false) || !file_exists($pic_info['fullpath']))
 {
 	message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
 }
@@ -152,7 +140,7 @@ if (($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
 		/*
 		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_title_reg . '.' . $pic_filetype);
+		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		readfile($images['no_thumbnail']);
 		exit;
 		*/
@@ -168,9 +156,9 @@ if (($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 // ------------------------------------
 // Increase view counter
 // ------------------------------------
-$sql = "UPDATE ". ALBUM_TABLE ."
+$sql = "UPDATE " . ALBUM_TABLE . "
 			SET pic_view_count = pic_view_count + 1
-			WHERE pic_id = '$pic_id'";
+			WHERE pic_id = '" . $pic_id . "'";
 if(!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, 'Could not update pic information', '', __LINE__, __FILE__, $sql);
@@ -179,16 +167,16 @@ if(!$result = $db->sql_query($sql))
 // --------------------------------
 // Check thumbnail cache. If cache is available we will SEND & EXIT
 // --------------------------------
-if(($album_config['midthumb_cache'] == true) && file_exists($pic_thumbnail_fullpath))
+if(($album_config['midthumb_cache'] == true) && file_exists($pic_info['thumbnail_m_fullpath']))
 {
 	/*
 	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_thumbnail_fullpath);
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'mid_', '', $album_config['thumbnail_quality']);
+	$Image->ReadSourceFile($pic_info['thumbnail_m_fullpath']);
+	$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
 	$Image->Destroy();
 	exit;
 	*/
-	switch ($pic_filetype)
+	switch ($pic_info['filetype'])
 	{
 		case 'gif':
 			$file_header = 'Content-type: image/gif';
@@ -201,40 +189,40 @@ if(($album_config['midthumb_cache'] == true) && file_exists($pic_thumbnail_fullp
 			break;
 		default:
 			header('Content-type: image/jpeg');
-			header("Content-Disposition: filename=mid_" . $pic_title_reg . '.' . $pic_filetype);
+			header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 			readfile($images['no_thumbnail']);
 			exit;
 			break;
 	}
 	header($file_header);
-	header("Content-Disposition: filename=mid_" . $pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_thumbnail_fullpath);
+	header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
+	readfile($pic_info['thumbnail_m_fullpath']);
 	exit;
 }
 
-if (($pic_filetype == 'gif') && ($album_config['show_gif_mid_thumb'] == 1))
+if (($pic_info['filetype'] == 'gif') && ($album_config['show_gif_mid_thumb'] == 1))
 {
 	header('Content-type: image/gif');
-	header('Content-Disposition: filename=' . $pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_fullpath);
+	header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
+	readfile($pic_info['fullpath']);
 	exit;
 }
 
 // ------------------------------------
 // Send Thumbnail to browser
 // ------------------------------------
-$pic_size = @getimagesize($pic_fullpath);
+$pic_size = @getimagesize($pic_info['fullpath']);
 $pic_width = $pic_size[0];
 $pic_height = $pic_size[1];
 
 if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_config['midthumb_height']))
 {
-	if ($pic_filetype == 'gif')
+	if ($pic_info['filetype'] == 'gif')
 	{
-		$copy_success = @copy($pic_fullpath, $pic_thumbnail_fullpath);
+		$copy_success = @copy($pic_info['fullpath'], $pic_info['thumbnail_m_fullpath']);
 		header('Content-type: image/gif');
-		header('Content-Disposition: filename=' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($pic_fullpath);
+		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
+		readfile($pic_info['fullpath']);
 		exit;
 	}
 
@@ -247,25 +235,25 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 		{
 			$wm_position = (($album_config['disp_watermark_at'] > 0) && ($album_config['disp_watermark_at'] < 10)) ? $album_config['disp_watermark_at'] : 5;
 			$wm_transition = 50;
-			$thumbnail = mergePics($pic_fullpath, $wm_file, $wm_position, $wm_transition, $pic_filetype);
+			$thumbnail = mergePics($pic_info['fullpath'], $wm_file, $wm_position, $wm_transition, $pic_info['filetype']);
 		}
 		// MG Watermark - END
 		if (($album_config['midthumb_cache'] == true))
 		{
 			// Re-generate successfully. Write it to disk!
-			switch ($pic_filetype)
+			switch ($pic_info['filetype'])
 			{
 				case 'jpg':
-					@imagejpeg($thumbnail, $pic_thumbnail_new_fullpath, $album_config['thumbnail_quality']);
+					@imagejpeg($thumbnail, $pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
 					break;
 				case 'png':
-					@imagepng($thumbnail, $pic_thumbnail_new_fullpath);
+					@imagepng($thumbnail, $pic_info['thumbnail_new_m_fullpath']);
 					break;
 			}
-			@chmod($pic_thumbnail_new_fullpath, 0777);
+			@chmod($pic_info['thumbnail_new_m_fullpath'], 0777);
 		}
 		// After write to disk, do not forget to send to browser also
-		switch ($pic_filetype)
+		switch ($pic_info['filetype'])
 		{
 			case 'jpg':
 				@imagejpeg($thumbnail, '', $album_config['thumbnail_quality']);
@@ -275,7 +263,7 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 				break;
 			default:
 				header('Content-type: image/jpeg');
-				header("Content-Disposition: filename=mid_" . $pic_title_reg . '.' . $pic_filetype);
+				header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 				readfile($images['no_thumbnail']);
 				break;
 		}
@@ -284,14 +272,14 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 	// Old Thumbnails - END
 
 	$Image = new ImgObj();
-	//$Image->ReadSourceFile($pic_fullpath);
-	if ($pic_filetype == 'jpg')
+	//$Image->ReadSourceFile($pic_info['fullpath']);
+	if ($pic_info['filetype'] == 'jpg')
 	{
-		$Image->ReadSourceFileJPG($pic_fullpath);
+		$Image->ReadSourceFileJPG($pic_info['fullpath']);
 	}
 	else
 	{
-		$Image->ReadSourceFile($pic_fullpath);
+		$Image->ReadSourceFile($pic_info['fullpath']);
 	}
 
 	if ($apply_wm == true)
@@ -302,14 +290,14 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 		$Image->WatermarkPos($wm_file, $wm_position, $wm_maxsize, $wm_transition);
 	}
 
-	//$Image->SendToBrowser($pic_title_reg, $pic_filetype, '', '', $album_config['thumbnail_quality']);
-	if ($pic_filetype == 'jpg')
+	//$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
+	if ($pic_info['filetype'] == 'jpg')
 	{
-		$Image->SendToBrowserJPG($pic_title_reg, $pic_filetype, '', '', $album_config['thumbnail_quality']);
+		$Image->SendToBrowserJPG($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
 	}
 	else
 	{
-		$Image->SendToBrowser($pic_title_reg, $pic_filetype, '', '', $album_config['thumbnail_quality']);
+		$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
 	}
 
 	$Image->Destroy();
@@ -340,31 +328,31 @@ else
 		{
 			$wm_position = (($album_config['disp_watermark_at'] > 0) && ($album_config['disp_watermark_at'] < 10)) ? $album_config['disp_watermark_at'] : 5;
 			$wm_transition = 50;
-			$thumbnail = mergeResizePics($pic_fullpath, $wm_file, $thumbnail_width, $thumbnail_height, $wm_position, $wm_transition, $pic_filetype);
+			$thumbnail = mergeResizePics($pic_info['fullpath'], $wm_file, $thumbnail_width, $thumbnail_height, $wm_position, $wm_transition, $pic_info['filetype']);
 		}
 		else
 		{
 			$thumbnail = ($album_config['gd_version'] == 1) ? @imagecreate($thumbnail_width, $thumbnail_height) : @imagecreatetruecolor($thumbnail_width, $thumbnail_height);
 			$resize_function = ($album_config['gd_version'] == 1) ? 'imagecopyresized' : 'imagecopyresampled';
-			@$resize_function($thumbnail, $pic_fullpath, 0, 0, 0, 0, $thumbnail_width, $thumbnail_height, $pic_width, $pic_height);
+			@$resize_function($thumbnail, $pic_info['fullpath'], 0, 0, 0, 0, $thumbnail_width, $thumbnail_height, $pic_width, $pic_height);
 		}
 		// MG Watermark - END
 		if (($album_config['midthumb_cache'] == 1))
 		{
 			// Re-generate successfully. Write it to disk!
-			switch ($pic_filetype)
+			switch ($pic_info['filetype'])
 			{
 				case 'jpg':
-					@imagejpeg($thumbnail, $pic_thumbnail_new_fullpath, $album_config['thumbnail_quality']);
+					@imagejpeg($thumbnail, $pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
 					break;
 				case 'png':
-					@imagepng($thumbnail, $pic_thumbnail_new_fullpath);
+					@imagepng($thumbnail, $pic_info['thumbnail_new_m_fullpath']);
 					break;
 			}
-			@chmod($pic_thumbnail_new_fullpath, 0777);
+			@chmod($pic_info['thumbnail_new_m_fullpath'], 0777);
 		}
 		// After write to disk, do not forget to send to browser also
-		switch ($pic_filetype)
+		switch ($pic_info['filetype'])
 		{
 			case 'jpg':
 				@imagejpeg($thumbnail, '', $album_config['thumbnail_quality']);
@@ -374,7 +362,7 @@ else
 				break;
 			default:
 				header('Content-type: image/jpeg');
-				header("Content-Disposition: filename=mid_" . $pic_title_reg . '.' . $pic_filetype);
+				header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 				readfile($images['no_thumbnail']);
 				break;
 		}
@@ -384,18 +372,18 @@ else
 
 	$Image = new ImgObj();
 
-	if ($pic_filetype == 'jpg')
+	if ($pic_info['filetype'] == 'jpg')
 	{
-		$Image->ReadSourceFileJPG($pic_fullpath);
+		$Image->ReadSourceFileJPG($pic_info['fullpath']);
 	}
 	else
 	{
-		$Image->ReadSourceFile($pic_fullpath);
+		$Image->ReadSourceFile($pic_info['fullpath']);
 	}
 
 	/*
 	// This is most CPU consuming for JPG...
-	$Image->ReadSourceFile($pic_fullpath);
+	$Image->ReadSourceFile($pic_info['fullpath']);
 	*/
 
 	$Image->Resize($thumbnail_width, $thumbnail_height);
@@ -408,40 +396,32 @@ else
 	}
 	if ($album_config['midthumb_cache'] == true)
 	{
-		if ($apply_wm == true)
+		if ($pic_info['filetype'] == 'jpg')
 		{
-			$Image->SendToFile($pic_thumbnail_wm_new_fullpath, $album_config['thumbnail_quality']);
-			//$Image->SendToFile($pic_thumbnail_wm_new_fullpath, $album_config['thumbnail_quality']);
-			//@chmod($pic_thumbnail_wm_new_fullpath, 0777);
+			$Image->SendToFileJPG($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
+			//$Image->SendToFile($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
+			//@chmod($pic_info['thumbnail_new_m_fullpath'], 0777);
 		}
 		else
 		{
-			$Image->SendToFile($pic_thumbnail_new_fullpath, $album_config['thumbnail_quality']);
-			//$Image->SendToFile($pic_thumbnail_new_fullpath, $album_config['thumbnail_quality']);
-			//@chmod($pic_thumbnail_new_fullpath, 0777);
-		}
-
-		$sql = "UPDATE ". ALBUM_TABLE ."
-			SET pic_thumbnail = '" . $pic_thumbnail_new . "'
-			WHERE pic_id = '" . $pic_id . "'";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not update pic information', '', __LINE__, __FILE__, $sql);
+			$Image->SendToFile($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
+			//$Image->SendToFile($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
+			//@chmod($pic_info['thumbnail_new_m_fullpath'], 0777);
 		}
 	}
 
-	if ($pic_filetype == 'jpg')
+	if ($pic_info['filetype'] == 'jpg')
 	{
-		$Image->SendToBrowserJPG($pic_title_reg, $pic_filetype, 'mid_', '', $album_config['thumbnail_quality']);
+		$Image->SendToBrowserJPG($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
 	}
 	else
 	{
-		$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'mid_', '', $album_config['thumbnail_quality']);
+		$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
 	}
 
 	/*
 	// This is most CPU consuming for JPG...
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'mid_', '', $album_config['thumbnail_quality']);
+	$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
 	*/
 
 	if ($Image == true)
@@ -456,13 +436,13 @@ else
 		if ($album_config['show_img_no_gd'] == false)
 		{
 			header('Content-type: image/jpeg');
-			header("Content-Disposition: filename=mid_" . $pic_title_reg . '.' . $pic_filetype);
+			header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 			readfile($images['no_thumbnail']);
 			exit;
 		}
 		else
 		{
-			switch ($pic_filetype)
+			switch ($pic_info['filetype'])
 			{
 				case 'gif':
 					$file_header = 'Content-type: image/gif';
@@ -475,14 +455,14 @@ else
 					break;
 				default:
 					header('Content-type: image/jpeg');
-					header("Content-Disposition: filename=mid_" . $pic_title_reg . '.' . $pic_filetype);
+					header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 					readfile($images['no_thumbnail']);
 					exit;
 					break;
 			}
 			header($file_header);
-			header("Content-Disposition: filename=mid_" . $pic_title_reg . '.' . $pic_filetype);
-			readfile(ALBUM_UPLOAD_PATH . $pic_filename);
+			header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
+			readfile($pic_info['fullpath']);
 			exit;
 		}
 	}

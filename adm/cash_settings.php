@@ -16,18 +16,18 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 
 if (!$cash->currency_count())
@@ -136,7 +136,7 @@ if ($table_updated)
 
 if (isset($_POST['submit']))
 {
-	$message = $lang['Cash_settings_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_settings'], '<a href="' . append_sid('cash_settings.' . $phpEx) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Cash_settings_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_settings'], '<a href="' . append_sid('cash_settings.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -144,7 +144,7 @@ if (isset($_POST['submit']))
 $template->set_filenames(array('body' => ADM_TPL . 'cash_settings.tpl'));
 
 $template->assign_vars(array(
-	'S_CASH_SETTINGS_ACTION' => append_sid('cash_settings.' . $phpEx),
+	'S_CASH_SETTINGS_ACTION' => append_sid('cash_settings.' . PHP_EXT),
 
 	'NUM_COLUMNS' => ($cash->currency_count() + 1),
 
@@ -304,6 +304,6 @@ while ($c_cur = &$cash->currency_next($cm_i))
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

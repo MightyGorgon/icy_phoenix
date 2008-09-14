@@ -1359,9 +1359,9 @@ $lang['field_deleted'] = 'The specified field has been deleted';
 $lang['double_check_delete'] = 'Are you sure you want to delete profile field "%s" from the database permanently?';
 
 $lang['here'] = 'Here';
-$lang['new_field_link'] = '<a href="' . append_sid("$filename?mode=add&pfid=x") . '">%s</a>';
-$lang['edit_field_link'] = '<a href="' . append_sid("$filename?mode=edit&pfid=x") . '">%s</a>';
-$lang['index_link'] = '<a href="' . append_sid("admin_profile_fields.$phpEx?mode=edit&pfid=x") . '">%s</a>';
+$lang['new_field_link'] = '<a href="' . append_sid($filename . '?mode=add&pfid=x') . '">%s</a>';
+$lang['edit_field_link'] = '<a href="' . append_sid($filename . '?mode=edit&pfid=x') . '">%s</a>';
+$lang['index_link'] = '<a href="' . append_sid('admin_profile_fields.' . PHP_EXT . '?mode=edit&pfid=x') . '">%s</a>';
 $lang['field_exists'] = 'This field already exists.<br /><br />You can try creating a ' . sprintf($lang['new_field_link'],'new') . ' profile field,<br /><br />or try ' . sprintf($lang['edit_field_link'],'editing') . ' the one you already have.';
 $lang['click_here_here'] = 'Click ' . sprintf($lang['new_field_link'],$lang['here']) . ' to add another profile field,<br /><br />or click ' . sprintf($lang['index_link'],$lang['here']) . ' to return to the Admin Index.';
 $lang['field_success'] = 'Field successfully submitted!<br /><br />' . $lang['click_here_here'];
@@ -2110,7 +2110,7 @@ $lang['110_Restore_DB'] = 'DB Restore'; // admin_db_utilities.php, admin_db_back
 $lang['115_Restore_DB'] = 'DB Restore From File'; // admin_db_utilities.php
 $lang['120_Optimize_DB'] = 'Optimize Database'; // admin_db_utilities.php
 $lang['130_DB_Maintenance'] = 'Database Maintenance'; // admin_db_maintenance.php
-$lang['140_DB_Admin'] = 'phpBB MySQLAdmin'; // admin_bb_db.php
+$lang['140_DB_Admin'] = 'IP MySQLAdmin'; // admin_bb_db.php
 $lang['150_db_update_generator'] = 'DB Update Generator'; // admin_db_generator.php
 $lang['160_msqd'] = 'MySQLDumper'; // admin_msqd.php
 

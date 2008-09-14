@@ -15,7 +15,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -33,23 +33,23 @@ function album_reorder_cat($user_id = ALBUM_PUBLIC_GALLERY)
 {
 	global $album_data , $db;
 
-	if ( count($album_data['data']) == 0 )
+	if (count($album_data['data']) == 0)
 	{
 		album_read_tree($user_id);
 	}
 
 	// update with new order
 	$order = 0;
-	for ($i = 0; $i < count($album_data['data']); $i++ )
+	for ($i = 0; $i < count($album_data['data']); $i++)
 	{
-		if ( !empty($album_data['id'][$i]) )
+		if (!empty($album_data['id'][$i]))
 		{
 			$order += 10;
 			$sql = "UPDATE " . ALBUM_CAT_TABLE . "
 					SET cat_order = $order
 					WHERE cat_id = " . intval($album_data['id'][$i]);
 
-			if ( !$db->sql_query($sql) )
+			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Couldn\'t reorder forums/categories table', '', __LINE__, __FILE__, $sql);
 			}
@@ -79,7 +79,7 @@ function album_read_tree($user_id = ALBUM_PUBLIC_GALLERY, $options = ALBUM_AUTH_
 	// read categories and categories with right user access rights
 	$cats = array();
 
-	if ( count($album_data['data']) > 0)
+	if (count($album_data['data']) > 0)
 	{
 		return ALBUM_DATA_ALREADY_READ;
 	}
@@ -168,23 +168,23 @@ function album_read_tree($user_id = ALBUM_PUBLIC_GALLERY, $options = ALBUM_AUTH_
 	// where the authentication rights fits the one that was specified in the
 	// function call (album_read_tree)
 	// ------------------------------------------------------------------------
-	if (!empty($album_data['auth']) || count($album_data['auth']) > 0 )
+	if (!empty($album_data['auth']) || count($album_data['auth']) > 0)
 	{
 		$cats = array(); // re-create an array
 		for ($idx = 0; $idx < count($album_data['auth']); $idx++)
 		{
 			$cat_id = $album_data['id'][$idx];
 
-			if ( ($album_data['auth'][$cat_id]["view"] >= $can_view) &&
+			if (($album_data['auth'][$cat_id]["view"] >= $can_view) &&
 				($album_data['auth'][$cat_id]["upload"] >= $can_upload) &&
 				($album_data['auth'][$cat_id]["rate"] >= $can_rate) &&
 				($album_data['auth'][$cat_id]["comment"] >= $can_comment) &&
 				($album_data['auth'][$cat_id]["edit"] >= $can_edit) &&
-				($album_data['auth'][$cat_id]["delete"] >= $can_delete) )
+				($album_data['auth'][$cat_id]["delete"] >= $can_delete))
 			{
 				if (checkFlag($options, ALBUM_CREATE_CAT_ID_LIST))
 				{
-					$cats[0] .= ( (empty($cats[0])) ? '' : ',') . $album_data['data'][$idx]['cat_id'];
+					$cats[0] .= ((empty($cats[0])) ? '' : ',') . $album_data['data'][$idx]['cat_id'];
 				}
 				else
 				{
@@ -257,8 +257,8 @@ function album_get_personal_root_id($user_id)
 		return ALBUM_ROOT_CATEGORY;
 	}
 
-	//if ( is_array($album_data ) && count($album_data['data']) > 0)
-	if ( $userdata['user_id'] == $user_id && is_array($album_data ) && count($album_data['data']) > 0 && $album_data['personal'][0] == 1)
+	//if (is_array($album_data) && count($album_data['data']) > 0)
+	if ($userdata['user_id'] == $user_id && is_array($album_data) && count($album_data['data']) > 0 && $album_data['personal'][0] == 1)
 	{
 		return $album_data['id'][0]; // the first array index is always root
 	}
@@ -308,12 +308,12 @@ function album_get_nonexisting_personal_gallery_info()
 		WHERE c.cat_user_id = u.user_id
 			AND c.cat_parent = 0";
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Internal Message : Could not read user infor for fake list.', '', __LINE__, __FILE__, $sql);
 	}
 
-	while ($row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$album_user_ids .= ($album_user_ids == '') ? $row['user_id'] : ',' . $row['user_id'];
 	}
@@ -324,14 +324,14 @@ function album_get_nonexisting_personal_gallery_info()
 			WHERE user_id NOT IN (" . $album_user_ids .")";
 			// AND user_id <> " . ANONYMOUS;
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Internal Message : Could not read user info for fake list.', '', __LINE__, __FILE__, $sql);
 	}
 
 	if ($db->sql_numrows($result) > 0)
 	{
-		while ($row = $db->sql_fetchrow($result) )
+		while ($row = $db->sql_fetchrow($result))
 		{
 			$userinfo[] = $row;
 		}
@@ -349,7 +349,7 @@ function album_get_nonexisting_personal_gallery_info()
 // ------------------------------------------------------------------------
 function album_create_personal_gallery($user_id, $view_level, $upload_level, $options = 0)
 {
-	global $album_config, $template, $lang, $phpEx, $userdata, $db;
+	global $album_config, $template, $lang, $userdata, $db;
 
 	if ($user_id == ALBUM_PUBLIC_GALLERY)
 	{
@@ -364,7 +364,7 @@ function album_create_personal_gallery($user_id, $view_level, $upload_level, $op
 			WHERE c.cat_user_id = '$user_id' AND c.cat_parent = 0
 			LIMIT 1";
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query category information', '', __LINE__, __FILE__, $sql);
 	}
@@ -456,7 +456,7 @@ function album_move_tree($cat_id, $move, $user_id = ALBUM_PUBLIC_GALLERY)
 
 	// if the album_tree is NOT filled then reload the data
 	// this will ensure that the album IS populated with data
-	if ( count($album_data['data']) == 0)
+	if (count($album_data['data']) == 0)
 	{
 		album_read_tree($user_id);
 	}
@@ -512,7 +512,7 @@ function album_move_tree($cat_id, $move, $user_id = ALBUM_PUBLIC_GALLERY)
 		$order = $order + 10;
 		$sql = "UPDATE " . ALBUM_CAT_TABLE . " SET cat_order=$order WHERE cat_id=" . $album_data['id'][$i];
 
-		if ( !$db->sql_query($sql) )
+		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t update album category order', '', __LINE__, __FILE__, $sql);
 		}
@@ -604,7 +604,7 @@ function album_no_newest_pictures($check_date, $cats, $exclude_cat_id = 0)
 			AND p.pic_cat_id = c.cat_id ' . $sql_time . '
 			GROUP BY c.cat_id';
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get the cat user id of this category ', '', __LINE__, __FILE__, $sql);
 	}
@@ -638,11 +638,11 @@ function album_get_cat_user_id($cat_id)
 {
 	global $db, $album_data;
 
-	if ( @!array_key_exists($cat_id, $album_data['keys']) || !isset($album_data) || !is_array($album_data))
+	if (@!array_key_exists($cat_id, $album_data['keys']) || !isset($album_data) || !is_array($album_data))
 	{
 		$sql = 'SELECT cat_user_id FROM ' . ALBUM_CAT_TABLE . ' WHERE cat_id IN (' . $cat_id . ') LIMIT 1';
 
-		if( !($result = $db->sql_query($sql)) )
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not get the cat user id of this category ', '', __LINE__, __FILE__, $sql);
 		}
@@ -691,7 +691,7 @@ function album_get_user_name($user_id)
 			WHERE user_id = $user_id
 			LIMIT 1";
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get the username of this category owner', '', __LINE__, __FILE__, $sql);
 	}
@@ -708,15 +708,12 @@ function album_get_user_name($user_id)
 // ------------------------------------------------------------------------
 function album_get_last_pic_info($cats, &$last_pic_id)
 {
-	global $phpEx, $board_config, $lang, $db, $album_data , $album_config;
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	}
+	global $board_config, $lang, $db, $album_data , $album_config;
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	// check whter we are running an album with CLowN's SP mod..
 	// and correct album picture url
-	$album_pic_url = 'album_showpage.' . $phpEx;
+	$album_pic_url = 'album_showpage.' . PHP_EXT;
 
 	$categories = implode(",", $cats);
 
@@ -761,27 +758,13 @@ function album_get_last_pic_info($cats, &$last_pic_id)
 	$info .= '<br />';
 
 	// Write username of last poster
-	if ( defined('IS_ICYPHOENIX') )
+	if (($row['user_id'] == ALBUM_GUEST) || ($row['username'] == ''))
 	{
-		if (($row['user_id'] == ALBUM_GUEST) || ($row['username'] == ''))
-		{
-			$info .= ($row['pic_username'] == '') ? $lang['Guest'] : colorize_username($row['user_id']);
-		}
-		else
-		{
-			$info .= $lang['Pic_Poster'] . ': ' . colorize_username($row['user_id']);
-		}
+		$info .= ($row['pic_username'] == '') ? $lang['Guest'] : colorize_username($row['user_id']);
 	}
 	else
 	{
-		if (($row['user_id'] == ALBUM_GUEST) || ($row['username'] == ''))
-		{
-			$info .= ($row['pic_username'] == '') ? $lang['Guest'] : $row['pic_username'];
-		}
-		else
-		{
-			$info .= $lang['Pic_Poster'] . ': <a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '">' . $row['username'] . '</a>';
-		}
+		$info .= $lang['Pic_Poster'] . ': ' . colorize_username($row['user_id']);
 	}
 
 	// Write the last pic's title. Truncate it if it's too long
@@ -796,7 +779,7 @@ function album_get_last_pic_info($cats, &$last_pic_id)
 	}
 
 	$info .= '<br />' . $lang['Pic_Image'] . ': <a href="';
-	$info .= ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $row['pic_id'])) . '" target="_blank">' : append_sid(album_append_uid($album_pic_url . '?pic_id=' . $row['pic_id'])) . '">' ;
+	$info .= ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) . '" target="_blank">' : append_sid(album_append_uid($album_pic_url . '?pic_id=' . $row['pic_id'])) . '">' ;
 	$info .= $row['pic_title'] . '</a>';
 
 	$last_pic_id = $row['pic_id'];
@@ -880,17 +863,14 @@ function album_get_total_pic_cat($ss_cat_id)
 // ------------------------------------------------------------------------
 function album_get_last_comment_info($cats)
 {
-	global $phpEx, $board_config, $lang, $db, $album_data;
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	}
+	global $board_config, $lang, $db, $album_data;
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
-	$album_pic_url = 'album_showpage.' . $phpEx;
+	$album_pic_url = 'album_showpage.' . PHP_EXT;
 
 	$categories = implode(",", $cats);
 
-	if ( $categories == '' )
+	if ($categories == '')
 	{
 		return '';
 	}
@@ -922,27 +902,13 @@ function album_get_last_comment_info($cats)
 	$info = create_date2($board_config['default_dateformat'], $row['comment_time'], $board_config['board_timezone']);
 	$info .= '<br />' . $lang['Pic_Poster'] . ': ';
 
-	if ( defined('IS_ICYPHOENIX') )
+	if (($row['user_id'] == ALBUM_GUEST) || ($row['comment_username'] == ''))
 	{
-		if (($row['user_id'] == ALBUM_GUEST) || ($row['comment_username'] == ''))
-		{
-			$info .= ($row['comment_username'] == '') ? $lang['Guest'] : colorize_username($row['user_id']);
-		}
-		else
-		{
-			$info .= colorize_username($row['user_id']);
-		}
+		$info .= ($row['comment_username'] == '') ? $lang['Guest'] : colorize_username($row['user_id']);
 	}
 	else
 	{
-		if (($row['user_id'] == ALBUM_GUEST) || ($row['comment_username'] == ''))
-		{
-			$info .= ($row['comment_username'] == '') ? $lang['Guest'] : $row['comment_username'];
-		}
-		else
-		{
-			$info .= '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '">' . $row['username'] . '</a>';
-		}
+		$info .= colorize_username($row['user_id']);
 	}
 
 	$info .= '<br />' . $lang['Pic_Image'] . ': <a href="' . append_sid(album_append_uid($album_pic_url . '?pic_id=' . $row['pic_id'])) . '">' . $row['pic_title'] . '</a>';
@@ -955,7 +921,7 @@ function album_get_last_comment_info($cats)
 // ------------------------------------------------------------------------
 function album_get_moderator_info($cat)
 {
-	global $phpEx, $lang, $db;
+	global $lang, $db;
 
 	// Most of this code is copyrighted by Smartor
 	// Modifications are done by IdleVoid
@@ -986,7 +952,7 @@ function album_get_moderator_info($cat)
 	{
 		for ($j = 0; $j < count($grouprows); $j++)
 		{
-			$group_link = '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
+			$group_link = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
 			$moderators .= ($moderators == '') ? $group_link : ', ' . $group_link;
 		}
 	}
@@ -1032,11 +998,11 @@ function synchronize_all_cat_pics_counter()
 	global $db, $lang;
 	$sql = "SELECT cat_id FROM " . ALBUM_CAT_TABLE;
 	$result = $db->sql_query($sql);
-	if ( !$result )
+	if (!$result)
 	{
 		message_die('Couldn\'t query album categories!', __LINE__, __FILE__, $sql);
 	}
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		synchronize_cat_pics_counter($row['cat_id']);
 	}
@@ -1054,12 +1020,12 @@ function synchronize_cat_pics_counter($cat_id)
 			FROM " . ALBUM_TABLE . " AS p
 			WHERE pic_cat_id = " . $cat_id;
 	$result = $db->sql_query($sql);
-	if ( !$result )
+	if (!$result)
 	{
 		message_die('Couldn\'t query album pics!', __LINE__, __FILE__, $sql);
 	}
 	$pics_count = 0;
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$pics_count = intval($row['count']);
 	}
@@ -1069,7 +1035,7 @@ function synchronize_cat_pics_counter($cat_id)
 		SET cat_pics = " . $pics_count . "
 		WHERE cat_id = " . $cat_id;
 	$result = $db->sql_query($sql);
-	if ( !$result )
+	if (!$result)
 	{
 		message_die('Couldn\'t update album categories!', __LINE__, __FILE__, $sql);
 	}
@@ -1084,7 +1050,7 @@ function album_get_total_pics($cats)
 {
 	global $db;
 
-	$sql_where = " WHERE cat_id " . ( (is_array($cats)) ? "IN (". implode(",", $cats) .")" : "= " . $cats);
+	$sql_where = " WHERE cat_id " . ((is_array($cats)) ? "IN (". implode(",", $cats) .")" : "= " . $cats);
 
 	$sql = "SELECT cat_id, cat_pics
 			FROM " . ALBUM_CAT_TABLE . "
@@ -1096,7 +1062,7 @@ function album_get_total_pics($cats)
 	}
 
 	$pics_count = 0;
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$pics_count = $pics_count + intval($row['cat_pics']);
 	}
@@ -1112,7 +1078,7 @@ function album_get_total_pics_old($cats)
 {
 	global $db;
 
-	$sql_where = " WHERE c.cat_id " . ( (is_array($cats)) ? "IN (". implode(",", $cats) .")" : "= " . $cats);
+	$sql_where = " WHERE c.cat_id " . ((is_array($cats)) ? "IN (". implode(",", $cats) .")" : "= " . $cats);
 
 	$sql = "SELECT COUNT(p.pic_id) AS count
 			FROM " . ALBUM_CAT_TABLE . " AS c
@@ -1139,25 +1105,22 @@ function album_get_total_pics_old($cats)
 // ------------------------------------------------------------------------
 function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, $start, $sort_method, $sort_order, $total_pics)
 {
-	global $board_config, $album_data, $album_config, $template, $lang, $phpEx, $userdata, $db;
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	}
+	global $board_config, $album_data, $album_config, $template, $lang, $userdata, $db;
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$viewmode = (strpos($cat_ids, ',') != false) ? '&mode=' . ALBUM_VIEW_ALL : '';
 
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
 	$album_comment_pic_url = $album_show_pic_url;
 
 	if (intval($cat_ids) == album_get_personal_root_id($user_id) && $user_id != ALBUM_PUBLIC_GALLERY)
 	{
-		$album_pagination_page_url = 'album.' . $phpEx;
+		$album_pagination_page_url = 'album.' . PHP_EXT;
 	}
 	else
 	{
-		$album_pagination_page_url = 'album_cat.' . $phpEx;
+		$album_pagination_page_url = 'album_cat.' . PHP_EXT;
 	}
 
 	$pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
@@ -1166,10 +1129,10 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 	$pic_approval_sql = 'AND p.pic_approval = 1';
 
-	//if ( ($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && ($AH_thiscat['cat_user_id'] > 0)))
-	if ( ($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && (album_get_cat_user_id($cat_ids) != false)) )
+	//if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && ($AH_thiscat['cat_user_id'] > 0)))
+	if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && (album_get_cat_user_id($cat_ids) != false)))
 	{
-		if( ($userdata['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)) )
+		if(($userdata['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)))
 		{
 			$pic_approval_sql = '';
 		}
@@ -1216,22 +1179,22 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 			ORDER BY $sort_method_sql $sort_order
 			LIMIT $limit_sql";
 
-	if( !($result = $db->sql_query($sql)) )
+	if(!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query pics information', '', __LINE__, __FILE__, $sql);
 	}
 
 	$picrow = array();
 
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$picrow[] = $row;
 	}
 
 	$tot_unapproved = 0;
-	for ($i = 0 ; $i < count($picrow); $i++ )
+	for ($i = 0 ; $i < count($picrow); $i++)
 	{
-		if ($picrow[$i]['pic_approval'] == 0 )
+		if ($picrow[$i]['pic_approval'] == 0)
 		{
 			$tot_unapproved++;
 		}
@@ -1248,21 +1211,21 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 		for ($j = $i; $j < ($i + $album_config['cols_per_page']); $j++)
 		{
-			if( $j >= count($picrow) )
+			if($j >= count($picrow))
 			{
 				$template->assign_block_vars('index_pics_block.picrow.nopiccol', array());
 				$template->assign_block_vars('index_pics_block.picrow.picnodetail', array());
 				continue;
 				//break;
 			}
-			//if ( ($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && ($AH_thiscat['cat_user_id'] > 0)))
-			if ( ($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && (album_get_cat_user_id($cat_ids) != false)) )
+			//if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && ($AH_thiscat['cat_user_id'] > 0)))
+			if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && (album_get_cat_user_id($cat_ids) != false)))
 			{
-				if( ($userdata['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)) )
+				if(($userdata['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)))
 				{
 					$approval_mode = ($picrow[$j]['pic_approval'] == 0) ? 'approval' : 'unapproval';
 
-					$approval_link = '<a href="'. append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=' . $approval_mode . '&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">';
+					$approval_link = '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=' . $approval_mode . '&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">';
 
 					$approval_link .= ($picrow[$j]['pic_approval'] == 0) ? '<b>' . $lang['Approve'] . '</b>' : $lang['Unapprove'];
 
@@ -1270,22 +1233,10 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 				}
 			}
 
-			$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id']));
-			if ( ($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true) )
+			$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']));
+			if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 			{
-				$pic_filename = $picrow[$j]['pic_filename'];
-				$file_part = explode('.', strtolower($pic_filename));
-				$pic_filetype = $file_part[count($file_part) - 1];
-				$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-				//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-				//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-				$pic_thumbnail = ( $picrow[$j]['pic_thumbnail'] == '' ) ? md5($pic_filename) . '.' . $pic_filetype : $picrow[$j]['pic_thumbnail'];
-				//$pic_thumbnail = ( $picrow[$j]['pic_thumbnail'] == '' ) ? $pic_filename : $picrow[$j]['pic_thumbnail'];
-				$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-				if ( file_exists($pic_thumbnail_fullpath) )
-				{
-					$thumbnail_file = $pic_thumbnail_fullpath;
-				}
+				$thumbnail_file = picture_quick_thumb($picrow[$j]['pic_filename'], $picrow[$j]['pic_thumbnail'], $thumbnail_file);
 			}
 			if ($album_config['lb_preview'] == 0)
 			{
@@ -1293,84 +1244,69 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 			}
 			else
 			{
-				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) . '\',\'' . addslashes($picrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '\',\'' . addslashes($picrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 			}
 
 
 			$template->assign_block_vars('index_pics_block.picrow.piccol', array(
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id='. $picrow[$j]['pic_id'] . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order)),
+				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id='. $picrow[$j]['pic_id'] . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order)),
 				'THUMBNAIL' => $thumbnail_file,
 				'PIC_PREVIEW' => $pic_preview,
-				'DESC' => $picrow[$j]['pic_desc'],
+				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'DESC' => htmlspecialchars($picrow[$j]['pic_desc']),
 				'APPROVAL' => $approval_link,
 				)
 			);
 
-			if ( defined('IS_ICYPHOENIX') )
+			if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
 			{
-				if( ($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == '') )
-				{
-					$pic_poster = ($picrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($picrow[$j]['user_id']);
-				}
-				else
-				{
-					$pic_poster = colorize_username($picrow[$j]['user_id']);
-				}
-
-				$image_rating = ImageRating($picrow[$j]['rating']);
-				$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
+				$pic_poster = ($picrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($picrow[$j]['user_id']);
 			}
 			else
 			{
-				if( ($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == '') )
-				{
-					$pic_poster = ($picrow[$j]['pic_username'] == '') ? $lang['Guest'] : $picrow[$j]['pic_username'];
-				}
-				else
-				{
-					$pic_poster = '<a href="'. append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL .'='. $picrow[$j]['user_id']) .'">'. $picrow[$j]['username'] .'</a>';
-				}
-
-				$image_rating = ImageRating($picrow[$j]['rating']);
-				$image_rating_link_style = '';
+				$pic_poster = colorize_username($picrow[$j]['user_id']);
 			}
+
+			$image_rating = ImageRating($picrow[$j]['rating']);
+			$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
 
 			$image_comment = ($picrow[$j]['comments'] == 0) ? $lang['Not_commented'] : $picrow[$j]['comments'];
 
-			$edit_rights = ( ( $auth_data['edit'] && ($picrow[$j]['pic_user_id'] == $userdata['user_id']) ) || ($auth_data['moderator'] && ($AH_thiscat['cat_edit_level'] != ALBUM_ADMIN) ) || ($userdata['user_level'] == ADMIN) ) ? true : false;
+			$edit_rights = (($auth_data['edit'] && ($picrow[$j]['pic_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($AH_thiscat['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? true : false;
 
-			$delete_rights = ( ( $auth_data['delete'] && ($picrow[$j]['pic_user_id'] == $userdata['user_id']) ) || ($auth_data['moderator'] && ($AH_thiscat['cat_delete_level'] != ALBUM_ADMIN) ) || ($userdata['user_level'] == ADMIN) ) ? true : false;
+			$delete_rights = (($auth_data['delete'] && ($picrow[$j]['pic_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($AH_thiscat['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? true : false;
 
 			$template->assign_block_vars('index_pics_block.picrow.pic_detail', array(
 				'PIC_ID' => $picrow[$j]['pic_id'],
+				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 				//'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'] . '">' . $picrow[$j]['pic_title'] . '</a>',
-				'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $picrow[$j]['pic_title'] . '</a>',
+				'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 				'POSTER' => $pic_poster,
 				'TIME' => create_date2($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
 
 				'VIEW' => $picrow[$j]['pic_view_count'],
 
-				'RATING' => ($album_config['rate'] == 1) ?( '<a href="' . append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '"' . $image_rating_link_style . '>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+				'RATING' => ($album_config['rate'] == 1) ?('<a href="' . append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '"' . $image_rating_link_style . '>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 
-				'COMMENTS' => ($album_config['comment'] == 1) ? ( '<a href="' . append_sid(album_append_uid($album_comment_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+				'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid($album_comment_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
-				'EDIT' =>  ($edit_rights) ? '<a href="'. append_sid(album_append_uid('album_edit.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '',
+				'EDIT' =>  ($edit_rights) ? '<a href="'. append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '',
 
-				'DELETE' => ($delete_rights) ? '<a href="'. append_sid(album_append_uid('album_delete.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '',
+				'DELETE' => ($delete_rights) ? '<a href="'. append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '',
 
-				'MOVE' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=move&amp;pic_id=' . $picrow[$j]['pic_id'])) .'">'. $lang['Move'] .'</a>' : '',
+				'MOVE' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $picrow[$j]['pic_id'])) .'">'. $lang['Move'] .'</a>' : '',
 
-				'COPY' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=copy&amp;pic_id=' . $picrow[$j]['pic_id'])) .'">'. $lang['Copy'] .'</a>' : '',
+				'COPY' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $picrow[$j]['pic_id'])) .'">'. $lang['Copy'] .'</a>' : '',
 
-				'LOCK' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . $phpEx . '?mode=' . (($picrow[$j]['pic_lock'] == 0) ? 'lock' : 'unlock') . '&amp;pic_id=' . $picrow[$j]['pic_id'])) .'">'. (($picrow[$j]['pic_lock'] == 0) ? $lang['Lock'] : $lang['Unlock']) .'</a>' : '',
+				'LOCK' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=' . (($picrow[$j]['pic_lock'] == 0) ? 'lock' : 'unlock') . '&amp;pic_id=' . $picrow[$j]['pic_id'])) .'">'. (($picrow[$j]['pic_lock'] == 0) ? $lang['Lock'] : $lang['Unlock']) .'</a>' : '',
 
 				'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) .'</a><br />' : '',
 
-				//'AVATAR_PIC' => ( ($album_config['personal_allow_avatar_gallery'] == 1) && ($userdata['user_id'] == $picrow[$j]['pic_user_id']) ) ? '<br /><a href="'. append_sid('album_avatar.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
+				//'AVATAR_PIC' => (($album_config['personal_allow_avatar_gallery'] == 1) && ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="'. append_sid('album_avatar.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
 
-				'AVATAR_PIC' => ( ($album_config['personal_allow_avatar_gallery'] == 1) && ($userdata['user_id'] == $picrow[$j]['pic_user_id']) && ($picrow[$j]['cat_user_id'] != 0) ) ? '<br /><a href="'. append_sid('album_avatar.' . $phpEx . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
+				'AVATAR_PIC' => (($album_config['personal_allow_avatar_gallery'] == 1) && ($userdata['user_id'] == $picrow[$j]['pic_user_id']) && ($picrow[$j]['cat_user_id'] != 0)) ? '<br /><a href="'. append_sid('album_avatar.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
 
-				'IMG_BBCODE' => ( ($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $picrow[$j]['pic_user_id']) ) ? '<br /><a href="javasript://" OnClick="window.clipboardData.setData(\'Text\', \'[albumimg]' . $picrow[$j]['pic_id'] . '[/albumimg]\'); return false;">' . $lang['BBCode_Copy'] . '</a>' : ''
+				'IMG_BBCODE' => (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="javasript://" OnClick="window.clipboardData.setData(\'Text\', \'[albumimg]' . $picrow[$j]['pic_id'] . '[/albumimg]\'); return false;">' . $lang['BBCode_Copy'] . '</a>' : ''
 				)
 			);
 
@@ -1378,7 +1314,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 			if ($album_config['show_slideshow'] == 1)
 			{
 				$last_pic_id = $picrow[$j]['pic_id'];
-				$slideshow_link = append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $last_pic_id . '&amp;slideshow=5'));
+				$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . '&amp;slideshow=5'));
 				$slideshow_link_full = '&nbsp;[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]&nbsp;';
 			}
 			else
@@ -1387,17 +1323,17 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 			}
 			// Mighty Gorgon - Slideshow - END
 
-			if ( is_array($cats) )
+			if (is_array($cats))
 			{
 				// is a personal category that the picture belongs to AND
 				// is it the main category in the personal gallery ?
 				if ($picrow[$j]['cat_user_id'] != 0 && $picrow[$j]['cat_id'] == album_get_personal_root_id($picrow[$j]['cat_user_id']))
 				{
-					$album_page_url = 'album.' . $phpEx;
+					$album_page_url = 'album.' . PHP_EXT;
 				}
 				else
 				{
-					$album_page_url = 'album_cat.' . $phpEx;
+					$album_page_url = 'album_cat.' . PHP_EXT;
 				}
 
 				$image_cat_url = append_sid(album_append_uid($album_page_url . '?cat_id=' . $picrow[$j]['cat_id'] . '&user_id=' . $picrow[$j]['cat_user_id']));
@@ -1415,8 +1351,8 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 		'PAGINATION' => generate_pagination(append_sid(album_append_uid($album_pagination_page_url . '?cat_id=' . intval($cat_ids) . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . $viewmode)), $total_pics, $pics_per_page, $start),
 		'SLIDESHOW' => $slideshow_link_full,
 		$waiting = ($tot_unapproved == 0) ? "" : $tot_unapproved . $lang['Waiting'],
-		'WAITING' => ( $userdata['user_level'] == ADMIN ) ? (($tot_unapproved == 0) ? '&nbsp;' : '<br /><span class="gensmall"><b>' . $tot_unapproved . $lang['Waiting'] . '</b></span>') : '&nbsp;',
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pics_per_page ) + 1 ), ceil( $total_pics / $pics_per_page ))
+		'WAITING' => ($userdata['user_level'] == ADMIN) ? (($tot_unapproved == 0) ? '&nbsp;' : '<br /><span class="gensmall"><b>' . $tot_unapproved . $lang['Waiting'] . '</b></span>') : '&nbsp;',
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 		)
 	);
 }
@@ -1428,13 +1364,10 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 // ------------------------------------------------------------------------
 function album_build_recent_pics($cats)
 {
-	global $db, $board_config, $album_config, $template, $lang, $phpEx, $profiledata;
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	}
+	global $db, $board_config, $album_config, $template, $lang, $profiledata;
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
 	$album_comment_pic_url = $album_show_pic_url;
 	$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
@@ -1442,11 +1375,11 @@ function album_build_recent_pics($cats)
 
 ####################################################################
 
-	$where = (!empty($_GET['user_id'])) ? "WHERE p.pic_cat_id IN ($cats) AND ( p.pic_approval = 1 OR ct.cat_approval = 0 )" : "WHERE ( p.pic_approval = 1 OR ct.cat_approval = 0 )";
+	$where = (!empty($_GET['user_id'])) ? "WHERE p.pic_cat_id IN ($cats) AND (p.pic_approval = 1 OR ct.cat_approval = 0)" : "WHERE (p.pic_approval = 1 OR ct.cat_approval = 0)";
 
 ##############################################################
 
-	if ( !empty($cats) )
+	if (!empty($cats))
 	{
 		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 				FROM ". ALBUM_TABLE ." AS p
@@ -1458,15 +1391,15 @@ function album_build_recent_pics($cats)
 				GROUP BY p.pic_id
 				ORDER BY pic_time DESC
 				LIMIT $limit_sql";
-//				WHERE p.pic_cat_id IN ($cats) AND ( p.pic_approval = 1 OR ct.cat_approval = 0 ) //// ".$where."
-		if( !($result = $db->sql_query($sql)) )
+//				WHERE p.pic_cat_id IN ($cats) AND (p.pic_approval = 1 OR ct.cat_approval = 0) //// ".$where."
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query recent pics information', '', __LINE__, __FILE__, $sql);
 		}
 
 		$recentrow = array();
 
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
 			$recentrow[] = $row;
 		}
@@ -1483,27 +1416,15 @@ function album_build_recent_pics($cats)
 
 				for ($j = $i; $j < ($i + $cols_per_page); $j++)
 				{
-					if( $j >= count($recentrow) )
+					if($j >= count($recentrow))
 					{
 						break;
 					}
 
-					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $recentrow[$j]['pic_id']));
-					if ( ($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true) )
+					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']));
+					if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 					{
-						$pic_filename = $recentrow[$j]['pic_filename'];
-						$file_part = explode('.', strtolower($pic_filename));
-						$pic_filetype = $file_part[count($file_part) - 1];
-						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-						//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-						//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-						$pic_thumbnail = ( $recentrow[$j]['pic_thumbnail'] == '' ) ? md5($pic_filename) . '.' . $pic_filetype : $recentrow[$j]['pic_thumbnail'];
-						//$pic_thumbnail = ( $recentrow[$j]['pic_thumbnail'] == '' ) ? $pic_filename : $recentrow[$j]['pic_thumbnail'];
-						$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-						if ( file_exists($pic_thumbnail_fullpath) )
-						{
-							$thumbnail_file = $pic_thumbnail_fullpath;
-						}
+						$thumbnail_file = picture_quick_thumb($recentrow[$j]['pic_filename'], $recentrow[$j]['pic_thumbnail'], $thumbnail_file);
 					}
 					if ($album_config['lb_preview'] == 0)
 					{
@@ -1511,60 +1432,44 @@ function album_build_recent_pics($cats)
 					}
 					else
 					{
-						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $recentrow[$j]['pic_id'])) . '\',\'' . addslashes($recentrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id'])) . '\',\'' . addslashes($recentrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
-						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $recentrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url. '?pic_id='. $recentrow[$j]['pic_id'])),
+						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url. '?pic_id='. $recentrow[$j]['pic_id'])),
 						'THUMBNAIL' => $thumbnail_file,
 						'PIC_PREVIEW' => $pic_preview,
-						'DESC' => $recentrow[$j]['pic_desc']
+						'PIC_TITLE' => htmlspecialchars($recentrow[$j]['pic_title']),
+						'DESC' => htmlspecialchars($recentrow[$j]['pic_desc'])
 						)
 					);
 
-					if ( defined('IS_ICYPHOENIX') )
+					if(($recentrow[$j]['user_id'] == ALBUM_GUEST) || ($recentrow[$j]['username'] == ''))
 					{
-						if( ($recentrow[$j]['user_id'] == ALBUM_GUEST) || ($recentrow[$j]['username'] == '') )
-						{
-							$recent_poster = ($recentrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($recentrow[$j]['user_id']);
-						}
-						else
-						{
-							$recent_poster = colorize_username($recentrow[$j]['user_id']);
-						}
-
-						$image_rating = ImageRating($recentrow[$j]['rating']);
-						$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
+						$recent_poster = ($recentrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($recentrow[$j]['user_id']);
 					}
 					else
 					{
-						if( ($recentrow[$j]['user_id'] == ALBUM_GUEST) || ($recentrow[$j]['username'] == '') )
-						{
-							$recent_poster = ($recentrow[$j]['pic_username'] == '') ? $lang['Guest'] : $recentrow[$j]['pic_username'];
-						}
-						else
-						{
-							$recent_poster = '<a href="'. append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL .'='. $recentrow[$j]['user_id']) .'">'. $recentrow[$j]['username'] .'</a>';
-						}
-
-						$image_rating = ImageRating($recentrow[$j]['rating']);
-						$image_rating_link_style = '';
+						$recent_poster = colorize_username($recentrow[$j]['user_id']);
 					}
 
+					$image_rating = ImageRating($recentrow[$j]['rating']);
+					$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
 
 					$image_comment = ($recentrow[$j]['comments'] == 0) ? $lang['Not_commented'] : $recentrow[$j]['comments'];
 
 					$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
 						'PIC_ID' => $recentrow[$j]['pic_id'],
-						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'])) . '">' . $recentrow[$j]['pic_title'] . '</a>',
+						'PIC_TITLE' => htmlspecialchars($recentrow[$j]['pic_title']),
+						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'])) . '">' . htmlspecialchars($recentrow[$j]['pic_title']) . '</a>',
 						'POSTER' => $recent_poster,
 						'TIME' => create_date2($board_config['default_dateformat'], $recentrow[$j]['pic_time'], $board_config['board_timezone']),
 
 						'VIEW' => $recentrow[$j]['pic_view_count'],
 
-						'RATING' => ($album_config['rate'] == 1) ? ( '<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $recentrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+						'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $recentrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 
-						'COMMENTS' => ($album_config['comment'] == 1) ? ( '<a href="' . append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $recentrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+						'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
 						'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($recentrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($recentrow[$j]['pic_user_ip']) .'</a><br />' : ''
 						)
@@ -1593,19 +1498,16 @@ function album_build_recent_pics($cats)
 // ------------------------------------------------------------------------
 function album_build_highest_rated_pics($cats)
 {
-	global $db, $board_config, $album_config, $template, $lang, $phpEx;
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	}
+	global $db, $board_config, $album_config, $template, $lang;
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
 
 	$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
 	$cols_per_page = $album_config['img_cols'];
 
-	if ( !empty($cats) )
+	if (!empty($cats))
 	{
 		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 			FROM ". ALBUM_TABLE ." AS p
@@ -1614,19 +1516,19 @@ function album_build_highest_rated_pics($cats)
 				LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
 				LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
 			WHERE p.pic_cat_id IN ($cats)
-				AND ( p.pic_approval = 1 OR ct.cat_approval = 0 )
+				AND (p.pic_approval = 1 OR ct.cat_approval = 0)
 			GROUP BY p.pic_id
 			ORDER BY rating DESC, RAND()
 			LIMIT $limit_sql";
 
-		if( !($result = $db->sql_query($sql)) )
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query highest rated pics information', '', __LINE__, __FILE__, $sql);
 		}
 
 		$highestrow = array();
 
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
 			$highestrow[] = $row;
 		}
@@ -1644,27 +1546,15 @@ function album_build_highest_rated_pics($cats)
 
 				for ($j = $i; $j < ($i + $cols_per_page); $j++)
 				{
-					if( $j >= count($highestrow) )
+					if($j >= count($highestrow))
 					{
 						break;
 					}
 
-					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $highestrow[$j]['pic_id']));
-					if ( ($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true) )
+					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id']));
+					if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 					{
-						$pic_filename = $highestrow[$j]['pic_filename'];
-						$file_part = explode('.', strtolower($pic_filename));
-						$pic_filetype = $file_part[count($file_part) - 1];
-						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-						//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-						//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-						$pic_thumbnail = ( $highestrow[$j]['pic_thumbnail'] == '' ) ? md5($pic_filename) . '.' . $pic_filetype : $highestrow[$j]['pic_thumbnail'];
-						//$pic_thumbnail = ( $highestrow[$j]['pic_thumbnail'] == '' ) ? $pic_filename : $highestrow[$j]['pic_thumbnail'];
-						$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-						if ( file_exists($pic_thumbnail_fullpath) )
-						{
-							$thumbnail_file = $pic_thumbnail_fullpath;
-						}
+						$thumbnail_file = picture_quick_thumb($highestrow[$j]['pic_filename'], $highestrow[$j]['pic_thumbnail'], $thumbnail_file);
 					}
 
 					if ($album_config['lb_preview'] == 0)
@@ -1673,49 +1563,32 @@ function album_build_highest_rated_pics($cats)
 					}
 					else
 					{
-						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $highestrow[$j]['pic_id'])) . '\',\'' . addslashes($highestrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id'])) . '\',\'' . addslashes($highestrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					if ($highestrow[$j]['rating'] > 0)
 					{
 						$template->assign_block_vars('highest_pics_block.highest_pics.highest_col', array(
-							'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $highestrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $highestrow[$j]['pic_id'])),
+							'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $highestrow[$j]['pic_id'])),
 							'THUMBNAIL' => $thumbnail_file,
 							'PIC_PREVIEW' => $pic_preview,
-							'DESC' => $highestrow[$j]['pic_desc']
+							'PIC_TITLE' => htmlspecialchars($highestrow[$j]['pic_title']),
+							'DESC' => htmlspecialchars($highestrow[$j]['pic_desc'])
 							)
 						);
 					}
 
-					if ( defined('IS_ICYPHOENIX') )
+					if(($highestrow[$j]['user_id'] == ALBUM_GUEST) || ($highestrow[$j]['username'] == ''))
 					{
-						if( ($highestrow[$j]['user_id'] == ALBUM_GUEST) || ($highestrow[$j]['username'] == '') )
-						{
-							$highest_poster = ($highestrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($highestrow[$j]['user_id']);
-						}
-						else
-						{
-							$highest_poster = colorize_username($highestrow[$j]['user_id']);
-						}
-
-						$image_rating = ImageRating($highestrow[$j]['rating']);
-						$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
+						$highest_poster = ($highestrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($highestrow[$j]['user_id']);
 					}
 					else
 					{
-						if( ($highestrow[$j]['user_id'] == ALBUM_GUEST) || ($highestrow[$j]['username'] == '') )
-						{
-							$highest_poster = ($highestrow[$j]['pic_username'] == '') ? $lang['Guest'] : $highestrow[$j]['pic_username'];
-						}
-						else
-						{
-							$highest_poster = '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $highestrow[$j]['user_id']) . '">' . $highestrow[$j]['username'] . '</a>';
-						}
-
-						$image_rating = ImageRating($highestrow[$j]['rating']);
-						$image_rating_link_style = '';
+						$highest_poster = colorize_username($highestrow[$j]['user_id']);
 					}
 
+					$image_rating = ImageRating($highestrow[$j]['rating']);
+					$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
 
 					$image_comment = ($highestrow[$j]['comments'] == 0) ? $lang['Not_commented'] : $highestrow[$j]['comments'];
 
@@ -1724,15 +1597,16 @@ function album_build_highest_rated_pics($cats)
 						$rated_images++;
 						$template->assign_block_vars('highest_pics_block.highest_pics.highest_detail', array(
 							'PIC_ID' => $highestrow[$j]['pic_id'],
-							'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $highestrow[$j]['pic_id'])) . '">' . $highestrow[$j]['pic_title'] . '</a>',
+							'PIC_TITLE' => htmlspecialchars($highestrow[$j]['pic_title']),
+							'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $highestrow[$j]['pic_id'])) . '">' . htmlspecialchars($highestrow[$j]['pic_title']) . '</a>',
 							'H_POSTER' => $highest_poster,
 							'H_TIME' => create_date2($board_config['default_dateformat'], $highestrow[$j]['pic_time'], $board_config['board_timezone']),
 
 							'H_VIEW' => $highestrow[$j]['pic_view_count'],
 
-							'H_RATING' => ($album_config['rate'] == 1) ? ( '<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $highestrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+							'H_RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $highestrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 
-							'H_COMMENTS' => ($album_config['comment'] == 1) ? ( '<a href="' . append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $highestrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+							'H_COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
 							'H_IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($highestrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($highestrow[$j]['pic_user_ip']) .'</a><br />' : ''
 							)
@@ -1768,18 +1642,15 @@ function album_build_highest_rated_pics($cats)
 // ------------------------------------------------------------------------
 function album_build_most_viewed_pics($cats)
 {
-	global $db, $board_config, $album_config, $template, $lang, $phpEx;
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	}
+	global $db, $board_config, $album_config, $template, $lang;
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
 	$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
 	$cols_per_page = $album_config['img_cols'];
 
-	if ( !empty($cats) )
+	if (!empty($cats))
 	{
 		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 			FROM ". ALBUM_TABLE ." AS p
@@ -1787,20 +1658,20 @@ function album_build_most_viewed_pics($cats)
 				LEFT JOIN ". ALBUM_CAT_TABLE ." AS ct ON p.pic_cat_id = ct.cat_id
 				LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
 				LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
-			WHERE p.pic_cat_id IN ($cats) AND ( p.pic_approval = 1 OR ct.cat_approval = 0 )
+			WHERE p.pic_cat_id IN ($cats) AND (p.pic_approval = 1 OR ct.cat_approval = 0)
 			GROUP BY p.pic_id
 			ORDER BY p.pic_view_count DESC
 			LIMIT $limit_sql";
 
-		//if( !($result = $db->sql_query($sql, false, 'album_pics_')) )
-		if( !($result = $db->sql_query($sql)) )
+		//if(!($result = $db->sql_query($sql, false, 'album_pics_')))
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query most viewed pics information', '', __LINE__, __FILE__, $sql);
 		}
 
 		$mostviewed = array();
 
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
 			$mostviewed[] = $row;
 		}
@@ -1817,27 +1688,15 @@ function album_build_most_viewed_pics($cats)
 
 				for ($j = $i; $j < ($i + $cols_per_page); $j++)
 				{
-					if( $j >= count($mostviewed) )
+					if($j >= count($mostviewed))
 					{
 						break;
 					}
 
-					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $mostviewed[$j]['pic_id']));
-					if ( ($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true) )
+					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id']));
+					if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 					{
-						$pic_filename = $mostviewed[$j]['pic_filename'];
-						$file_part = explode('.', strtolower($pic_filename));
-						$pic_filetype = $file_part[count($file_part) - 1];
-						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-						//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-						//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-						$pic_thumbnail = ( $mostviewed[$j]['pic_thumbnail'] == '' ) ? md5($pic_filename) . '.' . $pic_filetype : $mostviewed[$j]['pic_thumbnail'];
-						//$pic_thumbnail = ( $mostviewed[$j]['pic_thumbnail'] == '' ) ? $pic_filename : $mostviewed[$j]['pic_thumbnail'];
-						$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-						if ( file_exists($pic_thumbnail_fullpath) )
-						{
-							$thumbnail_file = $pic_thumbnail_fullpath;
-						}
+						$thumbnail_file = picture_quick_thumb($mostviewed[$j]['pic_filename'], $mostviewed[$j]['pic_thumbnail'], $thumbnail_file);
 					}
 
 					if ($album_config['lb_preview'] == 0)
@@ -1846,60 +1705,44 @@ function album_build_most_viewed_pics($cats)
 					}
 					else
 					{
-						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $mostviewed[$j]['pic_id'])) . '\',\'' . addslashes($mostviewed[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id'])) . '\',\'' . addslashes($mostviewed[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					$template->assign_block_vars('mostviewed_pics_block.mostviewed_pics.mostviewed_col', array(
-						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $mostviewed[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $mostviewed[$j]['pic_id'])),
+						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $mostviewed[$j]['pic_id'])),
 						'THUMBNAIL' => $thumbnail_file,
 						'PIC_PREVIEW' => $pic_preview,
-						'DESC' => $mostviewed[$j]['pic_desc']
+						'PIC_TITLE' => htmlspecialchars($mostviewed[$j]['pic_title']),
+						'DESC' => htmlspecialchars($mostviewed[$j]['pic_desc'])
 						)
 					);
 
-					if ( defined('IS_ICYPHOENIX') )
+					if(($mostviewed[$j]['user_id'] == ALBUM_GUEST) || ($mostviewed[$j]['username'] == ''))
 					{
-						if( ($mostviewed[$j]['user_id'] == ALBUM_GUEST) || ($mostviewed[$j]['username'] == '') )
-						{
-							$mostviewed_poster = ($mostviewed[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($mostviewed[$j]['user_id']);
-						}
-						else
-						{
-							$mostviewed_poster = colorize_username($mostviewed[$j]['user_id']);
-						}
-
-						$image_rating = ImageRating($mostviewed[$j]['rating']);
-						$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
+						$mostviewed_poster = ($mostviewed[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($mostviewed[$j]['user_id']);
 					}
 					else
 					{
-						if( ($mostviewed[$j]['user_id'] == ALBUM_GUEST) || ($mostviewed[$j]['username'] == '') )
-						{
-							$mostviewed_poster = ($mostviewed[$j]['pic_username'] == '') ? $lang['Guest'] : $mostviewed[$j]['pic_username'];
-						}
-						else
-						{
-							$mostviewed_poster = '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $mostviewed[$j]['user_id']) . '">' . $mostviewed[$j]['username'] . '</a>';
-						}
-
-						$image_rating = ImageRating($mostviewed[$j]['rating']);
-						$image_rating_link_style = '';
+						$mostviewed_poster = colorize_username($mostviewed[$j]['user_id']);
 					}
 
+					$image_rating = ImageRating($mostviewed[$j]['rating']);
+					$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
 
 					$image_comment = ($mostviewed[$j]['comments'] == 0) ? $lang['Not_commented'] : $mostviewed[$j]['comments'];
 
 					$template->assign_block_vars('mostviewed_pics_block.mostviewed_pics.mostviewed_detail', array(
 						'PIC_ID' => $mostviewed[$j]['pic_id'],
-						'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $mostviewed[$j]['pic_id'])) . '">' . $mostviewed[$j]['pic_title'] . '</a>',
+						'PIC_TITLE' => htmlspecialchars($mostviewed[$j]['pic_title']),
+						'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $mostviewed[$j]['pic_id'])) . '">' . htmlspecialchars($mostviewed[$j]['pic_title']) . '</a>',
 						'H_POSTER' => $mostviewed_poster,
 						'H_TIME' => create_date2($board_config['default_dateformat'], $mostviewed[$j]['pic_time'], $board_config['board_timezone']),
 
 						'H_VIEW' => $mostviewed[$j]['pic_view_count'],
 
-						'H_RATING' => ($album_config['rate'] == 1) ? ( '<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $mostviewed[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+						'H_RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $mostviewed[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 
-						'H_COMMENTS' => ($album_config['comment'] == 1) ? ( '<a href="' . append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $mostviewed[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+						'H_COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
 						'H_IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($mostviewed[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($mostviewed[$j]['pic_user_ip']) .'</a><br />' : ''
 						)
@@ -1928,18 +1771,15 @@ function album_build_most_viewed_pics($cats)
 // ------------------------------------------------------------------------
 function album_build_random_pics($cats)
 {
-	global $db, $board_config, $album_config, $template, $lang, $phpEx;
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-	}
+	global $db, $board_config, $album_config, $template, $lang;
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
 	$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
 	$cols_per_page = $album_config['img_cols'];
 
-	if ( !empty($cats) )
+	if (!empty($cats))
 	{
 		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 				FROM ". ALBUM_TABLE ." AS p
@@ -1947,19 +1787,19 @@ function album_build_random_pics($cats)
 					LEFT JOIN ". ALBUM_CAT_TABLE ." AS ct ON p.pic_cat_id = ct.cat_id
 					LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
 					LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
-				WHERE p.pic_cat_id IN ($cats) AND ( p.pic_approval = 1 OR ct.cat_approval = 0 )
+				WHERE p.pic_cat_id IN ($cats) AND (p.pic_approval = 1 OR ct.cat_approval = 0)
 				GROUP BY p.pic_id
 				ORDER BY RAND()
 				LIMIT $limit_sql";
 
-		if( !($result = $db->sql_query($sql)) )
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query rand pics information', '', __LINE__, __FILE__, $sql);
 		}
 
 		$randrow = array();
 
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
 			$randrow[] = $row;
 		}
@@ -1976,27 +1816,15 @@ function album_build_random_pics($cats)
 
 				for ($j = $i; $j < ($i + $cols_per_page); $j++)
 				{
-					if( $j >= count($randrow) )
+					if($j >= count($randrow))
 					{
 						break;
 					}
 
-					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $randrow[$j]['pic_id']));
-					if ( ($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true) )
+					$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id']));
+					if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 					{
-						$pic_filename = $randrow[$j]['pic_filename'];
-						$file_part = explode('.', strtolower($pic_filename));
-						$pic_filetype = $file_part[count($file_part) - 1];
-						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-						//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-						//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-						$pic_thumbnail = ( $randrow[$j]['pic_thumbnail'] == '' ) ? md5($pic_filename) . '.' . $pic_filetype : $randrow[$j]['pic_thumbnail'];
-						//$pic_thumbnail = ( $randrow[$j]['pic_thumbnail'] == '' ) ? $pic_filename : $randrow[$j]['pic_thumbnail'];
-						$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-						if ( file_exists($pic_thumbnail_fullpath) )
-						{
-							$thumbnail_file = $pic_thumbnail_fullpath;
-						}
+						$thumbnail_file = picture_quick_thumb($randrow[$j]['pic_filename'], $randrow[$j]['pic_thumbnail'], $thumbnail_file);
 					}
 
 					if ($album_config['lb_preview'] == 0)
@@ -2005,60 +1833,45 @@ function album_build_random_pics($cats)
 					}
 					else
 					{
-						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $randrow[$j]['pic_id'])) . '\',\'' . addslashes($randrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id'])) . '\',\'' . addslashes($randrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					$template->assign_block_vars('random_pics_block.rand_pics.rand_col', array(
-						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $randrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $randrow[$j]['pic_id'])),
+						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $randrow[$j]['pic_id'])),
 						'THUMBNAIL' => $thumbnail_file,
 						'PIC_PREVIEW' => $pic_preview,
-						'DESC' => $randrow[$j]['pic_desc']
+						'PIC_TITLE' => htmlspecialchars($randrow[$j]['pic_title']),
+						'DESC' => htmlspecialchars($randrow[$j]['pic_desc'])
 						)
 					);
 
-					if ( defined('IS_ICYPHOENIX') )
+					if(($randrow[$j]['user_id'] == ALBUM_GUEST) || ($randrow[$j]['username'] == ''))
 					{
-						if( ($randrow[$j]['user_id'] == ALBUM_GUEST) || ($randrow[$j]['username'] == '') )
-						{
-							$rand_poster = ($randrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($randrow[$j]['user_id']);
-						}
-						else
-						{
-							$rand_poster = colorize_username($randrow[$j]['user_id']);
-						}
-
-						$image_rating = ImageRating($randrow[$j]['rating']);
-						$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
+						$rand_poster = ($randrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($randrow[$j]['user_id']);
 					}
 					else
 					{
-						if( ($randrow[$j]['user_id'] == ALBUM_GUEST) || ($randrow[$j]['username'] == '') )
-						{
-							$rand_poster = ($randrow[$j]['pic_username'] == '') ? $lang['Guest'] : $randrow[$j]['pic_username'];
-						}
-						else
-						{
-							$rand_poster = '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $randrow[$j]['user_id']) . '">' . $randrow[$j]['username'] . '</a>';
-						}
-
-						$image_rating = ImageRating($randrow[$j]['rating']);
-						$image_rating_link_style = '';
+						$rand_poster = colorize_username($randrow[$j]['user_id']);
 					}
+
+					$image_rating = ImageRating($randrow[$j]['rating']);
+					$image_rating_link_style = ($image_rating == $lang['Not_rated']) ? '' : 'style="text-decoration: none;"';
 
 
 					$image_comment = ($randrow[$j]['comments'] == 0) ? $lang['Not_commented'] : $randrow[$j]['comments'];
 
 					$template->assign_block_vars('random_pics_block.rand_pics.rand_detail', array(
 						'PIC_ID' => $randrow[$j]['pic_id'],
-						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $randrow[$j]['pic_id'])) . '">' . $randrow[$j]['pic_title'] . '</a>',
+						'PIC_TITLE' => htmlspecialchars($randrow[$j]['pic_title']),
+						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $randrow[$j]['pic_id'])) . '">' . htmlspecialchars($randrow[$j]['pic_title']) . '</a>',
 						'POSTER' => $rand_poster,
 						'TIME' => create_date2($board_config['default_dateformat'], $randrow[$j]['pic_time'], $board_config['board_timezone']),
 
 						'VIEW' => $randrow[$j]['pic_view_count'],
 
-						'RATING' => ($album_config['rate'] == 1) ? ( '<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $randrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+						'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $randrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 
-						'COMMENTS' => ($album_config['comment'] == 1) ? ( '<a href="' . append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $randrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+						'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
 						'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($randrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($randrow[$j]['pic_user_ip']) .'</a><br />' : ''
 						)
@@ -2084,26 +1897,15 @@ function album_build_random_pics($cats)
 
 function album_build_last_comments_info($cats)
 {
-	global $db, $board_config, $album_config, $template, $lang, $phpEx, $album_data, $bbcode, $userdata;
-	global $album_root_path, $phpbb_root_path;
+	global $db, $board_config, $album_config, $template, $lang, $album_data, $bbcode, $userdata;
 
-	if ( defined('IS_ICYPHOENIX') )
-	{
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-		include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-	}
-	else
-	{
-		if ($album_config['album_bbcode'] == 1)
-		{
-			include_once($album_root_path . 'album_bbcode.' . $phpEx);
-		}
-	}
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 	$number_of_comments = 5;
-	$album_show_pic_url = 'album_showpage.' . $phpEx;
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 
-	if ( $cats == '' )
+	if ($cats == '')
 	{
 		$sql_where = '';
 	}
@@ -2130,7 +1932,7 @@ function album_build_last_comments_info($cats)
 		message_die(GENERAL_ERROR, 'Could not get last comment information', '', __LINE__, __FILE__, $sql);
 	}
 
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$commentsrow[] = $row;
 	}
@@ -2147,49 +1949,23 @@ function album_build_last_comments_info($cats)
 		);
 		for ($i = 0; $i < count($commentsrow); $i++)
 		{
-			if ( defined('IS_ICYPHOENIX') )
+			if (($commentsrow[$i]['comment_username'] == ALBUM_GUEST) || ($commentsrow[$i]['comment_username'] == ''))
 			{
-				if (($commentsrow[$i]['comment_username'] == ALBUM_GUEST) || ($commentsrow[$i]['comment_username'] == ''))
-				{
-					$poster = ($commentsrow[$i]['comment_username'] == '') ? $lang['Guest'] : colorize_username($commentsrow[$i]['user_id']);
-				}
-				else
-				{
-					$poster = colorize_username($commentsrow[$i]['user_id']);
-				}
+				$poster = ($commentsrow[$i]['comment_username'] == '') ? $lang['Guest'] : colorize_username($commentsrow[$i]['user_id']);
 			}
 			else
 			{
-				if (($commentsrow[$i]['comment_username'] == ALBUM_GUEST) || ($commentsrow[$i]['comment_username'] == ''))
-				{
-					$poster = ($commentsrow[$i]['comment_username'] == '') ? $lang['Guest'] : $commentsrow[$i]['comment_username'];
-				}
-				else
-				{
-					$poster = '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $commentsrow[$i]['user_id']) . '">' . $commentsrow[$i]['username'] . '</a>';
-				}
+				$poster = colorize_username($commentsrow[$i]['user_id']);
 			}
 
 			$info .= '<br />' . $lang['Pic_Image'] . ': <a href="' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $commentsrow[$i]['pic_title'] . '</a>';
 
 			$image_comment = ($commentsrow[$i]['comments'] == 0) ? $lang['Not_commented'] : $commentsrow[$i]['comments'];
 
-			$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $commentsrow[$i]['pic_id']));
-			if ( ($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true) )
+			$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id']));
+			if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
 			{
-				$pic_filename = $commentsrow[$i]['pic_filename'];
-				$file_part = explode('.', strtolower($pic_filename));
-				$pic_filetype = $file_part[count($file_part) - 1];
-				$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-				//$pic_filetype = strtolower(substr($pic_filename, strlen($pic_filename) - 4, 4));
-				//$pic_title = ucfirst(substr($pic_filename, 0, strlen($pic_filename) - 4));
-				$pic_thumbnail = ( $commentsrow[$i]['pic_thumbnail'] == '' ) ? md5($pic_filename) . '.' . $pic_filetype : $commentsrow[$i]['pic_thumbnail'];
-				//$pic_thumbnail = ( $commentsrow[$i]['pic_thumbnail'] == '' ) ? $pic_filename : $commentsrow[$i]['pic_thumbnail'];
-				$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-				if ( file_exists($pic_thumbnail_fullpath) )
-				{
-					$thumbnail_file = $pic_thumbnail_fullpath;
-				}
+				$thumbnail_file = picture_quick_thumb($commentsrow[$i]['pic_filename'], $commentsrow[$i]['pic_thumbnail'], $thumbnail_file);
 			}
 
 			if ($album_config['lb_preview'] == 0)
@@ -2198,61 +1974,44 @@ function album_build_last_comments_info($cats)
 			}
 			else
 			{
-				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . $phpEx . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '\',\'' . addslashes($commentsrow[$i]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '\',\'' . addslashes($commentsrow[$i]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 			}
 
-			if ( defined('IS_ICYPHOENIX') )
+			$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
+			$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
+			$smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? 1 : 0 ;
+			$bbcode->allow_html = $html_on;
+			$bbcode->allow_bbcode = $bbcode_on;
+			$bbcode->allow_smilies = $smilies_on;
+
+			$commentsrow[$i]['comment_text'] = $bbcode->parse($commentsrow[$i]['comment_text'], $bbcode_uid);
+			$commentsrow[$i]['comment_text'] = strtr($commentsrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
+
+			if(function_exists('acronym_pass'))
 			{
-				$html_on = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? 1 : 0 ;
-				$bbcode_on = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? 1 : 0 ;
-				$smilies_on = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? 1 : 0 ;
-				$bbcode->allow_html = $html_on;
-				$bbcode->allow_bbcode = $bbcode_on;
-				$bbcode->allow_smilies = $smilies_on;
-
-				$commentsrow[$i]['comment_text'] = $bbcode->parse($commentsrow[$i]['comment_text'], $bbcode_uid);
-				$commentsrow[$i]['comment_text'] = strtr($commentsrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
-
-				if( function_exists( 'acronym_pass' ) )
-				{
-					$commentsrow[$i]['comment_text'] = acronym_pass( $commentsrow[$i]['comment_text'] );
-				}
-				if( count($orig_autolink) )
-				{
-					$commentsrow[$i]['comment_text'] = autolink_transform($commentsrow[$i]['comment_text'], $orig_autolink, $replacement_autolink);
-				}
-				//$commentsrow[$i]['comment_text'] = kb_word_wrap_pass ($commentsrow[$i]['comment_text']);
-				$commentsrow[$i]['comment_text'] = ( count($orig_word) ) ? preg_replace($orig_word, $replacement_word, $commentsrow[$i]['comment_text']) : $commentsrow[$i]['comment_text'];
+				$commentsrow[$i]['comment_text'] = acronym_pass($commentsrow[$i]['comment_text']);
 			}
-			else
+			if(count($orig_autolink))
 			{
-				if ($album_config['album_bbcode'] == 1)
-				{
-					$html_on = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? 1 : 0 ;
-					$bbcode_on = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? 1 : 0 ;
-					$smilies_on = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? 1 : 0 ;
-					$bbcode->allow_html = $html_on;
-					$bbcode->allow_bbcode = $bbcode_on;
-					$bbcode->allow_smilies = $smilies_on;
-
-					$commentsrow[$i]['comment_text'] = $bbcode->parse($commentsrow[$i]['comment_text'], $bbcode_uid);
-					$commentsrow[$i]['comment_text'] = strtr($commentsrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
-				}
+				$commentsrow[$i]['comment_text'] = autolink_transform($commentsrow[$i]['comment_text'], $orig_autolink, $replacement_autolink);
 			}
+			//$commentsrow[$i]['comment_text'] = kb_word_wrap_pass ($commentsrow[$i]['comment_text']);
+			$commentsrow[$i]['comment_text'] = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $commentsrow[$i]['comment_text']) : $commentsrow[$i]['comment_text'];
 
 			$template->assign_block_vars('recent_comments_block.comment_row', array(
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $commentsrow[$i]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])),
+				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])),
 				'THUMBNAIL' => $thumbnail_file,
 				'PIC_PREVIEW' => $pic_preview,
-				'DESC' => $commentsrow[$i]['pic_desc'],
+				'PIC_TITLE' => htmlspecialchars($commentsrow[$j]['pic_title']),
+				'DESC' => htmlspecialchars($commentsrow[$i]['pic_desc']),
 				'COMMENT_TEXT' => $commentsrow[$i]['comment_text'],
 				'PIC_ID' => $commentsrow[$i]['pic_id'],
 				'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $commentsrow[$i]['pic_title'] . '</a>',
 				'POSTER' => $poster,
 				'TIME' => create_date2($board_config['default_dateformat'], $commentsrow[$i]['comment_time'], $board_config['board_timezone']),
 				'VIEW' => $commentsrow[$i]['pic_view_count'],
-				'RATING' => ($album_config['rate'] == 1) ? ( '<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $commentsrow[$i]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
-				'COMMENTS' => ($album_config['comment'] == 1) ? ( '<a href="' . append_sid(album_append_uid('album_showpage.' . $phpEx . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+				'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $commentsrow[$i]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+				'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 				'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($commentsrow[$i]['pic_user_ip']) . '" target="_blank">' . decode_ip($commentsrow[$i]['pic_user_ip']) .'</a><br />' : ''
 				)
 			);

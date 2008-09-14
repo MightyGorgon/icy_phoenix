@@ -16,23 +16,22 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path. 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . $phpEx);
-require_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . $phpEx);
-require($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
 
 $page_title = $lang['Personal_Cat_Admin'];
 $meta_description = '';
@@ -106,16 +105,16 @@ if( (isset($_GET['action'])) && ($_GET['action'] == 'create') )
 		{
 			if( ($album_user_id <= 0) && (!$userdata['session_logged_in']) )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=album_cat.' . $phpEx));
+				redirect(append_sid(LOGIN_MG . '?redirect=album_cat.' . PHP_EXT));
 			}
 			$album_user_id = (isset($_GET['user_id']) && (intval($_GET['user_id']) > 1)) ? intval($_GET['user_id']) : $userdata['user_id'];
 			//$album_user_id = $userdata['user_id'];
 		}
 		else
 		{
-			include_once($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			$message = $lang['No_Personal_Category_admin'];
-			$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid(album_append_uid('album.' . $phpEx)) . '">', '</a>');
+			$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT)) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
@@ -129,41 +128,41 @@ else
 		{
 			if( ($album_user_id <= 0) && (!$userdata['session_logged_in']) )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=album_cat.' . $phpEx));
+				redirect(append_sid(LOGIN_MG . '?redirect=album_cat.' . PHP_EXT));
 			}
 
 			if( !isset($_GET['action']) )
 			{
-				redirect(append_sid('album.' . $phpEx));
+				redirect(append_sid('album.' . PHP_EXT));
 			}
 			$album_user_id = $userdata['user_id'];
 		}
 		else
 		{
-			include_once($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			$message = $lang['No_Personal_Category_admin'];
-			$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+			$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
 }
 
-include_once($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // ------------------------------------------------------------------------
 //  A common function to generate the 'sucess' or 'failure' message
 // ------------------------------------------------------------------------
 function showResultMessage($in_message)
 {
-	global $lang, $album_user_id, $phpEx;
+	global $lang, $album_user_id;
 
 	if (album_get_personal_root_id($album_user_id) == ALBUM_ROOT_CATEGORY && strcmp('delete',isset($_GET['action']) == 0) )
 	{
-		$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_personal_gallery_index'], '<a href="' . append_sid(album_append_uid('album_personal_index.' . $phpEx)) . '">', '</a>');
+		$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_personal_gallery_index'], '<a href="' . append_sid(album_append_uid('album_personal_index.' . PHP_EXT)) . '">', '</a>');
 	}
 	else
 	{
-		$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid('album.' . $phpEx)) . '">', '</a>');
+		$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT)) . '">', '</a>');
 	}
 
 	message_die(GENERAL_MESSAGE, $message);
@@ -177,11 +176,11 @@ if( !isset($_POST['mode']) )
 {
 	if( !isset($_GET['action']) )
 	{
-		$template->set_filenames(array('body' => $acp_prefix . 'album_personal_cat_body.tpl'));
+		$template->set_filenames(array('body' => ADM_TPL . 'album_personal_cat_body.tpl'));
 
 		/* 'global' template vars */
 		$template->assign_vars(array(
-			'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx)),
+			'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT)),
 
 			'L_CREATE_CATEGORY' => $lang['Create_category'],
 			'L_ALBUM_INDEX' => $lang['Album_Categories_Title'],
@@ -192,8 +191,8 @@ if( !isset($_POST['mode']) )
 
 			'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
 
-			'U_PERSONAL_ALBUM' => append_sid(album_append_uid('album.' . $phpEx)),
-			'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?cat_id=' . $cat_id))
+			'U_PERSONAL_ALBUM' => append_sid(album_append_uid('album.' . PHP_EXT)),
+			'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id))
 			)
 		);
 
@@ -215,7 +214,7 @@ if( !isset($_POST['mode']) )
 		// Check if we have reached the maximum number of sub categories in personal gallery
 		// if we have, then disable creation button
 		// ------------------------------------------------------------------------------------
-		$sql = "SELECT COUNT(*) AS count FROM ". ALBUM_CAT_TABLE ." WHERE cat_user_id = $album_user_id AND cat_parent <> 0";
+		$sql = "SELECT COUNT(*) AS count FROM " . ALBUM_CAT_TABLE . " WHERE cat_user_id = $album_user_id AND cat_parent <> 0";
 
 		if( !$result = $db->sql_query($sql) )
 		{
@@ -234,7 +233,7 @@ if( !isset($_POST['mode']) )
 		// ------------------------------------------
 		$template->pparse('body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 	else
 	{
@@ -261,7 +260,7 @@ if( !isset($_POST['mode']) )
 			if ($cat_id != 0)
 			{
 				$sql = "SELECT cat.*, cat2.cat_title AS cat_parent_title, cat2.cat_id AS cat_parent_id
-						FROM ". ALBUM_CAT_TABLE ." AS cat LEFT OUTER JOIN ". ALBUM_CAT_TABLE ." AS cat2
+						FROM " . ALBUM_CAT_TABLE . " AS cat LEFT OUTER JOIN " . ALBUM_CAT_TABLE . " AS cat2
 						ON cat2.cat_id = cat.cat_parent WHERE cat.cat_id = '$cat_id' AND cat.cat_user_id = " . $album_user_id;
 
 				if(!$result = $db->sql_query($sql))
@@ -289,10 +288,10 @@ if( !isset($_POST['mode']) )
 				$cat_id = ALBUM_ROOT_CATEGORY;
 			}
 
-			$template->set_filenames(array('body' => $acp_prefix . 'album_personal_cat_new_body.tpl'));
+			$template->set_filenames(array('body' => ADM_TPL . 'album_personal_cat_new_body.tpl'));
 
 			$template->assign_vars(array(
-				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?cat_id=' . $cat_id)),
+				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)),
 				'L_CAT_TITLE' => $lang['Category_Title'],
 				'L_CAT_DESC' => $lang['Category_Desc'],
 				'L_CAT_PARENT_TITLE' => $lang['Parent_Category'],
@@ -304,9 +303,9 @@ if( !isset($_POST['mode']) )
 				'L_EDIT_LEVEL' => $lang['Edit_level'],
 
 				'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
-				'U_PERSONAL_ALBUM' => append_sid(album_append_uid('album.' . $phpEx)),
+				'U_PERSONAL_ALBUM' => append_sid(album_append_uid('album.' . PHP_EXT)),
 				'L_PERSONAL_ALBUM' => sprintf($lang['Personal_Gallery_Of_User'], $username),
-				'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?cat_id=' . $cat_id)),
+				'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)),
 				'L_PERSONAL_CAT_ADMIN' => $lang['Personal_Cat_Admin'],
 
 				'L_GUEST' => $lang['Forum_ALL'],
@@ -364,14 +363,14 @@ if( !isset($_POST['mode']) )
 
 			$template->pparse('body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		elseif( $_GET['action'] == 'delete' )
 		{
 			$cat_id = intval($_GET['cat_id']);
 
 			$sql = "SELECT cat_id, cat_title, cat_order
-					FROM ". ALBUM_CAT_TABLE ."
+					FROM " . ALBUM_CAT_TABLE . "
 					ORDER BY cat_order ASC";
 
 			if(!$result = $db->sql_query($sql))
@@ -409,10 +408,10 @@ if( !isset($_POST['mode']) )
 
 			$select_to .= '</select>';
 
-			$template->set_filenames(array('body' => $acp_prefix . 'album_personal_cat_delete_body.tpl'));
+			$template->set_filenames(array('body' => ADM_TPL . 'album_personal_cat_delete_body.tpl'));
 
 			$template->assign_vars(array(
-				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?cat_id=' . $cat_id)),
+				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)),
 				'L_CAT_DELETE' => $lang['Delete_Category'],
 				'L_CAT_DELETE_EXPLAIN' => $lang['Delete_Category_Explain'],
 				'L_CAT_TITLE' => $lang['Category_Title'],
@@ -423,8 +422,8 @@ if( !isset($_POST['mode']) )
 
 				'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
 
-				'U_PERSONAL_ALBUM' => append_sid(album_append_uid('album.' . $phpEx)),
-				'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?cat_id=' . $cat_id)),
+				'U_PERSONAL_ALBUM' => append_sid(album_append_uid('album.' . PHP_EXT)),
+				'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)),
 
 				'S_CAT_TITLE' => stripslashes($thiscat['cat_title']),
 				'S_SELECT_TO' => $select_to)
@@ -432,7 +431,7 @@ if( !isset($_POST['mode']) )
 
 			$template->pparse('body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx); //include('./page_footer_admin.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT); //include('./page_footer_admin.' . PHP_EXT);
 		}
 		elseif( $_GET['action'] == 'move' )
 		{
@@ -466,10 +465,10 @@ else
 			{
 				$s_album_cat_list = '<option value="-1" selected="selected">'. sprintf($lang['Personal_Gallery_Of_User'], $username). '</option>';
 			}
-			$template->set_filenames(array('body' => $acp_prefix . 'album_personal_cat_new_body.tpl'));
+			$template->set_filenames(array('body' => ADM_TPL . 'album_personal_cat_new_body.tpl'));
 
 			$template->assign_vars(array(
-				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx)),
+				'S_ALBUM_ACTION' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT)),
 
 				'L_CAT_TITLE' => $lang['Category_Title'],
 				'L_CAT_DESC' => $lang['Category_Desc'],
@@ -477,9 +476,9 @@ else
 				'L_CAT_PERMISSIONS' => $lang['Category_Permissions'],
 
 				'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
-				'U_PERSONAL_ALBUM' => append_sid('album.' . $phpEx),
+				'U_PERSONAL_ALBUM' => append_sid('album.' . PHP_EXT),
 				'L_PERSONAL_ALBUM' => sprintf($lang['Personal_Gallery_Of_User'], $username),
-				'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid("album_personal_cat_admin.$phpEx?cat_id=$cat_id")),
+				'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)),
 				'L_PERSONAL_CAT_ADMIN' => $lang['Personal_Cat_Admin'],
 
 				'L_VIEW_LEVEL' => $lang['View_level'],
@@ -523,7 +522,7 @@ else
 
 			$template->pparse('body');
 
-			include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
@@ -548,7 +547,7 @@ else
 			$cat_parent = ($_POST['cat_parent_id'] == ALBUM_ROOT_CATEGORY) ? album_get_personal_root_id($album_user_id) : intval($_POST['cat_parent_id']);
 
 			// Get the last ordered category
-			$sql = "SELECT cat_order FROM ". ALBUM_CAT_TABLE ."
+			$sql = "SELECT cat_order FROM " . ALBUM_CAT_TABLE . "
 					ORDER BY cat_order DESC
 					LIMIT 1";
 
@@ -562,7 +561,7 @@ else
 
 			// Here we insert a new row into the db
 
-			$sql = "INSERT INTO ". ALBUM_CAT_TABLE ." (cat_title, cat_desc, cat_order, cat_view_level, cat_upload_level, cat_rate_level, cat_comment_level, cat_edit_level, cat_delete_level, cat_approval, cat_parent, cat_user_id)
+			$sql = "INSERT INTO " . ALBUM_CAT_TABLE . " (cat_title, cat_desc, cat_order, cat_view_level, cat_upload_level, cat_rate_level, cat_comment_level, cat_edit_level, cat_delete_level, cat_approval, cat_parent, cat_user_id)
 					VALUES ('$cat_title', '$cat_desc', '$cat_order', '$view_level', '$upload_level', '$rate_level', '$comment_level', '" . ALBUM_PRIVATE . "', '" . ALBUM_PRIVATE . "', '0', '$cat_parent', '$album_user_id')";
 
 
@@ -610,7 +609,7 @@ else
 
 		// Now we update this row
 
-		$sql = "UPDATE ". ALBUM_CAT_TABLE ."
+		$sql = "UPDATE " . ALBUM_CAT_TABLE . "
 				SET cat_title = '$cat_title', cat_desc = '$cat_desc', cat_view_level = '$view_level', cat_upload_level = '$upload_level', cat_rate_level = '$rate_level', cat_comment_level = '$comment_level', cat_edit_level = '" . ALBUM_PRIVATE . "', cat_delete_level = '" . ALBUM_PRIVATE . "', cat_approval = '0', cat_parent = '$cat_parent', cat_user_id = '$album_user_id'
 				WHERE cat_id = '$cat_id'";
 
@@ -634,7 +633,7 @@ else
 		if( $target_cat_id == ALBUM_JUMPBOX_DELETE ) // Delete All
 		{
 			// check if the selected category is a parent to another category
-			$sql = "SELECT cat_id FROM ". ALBUM_CAT_TABLE ." WHERE cat_parent = " . $source_cat_id .";";
+			$sql = "SELECT cat_id FROM " . ALBUM_CAT_TABLE . " WHERE cat_parent = " . $source_cat_id .";";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not query Album information for existing child categories', '', __LINE__, __FILE__, $sql);
@@ -658,7 +657,7 @@ else
 
 				//... then check if the selected category is a child to another category
 				$sql = "SELECT cat.cat_id, parent.cat_title AS cat_parent_title, parent.cat_id AS cat_parent_id
-						FROM ". ALBUM_CAT_TABLE ." AS cat, ". ALBUM_CAT_TABLE ." AS parent
+						FROM " . ALBUM_CAT_TABLE . " AS cat, " . ALBUM_CAT_TABLE . " AS parent
 						WHERE cat.cat_id = '$source_cat_id' AND parent.cat_id = cat.cat_parent";
 
 				if(!$result = $db->sql_query($sql))
@@ -677,13 +676,13 @@ else
 				}
 
 				// move the the selected category's child categories to the selected parent category (which can be nothing = cat_parent = 0)
-				$sql = "UPDATE ". ALBUM_CAT_TABLE ." SET cat_parent = '" . $parent_cat_id . "' WHERE cat_parent = '" . $source_cat_id . "'";
+				$sql = "UPDATE " . ALBUM_CAT_TABLE . " SET cat_parent = '" . $parent_cat_id . "' WHERE cat_parent = '" . $source_cat_id . "'";
 				$result = $db->sql_query($sql);
 			}
 
 			// Get file information of all pics in this category
 			$sql = "SELECT pic_id, pic_filename, pic_thumbnail, pic_cat_id
-					FROM ". ALBUM_TABLE ."
+					FROM " . ALBUM_TABLE . "
 					WHERE pic_cat_id = '$source_cat_id'";
 			if(!$result = $db->sql_query($sql))
 			{
@@ -701,20 +700,58 @@ else
 				// Delete all physical pic & cached thumbnail files
 				for ($i = 0; $i < count($picrow); $i++)
 				{
-					@unlink('../' . ALBUM_CACHE_PATH . $picrow[$i]['pic_thumbnail']);
+					$pic_filename = $picrow[$i]['pic_filename'];
 
-					@unlink('../' . ALBUM_UPLOAD_PATH . $picrow[$i]['pic_filename']);
+					if (USERS_SUBFOLDERS_ALBUM == true)
+					{
+						if (strpos($pic_filename, '/') !== false)
+						{
+							$pic_path[] = array();
+							$pic_path = explode('/', $pic_filename);
+							$pic_filename = $pic_path[count($pic_path) - 1];
+						}
+					}
 
-					@unlink('../' . ALBUM_MED_CACHE_PATH . $picrow[$i]['pic_filename']);
+					$file_part = explode('.', strtolower($pic_filename));
+					$pic_filetype = $file_part[count($file_part) - 1];
+					$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
+					$pic_base_path = ALBUM_UPLOAD_PATH;
+					$pic_extra_path = '';
+					$pic_new_filename = $pic_extra_path . $pic_filename;
+					$pic_fullpath = $pic_base_path . $pic_new_filename;
+					$pic_thumbnail = $picrow[$i]['pic_thumbnail'];
+					$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
 
-					@unlink('../' . ALBUM_WM_CACHE_PATH . $picrow[$i]['pic_filename']);
+					if (USERS_SUBFOLDERS_ALBUM == true)
+					{
+						if (count($pic_path) == 2)
+						{
+							$pic_extra_path = $pic_path[0] . '/';
+							$pic_thumbnail_path = ALBUM_CACHE_PATH . $pic_extra_path;
+							if (is_dir($pic_path_only))
+							{
+								$pic_new_filename = $pic_extra_path . $pic_filename;
+								$pic_fullpath = $pic_base_path . $pic_new_filename;
+								$pic_thumbnail_fullpath = $pic_thumbnail_path . $pic_thumbnail;
+							}
+							else
+							{
+								message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
+							}
+						}
+					}
+
+					@unlink($pic_thumbnail_fullpath);
+					@unlink(ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink(ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink($pic_fullpath);
 				}
 
 				$pic_id_sql = '(' . implode(',', $pic_id_row) . ')';
 
 				// Delete all related ratings
 				$sql = "DELETE FROM ". ALBUM_RATE_TABLE ."
-						WHERE rate_pic_id IN ". $pic_id_sql;
+						WHERE rate_pic_id IN " . $pic_id_sql;
 				if(!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not delete Ratings information', '', __LINE__, __FILE__, $sql);
@@ -722,15 +759,15 @@ else
 
 				// Delete all related comments
 				$sql = "DELETE FROM ". ALBUM_COMMENT_TABLE ."
-						WHERE comment_pic_id IN ". $pic_id_sql;
+						WHERE comment_pic_id IN " . $pic_id_sql;
 				if(!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not delete Comments information', '', __LINE__, __FILE__, $sql);
 				}
 
 				// Delete pic entries in db
-				$sql = "DELETE FROM ". ALBUM_TABLE ."
-						WHERE pic_cat_id = '$source_cat_id'";
+				$sql = "DELETE FROM " . ALBUM_TABLE . "
+						WHERE pic_cat_id = '" . $source_cat_id . "'";
 				if(!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not delete pic entries in the DB', '', __LINE__, __FILE__, $sql);
@@ -738,8 +775,8 @@ else
 			}
 
 			// This category is now emptied, we can remove it!
-			$sql = "DELETE FROM ". ALBUM_CAT_TABLE ."
-					WHERE cat_id = '$source_cat_id'";
+			$sql = "DELETE FROM " . ALBUM_CAT_TABLE . "
+					WHERE cat_id = '" . $source_cat_id . "'";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete this Category', '', __LINE__, __FILE__, $sql);
@@ -754,17 +791,17 @@ else
 		}
 		else // Move content...
 		{
-			$sql = "UPDATE ". ALBUM_TABLE ."
-					SET pic_cat_id = '$target_cat_id'
-					WHERE pic_cat_id = '$source_cat_id'";
+			$sql = "UPDATE " . ALBUM_TABLE . "
+					SET pic_cat_id = '" . $target_cat_id . "'
+					WHERE pic_cat_id = '" . $source_cat_id . "'";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not update this Category content', '', __LINE__, __FILE__, $sql);
 			}
 
 			// This category is now emptied, we can remove it!
-			$sql = "DELETE FROM ". ALBUM_CAT_TABLE ."
-					WHERE cat_id = '$source_cat_id'";
+			$sql = "DELETE FROM " . ALBUM_CAT_TABLE . "
+					WHERE cat_id = '" . $source_cat_id . "'";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete this Category', '', __LINE__, __FILE__, $sql);

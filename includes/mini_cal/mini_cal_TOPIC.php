@@ -17,7 +17,7 @@
 
 // CTracker_Ignore: File checked by human
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -134,7 +134,7 @@ function getMiniCalEventDays($auth_view_forums)
  ***************************************************************************/
 function getMiniCalEvents($mini_cal_auth)
 {
-	global $template, $db, $phpEx, $lang, $mini_cal_today, $mini_cal_this_month, $mini_cal_this_year, $mini_cal_this_day;
+	global $template, $db, $lang, $mini_cal_today, $mini_cal_this_month, $mini_cal_this_year, $mini_cal_this_day;
 
 	// start and end date
 	$start_date = mktime(0, 0, 0, intval(substr($mini_cal_today, 4, 2)), $mini_cal_this_day, $mini_cal_this_year);
@@ -213,7 +213,7 @@ function getMiniCalEvents($mini_cal_auth)
 						'MINI_CAL_EVENT_DATE' => $cal_date,
 						'S_MINI_CAL_EVENT' => $row['topic_title'],
 						//'S_MINI_CAL_EVENT' => $mini_cal_auth_sql,
-						'U_MINI_CAL_EVENT' => append_sid( $phpbb_root_path . VIEWTOPIC_MG ."?" . POST_TOPIC_URL . '=' . $row['topic_id'] )
+						'U_MINI_CAL_EVENT' => append_sid( IP_ROOT_PATH . VIEWTOPIC_MG ."?" . POST_TOPIC_URL . '=' . $row['topic_id'] )
 						)
 				);
 			}
@@ -264,17 +264,12 @@ function getMiniCalSearchSql($search_date)
  ***************************************************************************/
 function getMiniCalSearchURL($search_date)
 {
-	global $phpEx;
-
 	$s_yy = intval(substr($search_date, 0, 4));
 	$s_mm = intval(substr($search_date, 4, 2));
 	$s_dd = intval(substr($search_date, 6, 2));
 	$search_date = mktime(0,0,0, $s_mm, $s_dd, $s_yy);
-
-	//$url = append_sid($phpbb_root_path . SEARCH_MG . '?search_id=mini_cal_events&amp;d=' . $search_date);
-	$url = append_sid($phpbb_root_path . 'calendar_scheduler.' . $phpEx . '?d=' . $search_date);
-
-
+	//$url = append_sid(IP_ROOT_PATH . SEARCH_MG . '?search_id=mini_cal_events&amp;d=' . $search_date);
+	$url = append_sid(IP_ROOT_PATH . 'calendar_scheduler.' . PHP_EXT . '?d=' . $search_date);
 	return $url;
 }
 
@@ -294,8 +289,8 @@ function getMiniCalPostForumsList($mini_cal_post_auth)
 
 
 $template->assign_vars(array(
-	'U_MINI_CAL_CALENDAR' => append_sid($phpbb_root_path . 'calendar.' . $phpEx),
-	'U_MINI_CAL_ADD_EVENT' => append_sid($phpbb_root_path . 'posting.' . $phpEx . '?mode=newtopic&f=' . MINI_CAL_EVENTS_FORUM )
+	'U_MINI_CAL_CALENDAR' => append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT),
+	'U_MINI_CAL_ADD_EVENT' => append_sid(IP_ROOT_PATH . 'posting.' . PHP_EXT . '?mode=newtopic&f=' . MINI_CAL_EVENTS_FORUM )
 	)
 );
 

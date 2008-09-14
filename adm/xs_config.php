@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './../';
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 
 // check if mod is installed
 if(empty($template->xs_version) || $template->xs_version !== 8)
@@ -28,14 +28,14 @@ if(empty($template->xs_version) || $template->xs_version !== 8)
 }
 
 define('IN_XS', true);
-include_once('xs_include.' . $phpEx);
+include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_config.' . $phpEx) . '">' . $lang['xs_configuration'] . '</a>'));
+$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_config.' . PHP_EXT) . '">' . $lang['xs_configuration'] . '</a>'));
 
-$lang['xs_config_updated_explain'] = str_replace('{URL}', append_sid('xs_config.' . $phpEx), $lang['xs_config_updated_explain']);
+$lang['xs_config_updated_explain'] = str_replace('{URL}', append_sid('xs_config.' . PHP_EXT), $lang['xs_config_updated_explain']);
 $lang['xs_config_title'] = str_replace('{VERSION}', $template->xs_versiontxt, $lang['xs_config_title']);
-$lang['xs_config_warning_explain'] = str_replace('{URL}', append_sid('xs_chmod.' . $phpEx), $lang['xs_config_warning_explain']);
-$lang['xs_config_back'] = str_replace('{URL}', append_sid('xs_config.' . $phpEx), $lang['xs_config_back']);
+$lang['xs_config_warning_explain'] = str_replace('{URL}', append_sid('xs_chmod.' . PHP_EXT), $lang['xs_config_warning_explain']);
+$lang['xs_config_back'] = str_replace('{URL}', append_sid('xs_config.' . PHP_EXT), $lang['xs_config_back']);
 
 //
 // Updating configuration
@@ -56,7 +56,7 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 	if($shownav !== $board_config['xs_shownav'])
 	{
 		$template->assign_block_vars('left_refresh', array(
-				'ACTION'	=> append_sid('index.' . $phpEx . '?pane=left')
+				'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
 			));
 	}
 	$_POST['xs_shownav'] = $shownav;
@@ -169,7 +169,7 @@ $template->assign_vars(array(
 	'XS_FTP_HOST'				=> defined('DEMO_MODE') ? '' : $xs_ftp_host,
 	'XS_FTP_LOGIN'				=> defined('DEMO_MODE') ? '' : $xs_ftp_login,
 	'XS_FTP_PATH'				=> defined('DEMO_MODE') ? '' : $xs_ftp_path,
-	'FORM_ACTION'				=> append_sid('xs_config.' . $phpEx),
+	'FORM_ACTION'				=> append_sid('xs_config.' . PHP_EXT),
 	));
 
 for($i=0; $i<XS_SHOWNAV_MAX; $i++)

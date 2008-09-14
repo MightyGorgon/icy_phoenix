@@ -21,7 +21,7 @@
 * | only if this copyright statement is not removed
 * +--------------------------------------------------*/
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }

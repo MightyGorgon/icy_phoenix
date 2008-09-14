@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,10 +24,10 @@ if(!function_exists(imp_rss_func))
 {
 	function imp_rss_func()
 	{
-		global $lang, $template, $board_config, $db, $phpbb_root_path, $phpEx, $cms_config_vars, $block_id;
+		global $lang, $template, $board_config, $db, $cms_config_vars, $block_id;
 		global $rss_channel, $currently_writing, $main, $item_counter;
 
-		include_once($phpbb_root_path . 'includes/functions_xs_useless.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 
 		$xml_id = 'rss_' . $block_id;
 		// $xml_feed = "http://news.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss091.xml";

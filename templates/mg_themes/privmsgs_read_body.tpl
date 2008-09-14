@@ -1,5 +1,5 @@
 <?php
-global $userdata, $board_config, $is_auth, $lang, $phpEx, $to_username, $privmsgs_id, $bbcode_uid, $post_subject, $images, $privmsg;
+global $userdata, $board_config, $is_auth, $lang, $to_username, $privmsgs_id, $bbcode_uid, $post_subject, $images, $privmsg;
 $post_subject = ( ( !preg_match('/^Re:/', $post_subject) ) ? 'Re: ' : '' ) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
 $this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:ShowHide(\'quick_reply\',\'quick_reply2\');"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /><a href="#quick"</a>';

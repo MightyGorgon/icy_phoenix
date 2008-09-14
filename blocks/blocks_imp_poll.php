@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,7 +24,7 @@ if(!function_exists(imp_poll_block_func))
 {
 	function imp_poll_block_func()
 	{
-		global $template, $cms_config_vars, $block_id, $db, $userdata, $images, $lang, $phpEx;
+		global $template, $cms_config_vars, $block_id, $db, $userdata, $images, $lang;
 
 		$template->_tpldata['b_poll_option.'] = array();
 		//reset($template->_tpldata['b_poll_option.']);
@@ -230,7 +230,7 @@ if(!function_exists(imp_poll_block_func))
 					'B_POLL_QUESTION' => $vote_title,
 					'B_L_SUBMIT_VOTE' => '<input type="submit" name="submit" value="'.$lang['Submit_vote'].'" class="liteoption" />',
 					'B_S_HIDDEN_FIELDS' => (!empty($s_hidden_fields)) ? $s_hidden_fields : '',
-					'S_POLL_ACTION' => append_sid('posting.' . $phpEx . '?' . POST_TOPIC_URL . '=' . $topic_id)
+					'S_POLL_ACTION' => append_sid('posting.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id)
 					)
 				);
 

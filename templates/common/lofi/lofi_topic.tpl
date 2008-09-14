@@ -1,6 +1,6 @@
 <?php
 // check if quick reply is enabled
-global $userdata, $board_config, $topic_id, $is_auth, $forum_topic_data, $lang, $phpEx;
+global $userdata, $board_config, $topic_id, $is_auth, $forum_topic_data, $lang;
 
 $can_reply = $userdata['session_logged_in'] ? true : false;
 if($can_reply)
@@ -43,7 +43,7 @@ if($can_reply)
 	ob_start();
 ?>
 <div id="quick_reply" style="display: none; position: relative; ">
-	<form action="<?php echo append_sid('posting.' . $phpEx); ?>" method="post" name="post" style="display: inline;">
+	<form action="<?php echo append_sid('posting.' . PHP_EXT); ?>" method="post" name="post" style="display: inline;">
 	{S_HIDDEN_FIELDS}
 	<table class="forumline" width="100%" cellspacing="0">
 	<tr><th colspan="2"><span><?php echo $lang['quick_lofi']; ?></span></th></tr>

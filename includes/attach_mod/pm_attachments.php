@@ -15,7 +15,7 @@
 *
 */
 
-if ( !defined('IN_PHPBB') )
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -215,7 +215,7 @@ class attach_pm extends attach_parent
 	*/
 	function privmsgs_attachment_mod($mode)
 	{
-		global $attach_config, $template, $lang, $userdata, $phpbb_root_path, $phpEx, $db;
+		global $attach_config, $template, $lang, $userdata, $db;
 		global $confirm, $delete, $delete_all, $post_id, $privmsgs_id, $privmsg_id, $submit, $refresh, $mark_list, $folder;
 
 		if ($folder != 'outbox')
@@ -252,7 +252,7 @@ class attach_pm extends attach_parent
 			if (!$userdata['session_logged_in'])
 			{
 				$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
-				header($header_location . append_sid($phpbb_root_path . LOGIN_MG . "?redirect=privmsg.$phpEx&folder=inbox", true));
+				header($header_location . append_sid(IP_ROOT_PATH . LOGIN_MG . '?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));
 				exit;
 			}
 

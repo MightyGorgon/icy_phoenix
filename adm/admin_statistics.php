@@ -16,7 +16,8 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('PHPBB_TEMPLATE', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -26,13 +27,12 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-$non_xs = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 if (!empty($board_config))
 {
-	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . PHP_EXT);
 }
 
 $__stats_config = array();
@@ -50,9 +50,9 @@ while ($row = $db->sql_fetchrow($result))
 	$__stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include($phpbb_root_path . 'includes/functions_stats.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_module.' . $phpEx);
-include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_module.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . PHP_EXT);
 
 //
 // Try to re-assign Images for Admin Display
@@ -249,7 +249,7 @@ if ($mode == 'config')
 		'RETURN_LIMIT' => $__stats_config['return_limit'],
 		'MODULES_DIR' => $__stats_config['modules_dir'],
 
-		'S_ACTION' => append_sid('admin_statistics.' . $phpEx . '?mode=config')
+		'S_ACTION' => append_sid('admin_statistics.' . PHP_EXT . '?mode=config')
 		)
 	);
 }
@@ -374,21 +374,21 @@ if ($mode == 'auto_set')
 
 		$language = $board_config['default_lang'];
 
-		if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_statistics.' . $phpEx))
+		if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT))
 		{
 			$language = 'english';
 		}
-		include($phpbb_root_path . 'language/lang_' . $language . '/lang_statistics.' . $phpEx);
-		include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . $phpEx);
+		include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
 
 		$language = $board_config['default_lang'];
 
 		/*
-		if (!file_exists($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $module_name . '/lang_' . $language . '/lang.' . $phpEx))
+		if (!file_exists(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_name . '/lang_' . $language . '/lang.' . PHP_EXT))
 		{
 			$language = 'english';
 		}
-		include($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $module_name . '/lang_' . $language . '/lang.' . $phpEx);
+		include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_name . '/lang_' . $language . '/lang.' . PHP_EXT);
 		*/
 
 		$statistics->result_cache_used = false;
@@ -396,10 +396,10 @@ if ($mode == 'auto_set')
 
 		$stat_db->begin_cached_query();
 		$result_cache->begin_cached_results();
-		include($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $module_name . '/module.php');
+		include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_name . '/module.php');
 
 		$template->set_filenames(array(
-			'module_tpl_' . $module_id => './../' . $phpbb_root_path . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '/module.tpl')
+			'module_tpl_' . $module_id => './../' . IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '/module.tpl')
 		);
 
 		$template->pparse('module_tpl_' . $module_id);
@@ -437,7 +437,7 @@ if ($mode == 'auto_set')
 
 	}
 
-	print '<br /><br /><br /><a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=manage') . '">' . $lang['Back_to_management'] . '</a>';
+	print '<br /><br /><br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=manage') . '">' . $lang['Back_to_management'] . '</a>';
 }
 
 //
@@ -491,34 +491,34 @@ if ($mode == 'manage')
 
 		if ($rows[$i]['display_order'] != $curr_min)
 		{
-			$link = append_sid('admin_statistics.' . $phpEx . '?mode=order&amp;move=-15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
+			$link = append_sid('admin_statistics.' . PHP_EXT . '?mode=order&amp;move=-15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
 			$move_up = '<a href="' . $link . '">' . $lang['Move_up'] . '</a>';
 		}
 
 		if ($rows[$i]['display_order'] != $curr_max)
 		{
-			$link = append_sid('admin_statistics.' . $phpEx . '?mode=order&amp;move=15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
+			$link = append_sid('admin_statistics.' . PHP_EXT . '?mode=order&amp;move=15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
 			$move_down = '<a href="' . $link . '">' . $lang['Move_down'] . '</a>';
 		}
 
 		if (intval($rows[$i]['installed']) == 1)
 		{
-			$edit_install = '<a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Edit'] . '</a>';
-			$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Uninstall'] . '</a>';
+			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Edit'] . '</a>';
+			$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Uninstall'] . '</a>';
 		}
 		else
 		{
-			$edit_install = '<a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . ' & ' . $lang['Activate'] . '</a>';
-			$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . '</a>';
+			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . ' & ' . $lang['Activate'] . '</a>';
+			$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . '</a>';
 		}
 
 		if (intval($rows[$i]['active']) == 1)
 		{
-			$state_link = '<a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=deactivate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '" alt="' . $lang['Deactivate'] . '">' . $lang['Active'] . '</a>';
+			$state_link = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=deactivate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '" alt="' . $lang['Deactivate'] . '">' . $lang['Active'] . '</a>';
 		}
 		else if ( (intval($rows[$i]['active']) == 0) && (intval($rows[$i]['installed']) == 1) )
 		{
-			$state_link = '<a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '" alt="' . $lang['Activate'] . '">' . $lang['Not_active'] . '</a>';
+			$state_link = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '" alt="' . $lang['Activate'] . '">' . $lang['Not_active'] . '</a>';
 		}
 		else if (intval($rows[$i]['active']) == 0)
 		{
@@ -546,7 +546,7 @@ if ($mode == 'manage')
 		'L_UPDATE_TIME' => $lang['Update_time'],
 		'L_AUTO_SET' => $lang['Auto_set_update_time'],
 		'L_GO' => $lang['Go'],
-		'U_AUTO_SET' => append_sid('admin_statistics.' . $phpEx . '?mode=auto_set'),
+		'U_AUTO_SET' => append_sid('admin_statistics.' . PHP_EXT . '?mode=auto_set'),
 
 		'MESSAGE' => $msg)
 	);
@@ -608,7 +608,7 @@ if ($mode == 'install')
 	{
 
 
-		$dbms_file = $phpbb_root_path . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '/' . $available_dbms[$dbms]['SCHEMA'] . '.sql';
+		$dbms_file = IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '/' . $available_dbms[$dbms]['SCHEMA'] . '.sql';
 
 		$remove_remarks = $available_dbms[$dbms]['COMMENTS'];;
 		$delimiter = $available_dbms[$dbms]['DELIM'];
@@ -691,7 +691,7 @@ if ($mode == 'install')
 		}
 	}
 
-	print '<br /><br /><br /><a href="' . append_sid('admin_statistics.' . $phpEx . '?mode=manage') . '">' . $lang['Back_to_management'] . '</a>';
+	print '<br /><br /><br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=manage') . '">' . $lang['Back_to_management'] . '</a>';
 }
 
 if ($submit && $mode == 'edit')
@@ -820,33 +820,33 @@ if ($mode == 'edit')
 	$__module_name = $module_name;
 
 	$__tpl_name = 'preview';
-	$__module_root_path = './../' . $phpbb_root_path;
+	$__module_root_path = './../' . IP_ROOT_PATH;
 	$__module_data = $__stat_module_data[$__module_id];
 
 	$__language = $board_config['default_lang'];
 
-	if (!@file_exists(@realpath($phpbb_root_path . 'language/lang_' . $__language . '/lang_statistics.' . $phpEx)))
+	if (!@file_exists(@realpath(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT)))
 	{
 		$__language = 'english';
 	}
 
-	if (@file_exists(@realpath($phpbb_root_path . 'language/lang_' . $__language . '/lang_statistics.' . $phpEx)))
+	if (@file_exists(@realpath(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT)))
 	{
-		include($phpbb_root_path . 'language/lang_' . $__language . '/lang_statistics.' . $phpEx);
+		include(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT);
 	}
 
 	$__language = $board_config['default_lang'];
 
 	/*
-	if (!@file_exists(@realpath($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . $phpEx)))
+	if (!@file_exists(@realpath(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . PHP_EXT)))
 	{
 		$__language = 'english';
 	}
 	*/
 
-	if (@file_exists(@realpath($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . $phpEx)))
+	if (@file_exists(@realpath(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . PHP_EXT)))
 	{
-		include($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . $phpEx);
+		include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . PHP_EXT);
 	}
 
 	$statistics->result_cache_used = false;
@@ -854,7 +854,7 @@ if ($mode == 'edit')
 
 	$stat_db->begin_cached_query();
 	$result_cache->begin_cached_results();
-	include($phpbb_root_path . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.php');
+	include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.php');
 	$stat_db->end_cached_query($__module_id);
 	$result_cache->end_cached_query($__module_id);
 
@@ -899,9 +899,9 @@ if ($mode == 'edit')
 		'L_PREVIEW_DEBUG_INFO' => sprintf($lang['Preview_debug_info'], $totaltime, $num_queries),
 		'L_UPDATE_TIME_RECOMMEND' => sprintf($lang['Update_time_recommend'], $update_time_recommend),
 		'L_BACK_TO_MANAGEMENT' => $lang['Back_to_management'],
-		'U_MANAGEMENT' => append_sid('admin_statistics.' . $phpEx . '?mode=manage'),
+		'U_MANAGEMENT' => append_sid('admin_statistics.' . PHP_EXT . '?mode=manage'),
 
-		'S_ACTION' => append_sid('admin_statistics.' . $phpEx . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $module_id))
+		'S_ACTION' => append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $module_id))
 	);
 
 	$template->assign_var_from_handle('PREVIEW_MODULE', 'preview');
@@ -918,7 +918,7 @@ if ($templated)
 {
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 }
 
 ?>

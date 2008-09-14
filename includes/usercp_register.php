@@ -22,7 +22,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -38,8 +38,8 @@ if (!defined('PARSE_CPL_NAV'))
 	define('PARSE_CPL_NAV', true);
 }
 
-include_once($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_selects.' . $phpEx);
+include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 $server_url = create_server_url();
 $profile_server_url = $server_url . PROFILE_MG;
 
@@ -62,7 +62,7 @@ if($board_config['registration_status'] && !$userdata['session_logged_in'])
 
 // CrackerTracker v5.x
 // BEGIN CrackerTracker v5.x
-include_once($phpbb_root_path . 'ctracker/classes/class_ct_userfunctions.' . $phpEx);
+include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 $profile_security = new ct_userfunctions();
 $profile_security->handle_profile();
 (isset($_POST['submit']))? $profile_security->password_functions() : null;
@@ -72,14 +72,14 @@ $profile_security->handle_profile();
 // Load agreement template since user has not yet agreed to registration conditions/coppa
 function show_coppa()
 {
-	global $userdata, $template, $board_config, $lang, $phpbb_root_path, $phpEx;
+	global $userdata, $template, $board_config, $lang;
 
 	// Load the appropriate Rules file
 	$lang_file = 'lang_rules';
 	$l_title = $lang['BoardRules'];
 
 	// Include the rules settings
-	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/' . $lang_file . '.' . $phpEx);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT);
 
 	//
 	// Pull the array data from the lang pack
@@ -215,7 +215,7 @@ if (($mode == 'register') && (isset($_POST['submit'])) && ($blacklist_enabled ==
 //if ($mode == 'register' && !isset($_POST['agreed']) && !isset($_GET['agreed']))
 if (($mode == 'register') && (!isset($_POST['agreed']) || !isset($_POST['privacy'])))
 {
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	if (isset($_POST['agreed']))
 	{
 		$template->set_filenames(array('reg_header' => 'error_body.tpl'));
@@ -226,7 +226,7 @@ if (($mode == 'register') && (!isset($_POST['agreed']) || !isset($_POST['privacy
 		$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
 	}
 	show_coppa();
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 // Start Mod User CP Organize: Retrieve display mode
@@ -257,9 +257,9 @@ if (
 	isset($_POST['cancelavatar']) ||
 	$mode == 'register')
 {
-	include($phpbb_root_path . 'includes/functions_validate.' . $phpEx);
-	include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-	include($phpbb_root_path . 'includes/functions_post.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 	if ($mode == 'editprofile')
 	{
@@ -499,7 +499,7 @@ if (($mode == 'register') && ($userdata['session_logged_in'] || ($username == $u
 //
 if (isset($_POST['submit']))
 {
-	include($phpbb_root_path . 'includes/usercp_avatar.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
 	// session id check
 	if ($sid == '' || $sid != $userdata['session_id'])
@@ -1020,7 +1020,7 @@ if (isset($_POST['submit']))
 				//
 				// The users account has been deactivated, send them an email with a new activation key
 				//
-				include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+				include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 				$emailer = new emailer($board_config['smtp_delivery']);
 
 				if ($board_config['require_activation'] != USER_ACTIVATION_ADMIN)
@@ -1178,26 +1178,16 @@ if (isset($_POST['submit']))
 			$register_pm = $lang['register_pm'];
 			$privmsgs_date = date('U');
 
-			$main_admin_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : '2';
-			if ($main_admin_id != '2')
+			if (defined('FOUNDER_ID'))
 			{
-				$sql = "SELECT user_id
-					FROM " . USERS_TABLE . "
-					WHERE user_id = '" . $main_admin_id . "'
-					LIMIT 1";
-				if (!($result = $db->sql_query($sql, false, 'main_admin_id_')))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
-				}
-				$main_admin_id = '2';
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$main_admin_id = $row['user_id'];
-				}
-				$db->sql_freeresult($result);
+				$founder_id = FOUNDER_ID;
+			}
+			else
+			{
+				$founder_id = get_founder_id();
 			}
 
-			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($register_pm_subject, $board_config['sitename']))) . "', '" . $main_admin_id . "', " . $user_id . ", " . $privmsgs_date . ", '0', '1', '1', '0')";
+			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($register_pm_subject, $board_config['sitename']))) . "', '" . $founder_id . "', " . $user_id . ", " . $privmsgs_date . ", '0', '1', '1', '0')";
 			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
@@ -1246,7 +1236,7 @@ if (isset($_POST['submit']))
 				message_die(GENERAL_ERROR, 'Error geting users post stat', '', __LINE__, __FILE__, $sql);
 			}
 
-			empty_cache_folder($phpbb_root_path, true);
+			empty_cache_folders(true);
 
 			while ($group_data = $db->sql_fetchrow($result))
 			{
@@ -1259,7 +1249,7 @@ if (isset($_POST['submit']))
 				}
 			}
 
-			include($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer($board_config['smtp_delivery']);
 
 			$emailer->from($board_config['board_email']);
@@ -1489,7 +1479,7 @@ elseif ($mode == 'editprofile' && !isset($_POST['avatargallery']) && !isset($_PO
 }
 
 // Default pages
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 make_jumpbox(VIEWFORUM_MG);
 
 if ($mode == 'editprofile')
@@ -1503,7 +1493,7 @@ if ($mode == 'editprofile')
 
 if(isset($_POST['avatargallery']) && !$error)
 {
-	include($phpbb_root_path . 'includes/usercp_avatar.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
 	$avatar_category = (!empty($_POST['avatarcategory'])) ? htmlspecialchars($_POST['avatarcategory']) : '';
 
@@ -1519,7 +1509,7 @@ elseif(isset($_POST['avatargenerator']) && !$error)
 	{
 		define('MG_CTRACK_FLAG', true);
 	}
-	include($phpbb_root_path . 'includes/usercp_avatar.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
 	$avatar_filename = (isset($_POST['avatar_filename'])) ? htmlspecialchars($_POST['avatar_filename']) : POSTED_IMAGES_THUMBS_PATH . uniqid(rand()) . '.gif';
 	//$avatar_filename = (isset($_POST['avatar_filename'])) ? htmlspecialchars($_POST['avatar_filename']) : $board_config['avatar_path'] . '/' . uniqid(rand()) . '.gif';
@@ -1715,11 +1705,11 @@ else
 
 			// Include Language
 			$language = $board_config['default_lang'];
-			if (!file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_profile_fields.' . $phpEx))
+			if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT))
 			{
 				$language = 'english';
 			}
-			include($phpbb_root_path . 'language/lang_' . $language . '/lang_profile_fields.' . $phpEx);
+			include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT);
 
 			foreach($profile_data as $field)
 			{
@@ -2365,7 +2355,7 @@ else
 		'DST_TIME_LAG' => $dst_time_lag,
 		'DATE_FORMAT' => date_select($user_dateformat,'dateformat'),
 		'HTML_STATUS' => $html_status,
-		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . $phpEx . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
 		'SMILIES_STATUS' => $smilies_status,
 
 		'L_CURRENT_PASSWORD' => $lang['Current_password'],
@@ -2474,7 +2464,7 @@ else
 		'L_CONFIRM_CODE' => $lang['Confirm_code'],
 		'L_CONFIRM_CODE_EXPLAIN' => $lang['Confirm_code_explain'],
 
-		'U_AJAX_VERIFY' => 'ajax_verify.' . $phpEx,
+		'U_AJAX_VERIFY' => 'ajax_verify.' . PHP_EXT,
 		'VERIFY_UN_JS' => $verify_un_js,
 		'VERIFY_EMAIL_JS' => $verify_email_js,
 		'L_UN_SHORT' => $lang['Reg_Username_Short'],
@@ -2544,6 +2534,6 @@ else
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

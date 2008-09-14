@@ -19,7 +19,7 @@
 // This file adds rating to the module
 // -------------------------------------------------------------------------
 
-if( !defined('IN_PHPBB') )
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -61,11 +61,11 @@ $start = ($start < 0) ? 0 : $start;
 
 if(!$is_block)
 {
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 }
 
 // load header
-include ($phpbb_root_path . 'includes/kb_header.' . $phpEx);
+include (IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'kb_rate_body.tpl'));
 

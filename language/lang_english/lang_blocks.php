@@ -51,7 +51,7 @@ $lang['Title_referers'] = 'Referrers';
 $lang['Title_rss'] = 'RSS';
 $lang['Title_search'] = 'Search';
 $lang['Title_sec_menu'] = 'Extra Menu';
-$lang['Title_shoutbox'] = '<a href="shoutbox_max.' . $phpEx . '?sid=' . $userdata['session_id'] . '">Shoutbox</a>';
+$lang['Title_shoutbox'] = '<a href="shoutbox_max.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">Shoutbox</a>';
 $lang['Title_staff'] = 'Staff';
 $lang['Title_statistics'] = 'Statistics';
 $lang['Title_style'] = 'Style';

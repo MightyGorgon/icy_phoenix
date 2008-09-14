@@ -27,7 +27,7 @@
 */
 
 // Constant check
-if ( !defined('IN_PHPBB') || !defined('CTRACKER_ACP') )
+if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
 {
 	die('Hacking attempt!');
 }
@@ -96,7 +96,7 @@ elseif ( ($mode == 'view') || ($mode == 'downloaddebug') )
 	( $logid == 4 || $logid == 5 )? $description_cell_2 = $lang['ctracker_log_manager_cell_2b'] : $description_cell_2 = $lang['ctracker_log_manager_cell_2a'];
 
 	$template->assign_block_vars('show_log_header', array(
-		'L_MESSAGE_TEXT'	=> ($logmanager->check_log_size($logid) == 1)? sprintf($lang['ctracker_log_manager_showheader1'], append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6')) : sprintf($lang['ctracker_log_manager_showheader'], $logmanager->check_log_size($logid), append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6')),
+		'L_MESSAGE_TEXT'	=> ($logmanager->check_log_size($logid) == 1)? sprintf($lang['ctracker_log_manager_showheader1'], append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6')) : sprintf($lang['ctracker_log_manager_showheader'], $logmanager->check_log_size($logid), append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6')),
 		'L_LOG_SHOW'		=> $lang['ctracker_log_manager_showlog'],
 		'L_LOGCELL1'		=> $lang['ctracker_log_manager_cell_1'],
 		'L_LOGCELL2'		=> $description_cell_2,
@@ -124,7 +124,7 @@ elseif ( ($mode == 'view') || ($mode == 'downloaddebug') )
 			$template->assign_block_vars('show_system_message', array(
 				'L_SYS_MSG'		=>	sprintf($lang['ctracker_log_manager_sysmsg'], date($board_config['default_dateformat'], $lastclean)),
 				'L_DELETE'		=> $lang['ctracker_log_manager_delete'],
-				'S_DELETE'		=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=' . $logid . '&mode=delete')
+				'S_DELETE'		=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=' . $logid . '&mode=delete')
 				)
 			);
 		}
@@ -169,20 +169,20 @@ if ( $mode != 'view')
 		'L_DELETE'				=> $lang['ctracker_log_manager_delete'],
 		'L_DELETE_ALL'		=> $lang['ctracker_log_manager_delete_all'],
 
-		'S_VIEW_2'				=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=2&mode=view'),
-		'S_DELETE_2'			=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=2&mode=delete'),
-		'S_VIEW_3'				=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=3&mode=view'),
-		'S_DELETE_3'			=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=3&mode=delete'),
-		'S_VIEW_4'				=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=4&mode=view'),
-		'S_DELETE_4'			=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=4&mode=delete'),
-		'S_VIEW_5'				=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=5&mode=view'),
-		'S_DELETE_5'			=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=5&mode=delete'),
-		//'S_VIEW_6'				=> $phpbb_root_path . 'ctracker/logfiles/logfile_debug_mode.txt',
-		'S_VIEW_6'				=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=6&mode=view'),
-		'S_DELETE_6'			=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&logid=6&mode=delete'),
-		'S_VIEW_7'				=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=99&mode=downloaddebug'),
+		'S_VIEW_2'				=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=2&mode=view'),
+		'S_DELETE_2'			=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=2&mode=delete'),
+		'S_VIEW_3'				=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=3&mode=view'),
+		'S_DELETE_3'			=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=3&mode=delete'),
+		'S_VIEW_4'				=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=4&mode=view'),
+		'S_DELETE_4'			=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=4&mode=delete'),
+		'S_VIEW_5'				=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=5&mode=view'),
+		'S_DELETE_5'			=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=5&mode=delete'),
+		//'S_VIEW_6'				=> IP_ROOT_PATH . 'ctracker/logfiles/logfile_debug_mode.txt',
+		'S_VIEW_6'				=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=6&mode=view'),
+		'S_DELETE_6'			=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=6&mode=delete'),
+		'S_VIEW_7'				=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=99&mode=downloaddebug'),
 
-		'S_DELETE_FORM'		=> append_sid('admin_cracker_tracker.' . $phpEx . '?modu=6&mode=delete_all'),
+		'S_DELETE_FORM'		=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&mode=delete_all'),
 
 		'S_LOGVALUE_2'		=> $logmanager->check_log_size(2),
 		'S_LOGVALUE_3'		=> $logmanager->check_log_size(3),
@@ -197,7 +197,7 @@ if ( $mode != 'view')
 * Send some vars to the template
 */
 $template->assign_vars(array(
-	'IMG_ICON'		=> $phpbb_root_path . $images['ctracker_log_manager'],
+	'IMG_ICON'		=> IP_ROOT_PATH . $images['ctracker_log_manager'],
 	'L_HEADLINE'	=> $lang['ctracker_log_manager_title'],
 	'L_SUBHEADLINE'	=> $lang['ctracker_log_manager_subtitle']
 	)

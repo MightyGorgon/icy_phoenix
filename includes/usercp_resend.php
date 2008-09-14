@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -76,7 +76,7 @@ if (isset($_POST['submit']))
 	$unhtml_specialchars_match = array('#&gt;#', '#&lt;#', '#&quot;#', '#&amp;#');
 	$unhtml_specialchars_replace = array('>', '<', '"', '&');
 
-	include_once($phpbb_root_path . 'includes/emailer.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
 	$emailer = new emailer($board_config['smtp_delivery']);
 	$emailer->from($board_config['board_email']);
@@ -115,7 +115,7 @@ else
 	$page_title = $lang['Resend_activation_email'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'profile_send_pass.tpl'));
 
@@ -130,7 +130,7 @@ else
 	);
 
 	$template->pparse('body');
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 ?>

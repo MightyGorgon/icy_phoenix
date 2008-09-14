@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -140,7 +140,7 @@ if ($search_keywords != '' && !$search_author)
 	$total_found_dl = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
-	$pagination = generate_pagination('downloads.' . $phpEx . '?view=search&search_keywords=' . $search_keywords . '&search_cat=' . $search_cat . '&sort_dir=' . $sort_dir, $total_found_dl, $board_config['topics_per_page'], $start);
+	$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=search&search_keywords=' . $search_keywords . '&search_cat=' . $search_cat . '&sort_dir=' . $sort_dir, $total_found_dl, $board_config['topics_per_page'], $start);
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
@@ -152,8 +152,8 @@ if ($search_keywords != '' && !$search_author)
 		'L_LONG_DESC' => $lang['Dl_detail'],
 		'L_NAV1' => $lang['Dl_cat_title'],
 		'L_NAV2' => $lang['Search'] . ' ' . $lang['Downloads'],
-		'U_NAV1' => append_sid('downloads.' . $phpEx),
-		'U_NAV2' => append_sid('downloads.' . $phpEx . '?view=search')
+		'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+		'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?view=search')
 		)
 	);
 
@@ -184,7 +184,7 @@ if ($search_keywords != '' && !$search_author)
 			$cat_id = $row['cat'];
 			$description = $row['description'];
 			$file_id = $row['id'];
-			$u_file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+			$u_file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 			$dl_status = array();
 			$dl_status = $dl_mod->dl_status($file_id);
@@ -195,7 +195,7 @@ if ($search_keywords != '' && !$search_author)
 			$mini_icon = $dl_mod->mini_status_file($index[$cat_id]['parent'], $file_id);
 
 			$cat_name = $row['cat_name'];
-			$u_cat_link = append_sid('downloads.' . $phpEx . "?cat=" . $cat_id);
+			$u_cat_link = append_sid('downloads.' . PHP_EXT . "?cat=" . $cat_id);
 
 			$long_desc = make_clickable(smilies_pass(bbencode_second_pass(stripslashes($row['long_desc']), $row['bbcode_uid'])));
 			$long_desc = str_replace("\n", "\n<br />\n", $long_desc);
@@ -272,7 +272,7 @@ elseif ($search_author)
 	$total_found_dl = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
-	$pagination = generate_pagination('downloads.' . $phpEx . '?view=search&search_author=' . $search_author . '&search_cat=' . $search_cat . '&sort_dir=' . $sort_dir, $total_found_dl, $board_config['topics_per_page'], $start);
+	$pagination = generate_pagination('downloads.' . PHP_EXT . '?view=search&search_author=' . $search_author . '&search_cat=' . $search_cat . '&sort_dir=' . $sort_dir, $total_found_dl, $board_config['topics_per_page'], $start);
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
@@ -284,8 +284,8 @@ elseif ($search_author)
 		'L_LONG_DESC' => $lang['Dl_detail'],
 		'L_NAV1' => $lang['Dl_cat_title'],
 		'L_NAV2' => $lang['Search'] . ' ' . $lang['Downloads'],
-		'U_NAV1' => append_sid('downloads.' . $phpEx),
-		'U_NAV2' => append_sid('downloads.' . $phpEx . '?view=search')
+		'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+		'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?view=search')
 		)
 	);
 
@@ -316,7 +316,7 @@ elseif ($search_author)
 			$cat_id = $row['cat'];
 			$description = $row['description'];
 			$file_id = $row['id'];
-			$u_file_link = append_sid('downloads.' . $phpEx . '?view=detail&amp;df_id=' . $file_id);
+			$u_file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
 			$dl_status = array();
 			$dl_status = $dl_mod->dl_status($file_id);
@@ -327,7 +327,7 @@ elseif ($search_author)
 			$mini_icon = $dl_mod->mini_status_file($index[$cat_id]['parent'], $file_id);
 
 			$cat_name = $row['cat_name'];
-			$u_cat_link = append_sid('downloads.' . $phpEx . "?cat=" . $cat_id);
+			$u_cat_link = append_sid('downloads.' . PHP_EXT . "?cat=" . $cat_id);
 
 			$long_desc = make_clickable(smilies_pass(bbencode_second_pass(stripslashes($row['long_desc']), $row['bbcode_uid'])));
 			$long_desc = str_replace("\n", "\n<br />\n", $long_desc);
@@ -389,14 +389,14 @@ else
 		'L_SEARCH' => $lang['Search'],
 		'L_SEARCH_AUTHOR' => $lang['Dl_search_author'],
 
-		'S_SEARCH_ACTION' => append_sid('downloads.' . $phpEx . '?view=search'),
+		'S_SEARCH_ACTION' => append_sid('downloads.' . PHP_EXT . '?view=search'),
 		'S_CATEGORY_OPTIONS' => $select_categories,
 		'S_SORT_ORDER' => $s_sort_dir,
 		'S_SORT_OPTIONS' => $s_search_fields,
 		'L_NAV1' => $lang['Dl_cat_title'],
 		'L_NAV2' => $lang['Search'] . ' ' . $lang['Downloads'],
-		'U_NAV1' => append_sid('downloads.' . $phpEx),
-		'U_NAV2' => append_sid('downloads.' . $phpEx . '?view=search')
+		'U_NAV1' => append_sid('downloads.' . PHP_EXT),
+		'U_NAV2' => append_sid('downloads.' . PHP_EXT . '?view=search')
 		)
 	);
 }

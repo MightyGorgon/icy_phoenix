@@ -8,12 +8,12 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -23,7 +23,7 @@ init_userprefs($userdata);
 $page_title = $lang['Staff'];
 $meta_description = '';
 $meta_keywords = '';
-include('includes/page_header.' . $phpEx);
+include('includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'staff_body.tpl'));
 
@@ -156,7 +156,7 @@ for($i = 0; $i < count($level_cat); $i++)
 				$topic_percent = 0;
 			}
 
-			$pmto = append_sid('privmsg.' . $phpEx . '?mode=post&amp;' . POST_USERS_URL . '=' . $staff[user_id]);
+			$pmto = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $staff[user_id]);
 			$pm = '<a href="' . $pmto . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 			$mailto = ( $board_config['board_email_form'] ) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $staff['user_id']) : 'mailto:' . $staff['user_email'];
 			$mail = ( $staff['user_email'] ) ? '<a href="' . $mailto . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>' : '';
@@ -217,6 +217,6 @@ $template->assign_vars(array(
 ));
 
 $template->pparse('body');
-include('includes/page_tail.' . $phpEx);
+include('includes/page_tail.' . PHP_EXT);
 
 ?>

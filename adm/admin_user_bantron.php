@@ -15,7 +15,7 @@
 *
 */
 
-define ('IN_PHPBB', 1);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules)) {
 	$filename = basename(__FILE__);
@@ -25,9 +25,9 @@ if (!empty($setmodules)) {
 }
 
 // Load default header
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 //
 // Set Overall Variables
@@ -54,7 +54,7 @@ if (isset ($_POST['delete_submit']))
 		}
 	}
 
-	$message = $lang['Ban_update_sucessful'] .'<br /><br />'. sprintf ($lang['Click_return_banadmin'], '<a href="'. append_sid ('admin_user_bantron.' . $phpEx) .'">', '</a>') .'<br /><br />' . sprintf ($lang['Click_return_admin_index'], '<a href="'. append_sid ('index.' . $phpEx . '?pane=right') .'">', '</a>');
+	$message = $lang['Ban_update_sucessful'] .'<br /><br />'. sprintf ($lang['Click_return_banadmin'], '<a href="'. append_sid ('admin_user_bantron.' . PHP_EXT) .'">', '</a>') .'<br /><br />' . sprintf ($lang['Click_return_admin_index'], '<a href="'. append_sid ('index.' . PHP_EXT . '?pane=right') .'">', '</a>');
 
 	message_die (GENERAL_MESSAGE, $message);
 }
@@ -317,7 +317,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 		}
 	}
 
-	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid ("admin_user_bantron.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid ('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid ("admin_user_bantron." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid ('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die (GENERAL_MESSAGE, $message);
 }
@@ -427,7 +427,7 @@ elseif (isset ($_POST['add']) || $_GET['mode'] == 'edit')
 
 		'SUBMIT' => (isset ($_POST['add'])) ? 'submit_add' : 'submit_update',
 
-		'S_BANLIST_ACTION' => append_sid('admin_user_bantron.' . $phpEx)
+		'S_BANLIST_ACTION' => append_sid('admin_user_bantron.' . PHP_EXT)
 		)
 	);
 
@@ -589,7 +589,7 @@ else
 		'SHOW' => $show,
 		'ORDER' => $order,
 
-		'S_BANTRON_ACTION' => append_sid ('admin_user_bantron.' . $phpEx)
+		'S_BANTRON_ACTION' => append_sid ('admin_user_bantron.' . PHP_EXT)
 		)
 	);
 
@@ -707,7 +707,7 @@ else
 			'BAN_ID' => $ban_id,
 			'BAN_TIME' => $ban_time,
 			'BAN_EXPIRE_TIME' => $ban_expire_time,
-			'U_BAN_EDIT' => append_sid ('admin_user_bantron.' . $phpEx . '?mode=edit&amp;ban_id=' . $ban_id),
+			'U_BAN_EDIT' => append_sid ('admin_user_bantron.' . PHP_EXT . '?mode=edit&amp;ban_id=' . $ban_id),
 			'BAN_REASON' => $ban_reason,
 			'BAN_BY' => $ban_by
 			)
@@ -763,7 +763,7 @@ else
 
 	$num_bans = $db->sql_fetchrow ($result);
 
-	$pagination = generate_pagination('admin_user_bantron.' . $phpEx . '?show=' . $show . '&amp;order=' . $order, $num_bans['total'], $board_config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_user_bantron.' . PHP_EXT . '?show=' . $show . '&amp;order=' . $order, $num_bans['total'], $board_config['topics_per_page'], $start). '&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
@@ -775,6 +775,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

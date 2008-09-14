@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -24,16 +24,16 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 // Check if the user has canceled a confirmation message.
 $confirm = isset($_POST['confirm']) ? true : false;
 $cancel = isset($_POST['cancel']) ? true : false;
 $no_page_header = (!empty($_POST['send_file']) || $cancel) ? true : false;
-require('./pagestart.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
 if ($cancel)
 {
-	redirect(ADM . '/'  . append_sid('admin_styles.' . $phpEx, true));
+	redirect(ADM . '/'  . append_sid('admin_styles.' . PHP_EXT, true));
 }
 
 if(isset($_GET['mode']) || isset($_POST['mode']))
@@ -55,7 +55,7 @@ switch($mode)
 		if(isset($install_to))
 		{
 
-			include($phpbb_root_path . "templates/" . basename($install_to) . "/theme_info.cfg");
+			include(IP_ROOT_PATH . "templates/" . basename($install_to) . "/theme_info.cfg");
 
 			$template_name = $$install_to;
 			$found = FALSE;
@@ -102,7 +102,7 @@ switch($mode)
 			}
 
 			cache_themes();
-			$message = $lang['Theme_installed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Theme_installed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -111,15 +111,15 @@ switch($mode)
 
 			$installable_themes = array();
 
-			if($dir = @opendir($phpbb_root_path. "templates/"))
+			if($dir = @opendir(IP_ROOT_PATH . 'templates/'))
 			{
 				while($sub_dir = @readdir($dir))
 				{
-					if(!is_file(phpbb_realpath($phpbb_root_path . 'templates/' .$sub_dir)) && !is_link(phpbb_realpath($phpbb_root_path . 'templates/' .$sub_dir)) && $sub_dir != "." && $sub_dir != ".." && $sub_dir != "CVS")
+					if(!is_file(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' .$sub_dir)) && $sub_dir != "." && $sub_dir != ".." && $sub_dir != "CVS")
 					{
-						if(@file_exists(@phpbb_realpath($phpbb_root_path. "templates/" . $sub_dir . "/theme_info.cfg")))
+						if(@file_exists(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir . '/theme_info.cfg')))
 						{
-							include($phpbb_root_path. "templates/" . $sub_dir . "/theme_info.cfg");
+							include(IP_ROOT_PATH . 'templates/' . $sub_dir . '/theme_info.cfg');
 
 							for($i = 0; $i < count($$sub_dir); $i++)
 							{
@@ -149,12 +149,12 @@ switch($mode)
 				);
 
 				$template->assign_vars(array(
-					"L_STYLES_TITLE" => $lang['Styles_admin'],
-					"L_STYLES_ADD_TEXT" => $lang['Styles_addnew_explain'],
-					"L_STYLE" => $lang['Style'],
-					"L_TEMPLATE" => $lang['Template'],
-					"L_INSTALL" => $lang['Install'],
-					"L_ACTION" => $lang['Action'])
+					'L_STYLES_TITLE' => $lang['Styles_admin'],
+					'L_STYLES_ADD_TEXT' => $lang['Styles_addnew_explain'],
+					'L_STYLE' => $lang['Style'],
+					'L_TEMPLATE' => $lang['Template'],
+					'L_INSTALL' => $lang['Install'],
+					'L_ACTION' => $lang['Action'])
 				);
 
 				for($i = 0; $i < count($installable_themes); $i++)
@@ -162,13 +162,13 @@ switch($mode)
 					$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 					$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
-					$template->assign_block_vars("styles", array(
-						"ROW_CLASS" => $row_class,
-						"ROW_COLOR" => "#" . $row_color,
-						"STYLE_NAME" => $installable_themes[$i]['style_name'],
-						"TEMPLATE_NAME" => $installable_themes[$i]['template_name'],
+					$template->assign_block_vars('styles', array(
+						'ROW_CLASS' => $row_class,
+						'ROW_COLOR' => '#' . $row_color,
+						'STYLE_NAME' => $installable_themes[$i]['style_name'],
+						'TEMPLATE_NAME' => $installable_themes[$i]['template_name'],
 
-						"U_STYLES_INSTALL" => append_sid("admin_styles.$phpEx?mode=addnew&amp;style=" . urlencode($installable_themes[$i]['style_name']) . "&amp;install_to=" . urlencode($installable_themes[$i]['template_name'])))
+						'U_STYLES_INSTALL' => append_sid('admin_styles.' . PHP_EXT . '?mode=addnew&amp;style=' . urlencode($installable_themes[$i]['style_name']) . '&amp;install_to=' . urlencode($installable_themes[$i]['template_name'])))
 					);
 
 				}
@@ -179,8 +179,8 @@ switch($mode)
 		}
 		break;
 
-	case "create":
-	case "edit":
+	case 'create':
+	case 'edit':
 		$submit = (isset($_POST['submit'])) ? TRUE : 0;
 
 		if($submit)
@@ -366,7 +366,7 @@ switch($mode)
 				}
 
 				cache_themes();
-				$message = $lang['Theme_updated'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = $lang['Theme_updated'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -468,7 +468,7 @@ switch($mode)
 				}
 
 				cache_themes();
-				$message = $lang['Theme_created'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+				$message = $lang['Theme_created'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -534,12 +534,12 @@ switch($mode)
 				'body' => ADM_TPL . 'styles_edit_body.tpl')
 			);
 
-			if($dir = @opendir($phpbb_root_path . 'templates/'))
+			if($dir = @opendir(IP_ROOT_PATH . 'templates/'))
 			{
 				$s_template_select = '<select name="template_name">';
 				while($file = @readdir($dir))
 				{
-					if(!is_file(phpbb_realpath($phpbb_root_path . 'templates/' . $file)) && !is_link(phpbb_realpath($phpbb_root_path . 'templates/' . $file)) && $file != "." && $file != ".." && $file != "CVS")
+					if(!is_file(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && $file != "." && $file != ".." && $file != "CVS")
 					{
 						if($file == $selected['template_name'])
 						{
@@ -688,7 +688,7 @@ switch($mode)
 				"HIDDEN_COLOR" => $selected['hidden_color'],
 				// End add - Online/Offline/Hidden Mod
 
-				"S_THEME_ACTION" => append_sid("admin_styles.$phpEx"),
+				"S_THEME_ACTION" => append_sid("admin_styles." . PHP_EXT),
 				"S_TEMPLATE_SELECT" => $s_template_select,
 				"S_HIDDEN_FIELDS" => $s_hidden_fields)
 			);
@@ -736,7 +736,7 @@ switch($mode)
 
 			@umask(0111);
 
-			$fp = @fopen($phpbb_root_path . 'templates/' . basename($template_name) . '/theme_info.cfg', 'w');
+			$fp = @fopen(IP_ROOT_PATH . 'templates/' . basename($template_name) . '/theme_info.cfg', 'w');
 
 			if(!$fp)
 			{
@@ -747,7 +747,7 @@ switch($mode)
 				$s_hidden_fields = '<input type="hidden" name="theme_info" value="' . htmlspecialchars($theme_data) . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="send_file" value="1" /><input type="hidden" name="mode" value="export" />';
 
-				$download_form = '<form action="' . append_sid("admin_styles.$phpEx") . '" method="post"><input class="mainoption" type="submit" name="submit" value="' . $lang['Download'] . '" />' . $s_hidden_fields;
+				$download_form = '<form action="' . append_sid("admin_styles." . PHP_EXT) . '" method="post"><input class="mainoption" type="submit" name="submit" value="' . $lang['Download'] . '" />' . $s_hidden_fields;
 
 				$template->set_filenames(array(
 					'body' => "message_body.tpl")
@@ -766,7 +766,7 @@ switch($mode)
 			fclose($fp);
 
 			cache_themes();
-			$message = $lang['Theme_info_saved'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Theme_info_saved'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -785,12 +785,12 @@ switch($mode)
 				'body' => ADM_TPL . 'styles_exporter.tpl')
 			);
 
-			if($dir = @opendir($phpbb_root_path . 'templates/'))
+			if($dir = @opendir(IP_ROOT_PATH . 'templates/'))
 			{
 				$s_template_select = '<select name="export_template">';
 				while($file = @readdir($dir))
 				{
-					if(!is_file(phpbb_realpath($phpbb_root_path . 'templates/' . $file)) && !is_link(phpbb_realpath($phpbb_root_path . 'templates/' .$file)) && $file != "." && $file != ".." && $file != "CVS")
+					if(!is_file(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' .$file)) && $file != "." && $file != ".." && $file != "CVS")
 					{
 						$s_template_select .= '<option value="' . $file . '">' . $file . "</option>\n";
 					}
@@ -803,13 +803,13 @@ switch($mode)
 			}
 
 			$template->assign_vars(array(
-				"L_STYLE_EXPORTER" => $lang['Export_themes'],
-				"L_EXPORTER_EXPLAIN" => $lang['Export_explain'],
-				"L_TEMPLATE_SELECT" => $lang['Select_template'],
-				"L_SUBMIT" => $lang['Submit'],
+				'L_STYLE_EXPORTER' => $lang['Export_themes'],
+				'L_EXPORTER_EXPLAIN' => $lang['Export_explain'],
+				'L_TEMPLATE_SELECT' => $lang['Select_template'],
+				'L_SUBMIT' => $lang['Submit'],
 
-				"S_EXPORTER_ACTION" => append_sid("admin_styles.$phpEx?mode=export"),
-				"S_TEMPLATE_SELECT" => $s_template_select)
+				'S_EXPORTER_ACTION' => append_sid('admin_styles.' . PHP_EXT . '?mode=export'),
+				'S_TEMPLATE_SELECT' => $s_template_select)
 			);
 
 			$template->pparse('body');
@@ -841,7 +841,7 @@ switch($mode)
 				"L_YES" => $lang['Yes'],
 				"L_NO" => $lang['No'],
 
-				"S_CONFIRM_ACTION" => append_sid("admin_styles.$phpEx"),
+				"S_CONFIRM_ACTION" => append_sid("admin_styles." . PHP_EXT),
 				"S_HIDDEN_FIELDS" => $hidden_fields
 				)
 			);
@@ -879,7 +879,7 @@ switch($mode)
 			}
 
 			cache_themes();
-			$message = $lang['Style_removed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles.$phpEx") . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . $phpEx . '?pane=right') . "\">", "</a>");
+			$message = $lang['Style_removed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], "<a href=\"" . append_sid("admin_styles." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -902,12 +902,12 @@ switch($mode)
 		);
 
 		$template->assign_vars(array(
-			"L_STYLES_TITLE" => $lang['Styles_admin'],
-			"L_STYLES_TEXT" => $lang['Styles_explain'],
-			"L_STYLE" => $lang['Style'],
-			"L_TEMPLATE" => $lang['Template'],
-			"L_EDIT" => $lang['Edit'],
-			"L_DELETE" => $lang['Delete'])
+			'L_STYLES_TITLE' => $lang['Styles_admin'],
+			'L_STYLES_TEXT' => $lang['Styles_explain'],
+			'L_STYLE' => $lang['Style'],
+			'L_TEMPLATE' => $lang['Template'],
+			'L_EDIT' => $lang['Edit'],
+			'L_DELETE' => $lang['Delete'])
 		);
 
 		for($i = 0; $i < count($style_rowset); $i++)
@@ -915,14 +915,15 @@ switch($mode)
 			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
-			$template->assign_block_vars("styles", array(
-				"ROW_CLASS" => $row_class,
-				"ROW_COLOR" => $row_color,
-				"STYLE_NAME" => $style_rowset[$i]['style_name'],
-				"TEMPLATE_NAME" => $style_rowset[$i]['template_name'],
+			$template->assign_block_vars('styles', array(
+				'ROW_CLASS' => $row_class,
+				'ROW_COLOR' => $row_color,
+				'STYLE_NAME' => $style_rowset[$i]['style_name'],
+				'TEMPLATE_NAME' => $style_rowset[$i]['template_name'],
 
-				"U_STYLES_EDIT" => append_sid("admin_styles.$phpEx?mode=edit&amp;style_id=" . $style_rowset[$i]['themes_id']),
-				"U_STYLES_DELETE" => append_sid("admin_styles.$phpEx?mode=delete&amp;style_id=" . $style_rowset[$i]['themes_id']))
+				'U_STYLES_EDIT' => append_sid('admin_styles.' . PHP_EXT . '?mode=edit&amp;style_id=' . $style_rowset[$i]['themes_id']),
+				'U_STYLES_DELETE' => append_sid('admin_styles.' . PHP_EXT . '?mode=delete&amp;style_id=' . $style_rowset[$i]['themes_id'])
+				)
 			);
 		}
 
@@ -932,7 +933,7 @@ switch($mode)
 
 if (empty($_POST['send_file']))
 {
-	include('./page_footer_admin.' . $phpEx);
+	include('./page_footer_admin.' . PHP_EXT);
 }
 
 ?>

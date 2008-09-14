@@ -29,7 +29,7 @@
 *
 */
 
-if(!defined('IN_PHPBB'))
+if(!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt!');
 }
@@ -45,7 +45,7 @@ if(!defined('IN_PHPBB'))
 function create_footer_layout($ct_gfn)
 {
 	// Globals we need
-	global $phpbb_root_path, $phpEx, $images, $lang;
+	global $images, $lang;
 
 	// Reset used vars
 	$counter_value_now 		  = 0;
@@ -59,15 +59,15 @@ function create_footer_layout($ct_gfn)
 	 */
 	if ( $ct_gfn == 3 || $ct_gfn == 4 || $ct_gfn == 6 || $ct_gfn == 7 || $ct_gfn == 8 )
 	{
-		include_once($phpbb_root_path . 'ctracker/classes/class_log_manager.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
 		$footer_mgr = new log_manager();
 		$footer_mgr->get_counter_value();
 		$counter_value_now = $footer_mgr->ct_counter_value;
 		unset($footer_mgr);
 	}
 
-	$footer_mini = '<a href="http://www.cback.de" target="_blank"><img src="' . $phpbb_root_path . $images['ctracker_footer_s'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
-	$footer_big  = '<a href="http://www.cback.de" target="_blank"><img src="' . $phpbb_root_path . $images['ctracker_footer_b'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
+	$footer_mini = '<a href="http://www.cback.de" target="_blank"><img src="' . IP_ROOT_PATH . $images['ctracker_footer_s'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
+	$footer_big  = '<a href="http://www.cback.de" target="_blank"><img src="' . IP_ROOT_PATH . $images['ctracker_footer_b'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
 
 	switch( $ct_gfn )
 	{

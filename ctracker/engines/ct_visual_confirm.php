@@ -33,7 +33,7 @@
 *
 */
 
-if( !defined('IN_PHPBB') || !defined('CRACKER_TRACKER_VCONFIRM') )
+if( !defined('IN_ICYPHOENIX') || !defined('CRACKER_TRACKER_VCONFIRM') )
 {
 	die('Hacking attempt!');
 }
@@ -128,7 +128,7 @@ if ( $mode == 'check' || defined('POST_CONFIRM_CHECK') )
 	{
 		if ( defined('IN_LOGIN') )
 		{
-			$error_msg .= '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="ctracker_login.' . $phpEx . '">', '</a>');
+			$error_msg .= '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="ctracker_login.' . PHP_EXT . '">', '</a>');
 		}
 		message_die(GENERAL_MESSAGE, $error_msg);
 	}

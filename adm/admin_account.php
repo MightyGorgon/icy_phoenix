@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
@@ -17,9 +17,9 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 
 if(!function_exists('period'))
 {
@@ -120,7 +120,7 @@ if((($delete && $confirm) || $activate) && $mark_list)
 				$text = ($mail['user_active'] == '0') ? $lang['Account_activated_text'] : $lang['Account_deactivated_text'];
 			}
 
-			include_once($phpbb_root_path . 'includes/emailer.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer($board_config['smtp_delivery']);
 			$emailer->from($board_config['board_email']);
 			$emailer->replyto($board_config['board_email']);
@@ -165,12 +165,12 @@ if($delete && $mark_list)
 			'MESSAGE_TEXT' => (count($mark_list) == '1') ? $lang['Account_delete_user'] : $lang['Account_delete_users'],
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
-			'S_CONFIRM_ACTION' => append_sid('admin_account.' . $phpEx . '?action=' . $action),
+			'S_CONFIRM_ACTION' => append_sid('admin_account.' . PHP_EXT . '?action=' . $action),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 			)
 		);
 		$template->pparse('confirm_body');
-		include('./page_footer_admin.' . $phpEx);
+		include('./page_footer_admin.' . PHP_EXT);
 	}
 	elseif($confirm)
 	{
@@ -264,10 +264,10 @@ $select_letter = '';
 for($i = 97; $i <= 122; $i++)
 {
 	$others_sql .= " AND username NOT LIKE '" . chr($i) . "%' ";
-	$select_letter .= ($by_letter == chr($i)) ? strtoupper(chr($i)) .'&nbsp;' : '<a href="'. append_sid('admin_account.' . $phpEx . '?action=' . $action . '&amp;letter=' . chr($i) . '&amp;start=' . $start) .'">'. strtoupper(chr($i)) .'</a>&nbsp;';
+	$select_letter .= ($by_letter == chr($i)) ? strtoupper(chr($i)) .'&nbsp;' : '<a href="'. append_sid('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . chr($i) . '&amp;start=' . $start) .'">'. strtoupper(chr($i)) .'</a>&nbsp;';
 }
-$select_letter .= ($by_letter == 'others') ? $lang['Account_others'] .'&nbsp;' : '<a href="'. append_sid('admin_account.' . $phpEx . '?action=' . $action . '&amp;letter=others&amp;start=' . $start) .'">'. $lang['Account_others'] .'</a>&nbsp;';
-$select_letter .= ($by_letter == 'all') ? $lang['Account_all'] : '<a href="'. append_sid('admin_account.' . $phpEx . '?action=' . $action . '&amp;letter=all&amp;start=' . $start) .'">'. $lang['Account_all'] .'</a>';
+$select_letter .= ($by_letter == 'others') ? $lang['Account_others'] .'&nbsp;' : '<a href="'. append_sid('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=others&amp;start=' . $start) .'">'. $lang['Account_others'] .'</a>&nbsp;';
+$select_letter .= ($by_letter == 'all') ? $lang['Account_all'] : '<a href="'. append_sid('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=all&amp;start=' . $start) .'">'. $lang['Account_all'] .'</a>';
 
 if($by_letter == 'all')
 {
@@ -365,11 +365,11 @@ $template->assign_vars(array(
 	'L_REGISTERED_AWAITS' => ($action == 'inactive') ? $lang['Account_awaits'] : $lang['Account_registered'],
 	'L_ACTIVATION' => $l_activation,
 	'TOTAL_USERS' => ($total_users == '1') ? sprintf($lang['Account_total_user'], $total_users) : sprintf($lang['Account_total_users'], $total_users),
-	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . $phpEx . '?action=' . $action . '&amp;letter=' . $letter, $total_users, $board_config['topics_per_page'], $start),
+	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . $letter, $total_users, $board_config['topics_per_page'], $start),
 	'PAGE_NUMBER' => ($total_users == '0') ? '' : sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_users / $board_config['topics_per_page'])),
 	'S_LETTER_SELECT' => $select_letter,
 	'S_LETTER_HIDDEN' => '<input type="hidden" name="letter" value="' . $by_letter . '">',
-	'S_ACCOUNT_ACTION' => append_sid('admin_account.' . $phpEx . '?action=' . $action),
+	'S_ACCOUNT_ACTION' => append_sid('admin_account.' . PHP_EXT . '?action=' . $action),
 	'S_HIDDEN_FIELDS' => '',
 	'S_SELECT_DAYS' => $select_days,
 	)
@@ -399,8 +399,8 @@ if($row = $db->sql_fetchrow($result))
 			'EMAIL' => $email,
 			'JOINED' => create_date($board_config['default_dateformat'], $row['user_regdate'], $board_config['board_timezone']),
 			'PERIOD' => period(time() - $row['user_regdate']),
-			'U_EDIT_USER' => append_sid('admin_users.' . $phpEx . '?mode=edit&amp;' . POST_USERS_URL . '=' . $user_id),
-			'U_USER_AUTH' => append_sid('admin_ug_auth.' . $phpEx . '?mode=user&amp;' . POST_USERS_URL . '=' . $user_id),
+			'U_EDIT_USER' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $user_id),
+			'U_USER_AUTH' => append_sid('admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $user_id),
 			'S_MARK_ID' => $user_id,
 			)
 		);
@@ -415,6 +415,6 @@ else
 }
 
 $template->pparse('body');
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -15,13 +15,13 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-include_once($phpbb_root_path . ATTACH_MOD_PATH . 'includes/functions_delete.' . $phpEx);
-require($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 function prune($forum_id, $prune_date, $prune_all = false)
 {

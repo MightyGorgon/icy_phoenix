@@ -15,19 +15,18 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // ------------------------------------
 // Check feature enabled
@@ -43,19 +42,16 @@ if( $album_config['comment'] == 0 )
 // Check the request
 // ------------------------------------
 
-if ( defined('IS_ICYPHOENIX') )
+if (isset($_POST['message']))
 {
-	if ( isset($_POST['message']) )
-	{
-		$_POST['comment'] = $_POST['message'];
-	}
+	$_POST['comment'] = $_POST['message'];
 }
 
-if( isset($_GET['comment_id']) )
+if(isset($_GET['comment_id']))
 {
 	$comment_id = intval($_GET['comment_id']);
 }
-elseif( isset($_POST['comment_id']) )
+elseif(isset($_POST['comment_id']))
 {
 	$comment_id = intval($_POST['comment_id']);
 }
@@ -147,7 +143,7 @@ if( ($album_user_access['comment'] == 0) || ($album_user_access['edit'] == 0) )
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . "?redirect=album_comment_edit.$phpEx?comment_id=$comment_id"));
+		redirect(append_sid(LOGIN_MG . '?redirect=album_comment_edit.' . PHP_EXT . '?comment_id=' . $comment_id));
 	}
 	else
 	{
@@ -192,7 +188,7 @@ if( !isset($_POST['comment']) )
 	$page_title = $lang['Album'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_comment_body.tpl'));
 
@@ -233,13 +229,13 @@ if( !isset($_POST['comment']) )
 
 	$template->assign_vars(array(
 		'CAT_TITLE' => $thispic['cat_title'],
-		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . $phpEx . '?cat_id=' . $cat_id)),
+		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
 
-		'U_THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . $phpEx . '?pic_id=' . $pic_id)),
-		'U_PIC' => append_sid(album_append_uid('album_pic.' . $phpEx . '?pic_id=' . $pic_id)),
+		'U_THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $pic_id)),
+		'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $pic_id)),
 
 		'PIC_ID' => $pic_id,
-		'PIC_TITLE' => $thispic['pic_title'],
+		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
 		'PIC_DESC' => nl2br($thispic['pic_desc']),
 		'POSTER' => $poster,
 		'PIC_TIME' => create_date($board_config['default_dateformat'], $thispic['pic_time'], $board_config['board_timezone']),
@@ -265,7 +261,7 @@ if( !isset($_POST['comment']) )
 
 		'L_SUBMIT' => $lang['Submit'],
 
-		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_comment_edit.' . $phpEx . '?comment_id=' . $comment_id))
+		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_comment_edit.' . PHP_EXT . '?comment_id=' . $comment_id))
 		)
 	);
 
@@ -274,7 +270,7 @@ if( !isset($_POST['comment']) )
 	//
 	$template->pparse('body');
 
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {
@@ -319,11 +315,11 @@ else
 	$return_url = 'album_showpage';
 
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid($return_url . '.' . $phpEx . '?pic_id=' . $pic_id)) .'">'
+		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id)) .'">'
 		)
 	);
 
-	$message = $lang['Stored'] . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(album_append_uid($return_url . '.' . $phpEx . '?pic_id=' . $pic_id)) . '#' . $comment_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . $phpEx) . '">', '</a>');
+	$message = $lang['Stored'] . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id)) . '#' . $comment_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }

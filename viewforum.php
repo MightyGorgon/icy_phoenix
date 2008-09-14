@@ -18,14 +18,14 @@
 // CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_topics.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 define('IN_VIEWFORUM', true);
 // Start initial var setup
@@ -57,7 +57,7 @@ if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
 	elseif (($type == POST_CAT_URL) || ($selected_id == 'Root'))
 	{
 		$parm = ($id != 0) ? '?' . POST_CAT_URL . '=' . $id : '';
-		redirect(append_sid($phpbb_root_path . FORUM_MG . $parm));
+		redirect(append_sid(IP_ROOT_PATH . FORUM_MG . $parm));
 		exit;
 	}
 }
@@ -215,7 +215,7 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 	{
 		if ((($check_viewed == 'false') && ($effected <> 1) && ($ins_date <= $userdata['user_regdate'])) || (($check_viewed == 'false') && ($effected == '1')))
 		{
-			include_once($phpbb_root_path . 'includes/page_header.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			$q = "SELECT * FROM " . FORCE_READ_TABLE;
 			$r = $db -> sql_query($q);
 			$row = $db -> sql_fetchrow($r);
@@ -224,7 +224,7 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 			$msg = $row['message'];
 			$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append . '&amp;mode=read_this') . '">', '</a>');
 			message_die(GENERAL_ERROR, $msg . $lng_msg, 'Error');
-			include_once($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+			include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
@@ -404,8 +404,8 @@ if ($bypass)
 	{
 		if ($forum_row['prune_next'] < time() && $forum_row['prune_enable'])
 		{
-			include($phpbb_root_path . 'includes/prune.' . $phpEx);
-			require($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+			include(IP_ROOT_PATH . 'includes/prune.' . PHP_EXT);
+			require(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 			auto_prune($forum_id);
 		}
 	}
@@ -441,7 +441,7 @@ if ($bypass)
 	}
 	for ($i = 0; $i < count($tree['mods'][$idx]['group_id']); $i++)
 	{
-		$moderators[] = '<a href="' . append_sid('./groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color[$tree['mods'][$idx]['group_id'][$i]] . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
+		$moderators[] = '<a href="' . append_sid('./groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color[$tree['mods'][$idx]['group_id'][$i]] . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
 	}
 
 	$l_moderators = (count($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'];
@@ -910,7 +910,7 @@ if ($bypass)
 
 	if ($is_auth['auth_mod'])
 	{
-		$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="modcp.' . $phpEx . '?' . $forum_id_append . '&amp;start=' . $start . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;start=' . $start . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 	}
 
 	// Mozilla navigation bar
@@ -976,7 +976,7 @@ if ($bypass)
 	$page_title = $forum_row['forum_name'];
 	$meta_description = '';
 	$meta_keywords = '';
-	include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	if ($kb_mode == true)
 	{
@@ -1014,7 +1014,7 @@ if ($bypass)
 
 	if ($board_config['forum_wordgraph'] == 1)
 	{
-		include($phpbb_root_path . 'includes/forum_wordgraph.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/forum_wordgraph.' . PHP_EXT);
 	}
 
 	$template->assign_vars(array(
@@ -1304,7 +1304,7 @@ if ($bypass)
 	}
 
 	// Should the news banner be shown?
-	include($phpbb_root_path . 'includes/xs_news.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/xs_news.' . PHP_EXT);
 	if($xs_news_config['xs_show_news'])
 	{
 		$template->assign_block_vars('switch_show_news', array());
@@ -1350,7 +1350,7 @@ if ($bypass)
 	$template->pparse('body');
 
 	// Page footer
-	include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
 ?>

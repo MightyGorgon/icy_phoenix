@@ -7,7 +7,7 @@
 
 // --------------------------------------------------------------------------------------------------------------
 
-var loadingImage = "images/fap/fap_loading.gif";		// loading image
+var loadingImage = "images/album/fap_loading.gif";		// loading image
 
 // --------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ var mooShows = null;
 		'			<a href=\'#' + shownumber + '\' id=\'' + showName + '_nextLink\' class=\'mooshow_nextLink\' onClick=\'mooShows[&#39;' + showName + '&#39;].nextImage();\' ></a> \n' +
 		'		</div> \n' +
 		'		<div id=\'' + showName + '_IPTC\' class=\'mooshow_IPTC\' style=\'width:' + photoArray[0][1] + 'px;\'></div> \n' +
-		'		<a href=\'#' + shownumber + '\' ><img src=\'images/fap/fap_info.gif\' id=\'' + showName + '_IPTCbutton\' class=\'mooshow_IPTCbutton\' onClick=\'mooShows[&#39;' + showName + '&#39;].updateIPTCinfoToggle();\' /></a> \n' +
+		'		<a href=\'#' + shownumber + '\' ><img src=\'images/album/fap_info.gif\' id=\'' + showName + '_IPTCbutton\' class=\'mooshow_IPTCbutton\' onClick=\'mooShows[&#39;' + showName + '&#39;].updateIPTCinfoToggle();\' /></a> \n' +
 		'	</div> \n' +
 		'	<div id=\'' + showName + '_extras\' class=\'mooshow_extras\'> \n' +
 		'		<div id=\'' + showName + '_captions\' class=\'mooshow_captions\' style=\'padding-top:' + this.border + 'px;padding-left:-' + this.border + 'px; width:' + photoArray[0][1] + 'px;\'>' + photoArray[0][7] + '&nbsp;</div> \n' +
@@ -237,7 +237,7 @@ mooshow.prototype = {
 		Element.setInnerHTML(showName+'_topNav', '');
 		this.topNavContent = $(showName+'_topNav').innerHTML;
 
-		this.topNavContent = (this.counter+1) + ' / ' + (this.photoArray.length-1) + ' <img src=\'images/fap/fap_blank.gif\' width=\'10\' height=\'1\' />';
+		this.topNavContent = (this.counter+1) + ' / ' + (this.photoArray.length-1) + ' <img src=\'images/album/fap_blank.gif\' width=\'10\' height=\'1\' />';
 
 		for ( var i = 1; i < this.photoArray.length; i++ )
 		{
@@ -287,7 +287,7 @@ mooshow.prototype = {
 		{
 			// when loaded
 			// hide current photo
-			Element.setSrc(showName + '_image','images/fap/fap_blank.gif');
+			Element.setSrc(showName + '_image','images/album/fap_blank.gif');
 			Element.setOpacity(showName + '_image',0);
 			// hide laoding animation
 			Element.hide(showName + '_loading');

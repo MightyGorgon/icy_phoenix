@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -24,8 +24,8 @@ if(!function_exists(imp_statistics_block_func))
 {
 	function imp_statistics_block_func()
 	{
-		global $template, $lang, $phpbb_root_path, $phpEx, $board_config;
-		include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+		global $template, $lang, $board_config;
+		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		$total_topics = $board_config['max_topics'];
 		$total_posts = $board_config['max_posts'];
 		$total_topics = $board_config['max_topics'];

@@ -8,30 +8,28 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = defined('IS_ICYPHOENIX') ? session_pagestart($user_ip) : session_pagestart($user_ip, PAGE_ALBUM);
+$userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
 // Get general album information
-$album_root_path = $phpbb_root_path . ALBUM_MOD_PATH;
-include($album_root_path . 'album_common.' . $phpEx);
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 /*
 global $album_config, $template, $lang, $images, $theme;
-global $phpbb_root_path, $phpEx;
 */
 
-if( isset($_GET['pic_id']) )
+if(isset($_GET['pic_id']))
 {
 	$pic_id = $_GET['pic_id'];
 }
-elseif( isset($_POST['pic_id']) )
+elseif(isset($_POST['pic_id']))
 {
 	$pic_id = $_POST['pic_id'];
 }
@@ -40,11 +38,11 @@ else
 	$pic_id = '';
 }
 
-if( isset($_GET['pic_cat']) )
+if(isset($_GET['pic_cat']))
 {
 	$pic_cat = $_GET['pic_cat'];
 }
-elseif( isset($_POST['pic_cat']) )
+elseif(isset($_POST['pic_cat']))
 {
 	$pic_cat = $_POST['pic_cat'];
 }
@@ -54,11 +52,11 @@ else
 }
 
 /*
-if ( !empty($_POST['pic_cat']) )
+if (!empty($_POST['pic_cat']))
 {
 	$pic_cat = htmlspecialchars($_POST['pic_cat']);
 }
-elseif ( !empty($_GET['pic_cat']) )
+elseif (!empty($_GET['pic_cat']))
 {
 	$pic_cat = htmlspecialchars($_GET['pic_cat']);
 }
@@ -66,20 +64,20 @@ elseif ( !empty($_GET['pic_cat']) )
 
 $upload_pics = false;
 $cat_to_upload = false;
-if( isset($_POST['pic_upload']) )
+if(isset($_POST['pic_upload']))
 {
-	if ( ($_POST['pic_upload'] == true) && (isset($_POST['cat_id'])) )
+	if (($_POST['pic_upload'] == true) && (isset($_POST['cat_id'])))
 	{
 		$cat_to_upload = $_POST['cat_id'];
 		$upload_pics = true;
 	}
 }
 
-if( isset($_GET['mode']) )
+if(isset($_GET['mode']))
 {
 	$mode = $_GET['mode'];
 }
-elseif( isset($_POST['mode']) )
+elseif(isset($_POST['mode']))
 {
 	$mode = $_POST['mode'];
 }
@@ -88,12 +86,12 @@ else
 	$mode = '';
 }
 
-if ( ($mode == 'delete') && ($pic_id != '') )
+if (($mode == 'delete') && ($pic_id != ''))
 {
 	$pic_id = basename($pic_id);
-	if ( $pic_id != '' )
+	if ($pic_id != '')
 	{
-		if ( @file_exists(@phpbb_realpath('./' . ALBUM_OTF_PATH . $pic_id)) )
+		if (@file_exists(@phpbb_realpath('./' . ALBUM_OTF_PATH . $pic_id)))
 		{
 			@unlink('./' . ALBUM_OTF_PATH . $pic_id);
 		}
@@ -106,18 +104,18 @@ $pic_file_names = array();
 $pic_names = array();
 $dir = @opendir(ALBUM_OTF_PATH);
 
-//while( $file = @readdir($dir) )
+//while($file = @readdir($dir))
 while(false !== ($file = readdir($dir)))
 {
-	if( ($file != '.') && ($file != '..') && (!is_file(ALBUM_OTF_PATH . $file)) && (!is_link(ALBUM_OTF_PATH . $file)) )
+	if(($file != '.') && ($file != '..') && (!is_file(ALBUM_OTF_PATH . $file)) && (!is_link(ALBUM_OTF_PATH . $file)))
 	{
 		$sub_dir = @opendir(ALBUM_OTF_PATH . $file);
 
 		$pic_row_count = 0;
 		$pic_col_count = 0;
-		while( $sub_file = @readdir($sub_dir) )
+		while($sub_file = @readdir($sub_dir))
 		{
-			if( preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file) )
+			if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file))
 			{
 				$pic_images[$file][$pic_row_count][$pic_col_count] = $file . '/' . $sub_file;
 				$pic_cat_names[$file][$pic_row_count][$pic_col_count] = $file;
@@ -125,7 +123,7 @@ while(false !== ($file = readdir($dir)))
 				$pic_names[$file][$pic_row_count][$pic_col_count] = ucfirst(str_replace("_", " ", preg_replace('/^(.*)\..*$/', '\1', $sub_file)));
 
 				$pic_col_count++;
-				if( $pic_col_count == $album_config['cols_per_page'] )
+				if($pic_col_count == $album_config['cols_per_page'])
 				{
 					$pic_row_count++;
 					$pic_col_count = 0;
@@ -141,17 +139,17 @@ while(false !== ($file = readdir($dir)))
 @ksort($pic_images);
 @reset($pic_images);
 
-if( empty($pic_cat) )
+if(empty($pic_cat))
 {
 	list($pic_cat) = each($pic_images);
 }
 @reset($pic_images);
 
 $s_categories = '<select name="pic_cat">';
-while( list($key) = each($pic_images) )
+while(list($key) = each($pic_images))
 {
-	$selected = ( $key == $pic_cat ) ? ' selected="selected"' : '';
-	if( count($pic_images[$key]) )
+	$selected = ($key == $pic_cat) ? ' selected="selected"' : '';
+	if(count($pic_images[$key]))
 	{
 		$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
 	}
@@ -168,10 +166,10 @@ if ($album_config['enable_mooshow'] == 1)
 	$template->assign_block_vars('mooshow', array());
 	$js_images_list = get_images_list(ALBUM_OTF_PATH . $pic_cat, $pic_cat_reg);
 
-	$js_include .= '<script type="text/javascript" src="' . ALBUM_MOD_PATH . 'prototype.lite.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="' . ALBUM_MOD_PATH . 'moo.fx.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="' . ALBUM_MOD_PATH . 'moo.fx.pack.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="' . ALBUM_MOD_PATH . 'mooshow.1.04.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/prototype.lite.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/moo.fx.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/moo.fx.pack.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/mooshow.1.04.js"></script>' . "\n";
 	$js_include .= '<script type="text/javascript">var showsIE = new Array("' . $pic_cat_reg . '");</script>' . "\n";
 }
 
@@ -215,7 +213,7 @@ if($userdata['user_level'] == ADMIN)
 $page_title = $lang['Album'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_otf_body.tpl'));
 
@@ -229,7 +227,7 @@ for($i = 0; $i < count($pic_images[$pic_cat]); $i++)
 	$template->assign_block_vars('pic_row', array());
 
 	$s_colspan = max($s_colspan, count($pic_images[$pic_cat][$i]));
-	$s_colwidth = ( $s_colspan == 0 ) ? '100%' : 100 / $s_colspan . '%';
+	$s_colwidth = ($s_colspan == 0) ? '100%' : 100 / $s_colspan . '%';
 
 	for($j = 0; $j < count($pic_images[$pic_cat][$i]); $j++)
 	{
@@ -239,25 +237,25 @@ for($i = 0; $i < count($pic_images[$pic_cat]); $i++)
 		/*
 		$pic_thumbnail = $pic_cat_names[$pic_cat][$i][$j] . '_' . $pic_file_names[$pic_cat][$i][$j];
 		$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
-		if ( file_exists($pic_thumbnail_fullpath) )
+		if (file_exists($pic_thumbnail_fullpath))
 		{
 			$pic_img_thumb = $pic_thumbnail_fullpath;
 		}
 		else
 		{
-			$pic_img_thumb = append_sid(album_append_uid('album_otf_thumbnail.' . $phpEx . '?pic_cat=' . $pic_cat_names[$pic_cat][$i][$j] . '&amp;pic_id=' . $pic_file_names[$pic_cat][$i][$j]));
+			$pic_img_thumb = append_sid(album_append_uid('album_otf_thumbnail.' . PHP_EXT . '?pic_cat=' . $pic_cat_names[$pic_cat][$i][$j] . '&amp;pic_id=' . $pic_file_names[$pic_cat][$i][$j]));
 		}
 		*/
 
-		$pic_img_thumb = append_sid(album_append_uid('album_otf_thumbnail.' . $phpEx . '?pic_cat=' . $pic_cat_names[$pic_cat][$i][$j] . '&amp;pic_id=' . $pic_file_names[$pic_cat][$i][$j]));
+		$pic_img_thumb = append_sid(album_append_uid('album_otf_thumbnail.' . PHP_EXT . '?pic_cat=' . $pic_cat_names[$pic_cat][$i][$j] . '&amp;pic_id=' . $pic_file_names[$pic_cat][$i][$j]));
 
-		if ( ($upload_pics == true) && ($cat_to_upload > 0) )
+		if (($upload_pics == true) && ($cat_to_upload > 0))
 		{
 			if ($upload_counter < 9)
 			{
 				$otf_pic_title = $pic_cat . ' - 00' . ($upload_counter + 1);
 			}
-			elseif ( ($upload_counter > 8) && ($upload_counter < 99) )
+			elseif (($upload_counter > 8) && ($upload_counter < 99))
 			{
 				$otf_pic_title = $pic_cat . ' - 0' . ($upload_counter + 1);
 			}
@@ -289,7 +287,7 @@ for($i = 0; $i < count($pic_images[$pic_cat]); $i++)
 	}
 }
 
-if ( ($upload_pics == true) && ($cat_to_upload > 0) )
+if (($upload_pics == true) && ($cat_to_upload > 0))
 {
 	synchronize_cat_pics_counter($cat_to_upload);
 	//$template->assign_block_vars('upload_confirm', array());
@@ -327,24 +325,45 @@ $template->assign_vars(array(
 	'S_CATEGORY_SELECT' => $s_categories,
 	'S_COLSPAN' => $s_colspan,
 	'S_COLWIDTH' => $s_colwidth,
-	'S_ACTION' => append_sid('album_otf.' . $phpEx),
+	'S_ACTION' => append_sid('album_otf.' . PHP_EXT),
 	)
 );
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 
 function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension, $otf_pic_title, $otf_pic_des, $otf_pic_cat, $otf_pic_time)
 {
 	global $db, $userdata;
 
-	while (file_exists(ALBUM_UPLOAD_PATH . $otf_pic_filename . '.' . $otf_pic_extension))
+	$pic_base_path = ALBUM_UPLOAD_PATH;
+	$pic_extra_path = '';
+	$upload_path = $pic_base_path . $pic_extra_path;
+	if (USERS_SUBFOLDERS_ALBUM == true)
+	{
+		$pic_extra_path = $userdata['user_id'] . '/';
+		$upload_path = $pic_base_path . $pic_extra_path;
+		if (!is_dir($upload_path))
+		{
+			$dir_creation = @mkdir($upload_path, 0777);
+			if ($dir_creation == true)
+			{
+				@copy($pic_base_path . 'index.html', $upload_path . 'index.html');
+			}
+			else
+			{
+				$upload_path = $pic_base_path;
+			}
+		}
+	}
+
+	while (file_exists($upload_path . $otf_pic_filename . '.' . $otf_pic_extension))
 	{
 		$otf_pic_filename = $otf_pic_filename . '_' . time() . '_' . mt_rand(100000, 999999);
 	}
-
+	$otf_pic_full_filename = $otf_pic_filename . '.' . $otf_pic_extension;
 
 	if ($otf_pic_time == '')
 	{
@@ -357,14 +376,14 @@ function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension,
 	$move_file = 'rename';
 	//$move_file = 'copy';
 	//$move_file = 'move_uploaded_file';
-	$upload_success = $move_file($otf_pic_path, ALBUM_UPLOAD_PATH . $otf_pic_filename . '.' . $otf_pic_extension);
+	$upload_success = $move_file($otf_pic_path, $upload_path . $otf_pic_full_filename);
 
 	if ($upload_success)
 	{
-		@chmod(ALBUM_UPLOAD_PATH . $otf_pic_filename, 0777);
+		@chmod($upload_path . $otf_pic_full_filename, 0777);
 		$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_thumbnail, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
-				VALUES ('" . ($otf_pic_filename . '.' . $otf_pic_extension) . "', '', '" . $otf_pic_title . "', '" . $otf_pic_des . "', '" . $otf_pic_user_id . "', '" . $otf_pic_user_ip . "', '" . $otf_pic_username . "', '" . $otf_pic_time . "', '" . $otf_pic_cat . "', '1')";
-		if( !$result = $db->sql_query($sql) )
+				VALUES ('" . ($pic_extra_path . $otf_pic_full_filename) . "', '', '" . $otf_pic_title . "', '" . $otf_pic_des . "', '" . $otf_pic_user_id . "', '" . $otf_pic_user_ip . "', '" . $otf_pic_username . "', '" . $otf_pic_time . "', '" . $otf_pic_cat . "', '1')";
+		if(!$result = $db->sql_query($sql))
 		{
 			return false;
 		}
@@ -390,7 +409,7 @@ function get_images_list($path, $gallery_name)
 				{
 					continue;
 				}
-				if( preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $file) )
+				if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $file))
 				{
 					$fullpath = $path . '/' . $file;
 					$fkey = strtolower($file);

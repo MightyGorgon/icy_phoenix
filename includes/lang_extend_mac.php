@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 	exit;
@@ -31,16 +31,16 @@ if (!defined('LANG_EXTEND_DONE'))
 	// get the english settings
 	if ( $board_config['default_lang'] != 'english' )
 	{
-		$dir = @opendir($phpbb_root_path . 'language/lang_english');
+		$dir = @opendir(IP_ROOT_PATH . 'language/lang_english');
 		while( $file = @readdir($dir) )
 		{
-			if( preg_match("/^lang_extend_.*?\." . $phpEx . "$/", $file) )
+			if( preg_match("/^lang_extend_.*?\." . PHP_EXT . "$/", $file) )
 			{
-				include_once($phpbb_root_path . 'language/lang_english/' . $file);
+				include_once(IP_ROOT_PATH . 'language/lang_english/' . $file);
 			}
 		}
 		// include the personalisations
-		@include_once($phpbb_root_path . 'language/lang_english/lang_extend.' . $phpEx);
+		@include_once(IP_ROOT_PATH . 'language/lang_english/lang_extend.' . PHP_EXT);
 		@closedir($dir);
 	}
 	*/
@@ -48,16 +48,16 @@ if (!defined('LANG_EXTEND_DONE'))
 	// get the user settings
 	if (!empty($board_config['default_lang']))
 	{
-		$dir = @opendir($phpbb_root_path . 'language/lang_' . $board_config['default_lang']);
+		$dir = @opendir(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang']);
 		while( $file = @readdir($dir) )
 		{
-			if( preg_match("/^lang_extend_.*?\." . $phpEx . "$/", $file) )
+			if( preg_match("/^lang_extend_.*?\." . PHP_EXT . "$/", $file) )
 			{
-				include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/' . $file);
+				include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $file);
 			}
 		}
 		// include the personalisations
-		@include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_extend.' . $phpEx);
+		@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_extend.' . PHP_EXT);
 		@closedir($dir);
 	}
 	define('LANG_EXTEND_DONE', true);

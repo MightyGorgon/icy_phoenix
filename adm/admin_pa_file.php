@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if( !empty($setmodules) )
 {
@@ -24,11 +24,11 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'includes/functions_field.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_field.' . PHP_EXT);
 
 $custom_field = new custom_field();
 $custom_field->init();
@@ -172,7 +172,7 @@ elseif($mode == 'do_add' && $file_id)
 	$mode = 'edit';
 	if(!$mirrors)
 	{
-		$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_file.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_file." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -221,7 +221,7 @@ $pafiledb_template->assign_vars(array(
 	'L_ADD_FILE' => $lang['Afiletitle'],
 
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
-	'S_FILE_ACTION' => append_sid("admin_pa_file.$phpEx"))
+	'S_FILE_ACTION' => append_sid("admin_pa_file." . PHP_EXT))
 );
 
 
@@ -396,7 +396,7 @@ if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove',
 		'L_UNAPPROVE_FILE' => $lang['Unapprove_selected'],
 		'L_NO_FILES' => $lang['No_file'],
 
-		'PAGINATION' => generate_pagination(append_sid("admin_pa_file.$phpEx?mode=$mode&amp;sort_method=$sort_method&amp;sort_order=$sort_order&cat_id=$cat_id"), $total_files, $pafiledb_config['settings_file_page'], $start),
+		'PAGINATION' => generate_pagination(append_sid('admin_pa_file.' . PHP_EXT . '?mode=' . $mode . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . '&amp;cat_id=' . $cat_id), $total_files, $pafiledb_config['settings_file_page'], $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pafiledb_config['settings_file_page'] ) + 1 ), ceil( $total_files / $pafiledb_config['settings_file_page'] )),
 
 		'S_CAT_LIST' => $cat_list,
@@ -437,9 +437,9 @@ if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove',
 					'FILE_NAME' => $file_data['file_name'],
 					'FILE_NUMBER' => $i++,
 					'FILE_ID' => $file_data['file_id'],
-					'U_FILE_EDIT' => append_sid("admin_pa_file.$phpEx?mode=edit&file_id={$file_data['file_id']}"),
-					'U_FILE_DELETE' => append_sid("admin_pa_file.$phpEx?mode=delete&file_id={$file_data['file_id']}"),
-					'U_FILE_APPROVE' => append_sid("admin_pa_file.$phpEx?mode=$approve_mode&file_id={$file_data['file_id']}"),
+					'U_FILE_EDIT' => append_sid('admin_pa_file.' . PHP_EXT . "?mode=edit&file_id={$file_data['file_id']}"),
+					'U_FILE_DELETE' => append_sid('admin_pa_file.' . PHP_EXT . "?mode=delete&file_id={$file_data['file_id']}"),
+					'U_FILE_APPROVE' => append_sid('admin_pa_file.' . PHP_EXT . "?mode=$approve_mode&file_id={$file_data['file_id']}"),
 					'L_APPROVE' => ($file_data['file_approved']) ? $lang['Unapprove'] : $lang['Approve'])
 				);
 
@@ -506,7 +506,7 @@ elseif($mode == 'add' || $mode == 'edit' || $mirrors)
 	}
 
 	$pafiledb_template->assign_vars(array(
-		'U_MIRRORS_PAGE' => append_sid("admin_pa_file.$phpEx?mode=mirrors&file_id=$file_id"),
+		'U_MIRRORS_PAGE' => append_sid('admin_pa_file.' . PHP_EXT . '?mode=mirrors&amp;file_id=' . $file_id),
 
 		'ADD_MIRRORS' => $mirrors,
 		'MODE_EDIT' => ($mode == 'edit') ? true : false,
@@ -708,6 +708,6 @@ $pafiledb_template->display('admin');
 $pafiledb->_pafiledb();
 $cache->unload();
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

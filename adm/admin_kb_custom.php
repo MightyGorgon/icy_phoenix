@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if ( !empty( $setmodules ) )
 {
@@ -24,17 +24,17 @@ if ( !empty( $setmodules ) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'config.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-include($phpbb_root_path . 'includes/kb_constants.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_auth.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_field.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_kb_mx.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 // ===================================================
 // addslashes to vars if magic_quotes_gpc is off
@@ -96,14 +96,14 @@ if ( $submit )
 	{
 		$kb_custom_field->update_add_field( $field_type );
 
-		$message = $lang['Fieldadded'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . append_sid( 'admin_kb_custom.' . $phpEx ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid( 'index.' . $phpEx . '?pane=right' ) . '">', '</a>' );
+		$message = $lang['Fieldadded'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . append_sid( 'admin_kb_custom.' . PHP_EXT ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid( 'index.' . PHP_EXT . '?pane=right' ) . '">', '</a>' );
 		mx_message_die( GENERAL_MESSAGE, $message );
 	}
 	elseif ( $mode == 'do_add' && $field_id )
 	{
 		$kb_custom_field->update_add_field( $field_type, $field_id );
 
-		$message = $lang['Fieldedited'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . append_sid( 'admin_kb_custom.' . $phpEx ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid( 'index.' . $phpEx . '?pane=right' ) . '">', '</a>' );
+		$message = $lang['Fieldedited'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . append_sid( 'admin_kb_custom.' . PHP_EXT ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid( 'index.' . PHP_EXT . '?pane=right' ) . '">', '</a>' );
 		mx_message_die( GENERAL_MESSAGE, $message );
 	}
 	elseif ( $mode == 'do_delete' )
@@ -113,7 +113,7 @@ if ( $submit )
 			$kb_custom_field->delete_field( $key );
 		}
 
-		$message = $lang['Fieldsdel'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . append_sid( 'admin_kb_custom.' . $phpEx ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid( 'index.' . $phpEx . '?pane=right' ) . '">', '</a>' );
+		$message = $lang['Fieldsdel'] . '<br /><br />' . sprintf( $lang['Click_return'], '<a href="' . append_sid( 'admin_kb_custom.' . PHP_EXT ) . '">', '</a>' ) . '<br /><br />' . sprintf( $lang['Click_return_admin_index'], '<a href="' . append_sid( 'index.' . PHP_EXT . '?pane=right' ) . '">', '</a>' );
 		mx_message_die( GENERAL_MESSAGE, $message );
 	}
 }
@@ -166,7 +166,7 @@ $template->assign_vars( array(
 		'L_SELECT_TITLE' => $lang['Fieldselecttitle'],
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_FIELD_ACTION' => append_sid('admin_kb_custom.' . $phpEx)
+		'S_FIELD_ACTION' => append_sid('admin_kb_custom.' . PHP_EXT)
 		)
 	);
 
@@ -241,6 +241,6 @@ elseif ( $mode == 'edit' || $mode == 'delete' || $mode == 'select' )
 $template->pparse( 'admin' );
 
 // MX Module
-include($phpbb_root_path . ADM . '/page_footer_admin.' . $phpEx);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -8,10 +8,10 @@
 *
 */
 
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -27,7 +27,7 @@ $gen_simple_header = true;
 $page_title = $lang['Rss_news_help_title'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $server_url = ( substr($server_url, strlen($server_url) - 1, 1) == '/' ) ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
 
 $template->assign_vars(array(
@@ -39,9 +39,9 @@ $template->assign_vars(array(
 	'L_RSS_NEWS_HELP_HEADER_3'		=> $lang['Rss_news_help_header_3'],
 	'L_RSS_NEWS_HELP_EXPLAIN_3'		=> $lang['Rss_news_help_explain_3'],
 	'L_RSS_NEWS_HELP_RIGHTS'			=> $lang['Rss_news_help_rights'],
-	'U_RSS'												=> $server_url . '/rss.' . $phpEx,
-	'U_RSS_NEWS'									=> $server_url . '/news_rss.' . $phpEx,
-	'U_RSS_ATOM'									=> $server_url . '/rss.' . $phpEx . '?atom',
+	'U_RSS'												=> $server_url . '/rss.' . PHP_EXT,
+	'U_RSS_NEWS'									=> $server_url . '/news_rss.' . PHP_EXT,
+	'U_RSS_ATOM'									=> $server_url . '/rss.' . PHP_EXT . '?atom',
 	'L_URL_RSS_EXPLAIN'						=> $lang['L_url_rss_explain'],
 	'L_URL_RSS_NEWS_EXPLAIN'			=> $lang['L_url_rss_news_explain'],
 	'L_URL_RSS_ATOM_EXPLAIN'			=> $lang['L_url_rss_atom_explain'],
@@ -55,6 +55,6 @@ if ($nothing)
 }
 
 $template->pparse('body');
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

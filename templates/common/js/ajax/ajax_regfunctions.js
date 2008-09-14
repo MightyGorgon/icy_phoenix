@@ -27,11 +27,11 @@ function ComparePasswords(new_password, password_confirm)
 	{
 		return;
 	}
-	
+
 	var pass_match = (new_password == password_confirm) || (new_password == '') || (password_confirm == '');
-	
+
 	var password_compare_error_tbl = getElementById('pass_compare_error_tbl');
-	
+
 	if (password_compare_error_tbl == null)
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -40,7 +40,7 @@ function ComparePasswords(new_password, password_confirm)
 		}
 		return;
 	}
-	
+
 	password_compare_error_tbl.style.display = (pass_match != 1) ? '' : 'none';
 }
 
@@ -50,11 +50,11 @@ function AJAXCheckEmail(email)
 	{
 		return;
 	}
-	
+
 	if (email != '')
 	{
 		error_handler = 'AJAXFinishCheckEmail';
-		var url	= 'ajax.' + phpEx;
+		var url	= 'ajax.' + php_ext;
 		var params = 'mode=checkemail&email=' + ajax_escape(email);
 		if (S_SID != '')
 		{
@@ -77,10 +77,10 @@ function AJAXFinishCheckEmail(result_code, error_msg)
 	{
 		return;
 	}
-	
+
 	var email_tbl = getElementById('email_error_tbl');
 	var email_text = getElementById('email_error_text');
-	
+
 	if ((email_tbl == null) || (email_text == null))
 	{
 		if (AJAX_DEBUG_HTML_ERRORS)
@@ -89,7 +89,7 @@ function AJAXFinishCheckEmail(result_code, error_msg)
 		}
 		return;
 	}
-	
+
 	email_tbl.style.display = (result_code != AJAX_OP_COMPLETED) ? '' : 'none';
 	setInnerText(email_text, error_msg);
 }

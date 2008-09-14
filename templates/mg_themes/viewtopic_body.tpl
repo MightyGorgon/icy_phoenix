@@ -173,11 +173,7 @@ function open_postreview(ref)
 			<!-- END below_sig -->
 		</div>
 		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
-		<?php
-			global $board_config;
-			if ($board_config['edit_notes'] == 1)
-			{
-		?>
+		<!-- IF S_EDIT_NOTES -->
 		<!-- IF postrow.EDITED_MESSAGE -->
 		<div class="post-notes"><div class="post-note"><span class="gensmall">{postrow.EDITED_MESSAGE}&nbsp;</span></div></div>
 		<!-- ENDIF -->
@@ -193,9 +189,7 @@ function open_postreview(ref)
 		<!-- END notes -->
 		</div>
 		<!-- ENDIF -->
-		<?php
-		}
-		?>
+		<!-- ENDIF -->
 	</td>
 </tr>
 <tr>

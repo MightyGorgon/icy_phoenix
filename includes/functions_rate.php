@@ -19,7 +19,7 @@
 /** Some Constants for Rate use only.
 /******************************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -28,14 +28,6 @@ define('RATE_AUTH_DENY', 0);
 define('RATE_AUTH_ALLOWED', 1);
 define('RATE_AUTH_PRIVATE', 2);
 define('RATE_AUTH_NONE', 3);
-
-/*
-$valid_phpbb_root_path = ($phpbb_root_path == './') || ($phpbb_root_path == '../') || ($phpbb_root_path == './../') || ($phpbb_root_path == '../../');
-if ( !$valid_phpbb_root_path )
-{
-	die('Hacking attempt');
-}
-*/
 
 //define('RATINGS_TABLE', $table_prefix . 'rate_results');
 $rating_switched_on = false;
@@ -192,7 +184,7 @@ if (!function_exists('nivisec_copyright'))
 */
 function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 {
-	global $db, $user_ip, $board_config, $template, $lang, $phpEx;
+	global $db, $user_ip, $board_config, $template, $lang;
 
 	if (!empty($_POST['thanks_user']))
 	{
@@ -671,7 +663,7 @@ function top_rated_topics($return_limit = '10', $forum_id = '-1')
 */
 function ratings_detailed($topic_id)
 {
-	global $template, $db, $board_config, $theme, $phpbb_root_path, $phpEx, $lang;
+	global $template, $db, $board_config, $theme, $lang;
 
 	$rank = 0;
 
@@ -728,7 +720,7 @@ function ratings_detailed($topic_id)
 */
 function ratings_index()
 {
-	global $template, $db, $board_config, $theme, $phpbb_root_path, $phpEx, $lang;
+	global $template, $db, $board_config, $theme, $lang;
 
 	$rank = 0;
 	$top_rated_row = top_rated_topics($board_config['index_rating_return']);
@@ -749,7 +741,7 @@ function ratings_index()
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
 				'MIN' => $top_rated_row[$i]['min'],
 				'MAX' => $top_rated_row[$i]['max'],
-				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . $phpEx . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : "",
+				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : "",
 				'NUMBER_OF_RATES' => $top_rated_row[$i]['rating_number']
 				)
 			);
@@ -777,7 +769,7 @@ function ratings_index()
 */
 function ratings_header()
 {
-	global $template, $db, $board_config, $theme, $phpbb_root_path, $phpEx, $lang;
+	global $template, $db, $board_config, $theme, $lang;
 
 	$sql = "SELECT config_value FROM " . CONFIG_TABLE . "
 					WHERE config_name = 'header_rating_return_limit'";
@@ -808,7 +800,7 @@ function ratings_header()
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
 				'MIN' => $top_rated_row[$i]['min'],
 				'MAX' => $top_rated_row[$i]['max'],
-				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . $phpEx . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
+				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
 				'NUMBER_OF_RATES' => $top_rated_row[$i]['rating_number']
 				)
 			);
@@ -832,7 +824,7 @@ function ratings_header()
 
 function ratings_large()
 {
-	global $template, $db, $board_config, $theme, $phpbb_root_path, $phpEx, $lang, $page_title, $forum_top;
+	global $template, $db, $board_config, $theme, $lang, $page_title, $forum_top;
 
 	if (!isset($forum_top))
 	{
@@ -859,7 +851,7 @@ function ratings_large()
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
 				'MIN' => $top_rated_row[$i]['min'],
 				'MAX' => $top_rated_row[$i]['max'],
-				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . $phpEx . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
+				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
 				'NUMBER_OF_RATES' => $top_rated_row[$i]['rating_number']
 				)
 			);
@@ -882,7 +874,7 @@ function ratings_large()
 		'L_MIN' => $lang['Min_Rating'],
 		'L_MAX' => $lang['Max_Rate'],
 		'S_FORUMS' => make_forum_drop_down_box(),
-		'S_MODE_ACTION' => append_sid('rate.' . $phpEx),
+		'S_MODE_ACTION' => append_sid('rate.' . PHP_EXT),
 		'L_BY_FORUM' => $lang['By_Forum'],
 		'L_VIEW' => $lang['Go']
 		)
@@ -894,7 +886,7 @@ function ratings_large()
 
 function ratings_view_topic()
 {
-	global $userdata, $template, $db, $board_config, $theme, $phpbb_root_path, $phpEx, $lang, $page_title, $forum_id, $topic_id;
+	global $userdata, $template, $db, $board_config, $theme, $lang, $page_title, $forum_id, $topic_id;
 
 	$rath_auth_data = rate_auth($userdata['user_id'], $forum_id, $topic_id);
 
@@ -965,7 +957,7 @@ function ratings_view_topic()
 					'L_RATE' => $lang['Rate'],
 					'S_RATE_SELECT' => $select_rate_choices,
 					'S_HIDDEN_FIELDS' => '<input type="hidden" name="topic_id" value="' . $topic_id . '" /><input type="hidden" name="rate_mode" value="rate" />',
-					'S_RATE_ACTION' => append_sid('rate.' . $phpEx),
+					'S_RATE_ACTION' => append_sid('rate.' . PHP_EXT),
 					'RATE_TOPIC_USER' => ''
 					)
 				);
@@ -979,7 +971,7 @@ function ratings_view_topic()
 						'L_RATE' => $lang['Rate'],
 						'S_RATE_SELECT' => $select_rate_choices,
 						'S_HIDDEN_FIELDS' => '<input type="hidden" name="topic_id" value="' . $topic_id . '" /><input type="hidden" name="rate_mode" value="rerate" />',
-						'S_RATE_ACTION' => append_sid('rate.' . $phpEx)
+						'S_RATE_ACTION' => append_sid('rate.' . PHP_EXT)
 						)
 					);
 				}
@@ -1006,7 +998,7 @@ function ratings_view_topic()
 		if ( $board_config['allow_ext_rating'] && ($rating_row['number_of_rates'] > 0) )
 		{
 			$template->assign_vars(array(
-				'FULL_STATS_URL' => '[ ' . sprintf($lang['View_Details'], append_sid('rate.' . $phpEx . '?rate_mode=detailed&amp;topic_id=' . $topic_id)) . ' ]'
+				'FULL_STATS_URL' => '[ ' . sprintf($lang['View_Details'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $topic_id)) . ' ]'
 				)
 			);
 		}

@@ -87,7 +87,7 @@ var box_end = '<\/span><\/div><br />';
 function update_order_{cat_row.CAT_CB_ID}()
 {
 	var request_options = {method: 'post', parameters: 'mode=update_menu_order&cat=' + {cat_row.CAT_CB_ID} + '&' + Sortable.serialize("list_{cat_row.CAT_CB_ID}") + '&sid=' + S_SID};
-	new Ajax.Request(phpbb_root_path + 'cms_db_update.' + phpEx, request_options);
+	new Ajax.Request(ip_root_path + 'cms_db_update.' + php_ext, request_options);
 }
 Sortable.create('list_{cat_row.CAT_CB_ID}', {onUpdate:function(){update_order_{cat_row.CAT_CB_ID}(); $('sort-info-box').innerHTML = box_begin + '{L_MENU_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('result-box',{duration: 0.5})", 2500);}});
 //Sortable.create("list_{cat_row.CAT_CB_ID}", {onUpdate:function(){new Ajax.Updater('sort-info-box', 'cms_db_update.php', {asynchronous: true, evalScripts: true, onComplete: function(request){new Effect.Highlight("result-box",{duration: 0.5});}, parameters: 'mode=update_menu_order&cat=' + {cat_row.CAT_CB_ID} + '&' + Sortable.serialize("list_{cat_row.CAT_CB_ID}") + '&sid=' + S_SID})}});

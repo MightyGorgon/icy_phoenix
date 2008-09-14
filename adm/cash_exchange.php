@@ -16,18 +16,18 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {
 	$navbar = 1;
-	include('./admin_cash.' . $phpEx);
+	include('./admin_cash.' . PHP_EXT);
 }
 
 if ($cash->currency_count() < 2)
@@ -112,7 +112,7 @@ else
 $template->set_filenames(array('body' => ADM_TPL . 'cash_exchange.tpl'));
 
 $template->assign_vars(array(
-	'S_EXCHANGE_ACTION' => append_sid('cash_exchange.' . $phpEx),
+	'S_EXCHANGE_ACTION' => append_sid('cash_exchange.' . PHP_EXT),
 	'L_EXCHANGE_TITLE' => $lang['Cash_exchange'],
 	'L_EXCHANGE_EXPLAIN' => $lang['Cash_exchange_explain'],
 	'L_SUBMIT' => $lang['Submit'],
@@ -168,6 +168,6 @@ for ($i = 0; $i < count($exchange); $i++)
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 ?>

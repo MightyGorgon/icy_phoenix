@@ -19,15 +19,15 @@
 define('IN_SEARCH', true);
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
-define('IN_PHPBB', true);
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
-include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
-include($phpbb_root_path . 'includes/functions_search.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_topics.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 
 // Adding CPL_NAV only if needed
 define('PARSE_CPL_NAV', true);
@@ -40,7 +40,7 @@ init_userprefs($userdata);
 // CrackerTracker v5.x
 if (isset($_POST['mode']) || isset($_GET['mode']) || !empty($_GET['search_id']) || isset($_POST['search_id']) || isset($_GET['search_keywords']) || isset($_POST['show_results']) || isset($_GET['show_results']))
 {
-	include_once($phpbb_root_path . 'ctracker/classes/class_ct_userfunctions.' . $phpEx);
+	include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 	$search_system = new ct_userfunctions();
 	$search_system->search_handler();
 	unset($search_system);
@@ -531,9 +531,9 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			{
 			// include the required events calendar support
 				define('IN_MINI_CAL', 1);
-				include_once($phpbb_root_path . 'includes/mini_cal/mini_cal_config.' . $phpEx);
+				include_once(IP_ROOT_PATH . 'includes/mini_cal/mini_cal_config.' . PHP_EXT);
 				$mini_cal_inc = 'mini_cal_' . MINI_CAL_CALENDAR_VERSION;
-				include_once($phpbb_root_path . 'includes/mini_cal/' . $mini_cal_inc . '.' . $phpEx);
+				include_once(IP_ROOT_PATH . 'includes/mini_cal/' . $mini_cal_inc . '.' . PHP_EXT);
 				$sql = getMiniCalSearchSql($search_date);
 
 				$show_results = 'posts';
@@ -616,8 +616,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		elseif ($search_keywords != '')
 		{
-			$stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
-			$synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
+			$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
+			$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
 
 			$split_search = array();
 			$stripped_keywords = stripslashes($search_keywords);
@@ -1362,8 +1362,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$page_title = $lang['Search'];
 		$meta_description = '';
 		$meta_keywords = '';
-		include_once($phpbb_root_path . 'includes/users_zebra_block.' . $phpEx);
-		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		if ($show_results == 'bookmarks')
 		{
@@ -1570,7 +1570,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$raw_message = str_replace('>', '&gt;', $raw_message);
 					$raw_message = str_replace('<br />', "\n", $raw_message);
 
-					$edit_url = append_sid('posting.' . $phpEx . '?mode=editpost&amp;' . POST_POST_URL . '=' . $searchset[$i]['post_id']);
+					$edit_url = append_sid('posting.' . PHP_EXT . '?mode=editpost&amp;' . POST_POST_URL . '=' . $searchset[$i]['post_id']);
 					$edit_img = '<a id="editimg_'. $searchset[$i]['post_id'] .'" onclick="return AJAXPostEdit('. $searchset[$i]['post_id'] .');" href="'. $edit_url .'"><img src="'. $images['icon_edit'] .'" alt="'. $lang['Edit_delete_post'] .'" title="'. $lang['Edit_delete_post'] .'" border="0" align="right" /></a><br />';
 				}
 				*/
@@ -1883,7 +1883,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		$template->pparse('body');
 
-		include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 	elseif ($is_ajax)
 	{
@@ -1944,7 +1944,7 @@ $l_only_bluecards = ($userdata['user_level'] >= ADMIN) ? '<input type="checkbox"
 $page_title = $lang['Search'];
 $meta_description = '';
 $meta_keywords = '';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'search_body.tpl'));
 make_jumpbox(VIEWFORUM_MG);
@@ -1992,6 +1992,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -26,13 +26,13 @@ if(!empty($setmodules))
 	return;
 }
 
-$phpbb_root_path = './../';
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_groups.' . $phpEx);
+require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
 
 $pafiledb->init();
 
@@ -75,11 +75,11 @@ $field_names = array(
 );
 
 $permissions_menu = array(
-	append_sid("admin_pa_catauth.$phpEx") => $lang['Cat_Permissions'],
-	append_sid("admin_pa_ug_auth.$phpEx?mode=user") => $lang['User_Permissions'],
-	append_sid("admin_pa_ug_auth.$phpEx?mode=group") => $lang['Group_Permissions'],
-	append_sid("admin_pa_ug_auth.$phpEx?mode=glob_user") => $lang['User_Global_Permissions'],
-	append_sid("admin_pa_ug_auth.$phpEx?mode=glob_group") => $lang['Group_Global_Permissions']
+	append_sid('admin_pa_catauth.' . PHP_EXT) => $lang['Cat_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=user') => $lang['User_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=group') => $lang['Group_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=glob_user') => $lang['User_Global_Permissions'],
+	append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=glob_group') => $lang['Group_Global_Permissions']
 );
 
 foreach($permissions_menu as $url => $l_name)
@@ -258,7 +258,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 	}
 
 	$l_auth_return = ($mode == 'user') ? $lang['Click_return_userauth'] : $lang['Click_return_groupauth'];
-	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid("admin_pa_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode == 'glob_group' && $group_id)))
@@ -392,7 +392,7 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 	}
 
 	$l_auth_return = ($mode == 'glob_user') ? $lang['Click_return_userauth'] : $lang['Click_return_groupauth'];
-	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid("admin_pa_ug_auth.$phpEx?mode=$mode") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode == 'group' && $group_id))
@@ -551,7 +551,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		{
 			$ug = ($mode == 'user') ? 'group&amp;' . POST_GROUPS_URL : 'user&amp;' . POST_USERS_URL;
 			$user_color = ($mode == 'user') ? '' : (' ' . colorize_username($id[$i], false, true));
-			$t_usergroup_list .= (($t_usergroup_list != '') ? ', ' : '') . '<a href="' . append_sid('admin_pa_ug_auth.' . $phpEx . '?mode=' . $ug . '=' . $id[$i]) . '"' . $user_color . '>' . $name[$i] . '</a>';
+			$t_usergroup_list .= (($t_usergroup_list != '') ? ', ' : '') . '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $ug . '=' . $id[$i]) . '"' . $user_color . '>' . $name[$i] . '</a>';
 		}
 	}
 	else
@@ -574,7 +574,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 	$s_hidden_fields .= ($mode == 'user') ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
 
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 
 	$pafiledb_template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
@@ -611,10 +611,10 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		'L_RESET' => $lang['Reset'],
 		'L_CAT' => $lang['Category'],
 
-		'U_USER_OR_GROUP' => append_sid('admin_pa_ug_auth.' . $phpEx),
+		'U_USER_OR_GROUP' => append_sid('admin_pa_ug_auth.' . PHP_EXT),
 
 		'S_COLUMN_SPAN' => $s_column_span + 2,
-		'S_AUTH_ACTION' => append_sid('admin_pa_ug_auth.' . $phpEx),
+		'S_AUTH_ACTION' => append_sid('admin_pa_ug_auth.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields)
 	);
 }
@@ -754,7 +754,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		'IS_HIGHER_CAT' => false,
 		'PRE' => '',
 
-		'U_CAT' => append_sid('admin_pa_settings.' . $phpEx))
+		'U_CAT' => append_sid('admin_pa_settings.' . PHP_EXT))
 	);
 
 	for($j = 0; $j < count($global_auth_fields); $j++)
@@ -792,7 +792,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		{
 			$ug = ($mode == 'glob_user') ? 'glob_group&amp;' . POST_GROUPS_URL : 'glob_user&amp;' . POST_USERS_URL;
 			$user_color = ($mode == 'glob_user') ? '' : (' ' . colorize_username($id[$i], false, true));
-			$t_usergroup_list .= (($t_usergroup_list != '') ? ', ' : '') . '<a href="' . append_sid('admin_pa_ug_auth.' . $phpEx . '?mode=' . $ug . '=' . $id[$i]) . '"' . $user_color . '>' . $name[$i] . '</a>';
+			$t_usergroup_list .= (($t_usergroup_list != '') ? ', ' : '') . '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $ug . '=' . $id[$i]) . '"' . $user_color . '>' . $name[$i] . '</a>';
 		}
 	}
 	else
@@ -814,7 +814,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 	$s_hidden_fields .= ($mode == 'glob_user') ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
 
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 
 	$pafiledb_template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
@@ -850,10 +850,10 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		'L_RESET' => $lang['Reset'],
 		'L_CAT' => ($mode == 'glob_user') ? $lang['User_Global_Permissions'] : $lang['Group_Global_Permissions'],
 
-		'U_USER_OR_GROUP' => append_sid('admin_pa_ug_auth.' . $phpEx),
+		'U_USER_OR_GROUP' => append_sid('admin_pa_ug_auth.' . PHP_EXT),
 
 		'S_COLUMN_SPAN' => $s_column_span + 1,
-		'S_AUTH_ACTION' => append_sid('admin_pa_ug_auth.' . $phpEx),
+		'S_AUTH_ACTION' => append_sid('admin_pa_ug_auth.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
@@ -861,7 +861,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 else
 {
 	// Select a user/group
-	include('./page_header_admin.' . $phpEx);
+	include('./page_header_admin.' . PHP_EXT);
 
 	$pafiledb_template->set_filenames(array('body' => ($mode == 'user' || $mode == 'glob_user') ? ADM_TPL . 'user_select_body.tpl' : ADM_TPL . 'auth_select_body.tpl'));
 
@@ -914,7 +914,7 @@ else
 		// End add - Admin add user MOD
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_' . $l_type . '_ACTION' => append_sid('admin_pa_ug_auth.' . $phpEx))
+		'S_' . $l_type . '_ACTION' => append_sid('admin_pa_ug_auth.' . PHP_EXT))
 	);
 }
 
@@ -924,11 +924,11 @@ $pafiledb_template->display('body');
 $pafiledb->_pafiledb();
 $cache->unload();
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 function admin_display_category_auth($cat_parent = 0, $depth = 0)
 {
-	global $pafiledb, $phpbb_root_path, $pafiledb_template, $phpEx;
+	global $pafiledb, $pafiledb_template;
 	global $cat_auth_fields, $optionlist_mod, $optionlist_acl_adv;
 	$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
 	if(isset($pafiledb->subcat_rowset[$cat_parent]))
@@ -939,10 +939,9 @@ function admin_display_category_auth($cat_parent = 0, $depth = 0)
 				'CAT_NAME' => $cat_data['cat_name'],
 				'IS_HIGHER_CAT' => ($cat_data['cat_allow_file']) ? false : true,
 				'PRE' => $pre,
-
-				'U_CAT' => append_sid("admin_pa_catauth.$phpEx?cat_id=$sub_cat_id"),
-
-				'S_MOD_SELECT' => $optionlist_mod[$sub_cat_id])
+				'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $sub_cat_id),
+				'S_MOD_SELECT' => $optionlist_mod[$sub_cat_id]
+				)
 			);
 
 			for($j = 0; $j < count($cat_auth_fields); $j++)

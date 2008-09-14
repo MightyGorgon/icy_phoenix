@@ -168,7 +168,7 @@ function AJAXCheckPostUsername(username)
 	if (username != '')
 	{
 		error_handler = 'AJAXFinishCheckPostUsername';
-		var url = 'ajax.' + phpEx;
+		var url = 'ajax.' + php_ext;
 		var params = 'mode=checkusername_post&username=' + ajax_escape(username);
 		if (S_SID != '')
 		{
@@ -241,7 +241,7 @@ function AJAXSubmitCheckPMUsername(username)
 	timer_id = 0;
 
 	error_handler = 'AJAXFinishCheckPMUsername';
-	var url = 'ajax.' + phpEx;
+	var url = 'ajax.' + php_ext;
 	var params = 'mode=checkusername_pm&username=' + ajax_escape(username);
 	if (S_SID != '')
 	{
@@ -345,7 +345,7 @@ function AJAXPreview(mode, post_id)
 		return false;
 	}
 
-	var url = 'ajax.' + phpEx;
+	var url = 'ajax.' + php_ext;
 	var params = (mode == 0) ? 'mode=post_preview' : 'mode=pm_preview';
 	params += '&'+ POST_POST_URL + '=' + post_id;
 	if (S_SID != '')

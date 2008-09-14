@@ -8,11 +8,19 @@
 *
 */
 
+// CTracker_Ignore: File Checked By Human
+
 define('IN_PHPBB', true);
-//$phpbb_root_path = './../';
-$phpbb_root_path = './';
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.' . $phpEx);
+define('IN_ICYPHOENIX', true);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+$phpbb_root_path = IP_ROOT_PATH;
+$phpEx = PHP_EXT;
+if (file_exists(IP_ROOT_PATH . 'extension.inc'))
+{
+	include(IP_ROOT_PATH . 'extension.inc');
+}
+include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip, 0);
@@ -31,7 +39,7 @@ if (isset($_POST['mode']) || isset($_GET['mode']))
 
 
 $page_title = 'Updating to latest Icy Phoenix';
-include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $older_update = false;
 
@@ -3191,10 +3199,19 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('show_alpha_bar', '0')";
 	}
 
+	/*
+	Updating from IP 1.2.7.34
+	*/
+	if (($older_update == true) || ($mode == 'update_12734'))
+	{
+		$older_update = true;
+		$sql[] = "ALTER TABLE `" . $table_prefix . "album` ADD COLUMN `pic_size` int(15) unsigned default '0' NOT NULL AFTER `pic_filename`";
+	}
+
 	// Versioning
-	$ip_version = '1.2.7.34';
+	$fap_version = '1.5.0';
 	$phpbb_version = '23';
-	$fap_version = '1.4.2';
+	$ip_version = '1.2.8.35';
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";
 	$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '" . $ip_version . "' WHERE config_name = 'ip_version'";
@@ -3229,7 +3246,7 @@ if (substr($mode, 0, 6) == 'update')
 	echo '<tr><td class="cat" height="28">&nbsp;</td></tr>';
 	echo '<tr><th>Upgrade Complete!</th></tr>';
 	echo '<tr><td class="row1"><span class="genmed">Please be sure to delete this file now.<br />If your site is not working properly please visit <a href="http://www.icyphoenix.com/viewforum.php?f=4" title="Documentation for Icy Phoenix" target="_blank">Icy Phoenix Documentation</a> and if you don\'t find an answer to your problem try to visit <a href="http://www.icyphoenix.com/" title="Icy Phoenix Support Site" target="_blank">Icy Phoenix Support Site</a> and ask for support.</span></td></tr>';
-	echo '<tr><td class="cat" height="28" align="center"><span class="genmed"><a href="' . append_sid('index.' . $phpEx) . '">Have a nice day</a></span></td></tr></table>';
+	echo '<tr><td class="cat" height="28" align="center"><span class="genmed"><a href="' . append_sid('index.' . PHP_EXT) . '">Have a nice day</a></span></td></tr></table>';
 }
 elseif (substr($mode, 0, 5) == 'chmod')
 {
@@ -3240,12 +3257,11 @@ else
 	show_main_options();
 }
 
-include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 // FUNCTIONS
 function apply_chmod()
 {
-	global $phpEx;
 	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">';
 	echo '<tr><th>Applying CHMOD</th></tr><tr><td class="row1"><div class="post-text"><div class="genmed"><ul type="circle">';
 
@@ -3265,8 +3281,9 @@ function apply_chmod()
 	$chmod_777[] = 'files';
 	$chmod_777[] = 'files/album';
 	$chmod_777[] = 'files/album/cache';
-	$chmod_777[] = 'files/album/jupload';
+	//$chmod_777[] = 'files/album/jupload';
 	$chmod_777[] = 'files/album/med_cache';
+	$chmod_777[] = 'files/album/users';
 	$chmod_777[] = 'files/album/wm_cache';
 	$chmod_777[] = 'files/posted_images';
 	$chmod_777[] = 'files/thumbs';
@@ -3313,15 +3330,13 @@ function apply_chmod()
 
 	echo '</ul></div></div></td></tr><tr><td class="cat" height="28">&nbsp;</td></tr>';
 	echo '<tr><th>CHMOD</th></tr><tr><td class="row1"><span class="genmed">CHMOD process ended. If you don\'t need to run upgrade, please delete this file now.</span></td></tr>';
-	echo '<tr><td class="cat" height="28" align="center"><span class="genmed"><a href="' . append_sid('update_to_ip.' . $phpEx) . '">Return to update options</a>&nbsp;|&nbsp;<a href="' . append_sid('index.' . $phpEx) . '">Return to your site</a></span></td></tr></table>';
+	echo '<tr><td class="cat" height="28" align="center"><span class="genmed"><a href="' . append_sid('update_to_ip.' . PHP_EXT) . '">Return to update options</a>&nbsp;|&nbsp;<a href="' . append_sid('index.' . PHP_EXT) . '">Return to your site</a></span></td></tr></table>';
 
 	return true;
 }
 
 function show_main_options()
 {
-	global $phpEx;
-
 	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">';
 	echo '<tr><th>Upgrading your Icy Phoenix</th></tr>';
 	echo '<tr><td class="row1">';
@@ -3331,27 +3346,28 @@ function show_main_options()
 	echo '<br /><span class="topic_ann"><b><span class="gen">Upgrading options:</span></b></span><br />';
 
 	echo '<div class="genmed"><br /><br /><ul type="circle">';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update') . '"><b class="topic_glo">Update to latest Icy Phoenix from phpBB or any older phpBB XS version</b></a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_058') . '"><b>Update to latest Icy Phoenix from phpBB XS 058</b></a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_1055') . '">Update to latest Icy Phoenix from Icy Phoenix 1.0.5.5 Beta</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_101111') . '">Update to latest Icy Phoenix from Icy Phoenix 1.0.11.11 RC1</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_11015') . '"><b class="topic_ann">Update to latest Icy Phoenix from Icy Phoenix 1.1.0.15 STABLE</b></a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_11116') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.1.16 Beta</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_11520') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.5.20 Beta</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_11722') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.7.22 RC1</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_11924') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.9.24 RC2</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_111025') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.10.25 RC3</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_12027') . '"><b class="topic_imp">Update to latest Icy Phoenix from Icy Phoenix 1.2.0.27 STABLE</b></a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_12229') . '">Update to latest Icy Phoenix from Icy Phoenix 1.2.2.29</a><br /><br /></li>';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=update_12431') . '"><b class="topic_glo">Update to latest Icy Phoenix from Icy Phoenix 1.2.4.31 (or higher)</b></a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update') . '"><b class="topic_glo">Update to latest Icy Phoenix from phpBB or any older phpBB XS version</b></a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_058') . '"><b>Update to latest Icy Phoenix from phpBB XS 058</b></a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_1055') . '">Update to latest Icy Phoenix from Icy Phoenix 1.0.5.5 Beta</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_101111') . '">Update to latest Icy Phoenix from Icy Phoenix 1.0.11.11 RC1</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_11015') . '"><b class="topic_ann">Update to latest Icy Phoenix from Icy Phoenix 1.1.0.15 STABLE</b></a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_11116') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.1.16 Beta</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_11520') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.5.20 Beta</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_11722') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.7.22 RC1</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_11924') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.9.24 RC2</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_111025') . '">Update to latest Icy Phoenix from Icy Phoenix 1.1.10.25 RC3</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_12027') . '"><b class="topic_imp">Update to latest Icy Phoenix from Icy Phoenix 1.2.0.27 STABLE</b></a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_12229') . '">Update to latest Icy Phoenix from Icy Phoenix 1.2.2.29</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_12431') . '">Update to latest Icy Phoenix from Icy Phoenix 1.2.4.31</a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=update_12734') . '"><b class="topic_glo">Update to latest Icy Phoenix from Icy Phoenix 1.2.7.34 (or higher)</b></a><br /><br /></li>';
 	echo '</ul></div>';
 	echo '<div class="genmed"><br /><br /><ul type="circle">';
-	echo '<li><a href="' . append_sid('update_to_ip.' . $phpEx . '?mode=chmod') . '"><b class="topic_imp">Apply CHMOD (Please note that not all servers support CHMOD via PHP!!!)</b></a><br /><br /></li>';
+	echo '<li><a href="' . append_sid('update_to_ip.' . PHP_EXT . '?mode=chmod') . '"><b class="topic_imp">Apply CHMOD (Please note that not all servers support CHMOD via PHP!!!)</b></a><br /><br /></li>';
 	echo '</ul></div>';
 
 	echo '</div>';
 	echo '</td></tr>';
-	echo '<tr><td class="cat" height="28" align="center"><span class="genmed"><a href="' . append_sid('index.' . $phpEx) . '">Return to your site</a></span></td></tr></table>';
+	echo '<tr><td class="cat" height="28" align="center"><span class="genmed"><a href="' . append_sid('index.' . PHP_EXT) . '">Return to your site</a></span></td></tr></table>';
 
 	return true;
 }

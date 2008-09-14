@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -484,7 +484,7 @@ function album_get_auth_data($cat_id)
 // ------------------------------------------------------------------------
 function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_data = 0)
 {
-	global $phpEx, $lang, $userdata, $album_config;
+	global $lang, $userdata, $album_config;
 
 	if (!is_array($auth_data))
 	{
@@ -515,7 +515,7 @@ function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_da
 	// ------------------------------------------------------------------------
 	if (($userdata['user_level'] == ADMIN) || ($auth_data['moderator'] == 1))
 	{
-		$auth_list .= sprintf($lang['Album_moderate_can'], '<a href="' . append_sid(album_append_uid('album_modcp.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>');
+		$auth_list .= sprintf($lang['Album_moderate_can'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 		$auth_list .= '<br />';
 	}
 
@@ -535,7 +535,7 @@ function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_da
 		if ( ($userdata['user_level'] == ADMIN) ||
 			( ($album_config['personal_allow_sub_categories'] == 1) && ($album_config['personal_sub_category_limit'] != 0)) )
 		{
-			$auth_list .= sprintf($lang['Album_Can_Manage_Categories'], '<a href="' . append_sid(album_append_uid('album_personal_cat_admin.' . $phpEx . '?cat_id=' . $cat_id)) . '">', '</a>');
+			$auth_list .= sprintf($lang['Album_Can_Manage_Categories'], '<a href="' . append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 			$auth_list .= '<br />';
 		}
 	}

@@ -15,7 +15,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -37,7 +37,7 @@ $album_config_tabs[] = array(
 	),
 	'config_table_name' => ALBUM_CONFIG_TABLE,
 	'generate_function' => 'album_generate_config_upload_box',
-	'template_file' => $acp_prefix . 'album_config_upload_body.tpl'
+	'template_file' => ADM_TPL . 'album_config_upload_body.tpl'
 );
 
 
@@ -45,10 +45,7 @@ function album_generate_config_upload_box($config_data)
 {
 	global $template, $lang, $new;
 
-	if ( !defined('IS_ICYPHOENIX') )
-	{
-		$template->assign_block_vars('switch_nuffload', array());
-	}
+	//$template->assign_block_vars('switch_nuffload', array());
 
 	$template->assign_vars(array(
 

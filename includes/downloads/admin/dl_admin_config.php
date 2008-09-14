@@ -16,7 +16,7 @@
 *
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
@@ -160,7 +160,7 @@ else
 
 	if( isset($_POST['submit']) )
 	{
-		$message = $lang['Dl_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_dl_config'], '<a href="' . append_sid('admin_downloads.' . $phpEx . '?submod=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Dl_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_dl_config'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -669,12 +669,12 @@ $template->assign_vars(array(
 	'USER_DOWNLOAD_LIMIT_FLAG_NO' => $user_download_limit_flag_no,
 
 	'S_STATS_PERM_SELECT' => $s_stats_perm_select,
-	'S_CONFIG_ACTION' => append_sid('admin_downloads.' . $phpEx . '?submod=config')
+	'S_CONFIG_ACTION' => append_sid('admin_downloads.' . PHP_EXT . '?submod=config')
 	)
 );
 
 /*
-if (@file_exists($phpbb_root_path . 'portal.' . $phpEx))
+if (@file_exists(IP_ROOT_PATH . 'portal.' . PHP_EXT))
 {
 	$template->assign_block_vars('portal_block', array());
 }

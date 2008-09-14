@@ -34,7 +34,7 @@
 										set in lang_main_min_cal.php
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }

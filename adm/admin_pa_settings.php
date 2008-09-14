@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_PHPBB', true);
+define('IN_ICYPHOENIX', true);
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
@@ -23,11 +23,11 @@ if( !empty($setmodules) )
 	return;
 }
 
-$phpbb_root_path = './../';
-require($phpbb_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+require('./pagestart.' . PHP_EXT);
 define('IN_PA_CONFIG_ADMIN', 1);
-include($phpbb_root_path . PA_FILE_DB_PATH . 'pafiledb_common.' . $phpEx);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
 
 $submit = (isset($_POST['submit'])) ? true : false;
 $size = (isset($_POST['max_size'])) ? $_POST['max_size'] : '';
@@ -86,7 +86,7 @@ else
 	if($submit)
 	{
 		$cache->unload();
-		$message = $lang['Settings_changed'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_settings.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . $phpEx . '?pane=right') . '">', '</a>');
+		$message = $lang['Settings_changed'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_settings." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -148,7 +148,7 @@ $pm_notify_yes = ($new['pm_notify']) ? ' selected' : '';
 $pm_notify_no = (!$new['pm_notify']) ? ' selected' : '';
 
 $template->assign_vars(array(
-	'S_SETTINGS_ACTION' => append_sid("admin_pa_settings.$phpEx"),
+	'S_SETTINGS_ACTION' => append_sid("admin_pa_settings." . PHP_EXT),
 
 	'L_MAX_FILE_SIZE' => $lang['Max_filesize'],
 	'L_MAX_FILE_SIZE_INFO' => $lang['Max_filesize_explain'],
@@ -288,7 +288,7 @@ $template->pparse('admin');
 $pafiledb->_pafiledb();
 $cache->unload();
 
-include('./page_footer_admin.' . $phpEx);
+include('./page_footer_admin.' . PHP_EXT);
 
 
 function pa_size_select($select_name, $size_compare)

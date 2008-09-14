@@ -19,8 +19,8 @@
 <!--
 var S_SID = '{S_SID}';
 var FULL_SITE_PATH = '{FULL_SITE_PATH}';
-var phpbb_root_path = '{PHPBB_ROOT_PATH}';
-var phpEx = '{PHPEX}';
+var ip_root_path = '{IP_ROOT_PATH}';
+var php_ext = '{PHP_EXT}';
 var POST_FORUM_URL = '{POST_FORUM_URL}';
 var POST_TOPIC_URL = '{POST_TOPIC_URL}';
 var POST_POST_URL = '{POST_POST_URL}';
