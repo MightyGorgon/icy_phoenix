@@ -304,7 +304,7 @@ switch ($mode)
 
 		$sql = "SELECT *
 			FROM " . FORUMS_TABLE . "
-			WHERE forum_id = $forum_id";
+			WHERE forum_id = '" . $forum_id . "'";
 		break;
 	case 'thank':
 	case 'reply':
@@ -323,7 +323,7 @@ switch ($mode)
 		// MG Cash MOD For IP - END
 		$sql = "SELECT f.*, t.topic_status, t.topic_title, t.topic_type" . $cash_sql . "
 			FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t
-			WHERE t.topic_id = $topic_id
+			WHERE t.topic_id = '" . $topic_id . "'
 				AND f.forum_id = t.forum_id";
 		break;
 
@@ -357,7 +357,7 @@ switch ($mode)
 
 		$sql = "SELECT f.*, t.topic_id, t.topic_status, t.topic_type, t.topic_first_post_id, t.topic_last_post_id, t.topic_vote, t.topic_show_portal, p.post_id, p.poster_id" . $select_sql . "
 			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $from_sql . "
-			WHERE p.post_id = $post_id
+			WHERE p.post_id = '" . $post_id . "'
 				AND t.topic_id = p.topic_id
 				AND f.forum_id = p.forum_id
 				" . $where_sql;
@@ -421,7 +421,7 @@ if (($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)
 		message_die(GENERAL_MESSAGE, $lang['Topic_locked']);
 	}
 
-	if ($mode == 'editpost' || $mode == 'delete' || $mode == 'poll_delete')
+	if (($mode == 'editpost') || ($mode == 'delete') || ($mode == 'poll_delete'))
 	{
 		$topic_id = $post_info['topic_id'];
 		$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
@@ -537,7 +537,7 @@ if (($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)
 	}
 
 	// BEGIN cmx_slash_news_mod
-	if($board_config['allow_news'] && $post_data['first_post'] && $is_auth['auth_post'] && ($is_auth['auth_news'] || ($is_auth['auth_mod'] && $mode == 'editpost')))
+	if($board_config['allow_news'] && $post_data['first_post'] && $is_auth['auth_post'] && ($is_auth['auth_news'] || ($is_auth['auth_mod'] && ($mode == 'editpost'))))
 	{
 		if($mode == 'editpost')
 		{
@@ -704,7 +704,7 @@ execute_posting_attachment_handling();
 // Get News Categories.
 if($userdata['session_logged_in'] && $post_data['disp_news'])
 {
-	if (($mode == 'edit') && empty($post_id))
+	if (($mode == 'editpost') && empty($post_id))
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_post_id']);
 	}

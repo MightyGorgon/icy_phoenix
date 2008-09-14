@@ -902,7 +902,8 @@ class attach_parent
 			'L_FILE_COMMENT' => $lang['File_comment'],
 			'RULES' => '<a href="javascript:attach_rules()">' . $lang['Allowed_extensions_and_sizes'] . '</a>',
 
-			'S_HIDDEN' => $s_hidden)
+			'S_HIDDEN' => $s_hidden
+			)
 		);
 
 		$attachments = array();
@@ -1537,7 +1538,7 @@ class attach_posting extends attach_parent
 		global $db, $is_auth, $mode, $userdata, $error, $error_msg;
 
 		// Insert Attachment ?
-		if (!empty($post_id) && ($mode == 'newtopic' || $mode == 'reply' || $mode == 'editpost') && $is_auth['auth_attachments'])
+		if (!empty($post_id) && (($mode == 'newtopic') || ($mode == 'reply') || ($mode == 'editpost')) && $is_auth['auth_attachments'])
 		{
 			$this->do_insert_attachment('attach_list', 'post', $post_id);
 			$this->do_insert_attachment('last_attachment', 'post', $post_id);
@@ -1588,7 +1589,6 @@ class attach_posting extends attach_parent
 		{
 			$add_attachment_box = (!empty($_POST['add_attachment_box'])) ? true : false;
 			$posted_attachments_box = (!empty($_POST['posted_attachments_box'])) ? true : false;
-
 			$refresh = $add_attachment_box || $posted_attachments_box;
 		}
 
@@ -1600,7 +1600,7 @@ class attach_posting extends attach_parent
 			return;
 		}
 
-		if ($confirm && ($delete || $mode == 'delete' || $mode == 'editpost') && ($is_auth['auth_delete'] || $is_auth['auth_mod']))
+		if ($confirm && ($delete || ($mode == 'delete') || ($mode == 'editpost')) && ($is_auth['auth_delete'] || $is_auth['auth_mod']))
 		{
 			if ($post_id)
 			{
@@ -1619,7 +1619,6 @@ class attach_posting extends attach_parent
 function execute_posting_attachment_handling()
 {
 	global $attachment_mod;
-
 	$attachment_mod['posting'] = new attach_posting();
 	$attachment_mod['posting']->posting_attachment_mod();
 }

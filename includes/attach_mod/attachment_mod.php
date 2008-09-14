@@ -36,6 +36,9 @@ while ($row = $db->sql_fetchrow($result))
 // We assign the original default board language here, because it gets overwritten later with the users default language
 $attach_config['board_lang'] = trim($board_config['default_lang']);
 
+// Needed to correctly process attachments!
+define('PAGE_PRIVMSGS', -10);
+
 include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
 include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_attach.' . PHP_EXT);
 include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . PHP_EXT);

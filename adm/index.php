@@ -188,9 +188,9 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 	{
 		$i = $i + '1';
 		$template->assign_block_vars('adminedit', array(
-			'editcount' => $i,
-			'edituser' => $row['edituser'],
-			'editok' => $row['editok']
+			'EDITCOUNT' => $i,
+			'EDITUSER' => colorize_username($row['editok'], true),
+			'EDITOK' => $row['editok']
 			)
 		);
 	}

@@ -1801,7 +1801,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 	else
 	{
-		if (!$privmsg_id && ($mode == 'reply' || $mode == 'edit' || $mode == 'quote'))
+		if (!$privmsg_id && (($mode == 'reply') || ($mode == 'edit') || ($mode == 'quote')))
 		{
 			message_die(GENERAL_ERROR, $lang['No_post_id']);
 		}

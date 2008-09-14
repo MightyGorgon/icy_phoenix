@@ -167,7 +167,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
 	global $db;
 
 	// Generate Array, if it's not an array
-	if ($post_id_array === 0 && $attach_id_array === 0 && $page === 0)
+	if (($post_id_array === 0) && ($attach_id_array === 0) && ($page === 0))
 	{
 		return;
 	}
@@ -331,7 +331,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
 			$sql = 'SELECT privmsgs_id, privmsgs_type, privmsgs_to_userid, privmsgs_from_userid
 				FROM ' . PRIVMSGS_TABLE . '
 				WHERE privmsgs_id IN (' . implode(', ', $post_id_array) . ')';
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Couldn\'t get Privmsgs Type', '', __LINE__, __FILE__, $sql);
 			}

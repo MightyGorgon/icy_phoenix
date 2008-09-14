@@ -14,8 +14,8 @@
 <!-- END switch_adminedit -->
 <!-- BEGIN adminedit -->
 <tr>
-	<td class="row1" width="50%" valign="top"><span class="genmed"><b>{adminedit.editcount}. {L_LISTOFADMINTEXT}:</b></span></td>
-	<td class="row1" width="50%"><span class="genmed"><a href="admin_users.php?mode=edit&u={adminedit.editok}">{adminedit.edituser}</a></span></td>
+	<td class="row1" width="50%" valign="top"><span class="genmed"><b>{adminedit.EDITCOUNT}. {L_LISTOFADMINTEXT}:</b></span></td>
+	<td class="row1" width="50%"><span class="genmed"><a href="admin_users.php?mode=edit&u={adminedit.EDITOK}" style="text-decoration:none;">{adminedit.EDITUSER}</a></span></td>
 </tr>
 <!-- END adminedit -->
 <!-- BEGIN switch_firstadmin -->
