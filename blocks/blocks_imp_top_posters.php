@@ -55,6 +55,9 @@ if(!function_exists(imp_top_posters_func))
 			message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
 		}
 
+		$show_avatars = ($cms_config_vars['md_show_avatars'][$block_id] == true) ? true : false;
+		$template->assign_var('S_SHOW_AVATARS', $show_avatars);
+
 		if ($row = $db->sql_fetchrow($result))
 		{
 			$i = 0;

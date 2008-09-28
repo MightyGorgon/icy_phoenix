@@ -133,13 +133,11 @@ if ($confirm)
 {
 	if (($board_config['bin_forum'] == 0) || (empty($_POST['topic_id_list']) && empty($topic_id)))
 	{
-		$redirect_page = VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
-		$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
+		$redirect_url = VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+		$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
 		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . $redirect_page . '">')
-		);
+		meta_refresh(3, $redirect_url);
 
 		message_die(GENERAL_MESSAGE, $lang['Bin_disabled'] . '<br /><br />' . $message);
 	}
@@ -188,8 +186,8 @@ if ($confirm)
 				}
 
 				$sql = "UPDATE " . TOPICS_TABLE . "
-					SET forum_id = $new_forum_id
-					WHERE topic_id = $topic_id";
+					SET forum_id = '" . $new_forum_id . "'
+					WHERE topic_id = '" . $topic_id . "'";
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
@@ -197,16 +195,16 @@ if ($confirm)
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				$sql = "UPDATE " . UPI2DB_LAST_POSTS_TABLE . "
-					SET forum_id = $new_forum_id
-					WHERE topic_id = $topic_id";
+					SET forum_id = '" . $new_forum_id . "'
+					WHERE topic_id = '" . $topic_id . "'";
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
 				}
 
 				$sql = "UPDATE " . UPI2DB_UNREAD_POSTS_TABLE . "
-					SET forum_id = $new_forum_id
-					WHERE topic_id = $topic_id";
+					SET forum_id = '" . $new_forum_id . "'
+					WHERE topic_id = '" . $topic_id . "'";
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
@@ -214,8 +212,8 @@ if ($confirm)
 //<!-- BEGIN Unread Post Information to Database Mod -->
 
 				$sql = "UPDATE " . POSTS_TABLE . "
-					SET forum_id = $new_forum_id
-					WHERE topic_id = $topic_id";
+					SET forum_id = '" . $new_forum_id . "'
+					WHERE topic_id = '" . $topic_id . "'";
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not update post topic ids', '', __LINE__, __FILE__, $sql);
@@ -235,14 +233,12 @@ if ($confirm)
 			$message = $lang['No_Topics_Moved'];
 		}
 
-		$redirect_page = VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
-		$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
+		$redirect_url = VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+		$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
 
 		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . $redirect_page . '">')
-		);
+		meta_refresh(3, $redirect_url);
 
 		message_die(GENERAL_MESSAGE, $message);
 	}

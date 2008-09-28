@@ -51,11 +51,10 @@ $code_text = '';
 define('EXTRACT_CODE', $code_id);
 
 // compile post
-$bbcode_uid = $posttext['bbcode_uid'];
 $bbcode->allow_bbcode = true;
 $bbcode->allow_smilies = $board_config['allow_smilies'] && $postrow['user_allowsmile'] ? true : false;
 $GLOBALS['code_post_id'] = $postrow['post_id'];
-$message = $bbcode->parse($posttext['post_text'], $bbcode_uid);
+$message = $bbcode->parse($posttext['post_text']);
 $GLOBALS['code_post_id'] = 0;
 
 if(!strlen($code_text))

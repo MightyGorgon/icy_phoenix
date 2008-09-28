@@ -98,7 +98,7 @@ else
 
 switch ($mode)
 {
-	case ('create'):
+	case 'create':
 
 		if (!$_POST['submit'])
 		{
@@ -217,7 +217,7 @@ switch ($mode)
 		}
 		break;
 
-	case ('edit'):
+	case 'edit':
 
 		if (!$_POST['submit'])
 		{
@@ -375,14 +375,14 @@ switch ($mode)
 		}
 		break;
 
-	case ('delete'):
+	case 'delete':
 
 		if (!$_POST['submit'])
 		{
 			$cat_id = $_GET['cat'];
 
 			$sql = "SELECT *
-       		FROM " . KB_CATEGORIES_TABLE . " WHERE category_id = '" . $cat_id . "'";
+							FROM " . KB_CATEGORIES_TABLE . " WHERE category_id = '" . $cat_id . "'";
 
 			if (!($cat_result = $db->sql_query($sql)))
 			{
@@ -607,10 +607,10 @@ switch ($mode)
 			$category_link = '<a href="' . $temp_url . '" class="gen">' . $category_name . '</a>';
 
 			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=edit&amp;cat=' . $category_id);
-			$edit = '<a href="' . $temp_url . '"><img src="' . IP_ROOT_PATH . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
+			$edit = '<a href="' . $temp_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
 
 			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=delete&amp;cat=' . $category_id);
-			$delete = '<a href="' . $temp_url . '" class="gen"><img src="' . IP_ROOT_PATH . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$delete = '<a href="' . $temp_url . '" class="gen"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
 
 			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=up&amp;cat=' . $category_id);
 			$up = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_up'] . '</a>';

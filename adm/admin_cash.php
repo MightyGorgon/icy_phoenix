@@ -36,7 +36,7 @@ if (!defined('ADMIN_MENU'))
 		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Settings', 'cash_settings', $lang['Cmenu_cash_settings']));
 		$i++;
 		$menu[$i] = new cash_menucat($lang['Cmcat_addons']);
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Events', 	'cash_events', $lang['Cmenu_cash_events']));
+		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Events', 'cash_events', $lang['Cmenu_cash_events']));
 		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Reset', 'cash_reset', $lang['Cmenu_cash_reset']));
 		$i++;
 		$menu[$i] = new cash_menucat($lang['Cmcat_other']);

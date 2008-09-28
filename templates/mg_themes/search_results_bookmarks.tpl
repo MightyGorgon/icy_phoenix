@@ -24,20 +24,15 @@
 <!-- END switch_no_bookmarks -->
 <!-- BEGIN searchresults -->
 <tr>
-	<td class="row1 row-center">
-		<img src="{searchresults.TOPIC_FOLDER_IMG}" alt="{searchresults.L_TOPIC_FOLDER_ALT}" title="{searchresults.L_TOPIC_FOLDER_ALT}" />
-	</td>
+	<td class="row1 row-center"><img src="{searchresults.TOPIC_FOLDER_IMG}" alt="{searchresults.L_TOPIC_FOLDER_ALT}" title="{searchresults.L_TOPIC_FOLDER_ALT}" /></td>
 	<td class="row1h row-forum" onclick="window.location.href='{searchresults.U_VIEW_FORUM}'">
-		<span class="forumlink">
-			<a href="{searchresults.U_VIEW_FORUM}" class="forumlink">{searchresults.FORUM_NAME}</a>
-		</span><br />
+		<span class="forumlink"><a href="{searchresults.U_VIEW_FORUM}" class="forumlink">{searchresults.FORUM_NAME}</a></span><br />
 	</td>
 	<td class="row1h row-forum" onclick="window.location.href='{searchresults.U_VIEW_TOPIC}'">
-		<span class="topiclink">
-			{searchresults.NEWEST_POST_IMG}{searchresults.TOPIC_TYPE}
-			<a href="{searchresults.U_VIEW_TOPIC}" class="topictitle">{searchresults.TOPIC_TITLE}</a>
-		</span>
+		<span class="topiclink">{searchresults.NEWEST_POST_IMG}{searchresults.TOPIC_TYPE}<a href="{searchresults.U_VIEW_TOPIC}" class="topictitle">{searchresults.TOPIC_TITLE}</a></span>
+		<!-- IF searchresults.GOTO_PAGE -->
 		<span class="gotopage">{searchresults.GOTO_PAGE}</span>
+		<!-- ENDIF -->
 	</td>
 	<td class="row2 row-center-small">{searchresults.TOPIC_AUTHOR}</td>
 	<td class="row1 row-center-small">{searchresults.REPLIES}</td>
@@ -45,12 +40,7 @@
 	<td class="row2 row-center-small"><input type="checkbox" name="topic_id_list[]" value="{searchresults.TOPIC_ID}" /></td>
 </tr>
 <!-- END searchresults -->
-<tr align="right">
-	<td class="catBottom" colspan="7">
-		{S_HIDDEN_FIELDS}
-		<input type="submit" name="delete" class="liteoption" value="{L_DELETE}" />
-	</td>
-</tr>
+<tr><td class="catBottom" colspan="7">{S_HIDDEN_FIELDS}<input type="submit" name="delete" class="liteoption" value="{L_DELETE}" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 

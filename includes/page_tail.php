@@ -191,7 +191,10 @@ if ($board_config['page_gen'] == 1)
 $template->pparse('overall_footer');
 
 // Close our DB connection.
-$db->sql_close();
+if (!empty($db))
+{
+	$db->sql_close();
+}
 
 // Compress buffered output if required and send to browser
 

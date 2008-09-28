@@ -900,7 +900,7 @@ class attach_parent
 			'L_POSTED_ATTACHMENTS' => $lang['Posted_attachments'],
 			'L_FILE_NAME' => $lang['File_name'],
 			'L_FILE_COMMENT' => $lang['File_comment'],
-			'RULES' => '<a href="javascript:attach_rules()">' . $lang['Allowed_extensions_and_sizes'] . '</a>',
+			'RULES' => '<a href="javascript:attach_rules(' . $u_rules_id . ')">' . $lang['Allowed_extensions_and_sizes'] . '</a>',
 
 			'S_HIDDEN' => $s_hidden
 			)

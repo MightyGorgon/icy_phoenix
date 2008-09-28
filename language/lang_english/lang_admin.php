@@ -64,8 +64,8 @@ $lang['Admin_Notepad'] = 'Notepad';
 $lang['Admin'] = 'Administration';
 $lang['Not_admin'] = 'You are not authorised to administer this board';
 $lang['Welcome_phpBB'] = 'Welcome to Icy Phoenix';
-$lang['Admin_intro'] = 'Thank you for choosing Icy Phoenix as your forum solution. This screen will give you a quick overview of all the various statistics of your board. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your board, click on the Forum link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your forum experience. Each secondary option link will have instructions on how to use the tools.';
-$lang['Forum_stats'] = 'Forum Statistics';
+$lang['Admin_intro'] = 'Thank you for choosing Icy Phoenix as your forum solution. This screen will give you a quick overview of all the various statistics of your site. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your board, click on the Forum link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your forum experience. Each secondary option link will have instructions on how to use the tools.';
+$lang['Forum_stats'] = 'Site Statistics';
 $lang['Admin_Index'] = 'Admin Index';
 $lang['Preview_forum'] = 'Preview Forum';
 $lang['Click_return_admin_index'] = 'Click %sHere%s to return to the Admin Index';
@@ -211,7 +211,7 @@ $lang['Click_return_forumauth'] = 'Click %sHere%s to return to Forum Permissions
 // Banning
 //
 $lang['Ban_control'] = 'Ban Control';
-$lang['Ban_explain'] = 'Control the banning of users. You can achieve this by banning either or both a specific user or an individual or range of IP addresses or hostnames. These methods prevent a user from even reaching the index page of your board. To prevent a user from registering under a different username you can also specify a banned email address. Please note that banning an email address alone will not prevent that user from being able to log on or post to your board. You should use one of the first two methods to achieve this.';
+$lang['Ban_explain'] = 'Control the banning of users. You can achieve this by banning either or both a specific user or an individual or range of IP addresses or hostnames. These methods prevent a user from even reaching the index page of your site. To prevent a user from registering under a different username you can also specify a banned email address. Please note that banning an email address alone will not prevent that user from being able to log on or post to your board. You should use one of the first two methods to achieve this.';
 $lang['Ban_explain_warn'] = 'Please note that entering a range of IP addresses results in all the addresses between the start and end being added to the banlist. Attempts will be made to minimise the number of addresses added to the database by introducing wildcards automatically where appropriate. If you really must enter a range, try to keep it small or better yet state specific addresses.';
 
 $lang['Select_username'] = 'Select a Username';
@@ -438,9 +438,7 @@ $lang['smiley_del_success'] = 'The Smiley was successfully removed';
 $lang['Click_return_smileadmin'] = 'Click %sHere%s to return to Smiley Administration';
 
 
-//
 // User Management
-//
 $lang['User_admin'] = 'User Administration';
 $lang['User_admin_explain'] = 'Change your users\' information and certain options. To modify the users\' permissions, please use the User and Group permissions system.';
 
@@ -466,9 +464,7 @@ $lang['User_special'] = 'Special admin-only fields';
 $lang['User_special_explain'] = 'These fields are not able to be modified by the users. You can set their status and other options that are not given to users.';
 
 
-//
 // Group Management
-//
 $lang['Group_administration'] = 'Group Administration';
 $lang['Group_admin_explain'] = 'Administer all your usergroups. You can delete, create and edit existing groups. You may choose moderators, toggle open/closed group status and set the group name and description';
 $lang['Error_updating_groups'] = 'There was an error while updating the groups';
@@ -681,78 +677,6 @@ $lang['span_class3'] = 'Span Class 3';
 $lang['img_poll_size'] = 'Polling Image Size [px]';
 $lang['img_pm_size'] = 'Private Message Status size [px]';
 
-// Install Process
-$lang['Welcome_install'] = 'Icy Phoenix Installation';
-$lang['Initial_config'] = 'Configuration';
-$lang['DB_config'] = 'Database Configuration';
-$lang['Admin_config'] = 'Admin Configuration';
-$lang['continue_upgrade'] = 'Once you have downloaded your config file to your local machine you may\'Continue Upgrade\' button below to move forward with the upgrade process. Please wait to upload the config file until the upgrade process is complete.';
-$lang['upgrade_submit'] = 'Continue Upgrade';
-
-$lang['Installer_Error'] = 'An error has occurred during installation';
-$lang['Previous_Install'] = 'A previous installation has been detected';
-$lang['Install_db_error'] = 'An error occurred trying to update the database';
-
-$lang['Re_install'] = 'Your previous installation is still active.<br /><br />If you would like to re-install Icy Phoenix you should click the Yes button below. Please be aware that doing so will destroy all existing data and no backups will be made! The Administrator username and password you have used to log in to the board will be re-created after the re-installation and no other settings will be retained.<br /><br />Think carefully before pressing Yes!';
-
-$lang['Inst_Step_0'] = 'Thank you for choosing Icy Phoenix. This wizard will guide you through the installation process.<br /><span class="text_red">Please note that you should have uploaded all Icy Phoenix files to your server and that the database you install into should already exist.</span>';
-
-$lang['Inst_Step_1'] = 'In order to complete this install please fill out the details requested below.<br /><span class="text_red">Please note that the database you install into should already exist.</span>';
-
-$lang['CHMOD_Files'] = 'Files &amp; Folders Permission';
-$lang['CHMOD_OK'] = 'Ok';
-$lang['CHMOD_Error'] = 'Error';
-$lang['CHMOD_777'] = 'CHMOD 777';
-$lang['CHMOD_666'] = 'CHMOD 666';
-$lang['CHMOD_Files_Explain_Error'] = 'Some errors occurred while verifying CHMOD permissions. Before going to the next step, please make sure that all files/folders from the installation package exist and they have the correct CHMOD permissions, otherwise Icy Phoenix cannot run correctly.';
-$lang['CHMOD_Files_Explain_Ok'] = 'All CHMOD permissions seems to be fine, you can proceed to next step.';
-$lang['CHMOD_File_Exists'] = 'This File/Folder exists and its permissions have been applied correctly.';
-$lang['CHMOD_File_NotExists'] = 'This File/Folder doesn\'t exist, please upload it and apply the correct CHMOD permissions.';
-$lang['CHMOD_File_Exists_Read_Only'] = 'This File/Folder exists but its permissions may not be modified automatically, please apply CHMOD manually and then click on "Start Install Anyway".';
-$lang['CHMOD_File_UnknownError'] = 'Unknown error while checking this File/Folder. Please make sure that this File/Folder exists on the server, that it has the correct CHMOD permissions and then click on "Start Install Anyway".';
-
-$lang['Start_Install'] = 'Start Install';
-$lang['Start_Install_Anyway'] = 'Start Install Anyway';
-$lang['Finish_Install'] = 'Finish Installation';
-$lang['Continue_Install'] = 'Continue Installation';
-
-$lang['Default_lang'] = 'Default site language';
-$lang['DB_Host'] = 'Database Server Hostname / DSN';
-$lang['DB_Name'] = 'Your Database Name';
-$lang['DB_Username'] = 'Database Username';
-$lang['DB_Password'] = 'Database Password';
-$lang['Database'] = 'Your Database';
-$lang['Install_lang'] = 'Choose Language for Installation';
-$lang['dbms'] = 'Database Type';
-$lang['Table_Prefix'] = 'Prefix for tables in database';
-$lang['Admin_Username'] = 'Administrator Username';
-$lang['Admin_Password'] = 'Administrator Password';
-$lang['Admin_Password_confirm'] = 'Administrator Password [ Confirm ]';
-
-$lang['Inst_Step_2'] = 'Your admin username has been created.<br />At this point to complete the setup process you need to <span class="text_red">remove <u>install</u> and <u>contrib</u> (if you have it on your server) folders</span>. Finally you should click on <b>Finish Installation</b> and then access ACP (Admin Control Panel) and CMS (Content Management System) where you can manage all Icy Phoenix settings and preferences.<br />In ACP you can adjust the main settings and preferences for the whole site, (styles, languages, time, forums, download, users, album, etc.) and while in CMS section you can configure options regarding the site pages (define permissions, add blocks, create new pages, create new menu, etc.). You may also want to configure <b>.htaccess</b> and <b>lang_main_settings.php</b> (for each installed lang) to fine tune some other preferences, like error reporting, url rewrite, keywords, welcome message, charset and so on.<br /><br />Thank you for choosing Icy Phoenix and remember to backup your db periodically.<br /><br />';
-
-$lang['Unwriteable_config'] = 'Your config file is not writable. A copy of the config file will be downloaded to your computer when you click the button below. You should upload this file to the same directory where Icy Phoenix has been uploaded. Once this is done you should delete the install folder and log in using the administrator name and password you provided on the previous form to visit the admin control centre; (a link will appear at the bottom of each screen once logged in) to check the general configuration. Thank you for choosing Icy Phoenix.';
-$lang['Download_config'] = 'Download Config';
-
-$lang['ftp_choose'] = 'Choose Download Method';
-$lang['ftp_option'] = '<br />Since FTP extensions are enabled in this version of PHP you may also be given the option of first trying to automatically FTP the config file into place.';
-$lang['ftp_instructs'] = 'You have chosen to FTP the file to the account containing Icy Phoenix automatically. Please enter the information below to facilitate this process. Note that the FTP path should be the exact path via FTP to your Icy Phoenix installation as if you were FTPing it using any normal client.';
-$lang['ftp_info'] = 'Enter Your FTP Information';
-$lang['Attempt_ftp'] = 'Attempt to FTP config file into place';
-$lang['Send_file'] = 'Just send the file to me and I\'ll FTP it manually';
-$lang['ftp_path'] = 'FTP path to Icy Phoenix';
-$lang['ftp_username'] = 'Your FTP Username';
-$lang['ftp_password'] = 'Your FTP Password';
-$lang['Transfer_config'] = 'Start Transfer';
-$lang['NoFTP_config'] = 'The attempt to FTP the config file into place failed. Please download the config file and FTP it into place manually.';
-
-$lang['Install'] = 'Install';
-$lang['Upgrade'] = 'Upgrade';
-
-$lang['Install_Method'] = 'Choose your installation method';
-$lang['Install_No_Ext'] = 'The PHP configuration on your server doesn\'t support the database type that you chose';
-$lang['Install_No_PCRE'] = 'Icy Phoenix Requires the Perl-Compatible Regular Expressions Module for PHP which your PHP configuration doesn\'t appear to support!';
-
 //
 // Admin Userlist Start
 //
@@ -874,7 +798,7 @@ $lang['L_DELETEMSG'] = 'Delete entries';
 $lang['L_DELETESUCMSG'] = 'The entries were deleted successfully';
 $lang['L_ADMINEDITMSG'] = 'You do not have permission to edit the profile data and/or the permissions of the first admin of the forum.<br /><br />This unauthorised access attempt was successfully blocked and recorded!';
 // Begin Thanks Mod
-$lang['use_thank'] = 'Allow to Thank posts';
+$lang['use_thank'] = 'Enable Thanks';
 // End Thanks Mod
 // Default avatar MOD, By Manipe (Begin)
 $lang['Default_avatar'] = 'Set a default avatar';
@@ -2044,6 +1968,62 @@ $lang['Backup_Invalid'] = 'The selected file to backup is invalid.';
 $lang['RESTORE_FAILURE'] = 'The backup file may be corrupt.';
 /* lang_admin_db_backup.php - END */
 
+/* Logs - BEGIN */
+$lang['LOGS_TITLE'] = 'Logs';
+$lang['LOGS_EXPLAIN'] = 'All relevant actions stored in the DB';
+$lang['LOGS_TARGET'] = 'Target';
+$lang['LOGS_DENY'] = 'Not authorized!';
+$lang['LOGS_POST_EDIT'] = 'edited a post posted by';
+$lang['LOGS_POST_DELETE'] = 'deleted a post posted by';
+$lang['LOGS_GROUP_JOIN'] = 'requested to join the group';
+$lang['LOGS_GROUP_EDIT'] = 'edited group options of %s';
+$lang['LOGS_GROUP_ADD'] = 'added %s to the group';
+$lang['LOGS_GROUP_TYPE'] = 'edited group %s status, now the group is %s';
+$lang['LOGS_GROUP_TYPE_0'] = 'open';
+$lang['LOGS_GROUP_TYPE_1'] = 'closed';
+$lang['LOGS_GROUP_TYPE_2'] = 'hidden';
+$lang['LOGS_MESSAGE'] = 'message to the user, code <b>%s</b>';
+$lang['LOGS_MODCP_DELETE'] = 'deleted some messages in %s through MODCP';
+$lang['LOGS_MODCP_RECYCLE'] = 'trashed some messages in %s through MODCP';
+$lang['LOGS_MODCP_LOCK'] = 'locked some messages in %s through MODCP';
+$lang['LOGS_MODCP_UNLOCK'] = 'unlocked some messages in %s through MODCP';
+$lang['LOGS_MODCP_MOVE'] = 'moved some messages in %s through MODCP';
+$lang['LOGS_MODCP_MERGE'] = 'merged some messages in %s through MODCP';
+$lang['LOGS_MODCP_SPLIT'] = 'splitted some messages in %s through MODCP';
+$lang['LOGS_TOPIC_BIN'] = 'trashed a message in';
+$lang['LOGS_TOPIC_ATTACK'] = 'hacking attempt to message';
+$lang['LOGS_CARD_BAN'] = 'banned';
+$lang['LOGS_CARD_WARN'] = 'warned';
+$lang['LOGS_CARD_UNBAN'] = 'unbanned';
+$lang['LOGS_ADMIN_CAT_ADD'] = 'added a forum category';
+$lang['LOGS_ADMIN_DB_UTILITIES_BACKUP'] = 'backupped the DB %s';
+$lang['LOGS_ADMIN_DB_UTILITIES_BACKUP_full'] = 'full';
+$lang['LOGS_ADMIN_DB_UTILITIES_BACKUP_structure'] = 'structure only';
+$lang['LOGS_ADMIN_DB_UTILITIES_BACKUP_data'] = 'data';
+$lang['LOGS_ADMIN_DB_UTILITIES_BACKUP_store_and_download'] = ', downloaded and stored';
+$lang['LOGS_ADMIN_DB_UTILITIES_BACKUP_store'] = ', stored';
+$lang['LOGS_ADMIN_DB_UTILITIES_BACKUP_download'] = ', downloaded';
+$lang['LOGS_ADMIN_DB_UTILITIES_RESTORE'] = 'restored the DB from';
+$lang['LOGS_ADMIN_BOARD_CONFIG'] = 'edited config settings';
+$lang['LOGS_ADMIN_BOARD_IP_CONFIG'] = 'edited Icy Phoenix settings';
+$lang['LOGS_ADMIN_GROUP_NEW'] = 'group created';
+$lang['LOGS_ADMIN_GROUP_DELETE'] = 'group deleted';
+$lang['LOGS_ADMIN_GROUP_EDIT'] = 'group edited';
+$lang['LOGS_ADMIN_USER_AUTH'] = 'edited permissions of';
+$lang['LOGS_ADMIN_GROUP_AUTH'] = 'edited group permissions';
+$lang['LOGS_ADMIN_USER_BAN'] = 'banned someone from ACP';
+$lang['LOGS_ADMIN_USER_UNBAN'] = 'unbanned someone from ACP';
+$lang['LOGS_ADMIN_USER_DELETE'] = 'user deleted';
+$lang['LOGS_ADMIN_USER_EDIT'] = 'profile edited of';
+$lang['LOGS_CMS_LAYOUT_EDIT'] = 'edited %sTHIS%s page';
+$lang['LOGS_CMS_LAYOUT_DELETE'] = 'deleted a page [ID = %s]';
+$lang['LOGS_CMS_BLOCK_EDIT'] = 'edited a block [ID = %s] in %sTHIS%s page';
+$lang['LOGS_CMS_BLOCK_EDIT_LS'] = 'edited a block [ID = %s] in a standard page [%s]';
+$lang['LOGS_CMS_BLOCK_DELETE'] = 'deleted a block [ID = %s] in %sTHIS%s page';
+$lang['LOGS_CMS_BLOCK_DELETE_LS'] = 'deleted a block  [ID = %s] in a standard page [%s]';
+//$lang['LOGS_'] = '';
+/* Logs - END */
+
 /*
 $lang['MG_SW_'] = '';
 */
@@ -2059,10 +2039,12 @@ $lang['MG_SW_'] = '';
 // Numbers have to be changed in all /adm/*.php files too
 
 // Configuration
-$lang['1000_Configuration'] = 'Configuration'; // admin_board.php, admin_board_extend.php, admin_board_headers_banners.php, admin_board_main.php, admin_board_permissions.php, admin_board_server.php, admin_board_posting.php, admin_board_queries.php, admin_captcha_config.php, admin_upi2db.php
+$lang['1000_Configuration'] = 'Configuration'; // admin_board.php, admin_board_extend.php, admin_board_headers_banners.php, admin_board_main.php, admin_board_permissions.php, admin_board_server.php, admin_board_posting.php, admin_board_queries.php, admin_captcha_config.php, admin_lang_user_created.php, admin_upi2db.php
 $lang['100_Server_Configuration'] = 'Server'; // admin_board_server.php
 $lang['110_Various_Configuration'] = 'Site'; // admin_board.php
 $lang['120_MG_Configuration'] = 'Icy Phoenix'; // admin_board.php
+$lang['125_Language'] = 'Custom Lang Vars'; // admin_lang_user_created.php
+$lang['127_Clear_Cache'] = 'Clear Cache'; // admin_board_clearcache.php
 $lang['130_UPI2DB_Mod'] = 'Unread Posts'; // admin_upi2db.php
 $lang['140_MG_Configuration_Headers_Banners'] = 'Headers &amp; Banners'; // admin_board_headers_banners.php
 $lang['145_Captcha_Config'] = 'Visual Confirmation'; // admin_captcha_config.php
@@ -2071,7 +2053,6 @@ $lang['160_Title_infos'] = 'Quick Title Management'; // admin_quick_title.php
 $lang['170_LIW'] = 'Limit Image Width'; // admin_liw.php
 $lang['175_Yahoo_search'] = 'Yahoo Search'; // admin_yahoo_search.php
 $lang['180_MG_Configuration_Permissions'] = 'Page Permissions'; // admin_board_permissions.php
-$lang['190_Clear_Cache'] = 'Clear Cache'; // admin_board_clearcache.php
 $lang['200_Language'] = 'Language'; // admin_lang_extend.php
 $lang['210_MG_Quick_Settings'] = 'Quick Settings'; // admin_board_quick_settings.php
 
@@ -2103,16 +2084,17 @@ $lang['150_Topic_Shadow'] = 'Shadow Topics'; // admin_topic_shadow.php
 // eXtreme Styles
 $lang['1300_Extreme_Styles'] = 'Styles &amp; Templates'; // xs_include.php -> $module_name
 
-// DB Maintenance
-$lang['1400_DB_Maintenance'] = 'DB Maintenance'; // admin_bb_db.php, admin_db_generator.php, admin_db_maintenance.php, admin_db_utilities.php
-$lang['100_Backup_DB'] = 'DB Backup'; // admin_db_utilities.php, admin_db_backup
-$lang['110_Restore_DB'] = 'DB Restore'; // admin_db_utilities.php, admin_db_backup
-$lang['115_Restore_DB'] = 'DB Restore From File'; // admin_db_utilities.php
-$lang['120_Optimize_DB'] = 'Optimize Database'; // admin_db_utilities.php
-$lang['130_DB_Maintenance'] = 'Database Maintenance'; // admin_db_maintenance.php
-$lang['140_DB_Admin'] = 'IP MySQLAdmin'; // admin_bb_db.php
-$lang['150_db_update_generator'] = 'DB Update Generator'; // admin_db_generator.php
-$lang['160_msqd'] = 'MySQLDumper'; // admin_msqd.php
+// DB Maintenance & Security
+$lang['1400_DB_Maintenance'] = 'DB And Security'; // admin_bb_db.php, admin_db_generator.php, admin_db_maintenance.php, admin_db_utilities.php, admin_logs.php
+$lang['100_Actions_LOG'] = 'Actions Log'; // admin_logs.php
+$lang['110_DB_Admin'] = 'IP MySQLAdmin'; // admin_bb_db.php
+$lang['120_Backup_DB'] = 'DB Backup'; // admin_db_utilities.php, admin_db_backup
+$lang['130_Restore_DB'] = 'DB Restore'; // admin_db_utilities.php, admin_db_backup
+$lang['135_Restore_DB'] = 'DB Restore From File'; // admin_db_utilities.php
+$lang['140_Optimize_DB'] = 'Optimize Database'; // admin_db_utilities.php
+$lang['150_DB_Maintenance'] = 'Database Maintenance'; // admin_db_maintenance.php
+$lang['170_db_update_generator'] = 'DB Update Generator'; // admin_db_generator.php
+$lang['180_msqd'] = 'MySQLDumper'; // admin_msqd.php
 
 // IM Portal
 $lang['1500_IM_Portal'] = 'Portal'; // admin_blocks.php, admin_blocks_pos.php, admin_blocks_var.php, admin_clear_cache.php, admin_layout.php, admin_portal.php
@@ -2134,6 +2116,7 @@ $lang['140_XS_News_Tickers'] = 'News Ticker'; // admin_xs_news_xml.php
 
 // Users
 $lang['1610_Users'] = 'Users'; // admin_account.php, admin_disallow.php, admin_email_list.php, admin_jr_admin.php, admin_postcount.php, admin_priv_msgs.php, admin_profile_fields.php, admin_ranks.php, admin_ug_auth.php, admin_user_ban.php, admin_user_bantron.php, admin_user_register.php, admin_user_search.php, admin_userlist.php, admin_users.php, admin_voting.php
+$lang['100_Jr_Admin'] = 'Junior Admin'; // admin_jr_admin.php
 $lang['110_Manage'] = 'Manage'; // admin_users.php
 $lang['113_Permissions_Users'] = 'Permissions'; // admin_ug_auth.php
 $lang['116_CMS_Permissions_Users'] = 'CMS Permissions'; // admin_cms_auth.php
@@ -2148,7 +2131,6 @@ $lang['190_Prune_users'] = 'Prune Users'; // admin_prune_users.php
 $lang['200_Disallow'] = 'Disallow Usernames'; // admin_disallow.php
 $lang['210_Ban_Management'] = 'Ban Users'; // admin_user_ban.php
 $lang['220_Bantron'] = 'Bantron'; // admin_user_bantron.php
-$lang['240_Jr_Admin'] = 'Junior Admin'; // admin_jr_admin.php
 $lang['250_Postcount_Config'] = 'Edit Postcounts'; // admin_postcount.php
 $lang['260_CPF_Add'] = 'Add Custom Profile Fields'; // admin_profile_fields.php
 $lang['270_CPF_Edit'] = 'Edit Custom Profile Fields'; // admin_profile_fields.php
@@ -2214,6 +2196,20 @@ $lang['110_Album_Config'] = 'Configuration'; // admin_album_config_extended.php
 $lang['120_Album_Categories'] = 'Manage Categories'; // admin_album_cat.php
 $lang['130_Album_Permissions'] = 'Permissions'; // admin_album_auth.php
 $lang['140_Personal_Galleries'] = 'Personal Galleries'; // admin_album_personal.php
+
+// FAQ
+$lang['2300_FAQ'] = 'FAQ & Rules'; // admin_faq_editor.php
+$lang['110_FAQ_BBCode'] = 'BBCode FAQ'; // admin_faq_editor.php
+$lang['120_FAQ_Board'] = 'Site FAQ'; // admin_faq_editor.php
+$lang['130_FAQ_Rules'] = 'Site Rules'; // admin_faq_editor.php
+
+// INFO
+$lang['2400_INFO'] = 'Info'; // admin_logs.php, admin_phpinfo.php, admin_gd_info.php, admin_referrers.php, admin_google_bot_detector.php
+$lang['110_Actions_LOG'] = 'Actions Log'; // admin_logs.php
+$lang['120_PHP_INFO'] = 'PHP Info'; // admin_phpinfo.php
+$lang['130_GD_Info'] = 'GD Info'; // admin_gd_info.php
+$lang['140_HTTP_REF'] = 'HTTP Referrers'; // admin_referrers.php
+$lang['150_Google_BOT'] = 'Google Bot Detector'; // admin_google_bot_detector.php
 
 //
 // ####################### [ ACP Navigation END ] #######################

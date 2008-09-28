@@ -559,12 +559,11 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			if ($b_type == true)
 			{
 				$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
-				$bbcode_uid = $b_info['block_bbcode_uid'];
 				//$bbcode->allow_html = true;
 				$bbcode->allow_html = false;
 				$bbcode->allow_bbcode = true;
 				$bbcode->allow_smilies = true;
-				$preview_message = $bbcode->parse($message, $bbcode_uid);
+				$preview_message = $bbcode->parse($message);
 			}
 			else
 			{
@@ -702,14 +701,12 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			message_die(GENERAL_MESSAGE, $lang['Must_enter_block']);
 		}
 
-		$bbcode_uid = '';
 		$b_content = ((STRIP) ? addslashes($b_content) : $b_content);
 		if($b_type == true)
 		{
 			if(!empty($b_content))
 			{
-				$bbcode_uid = make_bbcode_uid();
-				//$b_content = prepare_message(trim($b_content), true, true, true, $bbcode_uid);
+				//$b_content = prepare_message(trim($b_content), true, true, true);
 				//$b_content = str_replace("\'", "''", $b_content);
 			}
 		}
@@ -723,7 +720,6 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				active = '" . $b_active . "',
 				type = '" . $b_type . "',
 				content = '" . $b_content . "',
-				block_bbcode_uid = '" . $bbcode_uid . "',
 				blockfile = '" . $b_blockfile . "',
 				layout = '" . $layout_value . "',
 				layout_special = '" . $layout_special_value . "',
@@ -826,7 +822,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$weight = get_max_blocks_position(CMS_BLOCKS_TABLE, $id_var_value, $b_bposition) + 1;
 			$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
-			$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, block_bbcode_uid, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . str_replace("\'", "''", $b_title) . "', '" . $b_content . "', '" . str_replace("\'", "''", $b_bposition) . "', '" . $weight . "', '" . $b_active . "', '" . $b_type . "', '" . str_replace("\'", "''", $b_blockfile) . "', '" . $b_view . "', '" . $layout_value . "', '" . $layout_special_value . "', '" . $bbcode_uid . "', '" . $b_border . "', '" . $b_titlebar . "', '" . $b_background . "', '" . $b_local . "', '" . $b_group . "')";
+			$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . str_replace("\'", "''", $b_title) . "', '" . $b_content . "', '" . str_replace("\'", "''", $b_bposition) . "', '" . $weight . "', '" . $b_active . "', '" . $b_type . "', '" . str_replace("\'", "''", $b_blockfile) . "', '" . $b_view . "', '" . $layout_value . "', '" . $layout_special_value . "', '" . $b_border . "', '" . $b_titlebar . "', '" . $b_background . "', '" . $b_local . "', '" . $b_group . "')";
 			$message = $lang['Block_added'];
 			if(!$result = $db->sql_query($sql))
 			{
@@ -882,7 +878,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
-				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT),
+				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -955,7 +951,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$weight = get_max_blocks_position(CMS_BLOCKS_TABLE, $id_var_value, $b_bposition, 'layout') + 1;
 					$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
-					$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, block_bbcode_uid, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $b_info['title'] . "', '" . $b_info['content'] . "', '" . $b_info['bposition'] . "', '" . $b_info['weight'] . "', '" . $b_info['active'] . "', '" . $b_info['type'] . "', '" . $b_info['blockfile'] . "', '" . $b_info['view'] . "', '" . (($id_var_name == 'l_id') ? $id_var_value : 0) . "', '" . (($id_var_name == 'ls_id') ? $id_var_value : 0) . "', '" . $b_info['block_bbcode_uid'] . "', '" . $b_info['border'] . "', '" . $b_info['titlebar'] . "', '" . $b_info['background'] . "', '" . $b_info['local'] . "', '" . $b_info['groups'] . "')";
+					$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $b_info['title'] . "', '" . $b_info['content'] . "', '" . $b_info['bposition'] . "', '" . $b_info['weight'] . "', '" . $b_info['active'] . "', '" . $b_info['type'] . "', '" . $b_info['blockfile'] . "', '" . $b_info['view'] . "', '" . (($id_var_name == 'l_id') ? $id_var_value : 0) . "', '" . (($id_var_name == 'ls_id') ? $id_var_value : 0) . "', '" . $b_info['border'] . "', '" . $b_info['titlebar'] . "', '" . $b_info['background'] . "', '" . $b_info['local'] . "', '" . $b_info['groups'] . "')";
 					if(!$result = $db->sql_query($sql))
 					{
 						message_die(GENERAL_ERROR, 'Could not insert data into blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
@@ -1807,7 +1803,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'NOT_PAGE_NAV' => (!$l_info['page_nav']) ? 'checked="checked"' : '',
 			'L_EDIT_LAYOUT' => $lang['Layout_Edit'],
 			'L_SUBMIT' => $lang['Submit'],
-			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
+			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -2048,7 +2044,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				'L_ENABLED' => $lang['Enabled'],
 				'L_DISABLED' => $lang['Disabled'],
 
-				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT),
+				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);

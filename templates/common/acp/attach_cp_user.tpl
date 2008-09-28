@@ -24,10 +24,10 @@
 </tr>
 <!-- BEGIN memberrow -->
 <tr>
-	<td class="{memberrow.ROW_CLASS}" align="center"><span class="gen">&nbsp;{memberrow.ROW_NUMBER}&nbsp;</span></td>
-	<td class="{memberrow.ROW_CLASS}" align="center"><span class="gen"><a href="{memberrow.U_VIEW_MEMBER}" class="gen">{memberrow.USERNAME}</a></span></td>
-	<td class="{memberrow.ROW_CLASS}" align="center" valign="middle">&nbsp;<b>{memberrow.TOTAL_ATTACHMENTS}</b>&nbsp;</td>
-	<td class="{memberrow.ROW_CLASS}" align="center">&nbsp;<b>{memberrow.TOTAL_SIZE}</b>&nbsp;</td>
+	<td class="{memberrow.ROW_CLASS} row-center"><span class="gen">&nbsp;{memberrow.ROW_NUMBER}&nbsp;</span></td>
+	<td class="{memberrow.ROW_CLASS} row-center"><span class="gen"><a href="{memberrow.U_VIEW_MEMBER}" class="gen">{memberrow.USERNAME}</a></span></td>
+	<td class="{memberrow.ROW_CLASS} row-center" valign="middle">&nbsp;<b>{memberrow.TOTAL_ATTACHMENTS}</b>&nbsp;</td>
+	<td class="{memberrow.ROW_CLASS} row-center">&nbsp;<b>{memberrow.TOTAL_SIZE}</b>&nbsp;</td>
 </tr>
 <!-- END memberrow -->
 <tr><td class="cat" colspan="4">&nbsp;</td></tr>

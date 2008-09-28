@@ -25,13 +25,16 @@ define('FOUNDER_ID', '2');
 // ALLOW ONLY FOUNDER ACP, by setting this to true only the FOUNDER will be able to access ACP
 define('ONLY_FOUNDER_ACP', false);
 // Insert here the IDs of the main admins separated by commas, they will be able to access special features in ACP
-// Allowed features: Private Messages, DB Tools, Templates Edit (XS Style)
+// Allowed features: Action Logs, Private Messages, DB Tools, Templates Edit (XS Style)
 // If the constant is deleted then every admin is able to access the Full ACP
 define('MAIN_ADMINS_ID', '2');
 
 // Debug Level
 define('DEBUG', true); // Debugging on
 //define('DEBUG', false); // Debugging off
+
+// Output all SQL to a file in cache... do not use unless strictly needed!!!
+//@define('SQL_DEBUG_LOG', true);
 
 // Cache SQL Queries
 define('CACHE_SQL', true); // Caching SQL Queries ON
@@ -121,6 +124,58 @@ define('MOD', 2);
 define('GLOBAL_MOD', 3);
 define('JUNIOR_ADMIN', 4);
 
+// URL PARAMETERS
+define('POST_CAT_URL', 'c');
+define('POST_FORUM_URL', 'f');
+define('POST_TOPIC_URL', 't');
+define('POST_POST_URL', 'p');
+define('POST_GROUPS_URL', 'g');
+define('POST_USERS_URL', 'u');
+define('STYLE_URL', 's');
+define('LANG_URL', 'l');
+
+// Error codes
+define('GENERAL_MESSAGE', 200);
+define('GENERAL_ERROR', 202);
+define('CRITICAL_MESSAGE', 203);
+define('CRITICAL_ERROR', 204);
+
+// Auth settings - Levels
+define('AUTH_NONE', -1);
+define('AUTH_LIST_ALL', 0);
+define('AUTH_ALL', 0);
+define('AUTH_REG', 1);
+define('AUTH_ACL', 2);
+define('AUTH_MOD', 3);
+define('AUTH_JADMIN', 4);
+define('AUTH_ADMIN', 5);
+// Self AUTH - BEGIN
+define('AUTH_SELF', 9);
+// Self AUTH - END
+
+// Auth settings - Methods
+define('AUTH_VIEW', 1);
+define('AUTH_READ', 2);
+define('AUTH_POST', 3);
+define('AUTH_REPLY', 4);
+define('AUTH_EDIT', 5);
+define('AUTH_DELETE', 6);
+define('AUTH_STICKY', 7);
+define('AUTH_ANNOUNCE', 8);
+define('AUTH_GLOBALANNOUNCE', 9);
+define('AUTH_NEWS', 10);
+define('AUTH_CAL', 11);
+define('AUTH_VOTE', 12);
+define('AUTH_POLLCREATE', 13);
+define('AUTH_ATTACHMENTS', 14);
+define('AUTH_DOWNLOAD', 15);
+define('AUTH_BAN', 16);
+define('AUTH_GREENCARD', 17);
+define('AUTH_BLUECARD', 18);
+define('AUTH_RATE', 19);
+
+define('HIDDEN_CAT', 0); // NOTE: change this value to the forum id, of the forum, witch you would like to be hidden
+
 // CMS Levels
 define('CMS_GUEST', 0);
 define('CMS_REG', 1);
@@ -129,6 +184,7 @@ define('CMS_PUBLISHER', 3);
 define('CMS_REVIEWER', 4);
 define('CMS_CONTENT_MANAGER', 5);
 
+// CMS AUTH Levels
 define('CMS_AUTH_NONE', -1);
 define('CMS_AUTH_ALL', 0);
 define('CMS_AUTH_REG', 1);
@@ -178,12 +234,6 @@ define('POST_NEWS', 4);
 define('BEGIN_TRANSACTION', 1);
 define('END_TRANSACTION', 2);
 
-// Error codes
-define('GENERAL_MESSAGE', 200);
-define('GENERAL_ERROR', 202);
-define('CRITICAL_MESSAGE', 203);
-define('CRITICAL_ERROR', 204);
-
 // Private messaging
 define('PRIVMSGS_READ_MAIL', 0);
 define('PRIVMSGS_NEW_MAIL', 1);
@@ -192,57 +242,11 @@ define('PRIVMSGS_SAVED_IN_MAIL', 3);
 define('PRIVMSGS_SAVED_OUT_MAIL', 4);
 define('PRIVMSGS_UNREAD_MAIL', 5);
 
-// URL PARAMETERS
-define('POST_CAT_URL', 'c');
-define('POST_FORUM_URL', 'f');
-define('POST_TOPIC_URL', 't');
-define('POST_POST_URL', 'p');
-define('POST_GROUPS_URL', 'g');
-define('POST_USERS_URL', 'u');
-define('STYLE_URL', 's');
-define('LANG_URL', 'l');
-
 // Session parameters
 define('SESSION_METHOD_COOKIE', 100);
 define('SESSION_METHOD_GET', 101);
 
-// Auth settings - Levels
-define('AUTH_NONE', -1);
-define('AUTH_LIST_ALL', 0);
-define('AUTH_ALL', 0);
-define('AUTH_REG', 1);
-define('AUTH_ACL', 2);
-define('AUTH_MOD', 3);
-define('AUTH_JADMIN', 4);
-define('AUTH_ADMIN', 5);
-// Self AUTH - BEGIN
-define('AUTH_SELF', 9);
-// Self AUTH - END
-
-// Auth settings - Methods
-define('AUTH_VIEW', 1);
-define('AUTH_READ', 2);
-define('AUTH_POST', 3);
-define('AUTH_REPLY', 4);
-define('AUTH_EDIT', 5);
-define('AUTH_DELETE', 6);
-define('AUTH_STICKY', 7);
-define('AUTH_ANNOUNCE', 8);
-define('AUTH_GLOBALANNOUNCE', 9);
-define('AUTH_NEWS', 10);
-define('AUTH_CAL', 11);
-define('AUTH_VOTE', 12);
-define('AUTH_POLLCREATE', 13);
-define('AUTH_ATTACHMENTS', 14);
-define('AUTH_DOWNLOAD', 15);
-define('AUTH_BAN', 16);
-define('AUTH_GREENCARD', 17);
-define('AUTH_BLUECARD', 18);
-define('AUTH_RATE', 19);
-
-define('HIDDEN_CAT', 0); // NOTE: change this value to the forum id, of the forum, witch you would like to be hidden
-
-// Various define
+// Various constants
 define('POST_BIRTHDAY', 9);
 define('POST_CALENDAR', 10);
 
@@ -344,6 +348,7 @@ define('LINK_CONFIG_TABLE', $table_prefix . 'link_config');
 define('LINKS_TABLE', $table_prefix . 'links');
 define('LIW_CACHE_TABLE', $table_prefix . 'liw_cache');
 define('LOGINS_TABLE', $table_prefix . 'logins');
+define('LOGS_TABLE', $table_prefix . 'logs');
 define('MODULES_TABLE', $table_prefix . 'stats_modules');
 define('NEWS_TABLE', $table_prefix . 'news');
 define('NOTES_ADMIN_TABLE',$table_prefix . 'notes');

@@ -219,8 +219,6 @@ function jr_admin_get_module_list($user_module_list = false)
 	// We need this for regular expressions... to avoid errors!!!
 	$phpEx = PHP_EXT;
 
-	define('JA_PARSING', true);
-
 	//Read all the modules
 	$setmodules = 1;
 	$dir = @opendir(IP_ROOT_PATH . ADM . '/');
@@ -264,13 +262,29 @@ function jr_admin_get_module_list($user_module_list = false)
 				{
 					$module_list[$cat][$module_name]['filename'] = $filename;
 					$module_list[$cat][$module_name]['file_hash'] = $file_hash;
+					if (isset($ja_module[$cat][$module_name]))
+					{
+						$module_list[$cat][$module_name]['junior_admin'] = $ja_module[$cat][$module_name];
+					}
+					else
+					{
+						$module_list[$cat][$module_name]['junior_admin'] = true;
+					}
 				}
 			}
 			else
 			{
-				//No list sent?  Send back all of them because we should be an ADMIN!
+				//No list sent? Send back all of them because we should be an ADMIN!
 				$module_list[$cat][$module_name]['filename'] = $filename;
 				$module_list[$cat][$module_name]['file_hash'] = $file_hash;
+				if (isset($ja_module[$cat][$module_name]))
+				{
+					$module_list[$cat][$module_name]['junior_admin'] = $ja_module[$cat][$module_name];
+				}
+				else
+				{
+					$module_list[$cat][$module_name]['junior_admin'] = true;
+				}
 			}
 		}
 	}
@@ -472,8 +486,8 @@ function jr_admin_get_user_info($user_id)
 	//Do the query and get the results, return the user row as well.
 	return (
 	sql_query_nivisec(
-	'SELECT * FROM ' . JR_ADMIN_TABLE . "
-	WHERE user_id = $user_id",
+	"SELECT * FROM " . JR_ADMIN_TABLE . "
+	WHERE user_id = '" . $user_id . "'",
 	sprintf($lang['Error_Table'], JR_ADMIN_TABLE), false, 1, true));
 }
 
@@ -501,6 +515,42 @@ function jr_admin_make_admin_link()
 	{
 		return '&nbsp;';
 	}
+}
+
+// Check founder id
+function check_acp_module_access()
+{
+	global $userdata;
+	$is_allowed = true;
+
+	if (defined('MAIN_ADMINS_ID'))
+	{
+		$is_allowed = false;
+		$allowed_admins = explode(',', MAIN_ADMINS_ID);
+		if (defined('FOUNDER_ID'))
+		{
+			if ($userdata['user_id'] == FOUNDER_ID)
+			{
+				$is_allowed = true;
+			}
+		}
+		if ($is_allowed == false)
+		{
+			for ($i = 0; $i < count($allowed_admins); $i++)
+			{
+				if ($userdata['user_id'] == $allowed_admins[$i])
+				{
+					$is_allowed = true;
+					return true;
+				}
+			}
+		}
+		if ($is_allowed == false)
+		{
+			return false;
+		}
+	}
+	return $is_allowed;
 }
 
 ?>

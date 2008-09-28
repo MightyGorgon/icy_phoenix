@@ -27,7 +27,7 @@ $unhtml_specialchars_match = array('#&gt;#', '#&lt;#', '#&quot;#', '#&amp;#');
 $unhtml_specialchars_replace = array('>', '<', '"', '&');
 
 // This function will prepare a posted message for entry into the database.
-function prepare_message($message, $html_on, $bbcode_on, $smile_on, $bbcode_uid = 0)
+function prepare_message($message, $html_on, $bbcode_on, $smile_on)
 {
 	global $board_config, $html_entities_match, $html_entities_replace;
 
@@ -74,7 +74,7 @@ function unprepare_message($message)
 }
 
 // Prepare a message for posting
-function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$bbcode_uid, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
+function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
 	global $board_config, $userdata, $lang;
 	global $topic_id;
@@ -119,8 +119,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	// Check message
 	if (!empty($message))
 	{
-		$bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
-		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
 		// Mighty Gorgon - TO BE VERIFIED
 		//$message = addslashes($message);
 		// Mighty Gorgon - TO BE VERIFIED
@@ -143,7 +142,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 	// Check to see if there's a new post while the user is posting
 	$new_post_while_posting = false;
-	if(!empty($_POST['post_time']) && ($mode == 'reply' || $mode == 'quote') && $board_config['show_new_reply_posting'])
+	if(!empty($_POST['post_time']) && (($mode == 'reply') || ($mode == 'quote')) && $board_config['show_new_reply_posting'])
 	{
 		$last_post_time = intval($_POST['post_time']);
 
@@ -232,7 +231,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 }
 
 // Post a new topic/reply/poll or edit existing post/poll
-function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, &$bbcode_uid, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0, &$news_category, &$topic_show_portal)
+function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0, &$news_category, &$topic_show_portal)
 {
 	global $board_config, $lang, $db;
 	global $userdata, $user_ip, $post_data;
@@ -293,7 +292,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		remove_search_post($post_id);
 	}
 
-	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+	if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post']))
 	{
 		$topic_vote = (!empty($poll_title) && count($poll_options) >= 2) ? 1 : 0;
 		$topic_show_portal = ( $topic_show_portal == true ) ? 1 : 0;
@@ -323,9 +322,6 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	{
 		// Original phpBB "Edit By"
 		//$edited_sql = ($mode == 'editpost' && !$post_data['last_post'] && $post_data['poster_post']) ? ", post_edit_time = $current_time, post_edit_count = post_edit_count + 1 " : "";
-
-		// we cannot know if the post has been modified by the poster or a mod... so add only modifications by the poster (first modification by MG)
-		//$edited_sql = ($mode == 'editpost' && $post_data['poster_post']) ? ", post_edit_time = $current_time, post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "' " : "";
 
 		$edited_sql = ", post_edit_time = '" . $current_time . "', post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "' ";
 		if ($board_config['always_show_edit_by'] == true)
@@ -359,7 +355,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		$post_id = $db->sql_nextid();
 	}
 
-	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TEXT_TABLE . " (post_id, post_subject, bbcode_uid, post_text) VALUES ($post_id, '$post_subject', '$bbcode_uid', '$post_message')" : "UPDATE " . POSTS_TEXT_TABLE . " SET post_text = '$post_message', post_text_compiled = '', bbcode_uid = '$bbcode_uid', post_subject = '$post_subject' WHERE post_id = $post_id";
+	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TEXT_TABLE . " (post_id, post_subject, post_text) VALUES ($post_id, '$post_subject', '$post_message')" : "UPDATE " . POSTS_TEXT_TABLE . " SET post_text = '$post_message', post_text_compiled = '', post_subject = '$post_subject' WHERE post_id = $post_id";
 	if (!$db->sql_query($sql))
 	{
 		$db->clear_cache('posts_');
@@ -523,7 +519,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	// MG Cash MOD For IP - BEGIN
 	if ( defined('CASH_MOD') )
 	{
-		$cash_message = $GLOBALS['cm_posting']->update_post($mode, $post_data, $forum_id, $topic_id, $post_id, $topic_type, $bbcode_uid, $post_username, $post_message);
+		$cash_message = $GLOBALS['cm_posting']->update_post($mode, $post_data, $forum_id, $topic_id, $post_id, $topic_type, $post_username, $post_message);
 		$cash_string = '<br />' . $cash_message;
 	}
 	// MG Cash MOD For IP - END
@@ -905,7 +901,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 {
 	global $board_config, $lang, $db;
 	global $userdata, $user_ip;
-	global $bbcode, $bbcode_uid;
+	global $bbcode;
 	$current_time = time();
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
@@ -982,7 +978,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$emailer = new emailer($board_config['smtp_delivery']);
 
 					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-					$script_name = ($script_name != '') ? $script_name . '/'. VIEWTOPIC_MG : VIEWTOPIC_MG;
+					$script_name = ($script_name != '') ? $script_name . '/' . VIEWTOPIC_MG : VIEWTOPIC_MG;
 					$server_name = trim($board_config['server_name']);
 					$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 					$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
@@ -999,15 +995,15 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 					if ($board_config['html_email'] == true)
 					{
-						$bbcode->allow_bbcode = ( $board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false );
-						$bbcode->allow_html = ( $board_config['allow_html'] ? $board_config['allow_html'] : false );
-						$bbcode->allow_smilies = ( $board_config['allow_smilies'] ? $board_config['allow_smilies'] : false );
-						$post_text = $bbcode->parse($post_text, $bbcode_uid);
+						$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
+						$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
+						$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
+						$post_text = $bbcode->parse($post_text);
 						$post_text = stripslashes($post_text);
 					}
 					else
 					{
-						$post_text = plain_message_mg($post_text, $bbcode_uid);
+						$post_text = $bbcode->plain_message($post_text);
 					}
 
 					@reset($bcc_list_ary);
@@ -1108,7 +1104,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
 					$script_name_forum = ($script_name != '') ? $script_name . '/' . VIEWFORUM_MG : VIEWFORUM_MG;
-					$script_name = ($script_name != '') ? $script_name . '/'. VIEWTOPIC_MG : VIEWTOPIC_MG;
+					$script_name = ($script_name != '') ? $script_name . '/' . VIEWTOPIC_MG : VIEWTOPIC_MG;
 					$server_name = trim($board_config['server_name']);
 					$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
 					$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
@@ -1125,15 +1121,15 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 					if ($board_config['html_email'] == true)
 					{
-						$bbcode->allow_bbcode = ( $board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false );
-						$bbcode->allow_html = ( $board_config['allow_html'] ? $board_config['allow_html'] : false );
-						$bbcode->allow_smilies = ( $board_config['allow_smilies'] ? $board_config['allow_smilies'] : false );
-						$post_text = $bbcode->parse($post_text, $bbcode_uid);
+						$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
+						$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
+						$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
+						$post_text = $bbcode->parse($post_text);
 						$post_text = stripslashes($post_text);
 					}
 					else
 					{
-						$post_text = plain_message_mg($post_text, $bbcode_uid);
+						$post_text = $bbcode->plain_message($post_text, '');
 					}
 
 					$temp_is_auth = array();
@@ -1291,15 +1287,15 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 					if ($board_config['html_email'] == true)
 					{
-						$bbcode->allow_bbcode = ( $board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false );
-						$bbcode->allow_html = ( $board_config['allow_html'] ? $board_config['allow_html'] : false );
-						$bbcode->allow_smilies = ( $board_config['allow_smilies'] ? $board_config['allow_smilies'] : false );
-						$post_text = $bbcode->parse($post_text, $bbcode_uid);
+						$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
+						$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
+						$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
+						$post_text = $bbcode->parse($post_text);
 						$post_text = stripslashes($post_text);
 					}
 					else
 					{
-						$post_text = plain_message_mg($post_text, $bbcode_uid);
+						$post_text = $bbcode->plain_message($post_text, '');
 					}
 
 					$temp_is_auth = array();
@@ -1774,105 +1770,170 @@ function clean_html($tag)
 	}
 }
 
-// Functions
-
-function bbcode_killer_post($text, $uid)
+function change_post_time($post_id, $post_time)
 {
-	// pad it with a space so we can distinguish between false and matching the 1st char (index 0).
-	// This is important; bbencode_quote(), bbencode_list(), and bbencode_code() all depend on it.
-	$text = " " . $text;
+	global $db, $userdata;
 
-	// First: If there isn't a "[" and a "]" in the message, don't bother.
-	if (! (strpos($text, "[") && strpos($text, "]")) )
+	/*
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+	if ($userdata['user_id'] != $founder_id)
 	{
-		// Remove padding, return.
-		$text = substr($text, 1);
-		return $text;
+		return false;
+	}
+	*/
+
+	$sql = "SELECT post_edit_time FROM " . POSTS_TABLE . "
+		WHERE post_id = '" . $post_id . "'
+		LIMIT 1";
+	if (!$result = $db->sql_query($sql))
+	{
+		message_die(GENERAL_ERROR, 'Could not catch post edit time', '', __LINE__, __FILE__, $sql);
+	}
+	while($row = $db->sql_fetchrow($result))
+	{
+		$post_edit_time = $row['post_edit_time'];
+	}
+	$db->sql_freeresult($result);
+
+	if ($post_edit_time < $post_time)
+	{
+		$post_edit_time = $post_time;
 	}
 
-	// [CODE] and [ /CODE ]
+	$sql = "UPDATE " . POSTS_TABLE . "
+		SET post_time = '" . $post_time . "', post_edit_time = '" . $post_edit_time . "'
+		WHERE post_id = '" . $post_id . "'";
+	if (!$result = $db->sql_query($sql))
+	{
+		message_die(GENERAL_ERROR, 'Could not save post time and post edit time', '', __LINE__, __FILE__, $sql);
+	}
+
+	$is_first_post = false;
+	$sql = "SELECT topic_id
+		FROM " . TOPICS_TABLE . "
+		WHERE topic_first_post_id = '" . $post_id . "'
+		LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Couldn\'t query topics table', '', __LINE__, __FILE__, $sql);
+	}
+	if($row = $db->sql_fetchrow($result))
+	{
+		$is_first_post = true;
+		$topic_id = $row['topic_id'];
+	}
+	$db->sql_freeresult($result);
+
+	if ($is_first_post)
+	{
+		$sql = "UPDATE " . TOPICS_TABLE . "
+			SET topic_time = '" . $post_time . "'
+			WHERE topic_id = '" . $topic_id . "'";
+		if (!$result = $db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, 'Could not save topic time', '', __LINE__, __FILE__, $sql);
+		}
+	}
+
+	return true;
+}
+
+function change_poster_id($post_id, $poster_name)
+{
+	global $db, $userdata;
+
 	/*
-	$text = str_replace("[code:1:$uid]","", $text);
-	$text = str_replace("[/code:1:$uid]", "", $text);
-	$text = str_replace("[code:$uid]", "", $text);
-	$text = str_replace("[/code:$uid]", "", $text);
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+	if ($userdata['user_id'] != $founder_id)
+	{
+		return false;
+	}
 	*/
 
-	// [QUOTE] and [/QUOTE]
-	/*
-	$text = str_replace("[quote:1:$uid]","", $text);
-	$text = str_replace("[/quote:1:$uid]", "", $text);
-	$text = str_replace("[quote:$uid]", "", $text);
-	$text = str_replace("[/quote:$uid]", "", $text);
-	$text = preg_replace("/\[quote:$uid=(?:\"?([^\"]*)\"?)\]/si", "", $text);
-	$text = preg_replace("/\[quote:1:$uid=(?:\"?([^\"]*)\"?)\]/si", "", $text);
-	*/
+	$sql = "SELECT user_id, username
+		FROM " . USERS_TABLE . "
+		WHERE username = '" . $poster_name . "'
+		LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
+	}
+	if(!($row = $db->sql_fetchrow($result)))
+	{
+		$db->sql_freeresult($result);
+		return false;
+	}
+	$poster_id = $row['user_id'];
+	$db->sql_freeresult($result);
 
-	// [b] and [/b]
-	$text = str_replace("[b:$uid]","", $text);
-	$text = str_replace("[/b:$uid]", "", $text);
+	$is_first_post = false;
+	$sql = "SELECT topic_id
+		FROM " . TOPICS_TABLE . "
+		WHERE topic_first_post_id = '" . $post_id . "'
+		LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Couldn\'t query topics table', '', __LINE__, __FILE__, $sql);
+	}
+	if($row = $db->sql_fetchrow($result))
+	{
+		$is_first_post = true;
+		$topic_id = $row['topic_id'];
+	}
+	$db->sql_freeresult($result);
 
-	// [u] and [/u]
-	$text = str_replace("[u:$uid]", "", $text);
-	$text = str_replace("[/u:$uid]", "", $text);
+	$is_post_count = false;
+	$sql = "SELECT p.forum_id, p.poster_id, p.post_username, f.forum_postcount
+		FROM " . POSTS_TABLE . " p, " . FORUMS_TABLE . " f
+		WHERE p.post_id = '" . $post_id . "'
+			AND f.forum_id = p.forum_id
+		LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Couldn\'t query forums table', '', __LINE__, __FILE__, $sql);
+	}
+	if($row = $db->sql_fetchrow($result))
+	{
+		$old_poster_id = $row['poster_id'];
+		$old_poster_username = $row['post_username'];
+		$is_post_count = ($row['forum_postcount'] ? true : false);
+	}
+	$db->sql_freeresult($result);
 
-	// [i] and [/i]
-	$text = str_replace("[i:$uid]", "", $text);
-	$text = str_replace("[/i:$uid]", "", $text);
+	$sql = "UPDATE " . POSTS_TABLE . " SET poster_id = '" . $poster_id . "', post_username = '' WHERE post_id = '" . $post_id . "'";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Couldn\'t update posts table', '', __LINE__, __FILE__, $sql);
+	}
 
-	// size
-	$text = preg_replace("/\[size=([\-\+]?[1-3]?[0-9]):$uid\]/si", "", $text);
-	$text = str_replace("[/size:$uid]", "", $text);
+	if ($is_first_post)
+	{
+		$sql = "UPDATE " . TOPICS_TABLE . " SET topic_poster = '" . $poster_id . "' WHERE topic_id = '" . $topic_id . "'";
+		if (!($result = $db->sql_query($sql)))
+		{
+			message_die(GENERAL_ERROR, 'Couldn\'t update posts table', '', __LINE__, __FILE__, $sql);
+		}
+	}
 
-	// [list] and [list=x] for (un)ordered lists.
-	$text = str_replace("[list:$uid]", "", $text);
-	$text = str_replace("[*:$uid]", "", $text);
-	$text = str_replace("[/list:u:$uid]", "", $text);
-	$text = str_replace("[/list:o:$uid]", "", $text);
-	$text = preg_replace("/\[list=([a1]):$uid\]/si", "", $text);
+	if ($is_post_count)
+	{
+		$sql = "UPDATE " . USERS_TABLE . " SET user_posts = (user_posts + 1) WHERE user_id = '" . $poster_id . "'";
+		if (!($result = $db->sql_query($sql)))
+		{
+			message_die(GENERAL_ERROR, 'Couldn\'t update users table', '', __LINE__, __FILE__, $sql);
+		}
 
-	// Colours
-	$text = preg_replace("/\[color=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/color:$uid]", "", $text);
-	$text = preg_replace("/\[glow=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/glow:$uid]", "", $text);
-	$text = preg_replace("/\[shadow=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/shadow:$uid]", "", $text);
-	$text = preg_replace("/\[highlight=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/highlight:$uid]", "", $text);
+		if ($old_poster_id != ANONYMOUS)
+		{
+			$sql = "UPDATE " . USERS_TABLE . " SET user_posts = (user_posts - 1) WHERE user_id = '" . $old_poster_id . "'";
+			if (!($result = $db->sql_query($sql)))
+			{
+				message_die(GENERAL_ERROR, 'Couldn\'t update users table', '', __LINE__, __FILE__, $sql);
+			}
+		}
+	}
 
-	// url /\[url=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\](.*?)\[/url\]/si
-	$text = preg_replace("/\[url=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "", $text);
-	$text = str_replace("[/url:$uid]", "", $text);
-	$text = preg_replace("/\[web=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "", $text);
-	$text = str_replace("[/web:$uid]", "", $text);
-
-	// url #2
-	$text = str_replace("[url]","", $text);
-	$text = str_replace("[/url]", "", $text);
-
-	// img
-	$text = str_replace("[img:$uid]","", $text);
-	$text = str_replace("[/img:$uid]", "", $text);
-	$text = str_replace("[imgl:$uid]","", $text);
-	$text = str_replace("[/imgl:$uid]", "", $text);
-	$text = str_replace("[imgr:$uid]","", $text);
-	$text = str_replace("[/imgr:$uid]", "", $text);
-	$text = str_replace("[albumimg:$uid]","", $text);
-	$text = str_replace("[/albumimg:$uid]", "", $text);
-	$text = str_replace("[albumimgl:$uid]","", $text);
-	$text = str_replace("[/albumimgl:$uid]", "", $text);
-	$text = str_replace("[albumimgr:$uid]","", $text);
-	$text = str_replace("[/albumimgr:$uid]", "", $text);
-
-	// email
-	$text = str_replace("[email:$uid]","", $text);
-	$text = str_replace("[/email:$uid]", "", $text);
-
-	// Remove our padding from the string..
-	$text = substr($text, 1);
-
-	return $text;
+	return true;
 }
 
 ?>

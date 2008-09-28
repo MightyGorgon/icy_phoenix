@@ -151,7 +151,6 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 				$poster = $row['username'];
 
 				$message = $row['comment_text'];
-				$bbcode_uid = $row['bbcode_uid'];
 				$comment_time = $row['comment_time'];
 				$comment_edit_time = $row['comment_edit_time'];
 
@@ -164,29 +163,10 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 					$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
 				}
 
-				/*
-				if ( !$board_config['allow_html'] || !$userdata['user_allowhtml'])
-				{
-					$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
-				}
-
-				if ($bbcode_uid != '')
-				{
-					$message = ($board_config['allow_bbcode']) ? bbencode_second_pass($message, $bbcode_uid) : preg_replace("/\:$bbcode_uid/si", '', $message);
-				}
-
-				$message = make_clickable($message);
-
-				if( $board_config['allow_smilies'] )
-				{
-					$message = smilies_pass($message);
-				}
-				*/
-
 				$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
 				$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
 				$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
-				$message = $bbcode->parse($message, $bbcode_uid);
+				$message = $bbcode->parse($message);
 
 				$message = str_replace("\n", "\n<br />\n", $message);
 
@@ -199,17 +179,6 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 					$edited_by = '';
 				}
 
-				/*
-				if ($poster_id == ANONYMOUS)
-				{
-					$poster_url = '';
-				}
-				else
-				{
-					$poster_url = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $poster_id);
-					$poster = '<a href="' . $poster_url . '">' . $poster . '</a>';
-				}
-				*/
 				$poster = colorize_username($poster_id);
 
 				$post_time = create_date($board_config['default_dateformat'], $comment_time, $board_config['board_timezone']);
@@ -264,14 +233,11 @@ $mini_icon = $dl_mod->mini_status_file($cat_id, $df_id);
 $hack_version = '&nbsp;' . $dl_files['hack_version'];
 
 $long_desc = stripslashes($dl_files['long_desc']);
-/*
-$long_desc = ($dl_files['bbcode_uid']) ? bbencode_second_pass($long_desc, $dl_files['bbcode_uid']) : $long_desc;
-$long_desc = make_clickable(smilies_pass($long_desc));
-*/
-$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
-$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
-$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
-$long_desc = $bbcode->parse($long_desc, $dl_files['bbcode_uid']);
+
+$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
+$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+$long_desc = $bbcode->parse($long_desc);
 $long_desc = str_replace("\n", "\n<br />\n", $long_desc);
 
 $file_status = array();
@@ -347,31 +313,25 @@ $test = $dl_files['test'];
 $require = $dl_files['req'];
 $todo = $dl_files['todo'];
 $warning = $dl_files['warning'];
-/*
-$warning = ( $dl_files['bbcode_uid'] != '' ) ? smilies_pass(bbencode_second_pass(stripslashes($warning), $dl_files['bbcode_uid'])) : smilies_pass(stripslashes($warning));
-$warning = make_clickable($warning);
-*/
+
 $warning = stripslashes($warning);
-$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
-$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
-$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
-$warning = $bbcode->parse($warning, $dl_files['bbcode_uid']);
+$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
+$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+$warning = $bbcode->parse($warning);
 $warning = str_replace("\n", "\n<br />\n", $warning);
 
 $mod_desc = $dl_files['mod_desc'];
 $mod_list = $dl_files['mod_list'];
-/*
-$mod_desc = ( $dl_files['bbcode_uid'] != '' ) ? smilies_pass(bbencode_second_pass(stripslashes($mod_desc), $dl_files['bbcode_uid'])) : smilies_pass(stripslashes($mod_desc));
-$mod_desc = make_clickable($mod_desc);
-*/
+
 $mod_desc = stripslashes($mod_desc);
-$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
-$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
-$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
-$mod_desc = $bbcode->parse($mod_desc, $dl_files['bbcode_uid']);
+$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
+$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+$mod_desc = $bbcode->parse($mod_desc);
 $mod_desc = str_replace("\n", "\n<br />\n", $mod_desc);
 
-$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 /*
 * Hacklist

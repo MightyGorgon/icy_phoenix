@@ -71,9 +71,19 @@ function GetHTTPPasswd()
 function ExitWithHeader($output,$message='')
 {
 	global $db;
-	$db->sql_close();
-	if(function_exists("getallheaders")) header("HTTP/1.1 $output");
-	else header('Status: '.$output);
+	// Close our DB connection.
+	if (!empty($db))
+	{
+		$db->sql_close();
+	}
+	if(function_exists("getallheaders"))
+	{
+		header("HTTP/1.1 $output");
+	}
+	else
+	{
+		header('Status: ' . $output);
+	}
 	$code=intval(substr($output,0,3));
 	if(($code==200)||($code==304))
 	{

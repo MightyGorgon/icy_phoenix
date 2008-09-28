@@ -157,45 +157,25 @@ if ( !$html_on )
 {
 	$article = preg_replace( '#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $article );
 }
-$bbcode->allow_html = true;
 
 // Parse message
 
-$bbcode_uid = $kb_row['bbcode_uid'];
 
-if ( $smilies_on && !$lofi )
+$bbcode->allow_html = true;
+$bbcode->allow_smilies = ($board_config['allow_smilies'] && $smilies_on && !$lofi) ? true : false;
+$bbcode->allow_bbcode = $bbcode_on ? true : false;
+if (!$bbcode_on)
 {
-	$bbcode->allow_smilies = $board_config['allow_smilies'];
-}
-else
-{
-	$bbcode->allow_smilies = false;
-}
-
-if ( $bbcode_on )
-{
-	if ( $bbcode_uid != '' )
-	{
-		$bbcode->allow_bbcode = true;
-		$article = $bbcode->parse($article, $bbcode_uid);
-	}
-}
-else
-{
-	$bbcode->allow_bbcode = false;
 	$article = bbcode_killer_00($article);
-	$article = $bbcode->parse($article, $bbcode_uid);
 }
+$article = $bbcode->parse($article, '');
 
 
 $orig_autolink = array();
 $replacement_autolink = array();
 obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-if( function_exists( 'acronym_pass' ) )
-{
-	$article = acronym_pass( $article );
-}
-if( count($orig_autolink) )
+$article = $bbcode->acronym_pass($article);
+if(count($orig_autolink))
 {
 	$article = autolink_transform($article, $orig_autolink, $replacement_autolink);
 }

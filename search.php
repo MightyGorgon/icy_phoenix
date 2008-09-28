@@ -86,10 +86,9 @@ if($userdata['upi2db_access'])
 			search_mark_as_read($mar_topic_id);
 			$mark_read_text = $lang['upi2db_submit_topic_mark_read'];
 		}
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(SEARCH_MG . '?search_id=' . $search_mode . '&amp;s2=' . $s2) . '">'
-			)
-		);
+
+		$redirect_url = append_sid(SEARCH_MG . '?search_id=' . $search_mode . '&amp;s2=' . $s2);
+		meta_refresh(3, $redirect_url);
 
 		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(SEARCH_MG . '?search_id=' . $search_mode . '&amp;s2=' . $s2) . '">', '</a> ');
 		message_die(GENERAL_MESSAGE, $message);
@@ -132,7 +131,7 @@ if ($search_mode == 'bookmarks')
 // Define initial vars
 if (isset($_POST['mode']) || isset($_GET['mode']))
 {
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
+	$mode = (isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode']);
 }
 else
 {
@@ -343,7 +342,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 $multibyte_charset = 'utf-8, big5, shift_jis, euc-kr, gb2312';
 
 // Begin core code
-if ($mode == 'removebm')
+if (($search_mode == 'bookmarks') && ($mode == 'removebm'))
 {
 	// Delete Bookmarks
 	$delete = (isset($_POST['delete'])) ? true : false;
@@ -1174,7 +1173,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		if ($show_results == 'posts')
 		{
-			$sql = "SELECT pt.post_text, pt.post_text_compiled, pt.bbcode_uid, pt.post_subject, p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_sig, u.user_sig_bbcode_uid
+			$sql = "SELECT pt.post_text, pt.post_text_compiled, pt.post_subject, p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_sig
 				FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TEXT_TABLE . " pt
 				WHERE p.post_id IN ($search_results)
 					AND pt.post_id = p.post_id
@@ -1383,10 +1382,10 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		{
 			$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_bookmark'], $total_match_count) : sprintf($lang['Found_bookmarks'], $total_match_count);
 			// Send variables for bookmarks
-			$s_hidden_fields = '<input type="hidden" name="mode" value="removebm" />';
+			//$s_hidden_fields = '<input type="hidden" name="mode" value="removebm" />';
 			$template->assign_vars(array(
 				'L_DELETE' => $lang['Delete'],
-				'S_BM_ACTION' => append_sid(SEARCH_MG . '?search_id=bookmarks&amp;start=' . $start),
+				'S_BM_ACTION' => append_sid(SEARCH_MG . '?search_id=bookmarks&amp;mode=removebm&amp;start=' . $start),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -1503,8 +1502,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$is_auth = $is_auth_ary[$forum_id];
 				}
 
-				$bbcode_uid = $searchset[$i]['bbcode_uid'];
-
 				$clean_tags = false;
 				if ($return_chars != -1)
 				{
@@ -1517,7 +1514,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$bbcode->allow_bbcode = $board_config['allow_bbcode'] && $searchset[$i]['enable_bbcode'];
 					$bbcode->allow_smilies = $board_config['allow_smilies'] && $searchset[$i]['enable_smilies'];
 					$GLOBALS['code_post_id'] = $searchset[$i]['post_id'];
-					$message = $bbcode->parse($message, $bbcode_uid, false, $clean_tags);
+					$message = $bbcode->parse($message, '', false, $clean_tags);
 					$GLOBALS['code_post_id'] = 0;
 				}
 				else
@@ -1561,11 +1558,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if ($can_edit = ($is_auth['auth_mod'] || (($searchset[$i]['user_id'] == $userdata['user_id'] && ($searchset[$i]['topic_status'] != TOPIC_LOCKED)) && $is_auth['auth_edit'])))
 				{
 					$raw_message = $searchset[$i]['post_text'];
-					if (!empty($bbcode_uid))
-					{
-						$raw_message = preg_replace('#\:(([a-z0-9]:)?)'. $bbcode_uid .'#s', '', $raw_message);
-					}
-
 					$raw_message = str_replace('<', '&lt;', $raw_message);
 					$raw_message = str_replace('>', '&gt;', $raw_message);
 					$raw_message = str_replace('<br />', "\n", $raw_message);

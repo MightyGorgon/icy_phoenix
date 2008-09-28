@@ -88,7 +88,7 @@ else
  * Send some vars to the template
  */
 $template->assign_vars(array(
-		'IMG_RECOVERY'		=> IP_ROOT_PATH . $images['ctracker_recovery'],
+		'IMG_RECOVERY'		=> $images['ctracker_recovery'],
 		'L_HEADLINE'		=> $lang['ctracker_rec_head'],
 		'L_SUBHEADLINE'		=> $lang['ctracker_rec_subhead'],
 		'L_BACKUP'			=> $lang['ctracker_rec_backup'],

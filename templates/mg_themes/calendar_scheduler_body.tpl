@@ -54,7 +54,7 @@
 </form>
 
 <br />
-<div style="float:right;"><span class="pagination"><b>{PAGINATION}</b></span></div>
+<div style="float:right;"><span class="pagination">{PAGINATION}</span></div>
 
 <br />
 <div style="float:right;">{JUMPBOX}</div>

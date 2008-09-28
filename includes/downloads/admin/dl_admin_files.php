@@ -75,10 +75,10 @@ if($action == 'edit' || $action == 'add')
 		$warning = $dl_file['warning'];
 		$mod_desc = $dl_file['mod_desc'];
 		$mod_list = ($dl_file['mod_list']) ? 'checked="checked"' : '';
-		$mod_desc = preg_replace('/\:(([a-z0-9]:)?)' . $dl_file['bbcode_uid'] . '/s', '', stripslashes($mod_desc));
-		$long_desc = preg_replace('/\:(([a-z0-9]:)?)' . $dl_file['bbcode_uid'] . '/s', '', stripslashes($long_desc));
-		$description = preg_replace('/\:(([a-z0-9]:)?)' . $dl_file['bbcode_uid'] . '/s', '', stripslashes($description));
-		$warning = preg_replace('/\:(([a-z0-9]:)?)' . $dl_file['bbcode_uid'] . '/s', '', stripslashes($warning));
+		$mod_desc = stripslashes($mod_desc);
+		$long_desc = stripslashes($long_desc);
+		$description = stripslashes($description);
+		$warning = stripslashes($warning);
 
 		if ($file_traffic > 1023)
 		{
@@ -316,11 +316,10 @@ elseif($action == 'save')
 	$file_free = (isset($_POST['file_free'])) ? intval($_POST['file_free']) : 0;
 	$file_extern = (isset($_POST['file_extern'])) ? intval($_POST['file_extern']) : 0;
 
-	$bbcode_uid = make_bbcode_uid();
-	$description = prepare_message(trim($description), 0, 1, 1, $bbcode_uid);
-	$long_desc = prepare_message(trim($long_desc), 0, 1, 1, $bbcode_uid);
-	$mod_desc = prepare_message(trim($mod_desc), 0, 1, 1, $bbcode_uid);
-	$warning = prepare_message(trim($warning), 0, 1, 1, $bbcode_uid);
+	$description = prepare_message(trim($description), 0, 1, 1);
+	$long_desc = prepare_message(trim($long_desc), 0, 1, 1);
+	$mod_desc = prepare_message(trim($mod_desc), 0, 1, 1);
+	$warning = prepare_message(trim($warning), 0, 1, 1);
 
 	$send_notify = (isset($_POST['send_notify'])) ? intval($_POST['send_notify']) : 0;
 	$change_time = (isset($_POST['change_time'])) ? intval($_POST['change_time']) : 0;
@@ -426,7 +425,6 @@ elseif($action == 'save')
 			warning = '" . str_replace("\'", "''", $warning) . "',
 			mod_desc = '" . str_replace("\'", "''", $mod_desc) . "',
 			mod_list = '" . str_replace("\'", "''", $mod_list) . "',
-			bbcode_uid = '" . str_replace("\'", "''", $bbcode_uid) . "',
 			approve = '" . str_replace("\'", "''", $approve) . "',
 			file_size = '" . str_replace("\'", "''", $file_size) . "'";
 
@@ -445,7 +443,7 @@ elseif($action == 'save')
 			(file_name, cat, description, long_desc, free, extern,
 			hacklist, hack_author, hack_author_email, hack_author_website,
 			hack_version, hack_dl_url, test, req, todo, warning, mod_desc, approve,
-			mod_list, bbcode_uid, file_size, change_time, add_time,
+			mod_list, file_size, change_time, add_time,
 			change_user, add_user, file_traffic)
 			VALUES
 			('" . str_replace("\'", "''", $file_name) . "',
@@ -466,7 +464,6 @@ elseif($action == 'save')
 			'" . str_replace("\'", "''", $warning) . "',
 			'" . str_replace("\'", "''", $mod_desc) . "',
 			$approve, $mod_list,
-			'" . str_replace("\'", "''", $bbcode_uid) . "',
 			$file_size,
 			$current_time, $current_time, $current_user, $current_user,
 			'" . str_replace("\'", "''", $file_traffic) . "')";

@@ -15,35 +15,13 @@
 *
 */
 
+// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
-if (defined('MAIN_ADMINS_ID'))
+if (function_exists('check_acp_module_access'))
 {
-	if (defined('JA_PARSING') && (JA_PARSING == true))
-	{
-		return;
-	}
-	$is_allowed = false;
-	$allowed_admins = explode(',', MAIN_ADMINS_ID);
-	if (defined('FOUNDER_ID'))
-	{
-		if ($userdata['user_id'] == FOUNDER_ID)
-		{
-			$is_allowed = true;
-		}
-	}
-	if ($is_allowed == false)
-	{
-		for ($i = 0; $i < count($allowed_admins); $i++)
-		{
-			if ($userdata['user_id'] == $allowed_admins[$i])
-			{
-				$is_allowed = true;
-				break;
-			}
-		}
-	}
+	$is_allowed = check_acp_module_access();
 	if ($is_allowed == false)
 	{
 		return;
@@ -54,7 +32,8 @@ if (defined('MAIN_ADMINS_ID'))
 if (!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1400_DB_Maintenance']['130_DB_Maintenance'] = $filename;
+	$module['1400_DB_Maintenance']['150_DB_Maintenance'] = $filename;
+	$ja_module['1400_DB_Maintenance']['150_DB_Maintenance'] = false;
 	return;
 }
 
@@ -63,6 +42,14 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true; // We do not send the page header right here to prevent problems with GZIP-compression
 require('./pagestart.' . PHP_EXT);
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+$is_allowed = check_acp_module_access();
+if ($is_allowed == false)
+{
+	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+}
+// Mighty Gorgon - ACP Privacy - END
 
 define('DBMTNC_VERSION', '1.3.6');
 // CONFIG_LEVEL = 0: configuration is disabled
@@ -1738,7 +1725,7 @@ switch($mode_id)
 
 				// Check for texts without a post
 				echo("<p class=\"gen\"><b>" . $lang['Checking_texts_wo_post'] . "</b></p>\n");
-				$sql = "SELECT pt.post_id, pt.bbcode_uid, pt.post_text
+				$sql = "SELECT pt.post_id, pt.post_text
 					FROM " . POSTS_TEXT_TABLE . " pt
 						LEFT JOIN " . POSTS_TABLE . " p ON pt.post_id = p.post_id
 					WHERE p.post_id IS NULL";
@@ -1759,7 +1746,7 @@ switch($mode_id)
 						$enable_html = $board_config['allow_html'];
 						$enable_smilies = $board_config['allow_smilies'];
 					}
-					$enable_bbcode = ($board_config['allow_bbcode'] && $row['bbcode_uid'] != '') ? 1 : 0;
+					$enable_bbcode = ($board_config['allow_bbcode']) ? 1 : 0;
 					echo("<li>" . sprintf($lang['Recreating_post'], $row['post_id'], $lang['New_topic_name'], $lang['New_forum_name'], substr(htmlspecialchars(strip_tags($row['post_text'])), 0, 30)) . "</li>\n");
 					$sql2 = "INSERT INTO " . POSTS_TABLE . ' (post_id, topic_id, forum_id, poster_id, post_time, poster_ip, post_username, enable_bbcode, enable_html, enable_smilies, enable_sig, post_edit_time, post_edit_count)
 						VALUES (' . $row['post_id'] . ", $new_topic, $new_forum, " . ANONYMOUS . ', ' . time() . ', \'\', \'' . $lang['New_poster_name'] . "', $enable_bbcode, $enable_html, $enable_smilies, 0, NULL, 0)";
@@ -3358,9 +3345,10 @@ switch($mode_id)
 				// All posts are indexed for this turn - update Config-Data
 				update_config('dbmtnc_rebuild_pos', $last_post);
 				// OK, all actions are done - send headers
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="1;url=' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . '">')
-				);
+
+				$redirect_url = append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);
+				meta_refresh(3, $redirect_url);
+
 				include('./page_header_admin.' . PHP_EXT);
 				$db->sql_freeresult($result);
 				// Get Statistics

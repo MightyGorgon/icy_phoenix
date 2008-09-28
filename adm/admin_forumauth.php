@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1200_Forums']['125_Permissions_Forum'] = $file;
@@ -35,7 +35,7 @@ include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
 /*
 @reset($field_names);
 $forum_auth_fields = array();
-while ( list($auth_key, $auth_name) = @each($field_names) )
+while (list($auth_key, $auth_name) = @each($field_names))
 {
 	$forum_auth_fields[] = $auth_key;
 }
@@ -48,7 +48,7 @@ if(isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL]))
 	if ($f_type == POST_FORUM_URL)
 	{
 		$forum_id = intval(substr($fid, 1));
-		$forum_sql = " WHERE forum_id = $forum_id";
+		$forum_sql = " WHERE forum_id = '" . $forum_id . "'";
 	}
 	else
 	{
@@ -62,7 +62,7 @@ else
 	$forum_sql = '';
 }
 
-if( isset($_GET['adv']) )
+if(isset($_GET['adv']))
 {
 	$adv = intval($_GET['adv']);
 }
@@ -72,7 +72,7 @@ else
 }
 
 // Start program proper
-if( isset($_POST['submit']) )
+if(isset($_POST['submit']))
 {
 	$sql = '';
 
@@ -84,7 +84,7 @@ if( isset($_POST['submit']) )
 
 			for($i = 0; $i < count($simple_ary); $i++)
 			{
-				$sql .= ( ( $sql != '' ) ? ', ' : '' ) . $forum_auth_fields[$i] . ' = ' . $simple_ary[$i];
+				$sql .= (($sql != '') ? ', ' : '') . $forum_auth_fields[$i] . ' = ' . $simple_ary[$i];
 			}
 
 			if (is_array($simple_ary))
@@ -98,23 +98,23 @@ if( isset($_POST['submit']) )
 			{
 				$value = intval($_POST[$forum_auth_fields[$i]]);
 
-				if ( $forum_auth_fields[$i] == 'auth_vote' )
+				if ($forum_auth_fields[$i] == 'auth_vote')
 				{
-					if ( $_POST['auth_vote'] == AUTH_ALL )
+					if ($_POST['auth_vote'] == AUTH_ALL)
 					{
 						$value = AUTH_REG;
 					}
 				}
 
-				$sql .= ( ( $sql != '' ) ? ', ' : '' ) .$forum_auth_fields[$i] . ' = ' . $value;
+				$sql .= (($sql != '') ? ', ' : '') .$forum_auth_fields[$i] . ' = ' . $value;
 			}
 
 			$sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
 		}
 
-		if ( $sql != '' )
+		if ($sql != '')
 		{
-			if ( !$db->sql_query($sql) )
+			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not update auth table', '', __LINE__, __FILE__, $sql);
 			}
@@ -126,9 +126,9 @@ if( isset($_POST['submit']) )
 
 	cache_tree(true);
 
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id) . '">')
-	);
+	$redirect_url = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id);
+	meta_refresh(3, $redirect_url);
+
 	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid('admin_forumauth.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 
@@ -140,7 +140,7 @@ if( isset($_POST['submit']) )
 // was
 //
 
-if( empty($forum_id) )
+if(empty($forum_id))
 {
 	// Output the selection table if no forum id was specified
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_select_body.tpl'));
@@ -154,7 +154,8 @@ if( empty($forum_id) )
 		'L_LOOK_UP' => $lang['Look_up_Forum'],
 
 		'S_AUTH_ACTION' => append_sid('admin_forumauth.' . PHP_EXT),
-		'S_AUTH_SELECT' => $select_list)
+		'S_AUTH_SELECT' => $select_list
+		)
 	);
 
 }
@@ -166,7 +167,7 @@ else
 	$sql = "SELECT f.*
 		FROM " . FORUMS_TABLE . " f
 		WHERE forum_id = $forum_id";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, "Couldn't obtain forum list", "", __LINE__, __FILE__, $sql);
 	}
@@ -185,40 +186,40 @@ else
 
 	$forum_name = $forum_rows[0]['forum_name'];
 	@reset($simple_auth_ary);
-	while( list($key, $auth_levels) = each($simple_auth_ary))
+	while(list($key, $auth_levels) = each($simple_auth_ary))
 	{
 		$matched = 1;
 		for($k = 0; $k < count($auth_levels); $k++)
 		{
 			$matched_type = $key;
 
-			if ( $forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k] )
+			if ($forum_rows[0][$forum_auth_fields[$k]] != $auth_levels[$k])
 			{
 				$matched = 0;
 			}
 		}
 
-		if ( $matched )
+		if ($matched)
 		{
 			break;
 		}
 	}
 
 	// If we didn't get a match above then we automatically switch into 'advanced' mode
-	if ( !isset($adv) && !$matched )
+	if (!isset($adv) && !$matched)
 	{
 		$adv = 1;
 	}
 
 	$s_column_span == 0;
 
-	if ( empty($adv) )
+	if (empty($adv))
 	{
 		$simple_auth = '<select name="simpleauth">';
 
 		for($j = 0; $j < count($simple_auth_types); $j++)
 		{
-			$selected = ( $matched_type == $j ) ? ' selected="selected"' : '';
+			$selected = ($matched_type == $j) ? ' selected="selected"' : '';
 			$simple_auth .= '<option value="' . $j . '"' . $selected . '>' . $simple_auth_types[$j] . '</option>';
 		}
 
@@ -244,7 +245,7 @@ else
 
 			for($k = 0; $k < count($forum_auth_levels); $k++)
 			{
-				$selected = ( $forum_rows[0][$forum_auth_fields[$j]] == $forum_auth_const[$k] ) ? ' selected="selected"' : '';
+				$selected = ($forum_rows[0][$forum_auth_fields[$j]] == $forum_auth_const[$k]) ? ' selected="selected"' : '';
 				$custom_auth[$j] .= '<option value="' . $forum_auth_const[$k] . '"' . $selected . '>' . $lang['Forum_' . $forum_auth_levels[$k]] . '</option>';
 			}
 			$custom_auth[$j] .= '</select>&nbsp;';
@@ -262,9 +263,9 @@ else
 		}
 	}
 
-	$adv_mode = ( empty($adv) ) ? '1' : '0';
+	$adv_mode = (empty($adv)) ? '1' : '0';
 	$switch_mode = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=f' . $forum_id . '&adv=' . $adv_mode);
-	$switch_mode_text = ( empty($adv) ) ? $lang['Advanced_mode'] : $lang['Simple_mode'];
+	$switch_mode_text = (empty($adv)) ? $lang['Advanced_mode'] : $lang['Simple_mode'];
 	$u_switch_mode = '<a href="' . $switch_mode . '">' . $switch_mode_text . '</a>';
 	$s_hidden_fields = '<input type="hidden" name="' . POST_FORUM_URL . '" value="f' . $forum_id . '">';
 

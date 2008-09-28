@@ -189,16 +189,14 @@ class pafiledb_post_comment extends pafiledb_public
 				$replacement_word = array();
 				obtain_word_list($orig_word, $replacement_word);
 
-				$comment_bbcode_uid = ( $bbcode_on ) ? make_bbcode_uid() : '';
-				$comments_text = stripslashes(prepare_message(addslashes(unprepare_message($message)), $html_on, $bbcode_on, $smilies_on, $comment_bbcode_uid));
+				$comments_text = stripslashes(prepare_message(addslashes(unprepare_message($message)), $html_on, $bbcode_on, $smilies_on));
 
 				$title = $subject;
 
-				$comment_bbcode_uid = make_bbcode_uid();
-				$bbcode->allow_html = ( $html_on ? true : false );
-				$bbcode->allow_bbcode = ( $bbcode_on ? true : false );
-				$bbcode->allow_smilies = ( $smilies_on ? true : false );
-				$comments_text = $bbcode->parse($comments_text, $comment_bbcode_uid);
+				$bbcode->allow_html = ($html_on ? true : false);
+				$bbcode->allow_bbcode = ($bbcode_on ? true : false);
+				$bbcode->allow_smilies = ($smilies_on ? true : false);
+				$comments_text = $bbcode->parse($comments_text);
 				//bbcode parser End
 
 				if( !empty($orig_word) )
@@ -223,7 +221,6 @@ class pafiledb_post_comment extends pafiledb_public
 		{
 			$length = strlen($_POST['message']);
 			$comments_text = str_replace('<br />', "\n", $_POST['message']);
-			$comment_bbcode_uid = make_bbcode_uid();
 
 			$poster_id = intval($userdata['user_id']);
 			$title = stripslashes($_POST['subject']);
@@ -233,8 +230,8 @@ class pafiledb_post_comment extends pafiledb_public
 				message_die(GENERAL_ERROR, 'Your comment is too long!<br/>The maximum length allowed in characters is ' . $pafiledb_config['max_comment_chars'] . '');
 			}
 
-			$sql = 'INSERT INTO ' . PA_COMMENTS_TABLE . "(file_id, comments_text, comments_title, comments_time, comment_bbcode_uid, poster_id)
-				VALUES($file_id, '" . str_replace("\'", "''", $comments_text) . "','" . str_replace("\'", "''", $title) . "', $time, '$comment_bbcode_uid', $poster_id)";
+			$sql = 'INSERT INTO ' . PA_COMMENTS_TABLE . "(file_id, comments_text, comments_title, comments_time, poster_id)
+				VALUES($file_id, '" . str_replace("\'", "''", $comments_text) . "','" . str_replace("\'", "''", $title) . "', $time, $poster_id)";
 			if ( !($db->sql_query($sql)) )
 			{
 				message_die(GENERAL_ERROR, 'Couldnt insert comments', '', __LINE__, __FILE__, $sql);

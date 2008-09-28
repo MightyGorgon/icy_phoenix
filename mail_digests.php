@@ -294,7 +294,7 @@ while ($row = $db->sql_fetchrow($result))
 
 	// Create a list of messages for this user that presumably have not been seen.
 	// Filter out unauthorized forums.
-	$sql2 = "SELECT c.cat_title, f.forum_name, t.topic_title, u.username AS 'Posted by', post_time, pt.post_text, pt.bbcode_uid, p.post_id, t.topic_id, f.forum_id
+	$sql2 = "SELECT c.cat_title, f.forum_name, t.topic_title, u.username AS 'Posted by', post_time, pt.post_text, p.post_id, t.topic_id, f.forum_id
 		FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u, " . CATEGORIES_TABLE . " c, " . POSTS_TEXT_TABLE . " pt
 		WHERE p.topic_id = t.topic_id
 			AND t.forum_id = f.forum_id
@@ -380,10 +380,10 @@ while ($row = $db->sql_fetchrow($result))
 				$this_msg = preg_replace('/\\n/', '<br />', $this_msg);
 				$msg .= $this_msg . $line_break;
 				*/
-				$bbcode->allow_html = ( $board_config['allow_html'] ? $board_config['allow_html'] : false );
-				$bbcode->allow_bbcode = ( $board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : true );
-				$bbcode->allow_smilies = ( $board_config['allow_smilies'] ? $board_config['allow_smilies'] : true );
-				$post_text = $bbcode->parse($post_text, $row2['bbcode_uid']);
+				$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
+				$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : true);
+				$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : true);
+				$post_text = $bbcode->parse($post_text);
 				$this_msg = '<td class="row1"><div class="post-text">' . $post_text . '</div></td>';
 				if ( $bbcode->allow_bbcode == false)
 				{

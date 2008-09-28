@@ -176,22 +176,6 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
-	'mg_log_actions' => array(
-		'lang_key' => 'IP_mg_log_actions',
-		'explain' => 'IP_mg_log_actions_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 'No',
-		'values' => $list_yes_no,
-		),
-
-	'admin_protect' => array(
-		'lang_key' => 'IP_admin_protect',
-		'explain' => 'IP_admin_protect_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 'No',
-		'values' => $list_yes_no,
-		),
-
 	'split_ga_ann_sticky' => array(
 		'lang_key' => 'IP_split_ga_ann_sticky',
 		'explain' => 'IP_split_ga_ann_sticky_explain',
@@ -204,30 +188,6 @@ $config_fields = array(
 			'IP_split_topic_3' => 3,
 			),
 		),
-
-	'write_errors_log' => array(
-		'lang_key' => 'IP_write_errors_log',
-		'explain' => 'IP_write_errors_log_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 'No',
-		'values' => $list_yes_no,
-		),
-
-	'write_digests_log' => array(
-		'lang_key' => 'IP_write_digests_log',
-		'explain' => 'IP_write_digests_log_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 'No',
-		'values' => $list_yes_no,
-		),
-
-	'logs_path' => array(
-		'lang_key' => 'IP_logs_path',
-		'explain' => 'IP_logs_path_explain',
-		'type' => 'VARCHAR',
-		'default' => 'logs',
-		),
-
 
 );
 

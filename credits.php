@@ -26,7 +26,6 @@ init_userprefs($userdata);
 // End session management
 
 include(IP_ROOT_PATH . 'includes/functions_credits.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbc_tags.' . PHP_EXT);
 
 /****************************************************************************
 /** Constants and Main Vars.

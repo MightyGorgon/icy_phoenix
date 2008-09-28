@@ -15,15 +15,15 @@
 </tr>
 <!-- BEGIN autolinks -->
 <tr>
-	<td class="{autolinks.ROW_CLASS}" align="center">{autolinks.NUMBER}</td>
-	<td class="{autolinks.ROW_CLASS}" align="center">{autolinks.KEYWORD}</td>
-	<td class="{autolinks.ROW_CLASS}" align="center">{autolinks.TITLE}</td>
+	<td class="{autolinks.ROW_CLASS} row-center">{autolinks.NUMBER}</td>
+	<td class="{autolinks.ROW_CLASS} row-center">{autolinks.KEYWORD}</td>
+	<td class="{autolinks.ROW_CLASS} row-center">{autolinks.TITLE}</td>
 	<td class="{autolinks.ROW_CLASS}" nowrap="nowrap">{autolinks.URL}</td>
 	<td class="{autolinks.ROW_CLASS}" nowrap="nowrap">{autolinks.COMMENT}</td>
 	<td class="{autolinks.ROW_CLASS}" nowrap="nowrap">{autolinks.STYLE}</td>
-	<td class="{autolinks.ROW_CLASS}" align="center" nowrap="nowrap">{autolinks.FORUM}</td>
-	<td class="{autolinks.ROW_CLASS}" align="center">{autolinks.INTERNAL}</td>
-	<td class="{autolinks.ROW_CLASS}" align="center"><a href="{autolinks.U_KEYWORD_EDIT}">{L_EDIT}</a></td>
+	<td class="{autolinks.ROW_CLASS} row-center" nowrap="nowrap">{autolinks.FORUM}</td>
+	<td class="{autolinks.ROW_CLASS} row-center">{autolinks.INTERNAL}</td>
+	<td class="{autolinks.ROW_CLASS} row-center"><a href="{autolinks.U_KEYWORD_EDIT}">{L_EDIT}</a></td>
 </tr>
 <!-- END autolinks -->
 <!-- BEGIN no_autolinks -->

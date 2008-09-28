@@ -443,10 +443,10 @@ function multi_loop($message, $success=false)
 	{
 		$multi_id++;
 		$return_page = (function_exists(album_append_uid))? album_append_uid('album_upload.' . PHP_EXT . '?psid=' . $psid . '&multi_id=' . $multi_id) : 'album_upload.' . PHP_EXT . '?psid=' . $psid . '&multi_id=' . $multi_id;
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid($return_page) . '">'
-			)
-		);
+
+		$redirect_url = append_sid($return_page);
+		meta_refresh(3, $redirect_url);
+
 		$message .= '<br /><br /><span class="gen">' . $lang['please_wait'] . '<br />' . str_replace("%multi_id%", $multi_id, str_replace("%multi_max%", $multi_max + 1, $lang['uploaded'])) . '</span><br /><br />';
 	}
 	else
@@ -458,10 +458,8 @@ function multi_loop($message, $success=false)
 			$return_page = (function_exists(album_append_uid))? album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id) : 'album_cat.' . PHP_EXT . '?cat_id=' . $cat_id;
 			if ($thiscat['cat_approval'] == 0)
 			{
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid($return_page) . '">'
-					)
-				);
+				$redirect_url = append_sid($return_page);
+				meta_refresh(3, $redirect_url);
 			}
 
 			$message .= '<br /><br />' . sprintf($lang['Click_return_category'], '<a href="' . append_sid($return_page) . '">', '</a>');
@@ -470,10 +468,8 @@ function multi_loop($message, $success=false)
 		{
 			if ($thiscat['cat_approval'] == 0)
 			{
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('album_personal.' . PHP_EXT) . '">'
-					)
-				);
+				$redirect_url = append_sid('album_personal.' . PHP_EXT);
+				meta_refresh(3, $redirect_url);
 			}
 			$message .= '<br /><br />' . sprintf($lang['Click_return_personal_gallery'], '<a href="' . append_sid('album_personal.' . PHP_EXT) . '">', '</a>');
 		}

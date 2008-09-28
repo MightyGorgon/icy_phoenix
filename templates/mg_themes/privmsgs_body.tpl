@@ -29,19 +29,19 @@ function select_switch(status)
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td style="vertical-align:top;width:190px;" width="190">
-	<!-- BEGIN switch_box_size_notice -->
-	<table class="forumline" width="100%" cellspacing="0">
-	<tr><th colspan="3"><span class="gensmall">{ATTACH_BOX_SIZE_STATUS}</span></th></tr>
-	<tr>
-		<td colspan="3" width="190" class="row1" nowrap="nowrap"><img src="{BAR_GRAPHIC_LEFT}" width="4" height="12" alt="" /><img src="{BAR_GRAPHIC_BODY}" width="{ATTACHBOX_LIMIT_IMG_WIDTH}" height="12" alt="{INBOX_LIMIT_PERCENT}" /><img src="{BAR_GRAPHIC_RIGHT}" width="4" height="12" alt="" /></td>
-	</tr>
-	<tr>
-		<td width="33%" class="row3"><span class="gensmall"><span class="text_green">0%</span></span></td>
-		<td width="34%" class="row3 row-center"><span class="gensmall"><span class="text_blue">50%</span></span></td>
-		<td width="33%" class="row3 row-right"><span class="gensmall"><span class="text_red">100%</span></span></td>
-	</tr>
-	</table>
-	<!-- END switch_box_size_notice -->
+		<!-- BEGIN switch_box_size_notice -->
+		<table class="forumline" width="100%" cellspacing="0">
+		<tr><th colspan="3"><span class="gensmall">{BOX_SIZE_STATUS}</span></th></tr>
+		<tr>
+			<td colspan="3" class="row1" nowrap="nowrap"><img src="{BAR_GRAPHIC_LEFT}" width="4" height="12" alt="" /><img src="{BAR_GRAPHIC_BODY}" width="{INBOX_LIMIT_IMG_WIDTH}" height="12" alt="{INBOX_LIMIT_PERCENT}%" title="{INBOX_LIMIT_PERCENT}%" /><img src="{BAR_GRAPHIC_RIGHT}" width="4" height="12" alt="" /></td>
+		</tr>
+		<tr>
+			<td width="33%" class="row3"><span class="gensmall"><span class="text_green">0%</span></span></td>
+			<td width="34%" class="row3 row-center"><span class="gensmall"><span class="text_blue">50%</span></span></td>
+			<td width="33%" class="row3 row-right"><span class="gensmall"><span class="text_red">100%</span></span></td>
+		</tr>
+		</table>
+		<!-- END switch_box_size_notice -->
 	</td>
 	<td align="center" style="vertical-align:top;">
 		<div class="forumline" style="margin-left:10px;margin-right:10px">
@@ -58,9 +58,9 @@ function select_switch(status)
 	<td style="vertical-align:top;width:190px;" width="190">
 		<!-- BEGIN switch_box_size_notice -->
 		<table class="forumline" width="100%" cellspacing="0">
-		<tr><th colspan="3"><span class="gensmall">{BOX_SIZE_STATUS}</span></th></tr>
+		<tr><th colspan="3"><span class="gensmall">{ATTACH_BOX_SIZE_STATUS}</span></th></tr>
 		<tr>
-			<td colspan="3" class="row1" nowrap="nowrap"><img src="{BAR_GRAPHIC_LEFT}" width="4" height="12" alt="" /><img src="{BAR_GRAPHIC_BODY}" width="{INBOX_LIMIT_IMG_WIDTH}" height="12" alt="{INBOX_LIMIT_PERCENT}%" title="{INBOX_LIMIT_PERCENT}%" /><img src="{BAR_GRAPHIC_RIGHT}" width="4" height="12" alt="" /></td>
+			<td colspan="3" width="190" class="row1" nowrap="nowrap"><img src="{BAR_GRAPHIC_LEFT}" width="4" height="12" alt="" /><img src="{BAR_GRAPHIC_BODY}" width="{ATTACHBOX_LIMIT_IMG_WIDTH}" height="12" alt="{INBOX_LIMIT_PERCENT}" /><img src="{BAR_GRAPHIC_RIGHT}" width="4" height="12" alt="" /></td>
 		</tr>
 		<tr>
 			<td width="33%" class="row3"><span class="gensmall"><span class="text_green">0%</span></span></td>

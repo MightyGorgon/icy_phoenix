@@ -166,8 +166,7 @@ elseif ($submit || isset($_POST['message']))
 	if (!empty($message) && $is_auth['auth_post'] && !$error)
 	{
 		include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-		$bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
-		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
 		if ($board_config['img_shoutbox'] == true)
 		{
 			$message = preg_replace ("#\[url=(http://)([^ \"\n\r\t<]*)\]\[img\](http://)([^ \"\n\r\t<]*)\[/img\]\[/url\]#i", '[url=\\1\\2]\\4[/url]', $message);
@@ -175,8 +174,8 @@ elseif ($submit || isset($_POST['message']))
 			$message = preg_replace ("#\[img align=left\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $message);
 			$message = preg_replace ("#\[img align=right\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $message);
 		}
-		$sql = "INSERT INTO " . SHOUTBOX_TABLE . " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, shout_bbcode_uid,enable_bbcode,enable_html,enable_smilies)
-				VALUES ('$message', '".time()."', '".$userdata['user_id']."', '$user_ip', '".$username."', '".$bbcode_uid."',$bbcode_on,$html_on,$smilies_on)";
+		$sql = "INSERT INTO " . SHOUTBOX_TABLE . " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
+				VALUES ('$message', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $username . "', $bbcode_on, $html_on, $smilies_on)";
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error inserting shout.', '', __LINE__, __FILE__, $sql);

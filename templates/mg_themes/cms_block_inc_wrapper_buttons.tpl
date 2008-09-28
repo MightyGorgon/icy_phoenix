@@ -1,5 +1,5 @@
 <!-- IF BORDER -->
-<table width="100%" class="forum-buttons gh-border" style="background:none;background-image:none;" align="center" cellspacing="0" cellpadding="0">
+<table width="100%" class="forum-buttons" style="background:none;background-image:none;" align="center" cellspacing="0" cellpadding="0">
 <!-- ELSE -->
 <table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 <!-- ENDIF -->

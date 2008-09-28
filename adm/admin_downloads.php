@@ -147,7 +147,7 @@ $template->assign_vars(array(
 for ($i = 0; $i < $menu_width; $i++)
 {
 	$template->assign_block_vars('management_menu_row', array(
-		'I_MODULE_IMG' => IP_ROOT_PATH . $i_dl_modules[$i],
+		'I_MODULE_IMG' => $i_dl_modules[$i],
 		'L_MODULE_TITLE' => $l_dl_modules[$i],
 		'U_MODULE_URL' => append_sid('admin_downloads.' . PHP_EXT . '?submod=' . $u_dl_modules[$i])
 		)

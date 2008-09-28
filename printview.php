@@ -127,7 +127,7 @@ else
 	$post_time_order = 'ASC';
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_sig_bbcode_uid, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*,  pt.post_text, pt.post_subject, pt.bbcode_uid
+$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*,  pt.post_text, pt.post_subject
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
 	WHERE p.topic_id = $topic_id
 		AND pt.post_id = p.post_id
@@ -164,7 +164,6 @@ for($i = 0; $i < $total_posts; $i++)
 
 	$post_date = create_date($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
 	$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : '';
-	$bbcode_uid = $postrow[$i]['bbcode_uid'];
 	$message = $postrow[$i]['post_text'];
 
 	// Don't want any HTML on printview
@@ -188,7 +187,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$bbcode->allow_html = ($board_config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
 		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
 		$bbcode->allow_smilies = ($board_config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
-		$message = $bbcode->parse($message, $bbcode_uid);
+		$message = $bbcode->parse($message);
 	}
 
 	$template->assign_block_vars('postrow', array(
@@ -252,5 +251,4 @@ if($do_gzip_compress)
 	echo pack("V", $gzip_size);
 }
 exit;
-
 ?>

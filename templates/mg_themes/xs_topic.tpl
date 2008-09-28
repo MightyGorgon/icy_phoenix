@@ -75,7 +75,7 @@ for ($postrow_i = 0; $postrow_i < $postrow_count; $postrow_i++)
 	$postrow_item['MESSAGE'] = str_replace($search, $replace, $postrow_item['MESSAGE']);
 	// set prev/next post links
 	$next_id = $postrow_i == ($postrow_count - 1) ? false : $this->_tpldata['postrow.'][$postrow_i + 1]['U_POST_ID'];
-	if($next_id !== false || $prev_id !== false)
+	if(($next_id !== false) || ($prev_id !== false))
 	{
 		$str = '';
 		if($prev_id)
@@ -128,7 +128,7 @@ if($can_reply)
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="60" style="width:98%" tabindex="2" class="post" value="{L_RE}: {TOPIC_TITLE}" /></td>
+	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="100" style="width:98%" tabindex="2" class="post" value="{L_RE}: {TOPIC_TITLE}" /></td>
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{T_TEMPLATE_PATH}/images/spacer.gif" width="200" height="1" alt="" /></b></span></td>

@@ -631,7 +631,7 @@ function generate_picture_title($file_name, $pic_title, $pic_filetype)
 			case ($counter < 10):
 				$pic_title .= ' - 00' . $counter;
 				break;
-			case (($counter >= 10) && ($counter < 100)):
+			case ($counter < 100):
 				$pic_title .= ' - 0' . $counter;
 				break;
 			default:

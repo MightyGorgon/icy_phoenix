@@ -19,13 +19,13 @@ class files_management
 	{
 		/*
 		'r'  	 Open for reading only; place the file pointer at the beginning of the file.
-		'r+' 	Open for reading and writing; place the file pointer at the beginning of the file.
-		'w' 	Open for writing only; place the file pointer at the beginning of the file and truncate the file to zero length. If the file does not exist, attempt to create it.
-		'w+' 	Open for reading and writing; place the file pointer at the beginning of the file and truncate the file to zero length. If the file does not exist, attempt to create it.
-		'a' 	Open for writing only; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
-		'a+' 	Open for reading and writing; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
-		'x' 	Create and open for writing only; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
-		'x+' 	Create and open for reading and writing; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
+		'r+' 	 Open for reading and writing; place the file pointer at the beginning of the file.
+		'w' 	 Open for writing only; place the file pointer at the beginning of the file and truncate the file to zero length. If the file does not exist, attempt to create it.
+		'w+' 	 Open for reading and writing; place the file pointer at the beginning of the file and truncate the file to zero length. If the file does not exist, attempt to create it.
+		'a' 	 Open for writing only; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
+		'a+' 	 Open for reading and writing; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
+		'x' 	 Create and open for writing only; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
+		'x+' 	 Create and open for reading and writing; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
 		*/
 		$fp = fopen($file_filename, 'w');
 		@fwrite($fp, $file_content);
@@ -514,6 +514,42 @@ class files_management
 		$clean_string = str_replace($look_up_array, $replacement_array, $clean_string);
 
 		return $clean_string;
+	}
+
+	// usage: $result = gzcompressfile('my_data.sql');
+	function gzcompressfile($source, $level = false)
+	{
+		$dest = $source . '.gz';
+		$mode = 'wb' . $level;
+		$error = false;
+		if($fp_out = gzopen($dest, $mode))
+		{
+			if($fp_in = fopen($source, 'rb'))
+			{
+				while(!feof($fp_in))
+				{
+					gzwrite($fp_out, fread($fp_in, 1024 * 512));
+				}
+				fclose($fp_in);
+			}
+			else
+			{
+				$error = true;
+			}
+			gzclose($fp_out);
+		}
+		else
+		{
+			$error = true;
+		}
+		if($error)
+		{
+			return false;
+		}
+		else
+		{
+			return $dest;
+		}
 	}
 }
 

@@ -197,8 +197,14 @@ if ($search_keywords != '' && !$search_author)
 			$cat_name = $row['cat_name'];
 			$u_cat_link = append_sid('downloads.' . PHP_EXT . "?cat=" . $cat_id);
 
-			$long_desc = make_clickable(smilies_pass(bbencode_second_pass(stripslashes($row['long_desc']), $row['bbcode_uid'])));
-			$long_desc = str_replace("\n", "\n<br />\n", $long_desc);
+			$html_on = $board_config['allow_html'];
+			$bbcode_on = $board_config['allow_bbcode'];
+			$smile_on = $board_config['allow_smilies'];
+			$bbcode->allow_html = $html_on;
+			$bbcode->allow_bbcode = $bbcode_on;
+			$bbcode->allow_smilies = $smilies_on;
+			$long_desc = $bbcode->parse(stripslashes($row['long_desc']));
+			//$long_desc = str_replace("\n", "\n<br />\n", $long_desc);
 
 			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -327,10 +333,16 @@ elseif ($search_author)
 			$mini_icon = $dl_mod->mini_status_file($index[$cat_id]['parent'], $file_id);
 
 			$cat_name = $row['cat_name'];
-			$u_cat_link = append_sid('downloads.' . PHP_EXT . "?cat=" . $cat_id);
+			$u_cat_link = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
 
-			$long_desc = make_clickable(smilies_pass(bbencode_second_pass(stripslashes($row['long_desc']), $row['bbcode_uid'])));
-			$long_desc = str_replace("\n", "\n<br />\n", $long_desc);
+			$html_on = $board_config['allow_html'];
+			$bbcode_on = $board_config['allow_bbcode'];
+			$smile_on = $board_config['allow_smilies'];
+			$bbcode->allow_html = $html_on;
+			$bbcode->allow_bbcode = $bbcode_on;
+			$bbcode->allow_smilies = $smilies_on;
+			$long_desc = $bbcode->parse(stripslashes($row['long_desc']));
+			//$long_desc = str_replace("\n", "\n<br />\n", $long_desc);
 
 			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 

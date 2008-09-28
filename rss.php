@@ -312,7 +312,7 @@ else
 		$sql_news = 'AND t.topic_type = \'' . POST_NEWS . '\'';
 	}
 	$getdesc=($forum_id <> '') ? 'f.forum_desc,' : '';
-	$sql = "SELECT f.forum_name," . $getdesc . " t.topic_id, t.topic_title, u.user_id, u.username, u.user_sig, u.user_sig_bbcode_uid, u.user_allowsmile, p.post_time, p.post_username, p.post_edit_time, p.enable_sig, p.enable_smilies, p.enable_bbcode, p.enable_html, pt.*, t.topic_replies, t.topic_first_post_id
+	$sql = "SELECT f.forum_name," . $getdesc . " t.topic_id, t.topic_title, u.user_id, u.username, u.user_sig, u.user_allowsmile, p.post_time, p.post_username, p.post_edit_time, p.enable_sig, p.enable_smilies, p.enable_bbcode, p.enable_html, pt.*, t.topic_replies, t.topic_first_post_id
 		FROM " . FORUMS_TABLE . " AS f, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p, " . POSTS_TEXT_TABLE . " as pt
 		WHERE
 				$sql_limit_time
@@ -393,9 +393,7 @@ else
 			$post_id=$post['post_id'];
 			$post_subject = ($post['post_subject'] != '') ? $post['post_subject'] : '';
 			$message = $post['post_text'];
-			$bbcode_uid = $post['bbcode_uid'];
 			$user_sig = ($post['enable_sig'] && $post['user_sig'] != '' && $board_config['allow_sig']) ? $post['user_sig'] : '';
-			$user_sig_bbcode_uid = $post['user_sig_bbcode_uid'];
 			// If the board has HTML off but the post has HTML on then we process it, else leave it alone
 			$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
 			$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
@@ -404,11 +402,11 @@ else
 			$bbcode->allow_html = $html_on;
 			$bbcode->allow_bbcode = $bbcode_on;
 			$bbcode->allow_smilies = $smilies_on;
-			$text = $bbcode->parse($text, $bbcode_uid);
+			$text = $bbcode->parse($text);
 			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
-			$user_sig = $bbcode->parse($user_sig, $bbcode_uid);
+			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
-			$message = $bbcode->parse($message, $bbcode_uid);
+			$message = $bbcode->parse($message);
 
 			// Replace naughty words
 			if(count($orig_word))
@@ -591,7 +589,7 @@ if($show_time)
 	$sql_part = round($sql_time / $gentime * 100);
 	$excuted_queries = $db->num_queries;
 	$php_part = 100 - $sql_part;
-	echo '(PHP: '. $php_part .'% - SQL: '. $sql_part .'%) - SQL queries: '. $excuted_queries;
+	echo '(PHP: ' . $php_part . '% - SQL: ' . $sql_part . '%) - SQL queries: ' . $excuted_queries;
 
 	if(function_exists('memory_get_usage') && ($mem = @memory_get_usage()))
 	{

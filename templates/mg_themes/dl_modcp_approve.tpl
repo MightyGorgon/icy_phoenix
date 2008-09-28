@@ -29,8 +29,8 @@
 <tr>
 	<td class="{approve_row.ROW_CLASS}"><a href="{approve_row.U_CAT_VIEW}" class="forumlink">{approve_row.CAT_NAME}</a></td>
 	<td class="{approve_row.ROW_CLASS}">{approve_row.MINI_ICON}&nbsp;<a href="{approve_row.U_DOWNLOAD}" class="topictitle">{approve_row.DESCRIPTION}</a></td>
-	<td class="{approve_row.ROW_CLASS}" align="center" width="10%"><a href="{approve_row.U_EDIT}">{approve_row.EDIT_IMG}</a></td>
-	<td class="{approve_row.ROW_CLASS}" align="center" width="5%"><input type="checkbox" name="dlo_id[]" value="{approve_row.FILE_ID}" /></td>
+	<td class="{approve_row.ROW_CLASS} row-center" width="10%"><a href="{approve_row.U_EDIT}">{approve_row.EDIT_IMG}</a></td>
+	<td class="{approve_row.ROW_CLASS} row-center" width="5%"><input type="checkbox" name="dlo_id[]" value="{approve_row.FILE_ID}" /></td>
 </tr>
 <!-- END approve_row -->
 <tr>

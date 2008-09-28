@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1200_Forums']['120_Permissions_List'] = $filename;
@@ -43,7 +43,7 @@ $sql = "SELECT f.*
 $sql = "SELECT f.*
 		FROM " . FORUMS_TABLE . " f
 		ORDER BY f.cat_id ASC, f.forum_order ASC";
-if( !$result = $db->sql_query($sql) )
+if(!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, 'Couldn\'t obtain forum list', '', __LINE__, __FILE__, $sql);
 }
@@ -59,40 +59,40 @@ if($_POST['submit'])
 		$sql = '';
 		$forum_id = $forum_rows[$i]['forum_id'];
 
-		for( $j = 0; $j < count($forum_auth_fields); $j++ )
+		for($j = 0; $j < count($forum_auth_fields); $j++)
 		{
 			$value = $_POST[$forum_auth_fields[$j]][$forum_id];
 
-			if ( $forum_auth_fields[$j] == 'auth_vote' )
+			if ($forum_auth_fields[$j] == 'auth_vote')
 			{
-				if ( $_POST['auth_vote'][$forum_id] == AUTH_ALL )
+				if ($_POST['auth_vote'][$forum_id] == AUTH_ALL)
 				{
 					$value = AUTH_REG;
 				}
 			}
 
-			$sql .= ( ( $sql != '' ) ? ', ' : '' ) . $forum_auth_fields[$j] . ' = ' . $value;
+			$sql .= (($sql != '') ? ', ' : '') . $forum_auth_fields[$j] . ' = ' . $value;
 		}
 
 		$sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
-		if( !$db->sql_query($sql) )
+		if(!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t update forum permissions', '', __LINE__, __FILE__, $sql);
 		}
 
 	}
 	cache_tree(true);
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3; url=' . append_sid('admin_forumauth_list.' . PHP_EXT) . '" />'
-		)
-	);
+
+	$redirect_url = append_sid('admin_forumauth_list.' . PHP_EXT);
+	meta_refresh(3, $redirect_url);
+
 	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'],  '<a href="' . append_sid('admin_forumauth_list.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
 
 // Default page
-$colspan = count($forum_auth_fields) + 1;
+$colspan = count($forum_auth_fields) + 2;
 
 // Output the authorisation details
 $template->set_filenames(array('body' => ADM_TPL . 'auth_forum_list_body.tpl'));
@@ -108,11 +108,11 @@ $template->assign_vars(array(
 );
 
 $template->assign_block_vars('forum_auth_titles', array(
-	'CELL_TITLE' => 'Forum Name'
+	'CELL_TITLE' => $lang['Forum']
 	)
 );
 
-for( $i = 0; $i < count($forum_auth_fields); $i++ )
+for($i = 0; $i < count($forum_auth_fields); $i++)
 {
 	$template->assign_block_vars('forum_auth_titles', array(
 		'CELL_TITLE' => $field_names[$forum_auth_fields[$i]]
@@ -120,13 +120,18 @@ for( $i = 0; $i < count($forum_auth_fields); $i++ )
 	);
 }
 
+$template->assign_block_vars('forum_auth_titles', array(
+	'CELL_TITLE' => $lang['Forum']
+	)
+);
+
 for ($i = 0; $i < count($forum_rows); $i++)
 {
 	$temp_url = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_rows[$i]['forum_id']);
 	$s_forum = '<a href="' . $temp_url . '">' . $forum_rows[$i]['forum_name'] . '</a>';
 
 	$template->assign_block_vars('forum_row', array(
-		'ROW_CLASS' => ( !($i % 2) ) ? 'row1' : 'row2',
+		'ROW_CLASS' => (!($i % 2)) ? 'row1' : 'row2',
 		'S_FORUM' => $s_forum
 		)
 	);
@@ -137,7 +142,7 @@ for ($i = 0; $i < count($forum_rows); $i++)
 
 		for($k = 0; $k < count($forum_auth_levels); $k++)
 		{
-			$selected = ( $forum_rows[$i][$forum_auth_fields[$j]] == $forum_auth_const[$k] ) ? ' selected="selected"' : '';
+			$selected = ($forum_rows[$i][$forum_auth_fields[$j]] == $forum_auth_const[$k]) ? ' selected="selected"' : '';
 			$custom_auth[$j] .= '<option value="' . $forum_auth_const[$k] . '"' . $selected . '>' . $lang['Forum_' . $forum_auth_levels[$k]] . '</option>';
 		}
 		$custom_auth[$j] .= '</select>&nbsp;';

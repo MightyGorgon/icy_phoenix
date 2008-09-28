@@ -22,20 +22,20 @@ define('IN_ICYPHOENIX', true);
 define('CTRACKER_ACP', true);
 
 /**
- * <b>Module Number Documentation:</b><br /><br />
+ * <b>Module Number Documentation:</b>
  *
- *  1:	acp_module_changedfiles.php	<br />
- *  2:	acp_module_credits.php	<br />
- *  3:	acp_module_filescanner.php	<br />
- *  4:	acp_module_globalmessage.php	<br />
- *  5:	acp_module_ipblocker.php	<br />
- *  6:	acp_module_logmanager.php	<br />
- *  7:	acp_module_maintenance.php	<br />
- *  8:	acp_module_miserableuser.php	<br />
- *  9:	acp_module_settings.php	 <br />
- * 10:	acp_module_systemrestore.php	<br />
- * 11:	acp_module_footer.php <br />
- * 99:	acp_module_logmanager.php (including Download of Debug Log) <br />
+ *  1: acp_module_changedfiles.php
+ *  2: acp_module_credits.php
+ *  3: acp_module_filescanner.php
+ *  4: acp_module_globalmessage.php
+ *  5: acp_module_ipblocker.php
+ *  6: acp_module_logmanager.php
+ *  7: acp_module_maintenance.php
+ *  8: acp_module_miserableuser.php
+ *  9: acp_module_settings.php
+ * 10: acp_module_systemrestore.php
+ * 11: acp_module_footer.php
+ * 99: acp_module_logmanager.php (including Download of Debug Log)
  */
 
 // Generate the Modules we need
@@ -53,6 +53,17 @@ if( !empty($setmodules) )
 	$module['ctracker_module_category']['ctracker_module_9']  = $filename . '?modu=9';
 	$module['ctracker_module_category']['ctracker_module_10'] = $filename . '?modu=10';
 	$module['ctracker_module_category']['ctracker_module_11'] = $filename . '?modu=11';
+	$ja_module['ctracker_module_category']['ctracker_module_1']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_2']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_3']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_4']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_5']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_6']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_7']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_8']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_9']  = false;
+	$ja_module['ctracker_module_category']['ctracker_module_10'] = false;
+	$ja_module['ctracker_module_category']['ctracker_module_11'] = false;
 	return;
 }
 

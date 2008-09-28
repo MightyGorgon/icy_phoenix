@@ -314,10 +314,8 @@ else
 
 	$return_url = 'album_showpage';
 
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id)) .'">'
-		)
-	);
+	$redirect_url = append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id));
+	meta_refresh(3, $redirect_url);
 
 	$message = $lang['Stored'] . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id)) . '#' . $comment_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 

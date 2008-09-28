@@ -346,7 +346,7 @@ elseif ($mode == 'read')
 	// END PM Navigation MOD
 
 	// Major query obtains the message ...
-	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_sig_bbcode_uid, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text
+	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*, pmt.privmsgs_text
 		FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
 		WHERE pm.privmsgs_id = $privmsgs_id
 			AND pmt.privmsgs_text_id = pm.privmsgs_id
@@ -403,10 +403,8 @@ elseif ($mode == 'read')
 				AND privmsgs_from_userid = " . $privmsg['privmsgs_from_userid'];
 		if (!($result = $db->sql_query($sql)))
 		{
-			message_die(GENERAL_ERROR, 'Could not obtain sent message info for sendee', '', __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, 'Could not obtain sent message info for sender', '', __LINE__, __FILE__, $sql);
 		}
-
-		$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
 
 		if ($sent_info = $db->sql_fetchrow($result))
 		{
@@ -423,14 +421,14 @@ elseif ($mode == 'read')
 				$old_privmsgs_id = $db->sql_fetchrow($result);
 				$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-				$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id = $old_privmsgs_id";
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (sent)', '', __LINE__, __FILE__, $sql);
 				}
 
-				$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+				$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
 					WHERE privmsgs_text_id = $old_privmsgs_id";
 				if (!$db->sql_query($sql))
 				{
@@ -440,11 +438,11 @@ elseif ($mode == 'read')
 		}
 
 		//
-		// This makes a copy of the post and stores it as a SENT message from the sendee. Perhaps
+		// This makes a copy of the post and stores it as a SENT message from the sender. Perhaps
 		// not the most DB friendly way but a lot easier to manage, besides the admin will be able to
 		// set limits on numbers of storable posts for users ... hopefully!
 		//
-		$sql = "INSERT $sql_priority INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
+		$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
 			VALUES (" . PRIVMSGS_SENT_MAIL . ", '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_subject'])) . "', " . $privmsg['privmsgs_from_userid'] . ", " . $privmsg['privmsgs_to_userid'] . ", " . $privmsg['privmsgs_date'] . ", '" . $privmsg['privmsgs_ip'] . "', " . $privmsg['privmsgs_enable_html'] . ", " . $privmsg['privmsgs_enable_bbcode'] . ", " . $privmsg['privmsgs_enable_smilies'] . ", " . $privmsg['privmsgs_attach_sig'] . ", " . $privmsg['privmsgs_enable_autolinks_acronyms'] . ")";
 		if (!$db->sql_query($sql))
 		{
@@ -453,8 +451,8 @@ elseif ($mode == 'read')
 
 		$privmsg_sent_id = $db->sql_nextid();
 
-		$sql = "INSERT $sql_priority INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
-			VALUES ($privmsg_sent_id, '" . $privmsg['privmsgs_bbcode_uid'] . "', '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_text'])) . "')";
+		$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
+			VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_text'])) . "')";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not insert private message sent text', '', __LINE__, __FILE__, $sql);
@@ -714,9 +712,7 @@ elseif ($mode == 'read')
 
 	// Processing of post
 	$post_subject = $privmsg['privmsgs_subject'];
-
 	$private_message = $privmsg['privmsgs_text'];
-	$bbcode_uid = $privmsg['privmsgs_bbcode_uid'];
 
 	if ($board_config['allow_sig'])
 	{
@@ -726,8 +722,6 @@ elseif ($mode == 'read')
 	{
 		$user_sig = '';
 	}
-
-	$user_sig_bbcode_uid = ($privmsg['privmsgs_from_userid'] == $userdata['user_id']) ? $userdata['user_sig_bbcode_uid'] : $privmsg['user_sig_bbcode_uid'];
 
 	//
 	// If the board has HTML off but the post has HTML
@@ -749,17 +743,17 @@ elseif ($mode == 'read')
 	if (($user_sig != '') && $privmsg['privmsgs_attach_sig'])
 	{
 		$bbcode->allow_html = $board_config['allow_html'];
-		$bbcode->allow_bbcode = $board_config['allow_bbcode'] && $user_sig_bbcode_uid ? true : false;
+		$bbcode->allow_bbcode = $board_config['allow_bbcode'] ? true : false;
 		$bbcode->allow_smilies = $board_config['allow_smilies'];
 		$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
-		$user_sig = $bbcode->parse($user_sig, $user_sig_bbcode_uid);
+		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
 	}
 
 	$bbcode->allow_html = $board_config['allow_html'] && $privmsg['privmsgs_enable_html'];
-	$bbcode->allow_bbcode = $board_config['allow_bbcode'] && $bbcode_uid ? true : false;
+	$bbcode->allow_bbcode = $board_config['allow_bbcode'] ? true : false;
 	$bbcode->allow_smilies = $board_config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'];
-	$private_message = $bbcode->parse($private_message, $bbcode_uid);
+	$private_message = $bbcode->parse($private_message);
 
 	if ($privmsg['privmsgs_attach_sig'] && $user_sig != '')
 	{
@@ -784,16 +778,13 @@ elseif ($mode == 'read')
 		$orig_autolink = array();
 		$replacement_autolink = array();
 		obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-		if(function_exists('acronym_pass'))
-		{
-			$private_message = acronym_pass($private_message);
-		}
+		$private_message = $bbcode->acronym_pass($private_message);
 		if(count($orig_autolink))
 		{
 			$private_message = autolink_transform($private_message, $orig_autolink, $replacement_autolink);
 		}
 	}
-	//$private_message = kb_word_wrap_pass ($private_message);
+	//$private_message = kb_word_wrap_pass $private_message);
 	//Acronyms, AutoLinks, Wrap -END
 
 	$poster_avatar = user_get_avatar($privmsg['user_id'], $privmsg['user_avatar'], $privmsg['user_avatar_type'], $privmsg['user_allowavatar']);
@@ -1201,8 +1192,6 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 			message_die(GENERAL_ERROR, 'Could not obtain sent message info for sendee', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-
 		if ($saved_info = $db->sql_fetchrow($result))
 		{
 			if ($board_config['max_savebox_privmsgs'] && $saved_info['savebox_items'] >= $board_config['max_savebox_privmsgs'])
@@ -1220,14 +1209,14 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 				$old_privmsgs_id = $db->sql_fetchrow($result);
 				$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-				$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id = $old_privmsgs_id";
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (save)', '', __LINE__, __FILE__, $sql);
 				}
 
-				$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+				$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
 					WHERE privmsgs_text_id = $old_privmsgs_id";
 				if (!$db->sql_query($sql))
 				{
@@ -1495,11 +1484,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		{
 			if (!$error)
 			{
-				if ($bbcode_on)
-				{
-					$bbcode_uid = make_bbcode_uid();
-				}
-				$privmsg_message = prepare_message($_POST['message'], $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+				$privmsg_message = prepare_message($_POST['message'], $html_on, $bbcode_on, $smilies_on, '');
 			}
 		}
 		else
@@ -1524,9 +1509,11 @@ elseif ($submit || $refresh || ($mode != ''))
 			save_draft($draft_id, $userdata['user_id'], 0, 0, addslashes(trim(strip_tags($_POST['subject']))), addslashes(trim($_POST['message'])));
 			//save_draft($draft_id, $userdata['user_id'], 0, 0, str_replace("\'", "''", trim(strip_tags($_POST['subject']))), str_replace("\'", "''", trim(strip_tags($_POST['message']))));
 			//save_draft($draft_id, $userdata['user_id'], 0, 0, str_replace("\'", "''", $privmsg_subject), str_replace("\'", "''", $privmsg_message));
-			$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '">';
 			$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
-			$template->assign_vars(array('META' => $meta));
+
+			$redirect_url = append_sid('privmsg.' . PHP_EXT . '?folder=inbox');
+			meta_refresh(3, $redirect_url);
+
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		// MG Drafts - END
@@ -1547,8 +1534,6 @@ elseif ($submit || $refresh || ($mode != ''))
 				message_die(GENERAL_MESSAGE, $lang['No_such_user']);
 			}
 
-			$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-
 			if ($inbox_info = $db->sql_fetchrow($result))
 			{
 				if ($board_config['max_inbox_privmsgs'] && ($inbox_info['inbox_items'] >= $board_config['max_inbox_privmsgs']))
@@ -1566,14 +1551,14 @@ elseif ($submit || $refresh || ($mode != ''))
 					$old_privmsgs_id = $db->sql_fetchrow($result);
 					$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-					$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+					$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 						WHERE privmsgs_id = $old_privmsgs_id";
 					if (!$db->sql_query($sql))
 					{
 						message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)'.$sql, '', __LINE__, __FILE__, $sql);
 					}
 
-					$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+					$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
 						WHERE privmsgs_text_id = $old_privmsgs_id";
 					if (!$db->sql_query($sql))
 					{
@@ -1651,13 +1636,13 @@ elseif ($submit || $refresh || ($mode != ''))
 		{
 			$privmsg_sent_id = $db->sql_nextid();
 
-			$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
-				VALUES ($privmsg_sent_id, '" . $bbcode_uid . "', '" . str_replace("\'", "''", $privmsg_message) . "')";
+			$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
+				VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", $privmsg_message) . "')";
 		}
 		else
 		{
 			$sql = "UPDATE " . PRIVMSGS_TEXT_TABLE . "
-				SET privmsgs_text = '" . str_replace("\'", "''", $privmsg_message) . "', privmsgs_bbcode_uid = '$bbcode_uid'
+				SET privmsgs_text = '" . str_replace("\'", "''", $privmsg_message) . "'
 				WHERE privmsgs_text_id = $privmsg_id";
 		}
 
@@ -1701,13 +1686,13 @@ elseif ($submit || $refresh || ($mode != ''))
 					$bbcode->allow_html = ($html_on ? true : false);
 					$bbcode->allow_bbcode = ($bbcode_on ? true : false);
 					$bbcode->allow_smilies = ($smilies_on ? true : false);
-					$message = $bbcode->parse($privmsg_message, $bbcode_uid);
+					$message = $bbcode->parse($privmsg_message);
 					$message = stripslashes($message);
 					//HTML Message
 				}
 				else
 				{
-					$message = bbcode_killer_mg($privmsg_message, $bbcode_uid);
+					$message = $bbcode->bbcode_killer($privmsg_message, '');
 				}
 				$emailer->assign_vars(array(
 					'USERNAME' => stripslashes($to_username),
@@ -1736,10 +1721,8 @@ elseif ($submit || $refresh || ($mode != ''))
 			// MG Cash MOD For IP - END
 		}
 
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '">'
-			)
-		);
+		$redirect_url = append_sid('privmsg.' . PHP_EXT . '?folder=inbox');
+		meta_refresh(3, $redirect_url);
 
 		$msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
@@ -1827,7 +1810,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		}
 		elseif ($mode == 'edit')
 		{
-			$sql = "SELECT pm.*, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text, u.username, u.user_id, u.user_sig
+			$sql = "SELECT pm.*, pmt.privmsgs_text, u.username, u.user_id, u.user_sig
 				FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u
 				WHERE pm.privmsgs_id = $privmsg_id
 					AND pmt.privmsgs_text_id = pm.privmsgs_id
@@ -1847,14 +1830,7 @@ elseif ($submit || $refresh || ($mode != ''))
 
 			$privmsg_subject = $privmsg['privmsgs_subject'];
 			$privmsg_message = $privmsg['privmsgs_text'];
-			$privmsg_bbcode_uid = $privmsg['privmsgs_bbcode_uid'];
 			$privmsg_bbcode_enabled = ($privmsg['privmsgs_enable_bbcode'] == 1);
-
-			if ($privmsg_bbcode_enabled)
-			{
-				$privmsg_message = preg_replace("/\:(([a-z0-9]:)?)$privmsg_bbcode_uid/si", '', $privmsg_message);
-			}
-
 			$privmsg_message = str_replace('<br />', "\n", $privmsg_message);
 			//$privmsg_message = preg_replace('#</textarea>#si', '&lt;/textarea&gt;', $privmsg_message);
 
@@ -1867,7 +1843,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		elseif ($mode == 'reply' || $mode == 'quote')
 		{
 
-			$sql = "SELECT pm.privmsgs_subject, pm.privmsgs_date, pmt.privmsgs_bbcode_uid, pmt.privmsgs_text, u.username, u.user_id
+			$sql = "SELECT pm.privmsgs_subject, pm.privmsgs_date, pmt.privmsgs_text, u.username, u.user_id
 				FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u
 				WHERE pm.privmsgs_id = $privmsg_id
 					AND pmt.privmsgs_text_id = pm.privmsgs_id
@@ -1891,9 +1867,6 @@ elseif ($submit || $refresh || ($mode != ''))
 			if ($mode == 'quote' || $mode == 'reply')
 			{
 				$privmsg_message = $privmsg['privmsgs_text'];
-				$privmsg_bbcode_uid = $privmsg['privmsgs_bbcode_uid'];
-
-				$privmsg_message = preg_replace("/\:(([a-z0-9]:)?)$privmsg_bbcode_uid/si", '', $privmsg_message);
 				$privmsg_message = str_replace('<br />', "\n", $privmsg_message);
 				//$privmsg_message = preg_replace('#</textarea>#si', '&lt;/textarea&gt;', $privmsg_message);
 
@@ -1933,12 +1906,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			obtain_word_list($orig_word, $replacement_word);
 		}
 
-		if ($bbcode_on)
-		{
-			$bbcode_uid = make_bbcode_uid();
-		}
-
-		$preview_message = stripslashes(prepare_message($privmsg_message, $html_on, $bbcode_on, $smilies_on, $bbcode_uid));
+		$preview_message = stripslashes(prepare_message($privmsg_message, $html_on, $bbcode_on, $smilies_on));
 		$privmsg_message = stripslashes(preg_replace($html_entities_match, $html_entities_replace, $privmsg_message));
 
 		// Finalise processing as per viewtopic
@@ -1950,20 +1918,20 @@ elseif ($submit || $refresh || ($mode != ''))
 			}
 		}
 
-		if ($attach_sig && ($user_sig != '') && $userdata['user_sig_bbcode_uid'])
+		if ($attach_sig && ($user_sig != ''))
 		{
 			$bbcode->allow_html = ($html_on ? true : false);
-			$bbcode->allow_bbcode = $userdata['user_sig_bbcode_uid'] ? true : false;
+			$bbcode->allow_bbcode = ($bbcode_on ? true : false);
 			$bbcode->allow_smilies = ($smilies_on ? true : false);
 			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
-			$user_sig = $bbcode->parse($user_sig, $userdata['user_sig_bbcode_uid']);
+			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
 		}
 
 		$bbcode->allow_html = ($html_on ? true : false);
 		$bbcode->allow_bbcode = ($bbcode_on ? true : false);
 		$bbcode->allow_smilies = ($smilies_on ? true : false);
-		$preview_message = $bbcode->parse($preview_message, $bbcode_uid);
+		$preview_message = $bbcode->parse($preview_message);
 
 		if ($attach_sig && $user_sig != '')
 		{
@@ -1984,16 +1952,13 @@ elseif ($submit || $refresh || ($mode != ''))
 			$orig_autolink = array();
 			$replacement_autolink = array();
 			obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-			if(function_exists('acronym_pass'))
-			{
-				$preview_message = acronym_pass($preview_message);
-			}
+			$preview_message = $bbcode->acronym_pass($preview_message);
 			if(count($orig_autolink))
 			{
 				$preview_message = autolink_transform($preview_message, $orig_autolink, $replacement_autolink);
 			}
 		}
-		//$preview_message = kb_word_wrap_pass ($preview_message);
+		//$preview_message = kb_word_wrap_pass($preview_message);
 		$s_hidden_fields = '<input type="hidden" name="folder" value="' . $folder . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
 
@@ -2108,33 +2073,29 @@ elseif ($submit || $refresh || ($mode != ''))
 
 	$post_to_review = $_GET['p'];
 
-	$q = "SELECT privmsgs_text, privmsgs_bbcode_uid
+	$q = "SELECT privmsgs_text
 			FROM " . PRIVMSGS_TEXT_TABLE . "
 			WHERE privmsgs_text_id = '" . $post_to_review . "'";
 	$r = $db -> sql_query($q);
 	$row = $db -> sql_fetchrow($r);
 
 	$prv_msg_review = $row['privmsgs_text'];
-	$bbcode_uid = $row['privmsgs_bbcode_uid'];
 	$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
 	$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
 	$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-	$prv_msg_review = $bbcode->parse($prv_msg_review, $bbcode_uid);
+	$prv_msg_review = $bbcode->parse($prv_msg_review);
 	if ($row['privmsgs_enable_autolinks_acronyms'])
 	{
 		$orig_autolink = array();
 		$replacement_autolink = array();
 		obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-		if(function_exists('acronym_pass'))
-		{
-			$prv_msg_review = acronym_pass($prv_msg_review);
-		}
+		$prv_msg_review = $bbcode->acronym_pass($prv_msg_review);
 		if(count($orig_autolink))
 		{
 			$prv_msg_review = autolink_transform($prv_msg_review, $orig_autolink, $replacement_autolink);
 		}
 	}
-	//$prv_msg_review = kb_word_wrap_pass ($prv_msg_review);
+	//$prv_msg_review = kb_word_wrap_pass($prv_msg_review);
 	if (!$userdata['user_allowswearywords'])
 	{
 		$orig_word = array();

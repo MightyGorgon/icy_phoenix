@@ -107,8 +107,8 @@ $template->assign_vars(array(
 	'L_MSG_LINK'		=> $lang['ctracker_glob_msg_link'],
 	'L_FIELD_DESC'		=> $checked_mode,
 
-	'IMG_ICON_GLOB_MSG' => IP_ROOT_PATH . $images['ctracker_global_msg'],
-	'IMG_ICON_GLOB_RES' => IP_ROOT_PATH . $images['ctracker_global_res'],
+	'IMG_ICON_GLOB_MSG' => $images['ctracker_global_msg'],
+	'IMG_ICON_GLOB_RES' => $images['ctracker_global_res'],
 
 	'S_CHK_STATUS_1'	=> $check_status_1,
 	'S_CHK_STATUS_2'	=> $check_status_2,

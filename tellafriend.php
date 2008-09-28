@@ -107,9 +107,8 @@ if ( isset($_POST['submit']) )
 		$emailer->send();
 		$emailer->reset();
 
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="5;url=' . append_sid(FORUM_MG) . '">')
-		);
+		$redirect_url = append_sid(FORUM_MG);
+		meta_refresh(5, $redirect_url)
 
 		$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 

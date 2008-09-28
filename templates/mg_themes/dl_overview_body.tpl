@@ -19,11 +19,11 @@
 </tr>
 <!-- BEGIN download -->
 <tr>
-	<td class="{download.ROW_CLASS}" align="center">{download.STATUS}</td>
+	<td class="{download.ROW_CLASS} row-center">{download.STATUS}</td>
 	<td class="{download.ROW_CLASS}" align="left"><a href="{download.U_DL_LINK}" class="nav">{download.DESCRIPTION}</a>&nbsp;<span class="genmed">{download.HACK_VERSION}</span></td>
-	<td class="{download.ROW_CLASS}" align="center"><a href="{download.U_CAT_VIEW}" class="gensmall">{download.CAT_NAME}</a></td>
+	<td class="{download.ROW_CLASS} row-center"><a href="{download.U_CAT_VIEW}" class="gensmall">{download.CAT_NAME}</a></td>
 	<td class="{download.ROW_CLASS}" align="right"><span class="genmed">{download.FILE_SIZE}</span></td>
-	<td class="{download.ROW_CLASS}" align="center"><span class="genmed">{download.FILE_KLICKS} / {download.FILE_OVERALL_KLICKS}</span></td>
+	<td class="{download.ROW_CLASS} row-center"><span class="genmed">{download.FILE_KLICKS} / {download.FILE_OVERALL_KLICKS}</span></td>
 	<td class="{download.ROW_CLASS}" nowrap="nowrap">
 	<table cellpadding="0" cellspacing="0" border="0">
 	<tr>

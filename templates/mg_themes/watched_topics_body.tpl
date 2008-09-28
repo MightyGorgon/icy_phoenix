@@ -75,7 +75,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 		<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a>
 		<br/>
 		<!-- END switch_watched_topics_block -->
-		<span class="pagination"><b>{PAGINATION}</b></span>
+		<span class="pagination">{PAGINATION}</span>
 		<!-- BEGIN switch_watched_topics_block -->
 	</div>
 <!-- END switch_watched_topics_block -->

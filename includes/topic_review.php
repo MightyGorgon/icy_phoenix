@@ -113,7 +113,7 @@ function topic_review($topic_id, $is_inline_review)
 	//
 	// Go ahead and pull all data for this topic
 	//
-	$sql = "SELECT u.username, u.user_id, p.*, pt.post_text, pt.post_text_compiled, pt.post_subject, pt.bbcode_uid
+	$sql = "SELECT u.username, u.user_id, p.*, pt.post_text, pt.post_text_compiled, pt.post_subject
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
 		WHERE p.topic_id = $topic_id
 			AND p.poster_id = u.user_id
@@ -148,7 +148,7 @@ function topic_review($topic_id, $is_inline_review)
 			$post_date = create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
 
 			// Handle anon users posting with usernames
-			if( ($poster_id == ANONYMOUS) && ($row['post_username'] != '') )
+			if(($poster_id == ANONYMOUS) && ($row['post_username'] != ''))
 			{
 				$poster = $row['post_username'];
 				$poster_rank = $lang['Guest'];
@@ -159,14 +159,12 @@ function topic_review($topic_id, $is_inline_review)
 				$poster_rank = '';
 			}
 
-			$post_subject = ( $row['post_subject'] != '' ) ? $row['post_subject'] : '';
+			$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
 
 			$message = $row['post_text'];
-			$bbcode_uid = $row['bbcode_uid'];
 
 			// Quick Quote - BEGIN
 			$plain_message = $row['post_text'];
-			$plain_message = preg_replace('/\:(([a-z0-9]:)?)' . $bbcode_uid . '/s', '', $plain_message);
 			$plain_message = str_replace('-->', '--&gt;', $plain_message);
 			if( preg_match('/\[hide/i', $plain_message) )
 			{
@@ -175,12 +173,11 @@ function topic_review($topic_id, $is_inline_review)
 			  $plain_message =  preg_replace($search, $replace, $plain_message);
 			}
 			//$plain_message = str_replace('postrow -->', 'postrow --&gt;', $plain_message);
-			//$plain_message = preg_replace('/\:(([a-z0-9]:)?)' . $bbcode_uid . '/s', '', $plain_message);
 			//$plain_message = str_replace('<', '&lt;', $plain_message);
 			//$plain_message = str_replace('>', '&gt;', $plain_message);
 			//$plain_message = str_replace('&amp;', '&', $plain_message);
 			//$plain_message = str_replace('<br />', "\n", $plain_message);
-			if ( empty($orig_word) && !$userdata['user_allowswearywords'] )
+			if (empty($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$orig_word = array();
 				$replacement_word = array();
@@ -201,24 +198,21 @@ function topic_review($topic_id, $is_inline_review)
 			}
 			else
 			{
-				$bbcode->allow_html = ( ($board_config['allow_html'] && $row['enable_bbcode']) ? true : false );
-				$bbcode->allow_bbcode = ( ($board_config['allow_bbcode'] && $row['enable_bbcode']) ? true : false );
-				$bbcode->allow_smilies = ( ($board_config['allow_smilies'] && $row['enable_smilies']) ? true : false );
-				$message = $bbcode->parse($message, $bbcode_uid);
+				$bbcode->allow_html = (($board_config['allow_html'] && $row['enable_bbcode']) ? true : false);
+				$bbcode->allow_bbcode = (($board_config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
+				$bbcode->allow_smilies = (($board_config['allow_smilies'] && $row['enable_smilies']) ? true : false);
+				$message = $bbcode->parse($message);
 			}
 
-			if ( count($orig_word) && !$userdata['user_allowswearywords'])
+			if (count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 				$message = preg_replace($orig_word, $replacement_word, $message);
 			}
 			if ($row['enable_autolinks_acronyms'] == 1)
 			{
-				if( function_exists( 'acronym_pass' ) )
-				{
-					$message = acronym_pass($message);
-				}
-				if ( count($orig_autolink) )
+				$message = $bbcode->acronym_pass($message);
+				if (count($orig_autolink))
 				{
 					$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
 				}

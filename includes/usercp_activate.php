@@ -33,10 +33,8 @@ if ($row = $db->sql_fetchrow($result))
 {
 	if ($row['user_active'] && trim($row['user_actkey']) == '')
 	{
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid(FORUM_MG) . '">'
-			)
-		);
+		$redirect_url = append_sid(FORUM_MG);
+		meta_refresh(10, $redirect_url);
 
 		message_die(GENERAL_MESSAGE, $lang['Already_activated']);
 	}
@@ -86,19 +84,15 @@ if ($row = $db->sql_fetchrow($result))
 			$emailer->send();
 			$emailer->reset();
 
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid(FORUM_MG) . '">'
-				)
-			);
+			$redirect_url = append_sid(FORUM_MG);
+			meta_refresh(10, $redirect_url);
 
 			message_die(GENERAL_MESSAGE, $lang['Account_active_admin']);
 		}
 		else
 		{
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="10;url=' . append_sid(FORUM_MG) . '">'
-				)
-			);
+			$redirect_url = append_sid(FORUM_MG);
+			meta_refresh(10, $redirect_url);
 
 			$message = ($sql_update_pass == '') ? $lang['Account_active'] : $lang['Password_activated'];
 			message_die(GENERAL_MESSAGE, $message);

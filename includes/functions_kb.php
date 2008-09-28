@@ -241,7 +241,7 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 
 	$server_url = create_server_url();
 
-	$sql = "SELECT t.*, u.user_id, u.user_rank, u.user_sig, u.user_sig_bbcode_uid, u.user_allowsmile
+	$sql = "SELECT t.*, u.user_id, u.user_rank, u.user_sig, u.user_allowsmile
 			FROM " . KB_ARTICLES_TABLE . " t, " . USERS_TABLE . " u
 			WHERE ";
 
@@ -335,18 +335,21 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 			if (($article_approved == 2) || ($article_approved == 0))
 			{
 				// approve
-				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id . '&amp;start=' . $start);
-				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
+				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id . '&amp;start=' . $start);
+				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
+				$approve = '<a href="' . $temp_url . '">' . $lang['Approve'] . '</a>';
 			}
 			elseif ($article_approved == 1)
 			{
 				// unapprove
-				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id . '&amp;start=' . $start);
-				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
+				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id . '&amp;start=' . $start);
+				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
+				$approve = '<a href="' . $temp_url . '">' . $lang['Un_approve'] . '</a>';
 			}
 			// delete
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id . '&amp;start=' . $start);
-			$delete = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id . '&amp;start=' . $start);
+			//$delete = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$delete = '<a href="' . $temp_url . '">' . $lang['Delete'] . '</a>';
 		}
 		else
 		{
@@ -499,7 +502,31 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 		$category_temp = append_sid(this_kb_mxurl('mode=cat&amp;cat=' . $category_id));
 		$category_url = '<a href="' . $category_temp . '" class="genmed">' . $category_name . '</a>';
 
-		if (defined('IN_ADMIN') || $userdata['user_level'] == ADMIN)
+		if (defined('IN_ADMIN'))
+		{
+			$category = get_kb_cat($article_cat);
+			$category_name = $category['category_name'];
+
+			if ($article_approved == 2 || $article_approved == 0)
+			{
+				// approve
+				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id);
+				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
+				$approve = '<a href="' . $temp_url . '">' . $lang['Approve'] . '</a>';
+			}
+			elseif ($article_approved == 1)
+			{
+				// unapprove
+				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id);
+				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
+				$approve = '<a href="' . $temp_url . '">' . $lang['Un_approve'] . '</a>';
+			}
+			// delete
+			$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id);
+			//$delete = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$delete = '<a href="' . $temp_url . '">' . $lang['Delete'] . '</a>';
+		}
+		elseif ($userdata['user_level'] == ADMIN)
 		{
 			$category = get_kb_cat($article_cat);
 			$category_name = $category['category_name'];
@@ -677,11 +704,7 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 	{
 		if (!$error)
 		{
-			if ($bbcode_on)
-			{
-				$bbcode_uid = make_bbcode_uid();
-			}
-			$privmsg_message = prepare_message($message, $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+			$privmsg_message = prepare_message($message, $html_on, $bbcode_on, $smilies_on);
 			//$privmsg_message = str_replace('\\\n', '\n', $privmsg_message);
 		}
 	}
@@ -705,8 +728,6 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 		message_die(GENERAL_MESSAGE, $lang['No_such_user']);
 	}
 
-	$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-
 	if ($inbox_info = $db->sql_fetchrow($result))
 	{
 		if ($inbox_info['inbox_items'] >= $board_config['max_inbox_privmsgs'])
@@ -724,14 +745,14 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 			$old_privmsgs_id = $db->sql_fetchrow($result);
 			$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-			$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+			$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 				WHERE privmsgs_id = $old_privmsgs_id";
 			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)'.$sql, '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+			$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
 				WHERE privmsgs_text_id = $old_privmsgs_id";
 			if (!$db->sql_query($sql))
 			{
@@ -751,8 +772,8 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 	$privmsg_sent_id = $db->sql_nextid();
 	//$privmsg_message = str_replace('\n', '\\\n', $privmsg_message);
 	//$privmsg_message = nl2br($privmsg_message);
-	$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
-		VALUES ($privmsg_sent_id, '" . $bbcode_uid . "', '" . str_replace("\'", "''", addslashes($privmsg_message)) . "')";
+	$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
+		VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", addslashes($privmsg_message)) . "')";
 
 	if (!$db->sql_query($sql, END_TRANSACTION))
 	{
@@ -848,14 +869,8 @@ function kb_mailer($to_id, $message, $subject, $from_id, $html_on = 0, $acro_aut
 	{
 		if (!$error)
 		{
-			if ($bbcode_on)
-			{
-				$bbcode_uid = make_bbcode_uid();
-			}
-
-			$privmsg_message = prepare_message($message, $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+			$privmsg_message = prepare_message($message, $html_on, $bbcode_on, $smilies_on);
 			$privmsg_message = str_replace('\\\n', '\n', $privmsg_message);
-
 		}
 	}
 	else
@@ -1044,13 +1059,15 @@ function get_kb_cat_subs_admin($parent, $select = 1, $indent, $ss)
 		$temp_url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=cat&amp;cat=' . $category_id2);
 		$category2 = '<a href="' . $temp_url . '" class="gen">' . $category_name2 . '</a>';
 
-		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=edit&amp;cat=' . $category_id2);
-		$edit2 = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
+		$temp_url = append_sid('admin_kb_cat.' . PHP_EXT . '?mode=edit&amp;cat=' . $category_id2);
+		//$edit2 = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
+		$edit2 = '<a href="' . $temp_url . '">' . $lang['Edit'] . '</a>';
 
-		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=delete&amp;cat=' . $category_id2);
-		$delete2 = '<a href="' . $temp_url . '" class="gen"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+		$temp_url = append_sid('admin_kb_cat.' . PHP_EXT . '?mode=delete&amp;cat=' . $category_id2);
+		//$delete2 = '<a href="' . $temp_url . '" class="gen"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+		$delete2 = '<a href="' . $temp_url . '" class="gen">' . $lang['Delete'] . '</a>';
 
-		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=up&amp;cat=' . $category_id2);
+		$temp_url = append_sid('admin_kb_cat.' . PHP_EXT . '?mode=up&amp;cat=' . $category_id2);
 		$up2 = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_up'] . '</a>';
 
 		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=down&amp;cat=' . $category_id2);
@@ -1309,15 +1326,14 @@ function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $us
 	$poll_length = '';
 	$mode = 'reply';
 
-	$bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
 	$error_die_function = ($error_die_function == '') ? 'message_die' : $error_die_function;
 	$current_time = ($current_time == 0) ? time() : $current_time;
 
 	// parse the message and the subject (belt & braces :)
 	$message = addslashes(unprepare_message($message));
-	$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+	$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
 	$message_update_text = addslashes(unprepare_message($message_update_text));
-	$message_update_text = prepare_message(trim($message_update_text), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+	$message_update_text = prepare_message(trim($message_update_text), $html_on, $bbcode_on, $smilies_on);
 	$subject = addslashes(unprepare_message(trim($subject)));
 
 	$username = addslashes(unprepare_message(trim($user_name)));
@@ -1346,7 +1362,7 @@ function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $us
 		// insert the actual post text for our new post
 		$message_tmp = (($mode == 'newtopic') ? $message : $message_update_text);
 
-		$sql = "INSERT INTO " . POSTS_TEXT_TABLE . " (post_id, post_subject, bbcode_uid, post_text) VALUES ($post_id, '$subject', '$bbcode_uid', '$message_tmp')";		if (!$db->sql_query($sql, BEGIN_TRANSACTION))
+		$sql = "INSERT INTO " . POSTS_TEXT_TABLE . " (post_id, post_subject, post_text) VALUES ($post_id, '$subject', '$message_tmp')";		if (!$db->sql_query($sql, BEGIN_TRANSACTION))
 		{
 			$error_die_function(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
 		}
@@ -1428,7 +1444,6 @@ function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $us
 
 	$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET
 					post_subject = '$subject',
-					bbcode_uid = '$bbcode_uid',
 					post_text = '$message_tmp'
 					WHERE post_id = '$orig_post_id'";
 
@@ -1479,7 +1494,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 
 	// Go ahead and pull all data for this topic
 
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_sig_bbcode_uid, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*,  pt.post_text, pt.post_subject, pt.bbcode_uid
+	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*,  pt.post_text, pt.post_subject
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
 		WHERE p.topic_id = $topic_id
 			AND pt.post_id = p.post_id
@@ -1518,11 +1533,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 	// Okay, let's do the loop, yeah come on baby let's do the loop
 	// and it goes like this ...
 
-	/*
-	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
-	*/
-	$start == 0 ? $i_init = 1: $i_init = 0;
+	$start == 0 ? ($i_init = 1) : ($i_init = 0);
 
 	for($i = $i_init; $i < $total_posts; $i++)
 	{
@@ -1590,9 +1601,8 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 			$poster_rank = $lang['Guest'];
 		}
 		$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : '';
-  	$mini_post_img = $images['icon_minipost'];
+		$mini_post_img = $images['icon_minipost'];
 		$message = $postrow[$i]['post_text'];
-		$bbcode_uid = $postrow[$i]['bbcode_uid'];
 
 		// If the board has HTML off but the post has HTML
 		// on then we process it, else leave it alone
@@ -1616,12 +1626,12 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 		$bbcode->allow_bbcode = $board_config['allow_bbcode'];
 		$bbcode->allow_smilies = $board_config['allow_smilies'] && $postrow[$i]['user_allowsmile'] ? true : false;
 
-		$message = $bbcode->parse($message, $bbcode_uid);
+		$message = $bbcode->parse($message);
 
 		if($user_sig != '')
 		{
 			$bbcode->is_sig = true;
-			$user_sig = $bbcode->parse($user_sig, $user_sig_bbcode_uid);
+			$user_sig = $bbcode->parse($user_sig);
 			$sig_cache[$postrow[$i]['user_id']] = $user_sig;
 			$bbcode->is_sig = false;
 		}
@@ -1631,16 +1641,13 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 			$orig_autolink = array();
 			$replacement_autolink = array();
 			obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-			if(function_exists('acronym_pass'))
-			{
-				$message = acronym_pass($message);
-			}
+			$message = $bbcode->acronym_pass($message);
 			if(count($orig_autolink))
 			{
 				$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
 			}
 		}
-		//$message = kb_word_wrap_pass ($message);
+		//$message = kb_word_wrap_pass($message);
 		if (empty($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$orig_word = array();

@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
-	$module['Info']['Http Referrers'] = "$file?mode=config";
+	$module['2400_INFO']['140_HTTP_REF'] = $file . '?mode=config';
 	return;
 }
 
@@ -30,12 +30,12 @@ require('./pagestart.' . PHP_EXT);
 
 if (isset($_POST['clear']))
 {
-	$sql = "DELETE FROM " .REFERRERS_TABLE;
+	$sql = "DELETE FROM " . REFERRERS_TABLE;
 	if (!$db->sql_query($sql))
 	{
-		message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
+		message_die(GENERAL_ERROR, "Failed to empty referrers table", "", __LINE__, __FILE__, $sql);
 	}
-	$message = $lang['Referrers_Cleared'] . '<br /><br />' . sprintf($lang['Click_Return_Referrers'], "<a href=\"" . append_sid("admin_referrers." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+	$message = $lang['Referrers_Cleared'] . '<br /><br />' . sprintf($lang['Click_Return_Referrers'], '<a href="' . append_sid('admin_referrers.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -88,9 +88,7 @@ else
 }
 $select_sort_order .= '</select>';
 
-//
 //Referrers Deletion
-//
 $params = array('mode' => '', 'referrer_id' => '');
 
 foreach($params as $var => $default)
@@ -106,15 +104,13 @@ if (count($_POST))
 {
 	foreach($_POST as $key => $valx)
 	{
-		//
 		// Check for deletion items
-		//
 		if (substr_count($key, 'delete_id_'))
 		{
 			$referrer_id = substr($key, 10);
 
 			$sql = "SELECT * FROM " . REFERRERS_TABLE ."
-				WHERE referrer_id = $referrer_id";
+				WHERE referrer_id = '" . $referrer_id . "'";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Error on querying referrers Table', '', __LINE__, __FILE__, $sql);
@@ -122,10 +118,10 @@ if (count($_POST))
 
 
 			$sql = "DELETE FROM " . REFERRERS_TABLE ."
-			   WHERE referrer_id = $referrer_id";
+			   WHERE referrer_id = '" . $referrer_id . "'";
 			if(!$db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, 'FUCK', '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, 'Error deleting referrers', '', __LINE__, __FILE__, $sql);
 			}
 		}
 	}
@@ -181,9 +177,7 @@ switch($mode)
 		break;
 }
 
-//
 //	Gathering required Information from referrers Table
-//
 $sql = "SELECT * FROM " . REFERRERS_TABLE ." ORDER BY $order_by";
 if (!($result = $db->sql_query($sql)))
 {

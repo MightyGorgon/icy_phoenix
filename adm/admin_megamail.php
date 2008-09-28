@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1100_General']['140_Mega_Mail'] = $filename;
@@ -54,7 +54,7 @@ if (isset($_GET['mode']))
 			status SMALLINT NOT NULL,
 			user_id MEDIUMINT(8) NOT NULL
 			)";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not create tables. Are you sure you are using mySQL? Are you sure the table does not already exist?', '', __LINE__, __FILE__, $sql);
 	}
@@ -70,18 +70,21 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 	$sql = "INSERT INTO " . MEGAMAIL_TABLE ." (mailsession_id, group_id, email_subject, email_body, batch_start, batch_size, batch_wait, status, user_id)
 			VALUES ('" . $mail_session_id . "', " . intval($_POST[POST_GROUPS_URL]) . ", '".str_replace("\'","''",trim($_POST['subject'])) . "', '" . str_replace("\'", "''", trim($_POST['message'])) . "', 0, " . $batchsize . "," . $batchwait . ", 0, " . $userdata['user_id'] . ")";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not insert the data into '. MEGAMAIL_TABLE, '', __LINE__, __FILE__, $sql);
 	}
 	$mail_id = $db->sql_nextid();
 	$url= append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' .$mail_session_id);
-	$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="'.$batchwait.';url=' . $url . '">'));
+
+	$redirect_url = $url;
+	meta_refresh($batchwait, $redirect_url);
+
 	$message = sprintf($lang['megamail_created_message'], '<a href="' . $url . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
-if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
+if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 {
 	@ignore_user_abort(true);
 	$mail_id = intval($_GET['mail_id']);
@@ -106,20 +109,19 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 	$subject = $mail_data['email_subject'];
 	$message = $mail_data['email_body'];
 	$group_id = $mail_data['group_id'];
-	$bbcode_uid = '';
 
 /* OLD HTML FORMAT
-	if ( $board_config['html_email'] == false)
+	if ($board_config['html_email'] == false)
 	{
-		$message = bbcode_killer_mg($message, $bbcode_uid);
-		$message = strip_tags($mail_data['email_body'], $bbcode_uid);
+		$message = $bbcode->bbcode_killer($message, '');
+		$message = strip_tags($mail_data['email_body'], '');
 	}
 	else
 	{
 		$bbcode->allow_html = true;
-		$bbcode->allow_bbcode = ( $board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false );
-		$bbcode->allow_smilies = ( $board_config['allow_smilies'] ? $board_config['allow_smilies'] : false );
-		$message = $bbcode->parse($message, $bbcode_uid);
+		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
+		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
+		$message = $bbcode->parse($message);
 	}
 */
 
@@ -169,7 +171,7 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 			SET mailsession_id = '" . $mail_session_id . "', batch_start= " . ($mail_data['batch_start'] + $mail_data['batch_size']) . $is_done . "
 			WHERE mail_id = '" . $mail_id . "'";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not insert the data into '. MEGAMAIL_TABLE, '', __LINE__, __FILE__, $sql);
 	}
@@ -210,23 +212,23 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 		{
 			$bcc_list .= (($bcc_list != '') ? ', ' : '') . $row['user_email'];
 		}
-		while ( $row = $db->sql_fetchrow($result) );
+		while ($row = $db->sql_fetchrow($result));
 		$db->sql_freeresult($result);
 	}
 	else
 	{
-		$message = ( $group_id != -1 ) ? $lang['Group_not_exist'] : $lang['No_such_user'];
+		$message = ($group_id != -1) ? $lang['Group_not_exist'] : $lang['No_such_user'];
 		$error = true;
-		$error_msg .= ( !empty($error_msg) ) ? '<br />' . $message : $message;
+		$error_msg .= (!empty($error_msg)) ? '<br />' . $message : $message;
 	}
 
-	if ( !$error )
+	if (!$error)
 	{
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		// Let's do some checking to make sure that mass mail functions are working in win32 versions of php.
-		if ( preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
+		if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
 		{
-			$ini_val = ( @phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
+			$ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 
 			// We are running on windows, force delivery to use our smtp functions
 			// since php's are broken by default
@@ -249,6 +251,9 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 		$emailer->extra_headers($email_headers);
 		$emailer->set_subject($subject);
 
+		// Do we want to force line breaks? It is HTML, so we should not replace line breaks...
+		//$message = preg_replace(array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/"), array("\r\n", "\r\n", "<br />\r\n"), $message);
+
 		$emailer->assign_vars(array(
 			'SITENAME' => $board_config['sitename'],
 			'BOARD_EMAIL' => $board_config['board_email'],
@@ -262,20 +267,20 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 		if ($is_done == '')
 		{
 			$url= append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="' . $mail_data['batch_wait'] . ';url=' . $url . '">'
-				)
-			);
+
+			$redirect_url = $url;
+			meta_refresh($mail_data['batch_wait'], $redirect_url);
+
 			$message = sprintf($lang['megamail_send_message'] ,$mail_data['batch_start'], ($mail_data['batch_start']+$mail_data['batch_size']), '<a href="' . $url . '">', '</a>');
 		}
 		else
 		{
 			$url= append_sid('admin_megamail.' . PHP_EXT);
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="'.$mail_data['batch_wait'].';url=' . $url . '">'
-				)
-			);
-			$message =  $lang['megamail_done']. '<br />' . sprintf($lang['megamail_proceed'],  '<a href="' . $url . '">', '</a>');
+
+			$redirect_url = $url;
+			meta_refresh($mail_data['batch_wait'], $redirect_url);
+
+			$message =  $lang['megamail_done']. '<br />' . sprintf($lang['megamail_proceed'], '<a href="' . $url . '">', '</a>');
 		}
 		message_die(GENERAL_MESSAGE, $message);
 
@@ -283,7 +288,7 @@ if ( isset($_GET['mail_id']) && isset($_GET['mail_session_id']) )
 	}
 }
 
-if ( $error )
+if ($error)
 {
 	$template->set_filenames(array('reg_header' => 'error_body.tpl'));
 	$template->assign_vars(array(
@@ -298,12 +303,12 @@ $sql = "SELECT m.*, u.username, g.group_name
 	FROM " . MEGAMAIL_TABLE . " m
 	LEFT JOIN " . USERS_TABLE . " u ON (m.user_id = u.user_id)
 	LEFT JOIN " . GROUPS_TABLE . " g ON (m.group_id = g.group_id)";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_MESSAGE, sprintf('Could not obtain list of email-sessions. If you want to create the table, click <a href="%s">here to install</a>', append_sid('admin_megamail.' . PHP_EXT . '?mode=install')), '', __LINE__, __FILE__, $sql);
 }
 $row_class = 0;
-if ( $mail_data = $db->sql_fetchrow($result) )
+if ($mail_data = $db->sql_fetchrow($result))
 {
 	do
 	{
@@ -343,7 +348,7 @@ if ( $mail_data = $db->sql_fetchrow($result) )
 		);
 		$row_class++;
 	}
-	while( $mail_data = $db->sql_fetchrow($result) );
+	while($mail_data = $db->sql_fetchrow($result));
 }
 else
 {
@@ -358,19 +363,19 @@ else
 $sql = "SELECT group_id, group_name
 	FROM " . GROUPS_TABLE . "
 	WHERE group_single_user <> 1";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not obtain list of groups', '', __LINE__, __FILE__, $sql);
 }
 
 $select_list = '<select name = "' . POST_GROUPS_URL . '"><option value = "-1">' . $lang['All_users'] . '</option>';
-if ( $row = $db->sql_fetchrow($result) )
+if ($row = $db->sql_fetchrow($result))
 {
 	do
 	{
 		$select_list .= '<option value = "' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
 	}
-	while ( $row = $db->sql_fetchrow($result) );
+	while ($row = $db->sql_fetchrow($result));
 }
 $select_list .= '</select>';
 

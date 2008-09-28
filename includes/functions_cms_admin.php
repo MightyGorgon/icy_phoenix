@@ -13,6 +13,78 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+/**
+* Testing File Creation
+*/
+function file_creation($path)
+{
+	$test_file = $path . 'icy_phoenix_testing_write_access_permissions.test';
+
+	// Check if the test file already exists...
+	if (file_exists($test_file))
+	{
+		if (!@unlink($test_file))
+		{
+			// It seems we haven't deleted it... try to change permissions
+			if (!@chmod($test_file, 0666))
+			{
+				return false;
+			}
+			else
+			{
+				if (!@unlink($test_file))
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	// Attempt to create a new file...
+	if (!@touch($test_file))
+	{
+		return false;
+	}
+	else
+	{
+		if (!@chmod($test_file, 0666))
+		{
+			if (!@unlink($test_file))
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		else
+		{
+			// We really want to make sure...
+			if (file_exists($test_file))
+			{
+				if (!@unlink($test_file))
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+/*
+* Common SQL
+*/
+
 function fix_weight_blocks($l_id, $table_name)
 {
 	global $db;
@@ -73,8 +145,6 @@ function fix_weight_blocks($l_id, $table_name)
 		}
 	}
 }
-
-// Common SQL
 
 function get_global_blocks_layout($table_name, $field_name, $id_var_value)
 {
@@ -368,7 +438,7 @@ function get_max_layout_id($table_name)
 	}
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
-	return $row[$field_name];
+	return $row[lid];
 }
 
 function delete_layout($layout_table, $block_pos_table, $l_id)

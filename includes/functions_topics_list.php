@@ -84,7 +84,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	{
 		$list_title = $lang['Topics'];
 	}
-	if (!empty($select_values) && !is_array($select_values) )
+	if (!empty($select_values) && !is_array($select_values))
 	{
 		$s_values = $select_values;
 		$select_values = array();
@@ -94,7 +94,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	// selections
 	$select_multi = false;
 	$select_unique = false;
-	if (!empty($select_field) && ($select_type > 0) && !empty($select_formname) )
+	if (!empty($select_field) && ($select_type > 0) && !empty($select_formname))
 	{
 		switch ($select_type)
 		{
@@ -141,9 +141,9 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	}
 
 	// read the user cookie
-	$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . "_t"]) : array();
-	$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . "_f"]) : array();
-	$tracking_all = ( isset($_COOKIE[$board_config['cookie_name'] . '_f_all']) ) ? intval($_COOKIE[$board_config['cookie_name'] . '_f_all']) : NULL;
+	$tracking_topics = (isset($_COOKIE[$board_config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
+	$tracking_forums = (isset($_COOKIE[$board_config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
+	$tracking_all = (isset($_COOKIE[$board_config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$board_config['cookie_name'] . '_f_all']) : NULL;
 
 	// categories hierarchy v 2 compliancy
 	$cat_hierarchy = function_exists(get_auth_keys);
@@ -178,7 +178,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		{
 			$topic_item_type = substr($topic_rowset[$i]['topic_id'], 0, 1);
 			$topic_id = intval(substr($topic_rowset[$i]['topic_id'], 1));
-			if ( $topic_item_type == POST_TOPIC_URL )
+			if ($topic_item_type == POST_TOPIC_URL)
 			{
 				$topic_ids[] = $topic_id;
 			}
@@ -191,7 +191,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$sql = "SELECT DISTINCT topic_id FROM " . POSTS_TABLE . "
 					WHERE topic_id IN ($s_topic_ids)
 						AND poster_id = " . $userdata['user_id'];
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not obtain post information', '', __LINE__, __FILE__, $sql);
 			}
@@ -211,24 +211,24 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 
 	// spanning of the first column (list name)
 	$span_left = 1;
-	if ( count($topic_rowset) > 0 )
+	if (count($topic_rowset) > 0)
 	{
 		// add folder image
 		$span_left++;
 	}
-	if ( $icon_installed )
+	if ($icon_installed)
 	{
 		// add topic icon
 		$span_left++;
 	}
-	if ( $select_unique )
+	if ($select_unique)
 	{
 		// selection in front is asked
 		$span_left++;
 	}
 	// spanning of the whole line (bottom row and/or empty list)
 	$span_all = $span_left + 4;
-	if ( $select_multi && (count($topic_rowset) >0) )
+	if ($select_multi && (count($topic_rowset) >0))
 	{
 		$span_all++;
 	}
@@ -242,30 +242,30 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	{
 		$topic_item_type = substr($topic_rowset[$i]['topic_id'], 0, 1);
 		$topic_id = intval(substr($topic_rowset[$i]['topic_id'], 1));
-		$topic_title = ( count($orig_word) ) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
+		$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
 		$replies = $topic_rowset[$i]['topic_replies'];
 		$topic_type = $topic_rowset[$i]['topic_type'];
-		$user_replied = ( !empty($user_topics) && isset($user_topics[$topic_rowset[$i]['topic_id']]) );
+		$user_replied = (!empty($user_topics) && isset($user_topics[$topic_rowset[$i]['topic_id']]));
 		$force_type_display = false;
 		$forum_id = $topic_rowset[$i]['forum_id'];
 
-		if ( defined('POST_BIRTHDAY') && ($topic_type == POST_BIRTHDAY) )
+		if (defined('POST_BIRTHDAY') && ($topic_type == POST_BIRTHDAY))
 		{
 			$topic_type = $lang['Birthday'] . ': ';
 		}
-		elseif( $topic_type == POST_NEWS )
+		elseif($topic_type == POST_NEWS)
 		{
 			$topic_type = $lang['News'] . ': ';
 		}
-		elseif( $topic_type == POST_GLOBAL_ANNOUNCE )
+		elseif($topic_type == POST_GLOBAL_ANNOUNCE)
 		{
 			$topic_type = $lang['Topic_Global_Announcement'] . ' ';
 		}
-		elseif( $topic_type == POST_ANNOUNCE )
+		elseif($topic_type == POST_ANNOUNCE)
 		{
 			$topic_type = $lang['Topic_Announcement'] . ' ';
 		}
-		elseif( $topic_type == POST_STICKY )
+		elseif($topic_type == POST_STICKY)
 		{
 			$topic_type = $lang['Topic_Sticky'] . ' ';
 		}
@@ -273,7 +273,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		{
 			$topic_type = '';
 		}
-		if( $topic_rowset[$i]['topic_vote'] )
+		if($topic_rowset[$i]['topic_vote'])
 		{
 			$topic_type .= $lang['Topic_Poll'] . ' ';
 			$force_type_display = true;
@@ -284,7 +284,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$folder_alt = $lang['Happy_birthday'];
 			$newest_post_img = '';
 		}
-		elseif( $topic_rowset[$i]['topic_status'] == TOPIC_MOVED )
+		elseif($topic_rowset[$i]['topic_status'] == TOPIC_MOVED)
 		{
 			$topic_type = $lang['Topic_Moved'] . ' ';
 			$topic_id = $topic_rowset[$i]['topic_moved_id'];
@@ -300,32 +300,32 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$user_replied = true;
 			*/
 
-			if( defined('POST_BIRTHDAY') && ($topic_rowset[$i]['topic_type'] == POST_BIRTHDAY) )
+			if(defined('POST_BIRTHDAY') && ($topic_rowset[$i]['topic_type'] == POST_BIRTHDAY))
 			{
 				$folder = $images['folder_birthday'];
 				$folder_new = $images['folder_birthday'];
 			}
-			elseif( $topic_rowset[$i]['topic_type'] == POST_NEWS )
+			elseif($topic_rowset[$i]['topic_type'] == POST_NEWS)
 			{
 				$folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_nor_read_own'] : $images['topic_nor_read'];
 				$folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_nor_unread_own'] : $images['topic_nor_unread'];
 			}
-			elseif( $topic_rowset[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE )
+			elseif($topic_rowset[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE)
 			{
 				$folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_glo_read_own'] : $images['topic_glo_read'];
 				$folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_glo_unread_own'] : $images['topic_glo_unread'];
 			}
-			elseif( $topic_rowset[$i]['topic_type'] == POST_ANNOUNCE )
+			elseif($topic_rowset[$i]['topic_type'] == POST_ANNOUNCE)
 			{
 				$folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_ann_read_own'] : $images['topic_ann_read'];
 				$folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_ann_unread_own'] : $images['topic_ann_unread'];
 			}
-			elseif( $topic_rowset[$i]['topic_type'] == POST_STICKY )
+			elseif($topic_rowset[$i]['topic_type'] == POST_STICKY)
 			{
 				$folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_imp_read_own'] : $images['topic_imp_read'];
 				$folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_imp_unread_own'] : $images['topic_imp_unread'];
 			}
-			elseif( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED )
+			elseif($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED)
 			{
 				$folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_nor_locked_read_own'] : $images['topic_nor_locked_read'];
 				$folder_new = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_nor_locked_unread_own'] : $images['topic_nor_locked_unread'];
@@ -344,39 +344,39 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 				}
 			}
 			$newest_post_img = '';
-			if ( $userdata['session_logged_in'] && ($topic_item_type == POST_TOPIC_URL) )
+			if ($userdata['session_logged_in'] && ($topic_item_type == POST_TOPIC_URL))
 			{
 				//<!-- BEGIN Unread Post Information to Database Mod -->
-				if( !$userdata['upi2db_access'])
+				if(!$userdata['upi2db_access'])
 				{
 				//<!-- END Unread Post Information to Database Mod -->
-					if( $topic_rowset[$i]['post_time'] > $userdata['user_lastvisit'] )
+					if($topic_rowset[$i]['post_time'] > $userdata['user_lastvisit'])
 					{
-						if( !empty($tracking_topics) || !empty($tracking_forums) || !empty($tracking_all) )
+						if(!empty($tracking_topics) || !empty($tracking_forums) || !empty($tracking_all))
 						{
 							$unread_topics = true;
-							if( !empty($tracking_topics[$topic_id]) )
+							if(!empty($tracking_topics[$topic_id]))
 							{
-								if( $tracking_topics[$topic_id] >= $topic_rowset[$i]['post_time'] )
+								if($tracking_topics[$topic_id] >= $topic_rowset[$i]['post_time'])
 								{
 									$unread_topics = false;
 								}
 							}
-							if( !empty($tracking_forums[$forum_id]) )
+							if(!empty($tracking_forums[$forum_id]))
 							{
-								if( $tracking_forums[$forum_id] >= $topic_rowset[$i]['post_time'] )
+								if($tracking_forums[$forum_id] >= $topic_rowset[$i]['post_time'])
 								{
 									$unread_topics = false;
 								}
 							}
-							if( !empty($tracking_all) )
+							if(!empty($tracking_all))
 							{
-								if( $tracking_all >= $topic_rowset[$i]['post_time'] )
+								if($tracking_all >= $topic_rowset[$i]['post_time'])
 								{
 									$unread_topics = false;
 								}
 							}
-							if ( $unread_topics )
+							if ($unread_topics)
 							{
 								$folder_image = $folder_new;
 								$folder_alt = $lang['New_posts'];
@@ -385,21 +385,21 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 							else
 							{
 								$folder_image = $folder;
-								$folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+								$folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 								$newest_post_img = '';
 							}
 						}
 						else
 						{
 							$folder_image = $folder_new;
-							$folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['New_posts'];
+							$folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['New_posts'];
 							$newest_post_img = '<a href="' . append_sid(VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=$topic_id&amp;view=newest") . '"><img src="' . $images['icon_newest_reply'] . '" alt="' . $lang['View_newest_post'] . '" title="' . $lang['View_newest_post'] . '" /></a> ';
 						}
 					}
 					else
 					{
 						$folder_image = $folder;
-						$folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+						$folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 						$newest_post_img = '';
 					}
 				//<!-- BEGIN Unread Post Information to Database Mod -->
@@ -413,28 +413,28 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			else
 			{
 				$folder_image = $folder;
-				$folder_alt = ( $topic_rowset[$i]['topic_status'] == TOPIC_LOCKED ) ? $lang['Topic_locked'] : $lang['No_new_posts'];
+				$folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 				$newest_post_img = '';
 			}
 		}
 
 		// generate list of page for the topic
 		$goto_page = '';
-		if( ( $replies + 1 ) > $board_config['posts_per_page'] )
+		if(($replies + 1) > $board_config['posts_per_page'])
 		{
-			$total_pages = ceil( ( $replies + 1 ) / $board_config['posts_per_page'] );
+			$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
 			$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
 			$times = 1;
 			for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 			{
 				$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . "?" . POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
-				if( $times == 1 && $total_pages > 4 )
+				if($times == 1 && $total_pages > 4)
 				{
 					$goto_page .= ' ... ';
 					$times = $total_pages - 3;
-					$j += ( $total_pages - 4 ) * $board_config['posts_per_page'];
+					$j += ($total_pages - 4) * $board_config['posts_per_page'];
 				}
-				else if ( $times < $total_pages )
+				else if ($times < $total_pages)
 				{
 					$goto_page .= ', ';
 				}
@@ -455,23 +455,23 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 				break;
 			default:
 				$view_topic_url = append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id);
-				$topic_author = ( $topic_rowset[$i]['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' : '';
-				$topic_author .= ( $topic_rowset[$i]['user_id'] != ANONYMOUS ) ? $topic_rowset[$i]['username'] : ( ( $topic_rowset[$i]['post_username'] != '' ) ? $topic_rowset[$i]['post_username'] : $lang['Guest'] );
-				$topic_author .= ( $topic_rowset[$i]['user_id'] != ANONYMOUS ) ? '</a>' : '';
+				$topic_author = ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' : '';
+				$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? $topic_rowset[$i]['username'] : (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']);
+				$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '</a>' : '';
 				$first_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
 				$last_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
-				$last_post_author = ( $topic_rowset[$i]['id2'] == ANONYMOUS ) ? ( ($topic_rowset[$i]['post_username2'] != '' ) ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '">' . $topic_rowset[$i]['user2'] . '</a>';
+				$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '">' . $topic_rowset[$i]['user2'] . '</a>';
 				$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?'  . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 				$views = $topic_rowset[$i]['topic_views'];
 				// BEGIN cmx_mod
-				$news_label = ( $topic_rowset[$i]['news_id'] > 0 ) ? $lang['News'] . ':' : '';
+				$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News'] . ':' : '';
 				// END cmx_mod
 				break;
 		}
 
 		// categories hierarchy v 2 compliancy
 		$nav_tree = '';
-		if ( $display_nav_tree && !empty($topic_rowset[$i]['forum_id']) )
+		if ($display_nav_tree && !empty($topic_rowset[$i]['forum_id']))
 		{
 			if ($cat_hierarchy)
 			{
@@ -484,7 +484,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			{
 				if ($is_auth[ $topic_rowset[$i]['forum_id'] ]['auth_view'])
 				{
-					$nav_tree = '<a href="' . append_sid(VIEWFORUM_MG . "?" . POST_FORUM_URL . "=" . $topic_rowset[$i]['forum_id']) . '" class="gensmall">' . $topic_rowset[$i]['forum_name'] . '</a>';
+					$nav_tree = '<a href="' . append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $topic_rowset[$i]['forum_id']) . '" class="gensmall">' . $topic_rowset[$i]['forum_name'] . '</a>';
 				}
 			}
 		}
@@ -497,22 +497,22 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		$topic_real_type = $topic_rowset[$i]['topic_type'];
 
 		// if no split between global and standard announcement, group them with standard announcement
-		if ( !$switch_split_global_announce && ($topic_real_type == POST_GLOBAL_ANNOUNCE) ) $topic_real_type = POST_ANNOUNCE;
+		if (!$switch_split_global_announce && ($topic_real_type == POST_GLOBAL_ANNOUNCE)) $topic_real_type = POST_ANNOUNCE;
 
 		// if no split between announce and sticky, group them with sticky
-		if ( !$switch_split_announce && ($topic_real_type == POST_ANNOUNCE) ) $topic_real_type = POST_NEWS;
+		if (!$switch_split_announce && ($topic_real_type == POST_ANNOUNCE)) $topic_real_type = POST_NEWS;
 
 		// if no split between news and global announcement, group them with normal
-		if ( !$switch_split_news && ($topic_real_type == POST_NEWS) ) $topic_real_type = POST_STICKY;
+		if (!$switch_split_news && ($topic_real_type == POST_NEWS)) $topic_real_type = POST_STICKY;
 
 		// if no split between sticky and normal, group them with normal
-		if ( !$switch_split_sticky && ($topic_real_type == POST_STICKY) ) $topic_real_type = POST_NORMAL;
+		if (!$switch_split_sticky && ($topic_real_type == POST_STICKY)) $topic_real_type = POST_NORMAL;
 
 		// check if rupture
 		$rupt = false;
 
 		// split
-		if ( ($i == 0) || $split_type )
+		if (($i == 0) || $split_type)
 		{
 			if ($i == 0)
 			{
@@ -535,7 +535,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			{
 				// footer
 				$template->assign_block_vars($tpl . '.row', array(
-					'COLSPAN'		=> $span_all,
+					'COLSPAN' => $span_all,
 					)
 				);
 
@@ -620,7 +620,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		}
 
 		// erase the type before the title if split
-		if ( $split_type && ($topic_real_type == $topic_rowset[$i]['topic_type']) && !$force_type_display)
+		if ($split_type && ($topic_real_type == $topic_rowset[$i]['topic_type']) && !$force_type_display)
 		{
 			$topic_type = '';
 		}
@@ -642,11 +642,11 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$type = $topic_rowset[$i]['topic_type'];
 			if ($type == POST_NORMAL)
 			{
-				if ( defined('POST_CALENDAR') && !empty($topic_rowset[$i]['topic_calendar_time']) )
+				if (defined('POST_CALENDAR') && !empty($topic_rowset[$i]['topic_calendar_time']))
 				{
 					$type = POST_CALENDAR;
 				}
-				if ( defined('POST_PICTURE') && !empty($topic_rowset[$i]['topic_pic_url']) )
+				if (defined('POST_PICTURE') && !empty($topic_rowset[$i]['topic_pic_url']))
 				{
 					$type = POST_PICTURE;
 				}
@@ -668,9 +668,9 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		// send topic to template
 		$selected = (!empty($select_values) && in_array($topic_rowset[$i]['topic_id'], $select_values));
 		$color = !$color;
-		$template->assign_block_vars( $tpl . '.row', array(
+		$template->assign_block_vars($tpl . '.row', array(
 			'ROW_CLASS' => ($color || !defined('TOPIC_ALTERNATE_ROW_CLASS')) ? $theme['td_class1'] : $theme['td_class2'],
-			'ROW_FOLDER_CLASS' => ($user_replied && defined('USER_REPLIED_CLASS')) ? USER_REPLIED_CLASS : ( ($color || !defined('TOPIC_ALTERNATE_ROW_CLASS')) ? $theme['td_class1'] : $theme['td_class2'] ),
+			'ROW_FOLDER_CLASS' => ($user_replied && defined('USER_REPLIED_CLASS')) ? USER_REPLIED_CLASS : (($color || !defined('TOPIC_ALTERNATE_ROW_CLASS')) ? $theme['td_class1'] : $theme['td_class2']),
 			'FORUM_ID' => $forum_id,
 			'TOPIC_ID' => $topic_id,
 			'TOPIC_FOLDER_IMG' => $folder_image,
@@ -702,9 +702,9 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			'L_SELECT' => ($selected && ($select_multi || $select_unique)) ? 'checked="checked"' : '',
 			)
 		);
-		$template->assign_block_vars( $tpl . '.row.topic', array());
+		$template->assign_block_vars($tpl . '.row.topic', array());
 
-		if ( !empty($topic_rowset[$i]['topic_desc']))
+		if (!empty($topic_rowset[$i]['topic_desc']) && $board_config['show_topic_description'])
 		{
 			$template->assign_block_vars($tpl . '.row.topic.switch_topic_desc', array());
 		}
@@ -721,13 +721,13 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		// icons
 		if ($icon_installed)
 		{
-			$template->assign_block_vars( $tpl . '.row.topic.icon', array());
+			$template->assign_block_vars($tpl . '.row.topic.icon', array());
 		}
 
 		// nav tree asked
 		if ($display_nav_tree && !empty($nav_tree))
 		{
-			$template->assign_block_vars( $tpl . '.row.topic.nav_tree', array());
+			$template->assign_block_vars($tpl . '.row.topic.nav_tree', array());
 		}
 	} // end for topic_rowset read
 
@@ -755,31 +755,31 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	if (count($topic_rowset) == 0)
 	{
 		// send no topics notice
-		$template->assign_block_vars( $tpl . '.row', array(
+		$template->assign_block_vars($tpl . '.row', array(
 			'L_NO_TOPICS' => $lang['No_search_match'],
 			'COLSPAN' => $span_all,
 			)
 		);
-		$template->assign_block_vars( $tpl . '.row.no_topics', array());
+		$template->assign_block_vars($tpl . '.row.no_topics', array());
 	}
 
 	// bottom line
 	if (!empty($footer))
 	{
-		$template->assign_block_vars( $tpl . '.row', array(
+		$template->assign_block_vars($tpl . '.row', array(
 			'COLSPAN' => $span_all,
 			'FOOTER' => $footer,
 			)
 		);
-		$template->assign_block_vars( $tpl . '.row.bottom', array());
+		$template->assign_block_vars($tpl . '.row.bottom', array());
 	}
 
 	// table closure
-	$template->assign_block_vars( $tpl . '.row', array(
+	$template->assign_block_vars($tpl . '.row', array(
 		'COLSPAN' => $span_all,
 		)
 	);
-	$template->assign_block_vars( $tpl . '.row.footer_table', array());
+	$template->assign_block_vars($tpl . '.row.footer_table', array());
 
 	// spacing
 	if (empty($footer))

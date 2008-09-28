@@ -6,7 +6,7 @@
 	</td>
 	<td align="right" valign="bottom" nowrap="nowrap">
 		{ALBUM_SEARCH_BOX}
-		<span class="pagination"><b>{PAGINATION}</b></span>
+		<span class="pagination">{PAGINATION}</span>
 	</td>
 </tr>
 </table>

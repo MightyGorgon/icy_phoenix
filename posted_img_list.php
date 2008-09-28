@@ -256,7 +256,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 			'PIC_IMAGE' => $pic_img_url,
 			'PIC_THUMB' => $pic_img_thumb,
 			'PIC_BBC_INPUT' => 'bbcode_box_' . $i,
-			'PIC_BBC' => '[img]' . $server_path . $pic_img_url . '[/img]',
+			'PIC_BBC' => '[img]' . $server_path . substr($pic_img_url, strlen(IP_ROOT_PATH)) . '[/img]',
 			'PIC_NAME' => $pic_names[$i]
 			)
 		);
@@ -401,7 +401,7 @@ else
 			'PIC_IMAGE' => $pic_img_url,
 			'PIC_THUMB' => $pic_img_thumb,
 			'PIC_BBC_INPUT' => 'bbcode_box_' . $i,
-			'PIC_BBC' => '[img]' . $server_path . $pic_img_url . '[/img]',
+			'PIC_BBC' => '[img]' . $server_path . substr($pic_img_url, strlen(IP_ROOT_PATH)) . '[/img]',
 			'PIC_NAME' => $pic_names[$i]
 			)
 		);

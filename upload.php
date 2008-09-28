@@ -158,7 +158,7 @@ if(isset($_FILES['userfile']))
 		'L_UPLOAD_SUCCESS' => $lang['Uploaded_Image_Success'],
 		'L_INSERT_BBC' => $lang['Upload_Insert_Image'],
 		'L_CLOSE_WINDOW' => $lang['Upload_Close'],
-		'IMG_BBCODE' => '[img]' . $server_path . $upload_dir . $filename . '.' . $extension . '[/img]',
+		'IMG_BBCODE' => '[img]' . $server_path . substr($upload_dir, strlen(IP_ROOT_PATH)) . $filename . '.' . $extension . '[/img]',
 		)
 	);
 

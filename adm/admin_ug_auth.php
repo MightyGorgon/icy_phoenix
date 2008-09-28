@@ -49,14 +49,7 @@ while(list($var, $param) = @each($params))
 $user_id = intval($user_id);
 $group_id = intval($group_id);
 // Disallow other admins to delete or edit the first admin - BEGIN
-if (defined('FOUNDER_ID'))
-{
-	$founder_id = FOUNDER_ID;
-}
-else
-{
-	$founder_id = get_founder_id();
-}
+$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 if (($user_id == $founder_id) && ($userdata['user_id'] != $founder_id))
 {
 	$edituser = $userdata['username'];

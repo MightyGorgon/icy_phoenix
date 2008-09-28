@@ -185,10 +185,8 @@ if ( isset($_POST['submit']) )
 		$db->clear_cache('zebra_users_');
 		if ($updated)
 		{
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(append_sid(PROFILE_MG . '?mode=zebra&amp;zmode=' . $zmode)) . '">'
-				)
-			);
+			$redirect_url = append_sid(append_sid(PROFILE_MG . '?mode=zebra&amp;zmode=' . $zmode));
+			meta_refresh(3, $redirect_url);
 			message_die(GENERAL_MESSAGE, (($zmode == 'friends') ? $lang['FRIENDS_UPDATED'] : $lang['FOES_UPDATED']));
 		}
 		else

@@ -66,6 +66,14 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'show_topic_description' => array(
+		'lang_key' => 'IP_show_topic_description',
+		'explain' => 'IP_show_topic_description_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
 	'edit_notes' => array(
 		'lang_key' => 'IP_edit_notes',
 		'explain' => 'IP_edit_notes_explain',

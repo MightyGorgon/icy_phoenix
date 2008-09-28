@@ -9,9 +9,9 @@
 </tr>
 <!-- BEGIN prune_results -->
 <tr>
-	<td class="{prune_results.ROW_CLASS}" align="center">{prune_results.FORUM_NAME}</td>
-	<td class="{prune_results.ROW_CLASS}" align="center">{prune_results.FORUM_TOPICS}</td>
-	<td class="{prune_results.ROW_CLASS}" align="center">{prune_results.FORUM_POSTS}</td>
+	<td class="{prune_results.ROW_CLASS} row-center">{prune_results.FORUM_NAME}</td>
+	<td class="{prune_results.ROW_CLASS} row-center">{prune_results.FORUM_TOPICS}</td>
+	<td class="{prune_results.ROW_CLASS} row-center">{prune_results.FORUM_POSTS}</td>
 </tr>
 <!-- END prune_results -->
 </table>

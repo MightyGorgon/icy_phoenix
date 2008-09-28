@@ -11,10 +11,11 @@
 </tr>
 <!-- BEGIN forum_row -->
 <tr>
-	<td class="{forum_row.ROW_CLASS}" align="center" nowrap="nowrap">{forum_row.S_FORUM}</td>
+	<td class="{forum_row.ROW_CLASS}" nowrap="nowrap"><span class="forumlink">{forum_row.S_FORUM}</span></td>
 	<!-- BEGIN forum_auth_data -->
 	<td class="{forum_row.ROW_CLASS} row-center" valign="center" nowrap="nowrap">{forum_row.forum_auth_data.S_AUTH_LEVELS_SELECT}</td>
 	<!-- END forum_auth_data -->
+	<td class="{forum_row.ROW_CLASS}" style="text-align: right;" nowrap="nowrap"><span class="forumlink">{forum_row.S_FORUM}</span></td>
 </tr>
 <!-- END forum_row -->
 <tr>

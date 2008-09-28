@@ -8,35 +8,13 @@
 *
 */
 
+// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
-if (defined('MAIN_ADMINS_ID'))
+if (function_exists('check_acp_module_access'))
 {
-	if (defined('JA_PARSING') && (JA_PARSING == true))
-	{
-		return;
-	}
-	$is_allowed = false;
-	$allowed_admins = explode(',', MAIN_ADMINS_ID);
-	if (defined('FOUNDER_ID'))
-	{
-		if ($userdata['user_id'] == FOUNDER_ID)
-		{
-			$is_allowed = true;
-		}
-	}
-	if ($is_allowed == false)
-	{
-		for ($i = 0; $i < count($allowed_admins); $i++)
-		{
-			if ($userdata['user_id'] == $allowed_admins[$i])
-			{
-				$is_allowed = true;
-				break;
-			}
-		}
-	}
+	$is_allowed = check_acp_module_access();
 	if ($is_allowed == false)
 	{
 		return;
@@ -47,13 +25,15 @@ if (defined('MAIN_ADMINS_ID'))
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	//$module['1400_DB_Maintenance']['100_Backup_DB'] = $filename . '?perform=backup';
+	//$module['1400_DB_Maintenance']['120_Backup_DB'] = $filename . '?perform=backup';
 	$file_uploads = (@phpversion() >= '4.0.0') ? @ini_get('file_uploads') : @get_cfg_var('file_uploads');
 	if( (empty($file_uploads) || $file_uploads != 0) && (strtolower($file_uploads) != 'off') && (@phpversion() != '4.0.4pl1') )
 	{
-		$module['1400_DB_Maintenance']['115_Restore_DB'] = $filename . '?perform=restore';
+		$module['1400_DB_Maintenance']['135_Restore_DB'] = $filename . '?perform=restore';
+		$ja_module['1400_DB_Maintenance']['135_Restore_DB'] = false;
 	}
-	$module['1400_DB_Maintenance']['120_Optimize_DB'] = $filename . '?perform=optimize';
+	$module['1400_DB_Maintenance']['140_Optimize_DB'] = $filename . '?perform=optimize';
+	$ja_module['1400_DB_Maintenance']['140_Optimize_DB'] = false;
 	return;
 }
 
@@ -62,6 +42,15 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+$is_allowed = check_acp_module_access();
+if ($is_allowed == false)
+{
+	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+}
+// Mighty Gorgon - ACP Privacy - END
+
 include(IP_ROOT_PATH . 'includes/sql_parse.' . PHP_EXT);
 
 //
@@ -785,9 +774,10 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 				}
 				$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="2;url=' . append_sid('admin_db_utilities.' . PHP_EXT . '?perform=backup&amp;additional_tables=' . quotemeta($additional_tables) . '&amp;backup_type=' . $backup_type . '&amp;drop=1&amp;backupstart=1&amp;phpbb_only=' . $phpbb_only . '&amp;gzipcompress=' . $gzipcompress . '&amp;startdownload=1') . '">',
+				$redirect_url = append_sid('admin_db_utilities.' . PHP_EXT . '?perform=backup&amp;additional_tables=' . quotemeta($additional_tables) . '&amp;backup_type=' . $backup_type . '&amp;drop=1&amp;backupstart=1&amp;phpbb_only=' . $phpbb_only . '&amp;gzipcompress=' . $gzipcompress . '&amp;startdownload=1');
+				meta_refresh(3, $redirect_url);
 
+				$template->assign_vars(array(
 					'MESSAGE_TITLE' => $lang['Database_Utilities'] . ': ' . $lang['Backup'],
 					'MESSAGE_TEXT' => $lang['Backup_download']
 					)

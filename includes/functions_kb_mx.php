@@ -30,23 +30,9 @@ if (!function_exists(mx_smilies_pass))
 		$smilies_path = $board_config['smilies_path'];
 		$board_config['smilies_path'] = PHPBB_URL . $board_config['smilies_path'];
 		$bbcode->allow_html = $board_config['allow_html'];
-		if ($board_config['allow_bbcode'] && ($bbcode_uid != ''))
-		{
-			$bbcode->allow_bbcode = $board_config['allow_bbcode'];
-		}
-		else
-		{
-			$bbcode->allow_bbcode = false;
-		}
-		if ($board_config['allow_smilies'])
-		{
-			$bbcode->allow_smilies = $board_config['allow_smilies'];
-		}
-		else
-		{
-			$bbcode->allow_smilies = false;
-		}
-		$bbcode->parse($message, $bbcode_uid);
+		$bbcode->allow_bbcode = $board_config['allow_bbcode'];
+		$bbcode->allow_smilies = $board_config['allow_smilies'];
+		$bbcode->parse($message);
 		$board_config['smilies_path'] = $smilies_path;
 		return $message;
 	}

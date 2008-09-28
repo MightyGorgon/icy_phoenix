@@ -99,7 +99,9 @@ if ( $board_config['use_captcha'] == true )
 	$db->sql_freeresult($result);
 
 	// For better compatibility with some servers which need absolute path to load TTFonts
-	$absolute_root_path = realpath(IP_ROOT_PATH);
+
+	//$absolute_root_path = IP_ROOT_PATH; //Why this doesn't work???
+	$absolute_root_path = str_replace('index.' . PHP_EXT, '', realpath(IP_ROOT_PATH . 'index.' . PHP_EXT));
 
 	// Prefs
 	$total_width = $captcha_config['width'];

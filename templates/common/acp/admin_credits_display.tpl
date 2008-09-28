@@ -38,13 +38,13 @@
 
 <!-- BEGIN listrow -->
 <tr>
-	<td class="{listrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">{listrow.HACK_NAME}&nbsp;{listrow.HACK_VERSION}</span></td>
-	<td class="{listrow.ROW_CLASS}" align="center"><span class="genmed">{listrow.HACK_AUTHOR}</span></td>
-	<td class="{listrow.ROW_CLASS}" align="center"><span class="genmed">{listrow.HACK_DESC}</span></td>
-	<td class="{listrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{listrow.HACK_WEBSITE}</span></td>
-	<td class="{listrow.ROW_CLASS}" align="center" valign="middle"><span class="genmed">{listrow.HACK_DISPLAY}</span></td>
-	<td class="{listrow.ROW_CLASS}" align="center" valign="middle"><span class="gen">{listrow.S_ACTION_EDIT}</span></td>
-	<td class="{listrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall"><input type="checkbox" name="delete_id_{listrow.HACK_ID}"></span></td>
+	<td class="{listrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">{listrow.HACK_NAME}&nbsp;{listrow.HACK_VERSION}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center"><span class="genmed">{listrow.HACK_AUTHOR}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center"><span class="genmed">{listrow.HACK_DESC}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{listrow.HACK_WEBSITE}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" valign="middle"><span class="genmed">{listrow.HACK_DISPLAY}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" valign="middle"><span class="gen">{listrow.S_ACTION_EDIT}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall"><input type="checkbox" name="delete_id_{listrow.HACK_ID}"></span></td>
 </tr>
 <!-- END listrow -->
 

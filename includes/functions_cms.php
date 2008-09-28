@@ -324,12 +324,11 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 				{
 					@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 					$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
-					$bbcode_uid = $block_info[$b_counter]['block_bbcode_uid'];
 					//$bbcode->allow_html = true;
 					$bbcode->allow_html = false;
 					$bbcode->allow_bbcode = true;
 					$bbcode->allow_smilies = true;
-					$message = $bbcode->parse($message, $bbcode_uid);
+					$message = $bbcode->parse($message);
 					//$message = str_replace("\n", "\n<br />\n", $message);
 					$message = '<div class="post-text">' . $message . '</div>';
 				}

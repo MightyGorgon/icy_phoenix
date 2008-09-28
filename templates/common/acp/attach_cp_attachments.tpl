@@ -41,15 +41,15 @@
 </tr>
 <!-- BEGIN attachrow -->
 <tr>
-	<td class="{attachrow.ROW_CLASS}" align="center"><span class="gen">&nbsp;{attachrow.ROW_NUMBER}&nbsp;</span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center"><span class="gen"><a href="{attachrow.U_VIEW_ATTACHMENT}" class="gen" target="_blank">{attachrow.FILENAME}</a></span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center"><span class="gen"><input type="text" size="40" maxlength="200" name="attach_comment_list[]" value="{attachrow.COMMENT}" class="post" /></span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center"><span class="gen">{attachrow.EXTENSION}</span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center" valign="middle"><span class="gen"><b>{attachrow.SIZE}</b></span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center" valign="middle"><span class="gen"><input type="text" size="3" maxlength="10" name="attach_count_list[]" value="{attachrow.DOWNLOAD_COUNT}" class="post" /></span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{attachrow.POST_TIME}</span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center" valign="middle"><span class="gen">{attachrow.POST_TITLE}</span></td>
-	<td class="{attachrow.ROW_CLASS}" align="center">{attachrow.S_DELETE_BOX}</td>
+	<td class="{attachrow.ROW_CLASS} row-center"><span class="gen">&nbsp;{attachrow.ROW_NUMBER}&nbsp;</span></td>
+	<td class="{attachrow.ROW_CLASS} row-center"><span class="gen"><a href="{attachrow.U_VIEW_ATTACHMENT}" class="gen" target="_blank">{attachrow.FILENAME}</a></span></td>
+	<td class="{attachrow.ROW_CLASS} row-center"><span class="gen"><input type="text" size="40" maxlength="200" name="attach_comment_list[]" value="{attachrow.COMMENT}" class="post" /></span></td>
+	<td class="{attachrow.ROW_CLASS} row-center"><span class="gen">{attachrow.EXTENSION}</span></td>
+	<td class="{attachrow.ROW_CLASS} row-center" valign="middle"><span class="gen"><b>{attachrow.SIZE}</b></span></td>
+	<td class="{attachrow.ROW_CLASS} row-center" valign="middle"><span class="gen"><input type="text" size="3" maxlength="10" name="attach_count_list[]" value="{attachrow.DOWNLOAD_COUNT}" class="post" /></span></td>
+	<td class="{attachrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{attachrow.POST_TIME}</span></td>
+	<td class="{attachrow.ROW_CLASS} row-center" valign="middle"><span class="gen">{attachrow.POST_TITLE}</span></td>
+	<td class="{attachrow.ROW_CLASS} row-center">{attachrow.S_DELETE_BOX}</td>
 	{attachrow.S_HIDDEN}
 </tr>
 <!-- END attachrow -->

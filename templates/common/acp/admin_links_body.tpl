@@ -20,12 +20,12 @@
 <!-- BEGIN linkrow -->
 <tr>
 	<td class="{linkrow.ROW_CLASS}" nowrap="nowrap"><a href="{linkrow.LINK_URL}" target="_blank">{linkrow.LINK_TITLE}</a></td>
-	<td class="{linkrow.ROW_CLASS}" align="center" nowrap="nowrap">{linkrow.LINK_CATEGORY}</td>
-	<td class="{linkrow.ROW_CLASS}" align="center" nowrap="nowrap">{linkrow.U_LINK_USER}</td>
+	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_CATEGORY}</td>
+	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.U_LINK_USER}</td>
 	<td class="{linkrow.ROW_CLASS}" nowrap="nowrap">{linkrow.LINK_JOINED}</td>
-	<td class="{linkrow.ROW_CLASS}" align="center" nowrap="nowrap">{linkrow.LINK_USER_IP}</td>
-	<td class="{linkrow.ROW_CLASS}" align="center" nowrap="nowrap">{linkrow.LINK_ACTIVE}</td>
-	<td class="{linkrow.ROW_CLASS}" align="center" nowrap="nowrap">{linkrow.LINK_HITS}</td>
+	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_USER_IP}</td>
+	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_ACTIVE}</td>
+	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_HITS}</td>
 	<td class="{linkrow.ROW_CLASS}" nowrap="nowrap">
 		<a href="{U_LINK}?mode=edit&link_id={linkrow.LINK_ID}">{L_EDIT}</a>
 		<a href="{U_LINK}?mode=delete&link_id={linkrow.LINK_ID}">{L_DELETE}</a>

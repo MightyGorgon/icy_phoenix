@@ -13,11 +13,11 @@
 </tr>
 <!-- BEGIN title -->
 <tr>
-	<td class="{title.ROW_CLASS}" align="center">{title.TITLE}</td>
-	<td class="{title.ROW_CLASS}" align="center">{title.PERMISSIONS}</td>
-	<td class="{title.ROW_CLASS}" align="center">{title.DATE_FORMAT}</td>
-	<td class="{title.ROW_CLASS}" align="center"><a href="{title.U_TITLE_EDIT}">{L_EDIT}</a></td>
-	<td class="{title.ROW_CLASS}" align="center"><a href="{title.U_TITLE_DELETE}">{L_DELETE}</a></td>
+	<td class="{title.ROW_CLASS} row-center">{title.TITLE}</td>
+	<td class="{title.ROW_CLASS} row-center">{title.PERMISSIONS}</td>
+	<td class="{title.ROW_CLASS} row-center">{title.DATE_FORMAT}</td>
+	<td class="{title.ROW_CLASS} row-center"><a href="{title.U_TITLE_EDIT}">{L_EDIT}</a></td>
+	<td class="{title.ROW_CLASS} row-center"><a href="{title.U_TITLE_DELETE}">{L_DELETE}</a></td>
 </tr>
 <!-- END title -->
 <tr><td class="cat" align="center" colspan="8"><input type="submit" class="mainoption" name="add" value="{ADD_NEW}" /></td></tr>

@@ -257,7 +257,7 @@ class dlmod
 		/*
 		* read the index
 		*/
-		$cat_fields = 'id, parent, path, cat_name, sort, bbcode_uid, auth_view, auth_dl, auth_up, auth_mod, must_approve, allow_mod_desc, statistics, stats_prune, comments, cat_traffic, cat_traffic_use, allow_thumbs, auth_cread, auth_cpost, approve_comments, bug_tracker';
+		$cat_fields = 'id, parent, path, cat_name, sort, auth_view, auth_dl, auth_up, auth_mod, must_approve, allow_mod_desc, statistics, stats_prune, comments, cat_traffic, cat_traffic_use, allow_thumbs, auth_cread, auth_cpost, approve_comments, bug_tracker';
 
 		if ($enable_desc)
 		{
@@ -643,7 +643,6 @@ class dlmod
 				$tree_dl[$cat_id]['description'] = $this->dl_index[$cat_id]['description'];
 				$tree_dl[$cat_id]['rules'] = $this->dl_index[$cat_id]['rules'];
 				$tree_dl[$cat_id]['cat_name'] = $this->dl_index[$cat_id]['cat_name'];
-				$tree_dl[$cat_id]['bbcode_uid'] = $this->dl_index[$cat_id]['bbcode_uid'];
 				$tree_dl[$cat_id]['nav_path'] = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
 				$tree_dl[$cat_id]['cat_path'] = $this->dl_index[$cat_id]['path'];
 				$tree_dl[$cat_id]['total'] = $this->dl_index[$cat_id]['total'];
@@ -689,7 +688,6 @@ class dlmod
 			$tree_dl[$only_cat]['description'] = $this->dl_index[$only_cat]['description'];
 			$tree_dl[$only_cat]['rules'] = $this->dl_index[$only_cat]['rules'];
 			$tree_dl[$only_cat]['cat_name'] = $this->dl_index[$only_cat]['cat_name'];
-			$tree_dl[$only_cat]['bbcode_uid'] = $this->dl_index[$only_cat]['bbcode_uid'];
 			$tree_dl[$only_cat]['nav_path'] = append_sid('downloads.' . PHP_EXT . "?cat=$only_cat");
 			$tree_dl[$only_cat]['cat_path'] = $this->dl_index[$only_cat]['path'];
 			$tree_dl[$only_cat]['total'] = $this->dl_index[$only_cat]['total'];
@@ -757,7 +755,6 @@ class dlmod
 						$tree_dl[$cat_id]['description'] = $this->dl_index[$cat_id]['description'];
 						$tree_dl[$cat_id]['rules'] = $this->dl_index[$cat_id]['rules'];
 						$tree_dl[$cat_id]['cat_name'] = $seperator.$this->dl_index[$cat_id]['cat_name'];
-						$tree_dl[$cat_id]['bbcode_uid'] = $this->dl_index[$cat_id]['bbcode_uid'];
 						$tree_dl[$cat_id]['nav_path'] = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
 						$tree_dl[$cat_id]['cat_path'] = $this->dl_index[$cat_id]['path'];
 						$tree_dl[$cat_id]['total'] = intval($this->dl_index[$cat_id]['total']);
@@ -1007,20 +1004,14 @@ class dlmod
 		$temp_title = $this->dl_index[$parent]['cat_name'];
 		$temp_title = str_replace('&nbsp;&nbsp;|', '', $temp_title);
 		$temp_title = str_replace('___&nbsp;', '', $temp_title);
-		$cat_bbcode_uid = $this->dl_index[$parent]['bbcode_uid'];
 
 		if ($disp_art == 'url')
 		{
-			/*
-			$temp_title = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $temp_title);
-			$temp_title = ($board_config['allow_bbcode'] && $cat_bbcode_uid != '') ? $bbcode->parse($temp_title, $cat_bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $temp_title);
-			$temp_title = ($board_config['allow_smilies']) ? smilies_pass($temp_title) : $temp_title;
-			*/
-			//$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
+			//$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 			$bbcode->allow_html = false;
-			$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
-			$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
-			$temp_title = $bbcode->parse($temp_title, $cat_bbcode_uid);
+			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
+			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+			$temp_title = $bbcode->parse($temp_title);
 			$seperator = '&nbsp;&raquo;&nbsp;';
 		}
 		else

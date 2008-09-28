@@ -248,9 +248,8 @@ else
 
 	$message = $lang['Pics_deleted_successfully'];
 
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">')
-	);
+	$redirect_url = append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id));
+	meta_refresh(3, $redirect_url);
 
 	if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{

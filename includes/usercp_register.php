@@ -292,7 +292,6 @@ if (
 	}
 
 	$signature = (isset($signature)) ? str_replace('<br />', "\n", $signature) : '';
-	$signature_bbcode_uid = '';
 
 	$gender = (isset($_POST['gender'])) ? intval ($_POST['gender']) : 0;
 	$selfdes = str_replace('<br />', "\n", $selfdes);
@@ -757,11 +756,7 @@ if (isset($_POST['submit']))
 			}
 		}
 
-		if (!isset($signature_bbcode_uid) || $signature_bbcode_uid == '')
-		{
-			$signature_bbcode_uid = ($allowbbcode) ? make_bbcode_uid() : '';
-		}
-		$signature = prepare_message($signature, $allowhtml, $allowbbcode, $allowsmilies, $signature_bbcode_uid);
+		$signature = prepare_message($signature, $allowhtml, $allowbbcode, $allowsmilies);
 	}
 
 /*
@@ -1084,10 +1079,8 @@ if (isset($_POST['submit']))
 				$message = $lang['Profile_updated'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>') . '<br /><br />' . sprintf($lang['Cpl_Click_Return_Cpl'], '<a href="' . append_sid($redirect_url) . '">', '</a>');
 			}
 
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid($redirect_url) . '">'
-				)
-			);
+			$redirect_url = append_sid($redirect_url);
+			meta_refresh(3, $redirect_url);
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
@@ -1116,8 +1109,8 @@ if (isset($_POST['submit']))
 // IN LINE ADD
 // , user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color
 // , $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color
-			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_from_flag, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_sig_bbcode_uid, user_avatar, user_avatar_type, user_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color, user_aim, user_yim, user_msnm, user_skype, user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_next_birthday_greeting, user_active, user_actkey)
-				VALUES ('" . str_replace("\'", "''", $user_registered_ip) . "', '" . str_replace("\'", "''", $user_registered_hostname) . "', $user_id, '" . str_replace("\'", "''", $username) . "', " . time() . ", '" . str_replace("\'", "''", $new_password) . "', '" . str_replace("\'", "''", $email) . "', '" . str_replace("\'", "''", $icq) . "', '" . str_replace("\'", "''", $website) . "', '" . str_replace("\'", "''", $occupation) . "', '" . str_replace("\'", "''", $location) . "', '$user_flag', '" . str_replace("\'", "''", $interests) . "', '" . str_replace("\'", "''", $phone) . "', '" . str_replace("\'", "''", $selfdes) . "', $profile_view_popup, '" . str_replace("\'", "''", $signature) . "', '$signature_bbcode_uid', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . str_replace("\'", "''", str_replace(' ', '+', $aim)) . "', '" . str_replace("\'", "''", $yim) . "', '" . str_replace("\'", "''", $msn) . "', '" . str_replace("\'", "''", $skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . str_replace("\'", "''", $user_dateformat) . "', '" . str_replace("\'", "''", $user_posts_per_page) . "', '" . str_replace("\'", "''", $user_topics_per_page) . "', '" . str_replace("\'", "''", $user_hot_threshold) . "', '" . str_replace("\'", "''", $user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$next_birthday_greeting', ";
+			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_from_flag, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color, user_aim, user_yim, user_msnm, user_skype, user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_next_birthday_greeting, user_active, user_actkey)
+				VALUES ('" . str_replace("\'", "''", $user_registered_ip) . "', '" . str_replace("\'", "''", $user_registered_hostname) . "', $user_id, '" . str_replace("\'", "''", $username) . "', " . time() . ", '" . str_replace("\'", "''", $new_password) . "', '" . str_replace("\'", "''", $email) . "', '" . str_replace("\'", "''", $icq) . "', '" . str_replace("\'", "''", $website) . "', '" . str_replace("\'", "''", $occupation) . "', '" . str_replace("\'", "''", $location) . "', '$user_flag', '" . str_replace("\'", "''", $interests) . "', '" . str_replace("\'", "''", $phone) . "', '" . str_replace("\'", "''", $selfdes) . "', $profile_view_popup, '" . str_replace("\'", "''", $signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . str_replace("\'", "''", str_replace(' ', '+', $aim)) . "', '" . str_replace("\'", "''", $yim) . "', '" . str_replace("\'", "''", $msn) . "', '" . str_replace("\'", "''", $skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . str_replace("\'", "''", $user_dateformat) . "', '" . str_replace("\'", "''", $user_posts_per_page) . "', '" . str_replace("\'", "''", $user_topics_per_page) . "', '" . str_replace("\'", "''", $user_hot_threshold) . "', '" . str_replace("\'", "''", $user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$next_birthday_greeting', ";
 			if (($board_config['require_activation'] == USER_ACTIVATION_SELF) || ($board_config['require_activation'] == USER_ACTIVATION_ADMIN) || $coppa)
 			{
 				$user_actkey = gen_rand_string(true);
@@ -1178,14 +1171,7 @@ if (isset($_POST['submit']))
 			$register_pm = $lang['register_pm'];
 			$privmsgs_date = date('U');
 
-			if (defined('FOUNDER_ID'))
-			{
-				$founder_id = FOUNDER_ID;
-			}
-			else
-			{
-				$founder_id = get_founder_id();
-			}
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
 			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($register_pm_subject, $board_config['sitename']))) . "', '" . $founder_id . "', " . $user_id . ", " . $privmsgs_date . ", '0', '1', '1', '0')";
 			if (!$db->sql_query($sql))
@@ -1194,7 +1180,7 @@ if (isset($_POST['submit']))
 			}
 
 			$privmsg_sent_id = $db->sql_nextid();
-			$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text, privmsgs_bbcode_uid) VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", addslashes(sprintf($register_pm, $board_config['sitename'], $board_config['sitename']))) . "', '" . make_bbcode_uid() . "')";
+			$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text) VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", addslashes(sprintf($register_pm, $board_config['sitename'], $board_config['sitename']))) . "')";
 			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not insert private message sent text', '', __LINE__, __FILE__, $sql);
@@ -1408,9 +1394,7 @@ if ($error)
 	$interests = stripslashes($interests);
 	$phone = htmlspecialchars(stripslashes($phone));
 	$selfdes = stripslashes($selfdes);
-	$selfdes = ($signature_bbcode_uid != '') ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid\]/si", ']', $selfdes) : $selfdes;
 	$signature = stripslashes($signature);
-	$signature = ($signature_bbcode_uid != '') ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid(=|\])/si", '\\3', $signature) : $signature;
 
 	$user_lang = stripslashes($user_lang);
 	$user_dateformat = stripslashes($user_dateformat);
@@ -1440,9 +1424,8 @@ elseif ($mode == 'editprofile' && !isset($_POST['avatargallery']) && !isset($_PO
 	$interests = $userdata['user_interests'];
 	$gender=$userdata['user_gender'];
 	$birthday = $userdata['user_birthday'];
-	$signature_bbcode_uid = $userdata['user_sig_bbcode_uid'];
-	$selfdes = ($signature_bbcode_uid != '') ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid\]/si", ']', $userdata['user_selfdes']) : $userdata['user_selfdes'];
-	$signature = ($signature_bbcode_uid != '') ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid(=|\])/si", '\\3', $userdata['user_sig']) : $userdata['user_sig'];
+	$selfdes = $userdata['user_selfdes'];
+	$signature = $userdata['user_sig'];
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	$upi2db_which_system = $userdata['user_upi2db_which_system'];

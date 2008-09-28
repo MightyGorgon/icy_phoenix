@@ -73,9 +73,9 @@
 <tr>
 	<td class="{optimize.ROW_CLASS}">{optimize.TABLE}</td>
 	<td class="{optimize.ROW_CLASS}" align="right">{optimize.RECORD}</td>
-	<td class="{optimize.ROW_CLASS}" align="center">{optimize.TYPE}</td>
+	<td class="{optimize.ROW_CLASS} row-center">{optimize.TYPE}</td>
 	<td class="{optimize.ROW_CLASS}" align="right">{optimize.SIZE}</td>
-	<td class="{optimize.ROW_CLASS}" align="center">{optimize.STATUS}</td>
+	<td class="{optimize.ROW_CLASS} row-center">{optimize.STATUS}</td>
 	<td class="{optimize.ROW_CLASS}">{optimize.S_SELECT_TABLE}</td>
 </tr>
 <!-- END optimize -->

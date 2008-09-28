@@ -85,7 +85,7 @@ if(!function_exists(imp_recent_topics_block_func))
 			$recent_topic_row[$i]['username'] = colorize_username($recent_topic_row[$i]['user_id']);
 			$template->assign_block_vars($style_row . '.recent_topic_row', array(
 				'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $recent_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],
-				'L_TITLE' => $bbcode->parse($recent_topic_row[$i]['topic_title'], $bbcode_uid, true),
+				'L_TITLE' => $bbcode->parse($recent_topic_row[$i]['topic_title'], '', true),
 				'L_BY' => $lang['By'],
 				'L_ON' => $lang['On'],
 				'U_POSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $recent_topic_row[$i]['user_id']),

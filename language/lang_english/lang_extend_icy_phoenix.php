@@ -27,9 +27,10 @@ $lang['40_IMG_Posting'] = 'Images In Posts';
 $lang['50_Hierarchy_setting'] = 'Forum';
 $lang['60_Calendar_settings'] = 'Calendar';
 $lang['70_SEO'] = 'SEO';
+$lang['80_Security'] = 'Logs And Security';
 
 // admin part
-if ( $lang_extend_admin )
+if ($lang_extend_admin)
 {
 	$lang['Lang_extend_icy_phoenix'] = 'Icy Phoenix';
 
@@ -90,27 +91,12 @@ if ( $lang_extend_admin )
 	$lang['IP_cms_style'] = 'CMS Modern Style';
 	$lang['IP_cms_style_explain'] = 'Modern Style for CMS consists in a modern layout with top transparent menu, while classic style has side menu';
 
-	$lang['IP_mg_log_actions'] = 'Enable TXT Actions Log';
-	$lang['IP_mg_log_actions_explain'] = 'By enabling this option any action that modifies the DB will be stored in a text file on the server (file will be stored in the LOGS folder). This file is not easy to read, but it may be useful under certain conditions. Enable it only if you know what your doing (site may slow down if you enable it).';
-
-	$lang['IP_admin_protect'] = 'Protect Main Admin Account';
-	$lang['IP_admin_protect_explain'] = 'Enabling this option will add more security to Main Admin';
-
 	$lang['IP_split_ga_ann_sticky'] = 'Split Topic by Type';
 	$lang['IP_split_ga_ann_sticky_explain'] = 'Here you can choose a way to split Topics by Type on the viewforum page';
 	$lang['IP_split_topic_0'] = '<p>All Topic Types Together (no Split)</p>';
 	$lang['IP_split_topic_1'] = '<p>Global Announcements, Announcements and Stickies together, Normal Topics split</p>';
 	$lang['IP_split_topic_2'] = '<p>Global Announcements split, Announcements and Stickies joined together, Normal Topics split</p>';
 	$lang['IP_split_topic_3'] = '<p>All Topic Types Split</p>';
-
-	$lang['IP_write_errors_log'] = 'Enable Errors Log';
-	$lang['IP_write_errors_log_explain'] = 'By enabling this option all errors will be logged into a daily TXT file.';
-
-	$lang['IP_write_digests_log'] = 'Enable Digests Log';
-	$lang['IP_write_digests_log_explain'] = 'By enabling this option all digests sent will be logged into a daily TXT file.';
-
-	$lang['IP_logs_path'] = 'Path for Logs (remember to CHMOD this folder to 0755 or 0777 as required)';
-	$lang['IP_logs_path_explain'] = 'Insert the path for the errors and other logs relative to your root and without ending slash. Example: <b>logs</b>.';
 
 	// TAB - SQL Charge
 	$lang['IP_fast_n_furious'] = 'Fast And Furious';
@@ -207,6 +193,9 @@ if ( $lang_extend_admin )
 
 	$lang['IP_no_bump'] = 'Forbid bumping within 24 hours';
 	$lang['IP_no_bump_explain'] = 'Enabling this option last posters won\'t be able to post within 24 hours from their last post unless someone else has posted a reply';
+
+	$lang['IP_show_topic_description'] = 'Enable Topic Description';
+	$lang['IP_show_topic_description_explain'] = 'Enabling this option will enable Topic Description while posting and browsing forums';
 
 	$lang['IP_edit_notes'] = 'Enable Edit Notes';
 	$lang['IP_edit_notes_explain'] = 'Enabling this option will enable Edit Notes';
@@ -375,6 +364,25 @@ if ( $lang_extend_admin )
 	$lang['IP_similar_ignore_forums_ids'] = 'Similar Topics :: Ignored forums';
 	$lang['IP_similar_ignore_forums_ids_explain'] = 'Enter the ID\'s of forums, in which the similar topics will be ignored (for example test forum, forum for talk, etc.). One ID per line.';
 
+	// TAB - Logging And Security
+	$lang['IP_admin_protect'] = 'Protect Main Admin Account';
+	$lang['IP_admin_protect_explain'] = 'Enabling this option will add more security to Main Admin: it can\'t be demoted by others administrators or users.';
+
+	$lang['IP_db_log_actions'] = 'Enable DB Actions Log';
+	$lang['IP_db_log_actions_explain'] = 'By enabling this option any action that modifies the DB will be stored in a the DB. If this option has been set as true in constants.php, then cannot be disabled in ACP. If you select to have the reports, then extra files will be stored with all errors logged.';
+
+	$lang['IP_mg_log_actions'] = 'Enable TXT Actions Log';
+	$lang['IP_mg_log_actions_explain'] = 'By enabling this option any action that modifies the DB will be stored in a text file on the server (file will be stored in the LOGS folder). This file is not easy to read, but it may be useful under certain conditions. Enable it only if you know what your doing (site may slow down if you enable it).';
+
+	$lang['IP_write_errors_log'] = 'Enable Site Errors Log';
+	$lang['IP_write_errors_log_explain'] = 'By enabling this option all site errors (i.e. 404 file missing, bad requests, etc) will be logged into a daily TXT file. Remember that you need to enable errors redirecting to errors.php in .htaccess to use this feature (an example is included in .htaccess, just insert your domain and decomment the lines).';
+
+	$lang['IP_write_digests_log'] = 'Enable Digests Log';
+	$lang['IP_write_digests_log_explain'] = 'By enabling this option all digests sent will be logged into a daily TXT file.';
+
+	$lang['IP_logs_path'] = 'Path for Logs (remember to CHMOD this folder to 0755 or 0777 as required)';
+	$lang['IP_logs_path_explain'] = 'Insert the path for the errors and other logs relative to your root and without ending slash. Example: <b>logs</b>.';
+
 
 	// lang_extend_mods_settings.php
 	$lang['Lang_extend_mods_settings'] = 'Icy Phoenix Settings';
@@ -394,8 +402,6 @@ $lang['CFG_ADMIN'] = 'ADMIN';
 $lang['Hierarchy_setting'] = 'Forum';
 $lang['Forum_link'] = 'Link redirection';
 $lang['Forum_link_visited'] = 'This link has been visited %d times';
-$lang['Redirect'] = 'Redirect';
-$lang['Redirect_to'] = 'If your browser does not support meta redirection please click %sHERE% to be redirected';
 
 $lang['Use_sub_forum'] = 'Index packing';
 $lang['Index_packing_explain'] = 'Choose the level of packing you want for the index';
@@ -452,6 +458,8 @@ $lang['Rules_calendar_cannot'] = 'You <b>cannot</b> post calendar events';
 $lang['birthday_header'] = 'Happy Birthday!';
 $lang['birthday'] = '<b>%s</b> has a birthday today!';
 // lang_extend_topic_calendar.php - END
+
+$lang['DB_LOG_ALL'] = 'Yes with error reports';
 
 //$lang[''] = '';
 

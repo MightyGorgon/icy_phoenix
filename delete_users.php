@@ -133,11 +133,9 @@ $message = '<b>Mode</b>: [ <span class="topic_glo">' . $mode_des . '</span> ]<br
 
 if (($mode == 'prune_mg') && ($users_number == $i))
 {
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('delete_users.' . PHP_EXT . '?mode=' . $mode . '&amp;users_number=' . $users_number . '&amp;days=' . $days) . '">'
-		)
-	);
-	$message = '<span class="topic_glo">IN PROGRESS...</span><br /><br />' . $message;
+	$redirect_url = append_sid('delete_users.' . PHP_EXT . '?mode=' . $mode . '&amp;users_number=' . $users_number . '&amp;days=' . $days);
+	meta_refresh(3, $redirect_url);
+	$message = '<span class="topic_glo">' . $lang['InProgress'] . '</span><br /><br />' . $message;
 }
 else
 {

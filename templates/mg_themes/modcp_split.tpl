@@ -14,7 +14,6 @@ function toggle_check_all()
 -->
 </script>
 
-<form method="post" name="post_ids" action="{S_SPLIT_ACTION}">
 {IMG_TBL}<div class="forumline nav-div">
 	<p class="nav-header">
 		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}
@@ -24,6 +23,8 @@ function toggle_check_all()
 		&nbsp;
 	</div>
 </div>{IMG_TBR}
+
+<form method="post" name="post_ids" action="{S_SPLIT_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SPLIT_TOPIC}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="3"><span class="gensmall">{L_SPLIT_TOPIC_EXPLAIN}</span></th></tr>
 <tr>
@@ -61,6 +62,7 @@ function toggle_check_all()
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
 </form>
 
 <table class="empty-table" width="100%" align="center" cellspacing="0">

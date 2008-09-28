@@ -69,9 +69,6 @@ if($action == 'edit' || $action == 'add')
 		$cat_parent .= '<option value="0">&nbsp;&raquo;&nbsp;' . $lang['Dl_cat_index'] . '</option>';
 		$cat_parent .= $dl_mod->dl_dropdown(0, 0, $index[$cat_id]['parent'], 'auth_view', $cat_id);
 		$cat_parent .= '</select>';
-		$bbcode_uid = $index[$cat_id]['bbcode_uid'];
-		$description = preg_replace('/\:(([a-z0-9]:)?)' . $bbcode_uid . '/s', '', $description);
-		$rules = preg_replace('/\:(([a-z0-9]:)?)' . $bbcode_uid . '/s', '', $rules);
 		$statistics = $index[$cat_id]['statistics'];
 		$stats_prune = $index[$cat_id]['stats_prune'];
 		$comments = $index[$cat_id]['comments'];
@@ -342,12 +339,11 @@ elseif($action == 'save_cat')
 	$rules = ( isset($_POST['rules']) ) ? trim($_POST['rules']) : '';
 	$cat_name = ( isset($_POST['cat_name']) ) ? trim($_POST['cat_name']) : '';
 	$path = ( isset($_POST['path']) ) ? trim($_POST['path']) : '';
-	$bbcode_uid = ($board_config['allow_bbcode']) ? make_bbcode_uid() : '';
 	$bbcode_on = $board_config['allow_bbcode'];
 	$smilie_on = $board_config['allow_smilies'];
 	$html_on = $board_config['allow_html'];
-	$description = prepare_message(trim($description), $html_on, $bbcode_on, $smilie_on, $bbcode_uid);
-	$rules = prepare_message(trim($rules), $html_on, $bbcode_on, $smilie_on, $bbcode_uid);
+	$description = prepare_message(trim($description), $html_on, $bbcode_on, $smilie_on);
+	$rules = prepare_message(trim($rules), $html_on, $bbcode_on, $smilie_on);
 	$must_approve = ( isset($_POST['must_approve']) ) ? intval($_POST['must_approve']) : 0;
 	$allow_mod_desc = ( isset($_POST['allow_mod_desc']) ) ? intval($_POST['allow_mod_desc']) : 0;
 	$statistics = ( isset($_POST['allow_mod_desc']) ) ? intval($_POST['statistics']) : 0;
@@ -390,7 +386,6 @@ elseif($action == 'save_cat')
 			parent = $cat_parent,
 			cat_name = '" . str_replace("\'", "''", $cat_name) . "',
 			path= '".str_replace("\'", "''", $path)."',
-			bbcode_uid = '$bbcode_uid',
 			must_approve = $must_approve,
 			allow_mod_desc = $allow_mod_desc,
 			statistics = $statistics,
@@ -413,9 +408,9 @@ elseif($action == 'save_cat')
 	else
 	{
 		$sql = "INSERT INTO " . DL_CAT_TABLE . "
-			(cat_name, parent, description, rules, path, bbcode_uid, must_approve, allow_mod_desc, statistics, stats_prune, comments, cat_traffic, allow_thumbs, approve_comments, auth_view, auth_dl, auth_up, auth_mod, auth_cread, auth_cpost, bug_tracker)
+			(cat_name, parent, description, rules, path, must_approve, allow_mod_desc, statistics, stats_prune, comments, cat_traffic, allow_thumbs, approve_comments, auth_view, auth_dl, auth_up, auth_mod, auth_cread, auth_cpost, bug_tracker)
 			VALUES
-			('" . str_replace("\'", "''", $cat_name) . "', $cat_parent, '" . str_replace("\'", "''", $description) . "', '" . str_replace("\'", "''", $rules) . "', '".str_replace("\'", "''", $path)."', '$bbcode_uid', $must_approve, $allow_mod_desc, $statistics, $stats_prune, $comments, $cat_traffic, $allow_thumbs, $approve_comments, $auth_view, $auth_dl, $auth_up, $auth_mod, $auth_cread, $auth_cpost, $bug_tracker)";
+			('" . str_replace("\'", "''", $cat_name) . "', $cat_parent, '" . str_replace("\'", "''", $description) . "', '" . str_replace("\'", "''", $rules) . "', '".str_replace("\'", "''", $path)."', $must_approve, $allow_mod_desc, $statistics, $stats_prune, $comments, $cat_traffic, $allow_thumbs, $approve_comments, $auth_view, $auth_dl, $auth_up, $auth_mod, $auth_cread, $auth_cpost, $bug_tracker)";
 
 		$message = $lang['Dl_category_added'];
 	}

@@ -129,9 +129,9 @@ if ($userdata['upi2db_access'])
 			$mark_read_text = always_read($t, $always_read, $unread);
 		}
 
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">')
-		);
+		$redirect_url = append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append);
+		meta_refresh(3, $redirect_url);
+
 		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?'. $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -386,9 +386,8 @@ if ($bypass)
 			}
 			//<!-- END Unread Post Information to Database Mod -->
 
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">')
-			);
+			$redirect_url = append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append);
+			meta_refresh(3, $redirect_url);
 		}
 
 		$message = $lang['Topics_marked_read'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append) . '">', '</a> ');
@@ -472,8 +471,7 @@ if ($bypass)
 				{
 					$is_watching_forum = 0;
 
-					$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-					$sql = "DELETE $sql_priority FROM " . FORUMS_WATCH_TABLE . "
+					$sql = "DELETE FROM " . FORUMS_WATCH_TABLE . "
 						WHERE forum_id = $forum_id
 							AND user_id = " . $userdata['user_id'];
 					if(!$result = $db->sql_query($sql))
@@ -482,9 +480,8 @@ if ($bypass)
 					}
 				}
 
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">')
-				);
+				$redirect_url = append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start);
+				meta_refresh(3, $redirect_url);
 
 				$message = $lang['No_longer_watching_forum'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -495,8 +492,7 @@ if ($bypass)
 
 				if($row['notify_status'])
 				{
-					$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-					$sql = "UPDATE $sql_priority " . FORUMS_WATCH_TABLE . "
+					$sql = "UPDATE " . FORUMS_WATCH_TABLE . "
 						SET notify_status = 0
 						WHERE forum_id = $forum_id
 							AND user_id = " . $userdata['user_id'];
@@ -515,8 +511,7 @@ if ($bypass)
 				{
 					$is_watching_forum = true;
 
-					$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-					$sql = "INSERT $sql_priority INTO " . FORUMS_WATCH_TABLE . " (user_id, forum_id, notify_status)
+					$sql = "INSERT INTO " . FORUMS_WATCH_TABLE . " (user_id, forum_id, notify_status)
 						VALUES (" . $userdata['user_id'] . ", $forum_id, 0)";
 					if(!$result = $db->sql_query($sql))
 					{
@@ -524,10 +519,8 @@ if ($bypass)
 					}
 				}
 
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">'
-					)
-				);
+				$redirect_url = append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start);
+				meta_refresh(3, $redirect_url);
 
 				$message = $lang['You_are_watching_forum'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -1009,7 +1002,7 @@ if ($bypass)
 	$bbcode->allow_html = true;
 	$bbcode->allow_bbcode = true;
 	$bbcode->allow_smilies = true;
-	$rules_bbcode = $bbcode->parse($rules_bbcode, $bbcode_uid);
+	$rules_bbcode = $bbcode->parse($rules_bbcode);
 	//BBcode Parsing for Olympus rules Start
 
 	if ($board_config['forum_wordgraph'] == 1)
@@ -1107,13 +1100,14 @@ if ($bypass)
 			$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
 			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
 			$topic_title = $topic_title_prefix . $topic_title;
+			$topic_title_plain = $topic_title;
 			if (($board_config['smilies_topic_title'] == true) && !$lofi)
 			{
 				//Start BBCode Parsing for title
 				$bbcode->allow_html = false;
 				$bbcode->allow_bbcode = false;
 				$bbcode->allow_smilies = ($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies'] ? true : false);
-				$topic_title = ($bbcode ? $topic_title = $bbcode->parse($topic_title, $bbcode_uid, true) : $topic_title);
+				$topic_title = $bbcode->parse($topic_title, '', true);
 				//End BBCode Parsing for title
 			}
 
@@ -1183,7 +1177,7 @@ if ($bypass)
 
 			$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($topic_rowset[$i]['id2']);
 
-			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . (!empty($topic_link['class_new']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (!empty($topic_link['class_new']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 //----------------------------------------------------
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -1261,12 +1255,12 @@ if ($bypass)
 				);
 			}
 
-			if (!empty($topic_rowset[$i]['topic_desc']))
+			if (!empty($topic_rowset[$i]['topic_desc']) && $board_config['show_topic_description'])
 			{
 				$topic_desc = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_desc']) : $topic_rowset[$i]['topic_desc'];
 				if ($board_config['smilies_topic_title'] == '1')
 				{
-					$topic_desc = ($bbcode ? $bbcode->parse($topic_desc, $bbcode_uid, true) : $topic_desc);
+					$topic_desc = $bbcode->parse($topic_desc, '', true);
 				}
 
 				$template->assign_block_vars('topicrow.switch_topic_desc', array(

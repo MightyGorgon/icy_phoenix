@@ -293,10 +293,8 @@ else
 	// Complete... now send a message to user
 	// --------------------------------
 
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_hotornot.' . PHP_EXT)) . '">'
-		)
-	);
+	$redirect_url =  append_sid(album_append_uid('album_hotornot.' . PHP_EXT));
+	meta_refresh(3, $redirect_url);
 
 	$message = $rate_string . '<br /><br />' . sprintf($lang['Click_rate_more'], '<a href="' . append_sid(album_append_uid('album_hotornot.' . PHP_EXT)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 

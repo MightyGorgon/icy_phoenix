@@ -324,10 +324,9 @@ function cash_event_unpack($string)
 	return $cash_amounts;
 }
 
-function cash_quotematch(&$message, $bbcode_uid)
+function cash_quotematch(&$message)
 {
 	$length = strlen($message);
-	//$starttag = '[quote:' . $bbcode_uid;
 	$starttag = '[quote';
 	$startarray = array();
 	$endtag = '[/quote]';
@@ -454,9 +453,7 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 	//
 
 	$msg_time = time();
-	$bbcode_uid = make_bbcode_uid();
-
-	$privmsg_message = prepare_message($message, $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+	$privmsg_message = prepare_message($message, $html_on, $bbcode_on, $smilies_on);
 
 	//
 	// See if recipient is at their inbox limit
@@ -471,8 +468,6 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_such_user']);
 	}
-
-	$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
 
 	if ($inbox_info = $db->sql_fetchrow($result))
 	{
@@ -491,14 +486,14 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 			$old_privmsgs_id = $db->sql_fetchrow($result);
 			$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-			$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+			$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 				WHERE privmsgs_id = $old_privmsgs_id";
 			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)' . $sql, '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+			$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
 				WHERE privmsgs_text_id = $old_privmsgs_id";
 			if (!$db->sql_query($sql))
 			{
@@ -515,8 +510,8 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 	}
 	$privmsg_sent_id = $db->sql_nextid();
 
-	$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
-		VALUES ($privmsg_sent_id, '" . $bbcode_uid . "', '" . str_replace("\'", "''", $privmsg_message) . "')";
+	$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
+		VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", $privmsg_message) . "')";
 	if (!$db->sql_query($sql, END_TRANSACTION))
 	{
 		message_die(GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql_info);
@@ -561,7 +556,7 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
 		$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
 		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
-		$message = $bbcode->parse($privmsg_message, $bbcode_uid, false, $clean_tags);
+		$message = $bbcode->parse($privmsg_message, '', false, $clean_tags);
 		$message = stripslashes($message);
 		//HTML Message
 		$emailer->assign_vars(array(
@@ -650,11 +645,11 @@ class cash_menuitem
 	{
 		if (!$append_sid)
 		{
-			return sprintf($this->url, PHP_EXT);
+			return sprintf($this->url, '.' . PHP_EXT);
 		}
 		else
 		{
-			return append_sid(sprintf($this->url, PHP_EXT));
+			return append_sid(sprintf($this->url, '.' . PHP_EXT));
 		}
 	}
 

@@ -24,12 +24,12 @@
 </tr>
 <!-- BEGIN modulerow -->
 <tr>
-	<td class="{modulerow.ROW_CLASS}" align="center"><strong>{modulerow.NAME}</strong></td>
-	<td class="{modulerow.ROW_CLASS}" align="center">{modulerow.DNAME}</td>
-	<td class="{modulerow.ROW_CLASS}" align="center">{modulerow.U_STATE}</td>
-	<td class="{modulerow.ROW_CLASS}" align="center">{modulerow.UPDATE_TIME}</td>
-	<td class="{modulerow.ROW_CLASS}" align="center">{modulerow.U_MOVE_UP}<br />{modulerow.U_MOVE_DOWN}</td>
-	<td class="{modulerow.ROW_CLASS}" align="center">{modulerow.U_EDIT}</td>
+	<td class="{modulerow.ROW_CLASS} row-center"><strong>{modulerow.NAME}</strong></td>
+	<td class="{modulerow.ROW_CLASS} row-center">{modulerow.DNAME}</td>
+	<td class="{modulerow.ROW_CLASS} row-center">{modulerow.U_STATE}</td>
+	<td class="{modulerow.ROW_CLASS} row-center">{modulerow.UPDATE_TIME}</td>
+	<td class="{modulerow.ROW_CLASS} row-center">{modulerow.U_MOVE_UP}<br />{modulerow.U_MOVE_DOWN}</td>
+	<td class="{modulerow.ROW_CLASS} row-center">{modulerow.U_EDIT}</td>
 </tr>
 <!-- END  modulerow -->
 </table>

@@ -43,16 +43,14 @@ if ($submit)
 	$send_notify = ( isset($_POST['send_notify']) ) ? intval($_POST['send_notify']) : 0;
 	$disable_popup_notify = (isset($_POST['disable_popup_notify'])) ? intval($_POST['disable_popup_notify']) : 0;
 
-	$bbcode_uid = make_bbcode_uid();
-
 	$html_on = $board_config['allow_html'];
 	$bbcode_on = $board_config['allow_bbcode'];
 	$smile_on = $board_config['allow_smilies'];
 
-	$description = prepare_message($description, $html_on, $bbcode_on, $smile_on, $bbcode_uid);
-	$long_desc = prepare_message($long_desc, $html_on, $bbcode_on, $smile_on, $bbcode_uid);
-	$mod_desc = prepare_message($mod_desc, $html_on, $bbcode_on, $smile_on, $bbcode_uid);
-	$warning = prepare_message($warning, $html_on, $bbcode_on, $smile_on, $bbcode_uid);
+	$description = prepare_message($description, $html_on, $bbcode_on, $smile_on);
+	$long_desc = prepare_message($long_desc, $html_on, $bbcode_on, $smile_on);
+	$mod_desc = prepare_message($mod_desc, $html_on, $bbcode_on, $smile_on);
+	$warning = prepare_message($warning, $html_on, $bbcode_on, $smile_on);
 
 	$hacklist = (isset($_POST['hacklist'])) ? intval($_POST['hacklist']) : 0;
 	$hack_author = (isset($_POST['hack_author'])) ? trim($_POST['hack_author']) : "";
@@ -184,7 +182,7 @@ if ($submit)
 		if (!$cat_auth['auth_mod'] && !$index[$cat_id]['auth_mod'] && !$index[$cat_id]['allow_mod_desc'] && $userdata['user_level'] != ADMIN)
 		{
 			$sql = "INSERT INTO " . DOWNLOADS_TABLE . "
-				(file_name, cat, description, long_desc, free, extern, bbcode_uid,
+				(file_name, cat, description, long_desc, free, extern,
 				hacklist, hack_author, hack_author_email, hack_author_website, hack_version, hack_dl_url,
 				approve, file_size, change_time, add_time,
 				change_user, add_user, file_traffic)
@@ -195,7 +193,6 @@ if ($submit)
 				'" . str_replace("\'", "''", $long_desc) . "',
 				'" . str_replace("\'", "''", $file_free) . "',
 				'" . str_replace("\'", "''", $file_extern) . "',
-				'" . str_replace("\'", "''", $bbcode_uid) . "',
 				'" . str_replace("\'", "''", $hacklist) . "',
 				'" . str_replace("\'", "''", $hack_author) . "',
 				'" . str_replace("\'", "''", $hack_author_email) . "',
@@ -209,7 +206,7 @@ if ($submit)
 		else
 		{
 			$sql = "INSERT INTO " . DOWNLOADS_TABLE . "
-				(file_name, cat, description, long_desc, free, extern, bbcode_uid,
+				(file_name, cat, description, long_desc, free, extern,
 				hacklist, hack_author, hack_author_email, hack_author_website, hack_version, hack_dl_url,
 				test, req, todo, warning, mod_desc, mod_list,
 				approve,  file_size, change_time, add_time,
@@ -221,7 +218,6 @@ if ($submit)
 				'" . str_replace("\'", "''", $long_desc) . "',
 				'" . str_replace("\'", "''", $file_free) . "',
 				'" . str_replace("\'", "''", $file_extern) . "',
-				'" . str_replace("\'", "''", $bbcode_uid) . "',
 				'" . str_replace("\'", "''", $hacklist) . "',
 				'" . str_replace("\'", "''", $hack_author) . "',
 				'" . str_replace("\'", "''", $hack_author_email) . "',
@@ -386,9 +382,8 @@ if ($submit)
 
 		$approve_message = ($approve) ? '' : '<br />' . $lang['Dl_must_be_approved'];
 
-		$template->assign_vars(array(
-			'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id) . '">')
-		);
+		$redirect_url = append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id);
+		meta_refresh(3, $redirect_url);
 
 		$message = $lang['Download_added'] . $thumb_message . $approve_message . '<br /><br />' . sprintf($lang['Click_return_downloads'], '<a href="' . append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id) . '">', '</a>');
 

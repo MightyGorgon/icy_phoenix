@@ -66,8 +66,8 @@ function create_footer_layout($ct_gfn)
 		unset($footer_mgr);
 	}
 
-	$footer_mini = '<a href="http://www.cback.de" target="_blank"><img src="' . IP_ROOT_PATH . $images['ctracker_footer_s'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
-	$footer_big  = '<a href="http://www.cback.de" target="_blank"><img src="' . IP_ROOT_PATH . $images['ctracker_footer_b'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
+	$footer_mini = '<a href="http://www.cback.de" target="_blank"><img src="' . $images['ctracker_footer_s'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
+	$footer_big  = '<a href="http://www.cback.de" target="_blank"><img src="' . $images['ctracker_footer_b'] . '" title="' . $lang['ctracker_fdisplay_imgdesc'] . '" alt="' . $lang['ctracker_fdisplay_imgdesc'] . '" border="0" align="middle" /></a>';
 
 	switch( $ct_gfn )
 	{

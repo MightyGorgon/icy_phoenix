@@ -7,8 +7,8 @@
 </tr>
 <!-- BEGIN acronym_row -->
 <tr>
-	<td class="{acronym_row.ROW_CLASS}" align="center" valign="middle"><span class="gen">{acronym_row.ACRONYM}</span></td>
-	<td class="{acronym_row.ROW_CLASS}" align="center" valign="middle"><span class="gen">{acronym_row.DESCRIPTION}</span></td>
+	<td class="{acronym_row.ROW_CLASS} row-center" valign="middle"><span class="gen">{acronym_row.ACRONYM}</span></td>
+	<td class="{acronym_row.ROW_CLASS} row-center" valign="middle"><span class="gen">{acronym_row.DESCRIPTION}</span></td>
 </tr>
 <!-- END acronym_row -->
 <tr><td class="catBottom" align="center" colspan="2"></td></tr>

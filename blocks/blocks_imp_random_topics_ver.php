@@ -123,7 +123,7 @@ if(!function_exists(imp_random_topics_ver_block_func))
 
 				$template->assign_block_vars('random_topic_ver_row', array(
 					'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $random_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $random_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $random_topic_row[$i]['post_id']) . '#p' . $random_topic_row[$i]['post_id'],
-					'L_TITLE' => $bbcode->parse($random_topic_row[$i]['topic_title'], $bbcode_uid),
+					'L_TITLE' => $bbcode->parse($random_topic_row[$i]['topic_title']),
 					'L_BY' => $lang['By'],
 					'L_ON' => $lang['On'],
 					'U_POSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $random_topic_row[$i]['user_id']),

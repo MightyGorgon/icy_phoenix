@@ -39,7 +39,7 @@ global $bbcode;
 BBCode Parsing
 =================
 
-$text = $bbcode->parse($text, $bbcode_uid);
+$text = $bbcode->parse($text);
 
 =================
 BBCode Conditions
@@ -67,12 +67,6 @@ $bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_
 
 =================
 
-$bbcode->allow_html = $board_config['allow_html'];
-$bbcode->allow_bbcode = $board_config['allow_bbcode'];
-$bbcode->allow_smilies = $board_config['allow_smilies'];
-
-=================
-
 $bbcode->allow_html = (($board_config['allow_html'] && $row['enable_bbcode']) ? true : false);
 $bbcode->allow_bbcode = (($board_config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
 $bbcode->allow_smilies = (($board_config['allow_smilies'] && $row['enable_smilies']) ? true : false);
@@ -85,11 +79,6 @@ $bbcode->allow_smilies = ($board_config['allow_smilies'] && $postrow[$i]['enable
 
 =================
 
-$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
-$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
-//$bbcode->allow_bbcode = ($bbcode_uid != '' ? $board_config['allow_bbcode'] : false);
-=================
-
 =================================
 Acronyms, Autolinks, Word Wrap
 =================================
@@ -97,15 +86,12 @@ Acronyms, Autolinks, Word Wrap
 $orig_autolink = array();
 $replacement_autolink = array();
 obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-if(function_exists('acronym_pass'))
-{
-	$text = acronym_pass($text);
-}
+$text = $bbcode->acronym_pass($text);
 if(count($orig_autolink))
 {
 	$text = autolink_transform($text, $orig_autolink, $replacement_autolink);
 }
-$text = kb_word_wrap_pass ($text);
+$text = kb_word_wrap_pass($text);
 ====================
 
 
@@ -119,13 +105,14 @@ global $db, $board_config, $lang;
 
 // To use this file outside Icy Phoenix you need to comment the define below and remove the check on top of the file.
 define('IS_ICYPHOENIX', true);
-if (defined('IS_ICYPHOENIX'))
+if(defined('IS_ICYPHOENIX'))
 {
-	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbc_tags.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 }
 else
 {
+	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 	$board_config['default_lang'] = 'english';
 	$board_config['server_name'] = 'icyphoenix.com';
 	$board_config['script_path'] = '/';
@@ -138,6 +125,7 @@ else
 	$board_config['quote_iterations'] = 3;
 	$board_config['switch_bbcb_active_content'] = 1;
 	$userdata['session_logged_in'] = 0;
+	$userdata['user_lang'] = 'english';
 	$lang['OpenNewWindow'] = 'Open in new window';
 	$lang['Click_enlarge_pic'] = 'Click to enlarge the image';
 	$lang['Links_For_Guests'] = 'You must be logged in to see this link';
@@ -182,497 +170,134 @@ class BBCode
 	var $data = array();
 	var $replaced_smilies = array();
 
-	var $self_closing_tags = array('[*]', '[hr]', '[xs]', '[ipstaff]', '[ipstaffstatic]', '[ipoverview]', '[iplicense]', '[iprequirements]', '[ipinstall]', '[upgrade]', '[upgradebb]', '[upgradexs]', '[upgradeip]');
+	var $self_closing_tags = array('[*]', '[hr]');
 
 	var $allowed_bbcode = array(
-			// simple tags
-			'b' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'i' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'u' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'tt' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'strong' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'em' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'strike' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'sup' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'sub' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'span' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'center' => array(
-					'nested' => true,
-					'inurl' => false,
-					'allow_empty' => false,
-					),
-			'size' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'cell' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'search' => array(
-					'nested' => true,
-					'inurl' => false,
-					'allow_empty' => false,
-					),
-			'hr' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'xs' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'random' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'ipstaff' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'ipstaffstatic' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'ipoverview' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'iplicense' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'iprequirements' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'ipinstall' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'upgrade' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'upgradebb' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'upgradexs' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			'upgradeip' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => true,
-					),
-			/*
-			'table' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			*/
-			/*
-			'tr' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'td' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			*/
-			/*
-			'iframe' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			*/
-			'align' => array(
-					'nested' => true,
-					'inurl' => false,
-					'allow_empty' => false,
-					),
-			'font' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'marquee' => array(
-					'nested' => true,
-					'inurl' => false,
-					'allow_empty' => false,
-					),
-			'smiley' => array(
-					'nested' => true,
-					'inurl' => false,
-					'allow_empty' => false,
-					),
-			'img' => array(
-					'nested' => false,
-					'inurl' => true,
-					),
-			'albumimg' => array(
-					'nested' => false,
-					'inurl' => true,
-					),
-			'color' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'glow' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'shadow' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'highlight' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'opacity' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'fade' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'blur' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'wave' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'fliph' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'flipv' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'flash' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'swf' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'flv' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'video' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'ram' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'quick' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'stream' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'emff' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'mp3' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'youtube' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'googlevideo' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'rainbow' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'hide' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'spoiler' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'tex' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'gradient' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'url' => array(
-					'nested' => false,
-					'inurl' => false,
-					),
-			'a' => array(
-					'nested' => false,
-					'inurl' => false,
-					),
-			'email' => array(
-					'nested' => false,
-					'inurl' => false,
-					),
-			'list' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'ul' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'ol' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'*' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'li' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'quote' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'ot' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'code' => array(
-					'nested' => false,
-					'inurl' => false,
-					),
-			'codeblock' => array(
-					'nested' => false,
-					'inurl' => false,
-					),
-			'language' => array(
-					'nested' => true,
-					'inurl' => false,
-					'allow_empty' => false,
-					),
+		'b'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strong'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'em'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'i'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'u'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'tt'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strike'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sup'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sub'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+
+		'color'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'highlight'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'rainbow'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'gradient'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'fade'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'opacity'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+
+		'align'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'center'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'font'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'size'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'hr'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
+
+		'url'				=> array('nested' => false, 'inurl' => false),
+		'a'					=> array('nested' => false, 'inurl' => false),
+		'email'			=> array('nested' => false, 'inurl' => false),
+
+		'list'			=> array('nested' => true, 'inurl' => false),
+		'ul'				=> array('nested' => true, 'inurl' => false),
+		'ol'				=> array('nested' => true, 'inurl' => false),
+		'li'				=> array('nested' => true, 'inurl' => false),
+		'*'					=> array('nested' => true, 'inurl' => false),
+
+		'span'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'cell'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'spoiler'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'hide'			=> array('nested' => false, 'inurl' => true, 'allow_empty' => false),
+
+		'quote'			=> array('nested' => true, 'inurl' => false),
+		'ot'				=> array('nested' => true, 'inurl' => false),
+		'code'			=> array('nested' => false, 'inurl' => false),
+		'codeblock'	=> array('nested' => false, 'inurl' => false),
+
+		'img'				=> array('nested' => false, 'inurl' => true),
+		'albumimg'	=> array('nested' => false, 'inurl' => true),
+
+		'search'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'langvar'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
+		'language'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+
+		'random'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
+		'marquee'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'smiley'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+
+		'flash'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'swf'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'flv'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'video'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'ram'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'quick'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'stream'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'emff'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'mp3'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'youtube'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'googlevideo' => array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+
+		/*
+		// All these tags require HTML 4 specification (NON XHTML) and only work with IE!
+		'glow'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'shadow'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'blur'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'wave'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'fliph'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'flipv'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		*/
+
+		// Requires external file for parsing TEX
+		//'tex'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+
+		// To use tables you just need to decomment this... no need to decomment even TR and TD
+		//'table'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		/*
+		'tr'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'td'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		*/
+
+		// To use IFRAMES you just need to decomment this line... good luck!
+		//'iframe'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 	);
+
 	var $allowed_html = array(
-			'b' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'i' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'u' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'tt' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'strong' => array(
-					'nested' => true,
-					'inurl' => true,
-					),
-					'allow_empty' => false,
-			'em' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'strike' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'sup' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'sub' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'span' => array(
-					'nested' => true,
-					'inurl' => true,
-					),
-			'center' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'hr' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			'a' => array(
-					'nested' => false,
-					'inurl' => false,
-					),
-			'ul' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'ol' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'li' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'blockquote' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'table' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			/*
-			'tr' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			'td' => array(
-					'nested' => true,
-					'inurl' => false,
-					),
-			*/
-			/*
-			'iframe' => array(
-					'nested' => true,
-					'inurl' => true,
-					'allow_empty' => false,
-					),
-			*/
+		'b'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strong'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'em'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'i'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'u'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'tt'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strike'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sup'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sub'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+
+		'span'			=> array('nested' => true, 'inurl' => true),
+		'center'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'hr'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+
+		'a'					=> array('nested' => false, 'inurl' => false),
+		'ul'				=> array('nested' => true, 'inurl' => false),
+		'ol'				=> array('nested' => true, 'inurl' => false),
+		'li'				=> array('nested' => true, 'inurl' => false),
+		'blockquote' => array('nested' => true, 'inurl' => false),
+
+		'table'			=> array('nested' => true, 'inurl' => false),
+		/*
+		'tr' => array('nested' => true, 'inurl' => false),
+		'td' => array('nested' => true, 'inurl' => false),
+		*/
+
+		// To use IFRAMES you just need to decomment this line... good luck!
+		//'iframe' => array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 	);
+
 	var $allowed_smilies = array(
-			array(
-				'code' => ':wink:',
-				'replace' => '(wink)',
-			),
-			array(
-				'code' => ';)',
-				'replace' => '(smile1)',
-			),
-			array(
-				'code' => ':)',
-				'replace' => '(smile2)',
-		),
+		array('code' => ':wink:', 'replace' => '(wink)'),
+		array('code' => ';)', 'replace' => '(smile1)'),
+		array('code' => ':)', 'replace' => '(smile2)'),
 	);
 
 	/*
@@ -733,9 +358,9 @@ class BBCode
 	function process_tag(&$item)
 	{
 		global $lang, $board_config, $userdata;
-		//Added in 033 -LIW -BEGIN
+		//LIW - BEGIN
 		$max_image_width = intval($board_config['liw_max_width']);
-		//Added in 033 -LIW -END
+		//LIW - END
 		$tag = $item['tag'];
 		//echo 'process_tag(', $tag, ')<br />';
 		$start = substr($this->text, $item['start'], $item['start_len']);
@@ -787,26 +412,138 @@ class BBCode
 			}
 		}
 
-		// Simple tags: B, U, TT, I, EM, STRONG, SPAN, CENTER, STRIKE
-		if($tag === 'b' ||
-			$tag === 'i' ||
-			$tag === 'u' ||
-			$tag === 'tt' ||
-			$tag === 'em' ||
-			$tag === 'strike' ||
-			$tag === 'sup' ||
-			$tag === 'sub' ||
-			$tag === 'strong' ||
-			$tag === 'span' ||
-			$tag === 'center'
-		)
+		// Simple tags: B, EM, STRONG, I, U, TT, STRIKE, SUP, SUB, SPAN, CENTER
+		if(($tag === 'b') || ($tag === 'em') || ($tag === 'strong') || ($tag === 'i') || ($tag === 'u') || ($tag === 'tt') || ($tag === 'strike') || ($tag === 'sup') || ($tag === 'sub') || ($tag === 'span') || ($tag === 'center'))
 		{
-			$extras = $this->allow_styling ? array('style', 'class') : array('class');
+			$extras = $this->allow_styling ? array('style', 'class', 'name') : array('class', 'name');
 			$html = '<' . $tag . $this->add_extras($item['params'], $extras) . '>';
 			return array(
 				'valid' => true,
 				'start' => $html,
 				'end' => '</' . $tag . '>'
+			);
+		}
+
+		// COLOR
+		if($tag === 'color')
+		{
+			$extras = $this->allow_styling ? array('class') : array();
+			$color = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : false)));
+			if($color === false)
+			{
+				return $error;
+			}
+			/*
+			$html = '<div style="display:inline;' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'color: ' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
+			return array(
+				'valid' => true,
+				'start' => $html,
+				'end' => '</div>',
+			);
+			*/
+			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'color: ' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
+			return array(
+				'valid' => true,
+				'start' => $html,
+				'end' => '</span>',
+			);
+		}
+
+		// RAINBOW
+		if($tag === 'rainbow')
+		{
+			/*
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			*/
+			$html = $this->rainbow($content);
+			return array(
+				'valid' => true,
+				'html' => $html,
+				'allow_nested' => false,
+			);
+		}
+
+		// GRADIENT
+		if($tag === 'gradient')
+		{
+			/*
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			*/
+			$default_color1 = '#000080';
+			$color1 = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['cols']) ? $item['params']['cols'] : $default_color1)), true);
+			$color1 = (($color1 === false) ? $default_color1 : $color1);
+
+			$default_color2 = '#aaccee';
+			$color2 = $this->valid_color((isset($item['params']['cole']) ? $item['params']['cole'] : $default_color2), true);
+			$color2 = (($color2 === false) ? $default_color2 : $color2);
+
+			$mode = $this->process_text((isset($item['params']['mode']) ? $item['params']['mode'] : ''));
+
+			$default_iterations = 10;
+			$iterations = intval(isset($item['params']['iterations']) ? $item['params']['iterations'] : $default_iterations);
+			$iterations = ((($iterations < 10) || ($iterations > 100)) ? $default_iterations : $iterations);
+
+			$html = $this->gradient($content, $color1, $color2, $mode, $iterations);
+			return array(
+				'valid' => true,
+				'html' => $html,
+				'allow_nested' => false,
+			);
+		}
+
+		// HIGHLIGHT
+		if($tag === 'highlight')
+		{
+			$extras = $this->allow_styling ? array('class') : array();
+			$default_param = '#FFFFAA';
+			$color = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : $default_param));
+			$color = $this->valid_color($color);
+			if($color === false)
+			{
+				return $error;
+			}
+			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'background-color:' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
+			return array(
+				'valid' => true,
+				'start' => $html,
+				'end' => '</span>',
+			);
+		}
+
+		// SIZE
+		if($tag === 'size')
+		{
+			$extras = $this->allow_styling ? array('class') : array();
+			$default_param = 0;
+			$size = intval((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['size']) ? $item['params']['size'] : $default_param)));
+			if($size > 0 && $size < 7)
+			{
+				// vBulletin-style sizes
+				switch($size)
+				{
+					case 1: $size = 7; break;
+					case 2: $size = 8; break;
+					case 3: $size = 10; break;
+					case 4: $size = 12; break;
+					case 5: $size = 15; break;
+					case 6: $size = 24; break;
+				}
+			}
+			if($size < 6 || $size > 48)
+			{
+				return $error;
+			}
+			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'font-size:' . $size . 'px;"' . $this->add_extras($item['params'], $extras) . '>';
+			return array(
+				'valid' => true,
+				'start' => $html,
+				'end' => '</span>',
 			);
 		}
 
@@ -818,15 +555,7 @@ class BBCode
 				return $error;
 			}
 			$extras = $this->allow_styling ? array('style', 'class') : array();
-			if(isset($item['params']['param']))
-			{
-				$color = $item['params']['param'];
-			}
-			elseif(isset($item['params']['color']))
-			{
-				$color = $item['params']['color'];
-			}
-			$color = $this->valid_color($color);
+			$color = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : false)));
 			if($color === false)
 			{
 				$html = '<' . $tag . ' />';
@@ -841,47 +570,13 @@ class BBCode
 			);
 		}
 
-		// Random number or quote (quote not implemented yet)
-		if($tag === 'random')
-		{
-			$max_n = 6;
-			if(isset($item['params']['param']))
-			{
-				$max_n = intval($item['params']['param']);
-			}
-			elseif(isset($item['params']['max']))
-			{
-				$max_n = intval($item['params']['max']);
-			}
-			$max_n = ($max_n <= '0') ? '6' : $max_n;
-			/*
-			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
-			$randomquote_phrase = $randomquote[rand(0, count($randomquote) - 1)];
-			*/
-			$html = rand(1, $max_n);
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
 		// ALIGN
 		if($tag === 'align')
 		{
 			$extras = $this->allow_styling ? array('style', 'class') : array();
-			if(isset($item['params']['param']))
-			{
-				$align = $item['params']['param'];
-			}
-			elseif(isset($item['params']['align']))
-			{
-				$align = $item['params']['align'];
-			}
-			else
-			{
-				$align === 'left';
-			}
-			if ($align === 'left' || $align === 'right' || $align === 'center' || $align === 'justify')
+			$default_param = 'left';
+			$align = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['align']) ? $item['params']['align'] : $default_param));
+			if (($align === 'left') || ($align === 'right') || ($align === 'center') || ($align === 'justify'))
 			{
 				if ($align === 'center')
 				{
@@ -897,402 +592,11 @@ class BBCode
 					'end' => '</div>',
 				);
 			}
-		}
-
-		// MARQUEE
-		if($tag === 'marquee')
-		{
-			if($this->is_sig)
+			else
 			{
 				return $error;
 			}
-			$extras = $this->allow_styling ? array('style', 'class') : array();
-			if(isset($item['params']['param']))
-			{
-				$direction = $item['params']['param'];
-			}
-			elseif(isset($item['params']['direction']))
-			{
-				$direction = $item['params']['direction'];
-			}
-			else
-			{
-				if ($direction === 'up' || $direction === 'down' || $direction === 'left' || $direction === 'right')
-				{
-					$direction = $direction;
-				}
-				else
-				{
-					$direction = 'right';
-				}
-			}
-
-			if(isset($item['params']['scrolldelay']))
-			{
-				$scrolldelay = $item['params']['scrolldelay'];
-				if ((intval($scrolldelay) > 10) && (intval($scrolldelay) < 601))
-				{
-					$scrolldelay = $scrolldelay;
-				}
-				else
-				{
-					$scrolldelay = '120';
-				}
-			}
-			else
-			{
-				$scrolldelay = '120';
-			}
-
-			if(isset($item['params']['behavior']))
-			{
-				$behavior = $item['params']['behavior'];
-				if ($behavior === 'alternate' || $behavior === 'slide')
-				{
-					$behavior = $behavior;
-				}
-				else
-				{
-					$behavior = 'scroll';
-				}
-			}
-			else
-			{
-				$behavior = 'scroll';
-			}
-
-			$html = '<marquee behavior="' . $behavior . '" direction="' . $direction . '" scrolldelay="' . $scrolldelay . '" loop="true" onmouseover="this.stop()" onmouseout="this.start()">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</marquee>',
-			);
 		}
-
-		// SMILEY
-		if($tag === 'smiley')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			$extras = $this->allow_styling ? array('style', 'class') : array();
-			if(isset($item['params']['param']))
-			{
-				$text = $item['params']['param'];
-			}
-			elseif(isset($item['params']['text']))
-			{
-				$text = $item['params']['text'];
-			}
-			else
-			{
-				$text = $content;
-			}
-
-			$text = htmlspecialchars($text);
-
-			if(isset($item['params']['smilie']))
-			{
-				if (($item['params']['smilie'] == 'standard') || ($item['params']['smilie'] == 'random'))
-				{
-					//$smilie = $item['params']['smilie'];
-					$smilie = '1';
-				}
-				else
-				{
-					$smilie = intval($item['params']['smilie']);
-				}
-			}
-			else
-			{
-				$smilie = '1';
-			}
-
-			if(isset($item['params']['fontcolor']))
-			{
-				$fontcolor = $item['params']['fontcolor'];
-			}
-			else
-			{
-				$fontcolor = '000000';
-			}
-			$color = $this->valid_color($fontcolor);
-			if($color === false)
-			{
-				$fontcolor = '000000';
-			}
-
-			if(isset($item['params']['shadowcolor']))
-			{
-				$shadowcolor = $item['params']['shadowcolor'];
-			}
-			else
-			{
-				$shadowcolor = '888888';
-			}
-			$color = $this->valid_color($shadowcolor);
-			if($color === false)
-			{
-				$shadowcolor = '888888';
-			}
-
-			if(isset($item['params']['shieldshadow']))
-			{
-				if ($item['params']['shieldshadow'] == 1)
-				{
-					$shieldshadow = 1;
-				}
-				else
-				{
-					$shieldshadow = 0;
-				}
-			}
-			else
-			{
-				$shieldshadow = 0;
-			}
-
-			//$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . $text . '" alt="Smiley" title="Smiley" />';
-			$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . urlencode(utf8_decode($text)) . '" alt="'. $text . '" title="' . $text . '" />';
-			return array(
-				'valid' => true,
-				'html' => $html,
-				'allow_nested' => false,
-			);
-		}
-
-		// FONT
-		if($tag === 'font')
-		{
-			$extras = $this->allow_styling ? array('style', 'class') : array();
-			if(isset($item['params']['param']))
-			{
-				$font = $item['params']['param'];
-			}
-			elseif(isset($item['params']['font']))
-			{
-				$font = $item['params']['font'];
-			}
-			else
-			{
-				$font = 'Verdana';
-			}
-
-			if ($font === 'Arial' ||
-				$font === 'Arial Black' ||
-				$font === 'Comic Sans MS' ||
-				$font === 'Courier New' ||
-				$font === 'Impact' ||
-				$font === 'Lucida Console' ||
-				$font === 'Lucida Sans Unicode' ||
-				$font === 'Microsoft Sans Serif' ||
-				$font === 'Symbol' ||
-				$font === 'Tahoma' ||
-				$font === 'Times New Roman' ||
-				$font === 'Traditional Arabic' ||
-				$font === 'Trebuchet MS' ||
-				$font === 'Verdana' ||
-				$font === 'Webdings' ||
-				$font === 'Wingdings')
-			{
-				$font = $font;
-			}
-			else
-			{
-				$font = 'Verdana';
-			}
-			/*
-			$html = '<div style="font-family:' . $font . ';display:inline;">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-			*/
-			$html = '<span style="font-family:' . $font . ';">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</span>',
-			);
-		}
-
-		// TABLE
-		if($tag === 'table')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			// additional allowed parameters
-			$extras = $this->allow_styling ? array('class', 'align', 'width', 'height', 'border', 'cellspacing', 'cellpadding') : array('class', 'align', 'width');
-			if(isset($item['params']['param']))
-			{
-				$table_class = $item['params']['param'];
-			}
-			else
-			{
-				$table_class = 'empty-table';
-			}
-
-			for($i = 0; $i < count($extras); $i++)
-			{
-				if(!empty($item['params'][$extras[$i]]))
-				{
-					if($extras[$i] === 'style')
-					{
-						$style = $this->valid_style($item['params']['style']);
-						if($style !== false)
-						{
-							$params['style'] = $style;
-						}
-					}
-					else
-					{
-						$params[$extras[$i]] = $item['params'][$extras[$i]];
-					}
-				}
-			}
-			if (!isset($params['class']))
-			{
-				$params['class'] = $table_class;
-			}
-			// generate html
-			$html = '<table';
-			foreach($params as $var => $value)
-			{
-				$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
-			}
-			$html .= ' >' . $content . '</table>';
-			return array(
-				'valid' => true,
-				'html' => $html,
-				'allow_nested' => true,
-			);
-		}
-
-		/*
-		// TR
-		if($tag === 'tr')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			// generate html
-			$html = '<tr>' . $content . '</tr>';
-			return array(
-				'valid' => true,
-				'html' => $html,
-				'allow_nested' => true,
-			);
-		}
-
-		// TD
-		if($tag === 'td')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			// additional allowed parameters
-			$extras = $this->allow_styling ? array('class', 'align', 'width', 'height') : array('class', 'align', 'width', 'height');
-
-			for($i = 0; $i < count($extras); $i++)
-			{
-				if(!empty($item['params'][$extras[$i]]))
-				{
-					if($extras[$i] === 'style')
-					{
-						$style = $this->valid_style($item['params']['style']);
-						if($style !== false)
-						{
-							$params['style'] = $style;
-						}
-					}
-					else
-					{
-						$params[$extras[$i]] = $item['params'][$extras[$i]];
-					}
-				}
-			}
-			// generate html
-			$html = '<td';
-			foreach($params as $var => $value)
-			{
-				$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
-			}
-			$html .= ' >' . $content . '</td>';
-			return array(
-				'valid' => true,
-				'html' => $html,
-				'allow_nested' => true,
-			);
-		}
-		*/
-
-		// IFRAME
-		/*
-		//<iframe src="index.html" scrolling="no" width="100%" height="190" frameborder="0" marginheight="0" marginwidth="0"></iframe>
-		//[iframe height=100]docs/index.html[/iframe]
-		//[iframe src=docs/index.html height=100] [/iframe]
-		if($tag === 'iframe')
-		{
-			if(isset($item['params']['param']))
-			{
-				$params['src'] = $item['params']['param'];
-			}
-			elseif(isset($item['params']['src']))
-			{
-				$params['src'] = $item['params']['src'];
-			}
-			elseif(!empty($content))
-			{
-				$params['src'] = $content;
-			}
-			if(isset($item['params']['scrolling']) && ($params['scrolling'] == 'no'))
-			{
-				$params['scrolling'] = 'no';
-				//$params['scrolling'] = $item['params']['scrolling'];
-			}
-			else
-			{
-				$params['scrolling'] = 'yes';
-			}
-			if(isset($item['params']['width']))
-			{
-				$params['width'] = $item['params']['width'];
-			}
-			else
-			{
-				$params['width'] = '100%';
-			}
-			if(isset($item['params']['height']))
-			{
-				$params['height'] = $item['params']['height'];
-			}
-			else
-			{
-				$params['height'] = '600';
-			}
-
-			foreach($params as $var => $value)
-			{
-				if ($this->process_text($value) != '')
-				{
-					$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
-				}
-			}
-			$extras = $this->allow_styling ? array('style', 'class') : array('class');
-			$html = '<iframe' . $html . '>';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</iframe>'
-			);
-		}
-		*/
 
 		// IMG
 		if($tag === 'img')
@@ -1595,7 +899,7 @@ class BBCode
 		}
 
 		// LIST
-		if($tag === 'list' || $tag === 'ul' || $tag === 'ol')
+		if(($tag === 'list') || ($tag === 'ul') || ($tag === 'ol'))
 		{
 			if($this->is_sig)
 			{
@@ -1607,7 +911,7 @@ class BBCode
 			for($i = 0; $i < count($item['items']); $i++)
 			{
 				$tag2 = $item['items'][$i]['tag'];
-				if($tag2 === '*' || $tag2 === 'li')
+				if(($tag2 === '*') || ($tag2 === 'li'))
 				{
 					$nested_count ++;
 				}
@@ -1635,7 +939,7 @@ class BBCode
 			{
 				$item2 = &$item['items'][$i];
 				$tag2 = $item2['tag'];
-				if($tag2 === '*' || $tag2 === 'li')
+				if(($tag2 === '*') || ($tag2 === 'li'))
 				{
 					// mark as valid
 					$item2['list_valid'] = true;
@@ -1669,7 +973,7 @@ class BBCode
 		}
 
 		// [*], LI
-		if($tag === '*' || $tag === 'li')
+		if(($tag === '*') || ($tag === 'li'))
 		{
 			if($this->is_sig)
 			{
@@ -1695,183 +999,36 @@ class BBCode
 			);
 		}
 
-		// COLOR
-		if($tag === 'color')
+		// FONT
+		if($tag === 'font')
 		{
-			$extras = $this->allow_styling ? array('class') : array();
-			$color = '';
-			if(isset($item['params']['param']))
+			$extras = $this->allow_styling ? array('style', 'class') : array();
+			$default_param = 'Verdana';
+			$font = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['font']) ? $item['params']['font'] : $default_param));
+			if ($font === 'Arial' ||
+				$font === 'Arial Black' ||
+				$font === 'Comic Sans MS' ||
+				$font === 'Courier New' ||
+				$font === 'Impact' ||
+				$font === 'Lucida Console' ||
+				$font === 'Lucida Sans Unicode' ||
+				$font === 'Microsoft Sans Serif' ||
+				$font === 'Symbol' ||
+				$font === 'Tahoma' ||
+				$font === 'Times New Roman' ||
+				$font === 'Traditional Arabic' ||
+				$font === 'Trebuchet MS' ||
+				$font === 'Verdana' ||
+				$font === 'Webdings' ||
+				$font === 'Wingdings')
 			{
-				$color = $item['params']['param'];
-			}
-			elseif(isset($item['params']['color']))
-			{
-				$color = $item['params']['color'];
+				$font = $font;
 			}
 			else
 			{
-				return $error;
+				$font = 'Verdana';
 			}
-			$color = $this->valid_color($color);
-			if($color === false)
-			{
-				return $error;
-			}
-			/*
-			$html = '<div style="display:inline;' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'color: ' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-			*/
-			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'color: ' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</span>',
-			);
-		}
-
-		// GLOW
-		if($tag === 'glow')
-		{
-			$color = '';
-			if(isset($item['params']['param']))
-			{
-				$color = $item['params']['param'];
-			}
-			elseif(isset($item['params']['color']))
-			{
-				$color = $item['params']['color'];
-			}
-			else
-			{
-				return $error;
-			}
-			$color = $this->valid_color($color);
-			if($color === false)
-			{
-				return $error;
-			}
-			$html = '<div style="display:inline;filter:glow(color=' . $color . ');height:20;">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-		}
-
-		// SHADOW
-		if($tag === 'shadow')
-		{
-			$color = '';
-			if(isset($item['params']['param']))
-			{
-				$color = $item['params']['param'];
-			}
-			elseif(isset($item['params']['color']))
-			{
-				$color = $item['params']['color'];
-			}
-			else
-			{
-				return $error;
-			}
-			$color = $this->valid_color($color);
-			if($color === false)
-			{
-				return $error;
-			}
-			$html = '<div style="display:inline;filter:shadow(color=' . $color . ');height:20;">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-		}
-
-		// HIGHLIGHT
-		if($tag === 'highlight')
-		{
-			$extras = $this->allow_styling ? array('class') : array();
-			$color = '#FFFFAA';
-			if(isset($item['params']['param']))
-			{
-				$color = $item['params']['param'];
-			}
-			elseif(isset($item['params']['highlight']))
-			{
-				$color = $item['params']['highlight'];
-			}
-			else
-			{
-				return $error;
-			}
-			$color = $this->valid_color($color);
-			if($color === false)
-			{
-				return $error;
-			}
-			/*
-			$html = '<div style="display:inline;' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'background-color:' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-			*/
-			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'background-color:' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</span>',
-			);
-		}
-
-		// SIZE
-		if($tag === 'size')
-		{
-			$extras = $this->allow_styling ? array('class') : array();
-			$size = 0;
-			if(isset($item['params']['param']))
-			{
-				$size = intval($item['params']['param']);
-			}
-			elseif(isset($item['params']['size']))
-			{
-				$size = intval($item['params']['size']);
-			}
-			else
-			{
-				return $error;
-			}
-			if($size > 0 && $size < 7)
-			{
-				// vBulletin-style sizes
-				switch($size)
-				{
-					case 1: $size = 7; break;
-					case 2: $size = 8; break;
-					case 3: $size = 10; break;
-					case 4: $size = 12; break;
-					case 5: $size = 15; break;
-					case 6: $size = 24; break;
-				}
-			}
-			if($size < 6 || $size > 36)
-			{
-				return $error;
-			}
-			/*
-			$html = '<div style="display:inline;' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'font-size:' . $size . 'px;"' . $this->add_extras($item['params'], $extras) . '>';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-			*/
-			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'font-size:' . $size . 'px;"' . $this->add_extras($item['params'], $extras) . '>';
+			$html = '<span style="font-family:' . $font . ';">';
 			return array(
 				'valid' => true,
 				'start' => $html,
@@ -1883,53 +1040,22 @@ class BBCode
 		if($tag === 'cell')
 		{
 			$extras = $this->allow_styling ? array('class', 'align', 'border') : array('class', 'align');
-			if(isset($item['params']['width']))
-			{
-				$width = ' width: ' . intval($item['params']['width']) . 'px;';
-			}
-			if(isset($item['params']['height']))
-			{
-				$height = ' height: ' . intval($item['params']['height']) . 'px;';
-			}
-			if(isset($item['params']['padding']))
-			{
-				$padding = ' padding: ' . intval($item['params']['padding']) . 'px;';
-			}
-			if(isset($item['params']['margin']))
-			{
-				$margin = ' margin: ' . intval($item['params']['margin']) . 'px;';
-			}
-			if(isset($item['params']['borderwidth']))
-			{
-				$borderwidth = ' border-width: ' . intval($item['params']['borderwidth']) . 'px;';
-			}
-			if(isset($item['params']['bgcolor']))
-			{
-				$bgcolor = $item['params']['bgcolor'];
-				$bgcolor = $this->valid_color($bgcolor);
-				if($bgcolor != false)
-				{
-					$bgcolor = ' background-color: ' . $bgcolor . ';';
-				}
-			}
-			if(isset($item['params']['bordercolor']))
-			{
-				$bordercolor = $item['params']['bordercolor'];
-				$bordercolor = $this->valid_color($bordercolor);
-				if($bordercolor != false)
-				{
-					$bordercolor = ' border-color: ' . $bordercolor . ';';
-				}
-			}
-			if(isset($item['params']['color']))
-			{
-				$color = $item['params']['color'];
-				$color = $this->valid_color($color);
-				if($color != false)
-				{
-					$color = ' color: ' . $color . ';';
-				}
-			}
+
+			$width = (isset($item['params']['width']) ? (' width: ' . intval($item['params']['width']) . 'px;') : '');
+			$height = (isset($item['params']['height']) ? (' height: ' . intval($item['params']['height']) . 'px;') : '');
+			$padding = (isset($item['params']['padding']) ? (' padding: ' . intval($item['params']['padding']) . 'px;') : '');
+			$margin = (isset($item['params']['margin']) ? (' margin: ' . intval($item['params']['margin']) . 'px;') : '');
+			$borderwidth = (isset($item['params']['borderwidth']) ? (' border-width: ' . intval($item['params']['borderwidth']) . 'px;') : '');
+
+			$bgcolor = $this->valid_color((isset($item['params']['bgcolor']) ? $item['params']['bgcolor'] : false));
+			$bgcolor = (($bgcolor !== false) ? (' background-color: ' . $bgcolor . ';') : '');
+
+			$bordercolor = $this->valid_color((isset($item['params']['bordercolor']) ? $item['params']['bordercolor'] : false));
+			$bordercolor = (($bordercolor !== false) ? (' border-color: ' . $bordercolor . ';') : '');
+
+			$color = $this->valid_color((isset($item['params']['color']) ? $item['params']['color'] : false));
+			$color = (($color !== false) ? (' color: ' . $color . ';') : '');
+
 			$html = '<div style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . $height . $width . $bgcolor . $bordercolor . $borderwidth . $color . $padding . $margin . '"' . $this->add_extras($item['params'], $extras) . '>';
 			return array(
 				'valid' => true,
@@ -1939,7 +1065,7 @@ class BBCode
 		}
 
 		// URL, A
-		if($tag === 'url' || $tag === 'a')
+		if(($tag === 'url') || ($tag === 'a'))
 		{
 			$extras = $this->allow_styling ? array('style', 'class', 'name', 'title') : array('name', 'title');
 			$allow_nested = true;
@@ -1965,7 +1091,7 @@ class BBCode
 			{
 				return $error;
 			}
-			if($url === $content && strlen($content) > 64)
+			if(($url === $content) && (strlen($content) > 64))
 			{
 				$content = substr($content, 0, 35) . '...' . substr($content, strlen($content) - 15);
 				$show_content = false;
@@ -2149,7 +1275,7 @@ class BBCode
 		}
 
 		// QUOTE
-		if($tag === 'quote' || $tag === 'blockquote' || $tag === 'ot')
+		if(($tag === 'quote') || ($tag === 'blockquote') || ($tag === 'ot'))
 		{
 			if($this->is_sig)
 			{
@@ -2245,7 +1371,7 @@ class BBCode
 			{
 				$item['params']['file'] = $item['params']['filename'];
 			}
-			if(defined('EXTRACT_CODE') && $this->code_counter == EXTRACT_CODE)
+			if(defined('EXTRACT_CODE') && ($this->code_counter == EXTRACT_CODE))
 			{
 				$GLOBALS['code_text'] = $text;
 				if(!empty($item['params']['file']))
@@ -2448,7 +1574,7 @@ class BBCode
 					}
 				}
 				// $html = BBCODE_NOSMILIES_START . '<div class="code"><div class="code-header">Code:</div><div class="code-content">' . $text . '</div></div>' . BBCODE_NOSMILIES_END;
-				$this->code_counter ++;
+				$this->code_counter++;
 				return array(
 					'valid' => true,
 					'html' => $html,
@@ -2457,7 +1583,7 @@ class BBCode
 			}
 			else
 			{
-				$php_syntax = false;
+				$syntax_highlight = false;
 				if(isset($item['params']['syntax']))
 				{
 					if ($item['params']['syntax'] == 'php')
@@ -2467,10 +1593,10 @@ class BBCode
 						$html_search = array('<code>', '</code>', '<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>');
 						$xhtml_replace = array('', '', '<code style="color:', '</code', ' ', '', '');
 						$html = str_replace ($html_search, $xhtml_replace, $html);
-						$php_syntax = true;
+						$syntax_highlight = true;
 					}
 				}
-				if ($php_syntax == false)
+				if ($syntax_highlight == false)
 				{
 					$html = $text;
 					$search = array('[highlight]', '[/highlight]');
@@ -2556,7 +1682,7 @@ class BBCode
 				$text = substr($text, 2);
 			}
 
-			$php_syntax = false;
+			$syntax_highlight = false;
 			if(isset($item['params']['syntax']))
 			{
 				if ($item['params']['syntax'] == 'php')
@@ -2566,10 +1692,10 @@ class BBCode
 					$html_search = array('<code>', '</code>', '<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>');
 					$xhtml_replace = array('', '', '<code style="color:', '</code', ' ', '', '');
 					$html = str_replace ($html_search, $xhtml_replace, $html);
-					$php_syntax = true;
+					$syntax_highlight = true;
 				}
 			}
-			if ($php_syntax == false)
+			if ($syntax_highlight == false)
 			{
 				$html = $text;
 				$search = array('[highlight]', '[/highlight]');
@@ -2603,6 +1729,310 @@ class BBCode
 				'valid' => true,
 				'html' => $html,
 				'allow_nested' => false
+			);
+		}
+
+		// HIDE
+		if($tag === 'hide')
+		{
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			if($item['iteration'] > 1)
+			{
+				return $error;
+			}
+			global $db, $topic_id, $mode;
+			$show = false;
+			if(defined('IS_ICYPHOENIX') && $userdata['session_logged_in'])
+			{
+				$sql = "SELECT p.poster_id, p.topic_id
+					FROM " . POSTS_TABLE . " p
+					WHERE p.topic_id = $topic_id
+					AND p.poster_id = " . $userdata['user_id'];
+				$resultat = $db->sql_query($sql);
+				$show = $db->sql_numrows($resultat) ? true : false;
+				$db->sql_freeresult($result);
+
+				$sql = "SELECT *
+					FROM " . THANKS_TABLE . "
+					WHERE topic_id = $topic_id
+					AND user_id = " . $userdata['user_id'];
+				$resultat = $db->sql_query($sql);
+				$show = ($db->sql_numrows($resultat) || ($show == true))? true : false;
+				$db->sql_freeresult($result);
+
+				if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+				{
+					$show = true;
+				}
+			}
+			// generate html
+			$html = '<blockquote class="quote"><div class="quote-nouser">' . $lang['xs_bbc_hide_message'] . ':</div><div class="post-text">';
+			if(!$show)
+			{
+				return array(
+					'valid' => true,
+					'html' => $html . $lang['xs_bbc_hide_message_explain'] . '</div></blockquote>',
+					'allow_nested' => false,
+				);
+			}
+			else
+			{
+				return array(
+					'valid' => true,
+					'start' => $html,
+					'end' => '</div></blockquote>'
+				);
+			}
+		}
+
+		// SPOILER
+		if($tag === 'spoiler')
+		{
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			if($item['iteration'] > 1)
+			{
+				return $error;
+			}
+			$spoiler_id = substr(md5($content . mt_rand()), 0, 8);
+			$str = '<div class="spoiler">';
+			$str .= '<div class="code-header" id="spoilerhdr_' . $spoiler_id . '" style="position: relative;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="javascript:void(0)" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\')">' . $lang['Show'] . '</a> ]</div>';
+			$str .= '<div class="code-header" id="spoilerhdr2_' . $spoiler_id . '" style="position: relative; display: none;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="javascript:void(0)" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\')">' . $lang['Hide'] . '</a> ]</div>';
+			$str .= '<div class="spoiler-content" id="spoiler2_' . $spoiler_id . '" style="position: relative; display: none;">' . $html;
+			return array(
+				'valid' => true,
+				'start' => $str,
+				'end' => '</div></div>'
+			);
+		}
+
+		// LANGVAR
+		// Insert the content of a lang var into post... maybe we need to filter something?
+		if($tag === 'langvar')
+		{
+			if(isset($item['params']['param']))
+			{
+				$langvar = $item['params']['param'];
+			}
+			else
+			{
+				$langvar = $content;
+			}
+				$langvar = $content;
+			$html = (isset($lang[$langvar]) ? $lang[$langvar] : '');
+			return array(
+				'valid' => true,
+				'html' => $html
+			);
+		}
+
+		// LANGUAGE
+		// Parse the content only if in the same language of the user viewing it!!!
+		if($tag === 'language')
+		{
+			if($content == '')
+			{
+				return $error;
+			}
+
+			$language = '';
+			if(isset($item['params']['param']))
+			{
+				$language = $item['params']['param'];
+			}
+
+			if ($userdata['user_lang'] != $language)
+			{
+				$html = '';
+			}
+			else
+			{
+				$html = $content;
+			}
+
+			return array(
+				'valid' => true,
+				'html' => $html
+			);
+		}
+
+		// SEARCH
+		if($tag === 'search')
+		{
+			if($content == '')
+			{
+				return $error;
+			}
+			$str = '<a href="' . SEARCH_MG . '?search_keywords=' . $this->process_text($content) . '">';
+			return array(
+				'valid' => true,
+				'start' => $str,
+				'end' => '</a>'
+			);
+		}
+
+		// Random number or quote (quote not implemented yet)
+		if($tag === 'random')
+		{
+			$max_n = 6;
+			$max_n = intval((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['max']) ? $item['params']['max'] : 6)));
+			$max_n = ($max_n <= 0) ? 6 : $max_n;
+			/*
+			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
+			$randomquote_phrase = $randomquote[rand(0, count($randomquote) - 1)];
+			*/
+			$html = rand(1, $max_n);
+			return array(
+				'valid' => true,
+				'html' => $html
+			);
+		}
+
+		// MARQUEE
+		if($tag === 'marquee')
+		{
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			$extras = $this->allow_styling ? array('style', 'class') : array();
+
+			$directions_array = array('up', 'right', 'down', 'left');
+			$default_param = 'right';
+			$direction = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['direction']) ? $item['params']['direction'] : $default_param));
+			$direction = (in_array($direction, $directions_array) ? $direction : $default_param);
+
+			$default_scroll = '120';
+			$scrolldelay = (isset($item['params']['scrolldelay']) ? intval($item['params']['scrolldelay']) : $default_scroll);
+			$scrolldelay = ((($scrolldelay > 10) && ($scrolldelay < 601)) ? $scrolldelay : $default_scroll);
+
+			$default_behavior = 'scroll';
+			$behavior = (isset($item['params']['behavior']) ? intval($item['params']['behavior']) : $default_behavior);
+			$behavior = ((($behavior === 'alternate') || ($behavior === 'slide')) ? $behavior : $default_behavior);
+
+			$html = '<marquee behavior="' . $behavior . '" direction="' . $direction . '" scrolldelay="' . $scrolldelay . '" loop="true" onmouseover="this.stop()" onmouseout="this.start()">';
+			return array(
+				'valid' => true,
+				'start' => $html,
+				'end' => '</marquee>',
+			);
+		}
+
+		// Active Content - BEGIN
+		// Added by Tom XS2 Build 054
+		if ($board_config['switch_bbcb_active_content'] == 1)
+		{
+			// FLASH, SWF, FLV, VIDEO, REAL, QUICK, STREAM, EMFF, YOUTUBE, GOOGLEVIDEO
+			if(($tag === 'flash') || ($tag === 'swf') || ($tag === 'flv') || ($tag === 'video') || ($tag === 'ram') || ($tag === 'quick') || ($tag === 'stream') || ($tag === 'emff') || ($tag === 'mp3') || ($tag === 'youtube') || ($tag === 'googlevideo'))
+			{
+				if($this->is_sig)
+				{
+					return $error;
+				}
+				$content = $this->process_text(isset($item['params']['param']) ? $item['params']['param'] : $content);
+
+				$default_width = '320';
+				$width = (isset($item['params']['width']) ? intval($item['params']['width']) : $default_width);
+				$width = ((($width > 10) && ($width < 641)) ? $width : $default_width);
+
+				$default_height = '240';
+				$height = (isset($item['params']['height']) ? intval($item['params']['height']) : $default_height);
+				$height = ((($height > 10) && ($height < 481)) ? $height : $default_height);
+
+				if (($tag === 'flash') || ($tag === 'swf'))
+				{
+					$html = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="' . $width . '" height="' . $height . '"><param name="movie" value="' . $content . '"><param name="quality" value="high"><param name="scale" value="noborder"><param name="wmode" value="transparent"><param name="bgcolor" value="#000000"><embed src="' . $content . '" quality="high" scale="noborder" wmode="transparent" bgcolor="#000000" width="' . $width . '" height="' . $height . '" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></embed></object>';
+				}
+				elseif ($tag === 'flv')
+				{
+					$html = '<object type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" wmode="transparent" data="flv_player.swf?file=' . $content . '&amp;autoStart=false"><param name="movie" value="flv_player.swf?file=' . $content . '&amp;autoStart=false"/><param name="wmode" value="transparent"/></object>';
+				}
+				elseif ($tag === 'video')
+				{
+					$html = '<div align="center"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '"></embed></div>';
+				}
+				elseif ($tag === 'ram')
+				{
+					$html = '<div align="center"><embed src="' . $content . '" align="center" width="275" height="40" type="audio/x-pn-realaudio-plugin" console="cons" controls="ControlPanel" autostart="false"></embed></div>';
+				}
+				elseif ($tag === 'quick')
+				{
+					$html = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0" width="' . $width . '" height="' . $height . '" align="middle"><param name="controller" value="true"><param name="type" value="video/quicktime"><param name="autoplay" value="true"><param name="target" value="myself"><param name="src" value="' . $content . '"><param name="pluginspage" value="http://www.apple.com/quicktime/download/indext.html"><param name="kioskmode" value="true"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '" align="middle" kioskmode="true" controller="true" target="myself" type="video/quicktime" border="0" pluginspage="http://www.apple.com/quicktime/download/indext.html"></embed></object>';
+				}
+				elseif ($tag === 'stream')
+				{
+					$html = '<object id="wmp" width="' . $width . '" height="' . $height . '" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,0,0,0" standby="Loading Microsoft Windows Media Player components..." type="application/x-oleobject"><param name="FileName" value="' . $content . '"><param name="ShowControls" value="1"><param name="ShowDisplay" value="0"><param name="ShowStatusBar" value="1"><param name="AutoSize" value="1"><embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/windows95/downloads/contents/wurecommended/s_wufeatured/mediaplayer/default.asp" src="' . $content . '" name="MediaPlayer2" showcontrols="1" showdisplay="0" showstatusbar="1" autosize="1" visible="1" animationatstart="0" transparentatstart="1" loop="0" height="70" width="300"></embed></object>';
+				}
+				elseif (($tag === 'emff') || ($tag === 'mp3'))
+				{
+					$html = '<object data="emff_player.swf" type="application/x-shockwave-flash" width="200" height="55" align="top" ><param name="FlashVars" value="src=' . $content . '" /><param name="movie" value="emff_player.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#F8F8F8" /></object>';
+				}
+				elseif ($tag === 'youtube')
+				{
+					$html = '<object width="425" height="350"><param name="movie" value="http://www.youtube.com/v/' . $content . '" /><embed src="http://www.youtube.com/v/' . $content . '" type="application/x-shockwave-flash" width="425" height="350"></embed></object><br /><a href="http://youtube.com/watch?v=' . $content . '" target="_blank">Link</a><br />';
+				}
+				elseif ($tag === 'googlevideo')
+				{
+					$html = '<object width="425" height="350"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:400px; height:326px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
+				}
+				return array(
+					'valid' => true,
+					'html' => $html
+				);
+			}
+		}
+		// Active Content - END
+
+		// SMILEY
+		if($tag === 'smiley')
+		{
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			$extras = $this->allow_styling ? array('style', 'class') : array();
+
+			$text = htmlspecialchars((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['text']) ? $item['params']['text'] : $content)));
+
+			if(isset($item['params']['smilie']))
+			{
+				if (($item['params']['smilie'] == 'standard') || ($item['params']['smilie'] == 'random'))
+				{
+					//$smilie = $item['params']['smilie'];
+					$smilie = '1';
+				}
+				else
+				{
+					$smilie = intval($item['params']['smilie']);
+				}
+			}
+			else
+			{
+				$smilie = '1';
+			}
+
+			$default_fontcolor = '000000';
+			$fontcolor = $this->valid_color((isset($item['params']['fontcolor']) ? $item['params']['fontcolor'] : $default_fontcolor));
+			$fontcolor = (($fontcolor === false) ? $default_fontcolor : $fontcolor);
+
+			$default_shadowcolor = '888888';
+			$shadowcolor = $this->valid_color((isset($item['params']['shadowcolor']) ? $item['params']['shadowcolor'] : $default_shadowcolor));
+			$shadowcolor = (($shadowcolor === false) ? $default_shadowcolor : $shadowcolor);
+
+			$default_shieldshadow = 0;
+			$shieldshadow = (isset($item['params']['shieldshadow']) ? (($item['params']['shieldshadow'] == 1) ? 1 : $default_param) : $default_param);
+
+			//$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . $text . '" alt="Smiley" title="Smiley" />';
+			$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . urlencode(utf8_decode($text)) . '" alt="'. $text . '" title="' . $text . '" />';
+			return array(
+				'valid' => true,
+				'html' => $html,
+				'allow_nested' => false,
 			);
 		}
 
@@ -2663,265 +2093,119 @@ class BBCode
 			);
 		}
 
-		// BLUR
-		if($tag === 'blur')
+		// IE AND HTML 4 ONLY TAGS - BEGIN
+		// Let's add a global IF so we can skip them all in once to speed up things...
+		// Enable these tags only if you know how to make them work...
+		/*
+		if(($tag === 'glow') || ($tag === 'shadow') || ($tag === 'blur') || ($tag === 'wave') || ($tag === 'fliph') || ($tag === 'flipv'))
 		{
-			if($this->is_sig)
+			// GLOW
+			if($tag === 'glow')
 			{
-				return $error;
-			}
-			if(isset($item['params']['param']))
-			{
-				$strenght = intval($item['params']['param']);
-				if (($strenght > 0) && ($strenght < 101))
+				$default_color = '#fffffa';
+				$color = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : $default_color)));
+				if($color === false)
 				{
-					$strenght = $strenght;
+					return $error;
 				}
-			}
-			else
-			{
-				$strenght = '100';
-			}
-			$strenght_dec = $strenght / 100;
-			$html = '<div style="display:inline;width:100%;height:20;filter:Blur(add=1,direction=270,strength=' . $strenght . ');">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-		}
-
-		// WAVE
-		if($tag === 'wave')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			if(isset($item['params']['param']))
-			{
-				$strenght = intval($item['params']['param']);
-				if (($strenght > 0) && ($strenght < 101))
-				{
-					$strenght = $strenght;
-				}
-			}
-			else
-			{
-				$strenght = '100';
-			}
-			$strenght_dec = $strenght / 100;
-			$html = '<div style="display:inline;width:100%;height:20;filter:Wave(add=1,direction=270,strength=' . $strenght . ');">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-		}
-
-		// FLIPH, FLIPV
-		if($tag === 'fliph' || $tag === 'flipv')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			$html = '<div style="display:inline;filter:' . $tag . ';height:1;">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-		}
-
-		// Easter Eggs - START
-		// Single tags: xs or ipstaff
-		if(($tag === 'xs') || ($tag === 'ipstaff'))
-		{
-			$html = $lang['BBC_IP_CREDITS'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: ipstaffstatic
-		if($tag === 'ipstaffstatic')
-		{
-			$html = $lang['BBC_IP_CREDITS_STATIC'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: ipoverview
-		if($tag === 'ipoverview')
-		{
-			$html = $lang['BBC_Overview'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: iplicense
-		if($tag === 'iplicense')
-		{
-			$html = $lang['BBC_License'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: iprequirements
-		if($tag === 'iprequirements')
-		{
-			$html = $lang['BBC_Requirements'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: ipinstall
-		if($tag === 'ipinstall')
-		{
-			$html = $lang['BBC_Fresh_Installation'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: upgradebb
-		if(($tag === 'upgrade') || ($tag === 'upgradebb'))
-		{
-			$html = $lang['BBC_Upgrade_phpbb'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: upgradexs
-		if($tag === 'upgradexs')
-		{
-			$html = $lang['BBC_Upgrade_XS'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Single tags: upgradeip
-		if($tag === 'upgradeip')
-		{
-			$html = $lang['BBC_Upgrade_IP'];
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
-		}
-
-		// Easter Eggs - END
-
-		// RAINBOW
-		if($tag === 'rainbow')
-		{
-			/*
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			*/
-			$html = rainbow($content);
-			return array(
-				'valid' => true,
-				'html' => $html,
-				'allow_nested' => false,
-			);
-		}
-
-		// HIDE
-		if($tag === 'hide')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			if($item['iteration'] > 1)
-			{
-				return $error;
-			}
-			global $db, $topic_id, $userdata, $mode;
-			$show = false;
-			if($userdata['session_logged_in'])
-			{
-				$sql = "SELECT p.poster_id, p.topic_id
-					FROM " . POSTS_TABLE . " p
-					WHERE p.topic_id = $topic_id
-					AND p.poster_id = " . $userdata['user_id'];
-				$resultat = $db->sql_query($sql);
-				$show = $db->sql_numrows($resultat) ? true : false;
-				$db->sql_freeresult($result);
-
-				$sql = "SELECT *
-					FROM " . THANKS_TABLE . "
-					WHERE topic_id = $topic_id
-					AND user_id = " . $userdata['user_id'];
-				$resultat = $db->sql_query($sql);
-				$show = ($db->sql_numrows($resultat) || ($show == true))? true : false;
-				$db->sql_freeresult($result);
-
-				if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
-				{
-					$show = true;
-				}
-			}
-			// generate html
-			$html = '<blockquote class="quote"><div class="quote-nouser">' . $lang['xs_bbc_hide_message'] . ':</div><div class="post-text">';
-			if(!$show)
-			{
-				return array(
-					'valid' => true,
-					'html' => $html . $lang['xs_bbc_hide_message_explain'] . '</div></blockquote>',
-					'allow_nested' => false,
-				);
-			}
-			else
-			{
+				$html = '<div style="display:inline;filter:glow(color=' . $color . ');height:20;">';
 				return array(
 					'valid' => true,
 					'start' => $html,
-					'end' => '</div></blockquote>'
+					'end' => '</div>',
+				);
+			}
+
+			// SHADOW
+			if($tag === 'shadow')
+			{
+				$default_color = '#666666';
+				$color = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : $default_color)));
+				if($color === false)
+				{
+					return $error;
+				}
+				$html = '<div style="display:inline;filter:shadow(color=' . $color . ');height:20;">';
+				return array(
+					'valid' => true,
+					'start' => $html,
+					'end' => '</div>',
+				);
+			}
+
+			// BLUR
+			if($tag === 'blur')
+			{
+				if($this->is_sig)
+				{
+					return $error;
+				}
+				if(isset($item['params']['param']))
+				{
+					$strenght = intval($item['params']['param']);
+					if (($strenght > 0) && ($strenght < 101))
+					{
+						$strenght = $strenght;
+					}
+				}
+				else
+				{
+					$strenght = '100';
+				}
+				$strenght_dec = $strenght / 100;
+				$html = '<div style="display:inline;width:100%;height:20;filter:Blur(add=1,direction=270,strength=' . $strenght . ');">';
+				return array(
+					'valid' => true,
+					'start' => $html,
+					'end' => '</div>',
+				);
+			}
+
+			// WAVE
+			if($tag === 'wave')
+			{
+				if($this->is_sig)
+				{
+					return $error;
+				}
+				if(isset($item['params']['param']))
+				{
+					$strenght = intval($item['params']['param']);
+					if (($strenght > 0) && ($strenght < 101))
+					{
+						$strenght = $strenght;
+					}
+				}
+				else
+				{
+					$strenght = '100';
+				}
+				$strenght_dec = $strenght / 100;
+				$html = '<div style="display:inline;width:100%;height:20;filter:Wave(add=1,direction=270,strength=' . $strenght . ');">';
+				return array(
+					'valid' => true,
+					'start' => $html,
+					'end' => '</div>',
+				);
+			}
+
+			// FLIPH, FLIPV
+			if(($tag === 'fliph') || ($tag === 'flipv'))
+			{
+				if($this->is_sig)
+				{
+					return $error;
+				}
+				$html = '<div style="display:inline;filter:' . $tag . ';height:1;">';
+				return array(
+					'valid' => true,
+					'start' => $html,
+					'end' => '</div>',
 				);
 			}
 		}
-
-		// SPOILER
-		if($tag === 'spoiler')
-		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
-			if($item['iteration'] > 1)
-			{
-				return $error;
-			}
-			$spoiler_id = substr(md5($content . mt_rand()), 0, 8);
-			$str = '<div class="spoiler">';
-			$str .= '<div class="code-header" id="spoilerhdr_' . $spoiler_id . '" style="position: relative;">Spoiler: [ <a href="javascript:void(0)" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\')">' . $lang['Show'] . '</a> ]</div>';
-			$str .= '<div class="code-header" id="spoilerhdr2_' . $spoiler_id . '" style="position: relative; display: none;">Spoiler: [ <a href="javascript:void(0)" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\')">' . $lang['Hide'] . '</a> ]</div>';
-			$str .= '<div class="spoiler-content" id="spoiler2_' . $spoiler_id . '" style="position: relative; display: none;">' . $html;
-			return array(
-				'valid' => true,
-				'start' => $str,
-				'end' => '</div></div>'
-			);
-		}
+		*/
+		// OLD IE AND HTML 4 ONLY TAGS - END
 
 		// TEX
 		if($tag === 'tex')
@@ -2938,202 +2222,181 @@ class BBCode
 			);
 		}
 
-		// GRADIENT
-		if($tag === 'gradient')
+		// TABLE
+		if($tag === 'table')
 		{
-			/*
 			if($this->is_sig)
 			{
 				return $error;
 			}
-			*/
-
+			// additional allowed parameters
+			$extras = $this->allow_styling ? array('class', 'align', 'width', 'height', 'border', 'cellspacing', 'cellpadding') : array('class', 'align', 'width');
 			if(isset($item['params']['param']))
 			{
-				$color1 = $item['params']['param'];
-			}
-			elseif(isset($item['params']['cols']))
-			{
-				$color1 = $item['params']['cols'];
-			}
-			if (valid_hex_color($color1) == false)
-			{
-				$color1 = '#000080';
-			}
-
-			if(isset($item['params']['cole']))
-			{
-				$color2 = $item['params']['cole'];
-			}
-			if (valid_hex_color($color2) == false)
-			{
-				$color2 = '#aaccee';
-			}
-
-			if(isset($item['params']['mode']))
-			{
-				$mode = $item['params']['mode'];
+				$table_class = $item['params']['param'];
 			}
 			else
 			{
-				$mode = '';
+				$table_class = 'empty-table';
 			}
 
-			if(isset($item['params']['iterations']))
+			for($i = 0; $i < count($extras); $i++)
 			{
-				$iterations = $item['params']['iterations'];
+				if(!empty($item['params'][$extras[$i]]))
+				{
+					if($extras[$i] === 'style')
+					{
+						$style = $this->valid_style($item['params']['style']);
+						if($style !== false)
+						{
+							$params['style'] = $style;
+						}
+					}
+					else
+					{
+						$params[$extras[$i]] = $item['params'][$extras[$i]];
+					}
+				}
 			}
-			if ((intval($iterations) < 10) || (intval($iterations) > 100))
+			if (!isset($params['class']))
 			{
-				$iterations = 10;
+				$params['class'] = $table_class;
 			}
-
-			$html = gradient($content, $color1, $color2, $mode, $iterations);
+			// generate html
+			$html = '<table';
+			foreach($params as $var => $value)
+			{
+				$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
+			}
+			$html .= ' >' . $content . '</table>';
 			return array(
 				'valid' => true,
 				'html' => $html,
-				'allow_nested' => false,
+				'allow_nested' => true,
 			);
 		}
 
-		// --- Disable Active Content Switch BEGIN ---
-		// Added by Tom XS2 Build 054
-		if ($board_config['switch_bbcb_active_content'] == 1)
+		/*
+		// TR
+		if($tag === 'tr')
 		{
-			// FLASH, SWF, FLV, VIDEO, REAL, QUICK, STREAM, EMFF, YOUTUBE, GOOGLEVIDEO
-			if(($tag === 'flash') || ($tag === 'swf') || ($tag === 'flv') || ($tag === 'video') || ($tag === 'ram') || ($tag === 'quick') || ($tag === 'stream') || ($tag === 'emff') || ($tag === 'mp3') || ($tag === 'youtube') || ($tag === 'googlevideo'))
-			{
-				if($this->is_sig)
-				{
-					return $error;
-				}
-				if(isset($item['params']['param']))
-				{
-					$content = $item['params']['param'];
-				}
-				$content = $this->process_text($content);
-
-				if(isset($item['params']['width']))
-				{
-					$width = $item['params']['width'];
-					if ((intval($width) > 10) && (intval($width) < 641))
-					{
-						$width = $width;
-					}
-					else
-					{
-						$width = '320';
-					}
-				}
-				else
-				{
-					$width = '320';
-				}
-
-				if(isset($item['params']['height']))
-				{
-					$height = $item['params']['height'];
-					if ((intval($height) > 10) && (intval($height) < 481))
-					{
-						$height = $height;
-					}
-					else
-					{
-						$height = '240';
-					}
-				}
-				else
-				{
-					$height = '240';
-				}
-
-				if (($tag === 'flash') || ($tag === 'swf'))
-				{
-					$html = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="' . $width . '" height="' . $height . '"><param name="movie" value="' . $content . '"><param name="quality" value="high"><param name="scale" value="noborder"><param name="wmode" value="transparent"><param name="bgcolor" value="#000000"><embed src="' . $content . '" quality="high" scale="noborder" wmode="transparent" bgcolor="#000000" width="' . $width . '" height="' . $height . '" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></embed></object>';
-				}
-				elseif ($tag === 'flv')
-				{
-					$html = '<object type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" wmode="transparent" data="flv_player.swf?file=' . $content . '&amp;autoStart=false"><param name="movie" value="flv_player.swf?file=' . $content . '&amp;autoStart=false"/><param name="wmode" value="transparent"/></object>';
-				}
-				elseif ($tag === 'video')
-				{
-					$html = '<div align="center"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '"></embed></div>';
-				}
-				elseif ($tag === 'ram')
-				{
-					$html = '<div align="center"><embed src="' . $content . '" align="center" width="275" height="40" type="audio/x-pn-realaudio-plugin" console="cons" controls="ControlPanel" autostart="false"></embed></div>';
-				}
-				elseif ($tag === 'quick')
-				{
-					$html = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0" width="' . $width . '" height="' . $height . '" align="middle"><param name="controller" value="true"><param name="type" value="video/quicktime"><param name="autoplay" value="true"><param name="target" value="myself"><param name="src" value="' . $content . '"><param name="pluginspage" value="http://www.apple.com/quicktime/download/indext.html"><param name="kioskmode" value="true"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '" align="middle" kioskmode="true" controller="true" target="myself" type="video/quicktime" border="0" pluginspage="http://www.apple.com/quicktime/download/indext.html"></embed></object>';
-				}
-				elseif ($tag === 'stream')
-				{
-					$html = '<object id="wmp" width="' . $width . '" height="' . $height . '" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,0,0,0" standby="Loading Microsoft Windows Media Player components..." type="application/x-oleobject"><param name="FileName" value="' . $content . '"><param name="ShowControls" value="1"><param name="ShowDisplay" value="0"><param name="ShowStatusBar" value="1"><param name="AutoSize" value="1"><embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/windows95/downloads/contents/wurecommended/s_wufeatured/mediaplayer/default.asp" src="' . $content . '" name="MediaPlayer2" showcontrols="1" showdisplay="0" showstatusbar="1" autosize="1" visible="1" animationatstart="0" transparentatstart="1" loop="0" height="70" width="300"></embed></object>';
-				}
-				elseif (($tag === 'emff') || ($tag === 'mp3'))
-				{
-					$html = '<object data="emff_player.swf" type="application/x-shockwave-flash" width="200" height="55" align="top" ><param name="FlashVars" value="src=' . $content . '" /><param name="movie" value="emff_player.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#F8F8F8" /></object>';
-				}
-				elseif ($tag === 'youtube')
-				{
-					$html = '<object width="425" height="350"><param name="movie" value="http://www.youtube.com/v/' . $content . '" /><embed src="http://www.youtube.com/v/' . $content . '" type="application/x-shockwave-flash" width="425" height="350"></embed></object><br /><a href="http://youtube.com/watch?v=' . $content . '" target="_blank">Link</a><br />';
-				}
-				elseif ($tag === 'googlevideo')
-				{
-					$html = '<object width="425" height="350"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:400px; height:326px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#F8F8F8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
-				}
-				return array(
-					'valid' => true,
-					'html' => $html
-				);
-			}
-		}
-		// --- Disable Active Content Switch END ---
-
-		// SEARCH
-		if($tag === 'search')
-		{
-			if($content == '')
+			if($this->is_sig)
 			{
 				return $error;
 			}
-			$str = '<a href="' . SEARCH_MG . '?search_keywords=' . $content . '">';
+			// generate html
+			$html = '<tr>' . $content . '</tr>';
 			return array(
 				'valid' => true,
-				'start' => $str,
-				'end' => '</a>'
+				'html' => $html,
+				'allow_nested' => true,
 			);
 		}
 
-		// LANGUAGE
-		// Parse the content only if in the same language of the user viewing it!!!
-		if($tag === 'language')
+		// TD
+		if($tag === 'td')
 		{
-			if($content == '')
+			if($this->is_sig)
 			{
 				return $error;
 			}
+			// additional allowed parameters
+			$extras = $this->allow_styling ? array('class', 'align', 'width', 'height') : array('class', 'align', 'width', 'height');
 
+			for($i = 0; $i < count($extras); $i++)
+			{
+				if(!empty($item['params'][$extras[$i]]))
+				{
+					if($extras[$i] === 'style')
+					{
+						$style = $this->valid_style($item['params']['style']);
+						if($style !== false)
+						{
+							$params['style'] = $style;
+						}
+					}
+					else
+					{
+						$params[$extras[$i]] = $item['params'][$extras[$i]];
+					}
+				}
+			}
+			// generate html
+			$html = '<td';
+			foreach($params as $var => $value)
+			{
+				$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
+			}
+			$html .= ' >' . $content . '</td>';
+			return array(
+				'valid' => true,
+				'html' => $html,
+				'allow_nested' => true,
+			);
+		}
+		*/
+
+		// IFRAME
+		/*
+		//<iframe src="index.html" scrolling="no" width="100%" height="190" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		//[iframe height=100]docs/index.html[/iframe]
+		//[iframe src=docs/index.html height=100] [/iframe]
+		if($tag === 'iframe')
+		{
 			if(isset($item['params']['param']))
 			{
-				$language = $item['params']['param'];
+				$params['src'] = $item['params']['param'];
 			}
-
-			if ($userdata['user_lang'] != $language)
+			elseif(isset($item['params']['src']))
 			{
-				$html = '';
+				$params['src'] = $item['params']['src'];
+			}
+			elseif(!empty($content))
+			{
+				$params['src'] = $content;
+			}
+			if(isset($item['params']['scrolling']) && ($params['scrolling'] == 'no'))
+			{
+				$params['scrolling'] = 'no';
+				//$params['scrolling'] = $item['params']['scrolling'];
 			}
 			else
 			{
-				$html = $content;
+				$params['scrolling'] = 'yes';
+			}
+			if(isset($item['params']['width']))
+			{
+				$params['width'] = $item['params']['width'];
+			}
+			else
+			{
+				$params['width'] = '100%';
+			}
+			if(isset($item['params']['height']))
+			{
+				$params['height'] = $item['params']['height'];
+			}
+			else
+			{
+				$params['height'] = '600';
 			}
 
+			foreach($params as $var => $value)
+			{
+				if ($this->process_text($value) != '')
+				{
+					$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
+				}
+			}
+			$extras = $this->allow_styling ? array('style', 'class') : array('class');
+			$html = '<iframe' . $html . '>';
 			return array(
 				'valid' => true,
-				'html' => $html
+				'start' => $html,
+				'end' => '</iframe>'
 			);
 		}
+		*/
 
 		// Invalid tag
 		return $error;
@@ -3149,7 +2412,7 @@ class BBCode
 		else
 		{
 			$tag_ok = false;
-			if(($tag === '*') || ($tag === '[*]') || ($tag === '[hr]') || ($tag === '[xs]') || ($tag === '[ipstaff]') || ($tag === '[ipstaffstatic]') || ($tag === '[ipoverview]') || ($tag === '[iplicense]') || ($tag === '[iprequirements]') || ($tag === '[ipinstall]') || ($tag === '[upgrade]') || ($tag === '[upgradebb]') || ($tag === '[upgradexs]') || ($tag === '[upgradeip]'))
+			if(($tag === '*') || ($tag === '[*]') || ($tag === '[hr]'))
 			{
 				$tag_ok = true;
 			}
@@ -3164,31 +2427,68 @@ class BBCode
 	}
 
 	// Check if color is valid
-	function valid_color($color)
+	function valid_color($color, $hex_only = false)
 	{
-		$color = strtolower($color);
-		if(preg_match('/^[a-z]+$/', $color))
+		if ($color === false)
 		{
-			// text color
-			return $color;
+			return false;
 		}
+		$color = strtolower($color);
 		if(substr($color, 0, 1) === '#')
 		{
 			// normal color
 			if(preg_match('/^[0-9a-f]+$/', substr($color, 1)))
 			{
-				if(strlen($color) == 4 || strlen($color) == 7)
+				if ($hex_only == true)
 				{
-					return $color;
+					if(strlen($color) == 7)
+					{
+						return $color;
+					}
+				}
+				else
+				{
+					if((strlen($color) == 4) || (strlen($color) == 7))
+					{
+						return $color;
+					}
 				}
 			}
 			return false;
 		}
+		// color with missing #
+		if(preg_match('/^[0-9a-f]+$/', $color))
+		{
+			if ($hex_only == true)
+			{
+				if(strlen($color) == 6)
+				{
+					return '#' . $color;
+				}
+			}
+			else
+			{
+				if((strlen($color) == 3) || (strlen($color) == 6))
+				{
+					return '#' . $color;
+				}
+			}
+		}
+		if($hex_only == true)
+		{
+			// We didn't find any valid 6 digits hex color
+			return false;
+		}
+		if(preg_match('/^[a-z]+$/', $color))
+		{
+			// text color
+			return $color;
+		}
 		// rgb color
-		if(substr($color, 0, 4) === 'rgb(' && preg_match('/^rgb\([0-9]+,[0-9]+,[0-9]+\)$/', $color))
+		if((substr($color, 0, 4) === 'rgb(') && preg_match('/^rgb\([0-9]+,[0-9]+,[0-9]+\)$/', $color))
 		{
 			$colors = explode(',', substr($color, 4, strlen($color) - 5));
-			for($i = 0; $i<3; $i++)
+			for($i = 0; $i < 3; $i++)
 			{
 				if($colors[$i] > 255)
 				{
@@ -3196,14 +2496,6 @@ class BBCode
 				}
 			}
 			return sprintf('#%02X%02X%02X', $colors[0], $colors[1], $colors[2]);
-		}
-		// color with missing #
-		if(preg_match('/^[0-9a-f]+$/', $color))
-		{
-			if(strlen($color) == 3 || strlen($color) == 6)
-			{
-				return '#' . $color;
-			}
 		}
 		return false;
 	}
@@ -3600,7 +2892,7 @@ class BBCode
 				'item' => &$items[$i]
 				);
 			$iterations = 0;
-			for($j=0; $j<count($prev_tags); $j++)
+			for($j = 0; $j < count($prev_tags); $j++)
 			{
 				if($prev_tags[$j]['tag'] === $item['tag'])
 				{
@@ -3813,11 +3105,29 @@ class BBCode
 		$this->text = substr($this->text, 1, strlen($this->text) - 2);
 	}
 
+	// Remove bbcode_uid from old posts
+	function bbcuid_clean($text, $id = false)
+	{
+		if ($id != false)
+		{
+			$text = str_replace(':' . $id, '', $text);
+		}
+		else
+		{
+			$text = preg_replace("/\:([a-f0-9]{10})/s", '', $text);
+			// phpBB 3
+			//$text = preg_replace("/\:([a-z0-9]{8})/s", '', $text);
+		}
+		return $text;
+	}
+
 	// Converts text to html code
 	function parse($text, $id = false, $light = false, $clean_tags = false)
 	{
 		if(defined('IN_ICYPHOENIX'))
 		{
+			// if you have an old phpBB based site with old posts, you may want to enable this BBCode UID strip REG EX Replace
+			//$text = preg_replace("/\:([a-f0-9]{10})/s", '', $text);
 			$search = array(
 				$id ? ':' . $id : '',
 				'code:1]',
@@ -3829,10 +3139,14 @@ class BBCode
 				'list]',
 				);
 			$text = str_replace($search, $replace, $text);
+			// We need this after having removed bbcode_uid... but don't know why
+			$text = undo_htmlspecialchars($text);
+			/*
 			if($id)
 			{
 				$text = undo_htmlspecialchars($text);
 			}
+			*/
 		}
 		// reset variables
 		$this->text = $text;
@@ -3876,10 +3190,384 @@ class BBCode
 
 		return $this->html;
 	}
+
+	function load_rainbow_colors()
+	{
+		return array(
+			1 => 'red',
+			2 => 'orange',
+			3 => 'yellow',
+			4 => 'green',
+			5 => 'blue',
+			6 => 'indigo',
+			7 => 'violet'
+		);
+	}
+
+	function rainbow($text)
+	{
+		// Returns text highlighted in rainbow colours
+		$colors = $this->load_rainbow_colors();
+		$text = trim(stripslashes($text));
+		$length = strlen($text);
+		$result = '';
+		$color_counter = 0;
+		$TAG_OPEN = false;
+		for ($i = 0; $i < $length; $i++)
+		{
+			$char = substr($text, $i, 1);
+			if (!$TAG_OPEN)
+			{
+				if ($char == '<')
+				{
+					$TAG_OPEN = true;
+					$result .= $char;
+				}
+				elseif (preg_match("#\S#i", $char))
+				{
+					$color_counter++;
+					$result .= '<span style="color: ' . $colors[$color_counter] . ';">' . $char . '</span>';
+					$color_counter = ($color_counter == 7) ? 0 : $color_counter;
+				}
+				else
+				{
+					$result .= $char;
+				}
+			}
+			else
+			{
+				if ($char == '>')
+				{
+					$TAG_OPEN = false;
+				}
+				$result .= $char;
+			}
+		}
+		return $result;
+	}
+
+	function rand_color()
+	{
+		$color_code = mt_rand(0, 255);
+		if ($color_code < 16)
+		{
+			return ('0' . dechex($color_code));
+		}
+		else
+		{
+			return dechex($color_code);
+		}
+	}
+
+	function load_random_colors($iterations = 10)
+	{
+		$random_color = array();
+		for ($i = 0; $i < $iterations; $i++)
+		{
+			$random_color[$i + 1] = '#' . $this->rand_color() . $this->rand_color() . $this->rand_color();
+		}
+		return $random_color;
+	}
+
+	function load_gradient_colors($color1, $color2, $iterations = 10)
+	{
+		$col1_array = array();
+		$col2_array = array();
+		$col_dif_array = array();
+		$gradient_color = array();
+		$col1_array[0] = hexdec(substr($color1, 1, 2));
+		$col1_array[1] = hexdec(substr($color1, 3, 2));
+		$col1_array[2] = hexdec(substr($color1, 5, 2));
+		$col2_array[0] = hexdec(substr($color2, 1, 2));
+		$col2_array[1] = hexdec(substr($color2, 3, 2));
+		$col2_array[2] = hexdec(substr($color2, 5, 2));
+		$col_dif_array[0] = ($col2_array[0] - $col1_array[0]) / ($iterations - 1);
+		$col_dif_array[1] = ($col2_array[1] - $col1_array[1]) / ($iterations - 1);
+		$col_dif_array[2] = ($col2_array[2] - $col1_array[2]) / ($iterations - 1);
+		for ($i = 0; $i < $iterations; $i++)
+		{
+			$part1 = round($col1_array[0] + ($col_dif_array[0] * $i));
+			$part2 = round($col1_array[1] + ($col_dif_array[1] * $i));
+			$part3 = round($col1_array[2] + ($col_dif_array[2] * $i));
+			$part1 = ($part1 < 16) ? ('0' . dechex($part1)) : (dechex($part1));
+			$part2 = ($part2 < 16) ? ('0' . dechex($part2)) : (dechex($part2));
+			$part3 = ($part3 < 16) ? ('0' . dechex($part3)) : (dechex($part3));
+			$gradient_color[$i + 1] = '#' . $part1 . $part2 . $part3;
+		}
+
+		return $gradient_color;
+	}
+
+	function gradient($text, $color1, $color2, $mode = 'random', $iterations = 10)
+	{
+		// Returns text highlighted in random gradient colours
+		if ($mode == 'random')
+		{
+			$colors = $this->load_random_colors();
+		}
+		else
+		{
+			$colors = $this->load_gradient_colors($color1, $color2, $iterations);
+		}
+		$text = trim(stripslashes($text));
+		$length = strlen($text);
+		$result = '';
+		$color_counter = 0;
+		$TAG_OPEN = false;
+		for ($i = 0; $i < $length; $i++)
+		{
+			$char = substr($text, $i, 1);
+			if (!$TAG_OPEN)
+			{
+				if ($char == '<')
+				{
+					$TAG_OPEN = true;
+					$result .= $char;
+				}
+				elseif (preg_match("#\S#i", $char))
+				{
+					$color_counter++;
+					$result .= '<span style="color: ' . $colors[$color_counter] . ';">' . $char . '</span>';
+					$color_counter = ($color_counter == $iterations) ? 0 : $color_counter;
+				}
+				else
+				{
+					$result .= $char;
+				}
+			}
+			else
+			{
+				if ($char == '>')
+				{
+					$TAG_OPEN = false;
+				}
+				$result .= $char;
+			}
+		}
+		return $result;
+	}
+
+	/*
+	* This function will strip common BBCodes tags, but some of them will be left there (such as CODE or QUOTE)
+	*/
+	function bbcode_killer($text, $id = false)
+	{
+		// Pad it with a space so we can distinguish between FALSE and matching the 1st char (index 0).
+		// This is important; bbencode_quote(), bbencode_list(), and bbencode_code() all depend on it.
+		$text = " " . $text;
+
+		// First: If there isn't a "[" and a "]" in the message, don't bother.
+		if (!(strpos($text, "[") && strpos($text, "]")))
+		{
+			// Remove padding, return.
+			$text = substr($text, 1);
+			return $text;
+		}
+
+		// Stripping out old bbcode_uid
+		if (!empty($id))
+		{
+			$text = preg_replace("/\:(([a-z0-9]:)?)" . $id . "/s", "", $text);
+		}
+
+		// Strip simple tags
+		$look_up_array = array(
+			//"[code]", "[/code]",
+			//"[php]","[/php]",
+			//"[cpp]","[/cpp]",
+			"[b]", "[/b]",
+			"[u]", "[/u]",
+			"[tt]", "[/tt]",
+			"[i]", "[/i]",
+			"[list]", "[/list]",
+			"[list=1]",
+			"[list=a]",
+			"[*]",
+			"[url]", "[/url]",
+			"[email]", "[/email]",
+			"[img]", "[img align=left]", "[img align=right]", "[/img]",
+			"[imgl]", "[/imgl]",
+			"[imgr]", "[/imgr]",
+			"[albumimg]", "[/albumimg]",
+			"[albumimgl]", "[/albumimgl]",
+			"[albumimgr]", "[/albumimgr]",
+			"[blur]", "[/blur]",
+			"[fade]", "[/fade]",
+			"[rainbow]", "[/rainbow]",
+			"[gradient]", "[/gradient]",
+			"[jiggle]", "[/jiggle]",
+			"[pulse]", "[/pulse]",
+			"[neon]", "[/neon]",
+			"[updown]", "[/updown]",
+			"[flipv]", "[/flipv]",
+			"[fliph]", "[/fliph]",
+			"[wave]", "[/wave]",
+			"[offtopic]", "[/offtopic]",
+			"[strike]", "[/strike]",
+			"[sup]", "[/sup]",
+			"[sub]", "[/sub]",
+			"[spoil]", "[/spoil]",
+			"[spoiler]", "[/spoiler]",
+			"[table]", "[/table]",
+			"[tr]", "[/tr]",
+			"[td]", "[/td]",
+			"[em]", "[/em]",
+			"[strong]", "[/strong]",
+			"[center]", "[/center]",
+			"[hide]", "[/hide]",
+			//"[]", "[/]",
+			"[hr]",
+		);
+
+		$text = str_replace($look_up_array, "", $text);
+
+		// Colours
+		$color_code = "(\#[0-9A-F]{6}|[a-z]+)";
+		$look_up_array = array(
+			"/\[color=" . $color_code . "\]/si", "/\[\/color\]/si",
+			"/\[glow=" . $color_code . "\]/si", "/\[\/glow\]/si",
+			"/\[shadow=" . $color_code . "\]/si", "/\[\/shadow\]/si",
+			"/\[highlight=" . $color_code . "\]/si", "/\[\/highlight\]/si",
+			"/\[size=([\-\+]?[1-3]?[0-9])\]/si", "/\[\/size\]/si",
+			"/\[url=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "/\[\/url\]/si",
+			"/\[web=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "/\[\/web\]/si",
+			"/\[font=(Arial|Arial Black|Arial Bold|Arial Bold Italic|Arial Italic|Comic Sans MS|Comic Sans MS Bold|Courier New|Courier New Bold|Courier New Bold Italic|Courier New Italic|Impact|Lucida Console|Lucida Sans Unicode|Microsoft Sans Serif|Symbol|Tahoma|Tahoma Bold|Times New Roman|Times New Roman Bold|Times New Roman Bold Italic|Times New Roman Italic|Traditional Arabic|Trebuchet MS|Trebuchet MS Bold|Trebuchet MS Bold Italic|Trebuchet MS Italic|Verdana|Verdana Bold|Verdana Bold Italic|Verdana Italic|Webdings|Wingdings|)\]/si", "/\[\/font\]/si",
+			"/\[marq=(left|right|up|down)\]/si", "/\[\/marq\]/si",
+			"/\[marquee direction=(left|right|up|down)\]/si", "/\[\/marquee\]/si",
+			"/\[align=(left|center|right|justify)\]/si", "/\[\/align\]/si",
+		);
+
+		$text = preg_replace($look_up_array, "", $text);
+
+		// [QUOTE] and [/QUOTE]
+	 /*
+		$text = str_replace("[quote]","", $text);
+		$text = str_replace("[/quote]", "", $text);
+		$text = preg_replace("/\[quote=(?:\"?([^\"]*)\"?)\]/si", "", $text);
+	 */
+
+		// Remove our padding from the string..
+		$text = substr($text, 1);
+
+		return $text;
+	}
+
+	function plain_message($text, $id)
+	{
+		// This function will strip from a message some BBCodes,
+		// all BBCodes $uid, and some other formattings.
+		// The result will be suitable for email sendings.
+		$text = $this->bbcode_killer($text, $id);
+		//$text = preg_replace("/\r\n/", "<br />", $text);
+		$text = preg_replace("/\r\n/", "\n", $text);
+		$text = str_replace('<br />', "\n", $text);
+
+		return $text;
+	}
+
+	/*
+	* This function will strip all specified BBCodes tags or all BBCodes tags
+	*/
+	function bbcode_clean($text, &$tags)
+	{
+		if (is_array($tags) && (count($tags) > 0))
+		{
+			for ($i = 0; $i < count($tags); $i++)
+			{
+				$tags[$i] = ($tags[$i] == '*') ? '\*' : $tags[$i];
+				$text = ereg_replace("\[" . $tags[$i] . "[^]^[]*\]", '', $text);
+				$text = ereg_replace("\[(/?)[^]^[]" . $tags[$i] . "\]", '', $text);
+			}
+		}
+		else
+		{
+			$text = ereg_replace("\[(/?)[^]^[]*\]", '', $text);
+		}
+
+		$text = nl2br($text);
+		return $text;
+	}
+
+	function acronym_sort($a, $b)
+	{
+		if (strlen($a['acronym']) == strlen($b['acronym']))
+		{
+			return 0;
+		}
+
+		return (strlen($a['acronym']) > strlen($b['acronym'])) ? -1 : 1;
+	}
+
+	function acronym_pass($text)
+	{
+		if (!defined('IS_ICYPHOENIX'))
+		{
+			return $text;
+		}
+
+		static $orig, $repl;
+
+		if(!isset($orig))
+		{
+			global $db, $board_config;
+			$orig = $repl = array();
+
+			$sql = 'SELECT * FROM ' . ACRONYMS_TABLE;
+			if(!$result = $db->sql_query($sql, false, 'acronyms_'))
+			{
+				message_die(GENERAL_ERROR, "Couldn't obtain acronyms data", "", __LINE__, __FILE__, $sql);
+			}
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$acronyms[] = $row;
+			}
+
+			if(count($acronyms))
+			{
+				//usort($acronyms, 'acronym_sort');
+				// This use acronym_sort calling it from within BBCode object
+				usort($acronyms, array('BBCode', 'acronym_sort'));
+			}
+
+			for ($i = 0; $i < count($acronyms); $i++)
+			{
+				/* OLD CODE FOR ACRONYMS
+				$orig[] = '#\b(' . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . ')\b#';
+				$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . "(?=.\W|\W.|\W$)/";
+				*/
+				$orig[] = '#\b(' . str_replace('\*', '\w*?', preg_quote(stripslashes($acronyms[$i]['acronym']), '#')) . ')\b#i';
+				$repl[] = '<acronym title="' . $acronyms[$i]['description'] . '">' . $acronyms[$i]['acronym'] . '</acronym>'; ;
+			}
+		}
+
+		if(count($orig))
+		{
+
+			$segments = preg_split('#(<acronym.+?>.+?</acronym>|<.+?>)#s' , $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+			//<?php
+			//Insert for formating purpose
+			$text = '';
+
+			foreach($segments as $seg)
+			{
+				if($seg[0] != '<' && $seg[0] != '[')
+				{
+					$text .= str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig, \$repl, '\\0')", '>' . $seg . '<'), 1, -1));
+				}
+				else
+				{
+					$text .= $seg;
+				}
+			}
+		}
+
+		return $text;
+	}
+
 }
 
 $bbcode = new BBCode();
-
 
 // Need to initialize the random numbers only ONCE
 mt_srand((double) microtime() * 1000000);
@@ -3981,193 +3669,8 @@ function make_clickable($text)
 	return($ret);
 }
 
-function rainbow($text)
-{
-	// Returns text highlighted in rainbow colours
-	if (!defined('RAINBOW_COLORS_LOADED'))
-	{
-		$colors = load_rainbow_colors();
-	}
-	$text = trim(stripslashes($text));
-	$length = strlen($text);
-	$result = '';
-	$color_counter = 0;
-	$TAG_OPEN = false;
-	for ($i = 0; $i < $length; $i++)
-	{
-		$char = substr($text, $i, 1);
-		if (!$TAG_OPEN)
-		{
-			if ($char == '<')
-			{
-				$TAG_OPEN = true;
-				$result .= $char;
-			}
-			elseif (preg_match("#\S#i", $char))
-			{
-				$color_counter++;
-				$result .= '<span style="color: ' . $colors[$color_counter] . ';">' . $char . '</span>';
-				$color_counter = ($color_counter == 7) ? 0 : $color_counter;
-			}
-			else
-			{
-				$result .= $char;
-			}
-		}
-		else
-		{
-			if ($char == '>')
-			{
-				$TAG_OPEN = false;
-			}
-			$result .= $char;
-		}
-	}
-	return $result;
-}
-
-function gradient($text, $color1, $color2, $mode = 'random', $iterations = 10)
-{
-	// Returns text highlighted in random gradient colours
-	if ($mode == 'random')
-	{
-		$colors = load_random_colors();
-	}
-	else
-	{
-		$colors = load_gradient_colors($color1, $color2, $iterations);
-	}
-	$text = trim(stripslashes($text));
-	$length = strlen($text);
-	$result = '';
-	$color_counter = 0;
-	$TAG_OPEN = false;
-	for ($i = 0; $i < $length; $i++)
-	{
-		$char = substr($text, $i, 1);
-		if (!$TAG_OPEN)
-		{
-			if ($char == '<')
-			{
-				$TAG_OPEN = true;
-				$result .= $char;
-			}
-			elseif (preg_match("#\S#i", $char))
-			{
-				$color_counter++;
-				$result .= '<span style="color: ' . $colors[$color_counter] . ';">' . $char . '</span>';
-				$color_counter = ($color_counter == $iterations) ? 0 : $color_counter;
-			}
-			else
-			{
-				$result .= $char;
-			}
-		}
-		else
-		{
-			if ($char == '>')
-			{
-				$TAG_OPEN = false;
-			}
-			$result .= $char;
-		}
-	}
-	return $result;
-}
-
-function load_rainbow_colors()
-{
-	return array(
-		1 => 'red',
-		2 => 'orange',
-		3 => 'yellow',
-		4 => 'green',
-		5 => 'blue',
-		6 => 'indigo',
-		7 => 'violet'
-	);
-}
-
-function rand_color()
-{
-	$color_code = mt_rand(0, 255);
-	if ($color_code < 16)
-	{
-		return ('0' . dechex($color_code));
-	}
-	else
-	{
-		return dechex($color_code);
-	}
-}
-
-function load_random_colors($iterations = 10)
-{
-	$random_color = array();
-	for ($i = 0; $i < $iterations; $i++)
-	{
-		$random_color[$i + 1] = '#' . rand_color() . rand_color() . rand_color();
-	}
-	return $random_color;
-}
-
-function load_gradient_colors($color1, $color2, $iterations = 10)
-{
-	$col1_array = array();
-	$col2_array = array();
-	$col_dif_array = array();
-	$gradient_color = array();
-	$col1_array[0] = hexdec(substr($color1, 1, 2));
-	$col1_array[1] = hexdec(substr($color1, 3, 2));
-	$col1_array[2] = hexdec(substr($color1, 5, 2));
-	$col2_array[0] = hexdec(substr($color2, 1, 2));
-	$col2_array[1] = hexdec(substr($color2, 3, 2));
-	$col2_array[2] = hexdec(substr($color2, 5, 2));
-	$col_dif_array[0] = ($col2_array[0] - $col1_array[0]) / ($iterations - 1);
-	$col_dif_array[1] = ($col2_array[1] - $col1_array[1]) / ($iterations - 1);
-	$col_dif_array[2] = ($col2_array[2] - $col1_array[2]) / ($iterations - 1);
-	for ($i = 0; $i < $iterations; $i++)
-	{
-		$part1 = round($col1_array[0] + ($col_dif_array[0] * $i));
-		$part2 = round($col1_array[1] + ($col_dif_array[1] * $i));
-		$part3 = round($col1_array[2] + ($col_dif_array[2] * $i));
-		$part1 = ($part1 < 16) ? ('0' . dechex($part1)) : (dechex($part1));
-		$part2 = ($part2 < 16) ? ('0' . dechex($part2)) : (dechex($part2));
-		$part3 = ($part3 < 16) ? ('0' . dechex($part3)) : (dechex($part3));
-		$gradient_color[$i + 1] = '#' . $part1 . $part2 . $part3;
-	}
-
-	return $gradient_color;
-}
-
-function valid_hex_color($color)
-{
-	$color = strtolower($color);
-	if(substr($color, 0, 1) === '#')
-	{
-		// normal color
-		if(preg_match('/^[0-9a-f]+$/', substr($color, 1)))
-		{
-			if(strlen($color) == 7)
-			{
-				return $color;
-			}
-		}
-		return false;
-	}
-	// color with missing #
-	if(preg_match('/^[0-9a-f]+$/', $color))
-	{
-		if(strlen($color) == 6)
-		{
-			return '#' . $color;
-		}
-	}
-	return false;
-}
-
 /*
-This function turns HTML into text... strips tags, comments spanning multiple lines including CDATA, and anything else that gets in it's way.
+* This function turns HTML into text... strips tags, comments spanning multiple lines including CDATA, and anything else that gets in it's way.
 */
 function html2txt($document)
 {
@@ -4179,164 +3682,6 @@ function html2txt($document)
 					);
 	$text = preg_replace($search, '', $document);
 	return $text;
-}
-
-// Mighty Gorgon Functions
-/*
-This function will strip all specified BBCodes tags or all BBCodes tags
-*/
-function bbcode_clean_mg($text, &$tags)
-{
-	if (is_array($tags) && (count($tags) > 0))
-	{
-		for ($i = 0; $i < count($tags); $i++)
-		{
-			$tags[$i] = ($tags[$i] == '*') ? '\*' : $tags[$i];
-			$text = ereg_replace("\[" . $tags[$i] . "[^]^[]*\]", '', $text);
-			$text = ereg_replace("\[(/?)[^]^[]" . $tags[$i] . "\]", '', $text);
-		}
-	}
-	else
-	{
-		$text = ereg_replace("\[(/?)[^]^[]*\]", '', $text);
-	}
-
-	$text = nl2br($text);
-	return $text;
-}
-
-/*
-This function will strip common BBCodes tags, but some of them will be left there (such as CODE or QUOTE)
-*/
-function bbcode_killer_mg($text, $bbcode_uid)
-{
-	// Pad it with a space so we can distinguish between FALSE and matching the 1st char (index 0).
-	// This is important; bbencode_quote(), bbencode_list(), and bbencode_code() all depend on it.
-	$text = " " . $text;
-
-	// First: If there isn't a "[" and a "]" in the message, don't bother.
-	if (!(strpos($text, "[") && strpos($text, "]")))
-	{
-		// Remove padding, return.
-		$text = substr($text, 1);
-		return $text;
-	}
-
-	// Stripping out the $bbcode_uid
-	$text = preg_replace("/\:(([a-z0-9]:)?)" . $bbcode_uid . "/s", "", $text);
-
-	// Strip simple tags
-	$look_up_array = array(
-		//"[code]", "[/code]",
-		//"[php]","[/php]",
-		//"[cpp]","[/cpp]",
-		"[b]", "[/b]",
-		"[u]", "[/u]",
-		"[tt]", "[/tt]",
-		"[i]", "[/i]",
-		"[list]", "[/list]",
-		"[list=1]",
-		"[list=a]",
-		"[*]",
-		"[url]", "[/url]",
-		"[email]", "[/email]",
-		"[img]", "[img align=left]", "[img align=right]", "[/img]",
-		"[imgl]", "[/imgl]",
-		"[imgr]", "[/imgr]",
-		"[albumimg]", "[/albumimg]",
-		"[albumimgl]", "[/albumimgl]",
-		"[albumimgr]", "[/albumimgr]",
-		"[blur]", "[/blur]",
-		"[fade]", "[/fade]",
-		"[rainbow]", "[/rainbow]",
-		"[gradient]", "[/gradient]",
-		"[jiggle]", "[/jiggle]",
-		"[pulse]", "[/pulse]",
-		"[neon]", "[/neon]",
-		"[updown]", "[/updown]",
-		"[flipv]", "[/flipv]",
-		"[fliph]", "[/fliph]",
-		"[wave]", "[/wave]",
-		"[offtopic]", "[/offtopic]",
-		"[strike]", "[/strike]",
-		"[sup]", "[/sup]",
-		"[sub]", "[/sub]",
-		"[spoil]", "[/spoil]",
-		"[spoiler]", "[/spoiler]",
-		"[table]", "[/table]",
-		"[tr]", "[/tr]",
-		"[td]", "[/td]",
-		"[em]", "[/em]",
-		"[strong]", "[/strong]",
-		"[center]", "[/center]",
-		"[hide]", "[/hide]",
-		//"[]", "[/]",
-		"[hr]",
-	);
-
-	$text = str_replace($look_up_array, "", $text);
-
-	// Colours
-	$color_code = "(\#[0-9A-F]{6}|[a-z]+)";
-	$look_up_array = array(
-		"/\[color=" . $color_code . "\]/si", "/\[\/color\]/si",
-		"/\[glow=" . $color_code . "\]/si", "/\[\/glow\]/si",
-		"/\[shadow=" . $color_code . "\]/si", "/\[\/shadow\]/si",
-		"/\[highlight=" . $color_code . "\]/si", "/\[\/highlight\]/si",
-		"/\[size=([\-\+]?[1-3]?[0-9])\]/si", "/\[\/size\]/si",
-		"/\[url=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "/\[\/url\]/si",
-		"/\[web=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "/\[\/web\]/si",
-		"/\[font=(Arial|Arial Black|Arial Bold|Arial Bold Italic|Arial Italic|Comic Sans MS|Comic Sans MS Bold|Courier New|Courier New Bold|Courier New Bold Italic|Courier New Italic|Impact|Lucida Console|Lucida Sans Unicode|Microsoft Sans Serif|Symbol|Tahoma|Tahoma Bold|Times New Roman|Times New Roman Bold|Times New Roman Bold Italic|Times New Roman Italic|Traditional Arabic|Trebuchet MS|Trebuchet MS Bold|Trebuchet MS Bold Italic|Trebuchet MS Italic|Verdana|Verdana Bold|Verdana Bold Italic|Verdana Italic|Webdings|Wingdings|)\]/si", "/\[\/font\]/si",
-		"/\[marq=(left|right|up|down)\]/si", "/\[\/marq\]/si",
-		"/\[marquee direction=(left|right|up|down)\]/si", "/\[\/marquee\]/si",
-		"/\[align=(left|center|right|justify)\]/si", "/\[\/align\]/si",
-	);
-
-	$text = preg_replace($look_up_array, "", $text);
-
-	// [QUOTE] and [/QUOTE]
- /*
-	$text = str_replace("[quote]","", $text);
-	$text = str_replace("[/quote]", "", $text);
-	$text = preg_replace("/\[quote=(?:\"?([^\"]*)\"?)\]/si", "", $text);
- */
-
-	// Remove our padding from the string..
-	$text = substr($text, 1);
-
-	return $text;
-}
-
-function plain_message_mg($text, $bbcode_uid)
-{
-	// This function will strip from a message some BBCodes,
-	// all BBCodes $uid, and some other formattings.
-	// The result will be suitable for email sendings.
-	$text = bbcode_killer_mg($text, $bbcode_uid);
-	//$text = preg_replace("/\r\n/", "<br />", $text);
-	$text = preg_replace("/\r\n/", "\n", $text);
-	$text = str_replace('<br />', "\n", $text);
-
-	return $text;
-}
-
-function bbcuid_killer_mg($text, $bbcode_uid)
-{
-	// Stripping out the $bbcode_uid
-	$text = preg_replace("/\:(([a-z0-9]:)?)" . $bbcode_uid . "/s", "", $text);
-	return $text;
-}
-
-function bbcuid_killer2_mg($text, $bbcode_uid)
-{
-	// Stripping out the $bbcode_uid
-	$text = preg_replace("/:(([a-z0-9]+:)?)" . $bbcode_uid . "\]/si", ']', $text);
-	return $text;
-}
-
-function bbcode_killer_empty_uid($text)
-{
-	preg_replace('/\:[0-9a-z\:]+\]/si', ']', $text);
 }
 
 function nl2any($string, $tag = 'p', $feed = '')
@@ -4378,76 +3723,6 @@ function nl2br_mg($text)
 	*/
 	$text = preg_replace(array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/"), array("\r\n", "\r\n", "<br />\r\n"), $text);
 	return $text;
-}
-
-function acronym_sort($a, $b)
-{
-	if (strlen($a['acronym']) == strlen($b['acronym']))
-	{
-		return 0;
-	}
-
-	return (strlen($a['acronym']) > strlen($b['acronym'])) ? -1 : 1;
-}
-
-function acronym_pass($message)
-{
-	static $orig, $repl;
-
-	if(!isset($orig))
-	{
-		global $db, $board_config;
-		$orig = $repl = array();
-
-		$sql = 'SELECT * FROM ' . ACRONYMS_TABLE;
-		if(!$result = $db->sql_query($sql, false, 'acronyms_'))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain acronyms data", "", __LINE__, __FILE__, $sql);
-		}
-
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$acronyms[] = $row;
-		}
-
-		if(count($acronyms))
-		{
-			usort($acronyms, 'acronym_sort');
-		}
-
-		for ($i = 0; $i < count($acronyms); $i++)
-		{
-			/* OLD CODE FOR ACRONYMS
-			$orig[] = '#\b(' . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . ')\b#';
-			$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . "(?=.\W|\W.|\W$)/";
-			*/
-			$orig[] = '#\b(' . str_replace('\*', '\w*?', preg_quote(stripslashes($acronyms[$i]['acronym']), '#')) . ')\b#i';
-			$repl[] = '<acronym title="' . $acronyms[$i]['description'] . '">' . $acronyms[$i]['acronym'] . '</acronym>'; ;
-		}
-	}
-
-	if(count($orig))
-	{
-
-		$segments = preg_split('#(<acronym.+?>.+?</acronym>|<.+?>)#s' , $message, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-		//<?php
-		//Insert for formating purpose
-		$message = '';
-
-		foreach($segments as $seg)
-		{
-			if($seg[0] != '<' && $seg[0] != '[')
-			{
-				$message .= str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig, \$repl, '\\0')", '>' . $seg . '<'), 1, -1));
-			}
-			else
-			{
-				$message .= $seg;
-			}
-		}
-	}
-
-	return $message;
 }
 
 ?>

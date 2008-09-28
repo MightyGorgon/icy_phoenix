@@ -301,11 +301,10 @@ $user_sig = '';
 if ($profiledata['user_attachsig'] && $board_config['allow_sig'])
 {
 	$user_sig = $profiledata['user_sig'];
-	$user_sig_bbcode_uid = $profiledata['user_sig_bbcode_uid'];
 	if ($user_sig != '')
 	{
 		$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
-		$user_sig = $bbcode->parse($user_sig, $user_sig_bbcode_uid);
+		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
 		if (!$userdata['user_allowswearywords'])
 		{

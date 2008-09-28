@@ -384,7 +384,7 @@ if ($download)
 		obtain_word_list($orig_word, $replacement_word);
 	}
 
-	$sql = "SELECT u.*, p.*,  pt.post_text, pt.post_subject, pt.bbcode_uid
+	$sql = "SELECT u.*, p.*,  pt.post_text, pt.post_subject
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
 		WHERE p.topic_id = $topic_id
 			$sql_download
@@ -413,10 +413,8 @@ if ($download)
 
 		$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
 
-		$bbcode_uid = $row['bbcode_uid'];
 		$message = $row['post_text'];
 		$message = strip_tags($message);
-		$message = preg_replace("/\[.*?:$bbcode_uid:?.*?\]/si", '', $message);
 		$message = preg_replace('/\[url\]|\[\/url\]/si', '', $message);
 		$message = preg_replace('/\:[0-9a-z\:]+\]/si', ']', $message);
 		if($userdata['session_logged_in'])
@@ -443,7 +441,6 @@ if ($download)
 		$search = array('/&#40;/', '/&#41;/', '/&#58;/', '/&#91;/', '/&#93;/', '/&#123;/', '/&#125;/');
 		$replace = array('(', ')', ':', '[', ']', '{', '}',);
 		$message = preg_replace($search, $replace, $message);
-		$message = bbcode_killer_mg($message, $bbcodeuid);
 
 		if (count($orig_word))
 		{
@@ -650,8 +647,7 @@ if ($bypass)
 				if ($_GET['unwatch'] == 'topic')
 				{
 					$is_watching_topic = 0;
-					$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-					$sql = "DELETE $sql_priority FROM " . TOPICS_WATCH_TABLE . "
+					$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
 						WHERE topic_id = $topic_id
 							AND user_id = " . $userdata['user_id'];
 					if (!($result = $db->sql_query($sql)))
@@ -660,10 +656,8 @@ if ($bypass)
 					}
 				}
 
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start . $kb_mode_append) . '">'
-					)
-				);
+				$redirect_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start . $kb_mode_append);
+				meta_refresh(3, $redirect_url);
 
 				$message = $lang['No_longer_watching'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start . $kb_mode_append) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -674,8 +668,7 @@ if ($bypass)
 
 				if ($row['notify_status'])
 				{
-					$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-					$sql = "UPDATE $sql_priority " . TOPICS_WATCH_TABLE . "
+					$sql = "UPDATE " . TOPICS_WATCH_TABLE . "
 						SET notify_status = 0
 						WHERE topic_id = $topic_id
 							AND user_id = " . $userdata['user_id'];
@@ -693,8 +686,7 @@ if ($bypass)
 				if ($_GET['watch'] == 'topic')
 				{
 					$is_watching_topic = true;
-					$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-					$sql = "INSERT $sql_priority INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, notify_status)
+					$sql = "INSERT INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, notify_status)
 						VALUES (" . $userdata['user_id'] . ", $topic_id, 0)";
 					if (!($result = $db->sql_query($sql)))
 					{
@@ -702,10 +694,8 @@ if ($bypass)
 					}
 				}
 
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . 'start=' . $start) . '">'
-					)
-				);
+				$redirect_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . 'start=' . $start);
+				meta_refresh(3, $redirect_url);
 
 				$message = $lang['You_are_watching'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . '&amp;start=' . $start) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -983,7 +973,7 @@ if ($bypass)
 	{
 		$post_precompiled_sql = '';
 	}
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_sig_bbcode_uid, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, pt.post_text" . $post_precompiled_sql . ", pt.post_subject, pt.bbcode_uid, pt.edit_notes, t.topic_poster, t.title_compl_infos
+	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, pt.post_text" . $post_precompiled_sql . ", pt.post_subject, pt.edit_notes, t.topic_poster, t.title_compl_infos
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 		WHERE p.topic_id = $topic_id
 			AND t.topic_id = p.topic_id
@@ -1267,45 +1257,49 @@ if ($bypass)
 	if ($is_auth['auth_mod'])
 	{
 		$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+
+		// Full string to append as a reference for FORUM TOPIC POST (FTP)
+		$full_ftp_append = (($forum_id_append == '') ? '' : ($forum_id_append . '&amp;')) . (($topic_id_append == '') ? '' : ($topic_id_append . '&amp;')) . (($post_id_append == '') ? '' : ($post_id_append . '&amp;'));
+
 		if ($lofi)
 		{
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=delete&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Delete_topic'] . '">' . $lang['Delete_topic'] . '</a>&nbsp;::&nbsp;';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=delete&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Delete_topic'] . '">' . $lang['Delete_topic'] . '</a>&nbsp;::&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=move&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Move_topic'] . '">' . $lang['Move_topic'] . '</a>&nbsp;<br />';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=move&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Move_topic'] . '">' . $lang['Move_topic'] . '</a>&nbsp;<br />';
 
-			$topic_mod .= ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED) ? '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=lock&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Lock_topic'] . '">' . $lang['Lock_topic'] . '</a>&nbsp;::&nbsp;' : '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=unlock&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Unlock_topic'] . '">' . $lang['Unlock_topic'] . '</a>&nbsp;::&nbsp;';
+			$topic_mod .= ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=lock&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Lock_topic'] . '">' . $lang['Lock_topic'] . '</a>&nbsp;::&nbsp;' : '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=unlock&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Unlock_topic'] . '">' . $lang['Unlock_topic'] . '</a>&nbsp;::&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=split&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Split_topic'] . '">' . $lang['Split_topic'] . '</a>&nbsp;';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=split&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Split_topic'] . '">' . $lang['Split_topic'] . '</a>&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=merge&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Merge_topic'] . '">' . $lang['Merge_topic'] . '</a>&nbsp;<br />';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=merge&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Merge_topic'] . '">' . $lang['Merge_topic'] . '</a>&nbsp;<br />';
 			if ($board_config['bin_forum'] != false)
 			{
-				$topic_mod .= '<a href="bin.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;sid=' . $userdata['session_id'] . '" title="' . $lang['Move_bin'] . '">' . $lang['Move_bin'] . '</a>&nbsp;';
+				$topic_mod .= '<a href="bin.' . PHP_EXT . '?' . $full_ftp_append . 'sid=' . $userdata['session_id'] . '" title="' . $lang['Move_bin'] . '">' . $lang['Move_bin'] . '</a>&nbsp;';
 			}
 		}
 		else
 		{
 			if ($board_config['bin_forum'] != false)
 			{
-				$topic_mod .= '<a href="bin.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_bin'] . '" alt="' . $lang['Move_bin'] . '" title="' . $lang['Move_bin'] . '" /></a>&nbsp;';
+				$topic_mod .= '<a href="bin.' . PHP_EXT . '?' . $full_ftp_append . 'sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_bin'] . '" alt="' . $lang['Move_bin'] . '" title="' . $lang['Move_bin'] . '" /></a>&nbsp;';
 			}
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=delete&amp;sid=' . $userdata['session_id'] . '" ><img src="' . $images['topic_mod_delete'] . '" alt="' . $lang['Delete_topic'] . '" title="' . $lang['Delete_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=delete&amp;sid=' . $userdata['session_id'] . '" ><img src="' . $images['topic_mod_delete'] . '" alt="' . $lang['Delete_topic'] . '" title="' . $lang['Delete_topic'] . '" /></a>&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=move&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_move'] . '" alt="' . $lang['Move_topic'] . '" title="' . $lang['Move_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=move&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_move'] . '" alt="' . $lang['Move_topic'] . '" title="' . $lang['Move_topic'] . '" /></a>&nbsp;';
 
-			$topic_mod .= ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED) ? '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=lock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_lock'] . '" alt="' . $lang['Lock_topic'] . '" title="' . $lang['Lock_topic'] . '" /></a>&nbsp;' : '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=unlock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_unlock'] . '" alt="' . $lang['Unlock_topic'] . '" title="' . $lang['Unlock_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=lock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_lock'] . '" alt="' . $lang['Lock_topic'] . '" title="' . $lang['Lock_topic'] . '" /></a>&nbsp;' : '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=unlock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_unlock'] . '" alt="' . $lang['Unlock_topic'] . '" title="' . $lang['Unlock_topic'] . '" /></a>&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=split&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_split'] . '" alt="' . $lang['Split_topic'] . '" title="' . $lang['Split_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=split&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_split'] . '" alt="' . $lang['Split_topic'] . '" title="' . $lang['Split_topic'] . '" /></a>&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=merge&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_merge'] . '" alt="' . $lang['Merge_topic'] . '" title="' . $lang['Merge_topic'] . '" /></a>&nbsp;<br /><br />';
+			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=merge&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_merge'] . '" alt="' . $lang['Merge_topic'] . '" title="' . $lang['Merge_topic'] . '" /></a>&nbsp;<br /><br />';
 
-			$normal_button = '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=normalize&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['normal_post'] . '" alt="' . $lang['Mod_CP_normal'] . '" title="' . $lang['Mod_CP_normal2'] . '" /></a>&nbsp;';
+			$normal_button = '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=normalize&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['normal_post'] . '" alt="' . $lang['Mod_CP_normal'] . '" title="' . $lang['Mod_CP_normal2'] . '" /></a>&nbsp;';
 
-			$sticky_button = ($is_auth['auth_sticky']) ? '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=sticky&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['sticky_post'] . '" alt="' . $lang['Mod_CP_sticky'] . '" title="' . $lang['Mod_CP_sticky2'] . '" /></a>&nbsp;' : "";
+			$sticky_button = ($is_auth['auth_sticky']) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=sticky&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['sticky_post'] . '" alt="' . $lang['Mod_CP_sticky'] . '" title="' . $lang['Mod_CP_sticky2'] . '" /></a>&nbsp;' : '';
 
-			$announce_button = ($is_auth['auth_announce']) ? '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['announce_post'] . '" alt="' . $lang['Mod_CP_announce'] . '" title="' . $lang['Mod_CP_announce2'] . '" /></a>&nbsp;' : "";
+			$announce_button = ($is_auth['auth_announce']) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['announce_post'] . '" alt="' . $lang['Mod_CP_announce'] . '" title="' . $lang['Mod_CP_announce2'] . '" /></a>&nbsp;' : '';
 
-			$global_button = ($is_auth['auth_globalannounce']) ? '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;mode=super_announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['gannounce_post'] . '" alt="' . $lang['Mod_CP_global'] . '" title="' . $lang['Mod_CP_global2'] . '" /></a>&nbsp;' : "";
+			$global_button = ($is_auth['auth_globalannounce']) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=super_announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['gannounce_post'] . '" alt="' . $lang['Mod_CP_global'] . '" title="' . $lang['Mod_CP_global2'] . '" /></a>&nbsp;' : '';
 
 			switch($forum_topic_data['topic_type'])
 			{
@@ -1443,7 +1437,7 @@ if ($bypass)
 	$bbcode->allow_html = true;
 	$bbcode->allow_bbcode = true;
 	$bbcode->allow_smilies = true;
-	$rules_bbcode = $bbcode->parse($rules_bbcode, $bbcode_uid);
+	$rules_bbcode = $bbcode->parse($rules_bbcode);
 	//BBcode Parsing for Olympus rules Start
 
 	if ($board_config['show_icons'] == true)
@@ -2372,7 +2366,6 @@ if ($bypass)
 		{
 			$message_compiled = false;
 		}
-		$bbcode_uid = $postrow[$i]['bbcode_uid'];
 
 		// BEGIN CMX News Mod
 		// Strip out the <!--break--> delimiter.
@@ -2385,7 +2378,6 @@ if ($bypass)
 		// END CMX News Mod
 
 		$user_sig = ($postrow[$i]['enable_sig'] && (trim($postrow[$i]['user_sig']) != '') && $board_config['allow_sig']) ? $postrow[$i]['user_sig'] : '';
-		$user_sig_bbcode_uid = $postrow[$i]['user_sig_bbcode_uid'];
 
 		// Replace Naughty Words - BEGIN
 		if (count($orig_word))
@@ -2415,7 +2407,7 @@ if ($bypass)
 			$bbcode->allow_smilies = $board_config['allow_smilies'] && !$lofi;
 			$bbcode->allow_html = $board_config['allow_html'] && $userdata['user_allowhtml'];
 			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
-			$user_sig = $bbcode->parse($user_sig, $user_sig_bbcode_uid);
+			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
 			$sig_cache[$postrow[$i]['user_id']] = $user_sig;
 		}
@@ -2440,7 +2432,7 @@ if ($bypass)
 
 		if ($lofi)
 		{
-			$message = $bbcode->parse($message, $bbcode_uid);
+			$message = $bbcode->parse($message);
 		}
 		elseif($board_config['posts_precompiled'] == '0')
 		{
@@ -2448,7 +2440,7 @@ if ($bypass)
 			{
 				// $bbcode->allow_smilies = $board_config['allow_smilies'] && $postrow[$i]['user_allowsmile'] ? true : false;
 				$GLOBALS['code_post_id'] = $postrow[$i]['post_id'];
-				$message = $bbcode->parse($message, $bbcode_uid);
+				$message = $bbcode->parse($message);
 				if ($bbcode->allow_bbcode == false)
 				{
 					$message = str_replace("\n", "<br />", preg_replace("/\r\n/", "\n", $message));
@@ -2466,7 +2458,7 @@ if ($bypass)
 		else
 		{
 			$GLOBALS['code_post_id'] = $postrow[$i]['post_id'];
-			$message = $bbcode->parse($message, $bbcode_uid);
+			$message = $bbcode->parse($message);
 			if ($bbcode->allow_bbcode == false)
 			{
 				$message = str_replace("\n", "<br />", preg_replace("/\r\n/", "\n", $message));
@@ -2478,15 +2470,12 @@ if ($bypass)
 		//Acronyms, AutoLinks, Wrap - BEGIN
 		if ($postrow[$i]['enable_autolinks_acronyms'] == true)
 		{
-			if(function_exists('acronym_pass'))
-			{
-				$message = acronym_pass($message);
-			}
+			$message = $bbcode->acronym_pass($message);
 			if(count($orig_autolink))
 			{
 				$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
 			}
-			//$message = kb_word_wrap_pass ($message);
+			//$message = kb_word_wrap_pass($message);
 			if (count($orig_word) && !$postrow[$i]['user_allowswearywords'])
 			{
 				$message = preg_replace($orig_word, $replacement_word, $message);
@@ -2559,7 +2548,8 @@ if ($bypass)
 			$bbcode->allow_html = false ;
 			$bbcode->allow_bbcode = false ;
 			$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-			$post_subject = ($bbcode ? $topic_title = $bbcode->parse($post_subject, $bbcode_uid, true) : $post_subject);
+			$post_subject = $bbcode->parse($post_subject, '', true);
+			$topic_title = $post_subject;
 			//End BBCode Parsing for title
 		}
 
@@ -2569,7 +2559,6 @@ if ($bypass)
 			$post_edit_max = ($postrow[$i]['post_time'] >= $postrow[$i]['post_edit_time']) ? $postrow[$i]['post_time'] : $postrow[$i]['post_edit_time'];
 			$post_time_max = (empty($board_config['upi2db_edit_as_new'])) ? $postrow[$i]['post_time'] : $post_edit_max;
 			$post_id = $postrow[$i]['post_id'];
-
 			$mark_topic_unread = mark_post_viewtopic($post_time_max, $unread, $topic_id, $forum_id, $post_id, $except_time, $forum_topic_data['topic_type']);
 		}
 		else
@@ -2585,7 +2574,7 @@ if ($bypass)
 
 		$post_id = $postrow[$i]['post_id'];
 		$poster_number = ($postrow[$i]['poster_id'] == ANONYMOUS) ? '' : $lang['User_Number'] . ': ' . $postrow[$i]['poster_id'];
-		$post_edit_link = append_sid('edit_post_time.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']);
+		$post_edit_link = append_sid('edit_post_details.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']);
 		$post_edit_string = (!$userdata['user_id'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(\'' . $post_edit_link . '\')" style="text-decoration:none;">' . $lang['Edit_post_time_xs'] . '</a>';
 		//$post_edit_string = (!$userdata['user_level'] == MOD || !$userdata['user_id'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(' . $topic_id . ', ' . $post_id . ')" style="text-decoration:none;">' . $lang['Edit_post_time_xs']. '</a>';
 		$single_post = '<a href="#_Single_Post_View" onclick="javascript:open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\');" style="text-decoration:none;">#' . ($i + 1 + $start) . '</a>';

@@ -1,5 +1,5 @@
 <?php
-global $userdata, $board_config, $is_auth, $lang, $to_username, $privmsgs_id, $bbcode_uid, $post_subject, $images, $privmsg;
+global $userdata, $board_config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
 $post_subject = ( ( !preg_match('/^Re:/', $post_subject) ) ? 'Re: ' : '' ) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
 $this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:ShowHide(\'quick_reply\',\'quick_reply2\');"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /><a href="#quick"</a>';
@@ -19,7 +19,7 @@ ob_start();
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="60" style="width:98%" tabindex="2" class="post" value="{qr_subject}" /></td>
+	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="100" style="width:98%" tabindex="2" class="post" value="{qr_subject}" /></td>
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{SPACER}" width="200" height="1" alt="" /></b></span></td>

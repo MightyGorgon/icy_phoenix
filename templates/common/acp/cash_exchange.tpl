@@ -11,7 +11,7 @@
 </tr>
 <tr>
 <!-- BEGIN cashrow -->
-	<td class="{cashrow.ROW_CLASS}" align="center"><input name="currency_val[{cashrow.CURRENCY_ID}]" value="{cashrow.CURRENCY_EXCHANGE}" class="post" /></td>
+	<td class="{cashrow.ROW_CLASS} row-center"><input name="currency_val[{cashrow.CURRENCY_ID}]" value="{cashrow.CURRENCY_EXCHANGE}" class="post" /></td>
 <!-- END cashrow -->
 </tr>
 <tr>
@@ -34,7 +34,7 @@
 </tr>
 <tr>
 	<!-- BEGIN cashrow -->
-	<td class="{cashrow.ROW_CLASS}" align="center">{cashrow.CURRENCY_NAME}</td>
+	<td class="{cashrow.ROW_CLASS} row-center">{cashrow.CURRENCY_NAME}</td>
 	<!-- END cashrow -->
 </tr>
 <!-- BEGIN siderow -->
@@ -42,9 +42,9 @@
 	<!-- BEGIN switch_first -->
 	<td class="{SIDE_CLASS}" rowspan="{NUM_COLUMNS}" valign="middle" align="center">{L_FROM}</th>
 	<!-- END switch_first -->
-	<td class="{siderow.ROW_CLASS}" align="center">{siderow.CURRENCY_NAME}</td>
+	<td class="{siderow.ROW_CLASS} row-center">{siderow.CURRENCY_NAME}</td>
 	<!-- BEGIN entry -->
-	<td class="{siderow.entry.ROW_CLASS}" align="center">{siderow.entry.CURRENCY_EX}</td>
+	<td class="{siderow.entry.ROW_CLASS} row-center">{siderow.entry.CURRENCY_EX}</td>
 	<!-- END entry -->
 </tr>
 <!-- END siderow -->

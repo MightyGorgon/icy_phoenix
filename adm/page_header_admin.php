@@ -24,16 +24,9 @@ define('HEADER_INC', true);
 
 if (defined('ONLY_FOUNDER_ACP') && (ONLY_FOUNDER_ACP == true))
 {
-	if (defined('FOUNDER_ID'))
-	{
-		$founder_id = FOUNDER_ID;
-	}
-	else
-	{
-		$db->clear_cache('founder_id_');
-		$founder_id = get_founder_id();
-	}
-
+	// Note that the get_founder_id here has the clear cache parameter set to true...
+	// This is important as we are in ACP, and we want to make sure we have cache cleaned...
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id(true));
 	if ($userdata['user_id'] != $founder_id)
 	{
 		die($lang['Not_Auth_View']);
@@ -164,6 +157,29 @@ $template->assign_vars(array(
 	'L_FAQ' => $lang['FAQ'],
 
 	'U_INDEX' => append_sid('../' . FORUM_MG),
+
+	'ACP_IMAGES_PATH' => IP_ROOT_PATH . 'images/profile/',
+	'U_ACP_FORUMS' => append_sid('admin_forums.' . PHP_EXT),
+	'U_ACP_USERS' => append_sid('admin_userlist.' . PHP_EXT),
+	'U_ACP_GROUPS' => append_sid('admin_groups.' . PHP_EXT),
+	'U_ACP_EMAIL' => append_sid('admin_megamail.' . PHP_EXT),
+	'U_ACP_ALBUM' => append_sid('admin_album_config_extended.' . PHP_EXT),
+	'U_ACP_DOWNLOADS' => append_sid('admin_pa_category.' . PHP_EXT),
+	'U_ACP_SERVER_SETTINGS' => append_sid('admin_board_server.' . PHP_EXT),
+	'U_ACP_SETTINGS' => append_sid('admin_board.' . PHP_EXT),
+	'U_ACP_IP_SETTINGS' => append_sid('admin_board_extend.' . PHP_EXT),
+	'U_ACP_CACHE' => append_sid('admin_board_clearcache.' . PHP_EXT),
+
+	'L_ACP_FORUMS' => $lang['1200_Forums'] . ' ' . $lang['100_Manage'],
+	'L_ACP_USERS' => $lang['110_Manage'] . ' ' . $lang['1610_Users'],
+	'L_ACP_GROUPS' => $lang['110_Manage_Groups'],
+	'L_ACP_EMAIL' => $lang['130_Mass_Email'],
+	'L_ACP_ALBUM' => $lang['2200_Photo_Album'],
+	'L_ACP_DOWNLOADS' => $lang['2000_Downloads'],
+	'L_ACP_SERVER_SETTINGS' => $lang['100_Server_Configuration'],
+	'L_ACP_SETTINGS' => $lang['110_Various_Configuration'],
+	'L_ACP_IP_SETTINGS' => $lang['120_MG_Configuration'],
+	'L_ACP_CACHE' => $lang['127_Clear_Cache'],
 
 	'S_TIMEZONE' => sprintf($lang['All_times'], $l_timezone),
 	'S_LOGIN_ACTION' => append_sid('../' . LOGIN_MG),

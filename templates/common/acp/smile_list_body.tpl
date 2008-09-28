@@ -18,7 +18,7 @@
 	<td class="{smiles.ROW_CLASS}">{smiles.CODE}</td>
 	<td class="{smiles.ROW_CLASS}"><img src="{smiles.SMILEY_IMG}" alt="{smiles.CODE}" /></td>
 	<td class="{smiles.ROW_CLASS}">{smiles.EMOT}</td>
-	<td class="{smiles.ROW_CLASS}" align="center"><a href="{smiles.U_SMILEY_MOVE_TOP}"><img src="../templates/common/images/2uparrow.png" alt="{L_MOVE_TOP} " title="{L_MOVE_TOP}" /></a><a href="{smiles.U_SMILEY_MOVE_UP}"><img src="../templates/common/images/1uparrow.png" alt="{L_MOVE_UP} " title="{L_MOVE_UP}" /></a><a href="{smiles.U_SMILEY_MOVE_DOWN}"><img src="../templates/common/images/1downarrow.png" alt="{L_MOVE_DOWN} " title="{L_MOVE_DOWN}" /></a><a href="{smiles.U_SMILEY_MOVE_END}"><img src="../templates/common/images/2downarrow.png" alt="{L_MOVE_END} " title="{L_MOVE_END}" /></a></td>
+	<td class="{smiles.ROW_CLASS} row-center"><a href="{smiles.U_SMILEY_MOVE_TOP}"><img src="../templates/common/images/2uparrow.png" alt="{L_MOVE_TOP} " title="{L_MOVE_TOP}" /></a><a href="{smiles.U_SMILEY_MOVE_UP}"><img src="../templates/common/images/1uparrow.png" alt="{L_MOVE_UP} " title="{L_MOVE_UP}" /></a><a href="{smiles.U_SMILEY_MOVE_DOWN}"><img src="../templates/common/images/1downarrow.png" alt="{L_MOVE_DOWN} " title="{L_MOVE_DOWN}" /></a><a href="{smiles.U_SMILEY_MOVE_END}"><img src="../templates/common/images/2downarrow.png" alt="{L_MOVE_END} " title="{L_MOVE_END}" /></a></td>
 	<td class="{smiles.ROW_CLASS}"><a href="{smiles.U_SMILEY_EDIT}">{L_EDIT}</a></td>
 	<td class="{smiles.ROW_CLASS}"><a href="{smiles.U_SMILEY_DELETE}">{L_DELETE}</a></td>
 </tr>

@@ -74,7 +74,7 @@ for ( $i = 0; $i < $ctracker_config->blocklist_count; $i++ )
 		'ROW_CLASS'		=> ( $row_class )? 'row1': 'row2',
 		'BLOCKER_VALUE'	=> $ctracker_config->blocklist[$i],
 		'BLOCKER_ID'	=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=5&mode=remove&id=' . $ctracker_config->blocklist_id[$i]),
-		'IMG_ICON'		=> IP_ROOT_PATH . $images['ctracker_global_res'],
+		'IMG_ICON'		=> $images['ctracker_global_res'],
 		'L_DELETE'		=> $lang['ctracker_ipb_delete'])
 	);
 }
@@ -90,8 +90,8 @@ $template->assign_vars(array(
 		'L_NEW_ENTRY'	=> $lang['ctracker_ipb_new_entry'],
 		'L_ADD_NOW'		=> $lang['ctracker_ipb_add_now'],
 
-		'IMG_INFO'		=> IP_ROOT_PATH . $images['ctracker_fc_icon_2'],
-		'IMG_DELETED'	=> IP_ROOT_PATH . $images['ctracker_global_res'],
+		'IMG_INFO'		=> $images['ctracker_fc_icon_2'],
+		'IMG_DELETED'	=> $images['ctracker_global_res'],
 
 		'S_FORM_ACTION' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=5&mode=add'))
   );

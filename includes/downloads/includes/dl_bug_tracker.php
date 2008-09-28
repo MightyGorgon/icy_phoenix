@@ -89,13 +89,11 @@ if ($action == 'save' && $userdata['session_logged_in'])
 		message_die(GENERAL_MESSAGE, $lang['Dl_bug_report_no_text']);
 	}
 
-	$bbcode_uid = make_bbcode_uid();
-
 	$html_on = 0;
 	$bbcode_on = 1;
 	$smilies_on = 0;
 
-	$report_text = stripslashes(prepare_message(addslashes(unprepare_message($report_text)), 0, 1, 0, $bbcode_uid));
+	$report_text = stripslashes(prepare_message(addslashes(unprepare_message($report_text)), 0, 1, 0));
 
 	$report_file_ver= (isset($_POST['report_file_ver'])) ? htmlspecialchars($_POST['report_file_ver']) : '';
 	$report_php = (isset($_POST['report_php'])) ? htmlspecialchars($_POST['report_php']) : '';
@@ -103,9 +101,9 @@ if ($action == 'save' && $userdata['session_logged_in'])
 	$report_forum = (isset($_POST['report_forum'])) ? htmlspecialchars($_POST['report_forum']) : '';
 
 	$sql = "INSERT INTO " . DL_BUGS_TABLE . "
-		(df_id, report_title, report_text, report_uid, report_file_ver, report_date, report_author_id, report_status_date, report_php, report_db, report_forum)
+		(df_id, report_title, report_text, report_file_ver, report_date, report_author_id, report_status_date, report_php, report_db, report_forum)
 		VALUES
-		($df_id, '" . str_replace("\'", "''", $report_title) . "', '" . str_replace("\'", "''", $report_text) . "', '$bbcode_uid', '" . str_replace("\'", "''", $report_file_ver) . "', " . time() . ", " . $userdata['user_id'] . ", " . time() . ", '" . str_replace("\'", "''", $report_php) . "', '" . str_replace("\'", "''", $report_db) . "', '" . str_replace("\'", "''", $report_forum) . "')";
+		($df_id, '" . str_replace("\'", "''", $report_title) . "', '" . str_replace("\'", "''", $report_text) . "', '" . str_replace("\'", "''", $report_file_ver) . "', " . time() . ", " . $userdata['user_id'] . ", " . time() . ", '" . str_replace("\'", "''", $report_php) . "', '" . str_replace("\'", "''", $report_db) . "', '" . str_replace("\'", "''", $report_forum) . "')";
 	if (!($db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not save bug report', '', __LINE__, __FILE__, $sql);
@@ -360,7 +358,7 @@ if ($action == 'detail' && $fav_id)
 	$report_file = $row['report_file'];
 	$report_title = $row['report_title'];
 	$report_text = $row['report_text'];
-	$report_uid = $row['report_uid'];
+	$report_uid = '';
 	$report_file_ver = $row['report_file_ver'];
 	$report_date = $row['report_date'];
 	$report_author_id = $row['report_author_id'];
@@ -448,9 +446,12 @@ if ($action == 'detail' && $fav_id)
 		$report_forum = preg_replace($orig_word, $replacement_word, $report_forum);
 	}
 
-	$report_text = bbencode_second_pass($report_text, $report_uid);
-	$report_text = make_clickable($report_text);
-	$report_text = str_replace("\n", "<br />", $report_text);
+	$bbcode->allow_html = $board_config['allow_html'];
+	$bbcode->allow_bbcode = $board_config['allow_bbcode'];
+	$bbcode->allow_smilies = $board_config['allow_smilies'];
+	$report_text = $bbcode->parse($report_text);
+
+	//$report_text = str_replace("\n", "<br />", $report_text);
 
 	// Autolinks - BEGIN
 	if (@function_exists('obtain_autolink_list'))
@@ -915,7 +916,6 @@ if (!$action)
 				$report_id = $row['report_id'];
 				$report_title = $row['report_title'];
 				$report_text = $row['report_text'];
-				$report_uid = $row['report_uid'];
 				$report_file_ver = $row['report_file_ver'];
 				$report_file = $row['report_file'];
 				$report_date = $row['report_date'];
@@ -940,7 +940,6 @@ if (!$action)
 					$report_forum = preg_replace($orig_word, $replacement_word, $report_forum);
 				}
 
-				$report_text = preg_replace('/\:(([a-z0-9]:)?)' . $report_uid . '/s', '', $report_text);
 				$report_text = (strlen($report_text) > 200) ? substr($report_text, 0, 200) . ' [ ... ]' : $report_text;
 				$report_text = str_replace("\n", "<br />", $report_text);
 

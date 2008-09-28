@@ -41,18 +41,18 @@
 </tr>
 <!-- BEGIN downloads -->
 <tr>
-	<td class="{downloads.ROW_CLASS}" align="center"><span class="nav">{downloads.FILE_ID}</span></td>
+	<td class="{downloads.ROW_CLASS} row-center"><span class="nav">{downloads.FILE_ID}</span></td>
 	<td class="{downloads.ROW_CLASS}" align="left"><span class="gen"><b>{downloads.DESCRIPTION}</b></span><br /><span class="gensmall">{downloads.FILE_NAME}</span></td>
 	<td class="{downloads.ROW_CLASS}" align="left"><span class="gen">{downloads.VERSION}</span></td>
 	<td class="{downloads.ROW_CLASS}" align="left"><span class="gensmall">{downloads.TEST}{downloads.UNAPPROVED}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="center"><span class="genmed">{downloads.FILE_SIZE}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="center"><span class="genmed">{downloads.FILE_FREE}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="center"><span class="genmed">{downloads.FILE_EXTERN}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="center"><span class="genmed">{downloads.FILE_KLICKS} / {downloads.FILE_OVERALL_KLICKS}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="center"><span class="genmed">{downloads.FILE_TRAFFIC}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="center"><span class="genmed">{downloads.HACKLIST}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="center"><a href="{downloads.U_FILE_EDIT}" class="gensmall">{L_EDIT}</a><br /><a href="{downloads.U_FILE_DELETE}" class="gensmall">{L_DELETE}</a></td>
-	<td class="{downloads.ROW_CLASS}" align="center">
+	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_SIZE}</span></td>
+	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_FREE}</span></td>
+	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_EXTERN}</span></td>
+	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_KLICKS} / {downloads.FILE_OVERALL_KLICKS}</span></td>
+	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_TRAFFIC}</span></td>
+	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.HACKLIST}</span></td>
+	<td class="{downloads.ROW_CLASS} row-center"><a href="{downloads.U_FILE_EDIT}" class="gensmall">{L_EDIT}</a><br /><a href="{downloads.U_FILE_DELETE}" class="gensmall">{L_DELETE}</a></td>
+	<td class="{downloads.ROW_CLASS} row-center">
 		<span class="gensmall">
 		<a href="{downloads.U_DOWNLOAD_MOVE_UP}" class="gensmall">{L_DL_UP}</a><br />
 		<a href="{downloads.U_DOWNLOAD_MOVE_DOWN}" class="gensmall">{L_DL_DOWN}</a>

@@ -30,9 +30,10 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $forum_id = request_var('f', 0);
 $privmsg = (!$forum_id) ? true : false;
 
-// Start Session Management
+// Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
+// End session management
 
 // Display the allowed Extension Groups and Upload Size
 if ($privmsg)
@@ -89,7 +90,7 @@ for ($i = 0; $i < $num_rows; $i++)
 		{
 			$det_filesize = round($det_filesize / 1048576 * 100) / 100;
 		}
-		else if ($det_filesize >= 1024)
+		elseif ($det_filesize >= 1024)
 		{
 			$det_filesize = round($det_filesize / 1024 * 100) / 100;
 		}
@@ -130,9 +131,10 @@ $meta_keywords = '';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->assign_vars(array(
-	'L_RULES_TITLE'			=> $lang['Attach_rules_title'],
-	'L_CLOSE_WINDOW'		=> $lang['Close_window'],
-	'L_EMPTY_GROUP_PERMS'	=> $lang['Note_user_empty_group_permissions'])
+	'L_RULES_TITLE' => $lang['Attach_rules_title'],
+	'L_CLOSE_WINDOW' => $lang['Close_window'],
+	'L_EMPTY_GROUP_PERMS' => $lang['Note_user_empty_group_permissions']
+	)
 );
 
 if ($nothing)

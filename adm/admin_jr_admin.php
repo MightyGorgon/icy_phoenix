@@ -25,7 +25,7 @@ define('MOD_CODE', 1);
 if (!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1610_Users']['240_Jr_Admin'] = $filename;
+	$module['1610_Users']['100_Jr_Admin'] = $filename;
 	return;
 }
 
@@ -236,8 +236,8 @@ $page_desc = $lang['Permissions_Page_Desc'];
 
 if (!empty($user_id) && !isset($_POST['update_user']))
 {
-	$sql = "SELECT $color_group username, user_id, user_level  FROM " . USERS_TABLE . "
-		WHERE user_id = $user_id
+	$sql = "SELECT " . $color_group . " username, user_id, user_level  FROM " . USERS_TABLE . "
+		WHERE user_id = '" . $user_id . "'
 		ORDER BY username ASC";
 	if (!$result = $db->sql_query($sql))
 	{
@@ -270,23 +270,31 @@ if (!empty($user_id) && !isset($_POST['update_user']))
 	$i = 0;
 	foreach($module_list as $cat => $info_array)
 	{
-		$template->assign_block_vars('catrow', array(
-			'CAT' => (isset($lang[$cat])) ? $lang[$cat] : preg_replace("/_/", ' ', $cat),
-			'NUM' => $i,
-			)
-		);
+		$cat_started = false;
 		foreach($info_array as $module_name => $file_array)
 		{
-			$file_hash = $file_array['file_hash'];
-			$checked = (in_array($file_hash, $user_module_list)) ? 'checked="checked"' : '';
-			$template->assign_block_vars('catrow.modulerow', array(
-				'ROW' => ($i % 2) ? 'row1' : 'row2',
-				'NAME' => (isset($lang[$module_name])) ? $lang[$module_name] : preg_replace("/_/", ' ', $module_name),
-				'FILENAME' => $file_array['filename'],
-				'FILE_HASH' => $file_hash,
-				'CHECKED' => $checked
-				)
-			);
+			if ($file_array['junior_admin'] == true)
+			{
+				if ($cat_started == false)
+				{
+					$template->assign_block_vars('catrow', array(
+						'CAT' => (isset($lang[$cat])) ? $lang[$cat] : preg_replace("/_/", ' ', $cat),
+						'NUM' => $i,
+						)
+					);
+					$cat_started = true;
+				}
+				$file_hash = $file_array['file_hash'];
+				$checked = (in_array($file_hash, $user_module_list)) ? 'checked="checked"' : '';
+				$template->assign_block_vars('catrow.modulerow', array(
+					'ROW' => ($i % 2) ? 'row1' : 'row2',
+					'NAME' => (isset($lang[$module_name])) ? $lang[$module_name] : preg_replace("/_/", ' ', $module_name),
+					'FILENAME' => $file_array['filename'],
+					'FILE_HASH' => $file_hash,
+					'CHECKED' => $checked
+					)
+				);
+			}
 		}
 		$i++;
 	}

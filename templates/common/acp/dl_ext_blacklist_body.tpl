@@ -31,8 +31,8 @@ function select_switch(status)
 </tr>
 <!-- BEGIN extention_row -->
 <tr>
-	<td width="50%" class="{extention_row.ROW_CLASS}" align="center"><span class="nav">{extention_row.EXTENTION}</span></td>
-	<td width="50%" class="{extention_row.ROW_CLASS}" align="center"><input type="checkbox" name="extention[]" value="{extention_row.EXTENTION}" /></td>
+	<td width="50%" class="{extention_row.ROW_CLASS} row-center"><span class="nav">{extention_row.EXTENTION}</span></td>
+	<td width="50%" class="{extention_row.ROW_CLASS} row-center"><input type="checkbox" name="extention[]" value="{extention_row.EXTENTION}" /></td>
 </tr>
 <!-- END extention_row -->
 <tr>

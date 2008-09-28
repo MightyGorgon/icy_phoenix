@@ -83,6 +83,6 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 <body>
 <a name="top"></a>
 <div class="rounded_line">
-<table id="forumtable" width="100%" cellspacing="0">
+<table id="forumtable" width="100%" cellspacing="0" style="width: 100% !important;">
 <tr>
 	<td id="content">

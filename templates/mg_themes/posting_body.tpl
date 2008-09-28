@@ -14,9 +14,9 @@ var L_AJAX_NO_RESULTS = '{L_AJAX_NO_RESULTS}';
 
 <script type="text/javascript">
 <!--
-function attach_rules(topic_id, post_id)
+function attach_rules(forum_id)
 {
-	window.open("attach_rules.php?", '_attach_rules', 'height=200,width=500,resizable=no,scrollbars=yes');
+	window.open('{U_ATTACH_RULES}' + forum_id + '&sid={S_SID}', '_attach_rules', 'height=200,width=500,resizable=no,scrollbars=yes');
 }
 //-->
 </script>
@@ -110,7 +110,7 @@ function attach_rules(topic_id, post_id)
 		<!-- END switch_privmsg -->
 		<tr>
 			<td class="row1" width="22%"><span class="gen"><b>{L_SUBJECT}</b></span></td>
-			<td class="row2" width="78%"><input type="text" name="subject" size="45" maxlength="60" style="width:98%" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
+			<td class="row2" width="78%"><input type="text" name="subject" size="45" maxlength="100" style="width:98%" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
 		</tr>
 		<!-- BEGIN switch_ajax_features -->
 		<tr id="subject_error_tbl" style="display:none;">

@@ -175,10 +175,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 					}
 				}
 
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url) . '">'
-					)
-				);
+				meta_refresh(3, (LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url)));
 
 				$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -186,10 +183,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 		}
 		else
 		{
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="3;url=' . LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url) . '">'
-				)
-			);
+			meta_refresh(3, (LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url)));
 
 			$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 

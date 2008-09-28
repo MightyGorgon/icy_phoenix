@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if (!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['Info']['GD Info'] = $filename;
+	$module['2400_INFO']['130_GD_Info'] = $filename;
 	return;
 }
 

@@ -40,6 +40,7 @@ class NewsModule
 	* @var object
 	*/
 	var $root_path;
+	var $root_path_link;
 
 	/**
 	* @var object
@@ -63,6 +64,7 @@ class NewsModule
 		global $db, $template, $board_config;
 
 		$this->root_path = 'http://' . $board_config['server_name'] . $board_config['script_path'];
+		$this->root_path_link = IP_ROOT_PATH;
 		$this->template = &$template;
 		$this->config = &$board_config;
 		$this->name = 'news';
@@ -118,10 +120,10 @@ class NewsModule
 				if(($show_abstract) && ($news_trim > 0))
 				{
 					$article['post_abstract'] = $this->trimText($article['post_text'], $news_trim, $trimmed);
-					$article['post_abstract'] = $this->parseMessage($article['post_abstract'] . ' ... ', $article['bbcode_uid'], $article['enable_bbcode'], $article['enable_html'], $article['enable_smilies'], $article['enable_autolinks_acronyms']);
+					$article['post_abstract'] = $this->parseMessage($article['post_abstract'] . ' ... ', $article['enable_bbcode'], $article['enable_html'], $article['enable_smilies'], $article['enable_autolinks_acronyms']);
 				}
 
-				$article['post_text'] = $this->parseMessage($article['post_text'], $article['bbcode_uid'], $article['enable_bbcode'], $article['enable_html'], $article['enable_smilies'], $article['enable_autolinks_acronyms']);
+				$article['post_text'] = $this->parseMessage($article['post_text'], $article['enable_bbcode'], $article['enable_html'], $article['enable_smilies'], $article['enable_autolinks_acronyms']);
 
 				if ($show_attachments == true)
 				{
@@ -182,9 +184,14 @@ class NewsModule
 					'RFC_POST_DATE' => create_date_simple('r', $article['post_time'], $timezone),
 					'L_POSTER' => colorize_username($article['user_id']),
 					'L_COMMENTS' => $article['topic_replies'],
+					/*
 					'U_COMMENTS' => $this->root_path . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
 					'U_COMMENT' => $this->root_path . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
 					'U_VIEWS' => $this->root_path . 'topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $article['topic_id'],
+					*/
+					'U_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
+					'U_COMMENT' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
+					'U_VIEWS' => append_sid('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'] . '&amp;start=0'),
 					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic=' . urlencode(utf8_decode($article['topic_title'])) . '&amp;link=' . urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']))),
@@ -282,7 +289,7 @@ class NewsModule
 		{
 			foreach($comments as $comment)
 			{
-				$comment['post_text'] = $this->parseMessage($comment['post_text'], $comment['bbcode_uid'], $comment['enable_bbcode'], $comment['enable_html'], $comment['enable_smilies'], $comment['enable_autolinks_acronyms']);
+				$comment['post_text'] = $this->parseMessage($comment['post_text'], $comment['enable_bbcode'], $comment['enable_html'], $comment['enable_smilies'], $comment['enable_autolinks_acronyms']);
 
 				$dateformat = ($userdata['user_id'] == ANONYMOUS) ? $board_config['default_dateformat'] : $userdata['user_dateformat'];
 				$timezone = ($userdata['user_id'] == ANONYMOUS) ? $board_config['board_timezone'] : $userdata['user_timezone'];
@@ -718,15 +725,14 @@ class NewsModule
 	* @access public
 	*
 	* @param string $text The body of text to be processed.
-	* @param string $bbcode_uid BBCode unique id needed for decoding.
 	*
 	* @return string The resulting decoded text.
 	*/
-	function decodeBBText($text, $bbcode_uid, $enable_bbcode = true, $enable_html = false, $enable_smilies = true, $enable_autolinks_acronyms = true)
+	function decodeBBText($text, $enable_bbcode = true, $enable_html = false, $enable_smilies = true, $enable_autolinks_acronyms = true)
 	{
 		global $bbcode, $lofi, $userdata;
 
-		if(!isset($text) || !isset($bbcode_uid) || (strlen($text) <= 0))
+		if(!isset($text) || (strlen($text) <= 0))
 		{
 			return;
 		}
@@ -743,14 +749,9 @@ class NewsModule
 
 		// Parse message and/or sig for BBCode if reqd
 		$bbcode->allow_html = (($this->config['allow_html'] == true) && ($enable_html == true)) ? true : false;
-		$bbcode->allow_bbcode = (($bbcode_uid != '') && ($this->config['allow_bbcode'] == true) && ($enable_bbcode == true)) ? true : false;
+		$bbcode->allow_bbcode = (($this->config['allow_bbcode'] == true) && ($enable_bbcode == true)) ? true : false;
 		$bbcode->allow_smilies = (($this->config['allow_smilies'] == true) && (!$lofi == true) && ($enable_smilies == true)) ? true : false;
-		/*
-		$bbcode->allow_html = (($this->config['allow_html'] == true)) ? true : false;
-		$bbcode->allow_bbcode = (($bbcode_uid != '') && ($this->config['allow_bbcode'] == true) && ($enable_bbcode == true)) ? true : false;
-		$bbcode->allow_smilies = (($this->config['allow_smilies'] == true) && (!$lofi == true) && ($enable_smilies == true)) ? true : false;
-		*/
-		$text = $bbcode->parse($text, $bbcode_uid);
+		$text = $bbcode->parse($text);
 
 		if (!$userdata['user_allowswearywords'])
 		{
@@ -760,11 +761,7 @@ class NewsModule
 		}
 		if ($enable_autolinks_acronyms == true)
 		{
-			if(function_exists('acronym_pass'))
-			{
-				$text = acronym_pass($text);
-			}
-
+			$text = $bbcode->acronym_pass($text);
 			if(count($orig_autolink))
 			{
 				$text = autolink_transform($text, $orig_autolink, $replacement_autolink);
@@ -780,9 +777,9 @@ class NewsModule
 
 	// }}
 
-	function parseMessage($text, $bbcode_uid, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms)
+	function parseMessage($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms)
 	{
-		$text = $this->decodeBBText($text, $bbcode_uid, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms);
+		$text = $this->decodeBBText($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms);
 
 		// Strip out the <!--break--> delimiter.
 		$delim = htmlspecialchars('<!--break-->');

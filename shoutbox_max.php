@@ -156,8 +156,7 @@ if ($refresh || $preview)
 				obtain_word_list($orig_word, $replacement_word);
 			}
 
-			$bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
-			$preview_message = stripslashes(prepare_message(addslashes(unprepare_message($message)), $html_on, $bbcode_on, $smilies_on, $bbcode_uid));
+			$preview_message = stripslashes(prepare_message(addslashes(unprepare_message($message)), $html_on, $bbcode_on, $smilies_on));
 			if ($board_config['img_shoutbox'] == true)
 			{
 				$preview_message = preg_replace ("#\[url=(http://)([^ \"\n\r\t<]*)\]\[img\](http://)([^ \"\n\r\t<]*)\[/img\]\[/url\]#i", '[url=\\1\\2]\\4[/url]', $preview_message);
@@ -168,7 +167,7 @@ if ($refresh || $preview)
 			$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
 			$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $bbcode_on ? true : false);
 			$bbcode->allow_smilies = ($board_config['allow_smilies'] && $smilies_on ? true : false);
-			$preview_message = $bbcode->parse($preview_message, $bbcode_uid);
+			$preview_message = $bbcode->parse($preview_message);
 
 			if(!empty($orig_word))
 			{
@@ -177,15 +176,12 @@ if ($refresh || $preview)
 			$orig_autolink = array();
 			$replacement_autolink = array();
 			obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-			if(function_exists('acronym_pass'))
-			{
-				$preview_message = acronym_pass($preview_message);
-			}
+			$preview_message = $bbcode->acronym_pass($preview_message);
 			if(count($orig_autolink))
 			{
 				$preview_message = autolink_transform($preview_message, $orig_autolink, $replacement_autolink);
 			}
-			//$preview_message = kb_word_wrap_pass ($preview_message);
+			//$preview_message = kb_word_wrap_pass($preview_message);
 			$preview_message = str_replace("\n", '<br />', $preview_message);
 			$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 			$template->assign_vars(array(
@@ -225,8 +221,6 @@ elseif ($submit || isset($_POST['message']))
 	// insert shout !
 	if (!empty($message) && $is_auth['auth_post'] && !$error)
 	{
-		$bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
-
 		if ($board_config['img_shoutbox'] == true)
 		{
 			$message = preg_replace ("#\[url=(http://)([^ \"\n\r\t<]*)\]\[img\](http://)([^ \"\n\r\t<]*)\[/img\]\[/url\]#i", '[url=\\1\\2]\\4[/url]', $message);
@@ -235,10 +229,10 @@ elseif ($submit || isset($_POST['message']))
 			$message = preg_replace ("#\[img align=right\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $message);
 		}
 
-		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
 		//$message = (!get_magic_quotes_gpc()) ? addslashes($message) : stripslashes($message);
-		$sql = "INSERT INTO " . SHOUTBOX_TABLE. " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, shout_bbcode_uid,enable_bbcode,enable_html,enable_smilies)
-				VALUES ('$message', '".time()."', '".$userdata['user_id']."', '$user_ip', '".$username."', '".$bbcode_uid."',$bbcode_on,$html_on,$smilies_on)";
+		$sql = "INSERT INTO " . SHOUTBOX_TABLE. " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
+				VALUES ('$message', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $username . "', $bbcode_on, $html_on, $smilies_on)";
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error inserting shout.', '', __LINE__, __FILE__, $sql);
@@ -564,7 +558,6 @@ while ($shout_row = $db->sql_fetchrow($result))
 
 	$shout = (! $shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'].(($is_auth['auth_mod']) ? '<br/><hr/><br/>'.$shout_row['shout_text'] : '');
 	$user_sig = ($shout_row['enable_sig'] && $shout_row['user_sig'] != '' && $board_config['allow_sig']) ? $shout_row['user_sig'] : '';
-	$user_sig_bbcode_uid = $shout_row['user_sig_bbcode_uid'];
 
 	$rank_image = '';
 	if ($shout_row['user_rank'])
@@ -596,7 +589,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
 		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
 		$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
-		$user_sig = $bbcode->parse($user_sig, $bbcode_uid);
+		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
 	}
 
@@ -620,21 +613,18 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $shout_row['enable_bbcode'] ? true : false);
 	$bbcode->allow_smilies = ($board_config['allow_smilies'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
 
-	$shout = $bbcode->parse($shout,$shout_row['shout_bbcode_uid']);
+	$shout = $bbcode->parse($shout);
 	$shout = str_replace("\n", "\n<br />\n", $shout);
 
 	$orig_autolink = array();
 	$replacement_autolink = array();
 	obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-	if(function_exists('acronym_pass'))
-	{
-		$shout = acronym_pass($shout);
-	}
+	$shout = $bbcode->acronym_pass($shout);
 	if(count($orig_autolink))
 	{
 		$shout = autolink_transform($shout, $orig_autolink, $replacement_autolink);
 	}
-	//$shout = kb_word_wrap_pass ($shout);
+	//$shout = kb_word_wrap_pass($shout);
 	if ($is_auth['auth_mod'] && $is_auth['auth_delete'])
 	{
 		$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);

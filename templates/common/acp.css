@@ -386,7 +386,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 	padding: 0;
 	text-align: left;
 	vertical-align: top;
-	height: 27px;
+	height: 25px;
 }
 
 .forumline p.row-header, .forumlinenb p.row-header { height: 25px; }

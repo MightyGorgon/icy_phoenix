@@ -473,7 +473,7 @@ function ColorExample(ColorCode)
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_DELETE_USER}?</span></td>
-	<td class="row2"><input type="checkbox" name="deleteuser" />{L_DELETE_USER_EXPLAIN}</td>
+	<td class="row2"><input type="checkbox" name="deleteuser" />&nbsp;{L_DELETE_USER_EXPLAIN}</td>
 </tr>
 <tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>

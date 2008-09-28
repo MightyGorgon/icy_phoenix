@@ -18,7 +18,7 @@
 function display_comments(&$file_data)
 {
 	global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images;
-	global $userdata, $db, $pafiledb, $pafiledb_functions, $bbcode, $comment_bbcode_uid;
+	global $userdata, $db, $pafiledb, $pafiledb_functions, $bbcode;
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 	require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
@@ -66,11 +66,10 @@ function display_comments(&$file_data)
 		$comments_text = comment_suite($comments_text);
 
 		//bbcode parser Start
-		$comment_bbcode_uid = make_bbcode_uid();
 		$bbcode->allow_html = ( $pafiledb_config['allow_html'] ? true : false );
 		$bbcode->allow_bbcode = ( $pafiledb_config['allow_bbcode'] ? true : false );
 		$bbcode->allow_smilies = ( $pafiledb_config['allow_smilies'] ? true : false );
-		$comments_text = $bbcode->parse($comments_text, $comment_bbcode_uid);
+		$comments_text = $bbcode->parse($comments_text);
 		//bbcode parser End
 
 		if ( count($orig_word) )
@@ -137,7 +136,7 @@ function display_comments(&$file_data)
 			'AUTH_COMMENT_DELETE' => ( ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $userdata['user_id']) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? TRUE : FALSE,
 			'DELETE_IMG' => ( ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $userdata['user_id']) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? $images['icon_delpost'] : '',
 			'ICON_MINIPOST_IMG' => IP_ROOT_PATH . $images['icon_minipost'],
-			'ICON_SPACER' => IP_ROOT_PATH . 'images/spacer.gif',
+			'ICON_SPACER' => IP_ROOT_PATH . $images['spacer'],
 			'USER_RANK_01' => $user_rank_01,
 			'USER_RANK_01_IMG' => $user_rank_01_img,
 			'USER_RANK_02' => $user_rank_02,

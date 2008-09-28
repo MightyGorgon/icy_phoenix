@@ -167,8 +167,8 @@ $template->assign_vars(array(
 	'U_LINK_OPTION_1' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=3&action=scan'),
 	'U_LINK_OPTION_2' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=3&action=display'),
 
-	'IMG_ICON_1' => IP_ROOT_PATH . $images['ctracker_fc_icon_1'],
-	'IMG_ICON_2' => IP_ROOT_PATH . $images['ctracker_fc_icon_2']
+	'IMG_ICON_1' => $images['ctracker_fc_icon_1'],
+	'IMG_ICON_2' => $images['ctracker_fc_icon_2']
 	)
 );
 

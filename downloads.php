@@ -1673,20 +1673,14 @@ if (empty($view) && !$inc_module)
 			$cat_name = $index[$cat_id]['cat_name'];
 			$cat_desc = $index[$cat_id]['description'];
 			$cat_view = $index[$cat_id]['nav_path'];
-			$cat_bbcode_uid = $index[$cat_id]['bbcode_uid'];
 			$cat_sublevel = $index[$cat_id]['sublevel'];
 
 			if ($cat_desc)
 			{
-				/*
-				$cat_desc = ($board_config['allow_html']) ? make_clickable($cat_desc) : preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $cat_desc);
-				$cat_desc = ($board_config['allow_bbcode'] && $cat_bbcode_uid) ? $bbcode->parse($cat_desc, $cat_bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $cat_desc);
-				$cat_desc = ($board_config['allow_smilies']) ? smilies_pass($cat_desc) : $cat_desc;
-				*/
 				$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 				$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
 				$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
-				$cat_desc = $bbcode->parse($cat_desc, $cat_bbcode_uid);
+				$cat_desc = $bbcode->parse($cat_desc);
 				$cat_desc = str_replace("\n", "\n<br />", $cat_desc);
 			}
 
@@ -1849,16 +1843,10 @@ if (empty($view) && !$inc_module)
 		if ($index_cat[$cat]['rules'])
 		{
 			$cat_rule = $index_cat[$cat]['rules'];
-			$cat_bbcode_uid = $index_cat[$cat]['bbcode_uid'];
-			/*
-			$cat_rule = ($board_config['allow_html']) ? make_clickable($cat_rule) : preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $cat_rule);
-			$cat_rule = ($board_config['allow_bbcode'] && $cat_bbcode_uid) ? $bbcode->parse($cat_rule, $cat_bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $cat_rule);
-			$cat_rule = ($board_config['allow_smilies']) ? smilies_pass($cat_rule) : $cat_rule;
-			*/
 			$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
 			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
-			$cat_rule = $bbcode->parse($cat_rule, $cat_bbcode_uid);
+			$cat_rule = $bbcode->parse($cat_rule);
 			$cat_rule = str_replace("\n", "\n<br />", $cat_rule);
 			$template->assign_block_vars('cat_rule', array(
 				'CAT_RULE' => $cat_rule
@@ -1904,7 +1892,7 @@ if (empty($view) && !$inc_module)
 	if ($cat && $total_downloads)
 	{
 		$dl_files = array();
-		$dl_files = $dl_mod->files($cat, $sql_sort_by, $sql_order, $start, $dl_config['dl_links_per_page'], 'id, description, hack_version, extern, file_size, klicks, overall_klicks, rating, bbcode_uid, long_desc');
+		$dl_files = $dl_mod->files($cat, $sql_sort_by, $sql_order, $start, $dl_config['dl_links_per_page'], 'id, description, hack_version, extern, file_size, klicks, overall_klicks, rating, long_desc');
 
 		if ($dl_mod->cat_auth_comment_read($cat))
 		{
@@ -1935,21 +1923,16 @@ if (empty($view) && !$inc_module)
 
 			$hack_version = '&nbsp;' . $dl_files[$i]['hack_version'];
 
-			$bbcode_uid = $dl_files[$i]['bbcode_uid'];
 			$long_desc = stripslashes($dl_files[$i]['long_desc']);
 			if (intval($dl_config['limit_desc_on_index']) && strlen($long_desc) > intval($dl_config['limit_desc_on_index']))
 			{
 				$long_desc = substr($long_desc, 0, intval($dl_config['limit_desc_on_index'])) . ' [...]';
 			}
 
-			/*
-			$long_desc = ($bbcode_uid) ? $bbcode->parse($long_desc, $bbcode_uid) : $long_desc;
-			$long_desc = make_clickable(smilies_pass($long_desc));
-			*/
 			$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
 			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
-			$long_desc = $bbcode->parse($long_desc, $bbcode_uid);
+			$long_desc = $bbcode->parse($long_desc);
 			$long_desc = str_replace("\n", "\n<br />\n", $long_desc);
 
 			$dl_status = array();

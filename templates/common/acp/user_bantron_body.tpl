@@ -55,20 +55,20 @@
 <!-- BEGIN rowlist -->
 <tr>
 	<!-- BEGIN username_content -->
-	<td class="{rowlist.ROW_CLASS}" align="center">{rowlist.username_content.USERNAME}</td>
+	<td class="{rowlist.ROW_CLASS} row-center">{rowlist.username_content.USERNAME}</td>
 	<!-- END username_content -->
 	<!-- BEGIN ip_content -->
-	<td class="{rowlist.ROW_CLASS}" align="center">{rowlist.ip_content.IP}</td>
+	<td class="{rowlist.ROW_CLASS} row-center">{rowlist.ip_content.IP}</td>
 	<!-- END ip_content -->
 	<!-- BEGIN email_content -->
-	<td class="{rowlist.ROW_CLASS}" align="center">{rowlist.email_content.EMAIL}</td>
+	<td class="{rowlist.ROW_CLASS} row-center">{rowlist.email_content.EMAIL}</td>
 	<!-- END email_content -->
-	<td class="{rowlist.ROW_CLASS}" align="center">{rowlist.BAN_TIME}</td>
-	<td class="{rowlist.ROW_CLASS}" align="center">{rowlist.BAN_EXPIRE_TIME}</td>
-	<td class="{rowlist.ROW_CLASS}" align="center">{rowlist.BAN_BY}</td>
-	<td class="{rowlist.ROW_CLASS}" align="center">{rowlist.BAN_REASON}</td>
-	<td class="{rowlist.ROW_CLASS}" align="center"><a href="{rowlist.U_BAN_EDIT}">{L_EDIT}</a></td>
-	<td class="{rowlist.ROW_CLASS}" align="center"><input type="checkbox" name="ban_delete[]" value="{rowlist.BAN_ID}"></td>
+	<td class="{rowlist.ROW_CLASS} row-center">{rowlist.BAN_TIME}</td>
+	<td class="{rowlist.ROW_CLASS} row-center">{rowlist.BAN_EXPIRE_TIME}</td>
+	<td class="{rowlist.ROW_CLASS} row-center">{rowlist.BAN_BY}</td>
+	<td class="{rowlist.ROW_CLASS} row-center">{rowlist.BAN_REASON}</td>
+	<td class="{rowlist.ROW_CLASS} row-center"><a href="{rowlist.U_BAN_EDIT}">{L_EDIT}</a></td>
+	<td class="{rowlist.ROW_CLASS} row-center"><input type="checkbox" name="ban_delete[]" value="{rowlist.BAN_ID}"></td>
 </tr>
 <!-- END rowlist -->
 <tr>

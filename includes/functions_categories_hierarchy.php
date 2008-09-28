@@ -1243,6 +1243,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				// resize
 				$topic_title = $data['tree.topic_title'];
 				$topic_title = (empty($data['title_compl_infos'])) ? $topic_title : $data['title_compl_infos'] . ' ' . $topic_title;
+				$topic_title_plain = $topic_title;
 
 				if (strlen($topic_title) > (intval($board_config['last_topic_title_length']) - 3))
 				{
@@ -1254,17 +1255,18 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 					$bbcode->allow_html = false;
 					$bbcode->allow_bbcode = false;
 					$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-					$topic_title = ($bbcode ? $topic_title = $bbcode->parse($topic_title, $bbcode_uid, true) : $topic_title);
+					$topic_title = ($bbcode ? $topic_title = $bbcode->parse($topic_title, '', true) : $topic_title);
 					//End Smileys Parsing for title
 				}
-				$topic_title = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $data['tree.topic_title'] . '">' . $topic_title . '</a><br />';
+
+				$topic_title = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
 
 				$last_post_time = create_date2($board_config['default_dateformat'], $data['tree.post_time'], $board_config['board_timezone']);
 				$last_post  = (($board_config['last_topic_title']) ? $topic_title : '');
 				$last_post .= $last_post_time . '<br />';
 				$last_post .= ($data['tree.post_user_id'] == ANONYMOUS) ? $data['tree.post_username'] . ' ' : colorize_username($data['tree.post_user_id']);
 
-				$last_post .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '"><img src="' . (($data['tree.unread_topics']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+				$last_post .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (($data['tree.unread_topics']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 			}
 
 			// links to sub-levels

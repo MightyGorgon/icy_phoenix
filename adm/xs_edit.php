@@ -22,33 +22,10 @@ $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
-if (defined('MAIN_ADMINS_ID'))
+$is_allowed = check_acp_module_access();
+if ($is_allowed == false)
 {
-	$is_allowed = false;
-	$allowed_admins = explode(',', MAIN_ADMINS_ID);
-	if (defined('FOUNDER_ID'))
-	{
-		if ($userdata['user_id'] == FOUNDER_ID)
-		{
-			$is_allowed = true;
-		}
-	}
-	if ($is_allowed == false)
-	{
-		for ($i = 0; $i < count($allowed_admins); $i++)
-		{
-			if ($userdata['user_id'] == $allowed_admins[$i])
-			{
-				$is_allowed = true;
-				break;
-			}
-		}
-	}
-	if ($is_allowed == false)
-	{
-		die($lang['Not_Auth_View']);
-		return;
-	}
+	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 // Mighty Gorgon - ACP Privacy - END
 

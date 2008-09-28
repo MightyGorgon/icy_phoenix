@@ -62,7 +62,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 <tr><td class="spaceRow" colspan="6"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr><td colspan="6" class="catBottom"><input type="submit" name="kill_drafts" class="liteoption" value="{L_DRAFTS_DELETE_SEL}" />&nbsp;&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-<div align="right"><span class="pagination"><b>{PAGINATION}</b></span></div>
+<div align="right"><span class="pagination">{PAGINATION}</span></div>
 <!-- END switch_drafts -->
 <!-- BEGIN switch_no_drafts -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_DRAFTS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

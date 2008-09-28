@@ -312,16 +312,17 @@ if ($submit)
 					}
 					else
 					{
-						message_die(GENERAL_ERROR, 'Unknown type of config data : ' . $mod_name, '', __LINE__, __FILE__, '');
+						message_die(GENERAL_ERROR, 'Unknown type of config data: ' . $mod_name, '', __LINE__, __FILE__, '');
 					}
 					break;
 			}
 			if ($error)
 			{
-				$ret_link = append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="3;url=' . $ret_link . '">')
-				);
+				$ret_link = append_sid('profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
+
+				$redirect_url = $ret_link;
+				meta_refresh(3, $redirect_url);
+
 				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_preferences'], '<a href="' . $ret_link . '">', '</a>') . '<br /><br />';
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -347,11 +348,11 @@ if ($submit)
 	}
 
 	// send an update message
-	$ret_link = append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . $ret_link . '">'
-		)
-	);
+	$ret_link = append_sid('profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
+
+	$redirect_url = $ret_link;
+	meta_refresh(3, $redirect_url);
+
 	$message = $lang['Profile_updated'] . '<br /><br />' . sprintf($lang['Click_return_preferences'], '<a href="' . $ret_link . '">', '</a>') . '<br /><br />';
 	message_die(GENERAL_MESSAGE, $message);
 }

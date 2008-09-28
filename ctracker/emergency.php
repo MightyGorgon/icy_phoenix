@@ -388,10 +388,12 @@ $template->assign_vars(array(
 // Generate the page
 $template->pparse('ct_body');
 
-
 /*
  * Disconnect from Database
  */
-$db->sql_close();
+if (!empty($db))
+{
+	$db->sql_close();
+}
 
 ?>

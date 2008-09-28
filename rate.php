@@ -46,13 +46,9 @@ switch($rate_mode)
 {
 	case 'rate':
 		$page_title = $lang['Rating'];
-		$template->assign_vars(array(
-			"META" => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">')
-		);
 	case 'rerate':
-		$template->assign_vars(array(
-			"META" => '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">')
-		);
+		$redirect_url = append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id);
+		meta_refresh(3, $redirect_url);
 	break;
 	case 'detailed':
 	{

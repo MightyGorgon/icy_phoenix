@@ -1,8 +1,8 @@
 <script type="text/javascript">
 <!--
-function attach_rules(topic_id, post_id)
+function attach_rules(forum_id)
 {
-	window.open("attach_rules.php?", '_postedittime', 'height=200, width=500, resizable=no, scrollbars=no');
+	window.open('{U_ATTACH_RULES}' + forum_id + '&sid={S_SID}', '_postedittime', 'height=200, width=500, resizable=no, scrollbars=no');
 }
 //-->
 </script>

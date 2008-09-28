@@ -23,8 +23,6 @@ if (!defined('IN_ICYPHOENIX'))
 
 if ($action == 'save' && !$deny_post)
 {
-	$bbcode_uid = make_bbcode_uid();
-
 	$html_on = 0;
 	$bbcode_on = 0;
 	$smilies_on = 0;
@@ -44,7 +42,7 @@ if ($action == 'save' && !$deny_post)
 		$smilies_on = $userdata['user_allowsmile'];
 	}
 
-	$comment_text = stripslashes(prepare_message(addslashes(unprepare_message($comment_text)), $html_on, $bbcode_on, $smilies_on, $bbcode_uid));
+	$comment_text = stripslashes(prepare_message(addslashes(unprepare_message($comment_text)), $html_on, $bbcode_on, $smilies_on));
 
 	$sql = "SELECT description FROM " . DOWNLOADS_TABLE . "
 		WHERE id = $df_id";
@@ -69,7 +67,7 @@ if ($action == 'save' && !$deny_post)
 	if ($dl_id)
 	{
 		$sql = "UPDATE " . DL_COMMENTS_TABLE . "
-			SET comment_edit_time = " . time() . ", comment_text = '" . str_replace("\'", "''", $comment_text) . "', bbcode_uid = '$bbcode_uid', approve = $approve
+			SET comment_edit_time = " . time() . ", comment_text = '" . str_replace("\'", "''", $comment_text) . "', approve = $approve
 			WHERE dl_id = $dl_id";
 		if (!($db->sql_query($sql)))
 		{
@@ -80,8 +78,8 @@ if ($action == 'save' && !$deny_post)
 	}
 	else
 	{
-		$sql = "INSERT INTO " . DL_COMMENTS_TABLE . " (id, cat_id, user_id, username, comment_time, comment_edit_time, comment_text, bbcode_uid, approve) VALUES
-			($df_id, $cat_id, " . $userdata['user_id'] . ", '" . str_replace("\'", "''", $userdata['username']) . "', " . time() . ", " . time() . ", '" . str_replace("\'", "''", $comment_text) . "', '$bbcode_uid', $approve)";
+		$sql = "INSERT INTO " . DL_COMMENTS_TABLE . " (id, cat_id, user_id, username, comment_time, comment_edit_time, comment_text, approve) VALUES
+			($df_id, $cat_id, " . $userdata['user_id'] . ", '" . str_replace("\'", "''", $userdata['username']) . "', " . time() . ", " . time() . ", '" . str_replace("\'", "''", $comment_text) . "', $approve)";
 		if (!($db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not save comment', '', __LINE__, __FILE__, $sql);
@@ -246,12 +244,10 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 	$db->sql_freeresult($result);
 
 	$description = stripslashes($row['description']);
-	//$description = make_clickable(smilies_pass(stripslashes($row['description'])));
-	//$description = ($row['bbcode_uid']) ? bbencode_second_pass($description, $row['bbcode_uid']) : $description;
-	$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
-	$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
-	$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
-	$description = $bbcode->parse($description, $row['bbcode_uid']);
+	$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+	$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
+	$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+	$description = $bbcode->parse($description);
 	$description = str_replace("\n", "\n<br />\n", $description);
 
 	$cat_name = $index[$cat_id]['cat_name'];
@@ -260,7 +256,7 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 	// Edit or add a comment
 	if ($action == 'edit')
 	{
-		$sql = "SELECT comment_text, bbcode_uid FROM " . DL_COMMENTS_TABLE . "
+		$sql = "SELECT comment_text FROM " . DL_COMMENTS_TABLE . "
 			WHERE dl_id = $dl_id
 				AND id = $df_id
 				AND cat_id = $cat_id";
@@ -271,13 +267,7 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 
 		$row = $db->sql_fetchrow($result);
 		$comment_text = $row['comment_text'];
-		$bbcode_uid = $row['bbcode_uid'];
 		$db->sql_freeresult($result);
-
-		if ($bbcode_uid)
-		{
-			$comment_text = preg_replace('/\:(([a-z0-9]:)?)' . $bbcode_uid . '/s', '', $comment_text);
-		}
 	}
 
 	$s_hidden_fields = '<input type="hidden" name="dl_id" value="'.$dl_id.'" />';
@@ -474,38 +464,18 @@ if ($action == 'view' || !$action)
 			$dl_id = $comment_row[$i]['dl_id'];
 
 			$message = $comment_row[$i]['comment_text'];
-			$bbcode_uid = $comment_row[$i]['bbcode_uid'];
 			$comment_time = $comment_row[$i]['comment_time'];
 			$comment_edit_time = $comment_row[$i]['comment_edit_time'];
-
-			/*
-			if (!$board_config['allow_html'] || !$userdata['user_allowhtml'])
-			{
-				$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
-			}
-
-			if ($bbcode_uid)
-			{
-				$message = ($board_config['allow_bbcode']) ? bbencode_second_pass($message, $bbcode_uid) : preg_replace("/\:$bbcode_uid/si", '', $message);
-			}
-
-			$message = make_clickable($message);
-
-			if($board_config['allow_smilies'])
-			{
-				$message = smilies_pass($message);
-			}
-			*/
 
 			if(count($orig_word))
 			{
 				$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
 			}
 
-			$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
-			$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
-			$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
-			$message = $bbcode->parse($message, $bbcode_uid);
+			$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
+			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+			$message = $bbcode->parse($message);
 			$message = str_replace("\n", "\n<br />\n", $message);
 
 			if($comment_time <> $comment_edit_time)
@@ -517,17 +487,6 @@ if ($action == 'view' || !$action)
 				$edited_by = '';
 			}
 
-			/*
-			if ($poster_id == ANONYMOUS)
-			{
-				$poster_url = '';
-			}
-			else
-			{
-				$poster_url = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $poster_id);
-				$poster = '<a href="' . $poster_url . '">' . $poster . '</a>';
-			}
-			*/
 			$poster = colorize_username($poster_id);
 
 			$post_time = create_date($board_config['default_dateformat'], $comment_time, $board_config['board_timezone']);

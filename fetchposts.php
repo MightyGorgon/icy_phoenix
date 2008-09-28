@@ -30,7 +30,7 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 {
 	global $db, $board_config, $bbcode;
 
-	$sql = 'SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_replies, pt.post_text, pt.post_text_compiled, pt.bbcode_uid, pt.post_id, p.post_id, p.enable_smilies, u.username, u.user_id
+	$sql = 'SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_replies, pt.post_text, pt.post_text_compiled, pt.post_id, p.post_id, p.enable_smilies, u.username, u.user_id
 			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . POSTS_TEXT_TABLE . ' AS pt, ' . POSTS_TABLE . ' AS p
 			WHERE t.forum_id IN (' . $forum_sql . ')
 				AND t.topic_time <= ' . time() . '
@@ -57,7 +57,6 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 		$i = 0;
 		do
 		{
-			$posts[$i]['bbcode_uid'] = $row['bbcode_uid'];
 			$posts[$i]['enable_smilies'] = $row['enable_smilies'];
 			$posts[$i]['post_text'] = $row['post_text'];
 			$posts[$i]['forum_id'] = $row['forum_id'];
@@ -70,7 +69,6 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 			$posts[$i]['username'] = $row['username'];
 
 			$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
-			$bbcode_uid = $posts[$i]['bbcode_uid'];
 
 			$bbcode->allow_bbcode = $board_config['allow_bbcode'];
 			$bbcode->allow_html = $board_config['allow_html'];
@@ -93,7 +91,7 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 			if($message_compiled === false)
 			{
 				$bbcode->allow_smilies = $board_config['allow_smilies'] && $posts[$i]['enable_smilies'] ? true : false;
-				$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], $bbcode_uid, false, $clean_tags);
+				$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
 			}
 			else
 			{
@@ -177,7 +175,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 	if ($single_post == true)
 	{
 		$single_post_id = $forum_sql;
-		$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, pt.post_text, pt.post_text_compiled, pt.bbcode_uid, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id
+		$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, pt.post_text, pt.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id
 				FROM " . POSTS_TABLE . " AS p, " . POSTS_TEXT_TABLE . " AS pt, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
 				WHERE p.post_id = '" . $single_post_id . "'
 					" . $add_to_sql . "
@@ -187,7 +185,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 	}
 	else
 	{
-		$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, pt.post_text, pt.post_text_compiled, pt.post_id, u.username, u.user_id, pt.bbcode_uid, p.post_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms
+		$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, pt.post_text, pt.post_text_compiled, pt.post_id, u.username, u.user_id, p.post_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms
 				FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TEXT_TABLE . " AS pt, " . POSTS_TABLE . " AS p
 				WHERE t.topic_time <= " . time() . "
 					" . $add_to_sql . "
@@ -214,7 +212,6 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 		$i = 0;
 		do
 		{
-			$posts[$i]['bbcode_uid'] = $row['bbcode_uid'];
 			$posts[$i]['enable_smilies'] = $row['enable_smilies'];
 			$posts[$i]['enable_autolinks_acronyms'] = $row['enable_autolinks_acronyms'];
 			$posts[$i]['post_text'] = $row['post_text'];
@@ -231,7 +228,6 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 			$posts[$i]['post_attachment'] = $row['post_attachment'];
 
 			$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
-			$bbcode_uid = $posts[$i]['bbcode_uid'];
 
 			$bbcode->allow_bbcode = $board_config['allow_bbcode'];
 			$bbcode->allow_html = $board_config['allow_html'];
@@ -254,7 +250,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 			if($message_compiled === false)
 			{
 				$bbcode->allow_smilies = $board_config['allow_smilies'] && $posts[$i]['enable_smilies'] ? true : false;
-				$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], $bbcode_uid, false, $clean_tags);
+				$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
 			}
 			else
 			{
@@ -279,15 +275,12 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 			//Acronyms, AutoLinks, Wrap - BEGIN
 			if ($posts[$i]['enable_autolinks_acronyms'] == 1)
 			{
-				if(function_exists('acronym_pass'))
-				{
-					$posts[$i]['post_text'] = acronym_pass($posts[$i]['post_text']);
-				}
+				$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
 				if(count($orig_autolink))
 				{
 					$posts[$i]['post_text'] = autolink_transform($posts[$i]['post_text'], $orig_autolink, $replacement_autolink);
 				}
-				//$posts[$i]['post_text'] = kb_word_wrap_pass ($posts[$i]['post_text']);
+				//$posts[$i]['post_text'] = kb_word_wrap_pass($posts[$i]['post_text']);
 			}
 			//Acronyms, AutoLinks, Wrap -END
 			$i++;
@@ -340,107 +333,5 @@ function phpbb_fetch_poll($forum_sql)
 
 	return $result;
 } // end func phpbb_fetch_poll
-
-//
-// Function strip all BBcodes (borrowed from Mouse Hover Topic Preview MOD)
-//
-function bbencode_strip($text, $uid)
-{
-	// pad it with a space so we can distinguish between FALSE and matching the 1st char (index 0).
-	// This is important; bbencode_quote(), bbencode_list(), and bbencode_code() all depend on it.
-	$text = " " . $text;
-
-	// First: If there isn't a "[" and a "]" in the message, don't bother.
-	if (! (strpos($text, "[") && strpos($text, "]")))
-	{
-		// Remove padding, return.
-		$text = substr($text, 1);
-		return $text;
-	}
-
-	// [CODE] and [ /CODE ] for posting code (HTML, PHP, C etc etc) in your posts.
-	$text = str_replace("[code:1:$uid]","", $text);
-	$text = str_replace("[/code:1:$uid]", "", $text);
-	$text = str_replace("[code:$uid]", "", $text);
-	$text = str_replace("[/code:$uid]", "", $text);
-
-	// [QUOTE] and [/QUOTE] for posting replies with quote, or just for quoting stuff.
-	$text = str_replace("[quote:1:$uid]","", $text);
-	$text = str_replace("[/quote:1:$uid]", "", $text);
-	$text = str_replace("[quote:$uid]", "", $text);
-	$text = str_replace("[/quote:$uid]", "", $text);
-	// New one liner to deal with opening quotes with usernames...
-	// replaces the two line version that I had here before..
-	$text = preg_replace("/\[quote:$uid=(?:\"?([^\"]*)\"?)\]/si", "", $text);
-	$text = preg_replace("/\[quote:1:$uid=(?:\"?([^\"]*)\"?)\]/si", "", $text);
-
-	// [list] and [list=x] for (un)ordered lists.
-	// unordered lists
-	$text = str_replace("[list:$uid]", "", $text);
-	// li tags
-	$text = str_replace("[*:$uid]", "", $text);
-	// ending tags
-	$text = str_replace("[/list:u:$uid]", "", $text);
-	$text = str_replace("[/list:o:$uid]", "", $text);
-	// Ordered lists
-	$text = preg_replace("/\[list=([a1]):$uid\]/si", "", $text);
-
-	// colours
-	$text = preg_replace("/\[color=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/color:$uid]", "", $text);
-	$text = preg_replace("/\[glow=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/glow:$uid]", "", $text);
-	$text = preg_replace("/\[shadow=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/shadow:$uid]", "", $text);
-	$text = preg_replace("/\[highlight=(\#[0-9A-F]{6}|[a-z]+):$uid\]/si", "", $text);
-	$text = str_replace("[/highlight:$uid]", "", $text);
-
-	// url #2
-	$text = str_replace("[url]","", $text);
-	$text = str_replace("[/url]", "", $text);
-
-	// url /\[url=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\](.*?)\[/url\]/si
-	$text = preg_replace("/\[url=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "", $text);
-	$text = str_replace("[/url:$uid]", "", $text);
-
-	// img
-	$text = str_replace("[img:$uid]","", $text);
-	$text = str_replace("[/img:$uid]", "", $text);
-	$text = str_replace("[imgl:$uid]","", $text);
-	$text = str_replace("[/imgl:$uid]", "", $text);
-	$text = str_replace("[imgr:$uid]","", $text);
-	$text = str_replace("[/imgr:$uid]", "", $text);
-	$text = str_replace("[albumimg:$uid]","", $text);
-	$text = str_replace("[/albumimg:$uid]", "", $text);
-	$text = str_replace("[albumimgl:$uid]","", $text);
-	$text = str_replace("[/albumimgl:$uid]", "", $text);
-	$text = str_replace("[albumimgr:$uid]","", $text);
-	$text = str_replace("[/albumimgr:$uid]", "", $text);
-
-	// email
-	$text = str_replace("[email:$uid]","", $text);
-	$text = str_replace("[/email:$uid]", "", $text);
-
-	// size
-	$text = preg_replace("/\[size=([\-\+]?[1-2]?[0-9]):$uid\]/si", "", $text);
-	$text = str_replace("[/size:$uid]", "", $text);
-
-	// [b] and [/b] for bolding text.
-	$text = str_replace("[b:$uid]","", $text);
-	$text = str_replace("[/b:$uid]", "", $text);
-
-	// [u] and [/u] for underlining text.
-	$text = str_replace("[u:$uid]", "", $text);
-	$text = str_replace("[/u:$uid]", "", $text);
-
-	// [i] and [/i] for italicizing text.
-	$text = str_replace("[i:$uid]", "", $text);
-	$text = str_replace("[/i:$uid]", "", $text);
-
-	// Remove our padding from the string..
-	$text = substr($text, 1);
-
-	return $text;
-}
 
 ?>

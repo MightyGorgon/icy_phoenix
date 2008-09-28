@@ -20,9 +20,9 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
-	$module['Faq_Rules_manager']['board_faq'] = $file . '?file=faq';
-	$module['Faq_Rules_manager']['bbcode_faq'] = $file . '?file=bbcode';
-	$module['Faq_Rules_manager']['board_rules'] = $file . '?file=rules';
+	$module['2300_FAQ']['110_FAQ_BBCode'] = $file . '?file=bbcode';
+	$module['2300_FAQ']['120_FAQ_Board'] = $file . '?file=faq';
+	$module['2300_FAQ']['130_FAQ_Rules'] = $file . '?file=rules';
 	return;
 }
 

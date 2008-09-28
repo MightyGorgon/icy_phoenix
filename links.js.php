@@ -92,7 +92,7 @@ $sql = "SELECT link_id, link_title, link_logo_src
 // If failed just ignore
 if( $result = $db->sql_query($sql) )
 {
-	$links_logo = "";
+	$links_logo = '';
 	while($row = $db->sql_fetchrow($result))
 	{
 		//if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
@@ -119,7 +119,7 @@ if( $result = $db->sql_query($sql) )
 	}
 }
 
-$template->pparse("body");
+$template->pparse('body');
 
 $db->sql_close();
 

@@ -30,8 +30,8 @@ $acp_icon['2000_Downloads'] = '../images/menu/disk_multiple.png';
 $acp_icon['2050_Downloads'] = '../images/menu/disk_multiple.png';
 $acp_icon['2100_Links'] = '../images/menu/world.png';
 $acp_icon['2200_Photo_Album'] = '../images/menu/photos.png';
-$acp_icon['Faq_Rules_manager'] = '../images/menu/warning.png';
-$acp_icon['Info'] = '../images/menu/information.png';
+$acp_icon['2300_FAQ'] = '../images/menu/warning.png';
+$acp_icon['2400_INFO'] = '../images/menu/information.png';
 $acp_icon['Statistics'] = '../images/menu/server_install.png';
 $acp_icon['ctracker_module_category'] = '../images/menu/radar.png';
 

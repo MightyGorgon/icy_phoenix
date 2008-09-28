@@ -522,8 +522,7 @@ if($userdata['session_logged_in'])
 		{
 			if ($_GET['unwatch'] == 'comment')
 			{
-				$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-				$sql = "DELETE $sql_priority FROM " . ALBUM_COMMENT_WATCH_TABLE . "
+				$sql = "DELETE FROM " . ALBUM_COMMENT_WATCH_TABLE . "
 					WHERE pic_id = $pic_id
 						AND user_id = " . $userdata['user_id'];
 				if (!($result = $db->sql_query($sql)))
@@ -533,7 +532,8 @@ if($userdata['session_logged_in'])
 				$is_watching_comment = false;
 			}
 
-			$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="5;url=' . append_sid('album.' . PHP_EXT) . '">'));
+			$redirect_url = append_sid('album.' . PHP_EXT);
+			meta_refresh(3, $redirect_url);
 
 			$message = $lang['No_longer_watching_comment'] . '<br /><br />' . sprintf($lang['Click_return_pic'], '<a href="' . append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
@@ -544,9 +544,7 @@ if($userdata['session_logged_in'])
 
 			if ($row['notify_status'])
 			{
-
-				$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-				$sql = "UPDATE $sql_priority " . ALBUM_COMMENT_WATCH_TABLE . "
+				$sql = "UPDATE " . ALBUM_COMMENT_WATCH_TABLE . "
 					SET notify_status = 0
 					WHERE pic_id = $pic_id
 						AND user_id = " . $userdata['user_id'];
@@ -562,15 +560,16 @@ if($userdata['session_logged_in'])
 	{
 		if ($_GET['watch'] == 'comment')
 		{
-			$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-			$sql = "INSERT $sql_priority INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
+			$sql = "INSERT INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
 				VALUES ($pic_id, " . $userdata['user_id'] . ", 0)";
 			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, "Could not insert comment watch information", '', __LINE__, __FILE__, $sql);
 			}
 		}
-		$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="5;url=' . append_sid('album.' . PHP_EXT) . '">'));
+
+		$redirect_url = append_sid('album.' . PHP_EXT);
+		meta_refresh(3, $redirect_url);
 
 		$message = $lang['Watching_comment'] . '<br /><br />' . sprintf($lang['Click_return_pic'], '<a href="' . append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
@@ -728,26 +727,23 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				$bbcode->allow_bbcode = $bbcode_on;
 				$bbcode->allow_smilies = $smilies_on;
 
-				$commentrow[$i]['comment_text'] = $bbcode->parse($commentrow[$i]['comment_text'], $bbcode_uid);
+				$commentrow[$i]['comment_text'] = $bbcode->parse($commentrow[$i]['comment_text']);
 				$commentrow[$i]['comment_text'] = strtr($commentrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
 
-				if(function_exists('acronym_pass'))
-				{
-					$commentrow[$i]['comment_text'] = acronym_pass($commentrow[$i]['comment_text']);
-				}
+				$commentrow[$i]['comment_text'] = $bbcode->acronym_pass($commentrow[$i]['comment_text']);
+
 				if(count($orig_autolink))
 				{
 					$commentrow[$i]['comment_text'] = autolink_transform($commentrow[$i]['comment_text'], $orig_autolink, $replacement_autolink);
 				}
-				//$commentrow[$i]['comment_text'] = kb_word_wrap_pass ($commentrow[$i]['comment_text']);
+				//$commentrow[$i]['comment_text'] = kb_word_wrap_pass($commentrow[$i]['comment_text']);
 				$commentrow[$i]['comment_text'] = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $commentrow[$i]['comment_text']) : $commentrow[$i]['comment_text'];
 
 				$user_sig = ($board_config['allow_sig']) ? trim($commentrow[$i]['user_sig']) : '';
-				$user_sig_bbcode_uid = $commentrow[$i]['user_sig_bbcode_uid'];
 				if($user_sig != '')
 				{
 					$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
-					$user_sig = $bbcode->parse($user_sig, $user_sig_bbcode_uid);
+					$user_sig = $bbcode->parse($user_sig);
 					$bbcode->is_sig = false;
 				}
 
@@ -1344,10 +1340,8 @@ else
 	// Complete... now send a message to user
 	// --------------------------------
 
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id)) . '">'
-		)
-	);
+	$redirect_url = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id));
+	meta_refresh(3, $redirect_url);
 
 	$message .= sprintf($lang['Click_return_pic'], '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id)) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 

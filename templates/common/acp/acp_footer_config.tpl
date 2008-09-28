@@ -18,8 +18,8 @@
 <tr><th colspan="2">{L_SELECT_FOOTER}</th></tr>
 <!-- BEGIN footer_output -->
 <tr> 
-	<td class="{footer_output.ROW_CLASS}" align="center"><br /><br />{footer_output.IMG_FOOTER}<br /><br /></td>
-	<td class="{footer_output.ROW_CLASS}" align="center" style="vertical_align:center;"><input type="radio" name="footer_layout" value="{footer_output.S_SELECT}"{footer_output.S_SELECTED}></td>
+	<td class="{footer_output.ROW_CLASS} row-center"><br /><br />{footer_output.IMG_FOOTER}<br /><br /></td>
+	<td class="{footer_output.ROW_CLASS} row-center" style="vertical_align:center;"><input type="radio" name="footer_layout" value="{footer_output.S_SELECT}"{footer_output.S_SELECTED}></td>
 </tr>
 <!-- END footer_output -->
 <tr><td class="cat" colspan="2" align="center"><input type="Submit" name="submit" value="{L_SUBMIT_BUTTON}" class="mainoption"></td></tr>

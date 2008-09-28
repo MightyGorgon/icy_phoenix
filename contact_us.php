@@ -232,10 +232,8 @@ if (isset($_POST['submit']))
 				$emailer->reset();
 			}
 
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="5;url=' . append_sid(PORTAL_MG) . '">'
-				)
-			);
+			$redirect_url = append_sid(PORTAL_MG);
+			meta_refresh(3, $redirect_url);
 
 			$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(PORTAL_MG) . '">', '</a>');
 
@@ -249,10 +247,8 @@ if (isset($_POST['submit']))
 					message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
 				}
 				$message = $lang['Email_sent'];
-				$template->assign_vars(array(
-					'META' => '<meta http-equiv="refresh" content="1;url=' . append_sid(LOGIN_MG . '?logout=true&amp;sid=' . $userdata['session_id']) . '">'
-					)
-				);
+				$redirect_url = append_sid(LOGIN_MG . '?logout=true&amp;sid=' . $userdata['session_id']);
+				meta_refresh(3, $redirect_url);
 			}
 
 			message_die(GENERAL_MESSAGE, $message);

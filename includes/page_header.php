@@ -322,14 +322,7 @@ else
 
 			$pm_text = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], $user_age) : sprintf($lang['Birthday_greeting_prev'], $user_age, realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $userdata['user_birthday']) . ((!empty($userdata['user_next_birthday_greeting']) ? ($userdata['user_next_birthday_greeting']) : '')));
 
-			if (defined('FOUNDER_ID'))
-			{
-				$founder_id = FOUNDER_ID;
-			}
-			else
-			{
-				$founder_id = get_founder_id();
-			}
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
 			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($pm_subject, $board_config['sitename']))) . "', '" . $founder_id . "', '" . $userdata['user_id'] . "', " . $pm_date . ", '0', '1', '1', '0')";
 			if (!$db->sql_query($sql))
@@ -1071,6 +1064,8 @@ $template->assign_vars(array(
 	'L_SEARCH_MATCHES' => $lang['Search_Matches'],
 	// Mighty Gorgon - Full Album Pack - END
 
+	'U_ATTACH_RULES' => 'attach_rules.' . PHP_EXT . '?' . POST_FORUM_URL . '=',
+
 	// Mighty Gorgon - Random Quote - Begin
 	'RANDOM_QUOTE' => $randomquote_phrase,
 	// Mighty Gorgon - Random Quote - End
@@ -1357,6 +1352,7 @@ if(empty($gen_simple_header))
 */
 
 $template->pparse('overall_header');
+
 if (($userdata['user_level'] != ADMIN) && $board_config['board_disable'] && !defined('IN_ADMIN') && !defined('IN_LOGIN'))
 {
 	if($board_config['board_disable_mess_st'])

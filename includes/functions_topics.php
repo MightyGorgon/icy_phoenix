@@ -399,7 +399,6 @@ function get_topic_prefixes()
 function is_bookmark_set($topic_id)
 {
 	global $db, $userdata;
-
 	$user_id = $userdata['user_id'];
 	$sql = "SELECT topic_id, user_id
 		FROM " . BOOKMARK_TABLE . "
@@ -424,12 +423,11 @@ function is_bookmark_set($topic_id)
 function set_bookmark($topic_id)
 {
 	global $db, $userdata;
-
 	$user_id = $userdata['user_id'];
 	if (!is_bookmark_set($topic_id, $user_id))
 	{
 		$sql = "INSERT INTO " . BOOKMARK_TABLE . " (topic_id, user_id)
-			VALUES ($topic_id, $user_id)";
+			VALUES ('" . $topic_id . "', '" . $user_id . "')";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not insert bookmark information', '', __LINE__, __FILE__, $sql);
@@ -442,10 +440,9 @@ function set_bookmark($topic_id)
 function remove_bookmark($topic_id)
 {
 	global $db, $userdata;
-
 	$user_id = $userdata['user_id'];
 	$sql = "DELETE FROM " . BOOKMARK_TABLE . "
-		WHERE topic_id IN ($topic_id) AND user_id = $user_id";
+		WHERE topic_id IN (" . $topic_id . ") AND user_id = '" . $user_id . "'";
 	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Could not remove bookmark information', '', __LINE__, __FILE__, $sql);

@@ -96,9 +96,7 @@ if(!defined('SQL_LAYER'))
 
 			if($this->db_connect_id)
 			{
-				//
 				// Commit any remaining transactions
-				//
 				if($this->in_transaction)
 				{
 					mysql_query('COMMIT', $this->db_connect_id);
@@ -197,7 +195,7 @@ if(!defined('SQL_LAYER'))
 
 			// Mighty Gorgon - Debug SQL Cache - BEGIN
 			// Cache SQL in the same file plus underscore
-			if (defined('DEBUG_EXTRA_LOG'))
+			if (defined('SQL_DEBUG_LOG') && (SQL_DEBUG_LOG == true))
 			{
 				/*
 				$f = fopen(SQL_CACHE_FOLDER . 'sql_' . $hash . '_.php', 'w');

@@ -19,47 +19,11 @@ if (!defined('IN_ICYPHOENIX'))
 {
 	define('IN_ICYPHOENIX', true);
 }
-$aprvmUtil = new aprvmUtils();
-$aprvmUtil->modVersion = '1.6.0';
-$aprvmUtil->copyrightYear = '2001-2005';
-
-/****************************************************************************
-/** Module Setup
-/***************************************************************************/
-define('PRIVMSGS_ALL_MAIL', -1);
-if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
-include_once('pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-
-//$aprvmUtil->find_lang_file('lang_admin_priv_msgs');
 
 // Mighty Gorgon - ACP Privacy - BEGIN
-if (defined('MAIN_ADMINS_ID'))
+if (function_exists('check_acp_module_access'))
 {
-	if (defined('JA_PARSING') && (JA_PARSING == true))
-	{
-		return;
-	}
-	$is_allowed = false;
-	$allowed_admins = explode(',', MAIN_ADMINS_ID);
-	if (defined('FOUNDER_ID'))
-	{
-		if ($userdata['user_id'] == FOUNDER_ID)
-		{
-			$is_allowed = true;
-		}
-	}
-	if ($is_allowed == false)
-	{
-		for ($i = 0; $i < count($allowed_admins); $i++)
-		{
-			if ($userdata['user_id'] == $allowed_admins[$i])
-			{
-				$is_allowed = true;
-				break;
-			}
-		}
-	}
+	$is_allowed = check_acp_module_access();
 	if ($is_allowed == false)
 	{
 		return;
@@ -71,8 +35,29 @@ if (!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1610_Users']['150_Private_Messages'] = $filename;
+	$ja_module['1610_Users']['150_Private_Messages'] = false;
 	return;
 }
+
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+include_once('pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+
+define('PRIVMSGS_ALL_MAIL', -1);
+$aprvmUtil = new aprvmUtils();
+$aprvmUtil->modVersion = '1.6.0';
+$aprvmUtil->copyrightYear = '2001-2005';
+
+//$aprvmUtil->find_lang_file('lang_admin_priv_msgs');
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+$is_allowed = check_acp_module_access();
+if ($is_allowed == false)
+{
+	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+}
+// Mighty Gorgon - ACP Privacy - END
 
 /****************************************************************************
 /** Module Actual Start
@@ -197,26 +182,11 @@ switch($pmaction)
 		/* Just stole all the phpBB code for message processing :) And edited a ton of it out since we are all admins here */
 		/**********************/
 		$private_message = $privmsg['privmsgs_text'];
-		$bbcode_uid = $privmsg['privmsgs_bbcode_uid'];
 		global $bbcode;
 		$bbcode->allow_html = ( $board_config['allow_html'] ? true : false );
 		$bbcode->allow_bbcode = ( $board_config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode'] ? true : false );
 		$bbcode->allow_smilies = ( $board_config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'] ? true : false );
-		$private_message = $bbcode->parse($private_message, $bbcode_uid);
-		/*
-		if ( $bbcode_uid != '' )
-		{
-			$private_message = bbencode_second_pass($private_message, $bbcode_uid);
-		}
-		$private_message = make_clickable($private_message);
-		if ( $privmsg['privmsgs_enable_smilies'] )
-		{
-			$old_config = $board_config['smilies_path'];
-			$board_config['smilies_path'] = '../' . $board_config['smilies_path'];
-			$private_message = smilies_pass($private_message);
-			$board_config['smilies_path'] = $old_config;
-		}
-		*/
+		$private_message = $bbcode->parse($private_message);
 		$private_message = str_replace("\n", '<br />', $private_message);
 
 		$template->set_filenames(array(

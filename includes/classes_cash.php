@@ -529,7 +529,7 @@ if (defined('CM_POSTING'))
 	class cash_posting
 	{
 
-		function update_post($mode, &$post_data, $forum_id, $topic_id, $post_id, $topic_type, $bbcode_uid, $post_username, &$post_message)
+		function update_post($mode, &$post_data, $forum_id, $topic_id, $post_id, $topic_type, $post_username, &$post_message)
 		{
 			global $board_config, $userdata;
 			if ($board_config['cash_disable'] || (($mode != 'newtopic') && ($mode != 'reply') && ($mode != 'editpost')))
@@ -539,13 +539,10 @@ if (defined('CM_POSTING'))
 			$first_post = $post_data['first_post'];
 			$poster_id = $userdata['user_id'];
 			$old_message = '';
-			$new_bbcode = $bbcode_uid;
-			$old_bbcode = '';
 			if ($mode == 'editpost')
 			{
 				$poster_id = $post_data['poster_id'];
 				$old_message = &$post_data['post_text'];
-				$old_bbcode = $post_data['bbcode_uid'];
 			}
 			if ($mode == 'reply')
 			{
@@ -555,7 +552,7 @@ if (defined('CM_POSTING'))
 			{
 				$topic_starter = false;
 			}
-			return $this->cash_update($mode, $poster_id, $first_post, $old_message, $post_message, $forum_id, $topic_id, $post_id, $new_bbcode, $topic_starter, $old_bbcode);
+			return $this->cash_update($mode, $poster_id, $first_post, $old_message, $post_message, $forum_id, $topic_id, $post_id, $topic_starter);
 		}
 
 		function update_delete($mode, &$post_data, $forum_id, $topic_id, $post_id)
@@ -567,14 +564,11 @@ if (defined('CM_POSTING'))
 			}
 			$first_post = $post_data['first_post'];
 			$poster_id = $post_data['poster_id'];
-			$new_message = '';
-			$new_bbcode = '';
-			$old_bbcode = $post_data['bbcode_uid'];
 			$topic_starter = ANONYMOUS;
-			$this->cash_update($mode, $poster_id, $first_post, $post_data['post_text'], $new_message, $forum_id, $topic_id, $post_id, $new_bbcode, $topic_starter, $old_bbcode);
+			$this->cash_update($mode, $poster_id, $first_post, $post_data['post_text'], $new_message, $forum_id, $topic_id, $post_id, $topic_starter);
 		}
 
-		function cash_update($mode, $poster_id, $first_post, &$old_message, &$new_message, $forum_id, $topic_id, $post_id, $new_bbcode, $topic_starter, $old_bbcode)
+		function cash_update($mode, $poster_id, $first_post, &$old_message, &$new_message, $forum_id, $topic_id, $post_id, $topic_starter)
 		{
 			global $board_config, $lang, $db, $userdata, $cash;
 
@@ -623,8 +617,8 @@ if (defined('CM_POSTING'))
 					$all_active = true;
 				}
 			}
-			$new_len = array(strlen($new_message), cash_quotematch($new_message, $new_bbcode));
-			$old_len = array(strlen($old_message), cash_quotematch($old_message, $old_bbcode));
+			$new_len = array(strlen($new_message), cash_quotematch($new_message));
+			$old_len = array(strlen($old_message), cash_quotematch($old_message));
 			$sql_clause = array();
 			$message_clause = array();
 			$reply_bonus = array();

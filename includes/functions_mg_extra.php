@@ -17,7 +17,7 @@ if (!defined('IN_ICYPHOENIX'))
 /*
 if(!function_exists(kb_word_wrap_pass))
 {
-	function kb_word_wrap_pass( $message )
+	function kb_word_wrap_pass($message)
 	{
 		$tempText = "";
 		$finalText = "";
@@ -26,59 +26,59 @@ if(!function_exists(kb_word_wrap_pass))
 		$inTag = false;
 		$ampText = "";
 
-		for ( $num = 0;$num < strlen( $message );$num++ )
+		for ($num = 0;$num < strlen($message);$num++)
 		{
 			$curChar = $message{$num};
 
-			if ( $curChar == "<" )
+			if ($curChar == "<")
 			{
-				for ( $snum = 0;$snum < strlen( $ampText );$snum++ )
+				for ($snum = 0;$snum < strlen($ampText);$snum++)
 				{
-					kb_addWrap( $ampText{$snum}, $ampText{$snum+1}, $finalText, $tempText, $curCount, $tempCount );
+					kb_addWrap($ampText{$snum}, $ampText{$snum+1}, $finalText, $tempText, $curCount, $tempCount);
 				}
 				$ampText = "";
 				$tempText .= "<";
 				$inTag = true;
 			}
-			elseif ( $inTag && $curChar == ">" )
+			elseif ($inTag && $curChar == ">")
 			{
 				$tempText .= ">";
 				$inTag = false;
 			}
-			elseif ( $inTag )
+			elseif ($inTag)
 			{
 				$tempText .= $curChar;
 			}
-			elseif ( $curChar == "&" )
+			elseif ($curChar == "&")
 			{
-				for ( $snum = 0;$snum < strlen( $ampText );$snum++ )
+				for ($snum = 0;$snum < strlen($ampText);$snum++)
 				{
-					kb_addWrap( $ampText{$snum}, $ampText{$snum+1}, $finalText, $tempText, $curCount, $tempCount );
+					kb_addWrap($ampText{$snum}, $ampText{$snum+1}, $finalText, $tempText, $curCount, $tempCount);
 				}
 				$ampText = "&";
 			}
-			elseif ( strlen( $ampText ) < $longestAmp && $curChar == ";" &&
-					( strlen( html_entity_decode( "$ampText;" ) ) == 1 || preg_match( '/^&#[0-9][0-9]*$/', $ampText ) ) )
+			elseif (strlen($ampText) < $longestAmp && $curChar == ";" &&
+					(strlen(html_entity_decode("$ampText;")) == 1 || preg_match('/^&#[0-9][0-9]*$/', $ampText)))
 			{
-				kb_addWrap( "$ampText;", $message{$num+1}, $finalText, $tempText, $curCount, $tempCount );
+				kb_addWrap("$ampText;", $message{$num+1}, $finalText, $tempText, $curCount, $tempCount);
 				$ampText = "";
 			}
-			elseif ( strlen( $ampText ) >= $longestAmp || $curChar == ";" )
+			elseif (strlen($ampText) >= $longestAmp || $curChar == ";")
 			{
-				for ( $snum = 0;$snum < strlen( $ampText );$snum++ )
+				for ($snum = 0;$snum < strlen($ampText);$snum++)
 				{
-					kb_addWrap( $ampText{$snum}, $ampText{$snum+1}, $finalText, $tempText, $curCount, $tempCount );
+					kb_addWrap($ampText{$snum}, $ampText{$snum+1}, $finalText, $tempText, $curCount, $tempCount);
 				}
-				kb_addWrap( $curChar, $message{$num+1}, $finalText, $tempText, $curCount, $tempCount );
+				kb_addWrap($curChar, $message{$num+1}, $finalText, $tempText, $curCount, $tempCount);
 				$ampText = "";
 			}
-			elseif ( strlen( $ampText ) != 0 && strlen( $ampText ) < $longestAmp )
+			elseif (strlen($ampText) != 0 && strlen($ampText) < $longestAmp)
 			{
 				$ampText .= $curChar;
 			}
 			else
 			{
-				kb_addWrap( $curChar, $message{$num+1}, $finalText, $tempText, $curCount, $tempCount );
+				kb_addWrap($curChar, $message{$num+1}, $finalText, $tempText, $curCount, $tempCount);
 			}
 		}
 
@@ -88,20 +88,20 @@ if(!function_exists(kb_word_wrap_pass))
 
 if(!function_exists(kb_addWrap))
 {
-	function kb_addWrap( $curChar, $nextChar, &$finalText, &$tempText, &$curCount, &$tempCount )
+	function kb_addWrap($curChar, $nextChar, &$finalText, &$tempText, &$curCount, &$tempCount)
 	{
-		$softHyph = ( !preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) ? '&#8203;': '&shy;';
+		$softHyph = (!preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) ? '&#8203;': '&shy;';
 		$maxChars = 10;
 		$wrapProhibitedChars = "([{!;,:?}])";
 
-		if ( $curChar == " " || $curChar == "\n" )
+		if ($curChar == " " || $curChar == "\n")
 		{
 			$finalText .= $tempText . $curChar;
 			$tempText = "";
 			$curCount = 0;
 			$curChar = "";
 		}
-		elseif ( $curCount >= $maxChars )
+		elseif ($curCount >= $maxChars)
 		{
 			$finalText .= $tempText . $softHyph;
 			$tempText = "";
@@ -114,30 +114,30 @@ if(!function_exists(kb_addWrap))
 		}
 		// the following code takes care of (unicode) characters prohibiting non-mandatory breaks directly before them.
 		// $curChar isn't a " " or "\n"
-		if ( $tempText != "" && $curChar != "" )
+		if ($tempText != "" && $curChar != "")
 		{
 			$tempCount++;
 		}
 		// $curChar is " " or "\n", but $nextChar prohibits wrapping.
-		elseif ( ( $curCount == 1 && strstr( $wrapProhibitedChars, $curChar ) !== false ) ||
-				( $curCount == 0 && $nextChar != "" && $nextChar != " " && $nextChar != "\n" && strstr( $wrapProhibitedChars, $nextChar ) !== false ) )
+		elseif (($curCount == 1 && strstr($wrapProhibitedChars, $curChar) !== false) ||
+				($curCount == 0 && $nextChar != "" && $nextChar != " " && $nextChar != "\n" && strstr($wrapProhibitedChars, $nextChar) !== false))
 		{
 			$tempCount++;
 		}
 		// $curChar and $nextChar aren't both either " " or "\n"
-		elseif ( !( $curCount == 0 && ( $nextChar == " " || $nextChar == "\n" ) ) )
+		elseif (!($curCount == 0 && ($nextChar == " " || $nextChar == "\n")))
 		{
 			$tempCount = 0;
 		}
 
-		if ( $tempCount >= $maxChars && $tempText == "" )
+		if ($tempCount >= $maxChars && $tempText == "")
 		{
 			$finalText .= "&nbsp;";
 			$tempCount = 1;
 			$curCount = 2;
 		}
 
-		if ( $tempText == "" && $curCount > 0 )
+		if ($tempText == "" && $curCount > 0)
 		{
 			$finalText .= $curChar;
 		}

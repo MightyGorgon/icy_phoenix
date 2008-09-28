@@ -360,7 +360,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 					t.*,
 					p.poster_id, p.post_username, p.enable_bbcode, p.enable_html, p.enable_smilies,
 					u.username,
-					pt.post_text, pt.bbcode_uid,
+					pt.post_text,
 					lp.poster_id AS lp_poster_id,
 					lu.username AS lp_username,
 					lp.post_username AS lp_post_username,
@@ -418,7 +418,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		$topic_title = $row['topic_title'];
 		$message = htmlspecialchars($row['post_text']);
 
-		$bbcode_uid = $row['bbcode_uid'];
 		$topic_calendar_time = $row['topic_calendar_time'];
 		$topic_calendar_duration = $row['topic_calendar_duration'];
 		$topic_link = append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id']);
@@ -431,27 +430,16 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		}
 		global $bbcode, $board_config;
 		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		if ($board_config['smilies_topic_title'] == true)
-		{
-			//Start BBCode Parsing for title
-			$bbcode->allow_html =  false ;
-			$bbcode->allow_bbcode =  false ;
-			$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-			$topic_title = ($bbcode ? $topic_title = $bbcode->parse($topic_title, $bbcode_uid) : $topic_title);
-			//End BBCode Parsing for title
-		}
-
 		$short_title = (strlen($topic_title) > $topic_title_length + 3) ? substr($topic_title, 0, $topic_title_length) . '...' : $topic_title;
-
 		if ($board_config['smilies_topic_title'] == true)
 		{
-			//Start BBCode Parsing for title
-			$bbcode->allow_html =  false ;
-			$bbcode->allow_bbcode =  false ;
+			$bbcode->allow_html = false ;
+			$bbcode->allow_bbcode = false ;
 			$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-			$topic_title = ($bbcode ? $short_title = $bbcode->parse($topic_title, $bbcode_uid) : $short_title);
-			//End BBCode Parsing for title
+			$topic_title = $bbcode->parse($topic_title);
+			$short_title = $bbcode->parse($short_title);
 		}
+
 		$dsp_topic_icon = '';
 		if (function_exists(get_icon_title))
 		{
@@ -475,7 +463,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		$bbcode->allow_bbcode = $bbcode_on;
 		$bbcode->allow_smilies = $smilies_on;
 
-		$message = $bbcode->parse($message, $bbcode_uid);
+		$message = $bbcode->parse($message);
 
 		// get the date format
 		$fmt = $lang['DATE_FORMAT2'];

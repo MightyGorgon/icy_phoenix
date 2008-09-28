@@ -29,7 +29,7 @@
 		<a href="{U_SHOW_ALL_COMMENTS}"><img src="{SHOW_ALL_COMMENTS_IMG}" alt="{L_SHOW_ALL_COMMENTS}" title="{L_SHOW_ALL_COMMENTS}" /></a>&nbsp;
 		<!-- END switch_show_all_comments -->
 	</td>
-	<td width="50%" align="right" nowrap="nowrap"><span class="pagination"><b>{PAGINATION}</b></span></td>
+	<td width="50%" align="right" nowrap="nowrap"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 

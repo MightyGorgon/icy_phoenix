@@ -25,30 +25,30 @@ init_userprefs($userdata);
 // End session management
 
 // Start initial var setup
-if ( isset($_GET['p']))
+if (isset($_GET['p']))
 {
 	$post_id = intval($_GET['p']);
 }
 
-if ( !isset($post_id) )
+if (!isset($post_id))
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
-$download = ( isset($_GET['download']) ) ? $_GET['download'] : '';
+$download = (isset($_GET['download'])) ? $_GET['download'] : '';
 
 //
 // Find topic id if user requested a newer or older topic
 //
-if ( isset($_GET['view']) )
+if (isset($_GET['view']))
 {
-	if ( $_GET['view'] == 'next' || $_GET['view'] == 'previous' )
+	if ($_GET['view'] == 'next' || $_GET['view'] == 'previous')
 	{
-		$sql_condition = ( $_GET['view'] == 'next' ) ? '>' : '<';
-		$sql_ordering = ( $_GET['view'] == 'next' ) ? 'ASC' : 'DESC';
+		$sql_condition = ($_GET['view'] == 'next') ? '>' : '<';
+		$sql_ordering = ($_GET['view'] == 'next') ? 'ASC' : 'DESC';
 
 		$sql = "SELECT topic_id, post_time FROM " . POSTS_TABLE . " WHERE post_id = " . $post_id . " LIMIT 1";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
 		}
@@ -64,7 +64,7 @@ if ( isset($_GET['view']) )
 			ORDER BY post_time $sql_ordering
 			LIMIT 1";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
 		}
@@ -75,13 +75,13 @@ if ( isset($_GET['view']) )
 		}
 		else
 		{
-			$message = ( $_GET['view'] == 'next' ) ? 'No_newer_posts' : 'No_older_posts';
+			$message = ($_GET['view'] == 'next') ? 'No_newer_posts' : 'No_older_posts';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
 }
 
-if ( !isset($post_id) )
+if (!isset($post_id))
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
@@ -95,12 +95,12 @@ $sql = "SELECT t.topic_title, t.topic_id, f.forum_id, f.auth_view, f.auth_read, 
 
 $tmp = '';
 
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
 }
 
-if ( !($forum_row = $db->sql_fetchrow($result)) )
+if (!($forum_row = $db->sql_fetchrow($result)))
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
@@ -109,9 +109,9 @@ $forum_id = $forum_row['forum_id'];
 $topic_title = $forum_row['topic_title'];
 $topic_id = $forum_row['topic_id'];
 
-if ( $download )
+if ($download)
 {
-	$sql_download = ( $download != -1 ) ? " AND p.post_id = " . intval($download) . " " : '';
+	$sql_download = ($download != -1) ? " AND p.post_id = " . intval($download) . " " : '';
 
 	$orig_word = array();
 	$replacement_word = array();
@@ -123,14 +123,14 @@ if ( $download )
 	// End Autolinks For phpBB Mod
 
 
-	$sql = "SELECT u.*, p.*,  pt.post_text, pt.post_subject, pt.bbcode_uid
+	$sql = "SELECT u.*, p.*,  pt.post_text, pt.post_subject
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
 		WHERE p.topic_id = $topic_id
 			$sql_download
 			AND pt.post_id = p.post_id
 			AND u.user_id = p.poster_id
 			ORDER BY p.post_time ASC, p.post_id ASC";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, "Could not create download stream for post.", '', __LINE__, __FILE__, $sql);
 	}
@@ -139,21 +139,19 @@ if ( $download )
 
 	$is_auth_read = array();
 
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$is_auth_read = auth(AUTH_ALL, $row['forum_id'], $userdata);
 
 		$poster_id = $row['user_id'];
-		$poster = ( $poster_id == ANONYMOUS ) ? $lang['Guest'] : $row['username'];
+		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 
 		$post_date = create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
 
-		$post_subject = ( $row['post_subject'] != '' ) ? $row['post_subject'] : '';
+		$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
 
-		$bbcode_uid = $row['bbcode_uid'];
 		$message = $row['post_text'];
 		$message = strip_tags($message);
-		$message = preg_replace("/\[.*?:$bbcode_uid:?.*?\]/si", '', $message);
 		$message = preg_replace('/\[url\]|\[\/url\]/si', '', $message);
 		$message = preg_replace('/\:[0-9a-z\:]+\]/si', ']', $message);
 
@@ -174,7 +172,7 @@ if ( $download )
 		$download_file .= $break . $line . $break . $poster . $break . $post_date . $break . $break . $post_subject . $break . $line . $break . $message . $break;
 	}
 
-	$disp_folder = ( $download == -1 ) ? 'Topic_'.$topic_id : 'Post_'.$download;
+	$disp_folder = ($download == -1) ? 'Topic_'.$topic_id : 'Post_'.$download;
 
 	if (!$is_auth_read['auth_read'])
 	{
@@ -194,13 +192,13 @@ if ( $download )
 $is_auth = array();
 $is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_row);
 
-if ( !$is_auth['auth_read'] )
+if (!$is_auth['auth_read'])
 {
 	message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
 }
 
 // Define censored word matches
-if ( empty($orig_word) && empty($replacement_word) )
+if (empty($orig_word) && empty($replacement_word))
 {
 	$orig_word = array();
 	$replacement_word = array();
@@ -254,14 +252,14 @@ $ranks_sql = query_ranks();
 // Mighty Gorgon - Multiple Ranks - END
 
 // Go ahead and pull all data for this topic
-$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_sig_bbcode_uid, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, p.*, pt.post_text, pt.post_text_compiled, pt.post_subject, pt.bbcode_uid, t.topic_poster, t.title_compl_infos
+$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, p.*, pt.post_text, pt.post_text_compiled, pt.post_subject, t.topic_poster, t.title_compl_infos
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt, " . TOPICS_TABLE . " t
 	WHERE p.post_id = $post_id
 	AND p.poster_id = u.user_id
 	AND p.post_id = pt.post_id
 	LIMIT 1";
 
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
 }
@@ -269,7 +267,7 @@ if ( !($result = $db->sql_query($sql)) )
 //init_display_review_attachments($is_auth);
 
 // Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
-if ( $row = $db->sql_fetchrow($result) )
+if ($row = $db->sql_fetchrow($result))
 {
 	$mini_post_img = $images['icon_minipost'];
 	$mini_post_alt = $lang['Post'];
@@ -278,15 +276,15 @@ if ( $row = $db->sql_fetchrow($result) )
 	do
 	{
 		$poster_id = $row['user_id'];
-		$poster = ( $poster_id == ANONYMOUS ) ? $lang['Guest'] : colorize_username($row['user_id']);
+		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($row['user_id']);
 
 		$post_date = create_date2($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
 
-		$poster_posts = ( $row['user_id'] != ANONYMOUS ) ? $lang['Posts'] . ': ' . $row['user_posts'] : '';
+		$poster_posts = ($row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $row['user_posts'] : '';
 
-		$poster_from = ( $row['user_from'] && $row['user_id'] != ANONYMOUS ) ? $lang['Location'] . ': ' . $row['user_from'] : '';
+		$poster_from = ($row['user_from'] && $row['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $row['user_from'] : '';
 
-		$poster_joined = ( $row['user_id'] != ANONYMOUS ) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']) : '';
+		$poster_joined = ($row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']) : '';
 
 		$poster_avatar = user_get_avatar($row['user_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
 
@@ -316,7 +314,7 @@ if ( $row = $db->sql_fetchrow($result) )
 		// Mighty Gorgon - Multiple Ranks - END
 
 		// Handle anon users posting with usernames
-		if ( $poster_id == ANONYMOUS && $row['post_username'] != '' )
+		if ($poster_id == ANONYMOUS && $row['post_username'] != '')
 		{
 			$poster = $row['post_username'];
 			$user_rank_01 = $lang['Guest'] . '<br />';
@@ -324,7 +322,7 @@ if ( $row = $db->sql_fetchrow($result) )
 
 		$temp_url = '';
 
-		if ( $poster_id != ANONYMOUS )
+		if ($poster_id != ANONYMOUS)
 		{
 			$temp_url = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $poster_id);
 			$profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
@@ -334,9 +332,9 @@ if ( $row = $db->sql_fetchrow($result) )
 			$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 			$pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
 
-			if ( !empty($row['user_viewemail']) || $is_auth['auth_mod'] )
+			if (!empty($row['user_viewemail']) || $is_auth['auth_mod'])
 			{
-				$email_uri = ( $board_config['board_email_form'] ) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $poster_id) : 'mailto:' . $row['user_email'];
+				$email_uri = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $poster_id) : 'mailto:' . $row['user_email'];
 
 				$email_img = '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
 				$email = '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
@@ -347,8 +345,8 @@ if ( $row = $db->sql_fetchrow($result) )
 				$email = '';
 			}
 
-			$www_img = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
-			$www = ( $row['user_website'] ) ? '<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>' : '';
+			$www_img = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
+			$www = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>' : '';
 
 			$icq_status_img = (!empty($row['user_icq'])) ? '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
 			$icq_img = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
@@ -366,13 +364,13 @@ if ( $row = $db->sql_fetchrow($result) )
 			$skype_img = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
 			$skype = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], false) : '';
 
-			if ( $row['user_session_time'] >= (time() - $board_config['online_time']) )
+			if ($row['user_session_time'] >= (time() - $board_config['online_time']))
 			{
-				if ( $row['user_allow_viewonline'] )
+				if ($row['user_allow_viewonline'])
 				{
 					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
 				}
-				else if ( $is_auth['auth_mod'] || $userdata['user_id'] == $poster_id )
+				else if ($is_auth['auth_mod'] || $userdata['user_id'] == $poster_id)
 				{
 					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
 				}
@@ -416,21 +414,19 @@ if ( $row = $db->sql_fetchrow($result) )
 		$quote_img = '<a href="' . $temp_url . '" target="_parent"><img src="' . $images['icon_quote'] . '" alt="' . $lang['Reply_with_quote'] . '" title="' . $lang['Reply_with_quote'] . '" /></a>';
 		$quote = '<a href="' . $temp_url . '" target="_parent">' . $lang['Reply_with_quote'] . '</a>';
 
-		$post_subject = ( $row['post_subject'] != '' ) ? $row['post_subject'] : '';
+		$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
 
 		$message = $row['post_text'];
 		$message_compiled = empty($row['post_text_compiled']) ? false : $row['post_text_compiled'];
-		$bbcode_uid = $row['bbcode_uid'];
 
-		$user_sig = ( $row['enable_sig'] && $row['user_sig'] != '' && $board_config['allow_sig'] ) ? $row['user_sig'] : '';
-		$user_sig_bbcode_uid = $row['user_sig_bbcode_uid'];
+		$user_sig = ($row['enable_sig'] && $row['user_sig'] != '' && $board_config['allow_sig']) ? $row['user_sig'] : '';
 
 		// Note! The order used for parsing the message _is_ important, moving things around could break any output
 
 		// Replace naughty words
-		if ( count($orig_word) )
+		if (count($orig_word))
 		{
-			if ( $user_sig != '' )
+			if ($user_sig != '')
 			{
 				$user_sig = preg_replace($orig_word, $replacement_word, $user_sig);
 			}
@@ -446,8 +442,8 @@ if ( $row = $db->sql_fetchrow($result) )
 
 		if($user_sig && empty($sig_cache[$row['user_id']]))
 		{
-			$bbcode->is_sig = ( $board_config['allow_all_bbcode'] == 0 ) ? true : false;
-			$user_sig = $bbcode->parse($user_sig, $user_sig_bbcode_uid);
+			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
 			$sig_cache[$row['user_id']] = $user_sig;
 		}
@@ -458,7 +454,7 @@ if ( $row = $db->sql_fetchrow($result) )
 		if($message_compiled === false)
 		{
 			$GLOBALS['code_post_id'] = $row['post_id'];
-			$message = $bbcode->parse($message, $bbcode_uid);
+			$message = $bbcode->parse($message);
 			$GLOBALS['code_post_id'] = 0;
 			// update database
 			$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET post_text_compiled='" . addslashes($message) . "' WHERE post_id='" . $row[$i]['post_id'] . "'";
@@ -470,13 +466,13 @@ if ( $row = $db->sql_fetchrow($result) )
 		}
 
 		// Replace newlines (we use this rather than nl2br because till recently it wasn't XHTML compliant)
-		if ( $user_sig != '' )
+		if ($user_sig != '')
 		{
 			$user_sig = '<br />' . $board_config['sig_line'] . '<br />' . $user_sig;
 		}
 
 		// Editing information
-		if ( $row['post_edit_count'] )
+		if ($row['post_edit_count'])
 		{
 			$l_edit_time_total = ($row['post_edit_count'] == 1) ? $lang['Edited_time_total'] : $lang['Edited_times_total'];
 			$l_edit_id = (intval($row['post_edit_id']) > 1) ? colorize_username($row['post_edit_id']) : $poster;
@@ -487,18 +483,18 @@ if ( $row = $db->sql_fetchrow($result) )
 			$l_edited_by = '&nbsp;';
 		}
 
-		if ( $row['enable_autolinks_acronyms'] == 1)
+		if ($row['enable_autolinks_acronyms'] == 1)
 		{
-			$message = acronym_pass( $message );
-			if( count($orig_autolink) )
+			$message = $bbcode->acronym_pass($message);
+			if(count($orig_autolink))
 			{
 				$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
 			}
 		}
 
 		// Again this will be handled by the templating code at some point
-		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
-		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
+		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('postrow', array(
 			'DOWNLOAD_POST' => append_sid(VIEWTOPIC_MG . '?download=' . $row['post_id'] . '&amp;' . POST_TOPIC_URL . '=' .$topic_id),

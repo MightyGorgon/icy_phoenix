@@ -67,28 +67,24 @@ function sudoku_starting_data($game_pack, $game_num, $db_table, $and_clause)
 // end starting data
 //
 
-//
 // begin grid build
-//
 function sudoku_grid_build()
 {
 	global $template, $images, $lang, $line, $pack, $num, $level, $mode, $co_ord, $input_box;
-	//
 	// build lines for template
-	//
 	$tile=array();
-	for ( $x=0; $x<9; $x++ )
+	for ($x = 0; $x < 9; $x++)
 	{
-		$line_key=$x+1;
-		for ( $i=0; $i<9; $i++ )
+		$line_key = $x + 1;
+		for ($i = 0; $i < 9; $i++)
 		{
-			$key=$i+1;
-			$tile_key=$line_key . '_' . $key;
-			$tile[$tile_key]=$line[$x][$i];
-			$tile_image='sudoku_' . $tile[$tile_key];
-			if ( !$mode )
+			$key = $i + 1;
+			$tile_key = $line_key . '_' . $key;
+			$tile[$tile_key] = $line[$x][$i];
+			$tile_image = 'sudoku_' . $tile[$tile_key];
+			if (!$mode)
 			{
-				if ( $tile[$tile_key] == 'x' || ( $tile[$tile_key] > 9 && $tile[$tile_key] < 20 ) )
+				if ($tile[$tile_key] == 'x' || ($tile[$tile_key] > 9 && $tile[$tile_key] < 20))
 				{
 					$tile_text=( $tile[$tile_key] == 'x' ) ? $lang['suduko_blank_tile'] : $lang['suduko_user_tile'];
 					$tile_url=( $tile[$tile_key] == 'x' ) ? append_sid('sudoku.' . PHP_EXT . '?mode=insert&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '#grid') : append_sid('sudoku.' . PHP_EXT . '?mode=edit&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '&amp;val=' . ($tile[$tile_key]-10) . '#grid');

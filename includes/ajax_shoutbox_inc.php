@@ -172,7 +172,6 @@ if($action)
 			//$message = stripslashes($row[$x]['shout_text']);
 			//$message = utf8_encode($row[$x]['shout_text']);
 			$message = $row[$x]['shout_text'];
-			$bbcode_uid = $row[$x]['shout_uid'];
 
 			// Word Censor.
 			$message = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $message) : $message;
@@ -187,7 +186,7 @@ if($action)
 			$bbcode->allow_bbcode = true;
 			$bbcode->allow_smilies = true;
 			*/
-			$message = $bbcode->parse($message, $bbcode_uid);
+			$message = $bbcode->parse($message);
 
 			//$message = preg_replace(array('<', '>'), array('mg_tag_open', 'mg_tag_close'), $message);
 
@@ -208,7 +207,6 @@ if($action)
 		$shouter = trim($_POST['nm']); //name from the form in index.html
 		$message = trim($_POST['co']); //comment from the form in index.html
 		$shout_time = time();
-		$bbcode_uid = make_bbcode_uid();
 
 		// Flood Control
 		$sql = "SELECT MAX(shout_time) AS last_shout
@@ -280,15 +278,13 @@ if($action)
 		}
 		*/
 
-		//$message = bbencode_first_pass($message, $bbcode_uid);
-
 		//$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 		// Forced HTML to false to avoid problems
 		$bbcode->allow_html = false;
 		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
 		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
-		//$message = addslashes($bbcode->parse($message, $bbcode_uid));
-		$message = $bbcode->parse($message, $bbcode_uid);
+		//$message = addslashes($bbcode->parse($message));
+		$message = $bbcode->parse($message);
 		$message = str_replace('http://', 'http:_/_/', $message);
 		$message = str_replace('www.', 'http:_/_/www.', $message);
 		$message = str_replace('http:_/_/http:_/_/', 'http:_/_/', $message);
@@ -297,7 +293,7 @@ if($action)
 		if ($message != '')
 		{
 			// Add new data
-			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_uid, shout_time) VALUES (" . $userdata['user_id'] . ", '" . $shouter . "', '" . $message . "', '" . $user_ip . "','" . $bbcode_uid . "', " . $shout_time . ")";
+			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time) VALUES (" . $userdata['user_id'] . ", '" . $shouter . "', '" . $message . "', '" . $user_ip . "', " . $shout_time . ")";
 
 			if(!($results = $db->sql_query($sql)))
 			{

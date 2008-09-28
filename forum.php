@@ -47,7 +47,8 @@ if($userdata['upi2db_access'])
 	{
 		$mark_always_read_text = always_read_forum($mark_forum_id, $mark_always_read);
 
-		$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(FORUM_MG) . '">'));
+		$redirect_url = append_sid(FORUM_MG);
+		meta_refresh(3, $redirect_url);
 
 		$message = $mark_always_read_text . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a> ');
 		message_die(GENERAL_MESSAGE, $message);
@@ -118,7 +119,8 @@ if($mark_read == 'forums')
 			//<!-- END Unread Post Information to Database Mod -->
 		}
 
-		$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url=' .append_sid(FORUM_MG) . '">'));
+		$redirect_url = append_sid(FORUM_MG);
+		meta_refresh(3, $redirect_url);
 	}
 	else
 	{
@@ -154,7 +156,8 @@ if($mark_read == 'forums')
 			}
 		}
 
-		$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="3;url=' .append_sid(FORUM_MG . '?' . POST_CAT_URL . '=' . $viewcat) . '">'));
+		$redirect_url = append_sid(FORUM_MG . '?' . POST_CAT_URL . '=' . $viewcat);
+		meta_refresh(3, $redirect_url);
 	}
 
 	$message = $lang['Forums_marked_read'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a> ');

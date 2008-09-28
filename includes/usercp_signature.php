@@ -91,12 +91,11 @@ if ($submit)
 
 		else
 		{
-			$bbcode_uid = ( $bbcode_on ) ? make_bbcode_uid() : '';
-			$signature = prepare_message($signature, $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+			$signature = prepare_message($signature, $html_on, $bbcode_on, $smilies_on);
 			$user_id =  $userdata['user_id'];
 
 			$sql = "UPDATE " . USERS_TABLE . "
-			SET user_sig = '" . str_replace("\'", "''", $signature) . "', user_sig_bbcode_uid = '$bbcode_uid'
+			SET user_sig = '" . str_replace("\'", "''", $signature) . "'
 			WHERE user_id = $user_id";
 
 			if ( !($result = $db->sql_query($sql)) )
@@ -126,7 +125,7 @@ elseif ($preview)
 	{
 		$preview_sig = $signature;
 
-		if ( strlen( $preview_sig ) > $board_config['max_sig_chars'] )
+		if (strlen($preview_sig) > $board_config['max_sig_chars'])
 		{
 			$preview_sig = $lang['Signature_too_long'];
 		}
@@ -134,13 +133,11 @@ elseif ($preview)
 	else
 	{
 		$preview_sig = htmlspecialchars(stripslashes($preview_sig));
-		$bbcode_uid = ( $bbcode_on ) ? make_bbcode_uid() : '';
-		$preview_sig = stripslashes(prepare_message(addslashes(unprepare_message($preview_sig)), $html_on, $bbcode_on, $smilies_on, $bbcode_uid));
-		$preview_sig = str_replace('&quot;', '"', $preview_sig);
+		$preview_sig = stripslashes(prepare_message(addslashes(unprepare_message($preview_sig)), $html_on, $bbcode_on, $smilies_on));
 		if( $preview_sig != '' )
 		{
 			$bbcode->is_sig = ( $board_config['allow_all_bbcode'] == 0 ) ? true : false;
-			$preview_sig = $bbcode->parse($preview_sig, $bbcode_uid);
+			$preview_sig = $bbcode->parse($preview_sig);
 			$bbcode->is_sig = false;
 			$preview_sig = '<br />' . $board_config['sig_line'] . '<br />' . $preview_sig;
 			//$preview_sig = nl2br($preview_sig);
@@ -150,7 +147,7 @@ elseif ($preview)
 				$replacement_word = array();
 				obtain_word_list($orig_word, $replacement_word);
 			}
-			if ( count($orig_word) )
+			if (count($orig_word))
 			{
 				$preview_sig = preg_replace($orig_word, $replacement_word, $preview_sig);
 			}
@@ -176,22 +173,19 @@ elseif ($mode)
 
 	$template->assign_block_vars('switch_current_sig', array());
 
-	$signature_bbcode_uid = $userdata['user_sig_bbcode_uid'];
-	$signature = ( $signature_bbcode_uid != '' ) ? preg_replace("/:(([a-z0-9]+:)?)$signature_bbcode_uid\]/si", ']', $userdata['user_sig']) : $userdata['user_sig'];
-	$bbcode_uid = $userdata['user_sig_bbcode_uid'];
-	$user_sig = prepare_message($userdata['user_sig'], $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+	$signature = $userdata['user_sig'];
+	$user_sig = prepare_message($userdata['user_sig'], $html_on, $bbcode_on, $smilies_on);
 
-	if( $user_sig != '' )
+	if($user_sig != '')
 	{
-		$bbcode->is_sig = ( $board_config['allow_all_bbcode'] == 0 ) ? true : false;
-		$user_sig = $bbcode->parse($user_sig, $bbcode_uid);
+		$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
-		if( !empty($orig_word) )
+		if(!empty($orig_word))
 		{
-			$user_sig = ( !empty($user_sig) ) ? preg_replace($orig_word, $replacement_word, $user_sig) : '';
+			$user_sig = (!empty($user_sig)) ? preg_replace($orig_word, $replacement_word, $user_sig) : '';
 		}
 		$user_sig = '<br />' . $board_config['sig_line'] . '<br />' . $user_sig;
-		$user_sig = str_replace('&amp;', '&', $user_sig);
 		//$user_sig = nl2br($user_sig);
 	}
 	else

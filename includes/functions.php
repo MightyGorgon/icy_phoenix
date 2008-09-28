@@ -223,283 +223,6 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 	return $var;
 }
 
-/**
-* Our own generator of random values
-* This uses a constantly changing value as the base for generating the values
-* The board wide setting is updated once per page if this code is called
-* With thanks to Anthrax101 for the inspiration on this one
-* Added in phpBB 2.0.20
-*/
-function dss_rand()
-{
-	global $db, $board_config, $dss_seeded;
-
-	$val = $board_config['rand_seed'] . microtime();
-	$val = md5($val);
-	$board_config['rand_seed'] = md5($board_config['rand_seed'] . $val . 'a');
-
-	if($dss_seeded !== true)
-	{
-		$sql = "UPDATE " . CONFIG_TABLE . " SET
-			config_value = '" . $board_config['rand_seed'] . "'
-			WHERE config_name = 'rand_seed'";
-
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Unable to reseed PRNG", "", __LINE__, __FILE__, $sql);
-		}
-
-		$dss_seeded = true;
-	}
-
-	return substr($val, 4, 16);
-}
-
-// added at phpBB 2.0.11 to properly format the username
-function phpbb_clean_username($username)
-{
-	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 25);
-	$username = phpbb_rtrim($username, "\\");
-	$username = str_replace("'", "\'", $username);
-
-	return $username;
-}
-
-/**
-* This function is a wrapper for ltrim, as charlist is only supported in php >= 4.1.0
-* Added in phpBB 2.0.18
-*/
-function phpbb_ltrim($str, $charlist = false)
-{
-	if ($charlist === false)
-	{
-		return ltrim($str);
-	}
-
-	$php_version = explode('.', PHP_VERSION);
-
-	// php version < 4.1.0
-	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
-	{
-		while ($str{0} == $charlist)
-		{
-			$str = substr($str, 1);
-		}
-	}
-	else
-	{
-		$str = ltrim($str, $charlist);
-	}
-
-	return $str;
-}
-
-// added at phpBB 2.0.12 to fix a bug in PHP 4.3.10 (only supporting charlist in php >= 4.1.0)
-function phpbb_rtrim($str, $charlist = false)
-{
-	if ($charlist === false)
-	{
-		return rtrim($str);
-	}
-
-	$php_version = explode('.', PHP_VERSION);
-
-	// php version < 4.1.0
-	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
-	{
-		while ($str{strlen($str)-1} == $charlist)
-		{
-			$str = substr($str, 0, strlen($str)-1);
-		}
-	}
-	else
-	{
-		$str = rtrim($str, $charlist);
-	}
-
-	return $str;
-}
-
-// Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
-function get_userdata($user, $force_str = false)
-{
-	global $db;
-
-	if (!is_numeric($user) || $force_str)
-	{
-		$user = phpbb_clean_username($user);
-	}
-	else
-	{
-		$user = intval($user);
-	}
-
-	$sql = "SELECT *
-		FROM " . USERS_TABLE . "
-		WHERE ";
-	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" .  str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
-	}
-	// Start Advanced IP Tools Pack MOD
-	if ($db->sql_affectedrows() == 0)
-	{
-		message_die(GENERAL_ERROR, 'User does not exist.');
-	}
-	// End Advanced IP Tools Pack MOD
-
-	if ($row = $db->sql_fetchrow($result))
-	{
-		if (isset($row['user_level']) && ($row['user_level'] == JUNIOR_ADMIN))
-		{
-			$row['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
-		}
-		return $row;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-function get_userdata_notifications($user, $force_str = false)
-{
-	global $db;
-
-	if (!is_numeric($user) || $force_str)
-	{
-		$user = phpbb_clean_username($user);
-	}
-	else
-	{
-		$user = intval($user);
-	}
-
-	$sql = "SELECT *
-			FROM " . USERS_TABLE . "
-			WHERE ";
-	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" . str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
-	}
-	return ($row = $db->sql_fetchrow($result)) ? $row : false;
-}
-
-function make_jumpbox($action, $match_forum_id = 0)
-{
-	global $template, $userdata, $lang, $db, $nav_links, $SID;
-
-	return jumpbox($action, $match_forum_id);
-
-//	$is_auth = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
-
-	$sql = "SELECT c.cat_id, c.cat_title, c.cat_order
-		FROM " . CATEGORIES_TABLE . " c, " . FORUMS_TABLE . " f
-		".(($userdata['user_level'] == ADMIN)? "" : " AND c.cat_id<>'".HIDDEN_CAT."'")."
-
-		WHERE f.cat_id = c.cat_id
-		GROUP BY c.cat_id, c.cat_title, c.cat_order
-		ORDER BY c.cat_order";
-	if (!($result = $db->sql_query($sql, false, 'jumpbox_')))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain category list.", "", __LINE__, __FILE__, $sql);
-	}
-
-	$category_rows = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$category_rows[] = $row;
-	}
-
-	if ($total_categories = count($category_rows))
-	{
-		$sql = "SELECT *
-			FROM " . FORUMS_TABLE . "
-			ORDER BY cat_id, forum_order";
-		if (!($result = $db->sql_query($sql, false, 'forums_')))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
-		}
-
-		$boxstring = '<select name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"><option value="-1">' . $lang['Select_forum'] . '</option>';
-
-		$forum_rows = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$forum_rows[] = $row;
-		}
-
-		if ($total_forums = count($forum_rows))
-		{
-			for($i = 0; $i < $total_categories; $i++)
-			{
-				$boxstring_forums = '';
-				for($j = 0; $j < $total_forums; $j++)
-				{
-					if ($forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $forum_rows[$j]['auth_view'] <= AUTH_REG)
-					{
-
-//					if ($forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $is_auth[$forum_rows[$j]['forum_id']]['auth_view'])
-//					{
-						$selected = ($forum_rows[$j]['forum_id'] == $match_forum_id) ? 'selected="selected"' : '';
-						$boxstring_forums .=  '<option value="' . $forum_rows[$j]['forum_id'] . '"' . $selected . '>' . $forum_rows[$j]['forum_name'] . '</option>';
-						//
-						// Add an array to $nav_links for the Mozilla navigation bar.
-						// 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
-						//
-						$nav_links['chapter forum'][$forum_rows[$j]['forum_id']] = array (
-							//SEO TOLKIT BEGIN
-							//'url' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_rows[$j]['forum_id']),
-							'url' => append_sid(make_url_friendly($forum_rows[$j]['forum_name']) . '-vf' . $forum_rows[$j]['forum_id'] . '.html') ,
-							//SEO TOLKIT END
-							'title' => $forum_rows[$j]['forum_name']
-						);
-					}
-				}
-
-				if ($boxstring_forums != '')
-				{
-					$boxstring .= '<option value="-1">&nbsp;</option>';
-					$boxstring .= '<option value="-1">' . $category_rows[$i]['cat_title'] . '</option>';
-					$boxstring .= '<option value="-1">----------------</option>';
-					$boxstring .= $boxstring_forums;
-				}
-			}
-		}
-
-		$boxstring .= '</select>';
-	}
-	else
-	{
-		$boxstring .= '<select name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"></select>';
-	}
-
-	// Let the jumpbox work again in sites having additional session id checks.
-	/*
-	if (!empty($SID))
-	{
-		$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
-	}
-	*/
-	$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
-
-	$template->set_filenames(array('jumpbox' => 'jumpbox.tpl'));
-	$template->assign_vars(array(
-		'L_GO' => $lang['Go'],
-		'L_JUMP_TO' => $lang['Jump_to'],
-		'L_SELECT_FORUM' => $lang['Select_forum'],
-
-		'S_JUMPBOX_SELECT' => $boxstring,
-		'S_JUMPBOX_ACTION' => append_sid($action)
-		)
-	);
-	$template->assign_var_from_handle('JUMPBOX', 'jumpbox');
-
-	return;
-}
-
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
@@ -595,12 +318,6 @@ function init_userprefs($userdata)
 	// CrackerTracker v5.x
 	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_cback_ctracker.' . PHP_EXT);
 	// CrackerTracker v5.x
-	// MG Logs - BEGIN
-	if ($board_config['mg_log_actions'] == true)
-	{
-		include(IP_ROOT_PATH . 'includes/log_http_cmd.' . PHP_EXT);
-	}
-	// MG Logs - END
 
 	// MG Cash MOD For IP - BEGIN
 	if (defined('CASH_MOD') && defined('IN_CASHMOD'))
@@ -627,7 +344,17 @@ function init_userprefs($userdata)
 	{
 		get_user_tree($userdata);
 	}
-	include(IP_ROOT_PATH . './includes/lang_extend_mac.' . PHP_EXT);
+	// include all lang_extend_*.php
+	include(IP_ROOT_PATH . 'includes/lang_extend_mac.' . PHP_EXT);
+	// include this as last file... so to be able to overwrite some vars from other common langs files
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_user_created.' . PHP_EXT);
+
+	// MG Logs - BEGIN
+	if ($board_config['mg_log_actions'] || $board_config['db_log_actions'])
+	{
+		include(IP_ROOT_PATH . 'includes/log_http_cmd.' . PHP_EXT);
+	}
+	// MG Logs - END
 
 	// Set up style
 	$old_default_style = $board_config['default_style'];
@@ -773,15 +500,399 @@ function init_userprefs($userdata)
 			{
 				$start = intval($board_config['max_link_bookmarks'] / $board_config['topics_per_page']) * $board_config['topics_per_page'];
 				$nav_links['bookmark'][$i] = array (
-					'url' => append_sid(SEARCH_MG . '?search_id=bookmarks&start=' . $start),
+					'url' => append_sid(SEARCH_MG . '?search_id=bookmarks&amp;start=' . $start),
 					'title' => $lang['More_bookmarks']
 				);
 			}
 		}
 	}
+
 	return;
 }
 
+// Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
+function get_userdata($user, $force_str = false)
+{
+	global $db;
+
+	if (!is_numeric($user) || $force_str)
+	{
+		$user = phpbb_clean_username($user);
+	}
+	else
+	{
+		$user = intval($user);
+	}
+
+	$sql = "SELECT *
+		FROM " . USERS_TABLE . "
+		WHERE ";
+	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" .  str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
+	}
+	// Start Advanced IP Tools Pack MOD
+	if ($db->sql_affectedrows() == 0)
+	{
+		message_die(GENERAL_ERROR, 'User does not exist.');
+	}
+	// End Advanced IP Tools Pack MOD
+
+	if ($row = $db->sql_fetchrow($result))
+	{
+		if (isset($row['user_level']) && ($row['user_level'] == JUNIOR_ADMIN))
+		{
+			$row['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
+		}
+		return $row;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+function get_userdata_notifications($user, $force_str = false)
+{
+	global $db;
+
+	if (!is_numeric($user) || $force_str)
+	{
+		$user = phpbb_clean_username($user);
+	}
+	else
+	{
+		$user = intval($user);
+	}
+
+	$sql = "SELECT *
+			FROM " . USERS_TABLE . "
+			WHERE ";
+	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" . str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
+	}
+	return ($row = $db->sql_fetchrow($result)) ? $row : false;
+}
+
+/**
+* Our own generator of random values
+* This uses a constantly changing value as the base for generating the values
+* The board wide setting is updated once per page if this code is called
+* With thanks to Anthrax101 for the inspiration on this one
+* Added in phpBB 2.0.20
+*/
+function dss_rand()
+{
+	global $db, $board_config, $dss_seeded;
+
+	$val = $board_config['rand_seed'] . microtime();
+	$val = md5($val);
+	$board_config['rand_seed'] = md5($board_config['rand_seed'] . $val . 'a');
+
+	if($dss_seeded !== true)
+	{
+		$sql = "UPDATE " . CONFIG_TABLE . " SET
+			config_value = '" . $board_config['rand_seed'] . "'
+			WHERE config_name = 'rand_seed'";
+
+		if(!$db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, "Unable to reseed PRNG", "", __LINE__, __FILE__, $sql);
+		}
+
+		$dss_seeded = true;
+	}
+
+	return substr($val, 4, 16);
+}
+
+// added at phpBB 2.0.11 to properly format the username
+function phpbb_clean_username($username)
+{
+	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 25);
+	$username = phpbb_rtrim($username, "\\");
+	$username = str_replace("'", "\'", $username);
+
+	return $username;
+}
+
+/**
+* This function is a wrapper for ltrim, as charlist is only supported in php >= 4.1.0
+* Added in phpBB 2.0.18
+*/
+function phpbb_ltrim($str, $charlist = false)
+{
+	if ($charlist === false)
+	{
+		return ltrim($str);
+	}
+
+	$php_version = explode('.', PHP_VERSION);
+
+	// php version < 4.1.0
+	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
+	{
+		while ($str{0} == $charlist)
+		{
+			$str = substr($str, 1);
+		}
+	}
+	else
+	{
+		$str = ltrim($str, $charlist);
+	}
+
+	return $str;
+}
+
+// added at phpBB 2.0.12 to fix a bug in PHP 4.3.10 (only supporting charlist in php >= 4.1.0)
+function phpbb_rtrim($str, $charlist = false)
+{
+	if ($charlist === false)
+	{
+		return rtrim($str);
+	}
+
+	$php_version = explode('.', PHP_VERSION);
+
+	// php version < 4.1.0
+	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
+	{
+		while ($str{strlen($str)-1} == $charlist)
+		{
+			$str = substr($str, 0, strlen($str)-1);
+		}
+	}
+	else
+	{
+		$str = rtrim($str, $charlist);
+	}
+
+	return $str;
+}
+
+function make_jumpbox($action, $match_forum_id = 0)
+{
+	global $template, $userdata, $lang, $db, $nav_links, $SID;
+
+	return jumpbox($action, $match_forum_id);
+
+//	$is_auth = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
+
+	$sql = "SELECT c.cat_id, c.cat_title, c.cat_order
+		FROM " . CATEGORIES_TABLE . " c, " . FORUMS_TABLE . " f
+		".(($userdata['user_level'] == ADMIN)? "" : " AND c.cat_id<>'".HIDDEN_CAT."'")."
+
+		WHERE f.cat_id = c.cat_id
+		GROUP BY c.cat_id, c.cat_title, c.cat_order
+		ORDER BY c.cat_order";
+	if (!($result = $db->sql_query($sql, false, 'jumpbox_')))
+	{
+		message_die(GENERAL_ERROR, "Couldn't obtain category list.", "", __LINE__, __FILE__, $sql);
+	}
+
+	$category_rows = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$category_rows[] = $row;
+	}
+
+	if ($total_categories = count($category_rows))
+	{
+		$sql = "SELECT *
+			FROM " . FORUMS_TABLE . "
+			ORDER BY cat_id, forum_order";
+		if (!($result = $db->sql_query($sql, false, 'forums_')))
+		{
+			message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+		}
+
+		$boxstring = '<select name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"><option value="-1">' . $lang['Select_forum'] . '</option>';
+
+		$forum_rows = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$forum_rows[] = $row;
+		}
+
+		if ($total_forums = count($forum_rows))
+		{
+			for($i = 0; $i < $total_categories; $i++)
+			{
+				$boxstring_forums = '';
+				for($j = 0; $j < $total_forums; $j++)
+				{
+					//if ($forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $is_auth[$forum_rows[$j]['forum_id']]['auth_view'])
+					if ($forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $forum_rows[$j]['auth_view'] <= AUTH_REG)
+					{
+						$selected = ($forum_rows[$j]['forum_id'] == $match_forum_id) ? 'selected="selected"' : '';
+						$boxstring_forums .=  '<option value="' . $forum_rows[$j]['forum_id'] . '"' . $selected . '>' . $forum_rows[$j]['forum_name'] . '</option>';
+						//
+						// Add an array to $nav_links for the Mozilla navigation bar.
+						// 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
+						//
+						$nav_links['chapter forum'][$forum_rows[$j]['forum_id']] = array (
+							//SEO TOLKIT BEGIN
+							//'url' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_rows[$j]['forum_id']),
+							'url' => append_sid(make_url_friendly($forum_rows[$j]['forum_name']) . '-vf' . $forum_rows[$j]['forum_id'] . '.html') ,
+							//SEO TOLKIT END
+							'title' => $forum_rows[$j]['forum_name']
+						);
+					}
+				}
+
+				if ($boxstring_forums != '')
+				{
+					$boxstring .= '<option value="-1">&nbsp;</option>';
+					$boxstring .= '<option value="-1">' . $category_rows[$i]['cat_title'] . '</option>';
+					$boxstring .= '<option value="-1">----------------</option>';
+					$boxstring .= $boxstring_forums;
+				}
+			}
+		}
+
+		$boxstring .= '</select>';
+	}
+	else
+	{
+		$boxstring .= '<select name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"></select>';
+	}
+
+	// Let the jumpbox work again in sites having additional session id checks.
+	/*
+	if (!empty($SID))
+	{
+		$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	}
+	*/
+	$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+
+	$template->set_filenames(array('jumpbox' => 'jumpbox.tpl'));
+	$template->assign_vars(array(
+		'L_GO' => $lang['Go'],
+		'L_JUMP_TO' => $lang['Jump_to'],
+		'L_SELECT_FORUM' => $lang['Select_forum'],
+
+		'S_JUMPBOX_SELECT' => $boxstring,
+		'S_JUMPBOX_ACTION' => append_sid($action)
+		)
+	);
+	$template->assign_var_from_handle('JUMPBOX', 'jumpbox');
+
+	return;
+}
+
+function create_server_url()
+{
+	// usage: $server_url = create_server_url();
+	global $board_config;
+
+	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
+	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
+	$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
+	$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
+	$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
+
+	return $server_url;
+}
+
+/**
+* Redirects the user to another page then exits the script nicely
+* This function is intended for urls within the board. It's not meant to redirect to cross-domains.
+*
+* @param string $url The url to redirect to
+* @param bool $return If true, do not redirect but return the sanitized URL. Default is no return.
+*/
+function redirect($url, $return = false)
+{
+	global $db, $lang, $board_config;
+
+	if (!empty($db) && !$return)
+	{
+		$db->sql_close();
+	}
+
+	// Make sure no &amp;'s are in, this will break the redirect
+	$url = str_replace('&amp;', '&', $url);
+
+	// Make sure no linebreaks are there... to prevent http response splitting for PHP < 4.4.2
+	if ((strpos(urldecode($url), "\n") !== false) || (strpos(urldecode($url), "\r") !== false) || (strpos($url, ';') !== false))
+	{
+		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url');
+	}
+
+	$server_url = create_server_url();
+	$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));
+	// Strip ./ and / from the beginning
+	$url = str_replace('./', '', $url);
+	$url = ($url && substr($url, 0, 1) == '/') ? substr($url, 1) : $url;
+
+	// Create full url path
+	$url = $server_url . $url;
+
+	// Now, also check the protocol and for a valid url the last time...
+	$allowed_protocols = array('http', 'https', 'ftp', 'ftps');
+	$url_parts = parse_url($url);
+
+	if (($url_parts === false) || empty($url_parts['scheme']) || !in_array($url_parts['scheme'], $allowed_protocols))
+	{
+		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url');
+	}
+
+	if ($return)
+	{
+		return $url;
+	}
+
+	// Redirect via an HTML form for PITA webservers
+	if (@preg_match('#Microsoft|WebSTAR|Xitami#', getenv('SERVER_SOFTWARE')))
+	{
+		header('Refresh: 0; URL=' . $url);
+
+		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">';
+		echo '<head>';
+		echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
+		echo '<meta http-equiv="refresh" content="0; url=' . str_replace('&', '&amp;', $url) . '" />';
+		echo '<title>' . $lang['Redirect'] . '</title>';
+		echo '</head>';
+		echo '<body>';
+		echo '<div style="text-align: center;">' . sprintf($lang['Redirect_to'], '<a href="' . str_replace('&', '&amp;', $url) . '">', '</a>') . '</div>';
+		echo '</body>';
+		echo '</html>';
+
+		exit;
+	}
+
+	// Behave as per HTTP/1.1 spec for others
+	header('Location: ' . $url);
+	exit;
+}
+
+/**
+* Meta refresh assignment
+*/
+function meta_refresh($time, $url)
+{
+	global $template;
+
+	$url = redirect($url, true);
+	// For XHTML compatibility we change back & to &amp;
+	$url = str_replace('&', '&amp;', $url);
+
+	$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '" />'));
+
+	return $url;
+}
+
+/**
+* Setup the default style
+*/
 function setup_style($style, $old_default_style, $old_style = false)
 {
 	global $db, $board_config, $template, $images, $themes_style;
@@ -950,18 +1061,14 @@ function decode_ip($int_ip)
 	return hexdec($hexipbang[0]). '.' . hexdec($hexipbang[1]) . '.' . hexdec($hexipbang[2]) . '.' . hexdec($hexipbang[3]);
 }
 
-//
 // Create calendar timestamp from timezone
-//
 function cal_date($gmepoch, $tz)
 {
 	global $board_config;
 	return (strtotime(gmdate('M d Y H:i:s', $gmepoch + (3600 * $tz))));
 }
 
-//
 // Create date/time from format and timezone
-//
 function create_date($format, $gmepoch, $tz)
 {
 	global $board_config, $lang, $userdata;
@@ -976,19 +1083,26 @@ function create_date($format, $gmepoch, $tz)
 		}
 	}
 
-	if (!$userdata['session_logged_in'])
+	if (!empty($userdata) && !$userdata['session_logged_in'])
 	{
+		$time_mode = $board_config['default_time_mode'];
+		$dst_time_lag = $board_config['default_dst_time_lag'];
 		$userdata['user_time_mode'] = $board_config['default_time_mode'];
 		$userdata['user_dst_time_lag'] = $board_config['default_dst_time_lag'];
 	}
-	switch ($userdata['user_time_mode'])
+	else
+	{
+		$time_mode = $userdata['user_time_mode'];
+		$dst_time_lag = $userdata['user_dst_time_lag'];
+	}
+	switch ($time_mode)
 	{
 		case MANUAL_DST:
-			$dst_sec = $userdata['user_dst_time_lag'] * 60;
+			$dst_sec = $dst_time_lag * 60;
 			return (!empty($translate)) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
 			break;
 		case SERVER_SWITCH:
-			$dst_sec = date('I', $gmepoch) * $userdata['user_dst_time_lag'] * 60;
+			$dst_sec = date('I', $gmepoch) * $dst_time_lag * 60;
 			return (!empty($translate)) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
 			break;
 		default:
@@ -1359,7 +1473,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 		if ($sql_store != '')
 		{
-			$debug_text .= "<br /><br />$sql_store";
+			$debug_text .= '<br /><br />' . $sql_store;
 		}
 
 		if ($err_line != '' && $err_file != '')
@@ -1376,10 +1490,8 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		// End session management
 	}
 
-	//
-	// If the header hasn't been output then do it
-	//
-	if (!defined('HEADER_INC') && $msg_code != CRITICAL_ERROR)
+	// If the header hasn't been parsed yet... then do it!
+	if (!defined('HEADER_INC') && ($msg_code != CRITICAL_ERROR))
 	{
 		if (empty($lang))
 		{
@@ -1389,7 +1501,8 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			}
 			include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
 			include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
-			include(IP_ROOT_PATH . './includes/lang_extend_mac.' . PHP_EXT);
+			// include all lang_extend_*.php
+			include(IP_ROOT_PATH . 'includes/lang_extend_mac.' . PHP_EXT);
 		}
 
 		if (empty($template) || empty($theme))
@@ -1461,7 +1574,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	// prevents debug info being output for general messages should DEBUG be
 	// set TRUE by accident (preventing confusion for the end user!)
 	//
-	if (DEBUG && ($msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR))
+	if (DEBUG && (($msg_code == GENERAL_ERROR) || ($msg_code == CRITICAL_ERROR)))
 	{
 		if ($debug_text != '')
 		{
@@ -1471,9 +1584,24 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 	// MG Logs - BEGIN
 	//if (($board_config['mg_log_actions'] == true) && ($msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR))
-	if ($board_config['mg_log_actions'] == true)
+	if ($msg_code != GENERAL_MESSAGE)
 	{
-		mg_log('[MSG_CODE: ' . $msg_code . '] - [MSG_TITLE: ' . $msg_title . '] - [MSG_TEXT: ' . $msg_text . ']');
+		if (($board_config['mg_log_actions'] == true) || ($board_config['db_log_actions'] == '1') || ($board_config['db_log_actions'] == '2'))
+		{
+			$db_log = array(
+				'action' => 'MESSAGE',
+				//'desc' => $msg_code . ',' . $msg_title . ',' . substr($msg_text,0,20) . '...',
+				'desc' => $msg_code,
+				'target' => '',
+			);
+
+			$error_log = array(
+				'code' => $msg_code,
+				'title' => $msg_title,
+				'text' => $msg_text,
+			);
+			ip_log('[MSG_CODE: ' . $msg_code . '] - [MSG_TITLE: ' . $msg_title . '] - [MSG_TEXT: ' . $msg_text . ']', $db_log, $error_log);
+		}
 	}
 	// MG Logs - END
 
@@ -1497,6 +1625,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			$template->set_filenames(array('message_body' => 'message_body.tpl'));
 		}
 
+		//echo('<br />' . htmlspecialchars($template->vars['META']));
 		$template->assign_vars(array(
 			'MESSAGE_TITLE' => $msg_title,
 			'MESSAGE_TEXT' => $msg_text
@@ -1529,42 +1658,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 // dougk_ff7 <October 5, 2002>
 function phpbb_realpath($path)
 {
-
 	return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
-}
-
-function redirect($url)
-{
-	global $db, $board_config;
-
-	if (!empty($db))
-	{
-		$db->sql_close();
-	}
-
-	if (strstr(urldecode($url), "\n") || strstr(urldecode($url), "\r") || strstr(urldecode($url), ';url'))
-	{
-		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url.');
-	}
-
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
-	$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
-	$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
-	$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));
-
-	// Redirect via an HTML form for PITA webservers
-	if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
-	{
-		header('Refresh: 0; URL=' . $server_protocol . $server_name . $server_port . $script_name . $url);
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta http-equiv="refresh" content="0; url=' . $server_protocol . $server_name . $server_port . $script_name . $url . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta redirection please click <a href="' . $server_protocol . $server_name . $server_port . $script_name . $url . '">HERE</a> to be redirected</div></body></html>';
-		exit;
-	}
-
-	// Behave as per HTTP/1.1 spec for others
-	header('Location: ' . $server_protocol . $server_name . $server_port . $script_name . $url);
-	exit;
 }
 
 // Mighty Gorgon - Full Album Pack - BEGIN
@@ -2115,21 +2209,6 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false)
 	return $bot_name;
 }
 
-function create_server_url()
-{
-	// usage: $server_url = create_server_url();
-	global $board_config;
-
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = trim($board_config['server_name']);
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-	$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
-	$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
-
-	return $server_url;
-}
-
 // Ajaxed - BEGIN
 function AJAX_headers()
 {
@@ -2169,7 +2248,11 @@ function AJAX_message_die($data_ar)
 
 	$template->pparse('ajax_result');
 
-	$db->sql_close();
+	// Close our DB connection.
+	if (!empty($db))
+	{
+		$db->sql_close();
+	}
 	exit;
 }
 
@@ -2444,6 +2527,34 @@ function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false)
 	return $im_link;
 }
 
+function get_founder_id($clear_cache = false)
+{
+	global $db, $board_config;
+	if ($clear_cache)
+	{
+		$db->clear_cache('founder_id_');
+	}
+	$founder_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : '2';
+	if ($founder_id != '2')
+	{
+		$sql = "SELECT user_id
+			FROM " . USERS_TABLE . "
+			WHERE user_id = '" . $founder_id . "'
+			LIMIT 1";
+		if (!($result = $db->sql_query($sql, false, 'founder_id_')))
+		{
+			message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
+		}
+		$founder_id = '2';
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$founder_id = $row['user_id'];
+		}
+		$db->sql_freeresult($result);
+	}
+	return $founder_id;
+}
+
 function empty_cache_folders($cg = false)
 {
 
@@ -2536,30 +2647,6 @@ function empty_images_cache_folders()
 		}
 	}
 	return true;
-}
-
-function get_founder_id()
-{
-	global $db, $board_config;
-	$founder_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : '2';
-	if ($founder_id != '2')
-	{
-		$sql = "SELECT user_id
-			FROM " . USERS_TABLE . "
-			WHERE user_id = '" . $founder_id . "'
-			LIMIT 1";
-		if (!($result = $db->sql_query($sql, false, 'founder_id_')))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
-		}
-		$founder_id = '2';
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$founder_id = $row['user_id'];
-		}
-		$db->sql_freeresult($result);
-	}
-	return $founder_id;
 }
 
 // Activity - BEGIN

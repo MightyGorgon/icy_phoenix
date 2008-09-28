@@ -370,14 +370,14 @@ else
 	if ((!$forum_id || $forum_id == '-1') && $display_all_forums)
 	{
 		$sql = "SELECT a.post_id, t.topic_title, d.*
-			FROM " . $attach_table . " a, " . $attach_desc_table . " d, "  . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
+			FROM " . $attach_table . " a, " . $attach_desc_table . " d, " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
 			WHERE (a.post_id = p.post_id) AND (p.forum_id IN (" . implode(', ', $forum_ids) . ")) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
 			ORDER BY $order_by";
 	}
 	elseif (($is_auth_ary[$forum_id]['auth_read']) && ($is_download_auth_ary[$forum_id]['auth_download']))
 	{
 		$sql = "SELECT a.post_id, t.topic_title, d.*
-			FROM " . $attach_table . " a, " . $attach_desc_table . " d, "  . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
+			FROM " . $attach_table . " a, " . $attach_desc_table . " d, " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
 			WHERE (a.post_id = p.post_id) AND (p.forum_id = " . $forum_id . ") AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
 			ORDER BY $order_by";
 	}

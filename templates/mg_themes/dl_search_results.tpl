@@ -21,7 +21,7 @@
 </tr>
 <!-- BEGIN searchresults -->
 <tr>
-	<td class="{searchresults.ROW_CLASS}" align="center" valign="middle">{searchresults.STATUS}</td>
+	<td class="{searchresults.ROW_CLASS} row-center" valign="middle">{searchresults.STATUS}</td>
 	<td class="{searchresults.ROW_CLASS}"><span class="forumlink"><a href="{searchresults.U_CAT_LINK}" class="forumlink">{searchresults.CAT_NAME}</a></span></td>
 	<td class="{searchresults.ROW_CLASS}"><span class="topictitle">{searchresults.MINI_ICON}<a href="{searchresults.U_FILE_LINK}" class="topictitle">{searchresults.DESCRIPTION}</span></td>
 	<td class="{searchresults.ROW_CLASS}"><span class="name">{searchresults.FILE_NAME}</span></td>

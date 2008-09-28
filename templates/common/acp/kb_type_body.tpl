@@ -20,7 +20,7 @@
 <!-- BEGIN typerow -->
 <tr>
 	<td class="{typerow.ROW_CLASS}"><span class="gen">{typerow.TYPE}</span></td>
-	<td width="15%" nowrap="nowrap" class="{typerow.ROW_CLASS}" align="center"><span class="post-buttons">{typerow.U_EDIT} {typerow.U_DELETE}</span></td>
+	<td width="15%" nowrap="nowrap" class="{typerow.ROW_CLASS} row-center"><span class="post-buttons">{typerow.U_EDIT} {typerow.U_DELETE}</span></td>
 </tr>
 <!-- END typerow -->
 <tr><td colspan="2" class="cat">&nbsp;</td></tr>

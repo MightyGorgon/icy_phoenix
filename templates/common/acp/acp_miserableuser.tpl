@@ -37,7 +37,7 @@
 <!-- BEGIN output -->
 <tr>
 	<td class="{output.ROW_CLASS}">{output.L_USERNAME}</td>
-	<td class="{output.ROW_CLASS}" align="center"><b>[ <a href="{output.U_DELLINK}">{L_DELETE}</a> ]</b></td>
+	<td class="{output.ROW_CLASS} row-center"><b>[ <a href="{output.U_DELLINK}">{L_DELETE}</a> ]</b></td>
 </tr>
 <!-- END output -->
 <!-- BEGIN no_entry -->

@@ -45,8 +45,6 @@ if ($action == 'save' && $submit)
 	$disable_popup_notify = (isset($_POST['disable_popup_notify'])) ? intval($_POST['disable_popup_notify']) : 0;
 	$del_thumb = ( isset($_POST['del_thumb']) ) ? intval($_POST['del_thumb']) : 0;
 
-	$bbcode_uid = make_bbcode_uid();
-
 	$mod_desc = make_clickable($mod_desc);
 	$warning = make_clickable($warning);
 
@@ -54,9 +52,9 @@ if ($action == 'save' && $submit)
 	$bbcode_on = $board_config['allow_bbcode'];
 	$smile_on = $board_config['allow_smilies'];
 
-	$long_desc = prepare_message(trim($long_desc), $html_on, $bbcode_on, $smile_on, $bbcode_uid);
-	$mod_desc = prepare_message(trim($mod_desc), $html_on, $bbcode_on, $smile_on, $bbcode_uid);
-	$warning = prepare_message(trim($warning), $html_on, $bbcode_on, $smile_on, $bbcode_uid);
+	$long_desc = prepare_message(trim($long_desc), $html_on, $bbcode_on, $smile_on);
+	$mod_desc = prepare_message(trim($mod_desc), $html_on, $bbcode_on, $smile_on);
+	$warning = prepare_message(trim($warning), $html_on, $bbcode_on, $smile_on);
 
 	$hacklist = (isset($_POST['hacklist'])) ? intval($_POST['hacklist']) : 0;
 	$hack_author = (isset($_POST['hack_author'])) ? trim($_POST['hack_author']) : "";
@@ -212,7 +210,6 @@ if ($action == 'save' && $submit)
 			free = '" . str_replace("\'", "''", $file_free) . "',
 			extern = '" . str_replace("\'", "''", $file_extern) . "',
 			cat = '" . str_replace("\'", "''", $new_cat) . "',
-			bbcode_uid = '" . str_replace("\'", "''", $bbcode_uid) . "',
 			approve = '" . str_replace("\'", "''", $approve) . "',
 			hacklist = '" . str_replace("\'", "''", $hacklist) . "',
 			hack_author = '" . str_replace("\'", "''", $hack_author) . "',
@@ -429,20 +426,18 @@ if ($action == 'save' && $submit)
 
 		if ($own_edit)
 		{
-			$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '">';
+			$redirect_url = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id);
+			meta_refresh(3, $redirect_url);
 			$message = $lang['Download_updated'] . $thumb_message . '<br /><br />' . sprintf($lang['Click_return_download_details'], '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $df_id) . '">', '</a>');
 		}
 		else
 		{
-			$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;cat_id=' . $cat_id) . '">';
+			$redirect_url = append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;cat_id=' . $cat_id);
 			$return_string = ($action == 'approve') ? $lang['Click_return_modcp_approve'] : $lang['Click_return_modcp_manage'];
 			$message = $lang['Download_updated'] . $thumb_message . '<br /><br />' . sprintf($return_string, '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=modcp&amp;action=manage&amp;cat_id=' . $cat_id) . '">', '</a>');
 		}
 
-		$template->assign_vars(array(
-			'META' => $meta
-			)
-		);
+		meta_refresh(3, $redirect_url);
 
 		message_die(GENERAL_MESSAGE, $message);
 		exit;
@@ -622,10 +617,10 @@ if ($action == 'edit')
 	$todo = $dl_file['todo'];
 	$warning = $dl_file['warning'];
 	$mod_desc = $dl_file['mod_desc'];
-	$mod_list = ( $dl_file['mod_list'] ) ? 'checked="checked"' : '';
-	$mod_desc = preg_replace('/\:(([a-z0-9]:)?)' . $dl_file['bbcode_uid'] . '/s', '', stripslashes($mod_desc));
-	$long_desc = preg_replace('/\:(([a-z0-9]:)?)' . $dl_file['bbcode_uid'] . '/s', '', stripslashes($long_desc));
-	$warning = preg_replace('/\:(([a-z0-9]:)?)' . $dl_file['bbcode_uid'] . '/s', '', stripslashes($warning));
+	$mod_list = ($dl_file['mod_list']) ? 'checked="checked"' : '';
+	$mod_desc = stripslashes($mod_desc);
+	$long_desc = stripslashes($long_desc);
+	$warning = stripslashes($warning);
 
 	if ($index[$cat_id]['allow_thumbs'] && $dl_config['thumb_fsize'])
 	{

@@ -57,10 +57,10 @@ function toggle_check_all()
 <tr>
 	<td class="{topicrow.ROW_CLASS}" align="right"><input type="checkbox" name="delete_id_{topicrow.TOPIC_ID}"></td>
 	<td class="{topicrow.ROW_CLASS}"  align="left"><span class="gen">{topicrow.TITLE}</span></td>
-	<td class="{topicrow.ROW_CLASS}" align="center" valign="middle"><span class="gen">{topicrow.POSTER}</span></td>
-	<td class="{topicrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{topicrow.TIME}</span></td>
-	<td class="{topicrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{topicrow.MOVED_FROM}</span></td>
-	<td class="{topicrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{topicrow.MOVED_TO}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gen">{topicrow.POSTER}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{topicrow.TIME}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{topicrow.MOVED_FROM}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{topicrow.MOVED_TO}</span></td>
 </tr>
 <!-- END topicrow -->
 <!-- BEGIN emptyrow -->

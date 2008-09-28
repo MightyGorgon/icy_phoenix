@@ -1486,15 +1486,15 @@ function display_admin_index($cur = 'Root', $level = 0, $max_level = -1)
 			$forum_link_img = '';
 			if (!empty($tree['data'][$CH_this]['forum_link']))
 			{
-				$forum_link_img = '<img src="' . IP_ROOT_PATH . $images['acp_link'] . '" />';
+				$forum_link_img = '<img src="' . $images['acp_link'] . '" />';
 			}
 			else
 			{
 				$sub = (isset($tree['sub'][POST_FORUM_URL . $forum_id]));
-				$forum_link_img = '<img src="' . IP_ROOT_PATH . (($sub) ? $images['acp_category'] : $images['acp_forum']) . '" />';
+				$forum_link_img = '<img src="' . (($sub) ? $images['acp_category'] : $images['acp_forum']) . '" />';
 				if ($tree['data'][$CH_this]['forum_status'] == FORUM_LOCKED)
 				{
-					$forum_link_img = '<img src="' . IP_ROOT_PATH . (($sub) ? $images['acp_category_locked'] : $images['acp_forum_locked']) . '" />';
+					$forum_link_img = '<img src="' . (($sub) ? $images['acp_category_locked'] : $images['acp_forum_locked']) . '" />';
 				}
 			}
 
@@ -1516,7 +1516,7 @@ function display_admin_index($cur = 'Root', $level = 0, $max_level = -1)
 				'NUM_TOPICS'		=> $forum['forum_topics'],
 				'NUM_POSTS'			=> $forum['forum_posts'],
 
-				'INC_SPAN'			=> $max_level - $level+1,
+				'INC_SPAN'			=> $max_level - $level + 1,
 				'WIDTH'				=> ($max_level == $level) ? 'width="50%"' : '',
 
 				'U_VIEWFORUM'		=> append_sid('admin_forums.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id),
@@ -1588,11 +1588,14 @@ if (!isset($tree['keys'][$main])) $main = 'Root';
 
 // get the nav cat sentence
 $nav_cat_desc = make_cat_nav_tree($main, 'admin_forums');
-if ($nav_cat_desc != '') $nav_cat_desc = $nav_separator . $nav_cat_desc;
+if ($nav_cat_desc != '')
+{
+	$nav_cat_desc = $nav_separator . $nav_cat_desc;
+}
 $template->assign_vars(array(
-	'SPACER'			=> IP_ROOT_PATH . $images['spacer'],
-	'NAV_CAT_DESC'		=> $nav_cat_desc,
-	'L_INDEX'			=> sprintf($lang['Forum_Index'], $board_config['sitename']),
+	'SPACER' => $images['spacer'],
+	'NAV_CAT_DESC' => $nav_cat_desc,
+	'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
 	)
 );
 

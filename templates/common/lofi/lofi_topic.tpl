@@ -49,7 +49,7 @@ if($can_reply)
 	<tr><th colspan="2"><span><?php echo $lang['quick_lofi']; ?></span></th></tr>
 	<tr>
 		<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-		<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="60" style="width:98%" tabindex="2" class="post" value="" /></td>
+		<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="100" style="width:98%" tabindex="2" class="post" value="" /></td>
 	</tr>
 	<tr>
 		<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{T_TEMPLATE_PATH}/images/spacer.gif" width="200" height="1" alt="" /></b></span></td>

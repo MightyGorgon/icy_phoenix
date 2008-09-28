@@ -92,11 +92,10 @@ while($row = $db->sql_fetchrow($result))
 if($link_config['lock_submit_site'] && $userdata['user_level'] != ADMIN)
 {
 	$message = $lang['Link_lock_submit_site'];
-	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links." . PHP_EXT) . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid('links.' . PHP_EXT) . '">', '</a>');
 
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links." . PHP_EXT) . '">'
-	));
+	$redirect_url = append_sid('links.' . PHP_EXT);
+	meta_refresh(3, $redirect_url);
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -105,12 +104,11 @@ if(!$link_config['allow_no_logo'] && !$link_logo_src)
 {
 	$message = $lang['Link_incomplete'];
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links." . PHP_EXT) . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid('links.' . PHP_EXT) . '">', '</a>');
 	$message .= '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
-	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links." . PHP_EXT) . '">'
-	));
+	$redirect_url = append_sid('links.' . PHP_EXT);
+	meta_refresh(3, $redirect_url);
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -197,16 +195,11 @@ if($link_title && $link_desc && $link_category && $link_url)
 					$attach_sig = 0;
 					while($to_userdata = $db->sql_fetchrow($admin_result))
 					{
-						//
 						// Has admin prevented user from sending PM's?
-						//
 						if ($to_userdata['user_allow_pm'])
 						{
-							$bbcode_uid = make_bbcode_uid();
 							$msg_time = time();
-							//
 							// See if recipient is at their inbox limit
-							//
 							$sql = "SELECT COUNT(privmsgs_id) AS inbox_items, MIN(privmsgs_date) AS oldest_post_time
 							FROM " . PRIVMSGS_TABLE . "
 							WHERE (privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
@@ -235,15 +228,14 @@ if($link_title && $link_desc && $link_category && $link_url)
 									$old_privmsgs_id = $db->sql_fetchrow($result);
 									$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-									$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-									$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TABLE . "
+									$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 									WHERE privmsgs_id = $old_privmsgs_id";
 									if (!$db->sql_query($sql))
 									{
 										message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)'.$sql, '', __LINE__, __FILE__, $sql);
 									}
 
-									$sql = "DELETE $sql_priority FROM " . PRIVMSGS_TEXT_TABLE . "
+									$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
 									WHERE privmsgs_text_id = $old_privmsgs_id";
 									if (!$db->sql_query($sql))
 									{
@@ -261,20 +253,17 @@ if($link_title && $link_desc && $link_category && $link_url)
 
 							$privmsg_sent_id = $db->sql_nextid();
 							$privmsg_message = sprintf($lang['Link_pm_notify_message'], $link_url);
+							$privmsg_message = stripslashes(prepare_message($privmsg_message, $html_on, $bbcode_on, $smilies_on));
 
-							$preview_message = stripslashes(prepare_message($privmsg_message, $html_on, $bbcode_on, $smilies_on, $bbcode_uid));
-
-							$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_bbcode_uid, privmsgs_text)
-							VALUES ($privmsg_sent_id, '" . $bbcode_uid . "', '" . str_replace("\'", "''", $privmsg_message) . "')";
+							$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
+							VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", $privmsg_message) . "')";
 
 							if (!$db->sql_query($sql, END_TRANSACTION))
 							{
 								message_die(GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql_info);
 							}
 
-							//
 							// Add to the users new pm counter
-							//
 							$sql = "UPDATE " . USERS_TABLE . "
 								SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
 								WHERE user_id = " . $to_userdata['user_id'];
@@ -303,9 +292,8 @@ else
 $message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid("links." . PHP_EXT) . '">', '</a>');
 $message .= '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
-$template->assign_vars(array(
-	'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("links." . PHP_EXT) . '">'
-));
+$redirect_url = append_sid('links.' . PHP_EXT);
+meta_refresh(3, $redirect_url);
 
 message_die(GENERAL_MESSAGE, $message);
 

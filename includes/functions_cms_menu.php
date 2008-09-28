@@ -135,7 +135,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 				$unread = unread();
 				$u_display_new = index_display_new($unread);
 				$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
-				$menu_url = $menu_icon . $lang['Posts2'] . ': <a href="search.' . PHP_EXT . '?search_id=newposts">' . $lang['New2'] . '</a>';
+				$menu_url = $menu_icon . $lang['Posts'] . ': <a href="search.' . PHP_EXT . '?search_id=newposts">' . $lang['New2'] . '</a>';
 				$menu_url .= '&nbsp;&#8226;&nbsp;' . $u_display_new['u'] . '&nbsp;&#8226;&nbsp;' . $u_display_new['m'] . '&nbsp;&#8226;&nbsp;' . $u_display_new['p'];
 				//$menu_url .= $u_display_new['u'] . $u_display_new['m'] . $u_display_new['p'];
 			}

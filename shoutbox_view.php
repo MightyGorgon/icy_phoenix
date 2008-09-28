@@ -106,27 +106,24 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 	$user_id = $shout_row['shout_user_id'];
-	$username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['shout_user_id'],true);
-	$shout = (! $shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'];
+	$username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['shout_user_id'], true);
+	$shout = (!$shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'];
 	$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
 	$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $shout_row['enable_bbcode'] ? true : false);
 	$bbcode->allow_smilies = ($board_config['allow_smilies'] && $shout_row['user_allowsmile'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
-	$shout = $bbcode->parse($shout,$shout_row['shout_bbcode_uid']);
+	$shout = $bbcode->parse($shout);
 	$shout = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $shout) : $shout;
 	//$shout = str_replace("\n", "\n<br />\n", $shout);
 	$shout = (preg_match("/<a/", $shout)) ? str_replace("\">" , "\" target=\"_top\">", $shout) : $shout;
 	$orig_autolink = array();
 	$replacement_autolink = array();
 	obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-	if(function_exists('acronym_pass'))
-	{
-		$shout = acronym_pass($shout);
-	}
+	$shout = $bbcode->acronym_pass($shout);
 	if(count($orig_autolink))
 	{
 		$shout = autolink_transform($shout, $orig_autolink, $replacement_autolink);
 	}
-	//$shout = kb_word_wrap_pass ($shout);
+	//$shout = kb_word_wrap_pass($shout);
 	$template->assign_block_vars('shoutrow', array(
 		'ROW_COLOR' => '#' . $row_color,
 		'ROW_CLASS' => $row_class,

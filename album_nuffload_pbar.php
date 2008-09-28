@@ -74,10 +74,7 @@ if(isset($_REQUEST['sessionid']))
 	//Output page
 	$template->pparse('body');
 
-	$template->set_filenames(array(
-		'overall_footer' => 'simple_footer.tpl'
-		)
-	);
+	$template->set_filenames(array('overall_footer' => 'simple_footer.tpl'));
 
 	$template->pparse('overall_footer');
 
@@ -91,9 +88,9 @@ if(isset($_REQUEST['sessionid']))
 		// info file created by perl script
 		if (intval($total_size) <= 0)
 		{
-			if ($fp = @fopen($info_file,"r"))
+			if ($fp = @fopen($info_file, 'r'))
 			{
-				$fd = fread($fp,1000);
+				$fd = fread($fp, 1000);
 				fclose($fp);
 				$total_size = $fd;
 			}

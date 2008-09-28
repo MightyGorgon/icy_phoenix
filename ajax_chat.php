@@ -349,7 +349,6 @@ else
 
 		//$message = stripslashes($row[$x]['shout_text']);
 		$message = utf8dec($row[$x]['shout_text']);
-		$bbcode_uid = $row[$x]['shout_uid'];
 
 		// BBCodes parsing not needed in this case!
 		/*
@@ -359,7 +358,7 @@ else
 		$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
 		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
-		$message = $bbcode->parse($message, $bbcode_uid);
+		$message = $bbcode->parse($message);
 
 		//$message = preg_replace(array('<', '>'), array('mg_tag_open', 'mg_tag_close'), $message);
 		*/

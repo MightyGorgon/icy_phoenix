@@ -96,9 +96,8 @@ if ( isset($_POST['submit']) )
 			$emailer->send();
 			$emailer->reset();
 
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="15;url=' . append_sid(FORUM_MG) . '">')
-			);
+			$redirect_url = append_sid(FORUM_MG);
+			meta_refresh(15, $redirect_url);
 
 			$message = $lang['Password_updated'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 

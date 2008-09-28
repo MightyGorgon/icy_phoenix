@@ -1350,8 +1350,7 @@ else
 				$db->sql_freeresult($result);
 				$pic_id = $new_pic_id['pic_id'];
 
-				$sql_priority = (SQL_LAYER == 'mysql') ? 'LOW_PRIORITY' : '';
-				$sql = "INSERT $sql_priority INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
+				$sql = "INSERT INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
 					VALUES ('" . $pic_id . "', '" . $userdata['user_id'] . "', 0)";
 				if (!($result = $db->sql_query($sql)))
 				{
@@ -1395,10 +1394,8 @@ else
 	{
 		if (album_is_debug_enabled() == false)
 		{
-			$template->assign_vars(array(
-				'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">'
-				)
-			);
+			$redirect_url = append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id));
+			meta_refresh(3, $redirect_url);
 		}
 	}
 	if ($album_user_id == ALBUM_PUBLIC_GALLERY)

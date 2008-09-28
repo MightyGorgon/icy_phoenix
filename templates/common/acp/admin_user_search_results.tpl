@@ -29,15 +29,15 @@
 </tr>
 <!-- BEGIN userrow -->
 <tr>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_VIEWPROFILE}" class="gen">{userrow.USERNAME}</a>&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.EMAIL}&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.JOINDATE}&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_VIEWPOSTS}" class="gen">{userrow.POSTS}</a>&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.LASTVISIT}&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_MANAGE}" class="gen">{L_MANAGE}</a>&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_PERMISSIONS}" class="gen">{L_PERMISSIONS}</a>&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.BAN}&nbsp;</span></td>
-	<td class="{userrow.ROW_CLASS}" align="center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.ABLED}&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_VIEWPROFILE}" class="gen">{userrow.USERNAME}</a>&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.EMAIL}&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.JOINDATE}&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_VIEWPOSTS}" class="gen">{userrow.POSTS}</a>&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.LASTVISIT}&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_MANAGE}" class="gen">{L_MANAGE}</a>&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;<a href="{userrow.U_PERMISSIONS}" class="gen">{L_PERMISSIONS}</a>&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.BAN}&nbsp;</span></td>
+	<td class="{userrow.ROW_CLASS} row-center" nowrap="nowrap"><span class="gen">&nbsp;{userrow.ABLED}&nbsp;</span></td>
 </tr>
 <!-- END userrow -->
 <tr><td class="cat" colspan="9" height="28">&nbsp;</td></tr>

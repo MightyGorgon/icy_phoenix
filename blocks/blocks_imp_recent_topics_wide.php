@@ -91,7 +91,7 @@ if(!function_exists(imp_recent_topics_wide_block_func))
 				'U_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id']),
 				'L_FORUM' => $recent_topic_row[$i]['forum_name'],
 				'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $recent_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],
-				'L_TITLE' => $bbcode->parse($recent_topic_row[$i]['topic_title'], $bbcode_uid, true),
+				'L_TITLE' => $bbcode->parse($recent_topic_row[$i]['topic_title'], '', true),
 				'L_BY' => $lang['By'],
 				'L_ON' => $lang['On'],
 				'S_POSTER' => $recent_topic_row[$i]['username'],

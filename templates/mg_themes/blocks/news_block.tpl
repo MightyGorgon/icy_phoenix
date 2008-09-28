@@ -80,7 +80,7 @@
 				<tr>
 					<td align="left" class="content-padding">
 						<span class="gensmall">
-							{L_NEWS_SUMMARY}&nbsp;<a href="{articles.U_VIEWS}"><b>{articles.COUNT_VIEWS}</b>&nbsp;{L_NEWS_VIEWS}</a>&nbsp;{L_NEWS_AND}&nbsp;<a href="{articles.U_COMMENT}"><b>{articles.COUNT_COMMENTS}</b>&nbsp;{L_NEWS_COMMENTS}</a>.
+							{L_NEWS_SUMMARY}&nbsp;<a href="{articles.U_VIEWS}"><b>{articles.COUNT_VIEWS}</b>&nbsp;{L_NEWS_VIEWS}</a>&nbsp;{L_NEWS_AND}&nbsp;<a href="{articles.U_COMMENT}" title="{articles.L_TITLE}"><b>{articles.COUNT_COMMENTS}</b>&nbsp;{L_NEWS_COMMENTS}</a>.
 						</span>
 					</td>
 					<td align="right" style="padding-right:5px;">

@@ -15,35 +15,13 @@
 *
 */
 
+// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
-if (defined('MAIN_ADMINS_ID'))
+if (function_exists('check_acp_module_access'))
 {
-	if (defined('JA_PARSING') && (JA_PARSING == true))
-	{
-		return;
-	}
-	$is_allowed = false;
-	$allowed_admins = explode(',', MAIN_ADMINS_ID);
-	if (defined('FOUNDER_ID'))
-	{
-		if ($userdata['user_id'] == FOUNDER_ID)
-		{
-			$is_allowed = true;
-		}
-	}
-	if ($is_allowed == false)
-	{
-		for ($i = 0; $i < count($allowed_admins); $i++)
-		{
-			if ($userdata['user_id'] == $allowed_admins[$i])
-			{
-				$is_allowed = true;
-				break;
-			}
-		}
-	}
+	$is_allowed = check_acp_module_access();
 	if ($is_allowed == false)
 	{
 		return;
@@ -53,13 +31,22 @@ if (defined('MAIN_ADMINS_ID'))
 
 if (!empty($setmodules))
 {
-	$module['1400_DB_Maintenance']['140_DB_Admin'] = basename(__FILE__);
+	$module['1400_DB_Maintenance']['110_DB_Admin'] = basename(__FILE__);
+	$ja_module['1400_DB_Maintenance']['110_DB_Admin'] = false;
 	return;
 }
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+
+// Mighty Gorgon - ACP Privacy - BEGIN
+$is_allowed = check_acp_module_access();
+if ($is_allowed == false)
+{
+	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+}
+// Mighty Gorgon - ACP Privacy - END
 
 include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_db_admin.' . PHP_EXT);
 

@@ -41,11 +41,7 @@ $starttime = $mtime;
 
 // Mighty Gorgon - Extra Debug - BEGIN
 @define('DEBUG_EXTRA', true);
-//@define('DEBUG_EXTRA_LOG', true);
-// Mighty Gorgon - Extra Debug - END
-
-// Mighty Gorgon - Extra Debug - BEGIN
-if (defined('DEBUG_EXTRA'))
+if (defined('DEBUG_EXTRA') && (DEBUG_EXTRA == true))
 {
 	$base_memory_usage = 0;
 	if (function_exists('memory_get_usage'))
@@ -104,7 +100,7 @@ function deregister_globals()
 		if (isset($not_unset[$varname]))
 		{
 			// Hacking attempt. No point in continuing unless it's a COOKIE
-			if ($varname !== 'GLOBALS' || isset($_GET['GLOBALS']) || isset($_POST['GLOBALS']) || isset($_SERVER['GLOBALS']) || isset($_SESSION['GLOBALS']) || isset($_ENV['GLOBALS']) || isset($_FILES['GLOBALS']))
+			if (($varname !== 'GLOBALS') || isset($_GET['GLOBALS']) || isset($_POST['GLOBALS']) || isset($_SERVER['GLOBALS']) || isset($_SESSION['GLOBALS']) || isset($_ENV['GLOBALS']) || isset($_FILES['GLOBALS']))
 			{
 				exit;
 			}
@@ -137,13 +133,10 @@ if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
 else
 {
 	set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
-
-	// Be paranoid with passed vars
 	if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on' || !function_exists('ini_get'))
 	{
 		deregister_globals();
 	}
-
 	define('STRIP', (get_magic_quotes_gpc()) ? true : false);
 }
 
@@ -234,9 +227,8 @@ if(!STRIP)
 }
 
 //
-// Define some basic configuration arrays this also prevents
-// malicious rewriting of language and other array values via
-// URI params
+// Define some basic configuration arrays this also prevents malicious
+// rewriting of language and other array values via URI params
 //
 $board_config = array();
 $xs_news_config = array();
@@ -362,7 +354,7 @@ if ($board_config['disable_referrers'] == false)
 }
 
 // MG Logs - BEGIN
-if ($board_config['mg_log_actions'] == true)
+if (($board_config['mg_log_actions'] == true) || ($board_config['db_log_actions'] == '1') || ($board_config['db_log_actions'] == '2'))
 {
 	include(IP_ROOT_PATH . 'includes/functions_mg_log.' . PHP_EXT);
 }
@@ -413,14 +405,7 @@ if (file_exists('install'))
 
 if ($board_config['admin_protect'] == true)
 {
-	if (defined('FOUNDER_ID'))
-	{
-		$founder_id = FOUNDER_ID;
-	}
-	else
-	{
-		$founder_id = get_founder_id();
-	}
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
 	// Activate Main Admin Account
 	$sql = "UPDATE " . USERS_TABLE . "

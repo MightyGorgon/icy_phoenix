@@ -19,11 +19,11 @@
 <!-- END switch_no_results -->
 <!-- BEGIN replaced -->
 <tr>
-	<td class="{switch_forum_sent.replaced.ROW_CLASS}" align="center">{switch_forum_sent.replaced.NUMBER}</td>
+	<td class="{switch_forum_sent.replaced.ROW_CLASS} row-center">{switch_forum_sent.replaced.NUMBER}</td>
 	<td class="{switch_forum_sent.replaced.ROW_CLASS}"><a href="{switch_forum_sent.replaced.U_FORUM}" target="_blank">{switch_forum_sent.replaced.FORUM_NAME}</a></td>
 	<td class="{switch_forum_sent.replaced.ROW_CLASS}"><a href="{switch_forum_sent.replaced.U_TOPIC}" target="_blank">{switch_forum_sent.replaced.TOPIC_TITLE}</a></td>
 	<td class="{switch_forum_sent.replaced.ROW_CLASS}"><a href="{switch_forum_sent.replaced.U_AUTHOR}" target="_blank">{switch_forum_sent.replaced.AUTHOR}</a></td>
-	<td class="{switch_forum_sent.replaced.ROW_CLASS}" align="center"><a href="{switch_forum_sent.replaced.U_POST}" target="_blank"><img src="{POST_IMG}" alt="" title="" border="" /></a> {switch_forum_sent.replaced.POST}</td>
+	<td class="{switch_forum_sent.replaced.ROW_CLASS} row-center"><a href="{switch_forum_sent.replaced.U_POST}" target="_blank"><img src="{POST_IMG}" alt="" title="" border="" /></a> {switch_forum_sent.replaced.POST}</td>
 </tr>
 <!-- END replaced -->
 <tr><td class="cat" colspan="5" align="center" style="font-weight:bold;">{REPLACED_COUNT}</td></tr>

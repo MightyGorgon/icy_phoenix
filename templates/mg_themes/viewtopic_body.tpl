@@ -1,12 +1,8 @@
 <script type="text/javascript">
 <!--
-//function post_time_edit(topic_id, post_id)
-//{
-//	window.open("edit_post_time.php?t="+topic_id+"&p="+post_id, '_postedittime', 'height=300, width=500, resizable=no, scrollbars=no');
-//}
 function post_time_edit(url)
 {
-	window.open(url, '_postedittime', 'width=500,height=300,resizable=no,scrollbars=no');
+	window.open(url, '_postedittime', 'width=600,height=300,resizable=no,scrollbars=no');
 }
 //-->
 </script>

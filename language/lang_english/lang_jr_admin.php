@@ -81,7 +81,7 @@ $lang['ASCII_Search_Codes'] = '48&57, 65-90';
 
 //Images
 // Don't change these unless you need to
-$lang['ASC_Image'] = 'images/asc_order.png';
-$lang['DESC_Image'] = 'images/desc_order.png';
+$lang['ASC_Image'] = 'images/sort_asc.png';
+$lang['DESC_Image'] = 'images/sort_desc.png';
 
 ?>

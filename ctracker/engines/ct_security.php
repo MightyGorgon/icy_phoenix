@@ -218,7 +218,7 @@ $unchecked_post_fields = array(
 	'autologin', 'current_email', 'download', 'menu_link', 'new_password', 'password_confirm',
 	'action_update', 'action_duplicate', 'duplicate_blocks', 'deleteall',
 	'top_html_block_text', 'bottom_html_block_text', 'cat_title', 'cat_desc',
-	'news_category_edit',
+	'news_category_edit', 'pm_delete_attach',
 	// '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 );
 

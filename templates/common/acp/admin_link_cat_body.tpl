@@ -7,11 +7,11 @@
 <!-- BEGIN catrow -->
 <tr>
 	<td class="{catrow.COLOR}" width="60%" height="25"><span class="gen"><strong>{catrow.TITLE}</strong><br /></span><span class="gensmall">{catrow.DESC}</span></td>
-	<td class="{catrow.COLOR}" align="center"><span
+	<td class="{catrow.COLOR} row-center"><span
 	class="genmed"><a href="{catrow.S_MOVE_UP}">{L_MOVE_UP}</a><br /><a href="{catrow.S_MOVE_DOWN}">{L_MOVE_DOWN}</a></span></td>
-	<td class="{catrow.COLOR}" align="center"><span
+	<td class="{catrow.COLOR} row-center"><span
 	class="genmed"><a href="{catrow.S_EDIT_ACTION}">{L_EDIT}</a></span></td>
-	<td class="{catrow.COLOR}" align="center"><span
+	<td class="{catrow.COLOR} row-center"><span
 	class="genmed"><a href="{catrow.S_DELETE_ACTION}">{L_DELETE}</a></span></td>
 </tr>
 <!-- END catrow -->

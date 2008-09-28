@@ -18,10 +18,10 @@
 	<!-- BEGIN inc -->
 	<td class="row2" rowspan="{catrow.cathead.inc.ROWSPAN}" width="46">&nbsp;</td>
 	<!-- END inc -->
-	<td class="{catrow.cathead.CLASS_CATLEFT}" colspan="{catrow.cathead.INC_SPAN}" {catrow.cathead.WIDTH}><span class="cattitle"><b><a href="{catrow.cathead.U_VIEWCAT}" class="cattitle">{catrow.cathead.CAT_TITLE}</a></b></span></td>
-	<td class="{catrow.cathead.CLASS_CATMIDDLE}" align="center" valign="middle"><span class="gen"><a href="{catrow.cathead.U_CAT_EDIT}" class="gen">{catrow.cathead.L_EDIT}</a></span></td>
-	<td class="{catrow.cathead.CLASS_CATMIDDLE}" align="center" valign="middle"><span class="gen"><a href="{catrow.cathead.U_CAT_DELETE}" class="gen">{catrow.cathead.L_DELETE}</a></span></td>
-	<td class="{catrow.cathead.CLASS_CATMIDDLE}" align="center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{catrow.cathead.U_CAT_MOVE_UP}" class="gen">{catrow.cathead.L_MOVE_UP}</a> <a href="{catrow.cathead.U_CAT_MOVE_DOWN}" class="gen">{catrow.cathead.L_MOVE_DOWN}</a></span></td>
+	<td class="row1" colspan="{catrow.cathead.INC_SPAN}" {catrow.cathead.WIDTH}><span class="forumlink"><b><a href="{catrow.cathead.U_VIEWCAT}" class="cattitle">{catrow.cathead.CAT_TITLE}</a></b></span></td>
+	<td class="row1 row-center" valign="middle"><span class="gensmall"><a href="{catrow.cathead.U_CAT_EDIT}">{catrow.cathead.L_EDIT}</a></span></td>
+	<td class="row1 row-center" valign="middle"><span class="gensmall"><a href="{catrow.cathead.U_CAT_DELETE}">{catrow.cathead.L_DELETE}</a></span></td>
+	<td class="row1 row-center" valign="middle" nowrap="nowrap"><span class="gensmall"><a href="{catrow.cathead.U_CAT_MOVE_UP}">{catrow.cathead.L_MOVE_UP}</a> | <a href="{catrow.cathead.U_CAT_MOVE_DOWN}">{catrow.cathead.L_MOVE_DOWN}</a></span></td>
 </tr>
 	<!-- END cathead -->
 	<!-- BEGIN cattitle -->
@@ -33,7 +33,7 @@
 		<!-- BEGIN inc -->
 	<td class="row2" width="46">&nbsp;</td>
 		<!-- END inc -->
-	<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="row2" nowrap="nowrap">&nbsp;
+	<td class="row2" colspan="{catrow.catfoot.INC_SPAN_ALL}" nowrap="nowrap">&nbsp;
 		<input class="post" type="text" name="{catrow.catfoot.S_ADD_NAME}" />&nbsp;
 		<input type="submit" {DISABLE_CREATION} class="liteoption"  name="{catrow.catfoot.S_ADD_CAT_SUBMIT}" value="{L_CREATE_CATEGORY}" />
 	</td>
@@ -42,7 +42,7 @@
 		<!-- BEGIN inc -->
 	<td class="row2" width="46">&nbsp;</td>
 		<!-- END inc -->
-	<td colspan="{catrow.catfoot.INC_SPAN_ALL}" height="1" class="spaceRow">&nbsp;</td>
+	<td colspan="{catrow.catfoot.INC_SPAN_ALL}" height="1" class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td>
 </tr>
 	<!-- END catfoot -->
 <!-- END catrow -->

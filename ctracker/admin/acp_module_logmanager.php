@@ -197,7 +197,7 @@ if ( $mode != 'view')
 * Send some vars to the template
 */
 $template->assign_vars(array(
-	'IMG_ICON'		=> IP_ROOT_PATH . $images['ctracker_log_manager'],
+	'IMG_ICON'		=> $images['ctracker_log_manager'],
 	'L_HEADLINE'	=> $lang['ctracker_log_manager_title'],
 	'L_SUBHEADLINE'	=> $lang['ctracker_log_manager_subtitle']
 	)

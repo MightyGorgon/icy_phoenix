@@ -93,21 +93,21 @@ function toggle_check_all()
 <!-- END empty_switch -->
 <!-- BEGIN msgrow -->
 <tr>
-	<td class="{msgrow.ROW_CLASS}" align="center">
+	<td class="{msgrow.ROW_CLASS} row-center">
 		<span class="gen">&nbsp;
 		<input type="checkbox" name="delete_id_{msgrow.PM_ID}" onClick="JavaScript:{JS_ARCHIVE_COMMENT_1}archive_id_{msgrow.PM_ID}.checked = false{JS_ARCHIVE_COMMENT_2};" />&nbsp;
 		</span>
 	</td>
 	<!-- BEGIN archive_avail_switch_msg -->
-	<td class="{msgrow.ROW_CLASS}" align="center">
+	<td class="{msgrow.ROW_CLASS} row-center">
 		<span class="gen">&nbsp;<input type="checkbox" name="archive_id_{msgrow.PM_ID}" onClick="JavaScript:delete_id_{msgrow.PM_ID}.checked = false;" />&nbsp;</span>
 	</td>
 <!-- END archive_avail_switch_msg -->
 	<td class="{msgrow.ROW_CLASS}" align="left"><span class="genmed"><a href="{msgrow.U_INLINE_VIEWMSG}" onClick="{msgrow.U_VIEWMSG}">{msgrow.SUBJECT}</a></span></td>
-	<td class="{msgrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{msgrow.FROM}{msgrow.FROM_IP}</span></td>
-	<td class="{msgrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{msgrow.TO}</span></td>
-	<td class="{msgrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{msgrow.DATE}</span></td>
-	<td class="{msgrow.ROW_CLASS}" align="center" valign="middle"><span class="gensmall">{msgrow.PM_TYPE}</span></td>
+	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.FROM}{msgrow.FROM_IP}</span></td>
+	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.TO}</span></td>
+	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.DATE}</span></td>
+	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.PM_TYPE}</span></td>
 </tr>
 <!-- END msgrow -->
 <tr>

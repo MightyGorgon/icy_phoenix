@@ -11,7 +11,7 @@
 </tr>
 <!-- BEGIN prune_overview -->
 <tr>
-	<td class="{prune_overview.ROW_CLASS} row-center"><input type="hidden" name="forum_id[{prune_overview.S_PRUNE_INDEX}]" value="{prune_overview.FORUM_ID}" /><span class="genmed">&nbsp;{prune_overview.PRUNE_FORUM}&nbsp;</span></td>
+	<td class="{prune_overview.ROW_CLASS}"><input type="hidden" name="forum_id[{prune_overview.S_PRUNE_INDEX}]" value="{prune_overview.FORUM_ID}" /><span class="forumlink">{prune_overview.PRUNE_FORUM}</span></td>
 	<td class="{prune_overview.ROW_CLASS} row-center"><span class="gensmall"><input type="text" class="post" maxlength="5" name="prune_days[{prune_overview.S_PRUNE_INDEX}]" size="5" value="{prune_overview.PRUNE_DAYS}" /> {L_DAYS}</span></td>
 	<td class="{prune_overview.ROW_CLASS} row-center"><span class="gensmall"><input type="text" class="post" maxlength="5" size="5" name="prune_freq[{prune_overview.S_PRUNE_INDEX}]" value="{prune_overview.PRUNE_FREQ}" /> {L_DAYS}</span></td>
 	<td class="{prune_overview.ROW_CLASS} row-center" valign="middle"><input type="checkbox" name="prune_enable[{prune_overview.S_PRUNE_INDEX}]" value="1" {prune_overview.S_PRUNE_ENABLED} /></td>

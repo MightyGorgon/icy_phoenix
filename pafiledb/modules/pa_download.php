@@ -399,8 +399,10 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 
 function pa_redirect($file_url)
 {
-	global $cache, $db;
-	if (isset($db))
+	global $cache, $db,$lang;
+
+	// Close our DB connection.
+	if (!empty($db))
 	{
 		$db->sql_close();
 	}
@@ -410,17 +412,38 @@ function pa_redirect($file_url)
 		$cache->unload();
 	}
 
-	// Redirect via an HTML form for PITA webservers
-	if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
+	// Make sure no &amp;'s are in, this will break the redirect
+	$file_url = str_replace('&amp;', '&', $file_url);
+
+	// Make sure no linebreaks are there... to prevent http response splitting for PHP < 4.4.2
+	if ((strpos(urldecode($file_url), "\n") !== false) || (strpos(urldecode($file_url), "\r") !== false) || (strpos($file_url, ';') !== false))
 	{
-		header('Refresh: 0; URL=' . $file_url);
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta http-equiv="refresh" content="0; url=' . $file_url . '"><title>Redirect</title></head><body><div align="center">If your browser does not support meta redirection please click <a href="' . $file_url . '">HERE</a> to be redirected</div></body></html>';
+		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url');
+	}
+
+	// Redirect via an HTML form for PITA webservers
+	if (@preg_match('#Microsoft|WebSTAR|Xitami#', getenv('SERVER_SOFTWARE')))
+	{
+		header('Refresh: 0; URL=' . $url);
+
+		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">';
+		echo '<head>';
+		echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
+		echo '<meta http-equiv="refresh" content="0; url=' . str_replace('&', '&amp;', $file_url) . '" />';
+		echo '<title>' . $lang['Redirect'] . '</title>';
+		echo '</head>';
+		echo '<body>';
+		echo '<div style="text-align: center;">' . sprintf($lang['Redirect_to'], '<a href="' . str_replace('&', '&amp;', $file_url) . '">', '</a>') . '</div>';
+		echo '</body>';
+		echo '</html>';
+
 		exit;
 	}
 
 	// Behave as per HTTP/1.1 spec for others
-	Header("Location: $file_url");
-	exit();
+	header('Location: ' . $file_url);
+	exit;
 }
 
 ?>

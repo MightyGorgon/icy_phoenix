@@ -1087,11 +1087,11 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		$s_move_opt = '<option value="" selected="selected">' . $lang['Delete_all_posts'] . '</option>' . $s_move_opt;
 
 		// icon
-		$icon_img = empty($item['icon']) ? '' : '<br /><img src="' . (isset($images[ $item['icon'] ]) ? IP_ROOT_PATH . $images[ $item['icon'] ] : $item['icon']) . '" alt="' . $item['icon'] . '" title="' . $item['icon'] . '" />';
+		$icon_img = empty($item['icon']) ? '' : '<br /><img src="' . (isset($images[$item['icon']]) ? $images[$item['icon']] : $item['icon']) . '" alt="' . $item['icon'] . '" title="' . $item['icon'] . '" />';
 
 		$icon = $item['icon'];
 		// Mighty Gorgon - Forum Icons Select - BEGIN
-		$icon_path = '../images/forums/';
+		$icon_path = IP_ROOT_PATH . 'images/forums/';
 		if (is_dir($icon_path))
 		{
 			$dir = opendir($icon_path);
@@ -1122,7 +1122,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 					$icons_list .= '<option value="images/forums/' . $file1[$k] . '">images/forums/' . $file1[$k] . '</option>';
 				}
 			}
-			$icon_img_sp = ($icon != '') ? ('../' . $icon) : ('../images/spacer.gif');
+			$icon_img_sp = ($icon != '') ? (IP_ROOT_PATH . $icon) : (IP_ROOT_PATH . 'images/spacer.gif');
 			$icon_img_path = ($icon != '') ? $icon : '';
 			$icons_list .= '</select>';
 			$icons_list .= '&nbsp;&nbsp;<img name="icon_image" src="' . $icon_img_sp . '" alt="" align="middle" />';
@@ -1154,7 +1154,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'ICON' => $item['icon'],
 			//'ICON_IMG' => $icon_img,
 			'ICON_LIST' => $icons_list,
-			'ICON_IMG' => ($icon != "") ? '../' . $icon : '../images/spacer.gif',
+			'ICON_IMG' => ($icon != '') ? IP_ROOT_PATH . $icon : IP_ROOT_PATH . 'images/spacer.gif',
 
 			'PRUNE_DISPLAY' => $item['prune_enable'] ? '' : 'none',
 			'PRUNE_ENABLE_YES' => $item['prune_enable'] ? 'checked="checked"' : '',
@@ -1354,8 +1354,8 @@ if ($mode == '')
 		'L_DELETE' => $lang['Delete'],
 		'L_MOVEUP' => $lang['Move_up'],
 		'L_MOVEDW' => $lang['Move_down'],
-		'IMG_MOVEUP' => IP_ROOT_PATH . $images['acp_up_arrow2'],
-		'IMG_MOVEDW' => IP_ROOT_PATH . $images['acp_down_arrow2'],
+		'IMG_MOVEUP' => $images['acp_up_arrow2'],
+		'IMG_MOVEDW' => $images['acp_down_arrow2'],
 		'L_RESYNC' => $lang['Resync'],
 
 		'L_CREATE_FORUM' => $lang['Create_forum'],
@@ -1438,9 +1438,9 @@ if ($mode == '')
 			}
 
 			// sub level link
-			$sub_folder = IP_ROOT_PATH . $sub_folder;
-			$link = '<a href="' . append_sid('./admin_forums_extend.' . PHP_EXT . '?selected_id=' . $sub_this) . '" class="gensmall" title="' . ereg_replace('<[^>]+>', '', get_object_lang($sub_this, 'desc', true)) . '">';
-			$link .= '<img src="' . $sub_folder . '" alt="' . $sub_l_folder . '" title="' . $sub_l_folder . '" align="middle" />';
+			$sub_folder = $sub_folder;
+			$link = '<a href="' . append_sid('./admin_forums_extend.' . PHP_EXT . '?selected_id=' . $sub_this) . '" class="gensmall" style="text-decoration: none;" title="' . ereg_replace('<[^>]+>', '', get_object_lang($sub_this, 'desc', true)) . '">';
+			$link .= '<img src="' . $sub_folder . '" alt="' . $sub_l_folder . '" title="' . $sub_l_folder . '" style="vertical-align: middle;" />';
 			$link .= '&nbsp;' . get_object_lang($sub_this, 'name', true) . '</a>';
 			$links .= (empty($links) ? '' : ', ') . $link;
 		}
@@ -1452,16 +1452,16 @@ if ($mode == '')
 			$icon_img = $icon;
 			if (isset($images[$icon_img]))
 			{
-				$icon_img = IP_ROOT_PATH . $images[$icon_img];
+				$icon_img = $images[$icon_img];
 			}
 		}
 		$color = !$color;
 		$template->assign_block_vars('row', array(
 			'COLOR' => $color ? 'row1' : 'row2',
-			'FOLDER' => IP_ROOT_PATH . $folder,
+			'FOLDER' => $folder,
 			'L_FOLDER' => $l_folder,
 			//'ICON_IMG' => $icon_img,
-			'ICON_IMG' => ($icon_img != "") ? '../' . $icon_img : '../images/spacer.gif',
+			'ICON_IMG' => ($icon_img != '') ? IP_ROOT_PATH . $icon_img : IP_ROOT_PATH . 'images/spacer.gif',
 			'ICON' => $icon,
 			'FORUM_NAME' => get_object_lang($CH_this, 'name', true),
 			'FORUM_DESC' => get_object_lang($CH_this, 'desc', true),

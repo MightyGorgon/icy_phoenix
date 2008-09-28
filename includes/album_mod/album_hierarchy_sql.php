@@ -1984,13 +1984,10 @@ function album_build_last_comments_info($cats)
 			$bbcode->allow_bbcode = $bbcode_on;
 			$bbcode->allow_smilies = $smilies_on;
 
-			$commentsrow[$i]['comment_text'] = $bbcode->parse($commentsrow[$i]['comment_text'], $bbcode_uid);
+			$commentsrow[$i]['comment_text'] = $bbcode->parse($commentsrow[$i]['comment_text']);
 			$commentsrow[$i]['comment_text'] = strtr($commentsrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
 
-			if(function_exists('acronym_pass'))
-			{
-				$commentsrow[$i]['comment_text'] = acronym_pass($commentsrow[$i]['comment_text']);
-			}
+			$commentsrow[$i]['comment_text'] = $bbcode->acronym_pass($commentsrow[$i]['comment_text']);
 			if(count($orig_autolink))
 			{
 				$commentsrow[$i]['comment_text'] = autolink_transform($commentsrow[$i]['comment_text'], $orig_autolink, $replacement_autolink);
