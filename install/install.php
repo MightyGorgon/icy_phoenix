@@ -108,6 +108,10 @@ if (!isset($_POST['install_step']))
 		{
 			define('CMS_LAYOUT_TABLE', $table_prefix . 'cms_layout');
 		}
+		if (!empty($current_ip_version) && !defined('ALBUM_TABLE'))
+		{
+			define('ALBUM_TABLE', $table_prefix . 'album');
+		}
 		$current_phpbb_version = $ip_sql->get_config_value('version');
 		$page_framework = new ip_page();
 

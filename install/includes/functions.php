@@ -943,7 +943,7 @@ function redirect($url, $return = false)
 
 	if (($url_parts === false) || empty($url_parts['scheme']) || !in_array($url_parts['scheme'], $allowed_protocols))
 	{
-		die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url');
+		die('Tried to redirect to potentially insecure url');
 	}
 
 	if ($return)

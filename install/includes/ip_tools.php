@@ -14,8 +14,15 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 $mode = $ip_functions->request_var('mode', '');
-$mode_test = ((substr($mode, 0, 6) == 'update') ? 'update' : $mode);
-$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_constants', 'fix_images_album', 'fix_posts', 'ren_move_images', 'update');
+if ($mode == 'update_phpbb')
+{
+	$mode_test = 'update_phpbb';
+}
+else
+{
+	$mode_test = ((substr($mode, 0, 6) == 'update') ? 'update' : $mode);
+}
+$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_constants', 'fix_images_album', 'fix_posts', 'ren_move_images', 'update_phpbb', 'update');
 $mode_test = in_array($mode_test, $mode_array) ? $mode_test : $mode_array[0];
 
 $action = $ip_functions->request_var('action', '');
@@ -323,6 +330,20 @@ switch ($mode_test)
 		$page_framework->page_footer(false);
 		break;
 
+	case 'update_phpbb':
+
+		$page_framework->page_header($lang['IcyPhoenix'], '', false, false);
+		echo('<br /><br />' . "\n");
+		$box_message = $lang['UpdateInProgress'];
+		$page_framework->box('yellow', 'red', $box_message);
+		echo('<br /><br />' . "\n");
+		include('schemas/sql_update_phpbb.' . PHP_EXT);
+		$box_message = $lang['UpdateCompleted_phpBB'] . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+		$page_framework->box('green', 'green', $box_message);
+		echo('<br /><br />' . "\n");
+		$page_framework->page_footer(false);
+		break;
+
 	case 'update':
 
 		$page_framework->page_header($lang['IcyPhoenix'], '', false, false);
@@ -381,17 +402,23 @@ switch ($mode_test)
 		else
 		{
 			$phpbb_update = '&amp;phpbb_update=true';
-			//$box_message = $lang['phpBB_Version_NotUpToDate'] . '<br /><br />' . sprintf($lang['ClickUpdate'], '<a href="' . $ip_functions->append_sid(THIS_FILE . '?mode=update') . '">', '</a>');
-			//$page_framework->box('yellow', 'red', $box_message);
+			// Comment "Force phpBB update" if you want to make all db updates all at once
+			// Force phpBB update - BEGIN
+			$box_message = $lang['phpBB_Version_NotUpToDate'] . '<br /><br />' . sprintf($lang['ClickUpdate'], '<a href="' . $ip_functions->append_sid(THIS_FILE . '?mode=update_phpbb') . '">', '</a>');
+			$page_framework->box('yellow', 'red', $box_message);
+			$page_framework->page_footer(false);
+			exit;
+			// Force phpBB update - END
 		}
 		//echo('<br /><br />');
+
 		if (($current_ip_version == $ip_version) && ($phpbb_update == ''))
 		{
-			$box_message = $lang['IcyPhoenix_Version_UpToDate'];
-			$page_framework->box('green', 'green', $box_message);
+			$needs_update = false;
 		}
 		else
 		{
+			$needs_update = true;
 			$phpbb_string = '';
 			if ($phpbb_update != '')
 			{
@@ -403,12 +430,22 @@ switch ($mode_test)
 			{
 				$ip_string = $lang['IcyPhoenix_Version_NotInstalled'] . '<br /><br />';
 			}
+		}
 
+		if ($needs_update == false)
+		{
+			$box_message = $lang['IcyPhoenix_Version_UpToDate'];
+			$page_framework->box('green', 'green', $box_message);
+		}
+		elseif (($needs_update == true) && version_compare($current_ip_version, '1.2.9.36', '<'))
+		{
+			$page_framework->box_upgrade_steps();
+		}
+		else
+		{
 			$box_message = $phpbb_string . $ip_string . sprintf($lang['ClickUpdate'], '<a href="' . $ip_functions->append_sid(THIS_FILE . '?mode=update' . $phpbb_update) . '">', '</a>');
 			$page_framework->box('yellow', 'red', $box_message);
 		}
-		echo('<br /><br />' . "\n");
-		$page_framework->box_upgrade_steps();
 		echo('<br /><br />' . "\n");
 		$page_framework->box_ip_tools();
 		$page_framework->page_footer(false);

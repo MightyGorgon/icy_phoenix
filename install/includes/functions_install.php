@@ -1473,7 +1473,7 @@ class ip_page
 			$table_output .= '<div class="post-text">' . "\n";
 			$table_output .= '<br /><span class="text_red"><b><span class="gen">' . $lang['ClickToClean'] . '</span></b></span><br /><br /><br />' . "\n";
 			$table_output .= '<ul type="circle">' . "\n";
-			$table_output .= '<li><a href="' . append_sid(THIS_FILE . '?mode=clean_old_files&amp;action=clean' . $lang_append) . '"><b>' . $lang['Clean_OldFiles_Explain'] . '</b></a></li>' . "\n";
+			$table_output .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=clean_old_files&amp;action=clean' . $lang_append) . '"><b>' . $lang['Clean_OldFiles_Explain'] . '</b></a></li>' . "\n";
 			$table_output .= '</ul>' . "\n";
 			$table_output .= '</div>' . "\n";
 		}
@@ -1546,8 +1546,8 @@ class ip_page
 					$table_output .= '<div class="post-text">' . "\n";
 					$table_output .= '<br /><span class="text_red"><b><span class="gen">' . $lang['ClickToFix'] . '</span></b></span><br /><br />' . "\n";
 					$table_output .= '<ul type="circle">' . "\n";
-					$table_output .= '<li><a href="' . append_sid(THIS_FILE . '?mode=fix_constants&amp;action=fix_all' . $lang_append) . '"><b>' . $lang['FixAllFiles'] . '</b></a></li>' . "\n";
-					$table_output .= '<li><a href="' . append_sid(THIS_FILE . '?mode=fix_constants&amp;action=fix_cms' . $lang_append) . '"><b>' . $lang['FixCMSPages'] . '</b></a></li>' . "\n";
+					$table_output .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants&amp;action=fix_all' . $lang_append) . '"><b>' . $lang['FixAllFiles'] . '</b></a></li>' . "\n";
+					$table_output .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants&amp;action=fix_cms' . $lang_append) . '"><b>' . $lang['FixCMSPages'] . '</b></a></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
 				}
@@ -1638,7 +1638,7 @@ class ip_page
 						{
 							@chmod($pic_new_file, 0755);
 							$pics_moved .= '<li><span class="gensmall">' . $pic_old_file . ' => ' . $pic_new_file . '</span></li>';
-							@unlink($pic_old_file);
+							//@unlink($pic_old_file);
 						}
 					}
 					else
@@ -1694,7 +1694,7 @@ class ip_page
 				break;
 
 			default:
-				$table_output .= '<form action="' . append_sid(THIS_FILE . '?mode=fix_images_album&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
+				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_images_album&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
 				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixPics'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
@@ -1815,7 +1815,7 @@ class ip_page
 				break;
 
 			default:
-				$table_output .= '<form action="' . append_sid(THIS_FILE . '?mode=fix_posts&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
+				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
 				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixPosts'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
@@ -1935,7 +1935,7 @@ class ip_page
 				break;
 
 			default:
-				$table_output .= '<form action="' . append_sid(THIS_FILE . '?mode=ren_move_images&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
+				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=ren_move_images&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
 				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixPics'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
@@ -1965,16 +1965,30 @@ class ip_page
 
 		$table_update_options .= '<div class="genmed"><br /><ol type="1">' . "\n";
 		$table_update_options .= '<li><span class="text_red"><strong>' . $lang['MakeFullBackup'] . '</strong></span><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_red">' . $lang['Update_phpBB'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_orange">' . $lang['MoveImages'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_green">' . $lang['Adjust_CMSPages'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_gray">' . $lang['Remove_BBCodeUID'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_blue">' . $lang['Merge_PostsTables'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_blue">' . $lang['Update_IcyPhoenix'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_blue">' . $lang['Clean_OldFiles'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_blue">' . $lang['Adjust_Config'] . '</span></a><br /><br /></li>' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_blue">' . $lang['Upload_NewFiles'] . '</span></a><br /><br /></li>' . "\n";
+		//$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_gray">' . $lang['Update_phpBB'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_orange">' . $lang['Remove_BBCodeUID'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_orange">' . $lang['Merge_PostsTables'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_orange">' . $lang['Update_IcyPhoenix'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><span class="text_red">' . $lang['Upload_NewFiles'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants' . $lang_append) . '"><span class="text_orange">' . $lang['Adjust_Config'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants' . $lang_append) . '"><span class="text_orange">' . $lang['Adjust_CMSPages'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_images_album' . $lang_append) . '"><span class="text_blue">' . $lang['MoveImagesAlbum'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=ren_move_images' . $lang_append) . '"><span class="text_blue">' . $lang['MoveImages'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=clean_old_files' . $lang_append) . '"><span class="text_green">' . $lang['Clean_OldFiles'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '</ol></div>' . "\n";
+
+		$table_update_options .= '<br />' . "\n";
+
+		$table_update_options .= '<div class="forumline" style="width:700px;padding:5px;">' . "\n";
+		$table_update_options .= '<strong>' . $lang['ColorsLegend'] . '</strong><br />' . "\n";
+		$table_update_options .= '<div class="gensmall"><ul>' . "\n";
+		$table_update_options .= '<li><span class="text_red">' . $lang['ColorsLegendRed'] . '</span></li>' . "\n";
+		$table_update_options .= '<li><span class="text_orange">' . $lang['ColorsLegendOrange'] . '</span></li>' . "\n";
+		$table_update_options .= '<li><span class="text_gray">' . $lang['ColorsLegendGray'] . '</span></li>' . "\n";
+		$table_update_options .= '<li><span class="text_blue">' . $lang['ColorsLegendBlue'] . '</span></li>' . "\n";
+		$table_update_options .= '<li><span class="text_green">' . $lang['ColorsLegendGreen'] . '</span></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+		$table_update_options .= '</div>' . "\n";
 
 		$table_update_options .= '<br />' . "\n";
 
@@ -1996,14 +2010,7 @@ class ip_page
 		//$this->box('yellow', 'red', 'Icy Phoenix');
 
 		$table_update_options = '';
-		$table_update_options .= '<br /><br />' . "\n";
 		$table_update_options .= '<div class="post-text">' . "\n";
-
-		// Fix Posts
-		$table_update_options .= '<span style="color:#228822;font-weight:bold">' . $lang['FixPosts'] . '</span><br />' . "\n";
-		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_red">' . $lang['FixPostsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
-		$table_update_options .= '</ul></div>' . "\n";
 
 		// Update Options
 		$table_update_options .= '<br /><br />' . "\n";
@@ -2022,6 +2029,13 @@ class ip_page
 
 		// Output the spoiler
 		$table_update_options .= $this->spoiler('update_options', $update_options, false);
+
+		// Fix Posts
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color:#228822;font-weight:bold">' . $lang['FixPosts'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_red">' . $lang['FixPostsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
 
 		// CHMOD
 		$table_update_options .= '<br /><br />' . "\n";
