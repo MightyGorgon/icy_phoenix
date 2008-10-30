@@ -20,11 +20,13 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_news_posters_func))
+if(!function_exists('imp_news_posters_func'))
 {
 	function imp_news_posters_func()
 	{
 		global $lang, $images, $template, $cms_config_vars, $block_id, $board_config, $db;
+
+		$template->_tpldata['news_poster.'] = array();
 
 		$page_link = htmlspecialchars($cms_config_vars['md_news_posters_page_link'][$block_id]);
 		//0 = alphabetical || 1 = News
@@ -128,4 +130,5 @@ if(!function_exists(imp_news_posters_func))
 }
 
 imp_news_posters_func();
+
 ?>

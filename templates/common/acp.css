@@ -1075,160 +1075,100 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 }
 
 .post-note a, .post-note a:visited { color: #666666; text-decoration: underline; }
-
 .post-note a:hover, .post-note a:active { color: #113355; text-decoration: underline; }
-
 .post-note-delete { float: right; }
 
-/*
-MG
-*/
-.bbcb_mg_codetitle {
-	background: #009900;
+/* MG BOXES */
+.bbcb_mg_codetitle, .post-text .mg_codetitle {
+	color: #ffffaa;
+	background: #559977 url('images/bbc_code.gif') no-repeat right;
 	border: 1px solid #dddddd;
+	font-weight: bold;
 	font-size: 10px;
-	color: #9AEF9E;
+	text-align: left;
 	padding: 5px;
 	width: 90%;
-	font-weight: bold;
-	text-align: left;
 	margin-top: 10px;
-	background: url(images/bbcb_mg_code.gif) #009900 no-repeat right;
 }
 
-.bbcb_mg_codediv {
-	background: #fafafa;
-	border: 1px solid #dddddd;
+.bbcb_mg_codediv, .post-text .mg_codediv {
 	color: #006600;
-	border-top: 0;
-	font: 12px Courier,"Courier New", sans-serif;
-	padding: 5px;
-	overflow: auto;
-	width: 90%;
-	height: 50px;
-	text-align: left;
-}
-
-.bbcb_mg_quotetitle {
-	background: #7799DD;
-	border: 1px solid #dddddd;
-	font-size: 10px;
-	color: #ECF0F6;
-	padding: 5px;
-	width: 90%;
-	font-weight: bold;
-	text-align: left;
-	margin-top: 10px;
-	background: url(images/bbcb_mg_quote.gif) #7799dd no-repeat right;
-}
-
-.bbcb_mg_quotediv {
 	background: #fafafa;
 	border: 1px solid #dddddd;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	color: #225566;
 	border-top: 0;
+	font: 12px Courier, "Courier New", sans-serif;
+	text-align: left;
+	padding: 5px;
 	overflow: auto;
 	width: 90%;
-	max-height: 200px;
-	text-align: left;
-	}
-
-.post-text .mg_codetitle {
-	display: block;
-	background: #009900;
-	border: 1px solid #dddddd;
-	font-size: 10px;
-	color: #9AEF9E;
-	padding: 5px;
-	width: 90%;
-	font-weight: bold;
-	text-align: left;
-	margin-top: 10px;
-	background: url(images/bbcb_mg_code.gif) #009900 no-repeat right;
+	/* height: 100px; */
 }
 
-.post-text .mg_codediv {
-	display: block;
+.bbcb_mg_quotetitle, .post-text .mg_quotetitle {
+	color: #446688;
+	background: #aaccff url('images/bbc_quote.gif') no-repeat right;
+	border: 1px solid #dddddd;
+	font-weight: bold;
+	font-size: 10px;
+	text-align: left;
+	padding: 5px;
+	width: 90%;
+	margin-top: 10px;
+}
+
+.bbcb_mg_attachtitle, .post-text .mg_attachtitle {
+	color: #ffdd99;
+	background: #ff9933 url('images/bbc_zip.gif') no-repeat right;
+	border: 1px solid #dddddd;
+	font-weight: bold;
+	font-size: 10px;
+	text-align: left;
+	padding: 5px;
+	width: 90%;
+	margin-top: 10px;
+}
+
+.bbcb_mg_quotediv, .post-text .mg_quotediv, .bbcb_mg_attachdiv, .post-text .mg_attachdiv {
+	color: #666666;
 	background: #fafafa;
 	border: 1px solid #dddddd;
-	color: #006600;
 	border-top: 0;
-	font: 12px Courier,"Courier New", sans-serif;
-	padding: 5px;
-	overflow: auto;
-	width: 90%;
-	height: 50px;
-	text-align: left;
-}
-
-.post-text .mg_quotetitle {
-	display: block;
-	background: #7799dd;
-	border: 1px solid #dddddd;
-	font-size: 10px;
-	color: #ECF0F6;
-	padding: 5px;
-	width: 90%;
-	font-weight: bold;
-	text-align: left;
-	margin-top: 10px;
-	background: url(images/bbcb_mg_quote.gif) #7799dd no-repeat right;
-}
-
-.post-text .mg_quotediv {
-	display: block;
-	background: #fafafa;
-	border: 1px solid #dddddd;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	color: #225566;
-	border-top: 0;
-	padding: 5px;
-	overflow: auto;
-	width: 90%;
 	text-align: left;
+	padding: 5px;
+	width: 90%;
+	overflow: auto;
+	direction: ltr;
+	/* max-height: 200px; */
 }
 
-.bbcb_mg_spoiler {
+.post-text .mg_codetitle, .post-text .mg_codediv, .post-text .mg_quotetitle, .post-text .mg_quotediv, .post-text .mg_attachtitle, .post-text .mg_attachdiv {
+	display: block;
+}
+
+.bbcb_mg_spoiler, .post-text .spoiler, .post-text .spoiler_trans {
+	background-color: #fafafa;
+	border: 1px solid #ff5500;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	color: #fafcfe;
 	line-height: 125%;
-	background-color: #fafcfe;
-	border: #000000;
-	border-style: solid;
-	border-left-width: 1px;
-	border-top-width: 1px;
-	border-right-width: 1px;
-	border-bottom-width: 1px;
+	margin: 5px 20px;
+	padding: 5px;
 }
 
 .post-text .spoiler {
 	display: block;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	color: #225566;
-	background-color: #fafafa;
-	border: 1px solid #ff5500;
-	margin: 5px 20px;
-	line-height: 125%;
-	padding: 5px;
+	color: #666666;
 }
 
 .post-text .spoiler_trans {
 	display: block;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
 	color: #fafafa;
-	background-color: #fafafa;
-	border: solid 1px #ff5500;
-	margin: 5px 20px;
 	width: auto;
-	padding: 5px;
 }
 
+/* MG COLORS CLASSES */
 .foundercolor,
 a.foundercolor,
 a.foundercolor:link,

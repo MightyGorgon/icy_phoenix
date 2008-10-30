@@ -96,20 +96,19 @@ function update_session(&$error_msg)
 		$guest_sql = " AND session_ip = '" . $user_ip . "'";
 	}
 
-	// Only get session data if the user was 2 minutes ago
-	$time = time()-120;
+	// Only get session data if the user was online 2 minutes ago
+	$time = time() - 120;
 	$sql = 'SELECT session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
 			WHERE session_user_id = ' . $userdata['user_id'] . '
-			AND session_time > ' . $time . $guest_sql . '
+				AND session_time > ' . $time . $guest_sql . '
 			LIMIT 1';
-
 	if(!($results = $db->sql_query($sql)))
 	{
-		$error_msg = "Can't read shoutbox session data";
+		$error_msg = 'Can\'t read shoutbox session data';
 	}
 
-	// We need to decided if we create an entry or update a previous one
+	// We need to decide if we create an entry or update a previous one
 	if($row = $db->sql_fetchrow($results))
 	{
 		$sql = "UPDATE " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
@@ -127,6 +126,16 @@ function update_session(&$error_msg)
 	{
 		$error_msg = 'Could not update Shoutbox session data';
 	}
+
+	$clean_time = time() - 86400;
+	// Clean old data...
+	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+			WHERE session_time < " . $clean_time;
+	if(!($results = $db->sql_query($sql)))
+	{
+		$error_msg = 'Could not update Shoutbox session data';
+	}
+
 }
 
 ?>

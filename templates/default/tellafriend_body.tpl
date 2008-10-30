@@ -16,11 +16,11 @@
 			<td><span class="gen"><b>{SENDER_MAIL}</b></span></td>
 		</tr>
 		<tr>
-			<td><span class="gen"><b>{L_TELL_FRIEND_RECIEVER_USER}</b></span></td>
+			<td><span class="gen"><b>{L_TELL_FRIEND_RECEIVER_USER}</b></span></td>
 			<td><input type="text" class="post" size="25" maxlength="40" name="friendname" /></td>
 		</tr>
 		<tr>
-			<td><span class="gen"><b>{L_TELL_FRIEND_RECIEVER_EMAIL}</b></span></td>
+			<td><span class="gen"><b>{L_TELL_FRIEND_RECEIVER_EMAIL}</b></span></td>
 			<td><input type="text" class="post" size="25" maxlength="40" name="friendemail" /></td>
 		</tr>
 		<tr>
@@ -30,8 +30,8 @@
 		</table>
 		<br />
 		<div class="center-block-text">
-			<input type="hidden" name="topic" size="25" maxlength="100" value="{TOPIC}" />
-			<input type="hidden" name="link" size="25" maxlength="100" value="{LINK}" />
+			<input type="hidden" name="topic" size="25" maxlength="100" value="{TOPIC_TITLE}" />
+			<input type="hidden" name="link" size="25" maxlength="100" value="{TOPIC_LINK}" />
 			<input type="submit" name="submit" class="mainoption" value="{L_SUBMIT}" />
 		</div>
 	<br />

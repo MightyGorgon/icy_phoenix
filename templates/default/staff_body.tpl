@@ -21,7 +21,7 @@
 			<br />{user_level.staff.AVATAR}
 		</span>
 	</td>
-	<td class="row1g" valign="top"><span class="genmed">{user_level.staff.FORUMS}</span></td>
+	<td class="row1g" valign="top"><span class="forumlink">{user_level.staff.FORUMS}</span></td>
 	<td class="row1g" valign="top">
 		<span class="genmed">
 			<b>{L_POSTS}:</b>&nbsp;{user_level.staff.POSTS}&nbsp;&nbsp;({user_level.staff.POST_PERCENT},&nbsp;ø&nbsp;{user_level.staff.POSTS_PER_DAY})<br />
@@ -40,9 +40,9 @@
 			{user_level.staff.SKYPE_IMG}
 		</span>
 	</td>
-	<td class="row1g row-center" valign="top"><span class="post-buttons">{user_level.staff.WWW}</span></td>
+	<td class="row1g row-center" valign="top"><span class="post-buttons">&nbsp;{user_level.staff.WWW}&nbsp;</span></td>
 </tr>
 <!-- END staff -->
 <!-- END user_level -->
-<tr><td class="catBottom" colspan="6">&nbsp;</td></tr>
+<tr><td class="cat" colspan="6">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

@@ -277,30 +277,35 @@ input.jumpbox { height: 18px; }
 	margin: 50px;
 }
 
-/* Yellow Card Mod - Changes for CA Styles */
-.img-ban a img { background-color: #990000; }
-.img-ban a:hover img { background-color: #ff0000; }
-.img-ban a:active img { background-color: #990000; }
+/* Hover Images - BEGIN */
+.img-btn a img {}
+.img-btn a:hover img {}
+.img-btn a:active img {}
+/* Hover Images - END */
 
-.img-warn a img { background-color: #ff9900; }
-.img-warn a:hover img { background-color: #ffff00; }
-.img-warn a:active img { background-color: #ff9900; }
+/* CARDS - BEGIN */
+.img-ban a img {}
+.img-ban a:hover img {}
+.img-ban a:active img {}
 
-.img-clear a img { background-color: #ffcc33; }
-.img-clear a:hover img { background-color: #FF7E00; }
-.img-clear a:active img { background-color: #ffcc33; }
+.img-warn a img {}
+.img-warn a:hover img {}
+.img-warn a:active img {}
 
-.img-report a img { background-color: #000099; }
-.img-report a:hover img { background-color: #0000FF; }
-.img-report a:active img { background-color: #000099; }
+.img-clear a img {}
+.img-clear a:hover img {}
+.img-clear a:active img {}
 
-.img-green a img { background-color: #009900; }
-.img-green a:hover img { background-color: #00FF00; }
-.img-green a:active img { background-color: #009900; }
+.img-report a img {}
+.img-report a:hover img {}
+.img-report a:active img {}
 
-/*
-MG
-*/
+.img-green a img {}
+.img-green a:hover img {}
+.img-green a:active img {}
+/* CARDS - END */
+
+/* MG - BEGIN */
 .text_cont_center {
 	display: block;
 	clear: both;
@@ -364,6 +369,7 @@ a.text_yellow:link,
 a.text_yellow:active,
 a.text_yellow:visited { color: #ffffaa; font-weight: bold; }
 a.text_yellow:hover { color: #ffffaa; text-decoration: underline; }
+/* MG - END */
 
 .highlight-w {
 	color: #dd2222;
@@ -414,7 +420,7 @@ ul.sitemap li {
 ul.sitemap li a {
 	background: transparent url('images/sitemapdocbullet.gif') no-repeat;
 	/*margin-left: -1.1em;*/
-	padding-left: 2.2em;
+	padding-left: 15px;
 }
 
 ul.sitemap li img {

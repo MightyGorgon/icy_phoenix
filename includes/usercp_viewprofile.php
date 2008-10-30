@@ -683,7 +683,7 @@ if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fi
 }
 include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT);
 
-include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 $profile_data = get_fields('WHERE view_in_profile = ' . VIEW_IN_PROFILE . ' AND users_can_view = ' . ALLOW_VIEW);
 $profile_names = array();
 
@@ -708,11 +708,11 @@ foreach($profile_data as $field)
 		WHERE user_id = $id";
 	if(!($result = $db->sql_query($sql)))
 	{
-		message_die(GENERAL_ERROR,'Could not obtain field value','',__LINE__,__FILE__,$sql);
+		message_die(GENERAL_ERROR,'Could not obtain field value', '', __LINE__, __FILE__, $sql);
 	}
 
 	$temp = $db->sql_fetchrow($result);
-	$profile_names[$name] = displayable_field_data($temp[$col_name],$field['field_type']);
+	$profile_names[$name] = displayable_field_data($temp[$col_name], $field['field_type']);
 	$tmp_field = $profile_names[$name];
 	if (isset($lang[$field_id . '_' . $tmp_field]))
 	{
@@ -721,11 +721,11 @@ foreach($profile_data as $field)
 
 	if($location == 1)
 	{
-		$contacts[] = '<td valign="top" class="row2"><b><span class="genmed">' . $field_name . '</span></b></td><td class="row1 post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$contacts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
 	}
 	else
 	{
-		$abouts[] = '<td valign="top" class="row2"><b><span class="genmed">' . $field_name . '</span></b></td><td class="row1 post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$abouts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
 	}
 }
 

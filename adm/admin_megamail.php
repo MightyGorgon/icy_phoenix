@@ -75,9 +75,9 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 		message_die(GENERAL_ERROR, 'Could not insert the data into '. MEGAMAIL_TABLE, '', __LINE__, __FILE__, $sql);
 	}
 	$mail_id = $db->sql_nextid();
-	$url= append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' .$mail_session_id);
+	$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' .$mail_session_id);
 
-	$redirect_url = $url;
+	$redirect_url = ADM . '/' . $url;
 	meta_refresh($batchwait, $redirect_url);
 
 	$message = sprintf($lang['megamail_created_message'], '<a href="' . $url . '">', '</a>');
@@ -268,7 +268,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 		{
 			$url= append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
 
-			$redirect_url = $url;
+			$redirect_url = ADM . '/' . $url;
 			meta_refresh($mail_data['batch_wait'], $redirect_url);
 
 			$message = sprintf($lang['megamail_send_message'] ,$mail_data['batch_start'], ($mail_data['batch_start']+$mail_data['batch_size']), '<a href="' . $url . '">', '</a>');
@@ -277,7 +277,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 		{
 			$url= append_sid('admin_megamail.' . PHP_EXT);
 
-			$redirect_url = $url;
+			$redirect_url = ADM . '/' . $url;
 			meta_refresh($mail_data['batch_wait'], $redirect_url);
 
 			$message =  $lang['megamail_done']. '<br />' . sprintf($lang['megamail_proceed'], '<a href="' . $url . '">', '</a>');

@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1600_News_Admin']['130_XS_News'] = $filename;
@@ -28,6 +28,7 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+$db->clear_cache('xs_config_');
 require_once(IP_ROOT_PATH . 'includes/functions_xs_admin.' . PHP_EXT);
 require_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 
@@ -47,11 +48,11 @@ if(empty($template->xs_version) || $template->xs_version < 6)
 
 // Query Config
 $sql = "SELECT * FROM " . XS_NEWS_CONFIG_TABLE;
-if( !($result = $db->sql_query($sql, false, 'xs_config_')) )
+if(!($result = $db->sql_query($sql)))
 {
 	message_die(CRITICAL_ERROR, 'Could not query XS News config information', '', __LINE__, __FILE__, $sql);
 }
-while ( $row = $db->sql_fetchrow($result) )
+while ($row = $db->sql_fetchrow($result))
 {
 	$xs_news_config[$row['config_name']] = $row['config_value'];
 }
@@ -112,9 +113,9 @@ switch ($xs_news_config['xs_news_dateformat']) {
 //
 // Mode setting
 //
-if( isset($_POST['mode']) || isset($_GET['mode']) )
+if(isset($_POST['mode']) || isset($_GET['mode']))
 {
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
 	$mode = htmlspecialchars($mode);
 }
 else
@@ -122,19 +123,19 @@ else
 	$mode = "";
 }
 
-if ( isset($_POST['cancel']) )
+if (isset($_POST['cancel']))
 {
 	$mode = '';
 }
 
-if( isset($_POST['addnews']) )
+if(isset($_POST['addnews']))
 {
-	$mode = ( isset($_POST['addnews']) ) ? "addnews" : "";
+	$mode = (isset($_POST['addnews'])) ? 'addnews' : '';
 }
 
-$confirm = ( isset($_POST['confirm']) ) ? true : 0;
+$confirm = (isset($_POST['confirm'])) ? true : 0;
 
-if( !empty($mode) )
+if(!empty($mode))
 {
 
 	switch($mode)
@@ -150,30 +151,29 @@ if( !empty($mode) )
 			}
 			else
 			{
-				while( $row = $db->sql_fetchrow($result) )
+				while($row = $db->sql_fetchrow($result))
 				{
 					$config_name = $row['config_name'];
 					$config_value = $row['config_value'];
 					$default_config[$config_name] = isset($_POST['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
 
-					$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
+					$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
 
-					if( isset($_POST['submit']) )
+					if(isset($_POST['submit']))
 					{
 						$sql = "UPDATE " . XS_NEWS_CONFIG_TABLE . " SET
 							config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
 							WHERE config_name = '$config_name'";
-						if( !$db->sql_query($sql) )
+						if(!$db->sql_query($sql))
 						{
 							message_die(GENERAL_ERROR, "Failed to update XS News general configuration for $config_name", "", __LINE__, __FILE__, $sql);
 						}
 					}
 				}
 
-				if( isset($_POST['submit']) )
+				if(isset($_POST['submit']))
 				{
 					$message = $lang['n_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-
 					message_die(GENERAL_MESSAGE, $message);
 				}
 			}
@@ -182,16 +182,16 @@ if( !empty($mode) )
 			$newmode = 'config';
 			$buttonvalue = $lang['Update'];
 
-			$show_xs_news_yes = ( $new['xs_show_news'] ) ? 'checked="checked"' : '';
-			$show_xs_news_no = ( !$new['xs_show_news'] ) ? 'checked="checked"' : '';
+			$show_xs_news_yes = ($new['xs_show_news']) ? 'checked="checked"' : '';
+			$show_xs_news_no = (!$new['xs_show_news']) ? 'checked="checked"' : '';
 
-			$show_xs_ticker_yes = ( $new['xs_show_ticker'] ) ? 'checked="checked"' : '';
-			$show_xs_ticker_no = ( !$new['xs_show_ticker'] ) ? 'checked="checked"' : '';
+			$show_xs_ticker_yes = ($new['xs_show_ticker']) ? 'checked="checked"' : '';
+			$show_xs_ticker_no = (!$new['xs_show_ticker']) ? 'checked="checked"' : '';
 
-			$show_xs_ticker_subtitle_yes = ( $new['xs_show_ticker_subtitle'] ) ? 'checked="checked"' : '';
-			$show_xs_ticker_subtitle_no = ( !$new['xs_show_ticker_subtitle'] ) ? 'checked="checked"' : '';
-			$show_xs_news_subtitle_yes = ( $new['xs_show_news_subtitle'] ) ? 'checked="checked"' : '';
-			$show_xs_news_subtitle_no = ( !$new['xs_show_news_subtitle'] ) ? 'checked="checked"' : '';
+			$show_xs_ticker_subtitle_yes = ($new['xs_show_ticker_subtitle']) ? 'checked="checked"' : '';
+			$show_xs_ticker_subtitle_no = (!$new['xs_show_ticker_subtitle']) ? 'checked="checked"' : '';
+			$show_xs_news_subtitle_yes = ($new['xs_show_news_subtitle']) ? 'checked="checked"' : '';
+			$show_xs_news_subtitle_no = (!$new['xs_show_news_subtitle']) ? 'checked="checked"' : '';
 
 			$xs_news_dateformat_select = '<select name="xs_news_dateformat">';
 			$xs_news_dateformat_select .= '<option value="0">' . create_date("d M Y", time(), $board_config['board_timezone']) . '</option>';
@@ -265,10 +265,10 @@ if( !empty($mode) )
 				$news_date = create_date($date_format_ae, $row['news_date'], $board_config['board_timezone']);
 				$news_item = xsm_unprepare_message($row['news_text']);
 
-				$news_display_yes = ( $row['news_display'] ) ? 'checked="checked"' : '';
-				$news_display_no = ( !$row['news_display'] ) ? 'checked="checked"' : '';
-				$news_smilies_yes = ( $row['news_smilies'] ) ? 'checked="checked"' : '';
-				$news_smilies_no = ( !$row['news_smilies'] ) ? 'checked="checked"' : '';
+				$news_display_yes = ($row['news_display']) ? 'checked="checked"' : '';
+				$news_display_no = (!$row['news_display']) ? 'checked="checked"' : '';
+				$news_smilies_yes = ($row['news_smilies']) ? 'checked="checked"' : '';
+				$news_smilies_no = (!$row['news_smilies']) ? 'checked="checked"' : '';
 
 			}
 			else
@@ -296,8 +296,8 @@ if( !empty($mode) )
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_SUBMIT_VALUE' => $buttonvalue,
 
-				'L_PAGE_TITLE' => ( $newmode == 'modnews' ) ? $lang['n_edit_page_title'] : $lang['n_add_page_title'],
-				'L_PAGE_TITLE_EXPLAIN' => ( $newmode == 'modnews' ) ? $lang['n_edit_page_title_explain'] : $lang['n_add_page_title_explain'],
+				'L_PAGE_TITLE' => ($newmode == 'modnews') ? $lang['n_edit_page_title'] : $lang['n_add_page_title'],
+				'L_PAGE_TITLE_EXPLAIN' => ($newmode == 'modnews') ? $lang['n_edit_page_title_explain'] : $lang['n_add_page_title_explain'],
 				'L_NEWS_SETTINGS' => $l_title,
 
 				'L_NEWS_DATE' => $lang['n_news_date'],
@@ -324,7 +324,7 @@ if( !empty($mode) )
 			//
 			// Create a new news item in the DB
 			//
-			if( trim($_POST['news_text']) == "" )
+			if(trim($_POST['news_text']) == "")
 			{
 				$message = $lang['n_create_item_null'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -332,14 +332,14 @@ if( !empty($mode) )
 
 			$news_item = xsm_prepare_message(trim($_POST['news_text']));
 
-			$news_date = ( (empty($_POST['news_date'])) ? create_date($date_format_ae, time(), $board_config['board_timezone']) : $_POST['news_date'] );
+			$news_date = ((empty($_POST['news_date'])) ? create_date($date_format_ae, time(), $board_config['board_timezone']) : $_POST['news_date']);
 
 			$date_split = explode('/', $news_date);
-			$date_month = ( ($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[0] : $date_split[1] );
-			$date_day = ( ($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[1] : $date_split[0] );
-			$date_error = ( ($xs_news_config['xs_news_dateformat'] == 1) ? 'mm/dd' : 'dd/mm' );
+			$date_month = (($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[0] : $date_split[1]);
+			$date_day = (($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[1] : $date_split[0]);
+			$date_error = (($xs_news_config['xs_news_dateformat'] == 1) ? 'mm/dd' : 'dd/mm');
 
-			if( !checkdate($date_month, $date_day, $date_split[2]) )
+			if(!checkdate($date_month, $date_day, $date_split[2]))
 			{
 				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -350,7 +350,7 @@ if( !empty($mode) )
 
 			$sql = "SELECT MAX(news_id) AS max_id
 				FROM " . XS_NEWS_TABLE;
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't get next ID number from News table", "", __LINE__, __FILE__, $sql);
 			}
@@ -361,7 +361,7 @@ if( !empty($mode) )
 
 			$sql = "INSERT INTO " . XS_NEWS_TABLE . " (news_id, news_date, news_text, news_display, news_smilies" . ")
 				VALUES ('" . $next_id . "', '" . $news_date_posting . "', '" . str_replace("\'", "''", $news_item) . "', '" . intval($_POST['news_display']) . "', '" . intval($_POST['news_smilies']) . "')";
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't insert row in news table", "", __LINE__, __FILE__, $sql);
 			}
@@ -378,14 +378,14 @@ if( !empty($mode) )
 			//
 			$news_item = xsm_prepare_message(trim($_POST['news_text']));
 
-			$news_date = ( (empty($_POST['news_date'])) ? create_date($date_format_ae, time(), $board_config['board_timezone']) : $_POST['news_date'] );
+			$news_date = ((empty($_POST['news_date'])) ? create_date($date_format_ae, time(), $board_config['board_timezone']) : $_POST['news_date']);
 
 			$date_split = explode('/', $news_date);
-			$date_month = ( ($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[0] : $date_split[1] );
-			$date_day = ( ($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[1] : $date_split[0] );
-			$date_error = ( ($xs_news_config['xs_news_dateformat'] == 1) ? 'mm/dd' : 'dd/mm' );
+			$date_month = (($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[0] : $date_split[1]);
+			$date_day = (($xs_news_config['xs_news_dateformat'] == 1) ? $date_split[1] : $date_split[0]);
+			$date_error = (($xs_news_config['xs_news_dateformat'] == 1) ? 'mm/dd' : 'dd/mm');
 
-			if( !checkdate($date_month, $date_day, $date_split[2]) )
+			if(!checkdate($date_month, $date_day, $date_split[2]))
 			{
 				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -396,7 +396,7 @@ if( !empty($mode) )
 			$sql = "UPDATE " . XS_NEWS_TABLE . "
 				SET news_date = " . $news_date_posting . ", news_text = '" . str_replace("\'", "''", $news_item) . "', news_display = " . intval($_POST['news_display']) . ", news_smilies = " . intval($_POST['news_smilies']). "
 				WHERE news_id = " . intval($_POST['id']);
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't update news information", "", __LINE__, __FILE__, $sql);
 			}
@@ -420,11 +420,11 @@ if( !empty($mode) )
 			$news_info = xsm_get_info('news', $news_id);
 			$name = $news_info['n_news_item'];
 
-			if( $confirm )
+			if($confirm)
 			{
 				$sql = "DELETE FROM " . XS_NEWS_TABLE . "
 					WHERE news_id = $news_id";
-				if( !$result = $db->sql_query($sql) )
+				if(!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, "Couldn't delete news item", "", __LINE__, __FILE__, $sql);
 				}

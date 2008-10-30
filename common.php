@@ -143,7 +143,15 @@ else
 // CrackerTracker v5.x
 // Uncomment the following define to disable CT GET and POST parsing.
 //define('MG_KILL_CTRACK', true);
-include(IP_ROOT_PATH . 'ctracker/engines/ct_security.' . PHP_EXT);
+if(defined('MG_KILL_CTRACK'))
+{
+	$ct_rules = array();
+	define('protection_unit_one', true);
+}
+else
+{
+	include(IP_ROOT_PATH . 'ctracker/engines/ct_security.' . PHP_EXT);
+}
 // CrackerTracker v5.x
 
 // Protect against GLOBALS tricks
@@ -276,7 +284,10 @@ if (defined('CASH_MOD') && defined('IN_CASHMOD'))
 }
 // MG Cash MOD For IP - END
 // We do not need this any longer, unset for safety purposes
+unset($dbuser);
 unset($dbpasswd);
+unset($db->password);
+unset($sql);
 
 //
 // Obtain and encode users IP
@@ -296,10 +307,22 @@ include(IP_ROOT_PATH . 'ctracker/engines/ct_ipblocker.' . PHP_EXT);
 // CrackerTracker v5.x
 
 // Setup site wide options, if this fails then we output a CRITICAL_ERROR since basic forum information is not available
-
-//BEGIN Getting Board Configuration
+if ((defined('IN_ADMIN') || defined('IN_CMS')) && !defined('ACP_MODULES'))
+{
+	// If we are in ACP it is better to clear some files in cache to make sure all options are updated
+	$db->clear_cache('config_');
+	if (defined('IN_ADMIN'))
+	{
+		$db->clear_cache('album_config_');
+		$db->clear_cache('auth_');
+		$db->clear_cache('cms_config_');
+		$db->clear_cache('ct_config_');
+		$db->clear_cache('smileys_');
+		$db->clear_cache('themes_');
+	}
+}
 $sql = "SELECT * FROM " . CONFIG_TABLE;
-if (CACHE_CFG == true)
+if ((CACHE_CFG == true) && !defined('IN_ADMIN') && !defined('IN_CMS'))
 {
 	if(!($result = $db->sql_query($sql, false, 'config_')))
 	{
@@ -318,7 +341,6 @@ while ($row = $db->sql_fetchrow($result))
 	$board_config[$row['config_name']] = $row['config_value'];
 }
 $db->sql_freeresult($result);
-//END Getting Board Configuration
 
 // Time Management - BEGIN
 // PARSE DATEFORMAT TO GET TIME FORMAT
@@ -365,13 +387,12 @@ if (($board_config['url_rw'] == true) || ($board_config['url_rw_guests'] == true
 	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
-// Mighty Gorgon - Change Lang/Style - Begin
-if (isset($_GET[LANG_URL]) || isset($_POST[LANG_URL]))
+// Mighty Gorgon - Change Lang/Style - BEGIN
+$test_language = request_var(LANG_URL, '');
+if ($test_language != '')
 {
-	$language = urldecode((isset($_GET[LANG_URL])) ? $_GET[LANG_URL] : $_POST[LANG_URL]);
-	$language = strtr($language, array_flip(get_html_translation_table(HTML_ENTITIES)));
-	$language = htmlspecialchars($language);
-	$board_config['default_lang'] = $language;
+	$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
+	$board_config['default_lang'] = is_dir(IP_ROOT_PATH . 'language/lang_' . $test_language) ? $test_language : $board_config['default_lang'];
 	setcookie($board_config['cookie_name'] . '_lang', $board_config['default_lang'], (time() + 86400), $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
 }
 else
@@ -382,10 +403,11 @@ else
 	}
 }
 
-if (isset($_GET[STYLE_URL]) || isset($_POST[STYLE_URL]))
+$test_style = request_var(STYLE_URL, 0);
+if ($test_style > 0)
 {
 	$old_style = $board_config['default_style'];
-	$board_config['default_style'] = urldecode((isset($_GET[STYLE_URL])) ? intval($_GET[STYLE_URL]) : intval($_POST[STYLE_URL]));
+	$board_config['default_style'] = urldecode($test_style);
 	$board_config['default_style'] = (check_style_exists($board_config['default_style']) == false) ? $old_style : $board_config['default_style'];
 	setcookie($board_config['cookie_name'] . '_style', $board_config['default_style'], (time() + 86400), $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
 }
@@ -396,7 +418,7 @@ else
 		$board_config['default_style'] = $_COOKIE[$board_config['cookie_name'] . '_style'];
 	}
 }
-// Mighty Gorgon - Change Lang/Style - End
+// Mighty Gorgon - Change Lang/Style - END
 
 if (file_exists('install'))
 {

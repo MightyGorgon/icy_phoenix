@@ -23,7 +23,7 @@ if (!defined('IN_ICYPHOENIX'))
 // Versioning
 $fap_version = '1.5.0';
 $phpbb_version = '.0.23';
-$ip_version = '1.2.10.37';
+$ip_version = '1.2.13.40';
 
 // CHMOD
 $chmod_777 = array();
@@ -46,15 +46,10 @@ $chmod_777[] = '../files/album/med_cache';
 $chmod_777[] = '../files/album/users';
 $chmod_777[] = '../files/album/wm_cache';
 $chmod_777[] = '../files/posted_images';
+$chmod_777[] = '../files/screenshots';
 $chmod_777[] = '../files/thumbs';
 $chmod_777[] = '../images/avatars';
 $chmod_777[] = '../logs';
-$chmod_777[] = '../pafiledb/uploads';
-$chmod_777[] = '../pafiledb/cache';
-$chmod_777[] = '../pafiledb/cache/templates';
-//$chmod_777[] = '../pafiledb/cache/templates/ca_aphrodite';
-$chmod_777[] = '../pafiledb/cache/templates/mg_themes';
-$chmod_777[] = '../pafiledb/images/screenshots';
 
 $chmod_666 = array();
 $chmod_666[] = '../includes/def_themes.php';

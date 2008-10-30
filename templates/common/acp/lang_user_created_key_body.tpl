@@ -5,15 +5,15 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th nowrap="nowrap" colspan="2">{L_KEY}</th></tr>
 <tr>
-	<td class="row1" width="40%"><span class="gen">{L_KEY_MAIN}</span><br /><span class="gensmall">{L_KEY_MAIN_EXPLAIN}</span></td>
+	<td class="row1" width="40%"><span class="genmed"><strong>{L_KEY_MAIN}</strong></span><br /><span class="gensmall">{L_KEY_MAIN_EXPLAIN}</span></td>
 	<td class="row2" width="60%"><input type="text" class="post" name="new_main" size="64" value="{KEY_MAIN}" /></td>
 </tr>
 <tr>
-	<td class="row1" width="40%"><span class="gen">{L_KEY_SUB}</span><br /><span class="gensmall">{L_KEY_SUB_EXPLAIN}</span></td>
+	<td class="row1" width="40%"><span class="genmed"><strong>{L_KEY_SUB}</strong></span><br /><span class="gensmall">{L_KEY_SUB_EXPLAIN}</span></td>
 	<td class="row2" width="60%"><input type="text" class="post" name="new_sub" size="64" value="{KEY_SUB}" /></td>
 </tr>
 <tr>
-	<td class="row1" width="40%"><span class="gen">{L_PACK}</span><br /><span class="gensmall">{L_PACK_EXPLAIN}</span></td>
+	<td class="row1" width="40%"><span class="genmed"><strong>{L_PACK}</strong></span><br /><span class="gensmall">{L_PACK_EXPLAIN}</span></td>
 	<td class="row2" width="60%"><span class="gen">{S_PACKS}</span></td>
 </tr>
 <!--

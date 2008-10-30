@@ -374,7 +374,7 @@ function insertNewContent(liId, liName, liText, liTime, last_id)
 	if(last_id != -1)
 	{
 		//Fat.fade_element(id, 30, 2000, '{T_FONTCOLOR3}');
-		Fat.fade_element(id, 30, 2000, '#FF5500');
+		Fat.fade_element(id, 30, 2000, '#ff5500');
 		// Finally we can set the cells classes after the fade
 		setTimeout("classChanger('" + newRow.id + "');", 2000);
 		return true;
@@ -553,4 +553,131 @@ function getHTTPObject()
 	return xmlhttp;
 }
 </script>
+
+<!-- ONLINE BLOCK - BEGIN -->
+<script type="text/javascript">
+<!--
+var displayed = new Array();
+// Array to store the users online from the XmlRquest
+var dbonline = new Array();
+var on_total, on_reg, on_guest = 0;
+
+// Tell the script to update the online list
+update_online = true;
+
+function update_counters (ctotal, cusers, cguest)
+{
+	var total_c = document.getElementById('total_c').innerHTML = ctotal;
+	var user_c = document.getElementById('user_c').innerHTML = cusers;
+	var guest_c = document.getElementById('guests_c').innerHTML = cguest;
+}
+
+// Searchs for search_term in all values of array
+function in_array(search_term, array)
+{
+	var i = array.length;
+	if (i > 0)
+	{
+		do
+		{
+			if (array[i] === search_term)
+			{
+				return true;
+			}
+		} while (i--);
+	}
+	return false;
+}
+
+// Searchs for obj in all username values of dbonline
+function array_search(obj)
+{
+	for (var x = 0; x < dbonline.length; x++)
+	{
+		if (dbonline[x]['username'] == obj)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+// Get users already displayed as online
+function get_displayed()
+{
+	displayed.length = 0;
+	var y = 0;
+	var list = document.getElementById('online_list');
+	for (var x = 0; x < list.childNodes.length; x++)
+	{
+		if(list.childNodes[x].childNodes[0].tagName == 'A')
+		{
+			displayed[x] = list.childNodes[x].childNodes[0].innerHTML;
+		}
+		else if (list.childNodes[x].childNodes[0].tagName == 'B')
+		{
+			displayed[x] = list.childNodes[x].childNodes[0].childNodes[0].innerHTML;
+		}
+	}
+}
+
+function updateOnline()
+{
+	// Get users already displayed
+	get_displayed()
+
+	// Remove users offline
+	for (var x = 0; x < displayed.length; x++)
+	{
+		if (!(array_search(displayed[x])))
+		{
+			cont = document.getElementById(displayed[x]);
+			cont.parentNode.removeChild(cont);
+		}
+	}
+
+	// Add new users online
+	var list = document.getElementById('online_list');
+	for (var y = 0; y < dbonline.length; y++)
+	{
+
+		if (!(in_array(dbonline[y]['username'], displayed)))
+		{
+			var li = document.createElement('span');
+			var style, bb, be;
+			li.setAttribute('id', dbonline[y]['username'])
+			li.setAttribute('align', 'left')
+			if (dbonline[y]['style'] != '')
+			{
+				style = dbonline[y]['style'];
+				//bb = '&nbsp;&#8226;&nbsp;';
+				bb = '';
+				be = '';
+			}
+			else
+			{
+				style = '';
+				bb = '';
+				be = '';
+			}
+
+			// Remove this if you want to display each user on a new line!
+			if (y > 0)
+			{
+				bb = ', ';
+			}
+
+			//li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="postlink" target="_blank"' + style + '>' + dbonline[y]['username'] + '</a>' + be;
+			li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="gensmall" target="_blank"' + dbonline[y]['style'] + '>' + dbonline[y]['username'] + '</a>' + be;
+			list.appendChild(li);
+			Fat.fade_element(dbonline[y]['username'], 30, 2000, '#ff5500');
+		}
+	}
+
+	// Reset the dbonline array
+	dbonline.length = 0;
+}
+//-->
+</script>
+<!-- ONLINE BLOCK - END -->
 <!-- END view_shoutbox -->

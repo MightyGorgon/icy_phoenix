@@ -42,6 +42,11 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true; // We do not send the page header right here to prevent problems with GZIP-compression
 require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+
+@set_time_limit(0);
+$mem_limit = check_mem_limit();
+@ini_set('memory_limit', $mem_limit);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
@@ -466,11 +471,11 @@ switch($mode_id)
 				$template->pparse('body');
 				break;
 			case 'check_user': // Check user tables
-				echo("<h1>" . $lang['Checking_user_tables'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_user_tables'] . '</h1>' . "\n");
 				lock_db();
 
 				// Check for missing anonymous user
-				echo("<p class=\"gen\"><b>" . $lang['Checking_missing_anonymous'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_missing_anonymous'] . '</b></p>' . "\n");
 				$sql = "SELECT user_id FROM " . USERS_TABLE . "
 					WHERE user_id = " . ANONYMOUS;
 				$result = $db->sql_query($sql);
@@ -492,11 +497,11 @@ switch($mode_id)
 					{
 						throw_error("Couldn't add user data!", __LINE__, __FILE__, $sql);
 					}
-					echo("<p class=\"gen\">" . sprintf($lang['Anonymous_recreated'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Anonymous_recreated'], $affected_rows) . '</p>' . "\n");
 				}
 
 				// Update incorrect pending information: either a single user group with pending state or a group with pending state NULL
-				echo("<p class=\"gen\"><b>" . $lang['Checking_incorrect_pending_information'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_incorrect_pending_information'] . '</b></p>' . "\n");
 				$db_updated = false;
 				// Update the cases where user_pending is null (there were some cases reported, so we just do it)
 				$sql = "UPDATE " . USER_GROUP_TABLE . "
@@ -511,12 +516,12 @@ switch($mode_id)
 				if ($affected_rows == 1)
 				{
 					$db_updated = true;
-					echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_pendig_user'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Updating_invalid_pendig_user'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif ($affected_rows > 1)
 				{
 					$db_updated = true;
-					echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_pendig_users'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Updating_invalid_pendig_users'], $affected_rows) . '</p>' . "\n");
 				}
 				// Check for pending single user groups
 				if (check_mysql_version())
@@ -550,7 +555,7 @@ switch($mode_id)
 				{
 					$db_updated = true;
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Updating_pending_information'] . ": $record_list</p>\n");
+					echo('<p class="gen">' . $lang['Updating_pending_information'] . ": $record_list</p>\n");
 					$sql = "UPDATE " . USER_GROUP_TABLE . "
 						SET user_pending = 0
 						WHERE group_id IN ($record_list)";
@@ -566,7 +571,7 @@ switch($mode_id)
 				}
 
 				// Checking for users without a single user group
-				echo("<p class=\"gen\"><b>" . $lang['Checking_missing_user_groups'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_missing_user_groups'] . '</b></p>' . "\n");
 				$db_updated = false;
 				$sql = "SELECT u.user_id, Sum(g.group_single_user) AS group_count
 					FROM " . USERS_TABLE . " u
@@ -595,8 +600,8 @@ switch($mode_id)
 				{
 					$db_updated = true;
 					$record_list = implode(',', $multiple_groups);
-					echo("<p class=\"gen\">" . $lang['Found_multiple_SUG'] . ":</p>\n");
-					echo("<font class=\"gen\"><ul>\n");
+					echo('<p class="gen">' . $lang['Found_multiple_SUG'] . ":</p>\n");
+					echo("<div class=\"post-text\"><ul>\n");
 					$list_open = true;
 					echo("<li>" . $lang['Resolving_user_id'] . ": $record_list</li>\n");
 					if (check_mysql_version())
@@ -646,7 +651,7 @@ switch($mode_id)
 					{
 						throw_error("Couldn't delete groups!", __LINE__, __FILE__, $sql);
 					}
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				// Create single user groups
@@ -654,7 +659,7 @@ switch($mode_id)
 				{
 					$db_updated = true;
 					$record_list = implode(',', $missing_groups);
-					echo("<p class=\"gen\">" . $lang['Recreating_SUG'] . ": $record_list</p>\n");
+					echo('<p class="gen">' . $lang['Recreating_SUG'] . ": $record_list</p>\n");
 					for($i = 0; $i < count($missing_groups); $i++)
 					{
 						$group_name = ($missing_groups[$i] == ANONYMOUS) ? 'Anonymous' : '';
@@ -681,7 +686,7 @@ switch($mode_id)
 				}
 
 				// Check for group moderators who do not exist
-				echo("<p class=\"gen\"><b>" . $lang['Checking_for_invalid_moderators'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_for_invalid_moderators'] . '</b></p>' . "\n");
 				$sql = "SELECT g.group_id, g.group_name
 					FROM " . GROUPS_TABLE . " g
 						LEFT JOIN " . USERS_TABLE . " u ON g.group_moderator = u.user_id
@@ -696,8 +701,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\"><b>" . $lang['Updating_Moderator'] . ":</b></p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen"><b>' . $lang['Updating_Moderator'] . ":</b></p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . htmlspecialchars($row['group_name']) . " (" . $row['group_id'] . ")</li>\n");
@@ -713,7 +718,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -722,7 +727,7 @@ switch($mode_id)
 				}
 
 				// Check for group moderators who are not member of the group they moderate
-				echo("<p class=\"gen\"><b>" . $lang['Checking_moderator_membership'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_moderator_membership'] . '</b></p>' . "\n");
 				$sql = "SELECT group_id, group_name, group_moderator
 					FROM " . GROUPS_TABLE . " g
 					WHERE g.group_single_user = 0";
@@ -746,8 +751,8 @@ switch($mode_id)
 					{
 						if (!$list_open)
 						{
-							echo("<p class=\"gen\"><b>" . $lang['Updating_mod_membership'] . ":</b></p>\n");
-							echo("<font class=\"gen\"><ul>\n");
+							echo('<p class="gen"><b>' . $lang['Updating_mod_membership'] . ":</b></p>\n");
+							echo("<div class=\"post-text\"><ul>\n");
 							$list_open = true;
 						}
 						echo("<li>" . htmlspecialchars($row['group_name']) . " (" . $row['group_id'] . ") - " . $lang['Moderator_added'] . "</li>\n");
@@ -763,8 +768,8 @@ switch($mode_id)
 					{
 						if (!$list_open)
 						{
-							echo("<p class=\"gen\"><b>" . $lang['Updating_mod_membership'] . ":</b></p>\n");
-							echo("<font class=\"gen\"><ul>\n");
+							echo('<p class="gen"><b>' . $lang['Updating_mod_membership'] . ":</b></p>\n");
+							echo("<div class=\"post-text\"><ul>\n");
 							$list_open = true;
 						}
 						echo("<li>" . htmlspecialchars($row['group_name']) . " (" . $row['group_id'] . ") - " . $lang['Moderator_changed_pending'] . "</li>\n");
@@ -783,7 +788,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -792,7 +797,7 @@ switch($mode_id)
 				}
 
 				// Remove user-group data without a valid user
-				echo("<p class=\"gen\"><b>" . $lang['Remove_invalid_user_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Remove_invalid_user_data'] . '</b></p>' . "\n");
 				$sql = "SELECT ug.user_id
 					FROM " . USER_GROUP_TABLE . " ug
 						LEFT JOIN " . USERS_TABLE . " u ON ug.user_id = u.user_id
@@ -822,11 +827,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -835,7 +840,7 @@ switch($mode_id)
 				}
 
 				// Remove groups without any members
-				echo("<p class=\"gen\"><b>" . $lang['Remove_empty_groups'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Remove_empty_groups'] . '</b></p>' . "\n");
 				// Since we alread added the moderators to the groups this will only include rests of single user groups. So we don't need to display more information
 				$sql = "SELECT g.group_id
 					FROM " . GROUPS_TABLE . " g
@@ -865,11 +870,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -878,7 +883,7 @@ switch($mode_id)
 				}
 
 				// Remove user-group data without a valid group
-				echo("<p class=\"gen\"><b>" . $lang['Remove_invalid_group_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Remove_invalid_group_data'] . '</b></p>' . "\n");
 				$sql = "SELECT ug.group_id
 					FROM " . USER_GROUP_TABLE . " ug
 						LEFT JOIN " . GROUPS_TABLE . " g ON ug.group_id = g.group_id
@@ -908,11 +913,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -921,7 +926,7 @@ switch($mode_id)
 				}
 
 				// Checking for invalid ranks
-				echo("<p class=\"gen\"><b>" . $lang['Checking_ranks'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_ranks'] . '</b></p>' . "\n");
 				$sql = "SELECT u.user_id, u.username
 					FROM " . USERS_TABLE . " u
 						LEFT JOIN " . RANKS_TABLE . " r ON u.user_rank = r.rank_id
@@ -936,8 +941,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Invalid_ranks_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Invalid_ranks_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . htmlspecialchars($row['username']) . " (" . $row['user_id'] . ")</li>\n");
@@ -946,12 +951,12 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				if (count($result_array))
 				{
-					echo("<p class=\"gen\">" . $lang['Removing_invalid_ranks'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Removing_invalid_ranks'] . '</p>' . "\n");
 					$record_list = implode(',', $result_array);
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_rank = 0
@@ -968,7 +973,7 @@ switch($mode_id)
 				}
 
 				// Checking for invalid themes
-				echo("<p class=\"gen\"><b>" . $lang['Checking_themes'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_themes'] . '</b></p>' . "\n");
 				$sql = "SELECT u.user_style
 					FROM " . USERS_TABLE . " u
 						LEFT JOIN " . THEMES_TABLE . " t ON u.user_style = t.themes_id
@@ -985,7 +990,7 @@ switch($mode_id)
 					if ($row['user_style'] == '')
 					{
 						// At least one style is NULL, so change these records
-						echo("<p class=\"gen\">" . $lang['Updating_users_without_style'] . "</p>\n");
+						echo('<p class="gen">' . $lang['Updating_users_without_style'] . '</p>' . "\n");
 						$sql2 = "UPDATE " . USERS_TABLE . "
 							SET user_style = 0
 							WHERE user_style IS NULL AND user_id <> " . ANONYMOUS;
@@ -1020,7 +1025,7 @@ switch($mode_id)
 					}
 					else // the default template is not available
 					{
-						echo("<p class=\"gen\">" . $lang['Default_theme_invalid'] . "</p>\n");
+						echo('<p class="gen">' . $lang['Default_theme_invalid'] . '</p>' . "\n");
 						$db->sql_freeresult($result);
 						$sql = "SELECT themes_id
 							FROM " . THEMES_TABLE . "
@@ -1041,7 +1046,7 @@ switch($mode_id)
 						}
 					}
 					$db->sql_freeresult($result);
-					echo("<p class=\"gen\">" . sprintf($lang['Updating_themes'], $new_style) . "...</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Updating_themes'], $new_style) . "...</p>\n");
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_style = $new_style
 						WHERE user_style IN ($record_list)";
@@ -1056,51 +1061,8 @@ switch($mode_id)
 					echo($lang['Nothing_to_do']);
 				}
 
-				// Checking for invalid theme names data
-				echo("<p class=\"gen\"><b>" . $lang['Checking_theme_names'] . "</b></p>\n");
-				$sql = "SELECT tn.themes_id
-					FROM " . THEMES_NAME_TABLE . " tn
-						LEFT JOIN " . THEMES_TABLE . " t ON tn.themes_id = t.themes_id
-					WHERE t.themes_id IS NULL";
-				$result_array = array();
-				$result = $db->sql_query($sql);
-				if (!$result)
-				{
-					throw_error("Couldn't get themes data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$result_array[] = $row['themes_id'];
-				}
-				$db->sql_freeresult($result);
-				if (count($result_array))
-				{
-					echo("<p class=\"gen\">" . $lang['Removing_invalid_theme_names'] . "</p>\n");
-					$record_list = implode(',', $result_array);
-					$sql = "DELETE FROM " . THEMES_NAME_TABLE . "
-						WHERE themes_id IN ($record_list)";
-					$result = $db->sql_query($sql);
-					if (!$result)
-					{
-						throw_error("Couldn't update user data!", __LINE__, __FILE__, $sql);
-					}
-					$affected_rows = $db->sql_affectedrows();
-					if ($affected_rows == 1)
-					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
-					}
-					elseif ($affected_rows > 1)
-					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
-					}
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
 				// Checking for invalid languages
-				echo("<p class=\"gen\"><b>" . $lang['Checking_languages'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_languages'] . '</b></p>' . "\n");
 				$sql = "SELECT user_lang
 					FROM " . USERS_TABLE . "
 					WHERE user_id <> " . ANONYMOUS . "
@@ -1147,22 +1109,22 @@ switch($mode_id)
 					}
 					elseif (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $userdata['user_lang'] . '/lang_main.' . PHP_EXT)))
 					{
-						echo("<p class=\"gen\">" . $lang['Default_language_invalid'] . "</p>\n");
+						echo('<p class="gen">' . $lang['Default_language_invalid'] . '</p>' . "\n");
 						$default_lang = $userdata['user_lang'];
 					}
 					elseif (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT)))
 					{
-						echo("<p class=\"gen\">" . $lang['Default_language_invalid'] . "</p>\n");
+						echo('<p class="gen">' . $lang['Default_language_invalid'] . '</p>' . "\n");
 						$default_lang = 'english';
 					}
 					else
 					{
-						echo("<p class=\"gen\">" . $lang['English_language_invalid'] . "</p>\n");
+						echo('<p class="gen">' . $lang['English_language_invalid'] . '</p>' . "\n");
 						$default_lang = 'english';
 					}
 
-					echo("<p class=\"gen\">" . $lang['Invalid_languages_found'] . ":</p>\n");
-					echo("<font class=\"gen\"><ul>\n");
+					echo('<p class="gen">' . $lang['Invalid_languages_found'] . ":</p>\n");
+					echo("<div class=\"post-text\"><ul>\n");
 					$list_open = true;
 
 					for($i = 0; $i < count($result_array); $i++)
@@ -1179,7 +1141,7 @@ switch($mode_id)
 						}
 					}
 
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -1188,7 +1150,7 @@ switch($mode_id)
 				}
 
 				// Remove ban data without a valid user
-				echo("<p class=\"gen\"><b>" . $lang['Remove_invalid_ban_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Remove_invalid_ban_data'] . '</b></p>' . "\n");
 				$sql = "SELECT b.ban_userid
 					FROM " . BANLIST_TABLE . " b
 						LEFT JOIN " . USERS_TABLE . " u ON b.ban_userid = u.user_id
@@ -1219,11 +1181,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -1234,7 +1196,7 @@ switch($mode_id)
 				// Remove session key data without valid user
 				if ($phpbb_version[0] == 0 && $phpbb_version[1] >= 18)
 				{
-					echo("<p class=\"gen\"><b>" . $lang['Remove_invalid_session_keys'] . "</b></p>\n");
+					echo('<p class="gen"><b>' . $lang['Remove_invalid_session_keys'] . '</b></p>' . "\n");
 					$sql = "SELECT k.key_id
 						FROM " . SESSIONS_KEYS_TABLE . " k
 							LEFT JOIN " . USERS_TABLE . " u ON k.user_id = u.user_id
@@ -1265,11 +1227,11 @@ switch($mode_id)
 						$affected_rows = $db->sql_affectedrows();
 						if ($affected_rows == 1)
 						{
-							echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+							echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 						}
 						elseif ($affected_rows > 1)
 						{
-							echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+							echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 						}
 					}
 					else
@@ -1281,14 +1243,14 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'check_post': // Checks post data
-				echo("<h1>" . $lang['Checking_post_tables'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_post_tables'] . '</h1>' . "\n");
 				$db_state = lock_db();
 
 				// Set a variable to check whether we should update the post data
 				$update_post_data = false;
 
 				// Check posts for invaild posters
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_posters'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_posters'] . '</b></p>' . "\n");
 				$sql = "SELECT p.post_id
 					FROM " . POSTS_TABLE . " p
 						LEFT JOIN " . USERS_TABLE . " u ON p.poster_id = u.user_id
@@ -1307,8 +1269,8 @@ switch($mode_id)
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Invalid_poster_found'] . ": $record_list</p>\n");
-					echo("<p class=\"gen\">" . $lang['Updating_posts'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Invalid_poster_found'] . ": $record_list</p>\n");
+					echo('<p class="gen">' . $lang['Updating_posts'] . '</p>' . "\n");
 					$sql = "UPDATE " . POSTS_TABLE . "
 						SET poster_id = " . DELETED . ",
 							post_username = ''
@@ -1325,7 +1287,7 @@ switch($mode_id)
 				}
 
 				// Check topics for invaild posters
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_topic_posters'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_topic_posters'] . '</b></p>' . "\n");
 				$sql = "SELECT t.topic_id, t.topic_poster
 					FROM " . TOPICS_TABLE . " t
 						LEFT JOIN " . USERS_TABLE . " u ON t.topic_poster = u.user_id
@@ -1340,8 +1302,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Invalid_topic_poster_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Invalid_topic_poster_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					$poster_id = get_poster($row['topic_id']);
@@ -1358,7 +1320,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -1367,7 +1329,7 @@ switch($mode_id)
 				}
 
 				// Check for forums with invalid categories
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_forums'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_forums'] . '</b></p>' . "\n");
 				$sql = "SELECT f.forum_id, f.forum_name
 					FROM " . FORUMS_TABLE . " f
 						LEFT JOIN " . CATEGORIES_TABLE . " c ON f.cat_id = c.cat_id
@@ -1383,8 +1345,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Invalid_forums_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Invalid_forums_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . htmlspecialchars($row['forum_name']) . " (" . $row['forum_id'] . ")</li>\n");
@@ -1393,14 +1355,14 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$new_cat = create_cat();
-					echo("<p class=\"gen\">" . sprintf($lang['Setting_category'], $lang['New_cat_name']) . " </p>\n");
+					echo('<p class="gen">' . sprintf($lang['Setting_category'], $lang['New_cat_name']) . " </p>\n");
 					$sql = "UPDATE " . FORUMS_TABLE . "
 						SET cat_id = $new_cat
 						WHERE forum_id IN ($record_list)";
@@ -1415,57 +1377,8 @@ switch($mode_id)
 					echo($lang['Nothing_to_do']);
 				}
 
-				// Check for posts without a text
-				echo("<p class=\"gen\"><b>" . $lang['Checking_posts_wo_text'] . "</b></p>\n");
-				$sql = "SELECT p.post_id, t.topic_id, t.topic_title, u.user_id, u.username
-					FROM " . POSTS_TABLE . " p
-						LEFT JOIN " . POSTS_TEXT_TABLE . " pt ON p.post_id = pt.post_id
-						LEFT JOIN " . TOPICS_TABLE . " t ON p.topic_id = t.topic_id
-						LEFT JOIN " . USERS_TABLE . " u ON p.poster_id = u.user_id
-					WHERE pt.post_id IS NULL";
-				$result_array = array();
-				$result = $db->sql_query($sql);
-				if (!$result)
-				{
-					throw_error("Couldn't get post data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					if (!$list_open)
-					{
-						echo("<p class=\"gen\">" . $lang['Posts_wo_text_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
-						$list_open = true;
-					}
-					echo("<li>" . sprintf($lang['Deleting_post_wo_text'], $row['post_id'], htmlspecialchars($row['topic_title']), $row['topic_id'], htmlspecialchars($row['username']), $row['user_id']) . "</li>\n");
-					$result_array[] = $row['post_id'];
-				}
-				$db->sql_freeresult($result);
-				if ($list_open)
-				{
-					echo("</ul></font>\n");
-					$list_open = false;
-				}
-				if (count($result_array))
-				{
-					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Deleting_Posts'] . " </p>\n");
-					$sql = "DELETE FROM " . POSTS_TABLE . "
-						WHERE post_id IN ($record_list)";
-					$result = $db->sql_query($sql);
-					if (!$result)
-					{
-						throw_error("Couldn't delete post data!", __LINE__, __FILE__, $sql);
-					}
-					$update_post_data = true;
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
 				// Check for topics without a post
-				echo("<p class=\"gen\"><b>" . $lang['Checking_topics_wo_post'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_topics_wo_post'] . '</b></p>' . "\n");
 				$sql = "SELECT t.topic_id, t.topic_title
 					FROM " . TOPICS_TABLE . " t
 						LEFT JOIN " . POSTS_TABLE . " p ON t.topic_id = p.topic_id
@@ -1481,8 +1394,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Topics_wo_post_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Topics_wo_post_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . htmlspecialchars($row['topic_title']) . " (" . $row['topic_id'] . ")</li>\n");
@@ -1491,13 +1404,13 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Deleting_topics'] . " </p>\n");
+					echo('<p class="gen">' . $lang['Deleting_topics'] . " </p>\n");
 					$sql = "DELETE FROM " . TOPICS_TABLE . "
 						WHERE topic_id IN ($record_list)";
 					$result = $db->sql_query($sql);
@@ -1513,7 +1426,7 @@ switch($mode_id)
 				}
 
 				// Check for topics with invalid forum
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_topics'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_topics'] . '</b></p>' . "\n");
 				$sql = "SELECT t.topic_id, t.topic_title
 					FROM " . TOPICS_TABLE . " t
 						LEFT JOIN " . FORUMS_TABLE . " f ON t.forum_id = f.forum_id
@@ -1528,8 +1441,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Invalid_topics_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Invalid_topics_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . htmlspecialchars($row['topic_title']) . " (" . $row['topic_id'] . ")</li>\n");
@@ -1538,14 +1451,14 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$new_forum = create_forum();
-					echo("<p class=\"gen\">" . sprintf($lang['Setting_forum'], $lang['New_forum_name']) . " </p>\n");
+					echo('<p class="gen">' . sprintf($lang['Setting_forum'], $lang['New_forum_name']) . " </p>\n");
 					$sql = "UPDATE " . TOPICS_TABLE . "
 						SET forum_id = $new_forum
 						WHERE topic_id IN ($record_list)";
@@ -1570,7 +1483,7 @@ switch($mode_id)
 				}
 
 				// Check for posts with invalid topic
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_posts'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_posts'] . '</b></p>' . "\n");
 				$sql = "SELECT p.post_id, p.topic_id
 					FROM " . POSTS_TABLE . " p
 						LEFT JOIN " . TOPICS_TABLE . " t ON p.topic_id = t.topic_id
@@ -1593,8 +1506,8 @@ switch($mode_id)
 							// Restoring topic
 							if (!$list_open)
 							{
-								echo("<p class=\"gen\">" . $lang['Invalid_posts_found'] . ":</p>\n");
-								echo("<font class=\"gen\"><ul>\n");
+								echo('<p class="gen">' . $lang['Invalid_posts_found'] . ":</p>\n");
+								echo("<div class=\"post-text\"><ul>\n");
 								$list_open = true;
 							}
 							$record_list = implode(',', $result_array);
@@ -1604,7 +1517,7 @@ switch($mode_id)
 							$post_replies = count($result_array) - 1;
 							// Get title for new topic
 							$sql2 = "SELECT post_subject
-								FROM " . POSTS_TEXT_TABLE . "
+								FROM " . POSTS_TABLE . "
 								WHERE post_id = $first_post";
 							$result2 = $db->sql_query($sql2);
 							if (!$result2)
@@ -1671,7 +1584,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 					$update_post_data = true;
 				}
@@ -1681,7 +1594,7 @@ switch($mode_id)
 				}
 
 				// Check for posts with invalid forum
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_forums_posts'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_forums_posts'] . '</b></p>' . "\n");
 				$sql = "SELECT p.post_id, p.forum_id AS p_forum_id, fp.forum_name AS p_forum_name, t.forum_id AS t_forum_id, ft.forum_name AS t_forum_name
 					FROM " . POSTS_TABLE . " p
 						LEFT JOIN " . TOPICS_TABLE . " t ON p.topic_id = t.topic_id
@@ -1697,8 +1610,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Invalid_forum_posts_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Invalid_forum_posts_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Setting_post_forum'], $row['post_id'], htmlspecialchars($row['p_forum_name']), $row['p_forum_id'], htmlspecialchars($row['t_forum_name']), $row['t_forum_id']) . "</li>\n");
@@ -1714,52 +1627,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
-					$list_open = false;
-					$update_post_data = true;
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
-				// Check for texts without a post
-				echo("<p class=\"gen\"><b>" . $lang['Checking_texts_wo_post'] . "</b></p>\n");
-				$sql = "SELECT pt.post_id, pt.post_text
-					FROM " . POSTS_TEXT_TABLE . " pt
-						LEFT JOIN " . POSTS_TABLE . " p ON pt.post_id = p.post_id
-					WHERE p.post_id IS NULL";
-				$result = $db->sql_query($sql);
-				if (!$result)
-				{
-					throw_error("Couldn't get post and text data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					if (!$list_open)
-					{
-						echo("<p class=\"gen\">" . $lang['Invalid_texts_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
-						$list_open = true;
-						$new_forum = create_forum();
-						$new_topic = create_topic();
-						$enable_html = $board_config['allow_html'];
-						$enable_smilies = $board_config['allow_smilies'];
-					}
-					$enable_bbcode = ($board_config['allow_bbcode']) ? 1 : 0;
-					echo("<li>" . sprintf($lang['Recreating_post'], $row['post_id'], $lang['New_topic_name'], $lang['New_forum_name'], substr(htmlspecialchars(strip_tags($row['post_text'])), 0, 30)) . "</li>\n");
-					$sql2 = "INSERT INTO " . POSTS_TABLE . ' (post_id, topic_id, forum_id, poster_id, post_time, poster_ip, post_username, enable_bbcode, enable_html, enable_smilies, enable_sig, post_edit_time, post_edit_count)
-						VALUES (' . $row['post_id'] . ", $new_topic, $new_forum, " . ANONYMOUS . ', ' . time() . ', \'\', \'' . $lang['New_poster_name'] . "', $enable_bbcode, $enable_html, $enable_smilies, 0, NULL, 0)";
-					$result2 = $db->sql_query($sql2);
-					if (!$result2)
-					{
-						throw_error("Couldn't update post information!", __LINE__, __FILE__, $sql2);
-					}
-				}
-				$db->sql_freeresult($result);
-				if ($list_open)
-				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 					$update_post_data = true;
 				}
@@ -1769,7 +1637,7 @@ switch($mode_id)
 				}
 
 				// Check moved topics
-				echo("<p class=\"gen\"><b>" . $lang['Checking_moved_topics'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_moved_topics'] . '</b></p>' . "\n");
 				$db_updated = false;
 				$sql = "SELECT t.topic_id
 					FROM " . TOPICS_TABLE . " t
@@ -1790,7 +1658,7 @@ switch($mode_id)
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Deleting_invalid_moved_topics'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Deleting_invalid_moved_topics'] . '</p>' . "\n");
 					$sql = "DELETE FROM " . TOPICS_TABLE . "
 						WHERE topic_id IN ($record_list)
 							AND topic_status = " . TOPIC_MOVED;
@@ -1803,12 +1671,12 @@ switch($mode_id)
 					if ($affected_rows == 1)
 					{
 						$db_updated = true;
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
 						$db_updated = true;
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				// Check for normal topics with move information
@@ -1824,11 +1692,11 @@ switch($mode_id)
 				$affected_rows = $db->sql_affectedrows();
 				if ($affected_rows == 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_moved_topic'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Updating_invalid_moved_topic'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif ($affected_rows > 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_moved_topics'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Updating_invalid_moved_topics'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif (!$db_updated)
 				{
@@ -1836,7 +1704,7 @@ switch($mode_id)
 				}
 
 				// Checking for invalid prune settings
-				echo("<p class=\"gen\"><b>" . $lang['Checking_prune_settings'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_prune_settings'] . '</b></p>' . "\n");
 				$db_updated = false;
 				$sql = "SELECT p.forum_id
 					FROM " . PRUNE_TABLE . " p
@@ -1872,7 +1740,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if (count($result_array))
 				{
-					echo("<p class=\"gen\">" . $lang['Removing_invalid_prune_settings'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Removing_invalid_prune_settings'] . '</p>' . "\n");
 					$record_list = implode(',', $result_array);
 					$db_updated = true;
 					$sql = "DELETE FROM " . PRUNE_TABLE . "
@@ -1885,11 +1753,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_moved_topic'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Updating_invalid_moved_topic'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_moved_topics'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Updating_invalid_moved_topics'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				// Forums with pruning enabled and no prune settings
@@ -1923,11 +1791,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_prune_setting'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Updating_invalid_prune_setting'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Updating_invalid_moved_settings'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Updating_invalid_moved_settings'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				elseif (!$db_updated)
@@ -1936,7 +1804,7 @@ switch($mode_id)
 				}
 
 				// Checking for invalid topic-watch data
-				echo("<p class=\"gen\"><b>" . $lang['Checking_topic_watch_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_topic_watch_data'] . '</b></p>' . "\n");
 				$sql = "SELECT tw.user_id
 					FROM " . TOPICS_WATCH_TABLE . " tw
 						LEFT JOIN " . USERS_TABLE . " u ON tw.user_id = u.user_id
@@ -1990,11 +1858,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -2003,7 +1871,7 @@ switch($mode_id)
 				}
 
 				// Checking for invalid auth-access data
-				echo("<p class=\"gen\"><b>" . $lang['Checking_auth_access_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_auth_access_data'] . '</b></p>' . "\n");
 				$sql = "SELECT aa.group_id
 					FROM " . AUTH_ACCESS_TABLE . " aa
 						LEFT JOIN " . GROUPS_TABLE . " g ON aa.group_id = g.group_id
@@ -2057,11 +1925,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -2072,7 +1940,7 @@ switch($mode_id)
 				// If post or topic data has been updated, we interrupt here and add a link to resync the data
 				if ($update_post_data)
 				{
-					echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=synchronize_post_direct&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Must_synchronize'] . "</a></p>\n");
+					echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=synchronize_post_direct&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Must_synchronize'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 					include('./page_footer_admin.' . PHP_EXT);
@@ -2084,11 +1952,11 @@ switch($mode_id)
 				}
 				break;
 			case 'check_vote': // Check vote tables
-				echo("<h1>" . $lang['Checking_vote_tables'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_vote_tables'] . '</h1>' . "\n");
 				lock_db();
 
 				// Check for votes without a topic
-				echo("<p class=\"gen\"><b>" . $lang['Checking_votes_wo_topic'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_votes_wo_topic'] . '</b></p>' . "\n");
 				$sql = "SELECT v.vote_id, v.vote_text, v.vote_start, v.vote_length
 					FROM " . VOTE_DESC_TABLE . " v
 						LEFT JOIN " . TOPICS_TABLE . " t ON v.topic_id = t.topic_id
@@ -2103,8 +1971,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Votes_wo_topic_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Votes_wo_topic_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					$start_time = create_date($board_config['default_dateformat'], $row['vote_start'], $board_config['board_timezone']);
@@ -2115,13 +1983,13 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Deleting_Votes'] . " </p>\n");
+					echo('<p class="gen">' . $lang['Deleting_Votes'] . " </p>\n");
 					$sql = "DELETE FROM " . VOTE_DESC_TABLE . "
 						WHERE vote_id IN ($record_list)";
 					$result = $db->sql_query($sql);
@@ -2150,7 +2018,7 @@ switch($mode_id)
 				}
 
 				// Check for votes without results
-				echo("<p class=\"gen\"><b>" . $lang['Checking_votes_wo_result'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_votes_wo_result'] . '</b></p>' . "\n");
 				$sql = "SELECT v.vote_id, v.vote_text, v.vote_start, v.vote_length
 					FROM " . VOTE_DESC_TABLE . " v
 						LEFT JOIN " . VOTE_RESULTS_TABLE . " vr ON v.vote_id = vr.vote_id
@@ -2165,8 +2033,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Votes_wo_result_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Votes_wo_result_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					$start_time = create_date($board_config['default_dateformat'], $row['vote_start'], $board_config['board_timezone']);
@@ -2177,13 +2045,13 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Deleting_Votes'] . " </p>\n");
+					echo('<p class="gen">' . $lang['Deleting_Votes'] . " </p>\n");
 					$sql = "DELETE FROM " . VOTE_DESC_TABLE . "
 						WHERE vote_id IN ($record_list)";
 					$result = $db->sql_query($sql);
@@ -2212,7 +2080,7 @@ switch($mode_id)
 				}
 
 				// Check vote data in topics
-				echo("<p class=\"gen\"><b>" . $lang['Checking_topics_vote_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_topics_vote_data'] . '</b></p>' . "\n");
 				$db_updated = false;
 				$sql = "SELECT t.topic_id
 					FROM " . TOPICS_TABLE . " t
@@ -2233,7 +2101,7 @@ switch($mode_id)
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Updating_topics_wo_vote'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Updating_topics_wo_vote'] . '</p>' . "\n");
 					$sql = "UPDATE " . TOPICS_TABLE . "
 						SET topic_vote = 0
 						WHERE topic_id IN ($record_list)";
@@ -2246,12 +2114,12 @@ switch($mode_id)
 					if ($affected_rows == 1)
 					{
 						$db_updated = true;
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
 						$db_updated = true;
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				// Check for topics with vote not marked as vote
@@ -2284,7 +2152,7 @@ switch($mode_id)
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Updating_topics_w_vote'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Updating_topics_w_vote'] . '</p>' . "\n");
 					$sql = "UPDATE " . TOPICS_TABLE . "
 						SET topic_vote = 1
 						WHERE topic_id IN ($record_list)";
@@ -2297,12 +2165,12 @@ switch($mode_id)
 					if ($affected_rows == 1)
 					{
 						$db_updated = true;
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
 						$db_updated = true;
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				if (!$db_updated)
@@ -2311,7 +2179,7 @@ switch($mode_id)
 				}
 
 				// Check for vote results without a vote
-				echo("<p class=\"gen\"><b>" . $lang['Checking_results_wo_vote'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_results_wo_vote'] . '</b></p>' . "\n");
 				$sql = "SELECT vr.vote_id, vr.vote_option_id, vr.vote_option_text, vr.vote_result
 					FROM " . VOTE_RESULTS_TABLE . " vr
 						LEFT JOIN " . VOTE_DESC_TABLE . " v ON vr.vote_id = v.vote_id
@@ -2325,8 +2193,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Results_wo_vote_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Results_wo_vote_found'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Invalid_result'], htmlspecialchars($row['vote_option_text']), $row['vote_result']) . "</li>\n");
@@ -2342,7 +2210,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -2351,7 +2219,7 @@ switch($mode_id)
 				}
 
 				// Checking for invalid voters data
-				echo("<p class=\"gen\"><b>" . $lang['Checking_voters_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_voters_data'] . '</b></p>' . "\n");
 				$sql = "SELECT vu.vote_user_id
 					FROM " . VOTE_USERS_TABLE . " vu
 						LEFT JOIN " . USERS_TABLE . " u ON vu.vote_user_id = u.user_id
@@ -2405,11 +2273,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -2420,102 +2288,11 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'check_pm': // Check private messages
-				echo("<h1>" . $lang['Checking_pm_tables'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_pm_tables'] . '</h1>' . "\n");
 				lock_db();
 
-				// Check for pms without a text
-				echo("<p class=\"gen\"><b>" . $lang['Checking_pms_wo_text'] . "</b></p>\n");
-				$sql = "SELECT pm.privmsgs_id, pm.privmsgs_subject, uf.user_id AS from_user_id, uf.username AS from_username, ut.user_id AS to_user_id, ut.username AS to_username
-					FROM " . PRIVMSGS_TABLE . " pm
-						LEFT JOIN " . PRIVMSGS_TEXT_TABLE . " pmt ON pm.privmsgs_id = pmt.privmsgs_text_id
-						LEFT JOIN " . USERS_TABLE . " uf ON pm.privmsgs_from_userid = uf.user_id
-						LEFT JOIN " . USERS_TABLE . " ut ON pm.privmsgs_to_userid = ut.user_id
-					WHERE pmt.privmsgs_text_id IS NULL";
-				$result_array = array();
-				$result = $db->sql_query($sql);
-				if (!$result)
-				{
-					throw_error("Couldn't get private message data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					if (!$list_open)
-					{
-						echo("<p class=\"gen\">" . $lang['Pms_wo_text_found'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
-						$list_open = true;
-					}
-					echo("<li>" . sprintf($lang['Deleting_pn_wo_text'], $row['privmsgs_id'], htmlspecialchars($row['privmsgs_subject']), htmlspecialchars($row['from_username']), $row['from_user_id'], htmlspecialchars($row['to_username']), $row['to_user_id']) . "</li>\n");
-					$result_array[] = $row['privmsgs_id'];
-				}
-				$db->sql_freeresult($result);
-				if ($list_open)
-				{
-					echo("</ul></font>\n");
-					$list_open = false;
-				}
-				if (count($result_array))
-				{
-					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Deleting_Pms'] . " </p>\n");
-					$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
-						WHERE privmsgs_id IN ($record_list)";
-					$result = $db->sql_query($sql);
-					if (!$result)
-					{
-						throw_error("Couldn't delete private message data!", __LINE__, __FILE__, $sql);
-					}
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
-				// Check for texts without a private message
-				echo("<p class=\"gen\"><b>" . $lang['Checking_texts_wo_pm'] . "</b></p>\n");
-				$sql = "SELECT pmt.privmsgs_text_id
-					FROM " . PRIVMSGS_TEXT_TABLE . " pmt
-						LEFT JOIN " . PRIVMSGS_TABLE . " pm ON pmt.privmsgs_text_id = pm.privmsgs_id
-					WHERE pm.privmsgs_id IS NULL";
-				$result_array = array();
-				$result = $db->sql_query($sql);
-				if (!$result)
-				{
-					throw_error("Couldn't get private messages and text data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$result_array[] = $row['privmsgs_text_id'];
-				}
-				$db->sql_freeresult($result);
-				if (count($result_array))
-				{
-					echo("<p class=\"gen\">" . $lang['Deleting_pm_texts'] . "</p>\n");
-					$record_list = implode(',', $result_array);
-					$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-						WHERE privmsgs_text_id IN ($record_list)";
-					$result = $db->sql_query($sql);
-					if (!$result)
-					{
-						throw_error("Couldn't delete private message text data!", __LINE__, __FILE__, $sql);
-					}
-					$affected_rows = $db->sql_affectedrows();
-					if ($affected_rows == 1)
-					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
-					}
-					elseif ($affected_rows > 1)
-					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
-					}
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
 				// Check pms for invaild senders
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_pm_senders'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_pm_senders'] . '</b></p>' . "\n");
 				$sql = "SELECT pm.privmsgs_id
 					FROM " . PRIVMSGS_TABLE . " pm
 						LEFT JOIN " . USERS_TABLE . " u ON pm.privmsgs_from_userid = u.user_id
@@ -2534,8 +2311,8 @@ switch($mode_id)
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Invalid_pm_senders_found'] . ": $record_list</p>\n");
-					echo("<p class=\"gen\">" . $lang['Updating_pms'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Invalid_pm_senders_found'] . ": $record_list</p>\n");
+					echo('<p class="gen">' . $lang['Updating_pms'] . '</p>' . "\n");
 					$sql = "UPDATE " . PRIVMSGS_TABLE . "
 						SET privmsgs_from_userid = " . DELETED . "
 						WHERE privmsgs_id IN ($record_list)";
@@ -2551,7 +2328,7 @@ switch($mode_id)
 				}
 
 				// Check pms for invaild recipients
-				echo("<p class=\"gen\"><b>" . $lang['Checking_invalid_pm_recipients'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_invalid_pm_recipients'] . '</b></p>' . "\n");
 				$sql = "SELECT pm.privmsgs_id
 					FROM " . PRIVMSGS_TABLE . " pm
 						LEFT JOIN " . USERS_TABLE . " u ON pm.privmsgs_to_userid = u.user_id
@@ -2570,8 +2347,8 @@ switch($mode_id)
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Invalid_pm_recipients_found'] . ": $record_list</p>\n");
-					echo("<p class=\"gen\">" . $lang['Updating_pms'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Invalid_pm_recipients_found'] . ": $record_list</p>\n");
+					echo('<p class="gen">' . $lang['Updating_pms'] . '</p>' . "\n");
 					$sql = "UPDATE " . PRIVMSGS_TABLE . "
 						SET privmsgs_to_userid = " . DELETED . "
 						WHERE privmsgs_id IN ($record_list)";
@@ -2587,7 +2364,7 @@ switch($mode_id)
 				}
 
 				// Check for pns with deleted sender or recipient
-				echo("<p class=\"gen\"><b>" . $lang['Checking_pm_deleted_users'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_pm_deleted_users'] . '</b></p>' . "\n");
 				$sql = "SELECT privmsgs_id
 					FROM " . PRIVMSGS_TABLE . "
 					WHERE (privmsgs_from_userid = " . DELETED . " AND privmsgs_type IN (" . PRIVMSGS_NEW_MAIL . "," . PRIVMSGS_UNREAD_MAIL . "," . PRIVMSGS_SENT_MAIL . "," . PRIVMSGS_SAVED_OUT_MAIL . ")) OR
@@ -2606,17 +2383,10 @@ switch($mode_id)
 				if (count($result_array))
 				{
 					$record_list = implode(',', $result_array);
-					echo("<p class=\"gen\">" . $lang['Invalid_pm_users_found'] . ": $record_list</p>\n");
-					echo("<p class=\"gen\">" . $lang['Deleting_pms'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Invalid_pm_users_found'] . ": $record_list</p>\n");
+					echo('<p class="gen">' . $lang['Deleting_pms'] . '</p>' . "\n");
 					$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 						WHERE privmsgs_id IN ($record_list)";
-					$result = $db->sql_query($sql);
-					if (!$result)
-					{
-						throw_error("Couldn't delete private message data!", __LINE__, __FILE__, $sql);
-					}
-					$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-						WHERE privmsgs_text_id IN ($record_list)";
 					$result = $db->sql_query($sql);
 					if (!$result)
 					{
@@ -2629,7 +2399,7 @@ switch($mode_id)
 				}
 
 				// Updating new pm counter
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_new_pm_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_new_pm_data'] . '</b></p>' . "\n");
 				if (check_mysql_version())
 				{
 					$sql = "SELECT u.user_id, u.username, u.user_new_privmsg, Count(pm.privmsgs_id) AS new_counter
@@ -2662,8 +2432,8 @@ switch($mode_id)
 					{
 						if (!$list_open)
 						{
-							echo("<p class=\"gen\">" . $lang['Synchronizing_users'] . ":</p>\n");
-							echo("<font class=\"gen\"><ul>\n");
+							echo('<p class="gen">' . $lang['Synchronizing_users'] . ":</p>\n");
+							echo("<div class=\"post-text\"><ul>\n");
 							$list_open = true;
 						}
 						echo("<li>" . sprintf($lang['Synchronizing_user'], htmlspecialchars($row['username']), $row['user_id']) . "</li>\n");
@@ -2699,8 +2469,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Synchronizing_users'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Synchronizing_users'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Synchronizing_user'], htmlspecialchars($row['username']), $row['user_id']) . "</li>\n");
@@ -2716,7 +2486,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -2725,7 +2495,7 @@ switch($mode_id)
 				}
 
 				// Updating unread pm counter
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_unread_pm_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_unread_pm_data'] . '</b></p>' . "\n");
 				if (check_mysql_version())
 				{
 					$sql = "SELECT u.user_id, u.username, u.user_unread_privmsg, Count(pm.privmsgs_id) AS new_counter
@@ -2758,8 +2528,8 @@ switch($mode_id)
 					{
 						if (!$list_open)
 						{
-							echo("<p class=\"gen\">" . $lang['Synchronizing_users'] . ":</p>\n");
-							echo("<font class=\"gen\"><ul>\n");
+							echo('<p class="gen">' . $lang['Synchronizing_users'] . ":</p>\n");
+							echo("<div class=\"post-text\"><ul>\n");
 							$list_open = true;
 						}
 						echo("<li>" . sprintf($lang['Synchronizing_user'], htmlspecialchars($row['username']), $row['user_id']) . "</li>\n");
@@ -2795,8 +2565,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Synchronizing_users'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Synchronizing_users'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Synchronizing_user'], htmlspecialchars($row['username']), $row['user_id']) . "</li>\n");
@@ -2812,7 +2582,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -2823,10 +2593,10 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'check_config': // Check config table
-				echo("<h1>" . $lang['Checking_config_table'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_config_table'] . '</h1>' . "\n");
 				lock_db();
 
-				echo("<p class=\"gen\"><b>" . $lang['Checking_config_entries'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_config_entries'] . '</b></p>' . "\n");
 
 				// Update config data to match current configuration
 				if (!empty($_SERVER['SERVER_PROTOCOL']) || !empty($_ENV['SERVER_PROTOCOL']))
@@ -2875,8 +2645,8 @@ switch($mode_id)
 						// entry does not exists
 						if (!$list_open)
 						{
-							echo("<p class=\"gen\">" . $lang['Restoring_config'] . ":</p>\n");
-							echo("<font class=\"gen\"><ul>\n");
+							echo('<p class="gen">' . $lang['Restoring_config'] . ":</p>\n");
+							echo("<div class=\"post-text\"><ul>\n");
 							$list_open = true;
 						}
 						echo("<li><b>$key:</b> $value</li>\n");
@@ -2891,7 +2661,7 @@ switch($mode_id)
 				}
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -2902,11 +2672,11 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'check_search_wordmatch': // Check search word match data
-				echo("<h1>" . $lang['Checking_search_wordmatch_tables'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_search_wordmatch_tables'] . '</h1>' . "\n");
 				lock_db();
 
 				// Checking for invalid search word match data
-				echo("<p class=\"gen\"><b>" . $lang['Checking_search_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_search_data'] . '</b></p>' . "\n");
 				$sql = "SELECT sm.post_id
 					FROM " . SEARCH_MATCH_TABLE . " sm
 						LEFT JOIN " . POSTS_TABLE . " p ON sm.post_id = p.post_id
@@ -2961,11 +2731,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				else
@@ -2976,11 +2746,11 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'check_search_wordlist': // Check search word list data
-				echo("<h1>" . $lang['Checking_search_wordlist_tables'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_search_wordlist_tables'] . '</h1>' . "\n");
 				lock_db();
 
 				// Checking for invalid search word list data
-				echo("<p class=\"gen\"><b>" . $lang['Checking_search_words'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_search_words'] . '</b></p>' . "\n");
 				$sql = "SELECT sw.word_id
 					FROM " . SEARCH_WORD_TABLE . " sw
 						LEFT JOIN " . SEARCH_MATCH_TABLE . " sm ON sw.word_id = sm.word_id
@@ -2998,7 +2768,7 @@ switch($mode_id)
 					$result_array[] = $row['word_id'];
 					if (count($result_array) >= 100)
 					{
-						echo("<p class=\"gen\">" . $lang['Removing_part_invalid_words'] . "...</p>\n");
+						echo('<p class="gen">' . $lang['Removing_part_invalid_words'] . "...</p>\n");
 						$record_list = implode(',', $result_array);
 						$sql2 = "DELETE FROM " . SEARCH_WORD_TABLE . "
 							WHERE word_id IN ($record_list)";
@@ -3014,7 +2784,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if (count($result_array))
 				{
-					echo("<p class=\"gen\">" . $lang['Removing_invalid_words'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Removing_invalid_words'] . '</p>' . "\n");
 					$record_list = implode(',', $result_array);
 					$sql = "DELETE FROM " . SEARCH_WORD_TABLE . "
 						WHERE word_id IN ($record_list)";
@@ -3027,11 +2797,11 @@ switch($mode_id)
 				}
 				if ($affected_rows == 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif ($affected_rows > 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 				}
 				else
 				{
@@ -3041,13 +2811,13 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'sync_topics_subjects': // Synchronize Topics Subjects
-				echo("<h1>" . $lang['Sync_topics_subjects'] . "</h1>\n");
+				echo('<h1>' . $lang['Sync_topics_subjects'] . '</h1>' . "\n");
 				$db_state = lock_db();
 
 				// Synchronizing...
-				echo("<p class=\"gen\"><b>" . $lang['Sync_topics_subjects_progress'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Sync_topics_subjects_progress'] . '</b></p>' . "\n");
 				$affected_rows = 0;
-				$sql= "UPDATE " . POSTS_TEXT_TABLE . " p, " . TOPICS_TABLE . " t
+				$sql= "UPDATE " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
 					SET p.post_subject = t.topic_title
 					WHERE p.post_id = t.topic_first_post_id";
 				$result = $db->sql_query($sql);
@@ -3058,11 +2828,11 @@ switch($mode_id)
 				$affected_rows = $db->sql_affectedrows();
 				if ($affected_rows == 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif ($affected_rows > 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 				}
 				else
 				{
@@ -3072,11 +2842,11 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'rebuild_search_index': // Rebuild Search Index
-				echo("<h1>" . $lang['Rebuilding_search_index'] . "</h1>\n");
+				echo('<h1>' . $lang['Rebuilding_search_index'] . '</h1>' . "\n");
 				$db_state = lock_db();
 
 				// Clear Tables
-				echo("<p class=\"gen\"><b>" . $lang['Deleting_search_tables'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Deleting_search_tables'] . '</b></p>' . "\n");
 				$sql = "DELETE FROM " . SEARCH_TABLE;
 				if (!($db->sql_query($sql)))
 				{
@@ -3092,18 +2862,18 @@ switch($mode_id)
 				{
 					throw_error("Couldn't delete from search-match table!", __LINE__, __FILE__, $sql);
 				}
-				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
 				// Reset auto increment
-				echo("<p class=\"gen\"><b>" . $lang['Reset_search_autoincrement'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Reset_search_autoincrement'] . '</b></p>' . "\n");
 				$sql = "ALTER TABLE " . SEARCH_WORD_TABLE . " AUTO_INCREMENT=1";
 				if (!($db->sql_query($sql)))
 				{
 					throw_error("Couldn't reset auto_increment!", __LINE__, __FILE__, $sql);
 				}
-				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
-				echo("<p class=\"gen\"><b>" . $lang['Preparing_config_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Preparing_config_data'] . '</b></p>' . "\n");
 				// Set data for start position in config table
 				update_config('dbmtnc_rebuild_pos', '0');
 				// Get data for end position
@@ -3121,20 +2891,20 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				// Set data for end position in config table
 				update_config('dbmtnc_rebuild_end', intval($row['max_post_id']));
-				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
-				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Can_start_rebuilding'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
+				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Can_start_rebuilding'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 				include('./page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 			case 'proceed_rebuilding': // Proceed rebuilding search index
-				echo("<h1>" . $lang['Preparing_to_proceed'] . "</h1>\n");
+				echo('<h1>' . $lang['Preparing_to_proceed'] . '</h1>' . "\n");
 				$db_state = lock_db();
 
 				// Clear Tables
-				echo("<p class=\"gen\"><b>" . $lang['Preparing_search_tables'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Preparing_search_tables'] . '</b></p>' . "\n");
 				$sql = "DELETE FROM " . SEARCH_TABLE;
 				if (!($db->sql_query($sql)))
 				{
@@ -3147,9 +2917,9 @@ switch($mode_id)
 				{
 					throw_error("Couldn't delete from search-match table!", __LINE__, __FILE__, $sql);
 				}
-				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
-				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . "\">" . $lang['Can_start_rebuilding'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
+				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Can_start_rebuilding'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 				include('./page_footer_admin.' . PHP_EXT);
@@ -3197,7 +2967,7 @@ switch($mode_id)
 				}
 				// We have all data so get the post information
 				$sql = "SELECT post_id, post_subject, post_text
-					FROM " . POSTS_TEXT_TABLE . "
+					FROM " . POSTS_TABLE . "
 					WHERE post_id > " . intval($board_config['dbmtnc_rebuild_pos']) . "
 						AND post_id <= " . intval($board_config['dbmtnc_rebuild_end']) . "
 					ORDER BY post_id
@@ -3217,7 +2987,7 @@ switch($mode_id)
 					update_config('dbmtnc_rebuild_pos', '-1');
 					update_config('dbmtnc_rebuild_end', '0');
 
-					echo("<p class=\"gen\">" . $lang['Indexing_finished'] . ".</p>\n");
+					echo('<p class="gen">' . $lang['Indexing_finished'] . ".</p>\n");
 
 					if ($db_state == 0)
 					{
@@ -3225,11 +2995,11 @@ switch($mode_id)
 					}
 					else
 					{
-						echo('<p class="gen"><b>' . $lang['Unlock_db'] . "</b></p>\n");
-						echo('<p class="gen">' . $lang['Ignore_unlock_command'] . "</p>\n");
+						echo('<p class="gen"><b>' . $lang['Unlock_db'] . '</b></p>' . "\n");
+						echo('<p class="gen">' . $lang['Ignore_unlock_command'] . '</p>' . "\n");
 					}
 
-					echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT) . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
+					echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT) . '">' . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 					include('./page_footer_admin.' . PHP_EXT);
@@ -3346,7 +3116,7 @@ switch($mode_id)
 				update_config('dbmtnc_rebuild_pos', $last_post);
 				// OK, all actions are done - send headers
 
-				$redirect_url = append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);
+				$redirect_url = append_sid(ADM . '/admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);
 				meta_refresh(3, $redirect_url);
 
 				include('./page_header_admin.' . PHP_EXT);
@@ -3354,7 +3124,7 @@ switch($mode_id)
 				// Get Statistics
 				$posts_total = 0;
 				$sql = "SELECT Count(*) AS posts_total
-					FROM " . POSTS_TEXT_TABLE . "
+					FROM " . POSTS_TABLE . "
 					WHERE post_id <= " . intval($board_config['dbmtnc_rebuild_end']);
 				if ($result = $db->sql_query($sql))
 				{
@@ -3366,7 +3136,7 @@ switch($mode_id)
 				}
 				$posts_indexed = 0;
 				$sql = "SELECT Count(*) AS posts_indexed
-					FROM " . POSTS_TEXT_TABLE . "
+					FROM " . POSTS_TABLE . "
 					WHERE post_id <= " . intval($last_post);
 				if ($result = $db->sql_query($sql))
 				{
@@ -3377,8 +3147,8 @@ switch($mode_id)
 					$db->sql_freeresult($result);
 				}
 
-				echo("<p class=\"gen\">" . sprintf($lang['Indexing_progress'], $posts_indexed, $posts_total, ($posts_indexed / $posts_total) * 100, $last_post) . "</p>\n");
-				echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . "\">" . $lang['Click_or_wait_to_proceed'] . "</a><br /><span class=\"gensmall\">" . $lang['Click_once_warning'] . "</span></p>\n");
+				echo('<p class="gen">' . sprintf($lang['Indexing_progress'], $posts_indexed, $posts_total, ($posts_indexed / $posts_total) * 100, $last_post) . '</p>' . "\n");
+				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . '">' . $lang['Click_or_wait_to_proceed'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 				include('./page_footer_admin.' . PHP_EXT);
@@ -3386,7 +3156,7 @@ switch($mode_id)
 				break;
 			case 'synchronize_post': // Synchronize post data
 			case 'synchronize_post_direct': // Run directly
-				echo("<h1>" . $lang['Synchronize_posts'] . "</h1>\n");
+				echo('<h1>' . $lang['Synchronize_posts'] . '</h1>' . "\n");
 				if ($function == 'synchronize_post_direct')
 				{
 					$db_state = (isset($_GET['db_state'])) ? intval($_GET['db_state']) : 1;
@@ -3397,7 +3167,7 @@ switch($mode_id)
 				}
 
 				// Updating normal topics
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_topic_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_topic_data'] . '</b></p>' . "\n");
 				if (check_mysql_version())
 				{
 					$sql = "SELECT t.topic_id, t.topic_title, t.topic_replies, t.topic_first_post_id, t.topic_last_post_id, Count(p.post_id) - 1 AS new_replies, Min(p.post_id) AS new_first_post_id, Max(p.post_id) AS new_last_post_id
@@ -3428,8 +3198,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Synchronizing_topics'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Synchronizing_topics'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Synchronizing_topic'], $row['topic_id'], htmlspecialchars($row['topic_title'])) . "</li>\n");
@@ -3447,7 +3217,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -3456,7 +3226,7 @@ switch($mode_id)
 				}
 
 				// Updating moved topics
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_moved_topic_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_moved_topic_data'] . '</b></p>' . "\n");
 				$sql = "SELECT topic_id, topic_title, topic_last_post_id, topic_moved_id
 					FROM " . TOPICS_TABLE . "
 					WHERE topic_status = " . TOPIC_MOVED;
@@ -3495,8 +3265,8 @@ switch($mode_id)
 						{
 							if (!$list_open)
 							{
-								echo("<p class=\"gen\">" . $lang['Synchronizing_moved_topics'] . ":</p>\n");
-								echo("<font class=\"gen\"><ul>\n");
+								echo('<p class="gen">' . $lang['Synchronizing_moved_topics'] . ":</p>\n");
+								echo("<div class=\"post-text\"><ul>\n");
 								$list_open = true;
 							}
 							echo("<li>" . sprintf($lang['Synchronizing_moved_topic'], $row['topic_id'], $row['topic_moved_id'], htmlspecialchars($row['topic_title'])) . "</li>\n");
@@ -3514,14 +3284,14 @@ switch($mode_id)
 					}
 					else
 					{
-						throw_error(sprintf($lang['Inconsistencies_found'], "<a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=check_post") . "\">", '</a>'));
+						throw_error(sprintf($lang['Inconsistencies_found'], "<a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=check_post") . '">', '</a>'));
 					}
 					$db->sql_freeresult($result2);
 				}
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -3530,7 +3300,7 @@ switch($mode_id)
 				}
 
 				// Updating topic data of forums
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_forum_topic_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_forum_topic_data'] . '</b></p>' . "\n");
 				if (check_mysql_version())
 				{
 					$sql = "SELECT f.forum_id, f.forum_name, f.forum_topics, Count(t.topic_id) AS new_topics
@@ -3557,8 +3327,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Synchronizing_forums'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Synchronizing_forums'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Synchronizing_forum'], $row['forum_id'], htmlspecialchars($row['forum_name'])) . "</li>\n");
@@ -3574,7 +3344,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -3583,7 +3353,7 @@ switch($mode_id)
 				}
 
 				// Updating forums without a topic
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_forum_data_wo_topic'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_forum_data_wo_topic'] . '</b></p>' . "\n");
 				$sql = "SELECT f.forum_id
 					FROM " . FORUMS_TABLE . " f
 						LEFT JOIN " . TOPICS_TABLE . " t ON f.forum_id = t.forum_id
@@ -3615,11 +3385,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				elseif (!$db_updated)
@@ -3628,7 +3398,7 @@ switch($mode_id)
 				}
 
 				// Updating post data of forums
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_forum_post_data'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_forum_post_data'] . '</b></p>' . "\n");
 				if (check_mysql_version())
 				{
 					$sql = "SELECT f.forum_id, f.forum_name, f.forum_posts, f.forum_last_post_id, Count(p.post_id) AS new_posts, Max(p.post_id) AS new_last_post_id
@@ -3657,8 +3427,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Synchronizing_forums'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Synchronizing_forums'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Synchronizing_forum'], $row['forum_id'], htmlspecialchars($row['forum_name'])) . "</li>\n");
@@ -3675,7 +3445,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -3684,7 +3454,7 @@ switch($mode_id)
 				}
 
 				// Updating forums without a post
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_forum_data_wo_post'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_forum_data_wo_post'] . '</b></p>' . "\n");
 				$sql = "SELECT f.forum_id
 					FROM " . FORUMS_TABLE . " f
 						LEFT JOIN " . POSTS_TABLE . " p ON f.forum_id = p.forum_id
@@ -3715,11 +3485,11 @@ switch($mode_id)
 					$affected_rows = $db->sql_affectedrows();
 					if ($affected_rows == 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 					}
 					elseif ($affected_rows > 1)
 					{
-						echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 					}
 				}
 				elseif (!$db_updated)
@@ -3735,8 +3505,8 @@ switch($mode_id)
 					}
 					else
 					{
-						echo('<p class="gen"><b>' . $lang['Unlock_db'] . "</b></p>\n");
-						echo('<p class="gen">' . $lang['Ignore_unlock_command'] . "</p>\n");
+						echo('<p class="gen"><b>' . $lang['Unlock_db'] . '</b></p>' . "\n");
+						echo('<p class="gen">' . $lang['Ignore_unlock_command'] . '</p>' . "\n");
 					}
 				}
 				else
@@ -3746,11 +3516,11 @@ switch($mode_id)
 
 				break;
 			case 'synchronize_user': // Synchronize post counter of users
-				echo("<h1>" . $lang['Synchronize_post_counters'] . "</h1>\n");
+				echo('<h1>' . $lang['Synchronize_post_counters'] . '</h1>' . "\n");
 				lock_db();
 
 				// Updating new pm counter
-				echo("<p class=\"gen\"><b>" . $lang['Synchronize_user_post_counter'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Synchronize_user_post_counter'] . '</b></p>' . "\n");
 
 				// List forum to not sync
 				$sql = "SELECT forum_id FROM " . FORUMS_TABLE . "
@@ -3801,8 +3571,8 @@ switch($mode_id)
 					{
 						if (!$list_open)
 						{
-							echo("<p class=\"gen\">" . $lang['Synchronizing_users'] . ":</p>\n");
-							echo("<font class=\"gen\"><ul>\n");
+							echo('<p class="gen">' . $lang['Synchronizing_users'] . ":</p>\n");
+							echo("<div class=\"post-text\"><ul>\n");
 							$list_open = true;
 						}
 						echo("<li>" . sprintf($lang['Synchronizing_user_counter'], htmlspecialchars($row['username']), $row['user_id'], $row['user_posts'], $row['new_counter']) . "</li>\n");
@@ -3838,8 +3608,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Synchronizing_users'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Synchronizing_users'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Synchronizing_user_counter'], htmlspecialchars($row['username']), $row['user_id'], $row['user_posts'], 0) . "</li>\n");
@@ -3855,7 +3625,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -3866,11 +3636,11 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'synchronize_mod_state': // Synchronize moderator status
-				echo("<h1>" . $lang['Synchronize_moderators'] . "</h1>\n");
+				echo('<h1>' . $lang['Synchronize_moderators'] . '</h1>' . "\n");
 				lock_db();
 
 				// Getting moderator data
-				echo("<p class=\"gen\"><b>" . $lang['Getting_moderators'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Getting_moderators'] . '</b></p>' . "\n");
 				if (check_mysql_version())
 				{
 					$sql = "SELECT ug.user_id
@@ -3908,10 +3678,10 @@ switch($mode_id)
 				{
 					$moderator_list = '0';
 				}
-				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
 				// Checking non moderators
-				echo("<p class=\"gen\"><b>" . $lang['Checking_non_moderators'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_non_moderators'] . '</b></p>' . "\n");
 				$sql = "SELECT user_id, username
 					FROM " . USERS_TABLE . "
 					WHERE user_level = " . MOD . "
@@ -3925,8 +3695,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Updating_mod_state'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Updating_mod_state'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Changing_moderator_status'], htmlspecialchars($row['username']), $row['user_id']) . "</li>\n");
@@ -3942,7 +3712,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -3951,7 +3721,7 @@ switch($mode_id)
 				}
 
 				// Checking moderators
-				echo("<p class=\"gen\"><b>" . $lang['Checking_moderators'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_moderators'] . '</b></p>' . "\n");
 				$sql = "SELECT user_id, username
 					FROM " . USERS_TABLE . "
 					WHERE user_level = " . USER . "
@@ -3965,8 +3735,8 @@ switch($mode_id)
 				{
 					if (!$list_open)
 					{
-						echo("<p class=\"gen\">" . $lang['Updating_mod_state'] . ":</p>\n");
-						echo("<font class=\"gen\"><ul>\n");
+						echo('<p class="gen">' . $lang['Updating_mod_state'] . ":</p>\n");
+						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Changing_moderator_status'], htmlspecialchars($row['username']), $row['user_id']) . "</li>\n");
@@ -3982,7 +3752,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if ($list_open)
 				{
-					echo("</ul></font>\n");
+					echo("</ul></div>\n");
 					$list_open = false;
 				}
 				else
@@ -3993,14 +3763,14 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'reset_date': // Reset dates
-				echo("<h1>" . $lang['Resetting_future_post_dates'] . "</h1>\n");
+				echo('<h1>' . $lang['Resetting_future_post_dates'] . '</h1>' . "\n");
 				lock_db();
 
 				// Set a variable with the current time
 				$time = time();
 
 				// Checking post table
-				echo("<p class=\"gen\"><b>" . $lang['Checking_post_dates'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_post_dates'] . '</b></p>' . "\n");
 				$sql = "UPDATE " . POSTS_TABLE . "
 					SET post_time = $time
 					WHERE post_time > $time";
@@ -4012,11 +3782,11 @@ switch($mode_id)
 				$affected_rows = $db->sql_affectedrows();
 				if ($affected_rows == 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif ($affected_rows > 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 				}
 				else
 				{
@@ -4024,7 +3794,7 @@ switch($mode_id)
 				}
 
 				// Checking private messages table
-				echo("<p class=\"gen\"><b>" . $lang['Checking_pm_dates'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_pm_dates'] . '</b></p>' . "\n");
 				$sql = "UPDATE " . PRIVMSGS_TABLE . "
 					SET privmsgs_date = $time
 					WHERE privmsgs_date > $time";
@@ -4036,11 +3806,11 @@ switch($mode_id)
 				$affected_rows = $db->sql_affectedrows();
 				if ($affected_rows == 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif ($affected_rows > 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 				}
 				else
 				{
@@ -4048,7 +3818,7 @@ switch($mode_id)
 				}
 
 				// Checking user table (last e-mail))
-				echo("<p class=\"gen\"><b>" . $lang['Checking_email_dates'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_email_dates'] . '</b></p>' . "\n");
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_emailtime = $time
 					WHERE user_emailtime > $time";
@@ -4060,11 +3830,11 @@ switch($mode_id)
 				$affected_rows = $db->sql_affectedrows();
 				if ($affected_rows == 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_row'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
 				}
 				elseif ($affected_rows > 1)
 				{
-					echo("<p class=\"gen\">" . sprintf($lang['Affected_rows'], $affected_rows) . "</p>\n");
+					echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
 				}
 				else
 				{
@@ -4074,11 +3844,11 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'reset_sessions': // Reset sessions
-				echo("<h1>" . $lang['Resetting_sessions'] . "</h1>\n");
+				echo('<h1>' . $lang['Resetting_sessions'] . '</h1>' . "\n");
 				lock_db();
 
 				// Deleting tables
-				echo("<p class=\"gen\"><b>" . $lang['Deleting_session_tables'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Deleting_session_tables'] . '</b></p>' . "\n");
 				$sql = "DELETE FROM " . SESSIONS_TABLE;
 				$result = $db->sql_query($sql);
 				if (!$result)
@@ -4091,10 +3861,10 @@ switch($mode_id)
 				{
 					throw_error("Couldn't delete from search result table!", __LINE__, __FILE__, $sql);
 				}
-				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
 				// Restore session data of current user to prevent getting thrown out of the admin panel
-				echo("<p class=\"gen\"><b>" . $lang['Restoring_session'] . "</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Restoring_session'] . '</b></p>' . "\n");
 				// Set Variables
 				$session_id = $userdata['session_id'];
 				$user_id = $userdata['user_id'];
@@ -4119,20 +3889,20 @@ switch($mode_id)
 				{
 					throw_error("Couldn't restore session data!", __LINE__, __FILE__, $sql);
 				}
-				echo("<p class=\"gen\">" . $lang['Done'] . "</p>\n");
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
 				lock_db(true);
 				break;
 			case 'check_db': // Check database
-				echo("<h1>" . $lang['Checking_db'] . "</h1>\n");
+				echo('<h1>' . $lang['Checking_db'] . '</h1>' . "\n");
 				if (!check_mysql_version())
 				{
-					echo("<p class=\"gen\">" . $lang['Old_MySQL_Version'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Old_MySQL_Version'] . '</p>' . "\n");
 					break;
 				}
 				lock_db();
-				echo("<p class=\"gen\"><b>" . $lang['Checking_tables'] . ":</b></p>\n");
-				echo("<font class=\"gen\"><ul>\n");
+				echo('<p class="gen"><b>' . $lang['Checking_tables'] . ":</b></p>\n");
+				echo("<div class=\"post-text\"><ul>\n");
 				$list_open = true;
 
 				for($i = 0; $i < count($tables); $i++)
@@ -4170,20 +3940,20 @@ switch($mode_id)
 					}
 					$db->sql_freeresult($result);
 				}
-				echo("</ul></font>\n");
+				echo("</ul></div>\n");
 				$list_open = false;
 				lock_db(true);
 				break;
 			case 'repair_db': // Repair database
-				echo("<h1>" . $lang['Repairing_db'] . "</h1>\n");
+				echo('<h1>' . $lang['Repairing_db'] . '</h1>' . "\n");
 				if (!check_mysql_version())
 				{
-					echo("<p class=\"gen\">" . $lang['Old_MySQL_Version'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Old_MySQL_Version'] . '</p>' . "\n");
 					break;
 				}
 				lock_db();
-				echo("<p class=\"gen\"><b>" . $lang['Repairing_tables'] . ":</b></p>\n");
-				echo("<font class=\"gen\"><ul>\n");
+				echo('<p class="gen"><b>' . $lang['Repairing_tables'] . ":</b></p>\n");
+				echo("<div class=\"post-text\"><ul>\n");
 				$list_open = true;
 
 				for($i = 0; $i < count($tables); $i++)
@@ -4221,21 +3991,21 @@ switch($mode_id)
 					}
 					$db->sql_freeresult($result);
 				}
-				echo("</ul></font>\n");
+				echo("</ul></div>\n");
 				$list_open = false;
 				lock_db(true);
 				break;
 			case 'optimize_db': // Optimize database
-				echo("<h1>" . $lang['Optimizing_db'] . "</h1>\n");
+				echo('<h1>' . $lang['Optimizing_db'] . '</h1>' . "\n");
 				if (!check_mysql_version())
 				{
-					echo("<p class=\"gen\">" . $lang['Old_MySQL_Version'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Old_MySQL_Version'] . '</p>' . "\n");
 					break;
 				}
 				lock_db();
 				$old_stat = get_table_statistic();
-				echo("<p class=\"gen\"><b>" . $lang['Optimizing_tables'] . ":</b></p>\n");
-				echo("<font class=\"gen\"><ul>\n");
+				echo('<p class="gen"><b>' . $lang['Optimizing_tables'] . ":</b></p>\n");
+				echo("<div class=\"post-text\"><ul>\n");
 				$list_open = true;
 
 				for($i = 0; $i < count($tables); $i++)
@@ -4273,19 +4043,19 @@ switch($mode_id)
 					}
 					$db->sql_freeresult($result);
 				}
-				echo("</ul></font>\n");
+				echo("</ul></div>\n");
 				$list_open = false;
 				$new_stat = get_table_statistic();
 				$reduction_absolute = $old_stat['core']['size'] - $new_stat['core']['size'];
 				$reduction_percent = ($reduction_absolute / $old_stat['core']['size']) * 100;
-				echo("<p class=\"gen\">" . sprintf($lang['Optimization_statistic'], convert_bytes($old_stat['core']['size']), convert_bytes($new_stat['core']['size']), convert_bytes($reduction_absolute), $reduction_percent) . "</b></p>\n");
+				echo('<p class="gen">' . sprintf($lang['Optimization_statistic'], convert_bytes($old_stat['core']['size']), convert_bytes($new_stat['core']['size']), convert_bytes($reduction_absolute), $reduction_percent) . '</b></p>' . "\n");
 				lock_db(true);
 				break;
 			case 'reset_auto_increment': // Reset autoincrement values
-				echo("<h1>" . $lang['Reset_ai'] . "</h1>\n");
+				echo('<h1>' . $lang['Reset_ai'] . '</h1>' . "\n");
 				lock_db();
-				echo("<p class=\"gen\"><b>" . $lang['Reset_ai'] . "...</b></p>\n");
-				echo("<font class=\"gen\"><ul>\n");
+				echo('<p class="gen"><b>' . $lang['Reset_ai'] . "...</b></p>\n");
+				echo("<div class=\"post-text\"><ul>\n");
 
 				set_autoincrement(BANLIST_TABLE, 'ban_id', 8);
 				set_autoincrement(CATEGORIES_TABLE, 'cat_id', 8);
@@ -4302,20 +4072,20 @@ switch($mode_id)
 				set_autoincrement(VOTE_DESC_TABLE, 'vote_id', 8);
 				set_autoincrement(WORDS_TABLE, 'word_id', 8);
 
-				echo("</ul></font>\n");
+				echo("</ul></div>\n");
 				$list_open = false;
 
 				lock_db(true);
 				break;
 			case 'heap_convert': // Convert session table to HEAP
-				echo("<h1>" . $lang['Reset_ai'] . "</h1>\n");
+				echo('<h1>' . $lang['Reset_ai'] . '</h1>' . "\n");
 				if (!check_mysql_version())
 				{
-					echo("<p class=\"gen\">" . $lang['Old_MySQL_Version'] . "</p>\n");
+					echo('<p class="gen">' . $lang['Old_MySQL_Version'] . '</p>' . "\n");
 					break;
 				}
 				lock_db();
-				echo("<p class=\"gen\"><b>" . $lang['Converting_heap'] . "...</b></p>\n");
+				echo('<p class="gen"><b>' . $lang['Converting_heap'] . "...</b></p>\n");
 
 				// First check for current table size
 				$sql = "SELECT Count(*) as count FROM " . SESSIONS_TABLE;
@@ -4356,13 +4126,13 @@ switch($mode_id)
 				lock_db(true);
 				break;
 			case 'unlock_db': // Unlock the database
-				echo("<h1>" . $lang['Unlocking_db'] . "</h1>\n");
+				echo('<h1>' . $lang['Unlocking_db'] . '</h1>' . "\n");
 				lock_db(true, true, true);
 				break;
 			default:
-				echo("<p class=\"gen\">" . $lang['function_unknown'] . "</p>\n");
+				echo('<p class="gen">' . $lang['function_unknown'] . '</p>' . "\n");
 		}
-		echo("<p class=\"gen\"><a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT) . "\">" . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
+		echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT) . '">' . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
 		// Send Information about processing time
 		echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 		ob_start();

@@ -6,19 +6,19 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_FILE_CHECKER}</th></tr>
 <!-- BEGIN check -->
-<tr><td class="row1"><span class="cattitle">{L_FILE_CHECKER_SP1}</span></td></tr>
+<tr><td class="row1"><span class="cattitle"><strong>{L_FILE_CHECKER_SP1}</strong></span></td></tr>
 <!-- BEGIN check_step1 -->
 <tr><td class="row1"><span class="gensmall">{check.check_step1.DEL_DURL}</span></td></tr>
 <!-- END check_step1 -->
-<tr><td class="row1"><span class="cattitle">{L_FILE_CHECKER_SP2}</span></B></td></tr>
+<tr><td class="row1"><span class="cattitle"><strong>{L_FILE_CHECKER_SP2}</strong></span></B></td></tr>
 <!-- BEGIN check_step2 -->
 <tr><td class="row1"><span class="gensmall">{check.check_step2.DEL_SSURL}</span></td></tr>
 <!-- END check_step2 -->
-<tr><td class="row1"><span class="cattitle">{L_FILE_CHECKER_SP3}</span></B></td></tr>
+<tr><td class="row1"><span class="cattitle"><strong>{L_FILE_CHECKER_SP3}</strong></span></B></td></tr>
 <!-- BEGIN check_step3 -->
 <tr><td class="row1"><span class="gensmall">{check.check_step3.DEL_FILE}</span></td></tr>
 <!-- END check_step3 -->
-<tr><td class="row1"><span class="cattitle">{L_FILE_CHECKER_SAVED}:</span> <span class="gensmall">{SAVED}.</span></td></tr>
+<tr><td class="row1"><span class="cattitle"><strong>{L_FILE_CHECKER_SAVED}:</strong></span> <span class="gensmall">{SAVED}.</span></td></tr>
 <tr><td class="cat">&nbsp;</td></tr>
 <!-- END check -->
 

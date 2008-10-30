@@ -313,20 +313,17 @@ class NewsDataAccess
 		$sql = 'SELECT
 				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
 				n.*,
-				p.post_id, p.post_username, p.post_time, p.post_edit_time, p.post_attachment, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_autolinks_acronyms,
-				pt.*,
+				p.*,
 				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . FORUMS_TABLE . ' AS f,
 				' . USERS_TABLE . ' AS u,
 				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TEXT_TABLE . ' AS pt,
 				' . POSTS_TABLE . ' AS p
 			WHERE
 				t.topic_first_post_id = p.post_id
 				AND t.forum_id = f.forum_id
-				AND t.topic_first_post_id = pt.post_id
 				AND t.topic_poster = u.user_id
 				AND t.news_id = n.news_id
 				AND t.topic_id = ' . $article_id . '
@@ -380,19 +377,16 @@ class NewsDataAccess
 
 		// Begin SQL Construction.
 		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_attachment,
-				p.post_id, p.post_username, p.post_time, p.post_edit_time, p.post_attachment, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_autolinks_acronyms,
-				pt.*,
+				p.*,
 				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . USERS_TABLE . ' AS u,
-				' . POSTS_TEXT_TABLE . ' AS pt,
 				' . POSTS_TABLE . ' AS p
 			WHERE
 				t.topic_id = ' . $topic_id . '
 				AND p.topic_id = t.topic_id
 				AND p.post_id <> t.topic_first_post_id
-				AND pt.post_id = p.post_id
 				AND p.poster_id = u.user_id
 				' . $auth_sql . '
 			ORDER BY
@@ -446,13 +440,11 @@ class NewsDataAccess
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . USERS_TABLE . ' AS u,
-				' . POSTS_TEXT_TABLE . ' AS pt,
 				' . POSTS_TABLE . ' AS p
 			WHERE
 				t.topic_id = ' . $topic_id . '
 				AND p.topic_id = t.topic_id
 				AND p.post_id <> t.topic_first_post_id
-				AND pt.post_id = p.post_id
 				AND p.poster_id = u.user_id
 				' . $auth_sql;
 
@@ -529,20 +521,17 @@ class NewsDataAccess
 		$sql = 'SELECT
 				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
 				n.*,
-				p.post_id, p.post_username, p.post_time, p.post_edit_time, p.post_attachment, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_autolinks_acronyms,
-				pt.*,
+				p.*,
 				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . FORUMS_TABLE . ' AS f,
 				' . USERS_TABLE . ' AS u,
 				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TEXT_TABLE . ' AS pt,
 				' . POSTS_TABLE . ' AS p
 			WHERE
 				p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
-				AND pt.post_id = t.topic_first_post_id
 				' . $ubid_sql . '
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id
@@ -838,20 +827,17 @@ class NewsDataAccess
 		$sql = 'SELECT
 				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
 				n.*,
-				p.post_id, p.post_username, p.post_time, p.post_edit_time, p.post_attachment, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_autolinks_acronyms,
-				pt.*,
+				p.*,
 				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . FORUMS_TABLE . ' AS f,
 				' . USERS_TABLE . ' AS u,
 				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TEXT_TABLE . ' AS pt,
 				' . POSTS_TABLE . ' AS p
 			WHERE
 				p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
-				AND pt.post_id = t.topic_first_post_id
 				' . $ubid_sql . '
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id
@@ -864,13 +850,10 @@ class NewsDataAccess
 		}
 
 		$is_block = false;
-		if (!empty($cms_config_var['md_news_sort']))
+		if (!empty($cms_config_var['md_news_sort']) && ($cms_config_var['md_news_sort'] == '1'))
 		{
-			if ($cms_config_var['md_news_sort'] == '1')
-			{
-				$is_block = true;
-				$sql .= 'ORDER BY RAND() LIMIT ';
-			}
+			$is_block = true;
+			$sql .= 'ORDER BY RAND() LIMIT ';
 		}
 
 		if ($is_block == false)
@@ -961,12 +944,10 @@ class NewsDataAccess
 				' . FORUMS_TABLE . ' AS f,
 				' . USERS_TABLE . ' AS u,
 				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TEXT_TABLE . ' AS pt,
 				' . POSTS_TABLE . ' AS p
 			WHERE
 				p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
-				AND pt.post_id = t.topic_first_post_id
 				' . $ubid_sql . '
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id

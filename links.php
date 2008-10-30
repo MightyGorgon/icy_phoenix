@@ -29,26 +29,8 @@ init_userprefs($userdata);
 
 $cms_page_id = '13';
 $cms_page_name = 'links';
-$auth_level_req = $board_config['auth_view_links'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_links'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 

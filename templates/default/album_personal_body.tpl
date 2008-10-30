@@ -15,10 +15,10 @@
 <tr>
 	<td class="nav" align="left">
 		<!-- BEGIN your_personal_gallery -->
-		{UPLOAD_FULL_LINK}
+		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END your_personal_gallery -->
 		<!-- BEGIN enable_picture_download -->
-		{DOWNLOAD_FULL_LINK}
+		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download -->
 		<br />
 		<span class="nav">
@@ -95,10 +95,10 @@
 <tr>
 	<td class="nav" width="100%">
 		<!-- BEGIN your_personal_gallery -->
-		{UPLOAD_FULL_LINK}
+		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END your_personal_gallery -->
 		<!-- BEGIN enable_picture_download -->
-		{DOWNLOAD_FULL_LINK}
+		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download -->
 		<br />
 		<span class="nav">

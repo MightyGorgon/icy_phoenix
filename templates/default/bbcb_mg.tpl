@@ -28,70 +28,70 @@ function openAllSmiles()
 	<td width="100%" align="left" nowrap="nowrap">
 		&nbsp;
 		<select style="height:18px;" name="ft" onChange="BBCft();this.selectedIndex=0;" onMouseOver="helpline('ft')">
-			<option value="" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Verdana; background-color: {T_TD_COLOR1}">{L_FONT_TYPE}</option>
-			<option value="Arial" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Arial; background-color: {T_TD_COLOR1}">{L_FONT_ARIAL}</option>
-			<option value="Comic Sans MS" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Comic Sans MS'; background-color: {T_TD_COLOR1}">{L_FONT_COMIC_SANS_MS}</option>
-			<option value="Courier New" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Courier New'; background-color: {T_TD_COLOR1}">{L_FONT_COURIER_NEW}</option>
-			<option value="Impact" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Impact; background-color: {T_TD_COLOR1}">{L_FONT_IMPACT}</option>
-			<option value="Lucida Console" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Lucida Console'; background-color: {T_TD_COLOR1}">{L_FONT_LUCIDA_CONSOLE}</option>
-			<option value="Lucida Sans Unicode" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Lucida Sans Unicode'; background-color: {T_TD_COLOR1}">{L_FONT_LUCIDA_SANS_UNICODE}</option>
-			<option value="Microsoft Sans Serif" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Microsoft Sans Serif'; background-color: {T_TD_COLOR1}">{L_FONT_MICROSOFT_SANS_SERIF}</option>
-			<option value="Symbol" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Symbol; background-color: {T_TD_COLOR1}">{L_FONT_SYMBOL}</option>
-			<option value="Tahoma" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Tahoma; background-color: {T_TD_COLOR1}">{L_FONT_TAHOMA}</option>
-			<option value="Times New Roman" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Times New Roman'; background-color: {T_TD_COLOR1}">{L_FONT_TIMES_NEW_ROMAN}</option>
-			<option value="Traditional Arabic" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Traditional Arabic'; background-color: {T_TD_COLOR1}">{L_FONT_TRADITIONAL_ARABIC}</option>
-			<option value="Trebuchet MS" class="genmed" style="color:{T_FONTCOLOR1}; font-family:'Trebuchet MS'; background-color: {T_TD_COLOR1}">{L_FONT_TREBUCHET_MS}</option>
-			<option value="Verdana" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Verdana; background-color: {T_TD_COLOR1}">{L_FONT_VERDANA}</option>
-			<option value="Webdings" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Webdings; background-color: {T_TD_COLOR1}">{L_FONT_WEBDINGS}</option>
-			<option value="Wingdings" class="genmed" style="color:{T_FONTCOLOR1}; font-family:Wingdings; background-color: {T_TD_COLOR1}">{L_FONT_WINGDINGS}</option>
+			<option value="" class="genmed" style="font-family:Verdana;">{L_FONT_TYPE}</option>
+			<option value="Arial" class="genmed" style="font-family:Arial;">{L_FONT_ARIAL}</option>
+			<option value="Comic Sans MS" class="genmed" style="font-family:'Comic Sans MS';">{L_FONT_COMIC_SANS_MS}</option>
+			<option value="Courier New" class="genmed" style="font-family:'Courier New';">{L_FONT_COURIER_NEW}</option>
+			<option value="Impact" class="genmed" style="font-family:Impact;">{L_FONT_IMPACT}</option>
+			<option value="Lucida Console" class="genmed" style="font-family:'Lucida Console';">{L_FONT_LUCIDA_CONSOLE}</option>
+			<option value="Lucida Sans Unicode" class="genmed" style="font-family:'Lucida Sans Unicode';">{L_FONT_LUCIDA_SANS_UNICODE}</option>
+			<option value="Microsoft Sans Serif" class="genmed" style="font-family:'Microsoft Sans Serif';">{L_FONT_MICROSOFT_SANS_SERIF}</option>
+			<option value="Symbol" class="genmed" style="font-family:Symbol;">{L_FONT_SYMBOL}</option>
+			<option value="Tahoma" class="genmed" style="font-family:Tahoma;">{L_FONT_TAHOMA}</option>
+			<option value="Times New Roman" class="genmed" style="font-family:'Times New Roman';">{L_FONT_TIMES_NEW_ROMAN}</option>
+			<option value="Traditional Arabic" class="genmed" style="font-family:'Traditional Arabic';">{L_FONT_TRADITIONAL_ARABIC}</option>
+			<option value="Trebuchet MS" class="genmed" style="font-family:'Trebuchet MS';">{L_FONT_TREBUCHET_MS}</option>
+			<option value="Verdana" class="genmed" style="font-family:Verdana;">{L_FONT_VERDANA}</option>
+			<option value="Webdings" class="genmed" style="font-family:Webdings;">{L_FONT_WEBDINGS}</option>
+			<option value="Wingdings" class="genmed" style="font-family:Wingdings;">{L_FONT_WINGDINGS}</option>
 		</select>
 		&nbsp;
 		<select style="height:18px;" name="fs" onChange="BBCfs();this.selectedIndex=0;" onMouseOver="helpline('fs')">
-			<option value="" selected class="genmed" style="color:{T_FONTCOLOR1}; background-color: {T_TD_COLOR1}">{L_FONT_SIZE}</option>
-			<option value="8" class="genmed" style="color:{T_FONTCOLOR1}; background-color: {T_TD_COLOR1}; font-size:8px">{L_FONT_TINY}</option>
-			<option value="10" class="genmed" style="color:{T_FONTCOLOR1}; background-color: {T_TD_COLOR1}; font-size:10px">{L_FONT_SMALL}</option>
-			<option value="12" class="genmed" style="color:{T_FONTCOLOR1}; background-color: {T_TD_COLOR1}; font-size:12px">{L_FONT_NORMAL}</option>
-			<option value="14" class="genmed" style="color:{T_FONTCOLOR1}; background-color: {T_TD_COLOR1}; font-size:14px">{L_FONT_LARGE}</option>
-			<option value="18" class="genmed" style="color:{T_FONTCOLOR1};  background-color: {T_TD_COLOR1}; font-size:18px">{L_FONT_HUGE}</option>
-			<option value="24" class="genmed" style="color:{T_FONTCOLOR1}; background-color: {T_TD_COLOR1}; font-size:24px">{L_FONT_XL}</option>
+			<option value="" selected class="genmed" style="color:{T_FONTCOLOR1}">{L_FONT_SIZE}</option>
+			<option value="8" class="genmed" style="font-size:8px;">{L_FONT_TINY}</option>
+			<option value="10" class="genmed" style="font-size:10px;">{L_FONT_SMALL}</option>
+			<option value="12" class="genmed" style="font-size:12px;">{L_FONT_NORMAL}</option>
+			<option value="14" class="genmed" style="font-size:14px;">{L_FONT_LARGE}</option>
+			<option value="18" class="genmed" style="font-size:18px;">{L_FONT_HUGE}</option>
+			<option value="24" class="genmed" style="font-size:24px;">{L_FONT_XL}</option>
 		</select>
 		&nbsp;
 		<select style="height:18px;" name="fc" onChange="BBCfc();this.selectedIndex=0;" onMouseOver="helpline('fc')">
-			<option style="color:{T_FONTCOLOR1}; background-color: {T_TD_COLOR1}" value="{T_FONTCOLOR1}" class="genmed">{L_FONT_COLOR}</option>
-			<option style="color:brown; background-color: {T_TD_COLOR1}" value="brown" class="genmed">{L_COLOR_BROWN}</option>
-			<option style="color:chocolate; background-color: {T_TD_COLOR1}" value="chocolate" class="genmed">{L_COLOR_CHOCOLATE}</option>
-			<option style="color:darkred; background-color: {T_TD_COLOR1}" value="darkred" class="genmed">{L_COLOR_DARK_RED}</option>
-			<option style="color:crimson; background-color: {T_TD_COLOR1}" value="crimson" class="genmed">{L_COLOR_CRIMSON}</option>
-			<option style="color:red; background-color: {T_TD_COLOR1}" value="red" class="genmed">{L_COLOR_RED}</option>
-			<option style="color:#FF8866; background-color: {T_TD_COLOR1}" value="#FF8866" class="genmed">{L_COLOR_LIGHT_ORANGE}</option>
-			<option style="color:#FF5500; background-color: {T_TD_COLOR1}" value="#FF5500" class="genmed">{L_COLOR_POWER_ORANGE}</option>
-			<option style="color:orange; background-color: {T_TD_COLOR1}" value="orange" class="genmed">{L_COLOR_ORANGE}</option>
-			<option style="color:gold; background-color: {T_TD_COLOR1}" value="gold" class="genmed">{L_COLOR_GOLD}</option>
-			<option style="color:peachpuff; background-color: {T_TD_COLOR1}" value="peachpuff" class="genmed">{L_COLOR_PEACH}</option>
-			<option style="color:yellow; background-color: {T_TD_COLOR1}" value="yellow" class="genmed">{L_COLOR_YELLOW}</option>
-			<option style="color:#00FF00; background-color: {T_TD_COLOR1}" value="#00FF00" class="genmed">{L_COLOR_LIGHT_GREEN}</option>
-			<option style="color:seagreen; background-color: {T_TD_COLOR1}" value="seagreen" class="genmed">{L_COLOR_SEA_GREEN}</option>
-			<option style="color:green; background-color: {T_TD_COLOR1}" value="green" class="genmed">{L_COLOR_GREEN}</option>
-			<option style="color:olive; background-color: {T_TD_COLOR1}" value="olive" class="genmed">{L_COLOR_OLIVE}</option>
-			<option style="color:darkgreen; background-color: {T_TD_COLOR1}" value="darkgreen" class="genmed">{L_COLOR_DARKGREEN}</option>
-			<option style="color:#DDEEFF; background-color: {T_TD_COLOR1}" value="#DDEEFF" class="genmed">{L_COLOR_LIGHT_CYAN}</option>
-			<option style="color:#AACCEE; background-color: {T_TD_COLOR1}" value="#AACCEE" class="genmed">{L_COLOR_LIGHT_BLUE}</option>
-			<option style="color:cadetblue; background-color: {T_TD_COLOR1}" value="cadetblue" class="genmed">{L_COLOR_CADET_BLUE}</option>
-			<option style="color:cyan; background-color: {T_TD_COLOR1}" value="cyan" class="genmed">{L_COLOR_CYAN}</option>
-			<option style="color:#666699; background-color: {T_TD_COLOR1}" value="#666699" class="genmed">{L_COLOR_TURQUOISE}</option>
-			<option style="color:blue; background-color: {T_TD_COLOR1}" value="blue" class="genmed">{L_COLOR_BLUE}</option>
-			<option style="color:deepskyblue; background-color: {T_TD_COLOR1}" value="deepskyblue" class="genmed">{L_COLOR_DEEPSKYBLUE}</option>
-			<option style="color:midnightblue; background-color: {T_TD_COLOR1}" value="midnightblue" class="genmed">{L_COLOR_MIDNIGHTBLUE}</option>
-			<option style="color:darkblue; background-color: {T_TD_COLOR1}" value="darkblue" class="genmed">{L_COLOR_DARK_BLUE}</option>
-			<option style="color:indigo; background-color: {T_TD_COLOR1}" value="indigo" class="genmed">{L_COLOR_INDIGO}</option>
-			<option style="color:darkorchid; background-color: {T_TD_COLOR1}" value="darkorchid" class="genmed">{L_COLOR_DARK_ORCHID}</option>
-			<option style="color:violet; background-color: {T_TD_COLOR1}" value="violet" class="genmed">{L_COLOR_VIOLET}</option>
-			<option style="color:white; background-color: {T_TD_COLOR1}" value="white" class="genmed">{L_COLOR_WHITE}</option>
-			<option style="color:lightgrey; background-color: {T_TD_COLOR1}" value="lightgrey" class="genmed">{L_COLOR_LIGHT_GREY}</option>
-			<option style="color:silver; background-color: {T_TD_COLOR1}" value="silver" class="genmed">{L_COLOR_SILVER}</option>
-			<option style="color:darkgrey; background-color: {T_TD_COLOR1}" value="darkgrey" class="genmed">{L_COLOR_DARK_GREY}</option>
-			<option style="color:gray; background-color: {T_TD_COLOR1}" value="gray" class="genmed">{L_COLOR_GRAY}</option>
-			<option style="color:black; background-color: {T_TD_COLOR1}" value="black" class="genmed">{L_COLOR_BLACK}</option>
+			<option value="" class="genmed">{L_FONT_COLOR}</option>
+			<option style="color:brown;" value="brown" class="genmed">{L_COLOR_BROWN}</option>
+			<option style="color:chocolate;" value="chocolate" class="genmed">{L_COLOR_CHOCOLATE}</option>
+			<option style="color:darkred;" value="darkred" class="genmed">{L_COLOR_DARK_RED}</option>
+			<option style="color:crimson;" value="crimson" class="genmed">{L_COLOR_CRIMSON}</option>
+			<option style="color:red;" value="red" class="genmed">{L_COLOR_RED}</option>
+			<option style="color:#ff8866;" value="#FF8866" class="genmed">{L_COLOR_LIGHT_ORANGE}</option>
+			<option style="color:#ff5500;" value="#FF5500" class="genmed">{L_COLOR_POWER_ORANGE}</option>
+			<option style="color:orange;" value="orange" class="genmed">{L_COLOR_ORANGE}</option>
+			<option style="color:gold;" value="gold" class="genmed">{L_COLOR_GOLD}</option>
+			<option style="color:peachpuff;" value="peachpuff" class="genmed">{L_COLOR_PEACH}</option>
+			<option style="color:yellow;" value="yellow" class="genmed">{L_COLOR_YELLOW}</option>
+			<option style="color:#00ff00;" value="#00FF00" class="genmed">{L_COLOR_LIGHT_GREEN}</option>
+			<option style="color:seagreen;" value="seagreen" class="genmed">{L_COLOR_SEA_GREEN}</option>
+			<option style="color:green;" value="green" class="genmed">{L_COLOR_GREEN}</option>
+			<option style="color:olive;" value="olive" class="genmed">{L_COLOR_OLIVE}</option>
+			<option style="color:darkgreen;" value="darkgreen" class="genmed">{L_COLOR_DARKGREEN}</option>
+			<option style="color:#ddeeff;" value="#DDEEFF" class="genmed">{L_COLOR_LIGHT_CYAN}</option>
+			<option style="color:#aaccee;" value="#AACCEE" class="genmed">{L_COLOR_LIGHT_BLUE}</option>
+			<option style="color:cadetblue;" value="cadetblue" class="genmed">{L_COLOR_CADET_BLUE}</option>
+			<option style="color:cyan;" value="cyan" class="genmed">{L_COLOR_CYAN}</option>
+			<option style="color:#666699;" value="#666699" class="genmed">{L_COLOR_TURQUOISE}</option>
+			<option style="color:blue;" value="blue" class="genmed">{L_COLOR_BLUE}</option>
+			<option style="color:deepskyblue;" value="deepskyblue" class="genmed">{L_COLOR_DEEPSKYBLUE}</option>
+			<option style="color:midnightblue;" value="midnightblue" class="genmed">{L_COLOR_MIDNIGHTBLUE}</option>
+			<option style="color:darkblue;" value="darkblue" class="genmed">{L_COLOR_DARK_BLUE}</option>
+			<option style="color:indigo;" value="indigo" class="genmed">{L_COLOR_INDIGO}</option>
+			<option style="color:darkorchid;" value="darkorchid" class="genmed">{L_COLOR_DARK_ORCHID}</option>
+			<option style="color:violet;" value="violet" class="genmed">{L_COLOR_VIOLET}</option>
+			<option style="color:white;" value="white" class="genmed">{L_COLOR_WHITE}</option>
+			<option style="color:lightgrey;" value="lightgrey" class="genmed">{L_COLOR_LIGHT_GREY}</option>
+			<option style="color:silver;" value="silver" class="genmed">{L_COLOR_SILVER}</option>
+			<option style="color:darkgrey;" value="darkgrey" class="genmed">{L_COLOR_DARK_GREY}</option>
+			<option style="color:gray;" value="gray" class="genmed">{L_COLOR_GRAY}</option>
+			<option style="color:black;" value="black" class="genmed">{L_COLOR_BLACK}</option>
 		</select>
 		<!-- BEGIN switch_colorpicker -->
 		<a href="{U_BBCODE_COLORPICKER}" onClick="javascript:popup=window.open('{U_BBCODE_COLORPICKER}','_color_picker','height=420,width=530,scrollbars=no,resizable=yes');" target="_color_picker"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onMouseOver="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align:middle;" class="bbimages" /></a>
@@ -213,7 +213,7 @@ function openAllSmiles()
 			<td width="5">
 				<script type="text/javascript">document.write('<img height=' + height1 + ' src="{BBCB_MG_IMG_PATH}spacer.gif" width="5" />');</script>
 			</td>
-			<script type="text/javascript">rgb(pas, width1, height1, text1, text2, '{BBCB_MG_PATH_PREFIX}')</script>
+			<script type="text/javascript">rgb(pas, width1, height1, text1, text2, '{BBCB_MG_PATH_PREFIX}');</script>
 		</tr>
 		</table>
 	</td>

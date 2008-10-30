@@ -93,18 +93,18 @@
 <table width="100%" cellpadding="2" cellspacing="0">
 <tr>
 <!-- IF AUTH_DOWNLOAD -->
-	<td width="33%" align="center"><a href="{U_DOWNLOAD}"><img src="{DOWNLOAD_IMG}" alt="{L_DOWNLOAD}" /></a></td>
+	<td width="33%" align="center"><span class="img-btn"><a href="{U_DOWNLOAD}"><img src="{DOWNLOAD_IMG}" alt="{L_DOWNLOAD}" /></span></a></td>
 <!-- ENDIF -->
 <!-- IF AUTH_RATE -->
-	<td width="34%" align="center"><a href="{U_RATE}"><img src="{RATE_IMG}" alt="{L_RATE}" /></a></td>
+	<td width="34%" align="center"><span class="img-btn"><a href="{U_RATE}"><img src="{RATE_IMG}" alt="{L_RATE}" /></a></span></td>
 <!-- ENDIF -->
 <!-- IF AUTH_EMAIL -->
-	<td width="33%" align="center"><a href="{U_EMAIL}"><img src="{EMAIL_IMG}" alt="{L_EMAIL}" /></a></td>
+	<td width="33%" align="center"><span class="img-btn"><a href="{U_EMAIL}"><img src="{EMAIL_IMG}" alt="{L_EMAIL}" /></a></span></td>
 <!-- ENDIF -->
 </tr>
 </table>
 <br />
 <!-- IF INCLUDE_COMMENTS -->
-	<!-- INCLUDE pa_comment_body.tpl -->
+<!-- INCLUDE pa_comment_body.tpl -->
 <!-- ENDIF -->
 <!-- INCLUDE pa_footer.tpl -->

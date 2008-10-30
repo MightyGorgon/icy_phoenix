@@ -346,10 +346,9 @@ elseif ($mode == 'read')
 	// END PM Navigation MOD
 
 	// Major query obtains the message ...
-	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*, pmt.privmsgs_text
-		FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
+	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*
+		FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
 		WHERE pm.privmsgs_id = $privmsgs_id
-			AND pmt.privmsgs_text_id = pm.privmsgs_id
 			$pm_sql_user
 			AND u.user_id = pm.privmsgs_from_userid
 			AND u2.user_id = pm.privmsgs_to_userid";
@@ -367,7 +366,7 @@ elseif ($mode == 'read')
 	$privmsg_id = $privmsg['privmsgs_id'];
 
 	// Is this a new message in the inbox? If it is then save a copy in the posters sent box
-	if (($privmsg['privmsgs_type'] == PRIVMSGS_NEW_MAIL || $privmsg['privmsgs_type'] == PRIVMSGS_UNREAD_MAIL) && $folder == 'inbox')
+	if ((($privmsg['privmsgs_type'] == PRIVMSGS_NEW_MAIL) || ($privmsg['privmsgs_type'] == PRIVMSGS_UNREAD_MAIL)) && ($folder == 'inbox'))
 	{
 		// Update appropriate counter
 		switch ($privmsg['privmsgs_type'])
@@ -427,36 +426,22 @@ elseif ($mode == 'read')
 				{
 					message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (sent)', '', __LINE__, __FILE__, $sql);
 				}
-
-				$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-					WHERE privmsgs_text_id = $old_privmsgs_id";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (sent)', '', __LINE__, __FILE__, $sql);
-				}
 			}
 		}
 
 		//
 		// This makes a copy of the post and stores it as a SENT message from the sender. Perhaps
 		// not the most DB friendly way but a lot easier to manage, besides the admin will be able to
-		// set limits on numbers of storable posts for users ... hopefully!
+		// set limits on numbers of storable posts for users... hopefully!
 		//
-		$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
-			VALUES (" . PRIVMSGS_SENT_MAIL . ", '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_subject'])) . "', " . $privmsg['privmsgs_from_userid'] . ", " . $privmsg['privmsgs_to_userid'] . ", " . $privmsg['privmsgs_date'] . ", '" . $privmsg['privmsgs_ip'] . "', " . $privmsg['privmsgs_enable_html'] . ", " . $privmsg['privmsgs_enable_bbcode'] . ", " . $privmsg['privmsgs_enable_smilies'] . ", " . $privmsg['privmsgs_attach_sig'] . ", " . $privmsg['privmsgs_enable_autolinks_acronyms'] . ")";
+		$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
+			VALUES (" . PRIVMSGS_SENT_MAIL . ", '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_subject'])) . "', '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_text'])) . "', " . $privmsg['privmsgs_from_userid'] . ", " . $privmsg['privmsgs_to_userid'] . ", " . $privmsg['privmsgs_date'] . ", '" . $privmsg['privmsgs_ip'] . "', " . $privmsg['privmsgs_enable_html'] . ", " . $privmsg['privmsgs_enable_bbcode'] . ", " . $privmsg['privmsgs_enable_smilies'] . ", " . $privmsg['privmsgs_attach_sig'] . ", " . $privmsg['privmsgs_enable_autolinks_acronyms'] . ")";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
 		}
 
 		$privmsg_sent_id = $db->sql_nextid();
-
-		$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
-			VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", addslashes($privmsg['privmsgs_text'])) . "')";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert private message sent text', '', __LINE__, __FILE__, $sql);
-		}
 	}
 	$attachment_mod['pm']->duplicate_attachment_pm($privmsg['privmsgs_attachment'], $privmsg['privmsgs_id'], $privmsg_sent_id);
 
@@ -1060,8 +1045,6 @@ elseif (($delete && $mark_list) || $delete_all)
 			}
 
 			// Delete the messages
-			$delete_text_sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-				WHERE privmsgs_text_id IN ($delete_sql_id)";
 			$delete_sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 				WHERE privmsgs_id IN ($delete_sql_id)
 					AND ";
@@ -1093,11 +1076,6 @@ elseif (($delete && $mark_list) || $delete_all)
 			if (!$db->sql_query($delete_sql, BEGIN_TRANSACTION))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
-			}
-
-			if (!$db->sql_query($delete_text_sql, END_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
 			}
 		}
 	}
@@ -1139,9 +1117,9 @@ elseif ($download && $mark_list)
 		$pmtext .= $disp_folder . ' (' . date($user_dateformat, time()) . ')' . $crlf;
 		while($mark_list[$i] != '')
 		{
-			$sql = "SELECT pt.privmsgs_text, us.username, us.user_id, pm.privmsgs_date, pm.privmsgs_subject
-				FROM " . PRIVMSGS_TEXT_TABLE . " pt, " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " us
-				WHERE pt.privmsgs_text_id = " . $mark_list[$i] . " AND pm.privmsgs_id = " . $mark_list[$i] . "
+			$sql = "SELECT pm.privmsgs_date, pm.privmsgs_subject, pm.privmsgs_text, us.username, us.user_id
+				FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " us
+				WHERE pm.privmsgs_text_id = " . $mark_list[$i] . " AND pm.privmsgs_id = " . $mark_list[$i] . "
 				AND us.user_id = pm.privmsgs_from_userid";
 			if ($result = $db->sql_query($sql))
 			{
@@ -1214,13 +1192,6 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (save)', '', __LINE__, __FILE__, $sql);
-				}
-
-				$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-					WHERE privmsgs_text_id = $old_privmsgs_id";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (save)', '', __LINE__, __FILE__, $sql);
 				}
 			}
 		}
@@ -1557,13 +1528,6 @@ elseif ($submit || $refresh || ($mode != ''))
 					{
 						message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)'.$sql, '', __LINE__, __FILE__, $sql);
 					}
-
-					$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-						WHERE privmsgs_text_id = $old_privmsgs_id";
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (inbox)', '', __LINE__, __FILE__, $sql);
-					}
 				}
 			}
 
@@ -1592,8 +1556,8 @@ elseif ($submit || $refresh || ($mode != ''))
 					}
 				}
 			}
-			$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
-				VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig, $acro_auto_on)";
+			$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
+				VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', '" . str_replace("\'", "''", $privmsg_message) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig, $acro_auto_on)";
 		}
 		else
 		{
@@ -1623,7 +1587,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				}
 			}
 			$sql_info = "UPDATE " . PRIVMSGS_TABLE . "
-				SET privmsgs_type = " . PRIVMSGS_NEW_MAIL . ", privmsgs_subject = '" . str_replace("\'", "''", $privmsg_subject) . "', privmsgs_from_userid = " . $userdata['user_id'] . ", privmsgs_to_userid = " . $to_userdata['user_id'] . ", privmsgs_date = $msg_time, privmsgs_ip = '$user_ip', privmsgs_enable_html = $html_on, privmsgs_enable_bbcode = $bbcode_on, privmsgs_enable_smilies = $smilies_on, privmsgs_attach_sig = $attach_sig, privmsgs_enable_autolinks_acronyms = $acro_auto_on
+				SET privmsgs_type = " . PRIVMSGS_NEW_MAIL . ", privmsgs_subject = '" . str_replace("\'", "''", $privmsg_subject) . "', privmsgs_text = '" . str_replace("\'", "''", $privmsg_message) . "', privmsgs_from_userid = " . $userdata['user_id'] . ", privmsgs_to_userid = " . $to_userdata['user_id'] . ", privmsgs_date = $msg_time, privmsgs_ip = '$user_ip', privmsgs_enable_html = $html_on, privmsgs_enable_bbcode = $bbcode_on, privmsgs_enable_smilies = $smilies_on, privmsgs_attach_sig = $attach_sig, privmsgs_enable_autolinks_acronyms = $acro_auto_on
 				WHERE privmsgs_id = $privmsg_id";
 		}
 
@@ -1635,21 +1599,8 @@ elseif ($submit || $refresh || ($mode != ''))
 		if ($mode != 'edit')
 		{
 			$privmsg_sent_id = $db->sql_nextid();
-
-			$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
-				VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", $privmsg_message) . "')";
-		}
-		else
-		{
-			$sql = "UPDATE " . PRIVMSGS_TEXT_TABLE . "
-				SET privmsgs_text = '" . str_replace("\'", "''", $privmsg_message) . "'
-				WHERE privmsgs_text_id = $privmsg_id";
 		}
 
-		if (!$db->sql_query($sql, END_TRANSACTION))
-		{
-			message_die(GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql_info);
-		}
 		$attachment_mod['pm']->insert_attachment_pm($privmsg_id);
 		if ($mode != 'edit')
 		{
@@ -1810,10 +1761,9 @@ elseif ($submit || $refresh || ($mode != ''))
 		}
 		elseif ($mode == 'edit')
 		{
-			$sql = "SELECT pm.*, pmt.privmsgs_text, u.username, u.user_id, u.user_sig
-				FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u
+			$sql = "SELECT pm.*, u.username, u.user_id, u.user_sig
+				FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u
 				WHERE pm.privmsgs_id = $privmsg_id
-					AND pmt.privmsgs_text_id = pm.privmsgs_id
 					AND pm.privmsgs_from_userid = " . $userdata['user_id'] . "
 					AND (pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 						OR pm.privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")
@@ -1843,10 +1793,9 @@ elseif ($submit || $refresh || ($mode != ''))
 		elseif ($mode == 'reply' || $mode == 'quote')
 		{
 
-			$sql = "SELECT pm.privmsgs_subject, pm.privmsgs_date, pmt.privmsgs_text, u.username, u.user_id
-				FROM " . PRIVMSGS_TABLE . " pm, " . PRIVMSGS_TEXT_TABLE . " pmt, " . USERS_TABLE . " u
+			$sql = "SELECT pm.privmsgs_subject, pm.privmsgs_date, pm.privmsgs_text, u.username, u.user_id
+				FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u
 				WHERE pm.privmsgs_id = $privmsg_id
-					AND pmt.privmsgs_text_id = pm.privmsgs_id
 					AND pm.privmsgs_to_userid = " . $userdata['user_id'] . "
 					AND u.user_id = pm.privmsgs_from_userid";
 			if (!($result = $db->sql_query($sql)))
@@ -2074,8 +2023,8 @@ elseif ($submit || $refresh || ($mode != ''))
 	$post_to_review = $_GET['p'];
 
 	$q = "SELECT privmsgs_text
-			FROM " . PRIVMSGS_TEXT_TABLE . "
-			WHERE privmsgs_text_id = '" . $post_to_review . "'";
+			FROM " . PRIVMSGS_TABLE . "
+			WHERE privmsgs_id = '" . $post_to_review . "'";
 	$r = $db -> sql_query($q);
 	$row = $db -> sql_fetchrow($r);
 

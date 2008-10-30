@@ -26,26 +26,8 @@ if (!defined('IMG_THUMB'))
 {
 	$cms_page_id = '12';
 	$cms_page_name = 'album';
-	$auth_level_req = $board_config['auth_view_album'];
-	if ($auth_level_req > AUTH_ALL)
-	{
-		if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if ($userdata['user_level'] != ADMIN)
-		{
-			if ($auth_level_req == AUTH_ADMIN)
-			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-			}
-			if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-			}
-		}
-	}
-	$cms_global_blocks = ($board_config['wide_blocks_album'] == 1) ? true : false;
+	check_page_auth($cms_page_id, $cms_page_name);
+	$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 }
 
 // Include Language
@@ -90,7 +72,7 @@ else
 	$thumb_size = '';
 }
 
-if ((intval($album_config['set_memory']) > '0') && (intval($album_config['set_memory']) < '17'))
+if ((intval($album_config['set_memory']) > '0') && (intval($album_config['set_memory']) < '33'))
 {
 	@ini_set('memory_limit', intval($album_config['set_memory']) . 'M');
 }
@@ -132,7 +114,7 @@ if ($album_config['lb_preview'] == 0)
 }
 else
 {
-	$preview_lb_div = '<script type="text/javascript" src="' . COMMON_TPL . 'album/fap_loader.js"></script>';
+	$preview_lb_div = '<script type="text/javascript" src="templates/common/album/fap_loader.js"></script>';
 	$preview_lb_div .= '<div id="preview_div" style="display: none; position: absolute; z-index: 110; left: -600px; top: -600px;">';
 	$preview_lb_div .= '	<div class="border_preview" style="width: ' . $album_config['midthumb_width'] . 'px; height: ' . $album_config['midthumb_height'] . 'px;">';
 	$preview_lb_div .= '		<div id="loader_container" style="display: none; visibility: hidden;">';

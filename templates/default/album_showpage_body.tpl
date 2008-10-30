@@ -200,7 +200,7 @@ function checkFormRate()
 		</div>
 	</td>
 	<td class="row-post" width="100%" height="100%">
-		<div class="post-buttons-top post-buttons">{commentrow.EDIT} {commentrow.DELETE} {commentrow.IP_IMG}</div>
+		<div class="post-buttons-top post-buttons">{commentrow.EDIT} {commentrow.DELETE}</div>
 		<div class="post-subject">&nbsp;</div>
 		<div class="post-text">{commentrow.TEXT}<br /></div>
 		<div class="post-text"><br /><br /><br />_______________<br />{commentrow.POSTER_SIGNATURE}</div>
@@ -233,26 +233,22 @@ function checkFormRate()
 <!-- BEGIN switch_comment_post -->
 <br />
 <form name="post" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkFormComment();">
-	{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-	<!-- BEGIN logout -->
-	<tr>
-		<td class="row1" width="30%" height="28"><span class="genmed">{L_USERNAME}</span></td>
-		<td class="row2"><input class="post" type="text" name="comment_username" size="32" maxlength="32" /></td>
-	</tr>
-	<!-- END logout -->
-	<tr>
-		<td class="row1" valign="top" width="20%" nowrap="nowrap">
-			<span class="gen">{L_MESSAGE}</span><br />
-			<span class="genmed">{L_MAX_LENGTH}: <b>{S_MAX_LENGTH}</b></span><br /><br /><br /><br />
-			<div class="center-block">{BBCB_SMILEYS_MG}</div>
-		</td>
-		<td class="row2" valign="top">
-			{BBCB_MG}
-			<textarea name="message" rows="15" cols="35" wrap="virtual" style="width:98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{S_MESSAGE}</textarea>
-		</td>
-	</tr>
-	<tr><td class="cat" align="center" colspan="2" height="28"><input class="mainoption" type="submit" name="submit" value="{L_SUBMIT}" /></td></tr>
-	</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- BEGIN logout -->
+<tr>
+	<td class="row1"><span class="genmed">{L_USERNAME}</span></td>
+	<td class="row2"><input class="post" type="text" name="comment_username" size="32" maxlength="32" /></td>
+</tr>
+<!-- END logout -->
+<tr>
+	<td class="row1 row-center" width="20%"><br /><br /><br /><br />{BBCB_SMILEYS_MG}</td>
+	<td class="row2" valign="top">
+		{BBCB_MG}
+		<textarea name="message" rows="15" cols="35" wrap="virtual" style="width:98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{S_MESSAGE}</textarea>
+	</td>
+</tr>
+<tr><td class="cat" align="center" colspan="2" height="28"><input class="mainoption" type="submit" name="submit" value="{L_SUBMIT}" /></td></tr>
+</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <!-- END switch_comment_post -->
 
@@ -264,8 +260,8 @@ function checkFormRate()
 	<td align="left"><span class="gensmall">{PAGE_NUMBER}</span></td>
 	<td align="right" nowrap="nowrap"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
 </tr>
--->
 </table>
+-->
 <!-- END switch_comment -->
 <br />
 {CM_PAGINATION}

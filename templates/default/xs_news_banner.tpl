@@ -17,7 +17,6 @@ if(GetCookie(tmp) == '2')
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('xs_news','xs_news_h','xs_news');" alt="{L_HIDE}" /><span class="forumlink">{NEWS_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td>
-
 	<!-- BEGIN switch_news_ticker -->
 		<!-- BEGIN switch_ticker_subtitle -->
 		<p class="subtitle" style="height:18px;">{XS_NEWS_TICKERS_TITLE}</p>

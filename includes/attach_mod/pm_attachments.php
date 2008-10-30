@@ -69,7 +69,7 @@ class attach_pm extends attach_parent
 			$a_privmsgs_id = (int) $privmsg_sent_id;
 		}
 
-		if ($a_privmsgs_id && ($mode == 'post' || $mode == 'reply' || $mode == 'edit') && intval($attach_config['allow_pm_attach']))
+		if ($a_privmsgs_id && (($mode == 'post') || ($mode == 'reply') || ($mode == 'edit')) && intval($attach_config['allow_pm_attach']))
 		{
 			$this->do_insert_attachment('attach_list', 'pm', $a_privmsgs_id);
 			$this->do_insert_attachment('last_attachment', 'pm', $a_privmsgs_id);
@@ -230,8 +230,8 @@ class attach_pm extends attach_parent
 
 		if (!$refresh)
 		{
-			$add_attachment_box = (!empty($_POST['add_attachment_box'])) ? TRUE : FALSE;
-			$posted_attachments_box = (!empty($_POST['posted_attachments_box'])) ? TRUE : FALSE;
+			$add_attachment_box = (!empty($_POST['add_attachment_box'])) ? true : false;
+			$posted_attachments_box = (!empty($_POST['posted_attachments_box'])) ? true : false;
 
 			$refresh = $add_attachment_box || $posted_attachments_box;
 		}

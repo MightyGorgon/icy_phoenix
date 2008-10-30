@@ -2,7 +2,7 @@
 <p>{L_RANKS_TEXT}</p>
 
 <form method="post" action="{S_RANKS_ACTION}">
-<table class="forumline" align="center" cellspacing="0" cellpadding="0" border="0">
+<table width="100%" class="forumline" align="center" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<th>{L_RANK}</th>
 	<th>{L_RANK_MINIMUM}</th>

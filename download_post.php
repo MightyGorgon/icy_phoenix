@@ -17,29 +17,18 @@ include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
 $code_id = isset($_GET['item']) ? intval($_GET['item']) : 0;
 
-if( !$post_id )
+if(!$post_id)
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
 
 // get post
 $sql = "SELECT * FROM " . POSTS_TABLE . " WHERE post_id='{$post_id}'";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
 if (($postrow = $db->sql_fetchrow($result)) === false)
-{
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
-}
-$db->sql_freeresult($result);
-
-$sql = "SELECT * FROM " . POSTS_TEXT_TABLE . " WHERE post_id='{$post_id}'";
-if ( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
-}
-if (($posttext = $db->sql_fetchrow($result)) === false)
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
@@ -54,7 +43,7 @@ define('EXTRACT_CODE', $code_id);
 $bbcode->allow_bbcode = true;
 $bbcode->allow_smilies = $board_config['allow_smilies'] && $postrow['user_allowsmile'] ? true : false;
 $GLOBALS['code_post_id'] = $postrow['post_id'];
-$message = $bbcode->parse($posttext['post_text']);
+$message = $bbcode->parse($postrow['post_text']);
 $GLOBALS['code_post_id'] = 0;
 
 if(!strlen($code_text))

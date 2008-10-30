@@ -1,31 +1,24 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-<tr><th colspan="3">{L_DL_FILES_TITLE}</th></tr>
-<tr><td class="row3 row-center" colspan="3"><span class="gensmall">{L_DL_FILES_TEXT}</span></td></tr>
-</table>
 <br />
-
-<form method="post" action="{S_DOWNLOADS_ACTION}" name="add_dl">
-<table cellspacing="0" cellpadding="0" border="0" align="center">
-<tr>
-	<td align="center">
-		<input type="submit" class="mainoption" name="submit" value="{L_ADD_DOWNLOAD}" />
-		<input type="hidden" name="action" value="add" />
-	</td>
-</tr>
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<tr><th>{L_DL_FILES_TITLE}</th></tr>
+<tr><td class="row1 row-center"><span class="genmed">{L_DL_FILES_TEXT}</span></td></tr>
 </table>
-</form>
 
 <form action="{S_DOWNLOADS_ACTION}" method="post" name="cat_id" onsubmit="if(this.options[this.selectedIndex].value == -1){ return false; }">
-<table width="100%" cellpadding="3" cellspacing="1" border="0">
+<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-	<td width="30%"><span class="nav">{CATEGORIES}</span></td>
-	<td width="40%" align="center"><span class="nav">{DL_COUNT}</span></td>
-	<td width="30%" align="right"><span class="nav"><a href="{U_DOWNLOAD_ORDER_ALL}">{L_SORT}</a></span></td>
+	<th width="20%"><span class="genmed">{CATEGORIES}</span></th>
+	<th width="60%"><span class="genmed"><b>{DL_COUNT}</b></span></th>
+	<th width="20%"><span class="genmed"><b><a href="{U_DOWNLOAD_ORDER_ALL}">{L_SORT}</a></b></span></th>
 </tr>
 </table>
 </form>
 
-<br />
+<form method="post" action="{S_DOWNLOADS_ACTION}" name="add_dl">
+<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><th><input type="submit" class="mainoption" name="submit" value="{L_ADD_DOWNLOAD}" />&nbsp;<input type="hidden" name="action" value="add" /></th></tr>
+</table>
+</form>
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -42,9 +35,9 @@
 <!-- BEGIN downloads -->
 <tr>
 	<td class="{downloads.ROW_CLASS} row-center"><span class="nav">{downloads.FILE_ID}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="left"><span class="gen"><b>{downloads.DESCRIPTION}</b></span><br /><span class="gensmall">{downloads.FILE_NAME}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="left"><span class="gen">{downloads.VERSION}</span></td>
-	<td class="{downloads.ROW_CLASS}" align="left"><span class="gensmall">{downloads.TEST}{downloads.UNAPPROVED}</span></td>
+	<td class="{downloads.ROW_CLASS}"><span class="gen"><b>{downloads.DESCRIPTION}</b></span><br /><span class="gensmall">{downloads.FILE_NAME}</span></td>
+	<td class="{downloads.ROW_CLASS}"><span class="gen">{downloads.VERSION}</span></td>
+	<td class="{downloads.ROW_CLASS}"><span class="gensmall">{downloads.TEST}{downloads.UNAPPROVED}</span></td>
 	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_SIZE}</span></td>
 	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_FREE}</span></td>
 	<td class="{downloads.ROW_CLASS} row-center"><span class="genmed">{downloads.FILE_EXTERN}</span></td>

@@ -30,7 +30,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = false;
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 
 if(!isset($_GET['mode']) || !isset($_GET['pfid']))
 {

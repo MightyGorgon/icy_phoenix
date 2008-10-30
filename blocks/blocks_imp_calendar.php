@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 //define('MINI_CAL_FLAG', true);
 
-if(!function_exists(imp_calendar_block_func))
+if(!function_exists('imp_calendar_block_func'))
 {
 	function imp_calendar_block_func()
 	{
@@ -100,14 +100,14 @@ if(!function_exists(imp_calendar_block_func))
 						// stores the data set in a cache file
 						$data = "<" . "?" . "php\n";
 						$data .= '$birthday_today_list = \'' . addslashes($birthday_today_list) . "';\n";
-						$data .= '$birthday_week_list = \'' . addslashes($birthday_week_list) . "';\n" . "?" . ">";
+						$data .= '$birthday_week_list = \'' . addslashes($birthday_week_list) . "';\n";
+						$data .= "?" . ">";
 						$fp = fopen($cache_data_file, "w");
 						fwrite($fp, $data);
 						fclose($fp);
 					}
 				}
 			}
-			//$template->assign_block_vars('switch_show_birthday', array());
 		}
 
 		$birthday_today_list = stripslashes($birthday_today_list);

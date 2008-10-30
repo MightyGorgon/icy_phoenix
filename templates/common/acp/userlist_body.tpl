@@ -1,7 +1,8 @@
 <script type="text/javascript">
 <!--
 
-function handleClick(id) {
+function handleClick(id)
+{
 	var obj = "";
 
 	// Check browser compatibility
@@ -43,44 +44,47 @@ function handleClick(id) {
 <p>{L_DESCRIPTION}</p>
 
 <form action="{S_ACTION}" method="post">
-<table width="100%" cellpadding="3" cellspacing="1" border="0">
-<tr>
-	<td width="100%">&nbsp;</td>
-	<td align="right" nowrap="nowrap"><span class="gen">{L_SORT_BY}</td>
-	<td nowrap="nowrap">
-		<select name="sort" class="post">
-			<option value="user_id">{L_USER_ID}</option>
-			<option value="user_active">{L_ACTIVE}</option>
-			<option value="username">{L_USERNAME}</option>
-			<option value="user_regdate">{L_JOINED}</option>
-			<option value="user_session_time">{L_ACTIVTY}</option>
-			<option value="user_level">{L_USER_LEVEL}</option>
-			<option value="user_posts">{L_POSTS}</option>
-			<option value="user_rank">{L_RANK}</option>
-			<option value="user_email">{L_EMAIL}</option>
-			<option value="user_website">{L_WEBSITE}</option>
-			<option value="user_birthday">{L_BIRTHDAY}</option>
-			<option value="user_lang">{L_LANG}</option>
-		</select>
-	</td>
-	<td nowrap="nowrap"><select name="order" class="post">
-		<option value="ASC">{L_ASCENDING}</option>
-		<option value="DESC">{L_DESCENDING}</option>
-	</select></td>
-	<td nowrap="nowrap"><span class="gen">{L_SHOW}</span></td>
-	<td nowrap="nowrap"><input type="text" class="post" size="5" value="{S_SHOW}" name="show"></td>
-	<td nowrap="nowrap">{S_HIDDEN_FIELDS}<input type="submit" value="{S_SORT}" name="change_sort" class="liteoption"></td>
-</tr>
-</table>
+<div style="text-align:right;padding:3px;">
+<span class="genmed">
+<strong>{L_SORT_BY}:</strong>&nbsp;
+<select name="sort" class="post">
+	<option value="user_id">{L_USER_ID}</option>
+	<option value="user_active">{L_ACTIVE}</option>
+	<option value="username">{L_USERNAME}</option>
+	<option value="user_regdate">{L_JOINED}</option>
+	<option value="user_session_time">{L_ACTIVTY}</option>
+	<option value="user_level">{L_USER_LEVEL}</option>
+	<option value="user_posts">{L_POSTS}</option>
+	<option value="user_rank">{L_RANK}</option>
+	<option value="user_email">{L_EMAIL}</option>
+	<option value="user_website">{L_WEBSITE}</option>
+	<option value="user_birthday">{L_BIRTHDAY}</option>
+	<option value="user_lang">{L_LANG}</option>
+</select>
+&nbsp;&nbsp;
+<strong>{L_SORT}:</strong>&nbsp;
+<select name="order" class="post">
+	<option value="ASC">{L_ASCENDING}</option>
+	<option value="DESC">{L_DESCENDING}</option>
+</select>
+<strong>{L_SHOW}:</strong>&nbsp;
+{S_HIDDEN_FIELDS}
+<input type="text" class="post" size="5" value="{S_SHOW}" name="show" />&nbsp;
+<input type="submit" value="{S_SORT}" name="change_sort" class="liteoption" />
+</span>
+</div>
 </form>
 
-<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
+	<td class="cat">
+	<span class="gensmall">
+	&bull;
 	<!-- BEGIN alphanumsearch -->
-	<td align="left" width="{alphanumsearch.SEARCH_SIZE}">
-		<span class="genmed"><a href="{alphanumsearch.SEARCH_LINK}" class="genmed">{alphanumsearch.SEARCH_TERM}</a></span>
-	</td>
+	<a href="{alphanumsearch.SEARCH_LINK}"><b>{alphanumsearch.SEARCH_TERM}</b></a>&nbsp;&bull;
 	<!-- END alphanumsearch -->
+	</span>
+	</td>
 </tr>
 </table>
 
@@ -97,12 +101,12 @@ function handleClick(id) {
 </tr>
 <!-- BEGIN user_row -->
 <tr>
-	<td class="row1" nowrap="nowrap"><input type="checkbox" name="{S_USER_VARIABLE}[]" value="{user_row.USER_ID}">&nbsp;&nbsp;&nbsp;<a href="javascript:handleClick('user{user_row.USER_ID}');">{L_OPEN_CLOSE}</a></td>
+	<td class="row1" nowrap="nowrap"><input type="checkbox" name="{S_USER_VARIABLE}[]" value="{user_row.USER_ID}" />&nbsp;&nbsp;&nbsp;<a href="javascript:handleClick('user{user_row.USER_ID}');">{L_OPEN_CLOSE}</a></td>
 	<td class="row1"><span class="genmed">{user_row.USERNAME}</span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.ACTIVE}</span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.JOINED}</span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.LAST_ACTIVITY}</span></td>
-	<td class="row1 row-center"><span class="genmed">{user_row.BIRTHDAY}</span></td>
+	<td class="row1 row-center"><span class="genmed"><!-- IF user_row.BIRTHDAY -->{user_row.BIRTHDAY}<!-- ELSE -->&nbsp;<!-- ENDIF --></span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.USER_LANG}</span></td>
 </tr>
 <tr id="user{user_row.USER_ID}" style="display: none">
@@ -110,27 +114,30 @@ function handleClick(id) {
 	<td class="row1" colspan="6" width="100%">
 		<table width="100%" cellpadding="3" cellspacing="1" border="0">
 			<tr>
-				<td class="row1" width="33%"><span class="genmed"><b>{L_RANK}:</b> {user_row.RANK} &nbsp; {user_row.I_RANK}</td>
-				<td class="row1" width="34%"><span class="genmed"><b>{L_GROUP}:</b>
+				<td class="row1" width="33%"><span class="genmed"><b>{L_RANK}:</b> {user_row.RANK} &nbsp; {user_row.I_RANK}</span></td>
+				<td class="row1" width="34%">
+				<span class="genmed"><b>{L_GROUP}:</b></span>
 					<!-- BEGIN group_row -->
-					<a href="{user_row.group_row.U_GROUP}" class="genmed" target="_blank">{user_row.group_row.GROUP_NAME}</a> ({user_row.group_row.GROUP_STATUS})<br />
+					<span class="genmed"><a href="{user_row.group_row.U_GROUP}" class="genmed" target="_blank">{user_row.group_row.GROUP_NAME}</a> ({user_row.group_row.GROUP_STATUS})</span><br />
 					<!-- END group_row -->
 					<!-- BEGIN no_group_row -->
-					{user_row.no_group_row.L_NONE}<br />
+					<span class="genmed">{user_row.no_group_row.L_NONE}</span><br />
 					<!-- END no_group_row -->
-				</span></td>
+				</td>
 				<td class="row1" width="33%"><span class="genmed"><b>{L_POSTS}:</b> {user_row.POSTS} &nbsp; <a href="{user_row.U_SEARCH}" class="genmed" target="_blank">{L_FIND_ALL_POSTS}</a></span></td>
 			</tr>
+			<!-- IF user_row.U_WEBSITE -->
+			<tr><td class="row1" colspan="3"><span class="genmed"><b>{L_WEBSITE}:</b> <a href="{user_row.U_WEBSITE}" class="gen" target="_blank">{user_row.U_WEBSITE}</a></span></td></tr>
+			<!-- ENDIF -->
 			<tr>
-				<td class="row1" colspan="3"><span class="genmed"><b>{L_WEBSITE}:</b> <a href="{user_row.U_WEBSITE}" class="gen" target="_blank">{user_row.U_WEBSITE}</a></span></td>
-			</tr>
-			<tr>
-				<td class="row1"><span class="genmed">
+				<td class="row1">
+				<span class="genmed">
 					<a href="{user_row.U_MANAGE}" class="genmed">{L_MANAGE}</a><br />
 					<a href="{user_row.U_PERMISSIONS}" class="genmed">{L_PERMISSIONS}</a><br />
 					<a href="mailto:{user_row.EMAIL}" class="genmed">{L_EMAIL} [ {user_row.EMAIL} ]</a><br />
 					<a href="{user_row.U_PM}" class="genmed">{L_PM}</a>
-				</span></td>
+				</span>
+				</td>
 				<td colspan="2" class="{user_row.ROW_CLASS}">{user_row.I_AVATAR}</td>
 			</tr>
 		</table>

@@ -134,12 +134,18 @@ else
 	$lang['OffTopic'] = 'Off Topic';
 	$lang['ReviewPost'] = 'Review Post';
 	$lang['wrote'] = 'wrote';
+	$lang['Description'] = 'Description';
 	$lang['Download'] = 'Download';
 	$lang['Hide'] = 'Hide';
 	$lang['Show'] = 'Show';
 	$lang['Select'] = 'Select';
 	$lang['xs_bbc_hide_message'] = 'Hidden';
 	$lang['xs_bbc_hide_message_explain'] = 'This message is hidden, you have to answer this topic to see it.';
+	$lang['DOWNLOADED'] = 'Downloaded';
+	$lang['FILESIZE'] = 'Filesize';
+	$lang['FILENAME'] = 'Filename';
+	$lang['Not_Authorised'] = 'Not Authorised';
+	$lang['FILE_NOT_AUTH'] = 'You are not authorised to download this file';
 }
 
 $urls_local = array(
@@ -218,6 +224,8 @@ class BBCode
 
 		'img'				=> array('nested' => false, 'inurl' => true),
 		'albumimg'	=> array('nested' => false, 'inurl' => true),
+		'attachment' => array('nested' => false, 'inurl' => false, 'allow_empty' => true),
+		'download'	=> array('nested' => false, 'inurl' => false, 'allow_empty' => true),
 
 		'search'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'langvar'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
@@ -239,14 +247,15 @@ class BBCode
 		'youtube'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'googlevideo' => array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
-		/*
 		// All these tags require HTML 4 specification (NON XHTML) and only work with IE!
+		// Decomment below to use these properly...
 		'glow'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'shadow'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'blur'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'wave'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'fliph'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'flipv'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		/*
 		*/
 
 		// Requires external file for parsing TEX
@@ -898,6 +907,88 @@ class BBCode
 			);
 		}
 
+		// ATTACHMENT
+		if(($tag === 'attachment') || ($tag === 'download'))
+		{
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			$html = '';
+			$params['id'] = isset($item['params']['param']) ? intval($item['params']['param']) : (isset($item['params']['id']) ? intval($item['params']['id']) : false);
+			$params['title'] = isset($item['params']['title']) ? $this->process_text($item['params']['title']) : false;
+			$params['description'] = isset($item['params']['description']) ? $this->process_text($item['params']['description']) : false;
+			$params['icon'] = isset($item['params']['icon']) ? $this->process_text($item['params']['icon']) : false;
+			$color = $this->valid_color(isset($item['params']['color']) ? $item['params']['color'] : false);
+			$bgcolor = $this->valid_color(isset($item['params']['bgcolor']) ? $item['params']['bgcolor'] : false);
+
+			$errored = false;
+			if ($params['id'] <= 0)
+			{
+				$errored = true;
+			}
+
+			if (!$errored)
+			{
+				if ($tag === 'attachment')
+				{
+					$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+					$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $userdata);
+					$attachment_details = get_attachment_details($params['id']);
+					if (($attachment_details == false) || !$is_auth_ary[$attachment_details['forum_id']]['auth_read'] || !$is_download_auth_ary[$attachment_details['forum_id']]['auth_download'])
+					{
+						$errored = true;
+					}
+				}
+				else
+				{
+					$attachment_details = get_download_details($params['id']);
+					$errored = ($attachment_details == false) ? true : false;
+				}
+			}
+
+			if (!$errored)
+			{
+				if ($tag === 'attachment')
+				{
+					$params['title'] = $params['title'] ? $params['title'] : (!empty($attachment_details['real_filename']) ? $attachment_details['real_filename'] : '&nbsp;');
+					$params['description'] = $params['description'] ? $params['description'] : (!empty($attachment_details['comment']) ? $attachment_details['comment'] : '&nbsp;');
+					$params['icon'] = IP_ROOT_PATH . FILES_ICONS_DIR . ($params['icon'] ? $params['icon'] : 'default.png');
+					$download_url = 'download.' . PHP_EXT;
+				}
+				else
+				{
+					$params['title'] = $params['title'] ? $params['title'] : (!empty($attachment_details['file_name']) ? $attachment_details['file_name'] : '&nbsp;');
+					$params['description'] = $params['description'] ? $params['description'] : (!empty($attachment_details['file_desc']) ? $attachment_details['file_desc'] : '&nbsp;');
+					$params['icon'] = IP_ROOT_PATH . FILES_ICONS_DIR . ($params['icon'] ? $params['icon'] : (!empty($attachment_details['file_posticon']) ? $attachment_details['file_posticon'] : 'default.png'));
+					$attachment_details['filesize'] = $attachment_details['file_size'];
+					$attachment_details['download_count'] = $attachment_details['file_dls'];
+					$download_url = 'dload.' . PHP_EXT;
+				}
+				//$params['icon'] = strip_tags(ereg_replace("[^A-Za-z0-9_.]", "_", $params['icon']));
+				$params['icon'] = file_exists($params['icon']) ? $params['icon'] : (IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png');
+				$style = ($color || $bgcolor) ? (' style="' . ($color ? 'color: ' . $color . ';' : '') . ($bgcolor ? 'background-color: ' . $bgcolor . ';' : '') . '"') : '';
+
+				$html .= '<div class="mg_attachtitle"' . $style . '>' . $params['title'] . '</div>';
+				$html .= '<div class="mg_attachdiv"><table width="100%" cellpadding="0" cellspacing="0" border="0">';
+				$html .= '<tr><td width="15%"><b class="gensmall">' . $lang['Description'] . ':</b></td><td width="75%"><span class="gensmall">' . $params['description'] . '</span></td><td rowspan="3" width="10%" class="row-center"><img src="' . $params['icon'] . '" alt="' . $params['description'] . '" /><br /><a href="' . append_sid(IP_ROOT_PATH . $download_url . '?id=' . $params['id']) . '"><b>' . $lang['Download'] . '</b></a></td></tr>';
+				$html .= '<tr><td><b class="gensmall">' . $lang['FILESIZE'] . ':</b></td><td><span class="gensmall">' . round(($attachment_details['filesize'] / 1024), 2) . ' KB</span></td></tr>';
+				$html .= '<tr><td><b class="gensmall">' . $lang['DOWNLOADED'] . ':</b></td><td><span class="gensmall">' . $attachment_details['download_count'] . '</span></td></tr>';
+				$html .= '</table></div>';
+			}
+			else
+			{
+				$html .= '<div class="mg_attachtitle"' . $style . '>' . $lang['Not_Authorised'] . '</div>';
+				$html .= '<div class="mg_attachdiv"><div style="text-align:center;">' . $lang['FILE_NOT_AUTH'] . '</div></div>';
+			}
+
+			return array(
+				'valid' => true,
+				'html' => $html,
+				'allow_nested' => false,
+			);
+		}
+
 		// LIST
 		if(($tag === 'list') || ($tag === 'ul') || ($tag === 'ol'))
 		{
@@ -1093,7 +1184,7 @@ class BBCode
 			}
 			if(($url === $content) && (strlen($content) > 64))
 			{
-				$content = substr($content, 0, 35) . '...' . substr($content, strlen($content) - 15);
+				$content = htmlspecialchars(substr($content, 0, 35) . '...' . substr($content, strlen($content) - 15));
 				$show_content = false;
 			}
 			// check if its email
@@ -2018,11 +2109,11 @@ class BBCode
 
 			$default_fontcolor = '000000';
 			$fontcolor = $this->valid_color((isset($item['params']['fontcolor']) ? $item['params']['fontcolor'] : $default_fontcolor));
-			$fontcolor = (($fontcolor === false) ? $default_fontcolor : $fontcolor);
+			$fontcolor = (($fontcolor === false) ? $default_fontcolor : str_replace('#', '', $fontcolor));
 
 			$default_shadowcolor = '888888';
 			$shadowcolor = $this->valid_color((isset($item['params']['shadowcolor']) ? $item['params']['shadowcolor'] : $default_shadowcolor));
-			$shadowcolor = (($shadowcolor === false) ? $default_shadowcolor : $shadowcolor);
+			$shadowcolor = (($shadowcolor === false) ? $default_shadowcolor : str_replace('#', '', $shadowcolor));
 
 			$default_shieldshadow = 0;
 			$shieldshadow = (isset($item['params']['shieldshadow']) ? (($item['params']['shieldshadow'] == 1) ? 1 : $default_param) : $default_param);
@@ -2096,6 +2187,14 @@ class BBCode
 		// IE AND HTML 4 ONLY TAGS - BEGIN
 		// Let's add a global IF so we can skip them all in once to speed up things...
 		// Enable these tags only if you know how to make them work...
+		if(($tag === 'glow') || ($tag === 'shadow') || ($tag === 'blur') || ($tag === 'wave') || ($tag === 'fliph') || ($tag === 'flipv'))
+		{
+			return array(
+				'valid' => true,
+				'start' => '',
+				'end' => '',
+			);
+		}
 		/*
 		if(($tag === 'glow') || ($tag === 'shadow') || ($tag === 'blur') || ($tag === 'wave') || ($tag === 'fliph') || ($tag === 'flipv'))
 		{
@@ -2214,7 +2313,7 @@ class BBCode
 			{
 				return $error;
 			}
-			$html = '<img src="../cgi-bin/mimetex.cgi?' . $content . '" alt="" border=0 align=middle />';
+			$html = '<img src="cgi-bin/mimetex.cgi?' . $content . '" alt="" border="0" style="vertical-align:middle;" />';
 			return array(
 				'valid' => true,
 				'html' => $html,
@@ -2925,7 +3024,7 @@ class BBCode
 			'[email autourl=' . AUTOURL . ']',
 			'[/email autourl=' . AUTOURL .']'
 		);
-		$replace = array('','','','');
+		$replace = array('', '', '', '');
 		$text = str_replace($search, $replace, $text);
 		if($chars)
 		{
@@ -3569,17 +3668,6 @@ class BBCode
 
 $bbcode = new BBCode();
 
-// Need to initialize the random numbers only ONCE
-mt_srand((double) microtime() * 1000000);
-
-function make_bbcode_uid()
-{
-	// Unique ID for this message..
-	$uid = dss_rand();
-	$uid = substr($uid, 0, BBCODE_UID_LEN);
-	return $uid;
-}
-
 if (defined('SMILIES_TABLE'))
 {
 	//$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
@@ -3603,6 +3691,17 @@ if (defined('SMILIES_TABLE'))
 	{
 		message_die(GENERAL_ERROR, 'Couldn\'t retrieve smilies list', '', __LINE__, __FILE__, $sql);
 	}
+}
+
+// Need to initialize the random numbers only ONCE
+mt_srand((double) microtime() * 1000000);
+
+function make_bbcode_uid()
+{
+	// Unique ID for this message..
+	$uid = dss_rand();
+	$uid = substr($uid, 0, BBCODE_UID_LEN);
+	return $uid;
 }
 
 function undo_htmlspecialchars($input, $full_undo = false)
@@ -3667,6 +3766,167 @@ function make_clickable($text)
 	$ret = substr($ret, 1);
 
 	return($ret);
+}
+
+// Autolinks - BEGIN
+//
+// Obtain list of autolink words and build preg style replacement arrays for use by the
+// calling script, note that the vars are passed as references this just makes it easier
+// to return both sets of arrays
+//
+// This is a copy of phpBB's obtain_word_list() function with slight changes.
+//
+function obtain_autolink_list(&$orig_autolink, &$replacement_autolink, $id)
+{
+	global $db;
+
+	//$where = ($id) ? ' WHERE link_forum = 0 OR link_forum = ' . $id : ' WHERE link_forum = -1';
+	$where = ($id) ? ' WHERE link_forum = 0 OR link_forum IN (' . $id . ')' : ' WHERE link_forum = -1';
+
+	$sql = "SELECT * FROM  " . AUTOLINKS . $where;
+	if(!($result = $db->sql_query($sql, false, 'autolinks_')))
+	{
+		message_die(GENERAL_ERROR, 'Could not get autolink data from database', '', __LINE__, __FILE__, $sql);
+	}
+
+	if($row = $db->sql_fetchrow($result))
+	{
+		do
+		{
+			// Munge word boundaries to stop autolinks from linking to
+			// themselves or other autolinks in step 2 in the function below.
+			$row['link_url'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_url']);
+			$row['link_comment'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_comment']);
+
+			if($row['link_style'])
+			{
+				$row['link_style'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_style']);
+				$style = ' style="' . htmlspecialchars($row['link_style']) . '" ';
+			}
+			else
+			{
+				$style = ' ';
+			}
+			$orig_autolink[] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/'). ')(?![\/\w@:-])(?!\.\w)/i';
+			if($row['link_int'])
+			{
+				$replacement_autolink[] = '<a href="' . append_sid(htmlspecialchars($row['link_url'])) . '" target="_self"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
+			}
+			else
+			{
+				$replacement_autolink[] = '<a href="' . htmlspecialchars($row['link_url']) . '" target="_blank"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
+			}
+		}
+		while($row = $db->sql_fetchrow($result));
+	}
+
+	return true;
+}
+
+//
+// Taken from the POST-NUKE pnuserapi.php Autolinks user API file with slight changes.
+// Original Author - Jim McDonald.
+//
+function autolink_transform($message, $orig, $replacement)
+{
+	global $board_config;
+
+	// Step 1 - move all tags out of the text and replace them with placeholders
+	preg_match_all('/(<a\s+.*?\/a>|<[^>]+>)/i', $message, $matches);
+	$matchnum = count($matches[1]);
+	for($i = 0; $i < $matchnum; $i++)
+	{
+		$message = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', "ALPLACEHOLDER{$i}PH", $message, 1);
+	}
+
+	// Step 2 - s/r of the remaining text
+	if($board_config['autolink_first'])
+	{
+		$message = preg_replace($orig, $replacement, $message, 1);
+	}
+	else
+	{
+		$message = preg_replace($orig, $replacement, $message);
+	}
+
+	// Step 3 - replace the spaces we munged in step 1
+	$message = preg_replace('/ALSPACEHOLDER/', '', $message);
+
+	// Step 4 - replace the HTML tags that we removed in step 1
+	for($i = 0; $i <$matchnum; $i++)
+	{
+		$message = preg_replace("/ALPLACEHOLDER{$i}PH/", $matches[1][$i], $message, 1);
+	}
+
+	return $message;
+}
+// Autolinks - END
+
+/*
+* Get attachment details
+*/
+function get_attachment_details($attach_id)
+{
+	global $db;
+	$sql = "SELECT a.*, d.*, s.*, p.forum_id
+		FROM " . ATTACHMENTS_TABLE . " a, " . ATTACHMENTS_DESC_TABLE . " d, " . ATTACHMENTS_STATS_TABLE . " s, " . POSTS_TABLE . " p
+		WHERE a.attach_id = " . $attach_id . "
+			AND d.attach_id = a.attach_id
+			AND s.attach_id = a.attach_id
+			AND a.post_id > 0
+			AND p.post_id = a.post_id
+		LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Cound not query attachment stats table', '', __LINE__, __FILE__, $sql);
+	}
+
+	if ($row = $db->sql_fetchrow($result))
+	{
+		$db->sql_freeresult($result);
+		return $row;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/*
+* Get download details
+*/
+function get_download_details($file_id)
+{
+	global $db, $userdata;
+	$sql = "SELECT f.*, c.*
+		FROM " . PA_FILES_TABLE . " f, " . PA_CATEGORY_TABLE . " c
+		WHERE file_id = " . $file_id . "
+			AND file_approved = '1'
+			AND c.cat_id = f.file_catid
+		LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Cound not query attachment stats table', '', __LINE__, __FILE__, $sql);
+	}
+
+	if ($row = $db->sql_fetchrow($result))
+	{
+		$db->sql_freeresult($result);
+		$allowed = false;
+		if (($row['auth_view_file'] == AUTH_ALL) || ($userdata['user_level'] == ADMIN))
+		{
+			$allowed = true;
+		}
+		elseif (($row['auth_view_file'] == AUTH_REG) && $userdata['session_logged_in'])
+		{
+			$allowed = true;
+		}
+		return ($allowed ? $row : false);
+	}
+	else
+	{
+		return false;
+	}
 }
 
 /*

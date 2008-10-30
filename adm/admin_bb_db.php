@@ -146,11 +146,11 @@ else
 //==== End: Functions
 
 	$images = IP_ROOT_PATH . 'images/bb_admin/';
-	echo '<table align="center" valign="top" class="forumline">';
+	echo '<table class="forumline" width="200" cellspacing="0" cellpadding="0" border="0">';
 	echo '	<tr>';
 	echo '		<td align="left" valign="middle" class="row2" colspan="15">';
 	echo '			<span class="genmed">';
-	echo '				' . $lang['db_sql_query_db'] . '<a href="' . $_SERVER['PHP_SELF'] . '?mode=sql_change&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images . 'b_sql.png" border="0"></a>&nbsp;&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?mode=explain_change&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images . 'b_tipp.png" alt="' . $lang['db_explain'] . '" title="' . $lang['db_explain'] . '" border="0"></a>';
+	echo '				' . $lang['db_sql_query_db'] . '<a href="' . $_SERVER['PHP_SELF'] . '?mode=sql_change&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images . 'b_sql.png" alt="" /></a>&nbsp;&nbsp;<a href="' . $_SERVER['PHP_SELF'] . '?mode=explain_change&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images . 'b_tipp.png" alt="' . $lang['db_explain'] . '" title="' . $lang['db_explain'] . '" /></a>';
 	echo '				<div style="text-align:center;"><a href="' . append_sid($_SERVER['PHP_SELF']) . '"><b>' . $dbname . '</b></a></div>';
 	echo '			</span>';
 	echo '		</td>';
@@ -159,8 +159,8 @@ else
 
 	if (isset($_POST['field_dynamic']))
 	{
-		$old_names 	= $_POST['field_static'];
-		$new_names 	= $_POST['field_dynamic'];
+		$old_names = $_POST['field_static'];
+		$new_names = $_POST['field_dynamic'];
 		$table_name = $_POST['table_name'];
 
 		$q 	= 'DESCRIBE '. $table_name;
@@ -176,7 +176,7 @@ else
 			}
 		}
 
-		echo '<table align="center" width="100%" class="forumline">';
+		echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 		for ($x = 0; $x < count($qs); $x++)
 		{
 			echo '	<tr>';
@@ -185,14 +185,14 @@ else
 			echo '		</th>';
 			echo '	</tr>';
 			echo '	<tr>';
-			echo '		<td class="row1" align="left" width="100%">';
+			echo '		<td class="row1" width="100%">';
 			echo '			<span class="genmed">';
 			echo '				'. $qd[$x];
 			echo '			</span>';
 			echo '		</td>';
 			echo '	</tr>';
 			echo '	<tr>';
-			echo '		<td class="row2" align="left" width="100%">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			if (!$db->sql_query($qs[$x]))
 			{
@@ -208,7 +208,7 @@ else
 			echo '	</tr>';
 		}
 		echo '	<tr>';
-		echo '		<th width="100%">&nbsp;</th>';
+		echo '		<th>&nbsp;</th>';
 		echo '	</tr>';
 		echo '</table>';
 		include_once('page_footer_admin.' . PHP_EXT);
@@ -219,7 +219,7 @@ else
 		if (!$action)
 		{
 			echo '<form name="sql" action="'. $_SERVER['PHP_SELF'] .'?sid='. $userdata['session_id'] .'" method="post">';
-			echo '<table align="center" width="100%" class="forumline">';
+			echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 			echo '	<tr>';
 			echo '		<td class="row1" width="100%">';
 			echo '			<textarea cols="100" rows="20" name="sql_input" class="post"></textarea>';
@@ -227,7 +227,7 @@ else
 			echo '	</tr>';
 			echo '	<tr>';
 			echo '		<td class="row2 row-center" width="100%">';
-			echo '			<input type="submit" name="submit_it" value="'. $lang['db_submit_q'] .'" onclick="document.sql.submit()" class="lightoption">';
+			echo '			<input type="submit" name="submit_it" value="'. $lang['db_submit_q'] .'" onclick="document.sql.submit()" class="liteoption" />';
 			echo '			<input type="hidden" name="mode" value="sql_change">';
 			echo '			<input type="hidden" name="action" value="submit">';
 			echo '		</td>';
@@ -269,7 +269,7 @@ else
 					if (trim(strtolower($words[0])) == 'select')
 						$select_statement = TRUE;
 
-				echo '<table align="center" width="100%" class="forumline">';
+				echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 				echo '	<tr>';
 				echo '		<th width="100%">';
 				echo '			'. sprintf($lang['db_sql_total'], ($x + 1));
@@ -283,7 +283,7 @@ else
 				echo '		</td>';
 				echo '	</tr>';
 				echo '	<tr>';
-				echo '		<td class="row2" width="100%">';
+				echo '		<td class="row2">';
 				echo '			<span class="genmed">';
 				$q = stripslashes($sql_2[$x]);
 				if ($select_statement)
@@ -319,7 +319,7 @@ else
 			echo '		</td>';
 			echo '	</tr>';
 			echo '	<tr>';
-			echo '		<th width="100%">&nbsp;</th>';
+			echo '		<th>&nbsp;</th>';
 			echo '	</tr>';
 			echo '</table>';
 				}
@@ -377,7 +377,7 @@ else
 	$page_number 	= sprintf($lang['Page_of'], ( floor( $start / 30 ) + 1 ), ceil( $rows / 30 ));
 	$showing 		= "Showing ". number_format($start) ." - ". number_format($start + 30) ." ( ". number_format($rows) ." Total )";
 
-	echo '<table align="left" width="30%" class="forumline">';
+	echo '<table class="forumline" width="30%" cellspacing="0" cellpadding="0" border="0">';
 	echo '	<tr>';
 	echo '		<td class="row1" width="100%">';
 	echo '			<span class="genmed">';
@@ -386,22 +386,22 @@ else
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
-	echo '		<td class="row2" width="100%">';
+	echo '		<td class="row2">';
 	echo '			<span class="genmed">';
 	echo '				'. str_replace("\n", '<br />', $q);
 	echo '			</span>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
-	echo '		<td class="row1" width="100%">';
+	echo '		<td class="row1">';
 	echo '			<span class="genmed">';
-	echo '				'. $pagination .'&nbsp;&nbsp;&nbsp;'. $page_number;
+	echo '				' . $pagination . '&nbsp;&nbsp;&nbsp;' . $page_number;
 	echo '			</span>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '</table>';
 	echo '<br clear="all">';
-	echo '<table align="left" width="100%" class="forumline">';
+	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 	echo '	<tr>';
 	$fields = '';
 	$fields = array();
@@ -449,57 +449,57 @@ else
 	echo '<form name="mass" action="'. $_SERVER['PHP_SELF'] .'?sid='. $userdata['session_id'] .'" method="post">';
 	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 	echo '	<tr>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_table_name'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle" colspan="5">';
+	echo '		<th colspan="5">';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_action'] .'</b>&nbsp;&nbsp;<a href="'. $_SERVER['PHP_SELF'] .'?mode=explain&amp;sid='. $userdata['session_id'] .'"><img src="'. $images .'b_tipp.png" alt="'. $lang['db_explain'] .'" title="'. $lang['db_explain'] .'" border="0"></a>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_type'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_row_format'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_rows'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_avg_r_len'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_data_len'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_max_dat_len'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_index_len'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_overhead'] .'</b>';
 	echo '			</span>';
 	echo '		</th>';
-	echo '		<th valign="middle">';
+	echo '		<th>';
 	echo '			<span class="genmed">';
 	echo '				<b>'. $lang['db_auto_inc'] .'</b>';
 	echo '			</span>';
@@ -515,77 +515,77 @@ else
 		for ($x = 0; $x < count($tables); $x++)
 		{
 			echo '	<tr>';
-			echo '		<td class="row2" valign="top">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				<input type="checkbox" name="selected_tables[]" value="'. $tables[$x]['Name'] .'">&nbsp;'. $tables[$x]['Name'];
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="top">';
+			echo '		<td class="row2">';
 			echo '			<a href="'. $_SERVER['PHP_SELF'] .'?mode=browse&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
 			echo '				<img src="'. $images .'b_select.png" alt="'. $lang['db_browse'] .'" title="'. $lang['db_browse'] .'">';
 			echo '			</a>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="top">';
+			echo '		<td class="row2">';
 			echo '			<a href="'. $_SERVER['PHP_SELF'] .'?mode=structure&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
 			echo '				<img src="'. $images .'b_props.png" alt="'. $lang['db_structure'] .'" title="'. $lang['db_structure'] .'">';
 			echo '			</a>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="top">';
+			echo '		<td class="row2">';
 			echo '			<a href="'. $_SERVER['PHP_SELF'] .'?mode=optimize&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
 			echo '				<img src="'. $images .'b_browse.png" alt="'. $lang['db_optimize'] .'" title="'. $lang['db_optimize'] .'">';
 			echo '			</a>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="top">';
+			echo '		<td class="row2">';
 			echo '			<a href="'. $_SERVER['PHP_SELF'] .'?mode=truncate&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
 			echo '				<img src="'. $images .'b_empty.png" alt="'. $lang['db_truncate'] .'" title="'. $lang['db_truncate'] .'">';
 			echo '			</a>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="top">';
+			echo '		<td class="row2">';
 			echo '			<a href="'. $_SERVER['PHP_SELF'] .'?mode=drop&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
 			echo '				<img src="'. $images .'b_drop.png" alt="'. $lang['db_drop'] .'" title="'. $lang['db_drop'] .'">';
 			echo '			</a>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. $tables[$x]['Type'] .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. $tables[$x]['Row_format'] .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. number_format($tables[$x]['Rows']) .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. number_format($tables[$x]['Avg_row_length']) .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. admin_db_calculate($tables[$x]['Data_length']) .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. str_replace('.00', '', admin_db_calculate($tables[$x]['Max_data_length'])) .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. $tables[$x]['Index_length'] .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. admin_db_calculate($tables[$x]['Data_free']) .'&nbsp;';
 			echo '			</span>';
 			echo '		</td>';
-			echo '		<td class="row2" valign="middle">';
+			echo '		<td class="row2">';
 			echo '			<span class="genmed">';
 			echo '				'. number_format($tables[$x]['Auto_increment']) .'&nbsp;';
 			echo '			</span>';
@@ -614,31 +614,31 @@ else
 	echo '</table>';
 	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 	echo '	<tr>';
-	echo '		<td class="row2" valign="middle" colspan="4">';
+	echo '		<td class="row2" colspan="4">';
 	echo '			<span class="genmed">';
 	echo '				'. $lang['db_with_sel'] .'&nbsp;&nbsp;<a href="javascript:select_switch(true);" class="gensmall">Check All</a>&nbsp;<b>::</b>&nbsp;<a href="javascript:select_switch(false);" class="gensmall">Un-Check All</a>';
 	echo '			</span>';
 	echo '		</td>';
 	echo '	</tr>';
 	echo '	<tr>';
-	echo '		<td class="row2" valign="middle">';
+	echo '		<td class="row2 row-center">';
 	echo '			<span class="genmed">';
-	echo '				<input type="submit" name="Optimize" value="'. $lang['db_optimize'] .'" onclick="document.mass.submit()" class="lightoption">';
+	echo '				<input type="submit" name="Optimize" value="'. $lang['db_optimize'] .'" onclick="document.mass.submit()" class="liteoption">';
 	echo '			</span>';
 	echo '		</td>';
-	echo '		<td class="row2" valign="middle">';
+	echo '		<td class="row2 row-center">';
 	echo '			<span class="genmed">';
-	echo '				<input type="submit" name="Repair" value="'. $lang['db_repair'] .'" onclick="document.mass.submit()" class="lightoption">';
+	echo '				<input type="submit" name="Repair" value="'. $lang['db_repair'] .'" onclick="document.mass.submit()" class="liteoption">';
 	echo '			</span>';
 	echo '		</td>';
-	echo '		<td class="row2" valign="middle">';
+	echo '		<td class="row2 row-center">';
 	echo '			<span class="genmed">';
-	echo '				<input type="submit" name="Truncate" value="'. $lang['db_truncate'] .'" onclick="document.mass.submit()" class="lightoption">';
+	echo '				<input type="submit" name="Truncate" value="'. $lang['db_truncate'] .'" onclick="document.mass.submit()" class="liteoption">';
 	echo '			</span>';
 	echo '		</td>';
-	echo '		<td class="row2" valign="middle">';
+	echo '		<td class="row2 row-center">';
 	echo '			<span class="genmed">';
-	echo '				<input type="submit" name="Drop" value="'. $lang['db_drop'] .'" onclick="document.mass.submit()" class="lightoption">';
+	echo '				<input type="submit" name="Drop" value="'. $lang['db_drop'] .'" onclick="document.mass.submit()" class="liteoption">';
 	echo '			</span>';
 	echo '		</td>';
 	echo '	</tr>';
@@ -658,7 +658,7 @@ else
 			if ($x == intval($_GET['table']))
 				{
 			$table_name = $tables[$x]['Name'];
-			$table_id	= $x;
+			$table_id = $x;
 			break;
 				}
 			}
@@ -746,7 +746,7 @@ else
 	echo '<form name="change_field" method="post" action="'. append_sid($_SERVER['PHP_SELF']) .'">';
 	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 	echo '	<tr>';
-	echo '		<th colspan="6" valign="middle">'. $table_name .'</th>';
+	echo '		<th colspan="6">'. $table_name .'</th>';
 	echo '	</tr>';
 	echo '	<tr>';
 	echo '		<td class="row2 row-center">';

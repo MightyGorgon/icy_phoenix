@@ -32,26 +32,8 @@ if ($board_config['disable_referrers'] == true)
 
 $cms_page_id = '18';
 $cms_page_name = 'referrers';
-$auth_level_req = $board_config['auth_view_referrers'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_referrers'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;

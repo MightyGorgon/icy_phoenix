@@ -24,52 +24,17 @@ init_userprefs($userdata);
 
 $cms_page_id = '11';
 $cms_page_name = 'download';
-$auth_level_req = $board_config['auth_view_download'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_download'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
-
-//===================================================
-// Include the common file
-//===================================================
-
-include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
-
-//===================================================
-// Get action variable other wise set it to the main
-//===================================================
-
-$action = (isset($_REQUEST['action'])) ? htmlspecialchars($_REQUEST['action']) : 'main';
-
-//===================================================
-// if the database disabled give them a nice message
-//===================================================
+include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 if(intval($pafiledb_config['settings_disable']))
 {
 	message_die(GENERAL_MESSAGE, $lang['pafiledb_disable']);
 }
 
-//===================================================
-// an array of all expected actions
-//===================================================
+$action = (isset($_REQUEST['action'])) ? htmlspecialchars($_REQUEST['action']) : 'main';
 
 $actions = array(
 					'download' => 'download',
@@ -88,11 +53,6 @@ $actions = array(
 					'ucp' => 'ucp',
 					'main' => 'main'
 				);
-
-
-//===================================================
-// Lets Build the page
-//===================================================
 
 $action_mod = array();
 $action_mod = explode('?', $action);

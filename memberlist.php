@@ -33,26 +33,8 @@ init_userprefs($userdata);
 
 $cms_page_id = '7';
 $cms_page_name = 'memberlist';
-$auth_level_req = $board_config['auth_view_memberlist'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_memberlist'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
@@ -334,7 +316,7 @@ if(!($result = $db->sql_query($sql)))
 if ($row = $db->sql_fetchrow($result))
 {
 	// Custom Profile Fields MOD - BEGIN
-	include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 	$profile_data = get_fields('WHERE view_in_memberlist = ' . VIEW_IN_MEMBERLIST . ' AND users_can_view = ' . ALLOW_VIEW);
 
 	foreach($profile_data as $field)
@@ -504,23 +486,23 @@ if ($row = $db->sql_fetchrow($result))
 				if ($row['user_allow_viewonline'])
 				{
 					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
-					$online_status = '<strong><a href="' . append_sid('viewonline.' . PHP_EXT) . '" title="' . sprintf($lang['is_online'], $username) . '"' . $online_color . '>' . $lang['Online'] . '</a></strong>';
+					$online_status = '<strong><a href="' . append_sid('viewonline.' . PHP_EXT) . '" title="' . sprintf($lang['is_online'], $username) . '"' . '>' . $lang['Online'] . '</a></strong>';
 				}
 				else if ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $user_id)
 				{
 					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
-					$online_status = '<strong><em><a href="' . append_sid('viewonline.' . PHP_EXT) . '" title="' . sprintf($lang['is_hidden'], $username) . '"' . $hidden_color . '>' . $lang['Hidden'] . '</a></em></strong>';
+					$online_status = '<strong><em><a href="' . append_sid('viewonline.' . PHP_EXT) . '" title="' . sprintf($lang['is_hidden'], $username) . '"' . '>' . $lang['Hidden'] . '</a></em></strong>';
 				}
 				else
 				{
 					$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
-					$online_status = '<span title="' . sprintf($lang['is_offline'], $username) . '"' . $offline_color . '><strong>' . $lang['Offline'] . '</strong></span>';
+					$online_status = '<span title="' . sprintf($lang['is_offline'], $username) . '"' . '><strong>' . $lang['Offline'] . '</strong></span>';
 				}
 			}
 			else
 			{
 				$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
-				$online_status = '<span title="' . sprintf($lang['is_offline'], $username) . '"' . $offline_color . '><strong>' . $lang['Offline'] . '</strong></span>';
+				$online_status = '<span title="' . sprintf($lang['is_offline'], $username) . '"' . '><strong>' . $lang['Offline'] . '</strong></span>';
 			}
 			// End add - Online/Offline/Hidden Mod
 		}
@@ -632,10 +614,10 @@ if ($row = $db->sql_fetchrow($result))
 			$sql2 = "SELECT $name FROM " . USERS_TABLE . "
 				WHERE user_id = $user_id";
 			if(!($result2 = $db->sql_query($sql2)))
-				message_die(GENERAL_ERROR,'Could not get custom profile data','',__LINE__,__FILE__,$sql2);
+				message_die(GENERAL_ERROR,'Could not get custom profile data', '', __LINE__, __FILE__, $sql2);
 
 			$val = $db->sql_fetchrow($result2);
-			$val = displayable_field_data($val[$name],$field['field_type']);
+			$val = displayable_field_data($val[$name], $field['field_type']);
 
 			$template->assign_block_vars('memberrow.custom_fields',array('CUSTOM_FIELD' => $val));
 		}

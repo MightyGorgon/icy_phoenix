@@ -20,6 +20,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+$db->clear_cache('config_');
 
 $confirmation = false;
 if(isset($_POST['confirm_clear_cache_main']))
@@ -33,7 +34,7 @@ if(isset($_POST['confirm_clear_cache_main']))
 
 if(isset($_POST['confirm_clear_cache_posts']))
 {
-	$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET post_text_compiled = ''";
+	$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled = ''";
 
 	if(!$result = $db->sql_query($sql))
 	{

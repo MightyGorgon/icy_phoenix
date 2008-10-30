@@ -34,6 +34,14 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'bots_reg_auth' => array(
+		'lang_key' => 'IP_bots_reg_auth',
+		'explain' => 'IP_bots_reg_auth_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
 	'lofi_bots' => array(
 		'lang_key' => 'IP_lofi_bots',
 		'explain' => 'IP_lofi_bots_explain',

@@ -49,6 +49,9 @@ include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang
 // Generate relevant output
 if(isset($_GET['pane']) && ($_GET['pane'] == 'left'))
 {
+	//Needed to avoid emptying cache when generating ACP Modules... do not remove or change, unless you also change it in common.php
+	define('ACP_MODULES', true);
+
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 	$module = jr_admin_get_module_list($jr_admin_userdata['user_jr_admin']);
 
@@ -97,6 +100,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		'U_ADMIN_LOGS' => append_sid('admin_logs.' . PHP_EXT),
 		'L_WELCOME' => $lang['Welcome_phpBB'],
 		'L_ADMIN_INTRO' => $lang['Admin_intro'],
+		'L_PAYPAL_INFO' => $lang['PayPalInfo'],
 		'L_SITE_STATS' => $lang['Forum_stats'],
 		'L_WHO_IS_ONLINE' => $lang['Who_is_Online'],
 		'L_USERNAME' => $lang['Username'],

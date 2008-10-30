@@ -16,7 +16,7 @@
 	<td class="row2"><span class="gen">{editrow.CATEGORY}</span></td>
 	<td class="row3"><span class="gen">{editrow.ARTICLE_TYPE}</span></td>
 	<td class="row2"><span class="gen">{editrow.ARTICLE_AUTHOR}</span></td>
-	<td class="row3 row-center"><span class="post-buttons">{editrow.U_APPROVE} {editrow.U_DELETE}</span></td>
+	<td class="row3 row-center"><span class="post-buttons">{editrow.U_APPROVE} | {editrow.U_DELETE}</span></td>
 </tr>
 <!-- END editrow -->
 </table>
@@ -37,7 +37,7 @@
 	<td class="row2"><span class="gen">{notrow.CATEGORY}</span></td>
 	<td class="row3"><span class="gen">{notrow.ARTICLE_TYPE}</span></td>
 	<td class="row2"><span class="gen">{notrow.ARTICLE_AUTHOR}</span></td>
-	<td class="row3 row-center"><span class="post-buttons">{notrow.U_APPROVE} {notrow.U_DELETE}</span></td>
+	<td class="row3 row-center"><span class="post-buttons">{notrow.U_APPROVE} | {notrow.U_DELETE}</span></td>
 </tr>
 <!-- END notrow -->
 </table>
@@ -58,9 +58,10 @@
 	<td class="row2"><span class="gen">{approverow.CATEGORY}</span></td>
 	<td class="row3"><span class="gen">{approverow.ARTICLE_TYPE}</span></td>
 	<td class="row2"><span class="gen">{approverow.ARTICLE_AUTHOR}</span></td>
-	<td class="row3 row-center"><span class="post-buttons">{approverow.U_APPROVE} {approverow.U_DELETE}</span></td>
+	<td class="row3 row-center"><span class="post-buttons">{approverow.U_APPROVE} | {approverow.U_DELETE}</span></td>
 </tr>
 <!-- END approverow -->
+<tr><td class="cat" colspan="5">&nbsp;</td></tr>
 </table>
 
 <!-- BEGIN pagination -->

@@ -21,30 +21,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-/*
-$cms_page_id = '0';
-$cms_page_name = 'index';
-*/
-$auth_level_req = $board_config['auth_view_portal'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-//$cms_global_blocks = ($board_config['wide_blocks_portal'] == 1) ? true : false;
+check_page_auth(0, 'portal');
 
 define('PORTAL_INIT', true);
 include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);

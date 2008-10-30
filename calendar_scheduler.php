@@ -24,6 +24,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_topics_list.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -57,7 +58,7 @@ if ( !empty($start_month) && !empty($start_year) )
 	{
 		$day = date('d', $date);
 	}
-	$date = mktime(0,0,0, $start_month, $day, $start_year);
+	$date = mktime(0, 0, 0, $start_month, $day, $start_year);
 }
 
 // mode
@@ -103,7 +104,7 @@ if ( isset($_POST['selected_id']) || isset($_GET['fid']) )
 	{
 		$type = substr($fid, 0, 1);
 		$id = intval(substr($fid, 1));
-		if ( ($id == 0) || !in_array($type, array(POST_FORUM_URL, POST_CAT_URL)) )
+		if (($id == 0) || !in_array($type, array(POST_FORUM_URL, POST_CAT_URL)))
 		{
 			$type = POST_CAT_URL;
 			$id = 0;
@@ -116,11 +117,9 @@ if ( isset($_POST['selected_id']) || isset($_GET['fid']) )
 	}
 }
 
-//
-// get the month events
-//
-$month_start = mktime(0,0,0, $month, 01, $year);
-$month_end = mktime(0,0,0, $month+1, 01, $year);
+// Get month events
+$month_start = mktime(0, 0, 0, $month, 01, $year);
+$month_end = mktime(0, 0, 0, $month + 1, 01, $year);
 $number = 0;
 $events = array();
 get_event_topics($events, $number, $month_start, $month_end, false, 0, -1, $fid);
@@ -131,7 +130,7 @@ for($i = 0; $i < count($events); $i++)
 {
 	// set the event on the month viewed
 	$calendar_start = $events[$i]['event_calendar_time'];
-	$calendar_end =  $events[$i]['event_calendar_time'] + $events[$i]['event_calendar_duration'];
+	$calendar_end = $events[$i]['event_calendar_time'] + $events[$i]['event_calendar_duration'];
 	if ($calendar_start < $month_start) $calendar_start = $month_start;
 	if ($calendar_end >= $month_end) $calendar_end = $month_end - 1;
 	$wstart = intval(date('d', $calendar_start));
@@ -142,14 +141,8 @@ for($i = 0; $i < count($events); $i++)
 	}
 }
 
-// get the day events
+// Get day events
 $events = array();
-
-// birthday
-$birthdays_count = 0;
-$remaining = $board_config['topics_per_page'];
-$displayed = count($events) - 1;
-if ($displayed < 0) $displayed = 0;
 
 // topics
 $topics_count = 0;
@@ -160,6 +153,28 @@ get_event_topics($events, $topics_count, $start_date, $end_date, true, $local_st
 $page_title = $lang['Calendar_scheduler'];
 $meta_description = '';
 $meta_keywords = '';
+
+$today_birthdays_list = '';
+if (($board_config['calendar_birthday'] == true))
+{
+	$b_year = date('Y', $date);
+	$b_month = date('n', $date);
+	$b_day = date('j', $date);
+	$b_limit = 0;
+	$birthdays_list = array();
+	$birthdays_list = get_birthdays_list($b_year, true, $b_month, $b_day, 0, $b_limit, false);
+
+	// get the number of occurences
+	$number = count($birthdays_list);
+
+	// read users
+	for ($i = 0; $i < $number; $i++)
+	{
+		$today_birthdays_list = (($today_birthdays_list == '') ? '' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+	}
+}
+$today_birthdays_list = ($today_birthdays_list == '') ? $lang['None'] : $today_birthdays_list;
+
 include (IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // template name
@@ -169,7 +184,9 @@ make_jumpbox(VIEWFORUM_MG);
 // Header
 $template->assign_vars(array(
 	'L_CALENDAR_SCHEDULER' => $lang['Calendar_scheduler'],
-	'U_CALENDAR_SCHEDULER' => append_sid('calendar_scheduler.' . PHP_EXT . '?d=' . $date . '&mode=' . $mode . '&start=' . $start),
+	'U_CALENDAR_SCHEDULER' => append_sid('calendar_scheduler.' . PHP_EXT . '?d=' . $date . '&amp;mode=' . $mode . '&amp;start=' . $start),
+	'L_BIRTHDAYS' => $lang['birthdays'],
+	'TODAY_BIRTHDAYS_LIST' => $today_birthdays_list,
 	)
 );
 
@@ -192,7 +209,7 @@ for($i = 0; $i <= 24; $i++)
 	else
 	{
 		$l_hour = date('H', $work_date);
-		if ( ($mode == 'hour') && ($hour == $i - 1) )
+		if (($mode == 'hour') && ($hour == $i - 1))
 		{
 			$color = 'quote';
 		}
@@ -205,7 +222,7 @@ for($i = 0; $i <= 24; $i++)
 	$template->assign_block_vars('hour', array(
 		'CLASS' => $color,
 		'HOUR' => $l_hour,
-		'U_HOUR' => append_sid('calendar_scheduler.' . PHP_EXT . '?' . (($i==0) ? '' : 'mode=hour&') . 'd=' . mktime((($i == 0) ? 0 : $i - 1), 0, 0, $month, $day, $year)),
+		'U_HOUR' => append_sid('calendar_scheduler.' . PHP_EXT . '?' . (($i == 0) ? '' : 'mode=hour&amp;') . 'd=' . mktime((($i == 0) ? 0 : $i - 1), 0, 0, $month, $day, $year)),
 		)
 	);
 }
@@ -218,14 +235,14 @@ $s_month = '';
 for ($i = 0; $i < count($set_of_months); $i++)
 {
 	$selected = ($month == $i+1) ? ' selected="selected"' : '';
-	$s_month .= '<option value="' . ($i+1) . '"' . $selected . '>' . $lang['datetime'][ $set_of_months[$i] ] . '</option>';
+	$s_month .= '<option value="' . ($i + 1) . '"' . $selected . '>' . $lang['datetime'][$set_of_months[$i]] . '</option>';
 }
-$s_month = sprintf('<select name="start_month" onchange="forms[\'_calendar_scheduler\'].submit();">%s</select>', $s_month);;
+$s_month = sprintf('<select name="start_month" onchange="forms[\'f_calendar_scheduler\'].submit();">%s</select>', $s_month);
 
 // buid select list for year
 $year = intval(date('Y', $start_date));
-$s_year = '<select name="start_year" onchange="forms[\'_calendar_scheduler\'].submit();">';
-for ($i=1971; $i < 2070; $i++)
+$s_year = '<select name="start_year" onchange="forms[\'f_calendar_scheduler\'].submit();">';
+for ($i = 1971; $i < 2070; $i++)
 {
 	$selected = ($year == $i) ? ' selected="selected"' : '';
 	$s_year .= '<option value="' . $i . '"' . $selected . '>' . $i . '</option>';
@@ -233,43 +250,43 @@ for ($i=1971; $i < 2070; $i++)
 $s_year .= '</select>';
 
 // build a forum select list
-$s_forum_list = '<select name="selected_id" onchange="forms[\'_calendar_scheduler\'].submit();">' . get_tree_option($fid) . '</select>';
+$s_forum_list = '<select name="selected_id" onchange="forms[\'f_calendar_scheduler\'].submit();">' . get_tree_option($fid) . '</select>';
 
 // send header
 $k = $first_day_of_week;
 for ($i = 0; $i <= 6; $i++)
 {
 	$template->assign_block_vars('header_cell', array(
-		'L_DAY' => $lang['datetime'][ $set_of_days[$k] ],
+		'L_DAY' => $lang['datetime'][$set_of_days[$k]],
 		)
 	);
 	$k++;
 	if ($k > 6) $k = 0;
 }
 
-$prec = mktime(0,0,0, $month - 1, $day, $year);
-$next = mktime(0,0,0, $month + 1, $day, $year);
+$prec = mktime(0, 0, 0, $month - 1, $day, $year);
+$next = mktime(0, 0, 0, $month + 1, $day, $year);
 $template->assign_vars(array(
-	'S_MONTH'			=> $s_month,
-	'S_YEAR'			=> $s_year,
-	'U_PREC'			=> append_sid('./calendar_scheduler.' . PHP_EXT . '?d=' . $prec . '&fid=' . $fid),
-	'U_NEXT'			=> append_sid('./calendar_scheduler.' . PHP_EXT . '?d=' . $next . '&fid=' . $fid),
-	'U_CALENDAR'		=> append_sid('./calendar.' . PHP_EXT . '?start=' . $year . $month . '01&fid=' . $fid),
+	'S_MONTH'				=> $s_month,
+	'S_YEAR'				=> $s_year,
+	'U_PREC'				=> append_sid('calendar_scheduler.' . PHP_EXT . '?d=' . $prec . '&amp;fid=' . $fid),
+	'U_NEXT'				=> append_sid('calendar_scheduler.' . PHP_EXT . '?d=' . $next . '&amp;fid=' . $fid),
+	'U_CALENDAR'		=> append_sid('calendar.' . PHP_EXT . '?start=' . $year . $month . '01&amp;fid=' . $fid),
 	'L_CALENDAR'		=> $lang['Calendar'],
-	'IMG_CALENDAR'		=> $images['icon_calendar'],
+	'IMG_CALENDAR'	=> $images['icon_calendar'],
 	)
 );
 
 // get first day of the month
-$offset = date('w', mktime(0,0,0, $month, 01, $year)) - $first_day_of_week;
+$offset = date('w', mktime(0, 0, 0, $month, 01, $year)) - $first_day_of_week;
 if ($offset < 0) $offset = $offset + 7;
-$offset = mktime(0,0,0, $month, 01-$offset, $year);
-$nb_days = intval((mktime(0,0,0, $month + 1, 01, $year) - $offset) / 86400);
+$offset = mktime(0, 0, 0, $month, 01-$offset, $year);
+$nb_days = intval((mktime(0, 0, 0, $month + 1, 01, $year) - $offset) / 86400);
 $nb_rows = intval($nb_days / 7);
 
-$start_m = mktime(0,0,0, $month, 01, $year);
-$end_m = mktime(0,0,0, $month + 1, 01, $year);
-$today = mktime(0,0,0, $month, $day, $year);
+$start_m = mktime(0, 0, 0, $month, 01, $year);
+$end_m = mktime(0, 0, 0, $month + 1, 01, $year);
+$today = mktime(0, 0, 0, $month, $day, $year);
 if (($nb_days % 7) > 0)
 {
 	$nb_rows++;
@@ -280,7 +297,7 @@ for ($j = 0; $j < $nb_rows; $j++)
 {
 	$template->assign_block_vars('row', array());
 	$color = !$color;
-	for ($i=0; $i <= 6; $i++)
+	for ($i = 0; $i <= 6; $i++)
 	{
 		$cur = intval(date('d', $offset));
 		$class = ($color) ? $theme['td_class1'] : $theme['td_class2'];
@@ -293,10 +310,12 @@ for ($j = 0; $j < $nb_rows; $j++)
 		{
 			$class = 'quote';
 		}
-		if ($days[$cur])
+		// Old condition removed...
+		//if ($days[$cur])
+		if ($cur != '&nbsp;')
 		{
-			$url = append_sid('./calendar_scheduler.' . PHP_EXT . '?d=' . $offset . '&fid=' . $fid);
-			$cur = sprintf('<a href="%s" class="gen"><b>%s</b></a>', $url, $cur);
+			$url = append_sid('calendar_scheduler.' . PHP_EXT . '?d=' . $offset . '&amp;fid=' . $fid);
+			$cur = sprintf('<a href="%s" class="gensmall"><b>%s</b></a>', $url, $cur);
 		}
 		$template->assign_block_vars('row.cell', array(
 			'CLASS' => $class,
@@ -315,28 +334,28 @@ $title = get_calendar_title_date($start_date, $period);
 $topic_rowset = array();
 for ($i = 0; $i < count($events); $i++)
 {
-	$row['topic_id']				= $events[$i]['event_id'];
-	$row['topic_title']				= $events[$i]['event_title'];
-	$row['topic_replies']			= $events[$i]['event_replies'];
-	$row['topic_type']				= $events[$i]['event_type'];
-	$row['topic_vote']				= $events[$i]['event_vote'];
-	$row['topic_status']			= $events[$i]['event_status'];
-	$row['topic_moved_id']			= $events[$i]['event_moved_id'];
-	$row['post_time']				= $events[$i]['event_last_time'];
-	$row['user_id']					= $events[$i]['event_author_id'];
-	$row['username']				= $events[$i]['event_author'];
-	$row['post_username']			= $events[$i]['event_author'];
-	$row['topic_time']				= $events[$i]['event_time'];
-	$row['id2']						= $events[$i]['event_last_author_id'];
-	$row['post_username2']			= $events[$i]['event_last_author'];
-	$row['user2']					= $events[$i]['event_last_author'];
-	$row['topic_last_post_id']		= $events[$i]['event_last_id'];
-	$row['topic_views']				= $events[$i]['event_views'];
-	$row['forum_id']				= $events[$i]['event_forum_id'];
-	$row['forum_name']				= $events[$i]['event_forum_name'];
-	$row['topic_calendar_time']		= $events[$i]['event_calendar_time'];
-	$row['topic_calendar_duration']	= $events[$i]['event_calendar_duration'];
-	$row['topic_icon']				= $events[$i]['event_icon'];
+	$row['topic_id']									= $events[$i]['event_id'];
+	$row['topic_title']								= $events[$i]['event_title'];
+	$row['topic_replies']							= $events[$i]['event_replies'];
+	$row['topic_type']								= $events[$i]['event_type'];
+	$row['topic_vote']								= $events[$i]['event_vote'];
+	$row['topic_status']							= $events[$i]['event_status'];
+	$row['topic_moved_id']						= $events[$i]['event_moved_id'];
+	$row['post_time']									= $events[$i]['event_last_time'];
+	$row['user_id']										= $events[$i]['event_author_id'];
+	$row['username']									= $events[$i]['event_author'];
+	$row['post_username']							= $events[$i]['event_author'];
+	$row['topic_time']								= $events[$i]['event_time'];
+	$row['id2']												= $events[$i]['event_last_author_id'];
+	$row['post_username2']						= $events[$i]['event_last_author'];
+	$row['user2']											= $events[$i]['event_last_author'];
+	$row['topic_last_post_id']				= $events[$i]['event_last_id'];
+	$row['topic_views']								= $events[$i]['event_views'];
+	$row['forum_id']									= $events[$i]['event_forum_id'];
+	$row['forum_name']								= $events[$i]['event_forum_name'];
+	$row['topic_calendar_time']				= $events[$i]['event_calendar_time'];
+	$row['topic_calendar_duration']		= $events[$i]['event_calendar_duration'];
+	$row['topic_icon']								= $events[$i]['event_icon'];
 
 	$topic_rowset[] = $row;
 }
@@ -344,7 +363,7 @@ for ($i = 0; $i < count($events); $i++)
 $split_type = false;
 $display_nav_tree = (intval($board_config['calendar_forum']) == 1);
 $footer = $s_forum_list . '&nbsp;<input type="submit" value="' . $lang['Go'] . '" class="liteoption" />';
-topic_list('TOPIC_LIST_SCHEDULER', 'topics_list_box', $topic_rowset, $title, $split_type, $display_nav_tree, $footer );
+topic_list('TOPIC_LIST_SCHEDULER', 'topics_list_box', $topic_rowset, $title, $split_type, $display_nav_tree, $footer);
 
 // system
 $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
@@ -352,19 +371,23 @@ $s_hidden_fields .= '<input type="hidden" name="date" value="' . $date . '" />';
 $s_hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
 if (!isset($nav_separator))
 {
-	$nav_separator = '&nbsp;->&nbsp;';
+	$nav_separator = '&nbsp;&raquo;&nbsp;';
 }
 
-$total = $topics_count + $birthdays_count;
-if ($total == 0) $total++;
+$total = $topics_count;
+if ($total == 0)
+{
+	$total++;
+}
+
 $template->assign_vars(array(
-	'PAGINATION' => generate_pagination('calendar_scheduler.' . PHP_EXT . '?d=' . $date . '&mode=' . $mode, $total, $board_config['topics_per_page'], $start),
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), ceil( $topics_count / $board_config['topics_per_page'] )),
+	'PAGINATION' => generate_pagination('calendar_scheduler.' . PHP_EXT . '?d=' . $date . '&amp;mode=' . $mode, $total, $board_config['topics_per_page'], $start),
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor( $start / $board_config['topics_per_page']) + 1 ), ceil($topics_count / $board_config['topics_per_page'])),
 	'L_GOTO_PAGE' => $lang['Goto_page'],
 
-	'NAV_SEPARATOR'		=> $nav_separator,
-	'S_ACTION'			=> append_sid('./calendar_scheduler.' . PHP_EXT),
-	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
+	'NAV_SEPARATOR' => $nav_separator,
+	'S_ACTION' => append_sid('calendar_scheduler.' . PHP_EXT),
+	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	)
 );
 

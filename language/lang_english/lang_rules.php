@@ -16,6 +16,11 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
 //
 // To add an entry to your rules simply add a line to this file in this format:
 // $faq[] = array("question", "answer");
@@ -24,9 +29,7 @@
 //
 // DO NOT forget the ; at the end of the line.
 // Do NOT put double quotes (") in your rules entries, if you absolutely must then escape them ie. \"something\"
-//
 // The rules items will appear on the rules page in the same order they are listed in this file
-//
 
 $faq[] = array('--', 'Icy Phoenix Main rules:');
 $faq[] = array('Please read the following rules and guidelines', 'By proceeding to post in the forum, you agree to these guidelines and must obey them at all times. This guide is designed to strike a balance between the main goal of the Icy Phoenix website, providing information and support, and keeping the relaxed and welcoming atmosphere of Icy Phoenix. We require all posts to be positive, constructive, and on topic. We reserve the right to remove any topics or individual posts that we deem inappropriate or disruptive. Please note that, from time to time, topics may be removed for being inappropriate even though your individual post in that topic may have been perfectly fine. You may not make personal attacks on other users either in the forums or private messages. You may not use profanity:- it is unprofessional and offensive, and will not be tolerated. You may not advertise or promote other companies or their programmes in this website. We reserve the right to ban any member who violates our guidelines or disrupts the forum. We will be fair and provide a warning in most cases. If you have an issue concerning our services, policies, or staff, please use a personal contact method such as a private message or email to an administrator or moderator - they are highlighted in the active members list. We take serious complaints to heart and will do our best to address them.');

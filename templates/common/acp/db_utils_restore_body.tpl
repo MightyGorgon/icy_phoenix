@@ -4,10 +4,10 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th>{L_SELECT_FILE}</th></tr>
 <tr>
-	<td class="row1 row-center">
+	<td class="cat">
 		{S_HIDDEN_FIELDS}&nbsp;
 		<input type="file" name="backup_file" />&nbsp;&nbsp;
-		<input type="submit" name="restore_start" value="{L_START_RESTORE}" class="mainoption" />&nbsp;
+		<input type="submit" name="restore_start" value="{L_START_RESTORE}" class="mainoption" />
 	</td>
 </tr>
 </table>

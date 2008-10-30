@@ -28,30 +28,10 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-/*
-$cms_page_id = '0';
-$cms_page_name = 'custom_pages';
-*/
-$auth_level_req = $board_config['auth_view_custom_pages'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-//$cms_global_blocks = ($board_config['wide_blocks_custom_pages'] == 1) ? true : false;
+$cms_page_id_tmp = '0';
+$cms_page_name_tmp = 'custom_pages';
+check_page_auth($cms_page_id_tmp, $cms_page_name_tmp);
+//$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name_tmp] == 1) ? true : false;
 
 define('PORTAL_INIT', true);
 include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);

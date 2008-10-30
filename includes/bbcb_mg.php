@@ -26,30 +26,7 @@ $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 
 //include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
-$view_pic_upload = true;
-/*
-$cms_page_id = '0';
-$cms_page_name = 'pic_upload';
-*/
-$auth_level_req = $board_config['auth_view_pic_upload'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		$view_pic_upload = false;
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			$view_pic_upload = false;
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			$view_pic_upload = false;
-		}
-	}
-}
+$view_pic_upload = check_page_auth(0, 'pic_upload', true);
 
 if (defined('IN_PA_POSTING'))
 {

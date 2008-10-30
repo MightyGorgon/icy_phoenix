@@ -76,7 +76,7 @@
 	<td class="row1 row-center-small">{memberrow.custom_fields.CUSTOM_FIELD}</td>
 	<!-- END custom_fields -->
 	<!-- IF S_ADMIN -->
-	<td class="row1 row-center-small">{memberrow.DELETE}</td>
+	<td class="row1 row-center-small post-buttons-single">{memberrow.DELETE}</td>
 	<!-- ENDIF -->
 </tr>
 <!-- END memberrow -->

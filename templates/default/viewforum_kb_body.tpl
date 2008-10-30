@@ -12,7 +12,7 @@
 <tr>
 	<td align="left" valign="bottom" width="70%">
 		<span class="gensmall">{TOTAL_USERS_ONLINE}<br/>{LOGGED_IN_USER_LIST}<br />{BOT_LIST}</span><br />
-		<a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a>
+		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span>
 	</td>
 	<td align="right" valign="bottom">
 		<span class="gen">{PAGE_NUMBER}</span><br />
@@ -86,7 +86,7 @@
 
 <table width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td align="left" valign="top" nowrap="nowrap"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a><br /></td>
+	<td align="left" valign="top" nowrap="nowrap"><span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span><br /></td>
 	<td width="40%" align="right" valign="top" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /></td>
 </tr>
 </table>

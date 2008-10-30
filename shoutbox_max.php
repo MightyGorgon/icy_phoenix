@@ -32,27 +32,8 @@ $start = (!$page_number) ? $start : (($page_number * $board_config['topics_per_p
 
 $cms_page_id = '19';
 $cms_page_name = 'shoutbox';
-$auth_level_req = $board_config['auth_view_shoutbox'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_shoutbox'] == 1) ? true : false;
-
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 // Start auth check
 switch ($userdata['user_level'])
@@ -457,7 +438,7 @@ if (isset($_GET['highlight']))
 
 
 $sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-if (!($result = $db->sql_query($sql. false, true)))
+if (!($result = $db->sql_query($sql, false, 'ranks_')))
 {
 	message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
 }
@@ -469,9 +450,7 @@ while ($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
-//
 // Define censored word matches
-//
 if (!$userdata['user_allowswearywords'])
 {
 	$orig_word = array();
@@ -597,7 +576,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	// Highlight active words (primarily for search)
 	if ($highlight_match)
 	{
-		$shout = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . str_replace('\\', '\\\\', addslashes($highlight_match)) . ")\b#i', '<span style=\"color:#" . $theme['fontcolor3'] . "\"><b>\\\\1</b></span>', '\\0')", '>' . $shout . '<'), 1, -1));
+		$shout = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . str_replace('\\', '\\\\', addslashes($highlight_match)) . ")\b#i', '<span class=\"highlight-w\"><b>\\\\1</b></span>', '\\0')", '>' . $shout . '<'), 1, -1));
 	}
 
 	// Replace naughty words

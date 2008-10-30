@@ -8,25 +8,25 @@
 	</div>
 </div>
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-	<tr>
-		<td width="100%"><span class="genmed">{L_MEMBERLIST_GALLERY_EXPLAIN}</span></td>
-		<!-- BEGIN switch_show_album_search -->
-		<td align="right" valign="bottom" nowrap="nowrap">{ALBUM_SEARCH_BOX}</td>
-		<!-- END switch_show_album_search -->
-	</tr>
+<tr>
+	<td width="100%"><span class="genmed">{L_MEMBERLIST_GALLERY_EXPLAIN}</span></td>
+	<!-- BEGIN switch_show_album_search -->
+	<td align="right" valign="bottom" nowrap="nowrap">{ALBUM_SEARCH_BOX}</td>
+	<!-- END switch_show_album_search -->
+</tr>
 </table>
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td width="50%" align="left">
 		<!-- BEGIN switch_show_all_pics -->
-		<a href="{U_SHOW_ALL_PICS}"><img src="{SHOW_ALL_PICS_IMG}" alt="{L_SHOW_ALL_PICS}" title="{L_SHOW_ALL_PICS}" /></a>&nbsp;
+		<span class="img-btn"><a href="{U_SHOW_ALL_PICS}"><img src="{SHOW_ALL_PICS_IMG}" alt="{L_SHOW_ALL_PICS}" title="{L_SHOW_ALL_PICS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_pics -->
 		<!-- BEGIN switch_show_all_ratings -->
-		<a href="{U_SHOW_ALL_RATINGS}"><img src="{SHOW_ALL_RATINGS_IMG}" alt="{L_SHOW_ALL_RATINGS}" title="{L_SHOW_ALL_RATINGS}" /></a>&nbsp;
+		<span class="img-btn"><a href="{U_SHOW_ALL_RATINGS}"><img src="{SHOW_ALL_RATINGS_IMG}" alt="{L_SHOW_ALL_RATINGS}" title="{L_SHOW_ALL_RATINGS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_ratings -->
 		<!-- BEGIN switch_show_all_comments -->
-		<a href="{U_SHOW_ALL_COMMENTS}"><img src="{SHOW_ALL_COMMENTS_IMG}" alt="{L_SHOW_ALL_COMMENTS}" title="{L_SHOW_ALL_COMMENTS}" /></a>&nbsp;
+		<span class="img-btn"><a href="{U_SHOW_ALL_COMMENTS}"><img src="{SHOW_ALL_COMMENTS_IMG}" alt="{L_SHOW_ALL_COMMENTS}" title="{L_SHOW_ALL_COMMENTS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_comments -->
 	</td>
 	<td width="50%" align="right" nowrap="nowrap"><span class="pagination">{PAGINATION}</span></td>
@@ -97,13 +97,13 @@
 <tr>
 	<td width="50%" align="left">
 		<!-- BEGIN switch_show_all_pics -->
-		<a href="{U_SHOW_ALL_PICS}"><img src="{SHOW_ALL_PICS_IMG}" alt="{L_SHOW_ALL_PICS}" title="{L_SHOW_ALL_PICS}" /></a>&nbsp;
+		<span class="img-btn"><a href="{U_SHOW_ALL_PICS}"><img src="{SHOW_ALL_PICS_IMG}" alt="{L_SHOW_ALL_PICS}" title="{L_SHOW_ALL_PICS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_pics -->
 		<!-- BEGIN switch_show_all_ratings -->
-		<a href="{U_SHOW_ALL_RATINGS}"><img src="{SHOW_ALL_RATINGS_IMG}" alt="{L_SHOW_ALL_RATINGS}" title="{L_SHOW_ALL_RATINGS}" /></a>&nbsp;
+		<span class="img-btn"><a href="{U_SHOW_ALL_RATINGS}"><img src="{SHOW_ALL_RATINGS_IMG}" alt="{L_SHOW_ALL_RATINGS}" title="{L_SHOW_ALL_RATINGS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_ratings -->
 		<!-- BEGIN switch_show_all_comments -->
-		<a href="{U_SHOW_ALL_COMMENTS}"><img src="{SHOW_ALL_COMMENTS_IMG}" alt="{L_SHOW_ALL_COMMENTS}" title="{L_SHOW_ALL_COMMENTS}" /></a>&nbsp;
+		<span class="img-btn"><a href="{U_SHOW_ALL_COMMENTS}"><img src="{SHOW_ALL_COMMENTS_IMG}" alt="{L_SHOW_ALL_COMMENTS}" title="{L_SHOW_ALL_COMMENTS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_comments -->
 	</td>
 	<td align="right" width="50%" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /></td>

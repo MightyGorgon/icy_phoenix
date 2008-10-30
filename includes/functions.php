@@ -223,6 +223,18 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 	return $var;
 }
 
+if (!function_exists('htmlspecialchars_decode'))
+{
+	/**
+	* A wrapper for htmlspecialchars_decode
+	* @ignore
+	*/
+	function htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
+	{
+		return strtr($string, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
+	}
+}
+
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
@@ -553,28 +565,41 @@ function get_userdata($user, $force_str = false)
 	}
 }
 
-function get_userdata_notifications($user, $force_str = false)
+/**
+* Check if the user is allowed to access a page
+*/
+function check_page_auth($cms_page_id, $cms_page_name, $return = false)
 {
-	global $db;
+	global $lang, $board_config, $userdata;
 
-	if (!is_numeric($user) || $force_str)
+	$auth_level_req = $board_config['auth_view_' . $cms_page_name];
+	// If access for all or user is admin, then return true
+	if (($auth_level_req == AUTH_ALL) || ($userdata['user_level'] == ADMIN))
 	{
-		$user = phpbb_clean_username($user);
-	}
-	else
-	{
-		$user = intval($user);
+		return true;
 	}
 
-	$sql = "SELECT *
-			FROM " . USERS_TABLE . "
-			WHERE ";
-	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" . str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
+	// Access level required is at least REG and user is not an admin!
+	// Remember that Junior Admin has the ADMIN level while not in CMS or ACP
+	$not_auth = false;
+	// Check if the user is REG or a BOT
+	$is_reg = ((($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) || $userdata['session_logged_in']) ? true : false;
+	$not_auth = (!$not_auth && ($auth_level_req == AUTH_REG) && !$is_reg) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD)) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($auth_level_req == AUTH_ADMIN)) ? true : $not_auth;
+	if ($not_auth)
 	{
-		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
+		if ($return)
+		{
+			return false;
+		}
+		else
+		{
+			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+		}
 	}
-	return ($row = $db->sql_fetchrow($result)) ? $row : false;
+
+	return true;
 }
 
 /**
@@ -676,113 +701,7 @@ function phpbb_rtrim($str, $charlist = false)
 
 function make_jumpbox($action, $match_forum_id = 0)
 {
-	global $template, $userdata, $lang, $db, $nav_links, $SID;
-
 	return jumpbox($action, $match_forum_id);
-
-//	$is_auth = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
-
-	$sql = "SELECT c.cat_id, c.cat_title, c.cat_order
-		FROM " . CATEGORIES_TABLE . " c, " . FORUMS_TABLE . " f
-		".(($userdata['user_level'] == ADMIN)? "" : " AND c.cat_id<>'".HIDDEN_CAT."'")."
-
-		WHERE f.cat_id = c.cat_id
-		GROUP BY c.cat_id, c.cat_title, c.cat_order
-		ORDER BY c.cat_order";
-	if (!($result = $db->sql_query($sql, false, 'jumpbox_')))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain category list.", "", __LINE__, __FILE__, $sql);
-	}
-
-	$category_rows = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$category_rows[] = $row;
-	}
-
-	if ($total_categories = count($category_rows))
-	{
-		$sql = "SELECT *
-			FROM " . FORUMS_TABLE . "
-			ORDER BY cat_id, forum_order";
-		if (!($result = $db->sql_query($sql, false, 'forums_')))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
-		}
-
-		$boxstring = '<select name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"><option value="-1">' . $lang['Select_forum'] . '</option>';
-
-		$forum_rows = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$forum_rows[] = $row;
-		}
-
-		if ($total_forums = count($forum_rows))
-		{
-			for($i = 0; $i < $total_categories; $i++)
-			{
-				$boxstring_forums = '';
-				for($j = 0; $j < $total_forums; $j++)
-				{
-					//if ($forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $is_auth[$forum_rows[$j]['forum_id']]['auth_view'])
-					if ($forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] && $forum_rows[$j]['auth_view'] <= AUTH_REG)
-					{
-						$selected = ($forum_rows[$j]['forum_id'] == $match_forum_id) ? 'selected="selected"' : '';
-						$boxstring_forums .=  '<option value="' . $forum_rows[$j]['forum_id'] . '"' . $selected . '>' . $forum_rows[$j]['forum_name'] . '</option>';
-						//
-						// Add an array to $nav_links for the Mozilla navigation bar.
-						// 'chapter' and 'forum' can create multiple items, therefore we are using a nested array.
-						//
-						$nav_links['chapter forum'][$forum_rows[$j]['forum_id']] = array (
-							//SEO TOLKIT BEGIN
-							//'url' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_rows[$j]['forum_id']),
-							'url' => append_sid(make_url_friendly($forum_rows[$j]['forum_name']) . '-vf' . $forum_rows[$j]['forum_id'] . '.html') ,
-							//SEO TOLKIT END
-							'title' => $forum_rows[$j]['forum_name']
-						);
-					}
-				}
-
-				if ($boxstring_forums != '')
-				{
-					$boxstring .= '<option value="-1">&nbsp;</option>';
-					$boxstring .= '<option value="-1">' . $category_rows[$i]['cat_title'] . '</option>';
-					$boxstring .= '<option value="-1">----------------</option>';
-					$boxstring .= $boxstring_forums;
-				}
-			}
-		}
-
-		$boxstring .= '</select>';
-	}
-	else
-	{
-		$boxstring .= '<select name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }"></select>';
-	}
-
-	// Let the jumpbox work again in sites having additional session id checks.
-	/*
-	if (!empty($SID))
-	{
-		$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
-	}
-	*/
-	$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
-
-	$template->set_filenames(array('jumpbox' => 'jumpbox.tpl'));
-	$template->assign_vars(array(
-		'L_GO' => $lang['Go'],
-		'L_JUMP_TO' => $lang['Jump_to'],
-		'L_SELECT_FORUM' => $lang['Select_forum'],
-
-		'S_JUMPBOX_SELECT' => $boxstring,
-		'S_JUMPBOX_ACTION' => append_sid($action)
-		)
-	);
-	$template->assign_var_from_handle('JUMPBOX', 'jumpbox');
-
-	return;
 }
 
 function create_server_url()
@@ -917,14 +836,23 @@ function setup_style($style, $old_default_style, $old_style = false)
 	}
 	else
 	{
-		//$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id = '" . (int) $style . "'";
-		$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id = '" . (int) $style . "' LIMIT 1";
+		$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id = " . (int) $style . " LIMIT 1";
 		if (!($result = $db->sql_query($sql, false, 'themes_')))
 		{
 			message_die(CRITICAL_ERROR, 'Could not query database for theme info');
 		}
 
-		if (!($row = $db->sql_fetchrow($result)))
+		$template_row = array();
+
+		$style_exists = false;
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$template_row = $row;
+			$style_exists = true;
+		}
+		$db->sql_freeresult($result);
+
+		if (!$style_exists)
 		{
 			// We are trying to setup a style which does not exist in the database
 			// Try to fallback to the board default (if the user had a custom style)
@@ -935,25 +863,27 @@ function setup_style($style, $old_default_style, $old_style = false)
 				{
 					$board_config['default_style'] = $old_style;
 				}
-				//$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id = '" . (int) $board_config['default_style'] . "'";
-				$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id = '" . (int) $board_config['default_style'] . "' LIMIT 1";
+				$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id = " . (int) $board_config['default_style'] . " LIMIT 1";
 				if (!($result = $db->sql_query($sql, false, 'themes_')))
 				{
 					message_die(CRITICAL_ERROR, 'Could not query database for theme info');
 				}
 
-				if ($row = $db->sql_fetchrow($result))
+				while ($row = $db->sql_fetchrow($result))
 				{
-					$db->sql_freeresult($result);
+					$template_row = $row;
+					$style_exists = true;
 				}
-				else
+				$db->sql_freeresult($result);
+
+				if (!$style_exists)
 				{
 					$style = $old_default_style;
 					//message_die(CRITICAL_ERROR, "Could not get theme data for themes_id [$style]", '', __LINE__, __FILE__);
 				}
 
 				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_style = '" . (int) $board_config['default_style'] . "'
+					SET user_style = " . (int) $board_config['default_style'] . "
 					WHERE user_style = '" . $style . "'";
 				if (!($result = $db->sql_query($sql)))
 				{
@@ -966,6 +896,8 @@ function setup_style($style, $old_default_style, $old_style = false)
 			}
 		}
 	}
+	unset($row);
+	$row = $template_row;
 	$template_path = 'templates/';
 	$template_name = $row['template_name'];
 
@@ -989,16 +921,6 @@ function setup_style($style, $old_default_style, $old_style = false)
 		if (!defined('TEMPLATE_CONFIG'))
 		{
 			message_die(CRITICAL_ERROR, "Could not open $current_template_cfg", '', __LINE__, __FILE__);
-		}
-
-		$img_lang = (file_exists(@phpbb_realpath(IP_ROOT_PATH . $current_template_path . '/images/lang_' . $board_config['default_lang']))) ? $board_config['default_lang'] : 'english';
-
-		while(list($key, $value) = @each($images))
-		{
-			if (!is_array($value))
-			{
-				$images[$key] = str_replace('{LANG}', 'lang_' . $img_lang, $value);
-			}
 		}
 	}
 
@@ -1036,14 +958,12 @@ function check_style_exists($style_id)
 			message_die(CRITICAL_ERROR, 'Could not query database for theme info');
 		}
 
-		if (!($row = $db->sql_fetchrow($result)))
+		$style_exists = false;
+		while ($row = $db->sql_fetchrow($result))
 		{
-			$stile_exists = false;
+			$style_exists = true;
 		}
-		else
-		{
-			$stile_exists = true;
-		}
+		$db->sql_freeresult($result);
 	}
 
 	return $stile_exists;
@@ -1067,6 +987,20 @@ function cal_date($gmepoch, $tz)
 	global $board_config;
 	return (strtotime(gmdate('M d Y H:i:s', $gmepoch + (3600 * $tz))));
 }
+
+/*
+* A more logic function to output serial dates
+*/
+/*
+function dateserial($year, $month, $day, $hour, $minute, $timezone = 'UTC')
+{
+	$org_tz = date_default_timezone_get();
+	date_default_timezone_set($timezone);
+	$date_serial = mktime($hour, $minute, 0, $month, $day, $year);
+	date_default_timezone_set($org_tz);
+	return $date_serial;
+}
+*/
 
 // Create date/time from format and timezone
 function create_date($format, $gmepoch, $tz)
@@ -1160,10 +1094,103 @@ function create_date_simple($format, $gmepoch, $tz)
 	return $date_day;
 }
 
+// Birthday - BEGIN
+// Add function realdate for Birthday MOD
+// the originate php "date()", does not work proberly on all OS, especially when going back in time
+// before year 1970 (year 0), this function "realdate()", has a much larger valid date range,
+// from 1901 - 2099. it returns a "like" UNIX date format (only date, related letters may be used, due to the fact that
+// the given date value should already be divided by 86400 - leaving no time information left)
+// a input like a UNIX timestamp divided by 86400 is expected, so
+// calculation from the originate php date and mktime is easy.
+// e.g. realdate ("m d Y", 3) returns the string "1 3 1970"
+
+// UNIX users should replace this function with the below code, since this should be faster
 //
-// Pagination routine, generates
-// page number sequence
-//
+function realdate($date_syntax = 'Ymd', $date = 0)
+{
+	return create_date($date_syntax, ($date * 86400) + 1, 0);
+}
+
+/*
+function realdate($date_syntax = 'Ymd',$date = 0)
+{
+	global $lang;
+	$i = 2;
+	if ($date >= 0)
+	{
+		return create_date($date_syntax, $date * 86400 + 1,0);
+	}
+	else
+	{
+		$year = -(date % 1461);
+		$days = $date + $year * 1461;
+		while ($days < 0)
+		{
+			$year--;
+			$days += 365;
+			if ($i++ == 3)
+			{
+				$i = 0;
+				$days++;
+			}
+		}
+	}
+	$leap_year = ($i == 0) ? true : false;
+	$months_array = ($i == 0) ? array (0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366) : array (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365);
+	for ($month = 1; $month < 12; $month++)
+	{
+		if ($days < $months_array[$month]) break;
+	}
+
+	$day = $days - $months_array[$month - 1] + 1;
+	//you may gain speed performance by remove some of the below entry's if they are not needed/used
+	return strtr ($date_syntax, array(
+		'a' => '',
+		'A' => '',
+		'\\d' => 'd',
+		'd' => ($day > 9) ? $day : '0' . $day,
+		'\\D' => 'D',
+		'D' => $lang['day_short'][($date - 3) % 7],
+		'\\F' => 'F',
+		'F' => $lang['month_long'][$month - 1],
+		'g' => '',
+		'G' => '',
+		'H' => '',
+		'h' => '',
+		'i' => '',
+		'I' => '',
+		'\\j' => 'j',
+		'j' => $day,
+		'\\l' => 'l',
+		'l' => $lang['day_long'][($date - 3) % 7],
+		'\\L' => 'L',
+		'L' => $leap_year,
+		'\\m' => 'm',
+		'm' => ($month>9) ? $month : '0' . $month,
+		'\\M' => 'M',
+		'M' => $lang['month_short'][$month - 1],
+		'\\n' => 'n',
+		'n' => $month,
+		'O' => '',
+		's' => '',
+		'S' => '',
+		'\\t' => 't',
+		't' => $months_array[$month] - $months_array[$month - 1],
+		'w' => '',
+		'\\y' => 'y',
+		'y' => ($year > 29) ? $year - 30 : $year + 70,
+		'\\Y' => 'Y',
+		'Y' => $year + 1970,
+		'\\z' => 'z',
+		'z' => $days,
+		'\\W' => '',
+		'W' => ''));
+}*/
+// Birthday - END
+
+/*
+* Pagination routine, generates page number sequence
+*/
 function get_page($num_items, $per_page, $start_item)
 {
 	$total_pages = ceil($num_items/$per_page);
@@ -1301,7 +1328,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 {
 	global $db;
 	global $global_orig_word, $global_replacement_word;
-		if (isset($global_orig_word))
+	if (isset($global_orig_word))
 	{
 		$orig_word = $global_orig_word;
 		$replacement_word = $global_replacement_word;
@@ -1393,7 +1420,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
 	global $db, $template, $board_config, $theme, $lang, $nav_links, $gen_simple_header, $images;
-	global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars;
+	global $cms_global_blocks, $cms_page_id, $cms_config_vars;
 	global $userdata, $user_ip, $session_length, $starttime, $tree;
 
 	//+MOD: Fix message_die for multiple errors MOD
@@ -1679,534 +1706,102 @@ function checkFlag($flags, $flag)
 }
 // Mighty Gorgon - Full Album Pack - END
 
-// Add function realdate for Birthday MOD
-// the originate php "date()", does not work proberly on all OS, especially when going back in time
-// before year 1970 (year 0), this function "realdate()", has a much larger valid date range,
-// from 1901 - 2099. it returns a "like" UNIX date format (only date, related letters may be used, due to the fact that
-// the given date value should already be divided by 86400 - leaving no time information left)
-// a input like a UNIX timestamp divided by 86400 is expected, so
-// calculation from the originate php date and mktime is easy.
-// e.g. realdate ("m d Y", 3) returns the string "1 3 1970"
-
-// UNIX users should replace this function with the below code, since this should be faster
-//
-function realdate($date_syntax = 'Ymd', $date = 0)
-{
-	return create_date($date_syntax, ($date * 86400) + 1, 0);
-}
-
 /*
-function realdate($date_syntax = 'Ymd',$date = 0)
-{
-	global $lang;
-	$i = 2;
-	if ($date >= 0)
-	{
-		return create_date($date_syntax, $date * 86400 + 1,0);
-	}
-	else
-	{
-		$year = -(date % 1461);
-		$days = $date + $year * 1461;
-		while ($days < 0)
-		{
-			$year--;
-			$days += 365;
-			if ($i++ == 3)
-			{
-				$i = 0;
-				$days++;
-			}
-		}
-	}
-	$leap_year = ($i == 0) ? true : false;
-	$months_array = ($i == 0) ? array (0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366) : array (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365);
-	for ($month = 1; $month < 12; $month++)
-	{
-		if ($days < $months_array[$month]) break;
-	}
-
-	$day = $days - $months_array[$month - 1] + 1;
-	//you may gain speed performance by remove som of the below entry's if they are not needed/used
-	return strtr ($date_syntax, array(
-		'a' => '',
-		'A' => '',
-		'\\d' => 'd',
-		'd' => ($day > 9) ? $day : '0' . $day,
-		'\\D' => 'D',
-		'D' => $lang['day_short'][($date - 3) % 7],
-		'\\F' => 'F',
-		'F' => $lang['month_long'][$month - 1],
-		'g' => '',
-		'G' => '',
-		'H' => '',
-		'h' => '',
-		'i' => '',
-		'I' => '',
-		'\\j' => 'j',
-		'j' => $day,
-		'\\l' => 'l',
-		'l' => $lang['day_long'][($date - 3) % 7],
-		'\\L' => 'L',
-		'L' => $leap_year,
-		'\\m' => 'm',
-		'm' => ($month>9) ? $month : '0' . $month,
-		'\\M' => 'M',
-		'M' => $lang['month_short'][$month - 1],
-		'\\n' => 'n',
-		'n' => $month,
-		'O' => '',
-		's' => '',
-		'S' => '',
-		'\\t' => 't',
-		't' => $months_array[$month] - $months_array[$month - 1],
-		'w' => '',
-		'\\y' => 'y',
-		'y' => ($year > 29) ? $year - 30 : $year + 70,
-		'\\Y' => 'Y',
-		'Y' => $year + 1970,
-		'\\z' => 'z',
-		'z' => $days,
-		'\\W' => '',
-		'W' => ''));
-}*/
-// End add - Birthday MOD
-
-
-// Start add - Last visit MOD
-function make_hours($base_time)
-{
-	global $lang;
-	$years = floor($base_time / 31536000);
-	$base_time = $base_time - ($years * 31536000);
-	$weeks = floor($base_time / 604800);
-	$base_time = $base_time - ($weeks * 604800);
-	$days = floor($base_time / 86400);
-	$base_time = $base_time - ($days * 86400);
-	$hours = floor($base_time / 3600);
-	$base_time = $base_time - ($hours * 3600);
-	$min = floor($base_time / 60);
-	$sek = $base_time - ($min * 60);
-	if ($sek < 10)
-	{
-		$sek = '0' . $sek;
-	}
-	if ($min < 10)
-	{
-		$min ='0' . $min;
-	}
-	if ($hours < 10)
-	{
-		$hours = '0' . $hours;
-	}
-	$result = (($years) ? $years . ' ' . (($years == 1) ? $lang['Year'] : $lang['Years']) . ', ' : '') . (($years || $weeks) ? $weeks . ' ' . (($weeks == 1) ? $lang['Week'] : $lang['Weeks']) . ', ' : '') . (($years || $weeks || $days) ? $days . ' ' . (($days == 1) ? $lang['Day'] : $lang['Days']) . ', ' : '') . (($hours) ? $hours . ':' : '00:') . (($min) ? $min . ':' : '00:') . $sek;
-	return ($result) ? $result : $lang['None'];
-}
-// End add - Last visit MOD
-
-// Top X Posters
-function top_posters($user_limit, $show_admin, $show_mod)
-{
-	global $db;
-	if ( ($show_admin == true) && ($show_mod == true) )
-	{
-		$sql_level = "";
-	}
-	elseif ($show_admin == true)
-	{
-		$sql_level = "AND u.user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
-	}
-	elseif ($show_mod == true)
-	{
-		$sql_level = "AND u.user_level IN (" . USER . ", " . MOD . ")";
-	}
-	else
-	{
-		$sql_level = "AND u.user_level = " . USER;
-	}
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_level
-	FROM " . USERS_TABLE . " u
-	WHERE (u.user_id <> " . ANONYMOUS . ")
-	" . $sql_level . "
-	ORDER BY u.user_posts DESC
-	LIMIT " . $user_limit;
-	if (!($result = $db->sql_query($sql, false, 'top_posters_')))
-	{
-		message_die(GENERAL_ERROR, 'Could not query forum top poster information', '', __LINE__, __FILE__, $SQL);
-	}
-	$top_posters = '';
-	while($row = $db->sql_fetchrow($result))
-	{
-		$top_posters .= ' ' . colorize_username($row['user_id']) . '(' . $row['user_posts'] . ') ';
-	}
-	return $top_posters;
-}
-
-// Autolinks - BEGIN
-//
-// Obtain list of autolink words and build preg style replacement arrays for use by the
-// calling script, note that the vars are passed as references this just makes it easier
-// to return both sets of arrays
-//
-// This is a copy of phpBB's obtain_word_list() function with slight changes.
-//
-function obtain_autolink_list(&$orig_autolink, &$replacement_autolink, $id)
-{
-	global $db;
-
-	//$where = ($id) ? ' WHERE link_forum = 0 OR link_forum = ' . $id : ' WHERE link_forum = -1';
-	$where = ($id) ? ' WHERE link_forum = 0 OR link_forum IN (' . $id . ')' : ' WHERE link_forum = -1';
-
-	$sql = "SELECT * FROM  " . AUTOLINKS . $where;
-	if(!($result = $db->sql_query($sql, false, 'autolinks_')))
-	{
-		message_die(GENERAL_ERROR, 'Could not get autolink data from database', '', __LINE__, __FILE__, $sql);
-	}
-
-	if($row = $db->sql_fetchrow($result))
-	{
-		do
-		{
-			// Munge word boundaries to stop autolinks from linking to
-			// themselves or other autolinks in step 2 in the function below.
-			$row['link_url'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_url']);
-			$row['link_comment'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_comment']);
-
-			if($row['link_style'])
-			{
-				$row['link_style'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_style']);
-				$style = ' style="' . htmlspecialchars($row['link_style']) . '" ';
-			}
-			else
-			{
-				$style = ' ';
-			}
-			$orig_autolink[] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/'). ')(?![\/\w@:-])(?!\.\w)/i';
-			if($row['link_int'])
-			{
-				$replacement_autolink[] = '<a href="' . append_sid(htmlspecialchars($row['link_url'])) . '" target="_self"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
-			}
-			else
-			{
-				$replacement_autolink[] = '<a href="' . htmlspecialchars($row['link_url']) . '" target="_blank"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
-			}
-		}
-		while($row = $db->sql_fetchrow($result));
-	}
-
-	return true;
-}
-
-//
-// Taken from the POST-NUKE pnuserapi.php Autolinks user API file with slight changes.
-// Original Author - Jim McDonald.
-//
-function autolink_transform($message, $orig, $replacement)
-{
-	global $board_config;
-
-	// Step 1 - move all tags out of the text and replace them with placeholders
-	preg_match_all('/(<a\s+.*?\/a>|<[^>]+>)/i', $message, $matches);
-	$matchnum = count($matches[1]);
-	for($i = 0; $i < $matchnum; $i++)
-	{
-		$message = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', "ALPLACEHOLDER{$i}PH", $message, 1);
-	}
-
-	// Step 2 - s/r of the remaining text
-	if($board_config['autolink_first'])
-	{
-		$message = preg_replace($orig, $replacement, $message, 1);
-	}
-	else
-	{
-		$message = preg_replace($orig, $replacement, $message);
-	}
-
-	// Step 3 - replace the spaces we munged in step 1
-	$message = preg_replace('/ALSPACEHOLDER/', '', $message);
-
-	// Step 4 - replace the HTML tags that we removed in step 1
-	for($i = 0; $i <$matchnum; $i++)
-	{
-		$message = preg_replace("/ALPLACEHOLDER{$i}PH/", $matches[1][$i], $message, 1);
-	}
-
-	return $message;
-}
-// Autolinks - END
-
-/*
-MG BOTS Parsing Function
+* MG BOTS Parsing Function
 */
-function bots_parse($ip_address, $bot_color = '#888888', $browser = false)
+function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $check_inactive = false, $return_id = false)
 {
+	global $db, $lang;
 	/*
 	// Testing!!!
+	$browser = 'msnbot/ ciao';
 	$bot_name = 'MG';
 	return $bot_name;
 	*/
+
 	$bot_name = false;
 	//return $bot_name;
-	$bot_color = ($bot_color == '') ? '#888888' : $bot_color;
+	$bot_color = empty($bot_color) ? '#888888' : $bot_color;
 
 	if ($browser != false)
 	{
-		//if ((strpos($browser, 'MSIE') !== false) || (strpos($browser, 'Opera') !== false) || (strpos($browser, 'Firefox') !== false) || (strpos($browser, 'Mozilla') !== false))
-		if ((strpos($browser, 'MSIE') !== false) || (strpos($browser, 'Opera') !== false) || (strpos($browser, 'Firefox') !== false))
+		if ((strpos($browser, 'Firefox') !== false) || (strpos($browser, 'MSIE') !== false) || (strpos($browser, 'Opera') !== false))
 		{
 			$bot_name = false;
 			return $bot_name;
 		}
 	}
 
-	$bot_name_ary = array(
-		'adsbot' => 'AdsBot [Google]',
-		'alexa' => 'Alexa',
-		'alta_vista' => 'Alta Vista',
-		'alltheweb' => 'AllTheWeb',
-		'ask_jeeves' => 'Ask Jeeves',
-		'ask_jeeves_teoma' => 'Ask Jeeves',
-		'baidu' => 'Baidu [Spider]',
-		'becomebot' => 'Become',
-		'ebay' => 'eBay Ad',
-		'edintorni' => 'eDintorni Crawler',
-		'exabot' => 'Exabot',
-		'fast_enterprise' => 'FAST Enterprise [Crawler]',
-		'fast_webcrawler' => 'FAST WebCrawler [Crawler]',
-		'francis' => 'Francis',
-		'gigablast' => 'Gigablast',
-		'gigabot' => 'Gigabot',
-		'google_adsense' => 'Google Adsense',
-		'google_desktop' => 'Google Desktop',
-		'google_feedfetcher' => 'Google Feedfetcher',
-		'google' => 'Google',
-		'heise_it_markt' => 'Heise IT-Markt [Crawler]',
-		'heritrix' => 'Heritrix [Crawler]',
-		'jetbot' => 'JetBot',
-		'ibm_research' => 'IBM Research',
-		'iccrawler_icjobs' => 'ICCrawler - ICjobs',
-		'ichiro' => 'ichiro [Crawler]',
-		'ie_auto_discovery' => 'IEAutoDiscovery',
-		'indy_library' => 'Indy Library',
-		'infoseek' => 'Infoseek',
-		'inktomi' => 'Inktomi',
-		'live' => 'LiveBot',
-		'looksmart' => 'LookSmart',
-		'lycos' => 'Lycos',
-		'magpierss' => 'MagpieRSS',
-		'majestic_12' => 'Majestic-12',
-		'metager' => 'Metager',
-		'msn_newsblogs' => 'MSN NewsBlogs',
-		'msn' => 'MSN',
-		'msnbot_media' => 'MSNbot Media',
-		'msrbot_media' => 'Microsoft Research',
-		'ng_search' => 'NG-Search',
-		'noxtrum' => 'Noxtrum [Crawler]',
-		'nutch' => 'Nutch',
-		'nutch_cvs' => 'Nutch/CVS',
-		'omniexplorer' => 'OmniExplorer',
-		'online_link' => 'Online link [Validator]',
-		'perl' => 'Perl Script',
-		'pompos' => 'Pompos',
-		'psbot' => 'psbot [Picsearch]',
-		'seekport' => 'Seekport',
-		'sensis' => 'Sensis [Crawler]',
-		'seo_crawler' => 'SEO Crawler [Crawler]',
-		'seoma' => 'Seoma [Crawler]',
-		'seosearch' => 'SEOSearch [Crawler]',
-		'snapbot' => 'Snap Bot',
-		'snappy' => 'Snappy',
-		'speedy_spider' => 'Speedy Spider',
-		'steeler' => 'Steeler [Crawler]',
-		'synoo' => 'Synoo',
-		'telekom' => 'Telekom',
-		'turnitinbot' => 'TurnitinBot',
-		'twiceler' => 'Twiceler',
-		'virgilio' => 'Virgilio',
-		'voila' => 'Voila',
-		'voyager' => 'Voyager',
-		'w3' => 'W3 [Sitesearch]',
-		'w3c_linkcheck' => 'W3C [Linkcheck]',
-		'w3c_validator' => 'W3C [Validator]',
-		'wisenut' => 'WiseNut',
-		'yacy' => 'YaCy',
-		'yahoo_mmcrawler' => 'Yahoo MMCrawler',
-		'yahoo_slurp' => 'Yahoo! DE Slurp',
-		'yahoo' => 'Yahoo! Slurp',
-		'yahooseeker' => 'YahooSeeker',
-	);
-
-	$bot_color_ary = array(
-		'google' => '<span style="font-weight: bold; color: #2244BB;">G</span><span style="font-weight: bold; color: #DD2222;">o</span><span style="font-weight: bold; color: #EEBB00;">o</span><span style="font-weight: bold; color: #2244BB;">g</span><span style="font-weight: bold; color: #339933;">l</span><span style="font-weight: bold; color: #DD2222;">e</span>',
-		'google_adsense' => '<span style="font-weight: bold; color: #2244BB;">G</span><span style="font-weight: bold; color: #DD2222;">o</span><span style="font-weight: bold; color: #EEBB00;">o</span><span style="font-weight: bold; color: #2244BB;">g</span><span style="font-weight: bold; color: #339933;">l</span><span style="font-weight: bold; color: #DD2222;">e</span><span style="font-weight: bold; color: #DD2222;"> Adsense</span>',
-		'google_desktop' => '<span style="font-weight: bold; color: #2244BB;">G</span><span style="font-weight: bold; color: #DD2222;">o</span><span style="font-weight: bold; color: #EEBB00;">o</span><span style="font-weight: bold; color: #2244BB;">g</span><span style="font-weight: bold; color: #339933;">l</span><span style="font-weight: bold; color: #DD2222;">e</span><span style="font-weight: bold; color: #DD2222;"> Desktop</span>',
-		'google_feedfetcher' => '<span style="font-weight: bold; color: #2244BB;">G</span><span style="font-weight: bold; color: #DD2222;">o</span><span style="font-weight: bold; color: #EEBB00;">o</span><span style="font-weight: bold; color: #2244BB;">g</span><span style="font-weight: bold; color: #339933;">l</span><span style="font-weight: bold; color: #DD2222;">e</span><span style="font-weight: bold; color: #DD2222;"> Feedfetcher</span>',
-		'yahoo_mmcrawler' => '<span style="font-weight: bold; color: #DD2222;">Yahoo!</span><span style="font-weight: bold; color: #2244BB;"> MMCrawler</span>',
-		'yahoo_slurp' => '<span style="font-weight: bold; color: #DD2222;">Yahoo!</span><span style="font-weight: bold; color: #2244BB;"> DE Slurp</span><span style="font-weight: bold; color: ' . $bot_color . ';"> [Bot]</span>',
-		'yahoo' => '<span style="font-weight: bold; color: #DD2222;">Yahoo!</span><span style="font-weight: bold; color: #2244BB;"> Slurp</span>',
-		'live' => '<span style="font-weight: bold; color: #446688;">LiveBot</span>',
-		'msn_newsblogs' => '<span style="font-weight: bold; color: #446688;">MSN NewsBlogs</span>',
-		'msn' => '<span style="font-weight: bold; color: #446688;">MSN</span>',
-		'msnbot_media' => '<span style="font-weight: bold; color: #446688;">MSNbot Media</span>',
-	);
-
-	// list more probable first... to speed up things!
-	$bot_reg_exp_ary = array(
-		'yahoo' => 'Yahoo! Slurp',
-		'google' => 'Googlebot',
-		'msn' => 'msnbot/',
-		'live' => 'LiveBot',
-		'adsbot' => 'AdsBot-Google',
-		'google_adsense' => 'Mediapartners-Google',
-		'yahoo_slurp' => 'Yahoo! DE Slurp',
-		'yahoo_mmcrawler' => 'Yahoo-MMCrawler/',
-		'yahooseeker' => 'YahooSeeker/',
-		'google_desktop' => 'Google Desktop',
-		'google_feedfetcher' => 'Feedfetcher-Google',
-		'msn_newsblogs' => 'msnbot-NewsBlogs/',
-		'msnbot_media' => 'msnbot-media/',
-		'alexa' => 'ia_archiver',
-		'alta_vista' => 'Scooter/',
-		'alltheweb' => 'alltheweb',
-		'ask_jeeves' => 'Ask Jeeves',
-		'ask_jeeves_teoma' => 'teoma',
-		'baidu' => 'Baiduspider+(',
-		'becomebot' => 'BecomeBot/',
-		'edintorni' => 'eDintorni',
-		'exabot' => 'Exabot/',
-		'fast_enterprise' => 'FAST Enterprise Crawler',
-		'fast_webcrawler' => 'FAST-WebCrawler/',
-		'francis' => 'http://www.neomo.de/',
-		'gigabot' => 'Gigabot/',
-		'heise_it_markt' => 'heise-IT-Markt-Crawler',
-		'heritrix' => 'heritrix/1.',
-		'jetbot' => 'Jetbot',
-		'ibm_research' => 'ibm.com/cs/crawler',
-		'iccrawler_icjobs' => 'ICCrawler - ICjobs',
-		'ichiro' => 'ichiro/2',
-		'ie_auto_discovery' => 'IEAutoDiscovery',
-		'indy_library' => 'Indy Library',
-		'infoseek' => 'Infoseek',
-		'live' => 'LiveBot',
-		'looksmart' => 'MARTINI',
-		'lycos' => 'Lycos',
-		'magpierss' => 'MagpieRSS',
-		'majestic_12' => 'MJ12bot/',
-		'metager' => 'MetagerBot/',
-		'msrbot_media' => 'MSRBOT',
-		'ng_search' => 'NG-Search/',
-		'noxtrum' => 'noxtrumbot',
-		'nutch' => 'http://lucene.apache.org/nutch/',
-		'nutch_cvs' => 'NutchCVS/',
-		'omniexplorer' => 'OmniExplorer_Bot/',
-		'online_link' => 'online link validator',
-		'perl' => 'libwww-perl/',
-		'psbot' => 'psbot/0',
-		'seekport' => 'Seekbot/',
-		'sensis' => 'Sensis Web Crawler',
-		'seo_crawler' => 'SEO search Crawler/',
-		'seoma' => 'Seoma',
-		'seosearch' => 'SEOsearch/',
-		'snapbot' => 'Snapbot/',
-		'snappy' => 'Snappy/',
-		'speedy_spider' => 'Speedy Spider',
-		'steeler' => 'http://www.tkl.iis.u-tokyo.ac.jp/~crawler/',
-		'synoo' => 'SynooBot/',
-		'telekom' => 'crawleradmin.t-info@telekom.de',
-		'turnitinbot' => 'TurnitinBot/',
-		'twiceler' => 'Twiceler',
-		'voyager' => 'voyager/1.0',
-		'voila' => 'VoilaBot',
-		'w3' => 'W3 SiteSearch Crawler',
-		'w3c_linkcheck' => 'W3C-checklink/',
-		'w3c_validator' => 'W3C_',
-		'wisenut' => 'http://www.WISEnutbot.com',
-		'yacy' => 'yacybot',
-	);
-
-	if ($browser != false)
+	$active_bots = array();
+	$sql = "SELECT bot_id, bot_name, bot_active, bot_agent, bot_ip, bot_color
+		FROM " . BOTS_TABLE . "
+		ORDER BY bot_id";
+	if(!$result = $db->sql_query($sql, false, 'bots_list_'))
 	{
-		while ($str_check = current($bot_reg_exp_ary))
+		message_die(GENERAL_ERROR, 'Could not query bots table', $lang['Error'], __LINE__, __FILE__, $sql);
+	}
+
+	while($row = $db->sql_fetchrow($result))
+	{
+		$active_bots[] = $row;
+	}
+	$db->sql_freeresult($result);
+
+	for ($i = 0; $i < count($active_bots); $i++)
+	{
+		if (!empty($active_bots[$i]['bot_agent']) && preg_match('#' . str_replace('\*', '.*?', preg_quote($active_bots[$i]['bot_agent'], '#')) . '#i', $browser))
 		{
-			if (strpos(strtolower($browser), strtolower($str_check)) !== false)
+			$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
+			if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
 			{
-				$bot_name = array_key_exists(key($bot_reg_exp_ary), $bot_color_ary) ? $bot_color_ary[key($bot_reg_exp_ary)] : '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary[key($bot_reg_exp_ary)] . '</span>';
-				return $bot_name;
+				message_die(GENERAL_ERROR, $lang['Not_Authorised']);
 			}
-			next($bot_reg_exp_ary);
+			if ($return_id == true)
+			{
+				$bot_name = $active_bots[$i]['bot_id'];
+			}
+			return $bot_name;
+		}
+
+		if (!empty($active_bots[$i]['bot_ip']))
+		{
+			foreach (explode(',', $active_bots[$i]['bot_ip']) as $bot_ip)
+			{
+				if (strpos(decode_ip($ip_address), trim($bot_ip)) === 0)
+				{
+					$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
+					if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
+					{
+						message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+					}
+					if ($return_id == true)
+					{
+						$bot_name = $active_bots[$i]['bot_id'];
+					}
+					return $bot_name;
+				}
+			}
 		}
 	}
 
-	$tmp_list = explode(".", decode_ip($ip_address));
+	return false;
+}
 
-	if ($tmp_list[0] == "66" && $tmp_list[1] == "249")
+/*
+* Update bots table
+*/
+function bots_table_update($bot_id)
+{
+	global $db, $lang;
+	$sql = "UPDATE " . BOTS_TABLE . "
+					SET bot_visit_counter = (bot_visit_counter + 1),
+						bot_last_visit = '" . time() . "'
+					WHERE bot_id = '" . $bot_id . "'";
+	if(!$result = $db->sql_query($sql))
 	{
-		return $bot_color_ary['google'];
+		message_die(GENERAL_ERROR, 'Could not update bots table', $lang['Error'], __LINE__, __FILE__, $sql);
 	}
-	elseif ($tmp_list[0] == "72" && $tmp_list[1] == "14" && $tmp_list[2] == "199")
-	{
-		return $bot_color_ary['google_feedfetcher'];
-	}
-	elseif (($tmp_list[0] == "66" && $tmp_list[1] == "196") || ($tmp_list[0] == "68" && $tmp_list[1] == "142") || ($tmp_list[0] == "72" && $tmp_list[1] == "30") || ($tmp_list[0] == "74" && $tmp_list[1] == "6") || ($tmp_list[0] == "202" && $tmp_list[1] == "160" && $tmp_list[2] == "180"))
-	{
-		return $bot_color_ary['yahoo'];
-	}
-	elseif (($tmp_list[0] == "207" && $tmp_list[1] == "66" && $tmp_list[2] == "146") || ($tmp_list[0] == "207" && $tmp_list[1] == "46") || ($tmp_list[0] == "65" && $tmp_list[1] == "54" && $tmp_list[2] == "188") || ($tmp_list[0] == "65" && $tmp_list[1] == "54" && $tmp_list[2] == "246") || ($tmp_list[0] == "65" && $tmp_list[1] == "55" && $tmp_list[2] == "210") || ($tmp_list[0] == "65" && $tmp_list[1] == "55" && $tmp_list[2] == "213") || ($tmp_list[0] == "65" && $tmp_list[1] == "54" && $tmp_list[2] == "165"))
-	{
-		return $bot_color_ary['msn'];
-	}
-	elseif ($tmp_list[0] == "195" && $tmp_list[1] == "101" && $tmp_list[2] == "94")
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['voila'] . '</span>';
-		return $bot_name;
-	}
-	elseif ($tmp_list[0] == "65" && $tmp_list[1] == "19" && $tmp_list[2] == "150" && $tmp_list[3] >= 193 && $tmp_list[3] <= 256)
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['omniexplorer'] . '</span>';
-		return $bot_name;
-	}
-	elseif ($tmp_list[0] == "212" && $tmp_list[1] == "27" && $tmp_list[2] == "41" && $tmp_list[3] >= 20 && $tmp_list[3] <= 50)
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['pompos'] . '</span>';
-		return $bot_name;
-	}
-	elseif (($tmp_list[0] == "66" && $tmp_list[1] == "154" && $tmp_list[2] == "102") || ($tmp_list[0] == "66" && $tmp_list[1] == "154" && $tmp_list[2] == "103"))
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['gigablast'] . '</span>';
-		return $bot_name;
-	}
-	elseif ($tmp_list[0] == "212" && $tmp_list[1] == "222" && $tmp_list[2] == "51")
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['ebay'] . '</span>';
-		return $bot_name;
-	}
-	elseif ($tmp_list[0] == "65" && $tmp_list[1] == "214" && $tmp_list[2] == "44")
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['ask_jeeves'] . '</span>';
-		return $bot_name;
-	}
-	elseif ($tmp_list[0] == "209" && $tmp_list[1] == "237" && $tmp_list[2] == "238")
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['alexa'] . '</span>';
-		return $bot_name;
-	}
-	elseif ($tmp_list[0] == "212" && $tmp_list[1] == "48" && $tmp_list[2] == "8")
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['virgilio'] . '</span>';
-		return $bot_name;
-	}
-	elseif (($tmp_list[0] == "66" && $tmp_list[1] == "94" && $tmp_list[2] == "229") || ($tmp_list[0] == "66" && $tmp_list[1] == "228" && $tmp_list[2] == "165"))
-	{
-		$bot_name = '<span style="font-weight: bold; color: ' . $bot_color . ';">' . $bot_name_ary['inktomi'] . '</span>';
-		return $bot_name;
-	}
-	else
-	{
-		return $bot_name;
-	}
-
-	return $bot_name;
+	return true;
 }
 
 // Ajaxed - BEGIN
@@ -2254,18 +1849,6 @@ function AJAX_message_die($data_ar)
 		$db->sql_close();
 	}
 	exit;
-}
-
-// This function is taken from includes/bbcode.php and renamed
-// We need this in special occasions
-function unhtmlspecialchars($text)
-{
-	$text = preg_replace("/&gt;/i", ">", $text);
-	$text = preg_replace("/&lt;/i", "<", $text);
-	$text = preg_replace("/&quot;/i", "\"", $text);
-	$text = preg_replace("/&amp;/i", "&", $text);
-
-	return $text;
 }
 
 /**
@@ -2326,7 +1909,6 @@ function utf8_rawurldecode($source)
 function ajax_htmlspecialchars($text)
 {
 	global $html_entities_match, $html_entities_replace;
-
 	return preg_replace($html_entities_match, $html_entities_replace, $text);
 }
 // Ajaxed - END
@@ -2432,11 +2014,11 @@ function resize_avatar($avatar_url)
 			}
 			elseif ($pic_width > $pic_height)
 			{
-				$avatar_height = $avatar_width * ($pic_height/$pic_width);
+				$avatar_height = $avatar_width * ($pic_height / $pic_width);
 			}
 			else
 			{
-				$avatar_width = $avatar_height * ($pic_width/$pic_height);
+				$avatar_width = $avatar_height * ($pic_width / $pic_height);
 			}
 		}
 	}
@@ -2476,27 +2058,6 @@ function get_gravatar($email)
 	}
 
 	return $image;
-}
-
-function user_get_thanks_received($user_id)
-{
-	global $db;
-	$total_thanks_received = 0;
-	$sql = "SELECT COUNT(th.topic_id) AS total_thanks
-					FROM " . THANKS_TABLE . " th, " . TOPICS_TABLE . " t
-					WHERE t.topic_poster = '" . $user_id . "'
-						AND t.topic_id = th.topic_id";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query thanks informations", "", __LINE__, __FILE__, $sql);
-	}
-	if (!$row = $db->sql_fetchrow($result))
-	{
-		message_die(GENERAL_ERROR, "Could not query thanks informations", "", __LINE__, __FILE__, $sql);
-	}
-	$total_thanks_received = $row['total_thanks'];
-	$db->sql_freeresult($result);
-	return $total_thanks_received;
 }
 
 function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false)

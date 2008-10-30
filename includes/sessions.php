@@ -345,10 +345,9 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	return $userdata;
 }
 
-//
-// Checks for a given user session, tidies session table and updates user
-// sessions at each page refresh
-//
+/*
+* Checks for a given user session, tidies session table and updates user sessions at each page refresh
+*/
 function session_pagestart($user_ip, $thispage_id = '')
 {
 	global $db, $lang, $board_config;
@@ -407,6 +406,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 
 	$last_visit = 0;
 	$current_time = time();
+	$userdata_processed = false;
 
 	// Does a session exist?
 	if (!empty($session_id))
@@ -492,11 +492,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 				}
 //<!-- END Unread Post Information to Database Mod -->
 
-				// Mighty Gorgon - BOT SESSION - BEGIN
-				$userdata['bot_id'] = bots_parse($user_ip, $board_config['bots_color'], $user_agent);
-				//$userdata['bot_id'] = 'Mighty Gorgon';
-				// Mighty Gorgon - BOT SESSION - END
-				return $userdata;
+				$userdata_processed = true;
 			}
 		}
 	}
@@ -535,28 +531,45 @@ function session_pagestart($user_ip, $thispage_id = '')
 //<!-- BEGIN Unread Post Information to Database Mod -->
 //			$userdata['upi2db_access'] = check_upi2db_on($userdata);
 //<!-- END Unread Post Information to Database Mod -->
-			// Mighty Gorgon - BOT SESSION - BEGIN
-			$userdata['bot_id'] = bots_parse($user_ip, $board_config['bots_color'], $user_agent);
-			// Mighty Gorgon - BOT SESSION - END
-			return $userdata;
+
+			$userdata_processed = true;
 		}
 	}
-	//
-	// If we reach here then no (valid) session exists. So we'll create a new one,
-	// using the cookie user_id if available to pull basic user prefs.
-	//
-	$user_id = (isset($sessiondata['userid'])) ? intval($sessiondata['userid']) : ANONYMOUS;
 
-	if (!($userdata = session_begin($user_id, $user_ip, true)))
+	if (!$userdata_processed)
 	{
-		message_die(CRITICAL_ERROR, 'Error creating user session', '', __LINE__, __FILE__, $sql);
+		//
+		// If we reach here then no (valid) session exists. So we'll create a new one,
+		// using the cookie user_id if available to pull basic user prefs.
+		//
+		$user_id = (isset($sessiondata['userid'])) ? intval($sessiondata['userid']) : ANONYMOUS;
+
+		if (!($userdata = session_begin($user_id, $user_ip, true)))
+		{
+			message_die(CRITICAL_ERROR, 'Error creating user session', '', __LINE__, __FILE__, $sql);
+		}
 	}
 
 	// Mighty Gorgon - BOT SESSION - BEGIN
-	$userdata['bot_id'] = bots_parse($user_ip, $board_config['bots_color'], $user_agent);
+	if ($userdata['user_id'] != ANONYMOUS)
+	{
+		$userdata['bot_id'] = false;
+	}
+	else
+	{
+		$userdata['bot_id'] = bots_parse($user_ip, $board_config['bots_color'], $user_agent, true);
+		if ($userdata['bot_id'] !== false)
+		{
+			/*
+			$userdata['user_id'] = BOT;
+			$userdata['session_user_id'] = BOT;
+			$userdata['session_logged_in'] = 1;
+			*/
+			bots_table_update(bots_parse($user_ip, $board_config['bots_color'], $user_agent, true, true));
+		}
+	}
 	// Mighty Gorgon - BOT SESSION - END
 	return $userdata;
-
 }
 
 /**

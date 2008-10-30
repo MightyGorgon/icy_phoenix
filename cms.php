@@ -37,11 +37,11 @@ init_userprefs($userdata);
 $cms_type = 'cms_standard';
 
 $mode_array = array('blocks', 'blocks_adv', 'config', 'layouts', 'layouts_adv', 'layouts_special', 'smilies');
-$mode = (!empty($_GET['mode']) ? $_GET['mode'] : (!empty($_POST['mode']) ? $_POST['mode'] : false));
+$mode = request_var('mode', '');
 $mode = (in_array($mode, $mode_array) ? $mode : false);
 
 $action_array = array('add', 'delete', 'duplicate', 'edit', 'editglobal', 'list', 'save');
-$action = (!empty($_GET['action']) ? $_GET['action'] : (!empty($_POST['action']) ? $_POST['action'] : false));
+$action = request_var('action', '');
 $action = (isset($_POST['add']) ? 'add' : $action);
 $action = (isset($_POST['save']) ? 'save' : $action);
 $action = (isset($_POST['action_duplicate']) ? 'duplicate' : $action);
@@ -1674,7 +1674,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			$s_hidden_fields .= '<input type="hidden" name="filename_old" value="' . $l_info['filename'] . '" />';
 		}
 
-		$template_name = get_template_name($board_config['default_style']);
+		$template_name = 'default';
 		$template_dir = IP_ROOT_PATH . '/templates/' . $template_name . '/layout';
 
 		if ($mode == 'layouts')
@@ -1894,7 +1894,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			}
 			$message .= $lang['Layout_updated'];
 
-			$template_name = get_template_name($board_config['default_style']);
+			$template_name = 'default';
 
 			if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
 			{
@@ -1990,7 +1990,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			}
 			$message .= $lang['Layout_added'];
 
-			$template_name = get_template_name($board_config['default_style']);
+			$template_name = 'default';
 
 			if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
 			{

@@ -20,11 +20,11 @@
 <!-- END catrow -->
 </div>
 <br />
-<!-- BEGIN disable_viewonline -->
+<!-- IF S_VIEWONLINE -->
 <div class="whosonline">
 	{L_WHO_IS_ONLINE}<br />
 	{TOTAL_POSTS}<br />{TOTAL_USERS}<br />{NEWEST_USER}<br />
 	{TOTAL_USERS_ONLINE}<br />{RECORD_USERS}<br />{LOGGED_IN_USER_LIST}<br />{L_ONLINE_EXPLAIN}
 </div>
 <br />
-<!-- END disable_viewonline -->
+<!-- ENDIF -->

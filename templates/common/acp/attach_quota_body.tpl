@@ -10,11 +10,11 @@
 	<th>{L_ADD_NEW}</th>
 </tr>
 <tr>
-	<td class="row1 row-center" valign="middle"><input type="text" size="20" maxlength="25" name="quota_description" class="post" value=""/></td>
-	<td class="row2 row-center" valign="middle"><input type="text" size="8" maxlength="15" name="add_max_filesize" class="post" value="{MAX_FILESIZE}" /> {S_FILESIZE}</td>
+	<td class="row1" valign="middle">&nbsp;<input type="text" size="20" maxlength="25" name="quota_description" class="post" value="" /></td>
+	<td class="row1 row-center" valign="middle"><input type="text" size="8" maxlength="15" name="add_max_filesize" class="post" value="{MAX_FILESIZE}" /> {S_FILESIZE}</td>
 	<td class="row1 row-center" valign="middle"><input type="checkbox" name="add_quota_check" /></td>
 </tr>
-<tr><td class="cat" colspan="5"> {S_HIDDEN_FIELDS} <input type="submit" name="submit" class="liteoption" value="{L_SUBMIT}" /></td></tr>
+<tr><td class="cat" colspan="5">{S_HIDDEN_FIELDS}<input type="submit" name="submit" class="liteoption" value="{L_SUBMIT}" /></td></tr>
 <tr>
 	<th>{L_DESCRIPTION}</th>
 	<th>{L_SIZE}</th>
@@ -22,16 +22,11 @@
 </tr>
 <!-- BEGIN limit_row -->
 <tr>
-	<td class="row1 row-center" valign="middle">
+	<td class="row1" valign="middle">
 	<input type="hidden" name="quota_change_list[]" value="{limit_row.QUOTA_ID}" />
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
-		<tr>
-			<td class="row1 row-center" valign="middle" width="10%" wrap="nowrap"><b><span class="gensmall"><a href="{limit_row.U_VIEW}" class="gensmall">{L_VIEW}</a></span></b></td>
-			<td class="row1" align="left" valign="middle"><input type="text" size="20" maxlength="25" name="quota_desc_list[]" class="post" value="{limit_row.QUOTA_NAME}" /></td>
-		</tr>
-		</table>
+	&nbsp;<b><span class="gensmall"><a href="{limit_row.U_VIEW}" class="gensmall">{L_VIEW}</a></span></b>&nbsp;<input type="text" size="20" maxlength="25" name="quota_desc_list[]" class="post" value="{limit_row.QUOTA_NAME}" />
 	</td>
-	<td class="row2 row-center" valign="middle"><input type="text" size="8" maxlength="15" name="max_filesize_list[]" class="post" value="{limit_row.MAX_FILESIZE}" /> {limit_row.S_FILESIZE}</td>
+	<td class="row1 row-center" valign="middle"><input type="text" size="8" maxlength="15" name="max_filesize_list[]" class="post" value="{limit_row.MAX_FILESIZE}" /> {limit_row.S_FILESIZE}</td>
 	<td class="row1 row-center" valign="middle"><input type="checkbox" name="quota_id_list[]" value="{limit_row.QUOTA_ID}" /></td>
 </tr>
 <!-- END limit_row -->

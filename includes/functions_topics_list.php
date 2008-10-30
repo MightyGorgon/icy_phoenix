@@ -238,7 +238,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	$prec_topic_type = '';
 	$header_sent = false;
 	if (!isset($box_id)) $box_id = -1;
-	for ($i=0; $i < count($topic_rowset); $i++)
+	for ($i = 0; $i < count($topic_rowset); $i++)
 	{
 		$topic_item_type = substr($topic_rowset[$i]['topic_id'], 0, 1);
 		$topic_id = intval(substr($topic_rowset[$i]['topic_id'], 1));
@@ -281,7 +281,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		if (defined('POST_BIRTHDAY') && ($topic_rowset[$i]['topic_type'] == POST_BIRTHDAY))
 		{
 			$folder_image =  $images['folder_birthday'];
-			$folder_alt = $lang['Happy_birthday'];
+			$folder_alt = $lang['HAPPY_BIRTHDAY'];
 			$newest_post_img = '';
 		}
 		elseif($topic_rowset[$i]['topic_status'] == TOPIC_MOVED)

@@ -29,28 +29,11 @@ init_userprefs($userdata);
 include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_attach.' . PHP_EXT);
 
 $cms_page_id = '11';
+$cms_page_name = 'attachments';
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+// set the cms page to download now...
 $cms_page_name = 'download';
-//$cms_page_name = 'attachments';
-$auth_level_req = $board_config['auth_view_attachments'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_attachments'] == 1) ? true : false;
 
 $real_filename = 'real_filename';
 $attach_table = ATTACHMENTS_TABLE;
@@ -323,7 +306,7 @@ else
 		if (($is_auth_ary[$row['forum_id']]['auth_read']) && ($is_download_auth_ary[$row['forum_id']]['auth_download']))
 		{
 			$selected = ($forum_id == $row['forum_id']) ? ' selected="selected"' : '';
-			$select_forums .= '<option value="' . $row['forum_id'] . '"' . $selected . '>' . $row['forum_name'] . '</option>';
+			$select_forums .= '<option value="' . $row['forum_id'] . '"' . $selected . '>' . strip_tags($row['forum_name']) . '</option>';
 			$forum_ids[] = $row['forum_id'];
 		}
 	}
@@ -335,7 +318,7 @@ else
 	}
 	else
 	{
-		message_die(GENERAL_MESSAGE, "You are not authorized to view Attachments at all.");
+		message_die(GENERAL_MESSAGE, 'You are not authorized to view Attachments at all.');
 	}
 
 	$forum_id = (intval($forum_id) >= '-1') ? intval($forum_id) : '-1';

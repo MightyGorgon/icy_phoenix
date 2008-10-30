@@ -27,7 +27,7 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $pafiledb->init();
 

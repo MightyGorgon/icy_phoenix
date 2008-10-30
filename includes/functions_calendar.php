@@ -24,7 +24,7 @@ include_once(IP_ROOT_PATH . './includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . './includes/bbcode.' . PHP_EXT);
 
 // function select
-function calendar_get_tree_option($cur='')
+function calendar_get_tree_option($cur = '')
 {
 	global $db, $userdata, $lang;
 	global $bbcode;
@@ -97,8 +97,8 @@ function calendar_forum_select($selected_id = '')
 {
 	global $db, $userdata, $lang;
 	global $bbcode;
-	$forum_list = '<select name="selected_id" onchange="forms[\'_calendar\'].submit();">' . get_tree_option($selected_id) . '</select>';
-	//$forum_list = '<select name="selected_id" onchange="forms[\'_calendar\'].submit();">' . calendar_get_tree_option($selected_id) . '</select>';
+	$forum_list = '<select name="selected_id" onchange="forms[\'f_calendar\'].submit();">' . get_tree_option($selected_id) . '</select>';
+	//$forum_list = '<select name="selected_id" onchange="forms[\'f_calendar\'].submit();">' . calendar_get_tree_option($selected_id) . '</select>';
 
 	return $forum_list;
 }
@@ -206,6 +206,31 @@ function get_calendar_title($calendar_start, $calendar_duration)
 	// send back the full title
 	$res = '<span class="gensmall"><br />' . $calendar_title . '</span>';
 	return $res;
+}
+
+/*
+* Return true if the year is a leap year
+* You can also use this one... but it works only for valid UNIX TIMESTAMP... if you want to check year 3245 for example, it won't work...
+* $d_isleapyear = date('L', mktime(0, 0, 0, $myMonth, 1, $myYear));    // is YYYY a leapyear?
+*/
+function is_leap_year($year)
+{
+	if(($year % 400) == 0)
+	{
+		return true;
+	}
+	elseif(($year % 100) == 0)
+	{
+		return false;
+	}
+	elseif(($year % 4) == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 //------------------------------------------------------------------
@@ -358,19 +383,17 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 	}
 	$sql = "SELECT
 					t.*,
-					p.poster_id, p.post_username, p.enable_bbcode, p.enable_html, p.enable_smilies,
+					p.poster_id, p.post_username, p.post_text, p.enable_bbcode, p.enable_html, p.enable_smilies,
 					u.username,
-					pt.post_text,
 					lp.poster_id AS lp_poster_id,
 					lu.username AS lp_username,
 					lp.post_username AS lp_post_username,
 					lp.post_time AS lp_post_time
 					$sql_forums_field
-			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . POSTS_TEXT_TABLE . " AS pt, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS lp, " . USERS_TABLE . " lu $sql_forums_file
+			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS lp, " . USERS_TABLE . " lu $sql_forums_file
 			WHERE
 				t.forum_id IN ($s_forum_ids)
 				AND p.post_id = t.topic_first_post_id
-				AND pt.post_id = t.topic_first_post_id
 				AND u.user_id = p.poster_id
 				AND lp.post_id = t.topic_last_post_id
 				AND lu.user_id = lp.poster_id
@@ -545,6 +568,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		$new_row['event_calendar_time'] = $topic_calendar_time;
 		$new_row['event_calendar_duration'] = $topic_calendar_duration;
 		$new_row['event_link'] = $topic_link;
+		$new_row['event_birthday'] = false;
 		$new_row['event_txt_class'] = 'genmed';
 		$new_row['event_type_icon'] = '<img src="' . $images['icon_tiny_topic'] . '" border="0" valign="bottom" hspace="2" />';
 
@@ -553,56 +577,50 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 	$db->sql_freeresult($result);
 }
 
-//
-// Birthday Mod for Topic Calendar & Birthday Mod wihout PCP
-//
-function get_birthday(&$events, &$number, $start_date, $end_date, $limit=false, $start=0, $max_limit=-1)
+/*
+* Get birthdays for calendar
+*/
+function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $year_lt = false, $month = 0, $day = 0, $day_end = 0, $limit = 0, $show_inactive = false)
 {
-	global $template, $lang, $images, $userdata, $board_config, $db;
-	global $bbcode;
-		$sql = "SELECT u.*
-					FROM " . USERS_TABLE . " AS u
-					WHERE u.user_id <> " . ANONYMOUS . "
-					 AND u.user_birthday <> 999999
-					ORDER BY username";
+	global $lang, $images, $db;
 
-	if (!$result = $db->sql_query($sql, false, 'birthdays_list_'))
-	{
-		message_die(GENERAL_ERROR, 'Could not read user table to get birthday today info', '', __LINE__, __FILE__, $sql);
-	}
+	$birthdays_list = array();
+	$birthdays_list = get_birthdays_list($year, $year_lt, $month, $day, $day_end, $limit, false);
+
+	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	// get the number of occurences
-	$number = $db->sql_numrows($result);
-	// if limit per page asked, limit the number of results
+	$number = count($birthdays_list);
 
 	// read users
-	while ($row = $db->sql_fetchrow($result))
+	for ($i = 0; $i < $number; $i++)
 	{
-		$user_id = $row['user_id'];
-		$username = $row['username'];
-		$user_birthday = realdate($lang['DATE_FORMAT2'], $row['user_birthday']);
+		$user_id = $birthdays_list[$i]['user_id'];
+		$username = $birthdays_list[$i]['username'];
+		$user_birthday = realdate($lang['DATE_FORMAT2'], $birthdays_list[$i]['user_birthday']);
 
-		$ignore = $row['user_ignore'];
-		$friend = $row['user_friend'];
-		$always_visible = $row['user_visible'];
+		// We cannot use colorize_username because this should be just the url... try to parse the color code instead
+		$username_colorized = colorize_username($user_id, true);
+		$username_color = colorize_username($user_id, false, true);
+		// Trim last double quote...
+		$username_color = (substr($username_color, -1) == '"') ? substr($username_color, 0, -1) : '';
+		$username_link = append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" ' . $username_color;
 
-		$username_link = append_sid(IP_ROOT_PATH . './' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id);
-
-
-		$event_day = realdate('d',$row['user_birthday']);
-		$event_month = realdate('n',$row['user_birthday']);
-		$event_year2 = realdate('Y',$row['user_birthday']);
+		$event_day = realdate('d', $birthdays_list[$i]['user_birthday']);
+		$event_month = realdate('n', $birthdays_list[$i]['user_birthday']);
+		$event_year2 = realdate('Y', $birthdays_list[$i]['user_birthday']);
 		$start_month = intval(date('m', $start_date));
 		$event_year = intval(date('Y', $start_date));
 		if ($event_month < $start_month)
 		{
 			$event_year++;
 		}
-		$event_time = mktime(0,0,0, $event_month, $event_day, $event_year);
+		$event_time = mktime(0, 0, 0, $event_month, $event_day, $event_year);
 
 
-		$tmp_message = sprintf($lang['birthday'],$username);
-		$message = htmlspecialchars('<table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row1" nowrap="nowrap"><b>' . $lang['birthday_header'] . '</b><span class="topictitle"></span><hr /><span class="genmed">' . $tmp_message . '</span></td></tr></table>');
+		$tmp_message = sprintf($lang['birthday'], $username_colorized);
+		// It is JavaScript... we need to escape slashes
+		$message = htmlspecialchars('<table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row1" nowrap="nowrap"><b>' . $lang['birthday_header'] . '<\/b><span class="topictitle"><\/span><hr \/><span class="genmed">' . $tmp_message . '<\/span><\/td><\/tr><\/table>');
 		$message = preg_replace("/[\n\r]{1,2}/", '', $message);
 
 		$new_row = array();
@@ -633,11 +651,82 @@ function get_birthday(&$events, &$number, $start_date, $end_date, $limit=false, 
 		$new_row['event_calendar_time'] = $event_time;
 		$new_row['event_calendar_duration'] = '';
 		$new_row['event_link'] = $username_link;
+		$new_row['event_birthday'] = true;
 		$new_row['event_txt_class'] = $txt_class;
-		$new_row['event_type_icon'] = '<img src="' . $images['icon_tiny_profile'] . '" border="0" align="absbottom" hspace="2" />';
+		$new_row['event_type_icon'] = '<img src="' . $images['icon_tiny_profile'] . '" border="0" hspace="2" />';
 		$events[] = $new_row;
 	}
+}
+
+/*
+* Get birthdays for calendar
+*/
+function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $day_end = 0, $limit = 0, $show_inactive = false)
+{
+	global $db;
+
+	$sql_where = '';
+	if ($year_lt == false)
+	{
+		$sql_where .= ($year > 0) ? (' AND u.user_birthday_y = ' . $year) : '';
+	}
+	else
+	{
+		$sql_where .= ($year > 0) ? (' AND u.user_birthday_y <= ' . $year) : '';
+	}
+
+	if (($month > 0) && ($day_end > 0))
+	{
+		$month_start = $month;
+		$month_end = $month;
+		if ($day_end < $day)
+		{
+			$month_end = ($month_end == 12) ? 1 : $month_end;
+			$sql_where .= ' AND (((u.user_birthday_m = ' . $month_start . ') AND (u.user_birthday_d >= ' . $day . ')) OR ((u.user_birthday_m = ' . $month_end . ') AND (u.user_birthday_d <= ' . $day_end . ')))';
+		}
+		else
+		{
+			$sql_where .= ' AND u.user_birthday_m = ' . $month;
+			$sql_where .= ' AND u.user_birthday_d >= ' . $day;
+			$sql_where .= ' AND u.user_birthday_d <= ' . $day_end;
+		}
+	}
+	else
+	{
+		$sql_where .= ($month > 0) ? (' AND u.user_birthday_m = ' . $month) : '';
+		$sql_where .= ($day > 0) ? (' AND u.user_birthday_d = ' . $day) : '';
+	}
+
+	// If WHERE still empty then query only users with a birthday
+	$sql_where = ($sql_where == '') ? (' AND u.user_birthday <> 999999') : $sql_where;
+
+	if ($show_inactive == false)
+	{
+		$sql_where .= (' AND user_active = 1');
+	}
+
+	$sql_limit = ($limit > 0) ? ('LIMIT ' . $limit) : '';
+
+	$sql = "SELECT u.user_id, u.username, u.user_birthday, u.user_birthday_y, u.user_birthday_m, u.user_birthday_d
+				FROM " . USERS_TABLE . " AS u
+				WHERE u.user_id <> " . ANONYMOUS . "
+				" . $sql_where . "
+				ORDER BY username
+				" . $sql_limit;
+
+	if (!$result = $db->sql_query($sql, false, 'birthdays_list_'))
+	{
+		message_die(GENERAL_ERROR, 'Could not read user table to get birthday info', '', __LINE__, __FILE__, $sql);
+	}
+
+	$birthdays_list = array();
+	// read users
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$birthdays_list[] = $row;
+	}
 	$db->sql_freeresult($result);
+	return $birthdays_list;
 }
 
 function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
@@ -683,9 +772,12 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	$nb_row_per_cell = isset($board_config['calendar_nb_row']) ? intval($board_config['calendar_nb_row']) : 5;
 
 	// get the start date - calendar doesn't go before 1971
-	$cur_date = (empty($start) || (intval(date('Y', $start)) < 1971)) ? cal_date(time(),$board_config['board_timezone']) : $start;
+	$cur_date = (empty($start) || (intval(date('Y', $start)) < 1971)) ? cal_date(time(), $board_config['board_timezone']) : $start;
 
-	$cur_date = mktime(0,0,0, intval(date('m', $cur_date)), intval(date('d', $cur_date)), intval(date('Y', $cur_date)));
+	$cur_date = mktime(0, 0, 0, intval(date('m', $cur_date)), intval(date('d', $cur_date)), intval(date('Y', $cur_date)));
+
+	$cur_month = 0;
+	$cur_day = 0;
 
 	// the full month is displayed
 	if (empty($nb_days))
@@ -694,7 +786,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 		$full_month = true;
 
 		// set the start day on the start of the month
-		$start_date = mktime(0,0,0, intval(date('m', $cur_date)), 01, intval(date('Y', $cur_date)));
+		$start_date = mktime(0, 0, 0, intval(date('m', $cur_date)), 01, intval(date('Y', $cur_date)));
 
 		// get the day number set as start of the display
 		$cfg_week_day_start = $first_day_of_week;
@@ -706,15 +798,18 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 			$start_inc = 7 + $start_inc;
 		}
 
-		//  get the end date
+		// Used to adjust birthdays SQL
+		$cur_month = intval(date('n', $cur_date));
+
+		// get the end date
 		$year = intval(date('Y', $start_date));
-		$month = intval(date('m', $start_date))+1;
+		$month = intval(date('m', $start_date)) + 1;
 		if ($month > 12)
 		{
 			$year++;
 			$month = 1;
 		}
-		$end_date = mktime(0,0,0, $month, 01, $year);
+		$end_date = mktime(0, 0, 0, $month, 01, $year);
 
 		// set the number of cells per line
 		$nb_cells = 7;
@@ -728,7 +823,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 		$full_month = false;
 
 		// set the start date to the day before the date selected
-		$start_date = mktime(0,0,0, date('m', $cur_date), date('d', $cur_date)-1, date('Y', $cur_date));
+		$start_date = mktime(0, 0, 0, date('m', $cur_date), date('d', $cur_date) - 1, date('Y', $cur_date));
 
 		// get the day number set as start of the week
 		$cfg_week_day_start = intval(date('w', $start_date));
@@ -737,7 +832,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 		$start_inc = 0;
 
 		// get the end date
-		$end_date = mktime(0,0,0, date('m', $start_date), date('d', $start_date) + $nb_days, date('Y', $start_date));
+		$end_date = mktime(0, 0, 0, date('m', $start_date), date('d', $start_date) + $nb_days, date('Y', $start_date));
 
 		// set the number of cells per line
 		$nb_cells = $nb_days;
@@ -757,16 +852,33 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	//$current_page = $_SERVER['PHP_SELF'];
 	$current_page = basename($_SERVER['PHP_SELF']);
 
-	if (in_array(strtolower($current_page), $pages_array))
+	// No limits in calendar
+	$day_end = 0;
+	$birthdays_limit = 0;
+	if ($current_page != 'calendar.' . PHP_EXT)
 	{
-		get_birthday($events, $number, $start_date, $end_date);
+		// Limit total birthdays in forum and viewforum... in large could take forever!
+		$birthdays_limit = 50;
+		// We are not in calendar, so we can force date to today!!!
+		$cur_time = time() + (3600 * $board_config['board_timezone']);
+		$cur_month = intval(date('n', $cur_time));
+		$cur_day = intval(date('j', $cur_time));
+		// Force one week walk forward...
+		$days_walk_forward = 7;
+		$day_end = intval(date('j', $cur_time + ($days_walk_forward * 86400)));
+	}
+
+	if (($board_config['calendar_birthday'] == true) && in_array(strtolower($current_page), $pages_array))
+	{
+		// get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $year_lt = false, $month = 0, $day = 0, $day_end = 0, $limit = 0, $show_inactive = false)
+		get_birthdays($events, $number, $start_date, $end_date, 0, false, $cur_month, $cur_day, $day_end, $birthdays_limit, false);
 	}
 	/*
 	for ($i = 0; $i < count($pages_array); $i++)
 	{
 		if (strpos(strtolower($current_page), strtolower($pages_array[$i])) !== false)
 		{
-			get_birthday($events, $number, $start_date, $end_date);
+			get_birthdays($events, $number, $start_date, $end_date);
 		}
 	}
 	*/
@@ -781,8 +893,8 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 
 		// adjust the event period to the start of day
 		$event_time_end = $event_time + $events[$i]['event_calendar_duration'];
-		$event_end = mktime(0,0,0, intval(date('m', $event_time_end)), intval(date('d', $event_time_end)), intval(date('Y', $event_time_end)));
-		$event_start = mktime(0,0,0, intval(date('m', $event_time)), intval(date('d', $event_time)), intval(date('Y', $event_time)));
+		$event_end = mktime(0, 0, 0, intval(date('m', $event_time_end)), intval(date('d', $event_time_end)), intval(date('Y', $event_time_end)));
+		$event_start = mktime(0, 0, 0, intval(date('m', $event_time)), intval(date('d', $event_time)), intval(date('Y', $event_time)));
 
 		if ($event_start < $start_date)
 		{
@@ -811,12 +923,12 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 		$offset_date = $event_start;
 		while ($offset_date <= $event_end)
 		{
-			for ($l=count($map[$offset_date]); $l <= $map_offset; $l++)
+			for ($l = count($map[$offset_date]); $l <= $map_offset; $l++)
 			{
 				$map[$offset_date][$l] = -1;
 			}
 			$map[$offset_date][$map_offset] = $i;
-			$offset_date = mktime(0,0,0, date('m', $offset_date), date('d', $offset_date)+1, date('Y', $offset_date));
+			$offset_date = mktime(0, 0, 0, date('m', $offset_date), date('d', $offset_date)+1, date('Y', $offset_date));
 		}
 	}
 
@@ -825,7 +937,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 
 	// buid select list for month
 	$month = intval(date('m', $start_date));
-	$s_month = '<select name="start_month" onchange="forms[\'_calendar\'].submit();" }>';
+	$s_month = '<select name="start_month" onchange="forms[\'f_calendar\'].submit();">';
 	for ($i = 1; $i < count($months); $i++)
 	{
 		$selected = ($month == $i) ? ' selected="selected"' : '';
@@ -835,7 +947,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 
 	// buid select list for year
 	$year = intval(date('Y', $start_date));
-	$s_year = '<select name="start_year" onchange="forms[\'_calendar\'].submit();">';
+	$s_year = '<select name="start_year" onchange="forms[\'f_calendar\'].submit();">';
 	for ($i=1971; $i < 2070; $i++)
 	{
 		$selected = ($year == $i) ? ' selected="selected"' : '';
@@ -844,33 +956,33 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	$s_year .= '</select>';
 
 	// build a forum select list
-	$s_forum_list = '<select name="selected_id" onchange="forms[\'_calendar\'].submit();">' . get_tree_option($fid) . '</select>';
+	$s_forum_list = '<select name="selected_id" onchange="forms[\'f_calendar\'].submit();">' . get_tree_option($fid) . '</select>';
 
 	// header
 	$board_config['calendar_display_open'] = false;
 	$template->assign_vars(array(
-		'UP_ARROW' => $images['up_arrow'],
-		'DOWN_ARROW' => $images['down_arrow'],
-		'UP_ARROW2' => $images['up_arrow2'],
-		'DOWN_ARROW2' => $images['down_arrow2'],
-		'TOGGLE_ICON' => ($board_config['calendar_display_open'] == false) ? $images['up_arrow'] : $images['down_arrow'],
-		'TOGGLE_ICON2' => ($board_config['calendar_display_open'] == false) ? $images['up_arrow2'] : $images['down_arrow2'],
+		'UP_ARROW' => $images['cal_up_arrow'],
+		'DOWN_ARROW' => $images['cal_down_arrow'],
+		'UP_ARROW2' => $images['arrow_up'],
+		'DOWN_ARROW2' => $images['arrow_down'],
+		'TOGGLE_ICON' => ($board_config['calendar_display_open'] == false) ? $images['cal_up_arrow'] : $images['cal_down_arrow'],
+		'TOGGLE_ICON2' => ($board_config['calendar_display_open'] == false) ? $images['arrow_up'] : $images['arrow_down'],
 		'TOGGLE_STATUS' => ($board_config['calendar_display_open'] == false) ? 'none' : '',
 		)
 	);
-	$prec = (date('Ym', $start_date) > 197101) ? date('Ymd', mktime(0,0,0, date('m', $start_date)-1, 01, date('Y', $start_date))) : date('Ymd', $start_date);
-	$next = date('Ymd', mktime(0,0,0, date('m', $start_date)+1, 01, date('Y', $start_date)));
+	$prec = (date('Ym', $start_date) > 197101) ? date('Ymd', mktime(0, 0, 0, date('m', $start_date) - 1, 01, date('Y', $start_date))) : date('Ymd', $start_date);
+	$next = date('Ymd', mktime(0, 0, 0, date('m', $start_date)+1, 01, date('Y', $start_date)));
 	$template->assign_block_vars('_calendar_box', array(
-		'L_CALENDAR' => '<a href="' . append_sid(IP_ROOT_PATH . './calendar.' . PHP_EXT . '?start=' . date('Ymd', cal_date(time(),$board_config['board_timezone']))) . '"><img src="' . $images['icon_calendar'] . '" hspace="3" border="0" align="top" alt="' . $lang['Calendar_event'] . '" /></a>' . $lang['Calendar'],
+		'L_CALENDAR' => '<a href="' . append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?start=' . date('Ymd', cal_date(time(),$board_config['board_timezone']))) . '"><img src="' . $images['icon_calendar'] . '" hspace="3" border="0" align="top" alt="' . $lang['Calendar_event'] . '" /></a>' . $lang['Calendar'],
 		'L_CALENDAR_TXT' => $lang['Calendar'],
 		'SPAN_ALL' => $nb_cells,
 		'S_MONTH' => $s_month,
 		'S_YEAR' => $s_year,
 		'S_FORUM_LIST' => $s_forum_list,
 		'L_GO' => $lang['Go'],
-		'ACTION' => append_sid(IP_ROOT_PATH . './calendar.' . PHP_EXT),
-		'U_PREC' => append_sid('./calendar.' . PHP_EXT . '?start=' . $prec . '&fid=' . $fid),
-		'U_NEXT' => append_sid('./calendar.' . PHP_EXT . '?start=' . $next . '&fid=' . $fid),
+		'ACTION' => append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT),
+		'U_PREC' => append_sid('calendar.' . PHP_EXT . '?start=' . $prec . '&amp;fid=' . $fid),
+		'U_NEXT' => append_sid('calendar.' . PHP_EXT . '?start=' . $next . '&amp;fid=' . $fid),
 		)
 	);
 	if ($full_month)
@@ -894,7 +1006,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	}
 
 	// display
-	$offset_date = mktime(0,0,0, date('m', $start_date), date('d', $start_date) - $start_inc, date('Y', $start_date));
+	$offset_date = mktime(0, 0, 0, date('m', $start_date), date('d', $start_date) - $start_inc, date('Y', $start_date));
 	for ($i=0; $i < $nb_rows; $i++)
 	{
 		$template->assign_block_vars('_calendar_box._row', array());
@@ -908,7 +1020,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 				// compute the cell to span
 				$span = $start_inc;
 				$j = $start_inc-1;
-				$offset_date = mktime(0,0,0, date('m', $start_date), date('d', $start_date)-1, date('Y', $start_date));
+				$offset_date = mktime(0, 0, 0, date('m', $start_date), date('d', $start_date)-1, date('Y', $start_date));
 			}
 
 			// date greater than last
@@ -940,7 +1052,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 				// send events
 				$more = false;
 				$over = (count($map[$offset_date]) > $nb_row_per_cell);
-				for ($k=0; $k < count($map[$offset_date]); $k++)
+				for ($k = 0; $k < count($map[$offset_date]); $k++)
 				{
 					// we are just over the limit
 					if ($over && ($k == $nb_row_per_cell))
@@ -994,7 +1106,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 			{
 				$template->assign_block_vars('_calendar_box._row._cell.switch_filled_no', array());
 			}
-			$offset_date = mktime(0,0,0, date('m', $offset_date), date('d', $offset_date)+1, date('Y', $offset_date));
+			$offset_date = mktime(0, 0, 0, date('m', $offset_date), date('d', $offset_date) + 1, date('Y', $offset_date));
 		}
 	}
 

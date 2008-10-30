@@ -117,17 +117,17 @@
 </tr>
 <tr><td colspan="2" class="row3" height="2"></td></tr>
 <!-- ENDIF -->
-<tr><td class="cat" colspan="2" align="center"><span class="cattitle">{L_ADD_NEW_MIRROR}</span></td></tr>
+<tr><th colspan="2">{L_ADD_NEW_MIRROR}</th></tr>
 <tr>
-	<td width="50%" class="row1">{L_MIRROR_LOCATION}</td>
+	<td width="50%" class="row1"><strong>{L_MIRROR_LOCATION}</strong></td>
 	<td class="row2"><input type="text" class="post" size="50" name="new_location" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="genmed">{L_FILE_UPLOAD}</span><br /><span class="gensmall">{L_FILEINFO_UPLOAD}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_FILE_UPLOAD}</strong></span><br /><span class="gensmall">{L_FILEINFO_UPLOAD}</span></td>
 	<td class="row2"><input type="file" size="50" name="new_userfile" maxlength="{FILESIZE}" class="post" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="genmed">{L_FILE_URL}</span><br /><span class="gensmall">{L_FILE_URL_INFO}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_FILE_URL}</strong></span><br /><span class="gensmall">{L_FILE_URL_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="new_download_url" /></td>
 </tr>
 <tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_ADD_NEW}" name="add_new" onClick="set_check_delete(false); set_add_file(true);" /></td></tr>

@@ -1419,10 +1419,9 @@ class ip_page
 
 		$lang_append = '&amp;lang=' . $language;
 
-		require('schemas/old_files.' . PHP_EXT);
-
 		if ($action == 'clean')
 		{
+			require('schemas/old_files.' . PHP_EXT);
 			$tot_items = count($files_array);
 			$killed_counter = 0;
 			$not_killed_counter = 0;
@@ -1476,6 +1475,107 @@ class ip_page
 			$table_output .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=clean_old_files&amp;action=clean' . $lang_append) . '"><b>' . $lang['Clean_OldFiles_Explain'] . '</b></a></li>' . "\n";
 			$table_output .= '</ul>' . "\n";
 			$table_output .= '</div>' . "\n";
+		}
+
+		return $table_output;
+	}
+
+	function fix_birthdays($action)
+	{
+		global $db, $lang, $language, $board_config;
+		global $wip;
+		global $birthdays_number, $birthday_start, $total_birthdays, $total_birthdays_modified;
+
+		$lang_append = '&amp;lang=' . $language;
+
+		$table_output = '';
+
+		switch ($action)
+		{
+			case 'fix':
+				if ($total_birthdays == 0)
+				{
+					$sql = "SELECT * FROM " . USERS_TABLE . "
+									WHERE user_birthday <> '999999'";
+					if (!($result = $db->sql_query($sql)))
+					{
+						die('Could not obtain total users numbers');
+					}
+					$row = $db->sql_fetchrow($result);
+					$total_birthdays = $db->sql_numrows($result);
+					$total_birthdays_modified = 0;
+				}
+
+				if ($total_birthdays_modified >= $total_birthdays)
+				{
+					$wip = false;
+					$table_output .= '<br /><br />' . "\n";
+					$table_output .= '<div class="post-text">' . "\n";
+					$table_output .= '<ul type="circle" style="align:left;">' . "\n";
+					$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . $lang['FixingBirthdaysComplete'] . '</b></span></li>' . "\n";
+					$table_output .= '<li><span style="color:' . $this->color_blue . ';"><b>' . $total_birthdays_modified . $lang['FixingBirthdaysModified'] . '</b></span></li>' . "\n";
+					$table_output .= '</ul>' . "\n";
+					$table_output .= '</div>' . "\n";
+					$table_output .= '<br clear="all" />' . "\n";
+					$table_output .= '<br /><br />' . "\n";
+					return $table_output;
+				}
+
+				$sql = "SELECT user_id, user_birthday
+					FROM " . USERS_TABLE . "
+					WHERE user_birthday <> '999999'
+					ORDER BY user_id ASC
+					LIMIT " . $birthday_start . ", " . $birthdays_number;
+				$result = $db->sql_query($sql);
+
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$birthday_year = date('Y', ($row['user_birthday'] * 86400) + 1);
+					$birthday_month = date('n', ($row['user_birthday'] * 86400) + 1);
+					$birthday_day = date('j', ($row['user_birthday'] * 86400) + 1);
+					$sql_update = "UPDATE " . USERS_TABLE . " SET user_birthday_y = '" . $birthday_year . "', user_birthday_m = '" . $birthday_month . "', user_birthday_d = '" . $birthday_day . "' WHERE user_id = '" . $row['user_id'] . "'";
+
+					if (!$result_new = $db->sql_query($sql_update))
+					{
+						die('Error in editing birthdays...');
+					}
+
+					$total_birthdays_modified++;
+				}
+
+				if ($total_birthdays_modified > $total_birthdays)
+				{
+					$total_birthdays_modified = $total_birthdays;
+				}
+
+				$table_output .= '<br /><br />' . "\n";
+				$table_output .= '<div class="post-text">' . "\n";
+				$table_output .= '<ul type="circle" style="align:left;">' . "\n";
+				$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . sprintf($lang['FixingBirthdaysFrom'], ($birthday_start + 1), ((($birthday_start + $birthdays_number) > $total_birthdays) ? $total_birthdays : ($birthday_start + $birthdays_number))) . '</b></span></li>' . "\n";
+				$table_output .= '<li><span style="color:' . $this->color_purple . ';"><b>' . sprintf($lang['FixingBirthdaysTotal'], $total_birthdays_modified, $total_birthdays) . '</b></span></li>' . "\n";
+				$table_output .= '</ul>' . "\n";
+				$table_output .= '</div>' . "\n";
+				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br /><br />' . "\n";
+
+				// Increase $post_start to process the other posts
+				$birthday_start = ($birthday_start + $birthdays_number);
+
+				break;
+
+			default:
+				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_birthdays&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
+				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixBirthdays'] . '</span></td></tr>' . "\n";
+				$table_output .= '<tr>' . "\n";
+				$table_output .= '	<td class="row1"><span class="genmed">' . $lang['BirthdaysPerStep'] . '&nbsp;</span></td>' . "\n";
+				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="birthdays_number" value="100" size="10" /></span></td>' . "\n";
+				$table_output .= '</tr>' . "\n";
+				$table_output .= '<tr>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width:0px;border-bottom-width:0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '</tr>' . "\n";
+				$table_output .= '</table>' . "\n";
+				$table_output .= '</form>' . "\n";
 		}
 
 		return $table_output;
@@ -1731,7 +1831,7 @@ class ip_page
 			case 'fix':
 				if ($total_posts == 0)
 				{
-					$sql = "SELECT * FROM " . POSTS_TEXT_TABLE;
+					$sql = "SELECT * FROM " . POSTS_TABLE;
 					if (!($result = $db->sql_query($sql)))
 					{
 						die('Could not obtain total posts numbers');
@@ -1757,7 +1857,7 @@ class ip_page
 				}
 
 				$sql = "SELECT *
-					FROM " . POSTS_TEXT_TABLE . "
+					FROM " . POSTS_TABLE . "
 					ORDER BY post_id ASC
 					LIMIT " . $post_start . ", " . $posts_number;
 				$result = $db->sql_query($sql);
@@ -1784,7 +1884,7 @@ class ip_page
 						$post_text_f = mg_functions::img_replace($post_text_f);
 					}
 
-					$sql_update = "UPDATE " . POSTS_TEXT_TABLE . " SET post_text = '" . addslashes($post_text_f) . "' WHERE post_id = '" . $row['post_id'] . "'";
+					$sql_update = "UPDATE " . POSTS_TABLE . " SET post_text = '" . addslashes($post_text_f) . "' WHERE post_id = '" . $row['post_id'] . "'";
 
 					if (!$result_new = $db->sql_query($sql_update))
 					{
@@ -1932,6 +2032,31 @@ class ip_page
 				$table_output .= '<br clear="all" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
+				// FIX PA_FILE PATHS - BEGIN
+				/*
+				$old_pafile_folders = array(IP_ROOT_PATH . 'pafiledb/uploads/', IP_ROOT_PATH . 'pafiledb/images/screenshots/');
+				$new_pafile_folders = array(IP_ROOT_PATH . 'downloads/', IP_ROOT_PATH . 'files/screenshots/');
+				for ($pac = 0; $pac < count($old_pafile_folders); $pac++)
+				{
+					if (is_dir($old_pafile_folders[$pac] . $file) && is_dir($new_pafile_folders[$pac] . $file))
+					{
+						$dir = @opendir($old_pafile_folders[$pac]);
+						while($file = readdir($dir))
+						{
+							if (!is_dir($file))
+							{
+								$process_item = (($file != '.') && ($file != '..') && !is_link($file)) ? true : false;
+								if(($process_item) && !file_exists($new_pafile_folders[$pac] . $file))
+								{
+									$result = @rename($old_pafile_folders[$pac] . $file, $new_pafile_folders[$pac] . $file);
+								}
+							}
+						}
+					}
+				}
+				*/
+				// FIX PA_FILE PATHS - END
+
 				break;
 
 			default:
@@ -2024,7 +2149,8 @@ class ip_page
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12027' . $lang_append) . '"><span class="text_green">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.0.27</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12229' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.2.29</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12734' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.7.34</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12936' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.9.36 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12936' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.9.36</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121239' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.12.39 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
 		$update_options .= '</ul></div>' . "\n";
 
 		// Output the spoiler
@@ -2070,6 +2196,13 @@ class ip_page
 		$table_update_options .= '<span style="color:#aa0022;font-weight:bold">' . $lang['RenMovePics'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=ren_move_images' . $lang_append) . '"><span class="text_red">' . $lang['RenMovePicsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// Fix Birthdays
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color:#aa6622;font-weight:bold">' . $lang['FixBirthdays'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_birthdays' . $lang_append) . '"><span class="text_red">' . $lang['FixBirthdaysExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		$table_update_options .= '</div>' . "\n";

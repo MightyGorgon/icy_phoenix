@@ -159,12 +159,6 @@ if ($page_url['basename'] == 'viewonline.' . PHP_EXT)
 ob_start();
 // end gzip fix
 
-// Select the header type and set some templates related vars.
-if (empty($head_foot_ext))
-{
-	$head_foot_ext = '';
-}
-
 // Header tpl
 if (defined('IN_CMS'))
 {
@@ -174,7 +168,7 @@ if (defined('IN_CMS'))
 }
 elseif (empty($gen_simple_header))
 {
-	$header_tpl = 'overall_header' . $head_foot_ext . '.tpl';
+	$header_tpl = 'overall_header.tpl';
 }
 else
 {
@@ -324,18 +318,19 @@ else
 
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
-			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($pm_subject, $board_config['sitename']))) . "', '" . $founder_id . "', '" . $userdata['user_id'] . "', " . $pm_date . ", '0', '1', '1', '0')";
+			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($pm_subject, $board_config['sitename']))) . "', '" . str_replace("\'", "''", addslashes(sprintf($pm_text, $board_config['sitename'], $board_config['sitename']))) . "', '" . $founder_id . "', '" . $userdata['user_id'] . "', " . $pm_date . ", '0', '1', '1', '0')";
 			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
 			}
 
-			$pm_sent_id = $db->sql_nextid();
-
-			$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text) VALUES ($pm_sent_id, '" . str_replace("\'", "''", addslashes(sprintf($pm_text, $board_config['sitename'], $board_config['sitename']))) . "')";
-			if (!$db->sql_query($sql))
+			// Add to the users new pm counter
+			$sql = "UPDATE " . USERS_TABLE . "
+				SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
+				WHERE user_id = " . $userdata['user_id'];
+			if (!$status = $db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, 'Could not insert private message sent text', '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
 			}
 			// Birthday PM - END
 
@@ -694,7 +689,7 @@ if (($ctracker_config->settings['login_ip_check'] == 1) && ($userdata['ct_enable
 	if ($check_ip_range != 'allclear')
 	{
 		$template->assign_block_vars('ctracker_message', array(
-			'ROW_COLOR' => 'FFDFDF',
+			'ROW_COLOR' => 'ffdfdf',
 			'ICON_GLOB' => $images['ctracker_note'],
 			'L_MESSAGE_TEXT' => $check_ip_range,
 			'L_MARK_MESSAGE' => $lang['ctracker_gmb_markip'],
@@ -739,7 +734,7 @@ if (($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && 
 	}
 
 	$template->assign_block_vars('ctracker_message', array(
-		'ROW_COLOR' => 'E1FFDF',
+		'ROW_COLOR' => 'e1ffdf',
 		'ICON_GLOB' => $images['ctracker_note'],
 		'L_MESSAGE_TEXT' => $global_message_output,
 		'L_MARK_MESSAGE' => $lang['ctracker_gmb_mark'],
@@ -758,7 +753,7 @@ if ($userdata['session_logged_in'] && ($ctracker_config->settings['pw_control'] 
 	if (time() > $userdata['ct_last_pw_reset'])
 	{
 		$template->assign_block_vars('ctracker_message', array(
-			'ROW_COLOR' => 'FFDFDF',
+			'ROW_COLOR' => 'ffdfdf',
 			'ICON_GLOB' => $images['ctracker_note'],
 			'L_MESSAGE_TEXT' => sprintf($lang['ctracker_info_pw_expired'], $ctracker_config->settings['pw_validity'], $userdata['user_id']),
 			'L_MARK_MESSAGE' => '',
@@ -773,7 +768,7 @@ if ($userdata['session_logged_in'] && ($ctracker_config->settings['pw_control'] 
 if ((CT_DEBUG_MODE === true) && ($userdata['user_level'] == ADMIN))
 {
 	$template->assign_block_vars('ctracker_message', array(
-		'ROW_COLOR' => 'FFDFDF',
+		'ROW_COLOR' => 'ffdfdf',
 		'ICON_GLOB' => $images['ctracker_note'],
 		'L_MESSAGE_TEXT' => $lang['ctracker_dbg_mode'],
 		'L_MARK_MESSAGE' => '',
@@ -1183,45 +1178,13 @@ $template->assign_vars(array(
 	//Style vars
 	'T_HEAD_STYLESHEET' => $theme['head_stylesheet'],
 	'T_BODY_BACKGROUND' => $theme['body_background'],
-	'T_BODY_BGCOLOR' => '#'.$theme['body_bgcolor'],
-	'T_BODY_TEXT' => '#'.$theme['body_text'],
-	'T_BODY_LINK' => '#'.$theme['body_link'],
-	'T_BODY_VLINK' => '#'.$theme['body_vlink'],
-	'T_BODY_ALINK' => '#'.$theme['body_alink'],
-	'T_BODY_HLINK' => '#'.$theme['body_hlink'],
-	'T_TR_COLOR1' => '#'.$theme['tr_color1'],
-	'T_TR_COLOR2' => '#'.$theme['tr_color2'],
-	'T_TR_COLOR3' => '#'.$theme['tr_color3'],
+	'T_BODY_BGCOLOR' => '#' . $theme['body_bgcolor'],
 	'T_TR_CLASS1' => $theme['tr_class1'],
 	'T_TR_CLASS2' => $theme['tr_class2'],
 	'T_TR_CLASS3' => $theme['tr_class3'],
-	'T_TH_COLOR1' => '#'.$theme['th_color1'],
-	'T_TH_COLOR2' => '#'.$theme['th_color2'],
-	'T_TH_COLOR3' => '#'.$theme['th_color3'],
-	'T_TH_CLASS1' => $theme['th_class1'],
-	'T_TH_CLASS2' => $theme['th_class2'],
-	'T_TH_CLASS3' => $theme['th_class3'],
-	'T_TD_COLOR1' => '#'.$theme['td_color1'],
-	'T_TD_COLOR2' => '#'.$theme['td_color2'],
-	'T_TD_COLOR3' => '#'.$theme['td_color3'],
 	'T_TD_CLASS1' => $theme['td_class1'],
 	'T_TD_CLASS2' => $theme['td_class2'],
 	'T_TD_CLASS3' => $theme['td_class3'],
-	'T_FONTFACE1' => $theme['fontface1'],
-	'T_FONTFACE2' => $theme['fontface2'],
-	'T_FONTFACE3' => $theme['fontface3'],
-	'T_FONTSIZE1' => $theme['fontsize1'],
-	'T_FONTSIZE2' => $theme['fontsize2'],
-	'T_FONTSIZE3' => $theme['fontsize3'],
-	'T_FONTCOLOR1' => '#'.$theme['fontcolor1'],
-	'T_FONTCOLOR2' => '#'.$theme['fontcolor2'],
-	'T_FONTCOLOR3' => '#'.$theme['fontcolor3'],
-	'T_SPAN_CLASS1' => $theme['span_class1'],
-	'T_SPAN_CLASS2' => $theme['span_class2'],
-	'T_SPAN_CLASS3' => $theme['span_class3'],
-	'T_ONLINE_COLOR' => '#' . $theme['online_color'],
-	'T_OFFLINE_COLOR' => '#' . $theme['offline_color'],
-	'T_HIDDEN_COLOR' => '#' . $theme['hidden_color'],
 
 	'NAV_LINKS' => $nav_links_html
 	)

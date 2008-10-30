@@ -32,12 +32,12 @@ $page_number = ($page_number < 1) ? false : $page_number;
 $start = (!$page_number) ? $start : (($page_number * $board_config['topics_per_page']) - $board_config['topics_per_page']);
 
 // ############         Edit below         ########################################
-$topic_length = '40'; // length of topic title
+$topic_length = '60'; // length of topic title
 $topic_limit = $board_config['topics_per_page'];
 $special_forums = '0'; // specify forums ('0' = no; '1' = yes)
 $forum_ids = ''; // IDs of forums; separate them with a comma
-$set_mode = 'today'; // set default mode ('today', 'yesterday', 'last24', 'lastweek', 'lastXdays')
-$set_days = '3'; // set default days (used for lastXdays mode)
+$set_mode = 'last24'; // set default mode ('today', 'yesterday', 'last24', 'lastweek', 'lastXdays')
+$set_days = '7'; // set default days (used for lastXdays mode)
 // ############         Edit above         ########################################
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -53,26 +53,8 @@ if($userdata['upi2db_access'])
 
 $cms_page_id = '17';
 $cms_page_name = 'recent';
-$auth_level_req = $board_config['auth_view_recent'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_recent'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 $mode_types = array('today', 'yesterday', 'last24', 'lastweek', 'lastXdays', 'utopics');
 if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
@@ -380,7 +362,9 @@ for($i = 0; $i < count($line); $i++)
 		$goto_page = '';
 	}
 
-	$first_time = create_date2($board_config['default_dateformat'], $line[$i]['topic_time'], $board_config['board_timezone']);
+	$first_time = create_date_simple($lang['DATE_FORMAT_VF'], $line[$i]['topic_time'], $board_config['board_timezone']);
+	// Old format
+	//$first_time = create_date2($board_config['default_dateformat'], $line[$i]['topic_time'], $board_config['board_timezone']);
 	$first_author = ($line[$i]['first_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['first_poster_id']) : (($line[$i]['first_poster_name'] != '') ? $line[$i]['first_poster_name'] : $lang['Guest']);
 	$last_time = create_date2($board_config['default_dateformat'], $line[$i]['post_time'], $board_config['board_timezone']);
 	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id']): (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
@@ -426,7 +410,8 @@ for($i = 0; $i < count($line); $i++)
 
 		'L_REPLIES' => $lang['Replies'],
 		'REPLIES' => $replies,
-		'FIRST_TIME' => sprintf($lang['Recent_first'], $first_time),
+		//'FIRST_TIME' => sprintf($lang['Recent_first'], $first_time),
+		'FIRST_TIME' => $first_time,
 		'FIRST_AUTHOR' => $first_author,
 		'LAST_TIME' => $last_time,
 		'LAST_AUTHOR' => $last_author,

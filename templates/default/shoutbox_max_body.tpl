@@ -43,8 +43,8 @@
 </tr>
 <tr>
 	<td class="catBottom" colspan="2">{S_HIDDEN_FORM_FIELDS}
-		<input type="submit" tabindex="5" name="refresh" class="mainoption" value="{L_SHOUT_REFRESH}" />&nbsp;
-		<input type="submit" tabindex="5" name="preview" class="mainoption" value="{L_SHOUT_PREVIEW}" />&nbsp;
+		<input type="submit" tabindex="5" name="refresh" class="liteoption" value="{L_SHOUT_REFRESH}" />&nbsp;
+		<input type="submit" tabindex="5" name="preview" class="liteoption" value="{L_SHOUT_PREVIEW}" />&nbsp;
 		<input type="submit" accesskey="s" tabindex="6" name="shout" class="mainoption" value="{L_SHOUT_SUBMIT}" />
 	</td>
 </tr>

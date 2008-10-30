@@ -31,29 +31,28 @@ require('./pagestart.' . PHP_EXT);
 $str_old = trim(htmlspecialchars($HTTP_POST_VARS['str_old']));
 $str_new = trim(htmlspecialchars($HTTP_POST_VARS['str_new']));
 
-if ( $HTTP_POST_VARS['submit'] && !empty($str_old) && $str_old != $str_new )
+if ($_POST['submit'] && !empty($str_old) && $str_old != $str_new)
 {
-	$template->assign_block_vars("switch_forum_sent", array() );
+	$template->assign_block_vars("switch_forum_sent", array());
 
-	$sql = "SELECT f.forum_id, f.forum_name, t.topic_id, t.topic_title, p.post_id, p.post_time, pt.post_text, u.user_id, u.username
-		FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . POSTS_TEXT_TABLE . " pt, " . USERS_TABLE . " u
+	$sql = "SELECT f.forum_id, f.forum_name, t.topic_id, t.topic_title, p.post_id, p.post_time, p.post_text, u.user_id, u.username
+		FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE post_text LIKE '%" . $str_old . "%'
-		AND p.post_id = pt.post_id
 		AND p.topic_id = t.topic_id
 		AND p.forum_id = f.forum_id
 		AND p.poster_id = u.user_id
-		ORDER BY pt.post_id DESC;";
-	if ( !($result = $db->sql_query($sql)) )
+		ORDER BY p.post_id DESC;";
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain posts', '', __LINE__, __FILE__, $sql);
 	}
 
-	if ( $db->sql_numrows($result) >= 1 )
+	if ($db->sql_numrows($result) >= 1)
 	{
 		for ($i = 1; $row = $db->sql_fetchrow($result); $i++)
 		{
 			$template->assign_block_vars('switch_forum_sent.replaced', array(
-				'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
+				'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 				'NUMBER' => $i,
 				'FORUM_NAME' => $row['forum_name'],
 				'TOPIC_TITLE' => $row['topic_title'],
@@ -66,10 +65,10 @@ if ( $HTTP_POST_VARS['submit'] && !empty($str_old) && $str_old != $str_new )
 				'U_POST' => append_sid('../' . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $row['post_id']) . '#p' . $row['post_id'])
 			);
 
-			$sql = "UPDATE " . POSTS_TEXT_TABLE . "
+			$sql = "UPDATE " . POSTS_TABLE . "
 				SET post_text = '" . str_replace($str_old, $str_new, addslashes($row['post_text'])) . "'
 				WHERE post_id = '" . $row['post_id'] . "';";
-			if ( !($result_update = $db->sql_query($sql)) )
+			if (!($result_update = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not update posts', '', __LINE__, __FILE__, $sql);
 			}
@@ -78,7 +77,7 @@ if ( $HTTP_POST_VARS['submit'] && !empty($str_old) && $str_old != $str_new )
 	}
 	else
 	{
-		$template->assign_block_vars('switch_forum_sent.switch_no_results', array() );
+		$template->assign_block_vars('switch_forum_sent.switch_no_results', array());
 	}
 }
 
@@ -99,7 +98,7 @@ $template->assign_vars(array(
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 
-	'REPLACED_COUNT' => ( $i == 0 ) ? '&nbsp;' : sprintf($lang['Replaced_count'], $i -1),
+	'REPLACED_COUNT' => ($i == 0) ? '&nbsp;' : sprintf($lang['Replaced_count'], $i - 1),
 
 	'STR_OLD' => $str_old,
 	'STR_NEW' => $str_new,

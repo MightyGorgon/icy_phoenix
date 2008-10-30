@@ -4,7 +4,6 @@
 <br />
 
 <form action="{S_FORM_ACTION}" method="post">
-
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_1}</th></tr>
 <tr>
@@ -16,11 +15,6 @@
 	<td class="row2" width="50%"><b>{L_MOD_2}</b><br />{L_EXP_2}</td>
 	<td class="row2" width="30%"><select name="ipblock_logsize">{S_OUTPUT_2}</select></td>
 </tr>
-</table>
-
-<br />
-
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_2}</th></tr>
 <tr>
 	<td class="row3 row-center" width="20%" rowspan="5"><img src="{CAT_ICON_2}" border="0" /></td>
@@ -43,11 +37,6 @@
 	<td class="row1" width="50%"><b>{L_MOD_7}</b><br />{L_EXP_7}</td>
 	<td class="row1" width="30%"><select name="search_count_guest">{S_OUTPUT_7}</select></td>
 </tr>
-</table>
-
-<br />
-
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_3}</th></tr>
 <tr>
 	<td class="row3 row-center" width="20%" rowspan="6"><img src="{CAT_ICON_3}" border="0" /></td>
@@ -74,11 +63,6 @@
 	<td class="row2" width="50%"><b>{L_MOD_13}</b><br />{L_EXP_13}</td>
 	<td class="row2" width="30%"><select name="login_ip_check">{S_OUTPUT_13}</select></td>
 </tr>
-</table>
-
-<br />
-
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_4}</th></tr>
 <tr>
 	<td class="row3 row-center" width="20%" rowspan="6"><img src="{CAT_ICON_4}" border="0" /></td>
@@ -105,11 +89,6 @@
 	<td class="row2" width="50%"><b>{L_MOD_36}</b><br />{L_EXP_36}</td>
 	<td class="row2" width="30%"><select name="spam_keyword_det">{S_OUTPUT_36}</select></td>
 </tr>
-</table>
-
-<br />
-
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_5}</th></tr>
 <tr>
 	<td class="row3 row-center" width="20%" rowspan="3"><img src="{CAT_ICON_5}" border="0" /></td>
@@ -124,11 +103,6 @@
 	<td class="row1" width="50%"><b>{L_MOD_21}</b><br />{L_EXP_21}</td>
 	<td class="row1" width="30%"><select name="reg_ip_scan">{S_OUTPUT_21}</select></td>
 </tr>
-</table>
-
-<br />
-
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_6}</th></tr>
 <tr>
 	<td class="row3 row-center" width="20%" rowspan="5"><img src="{CAT_ICON_6}" border="0" /></td>
@@ -151,11 +125,6 @@
 	<td class="row1" width="50%"><b>{L_MOD_26}</b><br />{L_EXP_26}</td>
 	<td class="row1" width="30%"><select name="pw_complex_min">{S_OUTPUT_26}</select></td>
 </tr>
-</table>
-
-<br />
-
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_7}</th></tr>
 <tr>
 	<td class="row3 row-center" width="20%" rowspan="4"><img src="{CAT_ICON_7}" border="0" /></td>
@@ -174,11 +143,6 @@
 	<td class="row2" width="50%"><b>{L_MOD_30}</b><br />{L_EXP_30}</td>
 	<td class="row2" width="30%"><select name="massmail_time">{S_OUTPUT_30}</select></td>
 </tr>
-</table>
-
-<br />
-
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_CATNAME_8}</th></tr>
 <tr>
 	<td class="row3 row-center" width="20%" rowspan="4"><img src="{CAT_ICON_8}" border="0" /></td>
@@ -198,10 +162,7 @@
 	<td class="row2" width="30%"><select name="detect_misconfiguration">{S_OUTPUT_34}</select></td>
 </tr>
 <tr>
-	<td class="cat" colspan="3" align="center"><input type="Submit" name="submit" value="{L_SUBMIT}" class="mainoption">&nbsp;<input type="reset" value="{L_RESET}" class="liteoption"></td>
+	<td class="cat" colspan="3" align="center"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
 </tr>
 </table>
-
-<br />
-
 </form>

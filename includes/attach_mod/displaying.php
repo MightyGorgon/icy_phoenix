@@ -198,7 +198,7 @@ function init_complete_extensions_data()
 */
 function init_display_template($template_var, $replacement, $filename = 'viewtopic_attach_body.tpl')
 {
-	global $template;
+	global $template, $board_config;
 
 	// This function is adapted from the old template class
 	// I wish i had the functions from the 3.x one. :D (This class rocks, can't await to use it in Mods)
@@ -227,6 +227,10 @@ function init_display_template($template_var, $replacement, $filename = 'viewtop
 	if (substr($complete_filename, 0, 1) != '/')
 	{
 		$complete_filename = $template->root . '/' . $complete_filename;
+		if (!file_exists($complete_filename))
+		{
+			$complete_filename = IP_ROOT_PATH . 'templates/' . $board_config['xs_def_template'] . '/' . $filename;
+		}
 	}
 
 	if (!file_exists($complete_filename))
@@ -579,12 +583,6 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 
 		$template->assign_block_vars('postrow', array());
 		$template->assign_block_vars('postrow.attach', array());
-
-		$template->assign_vars(array(
-			'T_BODY_TEXT' => '#'.$theme['body_text'],
-			'T_TR_COLOR3' => '#'.$theme['tr_color3']
-			)
-		);
 
 		for ($i = 0, $size = count($attachment_list); $i < $size; $i++)
 		{

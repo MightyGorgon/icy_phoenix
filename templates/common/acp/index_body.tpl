@@ -1,19 +1,30 @@
 <!-- IF S_ADMIN -->
 <div class="forumline" style="margin: 0 auto; display: block; text-align: center; width: 500px; padding: 10px;">
 <a href="{U_ACP_SERVER_SETTINGS}" title="{L_ACP_SERVER_SETTINGS}"><img src="{ACP_IMAGES_PATH}server_install.png" alt="{L_ACP_SERVER_SETTINGS}" title="{L_ACP_SERVER_SETTINGS}" /></a>&nbsp;
-<a href="{U_ACP_SETTINGS}" title="{L_ACP_SETTINGS}"><img src="{ACP_IMAGES_PATH}settings.png" alt="{L_ACP_SETTINGS}" title="{L_ACP_SETTINGS}" /></a>&nbsp;
+<a href="{U_ACP_SETTINGS}" title="{L_ACP_SETTINGS}"><img src="{ACP_IMAGES_PATH}config.png" alt="{L_ACP_SETTINGS}" title="{L_ACP_SETTINGS}" /></a>&nbsp;
 <a href="{U_ACP_IP_SETTINGS}" title="{L_ACP_IP_SETTINGS}"><img src="{ACP_IMAGES_PATH}icy_phoenix.png" alt="{L_ACP_IP_SETTINGS}" title="{L_ACP_IP_SETTINGS}" /></a>&nbsp;
-<a href="{U_ACP_CACHE}" title="{L_ACP_CACHE}"><img src="{ACP_IMAGES_PATH}archive.png" alt="{L_ACP_CACHE}" title="{L_ACP_CACHE}" /></a>&nbsp;
-<a href="{U_ACP_FORUMS}" title="{L_ACP_FORUMS}"><img src="{ACP_IMAGES_PATH}folder_blue.png" alt="{L_ACP_FORUMS}" title="{L_ACP_FORUMS}" /></a>&nbsp;
-<a href="{U_ACP_USERS}" title="{L_ACP_USERS}"><img src="{ACP_IMAGES_PATH}profile.png" alt="{L_ACP_USERS}" title="{L_ACP_USERS}" /></a>&nbsp;
-<a href="{U_ACP_GROUPS}" title="{L_ACP_GROUPS}"><img src="{ACP_IMAGES_PATH}users.png" alt="{L_ACP_GROUPS}" title="{L_ACP_GROUPS}" /></a>&nbsp;
+<a href="{U_ACP_CACHE}" title="{L_ACP_CACHE}"><img src="{ACP_IMAGES_PATH}cache.png" alt="{L_ACP_CACHE}" title="{L_ACP_CACHE}" /></a>&nbsp;
+<a href="{U_ACP_FORUMS}" title="{L_ACP_FORUMS}"><img src="{ACP_IMAGES_PATH}forum.png" alt="{L_ACP_FORUMS}" title="{L_ACP_FORUMS}" /></a>&nbsp;
+<a href="{U_ACP_USERS}" title="{L_ACP_USERS}"><img src="{ACP_IMAGES_PATH}users.png" alt="{L_ACP_USERS}" title="{L_ACP_USERS}" /></a>&nbsp;
+<a href="{U_ACP_GROUPS}" title="{L_ACP_GROUPS}"><img src="{ACP_IMAGES_PATH}groups.png" alt="{L_ACP_GROUPS}" title="{L_ACP_GROUPS}" /></a>&nbsp;
 <a href="{U_ACP_EMAIL}" title="{L_ACP_EMAIL}"><img src="{ACP_IMAGES_PATH}email.png" alt="{L_ACP_EMAIL}" title="{L_ACP_EMAIL}" /></a>
 </div>
 <!-- ENDIF -->
 
+<br />
+<div class="text_cont_center" style="width:500px;"><div class="text_yellow_cont">
+<b><span class="text_red">{L_PAYPAL_INFO}</span></b><br /><br />
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick" />
+<input type="image" src="../images/paypal.gif" name="submit" alt="Support Icy Phoenix!" style="border-width:0px;" /><br />
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----" />
+</form>
+</div></div>
+
 <h1>{L_WELCOME}</h1>
 
 <p>{L_ADMIN_INTRO}</p>
+
 <!-- BEGIN switch_adminedit -->
 <h1><span class="text_red">{L_LISTOFADMINEDIT}</span></h1>
 <p>{L_LISTOFADMINEDITEXP}</p>

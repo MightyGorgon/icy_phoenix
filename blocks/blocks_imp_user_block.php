@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_user_block_block_func))
+if(!function_exists('imp_user_block_block_func'))
 {
 	function imp_user_block_block_func()
 	{
@@ -76,4 +76,5 @@ if(!function_exists(imp_user_block_block_func))
 }
 
 imp_user_block_block_func();
+
 ?>

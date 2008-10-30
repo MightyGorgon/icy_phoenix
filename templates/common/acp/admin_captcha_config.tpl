@@ -53,7 +53,7 @@
 	<td class="row2"><input type="radio" name="image" value="1" {S_ALLOW_IMAGE_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="image" value="0" {S_ALLOW_IMAGE_NO} /> {L_NO}</td>
 </tr>
 -->
-<tr><td class="spaceRow" colspan="2" height="1"><img src="{SPACER}" alt="" width="1" height="1" /></td></tr>
+<tr><th colspan="2">{L_FOREGROUND_LATTICE}</th></tr>
 <tr>
 	<td class="row1"><b>{L_FOREGROUND_LATTICE}</b>&nbsp;<span class="gensmall">{L_FOREGROUND_LATTICE_EXPLAIN}</span></td>
 	<td class="row2"><input class="post" type="text" maxlength="3" size="3" name="foreground_lattice_x" value="{LATTICE_X_LINES}" /> x <input class="post" type="text" maxlength="3" size="3" name="foreground_lattice_y" value="{LATTICE_Y_LINES}" /></td>

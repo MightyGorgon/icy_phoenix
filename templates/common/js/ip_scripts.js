@@ -381,7 +381,7 @@ function hdr_toggle(object, open_close, open_icon, close_icon)
 
 
 // Gradual Highlight - BEGIN
-var baseopacity = 70;
+var baseopacity = 80;
 
 function slowhigh(which2)
 {

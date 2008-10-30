@@ -339,9 +339,9 @@ if ($mode == '')
 
 		$sql = "SELECT p.pic_id, p.pic_title, p.pic_user_id, p.pic_user_ip, p.pic_username, p.pic_time, p.pic_cat_id, p.pic_view_count, p.pic_lock, p.pic_approval, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(c.comment_id) AS comments, MAX(c.comment_id) AS new_comment
 				FROM " . ALBUM_TABLE . " AS p
-					LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
-					LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
-					LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
+					LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
+					LEFT JOIN " . ALBUM_RATE_TABLE . " AS r ON p.pic_id = r.rate_pic_id
+					LEFT JOIN " . ALBUM_COMMENT_TABLE . " AS c ON p.pic_id = c.comment_pic_id
 				WHERE p.pic_cat_id = '$cat_id' $pic_approval_sql
 				GROUP BY p.pic_id
 				ORDER BY $sort_method $sort_order

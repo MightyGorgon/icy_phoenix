@@ -2,11 +2,7 @@
 
 <form action="{S_ALBUM_ACTION}" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_COPY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr>
-	<td class="row1 row-center">
-		<br /><span class="gen">{L_COPY_TO_CATEGORY}</span>&nbsp;{S_CATEGORY_SELECT}&nbsp;<input class="mainoption" type="submit" name="copy" value="{L_COPY}" /><br />
-	</td>
-</tr>
+<tr><td class="row1 row-center"><br /><span class="gen">{L_COPY_TO_CATEGORY}</span>&nbsp;{S_CATEGORY_SELECT}&nbsp;<input class="mainoption" type="submit" name="copy" value="{L_COPY}" /><br /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- BEGIN pic_id_array -->
 <input type="hidden" name="pic_id[]" value="{pic_id_array.VALUE}" />

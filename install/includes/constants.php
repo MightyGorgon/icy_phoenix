@@ -155,7 +155,6 @@ define('POSTS_TABLE', $table_prefix.'posts');
 define('POSTS_TEXT_TABLE', $table_prefix.'posts_text');
 define('PRIVMSGS_TABLE', $table_prefix.'privmsgs');
 define('PRIVMSGS_TEXT_TABLE', $table_prefix.'privmsgs_text');
-define('PRIVMSGS_IGNORE_TABLE', $table_prefix.'privmsgs_ignore');
 define('PRUNE_TABLE', $table_prefix.'forum_prune');
 define('RANKS_TABLE', $table_prefix.'ranks');
 define('SEARCH_TABLE', $table_prefix.'search_results');

@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_staff_func))
+if(!function_exists('imp_staff_func'))
 {
 	function imp_staff_func()
 	{

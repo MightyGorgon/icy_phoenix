@@ -166,10 +166,10 @@ if ($album_config['enable_mooshow'] == 1)
 	$template->assign_block_vars('mooshow', array());
 	$js_images_list = get_images_list(ALBUM_OTF_PATH . $pic_cat, $pic_cat_reg);
 
-	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/prototype.lite.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/moo.fx.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/moo.fx.pack.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="' . COMMON_TPL . 'album/mooshow.1.04.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="templates/common/album/prototype.lite.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="templates/common/album/moo.fx.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="templates/common/album/moo.fx.pack.js"></script>' . "\n";
+	$js_include .= '<script type="text/javascript" src="templates/common/album/mooshow.1.04.js"></script>' . "\n";
 	$js_include .= '<script type="text/javascript">var showsIE = new Array("' . $pic_cat_reg . '");</script>' . "\n";
 }
 

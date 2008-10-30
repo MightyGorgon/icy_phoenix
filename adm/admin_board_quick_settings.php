@@ -20,14 +20,15 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+$db->clear_cache('config_');
 
-if ( isset($_POST['mode']) || isset($_GET['mode']) )
+if (isset($_POST['mode']) || isset($_GET['mode']))
 {
 	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
 }
 
 
-if ( substr($mode, 0, 3) == 'set')
+if (substr($mode, 0, 3) == 'set')
 {
 
 	$sql = array();

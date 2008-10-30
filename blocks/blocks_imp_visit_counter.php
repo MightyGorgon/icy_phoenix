@@ -20,12 +20,11 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_visit_counter_block_func))
+if(!function_exists('imp_visit_counter_block_func'))
 {
 	function imp_visit_counter_block_func()
 	{
 		global $template, $lang, $board_config;
-
 		$template->assign_vars(array(
 			'VISIT_COUNTER' => sprintf($lang['Visit_counter_statement'], $board_config['visit_counter'] + 1, create_date($board_config['default_dateformat'], $board_config['board_startdate'], $board_config['board_timezone'])),
 			'L_VISIT_COUNTER' => $lang['Visit_counter']

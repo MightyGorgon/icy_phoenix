@@ -123,11 +123,10 @@ if ($download)
 	// End Autolinks For phpBB Mod
 
 
-	$sql = "SELECT u.*, p.*,  pt.post_text, pt.post_subject
-		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+	$sql = "SELECT u.*, p.*
+		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE p.topic_id = $topic_id
 			$sql_download
-			AND pt.post_id = p.post_id
 			AND u.user_id = p.poster_id
 			ORDER BY p.post_time ASC, p.post_id ASC";
 	if (!($result = $db->sql_query($sql)))
@@ -252,11 +251,10 @@ $ranks_sql = query_ranks();
 // Mighty Gorgon - Multiple Ranks - END
 
 // Go ahead and pull all data for this topic
-$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, p.*, pt.post_text, pt.post_text_compiled, pt.post_subject, t.topic_poster, t.title_compl_infos
-	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt, " . TOPICS_TABLE . " t
+$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, p.*, t.topic_poster, t.title_compl_infos
+	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t
 	WHERE p.post_id = $post_id
 	AND p.poster_id = u.user_id
-	AND p.post_id = pt.post_id
 	LIMIT 1";
 
 if (!($result = $db->sql_query($sql)))
@@ -457,7 +455,7 @@ if ($row = $db->sql_fetchrow($result))
 			$message = $bbcode->parse($message);
 			$GLOBALS['code_post_id'] = 0;
 			// update database
-			$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET post_text_compiled='" . addslashes($message) . "' WHERE post_id='" . $row[$i]['post_id'] . "'";
+			$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled='" . addslashes($message) . "' WHERE post_id='" . $row[$i]['post_id'] . "'";
 			$db->sql_query($sql);
 		}
 		else

@@ -9,7 +9,7 @@
 		<!-- BEGIN faq_row -->
 		<li>
 			<h2 class="sitemap">{faq_block.faq_row.FAQ_QUESTION}</h2>
-			<ul class="sitemap"><li><div class="post-text">{faq_block.faq_row.FAQ_ANSWER}</div><br /><br /></li></ul>
+			<ul class="sitemap"><li><div class="post-text">{faq_block.faq_row.FAQ_ANSWER}</div><br clear="all" /></li></ul>
 		</li>
 		<!-- END faq_row -->
 		</ul>

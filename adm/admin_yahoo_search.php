@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if( !empty($setmodules) )
 {
 	$filename = basename(__FILE__);
-	$module['1000_Configuration']['175_Yahoo_search'] = $filename;
+	$module['1000_Configuration']['195_Yahoo_search'] = $filename;
 	return;
 }
 

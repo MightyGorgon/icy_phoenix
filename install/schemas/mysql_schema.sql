@@ -336,6 +336,27 @@ CREATE TABLE `phpbb_bookmarks` (
 
 ## --------------------------------------------------------
 
+## `phpbb_bots`
+
+CREATE TABLE phpbb_bots (
+	bot_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+	bot_active tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	bot_name varchar(255) DEFAULT '' NOT NULL,
+	bot_color varchar(255) DEFAULT '' NOT NULL,
+	bot_agent varchar(255) DEFAULT '' NOT NULL,
+	bot_ip varchar(255) DEFAULT '' NOT NULL,
+	bot_last_visit varchar(11) DEFAULT '0' NOT NULL,
+	bot_visit_counter mediumint(8) DEFAULT '0' NOT NULL,
+	PRIMARY KEY (bot_id),
+	KEY bot_name (bot_name),
+	KEY bot_active (bot_active)
+);
+
+## `phpbb_bots`
+
+
+## --------------------------------------------------------
+
 ## `phpbb_captcha_config`
 
 CREATE TABLE `phpbb_captcha_config` (
@@ -1229,10 +1250,14 @@ CREATE TABLE `phpbb_posts` (
 	`post_time` int(11) NOT NULL default '0',
 	`poster_ip` varchar(8) NOT NULL default '',
 	`post_username` varchar(25) default NULL,
+	`post_subject` varchar(255) default NULL,
+	`post_text` text,
+	`post_text_compiled` text,
 	`enable_bbcode` tinyint(1) NOT NULL default '1',
 	`enable_html` tinyint(1) NOT NULL default '0',
 	`enable_smilies` tinyint(1) NOT NULL default '1',
 	`enable_sig` tinyint(1) NOT NULL default '1',
+	`edit_notes` mediumtext,
 	`post_edit_time` int(11) default NULL,
 	`post_edit_count` smallint(5) unsigned NOT NULL default '0',
 	`post_edit_id` mediumint(8) NOT NULL default '0',
@@ -1251,28 +1276,13 @@ CREATE TABLE `phpbb_posts` (
 
 ## --------------------------------------------------------
 
-## `phpbb_posts_text`
-
-CREATE TABLE `phpbb_posts_text` (
-	`post_id` mediumint(8) unsigned NOT NULL default '0',
-	`post_subject` varchar(60) default NULL,
-	`post_text` text,
-	`post_text_compiled` text,
-	`edit_notes` mediumtext,
-	PRIMARY KEY (`post_id`)
-);
-
-## `phpbb_posts_text`
-
-
-## --------------------------------------------------------
-
 ## `phpbb_privmsgs`
 
 CREATE TABLE `phpbb_privmsgs` (
 	`privmsgs_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`privmsgs_type` tinyint(4) NOT NULL default '0',
 	`privmsgs_subject` varchar(255) NOT NULL default '',
+	`privmsgs_text` text,
 	`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_date` int(11) NOT NULL default '0',
@@ -1299,6 +1309,7 @@ CREATE TABLE `phpbb_privmsgs_archive` (
 	`privmsgs_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`privmsgs_type` tinyint(4) NOT NULL default '0',
 	`privmsgs_subject` varchar(255) NOT NULL default '',
+	`privmsgs_text` text,
 	`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_date` int(11) NOT NULL default '0',
@@ -1315,19 +1326,6 @@ CREATE TABLE `phpbb_privmsgs_archive` (
 );
 
 ## `phpbb_privmsgs_archive`
-
-
-## --------------------------------------------------------
-
-## `phpbb_privmsgs_text`
-
-CREATE TABLE `phpbb_privmsgs_text` (
-	`privmsgs_text_id` mediumint(8) unsigned NOT NULL default '0',
-	`privmsgs_text` text,
-	PRIMARY KEY (`privmsgs_text_id`)
-);
-
-## `phpbb_privmsgs_text`
 
 
 ## --------------------------------------------------------
@@ -1740,92 +1738,16 @@ CREATE TABLE `phpbb_themes` (
 	`head_stylesheet` varchar(100) default NULL,
 	`body_background` varchar(100) default NULL,
 	`body_bgcolor` varchar(6) default NULL,
-	`body_text` varchar(6) default NULL,
-	`body_link` varchar(6) default NULL,
-	`body_vlink` varchar(6) default NULL,
-	`body_alink` varchar(6) default NULL,
-	`body_hlink` varchar(6) default NULL,
-	`tr_color1` varchar(6) default NULL,
-	`tr_color2` varchar(6) default NULL,
-	`tr_color3` varchar(6) default NULL,
 	`tr_class1` varchar(25) default NULL,
 	`tr_class2` varchar(25) default NULL,
 	`tr_class3` varchar(25) default NULL,
-	`th_color1` varchar(6) default NULL,
-	`th_color2` varchar(6) default NULL,
-	`th_color3` varchar(6) default NULL,
-	`th_class1` varchar(25) default NULL,
-	`th_class2` varchar(25) default NULL,
-	`th_class3` varchar(25) default NULL,
-	`td_color1` varchar(6) default NULL,
-	`td_color2` varchar(6) default NULL,
-	`td_color3` varchar(6) default NULL,
 	`td_class1` varchar(25) default NULL,
 	`td_class2` varchar(25) default NULL,
 	`td_class3` varchar(25) default NULL,
-	`fontface1` varchar(50) default NULL,
-	`fontface2` varchar(50) default NULL,
-	`fontface3` varchar(50) default NULL,
-	`fontsize1` tinyint(4) default NULL,
-	`fontsize2` tinyint(4) default NULL,
-	`fontsize3` tinyint(4) default NULL,
-	`fontcolor1` varchar(6) default NULL,
-	`fontcolor2` varchar(6) default NULL,
-	`fontcolor3` varchar(6) default NULL,
-	`span_class1` varchar(25) default NULL,
-	`span_class2` varchar(25) default NULL,
-	`span_class3` varchar(25) default NULL,
-	`img_size_poll` smallint(5) unsigned default NULL,
-	`img_size_privmsg` smallint(5) unsigned default NULL,
-	`online_color` varchar(6) default NULL,
-	`offline_color` varchar(6) default NULL,
-	`hidden_color` varchar(6) default NULL,
 	PRIMARY KEY (`themes_id`)
 );
 
 ## `phpbb_themes`
-
-
-## --------------------------------------------------------
-
-## `phpbb_themes_name`
-
-CREATE TABLE `phpbb_themes_name` (
-	`themes_id` smallint(5) unsigned NOT NULL default '0',
-	`tr_color1_name` char(50) default NULL,
-	`tr_color2_name` char(50) default NULL,
-	`tr_color3_name` char(50) default NULL,
-	`tr_class1_name` char(50) default NULL,
-	`tr_class2_name` char(50) default NULL,
-	`tr_class3_name` char(50) default NULL,
-	`th_color1_name` char(50) default NULL,
-	`th_color2_name` char(50) default NULL,
-	`th_color3_name` char(50) default NULL,
-	`th_class1_name` char(50) default NULL,
-	`th_class2_name` char(50) default NULL,
-	`th_class3_name` char(50) default NULL,
-	`td_color1_name` char(50) default NULL,
-	`td_color2_name` char(50) default NULL,
-	`td_color3_name` char(50) default NULL,
-	`td_class1_name` char(50) default NULL,
-	`td_class2_name` char(50) default NULL,
-	`td_class3_name` char(50) default NULL,
-	`fontface1_name` char(50) default NULL,
-	`fontface2_name` char(50) default NULL,
-	`fontface3_name` char(50) default NULL,
-	`fontsize1_name` char(50) default NULL,
-	`fontsize2_name` char(50) default NULL,
-	`fontsize3_name` char(50) default NULL,
-	`fontcolor1_name` char(50) default NULL,
-	`fontcolor2_name` char(50) default NULL,
-	`fontcolor3_name` char(50) default NULL,
-	`span_class1_name` char(50) default NULL,
-	`span_class2_name` char(50) default NULL,
-	`span_class3_name` char(50) default NULL,
-	PRIMARY KEY (`themes_id`)
-);
-
-## `phpbb_themes_name`
 
 
 ## --------------------------------------------------------
@@ -2045,6 +1967,9 @@ CREATE TABLE `phpbb_users` (
 	`user_actkey` varchar(32) default NULL,
 	`user_newpasswd` varchar(32) default NULL,
 	`user_birthday` int(11) NOT NULL default '999999',
+	`user_birthday_y` varchar(4) NOT NULL default '',
+	`user_birthday_m` varchar(2) NOT NULL default '',
+	`user_birthday_d` varchar(2) NOT NULL default '',
 	`user_next_birthday_greeting` int(11) NOT NULL default '0',
 	`user_sub_forum` tinyint(1) NOT NULL default '1',
 	`user_split_cat` tinyint(1) NOT NULL default '1',
@@ -2265,7 +2190,54 @@ CREATE TABLE `phpbb_ctracker_loginhistory` (
 ## Cracker Tracker - END
 
 
+## DRAFTS - BEGIN
+
+CREATE TABLE `phpbb_drafts` (
+	`draft_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
+	`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`save_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`draft_subject` varchar(100) DEFAULT '' NOT NULL,
+	`draft_message` text,
+	PRIMARY KEY (`draft_id`),
+	KEY `save_time` (`save_time`)
+);
+
+## DRAFTS - END
+
+
+## FRIENDS AND FOES - BEGIN
+
+CREATE TABLE phpbb_zebra (
+	user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	zebra_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	friend tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	foe tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	PRIMARY KEY (user_id, zebra_id)
+);
+
+## FRIENDS AND FOES - END
+
+
+## ICY PHOENIX LOGS - BEGIN
+
+CREATE TABLE `phpbb_logs` (
+	`log_id` int(11) unsigned NOT NULL auto_increment,
+	`log_time` varchar(11) NOT NULL,
+	`log_page` varchar(255) NOT NULL default '',
+	`log_user_id` int(10) NOT NULL,
+	`log_action` varchar(60) NOT NULL default '',
+	`log_desc` varchar(255) NOT NULL default '',
+	`log_target` int(10) NOT NULL default '0',
+	PRIMARY KEY (`log_id`)
+);
+
+## ICY PHOENIX LOGS - END
+
+
 ## Digests - BEGIN
+
 CREATE TABLE `phpbb_digest_subscriptions` (
 	`user_id` INTEGER NOT NULL DEFAULT 0,
 	`digest_type` CHAR(4) NOT NULL DEFAULT 'DAY',
@@ -2284,6 +2256,7 @@ CREATE TABLE `phpbb_digest_subscribed_forums` (
 	`forum_id` SMALLINT(5) NOT NULL DEFAULT 0,
 	UNIQUE user_id (user_id, forum_id)
 );
+
 ## Digests - END
 
 
@@ -2486,23 +2459,6 @@ CREATE TABLE phpbb_cash_log (
 ## CASH Mod - END
 
 
-## DRAFTS - BEGIN
-
-CREATE TABLE `phpbb_drafts` (
-	`draft_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
-	`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-	`topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-	`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-	`save_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
-	`draft_subject` varchar(100) DEFAULT '' NOT NULL,
-	`draft_message` text,
-	PRIMARY KEY (`draft_id`),
-	KEY `save_time` (`save_time`)
-);
-
-## DRAFTS - END
-
-
 ## DOWNLOADS - BEGIN
 
 CREATE TABLE phpbb_downloads (
@@ -2697,31 +2653,3 @@ ALTER TABLE phpbb_users ADD COLUMN user_download_counter MEDIUMINT(8) DEFAULT '0
 
 ## DOWNLOADS - END
 
-
-## FRIENDS AND FOES - BEGIN
-
-CREATE TABLE phpbb_zebra (
-	user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-	zebra_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-	friend tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-	foe tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
-	PRIMARY KEY (user_id, zebra_id)
-);
-
-## FRIENDS AND FOES - END
-
-
-## ICY PHOENIX LOGS - BEGIN
-
-CREATE TABLE `phpbb_logs` (
-	`log_id` int(11) unsigned NOT NULL auto_increment,
-	`log_time` varchar(11) NOT NULL,
-	`log_page` varchar(255) NOT NULL default '',
-	`log_user_id` int(10) NOT NULL,
-	`log_action` varchar(60) NOT NULL default '',
-	`log_desc` varchar(255) NOT NULL default '',
-	`log_target` int(10) NOT NULL default '0',
-	PRIMARY KEY (`log_id`)
-);
-
-## ICY PHOENIX LOGS - END

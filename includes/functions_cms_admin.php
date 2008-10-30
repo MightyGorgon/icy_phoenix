@@ -415,19 +415,6 @@ function get_layout_info($table_name, $l_id)
 	return $l_info;
 }
 
-function get_template_name($default_style)
-{
-	global $db, $lang;
-	$sql = "SELECT template_name FROM " . THEMES_TABLE . " WHERE themes_id = '" . $default_style . "'";
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(CRITICAL_ERROR, 'Could not query themes information', '', __LINE__, __FILE__, $sql);
-	}
-	$row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-	return $row['template_name'];
-}
-
 function get_max_layout_id($table_name)
 {
 	global $db, $lang;

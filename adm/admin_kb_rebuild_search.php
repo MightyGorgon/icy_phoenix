@@ -101,7 +101,7 @@ if (isset ($_GET['start']))
 		$form_action = append_sid('admin_kb_rebuild_search.' . PHP_EXT . '?start=' . ($start + $num_rows) . '&amp;total_num_rows=' . $total_num_rows . '&amp;post_limit=' . $_GET['post_limit'] . '&amp;time_limit=' . $time_limit . '&amp;refresh_rate=' . $_GET['refresh_rate']);
 		$next = $lang['Next'];
 
-		$redirect_url = $form_action;
+		$redirect_url = ADM . '/' . $form_action;
 		meta_refresh($_GET['refresh_rate'], $redirect_url);
 	}
 	else

@@ -24,12 +24,7 @@ function select_switch(status)
 <tr><td class="cat" colspan="3" align="center"><input type="submit" class="mainoption" name="del_real_thumbs" value="{L_DELETE}" /></td></tr>
 </table>
 
-<table border="0" cellpadding="3" cellspacing="1" align="center" width="50%">
-<tr>
-	<td nowrap="nowrap" align="right"><span class="gensmall">
-		<a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a> ::
-		<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
-	</span></td>
-</tr>
+<table width="50%" align="center" cellpadding="0" cellspacing="0" border="0">
+<tr><td nowrap="nowrap" align="right"><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a> :: <a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></td></tr>
 </table>
 </form>

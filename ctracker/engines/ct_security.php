@@ -37,12 +37,6 @@ if(!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt!');
 }
 
-if(defined('MG_KILL_CTRACK'))
-{
-	define('protection_unit_one', true);
-	return;
-}
-
 $disable_ct_warning = false;
 if(defined('MG_CTRACK_FLAG'))
 {
@@ -50,33 +44,33 @@ if(defined('MG_CTRACK_FLAG'))
 }
 
 /*
- * Change the following to define('CT_DEBUG_MODE', true);
- * if you want to activate the debug mode of CrackerTracker
- * but don't forget to deactivate it again as soon as possible
- */
+* Change the following to define('CT_DEBUG_MODE', true);
+* if you want to activate the debug mode of CrackerTracker
+* but don't forget to deactivate it again as soon as possible
+*/
 define('CT_DEBUG_MODE', false);
 //define('CT_DEBUG_MODE', true);
 
 /*
- * DO NOT CHANGE ANYTHING BELOW!
- * CHANGING STUFF BELOW CAN DRAMATICALLY DECREASE
- * THE SECURITY OF YOUR BOARD SO PLEASE
- * DO NOT CHANGE ANYTHING BELOW THIS LINE!
- */
+* DO NOT CHANGE ANYTHING BELOW!
+* CHANGING STUFF BELOW CAN DRAMATICALLY DECREASE
+* THE SECURITY OF YOUR BOARD SO PLEASE
+* DO NOT CHANGE ANYTHING BELOW THIS LINE!
+*/
 
 /*
 
 /*
- * The first thing we do now is checking the integrity of the IP_ROOT_PATH
- * because CrackerTracker will need it later. With this step we prevent that
- * scripts without the IP_ROOT_PATH or without a validated IP_ROOT_PATH
- * can be executed.
- */
+* The first thing we do now is checking the integrity of the IP_ROOT_PATH
+* because CrackerTracker will need it later. With this step we prevent that
+* scripts without the IP_ROOT_PATH or without a validated IP_ROOT_PATH
+* can be executed.
+*/
 if (!defined('IP_ROOT_PATH'))
 {
 	/*
-	 * Create a HTML error Message output
-	 */
+	* Create a HTML error Message output
+	*/
 	$htmloutput = <<<EOM
 <html>
 <head><title>CBACK CrackerTracker :: Security Alert</title></head>
@@ -85,10 +79,10 @@ if (!defined('IP_ROOT_PATH'))
 <div align="center">
 <table style="border:2px solid #000000" border="0" width="600" cellpadding="10" cellspacing="0">
 <tr>
-	<td align="left" bgcolor="#000000"><font face="Tahoma, Arial, Helvetica" size="4" color="#FFFFFF"><b>SECURITY ALERT &raquo; &raquo; &raquo; &raquo;</b></font></td>
+	<td align="left" bgcolor="#000000"><font face="Tahoma, Arial, Helvetica" size="4" color="#ffffff"><b>SECURITY ALERT &raquo; &raquo; &raquo; &raquo;</b></font></td>
 </tr>
 <tr>
-	<td bgcolor="#FFF4BF" align="left">
+	<td bgcolor="#fff4bf" align="left">
 		<font face="Tahoma, Arial, Helvetica" size="2" color="#000000">
 			CBACK CrackerTracker stopped your script because the engine detected
 			that the script you want to execute has not initialized the constant
@@ -114,9 +108,9 @@ EOM;
 
 
 /*
- * Now we define an array where all definition data is saved in.
- * After that we check URL committals for potential worm acitivities
- */
+* Now we define an array where all definition data is saved in.
+* After that we check URL committals for potential worm acitivities
+*/
 
 $ct_rules = array(
 	'http_', '_server', 'delete%20', 'delete ', 'delete-', 'delete(', '(delete', 'drop%20',
@@ -232,9 +226,9 @@ $unchecked_get_fields = array(
 );
 
 /*
- * Let's check if a security level is set
- * and prepare our variables
- */
+* Let's check if a security level is set
+* and prepare our variables
+*/
 if (!defined('CT_SECLEVEL') || (CT_SECLEVEL == 'HIGH'))
 {
 	// Empty the variables for security reasons
@@ -369,7 +363,7 @@ if ($ct_attack_detection)
 	{
 
 		// generate HTML Message
-$htmloutput =<<<EOM
+$htmloutput = <<<EOM
 <html>
 <head><title>CBACK CrackerTracker :: Security Alert</title></head>
 <body>
@@ -405,6 +399,10 @@ EOM;
 
 // Tell the self test that this script was included correctly
 define('protection_unit_one', true);
+// Unfortunately we cannot unset $ct_rules because they are used in other files
+//unset($ct_rules);
+unset($unchecked_post_fields);
+unset($unchecked_get_fields);
 
 function ct_debugger($checkstring, $checkmode)
 {

@@ -47,10 +47,10 @@ function select_switch(status)
 		<div class="forumline" style="margin-left:10px;margin-right:10px">
 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td width="25%" align="center">{INBOX_IMG}<br /><span class="forumlink">{INBOX}</span></td>
-			<td width="25%" align="center">{SENTBOX_IMG}<br /><span class="forumlink">{SENTBOX}</span></td>
-			<td width="25%" align="center">{OUTBOX_IMG}<br /><span class="forumlink">{OUTBOX}</span></td>
-			<td width="25%" align="center">{SAVEBOX_IMG}<br /><span class="forumlink">{SAVEBOX}</span></td>
+			<td width="25%" align="center">{INBOX_IMG}<br /><b><span class="topiclink">{INBOX}</span></b></td>
+			<td width="25%" align="center">{SENTBOX_IMG}<br /><b><span class="topiclink">{SENTBOX}</span></b></td>
+			<td width="25%" align="center">{OUTBOX_IMG}<br /><b><span class="topiclink">{OUTBOX}</span></b></td>
+			<td width="25%" align="center">{SAVEBOX_IMG}<br /><b><span class="topiclink">{SAVEBOX}</span></b></td>
 		</tr>
 		</table>
 		</div>
@@ -74,7 +74,7 @@ function select_switch(status)
 </table>
 </div>
 
-<div style="text-align:left;">{POST_PM_IMG}</div>
+<div style="text-align:left;"><span class="img-btn">{POST_PM_IMG}</span></div>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{BOX_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -123,7 +123,7 @@ function select_switch(status)
 
 <table width="100%" cellspacing="0" border="0" align="center" cellpadding="0">
 <tr>
-	<td align="left" valign="middle"><span class="gen">{POST_PM_IMG}</span></td>
+	<td align="left" valign="middle"><span class="img-btn">{POST_PM_IMG}</span></td>
 	<td align="right" valign="middle" width="100%"><span class="gensmall">{PAGE_NUMBER}</span></td>
 </tr>
 <tr><td align="right" valign="top" nowrap="nowrap"><span class="gensmall"></span><br /><div class="pagination">{PAGINATION}</div></td></tr>

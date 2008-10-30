@@ -1113,7 +1113,7 @@ UPDATE `phpbb_users` SET user_allow_pm_in = 1, user_allow_mass_email = 1;
 ALTER TABLE phpbb_groups ADD COLUMN group_legend_order MEDIUMINT(8) DEFAULT '0' NOT NULL AFTER `group_legend`;
 ##ALTER TABLE `phpbb_posts` CHANGE `post_edit_count` `post_edit_count` TINYTEXT DEFAULT '';
 ALTER TABLE `phpbb_posts` ADD COLUMN `post_edit_id` MEDIUMINT(8) DEFAULT '0' NOT NULL AFTER `post_edit_count`;
-ALTER TABLE `phpbb_posts_text` CHANGE `edit_notes` `edit_notes` MEDIUMTEXT DEFAULT '';
+ALTER TABLE `phpbb_posts` CHANGE `edit_notes` `edit_notes` MEDIUMTEXT DEFAULT '';
 
 
 
@@ -1232,13 +1232,13 @@ ALTER TABLE `phpbb_kb_articles` DROP `bbcode_uid`;
 ALTER TABLE `phpbb_pa_comments` DROP INDEX `comments_id`;
 ALTER TABLE `phpbb_pa_comments` DROP INDEX `comment_bbcode_uid`;
 ALTER TABLE `phpbb_pa_comments` DROP `comment_bbcode_uid`;
-ALTER TABLE `phpbb_posts_text` DROP `bbcode_uid`;
+ALTER TABLE `phpbb_posts` DROP `bbcode_uid`;
 ALTER TABLE `phpbb_privmsgs_text` DROP `privmsgs_bbcode_uid`;
 ALTER TABLE `phpbb_shout` DROP `shout_bbcode_uid`;
 ALTER TABLE `phpbb_users` DROP `user_sig_bbcode_uid`;
 
-ALTER TABLE `phpbb_topics` CHANGE `topic_title` `topic_title` VARCHAR(255) NOT NULL;
 ALTER TABLE `phpbb_privmsgs` CHANGE `privmsgs_subject` `privmsgs_subject` VARCHAR(255) NOT NULL;
+ALTER TABLE `phpbb_topics` CHANGE `topic_title` `topic_title` VARCHAR(255) NOT NULL;
 ##ALTER TABLE `phpbb_topics` ADD `topic_first_poster_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `topic_first_post_id`;
 ##ALTER TABLE `phpbb_topics` ADD `topic_first_poster_name` varchar(255) DEFAULT '' NOT NULL AFTER `topic_first_poster_id`;
 ##ALTER TABLE `phpbb_topics` ADD `topic_first_poster_colour` varchar(6) DEFAULT '' NOT NULL AFTER `topic_first_poster_name`;
@@ -1253,16 +1253,211 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_topic_d
 ########################################
 ##              BUILD 037             ##
 ########################################
+ALTER TABLE `phpbb_users` ADD COLUMN `user_birthday_y` VARCHAR(4) DEFAULT '' NOT NULL AFTER `user_birthday`;
+ALTER TABLE `phpbb_users` ADD COLUMN `user_birthday_m` VARCHAR(2) DEFAULT '' NOT NULL AFTER `user_birthday_y`;
+ALTER TABLE `phpbb_users` ADD COLUMN `user_birthday_d` VARCHAR(2) DEFAULT '' NOT NULL AFTER `user_birthday_m`;
+#ALTER TABLE `phpbb_users` DROP `user_birthday`;
+
+DELETE FROM `phpbb_config` WHERE `config_name` = 'allow_only_main_admin_id';
+
+
+
+########################################
+##              BUILD 038             ##
+########################################
+CREATE TABLE phpbb_bots (
+	bot_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+	bot_active tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	bot_name varchar(255) DEFAULT '' NOT NULL,
+	bot_color varchar(255) DEFAULT '' NOT NULL,
+	bot_agent varchar(255) DEFAULT '' NOT NULL,
+	bot_ip varchar(255) DEFAULT '' NOT NULL,
+	bot_last_visit varchar(11) DEFAULT '0' NOT NULL,
+	bot_visit_counter mediumint(8) DEFAULT '0' NOT NULL,
+	PRIMARY KEY (bot_id),
+	KEY bot_name (bot_name),
+	KEY bot_active (bot_active)
+);
+
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yahoo! Slurp', '<b style="color:#d22;">Yahoo!</b><b style="color:#24b;"> Slurp</b>', 'Yahoo! Slurp', '66.106, 68.142, 72.30, 74.6, 202.160.180');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Google', '<b style="color:#24b;">G</b><b style="color:#d22;">o</b><b style="color:#eb0;">o</b><b style="color:#24b;">g</b><b style="color:#393;">l</b><b style="color:#d22;">e</b>', 'Googlebot', '66.249');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('MSN', '<b style="color:#468;">MSN</b>', 'msnbot/', '207.66.146, 207.46, 65.54.188, 65.54.246, 65.54.165, 65.55.210, 65.55.213');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('LiveBot', '<b style="color:#468;">LiveBot</b>', 'LiveBot', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('AdsBot [Google]', '', 'AdsBot-Google', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Google Adsense', '<b style="color:#24b;">G</b><b style="color:#d22;">o</b><b style="color:#eb0;">o</b><b style="color:#24b;">g</b><b style="color:#393;">l</b><b style="color:#d22;">e</b><b style="color:#d22;"> Adsense</b>', 'Mediapartners-Google', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yahoo! DE Slurp', '<b style="color:#d22;">Yahoo!</b><b style="color:#24b;"> DE Slurp</b><b style="color:#888;"> [Bot]</b>', 'Yahoo! DE Slurp', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yahoo MMCrawler', '<b style="color:#d22;">Yahoo!</b><b style="color:#24b;"> MMCrawler</b>', 'Yahoo-MMCrawler/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('YahooSeeker', '', 'YahooSeeker/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Google Desktop', '<b style="color:#24b;">G</b><b style="color:#d22;">o</b><b style="color:#eb0;">o</b><b style="color:#24b;">g</b><b style="color:#393;">l</b><b style="color:#d22;">e</b><b style="color:#d22;"> Desktop</b>', 'Google Desktop', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Google Feedfetcher', '<b style="color:#24b;">G</b><b style="color:#d22;">o</b><b style="color:#eb0;">o</b><b style="color:#24b;">g</b><b style="color:#393;">l</b><b style="color:#d22;">e</b><b style="color:#d22;"> Feedfetcher</b>', 'Feedfetcher-Google', '72.14.199');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('MSN NewsBlogs', '<b style="color:#468;">MSN NewsBlogs</b>', 'msnbot-NewsBlogs/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('MSNbot Media', '<b style="color:#468;">MSNbot Media</b>', 'msnbot-media/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Alexa', '', 'ia_archiver', '207.209.238');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Alta Vista', '', 'Scooter/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('AllTheWeb', '', 'alltheweb', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Arianna', '', 'www.arianna.it', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ask Jeeves', '', 'Ask Jeeves', '65.214.44');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ask Jeeves Teoma', '', 'teoma', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Baidu [Spider]', '', 'Baiduspider', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Become', '', 'BecomeBot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Charlotte', '', 'Charlotte/1.1', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('eBay', '', '', '212.222.51');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('eDintorni Crawler', '', 'eDintorni', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Exabot', '', 'Exabot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('FAST Enterprise [Crawler]', '', 'FAST Enterprise Crawler', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('FAST WebCrawler [Crawler]', '', 'FAST-WebCrawler/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Francis', '', 'http://www.neomo.de/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Gigablast', '', '', '66.154.102, 66.154.103');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Gigabot', '', 'Gigabot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Heise IT-Markt [Crawler]', '', 'heise-IT-Markt-Crawler', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Heritrix [Crawler]', '', 'heritrix/1.', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('JetBot', '', 'Jetbot', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('IBM Research', '', 'ibm.com/cs/crawler', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('ICCrawler - ICjobs', '', 'ICCrawler - ICjobs', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('ichiro [Crawler]', '', 'ichiro/2', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('IEAutoDiscovery', '', 'IEAutoDiscovery', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Indy Library', '', 'Indy Library', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Infoseek', '', 'Infoseek', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Inktomi', '', '', '66.94.229, 66.228.165');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('LookSmart', '', 'MARTINI', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Lycos', '', 'Lycos', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('MagpieRSS', '', 'MagpieRSS', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Majestic-12', '', 'MJ12bot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Metager', '', 'MetagerBot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Microsoft Research', '', 'MSRBOT', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('NG-Search', '', 'NG-Search/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Noxtrum [Crawler]', '', 'noxtrumbot', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Nutch', '', 'http://lucene.apache.org/nutch/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Nutch/CVS', '', 'NutchCVS/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Omgili', '', 'omgilibot/0.3', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('OmniExplorer', '', 'OmniExplorer_Bot/', '65.19.150');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Online link [Validator]', '', 'online link validator', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Perl Script', '', 'libwww-perl/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Pompos', '', '', '212.27.41');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('psbot [Picsearch]', '', 'psbot/0', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Seekport', '', 'Seekbot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Sensis [Crawler]', '', 'Sensis Web Crawler', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('SEO Crawler [Crawler]', '', 'SEO search Crawler/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Seoma [Crawler]', '', 'Seoma', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('SEOSearch [Crawler]', '', 'SEOsearch/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snap Bot', '', 'Snapbot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snappy', '', 'Snappy/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Speedy Spider', '', 'Speedy Spider', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Steeler [Crawler]', '', 'http://www.tkl.iis.u-tokyo.ac.jp/~crawler/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Synoo', '', 'SynooBot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Telekom', '', 'crawleradmin.t-info@telekom.de', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('TurnitinBot', '', 'TurnitinBot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Twiceler', '', 'Twiceler', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Virgilio', '', '', '212.48.8');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Voyager', '', 'voyager/1.0', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Voila', '', 'VoilaBot', '195.101.94');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('W3 [Sitesearch]', '', 'W3 SiteSearch Crawler', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('W3C [Linkcheck]', '', 'W3C-checklink/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('W3C [Validator]', '', 'W3C_', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WiseNut', '', 'http://www.WISEnutbot.com', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('YaCy', '', 'yacybot', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yanga WorldSearch', '', 'Yanga WorldSearch Bot', '');
+
+ALTER TABLE `phpbb_posts` CHANGE `post_subject` `post_subject` VARCHAR(255) NOT NULL;
+
+#INSERT INTO `phpbb_users` (`user_id`, `user_active`, `username`, `user_password`, `user_session_time`, `user_session_page`, `user_http_agents`, `user_lastvisit`, `user_regdate`, `user_level`, `user_cms_level`, `user_posts`, `user_timezone`, `user_style`, `user_lang`, `user_dateformat`, `user_new_privmsg`, `user_unread_privmsg`, `user_last_privmsg`, `user_emailtime`, `user_viewemail`, `user_profile_view_popup`, `user_attachsig`, `user_setbm`, `user_allowhtml`, `user_allowbbcode`, `user_allowsmile`, `user_allowavatar`, `user_allow_pm`, `user_allow_viewonline`, `user_notify`, `user_notify_pm`, `user_popup_pm`, `user_rank`, `user_rank2`, `user_rank3`, `user_rank4`, `user_rank5`, `user_avatar`, `user_avatar_type`, `user_email`, `user_icq`, `user_website`, `user_from`, `user_sig`, `user_aim`, `user_yim`, `user_msnm`, `user_occ`, `user_interests`, `user_actkey`, `user_newpasswd`, `user_birthday`, `user_next_birthday_greeting`, `user_sub_forum`, `user_split_cat`, `user_last_topic_title`, `user_sub_level_links`, `user_display_viewonline`, `user_color_group`, `user_color`, `user_gender`, `user_lastlogon`, `user_totaltime`, `user_totallogon`, `user_totalpages`, `user_calendar_display_open`, `user_calendar_header_cells`, `user_calendar_week_start`, `user_calendar_nb_row`, `user_calendar_birthday`, `user_calendar_forum`, `user_warnings`, `user_time_mode`, `user_dst_time_lag`, `user_pc_timeOffsets`, `user_skype`, `user_registered_ip`, `user_registered_hostname`, `user_profile_view`, `user_last_profile_view`, `user_topics_per_page`, `user_hot_threshold`, `user_posts_per_page`, `user_allowswearywords`, `user_showavatars`, `user_showsignatures`, `user_login_tries`, `user_last_login_try`, `user_sudoku_playing`, `user_from_flag`, `user_phone`, `user_selfdes`, `user_upi2db_which_system`, `user_upi2db_disable`, `user_upi2db_datasync`, `user_upi2db_new_word`, `user_upi2db_edit_word`, `user_upi2db_unread_color`, `user_personal_pics_count`) VALUES (-2, 0, 'Bot', '', 0, 0, '', 0, 0, 0, 0, 0, 0.00, NULL, '', '', 0, 0, 0, NULL, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, NULL, -1, -2, -2, -2, '', 0, '', '', '', '', '', '', '', '', '', '', '', '', 999999, 0, 1, 1, 1, 2, 2, 0, '', 0, 0, 0, 0, 0, 0, 0, 1, 5, 1, 1, 0, 2, 60, '0', NULL, NULL, NULL, 0, 0, '50', '15', '15', 0, 1, 1, 0, 0, 0, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 0);
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bots_reg_auth', '0');
+
+
+
+########################################
+##              BUILD 039             ##
+########################################
+DROP TABLE `phpbb_themes_name`;
+ALTER TABLE `phpbb_themes` DROP `body_text`, DROP `body_link`, DROP `body_vlink`, DROP `body_alink`, DROP `body_hlink`, DROP `tr_color1`, DROP `tr_color2`, DROP `tr_color3`, DROP `th_color1`, DROP `th_color2`, DROP `th_color3`, DROP `th_class1`, DROP `th_class2`, DROP `th_class3`, DROP `td_color1`, DROP `td_color2`, DROP `td_color3`, DROP `fontface1`, DROP `fontface2`, DROP `fontface3`, DROP `fontsize1`, DROP `fontsize2`, DROP `fontsize3`, DROP `fontcolor1`, DROP `fontcolor2`, DROP `fontcolor3`, DROP `span_class1`, DROP `span_class2`, DROP `span_class3`, DROP `img_size_poll`, DROP `img_size_privmsg`, DROP `online_color`, DROP `offline_color`, DROP `hidden_color`;
+UPDATE phpbb_config SET config_value = 'default' WHERE config_name = 'xs_def_template';
+UPDATE phpbb_pa_config SET config_value = 'downloads/' WHERE config_name = 'upload_dir';
+UPDATE phpbb_pa_config SET config_value = 'files/screenshots/' WHERE config_name = 'screenshots_dir';
+
+
+
+########################################
+##              BUILD 040             ##
+########################################
+CREATE TABLE `___posts___` (
+	`post_id` mediumint(8) unsigned NOT NULL auto_increment,
+	`topic_id` mediumint(8) unsigned NOT NULL default '0',
+	`forum_id` smallint(5) unsigned NOT NULL default '0',
+	`poster_id` mediumint(8) NOT NULL default '0',
+	`post_time` int(11) NOT NULL default '0',
+	`poster_ip` varchar(8) NOT NULL default '',
+	`post_username` varchar(25) default NULL,
+	`post_subject` varchar(255) default NULL,
+	`post_text` text,
+	`post_text_compiled` text,
+	`enable_bbcode` tinyint(1) NOT NULL default '1',
+	`enable_html` tinyint(1) NOT NULL default '0',
+	`enable_smilies` tinyint(1) NOT NULL default '1',
+	`enable_sig` tinyint(1) NOT NULL default '1',
+	`edit_notes` mediumtext,
+	`post_edit_time` int(11) default NULL,
+	`post_edit_count` smallint(5) unsigned NOT NULL default '0',
+	`post_edit_id` mediumint(8) NOT NULL default '0',
+	`post_attachment` tinyint(1) NOT NULL default '0',
+	`post_bluecard` tinyint(1) default NULL,
+	`enable_autolinks_acronyms` tinyint(1) NOT NULL default '1',
+	PRIMARY KEY (`post_id`),
+	KEY `forum_id` (`forum_id`),
+	KEY `topic_id` (`topic_id`),
+	KEY `poster_id` (`poster_id`),
+	KEY `post_time` (`post_time`)
+);
+
+INSERT INTO `___posts___`
+SELECT p.post_id, p.topic_id, p.forum_id, p.poster_id, p.post_time, p.poster_ip, p.post_username, t.post_subject, t.post_text, t.post_text_compiled, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_sig, t.edit_notes, p.post_edit_time, p.post_edit_count, p.post_edit_id, p.post_attachment, p.post_bluecard, p.enable_autolinks_acronyms
+FROM `phpbb_posts` p, `phpbb_posts_text` t
+WHERE p.post_id = t.post_id
+ORDER BY p.post_id;
+
+RENAME TABLE `phpbb_posts` TO `_old_phpbb_posts`;
+RENAME TABLE `phpbb_posts_text` TO `_old_phpbb_posts_text`;
+RENAME TABLE `___posts___` TO `phpbb_posts`;
+
+CREATE TABLE `___privmsgs___` (
+	`privmsgs_id` mediumint(8) unsigned NOT NULL auto_increment,
+	`privmsgs_type` tinyint(4) NOT NULL default '0',
+	`privmsgs_subject` varchar(255) NOT NULL default '',
+	`privmsgs_text` text,
+	`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
+	`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
+	`privmsgs_date` int(11) NOT NULL default '0',
+	`privmsgs_ip` varchar(8) NOT NULL default '',
+	`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
+	`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
+	`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
+	`privmsgs_attach_sig` tinyint(1) NOT NULL default '1',
+	`privmsgs_attachment` tinyint(1) NOT NULL default '0',
+	`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '0',
+	PRIMARY KEY (`privmsgs_id`),
+	KEY `privmsgs_from_userid` (`privmsgs_from_userid`),
+	KEY `privmsgs_to_userid` (`privmsgs_to_userid`)
+);
+
+INSERT INTO `___privmsgs___`
+SELECT p.privmsgs_id, p.privmsgs_type, p.privmsgs_subject, t.privmsgs_text, p.privmsgs_from_userid, p.privmsgs_to_userid, p.privmsgs_date, p.privmsgs_ip, p.privmsgs_enable_bbcode, p.privmsgs_enable_html, p.privmsgs_enable_smilies, p.privmsgs_attach_sig, p.privmsgs_attachment, p.privmsgs_enable_autolinks_acronyms
+FROM `phpbb_privmsgs` p, `phpbb_privmsgs_text` t
+WHERE p.privmsgs_id = t.privmsgs_text_id
+ORDER BY p.privmsgs_id;
+
+RENAME TABLE `phpbb_privmsgs` TO `_old_phpbb_privmsgs`;
+RENAME TABLE `phpbb_privmsgs_text` TO `_old_phpbb_privmsgs_text`;
+RENAME TABLE `___privmsgs___` TO `phpbb_privmsgs`;
+
+ALTER TABLE `phpbb_privmsgs_archive` ADD COLUMN `privmsgs_text` text AFTER `privmsgs_subject`;
 
 
 
 #####################
 
-##UPDATE phpbb_config SET config_value = '1' WHERE config_name = 'allow_only_main_admin_id';
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.2.10.37' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.2.13.40' WHERE config_name = 'ip_version';

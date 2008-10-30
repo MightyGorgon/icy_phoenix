@@ -20,16 +20,14 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_random_attach_block_func))
+if(!function_exists('imp_random_attach_block_func'))
 {
 	function imp_random_attach_block_func()
 	{
 		global $template, $cms_config_vars, $block_id, $db, $lang, $tree, $attach_config;
 
-		$template->_tpldata['images.'] = array();
-		//reset($template->_tpldata['images.']);
-		$template->_tpldata['no_images.'] = array();
-		//reset($template->_tpldata['no_images.']);
+		$template->_tpldata['cms_block_images.'] = array();
+		$template->_tpldata['cms_block_no_images.'] = array();
 
 		$maxheight = $cms_config_vars['md_ran_att_height'][$block_id];
 		$maxwidth = $cms_config_vars['md_ran_att_width'][$block_id];
@@ -93,17 +91,17 @@ if(!function_exists(imp_random_attach_block_func))
 				$height = $dim[1];
 				$size = '';
 				// create width and hight
-				if ($width > $maxwidth && $width > $height)
+				if (($width > $maxwidth) && ($width > $height))
 				{
 					$width = $maxwidth;
-					$size = ' width="'.$width.'" ';
+					$size = ' width="' . $width . '" ';
 				}
 				elseif($height > $maxheight)
 				{
 					$height = $maxheight;
-					$size = ' height="'.$height.'" ';
+					$size = ' height="' . $height . '" ';
 				}
-				$template->assign_block_vars('images', array(
+				$template->assign_block_vars('cms_block_images', array(
 					'IMG' => $img,
 					'U_IMG' => append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '='. $imgrow['post_id'] . '#p' . $imgrow['post_id']),
 					'SIZE' => $size
@@ -113,7 +111,7 @@ if(!function_exists(imp_random_attach_block_func))
 		}
 		else
 		{
-			$template->assign_block_vars('no_images', array(
+			$template->assign_block_vars('cms_block_no_images', array(
 				'L_NOT_FOUND' => $lang['Not_found']
 				)
 			);

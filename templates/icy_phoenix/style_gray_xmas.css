@@ -1,6 +1,6 @@
-@import url("common.css");
-@import url("fap.css");
-@import url("dock.css");
+@import url("../default/common.css");
+@import url("../default/fap.css");
+@import url("../default/dock.css");
 @import url("style_gray_common.css");
 @import url("style_gray_xmas_colors.css");
 
@@ -42,7 +42,7 @@
 	/*line-height: 1.2em;*/
 }
 
-.roundedhc {
+.tbl-h-c {
 	background: url('images/gray/xmas/tbl_h_c.gif') bottom left repeat-x;
 }
 

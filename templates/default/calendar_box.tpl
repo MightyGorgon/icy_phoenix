@@ -24,7 +24,7 @@ function createTitle(which, string, x, y)
 		excessWidth = 50;
 	}
 	excessHeight = 20;
-	element.innerHTML = '<div class="bodyline"><table width="300" cellspacing="0" cellpadding="0" border="0"><tr><td><table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span class="gen">' + string + '</span></td></tr></table></td></tr></table></div>';
+	element.innerHTML = '<div class="bodyline"><table width="300" cellspacing="0" cellpadding="0" border="0"><tr><td><table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span class="gen">' + string + '<\/span><\/td><\/tr><\/table><\/td><\/tr><\/table><\/div>';
 	renderedElement = document.body.insertBefore(element, document.body.firstChild);
 	renderedWidth = renderedElement.offsetWidth;
 	renderedHeight = renderedElement.offsetHeight;
@@ -99,9 +99,9 @@ if(GetCookie(tmp) == '2')
 	<!-- END switch_filled_no -->
 	<!-- BEGIN switch_filled -->
 	<td class="row1" valign="top" colspan="{_calendar_box._row._cell.SPAN}" width="{_calendar_box._row._cell.WIDTH}%">
-		<table cellspacing="0" cellpadding="2" width="100%" height="94" valign="top">
+		<table cellspacing="0" cellpadding="2" width="100%" style="height:94px;vertical-align:top;">
 		<tr>
-			<td class="rowcal3" valign="top" align="center" height="4" nowrap="nowrap"><span class="genmed"><a href="{_calendar_box._row._cell.U_DATE}" alt="{_calendar_box._row._cell.DATE}" class="genmed">{_calendar_box._row._cell.DATE}</a></span></td>
+			<td class="rowcal3" valign="top" align="center" height="4" nowrap="nowrap"><span class="genmed"><a href="{_calendar_box._row._cell.U_DATE}" title="{_calendar_box._row._cell.DATE}" class="genmed">{_calendar_box._row._cell.DATE}</a></span></td>
 		</tr>
 		<tr valign="top">
 			<td class="rowcal2" nowrap="nowrap">

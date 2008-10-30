@@ -492,34 +492,17 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 			{
 				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)' . $sql, '', __LINE__, __FILE__, $sql);
 			}
-
-			$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-				WHERE privmsgs_text_id = $old_privmsgs_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (inbox)', '', __LINE__, __FILE__, $sql);
-			}
 		}
 	}
 
-	$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
-		VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', " . $userdata['user_id'] . ", " . $targetdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig, $acro_auto_on)";
+	$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
+		VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', '" . str_replace("\'", "''", $privmsg_message) . "', " . $userdata['user_id'] . ", " . $targetdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig, $acro_auto_on)";
 	if (!($result = $db->sql_query($sql_info, BEGIN_TRANSACTION)))
 	{
 		message_die(GENERAL_ERROR, "Could not insert/update private message sent info.", "", __LINE__, __FILE__, $sql_info);
 	}
-	$privmsg_sent_id = $db->sql_nextid();
 
-	$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
-		VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", $privmsg_message) . "')";
-	if (!$db->sql_query($sql, END_TRANSACTION))
-	{
-		message_die(GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql_info);
-	}
-
-	//
 	// Add to the users new pm counter
-	//
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
 		WHERE user_id = " . $targetdata['user_id'];

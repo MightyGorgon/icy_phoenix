@@ -44,7 +44,7 @@ if (!defined('IN_ICYPHOENIX'))
  * If so we use our ct_database class to load the Blocklist from the
  * Database in an array and check if someone who was blocked is in the list.
  */
-if ( $ctracker_config->settings['ipblock_enabled'] == 1 )
+if ($ctracker_config->settings['ipblock_enabled'] == 1)
 {
 	// Fetch Blocklist from Database
 	$ctracker_config->unset_blocklist_verbose();
@@ -74,7 +74,7 @@ if ( $ctracker_config->settings['ipblock_enabled'] == 1 )
 		/*
 		* Now lets check if we have matches in the blocklist
 		*/
-		if ( preg_match('/^' . $current_value . '$/is', $ct_client_ip) || preg_match('/^' . $current_value . '$/is', $ct_user_agent) || preg_match('/^' . $current_value . '$/is', $ct_remote_host) )
+		if (preg_match('/^' . $current_value . '$/is', $ct_client_ip) || preg_match('/^' . $current_value . '$/is', $ct_user_agent) || preg_match('/^' . $current_value . '$/is', $ct_remote_host))
 		{
 			// We have a match, so write the log
 			include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
@@ -112,8 +112,7 @@ if ( $ctracker_config->settings['ipblock_enabled'] == 1 )
 	} // for
 
 	/*
-	* Now we don't need the Array with the Blocklist Information anymore so
-	* we drop it
+	* Now we don't need the Array with the Blocklist Information anymore so we drop it
 	*/
 	unset($ctracker_config->blocklist);
 

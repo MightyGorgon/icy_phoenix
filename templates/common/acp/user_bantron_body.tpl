@@ -1,32 +1,28 @@
 <h1>{L_BM_TITLE}</h1> 
 <p>{L_BM_EXPLAIN}</p>
 <form action="{S_BANCENTER_ACTION}" method="post">
-<table width="100%" cellpadding="1" cellspacing="0" border="0">
-<tr>
-	<td width="50%" align="right"><span class="genmed"><strong>{L_SHOW_BANS_BY}:&nbsp;</strong></span></td>
-	<td width="1">
-		<select name="show"> 
-			<option value="username"{USERNAME_SELECTED}>{L_USERNAME}</option>
-			<option value="ip"{IP_SELECTED}>{L_IP}</option>
-			<option value="email"{EMAIL_SELECTED}>{L_EMAIL}</option>
-			<option value="all"{ALL_SELECTED}>{L_ALL}</option>
-		</select>
-	</td>
-	<td width="50%" align="left"><input type="submit" class="liteoption" name="show_submit" value="{L_SHOW}" /></td>
-</tr>
-<tr>
-	<td width="50%" align="right"><span class="genmed"><strong>{L_ORDER}:&nbsp;</strong></span></td>
-	<td width="1">
-		<select name="order"> 
-			<option value="ASC"{ASC_SELECTED}>{L_ASCENDING}</option>
-			<option value="DESC"{DESC_SELECTED}>{L_DESCENDING}</option>
-		</select>
-	</td>
-	<td width="50%" align="left"><input type="submit" class="liteoption" name="sort_submit" value="{L_SORT}" /></td>
-</tr>
-</table>
+<div style="text-align:right;padding:3px;">
+<span class="genmed">
+	<strong>{L_SHOW_BANS_BY}:</strong>&nbsp;
+	<select name="show" class="post">
+		<option value="username"{USERNAME_SELECTED}>{L_USERNAME}</option>
+		<option value="ip"{IP_SELECTED}>{L_IP}</option>
+		<option value="email"{EMAIL_SELECTED}>{L_EMAIL}</option>
+		<option value="all"{ALL_SELECTED}>{L_ALL}</option>
+	</select>
+	&nbsp;&nbsp;
+	<input type="submit" class="liteoption" name="show_submit" value="{L_SHOW}" />
+	&nbsp;&nbsp;
+	<strong>{L_ORDER}:</strong>
+	<select name="order" class="post">
+		<option value="ASC">{L_ASCENDING}</option>
+		<option value="DESC">{L_DESCENDING}</option>
+	</select>
+	&nbsp;&nbsp;
+	<input type="submit" class="liteoption" name="sort_submit" value="{L_SORT}" />
+</span>
+</div>
 </form>
-<br />
 
 <form action="{S_BANCENTER_ACTION}" method="post">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -48,9 +44,7 @@
 	<th nowrap="nowrap">{L_DELETE}</th>
 <tr>
 <!-- BEGIN switch_nobans -->
-<tr>
-	<td class="row1" colspan="11" align="left">{NO_BANS}</td>
-</tr>
+<tr><td class="row1" colspan="11" align="left">{NO_BANS}</td></tr>
 <!-- END switch_nobans -->
 <!-- BEGIN rowlist -->
 <tr>

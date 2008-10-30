@@ -43,20 +43,6 @@ switch ($current_phpbb_version)
 			ADD COLUMN topic_first_post_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 			ADD INDEX (topic_first_post_id)";
 
-		$sql[] = "ALTER TABLE " . THEMES_NAME_TABLE . "
-			ADD COLUMN tr_class1_name varchar(50) NULL,
-			ADD COLUMN tr_class2_name varchar(50) NULL,
-			ADD COLUMN tr_class3_name varchar(50) NULL,
-			ADD COLUMN th_class1_name varchar(50) NULL,
-			ADD COLUMN th_class2_name varchar(50) NULL,
-			ADD COLUMN th_class3_name varchar(50) NULL,
-			ADD COLUMN td_class1_name varchar(50) NULL,
-			ADD COLUMN td_class2_name varchar(50) NULL,
-			ADD COLUMN td_class3_name varchar(50) NULL,
-			ADD COLUMN span_class1_name varchar(50) NULL,
-			ADD COLUMN span_class2_name varchar(50) NULL,
-			ADD COLUMN span_class3_name varchar(50) NULL";
-
 	case 'RC-3':
 	case 'RC-4':
 	case '.0.0':
@@ -188,17 +174,10 @@ switch ($current_phpbb_version)
 			$theme_id = $row['themes_id'];
 
 			$sql = "UPDATE " . THEMES_TABLE . "
-				SET head_stylesheet = 'subSilver.css', body_background = '', body_bgcolor = 'E5E5E5', body_text = '000000', body_link = '006699', body_vlink = '5493B4', body_alink = '', body_hlink = 'DD6900', tr_color1 = 'EFEFEF', tr_color2 = 'DEE3E7', tr_color3 = 'D1D7DC', tr_class1 = '', tr_class2 = '', tr_class3 = '', th_color1 = '98AAB1', th_color2 = '006699', th_color3 = 'FFFFFF', th_class1 = 'cellpic1.gif', th_class2 = 'cellpic3.gif', th_class3 = 'cellpic2.jpg', td_color1 = 'FAFAFA', td_color2 = 'FFFFFF', td_color3 = '', td_class1 = 'row1', td_class2 = 'row2', td_class3 = '', fontface1 = 'Verdana, Arial, Helvetica, sans-serif', fontface2 = 'Trebuchet MS', fontface3 = 'Courier, ''Courier New'', sans-serif', fontsize1 = 10, fontsize2 = 11, fontsize3 = 12, fontcolor1 = '444444', fontcolor2 = '006600', fontcolor3 = 'FFA34F', span_class1 = '', span_class2 = '', span_class3 = ''
+				SET head_stylesheet = 'subSilver.css', body_background = '', body_bgcolor = 'E5E5E5', tr_class1 = '', tr_class2 = '', tr_class3 = '', td_class1 = 'row1', td_class2 = 'row2', td_class3 = ''
 				WHERE themes_id = $theme_id";
 			$ip_sql->_sql($sql, $errored, $error_ary);
 
-			$sql = "DELETE FROM " . THEMES_NAME_TABLE . "
-				WHERE themes_id = $theme_id";
-			$ip_sql->_sql($sql, $errored, $error_ary);
-
-			$sql = "INSERT INTO " . THEMES_NAME_TABLE . " (themes_id, tr_color1_name, tr_color2_name, tr_color3_name, tr_class1_name, tr_class2_name, tr_class3_name, th_color1_name, th_color2_name, th_color3_name, th_class1_name, th_class2_name, th_class3_name, td_color1_name, td_color2_name, td_color3_name, td_class1_name, td_class2_name, td_class3_name, fontface1_name, fontface2_name, fontface3_name, fontsize1_name, fontsize2_name, fontsize3_name, fontcolor1_name, fontcolor2_name, fontcolor3_name, span_class1_name, span_class2_name, span_class3_name)
-				VALUES ($theme_id, 'The lightest row colour', 'The medium row color', 'The darkest row colour', '', '', '', 'Border round the whole page', 'Outer table border', 'Inner table border', 'Silver gradient picture', 'Blue gradient picture', 'Fade-out gradient on index', 'Background for quote boxes', 'All white areas', '', 'Background for topic posts', '2nd background for topic posts', '', 'Main fonts', 'Additional topic title font', 'Form fonts', 'Smallest font size', 'Medium font size', 'Normal font size (post body etc)', 'Quote & copyright text', 'Code text colour', 'Main table header text colour', '', '', '')";
-			$ip_sql->_sql($sql, $errored, $error_ary);
 		}
 		$db->sql_freeresult($result);
 
@@ -593,7 +572,7 @@ $error_ary = array();
 // Optimize/vacuum analyze the tables where appropriate
 // this should be done for each version in future along with
 // the version number update
-$sql = 'OPTIMIZE TABLE ' . $table_prefix . 'auth_access, ' . $table_prefix . 'banlist, ' . $table_prefix . 'categories, ' . $table_prefix . 'config, ' . $table_prefix . 'disallow, ' . $table_prefix . 'forum_prune, ' . $table_prefix . 'forums, ' . $table_prefix . 'groups, ' . $table_prefix . 'posts, ' . $table_prefix . 'posts_text, ' . $table_prefix . 'privmsgs, ' . $table_prefix . 'privmsgs_text, ' . $table_prefix . 'ranks, ' . $table_prefix . 'search_results, ' . $table_prefix . 'search_wordlist, ' . $table_prefix . 'search_wordmatch, ' . $table_prefix . 'sessions_keys, ' . $table_prefix . 'smilies, ' . $table_prefix . 'themes, ' . $table_prefix . 'themes_name, ' . $table_prefix . 'topics, ' . $table_prefix . 'topics_watch, ' . $table_prefix . 'user_group, ' . $table_prefix . 'users, ' . $table_prefix . 'vote_desc, ' . $table_prefix . 'vote_results, ' . $table_prefix . 'vote_voters, ' . $table_prefix . 'words';
+$sql = 'OPTIMIZE TABLE ' . $table_prefix . 'auth_access, ' . $table_prefix . 'banlist, ' . $table_prefix . 'categories, ' . $table_prefix . 'config, ' . $table_prefix . 'disallow, ' . $table_prefix . 'forum_prune, ' . $table_prefix . 'forums, ' . $table_prefix . 'groups, ' . $table_prefix . 'posts, ' . $table_prefix . 'privmsgs, ' . $table_prefix . 'privmsgs_text, ' . $table_prefix . 'ranks, ' . $table_prefix . 'search_results, ' . $table_prefix . 'search_wordlist, ' . $table_prefix . 'search_wordmatch, ' . $table_prefix . 'sessions_keys, ' . $table_prefix . 'smilies, ' . $table_prefix . 'themes, ' . $table_prefix . 'topics, ' . $table_prefix . 'topics_watch, ' . $table_prefix . 'user_group, ' . $table_prefix . 'users, ' . $table_prefix . 'vote_desc, ' . $table_prefix . 'vote_results, ' . $table_prefix . 'vote_voters, ' . $table_prefix . 'words';
 
 $ip_sql->_sql($sql, $errored, $error_ary);
 

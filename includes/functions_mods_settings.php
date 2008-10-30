@@ -21,22 +21,18 @@
 $list_yes_no = array('Yes' => 1, 'No' => 0);
 define('BOARD_ADMIN', 98);
 
-//---------------------------------------------------------------
-//
-//	mods_settings_get_lang() : translation keys
-//
-//---------------------------------------------------------------
+/*
+* mods_settings_get_lang() : translation keys
+*/
 function mods_settings_get_lang($key)
 {
 	global $lang;
-	return ( (!empty($key) && isset($lang[$key])) ? $lang[$key] : $key );
+	return ((!empty($key) && isset($lang[$key])) ? $lang[$key] : $key);
 }
 
-//---------------------------------------------------------------
-//
-//	init_board_config_key() : add a key and its value to the board config table
-//
-//---------------------------------------------------------------
+/*
+* init_board_config_key() : add a key and its value to the board config table
+*/
 function init_board_config_key($key, $value, $force = false)
 {
 	global $db, $board_config;
@@ -45,8 +41,8 @@ function init_board_config_key($key, $value, $force = false)
 	{
 		$db->clear_cache('config_');
 		$board_config[$key] = $value;
-		$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name,config_value) VALUES('$key','$value')";
-		if ( !$db->sql_query($sql) )
+		$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES('$key', '$value')";
+		if (!$db->sql_query($sql))
 		{
 			//message_die(GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
 		}
@@ -55,19 +51,17 @@ function init_board_config_key($key, $value, $force = false)
 	{
 		$db->clear_cache('config_');
 		$board_config[$key] = $value;
-		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='$value' WHERE config_name='$key'";
-		if ( !$db->sql_query($sql) )
+		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '$value' WHERE config_name = '$key'";
+		if (!$db->sql_query($sql))
 		{
 			//message_die(GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
 		}
 	}
 }
 
-//---------------------------------------------------------------
-//
-//	user_board_config_key() : get the user choice if defined
-//
-//---------------------------------------------------------------
+/*
+* user_board_config_key() : get the user choice if defined
+*/
 function user_board_config_key($key, $user_field = '', $over_field = '')
 {
 	global $board_config, $userdata;
@@ -107,22 +101,20 @@ function user_board_config_key($key, $user_field = '', $over_field = '')
 	}
 }
 
-//---------------------------------------------------------------
-//
-//	init_board_config() : get the user choice if defined
-//
-//---------------------------------------------------------------
+/*
+* init_board_config() : get the user choice if defined
+*/
 function init_board_config($mod_name, $config_fields, $sub_name = '', $sub_sort = 0, $mod_sort = 0, $menu_name = 'Preferences', $menu_sort = 0)
 {
 	global $mods;
 
 	@reset($config_fields);
-	while ( list($config_key, $config_data) = each($config_fields) )
+	while (list($config_key, $config_data) = each($config_fields))
 	{
 		if (!isset($config_data['user_only']) || !$config_data['user_only'])
 		{
 			// create the key value
-			init_board_config_key($config_key, ( !empty($config_data['values']) ? $config_data['values'][ $config_data['default'] ] : $config_data['default']) );
+			init_board_config_key($config_key, (!empty($config_data['values']) ? $config_data['values'][ $config_data['default'] ] : $config_data['default']));
 			if (!empty($config_data['user']))
 			{
 				// create the "overwrite user choice" value
@@ -139,15 +131,15 @@ function init_board_config($mod_name, $config_fields, $sub_name = '', $sub_sort 
 			$mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$config_key] = $config_data;
 
 			// sort values : overwrite only if not yet provided
-			if (empty($mods[$menu_name]['sort']) || ($mods[$menu_name]['sort'] == 0) )
+			if (empty($mods[$menu_name]['sort']) || ($mods[$menu_name]['sort'] == 0))
 			{
 				$mods[$menu_name]['sort'] = $menu_sort;
 			}
-			if (empty($mods[$menu_name]['data'][$mod_name]['sort']) || ($mods[$menu_name]['data'][$mod_name]['sort'] == 0) )
+			if (empty($mods[$menu_name]['data'][$mod_name]['sort']) || ($mods[$menu_name]['data'][$mod_name]['sort'] == 0))
 			{
 				$mods[$menu_name]['data'][$mod_name]['sort'] = $mod_sort;
 			}
-			if (empty($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort']) || ($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort'] == 0) )
+			if (empty($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort']) || ($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort'] == 0))
 			{
 				$mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort'] = $sub_sort;
 			}

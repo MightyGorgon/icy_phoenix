@@ -5,7 +5,7 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th>{L_SELECT_TITLE}</b></th></tr>
 <tr>
-	<td class="row1 row-center">
+	<td class="cat">
 		<input class="liteoption" type="submit" value="add" name="mode" />&nbsp;
 		<input class="liteoption" type="submit" value="edit" name="mode" />&nbsp;
 		<input class="liteoption" type="submit" value="delete" name="mode" />

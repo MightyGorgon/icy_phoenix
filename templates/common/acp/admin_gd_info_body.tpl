@@ -1,7 +1,7 @@
 <h1>{L_TITLE}</h1>
 <p>{L_DESCRIPTION}</p>
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="2" align="left">{L_TITLE}:</th></tr>
+<tr><th colspan="2">{L_TITLE}</th></tr>
 <tr>
 	<td class="row1" width="50%"><span class="gen"><b>{L_VERSION}</b></span></td>
 	<td class="row1" width="50%"><span class="gen"><b>{VERSION}</b></span></td>
@@ -46,4 +46,5 @@
 	<td class="row1" width="50%"><span class="gen"><b>{L_JIS_MAPPED_SUPPORT}</b></span></td>
 	<td class="row1" width="50%"><span class="gen"><b>{JIS_MAPPED_SUPPORT}</b></span></td>
 </tr>
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>

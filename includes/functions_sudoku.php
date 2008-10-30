@@ -23,10 +23,10 @@ if (!defined('IN_ICYPHOENIX'))
 //
 // constants
 //
-define( EASY, 1 );
-define( MEDIUM, 2 );
-define( HARD, 3 );
-define( VERY_HARD, 4 );
+define(EASY, 1);
+define(MEDIUM, 2);
+define(HARD, 3);
+define(VERY_HARD, 4);
 
 //
 // begin functions
@@ -43,12 +43,12 @@ function sudoku_starting_data($game_pack, $game_num, $db_table, $and_clause)
 	AND game_num=$game_num
 	$and_clause
 	";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving solutions', '', __LINE__, __FILE__, $sql);
 	}
 	$line=array();
-	while ( $row=$db->sql_fetchrow($result) )
+	while ($row=$db->sql_fetchrow($result))
 	{
 		$lrow=$row;
 		$line[]=explode('a', $row['line_1']);
@@ -86,8 +86,8 @@ function sudoku_grid_build()
 			{
 				if ($tile[$tile_key] == 'x' || ($tile[$tile_key] > 9 && $tile[$tile_key] < 20))
 				{
-					$tile_text=( $tile[$tile_key] == 'x' ) ? $lang['suduko_blank_tile'] : $lang['suduko_user_tile'];
-					$tile_url=( $tile[$tile_key] == 'x' ) ? append_sid('sudoku.' . PHP_EXT . '?mode=insert&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '#grid') : append_sid('sudoku.' . PHP_EXT . '?mode=edit&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '&amp;val=' . ($tile[$tile_key]-10) . '#grid');
+					$tile_text=($tile[$tile_key] == 'x') ? $lang['suduko_blank_tile'] : $lang['suduko_user_tile'];
+					$tile_url=($tile[$tile_key] == 'x') ? append_sid('sudoku.' . PHP_EXT . '?mode=insert&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '#grid') : append_sid('sudoku.' . PHP_EXT . '?mode=edit&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '&amp;val=' . ($tile[$tile_key]-10) . '#grid');
 					$on_click = ($tile[$tile_key] == 'x') ? 'sudoku(\'' . append_sid('sudoku.' . PHP_EXT . '?tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;type=insert#grid') . "','','?')" : 'sudoku(\'' . append_sid('sudoku.' . PHP_EXT . '?tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;type=edit#grid') . "','" . ($tile[$tile_key]) . "','" . ($tile[$tile_key]-10) . "')";
 					$tile_object='<a href="' . $tile_url . '" onClick="' . $on_click . '; return false;"><img src="' . IP_ROOT_PATH . $images[$tile_image] . '" alt="' . $tile_text . '" title="' . $tile_text . '" hspace="0" vspace="0" border="0"></a>';
 				}
@@ -96,13 +96,13 @@ function sudoku_grid_build()
 					$tile_object='<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">';
 				}
 			}
-			//else if ( $mode == 'insert' )
+			//else if ($mode == 'insert')
 			//{
-			//	$tile_object=( $line_key != $co_ord[0] || $key != $co_ord[1] ) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
+			//	$tile_object=($line_key != $co_ord[0] || $key != $co_ord[1]) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
 			//}
-			//else if ( $mode == 'edit' )
+			//else if ($mode == 'edit')
 			//{
-			//	$tile_object=( $line_key != $co_ord[0] || $key != $co_ord[1] ) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
+			//	$tile_object=($line_key != $co_ord[0] || $key != $co_ord[1]) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" hspace="0" vspace="0" border="0">' : '<select name="num_input">' . $input_box;
 			//}
 			//
 			// set the template var
@@ -128,12 +128,12 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	AND game_num=$num
 	AND user_id=$Sud_user_id
 	";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error performing Sudoku Tasks', '', __LINE__, __FILE__, $sql);
 	}
 	$row=$db->sql_fetchrow($result);
-	if ( $row['entrys'] > 1 )
+	if ($row['entrys'] > 1)
 	{
 		$sql=" SELECT * FROM " . SUDOKU_USERS . "
 		WHERE game_pack=$pack
@@ -141,7 +141,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 		AND user_id=$Sud_user_id
 		LIMIT 1
 		";
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Error performing Sudoku Tasks', '', __LINE__, __FILE__, $sql);
 		}
@@ -153,7 +153,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 		AND game_num=$num
 		AND user_id=$Sud_user_id
 		";
-		if ( !$db->sql_query($sql) )
+		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error performing Sudoku Tasks', '', __LINE__, __FILE__, $sql);
 		}
@@ -163,7 +163,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 		VALUES
 		($Sud_user_id,$pack,$num,$level,'" . $row['line_1'] . "','" . $row['line_2'] . "','" . $row['line_3'] . "','" . $row['line_4'] . "','" . $row['line_5'] . "','" . $row['line_6'] . "','" . $row['line_7'] . "','" . $row['line_8'] . "','" . $row['line_9'] . "')
 		";
-		if (!$db->sql_query($sql) )
+		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 		}
@@ -173,19 +173,19 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	$sql=" SELECT * FROM " . SUDOKU_STATS . "
 	WHERE user_id=$Sud_user_id
 	";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error performing Sudoku Tasks', '', __LINE__, __FILE__, $sql);
 	}
 	$row=$db->sql_fetchrow($result);
-	if ( !$row )
+	if (!$row)
 	{
 		$s_games=0;
 		$s_points=0;
 		// do for first run stats
 		$sql=" SELECT SUM(points) AS total_points FROM " . SUDOKU_USERS . "
 		WHERE user_id=$Sud_user_id";
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 		}
@@ -194,7 +194,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 
 		$sql=" SELECT COUNT(user_id) AS total_games FROM " . SUDOKU_USERS . "
 		WHERE user_id=$Sud_user_id";
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 		}
@@ -207,7 +207,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 		VALUES
 		($Sud_user_id, '$s_games','$s_points')
 		";
-		if (!$db->sql_query($sql) )
+		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 		}
@@ -219,7 +219,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	WHERE user_id=$Sud_user_id
 	AND game_pack != $pack
 	";
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 	}
@@ -228,7 +228,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	WHERE user_id=$Sud_user_id
 	AND game_num != $num
 	";
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 	}
@@ -244,7 +244,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	VALUES
 	($Sud_user_id, $time)
 	";
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error updating Sudoku Sessions', '', __LINE__, __FILE__, $sql);
 	}
@@ -253,7 +253,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	WHERE user_id=$Sud_user_id
 	AND session_time != $time
 	";
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error updating Sudoku Sessions', '', __LINE__, __FILE__, $sql);
 	}
@@ -261,7 +261,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	$sql=" DELETE FROM " . SUDOKU_SESSIONS . "
 	WHERE session_time < $time_limit
 	";
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error updating Sudoku Sessions', '', __LINE__, __FILE__, $sql);
 	}
@@ -270,14 +270,14 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	$sql=" SELECT * FROM " . SUDOKU_SESSIONS . "
 	WHERE session_time > $time_limit
 	";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 	}
-	while ( $row=$db->sql_fetchrow($result) )
+	while ($row=$db->sql_fetchrow($result))
 	{
 		$s_users_today[]=$row['user_id'];
-		if ( $row['session_time'] > $active_time )
+		if ($row['session_time'] > $active_time)
 		{
 			$s_users_active[]=$row['user_id'];
 		}
@@ -286,7 +286,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	$sql=" SELECT count(user_id) AS total_all FROM " . USERS_TABLE . "
 	WHERE user_sudoku_playing=1
 	";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 	}
@@ -294,7 +294,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	$alltime_players=$row['total_all'];
 
 	$sql=" SELECT SUM(played) AS total_all_played FROM " . SUDOKU_STATS;
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 	}
@@ -312,27 +312,27 @@ function sudoku_resynch()
 	$sql=" SELECT game_pack, game_num FROM " . SUDOKU_STARTS . "
 	ORDER BY game_pack ASC, game_num ASC
 	";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in synchronisation', '', __LINE__, __FILE__, $sql);
 	}
 	$x=0;
-	while ( $row=$db->sql_fetchrow($result) )
+	while ($row=$db->sql_fetchrow($result))
 	{
 		$sql_a=" SELECT user_id FROM " . SUDOKU_USERS . "
 		WHERE game_pack=" . $row['game_pack'] . "
 		AND game_num=" . $row['game_num'] . "
 		";
-		if ( !($result_a = $db->sql_query($sql_a)) )
+		if (!($result_a = $db->sql_query($sql_a)))
 		{
 			message_die(GENERAL_ERROR, 'Error in synchronisation', '', __LINE__, __FILE__, $sql_a);
 		}
-		while ( $row_a=$db->sql_fetchrow($result_a) )
+		while ($row_a=$db->sql_fetchrow($result_a))
 		{
 			$sql_b=" UPDATE " . SUDOKU_STATS . "
 			SET played='$x'
 			WHERE user_id=" . $row_a['user_id'];
-			if ( !$db->sql_query($sql_b) )
+			if (!$db->sql_query($sql_b))
 			{
 				message_die(GENERAL_ERROR, 'Error in synchronisation', '', __LINE__, __FILE__, $sql_b);
 			}
@@ -349,18 +349,18 @@ function sudoku_grid_success($pack, $num, $curr_points, $redirect)
 		$sql=" UPDATE " . SUDOKU_STATS . "
 		SET played=played+1, points=points+'$curr_points'
 		WHERE user_id=" . $userdata['user_id'];
-		if (!$db->sql_query($sql) )
+		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 		}
 
 		$line='';
 		sudoku_starting_data($pack, ($num+1), SUDOKU_STARTS, '');
-		if ( !$line )
+		if (!$line)
 		{
 			sudoku_starting_data(($pack+1),1, SUDOKU_STARTS, '');
 		}
-		if ( !$line )
+		if (!$line)
 		{
 			$message=$lang['sudoku_nomore_grids'];
 			message_die(GENERAL_MESSAGE, $message);
@@ -371,7 +371,7 @@ function sudoku_grid_success($pack, $num, $curr_points, $redirect)
 		VALUES
 		(" . $userdata['user_id'] . "," . $lrow['game_pack'] . "," . $lrow['game_num'] . "," . $lrow['game_level'] . ",'" . $lrow['line_1'] . "','" . $lrow['line_2'] . "','" . $lrow['line_3'] . "','" . $lrow['line_4'] . "','" . $lrow['line_5'] . "','" . $lrow['line_6'] . "','" . $lrow['line_7'] . "','" . $lrow['line_8'] . "','" . $lrow['line_9'] . "')
 		";
-		if (!$db->sql_query($sql) )
+		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 		}

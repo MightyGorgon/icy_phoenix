@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_recent_topics_block_func))
+if(!function_exists('imp_recent_topics_block_func'))
 {
 	function imp_recent_topics_block_func()
 	{
@@ -29,7 +29,6 @@ if(!function_exists(imp_recent_topics_block_func))
 		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$template->_tpldata['recent_topic_row.'] = array();
-		//reset($template->_tpldata['recent_topic_row.']);
 
 		$bbcode->allow_html = $html_on;
 		$bbcode->allow_bbcode = $bbcode_on;
@@ -82,14 +81,12 @@ if(!function_exists(imp_recent_topics_block_func))
 			{
 				$recent_topic_row[$i]['topic_title'] = (!empty($recent_topic_row[$i]['topic_title'])) ? preg_replace($orig_word, $replacement_word, $recent_topic_row[$i]['topic_title']) : '';
 			}
-			$recent_topic_row[$i]['username'] = colorize_username($recent_topic_row[$i]['user_id']);
 			$template->assign_block_vars($style_row . '.recent_topic_row', array(
 				'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $recent_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],
-				'L_TITLE' => $bbcode->parse($recent_topic_row[$i]['topic_title'], '', true),
+				'L_TITLE' => $bbcode->parse(htmlspecialchars($recent_topic_row[$i]['topic_title']), '', true),
 				'L_BY' => $lang['By'],
 				'L_ON' => $lang['On'],
-				'U_POSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $recent_topic_row[$i]['user_id']),
-				'S_POSTER' => $recent_topic_row[$i]['username'],
+				'S_POSTER' => colorize_username($recent_topic_row[$i]['user_id']),
 				'S_POSTTIME' => create_date2($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
 				)
 			);

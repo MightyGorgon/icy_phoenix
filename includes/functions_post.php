@@ -167,7 +167,8 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 	// Check to see if the user is last poster and is bumping
 	//if(($mode == 'reply' || $mode == 'quote') && ($board_config['no_bump'] == true) && ($new_post_while_posting == false))
-	if(($mode == 'reply' || $mode == 'quote') && ($board_config['no_bump'] == true) && ($userdata['user_level'] != ADMIN) && ($new_post_while_posting == false))
+	$no_bump = ((($board_config['no_bump'] == 1) && ($userdata['user_level'] != ADMIN)) || (($board_config['no_bump'] == 2) && ($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))) ? true : false;
+	if(($mode == 'reply' || $mode == 'quote') && ($no_bump == true) && ($new_post_while_posting == false))
 	{
 		if(isset($topic_id))
 		{
@@ -343,7 +344,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	*/
 	// Mighty Gorgon - This must be tested! - END
 
-	$sql = ($mode != "editpost") ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_sig, enable_autolinks_acronyms) VALUES ($topic_id, $forum_id, " . $userdata['user_id'] . ", '$post_username', $current_time, '$user_ip', $bbcode_on, $html_on, $smilies_on, $attach_sig, $acro_auto_on)" : "UPDATE " . POSTS_TABLE . " SET post_username = '$post_username', enable_bbcode = $bbcode_on, enable_html = $html_on, enable_smilies = $smilies_on, enable_sig = $attach_sig" . $edited_sql . ", enable_autolinks_acronyms = " . $acro_auto_on . " WHERE post_id = $post_id";
+	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_sig, enable_autolinks_acronyms) VALUES ($topic_id, $forum_id, " . $userdata['user_id'] . ", '$post_username', '$post_subject', '$post_message', $current_time, '$user_ip', $bbcode_on, $html_on, $smilies_on, $attach_sig, $acro_auto_on)" : "UPDATE " . POSTS_TABLE . " SET post_username = '$post_username',  post_text = '$post_message', post_text_compiled = '', post_subject = '$post_subject', enable_bbcode = $bbcode_on, enable_html = $html_on, enable_smilies = $smilies_on, enable_sig = $attach_sig" . $edited_sql . ", enable_autolinks_acronyms = " . $acro_auto_on . " WHERE post_id = $post_id";
 	if (!$db->sql_query($sql, BEGIN_TRANSACTION))
 	{
 		$db->clear_cache('posts_');
@@ -353,13 +354,6 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	if ($mode != 'editpost')
 	{
 		$post_id = $db->sql_nextid();
-	}
-
-	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TEXT_TABLE . " (post_id, post_subject, post_text) VALUES ($post_id, '$post_subject', '$post_message')" : "UPDATE " . POSTS_TEXT_TABLE . " SET post_text = '$post_message', post_text_compiled = '', post_subject = '$post_subject' WHERE post_id = $post_id";
-	if (!$db->sql_query($sql))
-	{
-		$db->clear_cache('posts_');
-		message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
 	}
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -783,13 +777,6 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . POSTS_TEXT_TABLE . "
-			WHERE post_id = $post_id";
-		if (!$db->sql_query($sql))
-		{
-			$db->clear_cache('posts_');
-			message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
-		}
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . "
 			WHERE post_id = $post_id";
@@ -891,6 +878,32 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	cache_tree(true);
 
 	return;
+}
+
+function get_userdata_notifications($user, $force_str = false)
+{
+	global $db;
+
+	if (!is_numeric($user) || $force_str)
+	{
+		$user = phpbb_clean_username($user);
+	}
+	else
+	{
+		$user = intval($user);
+	}
+
+	$sql = "SELECT *
+			FROM " . USERS_TABLE . "
+			WHERE ";
+	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" . str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
+	}
+	$return_value = ($row = $db->sql_fetchrow($result)) ? $row : false;
+	$db->sql_freeresult($result);
+	return $return_value;
 }
 
 // Start replacement - Forum notification MOD

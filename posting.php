@@ -344,9 +344,9 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-		$select_sql = (!$submit) ? ', t.topic_title, t.news_id, t.topic_desc, t.topic_calendar_time, t.topic_calendar_duration, p.enable_bbcode, p.enable_html, p.enable_autolinks_acronyms, p.enable_smilies, p.enable_sig, p.post_username, pt.post_subject, pt.post_text, u.username, u.user_id, u.user_sig, u.user_level' : '';
-		$from_sql = (!$submit) ? ", " . POSTS_TEXT_TABLE . " pt, " . USERS_TABLE . " u" : '';
-		$where_sql = (!$submit) ? "AND pt.post_id = p.post_id AND u.user_id = p.poster_id" : '';
+		$select_sql = (!$submit) ? ', t.topic_title, t.news_id, t.topic_desc, t.topic_calendar_time, t.topic_calendar_duration, p.enable_bbcode, p.enable_html, p.enable_autolinks_acronyms, p.enable_smilies, p.enable_sig, p.post_username, p.post_subject, p.post_text, u.username, u.user_id, u.user_sig, u.user_level' : '';
+		$from_sql = (!$submit) ? ", " . USERS_TABLE . " u" : '';
+		$where_sql = (!$submit) ? "AND u.user_id = p.poster_id" : '';
 		// MG Cash MOD For IP - BEGIN
 		if (defined('CASH_MOD'))
 		{
@@ -1020,7 +1020,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 				}
 				if(($mode == 'editpost') && ($board_config['edit_notes'] == 1) && (strlen($notes) > 2))
 				{
-					$sql = "SELECT edit_notes FROM " . POSTS_TEXT_TABLE . " WHERE post_id='" . $post_id . "'";
+					$sql = "SELECT edit_notes FROM " . POSTS_TABLE . " WHERE post_id='" . $post_id . "'";
 					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
@@ -1056,7 +1056,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 						'text' => $notes
 					);
 					$db->clear_cache('posts_');
-					$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET edit_notes='" . addslashes(serialize($notes_list)) . "' WHERE post_id='" . $post_id . "'";
+					$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes='" . addslashes(serialize($notes_list)) . "' WHERE post_id='" . $post_id . "'";
 					$db->sql_query($sql);
 
 					// We need this, otherwise editing for normal users will be account twice!
@@ -1370,7 +1370,7 @@ else
 			message_die(GENERAL_ERROR, "Couldn't get post subject information");
 		$post_details = $db->sql_fetchrow($result);
 		$post_topic_id=$post_details['topic_id'];
-		$sql = 'SELECT pt.post_subject FROM ' . POSTS_TEXT_TABLE . ' pt, ' . POSTS_TABLE . ' p WHERE p.topic_id="' . $post_topic_id . '" AND pt.post_id=p.post_id ORDER BY p.post_time ASC LIMIT 1';
+		$sql = 'SELECT p.post_subject FROM ' . POSTS_TABLE . ' p WHERE p.topic_id="' . $post_topic_id . '" ORDER BY p.post_time ASC LIMIT 1';
 		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, "Couldn't get topic subject information <br />" . $sql);

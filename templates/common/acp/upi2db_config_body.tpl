@@ -68,43 +68,41 @@ UPI2DB Version: {UPI2DB_VERSION_NUMBER}</p>
 </tr>
 <tr>
 	<td class="row1">{L_MAX_MARK_POSTS} <br /><span class="gensmall">{L_MAX_MARK_POSTS_EXPLAIN}</span></td>
-	<td class="row2"><input class="post" type="text" size="3" maxlength="3" name="upi2db_max_mark_posts" value="{MAX_MARK_POSTS}" /></td>
+	<td class="row2"><input class="post" type="text" size="3" maxlength="3" name="upi2db_max_mark_posts" value="{MAX_MARK_POSTS}" />
+</td>
 </tr>
 <!-- END switch_upi2db_full -->
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
+</table>
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr><th colspan="4">{L_CONDITION_SETUP}</th></tr>
 <tr>
-	<td>
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-			<tr><th colspan="4">{L_CONDITION_SETUP}</th></tr>
-			<tr>
-				<td class="row1"><b>{L_GROUP_USER}</b></td>
-				<td class="row1"><b>{L_USER_ALLOW_UPI2DB}</b></td>
-				<td class="row1"><b>{L_MIN_POSTS}</b></td>
-				<td class="row1"><b>{L_MIN_REG_DAYS}</b></td>
-			</tr>
-			<tr>
-				<td class="row1">{L_USER_WITHOUT_GROUP}</td>
-				<td class="row1"><input name="upi2db_no_group_upi2db_on" type="radio" value="1" {NO_GROUP_UPI2DB_ON_YES}> {L_YES} <input name="upi2db_no_group_upi2db_on" type="radio" value="0" {NO_GROUP_UPI2DB_ON_NO}> {L_NO}</td>
-				<td class="row1"><input name="upi2db_no_group_min_posts" type="text" value="{NO_GROUP_MIN_POSTS}" size="4" maxlength="4"></td>
-				<td class="row1"><input name="upi2db_no_group_min_regdays" type="text" value="{NO_GROUP_MIN_REGDAYS}" size="4" maxlength="4"></td>
-			</tr>
-			<tr>
-				<td class="row1"><b>{L_GROUP_NAME}</b></td>
-				<td class="row1"><b>{L_GROUP_ALLOW_UPI2DB}</b></td>
-				<td class="row1"><b>{L_MIN_POSTS}</b></td>
-				<td class="row1"><b>{L_MIN_REG_DAYS}</b></td>
-			</tr>
-			<!-- BEGIN group_loop -->
-			<tr>
-				<td class="row1">{group_loop.GROUP_NAME}</td>
-				<td class="row1"><input name="group_upi2db_on[{group_loop.GROUP_ID}]" type="radio" value="1" {group_loop.GROUP_UPI2DB_ON_YES}> {L_YES} <input name="group_upi2db_on[{group_loop.GROUP_ID}]" type="radio" value="0" {group_loop.GROUP_UPI2DB_ON_NO}> {L_NO}</td>
-				<td class="row1"><input name="group_min_posts[{group_loop.GROUP_ID}]" type="text" value="{group_loop.GROUP_MIN_POSTS}" size="4" maxlength="4"></td>
-				<td class="row1"><input name="group_min_regdays[{group_loop.GROUP_ID}]" type="text" value="{group_loop.GROUP_MIN_REGDAYS}" size="4" maxlength="4"></td>
-			</tr>
-			<!-- END group_loop -->
-		</table>
-	</td>
+	<td class="row1" width="20%"><b>{L_GROUP_USER}</b></td>
+	<td class="row1"><b>{L_USER_ALLOW_UPI2DB}</b></td>
+	<td class="row1"><b>{L_MIN_POSTS}</b></td>
+	<td class="row1"><b>{L_MIN_REG_DAYS}</b></td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
+<tr>
+	<td class="row1" width="20%">{L_USER_WITHOUT_GROUP}</td>
+	<td class="row1"><input name="upi2db_no_group_upi2db_on" type="radio" value="1" {NO_GROUP_UPI2DB_ON_YES}> {L_YES} <input name="upi2db_no_group_upi2db_on" type="radio" value="0" {NO_GROUP_UPI2DB_ON_NO}> {L_NO}</td>
+	<td class="row1"><input name="upi2db_no_group_min_posts" type="text" value="{NO_GROUP_MIN_POSTS}" size="4" maxlength="4"></td>
+	<td class="row1"><input name="upi2db_no_group_min_regdays" type="text" value="{NO_GROUP_MIN_REGDAYS}" size="4" maxlength="4"></td>
+</tr>
+<tr>
+	<td class="row1" width="20%"><b>{L_GROUP_NAME}</b></td>
+	<td class="row1"><b>{L_GROUP_ALLOW_UPI2DB}</b></td>
+	<td class="row1"><b>{L_MIN_POSTS}</b></td>
+	<td class="row1"><b>{L_MIN_REG_DAYS}</b></td>
+</tr>
+<!-- BEGIN group_loop -->
+<tr>
+	<td class="row1">{group_loop.GROUP_NAME}</td>
+	<td class="row1"><input name="group_upi2db_on[{group_loop.GROUP_ID}]" type="radio" value="1" {group_loop.GROUP_UPI2DB_ON_YES}> {L_YES} <input name="group_upi2db_on[{group_loop.GROUP_ID}]" type="radio" value="0" {group_loop.GROUP_UPI2DB_ON_NO}> {L_NO}</td>
+	<td class="row1"><input name="group_min_posts[{group_loop.GROUP_ID}]" type="text" value="{group_loop.GROUP_MIN_POSTS}" size="4" maxlength="4"></td>
+	<td class="row1"><input name="group_min_regdays[{group_loop.GROUP_ID}]" type="text" value="{group_loop.GROUP_MIN_REGDAYS}" size="4" maxlength="4"></td>
+</tr>
+<!-- END group_loop -->
+<tr><td class="cat" colspan="4" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 </form>
 <script type="text/javascript">

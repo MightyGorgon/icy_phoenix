@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_top_downloads_block_func))
+if(!function_exists('imp_top_downloads_block_func'))
 {
 	function imp_top_downloads_block_func()
 	{
@@ -51,4 +51,5 @@ if(!function_exists(imp_top_downloads_block_func))
 }
 
 imp_top_downloads_block_func();
+
 ?>

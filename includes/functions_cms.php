@@ -19,7 +19,6 @@ function cms_assign_var_from_handle($template_var, $handle)
 	$template_var->pparse($handle);
 	$str = ob_get_contents();
 	ob_end_clean();
-
 	return $str;
 }
 
@@ -28,7 +27,8 @@ function cms_config_init(&$cms_config_vars)
 	global $db;
 
 	$cms_config_vars = array();
-	$sql = "SELECT * FROM " . CMS_CONFIG_TABLE;
+	$sql = "SELECT bid, config_name, config_value
+					FROM " . CMS_CONFIG_TABLE;
 	if(!($result = $db->sql_query($sql, false, 'cms_config_')))
 	{
 		message_die(CRITICAL_ERROR, "Could not query portal config table", "", __LINE__, __FILE__, $sql);
@@ -49,16 +49,18 @@ function cms_config_init(&$cms_config_vars)
 
 function cms_blocks_view($type = true)
 {
-	global $userdata;
+	global $userdata, $board_config;
 
-	if ($userdata['user_id'] == ANONYMOUS)
+	$is_reg = ((($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) || $userdata['session_logged_in']) ? true : false;
+	if (!$is_reg)
 	{
 		$bview = '(0,1)';
 		$append = '01';
 	}
 	else
 	{
-		switch($userdata['user_level'])
+		$access_level = $is_reg ? USER : $userdata['user_level'];
+		switch($access_level)
 		{
 			case USER:
 				$bview = '(0,2)';
@@ -77,14 +79,8 @@ function cms_blocks_view($type = true)
 				$append = '0';
 		}
 	}
-	if($type)
-	{
-		return $bview;
-	}
-	else
-	{
-		return $append;
-	}
+	$return_value = $type ? $bview : $append;
+	return $return_value;
 }
 
 function cms_groups($user_id)
@@ -276,7 +272,7 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 		if(!empty($block_info[$b_counter]['groups']))
 		{
 			$is_group_allowed = false;
-			$group_content = explode(",", $block_info[$b_counter]['groups']);
+			$group_content = explode(',', $block_info[$b_counter]['groups']);
 			for ($i = 0; $i < count($group_content); $i++)
 			{
 				if(in_array(intval($group_content[$i]), cms_groups($userdata['user_id'])))

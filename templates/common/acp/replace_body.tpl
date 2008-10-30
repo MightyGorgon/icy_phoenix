@@ -11,11 +11,11 @@
 	<th width="20%" align="center">{L_LINK}</th>
 </tr>
 <tr>
-	<td class="cat" colspan="3" align="center">{L_STR_OLD}: {STR_OLD}</td>
-	<td class="cat" colspan="2" align="center">{L_STR_NEW}: {STR_NEW}</td>
+	<td class="row1 row-center" colspan="3" style="padding:5px;"><strong>{L_STR_OLD}:</strong> {STR_OLD}</td>
+	<td class="row1 row-center" colspan="2" style="padding:5px;"><strong>{L_STR_NEW}:<strong> {STR_NEW}</td>
 </tr>
 <!-- BEGIN switch_no_results -->
-<tr><td class="row1 row-center" colspan="5" style="padding:10px;">{L_NO_RESULTS}</td></tr>
+<tr><td class="row2 row-center" colspan="5" style="padding:10px;"><strong>{L_NO_RESULTS}</strong></td></tr>
 <!-- END switch_no_results -->
 <!-- BEGIN replaced -->
 <tr>

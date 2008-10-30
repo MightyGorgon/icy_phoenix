@@ -194,7 +194,7 @@ class NewsModule
 					'U_VIEWS' => append_sid('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'] . '&amp;start=0'),
-					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic=' . urlencode(utf8_decode($article['topic_title'])) . '&amp;link=' . urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']))),
+					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(utf8_decode($article['topic_title'])) . '&amp;topic_id=' . $article['topic_id']),
 					'L_TITLE_HTML' => urlencode(utf8_decode($article['topic_title'])),
 					//'TELL_LINK' => urlencode(utf8_decode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?topic_id=' . $article['topic_id'])),
 					'COUNT_COMMENTS' => $article['topic_replies'],

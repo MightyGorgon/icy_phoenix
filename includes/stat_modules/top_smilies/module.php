@@ -137,7 +137,7 @@ if (!$statistics->result_cache_used)
 	}
 
 	$sql = "SELECT post_text
-	FROM " . POSTS_TEXT_TABLE . "
+	FROM " . POSTS_TABLE . "
 	WHERE " . $where_query . "
 	GROUP BY post_text";
 

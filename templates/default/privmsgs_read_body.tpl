@@ -2,7 +2,7 @@
 global $userdata, $board_config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
 $post_subject = ( ( !preg_match('/^Re:/', $post_subject) ) ? 'Re: ' : '' ) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
-$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:ShowHide(\'quick_reply\',\'quick_reply2\');"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /><a href="#quick"</a>';
+$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:ShowHide(\'quick_reply\',\'quick_reply2\');"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
 $this->vars['privmsgs_id'] = $privmsgs_id;
 
 ob_start();
@@ -19,7 +19,7 @@ ob_start();
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="100" style="width:98%" tabindex="2" class="post" value="{qr_subject}" /></td>
+	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width:98%" tabindex="2" class="post" value="{qr_subject}" /></td>
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{SPACER}" width="200" height="1" alt="" /></b></span></td>
@@ -83,10 +83,10 @@ $this->vars['CA_QUICK_REPLY_FORM'] = $str;
 <div class="forumline" style="margin-left:5%;margin-right:5%">
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td width="25%" align="center">{INBOX_IMG}<br /><span class="forumlink">{INBOX}</span></td>
-	<td width="25%" align="center">{SENTBOX_IMG}<br /><span class="forumlink">{SENTBOX}</span></td>
-	<td width="25%" align="center">{OUTBOX_IMG}<br /><span class="forumlink">{OUTBOX}</span></td>
-	<td width="25%" align="center">{SAVEBOX_IMG}<br /><span class="forumlink">{SAVEBOX}</span></td>
+	<td width="25%" align="center">{INBOX_IMG}<br /><b><span class="topiclink">{INBOX}</span></b></td>
+	<td width="25%" align="center">{SENTBOX_IMG}<br /><b><span class="topiclink">{SENTBOX}</span></b></td>
+	<td width="25%" align="center">{OUTBOX_IMG}<br /><b><span class="topiclink">{OUTBOX}</span></b></td>
+	<td width="25%" align="center">{SAVEBOX_IMG}<br /><b><span class="topiclink">{SAVEBOX}</span></b></td>
 </tr>
 </table>
 </div>
@@ -121,7 +121,7 @@ function addquote(privmsgs_id, tag)
 {S_HIDDEN_FIELDS}
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="middle">{REPLY_PM_IMG}&nbsp;{CA_QUICK_REPLY_BUTTON}</td></tr>
+<tr><td align="left" valign="middle"><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td></tr>
 </table>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{POST_SUBJECT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -180,9 +180,10 @@ function addquote(privmsgs_id, tag)
 	</tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
+<br />
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td align="left">{REPLY_PM_IMG}&nbsp;{CA_QUICK_REPLY_BUTTON}</td>
+	<td align="left"><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td>
 	<td align="right" valign="top" nowrap="nowrap">
 		<span class="gensmall">{S_TIMEZONE}</span>
 	</td>

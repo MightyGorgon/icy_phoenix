@@ -14,7 +14,7 @@
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<th width="30%" height="25">{L_HACK_NAME}</th>
+	<th width="30%">{L_HACK_NAME}</th>
 	<th width="20%">{L_AUTHOR}</th>
 	<th>{L_DESCRIPTION}</th>
 	<th>{L_WEBSITE}</th>
@@ -24,13 +24,13 @@
 <!-- END empty_switch -->
 
 <!-- BEGIN listrow -->
-<tr>
-	<td class="row1" valign="middle"><span class="gen">&nbsp;&nbsp;{listrow.HACK_NAME}&nbsp;{listrow.HACK_VERSION}</span></td>
-	<td class="row1g" valign="middle"><span class="genmed">{listrow.HACK_AUTHOR}</span></td>
-	<td class="row1"><span class="genmed">{listrow.HACK_DESC}</span></td>
-	<td class="row1g" valign="middle"><span class="gensmall">{listrow.HACK_WEBSITE}</span></td>
+<tr class="{listrow.ROW_CLASS} row1h">
+	<td class="{listrow.ROW_CLASS}" style="vertical-align:middle;background:none;"><span class="gen">&nbsp;{listrow.HACK_NAME}&nbsp;{listrow.HACK_VERSION}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" style="vertical-align:middle;background:none;"><span class="genmed">{listrow.HACK_AUTHOR}</span></td>
+	<td class="{listrow.ROW_CLASS}" style="vertical-align:middle;background:none;"><span class="genmed">{listrow.HACK_DESC}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" style="vertical-align:middle;background:none;"><span class="gensmall">{listrow.HACK_WEBSITE}</span></td>
 </tr>
 <!-- END listrow -->
 
-<tr><td class="catbottom" colspan="4" align="right">&nbsp;</td></tr>
+<tr><td class="catbottom" colspan="4">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

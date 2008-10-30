@@ -73,8 +73,10 @@ define('ADM_TPL', COMMON_TPL . 'acp/');
 define('CMS_TPL', COMMON_TPL . 'cms/');
 define('STYLES_PATH', 'styles/');
 define('ATTACH_MOD_PATH', 'includes/attach_mod/');
+define('DOWNLOADS_PATH', 'downloads/');
 define('DL_ROOT_PATH', 'includes/downloads/');
-define('PA_FILE_DB_PATH', 'pafiledb/');
+define('PA_FILE_DB_PATH', 'includes/pafiledb/');
+define('FILES_ICONS_DIR', 'images/files/');
 define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
 define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
 define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
@@ -117,6 +119,7 @@ define('BOTTOM_LIST', 1);
 // User Levels <- Do not change the values of USER or ADMIN
 define('DELETED', -1);
 define('ANONYMOUS', -1);
+define('BOT', -2);
 
 define('USER', 0);
 define('ADMIN', 1);
@@ -327,6 +330,7 @@ define('AUTH_ACCESS_TABLE', $table_prefix . 'auth_access');
 define('AUTOLINKS', $table_prefix . 'autolinks');
 define('BANLIST_TABLE', $table_prefix . 'banlist');
 define('BOOKMARK_TABLE', $table_prefix . 'bookmarks');
+define('BOTS_TABLE', $table_prefix . 'bots');
 define('CAPTCHA_CONFIG_TABLE', $table_prefix . 'captcha_config');
 define('CATEGORIES_TABLE', $table_prefix . 'categories');
 define('CONFIG_TABLE', $table_prefix . 'config');
@@ -354,10 +358,7 @@ define('NEWS_TABLE', $table_prefix . 'news');
 define('NOTES_ADMIN_TABLE',$table_prefix . 'notes');
 define('OPTIMIZE_DB_TABLE', $table_prefix . 'optimize_db');
 define('POSTS_TABLE', $table_prefix . 'posts');
-define('POSTS_TEXT_TABLE', $table_prefix . 'posts_text');
-define('PRIVMSGS_IGNORE_TABLE', $table_prefix . 'privmsgs_ignore');
 define('PRIVMSGS_TABLE', $table_prefix . 'privmsgs');
-define('PRIVMSGS_TEXT_TABLE', $table_prefix . 'privmsgs_text');
 define('PROFILE_FIELDS_TABLE', $table_prefix . 'profile_fields');
 define('PROFILE_VIEW_TABLE', $table_prefix . 'profile_view');
 define('PRUNE_TABLE', $table_prefix . 'forum_prune');
@@ -379,7 +380,6 @@ define('SUDOKU_STARTS', $table_prefix . 'sudoku_starts');
 define('SUDOKU_STATS', $table_prefix . 'sudoku_stats');
 define('SUDOKU_USERS', $table_prefix . 'sudoku_users');
 define('THANKS_TABLE', $table_prefix . 'thanks');
-define('THEMES_NAME_TABLE', $table_prefix . 'themes_name');
 define('THEMES_TABLE', $table_prefix . 'themes');
 define('TITLE_INFOS_TABLE', $table_prefix . 'title_infos');
 define('TOPIC_VIEW_TABLE', $table_prefix . 'topic_view');
@@ -470,12 +470,18 @@ define('DL_BUGS_TABLE', $table_prefix . 'dl_bug_tracker');
 define('DL_BUG_HISTORY_TABLE', $table_prefix . 'dl_bug_history');
 // DOWNLOADS - END
 
-/*
-define('HELPDESK_E', $table_prefix . 'helpdesk_emails');
-define('HELPDESK_I', $table_prefix . 'helpdesk_importance');
-define('HELPDESK_M', $table_prefix . 'helpdesk_msgs');
-define('HELPDESK_R', $table_prefix . 'helpdesk_reply');
-*/
+// PA FILES - BEGIN
+define('PA_CATEGORY_TABLE', $table_prefix . 'pa_cat');
+define('PA_COMMENTS_TABLE', $table_prefix . 'pa_comments');
+define('PA_CUSTOM_TABLE', $table_prefix . 'pa_custom');
+define('PA_CUSTOM_DATA_TABLE', $table_prefix . 'pa_customdata');
+define('PA_DOWNLOAD_INFO_TABLE', $table_prefix . 'pa_download_info');
+define('PA_FILES_TABLE', $table_prefix . 'pa_files');
+define('PA_LICENSE_TABLE', $table_prefix . 'pa_license');
+define('PA_CONFIG_TABLE', $table_prefix . 'pa_config');
+define('PA_VOTES_TABLE', $table_prefix . 'pa_votes');
+define('PA_AUTH_ACCESS_TABLE', $table_prefix . 'pa_auth');
+define('PA_MIRRORS_TABLE', $table_prefix . 'pa_mirrors');
+// PA FILES - END
 
-// Do not insert anything but tables below!
 ?>

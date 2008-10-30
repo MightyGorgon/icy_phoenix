@@ -84,7 +84,7 @@
 			<option value="0">{L_XS_STYLES_DEFSTYLE}</option>
 			<optgroup label="{L_XS_STYLES_AVAILABLE}">
 			<?php
-				for($i=0; $i<$styles_count; $i++)
+				for($i = 0; $i < $styles_count; $i++)
 				if($i != $styles_i)
 				{
 					$item = &$this->_tpldata['styles.'][$i];

@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_top_posters_func))
+if(!function_exists('imp_top_posters_func'))
 {
 	function imp_top_posters_func()
 	{
@@ -93,4 +93,5 @@ if(!function_exists(imp_top_posters_func))
 }
 
 imp_top_posters_func();
+
 ?>

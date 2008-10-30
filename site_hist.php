@@ -53,68 +53,13 @@ init_userprefs($userdata);
 
 $cms_page_id = '15';
 $cms_page_name = 'site_hist';
-$auth_level_req = $board_config['auth_view_site_hist'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_site_hist'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 $page_title = $lang['Site_history'];
 $meta_description = '';
 $meta_keywords = '';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-// Getting voting bar info
-if(!$board_config['override_user_style'])
-{
-	if(($userdata['user_id'] != ANONYMOUS) && (isset($userdata['user_style'])))
-	{
-		$style = $userdata['user_style'];
-		if(!$theme)
-		{
-			$style =  $board_config['default_style'];
-		}
-	}
-	else
-	{
-		$style =  $board_config['default_style'];
-	}
-}
-else
-{
-	$style =  $board_config['default_style'];
-}
-
-$sql = "SELECT *
-	FROM " . THEMES_TABLE . "
-	WHERE themes_id = " . $style;
-
-if (!($result = $db->sql_query($sql,false,true)))
-{
-	message_die(CRITICAL_ERROR, "Couldn't query database for theme info.");
-}
-
-if(!$row = $db->sql_fetchrow($result))
-{
-	message_die(CRITICAL_ERROR, "Couldn't get theme data for themes_id=$style.");
-}
-
-$current_template_path = 'templates/' . $row['template_name'] . '/';
 
 $template->set_filenames(array('body' => 'site_hist.tpl'));
 

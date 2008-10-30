@@ -19,26 +19,10 @@ init_userprefs($userdata);
 // End session management
 
 $cms_page_id = '12';
+$cms_page_name = 'pic_upload';
+check_page_auth($cms_page_id, $cms_page_name);
+// set now the page name to album
 $cms_page_name = 'album';
-$auth_level_req = $board_config['auth_view_pic_upload'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
 
 if (!$userdata['session_logged_in'])
 {

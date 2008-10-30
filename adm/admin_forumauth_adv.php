@@ -69,7 +69,7 @@ if( isset($_POST['submit']) )
 
 	cache_tree(true);
 
-	$redirect_url = append_sid('admin_forumauth_adv.' . PHP_EXT);
+	$redirect_url = append_sid(ADM . '/admin_forumauth_adv.' . PHP_EXT);
 	meta_refresh(3, $redirect_url);
 
 	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'], '<a href="' . append_sid('admin_forumauth_adv.' . PHP_EXT) . '">', '</a>');

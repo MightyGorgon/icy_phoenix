@@ -10,15 +10,15 @@
 </tr>
 <!-- BEGIN categories -->
 <tr>
-	<td class="{categories.ROW_CLASS}"><span class="gen">{categories.CAT_NAME}</span></td>
+	<td class="{categories.ROW_CLASS}"><span class="gen"><strong>{categories.CAT_NAME}</strong></span></td>
 	<td class="{categories.ROW_CLASS} row-center"><a href="{categories.U_CAT_EDIT}" class="genmed">{L_EDIT}</a></td>
 	<td class="{categories.ROW_CLASS} row-center">
 	<a href="{categories.U_CAT_DELETE}" class="genmed">{L_DELETE_CAT}</a>
 	<a href="{categories.U_DELETE_STATS}" class="genmed">{categories.L_DELETE_STATS}</a>
 	<a href="{categories.U_DELETE_COMMENTS}" class="genmed">{categories.L_DELETE_COMMENTS}</a></td>
 	<td class="{categories.ROW_CLASS} row-center">
-		<a href="{categories.U_CATEGORY_MOVE_UP}" class="gensmall">{L_UP}</a>&nbsp;::&nbsp;<a href="{categories.U_CATEGORY_MOVE_DOWN}" class="gensmall">{L_DOWN}</a><br />
-		<a href="{categories.U_CATEGORY_ASC_SORT}" class="gensmall">{categories.L_SORT_ASC}</a>
+		<a href="{categories.U_CATEGORY_MOVE_UP}" class="genmed">{L_UP}</a> | <a href="{categories.U_CATEGORY_MOVE_DOWN}" class="genmed">{L_DOWN}</a><br />
+		<a href="{categories.U_CATEGORY_ASC_SORT}" class="genmed">{categories.L_SORT_ASC}</a>
 	</td>
 </tr>
 <!-- END categories -->

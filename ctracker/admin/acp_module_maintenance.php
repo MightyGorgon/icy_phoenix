@@ -110,10 +110,10 @@ else
 
 
 // Engine tests
-( defined('protection_unit_one') )  ? $testvalue[1] = $lang['ctracker_ma_active'] : $testvalue[1] = $lang['ctracker_ma_inactive'];
-( defined('protection_unit_two') )  ? $testvalue[2] = $lang['ctracker_ma_active'] : $testvalue[2] = $lang['ctracker_ma_inactive'];
-( defined('protection_unit_three') )? $testvalue[3] = $lang['ctracker_ma_active'] : $testvalue[3] = $lang['ctracker_ma_inactive'];
-( count($ct_rules) >= 260 )         ? $testvalue[4] = $lang['ctracker_ma_active'] : $testvalue[4] = $lang['ctracker_ma_inactive'];
+(defined('protection_unit_one'))   ? $testvalue[1] = $lang['ctracker_ma_active'] : $testvalue[1] = $lang['ctracker_ma_inactive'];
+(defined('protection_unit_two'))   ? $testvalue[2] = $lang['ctracker_ma_active'] : $testvalue[2] = $lang['ctracker_ma_inactive'];
+(defined('protection_unit_three')) ? $testvalue[3] = $lang['ctracker_ma_active'] : $testvalue[3] = $lang['ctracker_ma_inactive'];
+(count($ct_rules) >= 260)          ? $testvalue[4] = $lang['ctracker_ma_active'] : $testvalue[4] = $lang['ctracker_ma_inactive'];
 
 // PHP Version test
 if ( @phpversion() >= '5.0.0' )

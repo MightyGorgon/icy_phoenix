@@ -1,12 +1,13 @@
 <h1>{PAGE_TITLE}</h1>
 <p>{PAGE_EXPLAIN}</p>
-
+<br />
 <form method="post" action="{PAGE_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td class="row1" nowrap="nowrap">{L_SEARCH_SITE}</td>
-	<td class="row1" colspan="8" nowrap="nowrap" align="right">{L_SEARCH_SITE_TITLE}<input type="text" style="width: 200px" class="post" name="search_keywords" size="30" />&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td>
-</tr>
+<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><th><span class="genmed"><strong>{L_SEARCH_SITE}</strong></span></th></tr>
+<tr><td class="row1 row-center"><span class="genmed">{L_SEARCH_SITE_TITLE}&nbsp;&nbsp;</span><input type="text" style="width: 200px" class="post" name="search_keywords" size="30" />&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;</td></tr>
+</table>
+<br /><br />
+<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<th nowrap="nowrap">{L_LINK_TITLE}</th>
 	<th nowrap="nowrap">{L_LINK_CATEGORY}</th>
@@ -26,12 +27,10 @@
 	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_USER_IP}</td>
 	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_ACTIVE}</td>
 	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_HITS}</td>
-	<td class="{linkrow.ROW_CLASS}" nowrap="nowrap">
-		<a href="{U_LINK}?mode=edit&link_id={linkrow.LINK_ID}">{L_EDIT}</a>
-		<a href="{U_LINK}?mode=delete&link_id={linkrow.LINK_ID}">{L_DELETE}</a>
-	</td>
+	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap"><a href="{U_LINK}?mode=edit&link_id={linkrow.LINK_ID}">{L_EDIT}</a> | <a href="{U_LINK}?mode=delete&link_id={linkrow.LINK_ID}">{L_DELETE}</a></td>
 </tr>
-	<!-- END linkrow -->
+<!-- END linkrow -->
+<tr><td class="cat" colspan="8">&nbsp;</td></tr>
 </table>
 </form>
 <br />

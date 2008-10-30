@@ -17,7 +17,7 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 /* MG BOXES */
 .bbcb_mg_codetitle, .post-text .mg_codetitle {
 	color: #ffffaa;
-	background: #559977 url('./images/bbc_code.gif') no-repeat right;
+	background: #559977 url('images/bbc_code.gif') no-repeat right;
 	border: 1px solid #dddddd;
 	font-weight: bold;
 	font-size: 10px;
@@ -42,7 +42,7 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 
 .bbcb_mg_quotetitle, .post-text .mg_quotetitle {
 	color: #446688;
-	background: #aaccff url('./images/bbc_quote.gif') no-repeat right;
+	background: #aaccff url('images/bbc_quote.gif') no-repeat right;
 	border: 1px solid #dddddd;
 	font-weight: bold;
 	font-size: 10px;
@@ -54,7 +54,7 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 
 .bbcb_mg_attachtitle, .post-text .mg_attachtitle {
 	color: #ffdd99;
-	background: #ff9933 url('./images/bbc_zip.gif') no-repeat right;
+	background: #ff9933 url('images/bbc_zip.gif') no-repeat right;
 	border: 1px solid #dddddd;
 	font-weight: bold;
 	font-size: 10px;

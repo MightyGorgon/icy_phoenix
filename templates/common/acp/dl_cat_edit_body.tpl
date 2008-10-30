@@ -99,6 +99,7 @@
 		<input name="cat_traffic_range" type="radio" value="GB" {CAT_TRAFFIC_RANGE_GB} />&nbsp;{L_DL_GB}
 	</td>
 </tr>
+<tr><td class="cat" colspan="6"><input type="submit" name="save_cat" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;&nbsp;<input type="reset" name="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
@@ -134,7 +135,7 @@
 </tr>
 <!-- BEGIN group_row -->
 <tr>
-	<td class="row1 row-center" width="50%"><span class="nav">{group_block.group_row.GROUP_NAME}</span></td>
+	<td class="row1" width="20%"><span class="nav"><strong>{group_block.group_row.GROUP_NAME}</strong></span></td>
 	<td class="row2 row-center"><input name="auth_view_set[{group_block.group_row.GROUP_ID}]" type="checkbox" value="1" {group_block.group_row.AUTH_VIEW_GROUP} /></td>
 	<td class="row1 row-center"><input name="auth_dl_set[{group_block.group_row.GROUP_ID}]" type="checkbox" value="1" {group_block.group_row.AUTH_DL_GROUP} /></td>
 	<td class="row2 row-center"><input name="auth_up_set[{group_block.group_row.GROUP_ID}]" type="checkbox" value="1" {group_block.group_row.AUTH_UP_GROUP} /></td>

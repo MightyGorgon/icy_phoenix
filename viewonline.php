@@ -40,26 +40,8 @@ $show_all = isset($_GET['show_all']) ? true : false;
 
 $cms_page_id = '4';
 $cms_page_name = 'viewonline';
-$auth_level_req = $board_config['auth_view_viewonline'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_viewonline'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 // Output page header and load viewonline template
 $page_title = $lang['Who_is_Online'];
@@ -372,7 +354,7 @@ if ($guest_users == 0)
 }
 if ($board_config['online_shoutbox'] == 1)
 {
-	$template->assign_block_vars('switch_show_shoutbox', array());
+	$template->assign_vars(array('S_SHOUTBOX' => true));
 }
 
 // Recent Topics - BEGIN

@@ -51,50 +51,16 @@ if ($sid != $userdata['session_id'])
 }
 
 // Get mode
-$mode = '';
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-
-$cms_type = '';
-if (isset($_POST['cms_type']) || isset($_GET['cms_type']))
-{
-	$cms_type = (isset($_POST['cms_type'])) ? $_POST['cms_type'] : $_GET['cms_type'];
-}
-
-$type = '';
-if (isset($_POST['type']) || isset($_GET['type']))
-{
-	$type = (isset($_POST['type'])) ? $_POST['type'] : $_GET['type'];
-}
-
-$b_id = 0;
-if (isset($_POST['b_id']) || isset($_GET['b_id']))
-{
-	$b_id = (isset($_POST['b_id'])) ? intval($_POST['b_id']) : intval($_GET['b_id']);
-}
+$mode = request_var('mode', '');
+$cms_type = request_var('cms_type', '');
+$type = request_var('type', '');
+$b_id = request_var('b_id', 0);
 $b_id = ($b_id < 0) ? 0 : $b_id;
-
-$cat = 0;
-if (isset($_POST['cat']) || isset($_GET['cat']))
-{
-	$cat = (isset($_POST['cat'])) ? intval($_POST['cat']) : intval($_GET['cat']);
-}
+$cat = request_var('cat', 0);
 $cat = ($cat < 0) ? 0 : $cat;
-
-$m_id = 0;
-if (isset($_POST['m_id']) || isset($_GET['m_id']))
-{
-	$m_id = (isset($_POST['m_id'])) ? intval($_POST['m_id']) : intval($_GET['m_id']);
-}
+$m_id = request_var('m_id', 0);
 $m_id = ($m_id < 0) ? 0 : $m_id;
-
-$old_status = '0';
-if (isset($_POST['status']) || isset($_GET['status']))
-{
-	$old_status = (isset($_POST['status'])) ? intval($_POST['status']) : intval($_GET['status']);
-}
+$old_status = request_var('status', 0);
 $old_status = ($old_status == 0) ? 0 : 1;
 
 // Send AJAX headers - this is to prevent browsers from caching possible error pages

@@ -20,16 +20,14 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_referers_block_func))
+if(!function_exists('imp_referers_block_func'))
 {
 	function imp_referers_block_func()
 	{
 		global $template, $db;
 
 		$template->_tpldata['linkrow1.'] = array();
-		//reset($template->_tpldata['linkrow1.']);
 		$template->_tpldata['linkrow2.'] = array();
-		//reset($template->_tpldata['linkrow2.']);
 
 		$sql = "SELECT COUNT(DISTINCT referrer_host) AS count
 			FROM " . REFERRERS_TABLE;
@@ -71,7 +69,6 @@ if(!function_exists(imp_referers_block_func))
 			}
 			$i++;
 		}
-
 	}
 }
 

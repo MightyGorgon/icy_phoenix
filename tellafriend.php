@@ -17,10 +17,10 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-$topic = (isset($_POST['topic'])) ? $_POST['topic'] : $_GET['topic'];
-$friendname = $_POST['friendname'];
-$message = $_POST['message'];
-$link = (isset($_POST['link'])) ? $_POST['link'] : $_GET['link'];
+$topic_title = request_var('topic_title', '');
+$topic_id = request_var('topic_id', 0);
+$friendname = request_var('friendname', '');
+$message = request_var('message', '');
 $PHP_SELF = $_SERVER['PHP_SELF'];
 
 // Start session management
@@ -28,33 +28,34 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ( !$userdata['session_logged_in'] )
+if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=tellafriend.' . PHP_EXT . '&topic=' . $topic . '&link=' . $link, true));
+	redirect(append_sid(LOGIN_MG . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id, true));
 }
 
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-$mail_body = str_replace("{TOPIC}", trim(stripslashes($topic)), $lang['Tell_Friend_Body']);
-$mail_body = str_replace("{LINK}", $link, $mail_body);
+if (($board_config['url_rw'] == true) || ($board_config['url_rw_guests'] == true))
+{
+	$topic_link = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html';
+}
+else
+{
+	$topic_link = create_server_url() . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id;
+}
+
+$mail_body = str_replace("{TOPIC}", trim(stripslashes(htmlspecialchars_decode($topic_title))), $lang['TELL_FRIEND_BODY']);
+$mail_body = str_replace("{LINK}", $topic_link, $mail_body);
 $mail_body = str_replace("{SITENAME}", $board_config['sitename'], $mail_body);
 
 $template->assign_vars(array(
-	'L_TELL_FRIEND_TITLE' => $lang['Tell_Friend_Title'],
-	'L_TELL_FRIEND_EMAIL_MESSAGE' => $lang['Tell_Friend_Email_Message'],
-	'L_TELL_FRIEND_SENDER_USER' => $lang['Tell_Friend'],
-	'L_TELL_FRIEND_SENDER_USER' => $lang['Tell_Friend_Sender_User'],
-	'L_TELL_FRIEND_SENDER_EMAIL' => $lang['Tell_Friend_Sender_Email'],
-	'L_TELL_FRIEND_RECIEVER_USER' => $lang['Tell_Friend_Reciever_User'],
-	'L_TELL_FRIEND_RECIEVER_EMAIL' => $lang['Tell_Friend_Reciever_Email'],
-	'L_TELL_FRIEND_MSG' => $lang['Tell_Friend_Msg'],
 	'L_TELL_FRIEND_BODY' => $mail_body,
 
 	'SUBMIT_ACTION' => append_sid($PHP_SELF, true),
 	'L_SUBMIT' => $lang['Send_email'],
 	'SITENAME' => $board_config['sitename'],
-	'TOPIC' => trim(stripslashes($topic)),
-	'LINK' => $link,
+	'TOPIC_TITLE' => trim(stripslashes($topic_title)),
+	'TOPIC_LINK' => $topic_link,
 	'SENDER_NAME' => $userdata['username'],
 	'SENDER_MAIL' => $userdata['user_email'],
 	)
@@ -94,7 +95,7 @@ if ( isset($_POST['submit']) )
 		$emailer->from($userdata['user_email']);
 		$emailer->replyto($userdata['user_email']);
 		$emailer->extra_headers($email_headers);
-		$emailer->set_subject(trim(stripslashes($topic)));
+		$emailer->set_subject(trim(stripslashes($topic_title)));
 
 		$emailer->assign_vars(array(
 			'SITENAME' => $board_config['sitename'],
@@ -108,7 +109,7 @@ if ( isset($_POST['submit']) )
 		$emailer->reset();
 
 		$redirect_url = append_sid(FORUM_MG);
-		meta_refresh(5, $redirect_url)
+		meta_refresh(5, $redirect_url);
 
 		$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 

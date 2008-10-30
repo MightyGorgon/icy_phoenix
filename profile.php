@@ -30,7 +30,7 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 
 // Adding CPL_NAV only if needed
 define('PARSE_CPL_NAV', true);
@@ -89,26 +89,8 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 	{
 		$cms_page_id = '6';
 		$cms_page_name = 'profile';
-		$auth_level_req = $board_config['auth_view_profile'];
-		if ($auth_level_req > AUTH_ALL)
-		{
-			if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-			}
-			if ($userdata['user_level'] != ADMIN)
-			{
-				if ($auth_level_req == AUTH_ADMIN)
-				{
-					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-				}
-				if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-				{
-					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-				}
-			}
-		}
-		$cms_global_blocks = ($board_config['wide_blocks_profile'] == 1) ? true : false;
+		check_page_auth($cms_page_id, $cms_page_name);
+		$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 		// Mighty Gorgon - Full Album Pack - BEGIN
 		include (ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);

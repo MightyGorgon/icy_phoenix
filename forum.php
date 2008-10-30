@@ -40,8 +40,8 @@ $mark_forum_id = (isset($_POST['forum_id'])) ? $_POST['forum_id'] : $_GET['forum
 
 if($userdata['upi2db_access'])
 {
-	$always_read_topics_string = explode(",", $unread['always_read']['topics']);
-	$always_read_forums_string = explode(",", $unread['always_read']['forums']);
+	$always_read_topics_string = explode(',', $unread['always_read']['topics']);
+	$always_read_forums_string = explode(',', $unread['always_read']['forums']);
 
 	if ($mark_always_read)
 	{
@@ -58,26 +58,8 @@ if($userdata['upi2db_access'])
 
 $cms_page_id = '1';
 $cms_page_name = 'forum';
-$auth_level_req = $board_config['auth_view_forum'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_forum'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 
@@ -363,8 +345,9 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 	// Birthday Box - BEGIN
 	if (($board_config['index_birthday'] == true) && ($board_config['birthday_check_day'] > 0))
 	{
-		// Birthday Mod, Show users with birthday
-		$template->assign_block_vars('switch_show_birthday', array());
+		$birthday_today_list = '';
+		$birthday_week_list = '';
+		$template->assign_vars(array('S_BIRTHDAYS' => true));
 
 		$cache_data_file = MAIN_CACHE_FOLDER . 'birthday_' . $board_config['board_timezone'] . '.dat';
 		$cache_update = true;
@@ -388,72 +371,50 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 		{
 			if ($board_config['birthday_check_day'])
 			{
-				if ($board_config['inactive_users_memberlists'] == false)
-				{
-					$where_sql = 'AND user_active = 1';
-				}
-				else
-				{
-					$where_sql = '';
-				}
-				$sql = "SELECT user_id, username, user_birthday, user_level
-								FROM " . USERS_TABLE . "
-								WHERE user_birthday != 999999
-									" . $where_sql . "
-									ORDER BY username";
+				include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
+				$time_now = time();
 
-				if($result = $db->sql_query($sql))
+				$date_today = create_date('Ymd', $time_now, $board_config['board_timezone']);
+				$date_forward = create_date('Ymd', $time_now + ($board_config['birthday_check_day'] * 86400), $board_config['board_timezone']);
+
+				$b_year = create_date('Y', $time_now, $board_config['board_timezone']);
+				$b_month = create_date('n', $time_now, $board_config['board_timezone']);
+				$b_day = create_date('j', $time_now, $board_config['board_timezone']);
+				$b_day_end = create_date('j', $time_now + ($board_config['birthday_check_day'] * 86400), $board_config['board_timezone']);
+				$b_limit = 0;
+				$show_inactive = (($board_config['inactive_users_memberlists'] == false) ? false : true);
+
+				$birthdays_list = get_birthdays_list($b_year, true, $b_month, $b_day, $b_day_end, $b_limit, $show_inactive);
+				for ($i = 0; $i < count($birthdays_list); $i++)
 				{
-					if (!empty($result))
+					$today_birthdays_list = (($today_birthdays_list == '') ? '' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+
+					$user_birthday2 = $b_year . ($user_birthday = realdate('md', $birthdays_list[$i]['user_birthday']));
+					if ($user_birthday2 < $date_today)
 					{
-						$time_now = time();
-						$this_year = create_date('Y', $time_now, $board_config['board_timezone']);
-						$date_today = create_date('Ymd', $time_now, $board_config['board_timezone']);
-						$date_forward = create_date('Ymd', $time_now+($board_config['birthday_check_day'] * 86400), $board_config['board_timezone']);
-						while ($birthdayrow = $db->sql_fetchrow($result))
-						{
-							$user_birthday2 = $this_year . ($user_birthday = realdate('md', $birthdayrow['user_birthday']));
-							if ($user_birthday2 < $date_today)
-							{
-								$user_birthday2 += 10000;
-							}
-							if (($user_birthday2 > $date_today) && ($user_birthday2 <= $date_forward))
-							{
-								// user are having birthday within the next days
-								$user_age = ($this_year.$user_birthday < $date_today) ? $this_year - realdate('Y', $birthdayrow['user_birthday']) + 1 : $this_year - realdate('Y', $birthdayrow['user_birthday']);
-								$style_color = colorize_username($birthdayrow['user_id']);
-								$birthday_week_list .= ' ' . $style_color . ' (' . $user_age . '),';
-							}
-							elseif ($user_birthday2 == $date_today)
-							{
-								//user have birthday today
-								$user_age = $this_year - realdate('Y', $birthdayrow['user_birthday']);
-								$style_color = colorize_username($birthdayrow['user_id']);
-								$birthday_today_list .= ' ' . $style_color . ' (' . $user_age . '),';
-							}
-						}
-						if ($birthday_today_list)
-						{
-							$birthday_today_list[ strlen($birthday_today_list)-1] = ' ';
-						}
-						if ($birthday_week_list)
-						{
-							$birthday_week_list[ strlen($birthday_week_list)-1] = ' ';
-						}
+						// MG: Why???
+						$user_birthday2 += 10000;
 					}
-					$db->sql_freeresult($result);
-					if (empty($SID))
+					if (($user_birthday2 > $date_today) && ($user_birthday2 <= $date_forward))
 					{
-						// stores the data set in a cache file
-						$data = '<' . '?php' . "\n";
-						$data .= '$birthday_today_list = \'' . addslashes($birthday_today_list) . "';\n";
-						$data .= '$birthday_week_list = \'' . addslashes($birthday_week_list) . "';\n";
-						$data .= '?' . '>';
-						$fp = fopen($cache_data_file, "w");
-						fwrite($fp, $data);
-						fclose($fp);
+						// user are having birthday within the next days
+						$birthday_week_list .= (($birthday_week_list == '') ? ' ' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+					}
+					elseif ($user_birthday2 == $date_today)
+					{
+						//user have birthday today
+						$birthday_today_list = (($birthday_today_list == '') ? ' ' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
 					}
 				}
+
+				// stores the data set in a cache file
+				$data = '<' . '?php' . "\n";
+				$data .= '$birthday_today_list = \'' . addslashes($birthday_today_list) . "';\n";
+				$data .= '$birthday_week_list = \'' . addslashes($birthday_week_list) . "';\n";
+				$data .= '?' . '>';
+				$fp = fopen($cache_data_file, 'w');
+				fwrite($fp, $data);
+				fclose($fp);
 			}
 		}
 		$birthday_today_list = stripslashes($birthday_today_list);
@@ -478,20 +439,20 @@ else
 if ($board_config['index_links'] == true)
 {
 	$sql = "SELECT * FROM " . LINK_CONFIG_TABLE;
-		if(!$result = $db->sql_query($sql, false, 'links_cfg_'))
-		{
-			message_die(GENERAL_ERROR, "Could not query Link config information", "", __LINE__, __FILE__, $sql);
-		}
-		while($row = $db->sql_fetchrow($result))
-		{
-			$link_config_name = $row['config_name'];
-			$link_config_value = $row['config_value'];
-			$link_config[$link_config_name] = $link_config_value;
-			$link_self_img = $link_config['site_logo'];
-			$site_logo_height = $link_config['height'];
-			$site_logo_width = $link_config['width'];
-		}
-		$template->assign_block_vars('switch_show_links', array());
+	if(!$result = $db->sql_query($sql, false, 'links_cfg_'))
+	{
+		message_die(GENERAL_ERROR, "Could not query Link config information", "", __LINE__, __FILE__, $sql);
+	}
+	while($row = $db->sql_fetchrow($result))
+	{
+		$link_config_name = $row['config_name'];
+		$link_config_value = $row['config_value'];
+		$link_config[$link_config_name] = $link_config_value;
+		$link_self_img = $link_config['site_logo'];
+		$site_logo_height = $link_config['height'];
+		$site_logo_width = $link_config['width'];
+	}
+	$template->assign_vars(array('S_LINKS' => true));
 }
 
 if ($board_config['site_history'] == true)
@@ -637,10 +598,10 @@ $template->assign_vars(array(
 // Display the board statistics
 if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_config['display_viewonline'] == 1)))
 {
-	$template->assign_block_vars('disable_viewonline', array());
+	$template->assign_vars(array('S_VIEWONLINE' => true));
 	if ($board_config['index_last_msgs'] == 1)
 	{
-		$template->assign_block_vars('disable_viewonline.show_recent', array());
+		$template->assign_block_vars('show_recent', array());
 
 		$except_forums = build_exclusion_forums_list();
 
@@ -671,8 +632,8 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 		}
 		for ($i = 0; $i < $number_recent_topics; $i++)
 		{
-			$template->assign_block_vars('disable_viewonline.show_recent.recent_topic_row', array(
-				'U_TITLE' => append_sid(VIEWTOPIC_MG . "?" . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],
+			$template->assign_block_vars('show_recent.recent_topic_row', array(
+				'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],
 				'L_TITLE' => $recent_topic_row[$i]['topic_title'],
 				'U_POSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $recent_topic_row[$i]['user_id']),
 				'S_POSTER' => $recent_topic_row[$i]['username'],
@@ -684,17 +645,18 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 	}
 	if ($board_config['show_random_quote'] == true)
 	{
-		$template->assign_block_vars('disable_viewonline.switch_show_random_quote', array());
+		$template->assign_block_vars('switch_show_random_quote', array());
 	}
 
 	if ($board_config['show_chat_online'] == true)
 	{
-		$template->assign_block_vars('disable_viewonline.switch_ac_online', array());
+		$template->assign_block_vars('switch_ac_online', array());
 	}
 
 	if ($board_config['index_top_posters'] == true)
 	{
-		$template->assign_block_vars('disable_viewonline.top_posters', array(
+		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+		$template->assign_block_vars('top_posters', array(
 			'TOP_POSTERS' => top_posters(8, true, true),
 			)
 		);
@@ -708,7 +670,7 @@ $display = display_index($viewcatkey);
 $auth_level_req = $board_config['auth_view_shoutbox'];
 if ((($board_config['index_shoutbox'] == true) && (($userdata['user_level'] + 1) >= $auth_level_req) && ($userdata['session_logged_in'])) || (($board_config['index_shoutbox'] == true) && ($userdata['user_level'] == ADMIN)))
 {
-	$template->assign_block_vars('switch_show_shoutbox', array());
+	$template->assign_vars(array('S_SHOUTBOX' => true));
 }
 
 if (!$display)
@@ -724,7 +686,6 @@ if($xs_news_config['xs_show_news'])
 }
 
 // Generate the page
-
 $template->pparse('body');
 
 include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);

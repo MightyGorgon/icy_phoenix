@@ -20,12 +20,12 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_ads_block_func))
+if(!function_exists('imp_ads_block_func'))
 {
 	function imp_ads_block_func()
 	{
 		global $template, $db, $board_config, $lang, $images, $userdata;
-		global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars, $block_id;
+		global $cms_global_blocks, $cms_page_id, $cms_config_vars, $block_id;
 
 		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_ads.' . PHP_EXT);
 

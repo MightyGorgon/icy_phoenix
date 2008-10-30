@@ -19,7 +19,7 @@ if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
-if(!function_exists(imp_kb_func))
+if(!function_exists('imp_kb_func'))
 {
 	function imp_kb_func()
 	{
@@ -34,13 +34,9 @@ if(!function_exists(imp_kb_func))
 		$bbcode->allow_smilies = true;
 
 		$template->_tpldata['kb_list.'] = array();
-		//reset($template->_tpldata['kb_list.']);
 		$template->_tpldata['kb_article.'] = array();
-		//reset($template->_tpldata['kb_article.']);
 		$template->_tpldata['cat_row.'] = array();
-		//reset($template->_tpldata['cat_row.']);
 		$template->_tpldata['menu_row.'] = array();
-		//reset($template->_tpldata['menu_row.']);
 
 		$template->set_filenames(array('kb_block' => 'blocks/kb_block.tpl'));
 
@@ -97,7 +93,7 @@ if(!function_exists(imp_kb_func))
 				'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
 				'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 				'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
-				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;link=' . urlencode(utf8_decode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?kb=article&' . POST_FORUM_URL . '=' . $forum_id . '&' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'])), true),
+				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
 				)
 			);
 			display_attachments($fetchposts[$i]['post_id'], 'articles_fp');
@@ -129,7 +125,7 @@ if(!function_exists(imp_kb_func))
 						'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
 						'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 						'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
-						'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;link=' . urlencode(utf8_decode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?kb=article&' . POST_FORUM_URL . '=' . $forum_id . '&' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'])), true),
+						'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
 						)
 					);
 
@@ -329,7 +325,6 @@ if(!function_exists(imp_kb_func))
 			}
 		}
 	}
-
 }
 
 imp_kb_func();

@@ -169,17 +169,14 @@ else
 	$comp_openssl_text = $lang['LIW_openssl_unavailable'];
 }
 
-//
-// Okay now we need to figure out whether or not the Attachment MOD has been installed
-//
-if ( defined('ATTACH_CONFIG_TABLE') && isset($config['liw_attach_enabled']) )
+if (isset($config['liw_attach_enabled']))
 {
 	$template->assign_block_vars('switch_attach_mod_installed', array());
 }
 
 
 $template->assign_vars(array(
-	'S_CONFIG_ACTION' => append_sid("admin_liw." . PHP_EXT),
+	'S_CONFIG_ACTION' => append_sid('admin_liw.' . PHP_EXT),
 
 	// Configuration
 	'S_ENABLED_YES' => ( ($config['liw_enabled']) ? 'checked="checked"' : '' ),

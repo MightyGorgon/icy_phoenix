@@ -101,7 +101,7 @@
 </table>{IMG_TBR}
 <br />
 <!-- END switch_show_recent -->
-<!-- BEGIN switch_show_shoutbox -->
+<!-- IF S_SHOUTBOX -->
 <div id="shoutbox_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_SHOW}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
@@ -121,7 +121,7 @@ if(GetCookie(tmp) == '2')
 <tr><td><iframe src="{U_SHOUTBOX}" scrolling="no" width="100%" height="190" frameborder="0" marginheight="0" marginwidth="0"></iframe></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
-<!-- END switch_show_shoutbox -->
+<!-- ENDIF -->
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top"><span class="gensmall">{L_ONLINE_EXPLAIN}</span></td>

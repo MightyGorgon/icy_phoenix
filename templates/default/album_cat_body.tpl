@@ -23,22 +23,22 @@
 <tr>
 	<td align="left">
 		<!-- BEGIN manage_personal_gal_folders -->
-		<a href="{U_MANAGE_PIC}"><img src="{MANAGE_PIC_IMG}" alt="{L_MANAGE_PIC}" title="{L_MANAGE_PIC}" align="middle" /></a>
+		<span class="img-btn"><a href="{U_MANAGE_PIC}"><img src="{MANAGE_PIC_IMG}" alt="{L_MANAGE_PIC}" title="{L_MANAGE_PIC}" align="middle" /></a></span>
 		<!-- END manage_personal_gal_folders -->
 		<!-- BEGIN enable_view_toggle -->
-		<a href="{U_TOGGLE_VIEW_ALL}"><img src="{TOGGLE_VIEW_ALL_IMG}" alt="{L_TOGGLE_VIEW_ALL}" title="{L_TOGGLE_VIEW_ALL}" align="middle" /></a>
+		<span class="img-btn"><a href="{U_TOGGLE_VIEW_ALL}"><img src="{TOGGLE_VIEW_ALL_IMG}" alt="{L_TOGGLE_VIEW_ALL}" title="{L_TOGGLE_VIEW_ALL}" align="middle" /></a></span>
 		<!-- END enable_view_toggle -->
 		<!-- BEGIN enable_picture_upload -->
-		{UPLOAD_FULL_LINK}
+		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_upload -->
 		<!-- BEGIN enable_picture_upload_pg -->
-		{UPLOAD_FULL_LINK}
+		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_upload_pg -->
 		<!-- BEGIN enable_picture_download -->
-		{DOWNLOAD_FULL_LINK}
+		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download -->
 		<!-- BEGIN enable_picture_download_pg -->
-		{DOWNLOAD_FULL_LINK}
+		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download_pg -->
 	</td>
 	<td align="right" valign="bottom" rowspan="2"><span class="gensmall">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></td>
@@ -242,22 +242,22 @@
 <tr>
 	<td align="left">
 		<!-- BEGIN manage_personal_gal_folders -->
-		<a href="{U_MANAGE_PIC}"><img src="{MANAGE_PIC_IMG}" alt="{L_MANAGE_PIC}" title="{L_MANAGE_PIC}" align="middle" /></a>
+		<span class="img-btn"><a href="{U_MANAGE_PIC}"><img src="{MANAGE_PIC_IMG}" alt="{L_MANAGE_PIC}" title="{L_MANAGE_PIC}" align="middle" /></a></span>
 		<!-- END manage_personal_gal_folders -->
 		<!-- BEGIN enable_view_toggle -->
-		<a href="{U_TOGGLE_VIEW_ALL}"><img src="{TOGGLE_VIEW_ALL_IMG}" alt="{L_TOGGLE_VIEW_ALL}" title="{L_TOGGLE_VIEW_ALL}" align="middle" /></a>
+		<span class="img-btn"><a href="{U_TOGGLE_VIEW_ALL}"><img src="{TOGGLE_VIEW_ALL_IMG}" alt="{L_TOGGLE_VIEW_ALL}" title="{L_TOGGLE_VIEW_ALL}" align="middle" /></a></span>
 		<!-- END enable_view_toggle -->
 		<!-- BEGIN enable_picture_upload -->
-		{UPLOAD_FULL_LINK}
+		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_upload -->
 		<!-- BEGIN enable_picture_upload_pg -->
-		{UPLOAD_FULL_LINK}
+		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_upload_pg -->
 		<!-- BEGIN enable_picture_download -->
-		{DOWNLOAD_FULL_LINK}
+		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download -->
 		<!-- BEGIN enable_picture_download_pg -->
-		{DOWNLOAD_FULL_LINK}
+		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download_pg -->
 	</td>
 	<td align="right" valign="top"><span class="gensmall">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></td>

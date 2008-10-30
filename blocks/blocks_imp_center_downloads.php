@@ -20,18 +20,16 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_center_downloads_block_func))
+if(!function_exists('imp_center_downloads_block_func'))
 {
 	function imp_center_downloads_block_func()
 	{
 		global $template, $cms_config_vars, $block_id, $table_prefix, $db, $lang, $board_config, $theme;
 
-		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . PHP_EXT);
+		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_constants.' . PHP_EXT);
 
 		$template->_tpldata['dlrow.'] = array();
-		//reset($template->_tpldata['dlrow.']);
 		$template->_tpldata['dlrow2.'] = array();
-		//reset($template->_tpldata['dlrow2.']);
 
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'

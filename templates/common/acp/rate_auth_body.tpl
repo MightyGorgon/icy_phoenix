@@ -30,8 +30,8 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="3">{L_PAGE_NAME}</th></tr>
 <tr>
-	<td class="cat" colspan="1" align="center"><span class="gen">{L_FORUM}</span></td>
-	<td class="cat" colspan="1" align="center"><span class="gen">{L_PERMISSIONS}</span></td>
+	<td class="row1" colspan="1" align="center"><span class="genmed"><strong>{L_FORUM}</strong></span></td>
+	<td class="row1" colspan="1" align="center"><span class="genmed"><strong>{L_PERMISSIONS}</strong></span></td>
 </tr>
 <!-- BEGIN forums_row -->
 <tr>

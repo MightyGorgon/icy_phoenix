@@ -20,26 +20,19 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_links_block_func))
+if(!function_exists('imp_links_block_func'))
 {
 	function imp_links_block_func()
 	{
 		global $template, $lang, $board_config, $db, $cms_config_vars, $block_id, $var_cache;
 
 		$template->_tpldata['links_row.'] = array();
-		//reset($template->_tpldata['links_row.']);
 		$template->_tpldata['links_own1.'] = array();
-		//reset($template->_tpldata['links_own1.']);
 		$template->_tpldata['links_own2.'] = array();
-		//reset($template->_tpldata['links_own2.']);
 		$template->_tpldata['links_scroll.'] = array();
-		//reset($template->_tpldata['links_scroll.']);
 		$template->_tpldata['links_static.'] = array();
-		//reset($template->_tpldata['links_static.']);
 
-		//
 		// Grab data
-		//
 		if($cms_config_vars['cache_enabled'])
 		{
 			$link_config = $var_cache->get('link_config', 86400, 'link');

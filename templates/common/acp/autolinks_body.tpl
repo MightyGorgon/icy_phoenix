@@ -31,8 +31,6 @@
 <!-- END no_autolinks -->
 </table>
 
-<br /><br />
-
 <a name="edit"></a>
 <form method="post" action="{S_AUTOLINKS_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">

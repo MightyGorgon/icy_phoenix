@@ -113,17 +113,10 @@ function prune($forum_id, $prune_date, $prune_all = false)
 				WHERE post_id IN ($sql_post)";
 			if ( !$db->sql_query($sql) )
 			{
-				message_die(GENERAL_ERROR, 'Could not delete post_text during prune', '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, 'Could not delete posts during prune', '', __LINE__, __FILE__, $sql);
 			}
 
 			$pruned_posts = $db->sql_affectedrows();
-
-			$sql = "DELETE FROM " . POSTS_TEXT_TABLE . "
-				WHERE post_id IN ($sql_post)";
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, 'Could not delete post during prune', '', __LINE__, __FILE__, $sql);
-			}
 
 			remove_search_post($sql_post);
 //<!-- BEGIN Unread Post Information to Database Mod -->

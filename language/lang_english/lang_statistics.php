@@ -16,212 +16,225 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
 // Original Statistics Mod (c) 2002 Nivisec - http://nivisec.com/mods
 
+$lang = array_merge($lang, array(
 // If you want to credit the Author on the Statistics Page, uncomment the second line.
-//$lang['Version_info'] = '<br />Statistics Mod Version %s'; //%s = number
-$lang['Version_info'] = 'Statistics Mod Version %s &copy; 2002 <a href="http://www.opentools.de/board">Acyd Burn</a>';
+// 'Version_info' => '<br />Statistics Mod Version %s', //%s = number
+	'Version_info' => 'Statistics Mod Version %s &copy; 2002 <a href="http://www.opentools.de/board">Acyd Burn</a>',
 
 // These Language Variables are available for all installed Modules
-$lang['Rank'] = 'Rank';
-$lang['Percent'] = 'Percent';
-$lang['Graph'] = 'Graph';
-$lang['Uses'] = 'Uses';
-$lang['How_many'] = 'How Many';
+	'Rank' => 'Rank',
+	'Percent' => 'Percent',
+	'Graph' => 'Graph',
+	'Uses' => 'Uses',
+	'How_many' => 'How Many',
 
 // Main Language
 
 // Page Header/Footer
-$lang['Install_info'] = 'Installed on %s'; //%s = date
-$lang['Viewed_info'] = 'Statistics Page Loaded %d Times'; //%d = number
-$lang['Statistics_title'] = 'Board Statistics';
+	'Install_info' => 'Installed on %s', //%s = date
+	'Viewed_info' => 'Statistics Page Loaded %d Times', //%d = number
+	'Statistics_title' => 'Board Statistics',
 
 // Admin Language
-$lang['Statistics_management'] = 'Statistics Modules';
-$lang['Statistics_config'] = 'Statistics Configuration';
+	'Statistics_management' => 'Statistics Modules',
+	'Statistics_config' => 'Statistics Configuration',
 
 // Statistics Config
-$lang['Statistics_config_title'] = 'Statistics Configuration';
+	'Statistics_config_title' => 'Statistics Configuration',
 
-$lang['Return_limit'] = 'Return Limit';
-$lang['Return_limit_desc'] = '<b>The number of items to include in each ranking.</b><br /> This is auto-parsed to all modules by being specified here.';
-$lang['Clear_cache'] = 'Clear Module Cache';
-$lang['Clear_cache_desc'] = 'Check Box to Clear all the current cached data for all modules.';
-$lang['Modules_directory'] = 'Modules Directory';
-$lang['Modules_directory_desc'] = 'The directory relative to the home Icy Phoenix directory where modules are located.<br /><b>Note:</b> A trailing / or \ must not be used!';
+	'Return_limit' => 'Return Limit',
+	'Return_limit_desc' => '<b>The number of items to include in each ranking.</b><br /> This is auto-parsed to all modules by being specified here.',
+	'Clear_cache' => 'Clear Module Cache',
+	'Clear_cache_desc' => 'Check Box to Clear all the current cached data for all modules.',
+	'Modules_directory' => 'Modules Directory',
+	'Modules_directory_desc' => 'The directory relative to the home Icy Phoenix directory where modules are located.<br /><b>Note:</b> A trailing / or \ must not be used!',
 
 // Status Messages
-$lang['Messages'] = 'Admin Messages';
-$lang['Updated'] = 'Updated';
-$lang['Active'] = 'Active';
-$lang['Activate'] = 'Activate';
-$lang['Activated'] = 'Activated';
-$lang['Not_active'] = 'Not Active';
-$lang['Deactivate'] = 'Deactivate';
-$lang['Deactivated'] = 'Deactivated';
-$lang['Install'] = 'Install';
-$lang['Installed'] = 'Installed';
-$lang['Uninstall'] = 'Uninstall';
-$lang['Uninstalled'] = 'Uninstalled';
-$lang['Move_up'] = 'Move Up';
-$lang['Move_down'] = 'Move Down';
-$lang['Update_time'] = 'Update Time';
-$lang['Auth_settings_updated'] = 'Authorization Settings - [These are always updated]';
+	'Messages' => 'Admin Messages',
+	'Updated' => 'Updated',
+	'Active' => 'Active',
+	'Activate' => 'Activate',
+	'Activated' => 'Activated',
+	'Not_active' => 'Not Active',
+	'Deactivate' => 'Deactivate',
+	'Deactivated' => 'Deactivated',
+	'Install' => 'Install',
+	'Installed' => 'Installed',
+	'Uninstall' => 'Uninstall',
+	'Uninstalled' => 'Uninstalled',
+	'Move_up' => 'Move Up',
+	'Move_down' => 'Move Down',
+	'Update_time' => 'Update Time',
+	'Auth_settings_updated' => 'Authorization Settings - [These are always updated]',
 
 // Modules Management
-$lang['Back_to_management'] = 'Back to the Modules Management Screen';
-$lang['Statistics_modules_title'] = 'Statistics Module Management';
+	'Back_to_management' => 'Back to the Modules Management Screen',
+	'Statistics_modules_title' => 'Statistics Module Management',
 
-$lang['Module_name'] = 'Name';
-$lang['Directory_name'] = 'Directory Name';
-$lang['Status'] = 'Status';
-$lang['Update_time_minutes'] = 'Update Time in Minutes';
-$lang['Update_time_desc'] = 'Time Interval (in Minutes) for refreshing the cached data with new Data.';
-$lang['Auto_set_update_time'] = '<span class="genmed"><b>Determine and set recommended Update Times for every Installed (and Active) Module. <br />Be aware: This may take a long time.</span></b>';
-$lang['Uninstall_module'] = 'Uninstall Module';
-$lang['Uninstall_module_desc'] = 'Marks the module with "not installed" status, so that you may re-install it with the install command.  It does not delete the module from your file system, you will manually need to delete the module folder to remove it completely.';
-$lang['Active_desc'] = 'Option for if the Module is Active, so it is displayed depending on the set Permissions.';
-$lang['Go'] = 'Go';
+	'Module_name' => 'Name',
+	'Directory_name' => 'Directory Name',
+	'Status' => 'Status',
+	'Update_time_minutes' => 'Update Time in Minutes',
+	'Update_time_desc' => 'Time Interval (in Minutes) for refreshing the cached data with new Data.',
+	'Auto_set_update_time' => '<span class="genmed"><b>Determine and set recommended Update Times for every Installed (and Active) Module. <br />Be aware: This may take a long time.</span></b>',
+	'Uninstall_module' => 'Uninstall Module',
+	'Uninstall_module_desc' => 'Marks the module with "not installed" status, so that you may re-install it with the install command.  It does not delete the module from your file system, you will manually need to delete the module folder to remove it completely.',
+	'Active_desc' => 'Option for if the Module is Active, so it is displayed depending on the set Permissions.',
+	'Go' => 'Go',
 
-$lang['Not_allowed_to_install'] = 'You are not able to install this Module. Mostly this is because you haven\'t installed a Mod needed in order to run this Module. Please contact the Author of this Module if you have questions and if the Extra Info printed here makes no sense to you.';
-$lang['Wrong_stats_mod_version'] = 'You are not able to install this Module, because your Statistics Mod Version does not match the Version required by the Module. In order to install and run the Module, you need at least Version %s of the Statistics Mod.'; // replace %s with Version (2.1.3 for example)
-$lang['Module_install_error'] = 'There was an error while installing this module. More than likely some SQL commands could not be executed, check for failure messages above.';
+	'Not_allowed_to_install' => 'You are not able to install this Module. Mostly this is because you haven\'t installed a Mod needed in order to run this Module. Please contact the Author of this Module if you have questions and if the Extra Info printed here makes no sense to you.',
+	'Wrong_stats_mod_version' => 'You are not able to install this Module, because your Statistics Mod Version does not match the Version required by the Module. In order to install and run the Module, you need at least Version %s of the Statistics Mod.', // replace %s with Version (2.1.3 for example)
+	'Module_install_error' => 'There was an error while installing this module. More than likely some SQL commands could not be executed, check for failure messages above.',
 
-$lang['Preview_debug_info'] = 'This Module was generated in %f seconds: %d queries were executed.'; // Replace %f with seconds and %d with queries
-$lang['Update_time_recommend'] = 'The Statistics Mod recommends (depending on the debug info) an update time of <b>%d</b> Minutes.'; // Replace %d with Minutes
+	'Preview_debug_info' => 'This Module was generated in %f seconds: %d queries were executed.', // Replace %f with seconds and %d with queries
+	'Update_time_recommend' => 'The Statistics Mod recommends (depending on the debug info) an update time of <b>%d</b> Minutes.', // Replace %d with Minutes
 
 // Modules
 
-$lang['module_name__stats_overview_section'] = 'Statistics overview';
+	'module_name__stats_overview_section' => 'Statistics overview',
 
-$lang['module_name_admin_statistics'] = 'Administrative Statistics';
-$lang['Statistic'] = 'Statistic';
-$lang['Value'] = 'Value';
-$lang['Number_posts'] = 'Number of posts';
-$lang['Posts_per_day'] = 'Posts per day';
-$lang['Number_topics'] = 'Number of topics';
-$lang['Topics_per_day'] = 'Topics per day';
-$lang['Number_users'] = 'Number of users';
-$lang['Users_per_day'] = 'Users per day';
-$lang['Board_started'] = 'Board started';
-$lang['Avatar_dir_size'] = 'Avatar directory size';
-$lang['Database_size'] = 'Database size';
-$lang['Gzip_compression'] ='Gzip compression';
-$lang['Not_available'] = 'Not available';
-$lang['Board_Up_Days'] = 'Board Up Days';
-$lang['Latest_Reg_User'] = 'Latest User Registered';
-$lang['Latest_Reg_User_Date'] = 'Latest User Registered Date';
-$lang['Most_Ever_Online'] = 'Most Users Ever Online';
-$lang['Most_Ever_Online_Date'] = 'Most Users Ever Online Date';
-$lang['Disk_usage'] = 'Disk Usage';
-$lang['Title'] = 'Average Posts per User';
-$lang['Average_Posts'] = 'Average Posts per User:';
+	'module_name_admin_statistics' => 'Administrative Statistics',
+	'Statistic' => 'Statistic',
+	'Value' => 'Value',
+	'Number_posts' => 'Number of posts',
+	'Posts_per_day' => 'Posts per day',
+	'Number_topics' => 'Number of topics',
+	'Topics_per_day' => 'Topics per day',
+	'Number_users' => 'Number of users',
+	'Users_per_day' => 'Users per day',
+	'Board_started' => 'Board started',
+	'Avatar_dir_size' => 'Avatar directory size',
+	'Database_size' => 'Database size',
+	'Gzip_compression' => 'Gzip compression',
+	'Not_available' => 'Not available',
+	'Board_Up_Days' => 'Board Up Days',
+	'Latest_Reg_User' => 'Latest User Registered',
+	'Latest_Reg_User_Date' => 'Latest User Registered Date',
+	'Most_Ever_Online' => 'Most Users Ever Online',
+	'Most_Ever_Online_Date' => 'Most Users Ever Online Date',
+	'Disk_usage' => 'Disk Usage',
+	'Title' => 'Average Posts per User',
+	'Average_Posts' => 'Average Posts per User:',
 
-$lang['module_name_average_posts_per_user'] = 'Average posts per user';
+	'module_name_average_posts_per_user' => 'Average posts per user',
 
-$lang['module_name_fastest_users'] = 'Fastest users';
-$lang['time_on_forum'] = 'Days on forum';
-$lang['posts_day'] = 'Messages per day';
-$lang['Statistics'] = 'Statistics';
+	'module_name_fastest_users' => 'Fastest users',
+	'time_on_forum' => 'Days on forum',
+	'posts_day' => 'Messages per day',
+	'Statistics' => 'Statistics',
 
-$lang['module_name_interesting_topics'] = 'Most interesting topics';
-$lang['Rate'] = 'Rate (views/messages)';
-$lang['Topic'] = $lang['Topic'];
+	'module_name_interesting_topics' => 'Most interesting topics',
+	'Rate' => 'Rate (views/messages)',
+	'Topic' => 'Topic',
 
-$lang['module_name_latest_topics'] = 'Latest Topics';
-$lang['Rank'] = 'Rank';
-$lang['Latest_Topics'] = 'Latest Topics';
-$lang['Post_time'] = 'Post time';
+	'module_name_latest_topics' => 'Latest Topics',
+	'Rank' => 'Rank',
+	'Latest_Topics' => 'Latest Topics',
+	'Post_time' => 'Post time',
 
-$lang['module_name_month_stat'] = 'Monthly Statistics';
-$lang['New_users'] = 'New Users';
-$lang['New_replies'] = 'New Replies';
-$lang['New_topics'] = 'New Topics';
-$lang['Avg_Table'] = 'Table Average';
-$lang['Sum_Table'] = 'Table Sum';
+	'module_name_month_stat' => 'Monthly Statistics',
+	'New_users' => 'New Users',
+	'New_replies' => 'New Replies',
+	'New_topics' => 'New Topics',
+	'Avg_Table' => 'Table Average',
+	'Sum_Table' => 'Table Sum',
 
-$lang['module_name_most_active_topics'] = 'Most Active Topics';
+	'module_name_most_active_topics' => 'Most Active Topics',
 
-$lang['module_name_most_active_topicstarter'] = 'Users who created most of the topics';
+	'module_name_most_active_topicstarter' => 'Users who created most of the topics',
 
-$lang['module_name_most_logged_on_users'] = 'Most Logged On Users';
-$lang['Time2'] = 'Logged On Time';
+	'module_name_most_logged_on_users' => 'Most Logged On Users',
+	'Time2' => 'Logged On Time',
 
-$lang['module_name_most_used_languages'] = 'Used Languages';
-$lang['Language'] = 'Language';
+	'module_name_most_used_languages' => 'Used Languages',
+	'Language' => 'Language',
 
-$lang['module_name_most_used_styles'] = 'Used Styles';
-$lang['Style'] = 'Style';
+	'module_name_most_used_styles' => 'Used Styles',
+	'Style' => 'Style',
 
-$lang['module_name_most_viewed_topics'] = 'Most Viewed Topics';
-$lang['Month_jan'] = 'Jan';
-$lang['Month_feb'] = 'Feb';
-$lang['Month_mar'] = 'Mar';
-$lang['Month_apr'] = 'Apr';
-$lang['Month_may'] = 'May';
-$lang['Month_jun'] = 'Jun';
-$lang['Month_jul'] = 'Jul';
-$lang['Month_aug'] = 'Aug';
-$lang['Month_sep'] = 'Sep';
-$lang['Month_oct'] = 'Oct';
-$lang['Month_nov'] = 'Nov';
-$lang['Month_dec'] = 'Dec';
-$lang['Year'] = 'Year';
-$lang['Month'] = 'Month';
-$lang['Number'] = 'Number';
+	'module_name_most_viewed_topics' => 'Most Viewed Topics',
+	'Month_jan' => 'Jan',
+	'Month_feb' => 'Feb',
+	'Month_mar' => 'Mar',
+	'Month_apr' => 'Apr',
+	'Month_may' => 'May',
+	'Month_jun' => 'Jun',
+	'Month_jul' => 'Jul',
+	'Month_aug' => 'Aug',
+	'Month_sep' => 'Sep',
+	'Month_oct' => 'Oct',
+	'Month_nov' => 'Nov',
+	'Month_dec' => 'Dec',
+	'Year' => 'Year',
+	'Month' => 'Month',
+	'Number' => 'Number',
 
-$lang['module_name_new_posts_by_month'] = 'Number of new posts by month';
-$lang['Posts_month'] = 'Number of new posts by month';
+	'module_name_new_posts_by_month' => 'Number of new posts by month',
+	'Posts_month' => 'Number of new posts by month',
 
-$lang['module_name_new_topics_by_month'] = 'Number of new topics by month';
-$lang['Topics_month'] = 'Number of new topics by month';
+	'module_name_new_topics_by_month' => 'Number of new topics by month',
+	'Topics_month' => 'Number of new topics by month',
 
-$lang['module_name_new_users_by_month'] = 'Number of new users by month';
-$lang['Signup_month'] = 'Number of new users by month';
+	'module_name_new_users_by_month' => 'Number of new users by month',
+	'Signup_month' => 'Number of new users by month',
 
-$lang['module_name_posting_by_day_of_week'] = 'Day-of-Week Traffic: Posting';
-$lang['Traffic_posts'] = 'Day-of-Week Traffic: Posting';
-$lang['Dow'] = 'Day';
+	'module_name_posting_by_day_of_week' => 'Day-of-Week Traffic: Posting',
+	'Traffic_posts' => 'Day-of-Week Traffic: Posting',
+	'Dow' => 'Day',
 
-$lang['module_name_registrations_by_day_of_week'] = 'Day-of-Week Traffic: Registrations';
-$lang['Traffic_reg'] = 'Day-of-Week Traffic: Registrations';
-$lang['New_users'] = 'New Users';
+	'module_name_registrations_by_day_of_week' => 'Day-of-Week Traffic: Registrations',
+	'Traffic_reg' => 'Day-of-Week Traffic: Registrations',
+	'New_users' => 'New Users',
 
-$lang['module_name_site_hist_month_top_posters'] = 'Top posting users this Month';
-$lang['Month_Var'] = '[%s]'; // %s will be replaced by the current Month
+	'module_name_site_hist_month_top_posters' => 'Top posting users this Month',
+	'Month_Var' => '[%s]', // %s will be replaced by the current Month
 
-$lang['module_name_site_hist_week_top_posters'] = 'Top posting users this week';
-$lang['Week_Var'] = '[%s]'; // %s will be replaced by the current Week
+	'module_name_site_hist_week_top_posters' => 'Top posting users this week',
+	'Week_Var' => '[%s]', // %s will be replaced by the current Week
 
-$lang['module_name_top_attachments'] = 'Top Downloaded Attachments';
-$lang['File_name'] = 'Filename';
-$lang['File_comment'] = 'File Comment';
+	'module_name_top_attachments' => 'Top Downloaded Attachments',
+	'File_name' => 'Filename',
+	'File_comment' => 'File Comment',
 
-$lang['module_name_top_posters'] = 'Top Posters';
+	'module_name_top_posters' => 'Top Posters',
 
-$lang['module_name_top_smilies'] = 'Top Used Smileys';
-$lang['smiley_url'] = 'Emoticon Image';
-$lang['smiley_code'] = 'Emoticon Code';
+	'module_name_top_smilies' => 'Top Used Smileys',
+	'smiley_url' => 'Emoticon Image',
+	'smiley_code' => 'Emoticon Code',
 
-$lang['module_name_top_words'] = 'Most used words';
-$lang['Word'] = 'Word';
-$lang['Uses2'] = 'Uses';
+	'module_name_top_words' => 'Most used words',
+	'Word' => 'Word',
+	'Uses2' => 'Uses',
 
-$lang['module_name_topics_by_day_of_week'] = 'New topics by day of the week ';
-$lang['Traffic_topics'] = 'Day-of-Week Traffic: Topics';
-$lang['Dow'] = 'Day';
+	'module_name_topics_by_day_of_week' => 'New topics by day of the week ',
+	'Traffic_topics' => 'Day-of-Week Traffic: Topics',
+	'Dow' => 'Day',
 
-$lang['module_name_users_from_where'] = 'Where our members are from';
-$lang['From_where_title'] = 'Where are users from';
-$lang['From_where'] = 'From where';
-$lang['How_many'] = 'How many';
+	'module_name_users_from_where' => 'Where our members are from',
+	'From_where_title' => 'Where are users from',
+	'From_where' => 'From where',
+	'How_many' => 'How many',
 
-$lang['module_name_users_gender'] = 'Gender';
-$lang['Users'] = 'Users';
+	'module_name_users_gender' => 'Gender',
+	'Users' => 'Users',
 
-$lang['module_name_users_ranks'] = 'Ranks';
-$lang['Rank_image'] = 'Rank Image';
-$lang['Rank_range'] = 'Rank messages';
-$lang['Rank_special'] = 'Special rank';
+	'module_name_users_ranks' => 'Ranks',
+	'Rank_image' => 'Rank Image',
+	'Rank_range' => 'Rank messages',
+	'Rank_special' => 'Special rank',
+	)
+);
 
 ?>

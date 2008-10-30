@@ -51,7 +51,7 @@
 	<td class="cat" align="center"><input type="submit" name="delete" value="{L_DELETE}" class="liteoption" /></td>
 </tr>
 </table>
-<table width="100%" cellpadding="3" cellspacing="0" border="0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<td align="right">
 		<a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a> ::

@@ -45,7 +45,7 @@ function checkForm(formObj) {
 </tr>
 <tr>
 	<td class="row1"><span class="gen"><b>{L_SUBJECT}</b></span></td>
-	<td class="row2"><span class="gen"><input type="text" name="subject" size="45" maxlength="100" style="width:450px" tabindex="3" class="post" value="{SUBJECT}" /></span></td>
+	<td class="row2"><span class="gen"><input type="text" class="post" name="subject" size="45" maxlength="120" style="width:450px" tabindex="3" value="{SUBJECT}" /></span></td>
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="gen"><b>{L_MESSAGE_BODY}</b></span><br /><span class="gensmall">{L_MESSAGE_BODY_DESC}</span></td>

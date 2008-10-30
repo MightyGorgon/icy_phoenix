@@ -63,9 +63,7 @@ $submit = (isset($_POST['submit'])) ? true : false;
 // Get Attachment Config
 $attach_config = array();
 
-$sql = 'SELECT *
-	FROM ' . ATTACH_CONFIG_TABLE;
-
+$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
 if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not query attachment information', '', __LINE__, __FILE__, $sql);

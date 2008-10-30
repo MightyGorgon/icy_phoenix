@@ -386,7 +386,6 @@ $shoutbox_table_width = $shoutbox_div_width - 30;
 $shoutbox_table_height = $shoutbox_div_height - 25;
 
 $template->assign_vars(array(
-	'HEADER_LINK_COLOR' => '#' . $theme['fontcolor3'],
 	'L_SHOUTBOX' => $lang['Ajax_Shoutbox'],
 	'L_USERNAME' => $lang['Username'],
 	'L_MESSAGE' => $lang['Message'],
@@ -395,6 +394,12 @@ $template->assign_vars(array(
 	'L_SUMBIT' => $lang['Submit'],
 	'L_ARCHIVE' => $lang['Ajax_Archive'],
 	'L_UNABLE' => $lang['Shoutbox_unable'],
+	'L_WIO' => $lang['Who_is_Chatting'],
+	'L_GUESTS' =>  $lang['Online_guests'],
+	'L_TOTAL' => $lang['Online_total'],
+	'L_USERS' => $lang['Online_registered'],
+	'L_TOP_SHOUTERS' => $lang['Top_Ten_Shouters'],
+	'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
 	'U_ARCHIVE' => append_sid('ajax_chat.' . PHP_EXT . '?mode=archive')
 	)
 );

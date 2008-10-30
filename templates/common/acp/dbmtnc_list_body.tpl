@@ -12,9 +12,7 @@
 	<td class="row2">{function.FUNCTION_DESCRIPTION}</td>
 </tr>
 <!-- BEGIN spaceRow -->
-<tr>
-	<td class="spaceRow" height="1" colspan="2"><img src="../images/spacer.gif" alt="" width="1" height="1" /></td>
-</tr>
+<tr><td class="spaceRow" height="1" colspan="2"><img src="../images/spacer.gif" alt="" width="1" height="1" /></td></tr>
 <!-- END spaceRow -->
 <!-- END function -->
 </table>

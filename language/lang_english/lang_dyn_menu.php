@@ -15,6 +15,16 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
 $lang['menu_item']['quick_links'] = $lang['QUICK_LINKS'];
 $lang['menu_item']['main_links'] = $lang['MAIN_LINKS'];
 $lang['menu_item']['tools_links'] = $lang['TOOLS_LINKS'];

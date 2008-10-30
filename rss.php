@@ -288,7 +288,7 @@ else
 	// BEGIN SQL statement to fetch active posts of allowed forums
 	$sql_limit_by_http = '';
 	$MaxRecordAge = time() - MAX_WEEKS_AGO * 604800;
-	$sql_limit_time = (MAX_WEEKS_AGO > 0) ? "p.post_time >" . $MaxRecordAge : "1";
+	$sql_limit_time = (MAX_WEEKS_AGO > 0) ? "p.post_time > " . $MaxRecordAge : "1";
 	if(!$no_limit)
 	{
 		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
@@ -312,13 +312,12 @@ else
 		$sql_news = 'AND t.topic_type = \'' . POST_NEWS . '\'';
 	}
 	$getdesc=($forum_id <> '') ? 'f.forum_desc,' : '';
-	$sql = "SELECT f.forum_name," . $getdesc . " t.topic_id, t.topic_title, u.user_id, u.username, u.user_sig, u.user_allowsmile, p.post_time, p.post_username, p.post_edit_time, p.enable_sig, p.enable_smilies, p.enable_bbcode, p.enable_html, pt.*, t.topic_replies, t.topic_first_post_id
-		FROM " . FORUMS_TABLE . " AS f, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p, " . POSTS_TEXT_TABLE . " as pt
+	$sql = "SELECT f.forum_name," . $getdesc . " t.topic_id, t.topic_title, u.user_id, u.username, u.user_sig, u.user_allowsmile, p.*, t.topic_replies, t.topic_first_post_id
+		FROM " . FORUMS_TABLE . " AS f, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
 		WHERE
 				$sql_limit_time
 				$sql_forum_where
 				$sql_limit_by_http
-				AND pt.post_id = p.post_id
 				AND t.forum_id = f.forum_id
 				AND p.poster_id = u.user_id
 				AND p.topic_id = t.topic_id

@@ -248,20 +248,11 @@ function mg_kill_user($user_id)
 		if ( count($mark_list) )
 		{
 			$delete_sql_id = implode(', ', $mark_list);
-
-			$delete_text_sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-				WHERE privmsgs_text_id IN ($delete_sql_id)";
 			$delete_sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 				WHERE privmsgs_id IN ($delete_sql_id)";
-
 			if ( !$db->sql_query($delete_sql) )
 			{
 				message_die(GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
-			}
-
-			if ( !$db->sql_query($delete_text_sql) )
-			{
-				message_die(GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
 			}
 		}
 

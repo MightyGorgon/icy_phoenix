@@ -102,7 +102,7 @@ class Statistics
 				$style = $userdata['user_style'];
 				if(!$theme)
 				{
-					$style =  $board_config['default_style'];
+					$style = $board_config['default_style'];
 				}
 			}
 			else

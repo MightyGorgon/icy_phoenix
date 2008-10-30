@@ -88,8 +88,8 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 		$sql_where = 'AND p.pic_approval = 1';
 	}
 
-	$sql = "SELECT p.*, cat.*,  u.user_id, u.username, r.rate_pic_id, " . $rating_from . ", COUNT(DISTINCT c.comment_id) AS comments
-			FROM " . ALBUM_CAT_TABLE . "  AS cat, " . ALBUM_TABLE . " AS p
+	$sql = "SELECT p.*, cat.*, u.user_id, u.username, r.rate_pic_id, " . $rating_from . ", COUNT(DISTINCT c.comment_id) AS comments
+			FROM " . ALBUM_CAT_TABLE . " AS cat, " . ALBUM_TABLE . " AS p
 				LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 				LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
 				LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id

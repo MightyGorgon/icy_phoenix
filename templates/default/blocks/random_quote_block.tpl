@@ -1,4 +1,4 @@
 <br />
-<!-- <marquee direction="left">{RANDOM_QUOTE}</marquee> -->
-{RANDOM_QUOTE}
+<!-- <marquee direction="left">{CMS_RANDOM_QUOTE}</marquee> -->
+{CMS_RANDOM_QUOTE}
 <br />

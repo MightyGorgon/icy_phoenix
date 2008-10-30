@@ -30,14 +30,14 @@
 </div>{IMG_TBR}
 
 <!-- BEGIN switch_show_news -->
-{IMG_TBL}<div align="center">{XS_NEWS}</div>{IMG_TBR}
+<div align="center">{XS_NEWS}</div>
 <!-- END switch_show_news -->
 
 {CALENDAR_BOX}
 
 {BOARD_INDEX}
 
-<!-- BEGIN disable_viewonline -->
+<!-- IF S_VIEWONLINE -->
 <div id="viewonline_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('viewonline','viewonline_h','viewonline');" alt="{L_SHOW}" /><a href="{U_VIEWONLINE}" class="forumlink">{L_WHO_IS_ONLINE}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
@@ -128,9 +128,9 @@ if(GetCookie(tmp) == '2')
 <!-- END top_posters -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
-<!-- END disable_viewonline -->
+<!-- ENDIF -->
 
-<!-- BEGIN switch_show_birthday -->
+<!-- IF S_BIRTHDAYS -->
 <div id="birthday_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('birthday','birthday_h','birthday');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_BIRTHDAYS}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
@@ -153,9 +153,9 @@ if(GetCookie(tmp) == '2')
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
-<!-- END switch_show_birthday -->
+<!-- ENDIF -->
 
-<!-- BEGIN switch_show_shoutbox -->
+<!-- IF S_SHOUTBOX -->
 <div id="shoutbox_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_SHOW}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
@@ -175,9 +175,9 @@ if(GetCookie(tmp) == '2')
 <tr><td><iframe src="{U_SHOUTBOX}" scrolling="no" width="100%" height="190" frameborder="0" marginheight="0" marginwidth="0"></iframe></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
-<!-- END switch_show_shoutbox -->
+<!-- ENDIF -->
 
-<!-- BEGIN switch_show_links -->
+<!-- IF S_LINKS -->
 <div id="links_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('links','links_h','links');" alt="{L_SHOW}" /><a href="{U_LINKS}" class="forumlink">{L_LINKS}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
@@ -195,21 +195,16 @@ if(GetCookie(tmp) == '2')
 </script>
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('links','links_h','links');" alt="{L_HIDE}" /><a href="{U_LINKS}" class="forumlink">{L_LINKS}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<th>{L_SITE_LINKS}</th>
-	<th><!-- {L_Link_ME} -->&nbsp;</th>
-</tr>
-<tr>
 	<td class="row1g" nowrap="nowrap" width="100%"><iframe marginwidth="0" marginheight="0" src="{U_LINKS_JS}" frameborder="0" scrolling="no" width="100%" height="{SITE_LOGO_HEIGHT}"></iframe></td>
 	<td class="row1g" nowrap="nowrap" width="100"><a href="javascript:links_me()"><img src="{U_SITE_LOGO}" alt="{SITENAME}" width="{SITE_LOGO_WIDTH}" height="{SITE_LOGO_HEIGHT}" /></a></td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
-<!-- END switch_show_links -->
+<!-- ENDIF -->
 
 <br />
-<br />
 <div class="center-block" style="text-align:center;margin:30px;">
-{IMG_TBL}<table class="forumlinenb" style="padding:2px;" width="100%" cellspacing="0" cellpadding="2">
+{IMG_TBL}<table class="forumlinenb" style="padding:2px;border-top-width:1px;" width="100%" cellspacing="0" cellpadding="2">
 <tr>
 	<td class="row-center-small"><img src="{FORUM_NEW_CAT_IMG}" alt="{L_CAT_NEW_POSTS}" title="{L_CAT_NEW_POSTS}" /></td>
 	<td class="row-center-small" width="11%">{L_CAT_NEW_POSTS}</td>

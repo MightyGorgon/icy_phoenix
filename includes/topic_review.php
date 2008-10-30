@@ -29,9 +29,9 @@ function topic_review($topic_id, $is_inline_review)
 	global $starttime;
 	global $tree;
 
-	if ( !$is_inline_review )
+	if (!$is_inline_review)
 	{
-		if ( !isset($topic_id) || !$topic_id)
+		if (!isset($topic_id) || !$topic_id)
 		{
 			message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 		}
@@ -44,12 +44,12 @@ function topic_review($topic_id, $is_inline_review)
 		$tmp = '';
 		attach_setup_viewtopic_auth($tmp, $sql);
 
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
 		}
 
-		if ( !($forum_row = $db->sql_fetchrow($result)) )
+		if (!($forum_row = $db->sql_fetchrow($result)))
 		{
 			message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 		}
@@ -69,7 +69,7 @@ function topic_review($topic_id, $is_inline_review)
 		$is_auth = array();
 		$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_row);
 
-		if ( !$is_auth['auth_read'] )
+		if (!$is_auth['auth_read'])
 		{
 			message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
 		}
@@ -78,7 +78,7 @@ function topic_review($topic_id, $is_inline_review)
 	//
 	// Define censored word matches
 	//
-	if ( empty($orig_word) && !$userdata['user_allowswearywords'] )
+	if (empty($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$orig_word = array();
 		$replacement_word = array();
@@ -86,7 +86,7 @@ function topic_review($topic_id, $is_inline_review)
 		obtain_word_list($orig_word, $replacement_word);
 	}
 	// Start Autolinks For phpBB Mod
-	if ( empty($orig_autolink) && empty($replacement_autolink) )
+	if (empty($orig_autolink) && empty($replacement_autolink))
 	{
 		$orig_autolink = array();
 		$replacement_autolink = array();
@@ -95,10 +95,8 @@ function topic_review($topic_id, $is_inline_review)
 
 	// End Autolinks For phpBB Mod
 
-	//
 	// Dump out the page header and load viewtopic body template
-	//
-	if ( !$is_inline_review )
+	if (!$is_inline_review)
 	{
 		$gen_simple_header = true;
 
@@ -110,28 +108,22 @@ function topic_review($topic_id, $is_inline_review)
 		$template->set_filenames(array('reviewbody' => 'posting_topic_review.tpl'));
 	}
 
-	//
 	// Go ahead and pull all data for this topic
-	//
-	$sql = "SELECT u.username, u.user_id, p.*, pt.post_text, pt.post_text_compiled, pt.post_subject
-		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+	$sql = "SELECT u.username, u.user_id, p.*
+		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE p.topic_id = $topic_id
 			AND p.poster_id = u.user_id
-			AND p.post_id = pt.post_id
 		ORDER BY p.post_time DESC
 		LIMIT " . $board_config['posts_per_page'];
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
 	}
 
 	init_display_review_attachments($is_auth);
 
-	//
-	// Okay, let's do the loop, yeah come on baby let's do the loop
-	// and it goes like this ...
-	//
-	if ( $row = $db->sql_fetchrow($result) )
+	// Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
+	if ($row = $db->sql_fetchrow($result))
 	{
 		//Begin Lo-Fi Mod
 		global $lofi;
@@ -153,7 +145,7 @@ function topic_review($topic_id, $is_inline_review)
 				$poster = $row['post_username'];
 				$poster_rank = $lang['Guest'];
 			}
-			elseif ( $poster_id == ANONYMOUS )
+			elseif ($poster_id == ANONYMOUS)
 			{
 				$poster = $lang['Guest'];
 				$poster_rank = '';
@@ -166,11 +158,11 @@ function topic_review($topic_id, $is_inline_review)
 			// Quick Quote - BEGIN
 			$plain_message = $row['post_text'];
 			$plain_message = str_replace('-->', '--&gt;', $plain_message);
-			if( preg_match('/\[hide/i', $plain_message) )
+			if(preg_match('/\[hide/i', $plain_message))
 			{
-			  $search = array("/\[hide\](.*?)\[\/hide\]/");
-			  $replace = array('[hide]' . $lang['xs_bbc_hide_quote_message'] . '[/hide]');
-			  $plain_message =  preg_replace($search, $replace, $plain_message);
+				$search = array("/\[hide\](.*?)\[\/hide\]/");
+				$replace = array('[hide]' . $lang['xs_bbc_hide_quote_message'] . '[/hide]');
+				$plain_message =  preg_replace($search, $replace, $plain_message);
 			}
 			//$plain_message = str_replace('postrow -->', 'postrow --&gt;', $plain_message);
 			//$plain_message = str_replace('<', '&lt;', $plain_message);
@@ -184,9 +176,9 @@ function topic_review($topic_id, $is_inline_review)
 				obtain_word_list($orig_word, $replacement_word);
 			}
 
-			if ( !empty($orig_word) )
+			if (!empty($orig_word))
 			{
-				$plain_message = ( !empty($plain_message) ) ? preg_replace($orig_word, $replace_word, $plain_message) : '';
+				$plain_message = (!empty($plain_message)) ? preg_replace($orig_word, $replace_word, $plain_message) : '';
 			}
 			$plain_message = addslashes($plain_message);
 			$plain_message = str_replace("\n", "\\n", $plain_message);
@@ -226,8 +218,8 @@ function topic_review($topic_id, $is_inline_review)
 			// Again this will be handled by the templating
 			// code at some point
 			//
-			$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
-			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
+			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('postrow', array(
 				'ROW_COLOR' => '#' . $row_color,
@@ -248,7 +240,7 @@ function topic_review($topic_id, $is_inline_review)
 
 			$i++;
 		}
-		while ( $row = $db->sql_fetchrow($result) );
+		while ($row = $db->sql_fetchrow($result));
 	}
 	else
 	{
@@ -269,7 +261,7 @@ function topic_review($topic_id, $is_inline_review)
 		)
 	);
 
-	if ( !$is_inline_review )
+	if (!$is_inline_review)
 	{
 		$template->pparse('reviewbody');
 		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);

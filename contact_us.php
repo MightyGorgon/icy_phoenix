@@ -24,7 +24,7 @@ init_userprefs($userdata);
 $account_delete = false;
 $cms_page_id = '21';
 $cms_page_name = 'contact_us';
-$auth_level_req = $board_config['auth_view_contact_us'];
+
 if (!empty($_GET['account_delete']) || !empty($_POST['account_delete']))
 {
 	$account_delete_id = (isset($_GET['account_delete']) ? intval($_GET['account_delete']) : (isset($_POST['account_delete']) ? intval($_POST['account_delete']) : false));
@@ -37,26 +37,9 @@ if (!empty($_GET['account_delete']) || !empty($_POST['account_delete']))
 }
 else
 {
-	if ($auth_level_req > AUTH_ALL)
-	{
-		if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if ($userdata['user_level'] != ADMIN)
-		{
-			if ($auth_level_req == AUTH_ADMIN)
-			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-			}
-			if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-			}
-		}
-	}
+	check_page_auth($cms_page_id, $cms_page_name);
 }
-$cms_global_blocks = ($board_config['wide_blocks_contact_us'] == 1) ? true : false;
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 // Set default email variables
 $script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
@@ -352,7 +335,7 @@ $template->assign_vars(array(
 
 	'L_CONTACT_US' => $lang['Contact_us'],
 	'L_SEND_EMAIL_MSG' => $lang['Send_email_msg'],
-	'L_SENDER' => $lang['Tell_Friend_Sender_Email'],
+	'L_SENDER' => $lang['TELL_FRIEND_SENDER_EMAIL'],
 	'L_SUBJECT' => $lang['Subject'],
 	'L_MESSAGE_BODY' => $lang['Message_body'],
 	'L_MESSAGE_BODY_DESC' => $lang['Email_message_desc'],

@@ -62,13 +62,6 @@ function delete_older_message($privmsgs_type)
 			{
 				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs', '', __LINE__, __FILE__, $sql);
 			}
-
-			$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-				WHERE privmsgs_text_id = '" . $old_privmsgs_id . "'";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text', '', __LINE__, __FILE__, $sql);
-			}
 		}
 	}
 }

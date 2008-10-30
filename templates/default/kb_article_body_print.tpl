@@ -7,10 +7,9 @@
 {NAV_LINKS}
 <title>{SITENAME} :: {PAGE_TITLE}</title>
 <link rel="stylesheet" href="{T_COMMON_TPL_PATH}print_version.css" type="text/css" >
-<link rel="stylesheet" href="{T_COMMON_TPL_PATH}acp.css" type="text/css" >
 </head>
 
-<body bgcolor="{T_BODY_BGCOLOR}" text="{T_BODY_TEXT}" link="{T_BODY_LINK}" vlink="{T_BODY_VLINK}" />
+<body>
 <a name="top"></a>
 
 <table class="forumline" width="100%" cellspacing="0">

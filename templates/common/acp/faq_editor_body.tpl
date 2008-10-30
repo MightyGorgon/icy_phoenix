@@ -5,19 +5,19 @@
 <tr><th colspan="5" align="center">{L_TITLE}</th></tr>
 <!-- BEGIN blockrow -->
 <tr>
-	<td class="cat" width="100%"><span class="cattitle"><a name="{blockrow.BLOCK_ANCHOR}">{blockrow.BLOCK_TITLE}</a></span></td>
-	<td class="cat" align="center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.U_BLOCK_EDIT}">{L_EDIT}</a></span></td>
-	<td class="cat" align="center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.U_BLOCK_DELETE}">{L_DELETE}</a></span></td>
-	<td class="cat" align="center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.U_BLOCK_MOVE_UP}">{L_MOVE_UP}</a></span></td>
-	<td class="cat" align="center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.U_BLOCK_MOVE_DOWN}">{L_MOVE_DOWN}</a></span></td>
+	<th align="left"><span class="genmed"><a name="{blockrow.BLOCK_ANCHOR}">{blockrow.BLOCK_TITLE}</a></span></th>
+	<th><span class="genmed"><a href="{blockrow.U_BLOCK_EDIT}">{L_EDIT}</a></span></th>
+	<th><span class="genmed"><a href="{blockrow.U_BLOCK_DELETE}">{L_DELETE}</a></span></th>
+	<th><span class="genmed"><a href="{blockrow.U_BLOCK_MOVE_UP}">{L_MOVE_UP}</a></span></th>
+	<th><span class="genmed"><a href="{blockrow.U_BLOCK_MOVE_DOWN}">{L_MOVE_DOWN}</a></span></th>
 </tr>
 <!-- BEGIN questrow -->
 <tr>
-	<td class="row1" valign="top" width="100%"><span class="gen"><a href="{blockrow.questrow.U_QUEST}" target="_new">{blockrow.questrow.QUEST_TITLE}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.questrow.U_QUEST_EDIT}">{L_EDIT}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.questrow.U_QUEST_DELETE}">{L_DELETE}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.questrow.U_QUEST_MOVE_UP}">{L_MOVE_UP}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="gen"><a href="{blockrow.questrow.U_QUEST_MOVE_DOWN}">{L_MOVE_DOWN}</span></td>
+	<td class="row1" valign="top" width="100%"><span class="genmed"><a href="{blockrow.questrow.U_QUEST}" target="_new">{blockrow.questrow.QUEST_TITLE}</a></span></td>
+	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_EDIT}">{L_EDIT}</a></span></td>
+	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_DELETE}">{L_DELETE}</a></span></td>
+	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_MOVE_UP}">{L_MOVE_UP}</a></span></td>
+	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_MOVE_DOWN}">{L_MOVE_DOWN}</span></td>
 </tr>
 <!-- END questrow -->
 <!-- BEGIN no_questions -->
@@ -35,7 +35,7 @@
 		</form>
 	</td>
 </tr>
-<tr><td colspan="5" height="1" class="spaceRow"><img src="../images/spacer.gif" alt="" width="1" height="1" /></td></tr>
+<tr><td colspan="5" height="1" class="spaceRow"><img src="{SPACER}" alt="" width="1" height="1" /></td></tr>
 <!-- END blockrow -->
 <!-- BEGIN no_blocks -->
 <tr><td class="cat" colspan="5"><span class="cattitle">{L_NO_BLOCKS}</span></td></tr>

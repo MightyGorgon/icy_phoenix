@@ -126,8 +126,8 @@ switch( $mode )
 }
 
 $sql = "SELECT u.username, u.user_id, u.user_regdate, COUNT(p.pic_id) AS pics, MAX(p.pic_id) AS last_pic, COUNT(c.cat_user_id) AS cats
-		FROM ". USERS_TABLE ." AS u, " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
-		WHERE u.user_id <> ". ANONYMOUS ."
+		FROM " . USERS_TABLE . " AS u, " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
+		WHERE u.user_id <> " . ANONYMOUS . "
 			AND c.cat_user_id = u.user_id
 			AND c.cat_id = p.pic_cat_id
 		GROUP BY user_id
@@ -159,8 +159,8 @@ for ($i = 0; $i < count($memberrow); $i++)
 }
 
 $sql = "SELECT COUNT(DISTINCT u.user_id) AS total
-		FROM ". USERS_TABLE ." AS u, ". ALBUM_TABLE ." AS p, " . ALBUM_CAT_TABLE . " AS c
-		WHERE u.user_id <> ". ANONYMOUS ."
+		FROM " . USERS_TABLE . " AS u, " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
+		WHERE u.user_id <> " . ANONYMOUS . "
 			AND c.cat_user_id = u.user_id
 			AND c.cat_id = p.pic_cat_id";
 

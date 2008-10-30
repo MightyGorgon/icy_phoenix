@@ -294,16 +294,15 @@ while ($row = $db->sql_fetchrow($result))
 
 	// Create a list of messages for this user that presumably have not been seen.
 	// Filter out unauthorized forums.
-	$sql2 = "SELECT c.cat_title, f.forum_name, t.topic_title, u.username AS 'Posted by', post_time, pt.post_text, p.post_id, t.topic_id, f.forum_id
-		FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u, " . CATEGORIES_TABLE . " c, " . POSTS_TEXT_TABLE . " pt
+	$sql2 = "SELECT c.cat_title, f.forum_name, t.topic_title, u.username AS 'Posted by', p.post_time, p.post_text, p.post_id, t.topic_id, f.forum_id
+		FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u, " . CATEGORIES_TABLE . " c
 		WHERE p.topic_id = t.topic_id
 			AND t.forum_id = f.forum_id
 			AND p.poster_id = u.user_id
 			AND f.cat_id = c.cat_id
-			AND p.post_id = pt.post_id
-			AND post_time > " . $code . "
+			AND p.post_time > " . $code . "
 			AND f.forum_id IN (" . $forum_list . ")
-		ORDER BY c.cat_order, f.forum_order, t.topic_title, post_time";
+		ORDER BY c.cat_order, f.forum_order, t.topic_title, p.post_time";
 
 	// Uncomment next line to see SQL used
 	// $msg .= "**DEBUG**\r\n' . $sql2 . '\r\n**DEBUG**\r\n";

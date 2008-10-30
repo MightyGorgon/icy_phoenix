@@ -31,8 +31,8 @@
 <br />
 
 <!-- BEGIN switch_submit_result -->
-<table width="100%" cellspacing="0" cellpadding="0" border="1" class="forumline">
-<tr><td colspan="{SUBMIT_RESULT_FIELD_COUNT}" align="left" class="catLeft"><span class="gen">{SUBMIT_RESULT_QUERY}</span></td>
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr><td class="cat" colspan="{SUBMIT_RESULT_FIELD_COUNT}"><span class="gen">{SUBMIT_RESULT_QUERY}</span></td>
 </tr>
 <tr>
 	<!-- BEGIN submit_result_fields -->
@@ -51,10 +51,10 @@
 <!-- END switch_submit_result -->
 
 <!-- BEGIN switch_table_browse -->
-<table width="100%" cellspacing="0" cellpadding="0" border="1" class="forumline">
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <!-- BEGIN table_browse_menu -->
 <tr>
-	<td colspan="{switch_table_browse.table_browse_menu.BROWSE_MENU_COLSPAN}" align="left" class="catLeft">
+	<td class="cat" colspan="{switch_table_browse.table_browse_menu.BROWSE_MENU_COLSPAN}">
 		<span class="gen"><a href="{switch_table_browse.table_browse_menu.FIRST_PAGE}">{switch_table_browse.table_browse_menu.L_FIRST_PAGE}</a>&nbsp;</span>
 		<span class="gen"><a href="{switch_table_browse.table_browse_menu.NEXT_PAGE}">{switch_table_browse.table_browse_menu.L_NEXT_PAGE}</a>&nbsp;</span>
 		<span class="gen"><a href="{switch_table_browse.table_browse_menu.PREVIOUS_PAGE}">{switch_table_browse.table_browse_menu.L_PREVIOUS_PAGE}</a>&nbsp;</span>
@@ -83,7 +83,7 @@
 
 <!-- BEGIN switch_table_structure -->
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td colspan="7" align="center" class="catLeft"><span class="gen"><b>{L_TABLE_STRUCTURE_TABLENAME}</b></span></td></tr>
+<tr><td class="cat" colspan="7"><span class="gen"><b>{L_TABLE_STRUCTURE_TABLENAME}</b></span></td></tr>
 <tr>
 	<td class="row1"><span class="genmed"><b>&nbsp;</b></span></td>
 	<td class="row1"><span class="genmed"><b>{L_TABLE_STRUCTURE_FIELD}</b>&nbsp;</span></td>
@@ -109,7 +109,7 @@
 <!-- END switch_table_structure -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-<tr><td colspan="12" align="center" class="catLeft"><span class="gen"><b>{TABLE_TITLE}</b></span></td></tr>
+<tr><td class="cat" colspan="12"><span class="gen"><b>{TABLE_TITLE}</b></span></td></tr>
 <tr>
 	<td class="row1"><span class="genmed"><b>{L_TABLE_NAME}</b>&nbsp;</span></td>
 	<td class="row1" colspan="6" align="center"><span class="genmed"><b>{L_TABLE_ACTIONS}</b>&nbsp;</span></td>

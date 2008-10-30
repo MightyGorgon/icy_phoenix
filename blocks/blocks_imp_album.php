@@ -20,35 +20,17 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_album_block_func))
+if(!function_exists('imp_album_block_func'))
 {
 	function imp_album_block_func()
 	{
 		global $template, $db, $board_config, $lang, $images, $userdata;
-		global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars, $block_id;
+		global $cms_global_blocks, $cms_page_id, $cms_config_vars, $block_id;
 
-		/*
-		$cms_page_id = '12';
-		$cms_page_name = 'album';
-		*/
-		$auth_level_req = $board_config['auth_view_album'];
-		if ($auth_level_req > AUTH_ALL)
+		$process_block = check_page_auth(0, 'album', true);
+		if (!$process_block)
 		{
-			if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-			{
-				return;
-			}
-			if ($userdata['user_level'] != ADMIN)
-			{
-				if ($auth_level_req == AUTH_ADMIN)
-				{
-					return;
-				}
-				if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-				{
-					return;
-				}
-			}
+			return;
 		}
 
 		if (!defined('IMG_THUMB'))

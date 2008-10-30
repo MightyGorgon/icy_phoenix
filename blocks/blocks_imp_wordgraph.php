@@ -21,14 +21,13 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_wordgraph))
+if(!function_exists('imp_wordgraph_func'))
 {
-	function imp_wordgraph()
+	function imp_wordgraph_func()
 	{
 		global $lang, $template, $board_config, $db, $cms_config_vars, $block_id;
 
 		$template->_tpldata['wordgraph_loop.'] = array();
-		//reset($template->_tpldata['wordgraph_loop.']);
 
 		$words_array = array();
 
@@ -46,9 +45,7 @@ if(!function_exists(imp_wordgraph))
 		{
 			$word = strtolower($row['word_text']);
 			$word_count = $row['word_count'];
-
 			$words_array[$word] = $word_count;
-
 		}
 
 		$minimum = 1000000;
@@ -66,8 +63,6 @@ if(!function_exists(imp_wordgraph))
 				$minimum = $words_array[$word];
 			}
 		}
-
-
 
 		$words = array_keys($words_array);
 		sort($words);
@@ -87,10 +82,9 @@ if(!function_exists(imp_wordgraph))
 			'L_WORDGRAPH' => $lang['Wordgraph'],
 			)
 		);
-
 	}
 }
 
-imp_wordgraph();
+imp_wordgraph_func();
 
 ?>

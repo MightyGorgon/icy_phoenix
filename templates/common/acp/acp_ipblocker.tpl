@@ -24,7 +24,7 @@
 	<td class="row2 row-center">
 		<table border="0" width="100%" cellspacing="4" cellpadding="4">
 		<tr>
-			<td><img src="{IMG_INFO}" alt="{added.L_SUCCESSFULLY_ADDED}" title="{added.L_SUCCESSFULLY_ADDED}" border="0"></td>
+			<td><img src="{IMG_INFO}" alt="{added.L_SUCCESSFULLY_ADDED}" title="{added.L_SUCCESSFULLY_ADDED}" border="0" /></td>
 			<td>{added.L_SUCCESSFULLY_ADDED}</td>
 		</tr>
 		</table>
@@ -47,4 +47,5 @@
 	<td width="10%" class="{ipblocker.ROW_CLASS} row-center"><a href="{ipblocker.BLOCKER_ID}"><img src="{ipblocker.IMG_ICON}" alt="{ipblocker.L_DELETE}" title="{ipblocker.L_DELETE}" /></a></td>
 </tr>
 <!-- END ipblocker -->
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>

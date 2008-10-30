@@ -102,26 +102,8 @@ if($userdata['upi2db_access'])
 
 $cms_page_id = '5';
 $cms_page_name = 'search';
-$auth_level_req = $board_config['auth_view_search'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_search'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 if ($search_mode == 'bookmarks')
 {
@@ -678,19 +660,19 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							$search_add_sql = '';
 							if ($search_fields == 'msgonly')
 							{
-								$search_add_sql = "pt.post_text LIKE '$match_word'";
+								$search_add_sql = "p.post_text LIKE '$match_word'";
 							}
 							elseif ($search_fields == 'titleonly')
 							{
-								$search_add_sql = "pt.post_subject LIKE '$match_word'";
+								$search_add_sql = "p.post_subject LIKE '$match_word'";
 							}
 							else
 							{
-								$search_add_sql = "pt.post_text LIKE '$match_word' OR pt.post_subject LIKE '$match_word'";
+								$search_add_sql = "p.post_text LIKE '$match_word' OR p.post_subject LIKE '$match_word'";
 							}
-							$search_add_sql .= ($only_bluecards) ? " AND p.post_bluecard > 0 AND pt.post_id = p.post_id" : '';
-							$sql = "SELECT pt.post_id
-								FROM " . POSTS_TEXT_TABLE . " pt " . (($only_bluecards) ? ','.POSTS_TABLE . ' p ' : '') . "
+							$search_add_sql .= ($only_bluecards) ? " AND p.post_bluecard > 0" : '';
+							$sql = "SELECT p.post_id
+								FROM " . POSTS_TABLE . " p
 								WHERE " . $search_add_sql;
 						}
 						if (!($result = $db->sql_query($sql)))
@@ -1173,10 +1155,9 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		if ($show_results == 'posts')
 		{
-			$sql = "SELECT pt.post_text, pt.post_text_compiled, pt.post_subject, p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_sig
-				FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TEXT_TABLE . " pt
+			$sql = "SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_sig
+				FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p
 				WHERE p.post_id IN ($search_results)
-					AND pt.post_id = p.post_id
 					AND f.forum_id = p.forum_id
 					AND p.topic_id = t.topic_id
 					AND p.poster_id = u.user_id";
@@ -1205,7 +1186,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		switch ($sort_by)
 		{
 			case 1:
-				$sql .= ($show_results == 'posts') ? 'pt.post_subject' : 't.topic_title';
+				$sql .= ($show_results == 'posts') ? 'p.post_subject' : 't.topic_title';
 				break;
 			case 2:
 				$sql .= 't.topic_title';

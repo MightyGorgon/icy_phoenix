@@ -1,6 +1,6 @@
-@import url("common.css");
-@import url("fap.css");
-@import url("dock.css");
+@import url("../default/common.css");
+@import url("../default/fap.css");
+@import url("../default/dock.css");
 @import url("style_ice_colors.css");
 
 /* main selectors */
@@ -37,10 +37,12 @@ body {
 	border: 0px solid #ffffff;
 	background: url('images/ice/top_header.png') repeat;
 	/* background: url('images/ice/top_header_ts.png') repeat; */
-/* MG XMas */
-	/*background: url('images/ice/xmas/xmas_header.png');*/
-/* MG XMas */
 	height: 150px;
+}
+
+#logo-img {
+	margin-top: 20px;
+	margin-left: 10px;
 }
 
 #bottom_logo_ext{
@@ -385,55 +387,57 @@ hr {
 
 .forumline td.spaceRow, .forumlinenb td.spaceRow { padding: 0; }
 
-.roundedtop {
+/* === Tables === */
+
+.tbl {
 	margin-top: 5px;
-	margin-bottom: 0px;
-}
-
-.roundedtop td {
-	height: 29px;
-	white-space: nowrap;
-	/*
-	background: none;
-	*/
-}
-
-.topcorners {
-	vertical-align: bottom;
-	width: 27px;
-	height: 29px;
-}
-
-.roundedhl {
-	background: url('images/ice/tbl_h_l.gif') no-repeat;
-}
-
-.roundedhc {
-	background: url('images/ice/tbl_h_c.gif') bottom left repeat-x;
-/* MG XMas */
-	/*background: url('images/ice/xmas/tbl_h_c.gif') bottom left repeat-x;*/
-/* MG XMas */
-}
-
-.roundedhr {
-	background: url('images/ice/tbl_h_r.gif') no-repeat;
-}
-
-.roundedfl {
-	background: url('images/ice/tbl_f_l.gif') no-repeat;
-}
-
-.roundedfc {
-	background: url('images/ice/tbl_f_c.gif') top left repeat-x;
-}
-
-.roundedfr {
-	background: url('images/ice/tbl_f_r.gif') no-repeat;
-}
-
-.roundedbottom {
-	margin-top: 0px;
 	margin-bottom: 5px;
+}
+
+.tbl-title {
+	color: #113355;
+	margin-top: 5px;
+}
+
+.tbl-h-c {
+	background: url('images/ice/tbl_h_c.gif') bottom left repeat-x;
+	height: 29px;
+	font-weight: bold;
+	/*font-size: 1.3em;*/
+	text-align: center;
+	vertical-align: middle;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.tbl-h-l {
+	background: url('images/ice/tbl_h_l.gif') bottom left no-repeat;
+	padding-left: 27px;
+}
+
+.tbl-h-r {
+	background: url('images/ice/tbl_h_r.gif') bottom right no-repeat;
+	padding-right: 27px;
+}
+
+.tbl-f-c {
+	background: url('images/ice/tbl_f_c.gif') bottom left repeat-x;
+	height: 12px;
+	font-size: 0.1em;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.tbl-f-l {
+	background: url('images/ice/tbl_f_l.gif') bottom left no-repeat;
+	padding-left: 10px;
+}
+
+.tbl-f-r {
+	background: url('images/ice/tbl_f_r.gif') bottom right no-repeat;
+	padding-right: 10px;
 }
 
 /* navigation */

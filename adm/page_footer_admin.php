@@ -23,10 +23,10 @@ if (!defined('IN_ICYPHOENIX'))
 global $do_gzip_compress;
 
 // Show the overall footer.
-$template->set_filenames(array('page_footer' =>  ADM_TPL . 'page_footer.tpl'));
+$template->set_filenames(array('page_footer' => ADM_TPL . 'page_footer.tpl'));
 
 $template->assign_vars(array(
-	'PHPBB_VERSION' => (($userdata['user_level'] == ADMIN) && ($userdata['user_id'] != ANONYMOUS)) ? '2' . $board_config['version'] : '',
+	'PHPBB_VERSION' => '2' . $board_config['version'],
 	'IP_VERSION' => $board_config['ip_version'],
 	'TRANSLATION_INFO' => (isset($lang['TRANSLATION_INFO'])) ? $lang['TRANSLATION_INFO'] : ((isset($lang['TRANSLATION'])) ? $lang['TRANSLATION'] : '')
 	)
@@ -35,11 +35,10 @@ $template->assign_vars(array(
 $template->pparse('page_footer');
 
 // Close our DB connection.
-$db->clear_cache();
 $db->sql_close();
 
 // Compress buffered output if required and send to browser
-if( $do_gzip_compress )
+if($do_gzip_compress)
 {
 	// Borrowed from php.net!
 	$gzip_contents = ob_get_contents();

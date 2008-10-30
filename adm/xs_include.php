@@ -833,14 +833,14 @@ function xs_install_style($tpl, $num)
 // generate theme_info.cfg for template
 function xs_generate_themeinfo($theme_rowset, $export, $exportas, $total)
 {
-	$vars = array('template_name', 'style_name', 'head_stylesheet', 'body_background', 'body_bgcolor', 'body_text', 'body_link', 'body_vlink', 'body_alink', 'body_hlink', 'tr_color1', 'tr_color2', 'tr_color3', 'tr_class1', 'tr_class2', 'tr_class3', 'th_color1', 'th_color2', 'th_color3', 'th_class1', 'th_class2', 'th_class3', 'td_color1', 'td_color2', 'td_color3', 'td_class1', 'td_class2', 'td_class3', 'fontface1', 'fontface2', 'fontface3', 'fontsize1', 'fontsize2', 'fontsize3', 'fontcolor1', 'fontcolor2', 'fontcolor3', 'span_class1', 'span_class2', 'span_class3', 'img_size_poll', 'img_size_privmsg');
+	$vars = array('template_name', 'style_name', 'head_stylesheet', 'body_background', 'body_bgcolor', 'tr_class1', 'tr_class2', 'tr_class3', 'td_class1', 'td_class2', 'td_class3');
 	$theme_data = '<?php'."\n\n";
 	$theme_data .= "//\n// eXtreme Styles mod (compatible with phpBB 2.0.x) auto-generated theme config file for $exportas\n// Do not change anything in this file unless you know exactly what you are doing!\n//\n\n";
 	for($i = 0; $i < count($theme_rowset); $i++)
 	{
 		$id = $theme_rowset[$i]['themes_id'];
 		$theme_name = $theme_rowset[$i]['style_name'];
-		for($j=0; $j<$total; $j++)
+		for($j = 0; $j < $total; $j++)
 		{
 			if(!empty($_POST['export_style_name_'.$j]) && $_POST['export_style_id_'.$j] == $id)
 			{

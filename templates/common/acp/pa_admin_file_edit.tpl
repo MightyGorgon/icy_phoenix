@@ -103,97 +103,97 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_FILE_TITLE}</th></tr>
 <tr>
-	<td width="50%" class="row1">{L_FILE_NAME}<br /><span class="gensmall">{L_FILE_NAME_INFO}</span></td>
+	<td width="50%" class="row1"><strong>{L_FILE_NAME}</strong><br /><span class="gensmall">{L_FILE_NAME_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="name" value="{FILE_NAME}" /></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_SHORT_DESC}<br /><span class="gensmall">{L_FILE_SHORT_DESC_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_SHORT_DESC}</strong><br /><span class="gensmall">{L_FILE_SHORT_DESC_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="short_desc" value="{FILE_DESC}" /></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_LONG_DESC}<br /><span class="gensmall">{L_FILE_LONG_DESC_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_LONG_DESC}</strong><br /><span class="gensmall">{L_FILE_LONG_DESC_INFO}</span></td>
 	<td class="row2"><textarea rows="6" name="long_desc" cols="32" class="post">{FILE_LONG_DESC}</textarea></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_AUTHOR}<br /><span class="gensmall">{L_FILE_AUTHOR_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_AUTHOR}</strong><br /><span class="gensmall">{L_FILE_AUTHOR_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="author" value="{FILE_AUTHOR}" /></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_VERSION}<br /><span class="gensmall">{L_FILE_VERSION_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_VERSION}</strong><br /><span class="gensmall">{L_FILE_VERSION_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="version" value="{FILE_VERSION}" /></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_WEBSITE}<br /><span class="gensmall">{L_FILE_WEBSITE_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_WEBSITE}</strong><br /><span class="gensmall">{L_FILE_WEBSITE_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="website" value="{FILE_WEBSITE}" /></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_POSTICONS}<br /><span class="gensmall">{L_FILE_POSTICONS_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_POSTICONS}</strong><br /><span class="gensmall">{L_FILE_POSTICONS_INFO}</span></td>
 	<td class="row2">{S_POSTICONS}</td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_CAT}<br /><span class="gensmall">{L_FILE_CAT_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_CAT}</strong><br /><span class="gensmall">{L_FILE_CAT_INFO}</span></td>
 	<td class="row2"><select name="cat_id" class="post">{S_CAT_LIST}</select></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_LICENSE}<br /><span class="gensmall">{L_FILE_LICENSE_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_LICENSE}</strong><br /><span class="gensmall">{L_FILE_LICENSE_INFO}</span></td>
 	<td class="row2"><select name="license" class="post">{S_LICENSE_LIST}</select></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_PINNED}<br /><span class="gensmall">{L_FILE_PINNED_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_PINNED}</strong><br /><span class="gensmall">{L_FILE_PINNED_INFO}</span></td>
 	<td class="row2">
 		<input type="radio" name="pin" value="1"{PIN_CHECKED_YES} />{L_YES}&nbsp;
 		<input type="radio" name="pin" value="0"{PIN_CHECKED_NO} />{L_NO}&nbsp;
 	</td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_DOWNLOAD}</td>
+	<td class="row1"><strong>{L_FILE_DOWNLOAD}</strong></td>
 	<td class="row2"><input type="text" class="post" size="10" name="file_download" value="{FILE_DOWNLOAD}" /></td>
 </tr>
 <tr>
-	<td class="row1">{L_FILE_APPROVED}<br /><span class="gensmall">{L_FILE_APPROVED_INFO}</span></td>
+	<td class="row1"><strong>{L_FILE_APPROVED}</strong><br /><span class="gensmall">{L_FILE_APPROVED_INFO}</span></td>
 	<td class="row2">
 	<input type="radio" name="approved" value="1" {APPROVED_CHECKED_YES} />{L_YES}&nbsp;
 	<input type="radio" name="approved" value="0" {APPROVED_CHECKED_NO} />{L_NO}&nbsp;
 	</td>
 </tr>
-<tr><td class="cat" colspan="2" align="center"><span class="cattitle">{L_SCREENSHOT}</span></td></tr>
+<tr><th colspan="2">{L_SCREENSHOT}</th></tr>
 <tr>
-	<td class="row1"><span class="genmed">{L_FILESS_UPLOAD}</span><br /><span class="gensmall">{L_FILESSINFO_UPLOAD}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_FILESS_UPLOAD}</strong></span><br /><span class="gensmall">{L_FILESSINFO_UPLOAD}</span></td>
 	<td class="row2"><input type="file" size="50" name="screen_shot" maxlength="{FILESIZE}" class="post" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="genmed">{L_FILESS}</span><br /><span class="gensmall">{L_FILESSINFO}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_FILESS}</strong></span><br /><span class="gensmall">{L_FILESSINFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="screen_shot_url" value="{FILE_SSURL}" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="genmed">{L_FILE_SSLINK}</span><br /><span class="gensmall">{L_FILE_SSLINK_INFO}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_FILE_SSLINK}</strong></span><br /><span class="gensmall">{L_FILE_SSLINK_INFO}</span></td>
 	<td class="row2">
 		<input type="radio" name="sshot_link" value="1" {SS_CHECKED_YES} />{L_YES}&nbsp;
 		<input type="radio" name="sshot_link" value="0" {SS_CHECKED_NO} />{L_NO}&nbsp;
 	</td>
 </tr>
-<tr><td class="cat" colspan="2" align="center"><span class="cattitle">{L_FILES}</span></td></tr>
+<tr><th colspan="2">{L_FILES}</th></tr>
 <tr>
-	<td class="row1"><span class="genmed">{L_FILE_UPLOAD}</span><br /><span class="gensmall">{L_FILEINFO_UPLOAD}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_FILE_UPLOAD}</strong></span><br /><span class="gensmall">{L_FILEINFO_UPLOAD}</span></td>
 	<td class="row2"><input type="file" size="50" name="userfile" maxlength="{FILESIZE}" class="post" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="genmed">{L_FILE_URL}</span><br /><span class="gensmall">{L_FILE_URL_INFO}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_FILE_URL}</strong></span><br /><span class="gensmall">{L_FILE_URL_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="download_url" value="{FILE_DLURL}" /></td>
 </tr>
 <!-- IF MIRROR_FILE -->
 <tr>
-	<td class="row1"><span class="genmed">{L_UPLOADED_FILE}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_UPLOADED_FILE}</strong></span></td>
 	<td class="row2"><a href="{U_UPLOADED_MIRROR}">{MIRROR_FILE}</a></td>
 </tr>
 <!-- ENDIF -->
 <tr>
-	<td class="row1"><span class="genmed">{L_MIRRORS}</span><br /><span class="gensmall">{L_MIRRORS_INFO}</span></td>
+	<td class="row1"><span class="genmed"><strong>{L_MIRRORS}</strong></span><br /><span class="gensmall">{L_MIRRORS_INFO}</span></td>
 	<td class="row2"><input class="mainoption" type="submit" value="{L_CLICK_HERE_MIRRORS}" name="mirrors"<!-- IF MODE_EDIT --> onClick="set_mirror_mode(true);"<!-- ENDIF --> />
 	</td>
 </tr>
 <!-- IF CUSTOM_EXIST -->
-<tr><td class="cat" colspan="2" align="center"><span class="cattitle">{L_ADDTIONAL_FIELD}</span></td></tr>
+<tr><th colspan="2">{L_ADDTIONAL_FIELD}</th></tr>
 <!-- ENDIF -->
 
 <!-- INCLUDE pa_custom_field.tpl -->

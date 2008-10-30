@@ -20,17 +20,4 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_nav_links_block_func))
-{
-	function imp_nav_links_block_func()
-	{
-		global $template, $lang, $board_config;
-		$template->assign_vars(array(
-			)
-		);
-	}
-}
-
-imp_nav_links_block_func();
-
 ?>

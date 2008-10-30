@@ -421,12 +421,6 @@ switch($mode)
 				{
 					message_die(GENERAL_ERROR, 'could not delete posts.', '', __LINE__, __FILE__, $sql);
 				}
-
-				$sql = "DELETE FROM " . POSTS_TEXT_TABLE . " WHERE post_id IN ($post_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete posts text.', '', __LINE__, __FILE__, $sql);
-				}
 				remove_search_post($post_id_sql);
 			}
 
@@ -1178,11 +1172,10 @@ switch($mode)
 			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			$template->set_filenames(array('split_body' => 'modcp_split.tpl'));
 
-			$sql = "SELECT u.user_id, u.username, p.*, pt.post_text, pt.post_subject, p.post_username
-				FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+			$sql = "SELECT u.user_id, u.username, p.*
+				FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 				WHERE p.topic_id = $topic_id
 					AND p.poster_id = u.user_id
-					AND p.post_id = pt.post_id
 				ORDER BY p.post_time ASC";
 			if(!($result = $db->sql_query($sql)))
 			{

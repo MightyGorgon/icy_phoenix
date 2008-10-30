@@ -8,6 +8,11 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
 // Banners array setup
 $banner_h_s_all = array();
 $banner_h_m_all = array();

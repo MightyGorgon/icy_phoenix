@@ -20,6 +20,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 if(!function_exists('period'))
 {
@@ -394,8 +395,7 @@ if($row = $db->sql_fetchrow($result))
 		$template->assign_block_vars('admin_account', array(
 			'ROW_NUMBER' => ($i == '1') ? '1' : ($i + intval($_GET['start'])),
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
-			'USERNAME' => $row['username'],
-			'U_PROFILE' => append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
+			'USERNAME' => colorize_username($row['user_id']),
 			'EMAIL' => $email,
 			'JOINED' => create_date($board_config['default_dateformat'], $row['user_regdate'], $board_config['board_timezone']),
 			'PERIOD' => period(time() - $row['user_regdate']),

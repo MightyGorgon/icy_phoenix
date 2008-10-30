@@ -1,6 +1,6 @@
 <!-- INCLUDE breadcrumbs.tpl -->
 
-<form name="_calendar_scheduler" method="post" action="{ACTION}">
+<form name="f_calendar_scheduler" method="post" action="{ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_CALENDAR_SCHEDULER}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td colspan="3">
@@ -28,7 +28,7 @@
 				<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 				<tr>
 					<td><b>&nbsp;<a href="{U_PREC}" class="gen">&laquo;</a>&nbsp;</b></td>
-					<td width="100%" align="center">{S_MONTH}{S_YEAR}</td>
+					<td width="100%" align="center">{S_MONTH}&nbsp;{S_YEAR}</td>
 					<td><b>&nbsp;<a href="{U_NEXT}" class="gen">&raquo;</a>&nbsp;</b></td>
 				</tr>
 				</table>
@@ -41,9 +41,12 @@
 			<!-- END cell -->
 		</tr>
 		<!-- END row -->
-		<tr>
-			<td class="cat" colspan="7" align="center"><img src="{IMG_CALENDAR}" border="0" align="absbottom" hspace="5" alt="{L_CALENDAR}" title="{L_CALENDAR}" /><span class="genmed"><a href="{U_CALENDAR}" alt="{L_CALENDAR}" title="{L_CALENDAR}">{L_CALENDAR}</a></span></td>
-		</tr>
+		<tr><td class="cat" colspan="7" align="center"><img src="{IMG_CALENDAR}" border="0" alt="{L_CALENDAR}" title="{L_CALENDAR}" />&nbsp;<span class="genmed" style="vertical-align:top;"><b><a href="{U_CALENDAR}">{L_CALENDAR}</a></b></span></td></tr>
+		</table>
+		<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<tr><td class="row-header"><span>{L_BIRTHDAYS}</span></td></tr>
+		<tr><td class="row-post"><div class="post-text"><span class="gensmall">{TODAY_BIRTHDAYS_LIST}</span></div></td></tr>
+		<tr><td class="cat"><img src="{IMG_CALENDAR}" border="0" alt="{L_CALENDAR}" title="{L_CALENDAR}" />&nbsp;<span class="genmed" style="vertical-align:top;"><b><a href="{U_CALENDAR}">{L_CALENDAR}</a></b></span></td>
 		</table>
 	</td>
 	<td><span class="gensmall">&nbsp;</span></td>

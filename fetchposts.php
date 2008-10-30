@@ -21,21 +21,17 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
-set_magic_quotes_runtime(0);
-
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 {
 	global $db, $board_config, $bbcode;
 
-	$sql = 'SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_replies, pt.post_text, pt.post_text_compiled, pt.post_id, p.post_id, p.enable_smilies, u.username, u.user_id
-			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . POSTS_TEXT_TABLE . ' AS pt, ' . POSTS_TABLE . ' AS p
+	$sql = 'SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_replies, p.post_id, p.enable_smilies, p.post_text, p.post_text_compiled, u.username, u.user_id
+			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . POSTS_TABLE . ' AS p
 			WHERE t.forum_id IN (' . $forum_sql . ')
 				AND t.topic_time <= ' . time() . '
 				AND t.topic_poster = u.user_id
-				AND t.topic_first_post_id = pt.post_id
 				AND t.topic_first_post_id = p.post_id
 				AND t.topic_status <> 2
 			ORDER BY t.topic_time DESC';
@@ -175,22 +171,20 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 	if ($single_post == true)
 	{
 		$single_post_id = $forum_sql;
-		$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, pt.post_text, pt.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id
-				FROM " . POSTS_TABLE . " AS p, " . POSTS_TEXT_TABLE . " AS pt, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
+		$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id
+				FROM " . POSTS_TABLE . " AS p, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
 				WHERE p.post_id = '" . $single_post_id . "'
 					" . $add_to_sql . "
-					AND pt.post_id = p.post_id
 					AND t.topic_id = p.topic_id
 					AND p.poster_id = u.user_id";
 	}
 	else
 	{
-		$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, pt.post_text, pt.post_text_compiled, pt.post_id, u.username, u.user_id, p.post_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms
-				FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TEXT_TABLE . " AS pt, " . POSTS_TABLE . " AS p
+		$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, u.username, u.user_id, p.post_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
+				FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
 				WHERE t.topic_time <= " . time() . "
 					" . $add_to_sql . "
 					AND t.topic_poster = u.user_id
-					AND t.topic_first_post_id = pt.post_id
 					AND t.topic_first_post_id = p.post_id
 					AND t.topic_status <> 2
 				ORDER BY " . $order_sql . $limit_sql;

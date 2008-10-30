@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_recent_articles_func))
+if(!function_exists('imp_recent_articles_func'))
 {
 	function imp_recent_articles_func()
 	{
@@ -32,10 +32,10 @@ if(!function_exists(imp_recent_articles_func))
 		global $style_row, $lang, $template, $cms_config_vars, $block_id, $board_config, $db, $table_prefix, $userdata, $var_cache;
 
 		$template->_tpldata['recent_articles.'] = array();
-		//reset($template->_tpldata['recent_articles.']);
 
 		//include_once(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		$sql = "SELECT * FROM " . KB_ARTICLES_TABLE . " ORDER BY article_id DESC LIMIT " . $cms_config_vars['md_total_articles'][$block_id];
 
 		if(!($result = $db->sql_query($sql)))
@@ -66,7 +66,7 @@ if(!function_exists(imp_recent_articles_func))
 					}
 					$template->assign_block_vars($style_row, '');
 					$template->assign_block_vars ($style_row . '.recent_articles', array(
-							'TITLE' => $title,
+							'TITLE' => htmlspecialchars($title),
 							'U_ARTICLE' => $url,
 							'AUTHOR' => $author,
 							'DATE' => create_date2($board_config['default_dateformat'], $row['article_date'], $board_config['board_timezone'])
@@ -76,7 +76,6 @@ if(!function_exists(imp_recent_articles_func))
 				$i++;
 			}
 			while($row = $db->sql_fetchrow($result));
-
 		}
 	}
 }

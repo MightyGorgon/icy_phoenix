@@ -1,15 +1,16 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-<!-- BEGIN pertype -->
-	<td class="cat" align="left" nowrap="nowrap"><a href="{pertype.U_NAME}">{pertype.L_NAME}</a></td>
-<!-- END pertype -->
-</tr>
-</table>
-<br />
 
 <h1>{L_AUTH_TITLE}</h1>
 <p>{L_AUTH_EXPLAIN}</p>
 <h2>{L_CATEGORY}<!-- IF CATEGORY_NAME neq '' --> : {CATEGORY_NAME}<!-- ENDIF --></h2>
+
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<!-- BEGIN pertype -->
+	<th><a href="{pertype.U_NAME}">{pertype.L_NAME}</a></th>
+<!-- END pertype -->
+</tr>
+</table>
+<br />
 
 <form method="post" action="{S_CATAUTH_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -22,14 +23,14 @@
 <!-- BEGIN cat_row -->
 <tr>
 	<!-- IF cat_row.IS_HIGHER_CAT -->
-		<td class="cat" align="left" nowrap="nowrap">{cat_row.PRE}{NAV_SEP}<a href="{cat_row.U_CAT}">{cat_row.CATEGORY_NAME}</a></td>
+	<td class="row1" nowrap="nowrap">{cat_row.PRE}{NAV_SEP}<strong><a href="{cat_row.U_CAT}">{cat_row.CATEGORY_NAME}</a></strong></td>
 	<!-- ELSE -->
-		<td class="row1" align="left" nowrap="nowrap">{cat_row.PRE}{NAV_SEP}<a href="{cat_row.U_CAT}">{cat_row.CATEGORY_NAME}</a></td>
+	<td class="row1" nowrap="nowrap">{cat_row.PRE}{NAV_SEP}<a href="{cat_row.U_CAT}">{cat_row.CATEGORY_NAME}</a></td>
 	<!-- ENDIF -->
 
 	<!-- BEGIN cat_auth_data -->
 	<!-- IF cat_row.IS_HIGHER_CAT -->
-	<td class="cat" align="center" valign="center" nowrap="nowrap">{cat_row.cat_auth_data.S_AUTH_LEVELS_SELECT}</td>
+	<td class="row1 row-center" valign="center" nowrap="nowrap">{cat_row.cat_auth_data.S_AUTH_LEVELS_SELECT}</td>
 	<!-- ELSE -->
 	<td class="row1 row-center" valign="center" nowrap="nowrap">{cat_row.cat_auth_data.S_AUTH_LEVELS_SELECT}</td>
 	<!-- ENDIF -->

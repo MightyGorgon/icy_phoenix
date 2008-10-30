@@ -29,7 +29,7 @@ function toggle_check_all()
 <tr><th colspan="3"><span class="gensmall">{L_SPLIT_TOPIC_EXPLAIN}</span></th></tr>
 <tr>
 	<td class="row1" nowrap="nowrap"><span class="gen">{L_SPLIT_SUBJECT}</span></td>
-	<td class="row2" colspan="2"><input class="post" type="text" size="35" style="width: 350px" maxlength="60" name="subject" /></td>
+	<td class="row2" colspan="2"><input name="subject" class="post" type="text" size="45" maxlength="120" style="width: 350px" /></td>
 </tr>
 <tr>
 	<td class="row1" nowrap="nowrap"><span class="gen">{L_SPLIT_FORUM}</span></td>

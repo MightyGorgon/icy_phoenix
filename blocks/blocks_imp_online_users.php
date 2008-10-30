@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_online_users_block_func))
+if(!function_exists('imp_online_users_block_func'))
 {
 	function imp_online_users_block_func()
 	{

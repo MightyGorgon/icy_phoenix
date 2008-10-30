@@ -62,7 +62,7 @@ if (!function_exists(mx_message_die))
 		global $db, $template, $board_config, $theme, $lang, $nav_links, $gen_simple_header, $images;
 		global $userdata, $user_ip, $session_length;
 		global $starttime;
-		global $head_foot_ext, $cms_global_blocks, $cms_page_id, $cms_config_vars;
+		global $cms_global_blocks, $cms_page_id, $cms_config_vars;
 
 		message_die($msg_code, $msg_text, $msg_title, $err_line, $err_file, $sql);
 	}

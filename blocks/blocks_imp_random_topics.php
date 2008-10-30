@@ -20,15 +20,15 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_random_topics_block_func))
+if(!function_exists('imp_random_topics_block_func'))
 {
 	function imp_random_topics_block_func()
 	{
 		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $var_cache, $lang, $bbcode;
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$template->_tpldata['random_topic_row.'] = array();
-		//reset($template->_tpldata['random_topic_row.']);
 
 		$bbcode->allow_html = $html_on;
 		$bbcode->allow_bbcode = $bbcode_on;
@@ -130,34 +130,18 @@ if(!function_exists(imp_random_topics_block_func))
 				{
 					$random_topic_row[$i]['topic_title'] = (!empty($random_topic_row[$i]['topic_title'])) ? preg_replace($orig_word, $replacement_word, $random_topic_row[$i]['topic_title']) : '';
 				}
-				$random_topic_row[$i]['username'] = colorize_username($random_topic_row[$i]['user_id']);
-				if ($random_topic_row[$i]['user_id'] != -1)
-				{
-					$template->assign_block_vars($style_row . '.random_topic_row', array(
-						'U_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $random_topic_row[$i]['forum_id']),
-						'L_FORUM' => $random_topic_row[$i]['forum_name'],
-						'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $random_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $random_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $random_topic_row[$i]['post_id']) . '#p' . $random_topic_row[$i]['post_id'],
-						'L_TITLE' => $bbcode->parse($random_topic_row[$i]['topic_title']),
-						'L_BY' => $lang['By'],
-						'L_ON' => $lang['On'],
-						'U_POSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $random_topic_row[$i]['user_id']),
-						'S_POSTER' => $random_topic_row[$i]['username'],
-						'S_POSTTIME' => create_date2($board_config['default_dateformat'], $random_topic_row[$i]['post_time'], $board_config['board_timezone'])
-						)
-					);
-				}
-				else
-				{
-					$template->assign_block_vars($style_row . '.random_topic_row', array(
-						'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $random_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $random_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $random_topic_row[$i]['post_id']) . '#p' .$random_topic_row[$i]['post_id'],
-						'L_TITLE' => $bbcode->parse($random_topic_row[$i]['topic_title']),
-						'L_BY' => $lang['By'],
-						'U_POSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $random_topic_row[$i]['user_id']),
-						'S_POSTER' => $random_topic_row[$i]['post_username'],
-						'S_POSTTIME' => create_date2($board_config['default_dateformat'], $random_topic_row[$i]['post_time'], $board_config['board_timezone'])
-						)
-					);
-				}
+
+				$template->assign_block_vars($style_row . '.random_topic_row', array(
+					'U_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $random_topic_row[$i]['forum_id']),
+					'L_FORUM' => $random_topic_row[$i]['forum_name'],
+					'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $random_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $random_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $random_topic_row[$i]['post_id']) . '#p' . $random_topic_row[$i]['post_id'],
+					'L_TITLE' => $bbcode->parse(htmlspecialchars($random_topic_row[$i]['topic_title'])),
+					'L_BY' => $lang['By'],
+					'L_ON' => $lang['On'],
+					'S_POSTER' => colorize_username($random_topic_row[$i]['user_id']),
+					'S_POSTTIME' => create_date2($board_config['default_dateformat'], $random_topic_row[$i]['post_time'], $board_config['board_timezone'])
+					)
+				);
 			}
 		}
 	}

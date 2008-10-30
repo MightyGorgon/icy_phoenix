@@ -20,14 +20,13 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_poll_block_func))
+if(!function_exists('imp_poll_block_func'))
 {
 	function imp_poll_block_func()
 	{
 		global $template, $cms_config_vars, $block_id, $db, $userdata, $images, $lang;
 
 		$template->_tpldata['b_poll_option.'] = array();
-		//reset($template->_tpldata['b_poll_option.']);
 
 		$template->assign_block_vars('PORTAL_POLL', array());
 

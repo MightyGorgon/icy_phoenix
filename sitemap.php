@@ -14,14 +14,17 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+
+@set_time_limit(0);
+$mem_limit = check_mem_limit();
+@ini_set('memory_limit', $mem_limit);
+@ini_set('max_execution_time', '3600');
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
-
-@ini_set('memory_limit', '24M');
-@ini_set('max_execution_time', '3600');
 
 $prog_name = 'Sitemap IP 1.0.0';
 $verinfo = 'V100';
@@ -234,7 +237,7 @@ else
 	// MG SITEMAP - FORUM - END
 
 	// MG SITEMAP - DOWNLOADS - BEGIN
-		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/pafiledb_constants.' . PHP_EXT);
+		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_constants.' . PHP_EXT);
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
 							ORDER BY file_time DESC";

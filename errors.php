@@ -113,7 +113,7 @@ if ($email[$result] == 'Y')
 }
 
 // Start output of page
-$page_title = $lang['Portal'];
+$page_title = $lang['Error'];
 $meta_description = '';
 $meta_keywords = '';
 $board_config['thumbnail_lightbox'] = false;

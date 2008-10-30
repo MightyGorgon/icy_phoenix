@@ -4,7 +4,7 @@
 
 <form action="{S_ATTACH_ACTION}" method="post">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="2">{L_SETTINGS_CAT_IMAGES}<br />{L_ASSIGNED_GROUP}: {S_ASSIGNED_GROUP_IMAGES}</th></tr>
+<tr><th colspan="2">{L_SETTINGS_CAT_IMAGES} {L_ASSIGNED_GROUP}: {S_ASSIGNED_GROUP_IMAGES}</th></tr>
 <tr>
 	<td class="row1" width="80%"><strong>{L_DISPLAY_INLINED}</strong><br /><span class="gensmall">{L_DISPLAY_INLINED_EXPLAIN}</span></td>
 	<td class="row2"><input type="radio" name="img_display_inlined" value="1" {DISPLAY_INLINED_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="img_display_inlined" value="0" {DISPLAY_INLINED_NO} /> {L_NO}</td>

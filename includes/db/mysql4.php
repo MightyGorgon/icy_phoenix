@@ -700,7 +700,8 @@ if(!defined('SQL_LAYER'))
 			//$f_content = '<' . '?php' . "\n" . '$sql_time_c = \'' . time() . '\';' . "\n\n" . '$sql_string_c = \'' . addslashes($this->query_string) . '\';' . "\n\n" . '$set = ' . $data . ';' . "\n" . 'return;' . "\n" . '?' . '>';
 			$f_content = '<' . '?php' . "\n";
 			$f_content .= '/* SQL: ' . str_replace('*/', '*\/', $this->query_string) . ' */' . "\n\n";
-			$f_content .= '/* TIME: ' . time() . ' */' . "\n\n";
+			$f_content .= '/* UNIX TIME: ' . time() . ' */' . "\n\n";
+			$f_content .= '/* TIME: ' . date('Y/m/d - H:i:s') . ' */' . "\n\n";
 			//$f_content .= '$expired = (time() > ' . (time() + 86400) . ') ? true : false;' . "\n" . 'if ($expired) { return; }' . "\n\n";
 			$f_content .= '$set = ' . $data . ';' . "\n" . 'return;' . "\n";
 			$f_content .= '?' . '>';
@@ -870,13 +871,13 @@ if(!defined('SQL_LAYER'))
 					}
 					elseif ($this->cached == true)
 					{
-						$this->sql_report .= '<b style="color:#228844;">FROM CACHE</b>';
+						$this->sql_report .= '<b style="color:#228822;">FROM CACHE</b>';
 						$this->sql_report .= ' ==> Elapsed: <b style="color:#224488;">' . sprintf('%.5f', $endtime - $this->curtime) . 's</b> &bull; [Before: ' . sprintf('%.5f', $this->curtime - $starttime) . 's | After: ' . sprintf('%.5f', $endtime - $starttime) . 's]';
 					}
 					else
 					{
 						$error = $this->sql_error();
-						$this->sql_report .= '<b style="color:#CC3333;">FAILED</b> - ' . $this->sql_layer . ' Error ' . $error['code'] . ': ' . htmlspecialchars($error['message']);
+						$this->sql_report .= '<b style="color:#cc3333;">FAILED</b> - ' . $this->sql_layer . ' Error ' . $error['code'] . ': ' . htmlspecialchars($error['message']);
 					}
 					$this->sql_report .= '</p><br /><br />';
 					$this->sql_time += $endtime - $this->curtime;

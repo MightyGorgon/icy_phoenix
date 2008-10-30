@@ -16,6 +16,16 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
 $lang['Mini_Cal_calendar'] = 'Calendar';
 $lang['Mini_Cal_add_event'] = 'Add Event';
 $lang['Mini_Cal_events'] = 'Upcoming Events';

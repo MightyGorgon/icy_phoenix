@@ -56,6 +56,12 @@
 		</tr>
 		<!-- END shout_allowed -->
 		<tr>
+			<td class="row2">
+			<b>{L_WIO}:</b>&nbsp;<span class="gensmall">{L_TOTAL}:&nbsp;<b><span id="total_c">0</span></b>&nbsp;-&nbsp;{L_USERS}:&nbsp;<b><span id="user_c">0</span></b>&nbsp;-&nbsp;{L_GUESTS}:&nbsp;<b><span id="guests_c">0</span></b></span><br />
+			<span class="post-text" id="online_list"></span>
+			</td>
+		</tr>
+		<tr>
 			<td class="row1 row-center">
 				<div class="shouts">
 					<table class="forumline" id="outputList" width="100%" align="center" cellspacing="0" cellpadding="0">

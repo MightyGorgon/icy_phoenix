@@ -31,10 +31,9 @@ require(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 $html_entities_match = array('#<#', '#>#');
@@ -130,16 +129,16 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 		if (isset($_POST['birthday']))
 		{
 			$birthday = intval ($_POST['birthday']);
-			$b_day = realdate('j',$birthday);
-			$b_md = realdate('n',$birthday);
-			$b_year = realdate('Y',$birthday);
+			$birthday_day = realdate('j',$birthday);
+			$birthday_month = realdate('n',$birthday);
+			$birthday_year = realdate('Y',$birthday);
 		}
 		else
 		{
-			$b_day = (isset($_POST['b_day'])) ? intval ($_POST['b_day']) : 0;
-			$b_md = (isset($_POST['b_md'])) ? intval ($_POST['b_md']) : 0;
-			$b_year = (isset($_POST['b_year'])) ? intval ($_POST['b_year']) : 0;
-			$birthday = mkrealdate($b_day, $b_md, $b_year);
+			$birthday_day = (isset($_POST['b_day'])) ? intval ($_POST['b_day']) : 0;
+			$birthday_month = (isset($_POST['b_md'])) ? intval ($_POST['b_md']) : 0;
+			$birthday_year = (isset($_POST['b_year'])) ? intval ($_POST['b_year']) : 0;
+			$birthday = mkrealdate($birthday_day, $birthday_month, $birthday_year);
 		}
 		$next_birthday_greeting = (!empty($_POST['next_birthday_greeting'])) ? intval($_POST['next_birthday_greeting']) : 0;
 		$gender = (isset($_POST['gender'])) ? intval ($_POST['gender']) : 0;
@@ -648,11 +647,11 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 
 		// Start add - Birthday MOD
 		// find the birthday values, reflected by the $lang['Submit_date_format']
-		if ($b_day || $b_md || $b_year) //if a birthday is submited, then validate it
+		if ($birthday_day || $birthday_month || $birthday_year) //if a birthday is submited, then validate it
 		{
-			$user_age = (date('md') >= $b_md . (($b_day <= 9) ? '0' : '') . $b_day) ? date('Y') - $b_year : date('Y') - $b_year - 1;
+			$user_age = (date('md') >= $birthday_month . (($birthday_day <= 9) ? '0' : '') . $birthday_day) ? date('Y') - $birthday_year : date('Y') - $birthday_year - 1;
 			// Check date, maximum / minimum user age
-			if (!checkdate($b_md,$b_day,$b_year))
+			if (!checkdate($birthday_month,$birthday_day,$birthday_year))
 			{
 				$error = true;
 				if(isset($error_msg))$error_msg .= '<br />';
@@ -672,7 +671,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			}
 			else
 			{
-				$birthday = ($error) ? $birthday : mkrealdate($b_day, $b_md, $b_year);
+				$birthday = ($error) ? $birthday : mkrealdate($birthday_day, $birthday_month, $birthday_year);
 			}
 		}
 		else
@@ -715,7 +714,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			else
 			{
 				// remove the ban, if there is any
-				$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid=$user_id";
+				$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = $user_id";
 				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, "Couldn't remove ban_userid info into database", "", __LINE__, __FILE__, $sql);
@@ -729,7 +728,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			clear_user_color_cache($user_id);
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) . "', user_icq = '" . str_replace("\'", "''", $icq) . "', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "', user_from_flag = '$user_flag', user_interests = '" . str_replace("\'", "''", $interests) . "', user_phone = '" . str_replace("\'", "''", $phone) . "', user_selfdes = '" . str_replace("\'", "''", $selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday='$birthday', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . str_replace("\'", "''", $signature) . "', user_viewemail = $viewemail, user_aim = '" . str_replace("\'", "''", $aim) . "', user_yim = '" . str_replace("\'", "''", $yim) . "', user_msnm = '" . str_replace("\'", "''", $msn) . "', user_skype = '" . str_replace("\'", "''", $skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popuppm, user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = $user_timezone, user_time_mode = '$time_mode', user_dst_time_lag = '$dst_time_lag', user_dateformat = '" . str_replace("\'", "''", $user_dateformat) . "', user_posts_per_page = '" . str_replace("\'", "''", $user_posts_per_page) . "', user_topics_per_page = '" . str_replace("\'", "''", $user_topics_per_page) . "', user_hot_threshold = '" . str_replace("\'", "''", $user_hot_threshold) . "', user_active = $user_status, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
+				SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) . "', user_icq = '" . str_replace("\'", "''", $icq) . "', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "', user_from_flag = '$user_flag', user_interests = '" . str_replace("\'", "''", $interests) . "', user_phone = '" . str_replace("\'", "''", $phone) . "', user_selfdes = '" . str_replace("\'", "''", $selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . str_replace("\'", "''", $signature) . "', user_viewemail = $viewemail, user_aim = '" . str_replace("\'", "''", $aim) . "', user_yim = '" . str_replace("\'", "''", $yim) . "', user_msnm = '" . str_replace("\'", "''", $msn) . "', user_skype = '" . str_replace("\'", "''", $skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popuppm, user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = $user_timezone, user_time_mode = '$time_mode', user_dst_time_lag = '$dst_time_lag', user_dateformat = '" . str_replace("\'", "''", $user_dateformat) . "', user_posts_per_page = '" . str_replace("\'", "''", $user_posts_per_page) . "', user_topics_per_page = '" . str_replace("\'", "''", $user_topics_per_page) . "', user_hot_threshold = '" . str_replace("\'", "''", $user_hot_threshold) . "', user_active = $user_status, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
 				WHERE user_id = '" . $user_id . "'";
 
 			if($result = $db->sql_query($sql))
@@ -897,15 +896,15 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 		if ($this_userdata['user_birthday'] != 999999)
 		{
 			$birthday = realdate($lang['Submit_date_format'], $this_userdata['user_birthday']);
-			$b_day = realdate('j', $this_userdata['user_birthday']);
-			$b_md = realdate('n', $this_userdata['user_birthday']);
-			$b_year = realdate('Y', $this_userdata['user_birthday']);
+			$birthday_day = realdate('j', $this_userdata['user_birthday']);
+			$birthday_month = realdate('n', $this_userdata['user_birthday']);
+			$birthday_year = realdate('Y', $this_userdata['user_birthday']);
 		}
 		else
 		{
-			$b_day = '';
-			$b_md = '';
-			$b_year = '';
+			$birthday_day = '';
+			$birthday_month = '';
+			$birthday_year = '';
 			$birthday = '';
 		}
 		$gender = $this_userdata['user_gender'];
@@ -1297,7 +1296,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 						$temp = "<input type=\"radio\" name=\"$name\" value=\"$radio_name\"";
 						if($radio_name == $value)
 							$temp .= ' checked="checked"';
-						$temp .= " /> <span class=\"gen\">$radio_name</span>";
+						$temp .= " />&nbsp;<span class=\"gen\">$radio_name</span>";
 						if($num < count($radio_list))
 							$temp .= '<br />';
 						$html_list[] = $temp;
@@ -1319,7 +1318,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 								$temp .= ' checked="checked"';
 								break;
 							}
-						$temp .= " /> <span class=\"gen\">$check_name</span>";
+						$temp .= " />&nbsp;<span class=\"gen\">$check_name</span>";
 						if($num < count($check_list))
 							$temp .= '<br />';
 						$html_list[] = $temp;
@@ -1434,21 +1433,21 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			$i_start = date('Y', time()) - $board_config['max_user_age'];
 			$i_end = date('Y', time()) - $board_config['min_user_age'];
 			$s_birthday_year = '';
-			$y_selected = ($b_year == 0) ? ' selected="selected"' : '';
+			$y_selected = ($birthday_year == 0) ? ' selected="selected"' : '';
 			$s_birthday_year .= '<option value="0"' . $y_selected . '> ---- </option>';
 			//for ($i = $i_start; $i <= $i_end; $i++)
 			for ($i = $i_end; $i >= $i_start; $i--)
 			{
-				$y_selected = ($b_year == $i) ? ' selected="selected"' : '';
+				$y_selected = ($birthday_year == $i) ? ' selected="selected"' : '';
 				$s_birthday_year .= '<option value="' . $i . '"' . $y_selected . '>' . $i . '</option>';
 			}
 			$s_birthday_year = '<select name="b_year">' . $s_birthday_year . '</select>';
 			// Mighty Gorgon - Generate Years Select - END
-			$s_b_day= str_replace("value=\"".$b_day."\">", "value=\"".$b_day."\" selected=\"selected\">" ,$s_b_day);
-			$s_b_md = str_replace("value=\"".$b_md."\">", "value=\"".$b_md."\" selected=\"selected\">" ,$s_b_md);
-			$s_b_day= str_replace("value=\"".$b_day."\">", "value=\"".$b_day."\" selected=\"selected\">" ,$s_b_day);
-			$s_b_md = str_replace("value=\"".$b_md."\">", "value=\"".$b_md."\" selected=\"selected\">" ,$s_b_md);
-			//$s_b_year = '<span class="genmed">' . $lang['Year'] . '&nbsp;</span><input type="text" class="post" style="width: 50px" name="b_year" size="4" maxlength="4" value="' . $b_year . '" />&nbsp;&nbsp;';
+			$s_b_day= str_replace("value=\"".$birthday_day."\">", "value=\"".$birthday_day."\" selected=\"selected\">" ,$s_b_day);
+			$s_b_md = str_replace("value=\"".$birthday_month."\">", "value=\"".$birthday_month."\" selected=\"selected\">" ,$s_b_md);
+			$s_b_day= str_replace("value=\"".$birthday_day."\">", "value=\"".$birthday_day."\" selected=\"selected\">" ,$s_b_day);
+			$s_b_md = str_replace("value=\"".$birthday_month."\">", "value=\"".$birthday_month."\" selected=\"selected\">" ,$s_b_md);
+			//$s_b_year = '<span class="genmed">' . $lang['Year'] . '&nbsp;</span><input type="text" class="post" style="width: 50px" name="b_year" size="4" maxlength="4" value="' . $birthday_year . '" />&nbsp;&nbsp;';
 			$s_b_year = '<span class="genmed">' . $lang['Year'] . '&nbsp;</span>' . $s_birthday_year . '&nbsp;&nbsp;';
 			$i = 0;
 			$s_birthday = '';

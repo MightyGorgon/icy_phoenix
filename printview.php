@@ -26,25 +26,9 @@ $do_gzip_compress = false;
 if($board_config['gzip_compress'])
 {
 	$phpver = phpversion();
-	if($phpver >= '4.0.4pl1')
+	if(extension_loaded('zlib'))
 	{
-		if(extension_loaded('zlib'))
-		{
-			ob_start('ob_gzhandler');
-		}
-	}
-	elseif($phpver > '4.0')
-	{
-		if(strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
-		{
-			if(extension_loaded('zlib'))
-			{
-				$do_gzip_compress = true;
-				ob_start();
-				ob_implicit_flush(0);
-				header('Content-Encoding: gzip');
-			}
-		}
+		ob_start('ob_gzhandler');
 	}
 }
 
@@ -60,27 +44,27 @@ init_userprefs($userdata);
 // End session management
 
 // Make sure a topic id was passed
-if(isset($_GET[POST_TOPIC_URL]))
-{
-	$topic_id = intval($_GET[POST_TOPIC_URL]);
-}
-elseif(isset($_GET['topic']))
-{
-	$topic_id = intval($_GET['topic']);
-}
+$topic_id = request_var(POST_TOPIC_URL, 0);
+$topic_id = empty($topic_id) ? request_var('topic', 0) : $topic_id;
+$topic_id = ($topic_id > 0) ? $topic_id : 0;
 
-if(!isset($topic_id))
+if($topic_id == 0)
 {
+	ob_end_clean();
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
+
+$start = request_var('start', 0);
+$limit = request_var('limit', 50);
+$post_order = request_var('post_order', 'ASC');
+$post_order = ($post_order == 'DESC') ? 'DESC' : 'ASC';
 
 $template->set_filenames(array('body' => 'viewtopic_print.tpl'));
 
 $sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 	WHERE t.topic_id = '" . $topic_id . "'
-		AND f.forum_id = t.forum_id
-		$order_sql";
+		AND f.forum_id = t.forum_id";
 if(!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Couldn\'t obtain topic information', '', __LINE__, __FILE__, $sql);
@@ -88,6 +72,7 @@ if(!($result = $db->sql_query($sql)))
 
 if(!($forum_row = $db->sql_fetchrow($result)))
 {
+	ob_end_clean();
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
 $forum_id = $forum_row['forum_id'];
@@ -106,33 +91,19 @@ if(!$is_auth['auth_read'])
 		$redirect = POST_TOPIC_URL . '=' . $topic_id;
 		header('Location: ' . append_sid(LOGIN_MG . '?redirect=printview.' . PHP_EXT . '&' . $redirect, true));
 	}
-
 	$message = sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
-
+	ob_end_clean();
 	message_die(GENERAL_MESSAGE, $message);
 }
 // End auth check
 
 // Right we have auth checked and a topic id so we can fetch the topic data.
-
-// Decide how to order the post display
-if(!empty($_POST['postorder']) || !empty($_GET['postorder']))
-{
-	$post_order = (!empty($_POST['postorder'])) ? $_POST['postorder'] : $_GET['postorder'];
-	$post_time_order = ($post_order == 'asc') ? 'ASC' : 'DESC';
-}
-else
-{
-	$post_order = 'asc';
-	$post_time_order = 'ASC';
-}
-
-$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*,  pt.post_text, pt.post_subject
-	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*
+	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 	WHERE p.topic_id = $topic_id
-		AND pt.post_id = p.post_id
 		AND u.user_id = p.poster_id
-	ORDER BY p.post_time $post_time_order";
+	ORDER BY p.post_time $post_order
+	LIMIT $start, $limit";
 if(!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, 'Couldn\'t obtain post/user information.', '', __LINE__, __FILE__, $sql);
@@ -140,6 +111,7 @@ if(!$result = $db->sql_query($sql))
 
 if(!$total_posts = $db->sql_numrows($result))
 {
+	ob_end_clean();
 	message_die(GENERAL_MESSAGE, $lang['No_posts_topic']);
 }
 $postrow = $db->sql_fetchrowset($result);
@@ -203,6 +175,7 @@ for($i = 0; $i < $total_posts; $i++)
 $page_title = $lang['View_topic'] . ' - ' . $topic_title;
 $meta_description = '';
 $meta_keywords = '';
+$s_hidden_fields = '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" />';
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_NAME' => $forum_name,
@@ -211,6 +184,9 @@ $template->assign_vars(array(
 	'SITENAME' => $board_config['sitename'],
 	'SITE_DESCRIPTION' => $board_config['site_desc'],
 	'PAGE_TITLE' => $page_title,
+	'POSTS_START' => $start,
+	'POSTS_LIMIT' => $limit,
+
 	'L_POSTED' => $lang['Posted'],
 	'L_POST_SUBJECT' => $lang['Post_subject'],
 	'L_POSTED' => $lang['Posted'],
@@ -218,13 +194,15 @@ $template->assign_vars(array(
 	'L_SUBJECT' => $lang['Subject'],
 	'L_MESSAGE' => $lang['Message'],
 	'L_FORUM' => $lang['Forum'],
-	'PHPBB_VERSION' => '2' . $board_config['version'],
-	'T_FONTFACE1' => $theme['fontface1'],
-	'T_FONTSIZE2' => $theme['fontsize2'],
+	'L_TOPICS' => $lang['Topics'],
+
+	'U_TOPIC' => append_sid('viewtopic.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id),
+
+	'S_ACTION' => append_sid('printview.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id),
+	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
 	'S_CONTENT_ENCODING' => $lang['ENCODING'],
 	'S_TIMEZONE' => sprintf($lang['All_times'], $lang[number_format($board_config['board_timezone'])]),
-	'L_TOPICS' => $lang['Topics']
 	)
 );
 
@@ -251,4 +229,5 @@ if($do_gzip_compress)
 	echo pack("V", $gzip_size);
 }
 exit;
+
 ?>

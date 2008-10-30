@@ -22,6 +22,11 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
 //
 // To add an entry to your FAQ simply add a line to this file in this format:
 // $faq[] = array("question", "answer");
@@ -30,9 +35,7 @@
 //
 // DO NOT forget the ; at the end of the line.
 // Do NOT put double quotes (") in your FAQ entries, if you absolutely must then escape them ie. \"something\"
-//
 // The FAQ items will appear on the FAQ page in the same order they are listed in this file
-//
 
 
 $faq[] = array("--","Login and Registration Issues");

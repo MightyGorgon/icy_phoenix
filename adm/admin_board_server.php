@@ -21,10 +21,10 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+$db->clear_cache('config_');
 
 // Pull all config data
-$sql = "SELECT *
-	FROM " . CONFIG_TABLE;
+$sql = "SELECT * FROM " . CONFIG_TABLE;
 if(!$result = $db->sql_query($sql))
 {
 	message_die(CRITICAL_ERROR, "Could not query config information in admin_board", "", __LINE__, __FILE__, $sql);

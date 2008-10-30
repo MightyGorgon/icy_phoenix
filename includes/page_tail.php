@@ -31,7 +31,7 @@ if (defined('IN_CMS'))
 }
 elseif (empty($gen_simple_header))
 {
-	$footer_tpl = 'overall_footer' . $head_foot_ext . '.tpl';
+	$footer_tpl = 'overall_footer.tpl';
 }
 else
 {

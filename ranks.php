@@ -18,30 +18,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-/*
-$cms_page_id = '21';
-$cms_page_name = 'ranks';
-*/
-$auth_level_req = $board_config['auth_view_ranks'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_ranks'] == 1) ? true : false;
+check_page_auth(0, 'ranks');
 
 $page_title = $lang['Rank_Header'];
 $meta_description = '';
@@ -60,10 +37,10 @@ $rank_count = $db->sql_numrows($result);
 $rank_rows = $db->sql_fetchrowset($result);
 
 $template->assign_vars(array(
-	"L_RANKS_TITLE" => $lang['Rank_Header'],
-	"L_RANKS_IMAGE"=> $lang['Rank_Image'],
-	"L_RANK_TITLE" => $lang['Rank'],
-	"L_RANK_MIN_M" => $lang['Rank_Min_Des']
+	'L_RANKS_TITLE' => $lang['Rank_Header'],
+	'L_RANKS_IMAGE'=> $lang['Rank_Image'],
+	'L_RANK_TITLE' => $lang['Rank'],
+	'L_RANK_MIN_M' => $lang['Rank_Min_Des']
 	)
 );
 

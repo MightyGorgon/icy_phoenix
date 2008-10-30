@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_rss_func))
+if(!function_exists('imp_rss_func'))
 {
 	function imp_rss_func()
 	{

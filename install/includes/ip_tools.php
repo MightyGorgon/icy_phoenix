@@ -22,7 +22,7 @@ else
 {
 	$mode_test = ((substr($mode, 0, 6) == 'update') ? 'update' : $mode);
 }
-$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_constants', 'fix_images_album', 'fix_posts', 'ren_move_images', 'update_phpbb', 'update');
+$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_birthdays', 'fix_constants', 'fix_images_album', 'fix_posts', 'ren_move_images', 'update_phpbb', 'update');
 $mode_test = in_array($mode_test, $mode_array) ? $mode_test : $mode_array[0];
 
 $action = $ip_functions->request_var('action', '');
@@ -76,6 +76,73 @@ switch ($mode_test)
 			$page_framework->box('red', 'red', $box_message);
 			echo('<br /><br />' . "\n");
 			echo($page_framework->clean_old_files($action));
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+			$box_message = sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+			$page_framework->box('yellow', 'red', $box_message);
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+		}
+		echo('<br /><br />' . "\n");
+		$page_framework->page_footer(false);
+		break;
+
+	case 'fix_birthdays':
+
+		$wip = $ip_functions->request_var('wip', false);
+
+		$birthdays_number = $ip_functions->request_var('birthdays_number', 0);
+		$birthday_start = $ip_functions->request_var('birthday_start', 0);
+		$total_birthdays = $ip_functions->request_var('total_birthdays', 0);
+		$total_birthdays_modified = $ip_functions->request_var('total_birthdays_modified', 0);
+
+		if (substr($action, 0, 3) == 'fix')
+		{
+			$fix_results = $page_framework->fix_birthdays($action);
+
+			$url_append = '';
+
+			$url_append .= ($wip ? ('wip=true&amp;') : '');
+
+			$url_append .= 'birthdays_number=' . $birthdays_number . '&amp;' . 'birthday_start=' . $birthday_start . '&amp;' . 'total_birthdays=' . $total_birthdays . '&amp;' . 'total_birthdays_modified=' . $total_birthdays_modified;
+
+			$lang_append = '&amp;lang=' . $language;
+
+			$tmp_url = THIS_FILE . '?' . 'mode=' . $mode . '&amp;action=' . $action . '&amp;' . $url_append . $lang_append;
+			$meta_refresh = '';
+			if ($wip !== false)
+			{
+				$meta_refresh = '<meta http-equiv="refresh" content="3;url=' . $ip_functions->append_sid($tmp_url) . '">';
+			}
+
+			$page_framework->page_header($lang['IcyPhoenix'], '', false, false, false, false, $meta_refresh);
+			echo('<br /><br />' . "\n");
+
+			echo('<br /><br />' . "\n");
+			echo($fix_results);
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+			if ($wip === false)
+			{
+				$box_message = $lang['FixingBirthdaysComplete'] . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+				$page_framework->box('green', 'green', $box_message);
+			}
+			else
+			{
+				$box_message = $lang['FixingBirthdaysInProgress'] . '<br /><br />' . $lang['FixingBirthdaysInProgressRedirect'] . '<br /><br />' . sprintf($lang['FixingBirthdaysInProgressRedirectClick'], '<a href="' . $ip_functions->append_sid($tmp_url) . '">', '</a>');
+				$page_framework->box('yellow', 'red', $box_message);
+			}
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+		}
+		else
+		{
+			$page_framework->page_header($lang['IcyPhoenix'], '', false, false);
+			echo('<br /><br />' . "\n");
+			$box_message = $lang['ActionUndone'];
+			$page_framework->box('red', 'red', $box_message);
+			echo('<br /><br />' . "\n");
+			echo($page_framework->fix_birthdays($action));
 			echo('<br clear="all" />' . "\n");
 			echo('<br /><br />' . "\n");
 			$box_message = sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');

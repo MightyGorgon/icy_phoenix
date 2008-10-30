@@ -1,3 +1,4 @@
+chmod 777 backup
 chmod 777 cache
 chmod 777 cache/sql
 chmod 777 cache/users
@@ -15,17 +16,11 @@ chmod 777 files/album/med_cache
 chmod 777 files/album/users
 chmod 777 files/album/wm_cache
 chmod 777 files/posted_images
+chmod 777 files/screenshots
 chmod 777 files/thumbs
 chmod 777 images/avatars
 chmod 777 logs
-chmod 777 pafiledb/uploads
-chmod 777 pafiledb/cache
-chmod 777 pafiledb/cache/templates
-chmod 777 pafiledb/cache/templates/ca_aphrodite
-chmod 777 pafiledb/cache/templates/mg_themes
-chmod 777 pafiledb/images/screenshots
 
 chmod 666 includes/def_themes.php
 chmod 666 includes/def_tree.php
 chmod 666 includes/def_words.php
-chmod 666 language/lang_english/lang_extend.php

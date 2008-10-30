@@ -62,7 +62,7 @@
 <br />
 <!-- IF AUTH_POST -->
 <table class="empty-table" width="100%" align="center" cellspacing="0">
-<tr><td><a href="{U_COMMENT_DO}"><img src="{REPLY_IMG}" alt="{L_COMMENT_ADD}" align="middle" /></a></td></tr>
+<tr><td><span class="img-btn"><a href="{U_COMMENT_DO}"><img src="{REPLY_IMG}" alt="{L_COMMENT_ADD}" align="middle" /></a></span></td></tr>
 </table>
 <br clear="all" />
 <!-- ENDIF -->

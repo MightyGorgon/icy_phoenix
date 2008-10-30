@@ -24,6 +24,7 @@ function SetDays()
 	<td class="row3">{prune_list.LIST}</td>
 </tr>
 <!-- END prune_list -->
+<tr><td class="cat" colspan="3">&nbsp;</td></tr>
 </table>
 <input type="hidden" name="confirm" value="YES" />
 </form>

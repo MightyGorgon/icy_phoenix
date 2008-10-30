@@ -35,7 +35,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_profile_fields.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -352,26 +352,8 @@ if (isset($_GET['setbm']) || isset($_GET['removebm']))
 
 $cms_page_id = '3';
 $cms_page_name = 'viewt';
-$auth_level_req = $board_config['auth_view_viewt'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_viewt'] == 1) ? true : false;
+check_page_auth($cms_page_id, $cms_page_name);
+$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 if ($download)
 {
@@ -384,11 +366,10 @@ if ($download)
 		obtain_word_list($orig_word, $replacement_word);
 	}
 
-	$sql = "SELECT u.*, p.*,  pt.post_text, pt.post_subject
-		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+	$sql = "SELECT u.*, p.*
+		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE p.topic_id = $topic_id
 			$sql_download
-			AND pt.post_id = p.post_id
 			AND u.user_id = p.poster_id
 			ORDER BY p.post_time ASC, p.post_id ASC";
 	if (!($result = $db->sql_query($sql)))
@@ -965,19 +946,11 @@ if ($bypass)
 	$self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_TABLE . ' u2' : '';
 	$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $userdata['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 	// Self AUTH - END
-	if($board_config['posts_precompiled'] == '0')
-	{
-		$post_precompiled_sql = ', pt.post_text_compiled';
-	}
-	else
-	{
-		$post_precompiled_sql = '';
-	}
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, pt.post_text" . $post_precompiled_sql . ", pt.post_subject, pt.edit_notes, t.topic_poster, t.title_compl_infos
-		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt, " . TOPICS_TABLE . " t" . $self_sql_tables . "
+
+	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 		WHERE p.topic_id = $topic_id
 			AND t.topic_id = p.topic_id
-			AND pt.post_id = p.post_id
 			AND u.user_id = p.poster_id
 			" . $limit_posts_time . "
 			" . $self_sql . "
@@ -1281,25 +1254,25 @@ if ($bypass)
 		{
 			if ($board_config['bin_forum'] != false)
 			{
-				$topic_mod .= '<a href="bin.' . PHP_EXT . '?' . $full_ftp_append . 'sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_bin'] . '" alt="' . $lang['Move_bin'] . '" title="' . $lang['Move_bin'] . '" /></a>&nbsp;';
+				$topic_mod .= '<span class="img-btn"><a href="bin.' . PHP_EXT . '?' . $full_ftp_append . 'sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_bin'] . '" alt="' . $lang['Move_bin'] . '" title="' . $lang['Move_bin'] . '" /></a></span>&nbsp;';
 			}
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=delete&amp;sid=' . $userdata['session_id'] . '" ><img src="' . $images['topic_mod_delete'] . '" alt="' . $lang['Delete_topic'] . '" title="' . $lang['Delete_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=delete&amp;sid=' . $userdata['session_id'] . '" ><img src="' . $images['topic_mod_delete'] . '" alt="' . $lang['Delete_topic'] . '" title="' . $lang['Delete_topic'] . '" /></a></span>&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=move&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_move'] . '" alt="' . $lang['Move_topic'] . '" title="' . $lang['Move_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=move&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_move'] . '" alt="' . $lang['Move_topic'] . '" title="' . $lang['Move_topic'] . '" /></a></span>&nbsp;';
 
-			$topic_mod .= ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=lock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_lock'] . '" alt="' . $lang['Lock_topic'] . '" title="' . $lang['Lock_topic'] . '" /></a>&nbsp;' : '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=unlock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_unlock'] . '" alt="' . $lang['Unlock_topic'] . '" title="' . $lang['Unlock_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED) ? '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=lock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_lock'] . '" alt="' . $lang['Lock_topic'] . '" title="' . $lang['Lock_topic'] . '" /></a></span>&nbsp;' : '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=unlock&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_unlock'] . '" alt="' . $lang['Unlock_topic'] . '" title="' . $lang['Unlock_topic'] . '" /></a></span>&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=split&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_split'] . '" alt="' . $lang['Split_topic'] . '" title="' . $lang['Split_topic'] . '" /></a>&nbsp;';
+			$topic_mod .= '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=split&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_split'] . '" alt="' . $lang['Split_topic'] . '" title="' . $lang['Split_topic'] . '" /></a></span>&nbsp;';
 
-			$topic_mod .= '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=merge&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_merge'] . '" alt="' . $lang['Merge_topic'] . '" title="' . $lang['Merge_topic'] . '" /></a>&nbsp;<br /><br />';
+			$topic_mod .= '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=merge&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['topic_mod_merge'] . '" alt="' . $lang['Merge_topic'] . '" title="' . $lang['Merge_topic'] . '" /></a></span>&nbsp;<br /><br />';
 
-			$normal_button = '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=normalize&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['normal_post'] . '" alt="' . $lang['Mod_CP_normal'] . '" title="' . $lang['Mod_CP_normal2'] . '" /></a>&nbsp;';
+			$normal_button = '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=normalize&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['normal_post'] . '" alt="' . $lang['Mod_CP_normal'] . '" title="' . $lang['Mod_CP_normal2'] . '" /></a></span>&nbsp;';
 
-			$sticky_button = ($is_auth['auth_sticky']) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=sticky&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['sticky_post'] . '" alt="' . $lang['Mod_CP_sticky'] . '" title="' . $lang['Mod_CP_sticky2'] . '" /></a>&nbsp;' : '';
+			$sticky_button = ($is_auth['auth_sticky']) ? '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=sticky&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['sticky_post'] . '" alt="' . $lang['Mod_CP_sticky'] . '" title="' . $lang['Mod_CP_sticky2'] . '" /></a></span>&nbsp;' : '';
 
-			$announce_button = ($is_auth['auth_announce']) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['announce_post'] . '" alt="' . $lang['Mod_CP_announce'] . '" title="' . $lang['Mod_CP_announce2'] . '" /></a>&nbsp;' : '';
+			$announce_button = ($is_auth['auth_announce']) ? '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['announce_post'] . '" alt="' . $lang['Mod_CP_announce'] . '" title="' . $lang['Mod_CP_announce2'] . '" /></a></span>&nbsp;' : '';
 
-			$global_button = ($is_auth['auth_globalannounce']) ? '<a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=super_announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['gannounce_post'] . '" alt="' . $lang['Mod_CP_global'] . '" title="' . $lang['Mod_CP_global2'] . '" /></a>&nbsp;' : '';
+			$global_button = ($is_auth['auth_globalannounce']) ? '<span class="img-btn"><a href="modcp.' . PHP_EXT . '?' . $full_ftp_append . 'mode=super_announce&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images['gannounce_post'] . '" alt="' . $lang['Mod_CP_global'] . '" title="' . $lang['Mod_CP_global2'] . '" /></a></span>&nbsp;' : '';
 
 			switch($forum_topic_data['topic_type'])
 			{
@@ -1456,15 +1429,16 @@ if ($bypass)
 	$topic_title_enc = urlencode(utf8_decode($topic_title));
 	// URL Rewrite - BEGIN
 	// Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled
+	// Forum ID and KB Mode removed from topic_url_enc to avoid compatibility problems with redirects in tell a friend
 	if (($board_config['url_rw'] == true) || ($board_config['url_rw_guests'] == true))
 	{
 		$topic_url_ltt = htmlspecialchars((create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html') . ($kb_mode ? ('?' . $kb_mode_append) : ''));
-		$topic_url_enc = urlencode(utf8_decode(create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html') . ($kb_mode ? ('?' . $kb_mode_append) : ''));
+		$topic_url_enc = urlencode(utf8_decode(create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
 	}
 	else
 	{
 		$topic_url_ltt = htmlspecialchars(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
-		$topic_url_enc = urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
+		$topic_url_enc = urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $topic_id_append));
 	}
 	// URL Rewrite - END
 	$template->assign_vars(array(
@@ -1486,7 +1460,7 @@ if ($bypass)
 		'L_DOWNLOAD_POST' => $lang['Download_post'],
 		'L_DOWNLOAD_TOPIC' => $lang['Download_topic'],
 		'DOWNLOAD_TOPIC' => append_sid(VIEWTOPIC_MG . '?download=-1&amp;' . $forum_id_append . '&amp;' . $topic_id_append),
-		'U_TELL' => append_sid('tellafriend.' . PHP_EXT . '?topic=' . $topic_title_enc . '&amp;link=' . $topic_url_enc),
+		'U_TELL' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . $topic_title_enc . '&amp;topic_id=' . $topic_id),
 		'L_PRINT' => $lang['Print_View'],
 		'U_PRINT' => append_sid('printview.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start),
 
@@ -1501,6 +1475,11 @@ if ($bypass)
 		'IMG_EMAIL' => $images['email_topic'],
 		'IMG_LEFT' => $images['icon_previous'],
 		'IMG_RIGHT' => $images['icon_next'],
+
+		'IMG_ARU' => $images['arrow_rounded_up'],
+		'IMG_ARR' => $images['arrow_rounded_right'],
+		'IMG_ARD' => $images['arrow_rounded_down'],
+		'IMG_ARL' => $images['arrow_rounded_left'],
 
 		'L_AUTHOR' => $lang['Author'],
 		'L_MESSAGE' => $lang['Message'],
@@ -1528,7 +1507,7 @@ if ($bypass)
 		'L_GOTO_PAGE' => $lang['Goto_page'],
 		'L_FORUM_RULES' => (empty($forum_topic_data['rules_custom_title'])) ? $lang['Forum_Rules'] : $forum_topic_data['rules_custom_title'],
 		'L_PERMISSIONS_LIST' => $lang['Permissions_List'],
-		'L_TELL' => $lang['Tell_Friend'],
+		'L_TELL' => $lang['TELL_FRIEND'],
 		'L_TOPIC_RATING' => $lang['TopicUseful'],
 
 		'L_SMILEYS' => $lang['Emoticons'],
@@ -2146,12 +2125,11 @@ if ($bypass)
 		}
 
 		// Start Yellow Card Changes for phpBB Styles
-		$style_used = explode('/', $template->files['body']);
 		$allowed_styles = array(
 			'ca_aphrodite',
-			//'mg_themes',
+			'squared',
 		);
-		if(in_array($style_used[2], $allowed_styles) && (!empty($template->xs_version)))
+		if(in_array($theme['template_name'], $allowed_styles))
 		{
 			$phpbb_styles = true;
 		}
@@ -2165,7 +2143,7 @@ if ($bypass)
 			$current_user = str_replace("'", "\'", $postrow[$i]['username']);
 			if ($is_auth['auth_greencard'])
 			{
-				$grn_card_img = '<img src="'. $images['icon_g_card'] . '" alt="'. $lang['Give_G_card'] . '" />';
+				$grn_card_img = '<img src="'. $images['icon_g_card'] . '" alt="' . $lang['Give_G_card'] . '" />';
 				$grn_card_action = 'return confirm(\''.sprintf($lang['Green_card_warning'],$current_user).'\')';
 				$temp_url = 'card.' . PHP_EXT . '?mode=unban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $userdata['user_id'] . '&amp;sid=' . $userdata['session_id'];
 				$g_card_img = '<a href="' . $temp_url . '" title="'. $lang['Give_G_card'] . '" onclick="' . $grn_card_action . '">' . $grn_card_img . '</a>';
@@ -2447,7 +2425,7 @@ if ($bypass)
 				}
 				$GLOBALS['code_post_id'] = 0;
 				// update database
-				$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET post_text_compiled='" . addslashes($message) . "' WHERE post_id='" . $postrow[$i]['post_id'] . "'";
+				$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled='" . addslashes($message) . "' WHERE post_id='" . $postrow[$i]['post_id'] . "'";
 				$db->sql_query($sql);
 			}
 			else
@@ -2516,7 +2494,7 @@ if ($bypass)
 				}
 				$notes_list = $new_list;
 				$postrow[$i]['edit_notes'] = count($notes_list) ? serialize($notes_list) : '';
-				$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET edit_notes='" . addslashes($postrow[$i]['edit_notes']) . "' WHERE post_id='" . $postrow[$i]['post_id'] . "'";
+				$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes='" . addslashes($postrow[$i]['edit_notes']) . "' WHERE post_id='" . $postrow[$i]['post_id'] . "'";
 				$db->sql_query($sql);
 			}
 		}

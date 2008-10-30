@@ -20,14 +20,13 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_forum_block_func))
+if(!function_exists('imp_forum_block_func'))
 {
 	function imp_forum_block_func()
 	{
 		global $template, $lang, $cms_config_vars, $block_id, $board_config, $images, $_GET;
 
 		$template->_tpldata['fetchpost_row.'] = array();
-		//reset($template->_tpldata['fetchpost_row.']);
 
 		include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 

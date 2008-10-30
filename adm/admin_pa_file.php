@@ -27,8 +27,8 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
-include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'includes/functions_field.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
+include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_field.' . PHP_EXT);
 
 $custom_field = new custom_field();
 $custom_field->init();
@@ -529,7 +529,7 @@ elseif($mode == 'add' || $mode == 'edit' || $mirrors)
 		'PIN_CHECKED_YES' => $pin_checked_yes,
 		'PIN_CHECKED_NO' => $pin_checked_no,
 		'MIRROR_FILE' => $file_unique_name,
-		'U_UPLOADED_MIRROR' => get_formated_url() . '/' . $file_dir . $file_unique_name,
+		'U_UPLOADED_MIRROR' => create_server_url() . '/' . $file_dir . $file_unique_name,
 
 		'L_FILE_APPROVED' => $lang['Approved'],
 		'L_FILE_APPROVED_INFO' => $lang['Approved_info'],
@@ -693,7 +693,7 @@ elseif($mode == 'mirrors')
 			'MIRROR_ID' => $mirror_id,
 			'MIRROR_URL' => $mirror_data['file_dlurl'],
 			'MIRROR_FILE' => $mirror_data['unique_name'],
-			'U_UPLOADED_MIRROR' => get_formated_url() . '/' . $mirror_data['file_dir'] . $mirror_data['unique_name'])
+			'U_UPLOADED_MIRROR' => create_server_url() . '/' . $mirror_data['file_dir'] . $mirror_data['unique_name'])
 		);
 	}
 }

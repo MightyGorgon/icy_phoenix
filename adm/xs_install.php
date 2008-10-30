@@ -107,17 +107,17 @@ $res = @opendir('../templates/');
 $styles = array();
 while(($file = readdir($res)) !== false)
 {
-	if($file !== '.' && $file !== '..' && @file_exists('../templates/'.$file.'/theme_info.cfg') && @file_exists('../templates/'.$file.'/'.$file.'.cfg'))
+	if($file !== '.' && $file !== '..' && @file_exists('../templates/' . $file . '/theme_info.cfg') && @file_exists('../templates/' . $file . '/' . $file . '.cfg'))
 	{
 		$arr = xs_get_themeinfo($file);
-		for($i=0; $i<count($arr); $i++)
+		for($i = 0; $i < count($arr); $i++)
 		{
 			if(isset($arr[$i]['template_name']) && $arr[$i]['template_name'] === $file)
 			{
 				$arr[$i]['num'] = $i;
 				$style = $arr[$i]['style_name'];
 				$found = false;
-				for($j=0; $j<count($style_rowset); $j++)
+				for($j = 0; $j < count($style_rowset); $j++)
 				{
 					if($style_rowset[$j]['style_name'] == $style)
 					{

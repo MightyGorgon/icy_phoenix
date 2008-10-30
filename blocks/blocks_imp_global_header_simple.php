@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_global_header_simple_block_func))
+if(!function_exists('imp_global_header_simple_block_func'))
 {
 	function imp_global_header_simple_block_func()
 	{
@@ -28,9 +28,7 @@ if(!function_exists(imp_global_header_simple_block_func))
 		include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
 
 		$template->_tpldata['header_row.'] = array();
-		//reset($template->_tpldata['header_row.']);
 		$template->_tpldata['header_desc.'] = array();
-		//reset($template->_tpldata['header_desc.']);
 
 		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
 

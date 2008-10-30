@@ -1,2 +1,2 @@
 <!-- INCLUDE breadcrumbs.tpl -->
-<form name="_calendar" method="post" action="{ACTION}">{CALENDAR_MONTH}</form>
+<form name="f_calendar" method="post" action="{ACTION}">{CALENDAR_MONTH}</form>

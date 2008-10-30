@@ -338,7 +338,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 				// calculate for all the subcats in this branch
 				for ($i = 0; $i < count($sub_cats); $i++)
 				{
-					$total = $total + $newestpic[ $sub_cats[$i] ];
+					$total = $total + $newestpic[$sub_cats[$i]];
 				}
 
 				// Mighty Gorgon - Slideshow - BEGIN
@@ -360,7 +360,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 				if ( $total > 0 )
 				{
 					$new_text = ($total == 1) ? sprintf($lang['One_new_picture'], $total) : sprintf($lang['Multiple_new_pictures'], $total);
-					$newpics_sub_link = '&nbsp;<img src="' . $images['mini_new_pictures'] . '" alt="' . $new_text .'" title="' . $new_text .'">&nbsp;';
+					$newpics_sub_link = '&nbsp;<img src="' . $images['mini_new_pictures'] . '" alt="' . $new_text . '" title="' . $new_text . '">&nbsp;';
 					$link = $link . $slideshow_link_full;
 				}
 
@@ -444,10 +444,10 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 			)
 		);
 
-		if ( intval(($newestpic[ $cur_cat_id ])) != 0 )
+		if (intval(($newestpic[$cur_cat_id])) != 0)
 		{
-			$new_text = ($newestpic[ $cur_cat_id ] > 1) ? sprintf($lang['Multiple_new_pictures'], $newestpic[ $cur_cat_id ]) : sprintf($lang['One_new_picture'], $newestpic[ $cur_cat_id ]);
-			$xs_new = (intval(($newestpic[ $cur_cat_id ])) != 0)  ? '-new' : '';
+			$new_text = ($newestpic[$cur_cat_id] > 1) ? sprintf($lang['Multiple_new_pictures'], $newestpic[ $cur_cat_id ]) : sprintf($lang['One_new_picture'], $newestpic[$cur_cat_id]);
+			$xs_new = (intval(($newestpic[$cur_cat_id])) != 0) ? '-new' : '';
 
 			$template->assign_block_vars('catmain.catrow.newpics', array(
 				'I_NEWEST_PICS' => $images['mini_new_pictures'],
@@ -513,7 +513,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		if ($album_config['show_index_thumb'] == 1)
 		{
 			// add the index thumbnail picture to the template
-			if ($last_pic_id == 0 || $album_config['show_index_last_pic'] == 0)
+			if (($last_pic_id == 0) || ($album_config['show_index_last_pic'] == 0))
 			{
 				album_get_last_pic_info($cats, $last_pic_id);
 			}
@@ -530,13 +530,23 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 			}
 			$pic_thumb_sid = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $last_pic_id));
 
+			if ($album_config['show_img_no_gd'] == 1)
+			{
+				//$thumb_size = 'width="' . $album_config['thumbnail_size'] . '" height="' . $album_config['thumbnail_size'] . '"';
+				$thumb_size = 'width="' . $album_config['thumbnail_size'] . '"';
+			}
+			else
+			{
+				$thumb_size = '';
+			}
+
 			if ($last_pic_id == 0)
 			{
 				$pic_url = '';
 			}
 			else
 			{
-				$pic_url = sprintf('<a href="%s" target="%s"><img src="%s" {THUMB_SIZE} alt="" title="" /></a>', $pic_url_sid, $pic_target, $pic_thumb_sid);
+				$pic_url = '<a href="' . $pic_url_sid . '" target="' . $pic_target . '"><img src="' . $pic_thumb_sid . '" ' . $thumb_size . ' alt="' . $lang['Last_Index_Thumbnail'] . '" title="' . $lang['Last_Index_Thumbnail'] . '" /></a>';
 			}
 
 			$template->assign_block_vars('catmain.catrow.thumb', array(
@@ -546,7 +556,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		}
 
 		// add the sub category links row to the template
-		if ( !empty($links) )
+		if (!empty($links))
 		{
 			if ((($user_id == ALBUM_PUBLIC_GALLERY) && ($album_config['show_index_subcats'] == 1)) || (($user_id != ALBUM_PUBLIC_GALLERY) && ($album_config['personal_show_subcats_in_index'] == 1)))
 			{

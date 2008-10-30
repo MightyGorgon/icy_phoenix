@@ -10,7 +10,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1000_Configuration']['140_MG_Configuration_Headers_Banners'] = $file;
@@ -20,6 +20,7 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+$db->clear_cache('config_');
 
 // Pull all config data
 $sql = "SELECT * FROM " . CONFIG_TABLE;
@@ -29,15 +30,15 @@ if(!$result = $db->sql_query($sql))
 }
 else
 {
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$config_name = $row['config_name'];
 		$config_value = $row['config_value'];
 		$default_config[$config_name] = $config_value;
 
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
+		$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
 
-		if( isset($_POST['submit']) && isset($_POST[$config_name]) )
+		if(isset($_POST['submit']) && isset($_POST[$config_name]))
 		{
 			if (strstr($new[$config_name], '_text'))
 			{
@@ -46,14 +47,14 @@ else
 			$sql = "UPDATE " . CONFIG_TABLE . " SET
 				config_value = '" . $new[$config_name] . "'
 				WHERE config_name = '$config_name'";
-			if( !$db->sql_query($sql) )
+			if(!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
 			}
 		}
 	}
 
-	if( isset($_POST['submit']) )
+	if(isset($_POST['submit']))
 	{
 		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config_mg'], '<a href="' . append_sid('admin_board_headers_banners.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -62,20 +63,20 @@ else
 }
 
 
-$switch_top_html_block_yes = ( $new['switch_top_html_block'] ) ? 'checked="checked"' : '';
-$switch_top_html_block_no = ( !$new['switch_top_html_block'] ) ? 'checked="checked"' : '';
-$switch_bottom_html_block_yes = ( $new['switch_bottom_html_block'] ) ? 'checked="checked"' : '';
-$switch_bottom_html_block_no = ( !$new['switch_bottom_html_block'] ) ? 'checked="checked"' : '';
+$switch_top_html_block_yes = ($new['switch_top_html_block']) ? 'checked="checked"' : '';
+$switch_top_html_block_no = (!$new['switch_top_html_block']) ? 'checked="checked"' : '';
+$switch_bottom_html_block_yes = ($new['switch_bottom_html_block']) ? 'checked="checked"' : '';
+$switch_bottom_html_block_no = (!$new['switch_bottom_html_block']) ? 'checked="checked"' : '';
 
-$switch_header_table_yes = ( $new['switch_header_table'] ) ? 'checked="checked"' : '';
-$switch_header_table_no = ( !$new['switch_header_table'] ) ? 'checked="checked"' : '';
-$switch_footer_table_yes = ( $new['switch_footer_table'] ) ? 'checked="checked"' : '';
-$switch_footer_table_no = ( !$new['switch_footer_table'] ) ? 'checked="checked"' : '';
+$switch_header_table_yes = ($new['switch_header_table']) ? 'checked="checked"' : '';
+$switch_header_table_no = (!$new['switch_header_table']) ? 'checked="checked"' : '';
+$switch_footer_table_yes = ($new['switch_footer_table']) ? 'checked="checked"' : '';
+$switch_footer_table_no = (!$new['switch_footer_table']) ? 'checked="checked"' : '';
 
-$switch_header_banner_yes = ( $new['switch_header_banner'] ) ? 'checked="checked"' : '';
-$switch_header_banner_no = ( !$new['switch_header_banner'] ) ? 'checked="checked"' : '';
-$switch_viewtopic_banner_yes = ( $new['switch_viewtopic_banner'] ) ? 'checked="checked"' : '';
-$switch_viewtopic_banner_no = ( !$new['switch_viewtopic_banner'] ) ? 'checked="checked"' : '';
+$switch_header_banner_yes = ($new['switch_header_banner']) ? 'checked="checked"' : '';
+$switch_header_banner_no = (!$new['switch_header_banner']) ? 'checked="checked"' : '';
+$switch_viewtopic_banner_yes = ($new['switch_viewtopic_banner']) ? 'checked="checked"' : '';
+$switch_viewtopic_banner_no = (!$new['switch_viewtopic_banner']) ? 'checked="checked"' : '';
 
 $new['top_html_block_text'] = stripslashes($new['top_html_block_text']);
 $new['bottom_html_block_text'] = stripslashes($new['bottom_html_block_text']);
@@ -148,7 +149,6 @@ $template->assign_vars(array(
 	'VIEWTOPIC_BANNER_CODE' => $new['viewtopic_banner_text'],
 	)
 );
-
 
 $template->pparse('body');
 

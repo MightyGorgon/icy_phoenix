@@ -34,74 +34,15 @@ $template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . ap
 
 $lang['xs_edittpl_back_list'] = str_replace('{URL}', append_sid('xs_edit_data.' . PHP_EXT), $lang['xs_edittpl_back_list']);
 
-function xs_empty_name()
-{
-	global $db;
-	$sql = "SELECT * FROM " . THEMES_NAME_TABLE . " LIMIT 0, 1";
-	if(!$result = $db->sql_query($sql))
-	{
-		$data = array();
-	}
-	$data = $db->sql_fetchrow($result);
-	if($data === false || !@count($data))
-	{
-		$data = array(
-			'themes_id'	=> 0,
-			'tr_color1_name'	=> '',
-			'tr_color2_name'	=> '',
-			'tr_color3_name'	=> '',
-			'tr_class1_name'	=> '',
-			'tr_class2_name'	=> '',
-			'tr_class3_name'	=> '',
-			'th_color1_name'	=> '',
-			'th_color2_name'	=> '',
-			'th_color3_name'	=> '',
-			'th_class1_name'	=> '',
-			'th_class2_name'	=> '',
-			'th_class3_name'	=> '',
-			'td_color1_name'	=> '',
-			'td_color2_name'	=> '',
-			'td_color3_name'	=> '',
-			'td_class1_name'	=> '',
-			'td_class2_name'	=> '',
-			'td_class3_name'	=> '',
-			'fontface1_name'	=> '',
-			'fontface2_name'	=> '',
-			'fontface3_name'	=> '',
-			'fontsize1_name'	=> '',
-			'fontsize2_name'	=> '',
-			'fontsize3_name'	=> '',
-			'fontcolor1_name'	=> '',
-			'fontcolor2_name'	=> '',
-			'fontcolor3_name'	=> '',
-			'span_class1_name'	=> '',
-			'span_class2_name'	=> '',
-			'span_class3_name'	=> ''
-		);
-
-	}
-	$arr = array();
-	foreach($data as $var => $value)
-	{
-		if($var !== 'themes_id')
-		{
-			$arr[$var] = '';
-		}
-	}
-	return $arr;
-}
-
 function xs_get_vars($theme)
 {
 	$arr1 = array();
 	$arr2 = array();
 	$vars_100 = array('head_stylesheet', 'body_background');
-	$vars_50 = array('fontface');
 	$vars_30 = array('style_name');
-	$vars_25 = array('tr_class', 'th_class', 'td_class', 'span_class');
-	$vars_6 = array('body_bgcolor', 'body_text', 'body_link', 'body_vlink', 'body_alink', 'body_hlink', 'tr_color', 'th_color', 'td_color', 'fontcolor');
-	$vars_5 = array('img_size_poll', 'img_size_privmsg');
-	$vars_4 = array('fontsize', 'theme_public');
+	$vars_25 = array('tr_class', 'td_class');
+	$vars_6 = array('body_bgcolor');
+	$vars_4 = array('theme_public');
 	foreach($theme as $var => $value)
 	{
 		if(!is_integer($var) && $var !== 'themes_id' && $var !== 'template_name')
@@ -112,10 +53,6 @@ function xs_get_vars($theme)
 			if(xs_in_array($var, $vars_100) || xs_in_array($sub, $vars_100))
 			{
 				$len = 100;
-			}
-			elseif(xs_in_array($var, $vars_50) || xs_in_array($sub, $vars_50))
-			{
-				$len = 50;
 			}
 			elseif(xs_in_array($var, $vars_30) || xs_in_array($sub, $vars_30))
 			{
@@ -128,10 +65,6 @@ function xs_get_vars($theme)
 			elseif(xs_in_array($var, $vars_6) || xs_in_array($sub, $vars_6))
 			{
 				$len = 6;
-			}
-			elseif(xs_in_array($var, $vars_5) || xs_in_array($sub, $vars_5))
-			{
-				$len = 5;
 			}
 			elseif(xs_in_array($var, $vrs_4) || xs_in_array($sub, $vars_4))
 			{
@@ -224,22 +157,6 @@ if(!empty($_POST['edit']) && !defined('DEMO_MODE'))
 	{
 		xs_error($lang['xs_edittpl_error_updating'] . '<br /><br />' . $lang['xs_edittpl_back_edit'] . '<br /><br />' . $lang['xs_edittpl_back_list'], __LINE__, __FILE__);
 	}
-	// check if there is name
-	$sql = "SELECT themes_id FROM " . THEMES_NAME_TABLE . " WHERE themes_id='{$id}'";
-	if(!$result = $db->sql_query($sql))
-	{
-		$sql = "INSERT INTO " . THEMES_NAME_TABLE . " (" . implode(',', $data_name_insert_vars) . ") VALUES ('" . implode("', '", $data_name_insert_values) . "')";
-	}
-	$item = $db->sql_fetchrow($result);
-	if(!is_array($item))
-	{
-		$sql = "INSERT INTO " . THEMES_NAME_TABLE . " (" . implode(',', $data_name_insert_vars) . ") VALUES ('" . implode("', '", $data_name_insert_values) . "')";
-	}
-	else
-	{
-		$sql = "UPDATE " . THEMES_NAME_TABLE . " SET " . implode(',', $data_name_update) . " WHERE themes_id='{$id}'";
-	}
-	$db->sql_query($sql);
 	// regen themes cache
 	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
 	{
@@ -271,16 +188,6 @@ if(!empty($_GET['edit']))
 	{
 		xs_error($lang['xs_invalid_style_id'] . '<br /><br />' . $lang['xs_edittpl_back_list']);
 	}
-	$sql = "SELECT * FROM " . THEMES_NAME_TABLE . " WHERE themes_id='{$id}'";
-	if(!$result = $db->sql_query($sql))
-	{
-		$item_name = array();
-	}
-	$item_name = $db->sql_fetchrow($result);
-	if($item_name === false || !@count($item_name))
-	{
-		$item_name = xs_empty_name();
-	}
 	$vars = xs_get_vars($item);
 	// show variables
 	$template->assign_vars(array(
@@ -302,22 +209,22 @@ if(!empty($_GET['edit']))
 		}
 		else
 		{
-           $str = substr($var, 0, strlen($var) - 1);
-           $str_fc = substr($var, 0, strlen($var) - 2);
-           if(isset($lang['xs_data_'.$str_fc]))
-           {
-               $str1 = substr($var, strlen($var) - 2);
-               $text = sprintf($lang['xs_data_'.$str_fc], $str1);
-           }
-           else if(isset($lang['xs_data_'.$str]))
-           {
-               $str1 = substr($var, strlen($var) - 1);
-               $text = sprintf($lang['xs_data_'.$str], $str1);
-           }
-           else
-           {
-               $text = sprintf($lang['xs_data_unknown'], $var);
-           }
+			$str = substr($var, 0, strlen($var) - 1);
+			$str_fc = substr($var, 0, strlen($var) - 2);
+			if(isset($lang['xs_data_'.$str_fc]))
+			{
+				$str1 = substr($var, strlen($var) - 2);
+				$text = sprintf($lang['xs_data_'.$str_fc], $str1);
+			}
+			elseif(isset($lang['xs_data_'.$str]))
+			{
+				$str1 = substr($var, strlen($var) - 1);
+				$text = sprintf($lang['xs_data_'.$str], $str1);
+			}
+			else
+			{
+				$text = sprintf($lang['xs_data_unknown'], $var);
+			}
 		}
 		$template->assign_block_vars('row', array(
 			'ROW_CLASS'	=> $row_class,

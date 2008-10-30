@@ -33,11 +33,11 @@
 		<span class="gen">{PAGE_NUMBER}</span><br />
 		<span class="pagination">{PAGINATION}</span>
 		<!-- BEGIN extended_pagination -->
-		<br /><form method="post" action="{U_VIEW_FORUM}" style="display:inline;"><span class="gen">{L_GO_TO_PAGE_NUMBER}&nbsp;<input type="text" name="page_number" value="" size="3" class="post">&nbsp;&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" /></span></form>
+		<br /><form method="post" action="{U_VIEW_FORUM}" style="display:inline;"><span class="gen">{L_GO_TO_PAGE_NUMBER}&nbsp;<input type="text" name="page_number" value="" size="3" class="post" />&nbsp;&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" /></span></form>
 		<!-- END extended_pagination -->
 	</td>
 </tr>
-<tr><td align="left" valign="middle"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></td></tr>
+<tr><td align="left" valign="middle"><span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span></td></tr>
 </table>
 {BOARD_INDEX}
 
@@ -108,7 +108,7 @@
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top" nowrap="nowrap">
-		<a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a><br />
+		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span><br />
 		<div style="margin-right:30px;">{IMG_TBL}<div id="icon_description_h" style="display: none;">
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
@@ -189,7 +189,7 @@
 		}
 		//-->
 		</script>
-		{JUMPBOX}<br />
+		<div style="margin-top:6px;margin-bottom:4px;">{JUMPBOX}</div><br />
 	</td>
 	<td width="40%" align="right" valign="top" nowrap="nowrap">
 		<span class="pagination">{PAGINATION}</span><br />

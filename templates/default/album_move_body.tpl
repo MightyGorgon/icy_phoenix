@@ -9,7 +9,7 @@
 	</div>
 </div>
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_MOVE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-	<tr><td class="row1 row-center"><br /><span class="gen">{L_MOVE_TO_CATEGORY}</span> &nbsp; {S_CATEGORY_SELECT} &nbsp; <input class="mainoption" type="submit" name="move" value="{L_MOVE}" /><br />&nbsp;</td></tr>
+<tr><td class="row1 row-center"><br /><span class="gen">{L_MOVE_TO_CATEGORY}</span> &nbsp; {S_CATEGORY_SELECT} &nbsp; <input class="mainoption" type="submit" name="move" value="{L_MOVE}" /><br />&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- BEGIN pic_id_array -->
 <input type="hidden" name="pic_id[]" value="{pic_id_array.VALUE}" />

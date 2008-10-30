@@ -3,16 +3,14 @@
 {ERROR_BOX}
 
 <script type="text/javascript">
-	//
-	// Should really check the browser to stop this whining ...
-	//
-	function select_switch(status)
+// Should really check the browser to stop this whining ...
+function select_switch(status)
+{
+	for (i = 0; i < document.shadow_list.length; i++)
 	{
-		for (i = 0; i < document.shadow_list.length; i++)
-		{
-			document.shadow_list.elements[i].checked = status;
-		}
+		document.shadow_list.elements[i].checked = status;
 	}
+}
 </script>
 
 <form method="post" name="shadow_list" action="{S_ATTACH_ACTION}">
@@ -23,9 +21,7 @@
 	<th>&nbsp;{L_COMMENT}&nbsp;</th>
 	<th>&nbsp;{L_DELETE}&nbsp;</th>
 </tr>
-<tr>
-	<td class="cat" colspan="5" align="center"><span class="gensmall">{L_EXPLAIN_FILE}</span></td>
-</tr>
+<tr><td class="row1" colspan="5" align="center"><span class="gensmall">{L_EXPLAIN_FILE}</span></td></tr>
 <!-- BEGIN file_shadow_row -->
 	<tr>
 	<td class="row2 row-center" valign="middle"><span class="postdetails"><a class="postdetails" href="{file_shadow_row.U_ATTACHMENT}" target="_blank">{file_shadow_row.ATTACH_FILENAME}</a></span></td>
@@ -38,7 +34,7 @@
 	<th>&nbsp;{L_COMMENT}&nbsp;</th>
 	<th>&nbsp;{L_DELETE}&nbsp;</th>
 </tr>
-<tr><td class="cat" colspan="5" align="center"><span class="gensmall">{L_EXPLAIN_ROW}</span></td></tr>
+<tr><td class="row1 row-center" colspan="5"><span class="gensmall">{L_EXPLAIN_ROW}</span></td></tr>
 <!-- BEGIN table_shadow_row -->
 <tr>
 	<td class="row2 row-center" valign="middle"><span class="postdetails">{table_shadow_row.ATTACH_FILENAME}</span></td>

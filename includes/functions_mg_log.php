@@ -73,7 +73,7 @@ function ip_log($content, $db_log, $error_log = false)
 		$datecode = date('Ymd');
 		$logs_path = !empty($board_config['logs_path']) ? $board_config['logs_path'] : 'logs';
 		$log_file = IP_ROOT_PATH . $logs_path . '/mg_log_' . $datecode . '.txt';
-		$fp = fopen ($log_file, "a+");
+		$fp = fopen ($log_file, 'a+');
 		fwrite($fp, $message);
 		fclose($fp);
 	}
@@ -86,7 +86,7 @@ function ip_log($content, $db_log, $error_log = false)
 			foreach ($db_target as $db_target_data)
 			{
 				$sql = "INSERT INTO " . LOGS_TABLE . " (log_time, log_page, log_user_id, log_action, log_desc, log_target)
-					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db_log['action'] . "', '" . $db_log['desc'] . "', '" . $db_target_data . "')";
+					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . ((STRIP) ? addslashes($db_log['action']) : $db_log['action']) . "', '" . ((STRIP) ? addslashes($db_log['desc']) : $db_log['desc']) . "', '" . $db_target_data . "')";
 				if(!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not insert data into logs table', $lang['Error'], __LINE__, __FILE__, $sql);
@@ -105,7 +105,7 @@ function ip_log($content, $db_log, $error_log = false)
 			$new_log_id = $row['max_log_id'] + 1;
 
 			$sql = "INSERT INTO " . LOGS_TABLE . " (log_id, log_time, log_page, log_user_id, log_action, log_desc, log_target)
-				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db_log['action'] . "', '" . $db_log['desc'] . "', '')";
+				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . ((STRIP) ? addslashes($db_log['action']) : $db_log['action']) . "', '" . ((STRIP) ? addslashes($db_log['desc']) : $db_log['desc']) . "', '')";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not insert data into logs table', $lang['Error'], __LINE__, __FILE__, $sql);

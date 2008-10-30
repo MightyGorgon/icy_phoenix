@@ -16,7 +16,7 @@ define('IN_ICYPHOENIX', true);
 if (!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['2400_INFO']['150_Google_BOT'] = $filename;
+	$module['1000_Configuration']['192_Google_BOT'] = $filename;
 	return;
 }
 

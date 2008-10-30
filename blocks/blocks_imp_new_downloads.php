@@ -20,16 +20,15 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_new_downloads_block_func))
+if(!function_exists('imp_new_downloads_block_func'))
 {
 	function imp_new_downloads_block_func()
 	{
 		global $template, $cms_config_vars, $block_id, $table_prefix, $db, $board_config, $theme;
 
 		$template->_tpldata['dlrow2.'] = array();
-		//reset($template->_tpldata['dlrow2.']);
 
-		$sql = "SELECT * FROM " . $table_prefix."pa_files ORDER BY file_time DESC LIMIT 0," . $cms_config_vars['md_num_new_downloads'][$block_id];
+		$sql = "SELECT * FROM " . $table_prefix . "pa_files ORDER BY file_time DESC LIMIT 0," . $cms_config_vars['md_num_new_downloads'][$block_id];
 		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query database for the most downloads');

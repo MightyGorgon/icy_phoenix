@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_xs_news_func))
+if(!function_exists('imp_xs_news_func'))
 {
 	function imp_xs_news_func()
 	{

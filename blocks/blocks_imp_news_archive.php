@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_news_archive_block_func))
+if(!function_exists('imp_news_archive_block_func'))
 {
 	function imp_news_archive_block_func()
 	{
@@ -29,23 +29,14 @@ if(!function_exists(imp_news_archive_block_func))
 		@include_once(IP_ROOT_PATH . 'includes/news.' . PHP_EXT);
 
 		//$template->_tpldata['news_detail.'] = array();
-		//reset($template->_tpldata['news_detail.']);
 		//$template->_tpldata['newscol.'] = array();
-		//reset($template->_tpldata['newscol.']);
 		$template->_tpldata['articles_fp.'] = array();
-		//reset($template->_tpldata['articles_fp.']);
 		$template->_tpldata['news_categories.'] = array();
-		//reset($template->_tpldata['news_categories.']);
 		$template->_tpldata['newsrow.'] = array();
-		//reset($template->_tpldata['newsrow.']);
 		$template->_tpldata['news_archives.'] = array();
-		//reset($template->_tpldata['news_archives.']);
 		$template->_tpldata['arch.'] = array();
-		//reset($template->_tpldata['arch.']);
 		$template->_tpldata['yes_news.'] = array();
-		//reset($template->_tpldata['yes_news.']);
 		$template->_tpldata['no_news.'] = array();
-		//reset($template->_tpldata['no_news.']);
 
 		$img_width = ($cms_config_vars['md_news_images_width'][$block_id] < 20) ? '' : ('width="' . $cms_config_vars['md_news_images_width'][$block_id] . '"');
 

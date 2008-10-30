@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="{T_URL}/style_{TPL_COLOR}.css" type="text/css">
 </head>
 
-<!-- <body bgcolor="{T_TR_COLOR3}" text="{T_BODY_TEXT}" link="{T_BODY_LINK}" vlink="{T_BODY_VLINK}"> -->
 <body style="margin:0px;padding:0px;">
 <script src="{T_COMMON_TPL_PATH}js/bbcode.js" type="text/javascript" ></script>
 <form method="post" name="post" action="{U_SHOUTBOX}" onsubmit="return checkForm(this)">
@@ -26,12 +25,12 @@
 			{L_SHOUT_TEXT}:&nbsp;
 			<input type="text" class="button" name="message" value="{MESSAGE}" size="25" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" />
 			&nbsp;
-			<input type="submit" class="button" value="{L_SHOUT_SUBMIT}" name="shout" />
+			<input type="submit" class="mainoption" value="{L_SHOUT_SUBMIT}" name="shout" />
 			<!-- END switch_auth_post -->
 			<!-- BEGIN switch_auth_no_post -->
 			{L_SHOUTBOX_LOGIN}&nbsp;
 			<!-- END switch_auth_no_post -->
-			<input type="submit" class="button" value="{L_SHOUT_REFRESH}" name="refresh" />
+			<input type="submit" class="liteoption" value="{L_SHOUT_REFRESH}" name="refresh" />
 		</span>
 	</div>
 	</td>

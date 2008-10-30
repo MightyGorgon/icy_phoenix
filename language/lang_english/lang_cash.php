@@ -16,6 +16,16 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
 // Admin menu
 $lang['Cmcat_main'] = 'Main';
 $lang['Cmcat_addons'] = 'Add-ons';
@@ -94,9 +104,7 @@ $lang['Bad_dbfield'] = 'Bad field name, must be in the form \'user_word\'<br /><
 // 0 currencies (most admin panels won't work... )
 $lang['Insufficient_currencies'] = 'You need to create Currencies before you can alter settings';
 
-//
 // Add-ons ?
-//
 
 // Events
 $lang['Cash_events'] = 'Cash Mod Events';
@@ -125,9 +133,7 @@ $lang['Update_successful'] = 'Update successful!';
 $lang['Click_return_cash_reset'] = 'Click %sHere%s to return to Cash Reset';
 $lang['User_updated'] = '%s updated<br />';
 
-//
 // Others
-//
 
 // Exchange
 $lang['Cash_exchange'] = 'Cash Mod Exchange';
@@ -293,20 +299,14 @@ $lang['Year'] = 'Year';
 $lang['Page'] = 'Page';
 $lang['Per_page'] = 'per page';
 
-//
 // Now for some regular stuff...
-//
 
-//
 // User CP
-//
 $lang['Donate'] = 'Donate';
 $lang['Mod_usercash'] = 'Modify %s\'s Cash';
 $lang['Exchange'] = 'Exchange';
 
-//
 // Exchange
-//
 $lang['Convert'] = 'Convert';
 $lang['Select_one'] = 'Select One';
 $lang['Exchange_lack_of_currencies'] = 'There aren\'t enough Currencies for you to be able to exchange<br />To enable this feature, your admin needs to create at least 2 currencies';
@@ -314,17 +314,13 @@ $lang['You_have'] = 'You have';
 $lang['One_worth'] = 'One %s is worth:';
 $lang['Cannot_exchange'] = 'You cannot exchange %s, currently';
 
-//
 // Donate
-//
 $lang['Amount'] = 'Amount';
 $lang['Donate_to'] = 'Donate to %s';
 $lang['Donation_recieved'] = 'You have received a donation from %s';
 $lang['Has_donated'] = '%s has donated [b]%s[/b] to you.' . "\n\n" . '%s wrote: ' . "\n";
 
-//
 // Mod Edit
-//
 $lang['Add'] = 'Add';
 $lang['Remove'] = 'Remove';
 $lang['Omit'] = 'Omit';

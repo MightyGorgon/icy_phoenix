@@ -59,7 +59,7 @@ if(defined('IN_ADMIN'))
 }
 if(defined('ATTACH_PROFILE'))
 {
-	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_profile.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_profile.' . PHP_EXT);
 }
 
 // Please do not change the include-order, it is valuable for proper execution.

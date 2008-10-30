@@ -420,10 +420,10 @@ if(isset($comment_id) && $album_config['comment'] == 1)
 // ------------------------------------
 
 $sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_rank, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments_count
-		FROM ". ALBUM_CAT_TABLE ." AS ac, ". ALBUM_TABLE ." AS p
-			LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
-			LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
-			LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
+		FROM " . ALBUM_CAT_TABLE . " AS ac, " . ALBUM_TABLE . " AS p
+			LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
+			LEFT JOIN " . ALBUM_COMMENT_TABLE . " AS c ON p.pic_id = c.comment_pic_id
+			LEFT JOIN " . ALBUM_RATE_TABLE . " AS r ON p.pic_id = r.rate_pic_id
 		WHERE pic_id = '$pic_id'
 			AND ac.cat_id = p.pic_cat_id
 		GROUP BY p.pic_id
@@ -642,8 +642,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 			$comment_sort_order = (strtoupper($comment_sort_order) == 'DESC') ? 'DESC' : 'ASC';
 
 			$sql = "SELECT c.*, u.*
-				FROM ". ALBUM_COMMENT_TABLE ." AS c
-					LEFT JOIN ". USERS_TABLE ." AS u ON c.comment_user_id = u.user_id
+				FROM " . ALBUM_COMMENT_TABLE . " AS c
+					LEFT JOIN " . USERS_TABLE . " AS u ON c.comment_user_id = u.user_id
 				WHERE c.comment_pic_id = '$pic_id'
 				ORDER BY c.comment_id $comment_sort_order
 				LIMIT $limit_sql";
@@ -697,8 +697,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				if ($commentrow[$i]['comment_edit_count'] > 0)
 				{
 					$sql = "SELECT c.comment_id, c.comment_edit_user_id, u.user_id, u.username
-							FROM ". ALBUM_COMMENT_TABLE ." AS c
-								LEFT JOIN ". USERS_TABLE ." AS u ON c.comment_edit_user_id = u.user_id
+							FROM " . ALBUM_COMMENT_TABLE . " AS c
+								LEFT JOIN " . USERS_TABLE . " AS u ON c.comment_edit_user_id = u.user_id
 							WHERE c.comment_id = '".$commentrow[$i]['comment_id']."'
 							LIMIT 1";
 
@@ -941,21 +941,22 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id));
 		$slideshow_link_full = '<a href="' . $slideshow_link . '">' . $lang['Slideshow_Off'] . '</a>';
 		$pic_link = append_sid(album_append_uid($nuffimage_pic . PHP_EXT . '?pic_id=' . $pic_id));
+		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=next' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" align="middle" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" align="middle" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
 
-			$next_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=next&amp;slideshow=' . $slideshow_delay . $sort_append)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
-			$prev_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay . $sort_append)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
+			$next_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=next&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
+			$prev_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 		}
 		else
 		{
-			$next_pic = ($no_next_pic== false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" align="middle" /></a>' : '';
-			$prev_pic = ($no_prev_pic  == false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=next' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" align="middle" /></a>' : '';
+			$next_pic = ($no_next_pic== false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$prev_pic = ($no_prev_pic  == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
 
-			$next_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay . $sort_append)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
-			$prev_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=next&amp;slideshow=' . $slideshow_delay . $sort_append)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
+			$next_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
+			$prev_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=next&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 		}
 	}
 	else
@@ -978,15 +979,16 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;full=true'));
 		$slideshow_link_full = '<a href="' . $slideshow_link . '">' . $lang['Slideshow_On'] . '</a>';
 		$pic_link = append_sid(album_append_uid($nuffimage_pic . PHP_EXT . '?pic_id=' . $pic_id . $sort_append . $full_size_param . $nuff_http_full_string));
+		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=next' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" align="middle" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" align="middle" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
 		}
 		else
 		{
-			$next_pic = ($no_next_pic== false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" align="middle" /></a>' : '';
-			$prev_pic = ($no_prev_pic  == false) ? '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;mode=next' . $nuffimage_vars . $sort_append)) . '#TopPic"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" align="middle" /></a>' : '';
+			$next_pic = ($no_next_pic== false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
+			$prev_pic = ($no_prev_pic  == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image:none;display:inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
 		}
 	}
 
@@ -1042,7 +1044,12 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	$style_used = explode('/', $template->files['body']);
 	$allowed_styles = array(
 		//'ca_aphrodite',
+		'floreal',
+		'icy_phoenix',
 		'mg_themes',
+		//'morpheus',
+		'pearl',
+		//'squared',
 	);
 	if(in_array($style_used[2], $allowed_styles) && (!empty($template->xs_version)))
 	{
@@ -1050,7 +1057,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		$delete_link_content = '<img src="' . $images['topic_mod_delete'] . '" alt="' . $lang['Delete_pic'] . '" title="' . $lang['Delete_pic'] . '" style="border:0px;" />';
 		$lock_link_content = ($thispic['pic_lock'] == 0) ? '<img src="' . $images['topic_mod_lock'] . '" alt="' . $lang['Lock'] . '" title="' . $lang['Lock'] . '" style="border:0px;" />' : '<img src="' . $images['topic_mod_unlock'] . '" alt="' . $lang['Unlock'] . '" title="' . $lang['Unlock'] . '" style="border:0px;" />';
 		$move_link_content = '<img src="' . $images['topic_mod_move'] . '" alt="' . $lang['Move'] . '" title="' . $lang['Move'] . '" style="border:0px;" />';
-		$copy_link_content = '<img src="' . $images['topic_mod_split'] . '" alt="' . $lang['Copy'] . '" title="' . $lang['Copy'] . '" style="border:0px;" />';
+		$copy_link_content = '<img src="' . $images['topic_mod_copy'] . '" alt="' . $lang['Copy'] . '" title="' . $lang['Copy'] . '" style="border:0px;" />';
 	}
 
 	$template->assign_vars(array(

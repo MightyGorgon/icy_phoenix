@@ -13,6 +13,8 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+
 // Top Posting Users
 $template->assign_vars(array(
 	'L_RANK' => $lang['Rank'],

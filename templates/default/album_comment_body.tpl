@@ -260,35 +260,35 @@ function openAllSmiles()
 
 <!-- BEGIN switch_comment_post -->
 <form name="commentform" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkForm();">
-	{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-		<tr>
-			<td class="row1" valign="top" width="20%" nowrap="nowrap">
-				<span class="gen">{L_MESSAGE}</span><br /><span class="genmed">
-				{L_MAX_LENGTH}: <b>{S_MAX_LENGTH}</b></span>
-			</td>
-			<td class="row2 row-center" valign="top">
-				<textarea name="comment" class="post" cols="80" rows="9" wrap="virtual" onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{S_MESSAGE}</textarea>
-			</td>
-			<td class="row1 row-center" valign="middle" width="20%">
-				<table border="0" cellspacing="0" cellpadding="5" align="center">
-					<tr>
-					<!-- BEGIN smilies -->
-						<td align="center">
-							<img src="{switch_comment_post.smilies.URL}" border="0" onmouseover="this.style.cursor='hand';" onclick="emoticon('{switch_comment_post.smilies.CODE}');" alt="{switch_comment_post.smilies.DESC}" />
-						</td>
-					<!-- BEGIN new_col -->
-					</tr>
-					<tr>
-					<!-- END new_col -->
-					<!-- END smilies -->
-					</tr>
-				</table>
-				<input type='button' class="button" name="smiles_button" value="Smileys" onclick="openAllSmiles();" />
-			</td>
-		</tr>
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="row1" valign="top" width="20%" nowrap="nowrap">
+			<span class="gen">{L_MESSAGE}</span><br /><span class="genmed">
+			{L_MAX_LENGTH}: <b>{S_MAX_LENGTH}</b></span>
+		</td>
+		<td class="row2 row-center" valign="top">
+			<textarea name="comment" class="post" cols="80" rows="9" wrap="virtual" onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{S_MESSAGE}</textarea>
+		</td>
+		<td class="row1 row-center" valign="middle" width="20%">
+			<table border="0" cellspacing="0" cellpadding="5" align="center">
+				<tr>
+				<!-- BEGIN smilies -->
+					<td align="center">
+						<img src="{switch_comment_post.smilies.URL}" border="0" onmouseover="this.style.cursor='hand';" onclick="emoticon('{switch_comment_post.smilies.CODE}');" alt="{switch_comment_post.smilies.DESC}" />
+					</td>
+				<!-- BEGIN new_col -->
+				</tr>
+				<tr>
+				<!-- END new_col -->
+				<!-- END smilies -->
+				</tr>
+			</table>
+			<input type='button' class="button" name="smiles_button" value="Smileys" onclick="openAllSmiles();" />
+		</td>
+	</tr>
 
-		<tr><td class="cat" align="center" colspan="3"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
-	</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+	<tr><td class="cat" align="center" colspan="3"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <!-- END switch_comment_post -->
 <br />

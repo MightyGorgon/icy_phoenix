@@ -61,8 +61,7 @@ if (!$userdata['session_admin'])
 
 if (empty($no_page_header))
 {
-	// Not including the pageheader can be neccesarry if META tags are
-	// needed in the calling script.
+	// Not including the pageheader can be neccesarry if META tags are needed in the calling script.
 	include('page_header_admin.' . PHP_EXT);
 }
 

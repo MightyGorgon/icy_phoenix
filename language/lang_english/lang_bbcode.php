@@ -22,10 +22,10 @@
 *
 */
 
-/* CONTRIBUTORS
-	2002-12-15	Philip M. White (pwhite@mailhaven.com)
-		Fixed many minor grammatical problems.
-*/
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
 
 //
 // To add an entry to your BBCode guide simply add a line to this file in this format:
@@ -35,9 +35,7 @@
 //
 // DO NOT forget the ; at the end of the line.
 // Do NOT put double quotes (") in your BBCode guide entries, if you absolutely must then escape them ie. \"something\"
-//
 // The BBCode guide items will appear on the BBCode guide page in the same order they are listed in this file
-//
 // If just translating this file please do not alter the actual HTML unless absolutely necessary, thanks :)
 //
 // In addition please do not translate the colours referenced in relation to BBCode any section, if you do
@@ -62,7 +60,7 @@ $faq[] = array("Outputting code or fixed width data", "If you want to output a p
 
 
 $faq[] = array("--","Generating lists");
-$faq[] = array("Creating an Un-ordered list", "BBCode supports two types of lists, unordered and ordered. They are essentially the same as their HTML equivalents. An unordered list outputs each item in your list sequentially one after the other indenting each with a bullet character. To create an unordered list you use <b>[list][/list]</b> and define each item within the list using <b>[*]</b>. For example, to list your favourite colours you could use:<br /><br /><b>[list]</b><br /><b>[*]</b>Red<br /><b>[*]</b>Blue<br /><b>[*]</b>Yellow<br /><b>[/list]</b><br /><br />This would generate the following list:<ul><li>Red</li><li>Blue</li><li>Yellow</li></ul>");
+$faq[] = array("Creating an Un-ordered list", "BBCode supports two types of lists, unordered and ordered. They are essentially the same as their HTML equivalents. An unordered list outputs each item in your list sequentially one after the other indenting each with a bullet character. To create an unordered list you use <b>[list][/list]</b> and define each item within the list using <b>[*]</b>. For example, to list your favourite colours you could use:<br /><br /><b>[list]</b><br /><b>[*]</b>Red<br /><b>[*]</b>Blue<br /><b>[*]</b>Yellow<br /><b>[/list]</b><br /><br />This would generate the following list:<ul style=\"list-style-type: disc; padding: 15px;\"><li>Red</li><li>Blue</li><li>Yellow</li></ul>");
 $faq[] = array("Creating an Ordered list", "The second type of list, an ordered list gives you control over what is output before each item. To create an ordered list you use <b>[list=1][/list]</b> to create a numbered list or alternatively <b>[list=a][/list]</b> for an alphabetical list. As with the unordered list items are specified using <b>[*]</b>. For example:<br /><br /><b>[list=1]</b><br /><b>[*]</b>Go to the shops<br /><b>[*]</b>Buy a new computer<br /><b>[*]</b>Swear at computer when it crashes<br /><b>[/list]</b><br /><br />will generate the following:<ol type=\"1\"><li>Go to the shops</li><li>Buy a new computer</li><li>Swear at computer when it crashes</li></ol>Whereas for an alphabetical list you would use:<br /><br /><b>[list=a]</b><br /><b>[*]</b>The first possible answer<br /><b>[*]</b>The second possible answer<br /><b>[*]</b>The third possible answer<br /><b>[/list]</b><br /><br />giving<ol type=\"a\"><li>The first possible answer</li><li>The second possible answer</li><li>The third possible answer</li></ol>");
 
 
@@ -71,14 +69,12 @@ $faq[] = array("Linking to another site", "Icy Phoenix BBCode supports a number 
 
 
 $faq[] = array("--", "Showing images in posts");
-$faq[] = array("Adding an image to a post", "Icy Phoenix BBCode incorporates a tag for including images in your posts. Two very important things to remember when using this tag are: many users do not appreciate lots of images being shown in posts and second, the image you display must already be available on the Internet (it cannot exist only on your computer, for example, unless you run a webserver!). There is currently no way of storing images locally with phpBB (all these issues are expected to be addressed in the next release of phpBB). To display an image, you must surround the URL pointing to the image with <b>[img][/img]</b> tags. For example:<br /><br /><b>[img]</b>http://www.icyphoenix.com/images/logo_ip.png<b>[/img]</b><br /><br />As noted in the URL section above you can wrap an image in a <b>[url][/url]</b> tag if you wish, eg.<br /><br /><b>[url=http://www.icyphoenix.com/][img]</b>http://www.icyphoenix.com/images/logo_ip.png<b>[/img][/url]</b><br /><br />would generate:<br /><br /><a href=\"http://www.icyphoenix.com/\" target=\"_blank\"><img src=\"http://www.icyphoenix.com/images/logo_ip.png\" border=\"0\" alt=\"\" /></a><br />");
+$faq[] = array("Adding an image to a post", "Icy Phoenix BBCode incorporates a tag for including images in your posts. Two very important things to remember when using this tag are: many users do not appreciate lots of images being shown in posts and second, the image you display must already be available on the Internet (it cannot exist only on your computer, for example, unless you run a webserver!). There is currently no way of storing images locally with phpBB (all these issues are expected to be addressed in the next release of phpBB). To display an image, you must surround the URL pointing to the image with <b>[img][/img]</b> tags. For example:<br /><br /><b>[img]</b>http://www.icyphoenix.com/images/logo_ip.png<b>[/img]</b><br /><br />As noted in the URL section above you can wrap an image in a <b>[url][/url]</b> tag if you wish, eg.<br /><br /><b>[url=http://www.icyphoenix.com/][img]</b>http://www.icyphoenix.com/images/logo_ip.png<b>[/img][/url]</b><br /><br />would generate:<br /><br /><a href=\"http://www.icyphoenix.com/\" style=\"background-image: none;padding-left: 0px;\" target=\"_blank\"><img src=\"http://www.icyphoenix.com/images/logo_ip.png\" border=\"0\" alt=\"\" /></a><br />");
 
 
 $faq[] = array("--", "Other matters");
 $faq[] = array("Can I add my own tags?", "No, I am afraid not directly in Icy Phoenix. If you are confident with PHP then you may try to edit on your own <b>includes/bbcode.php</b> which is the file responsible for BBCodes.");
 
-//
 // This ends the BBCode guide entries
-//
 
 ?>

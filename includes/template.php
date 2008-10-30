@@ -110,7 +110,7 @@ class Template {
 
 	// Default template directory.
 	// If file for default template isn't found file from this template is used.
-	var $tpldef = 'mg_themes';
+	var $tpldef = 'default';
 
 	// this will hash handle names to the compiled code for that handle.
 	var $compiled_code = array();
@@ -209,7 +209,7 @@ class Template {
 			'xs_auto_recompile'			=> 1,
 			'xs_use_cache'					=> 1,
 			'xs_php'								=> PHP_EXT,
-			'xs_def_template'				=> 'mg_themes',
+			'xs_def_template'				=> 'default',
 			'xs_check_switches'			=> 1,
 			'xs_warn_includes'			=> 1,
 			'xs_add_comments'				=> 0,
@@ -315,7 +315,9 @@ class Template {
 		// Mighty Gorgon - Common TPL - END
 		if(!empty($this->tpl))
 		{
-			$this->load_replacements($this->tpldir . $cfg_path . '/xs.cfg');
+			//$file = $this->tpldir . $cfg_path . '/xs.cfg';
+			$file = $this->tpldir . $this->tpldef . '/xs.cfg';
+			$this->load_replacements($file);
 		}
 		if($old_root !== $this->root)
 		{
@@ -527,7 +529,7 @@ class Template {
 		// checking if tpl and/or php file exists
 		if(empty($this->files_cache[$handle]) && !@file_exists($this->files[$handle]))
 		{
-			// trying to load alternative filename (usually subSilver)
+			// trying to load alternative filename (usually default)
 			if(!empty($this->tpldef) && !empty($this->tpl) && ($this->tpldef !== $this->tpl))
 			{
 				$this->files[$handle] = '';

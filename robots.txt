@@ -1,5 +1,8 @@
 Sitemap: http://www.icyphoenix.com/sitemap.php
 
+User-agent: Yahoo! Slurp
+Crawl-delay: 240
+
 User-agent: Alexibot
 Disallow: /
 
@@ -360,21 +363,30 @@ Disallow: /language/
 Disallow: /logs/
 Disallow: /pafiledb/
 Disallow: /templates/
-Disallow: /calendar.php
+Disallow: /album_delete.php
+Disallow: /album_edit.php
+Disallow: /album_modcp.php
+Disallow: /album_search.php
+Disallow: /album_upload.php
 Disallow: /calendar_scheduler.php
+Disallow: /cms.php
+Disallow: /cms_auth.php
+Disallow: /cms_menu.php
 Disallow: /common.php
 Disallow: /config.php
 Disallow: /groupcp.php
 Disallow: /login_ip.php
-Disallow: /memberlist.php
+#Disallow: /memberlist.php
 Disallow: /modcp.php
 Disallow: /posting.php
 #Disallow: /printview.php
 Disallow: /privmsg.php
-Disallow: /profile.php
+#Disallow: /profile.php
 Disallow: /ranks.php
 Disallow: /search.php
+Disallow: /site_hist.php
 Disallow: /statistics.php
 Disallow: /tellafriend.php
+Disallow: /upload.php
 Disallow: /viewonline.php
 

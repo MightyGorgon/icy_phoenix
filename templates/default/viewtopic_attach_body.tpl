@@ -3,16 +3,12 @@
 	<br />
 	<!-- BEGIN denyrow -->
 	<table class="forumline" width="95%" align="center" cellspacing="0">
-	<tr>
-		<td width="100%" class="row1 row-center"><b><span class="gen">{postrow.attach.denyrow.L_DENIED}</span></b></td>
-	</tr>
+	<tr><td width="100%" class="row1 row-center"><b><span class="gen">{postrow.attach.denyrow.L_DENIED}</span></b></td></tr>
 	</table>
 	<!-- END denyrow -->
 	<!-- BEGIN cat_stream -->
 	<table class="forumline" width="95%" align="center" cellspacing="0">
-	<tr>
-		<td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_stream.DOWNLOAD_NAME}</span></td>
-	</tr>
+	<tr><td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_stream.DOWNLOAD_NAME}</span></td></tr>
 	<tr>
 		<td width="15%" class="row1"><span class="genmed">{L_DESCRIPTION}:</span></td>
 		<td width="75%" class="row2">{postrow.attach.cat_stream.COMMENT}&nbsp;</td>
@@ -45,9 +41,7 @@
 	<!-- END cat_stream -->
 	<!-- BEGIN cat_swf -->
 	<table class="forumline" width="95%" align="center" cellspacing="0">
-	<tr>
-		<td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_swf.DOWNLOAD_NAME}</span></td>
-	</tr>
+	<tr><td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_swf.DOWNLOAD_NAME}</span></td></tr>
 	<tr>
 		<td width="15%" class="row1"><span class="genmed">{L_DESCRIPTION}:</span></td>
 		<td width="75%" class="row2">{postrow.attach.cat_swf.COMMENT}&nbsp;</td>
@@ -78,9 +72,7 @@
 	<!-- END cat_swf -->
 	<!-- BEGIN cat_images -->
 	<table class="forumline" width="95%" align="center" cellspacing="0">
-	<tr>
-		<td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_images.DOWNLOAD_NAME}</span></td>
-	</tr>
+	<tr><td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_images.DOWNLOAD_NAME}</span></td></tr>
 	<tr>
 		<td width="15%" class="row1"><span class="genmed">{L_DESCRIPTION}:</span></td>
 		<td width="75%" class="row2">{postrow.attach.cat_images.COMMENT}&nbsp;</td>
@@ -99,11 +91,8 @@
 	</table>
 	<!-- END cat_images -->
 	<!-- BEGIN cat_thumb_images -->
-
 	<table class="forumline" width="95%" align="center" cellspacing="0">
-	<tr>
-		<td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_thumb_images.DOWNLOAD_NAME}</span></td>
-	</tr>
+	<tr><td width="100%" colspan="2" class="row-header"><span>{postrow.attach.cat_thumb_images.DOWNLOAD_NAME}</span></td></tr>
 	<tr>
 		<td width="15%" class="row1"><span class="genmed">{L_DESCRIPTION}:</span></td>
 		<td width="75%" class="row2">{postrow.attach.cat_thumb_images.COMMENT}&nbsp;</td>
@@ -123,9 +112,7 @@
 	<!-- END cat_thumb_images -->
 	<!-- BEGIN attachrow -->
 	<table class="forumline" width="95%" align="center" cellspacing="0">
-	<tr>
-		<td width="100%" colspan="3" class="row-header"><span>{postrow.attach.attachrow.DOWNLOAD_NAME}</span></td>
-	</tr>
+	<tr><td width="100%" colspan="3" class="row-header"><span>{postrow.attach.attachrow.DOWNLOAD_NAME}</span></td></tr>
 	<tr>
 		<td width="15%" class="row1"><span class="genmed">{L_DESCRIPTION}:</span></td>
 		<td width="75%" class="row2">{postrow.attach.attachrow.COMMENT}&nbsp;</td>
@@ -144,7 +131,6 @@
 		<td width="75%" class="row2"><span class="genmed">{postrow.attach.attachrow.L_DOWNLOAD_COUNT}</span></td>
 	</tr>
 	</table>
-
 	<!-- END attachrow -->
 	<br />
 </div>

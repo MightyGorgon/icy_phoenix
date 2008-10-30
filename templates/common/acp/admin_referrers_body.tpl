@@ -17,7 +17,7 @@ function toggle_check_all()
 <h1>{L_TITLE}</h1>
 <form method="post" action="{S_MODE_ACTION}" name="refersrow_values">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td class="row-header" colspan="8" width="100%"><span>{L_REFERRERS}</span></td></tr>
+<tr><th colspan="8">{L_REFERRERS}</th></tr>
 <tr>
 	<th nowrap="nowrap">#</th>
 	<th nowrap="nowrap">{L_HOST}</th>

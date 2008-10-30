@@ -124,6 +124,7 @@ define('PRIVMSGS_UNREAD_MAIL', 5);
 /******************************************************************************************/
 $archive_text = ($board_config['aprvmArchive'] && $mode == 'archive') ? '_archive' : '';
 $pmtype_text = ($pmtype != PRIVMSGS_ALL_MAIL) ? "AND pm.privmsgs_type = $pmtype" : '';
+
 // Assign text filters if specified
 if ($filter_from != '')
 {
@@ -169,13 +170,12 @@ switch($pmaction)
 		{
 			message_die(GENERAL_ERROR, $lang['No_Message_ID'], '', __LINE__, __FILE__);
 		}
-		$sql = 'SELECT pm.*, pmt.*
-			FROM ' . PRIVMSGS_TABLE . "$archive_text pm, " . PRIVMSGS_TEXT_TABLE . " pmt
-			WHERE pm.privmsgs_id = pmt.privmsgs_text_id
-			AND pmt.privmsgs_text_id = $view_id";
+		$sql = 'SELECT pm.*
+			FROM ' . PRIVMSGS_TABLE . "$archive_text pm
+			WHERE pm.privmsgs_id = $view_id";
 		if(!$result = $db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__);
+			message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__);
 		}
 		$privmsg = $db->sql_fetchrow($result);
 		/************************/
@@ -183,29 +183,27 @@ switch($pmaction)
 		/**********************/
 		$private_message = $privmsg['privmsgs_text'];
 		global $bbcode;
-		$bbcode->allow_html = ( $board_config['allow_html'] ? true : false );
-		$bbcode->allow_bbcode = ( $board_config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode'] ? true : false );
-		$bbcode->allow_smilies = ( $board_config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'] ? true : false );
+		$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
+		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($board_config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'] ? true : false);
 		$private_message = $bbcode->parse($private_message);
 		$private_message = str_replace("\n", '<br />', $private_message);
 
-		$template->set_filenames(array(
-		'viewmsg_body' => ADM_TPL . 'admin_priv_msgs_view_body.tpl')
-		);
+		$template->set_filenames(array('viewmsg_body' => ADM_TPL . 'admin_priv_msgs_view_body.tpl'));
 		$template->assign_vars(array(
-		'L_SUBJECT' => $lang['Subject'],
-		'L_TO' => $lang['To'],
-		'L_FROM' => $lang['From'],
-		'L_SENT_DATE' => $lang['Sent_Date'],
-		'L_PRIVATE_MESSAGES' => $aprvmUtil->modName)
-		);
-		$template->assign_vars(array(
-		'SUBJECT' => $privmsg['privmsgs_subject'],
-		'FROM' => $aprvmUtil->id_2_name($privmsg['privmsgs_from_userid']),
-		'FROM_IP' => ($board_config['aprvmIP']) ? ' : ('.decode_ip($privmsg['privmsgs_ip']).')' : '',
-		'TO' => $aprvmUtil->id_2_name($privmsg['privmsgs_to_userid']),
-		'DATE' => create_date($lang['DATE_FORMAT'], $privmsg['privmsgs_date'], $board_config['board_timezone']),
-		'MESSAGE' => $private_message)
+			'L_SUBJECT' => $lang['Subject'],
+			'L_TO' => $lang['To'],
+			'L_FROM' => $lang['From'],
+			'L_SENT_DATE' => $lang['Sent_Date'],
+			'L_PRIVATE_MESSAGES' => $aprvmUtil->modName,
+
+			'SUBJECT' => $privmsg['privmsgs_subject'],
+			'FROM' => $aprvmUtil->id_2_name($privmsg['privmsgs_from_userid']),
+			'FROM_IP' => ($board_config['aprvmIP']) ? ' : ('.decode_ip($privmsg['privmsgs_ip']).')' : '',
+			'TO' => $aprvmUtil->id_2_name($privmsg['privmsgs_to_userid']),
+			'DATE' => create_date($lang['DATE_FORMAT'], $privmsg['privmsgs_date'], $board_config['board_timezone']),
+			'MESSAGE' => $private_message
+			)
 		);
 
 		if ($board_config['aprvmView'])
@@ -239,12 +237,12 @@ switch($pmaction)
 
 			// Get orphan PM ids
 			$priv_msgs_id_sql_list = '';
-			$sql = 'SELECT privmsgs_id FROM '. PRIVMSGS_TABLE ."$archive_text
+			$sql = 'SELECT privmsgs_id FROM ' . PRIVMSGS_TABLE . "$archive_text
 				WHERE privmsgs_to_userid NOT IN ($user_id_sql_list)";
 			//print $sql;
 			if(!$result = $db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 			}
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -252,12 +250,12 @@ switch($pmaction)
 			}
 			if ($priv_msgs_id_sql_list != '')
 			{
-				$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-					WHERE privmsgs_text_id IN ($priv_msgs_id_sql_list)";
+				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
+					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				if(!$db->sql_query($sql))
 				{
-					message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 				}
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
@@ -265,7 +263,7 @@ switch($pmaction)
 				//print $sql;
 				if(!$db->sql_query($sql))
 				{
-					message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 				}
 			}
 
@@ -279,11 +277,11 @@ switch($pmaction)
 		{
 			// Get sent PM ids
 			$priv_msgs_id_sql_list = '';
-			$sql = 'SELECT privmsgs_id FROM '. PRIVMSGS_TABLE ."$archive_text
-				WHERE privmsgs_type = ". PRIVMSGS_SENT_MAIL;
+			$sql = 'SELECT privmsgs_id FROM ' . PRIVMSGS_TABLE . "$archive_text
+				WHERE privmsgs_type = " . PRIVMSGS_SENT_MAIL;
 			if(!$result = $db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 			}
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -291,12 +289,12 @@ switch($pmaction)
 			}
 			if ($priv_msgs_id_sql_list != '')
 			{
-				$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-					WHERE privmsgs_text_id IN ($priv_msgs_id_sql_list)";
+				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
+					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				if(!$db->sql_query($sql))
 				{
-					message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 				}
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
@@ -304,7 +302,7 @@ switch($pmaction)
 				//print $sql;
 				if(!$db->sql_query($sql))
 				{
-					message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 				}
 			}
 
@@ -314,17 +312,17 @@ switch($pmaction)
 	}
 	default:
 	{
-		$sql = 'SELECT pm.*, pmt.* FROM ' . PRIVMSGS_TABLE . "$archive_text pm, " . PRIVMSGS_TEXT_TABLE . " pmt
-				WHERE pm.privmsgs_id = pmt.privmsgs_text_id
+		$sql = 'SELECT pm.* FROM ' . PRIVMSGS_TABLE . "$archive_text pm
+				WHERE pm.privmsgs_id = pm.privmsgs_id
 				$pmtype_text
 				$filter_from_text
 				$filter_to_text
 				ORDER BY $sort $order
-			   LIMIT $start, $topics_per_pg";
+				LIMIT $start, $topics_per_pg";
 
 		if(!$result = $db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__);
+			message_die(GENERAL_ERROR, $lang['Error_PM_Archive_Table'], '', __LINE__, __FILE__);
 		}
 
 		$i = 0;
@@ -333,17 +331,18 @@ switch($pmaction)
 			$view_url = (!$board_config['aprvmView']) ? append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) : '#';
 			$onclick_url = ($board_config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) . "','_privmsg','width=550,height=450,resizable=yes')" : '';
 			$template->assign_block_vars('msgrow', array(
-			'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
-			'ATTACHMENT_INFO' => (defined('ATTACH_VERSION')) ? 'Not Here Yet' : '',
-			'PM_ID' => $row['privmsgs_id'],
-			'PM_TYPE' => $lang['PM_' . $row['privmsgs_type']],
-			'SUBJECT' => $row['privmsgs_subject'],
-			'FROM' => $aprvmUtil->id_2_name($row['privmsgs_from_userid']),
-			'TO' => $aprvmUtil->id_2_name($row['privmsgs_to_userid']),
-			'FROM_IP' => ($board_config['aprvmIP']) ? '<br />('.decode_ip($row['privmsgs_ip']).')' : '',
-			'U_VIEWMSG' => $onclick_url,
-			'U_INLINE_VIEWMSG' => $view_url,
-			'DATE' => create_date($lang['DATE_FORMAT'], $row['privmsgs_date'], $board_config['board_timezone']))
+				'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
+				'ATTACHMENT_INFO' => (defined('ATTACH_VERSION')) ? 'Not Here Yet' : '',
+				'PM_ID' => $row['privmsgs_id'],
+				'PM_TYPE' => $lang['PM_' . $row['privmsgs_type']],
+				'SUBJECT' => $row['privmsgs_subject'],
+				'FROM' => $aprvmUtil->id_2_name($row['privmsgs_from_userid']),
+				'TO' => $aprvmUtil->id_2_name($row['privmsgs_to_userid']),
+				'FROM_IP' => ($board_config['aprvmIP']) ? '<br />('.decode_ip($row['privmsgs_ip']).')' : '',
+				'U_VIEWMSG' => $onclick_url,
+				'U_INLINE_VIEWMSG' => $view_url,
+				'DATE' => create_date($lang['DATE_FORMAT'], $row['privmsgs_date'], $board_config['board_timezone'])
+				)
 			);
 			if ($mode != 'archive' && $board_config['aprvmArchive'])
 			{
@@ -366,64 +365,65 @@ switch($pmaction)
 		else {
 			/* Send the comment area to the archive only parts to prevent JS errors */
 			$template->assign_vars(array(
-			'JS_ARCHIVE_COMMENT_1' => '/* ',
-			'JS_ARCHIVE_COMMENT_2' => ' */'));
+				'JS_ARCHIVE_COMMENT_1' => '/* ',
+				'JS_ARCHIVE_COMMENT_2' => ' */'
+				)
+			);
 		}
 
-		$template->set_filenames(array(
-		'body' => ADM_TPL . 'admin_priv_msgs_body.tpl')
-		);
+		$template->set_filenames(array('body' => ADM_TPL . 'admin_priv_msgs_body.tpl'));
 
 		$template->assign_vars(array(
-		'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
-		'L_SUBJECT' => $lang['Subject'],
-		'L_TO' => $lang['To'],
-		'L_FROM' => $lang['From'],
-		'L_SENT_DATE' => $lang['Sent_Date'],
-		'L_PAGE_NAME' => $aprvmUtil->modName,
-		'L_ORDER' => $lang['Order'],
-		'L_SORT' => $lang['Sort'],
-		'L_SUBMIT' => $lang['Submit'],
-		'L_DELETE' => $lang['Delete'],
-		'L_PM_TYPE' => $lang['PM_Type'],
-		'L_FILTER_BY' => $lang['Filter_By'],
-		'L_RESET' => $lang['Reset'],
-		'L_ARCHIVE' => $lang['Archive'],
-		'L_PAGE_DESC' => ($mode == 'archive') ? $lang['Archive_Desc'] : $lang['Normal_Desc'],
-		'L_VERSION' => $lang['Version'],
-		'VERSION' => $aprvmUtil->modVersion,
-		'L_CURRENT' => $lang['Current'],
-		'CURRENT_ROWS' => $board_config['aprvmRows'],
-		'L_REMOVE_OLD' => $lang['Remove_Old'],
-		'L_REMOVE_SENT' => $lang['Remove_Sent'],
-		'L_UTILS' => $lang['Utilities'],
-		'L_PM_VIEW_TYPE' =>$lang['PM_View_Type'],
-		'L_SHOW_IP' =>$lang['Show_IP'],
-		'L_ROWS_PER_PAGE' =>$lang['Rows_Per_Page'],
-		'L_ARCHIVE_FEATURE' =>$lang['Archive_Feature'],
-		'L_OPTIONS' => $lang['Options'],
+			'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
+			'L_SUBJECT' => $lang['Subject'],
+			'L_TO' => $lang['To'],
+			'L_FROM' => $lang['From'],
+			'L_SENT_DATE' => $lang['Sent_Date'],
+			'L_PAGE_NAME' => $aprvmUtil->modName,
+			'L_ORDER' => $lang['Order'],
+			'L_SORT' => $lang['Sort'],
+			'L_SUBMIT' => $lang['Submit'],
+			'L_DELETE' => $lang['Delete'],
+			'L_PM_TYPE' => $lang['PM_Type'],
+			'L_FILTER_BY' => $lang['Filter_By'],
+			'L_RESET' => $lang['Reset'],
+			'L_ARCHIVE' => $lang['Archive'],
+			'L_PAGE_DESC' => ($mode == 'archive') ? $lang['Archive_Desc'] : $lang['Normal_Desc'],
+			'L_VERSION' => $lang['Version'],
+			'VERSION' => $aprvmUtil->modVersion,
+			'L_CURRENT' => $lang['Current'],
+			'CURRENT_ROWS' => $board_config['aprvmRows'],
+			'L_REMOVE_OLD' => $lang['Remove_Old'],
+			'L_REMOVE_SENT' => $lang['Remove_Sent'],
+			'L_UTILS' => $lang['Utilities'],
+			'L_PM_VIEW_TYPE' =>$lang['PM_View_Type'],
+			'L_SHOW_IP' =>$lang['Show_IP'],
+			'L_ROWS_PER_PAGE' =>$lang['Rows_Per_Page'],
+			'L_ARCHIVE_FEATURE' =>$lang['Archive_Feature'],
+			'L_OPTIONS' => $lang['Options'],
 
-		'URL_ORPHAN' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_old'),
-		'URL_SENT' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_sent'),
-		'URL_INLINE_MESSAGE_TYPE' => ($board_config['aprvmView'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=0') . "\">{$lang['Inline']}</a>" : $lang['Inline'],
-		'URL_POPUP_MESSAGE_TYPE' => ($board_config['aprvmView'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=1') . "\">{$lang['Pop_up']}</a>" : $lang['Pop_up'],
-		'URL_ROWS_PLUS_5' => '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']+5)) . "\">{$lang['Rows_Plus_5']}</a>",
-		'URL_ROWS_MINUS_5' => ($board_config['aprvmRows'] > 5) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']-5)) . "\">{$lang['Rows_Minus_5']}</a>" : $lang['Rows_Minus_5'],
-		'URL_SHOW_IP_ON' => ($board_config['aprvmIP'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
-		'URL_SHOW_IP_OFF' => ($board_config['aprvmIP'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
-		'URL_ARCHIVE_ENABLE_LINK' => ($board_config['aprvmArchive'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
-		'URL_ARCHIVE_DISABLE_LINK' => ($board_config['aprvmArchive'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
-		'URL_SWITCH_MODE' => ($board_config['aprvmArchive'] == 1) ? ($mode == 'archive') ? '<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=normal') . "\">{$lang['Switch_Normal']}</a></b>" :'<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=archive') . "\">{$lang['Switch_Archive']}</a></b>" : '',
+			'URL_ORPHAN' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_old'),
+			'URL_SENT' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_sent'),
+			'URL_INLINE_MESSAGE_TYPE' => ($board_config['aprvmView'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=0') . "\">{$lang['Inline']}</a>" : $lang['Inline'],
+			'URL_POPUP_MESSAGE_TYPE' => ($board_config['aprvmView'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=1') . "\">{$lang['Pop_up']}</a>" : $lang['Pop_up'],
+			'URL_ROWS_PLUS_5' => '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']+5)) . "\">{$lang['Rows_Plus_5']}</a>",
+			'URL_ROWS_MINUS_5' => ($board_config['aprvmRows'] > 5) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']-5)) . "\">{$lang['Rows_Minus_5']}</a>" : $lang['Rows_Minus_5'],
+			'URL_SHOW_IP_ON' => ($board_config['aprvmIP'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
+			'URL_SHOW_IP_OFF' => ($board_config['aprvmIP'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
+			'URL_ARCHIVE_ENABLE_LINK' => ($board_config['aprvmArchive'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
+			'URL_ARCHIVE_DISABLE_LINK' => ($board_config['aprvmArchive'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
+			'URL_SWITCH_MODE' => ($board_config['aprvmArchive'] == 1) ? ($mode == 'archive') ? '<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=normal') . "\">{$lang['Switch_Normal']}</a></b>" :'<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=archive') . "\">{$lang['Switch_Archive']}</a></b>" : '',
 
-		'S_MODE' => $mode,
-		'S_PMTYPE' => $pmtype,
-		'S_FILTER_FROM' => $filter_from,
-		'S_FILTER_TO' => $filter_to,
-		'S_PMTYPE_SELECT' => $aprvmUtil->make_drop_box('pmtype'),
-		'S_MODE_SELECT' => $aprvmUtil->make_drop_box('sort'),
-		'S_ORDER_SELECT' => $aprvmUtil->make_drop_box('order'),
-		'S_FILENAME' => basename(__FILE__),
-		'S_MODE_ACTION' => append_sid(basename(__FILE__)))
+			'S_MODE' => $mode,
+			'S_PMTYPE' => $pmtype,
+			'S_FILTER_FROM' => $filter_from,
+			'S_FILTER_TO' => $filter_to,
+			'S_PMTYPE_SELECT' => $aprvmUtil->make_drop_box('pmtype'),
+			'S_MODE_SELECT' => $aprvmUtil->make_drop_box('sort'),
+			'S_ORDER_SELECT' => $aprvmUtil->make_drop_box('order'),
+			'S_FILENAME' => basename(__FILE__),
+			'S_MODE_ACTION' => append_sid(basename(__FILE__))
+			)
 		);
 
 
@@ -431,8 +431,9 @@ switch($pmaction)
 		{
 			$template->assign_block_vars('statusrow', array());
 			$template->assign_vars(array(
-			'L_STATUS' => $lang['Status'],
-			'I_STATUS_MESSAGE' => $status_message)
+				'L_STATUS' => $lang['Status'],
+				'I_STATUS_MESSAGE' => $status_message
+				)
 			);
 		}
 
@@ -566,9 +567,9 @@ class aprvmUtils
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET $sql
 				WHERE user_id = $user_id";
-			if ( !$db->sql_query($sql) )
+			if (!$db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 			}
 		}
 	}
@@ -688,7 +689,7 @@ class aprvmUtils
 
 		if(!$result = $db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 		}
 		$total = $db->sql_fetchrow($result);
 		$total_pms = ($total['total'] > 0) ? $total['total'] : 1;
@@ -696,10 +697,9 @@ class aprvmUtils
 		$pagination = generate_pagination($this->urlPage, $total_pms, $topics_per_pg, $start)."&nbsp;";
 
 		$template->assign_vars(array(
-			"PAGINATION" => $pagination,
-			"PAGE_NUMBER" => sprintf($lang['Page_of'], ( floor( $start / $topics_per_pg ) + 1 ), ceil( $total_pms / $topics_per_pg )),
-
-			"L_GOTO_PAGE" => $lang['Goto_page'])
+			'PAGINATION' => $pagination,
+			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $topics_per_pg) + 1), ceil($total_pms / $topics_per_pg)),
+			'L_GOTO_PAGE' => $lang['Goto_page'])
 		);
 	}
 
@@ -746,23 +746,24 @@ class aprvmUtils
 			case 'mysql':
 			case 'mysql4':
 			{
-				$create[] = "CREATE TABLE `".$table_prefix."privmsgs_archive` (
-					`privmsgs_id` mediumint( 8 ) unsigned NOT NULL AUTO_INCREMENT ,
-					`privmsgs_type` tinyint( 4 ) NOT NULL default '0',
-					`privmsgs_subject` varchar( 255 ) NOT NULL default '0',
-					`privmsgs_from_userid` mediumint( 8 ) NOT NULL default '0',
-					`privmsgs_to_userid` mediumint( 8 ) NOT NULL default '0',
-					`privmsgs_date` int( 11 ) NOT NULL default '0',
-					`privmsgs_ip` varchar( 8 ) NOT NULL default '',
-					`privmsgs_enable_bbcode` tinyint( 1 ) NOT NULL default '1',
-					`privmsgs_enable_html` tinyint( 1 ) NOT NULL default '0',
-					`privmsgs_enable_smilies` tinyint( 1 ) NOT NULL default '1',
-					`privmsgs_attach_sig` tinyint( 1 ) NOT NULL default '1',
+				$create[] = "CREATE TABLE `" . $table_prefix . "privmsgs_archive` (
+					`privmsgs_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT ,
+					`privmsgs_type` tinyint(4) NOT NULL default '0',
+					`privmsgs_subject` varchar(255) NOT NULL default '0',
+					`privmsgs_text` text,
+					`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
+					`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
+					`privmsgs_date` int(11) NOT NULL default '0',
+					`privmsgs_ip` varchar(8) NOT NULL default '',
+					`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
+					`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
+					`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
+					`privmsgs_attach_sig` tinyint(1) NOT NULL default '1',
 					`privmsgs_attachment` tinyint(1) NOT NULL default '0',
-					`privmsgs_enable_autolinks_acronyms` tinyint( 1 ) NOT NULL default '1',
-					PRIMARY KEY ( `privmsgs_id` ) ,
-					KEY `privmsgs_from_userid` ( `privmsgs_from_userid` ) ,
-					KEY `privmsgs_to_userid` ( `privmsgs_to_userid` )
+					`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '1',
+					PRIMARY KEY (`privmsgs_id`) ,
+					KEY `privmsgs_from_userid` (`privmsgs_from_userid`) ,
+					KEY `privmsgs_to_userid` (`privmsgs_to_userid`)
 					)";
 				break;
 			}
@@ -772,7 +773,7 @@ class aprvmUtils
 		{
 			if(!$result = $db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__);
+				message_die(GENERAL_ERROR, $lang['Error_PM_Archive_Table'], '', __LINE__, __FILE__);
 			}
 		}
 		$status_message .= $lang['Archive_Table_Inserted'];
@@ -815,18 +816,18 @@ class aprvmManager
 				WHERE privmsgs_id IN ($postList)";
 		if(!$result = $db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 		}
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$sql = 'INSERT INTO ' . PRIVMSGS_TABLE . $aprvmUtil->archiveText.' VALUES
-				(' . $row['privmsgs_id'] . ', ' . $row['privmsgs_type'] . ", '" . addslashes($row['privmsgs_subject']) . "', " .
+				(' . $row['privmsgs_id'] . ', ' . $row['privmsgs_type'] . ", '" . addslashes($row['privmsgs_subject']) . "', '" . addslashes($row['privmsgs_text']) . "', " .
 				$row['privmsgs_from_userid'] . ', ' . $row['privmsgs_to_userid'] . ', ' . $row['privmsgs_date'] . ", '" .
 				$row['privmsgs_ip'] . "', " . $row['privmsgs_enable_bbcode'] . ', ' . $row['privmsgs_enable_html'] . ', ' .
 				$row['privmsgs_enable_smilies'] . ', ' . $row['privmsgs_attach_sig'] . ', ' . $row['privmsgs_attachment'] . ', ' . $row['privmsgs_enable_autolinks_acronyms'] . ')';
 			if(!$db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Text_Table'], '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, $lang['Error_PM_Text_Table'], '', __LINE__, __FILE__, $sql);
 			}
 			else
 			{
@@ -838,7 +839,7 @@ class aprvmManager
 				WHERE privmsgs_id IN ($postList)";
 		if(!$db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, $lang['Error_Posts_Text_Table'], '', __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, $lang['Error_PM_Text_Table'], '', __LINE__, __FILE__, $sql);
 		}
 
 	}
@@ -859,7 +860,7 @@ class aprvmManager
 							WHERE privmsgs_id = $post_id";
 				if(!$result = $db->sql_query($sql))
 				{
-					message_die(GENERAL_ERROR, $lang['Error_Posts_Archive_Table'], '', __LINE__, __FILE__, $sql);
+					message_die(GENERAL_ERROR, $lang['Error_PM_Archive_Table'], '', __LINE__, __FILE__, $sql);
 				}
 				$row = $db->sql_fetchrow($result);
 				$status_message .= sprintf($lang['Archived_Message_No_Delete'], $row['privmsgs_subject']);
@@ -870,11 +871,11 @@ class aprvmManager
 			}
 		}
 
-			$sql = 'SELECT privmsgs_subject, privmsgs_to_userid, privmsgs_type FROM ' . PRIVMSGS_TABLE . $aprvmUtil->inArchiveText."
-			   WHERE privmsgs_id IN ($postList)";
+			$sql = 'SELECT privmsgs_subject, privmsgs_to_userid, privmsgs_type FROM ' . PRIVMSGS_TABLE . $aprvmUtil->inArchiveText . "
+							WHERE privmsgs_id IN ($postList)";
 			if(!$result = $db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 			}
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -886,18 +887,11 @@ class aprvmManager
 				}
 			}
 
-			$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-			   	   WHERE privmsgs_text_id IN ($postList)";
+			$sql = "DELETE FROM " . PRIVMSGS_TABLE . $aprvmUtil->inArchiveText . "
+							WHERE privmsgs_id IN ($postList)";
 			if(!$db->sql_query($sql))
 			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
-			}
-
-			$sql = "DELETE FROM " . PRIVMSGS_TABLE . $aprvmUtil->inArchiveText."
-			   	   WHERE privmsgs_id IN ($postList)";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Posts_Table'], '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
 			}
 	}
 

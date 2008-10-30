@@ -18,7 +18,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1900_Attachments']['110_Att_Manage'] = $filename . '?mode=manage';
@@ -38,7 +38,7 @@ include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 if (!intval($attach_config['allow_ftp_upload']))
 {
-	if ( ($attach_config['upload_dir'][0] == '/') || ( ($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':') ) )
+	if (($attach_config['upload_dir'][0] == '/') || (($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':')))
 	{
 		$upload_dir = $attach_config['upload_dir'];
 	}
@@ -59,15 +59,13 @@ $size = request_var('size', '');
 $quota_size = request_var('quota_size', '');
 $pm_size = request_var('pm_size', '');
 
-$submit = (isset($_POST['submit'])) ? TRUE : FALSE;
-$check_upload = (isset($_POST['settings'])) ? TRUE : FALSE;
-$check_image_cat = (isset($_POST['cat_settings'])) ? TRUE : FALSE;
-$search_imagick = (isset($_POST['search_imagick'])) ? TRUE : FALSE;
+$submit = (isset($_POST['submit'])) ? true : false;
+$check_upload = (isset($_POST['settings'])) ? true : false;
+$check_image_cat = (isset($_POST['cat_settings'])) ? true : false;
+$search_imagick = (isset($_POST['search_imagick'])) ? true : false;
 
 // Re-evaluate the Attachment Configuration
-$sql = 'SELECT *
-	FROM ' . ATTACH_CONFIG_TABLE;
-
+$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
 if (!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, 'Could not find Attachment Config Table', '', __LINE__, __FILE__, $sql);
@@ -118,13 +116,13 @@ while ($row = $db->sql_fetchrow($result))
 		if ($config_name == 'attachment_quota')
 		{
 			$old = $new_attach[$config_name];
-			$new_attach[$config_name] = ( $quota_size == 'kb' ) ? round($new_attach[$config_name] * 1024) : ( ($quota_size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name] );
+			$new_attach[$config_name] = ($quota_size == 'kb') ? round($new_attach[$config_name] * 1024) : (($quota_size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name]);
 		}
 
 		if ($config_name == 'max_filesize_pm')
 		{
 			$old = $new_attach[$config_name];
-			$new_attach[$config_name] = ( $pm_size == 'kb' ) ? round($new_attach[$config_name] * 1024) : ( ($pm_size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name] );
+			$new_attach[$config_name] = ($pm_size == 'kb') ? round($new_attach[$config_name] * 1024) : (($pm_size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name]);
 		}
 
 		if ($config_name == 'ftp_server' || $config_name == 'ftp_path' || $config_name == 'download_path')
@@ -158,13 +156,13 @@ while ($row = $db->sql_fetchrow($result))
 			}
 
 			$sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-				SET	config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
+				SET config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
 				WHERE config_name = '" . attach_mod_sql_escape($config_name) . "'";
 		}
 		else
 		{
 			$sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-				SET	config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
+				SET config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
 				WHERE config_name = '" . attach_mod_sql_escape($config_name) . "'";
 		}
 
@@ -252,9 +250,7 @@ if ($check_upload)
 	// Some tests...
 	$attach_config = array();
 
-	$sql = 'SELECT *
-		FROM ' . ATTACH_CONFIG_TABLE;
-
+	$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not find Attachment Config Table', '', __LINE__, __FILE__, $sql);
@@ -297,7 +293,7 @@ if ($check_upload)
 
 		if (!$error)
 		{
-			if ( !($fp = @fopen($upload_dir . '/0_000000.000', 'w')) )
+			if (!($fp = @fopen($upload_dir . '/0_000000.000', 'w')))
 			{
 				$error = TRUE;
 				$error_msg = sprintf($lang['Directory_not_writeable'], $attach_config['upload_dir']) . '<br />';
@@ -312,7 +308,7 @@ if ($check_upload)
 	else
 	{
 		// Check FTP Settings
-		$server = ( empty($attach_config['ftp_server']) ) ? 'localhost' : $attach_config['ftp_server'];
+		$server = (empty($attach_config['ftp_server'])) ? 'localhost' : $attach_config['ftp_server'];
 
 		$conn_id = @ftp_connect($server);
 
@@ -324,7 +320,7 @@ if ($check_upload)
 
 		$login_result = @ftp_login($conn_id, $attach_config['ftp_user'], $attach_config['ftp_pass']);
 
-		if ( (!$login_result) && (!$error) )
+		if ((!$login_result) && (!$error))
 		{
 			$error = TRUE;
 			$error_msg = sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']) . '<br />';
@@ -408,8 +404,8 @@ if ($mode == 'manage')
 
 	for ($i = 0; $i < count($yes_no_switches); $i++)
 	{
-		eval("\$" . $yes_no_switches[$i] . "_yes = ( \$new_attach['" . $yes_no_switches[$i] . "'] != '0' ) ? 'checked=\"checked\"' : '';");
-		eval("\$" . $yes_no_switches[$i] . "_no = ( \$new_attach['" . $yes_no_switches[$i] . "'] == '0' ) ? 'checked=\"checked\"' : '';");
+		eval("\$" . $yes_no_switches[$i] . "_yes = (\$new_attach['" . $yes_no_switches[$i] . "'] != '0') ? 'checked=\"checked\"' : '';");
+		eval("\$" . $yes_no_switches[$i] . "_no = (\$new_attach['" . $yes_no_switches[$i] . "'] == '0') ? 'checked=\"checked\"' : '';");
 	}
 
 	if (!function_exists('ftp_connect'))
@@ -642,7 +638,7 @@ if ($mode == 'shadow')
 		{
 			if ($file_attachments[$i] != '')
 			{
-				if (!in_array(trim($file_attachments[$i]), $table_attachments['physical_filename']) )
+				if (!in_array(trim($file_attachments[$i]), $table_attachments['physical_filename']))
 				{
 					$shadow_attachments[] = trim($file_attachments[$i]);
 					// Delete this file from the file_attachments to not have double assignments in next steps
@@ -676,7 +672,7 @@ if ($mode == 'shadow')
 	{
 		if ($table_attachments['physical_filename'][$i] != '')
 		{
-			if ( !in_array(trim($table_attachments['physical_filename'][$i]), $file_attachments))
+			if (!in_array(trim($table_attachments['physical_filename'][$i]), $file_attachments))
 			{
 				$shadow_row['attach_id'][] = $table_attachments['attach_id'][$i];
 				$shadow_row['physical_filename'][] = trim($table_attachments['physical_filename'][$i]);
@@ -775,14 +771,14 @@ if ($mode == 'cats')
 		}
 	}
 
-	$display_inlined_yes = ( $new_attach['img_display_inlined'] != '0' ) ? 'checked="checked"' : '';
-	$display_inlined_no = ( $new_attach['img_display_inlined'] == '0' ) ? 'checked="checked"' : '';
+	$display_inlined_yes = ($new_attach['img_display_inlined'] != '0') ? 'checked="checked"' : '';
+	$display_inlined_no = ($new_attach['img_display_inlined'] == '0') ? 'checked="checked"' : '';
 
-	$create_thumbnail_yes = ( $new_attach['img_create_thumbnail'] != '0' ) ? 'checked="checked"' : '';
-	$create_thumbnail_no = ( $new_attach['img_create_thumbnail'] == '0' ) ? 'checked="checked"' : '';
+	$create_thumbnail_yes = ($new_attach['img_create_thumbnail'] != '0') ? 'checked="checked"' : '';
+	$create_thumbnail_no = ($new_attach['img_create_thumbnail'] == '0') ? 'checked="checked"' : '';
 
-	$use_gd2_yes = ( $new_attach['use_gd2'] != '0' ) ? 'checked="checked"' : '';
-	$use_gd2_no = ( $new_attach['use_gd2'] == '0' ) ? 'checked="checked"' : '';
+	$use_gd2_yes = ($new_attach['use_gd2'] != '0') ? 'checked="checked"' : '';
+	$use_gd2_no = ($new_attach['use_gd2'] == '0') ? 'checked="checked"' : '';
 
 	// Check Thumbnail Support
 	if (!is_imagick() && !@extension_loaded('gd'))
@@ -852,9 +848,7 @@ if ($check_image_cat)
 	// Some tests...
 	$attach_config = array();
 
-	$sql = 'SELECT *
-		FROM ' . ATTACH_CONFIG_TABLE;
-
+	$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not find Attachment Config Table', '', __LINE__, __FILE__, $sql);
@@ -906,7 +900,7 @@ if ($check_image_cat)
 
 		if (!$error)
 		{
-			if ( !($fp = @fopen($upload_dir . '/0_000000.000', 'w')) )
+			if (!($fp = @fopen($upload_dir . '/0_000000.000', 'w')))
 			{
 				$error = TRUE;
 				$error_msg = sprintf($lang['Directory_not_writeable'], $upload_dir) . '<br />';
@@ -921,7 +915,7 @@ if ($check_image_cat)
 	else if (intval($attach_config['allow_ftp_upload']) && intval($attach_config['img_create_thumbnail']))
 	{
 		// Check FTP Settings
-		$server = ( empty($attach_config['ftp_server']) ) ? 'localhost' : $attach_config['ftp_server'];
+		$server = (empty($attach_config['ftp_server'])) ? 'localhost' : $attach_config['ftp_server'];
 
 		$conn_id = @ftp_connect($server);
 
@@ -1159,7 +1153,7 @@ if ($submit && $mode == 'quota')
 
 	for ($i = 0; $i < count($quota_change_list); $i++)
 	{
-		$filesize_list[$i] = ($size_select_list[$i] == 'kb') ? round($filesize_list[$i] * 1024) : ( ($size_select_list[$i] == 'mb') ? round($filesize_list[$i] * 1048576) : $filesize_list[$i] );
+		$filesize_list[$i] = ($size_select_list[$i] == 'kb') ? round($filesize_list[$i] * 1024) : (($size_select_list[$i] == 'mb') ? round($filesize_list[$i] * 1048576) : $filesize_list[$i]);
 
 		$sql = 'UPDATE ' . QUOTA_LIMITS_TABLE . "
 			SET quota_desc = '" . attach_mod_sql_escape($quota_desc_list[$i]) . "', quota_limit = " . (int) $filesize_list[$i] . "
@@ -1202,7 +1196,7 @@ if ($submit && $mode == 'quota')
 	$quota_desc = request_var('quota_description', '');
 	$filesize = request_var('add_max_filesize', 0);
 	$size_select = request_var('add_size_select', '');
-	$add = ( isset($_POST['add_quota_check']) ) ? true : false;
+	$add = (isset($_POST['add_quota_check'])) ? true : false;
 
 	if ($quota_desc != '' && $add)
 	{
@@ -1226,7 +1220,7 @@ if ($submit && $mode == 'quota')
 				if ($row[$i]['quota_desc'] == $quota_desc)
 				{
 					$error = TRUE;
-					if( isset($error_msg) )
+					if(isset($error_msg))
 					{
 						$error_msg .= '<br />';
 					}
@@ -1237,7 +1231,7 @@ if ($submit && $mode == 'quota')
 
 		if (!$error)
 		{
-			$filesize = ($size_select == 'kb' ) ? round($filesize * 1024) : ( ($size_select == 'mb') ? round($filesize * 1048576) : $filesize );
+			$filesize = ($size_select == 'kb') ? round($filesize * 1024) : (($size_select == 'mb') ? round($filesize * 1048576) : $filesize);
 
 			$sql = "INSERT INTO " . QUOTA_LIMITS_TABLE . " (quota_desc, quota_limit)
 			VALUES ('" . attach_mod_sql_escape($quota_desc) . "', " . (int) $filesize . ")";
@@ -1266,13 +1260,13 @@ if ($mode == 'quota')
 	);
 
 	$max_add_filesize = $attach_config['max_filesize'];
-	$size = ($max_add_filesize >= 1048576) ? 'mb' : ( ($max_add_filesize >= 1024) ? 'kb' : 'b' );
+	$size = ($max_add_filesize >= 1048576) ? 'mb' : (($max_add_filesize >= 1024) ? 'kb' : 'b');
 
 	if ($max_add_filesize >= 1048576)
 	{
 		$max_add_filesize = round($max_add_filesize / 1048576 * 100) / 100;
 	}
-	else if ( $max_add_filesize >= 1024)
+	else if ($max_add_filesize >= 1024)
 	{
 		$max_add_filesize = round($max_add_filesize / 1024 * 100) / 100;
 	}
@@ -1308,7 +1302,7 @@ if ($mode == 'quota')
 
 	for ($i = 0; $i < count($rows); $i++)
 	{
-		$size_format = ($rows[$i]['quota_limit'] >= 1048576) ? 'mb' : ( ($rows[$i]['quota_limit'] >= 1024) ? 'kb' : 'b' );
+		$size_format = ($rows[$i]['quota_limit'] >= 1048576) ? 'mb' : (($rows[$i]['quota_limit'] >= 1024) ? 'kb' : 'b');
 
 		if ($rows[$i]['quota_limit'] >= 1048576)
 		{
@@ -1429,19 +1423,19 @@ if ($mode == 'quota' && $e_mode == 'view_quota')
 
 if ($error)
 {
-	$template->set_filenames(array(
-		'reg_header' => 'error_body.tpl')
-	);
+	$template->set_filenames(array('reg_header' => 'error_body.tpl'));
 
 	$template->assign_vars(array(
-		'ERROR_MESSAGE' => $error_msg)
+		'ERROR_MESSAGE' => $error_msg
+		)
 	);
 
 	$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
 }
 
 $template->assign_vars(array(
-	'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $attach_config['attach_version']))
+	'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $attach_config['attach_version'])
+	)
 );
 
 $template->pparse('body');

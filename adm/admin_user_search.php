@@ -16,7 +16,7 @@
 */
 
 define('IN_ICYPHOENIX', true);
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1610_Users']['280_User_Search'] = $filename;
@@ -36,7 +36,7 @@ $page_title = $lang['Search_users_advanced'];
 if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 {
 	$sql = "SELECT group_id, group_name
-				FROM ".GROUPS_TABLE."
+				FROM " . GROUPS_TABLE . "
 					WHERE group_single_user = 0
 						ORDER BY group_name ASC";
 
@@ -61,7 +61,7 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 	$timezone_list = tz_select('', 'timezone_type');
 
 	$sql = "SELECT f.forum_id, f.forum_name, c.cat_id, c.cat_title
-				FROM ( ". FORUMS_TABLE ." AS f INNER JOIN ". CATEGORIES_TABLE ." AS c ON c.cat_id = f.cat_id )
+				FROM (". FORUMS_TABLE ." AS f INNER JOIN ". CATEGORIES_TABLE ." AS c ON c.cat_id = f.cat_id)
 				ORDER BY c.cat_order, f.forum_order ASC";
 
 	if(!$result = $db->sql_query($sql))
@@ -98,7 +98,7 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 
 	foreach($lastvisited as $days)
 	{
-		$lastvisited_list .= '<option value="'.$days.'">'.$days.' '. ( ( $days > 1 ) ? $lang['Days'] : $lang['Day'] ) .'</option>';
+		$lastvisited_list .= '<option value="' . $days . '">' . $days . ' ' . (($days > 1) ? $lang['Days'] : $lang['Day']) . '</option>';
 	}
 
 	$template->set_filenames(array('body' => ADM_TPL . 'admin_user_search_form.tpl'));
@@ -173,55 +173,55 @@ else
 	$mode = '';
 
 	// validate mode
-	if(isset($_POST['search_username'])||isset($_GET['search_username']))
+	if(isset($_POST['search_username']) || isset($_GET['search_username']))
 	{
 		$mode = 'search_username';
 	}
-	else if(isset($_POST['search_email'])||isset($_GET['search_email']))
+	elseif(isset($_POST['search_email']) || isset($_GET['search_email']))
 	{
 		$mode = 'search_email';
 	}
-	else if(isset($_POST['search_ip'])||isset($_GET['search_ip']))
+	elseif(isset($_POST['search_ip']) || isset($_GET['search_ip']))
 	{
 		$mode = 'search_ip';
 	}
-	else if(isset($_POST['search_joindate'])||isset($_GET['search_joindate']))
+	elseif(isset($_POST['search_joindate']) || isset($_GET['search_joindate']))
 	{
 		$mode = 'search_joindate';
 	}
-	else if(isset($_POST['search_group'])||isset($_GET['search_group']))
+	elseif(isset($_POST['search_group']) || isset($_GET['search_group']))
 	{
 		$mode = 'search_group';
 	}
-	else if(isset($_POST['search_postcount'])||isset($_GET['search_postcount']))
+	elseif(isset($_POST['search_postcount']) || isset($_GET['search_postcount']))
 	{
 		$mode = 'search_postcount';
 	}
-	else if(isset($_POST['search_userfield'])||isset($_GET['search_userfield']))
+	elseif(isset($_POST['search_userfield']) || isset($_GET['search_userfield']))
 	{
 		$mode = 'search_userfield';
 	}
-	else if(isset($_POST['search_lastvisited'])||isset($_GET['search_lastvisited']))
+	elseif(isset($_POST['search_lastvisited']) || isset($_GET['search_lastvisited']))
 	{
 		$mode = 'search_lastvisited';
 	}
-	else if(isset($_POST['search_language'])||isset($_GET['search_language']))
+	elseif(isset($_POST['search_language']) || isset($_GET['search_language']))
 	{
 		$mode = 'search_language';
 	}
-	else if(isset($_POST['search_timezone'])||isset($_GET['search_timezone']))
+	elseif(isset($_POST['search_timezone']) || isset($_GET['search_timezone']))
 	{
 		$mode = 'search_timezone';
 	}
-	else if(isset($_POST['search_style'])||isset($_GET['search_style']))
+	elseif(isset($_POST['search_style']) || isset($_GET['search_style']))
 	{
 		$mode = 'search_style';
 	}
-	else if(isset($_POST['search_moderators'])||isset($_GET['search_moderators']))
+	elseif(isset($_POST['search_moderators']) || isset($_GET['search_moderators']))
 	{
 		$mode = 'search_moderators';
 	}
-	else if(isset($_POST['search_misc'])||isset($_GET['search_misc']))
+	elseif(isset($_POST['search_misc']) || isset($_GET['search_misc']))
 	{
 		$mode = 'search_misc';
 	}
@@ -230,8 +230,8 @@ else
 	switch($mode)
 	{
 		case 'search_username':
-			$username = ( isset($_GET['username']) ) ? $_GET['username'] : $_POST['username'];
-			$regex = ( $_POST['search_username_regex'] ) ? true : ( $_GET['regex'] ) ? true : false;
+			$username = (isset($_GET['username'])) ? $_GET['username'] : $_POST['username'];
+			$regex = ($_POST['search_username_regex']) ? true : ($_GET['regex']) ? true : false;
 
 			if(!$username)
 			{
@@ -240,8 +240,8 @@ else
 
 			break;
 		case 'search_email':
-			$email = ( isset($_GET['email']) ) ? $_GET['email'] : $_POST['email'];
-			$regex = ( $_POST['search_email_regex'] ) ? true : ( $_GET['regex'] ) ? true : false;
+			$email = (isset($_GET['email'])) ? $_GET['email'] : $_POST['email'];
+			$regex = ($_POST['search_email_regex']) ? true : ($_GET['regex']) ? true : false;
 
 			if(!$email)
 			{
@@ -250,7 +250,7 @@ else
 
 			break;
 		case 'search_ip':
-			$ip_address = ( isset($_POST['ip_address'] ) ) ? $_POST['ip_address'] : $_GET['ip_address'];
+			$ip_address = (isset($_POST['ip_address'])) ? $_POST['ip_address'] : $_GET['ip_address'];
 
 			if(!$ip_address)
 			{
@@ -258,10 +258,10 @@ else
 			}
 			break;
 		case 'search_joindate':
-			$date_type = ( isset($_POST['date_type'] ) ) ? $_POST['date_type'] : $_GET['date_type'];
-			$date_day = ( isset($_POST['date_day'] ) ) ? $_POST['date_day'] : $_GET['date_day'];
-			$date_month = ( isset($_POST['date_month'] ) ) ? $_POST['date_month'] : $_GET['date_month'];
-			$date_year = ( isset($_POST['date_year'] ) ) ? $_POST['date_year'] : $_GET['date_year'];
+			$date_type = (isset($_POST['date_type'])) ? $_POST['date_type'] : $_GET['date_type'];
+			$date_day = (isset($_POST['date_day'])) ? $_POST['date_day'] : $_GET['date_day'];
+			$date_month = (isset($_POST['date_month'])) ? $_POST['date_month'] : $_GET['date_month'];
+			$date_year = (isset($_POST['date_year'])) ? $_POST['date_year'] : $_GET['date_year'];
 
 			if(!$date_type || !$date_day || !$date_month || !$date_year)
 			{
@@ -269,25 +269,25 @@ else
 			}
 			break;
 		case 'search_group':
-			$group_id = ( isset($_POST['group_id'] ) ) ? $_POST['group_id'] : $_GET['group_id'];
+			$group_id = (isset($_POST['group_id'])) ? $_POST['group_id'] : $_GET['group_id'];
 			if(!$group_id)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_group']);
 			}
 			break;
 		case 'search_postcount':
-			$postcount_type = ( isset($_POST['postcount_type'] ) ) ? $_POST['postcount_type'] : $_GET['postcount_type'];
-			$postcount_value = ( isset($_POST['postcount_value'] ) ) ? $_POST['postcount_value'] : $_GET['postcount_value'];
+			$postcount_type = (isset($_POST['postcount_type'])) ? $_POST['postcount_type'] : $_GET['postcount_type'];
+			$postcount_value = (isset($_POST['postcount_value'])) ? $_POST['postcount_value'] : $_GET['postcount_value'];
 
-			if(!$postcount_type || ( !$postcount_value && $postcount_value != 0))
+			if(!$postcount_type || (!$postcount_value && $postcount_value != 0))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_postcount']);
 			}
 			break;
 		case 'search_userfield':
-			$userfield_type = ( isset($_POST['userfield_type'] ) ) ? $_POST['userfield_type'] : $_GET['userfield_type'];
-			$userfield_value = ( isset($_POST['userfield_value'] ) ) ? $_POST['userfield_value'] : $_GET['userfield_value'];
-			$regex = ( $_POST['search_userfield_regex'] ) ? true : ( $_GET['regex'] ) ? true : false;
+			$userfield_type = (isset($_POST['userfield_type'])) ? $_POST['userfield_type'] : $_GET['userfield_type'];
+			$userfield_value = (isset($_POST['userfield_value'])) ? $_POST['userfield_value'] : $_GET['userfield_value'];
+			$regex = ($_POST['search_userfield_regex']) ? true : ($_GET['regex']) ? true : false;
 
 			if(!$userfield_type || !$userfield_value)
 			{
@@ -296,8 +296,8 @@ else
 
 			break;
 		case 'search_lastvisited':
-			$lastvisited_days = ( isset($_POST['lastvisited_days'] ) ) ? $_POST['lastvisited_days'] : $_GET['lastvisited_days'];
-			$lastvisited_type = ( isset($_POST['lastvisited_type'] ) ) ? $_POST['lastvisited_type'] : $_GET['lastvisited_type'];
+			$lastvisited_days = (isset($_POST['lastvisited_days'])) ? $_POST['lastvisited_days'] : $_GET['lastvisited_days'];
+			$lastvisited_type = (isset($_POST['lastvisited_type'])) ? $_POST['lastvisited_type'] : $_GET['lastvisited_type'];
 
 			if(!$lastvisited_days || !$lastvisited_type)
 			{
@@ -306,7 +306,7 @@ else
 
 			break;
 		case 'search_language':
-			$language_type = ( isset($_POST['language_type'] ) ) ? $_POST['language_type'] : $_GET['language_type'];
+			$language_type = (isset($_POST['language_type'])) ? $_POST['language_type'] : $_GET['language_type'];
 
 			if(!$language_type)
 			{
@@ -315,7 +315,7 @@ else
 
 			break;
 		case 'search_timezone':
-			$timezone_type = ( isset($_POST['timezone_type'] ) ) ? $_POST['timezone_type'] : $_GET['timezone_type'];
+			$timezone_type = (isset($_POST['timezone_type'])) ? $_POST['timezone_type'] : $_GET['timezone_type'];
 
 			if(!$timezone_type && $timezone_type != 0)
 			{
@@ -324,7 +324,7 @@ else
 
 			break;
 		case 'search_style':
-			$style_type = ( isset($_POST['style_type'] ) ) ? $_POST['style_type'] : $_GET['style_type'];
+			$style_type = (isset($_POST['style_type'])) ? $_POST['style_type'] : $_GET['style_type'];
 
 			if(!$style_type)
 			{
@@ -333,7 +333,7 @@ else
 
 			break;
 		case 'search_moderators':
-			$moderators_forum = ( isset($_POST['moderators_forum'] ) ) ? $_POST['moderators_forum'] : $_GET['moderators_forum'];
+			$moderators_forum = (isset($_POST['moderators_forum'])) ? $_POST['moderators_forum'] : $_GET['moderators_forum'];
 
 			if(!$moderators_forum)
 			{
@@ -343,7 +343,7 @@ else
 			break;
 		case 'search_misc':
 		default:
-			$misc = ( isset($_POST['misc'] ) ) ? $_POST['misc'] : $_GET['misc'];
+			$misc = (isset($_POST['misc'])) ? $_POST['misc'] : $_GET['misc'];
 			if(!$misc)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid']);
@@ -353,28 +353,13 @@ else
 	$base_url = 'admin_user_search.' . PHP_EXT . '?dosearch=true';
 
 	$select_sql = "SELECT u.user_id, u.username, u.user_email, u.user_posts, u.user_regdate, u.user_level, u.user_active, u.user_lastvisit
-						FROM ".USERS_TABLE." AS u";
+								FROM " . USERS_TABLE . " AS u";
 
 	$lower_b = 'LOWER(';
 	$lower_e = ')';
 	if($regex)
 	{
-		switch(SQL_LAYER)
-		{
-			case 'postgres':
-				$op = '~';
-				break;
-			case 'oracle':
-				// Oracle uses a different syntax, we'll handle that a little later
-				break;
-			case 'mysql':
-			case 'mysql4':
-				$op = 'REGEXP';
-				break;
-			default:
-				message_die(GENERAL_MESSAGE, $lang['Search_no_regexp']);
-		}
-
+		$op = 'REGEXP';
 		$lower_b = '';
 		$lower_e = '';
 	}
@@ -410,26 +395,13 @@ else
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_username']);
 			}
 
-			if($regex && SQL_LAYER == 'oracle')
-			{
-				$total_sql .= "SELECT COUNT(user_id) AS total
-								FROM ".USERS_TABLE."
-									WHERE REGEXP_LIKE(username, '".str_replace("\'", "''", $username)."')
-										AND user_id <> ".ANONYMOUS;
+			$total_sql .= "SELECT COUNT(user_id) AS total
+							FROM " . USERS_TABLE . "
+								WHERE {$lower_b}username{$lower_e} $op '".str_replace("\'", "''", $username)."'
+									AND user_id <> " . ANONYMOUS;
 
-				$select_sql .= "	WHERE REGEXP_LIKE(u.username, '".str_replace("\'", "''", $username)."')
-										AND u.user_id <> ".ANONYMOUS;
-			}
-			else
-			{
-				$total_sql .= "SELECT COUNT(user_id) AS total
-								FROM ".USERS_TABLE."
-									WHERE {$lower_b}username{$lower_e} $op '".str_replace("\'", "''", $username)."'
-										AND user_id <> ".ANONYMOUS;
-
-				$select_sql .= "	WHERE {$lower_b}u.username{$lower_e} $op '".str_replace("\'", "''", $username)."'
-										AND u.user_id <> ".ANONYMOUS;
-			}
+			$select_sql .= " WHERE {$lower_b}u.username{$lower_e} $op '".str_replace("\'", "''", $username)."'
+									AND u.user_id <> " . ANONYMOUS;
 			break;
 		case 'search_email':
 			$base_url .= '&search_email=true&email=' . rawurlencode(stripslashes($email));
@@ -459,26 +431,13 @@ else
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_email']);
 			}
 
-			if($regex && SQL_LAYER == 'oracle')
-			{
-				$total_sql .= "SELECT COUNT(user_id) AS total
-								FROM ".USERS_TABLE."
-									WHERE REGEXP_LIKE(user_email, '".str_replace("\'", "''", $email)."')
-										AND user_id <> ".ANONYMOUS;
+			$total_sql .= "SELECT COUNT(user_id) AS total
+							FROM " . USERS_TABLE . "
+								WHERE {$lower_b}user_email{$lower_e} $op '".str_replace("\'", "''", $email)."'
+									AND user_id <> " . ANONYMOUS;
 
-				$select_sql .= "	WHERE REGEXP_LIKE(u.user_email, '".str_replace("\'", "''", $email)."')
-										AND u.user_id <> ".ANONYMOUS;
-			}
-			else
-			{
-				$total_sql .= "SELECT COUNT(user_id) AS total
-								FROM ".USERS_TABLE."
-									WHERE {$lower_b}user_email{$lower_e} $op '".str_replace("\'", "''", $email)."'
-										AND user_id <> ".ANONYMOUS;
-
-				$select_sql .= "	WHERE {$lower_b}u.user_email{$lower_e} $op '".str_replace("\'", "''", $email)."'
-										AND u.user_id <> ".ANONYMOUS;
-			}
+			$select_sql .= " WHERE {$lower_b}u.user_email{$lower_e} $op '".str_replace("\'", "''", $email)."'
+									AND u.user_id <> " . ANONYMOUS;
 			break;
 		case 'search_ip':
 			$base_url .= '&search_ip=true&ip_address=' . rawurlencode(stripslashes($ip_address));
@@ -492,7 +451,7 @@ else
 			$users = array();
 
 			// Let's see if they entered a full valid IPv4 address
-			if( preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){3}$/', $ip_address) )
+			if(preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){3}$/', $ip_address))
 			{
 				// Encode the ip into hexademicals
 				$ip = encode_ip($ip_address);
@@ -501,7 +460,7 @@ else
 				$users[] = $ip;
 			}
 			// We will also support wildcards, is this an xxx.xxx.* address?
-			else if( preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){0,2}\.\*/', $ip_address) )
+			elseif(preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){0,2}\.\*/', $ip_address))
 			{
 				// Alright, now we do the ugly part, converting them to encoded ips
 				// We need to deal with the three ways it can be done
@@ -513,7 +472,7 @@ else
 				$ip_split = explode('.', $ip_address);
 
 				// Now we'll work with which type of wildcard we have
-				switch( count($ip_split) )
+				switch(count($ip_split))
 				{
 					// xxx.xxx.xxx.*
 					case 4:
@@ -528,12 +487,12 @@ else
 					// xxx.*
 					case 2:
 						// We will encode the ip into hexademical quads again again....
-						$users[] = encode_ip($ip_split[0].".255.255.255");
+						$users[] = encode_ip($ip_split[0] . ".255.255.255");
 						break;
 				}
 			}
 			// Lastly, let's see if they have a range in the last quad, like xxx.xxx.xxx.xxx - xxx.xxx.xxx.yyy
-			else if( preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){3}(\s)*-(\s)*([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){3}$/', $ip_address) )
+			elseif(preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){3}(\s)*-(\s)*([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){3}$/', $ip_address))
 			{
 				// We will split the two ranges
 				$range = preg_split('/[-\s]+/', $ip_address);
@@ -543,16 +502,16 @@ else
 				$end_range = explode('.', $range[1]);
 
 				// Confirm if we are in the same subnet or the last quad in the beginning range is greater than the last in the ending range
-				if( ($start_range[0].$start_range[1].$start_range[2] != $end_range[0].$end_range[1].$end_range[2]) || ($start_range[3] > $end_range[3]) )
+				if(($start_range[0].$start_range[1].$start_range[2] != $end_range[0].$end_range[1].$end_range[2]) || ($start_range[3] > $end_range[3]))
 				{
 					message_die(GENERAL_MESSAGE, $lang['Search_invalid_ip']);
 				}
 
 				// Ok, we need to store each IP in the range..
-				for( $i = $start_range[3]; $i <= $end_range[3]; $i++ )
+				for($i = $start_range[3]; $i <= $end_range[3]; $i++)
 				{
 					// let's put it in the big array..
-					$users[] = encode_ip($start_range[0].".".$start_range[1  ].".".$start_range[2].".".$i);
+					$users[] = encode_ip($start_range[0] . "." . $start_range[1] . "." . $start_range[2] . "." . $i);
 				}
 			}
 			// This is not a valid IP based on what we want..
@@ -567,42 +526,42 @@ else
 			foreach($users as $address)
 			{
 				// Is this IP a range?
-				if( preg_match('/(ff){1,3}$/i', $address) )
+				if(preg_match('/(ff){1,3}$/i', $address))
 				{
 					// num.xxx.xxx.xxx
-					if( preg_match('/[0-9a-f]{2}ffffff/i', $address) )
+					if(preg_match('/[0-9a-f]{2}ffffff/i', $address))
 					{
 						$ip_start = substr($address, 0, 2);
 					}
 					// num.num.xxx.xxx
-					else if( preg_match('/[0-9a-f]{4}ffff/i', $address) )
+					elseif(preg_match('/[0-9a-f]{4}ffff/i', $address))
 					{
 						$ip_start = substr($address, 0, 4);
 
 					}
 					// num.num.num.xxx
-					else if( preg_match('/[0-9a-f]{6}ff/i', $address) )
+					elseif(preg_match('/[0-9a-f]{6}ff/i', $address))
 					{
 						$ip_start = substr($address, 0, 6);
 					}
 
-					$ip_like_sql .= ( $ip_like_sql != '' ) ? " OR poster_ip LIKE '".$ip_start."%'" : "poster_ip LIKE '".$ip_start."%'";
+					$ip_like_sql .= ($ip_like_sql != '') ? " OR poster_ip LIKE '".$ip_start."%'" : "poster_ip LIKE '".$ip_start."%'";
 				}
 				else
 				{
-					$ip_in_sql .= ( $ip_in_sql == '' ) ? "'$address'" : ", '$address'";
+					$ip_in_sql .= ($ip_in_sql == '') ? "'$address'" : ", '$address'";
 				}
 			}
 
 			$where_sql = '';
 
-			$where_sql .= ( $ip_in_sql != '' ) ? "poster_ip IN ($ip_in_sql)": "";
+			$where_sql .= ($ip_in_sql != '') ? "poster_ip IN ($ip_in_sql)": "";
 
-			$where_sql .= ( $ip_like_sql != '' ) ? ( $where_sql != "" ) ? " OR $ip_like_sql" : "$ip_like_sql": "";
+			$where_sql .= ($ip_like_sql != '') ? ($where_sql != "") ? " OR $ip_like_sql" : "$ip_like_sql": "";
 
 			$sql = "SELECT poster_id
-						FROM ".POSTS_TABLE."
-							WHERE poster_id <> ".ANONYMOUS."
+							FROM " . POSTS_TABLE . "
+							WHERE poster_id <> " . ANONYMOUS . "
 								AND ($where_sql)
 							GROUP BY poster_id";
 
@@ -625,11 +584,11 @@ else
 
 				while($row = $db->sql_fetchrow($result))
 				{
-					$ip_users_sql .= ( $ip_users_sql == '' ) ? $row['poster_id'] : ', '.$row['poster_id'];
+					$ip_users_sql .= ($ip_users_sql == '') ? $row['poster_id'] : ', '.$row['poster_id'];
 				}
 			}
 
-			$select_sql .= "	WHERE u.user_id IN ($ip_users_sql)";
+			$select_sql .= " WHERE u.user_id IN ($ip_users_sql)";
 
 			break;
 		case 'search_joindate':
@@ -644,28 +603,28 @@ else
 
 			$date_day = intval($date_day);
 
-			if( !preg_match('/^([1-9]|[0-2][0-9]|3[0-1])$/', $date_day) )
+			if(!preg_match('/^([1-9]|[0-2][0-9]|3[0-1])$/', $date_day))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_day']);
 			}
 
 			$date_month = intval($date_month);
 
-			if( !preg_match('/^(0?[1-9]|1[0-2])$/', $date_month) )
+			if(!preg_match('/^(0?[1-9]|1[0-2])$/', $date_month))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_month']);
 			}
 
 			$date_year = intval($date_year);
 
-			if( !preg_match('/^(20[0-9]{2}|19[0-9]{2})$/', $date_year) )
+			if(!preg_match('/^(20[0-9]{2}|19[0-9]{2})$/', $date_year))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_year']);
 			}
 
 			$text = sprintf($lang['Search_for_date'], strip_tags(htmlspecialchars(stripslashes($date_type))), $date_year, $date_month, $date_day);
 
-			$time = mktime(0,0,0,$date_month, $date_day, $date_year);
+			$time = mktime(0, 0, 0, $date_month, $date_day, $date_year);
 
 			if($date_type == 'before')
 			{
@@ -677,12 +636,12 @@ else
 			}
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
-							FROM ".USERS_TABLE."
+								FROM " . USERS_TABLE . "
 								WHERE user_regdate $arg $time
-									AND user_id <> ".ANONYMOUS;
+									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= "	WHERE u.user_regdate $arg $time
-									AND u.user_id <> ".ANONYMOUS;
+			$select_sql .= " WHERE u.user_regdate $arg $time
+									AND u.user_id <> " . ANONYMOUS;
 
 			break;
 		case 'search_group':
@@ -696,7 +655,7 @@ else
 			}
 
 			$sql = "SELECT group_name
-						FROM ".GROUPS_TABLE."
+							FROM " . GROUPS_TABLE . "
 							WHERE group_id = $group_id
 								AND group_single_user = 0";
 
@@ -715,15 +674,15 @@ else
 			$text = sprintf($lang['Search_for_group'], strip_tags(htmlspecialchars($group_name['group_name'])));
 
 			$total_sql .= "SELECT COUNT(u.user_id) AS total
-							FROM ".USERS_TABLE." AS u, ".USER_GROUP_TABLE." AS ug
+								FROM " . USERS_TABLE . " AS u, " . USER_GROUP_TABLE . " AS ug
 								WHERE u.user_id = ug.user_id
 										AND ug.group_id = $group_id
-										AND u.user_id <> ".ANONYMOUS;
+										AND u.user_id <> " . ANONYMOUS;
 
-			$select_sql .= ", ".USER_GROUP_TABLE." AS ug
-								WHERE u.user_id = ug.user_id
+			$select_sql .= ", " . USER_GROUP_TABLE . " AS ug
+									WHERE u.user_id = ug.user_id
 										AND ug.group_id = $group_id
-										AND u.user_id <> ".ANONYMOUS;
+										AND u.user_id <> " . ANONYMOUS;
 
 			break;
 		case 'search_postcount':
@@ -740,12 +699,12 @@ else
 					$text = sprintf($lang['Search_for_postcount_greater'], $postcount_value);
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM ".USERS_TABLE."
+										FROM " . USERS_TABLE . "
 										WHERE user_posts > $postcount_value
-											AND user_id <> ".ANONYMOUS;
+											AND user_id <> " . ANONYMOUS;
 
-					$select_sql .= "	WHERE u.user_posts > $postcount_value
-											AND u.user_id <> ".ANONYMOUS;
+					$select_sql .= " WHERE u.user_posts > $postcount_value
+											AND u.user_id <> " . ANONYMOUS;
 					break;
 				case 'lesser':
 					$postcount_value = intval($postcount_value);
@@ -753,12 +712,12 @@ else
 					$text = sprintf($lang['Search_for_postcount_lesser'], $postcount_value);
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM ".USERS_TABLE."
+										FROM " . USERS_TABLE . "
 										WHERE user_posts < $postcount_value
-											AND user_id <> ".ANONYMOUS;
+											AND user_id <> " . ANONYMOUS;
 
-					$select_sql .= "	WHERE u.user_posts < $postcount_value
-											AND u.user_id <> ".ANONYMOUS;
+					$select_sql .= " WHERE u.user_posts < $postcount_value
+											AND u.user_id <> " . ANONYMOUS;
 					break;
 				case 'equals':
 					// looking for a -
@@ -777,14 +736,14 @@ else
 						$text = sprintf($lang['Search_for_postcount_range'], $range_begin, $range_end);
 
 						$total_sql .= "SELECT COUNT(user_id) AS total
-										FROM ".USERS_TABLE."
+											FROM " . USERS_TABLE . "
 											WHERE user_posts >= $range_begin
 												AND user_posts <= $range_end
-												AND user_id <> ".ANONYMOUS;
+												AND user_id <> " . ANONYMOUS;
 
-						$select_sql .= "	WHERE u.user_posts >= $range_begin
+						$select_sql .= " WHERE u.user_posts >= $range_begin
 												AND u.user_posts <= $range_end
-												AND u.user_id <> ".ANONYMOUS;
+												AND u.user_id <> " . ANONYMOUS;
 					}
 					else
 					{
@@ -793,12 +752,12 @@ else
 						$text = sprintf($lang['Search_for_postcount_equals'], $postcount_value);
 
 						$total_sql .= "SELECT COUNT(user_id) AS total
-										FROM ".USERS_TABLE."
+											FROM " . USERS_TABLE . "
 											WHERE user_posts = $postcount_value
-												AND user_id <> ".ANONYMOUS;
+												AND user_id <> " . ANONYMOUS;
 
-						$select_sql .= "	WHERE u.user_posts = $postcount_value
-												AND u.user_id <> ".ANONYMOUS;
+						$select_sql .= " WHERE u.user_posts = $postcount_value
+												AND u.user_id <> " . ANONYMOUS;
 					}
 					break;
 				default:
@@ -874,26 +833,13 @@ else
 					message_die(GENERAL_MESSAGE, $lang['Search_invalid']);
 			}
 
-			if($regex && SQL_LAYER == 'oracle')
-			{
-				$total_sql .= "SELECT COUNT(user_id) AS total
-								FROM ".USERS_TABLE."
-									WHERE REGEXP_LIKE($field, '".str_replace("\'", "''", $userfield_value)."')
-										AND user_id <> ".ANONYMOUS;
+			$total_sql .= "SELECT COUNT(user_id) AS total
+							FROM " . USERS_TABLE . "
+								WHERE {$lower_b}$field{$lower_e} $op '" . str_replace("\'", "''", $userfield_value) . "'
+									AND user_id <> " . ANONYMOUS;
 
-				$select_sql .= "	WHERE REGEXP_LIKE(u.$field, '".str_replace("\'", "''", $userfield_value)."')
-										AND u.user_id <> ".ANONYMOUS;
-			}
-			else
-			{
-				$total_sql .= "SELECT COUNT(user_id) AS total
-								FROM ".USERS_TABLE."
-									WHERE {$lower_b}$field{$lower_e} $op '".str_replace("\'", "''", $userfield_value)."'
-										AND user_id <> ".ANONYMOUS;
-
-				$select_sql .= "	WHERE {$lower_b}u.$field{$lower_e} $op '".str_replace("\'", "''", $userfield_value)."'
-										AND u.user_id <> ".ANONYMOUS;
-			}
+			$select_sql .= " WHERE {$lower_b}u.$field{$lower_e} $op '".str_replace("\'", "''", $userfield_value)."'
+									AND u.user_id <> " . ANONYMOUS;
 
 			break;
 		case 'search_lastvisited':
@@ -902,31 +848,31 @@ else
 
 			$base_url .= '&search_lastvisited=true&lastvisited_type=' . rawurlencode(stripslashes($lastvisited_type)) . '&lastvisited_days=' . rawurlencode($lastvisited_days);
 
-			$lastvisited_seconds = ( time() - ( ( ( $lastvisited_days * 24 ) * 60 ) * 60 ) );
+			$lastvisited_seconds = (time() - ((($lastvisited_days * 24) * 60) * 60));
 
 			switch($lastvisited_type)
 			{
 				case 'in':
-					$text = sprintf($lang['Search_for_lastvisited_inthelast'], $lastvisited_days, ( ( $lastvisited_days > 1 ) ? $lang['Days'] : $lang['Day'] ) );
+					$text = sprintf($lang['Search_for_lastvisited_inthelast'], $lastvisited_days, (($lastvisited_days > 1) ? $lang['Days'] : $lang['Day']));
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM ".USERS_TABLE."
+										FROM " . USERS_TABLE . "
 										WHERE user_lastvisit >= $lastvisited_seconds
-											AND user_id <> ".ANONYMOUS;
+											AND user_id <> " . ANONYMOUS;
 
-					$select_sql .= "	WHERE u.user_lastvisit >= $lastvisited_seconds
-											AND u.user_id <> ".ANONYMOUS;
+					$select_sql .= " WHERE u.user_lastvisit >= $lastvisited_seconds
+											AND u.user_id <> " . ANONYMOUS;
 					break;
 				case 'after':
-					$text = sprintf($lang['Search_for_lastvisited_afterthelast'], $lastvisited_days, ( ( $lastvisited_days > 1 ) ? $lang['Days'] : $lang['Day'] ));
+					$text = sprintf($lang['Search_for_lastvisited_afterthelast'], $lastvisited_days, (($lastvisited_days > 1) ? $lang['Days'] : $lang['Day']));
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM ".USERS_TABLE."
+										FROM " . USERS_TABLE . "
 										WHERE user_lastvisit < $lastvisited_seconds
-											AND user_id <> ".ANONYMOUS;
+											AND user_id <> " . ANONYMOUS;
 
-					$select_sql .= "	WHERE u.user_lastvisit < $lastvisited_seconds
-											AND u.user_id <> ".ANONYMOUS;
+					$select_sql .= " WHERE u.user_lastvisit < $lastvisited_seconds
+											AND u.user_id <> " . ANONYMOUS;
 
 					break;
 				default:
@@ -947,12 +893,12 @@ else
 			$text = sprintf($lang['Search_for_language'], strip_tags(htmlspecialchars($language_type)));
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
-							FROM ".USERS_TABLE."
-								WHERE user_lang = '".str_replace("\'", "''", $language_type)."'
-									AND user_id <> ".ANONYMOUS;
+								FROM " . USERS_TABLE . "
+								WHERE user_lang = '" . str_replace("\'", "''", $language_type) . "'
+									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= "	WHERE u.user_lang = '".str_replace("\'", "''", $language_type)."'
-									AND u.user_id <> ".ANONYMOUS;
+			$select_sql .= " WHERE u.user_lang = '" . str_replace("\'", "''", $language_type) . "'
+									AND u.user_id <> " . ANONYMOUS;
 
 			break;
 		case 'search_timezone':
@@ -962,12 +908,12 @@ else
 			$timezone_type = intval($timezone_type);
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
-							FROM ".USERS_TABLE."
+								FROM " . USERS_TABLE . "
 								WHERE user_timezone = $timezone_type
-									AND user_id <> ".ANONYMOUS;
+									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= "	WHERE u.user_timezone = $timezone_type
-									AND u.user_id <> ".ANONYMOUS;
+			$select_sql .= " WHERE u.user_timezone = $timezone_type
+									AND u.user_id <> " . ANONYMOUS;
 
 			break;
 		case 'search_style':
@@ -976,9 +922,8 @@ else
 			$style_type = intval($style_type);
 
 			$sql = "SELECT style_name
-						FROM ".THEMES_TABLE."
+							FROM ".THEMES_TABLE."
 							WHERE themes_id = ".$style_type;
-
 
 			if(!$result = $db->sql_query($sql))
 			{
@@ -995,12 +940,12 @@ else
 			$text = sprintf($lang['Search_for_style'], strip_tags(htmlspecialchars($style_name['style_name'])));
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
-							FROM ".USERS_TABLE."
+								FROM " . USERS_TABLE . "
 								WHERE user_style = $style_type
-									AND user_id <> ".ANONYMOUS;
+									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= "	WHERE u.user_style = $style_type
-									AND u.user_id <> ".ANONYMOUS;
+			$select_sql .= " WHERE u.user_style = $style_type
+									AND u.user_id <> " . ANONYMOUS;
 
 			break;
 		case 'search_moderators':
@@ -1008,7 +953,7 @@ else
 			$moderators_forum = intval($moderators_forum);
 
 			$sql = "SELECT forum_name
-						FROM ".FORUMS_TABLE."
+							FROM " . FORUMS_TABLE . "
 							WHERE forum_id = ".$moderators_forum;
 
 
@@ -1027,18 +972,18 @@ else
 			$text = sprintf($lang['Search_for_moderators'], strip_tags(htmlspecialchars($forum_name['forum_name'])));
 
 			$total_sql .= "SELECT COUNT(DISTINCT u.user_id) AS total
-							FROM ".USERS_TABLE." AS u, ".GROUPS_TABLE." AS g, ".USER_GROUP_TABLE." AS ug, ".AUTH_ACCESS_TABLE." AS aa
+							FROM " . USERS_TABLE . " AS u, " . GROUPS_TABLE . " AS g, " . USER_GROUP_TABLE . " AS ug, " . AUTH_ACCESS_TABLE . " AS aa
 								WHERE u.user_id = ug.user_id
 									AND ug.group_id = g.group_id
-									AND	g.group_id = aa.group_id
+									AND g.group_id = aa.group_id
 									AND aa.forum_id = ". $moderators_forum ."
 									AND aa.auth_mod = 1
-									AND u.user_id <> ".ANONYMOUS;
+									AND u.user_id <> " . ANONYMOUS;
 
-			$select_sql .= ", ".GROUPS_TABLE." AS g, ".USER_GROUP_TABLE." AS ug, ".AUTH_ACCESS_TABLE." AS aa
+			$select_sql .= ", " . GROUPS_TABLE . " AS g, " . USER_GROUP_TABLE . " AS ug, " . AUTH_ACCESS_TABLE . " AS aa
 								WHERE u.user_id = ug.user_id
 									AND ug.group_id = g.group_id
-									AND	g.group_id = aa.group_id
+									AND g.group_id = aa.group_id
 									AND aa.forum_id = ". $moderators_forum ."
 									AND aa.auth_mod = 1
 									AND u.user_id <> ".ANONYMOUS."
@@ -1056,59 +1001,59 @@ else
 					$text = $lang['Search_for_admins'];
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM " . USERS_TABLE . "
+										FROM " . USERS_TABLE . "
 										WHERE user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")
 											AND user_id <> " . ANONYMOUS;
 
 					$select_sql .= " WHERE u.user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")
-											AND u.user_id <> ".ANONYMOUS;
+											AND u.user_id <> " . ANONYMOUS;
 					break;
 				case 'mods':
 					$text = $lang['Search_for_mods'];
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM ".USERS_TABLE."
+										FROM " . USERS_TABLE . "
 										WHERE user_level = " . MOD . "
 											AND user_id <> " . ANONYMOUS;
 
-					$select_sql .= "	WHERE u.user_level = ".MOD."
-											AND u.user_id <> ".ANONYMOUS;
+					$select_sql .= " WHERE u.user_level = ".MOD."
+											AND u.user_id <> " . ANONYMOUS;
 					break;
 				case 'banned':
 					$text = $lang['Search_for_banned'];
 
 					$total_sql .= "SELECT COUNT(u.user_id) AS total
-									FROM ".USERS_TABLE." AS u, ".BANLIST_TABLE." AS b
+										FROM " . USERS_TABLE . " AS u, ".BANLIST_TABLE." AS b
 										WHERE u.user_id = b.ban_userid
-											AND u.user_id <> ".ANONYMOUS;
+											AND u.user_id <> " . ANONYMOUS;
 
 					$select_sql .= ", ".BANLIST_TABLE." AS b
 										WHERE u.user_id = b.ban_userid
-											AND u.user_id <> ".ANONYMOUS;
+											AND u.user_id <> " . ANONYMOUS;
 
 					break;
 				case 'disabled':
 					$text = $lang['Search_for_disabled'];
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM ".USERS_TABLE."
+										FROM " . USERS_TABLE . "
 										WHERE user_active = 0
-											AND user_id <> ".ANONYMOUS;
+											AND user_id <> " . ANONYMOUS;
 
-					$select_sql .= "	WHERE u.user_active = 0
-											AND u.user_id <> ".ANONYMOUS;
+					$select_sql .= " WHERE u.user_active = 0
+											AND u.user_id <> " . ANONYMOUS;
 
 					break;
 				case 'disabled_pms':
 					$text = $lang['Search_for_disabled_pms'];
 
 					$total_sql .= "SELECT COUNT(user_id) AS total
-									FROM ".USERS_TABLE."
+										FROM " . USERS_TABLE . "
 										WHERE user_allow_pm = 0
-											AND user_id <> ".ANONYMOUS;
+											AND user_id <> " . ANONYMOUS;
 
-					$select_sql .= "	WHERE u.user_allow_pm = 0
-											AND u.user_id <> ".ANONYMOUS;
+					$select_sql .= " WHERE u.user_allow_pm = 0
+											AND u.user_id <> " . ANONYMOUS;
 
 					break;
 				default:
@@ -1121,7 +1066,7 @@ else
 		$base_url .= '&regex=1';
 	}
 
-	$select_sql .= "	ORDER BY ";
+	$select_sql .= " ORDER BY ";
 
 	switch(strtolower($_GET['sort']))
 	{
@@ -1166,7 +1111,7 @@ else
 
 	$select_sql .= " $order";
 
-	$page = ( isset($_GET['page']) ) ? intval($_GET['page']) : intval(trim($_POST['page']));
+	$page = (isset($_GET['page'])) ? intval($_GET['page']) : intval(trim($_POST['page']));
 
 	if($page < 1)
 	{
@@ -1179,7 +1124,7 @@ else
 	}
 	else
 	{
-		$offset = ( ($page - 1) * $board_config['topics_per_page']);
+		$offset = (($page - 1) * $board_config['topics_per_page']);
 	}
 
 	$limit = "LIMIT $offset, ".$board_config['topics_per_page'];
@@ -1200,18 +1145,18 @@ else
 			message_die(GENERAL_MESSAGE, $lang['Search_no_results']);
 		}
 	}
-	$num_pages = ceil( ( $total_pages['total'] / $board_config['topics_per_page'] ) );
+	$num_pages = ceil(($total_pages['total'] / $board_config['topics_per_page']));
 
 	$pagination = '';
 
 	if($page > 1)
 	{
-		$pagination .= '<a href="'.append_sid("$base_url&sort=$sort&order=$order&page=".($page - 1)).'">'.$lang['Previous'].'</a>';
+		$pagination .= '<a href="' . append_sid("$base_url&sort=$sort&order=$order&page=" . ($page - 1)) . '">' . $lang['Previous'] . '</a>';
 	}
 
 	if($page < $num_pages)
 	{
-		$pagination .= ( $pagination == '' ) ? '<a href="'.append_sid("$base_url&sort=$sort&order=$order&page=".($page + 1)).'">'.$lang['Next'].'</a>' : ' | <a href="'.append_sid("$base_url&sort=$sort&order=$order&page=".($page + 1)).'">'.$lang['Next'].'</a>';
+		$pagination .= ($pagination == '') ? '<a href="'.append_sid("$base_url&sort=$sort&order=$order&page=" . ($page + 1)) . '">' . $lang['Next'] . '</a>' : ' | <a href="' . append_sid("$base_url&sort=$sort&order=$order&page=" . ($page + 1)) . '">' . $lang['Next'] . '</a>';
 	}
 
 	if($num_pages > 2)
@@ -1237,11 +1182,11 @@ else
 		'PAGINATION' => $pagination,
 		'NEW_SEARCH' => sprintf($lang['Search_users_new'],$text, $total_pages['total'],append_sid('admin_user_search.' . PHP_EXT)),
 
-		'U_USERNAME' => ( ( $sort == 'username' ) ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=username&order=$order") ),
-		'U_EMAIL' => ( ( $sort == 'user_email' ) ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=user_email&order=$order") ),
-		'U_POSTS' => ( ( $sort == 'posts' ) ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=posts&order=$order") ),
-		'U_JOINDATE' => ( ( $sort == 'regdate' ) ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=regdate&order=$order") ),
-		'U_LASTVISIT' => ( ( $sort == 'lastvisit' ) ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=lastvisit&order=$order") ),
+		'U_USERNAME' => (($sort == 'username') ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=username&order=$order")),
+		'U_EMAIL' => (($sort == 'user_email') ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=user_email&order=$order")),
+		'U_POSTS' => (($sort == 'posts') ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=posts&order=$order")),
+		'U_JOINDATE' => (($sort == 'regdate') ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=regdate&order=$order")),
+		'U_LASTVISIT' => (($sort == 'lastvisit') ? append_sid("$base_url&sort=$sort&order=$o_order") : append_sid("$base_url&sort=lastvisit&order=$order")),
 
 		'S_POST_ACTION' => append_sid("$base_url&sort=$sort&order=$order")
 		)
@@ -1258,7 +1203,7 @@ else
 
 	foreach($rowset as $array)
 	{
-		$users_sql .= ( $users_sql == '' ) ? $array['user_id'] : ', '.$array['user_id'];
+		$users_sql .= ($users_sql == '') ? $array['user_id'] : ', '.$array['user_id'];
 	}
 
 	$sql = "SELECT ban_userid AS user_id
@@ -1281,7 +1226,7 @@ else
 
 	for($i = 0; $i < count($rowset); $i++)
 	{
-		$row_class = ( ( $i % 2 ) == 1 ) ? 'row1' : 'row2';
+		$row_class = (($i % 2) == 1) ? 'row1' : 'row2';
 
 		$template->assign_block_vars('userrow', array(
 			'ROW_CLASS' => $row_class,
@@ -1290,14 +1235,15 @@ else
 			'JOINDATE' => create_date($board_config['default_dateformat'], $rowset[$i]['user_regdate'], $board_config['board_timezone']),
 			'LASTVISIT' => create_date($board_config['default_dateformat'], $rowset[$i]['user_lastvisit'], $board_config['board_timezone']),
 			'POSTS' => $rowset[$i]['user_posts'],
-			'BAN' => ( ( !isset($banned[$rowset[$i]['user_id']]) ) ? $lang['Not_banned'] : $lang['Banned'] ),
-			'ABLED' => ( ( $rowset[$i]['user_active'] ) ? $lang['Enabled'] : $lang['Disabled'] ),
+			'BAN' => ((!isset($banned[$rowset[$i]['user_id']])) ? $lang['Not_banned'] : $lang['Banned']),
+			'ABLED' => (($rowset[$i]['user_active']) ? $lang['Enabled'] : $lang['Disabled']),
 
 			'U_VIEWPROFILE' => append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
 			'U_VIEWPOSTS' => append_sid('../' . SEARCH_MG . '?search_author=' . rawurlencode($rowset[$i]['username'])),
 			'U_MANAGE' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
 			'U_PERMISSIONS' => append_sid('admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
-		));
+			)
+		);
 	}
 }
 

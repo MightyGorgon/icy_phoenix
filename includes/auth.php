@@ -65,7 +65,7 @@
 */
 function auth($type, $forum_id, $userdata, $f_access = '')
 {
-	global $db, $lang, $tree;
+	global $db, $lang, $tree, $board_config;
 
 	if (!empty($tree['data']))
 	{
@@ -269,6 +269,8 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 
 				case AUTH_REG:
 					$auth_user[$key] = ($userdata['session_logged_in']) ? true : 0;
+					// Check if the user is a BOT
+					$auth_user[$key] = (($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) ? true : $auth_user[$key];
 					$auth_user[$key . '_type'] = $lang['Auth_Registered_Users'];
 					break;
 
@@ -320,6 +322,8 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 
 					case AUTH_REG:
 						$auth_user[$f_forum_id][$key] = ($userdata['session_logged_in']) ? true : 0;
+						// Check if the user is a BOT
+						$auth_user[$f_forum_id][$key] = (($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) ? true : $auth_user[$f_forum_id][$key];
 						$auth_user[$f_forum_id][$key . '_type'] = $lang['Auth_Registered_Users'];
 						break;
 
@@ -416,7 +420,8 @@ function build_exclusion_forums_list($only_auth_view = true)
 	global $db, $lang, $tree, $board_config;
 	global $userdata;
 
-	$sql_auth = "SELECT * FROM " . FORUMS_TABLE;
+	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post
+							FROM " . FORUMS_TABLE;
 	if(!$result_auth = $db->sql_query($sql_auth, false, 'excluded_forums_list_'))
 	{
 		message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
@@ -471,7 +476,8 @@ function build_allowed_forums_list()
 	global $db, $lang, $tree, $board_config;
 	global $userdata;
 
-	$sql_auth = "SELECT * FROM " . FORUMS_TABLE;
+	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post
+							FROM " . FORUMS_TABLE;
 	if(!$result_auth = $db->sql_query($sql_auth, false, 'allowed_forums_list_'))
 	{
 		message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);

@@ -20,14 +20,4 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_nav_logo_block_func))
-{
-	function imp_nav_logo_block_func()
-	{
-		return true;
-	}
-}
-
-imp_nav_logo_block_func();
-
 ?>

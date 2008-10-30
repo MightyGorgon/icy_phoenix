@@ -27,7 +27,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 define('IN_PA_CONFIG_ADMIN', 1);
-include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $submit = (isset($_POST['submit'])) ? true : false;
 $size = (isset($_POST['max_size'])) ? $_POST['max_size'] : '';
@@ -72,11 +72,6 @@ else
 			if ($config_name == 'max_file_size')
 			{
 				$new[$config_name] = ( $size == 'kb' ) ? round($new[$config_name] * 1024) : ( ($size == 'mb') ? round($new[$config_name] * 1048576) : $new[$config_name] );
-			}
-
-			if($config_name == 'tpl_php' && isset($_POST[$config_name]) && $new[$config_name] != $default_config[$config_name])
-			{
-				$pafiledb_template->compile_cache_clear();
 			}
 
 			$pafiledb_functions->set_config($config_name, $new[$config_name]);

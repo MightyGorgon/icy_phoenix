@@ -751,38 +751,18 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 			{
 				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)'.$sql, '', __LINE__, __FILE__, $sql);
 			}
-
-			$sql = "DELETE FROM " . PRIVMSGS_TEXT_TABLE . "
-				WHERE privmsgs_text_id = $old_privmsgs_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs text (inbox)', '', __LINE__, __FILE__, $sql);
-			}
 		}
 	}
 
-	$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
-		VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', " . $from_id . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig, $acro_auto_on)";
+	$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
+		VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', '" . str_replace("\'", "''", addslashes($privmsg_message)) . "', " . $from_id . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig, $acro_auto_on)";
 
 	if (!($result = $db->sql_query($sql_info, BEGIN_TRANSACTION)))
 	{
 		message_die(GENERAL_ERROR, "Could not insert/update private message sent info.", "", __LINE__, __FILE__, $sql_info);
 	}
 
-	$privmsg_sent_id = $db->sql_nextid();
-	//$privmsg_message = str_replace('\n', '\\\n', $privmsg_message);
-	//$privmsg_message = nl2br($privmsg_message);
-	$sql = "INSERT INTO " . PRIVMSGS_TEXT_TABLE . " (privmsgs_text_id, privmsgs_text)
-		VALUES ($privmsg_sent_id, '" . str_replace("\'", "''", addslashes($privmsg_message)) . "')";
-
-	if (!$db->sql_query($sql, END_TRANSACTION))
-	{
-		message_die(GENERAL_ERROR, "Could not insert/update private message sent text.", "", __LINE__, __FILE__, $sql);
-	}
-
-	//
 	// Add to the users new pm counter
-	//
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
 		WHERE user_id = " . $to_userdata['user_id'];
@@ -1353,7 +1333,7 @@ function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $us
 	// insert the post details using the topic id
 	if ($mode == 'newtopic' || $kb_config['bump_post'] == '1')
 	{
-		$sql = "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_time, poster_ip, enable_bbcode, enable_html, enable_autolinks_acronyms, enable_smilies, enable_sig) VALUES ($topic_id, $forum_id, " . $user_id . ", '$username', $current_time, '$user_ip', $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $user_attach_sig)";
+		$sql = "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_autolinks_acronyms, enable_smilies, enable_sig) VALUES ($topic_id, $forum_id, " . $user_id . ", '$username', '$subject', '$message_tmp', $current_time, '$user_ip', $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $user_attach_sig)";
 		if (!$db->sql_query($sql, BEGIN_TRANSACTION))
 		{
 			$error_die_function(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
@@ -1362,10 +1342,6 @@ function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $us
 		// insert the actual post text for our new post
 		$message_tmp = (($mode == 'newtopic') ? $message : $message_update_text);
 
-		$sql = "INSERT INTO " . POSTS_TEXT_TABLE . " (post_id, post_subject, post_text) VALUES ($post_id, '$subject', '$message_tmp')";		if (!$db->sql_query($sql, BEGIN_TRANSACTION))
-		{
-			$error_die_function(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
-		}
 		// update the post counts etc.
 		$newpostsql = ($mode == 'newtopic') ? ',forum_topics = forum_topics + 1' : '';
 		$sql = "UPDATE " . FORUMS_TABLE . " SET
@@ -1442,7 +1418,7 @@ function kb_insert_post($message, $subject, $forum_id, $user_id, $user_name, $us
 
 	$message_tmp = $mode == 'newtopic' ? $message : $message . '\n\n' . $message_update_text;
 
-	$sql = "UPDATE " . POSTS_TEXT_TABLE . " SET
+	$sql = "UPDATE " . POSTS_TABLE . " SET
 					post_subject = '$subject',
 					post_text = '$message_tmp'
 					WHERE post_id = '$orig_post_id'";
@@ -1494,10 +1470,9 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 
 	// Go ahead and pull all data for this topic
 
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*,  pt.post_text, pt.post_subject
-		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . POSTS_TEXT_TABLE . " pt
+	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*
+		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE p.topic_id = $topic_id
-			AND pt.post_id = p.post_id
 			AND u.user_id = p.poster_id
 			ORDER BY p.post_time $post_time_order";
 

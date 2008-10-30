@@ -123,9 +123,13 @@ switch ($mode)
 					}
 
 					// Data
+
 					if ($schema_data)
 					{
-						$extractor->write_data_mysql($table_name, true, false);
+						// Save bandwidth and avoid timeouts by exporting extended inserts...
+						$extractor->write_data_mysql($table_name, true, true);
+						// Decomment this line if you don't want extended inserts
+						//$extractor->write_data_mysql($table_name, true, false);
 					}
 				}
 
@@ -445,7 +449,7 @@ class base_extractor
 
 		if ($store == true)
 		{
-						$file = IP_ROOT_PATH . BACKUP_PATH . $filename . $ext;
+			$file = IP_ROOT_PATH . BACKUP_PATH . $filename . $ext;
 
 			$this->fp = $open($file, 'w');
 
@@ -689,7 +693,7 @@ class mysql_extractor extends base_extractor
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$line = '   ' . $row['Field'] . ' ' . $row['Type'];
+			$line = '  ' . $row['Field'] . ' ' . $row['Type'];
 
 			if (!is_null($row['Default']))
 			{
@@ -738,7 +742,7 @@ class mysql_extractor extends base_extractor
 
 		foreach ($index as $key => $columns)
 		{
-			$line = '   ';
+			$line = '  ';
 
 			if ($key == 'PRIMARY')
 			{

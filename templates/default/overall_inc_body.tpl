@@ -1,24 +1,28 @@
 <!-- BEGIN switch_header_table -->
 <tr>
-<td width="100%" colspan="3">
-	{IMG_TBL}<table class="forumline" width="100%" style="margin-left:50px;margin-right:50px;" cellspacing="0" cellpadding="0">
-		<tr><td class="row-header"><span>{L_STAFF_MESSAGE}</span></td></tr>
-		<tr><td class="row-post"><br /><div class="post-text">{switch_header_table.HEADER_TEXT}</div><br /><br /></td></tr>
-	</table>{IMG_TBR}
-</td>
+	<td width="100%" colspan="3" align="center">
+	<div style="width: 90%; margin 0 auto; clear: both; text-align: center; padding: 10px;">
+		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+			<tr><td class="row-header"><span>{L_STAFF_MESSAGE}</span></td></tr>
+			<tr><td class="row-post"><div class="post-text">{switch_header_table.HEADER_TEXT}</div><br /><br /></td></tr>
+		</table>{IMG_TBR}
+	</div>
+	</td>
 </tr>
 <!-- END switch_header_table -->
 
 <!-- BEGIN ctracker_message -->
 <tr>
-	<td width="100%" colspan="3">
-		{IMG_TBL}<table class="forumline" width="100%" style="margin-left:50px;margin-right:50px;" cellspacing="0" cellpadding="0">
+	<td width="100%" colspan="3" align="center">
+	<div style="width: 90%; margin 0 auto; clear: both; text-align: center; padding: 10px;">
+		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<td width="80" align="center" style="background-color:#{ctracker_message.ROW_COLOR};"><img src="{ctracker_message.ICON_GLOB}" alt="" title="" /></td>
 			<td style="background-color:#{ctracker_message.ROW_COLOR};"><div class="gensmall">{ctracker_message.L_MESSAGE_TEXT}</div></td>
 		</tr>
 		<tr><td class="row1 row-center" colspan="2"><div class="gensmall"><b><a href="{ctracker_message.U_MARK_MESSAGE}">{ctracker_message.L_MARK_MESSAGE}</a></b></div><br /></td></tr>
 		</table>{IMG_TBR}
+	</div>
 	</td>
 </tr>
 <!-- END ctracker_message -->

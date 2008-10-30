@@ -291,8 +291,8 @@ switch ($mode)
 					for ($i = 0; $i < count($post_array); $i++)
 					{
 						$sql = "DELETE
-						FROM " . POSTS_TEXT_TABLE . "
-						WHERE post_id = $post_array[$i]";
+						FROM " . POSTS_TABLE . "
+						WHERE post_id = " . $post_array[$i];
 						if (!$db->sql_query($sql))
 						{
 							message_die(GENERAL_ERROR, 'Could not delete posts text', '', __LINE__, __FILE__, $sql);

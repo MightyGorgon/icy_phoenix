@@ -63,7 +63,11 @@ $config_fields = array(
 		'explain' => 'IP_no_bump_explain',
 		'type' => 'LIST_RADIO',
 		'default' => 'No',
-		'values' => $list_yes_no,
+		'values' => array(
+			'No' => 0,
+			'Yes' => 1,
+			'MODS_ALLOWED' => 2,
+			),
 		),
 
 	'show_topic_description' => array(

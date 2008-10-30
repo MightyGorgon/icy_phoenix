@@ -86,37 +86,27 @@
 		<!-- BEGIN show_otf_link -->
 		<tr>
 			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
-				<span class="forumlink">
-					&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_OTF}" class="cattitle">{L_ALBUM_OTF}</a>
-				</span>
+				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_OTF}" class="cattitle">{L_ALBUM_OTF}</a></span>
 			</td>
 		</tr>
 		<!-- END show_otf_link -->
 		<tr>
 			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
-				<span class="forumlink">
-					&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_HON}" class="cattitle">{L_ALBUM_HON}</a>
-				</span>
+				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_HON}" class="cattitle">{L_ALBUM_HON}</a></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
-				<span class="forumlink">
-					&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_RDF}" class="cattitle">{L_ALBUM_RDF}</a>&nbsp;|&nbsp;<a href="{U_ALBUM_RSS}" class="cattitle">{L_ALBUM_RSS}</a>
-				</span>
+				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_RDF}" class="cattitle">{L_ALBUM_RDF}</a>&nbsp;|&nbsp;<a href="{U_ALBUM_RSS}" class="cattitle">{L_ALBUM_RSS}</a></span>
 			</td>
 		</tr>
 		<!-- BEGIN show_personal_galleries_link -->
 		<tr>
 			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
-				<span class="forumlink">
-					&nbsp;{NAV_DOT}&nbsp;<a href="{catfooter.cat_public_footer.U_USERS_PERSONAL_GALLERIES}" class="cattitle">{catfooter.cat_public_footer.L_USERS_PERSONAL_GALLERIES}</a>
-				</span>
+				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{catfooter.cat_public_footer.U_USERS_PERSONAL_GALLERIES}" class="cattitle">{catfooter.cat_public_footer.L_USERS_PERSONAL_GALLERIES}</a></span>
 				<br />
 				<img src="{SPACER}" width="5" height="15" alt="" />
-				<span class="gensmall">
-					&nbsp;{NAV_DOT}&nbsp;<a href="{catfooter.cat_public_footer.U_YOUR_PERSONAL_GALLERY}" class="gensmall"><b>{catfooter.cat_public_footer.L_YOUR_PERSONAL_GALLERY}</b></a>
-				</span>
+				<span class="gensmall">&nbsp;{NAV_DOT}&nbsp;<a href="{catfooter.cat_public_footer.U_YOUR_PERSONAL_GALLERY}" class="gensmall"><b>{catfooter.cat_public_footer.L_YOUR_PERSONAL_GALLERY}</b></a></span>
 			</td>
 		</tr>
 		<!-- END show_personal_galleries_link -->

@@ -322,7 +322,7 @@ switch($mode)
 			while($i < count($user_ids))
 			{
 				$user_id = intval($user_ids[$i]);
-				$hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '[]" value="' . $user_id . '">';
+				$hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '[]" value="' . $user_id . '" />';
 
 				unset($user_id);
 				$i++;
@@ -513,11 +513,6 @@ switch($mode)
 				$alphanum_search_url = append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show);
 			}
 
-			if (($alphanum == $temp) || ($alpha_range[$i] == $lang['All'] && empty($alphanum)))
-			{
-				$alpha_range[$i] = '<b>' . $alpha_range[$i] . '</b>';
-			}
-
 			$template->assign_block_vars('alphanumsearch', array(
 				'SEARCH_SIZE' => floor(100/count($alpha_range)) . '%',
 				'SEARCH_TERM' => $alpha_range[$i],
@@ -528,7 +523,7 @@ switch($mode)
 			$i++;
 		}
 
-		$hidden_fields = '<input type="hidden" name="start" value="' . $start . '">';
+		$hidden_fields = '<input type="hidden" name="start" value="' . $start . '" />';
 		$select_sort_by = array('user_id', 'user_active', 'username', 'user_regdate', 'user_session_time', 'user_level', 'user_posts', 'user_rank', 'user_email', 'user_website', 'user_birthday', 'user_lang', 'user_style');
 		$select_sort_by_text = array($lang['User_id'], $lang['Active'], $lang['Username'], $lang['Joined'], $lang['Last_activity'], $lang['User_level'], $lang['Posts'], $lang['Rank'], $lang['Email'], $lang['Website'], $lang['Birthday'], $lang['Board_lang'], $lang['Board_style']);
 
@@ -550,7 +545,7 @@ switch($mode)
 			$select_sort_order .= '<option value="ASC">' . $lang['Ascending'] . '</option><option value="DESC" selected="selected">' . $lang['Descending'] . '</option>';
 		}
 		$select_sort_order .= '</select>';
-		$hidden_fields .= '<input type="hidden" name="alphanum" value="' . $alphanum . '">';
+		$hidden_fields .= '<input type="hidden" name="alphanum" value="' . $alphanum . '" />';
 
 		//
 		// set up template varibles

@@ -80,7 +80,7 @@ for ($postrow_i = 0; $postrow_i < $postrow_count; $postrow_i++)
 		$str = '';
 		if($prev_id)
 		{
-			$str .= '<a href="#p' . $prev_id . '"><img src="' . $images['arrows_alt_up'] . '" alt="" /></a>';
+			$str .= '<a href="#p' . $prev_id . '"><img src="' . $images['arrow_alt_up'] . '" alt="" /></a>';
 			//$str .= '<br /><img src="' . $images['spacer'] . '" width="9" height="2" alt="" />';
 		}
 		else
@@ -91,7 +91,7 @@ for ($postrow_i = 0; $postrow_i < $postrow_count; $postrow_i++)
 		if($next_id)
 		{
 			//$str .= '<img src="' . $images['spacer'] . '" width="9" height="2" alt="" /><br />';
-			$str .= '<a href="#p' . $next_id . '"><img src="' . $images['arrows_alt_down'] . '" alt="" /></a>';
+			$str .= '<a href="#p' . $next_id . '"><img src="' . $images['arrow_alt_down'] . '" alt="" /></a>';
 		}
 		else
 		{
@@ -128,7 +128,7 @@ if($can_reply)
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="100" style="width:98%" tabindex="2" class="post" value="{L_RE}: {TOPIC_TITLE}" /></td>
+	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width:98%" tabindex="2" class="post" value="{L_RE}: {TOPIC_TITLE}" /></td>
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{T_TEMPLATE_PATH}/images/spacer.gif" width="200" height="1" alt="" /></b></span></td>

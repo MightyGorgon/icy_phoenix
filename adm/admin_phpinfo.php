@@ -46,12 +46,12 @@ preg_match_all('#<body[^>]*>(.*)</body>#siU', $phpinfo, $output);
 switch ($layout)
 {
 	case 'old':
-		$output = preg_replace('#<table#', '<div class="center-block"><table class="forumline" align="center"', $output[1][0]);
+		$output = preg_replace('#<table#', '<table class="forumline"', $output[1][0]);
 		$output = preg_replace('# bgcolor="\#(\w){6}"#', '', $output);
 		$output = preg_replace('#(\w),(\w)#', '\1, \2', $output);
-		$output = preg_replace('#border="0" cellspacing="0" cellpadding="0" width="600"#', 'border="0" cellspacing="0" cellpadding="0" width="95%"', $output);
-		$output = preg_replace('#<tr valign="top"><td align="left">(.*?<a .*?</a>)(.*?)</td></tr>#s', '<tr class="row1"><td style="{background-color: #9999cc;}"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td style="{background-color: #9999cc;}">\2</td><td style="{background-color: #9999cc;}">\1</td></tr></table></td></tr>', $output);
-		$output = preg_replace('#<tr valign="baseline"><td[ ]{0,1}><b>(.*?)</b>#', '<tr><td class="row1" nowrap="nowrap">\1', $output);
+		$output = preg_replace('#border="0" cellspacing="0" cellpadding="0" width="600"#', 'width="100%" cellspacing="0" cellpadding="0" border="0"', $output);
+		$output = preg_replace('#<tr valign="top"><td align="left">(.*?<a .*?</a>)(.*?)</td></tr>#s', '<tr><td class="row1"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row1">\2</td><td class="row1">\1</td></tr></table></td></tr>', $output);
+		$output = preg_replace('#<tr valign="baseline"><td[ ]{0,1}><b>(.*?)</b>#', '<tr><td class="row1">\1', $output);
 		$output = preg_replace('#<td align="(center|left)">#', '<td class="row2">', $output);
 		$output = preg_replace('#<td>#', '<td class="row2">', $output);
 		$output = preg_replace('#valign="middle"#', '', $output);
@@ -63,11 +63,11 @@ switch ($layout)
 		$output = $output[1][0];
 		break;
 	case 'new':
-		$output = preg_replace('#<table#', '<table class="forumline" align="center"', $output[1][0]);
+		$output = preg_replace('#<table#', '<table class="forumline"', $output[1][0]);
 		$output = preg_replace('#(\w),(\w)#', '\1, \2', $output);
-		$output = preg_replace('#border="0" cellpadding="3" width="600"#', 'border="0" cellspacing="1" cellpadding="4" width="95%"', $output);
-		$output = preg_replace('#<tr class="v"><td>(.*?<a .*?</a>)(.*?)</td></tr>#s', '<tr class="row1"><td><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td>\2</td><td>\1</td></tr></table></td></tr>', $output);
-		$output = preg_replace('#<td>#', '<td style="{background-color: #9999cc;}">', $output);
+		$output = preg_replace('#border="0" cellpadding="3" width="600"#', 'width="100%" cellspacing="0" cellpadding="0" border="0"', $output);
+		$output = preg_replace('#<tr class="v"><td>(.*?<a .*?</a>)(.*?)</td></tr>#s', '<tr><td class="row1"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td>\2</td><td>\1</td></tr></table></td></tr>', $output);
+		$output = preg_replace('#<td>#', '<td class="row1">', $output);
 		$output = preg_replace('#class="e"#', 'class="row1" nowrap="nowrap"', $output);
 		$output = preg_replace('#class="v"#', 'class="row2"', $output);
 		$output = preg_replace('# class="h"#', '', $output);
@@ -77,10 +77,7 @@ switch ($layout)
 		break;
 }
 
-
-//
 // The Final output
-//
 echo '<h1>PHP Info</h1>';
 echo $lang['Php_Info_Explain'] . '<br /><br />';
 echo $output;

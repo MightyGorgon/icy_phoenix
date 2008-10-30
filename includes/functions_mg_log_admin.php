@@ -68,7 +68,7 @@ function parse_logs_action($log_id, $log_action_type, $log_desc, $log_username, 
 
 	$log_action['desc'] = '';
 	$log_action['desc_extra'] = '';
-	$log_action_array = explode(';', $log_desc);
+	$log_action_array = explode(';', ((STRIP) ? stripslashes($log_desc) : $log_desc));
 
 	switch($log_action_type)
 	{

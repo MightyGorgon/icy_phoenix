@@ -774,7 +774,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 				}
 				$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 
-				$redirect_url = append_sid('admin_db_utilities.' . PHP_EXT . '?perform=backup&amp;additional_tables=' . quotemeta($additional_tables) . '&amp;backup_type=' . $backup_type . '&amp;drop=1&amp;backupstart=1&amp;phpbb_only=' . $phpbb_only . '&amp;gzipcompress=' . $gzipcompress . '&amp;startdownload=1');
+				$redirect_url = append_sid(ADM . '/admin_db_utilities.' . PHP_EXT . '?perform=backup&amp;additional_tables=' . quotemeta($additional_tables) . '&amp;backup_type=' . $backup_type . '&amp;drop=1&amp;backupstart=1&amp;phpbb_only=' . $phpbb_only . '&amp;gzipcompress=' . $gzipcompress . '&amp;startdownload=1');
 				meta_refresh(3, $redirect_url);
 
 				$template->assign_vars(array(

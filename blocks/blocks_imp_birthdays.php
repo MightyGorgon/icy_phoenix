@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_birthdays_func))
+if(!function_exists('imp_birthdays_func'))
 {
 	function imp_birthdays_func()
 	{

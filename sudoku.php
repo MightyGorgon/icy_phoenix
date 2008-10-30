@@ -15,8 +15,9 @@
 *
 */
 
-// standard hack prevent
+// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
+define('IN_SUDOKU', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
@@ -40,7 +41,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_sudoku.' . PHP_EXT);
 $user_id = $userdata['user_id'];
 if (!$userdata['session_logged_in'])
 {
-	$header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
+	$header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
 	header($header_location . append_sid(LOGIN_MG . "?redirect=sudoku." . PHP_EXT, true));
 	exit;
 }
@@ -52,7 +53,7 @@ include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'sudoku.tpl'));
 $sql=" SELECT game_pack FROM " . SUDOKU_STARTS . "
 ORDER BY game_pack DESC LIMIT 1";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Error in retrieving Sudoku grid data', '', __LINE__, __FILE__, $sql);
 }
@@ -69,35 +70,36 @@ $num_insert=intval($_POST['num_input']);
 $redirect='<meta http-equiv="refresh" content="3;url=' . append_sid('sudoku.' . PHP_EXT) . '">';
 $games=array();
 $points=array();
-$admin_tools=( $userdata['user_level'] == ADMIN ) ? '|| <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=resynch') . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=reset_game') . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
+$admin_tools=($userdata['user_level'] == ADMIN) ? '|| <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=resynch') . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=reset_game') . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
 // Set template Vars
 $template->assign_vars(array(
-'SUDOKU_VERSION'=>sprintf($lang['Sudoku_Version'], $board_config['sudoku_version'], $latest_pack),
-'L_SUBMIT'=>$lang['Submit'],
-'INSTRUCTIONS'=>$lang['sudoku_instructions'],
-'HOW_TO'=>$lang['sudoku_howto'],
-'STATS'=>$lang['sudoku_stats'],
-'STATISTICS'=>$lang['sudoku_statistics'],
-'PLAYER_STATS'=>$lang['sudoku_player_stats'],
-'LEADERBOARD'=>$lang['sudoku_leaderboard'],
-'USERNAME'=>$lang['Username'],
-'PLAYED'=>$lang['sudoku_played'],
-'POINTS'=>$lang['sudoku_points'],
-'LEAD_PLAYED'=>$lang['sudoku_lead_played'],
-'LEAD_POINTS'=>$lang['sudoku_lead_points'],
-'THESE_POINTS'=>$lang['sudoku_these_points'],
-'LEAD_CURRENT_GAME'=>$lang['sudoku_lead_current_game'],
-'PLACE'=>$lang['sudoku_place'],
-// navigation
-'RESET'=>'<a href="' . append_sid('sudoku.' . PHP_EXT . '?mode=reset') . '" class="nav">' . $lang['sudoku_reset_grid'] . '</a>',
-'ADMIN_TOOLS' => $admin_tools
-));
+	'SUDOKU_VERSION'=>sprintf($lang['Sudoku_Version'], $board_config['sudoku_version'], $latest_pack),
+	'L_SUBMIT'=>$lang['Submit'],
+	'INSTRUCTIONS'=>$lang['sudoku_instructions'],
+	'HOW_TO'=>$lang['sudoku_howto'],
+	'STATS'=>$lang['sudoku_stats'],
+	'STATISTICS'=>$lang['sudoku_statistics'],
+	'PLAYER_STATS'=>$lang['sudoku_player_stats'],
+	'LEADERBOARD'=>$lang['sudoku_leaderboard'],
+	'USERNAME'=>$lang['Username'],
+	'PLAYED'=>$lang['sudoku_played'],
+	'POINTS'=>$lang['sudoku_points'],
+	'LEAD_PLAYED'=>$lang['sudoku_lead_played'],
+	'LEAD_POINTS'=>$lang['sudoku_lead_points'],
+	'THESE_POINTS'=>$lang['sudoku_these_points'],
+	'LEAD_CURRENT_GAME'=>$lang['sudoku_lead_current_game'],
+	'PLACE'=>$lang['sudoku_place'],
+	// navigation
+	'RESET'=>'<a href="' . append_sid('sudoku.' . PHP_EXT . '?mode=reset') . '" class="nav">' . $lang['sudoku_reset_grid'] . '</a>',
+	'ADMIN_TOOLS' => $admin_tools
+	)
+);
 //
 // end vars
 //
-if ( $mode == 'resynch' )
+if ($mode == 'resynch')
 {
-	if ( $userdata['user_level'] != ADMIN )
+	if ($userdata['user_level'] != ADMIN)
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorised'] . $redirect);
 	}
@@ -105,13 +107,13 @@ if ( $mode == 'resynch' )
 	message_die(GENERAL_MESSAGE, $lang['sudoku_resynch_success'] . $redirect);
 }
 
-if ( $mode == 'reset_game' )
+if ($mode == 'reset_game')
 {
-	if ( $userdata['user_level'] != ADMIN )
+	if ($userdata['user_level'] != ADMIN)
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorised'] . $redirect);
 	}
-	if ( !isset($_POST['confirm']) && !isset($_POST['cancel']) )
+	if (!isset($_POST['confirm']) && !isset($_POST['cancel']))
 	{
 		$template->set_filenames(array(
 		'body' => 'confirm_body.tpl'
@@ -132,7 +134,7 @@ if ( $mode == 'reset_game' )
 		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		exit;
 	}
-	if ( isset($_POST['cancel']) )
+	if (isset($_POST['cancel']))
 	{
 			$message = $lang['sudoku_reset_game_cancelled'] . $redirect;
 			message_die(GENERAL_MESSAGE, $message);
@@ -140,17 +142,17 @@ if ( $mode == 'reset_game' )
 	// OK, reset the game
 	// first truncate sudoku tables
 	$sql=" DELETE FROM " . SUDOKU_SESSIONS;
-	if ( !$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error resetting game', '', __LINE__, __FILE__, $sql);
 	}
 	$sql=" DELETE FROM " . SUDOKU_USERS;
-	if ( !$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error resetting game', '', __LINE__, __FILE__, $sql);
 	}
 	$sql=" DELETE FROM " . SUDOKU_STATS;
-	if ( !$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error resetting game', '', __LINE__, __FILE__, $sql);
 	}
@@ -158,7 +160,7 @@ if ( $mode == 'reset_game' )
 	SET user_sudoku_playing=0
 	WHERE user_sudoku_playing>0
 	";
-	if ( !$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error resetting game', '', __LINE__, __FILE__, $sql);
 	}
@@ -167,9 +169,9 @@ if ( $mode == 'reset_game' )
 	message_die(GENERAL_MESSAGE,$lang['sudoku_rest_game_success'] . $redirect);
 }
 
-if ( $mode == 'buy' )
+if ($mode == 'buy')
 {
-	if ( !isset($_POST['confirm']) && !isset($_POST['cancel']) )
+	if (!isset($_POST['confirm']) && !isset($_POST['cancel']))
 	{
 		$template->set_filenames(array('body' => 'confirm_body.tpl'));
 
@@ -188,7 +190,7 @@ if ( $mode == 'buy' )
 		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		exit;
 	}
-	if ( isset($_POST['cancel']) )
+	if (isset($_POST['cancel']))
 	{
 			$message = $lang['sudoku_buy_cancelled'] . $redirect;
 			message_die(GENERAL_MESSAGE, $message);
@@ -206,11 +208,11 @@ if ( $mode == 'buy' )
 
 	// find the unknowns
 	$unknown_ary=array();
-	for ( $i=0; $i<9; $i++ )
+	for ($i=0; $i<9; $i++)
 	{
-		for ( $x=0; $x<9; $x++ )
+		for ($x=0; $x<9; $x++)
 		{
-			if ( $users_ary[$i][$x] == 'x' )
+			if ($users_ary[$i][$x] == 'x')
 			{
 				$unknown_ary[]=$i . '_' . $x;
 			}
@@ -218,7 +220,7 @@ if ( $mode == 'buy' )
 	}
 	// create a 3 dimensional array
 	$unknowns=array();
-	for ( $i=0; $i<count($unknown_ary); $i++ )
+	for ($i=0; $i<count($unknown_ary); $i++)
 	{
 		$unknowns[]=explode('_', $unknown_ary[$i]);
 	}
@@ -234,7 +236,7 @@ if ( $mode == 'buy' )
 	$key='line_' . ($x_co+1);
 	$user_line_upd=explode('a',$lrow[$key]);
 	$val=$user_line_upd[$y_co];
-	if ( $val != 'x' || count($user_line_upd) != 9 )
+	if ($val != 'x' || count($user_line_upd) != 9)
 	{
 		message_die(GENERAL_MESSAGE, $lang['sudoku_ran_error']);
 	}
@@ -246,7 +248,7 @@ if ( $mode == 'buy' )
 	WHERE game_pack=$pack
 	AND game_num=$num
 	AND user_id=" . $userdata['user_id'];
-	if ( !$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error in updating Sudoku grid data', '', __LINE__, __FILE__, $sql);
 	}
@@ -254,17 +256,17 @@ if ( $mode == 'buy' )
 	message_die(GENERAL_MESSAGE,$lang['sudoku_ran_success'] . $redirect);
 }
 
-if ( isset($_POST['input_num']) )
+if (isset($_POST['input_num']))
 {
 	//
 	// insert the number to the users data
 	//
-	if ( !$num_insert )
+	if (!$num_insert)
 	{
 		$message=$lang['sudoku_no_number'] . $redirect;
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	if ( $num_insert > 19 )
+	if ($num_insert > 19)
 	{
 		$message=$lang['sudoku_invalid_number'] . $redirect;
 		message_die(GENERAL_MESSAGE, $message);
@@ -274,7 +276,7 @@ if ( isset($_POST['input_num']) )
 	WHERE game_pack=$pack
 	AND game_num=$num
 	AND user_id=" . $userdata['user_id'];
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku grid data', '', __LINE__, __FILE__, $sql);
 	}
@@ -282,22 +284,22 @@ if ( isset($_POST['input_num']) )
 	$insert_line=explode('a', $row[$this_line]);
 	$pos=($co_ord['1']-1);
 	// add for blank number
-	if ( $type == 'insert' && $num_insert == -1 )
+	if ($type == 'insert' && $num_insert == -1)
 	{
 		$message=$lang['sudoku_no_blank_starter'] . $redirect;
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	// end blank number
 	// test for url tricks
-	if ( $type == 'insert' && $insert_line[$pos] == 'x' )
+	if ($type == 'insert' && $insert_line[$pos] == 'x')
 	{
 		$insert_line[$pos]=$num_insert;
 	}
-	else if ( $type == 'edit' && $insert_line[$pos] > 9 )
+	else if ($type == 'edit' && $insert_line[$pos] > 9)
 	{
-		$insert_line[$pos]=( $num_insert > 0 ) ? $num_insert : 'x';
+		$insert_line[$pos]=($num_insert > 0) ? $num_insert : 'x';
 	}
-	else if ( $insert_line[$pos] < 10 )
+	else if ($insert_line[$pos] < 10)
 	{
 		$message=$lang['sudoku_no_change_starter'] . $redirect;
 		message_die(GENERAL_MESSAGE, $message);
@@ -311,10 +313,10 @@ if ( isset($_POST['input_num']) )
 
 	$inserted_line=implode('a',$insert_line);
 	// changed for blank number
-	//$points_addition= ( $type == 'insert' ) ? 10 : -15;
-	if ( $num_insert > -1 )
+	//$points_addition= ($type == 'insert') ? 10 : -15;
+	if ($num_insert > -1)
 	{
-		$points_addition= ( $type == 'insert' ) ? 10 : -15;
+		$points_addition= ($type == 'insert') ? 10 : -15;
 	}
 	else
 	{
@@ -327,7 +329,7 @@ if ( isset($_POST['input_num']) )
 	WHERE game_pack=$pack
 	AND game_num=$num
 	AND user_id=" . $userdata['user_id'];
-	if ( !$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error in updating Sudoku grid data', '', __LINE__, __FILE__, $sql);
 	}
@@ -341,12 +343,12 @@ WHERE user_id=" . $userdata['user_id'] . "
 ORDER BY game_pack DESC, game_num DESC
 LIMIT 1
 ";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 }
 $row=$db->sql_fetchrow($result);
-if ( !$row['user_id'] )
+if (!$row['user_id'])
 {
 	//
 	// insert user to database for first run
@@ -358,7 +360,7 @@ if ( !$row['user_id'] )
 	VALUES
 	(" . $userdata['user_id'] . ",1,1,1,'" . $lrow['line_1'] . "','" . $lrow['line_2'] . "','" . $lrow['line_3'] . "','" . $lrow['line_4'] . "','" . $lrow['line_5'] . "','" . $lrow['line_6'] . "','" . $lrow['line_7'] . "','" . $lrow['line_8'] . "','" . $lrow['line_9'] . "')
 	";
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 	}
@@ -370,7 +372,7 @@ if ( !$row['user_id'] )
 	$sql=" UPDATE " . USERS_TABLE . "
 	SET user_sudoku_playing=1
 	WHERE user_id=" . $userdata['user_id'];
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error inserting new user', '', __LINE__, __FILE__, $sql);
 	}
@@ -384,7 +386,7 @@ $num=$row['game_num'];
 $level=$row['game_level'];
 $curr_points=$row['points'];
 $and_clause='AND user_id=' . $userdata['user_id'];
-switch ( $level )
+switch ($level)
 {
 	case EASY:
 	$v_level=$lang['sudoku_level_easy'];
@@ -409,9 +411,9 @@ switch ( $level )
 //
 // are we resetting?
 //
-if ( $mode == 'reset' )
+if ($mode == 'reset')
 {
-	if ( !isset($_POST['confirm']) && !isset($_POST['cancel']) )
+	if (!isset($_POST['confirm']) && !isset($_POST['cancel']))
 	{
 		$template->set_filenames(array('body' => 'confirm_body.tpl'));
 
@@ -429,7 +431,7 @@ if ( $mode == 'reset' )
 		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		exit;
 	}
-	if ( isset($_POST['cancel']) )
+	if (isset($_POST['cancel']))
 	{
 		$message = $lang['sudoku_reset_cancelled'] . $redirect;
 		message_die(GENERAL_MESSAGE, $message);
@@ -442,7 +444,7 @@ if ( $mode == 'reset' )
 	AND game_pack=$pack
 	AND game_num=$num
 	";
-	if (!$db->sql_query($sql) )
+	if (!$db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Error resetting grid', '', __LINE__, __FILE__, $sql);
 	}
@@ -460,23 +462,23 @@ sudoku_starting_data($pack, $num, SUDOKU_USERS, $and_clause);
 // check for completed grid
 //
 
-if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $line[2]) && !in_array('x', $line[3]) && !in_array('x', $line[4]) &&
-!in_array('x', $line[5]) && !in_array('x', $line[6]) && !in_array('x', $line[7]) && !in_array('x', $line[8]) )
+if (!in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $line[2]) && !in_array('x', $line[3]) && !in_array('x', $line[4]) &&
+!in_array('x', $line[5]) && !in_array('x', $line[6]) && !in_array('x', $line[7]) && !in_array('x', $line[8]))
 {
 	// OK, so grid is complete, but is it right according to default grid solution?
 	$u_line=array();
 	// let's lower the user and random numbers to do the check
-	for ( $i=0; $i<9; $i++ )
+	for ($i=0; $i<9; $i++)
 	{
-		for ( $x=0; $x<9; $x++ )
+		for ($x=0; $x<9; $x++)
 		{
 			// first lower the random numbers
-			if ( $line[$i][$x] > 19 )
+			if ($line[$i][$x] > 19)
 			{
 				$line[$i][$x]=$line[$i][$x]-20;
 			}
 			// then the user numbers
-			if ( $line[$i][$x] > 9 )
+			if ($line[$i][$x] > 9)
 			{
 				$line[$i][$x]=$line[$i][$x]-10;
 			}
@@ -499,8 +501,8 @@ if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $lin
 	sudoku_starting_data($pack, $num, SUDOKU_SOLUTIONS, '');
 
 	// OK, so lets compare!
-	if ( $u_line[0] == $line[0] && $u_line[1] == $line[1] && $u_line[2] == $line[2] && $u_line[3] == $line[3] && $u_line[4] == $line[4] &&
-	$u_line[5] == $line[5] && $u_line[6] == $line[6] && $u_line[7] == $line[7] && $u_line[8] == $line[8] )
+	if ($u_line[0] == $line[0] && $u_line[1] == $line[1] && $u_line[2] == $line[2] && $u_line[3] == $line[3] && $u_line[4] == $line[4] &&
+	$u_line[5] == $line[5] && $u_line[6] == $line[6] && $u_line[7] == $line[7] && $u_line[8] == $line[8])
 	{
 		// success!
 		sudoku_grid_success($pack, $num, $curr_points, $redirect);
@@ -513,15 +515,15 @@ if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $lin
 		// if successful, then $wrong_required=false
 		// do the basic check on the 9 grids
 
-		$bad[]=( count(array_unique($test_line[0])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[1])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[2])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[3])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[4])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[5])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[6])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[7])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($test_line[8])) == 9 ) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[0])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[1])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[2])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[3])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[4])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[5])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[6])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[7])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($test_line[8])) == 9) ? 0 : 1;
 
 		// now we must create horizontal arrays
 		$hor_test=array();
@@ -544,15 +546,15 @@ if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $lin
 
 		$hor_test[8]=array($test_line[6][6],$test_line[6][7],$test_line[6][8],$test_line[7][6],$test_line[7][7],$test_line[7][8],$test_line[8][6],$test_line[8][7],$test_line[8][8]);
 
-		$bad[]=( count(array_unique($hor_test[0])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[1])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[2])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[3])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[4])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[5])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[6])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[7])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($hor_test[8])) == 9 ) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[0])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[1])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[2])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[3])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[4])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[5])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[6])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[7])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($hor_test[8])) == 9) ? 0 : 1;
 
 		// finally, vertical arrays
 		$ver_test=array();
@@ -575,17 +577,17 @@ if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $lin
 
 		$ver_test[8]=array($test_line[2][2],$test_line[2][5],$test_line[2][8],$test_line[5][2],$test_line[5][5],$test_line[5][8],$test_line[8][2],$test_line[8][5],$test_line[8][8]);
 
-		$bad[]=( count(array_unique($ver_test[0])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[1])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[2])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[3])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[4])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[5])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[6])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[7])) == 9 ) ? 0 : 1;
-		$bad[]=( count(array_unique($ver_test[8])) == 9 ) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[0])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[1])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[2])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[3])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[4])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[5])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[6])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[7])) == 9) ? 0 : 1;
+		$bad[]=(count(array_unique($ver_test[8])) == 9) ? 0 : 1;
 
-		if ( in_array(1, $bad) )
+		if (in_array(1, $bad))
 		{
 			$wrong_required=true;
 		}
@@ -595,15 +597,15 @@ if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $lin
 			sudoku_grid_success($pack, $num, $curr_points, $redirect);
 		}
 	}
-	if ( $wrong_required == true )
+	if ($wrong_required == true)
 	{
 		// OK, so we need to suss the wrong numbers according to our default solution
 		$u_line_insert=array();
-		for ( $i=0; $i<9; $i++ )
+		for ($i=0; $i<9; $i++)
 		{
-			for ( $x=0; $x<9; $x++ )
+			for ($x=0; $x<9; $x++)
 			{
-				if ( $line[$i][$x] != $u_line[$i][$x] )
+				if ($line[$i][$x] != $u_line[$i][$x])
 				{
 					$u_line[$i][$x]='x';
 					$points_minus=$points_minus+20;
@@ -620,7 +622,7 @@ if ( !in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $lin
 		AND game_pack=$pack
 		AND game_num=$num
 		";
-		if (!$db->sql_query($sql) )
+		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error inserting Sudoku userdata to database', '', __LINE__, __FILE__, $sql);
 		}
@@ -650,12 +652,12 @@ sudoku_grid_build();
 $sql=" SELECT * FROM " . SUDOKU_STATS . "
 ORDER BY points DESC LIMIT 10
 ";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 }
 $x=1;
-while ( $row=$db->sql_fetchrow($result) )
+while ($row=$db->sql_fetchrow($result))
 {
 	$stat_points=$row['points'];
 	$stat_played=$row['played'];
@@ -663,7 +665,7 @@ while ( $row=$db->sql_fetchrow($result) )
 
 	$sql_a=" SELECT username FROM " . USERS_TABLE . "
 	WHERE user_id=" . $row['user_id'];
-	if ( !($result_a = $db->sql_query($sql_a)) )
+	if (!($result_a = $db->sql_query($sql_a)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql_a);
 	}
@@ -676,7 +678,7 @@ while ( $row=$db->sql_fetchrow($result) )
 	ORDER BY game_pack DESC, game_num DESC
 	LIMIT 1
 	";
-	if ( !($result_a = $db->sql_query($sql_a)) )
+	if (!($result_a = $db->sql_query($sql_a)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql_a);
 	}
@@ -685,8 +687,8 @@ while ( $row=$db->sql_fetchrow($result) )
 	$stat_gamenum=$row_a['game_num'];
 
 	// send to template
-	$row_color = ( !($x % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
-	$row_class = ( !($x % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+	$row_color = (!($x % 2)) ? $theme['td_color1'] : $theme['td_color2'];
+	$row_class = (!($x % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$template->assign_block_vars('leaderboard', array(
 		'ROW_COLOR' => '#' . $row_color,
@@ -709,13 +711,13 @@ $s_users_active_now = count($s_users_active);
 $s_users_today_names = array();
 $name = array();
 $s_users_active_names = array();
-for ( $i=0; $i<count($s_users_today); $i++ )
+for ($i=0; $i<count($s_users_today); $i++)
 {
 	$sql=" SELECT username FROM " . USERS_TABLE . "
 	WHERE user_id=" . $s_users_today[$i] . "
 	ORDER BY username ASC
 	";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 	}
@@ -725,13 +727,13 @@ for ( $i=0; $i<count($s_users_today); $i++ )
 }
 asort($name);
 $name_keys=array_keys($name);
-for ( $i = 0; $i < count($name); $i++ )
+for ($i = 0; $i < count($name); $i++)
 {
 	$disp_userid=$name_keys[$i];
 	$s_users_today_names[]= colorize_username($disp_userid);
 }
 $active_name=array();
-for ( $i = 0; $i < count($s_users_active); $i++ )
+for ($i = 0; $i < count($s_users_active); $i++)
 {
 	$disp_userid=$s_users_active[$i];
 	$active_name[$disp_userid]=$name[$disp_userid];
@@ -739,7 +741,7 @@ for ( $i = 0; $i < count($s_users_active); $i++ )
 
 asort($active_name);
 $active_name_keys=array_keys($active_name);
-for ( $i = 0; $i < count($active_name); $i++ )
+for ($i = 0; $i < count($active_name); $i++)
 {
 	$disp_userid=$active_name_keys[$i];
 	$s_users_active_names[]= colorize_username($disp_userid);

@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists(imp_news_block_func))
+if(!function_exists('imp_news_block_func'))
 {
 	function imp_news_block_func()
 	{
@@ -29,39 +29,24 @@ if(!function_exists(imp_news_block_func))
 		@include_once(IP_ROOT_PATH . 'includes/news.' . PHP_EXT);
 
 		$template->_tpldata['no_news.'] = array();
-		//reset($template->_tpldata['no_news.']);
 		$template->_tpldata['news_categories.'] = array();
-		//reset($template->_tpldata['news_categories.']);
 		$template->_tpldata['newsrow.'] = array();
-		//reset($template->_tpldata['newsrow.']);
 		$template->_tpldata['newscol.'] = array();
-		//reset($template->_tpldata['newscol.']);
 		$template->_tpldata['news_detail.'] = array();
-		//reset($template->_tpldata['news_detail.']);
 		$template->_tpldata['news_archives.'] = array();
-		//reset($template->_tpldata['news_archives.']);
 		$template->_tpldata['arch.'] = array();
-		//reset($template->_tpldata['arch.']);
 		$template->_tpldata['year.'] = array();
-		//reset($template->_tpldata['year.']);
 		$template->_tpldata['month.'] = array();
-		//reset($template->_tpldata['month.']);
 		$template->_tpldata['day.'] = array();
-		//reset($template->_tpldata['day.']);
 		$template->_tpldata['no_articles.'] = array();
-		//reset($template->_tpldata['no_articles.']);
 		$template->_tpldata['articles.'] = array();
-		//reset($template->_tpldata['articles.']);
 		$template->_tpldata['comments.'] = array();
-		//reset($template->_tpldata['comments.']);
 		$template->_tpldata['pagination.'] = array();
-		//reset($template->_tpldata['pagination.']);
 
 		//$cms_config_var['md_news_cat_id'] = $cms_config_vars['md_news_cat_id'][$block_id];
 		$cms_config_var['md_news_number'] = (intval($cms_config_vars['md_news_number'][$block_id]) && ($cms_config_vars['md_news_number'][$block_id] > 0)) ? $cms_config_vars['md_news_number'][$block_id] : $board_config['news_item_num'];
 		$cms_config_var['md_news_sort'] = ($cms_config_vars['md_news_sort'][$block_id] == 1) ? '1' : '0';
-		$cms_config_var['md_news_length'] = (intval($cms_config_vars['md_news_length'][$block_id]) && ($cms_config_vars['md_news_length'][$block_id] > 0)) ? $cms_config_vars['md_news_length'][$block_id] : $board_config['news_item_trim'];
-
+		$cms_config_var['md_news_length'] = ((int) ($cms_config_vars['md_news_length'][$block_id] >= 0)) ? $cms_config_vars['md_news_length'][$block_id] : $board_config['news_item_trim'];
 		//unset($cms_config_var);
 
 		//$index_file = PORTAL_MG;

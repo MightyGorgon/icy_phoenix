@@ -26,12 +26,12 @@
 <!-- BEGIN attachrow -->
 <tr>
 	<td class="row1 row-center" align="center"><span class="gen">&nbsp;{attachrow.ROW_NUMBER}&nbsp;</span></td>
-	<td class="row1 row-center"><span class="gen">{attachrow.VIEW_ATTACHMENT}</span></td>
-	<td class="row1 row-center"><span class="gen">{attachrow.COMMENT}</b></span></td>
-	<td class="row1 row-center" align="center" valign="middle"><span class="gen">{attachrow.SIZE}</b></span></td>
-	<td class="row1 row-center" align="center" valign="middle"><span class="gen">{attachrow.DOWNLOAD_COUNT}</b></span></td>
+	<td class="row1"><span class="gen">{attachrow.VIEW_ATTACHMENT}</span></td>
+	<td class="row1"><span class="gen">{attachrow.COMMENT}</span></td>
+	<td class="row1 row-center" align="center" valign="middle"><span class="gen"><b>{attachrow.SIZE}</b></span></td>
+	<td class="row1 row-center" align="center" valign="middle"><span class="gen"><b>{attachrow.DOWNLOAD_COUNT}</b></span></td>
 	<td class="row1 row-center" valign="middle"><span class="gensmall">{attachrow.POST_TIME}</span></td>
-	<td class="row1 row-center" valign="middle"><span class="gen">{attachrow.POST_TITLE}</span></td>
+	<td class="row1" valign="middle"><span class="gen">{attachrow.POST_TITLE}</span></td>
 </tr>
 <!-- END attachrow -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

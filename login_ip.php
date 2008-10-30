@@ -21,27 +21,10 @@ init_userprefs($userdata);
 // End session management
 
 // session id check
-if (!empty($_POST['sid']) || !empty($_GET['sid']))
-{
-	$sid = (!empty($_POST['sid'])) ? $_POST['sid'] : $_GET['sid'];
-}
-else
-{
-	$sid = '';
-}
+$sid = request_var('sid', '');
 
-if (!empty($_POST['redirect']))
-{
-	$redirect_url = str_replace(PHP_EXT . '&', PHP_EXT . '?', str_replace('?', '&', str_replace('&amp;', '&', urldecode($_POST['redirect']))));
-}
-elseif (!empty($_GET['redirect']))
-{
-	$redirect_url = str_replace(PHP_EXT . '&', PHP_EXT . '?', str_replace('?', '&', str_replace('&amp;', '&', urldecode($_GET['redirect']))));
-}
-else
-{
-	$redirect_url = '';
-}
+$redirect = request_var('redirect', '');
+$redirect_url = (!empty($redirect) ? urldecode(str_replace(array('&amp;', '?', PHP_EXT . '&'), array('&', '&', PHP_EXT . '?'), $redirect)) : '');
 
 if (strstr($redirect_url, "\n") || strstr($redirect_url, "\r") || strstr($redirect_url, ';url'))
 {
@@ -260,7 +243,7 @@ else
 
 		$username = ($userdata['user_id'] != ANONYMOUS) ? $userdata['username'] : '';
 
-		$s_hidden_fields = '<input type="hidden" name="redirect" value="' . $forward_page . '" />';
+		$s_hidden_fields = '<input type="hidden" name="redirect" value="' . htmlspecialchars($forward_page) . '" />';
 		$s_hidden_fields .= (isset($_GET['admin'])) ? '<input type="hidden" name="admin" value="1" />' : '';
 
 		make_jumpbox(VIEWFORUM_MG);

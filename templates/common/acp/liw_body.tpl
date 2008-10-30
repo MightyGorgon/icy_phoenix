@@ -18,10 +18,8 @@
 	<td class="row1" width="40%"><b>{L_OPENSSL}</b><br /><span class="gensmall">{L_OPENSSL_EXPLAIN}</span></td>
 	<td class="row2" width="60%"><span class="genmed"><b>{L_COMP_OPENSSL_STATUS}</b><br /><span class="gensmall">{L_COMP_OPENSSL_TEXT}</span></td>
 </tr>
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>
-
-<br />
-<br />
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="3">{L_MOD_CONFIG}</th></tr>
@@ -61,5 +59,4 @@
 	</td>
 </tr>
 </table>
-
 <br />

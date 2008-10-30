@@ -459,7 +459,7 @@ function setup_style($style)
 			$sql = 'SELECT *
 				FROM ' . THEMES_TABLE . '
 				WHERE themes_id = ' . (int) $board_config['default_style'];
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(CRITICAL_ERROR, 'Could not query database for theme info');
 			}
@@ -471,7 +471,7 @@ function setup_style($style)
 				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_style = ' . (int) $board_config['default_style'] . "
 					WHERE user_style = $style";
-				if ( !($result = $db->sql_query($sql)) )
+				if (!($result = $db->sql_query($sql)))
 				{
 					message_die(CRITICAL_ERROR, 'Could not update user theme info');
 				}

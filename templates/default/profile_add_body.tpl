@@ -276,9 +276,7 @@
 	<td class="row2"><span class="gen">{S_BIRTHDAY}</span></td>
 </tr>
 <!-- BEGIN switch_custom_fields -->
-<tr>
-	<td class="row3" colspan="2"><span class="gensmall">{switch_custom_fields.L_CUSTOM_FIELD_NOTICE}</span></td>
-</tr>
+<tr><td class="row3" colspan="2"><span class="gensmall">{switch_custom_fields.L_CUSTOM_FIELD_NOTICE}</span></td></tr>
 <!-- END switch_custom_fields -->
 <!-- BEGIN custom_fields -->
 <tr>
@@ -287,9 +285,7 @@
 		<br /><span class="gensmall">{custom_fields.switch_description.DESCRIPTION}</span>
 		<!-- END switch_description -->
 	</td>
-	<td class="row2">
-		{custom_fields.FIELD}
-	</td>
+	<td class="row2">{custom_fields.FIELD}</td>
 </tr>
 <!-- END custom_fields -->
 

@@ -190,7 +190,7 @@ if ($highlight_match)
 {
 	// This was shamelessly 'borrowed' from volker at multiartstudio dot de
 	// via php.net's annotated manual
-	$article = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . $highlight_match . ")\b#i', '<span style=\"color:#" . $theme['fontcolor3'] . "\"><b>\\\\1</b></span>', '\\0')", '>' . $article . '<'), 1, -1));
+	$article = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . $highlight_match . ")\b#i', '<span class=\"highlight-w\"><b>\\\\1</b></span>', '\\0')", '>' . $article . '<'), 1, -1));
 }
 
 // Replace naughty words
@@ -213,7 +213,7 @@ if ( $highlight_match )
 {
 	// This was shamelessly 'borrowed' from volker at multiartstudio dot de
 	// via php.net's annotated manual
-	$article = str_replace( '\"', '"', substr( preg_replace( '#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace('#\b(" . $highlight_match . ")\b#i', '<span style=\"color:#" . $theme['fontcolor3'] . "\"><b>\\\\1</b></span>', '\\0')", '>' . $article . '<' ), 1, -1 ) );
+	$article = str_replace( '\"', '"', substr( preg_replace( '#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace('#\b(" . $highlight_match . ")\b#i', '<span class=\"highlight-w\"><b>\\\\1</b></span>', '\\0')", '>' . $article . '<' ), 1, -1 ) );
 }
 
 $page_title = $article_title;
