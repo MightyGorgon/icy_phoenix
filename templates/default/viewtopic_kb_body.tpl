@@ -6,7 +6,8 @@ function post_time_edit(url)
 }
 //-->
 </script>
-<!-- INCLUDE viewtopic_nav.tpl -->
+<!-- INCLUDE breadcrumbs_vt.tpl -->
+<br clear="all" />
 
 <!--
 <br />
@@ -159,7 +160,7 @@ if(GetCookie(tmp) == '2')
 </tr>
 </table>
 
-<!-- INCLUDE viewtopic_nav.tpl -->
+<!-- INCLUDE breadcrumbs_vt.tpl -->
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>

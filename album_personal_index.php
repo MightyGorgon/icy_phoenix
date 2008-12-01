@@ -89,6 +89,9 @@ $select_sort_order .= '</select>';
 $page_title = $lang['Album'];
 $meta_description = '';
 $meta_keywords = '';
+$nav_server_url = create_server_url();
+$album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_personal_index.' . PHP_EXT) . '" class="nav-current">' . $lang['Users_Personal_Galleries'] . '</a>';
+$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_personal_index_body.tpl'));
@@ -106,7 +109,7 @@ $template->assign_vars(array(
 	)
 );
 
-switch( $mode )
+switch($mode)
 {
 	case 'joined':
 		$order_by = "user_regdate ASC LIMIT $start, " . $board_config['topics_per_page'];
@@ -133,14 +136,14 @@ $sql = "SELECT u.username, u.user_id, u.user_regdate, COUNT(p.pic_id) AS pics, M
 		GROUP BY user_id
 		ORDER BY $order_by";
 
-if( !($result = $db->sql_query($sql)) )
+if(!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
 }
 
 $memberrow = array();
 
-while( $row = $db->sql_fetchrow($result) )
+while($row = $db->sql_fetchrow($result))
 {
 	$memberrow[] = $row;
 }
@@ -164,12 +167,12 @@ $sql = "SELECT COUNT(DISTINCT u.user_id) AS total
 			AND c.cat_user_id = u.user_id
 			AND c.cat_id = p.pic_cat_id";
 
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Error getting total galleries', '', __LINE__, __FILE__, $sql);
 }
 
-if ( $total = $db->sql_fetchrow($result) )
+if ($total = $db->sql_fetchrow($result))
 {
 	$total_galleries = $total['total'];
 
@@ -182,9 +185,7 @@ $template->assign_vars(array(
 	)
 );
 
-//
 // Generate the page
-//
 $template->pparse('body');
 
 include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);

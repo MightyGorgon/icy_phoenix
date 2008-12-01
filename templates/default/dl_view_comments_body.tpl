@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_TOP}">{L_DOWNLOADS}</a>{NAV_SEP}<a href="{U_CAT_LINK}">{CAT_NAME}</a>{NAV_SEP}<a href="{U_DL_LINK}" class="nav-current">{DESCRIPTION}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <form action="{S_FORM_ACTION}" method="post" name="comments_view">
 {IMG_THL}{IMG_THC}<span class="forumlink">{DESCRIPTION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -40,13 +30,3 @@
 <br />
 {S_HIDDEN_FIELDS}
 </form>
-
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_TOP}">{L_DOWNLOADS}</a>{NAV_SEP}<a href="{U_CAT_LINK}">{CAT_NAME}</a>{NAV_SEP}<a href="{U_DL_LINK}" class="nav-current">{DESCRIPTION}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}

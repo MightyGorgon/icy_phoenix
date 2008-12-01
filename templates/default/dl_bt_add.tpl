@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_INDEX}">{L_DOWNLOADS}</a>{NAV_SEP}<a href="{U_BUG_TRACKER}" class="nav-current">{L_BUG_TRACKER}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <form action="{S_FORM_ACTION}" method="post" name="add_new_report">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_ADD_REPORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -82,15 +72,4 @@
 
 {S_HIDDEN_FIELDS}
 </form>
-
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_INDEX}">{L_DOWNLOADS}</a>{NAV_SEP}<a href="{U_BUG_TRACKER}" class="nav-current">{L_BUG_TRACKER}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <br />

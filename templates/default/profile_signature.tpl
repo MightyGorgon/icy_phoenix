@@ -1,32 +1,10 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}<a href="#" class="nav-current">{SIG_EDIT}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 <!-- BEGIN switch_current_sig -->
 <form method="post" action="{SIG_LINK}" name="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{SIG_CURRENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row2" width="100%" valign="bottom"><span class="gen">{CURRENT_PREVIEW}</span></td></tr>
-<tr>
-	<td class="row-post-buttons post-buttons">
-		<a href="#">{PROFIL_IMG}</a>
-		<a href="#"> {EMAIL_IMG}</a>
-		<a href="#"> {PM_IMG}</a>
-		<a href="#"> {WWW_IMG}</a>
-		<a href="#"> {AIM_IMG}</a>
-		<a href="#"> {YIM_IMG}</a>
-		<a href="#"> {MSN_IMG}</a>
-		<a href="#"> {SKYPE_IMG}</a>
-		<a href="#"> {ICQ_IMG}</a>
-	</td>
-</tr>
+<tr><td class="row2" width="100%" valign="bottom"><span class="gen">{CURRENT_PREVIEW}</span><br /><br /></td></tr>
+<tr><td class="cat">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <br />
@@ -68,22 +46,9 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{SIG_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" width="140" height="140"><span class="gen">{L_SIGNATURE}:</span></td>
-	<td class="row2" width="520" valign="bottom"><span class="gen">{REAL_PREVIEW}</span></td>
+	<td class="row2" width="520" valign="bottom"><span class="gen">{REAL_PREVIEW}</span><br /><br /></td>
 </tr>
-<tr>
-	<td class="row1" width="140" height="20">&nbsp;</td>
-	<td class="row-post-buttons post-buttons">
-		<a href="#">{PROFIL_IMG}</a>
-		<a href="#"> {EMAIL_IMG}</a>
-		<a href="#"> {PM_IMG}</a>
-		<a href="#"> {WWW_IMG}</a>
-		<a href="#"> {AIM_IMG}</a>
-		<a href="#"> {YIM_IMG}</a>
-		<a href="#"> {MSN_IMG}</a>
-		<a href="#"> {SKYPE_IMG}</a>
-		<a href="#"> {ICQ_IMG}</a>
-	</td>
-</tr>
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <br />

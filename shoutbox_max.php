@@ -14,6 +14,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 define('NUM_SHOUT', 20);
 
@@ -74,9 +75,7 @@ else
 	$mode = '';
 }
 
-//
 // Set toggles for various options
-//
 if (!$board_config['allow_html'])
 {
 	$html_on = 0;
@@ -269,7 +268,7 @@ elseif ($mode=='delete' || $mode=='censor')
 		message_die(GENERAL_MESSAGE, 'Not allowed.', '', __LINE__, __FILE__);
 	}
 }
-elseif ($mode=='ip')
+elseif ($mode == 'ip')
 {
 	//	show the ip
 	if (!$is_auth['auth_mod'])
@@ -359,9 +358,7 @@ elseif ($mode=='ip')
 		while ($row = $db->sql_fetchrow($result));
 	}
 
-	//
 	// Get other users who've posted under this IP
-	//
 	$sql = "SELECT u.user_id, u.username, COUNT(*) as postings
 		FROM " . USERS_TABLE ." u, " . POSTS_TABLE . " p
 		WHERE p.poster_id = u.user_id
@@ -380,8 +377,7 @@ elseif ($mode=='ip')
 		do
 		{
 			$id = $row['user_id'];
-//				$username = ($id == ANONYMOUS) ? $lang['Guest'] : $row['username'];
-			$shout_username = ($id == ANONYMOUS && $row['username'] == '') ? $lang['Guest'] : $row['username'];
+			$shout_username = ($id == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 
 			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
@@ -393,6 +389,7 @@ elseif ($mode=='ip')
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
 				'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], $shout_username),
 
+				'U_PROFILE_COL' => colorize_username($id),
 				'U_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $id),
 				'U_SEARCHPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode($shout_username) . '&amp;showresults=topics')
 				)
@@ -442,7 +439,6 @@ if (!($result = $db->sql_query($sql, false, 'ranks_')))
 {
 	message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
 }
-
 $ranksrow = array();
 while ($row = $db->sql_fetchrow($result))
 {
@@ -528,14 +524,20 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$user_id = $shout_row['shout_user_id'];
 	$shout_username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['shout_user_id']) ;
 
-	$user_profile = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id);
+	$user_info = array();
+	$user_info = generate_user_info($shout_row);
+	foreach ($user_info as $k => $v)
+	{
+		$$k = $v;
+	}
+
 	$user_posts = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $shout_row['user_posts'] : '';
 	$user_from = ($shout_row['user_from'] && $shout_row['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $shout_row['user_from'] : '';
 	$user_joined = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $shout_row['user_regdate'], $board_config['board_timezone']) : '';
 
-	$user_avatar = user_get_avatar($shout_row['user_id'], $shout_row['user_avatar'], $shout_row['user_avatar_type'], $shout_row['user_allowavatar']);
+	$user_avatar = $user_info['avatar'];
 
-	$shout = (! $shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'].(($is_auth['auth_mod']) ? '<br/><hr/><br/>'.$shout_row['shout_text'] : '');
+	$shout = (! $shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'] . (($is_auth['auth_mod']) ? '<br /><hr /><br />' . $shout_row['shout_text'] : '');
 	$user_sig = ($shout_row['enable_sig'] && $shout_row['user_sig'] != '' && $board_config['allow_sig']) ? $shout_row['user_sig'] : '';
 
 	$rank_image = '';
@@ -606,33 +608,37 @@ while ($shout_row = $db->sql_fetchrow($result))
 	//$shout = kb_word_wrap_pass($shout);
 	if ($is_auth['auth_mod'] && $is_auth['auth_delete'])
 	{
-		$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
-		$ip_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_ip'] . '" alt="' . $lang['View_IP'] . '" title="' . $lang['View_IP'] . '" /></a>';
-		$ip = '<a href="' . $temp_url . '">' . $lang['View_IP'] . '</a>';
+		$ip_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+		$ip_img = '<a href="' . $ip_url . '"><img src="' . $images['icon_ip'] . '" alt="' . $lang['View_IP'] . '" title="' . $lang['View_IP'] . '" /></a>';
+		$ip = '<a href="' . $ip_url . '">' . $lang['View_IP'] . '</a>';
 
-		$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=delete&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
-		$delshout_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>&nbsp;';
-		$delshout = '<a href="' . $temp_url . '">' . $lang['Delete_post'] . '</a>';
+		$delshout_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=delete&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+		$delshout_img = '<a href="' . $delshout_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>&nbsp;';
+		$delshout = '<a href="' . $delshout_url . '">' . $lang['Delete_post'] . '</a>';
 
-		$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
-		$censorshout_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_censor'] . '" alt="' . $lang['Censor'] . '" title="' . $lang['Censor'] . '" /></a>&nbsp;';
-		$censorshout = '<a href="' . $temp_url . '">' . $lang['Delete_post'] . '</a>';
+		$censorshout_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+		$censorshout_img = '<a href="' . $censorshout_url . '"><img src="' . $images['icon_censor'] . '" alt="' . $lang['Censor'] . '" title="' . $lang['Censor'] . '" /></a>&nbsp;';
+		$censorshout = '<a href="' . $censorshout_url . '">' . $lang['Delete_post'] . '</a>';
 	}
 	else
 	{
+		$ip_url = '';
 		$ip_img = '';
 		$ip = '';
 
 		if (($userdata['user_id'] == $user_id && $is_auth['auth_delete']) && ($userdata['user_id'] != ANONYMOUS || ($userdata['user_id'] == ANONYMOUS && $userdata['session_ip'] == $shout_row['shout_ip'])))
 		{
-			$temp_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
-			$censorshout_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_censor'] . '" alt="' . $lang['Censor'] . '" title="' . $lang['Censor'] . '" /></a>&nbsp;';
-			$censorshout = '<a href="' . $temp_url . '">' . $lang['Delete_post'] . '</a>';
+			$censorshout_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
+			$censorshout_img = '<a href="' . $censorshout_url . '"><img src="' . $images['icon_censor'] . '" alt="' . $lang['Censor'] . '" title="' . $lang['Censor'] . '" /></a>&nbsp;';
+			$censorshout = '<a href="' . $censorshout_url . '">' . $lang['Delete_post'] . '</a>';
 		}
 		else
 		{
+			$delshout_url = '';
 			$delshout_img = '';
 			$delshout = '';
+
+			$censorshout_url = '';
 			$censorshout_img = '';
 			$censorshout = '';
 		}
@@ -644,19 +650,23 @@ while ($shout_row = $db->sql_fetchrow($result))
 		'SHOUT' => $shout,
 		'TIME' => create_date2($board_config['default_dateformat'], $shout_row['shout_session_time'], $board_config['board_timezone']),
 		'SHOUT_USERNAME' => $shout_username,
-		'U_VIEW_USER_PROFILE' => $user_profile,
+		'GENDER' => $gender,
+		'AVATAR' => $user_avatar,
 		'RANK_IMAGE' => $rank_image,
-		'IP_IMG' => $ip_img,
-		'IP' => $ip,
+		'JOINED' => $user_joined,
+		'POSTS' => $user_posts,
+		'FROM' => $user_from,
 
+		'IP_IMG' => $ip_img,
+		'IP_URL' => $ip_url,
+		'IP' => $ip,
 		'DELETE_IMG' => $delshout_img,
+		'DELETE_URL' => $delshout_url,
 		'DELETE' => $delshout,
 		'CENSOR_IMG' => $censorshout_img,
+		'CENSOR_URL' => $censorshout_url,
 		'CENSOR' => $censorshout,
-		'USER_JOINED' => $user_joined,
-		'USER_POSTS' => $user_posts,
-		'USER_FROM' => $user_from,
-		'USER_AVATAR' => $user_avatar,
+		'U_VIEW_USER_PROFILE' => $user_profile,
 		'U_SHOUT_ID' => $shout_row['shout_id']
 		)
 	);
@@ -690,6 +700,10 @@ $template->assign_vars(array(
 	'L_SHOUT_TEXT' => $lang['Shout_text'],
 	'L_SHOUT_REFRESH' => $lang['Shout_refresh'],
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
+
+	'L_CENSOR' => $lang['Censor'],
+	'L_DELETE' => $lang['Delete_post'],
+	'L_VIEW_IP' => $lang['View_IP'],
 
 	'SMILIES_STATUS' => $smilies_status,
 	'L_EMPTY_MESSAGE' => $lang['Empty_message'],

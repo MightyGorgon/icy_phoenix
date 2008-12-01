@@ -1,11 +1,3 @@
-<div class="forumline nav-div">
-	<p class="nav-header"><a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}" class="nav">{L_ALBUM}</a>{NAV_CAT_DESC}</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>
-
 <a name="TopPic"></a>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{NEXT_PIC}&nbsp;&nbsp;{PIC_TITLE}&nbsp;&nbsp;{PREV_PIC}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

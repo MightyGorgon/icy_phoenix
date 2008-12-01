@@ -247,6 +247,9 @@ $lang = array();
 $nav_links = array();
 $dss_seeded = false;
 $gen_simple_header = false;
+$breadcrumbs_address = '';
+$breadcrumbs_links_left = '';
+$breadcrumbs_links_right = '';
 //<!-- BEGIN Unread Post Information to Database Mod -->
 $unread = array();
 //<!-- END Unread Post Information to Database Mod -->
@@ -260,14 +263,7 @@ if(!defined('IP_INSTALLED'))
 }
 
 include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
-if (defined('PHPBB_TEMPLATE'))
-{
-	include(IP_ROOT_PATH . 'includes/phpbb_template.' . PHP_EXT);
-}
-else
-{
-	include(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
-}
+include(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_categories_hierarchy.' . PHP_EXT);
@@ -317,6 +313,8 @@ if ((defined('IN_ADMIN') || defined('IN_CMS')) && !defined('ACP_MODULES'))
 		$db->clear_cache('auth_');
 		$db->clear_cache('cms_config_');
 		$db->clear_cache('ct_config_');
+		$db->clear_cache('cat_');
+		$db->clear_cache('forums_');
 		$db->clear_cache('smileys_');
 		$db->clear_cache('themes_');
 	}

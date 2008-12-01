@@ -46,13 +46,6 @@ function checkFormRate()
 // -->
 </script>
 
-<div class="forumline nav-div">
-	<p class="nav-header"><a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}" class="nav">{L_ALBUM}</a>{NAV_CAT_DESC}</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left">&nbsp;</td>
@@ -244,7 +237,7 @@ function checkFormRate()
 	<td class="row1 row-center" width="20%"><br /><br /><br /><br />{BBCB_SMILEYS_MG}</td>
 	<td class="row2" valign="top">
 		{BBCB_MG}
-		<textarea name="message" rows="15" cols="35" wrap="virtual" style="width:98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{S_MESSAGE}</textarea>
+		<textarea name="message" rows="15" cols="35" wrap="virtual" style="width:96%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{S_MESSAGE}</textarea>
 	</td>
 </tr>
 <tr><td class="cat" align="center" colspan="2" height="28"><input class="mainoption" type="submit" name="submit" value="{L_SUBMIT}" /></td></tr>

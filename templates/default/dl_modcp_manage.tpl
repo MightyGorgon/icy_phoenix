@@ -9,19 +9,6 @@
 	}
 </script>
 
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_NAV1}">{L_NAV1}</a>{NAV_SEP}<a href="{U_NAV2}">{L_NAV2}</a>{NAV_SEP}<a href="{U_NAV3}" class="nav-current">{L_NAV3}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- BEGIN sort_asc -->
-		<a href="{U_SORT_ASC}" class="gensmall">{L_DL_ABC}</a> ::
-		<!-- END sort_asc -->
-		<a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
-	</div>
-</div>{IMG_TBR}
-
 <form method="post" name="dl_modcp" action="{S_DL_MODCP_ACTION}" >
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_NAV3}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -30,7 +17,7 @@
 </tr>
 <!-- BEGIN manage_row -->
 <tr>
-	<td class="{manage_row.ROW_CLASS}"><a href="{manage_row.U_DOWNLOAD}" class="topictitle">{manage_row.DESCRIPTION}</a>&nbsp;{manage_row.MINI_ICON}</td>
+	<td class="{manage_row.ROW_CLASS}"><a href="{manage_row.U_DOWNLOAD}" class="topiclink">{manage_row.DESCRIPTION}</a>&nbsp;{manage_row.MINI_ICON}</td>
 	<td class="{manage_row.ROW_CLASS} row-center" width="10%"><a href="{manage_row.U_UP}" class="gensmall">{L_DL_UP}</a></td>
 	<td class="{manage_row.ROW_CLASS} row-center" width="10%"><a href="{manage_row.U_DOWN}" class="gensmall">{L_DL_DOWN}</a></td>
 	<td class="{manage_row.ROW_CLASS} row-center" width="10%"><a href="{manage_row.U_EDIT}">{manage_row.EDIT_IMG}</a></td>
@@ -58,10 +45,7 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">
-		<!-- BEGIN sort_asc -->
-		<a href="{U_SORT_ASC}" class="gensmall">{L_DL_ABC}</a> ::
-		<!-- END sort_asc -->
-		<a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
+		<!-- BEGIN sort_asc --><a href="{U_SORT_ASC}" class="gensmall">{L_DL_ABC}</a>&nbsp;::&nbsp;<!-- END sort_asc --><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
 		</span><br /><br /><span class="pagination">{PAGINATION}</span>
 	</td>
 </tr>

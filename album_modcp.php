@@ -398,6 +398,8 @@ if ($mode == '')
 	$page_title = $lang['Album'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">' . $thiscat['cat_title'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_modcp_body.tpl'));

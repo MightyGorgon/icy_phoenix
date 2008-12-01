@@ -1,18 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_TOP}">{L_DL_TOP}</a>{U_DL_CAT}
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- BEGIN modcp -->
-		<span class="gensmall">[ {modcp.DL_MODCP} ]</span>
-		<!-- END modcp -->
-		<!-- BEGIN cat_traffic -->
-		&nbsp;|&nbsp;<span class="gensmall">[ {cat_traffic.CAT_TRAFFIC} ]</span>
-		<!-- END cat_traffic -->
-	</div>
-</div>{IMG_TBR}
-
 <!-- BEGIN cat_rule -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_BOARDRULES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1"><br /><div class="post-text">{cat_rule.CAT_RULE}</div><br /></td></tr>
@@ -78,4 +63,5 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END download_rows -->
+<div class="gensmall" style="width: 100%; text-align: left;"><!-- BEGIN cat_traffic --><span style="float: right;">{cat_traffic.CAT_TRAFFIC}&nbsp;</span><!-- END cat_traffic --><!-- BEGIN modcp --><span class="gensmall">{modcp.DL_MODCP}&nbsp;</span><!-- END modcp --></div>
 </form>

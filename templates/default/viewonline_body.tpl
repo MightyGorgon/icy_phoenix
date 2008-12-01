@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_VIEWONLINE}" class="nav-current">{L_WHO_IS_ONLINE}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;<a href="{U_RECENT}" class="gensmall">{L_RECENT}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_UNANSWERED}" class="gensmall">{L_SEARCH_UNANSWERED}</a>
-	</div>
-</div>{IMG_TBR}
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_WHO_IS_ONLINE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th width="35%">{L_USERNAME}</th>

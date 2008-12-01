@@ -1,14 +1,5 @@
 <!-- INCLUDE pa_header.tpl -->
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a>{NAV_SEP}<a href="#" class="nav-current">{L_TOPLIST}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
-
+<!-- INCLUDE pa_links.tpl -->
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_TOPLIST}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td colspan="7" class="row1 row-center"><span class="gen"><b>{L_CURRENT_TOPLIST} - {L_NEW_FILES}</b></span></td></tr>
@@ -61,7 +52,7 @@
 </tr>
 	<!-- BEGIN files_row -->
 <tr>
-	<td class="row1 row-center" width="30"><a href="{files_row.U_FILE}" class="topictitle">{files_row.PIN_IMAGE}</a></td>
+	<td class="row1 row-center" width="30"><a href="{files_row.U_FILE}" class="topiclink">{files_row.PIN_IMAGE}</a></td>
 	<td class="row1h{files_row.XS_NEW} row-forum" onclick="window.location.href='{files_row.U_CAT}'" width="35%"><span class="forumlink"><a href="{files_row.U_CAT}" class="forumlink{files_row.XS_NEW}">{files_row.CAT_NAME}</a></span>&nbsp;</td>
 
 	<td class="row1h{files_row.XS_NEW} row-forum" onclick="window.location.href='{files_row.U_FILE}'" width="60%"><span class="forumlink"><a href="{files_row.U_FILE}" class="forumlink{files_row.XS_NEW}">{files_row.FILE_NAME}</a></span>&nbsp;

@@ -21,6 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 define('IN_ALBUM', true);
+define('ALBUM_NAV_ARROW', $lang['Nav_Separator']);
 
 if (!defined('IMG_THUMB'))
 {

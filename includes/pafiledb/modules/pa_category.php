@@ -29,7 +29,7 @@ class pafiledb_category extends pafiledb_public
 		{
 			$cat_id = intval($_REQUEST['cat_id']);
 		}
-		else if ($file_id == 0 && $action != '')
+		elseif ($file_id == 0 && $action != '')
 		{
 			$cat_id_array = array();
 			$cat_id_array = explode('=', $action);
@@ -43,7 +43,7 @@ class pafiledb_category extends pafiledb_public
 		$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
 		$start = ($start < 0) ? 0 : $start;
 
-		if( isset($_REQUEST['sort_method']) )
+		if(isset($_REQUEST['sort_method']))
 		{
 			switch ($_REQUEST['sort_method'])
 			{
@@ -108,9 +108,9 @@ class pafiledb_category extends pafiledb_public
 			}
 		}
 
-		if( (!$this->auth[$cat_id]['auth_read']) && (!$show_category) )
+		if((!$this->auth[$cat_id]['auth_read']) && (!$show_category))
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=category&cat_id=' . $cat_id, true));
 			}

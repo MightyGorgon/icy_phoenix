@@ -2,14 +2,14 @@
 <br />
 <!-- BEGIN ip_check -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RATE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><th colspan="4">{L_RATE}</th></tr>
+<tr><th>{L_RATE}</th></tr>
 </table>
 <!-- END ip_check -->
 
 <!-- BEGIN do_rate -->
 <table class="forumline" width="100%" cellspacing="0">
-<tr><td colspan="6" class="row-header"><span>{L_RATE}</span></td></tr>
-<tr><th colspan="4">{L_RATE}</th></tr>
+<tr><td class="row-header"><span>{L_RATE}</span></td></tr>
+<tr><th>{L_RATE}</th></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END do_rate -->
 
@@ -36,7 +36,7 @@
 		<input type="hidden" name="rate" value="dorate" />
 	</td>
 </tr>
-<tr><td colspan="4" class="catBottom"><input class="liteoption" type="submit" value="{L_RATE}" name="B1" /></td></tr>
+<tr><td colspan="4" class="cat"><input class="liteoption" type="submit" value="{L_RATE}" name="B1" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <!-- END rate -->

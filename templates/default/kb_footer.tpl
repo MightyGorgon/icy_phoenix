@@ -5,20 +5,11 @@
 			<td align="left" valign="top">
 				<!-- BEGIN quick_nav -->
 				<form method="get" name="jumpbox" action="{QUICK_JUMP_ACTION}" onsubmit="if(document.jumpbox.cat.value == -1){return false;}">
-					<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-						<tr>
-							<td nowrap="nowrap">
-								<span class="genmed">{L_QUICK_NAV}&nbsp;
-									<select name="cat" onchange="if(this.options[this.selectedIndex].value != 0){ forms['jumpbox'].submit() }">
-										<option value="0">{L_QUICK_JUMP}</otpion>
-										{QUICK_NAV}
-									</select>
-									{S_HIDDEN_VARS}
-									<input type="submit" value="{L_QUICK_JUMP}" class="liteoption" />
-								</span>
-							</td>
-						</tr>
-					</table>
+				<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<td nowrap="nowrap"><span class="genmed">{L_QUICK_NAV}&nbsp;<select name="cat" onchange="if(this.options[this.selectedIndex].value != 0){ forms['jumpbox'].submit() }"><option value="0">{L_QUICK_JUMP}</option>{QUICK_NAV}</select>{S_HIDDEN_VARS}<input type="submit" value="{L_QUICK_JUMP}" class="liteoption" /></span></td>
+				</tr>
+				</table>
 				</form>
 				<!-- END quick_nav -->
 			</td>

@@ -51,6 +51,7 @@ $files_array = array(
 	'cpl_menu.php',
 	'db_generator.php',
 	'edit_post_time.php',
+	'site_hist.php',
 	'subscp.php',
 	'uptime.php',
 	'usercp.php',
@@ -82,6 +83,13 @@ $files_array = array(
 	'images/fap/fap_prev.gif',
 	'images/fap/fap_nothumbnail.jpg',
 	'images/smiles/makepak.php',
+
+	'includes/functions_color_groups.php',
+	'includes/functions_module.php',
+	'includes/functions_portal.php',
+	'includes/functions_profile_fields.php',
+	'includes/news_common.php',
+	'includes/phpbb_template.php',
 
 	'includes/album_mod/album_bbcode.php',
 	'includes/album_mod/fap_loader.js',
@@ -130,11 +138,6 @@ $files_array = array(
 	'includes/album_mod/rating_star_yellow.png',
 	'includes/album_mod/spacer.gif',
 
-	'includes/functions_color_groups.php',
-	'includes/functions_portal.php',
-	'includes/functions_profile_fields.php',
-	'includes/news_common.php',
-
 	'includes/upi2db/upi2db_orig_xs.php',
 
 	'templates/common/acp/admin_similar_topics_body.tpl',
@@ -180,14 +183,23 @@ for ($i = 0; $i < count($languages_array); $i++)
 
 for ($i = 0; $i < count($templates_array); $i++)
 {
+	$files_array[] = 'templates/' . $templates_array[$i] . '/breadcrumbs.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/breadcrumbs_a.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/breadcrumbs_i.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/cms_block_inc_nav.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/db_generator_body.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/edit_post_time_body.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/faq_dhtml.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/news_.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/pa_quickdl_cat_body.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_header.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_headercenter.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_headerleft.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_tail.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_tailcenter.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_tailright.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/site_hist.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/viewtopic_nav.tpl';
 
 	$files_array[] = 'templates/' . $templates_array[$i] . '/xs/index.htm';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/xs/index.html';

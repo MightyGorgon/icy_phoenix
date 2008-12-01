@@ -316,6 +316,9 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	$page_title = $lang['Album'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '" class="nav-current">' . $thiscat['cat_title'] . '</a>';
+	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'album_upload_body.tpl'));
@@ -1230,7 +1233,7 @@ else
 		{
 			$sql = "SELECT COUNT(pic_id) AS count
 				FROM " . ALBUM_TABLE . "
-				WHERE pic_user_id = '". $userdata['user_id'] ."'
+				WHERE pic_user_id = '" . $userdata['user_id'] . "'
 				AND pic_cat_id = '" . $cat_id . "'";
 			if(!$result = $db->sql_query($sql))
 			{
@@ -1251,7 +1254,7 @@ else
 			$cat_user_id = $usercat['cat_user_id'];
 
 			// Update the users personal_pics_count
-			if (!empty ($userpics) || $userpics == 0)
+			if (!empty($userpics) || ($userpics == 0))
 			{
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_personal_pics_count = '" . $userpics . "'
@@ -1268,7 +1271,7 @@ else
 		if ($album_config['email_notification'])
 		{
 			$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
-							WHERE pic_filename = '" . $pic_filename . "'
+							WHERE pic_filename = '" . $pic_extra_path . $pic_filename . "'
 							AND pic_time = '" . $pic_time . "'
 							LIMIT 1";
 			if(!$result = $db->sql_query($sql))
@@ -1322,7 +1325,8 @@ else
 						'PIC_APPROVAL' => ($pic_approval ? $lang['Approvation_OK'] : $lang['Approvation_NO']),
 						'DATE' => create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']),
 						'SUBJECT' => $lang['Email_Notification'],
-						'U_PIC' => $server_path . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id'])
+						'U_PIC' => $server_path . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id']
+						)
 					);
 
 					$emailer->send();

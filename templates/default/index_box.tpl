@@ -1,6 +1,5 @@
 <?php
-
-$catrow_count = ( isset($this->_tpldata['catrow.']) ) ?  count($this->_tpldata['catrow.']) : 0;
+$catrow_count = (isset($this->_tpldata['catrow.'])) ? count($this->_tpldata['catrow.']) : 0;
 for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 {
 	$catrow_item = &$this->_tpldata['catrow.'][$catrow_i];
@@ -20,7 +19,6 @@ for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 	// add xs switch
 	$catrow_item['LINK_CLASS'] = $new_msg ? '-new' : '';
 }
-
 ?>
 <!-- BEGIN catrow -->
 <!-- BEGIN tablehead -->
@@ -60,7 +58,7 @@ if(GetCookie(tmp) == '2')
 </tr>
 <!-- END tablehead -->
 <?php
-if (ereg ("c=", $_SERVER['REQUEST_URI']) || ereg ("-vc", $_SERVER['REQUEST_URI']))
+if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
 {
 ?>
 <!-- BEGIN cathead -->

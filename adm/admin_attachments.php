@@ -514,7 +514,7 @@ if ($mode == 'manage')
 }
 
 // Shadow Attachments
-if ($submit && $mode == 'shadow')
+if ($submit && ($mode == 'shadow'))
 {
 	// Delete Attachments from file system...
 	$attach_file_list = request_var('attach_file_list', array(''));
@@ -561,9 +561,7 @@ if ($mode == 'shadow')
 	@set_time_limit(0);
 
 	// Shadow Attachments
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'attach_shadow.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'attach_shadow.tpl'));
 
 	$shadow_attachments = array();
 	$shadow_row = array();
@@ -581,7 +579,8 @@ if ($mode == 'shadow')
 		'L_UNMARK_ALL'		=> $lang['Unmark_all'],
 
 		'S_HIDDEN'			=> $hidden,
-		'S_ATTACH_ACTION'	=> append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow'))
+		'S_ATTACH_ACTION'	=> append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow')
+		)
 	);
 
 	$table_attachments = array();

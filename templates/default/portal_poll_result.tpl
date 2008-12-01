@@ -1,6 +1,6 @@
 <tr><td colspan="2" align="center"><span class="gensmall"><b>{B_POLL_QUESTION}</b></span></td></tr>
 <tr>
-<td colspan="2" align="center">
+	<td colspan="2" align="center">
 	<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<!-- BEGIN b_poll_option -->
 	<tr>
@@ -12,7 +12,7 @@
 	</tr>
 	<!-- END b_poll_option -->
 	</table>
-</td>
+	</td>
 </tr>
 <tr><td colspan="2" align="center"><span class="gensmall"><b>{B_L_TOTAL_VOTES} : {B_TOTAL_VOTES}</b></span></td></tr>
 <tr><td align="center"><span class="gensmall"><a href="{B_U_VIEW_RESULTS}" class="gensmall"><b>{B_L_VIEW_RESULTS}</b></a></span></td></tr>

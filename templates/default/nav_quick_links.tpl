@@ -224,10 +224,6 @@ if(GetCookie(tmp) == '2')
 				</tr>
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="{U_SITE_HIST}">{L_SITE_HIST}</a></td>
-				</tr>
-				<tr>
-					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_DELETE_COOKIES}">{L_DELETE_COOKIES}</a></td>
 				</tr>
 			</table>

@@ -468,6 +468,11 @@ if ($action == 'delete' && $cat_id)
 			/*
 			* output confirmation page
 			*/
+			$page_title = $lang['Downloads'];
+			$meta_description = '';
+			$meta_keywords = '';
+			$nav_server_url = create_server_url();
+			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>';
 			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('confirm_body' => 'dl_confirm_body.tpl'));
@@ -701,6 +706,11 @@ if ($action == 'edit')
 		$select_code = '';
 	}
 
+	$page_title = $lang['Downloads'];
+	$meta_description = '';
+	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_edit_body.tpl'));
@@ -987,6 +997,11 @@ if ($action == 'approve')
 		redirect(append_sid('downloads.' . PHP_EXT));
 	}
 
+	$page_title = $lang['Downloads'];
+	$meta_description = '';
+	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_modcp_approve.tpl'));
@@ -1044,6 +1059,7 @@ if ($action == 'approve')
 		'L_DL_CAT_NAME' => $lang['Dl_cat_name'],
 		'L_DOWNLOAD' => $lang['Dl_download'],
 		'L_SET' => $lang['Dl_edit'],
+		'L_EDIT' => $lang['Edit'],
 		'L_DELETE' => $lang['Dl_delete'],
 
 		'PAGINATION' => ($total_approve > $board_config['dl_links_per_page']) ? $pagination : '',
@@ -1096,6 +1112,11 @@ if ($action == 'capprove')
 		redirect(append_sid('downloads.' . PHP_EXT));
 	}
 
+	$page_title = $lang['Downloads'];
+	$meta_description = '';
+	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_modcp_capprove.tpl'));
@@ -1168,6 +1189,7 @@ if ($action == 'capprove')
 		'L_DOWNLOAD' => $lang['Dl_download'],
 		'L_COMMENT' => $lang['Dl_comment'],
 		'L_SET' => $lang['Dl_edit'],
+		'L_EDIT' => $lang['Edit'],
 		'L_DELETE' => $lang['Dl_delete'],
 
 		'PAGINATION' => ($total_approve > $board_config['dl_links_per_page']) ? $pagination : '',
@@ -1183,7 +1205,7 @@ if ($action == 'capprove')
 	);
 }
 
-if ($action == 'manage' && $cat_id)
+if (($action == 'manage') && $cat_id)
 {
 	$total_downloads = $index[$cat_id]['total'];
 
@@ -1212,6 +1234,11 @@ if ($action == 'manage' && $cat_id)
 		redirect(append_sid('downloads.' . PHP_EXT));
 	}
 
+	$page_title = $lang['Downloads'];
+	$meta_description = '';
+	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_modcp_manage.tpl'));
@@ -1287,6 +1314,7 @@ if ($action == 'manage' && $cat_id)
 		'L_DL_CAT_NAME' => $lang['Dl_cat_name'],
 		'L_DOWNLOAD' => $lang['Dl_download'],
 		'L_SET' => $lang['Dl_edit'],
+		'L_EDIT' => $lang['Edit'],
 		'L_DL_UP' => ($sort && $userdata['user_level'] == ADMIN) ? $lang['Dl_up'] : '',
 		'L_DL_DOWN' => ($sort && $userdata['user_level'] == ADMIN) ? $lang['Dl_down'] : '',
 		'L_DL_SORT' => $lang['Dl_order'],

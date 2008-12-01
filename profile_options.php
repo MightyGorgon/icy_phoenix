@@ -359,9 +359,14 @@ if ($submit)
 else
 {
 	// set the page title and include the page header
+	$pcp_section_url = append_sid('profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
+	$pcp_section = mods_settings_get_lang($mod_name) . (!empty($sub_name) ? ' - ' . mods_settings_get_lang($sub_name) : '');
 	$page_title = $lang['Preferences'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$link_name = $pcp_section;
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . $pcp_section_url . '">' . $link_name . '</a>') : '');
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
@@ -371,9 +376,9 @@ else
 	// header
 	$template->assign_vars(array(
 		'L_OPTION' => $page_title,
-		'U_OPTION' => append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
-		'L_MOD_NAME' => mods_settings_get_lang($mod_name) . (!empty($sub_name) ? ' - ' . mods_settings_get_lang($sub_name) : ''),
-		'U_USER' => append_sid('./' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $view_user_id),
+		'U_OPTION' => $pcp_section_url,
+		'L_MOD_NAME' => $pcp_section,
+		'U_USER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $view_user_id),
 		'L_USER' => $view_userdata['username'],
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
@@ -495,7 +500,7 @@ else
 	$s_hidden_fields .= '<input type="hidden" name="mod_sub_id" value="' . $sub_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="set" value="add" />';
 	$template->assign_vars(array(
-		'S_PROFILCP_ACTION' => append_sid('./profile_options.' . PHP_EXT),
+		'S_PROFILCP_ACTION' => append_sid('profile_options.' . PHP_EXT),
 		'NAV_SEPARATOR' => $nav_separator,
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		)

@@ -87,31 +87,31 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 	</div>
 
 	<div id="dropmenu_cms_management" class="dropmenudiv">
-		<a href="{U_CMS_GLOBAL_BLOCKS}">&nbsp;<img src="templates/common/cms/images/cms_blocks.png" alt="" />&nbsp;{L_CMS_GLOBAL_BLOCKS}</a>
-		<a href="{U_CMS_STANDARD_PAGES}">&nbsp;<img src="templates/common/cms/images/cms_standard_pages.png" alt="" />&nbsp;{L_CMS_STANDARD_PAGES}</a>
-		<a href="{U_CMS_CUSTOM_PAGES}">&nbsp;<img src="templates/common/cms/images/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES}</a>
-		<a href="{U_CMS_CUSTOM_PAGES_ADV}">&nbsp;<img src="templates/common/cms/images/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES_ADV}</a>
-		<a href="{U_CMS_MENU}">&nbsp;<img src="templates/common/cms/images/cms_menu.png" alt="" />&nbsp;{L_CMS_MENU}</a>
+		<a href="{U_CMS_GLOBAL_BLOCKS}">&nbsp;<img src="images/cms/menu/cms_blocks.png" alt="" />&nbsp;{L_CMS_GLOBAL_BLOCKS}</a>
+		<a href="{U_CMS_STANDARD_PAGES}">&nbsp;<img src="images/cms/menu/cms_standard_pages.png" alt="" />&nbsp;{L_CMS_STANDARD_PAGES}</a>
+		<a href="{U_CMS_CUSTOM_PAGES}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES}</a>
+		<a href="{U_CMS_CUSTOM_PAGES_ADV}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES_ADV}</a>
+		<a href="{U_CMS_MENU}">&nbsp;<img src="images/cms/menu/cms_menu.png" alt="" />&nbsp;{L_CMS_MENU}</a>
 	</div>
 
 	<!--
 	<div id="dropmenu_cms_adv_management" class="dropmenudiv">
-		<a href="cms_adv.php?mode=layouts">&nbsp;<img src="templates/common/cms/images/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES_ADV}</a>
-		<a href="cms_adv.php?mode=layouts&amp;cms_type=cms_standard">&nbsp;<img src="templates/common/cms/images/cms_standard_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES}</a>
+		<a href="cms_adv.php?mode=layouts">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES_ADV}</a>
+		<a href="cms_adv.php?mode=layouts&amp;cms_type=cms_standard">&nbsp;<img src="images/cms/menu/cms_standard_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES}</a>
 	</div>
 	-->
 
 	<div id="dropmenu_cms_settings" class="dropmenudiv">
-		<a href="{U_CMS_CONFIG}">&nbsp;<img src="templates/common/cms/images/cms_settings.png" alt="" />&nbsp;{L_CMS_CONFIG}</a>
-		<a href="{U_CMS_PAGES_PERMISSIONS}">&nbsp;<img src="templates/common/cms/images/cms_permissions.png" alt="" />&nbsp;{L_CMS_PAGES_PERMISSIONS}</a>
+		<a href="{U_CMS_CONFIG}">&nbsp;<img src="images/cms/menu/cms_settings.png" alt="" />&nbsp;{L_CMS_CONFIG}</a>
+		<a href="{U_CMS_PAGES_PERMISSIONS}">&nbsp;<img src="images/cms/menu/cms_permissions.png" alt="" />&nbsp;{L_CMS_PAGES_PERMISSIONS}</a>
 	</div>
 
 	<div id="dropmenu_links" class="dropmenudiv">
-		<a href="{U_CMS_ACP}">&nbsp;<img src="templates/common/cms/images/cms_acp.png" alt="" />&nbsp;{L_CMS_ACP}</a>
-		<a href="{U_PORTAL}">&nbsp;<img src="templates/common/cms/images/cms_home.png" alt="" />&nbsp;{L_PORTAL}</a>
-		<a href="{U_INDEX}">&nbsp;<img src="templates/common/cms/images/cms_forum.png" alt="" />&nbsp;{L_INDEX}</a>
+		<a href="{U_CMS_ACP}">&nbsp;<img src="images/cms/menu/cms_acp.png" alt="" />&nbsp;{L_CMS_ACP}</a>
+		<a href="{U_PORTAL}">&nbsp;<img src="images/cms/menu/cms_home.png" alt="" />&nbsp;{L_PORTAL}</a>
+		<a href="{U_INDEX}">&nbsp;<img src="images/cms/menu/cms_forum.png" alt="" />&nbsp;{L_INDEX}</a>
 		<hr />
-		<a href="http://www.icyphoenix.com">&nbsp;<img src="templates/common/cms/images/cms_icy_phoenix.png" alt="" />&nbsp;Icy Phoenix</a>
+		<a href="http://www.icyphoenix.com">&nbsp;<img src="images/cms/menu/cms_icy_phoenix.png" alt="" />&nbsp;Icy Phoenix</a>
 	</div>
 
 	<script type="text/javascript">cssdropdown.startchrome("chromemenu")</script>

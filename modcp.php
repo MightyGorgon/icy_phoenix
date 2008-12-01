@@ -1767,12 +1767,12 @@ switch($mode)
 			if(($replies + 1) > $board_config['posts_per_page'])
 			{
 				$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
-				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
+				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
 
 				$times = 1;
 				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 				{
-					$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '">' . $times . '</a>';
+					$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
 					if(($times == 1) && ($total_pages > 4))
 					{
 						$goto_page .= ' ... ';

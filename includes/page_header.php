@@ -634,7 +634,7 @@ else
 // Time Management - BEGIN
 // Format Timezone. We are unable to use array_pop here, because of PHP3 compatibility
 $l_timezone = explode('.', $board_config['board_timezone']);
-$l_timezone = ((count($l_timezone) > 1) && ($l_timezone[count($l_timezone)-1] != 0)) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
+$l_timezone = ((count($l_timezone) > 1) && ($l_timezone[count($l_timezone) - 1] != 0)) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
 
 if (!$userdata['session_logged_in'])
 {
@@ -884,7 +884,6 @@ $template->assign_vars(array(
 	'S_HEADER_DD_LOGGED_IN' => ((($board_config['switch_header_dropdown'] == true) && $userdata['upi2db_access']) ? true : false),
 	'S_HEADER_BANNER' => (($board_config['switch_header_banner'] == true) ? true : false),
 	'S_LIGHTBOX' => (($board_config['thumbnail_lightbox'] == true) ? true : false),
-	'S_XMAS_FX' => (($board_config['mg_switch_xmas_fx'] == true) ? true : false),
 	// SWITCHES - END
 
 	// CrackerTracker v5.x
@@ -1011,7 +1010,6 @@ $template->assign_vars(array(
 	'L_HACKS_LIST' => $lang['Hacks_List'],
 	'L_SUDOKU' => $lang['Sudoku'],
 	'L_AVATAR_GEN' => $lang['AvatarGenerator'],
-	'L_SITE_HIST' => $lang['Site_Hist'],
 	'L_LINKS' => $lang['Links'],
 	'L_RSS_FEEDS' => $lang['Rss_news_feeds'],
 	'L_WORDGRAPH' => $lang['Wordgraph'],
@@ -1028,7 +1026,6 @@ $template->assign_vars(array(
 	'U_STATISTICS' => append_sid('statistics.' . PHP_EXT),
 	'U_PORTAL_NEWS_CAT' => append_sid(PORTAL_MG . '?news=categories'),
 	'U_PORTAL_NEWS_ARC' => append_sid(PORTAL_MG . '?news=archives'),
-	'U_SITE_HIST' => append_sid('site_hist.' . PHP_EXT),
 	'U_LINKS' => append_sid('links.' . PHP_EXT),
 	'U_WORDGRAPH' => append_sid('wordgraph.' . PHP_EXT),
 	'U_ACRONYMS' => append_sid('acronyms.' . PHP_EXT),
@@ -1237,18 +1234,34 @@ if (empty($nav_key))
 }
 
 //$nav_separator = $lang['Nav_Separator'];
-$nav_cat_desc = make_cat_nav_tree($nav_key, $nav_pgm);
+$nav_cat_desc = '';
+if (!isset($skip_nav_cat))
+{
+	$nav_cat_desc = make_cat_nav_tree($nav_key, $nav_pgm);
+}
 
 if ($nav_cat_desc != '')
 {
+	$nav_server_url = create_server_url();
 	$nav_cat_desc = $nav_separator . $nav_cat_desc;
+	$breadcrumbs_address = $nav_separator . '<a href="' . $nav_server_url . append_sid(FORUM_MG) . '">' . $lang['Forum'] . '</a>' . $nav_cat_desc;
+	if (isset($nav_add_page_title) && ($nav_add_page_title == true))
+	{
+		$breadcrumbs_address = $breadcrumbs_address . $nav_separator . '<a href="#" class="nav-current">' . $page_title . '</a>';
+	}
 }
 
 // send to template
 $template->assign_vars(array(
 	//'SPACER' => $images['spacer'],
+	'S_PAGE_NAV' => (isset($cms_page_nav) ? $cms_page_nav : true),
 	'NAV_SEPARATOR' => $nav_separator,
 	'NAV_CAT_DESC' => $nav_cat_desc,
+	'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($page_title_simple != $board_config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $page_title_simple . '</a>') : '') : $breadcrumbs_address),
+	'S_BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : true),
+	'BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : $breadcrumbs_links_left),
+	'S_BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? false : true),
+	'BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? '&nbsp;' : $breadcrumbs_links_right),
 	)
 );
 

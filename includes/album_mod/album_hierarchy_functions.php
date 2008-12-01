@@ -399,12 +399,9 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		if ((album_get_total_pic_cat($cur_cat_id) > 0) && ($album_config['show_slideshow'] == 1))
 		{
 			$first_pic_id = album_get_first_pic_id($cur_cat_id);
-			// Bicet - XS Support - BEGIN
 			$slideshow_img_xs = ($xs_new) ? $images['icon_newest_reply'] : $images['icon_latest_reply'];
 			$slideshow_img = '<img src="' . $slideshow_img_xs . '" alt="' . $lang['Slideshow'] . '" title="' . $lang['Slideshow'] . '" />';
-			// Bicet - XS Support - END
 			$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
-			//$slideshow_link_full = '&nbsp;(<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>)&nbsp;';
 			$slideshow_link_full = '&nbsp;[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]&nbsp;';
 		}
 		else

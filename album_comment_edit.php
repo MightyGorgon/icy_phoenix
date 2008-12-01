@@ -161,20 +161,15 @@ else
 	}
 }
 
-
 /*
 +----------------------------------------------------------
 | Main work here...
 +----------------------------------------------------------
 */
 
-
 if( !isset($_POST['comment']) )
 {
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					Comments Screen
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
+	// Comments Screen
 	if( ($thispic['pic_user_id'] == ALBUM_GUEST) || ($thispic['username'] == '') )
 	{
 		$poster = ($thispic['pic_username'] == '') ? $lang['Guest'] : $thispic['pic_username'];
@@ -265,9 +260,7 @@ if( !isset($_POST['comment']) )
 		)
 	);
 
-	//
 	// Generate the page
-	//
 	$template->pparse('body');
 
 	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
@@ -293,7 +286,6 @@ else
 	$comment_edit_time = time();
 	$comment_edit_user_id = $userdata['user_id'];
 
-
 	// --------------------------------
 	// Update the DB
 	// --------------------------------
@@ -306,7 +298,6 @@ else
 	{
 		message_die(GENERAL_ERROR, 'Could not update comment data', '', __LINE__, __FILE__, $sql);
 	}
-
 
 	// --------------------------------
 	// Complete... now send a message to user

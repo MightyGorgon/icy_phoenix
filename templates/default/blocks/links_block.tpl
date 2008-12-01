@@ -18,7 +18,7 @@ function links_me()
 			<div class="gen">
 			<br />
 			<!-- BEGIN links_row -->
-			<a href="{static.links_row.LINK_HREF}" target="_blank" onmouseover="document.all.links_block.stop()" onmouseout="document.all.links_block.start()"><img src="{scroll.links_row.LINK_LOGO_SRC}" alt="{scroll.links_row.LINK_TITLE}" title="{scroll.links_row.LINK_TITLE}" width="{SITE_LOGO_WIDTH}" height="{SITE_LOGO_HEIGHT}" border="0"  vspace="3" /></a><br /><br />
+			<a href="{static.links_row.LINK_HREF}" target="_blank" onmouseover="document.all.links_block.stop()" onmouseout="document.all.links_block.start()"><img src="{scroll.links_row.LINK_LOGO_SRC}" alt="{scroll.links_row.LINK_TITLE}" title="{scroll.links_row.LINK_TITLE}" width="{SITE_LOGO_WIDTH}" height="{SITE_LOGO_HEIGHT}" border="0" vspace="3" /></a><br /><br />
 			<!-- END links_row -->
 			<br />
 			</div>

@@ -150,7 +150,7 @@ $lang = array_merge($lang, array(
 	'Dl_comments_delete_all' => 'Delete all comments',
 	'Dl_cat_traffic' => 'Traffic quota (currently aviable: %s)',
 	'Dl_cat_traffic_off' => 'Traffic quota (currently off)',
-	'Dl_cat_traffic_main' => 'For now %s traffic is left in this category',
+	'Dl_cat_traffic_main' => '%s traffic left for this category',
 	'Dl_thumb_cat' => 'Allow thumbnails',
 	'Dl_approve_comments' => 'Automatically approve every new comment',
 	'Dl_cat_rules' => 'Rules',
@@ -221,9 +221,9 @@ $lang = array_merge($lang, array(
 /*
 * moderator panel
 */
-	'Dl_modcp_approve' => 'Moderator panel - approve downloads',
-	'Dl_modcp_edit' => 'Moderator panel - edit download',
-	'Dl_modcp_manage' => 'Moderator panel - manage downloads',
+	'Dl_modcp_approve' => 'Moderator Panel - Approve Downloads',
+	'Dl_modcp_edit' => 'Moderator Panel - Edit Download',
+	'Dl_modcp_manage' => 'Moderator Panel - Manage Downloads',
 	'Dl_modcp_mod_auth' => 'You <b>can</b> %smoderate this category%s',
 
 /*

@@ -170,7 +170,7 @@ if (($board_config['calendar_birthday'] == true))
 	// read users
 	for ($i = 0; $i < $number; $i++)
 	{
-		$today_birthdays_list = (($today_birthdays_list == '') ? '' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+		$today_birthdays_list .= (($today_birthdays_list == '') ? '' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
 	}
 }
 $today_birthdays_list = ($today_birthdays_list == '') ? $lang['None'] : $today_birthdays_list;

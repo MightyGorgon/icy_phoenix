@@ -154,6 +154,39 @@ switch ($mode)
 			exit;
 		}
 		break;
+	case 'update_modules_order':
+		if ($userdata['user_level'] != ADMIN)
+		{
+			$result_ar = array(
+				'result' => AJAX_ERROR,
+				'error_msg' => 'NOT ALLOWED!!!'
+			);
+			AJAX_message_die($result_ar);
+			exit;
+		}
+		if (!empty($_POST['stats_modules']))
+		{
+			$item_order = 0;
+			foreach($_POST['stats_modules'] as $module_item_id)
+			{
+				$item_order++;
+				$sql = "UPDATE " . MODULES_TABLE . " SET display_order = '" . ($item_order * 10) . "' WHERE module_id = '" . $module_item_id . "'";
+				if(!$result = $db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not update stats table', $lang['Error'], __LINE__, __FILE__, $sql);
+				}
+			}
+		}
+		else
+		{
+			$result_ar = array(
+				'result' => AJAX_ERROR,
+				'error_msg' => 'Invalid stats module'
+			);
+			AJAX_message_die($result_ar);
+			exit;
+		}
+		break;
 	default:
 		$result_ar = array(
 			'result' => AJAX_ERROR,

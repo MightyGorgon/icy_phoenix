@@ -414,11 +414,6 @@ $kb_text = str_replace('<', '&lt;', $kb_text);
 $kb_text = str_replace('>', '&gt;', $kb_text);
 $kb_text = str_replace('<br />', "\n", $kb_text);
 
-if (!$is_block)
-{
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-}
-
 $html_status = $html_on ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
 $bbcode_status = $bbcode_on ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
 $smilies_status = $smilies_on ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];

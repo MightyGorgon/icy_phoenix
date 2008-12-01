@@ -23,9 +23,7 @@ function update_icon(newimage)
 		<a href="{U_INDEX}" class="nav">{L_INDEX}</a>{NAV_CAT_DESC}</span>
 	</p>
 	<div class="nav-links">
-		<div class="nav-links-left">
-			{L_TITLE_EXPLAIN}
-		</div>
+		<div class="nav-links-left">{L_TITLE_EXPLAIN}</div>
 		&nbsp;<br />&nbsp;
 	</div>
 </div>
@@ -34,164 +32,143 @@ function update_icon(newimage)
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="2" width="70%">{L_TITLE}</th></tr>
 <tr>
-	<td class="row1" width="40%"><span class="gen">{L_TYPE}</span></td>
-	<td class="row2" width="60%"><span class="gen">&nbsp;<select name="type" onchange="this.form.submit();">{S_TYPE_OPT}</select></span></td>
+	<td class="row1" width="40%"><span class="genmed"><b>{L_TYPE}</b></span></td>
+	<td class="row2" width="60%"><span class="genmed">&nbsp;<select name="type" onchange="this.form.submit();">{S_TYPE_OPT}</select></span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_NAME}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<input name="name" value="{NAME}" type="text" class="post" size="60" /></span></td>
+	<td class="row1"><span class="genmed"><b>{L_NAME}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<input name="name" value="{NAME}" type="text" class="post" size="60" /></span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_DESC}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<textarea name="desc" rows="5" cols="60" class="post">{DESC}</textarea></span></td>
+	<td class="row1"><span class="genmed"><b>{L_DESC}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<textarea name="desc" rows="5" cols="60" class="post">{DESC}</textarea></span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_MAIN}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<select name="main" onchange="this.form.submit();">{S_FORUMS_OPT}</select></span></td>
+	<td class="row1"><span class="genmed"><b>{L_MAIN}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<select name="main" onchange="this.form.submit();">{S_FORUMS_OPT}</select></span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_COPY_AUTH}</span><!-- <br /><span class="gensmall">{L_COPY_AUTH_EXPLAIN}</span> --></td>
-	<td class="row2"><span class="gen">&nbsp;<select name="dup_auth">{S_FORUM_LIST}</select></span></td>
+	<td class="row1"><span class="genmed"><b>{L_COPY_AUTH}</b></span><!-- <br /><span class="gensmall">{L_COPY_AUTH_EXPLAIN}</span> --></td>
+	<td class="row2"><span class="genmed">&nbsp;<select name="dup_auth">{S_FORUM_LIST}</select></span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_ICON}</span><span class="gensmall"><br />{L_ICON_EXPLAIN}</span></td>
+	<td class="row1"><span class="genmed"><b>{L_ICON}</b></span><br /><span class="gensmall">{L_ICON_EXPLAIN}</span></td>
 	<td class="row2">&nbsp;{ICON_LIST}</td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_POSITION}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<select name="position">{S_POS_OPT}</select></span></td>
+	<td class="row1"><span class="genmed"><b>{L_POSITION}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<select name="position">{S_POS_OPT}</select></span></td>
 </tr>
 <!-- BEGIN forum -->
 <tr>
-	<td class="row1"><span class="gen">{L_STATUS}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<select name="status">{S_STATUS_OPT}</select></span></td>
+	<td class="row1"><span class="genmed"><b>{L_STATUS}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<select name="status">{S_STATUS_OPT}</select></span></td>
 </tr>
 <!-- BEGIN topic_display_order -->
 <tr>
-	<td class="row1"><span class="gen">{L_FORUM_DISPLAY_SORT}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<select name="forum_display_sort">{S_FORUM_DISPLAY_SORT_LIST}</select>&nbsp;<select name="forum_display_order">{S_FORUM_DISPLAY_ORDER_LIST}</select></span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_DISPLAY_SORT}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<select name="forum_display_sort">{S_FORUM_DISPLAY_SORT_LIST}</select>&nbsp;<select name="forum_display_order">{S_FORUM_DISPLAY_ORDER_LIST}</select></span></td>
 </tr>
 <!-- END topic_display_order -->
 <!-- END forum -->
 <!-- BEGIN move -->
 <tr>
-	<td class="row1"><span class="gen">{L_MOVE}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<select name="move">{S_MOVE_OPT}</select></span></td>
+	<td class="row1"><span class="genmed"><b>{L_MOVE}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<select name="move">{S_MOVE_OPT}</select></span></td>
 </tr>
 <!-- END move -->
 <!-- BEGIN forum -->
 <tr>
-	<td class="row1"><span class="gen">{L_FORUM_THANK}</span></td>
-	<td class="row2">
-	<input type="radio" name="thank" value="1" {FORUM_THANK_YES} />
-	<span class="gen">{L_YES}</span>&nbsp;&nbsp;
-	<input type="radio" name="thank" value="0" {FORUM_THANK_NO} />
-	<span class="gen">{L_NO}</span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_THANK}</b></span></td>
+	<td class="row2"><input type="radio" name="forum_thanks" value="1"{FORUM_THANK_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_thanks" value="0"{FORUM_THANK_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_FORUM_NOTIFY}</span></td>
-	<td class="row2">
-	<input type="radio" name="forum_notify" value="1" {FORUM_NOTIFY_YES} />
-	<span class="gen">{L_YES}</span>&nbsp;&nbsp;
-	<input type="radio" name="forum_notify" value="0" {FORUM_NOTIFY_NO} />
-	<span class="gen">{L_NO}</span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_SIMILAR_TOPICS}</b></span><br /><span class="gensmall">{L_FORUM_SIMILAR_TOPICS_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_similar_topics" value="1"{FORUM_SIMILAR_TOPICS_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_similar_topics" value="0"{FORUM_SIMILAR_TOPICS_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_TAGS}</b></span><br /><span class="gensmall">{L_FORUM_TAGS_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_tags" value="1"{FORUM_TAGS_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_tags" value="0"{FORUM_TAGS_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_SORT_BOX}</b></span><br /><span class="gensmall">{L_FORUM_SORT_BOX_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_sort_box" value="1"{FORUM_SORT_BOX_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_sort_box" value="0"{FORUM_SORT_BOX_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_KB_MODE}</b></span><br /><span class="gensmall">{L_FORUM_KB_MODE_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_kb_mode" value="1"{FORUM_KB_MODE_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_kb_mode" value="0"{FORUM_KB_MODE_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_INDEX_ICONS}</b></span><br /><span class="gensmall">{L_FORUM_INDEX_ICONS_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_index_icons" value="1"{FORUM_INDEX_ICONS_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_index_icons" value="0"{FORUM_INDEX_ICONS_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_NOTIFY}</b></span></td>
+	<td class="row2"><input type="radio" name="forum_notify" value="1"{FORUM_NOTIFY_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_notify" value="0"{FORUM_NOTIFY_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed"><b>{L_POSTCOUNT}</b></span></td>
+	<td class="row2"><input type="radio" name="forum_postcount" value="1"{FORUM_POST_COUNT_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_postcount" value="0"{FORUM_POST_COUNT_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr><th colspan="2">{L_PRUNE_ENABLE}</th></tr>
+<tr>
+	<td class="row1" align="right"><span class="genmed"><b>{L_ENABLED}</b></span></td>
+	<td class="row2"><span class="genmed"><input name="prune_enable" type="radio" value="1" {PRUNE_ENABLE_YES} />{L_YES}&nbsp;&nbsp;<input name="prune_enable" type="radio" value="0" {PRUNE_ENABLE_NO} />{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1" align="right"><span class="genmed"><b>{L_PRUNE_DAYS}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<input name="prune_days" type="text" class="post" value="{PRUNE_DAYS}" size="3" />&nbsp;{L_DAYS}</span></td>
+</tr>
+<tr>
+	<td class="row1" align="right"><span class="genmed"><b>{L_PRUNE_FREQ}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<input name="prune_freq" type="text" class="post" value="{PRUNE_FREQ}" size="3" />&nbsp;{L_DAYS}</span></td>
 </tr>
 <tr><th colspan="2">{L_MOD_OS_FORUMRULES}</th></tr>
 <tr>
-	<td class="row1">{L_RULES_DISPLAY_TITLE}</td>
-	<td class="row2">
-		<table cellpadding="2" cellspacing="0" border="0">
-			<tr>
-				<td><input type="checkbox" name="rules_display_title" value="1" {S_RULES_DISPLAY_TITLE_ENABLED} /></td>
-				<td>{L_ENABLED}</td>
-			</tr>
-		</table>
-	</td>
+	<td class="row1"><span class="genmed"><b>{L_RULES_DISPLAY_TITLE}</b></td>
+	<td class="row2"><input type="checkbox" name="rules_display_title" value="1" {S_RULES_DISPLAY_TITLE_ENABLED} />&nbsp;<span class="genmed">{L_ENABLED}</span></td>
 </tr>
 <tr>
-	<td class="row1">{L_RULES_CUSTOM_TITLE}</td>
+	<td class="row1"><span class="genmed"><b>{L_RULES_CUSTOM_TITLE}</b></span></td>
 	<td class="row2"><input type="text" name="rules_custom_title" value="{RULES_CUSTOM_TITLE}" size="50" maxlength="80" class="post" /></td>
 </tr>
 <tr>
-	<td class="row1" valign="top">{L_FORUM_RULES}</td>
-	<td class="row2"><textarea rows="8" cols="70" wrap="virtual" name="forum_rules" class="post">{FORUM_RULES}</textarea></td>
+	<td class="row1" valign="top"><span class="genmed"><b>{L_FORUM_RULES}</b></span></td>
+	<td class="row2"><textarea rows="8" cols="70" wrap="virtual" name="rules" class="post">{RULES}</textarea></td>
 </tr>
 <tr>
-	<td class="row1" valign="top">{L_RULES_APPEAR_IN}</td>
+	<td class="row1" valign="top"><span class="genmed"><b>{L_RULES_APPEAR_IN}</b></span></td>
 	<td class="row2">
-		<table cellpadding="2" cellspacing="0" border="0">
-			<tr>
-				<td><input type="checkbox" name="rules_in_viewforum" value="1" {S_RULES_VIEWFORUM_ENABLED} /></td>
-				<td>{L_RULES_IN_VIEWFORUM}</td>
-			</tr>
-			<tr>
-				<td><input type="checkbox" name="rules_in_viewtopic" value="1" {S_RULES_VIEWTOPIC_ENABLED} /></td>
-				<td>{L_RULES_IN_VIEWTOPIC}</td>
-			</tr>
-			<tr>
-				<td><input type="checkbox" name="rules_in_posting" value="1" {S_RULES_POSTING_ENABLED} /></td>
-				<td>{L_RULES_IN_POSTING}</span></td>
-			</tr>
-		</table>
+		<input type="checkbox" name="rules_in_viewforum" value="1" {S_RULES_VIEWFORUM_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWFORUM}</span><br />
+		<input type="checkbox" name="rules_in_viewtopic" value="1" {S_RULES_VIEWTOPIC_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWTOPIC}</span><br />
+		<input type="checkbox" name="rules_in_posting" value="1" {S_RULES_POSTING_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_POSTING}</span><br />
 	</td>
 </tr>
-<!-- END forum -->
-<!-- BEGIN forum -->
-<tr>
-	<td class="cat" colspan="2">
-		<table cellspacing="0" cellpadding="0" border="0" width="100%">
-		<tr>
-			<td width="100%"><span class="cattitle">{L_PRUNE_ENABLE}</span></td>
-			<td nowrap="nowrap">
-				<span class="genmed">
-					<b>{L_ENABLED}:&nbsp;</b>
-					<input name="prune_enable" type="radio" value="0" {PRUNE_ENABLE_NO} onClick="if (this.form.prune_enable.checked=true) {document.all.prune_display.style.display='none'} else {document.all.prune_display.style.display=''}" />
-					{L_NO}&nbsp;&nbsp;
-					<input name="prune_enable" type="radio" value="1" {PRUNE_ENABLE_YES} onClick="if (this.form.prune_enable.checked=false) {document.all.prune_display.style.display='none'} else {document.all.prune_display.style.display=''}" />
-					{L_YES}
-				</span>
-			</td>
-		</tr>
-		</table>
-	</td>
-</tr>
-<tbody id="prune_display" style="display:{PRUNE_DISPLAY}">
-<tr>
-	<td class="row1" align="right"><span class="gen">{L_PRUNE_DAYS}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<input name="prune_days" type="text" class="post" value="{PRUNE_DAYS}" size="3" />&nbsp;{L_DAYS}</span></td>
-</tr>
-<tr>
-	<td class="row1" align="right"><span class="gen">{L_PRUNE_FREQ}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<input name="prune_freq" type="text" class="post" value="{PRUNE_FREQ}" size="3" />&nbsp;{L_DAYS}</span></td>
-</tr>
-</tbody>
 <!-- END forum -->
 <!-- BEGIN link -->
+<tr><th class="cat" colspan="2">{L_LINK}</th></tr>
 <tr>
-	<td class="cat" colspan="2"><span class="cattitle">{L_LINK}</span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_LINK}</b></span><br /><span class="gensmall">{L_FORUM_LINK_EXPLAIN}</span></td>
+	<td class="row2"><span class="genmed">&nbsp;<input name="link" type="text" class="post" value="{FORUM_LINK}" size="60" /></span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_FORUM_LINK}</span><span class="gensmall"><br />{L_FORUM_LINK_EXPLAIN}</span></td>
-	<td class="row2"><span class="gen">&nbsp;<input name="link" type="text" class="post" value="{FORUM_LINK}" size="60" /></span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_LINK_INTERNAL}</b></span><span class="gensmall"><br />{L_FORUM_LINK_INTERNAL_EXPLAIN}</span></td>
+	<td class="row2"><span class="genmed"><input name="link_internal" type="radio" value="1" {LINK_INTERNAL_YES} />&nbsp;{L_YES}&nbsp;&nbsp;<input name="link_internal" type="radio" value="0" {LINK_INTERNAL_NO} />&nbsp;{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_FORUM_LINK_INTERNAL}</span><span class="gensmall"><br />{L_FORUM_LINK_INTERNAL_EXPLAIN}</span></td>
-	<td class="row2"><span class="gen"><input name="link_internal" type="radio" value="1" {LINK_INTERNAL_YES} />{L_YES}&nbsp;&nbsp;<input name="link_internal" type="radio" value="0" {LINK_INTERNAL_NO} />{L_NO}</span></td>
-</tr>
-<tr>
-	<td class="row1"><span class="gen">{L_FORUM_LINK_HIT_COUNT}</span><span class="gensmall"><br />{L_FORUM_LINK_HIT_COUNT_EXPLAIN}</span></td>
-	<td class="row2"><span class="gen"><input name="link_hit_count" type="radio" value="1" {LINK_COUNT_YES} />{L_YES}&nbsp;&nbsp;<input name="link_hit_count" type="radio" value="0" {LINK_COUNT_NO} />{L_NO}</span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_LINK_HIT_COUNT}</b></span><span class="gensmall"><br />{L_FORUM_LINK_HIT_COUNT_EXPLAIN}</span></td>
+	<td class="row2"><span class="genmed"><input name="link_hit_count" type="radio" value="1" {LINK_COUNT_YES} />&nbsp;{L_YES}&nbsp;&nbsp;<input name="link_hit_count" type="radio" value="0" {LINK_COUNT_NO} />&nbsp;{L_NO}</span></td>
 </tr>
 <!-- END link -->
 <!-- BEGIN forum_link -->
 <tr>
-	<td width="100%" colspan="5">
-		<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
+	<td width="100%" colspan="5" style="padding: 0px;">
+		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td class="cat" colspan="{AUTH_SPAN}">
+			<td class="cat" colspan="{AUTH_SPAN}" style="padding: 0px;">
 				<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
-					<td align="left" width="100%"><span class="cattitle">{L_AUTH}</span></td>
+					<td align="left" width="100%"><span class="forumlink"><b>{L_AUTH}</b></span></td>
 					<!-- BEGIN no_link -->
 					<td align="right" nowrap="nowrap">
 						<span class="genmed"><input type="hidden" name="preset_choice" value="0" />
@@ -208,7 +185,7 @@ function update_icon(newimage)
 		<tr>
 			<!-- BEGIN cell -->
 			<td width="25%" class="{forum_link.auth.cell.COLOR}" align="center">
-				<table cellpadding="2" cellspacing="0" border="0" width="100%">
+				<table width="100%" cellpadding="2" cellspacing="0" border="0">
 				<tr>
 					<td align="right" width="50%"><span class="genmed">{forum_link.auth.cell.L_AUTH}:</span></td>
 					<td align="left" nowrap="nowrap"><select name="{forum_link.auth.cell.AUTH}">{forum_link.auth.cell.S_AUTH_OPT}</select></td>
@@ -226,7 +203,7 @@ function update_icon(newimage)
 </tr>
 <!-- END forum_link -->
 <tr>
-	<td class="cat" align="center"  colspan="5">{S_HIDDEN_FIELDS}
+	<td class="cat" align="center" colspan="5">{S_HIDDEN_FIELDS}
 		<span class="cattitle">
 			<input type="submit" name="update" value="{L_SUBMIT}" class="mainoption" />&nbsp;
 			<input type="submit" name="cancel" value="{L_CANCEL}" class="liteoption" />&nbsp;

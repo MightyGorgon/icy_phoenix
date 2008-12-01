@@ -1,0 +1,30 @@
+# This file will contain the information about your module
+# for the statistics parser to use.
+#
+
+# Module Name
+[name] Top Posters This Week (Site History)
+
+# your name
+[author] Mighty Gorgon
+
+# your email
+[email] mightygorgon@mightygorgon.com
+
+# your webpage url
+[url] http://www.icyphoenix.com
+
+# module version
+[version] 1.0.0
+
+[stats_mod_version] 2.1.3
+
+# Default Update Time (This Value can be skipped, you are allowed to delete this thing from your info.txt)
+[update_time] 60
+
+# extra info for the user, everything below
+# this block will be included, regardless if
+# you use a # even.
+[extra_info]
+This Module displays top posters statistics for the current week.
+[/extra_info]

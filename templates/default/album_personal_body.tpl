@@ -13,19 +13,15 @@
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td class="nav" align="left">
+	<td align="left">
 		<!-- BEGIN your_personal_gallery -->
 		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END your_personal_gallery -->
 		<!-- BEGIN enable_picture_download -->
 		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download -->
-		<br />
-		<span class="nav">
-			<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}">{L_ALBUM}</a>{NAV_SEP}<a href="{U_PERSONAL_GALLERY}" class="nav-current">{L_PERSONAL_GALLERY_OF_USER}</a>
-		</span>
 	</td>
-	<td class="nav" align="right" valign="bottom"><span class="gensmall"><b>{SLIDESHOW}</b></span></td>
+	<td align="right" valign="bottom"><span class="gensmall"><b>{SLIDESHOW}</b></span></td>
 </tr>
 </table>
 
@@ -93,17 +89,13 @@
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td class="nav" width="100%">
+	<td width="100%">
 		<!-- BEGIN your_personal_gallery -->
 		<span class="img-btn">{UPLOAD_FULL_LINK}</span>
 		<!-- END your_personal_gallery -->
 		<!-- BEGIN enable_picture_download -->
 		<span class="img-btn">{DOWNLOAD_FULL_LINK}</span>
 		<!-- END enable_picture_download -->
-		<br />
-		<span class="nav">
-			<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}">{L_ALBUM}</a>{NAV_SEP}<a href="{U_PERSONAL_GALLERY}" class="nav-current">{L_PERSONAL_GALLERY_OF_USER}</a>
-		</span>
 	</td>
 	<td align="right" nowrap="nowrap">
 		<span class="gensmall">{S_TIMEZONE}</span><br />

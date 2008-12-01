@@ -19,7 +19,7 @@ function update_icon(newimage)
 <p>{L_EDIT_CATEGORY_EXPLAIN}</p>
 
 <form action="{S_FORUM_ACTION}" method="post" name="post">
-<table cellpadding="4" cellspacing="1" border="0" class="forumline" align="center">
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="2">{L_EDIT_CATEGORY}</th></tr>
 <tr>
 	<td class="row1">{L_CATEGORY}</td>

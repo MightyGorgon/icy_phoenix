@@ -384,11 +384,11 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 				$b_limit = 0;
 				$show_inactive = (($board_config['inactive_users_memberlists'] == false) ? false : true);
 
+				$birthday_week_list = '';
+				$birthday_today_list = '';
 				$birthdays_list = get_birthdays_list($b_year, true, $b_month, $b_day, $b_day_end, $b_limit, $show_inactive);
 				for ($i = 0; $i < count($birthdays_list); $i++)
 				{
-					$today_birthdays_list = (($today_birthdays_list == '') ? '' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
-
 					$user_birthday2 = $b_year . ($user_birthday = realdate('md', $birthdays_list[$i]['user_birthday']));
 					if ($user_birthday2 < $date_today)
 					{
@@ -397,13 +397,13 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 					}
 					if (($user_birthday2 > $date_today) && ($user_birthday2 <= $date_forward))
 					{
-						// user are having birthday within the next days
+						// users having birthday within the next days
 						$birthday_week_list .= (($birthday_week_list == '') ? ' ' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
 					}
 					elseif ($user_birthday2 == $date_today)
 					{
-						//user have birthday today
-						$birthday_today_list = (($birthday_today_list == '') ? ' ' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+						//users having birthday today
+						$birthday_today_list .= (($birthday_today_list == '') ? ' ' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
 					}
 				}
 
@@ -516,6 +516,11 @@ build_groups_list_template();
 $page_title = $lang['Forum'];
 $meta_description = '';
 $meta_keywords = '';
+if ($userdata['session_logged_in'])
+{
+	$nav_server_url = create_server_url();
+	$breadcrumbs_links_right = '<a href="' . $nav_server_url . append_sid(FORUM_MG . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . $menu_sep_char . '&nbsp;<a href="' . $nav_server_url . append_sid(SEARCH_MG . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . $menu_sep_char . '&nbsp;<a href="' . $nav_server_url . append_sid(SEARCH_MG . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
+}
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'index_body.tpl'));
 

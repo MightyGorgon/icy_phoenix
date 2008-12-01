@@ -15,26 +15,26 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // get the board & user settings ...
-$html_on = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? 1 : 0 ;
-$bbcode_on = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? 1 : 0 ;
-$smilies_on = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? 1 : 0 ;
+$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
+$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
+$smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? 1 : 0 ;
 
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
 $bbcode->allow_smilies = $smilies_on;
-$bbcode->is_sig = ( $board_config['allow_all_bbcode'] == 0 ) ? true : false;
+$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
 
-if ( !empty($_POST['message']) )
+if (!empty($_POST['message']))
 {
 	$_POST['signature'] = $_POST['message'];
 }
 // check and set various parameters
 $params = array('submit' => 'save', 'preview' => 'preview', 'mode' => 'mode');
-while( list($var, $param) = @each($params) )
+while(list($var, $param) = @each($params))
 {
-	if ( !empty($_POST[$param]) || !empty($_GET[$param]) )
+	if (!empty($_POST[$param]) || !empty($_GET[$param]))
 	{
-		$$var = ( !empty($_POST[$param]) ) ? $_POST[$param] : $_GET[$param];
+		$$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param];
 	}
 	else
 	{
@@ -43,9 +43,9 @@ while( list($var, $param) = @each($params) )
 }
 
 $trim_var_list = array('signature' => 'signature');
-while( list($var, $param) = @each($trim_var_list) )
+while(list($var, $param) = @each($trim_var_list))
 {
-	if ( !empty($_POST[$param]) )
+	if (!empty($_POST[$param]))
 	{
 		$$var = trim($_POST[$param]);
 	}
@@ -54,7 +54,7 @@ while( list($var, $param) = @each($trim_var_list) )
 $signature = str_replace('<br />', "\n", $signature);
 
 // if cancel pressed then redirect to the index page
-if ( isset($_POST['cancel']) )
+if (isset($_POST['cancel']))
 {
 	$redirect = FORUM_MG;
 
@@ -62,18 +62,21 @@ if ( isset($_POST['cancel']) )
 	redirect(append_sid($redirect, true));
 
 // redirect 2.0.x
-//	$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
+//	$header_location = (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE'))) ? 'Refresh: 0; URL=' : 'Location: ';
 //	header($header_location . append_sid($redirect, true));
 //	exit;
 
 }
 
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+
 $page_title = $lang['Signature'];
 $meta_description = '';
 $meta_keywords = '';
-
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+$link_name = $lang['Signature'];
+$nav_server_url = create_server_url();
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // save new signature
@@ -81,10 +84,9 @@ if ($submit)
 {
 	$template->assign_block_vars('switch_save_sig', array());
 
-	if ( isset($signature) )
+	if (isset($signature))
 	{
-
-		if ( strlen( $signature ) > $board_config['max_sig_chars'] )
+		if (strlen($signature) > $board_config['max_sig_chars'])
 		{
 			$save_message = $lang['Signature_too_long'];
 		}
@@ -98,7 +100,7 @@ if ($submit)
 			SET user_sig = '" . str_replace("\'", "''", $signature) . "'
 			WHERE user_id = $user_id";
 
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
 			}
@@ -109,7 +111,6 @@ if ($submit)
 			}
 		}
 	}
-
 	else
 	{
 		message_die(GENERAL_MESSAGE, 'An Error occured while submitting Signature');
@@ -121,7 +122,7 @@ elseif ($preview)
 {
 	$template->assign_block_vars('switch_preview_sig', array());
 
-	if ( isset($signature) )
+	if (isset($signature))
 	{
 		$preview_sig = $signature;
 
@@ -129,38 +130,36 @@ elseif ($preview)
 		{
 			$preview_sig = $lang['Signature_too_long'];
 		}
-
-	else
-	{
-		$preview_sig = htmlspecialchars(stripslashes($preview_sig));
-		$preview_sig = stripslashes(prepare_message(addslashes(unprepare_message($preview_sig)), $html_on, $bbcode_on, $smilies_on));
-		if( $preview_sig != '' )
-		{
-			$bbcode->is_sig = ( $board_config['allow_all_bbcode'] == 0 ) ? true : false;
-			$preview_sig = $bbcode->parse($preview_sig);
-			$bbcode->is_sig = false;
-			$preview_sig = '<br />' . $board_config['sig_line'] . '<br />' . $preview_sig;
-			//$preview_sig = nl2br($preview_sig);
-			if (!$userdata['user_allowswearywords'])
-			{
-				$orig_word = array();
-				$replacement_word = array();
-				obtain_word_list($orig_word, $replacement_word);
-			}
-			if (count($orig_word))
-			{
-				$preview_sig = preg_replace($orig_word, $replacement_word, $preview_sig);
-			}
-			//$preview_sig = kb_word_wrap_pass ($preview_sig);
-
-		}
 		else
 		{
-			$preview_sig = $lang['sig_none'];
+			$preview_sig = htmlspecialchars(stripslashes($preview_sig));
+			$preview_sig = stripslashes(prepare_message(addslashes(unprepare_message($preview_sig)), $html_on, $bbcode_on, $smilies_on));
+			if($preview_sig != '')
+			{
+				$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+				$preview_sig = $bbcode->parse($preview_sig);
+				$bbcode->is_sig = false;
+				$preview_sig = '<br />' . $board_config['sig_line'] . '<br />' . $preview_sig;
+				//$preview_sig = nl2br($preview_sig);
+				if (!$userdata['user_allowswearywords'])
+				{
+					$orig_word = array();
+					$replacement_word = array();
+					obtain_word_list($orig_word, $replacement_word);
+				}
+				if (count($orig_word))
+				{
+					$preview_sig = preg_replace($orig_word, $replacement_word, $preview_sig);
+				}
+				//$preview_sig = kb_word_wrap_pass ($preview_sig);
+
+			}
+			else
+			{
+				$preview_sig = $lang['sig_none'];
+			}
 		}
 	}
-	}
-
 	else
 	{
 		message_die(GENERAL_MESSAGE, 'An Error occured while submitting Signature');
@@ -174,7 +173,8 @@ elseif ($mode)
 	$template->assign_block_vars('switch_current_sig', array());
 
 	$signature = $userdata['user_sig'];
-	$user_sig = prepare_message($userdata['user_sig'], $html_on, $bbcode_on, $smilies_on);
+	//$user_sig = prepare_message($userdata['user_sig'], $html_on, $bbcode_on, $smilies_on);
+	$user_sig = $userdata['user_sig'];
 
 	if($user_sig != '')
 	{
@@ -197,17 +197,6 @@ elseif ($mode)
 $template->set_filenames(array('body' => 'profile_signature.tpl'));
 
 $template->assign_vars(array(
-	// added some pic´s for a better preview ;)
-	'PROFIL_IMG' => '<img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" />',
-	'EMAIL_IMG' => '<img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" />',
-	'PM_IMG' => '<img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" />',
-	'WWW_IMG' => '<img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" />',
-	'AIM_IMG' => '<img src="' . $images['icon_aim'] . '" alt="' . $lang['AIM'] . '" title="' . $lang['AIM'] . '" />',
-	'YIM_IMG' => '<img src="' . $images['icon_yim'] . '" alt="' . $lang['YIM'] . '" title="' . $lang['YIM'] . '" />',
-	'MSN_IMG' => '<img src="' . $images['icon_msnm'] . '" alt="' . $lang['MSNM'] . '" title="' . $lang['MSNM'] . '" />',
-	'SKYPE_IMG' => '<img src="' . $images['icon_skype'] . '" alt="' . $lang['SKYPE'] . '" title="' . $lang['SKYPE'] . '" />',
-	'ICQ_IMG' => '<img src="' . $images['icon_icq'] . '" alt="' . $lang['ICQ'] . '" title="' . $lang['ICQ'] . '" />',
-
 	'SIG_SAVE' => $lang['sig_save'],
 	'SIG_CANCEL' => $lang['Cancel'],
 	'SIG_PREVIEW' => $lang['Preview'],

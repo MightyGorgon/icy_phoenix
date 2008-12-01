@@ -183,6 +183,12 @@ if ($result = $db->sql_query($sql))
 				}
 			}
 
+			$page_title = $lang['Send_email_msg'];
+			$meta_description = '';
+			$meta_keywords = '';
+			$link_name = $lang['Send_email_msg'];
+			$nav_server_url = create_server_url();
+			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('body' => 'profile_send_email.tpl'));

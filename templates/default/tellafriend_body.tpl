@@ -1,4 +1,3 @@
-<!-- INCLUDE breadcrumbs_i.tpl -->
 {ERROR_BOX}
 
 <form action="{SUBMIT_ACTION}" method="post">

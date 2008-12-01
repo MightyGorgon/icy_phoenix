@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div content-index">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom" width="70%">

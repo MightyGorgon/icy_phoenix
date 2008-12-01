@@ -16,10 +16,9 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('PHPBB_TEMPLATE', true);
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['Statistics']['Statistics_management'] = $filename . '?mode=manage';
@@ -29,7 +28,7 @@ if( !empty($setmodules) )
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 if (!empty($board_config))
 {
 	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . PHP_EXT);
@@ -37,10 +36,10 @@ if (!empty($board_config))
 
 $__stats_config = array();
 
+$db->clear_cache('stats_config_');
 $sql = 'SELECT *
 FROM ' . STATS_CONFIG_TABLE;
-
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
@@ -50,13 +49,20 @@ while ($row = $db->sql_fetchrow($result))
 	$__stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_module.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . PHP_EXT);
+$stats_lang = $board_config['default_lang'];
+if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statistics.' . PHP_EXT))
+{
+	$language = 'english';
+}
+include(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statistics.' . PHP_EXT);
 
-//
+include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_stats_module.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+
+// Mighty Gorgon: this should be not needed anymore...
+/*
 // Try to re-assign Images for Admin Display
-//
 @reset($images);
 while (list($key, $value) = each($images))
 {
@@ -66,88 +72,64 @@ while (list($key, $value) = each($images))
 	}
 }
 
-//
 // Now try to re-assign the smilies
-//
 $board_config['smilies_path'] = './../' . $board_config['smilies_path'];
+*/
 
-//
 // Init Vars
-//
 $params = array(
 	'mode' => 'mode',
 	'submit' => 'submit',
 	'module_id' => POST_FORUM_URL
 );
 
-while( list($var, $param) = @each($params) )
+while(list($var, $param) = @each($params))
 {
-	( !empty($_POST[$param]) || !empty($_GET[$param]) )? $$var = ( !empty($_POST[$param]) ) ? $_POST[$param] : $_GET[$param] : $$var = '';
+	(!empty($_POST[$param]) || !empty($_GET[$param]))? $$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param] : $$var = '';
 }
 
 $msg = '';
 $templated = true;
 
-function gen_auth_select($default_auth_value)
+if(isset($_POST['update']))
 {
-	global $lang;
+	$modules_upd = array();
+	$modules_upd = $_POST['module_status'];
 
-	$auth_levels = array('ALL', 'REG', 'ADMIN');
-	$auth_const = array(AUTH_ALL, AUTH_REG, AUTH_ADMIN);
-
-	$select_list = '<select name="auth_fields">';
-
-	for($i = 0; $i < count($auth_levels); $i++)
+	$sql = "SELECT * FROM " . MODULES_TABLE . " ORDER BY module_id ASC";
+	if(!$result = $db->sql_query($sql))
 	{
-		$selected = ( $default_auth_value == $auth_const[$i] ) ? ' selected="selected"' : '';
-		$select_list .= '<option value="' . $auth_const[$i] . '"' . $selected . '>' . $lang['Forum_' . $auth_levels[$i]] . '</option>';
-	}
-	$select_list .= '</select>';
-
-	return ($select_list);
-}
-
-function renumbering_order()
-{
-	global $db;
-
-	$sql = "SELECT module_id FROM " . MODULES_TABLE . "
-	ORDER BY display_order ASC";
-
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't get list of Modules", "", __LINE__, __FILE__, $sql);
+		message_die(GENERAL_ERROR, 'Couldn\'t query modules table', '', __LINE__, __FILE__, $sql);
 	}
 
-	$i = 10;
-	$inc = 10;
+	$m_rows = array();
+	$m_rows = $db->sql_fetchrowset($result);
+	$m_count = count($m_rows);
 
-	while( $row = $db->sql_fetchrow($result) )
+	for($i = 0; $i < $m_count; $i++)
 	{
+		$m_active = empty($modules_upd) ? 0 : (in_array($m_rows[$i]['module_id'], $modules_upd) ? 1 : 0);
 		$sql = "UPDATE " . MODULES_TABLE . "
-		SET display_order = " . $i . "
-		WHERE module_id = " . $row['module_id'];
-
-		if( !$db->sql_query($sql) )
+						SET active = '" . $m_active . "', update_time = '" . intval($_POST['module_time_' . $m_rows[$i]['module_id']]) . "'
+						WHERE module_id = '" . $m_rows[$i]['module_id'] . "'";
+		if(!$result = $db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, 'Could not update modules table', $lang['Error'], __LINE__, __FILE__, $sql);
 		}
-		$i += $inc;
 	}
+	$mode = 'manage';
 }
 
 if ($mode == 'order')
 {
-	//
 	// Change order of modules in the DB
-	//
 	$move = intval($_GET['move']);
 
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET display_order = display_order + $move
 	WHERE module_id = " . $module_id;
 
-	if( !$result = $db->sql_query($sql) )
+	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, "Couldn't change Module order", "", __LINE__, __FILE__, $sql);
 	}
@@ -157,11 +139,11 @@ if ($mode == 'order')
 	$mode = 'manage';
 }
 
-if ($submit && $mode == 'config')
+if ($submit && ($mode == 'config'))
 {
-	if ( !empty($_POST['return_limit_set']) )
+	if (!empty($_POST['return_limit_set']))
 	{
-		$update_value = ( !empty($_POST['return_limit_set']) ) ? intval($_POST['return_limit_set']) : 0;
+		$update_value = (!empty($_POST['return_limit_set'])) ? intval($_POST['return_limit_set']) : 0;
 
 		if (intval($__stats_config['return_limit']) != intval($update_value))
 		{
@@ -178,7 +160,7 @@ if ($submit && $mode == 'config')
 		}
 	}
 
-	if ( !empty($_POST['clear_cache_set']) )
+	if (!empty($_POST['clear_cache_set']))
 	{
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET module_info_time = 0,
@@ -192,9 +174,9 @@ if ($submit && $mode == 'config')
 		$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Clear_cache'];
 	}
 
-	if ( !empty($_POST['modules_dir_set']) )
+	if (!empty($_POST['modules_dir_set']))
 	{
-		$update_value = ( !empty($_POST['modules_dir_set']) ) ? $_POST['modules_dir_set'] : '';
+		$update_value = (!empty($_POST['modules_dir_set'])) ? $_POST['modules_dir_set'] : '';
 
 		if ($__stats_config['modules_dir'] != $update_value)
 		{
@@ -218,10 +200,8 @@ if ($mode == 'config')
 
 	$__stats_config = array();
 
-	$sql = 'SELECT *
-	FROM ' . STATS_CONFIG_TABLE;
-
-	if ( !($result = $db->sql_query($sql)) )
+	$sql = 'SELECT * FROM ' . STATS_CONFIG_TABLE;
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 	}
@@ -325,7 +305,6 @@ if ($mode == 'uninstall')
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
-
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
@@ -356,9 +335,7 @@ if ($mode == 'auto_set')
 
 		$module_info = generate_module_info($stat_module_data[$module_id]);
 
-		//
 		// Start Time
-		//
 		$mtime = microtime();
 		$mtime = explode(" ", $mtime);
 		$mtime = $mtime[1] + $mtime[0];
@@ -372,43 +349,20 @@ if ($mode == 'auto_set')
 		$module_info = generate_module_info($stat_module_data[$module_id]);
 		$mod_lang = 'module_language_parse';
 
-		$language = $board_config['default_lang'];
-
-		if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT))
-		{
-			$language = 'english';
-		}
-		include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT);
-		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
-
-		$language = $board_config['default_lang'];
-
-		/*
-		if (!file_exists(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_name . '/lang_' . $language . '/lang.' . PHP_EXT))
-		{
-			$language = 'english';
-		}
-		include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_name . '/lang_' . $language . '/lang.' . PHP_EXT);
-		*/
-
 		$statistics->result_cache_used = false;
 		$statistics->db_cache_used = false;
 
 		$stat_db->begin_cached_query();
 		$result_cache->begin_cached_results();
-		include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_name . '/module.php');
+		include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_name . '_module.php');
 
-		$template->set_filenames(array(
-			'module_tpl_' . $module_id => './../' . IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '/module.tpl')
-		);
+		$template->set_filenames(array('module_tpl_' . $module_id => STATS_TPL . $module_info['dname'] . '.tpl'));
 
 		$template->pparse('module_tpl_' . $module_id);
 
-		//
 		// End Time
-		//
 		$mtime = microtime();
-		$mtime = explode(" ",$mtime);
+		$mtime = explode(" ", $mtime);
 		$mtime = $mtime[1] + $mtime[0];
 		$endtime = $mtime;
 		$totaltime = ($endtime - $starttime);
@@ -419,10 +373,12 @@ if ($mode == 'auto_set')
 
 		if ($totaltime > 0.2)
 		{
-			$update_time_recommend = round((($totaltime * $num_queries) * 1.5), 0);
+			// Original update_time_factor was 1.5
+			$update_time_factor = 4;
+			$update_time_recommend = round((($totaltime * $num_queries) * $update_time_factor), 0);
 		}
 
-		print '<span class="gen">Time consumed: ' . $totaltime . ' - Queries executed: ' . $num_queries . ' - recommended Update Time: ' . $update_time_recommend . '</span><br />';
+		print '<span class="gen">Time consumed: ' . $totaltime . ' - Queries executed: ' . $num_queries . ' - Recommended Update Time: ' . $update_time_recommend . '</span><br />';
 		print '<br />';
 
 		$sql = "UPDATE " . MODULES_TABLE . "
@@ -440,14 +396,10 @@ if ($mode == 'auto_set')
 	print '<br /><br /><br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=manage') . '">' . $lang['Back_to_management'] . '</a>';
 }
 
-//
 // Manage Modules
-//
 if ($mode == 'manage')
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'stat_manage_modules.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'stat_manage_modules.tpl'));
 
 	$sql = "SELECT MAX(display_order) as max, MIN(display_order) as min
 	FROM " . MODULES_TABLE;
@@ -462,9 +414,7 @@ if ($mode == 'manage')
 	$curr_max = $row['max'];
 	$curr_min = $row['min'];
 
-	//
 	// Update Module List
-	//
 	update_module_list();
 
 	$sql = "SELECT *
@@ -481,7 +431,7 @@ if ($mode == 'manage')
 
 	for ($i = 0; $i < $num_rows; $i++)
 	{
-		$row_class = ( !($i%2) ) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = (($i % 2) ? $theme['td_class2'] : $theme['td_class1']);
 
 		$module_info = generate_module_info($rows[$i]);
 		$move_up = '';
@@ -492,48 +442,65 @@ if ($mode == 'manage')
 		if ($rows[$i]['display_order'] != $curr_min)
 		{
 			$link = append_sid('admin_statistics.' . PHP_EXT . '?mode=order&amp;move=-15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
-			$move_up = '<a href="' . $link . '">' . $lang['Move_up'] . '</a>';
+			//$move_up = '<a href="' . $link . '">' . $lang['Move_up'] . '</a>';
+			$move_up = '<a href="' . $link . '"><img src="../images/cms/arrow_up.png" alt="' . $lang['Move_up'] . '" title="' . $lang['Move_up'] . '" /></a>';
 		}
 
 		if ($rows[$i]['display_order'] != $curr_max)
 		{
 			$link = append_sid('admin_statistics.' . PHP_EXT . '?mode=order&amp;move=15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
-			$move_down = '<a href="' . $link . '">' . $lang['Move_down'] . '</a>';
+			//$move_down = '<a href="' . $link . '">' . $lang['Move_down'] . '</a>';
+			$move_down = '<a href="' . $link . '"><img src="../images/cms/arrow_down.png" alt="' . $lang['Move_down'] . '" title="' . $lang['Move_down'] . '" /></a>';
 		}
 
 		if (intval($rows[$i]['installed']) == 1)
 		{
-			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Edit'] . '</a>';
-			$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Uninstall'] . '</a>';
+			//$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Edit'] . '</a>';
+			//$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Uninstall'] . '</a>';
+			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_edit.png" alt="' . $lang['Edit'] . '" title="' . $lang['Edit'] . '" /></a>';
+			$edit_install .= '&nbsp;';
+			$edit_install .= '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_delete.png" alt="' . $lang['Uninstall'] . '" title="' . $lang['Uninstall'] . '" /></a>';
 		}
 		else
 		{
-			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . ' & ' . $lang['Activate'] . '</a>';
-			$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . '</a>';
+			//$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '</a>';
+			//$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . '</a>';
+			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_refresh.png" alt="' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '" title="' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '" /></a>';
+			$edit_install .= '&nbsp;';
+			$edit_install .= '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_add.png" alt="' . $lang['Install'] . '" title="' . $lang['Install'] . '" /></a>';
 		}
 
+		$status_checked = '';
+		$show_status_check = false;
 		if (intval($rows[$i]['active']) == 1)
 		{
 			$state_link = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=deactivate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '" alt="' . $lang['Deactivate'] . '">' . $lang['Active'] . '</a>';
+			$show_status_check = true;
+			$status_checked = ' checked="checked"';
 		}
-		else if ( (intval($rows[$i]['active']) == 0) && (intval($rows[$i]['installed']) == 1) )
+		elseif ((intval($rows[$i]['active']) == 0) && (intval($rows[$i]['installed']) == 1))
 		{
 			$state_link = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '" alt="' . $lang['Activate'] . '">' . $lang['Not_active'] . '</a>';
+			$show_status_check = true;
 		}
-		else if (intval($rows[$i]['active']) == 0)
+		elseif (intval($rows[$i]['active']) == 0)
 		{
 			$state_link = $lang['Not_active'];
 		}
 
 		$template->assign_block_vars('modulerow', array(
 			'ROW_CLASS' => $row_class,
+			'MODULE_ID' => $rows[$i]['module_id'],
 			'NAME' => $module_info['name'],
-			'DNAME' => $rows[$i]['name'],
+			'DNAME' => (isset($lang['module_name_' . $module_info['name']]) ? $lang['module_name_' . $module_info['name']] : $rows[$i]['name']),
 			'U_STATE' => $state_link,
+			'S_STATUS_CHECK' => $show_status_check,
+			'CHECKED' => $status_checked,
 			'UPDATE_TIME' => $rows[$i]['update_time'],
 			'U_MOVE_UP' => $move_up,
 			'U_MOVE_DOWN' => $move_down,
-			'U_EDIT' => $edit_install)
+			'U_EDIT' => $edit_install
+			)
 		);
 	}
 
@@ -541,14 +508,18 @@ if ($mode == 'manage')
 		'L_STATS_MANAGE' => $lang['Statistics_modules_title'],
 		'L_MESSAGES' => $lang['Messages'],
 		'L_NAME' => $lang['Module_name'],
-		'L_DNAME' => $lang['Directory_name'],
+		'L_MODULES_UPDATED' => $lang['Modules_order_update'],
+		'L_MODULE_NAME' => $lang['Module_file_name'],
 		'L_STATUS' => $lang['Status'],
 		'L_UPDATE_TIME' => $lang['Update_time'],
 		'L_AUTO_SET' => $lang['Auto_set_update_time'],
+		'L_UPDATE_MODULES' => $lang['Update_Modules'],
 		'L_GO' => $lang['Go'],
+		'S_ACTION' => append_sid('admin_statistics.' . PHP_EXT),
 		'U_AUTO_SET' => append_sid('admin_statistics.' . PHP_EXT . '?mode=auto_set'),
 
-		'MESSAGE' => $msg)
+		'MESSAGE' => $msg
+		)
 	);
 }
 
@@ -607,8 +578,7 @@ if ($mode == 'install')
 	if ($do_install)
 	{
 
-
-		$dbms_file = IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '/' . $available_dbms[$dbms]['SCHEMA'] . '.sql';
+		$dbms_file = IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '_' . $available_dbms[$dbms]['SCHEMA'] . '.sql';
 
 		$remove_remarks = $available_dbms[$dbms]['COMMENTS'];;
 		$delimiter = $available_dbms[$dbms]['DELIM'];
@@ -616,7 +586,7 @@ if ($mode == 'install')
 
 		$sql = true;
 
-		if ( !($fp = @fopen($dbms_file, 'r')) )
+		if (!($fp = @fopen($dbms_file, 'r')))
 		{
 	//		print "<br />No SQL File found... expected: " . $dbms_file . "<br />";
 			print "<br /><br />No need to install any SQL specific things.<br />";
@@ -644,7 +614,7 @@ if ($mode == 'install')
 				print "Running :: " . $sql_query[$i];
 				flush();
 
-				if ( !($result = $db->sql_query($sql_query[$i])) )
+				if (!($result = $db->sql_query($sql_query[$i])))
 				{
 					$errored = true;
 					$error = $db->sql_error();
@@ -673,7 +643,7 @@ if ($mode == 'install')
 			print '<br /><span class="text_red">' . $lang['Module_install_error'] . '</span>';
 		}
 
-		if ( (isset($var)) && ($var != '') )
+		if ((isset($var)) && ($var != ''))
 		{
 			if ($var == 'activate')
 			{
@@ -694,9 +664,9 @@ if ($mode == 'install')
 	print '<br /><br /><br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=manage') . '">' . $lang['Back_to_management'] . '</a>';
 }
 
-if ($submit && $mode == 'edit')
+if ($submit && ($mode == 'edit'))
 {
-	$auth_value = ( !empty($_POST['auth_fields']) ) ? intval($_POST['auth_fields']) : 0;
+	$auth_value = (!empty($_POST['auth_fields'])) ? intval($_POST['auth_fields']) : 0;
 
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET auth_value = " . $auth_value . "
@@ -719,7 +689,7 @@ if ($submit && $mode == 'edit')
 
 	$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Auth_settings_updated'] . ' : ' . $module_info['name'];
 
-	$update_value = ( isset($_POST['active']) ) ? intval($_POST['active']) : 0;
+	$update_value = (isset($_POST['active'])) ? intval($_POST['active']) : 0;
 
 	if (intval($module_info['active']) != $update_value)
 	{
@@ -735,7 +705,7 @@ if ($submit && $mode == 'edit')
 		$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Active'] . ' : ' . $module_info['name'];
 	}
 
-	$update_value = ( isset($_POST['updatetime']) ) ? intval($_POST['updatetime']) : 0;
+	$update_value = (isset($_POST['updatetime'])) ? intval($_POST['updatetime']) : 0;
 
 	if (intval($module_info['update_time']) != intval($update_value))
 	{
@@ -751,7 +721,7 @@ if ($submit && $mode == 'edit')
 		$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Update_time'] . ' : ' . $module_info['name'];
 	}
 
-	if ( isset($_POST['uninstall']) && (intval($_POST['uninstall']) == 0))
+	if (isset($_POST['uninstall']) && (intval($_POST['uninstall']) == 0))
 	{
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET installed = 0, active = 0
@@ -768,13 +738,9 @@ if ($submit && $mode == 'edit')
 
 if ($mode == 'edit')
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'stat_edit_module.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'stat_edit_module.tpl'));
 
-	//
 	// Set up Preview Page
-	//
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
 
@@ -799,14 +765,10 @@ if ($mode == 'edit')
 		)
 	);
 
-	//
 	// Compile the Module without using cache functions if it's active
-	//
 	$return_limit = $__stats_config['return_limit'];
 
-	//
 	// Start Time
-	//
 	$mtime = microtime();
 	$mtime = explode(" ",$mtime);
 	$mtime = $mtime[1] + $mtime[0];
@@ -837,34 +799,18 @@ if ($mode == 'edit')
 
 	$__language = $board_config['default_lang'];
 
-	/*
-	if (!@file_exists(@realpath(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . PHP_EXT)))
-	{
-		$__language = 'english';
-	}
-	*/
-
-	if (@file_exists(@realpath(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . PHP_EXT)))
-	{
-		include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/lang_' . $__language . '/lang.' . PHP_EXT);
-	}
-
 	$statistics->result_cache_used = false;
 	$statistics->db_cache_used = false;
 
 	$stat_db->begin_cached_query();
 	$result_cache->begin_cached_results();
-	include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.php');
+	include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '_module.php');
 	$stat_db->end_cached_query($__module_id);
 	$result_cache->end_cached_query($__module_id);
 
-	$template->set_filenames(array(
-		$__tpl_name => $__module_root_path . $__stats_config['modules_dir'] . '/' . $__module_info['dname'] . '/module.tpl')
-	);
+	$template->set_filenames(array($__tpl_name => STATS_TPL . $__module_info['dname'] . '.tpl'));
 
-	//
 	// End Time
-	//
 	$mtime = microtime();
 	$mtime = explode(" ", $mtime);
 	$mtime = $mtime[1] + $mtime[0];
@@ -881,6 +827,19 @@ if ($mode == 'edit')
 	}
 
 	$template->assign_vars(array(
+		'GRAPH_IMAGE' => $images['voting_graphic_body'],
+		'LEFT_GRAPH_IMAGE' => $images['voting_graphic_left'],
+		'RIGHT_GRAPH_IMAGE' => $images['voting_graphic_right'],
+		'R_GRAPH_IMAGE' => $images['voting_graphic_red_body'],
+		'R_LEFT_GRAPH_IMAGE' => $images['voting_graphic_red_left'],
+		'R_RIGHT_GRAPH_IMAGE' => $images['voting_graphic_red_right'],
+		'G_GRAPH_IMAGE' => $images['voting_graphic_green_body'],
+		'G_LEFT_GRAPH_IMAGE' => $images['voting_graphic_green_left'],
+		'G_RIGHT_GRAPH_IMAGE' => $images['voting_graphic_green_right'],
+		'B_GRAPH_IMAGE' => $images['voting_graphic_blue_body'],
+		'B_LEFT_GRAPH_IMAGE' => $images['voting_graphic_blue_left'],
+		'B_RIGHT_GRAPH_IMAGE' => $images['voting_graphic_blue_right'],
+
 		'MESSAGE' => $msg,
 		'L_ACTIVE' => $lang['Active'],
 		'L_ACTIVE_DESC' => $lang['Active_desc'],
@@ -901,7 +860,8 @@ if ($mode == 'edit')
 		'L_BACK_TO_MANAGEMENT' => $lang['Back_to_management'],
 		'U_MANAGEMENT' => append_sid('admin_statistics.' . PHP_EXT . '?mode=manage'),
 
-		'S_ACTION' => append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $module_id))
+		'S_ACTION' => append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $module_id)
+		)
 	);
 
 	$template->assign_var_from_handle('PREVIEW_MODULE', 'preview');
@@ -914,11 +874,61 @@ $template->assign_vars(array(
 	)
 );
 
+$db->clear_cache('stats_config_');
+
 if ($templated)
 {
 	$template->pparse('body');
+	include('page_footer_admin.' . PHP_EXT);
+}
 
-	include('./page_footer_admin.' . PHP_EXT);
+// FUNCTIONS
+function gen_auth_select($default_auth_value)
+{
+	global $lang;
+
+	$auth_levels = array('ALL', 'REG', 'ADMIN');
+	$auth_const = array(AUTH_ALL, AUTH_REG, AUTH_ADMIN);
+
+	$select_list = '<select name="auth_fields">';
+
+	for($i = 0; $i < count($auth_levels); $i++)
+	{
+		$selected = ($default_auth_value == $auth_const[$i]) ? ' selected="selected"' : '';
+		$select_list .= '<option value="' . $auth_const[$i] . '"' . $selected . '>' . $lang['Forum_' . $auth_levels[$i]] . '</option>';
+	}
+	$select_list .= '</select>';
+
+	return ($select_list);
+}
+
+function renumbering_order()
+{
+	global $db;
+
+	$sql = "SELECT module_id FROM " . MODULES_TABLE . "
+	ORDER BY display_order ASC";
+
+	if(!$result = $db->sql_query($sql))
+	{
+		message_die(GENERAL_ERROR, 'Couldn\'t get list of Modules', '', __LINE__, __FILE__, $sql);
+	}
+
+	$i = 10;
+	$inc = 10;
+
+	while($row = $db->sql_fetchrow($result))
+	{
+		$sql = "UPDATE " . MODULES_TABLE . "
+		SET display_order = " . $i . "
+		WHERE module_id = " . $row['module_id'];
+
+		if(!$db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
+		}
+		$i += $inc;
+	}
 }
 
 ?>

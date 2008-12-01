@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_NAV1}">{L_NAV1}</a>{NAV_SEP}<a href="{U_NAV2}">{L_NAV2}</a>{NAV_SEP}<a href="#" class="nav-current">{L_SEARCH_TITLE}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th nowrap="nowrap">&nbsp;{L_STATUS}&nbsp;</th>
@@ -23,7 +13,7 @@
 <tr>
 	<td class="{searchresults.ROW_CLASS} row-center" valign="middle">{searchresults.STATUS}</td>
 	<td class="{searchresults.ROW_CLASS}"><span class="forumlink"><a href="{searchresults.U_CAT_LINK}" class="forumlink">{searchresults.CAT_NAME}</a></span></td>
-	<td class="{searchresults.ROW_CLASS}"><span class="topictitle">{searchresults.MINI_ICON}<a href="{searchresults.U_FILE_LINK}" class="topictitle">{searchresults.DESCRIPTION}</span></td>
+	<td class="{searchresults.ROW_CLASS}"><span class="topiclink">{searchresults.MINI_ICON}<a href="{searchresults.U_FILE_LINK}" class="topictitle">{searchresults.DESCRIPTION}</span></td>
 	<td class="{searchresults.ROW_CLASS}"><span class="name">{searchresults.FILE_NAME}</span></td>
 </tr>
 <tr>

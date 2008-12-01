@@ -178,6 +178,8 @@ if (USERS_SUBFOLDERS_IMG == true)
 	$page_title = $lang['Uploaded_Images_Local'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('posted_img_list.' . PHP_EXT) . '">' . $lang['Uploaded_Images_Local'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'posted_img_list_body.tpl'));

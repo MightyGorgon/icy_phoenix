@@ -15,7 +15,7 @@ function select_switch(status)
 
 <form method="post" name="shadow_list" action="{S_ATTACH_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="5" align="center"><span class="cattitle">{L_SHADOW_TITLE}</span></td></tr>
+<tr><th colspan="5">{L_SHADOW_TITLE}</th></tr>
 <tr>
 	<th>&nbsp;{L_ATTACHMENT}&nbsp;</th>
 	<th>&nbsp;{L_COMMENT}&nbsp;</th>
@@ -34,7 +34,7 @@ function select_switch(status)
 	<th>&nbsp;{L_COMMENT}&nbsp;</th>
 	<th>&nbsp;{L_DELETE}&nbsp;</th>
 </tr>
-<tr><td class="row1 row-center" colspan="5"><span class="gensmall">{L_EXPLAIN_ROW}</span></td></tr>
+<tr><td class="row1" colspan="5"><span class="gensmall">{L_EXPLAIN_ROW}</span></td></tr>
 <!-- BEGIN table_shadow_row -->
 <tr>
 	<td class="row2 row-center" valign="middle"><span class="postdetails">{table_shadow_row.ATTACH_FILENAME}</span></td>

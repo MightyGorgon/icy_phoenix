@@ -78,38 +78,27 @@
 // -->
 </script>
 <!-- INCLUDE pa_header.tpl -->
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a>{NAV_SEP}<a href="#" class="nav-current">{L_MCP_TITLE}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
+<!-- INCLUDE pa_links.tpl -->
 
-<p>{L_MCP_EXPLAIN}</p>
 <body onLoad="disable_cat_list();">
 <form method="post" action="{S_FILE_ACTION}" name="form">
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td><b><span class="genmed">{L_MODE}:</span></b> <select name="mode_js" onchange="disable_cat_list();">{S_MODE_SELECT}</select> <b><span class="genmed">{L_CATEGORY}:</span></b> {S_CAT_LIST}<input type="submit" class="liteoption" name="go" value="{L_GO}" /></td>
-</tr>
-</table>
+<div class="forumline genmed" style="text-align: center; margin-top: 10px; padding: 5px;">
+<b>{L_MCP_EXPLAIN}</b>&nbsp;&raquo;&nbsp;<b><span class="genmed">{L_MODE}:</span></b>&nbsp;<select name="mode_js" onchange="disable_cat_list();">{S_MODE_SELECT}</select>&nbsp;&nbsp;&nbsp;<b><span class="genmed">{L_CATEGORY}:</span></b>&nbsp;{S_CAT_LIST}&nbsp;&nbsp;&nbsp;<input type="submit" class="liteoption" name="go" value="{L_GO}" />
+</div>
 {S_HIDDEN_FIELDS}
 </form>
 <form method="post" action="{S_FILE_ACTION}" name="file_ids" onsubmit="return check();">
 <!-- BEGIN file_mode -->
 <table class="forumline" width="100%" cellspacing="0">
-<tr><th colspan="6" class="thHead">{file_mode.L_FILE_MODE}</span></th></tr>
+<tr><th colspan="6">{file_mode.L_FILE_MODE}</span></th></tr>
 <!-- IF file_mode.DATA -->
 <!-- BEGIN file_row -->
 <tr>
 	<td class="row1 row-center" width="5%"><span class="genmed">{file_mode.file_row.FILE_NUMBER}</span></td>
 	<td class="row1" width="50%"><span class="genmed">{file_mode.file_row.FILE_NAME}</span></td>
-	<td class="row1 row-center" width="10%"><span class="gen"><a href="{file_mode.file_row.U_FILE_EDIT}">{L_EDIT}</a></span></td>
-	<td class="row1 row-center" width="10%"><span class="gen"><a href="javascript:delete_file('{file_mode.file_row.U_FILE_DELETE}')">{L_DELETE}</a></span></td>
-	<td class="row1 row-center" width="20%"><span class="gen"><a href="{file_mode.file_row.U_FILE_APPROVE}">{file_mode.file_row.L_APPROVE}</a></span></td>
+	<td class="row1 row-center" width="10%"><span class="genmed"><a href="{file_mode.file_row.U_FILE_EDIT}">{L_EDIT}</a></span></td>
+	<td class="row1 row-center" width="10%"><span class="genmed"><a href="javascript:delete_file('{file_mode.file_row.U_FILE_DELETE}')">{L_DELETE}</a></span></td>
+	<td class="row1 row-center" width="20%"><span class="genmed"><a href="{file_mode.file_row.U_FILE_APPROVE}">{file_mode.file_row.L_APPROVE}</a></span></td>
 	<td class="row1 row-center" width="5%"><span class="genmed"><input type="checkbox" name="file_ids[]" value="{file_mode.file_row.FILE_ID}" /></span></td>
 </tr>
 <!-- END file_row -->

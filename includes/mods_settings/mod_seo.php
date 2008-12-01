@@ -113,6 +113,7 @@ $config_fields = array(
 
 	'similar_topics' => array(
 		'lang_key' => 'IP_similar_topics',
+		'explain' => 'IP_similar_topics_explain',
 		'type' => 'LIST_RADIO',
 		'default' => 'Yes',
 		'values' => $list_yes_no,

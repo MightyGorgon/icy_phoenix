@@ -27,15 +27,6 @@ function checkAlbumForm()
 </script>
 <form name="editform" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkAlbumForm()">
 
-<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}" class="nav">{L_ALBUM}</a>{NAV_SEP}<a class="nav-current" href="{U_VIEW_CAT}">{CAT_TITLE}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		{SLIDESHOW}&nbsp;
-	</div>
-</div>
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_EDIT_PIC_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="row1" width="30%" height="28"><span class="gen">{L_PIC_TITLE}</span></td>

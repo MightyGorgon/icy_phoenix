@@ -1,13 +1,6 @@
 <!-- INCLUDE pa_header.tpl -->
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav-current">{DOWNLOAD}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
+<!-- INCLUDE pa_links.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{DOWNLOAD}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th colspan="2">{L_CATEGORY}</th>

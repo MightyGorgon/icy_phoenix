@@ -372,14 +372,14 @@ CREATE TABLE `phpbb_captcha_config` (
 
 ## `phpbb_categories`
 
-CREATE TABLE `phpbb_categories` (
+CREATE TABLE `___categories___` (
 	`cat_id` mediumint(8) unsigned NOT NULL auto_increment,
-	`cat_title` varchar(100) default NULL,
-	`cat_order` mediumint(8) unsigned NOT NULL default '0',
-	`cat_main_type` char(1) default NULL,
 	`cat_main` mediumint(8) unsigned NOT NULL default '0',
-	`cat_desc` text NOT NULL,
+	`cat_main_type` char(1) default NULL,
+	`cat_title` varchar(100) default NULL,
+	`cat_desc` text,
 	`icon` varchar(255) default NULL,
+	`cat_order` mediumint(8) unsigned NOT NULL default '0',
 	PRIMARY KEY (`cat_id`),
 	KEY `cat_order` (`cat_order`)
 );
@@ -539,21 +539,28 @@ CREATE TABLE `phpbb_forum_prune` (
 CREATE TABLE `phpbb_forums` (
 	`forum_id` smallint(5) unsigned NOT NULL default '0',
 	`cat_id` mediumint(8) unsigned NOT NULL default '0',
+	`main_type` char(1) default NULL,
 	`forum_name` varchar(150) default NULL,
 	`forum_desc` text,
 	`forum_status` tinyint(4) NOT NULL default '0',
-	`thank` tinyint(1) NOT NULL default '1',
 	`forum_order` mediumint(8) unsigned NOT NULL default '1',
 	`forum_posts` mediumint(8) unsigned NOT NULL default '0',
 	`forum_topics` mediumint(8) unsigned NOT NULL default '0',
 	`forum_last_post_id` mediumint(8) unsigned NOT NULL default '0',
+	`forum_postcount` tinyint(1) NOT NULL default '1',
+	`forum_thanks` tinyint(1) NOT NULL default '0',
 	`forum_notify` tinyint(1) unsigned NOT NULL default '1',
+	`forum_similar_topics` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_tags` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_sort_box` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_kb_mode` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_index_icons` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_rules` tinyint(1) unsigned NOT NULL default '0',
 	`forum_link` varchar(255) default NULL,
 	`forum_link_internal` tinyint(1) NOT NULL default '0',
 	`forum_link_hit_count` tinyint(1) NOT NULL default '0',
 	`forum_link_hit` bigint(20) unsigned NOT NULL default '0',
 	`icon` varchar(255) default NULL,
-	`main_type` char(1) default NULL,
 	`prune_next` int(11) default NULL,
 	`prune_enable` tinyint(1) NOT NULL default '0',
 	`auth_view` tinyint(2) NOT NULL default '0',
@@ -575,13 +582,6 @@ CREATE TABLE `phpbb_forums` (
 	`auth_greencard` tinyint(2) NOT NULL default '5',
 	`auth_bluecard` tinyint(2) NOT NULL default '1',
 	`auth_rate` tinyint(2) NOT NULL default '-1',
-	`forum_rules` text NOT NULL,
-	`rules_display_title` tinyint(1) NOT NULL default '1',
-	`rules_custom_title` varchar(80) NOT NULL default '',
-	`rules_in_viewforum` tinyint(1) unsigned NOT NULL default '0',
-	`rules_in_viewtopic` tinyint(1) unsigned NOT NULL default '0',
-	`rules_in_posting` tinyint(1) unsigned NOT NULL default '0',
-	`forum_postcount` tinyint(1) NOT NULL default '1',
 	PRIMARY KEY (`forum_id`),
 	KEY `forums_order` (`forum_order`),
 	KEY `cat_id` (`cat_id`),
@@ -589,6 +589,24 @@ CREATE TABLE `phpbb_forums` (
 );
 
 ## `phpbb_forums`
+
+
+## --------------------------------------------------------
+
+## `phpbb_forums_rules`
+
+CREATE TABLE `phpbb_forums_rules` (
+	`forum_id` smallint(5) unsigned NOT NULL default '0',
+	`rules` text NOT NULL,
+	`rules_display_title` tinyint(1) NOT NULL default '1',
+	`rules_custom_title` varchar(80) NOT NULL default '',
+	`rules_in_viewforum` tinyint(1) unsigned NOT NULL default '0',
+	`rules_in_viewtopic` tinyint(1) unsigned NOT NULL default '0',
+	`rules_in_posting` tinyint(1) unsigned NOT NULL default '0',
+	PRIMARY KEY (`forum_id`)
+);
+
+## `phpbb_forums_rules`
 
 
 ## --------------------------------------------------------

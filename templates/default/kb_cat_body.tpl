@@ -27,7 +27,7 @@
 	<td class="row2">
 		<b>{articlerow.ARTICLE}</b><br />
 		{articlerow.ARTICLE_DESCRIPTION}
-		<div align="right"><span class="post-buttons">{articlerow.U_APPROVE} {articlerow.U_DELETE}</span></div>
+		<div align="right"><span class="post-buttons">{articlerow.U_APPROVE_IMG}&nbsp;{articlerow.U_DELETE_IMG}</span></div>
 	</td>
 	<td class="row1 row-center">{articlerow.ARTICLE_TYPE}</td>
 	<td class="row2 row-center"><b>{articlerow.ARTICLE_AUTHOR}</b></td>

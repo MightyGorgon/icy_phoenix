@@ -1,4 +1,3 @@
-<!-- IF S_PAGE_NAV --><!-- INCLUDE cms_block_inc_nav.tpl --><!-- ENDIF -->
 <!-- BEGIN toprow_blocks_row -->{toprow_blocks_row.CMS_BLOCK}<!-- END toprow_blocks_row -->
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>

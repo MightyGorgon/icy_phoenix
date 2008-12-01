@@ -1,19 +1,3 @@
-<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_TOP}">{L_DL_TOP}</a>{U_DL_CAT}
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<div class="post-buttons">
-			<!-- BEGIN edit_button -->
-			<a href="{edit_button.U_EDIT}">{edit_button.EDIT_IMG}</a>&nbsp;
-			<!-- END edit_button -->
-			{U_SEARCH}
-		</div>
-		&nbsp;
-	</div>
-</div>
-
 <!-- BEGIN downloads -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_DOWNLOADS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -87,17 +71,18 @@
 </tr>
 <!-- END bug_tracker -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+<div style="text-align: right;"><div class="post-buttons"><!-- BEGIN edit_button --><a href="{edit_button.U_EDIT}">{edit_button.EDIT_IMG}</a>&nbsp;<!-- END edit_button -->{U_SEARCH}</div></div>
 
 <!-- BEGIN download_button -->
 <form action="{download_button.U_DOWNLOAD}" method="post" name="download">
 <!-- END download_button -->
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN allow_trafficfree_download -->
-<tr><td align="center"><span class="gensmall"><b class="text_red">{allow_trafficfree_download.L_YOU_CAN_DOWNLOAD}</b></span><br /><br /></td></tr>
+<tr><td class="row1 row-center"><span class="gensmall"><b class="text_red">{allow_trafficfree_download.L_YOU_CAN_DOWNLOAD}</b></span><br /><br /></td></tr>
 <!-- END allow_trafficfree_download -->
 <!-- BEGIN download_button -->
 <tr>
-	<td align="center">
+	<td class="row1 row-center">
 		<!-- BEGIN vc -->
 		<img src="{download_button.vc.VC}" style="vertical-align:bottom;" alt="" title="" />&nbsp;
 		<input type="text" value="" name="code" class="post" size="5" maxlength="5" />&nbsp;
@@ -107,12 +92,12 @@
 	</td>
 </tr>
 <!-- END download_button -->
-</table>
+</table>{IMG_TBR}
 <!-- BEGIN download_button -->
 </form>
 <!-- END download_button -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1">
 		<div style="float:right;text-align:right;">
@@ -137,7 +122,7 @@
 		<!-- END downloads -->
 	</td>
 </tr>
-</table>
+</table>{IMG_TBR}
 
 <br />
 
@@ -145,7 +130,7 @@
 <br />
 <form action="{S_ACTION}" method="post" name="rating">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RATING_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row3" nowrap="nowrap" colspan="2" align="center"><span class="topictitle">{L_RATING_TITLE}</span></td></tr>
+<tr><td class="row3" nowrap="nowrap" colspan="2" align="center"><span class="topiclink">{L_RATING_TITLE}</span></td></tr>
 <tr><td class="{ROW_CLASS2} row-center"><span class="gen">{rating.RATING}</span></td></tr>
 <tr>
 	<td class="cat" align="center">

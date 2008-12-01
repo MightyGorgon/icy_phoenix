@@ -1,12 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{REQUEST_URI}" class="nav-current">{PAGE_NAME}</a>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th align="center">{L_TOPICS}&nbsp;{L_FOR_FORUM}</th>
@@ -16,22 +7,16 @@
 	<th width="20%">{L_MAX}</th>
 </tr>
 <!-- BEGIN notopics -->
-<tr><td class="row3 row-center" valign="middle" colspan="6"><span class="postdetails"><br /><br />{notopics.MESSAGE}<br /><br /></span></td></tr>
+<tr><td class="row1 row-center" valign="middle" colspan="6"><span class="postdetails"><br /><br />{notopics.MESSAGE}<br /><br /></span></td></tr>
 <!-- END notopics -->
 <!-- BEGIN topicrow -->
 <tr>
 	<td class="row1" width="100%">
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-			<tr>
-				<td align="left">
-					<span class="topictitle">
-						<a href="{topicrow.URL}" class="topictitle">{topicrow.TITLE}</a>
-					</span>
-				</td>
-				<td align="right">
-					<span class="nav">{topicrow.L_VIEW_DETAILS}</span>
-				</td>
-			</tr>
+		<tr>
+			<td align="left"><span class="topiclink"><a href="{topicrow.URL}" class="topiclink">{topicrow.TITLE}</a></span></td>
+			<td align="right"><span class="nav">{topicrow.L_VIEW_DETAILS}</span></td>
+		</tr>
 		</table>
 	</td>
 	<td class="row3 row-center" valign="middle"><span class="postdetails">{topicrow.NUMBER_OF_RATES}</span></td>
@@ -44,6 +29,6 @@
 
 <form method="post" action="{S_MODE_ACTION}">
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="right"><span class="gen">{L_BY_FORUM}&nbsp;&nbsp;{S_FORUMS}&nbsp;&nbsp;{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_VIEW}" class="lightoption" /></span></td></tr>
+<tr><td align="right"><span class="genmed"><b>{L_BY_FORUM}</b>&nbsp;&nbsp;{S_FORUMS}&nbsp;&nbsp;{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_VIEW}" class="mainoption" /></span></td></tr>
 </table>
 </form>

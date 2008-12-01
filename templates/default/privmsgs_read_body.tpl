@@ -70,15 +70,6 @@ $str = ob_get_contents();
 ob_end_clean();
 $this->vars['CA_QUICK_REPLY_FORM'] = $str;
 ?>
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}<a href="{U_PRIVATEMSGS}">{L_PRIVATEMSGS}</a>{NAV_SEP}<a href="#" class="nav-current">{POST_SUBJECT}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<a href="{U_PRIVMSG_PREVIOUS}">{L_PRIVMSG_PREVIOUS}</a>&nbsp;|&nbsp;<a href="{U_PRIVMSG_NEXT}">{L_PRIVMSG_NEXT}</a>
-	</div>
-</div>{IMG_TBR}
 {CPL_MENU_OUTPUT}
 <div class="forumline" style="margin-left:5%;margin-right:5%">
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -135,7 +126,7 @@ function addquote(privmsgs_id, tag)
 			{RANK_IMAGE}
 			<span class="post-images">{POSTER_AVATAR}</span>
 			<div class="post-details">
-			{POSTER_ONLINE_STATUS_IMG}{IP_IMG}{AIM_IMG}{ICQ_IMG}{MSN_IMG}{SKYPE_IMG}{YIM_IMG}<br />
+			{ONLINE_STATUS_IMG}{IP_IMG}{AIM_IMG}{ICQ_IMG}{MSN_IMG}{SKYPE_IMG}{YIM_IMG}<br />
 			{POSTER_JOINED}<br />
 			{POSTER_POSTS}<br />
 			{POSTER_FROM}</div><br />

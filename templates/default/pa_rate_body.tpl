@@ -1,4 +1,5 @@
 <!-- INCLUDE pa_header.tpl -->
+<!-- INCLUDE pa_links.tpl -->
 <script type="text/javascript">
 <!--
 function checkRateForm()
@@ -14,15 +15,6 @@ function checkRateForm()
 }
 // -->
 </script>
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a><!-- BEGIN navlinks -->{NAV_SEP}<a href="{navlinks.U_VIEW_CAT}" class="nav">{navlinks.CAT_NAME}</a><!-- END navlinks -->{NAV_SEP}<a href="{U_FILE_NAME}" class="nav">{FILE_NAME}</a>{NAV_SEP}<a href="#" class="nav-current">{L_RATE}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
 
 <form name="rateform" action="{S_RATE_ACTION}" method="post" onsubmit="return checkRateForm();">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RATE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

@@ -30,6 +30,7 @@ init_userprefs($userdata);
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
+include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 if (isset($_POST['message']))
@@ -587,7 +588,9 @@ album_read_tree($album_user_id);
 $album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav' , $album_user_id);
 if ($album_nav_cat_desc != '')
 {
+	$nav_server_url = create_server_url();
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
+	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 }
 
 if(!isset($_POST['comment']) && !isset($_POST['rating']))
@@ -747,21 +750,14 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 					$bbcode->is_sig = false;
 				}
 
-
-				//email, profile, pm links
-				if (($commentrow[$i]['user_viewemail'] == true) || ($userdata['user_level'] == ADMIN))
+				$user_info = array();
+				$user_info = generate_user_info($commentrow[$i]);
+				foreach ($user_info as $k => $v)
 				{
-					$email_uri = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $commentrow[$i]['user_id']) : 'mailto:' . $commentrow[$i]['user_email'];
+					$$k = $v;
 				}
-				else
-				{
-					$email_uri = '';
-				}
-				$profile_url = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $commentrow[$i]['user_id']);
-				$pm_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $commentrow[$i]['user_id']);
 
-				//avatar
-				$poster_avatar = user_get_avatar($commentrow[$i]['user_id'], $commentrow[$i]['user_avatar'],	$commentrow[$i]['user_avatar_type'], $commentrow[$i]['user_allowavatar']);
+				$poster_avatar = $user_info['avatar'];
 
 				$poster_rank = '&nbsp;';
 				$rank_image = '';
@@ -799,65 +795,53 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 					$poster_rank = $lang['Guest'];
 				}
 
-				if (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $poster_id) || $commentrow[$i]['user_allow_viewonline'])
-				{
-					if ($commentrow[$i]['user_session_time'] >= (time() - $board_config['online_time']))
-					{
-						$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
-					}
-					else
-					{
-						$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] .'" title="' . $lang['Offline'] .'" />';
-					}
-				}
-				else
-				{
-					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
-				}
 				if ($userdata['user_level'] == ADMIN)
 				{
-					$ip_img = '<a href="http://www.nic.com/cgi-bin/whois.cgi?query=' . decode_ip($commentrow[$i]['comment_user_ip']) . '" target="_blank"><img src="' . $images['icon_ip2'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($commentrow[$i]['comment_user_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($commentrow[$i]['comment_user_ip']) . ')" /></a>';
-					$ip = '<a href="' . $temp_url . '">' . $lang['View_IP'] . '</a>';
+					$ip_url = 'http://www.nic.com/cgi-bin/whois.cgi?query=' . decode_ip($commentrow[$i]['comment_user_ip']);
+					$ip_img = '<a href="' . $ip_url . '" target="_blank"><img src="' . $images['icon_ip2'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($commentrow[$i]['comment_user_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($commentrow[$i]['comment_user_ip']) . ')" /></a>';
+					$ip = '<a href="' . $ip_url . '">' . $lang['View_IP'] . '</a>';
 				}
 				else
 				{
 					$ip_img = '';
 					$ip = '';
 				}
-				$icq_status_img = (!empty($commentrow[$i]['user_icq'])) ? '<a href="http://wwp.icq.com/' . $commentrow[$i]['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $commentrow[$i]['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-				$icq_img = (!empty($commentrow[$i]['user_icq'])) ? build_im_link('icq', $commentrow[$i]['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
-				$icq = (!empty($commentrow[$i]['user_icq'])) ? build_im_link('icq', $commentrow[$i]['user_icq'], $lang['ICQ'], false) : '';
 
-				$aim_img = (!empty($commentrow[$i]['user_aim'])) ? build_im_link('aim', $commentrow[$i]['user_aim'], $lang['AIM'], $images['icon_aim2']) : '';
-				$aim = (!empty($commentrow[$i]['user_aim'])) ? build_im_link('aim', $commentrow[$i]['user_aim'], $lang['AIM'], false) : '';
-
-				$msn_img = (!empty($commentrow[$i]['user_msnm'])) ? build_im_link('msn', $commentrow[$i]['user_msnm'], $lang['MSNM'], $images['icon_msnm2']) : '';
-				$msn = (!empty($commentrow[$i]['user_msnm'])) ? build_im_link('msn', $commentrow[$i]['user_msnm'], $lang['MSNM'], false) : '';
-
-				$yim_img = (!empty($commentrow[$i]['user_yim'])) ? build_im_link('yahoo', $commentrow[$i]['user_yim'], $lang['YIM'], $images['icon_yim2']) : '';
-				$yim = (!empty($commentrow[$i]['user_yim'])) ? build_im_link('yahoo', $commentrow[$i]['user_yim'], $lang['YIM'], false) : '';
-
-				$skype_img = (!empty($commentrow[$i]['user_skype'])) ? build_im_link('skype', $commentrow[$i]['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
-				$skype = (!empty($commentrow[$i]['user_skype'])) ? build_im_link('skype', $commentrow[$i]['user_skype'], $lang['SKYPE'], false) : '';
+				$edit_url = append_sid(album_append_uid('album_comment_edit.' . PHP_EXT . '?comment_id=' . $commentrow[$i]['comment_id']));
+				$delete_url = append_sid(album_append_uid('album_comment_delete.' . PHP_EXT . '?comment_id=' . $commentrow[$i]['comment_id']));
 
 				$template->assign_block_vars('commentrow', array(
 					'ID' => $commentrow[$i]['comment_id'],
 					'POSTER_NAME' => $poster,
 					'COMMENT_TIME' => create_date2($board_config['default_dateformat'], $commentrow[$i]['comment_time'], $board_config['board_timezone']),
-					'IP' => ($userdata['user_level'] == ADMIN) ? '<a href="http://www.nic.com/cgi-bin/whois.cgi?query=' . decode_ip($commentrow[$i]['comment_user_ip']) . '" target="_blank">' . decode_ip($commentrow[$i]['comment_user_ip']) .'</a><br />' : '',
+					'IP' => ($userdata['user_level'] == ADMIN) ? '<a href="' . $ip_url . '" target="_blank">' . decode_ip($commentrow[$i]['comment_user_ip']) .'</a><br />' : '',
 					'IP_IMG' => $ip_img,
 					'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
 
 					//users mesangers, website, email
 					'PROFILE_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $profile_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" style="border:0px;" /></a>' : '',
 					'PM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" style="border:0px;" /></a>' : '',
-					'AIM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $aim_img : '',
-					'YIM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $yim_img : '',
-					'MSNM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $msn_img : '',
-					'ICQ_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $icq_img : '',
-					'SKYPE_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $skype_img : '',
-					'EMAIL_IMG' => (($commentrow[$i]['user_id'] != ANONYMOUS) && ($email_uri != '')) ? '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" style="border:0px;" /></a>' : '',
+					'EMAIL_IMG' => (($commentrow[$i]['user_id'] != ANONYMOUS) && ($email_url != '')) ? '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" style="border:0px;" /></a>' : '',
 					'WWW_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? ($commentrow[$i]['user_website']) ? '<a href="' . $commentrow[$i]['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" style="border:0px;" /></a>' : '' : '',
+					'AIM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $aim_img : '',
+					'SKYPE_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $skype_img : '',
+					'ICQ_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $icq_img : '',
+					'MSNM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $msn_img : '',
+					'YIM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $yim_img : '',
+
+					'U_PROFILE' => $profile_url,
+					'U_PM' => $pm_url,
+					'U_IP' => $ip_url,
+					'U_EMAIL' => $email_url,
+					'U_WWW' => $www_url,
+					'U_AIM' => $aim_url,
+					'U_ICQ' => $icq_url,
+					'U_MSN' => $msn_url,
+					'U_SKYPE' => $skype_url,
+					'U_YIM' => $yim_url,
+					'L_POSTER_ONLINE_STATUS' => $online_status_lang,
+					'POSTER_ONLINE_STATUS_CLASS' => $online_status_class,
+					'U_POSTER_ONLINE_STATUS' => $online_status_url,
 
 					'POSTER_AVATAR' => $poster_avatar,
 					'POSTER_RANK' => $poster_rank,
@@ -870,9 +854,13 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 					'TEXT' => $commentrow[$i]['comment_text'],
 					'EDIT_INFO' => $edit_info,
 
-					'EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="'. append_sid(album_append_uid('album_comment_edit.' . PHP_EXT . '?comment_id=' . $commentrow[$i]['comment_id'])) .'"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" style="border:0px;" /></a>' : '',
+					'U_EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? $edit_url : '',
 
-					'DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="'. append_sid(album_append_uid('album_comment_delete.' . PHP_EXT . '?comment_id=' . $commentrow[$i]['comment_id'])) .'"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" style="border:0px;" /></a>' : ''
+					'EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $edit_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" style="border:0px;" /></a>' : '',
+
+					'U_DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? $delete_url : '',
+
+					'DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $delete_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" style="border:0px;" /></a>' : ''
 
 					)
 				);
@@ -1132,6 +1120,14 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		'L_VIEW' => $lang['Views'],
 		'L_COMMENTS' => $lang['Comments'],
 		'L_RATING' => $lang['Rating'],
+
+		'L_EDIT' => $lang['Edit'],
+		'L_DELETE' => $lang['Delete'],
+		'L_USER_WWW' => $lang['Website'],
+		'L_USER_EMAIL' => $lang['Send_Email'],
+		'L_USER_PROFILE' => $lang['Profile'],
+		'L_ONLINE_STATUS' => $lang['Online_status'],
+		'L_PM' => $lang['Private_Message'],
 
 		'L_POST_YOUR_COMMENT' => $lang['Post_your_comment'],
 		'L_MESSAGE' => $lang['Message'],

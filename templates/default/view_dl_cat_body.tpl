@@ -1,14 +1,3 @@
-<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_TOP}">{L_DL_TOP}</a>{U_DL_CAT}
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<div class="post-buttons">{U_SEARCH}</div>
-		&nbsp;
-	</div>
-</div>
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_DL_TOP}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th nowrap="nowrap" colspan="2">{L_DL_CAT}</th>
@@ -43,4 +32,5 @@
 <tr><td class="row1 row-center" colspan="5"><span class="gen">{no_category.L_NO_CATEGORY}</td></tr>
 <!-- END no_category -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+<div style="text-align: right;"><div class="post-buttons">{U_SEARCH}</div></div>
 <br />

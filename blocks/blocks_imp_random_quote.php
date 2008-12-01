@@ -24,7 +24,7 @@ if(!function_exists('imp_random_quote_func'))
 {
 	function imp_random_quote_func()
 	{
-		global $lang, $template;
+		global $board_config, $template;
 		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
 		$randomquote_phrase = $randomquote[rand(0, count($randomquote) - 1)];
 		$template->assign_vars(array(

@@ -1,18 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}
-		<!-- IF S_LOGGED_IN -->
-		<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}<a href="#" class="nav-current">{L_PROFILE}</a>
-		<!-- ELSE -->
-		<a href="{U_REGISTER}" class="nav-current">{L_REGISTER}</a>
-		<!-- ENDIF -->
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <script type="text/javascript">
 
 	function writediv(dest_div, dest_string)

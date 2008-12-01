@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs.tpl -->
-
 <form action="{S_DONATE_ACTION}" method="post">
 {IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2" nowrap="nowrap">{L_DONATE_TO}</th></tr>

@@ -1,14 +1,7 @@
 <!-- INCLUDE pa_header.tpl -->
+<!-- INCLUDE pa_links.tpl -->
+
 <form action="{S_SEARCH_ACTION}" method="post">
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-	<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a>{NAV_SEP}<a href="#" class="nav-current">{L_SEARCH}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" width="50%"><span class="gen">{L_SEARCH_KEYWORDS}:</span><br /><span class="gensmall">{L_SEARCH_KEYWORDS_EXPLAIN}</span></td>

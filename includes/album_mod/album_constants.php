@@ -21,7 +21,6 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 //define('PERSONAL_GALLERY', 0); // pic_cat_id <- do NOT change this value
-define('ALBUM_NAV_ARROW','&nbsp;&raquo;&nbsp;');
 define('ALBUM_DATA_ALREADY_READ', -127);
 
 define('ALBUM_ROOT_CATEGORY', -1);

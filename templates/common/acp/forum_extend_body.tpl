@@ -42,19 +42,11 @@
 	<td width="5%" class="{row.COLOR} row-center" valign="middle"><span class="gensmall">{row.TOPICS}</span></td>
 	<td width="5%" class="{row.COLOR} row-center" valign="middle"><span class="gensmall">{row.POSTS}</span></td>
 	<td width="25%" class="{row.COLOR} row-center">
-		<table align="center" cellspacing="3" cellpadding="0" border="0">
-		<tr>
-			<td><table cellpadding="1" cellspacing="0" border="1" align="center" width="80"><tr><td class="quote" align="center"><span class="genmed"><a href="{row.U_EDIT}" class="genmed" title="{L_EDIT}">{L_EDIT}</a></span></td></tr></table></td>
-			<td><table cellpadding="1" cellspacing="0" border="1" align="center" width="80"><tr><td class="quote" align="center"><span class="genmed"><a href="{row.U_DELETE}" class="genmed" title="{L_DELETE}">{L_DELETE}</a></span></td></tr></table></td>
-			<td rowspan="2">
-				<table cellpadding="0" cellspacing="2" border="0" align="center">
-				<tr><td><table cellpadding="2" cellspacing="0" border="1" align="center"><tr><td class="quote" align="center"><a href="{row.U_MOVEUP}" class="genmed" title="{L_MOVEUP}"><img src="{IMG_MOVEUP}" /></a></td></tr></table></td></tr>
-				<tr><td><table cellpadding="2" cellspacing="0" border="1" align="center"><tr><td class="quote" align="center"><a href="{row.U_MOVEDW}" class="genmed" title="{L_MOVEDW}"><img src="{IMG_MOVEDW}" /></a></td></tr></table></td></tr>
-				</table>
-			</td>
-		</tr>
-		<tr><td colspan="2"><table cellpadding="1" cellspacing="0" border="1" align="center" width="80"><tr><td class="quote" align="center"><span class="genmed"><a href="{row.U_RESYNC}" class="genmed" title="{L_RESYNC}">{L_RESYNC}</a></span></td></tr></table></td></tr>
-		</table>
+		<a href="{row.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>
+		<a href="{row.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a>
+		<a href="{row.U_MOVEUP}"><img src="../images/cms/arrow_up.png" alt="{L_MOVEUP}" title="{L_MOVEUP}" /></a>
+		<a href="{row.U_MOVEDW}"><img src="../images/cms/arrow_down.png" alt="{L_MOVEDW}" title="{L_MOVEDW}" /></a>
+		<a href="{row.U_RESYNC}"><img src="../images/cms/b_refresh.png" alt="{L_RESYNC}" title="{L_RESYNC}" /></a>
 	</td>
 </tr>
 <!-- END row -->

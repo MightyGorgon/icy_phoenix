@@ -27,19 +27,15 @@
 */
 
 // Constant check
-if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
+if (!defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP'))
 {
 	die('Hacking attempt!');
 }
 
-
-/*
- * Template definition
- */
+/* Template definition */
 $template->set_filenames(array('ct_body' => ADM_TPL . 'acp_miserableuser.tpl'));
 
-
-if ( isset($_POST['submit']) )
+if (isset($_POST['submit']))
 {
 	$user_id = 0;
 	$user_level = 0;
@@ -51,12 +47,12 @@ if ( isset($_POST['submit']) )
 	}
 
 
-	if ($this_userdata['user_level'] == ADMIN || $this_userdata['user_level'] == MOD)
+	if (($this_userdata['user_level'] == ADMIN) || ($this_userdata['user_level'] == MOD))
 	{
 		// Admin or Mods can not be defined as miserable user
 		$template->assign_block_vars('infobox', array(
-			'COLOR'						=> 'FFDDDD',
-			'L_MESSAGE_TEXT'	=> $lang['ctracker_mu_error_admin']
+			'COLOR' => 'ffdddd',
+			'L_MESSAGE_TEXT' => $lang['ctracker_mu_error_admin']
 			)
 		);
 	}
@@ -72,25 +68,27 @@ if ( isset($_POST['submit']) )
 		}
 
 		$template->assign_block_vars('infobox', array(
-				'COLOR'						=> 'DDFFCC',
-				'L_MESSAGE_TEXT'	=> $lang['ctracker_mu_success_html'])
+			'COLOR' => 'ddffcc',
+			'L_MESSAGE_TEXT' => $lang['ctracker_mu_success_html']
+			)
 		);
 	}
 }
-else if ( $_GET['mode'] == 'unmis' )
+elseif ($_GET['mode'] == 'unmis')
 {
 	$userid = intval($_GET['userid']);
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_miserable_user = 0 WHERE user_id = ' . $userid;
 
 	// Execute SQL Command in database
-	if ( !$result = $db->sql_query($sql) )
+	if (!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 	}
 
 	$template->assign_block_vars('infobox', array(
-			'COLOR'						=> 'DDFFCC',
-			'L_MESSAGE_TEXT'	=> $lang['ctracker_mu_deleted'])
+		'COLOR' => 'ddffcc',
+		'L_MESSAGE_TEXT' => $lang['ctracker_mu_deleted']
+		)
 	);
 }
 
@@ -107,40 +105,38 @@ if ( !($result = $db->sql_query($sql)) )
 $row_class = false;
 $entry_def = false;
 
-while ( $row = $db->sql_fetchrow($result) )
+while ($row = $db->sql_fetchrow($result))
 {
 	$row_class = !$row_class;	// row class changer without counter
-	$entry_def = true;			// yes, we have users in our list!
+	$entry_def = true;				// yes, we have users in our list!
 
 	$template->assign_block_vars('output', array(
-			'ROW_CLASS'		=>	($row_class)? 'row1' : 'row2',
-			'U_DELLINK'		=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=8&mode=unmis&userid=' . $row['user_id']),
-			'L_USERNAME'	=> $row['username'])
+		'ROW_CLASS' => ($row_class) ? 'row1' : 'row2',
+		'U_DELLINK' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=8&mode=unmis&userid=' . $row['user_id']),
+		'L_USERNAME' => $row['username']
+		)
 	);
 }
 
 // No entry in List?
-($entry_def)? null: $template->assign_block_vars('no_entry', array());
+($entry_def) ? null : $template->assign_block_vars('no_entry', array());
 
-/*
- * Send some vars to the template
- */
+/* Send some vars to the template */
 $template->assign_vars(array(
-	'U_SEARCH_USER' 	=> append_sid(IP_ROOT_PATH . 'search.' . PHP_EXT '?mode=searchuser'),
-	'S_FORM_ACTION'	 	=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=8'),
-	'L_HEADLINE'		=> $lang['ctracker_mu_head'],
-	'L_SUBHEADLINE' 	=> $lang['ctracker_mu_subhead'],
-	'L_MARK_MU'			=> $lang['ctracker_mu_select'],
-	'L_LOOK_UP'			=> $lang['ctracker_mu_send'],
-	'L_FIND_USERNAME'	=> $lang['ctracker_mu_find'],
-	'L_USER_ENTR'		=> $lang['ctracker_mu_entr'],
-	'L_TH1'				=> $lang['ctracker_mu_uname'],
-	'L_TH2'				=> $lang['ctracker_mu_remove'],
-	'L_DELETE'			=> $lang['ctracker_ipb_delete'],
-	'L_NOTHING'			=> $lang['ctracker_mu_no_defined']
+	'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . 'search.' . PHP_EXT . '?mode=searchuser'),
+	'S_FORM_ACTION' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=8'),
+	'L_HEADLINE' => $lang['ctracker_mu_head'],
+	'L_SUBHEADLINE' => $lang['ctracker_mu_subhead'],
+	'L_MARK_MU' => $lang['ctracker_mu_select'],
+	'L_LOOK_UP' => $lang['ctracker_mu_send'],
+	'L_FIND_USERNAME' => $lang['ctracker_mu_find'],
+	'L_USER_ENTR' => $lang['ctracker_mu_entr'],
+	'L_TH1' => $lang['ctracker_mu_uname'],
+	'L_TH2' => $lang['ctracker_mu_remove'],
+	'L_DELETE' => $lang['ctracker_ipb_delete'],
+	'L_NOTHING' => $lang['ctracker_mu_no_defined']
 	)
 );
-
 
 // Generate the page
 $template->pparse('ct_body');

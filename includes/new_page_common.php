@@ -124,9 +124,10 @@ if(($layout_template=='') || (!$lview) || ($not_group_allowed))
 }
 
 // Start output of page
-$page_title = $board_config['sitename'];
+$page_title = $board_config['sitename'] . ' - ' . $layout_name;
 $meta_description = '';
 $meta_keywords = '';
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $layout_name . '</a>';
 //define('SHOW_ONLINE', true);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 

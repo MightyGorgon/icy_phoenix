@@ -1,4 +1,3 @@
-<!-- INCLUDE breadcrumbs_i.tpl -->
 <br />
 <form action="{S_FORM_ACTION}" method="post" target="_top">
 <center>

@@ -164,13 +164,6 @@
 				<input type="radio" name="wide_blocks_rules" value="1" {WIDE_BLOCKS_RULES_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="wide_blocks_rules" value="0" {WIDE_BLOCKS_RULES_NO} /> {L_NO}
 			</td>
 		</tr>
-		<tr class="row2 row1h" style="background-image:none;">
-			<td class="row2" style="background:none;">{L_AUTH_VIEW_SITE_HIST}</td>
-			<td class="row2 row-center" style="background:none;">{S_AUTH_VIEW_SITE_HIST}</td>
-			<td class="row2 row-center" style="background:none;">
-				<input type="radio" name="wide_blocks_site_hist" value="1" {WIDE_BLOCKS_SITE_HIST_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="wide_blocks_site_hist" value="0" {WIDE_BLOCKS_SITE_HIST_NO} /> {L_NO}
-			</td>
-		</tr>
 		<tr class="row1 row1h" style="background-image:none;">
 			<td class="row1" style="background:none;">{L_AUTH_VIEW_SHOUTBOX}</td>
 			<td class="row1 row-center" style="background:none;">{S_AUTH_VIEW_SHOUTBOX}</td>

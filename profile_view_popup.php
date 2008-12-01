@@ -20,14 +20,14 @@ init_userprefs($userdata);
 // End session management
 
 $gen_simple_header = true;
+$page_title = $lang['Profile'] . ' - ' . $lang['Views'];
+$meta_description = '';
+$meta_keywords = '';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $current_time = time();
 $user_id = $userdata['user_id'];
 $last_view =$userdata['user_last_profile_view'];
-$page_title = $lang['Profile'] . ' - ' . $lang['Views'];
-$meta_description = '';
-$meta_keywords = '';
 
 $template->set_filenames(array('body' => 'profile_view_popup_body.tpl'));
 

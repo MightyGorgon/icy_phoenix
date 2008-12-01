@@ -18,16 +18,6 @@ function add_username(selected_username)
 //-->
 </script>
 
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}<a href="#" class="nav-current">{L_CPL_ZEBRA}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 <form action="{S_PROFILE_ACTION}" name="post" method="post">

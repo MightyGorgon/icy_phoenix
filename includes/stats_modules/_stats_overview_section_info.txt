@@ -1,0 +1,33 @@
+# This file will contain the information about your module
+# for the statistics parser to use.
+#
+# You can make comments by using #
+# Note that the text must be on a single line for the parser
+# to read it!  Excluding the extra install info area.
+#
+
+# Module Name
+[name] Statistics Overview Section
+
+# your name
+[author] Bananeweizen
+
+# your email
+[email] bananeweizen@gmx.de
+
+# your webpage url
+[url] http://www.rechenkraft.net
+
+# module version
+[version] 1.1
+
+# Default Update Time
+[update_time] 0
+
+# extra info for the user, everything below
+# this block will be included, regardless if
+# you use a # even.
+[extra_info]
+This module adds an overview section with links to all other statistics (like on the FAQ page).<br />
+It is best used at the top of the statistics page.<br />
+It can be configured (by editing a line in the module.php) in the way how many columns are displayed (default 2).

@@ -24,30 +24,26 @@ function checkBoxInverse(field)
 }
 // -->
 </script>
-<!-- INCLUDE breadcrumbs_a.tpl -->
+
 <form name="modcp" action="{S_ALBUM_ACTION}" method="post">
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td align="right" nowrap="nowrap">
-		<span class="gensmall">{L_SELECT_SORT_METHOD}:
-		<select name="sort_method">
-			<option {SORT_TIME} value='pic_time'>{L_TIME}</option>
-			<option {SORT_PIC_TITLE} value='pic_title'>{L_PIC_TITLE}</option>
-			{SORT_USERNAME_OPTION}
-			<option {SORT_VIEW} value='pic_view_count'>{L_VIEW}</option>
-			{SORT_RATING_OPTION}
-			{SORT_COMMENTS_OPTION}
-			{SORT_NEW_COMMENT_OPTION}
-		</select>
-		&nbsp;{L_ORDER}:
-		<select name="sort_order">
-			<option {SORT_ASC} value='ASC'>{L_ASC}</option>
-			<option {SORT_DESC} value='DESC'>{L_DESC}</option>
-		</select>
-		&nbsp;<input type="submit" name="submit" value="{L_SORT}" class="liteoption" /></span>
-	</td>
-</tr>
-</table>
+<div style="margin-top: 5px; text-align: right;">
+<span class="gensmall">{L_SELECT_SORT_METHOD}:
+<select name="sort_method">
+	<option {SORT_TIME} value='pic_time'>{L_TIME}</option>
+	<option {SORT_PIC_TITLE} value='pic_title'>{L_PIC_TITLE}</option>
+	{SORT_USERNAME_OPTION}
+	<option {SORT_VIEW} value='pic_view_count'>{L_VIEW}</option>
+	{SORT_RATING_OPTION}
+	{SORT_COMMENTS_OPTION}
+	{SORT_NEW_COMMENT_OPTION}
+</select>
+&nbsp;{L_ORDER}:
+<select name="sort_order">
+	<option {SORT_ASC} value='ASC'>{L_ASC}</option>
+	<option {SORT_DESC} value='DESC'>{L_DESC}</option>
+</select>
+&nbsp;<input type="submit" name="submit" value="{L_SORT}" class="liteoption" /></span>
+</div>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_MODCP}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>

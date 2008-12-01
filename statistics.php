@@ -9,17 +9,17 @@
 */
 
 // CTracker_Ignore: File checked by human
-//define('PHPBB_TEMPLATE', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Prepend all Variables with '__' to prevent conflicts with Variables from included Variables.
 $__stats_config = array();
 
 $sql = 'SELECT * FROM ' . STATS_CONFIG_TABLE;
-if (!($result = $db->sql_query($sql, false, 'stats_')))
+if (!($result = $db->sql_query($sql, false, 'stats_config_')))
 {
 	message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
 }
@@ -30,7 +30,7 @@ while ($row = $db->sql_fetchrow($result))
 }
 
 include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_module.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_stats_module.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -109,7 +109,7 @@ for ($__count = 0; $__count < count($__stat_module_rows); $__count++)
 					$result_cache->begin_cached_results(true, trim($__module_data['module_result_cache']));
 				}
 
-				include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.' . PHP_EXT);
+				include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '_module.' . PHP_EXT);
 
 				if (trim($__module_data['module_db_cache']) != '')
 				{
@@ -137,17 +137,26 @@ for ($__count = 0; $__count < count($__stat_module_rows); $__count++)
 
 			$stat_db->begin_cached_query();
 			$result_cache->begin_cached_results();
-			include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '/module.' . PHP_EXT);
+			include(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $__module_name . '_module.' . PHP_EXT);
 			$stat_db->end_cached_query($__module_id);
 			$result_cache->end_cached_query($__module_id);
 		}
 
-		$template->set_filenames(array($__tpl_name => $__module_root_path . $__stats_config['modules_dir'] . '/' . $__module_info['dname'] . '/module.tpl'));
+		$template->set_filenames(array($__tpl_name => STATS_TPL . $__module_info['dname'] . '.tpl'));
 
 		$template->assign_vars(array(
 			'GRAPH_IMAGE' => $images['voting_graphic_body'],
 			'LEFT_GRAPH_IMAGE' => $images['voting_graphic_left'],
 			'RIGHT_GRAPH_IMAGE' => $images['voting_graphic_right'],
+			'R_GRAPH_IMAGE' => $images['voting_graphic_red_body'],
+			'R_LEFT_GRAPH_IMAGE' => $images['voting_graphic_red_left'],
+			'R_RIGHT_GRAPH_IMAGE' => $images['voting_graphic_red_right'],
+			'G_GRAPH_IMAGE' => $images['voting_graphic_green_body'],
+			'G_LEFT_GRAPH_IMAGE' => $images['voting_graphic_green_left'],
+			'G_RIGHT_GRAPH_IMAGE' => $images['voting_graphic_green_right'],
+			'B_GRAPH_IMAGE' => $images['voting_graphic_blue_body'],
+			'B_LEFT_GRAPH_IMAGE' => $images['voting_graphic_blue_left'],
+			'B_RIGHT_GRAPH_IMAGE' => $images['voting_graphic_blue_right'],
 			)
 		);
 

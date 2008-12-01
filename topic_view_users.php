@@ -12,6 +12,7 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
@@ -24,15 +25,9 @@ if ($board_config['disable_topic_view'] == true)
 	message_die(GENERAL_MESSAGE, $lang['Feature_Disabled']);
 }
 
-if (isset($_GET[POST_TOPIC_URL]))
-{
-	$topic_id = intval($_GET[POST_TOPIC_URL]);
-}
-elseif (isset($_POST[POST_TOPIC_URL]))
-{
-	$topic_id = intval($_POST[POST_TOPIC_URL]);
-}
-else
+$topic_id = request_var(POST_TOPIC_URL, 0);
+
+if (empty($topic_id))
 {
 	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
 }
@@ -137,18 +132,23 @@ $template->assign_vars(array(
 	'L_EMAIL' => $lang['Email'],
 	'L_WEBSITE' => $lang['Website'],
 	'L_ONLINE_STATUS' => $lang['Online_status'],
-	'L_FROM' => $lang['Joined'],
-	'L_LOGON' => $lang['Location'],
 	'L_ORDER' => $lang['Order'],
 	'L_SORT' => $lang['Sort'],
 	'L_SUBMIT' => $lang['Sort'],
-	'L_AIM' => $lang['AIM'],
-	'L_YIM' => $lang['YIM'],
-	'L_MSNM' => $lang['MSNM'],
-	'L_ICQ' => $lang['ICQ'],
-	'L_JOINED' => $lang['Topic_time'],
-	'L_POSTS' => $lang['Topic_count'],
 	'L_PM' => $lang['Private_Message'],
+	'L_USER_PROFILE' => $lang['Profile'],
+	'L_EMAIL' => $lang['Email'],
+	'L_CONTACTS' => $lang['User_Contacts'],
+	'L_ONLINE_STATUS' => $lang['Online_status'],
+	'L_USER_WWW' => $lang['Website'],
+	'L_USER_EMAIL' => $lang['Send_Email'],
+	'L_USER_PROFILE' => $lang['Profile'],
+
+	'L_VIEWS_COUNT' => $lang['Topic_count'],
+	'L_LAST_VIEWED' => $lang['Topic_time'],
+	'L_FROM' => $lang['Location'],
+	'L_JOINED' => $lang['Joined'],
+
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order,
 	'S_MODE_ACTION' => append_sid('topic_view_users.' . PHP_EXT)
@@ -192,7 +192,7 @@ else
 	$sql_hidden = ' AND u.user_allow_viewonline = \'1\'';
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar, user_allow_viewonline, user_session_time, tv.view_time, tv.view_count
+$sql = "SELECT u.username, u.user_id, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, tv.view_time, tv.view_count
 	FROM " . USERS_TABLE . " u, " . TOPIC_VIEW_TABLE . " tv
 	WHERE u.user_id = tv.user_id
 		AND tv.topic_id = '" . $topic_id . "'
@@ -208,78 +208,20 @@ if(!($result = $db->sql_query($sql)))
 $i = 0;
 while ($row = $db->sql_fetchrow($result))
 {
-	$username = $row['username'];
 	$user_id = $row['user_id'];
+	$username = colorize_username($user_id);
 
-	$from = (!empty($row['user_from'])) ? $row['user_from'] : '&nbsp;';
-	$joined = create_date($lang['DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']);
-	$topic_time = ($row['view_time']) ? create_date($board_config['default_dateformat'],$row['view_time'], $board_config['board_timezone']) : $lang['Never_last_logon'];
+	$user_info = array();
+	$user_info = generate_user_info($row);
+	foreach ($user_info as $k => $v)
+	{
+		$$k = $v;
+	}
+
+	$topic_time = ($row['view_time']) ? create_date($board_config['default_dateformat'], $row['view_time'], $board_config['board_timezone']) : $lang['Never_last_logon'];
 	$view_count = ($row['view_count']) ? $row['view_count'] : '&nbsp;';
 
-	$poster_avatar = user_get_avatar($row['user_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
-
-	if (!empty($row['user_viewemail']) || $userdata['user_level'] == ADMIN)
-	{
-		$email_uri = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $user_id) : 'mailto:' . $row['user_email'];
-
-		$email_img = '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
-		$email = '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
-	}
-	else
-	{
-		$email_img = '&nbsp;';
-		$email = '&nbsp;';
-	}
-
-	$temp_url = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id);
-	$profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
-	$profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
-
-	$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
-	$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
-	$pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
-
-	$www_img = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '&nbsp;';
-	$www = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>' : '';
-
-	$icq_status_img = (!empty($row['user_icq'])) ? '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-	$icq_img = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
-	$icq = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], false) : '';
-
-	$aim_img = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], $images['icon_aim2']) : '';
-	$aim = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], false) : '';
-
-	$msn_img = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], $images['icon_msnm2']) : '';
-	$msn = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], false) : '';
-
-	$yim_img = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], $images['icon_yim2']) : '';
-	$yim = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], false) : '';
-
-	$skype_img = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
-	$skype = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], false) : '';
-
-	$temp_url = append_sid(SEARCH_MG . '?search_author=' . urlencode($username) . '&amp;showresults=posts');
-	$search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . $lang['Search_user_posts'] . '" title="' . $lang['Search_user_posts'] . '" /></a>';
-	$search = '<a href="' . $temp_url . '">' . $lang['Search_user_posts'] . '</a>';
-	if ($row['user_session_time'] >= (time() - $board_config['online_time']))
-	{
-		if ($row['user_allow_viewonline'])
-		{
-			$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
-		}
-		elseif ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $user_id)
-		{
-			$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
-		}
-		else
-		{
-			$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
-		}
-	}
-	else
-	{
-		$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
-	}
+	$poster_avatar = $user_info['avatar'];
 
 	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
@@ -288,36 +230,55 @@ while ($row = $db->sql_fetchrow($result))
 		'ROW_NUMBER' => $i + (intval($_GET['start']) + 1),
 		'ROW_COLOR' => '#' . $row_color,
 		'ROW_CLASS' => $row_class,
-		'USERNAME' => (($user_id != ANONYMOUS) ? colorize_username($user_id) : $lang['Guest']),
+		'USERNAME' => ($user_id == ANONYMOUS) ? $lang['Guest'] : $username,
 
-		'FROM' => $joined,
-		'LAST_LOGON' => $from,
-		'JOINED' => $topic_time,
-		'POSTS' => $view_count,
+		'LAST_VIEWED' => $topic_time,
+		'VIEWS_COUNT' => $view_count,
 
-		'AVATAR_IMG' => $poster_avatar,
-		'PROFILE_IMG' => $profile_img,
-		'PROFILE' => $profile,
-		'SEARCH_IMG' => $search_img,
-		'SEARCH' => $search,
-		'PM_IMG' => $pm_img,
-		'PM' => $pm,
-		'EMAIL_IMG' => $email_img,
-		'EMAIL' => $email,
-		'WWW_IMG' => $www_img,
-		'WWW' => $www,
-		'ICQ_STATUS_IMG' => $icq_status_img,
-		'ICQ_IMG' => $icq_img,
-		'ICQ' => $icq,
-		'AIM_IMG' => $aim_img,
-		'AIM' => $aim,
-		'MSN_IMG' => $msn_img,
-		'MSN' => $msn,
-		'YIM_IMG' => $yim_img,
-		'YIM' => $yim,
-		'SKYPE_IMG' => $skype_img,
-		'SKYPE' => $skype,
-		'ONLINE_STATUS_IMG' => $online_status_img,
+		'FROM' => $user_info['from'],
+		'JOINED' => $user_info['joined'],
+		'POSTS' => $user_info['posts'],
+		'AVATAR_IMG' => $user_info['avatar'],
+		'GENDER' => $user_info['gender'],
+		'PROFILE_URL' => $user_info['profile_url'],
+		'PROFILE_IMG' => $user_info['profile_img'],
+		'PROFILE' => $user_info['profile'],
+		'PM_URL' => $user_info['pm_url'],
+		'PM_IMG' => $user_info['pm_img'],
+		'PM' => $user_info['pm'],
+		'SEARCH_URL' => $user_info['search_url'],
+		'SEARCH_IMG' => $user_info['search_img'],
+		'SEARCH' => $user_info['search'],
+		'IP_URL' => $user_info['ip_url'],
+		'IP_IMG' => $user_info['ip_img'],
+		'IP' => $user_info['ip'],
+		'EMAIL_URL' => $user_info['email_url'],
+		'EMAIL_IMG' => $user_info['email_img'],
+		'EMAIL' => $user_info['email'],
+		'WWW_URL' => $user_info['www_url'],
+		'WWW_IMG' => $user_info['www_img'],
+		'WWW' => $user_info['www'],
+		'AIM_URL' => $user_info['aim_url'],
+		'AIM_IMG' => $user_info['aim_img'],
+		'AIM' => $user_info['aim'],
+		'ICQ_STATUS_IMG' => $user_info['icq_status_img'],
+		'ICQ_URL' => $user_info['icq_url'],
+		'ICQ_IMG' => $user_info['icq_img'],
+		'ICQ' => $user_info['icq'],
+		'MSN_URL' => $user_info['msn_url'],
+		'MSN_IMG' => $user_info['msn_img'],
+		'MSN' => $user_info['msn'],
+		'SKYPE_URL' => $user_info['skype_url'],
+		'SKYPE_IMG' => $user_info['skype_img'],
+		'SKYPE' => $user_info['skype'],
+		'YIM_URL' => $user_info['yim_url'],
+		'YIM_IMG' => $user_info['yim_img'],
+		'YIM' => $user_info['yim'],
+		'ONLINE_STATUS_URL' => $user_info['online_status_url'],
+		'ONLINE_STATUS_CLASS' => $user_info['online_status_class'],
+		'ONLINE_STATUS_IMG' => $user_info['online_status_img'],
+		'ONLINE_STATUS' => $user_info['online_status'],
+		'L_ONLINE_STATUS' => $user_info['online_status_lang'],
 		)
 	);
 

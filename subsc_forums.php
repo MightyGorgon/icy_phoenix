@@ -21,50 +21,52 @@ init_userprefs($userdata);
 
 //Gather required Information
 $subs_forums_list_sql='SELECT forum_id FROM ' . FORUMS_WATCH_TABLE . ' where user_id = ' . $userdata['user_id'] . ' and notify_status = 0';
-if ( !$subs_forums_list = $db->sql_query($subs_forums_list_sql) )
+if (!$subs_forums_list = $db->sql_query($subs_forums_list_sql))
 {
 	message_die(GENERAL_ERROR, 'Could not obtain subscribed forums information', '', __LINE__, __FILE__, $subs_forums_list_sql);
 }
 
-$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
-$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
+$tracking_topics = (isset($_COOKIE[$board_config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
+$tracking_forums = (isset($_COOKIE[$board_config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
 
 $subscribed_forums_count = 0;
 while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 {
 	$subs_forum_id = $subs_forum_line['forum_id'];
 	$subs_forums_name_sql = 'SELECT f.forum_id, f.forum_topics, f.forum_posts, f.forum_name, f.forum_desc, f.forum_last_post_id, f.forum_status, p.poster_id, p.post_id, p.post_time, u.user_id, u.username
-									FROM ' . FORUMS_TABLE . ' f, ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
-									WHERE f.forum_id = ' . $subs_forum_id . '
-									AND p.post_id=f.forum_last_post_id
-									AND u.user_id=p.poster_id';
+		FROM ' . FORUMS_TABLE . ' f, ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
+		WHERE f.forum_id = ' . $subs_forum_id . '
+		AND p.post_id=f.forum_last_post_id
+		AND u.user_id=p.poster_id';
 
-	if ( !$subs_forums_name = $db->sql_query($subs_forums_name_sql) )
+	if (!$subs_forums_name = $db->sql_query($subs_forums_name_sql))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain subscribed forum details information', '', __LINE__, __FILE__, $subs_forums_name_sql);
 	}
 
 	$empty_forum_status = 0;
-	if ( $db->sql_numrows($subs_forums_name) == 0 )
+	if ($db->sql_numrows($subs_forums_name) == 0)
 	{
 		$empty_forum_status = 1;
 
 		$subs_forums_name_sql='SELECT f.forum_id, f.forum_topics, f.forum_posts, f.forum_name, f.forum_desc, f.forum_last_post_id, f.forum_status
-										FROM ' . FORUMS_TABLE . ' f
-										WHERE f.forum_id = ' . $subs_forum_id;
+			FROM ' . FORUMS_TABLE . ' f
+			WHERE f.forum_id = ' . $subs_forum_id;
 
-		if ( !$subs_forums_name = $db->sql_query($subs_forums_name_sql) )
+		if (!$subs_forums_name = $db->sql_query($subs_forums_name_sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not obtain subscribed forum details information', '', __LINE__, __FILE__, $subs_forums_name_sql);
 		}
 	}
 
+	$forum_counter = 0;
 	while ($subs_forums_name_line = $db->sql_fetchrow($subs_forums_name))
 	{
+		$forum_counter++;
 		$is_auth = array();
 		$is_auth = auth(AUTH_VIEW, $subs_forum_id, $userdata);
 
-		if ( $empty_forum_status == 1 )
+		if ($empty_forum_status == 1)
 		{
 			$forum_topics = 0;
 			$forum_posts = 0;
@@ -77,13 +79,13 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 			$forum_posts = $subs_forums_name_line['forum_posts'];
 			$forum_last_post_time = create_date2($board_config['default_dateformat'], $subs_forums_name_line['post_time'], $board_config['board_timezone']);
 			$last_post = '';
-			$last_post .= ( $subs_forums_name_line['user_id'] == ANONYMOUS ) ? ( ($subs_forums_name_line['post_username'] != '' ) ? $subs_forums_name_line['post_username'] . ' ' : $lang['Guest'] . ' ' ) : colorize_username($subs_forums_name_line['user_id']);
+			$last_post .= ($subs_forums_name_line['user_id'] == ANONYMOUS) ? (($subs_forums_name_line['post_username'] != '') ? $subs_forums_name_line['post_username'] . ' ' : $lang['Guest'] . ' ') : colorize_username($subs_forums_name_line['user_id']);
 			$last_post .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $subs_forums_name_line['forum_last_post_id']) . '#p' . $subs_forums_name_line['forum_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 		}
 
-		if ( !empty($is_auth['auth_view']) )
+		if (!empty($is_auth['auth_view']))
 		{
-			if ( $subs_forums_name_line['forum_status'] == FORUM_LOCKED )
+			if ($subs_forums_name_line['forum_status'] == FORUM_LOCKED)
 			{
 				$folder_image = $images['forum_nor_locked_read'];
 				$folder_alt = $lang['Forum_locked'];
@@ -91,7 +93,7 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 			else
 			{
 				$unread_topics = false;
-				if ( $userdata['session_logged_in'] )
+				if ($userdata['session_logged_in'])
 				{
 					$sql = "SELECT t.forum_id, t.topic_id, p.post_time, t.topic_title
 								FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
@@ -99,31 +101,31 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 								AND p.post_time > " . $userdata['user_lastvisit'] . "
 								AND t.topic_moved_id = 0";
 
-					if ( !($result = $db->sql_query($sql)) )
+					if (!($result = $db->sql_query($sql)))
 					{
 						message_die(GENERAL_ERROR, 'Could not query new topic information for subscribed forums', '', __LINE__, __FILE__, $sql);
 					}
 
 					$new_topic_data = array();
-					while( $topic_data = $db->sql_fetchrow($result) )
+					while($topic_data = $db->sql_fetchrow($result))
 					{
 						$new_topic_data[$topic_data['forum_id']][$topic_data['topic_id']] = $topic_data['post_time'];
 					}
 					$db->sql_freeresult($result);
 					$forum_id = $subs_forums_name_line['forum_id'];
 
-					if ( !empty($new_topic_data[$forum_id]) )
+					if (!empty($new_topic_data[$forum_id]))
 					{
-						while( list($check_topic_id, $check_post_time) = @each($new_topic_data[$forum_id]) )
+						while(list($check_topic_id, $check_post_time) = @each($new_topic_data[$forum_id]))
 						{
-							if ( empty($tracking_topics[$check_topic_id]) )
+							if (empty($tracking_topics[$check_topic_id]))
 							{
 								$unread_topics = true;
 								$forum_last_post_time = max($check_post_time, $forum_last_post_time);
 							}
 							else
 							{
-								if ( $tracking_topics[$check_topic_id] < $check_post_time )
+								if ($tracking_topics[$check_topic_id] < $check_post_time)
 								{
 									$unread_topics = true;
 									$forum_last_post_time = max($check_post_time, $forum_last_post_time);
@@ -131,17 +133,17 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 							}
 						}
 
-						if ( !empty($tracking_forums[$forum_id]) )
+						if (!empty($tracking_forums[$forum_id]))
 						{
-							if ( $tracking_forums[$forum_id] > $forum_last_post_time )
+							if ($tracking_forums[$forum_id] > $forum_last_post_time)
 							{
 								$unread_topics = false;
 							}
 						}
 
-						if ( isset($_COOKIE[$board_config['cookie_name'] . '_f_all']) )
+						if (isset($_COOKIE[$board_config['cookie_name'] . '_f_all']))
 						{
-							if ( $_COOKIE[$board_config['cookie_name'] . '_f_all'] > $forum_last_post_time )
+							if ($_COOKIE[$board_config['cookie_name'] . '_f_all'] > $forum_last_post_time)
 							{
 								$unread_topics = false;
 							}
@@ -149,11 +151,12 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 					}
 				}
 
-				$folder_image = ( $unread_topics ) ? $images['forum_unread'] : $images['forum_nor_read'];
-				$folder_alt = ( $unread_topics ) ? $lang['New_posts'] : $lang['No_new_posts'];
+				$folder_image = ($unread_topics) ? $images['forum_unread'] : $images['forum_nor_read'];
+				$folder_alt = ($unread_topics) ? $lang['New_posts'] : $lang['No_new_posts'];
 			}
 
-			$template->assign_block_vars( 'subsc_forums_row', array(
+			$template->assign_block_vars('subsc_forums_row', array(
+					'ROW_CLASS' => (!($forum_counter % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 					'FORUM_FOLDER_IMG' => $folder_image,
 
 					'L_FORUM_FOLDER_ALT' => $folder_alt,
@@ -164,14 +167,14 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 					'S_LAST_POST_TIME' => $forum_last_post_time,
 					'S_LAST_POST' => $last_post,
 
-					'U_FORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG ."?" . POST_FORUM_URL . '=' . $subs_forum_id),
-					'U_NEWTOPIC' => append_sid(IP_ROOT_PATH . POSTING_MG . "?mode=newtopic&" . POST_FORUM_URL . '=' . $subs_forum_id),
-					'U_UNSUBSCRIBE' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . "?" . POST_FORUM_URL . '=' . $subs_forum_id . '&unwatch=forum&start=0'),
+					'U_FORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $subs_forum_id),
+					'U_NEWTOPIC' => append_sid(IP_ROOT_PATH . POSTING_MG . '?mode=newtopic&amp;' . POST_FORUM_URL . '=' . $subs_forum_id),
+					'U_UNSUBSCRIBE' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $subs_forum_id . '&unwatch=forum&start=0'),
 					)
 				);
 			$subscribed_forums_count++;
 		}
-			}
+	}
 }
 
 // Generate the page
@@ -181,7 +184,7 @@ $meta_keywords = '';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'subsc_forums_body.tpl'));
-if ( $subscribed_forums_count != 0 )
+if ($subscribed_forums_count != 0)
 {
 	$template->assign_block_vars('subsc_forums', array());
 }

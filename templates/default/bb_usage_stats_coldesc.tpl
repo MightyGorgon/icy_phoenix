@@ -16,7 +16,6 @@
 	<td class="row1"><span class="gensmall">{L_BBUS_COLHEADER_PCTUTP}</span></td>
 	<td class="row1"><span class="gensmall">{L_BBUS_COLHEADER_PCTUTP_EXPLAIN}</span></td>
 </tr>
-
 <!-- BEGIN bb_usage_switch_pctutup_coldesc -->
 <tr>
 	<td class="row2"><span class="gensmall">{bb_usage_switch_pctutup_coldesc.L_BBUS_COLHEADER_PCTUTUP}</span></td>

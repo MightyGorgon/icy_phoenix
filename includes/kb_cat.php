@@ -71,17 +71,10 @@ if ( !$kb_is_auth['auth_view'] )
 
 if ( $kb_config['use_comments'] && $category['comments_forum_id'] < 1 )
 {
-	//
 	// Commenting is enabled but no category forum id specified
-	//
 	$message = $lang['No_cat_comments_forum_id'];
 
 	mx_message_die(GENERAL_MESSAGE, $message);
-}
-
-if(!$is_block)
-{
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 }
 
 // load header

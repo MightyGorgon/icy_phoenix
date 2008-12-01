@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs.tpl -->
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_FEATURES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th>{L_FEATURES}</th>

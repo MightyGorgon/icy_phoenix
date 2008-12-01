@@ -152,12 +152,12 @@ if ($watch_count > 0)
 			if( ( $replies + 1 ) > $board_config['posts_per_page'] )
 			{
 				$total_pages = ceil( ( $replies + 1 ) / $board_config['posts_per_page'] );
-				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
+				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
 
 				$times = 1;
 				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 				{
-					$goto_page .= '<a href="' . append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '">' . $times . '</a>';
+					$goto_page .= '<a href="' . append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
 					if( $times == 1 && $total_pages > 4 )
 					{
 						$goto_page .= ' ... ';
@@ -201,7 +201,7 @@ if ($watch_count > 0)
 				'FORUM_NAME' => $watch_rows[$i]['forum_name'],
 				'TOPIC_POSTER' => $topic_poster,
 				'LAST_POSTER' => $last_poster,
-				'GOTO_PAGE' => ( ($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>' ),
+				'GOTO_PAGE' => (($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>'),
 
 				'U_VIEW_FORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . $forum_id_append),
 				'U_VIEW_TOPIC' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append),

@@ -15,6 +15,21 @@
 *
 */
 
+//
+// Modules should be considered to already have access to the following variables which
+// the parser will give out to it:
+
+// $return_limit - Control Panel defined number of items to display
+// $module_info['name'] - The module name specified in the info.txt file
+// $module_info['email'] - The author email
+// $module_info['author'] - The author name
+// $module_info['version'] - The version
+// $module_info['url'] - The author url
+//
+// To make the module more compatible, please do not use any functions here
+// and put all your code inline to keep from redeclaring functions on accident.
+//
+
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -29,7 +44,8 @@ function module_language_parse($lang_key, $lang_var)
 
 function sql_quote($data)
 {
-	$data = str_replace("'", "\'", $data);
+	//$data = str_replace("'", "\'", $data);
+	$data = ((STRIP) ? addslashes($data) : $data);
 	return ($data);
 }
 
@@ -39,14 +55,12 @@ function generate_module_info($module_data, $install = false)
 
 	$module_dir = trim($module_data['name']);
 
-	//
 	// Get Info from Cache or not...
-	//
 	$condition_mode = false;
 	$ret_array['condition_result'] = true;
 	$condition = '';
 
-	if ($module_data['module_info_time'] == filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '/info.txt'))
+	if ($module_data['module_info_time'] == filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '_info.txt'))
 	{
 		$ret_array = unserialize(stripslashes($module_data['module_info_cache']));
 	}
@@ -54,7 +68,7 @@ function generate_module_info($module_data, $install = false)
 	{
 		$extra_info_mode = false;
 		$ret_array['default_update_time'] = 0;
-		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
+		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '_info.txt');
 
 		while (list($key, $data) = @each($data_file))
 		{
@@ -111,10 +125,9 @@ function generate_module_info($module_data, $install = false)
 		}
 
 		$sql = "UPDATE " . MODULES_TABLE . "
-		SET module_info_cache = '" . addslashes(serialize($ret_array)) . "',
-		module_info_time = " . filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '/info.txt') . "
-		WHERE module_id = " . intval($module_data['module_id']);
-
+			SET module_info_cache = '" . addslashes(serialize($ret_array)) . "',
+			module_info_time = " . filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '_info.txt') . "
+			WHERE module_id = " . intval($module_data['module_id']);
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not update Info Cache', '', __LINE__, __FILE__, $sql);
@@ -129,7 +142,7 @@ function generate_module_info($module_data, $install = false)
 
 	if ($install)
 	{
-		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '/info.txt');
+		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '_info.txt');
 
 		while (list($key, $data) = @each($data_file))
 		{
@@ -181,13 +194,16 @@ function update_module_list()
 		message_die(GENERAL_ERROR, "Unable to open directory " . IP_ROOT_PATH . $__stats_config['modules_dir']);
 	}
 
-	$dir_list = '';
+	$modules_list = '';
+	$module_suffix = '_module.' . PHP_EXT;
 
 	while ($file = readdir($handle))
 	{
-		if ($file != '.' && $file != '..' && is_dir(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $file) && ($file != '_vti_cnf') && ($file != 'CVS'))
+		// Mighty Gorgon: Make sure we have a module by checking the substring
+		if (($file != '.') && ($file != '..') && (substr($file, -strlen($module_suffix)) == $module_suffix))
 		{
-			$dir_list .= ($dir_list == '') ? "'$file'" : ", '$file'";
+			$module_name = str_replace($module_suffix, '', $file);
+			$modules_list .= ($modules_list == '') ? "'$module_name'" : ", '$module_name'";
 
 			$sql = "SELECT MAX(display_order) as max
 			FROM " . MODULES_TABLE;
@@ -203,7 +219,7 @@ function update_module_list()
 
 			$sql = "SELECT module_id, name, display_order, active
 			FROM " . MODULES_TABLE . "
-			WHERE (name = '" . trim($file) . "')";
+			WHERE (name = '" . trim($module_name) . "')";
 
 			if (!$result = $db->sql_query($sql))
 			{
@@ -224,7 +240,7 @@ function update_module_list()
 
 				$sql = "INSERT INTO  " . MODULES_TABLE . "
 				(module_id, name, display_order, module_info_cache, module_db_cache, module_result_cache)
-				VALUES (" . $next_id . ", '" . trim($file) . "', " . ($curr_max + 10) . ", '', '', '')";
+				VALUES (" . $next_id . ", '" . trim($module_name) . "', " . ($curr_max + 10) . ", '', '', '')";
 
 				if (!$db->sql_query($sql))
 				{
@@ -252,7 +268,7 @@ function update_module_list()
 
 	// Kill old module folders that were deleted
 	$sql = "DELETE FROM " . MODULES_TABLE . "
-	WHERE (name NOT IN ($dir_list))";
+	WHERE (name NOT IN ($modules_list))";
 
 	if (!$db->sql_query($sql))
 	{
@@ -362,6 +378,52 @@ function module_auth_check($module_data, $userdata)
 	}
 
 	return (false);
+}
+
+// FUNCTIONS
+// sort multi-dimensional array - from File Attachment Mod
+// Used in TOP SMILEYS!
+function smilies_sort_multi_array_attachment ($sort_array, $key, $sort_order)
+{
+	$last_element = count($sort_array) - 1;
+
+	$string_sort = (is_string($sort_array[$last_element-1][$key])) ? true : false;
+
+	for ($i = 0; $i < $last_element; $i++)
+	{
+		$num_iterations = $last_element - $i;
+
+		for ($j = 0; $j < $num_iterations; $j++)
+		{
+			$next = 0;
+
+			// do checks based on key
+			$switch = false;
+			if (!($string_sort))
+			{
+				if ((($sort_order == 'DESC') && (intval($sort_array[$j][$key]) < intval($sort_array[$j + 1][$key]))) || (($sort_order == 'ASC') && (intval($sort_array[$j][$key]) > intval($sort_array[$j + 1][$key]))))
+				{
+					$switch = true;
+				}
+			}
+			else
+			{
+				if ((($sort_order == 'DESC') && (strcasecmp($sort_array[$j][$key], $sort_array[$j + 1][$key]) < 0)) || (($sort_order ==   'ASC') && (strcasecmp($sort_array[$j][$key], $sort_array[$j + 1][$key]) > 0)))
+				{
+					$switch = true;
+				}
+			}
+
+			if ($switch)
+			{
+				$temp = $sort_array[$j];
+				$sort_array[$j] = $sort_array[$j + 1];
+				$sort_array[$j + 1] = $temp;
+			}
+		}
+	}
+
+	return ($sort_array);
 }
 
 ?>

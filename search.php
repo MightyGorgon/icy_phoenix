@@ -107,7 +107,9 @@ $cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? tru
 
 if ($search_mode == 'bookmarks')
 {
-	$cms_global_blocks = ($board_config['wide_blocks_profile'] == 1) ? true : false;
+	// TO DO: force to false, and decide if we would like to overwrite it with Profile Global Blocks settings...
+	//$cms_global_blocks = ($board_config['wide_blocks_profile'] == 1) ? true : false;
+	$cms_global_blocks = false;
 }
 
 // Define initial vars
@@ -1339,9 +1341,24 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 
 		// Output header
-		$page_title = $lang['Search'];
+		if ($show_results == 'bookmarks')
+		{
+			$nav_main_lang = $lang['Bookmarks'];
+			$nav_main_url = append_sid('search.' . PHP_EXT . '?search_id=bookmarks');
+			$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_bookmark'], $total_match_count) : sprintf($lang['Found_bookmarks'], $total_match_count);
+		}
+		else
+		{
+			$nav_main_lang = $lang['Search'];
+			$nav_main_url = append_sid('search.' . PHP_EXT);
+			$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
+		}
+		$page_title = $nav_main_lang;
 		$meta_description = '';
 		$meta_keywords = '';
+		$nav_server_url = create_server_url();
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
+		$breadcrumbs_links_right = '<span class="gensmall">' . $l_search_matches . '</span>';
 		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
@@ -1361,7 +1378,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		if ($show_results == 'bookmarks')
 		{
-			$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_bookmark'], $total_match_count) : sprintf($lang['Found_bookmarks'], $total_match_count);
 			// Send variables for bookmarks
 			//$s_hidden_fields = '<input type="hidden" name="mode" value="removebm" />';
 			$template->assign_vars(array(
@@ -1370,10 +1386,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
-		}
-		else
-		{
-			$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
 		}
 
 		$template->assign_vars(array(
@@ -1774,6 +1786,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 //<!-- END Unread Post Information to Database Mod -->
 
 				$template->assign_block_vars('searchresults', array(
+					'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 					'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $searchset[$i]['forum_id'], 'name'),
 					'FORUM_ID' => $forum_id,
 					'TOPIC_ID' => $topic_id,

@@ -1,18 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}<!-- IF S_LOGGED_IN --><br />{MARKED_READ}<!-- ENDIF --></div>
-		<!-- IF S_LOGGED_IN -->
-		<!-- IF U_MARK_READ -->{U_MARK_READ}<!-- ENDIF --><!-- IF S_WATCH_FORUM --><!-- IF U_MARK_READ -->&nbsp;|&nbsp;<!-- ENDIF -->{S_WATCH_FORUM}<!-- ENDIF --><br />
-		<!-- IF U_MARK_ALWAYS_READ -->{U_MARK_ALWAYS_READ}<!-- ENDIF -->
-		<!-- ELSE -->
-		&nbsp;
-		<!-- ENDIF -->
-	</div>
-</div>{IMG_TBR}
-
 {XS_NEWS}
 
 {CALENDAR_BOX}

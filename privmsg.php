@@ -28,6 +28,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
 
@@ -218,6 +219,21 @@ if ($mode == 'newpm')
 	$page_title = $lang['Private_Messaging'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$link_name = '';
+	if ($mode == 'post')
+	{
+		$link_name = $lang['Send_a_new_message'];
+	}
+	elseif ($mode == 'reply')
+	{
+		$link_name = $lang['Send_a_reply'];
+	}
+	elseif ($mode == 'edit')
+	{
+		$link_name = $lang['Edit_message'];
+	}
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Private_Messaging'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
@@ -473,6 +489,10 @@ elseif ($mode == 'read')
 		$reply = $post_icons['reply'];
 		$quote = $post_icons['quote'];
 		$edit = '';
+		$post_url = $post_urls['post'];
+		$reply_url = $post_urls['reply'];
+		$quote_url = $post_urls['quote'];
+		$edit_url = '';
 		$l_box_name = $lang['Inbox'];
 	}
 	elseif ($folder == 'outbox')
@@ -485,6 +505,10 @@ elseif ($mode == 'read')
 		$reply = '';
 		$quote = '';
 		$edit = $post_icons['edit'];
+		$post_url = $post_urls['post'];
+		$reply_url = '';
+		$quote_url = '';
+		$edit_url = $post_urls['edit'];
 		$l_box_name = $lang['Outbox'];
 	}
 	elseif ($folder == 'savebox')
@@ -499,6 +523,10 @@ elseif ($mode == 'read')
 			$reply = $post_icons['reply'];
 			$quote = $post_icons['quote'];
 			$edit = '';
+			$post_url = $post_urls['post'];
+			$reply_url = $post_urls['reply'];
+			$quote_url = $post_urls['quote'];
+			$edit_url = '';
 		}
 		else
 		{
@@ -510,6 +538,10 @@ elseif ($mode == 'read')
 			$reply = '';
 			$quote = '';
 			$edit = '';
+			$post_url = $post_urls['post'];
+			$reply_url = '';
+			$quote_url = '';
+			$edit_url = '';
 		}
 		$l_box_name = $lang['Saved'];
 	}
@@ -523,7 +555,11 @@ elseif ($mode == 'read')
 		$reply = '';
 		$quote = '';
 		$edit = '';
-		$l_box_name = $lang['Sent'];
+		$post_url = $post_urls['post'];
+		$reply_url = '';
+		$quote_url = '';
+		$edit_url = '';
+		$l_box_name = '';
 	}
 
 	$s_hidden_fields = '<input type="hidden" name="mark[]" value="' . $privmsgs_id . '" />';
@@ -531,6 +567,10 @@ elseif ($mode == 'read')
 	$page_title = $lang['Read_pm'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '">' . $lang['Private_Messaging'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . htmlspecialchars(stripslashes($privmsg['privmsgs_subject'])) . '</a>';
+	$breadcrumbs_links_right = '<a href="' . append_sid('privmsg.' . PHP_EXT . '?folder=' . $folder . '&amp;mode=' . $mode . '&amp;' . POST_POST_URL . '=' . $privmsgs_id . '&amp;view=prev', true) . '">' . $lang['Previous_privmsg'] . '</a> &bull; <a href="' . append_sid('privmsg.' . PHP_EXT . '?folder=' . $folder . '&amp;mode=' . $mode . '&amp;' . POST_POST_URL . '=' . $privmsgs_id . '&amp;view=next', true) . '">' . $lang['Next_privmsg'] . '</a>';
+	$skip_nav_cat = true;
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
@@ -548,6 +588,16 @@ elseif ($mode == 'read')
 		'OUTBOX' => $outbox_url,
 		'SAVEBOX' => $savebox_url,
 		'BOX_NAME' => $l_box_name,
+
+		'L_QUICK_REPLY' => $lang['Quick_Reply'],
+		'L_EDIT_PM' => $lang['Edit_pm'],
+		'L_QUOTE_PM' => $lang['Post_quote_pm'],
+		'L_POST_PM' => $lang['Post_new_pm'],
+		'L_REPLY_PM' => $lang['Post_reply_pm'],
+		'EDIT_PM_URL' => $edit_url,
+		'POST_PM_URL' => $post_url,
+		'QUOTE_PM_URL' => $quote_url,
+		'REPLY_PM_URL' => $reply_url,
 
 		'POST_PM_IMG' => $post_img,
 		'REPLY_PM_IMG' => $reply_img,
@@ -574,6 +624,17 @@ elseif ($mode == 'read')
 		'L_TO' => $lang['To'],
 		'L_SAVE_MSG' => $lang['Save_message'],
 		'L_DELETE_MSG' => $lang['Delete_message'],
+		'L_PM' => $lang['Private_Message'],
+		'L_EMAIL' => $lang['Email'],
+		'L_POSTS' => $lang['Posts'],
+		'L_CONTACTS' => $lang['User_Contacts'],
+		'L_WEBSITE' => $lang['Website'],
+		'L_FROM' => $lang['Location'],
+		'L_ONLINE_STATUS' => $lang['Online_status'],
+		'L_USER_WWW' => $lang['Website'],
+		'L_USER_EMAIL' => $lang['Send_Email'],
+		'L_USER_PROFILE' => $lang['Profile'],
+
 		// BEGIN PM Navigation MOD
 		'L_PRIVMSG_NEXT' => $lang['Next_privmsg'],
 		'L_PRIVMSG_PREVIOUS' => $lang['Previous_privmsg'],
@@ -594,81 +655,17 @@ elseif ($mode == 'read')
 
 	$post_date = create_date2($board_config['default_dateformat'], $privmsg['privmsgs_date'], $board_config['board_timezone']);
 
-	$temp_url = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id_from);
-	$profile_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
-	$profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
-
-	// Start add - Gender MOD
-	switch ($privmsg['user_gender'])
+	$user_info = array();
+	$user_info = generate_user_info($privmsg);
+	foreach ($user_info as $k => $v)
 	{
-		case 1 : $gender_image = '<img src="' . $images['icon_minigender_male'] . '" alt="' . $lang['Gender'] . ': ' . $lang['Male'] . '" title="' . $lang['Gender'] . ': ' . $lang['Male'] . '" />'; break;
-		case 2 : $gender_image = '<img src="' . $images['icon_minigender_female'] . '" alt="' . $lang['Gender'] . ': ' . $lang['Female'] . '" title="' . $lang['Gender'] . ': ' . $lang['Female'] . '" />'; break;
-		default : $gender_image = '';
-	}
-	// End add - Gender MOD
-
-	$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id_from);
-	$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
-	$pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
-
-	if (!empty($privmsg['user_viewemail']) || ($userdata['user_level'] == ADMIN))
-	{
-		$email_uri = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $user_id_from) : 'mailto:' . $privmsg['user_email'];
-
-		$email_img = '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
-		$email = '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
-	}
-	else
-	{
-		$email_img = '';
-		$email = '';
+		$$k = $v;
 	}
 
-	$www_img = ($privmsg['user_website']) ? '<a href="' . $privmsg['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
-	$www = ($privmsg['user_website']) ? '<a href="' . $privmsg['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>' : '';
-
-	$icq_status_img = (!empty($privmsg['user_icq'])) ? '<a href="http://wwp.icq.com/' . $privmsg['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $privmsg['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-	$icq_img = (!empty($privmsg['user_icq'])) ? build_im_link('icq', $privmsg['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
-	$icq = (!empty($privmsg['user_icq'])) ? build_im_link('icq', $privmsg['user_icq'], $lang['ICQ'], false) : '';
-
-	$aim_img = (!empty($privmsg['user_aim'])) ? build_im_link('aim', $privmsg['user_aim'], $lang['AIM'], $images['icon_aim2']) : '';
-	$aim = (!empty($privmsg['user_aim'])) ? build_im_link('aim', $privmsg['user_aim'], $lang['AIM'], false) : '';
-
-	$msn_img = (!empty($privmsg['user_msnm'])) ? build_im_link('msn', $privmsg['user_msnm'], $lang['MSNM'], $images['icon_msnm2']) : '';
-	$msn = (!empty($privmsg['user_msnm'])) ? build_im_link('msn', $privmsg['user_msnm'], $lang['MSNM'], false) : '';
-
-	$yim_img = (!empty($privmsg['user_yim'])) ? build_im_link('yahoo', $privmsg['user_yim'], $lang['YIM'], $images['icon_yim2']) : '';
-	$yim = (!empty($privmsg['user_yim'])) ? build_im_link('yahoo', $privmsg['user_yim'], $lang['YIM'], false) : '';
-
-	$skype_img = (!empty($privmsg['user_skype'])) ? build_im_link('skype', $privmsg['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
-	$skype = (!empty($privmsg['user_skype'])) ? build_im_link('skype', $privmsg['user_skype'], $lang['SKYPE'], false) : '';
-
-
-	// Start add - Online/Offline/Hidden Mod
-	if ($privmsg['user_session_time'] >= (time() - $board_config['online_time']))
-	{
-		if ($privmsg['user_allow_viewonline'])
-	{
-			$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
-		}
-		elseif ($is_auth['auth_mod'] || $userdata['user_id'] == $user_id_from)
-		{
-			$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
-		}
-		else
-		{
-			$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] .'" title="' . $lang['Offline'] .'" />';
-		}
-	}
-	else
-	{
-		$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] .'" title="' . $lang['Offline'] .'" />';
-	}
-	// End add - Online/Offline/Hidden Mod
-
-	$temp_url = append_sid(SEARCH_MG . '?search_author=' . urlencode($username_from) . '&amp;showresults=posts');
-	$search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $username_from) . '" title="' . sprintf($lang['Search_user_posts'], $username_from) . '" /></a>';
-	$search = '<a href="' . $temp_url . '">' . sprintf($lang['Search_user_posts'], $username_from) . '</a>';
+	$poster_avatar = $user_info['avatar'];
+	$poster_posts = ($privmsg['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $privmsg['user_posts'] : '';
+	$poster_from = ($privmsg['user_from']) ? $lang['Location'] . ': ' . $privmsg['user_from'] : '';
+	$poster_joined = ($privmsg['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $privmsg['user_regdate'], $board_config['board_timezone']) : '';
 
 	// Mighty Gorgon - Quick Quote - BEGIN
 	$look_up_array = array(
@@ -772,14 +769,6 @@ elseif ($mode == 'read')
 	//$private_message = kb_word_wrap_pass $private_message);
 	//Acronyms, AutoLinks, Wrap -END
 
-	$poster_avatar = user_get_avatar($privmsg['user_id'], $privmsg['user_avatar'], $privmsg['user_avatar_type'], $privmsg['user_allowavatar']);
-
-	$poster_posts = ($privmsg['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $privmsg['user_posts'] : '';
-
-	$poster_from = ($privmsg['user_from']) ? $lang['Location'] . ': ' . $privmsg['user_from'] : '';
-
-	$poster_joined = ($privmsg['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $privmsg['user_regdate'], $board_config['board_timezone']) : '';
-
 	// Generate ranks, set them to empty string initially.
 	$poster_rank = '';
 	$rank_image = '';
@@ -828,32 +817,47 @@ elseif ($mode == 'read')
 		'POSTER_RANK' => '', //$poster_rank,
 		'RANK_IMAGE' => $rank_image,
 		'SIGNATURE' => $signature,
-		// Start add - Gender MOD
-		'POSTER_GENDER' => $gender_image,
-		// End add - Gender MOD
-		'PROFILE_IMG' => $profile_img,
-		'PROFILE' => $profile,
-		'SEARCH_IMG' => $search_img,
-		'SEARCH' => $search,
-		'EMAIL_IMG' => $email_img,
-		'EMAIL' => $email,
-		'WWW_IMG' => $www_img,
-		'WWW' => $www,
-		'ICQ_STATUS_IMG' => $icq_status_img,
-		'ICQ_IMG' => $icq_img,
-		'ICQ' => $icq,
-		'AIM_IMG' => $aim_img,
-		'AIM' => $aim,
-		'MSN_IMG' => $msn_img,
-		'MSN' => $msn,
-		'SKYPE_IMG' => $skype_img,
-		'SKYPE' => $skype,
-		// Start add - Online/Offline/Hidden Mod
-		'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
-		'POSTER_ONLINE_STATUS' => $online_status,
-		// End add - Online/Offline/Hidden Mod
-		'YIM_IMG' => $yim_img,
-		'YIM' => $yim
+		'POSTER_GENDER' => $user_info['gender'],
+
+		'PROFILE_URL' => $user_info['profile_url'],
+		'PROFILE_IMG' => $user_info['profile_img'],
+		'PROFILE' => $user_info['profile'],
+		'PM_URL' => $user_info['pm_url'],
+		'PM_IMG' => $user_info['pm_img'],
+		'PM' => $user_info['pm'],
+		'SEARCH_URL' => $user_info['search_url'],
+		'SEARCH_IMG' => $user_info['search_img'],
+		'SEARCH' => $user_info['search'],
+		'IP_URL' => $user_info['ip_url'],
+		'IP_IMG' => $user_info['ip_img'],
+		'IP' => $user_info['ip'],
+		'EMAIL_URL' => $user_info['email_url'],
+		'EMAIL_IMG' => $user_info['email_img'],
+		'EMAIL' => $user_info['email'],
+		'WWW_URL' => $user_info['www_url'],
+		'WWW_IMG' => $user_info['www_img'],
+		'WWW' => $user_info['www'],
+		'AIM_URL' => $user_info['aim_url'],
+		'AIM_IMG' => $user_info['aim_img'],
+		'AIM' => $user_info['aim'],
+		'ICQ_STATUS_IMG' => $user_info['icq_status_img'],
+		'ICQ_URL' => $user_info['icq_url'],
+		'ICQ_IMG' => $user_info['icq_img'],
+		'ICQ' => $user_info['icq'],
+		'MSN_URL' => $user_info['msn_url'],
+		'MSN_IMG' => $user_info['msn_img'],
+		'MSN' => $user_info['msn'],
+		'SKYPE_URL' => $user_info['skype_url'],
+		'SKYPE_IMG' => $user_info['skype_img'],
+		'SKYPE' => $user_info['skype'],
+		'YIM_URL' => $user_info['yim_url'],
+		'YIM_IMG' => $user_info['yim_img'],
+		'YIM' => $user_info['yim'],
+		'ONLINE_STATUS_URL' => $user_info['online_status_url'],
+		'ONLINE_STATUS_CLASS' => $user_info['online_status_class'],
+		'ONLINE_STATUS_IMG' => $user_info['online_status_img'],
+		'ONLINE_STATUS' => $user_info['online_status'],
+		'L_ONLINE_STATUS' => $user_info['online_status_lang'],
 		)
 	);
 
@@ -887,6 +891,8 @@ elseif (($delete && $mark_list) || $delete_all)
 		}
 
 		// Output confirmation page
+		$nav_server_url = create_server_url();
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '" class="nav-current">' . $lang['Private_Messaging'] . '</a>';
 		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('confirm_body' => 'confirm_body.tpl'));
@@ -1843,6 +1849,22 @@ elseif ($submit || $refresh || ($mode != ''))
 	$page_title = $lang['Send_private_message'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$link_name = '';
+	if ($mode == 'post')
+	{
+		$link_name = $lang['Send_a_new_message'];
+	}
+	elseif ($mode == 'reply')
+	{
+		$link_name = $lang['Send_a_reply'];
+	}
+	elseif ($mode == 'edit')
+	{
+		$link_name = $lang['Edit_message'];
+	}
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Private_Messaging'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+	$skip_nav_cat = true;
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
@@ -2217,6 +2239,9 @@ $userdata['user_unread_privmsg'] = ($userdata['user_new_privmsg'] + $userdata['u
 $page_title = $lang['Private_Messaging'];
 $meta_description = '';
 $meta_keywords = '';
+$nav_server_url = create_server_url();
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '" class="nav-current">' . $lang['Private_Messaging'] . '</a>';
+$breadcrumbs_links_right = '<a href="javascript:select_switch(true);" class="gensmall">' . $lang['Mark_all'] . '</a> :: <a href="javascript:select_switch(false);" class="gensmall">' . $lang['Unmark_all'] . '</a>';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
@@ -2383,9 +2408,9 @@ switch ($folder)
 		$l_box_name = $lang['Sentbox'];
 		break;
 }
-$post_pm = append_sid('privmsg.' . PHP_EXT . '?mode=post');
-$post_pm_img = '<a href="' . $post_pm . '"><img src="' . $images['pm_postmsg'] . '" alt="' . $lang['Post_new_pm'] . '" /></a>';
-$post_pm = '<a href="' . $post_pm . '">' . $lang['Post_new_pm'] . '</a>';
+$post_pm_url = append_sid('privmsg.' . PHP_EXT . '?mode=post');
+$post_pm_img = '<a href="' . $post_pm_url . '"><img src="' . $images['pm_postmsg'] . '" alt="' . $lang['Post_new_pm'] . '" /></a>';
+$post_pm = '<a href="' . $post_pm_url . '">' . $lang['Post_new_pm'] . '</a>';
 
 // Output data for inbox status
 if ($folder != 'outbox')
@@ -2450,6 +2475,9 @@ $template->assign_vars(array(
 	'SENTBOX' => $sentbox_url,
 	'OUTBOX' => $outbox_url,
 	'SAVEBOX' => $savebox_url,
+
+	'L_POST_PM' => $lang['Post_new_pm'],
+	'POST_PM_URL' => $post_pm_url,
 
 	'POST_PM_IMG' => $post_pm_img,
 	'POST_PM' => $post_pm,

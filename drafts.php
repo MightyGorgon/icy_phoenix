@@ -65,6 +65,8 @@ if ( ($draft_id > 0) || !empty($_POST['kill_drafts']) )
 			$page_title = $lang['Drafts'];
 			$meta_description = '';
 			$meta_keywords = '';
+			$nav_server_url = create_server_url();
+			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(PROFILE_MG) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
 			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$ref_url = explode('/', $_SERVER['HTTP_REFERER']);
@@ -128,6 +130,9 @@ if ( ($draft_id > 0) || !empty($_POST['kill_drafts']) )
 $page_title = $lang['Drafts'];
 $meta_description = '';
 $meta_keywords = '';
+$nav_server_url = create_server_url();
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
+$breadcrumbs_links_right = '<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', true); return false;">' . $lang['Mark_all'] . '</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', false); return false;">' . $lang['Unmark_all'] . '</a>';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 

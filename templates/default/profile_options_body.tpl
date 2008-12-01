@@ -1,16 +1,5 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}<a href="{U_OPTION}" class="nav-current">{L_MOD_NAME}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">
-			{CURRENT_TIME} | {S_TIMEZONE}
-		</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
+
 <form method="post" action="{S_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_MOD_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td colspan="2" class="row-header"><span>{L_MOD_NAME}</span></td></tr>

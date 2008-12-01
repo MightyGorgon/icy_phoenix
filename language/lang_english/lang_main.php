@@ -32,6 +32,40 @@ if (empty($lang) || !is_array($lang))
 	$lang = array();
 }
 
+// Do not remove these even if duplicated...
+$lang['-12'] = 'GMT - 12 Hours';
+$lang['-11'] = 'GMT - 11 Hours';
+$lang['-10'] = 'GMT - 10 Hours';
+$lang['-9'] = 'GMT - 9 Hours';
+$lang['-8'] = 'GMT - 8 Hours';
+$lang['-7'] = 'GMT - 7 Hours';
+$lang['-6'] = 'GMT - 6 Hours';
+$lang['-5'] = 'GMT - 5 Hours';
+$lang['-4'] = 'GMT - 4 Hours';
+$lang['-3.5'] = 'GMT - 3.5 Hours';
+$lang['-3'] = 'GMT - 3 Hours';
+$lang['-2'] = 'GMT - 2 Hours';
+$lang['-1'] = 'GMT - 1 Hours';
+$lang['0'] = 'GMT';
+$lang['1'] = 'GMT + 1 Hour';
+$lang['2'] = 'GMT + 2 Hours';
+$lang['3'] = 'GMT + 3 Hours';
+$lang['3.5'] = 'GMT + 3.5 Hours';
+$lang['4'] = 'GMT + 4 Hours';
+$lang['4.5'] = 'GMT + 4.5 Hours';
+$lang['5'] = 'GMT + 5 Hours';
+$lang['5.5'] = 'GMT + 5.5 Hours';
+$lang['6'] = 'GMT + 6 Hours';
+$lang['6.5'] = 'GMT + 6.5 Hours';
+$lang['7'] = 'GMT + 7 Hours';
+$lang['8'] = 'GMT + 8 Hours';
+$lang['9'] = 'GMT + 9 Hours';
+$lang['9.5'] = 'GMT + 9.5 Hours';
+$lang['10'] = 'GMT + 10 Hours';
+$lang['11'] = 'GMT + 11 Hours';
+$lang['12'] = 'GMT + 12 Hours';
+$lang['13'] = 'GMT + 13 Hours';
+
 $lang['BBC_IP_CREDITS_STATIC'] = '
 <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="http://www.icyphoenix.com/images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br />
 <span style="color: #FF5500;"><b>Mighty Gorgon</b></span><br />
@@ -456,15 +490,15 @@ $lang = array_merge($lang, array(
 	'More_emoticons' => 'View All Smileys',
 
 // Private Messaging
-	'Private_Messaging' => 'Private Messaging',
+	'Private_Messaging' => 'Private Messages',
 
 	'Login_check_pm' => 'Log in to check your private messages',
-	'New_pms' => 'You have %d new messages', // You have 2 new messages
-	'New_pm' => 'You have %d new message', // You have 1 new message
-	'No_new_pm' => 'You have no new messages',
-	'Unread_pms' => 'You have %d unread messages',
-	'Unread_pm' => 'You have %d unread message',
-	'No_unread_pm' => 'You have no unread messages',
+	'New_pms' => 'You have %d new PM', // You have 2 new messages
+	'New_pm' => 'You have %d new PM', // You have 1 new message
+	'No_new_pm' => 'You have no new PM',
+	'Unread_pms' => 'You have %d unread PM',
+	'Unread_pm' => 'You have %d unread PM',
+	'No_unread_pm' => 'You have no unread PM',
 	'You_new_pm' => 'A new private message is waiting for you in your Inbox',
 	'You_new_pms' => 'New private messages are waiting for you in your Inbox',
 	'You_no_new_pm' => 'No new private messages are waiting for you',
@@ -2104,6 +2138,8 @@ $lang = array_merge($lang, array(
 	'FILE_NOT_AUTH' => 'You are not authorised to download this file',
 	'SHOW_POSTS_FROM' => 'Show posts from',
 	'SHOW_POSTS_TO' => 'to',
+
+	'SEE_MORE_DETAILS' => 'See more details...',
 	)
 );
 
@@ -2128,9 +2164,10 @@ $lang['Prune_explain'][4] = 'Who have less than an average of 1 post for every 1
 $lang['Prune_commands'][5] = 'Prune non-posting and non-visiting users';
 $lang['Prune_explain'][5] = 'Who have never posted and not visited recently, <b>excluding</b> new users from the past %d days';
 
-// Timezones ... for display on each page
+// Timezones - BEGIN
 $lang['All_times'] = 'All times are %s'; // eg. All times are GMT - 12 Hours (times from next block)
 
+// Do not remove these even if duplicated...
 $lang['-12'] = 'GMT - 12 Hours';
 $lang['-11'] = 'GMT - 11 Hours';
 $lang['-10'] = 'GMT - 10 Hours';
@@ -2164,10 +2201,7 @@ $lang['11'] = 'GMT + 11 Hours';
 $lang['12'] = 'GMT + 12 Hours';
 $lang['13'] = 'GMT + 13 Hours';
 
-//
-// Time Zone Mod
 // These are displayed in the timezone select box
-
 $lang['tz']['-12'] = '(GMT -12 Hours) Eniwetok, Kwajalein';
 $lang['tz']['-11'] = '(GMT -11 Hours) Midway Island, Samoa';
 $lang['tz']['-10'] = '(GMT -10 Hours) Hawaii';
@@ -2201,8 +2235,7 @@ $lang['tz']['10'] = '(GMT +10 Hours) EAST(East Australian Standard), Guam';
 $lang['tz']['11'] = '(GMT +11 Hours) Magadan, Solomon Islands, New Caledonia';
 $lang['tz']['12'] = '(GMT +12 Hours) Auckland, Fiji, Kamchatka, Marshall Island';
 $lang['tz']['13'] = '(GMT +13 Hours) Nuku\'alofa';
-
-// End Time Zone Mod
+// Timezones - END
 
 $lang['datetime']['Sunday'] = 'Sunday';
 $lang['datetime']['Monday'] = 'Monday';

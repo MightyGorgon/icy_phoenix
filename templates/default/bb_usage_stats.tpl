@@ -14,7 +14,6 @@
 	<th nowrap="nowrap">{L_BBUS_COLHEADER_TOPICRATE}</th>
 	<th nowrap="nowrap">{L_BBUS_COLHEADER_TOPICS_WATCHED}</th>
 </tr>
-
 <!-- BEGIN bb_usage_section_row -->
 <tr>
 	<td class="cat" align="left" valign="middle">
@@ -26,9 +25,7 @@
 	<td class="cat" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_POST_PCTUTP}</b></td>
 	<!-- BEGIN bb_usage_switch_pctutup_section -->
 	<!--
-	<td class="cat" align="center" valign="middle">
-		<b><span class="catTitle">{bb_usage_section_row.bb_usage_switch_pctutup_section.SECTION_POST_PCTUTUP}</span></b>
-	</td>
+	<td class="cat" align="center" valign="middle"><b><span class="catTitle">{bb_usage_section_row.bb_usage_switch_pctutup_section.SECTION_POST_PCTUTUP}</span></b></td>
 	-->
 	<!-- END bb_usage_switch_pctutup_section -->
 	<td class="cat" align="center" valign="middle"><b>{bb_usage_section_row.SECTION_NEWTOPICS}</b></td>
@@ -47,9 +44,7 @@
 	<td class="row3 row-center" valign="middle"><span class="gen">{bb_usage_section_row.bb_usage_forum_row.FORUM_POST_PCTUTP}</span></td>
 	<!-- BEGIN bb_usage_switch_pctutup_forum -->
 	<!--
-	<td class="row3 row-center" valign="middle">
-		<span class="gen">{bb_usage_section_row.bb_usage_forum_row.bb_usage_switch_pctutup_forum.FORUM_POST_PCTUTUP}</span>
-	</td>
+	<td class="row3 row-center" valign="middle"><span class="gen">{bb_usage_section_row.bb_usage_forum_row.bb_usage_switch_pctutup_forum.FORUM_POST_PCTUTUP}</span></td>
 	-->
 	<!-- END bb_usage_switch_pctutup_forum -->
 	<td class="row2 row-center" valign="middle"><span class="gen">{bb_usage_section_row.bb_usage_forum_row.FORUM_NEWTOPICS}</span></td>

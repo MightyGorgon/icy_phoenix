@@ -1,13 +1,6 @@
 <!-- INCLUDE pa_header.tpl -->
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a><!-- BEGIN navlinks -->{NAV_SEP}<a href="{navlinks.U_VIEW_CAT}" class="{navlinks.CLASS}">{navlinks.CAT_NAME}</a><!-- END navlinks -->
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
+<!-- INCLUDE pa_links.tpl -->
+
 <!-- IF CAT_PARENT -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{DOWNLOAD}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -50,7 +43,7 @@
 
 <!-- BEGIN file_rows -->
 <tr>
-	<td class="row1 row-center" width="30" style="padding-right:5px;"><a href="{file_rows.U_FILE}" class="topictitle"><img src="{file_rows.PIN_IMAGE}" border="0" border="0"></a></td>
+	<td class="row1 row-center" width="30" style="padding-right: 5px;"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" border="0" border="0"></a></td>
 	<td class="row1h{file_rows.XS_NEW} row-forum" onclick="window.location.href='{file_rows.U_FILE}'" width="75%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span>&nbsp;
 	<!-- IF file_rows.IS_NEW_FILE -->
 	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}"> -->
@@ -62,9 +55,9 @@
 	<td class="row2 row-center">
 	<!-- IF file_rows.HAS_SCREENSHOTS -->
 		<!-- IF file_rows.SS_AS_LINK -->
-		<a href="{file_rows.FILE_SCREENSHOT}" class="topictitle" target="_blank"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}"></a>
+		<a href="{file_rows.FILE_SCREENSHOT}" class="topiclink" target="_blank"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}"></a>
 		<!-- ELSE -->
-		<a href="javascript:mpFoto('{file_rows.FILE_SCREENSHOT}')" class="topictitle"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}"></a>
+		<a href="javascript:mpFoto('{file_rows.FILE_SCREENSHOT}')" class="topiclink"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}"></a>
 		<!-- ENDIF -->
 	<!-- ELSE -->
 	&nbsp;
@@ -73,7 +66,7 @@
 </tr>
 <!-- END file_rows -->
 <tr>
-	<td class="cat" align="center" colspan="6">
+	<td class="cat" colspan="6">
 		<input type="hidden" name="action" value="category" />
 		<input type="hidden" name="cat_id" value="{ID}" />
 		<input type="hidden" name="start" value="{START}" />

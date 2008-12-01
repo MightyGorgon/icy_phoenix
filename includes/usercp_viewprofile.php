@@ -21,6 +21,8 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+
 if (empty($_GET[POST_USERS_URL]) || $_GET[POST_USERS_URL] == ANONYMOUS)
 {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
@@ -36,7 +38,7 @@ if ($user <> $viewer_id)
 {
 	$sql = "UPDATE " . USERS_TABLE . "
 			SET user_profile_view = '1'
-			WHERE user_id = " . $user. "";
+			WHERE user_id = " . $user . "";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, "Could not update user data.", '', __LINE__, __FILE__, $sql);
@@ -189,6 +191,7 @@ if ($totalpicrow > 0)
 				)
 			);
 
+			$recent_poster = colorize_username($recentrow[$j]['pic_user_id']);
 			$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
 				'TITLE' => '<a href = "'.$album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $recentrow[$j]['pic_title'] . '</a>',
 				'POSTER' => $recent_poster,
@@ -224,10 +227,11 @@ $user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . 
 $user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
 // Mighty Gorgon - Multiple Ranks - END
 
-$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
-$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
-$pm = '<a href="' . $temp_url . '">' . $lang['Send_private_message'] . '</a>';
+$pm_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
+$pm_img = '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
+$pm = '<a href="' . $pm_url . '">' . $lang['Send_private_message'] . '</a>';
 
+$email_url = '';
 if (empty($userdata['user_id']) || ($userdata['user_id'] == ANONYMOUS))
 {
 	if (!empty($profiledata['user_viewemail']))
@@ -242,10 +246,9 @@ if (empty($userdata['user_id']) || ($userdata['user_id'] == ANONYMOUS))
 }
 elseif (!empty($profiledata['user_viewemail']) || $userdata['user_level'] == ADMIN)
 {
-	$email_uri = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $profiledata['user_id']) : 'mailto:' . $profiledata['user_email'];
-
-	$email_img = '<a href="' . $email_uri . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
-	$email = '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
+	$email_url = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $profiledata['user_id']) : 'mailto:' . $profiledata['user_email'];
+	$email_img = '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
+	$email = '<a href="' . $email_url . '">' . $lang['Send_email'] . '</a>';
 }
 else
 {
@@ -253,25 +256,31 @@ else
 	$email = '&nbsp;';
 }
 
+$www_url = ($profiledata['user_website']) ? $profiledata['user_website'] : '';
 $www_img = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '&nbsp;';
 $www = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank">' . $profiledata['user_website'] . '</a>' : '&nbsp;';
+
+$aim_img = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], $images['icon_aim']) : '';
+$aim = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false) : '';
+$aim_url = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false, true) : '';
 
 $icq_status_img = (!empty($profiledata['user_icq'])) ? '<a href="http://wwp.icq.com/' . $profiledata['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $profiledata['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
 $icq_img = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], $images['icon_icq']) : '';
 $icq = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], false) : '';
-
-$aim_img = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], $images['icon_aim']) : '';
-$aim = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false) : '';
+$icq_url = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], false, true) : '';
 
 $msn_img = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], $images['icon_msnm']) : '';
 $msn = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], false) : '';
 $msn = $msn_img;
-
-$yim_img = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], $images['icon_yim']) : '';
-$yim = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false) : '';
+$msn_url = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], false, true) : '';
 
 $skype_img = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], $images['icon_skype']) : '';
 $skype = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], false) : '';
+$skype_url = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], false, true) : '';
+
+$yim_img = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], $images['icon_yim']) : '';
+$yim = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false) : '';
+$yim_url = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false, true) : '';
 
 $temp_url = append_sid(SEARCH_MG . '?search_author=' . urlencode($profiledata['username']) . '&amp;showresults=posts');
 $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" title="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" /></a>';
@@ -424,10 +433,23 @@ if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 }
 // Activity - END
 
+if (function_exists('get_html_translation_table'))
+{
+	$u_search_author = urlencode(strtr($profiledata['username'], array_flip(get_html_translation_table(HTML_ENTITIES))));
+}
+else
+{
+	$u_search_author = urlencode(str_replace(array('&amp;', '&#039;', '&quot;', '&lt;', '&gt;'), array('&', "'", '"', '<', '>'), $profiledata['username']));
+}
+
 // Generate page
 $page_title = $lang['Viewing_profile'];
 $meta_description = '';
 $meta_keywords = '';
+$link_name = htmlspecialchars(stripslashes($profiledata['username']));
+$nav_server_url = create_server_url();
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+$breadcrumbs_links_right = '<a href="' . append_sid(SEARCH_MG . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . sprintf($lang['Search_user_topics_started'], $profiledata['username']) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(SEARCH_MG . '?search_author=' . $u_search_author) . '">' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Start add - Online/Offline/Hidden Mod
@@ -452,15 +474,6 @@ else
 }
 // End add - Online/Offline/Hidden Mod
 display_upload_attach_box_limits($profiledata['user_id']);
-
-if (function_exists('get_html_translation_table'))
-{
-	$u_search_author = urlencode(strtr($profiledata['username'], array_flip(get_html_translation_table(HTML_ENTITIES))));
-}
-else
-{
-	$u_search_author = urlencode(str_replace(array('&amp;', '&#039;', '&quot;', '&lt;', '&gt;'), array('&', "'", '"', '<', '>'), $profiledata['username']));
-}
 
 // Mighty Gorgon - Feedbacks - BEGIN
 if (defined('MG_FEEDBACKS'))
@@ -529,21 +542,29 @@ $template->assign_vars(array(
 	'SEARCH' => $search,
 	'PM_IMG' => $pm_img,
 	'PM' => $pm,
+	'U_PM' => $pm_url,
 	'EMAIL_IMG' => (!$userdata['session_logged_in'])? '' : $email_img,
 	'EMAIL' => $email,
+	'U_EMAIL' => $email_url,
 	'WWW_IMG' => $www_img,
 	'WWW' => $www,
+	'U_WWW' => $www_url,
+	'AIM_IMG' => $aim_img,
+	'AIM' => $aim,
+	'U_AIM' => $aim_url,
 	'ICQ_STATUS_IMG' => $icq_status_img,
 	'ICQ_IMG' => $icq_img,
 	'ICQ' => $icq,
-	'AIM_IMG' => $aim_img,
-	'AIM' => $aim,
+	'U_ICQ' => $icq_url,
 	'MSN_IMG' => $msn_img,
 	'MSN' => $msn,
-	'YIM_IMG' => $yim_img,
-	'YIM' => $yim,
+	'U_MSN' => $msn_url,
 	'SKYPE_IMG' => $skype_img,
 	'SKYPE' => $skype,
+	'U_SKYPE' => $skype_url,
+	'YIM_IMG' => $yim_img,
+	'YIM' => $yim,
+	'U_YIM' => $yim_url,
 
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,
@@ -553,6 +574,7 @@ $template->assign_vars(array(
 	'PHONE' => ($profiledata['user_phone']) ? $profiledata['user_phone'] : '&nbsp;',
 	'SELFDES' => $selfdes,
 
+	'U_PROFILE_VISITS' => append_sid('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;' . POST_POST_URL . '=0'),
 	'U_VISITS' => '<a href="' . append_sid('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;' . POST_POST_URL . '=0') . '"><img src="' . $images['icon_view'] . '" alt="' . $lang['Views'] . '" /></a>',
 
 	// Start add - Gender MOD

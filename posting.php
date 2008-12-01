@@ -356,10 +356,11 @@ switch ($mode)
 		// MG Cash MOD For IP - END
 
 		$sql = "SELECT f.*, t.topic_id, t.topic_status, t.topic_type, t.topic_first_post_id, t.topic_last_post_id, t.topic_vote, t.topic_show_portal, p.post_id, p.poster_id" . $select_sql . "
-			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $from_sql . "
+			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $from_sql . "
 			WHERE p.post_id = '" . $post_id . "'
 				AND t.topic_id = p.topic_id
 				AND f.forum_id = p.forum_id
+				AND fr.forum_id = p.forum_id
 				" . $where_sql;
 		break;
 
@@ -695,9 +696,7 @@ $attach_sig = ($submit || $refresh) ? ((!empty($_POST['attach_sig'])) ? true : 0
 $setbm = ($submit || $refresh) ? ((!empty($_POST['setbm'])) ? true : 0) : (($userdata['user_id'] == ANONYMOUS) ? 0 : $userdata['user_setbm']);
 execute_posting_attachment_handling();
 
-// --------------------
-//  What shall we do?
-//
+// What shall we do?
 
 // BEGIN cmx_slash_news_mod
 // Get News Categories.
@@ -1773,6 +1772,7 @@ $page_title = ($postreport || $lock_subject) ? $lang['Post_a_report'] : $page_ti
 $page_title_alt = $page_title;
 $meta_description = '';
 $meta_keywords = '';
+$nav_add_page_title = true;
 
 // Generate smilies listing for page output
 //generate_smilies('inline');
@@ -1788,33 +1788,33 @@ $template->set_filenames(array(
 );
 
 make_jumpbox(VIEWFORUM_MG);
+
+$rules_bbcode = '';
 if ($post_info['rules_in_posting'])
 {
+	//BBcode Parsing for Olympus rules Start
+	$rules_bbcode = $post_info['rules'];
+	$bbcode->allow_html = true;
+	$bbcode->allow_bbcode = true;
+	$bbcode->allow_smilies = true;
+	$rules_bbcode = $bbcode->parse($rules_bbcode);
+	//BBcode Parsing for Olympus rules Start
+
 	$template->assign_block_vars('switch_forum_rules', array());
-	// display a title on top of the box??
+	// display a title on top of the box?
 	if ($post_info['rules_display_title'])
 	{
 		$template->assign_block_vars('switch_forum_rules.switch_display_title', array());
 	}
 }
 
-//BBcode Parsing for Olympus rules Start
-	$rules_bbcode = $post_info['forum_rules'];
-	$bbcode->allow_html = true;
-	$bbcode->allow_bbcode = true;
-	$bbcode->allow_smilies = true;
-	$rules_bbcode = $bbcode->parse($rules_bbcode);
-//BBcode Parsing for Olympus rules Start
-
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_NAME' => $forum_name,
 	'FORUM_RULES' => $rules_bbcode,
 	'L_FORUM_RULES' => (empty($post_info['rules_custom_title'])) ? $lang['Forum_Rules'] : $post_info['rules_custom_title'],
-
 	'L_POST_A' => $page_title_alt,
 	'L_POST_SUBJECT' => $lang['Post_subject'],
-
 	'U_VIEW_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id)
 	)
 );

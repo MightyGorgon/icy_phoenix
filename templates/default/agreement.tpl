@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs_i.tpl -->
-
 {ERROR_BOX}
 <form method="post" action="{S_AGREE_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{SITENAME} - {REGISTRATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

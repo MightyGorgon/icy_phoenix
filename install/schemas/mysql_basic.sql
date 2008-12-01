@@ -160,7 +160,7 @@ INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('
 INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('attachment_topic_review', '0');
 INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('allow_ftp_upload', '0');
 INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('show_apcp', '0');
-INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('attach_version', '2.4.1');
+INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('attach_version', '2.4.5');
 INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('default_upload_quota', '0');
 INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('default_pm_quota', '0');
 INSERT INTO `phpbb_attachments_config` (`config_name`, `config_value`) VALUES ('ftp_server', '');
@@ -300,7 +300,7 @@ INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('latt
 
 ## `phpbb_categories`
 ##
-INSERT INTO `phpbb_categories` (`cat_id`, `cat_title`, `cat_order`, `cat_main_type`, `cat_main`, `cat_desc`, `icon`) VALUES (1, 'Test category 1', 10, NULL, 0, '', NULL);
+INSERT INTO `phpbb_categories` (`cat_id`, `cat_main`, `cat_main_type`, `cat_title`, `cat_order`, `cat_desc`, `icon`) VALUES (1, 0, NULL, 'Test category 1', 10, '', NULL);
 
 ## `phpbb_cms_block_position`
 ##
@@ -424,7 +424,7 @@ INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_bloc
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('12', 'album', 'album', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('13', 'links', 'links', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('14', 'statistics', 'statistics', 0, 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('15', 'site_hist', 'site_hist', 0, 0, '');
+#INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('15', 'site_hist', 'site_hist', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('16', 'calendar', 'calendar', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('17', 'recent', 'recent', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('18', 'referrers', 'referrers', 0, 0, '');
@@ -472,15 +472,14 @@ INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (35, 0, 1, 0, 3, 31, 1, 2, '', '', 'Http Referrers', 'Http Referrers', 'referrers.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (36, 0, 1, 0, 3, 32, 1, 3, '', '', 'Who Is Online', 'Who Is Online', 'viewonline.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (37, 0, 1, 0, 3, 33, 1, 4, '', '', 'Statistics', 'Statistics', 'statistics.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (38, 0, 1, 0, 3, 34, 1, 5, '', '', 'Site History', 'Site History', 'site_hist.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (39, 0, 1, 0, 3, 35, 1, 6, '', '', 'Delete Cookies', 'Delete Cookies', 'remove_cookies.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (40, 0, 1, 0, 4, 36, 1, 1, '', '', 'Memberlist', 'Memberlist', 'memberlist.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (41, 0, 1, 0, 4, 37, 1, 2, '', '', 'Usergroups', 'Usergroups', 'groupcp.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (42, 0, 1, 0, 4, 38, 1, 3, '', '', 'Ranks', 'Ranks', 'ranks.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (43, 0, 1, 0, 4, 39, 1, 4, '', '', 'Staff', 'Staff', 'memberlist.php?mode=staff', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (44, 0, 1, 0, 5, 40, 1, 1, './images/menu/palette.png', '', 'Style', 'Style', '', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (45, 0, 1, 0, 5, 41, 1, 2, '', '', 'Language', 'Language', '', 0, 1, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (46, 0, 1, 0, 5, 42, 1, 3, './images/menu/feed.png', '', 'RSS News Feeds', 'RSS News Feeds', '', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (38, 0, 1, 0, 3, 35, 1, 5, '', '', 'Delete Cookies', 'Delete Cookies', 'remove_cookies.php', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (39, 0, 1, 0, 4, 36, 1, 1, '', '', 'Memberlist', 'Memberlist', 'memberlist.php', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (40, 0, 1, 0, 4, 37, 1, 2, '', '', 'Usergroups', 'Usergroups', 'groupcp.php', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (41, 0, 1, 0, 4, 38, 1, 3, '', '', 'Ranks', 'Ranks', 'ranks.php', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (42, 0, 1, 0, 4, 39, 1, 4, '', '', 'Staff', 'Staff', 'memberlist.php?mode=staff', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (43, 0, 1, 0, 5, 40, 1, 1, './images/menu/palette.png', '', 'Style', 'Style', '', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (44, 0, 1, 0, 5, 41, 1, 2, '', '', 'Language', 'Language', '', 0, 1, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (45, 0, 1, 0, 5, 42, 1, 3, './images/menu/feed.png', '', 'RSS News Feeds', 'RSS News Feeds', '', 0, 0, 0);
 
 ## `phpbb_config`
 ##
@@ -726,7 +725,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_st
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_recent', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_referrers', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_rules', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_site_hist', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_shoutbox', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_viewonline', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_custom_pages', '0');
@@ -752,7 +750,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_recent', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_referrers', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_rules', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_site_hist', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_shoutbox', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_viewonline', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_custom_pages', '0');
@@ -1269,7 +1266,10 @@ INSERT INTO `phpbb_force_read` (`topic_number`, `message`, `install_date`, `acti
 
 ## `phpbb_forums`
 ##
-INSERT INTO `phpbb_forums` (`forum_id`, `cat_id`, `forum_name`, `forum_desc`, `forum_status`, `thank`, `forum_order`, `forum_posts`, `forum_topics`, `forum_last_post_id`, `forum_notify`, `forum_link`, `forum_link_internal`, `forum_link_hit_count`, `forum_link_hit`, `icon`, `main_type`, `prune_next`, `prune_enable`, `auth_view`, `auth_read`, `auth_post`, `auth_reply`, `auth_edit`, `auth_delete`, `auth_sticky`, `auth_announce`, `auth_globalannounce`, `auth_news`, `auth_cal`, `auth_vote`, `auth_pollcreate`, `auth_attachments`, `auth_download`, `auth_ban`, `auth_greencard`, `auth_bluecard`, `auth_rate`, `forum_rules`, `rules_display_title`, `rules_custom_title`, `rules_in_viewforum`, `rules_in_viewtopic`, `rules_in_posting`, `forum_postcount`) VALUES (1, 1, 'Test Forum 1', 'This is just a test forum.', 0, 1, 10, 1, 1, 1, 1, NULL, 0, 0, 0, NULL, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 3, 1, 3, 3, 3, 1, 3, 1, 0, 3, 3, 1, 1, '', 1, '', 0, 0, 0, 1);
+INSERT INTO `phpbb_forums` (`forum_id`, `cat_id`, `main_type`, `forum_name`, `forum_desc`, `forum_status`, `forum_order`, `forum_posts`, `forum_topics`, `forum_last_post_id`, `forum_notify`, `forum_postcount`, `forum_link`, `forum_link_internal`, `forum_link_hit_count`, `forum_link_hit`, `icon`, `prune_next`, `prune_enable`, `auth_view`, `auth_read`, `auth_post`, `auth_reply`, `auth_edit`, `auth_delete`, `auth_sticky`, `auth_announce`, `auth_globalannounce`, `auth_news`, `auth_cal`, `auth_vote`, `auth_pollcreate`, `auth_attachments`, `auth_download`, `auth_ban`, `auth_greencard`, `auth_bluecard`, `auth_rate`) VALUES (1, 1, 'c', 'Test Forum 1', 'This is just a test forum.', 0, 10, 2, 2, 2, 1, 1, NULL, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 3, 1, 3, 3, 3, 1, 3, 1, 0, 3, 3, 1, 1);
+
+## `phpbb_forums_rules`
+##
 
 ## `phpbb_forums_watch`
 ##
@@ -1583,7 +1583,7 @@ INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smi
 ##
 INSERT INTO `phpbb_stats_config` (`config_name`, `config_value`) VALUES ('return_limit', '10');
 INSERT INTO `phpbb_stats_config` (`config_name`, `config_value`) VALUES ('version', '2.1.5');
-INSERT INTO `phpbb_stats_config` (`config_name`, `config_value`) VALUES ('modules_dir', 'includes/stat_modules');
+INSERT INTO `phpbb_stats_config` (`config_name`, `config_value`) VALUES ('modules_dir', 'includes/stats_modules');
 INSERT INTO `phpbb_stats_config` (`config_name`, `config_value`) VALUES ('page_views', '0');
 
 ## `phpbb_stats_modules`
@@ -1784,5 +1784,5 @@ INSERT INTO phpbb_dl_ext_blacklist (extention) VALUES
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.2.13.40');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.2.15.42');
 

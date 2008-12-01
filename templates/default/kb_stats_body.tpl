@@ -33,7 +33,7 @@
 </tr>
 <tr>
 	<td class="row1" colspan="4"><span class="genmed">{articlerow.ARTICLE_DESCRIPTION}</span></td>
-	<td class="row1 row-center" colspan="2">{articlerow.U_APPROVE}&nbsp;<span class="post-buttons">{articlerow.U_DELETE}</span></td>
+	<td class="row1 row-center" colspan="2"><span class="post-buttons">{articlerow.U_APPROVE_IMG}&nbsp;{articlerow.U_DELETE_IMG}</span></td>
 </tr>
 <!-- END articlerow -->
 <!-- BEGIN no_articles -->

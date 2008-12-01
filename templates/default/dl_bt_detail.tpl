@@ -1,18 +1,8 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_INDEX}">{L_DOWNLOADS}</a>{NAV_SEP}<a href="{U_BUG_TRACKER}" class="nav-current">{L_BUG_TRACKER}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_BUG_TRACKER}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="80%" valign="top">
 		<table width="100%" cellpadding="2" cellspacing="1" border="0">
-		<tr><td class="row2"><span class="genmed">{L_REPORT_TITLE}:</span><br /><span class="topictitle">{REPORT_TITLE}</span></td></tr>
+		<tr><td class="row2"><span class="genmed">{L_REPORT_TITLE}:</span><br /><span class="topiclink">{REPORT_TITLE}</span></td></tr>
 		</table>
 		<br />
 		<table width="100%" cellpadding="2" cellspacing="1" border="0">
@@ -103,15 +93,5 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END history -->
-
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DL_INDEX}">{L_DOWNLOADS}</a>{NAV_SEP}<a href="{U_BUG_TRACKER}" class="nav-current">{L_BUG_TRACKER}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
 
 <br />

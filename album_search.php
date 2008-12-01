@@ -31,19 +31,22 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 $page_title = $lang['Search'];
 $meta_description = '';
 $meta_keywords = '';
+$nav_server_url = create_server_url();
+$album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_search.' . PHP_EXT) . '" class="nav-current">' . $lang['Search'] . '</a>';
+$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_search_body.tpl'));
 
-if (( isset($_POST['search']) || isset($_GET['search']) ) && ( ($_POST['search'] != '') || ($_GET['search'] != '') ))
+if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] != '') || ($_GET['search'] != '')))
 {
 	$template->assign_block_vars('switch_search_results', array());
 
-	if ( isset($_POST['mode']) )
+	if (isset($_POST['mode']))
 	{
 		$m = $_POST['mode'];
 	}
-	elseif ( isset($_GET['mode']) )
+	elseif (isset($_GET['mode']))
 	{
 		$m = $_GET['mode'];
 	}
@@ -52,11 +55,11 @@ if (( isset($_POST['search']) || isset($_GET['search']) ) && ( ($_POST['search']
 		message_die(GENERAL_ERROR, 'Bad request');
 	}
 
-	if ( isset($_POST['search']) )
+	if (isset($_POST['search']))
 	{
 		$s = mysql_real_escape_string($_POST['search']);
 	}
-	elseif ( isset($_GET['search']) )
+	elseif (isset($_GET['search']))
 	{
 		$s = mysql_real_escape_string($_GET['search']);
 	}
@@ -101,7 +104,7 @@ if (( isset($_POST['search']) || isset($_GET['search']) ) && ( ($_POST['search']
 	// Count pic matches
 	// ------------------------------------
 
-	if ( ($album_config['personal_gallery_view'] == -1) || ($userdata['user_level'] == ADMIN))
+	if (($album_config['personal_gallery_view'] == -1) || ($userdata['user_level'] == ADMIN))
 	{
 		$search_pg = '';
 	}
@@ -118,7 +121,7 @@ if (( isset($_POST['search']) || isset($_GET['search']) ) && ( ($_POST['search']
 								" . $where . "
 								" . $search_pg;
 
-	if( !($result = $db->sql_query($count_sql)) )
+	if(!($result = $db->sql_query($count_sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not count '.$m, '', __LINE__, __FILE__, $count_sql);
 	}
@@ -135,19 +138,19 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 					" . $search_pg . "
 				ORDER BY p.pic_time DESC LIMIT ".$limit_sql."";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, "Couldn't obtain a list of matching information (searching for: $search)", "", __LINE__, __FILE__, $sql);
 	}
 
 	$numres = 0;
 
-	if ( $row = $db->sql_fetchrow($result) )
+	if ($row = $db->sql_fetchrow($result))
 	{
 		$in = array();
 		do
 		{
-			if ( !in_array($row['pic_id'], $in) )
+			if (!in_array($row['pic_id'], $in))
 			{
 				$album_user_id = $row['cat_user_id'];
 				$cat_id = $row['cat_id'];
@@ -166,14 +169,14 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 					$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) . '\',\'' . addslashes($row[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
-				//if( !$auth_data['view'] )
-				if ( $auth_data['view'] >= 0 )
+				//if(!$auth_data['view'])
+				if ($auth_data['view'] >= 0)
 				{
 					$template->assign_block_vars('switch_search_results.search_results', array(
 						'L_USERNAME' => $row['pic_username'],
 						'U_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&u=' . $row['pic_user_id']),
 
-						'L_CAT' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY ) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
+						'L_CAT' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
 						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
 
 						'L_PIC' => $row['pic_title'],
@@ -191,7 +194,7 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 				}
 			}
 		}
-		while( $row = $db->sql_fetchrow($result) );
+		while($row = $db->sql_fetchrow($result));
 
 		$template->assign_vars(array(
 			'L_NRESULTS' => $numres,

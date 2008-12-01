@@ -2,16 +2,6 @@
 {JS_INCLUDE}
 <!-- END mooshow -->
 
-<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}" class="nav">{L_ALBUM}</a>{NAV_SEP}<a href="#" class="nav-current">{L_PIC_GALLERY}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		{SLIDESHOW}&nbsp;
-	</div>
-</div>
-
 <!-- BEGIN mooshow -->
 <div id="{SELECTED_CAT_REG}" class="mooshow">
 	this.speed=300;

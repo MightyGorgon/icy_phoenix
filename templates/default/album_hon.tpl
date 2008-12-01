@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs.tpl -->
-
 <form action="{S_ACTION}" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RATE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN hon_rating -->

@@ -78,7 +78,7 @@ $not_group_allowed = false;
 if(!empty($layout_row['groups']))
 {
 	$not_group_allowed = true;
-	$group_content = explode(",",$layout_row['groups']);
+	$group_content = explode(",", $layout_row['groups']);
 	for ($i = 0; $i < count($group_content); $i++)
 	{
 		if(in_array(intval($group_content[$i]), cms_groups($userdata['user_id'])))
@@ -112,6 +112,11 @@ $page_title = $board_config['sitename'];
 $meta_description = '';
 $meta_keywords = '';
 //define('SHOW_ONLINE', true);
+if ($layout != $cms_config_vars['default_portal'])
+{
+	$page_title = $board_config['sitename'] . ' - ' . $layout_name;
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $layout_name . '</a>';
+}
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Tell the template class which template to use.

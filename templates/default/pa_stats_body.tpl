@@ -1,16 +1,5 @@
-
 <!-- INCLUDE pa_header.tpl -->
-<form action="{S_SEARCH_ACTION}" method="post">
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-	<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a>{NAV_SEP}<a href="#" class="nav-current">{L_STATISTICS}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
-
+<!-- INCLUDE pa_links.tpl -->
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_STATISTICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="2" align="center">{L_GENERAL_INFO}</th></tr>
@@ -29,7 +18,7 @@
 			<td class="row1" width="50%">
 				<table cellspacing="0" cellpadding="0" border="0">
 				<tr>
-					<td colspan="3" width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="12" /><img src="{downloads_os.OS_OPTION_IMG}" width="{downloads_os.OS_OPTION_IMG_WIDTH}%" height="12" alt="{downloads_os.OS_OPTION_IMG_WIDTH}%" /><img src="{U_VOTE_RCAP}" height="12" alt="" /></td>
+					<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="13" /><img src="{downloads_os.OS_OPTION_IMG}" width="{downloads_os.OS_OPTION_IMG_WIDTH}%" height="13" alt="{downloads_os.OS_OPTION_IMG_WIDTH}%" /><img src="{U_VOTE_RCAP}" height="13" alt="" /></td>
 				</tr>
 				</table>
 			</td>
@@ -46,8 +35,8 @@
 				<td><img src="{rating_os.OS_IMG}" alt="" />&nbsp;<span class="gen">{rating_os.OS_NAME}</span></td>
 				<td class="row1" align="left" width="50%">
 					<table cellspacing="0" cellpadding="0" border="0" align="left">
-						<tr>
-						<td colspan="3" width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="12" /><img src="{downloads_os.OS_OPTION_IMG}" width="{downloads_os.OS_OPTION_IMG_WIDTH}%" height="12" alt="{downloads_os.OS_OPTION_IMG_WIDTH}" /><img src="{U_VOTE_RCAP}" height="12" alt="" /></td>
+					<tr>
+						<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="13" /><img src="{downloads_os.OS_OPTION_IMG}" width="{downloads_os.OS_OPTION_IMG_WIDTH}%" height="13" alt="{downloads_os.OS_OPTION_IMG_WIDTH}" /><img src="{U_VOTE_RCAP}" height="13" alt="" /></td>
 					</tr>
 					</table>
 				</td>
@@ -67,7 +56,7 @@
 			<td class="row1" align="left" width="50%">
 				<table cellspacing="0" cellpadding="0" border="0" align="left">
 				<tr>
-					<td colspan="3" width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="12" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" height="12" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" height="12" alt="" /></td>
+					<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="13" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" height="13" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" height="13" alt="" /></td>
 				</tr>
 				</table>
 			</td>
@@ -85,7 +74,7 @@
 			<td class="row1" width="50%">
 				<table cellspacing="0" cellpadding="0" border="0" align="left">
 				<tr>
-					<td colspan="3" width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="12" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" height="12" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" height="12" alt="" /></td>
+					<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="13" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" height="13" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" height="13" alt="" /></td>
 				</tr>
 				</table>
 			</td>

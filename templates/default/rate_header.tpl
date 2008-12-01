@@ -9,11 +9,7 @@
 <!-- BEGIN hratingrow -->
 <tr>
 	<td class="row2 row-center-small"><b>{hratingrow.RATING}</b></td>
-	<td class="row1h{topicrow.LINK_CLASS} row-forum" width="100%">
-		<span class="topiclink{topicrow.LINK_CLASS}">
-			<a href="{hratingrow.URL}">{hratingrow.TITLE}</a>
-		</span>
-	</td>
+	<td class="row1h{topicrow.LINK_CLASS} row-forum" width="100%"><span class="topiclink{topicrow.LINK_CLASS}"><a href="{hratingrow.URL}">{hratingrow.TITLE}</a></span></td>
 </tr>
 <!-- END hratingrow -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

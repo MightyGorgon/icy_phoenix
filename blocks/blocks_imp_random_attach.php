@@ -70,7 +70,7 @@ if(!function_exists('imp_random_attach_block_func'))
 						WHERE
 									a.attach_id = ad.attach_id
 							AND a.post_id = p.post_id
-							AND ad.thumbnail =1
+							AND ad.thumbnail = 1
 							$fsql
 							$sqlexcl
 						ORDER BY

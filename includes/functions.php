@@ -595,7 +595,16 @@ function check_page_auth($cms_page_id, $cms_page_name, $return = false)
 		}
 		else
 		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+			if (($userdata['bot_id'] === false) && !$userdata['session_logged_in'])
+			{
+				$page_array = array();
+				$page_array = extract_current_page(IP_ROOT_PATH);
+				redirect(append_sid(IP_ROOT_PATH . LOGIN_MG . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
+			}
+			else
+			{
+				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+			}
 		}
 	}
 
@@ -931,6 +940,8 @@ function check_style_exists($style_id)
 {
 	global $db, $board_config, $template, $images, $themes_style;
 
+	$style_exists = false;
+
 	if (defined('CACHE_THEMES'))
 	{
 		include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
@@ -947,18 +958,17 @@ function check_style_exists($style_id)
 
 	if (!empty($themes_style[$style_id]))
 	{
-		$stile_exists = true;
+		$style_exists = true;
 	}
 	else
 	{
 		//$sql = "SELECT themes_id FROM " . THEMES_TABLE . " WHERE themes_id = '" . (int) $style_id . "'";
-		$sql = "SELECT themes_id FROM " . THEMES_TABLE . " WHERE themes_id = '" . (int) $style_id . "' LIMIT 1";
+		$sql = "SELECT themes_id FROM " . THEMES_TABLE . " WHERE themes_id = " . (int) $style_id . " LIMIT 1";
 		if (!($result = $db->sql_query($sql, false, 'themes_')))
 		{
 			message_die(CRITICAL_ERROR, 'Could not query database for theme info');
 		}
 
-		$style_exists = false;
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$style_exists = true;
@@ -966,7 +976,7 @@ function check_style_exists($style_id)
 		$db->sql_freeresult($result);
 	}
 
-	return $stile_exists;
+	return $style_exists;
 }
 
 function encode_ip($dotquad_ip)
@@ -1968,16 +1978,16 @@ function user_get_avatar($user_id, $user_avatar, $user_avatar_type, $user_allow_
 		switch($user_avatar_type)
 		{
 			case USER_AVATAR_UPLOAD:
-				$user_avatar_link = ($board_config['allow_avatar_upload']) ? '<img src="' . $path_prefix . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" />' : '';
+				$user_avatar_link = ($board_config['allow_avatar_upload']) ? '<img src="' . $path_prefix . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" style="margin-bottom: 3px;" />' : '';
 				break;
 			case USER_AVATAR_REMOTE:
 				$user_avatar_link = resize_avatar($user_avatar);
 				break;
 			case USER_AVATAR_GALLERY:
-				$user_avatar_link = ($board_config['allow_avatar_local']) ? '<img src="' . $path_prefix . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" />' : '';
+				$user_avatar_link = ($board_config['allow_avatar_local']) ? '<img src="' . $path_prefix . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" style="margin-bottom: 3px;" />' : '';
 				break;
 			case USER_GRAVATAR:
-				$user_avatar_link = ($board_config['enable_gravatars']) ? '<img src="' . get_gravatar($user_avatar) . '" alt="" />' : '';
+				$user_avatar_link = ($board_config['enable_gravatars']) ? '<img src="' . get_gravatar($user_avatar) . '" alt="" style="margin-bottom: 3px;" />' : '';
 				break;
 			default:
 				$user_avatar_link = '';
@@ -2060,7 +2070,7 @@ function get_gravatar($email)
 	return $image;
 }
 
-function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false)
+function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false, $im_url = false)
 {
 	switch($im_type)
 	{
@@ -2084,7 +2094,7 @@ function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false)
 			$im_ref = $im_id;
 	}
 	$link_content = ($im_img !== false) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '" title="' . $im_id . '" />') : $im_lang;
-	$im_link = '<a href="' . $im_ref . '">' . $link_content . '</a>';
+	$im_link = ($im_url !== false) ? $im_ref : '<a href="' . $im_ref . '">' . $link_content . '</a>';
 	return $im_link;
 }
 

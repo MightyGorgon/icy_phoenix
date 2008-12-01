@@ -41,7 +41,7 @@
 			<b>{L_LINK_URL}</b><br /><input type="text" name="link_url" value="http://" size="15" maxlength="100" style="width:160px" class="post"><br /><br />
 			<b>{L_LINK_LOGO_SRC}</b><br /><input type="text" size="15" maxlength="120" style="width:160px" name="link_logo_src" value="http://" class="post"><br />[<a href="javascript: void(0)" onclick="var img_src=document.linkdata.link_logo_src.value;if(img_src=='http://' || img_src=='') img_src='images/links/no_logo88a.gif';_preview=window.open(img_src, '_preview', 'toolbar=no,width=200,height=100,top=300,left=300');">{L_PREVIEW}</a>]</span><br /><br />
 			<b>{L_LINK_CATEGORY}</b><br />
-			<select name="link_category" style="width:160px"><option value="" selected>----------------</option>{LINK_CAT_OPTION}</select><br /><br />
+			<select name="link_category" style="width:160px"><option value="" selected="selected">----------------</option>{LINK_CAT_OPTION}</select><br /><br />
 			<span><b>{L_LINK_DESC}</b></span><br /><textarea name="link_desc" cols="15" rows="4" class="post" style="width:160px" maxsize="120" wrap="VIRTUAL"></textarea><br /><br />
 		</td>
 	</tr>

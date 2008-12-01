@@ -331,7 +331,7 @@ $lang = array_merge($lang, array(
 	'SMTP_password' => 'SMTP Password',
 	'SMTP_password_explain' => 'Only enter a password if your SMTP server requires it',
 
-	'Disable_privmsg' => 'Private Messaging',
+	'Disable_privmsg' => 'Private Messages',
 	'Inbox_limits' => 'Max posts in Inbox',
 	'Sentbox_limits' => 'Max posts in Sentbox',
 	'Savebox_limits' => 'Max posts in Savebox',
@@ -386,6 +386,17 @@ $lang = array_merge($lang, array(
 	'prune_freq' => 'Check for topic age every',
 	'prune_days' => 'Remove topics that have not been posted to in',
 	'Set_prune_data' => 'You have turned on auto-prune for this forum but did not set a frequency or number of days to prune. Please go back and do so.',
+
+	'FORUM_SIMILAR_TOPICS' => 'Similar Topics',
+	'FORUM_SIMILAR_TOPICS_EXPLAIN' => 'If you enable this option you will see a box with similar topics at the bottom of each topic in this forum',
+	'FORUM_TAGS' => 'Forum Tags',
+	'FORUM_TAGS_EXPLAIN' => 'If you enable this option you will see a box with all the most used words in this forum',
+	'FORUM_SORT_BOX' => 'Topic Sort Box',
+	'FORUM_SORT_BOX_EXPLAIN' => 'If you enable this option you will see a box wich allows you to alphabetically sort topics in this forum',
+	'FORUM_KB_MODE' => 'KB Mode',
+	'FORUM_KB_MODE_EXPLAIN' => 'If you enable this option this forum will be shown in KB Mode (topics listed like Knowledge Base)',
+	'FORUM_INDEX_ICONS' => 'Index Icons',
+	'FORUM_INDEX_ICONS_EXPLAIN' => 'If you enable this option you will see icons for RSS and New Topic in Forum Index',
 
 	'Move_and_Delete' => 'Move and Delete',
 
@@ -1050,14 +1061,14 @@ $lang = array_merge($lang, array(
 	'Prune_shouts' => 'Auto prune shouts',
 	'Prune_shouts_explain' => 'Number of days before the shouts are deleted. If the value is set to 0, autoprune will be disabled',
 
-	'MOD_OS_ForumRules' => 'Olympus-Style Forum Rules',
+	'MOD_OS_ForumRules' => 'Forum Rules',
 	'Forum_rules' => 'Forum Rules',
 	'Rules_display_title' => 'Display title in the Forum Rules BOX?',
 	'Rules_custom_title' => 'Custom title',
-	'Rules_appear_in' => 'These Forum Rules appear while ...',
+	'Rules_appear_in' => 'These rules appear while...',
 	'Rules_in_viewforum' => 'Viewing this forum',
 	'Rules_in_viewtopic' => 'Viewing topics in this forum',
-	'Rules_in_posting' => 'Posting/Replying in this forum',
+	'Rules_in_posting' => 'Posting / replying in this forum',
 
 	'Php_Info_Explain' => 'This page lists information on the version of PHP installed on this server. It includes details of loaded modules, available variables and default settings. This information may be useful when diagnosing problems. Please be aware that some hosting companies will limit what information is displayed here for security reasons. You are advised to not give out any details on this page except when asked for by support or other Team Member on the support forums.',
 

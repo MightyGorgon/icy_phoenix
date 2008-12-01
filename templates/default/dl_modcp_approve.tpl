@@ -8,16 +8,6 @@
 	}
 </script>
 
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_NAV1}">{L_NAV1}</a>{NAV_SEP}<a href="{U_NAV2}" class="nav-current">{L_NAV2}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
-	</div>
-</div>{IMG_TBR}
-
 <form method="post" name="dl_modcp" action="{S_DL_MODCP_ACTION}" >
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_NAV2}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -28,7 +18,7 @@
 <!-- BEGIN approve_row -->
 <tr>
 	<td class="{approve_row.ROW_CLASS}"><a href="{approve_row.U_CAT_VIEW}" class="forumlink">{approve_row.CAT_NAME}</a></td>
-	<td class="{approve_row.ROW_CLASS}">{approve_row.MINI_ICON}&nbsp;<a href="{approve_row.U_DOWNLOAD}" class="topictitle">{approve_row.DESCRIPTION}</a></td>
+	<td class="{approve_row.ROW_CLASS}">{approve_row.MINI_ICON}&nbsp;<a href="{approve_row.U_DOWNLOAD}" class="topiclink">{approve_row.DESCRIPTION}</a></td>
 	<td class="{approve_row.ROW_CLASS} row-center" width="10%"><a href="{approve_row.U_EDIT}">{approve_row.EDIT_IMG}</a></td>
 	<td class="{approve_row.ROW_CLASS} row-center" width="5%"><input type="checkbox" name="dlo_id[]" value="{approve_row.FILE_ID}" /></td>
 </tr>

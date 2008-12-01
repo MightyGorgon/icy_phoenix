@@ -203,19 +203,25 @@ a.topic_nor:hover { color: #cc3333; text-decoration: underline; }
 }
 
 /* UPI2DB */
-.upi2db_unread_color{
+.upi2db_unread_color {
+	padding: 2px;
+	background-color: #ffdddd;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #ff0000;
 }
 
-.upi2db_edit_color{
+.upi2db_edit_color {
+	padding: 2px;
+	background-color: #ffffdd;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #ffff00;
 }
 
-.upi2db_mark_color{
+.upi2db_mark_color {
+	padding: 2px;
+	background-color: #ddffdd;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #33cc33;

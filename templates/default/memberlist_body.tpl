@@ -1,6 +1,4 @@
 <form method="post" action="{S_MODE_ACTION}">
-<!-- INCLUDE breadcrumbs.tpl -->
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" align="center" nowrap="nowrap">
@@ -56,7 +54,7 @@
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td align="left" valign="middle">{memberrow.AVATAR_IMG}</td>
-			<td align="center" nowrap="nowrap">&nbsp;{memberrow.USERNAME}&nbsp;{memberrow.POSTER_GENDER}&nbsp;{memberrow.AGE}{memberrow.STYLE}</a></td>
+			<td align="left" width="100%" nowrap="nowrap" style="text-align: left;">&nbsp;{memberrow.USERNAME}&nbsp;{memberrow.POSTER_GENDER}&nbsp;{memberrow.AGE}{memberrow.STYLE}</a></td>
 		</tr>
 		</table>
 	</td>

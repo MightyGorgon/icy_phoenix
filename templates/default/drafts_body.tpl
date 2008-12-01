@@ -22,17 +22,6 @@ function setCheckboxes(theForm, elementName, isChecked)
 </script>
 <form name="drafts_form" id="drafts_form" method="post" action="{S_FORM_ACTION}">
 <input type="hidden" name="mode" value="editprofile" />
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}" >{L_CPL_NAV}</a>{NAV_SEP}<a href="{U_CPL_DRAFTS}" class="nav-current">{L_DRAFTS}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-		<a href="#" onclick="setCheckboxes('drafts_form', 'drafts_list[]', true); return false;">{L_MARK_ALL}</a>&nbsp;|&nbsp;<a href="#" onclick="setCheckboxes('drafts_form', 'drafts_list[]', false); return false;">{L_UNMARK_ALL}</a>
-	</div>
-</div>{IMG_TBR}
-
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 <!-- BEGIN switch_drafts -->

@@ -6,7 +6,9 @@ function post_time_edit(url)
 }
 //-->
 </script>
-<!-- INCLUDE viewtopic_nav.tpl -->
+<!-- INCLUDE breadcrumbs_vt.tpl -->
+<br clear="all" />
+
 <!-- BEGIN switch_forum_rules -->
 <table class="forumline" width="100%" cellspacing="0">
 <tr>
@@ -147,7 +149,7 @@ function open_postreview(ref)
 		<div class="post-buttons-top post-buttons">
 			{postrow.QUOTE_IMG}{postrow.EDIT_IMG}{postrow.DELETE_IMG}
 			{postrow.UNREAD_IMG}
-			{postrow.U_R_CARD}{postrow.U_Y_CARD}{postrow.U_G_CARD}{postrow.U_B_CARD}{postrow.TOPIC_VIEW_IMG}<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a>{postrow.ARROWS}
+			{postrow.U_R_CARD}{postrow.U_Y_CARD}{postrow.U_G_CARD}{postrow.U_B_CARD}<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a>{postrow.ARROWS}
 		</div>
 		<div class="post-subject {postrow.UNREAD_COLOR}"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
 		&nbsp;
@@ -212,7 +214,7 @@ function open_postreview(ref)
 <tr>
 	<td align="center" class="row-post-author">
 		<span class="post-name"><a href="#" style="font-weight:bold;text-decoration:none;">Sponsor</a></span><br />
-		<img src="images/ranks/rank_sponsor.png" alt="" /><br />
+		<img src="images/ranks/rank_sponsor.png" alt="" style="margin-bottom: 3px;" /><br />
 		<img src="images/avatars/default_avatars/sponsor.gif" alt="" />
 	</td>
 	<td class="row-post" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_CODE}</div></td>
@@ -281,7 +283,7 @@ if(GetCookie(tmp) == '2')
 </tr>
 </table>
 
-<!-- INCLUDE viewtopic_nav.tpl -->
+<!-- INCLUDE breadcrumbs_vt.tpl -->
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><b><br/>{TOTAL_USERS_ONLINE}<br/>{LOGGED_IN_USER_LIST}</b></span><br /><br /></td></tr>

@@ -45,9 +45,6 @@ function get_quick_stats($category_id = '')
 		mx_message_die(GENERAL_ERROR, "Error getting quick stats", '', __LINE__, __FILE__, $sql);
 	}
 
-	$template->assign_block_vars('switch_quick_stats', array('L_QUICK_STATS' => $lang['Quick_stats'])
-		);
-
 	$ii = 0;
 	while ($type = $db->sql_fetchrow($result))
 	{
@@ -79,8 +76,9 @@ function get_quick_stats($category_id = '')
 
 		if (!empty($category_id) && $number_count > 0)
 		{
-			$template->assign_block_vars('switch_quick_stats.quick_stats', array('Q_TYPE_NAME' => (($ii == 1) ? ':: ' . $type_name : $type_name),
-				'Q_TYPE_AMOUNT' => '(' . $number_count . ') ::'
+			$template->assign_block_vars('quick_stats', array(
+				'Q_TYPE_NAME' => (($ii == 1) ? '' . $type_name : $type_name),
+				'Q_TYPE_AMOUNT' => '(' . $number_count . ')'
 				)
 			);
 		}
@@ -171,8 +169,9 @@ function get_kb_cat($id)
 
 function get_kb_nav($parent)
 {
-	global $db;
+	global $db, $lang;
 	global $path_kb, $path_kb_array,$path_kb_array3, $path_kb_array4, $is_block, $page_id;
+
 	$sql = "SELECT * FROM " . KB_CATEGORIES_TABLE . "
 					WHERE category_id = $parent";
 
@@ -183,11 +182,11 @@ function get_kb_nav($parent)
 
 	$row = $db->sql_fetchrow($result);
 
-	if (ereg ("-kbc",$_SERVER['REQUEST_URI']) || ereg ("mode=cat",$_SERVER['REQUEST_URI']))
+	if (ereg('-kbc', $_SERVER['REQUEST_URI']) || ereg('mode=cat', $_SERVER['REQUEST_URI']))
 	{
 		$temp_url = append_sid(this_kb_mxurl('mode=cat&amp;cat=' . $row['category_id']));
-		$path_kb_array[] .= '&raquo;&nbsp;<a href="' . $temp_url . '" class="nav">' . $row['category_name'] . '</a>&nbsp;';
-		$path_kb_array4[] = '&raquo;&nbsp;<a href="' . $temp_url . '" class="nav-current">' . $row['category_name'] . '</a>';
+		$path_kb_array[] .= $lang['Nav_Separator'] . '<a href="' . $temp_url . '" class="nav">' . $row['category_name'] . '</a>';
+		$path_kb_array4[] = $lang['Nav_Separator'] . '<a href="' . $temp_url . '" class="nav-current">' . $row['category_name'] . '</a>';
 		$path_kb_array3[] .= $row['category_name'];
 		if ($row['parent'] != '0')
 		{
@@ -211,7 +210,7 @@ function get_kb_nav($parent)
 	else
 	{
 		$temp_url = append_sid(this_kb_mxurl('mode=cat&amp;cat=' . $row['category_id']));
-		$path_kb_array[] .= '&nbsp;&raquo;&nbsp;<a href="' . $temp_url . '" class="nav">' . $row['category_name'] . '</a>';
+		$path_kb_array[] .= $lang['Nav_Separator'] . '<a href="' . $temp_url . '" class="nav">' . $row['category_name'] . '</a>';
 
 		if ($row['parent'] != '0')
 		{
@@ -335,21 +334,21 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 			if (($article_approved == 2) || ($article_approved == 0))
 			{
 				// approve
-				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id . '&amp;start=' . $start);
-				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
-				$approve = '<a href="' . $temp_url . '">' . $lang['Approve'] . '</a>';
+				$approve_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id . '&amp;start=' . $start);
+				$approve_img = '<a href="' . $approve_url . '"><img src="' . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '" /></a>';
+				$approve = '<a href="' . $approve_url . '">' . $lang['Approve'] . '</a>';
 			}
 			elseif ($article_approved == 1)
 			{
 				// unapprove
-				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id . '&amp;start=' . $start);
-				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
-				$approve = '<a href="' . $temp_url . '">' . $lang['Un_approve'] . '</a>';
+				$approve_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id . '&amp;start=' . $start);
+				$approve_img = '<a href="' . $approve_url . '"><img src="' . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '" /></a>';
+				$approve = '<a href="' . $approve_url . '">' . $lang['Un_approve'] . '</a>';
 			}
 			// delete
-			$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id . '&amp;start=' . $start);
-			//$delete = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
-			$delete = '<a href="' . $temp_url . '">' . $lang['Delete'] . '</a>';
+			$delete_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id . '&amp;start=' . $start);
+			$delete_img = '<a href="' . $delete_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" /></a>';
+			$delete = '<a href="' . $delete_url . '">' . $lang['Delete'] . '</a>';
 		}
 		else
 		{
@@ -361,21 +360,24 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 				if ($article_approved == 2 || $article_approved == 0)
 				{
 					// approve
-					$temp_url = append_sid(this_kb_mxurl('mode=moderate&action=approve&amp;a=' . $article_id . '&cat=' . $article_cat . '&page=' . $page_id . '&start=' . $start));
-					$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
+					$approve_url = append_sid(this_kb_mxurl('mode=moderate&action=approve&amp;a=' . $article_id . '&cat=' . $article_cat . '&page=' . $page_id . '&start=' . $start));
+					$approve_img = '<a href="' . $approve_url . '"><img src="' . $server_url . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '" /></a>';
+					$approve = '<a href="' . $approve_url . '">' . $lang['Approve'] . '</a>';
 				}
 				elseif ($article_approved == 1)
 				{
 					// unapprove
-					$temp_url = append_sid(this_kb_mxurl('mode=moderate&action=unapprove&amp;a=' . $article_id . '&cat=' . $article_cat . '&page=' . $page_id . '&start=' . $start));
-					$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
+					$approve_url = append_sid(this_kb_mxurl('mode=moderate&action=unapprove&amp;a=' . $article_id . '&cat=' . $article_cat . '&page=' . $page_id . '&start=' . $start));
+					$approve_img = '<a href="' . $approve_url . '"><img src="' . $server_url . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '" /></a>';
+					$approve = '<a href="' . $approve_url . '">' . $lang['Un_approve'] . '</a>';
 				}
 			}
 			if ($kb_is_auth['auth_delete'] || $kb_is_auth['auth_mod'])
 			{
 				// delete
-				$temp_url = append_sid(this_kb_mxurl('mode=moderate&action=delete&amp;a=' . $article_id . '&cat=' . $article_cat . '&page=' . $page_id . '&start=' . $start));
-				$delete = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+				$delete_url = append_sid(this_kb_mxurl('mode=moderate&action=delete&amp;a=' . $article_id . '&cat=' . $article_cat . '&page=' . $page_id . '&start=' . $start));
+				$delete_img = '<a href="' . $delete_url . '"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" /></a>';
+				$delete = '<a href="' . $delete_url . '">' . $lang['Delete'] . '</a>';
 			}
 		}
 
@@ -403,7 +405,9 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 			'CATEGORY' => $category_name,
 			'ART_VIEWS' => $views,
 			'ART_VOTES' => $rating_message,
+			'U_APPROVE_IMG' => $approve_img,
 			'U_APPROVE' => $approve,
+			'U_DELETE_IMG' => $delete_img,
 			'U_DELETE' => $delete
 			)
 		);
@@ -510,21 +514,21 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 			if ($article_approved == 2 || $article_approved == 0)
 			{
 				// approve
-				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id);
-				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
-				$approve = '<a href="' . $temp_url . '">' . $lang['Approve'] . '</a>';
+				$approve_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id);
+				$approve_img = '<a href="' . $approve_url . '"><img src="' . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '" /></a>';
+				$approve = '<a href="' . $approve_url . '">' . $lang['Approve'] . '</a>';
 			}
 			elseif ($article_approved == 1)
 			{
 				// unapprove
-				$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id);
-				//$approve = '<a href="' . $temp_url . '"><img src="' . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
-				$approve = '<a href="' . $temp_url . '">' . $lang['Un_approve'] . '</a>';
+				$approve_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id);
+				$approve_img = '<a href="' . $approve_url . '"><img src="' . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '" /></a>';
+				$approve = '<a href="' . $approve_url . '">' . $lang['Un_approve'] . '</a>';
 			}
 			// delete
-			$temp_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id);
-			//$delete = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
-			$delete = '<a href="' . $temp_url . '">' . $lang['Delete'] . '</a>';
+			$delete_url = append_sid('admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id);
+			$delete_img = '<a href="' . $delete_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" /></a>';
+			$delete = '<a href="' . $delete_url . '">' . $lang['Delete'] . '</a>';
 		}
 		elseif ($userdata['user_level'] == ADMIN)
 		{
@@ -534,18 +538,21 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 			if ($article_approved == 2 || $article_approved == 0)
 			{
 				// approve
-				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id);
-				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '"></a>';
+				$approve_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=approve&amp;a=' . $article_id);
+				$approve_img = '<a href="' . $approve_url . '"><img src="' . $server_url . $images['icon_approve'] . '" alt="' . $lang['Approve'] . '" /></a>';
+				$approve = '<a href="' . $approve_url . '">' . $lang['Approve'] . '</a>';
 			}
 			elseif ($article_approved == 1)
 			{
 				// unapprove
-				$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id);
-				$approve = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '"></a>';
+				$approve_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=unapprove&amp;a=' . $article_id);
+				$approve_img = '<a href="' . $approve_url . '"><img src="' . $server_url . $images['icon_unapprove'] . '" alt="' . $lang['Un_approve'] . '" /></a>';
+				$approve = '<a href="' . $approve_url . '">' . $lang['Un_approve'] . '</a>';
 			}
 			// delete
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id);
-			$delete = '<a href="' . $temp_url . '"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$delete_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_art.' . PHP_EXT . '?mode=delete&amp;a=' . $article_id);
+			$delete_img = '<a href="' . $delete_url . '"><img src="' . $server_url . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" /></a>';
+			$delete = '<a href="' . $delete_url . '">' . $lang['Delete'] . '</a>';
 		}
 
 		if ($article['article_rating'] == 0 || $article['article_totalvotes'] == 0)
@@ -573,8 +580,11 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 					'ART_VIEWS' => $views,
 					'ART_VOTES' => $rating_message,
 
+					'U_APPROVE_IMG' => $approve_img,
 					'U_APPROVE' => $approve,
-					'U_DELETE' => $delete)
+					'U_DELETE_IMG' => $delete_img,
+					'U_DELETE' => $delete
+					)
 				);
 		}
 	}
@@ -1775,9 +1785,9 @@ function article_formatting($article)
 		"'\[abstract*?[^\[\]]*?\]'si",
 		"'\[\/abstract*?[^\[\]]*?\]'si");
 
-	$replace = array ("<span class=\"cattitle\">",
+	$replace = array ("<span class=\"forumlink\">",
 		"</span>",
-		"<span class=\"topictitle\">",
+		"<span class=\"topiclink\">",
 		"</span>",
 		"<span class=\"gensmall\"><b>",
 		"</b></span>",

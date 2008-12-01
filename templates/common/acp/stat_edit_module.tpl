@@ -13,11 +13,13 @@
 
 <br />
 
-<table class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+<!-- IF MESSAGE -->
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th>{L_MESSAGES}</th></tr>
 <tr><td class="row1 row-center"><span class="genmed"><strong>{MESSAGE}</strong></td></tr>
 <tr><td class="cat" colspan="1">&nbsp;</td></tr>
 </table>
+<!-- ENDIF -->
 
 <br />
 
@@ -26,15 +28,15 @@
 <tr><th colspan="2">{L_EDIT}</th></tr>
 <tr>
 	<td class="row1" width="50%"><span class="genmed"><strong>{L_ACTIVE}</strong></span><br /><span class="gensmall">{L_ACTIVE_DESC}</span></td>
-	<td class="row2" width="50%"><span class="genmed"><input type="radio" name="active" value="1" {ACTIVE_CHECKED_YES}>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" name="active" value="0" {ACTIVE_CHECKED_NO}>&nbsp;{L_NO}</span></td>
+	<td class="row2" width="50%"><span class="genmed"><input type="radio" name="active" value="1" {ACTIVE_CHECKED_YES} />&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" name="active" value="0" {ACTIVE_CHECKED_NO} />&nbsp;{L_NO}</span></td>
 </tr>
 <tr>
 	<td class="row1"><span class="genmed"><strong>{L_UPDATE_TIME}</strong></span><br /><span class="gensmall">{L_UPDATE_TIME_DESC}</span></td>
-	<td class="row2"><span class="genmed"><input type="text" name="updatetime" value="{UPDATE_TIME}"></td>
+	<td class="row2"><span class="genmed"><input type="text" class="post" name="updatetime" value="{UPDATE_TIME}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="genmed"><strong>{L_UNINSTALL}</strong></span><br /><span class="gensmall">{L_UNINSTALL_DESC}</span></td>
-	<td class="row2"><span class="genmed"><input type="checkbox" name="uninstall" value="0"></td>
+	<td class="row2"><span class="genmed"><input type="checkbox" name="uninstall" value="0" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="genmed"><strong>{L_AUTH_SETTINGS}</strong></span></td>

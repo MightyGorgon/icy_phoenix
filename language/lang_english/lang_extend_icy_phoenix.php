@@ -74,11 +74,11 @@ if ($lang_extend_admin)
 		'IP_switch_header_dropdown' => 'Activate Dropdown Menu in Header',
 		'IP_switch_header_dropdown_explain' => 'This will activate a dropdown menu in the forum header for search and for posts.',
 
-		'IP_show_alpha_bar' => 'Show Alphabetical Sort Bar In View Forum',
-		'IP_show_alpha_bar_explain' => 'This option will show an alphabetical sort bar on top of viewforum page.',
+		'IP_show_alpha_bar' => 'Show Alphabetical Sort Bar In View Forum (Global Switch)',
+		'IP_show_alpha_bar_explain' => 'This option will show an alphabetical sort bar on top of viewforum page. You will need also to enable single forums in Forums Management section.',
 
-		'IP_show_rss_forum_icon' => 'Forum Index Icons',
-		'IP_show_rss_forum_icon_explain' => 'This option will show icons on the right of every forum title (on Forum Index): RSS, New Topic...',
+		'IP_show_rss_forum_icon' => 'Forum Index Icons (Global Switch)',
+		'IP_show_rss_forum_icon_explain' => 'This option will show icons on the right of every forum title (on Forum Index): RSS, New Topic. You will need also to enable single forums in Forums Management section.',
 
 		'IP_allow_mods_view_self' => 'Allow ALL Moderators to View Self Auth Topics',
 		'IP_allow_mods_view_self_explain' => 'If a forum has been set to SELF AUTH access only admins and forum moderators can access those topics through viewforum and viewtopic. However there are many features that may show contents of these kind of posts even if not authed: Recent Topics, Search, Recent Messages Blocks, Random Topics Blocks, etc. To prevent this, an extra feature has been coded which doesn\'t allow non authed people to access these topics via secondary ways. Anyway you can allow ALL moderators (not only admins) to view these messages through these secondary ways. If you set this to YES then ALL moderators will be allowed to see the content of these messages through: Recent, Search, Topics related blocks... Unfortunately if you switch this OFF then neither AUTHED moderators may access SELF AUTHED topics through secondary ways. The feature has been coded in this way to save extra SQL charge. If you don\'t use SELF AUTHED forums, then you don\'t need this function as well.',
@@ -290,8 +290,8 @@ if ($lang_extend_admin)
 
 // forum links type
 		'Forum_link_url' => 'Link URL',
-		'Forum_link_url_explain' => 'Set a URI to an Icy Phoenix prog, or a full URL to an external server',
-		'Forum_link_internal' => 'Icy Phoenix prog',
+		'Forum_link_url_explain' => 'Set a URI to an Icy Phoenix file or a full URL to an external server',
+		'Forum_link_internal' => 'Icy Phoenix File',
 		'Forum_link_internal_explain' => 'Choose yes if you invoke a program that stands in the Icy Phoenix dirs',
 		'Forum_link_hit_count' => 'Hit count',
 		'Forum_link_hit_count_explain' => 'Choose yes if you want the board to count and display the number of hits using this link',
@@ -355,13 +355,14 @@ if ($lang_extend_admin)
 		'IP_word_graph_word_counts' => 'TAGS :: Enable Word Counts',
 		'IP_word_graph_word_counts_explain' => 'Display the total number of words next to each word?<br />Example: <b>Icy Phoenix (365)</b>?',
 
-		'IP_forum_wordgraph' => 'TAGS :: Forum Tags',
-		'IP_forum_wordgraph_explain' => 'This feature will enable a forum based tags table at the bottom of each forum',
+		'IP_forum_wordgraph' => 'TAGS :: Forum Tags (Global Switch)',
+		'IP_forum_wordgraph_explain' => 'This feature will enable a forum based tags table at the bottom of each forum. You will need also to enable single forums in Forums Management section.',
 
 		'Similar_topics' => 'Similar Topics',
 		'Similar_topics_explain' => 'Configure search of similar topics.',
 
-		'IP_similar_topics' => 'Similar Topics :: Enable Similar Topics',
+		'IP_similar_topics' => 'Similar Topics :: Similar Topics (Global Switch)',
+		'IP_similar_topics_explain' => 'This is the global switch for Similar Topics. If you want to switch on this feature you will need also to enable single forums in Forums Management section.',
 
 		'IP_similar_topics_desc' => 'Similar Topics :: Take into account the description of a topics',
 

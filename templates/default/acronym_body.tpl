@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs.tpl -->
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_ACRONYMS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th>{L_ACRONYM}</th>
@@ -11,5 +9,5 @@
 	<td class="{acronym_row.ROW_CLASS} row-center" valign="middle"><span class="gen">{acronym_row.DESCRIPTION}</span></td>
 </tr>
 <!-- END acronym_row -->
-<tr><td class="catBottom" align="center" colspan="2"></td></tr>
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

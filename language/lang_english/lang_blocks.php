@@ -55,6 +55,7 @@ $lang = array_merge($lang, array(
 	'Title_random_attach' => 'Random Attach',
 	'Title_random_topics' => 'Random Topics',
 	'Title_random_topics_ver' => 'Random Topics',
+	'Title_random_user' => 'Random User',
 	'Title_recent_articles' => 'Recent Articles',
 	'Title_recent_topics' => 'Recent Topics',
 	'Title_recent_topics_wide' => 'Recent Topics',

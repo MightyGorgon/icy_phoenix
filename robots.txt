@@ -384,7 +384,6 @@ Disallow: /privmsg.php
 #Disallow: /profile.php
 Disallow: /ranks.php
 Disallow: /search.php
-Disallow: /site_hist.php
 Disallow: /statistics.php
 Disallow: /tellafriend.php
 Disallow: /upload.php

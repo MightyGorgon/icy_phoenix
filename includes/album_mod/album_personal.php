@@ -130,11 +130,6 @@ else
 	$album_page_url = 'album_cat.' . PHP_EXT;
 }
 
-
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'album_cat_body.tpl'));
-
 $auth_list = album_build_auth_list($album_user_id, $cat_id, $auth_data);
 //$auth_list = album_build_auth_list($album_user_id, $cat_id);
 
@@ -148,7 +143,9 @@ if ($album_view_mode != ALBUM_VIEW_ALL)
 	$album_nav_cat_desc = album_make_nav_tree($cat_id, $album_page_url, 'nav', $album_user_id);
 	if (!empty($album_nav_cat_desc))
 	{
+		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
+		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	$cat_ids = $cat_id;
@@ -161,7 +158,9 @@ else
 	$album_nav_cat_desc = album_make_nav_tree(album_get_personal_root_id($album_user_id), $album_page_url, 'nav', $album_user_id);
 	if (!empty($album_nav_cat_desc))
 	{
+		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
+		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	if (album_get_personal_root_id($album_user_id) != $cat_id)
@@ -210,6 +209,18 @@ $row = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 
 $total_pics = $row['count'];
+
+if ($row['count'] == 0)
+{
+	if (!strstr($album_nav_cat_desc, sprintf($lang['Personal_Gallery_Of_User'], $username)))
+	{
+		$ext_address = ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>';
+		$album_nav_cat_desc .= $ext_address;
+		$breadcrumbs_address .= $ext_address;
+	}
+}
+include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+$template->set_filenames(array('body' => 'album_cat_body.tpl'));
 
 // ------------------------------------------------------------------------
 // Build up the page
@@ -273,11 +284,6 @@ $no_personal_gallery = false;
 
 if ($row['count'] == 0)
 {
-	if ( !strstr($album_nav_cat_desc, sprintf($lang['Personal_Gallery_Of_User'], $username)) )
-	{
-		$album_nav_cat_desc .= ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT . '?cat_id=' . $cat_id)) . '" class="nav">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>';
-	}
-
 	// ------------------------------------------------------------------------
 	// check if there is _any_ pictures at all in the personal gallery of this user.
 	// but ONLY if we aren't in simple view mode (then we have already indirectly done the check)
@@ -300,7 +306,7 @@ if ($row['count'] == 0)
 		$total_pics = $row['count'];
 	}
 
-	if ( ($album_config['personal_show_recent_instead_of_nopics'] == 1) && ($row['count'] > 0) )
+	if (($album_config['personal_show_recent_instead_of_nopics'] == 1) && ($row['count'] > 0))
 	{
 		album_build_recent_pics($allowed_cat);
 	}
@@ -348,7 +354,7 @@ else
 {
 	album_build_picture_table($album_user_id, $cat_ids, $thiscat, $auth_data, $start, $sort_method, $sort_order, $total_pics);
 
-	if ( ($album_config['personal_show_recent_in_subcats'] == 1) && ($album_view_mode != ALBUM_VIEW_ALL) )
+	if (($album_config['personal_show_recent_in_subcats'] == 1) && ($album_view_mode != ALBUM_VIEW_ALL))
 	{
 		album_build_recent_pics($allowed_cat);
 	}
@@ -434,12 +440,14 @@ $template->assign_vars(array(
 	'L_UPLOAD_PIC' => $lang['Upload_Pic'],
 	'U_UPLOAD_PIC' => $upload_link,
 	'UPLOAD_PIC_IMG' => $upload_img,
+	'UPLOAD_LINK' => $upload_link,
 	'UPLOAD_FULL_LINK' => $upload_full_link,
 
 	'L_DOWNLOAD_PICS' => $lang['Download_pics'],
 	'L_DOWNLOAD_PAGE' => $lang['Download_page'],
 	'U_DOWNLOAD' => $download_link,
 	'DOWNLOAD_PIC_IMG' => $download_img,
+	'DOWNLOAD_LINK' => $download_link,
 	'DOWNLOAD_FULL_LINK' => $download_full_link,
 
 	//'L_CREATE_PERSONAL_GALLERY' => $lang['Create_Personal_Categories'],

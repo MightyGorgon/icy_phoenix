@@ -96,7 +96,7 @@ else
 }
 
 $l_timezone = explode('.', $board_config['board_timezone']);
-$l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone)-1] != 0) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
+$l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone) - 1] != 0) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
 
 $template->assign_vars(array(
 	'S_ACTION' => append_sid('admin_google_bot_detector.' . PHP_EXT),

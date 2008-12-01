@@ -68,4 +68,6 @@
 </tr>
 <!-- ENDIF -->
 
+<!-- IF S_PAGE_NAV --><tr><td width="100%" colspan="3"><div style="margin-left: 7px; margin-right: 7px;"><!-- INCLUDE breadcrumbs_main.tpl --></div></td></tr><!-- ENDIF -->
+
 <!-- INCLUDE overall_inc_body.tpl -->

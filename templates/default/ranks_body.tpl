@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs_i.tpl -->
-
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td width="49%" align="center" valign="top">

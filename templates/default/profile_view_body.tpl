@@ -1,16 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="#">{L_PROFILE}</a>{NAV_SEP}<a href="#" class="nav-current">{USERNAME}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<a href="{U_SEARCH_USER_TOPICS}">{L_SEARCH_USER_TOPICS}</a>&nbsp;|&nbsp;
-		<a href="{U_SEARCH_USER}">{L_SEARCH_USER_POSTS}</a><br />
-		<a href="{U_PERSONAL_GALLERY}" class="gensmall">{L_PERSONAL_GALLERY}</a>&nbsp;|&nbsp;
-		<a href="{U_ALL_IMAGES_BY_USER}" class="gensmall">{L_ALL_IMAGES_BY_USER}</a>
-	</div>
-</div>{IMG_TBR}
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{USERNAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td height="2"></td>

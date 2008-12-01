@@ -35,14 +35,6 @@ function checkForm()
 }
 //-->
 </script>
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_SITE_LINKS}" class="nav-current">{L_SITE_LINKS}</a>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<a href="{U_SITE_SEARCH}">{L_SEARCH_SITE}</a>&nbsp;|&nbsp;<a href="{U_SITE_TOP}">{L_DESCEND_BY_HITS}</a>&nbsp;|&nbsp;<a href="{U_SITE_NEW}">{L_DESCEND_BY_JOINDATE}</a>
-	</div>
-</div>{IMG_TBR}
 
 <!-- INCLUDE links_leftblock.tpl -->
 	<td width="100%" nowrap="nowrap" valign="top">

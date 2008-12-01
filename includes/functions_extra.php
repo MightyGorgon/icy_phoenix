@@ -224,7 +224,7 @@ function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true)
 		$res .= '</optgroup>';
 	}
 
-	// erase all unnessecary lines
+	// erase all unnecessary lines
 	for ($k = 0; $k < $last_level; $k++)
 	{
 		$res = str_replace("[*$k*]", "&nbsp;", $res);

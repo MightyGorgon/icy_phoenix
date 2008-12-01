@@ -164,6 +164,7 @@ if(!function_exists('imp_poll_block_func'))
 							'B_POLL_OPTION_COLOR' => $vote_color,
 							'B_POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'],
 							'B_POLL_OPTION_RESULT' => $vote_info[$i]['vote_result'],
+							'B_POLL_OPTION_PCT' => $vote_percent * 100,
 							'B_POLL_OPTION_PERCENT' => sprintf('%.1d%%', ($vote_percent * 100)),
 							'POLL_GRAPHIC' => $voting_bar_img,
 							'POLL_GRAPHIC_BODY' => $voting_bar_body_img,

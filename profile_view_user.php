@@ -19,13 +19,16 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
+$page_title = $lang['Profile'] . ' - ' . $lang['Views'];
+$meta_description = '';
+$meta_keywords = '';
+$link_name = $lang['Profile_viewed'];
+$nav_server_url = create_server_url();
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $user_id = (isset($_POST[POST_USERS_URL])) ? intval($_POST[POST_USERS_URL]) : intval($_GET[POST_USERS_URL]);
-$page_title = $lang['Profile'] . ' - ' . $lang['Views'];
-$meta_description = '';
-$meta_keywords = '';
 $page_start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
 $page_start = ($page_start < 0) ? 0 : $page_start;
 

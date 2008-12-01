@@ -1,18 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}
-		<!-- IF S_LOGGED_IN -->
-			<a href="{U_PROFILE2}">{L_CPL_NAV2}</a>{NAV_SEP}<a href="#" class="nav-current">{L_AVATAR_GALLERY}</a>
-		<!-- ELSE -->
-			<a href="{U_REGISTER}" class="nav-current">{L_REGISTER}</a>
-		<!-- ENDIF -->
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <form action="{S_PROFILE_ACTION}" method="post">
 {CPL_MENU_OUTPUT}
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_AVATAR_GALLERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

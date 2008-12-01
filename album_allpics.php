@@ -478,6 +478,9 @@ if($album_config['comment'] == 1)
 $page_title = $lang['Album'];
 $meta_description = '';
 $meta_keywords = '';
+$nav_title = (strtolower($album_view_type) == 'comment') ? $lang['All_Comment_List_Of_User'] : ((strtolower($album_view_type) == 'rating') ? $lang['All_Rating_List_Of_User'] : $lang['All_Picture_List_Of_User']);
+$nav_server_url = create_server_url();
+$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid(album_append_uid('album_allpics.' . PHP_EXT . '?mode=' . $album_view_mode . '&amp;type=' . $album_view_type)) . '">' . $nav_title . '</a>';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'album_memberlist_body.tpl'));
@@ -551,7 +554,6 @@ $template->assign_vars(array(
 	'SORT_DESC' => ($sort_order == 'DESC') ? 'selected="selected"' : ''
 	)
 );
-
 
 // Generate the page
 $template->pparse('body');

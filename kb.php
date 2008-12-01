@@ -147,10 +147,7 @@ else
 	$page_title = $lang['KB_title'];
 	$meta_description = '';
 	$meta_keywords = '';
-	if (!$is_block)
-	{
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-	}
+
 	// load header
 	include(IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 

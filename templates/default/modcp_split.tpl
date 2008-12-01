@@ -14,16 +14,6 @@ function toggle_check_all()
 -->
 </script>
 
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <form method="post" name="post_ids" action="{S_SPLIT_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SPLIT_TOPIC}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="3"><span class="gensmall">{L_SPLIT_TOPIC_EXPLAIN}</span></th></tr>

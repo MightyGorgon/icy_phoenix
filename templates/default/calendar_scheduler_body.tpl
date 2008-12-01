@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs.tpl -->
-
 <form name="f_calendar_scheduler" method="post" action="{ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_CALENDAR_SCHEDULER}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>

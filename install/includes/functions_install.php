@@ -2150,6 +2150,7 @@ class ip_page
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12229' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.2.29</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12734' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.7.34</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12936' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.9.36</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121239' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.12.39</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121239' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.12.39 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
 		$update_options .= '</ul></div>' . "\n";
 

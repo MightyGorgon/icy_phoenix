@@ -2,16 +2,6 @@
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- END switch_ajax_features -->
 
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_GROUP_CP}">{L_USERGROUPS}</a>{NAV_SEP}<a href="#" class="nav-current">{GROUP_NAME}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <form action="{S_GROUPCP_ACTION}" method="post">
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_INFORMATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -60,52 +50,52 @@
 <form action="{S_GROUPCP_ACTION}" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_MODERATOR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<th>{L_PM}</th>
 	<th>{L_USERNAME}</th>
 	<th>{L_POSTS}</th>
 	<th>{L_FROM}</th>
-	<th>{L_EMAIL}</th>
 	<th>{L_ONLINE_STATUS}</th>
+	<th>{L_PM}</th>
+	<th>{L_EMAIL}</th>
 	<th>{L_WEBSITE}</th>
 </tr>
 <tr>
-	<td class="row1 post-buttons-single">&nbsp;{MOD_PM_IMG}&nbsp;</td>
-	<td class="row1h row-center" onclick="window.location.href='{U_MOD_VIEWPROFILE}'">{MOD_USERNAME}</td>
-	<td class="row2 row-center">{MOD_POSTS}</td>
-	<td class="row1 row-center">&nbsp;{MOD_FROM}&nbsp;</td>
-	<td class="row2 post-buttons-single">&nbsp;{MOD_EMAIL_IMG}&nbsp;</td>
-	<td class="row1 row-center">&nbsp;{MOD_ONLINE_STATUS_IMG}&nbsp;</td>
-	<td class="row3 post-buttons-single">&nbsp;{MOD_WWW_IMG}&nbsp;</td>
+	<td class="row1h row-center" onclick="window.location.href='{U_VIEWPROFILE}'">{USERNAME}</td>
+	<td class="row2 row-center">{POSTS}</td>
+	<td class="row1 row-center">&nbsp;{FROM}&nbsp;</td>
+	<td class="row1 row-center">&nbsp;{ONLINE_STATUS_IMG}&nbsp;</td>
+	<td class="row1 post-buttons-single">&nbsp;{PM_IMG}&nbsp;</td>
+	<td class="row1 post-buttons-single">&nbsp;{EMAIL_IMG}&nbsp;</td>
+	<td class="row3 post-buttons-single">&nbsp;{WWW_IMG}&nbsp;</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_MEMBERS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<th>{L_PM}</th>
 	<th>{L_USERNAME}</th>
 	<th>{L_POSTS}</th>
 	<th>{L_FROM}</th>
-	<th>{L_EMAIL}</th>
 	<th>{L_ONLINE_STATUS}</th>
+	<th>{L_PM}</th>
+	<th>{L_EMAIL}</th>
 	<th>{L_WEBSITE}</th>
 	<th>{L_SELECT}</th>
 </tr>
-<!-- BEGIN member_row -->
+<!-- BEGIN memberrow -->
 <tr>
-	<td class="row1 post-buttons-single">&nbsp;{member_row.PM_IMG}&nbsp;</td>
-	<td class="row1h row-center" onclick="window.location.href='{member_row.U_VIEWPROFILE}'">{member_row.USERNAME}</td>
-	<td class="row2 row-center">{member_row.POSTS}</td>
-	<td class="row1 row-center">&nbsp;{member_row.FROM}&nbsp;</td>
-	<td class="row2 post-buttons-single">&nbsp;{member_row.EMAIL_IMG}&nbsp;</td>
-	<td class="row1 row-center">&nbsp;{member_row.ONLINE_STATUS_IMG}&nbsp;</td>
-	<td class="row3 post-buttons-single">&nbsp;{member_row.WWW_IMG}&nbsp;</td>
-	<td class="row1 row-center">&nbsp;
+	<td class="row1h row-center" onclick="window.location.href='{memberrow.U_VIEWPROFILE}'">{memberrow.USERNAME}</td>
+	<td class="row2 row-center">{memberrow.POSTS}</td>
+	<td class="row1 row-center">&nbsp;{memberrow.FROM}&nbsp;</td>
+	<td class="row1 row-center">&nbsp;{memberrow.ONLINE_STATUS_IMG}&nbsp;</td>
+	<td class="row1 post-buttons-single">&nbsp;{memberrow.PM_IMG}&nbsp;</td>
+	<td class="row1 post-buttons-single">&nbsp;{memberrow.EMAIL_IMG}&nbsp;</td>
+	<td class="row1 post-buttons-single">&nbsp;{memberrow.WWW_IMG}&nbsp;</td>
+	<td class="row3 row-center">&nbsp;
 		<!-- BEGIN switch_mod_option -->
-		<input type="checkbox" name="members[]" value="{member_row.USER_ID}" />
+		<input type="checkbox" name="members[]" value="{memberrow.USER_ID}" />
 		<!-- END switch_mod_option -->
 	&nbsp;</td>
 </tr>
-<!-- END member_row -->
+<!-- END memberrow -->
 <!-- BEGIN switch_no_members -->
 <tr><td class="row1 row-center" colspan="8">{L_NO_MEMBERS}</td></tr>
 <!-- END switch_no_members -->

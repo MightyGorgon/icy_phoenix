@@ -1,11 +1,5 @@
 <!-- INCLUDE pa_header.tpl -->
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td valign="bottom">
-		<span class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a>{NAV_SEP}<a href="{U_DOWNLOAD_HOME}" class="nav">{DOWNLOAD}</a><!-- BEGIN navlinks -->{NAV_SEP}<a href="{navlinks.U_VIEW_CAT}" class="nav">{navlinks.CAT_NAME}</a><!-- END navlinks -->{NAV_SEP}{FILE_NAME}</span>
-	</td>
-</tr>
-</table>
+<!-- INCLUDE pa_links.tpl -->
 
 <table class="forumline" width="100%" cellspacing="0">
 <tr>

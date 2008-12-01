@@ -53,14 +53,10 @@ if (($mode == false) || ($mode != 'archive'))
 
 	$ajax_archive_link = check_page_auth(0, 'ajax_chat_archive', true);
 
-	if ($ajax_archive_link == true)
-	{
-		$template->assign_block_vars('archive_link', array());
-	}
-
 	$page_title = $lang['Ajax_Chat'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$breadcrumbs_links_right = '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>' . (($ajax_archive_link == true) ? ('&nbsp;' . $menu_sep_char . '&nbsp;' . '<a href="' . append_sid('ajax_chat.' . PHP_EXT . '?mode=archive') . '">' . $lang['Ajax_Archive'] . '</a>') : '');
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'ajax_chat_body.tpl'));
@@ -88,6 +84,7 @@ else
 	$page_title = $lang['Ajax_Chat'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$breadcrumbs_links_right = '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);

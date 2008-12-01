@@ -212,9 +212,22 @@ if (($mode == 'register') && (isset($_POST['submit'])) && ($blacklist_enabled ==
 }
 // Block DNSBL Blacklisted Registrants (by TerraFrost) - END
 
-//if ($mode == 'register' && !isset($_POST['agreed']) && !isset($_GET['agreed']))
+if (isset($_GET['cpl_mode']) || isset($_POST['cpl_mode']))
+{
+	$cpl_mode = (isset($_GET['cpl_mode'])) ? $_GET['cpl_mode'] : $_POST['cpl_mode'];
+	$cpl_mode = htmlspecialchars($cpl_mode);
+}
+if (($mode == 'register') || (($cpl_mode != 'all') && ($cpl_mode != 'reg_info') && ($cpl_mode != 'profile_info') && ($cpl_mode != 'preferences') && ($cpl_mode != 'board_settings') && ($cpl_mode != 'avatar') && ($cpl_mode != 'signature')))
+{
+	$cpl_mode = 'all';
+}
+
+//if (($mode == 'register') && !isset($_POST['agreed']) && !isset($_GET['agreed']))
 if (($mode == 'register') && (!isset($_POST['agreed']) || !isset($_POST['privacy'])))
 {
+	$link_name = $lang['Register'];
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(PROFILE_MG . '?mode=register') . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	if (isset($_POST['agreed']))
 	{
@@ -229,25 +242,12 @@ if (($mode == 'register') && (!isset($_POST['agreed']) || !isset($_POST['privacy
 	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 
-// Start Mod User CP Organize: Retrieve display mode
-if (isset($_GET['cpl_mode']) || isset($_POST['cpl_mode']))
-{
-	$cpl_mode = (isset($_GET['cpl_mode'])) ? $_GET['cpl_mode'] : $_POST['cpl_mode'];
-	$cpl_mode = htmlspecialchars($cpl_mode);
-}
-if ($mode == 'register' || ($cpl_mode != 'all' && $cpl_mode != 'reg_info' && $cpl_mode != 'profile_info' && $cpl_mode != 'preferences' && $cpl_mode != 'board_settings' && $cpl_mode != 'avatar' && $cpl_mode != 'signature'))
-{
-	$cpl_mode = 'all';
-}
 if ($mode != 'register')
 {
 	$template->assign_block_vars('switch_cpl_menu', array());
 }
-// End Mod User CP Organize
 
-//
 // Check and initialize some variables if needed
-//
 if (
 	isset($_POST['submit']) ||
 	isset($_POST['avatargallery']) ||
@@ -1465,6 +1465,41 @@ elseif ($mode == 'editprofile' && !isset($_POST['avatargallery']) && !isset($_PO
 }
 
 // Default pages
+$cp_section = '';
+if ($cpl_mode == 'reg_info')
+{
+	$cp_section = $lang['Registration_info'];
+}
+elseif ($cpl_mode == 'profile_info')
+{
+	$cp_section = $lang['Profile_info'];
+}
+elseif ($cpl_mode == 'preferences')
+{
+	$cp_section = $lang['Preferences'];
+}
+elseif ($cpl_mode == 'board_settings')
+{
+	$cp_section = $lang['Cpl_Board_Settings'];
+}
+elseif ($cpl_mode == 'avatar')
+{
+	$cp_section = $lang['Avatar_panel'];
+}
+
+if ($mode == 'register')
+{
+	$main_nav = $lang['Register'];
+}
+else
+{
+	$main_nav = $lang['Profile'];
+}
+
+$link_name = (($cp_section == '') ? '' : $cp_section);
+$link_url = (($cp_section == '') ? '#' : append_sid(PROFILE_MG . '?mode=editprofile&amp;cpl_mode=' . $cpl_mode));
+$nav_server_url = create_server_url();
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $main_nav . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="' . $link_url . '">' . $link_name . '</a>') : '');
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 make_jumpbox(VIEWFORUM_MG);
 
@@ -1581,20 +1616,20 @@ else
 	$user_hot_threshold = $userdata['user_hot_threshold'];
 	//Per Page Settings END
 
-	$l_time_mode_0 = "";
-	$l_time_mode_1 = "";
+	$l_time_mode_0 = '';
+	$l_time_mode_1 = '';
 	$l_time_mode_2 = $lang['time_mode_dst_server'];
 
 	switch ($board_config['default_time_mode'])
 	{
 		case MANUAL_DST:
-			$l_time_mode_1 = $l_time_mode_1 . "*";
+			$l_time_mode_1 = $l_time_mode_1 . '*';
 			break;
 		case SERVER_SWITCH:
-			$l_time_mode_2 = $l_time_mode_2 . "*";
+			$l_time_mode_2 = $l_time_mode_2 . '*';
 			break;
 		default:
-			$l_time_mode_0 = $l_time_mode_0 . "*";
+			$l_time_mode_0 = $l_time_mode_0 . '*';
 			break;
 	}
 
@@ -1667,16 +1702,16 @@ else
 	$cpl_registration_info = '';
 	$cpl_avatar_control = '';
 	// Assign profile blocks selected for display
-	if ($cpl_mode == 'reg_info' || $cpl_mode == 'all')
+	if (($cpl_mode == 'reg_info') || ($cpl_mode == 'all'))
 	{
 		$template->assign_block_vars('switch_cpl_reg_info', array());
 		$template->assign_vars(array(
-			'L_PROFILE' => $lang['Registration_info']
+			'L_PROFILE' => $cp_section
 			)
 		);
 		$cpl_registration_info = 'switch_cpl_reg_info.';
 	}
-	if ($cpl_mode == 'profile_info' || $cpl_mode == 'all')
+	if (($cpl_mode == 'profile_info') || ($cpl_mode == 'all'))
 	{
 		$template->assign_block_vars('switch_cpl_profile_info', array());
 		// Custom Profile Fields - BEGIN
@@ -1819,45 +1854,53 @@ else
 		// Custom Profile Fields - END
 
 		$template->assign_vars(array(
-			'L_PROFILE' => $lang['Profile_info']
+			'L_PROFILE' => $cp_section
 			)
 		);
 	}
 
-	if ($cpl_mode == 'preferences' || $cpl_mode == 'all')
+	if (($cpl_mode == 'preferences') || ($cpl_mode == 'all'))
 	{
 		$template->assign_block_vars('switch_cpl_preferences', array());
 		$template->assign_vars(array(
-		'L_PROFILE' => $lang['Preferences']));
+			'L_PROFILE' => $cp_section
+			)
+		);
 		$cpl_preferences = 'switch_cpl_preferences.';
 	}
+
 	if (($cpl_mode == 'board_settings') || ($cpl_mode == 'all'))
 	{
 		$template->assign_block_vars('switch_cpl_board_settings', array());
 		$template->assign_vars(array(
-			'L_PROFILE' => $lang['Cpl_Board_Settings']
+			'L_PROFILE' => $cp_section
 			)
 		);
 	}
-	if ($cpl_mode == 'signature' || $cpl_mode == 'all')
+
+	if (($cpl_mode == 'signature') || ($cpl_mode == 'all'))
 	{
 		$template->assign_block_vars('switch_cpl_signature', array());
 	}
-	if ($cpl_mode == 'avatar' || $cpl_mode == 'all')
+
+	if (($cpl_mode == 'avatar') || ($cpl_mode == 'all'))
 	{
 		$template->assign_block_vars('switch_cpl_avatar', array());
 		$template->assign_vars(array(
-		'L_PROFILE' => $lang['Avatar_panel']));
+			'L_PROFILE' => $cp_section
+			)
+		);
 		$cpl_avatar_control = 'switch_cpl_avatar.';
 	}
 
 	// Add Hidden inputs to replace the ones not displayed.
-	if ($cpl_mode != 'reg_info' && $cpl_mode != 'all')
+	if (($cpl_mode != 'reg_info') && ($cpl_mode != 'all'))
 	{
 		$s_hidden_fields .= '<input type="hidden" name="username" value="' . $username . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="email" value="' . $email . '" />';
 	}
-	if ($cpl_mode != 'profile_info' && $cpl_mode != 'all')
+
+	if (($cpl_mode != 'profile_info') && ($cpl_mode != 'all'))
 	{
 		$s_hidden_fields .= '<input type="hidden" name="icq" value="' . $icq . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="aim" value="' . $aim . '" />';
@@ -1961,6 +2004,7 @@ else
 		}
 		// Custom Profile Fields - END
 	}
+
 	if (($cpl_mode != 'preferences') && ($cpl_mode != 'all'))
 	{
 		$s_hidden_fields .= '<input type="hidden" name="viewemail" value="' . $viewemail . '" />';
@@ -1987,6 +2031,7 @@ else
 		$s_hidden_fields .= '<input type="hidden" name="upi2db_unread_color" value="' . $upi2db_unread_color . '" />';
 //<!-- END Unread Post Information to Database Mod -->
 	}
+
 	if (($cpl_mode != 'board_settings') && ($cpl_mode != 'all'))
 	{
 		$s_hidden_fields .= '<input type="hidden" name="style" value="' . $user_style . '" />';
@@ -2005,6 +2050,7 @@ else
 		$template->assign_block_vars($cpl_registration_info . 'switch_edit_profile', array());
 	}
 //<!-- BEGIN Unread Post Information to Database Mod -->
+
 	if(!$userdata['user_upi2db_disable'] && ($board_config['upi2db_on'] != '0'))
 	{
 		if(check_group_auth($userdata) == true)

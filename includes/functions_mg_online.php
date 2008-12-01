@@ -137,12 +137,6 @@ function get_online_page($page_id)
 		$location['url'] = 'statistics.' . PHP_EXT;
 		return $location;
 	}
-	elseif (strpos($page_id, 'site_hist.' . PHP_EXT) !== false)
-	{
-		$location['lang'] = $lang['Statistics'];
-		$location['url'] = 'site_hist.' . PHP_EXT;
-		return $location;
-	}
 	elseif (strpos($page_id, 'attachments.' . PHP_EXT) !== false)
 	{
 		$location['lang'] = $lang['Downloads'];

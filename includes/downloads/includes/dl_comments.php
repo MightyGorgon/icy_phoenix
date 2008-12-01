@@ -180,6 +180,11 @@ if ($action == 'delete' && $allow_manage)
 
 		$l_confirm = $lang['Confirm_delete'];
 
+		$page_title = $lang['Downloads'];
+		$meta_description = '';
+		$meta_keywords = '';
+		$nav_server_url = create_server_url();
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>';
 		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('confirm_body' => 'confirm_body.tpl'));
@@ -270,7 +275,7 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 		$db->sql_freeresult($result);
 	}
 
-	$s_hidden_fields = '<input type="hidden" name="dl_id" value="'.$dl_id.'" />';
+	$s_hidden_fields = '<input type="hidden" name="dl_id" value="' . $dl_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="df_id" value="' . $df_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="cat_id" value="' . $cat_id . '" />';
 
@@ -285,6 +290,11 @@ if (($action == 'edit' && $allow_manage) || ($action == 'post' && !$deny_post))
 		$l_smilies = '';
 	}
 
+	$page_title = $lang['Downloads'];
+	$meta_description = '';
+	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id) . '">' . $cat_name . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $description . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'dl_edit_comments_body.tpl'));
@@ -418,6 +428,11 @@ if ($action == 'view' || !$action)
 		$cat_name = $index[$cat_id]['cat_name'];
 		$cat_name = str_replace("&nbsp;&nbsp;|___&nbsp;", "", $cat_name);
 
+		$page_title = $lang['Downloads'];
+		$meta_description = '';
+		$meta_keywords = '';
+		$nav_server_url = create_server_url();
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?cat=' . $cat_id) . '">' . $cat_name . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $description . '</a>';
 		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('body' => 'dl_view_comments_body.tpl'));

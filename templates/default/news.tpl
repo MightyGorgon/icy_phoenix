@@ -43,7 +43,7 @@
 		<!-- BEGIN comments -->
 		<hr />
 		<br />
-		<div style="border: #DDDDDD solid 1px;padding:10px;margin:10px 0 10px 20px;clear:both;">
+		<div style="border: #dddddd solid 1px; padding: 10px; margin: 10px 0 10px 20px; clear: both;">
 			<div class="forumlink">{comments.L_TITLE}</div>
 			<div class="post-details">{comments.POST_DATE} by {comments.L_POSTER}</div>
 			<hr />

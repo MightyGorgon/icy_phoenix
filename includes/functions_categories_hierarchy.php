@@ -359,7 +359,7 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 	$tree_level = array();
 
 	// get the forums of the level
-	for ($i=0; $i < count($parents[POST_FORUM_URL][$main]); $i++)
+	for ($i = 0; $i < count($parents[POST_FORUM_URL][$main]); $i++)
 	{
 		$idx = $parents[POST_FORUM_URL][$main][$i];
 		$tree_level['type'][] = POST_FORUM_URL;
@@ -369,7 +369,7 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 	}
 
 	// add the categories of this level
-	for ($i=0; $i < count($parents[POST_CAT_URL][$main]); $i++)
+	for ($i = 0; $i < count($parents[POST_CAT_URL][$main]); $i++)
 	{
 		$idx = $parents[POST_CAT_URL][$main][$i];
 		$tree_level['type'][] = POST_CAT_URL;
@@ -383,7 +383,7 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 
 	// add the tree_level to the tree
 	$order = 0;
-	for ($i=0; $i < count($tree_level['data']); $i++)
+	for ($i = 0; $i < count($tree_level['data']); $i++)
 	{
 		$CH_this = count($tree['data']);
 		$key = $tree_level['type'][$i] . $tree_level['id'][$i];
@@ -448,7 +448,7 @@ function cache_tree($write = false)
 		$row['main'] = ($row['cat_id'] == 0) ? 'Root' : $main_type . $row['cat_id'];
 		$idx = count($forums);
 		$forums[$idx] = $row;
-		$parents[POST_FORUM_URL][ $row['main'] ][] = $idx;
+		$parents[POST_FORUM_URL][$row['main']][] = $idx;
 	}
 
 	// build the tree
@@ -1273,7 +1273,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			$links = '';
 			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && (intval($board_config['sub_level_links']) > 0))
 			{
-				for ($j = 0; $j < count($tree['sub'][$cur]); $j++) if ($tree['auth'][ $tree['sub'][$cur][$j] ]['auth_view'])
+				for ($j = 0; $j < count($tree['sub'][$cur]); $j++) if ($tree['auth'][$tree['sub'][$cur][$j]]['auth_view'])
 				{
 					$wcur = $tree['sub'][$cur][$j];
 					$wthis = $tree['keys'][$wcur];
@@ -1362,7 +1362,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			}
 
 			// forum icon
-			$icon_img = empty($data['icon']) ? '' : (isset($images[ $data['icon'] ]) ? $images[ $data['icon'] ] : $data['icon']);
+			$icon_img = empty($data['icon']) ? '' : (isset($images[$data['icon']]) ? $images[$data['icon']] : $data['icon']);
 //<!-- BEGIN Unread Post Information to Database Mod -->
 			if($userdata['upi2db_access'])
 			{
@@ -1407,7 +1407,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $id) : append_sid(FORUM_MG . '?' . POST_CAT_URL . '=' . $id);
 			}
 			// send to template
-			if (($board_config['show_rss_forum_icon'] == true) && ($type == POST_FORUM_URL))
+			if (($board_config['show_rss_forum_icon'] == 1) && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
 			{
 				$rss_feed_icon = '';
 				if (!$data['tree.locked'] && $userdata['session_logged_in'])
@@ -1600,9 +1600,17 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 	global $tree, $board_config, $userdata, $db, $nav_separator;
 	global $global_orig_word, $global_replacement_word;
 	$kb_mode_append = '';
-	if ((!empty($_GET['kb']) || !empty($_POST['kb'])) && ($userdata['bot_id'] == false))
+	$kb_mode_var = request_var('kb', '');
+	if (!empty($kb_mode_var) && ($userdata['bot_id'] == false))
 	{
-		$kb_mode_append = '&amp;kb=true';
+		if ($kb_mode_var == 'on')
+		{
+			$kb_mode_append = '&amp;kb=on';
+		}
+		elseif ($kb_mode_var == 'off')
+		{
+			$kb_mode_append = '&amp;kb=off';
+		}
 	}
 
 	// get topic or post level
@@ -1716,7 +1724,10 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 				$pgm_name = FORUM_MG;
 				break;
 		}
-		if ($pgm != '') $pgm_name = $pgm . '.' . PHP_EXT;
+		if ($pgm != '')
+		{
+			$pgm_name = $pgm . '.' . PHP_EXT;
+		}
 
 		//Dynamic Class Assignment - BEGIN
 		$k = $k + 1;

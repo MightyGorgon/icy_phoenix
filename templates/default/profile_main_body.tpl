@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}" class="nav-current">{L_CPL_NAV}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <!--
 <table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1"><div class="post-text">{L_PROFILE_EXPLAIN}</div></td></tr>
@@ -231,6 +221,6 @@
 		</table>
 	</td>
 </tr>
-<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr><td class="catBottom" colspan="2">&nbsp;</td></tr>
+<!-- <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr> -->
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

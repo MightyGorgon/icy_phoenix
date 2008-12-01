@@ -40,11 +40,11 @@ $meta_keywords = '';
 // ------------------------------------------------------------------------
 // Get $album_user_id
 // ------------------------------------------------------------------------
-if( isset($_POST['user_id']) )
+if(isset($_POST['user_id']))
 {
 	$album_user_id = intval($_POST['user_id']);
 }
-elseif( isset($_GET['user_id']) )
+elseif(isset($_GET['user_id']))
 {
 	$album_user_id = intval($_GET['user_id']);
 }
@@ -52,11 +52,11 @@ elseif( isset($_GET['user_id']) )
 // ------------------------------------------------------------------------
 // Get $cat_id
 // ------------------------------------------------------------------------
-if( isset($_POST['cat_id']) )
+if(isset($_POST['cat_id']))
 {
 	$cat_id = intval($_POST['cat_id']);
 }
-elseif( isset($_GET['cat_id']) )
+elseif(isset($_GET['cat_id']))
 {
 	$cat_id = intval($_GET['cat_id']);
 }
@@ -74,7 +74,7 @@ if (empty($username))
 // Check the actual personal gallery exists, if not there is nothing to manage
 // ------------------------------------------------------------------------
 
-if ( album_get_personal_root_id($album_user_id) == ALBUM_ROOT_CATEGORY )
+if (album_get_personal_root_id($album_user_id) == ALBUM_ROOT_CATEGORY)
 {
 	if(!isset($_POST['submit']))
 	{
@@ -96,14 +96,14 @@ else
 // gallery can manage the categories
 // TODO : should the moderator also be allowed ?
 // ------------------------------------------------------------------------
-if( (isset($_GET['action'])) && ($_GET['action'] == 'create') )
+if((isset($_GET['action'])) && ($_GET['action'] == 'create'))
 {
 	$auth_data = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_UPLOAD);
-	if ( !album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) )
+	if (!album_check_permission($auth_data, ALBUM_AUTH_UPLOAD))
 	{
-		if ( ($album_user_id != $userdata['user_id']) && ($userdata['user_level'] != ADMIN) )
+		if (($album_user_id != $userdata['user_id']) && ($userdata['user_level'] != ADMIN))
 		{
-			if( ($album_user_id <= 0) && (!$userdata['session_logged_in']) )
+			if(($album_user_id <= 0) && (!$userdata['session_logged_in']))
 			{
 				redirect(append_sid(LOGIN_MG . '?redirect=album_cat.' . PHP_EXT));
 			}
@@ -122,16 +122,16 @@ if( (isset($_GET['action'])) && ($_GET['action'] == 'create') )
 else
 {
 	$auth_data = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES);
-	if ( !album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) )
+	if (!album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES))
 	{
-		if ( ($album_user_id != $userdata['user_id']) && ($userdata['user_level'] != ADMIN) )
+		if (($album_user_id != $userdata['user_id']) && ($userdata['user_level'] != ADMIN))
 		{
-			if( ($album_user_id <= 0) && (!$userdata['session_logged_in']) )
+			if(($album_user_id <= 0) && (!$userdata['session_logged_in']))
 			{
 				redirect(append_sid(LOGIN_MG . '?redirect=album_cat.' . PHP_EXT));
 			}
 
-			if( !isset($_GET['action']) )
+			if(!isset($_GET['action']))
 			{
 				redirect(append_sid('album.' . PHP_EXT));
 			}
@@ -156,7 +156,7 @@ function showResultMessage($in_message)
 {
 	global $lang, $album_user_id;
 
-	if (album_get_personal_root_id($album_user_id) == ALBUM_ROOT_CATEGORY && strcmp('delete',isset($_GET['action']) == 0) )
+	if (album_get_personal_root_id($album_user_id) == ALBUM_ROOT_CATEGORY && strcmp('delete',isset($_GET['action']) == 0))
 	{
 		$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_personal_gallery_index'], '<a href="' . append_sid(album_append_uid('album_personal_index.' . PHP_EXT)) . '">', '</a>');
 	}
@@ -172,9 +172,9 @@ function showResultMessage($in_message)
 // ------------------------------------------------------------------------
 // now start processing the page...
 // ------------------------------------------------------------------------
-if( !isset($_POST['mode']) )
+if(!isset($_POST['mode']))
 {
-	if( !isset($_GET['action']) )
+	if(!isset($_GET['action']))
 	{
 		$template->set_filenames(array('body' => ADM_TPL . 'album_personal_cat_body.tpl'));
 
@@ -216,12 +216,12 @@ if( !isset($_POST['mode']) )
 		// ------------------------------------------------------------------------------------
 		$sql = "SELECT COUNT(*) AS count FROM " . ALBUM_CAT_TABLE . " WHERE cat_user_id = $album_user_id AND cat_parent <> 0";
 
-		if( !$result = $db->sql_query($sql) )
+		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not query number of sub category for user' ,'' , __LINE__, __FILE__, $sql);
 		}
 
-		if( $db->sql_numrows($result) >= 0 )
+		if($db->sql_numrows($result) >= 0)
 		{
 			$row = $db->sql_fetchrow($result);
 
@@ -237,13 +237,13 @@ if( !isset($_POST['mode']) )
 	}
 	else
 	{
-		if( $_GET['action'] == 'create' )
+		if($_GET['action'] == 'create')
 		{
 			album_create_personal_gallery($album_user_id, $album_config['personal_gallery_view'], ALBUM_PRIVATE);
 			album_read_tree($album_user_id);
 			showResultMessage($lang['New_category_created']);
 		}
-		elseif( $_GET['action'] == 'edit' )
+		elseif($_GET['action'] == 'edit')
 		{
 			$cat_id = intval($_GET['cat_id']);
 
@@ -268,7 +268,7 @@ if( !isset($_POST['mode']) )
 					message_die(GENERAL_ERROR, 'Could not query Album Categories information', '', __LINE__, __FILE__, $sql);
 				}
 
-				if( $db->sql_numrows($result) == 0 )
+				if($db->sql_numrows($result) == 0)
 				{
 					message_die(GENERAL_ERROR, 'The requested category is not existed');
 				}
@@ -365,7 +365,7 @@ if( !isset($_POST['mode']) )
 
 			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
-		elseif( $_GET['action'] == 'delete' )
+		elseif($_GET['action'] == 'delete')
 		{
 			$cat_id = intval($_GET['cat_id']);
 
@@ -379,9 +379,9 @@ if( !isset($_POST['mode']) )
 			}
 
 			$cat_found = FALSE;
-			while( $row = $db->sql_fetchrow($result) )
+			while($row = $db->sql_fetchrow($result))
 			{
-				if( $row['cat_id'] == $cat_id )
+				if($row['cat_id'] == $cat_id)
 				{
 					$thiscat = $row;
 					$cat_found = TRUE;
@@ -391,7 +391,7 @@ if( !isset($_POST['mode']) )
 					$catrow[] = $row;
 				}
 			}
-			if( $cat_found == FALSE )
+			if($cat_found == FALSE)
 			{
 				message_die(GENERAL_ERROR, 'The requested category is not existed');
 			}
@@ -433,7 +433,7 @@ if( !isset($_POST['mode']) )
 
 			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT); //include('./page_footer_admin.' . PHP_EXT);
 		}
-		elseif( $_GET['action'] == 'move' )
+		elseif($_GET['action'] == 'move')
 		{
 			$cat_id = intval($_GET['cat_id']);
 			$move = intval($_GET['move']);
@@ -447,9 +447,9 @@ if( !isset($_POST['mode']) )
 }
 else
 {
-	if( $_POST['mode'] == 'new' )
+	if($_POST['mode'] == 'new')
 	{
-		if ( is_array($_POST['addcategory']))
+		if (is_array($_POST['addcategory']))
 		{
 			list($cat_id) = each($_POST['addcategory']);
 			$cat_title = stripslashes($_POST['name'][$cat_id]);
@@ -457,7 +457,7 @@ else
 			$cat_id = -1;
 		}
 
-		if( !isset($_POST['cat_title']) )
+		if(!isset($_POST['cat_title']))
 		{
 			$s_album_cat_list = album_get_tree_option($cat_parent, ALBUM_AUTH_VIEW);
 
@@ -527,7 +527,7 @@ else
 		else
 		{
 			// Get posting variables
-			if( !get_magic_quotes_gpc() )
+			if(!get_magic_quotes_gpc())
 			{
 				$cat_title = addslashes(htmlspecialchars(trim($_POST['cat_title'])));
 				$cat_desc = addslashes(trim($_POST['cat_desc']));
@@ -574,11 +574,11 @@ else
 			showResultMessage($lang['New_category_created']);
 		}
 	}
-	elseif( $_POST['mode'] == 'edit' )
+	elseif($_POST['mode'] == 'edit')
 	{
 		// Get posting variables
 		$cat_id = intval($_GET['cat_id']);
-		if( !get_magic_quotes_gpc() )
+		if(!get_magic_quotes_gpc())
 		{
 			$cat_title = addslashes(htmlspecialchars(trim($_POST['cat_title'])));
 			$cat_desc = addslashes(trim($_POST['cat_desc']));
@@ -597,12 +597,12 @@ else
 		$cat_approval = intval($_POST['cat_approval']);
 		$cat_parent = ($_POST['cat_parent_id'] == ALBUM_ROOT_CATEGORY) ? 0 : intval($_POST['cat_parent_id']);
 
-		if ( ($cat_id == $cat_parent) && (album_get_personal_root_id($album_user_id) != $cat_id)  )
+		if (($cat_id == $cat_parent) && (album_get_personal_root_id($album_user_id) != $cat_id) )
 		{
 			showResultMessage($lang['No_Self_Refering_Cat']);
 		}
 
-		if ( (album_get_personal_root_id($album_user_id) == $cat_id) && ($cat_parent != 0) )
+		if ((album_get_personal_root_id($album_user_id) == $cat_id) && ($cat_parent != 0))
 		{
 			showResultMessage($lang['Can_Not_Change_Main_Parent']);
 		}
@@ -621,7 +621,7 @@ else
 		// Return a message...
 		showResultMessage($lang['Category_updated']);
 	}
-	elseif( $_POST['mode'] == 'delete' )
+	elseif($_POST['mode'] == 'delete')
 	{
 		$parent_cat_id = 0;
 		$parent_cat_title = "";
@@ -630,7 +630,7 @@ else
 		$source_cat_id = intval($_GET['cat_id']);
 		$target_cat_id = intval($_POST['target']);
 
-		if( $target_cat_id == ALBUM_JUMPBOX_DELETE ) // Delete All
+		if($target_cat_id == ALBUM_JUMPBOX_DELETE) // Delete All
 		{
 			// check if the selected category is a parent to another category
 			$sql = "SELECT cat_id FROM " . ALBUM_CAT_TABLE . " WHERE cat_parent = " . $source_cat_id .";";
@@ -667,7 +667,7 @@ else
 
 				if ($db->sql_numrows($result) > 0)
 				{
-					while( $row = $db ->sql_fetchrow($result) )
+					while($row = $db ->sql_fetchrow($result))
 					{
 						// get the paretn id for the selected id
 						$parent_cat_id = $row['cat_parent_id'];
@@ -689,13 +689,13 @@ else
 				message_die(GENERAL_ERROR, 'Could not query Album information', '', __LINE__, __FILE__, $sql);
 			}
 			$picrow = array();
-			while( $row = $db ->sql_fetchrow($result) )
+			while($row = $db ->sql_fetchrow($result))
 			{
 				$picrow[] = $row;
 				$pic_id_row[] = $row['pic_id'];
 			}
 
-			if( count($picrow) != 0 ) // if this category is not empty
+			if(count($picrow) != 0) // if this category is not empty
 			{
 				// Delete all physical pic & cached thumbnail files
 				for ($i = 0; $i < count($picrow); $i++)

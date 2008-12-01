@@ -585,6 +585,43 @@ function pafiledb_page_header($page_title)
 
 	if($action != 'download')
 	{
+		$page_title = $lang['Downloads'];
+		$meta_description = '';
+		$meta_keywords = '';
+		$nav_server_url = create_server_url();
+		$nav_links = '';
+		$file_id = request_var('file_id', 0);
+		$cat_id = request_var('cat_id', 0);
+		switch ($action)
+		{
+			case 'user_upload':
+				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['User_upload'] . '</a>';
+				break;
+			case 'license':
+				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['License'] . '</a>';
+				break;
+			case 'mcp':
+				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['MCP_title'] . '</a>';
+				break;
+			case 'stats':
+				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Statistics'] . '</a>';
+				break;
+			case 'search':
+				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Search'] . '</a>';
+				break;
+			case 'toplist':
+				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Toplist'] . '</a>';
+				break;
+			case 'viewall':
+				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Viewall'] . '</a>';
+				break;
+		}
+		if ($cat_id || $file_id)
+		{
+			$nav_links = $pafiledb->generate_category_nav_links($cat_id, $file_id);
+		}
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '"' . (($nav_links == '') ? ' class="nav-current"' : '') . '>' . $lang['Downloads'] . '</a>' . $nav_links;
+		$breadcrumbs_links_right = '';
 		include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	}
 
@@ -594,7 +631,6 @@ function pafiledb_page_header($page_title)
 		$upload_auth = $pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_upload'];
 		$mcp_url = append_sid('dload.' . PHP_EXT . "?action=mcp&amp;cat_id={$_REQUEST['cat_id']}");
 		$mcp_auth = $pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_mod'];
-
 	}
 	else
 	{
@@ -606,12 +642,20 @@ function pafiledb_page_header($page_title)
 		unset($cat_list);
 	}
 
+	$is_auth_viewall = ($pafiledb_config['settings_viewall']) ? (($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_viewall']) ? true : false) : false;
+	$is_auth_search = ($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_search']) ? true : false;
+	$is_auth_stats = ($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_stats']) ? true : false;
+	$is_auth_toplist = ($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_toplist']) ? true : false;
+	$is_auth_upload = $upload_auth;
+	$show_top_links = (!$is_auth_viewall && !$is_auth_search && !$is_auth_stats && !$is_auth_toplist && !$is_auth_upload) ? false : true;
+
 	$pafiledb_template->assign_vars(array(
-		'IS_AUTH_VIEWALL' => ($pafiledb_config['settings_viewall']) ? (($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_viewall']) ? true : false) : false,
-		'IS_AUTH_SEARCH' => ($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_search']) ? true : false,
-		'IS_AUTH_STATS' => ($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_stats']) ? true : false,
-		'IS_AUTH_TOPLIST' => ($pafiledb->modules[$pafiledb->module_name]->auth_global['auth_toplist']) ? true : false,
-		'IS_AUTH_UPLOAD' => $upload_auth,
+		'S_TOP_LINKS' => $show_top_links,
+		'IS_AUTH_VIEWALL' => $is_auth_viewall,
+		'IS_AUTH_SEARCH' => $is_auth_search,
+		'IS_AUTH_STATS' => $is_auth_stats,
+		'IS_AUTH_TOPLIST' => $is_auth_toplist,
+		'IS_AUTH_UPLOAD' => $is_auth_upload,
 		'IS_ADMIN' => (($userdata['user_level'] == ADMIN) && $userdata['session_logged_in']) ? true : 0,
 		//'IS_MOD' => $pafiledb->modules[$pafiledb->module_name]->is_moderator(),
 		'IS_MOD' => $pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_mod'],
@@ -655,7 +699,8 @@ function pafiledb_page_footer()
 		'JUMPMENU' => $pafiledb->modules[$pafiledb->module_name]->jumpmenu_option(),
 		'L_JUMP' => $lang['jump'],
 		'S_JUMPBOX_ACTION' => append_sid('dload.' . PHP_EXT),
-		'S_TIMEZONE' => sprintf($lang['All_times'], $lang[number_format($board_config['board_timezone'])]))
+		'S_TIMEZONE' => sprintf($lang['All_times'], $lang[number_format($board_config['board_timezone'])])
+		)
 	);
 	$pafiledb->modules[$pafiledb->module_name]->_pafiledb();
 	if(!isset($_GET['explain']))

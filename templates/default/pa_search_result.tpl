@@ -1,13 +1,5 @@
 <!-- INCLUDE pa_header.tpl -->
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a>{NAV_SEP}<a href="#" class="nav-current">{L_SEARCH_MATCHES}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
+<!-- INCLUDE pa_links.tpl -->
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -22,7 +14,7 @@
 
 <!-- BEGIN searchresults -->
 <tr>
-	<td class="row1 row-center" width="30"><a href="{searchresults.U_FILE}" class="topictitle">{searchresults.PIN_IMAGE}</a></td>
+	<td class="row1 row-center" width="30"><a href="{searchresults.U_FILE}" class="topiclink">{searchresults.PIN_IMAGE}</a></td>
 	<td class="row1h{searchresults.XS_NEW} row-forum" onclick="window.location.href='{searchresults.U_CAT}'"><span class="forumlink"><a href="{searchresults.U_CAT}" class="forumlink{searchresults.XS_NEW}">{searchresults.CAT_NAME}</a></span>&nbsp;</td>
 	<td class="row1h{searchresults.XS_NEW} row-forum" onclick="window.location.href='{searchresults.U_FILE}'"><span class="forumlink"><a href="{searchresults.U_FILE}" class="forumlink{searchresults.XS_NEW}">{searchresults.FILE_NAME}</a></span>&nbsp;
 	<br /><span class="genmed">{searchresults.FILE_DESC}</span>

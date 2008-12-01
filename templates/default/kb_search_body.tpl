@@ -1,14 +1,4 @@
 <form action="{S_SEARCH_ACTION}" method="post">
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_KB}">{L_KB}</a>{NAV_SEP}<a href="#" class="nav-current">{L_SEARCH_QUERY}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="4">{L_SEARCH_QUERY}</th></tr>
 <tr>
@@ -24,9 +14,10 @@
 		</span>
 	</td>
 </tr>
-<tr><td class="catBottom" colspan="4">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{S_SEARCH}" /></td></tr>
+<tr><td class="cat" colspan="4">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{S_SEARCH}" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <table class="empty-table" width="100%" align="center" cellspacing="0">
 <tr><td align="right" valign="middle"><span class="gensmall">{S_TIMEZONE}</span></td></tr>
-</table></form>
+</table>
+</form>

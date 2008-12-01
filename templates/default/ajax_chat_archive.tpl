@@ -100,15 +100,6 @@ function handlehResponse()
 }
 //-->
 </script>
-<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="#" class="nav-current">{L_ARCHIVE}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;<a href="{U_AJAX_SHOUTBOX}">{L_AJAX_SHOUTBOX}</a>
-	</div>
-</div>
 
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
 <tr valign="top">

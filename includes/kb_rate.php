@@ -59,11 +59,6 @@ $start = ($start < 0) ? 0 : $start;
 
 // End initial var setup
 
-if(!$is_block)
-{
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-}
-
 // load header
 include (IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 

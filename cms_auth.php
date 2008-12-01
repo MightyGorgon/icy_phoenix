@@ -92,7 +92,6 @@ $auth_view['statistics'] = auth_select($new['auth_view_statistics'], 'auth_view_
 $auth_view['recent'] = auth_select($new['auth_view_recent'], 'auth_view_recent');
 $auth_view['referrers'] = auth_select($new['auth_view_referrers'], 'auth_view_referrers');
 $auth_view['rules'] = auth_select($new['auth_view_rules'], 'auth_view_rules');
-$auth_view['site_hist'] = auth_select($new['auth_view_site_hist'], 'auth_view_site_hist');
 $auth_view['shoutbox'] = auth_select($new['auth_view_shoutbox'], 'auth_view_shoutbox');
 $auth_view['viewonline'] = auth_select($new['auth_view_viewonline'], 'auth_view_viewonline');
 $auth_view['contact_us'] = auth_select($new['auth_view_contact_us'], 'auth_view_contact_us');
@@ -140,8 +139,6 @@ $wide_blocks_referrers_yes = ($new['wide_blocks_referrers']) ? "checked=\"checke
 $wide_blocks_referrers_no = (!$new['wide_blocks_referrers']) ? "checked=\"checked\"" : "";
 $wide_blocks_rules_yes = ($new['wide_blocks_rules']) ? "checked=\"checked\"" : "";
 $wide_blocks_rules_no = (!$new['wide_blocks_rules']) ? "checked=\"checked\"" : "";
-$wide_blocks_site_hist_yes = ($new['wide_blocks_site_hist']) ? "checked=\"checked\"" : "";
-$wide_blocks_site_hist_no = (!$new['wide_blocks_site_hist']) ? "checked=\"checked\"" : "";
 $wide_blocks_shoutbox_yes = ($new['wide_blocks_shoutbox']) ? "checked=\"checked\"" : "";
 $wide_blocks_shoutbox_no = (!$new['wide_blocks_shoutbox']) ? "checked=\"checked\"" : "";
 $wide_blocks_viewonline_yes = ($new['wide_blocks_viewonline']) ? "checked=\"checked\"" : "";
@@ -213,7 +210,6 @@ $template->assign_vars(array(
 	'L_AUTH_VIEW_RECENT' => $lang['auth_view_recent'],
 	'L_AUTH_VIEW_REFERRERS' => $lang['auth_view_referrers'],
 	'L_AUTH_VIEW_RULES' => $lang['auth_view_rules'],
-	'L_AUTH_VIEW_SITE_HIST' => $lang['auth_view_site_hist'],
 	'L_AUTH_VIEW_SHOUTBOX' => $lang['auth_view_shoutbox'],
 	'L_AUTH_VIEW_VIEWONLINE' => $lang['auth_view_viewonline'],
 	'L_AUTH_VIEW_CONTACT_US' => $lang['auth_view_contact_us'],
@@ -242,7 +238,6 @@ $template->assign_vars(array(
 	'S_AUTH_VIEW_RECENT' => $auth_view['recent'],
 	'S_AUTH_VIEW_REFERRERS' => $auth_view['referrers'],
 	'S_AUTH_VIEW_RULES' => $auth_view['rules'],
-	'S_AUTH_VIEW_SITE_HIST' => $auth_view['site_hist'],
 	'S_AUTH_VIEW_SHOUTBOX' => $auth_view['shoutbox'],
 	'S_AUTH_VIEW_VIEWONLINE' => $auth_view['viewonline'],
 	'S_AUTH_VIEW_CONTACT_US' => $auth_view['contact_us'],
@@ -270,7 +265,6 @@ $template->assign_vars(array(
 	'WIDE_BLOCKS_RECENT_YES' => $wide_blocks_recent_yes,
 	'WIDE_BLOCKS_REFERRERS_YES' => $wide_blocks_referrers_yes,
 	'WIDE_BLOCKS_RULES_YES' => $wide_blocks_rules_yes,
-	'WIDE_BLOCKS_SITE_HIST_YES' => $wide_blocks_site_hist_yes,
 	'WIDE_BLOCKS_SHOUTBOX_YES' => $wide_blocks_shoutbox_yes,
 	'WIDE_BLOCKS_VIEWONLINE_YES' => $wide_blocks_viewonline_yes,
 	'WIDE_BLOCKS_CONTACT_US_YES' => $wide_blocks_contact_us_yes,
@@ -298,7 +292,6 @@ $template->assign_vars(array(
 	'WIDE_BLOCKS_RECENT_NO' => $wide_blocks_recent_no,
 	'WIDE_BLOCKS_REFERRERS_NO' => $wide_blocks_referrers_no,
 	'WIDE_BLOCKS_RULES_NO' => $wide_blocks_rules_no,
-	'WIDE_BLOCKS_SITE_HIST_NO' => $wide_blocks_site_hist_no,
 	'WIDE_BLOCKS_SHOUTBOX_NO' => $wide_blocks_shoutbox_no,
 	'WIDE_BLOCKS_VIEWONLINE_NO' => $wide_blocks_viewonline_no,
 	'WIDE_BLOCKS_CONTACT_US_NO' => $wide_blocks_contact_us_no,

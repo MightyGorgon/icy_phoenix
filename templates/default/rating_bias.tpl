@@ -16,29 +16,15 @@
 </tr>
 <!-- BEGIN bias -->
 <tr>
-	<td class="row1 row-center" valign="middle">
-		<span class="name">{bias.BIAS}</span>
-	</td>
-	<td class="row2 row-center" valign="middle">
-		<span class="name">{bias.WHO}</span>
-	</td>
-	<td class="row1 row-center" valign="middle">
-		<span class="name">{bias.WHEN}</span>
-	</td>
-	<td class="row2" valign="middle">
-		<span class="name">{bias.REASON}</span>
-	</td>
-	<td class="row3Right" valign="middle" nowrap="nowrap">
-		<span class="name">{bias.CURRENT}</span>
-	</td>
+	<td class="row1 row-center" valign="middle"><span class="name">{bias.BIAS}</span></td>
+	<td class="row2 row-center" valign="middle"><span class="name">{bias.WHO}</span></td>
+	<td class="row1 row-center" valign="middle"><span class="name">{bias.WHEN}</span></td>
+	<td class="row2" valign="middle"><span class="name">{bias.REASON}</span></td>
+	<td class="row3Right" valign="middle" nowrap="nowrap"><span class="name">{bias.CURRENT}</span></td>
 </tr>
 <!-- END bias -->
 <!-- BEGIN nobias -->
-<tr>
-	<td class="row1 row-center" colspan="5" valign="middle">
-		<span class="gen">{L_NO_BIAS}</span>
-	</td>
-</tr>
+<tr><td class="row1 row-center" colspan="5" valign="middle"><span class="gen">{L_NO_BIAS}</span></td></tr>
 <!-- END nobias -->
 </table>
 

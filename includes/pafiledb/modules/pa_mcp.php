@@ -55,9 +55,9 @@ class pafiledb_mcp extends pafiledb_public
 		// Pafiledb auth for mcp
 		//===================================================
 
-		if( (!$this->auth[$cat_id]['auth_mod']) || !$userdata['session_logged_in'])
+		if((!$this->auth[$cat_id]['auth_mod']) || !$userdata['session_logged_in'])
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
@@ -137,11 +137,11 @@ class pafiledb_mcp extends pafiledb_public
 				$template_file = 'pa_mcp.tpl';
 				$l_title = $lang['MCP_title'];
 				$l_explain = $lang['MCP_title_explain'];
-				//$s_hidden_fields = '<input type="hidden" name="mode" value="add">';
+				//$s_hidden_fields = '<input type="hidden" name="mode" value="add" />';
 				break;
 		}
 
-		if( $mode == 'do_approve' || $mode == 'do_unapprove' )
+		if(($mode == 'do_approve') || ($mode == 'do_unapprove'))
 		{
 			if ( ($pafiledb_config['validator'] == 'validator_mod' && $this->auth[$cat_id]['auth_mod']) || $userdata['user_level'] == ADMIN )
 			{
@@ -170,20 +170,21 @@ class pafiledb_mcp extends pafiledb_public
 		$s_hidden_fields = '<input type="hidden" name="cat_id" value="' . $cat_id . '" />';
 
 		$pafiledb_template->assign_vars(array(
-					'L_INDEX' => $lang['Home'],
-					'L_HOME' => $lang['Home'],
-					'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+				'L_INDEX' => $lang['Home'],
+				'L_HOME' => $lang['Home'],
+				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
-					'U_INDEX' => append_sid(PORTAL_MG),
-					'U_DOWNLOAD_HOME' => append_sid('dload.php'),
-					'U_DOWNLOAD' => append_sid('dload.php'),
-					'DOWNLOAD' => $pafiledb_config['settings_dbname'],
-					'L_MCP_TITLE' => $l_title,
-					'L_MCP_EXPLAIN' => $l_explain,
-					'L_ADD_FILE' => $lang['Afiletitle'],
+				'U_INDEX' => append_sid(PORTAL_MG),
+				'U_DOWNLOAD_HOME' => append_sid('dload.php'),
+				'U_DOWNLOAD' => append_sid('dload.php'),
+				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
+				'L_MCP_TITLE' => $l_title,
+				'L_MCP_EXPLAIN' => $l_explain,
+				'L_ADD_FILE' => $lang['Afiletitle'],
 
-					'S_HIDDEN_FIELDS' => $s_hidden_fields,
-					'S_FILE_ACTION' => append_sid('dload.' . PHP_EXT . '?action=mcp'))
+				'S_HIDDEN_FIELDS' => $s_hidden_fields,
+				'S_FILE_ACTION' => append_sid('dload.' . PHP_EXT . '?action=mcp')
+			)
 		);
 
 		if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove', 'file_cat', 'all_file')))

@@ -463,7 +463,6 @@ $default_config = array(
 	'auth_view_recent' => '0',
 	'auth_view_referrers' => '0',
 	'auth_view_rules' => '0',
-	'auth_view_site_hist' => '0',
 	'auth_view_shoutbox' => '0',
 	'auth_view_viewonline' => '0',
 	'auth_view_ajax_chat' => '1',
@@ -511,7 +510,6 @@ $default_config = array(
 	'wide_blocks_recent' => '0',
 	'wide_blocks_referrers' => '0',
 	'wide_blocks_rules' => '0',
-	'wide_blocks_site_hist' => '0',
 	'wide_blocks_shoutbox' => '0',
 	'wide_blocks_viewonline' => '0',
 	'auth_view_custom_pages' => '0',
@@ -587,7 +585,7 @@ $default_config = array(
 	'show_topic_description' => '0',
 	'bots_reg_auth' => '0',
 	// IP Version
-	'ip_version' => '1.2.13.40',
+	'ip_version' => '1.2.15.42',
 	// Cash
 	'cash_disable' => 0,
 	'cash_display_after_posts' => 1,

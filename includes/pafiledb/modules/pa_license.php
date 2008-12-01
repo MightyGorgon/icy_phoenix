@@ -21,7 +21,7 @@ class pafiledb_license extends pafiledb_public
 	{
 		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
 
-		if ( isset($_REQUEST['license_id']) )
+		if (isset($_REQUEST['license_id']))
 		{
 			$license_id = intval($_REQUEST['license_id']);
 		}
@@ -30,7 +30,7 @@ class pafiledb_license extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $lang['License_not_exist']);
 		}
 
-		if ( isset($_REQUEST['file_id']) )
+		if (isset($_REQUEST['file_id']))
 		{
 			$file_id = intval($_REQUEST['file_id']);
 		}
@@ -39,12 +39,11 @@ class pafiledb_license extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
 
-
 		$sql = 'SELECT file_catid, file_name
 			FROM ' . PA_FILES_TABLE . "
 			WHERE file_id = $file_id";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Couldnt Query file info', '', __LINE__, __FILE__, $sql);
 		}
@@ -56,11 +55,11 @@ class pafiledb_license extends pafiledb_public
 
 		$db->sql_freeresult($result);
 
-		if( (!$this->auth[$file_data['file_catid']]['auth_download']) )
+		if((!$this->auth[$file_data['file_catid']]['auth_download']))
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=license&license_id=' . $license_id . '&file_id=' . $file_id, true));
+				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=license&license_id=' . $license_id . '&amp;file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_download'], $this->auth[$file_data['file_catid']]['auth_download_type']);
@@ -72,7 +71,7 @@ class pafiledb_license extends pafiledb_public
 			FROM ' . PA_LICENSE_TABLE . "
 			WHERE license_id = $license_id";
 
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Couldnt Query license info for this file', '', __LINE__, __FILE__, $sql);
 		}

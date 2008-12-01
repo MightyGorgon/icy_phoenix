@@ -94,8 +94,6 @@ class pafiledb
 	//===================================================
 	// Prepare data
 	//===================================================
-
-
 	function init()
 	{
 		global $db, $userdata, $debug;
@@ -106,18 +104,14 @@ class pafiledb
 		$sql = 'SELECT *
 			FROM ' . PA_CATEGORY_TABLE . '
 			ORDER BY cat_order ASC';
-
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
-			message_die(GENERAL_ERROR, 'Couldnt Query categories info', '', __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, 'Couldn\'t query categories info', '', __LINE__, __FILE__, $sql);
 		}
 		$cat_rowset = $db->sql_fetchrowset($result);
-
 		$db->sql_freeresult($result);
-
 		$this->auth($cat_rowset);
-
-		for( $i = 0; $i < count($cat_rowset); $i++ )
+		for($i = 0; $i < count($cat_rowset); $i++)
 		{
 			if($this->auth[$cat_rowset[$i]['cat_id']]['auth_view'])
 			{
@@ -309,8 +303,7 @@ class pafiledb
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET parents_data = '" . addslashes(serialize($cat_nav)) . "'
 				WHERE cat_parent = " . $this->cat_rowset[$cat_id]['cat_parent'];
-
-			if ( !($db->sql_query($sql)) )
+			if (!($db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Couldnt Query categories info', '', __LINE__, __FILE__, $sql);
 			}
@@ -322,23 +315,20 @@ class pafiledb
 
 		if(!empty($cat_nav))
 		{
-
 			foreach ($cat_nav as $parent_cat_id => $parent_name)
 			{
-
 				$pafiledb_template->assign_block_vars('navlinks', array(
 					'CLASS' => 'nav',
 					'CAT_NAME' => $parent_name,
-					'U_VIEW_CAT' => append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $parent_cat_id))
+					'U_VIEW_CAT' => append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $parent_cat_id)
+					)
 				);
-
 			}
-
 		}
 
 		$pafiledb_template->assign_block_vars('navlinks', array(
-			'CAT_NAME' => $this->cat_rowset[$cat_id]['cat_name'],
 			'CLASS' => 'nav-current',
+			'CAT_NAME' => $this->cat_rowset[$cat_id]['cat_name'],
 			'U_VIEW_CAT' => append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $this->cat_rowset[$cat_id]['cat_id'])
 			)
 		);
@@ -346,17 +336,78 @@ class pafiledb
 		return;
 	}
 
+	function generate_category_nav_links($cat_id, $file_id)
+	{
+		global $db, $lang;
+		$nav_links = '';
+		$nav_server_url = create_server_url();
+
+		if ($file_id)
+		{
+			$sql = 'SELECT *
+				FROM ' . PA_FILES_TABLE . '
+				WHERE file_id = ' . $file_id . '
+				LIMIT 1';
+			if (!($result = $db->sql_query($sql)))
+			{
+				message_die(GENERAL_ERROR, 'Couldn\'t query files', '', __LINE__, __FILE__, $sql);
+			}
+			$row = $db->sql_fetchrow($result);
+			$file_name = htmlspecialchars(stripslashes($row['file_name']));
+			$cat_id = $row['file_catid'];
+			$db->sql_freeresult($result);
+		}
+
+		$sql = 'SELECT *
+			FROM ' . PA_CATEGORY_TABLE . '
+			ORDER BY cat_order ASC';
+		if (!($result = $db->sql_query($sql, false, 'pafiledb_cats_')))
+		{
+			message_die(GENERAL_ERROR, 'Couldn\'t query categories info', '', __LINE__, __FILE__, $sql);
+		}
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$this->cat_rowset[$row['cat_id']] = $row;
+		}
+		$db->sql_freeresult($result);
+
+		if($this->cat_rowset[$cat_id]['parents_data'] == '')
+		{
+			$cat_nav = array();
+			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], &$cat_nav);
+		}
+		else
+		{
+			$cat_nav = unserialize(stripslashes($this->cat_rowset[$cat_id]['parents_data']));
+		}
+
+		if(!empty($cat_nav))
+		{
+			foreach ($cat_nav as $parent_cat_id => $parent_name)
+			{
+				$nav_links .= $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $parent_cat_id) . '">' . $parent_name . '</a>';
+			}
+		}
+
+		$nav_links .= $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $this->cat_rowset[$cat_id]['cat_id']) . '"' . ($file_id ? '' : ' class="nav-current"') . '>' . $this->cat_rowset[$cat_id]['cat_name'] . '</a>';
+
+		$nav_links .= ($file_id ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $file_name . '</a>') : '');
+
+		return $nav_links;
+	}
+
 	function category_nav($parent_id, &$cat_nav)
 	{
 		if(!empty($this->cat_rowset[$parent_id]))
 		{
 			$this->category_nav($this->cat_rowset[$parent_id]['cat_parent'], &$cat_nav);
-			$cat_nav[$parent_id] = $this->cat_rowset[$parent_id]['cat_name'];
+			$cat_nav[$parent_id] = htmlspecialchars(stripslashes($this->cat_rowset[$parent_id]['cat_name']));
 		}
 		return;
 	}
 
-/*	function init_depth($cat_id = 0, $depth = 0)
+/*
+	function init_depth($cat_id = 0, $depth = 0)
 	{
 		$temp = $depth;
 		if(isset($this->subcat_rowset[$cat_id]))
@@ -389,7 +440,8 @@ class pafiledb
 			}
 
 		}
-	}*/
+	}
+*/
 
 	function file_in_cat($cat_id)
 	{
@@ -760,7 +812,6 @@ class pafiledb
 					}
 					$sub_cat = $this->get_sub_cat($subcat_id);
 
-					//XS 2 Start
 					$xs_new = ($is_new)  ? '-new' : '';
 					$mini_img = $images['icon_minicat'];
 					if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
@@ -772,12 +823,11 @@ class pafiledb
 						$url_cat = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $subcat_id);
 					}
 
-					//XS 2 End
 					$pafiledb_template->assign_block_vars('no_cat_parent', array(
 						'IS_HIGHER_CAT' => false,
 						'U_CAT' => $url_cat,
-						'SUB_CAT' => 	( !empty($sub_cat) ) ?  $sub_cat : '',
-						'L_SUB_CAT' => ( !empty($sub_cat) ) ? $lang['Sub_category'] .': ' : '',
+						'SUB_CAT' => (!empty($sub_cat)) ? $sub_cat : '',
+						'L_SUB_CAT' => (!empty($sub_cat)) ? $lang['Sub_category'] .': ' : '',
 						'CAT_IMAGE' => ($is_new) ? $images['forum_nor_unread'] : $images['forum_nor_read'],
 						'XS_NEW' => $xs_new,
 						'CAT_NEW_FILE' => ($is_new) ? $lang['New_file'] : $lang['No_new_file'],
@@ -854,7 +904,7 @@ class pafiledb
 							}
 
 							$sub_cat = $this->get_sub_cat($sub_cat_rowset[$k]['cat_id']);
-							$xs_new = ($is_new)  ? '-new' : '';
+							$xs_new = ($is_new) ? '-new' : '';
 							if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
 							{
 								$url_cat = append_sid( str_replace ('--', '-', make_url_friendly($sub_cat_rowset[$k]['cat_name']) . '-dc' . $sub_cat_rowset[$k]['cat_id'] . '.html'));
@@ -900,36 +950,18 @@ class pafiledb
 			$cat_where = "AND f1.file_catid = $cat_id";
 		}
 
-		switch(SQL_LAYER)
-		{
-			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments
-					FROM " . PA_FILES_TABLE . " AS f1, " . PA_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PA_COMMENTS_TABLE . " AS c
-					WHERE f1.file_id = r.votes_file(+)
-					AND f1.user_id = u.user_id(+)
-					AND f1.file_id = c.file_id(+)
-					AND f1.file_pin = " . FILE_PINNED . "
-					AND f1.file_approved = 1
-					$cat_where
-					GROUP BY f1.file_id
-					ORDER BY $sort_method $sort_order";
-				break;
+		$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments
+			FROM " . PA_FILES_TABLE . " AS f1
+				LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
+				LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
+				LEFT JOIN " . PA_COMMENTS_TABLE . " AS c ON f1.file_id = c.file_id
+			WHERE f1.file_pin = " . FILE_PINNED . "
+			AND f1.file_approved = 1
+			$cat_where
+			GROUP BY f1.file_id
+			ORDER BY $sort_method $sort_order";
 
-			default:
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) AS total_comments
-					FROM " . PA_FILES_TABLE . " AS f1
-						LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
-						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
-						LEFT JOIN " . PA_COMMENTS_TABLE . " AS c ON f1.file_id = c.file_id
-					WHERE f1.file_pin = " . FILE_PINNED . "
-					AND f1.file_approved = 1
-					$cat_where
-					GROUP BY f1.file_id
-					ORDER BY $sort_method $sort_order";
-				break;
-		}
-
-		if ( !($result = $db->sql_query($sql)) )
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t get file info for this category', '', __LINE__, __FILE__, $sql);
 		}
@@ -947,36 +979,18 @@ class pafiledb
 
 		$db->sql_freeresult($result);
 
-		switch(SQL_LAYER)
-		{
-			case 'oracle':
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id)
-					FROM " . PA_FILES_TABLE . " AS f1, " . PA_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PA_COMMENTS_TABLE . " AS c
-					WHERE f1.file_id = r.votes_file(+)
-					AND f1.user_id = u.user_id(+)
-					AND f1.file_id = c.file_id(+)
-					AND f1.file_pin <> " . FILE_PINNED . "
-					AND f1.file_approved = 1
-					$cat_where
-					GROUP BY f1.file_id
-					ORDER BY $sort_method $sort_order";
-				break;
+		$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id)
+			FROM " . PA_FILES_TABLE . " AS f1
+				LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
+				LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
+				LEFT JOIN " . PA_COMMENTS_TABLE . " AS c ON f1.file_id = c.file_id
+			WHERE f1.file_pin <> " . FILE_PINNED . "
+			AND f1.file_approved = 1
+			$cat_where
+			GROUP BY f1.file_id
+			ORDER BY $sort_method $sort_order";
 
-			default:
-				$sql = "SELECT f1.*, f1.file_id, r.votes_file, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id)
-					FROM " . PA_FILES_TABLE . " AS f1
-						LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
-						LEFT JOIN " . USERS_TABLE . " AS u ON f1.user_id = u.user_id
-						LEFT JOIN " . PA_COMMENTS_TABLE . " AS c ON f1.file_id = c.file_id
-					WHERE f1.file_pin <> " . FILE_PINNED . "
-					AND f1.file_approved = 1
-					$cat_where
-					GROUP BY f1.file_id
-					ORDER BY $sort_method $sort_order";
-				break;
-		}
-
-		if ( !($result = $pafiledb_functions->sql_query_limit($sql, $pafiledb_config['settings_file_page'], $start)) )
+		if (!($result = $pafiledb_functions->sql_query_limit($sql, $pafiledb_config['settings_file_page'], $start)))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t get file info for this category', '', __LINE__, __FILE__, $sql);
 		}
@@ -1929,7 +1943,7 @@ class pafiledb
 		}
 	}
 
-	function file_mainenance()
+	function file_maintenance()
 	{
 		return false;
 	}

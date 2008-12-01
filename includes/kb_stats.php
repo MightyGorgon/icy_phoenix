@@ -30,11 +30,6 @@ $kb_is_auth_all = kb_auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
 
 $kb_quick_nav = get_kb_cat_list('auth_view', 0, 0, true, $kb_is_auth_all);
 
-if(!$is_block)
-{
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-}
-
 // load header
 include (IP_ROOT_PATH . 'includes/kb_header.' . PHP_EXT);
 

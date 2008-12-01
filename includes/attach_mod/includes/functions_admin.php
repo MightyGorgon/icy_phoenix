@@ -570,7 +570,7 @@ function collect_attachments()
 		{
 			while ($file = @readdir($dir))
 			{
-				if ($file != 'index.php' && $file != '.htaccess' && !is_dir($upload_dir . '/' . $file) && !is_link($upload_dir . '/' . $file))
+				if (($file != 'index.php') && ($file != 'index.html') && ($file != '.htaccess') && !is_dir($upload_dir . '/' . $file) && !is_link($upload_dir . '/' . $file))
 				{
 					$file_attachments[] = trim($file);
 				}
@@ -610,7 +610,7 @@ function collect_attachments()
 				$dirinfo[4] = $regs[5]; // Time
 			}
 
-			if ($dirinfo[0] != 1 && $dirinfo[4] != 'index.php' && $dirinfo[4] != '.htaccess')
+			if (($dirinfo[0] != 1) && ($dirinfo[4] != 'index.php') && ($dirinfo[4] != 'index.html') && ($dirinfo[4] != '.htaccess'))
 			{
 				$file_attachments[] = trim($dirinfo[4]);
 			}
@@ -637,7 +637,7 @@ function get_formatted_dirsize()
 		{
 			while ($file = @readdir($dirname))
 			{
-				if ($file != 'index.php' && $file != '.htaccess' && !is_dir($upload_dir . '/' . $file) && !is_link($upload_dir . '/' . $file))
+				if (($file != 'index.php') && ($file != 'index.html') && ($file != '.htaccess') && !is_dir($upload_dir . '/' . $file) && !is_link($upload_dir . '/' . $file))
 				{
 					$upload_dir_size += @filesize($upload_dir . '/' . $file);
 				}
@@ -678,7 +678,7 @@ function get_formatted_dirsize()
 				$dirinfo[4] = $regs[5]; // Time
 			}
 
-			if ($dirinfo[0] != 1 && $dirinfo[4] != 'index.php' && $dirinfo[4] != '.htaccess')
+			if (($dirinfo[0] != 1) && ($dirinfo[4] != 'index.php') && ($dirinfo[4] != 'index.html') && ($dirinfo[4] != '.htaccess'))
 			{
 				$upload_dir_size += $dirinfo[1];
 			}

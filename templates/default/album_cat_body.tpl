@@ -1,10 +1,3 @@
-<div class="forumline nav-div">
-	<p class="nav-header"><a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}" class="nav">{L_ALBUM}</a>{NAV_CAT_DESC}</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		{SLIDESHOW}&nbsp;
-	</div>
-</div>
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top">
@@ -230,14 +223,7 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
 <!-- END mostviewed_pics_block -->
-<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ALBUM}" class="nav">{L_ALBUM}</a>{NAV_CAT_DESC}
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		{SLIDESHOW}&nbsp;
-	</div>
-</div>
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left">

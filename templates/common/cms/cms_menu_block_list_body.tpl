@@ -10,12 +10,12 @@
 <form method="post" action="{S_MENU_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1" style="padding:0px" valign="top">
+	<td class="row1" style="padding: 0px;" valign="top">
 		<table class="nav-div" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<th align="center" style="width:100px;">{L_CMS_ACTIONS}</th>
-			<th align="center" style="width:20px;">&nbsp;</th>
-			<th align="center" style="width:290px;">{L_CMS_NAME}</th>
+			<th align="center" style="width: 100px;">{L_CMS_ACTIONS}</th>
+			<th align="center" style="width: 20px;">&nbsp;</th>
+			<th align="center" style="width: 290px;">{L_CMS_NAME}</th>
 			<th align="center">{L_CMS_DESCRIPTION}</th>
 		</tr>
 		<!-- BEGIN no_items -->
@@ -31,32 +31,32 @@
 		<!-- BEGIN cat_row -->
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<th align="center" style="width:100px;">
+			<th align="center" style="width: 100px;">
 				{cat_row.U_MOVE_UP}
 				{cat_row.U_MOVE_DOWN}
 				{cat_row.U_EDIT}
 				{cat_row.U_DELETE}
 			</th>
-			<th align="center" style="width:20px;"><input type="checkbox" name="cb_mid[]" value="{cat_row.CAT_CB_ID}"{cat_row.CAT_CHECKED} /></th>
-			<th style="width:290px;">{cat_row.CAT_ICON}<b>{cat_row.CAT_ITEM}</b></th>
+			<th align="center" style="width: 20px;"><input type="checkbox" name="cb_mid[]" value="{cat_row.CAT_CB_ID}"{cat_row.CAT_CHECKED} /></th>
+			<th style="width: 290px;">{cat_row.CAT_ICON}<b>{cat_row.CAT_ITEM}</b></th>
 			<th align="center"><b>{cat_row.CAT_DESC}</b></th>
 			<!-- <td class="row1" style="padding-left:5px;"><b>{cat_row.CAT_DESC}</b></td> -->
 		</tr>
 		</table>
-		<ul id="list_{cat_row.CAT_CB_ID}" style="margin:0px;padding:0px;list-style-type:none;">
+		<ul id="list_{cat_row.CAT_CB_ID}" style="margin: 0px; padding: 0px; list-style-type: none;">
 		<!-- BEGIN menu_row -->
-		<li id="item_{cat_row.menu_row.MENU_CB_ID}" style="cursor:move;">
+		<li id="item_{cat_row.menu_row.MENU_CB_ID}" style="cursor: move;">
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr class="row1h">
-			<td class="row1 row-center" style="padding:0px;background:none;width:110px;">
+			<td class="row1 row-center" style="padding: 0px; background: none; width: 110px;">
 				{cat_row.menu_row.U_MOVE_UP}
 				{cat_row.menu_row.U_MOVE_DOWN}
 				{cat_row.menu_row.U_EDIT}
 				{cat_row.menu_row.U_DELETE}
 			</td>
-			<td class="row1 row-center" style="padding:0px;background:none;width:30px;"><input type="checkbox" name="cb_mid[]" value="{cat_row.menu_row.MENU_CB_ID}"{cat_row.menu_row.MENU_CHECKED} /></td>
-			<td class="row1" style="padding-left:10px;background:none;width:288px;">{cat_row.menu_row.MENU_URL}</td>
-			<td class="row1" style="padding-left:5px;background:none;">{cat_row.menu_row.MENU_DESC}</td>
+			<td class="row1 row-center" style="padding: 0px; background: none; width: 30px;"><input type="checkbox" name="cb_mid[]" value="{cat_row.menu_row.MENU_CB_ID}"{cat_row.menu_row.MENU_CHECKED} /></td>
+			<td class="row1" style="padding-left: 10px; background: none; width: 288px;">{cat_row.menu_row.MENU_URL}</td>
+			<td class="row1" style="padding-left: 5px; background: none;">{cat_row.menu_row.MENU_DESC}</td>
 		</tr>
 		</table>
 		</li>
@@ -81,7 +81,7 @@
 
 <script type="text/javascript">
 //<![CDATA[
-var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px #228844; background: #77dd99;"><span class="text_green">';
+var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px #228822; background: #77dd99;"><span class="text_green">';
 var box_end = '<\/span><\/div>';
 <!-- BEGIN cat_row -->
 function update_order_{cat_row.CAT_CB_ID}()

@@ -1,4 +1,6 @@
 <!-- INCLUDE pa_header.tpl -->
+<!-- INCLUDE pa_links.tpl -->
+
 <script type="text/javascript">
 <!--
 	var error_msg = "";
@@ -54,16 +56,6 @@
 </script>
 
 <form enctype="multipart/form-data" action="{S_ADD_FILE_ACTION}" method="post" name="form" onsubmit="return checkAddForm();">
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a>{NAV_SEP}<a href="#" class="nav-current">{L_UPLOAD}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_FILE_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="50%" class="row1"><span class="genmed">{L_FILE_NAME}</span><br /><span class="gensmall">{L_FILE_NAME_INFO}</span></td>

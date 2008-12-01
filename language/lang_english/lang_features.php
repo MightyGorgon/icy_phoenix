@@ -233,7 +233,7 @@ $lang = array_merge($lang, array(
 	'item_friend_foe_list' => 'Friends / Foe List',
 
 /*********/
-	'cat_priv_messaging' => 'Private Messaging',
+	'cat_priv_messaging' => 'Private Messages',
 
 	'item_add_pm_folder' => 'Additional PM Folders',
 	'item_custom_pm_filter' => 'Customisable PM Filter Rules',

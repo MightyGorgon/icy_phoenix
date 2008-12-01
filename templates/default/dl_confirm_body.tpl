@@ -2,7 +2,9 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{MESSAGE_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center">
-		<span class="gen"><br />{MESSAGE_TEXT}
+		<br />
+		<div class="post-text">{MESSAGE_TEXT}</div>
+		<div class="gen">
 		<br /><br /><input type="submit" name="confirm" value="{L_YES}" class="mainoption" />&nbsp;&nbsp;
 		<input type="submit" name="cancel" value="{L_NO}" class="liteoption" />{S_HIDDEN_FIELDS}
 <!-- BEGIN delete_files_confirm -->
@@ -11,7 +13,7 @@
 <!-- BEGIN choose_new_cat -->
 		<br /><br /><b>{L_SWITCH_CAT}:</b><br /><br />{S_SWITCH_CAT}
 <!-- END choose_new_cat -->
-		</span>
+		</div>
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

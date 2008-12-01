@@ -193,7 +193,7 @@ elseif($mode == 'delete')
 }
 elseif($mode == 'do_maintenace')
 {
-	$pafiledb->file_mainenance();
+	$pafiledb->file_maintenance();
 }
 elseif($mode == 'do_approve' || $mode == 'do_unapprove')
 {

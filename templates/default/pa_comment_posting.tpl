@@ -1,15 +1,7 @@
 <!-- INCLUDE pa_header.tpl -->
-<form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this)">
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_INDEX}">{L_HOME}</a>{NAV_SEP}<a href="{U_DOWNLOAD}" class="nav">{DOWNLOAD}</a><!-- BEGIN navlinks -->{NAV_SEP}<a href="{navlinks.U_VIEW_CAT}" class="nav">{navlinks.CAT_NAME}</a><!-- END navlinks -->{NAV_SEP}<a href="{U_FILE_NAME}" class="nav">{FILE_NAME}</a>{NAV_SEP}<a href="#" class="nav-current">{L_COMMENT_ADD}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		<!-- INCLUDE pa_links.tpl -->
-	</div>
-</div>{IMG_TBR}
+<!-- INCLUDE pa_links.tpl -->
 
+<form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this)">
 <!-- IF PREVIEW -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1g-left" valign="top"><div class="post-text">{PRE_COMMENT}</div></td></tr>
@@ -40,10 +32,10 @@
 </tr>
 <tr>
 	<td class="row1"><span class="gen"><B>{L_OPTIONS}</b></span><br /><span class="gensmall">{HTML_STATUS}<br />{BBCODE_STATUS}<br />{SMILIES_STATUS}<br />{LINKS_STATUS}<br />{IMAGES_STATUS}</span></td>
-	<td class="row2"><span class="gen">{L_COMMENT_EXPLAIN}<br /><a href="javascript:checklength(document.post);">{L_CHECK_MSG_LENGTH}</a></span></td>
+	<td class="row2"><span class="gen">{L_COMMENT_EXPLAIN}</span></td>
 </tr>
 <tr>
-	<td class="cat" colspan="2" align="center" height="28">
+	<td class="cat" colspan="2">
 		{S_HIDDEN_FORM_FIELDS}
 		<input type="submit" tabindex="5" name="preview" class="mainoption" value="{L_PREVIEW}" />&nbsp;
 		<input type="submit" accesskey="s" tabindex="6" name="submit" class="mainoption" value="{L_SUBMIT}" />

@@ -31,7 +31,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 // If you want to credit the Author on the Statistics Page, uncomment the second line.
 // 'Version_info' => '<br />Statistics Mod Version %s', //%s = number
-	'Version_info' => 'Statistics Mod Version %s &copy; 2002 <a href="http://www.opentools.de/board">Acyd Burn</a>',
+	'Version_info' => '<br />Statistics recoded by <a href="http://www.icyphoenix.com/">Mighty Gorgon</a> based on Statistics Mod Version %s &copy; 2002 <a href="http://www.opentools.de/board">Acyd Burn</a>',
 
 // These Language Variables are available for all installed Modules
 	'Rank' => 'Rank',
@@ -84,15 +84,18 @@ $lang = array_merge($lang, array(
 	'Statistics_modules_title' => 'Statistics Module Management',
 
 	'Module_name' => 'Name',
+	'Module_file_name' => 'Module Name',
+	'Modules_order_update' => 'Modules Updated',
 	'Directory_name' => 'Directory Name',
 	'Status' => 'Status',
 	'Update_time_minutes' => 'Update Time in Minutes',
 	'Update_time_desc' => 'Time Interval (in Minutes) for refreshing the cached data with new Data.',
-	'Auto_set_update_time' => '<span class="genmed"><b>Determine and set recommended Update Times for every Installed (and Active) Module. <br />Be aware: This may take a long time.</span></b>',
+	'Auto_set_update_time' => '<span class="genmed"><b>Determine and set recommended Update Times for every Installed (and Active) Module.</b></span><br /><span class="genmed"><b>Be aware: This may take a long time.</b></span><br /><span class="genmed"><i>Hint: You can adjust modules order using drag and drop.</i></span>',
 	'Uninstall_module' => 'Uninstall Module',
 	'Uninstall_module_desc' => 'Marks the module with "not installed" status, so that you may re-install it with the install command.  It does not delete the module from your file system, you will manually need to delete the module folder to remove it completely.',
 	'Active_desc' => 'Option for if the Module is Active, so it is displayed depending on the set Permissions.',
 	'Go' => 'Go',
+	'Update_Modules' => 'Update Modules',
 
 	'Not_allowed_to_install' => 'You are not able to install this Module. Mostly this is because you haven\'t installed a Mod needed in order to run this Module. Please contact the Author of this Module if you have questions and if the Extra Info printed here makes no sense to you.',
 	'Wrong_stats_mod_version' => 'You are not able to install this Module, because your Statistics Mod Version does not match the Version required by the Module. In order to install and run the Module, you need at least Version %s of the Statistics Mod.', // replace %s with Version (2.1.3 for example)
@@ -103,7 +106,7 @@ $lang = array_merge($lang, array(
 
 // Modules
 
-	'module_name__stats_overview_section' => 'Statistics overview',
+	'module_name__stats_overview_section' => 'Statistics Overview',
 
 	'module_name_admin_statistics' => 'Administrative Statistics',
 	'Statistic' => 'Statistic',
@@ -128,14 +131,19 @@ $lang = array_merge($lang, array(
 	'Title' => 'Average Posts per User',
 	'Average_Posts' => 'Average Posts per User:',
 
-	'module_name_average_posts_per_user' => 'Average posts per user',
+	'module_name_average_posts_per_user' => 'Average Posts Per User',
 
-	'module_name_fastest_users' => 'Fastest users',
+	'module_name_age_clusters' => 'Age Clusters',
+	'AGE' => 'Age',
+	'LESS_THAN' => 'Less than',
+	'MORE_THAN' => 'More than',
+
+	'module_name_fastest_users' => 'Fastest Users',
 	'time_on_forum' => 'Days on forum',
 	'posts_day' => 'Messages per day',
 	'Statistics' => 'Statistics',
 
-	'module_name_interesting_topics' => 'Most interesting topics',
+	'module_name_interesting_topics' => 'Most Interesting Topics',
 	'Rate' => 'Rate (views/messages)',
 	'Topic' => 'Topic',
 
@@ -153,15 +161,15 @@ $lang = array_merge($lang, array(
 
 	'module_name_most_active_topics' => 'Most Active Topics',
 
-	'module_name_most_active_topicstarter' => 'Users who created most of the topics',
+	'module_name_most_active_topicstarter' => 'Most Active Topics Starter',
 
 	'module_name_most_logged_on_users' => 'Most Logged On Users',
 	'Time2' => 'Logged On Time',
 
-	'module_name_most_used_languages' => 'Used Languages',
+	'module_name_most_used_languages' => 'Languages',
 	'Language' => 'Language',
 
-	'module_name_most_used_styles' => 'Used Styles',
+	'module_name_most_used_styles' => 'Styles',
 	'Style' => 'Style',
 
 	'module_name_most_viewed_topics' => 'Most Viewed Topics',
@@ -181,16 +189,16 @@ $lang = array_merge($lang, array(
 	'Month' => 'Month',
 	'Number' => 'Number',
 
-	'module_name_new_posts_by_month' => 'Number of new posts by month',
+	'module_name_new_posts_by_month' => 'New Posts By Month',
 	'Posts_month' => 'Number of new posts by month',
 
-	'module_name_new_topics_by_month' => 'Number of new topics by month',
+	'module_name_new_topics_by_month' => 'New Topics By Month',
 	'Topics_month' => 'Number of new topics by month',
 
-	'module_name_new_users_by_month' => 'Number of new users by month',
+	'module_name_new_users_by_month' => 'New Users By Month',
 	'Signup_month' => 'Number of new users by month',
 
-	'module_name_posting_by_day_of_week' => 'Day-of-Week Traffic: Posting',
+	'module_name_posting_by_day_of_week' => 'Day-of-Week Traffic: Posts',
 	'Traffic_posts' => 'Day-of-Week Traffic: Posting',
 	'Dow' => 'Day',
 
@@ -198,10 +206,16 @@ $lang = array_merge($lang, array(
 	'Traffic_reg' => 'Day-of-Week Traffic: Registrations',
 	'New_users' => 'New Users',
 
-	'module_name_site_hist_month_top_posters' => 'Top posting users this Month',
+	'module_name_site_hist_daily_stats_current_week' => 'Current Week Daily Statistics',
+
+	'module_name_site_hist_hours_stats_current_day' => 'Current Day Statistics',
+
+	'module_name_site_hist_month_top_posters' => 'Current Month Top Posting Users',
 	'Month_Var' => '[%s]', // %s will be replaced by the current Month
 
-	'module_name_site_hist_week_top_posters' => 'Top posting users this week',
+	'module_name_site_hist_monthly_stats_current_year' => 'Current Year Monthly Statistics',
+
+	'module_name_site_hist_week_top_posters' => 'Current Week Top Posting Users',
 	'Week_Var' => '[%s]', // %s will be replaced by the current Week
 
 	'module_name_top_attachments' => 'Top Downloaded Attachments',
@@ -210,22 +224,21 @@ $lang = array_merge($lang, array(
 
 	'module_name_top_posters' => 'Top Posters',
 
-	'module_name_top_smilies' => 'Top Used Smileys',
-	'smiley_url' => 'Emoticon Image',
-	'smiley_code' => 'Emoticon Code',
+	'module_name_top_smilies' => 'Most Used Smileys',
+	'smiley_url' => 'Image',
+	'smiley_code' => 'Code',
 
-	'module_name_top_words' => 'Most used words',
+	'module_name_top_words' => 'Most Used Words',
 	'Word' => 'Word',
 	'Uses2' => 'Uses',
 
-	'module_name_topics_by_day_of_week' => 'New topics by day of the week ',
+	'module_name_topics_by_day_of_week' => 'Day-of-Week Traffic: Topics',
 	'Traffic_topics' => 'Day-of-Week Traffic: Topics',
 	'Dow' => 'Day',
 
-	'module_name_users_from_where' => 'Where our members are from',
+	'module_name_users_from_where' => 'Users Location',
 	'From_where_title' => 'Where are users from',
 	'From_where' => 'From where',
-	'How_many' => 'How many',
 
 	'module_name_users_gender' => 'Gender',
 	'Users' => 'Users',

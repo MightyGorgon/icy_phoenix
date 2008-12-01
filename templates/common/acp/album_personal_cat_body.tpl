@@ -1,7 +1,7 @@
 <form method="post" name="acp" action="{S_ALBUM_ACTION}">
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-	<td class="nav" width="100%"><span class="nav">&nbsp;&nbsp;&nbsp;<a href="{U_INDEX}" class="nav">{L_INDEX}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_ALBUM}" class="nav">{L_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_ALBUM}" class="nav">{L_PERSONAL_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_CAT_ADMIN}" class="nav">{L_PERSONAL_CAT_ADMIN}</a></span></td>
+	<td class="row1" width="100%"><b>&nbsp;&nbsp;&nbsp;<a href="{U_INDEX}" class="nav">{L_INDEX}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_ALBUM}" class="nav">{L_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_ALBUM}" class="nav">{L_PERSONAL_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_CAT_ADMIN}" class="nav">{L_PERSONAL_CAT_ADMIN}</a></b></td>
 </tr>
 </table>
 
@@ -20,7 +20,7 @@
 			<!-- BEGIN cathead -->
 		<tr>
 			<!-- BEGIN inc -->
-			<td class="row2" rowspan="{catrow.cathead.inc.ROWSPAN}" width="46">&nbsp;</td>
+			<td class="row2" rowspan="{catrow.cathead.inc.ROWSPAN}" width="46"><img src="{SPACER}" width="1" height="3" alt="" /></td>
 			<!-- END inc -->
 			<td class="{catrow.cathead.CLASS_CATLEFT}" colspan="{catrow.cathead.INC_SPAN}" {catrow.cathead.WIDTH}><span class="cattitle"><b><a href="{catrow.cathead.U_VIEWCAT}" class="cattitle">{catrow.cathead.CAT_TITLE}</a></b></span></td>
 			<td class="{catrow.cathead.CLASS_CATMIDDLE}" align="center" valign="middle"><span class="gen"><a href="{catrow.cathead.U_CAT_EDIT}" class="gen">{catrow.cathead.L_EDIT}</a></span></td>
@@ -39,14 +39,14 @@
 				<!-- END inc -->
 			<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="row2" nowrap="nowrap">&nbsp;
 				<input class="post" type="text" name="{catrow.catfoot.S_ADD_NAME}" />&nbsp;
-				<input type="submit" {DISABLE_CREATION} class="liteoption"  name="{catrow.catfoot.S_ADD_CAT_SUBMIT}" value="{L_CREATE_CATEGORY}" />
+				<input type="submit" {DISABLE_CREATION} class="liteoption" name="{catrow.catfoot.S_ADD_CAT_SUBMIT}" value="{L_CREATE_CATEGORY}" />
 			</td>
 		</tr>
 		<tr>
 			<!-- BEGIN inc -->
-			<td class="row2" width="46">&nbsp;</td>
+			<td class="row2" width="46"><img src="{SPACER}" width="1" height="3" alt="" /></td>
 			<!-- END inc -->
-			<td colspan="{catrow.catfoot.INC_SPAN_ALL}" height="1" class="spaceRow">&nbsp;</td>
+			<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td>
 		</tr>
 			<!-- END catfoot -->
 		<!-- END catrow -->

@@ -35,7 +35,7 @@ CREATE TABLE `phpbb_ctracker_config` (
 	`ct_config_name` varchar(255) NOT NULL,
 	`ct_config_value` varchar(255) NOT NULL,
 	PRIMARY KEY  (`ct_config_name`)
-	);
+);
 
 INSERT INTO `phpbb_ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('ipblock_enabled', '1');
 INSERT INTO `phpbb_ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('ipblock_logsize', '100');
@@ -161,7 +161,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_recent', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_referrers', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_rules', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_site_hist', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_shoutbox', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_viewonline', '0');
 
@@ -558,10 +557,9 @@ INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (25, 0, 1, 0, 3, 1, 1, '', 'credits', 'Credits', 'Credits', 'credits.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (26, 0, 1, 0, 3, 1, 2, '', 'viewonline', 'Who Is Online', 'Who Is Online', 'viewonline.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (27, 0, 1, 0, 3, 1, 3, '', 'statistics', 'Statistics', 'Statistics', 'statistics.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (28, 0, 1, 0, 3, 1, 4, '', 'site_hist', 'Site History', 'Site History', 'site_hist.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (29, 0, 1, 0, 4, 1, 1, '', 'memberlist', 'Memberlist', 'Memberlist', 'memberlist.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (30, 0, 1, 0, 4, 1, 2, '', 'usergroups', 'Usergroups', 'Usergroups', 'groupcp.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (31, 0, 1, 0, 4, 1, 3, '', 'staff', 'Staff', 'Staff', 'memberlist.php?mode=staff', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (28, 0, 1, 0, 4, 1, 1, '', 'memberlist', 'Memberlist', 'Memberlist', 'memberlist.php', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (29, 0, 1, 0, 4, 1, 2, '', 'usergroups', 'Usergroups', 'Usergroups', 'groupcp.php', 0, 0, 0);
+INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (30, 0, 1, 0, 4, 1, 3, '', 'staff', 'Staff', 'Staff', 'memberlist.php?mode=staff', 0, 0, 0);
 
 
 ########################################
@@ -762,7 +760,6 @@ INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_bloc
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('12', 'album', 'album', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('13', 'links', 'links', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('14', 'statistics', 'statistics', 0, 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('15', 'site_hist', 'site_hist', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('16', 'calendar', 'calendar', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('17', 'recent', 'recent', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('18', 'referrers', 'referrers', 0, 0, '');
@@ -1312,6 +1309,7 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Heise IT-Markt [Crawler]', '', 'heise-IT-Markt-Crawler', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Heritrix [Crawler]', '', 'heritrix/1.', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('JetBot', '', 'Jetbot', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Kosmix', '', 'www.kosmix.com', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('IBM Research', '', 'ibm.com/cs/crawler', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('ICCrawler - ICjobs', '', 'ICCrawler - ICjobs', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('ichiro [Crawler]', '', 'ichiro/2', '');
@@ -1342,6 +1340,7 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('SEOSearch [Crawler]', '', 'SEOsearch/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snap Bot', '', 'Snapbot/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snappy', '', 'Snappy/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Sogou', '', 'www.sogou.com', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Speedy Spider', '', 'Speedy Spider', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Steeler [Crawler]', '', 'http://www.tkl.iis.u-tokyo.ac.jp/~crawler/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Synoo', '', 'SynooBot/', '');
@@ -1452,12 +1451,127 @@ ALTER TABLE `phpbb_privmsgs_archive` ADD COLUMN `privmsgs_text` text AFTER `priv
 
 
 
+########################################
+##              BUILD 041             ##
+########################################
+CREATE TABLE `___forums___` (
+	`forum_id` smallint(5) unsigned NOT NULL default '0',
+	`cat_id` mediumint(8) unsigned NOT NULL default '0',
+	`main_type` char(1) default NULL,
+	`forum_name` varchar(150) default NULL,
+	`forum_desc` text,
+	`forum_status` tinyint(4) NOT NULL default '0',
+	`forum_order` mediumint(8) unsigned NOT NULL default '1',
+	`forum_posts` mediumint(8) unsigned NOT NULL default '0',
+	`forum_topics` mediumint(8) unsigned NOT NULL default '0',
+	`forum_last_post_id` mediumint(8) unsigned NOT NULL default '0',
+	`forum_postcount` tinyint(1) NOT NULL default '1',
+	`forum_thanks` tinyint(1) NOT NULL default '0',
+	`forum_notify` tinyint(1) unsigned NOT NULL default '1',
+	`forum_similar_topics` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_tags` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_sort_box` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_kb_mode` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_index_icons` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_rules` tinyint(1) unsigned NOT NULL default '0',
+	`forum_link` varchar(255) default NULL,
+	`forum_link_internal` tinyint(1) NOT NULL default '0',
+	`forum_link_hit_count` tinyint(1) NOT NULL default '0',
+	`forum_link_hit` bigint(20) unsigned NOT NULL default '0',
+	`icon` varchar(255) default NULL,
+	`prune_next` int(11) default NULL,
+	`prune_enable` tinyint(1) NOT NULL default '0',
+	`auth_view` tinyint(2) NOT NULL default '0',
+	`auth_read` tinyint(2) NOT NULL default '0',
+	`auth_post` tinyint(2) NOT NULL default '0',
+	`auth_reply` tinyint(2) NOT NULL default '0',
+	`auth_edit` tinyint(2) NOT NULL default '0',
+	`auth_delete` tinyint(2) NOT NULL default '0',
+	`auth_sticky` tinyint(2) NOT NULL default '0',
+	`auth_announce` tinyint(2) NOT NULL default '0',
+	`auth_globalannounce` tinyint(2) NOT NULL default '3',
+	`auth_news` tinyint(2) NOT NULL default '2',
+	`auth_cal` tinyint(2) NOT NULL default '0',
+	`auth_vote` tinyint(2) NOT NULL default '0',
+	`auth_pollcreate` tinyint(2) NOT NULL default '0',
+	`auth_attachments` tinyint(2) NOT NULL default '0',
+	`auth_download` tinyint(2) NOT NULL default '0',
+	`auth_ban` tinyint(2) NOT NULL default '3',
+	`auth_greencard` tinyint(2) NOT NULL default '5',
+	`auth_bluecard` tinyint(2) NOT NULL default '1',
+	`auth_rate` tinyint(2) NOT NULL default '-1',
+	PRIMARY KEY (`forum_id`),
+	KEY `forums_order` (`forum_order`),
+	KEY `cat_id` (`cat_id`),
+	KEY `forum_last_post_id` (`forum_last_post_id`)
+);
+
+CREATE TABLE `phpbb_forums_rules` (
+	`forum_id` smallint(5) unsigned NOT NULL default '0',
+	`rules` text NOT NULL,
+	`rules_display_title` tinyint(1) NOT NULL default '1',
+	`rules_custom_title` varchar(80) NOT NULL default '',
+	`rules_in_viewforum` tinyint(1) unsigned NOT NULL default '0',
+	`rules_in_viewtopic` tinyint(1) unsigned NOT NULL default '0',
+	`rules_in_posting` tinyint(1) unsigned NOT NULL default '0',
+	PRIMARY KEY (`forum_id`)
+);
+
+INSERT INTO `___forums___`
+SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.thank, f.forum_notify, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
+FROM `phpbb_forums` f
+ORDER BY f.forum_id;
+
+INSERT INTO `phpbb_forums_rules`
+SELECT f.forum_id, f.forum_rules, f.rules_display_title, f.rules_custom_title, f.rules_in_viewforum, f.rules_in_viewtopic, f.rules_in_posting
+FROM `phpbb_forums` f
+ORDER BY f.forum_id;
+
+RENAME TABLE `phpbb_forums` TO `_old_phpbb_forums`;
+RENAME TABLE `___forums___` TO `phpbb_forums`;
+
+UPDATE phpbb_stats_config SET config_value = 'includes/stats_modules' WHERE config_name = 'modules_dir';
+
+
+
+########################################
+##              BUILD 042             ##
+########################################
+#DELETE FROM `phpbb_cms_layout_special` WHERE `lsid` = 15;
+DELETE FROM `phpbb_cms_nav_menu` WHERE `menu_link` = 'site_hist.php';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'auth_view_site_hist';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'wide_blocks_site_hist';
+
+CREATE TABLE `___categories___` (
+	`cat_id` mediumint(8) unsigned NOT NULL auto_increment,
+	`cat_main` mediumint(8) unsigned NOT NULL default '0',
+	`cat_main_type` char(1) default NULL,
+	`cat_title` varchar(100) default NULL,
+	`cat_desc` text,
+	`icon` varchar(255) default NULL,
+	`cat_order` mediumint(8) unsigned NOT NULL default '0',
+	PRIMARY KEY (`cat_id`),
+	KEY `cat_order` (`cat_order`)
+);
+
+INSERT INTO `___categories___`
+SELECT c.cat_id, c.cat_main, c.cat_main_type, c.cat_title, c.cat_desc, c.icon, c.cat_order
+FROM `phpbb_categories` c
+ORDER BY c.cat_id;
+
+RENAME TABLE `phpbb_categories` TO `_old_phpbb_categories`;
+RENAME TABLE `___categories___` TO `phpbb_categories`;
+
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
+UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = 'attach_version';
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.2.13.40' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.2.15.42' WHERE config_name = 'ip_version';

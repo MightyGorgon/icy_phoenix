@@ -80,11 +80,28 @@ init_userprefs($userdata);
 $kb_mode = false;
 $kb_mode_append = '';
 $kb_mode_append_red = '';
-if ((!empty($_GET['kb']) || !empty($_POST['kb'])) && ($userdata['bot_id'] == false))
+$kb_mode_var = request_var('kb', '');
+if (($kb_mode_var == 'on') && ($userdata['bot_id'] == false))
 {
 	$kb_mode = true;
-	$kb_mode_append = '&amp;kb=true';
-	$kb_mode_append_red = '&kb=true';
+	$kb_mode_append = '&amp;kb=on';
+	$kb_mode_append_red = '&kb=on';
+}
+
+if ($tree['data'][$tree['keys'][POST_FORUM_URL . $forum_id]]['forum_kb_mode'] == 1)
+{
+	if ($kb_mode_var == 'off')
+	{
+		$kb_mode = false;
+		$kb_mode_append = '&amp;kb=off';
+		$kb_mode_append_red = '&kb=off';
+	}
+	else
+	{
+		$kb_mode = true;
+		$kb_mode_append = '&amp;kb=on';
+		$kb_mode_append_red = '&kb=on';
+	}
 }
 
 $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
@@ -276,7 +293,7 @@ if ($bypass)
 		{
 			$sql = "UPDATE " . FORUMS_TABLE . "
 						SET forum_link_hit = forum_link_hit + 1
-						WHERE forum_id=$forum_id";
+						WHERE forum_id = $forum_id";
 			if (!$db->sql_query($sql)) message_die(GENERAL_ERROR, 'Could not increment forum hits information', '', __LINE__, __FILE__, $sql);
 			cache_tree(true);
 		}
@@ -897,7 +914,7 @@ if ($bypass)
 
 
 	// Start add - Forum notification MOD
-	$s_watching_forum = "";
+	$s_watching_forum = '';
 
 	if($can_watch_forum)
 	{
@@ -920,21 +937,21 @@ if ($bypass)
 		if(!in_array($forum_id, $unread['always_read']['forums']))
 		{
 			$mark_as_read = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
-			$marked_as_read = '&nbsp;';
 			$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . $kb_mode_append . '&amp;always_read=set') . '">' . $lang['upi2db_always_read_forum_short'] . '</a>';
+			$marked_as_read = '';
 		}
 		else
 		{
 			$mark_as_read = '';
-			$marked_as_read = $lang['upi2db_forum_is_always_read'];
 			$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . $kb_mode_append . '&amp;always_read=unset') . '">' . $lang['upi2db_always_read_forum_unset_short'] . '</a>';
+			$marked_as_read = $lang['upi2db_forum_is_always_read'];
 		}
 	}
 	else
 	{
+		$mark_as_read = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
 		$mark_always_read = '';
 		$marked_as_read = '';
-		$mark_as_read = '<a href="' . append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
 	}
 	//<!-- END Unread Post Information to Database Mod -->
 
@@ -951,6 +968,11 @@ if ($bypass)
 	$page_title = $forum_row['forum_name'];
 	$meta_description = '';
 	$meta_keywords = '';
+	if ($userdata['session_logged_in'])
+	{
+		$breadcrumbs_links_left = $marked_as_read;
+		$breadcrumbs_links_right = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . $menu_sep_char . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . $menu_sep_char . '&nbsp;' . $mark_always_read) : '');
+	}
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	if ($kb_mode == true)
@@ -964,13 +986,41 @@ if ($bypass)
 
 	make_jumpbox(VIEWFORUM_MG);
 
-	if ($forum_row['rules_in_viewforum'])
+	$rules_bbcode = '';
+	if ($forum_row['forum_rules'])
 	{
-		$template->assign_block_vars('switch_forum_rules', array());
-		// display a title on top of the box??
-		if ($forum_row['rules_display_title'])
+		$sql = "SELECT fr.*
+			FROM " . FORUMS_RULES_TABLE . " fr
+			WHERE fr.forum_id = " . $forum_row['forum_id'] . "
+			LIMIT 1";
+		if (!($result = $db->sql_query($sql, false, 'forum_rules_')))
 		{
-			$template->assign_block_vars('switch_forum_rules.switch_display_title', array());
+			message_die(GENERAL_ERROR, 'Could not query forum rules', '', __LINE__, __FILE__, $sql);
+		}
+
+		$forum_info = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$forum_info = $row;
+		}
+		$db->sql_freeresult($result);
+
+		if (isset($forum_info['rules_in_viewforum']) && $forum_info['rules_in_viewforum'])
+		{
+			//BBcode Parsing for Olympus rules Start
+			$rules_bbcode = $forum_info['rules'];
+			$bbcode->allow_html = true;
+			$bbcode->allow_bbcode = true;
+			$bbcode->allow_smilies = true;
+			$rules_bbcode = $bbcode->parse($rules_bbcode);
+			//BBcode Parsing for Olympus rules Start
+
+			$template->assign_block_vars('switch_forum_rules', array());
+			// display a title on top of the box?
+			if ($forum_info['rules_display_title'])
+			{
+				$template->assign_block_vars('switch_forum_rules.switch_display_title', array());
+			}
 		}
 	}
 	display_index(POST_FORUM_URL . $forum_id);
@@ -979,15 +1029,8 @@ if ($bypass)
 	{
 		$template->assign_block_vars('rating_switch', array());
 	}
-	//BBcode Parsing for Olympus rules Start
-	$rules_bbcode = $forum_row['forum_rules'];
-	$bbcode->allow_html = true;
-	$bbcode->allow_bbcode = true;
-	$bbcode->allow_smilies = true;
-	$rules_bbcode = $bbcode->parse($rules_bbcode);
-	//BBcode Parsing for Olympus rules Start
 
-	if ($board_config['forum_wordgraph'] == 1)
+	if (($board_config['forum_wordgraph'] == 1) && ($forum_row['forum_tags'] == 1))
 	{
 		include(IP_ROOT_PATH . 'includes/forum_wordgraph.' . PHP_EXT);
 	}
@@ -1107,12 +1150,12 @@ if ($bypass)
 			if(($replies + 1) > $board_config['posts_per_page'])
 			{
 				$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
-				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
+				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
 
 				$times = 1;
 				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 				{
-					$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '">' . $times . '</a>';
+					$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
 					if(($times == 1) && ($total_pages > 4))
 					{
 						$goto_page .= ' ... ';
@@ -1132,21 +1175,13 @@ if ($bypass)
 				$goto_page = '';
 			}
 
-			//$view_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append);
-			if ($kb_mode == true)
+			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 			{
-				$view_topic_url =  append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;kb=true');
+				$view_topic_url = append_sid(str_replace ('--', '-', make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
 			}
 			else
 			{
-				if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
-				{
-					$view_topic_url = append_sid(str_replace ('--', '-', make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
-				}
-				else
-				{
-					$view_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append);
-				}
+				$view_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append);
 			}
 
 			$topic_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']) : colorize_username($topic_rowset[$i]['user_id']);
@@ -1182,7 +1217,7 @@ if ($bypass)
 			$calendar_title = get_calendar_title($topic_rowset[$i]['topic_calendar_time'], $topic_rowset[$i]['topic_calendar_duration']);
 			if (!empty($calendar_title))
 			{
-				//$calendar_title = '</a></span>' . $calendar_title . '<span class="topictitle">';
+				//$calendar_title = '</a></span>' . $calendar_title . '<span class="topiclink">';
 				$calendar_title = '<span class="gensmall">' . $calendar_title . '</span>';
 			}
 			//$topic_title .= $calendar_title;
@@ -1287,11 +1322,11 @@ if ($bypass)
 	}
 
 	// Sort Topics - BEGIN
-	if ($board_config['show_alpha_bar'])
+	if (($board_config['show_alpha_bar'] == 1) && ($forum_row['forum_sort_box'] == 1))
 	{
 		// Begin Configuration Section
 		// Change this to whatever you want the divider to be. Be sure to keep both apostrophies.
-		$divider = ' &bull ';
+		$divider = ' &bull; ';
 		$divider_letters = ' ';
 		// End Configuration Section
 

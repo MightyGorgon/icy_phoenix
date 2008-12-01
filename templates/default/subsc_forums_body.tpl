@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_PROFILE}">{L_CPL_NAV}</a>{NAV_SEP}<a href="{U_WATCHED_TOPICS}" class="nav-current">{L_SUBSCFORUMS}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SUBSCFORUMS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<!-- BEGIN subsc_forums -->
@@ -27,7 +17,7 @@
 	</tr>
 	<tr>
 		<td class="row1 row-center" width="100%" colspan="5">
-			<span class="topictitle">{L_NO_SUBSCRIBED_FORUMS}</span>
+			<span class="topiclink">{L_NO_SUBSCRIBED_FORUMS}</span>
 		</td>
 	</tr>
 	<!-- END subsc_no_forums -->

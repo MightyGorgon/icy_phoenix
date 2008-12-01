@@ -1,7 +1,7 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" nowrap="nowrap">
-		<span class="topictitle">{TOPIC_TITLE}<hr /></span>
+		<span class="topiclink">{TOPIC_TITLE}<hr /></span>
 		<span class="gensmall">
 			<b>{L_CALENDAR_EVENT}:</b>&nbsp;{CALENDAR_EVENT}<br />
 			<b>{L_AUTHOR}:</b>&nbsp;{AUTHOR}<br />

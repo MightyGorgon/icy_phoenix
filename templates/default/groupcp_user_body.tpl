@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs.tpl -->
-
 <!-- BEGIN switch_groups_joined -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_YOU_BELONG_GROUPS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN mg_row -->

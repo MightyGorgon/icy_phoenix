@@ -387,11 +387,33 @@ $page_title = $thiscat['cat_title'];
 $meta_description = $lang['Album'] . ' - ' . $thiscat['cat_title'] . ' - ' . $cat_desc;
 $meta_keywords = $lang['Album'] . ', ' . $thiscat['cat_title'] . ', ' . $cat_desc . ', ';
 
+
 if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 {
 	if( empty($moderators_list) )
 	{
 		$moderators_list = $lang['None'];
+	}
+
+	album_read_tree($album_user_id);
+	$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav', $album_user_id);
+	if ($album_nav_cat_desc != '')
+	{
+		$nav_server_url = create_server_url();
+		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
+		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+	}
+
+	if (($album_config['show_slideshow'] == 1) && ($total_pics > 0))
+	{
+		$first_pic_id = album_get_first_pic_id($cat_id);
+		$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
+		$slideshow_link_full = '[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]';
+		$breadcrumbs_links_right = $slideshow_link_full;
+	}
+	else
+	{
+		$slideshow_link_full = '';
 	}
 
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
@@ -440,12 +462,17 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	}
 	// END thumbnails table
 
+	// MOVED UP
+	/*
 	album_read_tree($album_user_id);
 	$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav', $album_user_id);
 	if ($album_nav_cat_desc != '')
 	{
+		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
+		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
+	*/
 
 	// Maybe we should also add a new check to see if user really can upload or not
 	// this is not even in the original code by smartor
@@ -468,8 +495,10 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		'L_UPLOAD_PIC' => $lang['Upload_Pic'],
 		'U_UPLOAD_PIC' => $upload_link,
 		'UPLOAD_PIC_IMG' => $upload_img,
+		'UPLOAD_LINK' => $upload_link,
 		'UPLOAD_FULL_LINK' => $upload_full_link,
 
+		'JUPLOAD_LINK' => $jupload_link,
 		'JUPLOAD_FULL_LINK' => $jupload_full_link,
 		'U_JUPLOAD_PIC' => append_sid(album_append_uid('album_jupload.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'JUPLOAD_PIC_IMG' => $images['jupload_pic'],
@@ -490,9 +519,11 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		'L_DOWNLOAD_PAGE' => $lang['Download_page'],
 		'U_DOWNLOAD' => $download_link,
 		'DOWNLOAD_PIC_IMG' => $download_img,
+		'DOWNLOAD_LINK' => $download_link,
 		'DOWNLOAD_FULL_LINK' => $download_full_link,
 		'U_DOWNLOAD_ALL' => $download_all_link,
 		'DOWNLOAD_ALL_PIC_IMG' => $download_all_img,
+		'DOWNLOAD_ALL_LINK' => $download_all_link,
 		'DOWNLOAD_ALL_FULL_LINK' => $download_all_full_link,
 
 		'L_CATEGORY' => $lang['Category'],

@@ -198,4 +198,8 @@ if($can_reply)
 	$this->vars['CA_QUICK_REPLY_FORM'] = $str;
 }
 ?>
+<!-- IF IS_KB_MODE -->
+<!-- INCLUDE viewtopic_kb_body.tpl -->
+<!-- ELSE -->
 <!-- INCLUDE viewtopic_body.tpl -->
+<!-- ENDIF -->

@@ -316,6 +316,8 @@ if ($view == 'todo')
 		$page_title = $lang['Dl_mod_todo'];
 		$meta_description = '';
 		$meta_keywords = '';
+		$nav_server_url = create_server_url();
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?view=todo') . '">' . $lang['Dl_mod_todo'] . '</a>';
 		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('body' => 'dl_todo_body.tpl'));
@@ -357,8 +359,8 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 		{
 			$code = '';
 			$code_string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ123456789';
-			srand((double)microtime()*1000000);
-			mt_srand((double)microtime()*1000000);
+			srand((double)microtime() * 1000000);
+			mt_srand((double)microtime() * 1000000);
 
 			for ($i = 0; $i < 5; $i++)
 			{
@@ -388,6 +390,11 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 				message_die(GENERAL_ERROR, 'Could not save confirmation code for this download', '', __LINE__, __FILE__, $sql);
 			}
 
+			$page_title = $lang['Downloads'];
+			$meta_description = '';
+			$meta_keywords = '';
+			$nav_server_url = create_server_url();
+			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '" class="nav-current">' . $lang['Downloads'] . '</a>';
 			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 			$template->set_filenames(array('code_body' => 'dl_report_code_body.tpl'));
@@ -600,6 +607,8 @@ if ($view == 'bug_tracker')
 			$page_title = $lang['Dl_bug_tracker'];
 			$meta_description = '';
 			$meta_keywords = '';
+			$nav_server_url = create_server_url();
+			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?view=bug_tracker') . '">' . $lang['Dl_bug_tracker'] . '</a>';
 			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_bug_tracker.' . PHP_EXT);
 		}
@@ -625,6 +634,8 @@ if ($view == 'stat')
 	$page_title = $lang['Dl_stats'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?view=stat') . '">' . $lang['Dl_stats'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_stats.' . PHP_EXT);
 }
@@ -658,6 +669,8 @@ elseif ($view == 'user_config')
 	$page_title = $lang['Dl_config'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?view=user_config') . '">' . $lang['Dl_config'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_user_config.' . PHP_EXT);
 }
@@ -739,6 +752,8 @@ elseif ($view == 'detail')
 	$page_title = $lang['Download'] . ' - ' . $dl_files['description'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $dl_files['description'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_details.' . PHP_EXT);
 }
@@ -749,6 +764,8 @@ elseif ($view == 'search')
 	$page_title = $lang['Search'] . ' ' . $lang['Downloads'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?view=search') . '">' . $lang['Search'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_search.' . PHP_EXT);
 }
@@ -757,20 +774,15 @@ elseif ($view == 'popup')
 	//display the popup for a new or changed download
 	$gen_simple_header = true;
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
 	$template->set_filenames(array('body' => 'privmsgs_popup.tpl'));
-
 	$template->assign_vars(array(
 		'L_CLOSE_WINDOW' => $lang['Close_window'],
 		'L_MESSAGE' => sprintf($lang['New_download'], '<a href="javascript:jump_to_inbox();">', '</a>'),
 		'U_PRIVATEMSGS' => append_sid('downloads.' . PHP_EXT)
 		)
 	);
-
 	$template->pparse('body');
-
 	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
 	exit;
 }
 elseif ($view == 'load')
@@ -1183,6 +1195,8 @@ elseif ($view == 'upload')
 	$page_title = $lang['Dl_upload'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?view=upload') . '">' . $lang['Dl_upload'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	include(IP_ROOT_PATH . DL_ROOT_PATH . 'includes/dl_upload.' . PHP_EXT);
 }
@@ -1421,11 +1435,13 @@ if (!$dl_config['sort_preform'] && $userdata['user_dl_sort_opt'])
 }
 
 //create download overall view
-if ($view == 'overall' && count($index))
+if (($view == 'overall') && count($index))
 {
 	$page_title = $lang['Dl_overview'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT . '?view=overall') . '">' . $lang['Dl_overview'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$sql = "SELECT dl_id, user_id FROM " . DL_RATING_TABLE;
@@ -1623,9 +1639,12 @@ if (empty($view) && !$inc_module)
 	}
 
 	$path_dl_array = array();
-	$page_title = $lang['Downloads'] . (($cat) ? ' ' . $dl_mod->dl_nav($cat, 'text') : '');
+	$dl_nav = $cat ? ($dl_mod->dl_nav($cat, 'text')) : '';
+	$page_title = $lang['Downloads'] . $dl_nav;
 	$meta_description = '';
 	$meta_keywords = '';
+	$nav_server_url = create_server_url();
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('downloads.' . PHP_EXT) . '">' . $lang['Downloads'] . '</a>' . (($dl_nav != '') ? ('<a class="nav-current" href="#">' . $dl_nav . '</a>'): '');
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	$path_dl_array = array();
 
@@ -1867,8 +1886,11 @@ if (empty($view) && !$inc_module)
 		{
 			if ($dl_mod->user_auth($cat, 'auth_up'))
 			{
+				$dl_upload_link = append_sid('downloads.' . PHP_EXT . '?view=upload&amp;cat_id=' . $cat);
 				$template->assign_vars(array(
-					'DL_UPLOAD' => '<a href="' . append_sid('downloads.' . PHP_EXT . '?view=upload&amp;cat_id=' . $cat) . '"><img src="' . $images['Dl_upload'] . '" border="0" alt="' . $lang['Dl_upload'] . '"  title="' . $lang['Dl_upload'] . '" /></a>&nbsp;&nbsp;&nbsp;'
+					'DL_UPLOAD_URL' => $dl_upload_link,
+					'DL_UPLOAD_LANG' => $lang['Dl_upload'],
+					'DL_UPLOAD' => '<a href="' . $dl_upload_link . '"><img src="' . $images['Dl_upload'] . '" border="0" alt="' . $lang['Dl_upload'] . '"  title="' . $lang['Dl_upload'] . '" /></a>&nbsp;&nbsp;&nbsp;'
 					)
 				);
 			}

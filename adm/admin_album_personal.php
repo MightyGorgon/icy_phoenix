@@ -33,9 +33,7 @@ require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '
 
 if( !isset($_POST['submit']) )
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'album_personal_body.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'album_personal_body.tpl'));
 
 	// Get the list of phpBB usergroups
 	$sql = "SELECT group_id, group_name

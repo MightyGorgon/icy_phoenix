@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_PROFILE}" >{L_CPL_NAV}</a>{NAV_SEP}<a href="#" class="nav-current">{L_BOOKMARKS}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;{L_SEARCH_MATCHES}
-	</div>
-</div>{IMG_TBR}
-
 {CPL_MENU_OUTPUT}
 <form method="post" action="{S_BM_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_BOOKMARKS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -29,7 +19,7 @@
 		<span class="forumlink"><a href="{searchresults.U_VIEW_FORUM}" class="forumlink">{searchresults.FORUM_NAME}</a></span><br />
 	</td>
 	<td class="row1h row-forum" onclick="window.location.href='{searchresults.U_VIEW_TOPIC}'">
-		<span class="topiclink">{searchresults.NEWEST_POST_IMG}{searchresults.TOPIC_TYPE}<a href="{searchresults.U_VIEW_TOPIC}" class="topictitle">{searchresults.TOPIC_TITLE}</a></span>
+		<span class="topiclink">{searchresults.NEWEST_POST_IMG}{searchresults.TOPIC_TYPE}<a href="{searchresults.U_VIEW_TOPIC}" class="topiclink">{searchresults.TOPIC_TITLE}</a></span>
 		<!-- IF searchresults.GOTO_PAGE -->
 		<span class="gotopage">{searchresults.GOTO_PAGE}</span>
 		<!-- ENDIF -->

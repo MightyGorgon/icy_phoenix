@@ -51,7 +51,7 @@
 	border: 1px solid #bbb;
 	height: 14px;
 	width: 100%;
-	background: url(cms/images/bg_menu.gif) center repeat-x;
+	background: url("cms/images/bg_menu.gif") center repeat-x;
 	padding: 4px 0px;
 	margin: 0px;
 	text-align: left;
@@ -71,7 +71,7 @@
 
 .chromestyle ul li a:hover {
 	text-decoration: none;
-	background: url(cms/images/bg_menu_hover.gif) center center repeat-x;
+	background: url("cms/images/bg_menu_hover.gif") center center repeat-x;
 	border: solid 1px #cc3333;
 }
 

@@ -1,9 +1,16 @@
 <h1>{L_STATS_CONFIG}</h1>
-<table class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+
+<br />
+
+<!-- IF MESSAGE -->
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th>{L_MESSAGES}</th></tr>
 <tr><td class="row1 row-center"><span class="genmed"><strong>{MESSAGE}</strong></td></tr>
 <tr><td class="cat" colspan="1">&nbsp;</td></tr>
 </table>
+<!-- ENDIF -->
+
+<br />
 
 <form action="{S_ACTION}" method="post">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">

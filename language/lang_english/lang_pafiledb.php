@@ -234,7 +234,7 @@ $lang = array_merge($lang, array(
 // MX Addon
 	'Deletefile' => 'Delete file',
 	'Editfile' => 'Edit file',
-	'pa_MCP' => '[ModeratorCP]',
+	'pa_MCP' => 'ModeratorCP',
 	'Click_return_not_validated' => 'Click %sHere%s to return to the previous page',
 	)
 );

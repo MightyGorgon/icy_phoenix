@@ -1,13 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_ATTACHMENTS}" class="nav-current">{L_DOWNLOADS}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">{CURRENT_TIME}</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <form method="post" action="{S_MODE_ACTION}">
 <table class="empty-table" width="100%" align="center" cellspacing="0">
 <tr>

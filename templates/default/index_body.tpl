@@ -1,34 +1,3 @@
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<?php
-		global $nav_cat_desc;
-		if ($nav_cat_desc == '')
-		{
-		?>
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}" class="nav-current">{L_INDEX}</a>
-		<?php
-		}
-		else{
-		?>
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}
-		<?php
-		}
-		?>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">
-			<!-- IF S_LOGGED_IN --><a href="{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a><br /><!-- ENDIF -->
-			{CURRENT_TIME}
-		</div>
-		<!-- IF S_LOGGED_IN -->
-		<a href="{U_MARK_READ}">{L_MARK_FORUMS_READ}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a><br />
-		<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a>&nbsp;|&nbsp;<a href="{U_RECENT}" class="gensmall">{L_RECENT}</a>
-		<!-- ENDIF -->
-
-		<!-- IF not S_LOGGED_IN --><a href="{U_RECENT}" class="gensmall">{L_RECENT}</a>&nbsp;|&nbsp;<a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a><!-- ENDIF -->
-	</div>
-</div>{IMG_TBR}
-
 <!-- BEGIN switch_show_news -->
 <div align="center">{XS_NEWS}</div>
 <!-- END switch_show_news -->

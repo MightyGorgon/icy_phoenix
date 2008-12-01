@@ -1,0 +1,31 @@
+# This file will contain the information about your module
+# for the statistics parser to use.
+#
+# You can make comments by using #
+# Note that the text must be on a single line for the parser
+# to read it!  Excluding the extra install info area.
+#
+
+# Module Name
+[name] Most Active Topicstarter
+
+# your name
+[author] RustyDragon
+
+# your email
+[email] dev@RustyDragon.com
+
+# your webpage url
+[url] http://www.RustyDragon.com
+
+# module version
+[version] 1.2
+
+# Default Update Time (This Value can be skipped, you are allowed to delete this thing from your info.txt)
+[update_time] 1440
+
+# extra info for the user, everything below
+# this block will be included, regardless if
+# you use a # even.
+[extra_info]
+Made for Statistics mod version 2.1.2

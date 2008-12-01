@@ -1,5 +1,3 @@
-<!-- INCLUDE breadcrumbs.tpl -->
-
 <script type="text/javascript">
 
 	function writediv(dest_div, dest_string)

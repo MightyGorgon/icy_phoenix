@@ -5,7 +5,7 @@
 /* main selectors */
 body {
 	background: #ffffff;
-	/*background: #ffffff url(images/bg_body.gif) top left repeat-x;*/
+	/*background: #ffffff url('images/bg_body.gif') top left repeat-x;*/
 	margin: 0px 0px 0px 0;
 	padding: 0px 10px 0px;
 }
@@ -26,10 +26,10 @@ body {
 
 #top_logo{
 	border: 0px solid #ffffff;
-	background: url(images/top_header.png) repeat;
-	/* background: url(images/top_header_ts.png) repeat; */
+	background: url('images/top_header.png') repeat;
+	/* background: url('images/top_header_ts.png') repeat; */
 /* MG XMas */
-	/*background: url(images/xmas/xmas_header.png);*/
+	/*background: url('images/xmas/xmas_header.png');*/
 /* MG XMas */
 	height: 150px;
 }
@@ -42,18 +42,18 @@ body {
 #bottom_logo{
 	border: 0px solid #ffffff;
 	/*border-top: 1px solid #880000;*/
-	background: url(images/bg_hdr.gif) repeat;
+	background: url('images/bg_hdr.gif') repeat;
 	/*height: 150px;*/
 }
 
 .leftshadow{
-	background: url(images/shadow_left.gif) repeat-y;
+	background: url('images/shadow_left.gif') repeat-y;
 	width: 9px;
 	vertical-align: top;
 }
 
 .rightshadow{
-	background: url(images/shadow_right.gif) repeat-y;
+	background: url('images/shadow_right.gif') repeat-y;
 	width: 9px;
 	vertical-align: top;
 }
@@ -102,7 +102,7 @@ hr {
 	font-weight: bold;
 	color: #113355;
 	height: 25px;
-	background: #ffffff url(images/bg_th.gif) top left repeat-x;
+	background: #ffffff url('images/bg_th.gif') top left repeat-x;
 	/*
 	border-top: solid 1px #113355;
 	border-bottom: solid 1px #113355;
@@ -116,7 +116,7 @@ hr {
 .forum-buttons a:hover, .forum-buttons a:active { color: #cc3333; font-weight: bold; text-decoration: none; vertical-align: top; }
 
 .forum-buttons2 {
-	background: #ffffff url(images/bg_th.gif) top left repeat-x;
+	background: #ffffff url('images/bg_th.gif') top left repeat-x;
 	color: #225566;
 	font-weight: bold;
 	font-size: 11px;
@@ -156,7 +156,7 @@ ul#nav li {
 }
 
 ul#nav a {
-	background: #444444 url(images/bg_hdr1_orange.gif) top left repeat-x;
+	background: #444444 url('images/bg_hdr1_orange.gif') top left repeat-x;
 	color: #ffeedd;
 	font-weight: bold;
 	text-decoration: none;
@@ -166,13 +166,13 @@ ul#nav a {
 }
 
 ul#nav a:hover {
-	background: #ffddee url(images/bg_hdr1_blue.gif) top left repeat-x;
+	background: #ffddee url('images/bg_hdr1_blue.gif') top left repeat-x;
 	color: #225566;
 	font-weight: bold;
 }
 
 ul#nav li.activelink a, ul#nav li.activelink a:hover {
-	background: #e8eef8 url(images/tbl_h_c.gif) top left repeat-x;
+	background: #e8eef8 url('images/tbl_h_c.gif') top left repeat-x;
 	color: #225566;
 	font-weight: bold;
 }
@@ -183,7 +183,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 #copyright {
 	padding-left: 4px;
 	padding-right: 4px;
-	background-image: url(images/bg_copyright.gif);
+	background-image: url('images/bg_copyright.gif');
 	border-bottom: solid 2px #113355;
 	border-top: solid 1px #444444;
 	font-size: 9px;
@@ -239,7 +239,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 	/*margin: 5px 0;*/
 }
 
-.row1, .row2, .row3, .row4, .row1h, .row1h-new, .row2h, .row3h, .row1hHover, .row1h-newHover {
+.row1, .row2, .row3, .row4, .row1h, .row1h-new, .row1hHover, .row1h-newHover, .row2h, .row2h-new, .row2hHover, .row2h-newHover, .row3h {
 	border: solid 1px #ffffff;
 	border-right-color: #dddddd;
 	border-bottom-color: #dddddd;
@@ -250,7 +250,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 	background-color: #f8f8f8;
 }
 
-.row2, .row2h {
+.row2, .row2h, .row2h-new, .row2hHover, .row2h-newHover {
 	background-color: #f4f4f4;
 }
 
@@ -267,7 +267,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 }
 
 .row5bg {
-	background: #444444 url(images/bg_hdr.gif);
+	background: #444444 url('images/bg_hdr.gif');
 	border-width: 1px 0px 1px 0px;
 	border-bottom: 1px solid #113355;
 	border-top: 1px solid #113355;
@@ -316,28 +316,30 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 	vertical-align: top;
 }
 
-.row1h:hover, .row1hHover {
-	/*background: #f0f0f0 url(images/bg_row_hover.gif) bottom right no-repeat;*/
-	background: #ffffdd url(images/bg_row_hover.gif) bottom right no-repeat;
+.row1h:hover, .row1hHover, .row1h-new:hover, .row1h-newHover,
+.row2h:hover, .row2hHover, .row2h-new:hover, .row2h-newHover {
 	border-top-color: #f8f8f8;
 	border-left-color: #f8f8f8;
 	border-bottom-color: #cccccc;
 	border-right-color: #cccccc;
 }
 
-.row1h-new:hover, .row1h-newHover {
-	/*background: #f0f0f0 url(images/bg_row_hover_new.gif) bottom right no-repeat;*/
-	background: #ffffdd url(images/bg_row_hover_new.gif) bottom right no-repeat;
-	border-top-color: #f8f8f8;
-	border-left-color: #f8f8f8;
-	border-bottom-color: #cccccc;
-	border-right-color: #cccccc;
+.row1h:hover, .row1hHover, .row2h:hover, .row2hHover {
+	/*background: #f0f0f0 url('images/bg_row_hover.gif') bottom right no-repeat;*/
+	background: #ffffdd url('images/bg_row_hover.gif') bottom right no-repeat;
+	/*border-right: solid 2px #225599;*/
+}
+
+.row1h-new:hover, .row1h-newHover, .row2h-new:hover, .row2h-newHover {
+	/*background: #e4e8eb url('images/bg_row_hover_new.gif') bottom right no-repeat;*/
+	background: #ffdddd url('images/bg_row_hover_new.gif') bottom right no-repeat;
+	/*border-right: solid 2px #cc1144;*/
 }
 
 .forumline div.row1, .forumline p.row1, .forumlinenb div.row1, .forumlinenb p.row1 { text-align: left; padding: 3px; }
 
 .row1g, .row1g-left, .row1g-left-top {
-	background: #ffffff url(images/bg_post.gif) top left repeat-x;
+	background: #ffffff url('images/bg_post.gif') top left repeat-x;
 	border: solid 1px #ffffff;
 	border-right-color: #dddddd;
 	border-bottom-color: #dddddd;
@@ -354,7 +356,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 }
 
 .forumline th, .forumlinenb th {
-	background: #ffffff url(images/bg_th.gif) top left repeat-x;
+	background: #ffffff url('images/bg_th.gif') top left repeat-x;
 	color: #225566;
 	font-weight: bold;
 	font-size: 11px;
@@ -379,7 +381,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 }
 
 .forumline .row-header, .forumlinenb .row-header {
-	background: #C8C8C8 url(images/bg_th.gif);
+	background: #c8c8c8 url('images/bg_th.gif');
 	border: solid 1px #dddddd;
 	border-right-color: #dddddd;
 	border-bottom-color: #dddddd;
@@ -392,9 +394,9 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 .forumline p.row-header, .forumlinenb p.row-header { height: 25px; }
 
 .forumline .row-header span, .forumlinenb .row-header span {
-	background: url(images/little_box.gif) no-repeat left;
+	background: url('images/little_box.gif') no-repeat left;
 /* MG XMas */
-	/*background: url(images/xmas/little_box.gif) top left no-repeat;*/
+	/*background: url('images/xmas/little_box.gif') top left no-repeat;*/
 /* MG XMas */
 	padding-left: 24px;
 	color: #225566;
@@ -427,7 +429,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 }
 
 .catBottom, .cat, .catLeft, .catRight {
-	background: #ffffff url(images/bg_catbottom.gif) top left repeat-x;
+	background: #ffffff url('images/bg_catbottom.gif') top left repeat-x;
 	text-align: center;
 	border: solid 1px #ffffff;
 	border-right-color: #dddddd;
@@ -439,7 +441,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 .forumline td.catBottom, .forumlinenb td.catBottom { padding: 1px; }
 
 .spaceRow {
-	background: #113355 url(images/bg_spacerow.gif);
+	background: #113355 url('images/bg_spacerow.gif');
 	border: solid 1px #ffffff;
 	border-right-color: #dddddd;
 	border-bottom-color: #dddddd;
@@ -449,62 +451,64 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 
 .forumline td.spaceRow, .forumlinenb td.spaceRow { padding: 0; }
 
-.roundedtop {
+/* === Tables === */
+
+.tbl {
 	margin-top: 5px;
-	margin-bottom: 0px;
-}
-
-.roundedtop td {
-	height: 29px;
-	white-space: nowrap;
-	/*
-	background: none;
-	*/
-}
-
-.topcorners {
-	vertical-align: bottom;
-	width: 27px;
-	height: 29px;
-}
-
-.roundedhl {
-	background: url(images/tbl_h_l.gif) no-repeat;
-}
-
-.roundedhc {
-	background: url(images/tbl_h_c.gif) bottom left repeat-x;
-/* MG XMas */
-	/*background: url(images/xmas/tbl_h_c.gif) bottom left repeat-x;*/
-/* MG XMas */
-}
-
-.roundedhr {
-	background: url(images/tbl_h_r.gif) no-repeat;
-}
-
-.roundedfl {
-	background: url(images/tbl_f_l.gif) no-repeat;
-}
-
-.roundedfc {
-	background: url(images/tbl_f_c.gif) top left repeat-x;
-}
-
-.roundedfr {
-	background: url(images/tbl_f_r.gif) no-repeat;
-}
-
-.roundedbottom {
-	margin-top: 0px;
 	margin-bottom: 5px;
+}
+
+.tbl-title {
+	color: #113355;
+	margin-top: 5px;
+}
+
+.tbl-h-c {
+	background: url('images/tbl_h_c.gif') bottom left repeat-x;
+	height: 29px;
+	font-weight: bold;
+	/*font-size: 1.3em;*/
+	text-align: center;
+	vertical-align: middle;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.tbl-h-l {
+	background: url('images/tbl_h_l.gif') bottom left no-repeat;
+	padding-left: 27px;
+}
+
+.tbl-h-r {
+	background: url('images/tbl_h_r.gif') bottom right no-repeat;
+	padding-right: 27px;
+}
+
+.tbl-f-c {
+	background: url('images/tbl_f_c.gif') bottom left repeat-x;
+	height: 12px;
+	font-size: 0.1em;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.tbl-f-l {
+	background: url('images/tbl_f_l.gif') bottom left no-repeat;
+	padding-left: 10px;
+}
+
+.tbl-f-r {
+	background: url('images/tbl_f_r.gif') bottom right no-repeat;
+	padding-right: 10px;
 }
 
 /* navigation */
 .nav-header {
-	background: #e8eef8 url(images/bg_nav1.gif);
+	background: #e8eef8 url('images/bg_nav1.gif');
 /* MG XMas */
-	/*background: #e8eef8 url(images/xmas/bg_nav1.gif);*/
+	/*background: #e8eef8 url('images/xmas/bg_nav1.gif');*/
 /* MG XMas */
 	color: #888888;
 	font-size: 12px;
@@ -514,7 +518,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 }
 
 .nav-header2 {
-	background-image: url(images/bg_nav1.gif);
+	background-image: url('images/bg_nav1.gif');
 	color: #888888;
 	font-size: 12px;
 	font-weight: bold;
@@ -525,7 +529,7 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 .nav-links {
 	color: #888888;
 	text-align: right;
-	background: #ffffff url(images/bg_nav2.gif) top left repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top left repeat-x;
 	padding: 3px 5px;
 	font-size: 10px;
 	line-height: 1.4em;
@@ -630,7 +634,7 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 	color: #225566;
 	border: #888888 1px solid;
 	padding: 1px;
-	background: #ffffff url(images/bg_nav2.gif) top left repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top left repeat-x;
 }
 
 .pagination a:hover, .pagination a:active {
@@ -643,7 +647,7 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 	color: #225566;
 	border: #888888 1px solid;
 	padding: 1px;
-	background: #ffffff url(images/bg_nav2.gif) top left repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top left repeat-x;
 }
 
 .gotopage a:hover, .gotopage a:active {
@@ -663,9 +667,9 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 }
 
 .row-post-author, .row-post {
-	background: #ffffff url(images/bg_post.gif) top left repeat-x;
+	background: #ffffff url('images/bg_post.gif') top left repeat-x;
 /* MG XMas */
-	/*background: #ffffff url(images/xmas/bg_post.gif) top left repeat-x;*/
+	/*background: #ffffff url('images/xmas/bg_post.gif') top left repeat-x;*/
 /* MG XMas */
 	border: solid 1px #ffffff;
 	border-right-color: #dddddd;
@@ -729,7 +733,7 @@ a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: 
 	font-size: 10px;
 	line-height: 12px;
 	color: #666666;
-	background: url(images/bg_postbottom.gif);
+	background: url('images/bg_postbottom.gif');
 	white-space: nowrap;
 	padding: 1px;
 }
@@ -768,7 +772,7 @@ blockquote {
 	margin: 5px 20px;
 	width: auto;
 	border: solid 1px #cccccc;
-	background: #ffffff url(images/bg_quote_content.gif) bottom right no-repeat;
+	background: #ffffff url('images/bg_quote_content.gif') bottom right no-repeat;
 	padding: 5px;
 	font-size: 12px;
 }
@@ -796,7 +800,7 @@ blockquote {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-weight: normal;
 	color: #808080;
-	background: #ffffff url(images/bg_quote_header.gif) top left no-repeat;
+	background: #ffffff url('images/bg_quote_header.gif') top left no-repeat;
 }
 
 .post-text .code {
@@ -822,7 +826,7 @@ blockquote {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-weight: normal;
 	color: #808080;
-	background: #ffffff url(images/bg_code_header.gif) top left no-repeat;
+	background: #ffffff url('images/bg_code_header.gif') top left no-repeat;
 }
 
 .post-text .code a, .post-text .code a:visited {
@@ -901,7 +905,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 input.post, input.mainoption, input.altoption, input.liteoption {
-	background: #f8f8f8 url(images/bg_input.gif) top left repeat-x;
+	background: #f8f8f8 url('images/bg_input.gif') top left repeat-x;
 }
 
 input.post, * html input.post {
@@ -926,19 +930,19 @@ input.liteoption, * html input.liteoption {
 }
 
 input.post:hover, input.mainoption:hover, input.altoption:hover, input.liteoption:hover {
-	background: #fafafa url(images/bg_input.gif) top left repeat-x;
+	background: #fafafa url('images/bg_input.gif') top left repeat-x;
 	border: solid 1px #cc3333;
 	color: #cc3333;
 }
 
 input.post:focus, input.mainoption:focus, input.altoption:focus, input.liteoption:focus {
-	background: #e7e7e7 url(images/bg_input.gif) top left repeat-x;
+	background: #e7e7e7 url('images/bg_input.gif') top left repeat-x;
 	border: solid 1px #ff5500;
 	color: #333333;
 }
 
 input.button {
-	background: #ffffff url(images/bg_nav2.gif) top left repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top left repeat-x;
 	border: solid 1px #bbbbbb;
 	border-left-color: #cccccc;
 	border-top-color: #cccccc;
@@ -977,7 +981,7 @@ select option {
 	padding: 40px 60px;
 	font-size: 12px;
 	font-weight: bold;
-	background: #ffffff url(images/bg_post.gif) top left repeat-x;
+	background: #ffffff url('images/bg_post.gif') top left repeat-x;
 	border: solid 1px #444444;
 	color: #113355;
 	text-decoration: none;
@@ -995,7 +999,7 @@ select option {
 
 /* News Block */
 .forumline .news-header, .forumlinenb .news-header {
-	background: #c8c8c8 url(images/bg_th.gif);
+	background: #c8c8c8 url('images/bg_th.gif');
 	border: solid 1px #dddddd;
 	border-right-color: #dddddd;
 	border-bottom-color: #dddddd;
@@ -1006,9 +1010,9 @@ select option {
 }
 
 .forumline .news-header span, .forumlinenb .news-header span {
-	background: url(images/little_box.gif) no-repeat left;
+	background: url('images/little_box.gif') no-repeat left;
 /* MG XMas */
-	/*background: url(images/xmas/little_box.gif) top left no-repeat;*/
+	/*background: url('images/xmas/little_box.gif') top left no-repeat;*/
 /* MG XMas */
 	padding-left: 24px;
 	color: #225566;
@@ -1043,7 +1047,7 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 .activity-links {
 	color: #888888;
 	text-align: right;
-	background: #ffffff url(images/bg_nav2.gif) top left repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top left repeat-x;
 	padding: 8px 30px 0px 10px;
 	font-size: 10px;
 	line-height: 1.4em;
@@ -1289,22 +1293,29 @@ abbr, acronym {
 }
 
 #dropmenudiv a:hover { /*hover background color*/
-	background: #F0F0F0 url(images/bg_row_hover.gif) bottom right no-repeat;
+	background: #F0F0F0 url('images/bg_row_hover.gif') bottom right no-repeat;
 }
 
-.upi2db_unread_color{
+/* UPI2DB */
+.upi2db_unread_color {
+	padding: 2px;
+	background-color: #ffdddd;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #ff0000;
 }
 
-.upi2db_edit_color{
+.upi2db_edit_color {
+	padding: 2px;
+	background-color: #ffffdd;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #ffff00;
 }
 
-.upi2db_mark_color{
+.upi2db_mark_color {
+	padding: 2px;
+	background-color: #ddffdd;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #33cc33;

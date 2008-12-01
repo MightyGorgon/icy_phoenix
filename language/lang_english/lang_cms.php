@@ -217,6 +217,7 @@ $lang = array_merge($lang, array(
 	'cms_block_random_quote' => 'Random Quote',
 	'cms_block_random_topics' => 'Random Topics',
 	'cms_block_random_topics_ver' => 'Random Topics',
+	'cms_block_random_user' => 'Random User',
 	'cms_block_recent_articles' => 'Recent Articles',
 	'cms_block_recent_topics' => 'Recent Topics',
 	'cms_block_recent_topics_wide' => 'Recent Topics',

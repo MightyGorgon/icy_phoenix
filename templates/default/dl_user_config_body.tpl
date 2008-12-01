@@ -10,23 +10,11 @@ function select_switch(status)
 //-->
 </script>
 
-{IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_DOWNLOADS_ADV}">{L_DOWNLOADS}</a>{NAV_SEP}<a href="#" class="nav-current">{L_CONFIGURATION_TITLE}</a>
-	</p>
-	<div class="nav-links">
-		<div class="nav-links-left">
-			{CURRENT_TIME}
-		</div>
-		&nbsp;
-	</div>
-</div>{IMG_TBR}
-
 <form action="{S_CONFIG_ACTION}" method="post" name="user_dl_settings">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_CONFIGURATION_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN no_dl_popup_notify -->
 <tr>
-	<td class="row2" width="10%" rowspan="3"><span class="gen">{L_DOWNLOAD_POPUP}</span></td>
+	<td class="row2" width="10%" rowspan="3"><span class="gen"><b>{L_DOWNLOAD_POPUP}</b></span></td>
 	<td class="row1" width="50%"><span class="gen">{L_ALLOW_NEW_DOWNLOAD_POPUP}</span></td>
 	<td class="row2" width="40%"><span class="gen"><input type="radio" name="user_allow_new_download_popup" value="1" {ALLOW_NEW_DOWNLOAD_POPUP_YES}/>&nbsp;{L_YES}
 		&nbsp;&nbsp;&nbsp;<input type="radio" name="user_allow_new_download_popup" value="0" {ALLOW_NEW_DOWNLOAD_POPUP_NO}/>&nbsp;{L_NO}</span>
@@ -47,14 +35,14 @@ function select_switch(status)
 <!-- END no_dl_popup_notify -->
 <!-- BEGIN no_dl_email_notify -->
 <tr>
-	<td class="row2" width="10%" rowspan="2"><span class="gen">{L_DOWNLOAD_EMAIL}</span></td>
+	<td class="row2" width="10%" rowspan="2"><span class="gen"><b>{L_DOWNLOAD_EMAIL}</b></span></td>
 	<td class="row1" width="50%"><span class="gen">{L_ALLOW_NEW_DOWNLOAD_EMAIL}</span></td>
 	<td class="row2" width="40%"><span class="gen"><input type="radio" name="user_allow_new_download_email" value="1" {ALLOW_NEW_DOWNLOAD_EMAIL_YES}/>&nbsp;{L_YES}
 		&nbsp;&nbsp;&nbsp;<input type="radio" name="user_allow_new_download_email" value="0" {ALLOW_NEW_DOWNLOAD_EMAIL_NO}/>&nbsp;{L_NO}</span>
 	</td>
 </tr>
 <tr>
-	<td class="row1" width="50%"><span class="gen">{L_ALLOW_FAV_DOWNLOAD_EMAIL}</span></td>
+	<td class="row1" width="50%"><span class="gen"><b>{L_ALLOW_FAV_DOWNLOAD_EMAIL}</b></span></td>
 	<td class="row2" width="40%"><span class="gen"><input type="radio" name="user_allow_fav_download_email" value="1" {ALLOW_FAV_DOWNLOAD_EMAIL_YES}/>&nbsp;{L_YES}
 		&nbsp;&nbsp;&nbsp;<input type="radio" name="user_allow_fav_download_email" value="0" {ALLOW_FAV_DOWNLOAD_EMAIL_NO}/>&nbsp;{L_NO}</span>
 	</td>
@@ -62,7 +50,7 @@ function select_switch(status)
 <!-- END no_dl_email_notify -->
 <!-- BEGIN sort_config_options -->
 <tr>
-	<td class="row1" width="60%" colspan="2" valign="top"><span class="gen">{sort_config_options.L_DL_SORT_USER_OPT}</span></td>
+	<td class="row1" width="60%" colspan="2" valign="top"><span class="gen"><b>{sort_config_options.L_DL_SORT_USER_OPT}</b></span></td>
 	<td class="row2" width="40%"><span class="gen">{sort_config_options.S_DL_SORT_USER_OPT}&nbsp;{sort_config_options.S_DL_SORT_USER_DIR}
 		<br /><input type="checkbox" class="post" name="user_dl_sort_opt" value="1" {sort_config_options.S_DL_SORT_USER_EXT} />&nbsp;{sort_config_options.L_DL_SORT_USER_EXT}</span></td>
 </tr>
@@ -77,7 +65,8 @@ function select_switch(status)
 </tr>
 <!-- END exchange_row -->
 <tr>
-	<td class="cat" colspan="3" align="center">{S_HIDDEN_FIELDS}
+	<td class="cat" colspan="3" align="center">
+		{S_HIDDEN_FIELDS}
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
 		&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" />
 	</td>
