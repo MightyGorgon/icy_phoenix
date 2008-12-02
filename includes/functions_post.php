@@ -1047,6 +1047,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							'POST_TEXT' => $post_text,
 							'POSTERNAME' => $post_data['username'],
 							'FORUM_NAME' => $forum_name,
+							'ROOT' => $server_protocol . $server_name . $board_config['script_path'],
 
 							'U_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
 							'U_STOP_WATCHING_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '?' . POST_TOPIC_URL . '=' . $topic_id . '&unwatch=topic'
@@ -1348,6 +1349,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 								'POSTERNAME' => $post_data['username'],
 								'FORUM_NAME' => $forum_name,
 								'ROOT' => $server_protocol . $server_name . $board_config['script_path'],
+
 								'U_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
 								'U_STOP_WATCHING_FORUM' => $server_protocol . $server_name . $server_port . $script_name_forum . '?' . POST_FORUM_URL . '=' . $forum_id . '&unwatch=forum'
 								)

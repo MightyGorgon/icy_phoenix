@@ -25,7 +25,7 @@ if($can_reply)
 	{
 		$can_reply = false;
 	}
-	elseif (($forum_topic_data['forum_status'] == FORUM_LOCKED || $forum_topic_data['topic_status'] == TOPIC_LOCKED) && !$is_auth['auth_mod'])
+	elseif ((($forum_topic_data['forum_status'] == FORUM_LOCKED) || ($forum_topic_data['topic_status'] == TOPIC_LOCKED)) && !$is_auth['auth_mod'])
 	{
 		$can_reply = false;
 	}

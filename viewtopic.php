@@ -1469,6 +1469,8 @@ if ($bypass)
 		$topic_url_enc = urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $topic_id_append));
 	}
 	// URL Rewrite - END
+	// Convert and clean special chars!
+	$topic_title = htmlspecialchars_clean($topic_title);
 	$template->assign_vars(array(
 		'FORUM_ID' => $forum_id,
 		'FORUM_NAME' => $forum_name,

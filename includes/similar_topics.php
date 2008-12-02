@@ -142,24 +142,24 @@ if (!defined('IN_ICYPHOENIX'))
 			$similar['topic_title'] = @preg_replace($orig_word, $replacement_word, $similar['topic_title']);
 		}
 
-		$topic_title = (strlen($similar['topic_title']) > 45) ? (substr($similar['topic_title'], 0, 42) . '...') : $similar['topic_title'];
+		$similar_topic_title = (strlen($similar['topic_title']) > 45) ? (substr($similar['topic_title'], 0, 42) . '...') : $similar['topic_title'];
 		// Convert and clean special chars!
-		$topic_title = htmlspecialchars_clean($topic_title);
+		$similar_topic_title = htmlspecialchars_clean($similar_topic_title);
 		// SMILEYS IN TITLE - BEGIN
 		if (($board_config['smilies_topic_title'] == true) && !$lofi)
 		{
 			$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-			$topic_title = $bbcode->parse_only_smilies($topic_title);
+			$similar_topic_title = $bbcode->parse_only_smilies($similar_topic_title);
 		}
 		// SMILEYS IN TITLE - END
-		$topic_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $similar['topic_id']) . '" class="' . $topic_class . '">' . $topic_title . '</a>';
+		$topic_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $similar['topic_id']) . '" class="' . $topic_class . '">' . $similar_topic_title . '</a>';
 
-		$author = ($similar['user_id'] != ANONYMOUS) ? colorize_username($similar['user_id']) : (($similar['post_username'] != '') ? '<span style="font-weight:bold;color:#888888">' . $similar['post_username'] . '</span>' : '<span style="font-weight:bold;color:#888888">' . $lang['Guest'] . '</span>');
+		$author = ($similar['user_id'] != ANONYMOUS) ? colorize_username($similar['user_id']) : (($similar['post_username'] != '') ? '<span style="font-weight:bold;color:' . $board_config['active_users_color'] . '">' . $similar['post_username'] . '</span>' : '<span style="font-weight:bold;color:' . $board_config['active_users_color'] . '">' . $lang['Guest'] . '</span>');
 
 		$forum_url = append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $similar['forum_id']);
 		$forum = '<a href="' . $forum_url . '">' . $similar['forum_name'] . '</a>';
 
-		$last_post_author = ($similar['id2'] != ANONYMOUS) ? colorize_username($similar['id2']) : (($similar['post_username2'] != '') ? '<span style="font-weight:bold;color:#888888">' . $similar['post_username2'] . '</span>' : '<span style="font-weight:bold;color:#888888">' . $lang['Guest'] . '</span>');
+		$last_post_author = ($similar['id2'] != ANONYMOUS) ? colorize_username($similar['id2']) : (($similar['post_username2'] != '') ? '<span style="font-weight:bold;color:' . $board_config['active_users_color'] . '">' . $similar['post_username2'] . '</span>' : '<span style="font-weight:bold;color:' . $board_config['active_users_color'] . '">' . $lang['Guest'] . '</span>');
 
 		$post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $similar['topic_last_post_id']) . '#p' . $similar['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a><br />' . $last_post_author;
 
