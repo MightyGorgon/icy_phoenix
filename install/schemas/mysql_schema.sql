@@ -372,7 +372,7 @@ CREATE TABLE `phpbb_captcha_config` (
 
 ## `phpbb_categories`
 
-CREATE TABLE `___categories___` (
+CREATE TABLE `phpbb_categories` (
 	`cat_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`cat_main` mediumint(8) unsigned NOT NULL default '0',
 	`cat_main_type` char(1) default NULL,
