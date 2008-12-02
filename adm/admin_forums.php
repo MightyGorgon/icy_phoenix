@@ -430,14 +430,14 @@ if(!empty($mode))
 			$forum_rules_switch = (intval($_POST['rules_in_viewforum']) || intval($_POST['rules_in_viewtopic']) || intval($_POST['rules_in_posting'])) ? 1 : 0;
 
 			$sql = "INSERT INTO " . FORUMS_RULES_TABLE . " (forum_id, rules, rules_display_title, rules_custom_title, rules_in_viewforum, rules_in_viewtopic, rules_in_posting)
-				VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $_POST['rules']) . "', ". intval($_POST['rules_display_title']) . ", '" . str_replace("\'", "''", $_POST['rules_custom_title']) . "', ". intval($_POST['rules_in_viewforum']) . ", ". intval($_POST['rules_in_viewtopic']) . ", ". intval($_POST['rules_in_posting']) . ")";
+				VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $_POST['rules']) . "', " . intval($_POST['rules_display_title']) . ", '" . str_replace("\'", "''", $_POST['rules_custom_title']) . "', " . intval($_POST['rules_in_viewforum']) . ", " . intval($_POST['rules_in_viewtopic']) . ", ". intval($_POST['rules_in_posting']) . ")";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't insert row in forums rules table", "", __LINE__, __FILE__, $sql);
 			}
 
 			$sql = "INSERT INTO " . FORUMS_TABLE . " (forum_id, forum_name, cat_id, forum_desc, forum_order, forum_status, forum_notify, forum_thanks, forum_similar_topics, forum_tags, forum_sort_box, forum_kb_mode, forum_index_icons, prune_enable, forum_postcount, forum_rules" . $field_sql . ")
-				VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $_POST['forumname']) . "', $cat_id, '" . str_replace("\'", "''", $_POST['forumdesc']) . "', $next_order, " . intval($_POST['forumstatus']) . ", " . intval($_POST['notify_enable']) . ", " . intval($_POST['forum_thanks']) . ", " . intval($_POST['forum_similar_topics']) . ", " . intval($_POST['forum_tags']) . ", " . intval($_POST['forum_sort_box']) . ", " . intval($_POST['forum_kb_mode']) . ", " . intval($_POST['forum_index_icons']) . ", " . intval($_POST['prune_enable']) . ", " . intval($_POST['forum_postcount']) .", '" . $forum_rules_switch . "'" . $value_sql . ")";
+				VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $_POST['forumname']) . "', $cat_id, '" . str_replace("\'", "''", $_POST['forumdesc']) . "', $next_order, " . intval($_POST['forumstatus']) . ", " . intval($_POST['notify_enable']) . ", " . intval($_POST['forum_thanks']) . ", " . intval($_POST['forum_similar_topics']) . ", " . intval($_POST['forum_tags']) . ", " . intval($_POST['forum_sort_box']) . ", " . intval($_POST['forum_kb_mode']) . ", " . intval($_POST['forum_index_icons']) . ", " . intval($_POST['prune_enable']) . ", " . intval($_POST['forum_postcount']) . ", '" . $forum_rules_switch . "'" . $value_sql . ")";
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't insert row in forums table", "", __LINE__, __FILE__, $sql);

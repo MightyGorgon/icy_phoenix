@@ -585,7 +585,7 @@ $default_config = array(
 	'show_topic_description' => '0',
 	'bots_reg_auth' => '0',
 	// IP Version
-	'ip_version' => '1.2.15.42',
+	'ip_version' => '1.2.16.43',
 	// Cash
 	'cash_disable' => 0,
 	'cash_display_after_posts' => 1,
@@ -1035,6 +1035,13 @@ function create_forum()
 			throw_error("Couldn't get forum data!", __LINE__, __FILE__, $sql);
 		}
 		$next_forum_order = $row['forum_order'] + 10;
+
+		$sql = "INSERT INTO " . FORUMS_RULES_TABLE . " (forum_id, rules) VALUES ('" . $next_forum_id . "', '')";
+		$result = $db->sql_query($sql);
+		if(!$result)
+		{
+			throw_error("Couldn't update forums rules data!", __LINE__, __FILE__, $sql);
+		}
 
 		$forum_permission = AUTH_ADMIN;
 		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, cat_id, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)

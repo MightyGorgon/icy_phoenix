@@ -64,6 +64,7 @@ $check_upload = (isset($_POST['settings'])) ? true : false;
 $check_image_cat = (isset($_POST['cat_settings'])) ? true : false;
 $search_imagick = (isset($_POST['search_imagick'])) ? true : false;
 
+$db->clear_cache('attach_');
 // Re-evaluate the Attachment Configuration
 $sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
 if (!$result = $db->sql_query($sql))
@@ -78,7 +79,7 @@ while ($row = $db->sql_fetchrow($result))
 
 	$new_attach[$config_name] = request_var($config_name, trim($attach_config[$config_name]));
 
-	if (!$size && !$submit && $config_name == 'max_filesize')
+	if (!$size && !$submit && ($config_name == 'max_filesize'))
 	{
 		$size = ($attach_config[$config_name] >= 1048576) ? 'mb' : (($attach_config[$config_name] >= 1024) ? 'kb' : 'b');
 	}
@@ -178,6 +179,7 @@ while ($row = $db->sql_fetchrow($result))
 	}
 }
 $db->sql_freeresult($result);
+$db->clear_cache('attach_');
 
 $cache_dir = IP_ROOT_PATH . '/cache';
 $cache_file = $cache_dir . '/attach_config.php';
@@ -203,7 +205,7 @@ if ($search_imagick)
 	{
 		return true;
 	}
-	else if ($imagick != 'none')
+	elseif ($imagick != 'none')
 	{
 		if (!eregi('WIN', PHP_OS))
 		{
@@ -223,7 +225,7 @@ if ($search_imagick)
 				}
 			}
 		}
-		else if (eregi('WIN', PHP_OS))
+		elseif (eregi('WIN', PHP_OS))
 		{
 			$path = 'c:/imagemagick/convert.exe';
 
@@ -287,7 +289,7 @@ if ($check_upload)
 
 		if (!$error && !is_dir($upload_dir))
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = sprintf($lang['Directory_is_not_a_dir'], $attach_config['upload_dir']) . '<br />';
 		}
 
@@ -295,7 +297,7 @@ if ($check_upload)
 		{
 			if (!($fp = @fopen($upload_dir . '/0_000000.000', 'w')))
 			{
-				$error = TRUE;
+				$error = true;
 				$error_msg = sprintf($lang['Directory_not_writeable'], $attach_config['upload_dir']) . '<br />';
 			}
 			else
@@ -314,7 +316,7 @@ if ($check_upload)
 
 		if (!$conn_id)
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = sprintf($lang['Ftp_error_connect'], $server) . '<br />';
 		}
 
@@ -322,13 +324,13 @@ if ($check_upload)
 
 		if ((!$login_result) && (!$error))
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']) . '<br />';
 		}
 
 		if (!@ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = $lang['Ftp_error_pasv_mode'];
 		}
 
@@ -349,7 +351,7 @@ if ($check_upload)
 
 			if (!$result)
 			{
-				$error = TRUE;
+				$error = true;
 				$error_msg = sprintf($lang['Ftp_error_path'], $attach_config['ftp_path']) . '<br />';
 			}
 			else
@@ -358,7 +360,7 @@ if ($check_upload)
 
 				if (!$res)
 				{
-					$error = TRUE;
+					$error = true;
 					$error_msg = sprintf($lang['Ftp_error_upload'], $attach_config['ftp_path']) . '<br />';
 				}
 				else
@@ -367,7 +369,7 @@ if ($check_upload)
 
 					if (!$res)
 					{
-						$error = TRUE;
+						$error = true;
 						$error_msg = sprintf($lang['Ftp_error_delete'], $attach_config['ftp_path']) . '<br />';
 					}
 				}
@@ -381,12 +383,13 @@ if ($check_upload)
 
 	if (!$error)
 	{
+		$db->clear_cache('attach_');
 		message_die(GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=manage') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
 }
 
 // Management
-if ($submit && $mode == 'manage')
+if ($submit && ($mode == 'manage'))
 {
 	if (!$error)
 	{
@@ -396,9 +399,7 @@ if ($submit && $mode == 'manage')
 
 if ($mode == 'manage')
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'attach_manage_body.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'attach_manage_body.tpl'));
 
 	$yes_no_switches = array('disable_mod', 'allow_pm_attach', 'allow_ftp_upload', 'attachment_topic_review', 'display_order', 'show_apcp', 'ftp_pasv_mode');
 
@@ -550,6 +551,8 @@ if ($submit && ($mode == 'shadow'))
 			message_die(GENERAL_ERROR, 'Could not delete attachment entries', '', __LINE__, __FILE__, $sql);
 		}
 	}
+
+	$db->clear_cache('attach_');
 
 	$message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -723,15 +726,15 @@ if ($submit && $mode == 'cats')
 {
 	if (!$error)
 	{
+		$db->clear_cache('attach_');
+
 		message_die(GENERAL_MESSAGE, $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=cats') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
 }
 
 if ($mode == 'cats')
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'attach_cat_body.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'attach_cat_body.tpl'));
 
 	$s_assigned_group_images = $lang['None'];
 	$s_assigned_group_streams = $lang['None'];
@@ -837,7 +840,8 @@ if ($mode == 'cats')
 		'USE_GD2_NO'	=> $use_gd2_no,
 
 		'S_ASSIGNED_GROUP_IMAGES'	=> implode(', ', $s_assigned_group_images),
-		'S_ATTACH_ACTION'			=> append_sid('admin_attachments.' . PHP_EXT . '?mode=cats'))
+		'S_ATTACH_ACTION'			=> append_sid('admin_attachments.' . PHP_EXT . '?mode=cats')
+		)
 	);
 }
 
@@ -893,7 +897,7 @@ if ($check_image_cat)
 
 		if (!$error && !is_dir($upload_dir))
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = sprintf($lang['Directory_is_not_a_dir'], $upload_dir) . '<br />';
 		}
 
@@ -901,7 +905,7 @@ if ($check_image_cat)
 		{
 			if (!($fp = @fopen($upload_dir . '/0_000000.000', 'w')))
 			{
-				$error = TRUE;
+				$error = true;
 				$error_msg = sprintf($lang['Directory_not_writeable'], $upload_dir) . '<br />';
 			}
 			else
@@ -911,7 +915,7 @@ if ($check_image_cat)
 			}
 		}
 	}
-	else if (intval($attach_config['allow_ftp_upload']) && intval($attach_config['img_create_thumbnail']))
+	elseif (intval($attach_config['allow_ftp_upload']) && intval($attach_config['img_create_thumbnail']))
 	{
 		// Check FTP Settings
 		$server = (empty($attach_config['ftp_server'])) ? 'localhost' : $attach_config['ftp_server'];
@@ -920,7 +924,7 @@ if ($check_image_cat)
 
 		if (!$conn_id)
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = sprintf($lang['Ftp_error_connect'], $server) . '<br />';
 		}
 
@@ -928,13 +932,13 @@ if ($check_image_cat)
 
 		if (!$login_result && !$error)
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']) . '<br />';
 		}
 
 		if (!@ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
 		{
-			$error = TRUE;
+			$error = true;
 			$error_msg = $lang['Ftp_error_pasv_mode'];
 		}
 
@@ -962,7 +966,7 @@ if ($check_image_cat)
 
 			if (!$result)
 			{
-				$error = TRUE;
+				$error = true;
 				$error_msg = sprintf($lang['Ftp_error_path'], $attach_config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
 			}
 			else
@@ -971,7 +975,7 @@ if ($check_image_cat)
 
 				if (!$res)
 				{
-					$error = TRUE;
+					$error = true;
 					$error_msg = sprintf($lang['Ftp_error_upload'], $attach_config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
 				}
 				else
@@ -980,7 +984,7 @@ if ($check_image_cat)
 
 					if (!$res)
 					{
-						$error = TRUE;
+						$error = true;
 						$error_msg = sprintf($lang['Ftp_error_delete'], $attach_config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
 					}
 				}
@@ -994,6 +998,8 @@ if ($check_image_cat)
 
 	if (!$error)
 	{
+		$db->clear_cache('attach_');
+
 		message_die(GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=cats') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
 }
@@ -1133,6 +1139,7 @@ if ($mode == 'sync')
 	}
 	$db->sql_freeresult($result);
 
+	$db->clear_cache('attach_');
 	@flush();
 	die('<br /><br /><br />' . $lang['Attach_sync_finished'] . '<br /><br />' . $info);
 
@@ -1245,6 +1252,8 @@ if ($submit && $mode == 'quota')
 
 	if (!$error)
 	{
+		$db->clear_cache('attach_');
+
 		$message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=quota') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
@@ -1254,9 +1263,7 @@ if ($submit && $mode == 'quota')
 
 if ($mode == 'quota')
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'attach_quota_body.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'attach_quota_body.tpl'));
 
 	$max_add_filesize = $attach_config['max_filesize'];
 	$size = ($max_add_filesize >= 1048576) ? 'mb' : (($max_add_filesize >= 1024) ? 'kb' : 'b');
@@ -1265,7 +1272,7 @@ if ($mode == 'quota')
 	{
 		$max_add_filesize = round($max_add_filesize / 1048576 * 100) / 100;
 	}
-	else if ($max_add_filesize >= 1024)
+	elseif ($max_add_filesize >= 1024)
 	{
 		$max_add_filesize = round($max_add_filesize / 1024 * 100) / 100;
 	}
@@ -1307,7 +1314,7 @@ if ($mode == 'quota')
 		{
 			$rows[$i]['quota_limit'] = round($rows[$i]['quota_limit'] / 1048576 * 100) / 100;
 		}
-		else if($rows[$i]['quota_limit'] >= 1024)
+		elseif($rows[$i]['quota_limit'] >= 1024)
 		{
 			$rows[$i]['quota_limit'] = round($rows[$i]['quota_limit'] / 1024 * 100) / 100;
 		}
@@ -1323,7 +1330,7 @@ if ($mode == 'quota')
 	}
 }
 
-if ($mode == 'quota' && $e_mode == 'view_quota')
+if (($mode == 'quota') && ($e_mode == 'view_quota'))
 {
 	$quota_id = request_var('quota_id', 0);
 

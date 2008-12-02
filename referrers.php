@@ -202,7 +202,7 @@ $sql = "SELECT * FROM " . REFERRERS_TABLE ." ORDER BY $order_by";
 			'REFER_ID' => $row['referrer_id'],
 			'ROW_CLASS' => $row_class,
 			'HOST' => $row['referrer_host'],
-			'URL' => '<a href="' . $row['referrer_url'] . '" rel="nofollow" target="_blank">' . $url_name . '</a>',
+			'URL' => '<a href="' . htmlspecialchars($row['referrer_url']) . '" rel="nofollow" target="_blank">' . htmlspecialchars($url_name) . '</a>',
 			'IP' => '<a href="http://whois.sc/' . decode_ip($row['referrer_ip']) . '" target="_blank">' . decode_ip($row['referrer_ip']) . '</a>',
 			'HITS' => $row['referrer_hits'],
 			'FIRST' => create_date2($board_config['default_dateformat'], $row['referrer_firstvisit'], $board_config['board_timezone']),

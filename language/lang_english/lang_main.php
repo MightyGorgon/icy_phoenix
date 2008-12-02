@@ -354,7 +354,6 @@ $lang = array_merge($lang, array(
 // 'No_topics_post_one' => 'There are no posts in this forum.<br />Click on the <b>Post New Topic</b> link on this page to post one.',
 	'No_topics_post_one' => 'Either there are no posts in this forum, or there are no matches for the letter you selected.<br />Click on the <b>Post New Topic</b> link on this page to start a new post or select another letter.',
 
-
 // Viewtopic
 	'View_topic' => 'View topic',
 
