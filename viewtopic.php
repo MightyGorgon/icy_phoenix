@@ -2578,16 +2578,15 @@ if ($bypass)
 			$post_subject .= get_calendar_title($topic_calendar_time, $topic_calendar_duration);
 		}
 
-		if (($board_config['smilies_topic_title'] == '1') && !$lofi)
+		// Convert and clean special chars!
+		$post_subject = htmlspecialchars_clean($post_subject);
+		// SMILEYS IN TITLE - BEGIN
+		if (($board_config['smilies_topic_title'] == true) && !$lofi)
 		{
-			//Start BBCode Parsing for title
-			$bbcode->allow_html = false ;
-			$bbcode->allow_bbcode = false ;
-			$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-			$post_subject = $bbcode->parse($post_subject, '', true);
-			$topic_title = $post_subject;
-			//End BBCode Parsing for title
+			$bbcode->allow_smilies = ($board_config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
+			$post_subject = $bbcode->parse_only_smilies($post_subject);
 		}
+		// SMILEYS IN TITLE - END
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		if($userdata['upi2db_access'])

@@ -60,8 +60,10 @@ if(!function_exists('imp_forum_block_func'))
 					$read_full = '';
 				}
 
+				// Convert and clean special chars!
+				$topic_title = htmlspecialchars_clean($fetchposts[$i]['topic_title']);
 				$template->assign_block_vars('fetchpost_row', array(
-					'TITLE' => $fetchposts[$i]['topic_title'],
+					'TITLE' => $topic_title,
 					'POSTER' => $fetchposts[$i]['username'],
 					'TIME' => $fetchposts[$i]['topic_time'],
 					'TEXT' => $fetchposts[$i]['post_text'],
@@ -81,8 +83,10 @@ if(!function_exists('imp_forum_block_func'))
 
 			$i = intval($_GET['article']);
 
+			// Convert and clean special chars!
+			$topic_title = htmlspecialchars_clean($fetchposts[$i]['topic_title']);
 			$template->assign_block_vars('fetchpost_row', array(
-				'TITLE' => $fetchposts[$i]['topic_title'],
+				'TITLE' => $topic_title,
 				'POSTER' => $fetchposts[$i]['username'],
 				'TIME' => $fetchposts[$i]['topic_time'],
 				'TEXT' => $fetchposts[$i]['post_text'],

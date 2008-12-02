@@ -1332,6 +1332,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		}
 		$attachment_mod['posting']->preview_attachments();
 
+		$preview_subject = strtr($preview_subject, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$template->assign_vars(array(
 			'TOPIC_TITLE' => $preview_subject,
 			'POST_SUBJECT' => $preview_subject,
@@ -1622,7 +1623,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 
 // Calendar type selection
 $topic_type_cal = '';
-if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+if (($mode == 'newtopic') || ($mode == 'editpost' && $post_data['first_post']))
 {
 	if($is_auth['auth_cal'])
 	{
@@ -1691,7 +1692,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 
 		// day list
 		$s_topic_calendar_day = '<select name="topic_calendar_day">';
-		for ($i=0; $i <= 31; $i++)
+		for ($i = 0; $i <= 31; $i++)
 		{
 			$selected = (intval($day) == $i) ? ' selected="selected"' : '';
 			$s_topic_calendar_day .= '<option value="' . $i . '"' . $selected . '>' . (($i == 0) ? ' -- ' : str_pad($i, 2, '0', STR_PAD_LEFT)) . '</option>';
@@ -1700,7 +1701,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 
 		// month list
 		$s_topic_calendar_month = '<select name="topic_calendar_month">';
-		for ($i=0; $i <= 12; $i++)
+		for ($i = 0; $i <= 12; $i++)
 		{
 			$selected = (intval($month) == $i) ? ' selected="selected"' : '';
 			$s_topic_calendar_month .= '<option value="' . $i . '"' . $selected . '>' . $months[$i] . '</option>';
@@ -1870,6 +1871,10 @@ if ($board_config['allow_drafts'] == true)
 	}
 }
 // MG Drafts - END
+
+// Convert and clean special chars!
+$subject = htmlspecialchars_clean($subject);
+$topic_desc = htmlspecialchars_clean($topic_desc);
 
 // Output the data to the template
 $template->assign_vars(array(

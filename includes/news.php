@@ -169,8 +169,10 @@ class NewsModule
 					$ubid_link = 'ubid=' . htmlspecialchars(intval($_GET['ubid'])) . '&amp;';
 				}
 
+				// Convert and clean special chars!
+				$topic_title = htmlspecialchars_clean($article['topic_title']);
 				$this->setBlockVariables('articles', array(
-					'L_TITLE' => $article['topic_title'],
+					'L_TITLE' => $topic_title,
 					'ID' => $article['topic_id'],
 					'KEY' => $article['article_key'],
 					'DAY' => $this->getDay($article['topic_time']),

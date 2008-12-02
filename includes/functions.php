@@ -235,6 +235,15 @@ if (!function_exists('htmlspecialchars_decode'))
 	}
 }
 
+/**
+* HTML Special Chars markup cleaning
+* @ignore
+*/
+function htmlspecialchars_clean($string, $quote_style = ENT_COMPAT)
+{
+	return str_replace(array('<', '%3C', '>', '%3E'), array('&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style));
+}
+
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {

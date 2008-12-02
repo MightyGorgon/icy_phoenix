@@ -91,9 +91,11 @@ if(!function_exists('imp_forum_attach_block_func'))
 				$read_full = '';
 			}
 
+			// Convert and clean special chars!
+			$topic_title = htmlspecialchars_clean($fetchposts[$i]['topic_title']);
 			$template->assign_block_vars('articles_fp', array(
 				'TOPIC_ID' => $fetchposts[$i]['topic_id'],
-				'TITLE' => $fetchposts[$i]['topic_title'],
+				'TITLE' => $topic_title,
 				'POSTER' => $fetchposts[$i]['username'],
 				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id']),
 				'TIME' => $fetchposts[$i]['topic_time'],

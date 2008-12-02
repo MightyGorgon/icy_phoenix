@@ -85,11 +85,13 @@ if(!function_exists('imp_recent_topics_wide_block_func'))
 				$recent_topic_row[$i]['topic_title'] = (!empty($recent_topic_row[$i]['topic_title'])) ? preg_replace($orig_word, $replacement_word, $recent_topic_row[$i]['topic_title']) : '';
 			}
 
+			// Convert and clean special chars!
+			$topic_title = htmlspecialchars_clean($recent_topic_row[$i]['topic_title']);
 			$template->assign_block_vars($style_row . '.recent_topic_row', array(
 				'U_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id']),
 				'L_FORUM' => $recent_topic_row[$i]['forum_name'],
 				'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $recent_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],
-				'L_TITLE' => $bbcode->parse(htmlspecialchars($recent_topic_row[$i]['topic_title']), '', true),
+				'L_TITLE' => $topic_title,
 				'L_BY' => $lang['By'],
 				'L_ON' => $lang['On'],
 				'S_POSTER' => colorize_username($recent_topic_row[$i]['user_id']),

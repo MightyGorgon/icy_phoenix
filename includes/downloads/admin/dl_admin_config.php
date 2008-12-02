@@ -24,23 +24,22 @@ if (!defined('IN_ICYPHOENIX'))
 /*
 * fetch all config data
 */
-$sql = "SELECT *
-	FROM " . DL_CONFIG_TABLE;
+$sql = "SELECT * FROM " . DL_CONFIG_TABLE;
 if(!$result = $db->sql_query($sql))
 {
 	message_die(CRITICAL_ERROR, "Could not query config information in downloads", "", __LINE__, __FILE__, $sql);
 }
 else
 {
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$config_name = $row['config_name'];
 		$config_value = $row['config_value'];
 		$default_config[$config_name] = isset($_POST['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
 
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
+		$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
 
-		if( isset($_POST['submit']) )
+		if(isset($_POST['submit']))
 		{
 			if ($config_name == 'thumb_xsize')
 			{
@@ -151,87 +150,88 @@ else
 			$sql = "UPDATE " . DL_CONFIG_TABLE . " SET
 				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
 				WHERE config_name = '$config_name'";
-			if( !$db->sql_query($sql) )
+			if(!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
 			}
 		}
 	}
 
-	if( isset($_POST['submit']) )
+	if(isset($_POST['submit']))
 	{
 		$message = $lang['Dl_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_dl_config'], '<a href="' . append_sid('admin_downloads.' . PHP_EXT . '?submod=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
+		$db->clear_cache('dl_config_');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
 
 $template->set_filenames(array('config' => ADM_TPL . 'dl_config_body.tpl'));
 
-$enable_post_dl_traffic_yes = ( $new['enable_post_dl_traffic'] ) ? 'checked="checked"' : '';
-$enable_post_dl_traffic_no = ( !$new['enable_post_dl_traffic'] ) ? 'checked="checked"' : '';
+$enable_post_dl_traffic_yes = ($new['enable_post_dl_traffic']) ? 'checked="checked"' : '';
+$enable_post_dl_traffic_no = (!$new['enable_post_dl_traffic']) ? 'checked="checked"' : '';
 
-$stop_uploads_yes = ( $new['stop_uploads'] ) ? 'checked="checked"' : '';
-$stop_uploads_no = ( !$new['stop_uploads'] ) ? 'checked="checked"' : '';
+$stop_uploads_yes = ($new['stop_uploads']) ? 'checked="checked"' : '';
+$stop_uploads_no = (!$new['stop_uploads']) ? 'checked="checked"' : '';
 
-$upload_traffic_count_yes = ( $new['upload_traffic_count'] ) ? 'checked="checked"' : '';
-$upload_traffic_count_no = ( !$new['upload_traffic_count'] ) ? 'checked="checked"' : '';
+$upload_traffic_count_yes = ($new['upload_traffic_count']) ? 'checked="checked"' : '';
+$upload_traffic_count_no = (!$new['upload_traffic_count']) ? 'checked="checked"' : '';
 
-$disable_email_yes = ( $new['disable_email'] ) ? 'checked="checked"' : '';
-$disable_email_no = ( !$new['disable_email'] ) ? 'checked="checked"' : '';
+$disable_email_yes = ($new['disable_email']) ? 'checked="checked"' : '';
+$disable_email_no = (!$new['disable_email']) ? 'checked="checked"' : '';
 
-$disable_popup_yes = ( $new['disable_popup'] ) ? 'checked="checked"' : '';
-$disable_popup_no = ( !$new['disable_popup'] ) ? 'checked="checked"' : '';
+$disable_popup_yes = ($new['disable_popup']) ? 'checked="checked"' : '';
+$disable_popup_no = (!$new['disable_popup']) ? 'checked="checked"' : '';
 
-$disable_popup_notify_yes = ( $new['disable_popup_notify'] ) ? 'checked="checked"' : '';
-$disable_popup_notify_no = ( !$new['disable_popup_notify'] ) ? 'checked="checked"' : '';
+$disable_popup_notify_yes = ($new['disable_popup_notify']) ? 'checked="checked"' : '';
+$disable_popup_notify_no = (!$new['disable_popup_notify']) ? 'checked="checked"' : '';
 
-$guest_stats_show_yes = ( $new['guest_stats_show'] ) ? 'checked="checked"' : '';
-$guest_stats_show_no = ( !$new['guest_stats_show'] ) ? 'checked="checked"' : '';
+$guest_stats_show_yes = ($new['guest_stats_show']) ? 'checked="checked"' : '';
+$guest_stats_show_no = (!$new['guest_stats_show']) ? 'checked="checked"' : '';
 
-$dl_method_old = ( $new['dl_method'] == 1 ) ? 'checked="checked"' : '';
-$dl_method_new = ( $new['dl_method'] == 2 ) ? 'checked="checked"' : '';
+$dl_method_old = ($new['dl_method'] == 1) ? 'checked="checked"' : '';
+$dl_method_new = ($new['dl_method'] == 2) ? 'checked="checked"' : '';
 
-$dl_direct = ( $new['dl_direct'] ) ? 'checked="checked"' : '';
+$dl_direct = ($new['dl_direct']) ? 'checked="checked"' : '';
 
-$use_hacklist_yes = ( $new['use_hacklist'] ) ? 'checked="checked"' : '';
-$use_hacklist_no = ( !$new['use_hacklist'] ) ? 'checked="checked"' : '';
+$use_hacklist_yes = ($new['use_hacklist']) ? 'checked="checked"' : '';
+$use_hacklist_no = (!$new['use_hacklist']) ? 'checked="checked"' : '';
 
-$use_ext_blacklist_yes = ( $new['use_ext_blacklist']) ? 'checked="checked"' : '';
-$use_ext_blacklist_no = ( !$new['use_ext_blacklist']) ? 'checked="checked"' : '';
+$use_ext_blacklist_yes = ($new['use_ext_blacklist']) ? 'checked="checked"' : '';
+$use_ext_blacklist_no = (!$new['use_ext_blacklist']) ? 'checked="checked"' : '';
 
-$allow_thumbs_yes = ( $new['allow_thumbs'] ) ? 'checked="checked"' : '';
-$allow_thumbs_no = ( !$new['allow_thumbs'] ) ? 'checked="checked"' : '';
+$allow_thumbs_yes = ($new['allow_thumbs']) ? 'checked="checked"' : '';
+$allow_thumbs_no = (!$new['allow_thumbs']) ? 'checked="checked"' : '';
 
-$show_footer_legend_yes = ( $new['show_footer_legend']) ? 'checked="checked"' : '';
-$show_footer_legend_no = ( !$new['show_footer_legend']) ? 'checked="checked"' : '';
+$show_footer_legend_yes = ($new['show_footer_legend']) ? 'checked="checked"' : '';
+$show_footer_legend_no = (!$new['show_footer_legend']) ? 'checked="checked"' : '';
 
-$show_footer_stat_yes = ( $new['show_footer_stat']) ? 'checked="checked"' : '';
-$show_footer_stat_no = ( !$new['show_footer_stat']) ? 'checked="checked"' : '';
+$show_footer_stat_yes = ($new['show_footer_stat']) ? 'checked="checked"' : '';
+$show_footer_stat_no = (!$new['show_footer_stat']) ? 'checked="checked"' : '';
 
 $thumbs_xsize = $new['thumb_xsize'];
 $thumbs_ysize = $new['thumb_ysize'];
 $thumbs_fsize = $new['thumb_fsize'];
 
-$show_real_filetime_yes = ( $new['show_real_filetime']) ? 'checked="checked"' : '';
-$show_real_filetime_no = ( !$new['show_real_filetime']) ? 'checked="checked"' : '';
+$show_real_filetime_yes = ($new['show_real_filetime']) ? 'checked="checked"' : '';
+$show_real_filetime_no = (!$new['show_real_filetime']) ? 'checked="checked"' : '';
 
 $limit_desc_on_index = $new['limit_desc_on_index'];
 
-$user_traffic_once_yes = ( $new['user_traffic_once']) ? 'checked="checked"' : '';
-$user_traffic_once_no = ( !$new['user_traffic_once']) ? 'checked="checked"' : '';
+$user_traffic_once_yes = ($new['user_traffic_once']) ? 'checked="checked"' : '';
+$user_traffic_once_no = (!$new['user_traffic_once']) ? 'checked="checked"' : '';
 
-$prevent_hotlink_yes = ( $new['prevent_hotlink']) ? 'checked="checked"' : '';
-$prevent_hotlink_no = ( !$new['prevent_hotlink']) ? 'checked="checked"' : '';
+$prevent_hotlink_yes = ($new['prevent_hotlink']) ? 'checked="checked"' : '';
+$prevent_hotlink_no = (!$new['prevent_hotlink']) ? 'checked="checked"' : '';
 
-$hotlink_action_one = ( $new['hotlink_action']) ? 'checked="checked"' : '';
-$hotlink_action_two = ( !$new['hotlink_action']) ? 'checked="checked"' : '';
+$hotlink_action_one = ($new['hotlink_action']) ? 'checked="checked"' : '';
+$hotlink_action_two = (!$new['hotlink_action']) ? 'checked="checked"' : '';
 
-$edit_own_downloads_yes = ( $new['edit_own_downloads']) ? 'checked="checked"' : '';
-$edit_own_downloads_no = ( !$new['edit_own_downloads']) ? 'checked="checked"' : '';
+$edit_own_downloads_yes = ($new['edit_own_downloads']) ? 'checked="checked"' : '';
+$edit_own_downloads_no = (!$new['edit_own_downloads']) ? 'checked="checked"' : '';
 
-$icon_free_for_reg_yes = ( $new['icon_free_for_reg']) ? 'checked="checked"' : '';
-$icon_free_for_reg_no = ( !$new['icon_free_for_reg']) ? 'checked="checked"' : '';
+$icon_free_for_reg_yes = ($new['icon_free_for_reg']) ? 'checked="checked"' : '';
+$icon_free_for_reg_no = (!$new['icon_free_for_reg']) ? 'checked="checked"' : '';
 
 switch ($new['report_broken'])
 {
@@ -253,20 +253,20 @@ switch ($new['report_broken'])
 		$report_broken_guests = '';
 }
 
-$report_broken_lock_yes = ( $new['report_broken_lock']) ? 'checked="checked"' : '';
-$report_broken_lock_no = ( !$new['report_broken_lock']) ? 'checked="checked"' : '';
+$report_broken_lock_yes = ($new['report_broken_lock']) ? 'checked="checked"' : '';
+$report_broken_lock_no = (!$new['report_broken_lock']) ? 'checked="checked"' : '';
 
-$report_broken_message_yes = ( $new['report_broken_message']) ? 'checked="checked"' : '';
-$report_broken_message_no = ( !$new['report_broken_message']) ? 'checked="checked"' : '';
+$report_broken_message_yes = ($new['report_broken_message']) ? 'checked="checked"' : '';
+$report_broken_message_no = (!$new['report_broken_message']) ? 'checked="checked"' : '';
 
-$report_broken_vc_yes = ( $new['report_broken_vc']) ? 'checked="checked"' : '';
-$report_broken_vc_no = ( !$new['report_broken_vc']) ? 'checked="checked"' : '';
+$report_broken_vc_yes = ($new['report_broken_vc']) ? 'checked="checked"' : '';
+$report_broken_vc_no = (!$new['report_broken_vc']) ? 'checked="checked"' : '';
 
-$download_vc_yes = ( $new['download_vc']) ? 'checked="checked"' : '';
-$download_vc_no = ( !$new['download_vc']) ? 'checked="checked"' : '';
+$download_vc_yes = ($new['download_vc']) ? 'checked="checked"' : '';
+$download_vc_no = (!$new['download_vc']) ? 'checked="checked"' : '';
 
-$sort_preform_fix = ( $new['sort_preform']) ? 'checked="checked"' : '';
-$sort_preform_user = ( !$new['sort_preform']) ? 'checked="checked"' : '';
+$sort_preform_fix = ($new['sort_preform']) ? 'checked="checked"' : '';
+$sort_preform_user = (!$new['sort_preform']) ? 'checked="checked"' : '';
 
 if ($thumbs_fsize < 1024)
 {
@@ -428,8 +428,8 @@ $s_stats_perm_select .= '<option value="3">' . $lang['Dl_stat_perm_admin'] . '</
 $s_stats_perm_select .= '</select>';
 $s_stats_perm_select = str_replace('value="'.$new['dl_stats_perm'] . '">', 'value="' . $new['dl_stats_perm'] . '" selected="selected">', $s_stats_perm_select);
 
-$user_download_limit_flag_yes = ( $new['user_download_limit_flag'] ) ? 'checked="checked"' : '';
-$user_download_limit_flag_no = ( !$new['user_download_limit_flag'] ) ? 'checked="checked"' : '';
+$user_download_limit_flag_yes = ($new['user_download_limit_flag']) ? 'checked="checked"' : '';
+$user_download_limit_flag_no = (!$new['user_download_limit_flag']) ? 'checked="checked"' : '';
 
 $template->assign_vars(array(
 	'L_DL_LINKS_PER_PAGE' => $lang['Dl_Links_per_page'],

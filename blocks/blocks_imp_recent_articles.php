@@ -65,8 +65,10 @@ if(!function_exists('imp_recent_articles_func'))
 						$style_row = 'articles_static';
 					}
 					$template->assign_block_vars($style_row, '');
+					// Convert and clean special chars!
+					$title = htmlspecialchars_clean($title);
 					$template->assign_block_vars ($style_row . '.recent_articles', array(
-							'TITLE' => htmlspecialchars($title),
+							'TITLE' => $title,
 							'U_ARTICLE' => $url,
 							'AUTHOR' => $author,
 							'DATE' => create_date2($board_config['default_dateformat'], $row['article_date'], $board_config['board_timezone'])

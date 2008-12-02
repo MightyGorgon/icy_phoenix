@@ -1743,15 +1743,15 @@ switch($mode)
 			$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
 			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
 			$topic_title = $topic_title_prefix . $topic_title;
+			// Convert and clean special chars!
+			$topic_title = htmlspecialchars_clean($topic_title);
+			// SMILEYS IN TITLE - BEGIN
 			if (($board_config['smilies_topic_title'] == true) && !$lofi)
 			{
-				//Start BBCode Parsing for title
-				$bbcode->allow_html = false;
-				$bbcode->allow_bbcode = false;
 				$bbcode->allow_smilies = ($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies'] ? true : false);
-				$topic_title = $bbcode->parse($topic_title, '', true);
-				//End BBCode Parsing for title
+				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
+			// SMILEYS IN TITLE - END
 
 			//$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 			$news_label = '';

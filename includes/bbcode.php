@@ -3123,6 +3123,27 @@ class BBCode
 		}
 	}
 
+	// Parse only smilies
+	function parse_only_smilies($text)
+	{
+		if(!$this->allow_smilies || (count($this->allowed_smilies) == 0))
+		{
+			return;
+		}
+		$smilies_code = array();
+		$smilies_replace = array();
+		for($i = 0; $i < count($this->allowed_smilies); $i++)
+		{
+			$smilies_code_prev[] = ' ' . $this->allowed_smilies[$i]['code'];
+			$smilies_code_next[] = $this->allowed_smilies[$i]['code'] . ' ';
+			$smilies_replace_prev[] = ' ' . $this->allowed_smilies[$i]['replace'];
+			$smilies_replace_next[] = $this->allowed_smilies[$i]['replace'] . ' ';
+		}
+		$text = str_replace($smilies_code_prev, $smilies_replace_prev, $text);
+		$text = str_replace($smilies_code_next, $smilies_replace_next, $text);
+		return $text;
+	}
+
 	// Process smilies
 	function process_smilies()
 	{

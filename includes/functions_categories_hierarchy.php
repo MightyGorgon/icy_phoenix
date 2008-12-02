@@ -1244,20 +1244,22 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				$topic_title = $data['tree.topic_title'];
 				$topic_title = (empty($data['title_compl_infos'])) ? $topic_title : $data['title_compl_infos'] . ' ' . $topic_title;
 				$topic_title_plain = $topic_title;
-
+				$topic_title_short = $topic_title;
 				if (strlen($topic_title) > (intval($board_config['last_topic_title_length']) - 3))
 				{
-					$topic_title = substr($topic_title, 0, intval($board_config['last_topic_title_length'])) . '...';
+					$topic_title_short = substr($topic_title, 0, intval($board_config['last_topic_title_length'])) . '...';
 				}
-				if ($board_config['smilies_topic_title'] == '1' && !$lofi)
+
+				// Convert and clean special chars!
+				$topic_title = htmlspecialchars_clean($topic_title_short);
+				$topic_title_plain = htmlspecialchars_clean($topic_title_plain);
+				// SMILEYS IN TITLE - BEGIN
+				if (($board_config['smilies_topic_title'] == true) && !$lofi)
 				{
-					//Start Smileys Parsing for title
-					$bbcode->allow_html = false;
-					$bbcode->allow_bbcode = false;
 					$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-					$topic_title = ($bbcode ? $topic_title = $bbcode->parse($topic_title, '', true) : $topic_title);
-					//End Smileys Parsing for title
+					$topic_title = $bbcode->parse_only_smilies($topic_title);
 				}
+				// SMILEYS IN TITLE - END
 
 				$topic_title = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
 
@@ -1688,6 +1690,8 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 	$path_parts3 = pathinfo($_SERVER['SCRIPT_NAME']);
 	$filename3 = substr($path_parts3['basename'], 0, 5);
 
+	// Convert and clean special chars!
+	$topic_title = htmlspecialchars_clean($topic_title);
 	while (($CH_this >= 0) || ($fcur != ''))
 	{
 		$type = (substr($fcur, 0, 1) != '') ? substr($cur, 0, 1) : $tree['type'][$CH_this];

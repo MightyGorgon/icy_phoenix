@@ -454,14 +454,17 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		global $bbcode, $board_config;
 		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		$short_title = (strlen($topic_title) > $topic_title_length + 3) ? substr($topic_title, 0, $topic_title_length) . '...' : $topic_title;
-		if ($board_config['smilies_topic_title'] == true)
+		// Convert and clean special chars!
+		$topic_title = htmlspecialchars_clean($topic_title);
+		$short_title = htmlspecialchars_clean($short_title);
+		// SMILEYS IN TITLE - BEGIN
+		if (($board_config['smilies_topic_title'] == true) && !$lofi)
 		{
-			$bbcode->allow_html = false ;
-			$bbcode->allow_bbcode = false ;
 			$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
-			$topic_title = $bbcode->parse($topic_title);
-			$short_title = $bbcode->parse($short_title);
+			$topic_title = $bbcode->parse_only_smilies($topic_title);
+			$short_title = $bbcode->parse_only_smilies($short_title);
 		}
+		// SMILEYS IN TITLE - END
 
 		$dsp_topic_icon = '';
 		if (function_exists(get_icon_title))

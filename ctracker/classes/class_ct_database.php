@@ -90,8 +90,6 @@ class ct_database
 	function change_configuration($setting, $value)
 	{
 		global $db, $lang;
-		$db->clear_cache('ct_config_');
-
 		// Clean up the input
 		$setting = trim($setting);
 		$setting = str_replace("\'", "'", $setting);
@@ -108,6 +106,9 @@ class ct_database
 		{
 			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_config'], '', __LINE__, __FILE__, $sql);
 		}
+
+		// Clear the cache
+		$db->clear_cache('ct_config_');
 	}
 
 	/**

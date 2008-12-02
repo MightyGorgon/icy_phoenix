@@ -120,9 +120,11 @@ if(!function_exists('imp_random_topics_ver_block_func'))
 					$random_topic_row[$i]['topic_title'] = (!empty($random_topic_row[$i]['topic_title'])) ? preg_replace($orig_word, $replacement_word, $random_topic_row[$i]['topic_title']) : '';
 				}
 
+				// Convert and clean special chars!
+				$topic_title = htmlspecialchars_clean($random_topic_row[$i]['topic_title']);
 				$template->assign_block_vars('random_topic_ver_row', array(
 					'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $random_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $random_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $random_topic_row[$i]['post_id']) . '#p' . $random_topic_row[$i]['post_id'],
-					'L_TITLE' => $bbcode->parse(htmlspecialchars($random_topic_row[$i]['topic_title'])),
+					'L_TITLE' => $topic_title,
 					'L_BY' => $lang['By'],
 					'L_ON' => $lang['On'],
 					'S_POSTER' => colorize_username($random_topic_row[$i]['user_id']),

@@ -1628,6 +1628,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$topic_title = $topic_title_prefix . $topic_title;
 				}
 				// SELF AUTH - END
+				// Convert and clean special chars!
+				$topic_title = htmlspecialchars_clean($topic_title);
 				$template->assign_block_vars('searchresults', array(
 					'TOPIC_TITLE' => $topic_title,
 					'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $searchset[$i]['forum_id'], 'name'),
@@ -1785,6 +1787,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				// Edited By Mighty Gorgon - END
 //<!-- END Unread Post Information to Database Mod -->
 
+				// Convert and clean special chars!
+				$topic_title = htmlspecialchars_clean($topic_title);
 				$template->assign_block_vars('searchresults', array(
 					'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 					'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $searchset[$i]['forum_id'], 'name'),

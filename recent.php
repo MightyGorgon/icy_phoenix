@@ -390,6 +390,8 @@ for($i = 0; $i < count($line); $i++)
 		$last_url = '';
 	}
 
+	// Convert and clean special chars!
+	$topic_title = htmlspecialchars_clean($topic_title);
 	$template->assign_block_vars('recent', array(
 		'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 

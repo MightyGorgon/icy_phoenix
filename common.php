@@ -309,14 +309,11 @@ if ((defined('IN_ADMIN') || defined('IN_CMS')) && !defined('ACP_MODULES'))
 	$db->clear_cache('config_');
 	if (defined('IN_ADMIN'))
 	{
-		$db->clear_cache('album_config_');
-		$db->clear_cache('auth_');
-		$db->clear_cache('cms_config_');
-		$db->clear_cache('ct_config_');
-		$db->clear_cache('cat_');
-		$db->clear_cache('forums_');
-		$db->clear_cache('smileys_');
-		$db->clear_cache('themes_');
+		$acp_cache_clear = array('album_config_', 'auth_', 'cms_config_', 'ct_config_', 'cat_', 'dl_config_', 'forums_', 'smileys_', 'themes_');
+		for ($i = 0; $i < count($acp_cache_clear); $i++)
+		{
+			$db->clear_cache($acp_cache_clear[$i]);
+		}
 	}
 }
 $sql = "SELECT * FROM " . CONFIG_TABLE;

@@ -1125,16 +1125,16 @@ if ($bypass)
 			$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
 			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
 			$topic_title = $topic_title_prefix . $topic_title;
+			// Convert and clean special chars!
+			$topic_title = htmlspecialchars_clean($topic_title);
 			$topic_title_plain = $topic_title;
+			// SMILEYS IN TITLE - BEGIN
 			if (($board_config['smilies_topic_title'] == true) && !$lofi)
 			{
-				//Start BBCode Parsing for title
-				$bbcode->allow_html = false;
-				$bbcode->allow_bbcode = false;
 				$bbcode->allow_smilies = ($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies'] ? true : false);
-				$topic_title = $bbcode->parse($topic_title, '', true);
-				//End BBCode Parsing for title
+				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
+			// SMILEYS IN TITLE - END
 
 			//$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 			$news_label = '';
@@ -1194,6 +1194,7 @@ if ($bypass)
 
 			$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($topic_rowset[$i]['id2']);
 
+			// Convert and clean special chars!
 			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (!empty($topic_link['class_new']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 //----------------------------------------------------
@@ -1215,6 +1216,8 @@ if ($bypass)
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 			$calendar_title = '';
 			$calendar_title = get_calendar_title($topic_rowset[$i]['topic_calendar_time'], $topic_rowset[$i]['topic_calendar_duration']);
+			// Convert and clean special chars!
+			$calendar_title = htmlspecialchars_clean($calendar_title);
 			if (!empty($calendar_title))
 			{
 				//$calendar_title = '</a></span>' . $calendar_title . '<span class="topiclink">';
@@ -1275,11 +1278,15 @@ if ($bypass)
 			if (!empty($topic_rowset[$i]['topic_desc']) && $board_config['show_topic_description'])
 			{
 				$topic_desc = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_desc']) : $topic_rowset[$i]['topic_desc'];
-				if ($board_config['smilies_topic_title'] == '1')
+				// Convert and clean special chars!
+				$topic_desc = htmlspecialchars_clean($topic_desc);
+				// SMILEYS IN TITLE - BEGIN
+				if (($board_config['smilies_topic_title'] == true) && !$lofi)
 				{
-					$topic_desc = $bbcode->parse($topic_desc, '', true);
+					$bbcode->allow_smilies = ($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies'] ? true : false);
+					$topic_desc = $bbcode->parse_only_smilies($topic_desc);
 				}
-
+				// SMILEYS IN TITLE - END
 				$template->assign_block_vars('topicrow.switch_topic_desc', array(
 					'TOPIC_DESCRIPTION' => $topic_desc
 					)
