@@ -113,9 +113,9 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END index_pics_block -->
+<br />
 
 <!-- BEGIN recent_comments_block -->
-<br />
 {IMG_THL}{IMG_THC}<span class="forumlink">{recent_comments_block.L_LAST_COMMENT_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th width="10%" nowrap="nowrap">{L_PIC_TITLE}</th>
@@ -145,10 +145,10 @@
 <!-- END comment_row -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
+<br />
 <!-- END recent_comments_block -->
 
 <!-- BEGIN recent_pics_block -->
-<br />
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RECENT_PUBLIC_PICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN no_pics -->
 <tr><td class="row1g row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>

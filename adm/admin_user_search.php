@@ -1207,7 +1207,7 @@ else
 	}
 
 	$sql = "SELECT ban_userid AS user_id
-				FROM ".BANLIST_TABLE."
+					FROM " . BANLIST_TABLE . "
 					WHERE ban_userid IN ($users_sql)";
 
 	if(!$result = $db->sql_query($sql))
@@ -1226,7 +1226,7 @@ else
 
 	for($i = 0; $i < count($rowset); $i++)
 	{
-		$row_class = (($i % 2) == 1) ? 'row1' : 'row2';
+		$row_class = (($i % 2) == 1) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('userrow', array(
 			'ROW_CLASS' => $row_class,

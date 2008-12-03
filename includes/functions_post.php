@@ -922,12 +922,13 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 	{
 		if ($mode == 'reply')
 		{
-			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE;
-			if (!($result = $db->sql_query($sql)))
+			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
+							WHERE ban_userid <> 0
+							ORDER BY ban_userid ASC";
+			if (!($result = $db->sql_query($sql, false, 'ban_')))
 			{
-				message_die(GENERAL_ERROR, 'Could not obtain banlist', '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 			}
-
 			$user_id_sql = '';
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -1215,12 +1216,13 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 		if ($mode == 'newtopic')
 		{
-			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE;
-			if (!($result = $db->sql_query($sql)))
+			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
+							WHERE ban_userid <> 0
+							ORDER BY ban_userid ASC";
+			if (!($result = $db->sql_query($sql, false, 'ban_')))
 			{
-				message_die(GENERAL_ERROR, 'Could not obtain banlist', '', __LINE__, __FILE__, $sql);
+				message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 			}
-
 			$user_id_sql = '';
 			while ($row = $db->sql_fetchrow($result))
 			{

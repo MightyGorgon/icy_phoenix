@@ -314,7 +314,7 @@ if ($board_config['disable_thanks_topics'] == false)
 					FROM " . THANKS_TABLE . "
 					WHERE topic_id = '" . $topic_id . "'
 						AND user_id = '" . $userdata['user_id'] . "'";
-			if (!($result = $db->sql_query($sql, false, 'thanks_')))
+			if (!($result = $db->sql_query($sql, false, 'topics_thanks_', TOPICS_CACHE_FOLDER)))
 			{
 				message_die(GENERAL_ERROR, 'Could not obtain thanks information', '', __LINE__, __FILE__, $sql);
 			}

@@ -448,8 +448,8 @@ if(!empty($mode))
 				duplicate_auth(str_replace(POST_FORUM_URL, '', $_POST['dup_auth']), $next_id);
 			}
 			// Make sure forums cache is empty before creating user_tree
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			admin_check_cat();
 			get_user_tree($userdata);
 			move_tree('Root', 0, 0);
@@ -469,7 +469,6 @@ if(!empty($mode))
 				}
 			}
 			// Empty forums cache again... just to be really sure we are not messing up things!
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
 			cache_tree(true);
 			board_stats();
@@ -604,8 +603,8 @@ if(!empty($mode))
 					message_die(GENERAL_ERROR, "Couldn't Update Forum Prune Information", "", __LINE__, __FILE__, $sql);
 				}
 			}
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			if($_POST['notify_enable'] != '1')
@@ -670,14 +669,13 @@ if(!empty($mode))
 				message_die(GENERAL_ERROR, "Couldn't insert row in categories table", "", __LINE__, __FILE__, $sql);
 			}
 			// Empty cache to make sure user_tree is good...
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
 			admin_check_cat();
 			get_user_tree($userdata);
 			move_tree('Root', 0, 0);
 			// Make sure cache is empty again...
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 
@@ -844,8 +842,8 @@ if(!empty($mode))
 			}
 
 			$message = $lang['Forums_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumadmin'], '<a href="' . append_sid('admin_forums.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$err = admin_check_cat();
@@ -1022,7 +1020,6 @@ if(!empty($mode))
 				{
 					message_die(GENERAL_ERROR, "Couldn't move posts to other forum", "", __LINE__, __FILE__, $sql);
 				}
-				$db->clear_cache('cat_');
 				$db->clear_cache('forums_');
 				sync('forum', $to_id);
 			}
@@ -1155,8 +1152,8 @@ if(!empty($mode))
 			{
 				message_die(GENERAL_ERROR, "Couldn't delete forum prune information!", "", __LINE__, __FILE__, $sql);
 			}
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$sql = "DELETE FROM " . FORUMS_WATCH_TABLE . "
@@ -1289,8 +1286,8 @@ if(!empty($mode))
 			}
 
 			$message = $lang['Forums_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumadmin'], '<a href="' . append_sid('admin_forums.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$err = admin_check_cat();
@@ -1308,8 +1305,8 @@ if(!empty($mode))
 
 			// update the level order
 			move_tree(POST_FORUM_URL, $forum_id, $move);
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$show_index = true;
@@ -1324,8 +1321,8 @@ if(!empty($mode))
 			// get ids
 			$main = $tree['main'][$tree['keys'][POST_CAT_URL . $cat_id]];
 			$cat_id = $tree['id'][$tree['keys'][$main]];
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$show_index = true;
@@ -1790,8 +1787,8 @@ function move_tree($type, $id, $move)
 
 	// build the tree
 	$tree = array();
-	$db->clear_cache('cat_');
 	$db->clear_cache('forums_');
+	$db->clear_cache('', TOPICS_CACHE_FOLDER);
 	cache_tree_level('Root', $parents, $cats, $forums);
 
 	// re-order all

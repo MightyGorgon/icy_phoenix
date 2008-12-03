@@ -725,6 +725,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 				}
 			}
 
+			$db->clear_cache('ban_');
 			clear_user_color_cache($user_id);
 
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -780,13 +781,17 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 						{
 							$temp2 = '';
 							foreach($temp as $temp3)
+							{
 								$temp2 .= htmlspecialchars($temp3) . ',';
+							}
 							$temp2 = substr($temp2,0,strlen($temp2)-1);
 
 							$temp = $temp2;
 						}
 						else
+						{
 							$temp = is_numeric($temp) ? intval($temp) : htmlspecialchars($temp);
+						}
 						$profile_names[$name] = $temp;
 
 						$sql2 .= $name . " = '".str_replace("\'","''",$profile_names[$name])."', ";
@@ -871,9 +876,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			}
 		}
 
-		//
 		// Now parse and display it as a template
-		//
 		$user_id = $this_userdata['user_id'];
 		$username = $this_userdata['username'];
 		$email = $this_userdata['user_email'];

@@ -268,6 +268,8 @@ switch($mode)
 				$i++;
 			}
 
+			$db->clear_cache('ban_');
+
 			$message = $lang['User_banned_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);

@@ -751,6 +751,7 @@ function lock_db($unlock = false, $delay = true, $ignore_default = false)
 	// OK, now we can update the settings
 	update_config('board_disable', ($unlock) ? '0' : '1');
 	$db->clear_cache();
+	$db->clear_cache('', TOPICS_CACHE_FOLDER);
 
 	// Delay 3 seconds to allow database to finish operation
 	if (!$unlock && $delay)

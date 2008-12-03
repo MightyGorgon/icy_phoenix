@@ -331,11 +331,12 @@ class ct_userfunctions
 		if ( (intval($ctracker_config->settings['spammer_blockmode']) == 1) && ($userdata['user_id'] != ANONYMOUS) )
 		{
 			// Ban user
-			$sql = "INSERT INTO " . BANLIST_TABLE . "( `ban_id` , `ban_userid` , `ban_ip` , `ban_email` ) VALUES ('', '" . $userdata['user_id'] . "', '', NULL);";
+			$sql = "INSERT INTO " . BANLIST_TABLE . "(`ban_id` , `ban_userid` , `ban_ip` , `ban_email`) VALUES ('', '" . $userdata['user_id'] . "', '', NULL);";
 			if( !$db->sql_query($sql))
 			{
 				message_die(CRITICAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 			}
+			$db->clear_cache('ban_');
 		}
 		elseif ( intval($ctracker_config->settings['spammer_blockmode']) == 2 )
 		{
@@ -364,7 +365,7 @@ class ct_userfunctions
 		// Log out user
 		if( $userdata['session_logged_in'] )
 		{
-		session_end($userdata['session_id'], $userdata['user_id']);
+			session_end($userdata['session_id'], $userdata['user_id']);
 		}
 
 		// Output Info Message

@@ -57,6 +57,8 @@ if($mode == 'save')
 			message_die(GENERAL_ERROR, "Could not remove data from autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
+		$db->clear_cache('autolinks_', TOPICS_CACHE_FOLDER);
+
 		$message = $lang['Autolink_removed'] . '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], '<a href="' . append_sid('admin_autolinks.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
@@ -88,6 +90,8 @@ if($mode == 'save')
 		{
 			message_die(GENERAL_ERROR, "Could not insert data into autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
+
+		$db->clear_cache('autolinks_', TOPICS_CACHE_FOLDER);
 
 		$message .= '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], '<a href="' . append_sid('admin_autolinks.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 

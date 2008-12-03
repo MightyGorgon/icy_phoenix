@@ -21,8 +21,8 @@ if(!defined('SQL_LAYER'))
 
 	class sql_db
 	{
-
 		var $db_connect_id;
+		var $query_string = '';
 		var $query_result;
 		var $row = array();
 		var $rowset = array();
@@ -31,9 +31,10 @@ if(!defined('SQL_LAYER'))
 		var $caching = false;
 		var $cached = false;
 		var $cache = array();
-		//
+		var $cache_folder = '';
+		var $sql_time = 0;
+
 		// Constructor
-		//
 		function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
 		{
 			$mtime = microtime();
@@ -84,9 +85,7 @@ if(!defined('SQL_LAYER'))
 			}
 		}
 
-		//
 		// Other base methods
-		//
 		function sql_close()
 		{
 			$mtime = microtime();
@@ -126,10 +125,8 @@ if(!defined('SQL_LAYER'))
 			}
 		}
 
-		//
 		// Base query method
-		//
-		function sql_query($query = '', $transaction = false, $cache = false)
+		function sql_query($query = '', $transaction = false, $cache = false, $cache_folder = SQL_CACHE_FOLDER)
 		{
 			$mtime = microtime();
 			$mtime = explode(' ', $mtime);
@@ -155,16 +152,17 @@ if(!defined('SQL_LAYER'))
 			// Check cache
 			$this->query_string = $query;
 			$this->caching = false;
-			$this->cache = array();
 			$this->cached = false;
+			$this->cache = array();
+			$this->cache_folder = $cache_folder;
 			if(($query !== '') && $cache)
 			{
-								$hash = md5($query);
+				$hash = md5($query);
 				if(strlen($cache))
 				{
 					$hash = $cache . $hash;
 				}
-				$filename = SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
+				$filename = $this->cache_folder . 'sql_' . $hash . '.php';
 				if(@file_exists($filename))
 				{
 					$set = array();
@@ -198,14 +196,14 @@ if(!defined('SQL_LAYER'))
 			if (defined('SQL_DEBUG_LOG') && (SQL_DEBUG_LOG == true))
 			{
 				/*
-				$f = fopen(SQL_CACHE_FOLDER . 'sql_' . $hash . '_.php', 'w');
+				$f = fopen($this->cache_folder . 'sql_' . $hash . '_.php', 'w');
 				@fputs($f, '\'' . $query . '\'');
 				@fclose($f);
 				*/
 				// Cache SQL history in a file
 				if (!defined('IN_ADMIN'))
 				{
-					$f = fopen(SQL_CACHE_FOLDER . 'sql_history.php', 'a+');
+					$f = fopen($this->cache_folder . 'sql_history.php', 'a+');
 					@fputs($f, date('Y/m/d - H:i:s') . ' => ' . $hash . "\n\n" . $query . "\n\n\n=========================\n\n");
 					@fclose($f);
 				}
@@ -293,9 +291,7 @@ if(!defined('SQL_LAYER'))
 			}
 		}
 
-		//
 		// Other query methods
-		//
 		function sql_numrows($query_id = 0)
 		{
 			$mtime = microtime();
@@ -692,7 +688,8 @@ if(!defined('SQL_LAYER'))
 			{
 				return;
 			}
-						$cache_file_name = SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
+			$this->cache_folder = (empty($this->cache_folder) ? SQL_CACHE_FOLDER : $this->cache_folder);
+			$cache_file_name = $this->cache_folder . 'sql_' . $this->caching . '.php';
 			@unlink($cache_file_name);
 			$f = fopen($cache_file_name, 'w');
 			@flock($f, LOCK_EX);
@@ -714,21 +711,22 @@ if(!defined('SQL_LAYER'))
 			$this->cache = array();
 		}
 
-		function clear_cache($prefix = '')
+		function clear_cache($prefix = '', $cache_folder = SQL_CACHE_FOLDER)
 		{
-						$this->caching = false;
+			$this->caching = false;
 			$this->cached = false;
 			$this->cache = array();
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
-			$res = opendir(SQL_CACHE_FOLDER);
+			$this->cache_folder = $cache_folder;
+			$res = opendir($this->cache_folder);
 			if($res)
 			{
 				while(($file = readdir($res)) !== false)
 				{
 					if(substr($file, 0, $prefix_len) === $prefix)
 					{
-						@unlink(SQL_CACHE_FOLDER . $file);
+						@unlink($this->cache_folder . $file);
 					}
 				}
 			}

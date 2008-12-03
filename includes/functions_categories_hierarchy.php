@@ -415,7 +415,7 @@ function cache_tree($write = false)
 	// read categories
 	$cats = array();
 	$sql = "SELECT * FROM " . CATEGORIES_TABLE . " ORDER BY cat_order, cat_id";
-	if (!$result = $db->sql_query($sql, false, 'cat_'))
+	if (!$result = $db->sql_query($sql, false, 'forums_cats_'))
 	{
 		message_die(GENERAL_ERROR, 'Couldn\'t access list of Categories', '', __LINE__, __FILE__, $sql);
 	}

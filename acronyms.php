@@ -35,7 +35,7 @@ include('includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'acronym_body.tpl'));
 
 $sql = "SELECT * FROM " . ACRONYMS_TABLE . " ORDER BY acronym ASC";
-if(!$result = $db->sql_query($sql, false, 'acronyms_'))
+if(!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, "Could not obtain acronym data", "", __LINE__, __FILE__, $sql);
 }

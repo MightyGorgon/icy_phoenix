@@ -87,6 +87,7 @@ if (substr($mode, 0, 6) == 'update')
 	echo('<b>SQL Errors:</b><br /><br /><ul type="circle">' . $sql_results_error . '</ul><br /><br /><br />' . '<b>SQL Success:</b><br /><br /><ul type="circle">' . $sql_results_ok . '</ul><br />');
 
 	$db->clear_cache();
+	$db->clear_cache('', TOPICS_CACHE_FOLDER);
 
 	// CONFIG REWRITE
 	/*

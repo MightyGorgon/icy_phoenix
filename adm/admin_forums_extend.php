@@ -894,8 +894,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		{
 			$selected_id = $item['main'];
 			$error_msg .= $return_msg;
-			$db->clear_cache('cat_');
 			$db->clear_cache('forums_');
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 			message_die(GENERAL_MESSAGE, $error_msg);
 		}
 
@@ -1876,8 +1876,8 @@ function reorder_tree()
 	global $tree, $db;
 
 	// Make sure forums cache is empty...
-	$db->clear_cache('cat_');
 	$db->clear_cache('forums_');
+	$db->clear_cache('', TOPICS_CACHE_FOLDER);
 	// Read the tree
 	read_tree(true);
 
@@ -1908,8 +1908,8 @@ function reorder_tree()
 	}
 
 	// Make sure forums cache is empty again...
-	$db->clear_cache('cat_');
 	$db->clear_cache('forums_');
+	$db->clear_cache('', TOPICS_CACHE_FOLDER);
 	// Re-cache the tree
 	cache_tree(true);
 	board_stats();

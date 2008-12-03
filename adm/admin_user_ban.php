@@ -175,9 +175,8 @@ if ( isset($_POST['submit']) )
 		}
 	}
 
-	$sql = "SELECT *
-		FROM " . BANLIST_TABLE;
-	if ( !($result = $db->sql_query($sql)) )
+	$sql = "SELECT * FROM " . BANLIST_TABLE;
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, "Couldn't obtain banlist information", "", __LINE__, __FILE__, $sql);
 	}
@@ -302,22 +301,22 @@ if ( isset($_POST['submit']) )
 		}
 if (! empty($where_sql))
 {
-	$sql = "SELECT ban_userid FROM ".BANLIST_TABLE."
-	   WHERE ban_id IN ($where_sql)";
+	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
+		WHERE ban_id IN ($where_sql)";
 	if ( !($result = $db->sql_query($sql) ))
 	{
-	   message_die(GENERAL_ERROR, "Couldn't get user warnings info from database".$sql, "", __LINE__, __FILE__, $sql);
+		message_die(GENERAL_ERROR, "Couldn't get user warnings info from database".$sql, "", __LINE__, __FILE__, $sql);
 	}
 	while ($user_id_list = $db->sql_fetchrow($result))
 	{
-	   $where_user_sql .= ( ( $where_user_sql != '' ) ? ', ' : '' ) . $user_id_list['ban_userid'];
+		$where_user_sql .= ( ( $where_user_sql != '' ) ? ', ' : '' ) . $user_id_list['ban_userid'];
 	}
 	$sql = "UPDATE " . USERS_TABLE . "
-	   SET user_warnings='0'
-	   WHERE user_id IN ($where_user_sql)";
+		SET user_warnings='0'
+		WHERE user_id IN ($where_user_sql)";
 	if ( !$db->sql_query($sql) )
 	{
-	     message_die(GENERAL_ERROR, "Couldn't update user warnings info from database".$sql, "", __LINE__, __FILE__, $sql);
+		message_die(GENERAL_ERROR, "Couldn't update user warnings info from database".$sql, "", __LINE__, __FILE__, $sql);
 	}
 }
 
@@ -360,6 +359,8 @@ if (! empty($where_sql))
 		}
 	}
 
+	$db->clear_cache('ban_');
+
 	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid("admin_user_ban." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
@@ -367,9 +368,7 @@ if (! empty($where_sql))
 }
 else
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'user_ban_body.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'user_ban_body.tpl'));
 
 	$template->assign_vars(array(
 		'L_BAN_TITLE' => $lang['Ban_control'],
@@ -380,7 +379,8 @@ else
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
 
-		'S_BANLIST_ACTION' => append_sid("admin_user_ban." . PHP_EXT))
+		'S_BANLIST_ACTION' => append_sid('admin_user_ban.' . PHP_EXT)
+		)
 	);
 
 	$template->assign_vars(array(
@@ -389,7 +389,8 @@ else
 		'L_BAN_IP' => $lang['Ban_IP'],
 		'L_BAN_IP_EXPLAIN' => $lang['Ban_IP_explain'],
 		'L_BAN_EMAIL' => $lang['Ban_email'],
-		'L_BAN_EMAIL_EXPLAIN' => $lang['Ban_email_explain'])
+		'L_BAN_EMAIL_EXPLAIN' => $lang['Ban_email_explain']
+		)
 	);
 
 	$userban_count = 0;
@@ -424,9 +425,8 @@ else
 
 	$select_userlist = '<select name="unban_user[]" multiple="multiple" size="5">' . $select_userlist . '</select>';
 
-	$sql = "SELECT ban_id, ban_ip, ban_email
-		FROM " . BANLIST_TABLE;
-	if ( !($result = $db->sql_query($sql)) )
+	$sql = "SELECT ban_id, ban_ip, ban_email FROM " . BANLIST_TABLE;
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not select current ip ban list', '', __LINE__, __FILE__, $sql);
 	}
@@ -441,13 +441,13 @@ else
 	{
 		$ban_id = $banlist[$i]['ban_id'];
 
-		if ( !empty($banlist[$i]['ban_ip']) )
+		if (!empty($banlist[$i]['ban_ip']))
 		{
 			$ban_ip = str_replace('255', '*', decode_ip($banlist[$i]['ban_ip']));
 			$select_iplist .= '<option value="' . $ban_id . '">' . $ban_ip . '</option>';
 			$ipban_count++;
 		}
-		else if ( !empty($banlist[$i]['ban_email']) )
+		elseif (!empty($banlist[$i]['ban_email']))
 		{
 			$ban_email = $banlist[$i]['ban_email'];
 			$select_emaillist .= '<option value="' . $ban_id . '">' . $ban_email . '</option>';
@@ -455,12 +455,12 @@ else
 		}
 	}
 
-	if ( $select_iplist == '' )
+	if ($select_iplist == '')
 	{
 		$select_iplist = '<option value="-1">' . $lang['No_banned_ip'] . '</option>';
 	}
 
-	if ( $select_emaillist == '' )
+	if ($select_emaillist == '')
 	{
 		$select_emaillist = '<option value="-1">' . $lang['No_banned_email'] . '</option>';
 	}
@@ -479,11 +479,12 @@ else
 		'L_LOOK_UP' => $lang['Look_up_User'],
 		'L_FIND_USERNAME' => $lang['Find_username'],
 
-		'U_SEARCH_USER' => append_sid('./../' . SEARCH_MG . '?mode=searchuser'),
+		'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . SEARCH_MG . '?mode=searchuser'),
 		'S_UNBAN_USERLIST_SELECT' => $select_userlist,
 		'S_UNBAN_IPLIST_SELECT' => $select_iplist,
 		'S_UNBAN_EMAILLIST_SELECT' => $select_emaillist,
-		'S_BAN_ACTION' => append_sid('admin_user_ban.' . PHP_EXT))
+		'S_BAN_ACTION' => append_sid('admin_user_ban.' . PHP_EXT)
+		)
 	);
 }
 

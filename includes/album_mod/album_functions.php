@@ -893,12 +893,13 @@ function album_comment_notify($pic_id)
 {
 	global $db, $board_config, $album_config, $lang, $userdata;
 
-	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE;
-	if (!($result = $db->sql_query($sql)))
+	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
+					WHERE ban_userid <> 0
+					ORDER BY ban_userid ASC";
+	if (!($result = $db->sql_query($sql, false, 'ban_')))
 	{
-		message_die(GENERAL_ERROR, 'Could not obtain banlist', '', __LINE__, __FILE__, $sql);
+		message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 	}
-
 	$user_id_sql = '';
 	while ($row = $db->sql_fetchrow($result))
 	{

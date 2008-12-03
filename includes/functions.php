@@ -2154,7 +2154,7 @@ function empty_cache_folders($cg = false)
 	$cg_prefix = POST_USERS_URL . '_';
 	$dat_extension = '.dat';
 
-	$dirs_array = array(USERS_CACHE_FOLDER, MAIN_CACHE_FOLDER, SQL_CACHE_FOLDER);
+	$dirs_array = array(MAIN_CACHE_FOLDER, SQL_CACHE_FOLDER, TOPICS_CACHE_FOLDER, USERS_CACHE_FOLDER);
 	for ($i = 0; $i < count($dirs_array); $i++)
 	{
 		$dir = $dirs_array[$i];

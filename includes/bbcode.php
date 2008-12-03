@@ -3633,7 +3633,7 @@ class BBCode
 			$orig = $repl = array();
 
 			$sql = 'SELECT * FROM ' . ACRONYMS_TABLE;
-			if(!$result = $db->sql_query($sql, false, 'acronyms_'))
+			if(!$result = $db->sql_query($sql, false, 'acronyms_', TOPICS_CACHE_FOLDER))
 			{
 				message_die(GENERAL_ERROR, "Couldn't obtain acronyms data", "", __LINE__, __FILE__, $sql);
 			}
@@ -3805,7 +3805,7 @@ function obtain_autolink_list(&$orig_autolink, &$replacement_autolink, $id)
 	$where = ($id) ? ' WHERE link_forum = 0 OR link_forum IN (' . $id . ')' : ' WHERE link_forum = -1';
 
 	$sql = "SELECT * FROM  " . AUTOLINKS . $where;
-	if(!($result = $db->sql_query($sql, false, 'autolinks_')))
+	if(!($result = $db->sql_query($sql, false, 'autolinks_', TOPICS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get autolink data from database', '', __LINE__, __FILE__, $sql);
 	}

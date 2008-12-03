@@ -86,6 +86,7 @@
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+<br />
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>

@@ -18,13 +18,13 @@ function query_ranks()
 	global $db;
 
 	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
-		ORDER BY ban_userid ASC";
-	if ( !($result = $db->sql_query($sql, false, 'ban_')) )
+					WHERE ban_userid <> 0
+					ORDER BY ban_userid ASC";
+	if (!($result = $db->sql_query($sql, false, 'ban_')))
 	{
 		message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 	}
-
-	while ($row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$ranks_sql['bannedrow'][] = $row;
 	}
@@ -32,12 +32,11 @@ function query_ranks()
 	$db->sql_freeresult($result);
 
 	$sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-	if ( !($result = $db->sql_query($sql, false, 'ranks_')) )
+	if (!($result = $db->sql_query($sql, false, 'ranks_')))
 	{
 		message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
 	}
-
-	while ($row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$ranks_sql['ranksrow'][] = $row;
 	}
@@ -75,7 +74,7 @@ function generate_ranks($user_row, $ranks_sql)
 		$user_ranks[$user_ranks_array[$j]] = '';
 	}
 
-	if ( $user_row['user_id'] == ANONYMOUS )
+	if ($user_row['user_id'] == ANONYMOUS)
 	{
 		$is_guest = true;
 	}
@@ -84,7 +83,7 @@ function generate_ranks($user_row, $ranks_sql)
 	{
 		for($j = 0; $j < count($ranks_sql['bannedrow']); $j++)
 		{
-			if ( $ranks_sql['bannedrow'][$j]['ban_userid'] == $user_row['user_id'] )
+			if ($ranks_sql['bannedrow'][$j]['ban_userid'] == $user_row['user_id'])
 			{
 				$is_banned = true;
 				break;
@@ -95,7 +94,7 @@ function generate_ranks($user_row, $ranks_sql)
 	for($j = 0; $j < count($ranks_sql['ranksrow']); $j++)
 	{
 		$rank_tmp = $ranks_sql['ranksrow'][$j]['rank_title'];
-		$rank_img_tmp = ( $ranks_sql['ranksrow'][$j]['rank_image'] ) ? '<img src="' . $ranks_sql['ranksrow'][$j]['rank_image'] . '" alt="' . $ranks_tmp . '" title="' . $ranks_tmp . '" />' : '';
+		$rank_img_tmp = ($ranks_sql['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_sql['ranksrow'][$j]['rank_image'] . '" alt="' . $ranks_tmp . '" title="' . $ranks_tmp . '" />' : '';
 		if ($is_guest == true)
 		{
 			if ($ranks_sql['ranksrow'][$j]['rank_special'] == '2')
@@ -114,7 +113,7 @@ function generate_ranks($user_row, $ranks_sql)
 		}
 		else
 		{
-			$day_diff = intval( (time() - $user_row['user_regdate']) / 86400 );
+			$day_diff = intval((time() - $user_row['user_regdate']) / 86400);
 
 			for($k = 0; $k < count($user_fields_array); $k++)
 			{

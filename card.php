@@ -235,7 +235,6 @@ elseif ($mode == 'unban')
 	$e_temp = 'ban_reactivated';
 	//$e_subj = $lang['Ban_reactivate'];
 	$no_error_ban = true;
-	$db->clear_cache('ban_');
 }
 elseif ($mode == 'ban')
 {
@@ -257,7 +256,7 @@ elseif ($mode == 'ban')
 	}
 
 	// insert the user in the ban list
-	$sql = 'SELECT ban_userid FROM ' . BANLIST_TABLE . ' WHERE ban_userid="' . $poster_id . '"';
+	$sql = 'SELECT ban_userid FROM ' . BANLIST_TABLE . ' WHERE ban_userid = "' . $poster_id . '"';
 	if($result = $db->sql_query($sql))
 	{
 		if ((!$db->sql_fetchrowset($result)) && ($poster_id != ANONYMOUS))
@@ -283,7 +282,6 @@ elseif ($mode == 'ban')
 			$message = $lang['Ban_update_red'];
 			$e_temp = 'ban_block';
 			//$e_subj = $lang['Card_banned'];
-			$db->clear_cache('ban_');
 		}
 		else
 		{
@@ -335,7 +333,6 @@ elseif ($mode == 'block')
 	$message = sprintf($lang['Block_update'],$block_time) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL .'=' . $poster_id) . '">', '</a>');
 	$e_temp = 'card_block';
 	//$e_subj = sprintf($lang['Card_blocked'], $block_time);
-	$db->clear_cache('ban_');
 }
 elseif ($mode == 'warn')
 {
@@ -366,7 +363,7 @@ elseif ($mode == 'warn')
 	// se if the user are to be banned, if so do it ...
 	if (($the_user['user_warnings'] + 1) >= $board_config['max_user_bancard'])
 	{
-		$sql = 'SELECT ban_userid FROM ' . BANLIST_TABLE . ' WHERE ban_userid="' . $poster_id . '"';
+		$sql = 'SELECT ban_userid FROM ' . BANLIST_TABLE . ' WHERE ban_userid = "' . $poster_id . '"';
 		if($result = $db->sql_query($sql))
 		{
 			if ((!$db->sql_fetchrowset($result)) && ($poster_id != ANONYMOUS))
@@ -378,12 +375,12 @@ elseif ($mode == 'warn')
 					message_die(GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
 				}
 				// update the user table with new status
-				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in="0" WHERE session_user_id="' . $poster_id . '"';
+				$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in = "0" WHERE session_user_id = "' . $poster_id . '"';
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, "Couldn't update banned sessions from database", "", __LINE__, __FILE__, $sql);
 				}
-				$no_error_ban=true;
+				$no_error_ban = true;
 				$message = $lang['Ban_update_red'];
 				$e_temp = 'ban_block';
 				// $e_subj = $lang['Ban_blocked'];
@@ -406,7 +403,6 @@ elseif ($mode == 'warn')
 		$no_error_ban = true;
 		$e_temp = 'ban_warning';
 		// $e_subj = $lang['Ban_warning'];
-		$db->clear_cache('ban_');
 	}
 }
 
@@ -459,8 +455,10 @@ if ($no_error_ban)
 }
 else
 {
-	$message = 'Error card.php file';
+	$message = 'Error in card.php file';
 }
+
+$db->clear_cache('ban_');
 
 $message .= ($post_id != '-1') ? '<br /><br />' . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>') : '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG). '">', '</a>');
 message_die(GENERAL_MESSAGE, $message);

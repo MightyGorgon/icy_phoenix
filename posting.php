@@ -849,7 +849,7 @@ elseif ($mode == 'thank')
 			message_die(GENERAL_ERROR, 'Could not insert thanks information', '', __LINE__, __FILE__, $sql);
 		}
 		$message = $lang['thanks_add'];
-		$db->clear_cache('thanks_');
+		$db->clear_cache('topics_thanks_', TOPICS_CACHE_FOLDER);
 		// MG Cash MOD For IP - BEGIN
 		if (defined('CASH_MOD'))
 		{

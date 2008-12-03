@@ -1,22 +1,19 @@
 <?php
-/***************************************************************************
- *                          album_personal.php
- *                          ------------------------------------------------
- *     begin                : Friday, June 12, 2004
- *     copyright            : (C) 2004 IdleVoid
- *     email                : idlevoid@slater.dk
- *     file version         : 1.0.8
- *     release              : 1.2.0
- ****************************************************************************/
+/**
+*
+* @package Icy Phoenix
+* @version $Id$
+* @copyright (c) 2008 Icy Phoenix
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*
+*/
 
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+/**
+*
+* @Extra credits for this file
+* IdleVoid (idlevoid@slater.dk)
+*
+*/
 
 if (!defined('IN_ICYPHOENIX'))
 {
@@ -52,7 +49,7 @@ if (ALBUM_ROOT_CATEGORY == ($check_cat_id = album_get_personal_root_id($album_us
 }
 else
 {
-	if ( empty($cat_id) || ($cat_id == 0) )
+	if (empty($cat_id) || ($cat_id == 0))
 	{
 		$cat_id = $check_cat_id;
 	}
@@ -73,7 +70,7 @@ else
 // New AUTH check for PG
 //$auth_data = album_get_auth_data(album_get_personal_root_id($album_user_id));
 
-if ( !album_check_permission($auth_data, ALBUM_AUTH_VIEW) )
+if (!album_check_permission($auth_data, ALBUM_AUTH_VIEW))
 {
 	if (!$userdata['session_logged_in'])
 	{
@@ -91,7 +88,7 @@ if ( !album_check_permission($auth_data, ALBUM_AUTH_VIEW) )
 // ------------------------------------------------------------------------
 // Check personal gallery creation/upload permission
 // ------------------------------------------------------------------------
-if ( !album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) && (count($album_data['data']) <= 1) )
+if (!album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) && (count($album_data['data']) <= 1))
 {
 	if ($album_user_id == $userdata['user_id'])
 	{
@@ -114,7 +111,7 @@ if ($cat_id == ALBUM_ROOT_CATEGORY)
 	$cat_id = album_get_personal_root_id($album_user_id);
 }
 
-$is_root_cat = ( ($cat_id == album_get_personal_root_id($album_user_id) || ($cat_id == ALBUM_ROOT_CATEGORY) ) ? true : false);
+$is_root_cat = (($cat_id == album_get_personal_root_id($album_user_id) || ($cat_id == ALBUM_ROOT_CATEGORY)) ? true : false);
 $has_sub_cats = album_has_sub_cats($cat_id);
 $has_parent_cats = album_has_parent_cats($cat_id);
 
@@ -189,7 +186,7 @@ else
 // Count Pics of the root category of personal gallery,
 // - $cat_ids is set in the above IF statement
 // ------------------------------------------------------------------------
-if ( $cat_ids == '')
+if ($cat_ids == '')
 {
 	$cat_ids = 0;
 }
@@ -200,7 +197,7 @@ $sql = 'SELECT COUNT(p.pic_id) AS count
 			AND c.cat_id IN (' . $cat_ids . ')
 			AND p.pic_cat_id = c.cat_id';
 
-if( !($result = $db->sql_query($sql)) )
+if(!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not count pics !!', '', __LINE__, __FILE__, $sql);
 }
@@ -210,7 +207,7 @@ $db->sql_freeresult($result);
 
 $total_pics = $row['count'];
 
-if ($row['count'] == 0)
+if ($total_pics == 0)
 {
 	if (!strstr($album_nav_cat_desc, sprintf($lang['Personal_Gallery_Of_User'], $username)))
 	{
@@ -282,13 +279,13 @@ $template->set_filenames(array('body' => 'album_cat_body.tpl'));
 // ------------------------------------------------------------------------
 $no_personal_gallery = false;
 
-if ($row['count'] == 0)
+if ($total_pics == 0)
 {
 	// ------------------------------------------------------------------------
 	// check if there is _any_ pictures at all in the personal gallery of this user.
 	// but ONLY if we aren't in simple view mode (then we have already indirectly done the check)
 	// ------------------------------------------------------------------------
-	if ( ($album_view_mode != ALBUM_VIEW_ALL) && (!empty($allowed_cat)) )
+	if (($album_view_mode != ALBUM_VIEW_ALL) && (!empty($allowed_cat)))
 	{
 		$sql = 'SELECT COUNT(p.pic_id) AS count
 				FROM '. ALBUM_TABLE .' AS p, ' . ALBUM_CAT_TABLE .' AS c
@@ -296,7 +293,7 @@ if ($row['count'] == 0)
 					AND c.cat_id IN (' . $allowed_cat.')
 					AND p.pic_cat_id = c.cat_id';
 
-		if( !($result = $db->sql_query($sql)) )
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not count pics!!', '', __LINE__, __FILE__, $sql);
 		}
@@ -306,7 +303,7 @@ if ($row['count'] == 0)
 		$total_pics = $row['count'];
 	}
 
-	if (($album_config['personal_show_recent_instead_of_nopics'] == 1) && ($row['count'] > 0))
+	if (($album_config['personal_show_recent_instead_of_nopics'] == 1) && ($total_pics > 0))
 	{
 		album_build_recent_pics($allowed_cat);
 	}
@@ -316,14 +313,14 @@ if ($row['count'] == 0)
 		$template->assign_block_vars('index_pics_block.no_pics', array());
 	}
 
-	if ( ($is_root_cat) && (!$has_sub_cats) )
+	if (($is_root_cat) && (!$has_sub_cats))
 	{
 		$sql = "SELECT c.cat_id
 				FROM ". ALBUM_CAT_TABLE ." AS c
 				WHERE c.cat_user_id = '$album_user_id' AND c.cat_parent = 0
 				LIMIT 1";
 
-		if( !($result = $db->sql_query($sql)) )
+		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query category information', '', __LINE__, __FILE__, $sql);
 		}
@@ -333,7 +330,7 @@ if ($row['count'] == 0)
 			$no_personal_gallery = true;
 			$no_picture_message = sprintf($lang['Personal_gallery_not_created'], $username);
 			$create_personal_cat_link = '<a href="' . append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?action=create&amp;user_id=' . $album_user_id)) . '">' . $lang['Create_Personal_Categories'] . '</a><br />';
-			if ( album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) == true )
+			if (album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) == true)
 			{
 				$template->assign_block_vars('index_pics_block.no_pics.manage_personal_gal_folders', array());
 			}
@@ -368,17 +365,17 @@ $upload_link = append_sid(album_append_uid('album_upload.' . PHP_EXT . '?cat_id=
 $upload_full_link = '<a href="' . $upload_link . '"><img src="' . $upload_img .'" alt="' . $lang['Upload_Pic'] . '" title="' . $lang['Upload_Pic'] . '" align="middle" border="0" /></a>';
 
 $download_img = $images['download_pic'];
-$download_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . intval($cat_id) . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . ( ($start != '') ? '&amp;start=' . $start : '' )));
+$download_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . intval($cat_id) . (($sort_method != '') ? '&amp;sort_method=' . $sort_method : '') . (($sort_order != '') ? '&amp;sort_order=' . $sort_order : '') . (($start != '') ? '&amp;start=' . $start : '')));
 $download_full_link = '<a href="' . $download_link . '"><img src="' . $download_img . '" alt="' . $lang['Download_page'] . '" title="' . $lang['Download_page'] . '" align="middle" border="0" /></a>';
 
-if( ((album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) == true) && ($enable_picture_upload_switch == false)) || ($no_personal_gallery = false) )
+if(((album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) == true) && ($enable_picture_upload_switch == false)) || ($no_personal_gallery = false))
 {
 	$template->assign_block_vars('enable_picture_upload_pg', array());
 }
 
 // Enable download only for own personal galleries
-//if ( ($total_pics > 0) && ($enable_picture_download_switch == false) && ($thiscat['cat_user_id'] == $userdata['user_id']) )
-if ( ($total_pics > 0) && ($enable_picture_download_switch == false) )
+//if (($total_pics > 0) && ($enable_picture_download_switch == false) && ($thiscat['cat_user_id'] == $userdata['user_id']))
+if (($total_pics > 0) && ($enable_picture_download_switch == false))
 {
 	$template->assign_block_vars('enable_picture_download_pg', array());
 }
@@ -388,8 +385,8 @@ if ($no_personal_gallery == false)
 	$auth_data = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_ALL, $thiscat);
 	$auth_list = album_build_auth_list($album_user_id, $cat_id);
 
-	//if( (album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) == true) && ($is_root_cat) && (!$has_sub_cats && !$has_parent_cats))
-	if( (album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) == true) && ((($is_root_cat) && ($row['count'] > 0)) || (!$is_root_cat)))
+	//if((album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) == true) && ($is_root_cat) && (!$has_sub_cats && !$has_parent_cats))
+	if((album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) == true) && ((($is_root_cat) && ($row['count'] > 0)) || (!$is_root_cat)))
 	{
 		$template->assign_block_vars('manage_personal_gal_folders', array());
 	}

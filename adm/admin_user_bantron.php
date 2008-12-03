@@ -52,6 +52,8 @@ if (isset ($_POST['delete_submit']))
 		}
 	}
 
+	$db->clear_cache('ban_');
+
 	$message = $lang['Ban_update_sucessful'] .'<br /><br />'. sprintf ($lang['Click_return_banadmin'], '<a href="'. append_sid ('admin_user_bantron.' . PHP_EXT) .'">', '</a>') .'<br /><br />' . sprintf ($lang['Click_return_admin_index'], '<a href="'. append_sid ('index.' . PHP_EXT . '?pane=right') .'">', '</a>');
 
 	message_die (GENERAL_MESSAGE, $message);
@@ -216,7 +218,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			message_die (GENERAL_ERROR, "Couldn't obtain banlist information", "", __LINE__, __FILE__, $sql);
 		}
 
-		$current_banlist = $db->sql_fetchrowset ($result);
+		$current_banlist = $db->sql_fetchrowset($result);
 		$db->sql_freeresult ($result);
 
 		$kill_session_sql = '';
@@ -225,18 +227,18 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			$in_banlist = false;
 			for ($j = 0; $j < count($current_banlist); $j++)
 			{
-				if ($user_list[$i] == $current_banlist[$j]['ban_userid'] )
+				if ($user_list[$i] == $current_banlist[$j]['ban_userid'])
 				{
 					$in_banlist = true;
 				}
 			}
 
-			if (!$in_banlist )
+			if (!$in_banlist)
 			{
-				$kill_session_sql .= (($kill_session_sql != '' ) ? ' OR ' : '' ) . "session_user_id = " . $user_list[$i];
+				$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . "session_user_id = " . $user_list[$i];
 
 				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_userid, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
-					VALUES (". $user_list[$i] .", $ban_time, $ban_expire_time, $ban_by_userid, '$ban_priv_reason', $ban_pub_reason_mode, '$ban_pub_reason')";
+					VALUES (" . $user_list[$i] . ", $ban_time, $ban_expire_time, $ban_by_userid, '$ban_priv_reason', $ban_pub_reason_mode, '$ban_pub_reason')";
 				if (!$db->sql_query ($sql))
 				{
 					message_die (GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
@@ -249,7 +251,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			$in_banlist = false;
 			for ($j = 0; $j < count($current_banlist); $j++)
 			{
-				if ($ip_list[$i] == $current_banlist[$j]['ban_ip'] )
+				if ($ip_list[$i] == $current_banlist[$j]['ban_ip'])
 				{
 					$in_banlist = true;
 				}
@@ -297,7 +299,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			$in_banlist = false;
 			for ($j = 0; $j < count($current_banlist); $j++)
 			{
-				if ($email_list[$i] == $current_banlist[$j]['ban_email'] )
+				if ($email_list[$i] == $current_banlist[$j]['ban_email'])
 				{
 					$in_banlist = true;
 				}
@@ -305,7 +307,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 
 			if (!$in_banlist )
 			{
-				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_email, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
+				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
 					VALUES ('". str_replace ("\'", "''", $email_list[$i]) ."', $ban_time, $ban_expire_time, $ban_by_userid, '$ban_priv_reason', $ban_pub_reason_mode, '$ban_pub_reason')";
 				if (!$db->sql_query ($sql))
 				{
@@ -314,6 +316,8 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			}
 		}
 	}
+
+	$db->clear_cache('ban_');
 
 	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid ("admin_user_bantron." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid ('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -448,7 +452,7 @@ elseif (isset ($_POST['add']) || $_GET['mode'] == 'edit')
 			$template->assign_block_vars('username_row', array(
 				'L_USERNAME' => $lang['Username'],
 				'L_FIND_USERNAME' => $lang['Find_username'],
-				'U_SEARCH_USER' => append_sid('./../' . SEARCH_MG . '?mode=searchuser'),
+				'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . SEARCH_MG . '?mode=searchuser'),
 				'USERNAME' => $row['username']
 				)
 			);
@@ -529,7 +533,7 @@ elseif (isset ($_POST['add']) || $_GET['mode'] == 'edit')
 		$template->assign_block_vars('username_row', array(
 			'L_USERNAME' => $lang['Username'],
 			'L_FIND_USERNAME' => $lang['Find_username'],
-			'U_SEARCH_USER' => append_sid('./../' . SEARCH_MG . '?mode=searchuser')
+			'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . SEARCH_MG . '?mode=searchuser')
 			)
 		);
 
@@ -587,7 +591,7 @@ else
 		'SHOW' => $show,
 		'ORDER' => $order,
 
-		'S_BANTRON_ACTION' => append_sid ('admin_user_bantron.' . PHP_EXT)
+		'S_BANTRON_ACTION' => append_sid('admin_user_bantron.' . PHP_EXT)
 		)
 	);
 
@@ -611,6 +615,7 @@ else
 				ORDER BY u.username $order LIMIT $start, ". $board_config['topics_per_page'];
 
 			break;
+
 		case 'ip':
 			$template->assign_block_vars('ip_header', array(
 				'L_IP' => $lang['BM_IP']
@@ -626,6 +631,7 @@ else
 				ORDER BY ban_email $order LIMIT $start, ". $board_config['topics_per_page'];
 
 			break;
+
 		case 'email':
 			$template->assign_block_vars('email_header', array(
 				'L_EMAIL' => $lang['Email']
@@ -641,6 +647,7 @@ else
 				ORDER BY ban_email $order LIMIT $start, ". $board_config['topics_per_page'];
 
 			break;
+
 		case 'all':
 			$template->assign_block_vars('username_header', array(
 				'L_USERNAME' => $lang['Username']
@@ -698,7 +705,7 @@ else
 
 		$ban_time = (isset ($row['ban_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_time'], $board_config['board_timezone']) : '-';
 		$ban_expire_time = (isset ($row['ban_expire_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_expire_time'], $board_config['board_timezone']) : '-';
-		$ban_reason = (isset ($row['ban_priv_reason']) || isset ($row['ban_pub_reason'])) ? "<a href=\"javascript:void (0);\" onClick=\"window.open ('". append_sid ("admin_user_bantron.php?mode=view_reasons&ban_id=$ban_id") ."','ban_reason','scrollbars=yes,width=540,height=450')\">". $lang['View'] ."</a>" : '-';
+		$ban_reason = (isset ($row['ban_priv_reason']) || isset ($row['ban_pub_reason'])) ? "<a href=\"javascript:void (0);\" onClick=\"window.open ('" . append_sid('admin_user_bantron.' . PHP_EXT . '?mode=view_reasons&amp;ban_id=' . $ban_id) . "','ban_reason','scrollbars=yes,width=540,height=450')\">" . $lang['View'] . '</a>' : '-';
 
 		$template->assign_block_vars('rowlist', array(
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
@@ -720,6 +727,7 @@ else
 				);
 
 				break;
+
 			case 'ip':
 				$template->assign_block_vars('rowlist.ip_content', array(
 					'IP' => str_replace ('255', '*', decode_ip ($row['ban_ip']))
@@ -727,6 +735,7 @@ else
 				);
 
 				break;
+
 			case 'email':
 				$template->assign_block_vars('rowlist.email_content', array(
 					'EMAIL' => $row['ban_email']
@@ -734,6 +743,7 @@ else
 				);
 
 				break;
+
 			case 'all':
 				$template->assign_block_vars('rowlist.username_content', array(
 					'USERNAME' => ($row['ban_userid'] != '0') ? $row['username'] : '-'

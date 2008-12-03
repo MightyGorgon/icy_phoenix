@@ -179,6 +179,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 			{
 				message_die(GENERAL_MESSAGE, 'Unable to access the Banlist Table.');
 			}
+			$db->clear_cache('ban_');
 		}
 		else
 		{

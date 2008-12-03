@@ -17,12 +17,12 @@
 
 if(!defined('SQL_LAYER'))
 {
-
 	define('SQL_LAYER', 'mysql');
 
 	class sql_db
 	{
 		var $db_connect_id;
+		var $query_string = '';
 		var $query_result;
 		var $row = array();
 		var $rowset = array();
@@ -30,11 +30,10 @@ if(!defined('SQL_LAYER'))
 		var $caching = false;
 		var $cached = false;
 		var $cache = array();
-		var $sql_time = 0; // SQL excution time - added by Smartor
+		var $cache_folder = '';
+		var $sql_time = 0;
 
-		//
 		// Constructor
-		//
 		function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
 		{
 			$mtime = microtime();
@@ -91,9 +90,7 @@ if(!defined('SQL_LAYER'))
 			}
 		}
 
-		//
 		// Other base methods
-		//
 		function sql_close()
 		{
 			$mtime = microtime();
@@ -131,30 +128,30 @@ if(!defined('SQL_LAYER'))
 			}
 		}
 
-		//
 		// Base query method
-		//
-		function sql_query($query = "", $transaction = false, $cache = false)
+		function sql_query($query = '', $transaction = false, $cache = false, $cache_folder = SQL_CACHE_FOLDER)
 		{
 			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
+			$mtime = explode(" ", $mtime);
 			$mtime = $mtime[1] + $mtime[0];
 			$starttime = $mtime;
 
 			// Remove any pre-existing queries
 			unset($this->query_result);
 			// Check cache
+			$this->query_string = $query;
 			$this->caching = false;
-			$this->cache = array();
 			$this->cached = false;
-			if($query !== '' && $cache)
+			$this->cache = array();
+			$this->cache_folder = $cache_folder;
+			if(($query !== '') && $cache)
 			{
-								$hash = md5($query);
+				$hash = md5($query);
 				if(strlen($cache))
 				{
 					$hash = $cache . $hash;
 				}
-				$filename = SQL_CACHE_FOLDER . 'sql_' . $hash . '.php';
+				$filename = $this->cache_folder . 'sql_' . $hash . '.php';
 				if(@file_exists($filename))
 				{
 					$set = array();
@@ -170,7 +167,7 @@ if(!defined('SQL_LAYER'))
 			// not cached
 	//		echo 'sql: ', htmlspecialchars($query), '<br />';
 
-			if($query != "")
+			if($query != '')
 			{
 				$this->num_queries++;
 
@@ -199,13 +196,11 @@ if(!defined('SQL_LAYER'))
 
 				$this->sql_time += $endtime - $starttime;
 
-				return ( $transaction == END_TRANSACTION ) ? true : false;
+				return ($transaction == END_TRANSACTION) ? true : false;
 			}
 		}
 
-		//
 		// Other query methods
-		//
 		function sql_numrows($query_id = 0)
 		{
 			if($query_id === 'cache' && $this->cached)
@@ -246,6 +241,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_affectedrows()
 		{
 			$mtime = microtime();
@@ -278,6 +274,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_numfields($query_id = 0)
 		{
 			$mtime = microtime();
@@ -314,6 +311,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_fieldname($offset, $query_id = 0)
 		{
 			$mtime = microtime();
@@ -350,6 +348,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_fieldtype($offset, $query_id = 0)
 		{
 			$mtime = microtime();
@@ -386,9 +385,10 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_fetchrow($query_id = 0)
 		{
-			if($query_id === 'cache' && $this->cached)
+			if(($query_id === 'cache') && $this->cached)
 			{
 				return count($this->cache) ? array_shift($this->cache) : false;
 			}
@@ -434,9 +434,10 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_fetchrowset($query_id = 0)
 		{
-			if($query_id === 'cache' && $this->cached)
+			if(($query_id === 'cache') && $this->cached)
 			{
 				return $this->cache;
 			}
@@ -491,6 +492,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_fetchfield($field, $rownum = -1, $query_id = 0)
 		{
 			$mtime = microtime();
@@ -551,6 +553,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_rowseek($rownum, $query_id = 0)
 		{
 			$mtime = microtime();
@@ -587,6 +590,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_nextid()
 		{
 			$mtime = microtime();
@@ -619,6 +623,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_freeresult($query_id = 0)
 		{
 			if($query_id === 'cache')
@@ -670,6 +675,7 @@ if(!defined('SQL_LAYER'))
 				return false;
 			}
 		}
+
 		function sql_error($query_id = 0)
 		{
 			$mtime = microtime();
@@ -677,11 +683,11 @@ if(!defined('SQL_LAYER'))
 			$mtime = $mtime[1] + $mtime[0];
 			$starttime = $mtime;
 
-			$result["message"] = @mysql_error($this->db_connect_id);
-			$result["code"] = @mysql_errno($this->db_connect_id);
+			$result['message'] = @mysql_error($this->db_connect_id);
+			$result['code'] = @mysql_errno($this->db_connect_id);
 
 			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
+			$mtime = explode(' ', $mtime);
 			$mtime = $mtime[1] + $mtime[0];
 			$endtime = $mtime;
 
@@ -696,7 +702,8 @@ if(!defined('SQL_LAYER'))
 			{
 				return;
 			}
-						$cache_file_name = SQL_CACHE_FOLDER . 'sql_' . $this->caching . '.php';
+			$this->cache_folder = (empty($this->cache_folder) ? SQL_CACHE_FOLDER : $this->cache_folder);
+			$cache_file_name = $this->cache_folder . 'sql_' . $this->caching . '.php';
 			@unlink($cache_file_name);
 			$f = fopen($cache_file_name, 'w');
 			@flock($f, LOCK_EX);
@@ -717,21 +724,22 @@ if(!defined('SQL_LAYER'))
 			$this->cache = array();
 		}
 
-		function clear_cache($prefix = '')
+		function clear_cache($prefix = '', $cache_folder = SQL_CACHE_FOLDER)
 		{
-						$this->caching = false;
+			$this->caching = false;
 			$this->cached = false;
 			$this->cache = array();
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
-			$res = opendir(SQL_CACHE_FOLDER);
+			$this->cache_folder = $cache_folder;
+			$res = opendir($this->cache_folder);
 			if($res)
 			{
 				while(($file = readdir($res)) !== false)
 				{
 					if(substr($file, 0, $prefix_len) === $prefix)
 					{
-						@unlink(SQL_CACHE_FOLDER . $file);
+						@unlink($this->cache_folder . $file);
 					}
 				}
 			}

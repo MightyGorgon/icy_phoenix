@@ -10,7 +10,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1100_General']['100_Acronyms'] = $file;
@@ -22,20 +22,18 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
-if( isset($_GET['mode']) || isset($_POST['mode']) )
+if(isset($_GET['mode']) || isset($_POST['mode']))
 {
 	$mode = ($_GET['mode']) ? $_GET['mode'] : $_POST['mode'];
 }
 else
 {
-	//
 	// These could be entered via a form button
-	//
-	if( isset($_POST['add']) )
+	if(isset($_POST['add']))
 	{
 		$mode = 'add';
 	}
-	else if( isset($_POST['save']) )
+	else if(isset($_POST['save']))
 	{
 		$mode = 'save';
 	}
@@ -45,11 +43,11 @@ else
 	}
 }
 
-if( $mode != '' )
+if($mode != '')
 {
-	if( ($mode == 'edit') || ($mode == 'add') )
+	if(($mode == 'edit') || ($mode == 'add'))
 	{
-		$acronym_id = ( isset($_GET['id']) ) ? intval($_GET['id']) : 0;
+		$acronym_id = (isset($_GET['id'])) ? intval($_GET['id']) : 0;
 
 		$template->set_filenames(array(
 			'body' => ADM_TPL . 'acronyms_edit_body.tpl')
@@ -57,9 +55,9 @@ if( $mode != '' )
 
 		$s_hidden_fields = '';
 
-		if( $mode == 'edit' )
+		if($mode == 'edit')
 		{
-			if( $acronym_id )
+			if($acronym_id)
 			{
 				$sql = 'SELECT *
 					FROM ' . ACRONYMS_TABLE . "
@@ -99,44 +97,44 @@ if( $mode != '' )
 
 		include('./page_footer_admin.' . PHP_EXT);
 	}
-	elseif( $mode == 'save' )
+	elseif($mode == 'save')
 	{
-		$acronym_id = ( isset($_POST['id']) ) ? intval($_POST['id']) : 0;
-		$acronym = ( isset($_POST['acronym']) ) ? trim($_POST['acronym']) : '';
-		$description = ( isset($_POST['description']) ) ? trim($_POST['description']) : '';
+		$acronym_id = (isset($_POST['id'])) ? intval($_POST['id']) : 0;
+		$acronym = (isset($_POST['acronym'])) ? trim($_POST['acronym']) : '';
+		$description = (isset($_POST['description'])) ? trim($_POST['description']) : '';
 
-		if( ($acronym == '') || ($description == '') )
+		if(($acronym == '') || ($description == ''))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_enter_acronym']);
 		}
 
-		if( $acronym_id )
+		if($acronym_id)
 		{
 			$sql = "UPDATE " . ACRONYMS_TABLE . "
-				SET acronym = '" . str_replace("\'", "''", htmlspecialchars($acronym) ) . "', description = '" . str_replace("\'", "''", htmlspecialchars($description)) . "'
+				SET acronym = '" . str_replace("\'", "''", htmlspecialchars($acronym)) . "', description = '" . str_replace("\'", "''", htmlspecialchars($description)) . "'
 				WHERE acronym_id = $acronym_id";
 			$message = $lang['Acronym_updated'];
 		}
 		else
 		{
-			$sql = 'SELECT acronym FROM ' . ACRONYMS_TABLE . " WHERE acronym = '" . str_replace("\'", "''", htmlspecialchars($acronym) ) . "'";
+			$sql = 'SELECT acronym FROM ' . ACRONYMS_TABLE . " WHERE acronym = '" . str_replace("\'", "''", htmlspecialchars($acronym)) . "'";
 
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
 			}
 
-			if( $db->sql_fetchrow( $result ) )
+			if($db->sql_fetchrow($result))
 			{
 				$message = 'Acronym already in Database.';
 				$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
-				$db->sql_freeresult( $result );
+				$db->sql_freeresult($result);
 
-				message_die(GENERAL_MESSAGE, $message );
+				message_die(GENERAL_MESSAGE, $message);
 			}
 
-			$db->sql_freeresult( $result );
+			$db->sql_freeresult($result);
 
 			$sql = "INSERT INTO " . ACRONYMS_TABLE . " (acronym, description)
 				VALUES ('" . str_replace("\'", "''", htmlspecialchars($acronym)) . "', '" . str_replace("\'", "''", htmlspecialchars($description)) . "')";
@@ -149,22 +147,24 @@ if( $mode != '' )
 			message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
+		$db->clear_cache('acronyms_', TOPICS_CACHE_FOLDER);
+
 		$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	elseif( $mode == 'delete' )
+	elseif($mode == 'delete')
 	{
-		if( isset($_POST['id']) || isset($_GET['id']) )
+		if(isset($_POST['id']) || isset($_GET['id']))
 		{
-			$acronym_id = ( isset($_POST['id']) ) ? intval($_POST['id']) : intval($_GET['id']);
+			$acronym_id = (isset($_POST['id'])) ? intval($_POST['id']) : intval($_GET['id']);
 		}
 		else
 		{
 			$acronym_id = 0;
 		}
 
-		if( $acronym_id )
+		if($acronym_id)
 		{
 			$sql = "DELETE FROM " . ACRONYMS_TABLE . "
 				WHERE acronym_id = $acronym_id";
@@ -173,6 +173,8 @@ if( $mode != '' )
 			{
 				message_die(GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
 			}
+
+			$db->clear_cache('acronyms_', TOPICS_CACHE_FOLDER);
 
 			$message = $lang['Acronym_removed'] . '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -191,7 +193,7 @@ else
 	$sql = "SELECT *
 		FROM " . ACRONYMS_TABLE . "
 		ORDER BY acronym";
-	if( !$result = $db->sql_query($sql, false, 'acronyms_') )
+	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, "Could not query words table", $lang['Error'], __LINE__, __FILE__, $sql);
 	}
@@ -219,8 +221,8 @@ else
 		$description = $word_rows[$i]['description'];
 		$acronym_id = $word_rows[$i]['acronym_id'];
 
-		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
-		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
+		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('acronyms', array(
 			'ROW_COLOR' => '#' . $row_color,

@@ -49,8 +49,8 @@ define('CACHE_CH_SQL', true); // Caching CH SQL ON
 //define('CACHE_CH_SQL', false); // Caching CH SQL OFF
 
 // Session Refresh Seconds
-define('SESSION_REFRESH', 60); // Session Refresh Time (Seconds)
-define('ONLINE_REFRESH', 300); // Online Refresh Time (Seconds)
+define('SESSION_REFRESH', 120); // Session Refresh Time (Seconds)
+define('ONLINE_REFRESH', 600); // Online Refresh Time (Seconds)
 define('COLORIZE_CACHE_REFRESH', 2592000); // Caching time for colorize cache (seconds) (60*60*24=86400) (86400*30=2592000)
 
 // Mighty Gorgon - Constants Pages And Paths - BEGIN
@@ -82,6 +82,7 @@ define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
 define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
 define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
 define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
+define('TOPICS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'topics/');
 define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
 define('BACKUP_PATH', 'backup/');
 define('TPL_EXTENSION', 'tpl');

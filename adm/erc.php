@@ -727,11 +727,13 @@ switch($mode)
 				break;
 			case 'ecf': // Empty Cache
 				$db->clear_cache();
+				$db->clear_cache('', TOPICS_CACHE_FOLDER);
 				empty_cache_folders(false);
 				success_message($lang['ecf_success']);
 				break;
 			case 'fdt': // Fix def_tree.php
 				$db->clear_cache();
+				$db->clear_cache('', TOPICS_CACHE_FOLDER);
 				empty_cache_folders(false);
 				$res = '<' . '?' . 'php' . "\n\n" . '?' . '>';
 
@@ -1093,6 +1095,7 @@ switch($mode)
 					}
 					success_message($lang['cbl_success_anonymous']);
 				}
+				$db->clear_cache('ban_');
 				break;
 			case 'raa': // Remove all administrators
 				check_authorisation();

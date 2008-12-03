@@ -22,7 +22,7 @@ if (isset($meta_post_id) && ($meta_post_id > 0))
 						AND f.forum_id = p.forum_id
 						AND c.cat_id = f.cat_id
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'posts_meta_'))
+	if($result = $db->sql_query($sql, false, 'posts_meta_', TOPICS_CACHE_FOLDER))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
@@ -44,7 +44,7 @@ if (isset($meta_post_id) && ($meta_post_id > 0))
 						AND t.topic_first_post_id = m.post_id
 						AND m.word_id = w.word_id
 					LIMIT 20";
-	if($result = $db->sql_query($sql, false, 'topics_kw_'))
+	if($result = $db->sql_query($sql, false, 'topics_kw_', TOPICS_CACHE_FOLDER))
 	{
 		$meta_keywords = '';
 		while ($meta_row = $db->sql_fetchrow($result))
@@ -62,7 +62,7 @@ elseif (isset($meta_topic_id) && ($meta_topic_id > 0))
 						AND f.forum_id = t.forum_id
 						AND c.cat_id = f.cat_id
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'topics_meta_'))
+	if($result = $db->sql_query($sql, false, 'topics_meta_', TOPICS_CACHE_FOLDER))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
@@ -83,7 +83,7 @@ elseif (isset($meta_topic_id) && ($meta_topic_id > 0))
 						AND t.topic_first_post_id = m.post_id
 						AND m.word_id = w.word_id
 					LIMIT 20";
-	if($result = $db->sql_query($sql, false, 'topics_kw_'))
+	if($result = $db->sql_query($sql, false, 'topics_kw_', TOPICS_CACHE_FOLDER))
 	{
 		$meta_keywords = '';
 		while ($meta_row = $db->sql_fetchrow($result))
@@ -100,7 +100,7 @@ elseif (isset($meta_forum_id) && ($meta_forum_id > 0))
 					WHERE f.forum_id = '" . $meta_forum_id . "'
 						AND c.cat_id = f.cat_id
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'forums_meta_'))
+	if($result = $db->sql_query($sql, false, 'forums_meta_', TOPICS_CACHE_FOLDER))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
@@ -124,7 +124,7 @@ elseif (isset($meta_cat_id) && ($meta_cat_id > 0))
 					FROM " . CATEGORIES_TABLE . "
 					WHERE cat_id = '" . $meta_cat_id . "'
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'cats_meta_'))
+	if($result = $db->sql_query($sql, false, 'cats_meta_', TOPICS_CACHE_FOLDER))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{

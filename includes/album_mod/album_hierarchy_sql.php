@@ -258,7 +258,7 @@ function album_get_personal_root_id($user_id)
 	}
 
 	//if (is_array($album_data) && count($album_data['data']) > 0)
-	if ($userdata['user_id'] == $user_id && is_array($album_data) && count($album_data['data']) > 0 && $album_data['personal'][0] == 1)
+	if (($userdata['user_id'] == $user_id) && is_array($album_data) && count($album_data['data']) > 0 && $album_data['personal'][0] == 1)
 	{
 		return $album_data['id'][0]; // the first array index is always root
 	}
