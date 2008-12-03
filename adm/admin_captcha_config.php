@@ -61,7 +61,7 @@ else
 
 	if(isset($_POST['submit']))
 	{
-		$message = $lang['captcha_config_updated'] . "<br />" . sprintf($lang['Click_return_captcha_config'], "<a href=\"" . append_sid("admin_captcha_config." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>") . '<br /><br />';
+		$message = $lang['captcha_config_updated'] . "<br />" . sprintf($lang['Click_return_captcha_config'], '<a href="' . append_sid("admin_captcha_config." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>') . '<br /><br />';
 
 		message_die(GENERAL_MESSAGE, $message);
 	}

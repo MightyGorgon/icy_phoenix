@@ -68,7 +68,7 @@ else
 
 	if (isset($_POST['submit']))
 	{
-		$message = $lang['KB_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_kb_config'], "<a href=\"" . append_sid('admin_kb_config.' . PHP_EXT . '?mode=config') . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+		$message = $lang['KB_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_kb_config'], '<a href="' . append_sid('admin_kb_config.' . PHP_EXT . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}

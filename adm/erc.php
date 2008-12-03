@@ -1229,7 +1229,7 @@ switch($mode)
 				$ndbu = urlencode($new_dbuser);
 				$ndbp = urlencode($new_dbpasswd);
 				$ntp = urlencode($new_table_prefix);
-				success_message(sprintf($lang['rcp_success'], "<a href=\"" . $_SERVER['PHP_SELF'] . "?mode=download&ndbms=$ndbms&ndbh=$ndbh&ndbn=$ndbn&ndbu=$ndbu&ndbp=$ndbp&ntp=$ntp\">", '</a>'));
+				success_message(sprintf($lang['rcp_success'], '<a href="' . $_SERVER['PHP_SELF'] . '?mode=download&amp;ndbms=' . $ndbms . '&amp;ndbh=' . $ndbh . '&amp;ndbn=' . $ndbn . '&amp;ndbu=' . $ndbu . '&amp;ndbp=' . $ndbp . '&amp;ntp=' . $ntp . '">', '</a>'));
 				break;
 			default:
 ?>

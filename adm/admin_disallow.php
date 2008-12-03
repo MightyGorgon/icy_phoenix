@@ -56,7 +56,7 @@ if( isset($_POST['add_name']) )
 		$message = $lang['Disallow_successful'];
 	}
 
-	$message .= '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+	$message .= '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], '<a href="' . append_sid("admin_disallow." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -72,7 +72,7 @@ else if( isset($_POST['delete_name']) )
 		message_die(GENERAL_ERROR, "Couldn't removed disallowed user.", "",__LINE__, __FILE__, $sql);
 	}
 
-	$message .= $lang['Disallowed_deleted'] . '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], "<a href=\"" . append_sid("admin_disallow." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+	$message .= $lang['Disallowed_deleted'] . '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], '<a href="' . append_sid('admin_disallow.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 

@@ -3284,7 +3284,7 @@ switch($mode_id)
 					}
 					else
 					{
-						throw_error(sprintf($lang['Inconsistencies_found'], "<a href=\"" . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=check_post") . '">', '</a>'));
+						throw_error(sprintf($lang['Inconsistencies_found'], '<a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=check_post') . '">', '</a>'));
 					}
 					$db->sql_freeresult($result2);
 				}

@@ -188,7 +188,7 @@ if(isset($_GET['import_pack']) || isset($_POST['import_pack']))
 			}
 		}
 
-		$message = $lang['smiley_import_success'] . '<br /><br />' . sprintf($lang['Click_return_smileadmin'], "<a href=\"" . append_sid("admin_smilies." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+		$message = $lang['smiley_import_success'] . '<br /><br />' . sprintf($lang['Click_return_smileadmin'], '<a href="' . append_sid("admin_smilies." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 

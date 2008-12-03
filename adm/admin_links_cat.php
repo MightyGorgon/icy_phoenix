@@ -231,7 +231,7 @@ if( !isset($_POST['mode']) )
 			reorder_cat();
 
 			// Return a message...
-			$message = $lang['Category_changed_order'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_changed_order'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -288,7 +288,7 @@ else
 			}
 
 			// Return a message...
-			$message = $lang['New_category_created'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+			$message = $lang['New_category_created'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -310,7 +310,7 @@ else
 		}
 
 		// Return a message...
-		$message = $lang['Category_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+		$message = $lang['Category_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -360,7 +360,7 @@ else
 			reorder_cat();
 
 			// Return a message...
-			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -386,7 +386,7 @@ else
 			reorder_cat();
 
 			// Return a message...
-			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], "<a href=\"" . append_sid("admin_links_cat." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}

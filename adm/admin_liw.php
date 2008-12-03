@@ -101,7 +101,7 @@ if ( isset($_POST['submit']) )
 		}
 	}
 
-	$message = $lang['LIW_config_updated'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], "<a href=\"" . append_sid("admin_liw." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+	$message = $lang['LIW_config_updated'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], '<a href="' . append_sid('admin_liw.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -118,7 +118,7 @@ if ( isset($_POST['empty_cache']) )
 		message_die(GENERAL_MESSAGE, "Could not empty cache table", "", __LINE__, __FILE__, $sql);
 	}
 
-	$message = $lang['LIW_cache_emptied'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], "<a href=\"" . append_sid("admin_liw." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+	$message = $lang['LIW_cache_emptied'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], '<a href="' . append_sid('admin_liw.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 

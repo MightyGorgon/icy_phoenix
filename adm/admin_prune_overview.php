@@ -175,7 +175,7 @@ if ( isset($_POST['submit']) )
 		message_die(GENERAL_ERROR, "Failed to update prune config", "", __LINE__, __FILE__, $sql);
 	}
 
-	$message = $lang['Prune_update'] . '<br /><br />' . sprintf($lang['Click_return_admin_po'], "<a href=\"" . append_sid("admin_prune_overview." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+	$message = $lang['Prune_update'] . '<br /><br />' . sprintf($lang['Click_return_admin_po'], '<a href="' . append_sid('admin_prune_overview.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 } // End if ( isset($_POST['submit']...
 

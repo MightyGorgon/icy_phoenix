@@ -75,7 +75,7 @@ else
 
 	if( isset($_POST['submit']) )
 	{
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], "<a href=\"" . append_sid("admin_news." . PHP_EXT) . "\">", "</a>") . '<br /><br />' . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid('index.' . PHP_EXT . '?pane=right') . "\">", "</a>");
+		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
