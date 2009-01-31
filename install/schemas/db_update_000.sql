@@ -525,11 +525,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_refe
 
 ALTER TABLE `phpbb_config` CHANGE `config_value` `config_value` TEXT NOT NULL;
 
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_top_html_block', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('top_html_block_text', 'Text');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_bottom_html_block', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bottom_html_block_text', 'Text');
-
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (1, 1, 0, 0, 0, 0, 0, NULL, 'main_links', 'Main Links', 'Main Links Block', NULL, 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (2, 0, 1, 1, 0, 1, 1, './images/menu/application_view_tile.png', 'main_links', 'Main Links', 'Main Links', '', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (3, 0, 1, 2, 0, 1, 2, './images/menu/newspaper.png', 'news', 'News', 'News', '', 0, 0, 0);
@@ -1368,10 +1363,28 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bots_reg_aut
 ##              BUILD 039             ##
 ########################################
 DROP TABLE `phpbb_themes_name`;
-ALTER TABLE `phpbb_themes` DROP `body_text`, DROP `body_link`, DROP `body_vlink`, DROP `body_alink`, DROP `body_hlink`, DROP `tr_color1`, DROP `tr_color2`, DROP `tr_color3`, DROP `th_color1`, DROP `th_color2`, DROP `th_color3`, DROP `th_class1`, DROP `th_class2`, DROP `th_class3`, DROP `td_color1`, DROP `td_color2`, DROP `td_color3`, DROP `fontface1`, DROP `fontface2`, DROP `fontface3`, DROP `fontsize1`, DROP `fontsize2`, DROP `fontsize3`, DROP `fontcolor1`, DROP `fontcolor2`, DROP `fontcolor3`, DROP `span_class1`, DROP `span_class2`, DROP `span_class3`, DROP `img_size_poll`, DROP `img_size_privmsg`, DROP `online_color`, DROP `offline_color`, DROP `hidden_color`;
-UPDATE phpbb_config SET config_value = 'default' WHERE config_name = 'xs_def_template';
-UPDATE phpbb_pa_config SET config_value = 'downloads/' WHERE config_name = 'upload_dir';
-UPDATE phpbb_pa_config SET config_value = 'files/screenshots/' WHERE config_name = 'screenshots_dir';
+DROP TABLE `phpbb_themes`;
+CREATE TABLE `phpbb_themes` (
+	`themes_id` mediumint(8) unsigned NOT NULL auto_increment,
+	`template_name` varchar(30) NOT NULL default '',
+	`style_name` varchar(30) NOT NULL default '',
+	`head_stylesheet` varchar(100) default NULL,
+	`body_background` varchar(100) default NULL,
+	`body_bgcolor` varchar(6) default NULL,
+	`tr_class1` varchar(25) default NULL,
+	`tr_class2` varchar(25) default NULL,
+	`tr_class3` varchar(25) default NULL,
+	`td_class1` varchar(25) default NULL,
+	`td_class2` varchar(25) default NULL,
+	`td_class3` varchar(25) default NULL,
+	PRIMARY KEY (`themes_id`)
+);
+INSERT `phpbb_themes` VALUES (1, 'icy_phoenix', 'Frozen Phoenix', 'style_cyan.css', 'cyan', '', 'row1', 'row2', 'row3', 'row1', 'row2', 'row3');
+UPDATE `phpbb_users` SET `user_style` = '1';
+UPDATE `phpbb_config` SET `config_value` = '1' WHERE `config_name` = 'default_style';
+UPDATE `phpbb_config` SET `config_value` = 'default' WHERE `config_name` = 'xs_def_template';
+UPDATE `phpbb_pa_config` SET `config_value` = 'downloads/' WHERE `config_name` = 'upload_dir';
+UPDATE `phpbb_pa_config` SET `config_value` = 'files/screenshots/' WHERE `config_name` = 'screenshots_dir';
 
 
 
@@ -1468,11 +1481,11 @@ CREATE TABLE `___forums___` (
 	`forum_postcount` tinyint(1) NOT NULL default '1',
 	`forum_thanks` tinyint(1) NOT NULL default '0',
 	`forum_notify` tinyint(1) unsigned NOT NULL default '1',
-	`forum_similar_topics` TINYINT(1) NOT NULL DEFAULT '0',
-	`forum_tags` TINYINT(1) NOT NULL DEFAULT '0',
-	`forum_sort_box` TINYINT(1) NOT NULL DEFAULT '0',
-	`forum_kb_mode` TINYINT(1) NOT NULL DEFAULT '0',
-	`forum_index_icons` TINYINT(1) NOT NULL DEFAULT '0',
+	`forum_similar_topics` tinyint(1) NOT NULL default '0',
+	`forum_tags` tinyint(1) NOT NULL default '0',
+	`forum_sort_box` tinyint(1) NOT NULL default '0',
+	`forum_kb_mode` tinyint(1) NOT NULL default '0',
+	`forum_index_icons` tinyint(1) NOT NULL default '0',
 	`forum_rules` tinyint(1) unsigned NOT NULL default '0',
 	`forum_link` varchar(255) default NULL,
 	`forum_link_internal` tinyint(1) NOT NULL default '0',
@@ -1564,6 +1577,139 @@ RENAME TABLE `___categories___` TO `phpbb_categories`;
 
 
 
+########################################
+##              BUILD 043             ##
+########################################
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('ScoutJet', '', 'http://www.scoutjet.com/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yandex', '', 'Yandex/', '');
+
+ALTER TABLE phpbb_forums ADD `forum_topic_views` TINYINT(1) NOT NULL DEFAULT '1' AFTER `forum_similar_topics`;
+
+
+
+########################################
+##              BUILD 044             ##
+########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_global_switch', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_lock', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_queue_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_queue_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_digests_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_digests_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_files_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_files_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_database_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_database_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_cache_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_cache_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sql_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sql_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_users_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_users_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_topics_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_topics_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sessions_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sessions_last_run', '0');
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_count', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_show_begin_for', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_show_not_optimized', '0');
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('rand_seed_last_update', '0');
+
+DELETE FROM `phpbb_config` WHERE `config_name` = 'db_cron';
+
+DROP TABLE `phpbb_optimize_db`;
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('gsearch_guests', '0');
+
+CREATE TABLE `___megamail___` (
+	`mail_id` smallint unsigned NOT NULL auto_increment,
+	`mailsession_id` varchar(32) NOT NULL,
+	`mass_pm` tinyint(1) NOT NULL default '0',
+	`user_id` mediumint(8) NOT NULL,
+	`group_id` mediumint(8) NOT NULL,
+	`email_subject` varchar(255) NOT NULL,
+	`email_body` text,
+	`email_format` tinyint(1) NOT NULL default '0',
+	`batch_start` mediumint(8) NOT NULL,
+	`batch_size` smallint UNSIGNED NOT NULL,
+	`batch_wait` smallint NOT NULL,
+	`status` smallint NOT NULL,
+	PRIMARY KEY (`mail_id`)
+);
+
+INSERT INTO `___megamail___`
+SELECT m.mail_id, m.mailsession_id, 0, m.user_id, m.group_id, m.email_subject, m.email_body, 0, m.batch_start, m.batch_size, m.batch_wait, m.status
+FROM `phpbb_megamail` m
+ORDER BY m.mail_id;
+
+RENAME TABLE `phpbb_megamail` TO `_old_phpbb_megamail`;
+RENAME TABLE `___megamail___` TO `phpbb_megamail`;
+
+
+
+########################################
+##              BUILD 045             ##
+########################################
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Bloglines', '', 'Bloglines/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('DotBot', '', 'dotnetdotcom.org/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('FeedBurner', '', 'FeedBurner/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Feedreader', '', 'Feedreader', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Netvibes', '', 'Netvibes', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('NewsGatorOnline', '', 'NewsGatorOnline/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snarfer', '', 'Snarfer/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WikioFeedBot', '', 'WikioFeedBot', '');
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glt', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glb', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glh', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glf', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_fix', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_fit', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_fib', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vfx', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vft', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vfb', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vtx', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vtt', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vtb', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmt', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmb', '0');
+
+CREATE TABLE `phpbb_ads` (
+	`ad_id` mediumint(8) unsigned NOT NULL auto_increment,
+	`ad_title` varchar(255) NOT NULL,
+	`ad_text` text,
+	`ad_position` varchar(255) NOT NULL,
+	`ad_auth` tinyint(1) NOT NULL default '0',
+	`ad_format` tinyint(1) NOT NULL default '0',
+	`ad_active` tinyint(1) NOT NULL default '0',
+	PRIMARY KEY (`ad_id`)
+);
+
+DELETE FROM `phpbb_config` WHERE `config_name` = 'switch_top_html_block';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'switch_bottom_html_block';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'switch_footer_table';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'switch_header_banner';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'switch_viewtopic_banner';
+
+DELETE FROM `phpbb_config` WHERE `config_name` = 'top_html_block_text';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'bottom_html_block_text';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'footer_table_text';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'header_banner_text';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'viewtopic_banner_text';
+
+DELETE FROM `phpbb_extensions` WHERE `extension` = 'tif';
+DELETE FROM `phpbb_extensions` WHERE `extension` = 'tga';
+
+
+
+########################################
+##              BUILD 046             ##
+########################################
+
+
 
 #####################
 
@@ -1574,4 +1720,4 @@ UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = '
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.2.15.42' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.2.18.45' WHERE config_name = 'ip_version';

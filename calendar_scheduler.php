@@ -24,7 +24,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_topics_list.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -170,7 +169,7 @@ if (($board_config['calendar_birthday'] == true))
 	// read users
 	for ($i = 0; $i < $number; $i++)
 	{
-		$today_birthdays_list .= (($today_birthdays_list == '') ? '' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+		$today_birthdays_list .= (($today_birthdays_list == '') ? '' : ', ') . colorize_username($birthdays_list[$i]['user_id'], $birthdays_list[$i]['username'], $birthdays_list[$i]['user_color'], $birthdays_list[$i]['user_active']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
 	}
 }
 $today_birthdays_list = ($today_birthdays_list == '') ? $lang['None'] : $today_birthdays_list;
@@ -369,10 +368,8 @@ topic_list('TOPIC_LIST_SCHEDULER', 'topics_list_box', $topic_rowset, $title, $sp
 $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 $s_hidden_fields .= '<input type="hidden" name="date" value="' . $date . '" />';
 $s_hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
-if (!isset($nav_separator))
-{
-	$nav_separator = '&nbsp;&raquo;&nbsp;';
-}
+
+$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 
 $total = $topics_count;
 if ($total == 0)

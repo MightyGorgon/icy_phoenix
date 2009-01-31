@@ -13,7 +13,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 define ('NUM_SHOUT', 20);
 
 // Start session management
@@ -74,8 +73,11 @@ if (!$userdata['user_allowswearywords'])
 }
 
 // display the shoutbox
-$sql = "SELECT s.*, u.user_allowsmile, u.username FROM " . SHOUTBOX_TABLE . " s, ".USERS_TABLE." u
-		WHERE s.shout_user_id=u.user_id ORDER BY s.shout_session_time DESC LIMIT $start, ".NUM_SHOUT;
+$sql = "SELECT s.*, u.user_allowsmile, u.username, u.user_id, u.user_active, u.user_color
+		FROM " . SHOUTBOX_TABLE . " s, ".USERS_TABLE." u
+		WHERE s.shout_user_id = u.user_id
+		ORDER BY s.shout_session_time DESC
+		LIMIT $start, ".NUM_SHOUT;
 if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not get shoutbox information', '', __LINE__, __FILE__, $sql);
@@ -86,11 +88,11 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 	$user_id = $shout_row['shout_user_id'];
-	$username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['shout_user_id'], true);
+	$username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['user_id'], $shout_row['username'], $shout_row['user_color'], $shout_row['user_active'], true);
 	$shout = (!$shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'];
 	$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
 	$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $shout_row['enable_bbcode'] ? true : false);
-	$bbcode->allow_smilies = ($board_config['allow_smilies'] && $shout_row['user_allowsmile'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
+	$bbcode->allow_smilies = ($board_config['allow_smilies'] && $shout_row['user_allowsmile'] && ($shout != '') && $shout_row['enable_smilies'] ? true : false);
 	$shout = $bbcode->parse($shout);
 	$shout = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $shout) : $shout;
 	//$shout = str_replace("\n", "\n<br />\n", $shout);

@@ -21,7 +21,6 @@ function display_comments(&$file_data)
 	global $userdata, $db, $pafiledb, $pafiledb_functions, $bbcode;
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 	require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
 	$ranks_sql = query_ranks();
 	//
@@ -37,7 +36,7 @@ function display_comments(&$file_data)
 		)
 	);
 
-	$sql = 'SELECT c.*, u.*
+	$sql = 'SELECT c.*, u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang
 		FROM ' . PA_COMMENTS_TABLE . ' AS c
 			LEFT JOIN ' . USERS_TABLE . " AS u ON c.poster_id = u.user_id
 		WHERE c.file_id = '" . $file_data['file_id'] . "'
@@ -81,7 +80,7 @@ function display_comments(&$file_data)
 			}
 		}
 
-		$poster = colorize_username($comments_row['user_id']);
+		$poster = ($comments_row['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($comments_row['user_id'], $comments_row['username'], $comments_row['user_color'], $comments_row['user_active']);
 
 		$user_info = array();
 		$user_info = generate_user_info($comments_row);
@@ -115,7 +114,7 @@ function display_comments(&$file_data)
 
 		$pafiledb_template->assign_block_vars('text', array(
 			'POSTER' => $poster,
-			'U_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? append_sid("dload." . PHP_EXT . "?action=post_comment&amp;cid={$comments_row['comments_id']}&amp;delete=do&amp;file_id={$file_data['file_id']}") : '',
+			'U_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? append_sid('dload.' . PHP_EXT . "?action=post_comment&amp;cid={$comments_row['comments_id']}&amp;delete=do&amp;file_id={$file_data['file_id']}") : '',
 			'AUTH_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
 			'DELETE_IMG' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? $images['icon_delpost'] : '',
 			'ICON_MINIPOST_IMG' => IP_ROOT_PATH . $images['icon_minipost'],

@@ -1,4 +1,5 @@
 <?php
+$banner_processed = false;
 $catrow_count = (isset($this->_tpldata['catrow.'])) ? count($this->_tpldata['catrow.']) : 0;
 for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 {
@@ -97,15 +98,26 @@ if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
 	</td>
 	<!-- BEGIN forum_link_no -->
 	<td class="row1 row-center-small" width="120" colspan="2"{catrow.forumrow.LINKS_ROWSPAN}><div class="gensmall">{L_TOPICS}:&nbsp;{catrow.forumrow.TOPICS}<br />{L_POSTS}:&nbsp;{catrow.forumrow.POSTS}{catrow.forumrow.ONLINE}</div></td>
-	<td class="row1 row-center-small" width="180" nowrap="nowrap"{catrow.forumrow.LINKS_ROWSPAN}><span class="gensmall">{catrow.forumrow.LAST_POST}</span></td>
+	<td class="row1 row-center-small" width="180" nowrap="nowrap"{catrow.forumrow.LINKS_ROWSPAN}><span class="gensmall"><!-- IF S_BOT -->&nbsp;<!-- ELSE -->{catrow.forumrow.LAST_POST}<!-- ENDIF --></span></td>
 	<!-- END forum_link_no -->
 	<!-- BEGIN forum_link -->
 	<td class="row1 row-center" align="center" valign="middle" height="50" colspan="3"{catrow.forumrow.LINKS_ROWSPAN}><span class="gensmall">{catrow.forumrow.forum_link.HIT_COUNT}</span></td>
 	<!-- END forum_link -->
 </tr>
 <!-- IF catrow.forumrow.LINKS -->
-<tr><td class="row1h" style="padding:0px;"><span class="gensmall">{catrow.forumrow.L_LINKS}&nbsp;</span><span class="forumlink2{XS_NEW}">{catrow.forumrow.LINKS}&nbsp;</span></td></tr>
+<tr><td class="row1h" style="padding: 0px;"><span class="gensmall">{catrow.forumrow.L_LINKS}&nbsp;</span><span class="forumlink2{XS_NEW}">{catrow.forumrow.LINKS}&nbsp;</span></td></tr>
 <!-- ENDIF -->
+<?php
+if (!$banner_processed)
+{
+?>
+<!-- IF not S_BOT and FORUMINDEX_BANNER_ELEMENT -->
+<tr><td class="row1h-new" colspan="8"><span class="forumlink2-new">{FORUMINDEX_BANNER_ELEMENT}&nbsp;</span></td></tr>
+<!-- ENDIF -->
+<?php
+	$banner_processed = true;
+}
+?>
 <!-- END forumrow -->
 
 <!-- BEGIN tablefoot -->

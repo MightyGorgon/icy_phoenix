@@ -23,10 +23,25 @@ $my_lang_module_name = $lang['module_name__stats_overview_section'];
 
 // get information about the installed modules
 
+$auth_level = AUTH_ALL;
+if ($userdata['user_level'] == ADMIN)
+{
+	$auth_level = AUTH_ADMIN;
+}
+elseif ($userdata['user_level'] == MOD)
+{
+	$auth_level = AUTH_MOD;
+}
+elseif ($userdata['session_logged_in'])
+{
+	$auth_level = AUTH_REG;
+}
+
 $sql = 'SELECT module_id, name
 	FROM ' . MODULES_TABLE . '
 	WHERE active = 1
-	AND installed = 1
+		AND installed = 1
+		AND auth_value <= ' . $auth_level . '
 	ORDER BY display_order';
 
 if (!($result = $db->sql_query($sql)))
@@ -40,9 +55,7 @@ $module_data = $db->sql_fetchrowset($result);
 $template->_tpldata['stats_row_link.'] = array();
 //reset($template->_tpldata['stats_row_link.']);
 
-//
 // for all installed modules output an inpage link
-//
 $num_modules = 0;
 for ($i = 0; $i < $module_count; $i++)
 {

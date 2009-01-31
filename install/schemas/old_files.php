@@ -48,6 +48,7 @@ $output_paths_lang = array('lang_catala/', 'lang_dutch/', 'lang_english/', 'lang
 // OLD FILES - BEGIN
 $files_array = array(
 	'extension.inc',
+	'album_pclzip_lib.php',
 	'cpl_menu.php',
 	'db_generator.php',
 	'edit_post_time.php',
@@ -63,6 +64,7 @@ $files_array = array(
 	'adm/xs_lo_fi_mod.cfg',
 	'adm/xs_news.cfg',
 
+	'adm/admin_board_headers_banners.php',
 	'adm/admin_board_main.php',
 	'adm/admin_board_posting.php',
 	'adm/admin_board_queries.php',
@@ -85,10 +87,12 @@ $files_array = array(
 	'images/smiles/makepak.php',
 
 	'includes/functions_color_groups.php',
+	'includes/functions_mg_users.php',
 	'includes/functions_module.php',
 	'includes/functions_portal.php',
 	'includes/functions_profile_fields.php',
 	'includes/news_common.php',
+	'includes/optimize_database_cron.php',
 	'includes/phpbb_template.php',
 
 	'includes/album_mod/album_bbcode.php',
@@ -142,6 +146,7 @@ $files_array = array(
 
 	'templates/common/acp/admin_similar_topics_body.tpl',
 	'templates/common/acp/admin_db_generator_body.tpl',
+	'templates/common/acp/board_config_headers_banners.tpl',
 	'templates/common/acp/board_config_main_body.tpl',
 	'templates/common/acp/board_config_posting_body.tpl',
 	'templates/common/acp/board_config_queries.tpl',
@@ -296,7 +301,7 @@ for ($i = 0; $i < count($templates_array); $i++)
 				}
 
 				// ONLY FOR MG_THEMES - BEGIN
-				if (!in_array($templates_array[$i], $mg_themes_array))
+				if (in_array($templates_array[$i], $mg_themes_array))
 				{
 					// MOVE INTO BUTTONS - BEGIN
 					$buttons_folder = 'buttons/';
@@ -351,6 +356,7 @@ for ($i = 0; $i < count($templates_array); $i++)
 							{
 								$input_file = IP_ROOT_PATH . $current_full_path . $input_paths_lang[$l] . $input_images_lang[$m] . '.' . $extensions_array[$k];
 								$output_file = IP_ROOT_PATH . $current_full_path . $output_paths_lang[$l] . $output_images_lang[$m] . '.' . $extensions_array[$k];
+								//echo($input_file . ' - ' . $output_file . '<br />');
 								$action_result = (file_exists($input_file) ? rename($input_file, $output_file) : false);
 							}
 						}

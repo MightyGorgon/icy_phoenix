@@ -23,7 +23,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_mg_http.' . PHP_EXT);
 // Mighty Gorgon - HTTP AGENTS - END
 include(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -75,7 +74,7 @@ $template->assign_vars(array(
 
 // Forum info
 $sql = "SELECT forum_name, forum_id FROM " . FORUMS_TABLE;
-if ($result = $db->sql_query($sql, false, 'forums_info_'))
+if ($result = $db->sql_query($sql, false, 'forums_info_', FORUMS_CACHE_FOLDER))
 {
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -105,7 +104,7 @@ else
 */
 
 // Get user list
-$sql = "SELECT u.user_id, u.username, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_time, s.session_page, s.session_ip, s.session_user_agent
+$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_time, s.session_page, s.session_ip, s.session_user_agent
 	FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 	WHERE u.user_id = s.session_user_id
 	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
@@ -141,8 +140,7 @@ while($row = $db->sql_fetchrow($result))
 
 		if ($user_id != $prev_user)
 		{
-			$username = $row['username'];
-			$username = colorize_username($user_id);
+			$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 
 			if (!$row['user_allow_viewonline'])
 			{
@@ -371,7 +369,7 @@ if ($board_config['online_last_msgs'] == 1)
 
 	$except_forums = str_replace(' ', '', $except_forums);
 
-	$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, f.forum_name
+	$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color, f.forum_name
 			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . USERS_TABLE . " AS u, " . FORUMS_TABLE . " AS f
 			WHERE t.forum_id NOT IN (" . $except_forums . ")
 				AND t.topic_status <> 2
@@ -393,11 +391,11 @@ if ($board_config['online_last_msgs'] == 1)
 	for($i = 0; $i < $number_recent_topics; $i++)
 	{
 		$template->assign_block_vars('switch_show_recent.recent_topic_row', array(
-			'U_FORUM' => append_sid(VIEWFORUM_MG . "?" . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id']),
+			'U_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id']),
 			'L_FORUM' => $recent_topic_row[$i]['forum_name'],
-			'U_TITLE' => append_sid(VIEWTOPIC_MG . "?" . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' .$recent_topic_row[$i]['post_id'],
+			'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' .$recent_topic_row[$i]['post_id'],
 			'L_TITLE' => $recent_topic_row[$i]['topic_title'],
-			'U_POSTER' => colorize_username($recent_topic_row[$i]['user_id']),
+			'U_POSTER' => colorize_username($recent_topic_row[$i]['user_id'], $recent_topic_row[$i]['username'], $recent_topic_row[$i]['user_color'], $recent_topic_row[$i]['user_active']),
 			'S_POSTER' => $recent_topic_row[$i]['username'],
 			'S_POSTTIME' => create_date2($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
 			)
@@ -406,14 +404,17 @@ if ($board_config['online_last_msgs'] == 1)
 
 	// Last Seen - BEGIN
 	//$sql = "SELECT username, user_id, user_lastlogon, user_level, user_allow_viewonline FROM " . USERS_TABLE . " WHERE user_id > 0 ORDER BY user_lastlogon DESC LIMIT 10";
-	$sql = "SELECT username, user_id, user_lastlogon, user_level, user_allow_viewonline FROM " . USERS_TABLE . " WHERE user_id > 0 ORDER BY user_lastlogon DESC LIMIT " . intval($board_config['last_msgs_n']);
+	$sql = "SELECT username, user_id, user_active, user_color, user_lastlogon, user_level, user_allow_viewonline
+					FROM " . USERS_TABLE . "
+					WHERE user_id > 0 ORDER BY user_lastlogon DESC
+					LIMIT " . intval($board_config['last_msgs_n']);
 	if(!$result = $db->sql_query($sql)) { message_die(GENERAL_ERROR, 'Could not query last seen information', '', __LINE__, __FILE__, $sql); }
 	$number_last_seen = $db->sql_numrows($result);
 	$last_seen_row = array();
 	while($row = $db->sql_fetchrow($result)) { $last_seen_row[] = $row; }
 	for($i = 0; $i < $number_last_seen; $i++)
 	{
-		$username = colorize_username($last_seen_row[$i]['user_id']);
+		$username = colorize_username($last_seen_row[$i]['user_id'], $last_seen_row[$i]['username'], $last_seen_row[$i]['user_color'], $last_seen_row[$i]['user_active']);
 		$username_text = $last_seen_row[$i]['username'];
 		if($last_seen_row[$i]['user_allow_viewonline'] != 1)
 		{

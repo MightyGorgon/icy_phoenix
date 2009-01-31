@@ -67,6 +67,10 @@ include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_cache.' . PHP_EXT);
 include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions.' . PHP_EXT);
 include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'template.' . PHP_EXT);
 include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_pafiledb.' . PHP_EXT);
+if (defined('IN_ADMIN'))
+{
+	include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_pafiledb_admin.' . PHP_EXT);
+}
 
 $cache = new acm();
 $pafiledb_functions = new pafiledb_functions();

@@ -13,7 +13,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
 
 $friends_list = user_get_zebra_list();
@@ -29,10 +28,10 @@ else
 	if ($friends_online_list == false)
 	{
 		$template->assign_block_vars('no_friends_online', array());
-		foreach ($friends_list as $user_tmp)
+		for ($i = 0; $i < count($friends_list); $i++)
 		{
 			$template->assign_block_vars('friends_offline', array(
-				'USERNAME_FULL' => colorize_username($user_tmp),
+				'USERNAME_FULL' => colorize_username($friends_list[$i]['zebra_id'], $friends_list[$i]['username'], $friends_list[$i]['user_color'], $friends_list[$i]['user_active']),
 				)
 			);
 		}
@@ -41,15 +40,15 @@ else
 	{
 		$uon = 0;
 		$uoff = 0;
-		foreach ($friends_list as $user_tmp)
+		for ($i = 0; $i < count($friends_list); $i++)
 		{
-			// array_key_exists($user_tmp, $friends_online_list)
-			if ( isset($friends_online_list[$user_tmp]['user_allow_viewonline']) )
+			// array_key_exists($friends_list[$i]['zebra_id'], $friends_online_list)
+			if (isset($friends_online_list[$friends_list[$i]['zebra_id']]['user_allow_viewonline']))
 			{
-				if ( ($friends_online_list[$user_tmp]['user_allow_viewonline'] == true) || ($userdata['user_level'] == ADMIN) )
+				if (($friends_online_list[$friends_list[$i]['zebra_id']]['user_allow_viewonline'] == true) || ($userdata['user_level'] == ADMIN))
 				{
 					$template->assign_block_vars('friends_online', array(
-						'USERNAME_FULL' => colorize_username($user_tmp),
+						'USERNAME_FULL' => colorize_username($friends_list[$i]['zebra_id'], $friends_list[$i]['username'], $friends_list[$i]['user_color'], $friends_list[$i]['user_active']),
 						)
 					);
 					$uon++;
@@ -57,7 +56,7 @@ else
 				else
 				{
 					$template->assign_block_vars('friends_offline', array(
-						'USERNAME_FULL' => colorize_username($user_tmp),
+						'USERNAME_FULL' => colorize_username($friends_list[$i]['zebra_id'], $friends_list[$i]['username'], $friends_list[$i]['user_color'], $friends_list[$i]['user_active']),
 						)
 					);
 					$uoff++;
@@ -66,7 +65,7 @@ else
 			else
 			{
 				$template->assign_block_vars('friends_offline', array(
-					'USERNAME_FULL' => colorize_username($user_tmp),
+					'USERNAME_FULL' => colorize_username($friends_list[$i]['zebra_id'], $friends_list[$i]['username'], $friends_list[$i]['user_color'], $friends_list[$i]['user_active']),
 					)
 				);
 				$uoff++;

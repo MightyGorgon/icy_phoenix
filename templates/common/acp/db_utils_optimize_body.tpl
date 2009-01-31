@@ -8,30 +8,8 @@
 <tr><th valign="middle" colspan="6"><span class="cattitle">{L_OPTIMIZE_DB}</span></th></tr>
 <tr><th colspan="6">{L_CONFIGURATION}</th></tr>
 <tr>
-	<td class="row1" colspan="2"><strong>{L_ENABLE_CRON}:</strong></td>
-	<td class="row1 row-center" colspan="4">
-		<input type="radio" name="enable_optimize_cron" value="1" {S_ENABLE_CRON_YES} /> {L_YES}&nbsp;&nbsp;
-		<input type="radio" name="enable_optimize_cron" value="0" {S_ENABLE_CRON_NO} /> {L_NO}
-	</td>
-</tr>
-
-<tr>
-	<td class="row1" colspan="2"><strong>{L_CRON_EVERY}:</strong></td>
-	<td class="row2" colspan="4">
-<!-- BEGIN sel_cron_every -->
-		<select name="cron_every">
-			<option value="2592000" {sel_cron_every.MONTH}>{sel_cron_every.L_MONTH}</option>
-			<option value="1296000" {sel_cron_every.2WEEKS}>{sel_cron_every.L_2WEEKS}</option>
-			<option value="604800" {sel_cron_every.WEEK}>{sel_cron_every.L_WEEK}</option>
-			<option value="259200" {sel_cron_every.3DAYS}>{sel_cron_every.L_3DAYS}</option>
-			<option value="86400" {sel_cron_every.DAY}>{sel_cron_every.L_DAY}</option>
-			<option value="21600" {sel_cron_every.6HOURS}>{sel_cron_every.L_6HOURS}</option>
-			<option value="3600" {sel_cron_every.HOUR}>{sel_cron_every.L_HOUR}</option>
-			<option value="1800" {sel_cron_every.30MINUTES}>{sel_cron_every.L_30MINUTES}</option>
-			<option value="20" {sel_cron_every.20SECONDS}>{sel_cron_every.L_20SECONDS}</option>
-		</select>
-<!-- END sel_cron_every -->
-	</td>
+	<td class="row1" colspan="2"><strong>{L_CRON_EVERY}:</strong><br /><span class="gensmall">{L_CRON_EVERY_EXPLAIN}</span></td>
+	<td class="row2 row-center" colspan="4">{CRON_INTERVALS_SELECT}</td>
 </tr>
 <tr>
 	<td class="row1" colspan="2" valign="top"><strong>
@@ -55,8 +33,11 @@
 </tr>
 <tr>
 	<td class="row1 row-center" align="center" colspan="6">
-		<input type="submit" name="configure" value="{L_CONFIGURE}" class="liteoption" />&nbsp;&nbsp;
+		<input type="submit" name="configure" value="{L_CONFIGURE}" class="liteoption" />
+		<!--
+		&nbsp;&nbsp;
 		<input type="submit" name="reset" value="{L_RESET}" class="liteoption" onClick="document.tablesForm.show_begin_for.value=''" />
+		-->
 	</td>
 </tr>
 <tr><td colspan="6" height="1" class="spaceRow"><img src="{SPACER}" alt="" width="1" height="3" /></td></tr>

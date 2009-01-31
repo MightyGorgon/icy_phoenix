@@ -36,35 +36,37 @@ include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
-
-function get_list_kb($id, $select)
+if(!function_exists('get_list_kb'))
 {
-	global $db;
-
-	$idfield = 'id';
-	$namefield = 'type';
-
-	$sql = "SELECT *
-		FROM " . KB_TYPES_TABLE;
-
-	if ($select == 0)
+	function get_list_kb($id, $select)
 	{
-		$sql .= " WHERE $idfield <> $id";
+		global $db;
+
+		$idfield = 'id';
+		$namefield = 'type';
+
+		$sql = "SELECT *
+			FROM " . KB_TYPES_TABLE;
+
+		if ($select == 0)
+		{
+			$sql .= " WHERE $idfield <> $id";
+		}
+
+		if (!$result = $db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, "Couldn't get list of types", "", __LINE__, __FILE__, $sql);
+		}
+
+		$typelist = "";
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$typelist .= "<option value=\"$row[$idfield]\"$s>" . $row[$namefield] . "</option>\n";
+		}
+
+		return($typelist);
 	}
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Couldn't get list of types", "", __LINE__, __FILE__, $sql);
-	}
-
-	$typelist = "";
-
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$typelist .= "<option value=\"$row[$idfield]\"$s>" . $row[$namefield] . "</option>\n";
-	}
-
-	return($typelist);
 }
 
 // Load default header

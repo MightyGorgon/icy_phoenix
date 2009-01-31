@@ -1,8 +1,12 @@
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom" width="70%">
+		<!-- IF not S_BOT -->
 		<span class="gensmall">{TOTAL_USERS_ONLINE}<br/>{LOGGED_IN_USER_LIST}<br />{BOT_LIST}</span><br />
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span>
+		<!-- ELSE -->
+		&nbsp;
+		<!-- ENDIF -->
 	</td>
 	<td align="right" valign="bottom">
 		<span class="gen">{PAGE_NUMBER}</span><br />
@@ -17,6 +21,9 @@
 
 <form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
 {IMG_THL}{IMG_THC}<a href="{U_VIEW_FORUM}" class="forumlink">{FORUM_NAME}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- IF not S_BOT and VIEWFORUM_BANNER_TOP -->
+<tr><td class="row3 row-center" colspan="5">{VIEWFORUM_BANNER_TOP}</td></tr>
+<!-- ENDIF -->
 <!-- IF S_SHOW_ALPHA_BAR -->
 <tr>
 	<td class="cat" align="center" valign="middle" colspan="5">
@@ -49,10 +56,18 @@
 	<td class="row3 row-center-small"><img src="images/rates/rate_{topicrow.TOPIC_RATING}.png"></td>
 	<!-- END rate_switch_msg -->
 </tr>
+<!-- IF not S_BOT -->
+<!-- BEGIN switch_viewforum_banner -->
+<tr><td class="row1h-new row-forum" width="100%" colspan="5">{VIEWFORUM_BANNER_CODE}</td></tr>
+<!-- END switch_viewforum_banner -->
+<!-- ENDIF -->
 <!-- END topicrow -->
 <!-- BEGIN switch_no_topics -->
 <tr><td class="row1 row-center" colspan="5" height="30"><span class="gen">{L_NO_TOPICS}</span></td></tr>
 <!-- END switch_no_topics -->
+<!-- IF not S_BOT and VIEWFORUM_BANNER_BOTTOM -->
+<tr><td class="row3 row-center" colspan="5">{VIEWFORUM_BANNER_BOTTOM}</td></tr>
+<!-- ENDIF -->
 <tr>
 	<td class="cat" valign="middle" colspan="5">
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">

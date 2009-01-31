@@ -137,7 +137,7 @@ while (isset($users_list[$i]['user_id']))
 	$user_email = $users_list[$i]['user_email'];
 	$user_lang =  $users_list[$i]['user_lang'];
 
-	$killed = mg_kill_user($user_id);
+	$killed = ip_user_kill($user_id);
 
 	if (NOTIFY_USERS && !empty($user_email))
 	{

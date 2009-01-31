@@ -120,24 +120,24 @@ elseif ($mode == 'report')
 		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
 	}
 
-	$sql = 'SELECT f.forum_name, p.topic_id FROM '.POSTS_TABLE.' p, '.FORUMS_TABLE.' f WHERE p.post_id = "' . $post_id . '" AND  p.forum_id = f.forum_id';
+	$sql = 'SELECT f.forum_name, p.topic_id FROM ' . POSTS_TABLE . ' p, ' . FORUMS_TABLE . ' f WHERE p.post_id = "' . $post_id . '" AND  p.forum_id = f.forum_id';
 	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, "Couldn't get post subject information");
 	}
 
 	$post_details = $db->sql_fetchrow($result);
-	$forum_name=$post_details['forum_name'];
-	$topic_id=$post_details['topic_id'];
+	$forum_name = $post_details['forum_name'];
+	$topic_id = $post_details['topic_id'];
 	$sql = 'SELECT p.post_subject FROM ' . POSTS_TABLE . ' p, ' . TOPICS_TABLE . ' t WHERE t.topic_id = "' . $topic_id . '" AND p.post_id = t.topic_first_post_id';
 	if(!$result = $db->sql_query($sql))
 	{
-		message_die(GENERAL_ERROR, "Couldn't get topic subject information".$sql);
+		message_die(GENERAL_ERROR, "Couldn't get topic subject information" . $sql);
 	}
 	$post_details = $db->sql_fetchrow($result);
-	$post_subject=$post_details['post_subject'];
+	$post_subject = $post_details['post_subject'];
 
-	$sql = 'SELECT p.topic_id FROM ' . POSTS_TABLE . ' p WHERE p.post_subject = "(' . $post_id . ')' . $post_subject;
+	$sql = 'SELECT p.topic_id FROM ' . POSTS_TABLE . ' p WHERE p.post_subject = "(' . $post_id . ')' . $post_subject . '"';
 	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, "Couldn't get topic subject information" . $sql);
@@ -146,7 +146,7 @@ elseif ($mode == 'report')
 	$allready_reported= ($blue_card) ? $post_details['topic_id'] : '';
 
 	$blue_card++;
-	$sql = 'UPDATE ' . POSTS_TABLE . ' SET post_bluecard = "' . $blue_card . '" WHERE post_id="' . $post_id . '"';
+	$sql = 'UPDATE ' . POSTS_TABLE . ' SET post_bluecard = "' . $blue_card . '" WHERE post_id = "' . $post_id . '"';
 	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, "Couldn't update blue card information");
@@ -458,7 +458,7 @@ else
 	$message = 'Error in card.php file';
 }
 
-$db->clear_cache('ban_');
+$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
 $message .= ($post_id != '-1') ? '<br /><br />' . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>') : '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG). '">', '</a>');
 message_die(GENERAL_MESSAGE, $message);

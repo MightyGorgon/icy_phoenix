@@ -90,8 +90,9 @@ function user_board_config_key($key, $user_field = '', $over_field = '')
 		$board_config[$over_field] = 0; // no overwrite
 	}
 
-	// overwrite with the user data only if not overwrite sat, not anonymous, and logged in
-	if (!intval($board_config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in'])
+	// overwrite with the user data only if not overwrite set, not anonymous, logged in
+	// if the user is admin we will not overwrite his setting either...
+	if ((!intval($board_config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in']) || ($userdata['user_level'] == ADMIN))
 	{
 		$board_config[$key] = $userdata[$user_field];
 	}

@@ -26,6 +26,8 @@ if(!function_exists('imp_news_posters_func'))
 	{
 		global $lang, $images, $template, $cms_config_vars, $block_id, $board_config, $db;
 
+		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+
 		$template->_tpldata['news_poster.'] = array();
 
 		$page_link = htmlspecialchars($cms_config_vars['md_news_posters_page_link'][$block_id]);
@@ -49,7 +51,7 @@ if(!function_exists('imp_news_posters_func'))
 		}
 
 		$sql = "SELECT t.topic_poster, COUNT(t.topic_poster) num_topics,
-							u.user_id, u.username, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_posts,
+							u.user_id, u.username, u.user_active, u.user_color, u.user_level, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_posts,
 							u.user_from, u.user_from_flag, u.user_regdate, u.user_gender,
 							u.user_website, u.user_icq, u.user_aim, u.user_msnm, u.user_yim, u.user_skype
 						FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u
@@ -66,10 +68,10 @@ if(!function_exists('imp_news_posters_func'))
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$username_clean = $row['username'];
-			$username = colorize_username($row['user_id']);
+			$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 			$user_id = $row['user_id'];
 			$posts = ($row['user_posts']) ? $row['user_posts'] : 0;
-			$poster_avatar = user_get_avatar($row['user_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
+			$poster_avatar = user_get_avatar($row['user_id'], $row['user_level'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
 
 			$poster_from = ($row['user_from']) ? ($lang['Location'] . ': ' . $row['user_from']) : ($lang['Location'] . ': ???');
 			$poster_from_flag = ($row['user_from_flag']) ? ('&nbsp;<img src="images/flags/' . $row['user_from_flag'] . '" alt="' . $row['user_from_flag'] . '" title="' . $row['user_from'] . '" />') : '';
@@ -91,24 +93,12 @@ if(!function_exists('imp_news_posters_func'))
 					$gender_image = '';
 			}
 
-			$www_img = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
-			$www = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Website'] . '</a>' : '';
-
-			$icq_status_img = (!empty($row['user_icq'])) ? '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-			$icq_img = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
-			$icq = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], false) : '';
-
-			$aim_img = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], $images['icon_aim2']) : '';
-			$aim = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], false) : '';
-
-			$msn_img = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], $images['icon_msnm2']) : '';
-			$msn = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], false) : '';
-
-			$yim_img = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], $images['icon_yim2']) : '';
-			$yim = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], false) : '';
-
-			$skype_img = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
-			$skype = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], false) : '';
+			$user_info = array();
+			$user_info = generate_user_info($row);
+			foreach ($user_info as $k => $v)
+			{
+				$$k = $v;
+			}
 
 			$template->assign_block_vars($tpl_block_var_name, array(
 				'USERNAME' => $username . $gender_image,
@@ -118,14 +108,50 @@ if(!function_exists('imp_news_posters_func'))
 				'POSTER_FROM' => $poster_from . $poster_from_flag,
 				'POSTER_JOINED' => $poster_joined,
 				'CONTACTS' => $pm_img . $www_img . $icq_img . $aim_img . $msn_img . $yim_img . $skype_img,
+
+				'PROFILE_IMG' => $profile_img,
+				'PROFILE' => $profile,
+				'PM_IMG' => $pm_img,
+				'PM' => $pm,
+				'WWW_IMG' => $www_img,
+				'WWW' => $www,
+				'AIM_IMG' => $aim_img,
+				'AIM' => $aim,
+				'ICQ_STATUS_IMG' => $icq_status_img,
+				'ICQ_IMG' => $icq_img,
+				'ICQ' => $icq,
+				'MSN_IMG' => $msn_img,
+				'MSN' => $msn,
+				'SKYPE_IMG' => $skype_img,
+				'SKYPE' => $skype,
+				'YIM_IMG' => $yim_img,
+				'YIM' => $yim,
+
+				'U_PROFILE' => $profile_url,
+				'U_PM' => $pm_url,
+				'U_WWW' => $www_url,
+				'U_AIM' => $aim_url,
+				'U_ICQ' => $icq_url,
+				'U_MSN' => $msn_url,
+				'U_SKYPE' => $skype_url,
+				'U_YIM' => $yim_url,
+
 				'U_VIEWPOSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
 				'U_VIEWNEWS' => append_sid($page_link . ((strpos($page_link, '?') === false) ? '?' : '&amp;') . 'ubid=' . $user_id),
-				'U_VIEWTOPICS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(utf8_decode($username_clean)) . '&amp;search_topic_starter=1&amp;show_results=topics'),
-				'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(utf8_decode($username_clean)) . '&amp;showresults=posts')
+				'U_VIEWTOPICS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(ip_utf8_decode($username_clean)) . '&amp;search_topic_starter=1&amp;show_results=topics'),
+				'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(ip_utf8_decode($username_clean)) . '&amp;showresults=posts')
 				)
 			);
 		}
 		$db->sql_freeresult($result);
+
+		$template->assign_vars(array(
+			'L_USER_PROFILE' => $lang['Profile'],
+			'L_PM' => $lang['Private_Message'],
+			'L_USER_WWW' => $lang['Website'],
+			)
+		);
+
 	}
 }
 

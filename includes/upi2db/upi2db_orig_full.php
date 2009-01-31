@@ -63,9 +63,7 @@ if(!function_exists(delete_old_data))
 			WHERE (last_update < '" . $del_perm_time . "')";
 		$db->sql_query($sql);
 
-		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = " . time() . "
-			WHERE config_name = 'upi2db_delete_old_data'";
-		$db->sql_query($sql);
+		set_config('upi2db_delete_old_data', time());
 	}
 }
 
@@ -90,7 +88,7 @@ if(!function_exists(unread))
 		$auth_forum = ($auth_forum_id) ? ' AND forum_id IN (' . $auth_forum_id . ')' : '';
 		$max_new_posts = ($userdata['user_level'] != ADMIN) ? (($userdata['user_level'] != MOD) ? $board_config['upi2db_max_new_posts'] : $board_config['upi2db_max_new_posts_mod']) : $board_config['upi2db_max_new_posts_admin'];
 		// Edited By Mighty Gorgon - BEGIN
-		$max_new_posts = ($max_new_posts == 0) ? 999999 : $max_new_posts;
+		$max_new_posts = ($max_new_posts == 0) ? UPI2DB_MAX_UNREAD_POSTS : $max_new_posts;
 		// Edited By Mighty Gorgon - END
 
 		$sql = "SELECT post_id, topic_id, forum_id, user_id, status, topic_type FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
@@ -171,9 +169,12 @@ if(!function_exists(unread))
 		$db->sql_freeresult($result);
 
 		$sql_where = (count($unread['del_posts']) == 0) ? 0 : implode(',', $unread['del_posts']);
-		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
-			 WHERE post_id IN (" . $sql_where . ")";
-		$db->sql_query($sql);
+		if ($sql_where != 0)
+		{
+			$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
+				 WHERE post_id IN (" . $sql_where . ")";
+			$db->sql_query($sql);
+		}
 
 		return $unread;
 	}

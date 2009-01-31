@@ -37,9 +37,7 @@ $lang['xs_config_title'] = str_replace('{VERSION}', $template->xs_versiontxt, $l
 $lang['xs_config_warning_explain'] = str_replace('{URL}', append_sid('xs_chmod.' . PHP_EXT), $lang['xs_config_warning_explain']);
 $lang['xs_config_back'] = str_replace('{URL}', append_sid('xs_config.' . PHP_EXT), $lang['xs_config_back']);
 
-//
 // Updating configuration
-//
 if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 {
 	$vars = array('xs_use_cache', 'xs_auto_compile', 'xs_auto_recompile', 'xs_php', 'xs_def_template', 'xs_check_switches', 'xs_warn_includes', 'xs_add_comments', 'xs_ftp_host', 'xs_ftp_login', 'xs_ftp_path', 'xs_shownav');
@@ -56,8 +54,9 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 	if($shownav !== $board_config['xs_shownav'])
 	{
 		$template->assign_block_vars('left_refresh', array(
-				'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
-			));
+			'ACTION' => append_sid('index.' . PHP_EXT . '?pane=left')
+			)
+		);
 	}
 	$_POST['xs_shownav'] = $shownav;
 	// checking submitted data
@@ -87,7 +86,7 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 	{
 		$board_config['xs_template_time'] = time() + 10; // set time 10 seconds in future in case if some tpl file would be compiled right now with current settings
 		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . $board_config['xs_template_time'] . "' WHERE config_name = 'xs_template_time'";
-		if( !$db->sql_query($sql) )
+		if(!$db->sql_query($sql))
 		{
 			xs_error(str_replace('{VAR}', 'xs_template_time', $lang['xs_config_sql_error']) . '<br /><br />' . $lang['xs_config_back'], __LINE__, __FILE__);
 		}
@@ -95,11 +94,12 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 	// update config cache
 	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
 	{
-		if ( !empty($config) )
+		if (!empty($config))
 		{
 			$config->read(true);
 		}
 	}
+	$db->clear_cache('config_');
 	$template->assign_block_vars('switch_updated', array());
 	$template->load_config($template->root, false);
 }
@@ -111,7 +111,8 @@ if(empty($xs_ftp_host) && !empty($_SERVER['HTTP_HOST']))
 	$str = $_SERVER['HTTP_HOST'];
 	$template->assign_vars(array(
 		'HOST_GUESS' => str_replace(array('{HOST}', '{CLICK}'), array($str, 'document.config.xs_ftp_host.value=\''.$str.'\''), $lang['xs_ftp_host_guess'])
-		));
+		)
+	);
 }
 $dir = getcwd();
 $xs_ftp_login = $board_config['xs_ftp_login'];
@@ -126,7 +127,8 @@ if(empty($xs_ftp_login))
 			$str = substr($str, 0, $pos);
 			$template->assign_vars(array(
 				'LOGIN_GUESS' => str_replace(array('{LOGIN}', '{CLICK}'), array($str, 'document.config.xs_ftp_login.value=\''.$str.'\''), $lang['xs_ftp_login_guess'])
-			));
+				)
+			);
 		}
 	}
 }
@@ -145,7 +147,8 @@ if(empty($xs_ftp_path))
 			$str = substr($str, 0, $pos-1);
 			$template->assign_vars(array(
 				'PATH_GUESS' => str_replace(array('{PATH}', '{CLICK}'), array($str, 'document.config.xs_ftp_path.value=\''.$str.'\''), $lang['xs_ftp_path_guess'])
-				));
+				)
+			);
 		}
 	}
 }
@@ -172,7 +175,7 @@ $template->assign_vars(array(
 	'FORM_ACTION'				=> append_sid('xs_config.' . PHP_EXT),
 	));
 
-for($i=0; $i<XS_SHOWNAV_MAX; $i++)
+for($i = 0; $i < XS_SHOWNAV_MAX; $i++)
 {
 	$num = pow(2, $i);
 	if($i != XS_SHOWNAV_DOWNLOAD) // downloads feature is disabled
@@ -181,7 +184,8 @@ for($i=0; $i<XS_SHOWNAV_MAX; $i++)
 			'NUM' => $i,
 			'LABEL' => $lang['xs_config_shownav'][$i],
 			'CHECKED' => (($board_config['xs_shownav'] & $num) > 0) ? 'checked="checked"' : ''
-			));
+			)
+		);
 	}
 }
 

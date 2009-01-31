@@ -28,11 +28,15 @@ function post_time_edit(url)
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom">
+		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}" /></a></span>&nbsp;
 		<!-- BEGIN switch_thanks -->
 		<span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>
 		<!-- END switch_thanks -->
+		<!-- ELSE -->
+		&nbsp;
+		<!-- ENDIF -->
 	</td>
 	<td align="right" valign="bottom">
 		<span class="gen">{PAGE_NUMBER}</span><br />
@@ -97,6 +101,9 @@ function open_postreview(ref)
 //-->
 </script>
 {IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- IF not S_BOT and VIEWTOPIC_BANNER_TOP -->
+<tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
+<!-- ENDIF -->
 {POLL_DISPLAY}
 <tr>
 	<th width="150">{L_AUTHOR}</th>
@@ -147,9 +154,13 @@ function open_postreview(ref)
 	<!-- <td class="row-post" width="100%" height="100%" style="overflow: hidden;"> -->
 	<td class="row-post" height="100%">
 		<div class="post-buttons-top post-buttons">
+			<!-- IF not S_BOT -->
 			{postrow.QUOTE_IMG}{postrow.EDIT_IMG}{postrow.DELETE_IMG}
 			{postrow.UNREAD_IMG}
 			{postrow.U_R_CARD}{postrow.U_Y_CARD}{postrow.U_G_CARD}{postrow.U_B_CARD}<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a>{postrow.ARROWS}
+			<!-- ELSE -->
+			&nbsp;
+			<!-- ENDIF -->
 		</div>
 		<div class="post-subject {postrow.UNREAD_COLOR}"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
 		&nbsp;
@@ -197,9 +208,11 @@ function open_postreview(ref)
 			<div class="extra-top-padding" style="position:relative;float:left;text-align:left;vertical-align:middle;">
 				{postrow.PROFILE_IMG}{postrow.PM_IMG}{postrow.EMAIL_IMG}{postrow.WWW_IMG}{postrow.ALBUM_IMG}&nbsp;
 			</div>
+			<!-- IF not S_BOT -->
 			<!-- BEGIN switch_quick_quote -->
 			<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a><a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
 			<!-- END switch_quick_quote -->
+			<!-- ENDIF -->
 			<a href="{U_BACK_TOP}"><img src="{IMG_ARU}" alt="{L_BACK_TOP}" title="{L_BACK_TOP}" /></a><a href="{U_BACK_BOTTOM}"><img src="{IMG_ARD}" alt="{L_BACK_BOTTOM}" title="{L_BACK_BOTTOM}" /></a>
 		</div>
 	</td>
@@ -210,10 +223,11 @@ function open_postreview(ref)
 <tr><td colspan="3" class="row-post" valign="top" align="left"><span class="gensmall">{postrow.thanks.THANKS}&nbsp;</span></td></tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <!-- END thanks -->
+<!-- IF not S_BOT -->
 <!-- BEGIN switch_viewtopic_banner -->
 <tr>
 	<td align="center" class="row-post-author">
-		<span class="post-name"><a href="#" style="font-weight:bold;text-decoration:none;">Sponsor</a></span><br />
+		<span class="post-name"><a href="#" style="font-weight:bold;text-decoration:none;">{L_SPONSORS_LINKS}</a></span><br />
 		<img src="images/ranks/rank_sponsor.png" alt="" style="margin-bottom: 3px;" /><br />
 		<img src="images/avatars/default_avatars/sponsor.gif" alt="" />
 	</td>
@@ -221,7 +235,11 @@ function open_postreview(ref)
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <!-- END switch_viewtopic_banner -->
+<!-- ENDIF -->
 <!-- END postrow -->
+<!-- IF not S_BOT and VIEWTOPIC_BANNER_BOTTOM -->
+<tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
+<!-- ENDIF -->
 <tr>
 	<td class="cat" colspan="2">
 		<form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
@@ -231,6 +249,7 @@ function open_postreview(ref)
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
+<!-- IF not S_BOT -->
 <!-- BEGIN switch_topic_useful -->
 <a id="ratingblock"></a>
 <div id="rate_block_h" style="display: none;">
@@ -261,6 +280,7 @@ if(GetCookie(tmp) == '2')
 //-->
 </script>
 <!-- END switch_topic_useful -->
+<!-- ENDIF -->
 
 {SIMILAR_VIEWTOPIC}
 {CA_QUICK_REPLY_FORM}
@@ -269,12 +289,16 @@ if(GetCookie(tmp) == '2')
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top">
+		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}"/></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}"/></a></span>&nbsp;
 		<!-- BEGIN switch_thanks -->
 		<span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>&nbsp;
 		<!-- END switch_thanks -->
 		<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span>
+		<!-- ELSE -->
+		&nbsp;
+		<!-- ENDIF -->
 	</td>
 	<td align="right" valign="top">
 		<span class="gen">{PAGE_NUMBER}</span><br />
@@ -285,9 +309,12 @@ if(GetCookie(tmp) == '2')
 
 <!-- INCLUDE breadcrumbs_vt.tpl -->
 
+<!-- IF not S_BOT -->
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><b><br/>{TOTAL_USERS_ONLINE}<br/>{LOGGED_IN_USER_LIST}</b></span><br /><br /></td></tr>
 </table>
+<!-- ENDIF -->
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top" class="gensmall" width="40%">

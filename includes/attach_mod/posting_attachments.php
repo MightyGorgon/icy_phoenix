@@ -1098,7 +1098,7 @@ class attach_parent
 			}
 
 			// Check Forum Permissions
-			if (!$error && $this->page != PAGE_PRIVMSGS && $userdata['user_level'] != ADMIN && !is_forum_authed($auth_cache, $forum_id) && trim($auth_cache) != '')
+			if (!$error && ($this->page != PAGE_PRIVMSGS) && ($userdata['user_level'] != ADMIN) && !is_forum_authed($auth_cache, $forum_id) && (trim($auth_cache) != ''))
 			{
 				$error = true;
 				if(!empty($error_msg))
@@ -1161,7 +1161,7 @@ class attach_parent
 				}
 
 				// Do we have to create a thumbnail ?
-				if ($cat_id == IMAGE_CAT && intval($attach_config['img_create_thumbnail']))
+				if (($cat_id == IMAGE_CAT) && intval($attach_config['img_create_thumbnail']))
 				{
 					$this->thumbnail = 1;
 				}
@@ -1225,26 +1225,40 @@ class attach_parent
 			}
 
 			// Check Image Size, if it's an image
-			if (!$error && $userdata['user_level'] != ADMIN && $cat_id == IMAGE_CAT)
+			if (!$error && ($cat_id == IMAGE_CAT))
 			{
-				list($width, $height) = image_getdimension($upload_dir . '/' . $this->attach_filename);
-
-				if ($width != 0 && $height != 0 && intval($attach_config['img_max_width']) != 0 && intval($attach_config['img_max_height']) != 0)
+				$pic_size = image_getdimension($upload_dir . '/' . $this->attach_filename);
+				if ($pic_size == false)
 				{
-					if ($width > intval($attach_config['img_max_width']) || $height > intval($attach_config['img_max_height']))
+					$error = true;
+					if(!empty($error_msg))
 					{
-						$error = true;
-						if(!empty($error_msg))
+						$error_msg .= '<br />';
+					}
+					$error_msg .= $lang['FileType_Mismatch'];
+				}
+
+				if (!$error && ($userdata['user_level'] != ADMIN))
+				{
+					list($width, $height) = $pic_size;
+
+					if ($width != 0 && $height != 0 && intval($attach_config['img_max_width']) != 0 && intval($attach_config['img_max_height']) != 0)
+					{
+						if ($width > intval($attach_config['img_max_width']) || $height > intval($attach_config['img_max_height']))
 						{
-							$error_msg .= '<br />';
+							$error = true;
+							if(!empty($error_msg))
+							{
+								$error_msg .= '<br />';
+							}
+							$error_msg .= sprintf($lang['Error_imagesize'], intval($attach_config['img_max_width']), intval($attach_config['img_max_height']));
 						}
-						$error_msg .= sprintf($lang['Error_imagesize'], intval($attach_config['img_max_width']), intval($attach_config['img_max_height']));
 					}
 				}
 			}
 
 			// check Filesize
-			if (!$error && $allowed_filesize != 0 && $this->filesize > $allowed_filesize && $userdata['user_level'] != ADMIN)
+			if (!$error && ($allowed_filesize != 0) && ($this->filesize > $allowed_filesize) && ($userdata['user_level'] != ADMIN))
 			{
 				$size_lang = ($allowed_filesize >= 1048576) ? $lang['MB'] : ( ($allowed_filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 

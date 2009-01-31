@@ -239,6 +239,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	}
 
 	$is_admin = (($userdata['user_level'] == ADMIN) && $userdata['session_logged_in']) ? true : 0;
+	//$is_admin = ((($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == JUNIOR_ADMIN)) && $userdata['session_logged_in']) ? true : 0;
 
 	$auth_user = array();
 	for($i = 0; $i < count($auth_fields); $i++)

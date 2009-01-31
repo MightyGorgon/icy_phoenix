@@ -65,10 +65,13 @@ $tree = array(
 	'mods'	=> array(
 		<!-- BEGIN mods -->
 		{mods.IDX} => array(
-			'user_id'		=> array({mods.USER_IDS}),
+			'user_id'			=> array({mods.USER_IDS}),
 			'username'		=> array({mods.USERNAMES}),
+			'user_active'	=> array({mods.USER_ACTIVES}),
+			'user_color'	=> array({mods.USER_COLORS}),
 			'group_id'		=> array({mods.GROUP_IDS}),
 			'group_name'	=> array({mods.GROUP_NAMES}),
+			'group_color'	=> array({mods.GROUP_COLORS}),
 		),
 		<!-- END mods -->
 	),

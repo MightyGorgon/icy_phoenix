@@ -1,5 +1,7 @@
 chmod 777 backup
 chmod 777 cache
+chmod 777 cache/forums
+chmod 777 cache/posts
 chmod 777 cache/sql
 chmod 777 cache/topics
 chmod 777 cache/users

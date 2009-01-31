@@ -25,9 +25,7 @@ function xsm_prepare_message($message)
 
 	$allowed_html_tags = split(',', $board_config['allow_html_tags']);
 
-	//
 	// Clean up the message
-	//
 	$message = trim($message);
 
 	$message = preg_replace($html_entities_match, $html_entities_replace, $message);
@@ -43,9 +41,7 @@ function xsm_unprepare_message($message)
 	return preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, $message);
 }
 
-//
 // Borrowed from bbcode.php and putting it here saves having to include the whole file (modified by MG)
-//
 function smilies_news($message)
 {
 	static $orig, $repl;
@@ -129,23 +125,23 @@ function startElement($parser, $name, $attrs)
 
 	switch($name)
 	{
-		case "rss":
-		case "rdf:rdf":
-		case "items":
-			$currently_writing = "";
+		case 'rss':
+		case 'rdf:rdf':
+		case 'items':
+			$currently_writing = '';
 			break;
 
-		case "channel":
-			$main = "channel";
+		case 'channel':
+			$main = 'channel';
 			break;
 
-		case "image":
-			$main = "image";
-			$rss_channel["image"] = array();
+		case 'image':
+			$main = 'image';
+			$rss_channel['image'] = array();
 			break;
 
-		case "item":
-			$main = "items";
+		case 'item':
+			$main = 'items';
 			break;
 
 		default:
@@ -154,36 +150,32 @@ function startElement($parser, $name, $attrs)
 	}
 }
 
-//
 // xml_set_element_handler callback end_element_handler
-//
 function endElement($parser, $name)
 {
 	global $rss_channel, $currently_writing, $item_counter;
 
 	$name = strtolower($name);
 
-	$currently_writing = "";
-	if ($name == "item")
+	$currently_writing = '';
+	if ($name == 'item')
 	{
 		$item_counter++;
 	}
 }
 
-//
 // Set up the character data handler
-//
 function characterData($parser, $data)
 {
 	global $rss_channel, $currently_writing, $main, $item_counter;
 
 	$main = strtolower($main);
 
-	if ($currently_writing != "")
+	if ($currently_writing != '')
 	{
 		switch($main)
 		{
-			case "channel":
+			case 'channel':
 				if (isset($rss_channel[$currently_writing]))
 				{
 					$rss_channel[$currently_writing] .= $data;
@@ -194,7 +186,7 @@ function characterData($parser, $data)
 				}
 				break;
 
-			case "image":
+			case 'image':
 				if (isset($rss_channel[$main][$currently_writing]))
 				{
 					$rss_channel[$main][$currently_writing] .= $data;
@@ -205,7 +197,7 @@ function characterData($parser, $data)
 				}
 				break;
 
-			case "items":
+			case 'items':
 				if (isset($rss_channel[$main][$item_counter][$currently_writing]))
 				{
 					$rss_channel[$main][$item_counter][$currently_writing] .= $data;

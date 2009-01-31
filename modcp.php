@@ -26,7 +26,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 if(isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL]))
 {
@@ -465,8 +464,8 @@ switch($mode)
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
 
-			$db->clear_cache('posts_');
-			$db->clear_cache('forums_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
+			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			sync('forum', $forum_id);
 
 			message_die(GENERAL_MESSAGE, ((count($topics) == '1') ? $lang['Mod_CP_topic_removed'] : $lang['Topics_Removed']) . '<br /><br />' . $l_redirect);
@@ -570,7 +569,7 @@ switch($mode)
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
 
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 
 			message_die(GENERAL_MESSAGE, ((count($topics) == '1') ? $lang['Mod_CP_poll_removed'] : $lang['Mod_CP_polls_removed']) .'<br /><br />'. $l_redirect);
 		}
@@ -675,8 +674,8 @@ switch($mode)
 						message_die(GENERAL_ERROR, 'could not update post topic ids.', '', __LINE__, __FILE__, $sql);
 					}
 				}
-				$db->clear_cache('posts_');
-				$db->clear_cache('forums_');
+				empty_cache_folders(POSTS_CACHE_FOLDER);
+				empty_cache_folders(FORUMS_CACHE_FOLDER);
 				sync('forum', $new_forum_id);
 				sync('forum', $old_forum_id);
 				$message = ((count($topics) == '1') ? sprintf($lang['Mod_CP_topic_moved'], find_names($old_forum_id), find_names($new_forum_id)) : sprintf($lang['Mod_CP_topics_moved'], find_names($old_forum_id), find_names($new_forum_id))) .'<br /><br />';
@@ -779,7 +778,7 @@ switch($mode)
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
 
-		$db->clear_cache('posts_');
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 
 		if($mode == 'lock')
 		{
@@ -872,7 +871,7 @@ switch($mode)
 				$message = ((count($topics) == '1') ? $lang['Mod_CP_topic_normalized'] : $lang['Mod_CP_topics_normalized']) .'<br /><br />'. $message; break;
 		}
 
-		$db->clear_cache('posts_');
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 
 		message_die(GENERAL_MESSAGE, $message);
 		break;
@@ -955,8 +954,8 @@ switch($mode)
 					}
 
 					// Sync the forum indexes
-					$db->clear_cache('posts_');
-					$db->clear_cache('forums_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
+					empty_cache_folders(FORUMS_CACHE_FOLDER);
 					sync('forum', $forum_id);
 					sync('topic', $new_topic_id);
 
@@ -1152,8 +1151,8 @@ switch($mode)
 				}
 //<!-- END Unread Post Information to Database Mod -->
 
-				$db->clear_cache('posts_');
-				$db->clear_cache('forums_');
+				empty_cache_folders(POSTS_CACHE_FOLDER);
+				empty_cache_folders(FORUMS_CACHE_FOLDER);
 				sync('topic', $new_topic_id);
 				sync('topic', $topic_id);
 				sync('forum', $new_forum_id);
@@ -1172,7 +1171,7 @@ switch($mode)
 			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			$template->set_filenames(array('split_body' => 'modcp_split.tpl'));
 
-			$sql = "SELECT u.user_id, u.username, p.*
+			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, p.*
 				FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 				WHERE p.topic_id = $topic_id
 					AND p.poster_id = u.user_id
@@ -1236,7 +1235,7 @@ switch($mode)
 					$template->assign_block_vars('postrow', array(
 						'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 						'POSTER_NAME' => $postrow[$i]['username'],
-						'U_PROFILE_COL' => colorize_username($postrow[$i]['user_id']),
+						'U_PROFILE_COL' => colorize_username($postrow[$i]['user_id'], $postrow[$i]['username'], $postrow[$i]['user_color'], $postrow[$i]['user_active']),
 						'POST_DATE' => $post_date,
 						'POST_SUBJECT' => $post_subject,
 						'MESSAGE' => $message,
@@ -1323,9 +1322,10 @@ switch($mode)
 		}
 
 		// Get other users who've posted under this IP
-		$sql = "SELECT u.user_id, u.username, COUNT(*) as postings FROM " . USERS_TABLE . " u, " . POSTS_TABLE . " p
+		$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, COUNT(*) as postings
+			FROM " . USERS_TABLE . " u, " . POSTS_TABLE . " p
 			WHERE p.poster_id = u.user_id AND p.poster_ip = '" . $post_row['poster_ip'] . "'
-			GROUP BY u.user_id, u.username ORDER BY " . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC";
+			GROUP BY u.user_id, u.username ORDER BY postings DESC";
 		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'could not get posters information based on IP.', '', __LINE__, __FILE__, $sql);
@@ -1342,7 +1342,7 @@ switch($mode)
 					'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], (($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'])),
 					'U_PROFILE' => ($row['user_id'] == ANONYMOUS) ? 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'] : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 					'U_SEARCHPOSTS' => append_sid(SEARCH_MG . '?search_author=' . (($id == ANONYMOUS) ? 'Anonymous' : urlencode($username)) . '&amp;showresults=topics'),
-					'U_PROFILE_COL' => colorize_username($row['user_id']),
+					'U_PROFILE_COL' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 					//'U_SEARCHPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode((($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'])) . '&amp;showresults=topics'),
 					)
 				);
@@ -1447,8 +1447,8 @@ switch($mode)
 					}
 
 					// Sync the forum indexes
-					$db->clear_cache('posts_');
-					$db->clear_cache('forums_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
+					empty_cache_folders(FORUMS_CACHE_FOLDER);
 					sync('forum', $new_forum_id);
 					sync('forum', $old_forum_id);
 
@@ -1516,7 +1516,7 @@ switch($mode)
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
 
-		$db->clear_cache('posts_');
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 
 		message_die(GENERAL_MESSAGE, $lang['Topics_Title_Edited'] . '<br /><br />' . $message);
 		break;
@@ -1565,7 +1565,7 @@ switch($mode)
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
 
-		$db->clear_cache('posts_');
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 
 		message_die(GENERAL_MESSAGE, $lang['Category_Updated'] . '<br /><br />' . $message);
 		break;
@@ -1589,7 +1589,7 @@ switch($mode)
 
 		// Quick Title
 		$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . " ORDER BY title_info ASC";
-		if (!($result = $db->sql_query($sql, false, 'topics_prefixes_')))
+		if (!($result = $db->sql_query($sql, false, 'topics_prefixes_', TOPICS_CACHE_FOLDER)))
 		{
 			message_die(GENERAL_ERROR, 'Unable to query Quick Title Addon informations', '', __LINE__, __FILE__, $sql);
 		}
@@ -1629,7 +1629,6 @@ switch($mode)
 			'L_NEWS_CATEGORY' => $lang['Select_News_Category'],
 			'L_NO_TOPICS' => $lang['Mod_CP_no_topics'],
 			'L_MOD_CP' => $lang['Mod_CP'],
-			'L_ENHANCED' => $lang['Mod_CP_enhanced'],
 			'L_DELETE' => $lang['Delete'],
 			'L_POLL_DELETE' => $lang['Delete_poll'],
 			'L_MOVE' => $lang['Move'],
@@ -1707,9 +1706,12 @@ switch($mode)
 		$replacement_word = array();
 		obtain_word_list($orig_word, $replacement_word);
 
-		$sql = "SELECT t.*, u.username, u.user_id, p.post_time, p.post_id, p.post_username, u2.username AS topic_starter, u2.user_id AS topic_starter_id, p2.post_id, p2.post_username AS topic_starter_guest
+		$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, p.post_time, p.post_id, p.post_username, p.enable_smilies, u2.username AS topic_starter, u2.user_id AS topic_starter_id, u2.user_active AS topic_starter_active, u2.user_color AS topic_starter_color, p2.post_id, p2.post_username AS topic_starter_guest
 			FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2, " . POSTS_TABLE . " p2
-			WHERE t.forum_id = $forum_id AND p.poster_id = u.user_id AND t.topic_poster = u2.user_id AND p.post_id = t.topic_last_post_id
+			WHERE t.forum_id = $forum_id
+				AND p.poster_id = u.user_id
+				AND t.topic_poster = u2.user_id
+				AND p.post_id = t.topic_last_post_id
 				AND p2.post_id = t.topic_first_post_id $where_type
 			ORDER BY t.topic_type DESC, p.post_time DESC LIMIT $start, " . $board_config['topics_per_page'];
 		if(!($result = $db->sql_query($sql)))
@@ -1748,7 +1750,7 @@ switch($mode)
 			// SMILEYS IN TITLE - BEGIN
 			if (($board_config['smilies_topic_title'] == true) && !$lofi)
 			{
-				$bbcode->allow_smilies = ($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies'] ? true : false);
+				$bbcode->allow_smilies = (($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies']) ? true : false);
 				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
 			// SMILEYS IN TITLE - END
@@ -1794,13 +1796,13 @@ switch($mode)
 
 			$first_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
 			//$first_post_author = ($topic_rowset[$i]['topic_starter_id'] == ANONYMOUS) ? (($topic_rowset[$i]['topic_starter_guest'] != '') ? $topic_rowset[$i]['topic_starter_guest'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['topic_starter_id']) . '">' . $topic_rowset[$i]['topic_starter'] . '</a> ';
-			$first_post_author =  colorize_username($topic_rowset[$i]['topic_starter_id']);
+			$first_post_author =  colorize_username($topic_rowset[$i]['topic_starter_id'], $topic_rowset[$i]['topic_starter'], $topic_rowset[$i]['topic_starter_color'], $topic_rowset[$i]['topic_starter_active']);
 
 			$first_post_url = ($type == 'shadow') ? '' : '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 			$last_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
 			//$last_post_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' . $topic_rowset[$i]['username'] . '</a> ';
-			$last_post_author =  colorize_username($topic_rowset[$i]['user_id']);
+			$last_post_author =  colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
 			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 			$u_view_topic = 'modcp.' . PHP_EXT . '?mode=split&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];

@@ -32,6 +32,44 @@ $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
+// FUNCTIONS - BEGIN
+if (!function_exists('dateformatselect'))
+{
+	function check_auth($type, $key, $u_access, $is_admin)
+	{
+		$auth_user = 0;
+
+		if(count($u_access))
+		{
+			for($j = 0; $j < count($u_access); $j++)
+			{
+				$result = 0;
+				switch($type)
+				{
+					case AUTH_ACL:
+						$result = $u_access[$j][$key];
+
+					case AUTH_MOD:
+						$result = $result || $u_access[$j]['auth_mod'];
+
+					case AUTH_ADMIN:
+						$result = $result || $is_admin;
+						break;
+				}
+
+				$auth_user = $auth_user || $result;
+			}
+		}
+		else
+		{
+			$auth_user = $is_admin;
+		}
+
+		return $auth_user;
+	}
+}
+// FUNCTIONS - END
+
 $params = array('mode' => 'mode', 'user_id' => POST_USERS_URL, 'group_id' => POST_GROUPS_URL, 'adv' => 'adv');
 
 while(list($var, $param) = @each($params))
@@ -90,45 +128,6 @@ while (list($auth_key, $auth_name) = @each($field_names))
 {
 	$forum_auth_fields[] = $auth_key;
 }
-
-// ---------------
-// Start Functions
-//
-function check_auth($type, $key, $u_access, $is_admin)
-{
-	$auth_user = 0;
-
-	if(count($u_access))
-	{
-		for($j = 0; $j < count($u_access); $j++)
-		{
-			$result = 0;
-			switch($type)
-			{
-				case AUTH_ACL:
-					$result = $u_access[$j][$key];
-
-				case AUTH_MOD:
-					$result = $result || $u_access[$j]['auth_mod'];
-
-				case AUTH_ADMIN:
-					$result = $result || $is_admin;
-					break;
-			}
-
-			$auth_user = $auth_user || $result;
-		}
-	}
-	else
-	{
-		$auth_user = $is_admin;
-	}
-
-	return $auth_user;
-}
-//
-// End Functions
-// -------------
 
 if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'group') && $group_id)))
 {
@@ -950,7 +949,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		for($i = 0; $i < count($ug_info); $i++)
 		{
 			$ug = ($mode == 'user') ? 'group&amp;' . POST_GROUPS_URL : 'user&amp;' . POST_USERS_URL;
-			$user_color = ($mode == 'user') ? '' : (' ' . colorize_username($id[$i], false, true));
+			$user_color = ($mode == 'user') ? '' : (' ' . colorize_username($id[$i], '', '', '', false, true));
 			if (!$ug_info[$i]['user_pending'])
 			{
 				$t_usergroup_list .= (($t_usergroup_list != '') ? ', ' : '') . '<a href="' . append_sid('admin_ug_auth.' . PHP_EXT . '?mode=' . $ug . '=' . $id[$i]) . '"' . $user_color . '>' . $name[$i] . '</a>';

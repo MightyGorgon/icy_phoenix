@@ -35,7 +35,6 @@ if(!function_exists('imp_recent_articles_func'))
 
 		//include_once(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		$sql = "SELECT * FROM " . KB_ARTICLES_TABLE . " ORDER BY article_id DESC LIMIT " . $cms_config_vars['md_total_articles'][$block_id];
 
 		if(!($result = $db->sql_query($sql)))

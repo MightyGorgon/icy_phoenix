@@ -27,14 +27,14 @@
 		<span class="gensmall">{L_SEARCH_AUTHOR_EXPLAIN}</span>
 	</td>
 	<td class="row2" colspan="2">
-		<input type="text" style="width: 300px" class="post" name="search_author" size="30" /><br />
+		<input type="text" style="width: 300px;" class="post" name="search_author" size="30" /><br />
 		<input type="checkbox" name="search_topic_starter" />&nbsp;{L_SEARCH_AUTHOR_TOPIC_STARTER}
 	</td>
 </tr>
 <!-- IF S_ADMIN_MOD -->
 <tr>
 	<td class="row1" colspan="2"><span class="gensmall">{L_SEARCH_IP}:</span><br /><span class="gensmall">{L_SEARCH_IP_EXPLAIN}</span></td>
-	<td class="row2" colspan="2" valign="middle"><span class="genmed"><input type="text" style="width: 300px" class="post" name="search_ip" size="30" /></span></td>
+	<td class="row2" colspan="2" valign="middle"><span class="genmed"><input type="text" style="width: 300px;" class="post" name="search_ip" size="30" /></span></td>
 </tr>
 <!-- ENDIF -->
 <tr><th colspan="4">{L_SEARCH_OPTIONS}</th></tr>

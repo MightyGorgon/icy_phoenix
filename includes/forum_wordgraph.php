@@ -25,12 +25,12 @@ $sql = 'SELECT w.word_text, COUNT(*) AS word_count
 	AND t.forum_id = ' . $forum_id . '
 	GROUP BY m.word_id
 	ORDER BY word_count DESC LIMIT ' . intval($board_config['word_graph_max_words']);
-if ( !($result = $db->sql_query($sql, false, 'forum_wg_')) )
+if (!($result = $db->sql_query($sql, false, 'forums_wg_', FORUMS_CACHE_FOLDER)))
 {
 	message_die(GENERAL_ERROR, 'Could not obtain word list', '', __LINE__, __FILE__, $sql);
 }
 
-while ( $row = $db->sql_fetchrow($result) )
+while ($row = $db->sql_fetchrow($result))
 {
 	$word = strtolower($row['word_text']);
 	$word_count = $row['word_count'];
@@ -40,14 +40,14 @@ while ( $row = $db->sql_fetchrow($result) )
 $minimum = 1000000;
 $maximum = -1000000;
 
-foreach ( array_keys($words_array) as $word )
+foreach (array_keys($words_array) as $word)
 {
-	if ( $words_array[$word] > $maximum )
+	if ($words_array[$word] > $maximum)
 	{
 		$maximum = $words_array[$word];
 	}
 
-	if ( $words_array[$word] < $minimum )
+	if ($words_array[$word] < $minimum)
 	{
 		$minimum = $words_array[$word];
 	}
@@ -61,11 +61,11 @@ $template->assign_block_vars('forum_wordgraph', array(
 	)
 );
 
-foreach ( $words as $word )
+foreach ($words as $word)
 {
 	$ratio = intval(mt_rand(8, 14));
 	$template->assign_block_vars('forum_wordgraph.wordgraph_loop', array(
-		'WORD' => ( $board_config['word_graph_word_counts'] ) ? $word . ' (' . $words_array[$word] . ')' : $word,
+		'WORD' => ($board_config['word_graph_word_counts']) ? $word . ' (' . $words_array[$word] . ')' : $word,
 		'WORD_FONT_SIZE' => $ratio,
 		'WORD_SEARCH_URL' => append_sid(SEARCH_MG . '?search_keywords=' . urlencode($word)),
 		)

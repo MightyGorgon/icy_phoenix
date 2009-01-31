@@ -10,17 +10,25 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
+define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if (($userdata['user_level'] != ADMIN))
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+
+$access_allowed = get_cms_access_auth('cms_auth');
+
+if (!$access_allowed)
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
@@ -29,10 +37,6 @@ if (!$userdata['session_admin'])
 {
 	redirect(append_sid(LOGIN_MG . '?redirect=cms_auth.' . PHP_EXT . '&admin=1', true));
 }
-
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 // Pull all config data
 $sql = "SELECT * FROM " . CONFIG_TABLE;
@@ -52,17 +56,9 @@ else
 
 		if(isset($_POST['submit']) && isset($_POST[$config_name]))
 		{
-			$sql = "UPDATE " . CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-				WHERE config_name = '$config_name'";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
+			set_config($config_name, $new[$config_name]);
 		}
 	}
-
-	$db->clear_cache('config_');
 
 	if(isset($_POST['submit']))
 	{
@@ -99,63 +95,69 @@ $auth_view['ajax_chat'] = auth_select($new['auth_view_ajax_chat'], 'auth_view_aj
 $auth_view['ajax_chat_archive'] = auth_select($new['auth_view_ajax_chat_archive'], 'auth_view_ajax_chat_archive');
 $auth_view['custom_pages'] = auth_select($new['auth_view_custom_pages'], 'auth_view_custom_pages');
 
-$wide_blocks_portal_yes = ($new['wide_blocks_portal']) ? "checked=\"checked\"" : "";
-$wide_blocks_portal_no = (!$new['wide_blocks_portal']) ? "checked=\"checked\"" : "";
-$wide_blocks_forum_yes = ($new['wide_blocks_forum']) ? "checked=\"checked\"" : "";
-$wide_blocks_forum_no = (!$new['wide_blocks_forum']) ? "checked=\"checked\"" : "";
-$wide_blocks_viewf_yes = ($new['wide_blocks_viewf']) ? "checked=\"checked\"" : "";
-$wide_blocks_viewf_no = (!$new['wide_blocks_viewf']) ? "checked=\"checked\"" : "";
-$wide_blocks_viewt_yes = ($new['wide_blocks_viewt']) ? "checked=\"checked\"" : "";
-$wide_blocks_viewt_no = (!$new['wide_blocks_viewt']) ? "checked=\"checked\"" : "";
-$wide_blocks_faq_yes = ($new['wide_blocks_faq']) ? "checked=\"checked\"" : "";
-$wide_blocks_faq_no = (!$new['wide_blocks_faq']) ? "checked=\"checked\"" : "";
-$wide_blocks_memberlist_yes = ($new['wide_blocks_memberlist']) ? "checked=\"checked\"" : "";
-$wide_blocks_memberlist_no = (!$new['wide_blocks_memberlist']) ? "checked=\"checked\"" : "";
-$wide_blocks_group_cp_yes = ($new['wide_blocks_group_cp']) ? "checked=\"checked\"" : "";
-$wide_blocks_group_cp_no = (!$new['wide_blocks_group_cp']) ? "checked=\"checked\"" : "";
-$wide_blocks_profile_yes = ($new['wide_blocks_profile']) ? "checked=\"checked\"" : "";
-$wide_blocks_profile_no = (!$new['wide_blocks_profile']) ? "checked=\"checked\"" : "";
-$wide_blocks_search_yes = ($new['wide_blocks_search']) ? "checked=\"checked\"" : "";
-$wide_blocks_search_no = (!$new['wide_blocks_search']) ? "checked=\"checked\"" : "";
-$wide_blocks_album_yes = ($new['wide_blocks_album']) ? "checked=\"checked\"" : "";
-$wide_blocks_album_no = (!$new['wide_blocks_album']) ? "checked=\"checked\"" : "";
-$wide_blocks_links_yes = ($new['wide_blocks_links']) ? "checked=\"checked\"" : "";
-$wide_blocks_links_no = (!$new['wide_blocks_links']) ? "checked=\"checked\"" : "";
-$wide_blocks_calendar_yes = ($new['wide_blocks_calendar']) ? "checked=\"checked\"" : "";
-$wide_blocks_calendar_no = (!$new['wide_blocks_calendar']) ? "checked=\"checked\"" : "";
-$wide_blocks_attachments_yes = ($new['wide_blocks_attachments']) ? "checked=\"checked\"" : "";
-$wide_blocks_attachments_no = (!$new['wide_blocks_attachments']) ? "checked=\"checked\"" : "";
-$wide_blocks_download_yes = ($new['wide_blocks_download']) ? "checked=\"checked\"" : "";
-$wide_blocks_download_no = (!$new['wide_blocks_download']) ? "checked=\"checked\"" : "";
-$wide_blocks_kb_yes = ($new['wide_blocks_kb']) ? "checked=\"checked\"" : "";
-$wide_blocks_kb_no = (!$new['wide_blocks_kb']) ? "checked=\"checked\"" : "";
-$wide_blocks_ranks_yes = ($new['wide_blocks_ranks']) ? "checked=\"checked\"" : "";
-$wide_blocks_ranks_no = (!$new['wide_blocks_ranks']) ? "checked=\"checked\"" : "";
-$wide_blocks_statistics_yes = ($new['wide_blocks_statistics']) ? "checked=\"checked\"" : "";
-$wide_blocks_statistics_no = (!$new['wide_blocks_statistics']) ? "checked=\"checked\"" : "";
-$wide_blocks_recent_yes = ($new['wide_blocks_recent']) ? "checked=\"checked\"" : "";
-$wide_blocks_recent_no = (!$new['wide_blocks_recent']) ? "checked=\"checked\"" : "";
-$wide_blocks_referrers_yes = ($new['wide_blocks_referrers']) ? "checked=\"checked\"" : "";
-$wide_blocks_referrers_no = (!$new['wide_blocks_referrers']) ? "checked=\"checked\"" : "";
-$wide_blocks_rules_yes = ($new['wide_blocks_rules']) ? "checked=\"checked\"" : "";
-$wide_blocks_rules_no = (!$new['wide_blocks_rules']) ? "checked=\"checked\"" : "";
-$wide_blocks_shoutbox_yes = ($new['wide_blocks_shoutbox']) ? "checked=\"checked\"" : "";
-$wide_blocks_shoutbox_no = (!$new['wide_blocks_shoutbox']) ? "checked=\"checked\"" : "";
-$wide_blocks_viewonline_yes = ($new['wide_blocks_viewonline']) ? "checked=\"checked\"" : "";
-$wide_blocks_viewonline_no = (!$new['wide_blocks_viewonline']) ? "checked=\"checked\"" : "";
-$wide_blocks_contact_us_yes = ($new['wide_blocks_contact_us']) ? "checked=\"checked\"" : "";
-$wide_blocks_contact_us_no = (!$new['wide_blocks_contact_us']) ? "checked=\"checked\"" : "";
-$wide_blocks_ajax_chat_yes = ($new['wide_blocks_ajax_chat']) ? "checked=\"checked\"" : "";
-$wide_blocks_ajax_chat_no = (!$new['wide_blocks_ajax_chat']) ? "checked=\"checked\"" : "";
-$wide_blocks_ajax_chat_archive_yes = ($new['wide_blocks_ajax_chat_archive']) ? "checked=\"checked\"" : "";
-$wide_blocks_ajax_chat_archive_no = (!$new['wide_blocks_ajax_chat_archive']) ? "checked=\"checked\"" : "";
-$wide_blocks_custom_pages_yes = ($new['wide_blocks_custom_pages']) ? "checked=\"checked\"" : "";
-$wide_blocks_custom_pages_no = (!$new['wide_blocks_custom_pages']) ? "checked=\"checked\"" : "";
+$wide_blocks_portal_yes = ($new['wide_blocks_portal']) ? 'checked="checked"' : '';
+$wide_blocks_portal_no = (!$new['wide_blocks_portal']) ? 'checked="checked"' : '';
+$wide_blocks_forum_yes = ($new['wide_blocks_forum']) ? 'checked="checked"' : '';
+$wide_blocks_forum_no = (!$new['wide_blocks_forum']) ? 'checked="checked"' : '';
+$wide_blocks_viewf_yes = ($new['wide_blocks_viewf']) ? 'checked="checked"' : '';
+$wide_blocks_viewf_no = (!$new['wide_blocks_viewf']) ? 'checked="checked"' : '';
+$wide_blocks_viewt_yes = ($new['wide_blocks_viewt']) ? 'checked="checked"' : '';
+$wide_blocks_viewt_no = (!$new['wide_blocks_viewt']) ? 'checked="checked"' : '';
+$wide_blocks_faq_yes = ($new['wide_blocks_faq']) ? 'checked="checked"' : '';
+$wide_blocks_faq_no = (!$new['wide_blocks_faq']) ? 'checked="checked"' : '';
+$wide_blocks_memberlist_yes = ($new['wide_blocks_memberlist']) ? 'checked="checked"' : '';
+$wide_blocks_memberlist_no = (!$new['wide_blocks_memberlist']) ? 'checked="checked"' : '';
+$wide_blocks_group_cp_yes = ($new['wide_blocks_group_cp']) ? 'checked="checked"' : '';
+$wide_blocks_group_cp_no = (!$new['wide_blocks_group_cp']) ? 'checked="checked"' : '';
+$wide_blocks_profile_yes = ($new['wide_blocks_profile']) ? 'checked="checked"' : '';
+$wide_blocks_profile_no = (!$new['wide_blocks_profile']) ? 'checked="checked"' : '';
+$wide_blocks_search_yes = ($new['wide_blocks_search']) ? 'checked="checked"' : '';
+$wide_blocks_search_no = (!$new['wide_blocks_search']) ? 'checked="checked"' : '';
+$wide_blocks_album_yes = ($new['wide_blocks_album']) ? 'checked="checked"' : '';
+$wide_blocks_album_no = (!$new['wide_blocks_album']) ? 'checked="checked"' : '';
+$wide_blocks_links_yes = ($new['wide_blocks_links']) ? 'checked="checked"' : '';
+$wide_blocks_links_no = (!$new['wide_blocks_links']) ? 'checked="checked"' : '';
+$wide_blocks_calendar_yes = ($new['wide_blocks_calendar']) ? 'checked="checked"' : '';
+$wide_blocks_calendar_no = (!$new['wide_blocks_calendar']) ? 'checked="checked"' : '';
+$wide_blocks_attachments_yes = ($new['wide_blocks_attachments']) ? 'checked="checked"' : '';
+$wide_blocks_attachments_no = (!$new['wide_blocks_attachments']) ? 'checked="checked"' : '';
+$wide_blocks_download_yes = ($new['wide_blocks_download']) ? 'checked="checked"' : '';
+$wide_blocks_download_no = (!$new['wide_blocks_download']) ? 'checked="checked"' : '';
+$wide_blocks_kb_yes = ($new['wide_blocks_kb']) ? 'checked="checked"' : '';
+$wide_blocks_kb_no = (!$new['wide_blocks_kb']) ? 'checked="checked"' : '';
+$wide_blocks_ranks_yes = ($new['wide_blocks_ranks']) ? 'checked="checked"' : '';
+$wide_blocks_ranks_no = (!$new['wide_blocks_ranks']) ? 'checked="checked"' : '';
+$wide_blocks_statistics_yes = ($new['wide_blocks_statistics']) ? 'checked="checked"' : '';
+$wide_blocks_statistics_no = (!$new['wide_blocks_statistics']) ? 'checked="checked"' : '';
+$wide_blocks_recent_yes = ($new['wide_blocks_recent']) ? 'checked="checked"' : '';
+$wide_blocks_recent_no = (!$new['wide_blocks_recent']) ? 'checked="checked"' : '';
+$wide_blocks_referrers_yes = ($new['wide_blocks_referrers']) ? 'checked="checked"' : '';
+$wide_blocks_referrers_no = (!$new['wide_blocks_referrers']) ? 'checked="checked"' : '';
+$wide_blocks_rules_yes = ($new['wide_blocks_rules']) ? 'checked="checked"' : '';
+$wide_blocks_rules_no = (!$new['wide_blocks_rules']) ? 'checked="checked"' : '';
+$wide_blocks_shoutbox_yes = ($new['wide_blocks_shoutbox']) ? 'checked="checked"' : '';
+$wide_blocks_shoutbox_no = (!$new['wide_blocks_shoutbox']) ? 'checked="checked"' : '';
+$wide_blocks_viewonline_yes = ($new['wide_blocks_viewonline']) ? 'checked="checked"' : '';
+$wide_blocks_viewonline_no = (!$new['wide_blocks_viewonline']) ? 'checked="checked"' : '';
+$wide_blocks_contact_us_yes = ($new['wide_blocks_contact_us']) ? 'checked="checked"' : '';
+$wide_blocks_contact_us_no = (!$new['wide_blocks_contact_us']) ? 'checked="checked"' : '';
+$wide_blocks_ajax_chat_yes = ($new['wide_blocks_ajax_chat']) ? 'checked="checked"' : '';
+$wide_blocks_ajax_chat_no = (!$new['wide_blocks_ajax_chat']) ? 'checked="checked"' : '';
+$wide_blocks_ajax_chat_archive_yes = ($new['wide_blocks_ajax_chat_archive']) ? 'checked="checked"' : '';
+$wide_blocks_ajax_chat_archive_no = (!$new['wide_blocks_ajax_chat_archive']) ? 'checked="checked"' : '';
+$wide_blocks_custom_pages_yes = ($new['wide_blocks_custom_pages']) ? 'checked="checked"' : '';
+$wide_blocks_custom_pages_no = (!$new['wide_blocks_custom_pages']) ? 'checked="checked"' : '';
+
+$show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
 
 $page_title = $lang['Home'];
 $meta_description = '';
 $meta_keywords = '';
-$template->assign_vars(array('S_CMS_AUTH' => true));
+$template->assign_vars(array(
+	'S_CMS_AUTH' => true,
+	'S_SHOW_CMS_MENU' => $show_cms_menu
+	)
+);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 if ($board_config['cms_dock'] == true)

@@ -28,8 +28,8 @@
 							<td class="row2" valign="top"><b><span class="genmed">{L_RECENT_USER_ACTIVITY}</span></b></td>
 							<td class="row1">
 								<span class="genmed">[ <a href="{U_USER_RECENT_TOPICS}">{L_USER_TOPICS_STARTED}</a> ]</span><br />
-								<!-- IF S_ADMIN_MOD -->
 								<span class="genmed">[ <a href="{U_USER_RECENT_POSTS}">{L_USER_POSTS}</a> ]</span><br />
+								<!-- IF S_ADMIN -->
 								<span class="genmed">[ <a href="{U_USER_RECENT_TOPICS_VIEW}">{L_USER_TOPICS_VIEWS}</a> ]</span>
 								<!-- ENDIF -->
 							</td>

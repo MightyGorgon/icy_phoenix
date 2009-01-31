@@ -293,7 +293,7 @@ else
 }
 
 //$sql = "SELECT u.*" . $sql_style_select . "
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang" . $sql_style_select . "
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang" . $sql_style_select . "
 	FROM " . USERS_TABLE . " u" . $sql_style_from . "
 	WHERE u.user_id <> " . ANONYMOUS . "
 		" . $sql_style_where . "
@@ -413,7 +413,7 @@ if ($row = $db->sql_fetchrow($result))
 			$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
 			// Mighty Gorgon - Multiple Ranks - END
 
-			$username = colorize_username($user_id);
+			$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 
 			$user_info = array();
 			$user_info = generate_user_info($row);
@@ -476,7 +476,7 @@ if ($row = $db->sql_fetchrow($result))
 			//'ROW_NUMBER' => $i + ($_GET['start'] + 1) . (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
 			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
-			'USERNAME' => colorize_username($user_id),
+			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 			'FROM' => $from,
 			'JOINED' => $joined,
 			'DELETE' => (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . $deluser_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
@@ -493,7 +493,7 @@ if ($row = $db->sql_fetchrow($result))
 			'SEARCH' => $search,
 			'PM_IMG' => $pm_img,
 			'PM' => $pm,
-			'EMAIL_IMG' => (!$userdata['session_logged_in'])? '' : $email_img,
+			'EMAIL_IMG' => (!$userdata['session_logged_in']) ? '' : $email_img,
 			'EMAIL' => $email,
 			'WWW_IMG' => $www_img,
 			'WWW' => $www,

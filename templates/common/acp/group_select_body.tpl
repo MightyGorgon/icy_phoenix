@@ -46,48 +46,30 @@ function CheckColor(ColorCode)
 	<th>{L_GROUP_LEGEND}</th>
 </tr>
 <!-- BEGIN group_row -->
-<tr>
-	<td class="row1" nowrap="nowrap">
-		<span id="color_group_example_{group_row.GROUP_ID}" class="genmed"{group_row.GROUP_COLOR_STYLE}>{group_row.GROUP_NAME}</span>
-	</td>
-	<td class="row1 row-center">
-		<span class="genmed">
-			#<input type="text" class="post" name="group_color_{group_row.GROUP_ID}" value="{group_row.GROUP_COLOR}" size="9" maxlength="6" onblur="ColorExample(this.value,{group_row.GROUP_ID});" />
-		</span>
-	</td>
-	<td class="row1 row-center"><span class="genmed"><a href="{group_row.U_GROUP_EDIT}">{L_MANAGE}</a> / <a href="{group_row.U_GROUP_PERMISSIONS}">{L_PERMISSIONS}</a></span></td>
-	<td class="row1 row-center"><span class="genmed">{group_row.GROUP_STATUS}</span></td>
-	<td class="row1 row-center"><span class="genmed">{group_row.GROUP_MEMBERS}</span></td>
-	<td class="row1 row-center"><input type="checkbox" name="group_legend_{group_row.GROUP_ID}"{group_row.GROUP_LEGEND_CHECKED} value="1" style="vertical-align:top;" />{group_row.GROUP_LEGEND_MOVE}</td>
+<tr class="{group_row.ROW_CLASS}h">
+	<td class="{group_row.ROW_CLASS}" style="background: none;" nowrap="nowrap"><span id="color_group_example_{group_row.GROUP_ID}" class="genmed"{group_row.GROUP_COLOR_STYLE}>{group_row.GROUP_NAME}</span></td>
+	<td class="{group_row.ROW_CLASS} row-center" style="background: none;"><span class="genmed">#<input type="text" class="post" name="group_color_{group_row.GROUP_ID}" value="{group_row.GROUP_COLOR}" size="9" maxlength="6" onblur="ColorExample(this.value,{group_row.GROUP_ID});" /></span></td>
+	<td class="{group_row.ROW_CLASS} row-center" style="background: none;"><span class="genmed"><a href="{group_row.U_GROUP_EDIT}">{L_MANAGE}</a> / <a href="{group_row.U_GROUP_PERMISSIONS}">{L_PERMISSIONS}</a></span></td>
+	<td class="{group_row.ROW_CLASS} row-center" style="background: none;"><span class="genmed">{group_row.GROUP_STATUS}</span></td>
+	<td class="{group_row.ROW_CLASS} row-center" style="background: none;"><span class="genmed">{group_row.GROUP_MEMBERS}</span></td>
+	<td class="{group_row.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="group_legend_{group_row.GROUP_ID}"{group_row.GROUP_LEGEND_CHECKED} value="1" style="vertical-align:top;" />{group_row.GROUP_LEGEND_MOVE}</td>
 </tr>
 <!-- END group_row -->
-<tr>
-	<td class="row1" nowrap="nowrap">
-		<span id="color_group_example_active_users" class="genmed"{ACTIVE_USERS_COLOR_STYLE}>{L_ACTIVE_USERS_GROUP}</span>
-	</td>
-	<td class="row1 row-center">
-		<span class="genmed">
-			#<input type="text" class="post" name="active_users_color" value="{ACTIVE_USERS_COLOR}" size="9" maxlength="7" onblur="ColorExample(this.value,'active_users');" />
-		</span>
-	</td>
-	<td class="row1 row-center"><span class="genmed">-</span></td>
-	<td class="row1 row-center"><span class="genmed">{L_GROUP_OPEN}</span></td>
-	<td class="row1 row-center"><span class="genmed">{ACTIVE_MEMBERS}</span></td>
-	<td class="row1 row-center"><input type="checkbox" name="active_users_legend"{ACTIVE_USERS_LEGEND_CHECKED} value="1"></td>
+<tr class="{ROW_CLASS_ACTIVE_USERS}h">
+	<td class="{ROW_CLASS_ACTIVE_USERS}" style="background: none;" nowrap="nowrap"><span id="color_group_example_active_users" class="genmed"{ACTIVE_USERS_COLOR_STYLE}>{L_ACTIVE_USERS_GROUP}</span></td>
+	<td class="{ROW_CLASS_ACTIVE_USERS} row-center" style="background: none;"><span class="genmed">#<input type="text" class="post" name="active_users_color" value="{ACTIVE_USERS_COLOR}" size="9" maxlength="7" onblur="ColorExample(this.value,'active_users');" /></span></td>
+	<td class="{ROW_CLASS_ACTIVE_USERS} row-center" style="background: none;"><span class="genmed">-</span></td>
+	<td class="{ROW_CLASS_ACTIVE_USERS} row-center" style="background: none;"><span class="genmed">{L_GROUP_OPEN}</span></td>
+	<td class="{ROW_CLASS_ACTIVE_USERS} row-center" style="background: none;"><span class="genmed">{ACTIVE_MEMBERS}</span></td>
+	<td class="{ROW_CLASS_ACTIVE_USERS} row-center" style="background: none;"><input type="checkbox" name="active_users_legend"{ACTIVE_USERS_LEGEND_CHECKED} value="1"></td>
 </tr>
-<tr>
-	<td class="row1" nowrap="nowrap">
-		<span id="color_group_example_bots" class="genmed"{BOTS_COLOR_STYLE}>{L_BOTS_GROUP}</span>
-	</td>
-	<td class="row1 row-center">
-		<span class="genmed">
-			#<input type="text" class="post" name="bots_color" value="{BOTS_COLOR}" size="9" maxlength="7" onblur="ColorExample(this.value,'bots');" />
-		</span>
-	</td>
-	<td class="row1 row-center"><span class="genmed">-</span></td>
-	<td class="row1 row-center"><span class="genmed">{L_GROUP_OPEN}</span></td>
-	<td class="row1 row-center"><span class="genmed">-</span></td>
-	<td class="row1 row-center"><input type="checkbox" name="bots_legend"{BOTS_LEGEND_CHECKED} value="1"></td>
+<tr class="{ROW_CLASS_BOTS}h">
+	<td class="{ROW_CLASS_BOTS}" style="background: none;" nowrap="nowrap"><span id="color_group_example_bots" class="genmed"{BOTS_COLOR_STYLE}>{L_BOTS_GROUP}</span></td>
+	<td class="{ROW_CLASS_BOTS} row-center" style="background: none;"><span class="genmed">#<input type="text" class="post" name="bots_color" value="{BOTS_COLOR}" size="9" maxlength="7" onblur="ColorExample(this.value,'bots');" /></span></td>
+	<td class="{ROW_CLASS_BOTS} row-center" style="background: none;"><span class="genmed">-</span></td>
+	<td class="{ROW_CLASS_BOTS} row-center" style="background: none;"><span class="genmed">{L_GROUP_OPEN}</span></td>
+	<td class="{ROW_CLASS_BOTS} row-center" style="background: none;"><span class="genmed">-</span></td>
+	<td class="{ROW_CLASS_BOTS} row-center" style="background: none;"><input type="checkbox" name="bots_legend"{BOTS_LEGEND_CHECKED} value="1"></td>
 </tr>
 <!-- BEGIN select_box -->
 <!--

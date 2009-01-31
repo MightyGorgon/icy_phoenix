@@ -124,6 +124,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 
 		if (isset($userdata['user_level']) && ($userdata['user_level'] == JUNIOR_ADMIN))
 		{
+			define('IS_JUNIOR_ADMIN', true);
 			$userdata['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
 		}
 	}
@@ -156,7 +157,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	// Initial ban check against user id, IP and email address
 	preg_match('/(..)(..)(..)(..)/', $user_ip, $user_ip_parts);
 
-	$sql = "SELECT ban_ip, ban_userid, ban_email, ban_email, ban_expire_time, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason
+	$sql = "SELECT *
 		FROM " . BANLIST_TABLE . "
 		WHERE ban_ip IN ('" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . $user_ip_parts[4] . "', '" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . "ff', '" . $user_ip_parts[1] . $user_ip_parts[2] . "ffff', '" . $user_ip_parts[1] . "ffffff')
 			OR ban_userid = $user_id";
@@ -165,12 +166,12 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		$sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $userdata['user_email']) . "'
 			OR ban_email LIKE '" . substr(str_replace("\'", "''", $userdata['user_email']), strpos(str_replace("\'", "''", $userdata['user_email']), "@")) . "'";
 	}
-	if (!($result = $db->sql_query($sql, false, 'ban_')))
+	if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 	{
 		message_die(CRITICAL_ERROR, 'Could not obtain ban information', '', __LINE__, __FILE__, $sql);
 	}
 
-	if ($ban_info = $db->sql_fetchrow($result))
+	while ($ban_info = $db->sql_fetchrow($result))
 	{
 		if (($ban_info['ban_userid'] == ANONYMOUS) && ($ban_info['ban_ip'] == '') && ($ban_info['ban_email'] == null))
 		{
@@ -179,29 +180,49 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 			{
 				message_die(GENERAL_MESSAGE, 'Unable to access the Banlist Table.');
 			}
-			$db->clear_cache('ban_');
+			$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 		}
 		else
 		{
-			if ($ban_info['ban_ip'] || $ban_info['ban_userid'] || $ban_info['ban_email'] || ($ban_info['ban_expire_time'] >= time()) || ($ban_info['ban_userid'] && (!$ban_info['ban_expire_time'])))
+			if ($ban_info['ban_ip'] || $ban_info['ban_userid'] || $ban_info['ban_email'] || ($ban_info['ban_userid'] && (!$ban_info['ban_expire_time'])))
 			{
-				if (($ban_info['ban_pub_reason_mode'] == '0') || !isset ($ban_info['ban_pub_reason_mode']))
+				if (!empty($ban_info['ban_expire_time']) && ($ban_info['ban_expire_time'] <= time()))
 				{
-					$reason = $lang['You_been_banned'];
+					$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_id = '" . $ban_info['ban_id'] . "'";
+					if (!$db->sql_query($sql))
+					{
+						message_die(GENERAL_MESSAGE, 'Unable to access the Banlist Table.');
+					}
+					$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 				}
-				elseif ($ban_info['ban_pub_reason_mode'] == '1')
+				else
 				{
-					$reason = str_replace ("\n", '<br />', stripslashes ($ban_info['ban_priv_reason']));
-				}
-				elseif ($ban_info['ban_pub_reason_mode'] == '2')
-				{
-					$reason = str_replace ("\n", '<br />', stripslashes ($ban_info['ban_pub_reason']));
-				}
+					// We need to make sure we have at least the basic lang files included...
+					if (empty($lang))
+					{
+						setup_basic_lang();
+					}
 
-				message_die(CRITICAL_MESSAGE, $reason);
+					if (($ban_info['ban_pub_reason_mode'] == '0') || !isset($ban_info['ban_pub_reason_mode']))
+					{
+						$reason = $lang['You_been_banned'];
+					}
+					elseif ($ban_info['ban_pub_reason_mode'] == '1')
+					{
+						$reason = str_replace("\n", '<br />', stripslashes($ban_info['ban_priv_reason']));
+					}
+					elseif ($ban_info['ban_pub_reason_mode'] == '2')
+					{
+						$reason = str_replace("\n", '<br />', stripslashes($ban_info['ban_pub_reason']));
+					}
+
+					$reason = empty($reason) ? $lang['You_been_banned'] : $reason;
+					message_die(CRITICAL_MESSAGE, $reason);
+				}
 			}
 		}
 	}
+	$db->sql_freeresult($result);
 
 	// Create or update the session
 	$sql_ip = ($user_id == ANONYMOUS) ? " AND session_ip = '$user_ip'" : '';
@@ -211,7 +232,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 			AND session_user_id = '$user_id'";
 	if (!$db->sql_query($sql) || !$db->sql_affectedrows())
 	{
-		$session_id = md5(dss_rand());
+		$session_id = md5(unique_id());
 
 		$sql = "INSERT INTO " . SESSIONS_TABLE . "
 			(session_id, session_user_id, session_start, session_time, session_ip, session_user_agent, session_page, session_logged_in, session_admin)
@@ -222,8 +243,8 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		}
 	}
 
-	//if ($user_id != ANONYMOUS)
-	//{
+	if ($user_id != ANONYMOUS)
+	{
 		$last_visit = ($userdata['user_session_time'] > 0) ? $userdata['user_session_time'] : $current_time;
 
 		if (!$admin)
@@ -285,7 +306,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		// Regenerate the auto-login key
 		if ($enable_autologin)
 		{
-			$auto_login_key = dss_rand() . dss_rand();
+			$auto_login_key = unique_id() . unique_id();
 
 			if (isset($sessiondata['autologinid']) && (string) $sessiondata['autologinid'] != '')
 			{
@@ -314,7 +335,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 
 //		$sessiondata['autologinid'] = (!$admin) ? (($enable_autologin && $sessionmethod == SESSION_METHOD_COOKIE) ? $auto_login_key : '') : $sessiondata['autologinid'];
 		$sessiondata['userid'] = $user_id;
-//}
+	}
 
 	$userdata['session_id'] = $session_id;
 	$userdata['session_ip'] = $user_ip;
@@ -341,7 +362,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
 	setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
 
-	$SID = $user_id > 0 ? 'sid=' . $session_id : '';
+	$SID = ($user_id > 0) ? ('sid=' . $session_id) : '';
 
 	return $userdata;
 }
@@ -426,6 +447,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 		$userdata = $db->sql_fetchrow($result);
 		if (isset($userdata['user_level']) && ($userdata['user_level'] == JUNIOR_ADMIN))
 		{
+			define('IS_JUNIOR_ADMIN', true);
 			$userdata['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
 		}
 
@@ -446,7 +468,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 
 				// Only update session DB a minute or so after last update
 				$session_page_tmp = ($userdata['user_id'] == ANONYMOUS) ? $userdata['user_session_page'] : $userdata['session_page'];
-				if (((($current_time - $userdata['session_time']) > SESSION_REFRESH) || ($session_page_tmp != $thispage_id)) && ($parse_session === true))
+				if (((($current_time - $userdata['session_time']) > SESSION_REFRESH) || ($session_page_tmp != $thispage_id)) && ($parse_session === true) && empty($_REQUEST['explain']))
 				{
 					// A little trick to reset session_admin on session re-usage
 					$update_admin = (!defined('IN_ADMIN') && (($current_time - $userdata['session_time']) > ($board_config['session_length'] + SESSION_REFRESH))) ? ', session_admin = 0' : '';
@@ -514,6 +536,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 		$userdata = $db->sql_fetchrow($result);
 		if (isset($userdata['user_level']) && ($userdata['user_level'] == JUNIOR_ADMIN))
 		{
+			define('IS_JUNIOR_ADMIN', true);
 			$userdata['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
 		}
 
@@ -652,11 +675,9 @@ function session_clean($session_id)
 {
 	global $board_config, $db;
 
-	//
 	// Delete expired sessions
-	//
 	$sql = "DELETE FROM " . SESSIONS_TABLE . "
-		WHERE UNIX_TIMESTAMP() - session_time >= 172800
+		WHERE UNIX_TIMESTAMP() - session_time >= " . 172800 . "
 			AND session_id <> '$session_id'";
 	if (!$db->sql_query($sql))
 	{
@@ -708,7 +729,7 @@ function session_reset_keys($user_id, $user_ip)
 
 	if (!empty($key_sql))
 	{
-		$auto_login_key = dss_rand() . dss_rand();
+		$auto_login_key = unique_id() . unique_id();
 
 		$current_time = time();
 

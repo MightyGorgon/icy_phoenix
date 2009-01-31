@@ -8,6 +8,16 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
 $lang['DEMO_VAR'] = 'DEMO VAR';
 
 ?>

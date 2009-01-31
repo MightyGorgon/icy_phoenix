@@ -21,8 +21,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
-
 /*
 * clean up bug tracker for unset categories
 * hard stuff to do this, but we must be sure to track downloads only in the choosen categories...

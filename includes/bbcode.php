@@ -101,13 +101,14 @@ define('BBCODE_UID_LEN', 10);
 define('BBCODE_NOSMILIES_START', '<!-- no smilies start -->');
 define('BBCODE_NOSMILIES_END', '<!-- no smilies end -->');
 define('AUTOURL', time());
+// If included via function we need to make sure to have the requested globals...
 global $db, $board_config, $lang;
 
 // To use this file outside Icy Phoenix you need to comment the define below and remove the check on top of the file.
 define('IS_ICYPHOENIX', true);
 if(defined('IS_ICYPHOENIX'))
 {
-	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 }
 else
 {
@@ -631,7 +632,7 @@ class BBCode
 			{
 				$params['src'] = $item['params']['param'];
 				$img_url = $params['src'];
-				$img_url_enc = urlencode(utf8_decode($params['src']));
+				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
 				$params['alt'] = $content;
 			}
 			// [img src=blah alt=blah width=123][/img]
@@ -639,7 +640,7 @@ class BBCode
 			{
 				$params['src'] = $item['params']['src'];
 				$img_url = $params['src'];
-				$img_url_enc = urlencode(utf8_decode($params['src']));
+				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
 				$params['alt'] = isset($item['params']['alt']) ? $item['params']['alt'] : $content;
 				for($i = 0; $i < count($extras); $i++)
 				{
@@ -665,7 +666,7 @@ class BBCode
 			{
 				$params['src'] = $content;
 				$img_url = $params['src'];
-				$img_url_enc = urlencode(utf8_decode($params['src']));
+				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
 				// LIW - BEGIN
 				if (($board_config['liw_enabled'] == 1) && ($max_image_width > 0) && ($board_config['thumbnail_posts'] == 0))
 				{
@@ -2119,7 +2120,7 @@ class BBCode
 			$shieldshadow = (isset($item['params']['shieldshadow']) ? (($item['params']['shieldshadow'] == 1) ? 1 : $default_param) : $default_param);
 
 			//$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . $text . '" alt="Smiley" title="Smiley" />';
-			$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . urlencode(utf8_decode($text)) . '" alt="'. $text . '" title="' . $text . '" />';
+			$html = '<img src="text2shield.' . PHP_EXT . '?smilie=' . $smilie . '&amp;fontcolor=' . $fontcolor . '&amp;shadowcolor=' . $shadowcolor . '&amp;shieldshadow=' . $shieldshadow . '&amp;text=' . urlencode(ip_utf8_decode($text)) . '" alt="'. $text . '" title="' . $text . '" />';
 			return array(
 				'valid' => true,
 				'html' => $html,
@@ -3128,7 +3129,7 @@ class BBCode
 	{
 		if(!$this->allow_smilies || (count($this->allowed_smilies) == 0))
 		{
-			return;
+			return $text;
 		}
 		$smilies_code = array();
 		$smilies_replace = array();
@@ -3720,7 +3721,7 @@ mt_srand((double) microtime() * 1000000);
 function make_bbcode_uid()
 {
 	// Unique ID for this message..
-	$uid = dss_rand();
+	$uid = unique_id();
 	$uid = substr($uid, 0, BBCODE_UID_LEN);
 	return $uid;
 }

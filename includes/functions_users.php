@@ -44,7 +44,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['posts'] = ($row['user_posts']) ? $row['user_posts'] : 0;
 	$user_info['style'] = ($row['style_name']) ? $row['style_name'] : '';
 
-	$user_info['avatar'] = user_get_avatar($row['user_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
+	$user_info['avatar'] = user_get_avatar($row['user_id'], $row['user_level'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
 
 	if (empty($userdata['user_id']) || ($userdata['user_id'] == ANONYMOUS))
 	{
@@ -240,41 +240,33 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 /*
 * Top X Posters
 */
-function top_posters($user_limit, $show_admin, $show_mod)
+function top_posters($user_limit, $show_admins = true, $show_mods = true, $only_array = false)
 {
 	global $db;
-	if (($show_admin == true) && ($show_mod == true))
-	{
-		$sql_level = '';
-	}
-	elseif ($show_admin == true)
-	{
-		$sql_level = "AND u.user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
-	}
-	elseif ($show_mod == true)
-	{
-		$sql_level = "AND u.user_level IN (" . USER . ", " . MOD . ")";
-	}
-	else
-	{
-		$sql_level = "AND u.user_level = " . USER;
-	}
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_level
+	$sql_level = ($show_admins && $show_mods) ? '' : ("AND u.user_level IN (" . USER . ($show_mods ? (", " . MOD) : '') . ($show_admins ? (", " . JUNIOR_ADMIN . ", " . ADMIN) : '') . ")");
+
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_posts, u.user_avatar, u.user_avatar_type, u.user_allowavatar
 	FROM " . USERS_TABLE . " u
 	WHERE (u.user_id <> " . ANONYMOUS . ")
 	" . $sql_level . "
 	ORDER BY u.user_posts DESC
 	LIMIT " . $user_limit;
-	if (!($result = $db->sql_query($sql, false, 'top_posters_')))
+	if (!($result = $db->sql_query($sql, false, 'posts_top_posters_', POSTS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query forum top poster information', '', __LINE__, __FILE__, $SQL);
 	}
+
 	$top_posters = '';
+	$top_posters_array = array();
 	while($row = $db->sql_fetchrow($result))
 	{
-		$top_posters .= ' ' . colorize_username($row['user_id']) . '(' . $row['user_posts'] . ') ';
+		$top_posters .= (($top_posters == '') ? '' : ', ') . colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']) . '(' . $row['user_posts'] . ')';
+		$top_posters_array[] = $row;
 	}
-	return $top_posters;
+	$db->sql_freeresult($result);
+
+	$return_value = ($only_array == true) ? $top_posters_array : $top_posters;
+	return $return_value;
 }
 
 ?>

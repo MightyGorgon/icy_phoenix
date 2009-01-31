@@ -71,7 +71,8 @@ if (!isset($_POST['install_step']))
 
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(THIS_PATH . THIS_FILE);
+				if (!defined('LOGIN_MG')) define('LOGIN_MG', 'login.' . PHP_EXT);
+				redirect(append_sid(LOGIN_MG . '?redirect=' . THIS_PATH . THIS_FILE));
 				exit;
 			}
 
@@ -128,7 +129,7 @@ if (!isset($_POST['install_step']))
 			$page_framework = new ip_page();
 			$page_framework->page_header('Icy Phoenix', '', false, false);
 			$page_framework->stats_box($current_ip_version, $current_phpbb_version);
-			//$page_framework->upgrade_options();
+			$page_framework->box_upgrade_info();
 			$page_framework->page_footer(false);
 			exit;
 		}

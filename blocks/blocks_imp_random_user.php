@@ -44,11 +44,11 @@ if(!function_exists('imp_random_user_func'))
 		if ($row = $db->sql_fetchrow($result))
 		{
 			$user_id = $row['user_id'];
-			$username = colorize_username($row['user_id']);
+			$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 			$username_simple = $row['username'];
 			$user_pics = $row['user_personal_pics_count'];
 			$posts = ($row['user_posts']) ? $row['user_posts'] : 0;
-			$poster_avatar = user_get_avatar($row['user_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
+			$poster_avatar = user_get_avatar($row['user_id'], $row['user_level'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
 			$poster_posts = ($row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $row['user_posts'] : '';
 
 			$poster_from = ($row['user_from'] && $row['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $row['user_from'] : '';
@@ -181,7 +181,7 @@ if(!function_exists('imp_random_user_func'))
 				'USERNAME' => $username,
 				'POSTS' => $posts,
 				'U_VIEWPOSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
-				'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(utf8_decode($username_simple)) . '&amp;showresults=posts'),
+				'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(ip_utf8_decode($username_simple)) . '&amp;showresults=posts'),
 				'POSTER_AGE' => $poster_age,
 				'POSTER_BIRTHDAY' => $poster_birthday,
 				'USER_RANK_01' => $user_rank_01,

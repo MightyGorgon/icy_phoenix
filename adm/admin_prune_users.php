@@ -29,7 +29,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // ********************************************************************************
 // from here you can define you own delete criterias, if you makes more, then you shall also
@@ -98,7 +97,7 @@ while (!empty($sql_up[$n]))
 	}
 	$select[$n] = '<select name="days_' . $n . '" size="1" onchange="SetDays();" class="gensmall">' . str_replace('value="' . $days[$n] . '">&nbsp;', 'value="' . $days[$n] . '" selected="selected">&nbsp;*', $options);
 
-	$sql_full = "SELECT user_id , username, user_level
+	$sql_full = "SELECT user_id , username, user_active, user_color, user_level
 							FROM " . USERS_TABLE . "
 							WHERE user_id <> '" . ANONYMOUS . "'
 							" . $sql_up[$n] . "
@@ -113,7 +112,7 @@ while (!empty($sql_up[$n]))
 	$user_count = count($user_list);
 	for($i = 0; $i < $user_count; $i++)
 	{
-		$list[$n] .= ' ' . colorize_username($user_list[$i]['user_id']);
+		$list[$n] .= ' ' . colorize_username($user_list[$i]['user_id'], $user_list[$i]['username'], $user_list[$i]['user_color'], $user_list[$i]['user_active']);
 	}
 	$db->sql_freeresult($result);
 	$template->assign_block_vars('prune_list', array(

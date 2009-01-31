@@ -126,11 +126,13 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 		);
 	}
 
-	$sql = "SELECT * FROM " . DL_COMMENTS_TABLE . "
-		WHERE cat_id = $cat_id
-			AND id = $df_id
-			AND approve = " . TRUE . "
-		ORDER BY comment_time DESC
+	$sql = "SELECT c.*, u.username as user_username, u.user_active, u.user_color
+		FROM " . DL_COMMENTS_TABLE . " c, " . USERS_TABLE . " u
+		WHERE c.cat_id = $cat_id
+			AND c.id = $df_id
+			AND c.approve = " . TRUE . "
+			AND u.user_id = c.user_id
+		ORDER BY c.comment_time DESC
 		LIMIT 0, " . $dl_config['latest_comments'];
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -163,9 +165,9 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 					$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
 				}
 
-				$bbcode->allow_html = ( $userdata['user_allowhtml'] && $board_config['allow_html'] ) ? true : false;
-				$bbcode->allow_bbcode = ( $userdata['user_allowbbcode'] && $board_config['allow_bbcode'] ) ? true : false;
-				$bbcode->allow_smilies = ( $userdata['user_allowsmile'] && $board_config['allow_smilies'] ) ? true : false;
+				$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+				$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
+				$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
 				$message = $bbcode->parse($message);
 
 				$message = str_replace("\n", "\n<br />\n", $message);
@@ -179,11 +181,18 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 					$edited_by = '';
 				}
 
-				$poster = colorize_username($poster_id);
+				if (($poster_id == ANONYMOUS) || ($poster == ''))
+				{
+					$poster = ($poster == '') ? $lang['Guest'] : $poster;
+				}
+				else
+				{
+					$poster = colorize_username($poster_id, $row['user_username'], $row['user_color'], $row['user_active']);
+				}
 
 				$post_time = create_date($board_config['default_dateformat'], $comment_time, $board_config['board_timezone']);
 
-				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('comment_block.complete.comment_row', array(
 					'ROW_CLASS' => $row_class,
@@ -276,26 +285,28 @@ $cat_desc = $index[$cat_id]['description'];
 
 $add_user = $add_time = '';
 $change_user = $change_time = '';
-$sql = "SELECT username, user_id FROM " . USERS_TABLE . "
-	WHERE user_id = " . $dl_files['add_user'];
+$sql = "SELECT username, user_id, user_active, user_color FROM " . USERS_TABLE . "
+	WHERE user_id = " . $dl_files['add_user'] . "
+	LIMIT 1";
 if ($result = $db->sql_query($sql))
 {
 	$row = $db->sql_fetchrow($result);
 	//$add_user = ($row['user_id'] != '' || $row['user_id'] != ANONYMOUS) ? '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '">'.$row['username'] . '</a>' : $lang['Guest'];
-	$add_user = colorize_username($row['user_id']);
+	$add_user = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 	$add_time = create_date($board_config['default_dateformat'], $dl_files['add_time'], $board_config['board_timezone']);
 }
 $db->sql_freeresult($result);
 
 if ($dl_files['add_time'] != $dl_files['change_time'])
 {
-	$sql = "SELECT username, user_id FROM " . USERS_TABLE . "
-		WHERE user_id = " . $dl_files['change_user'];
+	$sql = "SELECT username, user_id, user_active, user_color FROM " . USERS_TABLE . "
+		WHERE user_id = " . $dl_files['change_user'] . ";
+		LIMIT 1";
 	if ($result = $db->sql_query($sql))
 	{
 		$row = $db->sql_fetchrow($result);
 		//$change_user = ($row['user_id'] != '' || $row['user_id'] != ANONYMOUS) ? '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '">'.$row['username'] . '</a>' : $lang['Guest'];
-		$change_user = colorize_username($row['user_id']);
+		$change_user = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		$change_time = create_date($board_config['default_dateformat'], $dl_files['change_time'], $board_config['board_timezone']);
 	}
 	$db->sql_freeresult($result);

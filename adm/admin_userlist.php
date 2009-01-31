@@ -20,9 +20,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 
 // Set mode
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
@@ -186,7 +184,7 @@ switch($mode)
 				{
 					message_die(GENERAL_ERROR, $lang['L_ADMINEDITMSG']);
 				}
-				$killed = mg_kill_user($user_id);
+				$killed = ip_user_kill($user_id);
 				unset($user_id);
 				$i++;
 			}
@@ -268,7 +266,7 @@ switch($mode)
 				$i++;
 			}
 
-			$db->clear_cache('ban_');
+			$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
 			$message = $lang['User_banned_successfully'] . '<br /><br />' . sprintf($lang['Click_return_userlist'], '<a href="' . append_sid('admin_userlist.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -295,11 +293,16 @@ switch($mode)
 			$new_status = ($row['user_active']) ? 0 : 1;
 
 			$sql = "UPDATE " .  USERS_TABLE . "
-				SET user_active = '$new_status'
-				WHERE user_id = $user_id";
+				SET user_active = '" . $new_status . "'
+				WHERE user_id = " . $user_id;
 			if(!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not update user status', '', __LINE__, __FILE__, $sql);
+			}
+
+			if ($new_status == 0)
+			{
+				$clear_notification = user_clear_notifications($user_id);
 			}
 
 			unset($user_id);
@@ -628,7 +631,7 @@ switch($mode)
 		$i = 1;
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$avatar_img = user_get_avatar($row['user_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar'], '../');
+			$avatar_img = user_get_avatar($row['user_id'], $row['user_level'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar'], '../');
 
 			$poster_rank = '';
 			$rank_image = '';
@@ -662,7 +665,7 @@ switch($mode)
 
 				'USER_ID' => $row['user_id'],
 				'ACTIVE' => ($row['user_active'] == true) ? $lang['Yes'] : $lang['No'],
-				'USERNAME' => colorize_username($row['user_id']),
+				'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 				'U_PROFILE' => append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 				'RANK' => $poster_rank,
 				'I_RANK' => $rank_image,
@@ -682,13 +685,12 @@ switch($mode)
 				)
 			);
 
-			//
 			// get the users group information
-			//
-			$group_sql = "SELECT * FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
+			$group_sql = "SELECT *
+				FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
 				WHERE ug.user_id = " . $row['user_id'] . "
-				 AND g.group_single_user <> 1
-				 AND g.group_id = ug.group_id";
+					AND g.group_single_user <> 1
+					AND g.group_id = ug.group_id";
 
 			if(!($group_result = $db->sql_query($group_sql)))
 			{
@@ -697,9 +699,7 @@ switch($mode)
 			$g = 0;
 			while ($group_row = $db->sql_fetchrow($group_result))
 			{
-				//
 				// assign the group varibles
-				//
 				if ($group_row['group_moderator'] == $row['user_id'])
 				{
 					$group_status = $lang['Moderator'];
@@ -715,8 +715,10 @@ switch($mode)
 
 				$template->assign_block_vars('user_row.group_row', array(
 					'GROUP_NAME' => $group_row['group_name'],
+					'GROUP_COLOR' => 'style="font-weight: bold; text-decoration: none;' . (($group_row['group_color'] != '') ? ('color: ' . $group_row['group_color'] . ';') : '') . '"',
 					'GROUP_STATUS' => $group_status,
-					'U_GROUP' => IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
+					'U_GROUP' => append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
+					)
 				);
 				$g++;
 			}

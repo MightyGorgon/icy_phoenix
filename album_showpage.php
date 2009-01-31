@@ -31,7 +31,6 @@ init_userprefs($userdata);
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 if (isset($_POST['message']))
 {
@@ -420,7 +419,7 @@ if(isset($comment_id) && $album_config['comment'] == 1)
 // Get this pic info and current category info
 // ------------------------------------
 
-$sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_rank, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments_count
+$sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_active, u.user_color, u.user_rank, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments_count
 		FROM " . ALBUM_CAT_TABLE . " AS ac, " . ALBUM_TABLE . " AS p
 			LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 			LEFT JOIN " . ALBUM_COMMENT_TABLE . " AS c ON p.pic_id = c.comment_pic_id
@@ -510,7 +509,8 @@ if($userdata['session_logged_in'])
 	$sql = "SELECT notify_status
 		FROM " . ALBUM_COMMENT_WATCH_TABLE . "
 		WHERE pic_id = $pic_id
-			AND user_id = " . $userdata['user_id'];
+			AND user_id = " . $userdata['user_id'] . "
+		LIMIT 1";
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, "Could not obtain comment watch information", '', __LINE__, __FILE__, $sql);
@@ -688,18 +688,11 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 			for ($i = 0; $i < count($commentrow); $i++)
 			{
-				if(($commentrow[$i]['user_id'] == ALBUM_GUEST) || ($commentrow[$i]['username'] == ''))
-				{
-					$poster = ($commentrow[$i]['comment_username'] == '') ? $lang['Guest'] : colorize_username($commentrow[$i]['user_id']);
-				}
-				else
-				{
-					$poster = colorize_username($commentrow[$i]['user_id']);
-				}
+				$poster = ($commentrow[$i]['comment_username'] == '') ? $lang['Guest'] : colorize_username($commentrow[$i]['user_id'], $commentrow[$i]['username'], $commentrow[$i]['user_color']);
 
 				if ($commentrow[$i]['comment_edit_count'] > 0)
 				{
-					$sql = "SELECT c.comment_id, c.comment_edit_user_id, u.user_id, u.username
+					$sql = "SELECT c.comment_id, c.comment_edit_user_id, u.user_id, u.username, u.user_color
 							FROM " . ALBUM_COMMENT_TABLE . " AS c
 								LEFT JOIN " . USERS_TABLE . " AS u ON c.comment_edit_user_id = u.user_id
 							WHERE c.comment_id = '".$commentrow[$i]['comment_id']."'
@@ -714,7 +707,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 					$edit_info = ($commentrow[$i]['comment_edit_count'] == 1) ? $lang['Edited_time_total'] : $lang['Edited_times_total'];
 
-					$edit_info = '<br /><br />&raquo;&nbsp;'. sprintf($edit_info, colorize_username($lastedit_row['user_id']), create_date2($board_config['default_dateformat'], $commentrow[$i]['comment_edit_time'], $board_config['board_timezone']), $commentrow[$i]['comment_edit_count']) .'<br />';
+					$edit_info = '<br /><br />&raquo;&nbsp;' . sprintf($edit_info, colorize_username($lastedit_row['user_id'], $lastedit_row['username'], $lastedit_row['user_color']), create_date2($board_config['default_dateformat'], $commentrow[$i]['comment_edit_time'], $board_config['board_timezone']), $commentrow[$i]['comment_edit_count']) .'<br />';
 				}
 				else
 				{
@@ -791,7 +784,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				// Handle anon users posting with usernames
 				if (($commentrow[$i]['user_id'] == ANONYMOUS) && ($commentrow[$i]['post_username'] != ''))
 				{
-					$poster = colorize_username($commentrow[$i]['user_id']);
+					$poster = colorize_username($commentrow[$i]['user_id'], $commentrow[$i]['username'], $commentrow[$i]['user_color']);
 					$poster_rank = $lang['Guest'];
 				}
 
@@ -876,15 +869,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	$template->set_filenames(array('body' => $show_template));
 
-	if(($thispic['pic_user_id'] == ALBUM_GUEST) || ($thispic['username'] == ''))
-	{
-		$poster = ($thispic['pic_username'] == '') ? $lang['Guest'] : colorize_username($thispic['user_id']);
-	}
-	else
-	{
-		$poster = colorize_username($thispic['user_id']);
-	}
-
+	$poster = ($thispic['username'] == '') ? $lang['Guest'] : colorize_username($thispic['user_id'], $thispic['username'], $thispic['user_color'], $thispic['user_active']);
 
 	//---------------------------------
 	// Comment Posting Form
@@ -1167,8 +1152,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	{
 		$template->assign_block_vars('social_bookmarks', array());
 	}
-	$topic_title_enc = urlencode(utf8_decode($thispic['pic_title']));
-	$topic_url_enc = urlencode(utf8_decode(create_server_url() . 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append));
+	$topic_title_enc = urlencode(ip_utf8_decode($thispic['pic_title']));
+	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append));
 	$template->assign_vars(array(
 		// Social Bookmarks - BEGIN
 		'TOPIC_TITLE_ENC' => $topic_title_enc,

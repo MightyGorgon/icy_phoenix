@@ -24,9 +24,7 @@ define('CACHE_TIME', 600);					// Cache time for RSS feed in sec, 5 min by defau
 																		// Set to zero to disable cache (Not recomendated).
 define('AUTOSTYLED', false);				// Use XSLT transformation in MSIE by default
 define('CACHE_TO_FILE', true);			// Use cache dir for caching defaul page. You MUST set 777 to that dir first
-define('UPDATE_VIEW_COUNT', false);	// Update count of viewed topics for non-Anonymous user
-																		// If set to false disable Who viewed a topic update too
-define('AUTO_WVT_MOD', true);				// Who viewed a topic [2.0.6/EM]
+define('UPDATE_VIEW_COUNT', false);	// Update count of viewed topics for non-Anonymous user. If set to false disable Who viewed a topic update too
 define('LV_MOD_INSTALLED', true);		// Last visit [2.0.10/EM]  http://mods.db9.dk/
 define('DEFAULT_ITEMS', 25);				// How many items parsed in feed by default
 define('MAX_ITEMS', 100);						// Max number of parsed items

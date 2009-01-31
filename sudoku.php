@@ -21,7 +21,6 @@ define('IN_SUDOKU', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -452,25 +451,21 @@ if ($mode == 'reset')
 	$message = $lang['sudoku_reset_confirmed'] . $redirect;
 	message_die(GENERAL_MESSAGE, $message);
 }
-//
+
 // perform tasks
-//
 sudoku_tasks($userdata['user_id'], $pack, $num, $level);
 sudoku_starting_data($pack, $num, SUDOKU_USERS, $and_clause);
 
-//
 // check for completed grid
-//
-
 if (!in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $line[2]) && !in_array('x', $line[3]) && !in_array('x', $line[4]) &&
 !in_array('x', $line[5]) && !in_array('x', $line[6]) && !in_array('x', $line[7]) && !in_array('x', $line[8]))
 {
 	// OK, so grid is complete, but is it right according to default grid solution?
-	$u_line=array();
+	$u_line = array();
 	// let's lower the user and random numbers to do the check
-	for ($i=0; $i<9; $i++)
+	for ($i = 0; $i < 9; $i++)
 	{
-		for ($x=0; $x<9; $x++)
+		for ($x = 0; $x < 9; $x++)
 		{
 			// first lower the random numbers
 			if ($line[$i][$x] > 19)
@@ -485,15 +480,15 @@ if (!in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $line
 		}
 	}
 
-	$u_line[0]=$line[0];
-	$u_line[1]=$line[1];
-	$u_line[2]=$line[2];
-	$u_line[3]=$line[3];
-	$u_line[4]=$line[4];
-	$u_line[5]=$line[5];
-	$u_line[6]=$line[6];
-	$u_line[7]=$line[7];
-	$u_line[8]=$line[8];
+	$u_line[0] = $line[0];
+	$u_line[1] = $line[1];
+	$u_line[2] = $line[2];
+	$u_line[3] = $line[3];
+	$u_line[4] = $line[4];
+	$u_line[5] = $line[5];
+	$u_line[6] = $line[6];
+	$u_line[7] = $line[7];
+	$u_line[8] = $line[8];
 
 	$test_line=$line;
 	unset($line);
@@ -515,77 +510,77 @@ if (!in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $line
 		// if successful, then $wrong_required=false
 		// do the basic check on the 9 grids
 
-		$bad[]=(count(array_unique($test_line[0])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[1])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[2])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[3])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[4])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[5])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[6])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[7])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($test_line[8])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[0])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[1])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[2])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[3])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[4])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[5])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[6])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[7])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($test_line[8])) == 9) ? 0 : 1;
 
 		// now we must create horizontal arrays
-		$hor_test=array();
+		$hor_test = array();
 
-		$hor_test[0]=array($test_line[0][0],$test_line[0][1],$test_line[0][2],$test_line[1][0],$test_line[1][1],$test_line[1][2],$test_line[2][0],$test_line[2][1],$test_line[2][2]);
+		$hor_test[0] = array($test_line[0][0],$test_line[0][1],$test_line[0][2],$test_line[1][0],$test_line[1][1],$test_line[1][2],$test_line[2][0],$test_line[2][1],$test_line[2][2]);
 
-		$hor_test[1]=array($test_line[0][3],$test_line[0][4],$test_line[0][5],$test_line[1][3],$test_line[1][4],$test_line[1][5],$test_line[2][3],$test_line[2][4],$test_line[2][5]);
+		$hor_test[1] = array($test_line[0][3],$test_line[0][4],$test_line[0][5],$test_line[1][3],$test_line[1][4],$test_line[1][5],$test_line[2][3],$test_line[2][4],$test_line[2][5]);
 
-		$hor_test[2]=array($test_line[0][6],$test_line[0][7],$test_line[0][8],$test_line[1][6],$test_line[1][7],$test_line[1][8],$test_line[2][6],$test_line[2][7],$test_line[2][8]);
+		$hor_test[2] = array($test_line[0][6],$test_line[0][7],$test_line[0][8],$test_line[1][6],$test_line[1][7],$test_line[1][8],$test_line[2][6],$test_line[2][7],$test_line[2][8]);
 
-		$hor_test[3]=array($test_line[3][0],$test_line[3][1],$test_line[3][2],$test_line[4][0],$test_line[4][1],$test_line[4][2],$test_line[5][0],$test_line[5][1],$test_line[5][2]);
+		$hor_test[3] = array($test_line[3][0],$test_line[3][1],$test_line[3][2],$test_line[4][0],$test_line[4][1],$test_line[4][2],$test_line[5][0],$test_line[5][1],$test_line[5][2]);
 
-		$hor_test[4]=array($test_line[3][3],$test_line[3][4],$test_line[3][5],$test_line[4][3],$test_line[4][4],$test_line[4][5],$test_line[5][3],$test_line[5][4],$test_line[5][5]);
+		$hor_test[4] = array($test_line[3][3],$test_line[3][4],$test_line[3][5],$test_line[4][3],$test_line[4][4],$test_line[4][5],$test_line[5][3],$test_line[5][4],$test_line[5][5]);
 
-		$hor_test[5]=array($test_line[3][6],$test_line[3][7],$test_line[3][8],$test_line[4][6],$test_line[4][7],$test_line[4][8],$test_line[5][6],$test_line[5][7],$test_line[5][8]);
+		$hor_test[5] = array($test_line[3][6],$test_line[3][7],$test_line[3][8],$test_line[4][6],$test_line[4][7],$test_line[4][8],$test_line[5][6],$test_line[5][7],$test_line[5][8]);
 
-		$hor_test[6]=array($test_line[6][0],$test_line[6][1],$test_line[6][2],$test_line[7][0],$test_line[7][1],$test_line[7][2],$test_line[8][0],$test_line[8][1],$test_line[8][2]);
+		$hor_test[6] = array($test_line[6][0],$test_line[6][1],$test_line[6][2],$test_line[7][0],$test_line[7][1],$test_line[7][2],$test_line[8][0],$test_line[8][1],$test_line[8][2]);
 
-		$hor_test[7]=array($test_line[6][3],$test_line[6][4],$test_line[6][5],$test_line[7][3],$test_line[7][4],$test_line[7][5],$test_line[8][3],$test_line[8][4],$test_line[8][5]);
+		$hor_test[7] = array($test_line[6][3],$test_line[6][4],$test_line[6][5],$test_line[7][3],$test_line[7][4],$test_line[7][5],$test_line[8][3],$test_line[8][4],$test_line[8][5]);
 
-		$hor_test[8]=array($test_line[6][6],$test_line[6][7],$test_line[6][8],$test_line[7][6],$test_line[7][7],$test_line[7][8],$test_line[8][6],$test_line[8][7],$test_line[8][8]);
+		$hor_test[8] = array($test_line[6][6],$test_line[6][7],$test_line[6][8],$test_line[7][6],$test_line[7][7],$test_line[7][8],$test_line[8][6],$test_line[8][7],$test_line[8][8]);
 
-		$bad[]=(count(array_unique($hor_test[0])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[1])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[2])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[3])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[4])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[5])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[6])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[7])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($hor_test[8])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[0])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[1])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[2])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[3])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[4])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[5])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[6])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[7])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($hor_test[8])) == 9) ? 0 : 1;
 
 		// finally, vertical arrays
-		$ver_test=array();
+		$ver_test = array();
 
-		$ver_test[0]=array($test_line[0][0],$test_line[0][3],$test_line[0][6],$test_line[3][0],$test_line[3][3],$test_line[3][6],$test_line[6][0],$test_line[6][3],$test_line[6][6]);
+		$ver_test[0] = array($test_line[0][0],$test_line[0][3],$test_line[0][6],$test_line[3][0],$test_line[3][3],$test_line[3][6],$test_line[6][0],$test_line[6][3],$test_line[6][6]);
 
-		$ver_test[1]=array($test_line[0][1],$test_line[0][4],$test_line[0][7],$test_line[3][1],$test_line[3][4],$test_line[3][7],$test_line[6][1],$test_line[6][4],$test_line[6][7]);
+		$ver_test[1] = array($test_line[0][1],$test_line[0][4],$test_line[0][7],$test_line[3][1],$test_line[3][4],$test_line[3][7],$test_line[6][1],$test_line[6][4],$test_line[6][7]);
 
-		$ver_test[2]=array($test_line[0][2],$test_line[0][5],$test_line[0][8],$test_line[3][2],$test_line[3][5],$test_line[3][8],$test_line[6][2],$test_line[6][5],$test_line[6][8]);
+		$ver_test[2] = array($test_line[0][2],$test_line[0][5],$test_line[0][8],$test_line[3][2],$test_line[3][5],$test_line[3][8],$test_line[6][2],$test_line[6][5],$test_line[6][8]);
 
-		$ver_test[3]=array($test_line[1][0],$test_line[1][3],$test_line[1][6],$test_line[4][0],$test_line[4][3],$test_line[4][6],$test_line[7][0],$test_line[7][3],$test_line[7][6]);
+		$ver_test[3] = array($test_line[1][0],$test_line[1][3],$test_line[1][6],$test_line[4][0],$test_line[4][3],$test_line[4][6],$test_line[7][0],$test_line[7][3],$test_line[7][6]);
 
-		$ver_test[4]=array($test_line[1][1],$test_line[1][4],$test_line[1][7],$test_line[4][1],$test_line[4][4],$test_line[4][7],$test_line[7][1],$test_line[7][4],$test_line[7][7]);
+		$ver_test[4] = array($test_line[1][1],$test_line[1][4],$test_line[1][7],$test_line[4][1],$test_line[4][4],$test_line[4][7],$test_line[7][1],$test_line[7][4],$test_line[7][7]);
 
-		$ver_test[5]=array($test_line[1][2],$test_line[1][5],$test_line[1][8],$test_line[4][2],$test_line[4][5],$test_line[4][8],$test_line[7][2],$test_line[7][5],$test_line[7][8]);
+		$ver_test[5] = array($test_line[1][2],$test_line[1][5],$test_line[1][8],$test_line[4][2],$test_line[4][5],$test_line[4][8],$test_line[7][2],$test_line[7][5],$test_line[7][8]);
 
-		$ver_test[6]=array($test_line[2][0],$test_line[2][3],$test_line[2][6],$test_line[5][0],$test_line[5][3],$test_line[5][6],$test_line[8][0],$test_line[8][3],$test_line[8][6]);
+		$ver_test[6] = array($test_line[2][0],$test_line[2][3],$test_line[2][6],$test_line[5][0],$test_line[5][3],$test_line[5][6],$test_line[8][0],$test_line[8][3],$test_line[8][6]);
 
-		$ver_test[7]=array($test_line[2][1],$test_line[2][4],$test_line[2][7],$test_line[5][1],$test_line[5][4],$test_line[5][7],$test_line[8][1],$test_line[8][4],$test_line[8][7]);
+		$ver_test[7] = array($test_line[2][1],$test_line[2][4],$test_line[2][7],$test_line[5][1],$test_line[5][4],$test_line[5][7],$test_line[8][1],$test_line[8][4],$test_line[8][7]);
 
-		$ver_test[8]=array($test_line[2][2],$test_line[2][5],$test_line[2][8],$test_line[5][2],$test_line[5][5],$test_line[5][8],$test_line[8][2],$test_line[8][5],$test_line[8][8]);
+		$ver_test[8] = array($test_line[2][2],$test_line[2][5],$test_line[2][8],$test_line[5][2],$test_line[5][5],$test_line[5][8],$test_line[8][2],$test_line[8][5],$test_line[8][8]);
 
-		$bad[]=(count(array_unique($ver_test[0])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[1])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[2])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[3])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[4])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[5])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[6])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[7])) == 9) ? 0 : 1;
-		$bad[]=(count(array_unique($ver_test[8])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[0])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[1])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[2])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[3])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[4])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[5])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[6])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[7])) == 9) ? 0 : 1;
+		$bad[] = (count(array_unique($ver_test[8])) == 9) ? 0 : 1;
 
 		if (in_array(1, $bad))
 		{
@@ -631,60 +626,50 @@ if (!in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $line
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
-
-//
 // end completion check
-//
 
-//
 // build lines for template
-//
 sudoku_grid_build();
-//
 // end lines for template
-//
 
-//
 // get statistics data
-//
 
 // grab the top ten
 $sql=" SELECT * FROM " . SUDOKU_STATS . "
-ORDER BY points DESC LIMIT 10
-";
+ORDER BY points DESC LIMIT 10";
 if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 }
-$x=1;
-while ($row=$db->sql_fetchrow($result))
+$x = 1;
+while ($row = $db->sql_fetchrow($result))
 {
-	$stat_points=$row['points'];
-	$stat_played=$row['played'];
-	$stat_userid=$row['user_id'];
+	$stat_points = $row['points'];
+	$stat_played = $row['played'];
+	$stat_userid = $row['user_id'];
 
-	$sql_a=" SELECT username FROM " . USERS_TABLE . "
-	WHERE user_id=" . $row['user_id'];
+	$sql_a="SELECT username
+					FROM " . USERS_TABLE . "
+					WHERE user_id = " . $row['user_id'];
 	if (!($result_a = $db->sql_query($sql_a)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql_a);
 	}
-	$row_a=$db->sql_fetchrow($result_a);
+	$row_a = $db->sql_fetchrow($result_a);
 	$stat_username = $row_a['username'];
 	$stat_user_id = $row_a['user_id'];
 	// grab current game
-	$sql_a=" SELECT game_pack, game_num FROM " . SUDOKU_USERS . "
-	WHERE user_id=" . $row['user_id'] . "
-	ORDER BY game_pack DESC, game_num DESC
-	LIMIT 1
-	";
+	$sql_a = "SELECT game_pack, game_num FROM " . SUDOKU_USERS . "
+					WHERE user_id = " . $row['user_id'] . "
+					ORDER BY game_pack DESC, game_num DESC
+					LIMIT 1";
 	if (!($result_a = $db->sql_query($sql_a)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql_a);
 	}
-	$row_a=$db->sql_fetchrow($result_a);
-	$stat_gamepack=$row_a['game_pack'];
-	$stat_gamenum=$row_a['game_num'];
+	$row_a = $db->sql_fetchrow($result_a);
+	$stat_gamepack = $row_a['game_pack'];
+	$stat_gamenum = $row_a['game_num'];
 
 	// send to template
 	$row_color = (!($x % 2)) ? $theme['td_color1'] : $theme['td_color2'];
@@ -693,7 +678,7 @@ while ($row=$db->sql_fetchrow($result))
 	$template->assign_block_vars('leaderboard', array(
 		'ROW_COLOR' => '#' . $row_color,
 		'ROW_CLASS' => $row_class,
-		'USERNAME' => colorize_username ($row['user_id']),
+		'USERNAME' => colorize_username($row['user_id']),
 		'POINTS' => $stat_points,
 		'PLAYED' => $stat_played,
 		'POS' => $x,
@@ -710,47 +695,50 @@ $s_users_active_now = count($s_users_active);
 // apply usernames to users
 $s_users_today_names = array();
 $name = array();
+$user_active = array();
+$user_color = array();
 $s_users_active_names = array();
-for ($i=0; $i<count($s_users_today); $i++)
+for ($i = 0; $i < count($s_users_today); $i++)
 {
-	$sql=" SELECT username FROM " . USERS_TABLE . "
-	WHERE user_id=" . $s_users_today[$i] . "
-	ORDER BY username ASC
-	";
+	$sql="SELECT username, user_active, user_color FROM " . USERS_TABLE . "
+				WHERE user_id = " . $s_users_today[$i] . "
+				ORDER BY username ASC";
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error in retrieving Sudoku userdata', '', __LINE__, __FILE__, $sql);
 	}
-	$row=$db->sql_fetchrow($result);
-	$disp_userid=$s_users_today[$i];
-	$name[$disp_userid]=$row['username'];
+	$row = $db->sql_fetchrow($result);
+	$disp_userid = $s_users_today[$i];
+	$name[$disp_userid] = $row['username'];
+	$user_active[$disp_userid] = $row['user_active'];
+	$user_color[$disp_userid] = $row['user_color'];
 }
 asort($name);
-$name_keys=array_keys($name);
+$name_keys = array_keys($name);
 for ($i = 0; $i < count($name); $i++)
 {
-	$disp_userid=$name_keys[$i];
-	$s_users_today_names[]= colorize_username($disp_userid);
+	$disp_userid = $name_keys[$i];
+	$s_users_today_names[] = colorize_username($disp_userid, $name[$disp_userid], $user_color[$disp_userid], $user_active[$disp_userid]);
 }
 $active_name=array();
 for ($i = 0; $i < count($s_users_active); $i++)
 {
-	$disp_userid=$s_users_active[$i];
-	$active_name[$disp_userid]=$name[$disp_userid];
+	$disp_userid = $s_users_active[$i];
+	$active_name[$disp_userid] = $name[$disp_userid];
 }
 
 asort($active_name);
-$active_name_keys=array_keys($active_name);
+$active_name_keys = array_keys($active_name);
 for ($i = 0; $i < count($active_name); $i++)
 {
-	$disp_userid=$active_name_keys[$i];
-	$s_users_active_names[]= colorize_username($disp_userid);
+	$disp_userid = $active_name_keys[$i];
+	$s_users_active_names[] = colorize_username($disp_userid, $name[$disp_userid], $user_color[$disp_userid], $user_active[$disp_userid]);
 }
 
 $s_users_today_disp=implode(', ', $s_users_today_names);
 $s_users_active_disp=implode(', ', $s_users_active_names);
 
-$this_userid=$userdata['user_id'];
+$this_userid = $userdata['user_id'];
 // parse to template
 $template->assign_vars(array(
 	'POINTS_VALUE'=>number_format($points[$this_userid]),

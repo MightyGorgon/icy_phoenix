@@ -26,7 +26,7 @@ $confirmation = false;
 if(isset($_POST['confirm_clear_cache_main']))
 {
 	$db->clear_cache();
-	empty_cache_folders(false);
+	empty_cache_folders();
 
 	$message = '<br /><br />' . $lang['Empty_Cache_Success'] . '<br /><br />';
 	$confirmation = true;
@@ -56,7 +56,7 @@ if(isset($_POST['confirm_clear_cache_thumbs']))
 
 if ($confirmation == true)
 {
-	$meta_tag = '</body><head><meta http-equiv="refresh" content="3;url=' . append_sid('admin_board_clearcache.' . PHP_EXT) . '"></head><body>';
+	//$meta_tag = '</body><head><meta http-equiv="refresh" content="3;url=' . append_sid('admin_board_clearcache.' . PHP_EXT) . '"></head><body>';
 	message_die(GENERAL_MESSAGE, $meta_tag . $message);
 }
 

@@ -29,8 +29,6 @@ if(!function_exists('imp_calendar_block_func'))
 		global $mini_cal_today, $mini_cal_this_month, $mini_cal_this_year, $mini_cal_this_day;
 		//global $birthday_week_list, $birthday_today_list;
 
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
-
 		// Birthday Mod, Show users with birthday
 		if (($board_config['birthday_check_day'] > 0) && ($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_config['display_viewonline'] == 1)))
 		{
@@ -54,7 +52,7 @@ if(!function_exists('imp_calendar_block_func'))
 			}
 			else
 			{
-				$sql = ($board_config['birthday_check_day']) ? "SELECT user_id, username, user_birthday, user_level FROM " . USERS_TABLE. " WHERE user_birthday != 999999 ORDER BY username" : "";
+				$sql = ($board_config['birthday_check_day']) ? "SELECT user_id, username, user_active, user_color, user_birthday, user_level FROM " . USERS_TABLE. " WHERE user_birthday != 999999 ORDER BY username" : "";
 				if($result = $db->sql_query($sql))
 				{
 					if (!empty($result))
@@ -70,28 +68,28 @@ if(!function_exists('imp_calendar_block_func'))
 							{
 								$user_birthday2 += 10000;
 							}
+
+							$style_color = colorize_username($birthdayrow['user_id'], $birthdayrow['username'], $birthdayrow['user_color'], $birthdayrow['user_active']);
 							if (($user_birthday2 > $date_today) && ($user_birthday2 <= $date_forward))
 							{
 								// user are having birthday within the next days
-								$user_age = ($this_year . $user_birthday < $date_today) ? $this_year - realdate ('Y', $birthdayrow['user_birthday']) + 1 : $this_year- realdate ('Y',$birthdayrow['user_birthday']);
-								$style_color = colorize_username($birthdayrow['user_id']);
+								$user_age = ($this_year . $user_birthday < $date_today) ? $this_year - realdate('Y', $birthdayrow['user_birthday']) + 1 : $this_year - realdate('Y', $birthdayrow['user_birthday']);
 								$birthday_week_list .= ' ' . $style_color . ' (' . $user_age . '),';
 							}
 							elseif ($user_birthday2 == $date_today)
 							{
 								//user have birthday today
-								$user_age = $this_year - realdate ('Y',$birthdayrow['user_birthday']);
-								$style_color = colorize_username($birthdayrow['user_id']);
+								$user_age = $this_year - realdate('Y', $birthdayrow['user_birthday']);
 								$birthday_today_list .= ' ' . $style_color . ' (' . $user_age . '),';
 							}
 						}
 						if ($birthday_today_list)
 						{
-							$birthday_today_list[ strlen($birthday_today_list)-1] = ' ';
+							$birthday_today_list[strlen($birthday_today_list) - 1] = ' ';
 						}
 						if ($birthday_week_list)
 						{
-							$birthday_week_list[ strlen($birthday_week_list)-1] = ' ';
+							$birthday_week_list[strlen($birthday_week_list) - 1] = ' ';
 						}
 					}
 					$db->sql_freeresult($result);

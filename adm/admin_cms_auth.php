@@ -10,7 +10,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1610_Users']['116_CMS_Permissions_Users'] = $filename;
@@ -25,9 +25,9 @@ require('./pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
 
 //Start Quick Administrator User Options and Information MOD
-if( isset( $_POST['redirect'] ) || isset( $_GET['redirect'] ) )
+if(isset($_POST['redirect']) || isset($_GET['redirect']))
 {
-	$redirect = ( isset( $_POST['redirect'] ) ) ? $_POST['redirect'] : $_GET['redirect'];
+	$redirect = (isset($_POST['redirect'])) ? $_POST['redirect'] : $_GET['redirect'];
 	$redirect = htmlspecialchars($redirect);
 }
 else
@@ -36,19 +36,19 @@ else
 }
 //End Quick Administrator User Options and Information MOD
 
-if ( !empty($_POST['u']) || !empty($_GET['u']) )
+if (!empty($_POST['u']) || !empty($_GET['u']))
 {
-	$user_id = ( !empty($_POST['u']) ) ? intval($_POST['u']) : intval($_GET['u']);
+	$user_id = (!empty($_POST['u'])) ? intval($_POST['u']) : intval($_GET['u']);
 }
 else
 {
 	$user_id = false;
 }
 
-if ( isset($_POST['username']) )
+if (isset($_POST['username']))
 {
 	$this_userdata = get_userdata($_POST['username'], true);
-	if ( !is_array($this_userdata) )
+	if (!is_array($this_userdata))
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_such_user']);
 	}
@@ -56,14 +56,15 @@ if ( isset($_POST['username']) )
 	$username = $_POST['username'];
 }
 
-$posted_user_cms_level = ( isset($_POST['user_cms_level']) ? intval($_POST['user_cms_level']) : false );
+$posted_user_cms_level = (isset($_POST['user_cms_level']) ? intval($_POST['user_cms_level']) : false);
 
-if ( $posted_user_cms_level != false )
+// Please note that !== is on purpose...
+if ($posted_user_cms_level !== false)
 {
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_cms_level = '" . $posted_user_cms_level . "'
 		WHERE user_id = '" . $user_id . "'";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not update user cms level', '', __LINE__, __FILE__, $sql);
 	}
@@ -73,18 +74,18 @@ if ( $posted_user_cms_level != false )
 }
 
 //Start Quick Administrator User Options and Information MOD
-if( $redirect != '' )
+if($redirect != '')
 {
 	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 }
 //End Quick Administrator User Options and Information MOD
-elseif ( $user_id != false )
+elseif ($user_id != false)
 {
 	$user_cms_level = '';
 	$sql = "SELECT u.*
 		FROM " . USERS_TABLE . " u
 		WHERE u.user_id = " . $user_id;
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not select info from users table', '', __LINE__, __FILE__, $sql);
 	}

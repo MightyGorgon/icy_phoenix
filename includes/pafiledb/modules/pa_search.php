@@ -20,7 +20,6 @@ class pafiledb_search extends pafiledb_public
 	function main($action)
 	{
 		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		if(!$this->auth_global['auth_search'])
 		{
@@ -469,44 +468,25 @@ class pafiledb_search extends pafiledb_public
 
 			if ( $search_results != '' )
 			{
-				switch(SQL_LAYER)
-				{
-					case 'oracle':
-						$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, c.cat_id, c.cat_name, COUNT(cm.comments_id) AS total_comments
-							FROM " . PA_FILES_TABLE . " AS f1, " . PA_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PA_CATEGORY_TABLE . " AS c, " . PA_COMMENTS_TABLE . " AS cm
-							WHERE f1.file_id IN ($search_results)
-							AND f1.file_id = r.votes_file(+)
-							AND f1.user_id = u.user_id(+)
-							AND f1.file_id = cm.file_id(+)
-							AND c.cat_id = f1.file_catid
-							AND f1.file_approved = '1'
-							GROUP BY f1.file_id
-							ORDER BY $sort_method $sort_order
-							LIMIT $limit_sql";
-						break;
+				$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, u.user_active, u.user_color, c.cat_id, c.cat_name, COUNT(cm.comments_id) AS total_comments
+					FROM (" . PA_FILES_TABLE . " AS f1, " . PA_CATEGORY_TABLE . " AS c)
+						LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
+						LEFT JOIN ". USERS_TABLE ." AS u ON f1.user_id = u.user_id
+						LEFT JOIN " . PA_COMMENTS_TABLE . " AS cm ON f1.file_id = cm.file_id
+					WHERE f1.file_id IN ($search_results)
+					AND c.cat_id = f1.file_catid
+					AND f1.file_approved = '1'
+					GROUP BY f1.file_id
+					ORDER BY $sort_method $sort_order
+					LIMIT $limit_sql";
 
-					default:
-						$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, c.cat_id, c.cat_name, COUNT(cm.comments_id) AS total_comments
-							FROM (" . PA_FILES_TABLE . " AS f1, " . PA_CATEGORY_TABLE . " AS c)
-								LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f1.file_id = r.votes_file
-								LEFT JOIN ". USERS_TABLE ." AS u ON f1.user_id = u.user_id
-								LEFT JOIN " . PA_COMMENTS_TABLE . " AS cm ON f1.file_id = cm.file_id
-							WHERE f1.file_id IN ($search_results)
-							AND c.cat_id = f1.file_catid
-							AND f1.file_approved = '1'
-							GROUP BY f1.file_id
-							ORDER BY $sort_method $sort_order
-							LIMIT $limit_sql";
-						break;
-				}
-
-				if ( !$result = $db->sql_query($sql) )
+				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
 				}
 
 				$searchset = array();
-				while( $row = $db->sql_fetchrow($result) )
+				while($row = $db->sql_fetchrow($result))
 				{
 					$searchset[] = $row;
 				}
@@ -516,7 +496,8 @@ class pafiledb_search extends pafiledb_public
 				$l_search_matches = ( $total_match_count == 1 ) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
 
 				$pafiledb_template->assign_vars(array(
-					'L_SEARCH_MATCHES' => $l_search_matches)
+					'L_SEARCH_MATCHES' => $l_search_matches
+					)
 				);
 
 				for($i = 0; $i < count($searchset); $i++)
@@ -545,7 +526,7 @@ class pafiledb_search extends pafiledb_public
 					{
 						$is_new = true;
 					}
-					$xs_new = ($is_new)  ? '-new' : '';
+					$xs_new = ($is_new) ? '-new' : '';
 					//===================================================
 					// Get the post icon fot this file
 					//===================================================
@@ -553,27 +534,26 @@ class pafiledb_search extends pafiledb_public
 					{
 						if (($searchset[$i]['file_posticon'] == 'none') || ($searchset[$i]['file_posticon'] == 'none.gif'))
 						{
-							$posticon = '<img src="' .IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png" />';
+							$posticon = '<img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png" alt="" />';
 							//$posticon = '&nbsp;';
 						}
 						else
 						{
-							$posticon = '<img src="' . FILES_ICONS_DIR . $searchset[$i]['file_posticon'] . '" />';
+							$posticon = '<img src="' . FILES_ICONS_DIR . $searchset[$i]['file_posticon'] . '" alt="" />';
 						}
 					}
 					else
 					{
-      			$posticon = '<img src="' . $images['forum_link'] . '" width="25" height="25" />';
+						$posticon = '<img src="' . $images['forum_link'] . '" alt="" />';
 					}
 
-
-					$poster = (  $searchset[$i]['user_id'] == ANONYMOUS ) ? $lang['Guest'] : colorize_username( $searchset[$i]['user_id']);
+					$poster = ($searchset[$i]['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']);
 					$pafiledb_template->assign_block_vars('searchresults', array(
 						'CAT_NAME' => $searchset[$i]['cat_name'],
 						'FILE_NEW_IMAGE' => $images['pa_file_new'],
 						'PIN_IMAGE' => $posticon,
 						'L_HOME' => $lang['Home'],
-   					'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+						'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 						'XS_NEW' => $xs_new,
 						'IS_NEW_FILE' => $is_new,
 						'FILE_NAME' => $searchset[$i]['file_name'],

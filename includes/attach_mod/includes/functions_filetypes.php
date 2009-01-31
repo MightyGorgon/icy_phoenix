@@ -67,7 +67,7 @@ function image_getdimension($file)
 {
 	$size = @getimagesize($file);
 
-	if ($size[0] != 0 || $size[1] != 0)
+	if (($size[0] != 0) || ($size[1] != 0))
 	{
 		return $size;
 	}
@@ -82,7 +82,6 @@ function image_getdimension($file)
 	$error = false;
 
 	// BMP - IMAGE
-
 	$tmp_str = fread($fp, 2);
 	if ($tmp_str == 'BM')
 	{
@@ -96,7 +95,7 @@ function image_getdimension($file)
 		if (!$error)
 		{
 			$i = read_longint($fp);
-			if ( $i != 0)
+			if ($i != 0)
 			{
 				$error = true;
 			}
@@ -106,7 +105,7 @@ function image_getdimension($file)
 		{
 			$i = read_longint($fp);
 
-			if ($i != 0x3E && $i != 0x76 && $i != 0x436 && $i != 0x36)
+			if (($i != 0x3E) && ($i != 0x76) && ($i != 0x436) && ($i != 0x36))
 			{
 				$error = true;
 			}
@@ -143,7 +142,6 @@ function image_getdimension($file)
 	fclose($fp);
 
 	// GIF - IMAGE
-
 	$fp = @fopen($file, 'rb');
 
 	$tmp_str = fread($fp, 3);
@@ -252,7 +250,6 @@ function image_getdimension($file)
 	fclose($fp);
 
 	// PCX - IMAGE
-
 	$fp = @fopen($file, 'rb');
 
 	$tmp_str = fread($fp, 3);
@@ -261,7 +258,7 @@ function image_getdimension($file)
 	{
 		$b = fread($fp, 1);
 
-		if (ord($b) != 1 && ord($b) != 2 && ord($b) != 4 && ord($b) != 8 && ord($b) != 24)
+		if ((ord($b) != 1) && (ord($b) != 2) && (ord($b) != 4) && (ord($b) != 8) && (ord($b) != 24))
 		{
 			$error = true;
 		}
@@ -314,8 +311,8 @@ function image_getdimension($file)
 
 /**
 */
-define('swf_tag_compressed', chr(0x43).chr(0x57).chr(0x53));
-define('swf_tag_identify', chr(0x46).chr(0x57).chr(0x53));
+define('swf_tag_compressed', chr(0x43) . chr(0x57) . chr(0x53));
+define('swf_tag_identify', chr(0x46) . chr(0x57) . chr(0x53));
 
 /**
 * Get flash bits

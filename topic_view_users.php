@@ -13,7 +13,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -61,11 +60,12 @@ if ((!$is_auth_ary[$forum_topic_data['forum_id']]['auth_read']) || (!$is_auth_ar
 }
 
 // If you want to disallow view to normal users decomment this block
-/*
-if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
+//if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
+if ($userdata['user_level'] != ADMIN)
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
+/*
 */
 
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
@@ -192,7 +192,7 @@ else
 	$sql_hidden = ' AND u.user_allow_viewonline = \'1\'';
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, tv.view_time, tv.view_count
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, tv.view_time, tv.view_count
 	FROM " . USERS_TABLE . " u, " . TOPIC_VIEW_TABLE . " tv
 	WHERE u.user_id = tv.user_id
 		AND tv.topic_id = '" . $topic_id . "'
@@ -209,7 +209,7 @@ $i = 0;
 while ($row = $db->sql_fetchrow($result))
 {
 	$user_id = $row['user_id'];
-	$username = colorize_username($user_id);
+	$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 
 	$user_info = array();
 	$user_info = generate_user_info($row);

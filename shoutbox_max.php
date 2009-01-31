@@ -15,7 +15,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 define('NUM_SHOUT', 20);
 
 // Start session management
@@ -41,8 +40,9 @@ switch ($userdata['user_level'])
 {
 	//Customize this, if you need other permission settings
 	// please also make same changes to other shoutbox php files
-	case ADMIN :
-	case MOD : $is_auth['auth_mod'] = 1;
+	case ADMIN:
+	case MOD:
+		$is_auth['auth_mod'] = 1;
 	default:
 			$is_auth['auth_read'] = 1;
 			$is_auth['auth_view'] = 1;
@@ -228,7 +228,7 @@ elseif ($submit || isset($_POST['message']))
 		}
 	}
 }
-elseif ($mode=='delete' || $mode=='censor')
+elseif (($mode == 'delete') || ($mode == 'censor'))
 {
 	// make shout inactive
 	if (isset($_GET[POST_POST_URL]) || isset($_POST[POST_POST_URL]))
@@ -319,7 +319,7 @@ elseif ($mode == 'ip')
 		FROM " . SHOUTBOX_TABLE . "
 		WHERE shout_user_id = $poster_id
 		GROUP BY shout_ip
-		ORDER BY " . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC";
+		ORDER BY postings DESC";
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get IP information for this user', '', __LINE__, __FILE__, $sql);
@@ -359,12 +359,12 @@ elseif ($mode == 'ip')
 	}
 
 	// Get other users who've posted under this IP
-	$sql = "SELECT u.user_id, u.username, COUNT(*) as postings
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, COUNT(*) as postings
 		FROM " . USERS_TABLE ." u, " . POSTS_TABLE . " p
 		WHERE p.poster_id = u.user_id
 			AND p.poster_ip = '" . $shout_identifyer['shout_ip'] . "'
 		GROUP BY u.user_id, u.username
-		ORDER BY " . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC";
+		ORDER BY postings DESC";
 
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -389,7 +389,7 @@ elseif ($mode == 'ip')
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
 				'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], $shout_username),
 
-				'U_PROFILE_COL' => colorize_username($id),
+				'U_PROFILE_COL' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 				'U_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $id),
 				'U_SEARCHPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode($shout_username) . '&amp;showresults=topics')
 				)
@@ -509,8 +509,11 @@ else
 }
 
 // display the shoutbox
-$sql = "SELECT s.*, u.* FROM " . SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
-	WHERE s.shout_user_id=u.user_id ORDER BY s.shout_session_time DESC LIMIT $start, " . $board_config['posts_per_page'];
+$sql = "SELECT s.*, u.username, u.user_id, u.user_active, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang
+				FROM " . SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
+				WHERE s.shout_user_id = u.user_id
+				ORDER BY s.shout_session_time DESC
+				LIMIT $start, " . $board_config['posts_per_page'];
 if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not get shoutbox information', '', __LINE__, __FILE__, $sql);
@@ -522,7 +525,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 	$user_id = $shout_row['shout_user_id'];
-	$shout_username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['shout_user_id']) ;
+	$shout_username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['user_id'], $shout_row['username'], $shout_row['user_color'], $shout_row['user_active']);
 
 	$user_info = array();
 	$user_info = generate_user_info($shout_row);
@@ -532,7 +535,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	}
 
 	$user_posts = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $shout_row['user_posts'] : '';
-	$user_from = ($shout_row['user_from'] && $shout_row['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $shout_row['user_from'] : '';
+	$user_from = ($shout_row['user_from'] && ($shout_row['user_id'] != ANONYMOUS)) ? $lang['Location'] . ': ' . $shout_row['user_from'] : '';
 	$user_joined = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $shout_row['user_regdate'], $board_config['board_timezone']) : '';
 
 	$user_avatar = $user_info['avatar'];

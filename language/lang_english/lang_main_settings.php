@@ -58,6 +58,7 @@ $lang['OwnerServer'] = 'Icy Phoenix';
 $lang['PrivacyDisclaimer'] = 'You specifically agree that your personal data will be treated in respect to current law in the country of the site owner.<br />';
 
 $lang['ENCODING'] = 'iso-8859-1';
+//$lang['ENCODING'] = 'utf8';
 $lang['ENCODING_ALT'] = 'utf8';
 $lang['DIRECTION'] = 'ltr';
 $lang['HEADER_LANG'] = 'en-gb';

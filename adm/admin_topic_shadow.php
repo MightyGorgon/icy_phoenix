@@ -27,6 +27,7 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_topics_shadows.' . PHP_EXT);
 
 /* If for some reason preference cookie saving needs to be disabled, you
 can do so by setting this to true */
@@ -84,93 +85,6 @@ $mode_types = array('topic_time', 'topic_title');
 $order_types = array('DESC', 'ASC');
 $page_title = $lang['Topic_Shadow'];
 $status_message = '';
-
-/****************************************************************************
-/** Functions
-/***************************************************************************/
-function topic_shadow_make_drop_box($prefix = 'mode')
-{
-	global $mode_types, $lang, $mode, $order_types, $order;
-
-	$rval = '<select name="'.$prefix.'">';
-
-	switch($prefix)
-	{
-		case 'mode':
-		{
-			foreach($mode_types as $val)
-			{
-				$selected = ($mode == $val) ? 'selected="selected"' : '';
-				$rval .= "<option value=\"$val\" $selected>" . $lang[$val] . '</option>';
-			}
-			break;
-		}
-		case 'order':
-		{
-			foreach($order_types as $val)
-			{
-				$selected = ($order == $val) ? 'selected="selected"' : '';
-				$rval .= "<option value=\"$val\" $selected>" . $lang[$val] . '</option>';
-			}
-			break;
-		}
-	}
-	$rval .= '</select>';
-
-	return $rval;
-}
-
-function ts_id_2_name($id, $mode = 'user')
-{
-	global $db;
-
-	if ($id == '')
-	{
-		return '?';
-	}
-
-	switch($mode)
-	{
-		case 'user':
-		{
-			$sql = 'SELECT username FROM ' . USERS_TABLE . "
-	   			WHERE user_id = $id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
-			}
-			$row = $db->sql_fetchrow($result);
-			return $row['username'];
-			break;
-		}
-		case 'forum':
-		{
-			$sql = 'SELECT f.forum_name FROM ' . FORUMS_TABLE . ' f, ' . TOPICS_TABLE . " t
-							WHERE t.topic_id = $id
-							AND t.forum_id = f.forum_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
-			}
-			$row = $db->sql_fetchrow($result);
-			return $row['forum_name'];
-			break;
-		}
-	}
-}
-if (!function_exists('copyright_nivisec'))
-{
-	/**
-	* @return void
-	* @desc Prints a sytlized line of copyright for module
-	*/
-	function copyright_nivisec($name, $year)
-	{
-		print '<br /><div class="copyright" style="text-align:center;">' . $name . ' ' . MOD_VERSION . ' &copy; ' . $year . ' <a href="http://www.nivisec.com">Nivisec.com</a></div>';
-	}
-}
 
 /*******************************************************************************************
 /** Check for deletion items
@@ -263,38 +177,39 @@ if ($status_message != '')
 }
 
 $template->assign_vars(array(
-'L_DELETE_FROM_EXPLAN' => $lang['Delete_From_Date'],
-'L_DELETE_BEFORE' => $lang['Delete_Before_Date_Button'],
-'L_MONTH' => $lang['Month'],
-'L_DAY' => $lang['Day'],
-'L_YEAR' => $lang['Year'],
-'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
-'L_TITLE' => $lang['Title'],
-'L_TIME' => $lang['Time'],
-'L_POSTER' => $lang['Poster'],
-'L_MOVED_TO' => $lang['Moved_To'],
-'L_PAGE_NAME' => $page_title,
-'L_ORDER' => $lang['Order'],
-'L_SORT' => $lang['Sort'],
-'L_DELETE' => $lang['Delete'],
-'L_NO_TOPICS_FOUND' => $lang['No_Shadow_Topics'],
-'L_STATUS' => $lang['Status'],
-'L_PAGE_DESC' => $lang['TS_Desc'],
-'L_CLEAR' => $lang['Clear'],
-'L_MOVED_FROM' => $lang['Moved_From'],
-'L_VERSION' => $lang['Version'],
-'VERSION' => MOD_VERSION,
+	'L_DELETE_FROM_EXPLAN' => $lang['Delete_From_Date'],
+	'L_DELETE_BEFORE' => $lang['Delete_Before_Date_Button'],
+	'L_MONTH' => $lang['Month'],
+	'L_DAY' => $lang['Day'],
+	'L_YEAR' => $lang['Year'],
+	'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
+	'L_TITLE' => $lang['Title'],
+	'L_TIME' => $lang['Time'],
+	'L_POSTER' => $lang['Poster'],
+	'L_MOVED_TO' => $lang['Moved_To'],
+	'L_PAGE_NAME' => $page_title,
+	'L_ORDER' => $lang['Order'],
+	'L_SORT' => $lang['Sort'],
+	'L_DELETE' => $lang['Delete'],
+	'L_NO_TOPICS_FOUND' => $lang['No_Shadow_Topics'],
+	'L_STATUS' => $lang['Status'],
+	'L_PAGE_DESC' => $lang['TS_Desc'],
+	'L_CLEAR' => $lang['Clear'],
+	'L_MOVED_FROM' => $lang['Moved_From'],
+	'L_VERSION' => $lang['Version'],
+	'VERSION' => MOD_VERSION,
 
-'I_STATUS_MESSAGE' => $status_message,
+	'I_STATUS_MESSAGE' => $status_message,
 
-'S_MONTH' => date('m'),
-'S_DAY' => date('d'),
-'S_YEAR' => date('Y'),
-'S_MODE' => $mode,
-'S_ORDER' => $order,
-'S_MODE_SELECT' => topic_shadow_make_drop_box('mode'),
-'S_ORDER_SELECT' => topic_shadow_make_drop_box('order'),
-'S_MODE_ACTION' => append_sid($_SERVER['PHP_SELF']))
+	'S_MONTH' => date('m'),
+	'S_DAY' => date('d'),
+	'S_YEAR' => date('Y'),
+	'S_MODE' => $mode,
+	'S_ORDER' => $order,
+	'S_MODE_SELECT' => topic_shadow_make_drop_box('mode'),
+	'S_ORDER_SELECT' => topic_shadow_make_drop_box('order'),
+	'S_MODE_ACTION' => append_sid($_SERVER['PHP_SELF'])
+	)
 );
 
 /* See if we actually have any shadow topics */

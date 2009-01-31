@@ -27,8 +27,6 @@ if(!function_exists('imp_staff_func'))
 	{
 		global $template, $lang, $db, $theme, $lang, $board_config, $userdata, $table_prefix, $var_cache, $images;
 
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
-
 		$sql = "SELECT * FROM " . USERS_TABLE."
 			WHERE user_level <> 0
 			ORDER BY user_level";
@@ -42,12 +40,12 @@ if(!function_exists('imp_staff_func'))
 			{
 				$user_level = $lang['Memberlist_Administrator'];
 			}
-			else if ($db_select['user_level'] == MOD)
+			elseif ($db_select['user_level'] == MOD)
 			{
 				$user_level = $lang['Memberlist_Moderator'];
 			}
 
-			$u_name = colorize_username($db_select[user_id]);
+			$u_name = colorize_username($db_select['user_id'], $db_select['username'], $db_select['user_color'], $db_select['user_active']);
 			$l_name = $db_select[username];
 
 			$template->assign_block_vars('staff', array(

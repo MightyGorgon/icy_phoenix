@@ -52,7 +52,7 @@ if (isset ($_POST['delete_submit']))
 		}
 	}
 
-	$db->clear_cache('ban_');
+	$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
 	$message = $lang['Ban_update_sucessful'] .'<br /><br />'. sprintf ($lang['Click_return_banadmin'], '<a href="'. append_sid ('admin_user_bantron.' . PHP_EXT) .'">', '</a>') .'<br /><br />' . sprintf ($lang['Click_return_admin_index'], '<a href="'. append_sid ('index.' . PHP_EXT . '?pane=right') .'">', '</a>');
 
@@ -86,10 +86,10 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 	$user_list = array ();
 	if (!empty($_POST['username']))
 	{
-		$this_userdata = get_userdata ($_POST['username']);
-		if (!$this_userdata )
+		$this_userdata = get_userdata($_POST['username']);
+		if (!$this_userdata)
 		{
-			message_die (GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 		}
 
 		$user_list[] = $this_userdata['user_id'];
@@ -110,12 +110,12 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 				$ip_1_counter = $ip_range_explode[1];
 				$ip_1_end = $ip_range_explode[5];
 
-				while ($ip_1_counter <= $ip_1_end )
+				while ($ip_1_counter <= $ip_1_end)
 				{
-					$ip_2_counter = ($ip_1_counter == $ip_range_explode[1] ) ? $ip_range_explode[2] : 0;
-					$ip_2_end = ($ip_1_counter < $ip_1_end ) ? 254 : $ip_range_explode[6];
+					$ip_2_counter = ($ip_1_counter == $ip_range_explode[1]) ? $ip_range_explode[2] : 0;
+					$ip_2_end = ($ip_1_counter < $ip_1_end) ? 254 : $ip_range_explode[6];
 
-					if ($ip_2_counter == 0 && $ip_2_end == 254 )
+					if ($ip_2_counter == 0 && $ip_2_end == 254)
 					{
 						$ip_2_counter = 255;
 						$ip_2_fragment = 255;
@@ -123,12 +123,12 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 						$ip_list[] = encode_ip ("$ip_1_counter.255.255.255");
 					}
 
-					while ($ip_2_counter <= $ip_2_end )
+					while ($ip_2_counter <= $ip_2_end)
 					{
-						$ip_3_counter = ($ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1] ) ? $ip_range_explode[3] : 0;
-						$ip_3_end = ($ip_2_counter < $ip_2_end || $ip_1_counter < $ip_1_end ) ? 254 : $ip_range_explode[7];
+						$ip_3_counter = ($ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1]) ? $ip_range_explode[3] : 0;
+						$ip_3_end = ($ip_2_counter < $ip_2_end || $ip_1_counter < $ip_1_end) ? 254 : $ip_range_explode[7];
 
-						if ($ip_3_counter == 0 && $ip_3_end == 254 )
+						if ($ip_3_counter == 0 && $ip_3_end == 254)
 						{
 							$ip_3_counter = 255;
 							$ip_3_fragment = 255;
@@ -136,12 +136,12 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 							$ip_list[] = encode_ip ("$ip_1_counter.$ip_2_counter.255.255");
 						}
 
-						while ($ip_3_counter <= $ip_3_end )
+						while ($ip_3_counter <= $ip_3_end)
 						{
-							$ip_4_counter = ($ip_3_counter == $ip_range_explode[3] && $ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1] ) ? $ip_range_explode[4] : 0;
-							$ip_4_end = ($ip_3_counter < $ip_3_end || $ip_2_counter < $ip_2_end ) ? 254 : $ip_range_explode[8];
+							$ip_4_counter = ($ip_3_counter == $ip_range_explode[3] && $ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1]) ? $ip_range_explode[4] : 0;
+							$ip_4_end = ($ip_3_counter < $ip_3_end || $ip_2_counter < $ip_2_end) ? 254 : $ip_range_explode[8];
 
-							if ($ip_4_counter == 0 && $ip_4_end == 254 )
+							if ($ip_4_counter == 0 && $ip_4_end == 254)
 							{
 								$ip_4_counter = 255;
 								$ip_4_fragment = 255;
@@ -149,7 +149,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 								$ip_list[] = encode_ip ("$ip_1_counter.$ip_2_counter.$ip_3_counter.255");
 							}
 
-							while ($ip_4_counter <= $ip_4_end )
+							while ($ip_4_counter <= $ip_4_end)
 							{
 								$ip_list[] = encode_ip ("$ip_1_counter.$ip_2_counter.$ip_3_counter.$ip_4_counter");
 								$ip_4_counter++;
@@ -257,7 +257,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 				}
 			}
 
-			if (!$in_banlist )
+			if (!$in_banlist)
 			{
 				if (preg_match('/(ff\.)|(\.ff)/is', chunk_split($ip_list[$i], 2, '.')))
 				{
@@ -268,7 +268,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 					$kill_ip_sql = "session_ip = '". $ip_list[$i] ."'";
 				}
 
-				$kill_session_sql .= (($kill_session_sql != '' ) ? ' OR ' : '' ) . $kill_ip_sql;
+				$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . $kill_ip_sql;
 
 				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_ip, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
 					VALUES ('". $ip_list[$i] ."', $ban_time, $ban_expire_time, $ban_by_userid, '$ban_priv_reason', $ban_pub_reason_mode, '$ban_pub_reason')";
@@ -284,7 +284,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 		// user or IP info just entered into the ban table ... this will force a session
 		// initialisation resulting in an instant ban
 		//
-		if ($kill_session_sql != '' )
+		if ($kill_session_sql != '')
 		{
 			$sql = "DELETE FROM ". SESSIONS_TABLE ."
 				WHERE $kill_session_sql";
@@ -305,7 +305,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 				}
 			}
 
-			if (!$in_banlist )
+			if (!$in_banlist)
 			{
 				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
 					VALUES ('". str_replace ("\'", "''", $email_list[$i]) ."', $ban_time, $ban_expire_time, $ban_by_userid, '$ban_priv_reason', $ban_pub_reason_mode, '$ban_pub_reason')";
@@ -317,7 +317,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 		}
 	}
 
-	$db->clear_cache('ban_');
+	$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
 	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid ("admin_user_bantron." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid ('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 

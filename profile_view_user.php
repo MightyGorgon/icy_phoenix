@@ -12,7 +12,6 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -40,15 +39,16 @@ if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, "Could not read userdata.", '', __LINE__, __FILE__, $sql);
 }
-$profile=$db->sql_fetchrow($result);
+$profile = $db->sql_fetchrow($result);
 if (!is_array($profile))
 {
 	message_die(GENERAL_ERROR, "Unknown User-ID!!!", '', __LINE__, __FILE__, $sql);
 }
 
-$sql = "SELECT p.*, u.user_avatar_type, u.user_allowavatar, u.user_avatar FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u
+$sql = "SELECT p.*, u.user_avatar_type, u.user_allowavatar, u.user_avatar
+				FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u
 				WHERE p.viewer_id = u.user_id
-					AND p.user_id = ".$user_id;
+					AND p.user_id = " . $user_id;
 if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, "Could not read profile views.", '', __LINE__, __FILE__, $sql);
@@ -58,7 +58,8 @@ $db->sql_freeresult($result);
 
 $pagination = generate_pagination('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $user_id, $total, $board_config['posts_per_page'], $page_start);
 
-$sql = "SELECT p.*, u.user_avatar_type, u.user_allowavatar, u.user_avatar FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u
+$sql = "SELECT p.*, u.username, u.user_active, u.user_color, u.user_level, u.user_avatar_type, u.user_allowavatar, u.user_avatar
+				FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u
 				WHERE p.viewer_id = u.user_id
 					AND p.user_id = " . $user_id . "
 				ORDER BY p.view_stamp DESC
@@ -71,10 +72,10 @@ if (!($result = $db->sql_query($sql)))
 while ($row = $db->sql_fetchrow($result))
 {
 	$viewer = $row['viewer_id'];
-	$viewer_avatar = user_get_avatar($row['viewer_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
+	$viewer_avatar = user_get_avatar($row['viewer_id'], $row['user_level'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
 	$template->assign_block_vars('row', array(
 		'AVATAR' => $viewer_avatar,
-		'VIEW_BY' => colorize_username($viewer),
+		'VIEW_BY' => colorize_username($viewer, $row['username'], $row['user_color'], $row['user_active']),
 		'NUMBER' => $row['counter'],
 		'STAMP' => create_date2($userdata['user_dateformat'], $row['view_stamp'], $userdata['user_timezone'])
 		)

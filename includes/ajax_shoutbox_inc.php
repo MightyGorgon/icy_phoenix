@@ -26,7 +26,6 @@ if (!defined('MG_CTRACK_FLAG'))
 
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 $action = false;
 // Lets see what we do, if nothing define show the shoutbox
@@ -64,11 +63,11 @@ if($action)
 		{
 			update_session($error_msg);
 			// Read session data for update
-			$sql = "SELECT u.user_id, u.username, u.user_level
+			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
 			FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
 			WHERE s.session_time >= " . (time() - 20) . "
-			AND s.session_user_id = u.user_id
-			ORDER BY case user_level when 0 then 10 else user_level end";
+				AND s.session_user_id = u.user_id
+			ORDER BY case u.user_level when 0 then 10 else u.user_level end";
 			$result = $db->sql_query($sql);
 
 			// Set all counters to 0
@@ -77,7 +76,7 @@ if($action)
 			{
 				if($online['user_id'] != ANONYMOUS)
 				{
-					$style_color = colorize_username($online['user_id'], false, true);
+					$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
 
 					$template->assign_block_vars('online_list', array(
 						'USER' => $online['username'],
@@ -111,26 +110,19 @@ if($action)
 		// If the request does not provide the id of the last know message the id is set to 0
 		$lastID = ($_GET['lastID']) ? intval($_GET['lastID']) : 0;
 
+		$limit_sql = '';
 		// Check if there is a limit else, show all shouts
 		if($board_config['display_shouts'] > 0)
 		{
 			// Gets a limited number of entries
-			$sql = "SELECT sb.*, u.username
-					FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
-					WHERE sb.shout_id > " . $lastID . "
-					AND sb.user_id = u.user_id
-					ORDER BY sb.shout_id DESC
-					LIMIT " . $board_config['display_shouts'];
+			$limit_sql = " LIMIT " . $board_config['display_shouts'];
 		}
-		else
-		{
-			// Get all shouts
-			$sql = "SELECT sb.*, u.username
-					FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
-					WHERE sb.shout_id > " . $lastID . "
+
+		$sql = "SELECT sb.*, u.username, u.user_active, u.user_color
+				FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
+				WHERE sb.shout_id > " . $lastID . "
 					AND sb.user_id = u.user_id
-					ORDER BY sb.shout_id DESC";
-		}
+				ORDER BY sb.shout_id DESC" . $limit_sql;
 		$results = $db->sql_query($sql);
 		$row = $db->sql_fetchrowset($results);
 
@@ -162,9 +154,9 @@ if($action)
 				$shouter_link = append_sid(PROFILE_MG . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
 			}
 
-			$shouter_color = colorize_username($row[$x]['user_id'], false, true);
+			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], $row[$x]['user_active'], false, true);
 			/*
-			$shouter = colorize_username($row[$x]['user_id']);
+			$shouter = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], $row[$x]['user_active']);
 			$shouter = preg_replace(array('<', '>'), array('mg_tag_open', 'mg_tag_close'), $shouter);
 			$shouter_link = '-1';
 			*/
@@ -230,7 +222,7 @@ if($action)
 		if($userdata['session_logged_in'])
 		{
 			$shouter = '';
-			//$shouter = colorize_username($userdata['user_id']);
+			//$shouter = colorize_username($userdata['user_id'], $userdata['username'], $userdata['user_color'], $userdata['user_active']);
 		}
 		else
 		{

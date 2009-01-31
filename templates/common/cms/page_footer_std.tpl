@@ -1,4 +1,6 @@
+	<!-- IF not HAS_DIED and S_SHOW_CMS_MENU -->
 	<!-- INCLUDE ../common/cms/cms_nav_menu_inc_end.tpl -->
+	<!-- ENDIF -->
 	<div style="text-align:center;"><br /><span class="admin-link">{ADMIN_LINK}</span><br /><br /></div>
 	</td>
 </tr>

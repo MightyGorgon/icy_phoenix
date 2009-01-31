@@ -73,6 +73,7 @@ $lang = array_merge($lang, array(
 	'Invalid_filename' => '%s is an invalid filename', // replace %s with given filename
 	'Attachment_php_size_na' => 'The Attachment is too big.<br />Couldn\'t get the maximum Size defined in PHP.<br />The Attachment Mod is unable to determine the maximum Upload Size defined in the php.ini.',
 	'Attachment_php_size_overrun' => 'The Attachment is too big.<br />Maximum Upload Size: %d MB.<br />Please note that this Size is defined in php.ini, this means it\'s set by PHP and the Attachment Mod cannot override this value.', // replace %d with ini_get('upload_max_filesize')
+	'FileType_Mismatch' => 'File type mismatch',
 	'Disallowed_extension' => 'The Extension %s is not allowed', // replace %s with extension (e.g. .php)
 	'Disallowed_extension_within_forum' => 'You are not allowed to post Files with the Extension %s within this Forum', // replace %s with the Extension
 	'Attachment_too_big' => 'The Attachment is too big.<br />Max Size: %d %s', // replace %d with maximum file size, %s with size var

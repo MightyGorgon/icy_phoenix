@@ -20,11 +20,10 @@ class pafiledb_toplist extends pafiledb_public
 	function main($action)
 	{
 		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		if(!$this->auth_global['auth_toplist'])
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
@@ -33,9 +32,9 @@ class pafiledb_toplist extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
-		$mode = ( isset($_REQUEST['mode']) ) ? htmlspecialchars($_REQUEST['mode']) : 'newest';
+		$mode = (isset($_REQUEST['mode'])) ? htmlspecialchars($_REQUEST['mode']) : 'newest';
 
-		$days = ( isset($_REQUEST['days']) ) ? intval($_REQUEST['days']) : 7;
+		$days = (isset($_REQUEST['days'])) ? intval($_REQUEST['days']) : 7;
 
 		$selected_date = ( isset($_REQUEST['selected_date']) ) ? $_REQUEST['selected_date'] : '';
 
@@ -109,7 +108,6 @@ class pafiledb_toplist extends pafiledb_public
 					}
 				}
 
-
 				$file_num_month = 0;
 
 				$day_time = (time()-(86400 * 30));
@@ -148,11 +146,11 @@ class pafiledb_toplist extends pafiledb_public
 					for($j = 0; $j <= $days - 1; $j++)
 					{
 						$day_time = (time()-(86400 * $j));
-						$day_date = Date('Y-m-d', $day_time);
+						$day_date = date('Y-m-d', $day_time);
 						$file_num = 0;
 						for($i = 0; $i < count($rowset); $i++)
 						{
-							$file_date = Date('Y-m-d', $rowset[$i]['file_time']);
+							$file_date = date('Y-m-d', $rowset[$i]['file_time']);
 							if( $file_date == $day_date )
 							{
 								$file_num++;
@@ -184,8 +182,8 @@ class pafiledb_toplist extends pafiledb_public
 					$file_ids = array();
 					for($i = 0; $i < count($rowset); $i++)
 					{
-						$formated_date = Date('Y-m-d', $selected_date);
-						$file_date = Date('Y-m-d', $rowset[$i]['file_time']);
+						$formated_date = date('Y-m-d', $selected_date);
+						$file_date = date('Y-m-d', $rowset[$i]['file_time']);
 						if($file_date == $formated_date)
 						{
 							$file_ids[] = $rowset[$i]['file_id'];
@@ -194,36 +192,18 @@ class pafiledb_toplist extends pafiledb_public
 					$file_ids = implode(', ', $file_ids);
 					if(!empty($file_ids))
 					{
-						switch(SQL_LAYER)
-						{
-							case 'oracle':
-								$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, c.cat_id, c.cat_name, COUNT(c.comments_id) AS total_comments
-									FROM " . PA_FILES_TABLE . " AS f1, " . PA_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PA_CATEGORY_TABLE . " AS c, " . PA_COMMENTS_TABLE . " AS cm
-									WHERE f1.file_id = r.votes_file(+)
-									AND f1.user_id = u.user_id(+)
-									AND c.cat_id = f1.file_catid
-									AND f1.file_id IN ($file_ids)
-									AND f1.file_approved = '1'
-									AND f1.file_id = cm.file_id(+)
-									GROUP BY f1.file_id
-									ORDER BY file_time DESC";
-								break;
+						$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, u.user_active, u.user_color, c.cat_id, c.cat_name, COUNT(cm.comments_id) AS total_comments
+							FROM (" . PA_FILES_TABLE . " AS f1, " . PA_CATEGORY_TABLE . " AS c)
+								LEFT JOIN " . PA_VOTES_TABLE . " AS r ON (f1.file_id = r.votes_file)
+								LEFT JOIN ". USERS_TABLE ." AS u ON (f1.user_id = u.user_id)
+								LEFT JOIN " . PA_COMMENTS_TABLE . " AS cm ON (f1.file_id = cm.file_id)
+							WHERE c.cat_id = f1.file_catid
+							AND f1.file_id IN ($file_ids)
+							AND f1.file_approved = '1'
+							GROUP BY f1.file_id
+							ORDER BY file_time DESC";
 
-							default:
-								$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, c.cat_id, c.cat_name, COUNT(cm.comments_id) AS total_comments
-									FROM (" . PA_FILES_TABLE . " AS f1, " . PA_CATEGORY_TABLE . " AS c)
-										LEFT JOIN " . PA_VOTES_TABLE . " AS r ON (f1.file_id = r.votes_file)
-										LEFT JOIN ". USERS_TABLE ." AS u ON (f1.user_id = u.user_id)
-										LEFT JOIN " . PA_COMMENTS_TABLE . " AS cm ON (f1.file_id = cm.file_id)
-									WHERE c.cat_id = f1.file_catid
-									AND f1.file_id IN ($file_ids)
-									AND f1.file_approved = '1'
-									GROUP BY f1.file_id
-									ORDER BY file_time DESC";
-								break;
-						}
-
-						if ( !($result = $db->sql_query($sql)) )
+						if (!($result = $db->sql_query($sql)))
 						{
 							message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
 						}
@@ -271,8 +251,7 @@ class pafiledb_toplist extends pafiledb_public
 						}
 
 						$cat_name = $file_rowset[$i]['cat_name'];
-						$xs_new = ($is_new)  ? '-new' : '';
-
+						$xs_new = ($is_new) ? '-new' : '';
 
 						//===================================================
 						// Get the post icon fot this file
@@ -281,23 +260,23 @@ class pafiledb_toplist extends pafiledb_public
 						{
 							if (($file_rowset[$i]['file_posticon'] == 'none') || ($file_rowset[$i]['file_posticon'] == 'none.gif'))
 							{
-								$posticon = '<img src="' .IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png" />';
+								$posticon = '<img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png" alt="" />';
 							}
 							else
 							{
-								$posticon = '<img src="' . FILES_ICONS_DIR . $file_rowset[$i]['file_posticon'] . '" />';
+								$posticon = '<img src="' . FILES_ICONS_DIR . $file_rowset[$i]['file_posticon'] . '" alt="" />';
 							}
 						}
 						else
 						{
-							$posticon = '<img src="' . $images['forum_link'] . '" />';
+							$posticon = '<img src="' . $images['forum_link'] . '" alt="" />';
 						}
 
-						$poster = (  $file_rowset[$i]['user_id'] == ANONYMOUS ) ? $lang['Guest'] : colorize_username( $file_rowset[$i]['user_id']);
+						$poster = ($file_rowset[$i]['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($file_rowset[$i]['user_id'], $file_rowset[$i]['username'], $file_rowset[$i]['user_color'], $file_rowset[$i]['user_active']);
+
 						//===================================================
 						// Assign Vars
 						//===================================================
-
 						$pafiledb_template->assign_block_vars('files_row', array(
 							'CAT_NAME' => $cat_name,
 							'FILE_NEW_IMAGE' => $images['pa_file_new'],
@@ -312,7 +291,8 @@ class pafiledb_toplist extends pafiledb_public
 							'DOWNLOADS' => $file_rowset[$i]['file_dls'],
 
 							'U_FILE' => $file_url,
-							'U_CAT' => $cat_url)
+							'U_CAT' => $cat_url
+							)
 						);
 					}
 				}
@@ -325,14 +305,14 @@ class pafiledb_toplist extends pafiledb_public
 				$join_statement = ($mode == 'rating') ? 'LEFT JOIN ' . PA_VOTES_TABLE . ' AS r ON f.file_id = r.votes_file' : '';
 				$group_statement = ($mode == 'rating') ? 'GROUP BY f.file_id' : '';
 
-				$sql = "SELECT file_id$rating_field
+				$sql = "SELECT file_id" . $rating_field . "
 					FROM " . PA_FILES_TABLE . " AS f
 					$join_statement
 					WHERE f.file_approved = '1'
 					$group_statement
 					ORDER BY f.file_time DESC";
 
-				if ( !($result = $db->sql_query($sql)) )
+				if (!($result = $db->sql_query($sql)))
 				{
 					message_die(GENERAL_ERROR, 'Couldnt Query category info for parent categories', '', __LINE__, __FILE__, $sql);
 				}
@@ -357,9 +337,9 @@ class pafiledb_toplist extends pafiledb_public
 				$limit = $most_num;
 				if($most_type == 'per')
 				{
-			    	$limit = $most_num / 100;
-			    	$limit = $file_num * $limit;
-			    	$limit = round($limit);
+					$limit = $most_num / 100;
+					$limit = $file_num * $limit;
+					$limit = round($limit);
 				}
 				$limit = ($limit <= 0) ? 1 : $limit;
 
@@ -389,44 +369,27 @@ class pafiledb_toplist extends pafiledb_public
 					'U_TOP_PER_10' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=' . $mode . '&amp;most_type=per&amp;most_num=10')
 					)
 				);
+
 				if ($limit)
 				{
 					$sort_method = ($mode == 'downloads') ? 'file_dls' : 'rating';
 					$sql_limit = "LIMIT 0, $limit ";
-					switch(SQL_LAYER)
-					{
-						case 'oracle':
-							$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, c.cat_id, c.cat_name
-								FROM " . PA_FILES_TABLE . " AS f1, " . PA_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PA_CATEGORY_TABLE . " AS c
-								WHERE f1.file_id = r.votes_file(+)
-								AND f1.user_id = u.user_id(+)
-								AND c.cat_id = f1.file_catid
-								AND f1.file_approved = '1'
-								GROUP BY f1.file_id
-								ORDER BY $sort_method DESC
-								$sql_limit";
-							break;
-
-						default:
-							$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, c.cat_id, c.cat_name
-								FROM (" . PA_FILES_TABLE . " AS f1, " . PA_CATEGORY_TABLE . " AS c)
-								LEFT JOIN " . PA_VOTES_TABLE . " AS r ON (f1.file_id = r.votes_file)
-								LEFT JOIN ". USERS_TABLE ." AS u ON (f1.user_id = u.user_id)
-								WHERE c.cat_id = f1.file_catid
-								AND f1.file_approved = '1'
-								GROUP BY f1.file_id
-								ORDER BY $sort_method DESC
-								$sql_limit";
-							break;
-					}
-
-					if ( !($result = $db->sql_query($sql)) )
+					$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, u.user_active, u.user_color, c.cat_id, c.cat_name
+						FROM (" . PA_FILES_TABLE . " AS f1, " . PA_CATEGORY_TABLE . " AS c)
+						LEFT JOIN " . PA_VOTES_TABLE . " AS r ON (f1.file_id = r.votes_file)
+						LEFT JOIN ". USERS_TABLE ." AS u ON (f1.user_id = u.user_id)
+						WHERE c.cat_id = f1.file_catid
+						AND f1.file_approved = '1'
+						GROUP BY f1.file_id
+						ORDER BY $sort_method DESC
+						$sql_limit";
+					if (!($result = $db->sql_query($sql)))
 					{
 						message_die(GENERAL_ERROR, 'Couldnt Query category info for parent categories', '', __LINE__, __FILE__, $sql);
 					}
 				}
 				$searchset = array();
-				while( $row = $db->sql_fetchrow($result) )
+				while($row = $db->sql_fetchrow($result))
 				{
 					$searchset[] = $row;
 				}
@@ -465,7 +428,8 @@ class pafiledb_toplist extends pafiledb_public
 					{
 						$is_new = true;
 					}
-					$xs_new = ($is_new)  ? '-new' : '';
+					$xs_new = ($is_new) ? '-new' : '';
+
 					//===================================================
 					// Get the post icon fot this file
 					//===================================================
@@ -473,19 +437,19 @@ class pafiledb_toplist extends pafiledb_public
 					{
 						if (($searchset[$i]['file_posticon'] == 'none') || ($searchset[$i]['file_posticon'] == 'none.gif'))
 						{
-							$posticon = '&nbsp;';
+							$posticon = '<img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png" alt="" />';
 						}
 						else
 						{
-							$posticon = '<img src="' . FILES_ICONS_DIR . $searchset[$i]['file_posticon'] . '" />';
+							$posticon = '<img src="' . FILES_ICONS_DIR . $searchset[$i]['file_posticon'] . '" alt="" />';
 						}
 					}
 					else
 					{
-						$posticon = '<img src="' . $images['forum_nor_read'] . '" />';
+						$posticon = '<img src="' . $images['forum_nor_read'] . '" alt="" />';
 					}
 
-					$poster = (  $searchset[$i]['user_id'] == ANONYMOUS ) ? $lang['Guest'] : colorize_username($searchset[$i]['user_id']);
+					$poster = ($searchset[$i]['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']);
 					$pafiledb_template->assign_block_vars('files_row', array(
 						'CAT_NAME' => $searchset[$i]['cat_name'],
 						'FILE_NEW_IMAGE' => $images['pa_file_new'],

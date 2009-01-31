@@ -10,6 +10,7 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
+define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -33,6 +34,16 @@ unset($js_temp);
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
+
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT))
+{
+	$board_config['default_lang'] = 'english';
+}
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . PHP_EXT);
 
 $cms_type = 'cms_standard';
 
@@ -63,44 +74,24 @@ $bv_id = ($bv_id < 0) ? false : $bv_id;
 
 $is_updated = (isset($_GET['updated']) ? $_GET['updated'] : (isset($_POST['updated']) ? $_POST['updated'] : false));
 
-$redirect_append = '';
-if (($mode == 'blocks') || ($mode == 'blocks_adv'))
-{
-	if ($action == 'edit')
-	{
-		$redirect_append = '&mode=' . $mode . '&action=edit&l_id=' . $l_id . '&b_id=' . $b_id;
-		if (($userdata['user_level'] != ADMIN) && ($userdata['user_cms_level'] < CMS_PUBLISHER))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-	else
-	{
-		if (($userdata['user_level'] != ADMIN) && ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-elseif (($mode == 'layouts') || ($mode == 'layouts_adv'))
-{
-	$redirect_append = '&mode=' . $mode . '&l_id=' . $l_id;
-	if (($userdata['user_level'] != ADMIN) && ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER))
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-}
-else
-{
-	if ($userdata['user_level'] != ADMIN)
-	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-	}
-}
+$redirect_append = (!empty($mode) ? ('&mode=' . $mode) : '') . (!empty($action) ? ('&action=' . $action) : '') . (!empty($l_id) ? ('&l_id=' . $l_id) : '') . (!empty($b_id) ? ('&b_id=' . $b_id) : '');
 
 if (!$userdata['session_admin'])
 {
 	redirect(append_sid(LOGIN_MG . '?redirect=cms.' . PHP_EXT . '&admin=1' . $redirect_append, true));
+}
+
+$access_allowed = get_cms_access_auth('cms', $mode, $action, $l_id, $b_id);
+
+if (!$access_allowed)
+{
+	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+}
+
+if ($mode == 'smilies')
+{
+	generate_smilies('window');
+	exit;
 }
 
 if(isset($_POST['block_reset']))
@@ -134,26 +125,16 @@ else
 }
 $block_content_file = $block_content;
 
-include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT))
-{
-	$board_config['default_lang'] = 'english';
-}
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . PHP_EXT);
-
-if ($mode == 'smilies')
-{
-	generate_smilies('window');
-	exit;
-}
+$show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
 
 $page_title = $lang['Home'];
 $meta_description = '';
 $meta_keywords = '';
-$template->assign_vars(array('S_CMS_AUTH' => true));
+$template->assign_vars(array(
+	'S_CMS_AUTH' => true,
+	'S_SHOW_CMS_MENU' => $show_cms_menu
+	)
+);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 if ($board_config['cms_dock'] == true)
@@ -242,7 +223,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				$b_info = get_block_info(CMS_BLOCKS_TABLE, $b_id);
 
 				$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : $b_info['bposition'];
-				$position = get_block_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
+				$position = get_blocks_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
 
 				$block_dir = IP_ROOT_PATH . 'blocks';
 				$blocks = opendir($block_dir);
@@ -285,7 +266,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : $b_info['view'];
 				for ($i = 0; $i < count($view_array); $i++)
 				{
-					$view .= '<option value="' . $i .'" ';
+					$view .= '<option value="' . $i . '" ';
 					if($b_info['view'] == $i)
 					{
 						$view .= 'selected="selected"';
@@ -312,7 +293,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		else
 		{
 			$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : '';
-			$position = get_block_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
+			$position = get_blocks_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
 
 			$block_dir = IP_ROOT_PATH . 'blocks';
 			$blocks = opendir($block_dir);
@@ -646,6 +627,12 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 	}
 	elseif($action == 'save')
 	{
+		$is_auth = get_layout_edit_auth($table_name, $field_name, $id_var_value);
+		if (!$is_auth)
+		{
+			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+		}
+
 		$b_title = (isset($_POST['title'])) ? trim($_POST['title']) : '';
 		$b_title = ((STRIP) ? stripslashes($b_title) : $b_title);
 		$b_bposition = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : '';
@@ -1044,10 +1031,13 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$positions_list = substr($positions_list, 0, (strlen($positions_list) - 1));
 
 			$sort_sql = ($_GET['dsort'] == 'p') ? 'b.bposition, b.layout' : 'b.layout, b.bposition';
+			//$cms_level_sql = "AND b.edit_auth <= " . $userdata['user_cms_level'];
+			$cms_level_sql = "";
 			$sql = "SELECT b.*, l.name
 							FROM " . CMS_BLOCKS_TABLE . " AS b, " . CMS_LAYOUT_TABLE . " AS l
 							WHERE b.bposition IN (" . $positions_list . ")
 								AND l.lid = b.layout
+								" . $cms_level_sql . "
 							ORDER BY " . $sort_sql;
 			if(!$result = $db->sql_query($sql))
 			{
@@ -1373,6 +1363,12 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 		if (($mode == 'blocks') || ($action == 'editglobal'))
 		{
+			$is_auth = get_layout_edit_auth($table_name, $field_name, $id_var_value);
+			if (!$is_auth)
+			{
+				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+			}
+
 			$b_rows = get_blocks_from_layouts(CMS_BLOCKS_TABLE, $block_layout_field, $l_id_list, '');
 			$b_count = count($b_rows);
 
@@ -2015,7 +2011,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 		}
 
 		$db->clear_cache('cms_');
-		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . PHP_EXT) . '">', '</a>') . '<br /><br />';
+		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=layouts&amp;action=edit&amp;l_id=' . $l_id) . '">', '</a>') . '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')

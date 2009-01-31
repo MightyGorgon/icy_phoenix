@@ -34,7 +34,7 @@
 <!-- END menu -->
 </div>
 
-<form action="{S_ACTION}" method="post">
+<form id="configform" action="{S_ACTION}" method="post">
 <!-- removed width=100% for incompatibility with the above div set to float -->
 <table class="forumline" cellspacing="0" cellpadding="0">
 <tr><th colspan="2">{L_MOD_NAME}</th></tr>

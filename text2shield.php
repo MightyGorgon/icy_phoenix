@@ -9,8 +9,8 @@
 */
 
 // CTracker_Ignore: File checked by human
+define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
-define('MG_CTRACK_FLAG', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);

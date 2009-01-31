@@ -37,7 +37,7 @@ if (!($result = $stat_db->sql_query($sql)))
 $row = $stat_db->sql_fetchrow($result);
 $total_time = $row['total_time'];
 
-$sql = 'SELECT user_id, username, user_totaltime
+$sql = 'SELECT user_id, username, user_active, user_color, user_totaltime
 	FROM ' . USERS_TABLE . '
 	WHERE (user_id <> ' . ANONYMOUS . ') AND (user_totaltime > 0)
 	ORDER BY user_totaltime DESC
@@ -65,7 +65,7 @@ for ($i = 0; $i < $user_count; $i++)
 	$template->assign_block_vars('stats_row', array(
 		'RANK' => $i + 1,
 		'CLASS' => $class,
-		'USERNAME' => colorize_username($user_data[$i]['user_id']),
+		'USERNAME' => colorize_username($user_data[$i]['user_id'], $user_data[$i]['username'], $user_data[$i]['user_color'], $user_data[$i]['user_active']),
 		'PERCENTAGE' => $statistics->percentage,
 		'BAR' => $statistics->bar_percent,
 		'TIME' => make_hours($user_data[$i]['user_totaltime'])

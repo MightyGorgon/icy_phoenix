@@ -10,7 +10,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1000_Configuration']['100_Server_Configuration'] = $file;
@@ -21,6 +21,7 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 $db->clear_cache('config_');
 
 // Pull all config data
@@ -31,46 +32,25 @@ if(!$result = $db->sql_query($sql))
 }
 else
 {
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$config_name = $row['config_name'];
 		$config_value = $row['config_value'];
-		$default_config[$config_name] = isset($_POST['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
+		//$default_config[$config_name] = isset($_POST['submit']) ? addslashes($config_value) : $config_value;
+		$default_config[$config_name] = $config_value;
+		$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+		fix_config_values($config_name, $config_value);
 
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
-
-		if ($config_name == 'cookie_name')
+		if(isset($_POST['submit']))
 		{
-			$new['cookie_name'] = str_replace('.', '_', $new['cookie_name']);
-		}
-
-		// Attempt to prevent a common mistake with this value,
-		// http:// is the protocol and not part of the server name
-		if ($config_name == 'server_name')
-		{
-			$new['server_name'] = str_replace('http://', '', $new['server_name']);
-		}
-
-		if( isset($_POST['submit']) )
-		{
-			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET config_value=\'' . $_POST['message_board_disable_text'] . '\' WHERE config_name = \'board_disable_message\'';
-			if( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
-
-			$sql = "UPDATE " . CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-				WHERE config_name = '$config_name'";
-			if( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
+			set_config($config_name, $new[$config_name]);
 		}
 	}
 
-	if( isset($_POST['submit']) )
+	if(isset($_POST['submit']))
 	{
+		set_config('board_disable_message', $_POST['message_board_disable_text']);
+
 		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_server.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
@@ -78,24 +58,24 @@ else
 }
 
 
-$disable_board_yes = ( $new['board_disable'] ) ? 'checked="checked"' : '';
-$disable_board_no = ( !$new['board_disable'] ) ? 'checked="checked"' : '';
+$disable_board_yes = ($new['board_disable']) ? 'checked="checked"' : '';
+$disable_board_no = (!$new['board_disable']) ? 'checked="checked"' : '';
 
-$message_disable_board_yes = ( $new['board_disable_mess_st'] ) ? 'checked="checked"' : '';
-$message_disable_board_no = ( !$new['board_disable_mess_st'] ) ? 'checked="checked"' : '';
+$message_disable_board_yes = ($new['board_disable_mess_st']) ? 'checked="checked"' : '';
+$message_disable_board_no = (!$new['board_disable_mess_st']) ? 'checked="checked"' : '';
 
-$cookie_secure_yes = ( $new['cookie_secure'] ) ? 'checked="checked"' : '';
-$cookie_secure_no = ( !$new['cookie_secure'] ) ? 'checked="checked"' : '';
+$cookie_secure_yes = ($new['cookie_secure']) ? 'checked="checked"' : '';
+$cookie_secure_no = (!$new['cookie_secure']) ? 'checked="checked"' : '';
 
-$registration_status_yes = ( $new['registration_status'] ) ? 'checked="checked"' : '';
-$registration_status_no = ( !$new['registration_status'] ) ? 'checked="checked"' : '';
+$registration_status_yes = ($new['registration_status']) ? 'checked="checked"' : '';
+$registration_status_no = (!$new['registration_status']) ? 'checked="checked"' : '';
 
-$disable_registration_ip_check_yes = ( $new['disable_registration_ip_check'] ) ? 'checked="checked"' : '';
-$disable_registration_ip_check_no = ( !$new['disable_registration_ip_check'] ) ? 'checked="checked"' : '';
+$disable_registration_ip_check_yes = ($new['disable_registration_ip_check']) ? 'checked="checked"' : '';
+$disable_registration_ip_check_no = (!$new['disable_registration_ip_check']) ? 'checked="checked"' : '';
 
-$activation_none = ( $new['require_activation'] == USER_ACTIVATION_NONE ) ? 'checked="checked"' : '';
-$activation_user = ( $new['require_activation'] == USER_ACTIVATION_SELF ) ? 'checked="checked"' : '';
-$activation_admin = ( $new['require_activation'] == USER_ACTIVATION_ADMIN ) ? 'checked="checked"' : '';
+$activation_none = ($new['require_activation'] == USER_ACTIVATION_NONE) ? 'checked="checked"' : '';
+$activation_user = ($new['require_activation'] == USER_ACTIVATION_SELF) ? 'checked="checked"' : '';
+$activation_admin = ($new['require_activation'] == USER_ACTIVATION_ADMIN) ? 'checked="checked"' : '';
 
 $confirm_yes = ($new['enable_confirm']) ? 'checked="checked"' : '';
 $confirm_no = (!$new['enable_confirm']) ? 'checked="checked"' : '';
@@ -105,17 +85,17 @@ $use_captcha_no = (!$new['use_captcha']) ? 'checked="checked"' : '';
 $allow_autologin_yes = ($new['allow_autologin']) ? 'checked="checked"' : '';
 $allow_autologin_no = (!$new['allow_autologin']) ? 'checked="checked"' : '';
 
-$board_email_form_yes = ( $new['board_email_form'] ) ? 'checked="checked"' : '';
-$board_email_form_no = ( !$new['board_email_form'] ) ? 'checked="checked"' : '';
+$board_email_form_yes = ($new['board_email_form']) ? 'checked="checked"' : '';
+$board_email_form_no = (!$new['board_email_form']) ? 'checked="checked"' : '';
 
-$gzip_yes = ( $new['gzip_compress'] ) ? 'checked="checked"' : '';
-$gzip_no = ( !$new['gzip_compress'] ) ? 'checked="checked"' : '';
+$gzip_yes = ($new['gzip_compress']) ? 'checked="checked"' : '';
+$gzip_no = (!$new['gzip_compress']) ? 'checked="checked"' : '';
 
-$prune_yes = ( $new['prune_enable'] ) ? 'checked="checked"' : '';
-$prune_no = ( !$new['prune_enable'] ) ? 'checked="checked"' : '';
+$prune_yes = ($new['prune_enable']) ? 'checked="checked"' : '';
+$prune_no = (!$new['prune_enable']) ? 'checked="checked"' : '';
 
-$smtp_yes = ( $new['smtp_delivery'] ) ? 'checked="checked"' : '';
-$smtp_no = ( !$new['smtp_delivery'] ) ? 'checked="checked"' : '';
+$smtp_yes = ($new['smtp_delivery']) ? 'checked="checked"' : '';
+$smtp_no = (!$new['smtp_delivery']) ? 'checked="checked"' : '';
 
 $template->set_filenames(array('body' => ADM_TPL . 'board_config_server_body.tpl'));
 
@@ -212,7 +192,7 @@ $template->assign_vars(array(
 	'SERVER_PORT' => $new['server_port'],
 	'SITENAME' => $new['sitename'],
 	'SITE_DESCRIPTION' => $new['site_desc'],
-	'BOARD_DISABLE_MESSAGE' => htmlspecialchars($new['board_disable_message']),
+	'BOARD_DISABLE_MESSAGE' => (STRIP ? htmlspecialchars(stripslashes($new['board_disable_message'])) : htmlspecialchars($new['board_disable_message'])),
 	'S_DISABLE_BOARD_YES' => $disable_board_yes,
 	'S_DISABLE_BOARD_NO' => $disable_board_no,
 	'S_REGISTRATION_STATUS_YES' => $registration_status_yes,

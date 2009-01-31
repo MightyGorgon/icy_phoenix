@@ -28,6 +28,7 @@ $config_fields = array(
 		),
 	*/
 
+	/*
 	'db_cron' => array(
 		'lang_key' => 'IP_db_cron',
 		'explain' => 'IP_db_cron_explain',
@@ -35,6 +36,7 @@ $config_fields = array(
 		'default' => 'Yes',
 		'values' => $list_yes_no,
 		),
+	*/
 
 	'site_history' => array(
 		'lang_key' => 'IP_site_history',
@@ -72,6 +74,13 @@ $config_fields = array(
 		'lang_key' => 'IP_google_bot_detector',
 		'type' => 'LIST_RADIO',
 		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
+	'gsearch_guests' => array(
+		'lang_key' => 'IP_gsearch_guests',
+		'type' => 'LIST_RADIO',
+		'default' => 'Yes',
 		'values' => $list_yes_no,
 		),
 

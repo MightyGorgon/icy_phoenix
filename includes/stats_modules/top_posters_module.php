@@ -24,9 +24,7 @@ $template->assign_vars(array(
 	)
 );
 
-$sql = "SELECT SUM(user_posts) as total_posts FROM " . USERS_TABLE . "
-WHERE user_id <> " . ANONYMOUS;
-
+$sql = "SELECT SUM(user_posts) as total_posts FROM " . USERS_TABLE . " WHERE user_id <> " . ANONYMOUS;
 if (!($result = $stat_db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
@@ -35,7 +33,7 @@ if (!($result = $stat_db->sql_query($sql)))
 $row = $stat_db->sql_fetchrow($result);
 $total_posts = $row['total_posts'];
 
-$sql = 'SELECT user_id, username, user_posts
+$sql = 'SELECT user_id, username, user_active, user_color, user_posts
 	FROM ' . USERS_TABLE . '
 	WHERE (user_id <> ' . ANONYMOUS . ') AND (user_posts > 0)
 	ORDER BY user_posts DESC
@@ -63,7 +61,7 @@ for ($i = 0; $i < $user_count; $i++)
 	$template->assign_block_vars('stats_row', array(
 		'RANK' => $i + 1,
 		'CLASS' => $class,
-		'USERNAME' => colorize_username($user_data[$i]['user_id']),
+		'USERNAME' => colorize_username($user_data[$i]['user_id'], $user_data[$i]['username'], $user_data[$i]['user_color'], $user_data[$i]['user_active']),
 		'PERCENTAGE' => $statistics->percentage,
 		'BAR' => $statistics->bar_percent,
 		'POSTS' => $user_data[$i]['user_posts']

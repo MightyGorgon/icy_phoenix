@@ -22,7 +22,6 @@ if (!defined('IN_ICYPHOENIX'))
 
 require_once(IP_ROOT_PATH . 'includes/news_data.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 /**
  * Class which displays news content.
@@ -184,7 +183,7 @@ class NewsModule
 					'CAT_IMG' => $this->root_path . $board_config['news_path'] . '/' . $article['news_image'],
 					'POST_DATE' => create_date_simple($dateformat, $article['post_time'], $timezone),
 					'RFC_POST_DATE' => create_date_simple('r', $article['post_time'], $timezone),
-					'L_POSTER' => colorize_username($article['user_id']),
+					'L_POSTER' => colorize_username($article['user_id'], $article['username'], $article['user_color'], $article['user_active']),
 					'L_COMMENTS' => $article['topic_replies'],
 					/*
 					'U_COMMENTS' => $this->root_path . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
@@ -196,9 +195,9 @@ class NewsModule
 					'U_VIEWS' => append_sid('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'] . '&amp;start=0'),
-					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(utf8_decode($article['topic_title'])) . '&amp;topic_id=' . $article['topic_id']),
-					'L_TITLE_HTML' => urlencode(utf8_decode($article['topic_title'])),
-					//'TELL_LINK' => urlencode(utf8_decode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?topic_id=' . $article['topic_id'])),
+					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($article['topic_title'])) . '&amp;topic_id=' . $article['topic_id']),
+					'L_TITLE_HTML' => urlencode(ip_utf8_decode($article['topic_title'])),
+					//'TELL_LINK' => urlencode(ip_utf8_decode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?topic_id=' . $article['topic_id'])),
 					'COUNT_COMMENTS' => $article['topic_replies'],
 					'BODY' => ($show_abstract && $trimmed) ? $article['post_abstract'] : $article['post_text'],
 					'READ_MORE_LINK' => ($show_abstract && $trimmed) ? '<a href="' . $index_file . '?' . $portal_page_id . $ubid_link . 'topic_id=' . $article['topic_id'] . '">' . $lang['Read_More'] . '</a>' : '',
@@ -299,7 +298,7 @@ class NewsModule
 				$this->setBlockVariables('comments', array(
 					'L_TITLE' => $comment['post_subject'],
 					'POST_DATE' => create_date2($dateformat, $comment['post_time'], $timezone),
-					'L_POSTER' => ($comment['username'] == '') ? colorize_username($comment['post_user_id']) : colorize_username($comment['user_id']),
+					'L_POSTER' => colorize_username($comment['user_id'], $comment['username'], $comment['user_color'], $comment['user_active']),
 					'BODY' => $comment['post_text']
 					)
 				);
@@ -496,14 +495,15 @@ class NewsModule
 		$encoding = $lang['ENCODING'];
 		$sitename = $this->config['sitename'] . ' :: RSS';
 		$copyright = $this->config['sitename'] . ' :: ' . gmdate('Y', time());
+		$server_url = create_server_url();
 
 		$this->setVariables(array(
 			'TITLE' => $this->config['sitename'],
-			'URL' => 'http://' . trim($this->config['server_name']) . trim($this->config['script_path']),
+			'URL' => $server_url,
 			'FORUM_PATH' => $this->config['script_path'],
 			'DESC' => $this->config['news_rss_desc'],
 			'LANGUAGE' => $this->config['news_rss_language'],
-			'COPY_RIGHT' => $copyright,
+			'COPYRIGHT' => $copyright,
 			'EDITOR' => $this->config['board_email'],
 			'WEBMASTER' => $this->config['board_email'],
 			'TTL' => $this->config['news_rss_ttl'],

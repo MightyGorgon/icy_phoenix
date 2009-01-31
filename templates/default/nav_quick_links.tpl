@@ -18,6 +18,16 @@ if(GetCookie(tmp) == '2')
 <!-- ENDIF -->
 <span class="forumlink">{L_QUICK_LINKS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 
+<!-- IF not S_BOT and NAV_MENU_ADS_TOP -->
+<tr>
+	<th style="cursor:pointer;" align="left">
+		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
+		<a href="#" title="{L_SPONSORS_LINKS}" style="vertical-align:top;text-decoration:none;"><b>{L_SPONSORS_LINKS}</b></a>
+	</th>
+</tr>
+<tr><td class="row1">{NAV_MENU_ADS_TOP}</td></tr>
+<!-- ENDIF -->
+
 <tr>
 	<th style="cursor:pointer;" align="left" onclick="ShowHide('main_links','main_links2','main_links');">
 		<img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_MAIN_LINKS}" title="{L_MAIN_LINKS}" />&nbsp;
@@ -51,6 +61,10 @@ if(GetCookie(tmp) == '2')
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_INDEX}">{L_FORUM}</a></td>
+				</tr>
+				<tr>
+					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
+					<td class="genmed" align="left"><a href="{U_BOARDRULES}">{L_BOARDRULES}</a></td>
 				</tr>
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
@@ -111,10 +125,6 @@ if(GetCookie(tmp) == '2')
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_CONTACT_US}">{L_CONTACT_US}</a></td>
-				</tr>
-				<tr>
-					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="{U_BOARDRULES}">{L_BOARDRULES}</a></td>
 				</tr>
 				<!-- IF S_LOGGED_IN -->
 				<tr>
@@ -376,11 +386,21 @@ if(GetCookie(tmp) == '2')
 	</td>
 </tr>
 
+<!-- IF not S_BOT and NAV_MENU_ADS_BOTTOM -->
+<tr>
+	<th style="cursor:pointer;" align="left">
+		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
+		<a href="#" title="{L_SPONSORS_LINKS}" style="vertical-align:top;text-decoration:none;"><b>{L_SPONSORS_LINKS}</b></a>
+	</th>
+</tr>
+<tr><td class="row1">{NAV_MENU_ADS_BOTTOM}</td></tr>
+<!-- ENDIF -->
+
 <!--
 <tr>
 	<th style="cursor:pointer;" align="left">
-		<img src="{IMG_NAV_MENU_SPONSOR}" alt="Sponsors" title="Sponsors" />&nbsp;
-		<a href="javascript:void(0);" title="Sponsors" style="vertical-align:top;text-decoration:none;"><b>Sponsors</b></a>
+		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
+		<a href="javascript:void(0);" title="{L_SPONSORS_LINKS}" style="vertical-align:top;text-decoration:none;"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>
 </tr>
 <tr>

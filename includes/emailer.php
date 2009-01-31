@@ -290,16 +290,7 @@ class emailer
 			if (!$result && !$board_config['sendmail_fix'] && $empty_to_header)
 			{
 				$to = ' ';
-
-				$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = '1'
-					WHERE config_name = 'sendmail_fix'";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Unable to update config table', '', __LINE__, __FILE__, $sql);
-				}
-
-				$board_config['sendmail_fix'] = 1;
+				set_config('sendmail_fix', 1);
 				$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
 			}
 		}
@@ -307,7 +298,7 @@ class emailer
 		// Did it work?
 		if (!$result)
 		{
-			if ( $board_config['disable_email_error'] == 0 )
+			if ($board_config['disable_email_error'] == 0)
 			{
 				message_die(GENERAL_ERROR, 'Failed sending email :: ' . (($this->use_smtp) ? 'SMTP' : 'PHP') . ' :: ' . $result, '', __LINE__, __FILE__);
 			}
@@ -432,7 +423,7 @@ class emailer
 	// Split the specified file up into a string and return it
 	function encode_file($sourcefile)
 	{
-		if (is_readable(phpbb_realpath($sourcefile)))
+		if (is_readable(@phpbb_realpath($sourcefile)))
 		{
 			$fd = fopen($sourcefile, "r");
 			$contents = fread($fd, filesize($sourcefile));

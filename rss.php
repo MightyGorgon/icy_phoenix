@@ -54,8 +54,7 @@ if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 		ExitWithHeader('304 Not Modified');
 	}
 }
-$sql= "SELECT MAX(post_time) as pt FROM ". POSTS_TABLE;
-
+$sql = "SELECT MAX(post_time) as pt FROM ". POSTS_TABLE;
 if(!($result = $db->sql_query($sql)))
 {
 	ExitWithHeader('500 Internal Server Error', 'Error in obtaining post data');
@@ -80,9 +79,9 @@ if(CACHE_TO_FILE && (CACHE_TIME > 0))
 	{
 		$cachefiletime = @filemtime($cache_file);
 		$timedif = ($deadline - $cachefiletime);
-		if($timedif < CACHE_TIME && filesize($cache_file) > 0)
+		if(($timedif < CACHE_TIME) && (filesize($cache_file) > 0))
 		{
-			$use_cached=true;
+			$use_cached = true;
 		}
 	}
 }
@@ -203,17 +202,12 @@ else
 
 	// BEGIN Create main board information (some code borrowed from functions_post.php)
 	// Build URL components
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-	$viewpost = ($script_name != '') ? $script_name . '/viewtopic.' . PHP_EXT : 'viewtopic.' . PHP_EXT;
-	$replypost = ($script_name != '') ? $script_name . '/posting.' . PHP_EXT . '?mode=quote' : 'posting.' . PHP_EXT . '?mode=quote';
-	$index = ($script_name != '') ? $script_name . '/index.' . PHP_EXT : 'index.' . PHP_EXT;
-	$server_name = trim($board_config['server_name']);
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
-	// Assemble URL components
-	$index_url = $server_protocol . $server_name . $server_port . (($script_name != '')? $script_name . '/':'');
-	$viewpost_url = $server_protocol . $server_name . $server_port . $viewpost;
-	$replypost_url =$server_protocol . $server_name . $server_port . $replypost;
+	$index_url = create_server_url();
+	$viewpost = VIEWTOPIC_MG;
+	$replypost = POSTING_MG . '?mode=quote';
+	$index = PORTAL_MG;
+	$viewpost_url = $index_url . $viewpost;
+	$replypost_url = $index_url . $replypost;
 	// Reformat site name and description
 	$site_name = strip_tags($board_config['sitename']);
 	$site_description = strip_tags($board_config['site_desc']);
@@ -229,7 +223,7 @@ else
 	{
 		$is_auth = array();
 		$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
-		if($forum_id=='')
+		if($forum_id == '')
 		{
 			while (list($forumId, $auth_mode) = each($is_auth))
 			{
@@ -265,7 +259,6 @@ else
 	{
 		$sql_forum_where = 'AND f.forum_id = ' . $forum_id;
 	}
-
 
 	// BEGIN Initialise template
 	if(isset($_GET['atom']))
@@ -311,8 +304,8 @@ else
 	{
 		$sql_news = 'AND t.topic_type = \'' . POST_NEWS . '\'';
 	}
-	$getdesc=($forum_id <> '') ? 'f.forum_desc,' : '';
-	$sql = "SELECT f.forum_name," . $getdesc . " t.topic_id, t.topic_title, u.user_id, u.username, u.user_sig, u.user_allowsmile, p.*, t.topic_replies, t.topic_first_post_id
+	$getdesc = ($forum_id <> '') ? ', f.forum_desc' : '';
+	$sql = "SELECT f.forum_name" . $getdesc . ", f.forum_topic_views, t.topic_id, t.topic_title, u.user_id, u.username, u.user_sig, u.user_allowsmile, p.*, t.topic_replies, t.topic_first_post_id
 		FROM " . FORUMS_TABLE . " AS f, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
 		WHERE
 				$sql_limit_time
@@ -344,8 +337,11 @@ else
 	// BEGIN Assign static variables to template
 	// Variable reassignment for Topic Replies
 	$l_topic_replies = $lang['Topic'] . ' ' . $lang['Replies'];
-	$user_lang=$userdata['user_lang'];
-	if(empty($user_lang))$user_lang=$board_config['default_lang'];
+	$user_lang = $userdata['user_lang'];
+	if(empty($user_lang))
+	{
+		$user_lang = $board_config['default_lang'];
+	}
 	$template->assign_vars(array(
 		'S_CONTENT_ENCODING' => $lang['ENCODING'],
 		'BOARD_URL' => $index_url,
@@ -389,7 +385,7 @@ else
 			$PostCount++;
 			$SeenTopics[$topic_id]++;
 			// Variable reassignment and reformatting for post text
-			$post_id=$post['post_id'];
+			$post_id = $post['post_id'];
 			$post_subject = ($post['post_subject'] != '') ? $post['post_subject'] : '';
 			$message = $post['post_text'];
 			$user_sig = ($post['enable_sig'] && $post['user_sig'] != '' && $board_config['allow_sig']) ? $post['user_sig'] : '';
@@ -430,7 +426,7 @@ else
 			$message = str_replace("\n", "\n<br />\n", $message);
 			if($post_subject != '')
 			{
-				$post_subject = htmlspecialchars($lang['Subject'].': '.$post_subject.'<br />');
+				$post_subject = $lang['Subject'] . ': ' . $post_subject . '<br />';
 			}
 			// Variable reassignment for topic title, and show whether it is the start of topic, or a reply
 			$topic_title = $post['topic_title'];
@@ -440,7 +436,7 @@ else
 			}
 			// Variable reassignment and reformatting for author
 			$author = $post['username'];
-			$author0 =$author;
+			$author0 = $author;
 			if($post['user_id'] != -1)
 			{
 				$author = '<a href="' . $index_url . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $post['user_id'] . '" target="_blank">' . $author . '</a>';
@@ -454,34 +450,41 @@ else
 			}
 			$author = make_clickable($author);
 			// Assign "item" variables to template
+			$topic_title = utf8_encode($topic_title);
+			$post_subject = utf8_encode($post_subject);
+			$message = utf8_encode($message);
 			$template->assign_block_vars('post_item', array(
 				'POST_URL' => $viewpost_url . '?' . POST_POST_URL . '=' . $post['post_id'] . '#p' . $post['post_id'],
 				'FIRST_POST_URL' => $viewpost_url . '?' . POST_POST_URL . '=' . $post['topic_first_post_id'] . '#p' . $post['topic_first_post_id'],
 				'REPLY_URL' => $replypost_url . '&amp;' . POST_POST_URL . '=' . $post['post_id'],
-				'TOPIC_TITLE' => htmlspecialchars(undo_htmlspecialchars($topic_title)),
 				'AUTHOR0' => htmlspecialchars($author0),
-				'AUTHOR' => htmlspecialchars($author),
-				'POST_TIME' => create_date($board_config['default_dateformat'], $post['post_time'], $board_config['board_timezone']) . ' (GMT ' . $board_config['board_timezone'] . ')',
 				'ATOM_TIME' => gmdate('Y-m-d\TH:i:s', $post['post_time']) . 'Z',
 				'ATOM_TIME_M' => (($post['post_edit_time'] <> '') ? gmdate('Y-m-d\TH:i:s', $post['post_edit_time']) . 'Z' : gmdate('Y-m-d\TH:i:s', $post['post_time']) . 'Z'),
-				'POST_SUBJECT' => $post_subject,
-				'FORUM_NAME' => htmlspecialchars($post['forum_name']),
 				'UTF_TIME' => RSSTimeFormat($post['post_time'],$userdata['user_timezone']),
-				'POST_TEXT' => htmlspecialchars(preg_replace('|[\x00-\x08\x0B\x0C\x0E-\x1f]|', '', $message)),
-				'USER_SIG' => htmlspecialchars($user_sig),
+
+				'FORUM_NAME' => $post['forum_name'],
+				'TOPIC_TITLE' => undo_htmlspecialchars($topic_title),
+
+				'AUTHOR' => $author,
+				'POST_TIME' => create_date($board_config['default_dateformat'], $post['post_time'], $board_config['board_timezone']) . ' (GMT ' . $board_config['board_timezone'] . ')',
+				'POST_SUBJECT' => $post_subject,
+				//'POST_TEXT' => htmlspecialchars(preg_replace('|[\x00-\x08\x0B\x0C\x0E-\x1f]|', '', $message)),
+				'POST_TEXT' => $message,
+				'USER_SIG' => $user_sig,
+
 				'TOPIC_REPLIES' => $post['topic_replies']
 				)
 			);
 		}
 		// END "item" loop
 
-		if($user_id != ANONYMOUS && UPDATE_VIEW_COUNT)
+		if(($user_id != ANONYMOUS) && UPDATE_VIEW_COUNT)
 		{
 			$updlist = '';
 			foreach ($SeenTopics as $topic_id=>$tcount)
 			{
 				$updlist .= (empty($updlist)) ? $topic_id : ',' . $topic_id;
-				if (($board_config['disable_topic_view'] == false) && AUTO_WVT_MOD)
+				if (($board_config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_views'] == 1))
 				{
 					$sql = 'UPDATE ' . TOPIC_VIEW_TABLE . ' SET topic_id = "' . $topic_id . '", view_time = "' . time() . '", view_count = view_count + 1 WHERE topic_id = ' . $topic_id . ' AND user_id = ' . $user_id;
 					if(!$db->sql_query($sql) || !$db->sql_affectedrows())
@@ -559,8 +562,8 @@ else
 		ob_end_flush();
 		if($f = @fopen($cache_file, 'w'))
 		{
-			fwrite ($f, $out,strlen($out));
-			fclose($f);
+			@fwrite($f, $out,strlen($out));
+			@fclose($f);
 		}
 	}
 	else

@@ -17,7 +17,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
@@ -276,7 +275,7 @@ if ($row = $db->sql_fetchrow($result))
 	do
 	{
 		$poster_id = $row['user_id'];
-		$poster = colorize_username($poster_id);
+		$poster = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 
 		$user_info = array();
 		$user_info = generate_user_info($row);
@@ -332,7 +331,7 @@ if ($row = $db->sql_fetchrow($result))
 		$message = $row['post_text'];
 		$message_compiled = empty($row['post_text_compiled']) ? false : $row['post_text_compiled'];
 
-		$user_sig = ($row['enable_sig'] && $row['user_sig'] != '' && $board_config['allow_sig']) ? $row['user_sig'] : '';
+		$user_sig = ($row['enable_sig'] && ($row['user_sig'] != '') && $board_config['allow_sig']) ? $row['user_sig'] : '';
 
 		// Note! The order used for parsing the message _is_ important, moving things around could break any output
 

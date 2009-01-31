@@ -10,18 +10,25 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
+define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ($userdata['user_level'] != ADMIN)
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
+
+$access_allowed = get_cms_access_auth('cms_menu');
+
+if (!$access_allowed)
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
@@ -30,9 +37,6 @@ if (!$userdata['session_admin'])
 {
 	redirect(append_sid(LOGIN_MG . '?redirect=cms_menu.' . PHP_EXT . '&admin=1', true));
 }
-
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
 
 if(!empty($_GET['mode']) || !empty($_POST['mode']))
 {
@@ -110,10 +114,16 @@ if(isset($_POST['cancel']) || isset($_POST['reset']))
 	redirect(append_sid('cms_menu.' . PHP_EXT . $s_append_url, true));
 }
 
+$show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
+
 $page_title = $lang['Home'];
 $meta_description = '';
 $meta_keywords = '';
-$template->assign_vars(array('S_CMS_AUTH' => true));
+$template->assign_vars(array(
+	'S_CMS_AUTH' => true,
+	'S_SHOW_CMS_MENU' => $show_cms_menu
+	)
+);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 if($board_config['cms_dock'] == true)

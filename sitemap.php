@@ -8,12 +8,11 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
-define('IMG_THUMB', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_archives.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 @set_time_limit(0);
@@ -26,23 +25,31 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
+// SITEMAP SETTINGS - BEGIN
 $prog_name = 'Sitemap IP 1.0.0';
 $verinfo = 'V100';
 
+define('ZIP_SITEMAP', true);
 $cache_data_file = MAIN_CACHE_FOLDER . 'sitemap.xml';
+$sitemap_xml_file = IP_ROOT_PATH . 'sitemap.xml';
+$sitemap_zip_file = IP_ROOT_PATH . 'sitemap.zip';
+// SITEMAP SETTINGS - END
+
+$cache_refresh = request_var('refresh', 0);
+
 $cache_update = true;
 $cache_file_time = time();
-if (@is_file($cache_data_file))
+if (@file_exists($cache_data_file) && empty($cache_refresh))
 {
 	//$valid = (date('YzH', time()) - date('YzH', @filemtime($cache_data_file)) < 1) ? true : false;
 	$cache_file_time = @filemtime($cache_data_file);
-	if ( ((date('YzH', time()) - date('YzH', $cache_file_time)) < 1) && ((date('Y', time()) == date('Y', $cache_file_time))) )
+	if (((date('YzH', time()) - date('YzH', $cache_file_time)) < 1) && ((date('Y', time()) == date('Y', $cache_file_time))))
 	{
 		$cache_update = false;
 	}
 }
 
-if( strpos($useragent, 'MSIE') )
+if(strpos($useragent, 'MSIE'))
 {
 	$encoding_charset = $lang['ENCODING'];
 }
@@ -60,21 +67,21 @@ if(strpos($useragent,'MSIE'))
 	$use_cached = false;
 }
 
-if( $board_config['gzip_compress'] )
+if($board_config['gzip_compress'])
 {
 	$phpver = phpversion();
-	if( $phpver >= '4.0.4pl1' && ( strstr($useragent,'compatible') || strstr($useragent,'Gecko') ) )
+	if($phpver >= '4.0.4pl1' && (strstr($useragent,'compatible') || strstr($useragent,'Gecko')))
 	{
-		if( extension_loaded('zlib') )
+		if(extension_loaded('zlib'))
 		{
 			ob_start('ob_gzhandler');
 		}
 	}
-	elseif( $phpver > '4.0' )
+	elseif($phpver > '4.0')
 	{
-		if( strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') )
+		if(strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
 		{
-			if( extension_loaded('zlib') )
+			if(extension_loaded('zlib'))
 			{
 				$do_gzip_compress = true;
 				ob_start();
@@ -133,12 +140,12 @@ else
 	// MG SITEMAP - FORUM - BEGIN
 	//Get a list of publicly viewable forums
 	$sql = "SELECT forum_id FROM " . FORUMS_TABLE . " WHERE auth_read = 0";
-	//if ( !($result = $db->sql_query($sql)) )
-	if ( !($result = $db->sql_query($sql, false, 'sitemap_forums_')) )
+	//if (!($result = $db->sql_query($sql)))
+	if (!($result = $db->sql_query($sql, false, 'forums_sitemap_', FORUMS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, 'Error getting permissions', '', __LINE__, __FILE__, $sql);
 	}
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$forumids .= $row['forum_id'] . ',';
 	}
@@ -153,7 +160,7 @@ else
 		$order = 'ASC';
 	}
 	$sql = "SELECT topic_id FROM " . TOPICS_TABLE . " WHERE forum_id IN (" . $forumids . ") ORDER BY topic_id $order LIMIT 1";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error getting topic information', '', __LINE__, __FILE__, $sql);
 	}
@@ -186,12 +193,12 @@ else
 						AND t.forum_id IN (" . $forumids . ") $wheresql
 						ORDER BY t.topic_id " . $board_config['sitemap_sort'] . "
 						LIMIT " . $board_config['sitemap_topic_limit'];
-		if ( !($result = $db->sql_query($sql, false, 'sitemap_topics_')) )
+		if (!($result = $db->sql_query($sql, false, 'topics_sitemap_', TOPICS_CACHE_FOLDER)))
 		{
 			message_die(GENERAL_ERROR, 'Error obtaining topic data', '', __LINE__, __FILE__, $sql);
 		}
 
-		while ( $row = $db->sql_fetchrow($result) )
+		while ($row = $db->sql_fetchrow($result))
 		{
 			$topics = $row;
 			$row['topic_type'] = ($row['news_id'] > 0) ? '2' : $row['topic_type'];
@@ -214,7 +221,7 @@ else
 			{
 				$topic_change = 'always';
 			}
-			if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
+			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 			{
 				$url = $server_url . str_replace ('--', '-', make_url_friendly($row['topic_title']) . '-vt' . $row['topic_id'] . '.html');
 			}
@@ -237,11 +244,13 @@ else
 	// MG SITEMAP - FORUM - END
 
 	// MG SITEMAP - DOWNLOADS - BEGIN
+	if ($board_config['auth_view_download'] == 0)
+	{
 		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_constants.' . PHP_EXT);
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
 							ORDER BY file_time DESC";
-		if ( !($result = $db->sql_query($sql, false, 'sitemap_files_')) )
+		if (!($result = $db->sql_query($sql, false, 'sitemap_files_')))
 		{
 			message_die(GENERAL_ERROR, 'Could not query downloads');
 		}
@@ -254,95 +263,115 @@ else
 			$dl_sitemap['file_name'];
 			$dl_sitemap['file_desc'];
 			*/
+			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			{
+				$url = $server_url . str_replace ('--', '-', make_url_friendly($dl_sitemap['file_name']) . '-df' . $dl_sitemap['file_id'] . '.html');
+			}
+			else
+			{
+				$url = $server_url . 'dload.' . PHP_EXT . '?action=file&amp;file_id=' . $dl_sitemap['file_id'];
+			}
 			$xml_sitemap_body .= '
 	<url>
-		<loc>' . $server_url . 'dload.' . PHP_EXT . '?action=file&amp;file_id=' . $dl_sitemap['file_id'] . '</loc>
+		<loc>' . $url . '</loc>
 		<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $dl_sitemap['file_time']) . '</lastmod>
 		<changefreq>' . $dl_change . '</changefreq>
 		<priority>' . $dl_priority . '</priority>
 	</url>';
 		}
 		$db->sql_freeresult();
+	}
 	// MG SITEMAP - DOWNLOADS - END
 
 	// MG SITEMAP - ALBUM - BEGIN
-	// Get general album information
-	include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-	$album_user_id = ALBUM_PUBLIC_GALLERY;
-	//$album_user_id = ALBUM_ROOT_CATEGORY;
-	$catrows = array ();
-	$options = ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW;
-	$catrows = album_read_tree($album_user_id, $options);
-	album_read_tree($album_user_id);
-	$allowed_cat = ''; // For Recent Public Pics below
-	for ($i = 0; $i < count($catrows); $i ++)
+	if ($board_config['auth_view_album'] == 0)
 	{
-		$allowed_cat .= ($allowed_cat == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
-	}
-
-	if($board_config['sitemap_sort'] == 'ASC')
-	{
-		$order = 'DESC';
-	}
-	else
-	{
-		$order = 'ASC';
-	}
-	$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
-					WHERE pic_cat_id IN (" . $allowed_cat . ")
-					ORDER BY pic_id $order LIMIT 1";
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Error getting pic information', '', __LINE__, __FILE__, $sql);
-	}
-	$result = $db->sql_fetchrow($result);
-	$lastid = $result['pic_id'];
-
-	//only get a limited number of pics per query (default 250) to keep server load down in case of large boards
-	while($lastpic != $lastid)
-	{
-		$result = '';
-		//Newest pics first
-		if(is_numeric($lastpic) && $board_config['sitemap_sort'] == 'ASC')
+		// Get general album information
+		include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+		$album_user_id = ALBUM_PUBLIC_GALLERY;
+		//$album_user_id = ALBUM_ROOT_CATEGORY;
+		$catrows = array ();
+		$options = ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW;
+		$catrows = album_read_tree($album_user_id, $options);
+		album_read_tree($album_user_id);
+		$allowed_cat = ''; // For Recent Public Pics below
+		for ($i = 0; $i < count($catrows); $i ++)
 		{
-			$lastpic++;
-			$wheresql = "AND p.pic_id >= $lastpic";
+			$allowed_cat .= ($allowed_cat == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
 		}
-		//Oldest pics first
-		elseif(is_numeric($lastpic))
+
+		if($board_config['sitemap_sort'] == 'ASC')
 		{
-			$lastpic--;
-			$wheresql = "AND p.pic_id <= $lastpic";
+			$order = 'DESC';
 		}
 		else
 		{
-			$wheresql = "";
+			$order = 'ASC';
 		}
-
-		$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_time, p.pic_lock
-						FROM " . ALBUM_TABLE . " AS p
-						WHERE p.pic_cat_id IN (" . $allowed_cat . ") $wheresql
-						ORDER BY p.pic_id " . $board_config['sitemap_sort'] . "
-						LIMIT " . $board_config['sitemap_topic_limit'];
-		if ( !($result = $db->sql_query($sql, false, 'sitemap_pics_')) )
+		$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
+						WHERE pic_cat_id IN (" . $allowed_cat . ")
+						ORDER BY pic_id $order LIMIT 1";
+		if (!($result = $db->sql_query($sql)))
 		{
-			message_die(GENERAL_ERROR, 'Error obtaining topic data', '', __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, 'Error getting pic information', '', __LINE__, __FILE__, $sql);
 		}
+		$result = $db->sql_fetchrow($result);
+		$lastid = $result['pic_id'];
 
-		while ( $row = $db->sql_fetchrow($result) )
+		//only get a limited number of pics per query (default 250) to keep server load down in case of large boards
+		while($lastpic != $lastid)
 		{
-			$pic_priority = $board_config['sitemap_default_priority'];
-			$pic_change = 'never';
-			$xml_sitemap_body .= '
-	<url>
-		<loc>' . $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'] . '</loc>
-		<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
-		<changefreq>' . $pic_change . '</changefreq>
-		<priority>' . $pic_priority . '</priority>
-	</url>';
-			$lastpic = $row['pic_id'];
+			$result = '';
+			//Newest pics first
+			if(is_numeric($lastpic) && $board_config['sitemap_sort'] == 'ASC')
+			{
+				$lastpic++;
+				$wheresql = "AND p.pic_id >= $lastpic";
+			}
+			//Oldest pics first
+			elseif(is_numeric($lastpic))
+			{
+				$lastpic--;
+				$wheresql = "AND p.pic_id <= $lastpic";
+			}
+			else
+			{
+				$wheresql = "";
+			}
+
+			$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_time, p.pic_lock
+							FROM " . ALBUM_TABLE . " AS p
+							WHERE p.pic_cat_id IN (" . $allowed_cat . ") $wheresql
+							ORDER BY p.pic_id " . $board_config['sitemap_sort'] . "
+							LIMIT " . $board_config['sitemap_topic_limit'];
+			if (!($result = $db->sql_query($sql, false, 'sitemap_pics_')))
+			{
+				message_die(GENERAL_ERROR, 'Error obtaining topic data', '', __LINE__, __FILE__, $sql);
+			}
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$pic_priority = $board_config['sitemap_default_priority'];
+				$pic_change = 'never';
+				if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+				{
+					$url = $server_url . str_replace ('--', '-', make_url_friendly($row['pic_title']) . '-asp' . $row['pic_id'] . '.html');
+				}
+				else
+				{
+					$url = $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'];
+				}
+				$xml_sitemap_body .= '
+		<url>
+			<loc>' . $url . '</loc>
+			<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
+			<changefreq>' . $pic_change . '</changefreq>
+			<priority>' . $pic_priority . '</priority>
+		</url>';
+				$lastpic = $row['pic_id'];
+			}
+			$db->sql_freeresult();
 		}
-		$db->sql_freeresult();
 	}
 	// MG SITEMAP - ALBUM - END
 
@@ -359,13 +388,31 @@ else
 	}
 	*/
 	// GZip - END
+	@chmod($cache_data_file, 0777)
+	@chmod($sitemap_xml_file, 0777)
+	@unlink($cache_data_file);
+	@unlink($sitemap_xml_file);
 	$fp = fopen($cache_data_file, 'w');
 	@fwrite($fp, $xml_content);
 	@fclose($fp);
+	@chmod($cache_data_file, 0666)
+	@copy($cache_data_file, $sitemap_xml_file);
+	@chmod($sitemap_xml_file, 0666)
+
+	if (ZIP_SITEMAP)
+	{
+		@chmod($sitemap_zip_file, 0777)
+		@unlink($sitemap_zip_file);
+		$archive = new zip_file($sitemap_zip_file);
+		$archive->set_options(array('overwrite' => 1, 'storepaths' => 0, 'comment' => 'Sitemap of ' . $board_config['sitename']));
+		$archive->add_files($cache_data_file);
+		$archive->create_archive();
+		@chmod($sitemap_zip_file, 0666)
+	}
 
 	//Compresss the sitemap with gzip
 	//this isn't as pretty as the code in page_header.php, but it's simple & it works :)
-	if( function_exists(ob_gzhandler) && ($board_config['gzip_compress'] == 1) )
+	if(function_exists(ob_gzhandler) && ($board_config['gzip_compress'] == 1))
 	{
 		//ob_start(ob_gzhandler);
 	}
@@ -388,7 +435,7 @@ else
 
 // GZip - BEGIN
 /*
-if( $do_gzip_compress )
+if($do_gzip_compress)
 {
 	// Borrowed from php.net!
 	$gzip_contents = ob_get_contents();

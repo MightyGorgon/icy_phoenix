@@ -9,11 +9,7 @@
 		<!-- END no_news -->
 		<!-- BEGIN newsrow -->
 		<tr>
-			<td class="row1 row-center">
-				<span class="genmed">
-					<a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.ID}"><img src="{newsrow.THUMBNAIL}" {newsrow.IMG_W} alt="{newsrow.DESC}" title="{newsrow.DESC}" vspace="10" /></a>
-				</span>
-			</td>
+			<td class="row1 row-center"><span class="genmed"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.ID}"><img src="{newsrow.THUMBNAIL}" alt="{newsrow.DESC}" title="{newsrow.DESC}" style="padding: 3px;{newsrow.IMG_W}" /></a></span></td>
 			<td class="row1" valign="middle">&nbsp;<span class="forumlink"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.ID}">{newsrow.NEWSCAT}</a></span></td>
 		</tr>
 		<!-- END newsrow -->
@@ -29,19 +25,29 @@
 		<tr>
 			<td class="row1">
 		<!-- END news_archives -->
+
 			<!-- BEGIN arch -->
-				<ul style=" padding: 0 1.3em; margin: 5px 10px;">
-				<!-- BEGIN year -->
-					<li class="gen"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}news=archives&amp;year={arch.year.YEAR}">{arch.year.YEAR}</a></li>
-					<!-- BEGIN month -->
-					<li class="gen" style="margin-left: 1em;"> <a href="{INDEX_FILE}?{PORTAL_PAGE_ID}news=archives&amp;year={arch.year.YEAR}&amp;month={arch.year.month.MONTH}">{arch.year.month.L_MONTH} {arch.year.month.POST_COUNT} </a></li>
+			<!-- BEGIN year -->
+			<ul style="list-style-type: disc; padding-left: 15px; margin-left: 5px;" id="ny_{arch.year.YEAR}">
+			<li class="gen">
+			<a href="{INDEX_FILE}?{PORTAL_PAGE_ID}news=archives&amp;year={arch.year.YEAR}">{arch.year.YEAR}</a>
+				<!-- BEGIN month -->
+				<ul style="list-style-type: square; margin-left: 10px;" id="nm_{arch.year.YEAR}_{arch.year.month.MONTH}">
+				<li class="gen">
+				<a href="{INDEX_FILE}?{PORTAL_PAGE_ID}news=archives&amp;year={arch.year.YEAR}&amp;month={arch.year.month.MONTH}">{arch.year.month.L_MONTH} {arch.year.month.POST_COUNT} </a>
 					<!-- BEGIN day -->
-					<li class="gen" style="margin-left: 2em;"> <a href="{INDEX_FILE}?{PORTAL_PAGE_ID}news=archives&amp;year={arch.year.YEAR}&amp;month={arch.year.month.MONTH}&amp;day={arch.year.month.day.DAY}">{arch.year.month.day.L_DAY3} {arch.year.month.day.L_DAY2} {arch.year.month.day.L_DAY} {arch.year.month.day.POST_COUNT}</a></li>
+					<ul style="list-style-type: circle; margin-left: 10px;" id="nd_{arch.year.YEAR}_{arch.year.month.MONTH}_{arch.year.month.day.DAY}">
+					<li class="gen"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}news=archives&amp;year={arch.year.YEAR}&amp;month={arch.year.month.MONTH}&amp;day={arch.year.month.day.DAY}">{arch.year.month.day.L_DAY3} {arch.year.month.day.L_DAY2} {arch.year.month.day.L_DAY} {arch.year.month.day.POST_COUNT}</a></li>
+					</ul>
 					<!-- END day -->
-					<!-- END month -->
-				<!-- END year -->
+				</li>
 				</ul>
+				<!-- END month -->
+			</li>
+			</ul>
+			<!-- END year -->
 			<!-- END arch -->
+
 		<!-- BEGIN news_archives -->
 			</td>
 		</tr>
@@ -50,9 +56,7 @@
 		<!-- END news_archives -->
 
 		<!-- BEGIN no_articles -->
-		<table class="empty-table" width="100%" cellspacing="1" cellpadding="3" border="0">
-		<tr><td class="row1 row-center" height="50"><span class="gen">{L_NO_NEWS}</span></td></tr>
-		</table>
+		<div style="width: 100%; text-align: center;; padding-top: 10px; padding-bottom: 10px;">{L_NO_NEWS}</div>
 		<!-- END no_articles -->
 	</td>
 </tr>

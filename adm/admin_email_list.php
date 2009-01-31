@@ -27,7 +27,6 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 $start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
@@ -52,7 +51,7 @@ $template->assign_vars(array(
 	)
 );
 
-$sql = "SELECT user_id, username, user_email FROM " . USERS_TABLE . "
+$sql = "SELECT user_id, username, user_active, user_color, user_email FROM " . USERS_TABLE . "
 				WHERE user_id <> " . ANONYMOUS . "
 				ORDER BY username ASC
 				LIMIT $start, $show";
@@ -69,7 +68,7 @@ while($row = $db->sql_fetchrow($result))
 	$template->assign_block_vars('userrow', array(
 		'COLOR' => $row_color,
 		'NUMBER' => ($start + $i + 1),
-		'USERNAME' => colorize_username($row['user_id']),
+		'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 		'U_ADMIN_USER' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 		'EMAIL' => $row['user_email']
 		)

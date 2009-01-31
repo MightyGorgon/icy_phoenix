@@ -24,7 +24,6 @@ init_userprefs($userdata);
 // End session management
 
 include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_rate.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_rate.' . PHP_EXT);
 
 $params = array('rate_mode', 'forum_top', 'topic_id', 'rating');

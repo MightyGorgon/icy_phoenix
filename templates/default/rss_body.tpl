@@ -24,15 +24,18 @@
 </image>
 <!-- BEGIN post_item -->
 <item>
-<title>{post_item.FORUM_NAME} :: {post_item.TOPIC_TITLE}</title>
+<title><![CDATA[{post_item.FORUM_NAME} :: {post_item.TOPIC_TITLE}]]></title>
 <link>{post_item.POST_URL}</link>
 <pubDate>{post_item.UTF_TIME}</pubDate>
 <guid isPermaLink="true">{post_item.POST_URL}</guid>
-<description>{L_AUTHOR}: {post_item.AUTHOR}&lt;br /&gt;
+<description>
+<![CDATA[
+{L_AUTHOR}: {post_item.AUTHOR}<br />
 {post_item.POST_SUBJECT}
-{L_POSTED}: {post_item.POST_TIME}&lt;br /&gt;
-&lt;br /&gt;&lt;div class="post-text"&gt;
-{post_item.POST_TEXT}{post_item.USER_SIG}&lt;/div&gt;&lt;br /&gt;
+{L_POSTED}: {post_item.POST_TIME}<br />
+
+<br /><div class="post-text">{post_item.POST_TEXT}{post_item.USER_SIG}</div><br />
+]]>
 </description>
 <dc:creator>{post_item.AUTHOR0}</dc:creator>
 <dc:subject>{post_item.FORUM_NAME}</dc:subject>

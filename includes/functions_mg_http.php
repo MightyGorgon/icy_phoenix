@@ -45,6 +45,7 @@ function get_user_referer()
 
 function get_user_os($http_user_agent_str)
 {
+	global $lang;
 	$user_os_img = 'images/http_agents/os/';
 
 	if (strpos($http_user_agent_str, 'Win'))
@@ -153,9 +154,14 @@ function get_user_os($http_user_agent_str)
 		$user_os_ver = 'Unix';
 		$user_os_img .= 'unix.png';
 	}
+	elseif (strpos($http_user_agent_str, 'Nintendo DS'))
+	{
+		$user_os_ver = 'Nintendo DS';
+		$user_os_img .= 'unknown.png';
+	}
 	else
 	{
-		$user_os_ver = '';
+		$user_os_ver = $lang['UNKNOWN'];
 		$user_os_img .= 'unknown.png';
 	}
 
@@ -167,6 +173,7 @@ function get_user_os($http_user_agent_str)
 
 function get_user_browser($http_user_agent_str)
 {
+	global $lang;
 	$user_browser_img = 'images/http_agents/browsers/';
 
 	if (ereg('MSIE ([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
@@ -199,9 +206,14 @@ function get_user_browser($http_user_agent_str)
 		$user_browser_ver = 'Chrome ' . $log_version[1];
 		$user_browser_img .= 'chrome.png';
 	}
+	elseif (ereg('Bunjalloo', $http_user_agent_str, $log_version))
+	{
+		$user_browser_ver = 'Bunjalloo';
+		$user_browser_img .= 'unknown.png';
+	}
 	else
 	{
-		$user_browser_ver = 'Unknown';
+		$user_browser_ver = $lang['UNKNOWN'];
 		$user_browser_img .= 'unknown.png';
 	}
 

@@ -3,7 +3,7 @@
 <tr>
 	<td class="row1 row-center" align="center" nowrap="nowrap">
 		<span class="genmed">
-			{L_USERS_PER_PAGE}&nbsp;<input type="text" name="users_per_page" value="{S_USERS_PER_PAGE}" size="5" class="post">&nbsp;
+			{L_USERS_PER_PAGE}&nbsp;<input type="text" name="users_per_page" value="{S_USERS_PER_PAGE}" size="5" class="post" />&nbsp;
 			{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp;
 			<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" />
 		</span>
@@ -54,7 +54,7 @@
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td align="left" valign="middle">{memberrow.AVATAR_IMG}</td>
-			<td align="left" width="100%" nowrap="nowrap" style="text-align: left;">&nbsp;{memberrow.USERNAME}&nbsp;{memberrow.POSTER_GENDER}&nbsp;{memberrow.AGE}{memberrow.STYLE}</a></td>
+			<td align="left" width="100%" nowrap="nowrap" style="text-align: left;">&nbsp;{memberrow.USERNAME}&nbsp;{memberrow.POSTER_GENDER}&nbsp;{memberrow.AGE}{memberrow.STYLE}</td>
 		</tr>
 		</table>
 	</td>
@@ -92,6 +92,7 @@
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+</form>
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
@@ -103,4 +104,3 @@
 	<td valign="top" align="right">{JUMPBOX}</td>
 </tr>
 </table>
-</form>

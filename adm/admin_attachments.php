@@ -35,6 +35,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
 include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
 
 if (!intval($attach_config['allow_ftp_upload']))
 {
@@ -722,7 +723,7 @@ if ($mode == 'shadow')
 	}
 }
 
-if ($submit && $mode == 'cats')
+if ($submit && ($mode == 'cats'))
 {
 	if (!$error)
 	{
@@ -889,7 +890,7 @@ if ($check_image_cat)
 
 			if (!@file_exists(@amod_realpath($upload_dir)))
 			{
-				$error = TRUE;
+				$error = true;
 				$error_msg = sprintf($lang['Directory_does_not_exist'], $upload_dir) . '<br />';
 			}
 
@@ -1011,7 +1012,7 @@ if ($mode == 'sync')
 
 	echo (isset($lang['Sync_topics'])) ? $lang['Sync_topics'] : 'Sync Topics';
 
-	$sql = "SELECT topic_id	FROM " . TOPICS_TABLE;
+	$sql = "SELECT topic_id FROM " . TOPICS_TABLE;
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
@@ -1075,7 +1076,8 @@ if ($mode == 'sync')
 	// Sync Thumbnails (if a thumbnail is no longer there, delete it)
 	// Get all Posts/PM's with the Thumbnail Flag set
 	// Go through all of them and make sure the Thumbnail exist. If it does not exist, unset the Thumbnail Flag
-	$sql = "SELECT attach_id, physical_filename, thumbnail FROM " . ATTACHMENTS_DESC_TABLE . " WHERE thumbnail = 1";
+	//$sql = "SELECT attach_id, physical_filename, thumbnail, mimetype FROM " . ATTACHMENTS_DESC_TABLE . " WHERE thumbnail = 1";
+	$sql = "SELECT attach_id, physical_filename, thumbnail, extension, mimetype FROM " . ATTACHMENTS_DESC_TABLE . " WHERE extension IN('png', 'jpg', 'jpeg')";
 
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -1096,12 +1098,37 @@ if ($mode == 'sync')
 
 		if (!thumbnail_exists(basename($row['physical_filename'])))
 		{
-			$info .= sprintf($lang['Sync_thumbnail_resetted'], $row['physical_filename']) . '<br />';
-			$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = 0 WHERE attach_id = " . (int) $row['attach_id'];
-			if (!($db->sql_query($sql)))
+			if (!intval($attach_config['allow_ftp_upload']))
 			{
-				$error = $db->sql_error();
-				die('Could not update thumbnail informations -> ' . $error['message'] . ' -> ' . $sql);
+				$source = $upload_dir . '/' . basename($row['physical_filename']);
+				$dest_file = @amod_realpath($upload_dir);
+				$dest_file .= '/' . THUMB_DIR . '/t_' . basename($row['physical_filename']);
+			}
+			else
+			{
+				$source = $row['physical_filename'];
+				$dest_file = THUMB_DIR . '/t_' . basename($row['physical_filename']);
+			}
+
+			if (!create_thumbnail($source, $dest_file, $row['mimetype']))
+			{
+				$info .= sprintf($lang['Sync_thumbnail_resetted'], $row['physical_filename']) . '<br />';
+				$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = 0 WHERE attach_id = " . (int) $row['attach_id'];
+				if (!($db->sql_query($sql)))
+				{
+					$error = $db->sql_error();
+					die('Could not update thumbnail informations -> ' . $error['message'] . ' -> ' . $sql);
+				}
+			}
+			else
+			{
+				$info .= sprintf($lang['Sync_thumbnail_recreated'], $row['physical_filename']) . '<br />';
+				$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = 1 WHERE attach_id = " . (int) $row['attach_id'];
+				if (!($db->sql_query($sql)))
+				{
+					$error = $db->sql_error();
+					die('Could not update thumbnail informations -> ' . $error['message'] . ' -> ' . $sql);
+				}
 			}
 		}
 		$i++;

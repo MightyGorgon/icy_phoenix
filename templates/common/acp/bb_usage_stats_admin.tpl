@@ -1,26 +1,34 @@
 <!-- **** BB USAGE STATISTICS MOD **** -->
-<script type="text/javascript"><!--
-
+<script type="text/javascript">
+<!--
 function setValue(textObj, chkObj, viewlevel)
 {
-	var chkObjValue = chkObj.checked
-	var txtObjValue = parseInt(textObj.value)
+	var chkObjValue = document.getElementById(chkObj);
+	var txtObjValue = parseInt(document.getElementById(textObj).value);
 
-	if (chkObjValue == true)
+	if (chkObjValue.checked)
 	{
-		textObj.value = txtObjValue + viewlevel
+		document.getElementById(textObj).value = txtObjValue + viewlevel;
 	} // if
 	else
 	{
-		textObj.value = txtObjValue - viewlevel
+		document.getElementById(textObj).value = txtObjValue - viewlevel;
 	} // else
 } // function
 
-function selectContents(fieldObj)
+function setValue_new(schecked, targettxt, tvalue)
 {
-	fieldObj.select();
-}
-//--></script>
+	if (schecked)
+	{
+		document.getElementById(targettxt).value = parseInt(document.getElementById(targettxt).value) + tvalue;
+	} // if
+	else
+	{
+		document.getElementById(targettxt).value = parseInt(document.getElementById(targettxt).value) - tvalue;
+	} // else
+} // function
+//-->
+</script>
 <tr><th colspan="2">{L_BBUS_SETTINGS_CAPTION}</th></tr>
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_BBUS_SETTINGS_EXPLAIN}</span></td></tr>
 
@@ -28,71 +36,47 @@ function selectContents(fieldObj)
 	<td class="row1" valign="top"><strong>{L_BBUS_SETTING_VIEWLEVEL_CAPTION}</strong><br /></td>
 	<td class="row2">
 		<span class="gensmall">{L_BBUS_SETTING_VIEWLEVEL_EXPLAIN1}</span>
-		<table cellpadding="2">
-			<tr>
-				<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_ANONYMOUS_CAPTION}</strong></span></td>
-				<td class="row3"><span class="gensmall">{L_BBUS_VIEWLEVEL_ANONYMOUS_EXPLAIN}</span></td>
-				<td class="row3"><span class="gensmall">{BBUS_VIEWLEVEL_ANONYMOUS_FLAGVALUE}</span></td>
-				<td class="row3">
-					<span class="gensmall">
-						<input id="chkVLAnonymous" {BBUS_VIEWLEVEL_ANONYMOUS_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewlevel, chkVLAnonymous,{BBUS_VIEWLEVEL_ANONYMOUS_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_SELF_CAPTION}</strong></span></td>
-				<td class="row2"><span class="gensmall">{L_BBUS_VIEWLEVEL_SELF_EXPLAIN}</span></td>
-				<td class="row2"><span class="gensmall">{BBUS_VIEWLEVEL_SELF_FLAGVALUE}</span></td>
-				<td class="row2">
-					<span class="gensmall">
-						<input id="chkVLSelf" {BBUS_VIEWLEVEL_SELF_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewlevel, chkVLSelf,{BBUS_VIEWLEVEL_SELF_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_USERS_CAPTION}</strong></span></td>
-				<td class="row3"><span class="gensmall">{L_BBUS_VIEWLEVEL_USERS_EXPLAIN}</span></td>
-				<td class="row3"><span class="gensmall">{BBUS_VIEWLEVEL_USERS_FLAGVALUE}</span></td>
-				<td class="row3">
-					<span class="gensmall">
-						<input id="chkVLUsers" {BBUS_VIEWLEVEL_USERS_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewlevel, chkVLUsers,{BBUS_VIEWLEVEL_USERS_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_MODERATORS_CAPTION}</strong></span></td>
-				<td class="row2"><span class="gensmall">{L_BBUS_VIEWLEVEL_MODERATORS_EXPLAIN}</span></td>
-				<td class="row2"><span class="gensmall">{BBUS_VIEWLEVEL_MODERATORS_FLAGVALUE}</span></td>
-				<td class="row2">
-					<span class="gensmall">
-						<input id="chkVLModerators" {BBUS_VIEWLEVEL_MODERATORS_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewlevel, chkVLModerators,{BBUS_VIEWLEVEL_MODERATORS_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_ADMINS_CAPTION}</strong></span></td>
-				<td class="row3"><span class="gensmall">{L_BBUS_VIEWLEVEL_ADMINS_EXPLAIN}</span></td>
-				<td class="row3"><span class="gensmall">{BBUS_VIEWLEVEL_ADMINS_FLAGVALUE}</span></td>
-				<td class="row3">
-					<span class="gensmall">
-						<input id="chkVLAdmins" {BBUS_VIEWLEVEL_ADMINS_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewlevel, chkVLAdmins,{BBUS_VIEWLEVEL_ADMINS_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_SPECIALGRP_CAPTION}</strong></span></td>
-				<td class="row2"><span class="gensmall">{L_BBUS_VIEWLEVEL_SPECIALGRP_EXPLAIN}</span></td>
-				<td class="row2"><span class="gensmall">{BBUS_VIEWLEVEL_SPECIALGRP_FLAGVALUE}</span></td>
-				<td class="row2">
-					<span class="gensmall">
-						<input name="chkVLSpecialGrp" {BBUS_VIEWLEVEL_SPECIALGRP_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewlevel, chkVLSpecialGrp,{BBUS_VIEWLEVEL_SPECIALGRP_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
+		<table class="forumline" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_ANONYMOUS_CAPTION}</strong></span></td>
+			<td class="row3"><span class="gensmall">{L_BBUS_VIEWLEVEL_ANONYMOUS_EXPLAIN}</span></td>
+			<td class="row3"><span class="gensmall">{BBUS_VIEWLEVEL_ANONYMOUS_FLAGVALUE}</span></td>
+
+			<td class="row3"><input id="chkVLAnonymous" {BBUS_VIEWLEVEL_ANONYMOUS_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewlevel', {BBUS_VIEWLEVEL_ANONYMOUS_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_SELF_CAPTION}</strong></span></td>
+			<td class="row2"><span class="gensmall">{L_BBUS_VIEWLEVEL_SELF_EXPLAIN}</span></td>
+			<td class="row2"><span class="gensmall">{BBUS_VIEWLEVEL_SELF_FLAGVALUE}</span></td>
+			<td class="row2"><input id="chkVLSelf" {BBUS_VIEWLEVEL_SELF_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewlevel', {BBUS_VIEWLEVEL_SELF_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_USERS_CAPTION}</strong></span></td>
+			<td class="row3"><span class="gensmall">{L_BBUS_VIEWLEVEL_USERS_EXPLAIN}</span></td>
+			<td class="row3"><span class="gensmall">{BBUS_VIEWLEVEL_USERS_FLAGVALUE}</span></td>
+			<td class="row3"><input id="chkVLUsers" {BBUS_VIEWLEVEL_USERS_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewlevel', {BBUS_VIEWLEVEL_USERS_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_MODERATORS_CAPTION}</strong></span></td>
+			<td class="row2"><span class="gensmall">{L_BBUS_VIEWLEVEL_MODERATORS_EXPLAIN}</span></td>
+			<td class="row2"><span class="gensmall">{BBUS_VIEWLEVEL_MODERATORS_FLAGVALUE}</span></td>
+			<td class="row2"><input id="chkVLModerators" {BBUS_VIEWLEVEL_MODERATORS_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewlevel', {BBUS_VIEWLEVEL_MODERATORS_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_ADMINS_CAPTION}</strong></span></td>
+			<td class="row3"><span class="gensmall">{L_BBUS_VIEWLEVEL_ADMINS_EXPLAIN}</span></td>
+			<td class="row3"><span class="gensmall">{BBUS_VIEWLEVEL_ADMINS_FLAGVALUE}</span></td>
+			<td class="row3"><input id="chkVLAdmins" {BBUS_VIEWLEVEL_ADMINS_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewlevel', {BBUS_VIEWLEVEL_ADMINS_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_SPECIALGRP_CAPTION}</strong></span></td>
+			<td class="row2"><span class="gensmall">{L_BBUS_VIEWLEVEL_SPECIALGRP_EXPLAIN}</span></td>
+			<td class="row2"><span class="gensmall">{BBUS_VIEWLEVEL_SPECIALGRP_FLAGVALUE}</span></td>
+			<td class="row2"><input name="chkVLSpecialGrp" {BBUS_VIEWLEVEL_SPECIALGRP_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewlevel', {BBUS_VIEWLEVEL_SPECIALGRP_FLAGVALUE});" /></td>
+		</tr>
 		</table>
 		<br />
-		<input type="text" readonly onFocus="javascript: selectContents(this)"  size="3" maxlength="10" name="bb_usage_stats_viewlevel" value="{BBUS_SETTING_VIEWLEVEL_VALUE}"/><strong>
-		{L_BBUS_SETTING_VIEWLEVEL_NOTE}</strong>
+		<input id="bb_usage_stats_viewlevel" name="bb_usage_stats_viewlevel" type="text" readonly="readonly" onFocus="javascript: this.select();" size="3" maxlength="10" value="{BBUS_SETTING_VIEWLEVEL_VALUE}" /><strong>{L_BBUS_SETTING_VIEWLEVEL_NOTE}</strong>
 		<hr />
 		<span class="gensmall">{L_BBUS_SETTING_VIEWLEVEL_EXPLAIN2}</span>
 	</td>
@@ -112,65 +96,40 @@ function selectContents(fieldObj)
 	<td class="row1" valign="top"><strong>{L_BBUS_SETTING_VIEWOPTIONS_CAPTION}</strong><br /></td>
 	<td class="row2">
 		<span class="gensmall">{L_BBUS_SETTING_VIEWOPTIONS_EXPLAIN1}</span>
-		<table cellpadding="2">
-			<tr>
-				<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_SHOW_ALL_FORUMS_CAPTION}</strong></span></td>
-				<td class="row2"><span class="gensmall">{BBUS_VIEWOPTION_SHOW_ALL_FORUMS_FLAGVALUE}</span></td>
-				<td class="row2">
-					<span class="gensmall">
-						<input id="chkVOShowAllForums" {BBUS_VIEWOPTION_SHOW_ALL_FORUMS_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewoptions, chkVOShowAllForums,{BBUS_VIEWOPTION_SHOW_ALL_FORUMS_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_CAPTION}</strong></span></td>
-				<td class="row3"><span class="gensmall">{BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_FLAGVALUE}</span></td>
-				<td class="row3">
-					<span class="gensmall">
-						<input id="chkVOPctUTUPColumnVisible" {BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewoptions, chkVOPctUTUPColumnVisible,{BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_CAPTION}</strong></span></td>
-				<td class="row2"><span class="gensmall">{BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_FLAGVALUE}</span></td>
-				<td class="row2">
-					<span class="gensmall">
-						<input id="chkVOMiscSectionVisible" {BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewoptions, chkVOMiscSectionVisible,{BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_CAPTION}</strong></span></td>
-				<td class="row3"><span class="gensmall">{BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_FLAGVALUE}</span></td>
-				<td class="row3">
-					<span class="gensmall">
-						<input id="chkVOMiscTotPrunedPosts" {BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewoptions, chkVOMiscTotPrunedPosts,{BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_CAPTION}</strong></span></td>
-				<td class="row2"><span class="gensmall">{BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_FLAGVALUE}</span></td>
-				<td class="row2">
-					<span class="gensmall">
-						<input id="chkVOViewerScalablePR" {BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewoptions, chkVOViewerScalablePR,{BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
-			<tr>
-				<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_CAPTION}</strong></span></td>
-				<td class="row3"><span class="gensmall">{BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_FLAGVALUE}</span></td>
-				<td class="row3">
-					<span class="gensmall">
-						<input id="chkVOViewerScalableTR" {BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_CHKED} type="checkbox" onclick="javascript: setValue(bb_usage_stats_viewoptions, chkVOViewerScalableTR,{BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_FLAGVALUE})"></input>
-					</span>
-				</td>
-			</tr>
+		<table class="forumline" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_SHOW_ALL_FORUMS_CAPTION}</strong></span></td>
+			<td class="row2"><span class="gensmall">{BBUS_VIEWOPTION_SHOW_ALL_FORUMS_FLAGVALUE}</span></td>
+			<td class="row2"><input id="chkVOShowAllForums" {BBUS_VIEWOPTION_SHOW_ALL_FORUMS_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewoptions', {BBUS_VIEWOPTION_SHOW_ALL_FORUMS_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_CAPTION}</strong></span></td>
+			<td class="row3"><span class="gensmall">{BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_FLAGVALUE}</span></td>
+			<td class="row3"><input id="chkVOPctUTUPColumnVisible" {BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewoptions', {BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_CAPTION}</strong></span></td>
+			<td class="row2"><span class="gensmall">{BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_FLAGVALUE}</span></td>
+			<td class="row2"><input id="chkVOMiscSectionVisible" {BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewoptions', {BBUS_VIEWOPTION_MISC_SECTION_VISIBLE_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_CAPTION}</strong></span></td>
+			<td class="row3"><span class="gensmall">{BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_FLAGVALUE}</span></td>
+			<td class="row3"><input id="chkVOMiscTotPrunedPosts" {BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewoptions', {BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_CAPTION}</strong></span></td>
+			<td class="row2"><span class="gensmall">{BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_FLAGVALUE}</span></td>
+			<td class="row2"><input id="chkVOViewerScalablePR" {BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewoptions', {BBUS_VIEWOPTION_VIEWER_SCALABLE_PR_FLAGVALUE});" /></td>
+		</tr>
+		<tr>
+			<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_CAPTION}</strong></span></td>
+			<td class="row3"><span class="gensmall">{BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_FLAGVALUE}</span></td>
+			<td class="row3"><input id="chkVOViewerScalableTR" {BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_CHKED} type="checkbox" onclick="javascript: setValue_new(this.checked, 'bb_usage_stats_viewoptions', {BBUS_VIEWOPTION_VIEWER_SCALABLE_TR_FLAGVALUE});" /></td>
+		</tr>
 		</table>
 		<br />
-		<input type="text" readonly="readonly" onFocus="javascript: selectContents(this)" size="3" maxlength="10" name="bb_usage_stats_viewoptions" value="{BBUS_SETTING_VIEWOPTIONS_VALUE}"/><strong>
-		{L_BBUS_SETTING_VIEWOPTIONS_NOTE}</strong>
+		<input id="bb_usage_stats_viewoptions" name="bb_usage_stats_viewoptions" type="text" readonly="readonly" onFocus="javascript: this.select();" size="3" maxlength="10" value="{BBUS_SETTING_VIEWOPTIONS_VALUE}" /><strong>{L_BBUS_SETTING_VIEWOPTIONS_NOTE}</strong>
 		<hr />
 		<span class="gensmall">{L_BBUS_SETTING_VIEWOPTIONS_EXPLAIN2}</span>
 	</td>

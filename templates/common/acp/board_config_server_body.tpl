@@ -1,7 +1,7 @@
 <h1>{L_CONFIGURATION_TITLE}</h1>
 <p>{L_CONFIGURATION_EXPLAIN}</p>
 
-<form action="{S_CONFIG_ACTION}" method="post"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<form id="configform" action="{S_CONFIG_ACTION}" method="post"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_SERVER_SETTINGS}</th></tr>
 <tr>
 	<td class="row1" width="300"><strong>{L_SERVER_NAME}</strong></td>
@@ -34,6 +34,10 @@
 <tr>
 	<td class="row1"><span class="gensmall">{L_MESSAGE_DISABLE_BOARD_TEXT}</span></td>
 	<td class="row2"><input class="post" type="text" size="80" name="message_board_disable_text" value="{BOARD_DISABLE_MESSAGE}" /></td>
+</tr>
+<tr>
+	<td class="row1"><strong>{L_ENABLE_GZIP}</strong></td>
+	<td class="row2"><input type="radio" name="gzip_compress" value="1" {GZIP_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="gzip_compress" value="0" {GZIP_NO} /> {L_NO}</td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_DISABLE_REGISTRATION_IP_CHECK}</strong><br /><span class="gensmall">{L_DISABLE_REGISTRATION_IP_CHECK_EXPLAIN}</span></td>

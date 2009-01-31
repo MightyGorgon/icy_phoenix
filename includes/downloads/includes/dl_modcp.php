@@ -1121,7 +1121,8 @@ if ($action == 'capprove')
 
 	$template->set_filenames(array('body' => 'dl_modcp_capprove.tpl'));
 
-	$sql = "SELECT d.cat, d.id, d.description, c.comment_text, c.user_id, c.username, c.dl_id FROM " . DOWNLOADS_TABLE . " d, " . DL_COMMENTS_TABLE . " c
+	$sql = "SELECT d.cat, d.id, d.description, c.comment_text, c.user_id, c.username, c.dl_id
+		FROM " . DOWNLOADS_TABLE . " d, " . DL_COMMENTS_TABLE . " c
 		WHERE d.id = c.id
 			AND c.approve = 0
 			$sql_access_cats
@@ -1145,11 +1146,10 @@ if ($action == 'capprove')
 		$file_id = $row['id'];
 		$comment_id = $row['dl_id'];
 		$comment_text = $row['comment_text'];
-		$comment_text = (strlen($comment_text) > 200) ? substr($comment_text,0,200).'<br />[...]' : $comment_text;
+		$comment_text = (strlen($comment_text) > 200) ? substr($comment_text, 0, 200) . '<br />[...]' : $comment_text;
 		$comment_user_id = $row['user_id'];
 		$comment_username = $row['username'];
-		//$comment_user_link = ($comment_user_id <> ANONYMOUS) ? append_sid(PROFILE_MG . '?mode=viewprofile&amp;'.POST_USERS_URL."=$comment_user_id") : '';
-		$comment_user_link = colorize_username($comment_user_id);
+		$comment_user_link = ($comment_user_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($comment_user_id);
 
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 

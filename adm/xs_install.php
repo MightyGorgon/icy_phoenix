@@ -65,25 +65,26 @@ if(!empty($_POST['total']) && !defined('DEMO_MODE'))
 	$tpl = array();
 	$num = array();
 	$total = intval($_POST['total']);
-	for($i=0; $i<$total; $i++)
+	for($i = 0; $i < $total; $i++)
 	{
 		if(!empty($_POST['install_'.$i]))
 		{
-			$tpl[] = stripslashes($_POST['install_'.$i.'_style']);
-			$num[] = intval($_POST['install_'.$i.'_num']);
+			$tpl[] = stripslashes($_POST['install_' . $i . '_style']);
+			$num[] = intval($_POST['install_' . $i . '_num']);
 		}
 	}
 	if(count($tpl))
 	{
-		for($i=0; $i<count($tpl); $i++)
+		for($i = 0; $i < count($tpl); $i++)
 		{
 			xs_install_style($tpl[$i], $num[$i]);
 		}
 		if(defined('REFRESH_NAVBAR'))
 		{
 			$template->assign_block_vars('left_refresh', array(
-					'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
-				));
+				'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
+				)
+			);
 		}
 		if(defined('XS_MODS_CATEGORY_HIERARCHY'))
 		{
@@ -107,7 +108,7 @@ $res = @opendir('../templates/');
 $styles = array();
 while(($file = readdir($res)) !== false)
 {
-	if($file !== '.' && $file !== '..' && @file_exists('../templates/' . $file . '/theme_info.cfg') && @file_exists('../templates/' . $file . '/' . $file . '.cfg'))
+	if(($file !== '.') && ($file !== '..') && @file_exists('../templates/' . $file . '/theme_info.cfg') && @file_exists('../templates/' . $file . '/' . $file . '.cfg'))
 	{
 		$arr = xs_get_themeinfo($file);
 		for($i = 0; $i < count($arr); $i++)

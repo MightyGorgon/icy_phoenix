@@ -29,7 +29,7 @@ define('CACHE_TREE', true);
 //--------------------------------------------------------------------------------------------------
 // $nav_separator : used in the navigation sentence : ie Forum Index -> MainCat -> Forum -> Topic
 //--------------------------------------------------------------------------------------------------
-$nav_separator = '&nbsp;&raquo;&nbsp;';
+$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 
 //--------------------------------------------------------------------------------------------------
 // board_stats : update the board stats (topics, posts and users)
@@ -51,15 +51,7 @@ function board_stats()
 	// update
 	if ($board_config['max_users'] != $max_users)
 	{
-		$config_updated = true;
-		$board_config['max_users'] = $max_users;
-		$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = " . $board_config['max_users'] . "
-					WHERE config_name = 'max_users'";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update config table', '', __LINE__, __FILE__, $sql);
-		}
+		set_config('max_users', $max_users);
 	}
 
 	// newest user
@@ -85,17 +77,18 @@ function board_stats()
 	$newest_user_id = intval($row['user_id']);
 
 	// update
-	if ($board_config['last_user_id'] != $newest_user_id)
+	$cache_data_file = MAIN_CACHE_FOLDER . 'newest_user.dat';
+	if (($board_config['last_user_id'] != $newest_user_id) || !file_exists($cache_data_file))
 	{
-		$config_updated = true;
-		$board_config['last_user_id'] = $newest_user_id;
-		$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = " . $board_config['last_user_id'] . "
-					WHERE config_name = 'last_user_id'";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update config table', '', __LINE__, __FILE__, $sql);
-		}
+		set_config('last_user_id', $newest_user_id);
+		$cache_data_file = MAIN_CACHE_FOLDER . 'newest_user.dat';
+		$newest_user = colorize_username($newest_user_id);
+		$data = '<' . '?php' . "\n";
+		$data .= '$newest_user = \'' . ((STRIP) ? addslashes($newest_user) : $newest_user) . '\';' . "\n";
+		$data .= '?' . '>';
+		$fp = fopen($cache_data_file, 'w');
+		@fwrite($fp, $data);
+		@fclose($fp);
 	}
 
 	// topics and posts
@@ -111,32 +104,11 @@ function board_stats()
 	// update
 	if ($board_config['max_topics'] != $max_topics)
 	{
-		$config_updated = true;
-		$board_config['max_topics'] = $max_topics;
-		$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = " . $board_config['max_topics'] . "
-					WHERE config_name = 'max_topics'";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update config table', '', __LINE__, __FILE__, $sql);
-		}
+		set_config('max_topics', $max_topics);
 	}
 	if ($board_config['max_posts'] != $max_posts)
 	{
-		$config_updated = true;
-		$board_config['max_posts'] = $max_posts;
-		$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = " . $board_config['max_posts'] . "
-					WHERE config_name = 'max_posts'";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update config table', '', __LINE__, __FILE__, $sql);
-		}
-	}
-
-	if ($config_updated == true)
-	{
-		$db->clear_cache('config_');
+		set_config('max_posts', $max_posts);
 	}
 }
 
@@ -319,23 +291,37 @@ function cache_tree_output()
 	while (list($idx, $data) = @each($tree['mods']))
 	{
 		$s_user_ids = empty($data['user_id']) ? '' : implode(', ', $data['user_id']);
+		$s_user_actives = empty($data['user_active']) ? '' : implode(', ', $data['user_active']);
 		$s_group_ids = empty($data['group_id']) ? '' : implode(', ', $data['group_id']);
 		$s_usernames = '';
 		for ($j = 0; $j < count($data['username']); $j++)
 		{
 			$s_usernames .= (empty($s_usernames) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['username'][$j]));
 		}
+		$s_user_colors = '';
+		for ($j = 0; $j < count($data['user_color']); $j++)
+		{
+			$s_user_colors .= (empty($s_user_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['user_color'][$j]));
+		}
 		$s_group_names = '';
 		for ($j = 0; $j < count($data['group_name']); $j++)
 		{
 			$s_group_names .= (empty($s_group_names) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_name'][$j]));
 		}
+		$s_group_colors = '';
+		for ($j = 0; $j < count($data['group_color']); $j++)
+		{
+			$s_group_colors .= (empty($s_group_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_color'][$j]));
+		}
 		$template->assign_block_vars('mods', array(
 			'IDX' => $idx,
 			'USER_IDS' => $s_user_ids,
 			'USERNAMES' => $s_usernames,
+			'USER_ACTIVES' => $s_user_actives,
+			'USER_COLORS' => $s_user_colors,
 			'GROUP_IDS' => $s_group_ids,
 			'GROUP_NAMES' => $s_group_names,
+			'GROUP_COLORS' => $s_group_colors,
 			)
 		);
 	}
@@ -415,7 +401,7 @@ function cache_tree($write = false)
 	// read categories
 	$cats = array();
 	$sql = "SELECT * FROM " . CATEGORIES_TABLE . " ORDER BY cat_order, cat_id";
-	if (!$result = $db->sql_query($sql, false, 'forums_cats_'))
+	if (!$result = $db->sql_query($sql, false, 'forums_cats_', FORUMS_CACHE_FOLDER))
 	{
 		message_die(GENERAL_ERROR, 'Couldn\'t access list of Categories', '', __LINE__, __FILE__, $sql);
 	}
@@ -438,7 +424,7 @@ function cache_tree($write = false)
 
 	// read forums
 	$sql = "SELECT * FROM " . FORUMS_TABLE . " ORDER BY forum_order, forum_id";
-	if (!$result = $db->sql_query($sql, false, 'forums_'))
+	if (!$result = $db->sql_query($sql, false, 'forums_', FORUMS_CACHE_FOLDER))
 	{
 		message_die(GENERAL_ERROR, "Couldn't access list of Forums", "", __LINE__, __FILE__, $sql);
 	}
@@ -459,7 +445,7 @@ function cache_tree($write = false)
 	// Obtain list of moderators of each forum
 	// First users, then groups ... broken into two queries
 	//
-	$sql = "SELECT aa.forum_id, u.user_id, u.username
+	$sql = "SELECT aa.forum_id, u.user_id, u.username, u.user_active, u.user_color
 			FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u
 			WHERE aa.auth_mod = " . TRUE . "
 				AND g.group_single_user = 1
@@ -478,9 +464,11 @@ function cache_tree($write = false)
 		$idx = $tree['keys'][ POST_FORUM_URL . $row['forum_id'] ];
 		$tree['mods'][$idx]['user_id'][] = $row['user_id'];
 		$tree['mods'][$idx]['username'][] = $row['username'];
+		$tree['mods'][$idx]['user_active'][] = $row['user_active'];
+		$tree['mods'][$idx]['user_color'][] = $row['user_color'];
 	}
 
-	$sql = "SELECT aa.forum_id, g.group_id, g.group_name
+	$sql = "SELECT aa.forum_id, g.group_id, g.group_name, g.group_color
 			FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
 			WHERE aa.auth_mod = " . TRUE . "
 				AND g.group_single_user = 0
@@ -499,6 +487,7 @@ function cache_tree($write = false)
 		$idx = $tree['keys'][ POST_FORUM_URL . $row['forum_id'] ];
 		$tree['mods'][$idx]['group_id'][] = $row['group_id'];
 		$tree['mods'][$idx]['group_name'][] = $row['group_name'];
+		$tree['mods'][$idx]['group_color'][] = $row['group_color'];
 	}
 
 	if ($write)
@@ -567,7 +556,7 @@ function read_tree($force = false)
 	$sql = "SELECT forum_id, forum_last_post_id FROM " . FORUMS_TABLE;
 	if (CACHE_CH_SQL == true)
 	{
-		if (!$result = $db->sql_query($sql, false, 'posts_'))
+		if (!$result = $db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t access list of last posts from forums', '', __LINE__, __FILE__, $sql);
 		}
@@ -594,7 +583,7 @@ function read_tree($force = false)
 
 	// read the last or unread posts
 	$user_lastvisit = $userdata['session_logged_in'] ? $userdata['user_lastvisit'] : 99999999999;
-	$sql = "SELECT p.forum_id, p.topic_id, p.post_time, p.post_username, u.username, u.user_id, t.topic_poster, t.topic_last_post_id, t.topic_title, t.title_compl_infos
+	$sql = "SELECT p.forum_id, p.topic_id, p.post_time, p.post_username, u.username, u.user_id, u.user_active, u.user_color, t.topic_poster, t.topic_last_post_id, t.topic_title, t.title_compl_infos
 				FROM ((" . POSTS_TABLE . " p
 					LEFT JOIN " . TOPICS_TABLE . " t ON t.topic_id = p.topic_id AND t.forum_id = p.forum_id AND t.topic_moved_id = 0)
 					LEFT JOIN " . USERS_TABLE . " u ON u.user_id = p.poster_id)
@@ -602,7 +591,7 @@ function read_tree($force = false)
 					AND p.post_id = t.topic_last_post_id";
 	if (CACHE_CH_SQL == true)
 	{
-		if (!$result = $db->sql_query($sql, false, 'posts_'))
+		if (!$result = $db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t access list of unread posts from forums', '', __LINE__, __FILE__, $sql);
 		}
@@ -619,7 +608,7 @@ function read_tree($force = false)
 	{
 		if ($row['post_time'] > $user_lastvisit)
 		{
-			$new_topic_data[ $row['forum_id'] ][ $row['topic_id'] ] = $row['post_time'];
+			$new_topic_data[$row['forum_id']][$row['topic_id']] = $row['post_time'];
 		}
 		if (isset($last_posts[$row['topic_last_post_id']]))
 		{
@@ -888,6 +877,8 @@ function set_tree_user_auth()
 				$tree['data'][$i]['tree.post_time'] = $tree['data'][$i]['post_time'];
 				$tree['data'][$i]['tree.post_user_id'] = $tree['data'][$i]['user_id'];
 				$tree['data'][$i]['tree.post_username'] = ($tree['data'][$i]['user_id'] != ANONYMOUS) ? $tree['data'][$i]['username'] : ((!empty($tree['data'][$i]['post_username'])) ? $tree['data'][$i]['post_username'] : $lang['Guest']);
+				$tree['data'][$i]['tree.user_active'] = $tree['data'][$i]['user_active'];
+				$tree['data'][$i]['tree.user_color'] = $tree['data'][$i]['user_color'];
 				$tree['data'][$i]['tree.topic_title'] = $tree['data'][$i]['topic_title'];
 				$tree['data'][$i]['tree.unread_topics'] = $tree['unread_topics'][$i];
 			}
@@ -903,6 +894,8 @@ function set_tree_user_auth()
 				$tree['data'][$main_idx]['tree.post_time'] = $tree['data'][$i]['tree.post_time'];
 				$tree['data'][$main_idx]['tree.post_user_id'] = $tree['data'][$i]['tree.post_user_id'];
 				$tree['data'][$main_idx]['tree.post_username'] = $tree['data'][$i]['tree.post_username'];
+				$tree['data'][$main_idx]['tree.user_active'] = $tree['data'][$i]['user_active'];
+				$tree['data'][$main_idx]['tree.user_color'] = $tree['data'][$i]['user_color'];
 				$tree['data'][$main_idx]['tree.topic_title'] = $tree['data'][$i]['tree.topic_title'];
 				$tree['data'][$main_idx]['tree.unread_topics'] = $tree['data'][$i]['tree.unread_topics'];
 			}
@@ -1266,7 +1259,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				$last_post_time = create_date2($board_config['default_dateformat'], $data['tree.post_time'], $board_config['board_timezone']);
 				$last_post  = (($board_config['last_topic_title']) ? $topic_title : '');
 				$last_post .= $last_post_time . '<br />';
-				$last_post .= ($data['tree.post_user_id'] == ANONYMOUS) ? $data['tree.post_username'] . ' ' : colorize_username($data['tree.post_user_id']);
+				$last_post .= ($data['tree.post_user_id'] == ANONYMOUS) ? $data['tree.post_username'] . ' ' : colorize_username($data['tree.post_user_id'], $data['tree.post_username'], $data['tree.user_color'], $data['tree.user_active']);
 
 				$last_post .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (($data['tree.unread_topics']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 			}
@@ -1562,11 +1555,11 @@ function display_index($cur = 'Root')
 		{
 			for ($i = 0; $i < count($data['user_id']); $i++)
 			{
-				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('./' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $data['user_id'][$i]) . '">' . $data['username'][$i] . '</a>';
+				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $data['user_id'][$i]) . '">' . $data['username'][$i] . '</a>';
 			}
 			for ($i = 0; $i < count($data['group_id']); $i++)
 			{
-				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('./groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
+				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
 			}
 		}
 	}

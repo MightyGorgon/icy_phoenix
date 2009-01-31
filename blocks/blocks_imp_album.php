@@ -52,7 +52,6 @@ if(!function_exists('imp_album_block_func'))
 		*/
 		include_once(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 		global $album_config;
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$sql = "SELECT c.*, COUNT(p.pic_id) AS count
 				FROM " . ALBUM_CAT_TABLE . " AS c
@@ -130,7 +129,7 @@ if(!function_exists('imp_album_block_func'))
 			{
 				if ($category_id != 0)
 				{
-					$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+					$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 						FROM " . ALBUM_TABLE . " AS p
 							LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 							LEFT JOIN " . ALBUM_CAT_TABLE . " AS ct ON p.pic_cat_id = ct.cat_id
@@ -143,7 +142,7 @@ if(!function_exists('imp_album_block_func'))
 				}
 				else
 				{
-					$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+					$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 						FROM " . ALBUM_TABLE . " AS p
 							LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 							LEFT JOIN " . ALBUM_CAT_TABLE . " AS ct ON p.pic_cat_id = ct.cat_id
@@ -159,7 +158,7 @@ if(!function_exists('imp_album_block_func'))
 			{
 				if ($category_id != 0)
 				{
-					$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+					$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 						FROM " . ALBUM_TABLE . " AS p
 							LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 							LEFT JOIN " . ALBUM_CAT_TABLE . " AS ct ON p.pic_cat_id = ct.cat_id
@@ -172,7 +171,7 @@ if(!function_exists('imp_album_block_func'))
 				}
 				else
 				{
-					$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+					$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 						FROM " . ALBUM_TABLE . " AS p
 							LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 							LEFT JOIN " . ALBUM_CAT_TABLE . " AS ct ON p.pic_cat_id = ct.cat_id
@@ -232,7 +231,7 @@ if(!function_exists('imp_album_block_func'))
 								}
 								else
 								{
-									$recent_poster = colorize_username($recentrow[$image_counter]['user_id']);
+									$recent_poster = colorize_username($recentrow[$image_counter]['user_id'], $recentrow[$image_counter]['username'], $recentrow[$image_counter]['user_color'], $recentrow[$image_counter]['user_active']);
 								}
 
 								$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']));

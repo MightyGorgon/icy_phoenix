@@ -118,7 +118,7 @@ function handleClick(id)
 				<td class="row1" width="34%">
 				<span class="genmed"><b>{L_GROUP}:</b></span>
 					<!-- BEGIN group_row -->
-					<span class="genmed"><a href="{user_row.group_row.U_GROUP}" class="genmed" target="_blank">{user_row.group_row.GROUP_NAME}</a> ({user_row.group_row.GROUP_STATUS})</span><br />
+					<span class="genmed"><a href="{user_row.group_row.U_GROUP}" class="genmed" {user_row.group_row.GROUP_COLOR} target="_blank">{user_row.group_row.GROUP_NAME}</a> ({user_row.group_row.GROUP_STATUS})</span><br />
 					<!-- END group_row -->
 					<!-- BEGIN no_group_row -->
 					<span class="genmed">{user_row.no_group_row.L_NONE}</span><br />

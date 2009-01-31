@@ -172,7 +172,7 @@ if(!function_exists('imp_poll_block_func'))
 							'POLL_GRAPHIC_RIGHT' => $voting_bar_right_img,
 							'B_POLL_OPTION_COLOR' => $vote_color,
 							'B_POLL_OPTION_IMG' => $vote_graphic_img,
-							'B_POLL_OPTION_IMG_WIDTH' => $portal_vote_graphic_length/1
+							'B_POLL_OPTION_IMG_WIDTH' => $portal_vote_graphic_length / 1
 							)
 						);
 					}

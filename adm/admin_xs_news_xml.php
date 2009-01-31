@@ -18,7 +18,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1600_News_Admin']['140_XS_News_Tickers'] = $filename;
@@ -42,11 +42,11 @@ if(empty($template->xs_version) || $template->xs_version < 6)
 
 // Query Config
 $sql = "SELECT * FROM " . XS_NEWS_CONFIG_TABLE;
-if( !($result = $db->sql_query($sql, false, 'xs_config_')) )
+if(!($result = $db->sql_query($sql)))
 {
 	message_die(CRITICAL_ERROR, 'Could not query XS News config information', '', __LINE__, __FILE__, $sql);
 }
-while ( $row = $db->sql_fetchrow($result) )
+while ($row = $db->sql_fetchrow($result))
 {
 	$xs_news_config[$row['config_name']] = $row['config_value'];
 }
@@ -54,12 +54,10 @@ while ( $row = $db->sql_fetchrow($result) )
 // load the admin language file
 include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
 
-//
 // Mode setting
-//
-if( isset($_POST['mode']) || isset($_GET['mode']) )
+if(isset($_POST['mode']) || isset($_GET['mode']))
 {
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
 	$mode = htmlspecialchars($mode);
 }
 else
@@ -67,19 +65,19 @@ else
 	$mode = "";
 }
 
-if ( isset($_POST['cancel']) )
+if (isset($_POST['cancel']))
 {
 	$mode = '';
 }
 
-if( isset($_POST['addxml']) )
+if(isset($_POST['addxml']))
 {
-	$mode = ( isset($_POST['addxml']) ) ? "addxml" : "";
+	$mode = (isset($_POST['addxml'])) ? "addxml" : "";
 }
 
-$confirm = ( isset($_POST['confirm']) ) ? true : 0;
+$confirm = (isset($_POST['confirm'])) ? true : 0;
 
-if( !empty($mode) )
+if(!empty($mode))
 {
 
 	switch($mode)
@@ -104,17 +102,17 @@ if( !empty($mode) )
 				$xml_id = $row['xml_id'];
 				$xml_title = $row['xml_title'];
 
-				$xml_display_yes = ( $row['xml_show'] ) ? 'checked="checked"' : '';
-				$xml_display_no = ( !$row['xml_show'] ) ? 'checked="checked"' : '';
+				$xml_display_yes = ($row['xml_show']) ? 'checked="checked"' : '';
+				$xml_display_no = (!$row['xml_show']) ? 'checked="checked"' : '';
 				$xml_feed = xsm_unprepare_message($row['xml_feed']);
 				$xml_width = $row['xml_width'];
 				$xml_height = $row['xml_height'];
 				$xml_fontsize = $row['xml_font'];
 				$xml_speed = $row['xml_speed'];
-				$xml_sd_left = ( !$row['xml_direction'] ) ? 'checked="checked"' : '';
-				$xml_sd_right = ( $row['xml_direction'] ) ? 'checked="checked"' : '';
-				$xml_is_feed_yes = ( $row['xml_is_feed'] ) ? 'checked="checked"' : '';
-				$xml_is_feed_no = ( !$row['xml_is_feed'] ) ? 'checked="checked"' : '';
+				$xml_sd_left = (!$row['xml_direction']) ? 'checked="checked"' : '';
+				$xml_sd_right = ($row['xml_direction']) ? 'checked="checked"' : '';
+				$xml_is_feed_yes = ($row['xml_is_feed']) ? 'checked="checked"' : '';
+				$xml_is_feed_no = (!$row['xml_is_feed']) ? 'checked="checked"' : '';
 
 			}
 			else
@@ -139,20 +137,18 @@ if( !empty($mode) )
 
 			}
 
-			$template->set_filenames(array(
-				'body' =>  XS_TPL_PATH . "news_ticker_edit_body.tpl"
-			));
+			$template->set_filenames(array('body' =>  XS_TPL_PATH . 'news_ticker_edit_body.tpl'));
 
-			$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode .'" />';
+			$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $xml_id . '" />';
 
 			$template->assign_vars(array(
-				'S_FORUM_ACTION' => append_sid("admin_xs_news_xml." . PHP_EXT),
+				'S_FORUM_ACTION' => append_sid('admin_xs_news_xml.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_SUBMIT_VALUE' => $buttonvalue,
 
-				'L_PAGE_TITLE' => ( $newmode == 'modxml' ) ? $lang['n_xml_edit_page_title'] : $lang['n_xml_add_page_title'],
-				'L_PAGE_TITLE_EXPLAIN' => ( $newmode == 'modxml' ) ? $lang['n_xml_edit_page_title_explain'] : $lang['n_xml_add_page_title_explain'],
+				'L_PAGE_TITLE' => ($newmode == 'modxml') ? $lang['n_xml_edit_page_title'] : $lang['n_xml_add_page_title'],
+				'L_PAGE_TITLE_EXPLAIN' => ($newmode == 'modxml') ? $lang['n_xml_edit_page_title_explain'] : $lang['n_xml_add_page_title_explain'],
 
 				'L_XS_NEWS_TICKER_SETTINGS' => $l_title,
 
@@ -185,16 +181,15 @@ if( !empty($mode) )
 				'XS_NEWS_TICKER_SD_RIGHT' => $xml_sd_right,
 				'XS_NEWS_ISFEED_YES' => $xml_is_feed_yes,
 				'XS_NEWS_ISFEED_NO' => $xml_is_feed_no
-			));
+				)
+			);
 
 			$template->pparse('body');
 			break;
 
 		case 'createxml':
-			//
 			// Create a new news ticker in the DB
-			//
-			if( trim($_POST['xml_feed']) == "" )
+			if(trim($_POST['xml_feed']) == "")
 			{
 				$message = $lang['n_xml_create_item_null'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
@@ -204,7 +199,7 @@ if( !empty($mode) )
 
 			$sql = "SELECT MAX(xml_id) AS max_id
 				FROM " . XS_NEWS_XML_TABLE;
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't get next ID number from News Ticker table", "", __LINE__, __FILE__, $sql);
 			}
@@ -215,10 +210,12 @@ if( !empty($mode) )
 
 			$sql = "INSERT INTO " . XS_NEWS_XML_TABLE . " (xml_id, xml_title, xml_show, xml_feed, xml_is_feed, xml_width, xml_height, xml_font, xml_speed, xml_direction" . ")
 				VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $_POST['xml_title']) . "', '" . intval($_POST['xml_show']) . "', '" . str_replace("\'", "''", $xml_feed) . "', '" . intval($_POST['xml_is_feed']) . "', '" . str_replace("\'", "''", $_POST['xml_width']) . "', '" . str_replace("\'", "''", $_POST['xml_height']) . "', '" . str_replace("\'", "''", $_POST['xml_font']) . "', '" . str_replace("\'", "''", $_POST['xml_speed']) . "', '" . intval($_POST['xml_direction']) . "')";
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't insert row in news table", "", __LINE__, __FILE__, $sql);
 			}
+
+			$db->clear_cache('xs_');
 
 			$message = $lang['n_xml_news_item_added'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -227,18 +224,18 @@ if( !empty($mode) )
 			break;
 
 		case 'modxml':
-			//
 			// Modify a news ticker in the DB
-			//
 			$xml_feed = xsm_prepare_message(trim($_POST['xml_feed']));
 
 			$sql = "UPDATE " . XS_NEWS_XML_TABLE . "
 				SET xml_title = '" . str_replace("\'", "''", $_POST['xml_title']) . "', xml_show = " . intval($_POST['xml_show']) . ", xml_feed = '" . str_replace("\'", "''", $xml_feed) . "', xml_is_feed = '" . intval($_POST['xml_is_feed']) . "', xml_width = '" . str_replace("\'", "''", $_POST['xml_width']). "', xml_height = '" . str_replace("\'", "''", $_POST['xml_height']). "', xml_font = '" . str_replace("\'", "''", $_POST['xml_font']). "', xml_speed = '" . str_replace("\'", "''", $_POST['xml_speed']). "', xml_direction = " . intval($_POST['xml_direction']). "
 				WHERE xml_id = " . intval($_POST['id']);
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't update XML Feed information", "", __LINE__, __FILE__, $sql);
 			}
+
+			$db->clear_cache('xs_');
 
 			$message = $lang['n_xml_news_updated'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -247,9 +244,7 @@ if( !empty($mode) )
 			break;
 
 		case 'deletexml':
-			//
 			// Show form to delete a news item
-			//
 			$xml_id = intval($_GET['id']);
 
 			$buttonvalue = $lang['Delete'];
@@ -259,14 +254,16 @@ if( !empty($mode) )
 			$xml_info = xsm_get_info('ticker', $xml_id);
 			$name = $news_info['n_news_item'];
 
-			if( $confirm )
+			if($confirm)
 			{
 				$sql = "DELETE FROM " . XS_NEWS_XML_TABLE . "
 					WHERE xml_id = $xml_id";
-				if( !$result = $db->sql_query($sql) )
+				if(!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, "Couldn't delete XML Feed", "", __LINE__, __FILE__, $sql);
 				}
+
+				$db->clear_cache('xs_');
 
 				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -274,12 +271,8 @@ if( !empty($mode) )
 			}
 			else
 			{
-				//
 				// Set template files
-				//
-				$template->set_filenames(array(
-					'confirm' =>  XS_TPL_PATH . 'news_confirm_body.tpl')
-				);
+				$template->set_filenames(array('confirm' =>  XS_TPL_PATH . 'news_confirm_body.tpl'));
 
 				$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" /><input type="hidden" name="id" value="' . $news_id . '" />';
 
@@ -311,12 +304,10 @@ if( !empty($mode) )
 	}
 }
 
-//
 // Start page proper
-//
 $template->set_filenames(array('body' => XS_TPL_PATH . 'news_ticker_list_body.tpl'));
 
-$master_switch = ( ($xs_news_config['xs_show_ticker'] == 1) ? true : false);
+$master_switch = (($xs_news_config['xs_show_ticker'] == 1) ? true : false);
 
 $template->assign_vars(array(
 	'S_FORUM_ACTION' => append_sid("admin_xs_news_xml." . PHP_EXT),
@@ -330,17 +321,18 @@ $template->assign_vars(array(
 	'L_SHOW' => $lang['n_xml_show'],
 	'L_TITLE' => $lang['n_xml_title'],
 	'XS_PATH' => '../templates/common/xs_mod/',
-	'L_MASTER_SWITCH' => sprintf($lang['n_xml_master_switch'], (($master_switch) ? 'On' : 'Off'), (($master_switch) ? $lang['n_xml_ms_will'] : $lang['n_xml_ms_not']) )
-));
+	'L_MASTER_SWITCH' => sprintf($lang['n_xml_master_switch'], (($master_switch) ? 'On' : 'Off'), (($master_switch) ? $lang['n_xml_ms_will'] : $lang['n_xml_ms_not']))
+	)
+);
 
 $sql = "SELECT xml_id, xml_title, xml_show FROM " . XS_NEWS_XML_TABLE . "
 	ORDER BY xml_id ASC";
-if( !$q_xml = $db->sql_query($sql) )
+if(!$q_xml = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, "Could not query xml news ticker item list", "", __LINE__, __FILE__, $sql);
 }
 
-if( $total_xml = $db->sql_numrows($q_xml) )
+if($total_xml = $db->sql_numrows($q_xml))
 {
 	$xml_rows = $db->sql_fetchrowset($q_xml);
 

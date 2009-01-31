@@ -30,47 +30,6 @@ $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
-if (!function_exists('admin_display_cat_auth'))
-{
-	function admin_display_cat_auth($cat_parent = 0, $depth = 0)
-	{
-		global $pafiledb, $pafiledb_template;
-		global $cat_auth_fields, $cat_auth_const, $cat_auth_levels, $lang;
-		$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
-		if(isset($pafiledb->subcat_rowset[$cat_parent]))
-		{
-			foreach($pafiledb->subcat_rowset[$cat_parent] as $sub_cat_id => $cat_data)
-			{
-				$pafiledb_template->assign_block_vars('cat_row', array(
-					'CATEGORY_NAME' => $cat_data['cat_name'],
-					'IS_HIGHER_CAT' => ($cat_data['cat_allow_file']) ? false : true,
-					'PRE' => $pre,
-					'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_parent=' . $sub_cat_id))
-				);
-
-				for($j = 0; $j < count($cat_auth_fields); $j++)
-				{
-					$custom_auth[$j] = '&nbsp;<select name="' . $cat_auth_fields[$j] . '[' . $sub_cat_id . ']' . '">';
-
-					for($k = 0; $k < count($cat_auth_levels); $k++)
-					{
-						$selected = ( $cat_data[$cat_auth_fields[$j]] == $cat_auth_const[$k] ) ? ' selected="selected"' : '';
-						$custom_auth[$j] .= '<option value="' . $cat_auth_const[$k] . '"' . $selected . '>' . $lang['Category_' . $cat_auth_levels[$k]] . '</option>';
-					}
-					$custom_auth[$j] .= '</select>&nbsp;';
-
-					$pafiledb_template->assign_block_vars('cat_row.cat_auth_data', array(
-						'S_AUTH_LEVELS_SELECT' => $custom_auth[$j])
-					);
-				}
-				admin_display_cat_auth($sub_cat_id, $depth + 1);
-			}
-			return;
-		}
-		return;
-	}
-}
-
 $pafiledb->init();
 
 $cat_auth_fields = array('auth_view', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment');

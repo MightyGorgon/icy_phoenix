@@ -27,7 +27,6 @@ if(!function_exists('imp_recent_topics_wide_block_func'))
 		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $var_cache, $lang, $bbcode;
 		global $html_on, $bbcode_on, $smilies_on;
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$template->_tpldata['recent_topic_row.'] = array();
 
@@ -41,7 +40,7 @@ if(!function_exists('imp_recent_topics_wide_block_func'))
 		//$extra = "AND t.topic_time <= $current_time";
 		$extra = '';
 
-		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, f.forum_name
+		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color, f.forum_name
 			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . USERS_TABLE . " AS u, " . FORUMS_TABLE . " AS f
 			WHERE t.forum_id NOT IN (" . $except_forums . ")
 				AND t.topic_status <> 2
@@ -94,7 +93,7 @@ if(!function_exists('imp_recent_topics_wide_block_func'))
 				'L_TITLE' => $topic_title,
 				'L_BY' => $lang['By'],
 				'L_ON' => $lang['On'],
-				'S_POSTER' => colorize_username($recent_topic_row[$i]['user_id']),
+				'S_POSTER' => colorize_username($recent_topic_row[$i]['user_id'], $recent_topic_row[$i]['username'], $recent_topic_row[$i]['user_color'], $recent_topic_row[$i]['user_active']),
 				'S_POSTTIME' => create_date2($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
 				)
 			);

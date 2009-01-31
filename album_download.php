@@ -19,6 +19,7 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_archives.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -27,7 +28,6 @@ init_userprefs($userdata);
 
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-include(ALBUM_MOD_PATH . 'archive.' . PHP_EXT);
 
 // ------------------------------------
 // Get the request
@@ -200,7 +200,7 @@ if ($total_pics > 0)
 	// $archive = new tar_file('archive.tar'); // save as tar
 	// $archive = new gzip_file('archive.tgz'); // save as gzip
 
-	$archive->set_options(array('inmemory'=>1,'storepaths'=>0,'comment'=>'Archived photos from ' . $board_config['sitename']));
+	$archive->set_options(array('inmemory' => 1, 'storepaths' => 0, 'comment' => 'Archived photos from ' . $board_config['sitename']));
 	$DLpics = array();
 	while($row = $db->sql_fetchrow($result))
 	{

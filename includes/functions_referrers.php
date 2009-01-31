@@ -52,8 +52,9 @@ if (!function_exists('arrayinstr'))
 
 if ($_SERVER['HTTP_REFERER'] && !eregi($_SERVER['HTTP_HOST'] . $board_config['script_path'], $_SERVER['HTTP_REFERER']))
 {
-	$referrer_url = $_SERVER['HTTP_REFERER'];
-	$referrer_host = str_replace ("http://", "", $referrer_url);
+	$referrer_url = ((STRIP) ? addslashes($_SERVER['HTTP_REFERER']) : $_SERVER['HTTP_REFERER']);
+	$referrer_host = ((STRIP) ? addslashes($referrer_url) : $referrer_url);
+	$referrer_host = str_replace ('http://', '', $referrer_host);
 	$referrer_host = substr($referrer_host, 0, strpos($referrer_host, "/"));
 	if (arrayinstr($referrer_host, $ref_black_list) === false)
 	{

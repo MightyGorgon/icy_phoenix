@@ -22,7 +22,18 @@ else
 {
 	$mode_test = ((substr($mode, 0, 6) == 'update') ? 'update' : $mode);
 }
-$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_birthdays', 'fix_constants', 'fix_images_album', 'fix_posts', 'ren_move_images', 'update_phpbb', 'update');
+
+if (!defined('IP_DB_UPDATE'))
+{
+	$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_birthdays', 'fix_constants', 'fix_images_album', 'fix_posts', 'fix_signatures', 'ren_move_images', 'update_phpbb', 'update');
+}
+else
+{
+	// We force update to work from automatically detected version to avoid unwanted tables modifications by accidental use of database_update.php
+	$mode = ((substr($mode, 0, 6) == 'update') ? 'update' : $mode);
+	$mode_array = array('start', 'update_phpbb', 'update');
+}
+
 $mode_test = in_array($mode_test, $mode_array) ? $mode_test : $mode_array[0];
 
 $action = $ip_functions->request_var('action', '');
@@ -333,6 +344,85 @@ switch ($mode_test)
 		$page_framework->page_footer(false);
 		break;
 
+	case 'fix_signatures':
+
+		$wip = $ip_functions->request_var('wip', false);
+		$search_word = urldecode($ip_functions->request_var('search_word', ''));
+		$replace_word = urldecode($ip_functions->request_var('replace_word', ''));
+
+		$remove_bbcode_uid = $ip_functions->request_var('remove_bbcode_uid', false);
+		$remove_guess_bbcode_uid = $ip_functions->request_var('remove_guess_bbcode_uid', false);
+		$fix_posted_images = $ip_functions->request_var('fix_posted_images', false);
+
+		$posts_number = $ip_functions->request_var('posts_number', 0);
+		$post_start = $ip_functions->request_var('post_start', 0);
+		$total_posts = $ip_functions->request_var('total_posts', 0);
+		$total_posts_modified = $ip_functions->request_var('total_posts_modified', 0);
+
+		if (substr($action, 0, 3) == 'fix')
+		{
+			$fix_results = $page_framework->fix_signatures($action);
+
+			$url_append = '';
+
+			$url_append .= ($wip ? ('wip=true&amp;') : '');
+			$url_append .= ($remove_bbcode_uid ? ('remove_bbcode_uid=true&amp;') : '');
+			$url_append .= ($remove_guess_bbcode_uid ? ('remove_guess_bbcode_uid=true&amp;') : '');
+			$url_append .= ($fix_posted_images ? ('fix_posted_images=true&amp;') : '');
+
+			$url_append .= 'search_word=' . urlencode($search_word) . '&amp;' . 'replace_word=' . urlencode($replace_word);
+
+			$url_append .= '&amp;';
+			$url_append .= 'posts_number=' . $posts_number . '&amp;' . 'post_start=' . $post_start . '&amp;' . 'total_posts=' . $total_posts . '&amp;' . 'total_posts_modified=' . $total_posts_modified;
+
+			$lang_append = '&amp;lang=' . $language;
+
+			$tmp_url = THIS_FILE . '?' . 'mode=' . $mode . '&amp;action=' . $action . '&amp;' . $url_append . $lang_append;
+			$meta_refresh = '';
+			if ($wip !== false)
+			{
+				$meta_refresh = '<meta http-equiv="refresh" content="3;url=' . $ip_functions->append_sid($tmp_url) . '">';
+			}
+
+			$page_framework->page_header($lang['IcyPhoenix'], '', false, false, false, false, $meta_refresh);
+			echo('<br /><br />' . "\n");
+
+			echo('<br /><br />' . "\n");
+			echo($fix_results);
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+			if ($wip === false)
+			{
+				$box_message = $lang['FixingSignaturesComplete'] . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+				$page_framework->box('green', 'green', $box_message);
+			}
+			else
+			{
+				$box_message = $lang['FixingSignaturesInProgress'] . '<br /><br />' . $lang['FixingPostsInProgressRedirect'] . '<br /><br />' . sprintf($lang['FixingPostsInProgressRedirectClick'], '<a href="' . $ip_functions->append_sid($tmp_url) . '">', '</a>');
+				$page_framework->box('yellow', 'red', $box_message);
+			}
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+		}
+		else
+		{
+			$page_framework->page_header($lang['IcyPhoenix'], '', false, false);
+			echo('<br /><br />' . "\n");
+			$box_message = $lang['ActionUndone'];
+			$page_framework->box('red', 'red', $box_message);
+			echo('<br /><br />' . "\n");
+			echo($page_framework->fix_signatures($action));
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+			$box_message = sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+			$page_framework->box('yellow', 'red', $box_message);
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+		}
+		echo('<br /><br />' . "\n");
+		$page_framework->page_footer(false);
+		break;
+
 	case 'ren_move_images':
 
 		$wip = $ip_functions->request_var('wip', false);
@@ -459,62 +549,11 @@ switch ($mode_test)
 		$page_framework->page_header($lang['IcyPhoenix'], '', false, false);
 		$page_framework->output_lang_select(THIS_FILE, true);
 		$page_framework->stats_box($current_ip_version, $current_phpbb_version);
-		echo('<br />' . "\n");
-		$phpbb_update = '';
-		if ($current_phpbb_version == $phpbb_version)
+		$page_framework->box_upgrade_info();
+		if (!defined('IP_DB_UPDATE'))
 		{
-			//$box_message = $lang['phpBB_Version_UpToDate'];
-			//$page_framework->box('green', 'green', $box_message);
+			$page_framework->box_ip_tools();
 		}
-		else
-		{
-			$phpbb_update = '&amp;phpbb_update=true';
-			// Comment "Force phpBB update" if you want to make all db updates all at once
-			// Force phpBB update - BEGIN
-			$box_message = $lang['phpBB_Version_NotUpToDate'] . '<br /><br />' . sprintf($lang['ClickUpdate'], '<a href="' . $ip_functions->append_sid(THIS_FILE . '?mode=update_phpbb') . '">', '</a>');
-			$page_framework->box('yellow', 'red', $box_message);
-			$page_framework->page_footer(false);
-			exit;
-			// Force phpBB update - END
-		}
-		//echo('<br /><br />');
-
-		if (($current_ip_version == $ip_version) && ($phpbb_update == ''))
-		{
-			$needs_update = false;
-		}
-		else
-		{
-			$needs_update = true;
-			$phpbb_string = '';
-			if ($phpbb_update != '')
-			{
-				$phpbb_string = $lang['phpBB_Version_NotUpToDate'] . '<br /><br />';
-			}
-
-			$ip_string = $lang['IcyPhoenix_Version_NotUpToDate'] . '<br /><br />';
-			if ($current_ip_version == $lang['NotInstalled'])
-			{
-				$ip_string = $lang['IcyPhoenix_Version_NotInstalled'] . '<br /><br />';
-			}
-		}
-
-		if ($needs_update == false)
-		{
-			$box_message = $lang['IcyPhoenix_Version_UpToDate'];
-			$page_framework->box('green', 'green', $box_message);
-		}
-		elseif (($needs_update == true) && version_compare($current_ip_version, '1.2.9.36', '<'))
-		{
-			$page_framework->box_upgrade_steps();
-		}
-		else
-		{
-			$box_message = $phpbb_string . $ip_string . sprintf($lang['ClickUpdate'], '<a href="' . $ip_functions->append_sid(THIS_FILE . '?mode=update' . $phpbb_update) . '">', '</a>');
-			$page_framework->box('yellow', 'red', $box_message);
-		}
-		echo('<br /><br />' . "\n");
-		$page_framework->box_ip_tools();
 		$page_framework->page_footer(false);
 }
 

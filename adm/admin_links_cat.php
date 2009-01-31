@@ -33,44 +33,45 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
-
 // --------------------------
 // This function will sort the order of all categories
 //
-function reorder_cat()
+if(!function_exists('reorder_cat'))
 {
-	global $db;
-
-	$sql = "SELECT cat_id, cat_order
-			FROM ". LINK_CATEGORIES_TABLE ."
-			WHERE cat_id <> 0
-			ORDER BY cat_order ASC";
-	if( !$result = $db->sql_query($sql) )
+	function reorder_cat()
 	{
-		message_die(GENERAL_ERROR, 'Could not get list of Categories', '', __LINE__, __FILE__, $sql);
-	}
+		global $db;
 
-	$i = 10;
-
-	while( $row = $db->sql_fetchrow($result) )
-	{
-		$sql = "UPDATE ". LINK_CATEGORIES_TABLE ."
-				SET cat_order = $i
-				WHERE cat_id = ". $row['cat_id'];
-		if( !$db->sql_query($sql) )
+		$sql = "SELECT cat_id, cat_order
+				FROM ". LINK_CATEGORIES_TABLE ."
+				WHERE cat_id <> 0
+				ORDER BY cat_order ASC";
+		if( !$result = $db->sql_query($sql) )
 		{
-			message_die(GENERAL_ERROR, 'Could not update order fields', '', __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, 'Could not get list of Categories', '', __LINE__, __FILE__, $sql);
 		}
-		$i += 10;
+
+		$i = 10;
+
+		while( $row = $db->sql_fetchrow($result) )
+		{
+			$sql = "UPDATE ". LINK_CATEGORIES_TABLE ."
+					SET cat_order = $i
+					WHERE cat_id = ". $row['cat_id'];
+			if( !$db->sql_query($sql) )
+			{
+				message_die(GENERAL_ERROR, 'Could not update order fields', '', __LINE__, __FILE__, $sql);
+			}
+			$i += 10;
+		}
 	}
 }
 // END
 // --------------------------
 
-
-if( !isset($_POST['mode']) )
+if(!isset($_POST['mode']))
 {
-	if( !isset($_GET['action']) )
+	if(!isset($_GET['action']))
 	{
 		$template->set_filenames(array('body' => ADM_TPL . 'admin_link_cat_body.tpl'));
 

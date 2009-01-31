@@ -25,7 +25,6 @@ if(!function_exists('imp_statistics_block_func'))
 	function imp_statistics_block_func()
 	{
 		global $template, $lang, $board_config;
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		$total_topics = $board_config['max_topics'];
 		$total_posts = $board_config['max_posts'];
 		$total_topics = $board_config['max_topics'];

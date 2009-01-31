@@ -12,7 +12,6 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -33,11 +32,11 @@ $subscribed_forums_count = 0;
 while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 {
 	$subs_forum_id = $subs_forum_line['forum_id'];
-	$subs_forums_name_sql = 'SELECT f.forum_id, f.forum_topics, f.forum_posts, f.forum_name, f.forum_desc, f.forum_last_post_id, f.forum_status, p.poster_id, p.post_id, p.post_time, u.user_id, u.username
+	$subs_forums_name_sql = 'SELECT f.forum_id, f.forum_topics, f.forum_posts, f.forum_name, f.forum_desc, f.forum_last_post_id, f.forum_status, p.poster_id, p.post_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color
 		FROM ' . FORUMS_TABLE . ' f, ' . POSTS_TABLE . ' p, ' . USERS_TABLE . ' u
 		WHERE f.forum_id = ' . $subs_forum_id . '
-		AND p.post_id=f.forum_last_post_id
-		AND u.user_id=p.poster_id';
+		AND p.post_id = f.forum_last_post_id
+		AND u.user_id = p.poster_id';
 
 	if (!$subs_forums_name = $db->sql_query($subs_forums_name_sql))
 	{
@@ -79,7 +78,7 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 			$forum_posts = $subs_forums_name_line['forum_posts'];
 			$forum_last_post_time = create_date2($board_config['default_dateformat'], $subs_forums_name_line['post_time'], $board_config['board_timezone']);
 			$last_post = '';
-			$last_post .= ($subs_forums_name_line['user_id'] == ANONYMOUS) ? (($subs_forums_name_line['post_username'] != '') ? $subs_forums_name_line['post_username'] . ' ' : $lang['Guest'] . ' ') : colorize_username($subs_forums_name_line['user_id']);
+			$last_post .= ($subs_forums_name_line['user_id'] == ANONYMOUS) ? (($subs_forums_name_line['post_username'] != '') ? $subs_forums_name_line['post_username'] . ' ' : $lang['Guest'] . ' ') : colorize_username($subs_forums_name_line['user_id'], $subs_forums_name_line['username'], $subs_forums_name_line['user_color'], $subs_forums_name_line['user_active']);
 			$last_post .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $subs_forums_name_line['forum_last_post_id']) . '#p' . $subs_forums_name_line['forum_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 		}
 

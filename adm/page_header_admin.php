@@ -127,7 +127,6 @@ if(is_array($js_include))
 $template->assign_vars(array(
 	'IP_ROOT_PATH' => IP_ROOT_PATH,
 	'PHP_EXT' => PHP_EXT,
-	'S_SID' => $userdata['session_id'],
 	'POST_FORUM_URL' => POST_FORUM_URL,
 	'POST_TOPIC_URL' => POST_TOPIC_URL,
 	'POST_POST_URL' => POST_POST_URL,

@@ -142,7 +142,7 @@ if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
 		$rank_select_box .= '<option value="' . $rank_id . '"' . $selected . '>' . $rank . '</option>';
 	}
 
-	$group_info['group_color'] = check_valid_color_mg($group_info['group_color']);
+	$group_info['group_color'] = check_valid_color($group_info['group_color']);
 	$group_open = ($group_info['group_type'] == GROUP_OPEN) ? ' checked="checked"' : '';
 	$group_closed = ($group_info['group_type'] == GROUP_CLOSED) ? ' checked="checked"' : '';
 	$group_hidden = ($group_info['group_type'] == GROUP_HIDDEN) ? ' checked="checked"' : '';
@@ -289,7 +289,7 @@ elseif (isset($_POST['group_update']))
 			message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
 		}
 
-		empty_cache_folders(true);
+		empty_cache_folders(USERS_CACHE_FOLDER);
 
 		$message = $lang['Deleted_group'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -303,7 +303,7 @@ elseif (isset($_POST['group_update']))
 		$group_moderator = isset($_POST['username']) ? $_POST['username'] : '';
 		$delete_old_moderator = isset($_POST['delete_old_moderator']) ? true : false;
 		$group_rank = isset($_POST['group_rank']) ? $_POST['group_rank'] : '0';
-		$group_color = isset($_POST['group_color']) ? check_valid_color_mg($_POST['group_color']) : false;
+		$group_color = isset($_POST['group_color']) ? check_valid_color($_POST['group_color']) : false;
 		$group_color = ($group_color != false) ? $group_color : '';
 		$group_legend = isset($_POST['group_legend']) ? $_POST['group_legend'] : '0';
 		$group_count = isset($_POST['group_count']) ? intval($_POST['group_count']) : 0;
@@ -387,7 +387,7 @@ elseif (isset($_POST['group_update']))
 				}
 			}
 
-			$group_color = (check_valid_color_mg($group_color) ? check_valid_color_mg($group_color) : '');
+			$group_color = (check_valid_color($group_color) ? check_valid_color($group_color) : '');
 			$sql = "UPDATE " . GROUPS_TABLE . "
 				SET group_type = $group_type, group_name = '" . str_replace("\'", "''", $group_name) . "', group_description = '" . str_replace("\'", "''", $group_description) . "', group_moderator = $group_moderator, group_rank='$group_rank', group_color='$group_color', group_legend='$group_legend', group_count='$group_count', group_count_max='$group_count_max', group_count_enable='$group_count_enable'
 				WHERE group_id = $group_id";
@@ -441,7 +441,7 @@ elseif (isset($_POST['group_update']))
 				message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
 			}
 
-			empty_cache_folders(true);
+			empty_cache_folders(USERS_CACHE_FOLDER);
 
 			$message = $lang['Updated_group'] . '<br />' . sprintf($lang['group_count_updated'], $group_count_remove, $group_count_added) . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -511,7 +511,7 @@ elseif (isset($_POST['group_update']))
 				}
 			}
 
-			empty_cache_folders(true);
+			empty_cache_folders(USERS_CACHE_FOLDER);
 
 			$message = $lang['Added_new_group'] . '<br />' . sprintf($lang['group_count_updated'], $group_count_remove, $group_count_added). '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');;
 
@@ -537,7 +537,7 @@ elseif (isset($_POST['mass_update']))
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$group_id = $row['group_id'];
-		$group_color = isset($_POST['group_color_' . $group_id]) ? check_valid_color_mg($_POST['group_color_' . $group_id]) : false;
+		$group_color = isset($_POST['group_color_' . $group_id]) ? check_valid_color($_POST['group_color_' . $group_id]) : false;
 		$group_color = ($group_color != false) ? $group_color : '';
 		$group_legend = isset($_POST['group_legend_' . $group_id]) ? $_POST['group_legend_' . $group_id] : '0';
 
@@ -558,16 +558,9 @@ elseif (isset($_POST['mass_update']))
 		}
 	}
 
-	$group_color = isset($_POST['active_users_color']) ? check_valid_color_mg($_POST['active_users_color']) : false;
+	$group_color = isset($_POST['active_users_color']) ? check_valid_color($_POST['active_users_color']) : false;
 	$group_color = ($group_color != false) ? $group_color : '';
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET
-		config_value = '" . $group_color . "'
-		WHERE config_name = 'active_users_color'";
-	if(!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Failed to update general configuration for bots_color", "", __LINE__, __FILE__, $sql);
-	}
+	set_config('active_users_color', $group_color);
 
 	$sql_users = "UPDATE " . USERS_TABLE . "
 		SET user_color = '" . $group_color . "'
@@ -580,37 +573,16 @@ elseif (isset($_POST['mass_update']))
 	}
 
 	$group_legend = isset($_POST['active_users_legend']) ? $_POST['active_users_legend'] : '0';
+	set_config('active_users_legend', $group_legend);
 
-	$sql = "UPDATE " . CONFIG_TABLE . " SET
-		config_value = '" . $group_legend . "'
-		WHERE config_name = 'active_users_legend'";
-	if(!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Failed to update general configuration for bots_color", "", __LINE__, __FILE__, $sql);
-	}
-
-	$group_color = isset($_POST['bots_color']) ? check_valid_color_mg($_POST['bots_color']) : false;
+	$group_color = isset($_POST['bots_color']) ? check_valid_color($_POST['bots_color']) : false;
 	$group_color = ($group_color != false) ? $group_color : '';
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET
-		config_value = '" . $group_color . "'
-		WHERE config_name = 'bots_color'";
-	if(!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Failed to update general configuration for bots_color", "", __LINE__, __FILE__, $sql);
-	}
+	set_config('bots_color', $group_color);
 
 	$group_legend = isset($_POST['bots_legend']) ? $_POST['bots_legend'] : '0';
+	set_config('bots_legend', $group_legend);
 
-	$sql = "UPDATE " . CONFIG_TABLE . " SET
-		config_value = '" . $group_legend . "'
-		WHERE config_name = 'bots_legend'";
-	if(!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Failed to update general configuration for bots_color", "", __LINE__, __FILE__, $sql);
-	}
-
-	empty_cache_folders(true);
+	empty_cache_folders(USERS_CACHE_FOLDER);
 
 	$message = $lang['Groups_Updated'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');;
 
@@ -641,8 +613,10 @@ else
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$select_list .= '<select name="' . POST_GROUPS_URL . '">';
+		$row_counter = 0;
 		do
 		{
+			$row_counter++;
 			$select_list .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
 			switch ($row['group_type'])
 			{
@@ -656,20 +630,23 @@ else
 					$type_lang = $lang['group_hidden'];
 					break;
 			}
-			$row['group_color'] = check_valid_color_mg($row['group_color']);
+			$row['group_color'] = check_valid_color($row['group_color']);
 			$counting_list = array();
 			$counting_list = count_users_in_group($row['group_id']);
 
-			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="../' . $images['arrows_cms_up'] . '" alt="' . $lang['Move_Up'] . '" title="' . $lang['Move_Up'] . '" /></a>';
-			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="../' . $images['arrows_cms_down'] . '" alt="' . $lang['Move_Down'] . '" title="' . $lang['Move_Down'] . '" /></a>';
+			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="../images/cms/arrow_up.png" alt="' . $lang['Move_Up'] . '" title="' . $lang['Move_Up'] . '" /></a>';
+			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="../images/cms/arrow_down.png" alt="' . $lang['Move_Down'] . '" title="' . $lang['Move_Down'] . '" /></a>';
+
+			$class = ($row_counter % 2) ? $theme['td_class2'] : $theme['td_class1'];
 
 			$template->assign_block_vars('group_row', array(
+				'ROW_CLASS' => $class,
 				'GROUP_ID' => $row['group_id'],
 				'GROUP_NAME' => $row['group_name'],
 				'GROUP_MEMBERS' => $counting_list['members'] . '/' . $counting_list['pending'],
 				'GROUP_STATUS' => $type_lang,
 				'GROUP_COLOR' => str_replace('#', '', $row['group_color']),
-				'GROUP_COLOR_STYLE' => ($row['group_color'] ? ' style="color:' . $row['group_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"'),
+				'GROUP_COLOR_STYLE' => ' style="' . ($row['group_color'] ? 'color: ' . $row['group_color'] . '; ' : '') . 'font-weight:bold;"',
 				'GROUP_LEGEND' => $row['group_legend'],
 				'GROUP_LEGEND_CHECKED' => ($row['group_legend'] == '1') ? ' checked="checked"' : '',
 				'GROUP_LEGEND_MOVE' => $g_move,
@@ -686,7 +663,14 @@ else
 	$counting_list = count_active_users();
 	$template->set_filenames(array('body' => ADM_TPL . 'group_select_body.tpl'));
 
+	$row_counter++;
+	$class_active_users = ($row_counter % 2) ? $theme['td_class2'] : $theme['td_class1'];
+	$row_counter++;
+	$class_bots = ($row_counter % 2) ? $theme['td_class2'] : $theme['td_class1'];
+
 	$template->assign_vars(array(
+		'ROW_CLASS_ACTIVE_USERS' => $class_active_users,
+		'ROW_CLASS_BOTS' => $class_bots,
 		'L_GROUP_TITLE' => $lang['Group_administration'],
 		'L_GROUP_EXPLAIN' => $lang['Group_admin_explain'],
 		'L_GROUP_SELECT' => $lang['Select_group'],
@@ -714,11 +698,11 @@ else
 		'L_ACTIVE_USERS_COLOR' => $lang['Active_Users_Color'],
 
 		'ACTIVE_USERS_COLOR' => str_replace('#', '', $board_config['active_users_color']),
-		'ACTIVE_USERS_COLOR_STYLE' => ($board_config['active_users_color'] ? ' style="color:' . $board_config['active_users_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"'),
+		'ACTIVE_USERS_COLOR_STYLE' => ' style="' . ($board_config['active_users_color'] ? 'color: ' . $board_config['active_users_color'] . '; ' : '') . 'font-weight:bold;"',
 		'ACTIVE_USERS_LEGEND_CHECKED' => ($board_config['active_users_legend'] == 1) ? ' checked="checked"' : '',
 		'ACTIVE_MEMBERS' => $counting_list['active_members'],
 		'BOTS_COLOR' => str_replace('#', '', $board_config['bots_color']),
-		'BOTS_COLOR_STYLE' => ($board_config['bots_color'] ? ' style="color:' . $board_config['bots_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"'),
+		'BOTS_COLOR_STYLE' => ' style="' . ($board_config['bots_color'] ? 'color: ' . $board_config['bots_color'] . '; ' : '') . 'font-weight:bold;"',
 		'BOTS_LEGEND_CHECKED' => ($board_config['bots_legend'] == 1) ? ' checked="checked"' : '',
 		'S_GROUP_ACTION' => append_sid('admin_groups.' . PHP_EXT),
 		'S_GROUP_SELECT' => $select_list

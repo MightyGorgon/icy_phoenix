@@ -31,8 +31,7 @@ require(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_mg_users.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
@@ -102,7 +101,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 
 		if($_POST['deleteuser'] && ($userdata['user_id'] != $user_id))
 		{
-			$killed = mg_kill_user($user_id);
+			$killed = ip_user_kill($user_id);
 
 			$message = $lang['User_deleted'] . '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid('admin_users.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -213,7 +212,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 		$user_posts = (!empty($_POST['user_posts'])) ? intval($_POST['user_posts']) : 0;
 
 		$user_color_group = (!empty($_POST['user_color_group'])) ? $_POST['user_color_group'] : '0';
-		$user_color = (!empty($_POST['user_color'])) ? ((check_valid_color_mg($_POST['user_color']) != false) ? check_valid_color_mg($_POST['user_color']) : '') : '';
+		$user_color = (!empty($_POST['user_color'])) ? ((check_valid_color($_POST['user_color']) != false) ? check_valid_color($_POST['user_color']) : '') : '';
 		if ($user_color_group > 0)
 		{
 			$sql = "SELECT g.group_color, g.group_rank
@@ -313,10 +312,14 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			if($type == CHECKBOX)
 			{
 				$temp2 = '';
-				foreach($temp as $temp3)
-				$temp2 .= htmlspecialchars($temp3) . ',';
-				$temp2 = substr($temp2,0,strlen($temp2)-1);
-
+				if (!empty($temp))
+				{
+					foreach($temp as $temp3)
+					{
+						$temp2 .= htmlspecialchars($temp3) . ',';
+					}
+					$temp2 = substr($temp2, 0, strlen($temp2) - 1);
+				}
 				$temp = $temp2;
 			}
 			else
@@ -725,7 +728,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 				}
 			}
 
-			$db->clear_cache('ban_');
+			$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 			clear_user_color_cache($user_id);
 
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -780,12 +783,14 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 						if($type == CHECKBOX)
 						{
 							$temp2 = '';
-							foreach($temp as $temp3)
+							if (!empty($temp))
 							{
-								$temp2 .= htmlspecialchars($temp3) . ',';
+								foreach($temp as $temp3)
+								{
+									$temp2 .= htmlspecialchars($temp3) . ',';
+								}
+								$temp2 = substr($temp2, 0, strlen($temp2) - 1);
 							}
-							$temp2 = substr($temp2,0,strlen($temp2)-1);
-
 							$temp = $temp2;
 						}
 						else
@@ -981,7 +986,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			$avatar_images = array();
 			while($file = @readdir($dir))
 			{
-				if($file != "." && $file != ".." && !is_file(phpbb_realpath('./../' . $board_config['avatar_gallery_path'] . "/" . $file)) && !is_link(phpbb_realpath('./../' . $board_config['avatar_gallery_path'] . "/" . $file)))
+				if($file != "." && $file != ".." && !is_file(@phpbb_realpath('./../' . $board_config['avatar_gallery_path'] . "/" . $file)) && !is_link(@phpbb_realpath('./../' . $board_config['avatar_gallery_path'] . "/" . $file)))
 				{
 					$sub_dir = @opendir("../" . $board_config['avatar_gallery_path'] . "/" . $file);
 

@@ -99,18 +99,6 @@ if( isset($_POST['confirm_clear_cache']) )
 
 
 //------------------------------------------------------------------------
-// This is the helper/comparation function for the usort function.
-//------------------------------------------------------------------------
-function sort_cmp($a, $b)
-{
-	if ($a['order'] == $b['order'])
-	{
-		return 0;
-	}
-	return ($a['order'] < $b['order']) ? -1 : 1;
-}
-
-//------------------------------------------------------------------------
 // $valid_tab_selections will hold the list of valid tab selections
 // $album_config_tabs will hold all the configuration data for the tabs (tab = one index in that array)
 $valid_tab_selections = array();

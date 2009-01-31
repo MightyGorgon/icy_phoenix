@@ -48,7 +48,7 @@ if(!function_exists(sync_database))
 
 		$time = time();
 
-		if($userdata['user_upi2db_datasync'] > ($time - 10))
+		if($userdata['user_upi2db_datasync'] > ($time - UPI2DB_RESYNC_TIME))
 		{
 			return;
 		}
@@ -64,7 +64,7 @@ if(!function_exists(sync_database))
 		$user_id = $userdata['user_id'];
 		$user_dbsync = $userdata['user_upi2db_datasync'];
 
-		if(date('Ymd',$board_config['upi2db_delete_old_data']) != date('Ymd',time()))
+		if(date('Ymd',$board_config['upi2db_delete_old_data']) != date('Ymd', time()))
 		{
 			delete_old_data($expired_post_time, $del_mark_time, $del_perm_time, $db);
 		}
@@ -75,12 +75,12 @@ if(!function_exists(sync_database))
 			$always_read_topics = (count($always_read['topics']) == 1)  ? $always_read['topics'][0] : implode(',', $always_read['topics']);
 		}
 
-		$ar_forums = ($always_read_forums) ? 'AND forum_id NOT IN ('. $always_read_forums .')' : '';
-		$ar_topics = ($always_read_topics) ? 'AND topic_id NOT IN ('. $always_read_topics .')' : '';
+		$ar_forums = ($always_read_forums) ? 'AND forum_id NOT IN (' . $always_read_forums . ')' : '';
+		$ar_topics = ($always_read_topics) ? 'AND topic_id NOT IN (' . $always_read_topics . ')' : '';
 		$auth_forum = ($auth_forum_id) ? 'AND forum_id IN ('. $auth_forum_id .')' : '';
 		$max_new_post = ($userdata['user_level'] != ADMIN) ? (($userdata['user_level'] != MOD) ? $board_config['upi2db_max_new_posts'] : $board_config['upi2db_max_new_posts_mod']): $board_config['upi2db_max_new_posts_admin'];
 		// Edited By Mighty Gorgon - BEGIN
-		$max_new_posts = ($max_new_posts == 0) ? 999999 : $max_new_posts;
+		$max_new_posts = ($max_new_posts == 0) ? UPI2DB_MAX_UNREAD_POSTS : $max_new_posts;
 		$new_post_limit = ($max_new_post > 0) ? 'ORDER BY post_time DESC, post_edit_time DESC LIMIT ' . $max_new_post : 'ORDER BY post_time DESC, post_edit_time DESC';
 		// Edited By Mighty Gorgon - END
 		$dbsync = ($user_dbsync < $userdata['user_regdate']) ? $userdata['user_regdate'] : $user_dbsync;
@@ -298,7 +298,7 @@ if(!function_exists(auth_forum_read))
 		global $board_config, $db, $lang;
 
 		$sql = "SELECT * FROM ". FORUMS_TABLE;
-		if (!$result = $db->sql_query($sql, false, 'forums_'))
+		if (!$result = $db->sql_query($sql, false, 'forums_', FORUMS_CACHE_FOLDER))
 		{
 			message_die(GENERAL_ERROR, 'Could not query forums information', '', __LINE__, __FILE__, $sql);
 		}

@@ -16,6 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
+define('IN_POSTING', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
 define('CM_POSTING', true);
@@ -32,7 +33,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 
 // Check and set various parameters
@@ -849,7 +849,6 @@ elseif ($mode == 'thank')
 			message_die(GENERAL_ERROR, 'Could not insert thanks information', '', __LINE__, __FILE__, $sql);
 		}
 		$message = $lang['thanks_add'];
-		$db->clear_cache('topics_thanks_', TOPICS_CACHE_FOLDER);
 		// MG Cash MOD For IP - BEGIN
 		if (defined('CASH_MOD'))
 		{
@@ -907,7 +906,7 @@ elseif ($mode == 'vote')
 						AND vote_option_id = $vote_option_id";
 				if (!$db->sql_query($sql, BEGIN_TRANSACTION))
 				{
-					$db->clear_cache('posts_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
 					message_die(GENERAL_ERROR, 'Could not update poll result', '', __LINE__, __FILE__, $sql);
 				}
 
@@ -915,7 +914,7 @@ elseif ($mode == 'vote')
 					VALUES ($vote_id, " . $userdata['user_id'] . ", '$user_ip', $vote_option_id)";
 				if (!$db->sql_query($sql, END_TRANSACTION))
 				{
-					$db->clear_cache('posts_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
 					message_die(GENERAL_ERROR, 'Could not insert user_id for poll', '', __LINE__, __FILE__, $sql);
 				}
 
@@ -938,7 +937,7 @@ elseif ($mode == 'vote')
 
 		$message .= '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
 
-		$db->clear_cache('posts_');
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -1054,7 +1053,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 						//'text' => htmlspecialchars($notes)
 						'text' => $notes
 					);
-					$db->clear_cache('posts_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
 					$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes='" . addslashes(serialize($notes_list)) . "' WHERE post_id='" . $post_id . "'";
 					$db->sql_query($sql);
 
@@ -1112,7 +1111,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 				if (!($result = $db->sql_query($sql)))
 				{
-					$db->clear_cache('posts_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
 					message_die(GENERAL_ERROR, 'Could not obtain topic title for notification', '', __LINE__, __FILE__, $sql);
 				}
 
@@ -1144,8 +1143,8 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 		if (($error_msg == '') && ($lock) && ($mode == 'newtopic'))
 		{
-			$db->clear_cache('posts_');
-			$db->clear_cache('forums_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
+			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			$sql = "UPDATE " . TOPICS_TABLE . "
 				SET topic_status = " . TOPIC_LOCKED . "
 				WHERE topic_id = " . $topic_id . "
@@ -1153,8 +1152,8 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 			if (!($result = $db->sql_query($sql)))
 			{
-				$db->clear_cache('posts_');
-				$db->clear_cache('forums_');
+				empty_cache_folders(POSTS_CACHE_FOLDER);
+				empty_cache_folders(FORUMS_CACHE_FOLDER);
 				message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
 			}
 		}
@@ -1188,6 +1187,10 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		{
 			// URL for redirection after deleting a post
 			$redirect = VIEWTOPIC_MG . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . $topic_id_append;
+			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			{
+				$redirect = str_replace ('--', '-', make_url_friendly($subject) . '-vt' . $topic_id . '.html');
+			}
 			// If the above URL points to a location outside the phpBB directories
 			// move the slashes on the next line to the start of the following line:
 			//redirect(append_sid($redirect, true), true);
@@ -1198,6 +1201,10 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			// URL for redirection after posting or editing a post
 			$redirect = VIEWTOPIC_MG . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . (!empty($topic_id_append) ? ($topic_id_append . '&') : '') . POST_POST_URL . '=' . $post_id;
 			$post_append = '#p' . $post_id;
+			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			{
+				$redirect = str_replace ('--', '-', make_url_friendly($subject) . '-vp' . $post_id . '.html');
+			}
 			// If the above URL points to a location outside the phpBB directories
 			// move the slashes on the next line to the start of the following line:
 			//redirect(append_sid($redirect, true) . $post_append, true);

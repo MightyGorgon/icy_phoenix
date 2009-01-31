@@ -179,6 +179,7 @@ $lang = array_merge($lang, array(
 	'Forum_SELF' => 'SELF',
 	'Forum_PRIVATE' => 'PRIVATE',
 	'Forum_MOD' => 'MOD',
+	'Forum_JADMIN' => 'J ADMIN',
 	'Forum_ADMIN' => 'ADMIN',
 
 	'View' => 'View',
@@ -388,15 +389,17 @@ $lang = array_merge($lang, array(
 	'Set_prune_data' => 'You have turned on auto-prune for this forum but did not set a frequency or number of days to prune. Please go back and do so.',
 
 	'FORUM_SIMILAR_TOPICS' => 'Similar Topics',
-	'FORUM_SIMILAR_TOPICS_EXPLAIN' => 'If you enable this option you will see a box with similar topics at the bottom of each topic in this forum',
+	'FORUM_SIMILAR_TOPICS_EXPLAIN' => 'If you enable this option you will see a box with similar topics at the bottom of each topic in this forum (please note that you need also to enable the global switch for this feature in Icy Phoenix Settings => SEO TAB)',
+	'FORUM_TOPIC_VIEWS' => 'Topics Viewer',
+	'FORUM_TOPIC_VIEWS_EXPLAIN' => 'If you enable this option all users that views topics in this forum will be stored in the DB (please note that you need also to enable the global switch for this feature in Icy Phoenix Settings => SQL TAB)',
 	'FORUM_TAGS' => 'Forum Tags',
-	'FORUM_TAGS_EXPLAIN' => 'If you enable this option you will see a box with all the most used words in this forum',
+	'FORUM_TAGS_EXPLAIN' => 'If you enable this option you will see a box with all the most used words in this forum (please note that you need also to enable the global switch for this feature in Icy Phoenix Settings => SEO TAB)',
 	'FORUM_SORT_BOX' => 'Topic Sort Box',
-	'FORUM_SORT_BOX_EXPLAIN' => 'If you enable this option you will see a box wich allows you to alphabetically sort topics in this forum',
+	'FORUM_SORT_BOX_EXPLAIN' => 'If you enable this option you will see a box wich allows you to alphabetically sort topics in this forum (please note that you need also to enable the global switch for this feature in Icy Phoenix Settings)',
 	'FORUM_KB_MODE' => 'KB Mode',
 	'FORUM_KB_MODE_EXPLAIN' => 'If you enable this option this forum will be shown in KB Mode (topics listed like Knowledge Base)',
 	'FORUM_INDEX_ICONS' => 'Index Icons',
-	'FORUM_INDEX_ICONS_EXPLAIN' => 'If you enable this option you will see icons for RSS and New Topic in Forum Index',
+	'FORUM_INDEX_ICONS_EXPLAIN' => 'If you enable this option you will see icons for RSS and New Topic in Forum Index (please note that you need also to enable the global switch for this feature in Icy Phoenix Settings)',
 
 	'Move_and_Delete' => 'Move and Delete',
 
@@ -773,6 +776,7 @@ $lang = array_merge($lang, array(
 	'Optimize_DB' => 'Optimize Database',
 	'Optimize_Enable_cron' => 'Enable Cron',
 	'Optimize_Cron_every' => 'Cron Every',
+	'Optimize_Cron_every_explain' => 'Please note that you need also to enable <b>PHP Cron [Global Switch]</b> in <b>Configuration &raquo; Icy Phoenix &raquo; Cron</b>',
 	'Optimize_month' => 'Month',
 	'Optimize_2weeks' => '2 weeks',
 	'Optimize_week' => 'Week',
@@ -1356,11 +1360,12 @@ $lang = array_merge($lang, array(
 /* lang_postcount.php - END */
 
 /* lang_megamail.php - BEGIN */
-	'Megamail_Explain' => 'Email a message to either all of your users, or all users of a specific group. To do this, an email will be sent out to the administrative email address supplied, with a blind carbon copy sent to all recipients.<br />This modified script will send the emails in several batches. This should circumvent timeout and server-load issues. The status of the mass mail sending will be saved in the db. You can close the window when you want to pause mass-mail-sending (the current batch will be sent out). You can simply continue later from where you left off.<br /><b>If HTML emails are enabled, then you should write emails using HTML code, inserting &lt;br /&gt; for a line break.</b>',
+	'Megamail_Explain' => 'This feature allows you to send private messages or email to either all of your users, or all users in a specific group. To do this, an email will be sent out to the administrative email address supplied, with a blind carbon copy sent to all recipients.<br />Emails will be sent in several batches: this should circumvent timeout and server-load issues. The status of the mass mail sending will be saved in the db. You can close the window when you want to pause mass-mail-sending (the current batch will be sent out). You can simply continue later from where you left off.<br /><b>If HTML emails are enabled, then you should write emails using HTML code, inserting &lt;br /&gt; for a line break.</b>',
+	'megamail_inactive_users' => 'Non visiting users in the last {DAYS} days',
 	'megamail_header' => 'Your Email-Sessions',
 	'megamail_id' => 'Mail-ID',
 	'megamail_batchstart' => 'Processed',
-	'megamail_batchsize' => 'Mails per Batch',
+	'megamail_batchsize' => 'Messages per Batch',
 	'megamail_batchwait' => 'Pause',
 	'megamail_created_message' => 'The Mass Mail has been saved to the database.<br /><br/> To start sending %sclick here%s or wait until the Meta-Refresh takes you there...',
 	'megamail_send_message' => 'The Current Batch (%s - %s) has been sent .<br /><br/> To continue sending %sclick here%s or wait until the Meta-Refresh takes you there...',
@@ -1817,9 +1822,12 @@ $lang = array_merge($lang, array(
 /* lang_admin_db_backup.php - END */
 
 /* Logs - BEGIN */
+	'LOGS_ACTIONS_FILTER' => 'Actions filter',
 	'LOGS_TITLE' => 'Logs',
 	'LOGS_EXPLAIN' => 'All relevant actions stored in the DB',
 	'LOGS_TARGET' => 'Target',
+	'LOGS_DELETE' => 'Delete Selected',
+	'LOGS_DELETE_ALL' => 'Empty Logs Table',
 	'LOGS_DENY' => 'Not authorized!',
 	'LOGS_POST_EDIT' => 'edited a post posted by',
 	'LOGS_POST_DELETE' => 'deleted a post posted by',
@@ -1844,14 +1852,14 @@ $lang = array_merge($lang, array(
 	'LOGS_CARD_WARN' => 'warned',
 	'LOGS_CARD_UNBAN' => 'unbanned',
 	'LOGS_ADMIN_CAT_ADD' => 'added a forum category',
-	'LOGS_ADMIN_DB_UTILITIES_BACKUP' => 'backupped the DB %s',
+	'LOGS_ADMIN_DB_UTILITIES_BACKUP' => 'DB backup %s',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_full' => 'full',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_structure' => 'structure only',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_data' => 'data',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_store_and_download' => ', downloaded and stored',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_store' => ', stored',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_download' => ', downloaded',
-	'LOGS_ADMIN_DB_UTILITIES_RESTORE' => 'restored the DB from',
+	'LOGS_ADMIN_DB_UTILITIES_RESTORE' => 'DB restored from',
 	'LOGS_ADMIN_BOARD_CONFIG' => 'edited config settings',
 	'LOGS_ADMIN_BOARD_IP_CONFIG' => 'edited Icy Phoenix settings',
 	'LOGS_ADMIN_GROUP_NEW' => 'group created',
@@ -1868,8 +1876,52 @@ $lang = array_merge($lang, array(
 	'LOGS_CMS_BLOCK_EDIT' => 'edited a block [ID = %s] in %sTHIS%s page',
 	'LOGS_CMS_BLOCK_EDIT_LS' => 'edited a block [ID = %s] in a standard page [%s]',
 	'LOGS_CMS_BLOCK_DELETE' => 'deleted a block [ID = %s] in %sTHIS%s page',
-	'LOGS_CMS_BLOCK_DELETE_LS' => 'deleted a block  [ID = %s] in a standard page [%s]',
+	'LOGS_CMS_BLOCK_DELETE_LS' => 'deleted a block [ID = %s] in a standard page [%s]',
 /* Logs - END */
+
+	'SMILEYS_UPDATED' => 'Smileys Updated',
+
+/* ADS - BEGIN */
+	'ADS_TITLE' => 'Ads &amp; Sponsors',
+	'ADS_TITLE_EXPLAIN' => 'This section allows you to configure banners, ads and sponsors to be shown on your site. You can add different types of banners and decide where these banners have to be shown or which level of users won\'t see them. If you specify more than one banner for a single position, then one banner will be shown randomly among all of those specified for the same position.',
+	'AD_DES' => 'Description',
+	'AD_TEXT' => 'Content',
+	'AD_ENABLED' => 'Enabled',
+	'AD_STATUS' => 'Status',
+	'AD_STATUS_EXPLAIN' => 'Select YES if you want to enable this ad or NO if you want to disable it',
+	'AD_POSITION' => 'Position',
+	'AD_AUTH' => 'Permission',
+	'AD_AUTH_EXPLAIN' => 'Users who will see this ad',
+	'AD_AUTH_GUESTS' => 'Guests only',
+	'AD_AUTH_REG' => 'Guests and Registered (not ADMINS and MODS)',
+	'AD_AUTH_MOD' => 'All but Administrators',
+	'AD_AUTH_ADMIN' => 'All',
+	'AD_FORMAT' => 'Format',
+	'AD_POS_GLT' => 'Global Top',
+	'AD_POS_GLB' => 'Global Bottom',
+	'AD_POS_GLH' => 'Global Header',
+	'AD_POS_GLF' => 'Global Footer',
+	'AD_POS_FIX' => 'Forum Index Element',
+	'AD_POS_FIT' => 'Forum Index Top',
+	'AD_POS_FIB' => 'Forum Index Bottom',
+	'AD_POS_VFX' => 'View Forum Element',
+	'AD_POS_VFT' => 'View Forum Top',
+	'AD_POS_VFB' => 'View Forum Bottom',
+	'AD_POS_VTX' => 'View Topic Element',
+	'AD_POS_VTT' => 'View Topic Top',
+	'AD_POS_VTB' => 'View Topic Bottom',
+	'AD_POS_NMT' => 'Nav Menu Top',
+	'AD_POS_NMB' => 'Nav Benu Bottom',
+	'AD_ADD' => 'Add Ad',
+	'AD_EDIT' => 'Edit Ad',
+	'AD_ADDED' => 'Ad added successfully',
+	'ADS_UPDATE' => 'Update Ads',
+	'AD_UPDATED' => 'Ad updated successfully',
+	'AD_DELETED' => 'Ad deleted successfully',
+	'CLICK_RETURN_ADS' => 'Click %sHere%s to return to Ads administration',
+	'AD_NO_ADS' => 'No ads defined',
+	'ERR_AD_ADD' => 'Please fill all required fields',
+/* ADS - END */
 
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'MG_Configuration' => 'Icy Phoenix Settings',
@@ -1884,31 +1936,10 @@ $lang = array_merge($lang, array(
 	'MG_SW_Edit_Notes_Title' => 'Edit Notes',
 	'MG_Configuration_IMG_Posting' => 'Images In Posting',
 
-	'MG_SW_Top_Header_Bottom_Footer' => 'Header and Footer HTML Blocks',
-	'MG_SW_Top_HTML_Block' => 'HTML Header Block',
-	'MG_SW_Top_HTML_Block_Explain' => 'Enabling this option shows the specified HTML code on top of each page.',
-	'MG_SW_Top_HTML_Block_Text' => 'Insert the HTML code for the header.',
-	'MG_SW_Bottom_HTML_Block' => 'HTML Footer Block',
-	'MG_SW_Bottom_HTML_Block_Explain' => 'Enabling this option shows the specified HTML code on the bottom of each page.',
-	'MG_SW_Bottom_HTML_Block_Text' => 'Insert the HTML code for the footer.',
-
-	'MG_SW_Header_Footer' => 'Header and Footer Messages',
+	'MG_SW_Header_Footer' => 'Header Table Message',
 	'MG_SW_Header_Table' => 'Header Table',
 	'MG_SW_Header_Table_Explain' => 'Enabling this option shows a customised message in the header table of each page.',
 	'MG_SW_Header_Table_Text' => 'Insert your text here.',
-	'MG_SW_Footer_Table' => 'Footer Table',
-	'MG_SW_Footer_Table_Explain' => 'Enabling this option shows a customised message in the footer table of each page.',
-	'MG_SW_Footer_Table_Text' => 'Insert your text here.',
-
-	'MG_SW_Banner_Title' => 'Banner Management',
-	'MG_SW_Header_Banner' => 'Header Banner',
-	'MG_SW_Header_Banner_Explain' => 'Enabling this option shows a Header Banner on every page.',
-	'MG_SW_Header_Banner_Code' => 'Header Banner Code',
-	'MG_SW_Header_Banner_Code_Explain' => 'Insert your advertisement code for the Header here.',
-	'MG_SW_Viewtopic_Banner' => 'Viewtopic Banner',
-	'MG_SW_Viewtopic_Banner_Explain' => 'Enabling this option will show a banner after the first post on every topic page.',
-	'MG_SW_Viewtopic_Banner_Code' => 'Viewtopic Banner Code',
-	'MG_SW_Viewtopic_Banner_Code_Explain' => 'Insert your advertisement code for Viewtopic here.',
 
 	'MG_SW_Empty_Precompiled_Posts' => 'Empty precompiled posts',
 	'MG_SW_Empty_Precompiled_Posts_Explain' => 'Empty all precompiled posts.',
@@ -1977,15 +2008,16 @@ $lang['210_MG_Quick_Settings'] = 'Quick Settings'; // admin_board_quick_settings
 $lang['1100_General'] = 'General'; // admin_acronyms.php, admin_autolinks.php, admin_force_read.php, admin_helpdesk.php, admin_liw.php, admin_force_read.php, admin_mass_email.php, admin_megamail.php, admin_notepad.php, admin_quick_title.php, admin_smilies.php, admin_words.php, admin_yahoo_search.php
 $lang['100_Acronyms'] = 'Acronyms'; // admin_acronyms.php
 $lang['110_Autolinks'] = 'Autolinks'; // admin_autolinks.php
+$lang['120_Ads'] = 'Ads &amp; Sponsors'; // admin_ads.php
 $lang['130_Mass_Email'] = 'Mass Email'; // admin_mass_email.php
-$lang['140_Mega_Mail'] = 'Mega Mail'; // admin_megamail.php
+$lang['140_Mega_Mail'] = 'Mass Email / PM'; // admin_megamail.php
 $lang['150_FTR_Config'] = 'FTR'; // admin_force_read.php
 $lang['160_FTR_Users'] = 'FTR User'; // admin_force_read.php
 $lang['170_Smilies'] = 'Smileys'; // admin_smilies.php
 $lang['180_Word_Censor'] = 'Word Censor'; // admin_words.php
 $lang['200_Notepad'] = 'Admin Notepad'; // admin_notepad.php
 $lang['210_Help_Desk'] = 'Help Desk'; // admin_helpdesk.php
-$lang['240_Replace_title'] = 'Replace in posts'; // admin_replace.php
+$lang['240_Replace_title'] = 'Replace In Posts'; // admin_replace.php
 
 // Forum
 $lang['1200_Forums'] = 'Forum'; // admin_forum_prune.php, admin_forumauth_list.php, admin_forums.php, admin_forums_extend.php, admin_prune_overview.php, admin_topic_shadow.php

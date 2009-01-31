@@ -32,28 +32,20 @@ require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '
 require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
 require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+require_once(ALBUM_MOD_PATH . 'album_acp_functions.' . PHP_EXT);
 
 $album_user_id = ALBUM_PUBLIC_GALLERY;
 
 // Mighty Gorgon - Synchronize Pics Counter - BEGIN
-if( isset($_POST['sync_pics_counter']) )
+if(isset($_POST['sync_pics_counter']))
 {
 	synchronize_all_cat_pics_counter();
 }
 // Mighty Gorgon - Synchronize Pics Counter - END
 
-function showResultMessage($in_message)
+if(!isset($_POST['mode']))
 {
-	global $lang, $album_user_id;
-
-	$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_album_category'], '<a href="' . append_sid('admin_album_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-
-	message_die(GENERAL_MESSAGE, $message);
-}
-
-if( !isset($_POST['mode']) )
-{
-	if( !isset($_GET['action']) )
+	if(!isset($_GET['action']))
 	{
 		album_read_tree();
 

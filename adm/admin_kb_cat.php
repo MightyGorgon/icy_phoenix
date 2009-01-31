@@ -36,41 +36,43 @@ include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
-function get_forums($sel_id = 0)
+if (!function_exists('get_forums'))
 {
-	global $db;
-
-	$sql = "SELECT forum_id, forum_name
-		FROM " . FORUMS_TABLE;
-
-	if (!$result = $db->sql_query($sql))
+	function get_forums($sel_id = 0)
 	{
-		message_die(GENERAL_ERROR, "Couldn't get list of forums", "", __LINE__, __FILE__, $sql);
-	}
+		global $db;
 
-	$forumlist = '<select name="forum_id">';
+		$sql = "SELECT forum_id, forum_name
+			FROM " . FORUMS_TABLE;
 
-	if ($sel_id == 0)
-	$forumlist .= '<option value="0" selected > Select a Forum !</option>';
-
-	while ($row = $db->sql_fetchrow($result))
-	{
-		if ($sel_id == $row['forum_id'])
+		if (!$result = $db->sql_query($sql))
 		{
-			$status = "selected";
+			message_die(GENERAL_ERROR, "Couldn't get list of forums", "", __LINE__, __FILE__, $sql);
 		}
-		else
+
+		$forumlist = '<select name="forum_id">';
+
+		if ($sel_id == 0)
+		$forumlist .= '<option value="0" selected > Select a Forum !</option>';
+
+		while ($row = $db->sql_fetchrow($result))
 		{
-			$status = '';
+			if ($sel_id == $row['forum_id'])
+			{
+				$status = "selected";
+			}
+			else
+			{
+				$status = '';
+			}
+			$forumlist .= '<option value="' . $row['forum_id'] . '" ' . $status . '>' . $row['forum_name'] . '</option>';
 		}
-		$forumlist .= '<option value="' . $row['forum_id'] . '" ' . $status . '>' . $row['forum_name'] . '</option>';
+
+		$forumlist .= '</select>';
+
+		return $forumlist;
 	}
-
-	$forumlist .= '</select>';
-
-	return $forumlist;
 }
-
 
 if (isset($_POST['mode']) || isset($_GET['mode']))
 {

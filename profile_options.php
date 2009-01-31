@@ -31,10 +31,7 @@ if (!$userdata['session_logged_in'])
 }
 
 // constant
-if (!isset($nav_separator))
-{
-	$nav_separator = '&nbsp;&raquo;&nbsp;';
-}
+$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 
 // functions
 function is_auth($field_level, $user_level)

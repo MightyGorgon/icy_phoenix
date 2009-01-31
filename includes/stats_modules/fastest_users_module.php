@@ -29,11 +29,14 @@ $bar_percent = 0;
 
 $currect_time = time();
 
-$sql ="SELECT user_id, username, user_posts, user_regdate,
-	(user_posts/(($currect_time - user_regdate)/ 86400)) rate,
-	ROUND(($currect_time - user_regdate)/ 86400) time_on_forum
-	FROM " . USERS_TABLE .
-	" WHERE (user_id <> " .ANONYMOUS . ") AND (user_posts > 0) ORDER BY rate DESC LIMIT " . $return_limit;
+$sql ="SELECT user_id, username, user_active, user_color, user_posts, user_regdate,
+	(user_posts / (($currect_time - user_regdate) / 86400)) rate,
+	ROUND(($currect_time - user_regdate) / 86400) time_on_forum
+	FROM " . USERS_TABLE . "
+	WHERE (user_id <> " .ANONYMOUS . ")
+		AND (user_posts > 0)
+	ORDER BY rate DESC
+	LIMIT " . $return_limit;
 if (!($result = $stat_db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
@@ -61,7 +64,7 @@ for ($i = 0; $i < $user_count; $i++)
 	$template->assign_block_vars('stats_row', array(
 		'RANK' => $i + 1,
 		'CLASS' => $class,
-		'USERNAME' => colorize_username($user_data[$i]['user_id']),
+		'USERNAME' => colorize_username($user_data[$i]['user_id'], $user_data[$i]['username'], $user_data[$i]['user_color'], $user_data[$i]['user_active']),
 		'BAR' => $bar_percent,
 		'RATE' => round($user_data[$i]['rate'], 2),
 		'TIME' => $user_data[$i]['time_on_forum']

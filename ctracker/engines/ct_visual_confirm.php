@@ -192,7 +192,7 @@ else
 
 	// Generate the required confirmation code
 	// NB 0 (zero) could get confused with O (the letter) so we make change it
-	$code = dss_rand();
+	$code = unique_id();
 	$code = substr(str_replace('0', 'Z', strtoupper(base_convert($code, 16, 35))), 2, 6);
 
 	$confirm_id = md5(uniqid($user_ip));

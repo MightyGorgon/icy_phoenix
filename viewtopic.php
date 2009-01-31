@@ -32,7 +32,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
@@ -191,7 +190,7 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 				{
 					$session_id_append = '';
 				}
-				redirect(VIEWTOPIC_MG . '?' . $session_id_append . $kb_mode_append_red . $forum_id_append . '&' . $topic_id_append . '&' . $post_id_append . $post_id_append_url);
+				redirect(append_sid(VIEWTOPIC_MG . '?' . $session_id_append . $kb_mode_append_red . $forum_id_append . '&' . $topic_id_append . '&' . $post_id_append . $post_id_append_url));
 			}
 		}
 
@@ -222,7 +221,7 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 			$forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : '');
 			$topic_id = intval($row['topic_id']);
 			$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
-			redirect(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red);
+			redirect(append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
 		}
 		else
 		{
@@ -243,7 +242,7 @@ $count_sql = (!$post_id) ? '' : ", COUNT(p2.post_id) AS prev_posts";
 
 $order_sql = (!$post_id) ? '' : "GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard ORDER BY p.post_id ASC";
 
-$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, f.forum_name, f.forum_status, f.forum_id, f.forum_similar_topics, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.forum_rules, f.auth_ban, f.auth_greencard, f.auth_bluecard, fr.*" . $count_sql . "
+$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, f.forum_name, f.forum_status, f.forum_id, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.forum_rules, f.auth_ban, f.auth_greencard, f.auth_bluecard, fr.*" . $count_sql . "
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $join_sql_table . "
 	WHERE $join_sql
 		AND f.forum_id = t.forum_id
@@ -291,34 +290,30 @@ if ($board_config['disable_thanks_topics'] == false)
 	// Check if the Thanks feature is active for this forum
 	$sql = "SELECT forum_thanks
 			FROM " . FORUMS_TABLE . "
-			WHERE forum_id = '" . $forum_id . "'";
-	if (!($result = $db->sql_query($sql, false, 'thanks_')))
+			WHERE forum_id = '" . $forum_id . "'
+			LIMIT 1";
+	if (!($result = $db->sql_query($sql, false, 'forums_thanks_', FORUMS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain forum information', '', __LINE__, __FILE__, $sql);
 	}
-	if (!($forum_thank_result = $db->sql_fetchrow($result)))
+	$show_thanks = 0;
+	$show_thanks_button = 0;
+	while ($forum_thank_result = $db->sql_fetchrow($result))
 	{
-		$show_thanks = 0;
-		$show_thanks_button = 0;
-		//message_die(GENERAL_MESSAGE, '"Thanks" information doesn\'t exists');
-	}
-	else
-	{
-		$db->sql_freeresult($result);
-
 		$show_thanks = ($forum_thank_result['forum_thanks'] == 1) ? 1 : 0;
 		$show_thanks_button = 0;
 		if ($show_thanks && $userdata['session_logged_in'])
 		{
-			$sql = "SELECT topic_id
+			$sql_thanked = "SELECT topic_id
 					FROM " . THANKS_TABLE . "
 					WHERE topic_id = '" . $topic_id . "'
-						AND user_id = '" . $userdata['user_id'] . "'";
-			if (!($result = $db->sql_query($sql, false, 'topics_thanks_', TOPICS_CACHE_FOLDER)))
+						AND user_id = '" . $userdata['user_id'] . "'
+					LIMIT 1";
+			if (!($result_thanked = $db->sql_query($sql_thanked)))
 			{
 				message_die(GENERAL_ERROR, 'Could not obtain thanks information', '', __LINE__, __FILE__, $sql);
 			}
-			if ($has_thanked = $db->sql_fetchrow($result))
+			if ($has_thanked = $db->sql_fetchrow($result_thanked))
 			{
 				$show_thanks_button = 0;
 			}
@@ -326,9 +321,10 @@ if ($board_config['disable_thanks_topics'] == false)
 			{
 				$show_thanks_button = 1;
 			}
-			$db->sql_freeresult($result);
+			$db->sql_freeresult($result_thanked);
 		}
 	}
+	$db->sql_freeresult($result);
 }
 else
 {
@@ -596,14 +592,14 @@ if ($bypass)
 	}
 	// End auth check
 
-	// Start add - Who viewed a topic MOD
-	if ($board_config['disable_topic_view'] == false)
+	// Who viewed a topic - BEGIN
+	if (($board_config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_views'] == 1))
 	{
 		$user_id = $userdata['user_id'];
 		$sql = 'UPDATE ' . TOPIC_VIEW_TABLE . ' SET topic_id = "' . $topic_id . '", view_time = "' . time() . '", view_count = view_count + 1 WHERE topic_id=' . $topic_id . ' AND user_id = ' . $user_id;
 		if (!$db->sql_query($sql) || !$db->sql_affectedrows())
 		{
-			$sql = 'INSERT IGNORE INTO ' . TOPIC_VIEW_TABLE . ' (topic_id, user_id, view_time,view_count)
+			$sql = 'INSERT IGNORE INTO ' . TOPIC_VIEW_TABLE . ' (topic_id, user_id, view_time, view_count)
 				VALUES (' . $topic_id . ', "' . $user_id . '", "' . time() . '", "1")';
 			if (!($db->sql_query($sql)))
 			{
@@ -611,7 +607,7 @@ if ($bypass)
 			}
 		}
 	}
-	// End add - Who viewed a topic MOD
+	// Who viewed a topic - END
 
 	$forum_id = intval($forum_topic_data['forum_id']);
 	$forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : '');
@@ -826,7 +822,7 @@ if ($bypass)
 		$forums_auth_sql = '';
 		//foreach ($similar_forums_auth as $k=>$v)
 		//$similar_forums_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
-		foreach ($similar_forums_auth as $k=>$v)
+		foreach ($similar_forums_auth as $k => $v)
 		{
 			if (count($ignore_forums_ids) && in_array($k, $ignore_forums_ids))
 			{
@@ -899,7 +895,7 @@ if ($bypass)
 		}
 
 		//ORDER BY t.topic_type DESC, ' . $sql_sort . ' DESC LIMIT 0,' . intval($board_config['similar_max_topics']);
-		$sql = "SELECT t.*, u.user_id, u.username, u2.username as user2, u2.user_id as id2, f.forum_id, f.forum_name, p.post_time, p.post_username, $sql_match as relevance
+		$sql = "SELECT t.*, u.user_id, u.username, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, f.forum_id, f.forum_name, p.post_time, p.post_username, $sql_match as relevance
 					FROM ". TOPICS_TABLE ." t, ". USERS_TABLE ." u, ". FORUMS_TABLE ." f, ". POSTS_TABLE ." p, " . USERS_TABLE . " u2
 					WHERE t.topic_id <> $topic_id $forums_auth_sql
 					AND $sql_match
@@ -972,7 +968,7 @@ if ($bypass)
 	$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $userdata['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 	// Self AUTH - END
 
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 		WHERE p.topic_id = $topic_id
 			AND t.topic_id = p.topic_id
@@ -1217,7 +1213,10 @@ if ($bypass)
 	make_jumpbox(VIEWFORUM_MG, $forum_id);
 
 	// Output page header
-	define('SHOW_ONLINE', true);
+	if ($board_config['display_viewonline'])
+	{
+		define('SHOW_ONLINE', true);
+	}
 
 	$topic_title = $topic_title_prefix . $topic_title;
 	$page_title = $topic_title;
@@ -1332,7 +1331,7 @@ if ($bypass)
 	if ($is_auth['auth_edit'] || ($userdata['user_id'] == $row['topic_poster']))
 	{
 		$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . " ORDER BY title_info ASC";
-		if (!($result = $db->sql_query($sql, false, 'topics_prefixes_')))
+		if (!($result = $db->sql_query($sql, false, 'topics_prefixes_', TOPICS_CACHE_FOLDER)))
 		{
 			message_die(GENERAL_MESSAGE, 'Unable to query Quick Title Addon informations.');
 		}
@@ -1449,24 +1448,29 @@ if ($bypass)
 		}
 	}
 
-	// Send vars to template
+	$topic_viewed_link = '';
+	if (($board_config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_views'] == 1) && ($userdata['user_level'] == ADMIN))
+	{
+		$topic_viewed_link = append_sid('topic_view_users.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append);
+	}
+
 	if ($board_config['show_social_bookmarks'] == true)
 	{
 		$template->assign_block_vars('social_bookmarks', array());
 	}
-	$topic_title_enc = urlencode(utf8_decode($topic_title));
+	$topic_title_enc = urlencode(ip_utf8_decode($topic_title));
 	// URL Rewrite - BEGIN
 	// Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled
 	// Forum ID and KB Mode removed from topic_url_enc to avoid compatibility problems with redirects in tell a friend
 	if (($board_config['url_rw'] == true) || ($board_config['url_rw_guests'] == true))
 	{
 		$topic_url_ltt = htmlspecialchars((create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html') . ($kb_mode ? ('?' . $kb_mode_append) : ''));
-		$topic_url_enc = urlencode(utf8_decode(create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
+		$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
 	}
 	else
 	{
-		$topic_url_ltt = htmlspecialchars(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
-		$topic_url_enc = urlencode(utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $topic_id_append));
+		$topic_url_ltt = htmlspecialchars(ip_utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
+		$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . VIEWTOPIC_MG . '?' . $topic_id_append));
 	}
 	// URL Rewrite - END
 	// Convert and clean special chars!
@@ -1549,6 +1553,7 @@ if ($bypass)
 		'L_USER_WWW' => $lang['Website'],
 		'L_USER_EMAIL' => $lang['Send_Email'],
 		'L_USER_PROFILE' => $lang['Profile'],
+		'L_PM' => $lang['Private_Message'],
 
 		'L_SMILEYS' => $lang['Emoticons'],
 		'L_SMILEYS_MORE' => $lang['More_emoticons'],
@@ -1575,7 +1580,7 @@ if ($bypass)
 		'S_MARK_AR' => $s_mark_ar,
 		'S_MARK_AR_IMG' => $s_mark_ar_img,
 //<!-- END Unread Post Information to Database Mod -->
-		'U_TOPIC_VIEWED' => ($board_config['disable_topic_view'] == false) ? append_sid('topic_view_users.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append) : '',
+		'U_TOPIC_VIEWED' => $topic_viewed_link,
 		'U_VIEW_FORUM' => $view_forum_url,
 		'U_VIEW_OLDER_TOPIC' => $view_prev_topic_url,
 		'U_VIEW_NEWER_TOPIC' => $view_next_topic_url,
@@ -1770,7 +1775,7 @@ if ($bypass)
 	{
 		// Select Format for the date
 		$timeformat = "d F";
-		$sql = "SELECT u.user_id, t.thanks_time
+		$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, t.thanks_time
 				FROM " . THANKS_TABLE . " t, " . USERS_TABLE . " u
 				WHERE topic_id = $topic_id
 				AND t.user_id = u.user_id";
@@ -1788,41 +1793,36 @@ if ($bypass)
 			}
 			while ($fil = $db->sql_fetchrow($result));
 		}
+		$db->sql_freeresult($result);
 		$thanks = '';
 		for($i = 0; $i < $total_thank; $i++)
 		{
-			$topic_thanks = $db->sql_fetchrow($result);
-			$thanker_id[$i] = $thanksrow[$i]['user_id'];
-			$thanks_date[$i] = $thanksrow[$i]['thanks_time'];
 			// Get thanks date
-			$thanks_date[$i] = create_date_simple($timeformat, $thanks_date[$i], $board_config['board_timezone']);
+			$thanks_date[$i] = create_date_simple($timeformat, $thanksrow[$i]['thanks_time'], $board_config['board_timezone']);
 			// Make thanker profile link
-			$thanks .= '<span class="gensmall">' . (($thanks != '') ? ', ' : '') . colorize_username($thanker_id[$i]) . ' (' . $thanks_date[$i] . ')</span>';
+			$thanks .= '<span class="gensmall">' . (($thanks != '') ? ', ' : '') . colorize_username($thanksrow[$i]['user_id'], $thanksrow[$i]['username'], $thanksrow[$i]['user_color'], $thanksrow[$i]['user_active']) . ' (' . $thanks_date[$i] . ')</span>';
 		}
 
-		$sql = "SELECT u.topic_poster, t.user_id, t.username
-				FROM " . TOPICS_TABLE . " u, " . USERS_TABLE . " t
-				WHERE topic_id = $topic_id
-				AND u.topic_poster = t.user_id";
+		$sql = "SELECT t.topic_poster, u.user_id, u.username, u.user_active, u.user_color
+				FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u
+				WHERE t.topic_id = $topic_id
+					AND t.topic_poster = u.user_id
+				LIMIT 1";
 
 		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, "Could not obtain user information", '', __LINE__, __FILE__, $sql);
 		}
-		$autor = array();
+		$author = array();
 		if ($fil = $db->sql_fetchrow($result))
 		{
-			do
-			{
-				$autor[] = $fil;
-			}
-			while ($fil = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
+			$author[] = $fil;
 		}
+		$db->sql_freeresult($result);
 
-		$autor_name = colorize_username($autor[0]['user_id']);
+		$author_name = colorize_username($author[0]['user_id'], $author[0]['username'], $author[0]['user_color'], $author[0]['user_active']);
 
-		$thanks2 .= $lang['thanks_to'] . ' ' . $autor_name . $lang['thanks_end'];
+		$thanks2 .= $lang['thanks_to'] . ' ' . $author_name . $lang['thanks_end'];
 	}
 	// End Thanks Mod
 
@@ -1858,7 +1858,7 @@ if ($bypass)
 		$poster_id = $postrow[$i]['user_id'];
 		$post_id = $postrow[$i]['post_id'];
 		$user_pic_count = $postrow[$i]['user_personal_pics_count'];
-		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($postrow[$i]['user_id']);
+		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($postrow[$i]['user_id'], $postrow[$i]['username'], $postrow[$i]['user_color'], $postrow[$i]['user_active']);
 		$poster_qq = ($poster_id == ANONYMOUS) ? $lang['Guest'] : $postrow[$i]['username'];
 		// Start add - Birthday MOD
 		$poster_age = '';
@@ -1900,7 +1900,7 @@ if ($bypass)
 
 		$poster_joined = ($postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $postrow[$i]['user_regdate'], $board_config['board_timezone']) : '';
 
-		$poster_avatar = user_get_avatar($poster_id, $postrow[$i]['user_avatar'], $postrow[$i]['user_avatar_type'], $postrow[$i]['user_allowavatar']);
+		$poster_avatar = user_get_avatar($poster_id, $postrow[$i]['user_level'], $postrow[$i]['user_avatar'], $postrow[$i]['user_avatar_type'], $postrow[$i]['user_allowavatar']);
 
 		// Define the little post icon
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -1955,7 +1955,7 @@ if ($bypass)
 		// Mighty Gorgon - Multiple Ranks - END
 
 		$poster_thanks_received = '';
-		if (($poster_id != ANONYMOUS) && ($board_config['show_thanks_viewtopic'] == true) && ($board_config['disable_thanks_topics'] == false) && !$lofi)
+		if (($poster_id != ANONYMOUS) && ($userdata['user_id'] != ANONYMOUS) && $board_config['show_thanks_viewtopic'] && !$board_config['disable_thanks_topics'] && !$lofi)
 		{
 			$total_thanks_received = user_get_thanks_received($poster_id);
 			$poster_thanks_received = ($total_thanks_received > 0) ? ($lang['THANKS_RECEIVED'] . ': ' . '<a href="' . append_sid(SEARCH_MG . '?search_thanks=' . $poster_id) . '">' . $total_thanks_received . '</a>' . '<br />') : '';
@@ -2575,11 +2575,6 @@ if ($bypass)
 			$l_edited_by = '';
 		}
 
-		if (!empty($topic_calendar_time) && ($postrow[$i]['post_id'] == $topic_first_post_id))
-		{
-			$post_subject .= get_calendar_title($topic_calendar_time, $topic_calendar_duration);
-		}
-
 		// Convert and clean special chars!
 		$post_subject = htmlspecialchars_clean($post_subject);
 		// SMILEYS IN TITLE - BEGIN
@@ -2589,6 +2584,11 @@ if ($bypass)
 			$post_subject = $bbcode->parse_only_smilies($post_subject);
 		}
 		// SMILEYS IN TITLE - END
+
+		if (!empty($topic_calendar_time) && ($postrow[$i]['post_id'] == $topic_first_post_id))
+		{
+			$post_subject .= get_calendar_title($topic_calendar_time, $topic_calendar_duration);
+		}
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		if($userdata['upi2db_access'])
@@ -2603,7 +2603,6 @@ if ($bypass)
 			$mark_topic_unread = '';
 		}
 //<!-- END Unread Post Information to Database Mod -->
-
 
 		$post_id = $postrow[$i]['post_id'];
 		$poster_number = ($postrow[$i]['poster_id'] == ANONYMOUS) ? '' : $lang['User_Number'] . ': ' . $postrow[$i]['poster_id'];
@@ -2836,25 +2835,34 @@ if ($bypass)
 		{
 			$template->assign_block_vars('postrow.switch_quick_quote', array());
 		}
-		if (($i == 0) && ($board_config['switch_viewtopic_banner'] == 1))
-		{
-			// Decomment this if you want sponsors to be shown everywhere
-			$template->assign_block_vars('postrow.switch_viewtopic_banner', array());
 
-			// Use this if you want to block sponsors not readable by guests
-			/*
-			if ($this_forum_auth_read > 0)
-			{
-				$template->assign_block_vars('postrow.switch_viewtopic_banner', array());
-			}
-			*/
-		}
 		if ($i == 0)
 		{
+
+			$viewtopic_banner_text = get_ad('vtx');
+			if (!empty($viewtopic_banner_text))
+			{
+				$template->assign_vars(array(
+					'VIEWTOPIC_BANNER_CODE' => $viewtopic_banner_text,
+					)
+				);
+
+				// Decomment this if you want sponsors to be shown everywhere
+				$template->assign_block_vars('postrow.switch_viewtopic_banner', array());
+
+				// Use this if you want to block sponsors not readable by guests
+				/*
+				if ($this_forum_auth_read > 0)
+				{
+					$template->assign_block_vars('postrow.switch_viewtopic_banner', array());
+				}
+				*/
+			}
+
 			$template->assign_block_vars('postrow.switch_first_post', array());
 		}
 
-		if ($board_config['edit_notes'] == 1)
+		if ($board_config['edit_notes'])
 		{
 			$template->assign_vars(array(
 				'S_EDIT_NOTES' => true,
@@ -2898,28 +2906,28 @@ if ($bypass)
 
 	$rating_auth_data = rate_auth($userdata['user_id'], $forum_id, $topic_id);
 	$rating_box = ((($rating_auth_data == RATE_AUTH_NONE) || ($rating_auth_data == RATE_AUTH_DENY)) ? false : true);
-	$sb_box = ($board_config['show_social_bookmarks'] == false) ? false : true;
-	$ltt_box = ($board_config['link_this_topic'] == false) ? false : true;
+	$sb_box = $board_config['show_social_bookmarks'] ? true : false;
+	$ltt_box = $board_config['link_this_topic'] ? true : false;
 	$topic_useful_box = ($rating_box || $sb_box || $ltt_box) ? true : false;
 
-	if (($topic_useful_box == true) || (($rating_box == false) && ($sb_box == false)))
+	if ($topic_useful_box)
 	{
 		$template->assign_block_vars('switch_topic_useful', array());
-	}
 
-	if ($sb_box)
-	{
-		$template->assign_block_vars('switch_topic_useful.social_bookmarks', array());
-	}
+		if ($sb_box)
+		{
+			$template->assign_block_vars('switch_topic_useful.social_bookmarks', array());
+		}
 
-	if ($rating_box)
-	{
-		ratings_view_topic();
-	}
+		if ($rating_box)
+		{
+			ratings_view_topic();
+		}
 
-	if ($ltt_box)
-	{
-		$template->assign_block_vars('switch_topic_useful.link_this_topic', array());
+		if ($ltt_box)
+		{
+			$template->assign_block_vars('switch_topic_useful.link_this_topic', array());
+		}
 	}
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -2928,6 +2936,14 @@ if ($bypass)
 		delete_read_posts($read_posts);
 	}
 //<!-- END Unread Post Information to Database Mod -->
+
+	$viewtopic_banner_top = get_ad('vtt');
+	$viewtopic_banner_bottom = get_ad('vtb');
+	$template->assign_vars(array(
+		'VIEWTOPIC_BANNER_TOP' => $viewtopic_banner_top,
+		'VIEWTOPIC_BANNER_BOTTOM' => $viewtopic_banner_bottom,
+		)
+	);
 
 	generate_smilies_row();
 

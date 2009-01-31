@@ -16,7 +16,6 @@
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{css_include.CSS_FILE}" type="text/css" />
 <!-- END css_include -->
 <script type="text/javascript">
-<!--
 var S_SID = '{S_SID}';
 var FULL_SITE_PATH = '{FULL_SITE_PATH}';
 var ip_root_path = '{IP_ROOT_PATH}';
@@ -32,7 +31,6 @@ var VIEWTOPIC_MG = '{VIEWTOPIC_MG}';
 var PROFILE_MG = '{PROFILE_MG}';
 var POSTING_MG = '{POSTING_MG}';
 var SEARCH_MG = '{SEARCH_MG}';
-//-->
 </script>
 
 <script type="text/javascript" src="{FULL_SITE_PATH}language/lang_{CURRENT_LANG}/bbcb_mg.js"></script>
@@ -90,4 +88,6 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 <tr>
 	<td colspan="3" id="content">
 
+	<!-- IF not HAS_DIED and S_SHOW_CMS_MENU -->
 	<!-- INCLUDE ../common/cms/cms_nav_menu_inc_start.tpl -->
+	<!-- ENDIF -->

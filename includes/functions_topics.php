@@ -381,7 +381,7 @@ function get_topic_prefixes()
 {
 	global $db;
 	$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . " ORDER BY title_info ASC";
-	if (!($result = $db->sql_query($sql, false, 'topics_prefixes_')))
+	if (!($result = $db->sql_query($sql, false, 'topics_prefixes_', TOPICS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_MESSAGE, 'Unable to query Quick Title Addon informations.');
 	}

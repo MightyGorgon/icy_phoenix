@@ -41,6 +41,7 @@ $lang['menu_item']['chat'] = $lang['Chat'];
 $lang['menu_item']['cms'] = $lang['CMS_Management'];
 $lang['menu_item']['cms_config'] = $lang['CMS_Config'];
 $lang['menu_item']['cms_pages_permissions'] = $lang['CMS_Page_Permissions'];
+$lang['menu_item']['cms_ads'] = $lang['CMS_ADS'];
 $lang['menu_item']['contact_us'] = $lang['Contact_us'];
 $lang['menu_item']['credits'] = $lang['Hacks_List'];
 $lang['menu_item']['digests'] = $lang['Digests'];

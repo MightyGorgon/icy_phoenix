@@ -64,7 +64,7 @@ $template->assign_vars(array(
 );
 
 // This months top postes
-$sql = "SELECT u.user_id, u.username, count(u.user_id) as user_posts
+$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, count(u.user_id) as user_posts
 	FROM " . USERS_TABLE . " u, " . POSTS_TABLE . " p
 	WHERE (u.user_id = p.poster_id)
 		AND (p.post_time > '" . $time_thismonth . "')
@@ -98,7 +98,7 @@ for ($i = 0; $i < $user_count; $i++)
 	$template->assign_block_vars('stats_row', array(
 		'RANK' => $i + 1,
 		'CLASS' => $class,
-		'USERNAME' => colorize_username($user_data[$i]['user_id']),
+		'USERNAME' => colorize_username($user_data[$i]['user_id'], $user_data[$i]['username'], $user_data[$i]['user_color'], $user_data[$i]['user_active']),
 		'PERCENTAGE' => $statistics->percentage,
 		'BAR' => $statistics->bar_percent,
 		'POSTS' => $user_data[$i]['user_posts']

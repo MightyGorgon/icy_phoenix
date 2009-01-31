@@ -32,7 +32,7 @@ if(!function_exists('imp_forum_list_block_func'))
 		$sql = "SELECT c.*
 			FROM " . CATEGORIES_TABLE . " c
 			ORDER BY c.cat_order";
-		if(!($result = $db->sql_query($sql, false, 'forum_cats_')))
+		if(!($result = $db->sql_query($sql, false, 'forums_cats_', FORUMS_CACHE_FOLDER)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query categories list', '', __LINE__, __FILE__, $sql);
 		}
@@ -60,7 +60,7 @@ if(!function_exists('imp_forum_list_block_func'))
 				WHERE f.auth_view = '0'
 				" . $sql_where . "
 				ORDER BY f.cat_id, f.forum_order";
-			if (!($result = $db->sql_query($sql, false, 'forums_list_')))
+			if (!($result = $db->sql_query($sql, false, 'forums_list_', FORUMS_CACHE_FOLDER)))
 			{
 				message_die(GENERAL_ERROR, 'Could not query forums information', '', __LINE__, __FILE__, $sql);
 			}

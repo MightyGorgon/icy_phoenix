@@ -56,6 +56,8 @@ function compileForm(m_id)
 	<th>{L_ID}</th>
 	<th>{L_GROUP}</th>
 	<th>{L_EMAIL_SUBJECT}</th>
+	<th>{L_MASS_PM}</th>
+	<th>{L_TEXT_FORMAT}</th>
 	<th>{L_BATCH_START}</th>
 	<th>{L_BATCH_SIZE}</th>
 	<th>{L_BATCH_WAIT}</th>
@@ -67,6 +69,8 @@ function compileForm(m_id)
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.ID}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.GROUP}</td>
 	<td class="{mail_sessions.ROW} row-center"><a href="javascript:compileForm({mail_sessions.ID});">{mail_sessions.SUBJECT}</a></td>
+	<td class="{mail_sessions.ROW} row-center">{mail_sessions.MASS_PM}</td>
+	<td class="{mail_sessions.ROW} row-center">{mail_sessions.EMAIL_FORMAT}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.BATCHSTART}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.BATCHSIZE}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.BATCHWAIT}</td>
@@ -97,14 +101,22 @@ function compileForm(m_id)
 	<td class="row2"><span class="gen"><input type="text" name="batchwait" size="4" maxlength="4" tabindex="3" class="post" value="{DEFAULT_WAIT}" /> s.</span></td>
 </tr>
 <tr>
+	<td class="row1" align="right"><b>{L_MASS_PM}</b></td>
+	<td class="row2"><span class="gen"><input type="radio" name="mass_pm" class="post" value="0" checked="checked" />&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" name="mass_pm" class="post" value="1" />&nbsp;{L_YES}</span></td>
+</tr>
+<tr>
+	<td class="row1" align="right"><b>{L_TEXT_FORMAT}</b></td>
+	<td class="row2"><span class="gen"><input type="radio" name="email_format" class="post" value="0" checked="checked" />&nbsp;{L_HTML}&nbsp;&nbsp;<input type="radio" name="email_format" class="post" value="1" />&nbsp;{L_BBCODE}</span></td>
+</tr>
+<tr>
 	<td class="row1" align="right"><b>{L_EMAIL_SUBJECT}</b></td>
-	<td class="row2"><span class="gen"><input type="text" name="subject" size="45" maxlength="100" tabindex="4" class="post" value="{SUBJECT}" /></span></td>
+	<td class="row2"><span class="gen"><input type="text" name="subject" size="45" maxlength="160" tabindex="4" class="post" value="{SUBJECT}" /></span></td>
 </tr>
 <tr>
 	<td class="row1" align="right" valign="top"><span class="gen"><b>{L_EMAIL_MSG}</b></span></td>
 	<td class="row2"><span class="gen"><textarea id="message" name="message" rows="15" cols="35" wrap="virtual" style="width:450px" tabindex="5" class="post">{MESSAGE}</textarea></span></td>
 </tr>
-<tr><td class="cat" colspan="2"><input type="submit" value="{L_EMAIL}" name="submit" class="mainoption" /></td></tr>
+<tr><td class="cat" colspan="2"><input type="submit" value="{L_SEND}" name="submit" class="mainoption" /></td></tr>
 </table>
 
 </form>

@@ -58,7 +58,7 @@ $dir = @opendir(IP_ROOT_PATH . $board_config['smilies_path']);
 
 while($file = @readdir($dir))
 {
-	if(!@is_dir(phpbb_realpath(IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $file)))
+	if(!@is_dir(@phpbb_realpath(IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $file)))
 	{
 		$img_size = @getimagesize(IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $file);
 
@@ -196,45 +196,44 @@ if(isset($_GET['import_pack']) || isset($_POST['import_pack']))
 	else
 	{
 		// Display the script to get the smile_pak cfg file...
-		$smile_paks_select = "<select name='smile_pak'><option value=''>" . $lang['Select_pak'] . "</option>";
+		$smile_paks_select = '<select name="smile_pak"><option value="">' . $lang['Select_pak'] . '</option>';
 		while(list($key, $value) = @each($smiley_paks))
 		{
 			if (!empty($value))
 			{
-				$smile_paks_select .= "<option>" . $value . "</option>";
+				$smile_paks_select .= '<option>' . $value . '</option>';
 			}
 		}
-		$smile_paks_select .= "</select>";
+		$smile_paks_select .= '</select>';
 
-		$hidden_vars = "<input type='hidden' name='mode' value='import'>";
+		$hidden_vars = '<input type="hidden" name="mode" value="import" />';
 
-		$template->set_filenames(array(
-			'body' => ADM_TPL . 'smile_import_body.tpl')
-		);
+		$template->set_filenames(array('body' => ADM_TPL . 'smile_import_body.tpl'));
 
 		$template->assign_vars(array(
-			"L_SMILEY_TITLE" => $lang['smiley_title'],
-			"L_SMILEY_EXPLAIN" => $lang['smiley_import_inst'],
-			"L_SMILEY_IMPORT" => $lang['smiley_import'],
-			"L_SELECT_LBL" => $lang['choose_smile_pak'],
-			"L_IMPORT" => $lang['import'],
-			"L_CONFLICTS" => $lang['smile_conflicts'],
-			"L_DEL_EXISTING" => $lang['del_existing_smileys'],
-			"L_REPLACE_EXISTING" => $lang['replace_existing'],
-			"L_KEEP_EXISTING" => $lang['keep_existing'],
+			'L_SMILEY_TITLE' => $lang['smiley_title'],
+			'L_SMILEY_EXPLAIN' => $lang['smiley_import_inst'],
+			'L_SMILEY_IMPORT' => $lang['smiley_import'],
+			'L_SELECT_LBL' => $lang['choose_smile_pak'],
+			'L_IMPORT' => $lang['import'],
+			'L_CONFLICTS' => $lang['smile_conflicts'],
+			'L_DEL_EXISTING' => $lang['del_existing_smileys'],
+			'L_REPLACE_EXISTING' => $lang['replace_existing'],
+			'L_KEEP_EXISTING' => $lang['keep_existing'],
 
-			"S_SMILEY_ACTION" => append_sid("admin_smilies." . PHP_EXT),
-			"S_SMILE_SELECT" => $smile_paks_select,
-			"S_HIDDEN_FIELDS" => $hidden_vars)
+			'S_SMILEY_ACTION' => append_sid('admin_smilies.' . PHP_EXT),
+			'S_SMILE_SELECT' => $smile_paks_select,
+			'S_HIDDEN_FIELDS' => $hidden_vars
+			)
 		);
 
-		$template->pparse("body");
+		$template->pparse('body');
 	}
 }
-else if(isset($_POST['export_pack']) || isset($_GET['export_pack']))
+elseif(isset($_POST['export_pack']) || isset($_GET['export_pack']))
 {
 	// Export our smiley config as a smiley pak...
-	if ($_GET['export_pack'] == "send")
+	if ($_GET['export_pack'] == 'send')
 	{
 		// Smilies Order REPLACE
 		//$sql = "SELECT *
@@ -271,13 +270,11 @@ else if(isset($_POST['export_pack']) || isset($_GET['export_pack']))
 	message_die(GENERAL_MESSAGE, $message);
 
 }
-else if(isset($_POST['add']) || isset($_GET['add']))
+elseif(isset($_POST['add']) || isset($_GET['add']))
 {
 	// Admin has selected to add a smiley.
 
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'smile_edit_body.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'smile_edit_body.tpl'));
 
 	$filename_list = "";
 	for($i = 0; $i < count($smiley_images); $i++)
@@ -288,26 +285,27 @@ else if(isset($_POST['add']) || isset($_GET['add']))
 	$s_hidden_fields = '<input type="hidden" name="mode" value="savenew" />';
 
 	$template->assign_vars(array(
-		"L_SMILEY_TITLE" => $lang['smiley_title'],
-		"L_SMILEY_CONFIG" => $lang['smiley_config'],
-		"L_SMILEY_EXPLAIN" => $lang['smile_desc'],
-		"L_SMILEY_CODE" => $lang['smiley_code'],
-		"L_SMILEY_URL" => $lang['smiley_url'],
-		"L_SMILEY_EMOTION" => $lang['smiley_emot'],
-		"L_SUBMIT" => $lang['Submit'],
-		"L_RESET" => $lang['Reset'],
+		'L_SMILEY_TITLE' => $lang['smiley_title'],
+		'L_SMILEY_CONFIG' => $lang['smiley_config'],
+		'L_SMILEY_EXPLAIN' => $lang['smile_desc'],
+		'L_SMILEY_CODE' => $lang['smiley_code'],
+		'L_SMILEY_URL' => $lang['smiley_url'],
+		'L_SMILEY_EMOTION' => $lang['smiley_emot'],
+		'L_SUBMIT' => $lang['Submit'],
+		'L_RESET' => $lang['Reset'],
 
-		"SMILEY_IMG" => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smiley_images[0],
+		'SMILEY_IMG' => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smiley_images[0],
 
-		"S_SMILEY_ACTION" => append_sid("admin_smilies." . PHP_EXT),
-		"S_HIDDEN_FIELDS" => $s_hidden_fields,
-		"S_FILENAME_OPTIONS" => $filename_list,
-		"S_SMILEY_BASEDIR" => IP_ROOT_PATH . $board_config['smilies_path'])
+		'S_SMILEY_ACTION' => append_sid('admin_smilies.' . PHP_EXT),
+		'S_HIDDEN_FIELDS' => $s_hidden_fields,
+		'S_FILENAME_OPTIONS' => $filename_list,
+		'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['smilies_path']
+		)
 	);
 
-	$template->pparse("body");
+	$template->pparse('body');
 }
-else if ($mode != "")
+elseif ($mode != '')
 {
 	switch($mode)
 	{
@@ -347,8 +345,9 @@ else if ($mode != "")
 					'L_YES' => $lang['Yes'],
 					'L_NO' => $lang['No'],
 
-					'S_CONFIRM_ACTION' => append_sid("admin_smilies." . PHP_EXT),
-					'S_HIDDEN_FIELDS' => $hidden_fields)
+					'S_CONFIRM_ACTION' => append_sid('admin_smilies.' . PHP_EXT),
+					'S_HIDDEN_FIELDS' => $hidden_fields
+					)
 				);
 				$template->pparse('body');
 			}
@@ -375,7 +374,7 @@ else if ($mode != "")
 			{
 				if($smiley_images[$i] == $smile_data['smile_url'])
 				{
-					$smiley_selected = "selected=\"selected\"";
+					$smiley_selected = 'selected="selected"';
 					$smiley_edit_img = $smiley_images[$i];
 				}
 				else
@@ -386,37 +385,36 @@ else if ($mode != "")
 				$filename_list .= '<option value="' . $smiley_images[$i] . '"' . $smiley_selected . '>' . $smiley_images[$i] . '</option>';
 			}
 
-			$template->set_filenames(array(
-				'body' => ADM_TPL . 'smile_edit_body.tpl')
-			);
+			$template->set_filenames(array('body' => ADM_TPL . 'smile_edit_body.tpl'));
 
 			$s_hidden_fields = '<input type="hidden" name="mode" value="save" /><input type="hidden" name="smile_id" value="' . $smile_data['smilies_id'] . '" />';
 
 			$template->assign_vars(array(
-				"SMILEY_CODE" => $smile_data['code'],
-				"SMILEY_EMOTICON" => $smile_data['emoticon'],
+				'SMILEY_CODE' => $smile_data['code'],
+				'SMILEY_EMOTICON' => $smile_data['emoticon'],
 
-				"L_SMILEY_TITLE" => $lang['smiley_title'],
-				"L_SMILEY_CONFIG" => $lang['smiley_config'],
-				"L_SMILEY_EXPLAIN" => $lang['smile_desc'],
-				"L_SMILEY_CODE" => $lang['smiley_code'],
-				"L_SMILEY_URL" => $lang['smiley_url'],
-				"L_SMILEY_EMOTION" => $lang['smiley_emot'],
-				"L_SUBMIT" => $lang['Submit'],
-				"L_RESET" => $lang['Reset'],
+				'L_SMILEY_TITLE' => $lang['smiley_title'],
+				'L_SMILEY_CONFIG' => $lang['smiley_config'],
+				'L_SMILEY_EXPLAIN' => $lang['smile_desc'],
+				'L_SMILEY_CODE' => $lang['smiley_code'],
+				'L_SMILEY_URL' => $lang['smiley_url'],
+				'L_SMILEY_EMOTION' => $lang['smiley_emot'],
+				'L_SUBMIT' => $lang['Submit'],
+				'L_RESET' => $lang['Reset'],
 
-				"SMILEY_IMG" => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smiley_edit_img,
+				'SMILEY_IMG' => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smiley_edit_img,
 
-				"S_SMILEY_ACTION" => append_sid("admin_smilies." . PHP_EXT),
-				"S_HIDDEN_FIELDS" => $s_hidden_fields,
-				"S_FILENAME_OPTIONS" => $filename_list,
-				"S_SMILEY_BASEDIR" => IP_ROOT_PATH . $board_config['smilies_path'])
+				'S_SMILEY_ACTION' => append_sid('admin_smilies.' . PHP_EXT),
+				'S_HIDDEN_FIELDS' => $s_hidden_fields,
+				'S_FILENAME_OPTIONS' => $filename_list,
+				'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['smilies_path']
+				)
 			);
 
-			$template->pparse("body");
+			$template->pparse('body');
 			break;
 
-		case "save":
+		case 'save':
 			// Admin has submitted changes while editing a smiley.
 
 			//
@@ -455,7 +453,7 @@ else if ($mode != "")
 			message_die(GENERAL_MESSAGE, $message);
 			break;
 
-		case "savenew":
+		case 'savenew':
 			// Admin has submitted changes while adding a new smiley.
 
 			//
@@ -679,7 +677,8 @@ else
 			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 
-			'SMILEY_IMG' =>  IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
+			'SMILEY_ID' => $smilies[$i]['smilies_id'],
+			'SMILEY_IMG' => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
 			'CODE' => $smilies[$i]['code'],
 			'EMOT' => $smilies[$i]['emoticon'],
 

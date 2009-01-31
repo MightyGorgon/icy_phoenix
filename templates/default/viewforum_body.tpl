@@ -12,7 +12,7 @@
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom" width="65%">
-		<span class="gensmall">{L_MODERATOR}:&nbsp;{MODERATORS}</span><br /><span class="gensmall">{TOTAL_USERS_ONLINE}</span><br/><span class="gensmall">{LOGGED_IN_USER_LIST}</span><br /><span class="gensmall">{BOT_LIST}&nbsp;</span><br />
+		<span class="gensmall">{L_MODERATOR}:&nbsp;{MODERATORS}</span><br /><!-- IF not S_BOT --><span class="gensmall">{TOTAL_USERS_ONLINE}</span><br/><span class="gensmall">{LOGGED_IN_USER_LIST}</span><br /><span class="gensmall">{BOT_LIST}&nbsp;</span><br /><!-- ENDIF -->
 	</td>
 	<td align="right" valign="bottom" rowspan="2">
 		<span class="gen">{PAGE_NUMBER}</span><br />
@@ -22,31 +22,31 @@
 		<!-- END extended_pagination -->
 	</td>
 </tr>
-<tr><td align="left" valign="middle"><span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span></td></tr>
+<tr><td align="left" valign="middle"><!-- IF not S_BOT --><span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span><!-- ELSE -->&nbsp;<!-- ENDIF --></td></tr>
 </table>
 {BOARD_INDEX}
 
 <form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
 {IMG_THL}{IMG_THC}<a href="{U_VIEW_FORUM}" class="forumlink">{FORUM_NAME}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- IF not S_BOT and VIEWFORUM_BANNER_TOP -->
+<tr><td class="row3 row-center" colspan="7">{VIEWFORUM_BANNER_TOP}</td></tr>
+<!-- ENDIF -->
 <tr>
-	<th colspan="2">{L_TOPICS}</th>
-	<th width="150">{L_AUTHOR}</th>
-	<th width="50">{L_VIEWS}</th>
-	<th width="50">{L_REPLIES}</th>
+	<th colspan="2"><a href="{U_VF_TITLE_SORT}" title="{L_CURRENT_SORT}">{L_TOPICS}{VF_TITLE_SORT}</a></th>
+	<th width="150"><a href="{U_VF_TIME_SORT}" title="{L_CURRENT_SORT}">{L_AUTHOR}{VF_TIME_SORT}</a></th>
+	<th width="50"><a href="{U_VF_VIEWS_SORT}" title="{L_CURRENT_SORT}">{L_VIEWS}{VF_VIEWS_SORT}</a></th>
+	<th width="50"><a href="{U_VF_REPLIES_SORT}" title="{L_CURRENT_SORT}">{L_REPLIES}{VF_REPLIES_SORT}</a></th>
 	<!-- BEGIN rating_switch -->
 	<th width="100">{L_RATING}</th>
 	<!-- END rating_switch -->
-	<th>{L_LASTPOST}</th>
+	<th><a href="{U_VF_LAST_POST_SORT}" title="{L_CURRENT_SORT}">{L_LASTPOST}{VF_LAST_POST_SORT}</a></th>
 </tr>
 <!-- BEGIN topicrow -->
 <!-- BEGIN divider -->
 <tr><td class="forum-buttons2" colspan="7" align="left"><span>{topicrow.divider.L_DIV_HEADERS}</span></td></tr>
 <!-- END divider -->
 <tr>
-	<td class="row1 row-center" width="20">
-		{topicrow.U_MARK_ALWAYS_READ}
-		<!-- <img src="{topicrow.TOPIC_FOLDER_IMG}" width="15" height="15" alt="{topicrow.L_TOPIC_FOLDER_ALT}" title="{topicrow.L_TOPIC_FOLDER_ALT}" /> -->
-	</td>
+	<td class="row1 row-center" width="20">{topicrow.U_MARK_ALWAYS_READ}</td>
 	<td class="row1h{topicrow.CLASS_NEW} row-forum" width="100%" onclick="window.location.href='{topicrow.U_VIEW_TOPIC}'">
 		<span class="topiclink{topicrow.CLASS_NEW}">
 			{topicrow.NEWEST_POST_IMG}{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE}<a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a>{topicrow.CALENDAR_TITLE}
@@ -62,12 +62,23 @@
 	<!-- BEGIN rate_switch_msg -->
 	<td class="row2 row-center-small"><img src="images/rates/rate_{topicrow.TOPIC_RATING}.png" alt="{topicrow.TOPIC_RATING}" /></td>
 	<!-- END rate_switch_msg -->
-	<td class="row3 row-center-small" style="padding-top:0;padding-left:2px;padding-right:2px;" nowrap="nowrap">{topicrow.LAST_POST_TIME}<br />{topicrow.LAST_POST_AUTHOR} {topicrow.LAST_POST_IMG}</td>
+	<td class="row3 row-center-small" style="padding-top:0;padding-left:2px;padding-right:2px;" nowrap="nowrap">{topicrow.LAST_POST_TIME}<br />{topicrow.LAST_POST_AUTHOR} <!-- IF S_BOT -->&nbsp;<!-- ELSE -->{topicrow.LAST_POST_IMG}<!-- ENDIF --></td>
 </tr>
+<!-- IF not S_BOT -->
+<!-- BEGIN switch_viewforum_banner -->
+<tr>
+	<td class="row1 row-center" width="20">{VIEWFORUM_BANNER_CODE_IMG}</td>
+	<td class="row1h-new row-forum" width="100%" colspan="6">{VIEWFORUM_BANNER_CODE}</td>
+</tr>
+<!-- END switch_viewforum_banner -->
+<!-- ENDIF -->
 <!-- END topicrow -->
 <!-- BEGIN switch_no_topics -->
 <tr><td class="row1 row-center" colspan="7" height="30"><span class="gen">{L_NO_TOPICS}</span></td></tr>
 <!-- END switch_no_topics -->
+<!-- IF not S_BOT and VIEWFORUM_BANNER_BOTTOM -->
+<tr><td class="row3 row-center" colspan="7">{VIEWFORUM_BANNER_BOTTOM}</td></tr>
+<!-- ENDIF -->
 <tr>
 	<td class="cat" valign="middle" colspan="7">
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -93,7 +104,7 @@
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top" nowrap="nowrap">
-		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span><br />
+		<!-- IF not S_BOT --><span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span><br /><!-- ENDIF -->
 		<div style="margin-right:30px;">{IMG_TBL}<div id="icon_description_h" style="display: none;">
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>

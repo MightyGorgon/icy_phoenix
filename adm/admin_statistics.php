@@ -29,6 +29,63 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
+
+// FUNCTIONS - BEGIN
+if (!function_exists('gen_auth_select'))
+{
+	function gen_auth_select($default_auth_value)
+	{
+		global $lang;
+
+		$auth_levels = array('ALL', 'REG', 'MOD', 'ADMIN');
+		$auth_const = array(AUTH_ALL, AUTH_REG, AUTH_MOD, AUTH_ADMIN);
+
+		$select_list = '<select name="auth_fields">';
+
+		for($i = 0; $i < count($auth_levels); $i++)
+		{
+			$selected = ($default_auth_value == $auth_const[$i]) ? ' selected="selected"' : '';
+			$select_list .= '<option value="' . $auth_const[$i] . '"' . $selected . '>' . $lang['Forum_' . $auth_levels[$i]] . '</option>';
+		}
+		$select_list .= '</select>';
+
+		return ($select_list);
+	}
+}
+
+if (!function_exists('renumbering_order'))
+{
+	function renumbering_order()
+	{
+		global $db;
+
+		$sql = "SELECT module_id FROM " . MODULES_TABLE . "
+		ORDER BY display_order ASC";
+
+		if(!$result = $db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, 'Couldn\'t get list of Modules', '', __LINE__, __FILE__, $sql);
+		}
+
+		$i = 10;
+		$inc = 10;
+
+		while($row = $db->sql_fetchrow($result))
+		{
+			$sql = "UPDATE " . MODULES_TABLE . "
+			SET display_order = " . $i . "
+			WHERE module_id = " . $row['module_id'];
+
+			if(!$db->sql_query($sql))
+			{
+				message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
+			}
+			$i += $inc;
+		}
+	}
+}
+// FUNCTIONS - END
+
 if (!empty($board_config))
 {
 	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . PHP_EXT);
@@ -58,7 +115,6 @@ include(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statistics.' . PH
 
 include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_stats_module.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Mighty Gorgon: this should be not needed anymore...
 /*
@@ -880,55 +936,6 @@ if ($templated)
 {
 	$template->pparse('body');
 	include('page_footer_admin.' . PHP_EXT);
-}
-
-// FUNCTIONS
-function gen_auth_select($default_auth_value)
-{
-	global $lang;
-
-	$auth_levels = array('ALL', 'REG', 'ADMIN');
-	$auth_const = array(AUTH_ALL, AUTH_REG, AUTH_ADMIN);
-
-	$select_list = '<select name="auth_fields">';
-
-	for($i = 0; $i < count($auth_levels); $i++)
-	{
-		$selected = ($default_auth_value == $auth_const[$i]) ? ' selected="selected"' : '';
-		$select_list .= '<option value="' . $auth_const[$i] . '"' . $selected . '>' . $lang['Forum_' . $auth_levels[$i]] . '</option>';
-	}
-	$select_list .= '</select>';
-
-	return ($select_list);
-}
-
-function renumbering_order()
-{
-	global $db;
-
-	$sql = "SELECT module_id FROM " . MODULES_TABLE . "
-	ORDER BY display_order ASC";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t get list of Modules', '', __LINE__, __FILE__, $sql);
-	}
-
-	$i = 10;
-	$inc = 10;
-
-	while($row = $db->sql_fetchrow($result))
-	{
-		$sql = "UPDATE " . MODULES_TABLE . "
-		SET display_order = " . $i . "
-		WHERE module_id = " . $row['module_id'];
-
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
-		}
-		$i += $inc;
-	}
 }
 
 ?>

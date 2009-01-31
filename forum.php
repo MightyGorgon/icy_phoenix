@@ -117,7 +117,10 @@ if($mark_read == 'forums')
 			{
 				$forum_id = $tree['id'][ $keys['idx'][$i] ];
 				$sql = "SELECT MAX(post_time) AS last_post FROM " . POSTS_TABLE . " WHERE forum_id = '" . $forum_id . "'";
-				if (!($result = $db->sql_query($sql))) message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+				if (!($result = $db->sql_query($sql)))
+				{
+					message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+				}
 				if ($row = $db->sql_fetchrow($result))
 				{
 					$tracking_forums = (isset($_COOKIE[$board_config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
@@ -151,6 +154,7 @@ if($mark_read == 'forums')
 include_once(IP_ROOT_PATH . 'includes/mods_settings/mod_categories_hierarchy.' . PHP_EXT);
 if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_config['display_viewonline'] == 1)))
 {
+	define('SHOW_ONLINE_CHAT', true);
 	define('SHOW_ONLINE', true);
 	if (empty($board_config['max_topics']) || empty($board_config['max_posts']) || empty($board_config['max_users']) || empty($board_config['last_user_id']))
 	{
@@ -166,7 +170,24 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 	$total_posts = $board_config['max_posts'];
 	$total_users = $board_config['max_users'];
 	$newest_userdata['user_id'] = $board_config['last_user_id'];
-	$newest_user = colorize_username($newest_userdata['user_id']);
+	$newest_user = '';
+	$cache_data_file = MAIN_CACHE_FOLDER . 'newest_user.dat';
+	if (file_exists($cache_data_file))
+	{
+		@include($cache_data_file);
+		$newest_user = ((STRIP) ? stripslashes($newest_user) : $newest_user);
+	}
+	else
+	{
+		$newest_user = colorize_username($newest_userdata['user_id']);
+		$data = '<' . '?php' . "\n";
+		$data .= '$newest_user = \'' . ((STRIP) ? addslashes($newest_user) : $newest_user) . '\';' . "\n";
+		$data .= '?' . '>';
+		$fp = fopen($cache_data_file, 'w');
+		@fwrite($fp, $data);
+		@fclose($fp);
+	}
+	$newest_user = !empty($newest_user) ? $newest_user : colorize_username($newest_userdata['user_id']);
 	$newest_uid = $newest_userdata['user_id'];
 
 	$l_total_post_s = $lang['Posted_articles_total'];
@@ -229,7 +250,9 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 			}
 		}
 		$guests_today = $db->sql_numrows($result);
-		$sql = 'SELECT user_id, username, user_allow_viewonline, user_level, user_lastlogon
+		$db->sql_freeresult($result);
+
+		$sql = 'SELECT user_id, username, user_active, user_color, user_allow_viewonline, user_level, user_lastlogon
 						FROM ' . USERS_TABLE . '
 						WHERE user_id != "' . ANONYMOUS . '"
 							AND user_session_time >= ' . $timetoday . '
@@ -241,6 +264,9 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 			message_die(GENERAL_ERROR, "Couldn't retrieve user today data", "", __LINE__, __FILE__, $sql);
 		}
 
+		$admins_today_list = '';
+		$mods_today_list =  '';
+		$users_today_list =  '';
 		while($todayrow = $db->sql_fetchrow($result))
 		{
 			$todayrow['user_level'] = ($todayrow['user_level'] == JUNIOR_ADMIN) ? ADMIN : $todayrow['user_level'];
@@ -249,18 +275,22 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 			{
 				$users_lasthour++;
 			}
-			$colored_user = colorize_username($todayrow['user_id'], false);
-			switch ($todayrow['user_level'])
+			$colored_user = colorize_username($todayrow['user_id'], $todayrow['username'], $todayrow['user_color'], $todayrow['user_active']);
+			$colored_user = (($todayrow['user_allow_viewonline']) ? $colored_user : (($userdata['user_level'] == ADMIN) ? '<i>' . $colored_user . '</i>' : ''));
+			if ($todayrow['user_allow_viewonline'] || ($userdata['user_level'] == ADMIN))
 			{
-				case ADMIN:
-					$admins_today_list .= ($todayrow['user_allow_viewonline']) ? $colored_user . ', ' : (($userdata['user_level'] == ADMIN) ? '<i>' . $colored_user . '</i>, ' : '');
-				break;
-				case MOD:
-					$mods_today_list .= ($todayrow['user_allow_viewonline']) ? $colored_user . ', ' : (($userdata['user_level'] == ADMIN) ? '<i>' . $colored_user . '</i>, ' : '');
-				break;
-				default:
-					$users_today_list .= ($todayrow['user_allow_viewonline']) ? $colored_user . ', ' : (($userdata['user_level'] == ADMIN) ? '<i>' . $colored_user . '</i>, ' : '');
-				break;
+				switch ($todayrow['user_level'])
+				{
+					case ADMIN:
+						$admins_today_list .= (empty($admins_today_list) ? '' : ', ') . $colored_user;
+					break;
+					case MOD:
+						$mods_today_list .= (empty($mods_today_list) ? '' : ', ') . $colored_user;
+					break;
+					default:
+						$users_today_list .= (empty($users_today_list) ? '' : ', ') . $colored_user;
+					break;
+				}
 			}
 
 			if (!$todayrow['user_allow_viewonline'])
@@ -273,40 +303,12 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 			}
 		}
 
-		if ($admins_today_list)
-		{
-			//$admins_today_list[strlen($admins_today_list) - 2] = ' ';
-			$admins_today_list = substr($admins_today_list, 0, strlen($admins_today_list) - 2);
-		}
-		else
-		{
-			$admins_today_list = $lang['None'];
-		}
+		$total_users_today = $db->sql_numrows($result) + $guests_today;
+		$db->sql_freeresult($result);
 
-		if ($mods_today_list)
-		{
-			//$mods_today_list[strlen($mods_today_list) - 2] = ' ';
-			$mods_today_list = substr($mods_today_list, 0, strlen($mods_today_list) - 2);
-		}
-		else
-		{
-			$mods_today_list = $lang['None'];
-		}
-		if ($users_today_list)
-		{
-			$users_today_list[strlen($users_today_list) - 2] = ' ';
-			$users_today_list = substr($users_today_list, 0, strlen($users_today_list) - 2);
-		}
-		else
-		{
-			$users_today_list = $lang['None'];
-		}
-
-		$total_users_today = $db->sql_numrows($result)+$guests_today;
-
-		$admins_today_list = addslashes($admins_today_list);
-		$mods_today_list = addslashes($mods_today_list);
-		$users_today_list = addslashes($users_today_list);
+		$admins_today_list = ((STRIP) ? addslashes($admins_today_list) : $admins_today_list);
+		$mods_today_list = ((STRIP) ? addslashes($mods_today_list) : $mods_today_list);
+		$users_today_list = ((STRIP) ? addslashes($users_today_list) : $users_today_list);
 
 		if (isset($_COOKIE[$board_config['cookie_name'] . '_sid']))
 		{
@@ -327,10 +329,12 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 		}
 	}
 
-	$admins_today_list = '<b>' . $lang['Users_Admins'] . ':</b>&nbsp;' . stripslashes($admins_today_list);
-	$mods_today_list = '<b>' . $lang['Users_Mods'] . ':</b>&nbsp;' . stripslashes($mods_today_list);
-	$users_today_list = '<b>' . $lang['Users_Regs'] . ':</b>&nbsp;' . stripslashes($users_today_list);
-	//$users_today_list = $lang['Registered_users'] . ' ' . $users_today_list;
+	$admins_today_list = ((STRIP) ? stripslashes($admins_today_list) : $admins_today_list);
+	$mods_today_list = ((STRIP) ? stripslashes($mods_today_list) : $mods_today_list);
+	$users_today_list = ((STRIP) ? stripslashes($users_today_list) : $users_today_list);
+	$admins_today_list = '<b>' . $lang['Users_Admins'] . ':</b>&nbsp;' . (empty($admins_today_list) ? $lang['None'] : $admins_today_list);
+	$mods_today_list = '<b>' . $lang['Users_Mods'] . ':</b>&nbsp;' . (empty($mods_today_list) ? $lang['None'] : $mods_today_list);
+	$users_today_list = '<b>' . $lang['Users_Regs'] . ':</b>&nbsp;' . (empty($users_today_list) ? $lang['None'] : $users_today_list);
 	$l_today_user_s = ($total_users_today) ? (($total_users_today == 1)? $lang['User_today_total'] : $lang['Users_today_total']) : $lang['Users_today_zero_total'];
 	$l_today_r_user_s = ($logged_visible_today) ? (($logged_visible_today == 1) ? $lang['Reg_user_total'] : $lang['Reg_users_total']) : $lang['Reg_users_zero_total'];
 	$l_today_h_user_s = ($logged_hidden_today) ? (($logged_hidden_today == 1) ? $lang['Hidden_user_total'] : $lang['Hidden_users_total']) : $lang['Hidden_users_zero_total'];
@@ -364,8 +368,8 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 		if (!$cache_update)
 		{
 			include($cache_data_file);
-			$birthday_today_list = stripslashes($birthday_today_list);
-			$birthday_week_list = stripslashes($birthday_week_list);
+			$birthday_today_list = ((STRIP) ? stripslashes($birthday_today_list) : $birthday_today_list);
+			$birthday_week_list = ((STRIP) ? stripslashes($birthday_week_list) : $birthday_week_list);
 		}
 		else
 		{
@@ -390,50 +394,50 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 				for ($i = 0; $i < count($birthdays_list); $i++)
 				{
 					$user_birthday2 = $b_year . ($user_birthday = realdate('md', $birthdays_list[$i]['user_birthday']));
+					$birthdays_list[$i]['username'] = ((STRIP) ? stripslashes($birthdays_list[$i]['username']) : $birthdays_list[$i]['username']);
 					if ($user_birthday2 < $date_today)
 					{
 						// MG: Why???
 						$user_birthday2 += 10000;
 					}
+					$birthday_username_age = colorize_username($birthdays_list[$i]['user_id'], $birthdays_list[$i]['username'], $birthdays_list[$i]['user_color'], $birthdays_list[$i]['user_active']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
 					if (($user_birthday2 > $date_today) && ($user_birthday2 <= $date_forward))
 					{
 						// users having birthday within the next days
-						$birthday_week_list .= (($birthday_week_list == '') ? ' ' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+						$birthday_week_list .= (($birthday_week_list == '') ? ' ' : ', ') . $birthday_username_age;
 					}
 					elseif ($user_birthday2 == $date_today)
 					{
 						//users having birthday today
-						$birthday_today_list .= (($birthday_today_list == '') ? ' ' : ', ') . colorize_username($birthdays_list[$i]['user_id']) . ' (' . (intval($b_year) - intval($birthdays_list[$i]['user_birthday_y'])) . ')';
+						$birthday_today_list .= (($birthday_today_list == '') ? ' ' : ', ') . $birthday_username_age;
 					}
 				}
 
 				// stores the data set in a cache file
 				$data = '<' . '?php' . "\n";
-				$data .= '$birthday_today_list = \'' . addslashes($birthday_today_list) . "';\n";
-				$data .= '$birthday_week_list = \'' . addslashes($birthday_week_list) . "';\n";
+				$data .= '$birthday_today_list = \'' . ((STRIP) ? addslashes($birthday_today_list) : $birthday_today_list) . "';\n";
+				$data .= '$birthday_week_list = \'' . ((STRIP) ? addslashes($birthday_week_list) : $birthday_week_list) . "';\n";
 				$data .= '?' . '>';
 				$fp = fopen($cache_data_file, 'w');
 				fwrite($fp, $data);
 				fclose($fp);
 			}
 		}
-		$birthday_today_list = stripslashes($birthday_today_list);
-		$birthday_week_list = stripslashes($birthday_week_list);
 	}
 	// Birthday Box - END
 }
 
-$avatar_img = user_get_avatar($userdata['user_id'], $userdata['user_avatar'], $userdata['user_avatar_type'], $userdata['user_allowavatar']);
+$avatar_img = user_get_avatar($userdata['user_id'], $userdata['user_level'], $userdata['user_avatar'], $userdata['user_avatar_type'], $userdata['user_allowavatar']);
 
 // Check For Anonymous User
-if ($userdata['user_id'] != '-1')
+if ($userdata['user_id'] != ANONYMOUS)
 {
-	$username = colorize_username($userdata['user_id']);
+	$username = colorize_username($userdata['user_id'], $userdata['username'], $userdata['user_color'], $userdata['user_active']);
 }
 else
 {
 	$username = $lang['Guest'];
-	$avatar_img = '<img src="' . $board_config['default_avatar_guests_url'] . '" alt="" />';
+	$avatar_img = '<img src="' . $board_config['default_avatar_guests_url'] . '" alt="Avatar" />';
 }
 
 if ($board_config['index_links'] == true)
@@ -453,6 +457,7 @@ if ($board_config['index_links'] == true)
 		$site_logo_width = $link_config['width'];
 	}
 	$template->assign_vars(array('S_LINKS' => true));
+	$db->sql_freeresult($result);
 }
 
 if ($board_config['site_history'] == true)
@@ -524,6 +529,8 @@ if ($userdata['session_logged_in'])
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'index_body.tpl'));
 
+$forumindex_banner_element = get_ad('fix');
+
 $template->assign_vars(array(
 	'TOTAL_POSTS' => sprintf($l_total_post_s, $total_posts),
 	'TOTAL_USERS' => sprintf($l_total_user_s, $total_users),
@@ -580,6 +587,8 @@ $template->assign_vars(array(
 	'L_NO_NEW_POSTS_LOCKED' => $lang['No_new_posts_locked'],
 	'L_NEW_POSTS_LOCKED' => $lang['New_posts_locked'],
 	'L_ONLINE_EXPLAIN' => $lang['Online_explain'],
+
+	'FORUMINDEX_BANNER_ELEMENT' => $forumindex_banner_element,
 
 	'L_LINKS' => $lang['Site_links'],
 	'U_LINKS' => append_sid('links.' . PHP_EXT),
@@ -662,7 +671,7 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 	{
 		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 		$template->assign_block_vars('top_posters', array(
-			'TOP_POSTERS' => top_posters(8, true, true),
+			'TOP_POSTERS' => top_posters(8, true, true, false),
 			)
 		);
 	}
@@ -689,6 +698,14 @@ if($xs_news_config['xs_show_news'])
 {
 	$template->assign_block_vars('switch_show_news', array());
 }
+
+$forumindex_banner_top = get_ad('fit');
+$forumindex_banner_bottom = get_ad('fib');
+$template->assign_vars(array(
+	'FORUMINDEX_BANNER_TOP' => $forumindex_banner_top,
+	'FORUMINDEX_BANNER_BOTTOM' => $forumindex_banner_bottom,
+	)
+);
 
 // Generate the page
 $template->pparse('body');

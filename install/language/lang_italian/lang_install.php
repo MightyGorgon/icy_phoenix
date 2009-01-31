@@ -8,6 +8,11 @@
 *
 */
 
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
 $lang = array_merge($lang, array(
 	'ENCODING' => 'iso-8859-1',
 	'ENCODING_ALT' => 'utf8',
@@ -32,7 +37,7 @@ $lang = array_merge($lang, array(
 
 	'Inst_Step_0' => 'Grazie per aver scelto Icy Phoenix. Questa procedura guidata ti aiuter&agrave; a completare l\'installazione.<br /><span class="text_red">Prima di procedere assicurati di aver caricato tutti i files necessari sul tuo server e di avere un database con tutti i dati d\'accesso.</span>',
 
-	'Inst_Step_1' => 'Per completare correttamente l\'installazione devi riempire tutti i campi sottostanti.<br /><span class="text_red">Prima di procedere assicurati di avere tutti i dati di accesso per il database (il database in cui vuoi installare Icy Phoenix deve essere gi&agrave; esistente, perch&acute; la procedura di installazione non pu&ograve; crearne uno!).</span>',
+	'Inst_Step_1' => 'Per completare correttamente l\'installazione devi riempire tutti i campi sottostanti.<br /><span class="text_red">Prima di procedere assicurati di avere tutti i dati di accesso per il database (il database in cui vuoi installare Icy Phoenix deve essere gi&agrave; esistente, perch&eacute; la procedura di installazione non pu&ograve; crearne uno!).</span>',
 
 	'Start_Install' => 'Inizia Installazione',
 	'Start_Install_Anyway' => 'Inizia Installazione Comunque',
@@ -239,6 +244,16 @@ $lang = array_merge($lang, array(
 	'RemoveBBCodeUID' => 'Elimina i BBCode UID (presi dalla tabella messaggi)',
 	'RemoveBBCodeUID_Guess' => 'Cerca di rimuovere tutti i codici che somigliano a BBCode UID',
 	'FixPostedImagesPaths' => 'Correggi tutti i percorsi delle immagini inviate (aggiungendo la sottocartella utente)',
+
+	'FixSignatures' => 'Correggi Firme',
+	'FixSignaturesExplain' => 'Questa funzione serve per correggere i le firme degli utenti. Si pu&ograve; utilizzare per: sostituire del testo all\'interno delle firme, eliminare il BBCode UID, modificare l\'indirizzo delle immagini inviate.',
+	'FixingSignaturesInProgress' => 'Correzione firme in corso',
+	'FixingSignaturesFrom' => 'Firme modificate in questo ciclo da %s a %s',
+	'FixingSignaturesTotal' => '%s firme modificate su un totale di %s ',
+	'FixingSignaturesModified' => ' firme modificate',
+	'FixingSignaturesComplete' => 'Correzione firme completata',
+	'SignaturesPerStep' => 'Numero firme per ciclo',
+	'StartFromSignature' => 'Inizia dalla firma',
 
 	'FixPics' => 'Correggi Immagini Album',
 	'FixPicsExplain' => 'Questa funzione serve per spostare le immagini dell\'album nelle sottocartelle degli utenti e aggiornare il database con i nuovi percorsi',

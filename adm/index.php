@@ -23,7 +23,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_mg_log_admin.' . PHP_EXT);
 
 // ---------------
@@ -190,7 +189,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		$i = $i + '1';
 		$template->assign_block_vars('adminedit', array(
 			'EDITCOUNT' => $i,
-			'EDITUSER' => colorize_username($row['editok'], true),
+			'EDITUSER' => colorize_username($row['editok'], '', '', '', true),
 			'EDITOK' => $row['editok']
 			)
 		);
@@ -220,7 +219,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	$db->sql_freeresult($result);
 
 	$deactivated_names = '';
-	$sql = "SELECT username, user_id
+	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_active = 0
 			AND user_id <> " . ANONYMOUS . "
@@ -231,7 +230,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	}
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$username = colorize_username($row['user_id']);
+		$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		$deactivated_names .= (($deactivated_names == '') ? '' : ', ') . $username;
 	}
 	$db->sql_freeresult($result);
@@ -255,7 +254,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	$db->sql_freeresult($result);
 
 	$moderator_names = '';
-	$sql = "SELECT username, user_id
+	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . MOD . "
 			AND user_id <> " . ANONYMOUS . "
@@ -266,7 +265,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	}
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$username = colorize_username($row['user_id']);
+		$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		$moderator_names .= (($moderator_names == '') ? '' : ', ') . $username;
 	}
 	$db->sql_freeresult($result);
@@ -290,7 +289,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	$db->sql_freeresult($result);
 
 	$junior_administrator_names = '';
-	$sql = "SELECT username, user_id
+	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . JUNIOR_ADMIN . "
 			AND user_id <> " . ANONYMOUS . "
@@ -301,7 +300,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	}
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$username = colorize_username($row['user_id']);
+		$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		$junior_administrator_names .= (($junior_administrator_names == '') ? '' : ', ') . $username;
 	}
 
@@ -324,7 +323,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	$db->sql_freeresult($result);
 
 	$administrator_names = '';
-	$sql = "SELECT username, user_id
+	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . ADMIN . "
 			AND user_id <> " . ANONYMOUS . "
@@ -335,7 +334,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	}
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$username = colorize_username($row['user_id']);
+		$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		$administrator_names .= (($administrator_names == '') ? '' : ', ') . $username;
 	}
 
@@ -529,7 +528,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	// End forum statistics
 
 	// Get users online information.
-	$sql = "SELECT u.user_id, u.username, u.user_session_time, u.user_session_page, s.session_logged_in, s.session_ip, s.session_start, s.session_page, s.session_user_agent
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_session_time, u.user_session_page, s.session_logged_in, s.session_ip, s.session_start, s.session_page, s.session_user_agent
 		FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 		WHERE s.session_logged_in = '1'
 			AND u.user_id = s.session_user_id
@@ -581,7 +580,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 				$reg_userid_ary[] = $onlinerow_reg[$i]['user_id'];
 
 				//$username = $onlinerow_reg[$i]['username'];
-				$username = colorize_username($onlinerow_reg[$i]['user_id']);
+				$username = colorize_username($onlinerow_reg[$i]['user_id'], $onlinerow_reg[$i]['username'], $onlinerow_reg[$i]['user_color'], $onlinerow_reg[$i]['user_active']);
 				if($onlinerow_reg[$i]['user_allow_viewonline'] || ($userdata['user_level'] == ADMIN))
 				{
 					$registered_users++;
@@ -891,7 +890,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	foreach ($log_item as $log_item_data)
 	{
 		$log_username = colorize_username($log_item_data['log_user_id']);
-		$log_target = colorize_username($log_item_data['log_target']);
+		$log_target = ($log_item_data['log_target'] >= 2) ? colorize_username($log_item_data['log_target']) : '&nbsp;';
 		$log_action = parse_logs_action($log_item_data['log_id'], $log_item_data['log_action'], $log_item_data['log_desc'], $log_username, $log_target);
 		$template->assign_block_vars('log_row', array(
 				'LOG_ID' => $log_item_data['log_id'],

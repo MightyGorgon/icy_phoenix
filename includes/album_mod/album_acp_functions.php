@@ -189,4 +189,25 @@ function remove_config_array($config_array, $index)
 	return $temp_array;
 }
 
+//------------------------------------------------------------------------
+// This is the helper/comparation function for the usort function.
+//------------------------------------------------------------------------
+function sort_cmp($a, $b)
+{
+	if ($a['order'] == $b['order'])
+	{
+		return 0;
+	}
+	return ($a['order'] < $b['order']) ? -1 : 1;
+}
+
+function showResultMessage($in_message)
+{
+	global $lang, $album_user_id;
+
+	$message = $in_message . '<br /><br />' . sprintf($lang['Click_return_album_category'], '<a href="' . append_sid('admin_album_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+
+	message_die(GENERAL_MESSAGE, $message);
+}
+
 ?>

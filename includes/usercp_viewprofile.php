@@ -21,12 +21,11 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
-
 if (empty($_GET[POST_USERS_URL]) || $_GET[POST_USERS_URL] == ANONYMOUS)
 {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
+
 $profiledata = get_userdata($_GET[POST_USERS_URL]);
 
 // Update the profile view list
@@ -144,10 +143,12 @@ $db->sql_freeresult($result);
 $limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
 $cols_per_page = $album_config['img_cols'];
 
-$sql = "SELECT * FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
+$sql = "SELECT p.*, c.*, u.user_id, u.username, u.user_active, u.user_color
+		FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c, " . USERS_TABLE . " u
 		WHERE c.cat_user_id = " . $profiledata['user_id'] . "
-		AND p.pic_cat_id = c.cat_id
-		AND p.pic_approval = 1
+			AND p.pic_cat_id = c.cat_id
+			AND p.pic_approval = 1
+			AND u.user_id = p.pic_user_id
 		ORDER BY pic_time DESC";
 
 if(!($result = $db->sql_query($sql)))
@@ -191,9 +192,9 @@ if ($totalpicrow > 0)
 				)
 			);
 
-			$recent_poster = colorize_username($recentrow[$j]['pic_user_id']);
+			$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
 			$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
-				'TITLE' => '<a href = "'.$album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $recentrow[$j]['pic_title'] . '</a>',
+				'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $recentrow[$j]['pic_title'] . '</a>',
 				'POSTER' => $recent_poster,
 				'TIME' => create_date($board_config['default_dateformat'], $recentrow[$j]['pic_time'], $board_config['board_timezone']),
 
@@ -210,7 +211,7 @@ else
 }
 // Mighty Gorgon - Full Album Pack - END
 
-$avatar_img = user_get_avatar($profiledata['user_id'], $profiledata['user_avatar'], $profiledata['user_avatar_type'], $profiledata['user_allowavatar']);
+$avatar_img = user_get_avatar($profiledata['user_id'], $profiledata['user_level'], $profiledata['user_avatar'], $profiledata['user_avatar_type'], $profiledata['user_allowavatar']);
 
 // Mighty Gorgon - Multiple Ranks - BEGIN
 $user_ranks = generate_ranks($profiledata, $ranks_sql);
@@ -260,26 +261,26 @@ $www_url = ($profiledata['user_website']) ? $profiledata['user_website'] : '';
 $www_img = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '&nbsp;';
 $www = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank">' . $profiledata['user_website'] . '</a>' : '&nbsp;';
 
-$aim_img = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], $images['icon_aim']) : '';
-$aim = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false) : '';
+$aim_img = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], $images['icon_aim']) : '&nbsp;';
+$aim = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false) : '&nbsp;';
 $aim_url = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false, true) : '';
 
-$icq_status_img = (!empty($profiledata['user_icq'])) ? '<a href="http://wwp.icq.com/' . $profiledata['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $profiledata['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-$icq_img = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], $images['icon_icq']) : '';
-$icq = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], false) : '';
+$icq_status_img = (!empty($profiledata['user_icq'])) ? '<a href="http://wwp.icq.com/' . $profiledata['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $profiledata['user_icq'] . '&img=5" width="18" height="18" /></a>' : '&nbsp;';
+$icq_img = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], $images['icon_icq']) : '&nbsp;';
+$icq = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], false) : '&nbsp;';
 $icq_url = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], false, true) : '';
 
-$msn_img = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], $images['icon_msnm']) : '';
-$msn = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], false) : '';
+$msn_img = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], $images['icon_msnm']) : '&nbsp;';
+$msn = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], false) : '&nbsp;';
 $msn = $msn_img;
 $msn_url = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], false, true) : '';
 
-$skype_img = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], $images['icon_skype']) : '';
-$skype = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], false) : '';
+$skype_img = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], $images['icon_skype']) : '&nbsp;';
+$skype = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], false) : '&nbsp;';
 $skype_url = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], false, true) : '';
 
-$yim_img = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], $images['icon_yim']) : '';
-$yim = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false) : '';
+$yim_img = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], $images['icon_yim']) : '&nbsp;';
+$yim = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false) : '&nbsp;';
 $yim_url = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false, true) : '';
 
 $temp_url = append_sid(SEARCH_MG . '?search_author=' . urlencode($profiledata['username']) . '&amp;showresults=posts');

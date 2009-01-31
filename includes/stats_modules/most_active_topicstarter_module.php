@@ -28,7 +28,7 @@ $bar_percent = 0;
 
 $total_topics = $board_config['max_topics'];
 
-$sql = 'SELECT u.user_id, u.username, COUNT(t.topic_poster) num_topics
+$sql = 'SELECT u.user_id, u.username, u.user_active, u.user_color, COUNT(t.topic_poster) num_topics
 	FROM ' . USERS_TABLE . ' u, ' . TOPICS_TABLE .' t
 	WHERE (t.topic_poster <> ' . ANONYMOUS . ') AND (u.user_posts > 0) AND (u.user_id = t.topic_poster)
 	GROUP BY t.topic_poster ORDER BY num_topics DESC
@@ -65,7 +65,7 @@ for ($i = 0; $i < $user_count; $i++)
 	$template->assign_block_vars('stats_row', array(
 		'RANK' => $i + 1,
 		'CLASS' => $class,
-		'USERNAME' => colorize_username($user_data[$i]['user_id']),
+		'USERNAME' => colorize_username($user_data[$i]['user_id'], $user_data[$i]['username'], $user_data[$i]['user_color'], $user_data[$i]['user_active']),
 		'PERCENTAGE' => $percentage,
 		'BAR' => $bar_percent,
 		'TOPICS' => $user_data[$i]['num_topics']

@@ -285,26 +285,4 @@ $cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 
-
-function pa_size_select($select_name, $size_compare)
-{
-	global $lang;
-
-	$size_types_text = array($lang['Bytes'], $lang['KB'], $lang['MB']);
-	$size_types = array('b', 'kb', 'mb');
-
-	$select_field = '<select name="' . $select_name . '">';
-
-	for ($i = 0; $i < count($size_types_text); $i++)
-	{
-		$selected = ($size_compare == $size_types[$i]) ? ' selected="selected"' : '';
-
-		$select_field .= '<option value="' . $size_types[$i] . '"' . $selected . '>' . $size_types_text[$i] . '</option>';
-	}
-
-	$select_field .= '</select>';
-
-	return ($select_field);
-}
-
 ?>

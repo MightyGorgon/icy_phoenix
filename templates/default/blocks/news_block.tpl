@@ -60,9 +60,9 @@
 		<br />
 		<!-- END no_articles -->
 		<!-- BEGIN articles -->
-		{IMG_THL}{IMG_THC}<a href="{INDEX_FILE}?{PORTAL_PAGE_ID}topic_id={articles.ID}" class="forumlink">{articles.L_TITLE}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="2" border="0">
+		{IMG_THL}{IMG_THC}<a href="{INDEX_FILE}?{PORTAL_PAGE_ID}topic_id={articles.ID}" class="forumlink" rel="nofollow">{articles.L_TITLE}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
-			<th align="left" colspan="2"><span class="gensmall"><a href="{articles.U_COMMENT}"><img src="{MINIPOST_IMG}" alt="" /></a>&nbsp;{L_POSTED}&nbsp;{L_WORD_ON}&nbsp;{articles.POST_DATE}&nbsp;{L_BY}&nbsp;{articles.L_POSTER}</span></th>
+			<th align="left" colspan="2"><span class="gensmall"><a href="{articles.U_COMMENT}"><img src="{MINIPOST_IMG}" alt="{articles.L_TITLE}" /></a>&nbsp;{L_POSTED}&nbsp;{L_WORD_ON}&nbsp;{articles.POST_DATE}&nbsp;{L_BY}&nbsp;{articles.L_POSTER}</span></th>
 		</tr>
 		<tr>
 			<td class="row-post" style="border-right-width:0px;">
@@ -80,7 +80,7 @@
 				<tr>
 					<td align="left" class="content-padding">
 						<span class="gensmall">
-							{L_NEWS_SUMMARY}&nbsp;<a href="{articles.U_VIEWS}"><b>{articles.COUNT_VIEWS}</b>&nbsp;{L_NEWS_VIEWS}</a>&nbsp;{L_NEWS_AND}&nbsp;<a href="{articles.U_COMMENT}" title="{articles.L_TITLE}"><b>{articles.COUNT_COMMENTS}</b>&nbsp;{L_NEWS_COMMENTS}</a>.
+							{L_NEWS_SUMMARY}&nbsp;<!-- IF S_ADMIN --><a href="{articles.U_VIEWS}"><!-- ENDIF --><b>{articles.COUNT_VIEWS}</b>&nbsp;{L_NEWS_VIEWS}<!-- IF S_ADMIN --></a><!-- ENDIF -->&nbsp;{L_NEWS_AND}&nbsp;<a href="{articles.U_COMMENT}" title="{articles.L_TITLE}"><b>{articles.COUNT_COMMENTS}</b>&nbsp;{L_NEWS_COMMENTS}</a>.
 						</span>
 					</td>
 					<td align="right" style="padding-right:5px;">

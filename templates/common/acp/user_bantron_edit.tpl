@@ -1,4 +1,4 @@
-<h1>{L_BC_TITLE}</h1> 
+<h1>{L_BC_TITLE}</h1>
 <p>{L_BC_EXPLAIN}</p>
 
 <form action="{S_BANCENTER_ACTION}" name="post" method="post">
@@ -10,7 +10,7 @@
 	<td class="row2" style="width:350px;">
 		<input class="post" type="text" class="post" name="username" value="{username_row.USERNAME}" maxlength="50" size="20" />
 		<input type="hidden" name="mode" value="edit" />
-		<input type="submit" name="usersubmit" value="{username_row.L_FIND_USERNAME}" class="liteoption" onClick="window.open('{username_row.U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');" />
+		<input type="button" name="usersubmit" value="{username_row.L_FIND_USERNAME}" class="liteoption" onClick="window.open('{username_row.U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');" />
 	</td>
 </tr>
 <!-- END username_row -->
@@ -61,13 +61,13 @@
 						<option value="weeks">{L_WEEKS}</option>
 						<option value="months">{L_MONTHS}</option>
 						<option value="years">{L_YEARS}</option>
-					</select> 
+					</select>
 				</td>
 			</tr>
 			<tr><td colspan="2"><input type="radio" name="ban_expire_time_mode" value="absolute"{BAN_EXPIRE_TIME_MODE_ABSOLUTE} /> {L_AFTER_SPECIFIED_DATE}</td></tr>
 			<tr>
 				<td width="30">
-					&nbsp; 
+					&nbsp;
 				</td>
 				<td>
 					<input type="text" name="ban_expire_time_absolute_hour" value="{BAN_EXPIRE_TIME_ABSOLUTE_HOUR}" size="2" maxlength="2" style="width: 2em;" />&nbsp;:&nbsp;<input type="text" name="ban_expire_time_absolute_minute" value="{BAN_EXPIRE_TIME_ABSOLUTE_MINUTE}" size="2" maxlength="2" style="width: 2em;">&nbsp;<input type="radio" name="ban_expire_time_absolute_ampm" value="am"{BAN_EXPIRE_TIME_ABSOLUTE_AM} />{L_AM}&nbsp;<input type="radio" name="ban_expire_time_absolute_ampm" value="pm"{BAN_EXPIRE_TIME_ABSOLUTE_PM} />{L_PM}&nbsp;<input type="radio" name="ban_expire_time_absolute_ampm" value=""{BAN_EXPIRE_TIME_ABSOLUTE_24} />{L_24_HOUR}

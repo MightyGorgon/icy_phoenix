@@ -20,7 +20,6 @@ class pafiledb_file extends pafiledb_public
 	function main($action)
 	{
 		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata, $pafiledb_functions;
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		if ( isset($_REQUEST['file_id']))
 		{
 			$file_id = intval($_REQUEST['file_id']);
@@ -40,32 +39,15 @@ class pafiledb_file extends pafiledb_public
 		// file id is not set, give him/her a nice error message
 		// =======================================================
 
-		switch(SQL_LAYER)
-		{
-			case 'oracle':
-				$sql = "SELECT f.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) as total_comments
-					FROM " . PA_FILES_TABLE . " AS f, " . PA_VOTES_TABLE . " AS r, " . USERS_TABLE . " AS u, " . PA_COMMENTS_TABLE . " AS c
-					WHERE f.file_id = r.votes_file(+)
-					AND f.user_id = u.user_id(+)
-					AND f.file_id = c.file_id(+)
-					AND f.file_id = $file_id
-					AND f.file_approved = 1
-					GROUP BY f.file_id ";
-				break;
-
-			default:
-				$sql = "SELECT f.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, COUNT(c.comments_id) as total_comments
-					FROM " . PA_FILES_TABLE . " AS f
-						LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f.file_id = r.votes_file
-						LEFT JOIN ". USERS_TABLE ." AS u ON f.user_id = u.user_id
-						LEFT JOIN " . PA_COMMENTS_TABLE . " AS c ON f.file_id = c.file_id
-					WHERE f.file_id = $file_id
-					AND f.file_approved = 1
-					GROUP BY f.file_id ";
-				break;
-		}
-
-		if ( !($result = $db->sql_query($sql)) )
+		$sql = "SELECT f.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, u.user_active, u.user_color, COUNT(c.comments_id) as total_comments
+			FROM " . PA_FILES_TABLE . " AS f
+				LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f.file_id = r.votes_file
+				LEFT JOIN ". USERS_TABLE ." AS u ON f.user_id = u.user_id
+				LEFT JOIN " . PA_COMMENTS_TABLE . " AS c ON f.file_id = c.file_id
+			WHERE f.file_id = $file_id
+			AND f.file_approved = 1
+			GROUP BY f.file_id ";
+		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Couldnt Query file info', '', __LINE__, __FILE__, $sql);
 		}
@@ -83,9 +65,9 @@ class pafiledb_file extends pafiledb_public
 		// Pafiledb auth for viewing file
 		//===================================================
 
-		if( (!$this->auth[$file_data['file_catid']]['auth_view_file']) )
+		if((!$this->auth[$file_data['file_catid']]['auth_view_file']))
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
@@ -139,7 +121,7 @@ class pafiledb_file extends pafiledb_public
 		$file_poster .= ( $file_data['user_id'] != ANONYMOUS ) ? $file_data['username'] : $lang['Guest'];
 		$file_poster .= ( $file_data['user_id'] != ANONYMOUS ) ? '</a>' : '';
 		*/
-		$file_poster = ( $file_data['user_id'] == ANONYMOUS ) ? $lang['Guest'] : colorize_username($file_data['user_id']);
+		$file_poster = ($file_data['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($file_data['user_id'], $file_data['username'], $file_data['user_color'], $file_data['user_active']);
 
 		$pafiledb_template->assign_vars(array(
 			'L_CLICK_HERE' => $lang['Click_here'],

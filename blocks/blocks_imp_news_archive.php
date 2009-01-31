@@ -94,9 +94,9 @@ if(!function_exists('imp_news_archive_block_func'))
 			{
 				$template->assign_block_vars('yes_news', array());
 			}
+			$img_w = (empty($cms_config_vars['md_news_images_width'][$block_id]) ? '' : (' width: ' . $cms_config_vars['md_news_images_width'][$block_id] . ';'));
 			for ($i = 0; $i < count($news_cats); $i++)
 			{
-				$img_w = (!empty($cms_config_vars['md_news_images_width'][$block_id]) ? (' width="' . $cms_config_vars['md_news_images_width'][$block_id] . '"') : '');
 				$template->assign_block_vars('newsrow', array(
 					//'THUMBNAIL' => $N_this->root_path . 'images/news/' . $news_cats[$j]['news_image'],
 					'THUMBNAIL' => $N_this->root_path . $board_config['news_path'] . '/' . $news_cats[$i]['news_image'],

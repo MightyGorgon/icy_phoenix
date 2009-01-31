@@ -21,8 +21,6 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
-
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);

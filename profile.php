@@ -68,8 +68,7 @@ $meta_keywords = '';
 // Page specific functions
 function gen_rand_string($hash)
 {
-	$rand_str = dss_rand();
-
+	$rand_str = unique_id();
 	return ($hash) ? md5($rand_str) : substr($rand_str, 0, 8);
 }
 // End page specific functions

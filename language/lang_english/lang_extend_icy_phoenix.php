@@ -34,6 +34,7 @@ $lang = array_merge($lang, array(
 	'60_Calendar_settings' => 'Calendar',
 	'70_SEO' => 'SEO',
 	'80_Security' => 'Logs And Security',
+	'90_Cron' => 'Cron',
 	)
 );
 
@@ -55,7 +56,7 @@ if ($lang_extend_admin)
 		'IP_enable_digests' => 'Enable Digests',
 
 		'IP_digests_php_cron' => 'Enable Digests PHP Cron',
-		'IP_digests_php_cron_explain' => 'This feature will enable a PHP emulation of the CRON trying to send the emails once per hour, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent. If you can enable CRON on your server, use CRON instead of this feature.',
+		'IP_digests_php_cron_explain' => 'This feature will enable a PHP emulation of the CRON trying to send the emails once per hour, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent. If you can enable CRON on your server, use CRON instead of this feature. Please note that you need also to enable <b>PHP Cron [Global Switch]</b> in <b>Configuration &raquo; Icy Phoenix &raquo; Cron</b>',
 
 		'IP_emails_only_to_admins' => 'Emails Only To Admins',
 		'IP_emails_only_to_admins_explain' => 'Allow email system only for sending emails to admins',
@@ -111,8 +112,10 @@ if ($lang_extend_admin)
 		'IP_fast_n_furious' => 'Fast And Furious',
 		'IP_fast_n_furious_explain' => 'Enabling this option some heavy SQL functions will be disabled, to hopefully speed up your site!',
 
+		/*
 		'IP_db_cron' => 'Database Optimize',
 		'IP_db_cron_explain' => 'Enabling this option will enable Database Optimization.',
+		*/
 
 		'IP_site_history' => 'Site History',
 		'IP_site_history_explain' => 'Enabling this option will enable Site History.',
@@ -128,6 +131,8 @@ if ($lang_extend_admin)
 
 		'IP_google_bot_detector' => 'Enable GoogleBot Detector',
 
+		'IP_gsearch_guests' => 'Force Google Search for guests',
+
 		'IP_visit_counter_switch' => 'Enable Visit Counter',
 
 		'IP_enable_new_messages_number' => 'Show the number of new messages since last visit',
@@ -138,7 +143,7 @@ if ($lang_extend_admin)
 
 		'IP_show_thanks_viewtopic' => 'Show Thanks received when viewing topics',
 
-		'IP_disable_topic_view' => 'Disable "Who read this topic"',
+		'IP_disable_topic_view' => 'Disable "Who read this topic" (Global Switch)',
 		'IP_disable_topic_view_explain' => 'This option allows you to disable "Who read this topic" feature (this saves SQL space).',
 
 		'IP_disable_referrers' => 'Disable Referrers',
@@ -396,6 +401,42 @@ if ($lang_extend_admin)
 
 		'IP_logs_path' => 'Path for Logs (remember to CHMOD this folder to 0755 or 0777 as required)',
 		'IP_logs_path_explain' => 'Insert the path for the errors and other logs relative to your root and without ending slash. Example: <b>logs</b>.',
+
+// TAB - Cron
+		'IP_cron_global_switch' => 'Enable PHP Cron [Global Switch]',
+		'IP_cron_global_switch_explain' => 'By enabling this option a PHP based cron will be activated: some automatic operations will be executed at fixed time intervals. The optimal time range for each cron feature depends on your site traffic and preferences: if you don\'t know what these settings may impact, please leave this feature disabled, you probably don\'t need it.',
+
+		'IP_cron_files_interval' => 'Files Executions Cron Interval',
+		'IP_cron_files_interval_explain' => 'This kind of cron may be used to automatically run certain files every fixed interval you decide. The files to be executed must be added in <b>constants.php</b> &raquo; <b>define(\'CRON_FILES\', \'\');</b>. Multiple files must be separated by comma.<br /><br /><b>Last run: ' . (($board_config['cron_files_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($board_config['cron_files_last_run']), $board_config['board_timezone'])) . '</b>',
+
+		'IP_cron_database_interval' => 'DB Optimization Cron Interval',
+		'IP_cron_database_interval_explain' => 'This feature will optimize the database of the site every chosen interval.<br /><br /><b>Last run: ' . (($board_config['cron_database_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($board_config['cron_database_last_run']), $board_config['board_timezone'])) . '</b>',
+
+		'IP_cron_cache_interval' => 'Tidy Templates Cache Cron Interval',
+		'IP_cron_cache_interval_explain' => 'Templates cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($board_config['cron_cache_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($board_config['cron_cache_last_run']), $board_config['board_timezone'])) . '</b>',
+
+		'IP_cron_sql_interval' => 'Tidy SQL Cache Cron Interval',
+		'IP_cron_sql_interval_explain' => 'SQL cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($board_config['cron_sql_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($board_config['cron_sql_last_run']), $board_config['board_timezone'])) . '</b>',
+
+		'IP_cron_users_interval' => 'Tidy Users Cache Cron Interval',
+		'IP_cron_users_interval_explain' => 'Users cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($board_config['cron_users_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($board_config['cron_users_last_run']), $board_config['board_timezone'])) . '</b>',
+
+		'IP_cron_topics_interval' => 'Tidy Topics Cache Cron Interval',
+		'IP_cron_topics_interval_explain' => 'Topics cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($board_config['cron_topics_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($board_config['cron_topics_last_run']), $board_config['board_timezone'])) . '</b>',
+
+		'Cron_Disabled' => 'Disabled',
+		'15M' => '15 Minutes',
+		'30M' => '30 Minutes',
+		'1H' => '1 Hour',
+		'2H' => '2 Hours',
+		'3H' => '3 Hours',
+		'6H' => '6 Hours',
+		'12H' => '12 Hours',
+		'1D' => '1 Day',
+		'3D' => '3 Days',
+		'7D' => '1 Week',
+		'14D' => '2 Weeks',
+		'30D' => '1 Month',
 
 
 // lang_extend_mods_settings.php

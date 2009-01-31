@@ -17,11 +17,17 @@
 // CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'config.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
+
+@set_time_limit(0);
+$mem_limit = check_mem_limit();
+@ini_set('memory_limit', $mem_limit);
 
 //
 // addslashes to vars if magic_quotes_gpc is off
@@ -638,7 +644,7 @@ switch($mode)
 					'LABEL'			=> 'MySQL 3.x'
 					),
 					'mysql4' => array(
-					'LABEL'			=> 'MySQL 4.x'
+					'LABEL'			=> 'MySQL 4.x or greater'
 					)
 				);
 				$dbms_select = '<select name="new_dbms">';
@@ -711,30 +717,40 @@ switch($mode)
 		{
 			case 'cls': // Clear Sessions
 				check_authorisation();
+
 				$sql = "DELETE FROM " . SESSIONS_TABLE;
 				$result = $db->sql_query($sql);
 				if(!$result)
 				{
-					erc_throw_error("Couldn't delete session table!", __LINE__, __FILE__, $sql);
+					erc_throw_error("Couldn't delete sessions table!", __LINE__, __FILE__, $sql);
 				}
+
+				$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE;
+				$result = $db->sql_query($sql);
+				if(!$result)
+				{
+					erc_throw_error("Couldn't delete AJAX Shoubox sessions table!", __LINE__, __FILE__, $sql);
+				}
+
 				$sql = "DELETE FROM " . SEARCH_TABLE;
 				$result = $db->sql_query($sql);
 				if(!$result)
 				{
 					erc_throw_error("Couldn't delete search result table!", __LINE__, __FILE__, $sql);
 				}
+
 				success_message($lang['cls_success']);
 				break;
 			case 'ecf': // Empty Cache
 				$db->clear_cache();
 				$db->clear_cache('', TOPICS_CACHE_FOLDER);
-				empty_cache_folders(false);
+				empty_cache_folders();
 				success_message($lang['ecf_success']);
 				break;
 			case 'fdt': // Fix def_tree.php
 				$db->clear_cache();
 				$db->clear_cache('', TOPICS_CACHE_FOLDER);
-				empty_cache_folders(false);
+				empty_cache_folders();
 				$res = '<' . '?' . 'php' . "\n\n" . '?' . '>';
 
 				$fname = IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT;
@@ -1095,7 +1111,7 @@ switch($mode)
 					}
 					success_message($lang['cbl_success_anonymous']);
 				}
-				$db->clear_cache('ban_');
+				$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 				break;
 			case 'raa': // Remove all administrators
 				check_authorisation();

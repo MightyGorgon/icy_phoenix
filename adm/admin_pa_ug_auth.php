@@ -30,7 +30,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $pafiledb->init();
@@ -538,7 +537,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 	{
 		if(($mode == 'user' && !$ug_info[$i]['group_single_user']) || $mode == 'group')
 		{
-			$name[] = ($mode == 'user') ? $ug_info[$i]['group_name'] :  $ug_info[$i]['username'];
+			$name[] = ($mode == 'user') ? $ug_info[$i]['group_name'] : $ug_info[$i]['username'];
 			$id[] = ($mode == 'user') ? intval($ug_info[$i]['group_id']) : intval($ug_info[$i]['user_id']);
 		}
 	}
@@ -549,7 +548,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		for($i = 0; $i < count($ug_info); $i++)
 		{
 			$ug = ($mode == 'user') ? 'group&amp;' . POST_GROUPS_URL : 'user&amp;' . POST_USERS_URL;
-			$user_color = ($mode == 'user') ? '' : (' ' . colorize_username($id[$i], false, true));
+			$user_color = ($mode == 'user') ? '' : (' ' . colorize_username($id[$i], '', '', '', false, true));
 			$t_usergroup_list .= (($t_usergroup_list != '') ? ', ' : '') . '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $ug . '=' . $id[$i]) . '"' . $user_color . '>' . $name[$i] . '</a>';
 		}
 	}
@@ -790,7 +789,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		for($i = 0; $i < count($ug_info); $i++)
 		{
 			$ug = ($mode == 'glob_user') ? 'glob_group&amp;' . POST_GROUPS_URL : 'glob_user&amp;' . POST_USERS_URL;
-			$user_color = ($mode == 'glob_user') ? '' : (' ' . colorize_username($id[$i], false, true));
+			$user_color = ($mode == 'glob_user') ? '' : (' ' . colorize_username($id[$i], '', '', '', false, true));
 			$t_usergroup_list .= (($t_usergroup_list != '') ? ', ' : '') . '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $ug . '=' . $id[$i]) . '"' . $user_color . '>' . $name[$i] . '</a>';
 		}
 	}
@@ -925,89 +924,4 @@ $cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 
-function admin_display_category_auth($cat_parent = 0, $depth = 0)
-{
-	global $pafiledb, $pafiledb_template;
-	global $cat_auth_fields, $optionlist_mod, $optionlist_acl_adv;
-	$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
-	if(isset($pafiledb->subcat_rowset[$cat_parent]))
-	{
-		foreach($pafiledb->subcat_rowset[$cat_parent] as $sub_cat_id => $cat_data)
-		{
-			$pafiledb_template->assign_block_vars('cat_row', array(
-				'CAT_NAME' => $cat_data['cat_name'],
-				'IS_HIGHER_CAT' => ($cat_data['cat_allow_file']) ? false : true,
-				'PRE' => $pre,
-				'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $sub_cat_id),
-				'S_MOD_SELECT' => $optionlist_mod[$sub_cat_id]
-				)
-			);
-
-			for($j = 0; $j < count($cat_auth_fields); $j++)
-			{
-				$pafiledb_template->assign_block_vars('cat_row.aclvalues', array(
-					'S_ACL_SELECT' => $optionlist_acl_adv[$sub_cat_id][$j])
-				);
-			}
-			admin_display_category_auth($sub_cat_id, $depth + 1);
-		}
-		return;
-	}
-	return;
-}
-
-
-function global_auth_check_user($type, $key, $global_u_access, $is_admin)
-{
-	$auth_user = 0;
-
-	if (!empty($global_u_access))
-	{
-		$result = 0;
-		switch($type)
-		{
-			case AUTH_ACL:
-				$result = $global_u_access[$key];
-
-			case AUTH_MOD:
-				$result = $result || is_moderator($global_u_access['group_id']);
-
-			case AUTH_ADMIN:
-				$result = $result || $is_admin;
-				break;
-		}
-
-		$auth_user = $auth_user || $result;
-	}
-	else
-	{
-		$auth_user = $is_admin;
-	}
-
-	return $auth_user;
-}
-
-function is_moderator($group_id)
-{
-	static $is_mod = false;
-
-	if($is_mod !== false)
-	{
-		return $is_mod;
-	}
-
-	global $db;
-
-	$sql = "SELECT *
-		FROM " . PA_AUTH_ACCESS_TABLE . "
-		WHERE group_id = $group_id
-		AND auth_mod = '1'";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't check for moderator $sql", "", __LINE__, __FILE__, $sql);
-	}
-
-	return ($is_mod = ($db->sql_fetchrow($result)) ? 1 : 0);
-}
 ?>

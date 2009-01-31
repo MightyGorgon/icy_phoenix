@@ -384,7 +384,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 	$sql = "SELECT
 					t.*,
 					p.poster_id, p.post_username, p.post_text, p.enable_bbcode, p.enable_html, p.enable_smilies,
-					u.username,
+					u.username, u.user_active, u.user_color,
 					lp.poster_id AS lp_poster_id,
 					lu.username AS lp_username,
 					lp.post_username AS lp_post_username,
@@ -548,6 +548,8 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 
 		$new_row['event_author_id'] = $topic_author_id;
 		$new_row['event_author'] = $topic_author;
+		$new_row['event_author_active'] = $row['user_active'];
+		$new_row['event_author_color'] = $row['user_color'];
 		$new_row['event_time'] = $topic_time;
 
 		$new_row['event_last_author_id'] = $topic_last_author_id;
@@ -590,8 +592,6 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 	$birthdays_list = array();
 	$birthdays_list = get_birthdays_list($year, $year_lt, $month, $day, $day_end, $limit, false);
 
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
-
 	// get the number of occurences
 	$number = count($birthdays_list);
 
@@ -603,8 +603,8 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 		$user_birthday = realdate($lang['DATE_FORMAT2'], $birthdays_list[$i]['user_birthday']);
 
 		// We cannot use colorize_username because this should be just the url... try to parse the color code instead
-		$username_colorized = colorize_username($user_id, true);
-		$username_color = colorize_username($user_id, false, true);
+		$username_colorized = colorize_username($birthdays_list[$i]['user_id'], $birthdays_list[$i]['username'], $birthdays_list[$i]['user_color'], $birthdays_list[$i]['user_active'], true);
+		$username_color = colorize_username($birthdays_list[$i]['user_id'], $birthdays_list[$i]['username'], $birthdays_list[$i]['user_color'], $birthdays_list[$i]['user_active'], false, true);
 		// Trim last double quote...
 		$username_color = (substr($username_color, -1) == '"') ? substr($username_color, 0, -1) : '';
 		$username_link = append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" ' . $username_color;
@@ -710,7 +710,7 @@ function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $
 
 	$sql_limit = ($limit > 0) ? ('LIMIT ' . $limit) : '';
 
-	$sql = "SELECT u.user_id, u.username, u.user_birthday, u.user_birthday_y, u.user_birthday_m, u.user_birthday_d
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_birthday, u.user_birthday_y, u.user_birthday_m, u.user_birthday_d
 				FROM " . USERS_TABLE . " AS u
 				WHERE u.user_id <> " . ANONYMOUS . "
 				" . $sql_where . "

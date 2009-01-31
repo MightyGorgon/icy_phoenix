@@ -156,7 +156,7 @@ function get_forum_most_active($user)
 	}
 
 	$sql_forum = "SELECT forum_id, forum_name FROM " . FORUMS_TABLE . " ORDER BY forum_id";
-	if (!($result = $db->sql_query($sql_forum, false, 'forums_')))
+	if (!($result = $db->sql_query($sql_forum, false, 'forums_', FORUMS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain forums list', '', __LINE__, __FILE__, $sql_forum);
 	}

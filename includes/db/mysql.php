@@ -36,10 +36,8 @@ if(!defined('SQL_LAYER'))
 		// Constructor
 		function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			$this->persistency = $persistency;
 			$this->user = $sqluser;
@@ -68,10 +66,8 @@ if(!defined('SQL_LAYER'))
 					}
 				}
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -79,10 +75,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -93,10 +87,8 @@ if(!defined('SQL_LAYER'))
 		// Other base methods
 		function sql_close()
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if($this->db_connect_id)
 			{
@@ -106,10 +98,8 @@ if(!defined('SQL_LAYER'))
 				}
 				$result = @mysql_close($this->db_connect_id);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -117,10 +107,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -131,10 +119,8 @@ if(!defined('SQL_LAYER'))
 		// Base query method
 		function sql_query($query = '', $transaction = false, $cache = false, $cache_folder = SQL_CACHE_FOLDER)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ", $mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			// Remove any pre-existing queries
 			unset($this->query_result);
@@ -144,6 +130,7 @@ if(!defined('SQL_LAYER'))
 			$this->cached = false;
 			$this->cache = array();
 			$this->cache_folder = $cache_folder;
+			$this->cache_folder = ((is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
 			if(($query !== '') && $cache)
 			{
 				$hash = md5($query);
@@ -155,11 +142,15 @@ if(!defined('SQL_LAYER'))
 				if(@file_exists($filename))
 				{
 					$set = array();
-					include($filename);
-					$this->cache = $set;
-					$this->cached = true;
-					$this->caching = false;
-					return 'cache';
+					$cache_included = false;
+					@include($filename);
+					if ($cache_included == true)
+					{
+						$this->cache = $set;
+						$this->cached = true;
+						$this->caching = false;
+						return 'cache';
+					}
 				}
 	//			echo 'cache is missing: ', $filename, '<br />';
 				$this->caching = $hash;
@@ -178,10 +169,8 @@ if(!defined('SQL_LAYER'))
 				unset($this->row[$this->query_result]);
 				unset($this->rowset[$this->query_result]);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -189,10 +178,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -207,10 +194,8 @@ if(!defined('SQL_LAYER'))
 			{
 				return count($this->cache);
 			}
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -220,10 +205,8 @@ if(!defined('SQL_LAYER'))
 			{
 				$result = @mysql_num_rows($query_id);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -231,10 +214,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -244,19 +225,15 @@ if(!defined('SQL_LAYER'))
 
 		function sql_affectedrows()
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if($this->db_connect_id)
 			{
 				$result = @mysql_affected_rows($this->db_connect_id);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -264,10 +241,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -277,10 +252,8 @@ if(!defined('SQL_LAYER'))
 
 		function sql_numfields($query_id = 0)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -290,10 +263,8 @@ if(!defined('SQL_LAYER'))
 			{
 				$result = @mysql_num_fields($query_id);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -301,10 +272,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -314,10 +283,8 @@ if(!defined('SQL_LAYER'))
 
 		function sql_fieldname($offset, $query_id = 0)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -327,10 +294,8 @@ if(!defined('SQL_LAYER'))
 			{
 				$result = @mysql_field_name($query_id, $offset);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -338,10 +303,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -351,10 +314,8 @@ if(!defined('SQL_LAYER'))
 
 		function sql_fieldtype($offset, $query_id = 0)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -364,10 +325,8 @@ if(!defined('SQL_LAYER'))
 			{
 				$result = @mysql_field_type($query_id, $offset);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -375,10 +334,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -392,10 +349,8 @@ if(!defined('SQL_LAYER'))
 			{
 				return count($this->cache) ? array_shift($this->cache) : false;
 			}
-			$mtime = microtime();
-			$mtime = explode(" ", $mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -413,10 +368,8 @@ if(!defined('SQL_LAYER'))
 					$this->cache[] = $this->row[$query_id];
 				}
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -424,10 +377,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -441,10 +392,8 @@ if(!defined('SQL_LAYER'))
 			{
 				return $this->cache;
 			}
-			$mtime = microtime();
-			$mtime = explode(" ", $mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -471,10 +420,8 @@ if(!defined('SQL_LAYER'))
 					$this->write_cache();
 				}
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -482,10 +429,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -495,10 +440,8 @@ if(!defined('SQL_LAYER'))
 
 		function sql_fetchfield($field, $rownum = -1, $query_id = 0)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -532,10 +475,8 @@ if(!defined('SQL_LAYER'))
 					}
 				}
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -543,10 +484,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -556,10 +495,8 @@ if(!defined('SQL_LAYER'))
 
 		function sql_rowseek($rownum, $query_id = 0)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -569,10 +506,8 @@ if(!defined('SQL_LAYER'))
 			{
 				$result = @mysql_data_seek($query_id, $rownum);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -580,10 +515,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -593,19 +526,15 @@ if(!defined('SQL_LAYER'))
 
 		function sql_nextid()
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if($this->db_connect_id)
 			{
 				$result = @mysql_insert_id($this->db_connect_id);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -613,15 +542,46 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
 				return false;
 			}
+		}
+
+		/**
+		* Build SQL to INSERT or UPDATE from the provided array
+		*/
+		function sql_build_insert_update($sql_input_array, $sql_insert = true)
+		{
+			$insert_fields_sql = '';
+			$insert_values_sql = '';
+			$update_sql = '';
+			foreach ($sql_input_array as $k => $v)
+			{
+				$insert_fields_sql .= (($insert_fields_sql == '') ? '' : ', ') . $k;
+				$insert_values_sql .= (($insert_values_sql == '') ? '' : ', ') . (is_numeric($v) ? '' : "'") . $v . (is_numeric($v) ? '' : "'");
+				$update_sql .= (($update_sql == '') ? '' : ', ') . $k . ' = ' . (is_numeric($v) ? '' : "'") . $v . (is_numeric($v) ? '' : "'");
+			}
+
+			$sql_string = $sql_insert ? (' (' . $insert_fields_sql . ') VALUES (' . $insert_values_sql . ')') : $update_sql;
+
+			return $sql_string;
+		}
+
+		/**
+		* Escape string used in sql query
+		*/
+		function sql_escape($msg)
+		{
+			if (!$this->db_connect_id)
+			{
+				return @mysql_real_escape_string($msg);
+			}
+
+			return @mysql_real_escape_string($msg, $this->db_connect_id);
 		}
 
 		function sql_freeresult($query_id = 0)
@@ -637,10 +597,8 @@ if(!defined('SQL_LAYER'))
 				$this->write_cache();
 			}
 
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			if(!$query_id)
 			{
@@ -654,10 +612,8 @@ if(!defined('SQL_LAYER'))
 
 				@mysql_free_result($query_id);
 
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -665,10 +621,8 @@ if(!defined('SQL_LAYER'))
 			}
 			else
 			{
-				$mtime = microtime();
-				$mtime = explode(" ",$mtime);
-				$mtime = $mtime[1] + $mtime[0];
-				$endtime = $mtime;
+				$mtime = explode(' ', microtime());
+				$endtime = $mtime[1] + $mtime[0];
 
 				$this->sql_time += $endtime - $starttime;
 
@@ -678,18 +632,14 @@ if(!defined('SQL_LAYER'))
 
 		function sql_error($query_id = 0)
 		{
-			$mtime = microtime();
-			$mtime = explode(" ",$mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$starttime = $mtime;
+			$mtime = explode(' ', microtime());
+			$starttime = $mtime[1] + $mtime[0];
 
 			$result['message'] = @mysql_error($this->db_connect_id);
 			$result['code'] = @mysql_errno($this->db_connect_id);
 
-			$mtime = microtime();
-			$mtime = explode(' ', $mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$endtime = $mtime;
+			$mtime = explode(' ', microtime());
+			$endtime = $mtime[1] + $mtime[0];
 
 			$this->sql_time += $endtime - $starttime;
 
@@ -703,6 +653,7 @@ if(!defined('SQL_LAYER'))
 				return;
 			}
 			$this->cache_folder = (empty($this->cache_folder) ? SQL_CACHE_FOLDER : $this->cache_folder);
+			$this->cache_folder = ((is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
 			$cache_file_name = $this->cache_folder . 'sql_' . $this->caching . '.php';
 			@unlink($cache_file_name);
 			$f = fopen($cache_file_name, 'w');
@@ -713,7 +664,8 @@ if(!defined('SQL_LAYER'))
 			$f_content .= '/* SQL: ' . str_replace('*/', '*\/', $this->query_string) . ' */' . "\n\n";
 			$f_content .= '/* TIME: ' . time() . ' */' . "\n\n";
 			//$f_content .= '$expired = (time() > ' . (time() + 86400) . ') ? true : false;' . "\n" . 'if ($expired) { return; }' . "\n\n";
-			$f_content .= '$set = ' . $data . ';' . "\n" . 'return;' . "\n";
+			$f_content .= '$set = ' . $data . ';' . "\n";
+			$f_content .= '$cache_included = true;' . "\n" . 'return;' . "\n";
 			$f_content .= '?' . '>';
 			@fputs($f, $f_content);
 			@flock($f, LOCK_UN);
@@ -732,6 +684,7 @@ if(!defined('SQL_LAYER'))
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
 			$this->cache_folder = $cache_folder;
+			$this->cache_folder = ((is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
 			$res = opendir($this->cache_folder);
 			if($res)
 			{

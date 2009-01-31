@@ -215,7 +215,6 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 		{
 			message_die(GENERAL_ERROR, 'Could not insert thanks information', '', __LINE__, __FILE__, $sql);
 		}
-		$db->clear_cache('topics_thanks_', TOPICS_CACHE_FOLDER);
 		// MG Cash MOD For IP - BEGIN
 		if ( defined('CASH_MOD') )
 		{
@@ -672,15 +671,17 @@ function ratings_detailed($topic_id)
 		$topic_id = -1;
 	}
 
-	$sql = "SELECT * FROM " . RATINGS_TABLE . "
-		WHERE topic_id = '" . $topic_id . "'
-		ORDER BY rating_time";
+	$sql = "SELECT r.*, u.username, u.user_active, u.user_color
+		FROM " . RATINGS_TABLE . " r, " . USERS_TABLE . " u
+		WHERE r.topic_id = '" . $topic_id . "'
+			AND u.user_id = r.user_id
+		ORDER BY r.rating_time";
 	if (!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
 	}
 
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$template->assign_block_vars('user_rates_row', array(
 			'RANK' => ++$rank,
@@ -690,8 +691,7 @@ function ratings_detailed($topic_id)
 			'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 			'USER_RATE_DATE' => (create_date2($board_config['default_dateformat'], $row['rating_time'], $board_config['board_timezone'])),
 			//'USERNAME' => id_to_value($row['user_id'], 'user', true)
-			//'USERNAME' => colorize_username($row['user_id'], 'user', true)
-			'USERNAME' => colorize_username($row['user_id'])
+			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active'])
 			)
 		);
 	}

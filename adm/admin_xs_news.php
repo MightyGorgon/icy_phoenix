@@ -28,7 +28,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-$db->clear_cache('xs_config_');
+$db->clear_cache('xs_');
 require_once(IP_ROOT_PATH . 'includes/functions_xs_admin.' . PHP_EXT);
 require_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 
@@ -61,7 +61,8 @@ while ($row = $db->sql_fetchrow($result))
 include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
 
 // Set Date format based on the admin choice
-switch ($xs_news_config['xs_news_dateformat']) {
+switch ($xs_news_config['xs_news_dateformat'])
+{
 	case 0:
 	$date_format_ae = 'd/m/Y';
 	$date_format_display = 'd M Y'; // displays '01 Jan 2005'
@@ -110,9 +111,7 @@ switch ($xs_news_config['xs_news_dateformat']) {
 	break;
 }
 
-//
 // Mode setting
-//
 if(isset($_POST['mode']) || isset($_GET['mode']))
 {
 	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
@@ -141,9 +140,7 @@ if(!empty($mode))
 	switch($mode)
 	{
 		case 'config':
-			//
 			// Pull all config data
-			//
 			$sql = "SELECT * FROM " . XS_NEWS_CONFIG_TABLE;
 			if(!$result = $db->sql_query($sql))
 			{
@@ -173,7 +170,10 @@ if(!empty($mode))
 
 				if(isset($_POST['submit']))
 				{
+					$db->clear_cache('xs_');
+
 					$message = $lang['n_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+
 					message_die(GENERAL_MESSAGE, $message);
 				}
 			}
@@ -246,9 +246,7 @@ if(!empty($mode))
 
 		case 'addnews':
 		case 'editnews':
-			//
 			// Show form to create/modify a news item
-			//
 			if ($mode == 'editnews')
 			{
 				// $newmode determines if we are going to INSERT or UPDATE after posting?
@@ -321,9 +319,7 @@ if(!empty($mode))
 			break;
 
 		case 'createnews':
-			//
 			// Create a new news item in the DB
-			//
 			if(trim($_POST['news_text']) == "")
 			{
 				$message = $lang['n_create_item_null'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -342,6 +338,7 @@ if(!empty($mode))
 			if(!checkdate($date_month, $date_day, $date_split[2]))
 			{
 				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
@@ -366,6 +363,8 @@ if(!empty($mode))
 				message_die(GENERAL_ERROR, "Couldn't insert row in news table", "", __LINE__, __FILE__, $sql);
 			}
 
+			$db->clear_cache('xs_');
+
 			$message = $lang['n_news_item_added'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -373,9 +372,7 @@ if(!empty($mode))
 			break;
 
 		case 'modnews':
-			//
 			// Modify a news item in the DB
-			//
 			$news_item = xsm_prepare_message(trim($_POST['news_text']));
 
 			$news_date = ((empty($_POST['news_date'])) ? create_date($date_format_ae, time(), $board_config['board_timezone']) : $_POST['news_date']);
@@ -401,6 +398,8 @@ if(!empty($mode))
 				message_die(GENERAL_ERROR, "Couldn't update news information", "", __LINE__, __FILE__, $sql);
 			}
 
+			$db->clear_cache('xs_');
+
 			$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -408,9 +407,7 @@ if(!empty($mode))
 			break;
 
 		case 'deletenews':
-			//
 			// Show form to delete a news item
-			//
 			$news_id = intval($_GET['id']);
 
 			$buttonvalue = $lang['Delete'];
@@ -429,15 +426,15 @@ if(!empty($mode))
 					message_die(GENERAL_ERROR, "Couldn't delete news item", "", __LINE__, __FILE__, $sql);
 				}
 
+				$db->clear_cache('xs_');
+
 				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
-				//
 				// Set template files
-				//
 				$template->set_filenames(array('confirm' => XS_TPL_PATH . 'news_confirm_body.tpl'));
 
 				$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" /><input type="hidden" name="id" value="' . $news_id . '" />';
@@ -470,9 +467,7 @@ if(!empty($mode))
 	}
 }
 
-//
 // Start page proper
-//
 $template->set_filenames(array('body' => XS_TPL_PATH . 'news_list_body.tpl'));
 
 $template->assign_vars(array(

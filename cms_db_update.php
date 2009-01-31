@@ -9,6 +9,7 @@
 */
 
 // CTracker_Ignore: File Checked By Human
+define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -182,6 +183,40 @@ switch ($mode)
 			$result_ar = array(
 				'result' => AJAX_ERROR,
 				'error_msg' => 'Invalid stats module'
+			);
+			AJAX_message_die($result_ar);
+			exit;
+		}
+		break;
+	case 'update_smileys_order':
+		if ($userdata['user_level'] != ADMIN)
+		{
+			$result_ar = array(
+				'result' => AJAX_ERROR,
+				'error_msg' => 'NOT ALLOWED!!!'
+			);
+			AJAX_message_die($result_ar);
+			exit;
+		}
+		if (!empty($_POST['smileys']))
+		{
+			$item_order = 0;
+			foreach($_POST['smileys'] as $smiley_item_id)
+			{
+				$item_order++;
+				$sql = "UPDATE " . SMILIES_TABLE . " SET smilies_order = '" . $item_order . "' WHERE smilies_id = '" . $smiley_item_id . "'";
+				if(!$result = $db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not update stats table', $lang['Error'], __LINE__, __FILE__, $sql);
+				}
+			}
+			$db->clear_cache('smileys_');
+		}
+		else
+		{
+			$result_ar = array(
+				'result' => AJAX_ERROR,
+				'error_msg' => 'Invalid smiley position'
 			);
 			AJAX_message_die($result_ar);
 			exit;

@@ -24,28 +24,31 @@ if (!defined('CASH_MOD'))
 if (!defined('ADMIN_MENU'))
 {
 	define('ADMIN_MENU', 1);
-	function admin_menu(&$menu)
+	if (!function_exists('admin_menu'))
 	{
-		global $lang;
-		$i = 0;
-		$j = 0;
-		$menu[$i] = new cash_menucat($lang['Cmcat_main']);
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Configuration', 'cash_config', $lang['Cmenu_cash_config']));
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Currencies', 'cash_currencies', $lang['Cmenu_cash_currencies']));
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Forums', 'cash_forums', $lang['Cmenu_cash_forums']));
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Settings', 'cash_settings', $lang['Cmenu_cash_settings']));
-		$i++;
-		$menu[$i] = new cash_menucat($lang['Cmcat_addons']);
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Events', 'cash_events', $lang['Cmenu_cash_events']));
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Reset', 'cash_reset', $lang['Cmenu_cash_reset']));
-		$i++;
-		$menu[$i] = new cash_menucat($lang['Cmcat_other']);
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Exchange', 'cash_exchange', $lang['Cmenu_cash_exchange']));
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Groups', 'cash_groups', $lang['Cmenu_cash_groups']));
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Logs', 'cash_log', $lang['Cmenu_cash_log']));
-		$i++;
-		$menu[$i] = new cash_menucat($lang['Cmcat_help']);
-		$menu[$i]->additem(new cash_menuitem($j, 'Cash_Help', 'cash_help', $lang['Cmenu_cash_help']));
+		function admin_menu(&$menu)
+		{
+			global $lang;
+			$i = 0;
+			$j = 0;
+			$menu[$i] = new cash_menucat($lang['Cmcat_main']);
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Configuration', 'cash_config', $lang['Cmenu_cash_config']));
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Currencies', 'cash_currencies', $lang['Cmenu_cash_currencies']));
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Forums', 'cash_forums', $lang['Cmenu_cash_forums']));
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Settings', 'cash_settings', $lang['Cmenu_cash_settings']));
+			$i++;
+			$menu[$i] = new cash_menucat($lang['Cmcat_addons']);
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Events', 'cash_events', $lang['Cmenu_cash_events']));
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Reset', 'cash_reset', $lang['Cmenu_cash_reset']));
+			$i++;
+			$menu[$i] = new cash_menucat($lang['Cmcat_other']);
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Exchange', 'cash_exchange', $lang['Cmenu_cash_exchange']));
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Groups', 'cash_groups', $lang['Cmenu_cash_groups']));
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Logs', 'cash_log', $lang['Cmenu_cash_log']));
+			$i++;
+			$menu[$i] = new cash_menucat($lang['Cmcat_help']);
+			$menu[$i]->additem(new cash_menuitem($j, 'Cash_Help', 'cash_help', $lang['Cmenu_cash_help']));
+		}
 	}
 }
 

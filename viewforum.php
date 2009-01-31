@@ -25,7 +25,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 define('IN_VIEWFORUM', true);
 // Start initial var setup
@@ -233,28 +232,49 @@ elseif ($active && ($check_viewed == 'false') && !$bypass)
 }
 // Force Topic Read - END
 
-// Sort Topics - BEGIN
+// Topics Sorting - BEGIN
 $letters_array = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
-$start_letter = (isset($_GET['start_letter'])) ? $_GET['start_letter'] : '';
+$start_letter = request_var('start_letter', '');
 $start_letter = (in_array($start_letter, $letters_array) ? $start_letter : '');
 
-$asort_order = (isset($_GET['asort_order'])) ? $_GET['asort_order'] : '';
+$sort_order_array = array('newest', 'oldest', 'AZ', 'ZA', 'views', 'replies', 'time', 'author');
+$sort_order = request_var('sort_order', 'newest');
+$sort_order = (in_array($sort_order, $sort_order_array) ? $sort_order : $sort_order_array[0]);
+$sort_dir = request_var('sort_dir', 'DESC');
+$sort_dir = ($sort_dir == 'ASC') ? 'ASC' : 'DESC';
 
-if ($asort_order == 'AZ')
+switch ($sort_order)
 {
-	$sort_order = "t.topic_title ASC";
-}
-elseif ($asort_order == 'ZA')
-{
-	$sort_order = "t.topic_title DESC";
-}
-elseif ($asort_order == 'oldest')
-{
-	$sort_order = "t.topic_last_post_id ASC";
-}
-else
-{
-	$sort_order = "t.topic_last_post_id DESC";
+	case 'AZ':
+		$sort_dir = 'ASC';
+		$sort_order_sql = "t.topic_title " . $sort_dir;
+		break;
+	case 'ZA':
+		$sort_dir = 'DESC';
+		$sort_order_sql = "t.topic_title " . $sort_dir;
+		break;
+	case 'views':
+		$sort_order_sql = "t.topic_views " . $sort_dir;
+		break;
+	case 'replies':
+		$sort_order_sql = "t.topic_replies " . $sort_dir;
+		break;
+	case 'time':
+		$sort_order_sql = "t.topic_time " . $sort_dir;
+		break;
+	case 'author':
+		$sort_order_sql = "t.topic_poster " . $sort_dir;
+		break;
+	case 'oldest':
+		$sort_dir = 'ASC';
+		$sort_order_sql = "t.topic_last_post_id " . $sort_dir;
+		break;
+	case 'newest':
+	default:
+		$sort_order = 'newest';
+		$sort_dir = 'DESC';
+		$sort_order_sql = "t.topic_last_post_id " . $sort_dir;
+		break;
 }
 
 if (!in_array($start_letter, $letters_array))
@@ -264,10 +284,11 @@ if (!in_array($start_letter, $letters_array))
 }
 else // we have a single letter, so lets sort alphabetically...
 {
-	$sort_order = "topic_title ASC";
+	$sort_dir = 'ASC';
+	$sort_order_sql = "t.topic_title " . $sort_dir;
 	$start_letter_sql = "AND t.topic_title LIKE '" . $start_letter . "%'";
 }
-// Sort Topics - END
+// Topics Sorting - END
 
 if ($bypass)
 {
@@ -409,37 +430,21 @@ if ($bypass)
 	}
 	// End of forum prune
 
-	// GET GROUP COLORS - BEGIN
-	$group_color = array();
-	$sql_gc = "SELECT g.group_id, g.group_color
-						FROM " . GROUPS_TABLE . " as g
-						WHERE g.group_color <> ''";
-	if (!($result_gc = $db->sql_query($sql_gc, false, 'groups_colors_')))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain groups color', '', __LINE__, __FILE__, $sql_gc);
-	}
-
-	while ($row_gc = $db->sql_fetchrow($result_gc))
-	{
-		$group_color[$row_gc['group_id']] = ($row_gc['group_color'] != '') ? ' style="font-weight:bold;text-decoration:none;color:' . $row_gc['group_color'] . ';"' : ' style="font-weight:bold;text-decoration:none;"';
-	}
-	$db->sql_freeresult($result_gc);
-	// GET GROUP COLORS - END
-
 	//
 	// Obtain list of moderators of each forum
 	// First users, then groups ... broken into two queries
 	//
 	// moderators list
 	$moderators = array();
-	$idx = $tree['keys'][ POST_FORUM_URL . $forum_id ];
+	$idx = $tree['keys'][POST_FORUM_URL . $forum_id];
 	for ($i = 0; $i < count($tree['mods'][$idx]['user_id']); $i++)
 	{
-		$moderators[] = colorize_username($tree['mods'][$idx]['user_id'][$i]);
+		$moderators[] = colorize_username($tree['mods'][$idx]['user_id'][$i], $tree['mods'][$idx]['username'][$i], $tree['mods'][$idx]['user_color'][$i], $tree['mods'][$idx]['user_active'][$i]);
 	}
 	for ($i = 0; $i < count($tree['mods'][$idx]['group_id']); $i++)
 	{
-		$moderators[] = '<a href="' . append_sid('./groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color[$tree['mods'][$idx]['group_id'][$i]] . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
+		$group_color_style = ' style="font-weight: bold; text-decoration: none;' . (($tree['mods'][$idx]['group_color'][$i] != '') ? 'color: ' . $tree['mods'][$idx]['group_color'][$i] . ';"' : '"');
+		$moderators[] = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color_style . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
 	}
 
 	$l_moderators = (count($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'];
@@ -578,14 +583,14 @@ if ($bypass)
 	}
 	else
 	{
-		// Sort Topics - BEGIN
+		// Topics Sorting - BEGIN
 		if (!empty($start_letter))
 		{
 			$sql = "SELECT COUNT(topic_id) AS forum_topics
-				FROM " . TOPICS_TABLE . "
-				WHERE forum_id = '" . $forum_id . "'
-					AND topic_title LIKE '" . $start_letter . "%'
-				ORDER BY " . $sort_order;
+				FROM " . TOPICS_TABLE . " t
+				WHERE t.forum_id = '" . $forum_id . "'
+					AND t.topic_title LIKE '" . $start_letter . "%'
+				ORDER BY " . $sort_order_sql;
 			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not get topic counts for letter search', '', __LINE__, __FILE__, $sql);
@@ -596,11 +601,11 @@ if ($bypass)
 		}
 		else
 		{
-		// Sort Topics - END
+		// Topics Sorting - END
 			$topics_count = ($forum_row['forum_topics']) ? $forum_row['forum_topics'] : 1;
-		// Sort Topics - BEGIN
+		// Topics Sorting - BEGIN
 		}
-		// Sort Topics - END
+		// Topics Sorting - END
 		$limit_topics_time = '';
 		$topic_days = 0;
 	}
@@ -619,14 +624,14 @@ if ($bypass)
 	//<!-- END Unread Post Information to Database Mod -->
 
 		// All GLOBAL announcement data, this keeps GLOBAL announcements on each viewforum page...
-		$sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_time, p.post_username
+		$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username
 						FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
 						WHERE t.topic_poster = u.user_id
 							AND p.post_id = t.topic_last_post_id
 							AND p.poster_id = u2.user_id
 							AND t.topic_type = " . POST_GLOBAL_ANNOUNCE . "
 							" . $start_letter_sql . "
-						ORDER BY " . $sort_order;
+						ORDER BY " . $sort_order_sql;
 		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, "Couldn't obtain topic information", "", __LINE__, __FILE__, $sql);
@@ -648,7 +653,7 @@ if ($bypass)
 	//{
 	//<!-- END Unread Post Information to Database Mod -->
 		// All announcement data, this keeps announcements on each viewforum page...
-		$sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_time, p.post_username
+		$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username
 						FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
 						WHERE t.forum_id = $forum_id
 							AND t.topic_poster = u.user_id
@@ -656,7 +661,7 @@ if ($bypass)
 							AND p.poster_id = u2.user_id
 							AND t.topic_type = " . POST_ANNOUNCE . "
 							" . $start_letter_sql . "
-						ORDER BY " . $sort_order;
+						ORDER BY " . $sort_order_sql;
 		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
@@ -693,7 +698,7 @@ if ($bypass)
 	//$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = '" . $userdata['user_id'] . "'" : '';
 	$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND (t.topic_poster = '" . $userdata['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 	// Self AUTH - END
-	$sql = "SELECT t.*, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies
+	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies
 					FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
 					WHERE $upi2db_post_global_announce
 						AND t.topic_poster = u.user_id
@@ -703,7 +708,7 @@ if ($bypass)
 						$self_sql
 						$upi2db_post_announce
 						$start_letter_sql
-					ORDER BY t.topic_type DESC, " . $sort_order . "
+					ORDER BY t.topic_type DESC, " . $sort_order_sql . "
 					LIMIT $start, " . $board_config['topics_per_page'];
 // UPI2DB DELETE
 //#AND t.topic_type <> " . POST_GLOBAL_ANNOUNCE . "
@@ -875,7 +880,7 @@ if ($bypass)
 		'L_DISPLAY_TOPICS' => $lang['Display_topics'],
 		'U_POST_NEW_TOPIC' => append_sid(POSTING_MG . '?mode=newtopic&amp;' . $forum_id_append),
 		'S_SELECT_TOPIC_DAYS' => $select_topic_days,
-		'S_POST_DAYS_ACTION' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start . '&amp;start_letter=' . $start_letter . '&amp;asort_order=' . $asort_order)
+		'S_POST_DAYS_ACTION' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;start=' . $start . '&amp;start_letter=' . $start_letter . '&amp;sort_order=' . $sort_order . '&amp;sort_dir=' . $sort_dir)
 		)
 	);
 
@@ -958,7 +963,10 @@ if ($bypass)
 	// Dump out the page header and load viewforum template
 
 	$forum_row['forum_name'] = get_object_lang(POST_FORUM_URL . $forum_id, 'name');
-	define('SHOW_ONLINE', true);
+	if ($board_config['display_viewonline'])
+	{
+		define('SHOW_ONLINE', true);
+	}
 	if (!$board_config['board_disable'] || ($board_config['board_disable'] && ($userdata['user_level'] == ADMIN)))
 	{
 		$template->vars['S_TPL_FILENAME'] = 'index';
@@ -993,7 +1001,7 @@ if ($bypass)
 			FROM " . FORUMS_RULES_TABLE . " fr
 			WHERE fr.forum_id = " . $forum_row['forum_id'] . "
 			LIMIT 1";
-		if (!($result = $db->sql_query($sql, false, 'forum_rules_')))
+		if (!($result = $db->sql_query($sql, false, 'forums_rules_', FORUMS_CACHE_FOLDER)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query forum rules', '', __LINE__, __FILE__, $sql);
 		}
@@ -1034,6 +1042,16 @@ if ($bypass)
 	{
 		include(IP_ROOT_PATH . 'includes/forum_wordgraph.' . PHP_EXT);
 	}
+
+	$sort_lang = ($sort_dir == 'ASC') ? $lang['Sort_Ascending'] : $lang['Sort_Descending'];
+	$sort_img = ($sort_dir == 'ASC') ? 'images/sort_asc.png' : 'images/sort_desc.png';
+	$sort_img_full = '<img src="' . $sort_img . '" alt="' . $sort_lang . '" title="' . $sort_lang . '" style="padding-left: 3px;" />';
+	$start_letter_append = ($start_letter == '') ? '' : ('&amp;start_letter=' . $start_letter);
+	$sort_order_append = '&amp;sort_order=' . $sort_order;
+	$sort_dir_append = '&amp;sort_dir=' . $sort_dir;
+	$sort_dir_append_rev = '&amp;sort_dir=' . (($sort_dir == 'ASC') ? 'DESC' : 'ASC');
+	$topic_days_append = ($topic_days == 0) ? '' : ('&amp;topicdays=' . $topic_days);
+	$this_forum_address = VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . $topic_days_append . $start_letter_append;
 
 	$template->assign_vars(array(
 		'FORUM_ID' => $forum_id,
@@ -1086,6 +1104,22 @@ if ($bypass)
 		'L_NO_NEW_POSTS' => $lang['No_new_posts'],
 		'L_NEW_POSTS' => $lang['New_posts'],
 
+		'U_VF_TITLE_SORT' => append_sid($this_forum_address . '&amp;sort_order=' . (($sort_order == 'AZ') ? 'ZA' : 'AZ')),
+		'U_VF_VIEWS_SORT' => append_sid($this_forum_address . '&amp;sort_order=views' . $sort_dir_append_rev),
+		'U_VF_REPLIES_SORT' => append_sid($this_forum_address . '&amp;sort_order=replies' . $sort_dir_append_rev),
+		'U_VF_TIME_SORT' => append_sid($this_forum_address . '&amp;sort_order=time' . $sort_dir_append_rev),
+		'U_VF_AUTHOR_SORT' => append_sid($this_forum_address . '&amp;sort_order=author' . $sort_dir_append_rev),
+		'U_VF_LAST_POST_SORT' => append_sid($this_forum_address . '&amp;sort_order=' . (($sort_order == 'newest') ? 'oldest' : 'newest')),
+
+		'VF_TITLE_SORT' => ((($sort_order == 'AZ') || ($sort_order == 'ZA')) ? $sort_img_full : ''),
+		'VF_VIEWS_SORT' => (($sort_order == 'views') ? $sort_img_full : ''),
+		'VF_REPLIES_SORT' => (($sort_order == 'replies') ? $sort_img_full : ''),
+		'VF_TIME_SORT' => (($sort_order == 'time') ? $sort_img_full : ''),
+		'VF_AUTHOR_SORT' => (($sort_order == 'author') ? $sort_img_full : ''),
+		'VF_LAST_POST_SORT' => ((($sort_order == 'oldest') || ($sort_order == 'newest')) ? $sort_img_full : ''),
+
+		'L_CURRENT_SORT' => $sort_lang,
+
 		'L_POSTED' => $lang['Posted'],
 		'L_JOINED' => $lang['Joined'],
 		'L_AUTHOR' => $lang['Author'],
@@ -1127,11 +1161,11 @@ if ($bypass)
 			$topic_title = $topic_title_prefix . $topic_title;
 			// Convert and clean special chars!
 			$topic_title = htmlspecialchars_clean($topic_title);
-			$topic_title_plain = $topic_title;
+			$topic_title_plain = htmlspecialchars($topic_title);
 			// SMILEYS IN TITLE - BEGIN
 			if (($board_config['smilies_topic_title'] == true) && !$lofi)
 			{
-				$bbcode->allow_smilies = ($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies'] ? true : false);
+				$bbcode->allow_smilies = (($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies']) ? true : false);
 				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
 			// SMILEYS IN TITLE - END
@@ -1184,7 +1218,7 @@ if ($bypass)
 				$view_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append);
 			}
 
-			$topic_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']) : colorize_username($topic_rowset[$i]['user_id']);
+			$topic_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']) : colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
 			$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '' : '';
 
 			//$first_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
@@ -1192,10 +1226,10 @@ if ($bypass)
 
 			$last_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
 
-			$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($topic_rowset[$i]['id2']);
+			$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($topic_rowset[$i]['id2'], $topic_rowset[$i]['user2'], $topic_rowset[$i]['user_color2'], $topic_rowset[$i]['user_active2']);
 
 			// Convert and clean special chars!
-			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (!empty($topic_link['class_new']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (!empty($topic_link['class_new']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $topic_title_plain . ' - ' . $lang['View_latest_post'] . '" /></a>';
 
 //----------------------------------------------------
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -1205,7 +1239,7 @@ if ($bypass)
 			}
 			else
 			{
-				$mark_always_read = '<img src="' . $topic_link['image'] . '" style="margin-right:4px;" alt="' . $topic_link['image_alt'] . '" title="' . $topic_link['image_alt'] . '" />';
+				$mark_always_read = '<img src="' . $topic_link['image'] . '" style="margin-right: 4px;" alt="' . $topic_link['image_alt'] . '" title="' . $topic_link['image_alt'] . '" />';
 			}
 //<!-- END Unread Post Information to Database Mod -->
 //----------------------------------------------------
@@ -1217,7 +1251,8 @@ if ($bypass)
 			$calendar_title = '';
 			$calendar_title = get_calendar_title($topic_rowset[$i]['topic_calendar_time'], $topic_rowset[$i]['topic_calendar_duration']);
 			// Convert and clean special chars!
-			$calendar_title = htmlspecialchars_clean($calendar_title);
+			// We shouldn't need this...
+			//$calendar_title = htmlspecialchars_clean($calendar_title);
 			if (!empty($calendar_title))
 			{
 				//$calendar_title = '</a></span>' . $calendar_title . '<span class="topiclink">';
@@ -1292,6 +1327,21 @@ if ($bypass)
 					)
 				);
 			}
+
+			if ($i == 0)
+			{
+				$viewforum_banner_text = get_ad('vfx');
+				if (!empty($viewforum_banner_text))
+				{
+					$template->assign_vars(array(
+						'VIEWFORUM_BANNER_CODE_IMG' => '<img src="' . $images['topic_hot_unread'] . '" style="margin-right: 4px;" alt="Sponsor" title="Sponsor" />',
+						'VIEWFORUM_BANNER_CODE' => $viewforum_banner_text,
+						)
+					);
+					$template->assign_block_vars('topicrow.switch_viewforum_banner', array());
+				}
+			}
+
 		}
 
 		$topics_count -= $total_announcements;
@@ -1303,7 +1353,7 @@ if ($bypass)
 		}
 
 		$template->assign_vars(array(
-			'PAGINATION' => generate_pagination(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;topicdays=' . $topic_days . '&amp;start_letter=' . $start_letter . '&amp;asort_order=' . $asort_order, $topics_count, $board_config['topics_per_page'], $start),
+			'PAGINATION' => generate_pagination(VIEWFORUM_MG . '?' . $forum_id_append . $kb_mode_append . '&amp;topicdays=' . $topic_days . '&amp;start_letter=' . $start_letter . '&amp;sort_order=' . $sort_order . '&amp;sort_dir=' . $sort_dir, $topics_count, $board_config['topics_per_page'], $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), $number_of_page),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)
@@ -1328,7 +1378,7 @@ if ($bypass)
 		$template->assign_block_vars('switch_show_news', array());
 	}
 
-	// Sort Topics - BEGIN
+	// Topics Sorting - BEGIN
 	if (($board_config['show_alpha_bar'] == 1) && ($forum_row['forum_sort_box'] == 1))
 	{
 		// Begin Configuration Section
@@ -1344,10 +1394,10 @@ if ($bypass)
 		$template->assign_vars(array(
 			'S_SHOW_ALPHA_BAR' => true,
 			'DIVIDER' => $divider,
-			'U_NEWEST' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=newest&amp;topicdays=' . $topic_days . $kb_mode_append),
-			'U_OLDEST' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=oldest&amp;topicdays=' . $topic_days . $kb_mode_append),
-			'U_AZ' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=AZ&amp;topicdays=' . $topic_days . $kb_mode_append),
-			'U_ZA' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;asort_order=ZA&amp;topicdays=' . $topic_days . $kb_mode_append),
+			'U_NEWEST' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=newest&amp;topicdays=' . $topic_days . $kb_mode_append),
+			'U_OLDEST' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=oldest&amp;topicdays=' . $topic_days . $kb_mode_append),
+			'U_AZ' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=AZ&amp;topicdays=' . $topic_days . $kb_mode_append),
+			'U_ZA' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=ZA&amp;topicdays=' . $topic_days . $kb_mode_append),
 			)
 		);
 
@@ -1362,7 +1412,15 @@ if ($bypass)
 			);
 		}
 	}
-	// Sort Topics - END
+	// Topics Sorting - END
+
+	$viewforum_banner_top = get_ad('vft');
+	$viewforum_banner_bottom = get_ad('vfb');
+	$template->assign_vars(array(
+		'VIEWFORUM_BANNER_TOP' => $viewforum_banner_top,
+		'VIEWFORUM_BANNER_BOTTOM' => $viewforum_banner_bottom,
+		)
+	);
 
 	// Parse the page and print
 	$template->pparse('body');

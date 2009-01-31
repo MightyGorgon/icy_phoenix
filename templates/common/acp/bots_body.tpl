@@ -25,11 +25,11 @@
 	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:50px;"><input type="checkbox" name="bots[]" value="{bots.BOT_ID}"{bots.BOT_ACTIVE_CHECKED} /></td>
 	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:90px;" nowrap="nowrap"><span class="gensmall">{bots.BOT_LAST_VISIT}</span></td>
 	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:50px;" nowrap="nowrap"><b class="gensmall">{bots.BOT_COUNTER}</b></td>
-	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:80px;"><b class="gensmall"><a href="{bots.U_EDIT}">{L_EDIT}</a>&nbsp;|&nbsp;<a href="{bots.U_DELETE}">{L_DELETE}</a></b></td>
+	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:80px;"><b class="gensmall"><a href="{bots.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{bots.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></b></td>
 </tr>
 <!-- END bots -->
 <!-- BEGIN no_bots -->
-<tr><td colspan="9" class="row1 row-center">{no_bots.L_NO_BOTS}</td></tr>
+<tr><td colspan="9" class="row1 row-center">{L_NO_BOTS}</td></tr>
 <!-- END no_bots -->
 <tr><td colspan="9" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="update" value="{L_BOTS_UPDATE}" class="liteoption" />&nbsp;&nbsp;<input type="submit" value="{L_BOT_ADD}" class="mainoption" /></td></tr>
 </table>

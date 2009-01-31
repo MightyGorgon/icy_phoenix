@@ -33,7 +33,6 @@ if (!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_mg_log_admin.' . PHP_EXT);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
@@ -66,7 +65,7 @@ if (isset($_POST['clear']))
 	}
 }
 
-if (count($_POST))
+if (isset($_POST['delete_sub']))
 {
 	if ($is_allowed)
 	{
@@ -94,16 +93,24 @@ if (count($_POST))
 	}
 }
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
+$sort_order_array = array('log_id', 'log_time', 'log_page', 'log_user_id', 'log_action', 'log_desc', 'log_target');
+$sort_order = request_var('sort_order', $sort_order_array[0]);
+$sort_order = (in_array($sort_order, $sort_order_array) ? $sort_order : $sort_order_array[0]);
+$sort_dir = request_var('sort_dir', 'DESC');
+$sort_dir = ($sort_dir == 'ASC') ? 'ASC' : 'DESC';
+
+$logs_actions_filter = request_var('logs_actions_filter', 'ALL');
+
 $log_item = array();
-$log_item = get_logs('', $start, $board_config['posts_per_page'], 'log_id', 'DESC');
+$log_item = get_logs('', $start, $board_config['topics_per_page'], $sort_order, $sort_dir, $logs_actions_filter);
 
 foreach ($log_item as $log_item_data)
 {
 	$log_username = colorize_username($log_item_data['log_user_id']);
-	$log_target = colorize_username($log_item_data['log_target']);
+	$log_target = ($log_item_data['log_target'] >= 2) ? colorize_username($log_item_data['log_target']) : '&nbsp;';
 	$log_action = parse_logs_action($log_item_data['log_id'], $log_item_data['log_action'], $log_item_data['log_desc'], $log_username, $log_target);
 	$template->assign_block_vars('log_row', array(
 			'LOG_ID' => $log_item_data['log_id'],
@@ -119,8 +126,50 @@ foreach ($log_item as $log_item_data)
 	);
 }
 
+$logs_actions_filter_select = actions_filter_select($logs_actions_filter);
+
+$sort_lang = ($sort_dir == 'ASC') ? $lang['Sort_Ascending'] : $lang['Sort_Descending'];
+$sort_img = ($sort_dir == 'ASC') ? 'images/sort_asc.png' : 'images/sort_desc.png';
+$sort_img_full = '<img src="' . IP_ROOT_PATH . $sort_img . '" alt="' . $sort_lang . '" title="' . $sort_lang . '" style="padding-left: 3px;" />';
+$sort_order_append = '&amp;sort_order=' . $sort_order;
+$sort_dir_append = '&amp;sort_dir=' . $sort_dir;
+$logs_actions_filter_append = ($logs_actions_filter == 'ALL') ? '' : ('&amp;logs_actions_filter=' . $logs_actions_filter);
+$sort_dir_append_rev = '&amp;sort_dir=' . (($sort_dir == 'ASC') ? 'DESC' : 'ASC');
+$this_page_address = 'admin_logs.' . PHP_EXT . '?' . $sort_dir_append_rev . $logs_actions_filter_append;
+
+$sort_order_array = array('log_id', 'log_time', 'log_page', 'log_user_id', 'log_action', 'log_desc', 'log_target');
+$template->assign_vars(array(
+	'L_TITLE' => $lang['LOGS_TITLE'],
+	'L_TITLE_EXPLAIN' => $lang['LOGS_EXPLAIN'],
+
+	'U_LOG_ID_SORT' => append_sid($this_page_address . '&amp;sort_order=log_id'),
+	'U_LOG_TIME_SORT' => append_sid($this_page_address . '&amp;sort_order=log_time'),
+	'U_LOG_PAGE_SORT' => append_sid($this_page_address . '&amp;sort_order=log_page'),
+	'U_LOG_USER_ID_SORT' => append_sid($this_page_address . '&amp;sort_order=log_user_id'),
+	'U_LOG_ACTION_SORT' => append_sid($this_page_address . '&amp;sort_order=log_action'),
+	'U_LOG_DESC_SORT' => append_sid($this_page_address . '&amp;sort_order=log_desc'),
+	'U_LOG_TARGET_SORT' => append_sid($this_page_address . '&amp;sort_order=log_target'),
+
+	'LOG_ID_SORT' => (($sort_order == 'log_id') ? $sort_img_full : ''),
+	'LOG_TIME_SORT' => (($sort_order == 'log_time') ? $sort_img_full : ''),
+	'LOG_PAGE_SORT' => (($sort_order == 'log_page') ? $sort_img_full : ''),
+	'LOG_USER_ID_SORT' => (($sort_order == 'log_user_id') ? $sort_img_full : ''),
+	'LOG_ACTION_SORT' => (($sort_order == 'log_action') ? $sort_img_full : ''),
+	'LOG_DESC_SORT' => (($sort_order == 'log_desc') ? $sort_img_full : ''),
+	'LOG_TARGET_SORT' => (($sort_order == 'log_target') ? $sort_img_full : ''),
+
+	'L_CURRENT_SORT' => $sort_lang,
+
+	'LOGS_ACTIONS_FILTER' => $logs_actions_filter_select,
+	'S_MODE_ACTION' => append_sid('admin_logs.' . PHP_EXT)
+	)
+);
+
+// Pagination
+$logs_actions_filter_sql = (($logs_actions_filter == 'ALL') ? '' : (' WHERE log_action = \'' . $logs_actions_filter . '\''));
 $sql = "SELECT count(*) AS total
-				FROM " . LOGS_TABLE ;
+				FROM " . LOGS_TABLE . "
+				" . $logs_actions_filter_sql;
 if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Error getting total logs', '', __LINE__, __FILE__, $sql);
@@ -128,21 +177,14 @@ if (!($result = $db->sql_query($sql)))
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_logs = $total['total'];
-	$pagination = generate_pagination('admin_logs.' . PHP_EXT . '?mode=list', $total_logs , '30', $start). '&nbsp;';
+	$pagination = generate_pagination('admin_logs.' . PHP_EXT . '?mode=list' . $logs_actions_filter_append . $sort_order_append . $sort_dir_append, $total_logs , $board_config['topics_per_page'], $start);
 }
 $db->sql_freeresult($result);
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / 30) + 1), ceil($total_logs  / 30)),
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_logs / $board_config['topics_per_page'])),
 	'L_GOTO_PAGE' => $lang['Goto_page']
-	)
-);
-
-$template->assign_vars(array(
-	'L_TITLE' => $lang['LOGS_TITLE'],
-	'L_TITLE_EXPLAIN' => $lang['LOGS_EXPLAIN'],
-	'S_MODE_ACTION' => append_sid('admin_logs.' . PHP_EXT)
 	)
 );
 

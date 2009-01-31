@@ -26,7 +26,6 @@ if(!function_exists('imp_random_topics_block_func'))
 	{
 		global $template, $cms_config_vars, $block_id, $userdata, $board_config, $db, $var_cache, $lang, $bbcode;
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 		$template->_tpldata['random_topic_row.'] = array();
 
@@ -77,7 +76,7 @@ if(!function_exists('imp_random_topics_block_func'))
 			$allowed_forums_sql = '';
 		}
 
-		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, f.forum_name
+		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color, f.forum_name
 			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . USERS_TABLE . " AS u, " . FORUMS_TABLE . " AS f
 			WHERE t.topic_status <> 2
 				" . $allowed_forums_sql . "
@@ -138,7 +137,7 @@ if(!function_exists('imp_random_topics_block_func'))
 					'L_TITLE' => $bbcode->parse(htmlspecialchars($random_topic_row[$i]['topic_title'])),
 					'L_BY' => $lang['By'],
 					'L_ON' => $lang['On'],
-					'S_POSTER' => colorize_username($random_topic_row[$i]['user_id']),
+					'S_POSTER' => colorize_username($random_topic_row[$i]['user_id'], $random_topic_row[$i]['username'], $random_topic_row[$i]['user_color'], $random_topic_row[$i]['user_active']),
 					'S_POSTTIME' => create_date2($board_config['default_dateformat'], $random_topic_row[$i]['post_time'], $board_config['board_timezone'])
 					)
 				);

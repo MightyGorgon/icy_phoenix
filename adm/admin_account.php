@@ -20,7 +20,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 
 if(!function_exists('period'))
 {
@@ -244,6 +244,7 @@ elseif($activate && $mark_list)
 				break;
 			case 'active':
 				$activate_sql .= " SET user_active = '0' WHERE user_active = '1'";
+				$clear_notification = user_clear_notifications($userdata['user_id']);
 				break;
 		}
 		$activate_sql .= " AND user_id IN ($activate_id)";
@@ -252,8 +253,8 @@ elseif($activate && $mark_list)
 			message_die(GENERAL_ERROR, 'could not activate users.', '', __LINE__, __FILE__, $activate_sql);
 		}
 
-		$template->assign_vars(array('MESSAGE' => ((count($mark_list) == '1') ? (($action == 'active') ? $lang['Account_user_deactivated'] : $lang['Account_user_activated']) : (($action == 'active') ? $lang['Account_users_deactivated'] : $lang['Account_users_activated'])).' '. $lang['Account_notification']));
-		$template->assign_block_vars("switch_message", array());
+		$template->assign_vars(array('MESSAGE' => ((count($mark_list) == '1') ? (($action == 'active') ? $lang['Account_user_deactivated'] : $lang['Account_user_activated']) : (($action == 'active') ? $lang['Account_users_deactivated'] : $lang['Account_users_activated'])) . ' ' . $lang['Account_notification']));
+		$template->assign_block_vars('switch_message', array());
 	}
 }
 
@@ -283,8 +284,8 @@ else
 	$letter_sql = " AND username LIKE '$by_letter%' ";
 }
 
-$sql_count = "SELECT COUNT(user_id) AS total_users FROM ". USERS_TABLE ." ";
-$sql = "SELECT username, user_id, user_actkey, user_regdate, user_email FROM ". USERS_TABLE ." ";
+$sql_count = "SELECT COUNT(user_id) AS total_users FROM " . USERS_TABLE . " ";
+$sql = "SELECT username, user_id, user_active, user_color, user_actkey, user_regdate, user_email FROM " . USERS_TABLE . " ";
 switch($action)
 {
 	case 'inactive':
@@ -395,7 +396,7 @@ if($row = $db->sql_fetchrow($result))
 		$template->assign_block_vars('admin_account', array(
 			'ROW_NUMBER' => ($i == '1') ? '1' : ($i + intval($_GET['start'])),
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
-			'USERNAME' => colorize_username($row['user_id']),
+			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 			'EMAIL' => $email,
 			'JOINED' => create_date($board_config['default_dateformat'], $row['user_regdate'], $board_config['board_timezone']),
 			'PERIOD' => period(time() - $row['user_regdate']),

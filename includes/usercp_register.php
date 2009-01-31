@@ -38,6 +38,7 @@ if (!defined('PARSE_CPL_NAV'))
 	define('PARSE_CPL_NAV', true);
 }
 
+include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 $server_url = create_server_url();
@@ -501,7 +502,7 @@ if (isset($_POST['submit']))
 	include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
 	// session id check
-	if ($sid == '' || $sid != $userdata['session_id'])
+	if (($sid == '') || ($sid != $userdata['session_id']))
 	{
 		$error = true;
 		$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Session_invalid'];
@@ -1154,41 +1155,18 @@ if (isset($_POST['submit']))
 				message_die(GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql);
 			}
 
-			// START - SEND PM ON REGISTER MOD - AbelaJohnB
-			//
-			// According to 'netclectic' we need to set the datastamp to '9999999999' in order to
-			// insure the pop-up notification about a new message existing. I concur with 'netclectic'
-			// and have thus made the change to his suggestion. Thanks netclectic!
-			//
-			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_new_privmsg = '1', user_last_privmsg = '9999999999'
-						WHERE user_id = $user_id";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
-			}
-
-			$register_pm_subject = $lang['register_pm_subject'];
-			$register_pm = $lang['register_pm'];
-			$privmsgs_date = date('U');
-
+			// PM ON REGISTER - BEGIN
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+			include_once(IP_ROOT_PATH . 'includes/functions_privmsgs.' . PHP_EXT);
+			$privmsg_sender = $founder_id;
+			$privmsg_recipient = $user_id;
+			$privmsg_subject = sprintf($lang['register_pm_subject'], $board_config['sitename']);
+			$privmsg_message = sprintf($lang['register_pm'], $board_config['sitename'], $board_config['sitename']);
 
-			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($register_pm_subject, $board_config['sitename']))) . "', '" . str_replace("\'", "''", addslashes(sprintf($register_pm, $board_config['sitename'], $board_config['sitename']))) . "', '" . $founder_id . "', " . $user_id . ", " . $privmsgs_date . ", '0', '1', '1', '0')";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
-			}
-
-			// Add to the users new pm counter
-			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
-				WHERE user_id = " . $user_id;
-			if (!$status = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
-			}
-			// END - SEND PM ON REGISTER MOD - AbelaJohnB
+			$privmsg = new privmsgs();
+			$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
+			unset($privmsg);
+			// PM ON REGISTER - END
 
 			board_stats();
 
@@ -1215,17 +1193,17 @@ if (isset($_POST['submit']))
 
 			$sql = "SELECT ug.user_id, g.group_id as g_id, g.group_name , u.user_posts, g.group_count FROM (" . GROUPS_TABLE . " g, " . USERS_TABLE . " u)
 					LEFT JOIN " . USER_GROUP_TABLE . " ug ON g.group_id=ug.group_id AND ug.user_id = '" . $user_id . "'
-					WHERE u.user_id=$user_id
+					WHERE u.user_id = $user_id
 						 AND ug.user_id is NULL
-						 AND g.group_count=0
-						 AND g.group_single_user=0
-						 AND g.group_moderator<>$user_id";
+						 AND g.group_count = 0
+						 AND g.group_single_user = 0
+						 AND g.group_moderator <> $user_id";
 			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Error geting users post stat', '', __LINE__, __FILE__, $sql);
 			}
 
-			empty_cache_folders(true);
+			clear_user_color_cache($user_id);
 
 			while ($group_data = $db->sql_fetchrow($result))
 			{
@@ -1566,16 +1544,16 @@ else
 		switch($user_avatar_type)
 		{
 			case USER_AVATAR_UPLOAD:
-				$avatar_img = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" />' : '';
+				$avatar_img = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="avatar" />' : '';
 				break;
 			case USER_AVATAR_REMOTE:
-				$avatar_img = resize_avatar($user_avatar);
+				$avatar_img = resize_avatar($userdata['user_id'], $userdata['user_level'], $user_avatar);
 				break;
 			case USER_AVATAR_GALLERY:
-				$avatar_img = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" />' : '';
+				$avatar_img = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="avatar" />' : '';
 				break;
 			case USER_AVATAR_GENERATOR:
-				$avatar_img = ($board_config['allow_avatar_generator']) ? '<img src="' . $user_avatar . '" alt="" />' : '';
+				$avatar_img = ($board_config['allow_avatar_generator']) ? '<img src="' . $user_avatar . '" alt="avatar" />' : '';
 				break;
 		}
 	}
@@ -1761,12 +1739,14 @@ else
 						$hidden_fields_custom_name = $name;
 						$hidden_fields_custom_value = $value;
 						break;
+
 					case TEXTAREA:
 						$value = $userdata[$name];
 						$field_html_code = '<textarea name="' . $name . '" style="width: 300px;" rows="6" cols="30" class="post">' . $value . '</textarea>';
 						$hidden_fields_custom_name = $name;
 						$hidden_fields_custom_value = $value;
 						break;
+
 					case RADIO:
 						$value = $userdata[$name];
 						$radio_list = explode(',',$field['radio_button_values']);
@@ -1798,6 +1778,7 @@ else
 							$field_html_code .= $line . "\n";
 						}
 						break;
+
 					case CHECKBOX:
 						$value_array = explode(',',$userdata[$name]);
 						$check_list = explode(',',$field['checkbox_values']);
@@ -1942,12 +1923,14 @@ else
 					$hidden_fields_custom_name = $name;
 					$hidden_fields_custom_value = $value;
 					break;
+
 				case TEXTAREA:
 					$value = $userdata[$name];
 					$field_html_code = '<textarea name="' . $name . '" style="width: 300px" rows="6" cols="30" class="post">' . $value . '</textarea>';
 					$hidden_fields_custom_name = $name;
 					$hidden_fields_custom_value = $value;
 					break;
+
 				case RADIO:
 					$value = $userdata[$name];
 					$radio_list = explode(',',$field['radio_button_values']);
@@ -1970,8 +1953,11 @@ else
 					$hidden_fields_custom_name = $name;
 					$hidden_fields_custom_value = $value;
 					foreach($html_list as $line)
+					{
 						$field_html_code .= $line . "\n";
+					}
 					break;
+
 				case CHECKBOX:
 					$value_array = explode(',', $userdata[$name]);
 					$check_list = explode(',', $field['checkbox_values']);
@@ -1990,14 +1976,18 @@ else
 						}
 						$temp .= ' /> <span class="gen">' . $check_name . '</span>';
 						if($num < count($check_list))
+						{
 							$temp .= '<br />';
+						}
 						$html_list[] = $temp;
 					}
 					$field_html_code = '';
 					$hidden_fields_custom_name = $name;
 					$hidden_fields_custom_value = $value;
 					foreach($html_list as $line)
+					{
 						$field_html_code .= $line . "\n";
+					}
 					break;
 			}
 			$s_hidden_fields .= '<input type="hidden" name="' . $name . '" value="' . $value . '" />';
@@ -2158,7 +2148,7 @@ else
 
 		// Generate the required confirmation code
 		// NB 0 (zero) could get confused with O (the letter) so we make change it
-		$code = dss_rand();
+		$code = unique_id();
 		$code = substr(str_replace('0', 'Z', strtoupper(base_convert($code, 16, 35))), 2, 6);
 		$confirm_id = md5(uniqid($user_ip));
 		$sql = "INSERT INTO " . CONFIRM_TABLE . " (confirm_id, session_id, code)
@@ -2247,7 +2237,7 @@ else
 	$s_b_year = '<span class="genmed">' . $lang['Year'] . '&nbsp;</span>' . $s_birthday_year . '&nbsp;&nbsp;';
 	$i = 0;
 	$s_birthday = '';
-	for ($i=0; $i<=strlen($lang['Submit_date_format']); $i++)
+	for ($i = 0; $i <= strlen($lang['Submit_date_format']); $i++)
 	{
 		switch ($lang['Submit_date_format'][$i])
 		{

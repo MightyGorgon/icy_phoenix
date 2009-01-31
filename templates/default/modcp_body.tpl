@@ -15,7 +15,7 @@ function toggle_check_all()
 </script>
 
 <form method="post" name="topic_ids" action="{S_MODCP_ACTION}">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOD_CP}&nbsp;{L_ENHANCED}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOD_CP}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row3 row-center" colspan="5" height="28">&nbsp;<span class="genmed"><b>{TOPIC_TYPES}</b></span></td>
 	<td class="row3 row-center" colspan="2" align="right"><span class="genmed">{TOPIC_COUNT}</span>&nbsp;</td>

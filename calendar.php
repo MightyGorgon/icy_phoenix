@@ -114,10 +114,7 @@ display_calendar('CALENDAR_MONTH', 0, $start_date, $fid);
 
 // system
 $s_hidden_fields = '';
-if (!isset($nav_separator))
-{
-	$nav_separator = '&nbsp;&raquo;&nbsp;';
-}
+$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 $template->assign_vars(array(
 	'NAV_SEPARATOR' => $nav_separator,
 	'S_ACTION' => append_sid('calendar.' . PHP_EXT),

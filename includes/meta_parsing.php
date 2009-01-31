@@ -22,13 +22,16 @@ if (isset($meta_post_id) && ($meta_post_id > 0))
 						AND f.forum_id = p.forum_id
 						AND c.cat_id = f.cat_id
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'posts_meta_', TOPICS_CACHE_FOLDER))
+	// Mighty Gorgon: shall we cache this as well? Maybe too many files... better avoid...
+	//if($result = $db->sql_query($sql, false, 'posts_meta_', TOPICS_CACHE_FOLDER))
+	if($result = $db->sql_query($sql))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
 			$meta_topic_id = $meta_row['topic_id'];
 			$meta_row['cat_title'] = strip_tags($meta_row['cat_title']);
 			$meta_row['forum_name'] = strip_tags($meta_row['forum_name']);
+			$meta_row['topic_title'] = strip_tags($meta_row['topic_title']);
 			/*
 			$meta_description = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
 			$page_title = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $page_title;
@@ -44,7 +47,8 @@ if (isset($meta_post_id) && ($meta_post_id > 0))
 						AND t.topic_first_post_id = m.post_id
 						AND m.word_id = w.word_id
 					LIMIT 20";
-	if($result = $db->sql_query($sql, false, 'topics_kw_', TOPICS_CACHE_FOLDER))
+	$result = CACHE_TOPICS_META ? $db->sql_query($sql, false, 'topics_kw_', TOPICS_CACHE_FOLDER) : $db->sql_query($sql);
+	if($result)
 	{
 		$meta_keywords = '';
 		while ($meta_row = $db->sql_fetchrow($result))
@@ -62,12 +66,14 @@ elseif (isset($meta_topic_id) && ($meta_topic_id > 0))
 						AND f.forum_id = t.forum_id
 						AND c.cat_id = f.cat_id
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'topics_meta_', TOPICS_CACHE_FOLDER))
+	$result = CACHE_TOPICS_META ? $db->sql_query($sql, false, 'topics_meta_', TOPICS_CACHE_FOLDER) : $db->sql_query($sql);
+	if($result)
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
 			$meta_row['cat_title'] = strip_tags($meta_row['cat_title']);
 			$meta_row['forum_name'] = strip_tags($meta_row['forum_name']);
+			$meta_row['topic_title'] = strip_tags($meta_row['topic_title']);
 			/*
 			$meta_description = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
 			$page_title = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $page_title;
@@ -83,7 +89,8 @@ elseif (isset($meta_topic_id) && ($meta_topic_id > 0))
 						AND t.topic_first_post_id = m.post_id
 						AND m.word_id = w.word_id
 					LIMIT 20";
-	if($result = $db->sql_query($sql, false, 'topics_kw_', TOPICS_CACHE_FOLDER))
+	$result = CACHE_TOPICS_META ? $db->sql_query($sql, false, 'topics_kw_', TOPICS_CACHE_FOLDER) : $db->sql_query($sql);
+	if($result)
 	{
 		$meta_keywords = '';
 		while ($meta_row = $db->sql_fetchrow($result))
@@ -100,7 +107,7 @@ elseif (isset($meta_forum_id) && ($meta_forum_id > 0))
 					WHERE f.forum_id = '" . $meta_forum_id . "'
 						AND c.cat_id = f.cat_id
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'forums_meta_', TOPICS_CACHE_FOLDER))
+	if($result = $db->sql_query($sql, false, 'forums_meta_', FORUMS_CACHE_FOLDER))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
@@ -124,7 +131,7 @@ elseif (isset($meta_cat_id) && ($meta_cat_id > 0))
 					FROM " . CATEGORIES_TABLE . "
 					WHERE cat_id = '" . $meta_cat_id . "'
 					LIMIT 1";
-	if($result = $db->sql_query($sql, false, 'cats_meta_', TOPICS_CACHE_FOLDER))
+	if($result = $db->sql_query($sql, false, 'forums_cats_meta_', FORUMS_CACHE_FOLDER))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
@@ -148,5 +155,12 @@ else
 	$meta_keywords = '';
 	*/
 }
+
+// Mighty Gorgon: shall we UTF8 decode also page_title and metas?
+/*
+$page_title = ip_utf8_decode($page_title);
+$meta_description = ip_utf8_decode($meta_description);
+$meta_keywords = ip_utf8_decode($meta_keywords);
+*/
 
 ?>

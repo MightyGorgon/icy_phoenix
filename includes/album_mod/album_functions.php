@@ -896,7 +896,7 @@ function album_comment_notify($pic_id)
 	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
 					WHERE ban_userid <> 0
 					ORDER BY ban_userid ASC";
-	if (!($result = $db->sql_query($sql, false, 'ban_')))
+	if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 	}

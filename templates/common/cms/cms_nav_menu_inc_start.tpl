@@ -1,6 +1,6 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td id="var_width" width="220" valign="top" align="left" style="padding-right:7px;">
+	<td id="var_width" width="220" valign="top" align="left" style="padding-right:7px;" nowrap="nowrap">
 		<div id="quick_links_cms2" style="padding-top:5px;display:none;margin-left:0px;text-align:left;position:relative;float:left;"><a href="javascript:ShowHide('quick_links_cms','quick_links_cms2','quick_links_cms');setWidth(220);" title="{L_CMS}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CMS}" /></a></div>
 		<div id="quick_links_cms">
 		<script type="text/javascript">
@@ -81,6 +81,10 @@
 					<tr>
 						<td width="8" align="left" valign="middle">{IMG_NAV_MENU_SEP}</td>
 						<td class="genmed" align="left"><a href="{U_CMS_PAGES_PERMISSIONS}">{L_CMS_PAGES_PERMISSIONS}</a></td>
+					</tr>
+					<tr>
+						<td width="8" align="left" valign="middle">{IMG_NAV_MENU_SEP}</td>
+						<td class="genmed" align="left"><a href="{U_CMS_ADS}">{L_CMS_ADS}</a></td>
 					</tr>
 					</table>
 				</div>

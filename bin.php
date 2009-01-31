@@ -221,8 +221,8 @@ if ($confirm)
 			}
 
 			// Sync the forum indexes
-			$db->clear_cache('posts_');
-			$db->clear_cache('forums_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
+			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			sync('forum', $new_forum_id);
 			sync('forum', $old_forum_id);
 

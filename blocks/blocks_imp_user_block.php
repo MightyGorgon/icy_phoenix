@@ -25,14 +25,14 @@ if(!function_exists('imp_user_block_block_func'))
 	function imp_user_block_block_func()
 	{
 		global $userdata, $template, $board_config, $lang, $db;
-		include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
-		/*if($userdata['session_logged_in'])
+		/*
+		if($userdata['session_logged_in'])
 		{
-				$sql = "SELECT COUNT(post_id) as total
-					FROM " . POSTS_TABLE . "
-					WHERE post_time >= " . $userdata['user_lastvisit'] . " AND poster_id <> " . $userdata['user_id'] . " AND post_time < " . time();
-					$result = $db->sql_query($sql);
+			$sql = "SELECT COUNT(post_id) as total
+				FROM " . POSTS_TABLE . "
+				WHERE post_time >= " . $userdata['user_lastvisit'] . " AND poster_id <> " . $userdata['user_id'] . " AND post_time < " . time();
+				$result = $db->sql_query($sql);
 			if($result)
 			{
 				$row = $db->sql_fetchrow($result);
@@ -40,26 +40,16 @@ if(!function_exists('imp_user_block_block_func'))
 			}
 		}*/
 
-		$avatar_img = user_get_avatar($userdata['user_id'], $userdata['user_avatar'], $userdata['user_avatar_type'], $userdata['user_allowavatar']);
-
 		// Check For Anonymous User
 		if ($userdata['user_id'] != ANONYMOUS)
 		{
-				$username = colorize_username($userdata['user_id']);
-		}
-		else
-		{
-			$username = $lang['Guest'];
-			$avatar_img = '<img src="' . $board_config['default_avatar_guests_url'] . '" alt="" />';
-		}
-		if ($userdata['user_id'] != '-1')
-		{
-			$userdata['username'] = colorize_username($userdata['user_id']);
-			$name_link =  $userdata['username'];
+			$name_link = colorize_username($userdata['user_id'], $userdata['username'], $userdata['user_color'], $userdata['user_active']);
+			$avatar_img = user_get_avatar($userdata['user_id'], $userdata['user_level'], $userdata['user_avatar'], $userdata['user_avatar_type'], $userdata['user_allowavatar']);
 		}
 		else
 		{
 			$name_link = $lang['Guest'];
+			$avatar_img = '<img src="' . $board_config['default_avatar_guests_url'] . '" alt="" />';
 		}
 
 		$template->assign_vars(array(

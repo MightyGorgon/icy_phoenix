@@ -21,6 +21,117 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
+// FUNCTIONS - BEGIN
+if (!function_exists('dateformatselect'))
+{
+	function dateformatselect($default, $timezone, $select_name = 'dateformat')
+	{
+		global $board_config;
+
+		//---------------------------------------------------
+		$date_formats[] = 'Y/m/d - H:i';
+		$date_formats[] = 'Y.m.d - H:i';
+		$date_formats[] = 'd/m/Y - H:i';
+		$date_formats[] = 'd.m.Y - H:i';
+		//---------------------------------------------------
+		$date_formats[] = 'F d Y, H:i';
+		$date_formats[] = 'F d Y, G:i';
+		$date_formats[] = 'F d Y, h:i A';
+		$date_formats[] = 'F d Y';
+		//---------------------------------------------------
+		$date_formats[] = 'd F Y';
+		$date_formats[] = 'd F Y, H:i';
+		$date_formats[] = 'd F Y, G:i';
+		$date_formats[] = 'd F Y, h:i A';
+		//---------------------------------------------------
+		$date_formats[] = 'l, d F Y';
+		$date_formats[] = 'l, d F Y, H:i';
+		$date_formats[] = 'l, d F Y, G:i';
+		$date_formats[] = 'l, d F Y, h:i A';
+		//---------------------------------------------------
+		$date_formats[] = 'D, M d Y';
+		$date_formats[] = 'D, M d Y, H:i';
+		$date_formats[] = 'D, M d Y, G:i';
+		$date_formats[] = 'D, M d Y, h:i A';
+		//---------------------------------------------------
+		$date_formats[] = 'D d M';
+		$date_formats[] = 'D d M, Y H:i';
+		$date_formats[] = 'D d M, Y G:i';
+		$date_formats[] = 'D d M, Y h:i A';
+		//---------------------------------------------------
+		$date_formats[] = 'd/m/Y';
+		$date_formats[] = 'd/m/Y H:i';
+		$date_formats[] = 'd/m/Y G:i';
+		$date_formats[] = 'd/m/Y h:i A';
+		//---------------------------------------------------
+		$date_formats[] = 'm/d/Y';
+		$date_formats[] = 'm/d/Y H:i';
+		$date_formats[] = 'm/d/Y G:i';
+		$date_formats[] = 'm/d/Y h:i A';
+		//---------------------------------------------------
+		$date_formats[] = 'm.d.Y';
+		$date_formats[] = 'm.d.Y H:i';
+		$date_formats[] = 'm.d.Y G:i';
+		$date_formats[] = 'm.d.Y h:i A';
+		//---------------------------------------------------
+		$date_formats[] = 'd.m.Y';
+		$date_formats[] = 'd.m.Y H:i';
+		$date_formats[] = 'd.m.Y G:i';
+		$date_formats[] = 'd.m.Y h:i A';
+		//---------------------------------------------------
+
+		// Include any valid PHP date format strings here, in your preferred order
+		/*
+		$date_formats = array(
+			'D d.M, Y',
+			'D d.M, Y g:i a',
+			'D d.M, Y H:i',
+			'D M d, Y',
+			'D M d, Y g:i a',
+			'D M d, Y H:i',
+			'n.F Y',
+			'n.F Y, g:i a',
+			'n.F Y, H:i',
+			'F jS Y',
+			'F jS Y, g:i a',
+			'F jS Y, H:i',
+			'j/n/Y',
+			'j/n/Y, g:i a',
+			'j/n/Y, H:i',
+			'n/j/Y',
+			'n/j/Y, g:i a',
+			'n/j/Y, H:i',
+			'Y-m-d',
+			'Y-m-d, g:i a',
+			'Y-m-d, H:i'
+		);
+		*/
+
+		if (!isset($timezone))
+		{
+			$timezone == $board_config['board_timezone'];
+		}
+		$now = time() + (3600 * $timezone);
+
+		$df_select = '<select name="' . $select_name . '">';
+		for ($i = 0; $i < count($date_formats); $i++)
+		{
+			$format = $date_formats[$i];
+			$display = date($format, $now);
+			$df_select .= '<option value="' . $format . '"';
+			if (isset($default) && ($default == $format))
+			{
+				$df_select .= ' selected';
+			}
+			$df_select .= '>' . $display . '</option>';
+		}
+		$df_select .= '</select>';
+
+		return $df_select;
+	}
+}
+// FUNCTIONS - END
+
 $unhtml_specialchars_match = array('#>#', '#<#', '#"#', '#&#');
 $unhtml_specialchars_replace = array('>', '<', '"', '&');
 
@@ -302,111 +413,5 @@ $template->assign_vars(array(
 $template->pparse('body');
 
 include(IP_ROOT_PATH . ADM .'/page_footer_admin.' . PHP_EXT);
-
-function dateformatselect($default, $timezone, $select_name = 'dateformat')
-{
-	global $board_config;
-
-	//---------------------------------------------------
-	$date_formats[] = 'Y/m/d - H:i';
-	$date_formats[] = 'Y.m.d - H:i';
-	$date_formats[] = 'd/m/Y - H:i';
-	$date_formats[] = 'd.m.Y - H:i';
-	//---------------------------------------------------
-	$date_formats[] = 'F d Y, H:i';
-	$date_formats[] = 'F d Y, G:i';
-	$date_formats[] = 'F d Y, h:i A';
-	$date_formats[] = 'F d Y';
-	//---------------------------------------------------
-	$date_formats[] = 'd F Y';
-	$date_formats[] = 'd F Y, H:i';
-	$date_formats[] = 'd F Y, G:i';
-	$date_formats[] = 'd F Y, h:i A';
-	//---------------------------------------------------
-	$date_formats[] = 'l, d F Y';
-	$date_formats[] = 'l, d F Y, H:i';
-	$date_formats[] = 'l, d F Y, G:i';
-	$date_formats[] = 'l, d F Y, h:i A';
-	//---------------------------------------------------
-	$date_formats[] = 'D, M d Y';
-	$date_formats[] = 'D, M d Y, H:i';
-	$date_formats[] = 'D, M d Y, G:i';
-	$date_formats[] = 'D, M d Y, h:i A';
-	//---------------------------------------------------
-	$date_formats[] = 'D d M';
-	$date_formats[] = 'D d M, Y H:i';
-	$date_formats[] = 'D d M, Y G:i';
-	$date_formats[] = 'D d M, Y h:i A';
-	//---------------------------------------------------
-	$date_formats[] = 'd/m/Y';
-	$date_formats[] = 'd/m/Y H:i';
-	$date_formats[] = 'd/m/Y G:i';
-	$date_formats[] = 'd/m/Y h:i A';
-	//---------------------------------------------------
-	$date_formats[] = 'm/d/Y';
-	$date_formats[] = 'm/d/Y H:i';
-	$date_formats[] = 'm/d/Y G:i';
-	$date_formats[] = 'm/d/Y h:i A';
-	//---------------------------------------------------
-	$date_formats[] = 'm.d.Y';
-	$date_formats[] = 'm.d.Y H:i';
-	$date_formats[] = 'm.d.Y G:i';
-	$date_formats[] = 'm.d.Y h:i A';
-	//---------------------------------------------------
-	$date_formats[] = 'd.m.Y';
-	$date_formats[] = 'd.m.Y H:i';
-	$date_formats[] = 'd.m.Y G:i';
-	$date_formats[] = 'd.m.Y h:i A';
-	//---------------------------------------------------
-
-	// Include any valid PHP date format strings here, in your preferred order
-	/*
-	$date_formats = array(
-		'D d.M, Y',
-		'D d.M, Y g:i a',
-		'D d.M, Y H:i',
-		'D M d, Y',
-		'D M d, Y g:i a',
-		'D M d, Y H:i',
-		'n.F Y',
-		'n.F Y, g:i a',
-		'n.F Y, H:i',
-		'F jS Y',
-		'F jS Y, g:i a',
-		'F jS Y, H:i',
-		'j/n/Y',
-		'j/n/Y, g:i a',
-		'j/n/Y, H:i',
-		'n/j/Y',
-		'n/j/Y, g:i a',
-		'n/j/Y, H:i',
-		'Y-m-d',
-		'Y-m-d, g:i a',
-		'Y-m-d, H:i'
-	);
-	*/
-
-	if (!isset($timezone))
-	{
-		$timezone == $board_config['board_timezone'];
-	}
-	$now = time() + (3600 * $timezone);
-
-	$df_select = '<select name="' . $select_name . '">';
-	for ($i = 0; $i < count($date_formats); $i++)
-	{
-		$format = $date_formats[$i];
-		$display = date($format, $now);
-		$df_select .= '<option value="' . $format . '"';
-		if (isset($default) && ($default == $format))
-		{
-			$df_select .= ' selected';
-		}
-		$df_select .= '>' . $display . '</option>';
-	}
-	$df_select .= '</select>';
-
-	return $df_select;
-}
 
 ?>

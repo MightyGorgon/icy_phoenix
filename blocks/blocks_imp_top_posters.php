@@ -26,69 +26,34 @@ if(!function_exists('imp_top_posters_func'))
 	{
 		global $lang, $template, $cms_config_vars, $block_id, $board_config, $db;
 
-		$show_admin = true;
-		$show_mod = true;
-		if (($show_admin == true) && ($show_mod == true))
-		{
-			$sql_level = "";
-		}
-		elseif ($show_admin == true)
-		{
-			$sql_level = "AND u.user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
-		}
-		elseif ($show_mod == true)
-		{
-			$sql_level = "AND u.user_level IN (" . USER . ", " . MOD . ")";
-		}
-		else
-		{
-			$sql_level = "AND u.user_level = " . USER;
-		}
-		$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_level
-			FROM " . USERS_TABLE . " u
-			WHERE (u.user_id <> " . ANONYMOUS . ")
-			" . $sql_level . "
-			ORDER BY u.user_posts DESC
-			LIMIT " . $cms_config_vars['md_total_poster'][$block_id];
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
-		}
+		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+
+		$top_posters_n = (intval($cms_config_vars['md_total_poster'][$block_id]) ? $cms_config_vars['md_total_poster'][$block_id] : 10);
+		$show_admins = true;
+		$show_mods = true;
+		$top_posters_array = top_posters($top_posters_n, $show_admins, $show_mods, true);
 
 		$show_avatars = ($cms_config_vars['md_show_avatars'][$block_id] == true) ? true : false;
 		$template->assign_var('S_SHOW_AVATARS', $show_avatars);
 
-		if ($row = $db->sql_fetchrow($result))
+		for ($i = 0; $i < count($top_posters_array); $i++)
 		{
-			$i = 0;
-			do
-			{
-				$username2 = $row['username'];
-				$row['username'] = colorize_username($row['user_id']);
-				$username = $row['username'];
-				$user_id = $row['user_id'];
-				$posts = ($row['user_posts']) ? $row['user_posts'] : 0;
-				$poster_avatar = user_get_avatar($row['user_id'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
+			$username2 = $top_posters_array[$i]['username'];
+			$username = colorize_username($top_posters_array[$i]['user_id'], $top_posters_array[$i]['username'], $top_posters_array[$i]['user_color'], $top_posters_array[$i]['user_active']);
+			$user_id = $top_posters_array[$i]['user_id'];
+			$posts = ($top_posters_array[$i]['user_posts']) ? $top_posters_array[$i]['user_posts'] : 0;
+			$poster_avatar = user_get_avatar($top_posters_array[$i]['user_id'], $top_posters_array[$i]['user_level'], $top_posters_array[$i]['user_avatar'], $top_posters_array[$i]['user_avatar_type'], $top_posters_array[$i]['user_allowavatar']);
 
-				$template->assign_block_vars('topposter', array(
-					'USERNAME' => $username,
-					'POSTS' => $posts,
-					'AVATAR_IMG' => $poster_avatar,
-					'U_VIEWPOSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
-					'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(utf8_decode($username2)) . '&amp;showresults=posts')
-					//'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . htmlspecialchars($username2) . '&amp;showresults=posts')
-					)
-				);
-				$i++;
-			}
-			while ($row = $db->sql_fetchrow($result));
+			$template->assign_block_vars('topposter', array(
+				'USERNAME' => $username,
+				'POSTS' => $posts,
+				'AVATAR_IMG' => $poster_avatar,
+				'U_VIEWPOSTER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
+				'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode(ip_utf8_decode($username2)) . '&amp;showresults=posts')
+				//'U_VIEWPOSTS' => append_sid(SEARCH_MG . '?search_author=' . htmlspecialchars($username2) . '&amp;showresults=posts')
+				)
+			);
 		}
-		$db->sql_freeresult($result);
-
-		$template->assign_vars(array(
-			'L_POSTS' => $lang['Posts']
-			)
-		);
 	}
 }
 

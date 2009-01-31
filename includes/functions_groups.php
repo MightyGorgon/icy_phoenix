@@ -13,9 +13,14 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('RGB_COLOR_LIST', 'aqua,black,blue,brown,cadetblue,chocolate,crimson,cyan,darkblue,darkgreen,darkgrey,darkorchid,darkred,deepskyblue,fuchsia,gold,gray,green,indigo,lightgrey,lime,maroon,navy,olive,orange,peachpuff,purple,red,seagreen,silver,teal,violet,white,yellow');
+/**
+ * Create a profile link for the user with his own color
+*/
+// Mighty Gorgon: OLD COLORIZE FUNCTION - BEGIN
+/*
 
-function colorize_username($user_id, $no_profile = false, $get_only_color_style = false)
+//define('COLORIZE_CACHE_REFRESH', 2592000); // Caching time for user colors cache (Seconds) (60*60*24=86400) (86400*30=2592000)
+function groups_colorize_username($user_id, $no_profile = false, $get_only_color_style = false)
 {
 	global $board_config, $db;
 
@@ -23,7 +28,7 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 	if($user_id != ANONYMOUS)
 	{
 		// Change following two variables if you need to:
-		$cache_update = COLORIZE_CACHE_REFRESH; // set in constants
+		$cache_update = 2592000;
 		$cache_file = USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . PHP_EXT;
 		$update_cache = true;
 
@@ -40,7 +45,8 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 		if($update_cache == true)
 		{
 			// Get the user info and see if they are assigned a color_group //
-			$sql = "SELECT u.user_color, u.user_color_group, u.username, u.user_active FROM " . USERS_TABLE . " u
+			$sql = "SELECT u.username, u.user_active, u.user_color, u.user_color_group
+				FROM " . USERS_TABLE . " u
 				WHERE u.user_id = '" . $user_id . "'
 					LIMIT 1";
 			$result = $db->sql_query($sql);
@@ -55,7 +61,7 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 			{
 				if($row['user_color'] != '')
 				{
-					$usercolor = check_valid_color_mg($row['user_color']);
+					$usercolor = check_valid_color($row['user_color']);
 				}
 				elseif($row['user_color_group'] != 0)
 				{
@@ -64,7 +70,7 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 							LIMIT 1";
 					$result_cg = $db->sql_query($sql_cg);
 					$row_cg = $db->sql_fetchrow($result_cg);
-					$usercolor = check_valid_color_mg($row_cg['group_color']);
+					$usercolor = check_valid_color($row_cg['group_color']);
 				}
 				else
 				{
@@ -86,7 +92,7 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 
 		if ($no_profile == false)
 		{
-			$user_link = '<a href="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" ' . $style_color .'>' . $username . '</a>';
+			$user_link = '<a href="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" ' . $style_color . '>' . $username . '</a>';
 		}
 		else
 		{
@@ -109,51 +115,12 @@ function colorize_username($user_id, $no_profile = false, $get_only_color_style 
 		return false;
 	}
 }
+*/
+// Mighty Gorgon: OLD COLORIZE FUNCTION - END
 
 /**
-* @return valid color or false
-* @param color as string
-* @desc Checks for a valid color string in #rrggbb, rrggbb, #rgb, rgb, rgb(rrr,ggg,bbb) format or color name defined in constant RGB_COLOR_LIST.
+ * Count all users in a group
 */
-function check_valid_color_mg($color)
-{
-	$color = strtolower($color);
-	// hex colors
-	if (preg_match('/#[0-9,a-f]{6}/', $color) || preg_match('/#[0-9,a-f]{3}/', $color))
-	{
-		return $color;
-	}
-	// hex colors
-	if (preg_match('/[0-9,a-f]{6}/', $color) || preg_match('/[0-9,a-f]{3}/', $color))
-	{
-		return '#' . $color;
-	}
-	// rgb color
-	if(substr($color, 0, 4) === 'rgb(' && preg_match('/^rgb\([0-9]+,[0-9]+,[0-9]+\)$/', $color))
-	{
-		$colors = explode(',', substr($color, 4, strlen($color) - 5));
-		for($i = 0; $i < 3; $i++)
-		{
-			if($colors[$i] > 255)
-			{
-				return false;
-			}
-		}
-		return sprintf('#%02X%02X%02X', $colors[0], $colors[1], $colors[2]);
-	}
-	// text color in array
-	if (in_array($color, explode(',', RGB_COLOR_LIST)))
-	{
-		return $color;
-	}
-	// text color
-	if(preg_match('/^[a-z]+$/', $color))
-	{
-		return $color;
-	}
-	return false;
-}
-
 function count_users_in_group($group_id)
 {
 	global $db;
@@ -170,10 +137,13 @@ function count_users_in_group($group_id)
 	return $counting_list;
 }
 
+/**
+ * Count all active users
+*/
 function count_active_users()
 {
 	global $db;
-	$sql = "SELECT SUM(user_active=1) as active_members
+	$sql = "SELECT SUM(user_active = 1) as active_members
 		FROM " . USERS_TABLE;
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -238,7 +208,7 @@ function update_all_users_colors_ranks($group_id)
  * @param => user_color_group
  * @return => true on success
 */
-function update_user_color($user_id, $user_color, $user_color_group = false)
+function update_user_color($user_id, $user_color, $user_color_group = false, $force_color = false, $force_group_color = false)
 {
 	global $db, $board_config;
 	$sql = "SELECT u.user_color, u.user_color_group
@@ -255,92 +225,45 @@ function update_user_color($user_id, $user_color, $user_color_group = false)
 	$old_user_color_group = $row['user_color_group'];
 	$db->sql_freeresult($result);
 
-	if (($old_user_color == '') || ($old_user_color == $board_config['active_users_color']))
+	$exec_update = false;
+	$user_color_sql = '';
+
+	$user_color = check_valid_color($user_color);
+	$user_color = ($user_color != false) ? $user_color : $board_config['active_users_color'];
+
+	if ($force_color || ($old_user_color == '') || ($old_user_color == $board_config['active_users_color']) || ($old_user_color_group == '0'))
 	{
-		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color = '" . $user_color . "'
-			WHERE user_id = '" . $user_id . "'";
-		if (!$db->sql_query($sql_users))
-		{
-			message_die(GENERAL_ERROR, 'Could not update user color', '', __LINE__, __FILE__, $sql_users);
-		}
+		$exec_update = true;
+		$user_color_sql .= (($user_color_sql == '') ? '' : ', ') . ('user_color = \'' . $user_color . '\'');
 	}
 
-	if (($old_user_color_group == '0') && ($user_color_group != false))
+	$user_color_group_sql = '';
+	// 0 is different from false...
+	if ($user_color_group === 0)
 	{
-		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color_group = '" . $user_color_group . "'
-			WHERE user_id = '" . $user_id . "'";
-		if (!$db->sql_query($sql_users))
-		{
-			message_die(GENERAL_ERROR, 'Could not update user color group', '', __LINE__, __FILE__, $sql_users);
-		}
+		$exec_update = true;
+		$user_color_sql .= (($user_color_sql == '') ? '' : ', ') . ('user_color_group = \'0\'');
+	}
+	elseif ($force_group_color || (($old_user_color_group == '0') && ($user_color_group !== false)))
+	{
+		$exec_update = true;
+		$new_group_color = get_group_color($user_color_group);
+		$user_color = ($new_group_color != false) ? $new_group_color : $user_color;
+		$user_color_sql .= ($new_group_color != false) ? ((($user_color_sql == '') ? '' : ', ') . ('user_color_group = \'' . $user_color_group . '\'')) : '';
 	}
 
-	clear_user_color_cache($user_id);
-	return true;
-}
-
-/**
- * Clear user color and group.
- *
- * @param => user_id
- * @param => user_color
- * @param => user_color_group
- * @return => true on success
-*/
-function clear_user_color($user_id, $user_color, $user_color_group = false)
-{
-	global $db, $board_config;
-	$sql = "SELECT u.user_color, u.user_color_group
-					FROM " . USERS_TABLE . " as u
-					WHERE u.user_id = '" . $user_id . "'
-					LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain group color', '', __LINE__, __FILE__, $sql);
-	}
-
-	$row = $db->sql_fetchrow($result);
-	$old_user_color = $row['user_color'];
-	$old_user_color_group = $row['user_color_group'];
-	$db->sql_freeresult($result);
-
-	if ($old_user_color == $user_color)
+	if ($exec_update)
 	{
 		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color = '" . $board_config['active_users_color'] . "'
-			WHERE user_id = '" . $user_id . "'";
-		if (!$db->sql_query($sql_users))
-		{
-			message_die(GENERAL_ERROR, 'Could not update user color', '', __LINE__, __FILE__, $sql_users);
-		}
-	}
-
-	if (($old_user_color_group == $user_color_group) && ($user_color_group != false))
-	{
-		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color_group = '0'
+			SET " . $user_color_sql . "
 			WHERE user_id = '" . $user_id . "'";
 		if (!$db->sql_query($sql_users))
 		{
 			message_die(GENERAL_ERROR, 'Could not update user color group', '', __LINE__, __FILE__, $sql_users);
 		}
+
+		clear_user_color_cache($user_id);
 	}
-
-	clear_user_color_cache($user_id);
-	return true;
-}
-
-/**
- * Clear user color cache.
- *
- * @param => user_id
- * @return => true on success
-*/
-function clear_user_color_cache($user_id)
-{
-	@unlink(USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . PHP_EXT);
 	return true;
 }
 
@@ -371,7 +294,7 @@ function build_groups_list_array()
 		$groups_list[$i]['group_id'] = $row['group_id'];
 		$groups_list[$i]['group_name'] = $row['group_name'];
 		$groups_list[$i]['group_url'] = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']);
-		$groups_list[$i]['group_color'] = check_valid_color_mg($row['group_color']);
+		$groups_list[$i]['group_color'] = check_valid_color($row['group_color']);
 		$groups_list[$i]['group_color_style'] = ($groups_list[$i]['group_color'] ? ' style="color:' . $row['group_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"');
 	}
 	$db->sql_freeresult($result);
@@ -399,7 +322,7 @@ function build_groups_list_template()
 		WHERE group_single_user <> " . TRUE . "
 			AND group_legend = 1
 		ORDER BY group_legend_order ASC, group_name ASC";
-	if (!($result = $db->sql_query($sql, false, 'groups_')))
+	if (!($result = $db->sql_query($sql, false, 'groups_', USERS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain group list', '', __LINE__, __FILE__, $sql);
 	}
@@ -408,16 +331,16 @@ function build_groups_list_template()
 	$groups_list = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color_mg($row['group_color']) ? ('color:' . check_valid_color_mg($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
+		$groups_list .= '&nbsp;<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color($row['group_color']) ? ('color:' . check_valid_color($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
 	}
 	$db->sql_freeresult($result);
 	if ($board_config['active_users_legend'] == true)
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid('memberlist.' . PHP_EXT) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color_mg($board_config['active_users_color']) ? ('color:' . check_valid_color_mg($board_config['active_users_color']) . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
+		$groups_list .= '&nbsp;<a href="' . append_sid('memberlist.' . PHP_EXT) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color($board_config['active_users_color']) ? ('color:' . check_valid_color($board_config['active_users_color']) . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
 	}
 	if ($board_config['bots_legend'] == true)
 	{
-		$groups_list .= '&nbsp;<span style="font-weight:bold;text-decoration:none;' . (check_valid_color_mg($board_config['bots_color']) ? ('color:' . check_valid_color_mg($board_config['bots_color']) . ';') : '') . '">' . $lang['Bots_Group'] . '</span>,';
+		$groups_list .= '&nbsp;<span style="font-weight:bold;text-decoration:none;' . (check_valid_color($board_config['bots_color']) ? ('color:' . check_valid_color($board_config['bots_color']) . ';') : '') . '">' . $lang['Bots_Group'] . '</span>,';
 	}
 	if ($groups_list != '')
 	{

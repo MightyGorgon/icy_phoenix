@@ -52,7 +52,7 @@ function &get_section_usage_row(&$s_usage_rows, $section_id)
 {
 	$row = NULL;
 	for ($i = 0; $i < count($s_usage_rows); $i++) {
-		if ( $s_usage_rows[$i]['section_id'] == $section_id )
+		if ($s_usage_rows[$i]['section_id'] == $section_id)
 		{
 			$row = & $s_usage_rows[$i];
 			break;
@@ -82,7 +82,7 @@ function &get_section_usage_rows(&$f_usage_rows, &$f_topic_starts_rows)
 		 * and reset count variables. Otherwise, simply update section data */
 		$cur_section_id = $f_usage_rows[$i]['cat_id'];
 
-		if ( $cur_section_id != $last_section_id )
+		if ($cur_section_id != $last_section_id)
 		{
 			$section_rows[$j++] = array(
 				'section_id' => $last_section_id,
@@ -121,7 +121,7 @@ function &get_section_usage_rows(&$f_usage_rows, &$f_topic_starts_rows)
  ******************************************************************************/
 function get_scale_suffix($scale_factor)
 {
-	if ( $scale_factor != 1 )
+	if ($scale_factor != 1)
 	{
 		return "<br /><font size=\"-2\">x $scale_factor</font>";
 	}
@@ -139,15 +139,15 @@ function get_unpruned_post_count($user_id)
 {
 	global $db;
 
-	$sql = "SELECT DISTINCT p.poster_id, COUNT( p.poster_id ) AS post_count FROM " . POSTS_TABLE . " AS p WHERE p.poster_id = $user_id GROUP BY p.poster_id";
+	$sql = "SELECT DISTINCT p.poster_id, COUNT(p.poster_id) AS post_count FROM " . POSTS_TABLE . " AS p WHERE p.poster_id = $user_id GROUP BY p.poster_id";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Function get_unpruned_post_count(): Could not obtain unpruned post count information.', '', __LINE__, __FILE__, $sql);
 	}
 
 	$post_count = 0;
-	if ( $row = $db->sql_fetchrow($result) )
+	if ($row = $db->sql_fetchrow($result))
 	{
 		$post_count = $row['post_count'];
 	}
@@ -166,14 +166,14 @@ function &get_topics_watched_rows($user_id)
 {
 	global $db;
 
-	$sql = 'SELECT t.forum_id, w.user_id, count( w.topic_id )  AS watch_count FROM ' . TOPICS_WATCH_TABLE . ' AS w INNER  JOIN ' . TOPICS_TABLE . " AS t ON w.topic_id = t.topic_id GROUP  BY w.user_id, t.forum_id HAVING ( w.user_id = $user_id ) ORDER  BY t.forum_id";
+	$sql = 'SELECT t.forum_id, w.user_id, count(w.topic_id)  AS watch_count FROM ' . TOPICS_WATCH_TABLE . ' AS w INNER  JOIN ' . TOPICS_TABLE . " AS t ON w.topic_id = t.topic_id GROUP  BY w.user_id, t.forum_id HAVING (w.user_id = $user_id) ORDER  BY t.forum_id";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Function get_topics_watched_rows(): Could not obtain topics watched information.', '', __LINE__, __FILE__, $sql);
 	}
 
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$rows[] = $row;
 	}
@@ -193,7 +193,7 @@ function &get_forum_categories_rows($show_all_forums)
 {
 	global $db;
 
-	if( $show_all_forums )
+	if($show_all_forums)
 	{
 		$sql = 'SELECT c.cat_id, c.cat_title, f.forum_id, f.forum_name, 0 AS forum_post_count, 0 AS forum_post_pct FROM ' . FORUMS_TABLE . ' AS f INNER JOIN ' . CATEGORIES_TABLE . ' AS c ON f.cat_id = c.cat_id ORDER BY c.cat_order, f.forum_order';
 	}
@@ -202,12 +202,12 @@ function &get_forum_categories_rows($show_all_forums)
 		$sql = 'SELECT c.cat_id, c.cat_title, f.forum_id, f.forum_name FROM ' . FORUMS_TABLE . ' AS f INNER JOIN ' . CATEGORIES_TABLE . ' AS c ON f.cat_id = c.cat_id ORDER  BY c.cat_order, f.forum_order';
 	}
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Function get_forum_categories_rows(): Could not obtain category/forum information.', '', __LINE__, __FILE__, $sql);
 	}
 
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$rows[] = $row;
 	}
@@ -234,14 +234,14 @@ function &get_forum_usage_rows($user_id, $user_posts, $show_all_forums)
 	$topics_watched_rows = & get_topics_watched_rows($user_id);
 
 	/* Next, retrieve user's forum usage info */
-	$sql = "SELECT f.forum_id, f.forum_name, p.poster_id, COUNT(p.poster_id) AS forum_post_count, (COUNT(p.poster_id) / $user_posts)*100 AS forum_post_pct FROM " . POSTS_TABLE . " AS p INNER JOIN " . FORUMS_TABLE . " AS f ON f.forum_id = p.forum_id GROUP BY p.forum_id, p.poster_id HAVING ( p.poster_id = $user_id ) ORDER BY f.forum_id";
+	$sql = "SELECT f.forum_id, f.forum_name, p.poster_id, COUNT(p.poster_id) AS forum_post_count, (COUNT(p.poster_id) / $user_posts)*100 AS forum_post_pct FROM " . POSTS_TABLE . " AS p INNER JOIN " . FORUMS_TABLE . " AS f ON f.forum_id = p.forum_id GROUP BY p.forum_id, p.poster_id HAVING (p.poster_id = $user_id) ORDER BY f.forum_id";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Function get_forum_usage_rows(): Could not obtain forum usage data information.', '', __LINE__, __FILE__, $sql);
 	}
 
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$rows[] = $row;
 	}
@@ -249,14 +249,14 @@ function &get_forum_usage_rows($user_id, $user_posts, $show_all_forums)
 	$db->sql_freeresult($result);
 	unset($sql);
 
-	if ( $show_all_forums )
+	if ($show_all_forums)
 	{
 		/* Merge the forum usage info with the forum categories info. */
 		for ($i = 0; $i < count($forum_categories_rows); $i++)
 		{
 			for ($j = 0; $j < count($rows); $j++)
 			{
-				if ( $forum_categories_rows[$i]['forum_id'] == $rows[$j]['forum_id'] )
+				if ($forum_categories_rows[$i]['forum_id'] == $rows[$j]['forum_id'])
 				{
 					$forum_categories_rows[$i] = array_merge($forum_categories_rows[$i], $rows[$j]);
 					break;
@@ -268,7 +268,7 @@ function &get_forum_usage_rows($user_id, $user_posts, $show_all_forums)
 		{
 			for ($j = 0; $j < count($forum_categories_rows); $j++)
 			{
-				if ( $topics_watched_rows[$i]['forum_id'] == $forum_categories_rows[$j]['forum_id'] )
+				if ($topics_watched_rows[$i]['forum_id'] == $forum_categories_rows[$j]['forum_id'])
 				{
 					$forum_categories_rows[$j] = array_merge($forum_categories_rows[$j], $topics_watched_rows[$i]);
 					break;
@@ -287,7 +287,7 @@ function &get_forum_usage_rows($user_id, $user_posts, $show_all_forums)
 		for ($i = 0; $i < count($forum_categories_rows); $i++)
 		{
 			for ($j = 0; $j < count($rows); $j++)  {
-				if ( $forum_categories_rows[$i]['forum_id'] == $rows[$j]['forum_id'] ) {
+				if ($forum_categories_rows[$i]['forum_id'] == $rows[$j]['forum_id']) {
 					$return_rows[$h++] = array_merge($forum_categories_rows[$i], $rows[$j]);
 					break;
 				}
@@ -298,7 +298,7 @@ function &get_forum_usage_rows($user_id, $user_posts, $show_all_forums)
 		{
 			for ($j = 0; $j < count($return_rows); $j++)
 			{
-				if ( $topics_watched_rows[$i]['forum_id'] == $return_rows[$j]['forum_id'] )
+				if ($topics_watched_rows[$i]['forum_id'] == $return_rows[$j]['forum_id'])
 				{
 					$return_rows[$j] = array_merge($return_rows[$j], $topics_watched_rows[$i]);
 					break;
@@ -321,12 +321,12 @@ function &get_forum_topic_starts_rows($user_id)
 	/* Retrieve forum topic start data from database */
 	$sql = 'SELECT COUNT(topic_id) AS forum_topic_starts, forum_id, topic_poster FROM  ' . TOPICS_TABLE . " GROUP BY forum_id, topic_poster HAVING (topic_poster = $user_id)";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Function get_forum_topic_starts_rows(): Could not obtain forum topic start data.', '', __LINE__, __FILE__, $sql);
 	}
 
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$rows[] = $row;
 	}
@@ -340,7 +340,7 @@ function &get_forum_topic_starts_rows($user_id)
 /* =================================================================================== */
 
 /* Determine if bb_usage_stats_viewlevel is set and, if not, set it to default. */
-if( !isset($board_config[BBUS_CONFIGPROP_VIEWLEVEL_NAME]) )
+if(!isset($board_config[BBUS_CONFIGPROP_VIEWLEVEL_NAME]))
 {
 	$viewlevel = BBUS_CONFIGPROP_VIEWLEVEL_DEFAULT;
 	set_bb_usage_stats_property(BBUS_CONFIGPROP_VIEWLEVEL_NAME, $viewlevel);
@@ -353,7 +353,7 @@ else
 }
 
 /* Determine if bb_usage_stats_viewoptions is set and, if not, set it to default. */
-if( !isset($board_config[BBUS_CONFIGPROP_VIEWOPTIONS_NAME]) )
+if(!isset($board_config[BBUS_CONFIGPROP_VIEWOPTIONS_NAME]))
 {
 	$viewoptions = BBUS_CONFIGPROP_VIEWOPTIONS_DEFAULT;
 	set_bb_usage_stats_property(BBUS_CONFIGPROP_VIEWOPTIONS_NAME, $viewoptions);
@@ -367,34 +367,34 @@ else
 
 /* Determine if user is permitted to view forum usage data */
 $view_bb_usage_allowed = false;
-if ( ($viewlevel & BBUS_VIEWLEVEL_ANONYMOUS) != 0 && $userdata['user_id'] == ANONYMOUS )
+if (($viewlevel & BBUS_VIEWLEVEL_ANONYMOUS) != 0 && $userdata['user_id'] == ANONYMOUS)
 {
 	$view_bb_usage_allowed = true;
 }
-elseif( ($viewlevel & BBUS_VIEWLEVEL_SELF) != 0 && $profiledata['user_id'] == $userdata['user_id'] )
+elseif(($viewlevel & BBUS_VIEWLEVEL_SELF) != 0 && $profiledata['user_id'] == $userdata['user_id'])
 {
 	$view_bb_usage_allowed = true;
 }
-elseif( ($viewlevel & BBUS_VIEWLEVEL_USERS) != 0 && $userdata['user_level'] == USER )
+elseif(($viewlevel & BBUS_VIEWLEVEL_USERS) != 0 && $userdata['user_level'] == USER)
 {
 	$view_bb_usage_allowed = true;
 }
-elseif( ($viewlevel & BBUS_VIEWLEVEL_MODERATORS) != 0 && $userdata['user_level'] == MOD )
+elseif(($viewlevel & BBUS_VIEWLEVEL_MODERATORS) != 0 && $userdata['user_level'] == MOD)
 {
 	$view_bb_usage_allowed = true;
 }
-elseif( ($viewlevel & BBUS_VIEWLEVEL_ADMINS) != 0 && $userdata['user_level'] == ADMIN )
+elseif(($viewlevel & BBUS_VIEWLEVEL_ADMINS) != 0 && $userdata['user_level'] == ADMIN)
 {
 	$view_bb_usage_allowed = true;
 }
-elseif( ($viewlevel & BBUS_VIEWLEVEL_SPECIALGRP) != 0 )
+elseif(($viewlevel & BBUS_VIEWLEVEL_SPECIALGRP) != 0)
 {
 	/* Determine if special group has been set and is not -1.  If either, ignore. */
-	if ( isset($board_config[BBUS_CONFIGPROP_SPECIALGRP_NAME]) )
+	if (isset($board_config[BBUS_CONFIGPROP_SPECIALGRP_NAME]))
 	{
-		if ( $board_config[BBUS_CONFIGPROP_SPECIALGRP_NAME] != -1 )
+		if ($board_config[BBUS_CONFIGPROP_SPECIALGRP_NAME] != -1)
 		{
-			if ( is_user_member_of_group($userdata['user_id'], $board_config[BBUS_CONFIGPROP_SPECIALGRP_NAME]) )
+			if (is_user_member_of_group($userdata['user_id'], $board_config[BBUS_CONFIGPROP_SPECIALGRP_NAME]))
 			{
 				$view_bb_usage_allowed = true;
 			}
@@ -409,7 +409,7 @@ elseif( ($viewlevel & BBUS_VIEWLEVEL_SPECIALGRP) != 0 )
 /* If the bb_usage_stats_prscale property is not in the board's configuration,
  * add it and generate the select list.  Otherwise, just generate the select
  * list. */
-if (!isset($board_config[BBUS_CONFIGPROP_PRSCALE_NAME]) )
+if (!isset($board_config[BBUS_CONFIGPROP_PRSCALE_NAME]))
 {
 	create_property(BBUS_CONFIGPROP_PRSCALE_NAME, BBUS_CONFIGPROP_PRSCALE_DEFAULT);
 	$board_config[BBUS_CONFIGPROP_PRSCALE_NAME] = BBUS_CONFIGPROP_PRSCALE_DEFAULT;
@@ -418,14 +418,14 @@ if (!isset($board_config[BBUS_CONFIGPROP_PRSCALE_NAME]) )
 /* If the bb_usage_stats_trscale property is not in the board's configuration,
  * add it and generate the select list.  Otherwise, just generate the select
  * list. */
-if (!isset($board_config[BBUS_CONFIGPROP_TRSCALE_NAME]) )
+if (!isset($board_config[BBUS_CONFIGPROP_TRSCALE_NAME]))
 {
 	create_property(BBUS_CONFIGPROP_TRSCALE_NAME, BBUS_CONFIGPROP_TRSCALE_DEFAULT);
 	$board_config[BBUS_CONFIGPROP_TRSCALE_NAME] = BBUS_CONFIGPROP_TRSCALE_DEFAULT;
 }
 
 /* Now, begin the task of constructing the BB Usage Stats data */
-if ( $view_bb_usage_allowed )
+if ($view_bb_usage_allowed)
 {
 
 	$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
@@ -445,15 +445,15 @@ if ( $view_bb_usage_allowed )
 	$unpruned_post_count = get_unpruned_post_count($profiledata['user_id']);
 
 	$max_columns = 7;
-	if ( ($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0 )
+	if (($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0)
 	{
 		$max_columns++;
 	}
 
 	/* If any forum usage results were returned: */
-	if ( $forum_usage_rows ) {
-		$prscale = (isset($_POST['prscale']) ) ? $_POST['prscale'] : $board_config[BBUS_CONFIGPROP_PRSCALE_NAME];
-		$trscale = (isset($_POST['trscale']) ) ? $_POST['trscale'] : $board_config[BBUS_CONFIGPROP_TRSCALE_NAME];
+	if ($forum_usage_rows) {
+		$prscale = (isset($_POST['prscale'])) ? $_POST['prscale'] : $board_config[BBUS_CONFIGPROP_PRSCALE_NAME];
+		$trscale = (isset($_POST['trscale'])) ? $_POST['trscale'] : $board_config[BBUS_CONFIGPROP_TRSCALE_NAME];
 
 		/* Pass results on to template... */
 		$last_cat_id = -1;
@@ -462,12 +462,12 @@ if ( $view_bb_usage_allowed )
 			$forum_topic_starts = & get_forum_topic_starts($forum_topic_starts_rows, $forum_usage_rows[$i]['forum_id']);
 
 			// The *_per_day calculations assume $memberdays has already been calculated in usercp_viewprofile.php
-			$forum_post_rate = sprintf("%01.2f", ($forum_usage_rows[$i]['forum_post_count'] / $memberdays)*$prscale );
-			$forum_topic_rate = sprintf("%01.2f", ($forum_topic_starts / $memberdays)*$trscale );
+			$forum_post_rate = sprintf("%01.2f", ($forum_usage_rows[$i]['forum_post_count'] / $memberdays)*$prscale);
+			$forum_topic_rate = sprintf("%01.2f", ($forum_topic_starts / $memberdays)*$trscale);
 
 			/* If the section id has changed, set it. */
 			$cur_cat_id = $forum_usage_rows[$i]['cat_id'];
-			if ( $cur_cat_id != $last_cat_id )
+			if ($cur_cat_id != $last_cat_id)
 			{
 				$section_row = & get_section_usage_row($section_usage_rows, $cur_cat_id);
 
@@ -478,12 +478,12 @@ if ( $view_bb_usage_allowed )
 				}
 				else
 				{
-					$section_post_pctutp = sprintf("%01.2f", ($section_row['section_post_count'] / $profiledata['user_posts']) * 100 );
+					$section_post_pctutp = sprintf("%01.2f", ($section_row['section_post_count'] / $profiledata['user_posts']) * 100);
 				}
-				$section_post_rate = sprintf("%01.2f", ($section_row['section_post_count'] / $memberdays) * $prscale );
-				$section_topic_rate = sprintf("%01.2f", ($section_row['section_topic_starts'] / $memberdays) * $trscale );
+				$section_post_rate = sprintf("%01.2f", ($section_row['section_post_count'] / $memberdays) * $prscale);
+				$section_topic_rate = sprintf("%01.2f", ($section_row['section_topic_starts'] / $memberdays) * $trscale);
 
-				$u_search = append_sid(SEARCH_MG . '?search_author=' . str_replace(array(' '), array('%20'), $profiledata['username']) );
+				$u_search = append_sid(SEARCH_MG . '?search_author=' . str_replace(array(' '), array('%20'), $profiledata['username']));
 
 				$template->assign_block_vars('bb_usage_section_row', array(
 					'U_SECTION' => $u_search,
@@ -499,7 +499,7 @@ if ( $view_bb_usage_allowed )
 				);
 
 				/* If PCTUTUP column is to be visible.... */
-				if ( ($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0 )
+				if (($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0)
 				{
 					/* Avoid Div By Zero */
 					if ($unpruned_post_count <= 0)
@@ -508,7 +508,7 @@ if ( $view_bb_usage_allowed )
 					}
 					else
 					{
-						$section_post_pctutup = sprintf("%01.2f", ($section_row['section_post_count'] / $unpruned_post_count)*100 );
+						$section_post_pctutup = sprintf("%01.2f", ($section_row['section_post_count'] / $unpruned_post_count)*100);
 					}
 
 					/* Add value to template */
@@ -520,7 +520,7 @@ if ( $view_bb_usage_allowed )
 			}
 			$last_cat_id = $cur_cat_id;
 
-			if ( !isset($forum_usage_rows[$i]['watch_count']) )
+			if (!isset($forum_usage_rows[$i]['watch_count']))
 			{
 				$watch_count = 0;
 			}
@@ -531,7 +531,7 @@ if ( $view_bb_usage_allowed )
 
 			$cur_forum_id = $forum_usage_rows[$i]['forum_id'];
 			/* If viewer is not authorized to view the forum, do not display the row */
-			if ( $is_auth[$cur_forum_id]['auth_read'] )
+			if ($is_auth[$cur_forum_id]['auth_read'])
 			{
 				$template->assign_block_vars('bb_usage_section_row.bb_usage_forum_row', array(
 					'FORUM_URL' => $u_search,
@@ -546,7 +546,7 @@ if ( $view_bb_usage_allowed )
 					)
 				);
 
-				if ( ($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0 )
+				if (($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0)
 				{
 					/* Avoid Div By Zero */
 					if ($unpruned_post_count <= 0)
@@ -555,7 +555,7 @@ if ( $view_bb_usage_allowed )
 					}
 					else
 					{
-						$forum_post_pctutup = sprintf("%01.2f", ($forum_usage_rows[$i]['forum_post_count'] / $unpruned_post_count)*100 );
+						$forum_post_pctutup = sprintf("%01.2f", ($forum_usage_rows[$i]['forum_post_count'] / $unpruned_post_count)*100);
 					}
 					$template->assign_block_vars('bb_usage_section_row.bb_usage_forum_row.bb_usage_switch_pctutup_forum', array(
 						'FORUM_POST_PCTUTUP' => $forum_post_pctutup . '%',
@@ -570,10 +570,10 @@ if ( $view_bb_usage_allowed )
 		/* Either post rate, topic rate, or both must be scalable by the viewer
 		 * for the scaling row to be visible
 		 */
-		if ( ($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_PR) != 0 || ($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_TR) != 0 )
+		if (($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_PR) != 0 || ($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_TR) != 0)
 		{
 			/* Only display post scaling list if enabled by administrator */
-			if ( ($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_PR) != 0 )
+			if (($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_PR) != 0)
 			{
 				$pr_scale_select_list = scaleby_select('scale_form', 'prscale', BBUS_SCALING_MIN, BBUS_SCALING_MAX, $prscale);
 			}
@@ -583,7 +583,7 @@ if ( $view_bb_usage_allowed )
 			}
 
 			/* Only display topic scaling list if enabled by administrator */
-			if ( ($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_TR) != 0 )
+			if (($viewoptions & BBUS_VIEWOPTION_VIEWER_SCALABLE_TR) != 0)
 			{
 				$tr_scale_select_list = scaleby_select('scale_form', 'trscale', BBUS_SCALING_MIN, BBUS_SCALING_MAX, $trscale);
 			}
@@ -600,7 +600,7 @@ if ( $view_bb_usage_allowed )
 				)
 			);
 
-			if ( ($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0 )
+			if (($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0)
 			{
 				$template->assign_block_vars('bb_usage_switch_scaling_row.pctutup_filler_cell', array(
 					'FILLER_CELL' => '<td class="cat" align="right" valign="middle">&nbsp;</td>'
@@ -620,14 +620,14 @@ if ( $view_bb_usage_allowed )
 	}
 
 
-	if ( ($viewoptions & BBUS_VIEWOPTION_MISC_SECTION_VISIBLE) != 0 )
+	if (($viewoptions & BBUS_VIEWOPTION_MISC_SECTION_VISIBLE) != 0)
 	{
 		$template->assign_block_vars('bb_usage_switch_miscellaneous_info', array(
 			'L_BBUS_COLHDR_MISC' => $lang['BBUS_Misc']
 			)
 		);
 
-		if ( ($viewoptions & BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_VISIBLE) != 0 )
+		if (($viewoptions & BBUS_VIEWOPTION_MISC_TOTPRUNEDPOSTS_VISIBLE) != 0)
 		{
 			$total_posts_pruned = $profiledata['user_posts'] - $unpruned_post_count;
 			$template->assign_block_vars('bb_usage_switch_miscellaneous_info.bb_usage_switch_misc_prunedposts', array(
@@ -640,7 +640,7 @@ if ( $view_bb_usage_allowed )
 	}
 
 
-	if ( ($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0 )
+	if (($viewoptions & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0)
 	{
 		$template->assign_block_vars('bb_usage_switch_pctutup_colhdr', array(
 			'L_BBUS_COLHEADER_PCTUTUP' => $lang['BBUS_ColHeader_PctUTUP']

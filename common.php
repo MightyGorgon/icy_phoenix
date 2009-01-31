@@ -266,12 +266,12 @@ include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_categories_hierarchy.' . PHP_EXT);
 if (defined('IN_ADMIN'))
 {
 	include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
 }
-include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 // MG Cash MOD For IP - BEGIN
 if (defined('CASH_MOD') && defined('IN_CASHMOD'))
@@ -309,13 +309,22 @@ if ((defined('IN_ADMIN') || defined('IN_CMS')) && !defined('ACP_MODULES'))
 	$db->clear_cache('config_');
 	if (defined('IN_ADMIN'))
 	{
-		$acp_cache_clear = array('album_config_', 'auth_', 'cms_config_', 'ct_config_', 'dl_config_', 'forums_', 'smileys_', 'themes_');
+		empty_cache_folders(FORUMS_CACHE_FOLDER);
+		$acp_cache_clear = array('album_config_', 'auth_', 'cms_config_', 'ct_config_', 'dl_config_', 'smileys_', 'themes_');
 		for ($i = 0; $i < count($acp_cache_clear); $i++)
 		{
 			$db->clear_cache($acp_cache_clear[$i]);
 		}
 	}
 }
+else
+{
+	if (!defined('IN_POSTING') && defined('TIME_LIMIT'))
+	{
+		@set_time_limit(TIME_LIMIT);
+	}
+}
+
 $sql = "SELECT * FROM " . CONFIG_TABLE;
 if ((CACHE_CFG == true) && !defined('IN_ADMIN') && !defined('IN_CMS'))
 {
@@ -355,29 +364,29 @@ unset($today_ary);
 include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if ($board_config['global_disable_upi2db'] == false)
+if ($board_config['global_disable_upi2db'])
 {
-	include(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
+	$board_config['upi2db_on'] = 0;
 }
 else
 {
-	$board_config['upi2db_on'] = '0';
+	include(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 }
 //<!-- END Unread Post Information to Database Mod -->
 
-if ($board_config['disable_referrers'] == false)
+if (!$board_config['disable_referrers'])
 {
 	include_once(IP_ROOT_PATH . 'includes/functions_referrers.' . PHP_EXT);
 }
 
 // MG Logs - BEGIN
-if (($board_config['mg_log_actions'] == true) || ($board_config['db_log_actions'] == '1') || ($board_config['db_log_actions'] == '2'))
+if ($board_config['mg_log_actions'] || ($board_config['db_log_actions'] == 1) || ($board_config['db_log_actions'] == 2))
 {
 	include(IP_ROOT_PATH . 'includes/functions_mg_log.' . PHP_EXT);
 }
 // MG Logs - END
 
-if (($board_config['url_rw'] == true) || ($board_config['url_rw_guests'] == true))
+if ($board_config['url_rw'] || $board_config['url_rw_guests'])
 {
 	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
@@ -420,7 +429,7 @@ if (file_exists('install'))
 	message_die(GENERAL_MESSAGE, 'Please_remove_install_contrib');
 }
 
-if ($board_config['admin_protect'] == true)
+if ($board_config['admin_protect'])
 {
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
@@ -440,7 +449,7 @@ if ($board_config['admin_protect'] == true)
 	{
 		message_die(GENERAL_MESSAGE, 'Unable to access the Banlist Table.');
 	}
-	$db->clear_cache('ban_');
+	$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 }
 
 if (intval($_GET['lofi']) || $_COOKIE['lofi'])

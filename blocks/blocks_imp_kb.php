@@ -26,7 +26,6 @@ if(!function_exists('imp_kb_func'))
 		global $template, $cms_config_vars, $block_id, $table_prefix, $db, $lang, $board_config, $theme, $images, $userdata;
 
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
-		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 
 		$bbcode->allow_html = true;
@@ -85,7 +84,7 @@ if(!function_exists('imp_kb_func'))
 				'TITLE' => $fetchposts[$i]['topic_title'],
 				'TOPIC_DESC' => $fetchposts[$i]['topic_desc'],
 				'POSTER' => $fetchposts[$i]['username'],
-				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id']),
+				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id'], $fetchposts[$i]['username'], $fetchposts[$i]['user_color'], $fetchposts[$i]['user_active']),
 				'TIME' => $fetchposts[$i]['topic_time'],
 				'TEXT' => $fetchposts[$i]['post_text'],
 				'REPLIES' => $fetchposts[$i]['topic_replies'],
@@ -93,7 +92,7 @@ if(!function_exists('imp_kb_func'))
 				'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
 				'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 				'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
-				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
+				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
 				)
 			);
 			display_attachments($fetchposts[$i]['post_id'], 'articles_fp');
@@ -117,7 +116,7 @@ if(!function_exists('imp_kb_func'))
 						'TOPIC_TITLE' => $fetchposts[$i]['topic_title'],
 						'TOPIC_DESC' => $fetchposts[$i]['topic_desc'],
 						'POSTER' => $fetchposts[$i]['username'],
-						'POSTER_CG' => colorize_username($fetchposts[$i]['user_id']),
+						'POSTER_CG' => colorize_username($fetchposts[$i]['user_id'], $fetchposts[$i]['username'], $fetchposts[$i]['user_color'], $fetchposts[$i]['user_active']),
 						'TIME' => $fetchposts[$i]['topic_time'],
 						'REPLIES' => $fetchposts[$i]['topic_replies'],
 						'U_VIEW_ARTICLE' => append_sid($_SERVER['PHP_SELF'] . '?kb=article&f=' . $forum_id . '&' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
@@ -125,7 +124,7 @@ if(!function_exists('imp_kb_func'))
 						'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
 						'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 						'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
-						'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
+						'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
 						)
 					);
 

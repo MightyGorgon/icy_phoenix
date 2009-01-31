@@ -26,7 +26,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 
 // Adding CPL_NAV only if needed
@@ -36,6 +35,11 @@ define('PARSE_CPL_NAV', true);
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
+
+if (!$userdata['session_logged_in'] && $board_config['gsearch_guests'])
+{
+	redirect(append_sid('gsearch.' . PHP_EXT, true));
+}
 
 // CrackerTracker v5.x
 if (isset($_POST['mode']) || isset($_GET['mode']) || !empty($_GET['search_id']) || isset($_POST['search_id']) || isset($_GET['search_keywords']) || isset($_POST['show_results']) || isset($_GET['show_results']))
@@ -1157,7 +1161,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		if ($show_results == 'posts')
 		{
-			$sql = "SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_sig
+			$sql = "SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_active, u.user_color, u.user_sig
 				FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p
 				WHERE p.post_id IN ($search_results)
 					AND f.forum_id = p.forum_id
@@ -1166,7 +1170,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		else
 		{
-			$sql = "SELECT t.*, f.forum_id, f.forum_name, u.username, u.user_id, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time
+			$sql = "SELECT t.*, f.forum_id, f.forum_name, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time
 				FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
 				WHERE t.topic_id IN ($search_results)
 					AND t.topic_poster = u.user_id
@@ -1530,7 +1534,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				{
 					$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 					$topic_raw_title = preg_replace($orig_word, $replacement_word, $topic_raw_title);
-					$post_subject = ($searchset[$i]['post_subject'] != "") ? preg_replace($orig_word, $replacement_word, $searchset[$i]['post_subject']) : $topic_title_prefix . $topic_title;
+					$post_subject = ($searchset[$i]['post_subject'] != '') ? preg_replace($orig_word, $replacement_word, $searchset[$i]['post_subject']) : $topic_title_prefix . $topic_title;
 					// AJAX Not Applied
 					//$post_subject = ($searchset[$i]['post_subject'] != "") ? preg_replace($orig_word, $replacement_word, $searchset[$i]['post_subject']) : '';
 
@@ -1560,7 +1564,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 				*/
 
-				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? colorize_username($searchset[$i]['user_id']) : $lang['Guest'];
+				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']) : (($searchset[$i]['post_username'] != '') ? $searchset[$i]['post_username'] : $lang['Guest']);
 				//$poster .= ($searchset[$i]['user_id'] != ANONYMOUS) ? $searchset[$i]['username'] : (($searchset[$i]['post_username'] != "") ? $searchset[$i]['post_username'] : $lang['Guest']);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -1721,11 +1725,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				if ($searchset[$i]['user_id'] != ANONYMOUS)
 				{
-					$topic_author = colorize_username($searchset[$i]['user_id']);
+					$topic_author = colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']);
 				}
 				else
 				{
-					$sql = "SELECT p.post_username FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
+					$sql = "SELECT p.post_username
+						FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 						WHERE t.topic_first_post_id = p.post_id
 						AND t.topic_id = " . $searchset[$i]['topic_id'];
 					if (!$result = $db->sql_query($sql))
@@ -1739,7 +1744,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				$first_post_time = create_date($board_config['default_dateformat'], $searchset[$i]['topic_time'], $board_config['board_timezone']);
 				$last_post_time = create_date2($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
-				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($searchset[$i]['id2']);
+				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($searchset[$i]['id2'], $searchset[$i]['user2'], $searchset[$i]['user_color2'], $searchset[$i]['user_active2']);
 
 				$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#p' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -1934,6 +1939,7 @@ $l_only_bluecards = ($userdata['user_level'] >= ADMIN) ? '<input type="checkbox"
 $page_title = $lang['Search'];
 $meta_description = '';
 $meta_keywords = '';
+$breadcrumbs_links_right = '<span class="gensmall"><a href="' . append_sid('gsearch.' . PHP_EXT) . '">' . $lang['GSEARCH_ENGINE'] . '</a></span>';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->set_filenames(array('body' => 'search_body.tpl'));

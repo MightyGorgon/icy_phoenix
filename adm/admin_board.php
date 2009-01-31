@@ -28,8 +28,9 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-$db->clear_cache('config_');
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+$db->clear_cache('config_');
 
 // Pull all config data
 $sql = "SELECT * FROM " . CONFIG_TABLE;
@@ -42,28 +43,28 @@ else
 	// CrackerTracker v5.x
 	// Mighty Gorgon: This is not needed here so I remove it!!!
 	/*
-	if ( isset($_POST['submit']) && $ctracker_config->settings['detect_misconfiguration'] == 1 )
+	if (isset($_POST['submit']) && $ctracker_config->settings['detect_misconfiguration'] == 1)
 	{
 		// Let's detect some things of misconfiguration
-		if ( $_POST['server_port'] == '21' )
+		if ($_POST['server_port'] == '21')
 		{
 			// FTP Port Mistake
 			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_1']);
 		}
 
-		if ( $_POST['session_length'] < '100' )
+		if ($_POST['session_length'] < '100')
 		{
 			// Session Length Error
 			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_2']);
 		}
 
-		if ( !preg_match('/\\A\/$|\\A\/.*\/$/', $_POST['script_path']) )
+		if (!preg_match('/\\A\/$|\\A\/.*\/$/', $_POST['script_path']))
 		{
 			// Script Path Error
 			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_3']);
 		}
 
-		if ( preg_match('/\/$/', $_POST['server_name']) )
+		if (preg_match('/\/$/', $_POST['server_name']))
 		{
 			// Server Name Error
 			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_4']);
@@ -72,7 +73,7 @@ else
 	*/
 	// CrackerTracker v5.x
 
-	if ( isset($_POST['submit']) && $ctracker_config->settings['auto_recovery'] == 1 )
+	if (isset($_POST['submit']) && $ctracker_config->settings['auto_recovery'] == 1)
 	{
 		define('CTRACKER_ACP', true);
 		include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_adminfunctions.' . PHP_EXT);
@@ -81,67 +82,22 @@ else
 		unset($backup_system);
 	}
 	// CrackerTracker v5.x
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$config_name = $row['config_name'];
 		$config_value = $row['config_value'];
-		$default_config[$config_name] = isset($_POST['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
+		//$default_config[$config_name] = isset($_POST['submit']) ? addslashes($config_value) : $config_value;
+		$default_config[$config_name] = $config_value;
+		$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+		fix_config_values($config_name, $config_value);
 
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
-
-		if ($config_name == 'cookie_name')
+		if(isset($_POST['submit']))
 		{
-			$new['cookie_name'] = str_replace('.', '_', $new['cookie_name']);
-		}
-
-		if ($config_name == 'report_forum')
-		{
-			$new['report_forum'] = str_replace('f', '', $new['report_forum']);
-		}
-
-		if ($config_name == 'bin_forum')
-		{
-			$new['bin_forum'] = str_replace('f', '', $new['bin_forum']);
-		}
-
-		// Attempt to prevent a common mistake with this value,
-		// http:// is the protocol and not part of the server name
-		if ($config_name == 'server_name')
-		{
-			$new['server_name'] = str_replace('http://', '', $new['server_name']);
-		}
-
-		// Attempt to prevent a mistake with this value.
-		if ($config_name == 'avatar_path')
-		{
-			$new['avatar_path'] = trim($new['avatar_path']);
-			if (strstr($new['avatar_path'], "\0") || !is_dir(IP_ROOT_PATH . $new['avatar_path']) || !is_writable(IP_ROOT_PATH . $new['avatar_path']))
-			{
-				$new['avatar_path'] = $default_config['avatar_path'];
-			}
-		}
-
-		if( isset($_POST['submit']) )
-		{
-			/*
-			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET config_value=\'' . $_POST['message_board_disable_text'] . '\' WHERE config_name = \'board_disable_message\'';
-			if( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
-			*/
-
-			$sql = "UPDATE " . CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-				WHERE config_name = '$config_name'";
-			if( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Failed to update general configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
+			set_config($config_name, $new[$config_name]);
 		}
 	}
 
-	if( isset($_POST['submit']) )
+	if(isset($_POST['submit']))
 	{
 		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -153,52 +109,55 @@ $style_select = style_select($new['default_style'], 'default_style', '../templat
 $lang_select = language_select($new['default_lang'], 'default_lang', 'language');
 $timezone_select = tz_select($new['board_timezone'], 'board_timezone');
 
-$disable_board_yes = ( $new['board_disable'] ) ? 'checked="checked"' : '';
-$disable_board_no = ( !$new['board_disable'] ) ? 'checked="checked"' : '';
+$disable_board_yes = ($new['board_disable']) ? 'checked="checked"' : '';
+$disable_board_no = (!$new['board_disable']) ? 'checked="checked"' : '';
 
-$registration_status_yes = ( $new['registration_status'] ) ? 'checked="checked"' : '';
-$registration_status_no = ( !$new['registration_status'] ) ? 'checked="checked"' : '';
+$registration_status_yes = ($new['registration_status']) ? 'checked="checked"' : '';
+$registration_status_no = (!$new['registration_status']) ? 'checked="checked"' : '';
 
-$message_disable_board_yes = ( $new['board_disable_mess_st'] ) ? 'checked="checked"' : '';
-$message_disable_board_no = ( !$new['board_disable_mess_st'] ) ? 'checked="checked"' : '';
+$message_disable_board_yes = ($new['board_disable_mess_st']) ? 'checked="checked"' : '';
+$message_disable_board_no = (!$new['board_disable_mess_st']) ? 'checked="checked"' : '';
+
+$switch_header_table_yes = ($new['switch_header_table']) ? 'checked="checked"' : '';
+$switch_header_table_no = (!$new['switch_header_table']) ? 'checked="checked"' : '';
 
 $default_avatar_guests = ($new['default_avatar_set'] == '0') ? 'checked="checked"' : '';
 $default_avatar_users = ($new['default_avatar_set'] == '1') ? 'checked="checked"' : '';
 $default_avatar_both = ($new['default_avatar_set'] == '2') ? 'checked="checked"' : '';
 $default_avatar_none = ($new['default_avatar_set'] == '3') ? 'checked="checked"' : '';
 
-$cookie_secure_yes = ( $new['cookie_secure'] ) ? 'checked="checked"' : '';
-$cookie_secure_no = ( !$new['cookie_secure'] ) ? 'checked="checked"' : '';
+$cookie_secure_yes = ($new['cookie_secure']) ? 'checked="checked"' : '';
+$cookie_secure_no = (!$new['cookie_secure']) ? 'checked="checked"' : '';
 
 $html_tags = $new['allow_html_tags'];
 
-$override_user_style_yes = ( $new['override_user_style'] ) ? 'checked="checked"' : '';
-$override_user_style_no = ( !$new['override_user_style'] ) ? 'checked="checked"' : '';
+$override_user_style_yes = ($new['override_user_style']) ? 'checked="checked"' : '';
+$override_user_style_no = (!$new['override_user_style']) ? 'checked="checked"' : '';
 
-$html_yes = ( $new['allow_html'] ) ? 'checked="checked"' : '';
-$html_no = ( !$new['allow_html'] ) ? 'checked="checked"' : '';
+$html_yes = ($new['allow_html']) ? 'checked="checked"' : '';
+$html_no = (!$new['allow_html']) ? 'checked="checked"' : '';
 
-$bbcode_yes = ( $new['allow_bbcode'] ) ? 'checked="checked"' : '';
-$bbcode_no = ( !$new['allow_bbcode'] ) ? 'checked="checked"' : '';
+$bbcode_yes = ($new['allow_bbcode']) ? 'checked="checked"' : '';
+$bbcode_no = (!$new['allow_bbcode']) ? 'checked="checked"' : '';
 
-$activation_none = ( $new['require_activation'] == USER_ACTIVATION_NONE ) ? 'checked="checked"' : '';
-$activation_user = ( $new['require_activation'] == USER_ACTIVATION_SELF ) ? 'checked="checked"' : '';
-$activation_admin = ( $new['require_activation'] == USER_ACTIVATION_ADMIN ) ? 'checked="checked"' : '';
+$activation_none = ($new['require_activation'] == USER_ACTIVATION_NONE) ? 'checked="checked"' : '';
+$activation_user = ($new['require_activation'] == USER_ACTIVATION_SELF) ? 'checked="checked"' : '';
+$activation_admin = ($new['require_activation'] == USER_ACTIVATION_ADMIN) ? 'checked="checked"' : '';
 
 $confirm_yes = ($new['enable_confirm']) ? 'checked="checked"' : '';
 $confirm_no = (!$new['enable_confirm']) ? 'checked="checked"' : '';
 $use_captcha_yes = ($new['use_captcha']) ? 'checked="checked"' : '';
 $use_captcha_no = (!$new['use_captcha']) ? 'checked="checked"' : '';
 
-$autolink_first_yes = ( $new['autolink_first'] ) ? 'checked="checked"' : '';
-$autolink_first_no = ( !$new['autolink_first'] ) ? 'checked="checked"' : '';
+$autolink_first_yes = ($new['autolink_first']) ? 'checked="checked"' : '';
+$autolink_first_no = (!$new['autolink_first']) ? 'checked="checked"' : '';
 
 $allow_autologin_yes = ($new['allow_autologin']) ? 'checked="checked"' : '';
 $allow_autologin_no = (!$new['allow_autologin']) ? 'checked="checked"' : '';
 
 /*
-$board_email_form_yes = ( $new['board_email_form'] ) ? 'checked="checked"' : '';
-$board_email_form_no = ( !$new['board_email_form'] ) ? 'checked="checked"' : '';
+$board_email_form_yes = ($new['board_email_form']) ? 'checked="checked"' : '';
+$board_email_form_no = (!$new['board_email_form']) ? 'checked="checked"' : '';
 */
 
 switch ($new['default_time_mode'])
@@ -222,52 +181,52 @@ switch ($new['default_time_mode'])
 		$time_mode_manual_checked='checked="checked"';
 }
 
-$gzip_yes = ( $new['gzip_compress'] ) ? 'checked="checked"' : '';
-$gzip_no = ( !$new['gzip_compress'] ) ? 'checked="checked"' : '';
+$gzip_yes = ($new['gzip_compress']) ? 'checked="checked"' : '';
+$gzip_no = (!$new['gzip_compress']) ? 'checked="checked"' : '';
 
-$privmsg_on = ( !$new['privmsg_disable'] ) ? 'checked="checked"' : '';
-$privmsg_off = ( $new['privmsg_disable'] ) ? 'checked="checked"' : '';
+$privmsg_on = (!$new['privmsg_disable']) ? 'checked="checked"' : '';
+$privmsg_off = ($new['privmsg_disable']) ? 'checked="checked"' : '';
 
-$prune_yes = ( $new['prune_enable'] ) ? 'checked="checked"' : '';
-$prune_no = ( !$new['prune_enable'] ) ? 'checked="checked"' : '';
+$prune_yes = ($new['prune_enable']) ? 'checked="checked"' : '';
+$prune_no = (!$new['prune_enable']) ? 'checked="checked"' : '';
 
 // Start the Designers & Coders Network
-$network_drop = ( $new['network_type'] == 'drop' ) ? 'checked="checked"' : '';
-$network_line = ( $new['network_type'] == 'line' ) ? 'checked="checked"' : '';
+$network_drop = ($new['network_type'] == 'drop') ? 'checked="checked"' : '';
+$network_line = ($new['network_type'] == 'line') ? 'checked="checked"' : '';
 // End the Designers & Coders Network
 
-$hidde_last_logon_yes = ( $new['hidde_last_logon'] ) ? 'checked="checked"' : '';
-$hidde_last_logon_no = ( !$new['hidde_last_logon'] ) ? 'checked="checked"' : '';
+$hidde_last_logon_yes = ($new['hidde_last_logon']) ? 'checked="checked"' : '';
+$hidde_last_logon_no = (!$new['hidde_last_logon']) ? 'checked="checked"' : '';
 
-$birthday_greeting_yes = ( $new['birthday_greeting'] ) ? 'checked="checked"' : '';
-$birthday_greeting_no = ( !$new['birthday_greeting'] ) ? 'checked="checked"' : '';
-$birthday_required_yes = ( $new['birthday_required'] ) ? 'checked="checked"' : '';
-$birthday_required_no = ( !$new['birthday_required'] ) ? 'checked="checked"' : '';
-$gender_required_yes = ( $new['gender_required'] ) ? ' checked="checked"' : '';
-$gender_required_no = ( !$new['gender_required'] ) ? ' checked="checked"' : '';
+$birthday_greeting_yes = ($new['birthday_greeting']) ? 'checked="checked"' : '';
+$birthday_greeting_no = (!$new['birthday_greeting']) ? 'checked="checked"' : '';
+$birthday_required_yes = ($new['birthday_required']) ? 'checked="checked"' : '';
+$birthday_required_no = (!$new['birthday_required']) ? 'checked="checked"' : '';
+$gender_required_yes = ($new['gender_required']) ? ' checked="checked"' : '';
+$gender_required_no = (!$new['gender_required']) ? ' checked="checked"' : '';
 
-$smile_yes = ( $new['allow_smilies'] ) ? 'checked="checked"' : '';
-$smile_no = ( !$new['allow_smilies'] ) ? 'checked="checked"' : '';
+$smile_yes = ($new['allow_smilies']) ? 'checked="checked"' : '';
+$smile_no = (!$new['allow_smilies']) ? 'checked="checked"' : '';
 
-$sig_yes = ( $new['allow_sig'] ) ? 'checked="checked"' : '';
-$sig_no = ( !$new['allow_sig'] ) ? 'checked="checked"' : '';
+$sig_yes = ($new['allow_sig']) ? 'checked="checked"' : '';
+$sig_no = (!$new['allow_sig']) ? 'checked="checked"' : '';
 
-$namechange_yes = ( $new['allow_namechange'] ) ? 'checked="checked"' : '';
-$namechange_no = ( !$new['allow_namechange'] ) ? 'checked="checked"' : '';
+$namechange_yes = ($new['allow_namechange']) ? 'checked="checked"' : '';
+$namechange_no = (!$new['allow_namechange']) ? 'checked="checked"' : '';
 
-$avatars_local_yes = ( $new['allow_avatar_local'] ) ? 'checked="checked"' : '';
-$avatars_local_no = ( !$new['allow_avatar_local'] ) ? 'checked="checked"' : '';
-$avatars_remote_yes = ( $new['allow_avatar_remote'] ) ? 'checked="checked"' : '';
-$avatars_remote_no = ( !$new['allow_avatar_remote'] ) ? 'checked="checked"' : '';
-$avatars_upload_yes = ( $new['allow_avatar_upload'] ) ? 'checked="checked"' : '';
-$avatars_upload_no = ( !$new['allow_avatar_upload'] ) ? 'checked="checked"' : '';
-$gravatars_yes = ( $new['enable_gravatars'] ) ? ' checked="checked"' : '';
-$gravatars_no = ( !$new['enable_gravatars'] ) ? ' checked="checked"' : '';
-$avatar_generator_yes = ( $new['allow_avatar_generator'] ) ? 'checked="checked"' : '';
-$avatar_generator_no = ( !$new['allow_avatar_generator'] ) ? 'checked="checked"' : '';
+$avatars_local_yes = ($new['allow_avatar_local']) ? 'checked="checked"' : '';
+$avatars_local_no = (!$new['allow_avatar_local']) ? 'checked="checked"' : '';
+$avatars_remote_yes = ($new['allow_avatar_remote']) ? 'checked="checked"' : '';
+$avatars_remote_no = (!$new['allow_avatar_remote']) ? 'checked="checked"' : '';
+$avatars_upload_yes = ($new['allow_avatar_upload']) ? 'checked="checked"' : '';
+$avatars_upload_no = (!$new['allow_avatar_upload']) ? 'checked="checked"' : '';
+$gravatars_yes = ($new['enable_gravatars']) ? ' checked="checked"' : '';
+$gravatars_no = (!$new['enable_gravatars']) ? ' checked="checked"' : '';
+$avatar_generator_yes = ($new['allow_avatar_generator']) ? 'checked="checked"' : '';
+$avatar_generator_no = (!$new['allow_avatar_generator']) ? 'checked="checked"' : '';
 
-$smtp_yes = ( $new['smtp_delivery'] ) ? 'checked="checked"' : '';
-$smtp_no = ( !$new['smtp_delivery'] ) ? 'checked="checked"' : '';
+$smtp_yes = ($new['smtp_delivery']) ? 'checked="checked"' : '';
+$smtp_no = (!$new['smtp_delivery']) ? 'checked="checked"' : '';
 
 $template->set_filenames(array('body' => ADM_TPL . 'board_config_body.tpl'));
 
@@ -275,7 +234,7 @@ $template->set_filenames(array('body' => ADM_TPL . 'board_config_body.tpl'));
 $sql = "SELECT f.forum_name, f.forum_id
 	FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
 	WHERE c.cat_id = f.cat_id ORDER BY c.cat_order ASC, f.forum_order ASC";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, "Couldn't obtain forum list", "", __LINE__, __FILE__, $sql);
 }
@@ -290,7 +249,7 @@ $report_forum_select_list = str_replace("value=\"" . 'f' . $new['report_forum'] 
 $sql = "SELECT f.forum_name, f.forum_id
 	FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
 	WHERE c.cat_id = f.cat_id ORDER BY c.cat_order ASC, f.forum_order ASC";
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, "Couldn't obtain forum list", "", __LINE__, __FILE__, $sql);
 }
@@ -308,15 +267,21 @@ $new['registration_closed'] = str_replace('"', '&quot;', $new['registration_clos
 $new['sig_line'] = str_replace('"', '&quot;', $new['sig_line']);
 
 // Ajax Shoutbox - BEGIN
-$shoutguest_yes = ( $new['shout_allow_guest'] == 1 ) ? 'checked="checked"' : '';
-$shoutguest_read = ( $new['shout_allow_guest'] == 2 ) ? 'checked="checked"' : '';
-$shoutguest_no = ( $new['shout_allow_guest'] == 0 ) ? 'checked="checked"' : '';
+$shoutguest_yes = ($new['shout_allow_guest'] == 1) ? 'checked="checked"' : '';
+$shoutguest_read = ($new['shout_allow_guest'] == 2) ? 'checked="checked"' : '';
+$shoutguest_no = ($new['shout_allow_guest'] == 0) ? 'checked="checked"' : '';
 // Ajax Shoutbox - END
 
 $template->assign_vars(array(
 	'S_CONFIG_ACTION' => append_sid('admin_board.' . PHP_EXT),
 	'L_YES' => $lang['Yes'],
 	'L_NO' => $lang['No'],
+
+	'L_HEADER_FOOTER' => $lang['MG_SW_Header_Footer'],
+	'L_HEADER_TABLE_SWITCH' => $lang['MG_SW_Header_Table'],
+	'L_HEADER_TABLE_SWITCH_EXPLAIN' =>$lang['MG_SW_Header_Table_Explain'],
+	'L_HEADER_TABLE_TEXT' =>$lang['MG_SW_Header_Table_Text'],
+
 	'L_DEFAULT_AVATAR' => $lang['Default_avatar'],
 	'L_DEFAULT_AVATAR_EXPLAIN' => $lang['Default_avatar_explain'],
 	'L_DEFAULT_AVATAR_GUESTS' => $lang['Default_avatar_guests'],
@@ -490,6 +455,9 @@ $template->assign_vars(array(
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 
+	'HEADER_TBL_YES' => $switch_header_table_yes,
+	'HEADER_TBL_NO' => $switch_header_table_no,
+	'HEADER_TBL_TXT' => (STRIP ? stripslashes($new['header_table_text']) : $new['header_table_text']),
 
 	'LOGIN_MAX_FAILED' => $new['login_tries'],
 	'LOGIN_TIME_LOCKED' => $new['login_locked_out'],
@@ -617,7 +585,7 @@ $template->assign_vars(array(
 	'AVATARS_UPLOAD_YES' => $avatars_upload_yes,
 	'AVATARS_UPLOAD_NO' => $avatars_upload_no,
 	'AVATAR_GENERATOR_YES' => $avatar_generator_yes,
-	'AVATAR_GENERATOR_NO' => $avatars_generator_no,
+	'AVATAR_GENERATOR_NO' => $avatar_generator_no,
 	'AVATAR_FILESIZE' => $new['avatar_filesize'],
 	'AVATAR_MAX_HEIGHT' => $new['avatar_max_height'],
 	'AVATAR_MAX_WIDTH' => $new['avatar_max_width'],

@@ -60,23 +60,8 @@ if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN'))
 
 $template->set_filenames(array('overall_footer' => $footer_tpl));
 
-if ($board_config['switch_footer_table'] == true)
-{
-	$template->assign_block_vars('switch_footer_table', array(
-		'FOOTER_TEXT' => $board_config['footer_table_text'],
-		'L_STAFF_MESSAGE' => $lang['staff_message'],
-		)
-	);
-}
-
-if ($board_config['switch_bottom_html_block'] == true)
-{
-	$bottom_html_block_text = $board_config['bottom_html_block_text'];
-}
-else
-{
-	$bottom_html_block_text = '';
-}
+$bottom_html_block_text = get_ad('glb');
+$footer_banner_text = get_ad('glf');
 
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 $admin_link = jr_admin_make_admin_link();
@@ -110,82 +95,115 @@ $template->assign_vars(array(
 	)
 );
 
+// Mighty Gorgon - CRON - BEGIN
+if ($board_config['cron_global_switch'] && !defined('IN_CRON') && !defined('IN_ADMIN') && !defined('IN_CMS') && !$board_config['board_disable'])
+{
+	$cron_time = time();
+	$cron_append = '';
+	//$cron_types = array('queue', 'digests', 'files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
+	$cron_types = array('files', 'database', 'cache', 'sql', 'users', 'topics');
+
+	for ($i = 0; $i < count($cron_types); $i++)
+	{
+		$cron_trigger = $cron_time - $board_config['cron_' . $cron_types[$i] . '_interval'];
+		if (($board_config['cron_' . $cron_types[$i] . '_interval'] > 0) && ($cron_trigger > $board_config['cron_' . $cron_types[$i] . '_last_run']))
+		{
+			$cron_append .= (($cron_append == '') ? '?' : '&amp;') . $cron_types[$i] . '=1';
+		}
+	}
+
+	// We can force digests as all checks are performed by the function
+	$last_send_time = getdate($board_config['digests_last_send_time']);
+	$cur_time = getdate();
+	if (($board_config['enable_digests'] == true) && ($board_config['digests_php_cron'] == true) && ($cur_time['hours'] <> $last_send_time['hours']))
+	{
+		$cron_append .= (($cron_append == '') ? '?' : '&amp;') . 'digests=1';
+	}
+
+	if (!empty($cron_append))
+	{
+		$template->assign_var('RUN_CRON_TASK', '<img src="' . append_sid(IP_ROOT_PATH . 'cron.' . PHP_EXT . $cron_append) . '" width="1" height="1" alt="cron" />');
+	}
+}
+// Mighty Gorgon - CRON - END
+
 if ($board_config['page_gen'] == 1)
 {
-	// Page generation time for Admin - BEGIN
-	/* Un-comment the line below to restrict Admins only to view page generation info */
-	//if($userdata['user_level'] == ADMIN)
-	//{
-	$gzip_text = ($board_config['gzip_compress']) ? 'GZIP ' . $lang['Enabled']: 'GZIP ' . $lang['Disabled'];
-	$debug_text = (DEBUG == true) ? $lang['Debug_On'] : $lang['Debug_Off'];
-	$memory_usage_text = '';
-	$excuted_queries = $db->num_queries;
-	$mtime = microtime();
-	$mtime = explode(" ", $mtime);
-	$mtime = $mtime[1] + $mtime[0];
-	$endtime = $mtime;
-	$gentime = round(($endtime - $starttime), 4); // You can adjust the number 6
-	$sql_time = round($db->sql_time, 4);
-
-	$sql_part = round($sql_time / $gentime * 100);
-	$php_part = 100 - $sql_part;
-
-	// Mighty Gorgon - Extra Debug - BEGIN
-	if (defined('DEBUG_EXTRA') && ($userdata['user_level'] == ADMIN))
+	// Page generation time - BEGIN
+	/* Set $page_gen_allowed to FALSE if you want only Admins to view page generation info */
+	$page_gen_allowed = true;
+	if (($userdata['user_level'] == ADMIN) || $page_gen_allowed)
 	{
-		if (function_exists('memory_get_usage'))
+		$gzip_text = ($board_config['gzip_compress']) ? 'GZIP ' . $lang['Enabled']: 'GZIP ' . $lang['Disabled'];
+		$debug_text = (DEBUG == true) ? $lang['Debug_On'] : $lang['Debug_Off'];
+		$memory_usage_text = '';
+		$excuted_queries = $db->num_queries;
+		$mtime = microtime();
+		$mtime = explode(" ", $mtime);
+		$mtime = $mtime[1] + $mtime[0];
+		$endtime = $mtime;
+		$gentime = round(($endtime - $starttime), 4); // You can adjust the number 6
+		$sql_time = round($db->sql_time, 4);
+
+		$sql_part = round($sql_time / $gentime * 100);
+		$php_part = 100 - $sql_part;
+
+		// Mighty Gorgon - Extra Debug - BEGIN
+		if (defined('DEBUG_EXTRA') && ($userdata['user_level'] == ADMIN))
 		{
-			if ($memory_usage = memory_get_usage())
+			if (function_exists('memory_get_usage'))
 			{
-				global $base_memory_usage;
-				$memory_usage -= $base_memory_usage;
-				$memory_usage = ($memory_usage >= 1048576) ? round((round($memory_usage / 1048576 * 100) / 100), 2) . ' ' . 'MB' : (($memory_usage >= 1024) ? round((round($memory_usage / 1024 * 100) / 100), 2) . ' ' . 'KB' : $memory_usage . ' ' . 'BYTES');
-				$memory_usage_text = ' - ' . $lang['Memory_Usage'] . ': ' . $memory_usage;
+				if ($memory_usage = memory_get_usage())
+				{
+					global $base_memory_usage;
+					$memory_usage -= $base_memory_usage;
+					$memory_usage = ($memory_usage >= 1048576) ? round((round($memory_usage / 1048576 * 100) / 100), 2) . ' ' . 'MB' : (($memory_usage >= 1024) ? round((round($memory_usage / 1024 * 100) / 100), 2) . ' ' . 'KB' : $memory_usage . ' ' . 'BYTES');
+					$memory_usage_text = ' - ' . $lang['Memory_Usage'] . ': ' . $memory_usage;
+				}
+			}
+			if (defined('DEBUG_EXTRA'))
+			{
+				$tmp_query_string = htmlspecialchars(str_replace(array('&explain=1', 'explain=1'), array('', ''), $_SERVER['QUERY_STRING']));
+				$gzip_text .= ' - <a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . (!empty($tmp_query_string) ? ('?' . $tmp_query_string . '&amp;explain=1') : '?explain=1')) . '">Extra ' . $lang['Debug_On'] . '</a>';
 			}
 		}
-		if (defined('DEBUG_EXTRA'))
+
+		//if (defined('DEBUG_EXTRA') && ($userdata['user_level'] == ADMIN))
+		if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']) && ($userdata['user_level'] == ADMIN) && method_exists($db, 'sql_report'))
 		{
-			$tmp_query_string = htmlspecialchars(str_replace(array('&explain=1', 'explain=1'), array('', ''), $_SERVER['QUERY_STRING']));
-			$gzip_text .= ' - <a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . (!empty($tmp_query_string) ? ('?' . $tmp_query_string . '&amp;explain=1') : '?explain=1')) . '">Extra ' . $lang['Debug_On'] . '</a>';
+			$db->sql_report('display');
 		}
+		// Mighty Gorgon - Extra Debug - END
+
+		$template->assign_vars(array(
+			'SPACER' => $images['spacer'],
+			'PAGE_GEN_TIME' => $lang['Page_Generation_Time'] . ':',
+			'GENERATION_TIME' => $gentime,
+			'NUMBER_QUERIES' => $excuted_queries,
+			'MEMORY_USAGE' => $memory_usage_text,
+			'GZIP_TEXT' => $gzip_text,
+			'SQL_QUERIES' => $lang['SQL_Queries'],
+			'SQL_PART' => $sql_part,
+			'PHP_PART' => $php_part,
+			'OVERALL_QUERIES_TODAY' => $show_in_footer_today,
+			'OVERALL_QUERIES_TOP' => $show_in_footer_top,
+			'OVERALL_PAGES_VIEWED' => $spvt,
+			'DEBUG_TEXT' => $debug_text,
+			'BOTTOM_HTML_BLOCK' => $bottom_html_block_text,
+			'FOOTER_BANNER_BLOCK' => $footer_banner_text,
+			)
+		);
+
+		$template->assign_block_vars('generation_time_switch', array());
+
+		/*
+		$gen_log_file = IP_ROOT_PATH . 'cache/gen_log.txt';
+		$fp = fopen ($gen_log_file, "a+");
+		fwrite($fp, $gentime . "\t" . $memory_usage . "\n");
+		fclose($fp);
+		*/
 	}
-
-	//if (defined('DEBUG_EXTRA') && ($userdata['user_level'] == ADMIN))
-	if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']) && ($userdata['user_level'] == ADMIN) && method_exists($db, 'sql_report'))
-	{
-		$db->sql_report('display');
-	}
-	// Mighty Gorgon - Extra Debug - END
-
-	$template->assign_vars(array(
-		'SPACER' => $images['spacer'],
-		'PAGE_GEN_TIME' => $lang['Page_Generation_Time'] . ':',
-		'GENERATION_TIME' => $gentime,
-		'NUMBER_QUERIES' => $excuted_queries,
-		'MEMORY_USAGE' => $memory_usage_text,
-		'GZIP_TEXT' => $gzip_text,
-		'SQL_QUERIES' => $lang['SQL_Queries'],
-		'SQL_PART' => $sql_part,
-		'PHP_PART' => $php_part,
-		'OVERALL_QUERIES_TODAY' => $show_in_footer_today,
-		'OVERALL_QUERIES_TOP' => $show_in_footer_top,
-		'OVERALL_PAGES_VIEWED' => $spvt,
-		'DEBUG_TEXT' => $debug_text,
-		'BOTTOM_HTML_BLOCK' => $bottom_html_block_text,
-		)
-	);
-
-	$template->assign_block_vars('generation_time_switch', array());
-
-	/*
-	$gen_log_file = IP_ROOT_PATH . 'cache/gen_log.txt';
-	$fp = fopen ($gen_log_file, "a+");
-	fwrite($fp, $gentime . "\t" . $memory_usage . "\n");
-	fclose($fp);
-	*/
-
-	//}
-	// Page generation time for Admin - END
+	// Page generation time - END
 }
 
 $template->pparse('overall_footer');

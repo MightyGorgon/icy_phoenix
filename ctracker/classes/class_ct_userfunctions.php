@@ -323,12 +323,12 @@ class ct_userfunctions
 	{
 		global $db, $lang, $ctracker_config, $userdata;
 
-		if ( $userdata['user_id'] == ANONYMOUS )
+		if ($userdata['user_id'] == ANONYMOUS)
 		{
 			return;
 		}
 
-		if ( (intval($ctracker_config->settings['spammer_blockmode']) == 1) && ($userdata['user_id'] != ANONYMOUS) )
+		if ((intval($ctracker_config->settings['spammer_blockmode']) == 1) && ($userdata['user_id'] != ANONYMOUS))
 		{
 			// Ban user
 			$sql = "INSERT INTO " . BANLIST_TABLE . "(`ban_id` , `ban_userid` , `ban_ip` , `ban_email`) VALUES ('', '" . $userdata['user_id'] . "', '', NULL);";
@@ -336,16 +336,22 @@ class ct_userfunctions
 			{
 				message_die(CRITICAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 			}
-			$db->clear_cache('ban_');
+			$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 		}
-		elseif ( intval($ctracker_config->settings['spammer_blockmode']) == 2 )
+		elseif (intval($ctracker_config->settings['spammer_blockmode']) == 2)
 		{
 			// Block user
 			$sql = 'UPDATE ' . USERS_TABLE . ' SET user_active = 0 WHERE user_id = ' . $userdata['user_id'];
-			if ( !$result = $db->sql_query($sql) )
+			if (!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 			}
+			// Mighty Gorgon: Remove all notifications...
+			if (!function_exists('user_clear_notifications'))
+			{
+				include_once(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
+			}
+			$clear_notification = user_clear_notifications($userdata['user_id']);
 		}
 
 		// Remove Profile data

@@ -29,6 +29,7 @@
 
 {BOTTOM_HTML_BLOCK}
 <span><a name="bottom"></a></span>
+<!-- IF not S_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
 
 </div>
 </body>

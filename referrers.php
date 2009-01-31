@@ -195,7 +195,7 @@ $sql = "SELECT * FROM " . REFERRERS_TABLE ." ORDER BY $order_by";
 	{
 		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-		$url_name = (strlen($row['referrer_url']) > 50)?substr ($row['referrer_url'], 0, 50).'...' :$row['referrer_url'];// Cut Url name if it is longer than 50 chars
+		$url_name = (strlen($row['referrer_url']) > 50) ? (substr($row['referrer_url'], 0, 50) . '...') : $row['referrer_url'];// Cut Url name if it is longer than 50 chars
 
 		$template->assign_block_vars('refersrow', array(
 			'ID' => $i + ($start + 1),

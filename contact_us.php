@@ -12,6 +12,7 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 $enable_visual_confirm = true;
@@ -229,6 +230,7 @@ if (isset($_POST['submit']))
 				{
 					message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
 				}
+				$clear_notification = user_clear_notifications($userdata['user_id']);
 				$message = $lang['Email_sent'];
 				$redirect_url = append_sid(LOGIN_MG . '?logout=true&amp;sid=' . $userdata['session_id']);
 				meta_refresh(3, $redirect_url);
@@ -304,7 +306,7 @@ if ($enable_visual_confirm && !$userdata['session_logged_in'])
 	$db->sql_freeresult($result);
 	// Generate the required confirmation code
 	// NB 0 (zero) could get confused with O (the letter) so we make change it
-	$code = dss_rand();
+	$code = unique_id();
 	$code = substr(str_replace('0', 'Z', strtoupper(base_convert($code, 16, 35))), 2, 6);
 	$confirm_id = md5(uniqid($user_ip));
 	$sql = "INSERT INTO " . CONFIRM_TABLE . " (confirm_id, session_id, code)

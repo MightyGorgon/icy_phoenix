@@ -115,7 +115,7 @@ switch($mode)
 			{
 				while($sub_dir = @readdir($dir))
 				{
-					if(!is_file(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' .$sub_dir)) && $sub_dir != '.' && $sub_dir != '..' && $sub_dir != 'common' && $sub_dir != 'default')
+					if(!is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . 'templates/' .$sub_dir)) && ($sub_dir != '.') && ($sub_dir != '..') && ($sub_dir != 'common') && ($sub_dir != 'default'))
 					{
 						if(@file_exists(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir . '/theme_info.cfg')))
 						{
@@ -347,7 +347,7 @@ switch($mode)
 				$s_template_select = '<select name="template_name">';
 				while($file = @readdir($dir))
 				{
-					if(!is_file(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && $file != '.' && $file != '..' && $file != 'common' && $file != 'default')
+					if(!is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && ($file != '.') && ($file != '..') && ($file != 'common') && ($file != 'default'))
 					{
 						if($file == $selected['template_name'])
 						{
@@ -494,7 +494,7 @@ switch($mode)
 				$s_template_select = '<select name="export_template">';
 				while($file = @readdir($dir))
 				{
-					if(!is_file(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && $file != '.' && $file != '..' && $file != 'common' && $file != 'default')
+					if(!is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && ($file != '.') && ($file != '..') && ($file != 'common') && ($file != 'default'))
 					{
 						$s_template_select .= '<option value="' . $file . '">' . $file . "</option>\n";
 					}

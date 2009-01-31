@@ -38,11 +38,33 @@ function mg_clean_markup($str)
 	return $str;
 }
 
+// Actions Filter Select
+function actions_filter_select($default = 'ALL')
+{
+	global $lang;
+	$select_box = '';
+	$options_array = array('ALL', 'POST_EDIT', 'POST_DELETE', 'GROUP_JOIN', 'GROUP_EDIT', 'GROUP_ADD', 'GROUP_TYPE', 'MESSAGE', 'MODCP_DELETE', 'MODCP_RECYCLE', 'MODCP_LOCK', 'MODCP_UNLOCK', 'MODCP_MOVE', 'MODCP_MERGE', 'MODCP_SPLIT', 'TOPIC_BIN', 'TOPIC_ATTACK', 'CARD_BAN', 'CARD_WARN', 'CARD_UNBAN', 'ADMIN_CAT_ADD', 'ADMIN_FORUM_AUTH', 'ADMIN_DB_UTILITIES_BACKUP', 'ADMIN_DB_UTILITIES_RESTORE', 'ADMIN_BOARD_CONFIG', 'ADMIN_BOARD_IP_CONFIG', 'ADMIN_GROUP_NEW', 'ADMIN_GROUP_DELETE', 'ADMIN_GROUP_EDIT', 'ADMIN_USER_AUTH', 'ADMIN_GROUP_AUTH', 'ADMIN_USER_BAN', 'ADMIN_USER_UNBAN', 'ADMIN_USER_DELETE', 'ADMIN_USER_EDIT', 'CMS_LAYOUT_EDIT', 'CMS_LAYOUT_DELETE', 'CMS_BLOCK_EDIT', 'CMS_BLOCK_EDIT_LS', 'CMS_BLOCK_DELETE', 'CMS_BLOCK_DELETE_LS');
+
+	$options_lang_array = array('ALL', 'POST_EDIT', 'POST_DELETE', 'GROUP_JOIN', 'GROUP_EDIT', 'GROUP_ADD', 'GROUP_TYPE', 'MESSAGE', 'MODCP_DELETE', 'MODCP_RECYCLE', 'MODCP_LOCK', 'MODCP_UNLOCK', 'MODCP_MOVE', 'MODCP_MERGE', 'MODCP_SPLIT', 'TOPIC_BIN', 'TOPIC_ATTACK', 'CARD_BAN', 'CARD_WARN', 'CARD_UNBAN', 'ADMIN_CAT_ADD', 'ADMIN_FORUM_AUTH', 'ADMIN_DB_UTILITIES_BACKUP', 'ADMIN_DB_UTILITIES_RESTORE', 'ADMIN_BOARD_CONFIG', 'ADMIN_BOARD_IP_CONFIG', 'ADMIN_GROUP_NEW', 'ADMIN_GROUP_DELETE', 'ADMIN_GROUP_EDIT', 'ADMIN_USER_AUTH', 'ADMIN_GROUP_AUTH', 'ADMIN_USER_BAN', 'ADMIN_USER_UNBAN', 'ADMIN_USER_DELETE', 'ADMIN_USER_EDIT', 'CMS_LAYOUT_EDIT', 'CMS_LAYOUT_DELETE', 'CMS_BLOCK_EDIT', 'CMS_BLOCK_EDIT_LS', 'CMS_BLOCK_DELETE', 'CMS_BLOCK_DELETE_LS');
+
+	$select_box .= '<select name="logs_actions_filter" class="post" onchange="document.logs_values.submit();">';
+	for($j = 0; $j < count($options_array); $j++)
+	{
+		$selected = ($options_array[$j] == $default) ? ' selected="selected"' : '';
+		$select_box .= '<option value="' . $options_array[$j] . '"' . $selected . '>' . $options_lang_array[$j] . '</option>';
+	}
+	$select_box .= '</select>';
+
+	return $select_box;
+}
+
 // Query Logs
-function get_logs($logs_type, $logs_start = 0, $logs_number = 30, $logs_sort = 'log_id', $logs_sort_dir = 'DESC')
+function get_logs($logs_type, $logs_start = 0, $logs_number = 30, $logs_sort = 'log_id', $logs_sort_dir = 'DESC', $logs_actions_filter = 'ALL')
 {
 	global $db, $lang;
+	$logs_actions_filter_sql = (($logs_actions_filter == 'ALL') ? '' : ('WHERE log_action = \'' . $logs_actions_filter . '\''));
 	$sql = "SELECT * FROM " . LOGS_TABLE . "
+					" . $logs_actions_filter_sql . "
 					ORDER BY " . $logs_sort . " " . $logs_sort_dir . "
 					LIMIT " . $logs_start . ", " . $logs_number;
 	if(!$result = $db->sql_query($sql))

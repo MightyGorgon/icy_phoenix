@@ -145,7 +145,7 @@ if (isset($_REQUEST['psid']))
 	// Extract archives and save in variable list
 	if($zip_uploads && !$multi_id)
 	{
-		require_once('album_pclzip_lib.' . PHP_EXT);
+		require_once(IP_ROOT_PATH . 'includes/pclzip.lib.' . PHP_EXT);
 		$pfm = $multi_max;
 		$ptm = $multi_max;
 		for($i=0 ; $i < $k ; $i++)

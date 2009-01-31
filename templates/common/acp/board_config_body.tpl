@@ -2,7 +2,7 @@
 
 <p>{L_CONFIGURATION_EXPLAIN}</p>
 
-<form action="{S_CONFIG_ACTION}" method="post">
+<form id="configform" action="{S_CONFIG_ACTION}" method="post">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_GENERAL_SETTINGS}</th></tr>
 <tr>
@@ -70,10 +70,12 @@
 	<td class="row1"><strong>{L_ONLINE_TIME}</strong><br /><span class="gensmall">{L_ONLINE_TIME_EXPLAIN}</span></td>
 	<td class="row2"><input class="post" type="text" size="3" maxlength="4" name="online_time" value="{ONLINE_TIME}" /></td>
 </tr>
+<!--
 <tr>
 	<td class="row1"><strong>{L_ENABLE_GZIP}</strong></td>
 	<td class="row2"><input type="radio" name="gzip_compress" value="1" {GZIP_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="gzip_compress" value="0" {GZIP_NO} /> {L_NO}</td>
 </tr>
+-->
 <tr>
 	<td class="row1"><strong>{L_ENABLE_PRUNE}</strong></td>
 	<td class="row2"><input type="radio" name="prune_enable" value="1" {PRUNE_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="prune_enable" value="0" {PRUNE_NO} /> {L_NO}</td>
@@ -89,6 +91,15 @@
 <tr>
 	<td class="row1"><strong>{L_BIN_FORUM}</strong><br /><span class="gensmall">{L_BIN_FORUM_EXPLAIN}</span><br /></td>
 	<td class="row2" valign="top">{S_BIN_FORUM}</td>
+</tr>
+<tr><th colspan="2">{L_HEADER_FOOTER}</th></tr>
+<tr>
+	<td class="row1"><strong>{L_HEADER_TABLE_SWITCH}</strong><br /><span class="gensmall">{L_HEADER_TABLE_SWITCH_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="switch_header_table" value="1" {HEADER_TBL_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="switch_header_table" value="0" {HEADER_TBL_NO} /> {L_NO}</td>
+</tr>
+<tr>
+	<td class="row1"><strong>{L_HEADER_TABLE_TEXT}</strong></td>
+	<td class="row2"><textarea name="header_table_text" rows="10" cols="35" wrap="virtual" style="width:300" class="post" >{HEADER_TBL_TXT}</textarea></td>
 </tr>
 <tr><th colspan="2">{L_PRIVATE_MESSAGING}</th></tr>
 <tr>

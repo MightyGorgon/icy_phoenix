@@ -210,9 +210,7 @@ $unchecked_post_fields = array(
 	'pic_title', 'pic_desc', 'article_desc', 'email_confirm', 'article_name', 'article_desc',
 	'menu_name', 'menu_desc', 'menu_name_lang', 'remove', 'add', 'add_cat', 'add_item',
 	'autologin', 'current_email', 'download', 'menu_link', 'new_password', 'password_confirm',
-	'action_update', 'action_duplicate', 'duplicate_blocks', 'deleteall',
-	'top_html_block_text', 'bottom_html_block_text', 'cat_title', 'cat_desc',
-	'news_category_edit', 'pm_delete_attach',
+	'deleteall', 'cat_title', 'cat_desc', 'news_category_edit', 'pm_delete_attach',
 	// '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 );
 
@@ -220,9 +218,8 @@ $unchecked_post_fields = array(
 $unchecked_get_fields = array(
 	'submit', 'search_author',
 	// Added by MG
-	'mode', 'l_id', 'b_id', 'bv_id',
-	'cachefile', 'avatarfile', 'text_content', 'text_size', 'text_font',
-	'text_color', 'text_position',
+	'mode', 'cachefile', 'avatarfile',
+	'text_content', 'text_size', 'text_font', 'text_color', 'text_position',
 );
 
 /*

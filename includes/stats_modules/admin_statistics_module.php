@@ -32,7 +32,14 @@ $total_topics = $board_config['max_topics'];
 $total_posts = $board_config['max_posts'];
 $total_users = $board_config['max_users'];
 $newest_userdata['user_id'] = $board_config['last_user_id'];
-$newest_user = colorize_username($newest_userdata['user_id']);
+$newest_user = '';
+$cache_data_file = MAIN_CACHE_FOLDER . 'newest_user.dat';
+if (file_exists($cache_data_file))
+{
+	@include($cache_data_file);
+	$newest_user = ((STRIP) ? stripslashes($newest_user) : $newest_user);
+}
+$newest_user = !empty($newest_user) ? $newest_user : colorize_username($newest_userdata['user_id']);
 $newest_uid = $newest_userdata['user_id'];
 
 $start_date = create_date($board_config['default_dateformat'], $board_config['board_startdate'], $board_config['board_timezone']);

@@ -21,8 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
- * PhpBB Data Access class use to retrieve news posts from the phpBB
- * database.
+ * PhpBB Data Access class use to retrieve news posts from phpBB database.
  *
  * @author Nicholas Young-Soares <programs@codemonkeyx.net>
  * @see http://www.codemonkeyx.net
@@ -314,7 +313,7 @@ class NewsDataAccess
 				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
 				n.*,
 				p.*,
-				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . FORUMS_TABLE . ' AS f,
@@ -378,7 +377,7 @@ class NewsDataAccess
 		// Begin SQL Construction.
 		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_attachment,
 				p.*,
-				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . USERS_TABLE . ' AS u,
@@ -522,7 +521,7 @@ class NewsDataAccess
 				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
 				n.*,
 				p.*,
-				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . FORUMS_TABLE . ' AS f,
@@ -789,7 +788,7 @@ class NewsDataAccess
 	// {{{ fetchArticles()
 
 	/**
-	* Fetches news articles from the phpBB database.
+	* Fetches news articles from the database.
 	*
 	* @access public
 	*
@@ -823,12 +822,11 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('forum');
 
 		// Begin SQL Construction.
-			//p.post_time, p.post_edit_time, p.post_attachment,
 		$sql = 'SELECT
 				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
 				n.*,
 				p.*,
-				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . FORUMS_TABLE . ' AS f,
@@ -888,7 +886,7 @@ class NewsDataAccess
 		}
 		else
 		{
-			if(!($result = $this->db->sql_query($sql, false, 'posts_')))
+			if(!($result = $this->db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER)))
 			{
 				echo 'Error ' . __LINE__ . ' ' . __FILE__;
 				return array();
@@ -1018,7 +1016,7 @@ class NewsDataAccess
 		$sql = 'SELECT
 				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies,
 				n.*,
-				u.user_id, u.username, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM
 				' . TOPICS_TABLE . ' AS t,
 				' . USERS_TABLE . ' AS u,
@@ -1054,7 +1052,7 @@ class NewsDataAccess
 		$sql .= $start . ', ' . $num_items;
 		// End SQL Construction.
 
-		if(!($result = $this->db->sql_query($sql, false, 'posts_')))
+		if(!($result = $this->db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER)))
 		{
 			echo 'Error ' . __LINE__ . ' ' . __FILE__;
 			return array();

@@ -110,7 +110,7 @@ if (isset($_POST['groupstatus']) && $group_id)
 
 	$message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
-	$db->clear_cache('groups_');
+	$db->clear_cache('groups_', USERS_CACHE_FOLDER);
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -198,7 +198,7 @@ elseif (isset($_POST['joingroup']) && $group_id)
 
 	if ($is_autogroup_enable)
 	{
-		update_user_color($user_id, $group_data['group_color'], $userdata['user_color_group']);
+		update_user_color($user_id, $group_data['group_color'], $userdata['user_color_group'], false, false);
 	}
 
 	if (($userdata['user_rank'] == '0') && ($group_rank != '0') && $is_autogroup_enable)
@@ -301,7 +301,7 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 			message_die(GENERAL_ERROR, 'Could not delete group memebership data', '', __LINE__, __FILE__, $sql);
 		}
 
-		clear_user_color($userdata['user_id'], $group_color, $group_id);
+		update_user_color($userdata['user_id'], $board_config['active_users_color'], 0);
 
 		if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] == MOD))
 		{
@@ -476,7 +476,7 @@ elseif ($group_id)
 						message_die(GENERAL_ERROR, 'Could not add user to group', '', __LINE__, __FILE__, $sql);
 					}
 
-					update_user_color($row['user_id'], $group_color, $group_id);
+					update_user_color($row['user_id'], $group_color, $group_id, false, false);
 
 					if (($row['user_rank'] == '0') && ($group_rank != '0'))
 					{
@@ -780,6 +780,7 @@ elseif ($group_id)
 	{
 		message_die(GENERAL_MESSAGE, $lang['Group_not_exist']);
 	}
+	$db->sql_freeresult($result);
 
 	// Get group rank
 	$sql_rank = "SELECT * FROM " . RANKS_TABLE . "
@@ -797,9 +798,10 @@ elseif ($group_id)
 	{
 		$group_rank_image = '-';
 	}
+	$db->sql_freeresult($result);
 
 	// Get moderator details for this group
-	$sql = "SELECT username, user_id, user_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
+	$sql = "SELECT username, user_id, user_active, user_color, user_color_group, user_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
 		FROM " . USERS_TABLE . "
 		WHERE user_id = " . $group_info['group_moderator'];
 	if (!($result = $db->sql_query($sql)))
@@ -808,9 +810,10 @@ elseif ($group_id)
 	}
 
 	$group_moderator = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
 
 	// Get user information for this group
-	$sql = "SELECT u.username, u.user_id, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
 		FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
 		WHERE ug.group_id = $group_id
 			AND u.user_id = ug.user_id
@@ -823,10 +826,9 @@ elseif ($group_id)
 	}
 
 	$group_members = $db->sql_fetchrowset($result);
-	// 1 line deleted for Faster groupcp MOD
 	$db->sql_freeresult($result);
 
-	$sql = "SELECT u.username, u.user_id, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
 		FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u
 		WHERE ug.group_id = $group_id
 			AND ug.user_pending = 1
@@ -838,6 +840,8 @@ elseif ($group_id)
 	}
 
 	$modgroup_pending_list = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
 	// Start replacement - Faster groupcp MOD
 	$sql = "SELECT SUM(user_pending = 0) as members, SUM(user_pending = 1) as pending
 		FROM " . USER_GROUP_TABLE . "
@@ -847,19 +851,19 @@ elseif ($group_id)
 	{
 		message_die(GENERAL_ERROR, 'Error getting user count information', '', __LINE__, __FILE__, $sql);
 	}
+
 	$counting_list = $db->sql_fetchrow($result);
 	$members_count = $counting_list['members'];
 	$modgroup_pending_count = $counting_list['pending'];
-	// End replacement - Faster groupcp MOD
-
 	$db->sql_freeresult($result);
+	// End replacement - Faster groupcp MOD
 
 	$is_group_member = 0;
 	if ($members_count)
 	{
 		for($i = 0; $i < $members_count; $i++)
 		{
-			if ($group_members[$i]['user_id'] == $userdata['user_id'] && $userdata['session_logged_in'])
+			if (($group_members[$i]['user_id'] == $userdata['user_id']) && $userdata['session_logged_in'])
 			{
 				$is_group_member = true;
 			}
@@ -968,7 +972,7 @@ elseif ($group_id)
 
 	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
 
-	$group_color = check_valid_color_mg($group_info['group_color']) ? check_valid_color_mg($group_info['group_color']) : false;
+	$group_color = check_valid_color($group_info['group_color']) ? check_valid_color($group_info['group_color']) : false;
 	$template->assign_vars(array(
 		'L_GROUP_INFORMATION' => $lang['Group_Information'],
 		'L_GROUP_NAME' => $lang['Group_name'],
@@ -1013,7 +1017,7 @@ elseif ($group_id)
 		'GROUP_COLOR_STYLE' => ($group_color ? ' style="color:' . $group_color . ';font-weight:bold;"' : ' style="font-weight:bold;"'),
 		'ROW_COLOR' => '#' . $theme['td_color1'],
 		'ROW_CLASS' => $theme['td_class1'],
-		'USERNAME' => colorize_username($user_id),
+		'USERNAME' => colorize_username($group_moderator['user_id'], $group_moderator['username'], $group_moderator['user_color'], $group_moderator['user_active']),
 		'FROM' => $user_info['from'],
 		'JOINED' => $user_info['joined'],
 		'POSTS' => $user_info['posts'],
@@ -1095,7 +1099,7 @@ elseif ($group_id)
 				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'USER_ID' => $user_id,
-				'USERNAME' => colorize_username($user_id),
+				'USERNAME' => colorize_username($group_members[$i]['user_id'], $group_members[$i]['username'], $group_members[$i]['user_color'], $group_members[$i]['user_active']),
 				'FROM' => $user_info['from'],
 				'JOINED' => $user_info['joined'],
 				'POSTS' => $user_info['posts'],
@@ -1205,7 +1209,7 @@ elseif ($group_id)
 					'ROW_CLASS' => $row_class,
 					'ROW_COLOR' => '#' . $row_color,
 					'USER_ID' => $user_id,
-					'USERNAME' => colorize_username($user_id),
+					'USERNAME' => colorize_username($modgroup_pending_list[$i]['user_id'], $modgroup_pending_list[$i]['username'], $modgroup_pending_list[$i]['user_color'], $modgroup_pending_list[$i]['user_active']),
 					'FROM' => $user_info['from'],
 					'JOINED' => $user_info['joined'],
 					'POSTS' => $user_info['posts'],
@@ -1311,7 +1315,7 @@ else
 			{
 				$in_group[] = $row['group_id'];
 				$s_member_groups_opt .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
-				$group_color = check_valid_color_mg($row['group_color']) ? check_valid_color_mg($row['group_color']) : false;
+				$group_color = check_valid_color($row['group_color']) ? check_valid_color($row['group_color']) : false;
 				$template->assign_block_vars('switch_groups_joined.mg_row', array(
 					'GROUP_ID' => $row['group_id'],
 					'GROUP_NAME' => $row['group_name'],
@@ -1345,7 +1349,7 @@ else
 			{
 				$in_group[] = $row['group_id'];
 				$s_pending_groups_opt .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
-				$group_color = check_valid_color_mg($row['group_color']) ? check_valid_color_mg($row['group_color']) : false;
+				$group_color = check_valid_color($row['group_color']) ? check_valid_color($row['group_color']) : false;
 				$template->assign_block_vars('switch_groups_pending.pg_row', array(
 					'GROUP_ID' => $row['group_id'],
 					'GROUP_NAME' => $row['group_name'],
@@ -1383,7 +1387,7 @@ else
 			if (($row['group_type'] != GROUP_HIDDEN) || ($userdata['user_level'] == ADMIN))
 			{
 				$s_group_list_opt .='<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
-				$group_color = check_valid_color_mg($row['group_color']) ? check_valid_color_mg($row['group_color']) : false;
+				$group_color = check_valid_color($row['group_color']) ? check_valid_color($row['group_color']) : false;
 				$template->assign_block_vars('switch_groups_remaining.ag_row', array(
 					'GROUP_ID' => $row['group_id'],
 					'GROUP_NAME' => $row['group_name'],

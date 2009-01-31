@@ -123,7 +123,7 @@ $pafiledb_template->assign_vars(array(
 	)
 );
 
-if($mode == '' || $mode == 'cat_order' || $mode == 'sync' || $mode == 'sync_all')
+if($mode == '' || ($mode == 'cat_order') || ($mode == 'sync') || ($mode == 'sync_all'))
 {
 	$pafiledb_template->assign_vars(array(
 		'L_CREATE_CATEGORY' => $lang['Create_category'],
@@ -149,13 +149,13 @@ elseif($mode == 'add' || $mode == 'edit')
 			$cat_list .= '<option value="0">' . $lang['None'] . '</option>';
 		}
 		$cat_list .= (!$_POST['cat_parent']) ? $pafiledb->jumpmenu_option() : $pafiledb->jumpmenu_option(0, 0, array($_POST['cat_parent'] => 1));
-		$checked_yes = ($_POST['cat_allow_file']) ? ' checked' : '';
-		$checked_no = (!$_POST['cat_allow_file']) ? ' checked' : '';
+		$checked_yes = ($_POST['cat_allow_file']) ? ' checked="checked"' : '';
+		$checked_no = (!$_POST['cat_allow_file']) ? ' checked="checked"' : '';
 		// MX Addon
-		$checked_comments_yes = ($_POST['cat_allow_comments']) ? ' checked' : '';
-		$checked_comments_no = (!$_POST['cat_allow_comments']) ? ' checked' : '';
-		$checked_ratings_yes = ($_POST['cat_allow_ratings']) ? ' checked' : '';
-		$checked_ratings_no = (!$_POST['cat_allow_ratings']) ? ' checked' : '';
+		$checked_comments_yes = ($_POST['cat_allow_comments']) ? ' checked="checked"' : '';
+		$checked_comments_no = (!$_POST['cat_allow_comments']) ? ' checked="checked"' : '';
+		$checked_ratings_yes = ($_POST['cat_allow_ratings']) ? ' checked="checked"' : '';
+		$checked_ratings_no = (!$_POST['cat_allow_ratings']) ? ' checked="checked"' : '';
 		// End
 		$cat_name = (!empty($_POST['cat_name'])) ? $_POST['cat_name'] : '';
 		$cat_desc = (!empty($_POST['cat_desc'])) ? $_POST['cat_desc'] : '';
@@ -174,35 +174,35 @@ elseif($mode == 'add' || $mode == 'edit')
 
 		if($pafiledb->cat_rowset[$cat_id]['cat_allow_file'])
 		{
-			$checked_yes = ' checked';
+			$checked_yes = ' checked="checked"';
 			$checked_no = '';
 		}
 		else
 		{
 			$checked_yes = '';
-			$checked_no = ' checked';
+			$checked_no = ' checked="checked"';
 		}
 
 		if($pafiledb->cat_rowset[$cat_id]['cat_allow_comments'])
 		{
-			$checked_comments_yes = ' checked';
+			$checked_comments_yes = ' checked="checked"';
 			$checked_comments_no = '';
 		}
 		else
 		{
 			$checked_comments_yes = '';
-			$checked_comments_no = ' checked';
+			$checked_comments_no = ' checked="checked"';
 		}
 
 		if($pafiledb->cat_rowset[$cat_id]['cat_allow_ratings'])
 		{
-			$checked_ratings_yes = ' checked';
+			$checked_ratings_yes = ' checked="checked"';
 			$checked_ratings_no = '';
 		}
 		else
 		{
 			$checked_ratings_yes = '';
-			$checked_ratings_no = ' checked';
+			$checked_ratings_no = ' checked="checked"';
 		}
 
 		$cat_name = $pafiledb->cat_rowset[$cat_id]['cat_name'];
@@ -267,31 +267,4 @@ $cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 
-function admin_cat_main($cat_parent = 0, $depth = 0)
-{
-	global $pafiledb, $pafiledb_template;
-
-	$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
-	if(isset($pafiledb->subcat_rowset[$cat_parent]))
-	{
-		foreach($pafiledb->subcat_rowset[$cat_parent] as $subcat_id => $cat_data)
-		{
-			$pafiledb_template->assign_block_vars('cat_row', array(
-				'IS_HIGHER_CAT' => ($cat_data['cat_allow_file'] == PA_CAT_ALLOW_FILE) ? false : true,
-				'U_CAT' => append_sid('admin_pa_category.php?cat_id=' . $subcat_id),
-				'U_CAT_EDIT' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=edit&amp;cat_id=' . $subcat_id),
-				'U_CAT_DELETE' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=delete&amp;cat_id=' . $subcat_id),
-				'U_CAT_MOVE_UP' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=cat_order&amp;move=-15&amp;cat_id_other=' . $subcat_id),
-				'U_CAT_MOVE_DOWN' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=cat_order&amp;move=15&amp;cat_id_other=' . $subcat_id),
-				'U_CAT_RESYNC' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=sync&amp;cat_id_other=' . $subcat_id),
-				'CAT_NAME' => $cat_data['cat_name'],
-				'PRE' => $pre
-				)
-			);
-			admin_cat_main($subcat_id, $depth + 1);
-		}
-		return;
-	}
-	return;
-}
 ?>

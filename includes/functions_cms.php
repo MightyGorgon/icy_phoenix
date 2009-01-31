@@ -71,8 +71,13 @@ function cms_blocks_view($type = true)
 				$append = '023';
 				break;
 			case ADMIN:
+				// If you want admin to see also GUEST ONLY blocks you need to use these settings...
+				/*
 				$bview = '(0,1,2,3,4)';
 				$append = '01234';
+				*/
+				$bview = '(0,2,3,4)';
+				$append = '0234';
 				break;
 			default:
 				$bview = '(0)';

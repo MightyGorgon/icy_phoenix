@@ -42,6 +42,10 @@ switch ($req_version)
 	case '121340': $current_ip_version = '1.2.13.40'; break;
 	case '121441': $current_ip_version = '1.2.14.41'; break;
 	case '121542': $current_ip_version = '1.2.15.42'; break;
+	case '121643': $current_ip_version = '1.2.16.43'; break;
+	case '121744': $current_ip_version = '1.2.17.44'; break;
+	case '121845': $current_ip_version = '1.2.18.45'; break;
+	case '121946': $current_ip_version = '1.2.19.46'; break;
 }
 
 // Icy Phoenix Part...
@@ -521,16 +525,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "notes` (
 			`id` int(8) NOT NULL default '0',
 			`text` text
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "optimize_db` (
-			`cron_enable` enum('0','1') NOT NULL default '0',
-			`cron_every` int(7) NOT NULL default '86400',
-			`cron_next` int(11) NOT NULL default '0',
-			`cron_count` int(5) NOT NULL default '0',
-			`cron_lock` enum('0','1') NOT NULL default '0',
-			`show_begin_for` varchar(150) NOT NULL default '',
-			`show_not_optimized` enum('0','1') NOT NULL default '0'
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_auth` (
@@ -1158,7 +1152,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('liw_max_width', '500')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('liw_attach_enabled', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('xs_news_version', '2.0.3')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('board_disable_message', 'forum disabled')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('board_disable_message', 'Site disabled')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('board_disable_mess_st', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('sitemap_announce_priority', '1.0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('sitemap_default_priority', '0.5')";
@@ -1229,8 +1223,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('xmas_fx', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_header_table', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('header_table_text', 'Text')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_footer_table', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('footer_table_text', 'Text')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('fast_n_furious', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('new_msgs_mumber', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('index_last_msgs', '0')";
@@ -1244,7 +1236,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('posts_precompiled', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('index_links', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('index_birthday', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('db_cron', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('site_history', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('smilies_topic_title', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('html_email', '1')";
@@ -1321,7 +1312,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "links` VALUES (3, 'Mighty Gorgon Community', 'Mighty Gorgon Community', 4, 'http://www.mightygorgon.com/', 'images/links/banner_mightygorgon.gif', 1125353670, 1, 0, 2, '', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "news` VALUES (1, 'News', '48_leaf_orange.png')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "notes` VALUES (1, 'Write here your notes')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "optimize_db` VALUES ('1', 86400, 1133017073, 1, '1', '', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_cat` VALUES (1, 'My Category', '', 0, '', 1, 0, 0, 0, 0, 0, '0', 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_cat` VALUES (2, 'Test Cagegory', 'Just a test category', 1, '', 2, 1, 0, 0, 0, 0, '0', 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_config` VALUES ('allow_comment_images', '0')";
@@ -1376,28 +1366,6 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "ALTER TABLE " . $table_prefix . "users ADD user_login_tries smallint(5) UNSIGNED DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE " . $table_prefix . "users ADD user_last_login_try int(11) DEFAULT '0' NOT NULL";
-		$sql[] = "DROP TABLE " . $table_prefix . "themes";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "themes` (
-			`themes_id` mediumint(8) unsigned NOT NULL auto_increment,
-			`template_name` varchar(30) NOT NULL default '',
-			`style_name` varchar(30) NOT NULL default '',
-			`head_stylesheet` varchar(100) default NULL,
-			`body_background` varchar(100) default NULL,
-			`body_bgcolor` varchar(6) default NULL,
-			`tr_class1` varchar(25) default NULL,
-			`tr_class2` varchar(25) default NULL,
-			`tr_class3` varchar(25) default NULL,
-			`td_class1` varchar(25) default NULL,
-			`td_class2` varchar(25) default NULL,
-			`td_class3` varchar(25) default NULL,
-			PRIMARY KEY (`themes_id`)
-		)";
-
-		$sql[] = "INSERT`" . $table_prefix . "themes` VALUES (1, 'default', 'Icy Phoenix', 'style_ice.css', 'ice', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'row1', 'row2', '', '', '', '', 10, 11, 12, '', '22BB33', 'DD2222', '', '', '', 0, 0, '008000', 'DD0000', 'EECC00')";
-
-		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_style` = '1'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'default_style'";
 		$sql[] = "ALTER TABLE " . $table_prefix . "smilies ADD smilies_order INT(5) NOT NULL";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('smilies_insert', '1')";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_show_portal` TINYINT(1) NOT NULL DEFAULT '0'";
@@ -1554,11 +1522,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD user_setbm tinyint(1) NOT NULL default '0' AFTER user_attachsig";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('max_link_bookmarks', '0')";
-
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_header_banner', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_viewtopic_banner', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('header_banner_text', 'Text')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('viewtopic_banner_text', 'Text')";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "captcha_config` (
 			`config_name` varchar(255) NOT NULL default '',
@@ -2493,11 +2456,6 @@ if (substr($mode, 0, 6) == 'update')
 		$db->sql_freeresult($result_tmp);
 		$sql[] = "DROP TABLE `" . $table_prefix . "config_mg`";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('switch_top_html_block', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('top_html_block_text', 'Text')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('switch_bottom_html_block', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('bottom_html_block_text', 'Text')";
-
 		/* Updating from IP 1.0.11.11 */
 		case '1.0.11.11':
 		$older_update = true;
@@ -2628,7 +2586,6 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.1.1.16 */
 		case '1.1.1.16':
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('show_social_bookmarks', '0')";
-		$sql[] = "UPDATE `" . $table_prefix . "themes` SET td_class3 = 'row3'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "album_cat` ADD `cat_pics` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `cat_wm`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `user_session_topic`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` DROP `session_topic`";
@@ -3210,10 +3167,31 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.2.11.38 */
 		case '1.2.11.38':
 		$sql[] = "DROP TABLE `" . $table_prefix . "themes_name`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "themes` DROP `body_text`, DROP `body_link`, DROP `body_vlink`, DROP `body_alink`, DROP `body_hlink`, DROP `tr_color1`, DROP `tr_color2`, DROP `tr_color3`, DROP `th_color1`, DROP `th_color2`, DROP `th_color3`, DROP `th_class1`, DROP `th_class2`, DROP `th_class3`, DROP `td_color1`, DROP `td_color2`, DROP `td_color3`, DROP `fontface1`, DROP `fontface2`, DROP `fontface3`, DROP `fontsize1`, DROP `fontsize2`, DROP `fontsize3`, DROP `fontcolor1`, DROP `fontcolor2`, DROP `fontcolor3`, DROP `span_class1`, DROP `span_class2`, DROP `span_class3`, DROP `img_size_poll`, DROP `img_size_privmsg`, DROP `online_color`, DROP `offline_color`, DROP `hidden_color`";
-		$sql[] = "UPDATE " . $table_prefix . "config SET config_value = 'default' WHERE config_name = 'xs_def_template'";
-		$sql[] = "UPDATE " . $table_prefix . "pa_config SET config_value = 'downloads/' WHERE config_name = 'upload_dir'";
-		$sql[] = "UPDATE " . $table_prefix . "pa_config SET config_value = 'files/screenshots/' WHERE config_name = 'screenshots_dir'";
+		$sql[] = "DROP TABLE " . $table_prefix . "themes";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "themes` (
+			`themes_id` mediumint(8) unsigned NOT NULL auto_increment,
+			`template_name` varchar(30) NOT NULL default '',
+			`style_name` varchar(30) NOT NULL default '',
+			`head_stylesheet` varchar(100) default NULL,
+			`body_background` varchar(100) default NULL,
+			`body_bgcolor` varchar(6) default NULL,
+			`tr_class1` varchar(25) default NULL,
+			`tr_class2` varchar(25) default NULL,
+			`tr_class3` varchar(25) default NULL,
+			`td_class1` varchar(25) default NULL,
+			`td_class2` varchar(25) default NULL,
+			`td_class3` varchar(25) default NULL,
+			PRIMARY KEY (`themes_id`)
+		)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "themes` VALUES (1, 'icy_phoenix', 'Frozen Phoenix', 'style_cyan.css', 'cyan', '', 'row1', 'row2', 'row3', 'row1', 'row2', 'row3')";
+
+		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_style` = '1'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'default_style'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = 'default' WHERE `config_name` = 'xs_def_template'";
+		$sql[] = "UPDATE `" . $table_prefix . "pa_config` SET `config_value` = 'downloads/' WHERE `config_name` = 'upload_dir'";
+		$sql[] = "UPDATE `" . $table_prefix . "pa_config` SET `config_value` = 'files/screenshots/' WHERE `config_name` = 'screenshots_dir'";
 
 		/* Updating from IP 1.2.12.39 */
 		case '1.2.12.39':
@@ -3369,12 +3347,12 @@ if (substr($mode, 0, 6) == 'update')
 
 			$sql[] = "INSERT INTO `___forums___`
 			SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.thank, f.forum_notify, 0, 0, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
-			FROM `phpbb_forums` f
+			FROM `" . $table_prefix . "forums` f
 			ORDER BY f.forum_id";
 
 			$sql[] = "INSERT INTO `" . $table_prefix . "forums_rules`
 			SELECT f.forum_id, f.forum_rules, f.rules_display_title, f.rules_custom_title, f.rules_in_viewforum, f.rules_in_viewtopic, f.rules_in_posting
-			FROM `phpbb_forums` f
+			FROM `" . $table_prefix . "forums` f
 			ORDER BY f.forum_id";
 
 			$sql[] = "RENAME TABLE `" . $table_prefix . "forums` TO `_old_" . $table_prefix . "forums`";
@@ -3404,7 +3382,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "INSERT INTO `___categories___`
 			SELECT c.cat_id, c.cat_main, c.cat_main_type, c.cat_title, c.cat_desc, c.icon, c.cat_order
-			FROM `phpbb_categories` c
+			FROM `" . $table_prefix . "categories` c
 			ORDER BY c.cat_id";
 
 		$sql[] = "RENAME TABLE `" . $table_prefix . "categories` TO `_old_" . $table_prefix . "categories`";
@@ -3412,6 +3390,133 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.2.15.42 */
 		case '1.2.15.42':
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('ScoutJet', '', 'http://www.scoutjet.com/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yandex', '', 'Yandex/', '')";
+
+		$sql[] = "ALTER TABLE " . $table_prefix . "forums ADD `forum_topic_views` TINYINT(1) NOT NULL DEFAULT '1' AFTER `forum_similar_topics`";
+
+		/* Updating from IP 1.2.16.43 */
+		case '1.2.16.43':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_global_switch', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_lock', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_queue_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_queue_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_digests_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_digests_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_files_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_files_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_database_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_database_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_cache_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_cache_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_sql_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_sql_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_users_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_users_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_topics_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_topics_last_run', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_sessions_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_sessions_last_run', '0')";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_db_count', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_db_show_begin_for', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_db_show_not_optimized', '0')";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('rand_seed_last_update', '0')";
+
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'db_cron'";
+
+		$sql[] = "DROP TABLE `" . $table_prefix . "optimize_db`";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('gsearch_guests', '0')";
+
+		$sql_tmp = "SHOW TABLES LIKE '_old_" . $table_prefix . "megamail'";
+		$result_tmp = $db->sql_query($sql_tmp);
+		if (!$row = $db->sql_fetchrow($result_tmp))
+		{
+			$sql[] = "CREATE TABLE `___megamail___` (
+				`mail_id` smallint unsigned NOT NULL auto_increment,
+				`mailsession_id` varchar(32) NOT NULL,
+				`mass_pm` tinyint(1) NOT NULL default '0',
+				`user_id` mediumint(8) NOT NULL,
+				`group_id` mediumint(8) NOT NULL,
+				`email_subject` varchar(255) NOT NULL,
+				`email_body` text,
+				`email_format` tinyint(1) NOT NULL default '0',
+				`batch_start` mediumint(8) NOT NULL,
+				`batch_size` smallint UNSIGNED NOT NULL,
+				`batch_wait` smallint NOT NULL,
+				`status` smallint NOT NULL,
+				PRIMARY KEY (`mail_id`)
+			)";
+
+			$sql[] = "INSERT INTO `___megamail___`
+			SELECT m.mail_id, m.mailsession_id, 0, m.user_id, m.group_id, m.email_subject, m.email_body, 0, m.batch_start, m.batch_size, m.batch_wait, m.status
+			FROM `" . $table_prefix . "megamail` m
+			ORDER BY m.mail_id";
+
+			$sql[] = "RENAME TABLE `" . $table_prefix . "megamail` TO `_old_" . $table_prefix . "megamail`";
+			$sql[] = "RENAME TABLE `___megamail___` TO `" . $table_prefix . "megamail`";
+		}
+
+		/* Updating from IP 1.2.17.44 */
+		case '1.2.17.44':
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Bloglines', '', 'Bloglines/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('DotBot', '', 'dotnetdotcom.org/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('FeedBurner', '', 'FeedBurner/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Feedreader', '', 'Feedreader', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Netvibes', '', 'Netvibes', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('NewsGatorOnline', '', 'NewsGatorOnline/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snarfer', '', 'Snarfer/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WikioFeedBot', '', 'WikioFeedBot', '')";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_glt', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_glb', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_glh', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_glf', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_fix', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_fit', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_fib', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_vfx', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_vft', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_vfb', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_vtx', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_vtt', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_vtb', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_nmt', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ads_nmb', '0')";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "ads` (
+			`ad_id` mediumint(8) unsigned NOT NULL auto_increment,
+			`ad_title` varchar(255) NOT NULL,
+			`ad_text` text,
+			`ad_position` varchar(255) NOT NULL,
+			`ad_auth` tinyint(1) NOT NULL default '0',
+			`ad_format` tinyint(1) NOT NULL default '0',
+			`ad_active` tinyint(1) NOT NULL default '0',
+			PRIMARY KEY (`ad_id`)
+		)";
+
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'switch_top_html_block'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'switch_bottom_html_block'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'switch_footer_table'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'switch_header_banner'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'switch_viewtopic_banner'";
+
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'top_html_block_text'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'bottom_html_block_text'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'footer_table_text'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'header_banner_text'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'viewtopic_banner_text'";
+
+		$sql[] = "DELETE FROM " . $table_prefix . "extensions WHERE `extension` = 'tif'";
+		$sql[] = "DELETE FROM " . $table_prefix . "extensions WHERE `extension` = 'tga'";
+
+		/* Updating from IP 1.2.18.45 */
+		case '1.2.18.45':
+
+		/* Updating from IP 1.2.19.46 */
+		case '1.2.19.46':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

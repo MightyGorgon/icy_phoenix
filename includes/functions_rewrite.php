@@ -25,7 +25,7 @@ function make_url_friendly($url)
 	// Remove all HTML tags
 	$url = strip_tags($url);
 	// Convert &
-	$url = str_replace(array('&amp;', '&nbsp;'), array('&', ' '), $url);
+	$url = str_replace(array('&amp;', '&nbsp;', '&quot;'), array('&', ' ', ''), $url);
 	// Decode all HTML entities
 	$url = html_entity_decode($url, ENT_COMPAT, $lang['ENCODING']);
 
@@ -199,7 +199,7 @@ function rewrite_urls($content)
 		"make_url_friendly('\\15') . '-vf\\1-vt\\5-vp\\9.html' . if_query('\\11') . stripslashes('\\13\\14') . 'alt=\"' . stripslashes('\\15') . '\"' . stripslashes('\\16') . '</a>'",
 		"make_url_friendly('\\14') . '-vf\\1-vt\\5-vp\\9.html' . if_query('\\10') . stripslashes('\\13\\14') . '</a>'",
 
-		"make_url_friendly('\\10') . '-vf\\1-vt\\5.html' . if_query('\\6') . stripslashes('\\9') . 'title=\"' . stripslashes('\\10\\11\\12\\13') . '</a>'",
+		"make_url_friendly('\\10') . '-vf\\1-vp\\5.html' . if_query('\\6') . stripslashes('\\9') . 'title=\"' . stripslashes('\\10\\11\\12\\13') . '</a>'",
 		"make_url_friendly('\\10') . '-vf\\1-vt\\5.html' . if_query('\\6') . stripslashes('\\9') . 'title=\"' . stripslashes('\\10\\11\\12\\13') . '</a>'",
 
 		"make_url_friendly('\\11') . '-vf\\1-vp\\5.html' . if_query('\\6') . stripslashes('\\9\\10') . 'alt=\"' . stripslashes('\\11') . '\"' . stripslashes('\\12') . '</a>'",

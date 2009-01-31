@@ -14,141 +14,117 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
-* Testing File Creation
+* Check CMS permissions required to access current page
 */
-function file_creation($path)
+function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b_id = '')
 {
-	$test_file = $path . 'icy_phoenix_testing_write_access_permissions.test';
+	global $userdata;
 
-	// Check if the test file already exists...
-	if (file_exists($test_file))
+	// If the user is admin... give immediate access and exit!
+	if ($userdata['user_level'] == ADMIN)
 	{
-		if (!@unlink($test_file))
-		{
-			// It seems we haven't deleted it... try to change permissions
-			if (!@chmod($test_file, 0666))
-			{
-				return false;
-			}
-			else
-			{
-				if (!@unlink($test_file))
-				{
-					return false;
-				}
-			}
-		}
+		return true;
 	}
 
-	// Attempt to create a new file...
-	if (!@touch($test_file))
+	$is_auth = false;
+
+	// The user is not admin... let's check if he has some extra power... ;-)
+	switch ($cms_page)
 	{
-		return false;
-	}
-	else
-	{
-		if (!@chmod($test_file, 0666))
-		{
-			if (!@unlink($test_file))
+		case 'cms':
+			if (($mode == 'blocks') || ($mode == 'blocks_adv'))
 			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
-		else
-		{
-			// We really want to make sure...
-			if (file_exists($test_file))
-			{
-				if (!@unlink($test_file))
+				if ((($action == 'list') || ($action == 'edit') || ($action == 'save') || empty($action)) && !isset($_POST['action_update']))
 				{
-					return false;
+					$is_auth = ($userdata['user_cms_level'] < CMS_PUBLISHER) ? false : true;
 				}
 				else
 				{
-					return true;
+					$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 				}
+			}
+			elseif (($mode == 'layouts') || ($mode == 'layouts_adv') || ($mode == 'layouts_special'))
+			{
+				$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 			}
 			else
 			{
-				return false;
+				$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 			}
-		}
+			break;
+		case 'cms_ads':
+			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+			break;
+		case 'cms_adv':
+			break;
+		case 'cms_auth':
+			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+			break;
+		case 'cms_menu':
+			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+			break;
+		default:
+			return false;
 	}
-	return true;
+
+	return $is_auth;
+}
+
+/**
+* Check if a user is auth to edit the selected layout
+*/
+function get_layout_edit_auth($table_name, $field_name, $id_var_value)
+{
+	global $db, $lang, $userdata;
+
+	// If the user is admin... give immediate access and exit!
+	if ($userdata['user_level'] == ADMIN)
+	{
+		return true;
+	}
+
+	$sql = "SELECT edit_auth FROM " . $table_name . " WHERE " . $field_name . " = '" . $id_var_value . "'";
+	if(!$result = $db->sql_query($sql))
+	{
+		message_die(GENERAL_ERROR, 'Could not query layout table', $lang['Error'], __LINE__, __FILE__, $sql);
+	}
+	$l_row = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+	$is_auth = (($l_row['edit_auth'] <= $userdata['user_cms_level']) ? true : false);
+	return $is_auth;
+}
+
+/**
+* Check if a user is auth to edit the selected block
+*/
+function get_block_edit_auth($table_name, $field_name, $id_var_value)
+{
+	global $db, $lang, $userdata;
+
+	// If the user is admin... give immediate access and exit!
+	if ($userdata['user_level'] == ADMIN)
+	{
+		return true;
+	}
+
+	$sql = "SELECT edit_auth FROM " . $table_name . " WHERE " . $field_name . " = '" . $id_var_value . "'";
+	if(!$result = $db->sql_query($sql))
+	{
+		message_die(GENERAL_ERROR, 'Could not query layout table', $lang['Error'], __LINE__, __FILE__, $sql);
+	}
+	$b_row = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+	$is_auth = (($b_row['edit_auth'] <= $userdata['user_cms_level']) ? true : false);
+	return $is_auth;
 }
 
 /*
-* Common SQL
+* Get global blocks layout
 */
-
-function fix_weight_blocks($l_id, $table_name)
-{
-	global $db;
-	$layout_special_sql = '';
-	if ($table_name == CMS_LAYOUT_TABLE)
-	{
-		$layout_value = $l_id;
-		$layout_special_value = 0;
-		$layout_special_sql = ' AND layout_special = \'' . $layout_special_value . '\'';
-		$layout_field = 'layout';
-		$blocks_table = CMS_BLOCKS_TABLE;
-	}
-	elseif ($table_name == CMS_LAYOUT_SPECIAL_TABLE)
-	{
-		$layout_value = 0;
-		$layout_special_value = $l_id;
-		$layout_special_sql = ' AND layout_special = \'' . $layout_special_value . '\'';
-		$layout_field = 'layout';
-		$blocks_table = CMS_BLOCKS_TABLE;
-	}
-	elseif ($table_name == CMS_ADV_PAGES_TABLE)
-	{
-		$layout_value = $l_id;
-		//$layout_field = 'page';
-		$layout_field = 'layout';
-		$blocks_table = CMS_ADV_BLOCKS_TABLE;
-	}
-	else
-	{
-		message_die(GENERAL_ERROR, 'Wrong table');
-	}
-
-	$sql = "SELECT DISTINCT bposition FROM " . $blocks_table . " WHERE " . $layout_field . " = '" . $layout_value . "'" . $layout_special_sql;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-	$rows = $db->sql_fetchrowset($result);
-	$db->sql_freeresult($result);
-	$count = count($rows);
-
-	for($i = 0; $i < $count; $i++)
-	{
-		$sql = "SELECT bid FROM ". $blocks_table . " WHERE " . $layout_field . " = '" . $layout_value . "'" . $layout_special_sql . " AND bposition = '" . $rows[$i]['bposition'] . "' ORDER BY weight ASC";
-		if(!$result1 = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-		$weight = 0;
-		while($row = $db->sql_fetchrow($result1))
-		{
-			$weight++;
-			$sql = "UPDATE " . $blocks_table . " SET weight = '" . $weight . "' WHERE bposition = '" . $rows[$i]['bposition'] . "' AND bid = '" . $row['bid'] . "'";
-			if(!$result2 = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-		}
-	}
-}
-
 function get_global_blocks_layout($table_name, $field_name, $id_var_value)
 {
 	global $db, $lang;
+
 	$sql = "SELECT global_blocks FROM " . $table_name . " WHERE " . $field_name . " = '" . $id_var_value . "'";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -159,9 +135,13 @@ function get_global_blocks_layout($table_name, $field_name, $id_var_value)
 	return $l_row;
 }
 
+/*
+* Get block info
+*/
 function get_block_info($blocks_table, $b_id)
 {
 	global $db, $lang;
+
 	$sql = "SELECT * FROM " . $blocks_table . " WHERE bid = '" . $b_id . "'";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -172,9 +152,13 @@ function get_block_info($blocks_table, $b_id)
 	return $b_info;
 }
 
-function get_block_positions($table_name, $l_id_list, $b_info_bposition)
+/*
+* Get blocks positions for the selected layouts
+*/
+function get_blocks_positions($table_name, $l_id_list, $b_info_bposition)
 {
 	global $db, $lang;
+
 	$sql = "SELECT pkey, bposition FROM " . $table_name . " WHERE layout IN (" . $l_id_list . ") ORDER BY layout, bpid";
 	if(!($result = $db->sql_query($sql)))
 	{
@@ -198,6 +182,9 @@ function get_block_positions($table_name, $l_id_list, $b_info_bposition)
 	return $position;
 }
 
+/*
+* Get all usergroups
+*/
 function get_all_usergroups($info_groups = '')
 {
 	global $db, $lang;
@@ -226,9 +213,13 @@ function get_all_usergroups($info_groups = '')
 	return $group;
 }
 
+/*
+* Get max group id
+*/
 function get_max_group_id()
 {
 	global $db, $lang;
+
 	$sql = "SELECT MAX(group_id) max_group_id FROM " . GROUPS_TABLE . " WHERE group_single_user = 0";
 	if(!($result = $db->sql_query($sql)))
 	{
@@ -240,9 +231,13 @@ function get_max_group_id()
 	return $max_group_id;
 }
 
+/*
+* Clear single block configuration entry
+*/
 function delete_block_config_single($cfg_table, $blocks_var_table, $b_id, $config_name)
 {
 	global $db, $lang;
+
 	$sql = "DELETE FROM " . $cfg_table . " WHERE bid = '" . $b_id . "' AND config_name = '" . $config_name . "'";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -257,9 +252,13 @@ function delete_block_config_single($cfg_table, $blocks_var_table, $b_id, $confi
 	return true;
 }
 
+/*
+* Clear all block configurations entries
+*/
 function delete_block_config_all($cfg_table, $blocks_var_table, $b_id)
 {
 	global $db, $lang;
+
 	$sql = "DELETE FROM " . $cfg_table . " WHERE bid = '" . $b_id . "'";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -274,6 +273,9 @@ function delete_block_config_all($cfg_table, $blocks_var_table, $b_id)
 	return true;
 }
 
+/*
+* Delete a block
+*/
 function delete_block($table_name, $b_id)
 {
 	global $db, $lang;
@@ -298,9 +300,13 @@ function delete_block($table_name, $b_id)
 	return true;
 }
 
+/*
+* Check if a configuration entry exists
+*/
 function get_existing_block_var($table_name, $b_id, $block_variable_name)
 {
 	global $db, $lang;
+
 	$sql = "SELECT count(1) existing FROM " . $table_name . "
 		WHERE config_name = '" . $block_variable_name . "'
 			AND bid = '" . $b_id . "'";
@@ -314,9 +320,13 @@ function get_existing_block_var($table_name, $b_id, $block_variable_name)
 	return $existing;
 }
 
+/*
+* Get max blocks position
+*/
 function get_max_blocks_position($table_name, $id_var_value, $b_bposition)
 {
 	global $db, $lang;
+
 	$sql = "SELECT max(weight) mweight FROM " . $table_name . " WHERE layout = '" . $id_var_value . "' AND bposition = '" . $b_bposition . "'";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -328,9 +338,13 @@ function get_max_blocks_position($table_name, $id_var_value, $b_bposition)
 	return $weight;
 }
 
+/*
+* Get max block id
+*/
 function get_max_block_id($table_name)
 {
 	global $db, $lang;
+
 	$sql = "SELECT max(bid) mbid FROM " . $table_name;
 	if(!$result = $db->sql_query($sql))
 	{
@@ -342,9 +356,13 @@ function get_max_block_id($table_name)
 	return $b_id;
 }
 
+/*
+* Get groups names
+*/
 function get_groups_names($groups_ids)
 {
 	global $db, $lang;
+
 	$sql = "SELECT group_name FROM " . GROUPS_TABLE . " WHERE group_id IN (" . $groups_ids . ")";
 	if(!($result = $db->sql_query($sql)))
 	{
@@ -359,9 +377,13 @@ function get_groups_names($groups_ids)
 	return $groups;
 }
 
+/*
+* Get layout name
+*/
 function get_layout_name($table_name, $field_name, $id_var_value)
 {
 	global $db, $lang;
+
 	$sql = "SELECT name, filename, global_blocks, page_nav FROM " . $table_name . " WHERE " . $field_name . " = '" . $id_var_value . "'";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -372,10 +394,16 @@ function get_layout_name($table_name, $field_name, $id_var_value)
 	return $l_row;
 }
 
+/*
+* Get blocks from layouts
+*/
 function get_blocks_from_layouts($table_name, $block_layout_field, $l_id_list, $sql_no_gb = '')
 {
-	global $db, $lang;
-	$sql = "SELECT * FROM " . $table_name . " WHERE " . $block_layout_field . " IN (" . $l_id_list . ")" . $sql_no_gb . " ORDER BY bposition, weight";
+	global $db, $lang, $userdata;
+
+	//$cms_level_sql = " AND edit_auth <= " . $userdata['user_cms_level'] . " ";
+	$cms_level_sql = "";
+	$sql = "SELECT * FROM " . $table_name . " WHERE " . $block_layout_field . " IN (" . $l_id_list . ")" . $cms_level_sql . $sql_no_gb . " ORDER BY bposition, weight";
 	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
@@ -385,9 +413,13 @@ function get_blocks_from_layouts($table_name, $block_layout_field, $l_id_list, $
 	return $b_rows;
 }
 
+/*
+* Get blocks positions
+*/
 function get_blocks_positions_layout($table_name, $l_id_list)
 {
 	global $db, $lang;
+
 	$sql = "SELECT bposition, pkey FROM " . $table_name . " WHERE layout IN ('" . $l_id_list . "')";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -402,9 +434,13 @@ function get_blocks_positions_layout($table_name, $l_id_list)
 	return $position;
 }
 
+/*
+* Get layout info
+*/
 function get_layout_info($table_name, $l_id)
 {
 	global $db, $lang;
+
 	$sql = "SELECT * FROM " . $table_name . " WHERE lid = '" . $l_id . "'";
 	if(!$result = $db->sql_query($sql))
 	{
@@ -415,9 +451,13 @@ function get_layout_info($table_name, $l_id)
 	return $l_info;
 }
 
+/*
+* Get max layout id
+*/
 function get_max_layout_id($table_name)
 {
 	global $db, $lang;
+
 	$sql = "SELECT lid FROM " . $table_name . " ORDER BY lid desc LIMIT 1";
 	if(!($result = $db->sql_query($sql)))
 	{
@@ -428,11 +468,14 @@ function get_max_layout_id($table_name)
 	return $row[lid];
 }
 
+/*
+* Delete layout
+*/
 function delete_layout($layout_table, $block_pos_table, $l_id)
 {
 	global $db, $lang;
-	$sql = "DELETE FROM " . $layout_table . " WHERE lid = '" . $l_id . "'";
 
+	$sql = "DELETE FROM " . $layout_table . " WHERE lid = '" . $l_id . "'";
 	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, 'Could not remove data from layout table', $lang['Error'], __LINE__, __FILE__, $sql);
@@ -447,9 +490,13 @@ function delete_layout($layout_table, $block_pos_table, $l_id)
 	return true;
 }
 
+/*
+* Count blocks in layout
+*/
 function count_blocks_in_layout($table_name, $l_id_list, $is_special = false, $only_active = true)
 {
 	global $db, $lang;
+
 	$only_active_sql = '';
 	if ($only_active == true)
 	{
@@ -470,18 +517,23 @@ function count_blocks_in_layout($table_name, $l_id_list, $is_special = false, $o
 	return $row['blocks_counter'];
 }
 
+/*
+* Create CMS block
+*/
 function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $cms_type)
 {
 	global $db, $lang, $images;
 
 	if ($cms_type == 'cms_standard')
 	{
+		$source_file = 'cms.';
 		$cms_type_id = '1';
 		$cms_block_table = CMS_BLOCKS_TABLE;
 		$type_append_url = '&cms_type=cms_standard';
 	}
 	else
 	{
+		$source_file = 'cms_adv.';
 		$cms_type_id = '0';
 		$cms_block_table = CMS_ADV_BLOCKS_TABLE;
 		$type_append_url = '';
@@ -546,8 +598,8 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	$u_local = '<img src="' . $img_local . '" alt="' . $lang['TURN_LOCAL'] . '" title="' . $lang['TURN_LOCAL'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 3, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 	$u_background = '<img src="' . $img_background . '" alt="' . $lang['TURN_BACKGROUND'] . '" title="' . $lang['TURN_BACKGROUND'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 4, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 
-	$u_edit = '<a href="' . append_sid('cms_adv.' . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';
-	$u_delete = '<a href="' . append_sid('cms_adv.' . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=delete&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CMS_Delete'] . '" title="' . $lang['CMS_Delete'] . '"/></a>';
+	$u_edit = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';
+	$u_delete = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=delete&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CMS_Delete'] . '" title="' . $lang['CMS_Delete'] . '"/></a>';
 
 	$block_class = (!$invalid) ? 'sortable-list-div' : 'sortable-invalid-list-div';
 
@@ -578,9 +630,13 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	return $output;
 }
 
+/*
+* Default layout content
+*/
 function default_layout_content()
 {
 	global $db, $lang;
+
 	$default_layout = array();
 	$default_layout['options'] = '';
 	$default_layout['values'] = '';
@@ -598,9 +654,13 @@ function default_layout_content()
 	return $default_layout;
 }
 
+/*
+* Get CMS global vars
+*/
 function get_cms_global_vars()
 {
 	global $db, $lang;
+
 	$sql = "SELECT * FROM " . CMS_BLOCK_VARIABLE_TABLE . "
 		WHERE bid = 0
 		ORDER BY bvid";
@@ -624,10 +684,14 @@ function get_cms_global_vars()
 	return $global_var;
 }
 
+/*
+* Create CMS field
+*/
 function create_cms_field($config_array)
 {
 	global $db, $lang;
 	global $layout_options, $layout_values;
+
 	//$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
 
 	$cms_field[$config_array['config_name']] = array();
@@ -700,9 +764,13 @@ function create_cms_field($config_array)
 	return $cms_field;
 }
 
+/*
+* Get layout details
+*/
 function get_layouts_details($layout_dir, $layout_extension, $common_cms_template, $layout_field = 'template', $cms_type = 'cms_standard')
 {
 	global $l_info;
+
 	$layout_details = array();
 	$num_layout = 0;
 	$layouts = opendir($layout_dir);
@@ -733,9 +801,13 @@ function get_layouts_details($layout_dir, $layout_extension, $common_cms_templat
 	return $layout_details;
 }
 
+/*
+* Get layout details select
+*/
 function get_layouts_details_select($layout_dir, $layout_extension)
 {
 	global $l_info;
+
 	$layout_details = '';
 	$layouts = opendir($layout_dir);
 	while ($file = readdir($layouts))
@@ -755,13 +827,145 @@ function get_layouts_details_select($layout_dir, $layout_extension)
 }
 
 /*
+* Adjust blocks order
+*/
+function fix_weight_blocks($l_id, $table_name)
+{
+	global $db;
+
+	$layout_special_sql = '';
+	if ($table_name == CMS_LAYOUT_TABLE)
+	{
+		$layout_value = $l_id;
+		$layout_special_value = 0;
+		$layout_special_sql = ' AND layout_special = \'' . $layout_special_value . '\'';
+		$layout_field = 'layout';
+		$blocks_table = CMS_BLOCKS_TABLE;
+	}
+	elseif ($table_name == CMS_LAYOUT_SPECIAL_TABLE)
+	{
+		$layout_value = 0;
+		$layout_special_value = $l_id;
+		$layout_special_sql = ' AND layout_special = \'' . $layout_special_value . '\'';
+		$layout_field = 'layout';
+		$blocks_table = CMS_BLOCKS_TABLE;
+	}
+	elseif ($table_name == CMS_ADV_PAGES_TABLE)
+	{
+		$layout_value = $l_id;
+		//$layout_field = 'page';
+		$layout_field = 'layout';
+		$blocks_table = CMS_ADV_BLOCKS_TABLE;
+	}
+	else
+	{
+		message_die(GENERAL_ERROR, 'Wrong table');
+	}
+
+	$sql = "SELECT DISTINCT bposition FROM " . $blocks_table . " WHERE " . $layout_field . " = '" . $layout_value . "'" . $layout_special_sql;
+	if(!$result = $db->sql_query($sql))
+	{
+		message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
+	}
+	$rows = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+	$count = count($rows);
+
+	for($i = 0; $i < $count; $i++)
+	{
+		$sql = "SELECT bid FROM ". $blocks_table . " WHERE " . $layout_field . " = '" . $layout_value . "'" . $layout_special_sql . " AND bposition = '" . $rows[$i]['bposition'] . "' ORDER BY weight ASC";
+		if(!$result1 = $db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
+		}
+		$weight = 0;
+		while($row = $db->sql_fetchrow($result1))
+		{
+			$weight++;
+			$sql = "UPDATE " . $blocks_table . " SET weight = '" . $weight . "' WHERE bposition = '" . $rows[$i]['bposition'] . "' AND bid = '" . $row['bid'] . "'";
+			if(!$result2 = $db->sql_query($sql))
+			{
+				message_die(GENERAL_ERROR, 'Could not update blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
+			}
+		}
+	}
+}
+
+/**
+* Testing File Creation
+*/
+function file_creation($path)
+{
+	$test_file = $path . 'icy_phoenix_testing_write_access_permissions.test';
+
+	// Check if the test file already exists...
+	if (file_exists($test_file))
+	{
+		if (!@unlink($test_file))
+		{
+			// It seems we haven't deleted it... try to change permissions
+			if (!@chmod($test_file, 0666))
+			{
+				return false;
+			}
+			else
+			{
+				if (!@unlink($test_file))
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	// Attempt to create a new file...
+	if (!@touch($test_file))
+	{
+		return false;
+	}
+	else
+	{
+		if (!@chmod($test_file, 0666))
+		{
+			if (!@unlink($test_file))
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		else
+		{
+			// We really want to make sure...
+			if (file_exists($test_file))
+			{
+				if (!@unlink($test_file))
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+/*
 function get_($, $)
 {
 	global $db, $lang;
 
 	return $;
 }
-
 */
 
 ?>

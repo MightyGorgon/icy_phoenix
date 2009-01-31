@@ -21,5 +21,6 @@ function icon_text(text)
 	<td height="180" class="row1h row-center"><a href="{U_CMS_MENU}" onmouseover="icon_text('{L_CMS_MENU}')" onMouseOut="icon_text('&nbsp;')"><img src="images/cms/cms_index_menu.png" alt="{L_CMS_MENU}" title="{L_CMS_MENU}" /></a><br /><b>{L_CMS_MENU}</b></td>
 	<td class="row1h row-center"><a href="{U_CMS_CONFIG}" onmouseover="icon_text('{L_CMS_CONFIG}')" onMouseOut="icon_text('&nbsp;')"><img src="images/cms/cms_index_config.png" alt="{L_CMS_CONFIG}" title="{L_CMS_CONFIG}" /></a><br /><b>{L_CMS_CONFIG}</b></td>
 	<td class="row1h row-center"><a href="{U_CMS_PAGES_PERMISSIONS}" onmouseover="icon_text('{L_CMS_PAGES_PERMISSIONS}')" onMouseOut="icon_text('&nbsp;')"><img src="images/cms/cms_index_permissions.png" alt="{L_CMS_PAGES_PERMISSIONS}" title="{L_CMS_PAGES_PERMISSIONS}" /></a><br /><b>{L_CMS_PAGES_PERMISSIONS}</b></td>
+	<!-- <td class="row1h row-center"><a href="{U_CMS_ADS}" onmouseover="icon_text('{L_CMS_ADS}')" onmouseout="icon_text('&nbsp;')"><img src="images/cms/cms_index_ads.png" alt="{L_CMS_ADS}" title="{L_CMS_ADS}" /></a><br /><b>{L_CMS_ADS}</b></td> -->
 </tr>
 </table>

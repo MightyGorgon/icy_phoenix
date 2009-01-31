@@ -94,11 +94,14 @@ if (!in_array($page_url['basename'], $no_meta_pages_array) && (!empty($meta_post
 	include(IP_ROOT_PATH . 'includes/meta_parsing.' . PHP_EXT);
 }
 
+$meta_description = !empty($meta_description) ? ($meta_description . (META_TAGS_ATTACH ? $lang['Default_META_Keywords'] : '')) : $lang['Default_META_Keywords'];
+$meta_keywords = !empty($meta_keywords) ? ($meta_keywords . (META_TAGS_ATTACH ? (' - ' . $lang['Default_META_Description']) : '')) : $lang['Default_META_Description'];
+
 $phpbb_meta = '<meta name="title" content="' . $page_title . '" />' . "\n";
 $phpbb_meta .= '<meta name="author" content="' . $lang['Default_META_Author'] . '" />' . "\n";
 $phpbb_meta .= '<meta name="copyright" content="' . $lang['Default_META_Copyright'] . '" />' . "\n";
-$phpbb_meta .= '<meta name="keywords" content="' . $meta_keywords . $lang['Default_META_Keywords'] . '" />' . "\n";
-$phpbb_meta .= '<meta name="description" content="' . $meta_description . ' - ' . $lang['Default_META_Description'] . '" />' . "\n";
+$phpbb_meta .= '<meta name="description" content="' . $meta_description . '" />' . "\n";
+$phpbb_meta .= '<meta name="keywords" content="' . $meta_keywords . '" />' . "\n";
 $phpbb_meta .= '<meta name="category" content="general" />' . "\n";
 if (defined('IN_SEARCH'))
 {
@@ -210,7 +213,7 @@ if (!$userdata['session_logged_in'])
 		{
 			if ($smart_get_keys[$i] != 'sid')
 			{
-				$smart_redirect .= '&amp;' . $smart_get_keys[$i] . '=' . urlencode(utf8_decode($_GET[$smart_get_keys[$i]]));
+				$smart_redirect .= '&amp;' . $smart_get_keys[$i] . '=' . urlencode(ip_utf8_decode($_GET[$smart_get_keys[$i]]));
 			}
 		}
 	}
@@ -292,14 +295,6 @@ else
 		if (($userdata['user_birthday'] != 999999) && $board_config['birthday_greeting'] && (create_date('Ymd', time(), $board_config['board_timezone']) >= $userdata['user_next_birthday_greeting'] . realdate('md', $userdata['user_birthday'])))
 		{
 			// Birthday PM - BEGIN
-			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = '9999999999'
-						WHERE user_id = " . $userdata['user_id'];
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
-			}
-
 			$pm_subject = $lang['Greeting_Messaging'];
 			$pm_date = date('U');
 
@@ -318,20 +313,16 @@ else
 
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
-			$sql = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig) VALUES ('0', '" . str_replace("\'", "''", addslashes(sprintf($pm_subject, $board_config['sitename']))) . "', '" . str_replace("\'", "''", addslashes(sprintf($pm_text, $board_config['sitename'], $board_config['sitename']))) . "', '" . $founder_id . "', '" . $userdata['user_id'] . "', " . $pm_date . ", '0', '1', '1', '0')";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert private message sent info', '', __LINE__, __FILE__, $sql);
-			}
+			include_once(IP_ROOT_PATH . 'includes/functions_privmsgs.' . PHP_EXT);
+			$privmsg_subject = sprintf($pm_subject, $board_config['sitename']);
+			$privmsg_message = sprintf($pm_text, $board_config['sitename'], $board_config['sitename']);
+			$privmsg_sender = $founder_id;
+			$privmsg_recipient = $userdata['user_id'];
 
-			// Add to the users new pm counter
-			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
-				WHERE user_id = " . $userdata['user_id'];
-			if (!$status = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
-			}
+			$privmsg = new privmsgs();
+			$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
+			$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
+			unset($privmsg);
 			// Birthday PM - END
 
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -414,7 +405,8 @@ else
 		$s_privmsg_new = 0;
 	}
 
-	if ($board_config['enable_new_messages_number'] == true)
+	// We don't want this SQL being too expensive... so we will allow the number of new messages only for users which log on frequently
+	if (($board_config['enable_new_messages_number'] == true) && ($userdata['user_lastvisit'] > (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 60 * 60 * 24))))
 	{
 		$sql = "SELECT COUNT(post_id) as total
 			FROM " . POSTS_TABLE . "
@@ -441,51 +433,39 @@ else
 }
 // LOGGED IN CHECK - END
 
-// DB Cron - BEGIN
-//die($board_config['db_cron']);
-if (($board_config['db_cron'] == true) && (!$userdata['session_logged_in']))
-{
-	include(IP_ROOT_PATH . 'includes/optimize_database_cron.' . PHP_EXT);
-}
-// DB Cron - END
-
 // Digests - BEGIN
 if ($board_config['enable_digests'] == true)
 {
 	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
+	if ($userdata['session_logged_in'])
+	{
+		$template->assign_block_vars('switch_show_digests', array());
+	}
+
+	// DIGESTS TEMP CODE - BEGIN
 	// MG PHP Cron Emulation For Digests - BEGIN
-	// Requires 1 extra SQL per page
-	// Let's assign the extra SQL charge to a non registered users... ;-)
+	$is_allowed = true;
+	// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
+	$is_allowed = (!$userdata['session_logged_in']) ? true : false;
 	$digests_pages_array = array(PROFILE_MG, POSTING_MG);
-	if (($board_config['digests_php_cron'] == true) && (!$userdata['session_logged_in']) && !in_array($page_url['basename'], $digests_pages_array))
+	if (($board_config['digests_php_cron'] == true) && $is_allowed && !in_array($page_url['basename'], $digests_pages_array))
 	//if (($board_config['digests_php_cron'] == true) && ($board_config['digests_php_cron_lock'] == false) && (!$userdata['session_logged_in']) && !in_array($page_url['basename'], $digests_pages_array))
 	{
-		if ((time() - $board_config['digests_last_send_time']) > 300)
+		if ((time() - $board_config['digests_last_send_time']) > CRON_REFRESH)
 		{
 			$board_config['digests_last_send_time'] = ($board_config['digests_last_send_time'] == 0) ? (time() - 3600) : $board_config['digests_last_send_time'];
 			$last_send_time = getdate($board_config['digests_last_send_time']);
 			$cur_time = getdate();
 			if ($cur_time['hours'] <> $last_send_time['hours'])
 			{
-				$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = '1'
-					WHERE config_name = 'digests_php_cron_lock'";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
-				}
-				$db->clear_cache('config_');
-
+				set_config('digests_php_cron_lock', 1);
 				define('PHP_DIGESTS_CRON', true);
 				include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
 			}
 		}
 	}
 	// MG PHP Cron Emulation For Digests - END
-	if ($userdata['session_logged_in'])
-	{
-		$template->assign_block_vars('switch_show_digests', array());
-	}
+	// DIGESTS TEMP CODE - END
 }
 // Digests - END
 
@@ -572,7 +552,6 @@ $ac_online_text = '';
 $ac_username_lists = '';
 if (defined('SHOW_ONLINE'))
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/users_online_block.' . PHP_EXT);
 }
 // Show Online Block - END
@@ -778,23 +757,19 @@ if ((CT_DEBUG_MODE === true) && ($userdata['user_level'] == ADMIN))
 }
 // CrackerTracker v5.x
 
-if ($board_config['switch_header_table'] == true)
+if ($board_config['switch_header_table'])
 {
 	$template->assign_block_vars('switch_header_table', array(
-		'HEADER_TEXT' => $board_config['header_table_text'],
+		'HEADER_TEXT' => (STRIP ? stripslashes($board_config['header_table_text']) : $board_config['header_table_text']),
 		'L_STAFF_MESSAGE' => $lang['staff_message'],
 		)
 	);
 }
 
-if ($board_config['switch_top_html_block'] == true)
-{
-	$top_html_block_text = $board_config['top_html_block_text'];
-}
-else
-{
-	$top_html_block_text = '';
-}
+$top_html_block_text = get_ad('glt');
+$header_banner_text = get_ad('glh');
+$nav_menu_ads_top = get_ad('nmt');
+$nav_menu_ads_bottom = get_ad('nmb');
 
 if(is_array($css_style_include))
 {
@@ -834,7 +809,6 @@ $template->assign_vars(array(
 	'DOCTYPE_HTML' => $doctype_html,
 	'IP_ROOT_PATH' => IP_ROOT_PATH,
 	'PHP_EXT' => PHP_EXT,
-	'S_SID' => $userdata['session_id'],
 	'POST_FORUM_URL' => POST_FORUM_URL,
 	'POST_TOPIC_URL' => POST_TOPIC_URL,
 	'POST_POST_URL' => POST_POST_URL,
@@ -875,14 +849,16 @@ $template->assign_vars(array(
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	'UPI2DB_FIRST_USE' => $upi2db_first_use,
 //<!-- END Unread Post Information to Database Mod -->
+
 	'TOP_HTML_BLOCK' => $top_html_block_text,
-	'HEADER_BANNER_CODE' => stripslashes($board_config['header_banner_text']),
-	'VIEWTOPIC_BANNER_CODE' => stripslashes($board_config['viewtopic_banner_text']),
+	'HEADER_BANNER_CODE' => $header_banner_text,
+	'NAV_MENU_ADS_TOP' => $nav_menu_ads_top,
+	'NAV_MENU_ADS_BOTTOM' => $nav_menu_ads_bottom,
 
 	// SWITCHES - BEGIN
 	'S_HEADER_DROPDOWN' => (($board_config['switch_header_dropdown'] == true) ? true : false),
 	'S_HEADER_DD_LOGGED_IN' => ((($board_config['switch_header_dropdown'] == true) && $userdata['upi2db_access']) ? true : false),
-	'S_HEADER_BANNER' => (($board_config['switch_header_banner'] == true) ? true : false),
+	'S_HEADER_BANNER' => (empty($header_banner_text) ? false : true),
 	'S_LIGHTBOX' => (($board_config['thumbnail_lightbox'] == true) ? true : false),
 	// SWITCHES - END
 
@@ -1070,6 +1046,7 @@ $template->assign_vars(array(
 	'U_CMS_CONFIG' => append_sid('cms.' . PHP_EXT . '?mode=config'),
 	'L_CMS_PAGES_PERMISSIONS' => $lang['CMS_Page_Permissions'],
 	'U_CMS_PAGES_PERMISSIONS' => append_sid('cms_auth.' . PHP_EXT),
+	'U_CMS_ADS' => append_sid('cms_ads.' . PHP_EXT),
 	'L_CMS_MENU' => $lang['CMS_Menu_Page'],
 	'U_CMS_MENU' => append_sid('cms_menu.' . PHP_EXT),
 	'L_CMS_ACP' => $lang['Admin_panel'],
@@ -1233,7 +1210,7 @@ if (empty($nav_key))
 	$nav_key = 'Root';
 }
 
-//$nav_separator = $lang['Nav_Separator'];
+$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 $nav_cat_desc = '';
 if (!isset($skip_nav_cat))
 {
@@ -1254,7 +1231,7 @@ if ($nav_cat_desc != '')
 // send to template
 $template->assign_vars(array(
 	//'SPACER' => $images['spacer'],
-	'S_PAGE_NAV' => (isset($cms_page_nav) ? $cms_page_nav : true),
+	'S_PAGE_NAV' => (defined('IN_LOGIN') ? false : (isset($cms_page_nav) ? $cms_page_nav : true)),
 	'NAV_SEPARATOR' => $nav_separator,
 	'NAV_CAT_DESC' => $nav_cat_desc,
 	'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($page_title_simple != $board_config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $page_title_simple . '</a>') : '') : $breadcrumbs_address),
@@ -1336,6 +1313,7 @@ if (($userdata['user_level'] != ADMIN) && $board_config['board_disable'] && !def
 		$sql = "SELECT config_value FROM " . CONFIG_TABLE . " WHERE config_name = 'board_disable_message'";
 		$gm_result = $db->sql_query($sql) or message_die(CRITICAL_ERROR, "Could not query config information", "", __LINE__, __FILE__, $sql);
 		$mon_message = mysql_result($gm_result, 0);
+		$mon_message = (STRIP ? stripslashes($mon_message) : $mon_message);
 		message_die(GENERAL_MESSAGE, $mon_message);
 	}
 	else

@@ -13,7 +13,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -142,9 +141,10 @@ else
 	{
 		$topic_post_time = 'topic';
 
-		$sql = "SELECT topic_time, topic_poster
-						FROM " . TOPICS_TABLE . "
-						WHERE topic_id = '" . $topic_id . "'";
+		$sql = "SELECT t.topic_time, t.topic_poster, u.user_id, u.username, u.user_active, u.user_color
+						FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u
+						WHERE t.topic_id = '" . $topic_id . "'
+							AND u.user_id = t.topic_poster";
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not get topic time', '', __LINE__, __FILE__, $sql);
@@ -153,7 +153,7 @@ else
 		{
 			$edit_post_time = $row['topic_time'];
 			$poster_id = $row['topic_poster'];
-			$poster_name = colorize_username($row['topic_poster']);
+			$poster_name = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		}
 		$db->sql_freeresult($result);
 	}
@@ -161,9 +161,10 @@ else
 	{
 		$topic_post_time = 'post';
 
-		$sql = "SELECT post_time, poster_id
-						FROM " . POSTS_TABLE . "
-						WHERE post_id = '" . $post_id . "'";
+		$sql = "SELECT p.post_time, p.poster_id, u.user_id, u.username, u.user_active, u.user_color
+						FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
+						WHERE p.post_id = '" . $post_id . "'
+							AND u.user_id = p.poster_id";
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not get post time and post edit time', '', __LINE__, __FILE__, $sql);
@@ -172,7 +173,7 @@ else
 		{
 			$edit_post_time = $row['post_time'];
 			$poster_id = $row['poster_id'];
-			$poster_name = colorize_username($row['poster_id']);
+			$poster_name = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		}
 		$db->sql_freeresult($result);
 	}

@@ -89,7 +89,8 @@ if (USERS_SUBFOLDERS_IMG == true)
 {
 	if ((count($pic_path) > 4) && (strpos($pic_id, $board_config['server_name']) !== false))
 	{
-		$pic_main_folder = $pic_path[count($pic_path) - 4] . '/' . $pic_path[count($pic_path) - 3] . '/';
+		// We need to add IP_ROOT_PATH because POSTED_IMAGES_PATH already includes it...
+		$pic_main_folder = IP_ROOT_PATH . $pic_path[count($pic_path) - 4] . '/' . $pic_path[count($pic_path) - 3] . '/';
 		if ($pic_main_folder == POSTED_IMAGES_PATH)
 		{
 			$pic_thumbnail_path = POSTED_IMAGES_THUMBS_PATH . $pic_path[count($pic_path) - 2];

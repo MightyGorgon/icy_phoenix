@@ -355,7 +355,18 @@ function module_auth_check($module_data, $userdata)
 			break;
 
 		case AUTH_REG:
-			if (($userdata['session_logged_in']) && ($userdata['user_id'] != ANONYMOUS))
+			if ($userdata['session_logged_in'] && ($userdata['user_id'] != ANONYMOUS))
+			{
+				return (true);
+			}
+			else
+			{
+				return (false);
+			}
+			break;
+
+		case AUTH_MOD:
+			if ($userdata['session_logged_in'] && (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD)))
 			{
 				return (true);
 			}
@@ -366,7 +377,7 @@ function module_auth_check($module_data, $userdata)
 			break;
 
 		case AUTH_ADMIN:
-			if (($userdata['user_level'] == ADMIN && $userdata['session_logged_in']))
+			if ($userdata['session_logged_in'] && ($userdata['user_level'] == ADMIN))
 			{
 				return (true);
 			}

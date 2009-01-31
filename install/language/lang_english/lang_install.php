@@ -8,6 +8,11 @@
 *
 */
 
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
 $lang = array_merge($lang, array(
 	'ENCODING' => 'iso-8859-1',
 	'ENCODING_ALT' => 'utf8',
@@ -227,6 +232,16 @@ $lang = array_merge($lang, array(
 	'RemoveBBCodeUID' => 'Remove BBCode UID (get it from posts table)',
 	'RemoveBBCodeUID_Guess' => 'Try to guess and remove BBCode UID',
 	'FixPostedImagesPaths' => 'Fix all posted images paths (adjust paths to reflect users subfolders)',
+
+	'FixSignatures' => 'Fix Signatures',
+	'FixSignaturesExplain' => 'This feature will allow you to fix all users signatures. You can use this feature to: find and replace any text in signatures, remove all BBCode UID, automatically adjust the address of posted images.',
+	'FixingSignaturesInProgress' => 'Fixing signatures in progress',
+	'FixingSignaturesFrom' => 'Signatures modified this step from %s to %s',
+	'FixingSignaturesTotal' => '%s signatures of %s modified so far',
+	'FixingSignaturesModified' => ' signatures fixed',
+	'FixingSignaturesComplete' => 'Fixing signatures complete',
+	'SignaturesPerStep' => 'Number of signatures per step',
+	'StartFromSignature' => 'Start from signature',
 
 	'FixPics' => 'Fix Album Pics Paths',
 	'FixPicsExplain' => 'This feature will move all album pics from the main folder into users subfolders and will also update the database with the new paths',

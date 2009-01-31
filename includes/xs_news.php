@@ -24,16 +24,16 @@ if (!defined('IN_ICYPHOENIX'))
 // Cached Query Config moved here by MG to reduce charge on common.php
 $xs_news_config = array();
 $sql = "SELECT * FROM " . XS_NEWS_CONFIG_TABLE;
-if( !($result = $db->sql_query($sql, false, 'xs_config_')) )
+if(!($result = $db->sql_query($sql, false, 'xs_config_')))
 {
 	message_die(CRITICAL_ERROR, 'Could not query XS News config information', '', __LINE__, __FILE__, $sql);
 }
-while ( $row = $db->sql_fetchrow($result) )
+while ($row = $db->sql_fetchrow($result))
 {
 	$xs_news_config[$row['config_name']] = $row['config_value'];
 }
 
-if( $xs_news_config['xs_show_news'] != false )
+if($xs_news_config['xs_show_news'] != false)
 {
 	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 	/*
@@ -84,12 +84,12 @@ if( $xs_news_config['xs_show_news'] != false )
 	// Get contents of News table (cached by MG)
 	$sql = "SELECT * FROM " . XS_NEWS_TABLE . "
 		ORDER BY news_date DESC";
-	if( !$q_news = $db->sql_query($sql, false, 'xs_news_') )
+	if(!$q_news = $db->sql_query($sql, false, 'xs_news_'))
 	{
 		message_die(GENERAL_ERROR, "Could not query news table", "", __LINE__, __FILE__, $sql);
 	}
 
-	while ( $test_row = $db->sql_fetchrow($q_news) )
+	while ($test_row = $db->sql_fetchrow($q_news))
 	{
 		$news_rows[] = $test_row;
 	}
@@ -101,7 +101,7 @@ if( $xs_news_config['xs_show_news'] != false )
 	$tick_displayed = 0;
 	$news_displayed = 0;
 
-	if( $total_news = count($news_rows) )
+	if($total_news = count($news_rows))
 	{
 
 		for($i = 0; $i < $total_news; $i++)
@@ -112,9 +112,9 @@ if( $xs_news_config['xs_show_news'] != false )
 			$news_display = $news_rows[$i]['news_display'];
 			$news_smilies = $news_rows[$i]['news_smilies'];
 
-			if( $news_display)
+			if($news_display)
 			{
-				if( $news_smilies )
+				if($news_smilies)
 				{
 					$news_text = smilies_news($news_text);
 				}
@@ -130,7 +130,7 @@ if( $xs_news_config['xs_show_news'] != false )
 		}
 	}
 
-	if( $news_displayed == 0 )
+	if($news_displayed == 0)
 	{
 		$template->assign_block_vars('newsitem', array(
 			'NEWS_ITEM_DATE' => create_date($date_format, time(), $board_config['board_timezone']),
@@ -142,36 +142,35 @@ if( $xs_news_config['xs_show_news'] != false )
 	}
 
 	// Should the news subtitle be shown?
-	if( $xs_news_config['xs_show_news_subtitle'] )
+	if($xs_news_config['xs_show_news_subtitle'])
 	{
 		$template->assign_block_vars('switch_news_subtitle', array());
 	}
 
 	// Should we show the XS News Ticker?
-	if( $xs_news_config['xs_show_ticker'] )
+	if($xs_news_config['xs_show_ticker'])
 	{
 		$template->assign_block_vars('switch_news_ticker', array());
 
-		if( $xs_news_config['xs_show_ticker_subtitle'] )
+		if($xs_news_config['xs_show_ticker_subtitle'])
 		{
 			$template->assign_block_vars('switch_news_ticker.switch_ticker_subtitle', array());
 		}
 
 		// Get contents of XML table (cached by MG)
-		$sql = "SELECT * FROM " . XS_NEWS_XML_TABLE . "
-			ORDER BY xml_id ASC";
-		if( !$q_xml = $db->sql_query($sql, false, 'xs_news_xml_') )
+		$sql = "SELECT * FROM " . XS_NEWS_XML_TABLE . " ORDER BY xml_id ASC";
+		if(!$q_xml = $db->sql_query($sql, false, 'xs_news_xml_'))
 		{
 			message_die(GENERAL_ERROR, "Could not query News Ticker table", "", __LINE__, __FILE__, $sql);
 		}
 
-		while ( $test_row = $db->sql_fetchrow($q_xml) )
+		while ($test_row = $db->sql_fetchrow($q_xml))
 		{
 			$xml_row[] = $test_row;
 		}
 		unset($test_row);
 
-		if( $total_xml = count($xml_row) )
+		if($total_xml = count($xml_row))
 		{
 
 			for($i = 0; $i < $total_xml; $i++)
@@ -186,22 +185,22 @@ if( $xs_news_config['xs_show_news'] != false )
 				$xml_height = $xml_row[$i]['xml_height'];
 				$xml_font = $xml_row[$i]['xml_font'];
 				$xml_speed = $xml_row[$i]['xml_speed'];
-				$xml_dir = (( $xml_row[$i]['xml_direction'] == 0) ? 'left' : 'right');
+				$xml_dir = (($xml_row[$i]['xml_direction'] == 0) ? 'left' : 'right');
 
-				if( $xml_show )
+				if($xml_show)
 				{
-					if( $xml_is_feed )
+					if($xml_is_feed)
 					{
 						$rss_channel = array();
-						$currently_writing = "";
-						$main = "";
+						$currently_writing = '';
+						$main = '';
 						$item_counter = 0;
 
 						$xml_feed_error = false;
 						$xml_error = false;
 						$xml_error_msg = '';
 
-						if( empty($xml_feed) )
+						if(empty($xml_feed))
 						{
 							$xml_feed_error = true;
 							$xml_error_msg = 'No XML Feed URL';
@@ -211,9 +210,9 @@ if( $xs_news_config['xs_show_news'] != false )
 						xml_set_element_handler($xml_parser, 'startElement', 'endElement');
 						xml_set_character_data_handler($xml_parser, 'characterData');
 
-						if ( !$xml_feed_error )
+						if (!$xml_feed_error)
 						{
-							if ( ($fp = @fopen($xml_feed, 'r')) )
+							if (($fp = @fopen($xml_feed, 'r')))
 							{
 								while ($xml_buffer = @fread($fp, 4096))
 								{
@@ -237,10 +236,11 @@ if( $xs_news_config['xs_show_news'] != false )
 										$item_count = count($rss_channel['items']);
 										for($j = 0; $j < $item_count; $j++)
 										{
-											//$news_ticker_content .= '<a href="' . $rss_channel['items'][$j]["link"] . '" target="_blank" title="' . $rss_channel['items'][$j]["link"] . '\n' . str_replace("'", "\'", $rss_channel['items'][$j]['title']) . '"  onmouseover="scrollStop(\\\'news_ticker\\\');" onmouseout="scrollStart(\\\'news_ticker\\\');">' . str_replace("'", "\'", $rss_channel['items'][$j]['title']) . '</a>';
-											$news_ticker_content .= '<a href="' . $rss_channel['items'][$j]["link"] . '" target="_blank" title="'. $rss_channel['items'][$j]['title'] .'" onmouseover="document.all.' . $news_ticker_id . '.stop();" onmouseout="document.all.' . $news_ticker_id . '.start();">' . $rss_channel['items'][$j]['title'] . '</a>';
+											$title = htmlspecialchars_clean(ip_utf8_decode(strip_tags($rss_channel['items'][$j]['title'])));
+											//$news_ticker_content .= '<a href="' . $rss_channel['items'][$j]["link"] . '" target="_blank" title="' . $rss_channel['items'][$j]["link"] . '\n' . str_replace("'", "\'", $title) . '"  onmouseover="scrollStop(\\\'news_ticker\\\');" onmouseout="scrollStart(\\\'news_ticker\\\');">' . str_replace("'", "\'", $title) . '</a>';
+											$news_ticker_content .= '<a href="' . $rss_channel['items'][$j]['link'] . '" target="_blank" title="'. $title .'" onmouseover="document.all.' . $news_ticker_id . '.stop();" onmouseout="document.all.' . $news_ticker_id . '.start();">' . $title . '</a>';
 
-											if($j != (count($rss_channel['items']) - 1) )
+											if($j != (count($rss_channel['items']) - 1))
 											{
 												$news_ticker_content .= '&nbsp;&nbsp;&raquo;&nbsp;&nbsp;';
 											}
@@ -253,12 +253,13 @@ if( $xs_news_config['xs_show_news'] != false )
 									}
 								}
 
+								$rss_channel_title = (empty($rss_channel['title']) ? 'No Source Info Available' : ('<a href="' . $rss_channel['link'] . '" target="_blank">' . htmlspecialchars_clean(ip_utf8_decode(strip_tags($rss_channel['title']))) . '</a>'));
 								$template->assign_block_vars('switch_news_ticker.news_ticker_row', array(
-									'XS_NEWS_TICKER_FROM' => ( empty($rss_channel['title']) ) ? 'No Source Info Available' : '<a href="' . $rss_channel["link"] . '" target="_blank">' . $rss_channel['title'] . '</a>',
+									'XS_NEWS_TICKER_FROM' => $rss_channel_title,
 									'XS_NEWS_TICKER_ID' => $news_ticker_id,
 									'XS_NEWS_TICKER_WIDTH' => $xml_width,
 									'XS_NEWS_TICKER_HEIGHT' => $xml_height,
-									'XS_NEWS_TICKER_FONTSIZE' => (( $xml_font == 0 ) ? '' : 'style="font-size: ' . intval($xml_font) . 'px;"'),
+									'XS_NEWS_TICKER_FONTSIZE' => (($xml_font == 0) ? '' : 'style="font-size: ' . intval($xml_font) . 'px;"'),
 									'XS_NEWS_TICKER_SPEED' => $xml_speed,
 									'XS_NEWS_TICKER_SCROLL_DIR' => $xml_dir,
 									'XS_NEWS_TICKER_CONTENTS' => $news_ticker_content,
@@ -266,7 +267,7 @@ if( $xs_news_config['xs_show_news'] != false )
 									)
 								);
 
-								$template->assign_block_vars('switch_news_ticker.news_ticker_row.switch_show_feed', array() );
+								$template->assign_block_vars('switch_news_ticker.news_ticker_row.switch_show_feed', array());
 							}
 							else
 							{
@@ -275,7 +276,7 @@ if( $xs_news_config['xs_show_news'] != false )
 							}
 						}
 
-						if( $xml_error || $xml_feed_error )
+						if($xml_error || $xml_feed_error)
 						{
 							$news_ticker_id = 'news_ticker_' . $i;
 
@@ -283,7 +284,7 @@ if( $xs_news_config['xs_show_news'] != false )
 								'XS_NEWS_TICKER_ID' => $news_ticker_id,
 								'XS_NEWS_TICKER_WIDTH' => $xml_width,
 								'XS_NEWS_TICKER_HEIGHT' => $xml_height,
-								'XS_NEWS_TICKER_FONTSIZE' => (( $xml_font == 0 ) ? '' : 'style="font-size: ' . intval($xml_font) . 'px;"'),
+								'XS_NEWS_TICKER_FONTSIZE' => (($xml_font == 0) ? '' : 'style="font-size: ' . intval($xml_font) . 'px;"'),
 								'XS_NEWS_TICKER_SPEED' => $xml_speed,
 								'XS_NEWS_TICKER_SCROLL_DIR' => $xml_dir,
 								'XS_NEWS_TICKER_CONTENTS' => '<b>' . $xml_error_msg . '</b>: ' . $xml_feed,
@@ -304,7 +305,7 @@ if( $xs_news_config['xs_show_news'] != false )
 							'XS_NEWS_TICKER_ID' => $news_ticker_id,
 							'XS_NEWS_TICKER_WIDTH' => $xml_width,
 							'XS_NEWS_TICKER_HEIGHT' => $xml_height,
-							'XS_NEWS_TICKER_FONTSIZE' => (( $xml_font == 0 ) ? '' : 'style="font-size: ' . intval($xml_font) . 'px;"'),
+							'XS_NEWS_TICKER_FONTSIZE' => (($xml_font == 0) ? '' : 'style="font-size: ' . intval($xml_font) . 'px;"'),
 							'XS_NEWS_TICKER_SPEED' => $xml_speed,
 							'XS_NEWS_TICKER_SCROLL_DIR' => $xml_dir,
 							'XS_NEWS_TICKER_CONTENTS' => $xml_feed,
@@ -337,7 +338,7 @@ if( $xs_news_config['xs_show_news'] != false )
 		}
 	}
 
-	if( isset($board_config['xs_nav_version']) )
+	if(isset($board_config['xs_nav_version']))
 	{
 		$xml_collapse = "onmouseover=\"showStatus('news_0'); return true;\" onmouseout=\"window.status=' '; return true;\"";
 	}
@@ -349,8 +350,8 @@ if( $xs_news_config['xs_show_news'] != false )
 	$template->assign_vars(array(
 		'NEWS_TITLE' => $lang['xs_latest_news'],
 		'XS_NEWS_VERSION' => sprintf($lang['xs_news_version'], (!empty($board_config['xs_news_version']) ? $board_config['xs_news_version'] : 'ver error')),
-		'XS_NEWS_TICKERS_TITLE' => ( ($tick_displayed == 0 || $tick_displayed == 1) ? $lang['xs_news_ticker_title'] : $lang['xs_news_tickers_title']),
-		'XS_NEWS_ITEMS_TITLE' => ( ($news_displayed == 0 || $news_displayed == 1) ? $lang['xs_news_item_title'] : $lang['xs_news_items_title']),
+		'XS_NEWS_TICKERS_TITLE' => (($tick_displayed == 0 || $tick_displayed == 1) ? $lang['xs_news_ticker_title'] : $lang['xs_news_tickers_title']),
+		'XS_NEWS_ITEMS_TITLE' => (($news_displayed == 0 || $news_displayed == 1) ? $lang['xs_news_item_title'] : $lang['xs_news_items_title']),
 		'XS_NEWS_COLLAPSE' => $xml_collapse,
 		)
 	);

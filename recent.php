@@ -16,7 +16,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -151,7 +150,7 @@ if ($mode == 'utview')
 	$extra_tables = ", " . TOPIC_VIEW_TABLE . " tv";
 }
 
-$sql_start = "SELECT DISTINCT(t.topic_id), t.*, p.poster_id, p.post_username AS last_poster_name, p.post_id, p.post_time, f.forum_name, f.forum_id, u.username AS last_poster, u.user_id AS last_poster_id, u2.username AS first_poster, u2.user_id AS first_poster_id, p2.post_username AS first_poster_name" . $extra_fields . "
+$sql_start = "SELECT DISTINCT(t.topic_id), t.*, p.poster_id, p.post_username AS last_poster_name, p.post_id, p.post_time, f.forum_name, f.forum_id, u.username AS last_poster, u.user_id AS last_poster_id, u.user_active AS last_poster_active, u.user_color AS last_poster_color, u2.username AS first_poster, u2.user_id AS first_poster_id, u2.user_active AS first_poster_active, u2.user_color AS first_poster_color, p2.post_username AS first_poster_name" . $extra_fields . "
 		FROM (" . TOPICS_TABLE . " t, " . POSTS_TABLE . " p" . $extra_tables . ")
 			LEFT OUTER JOIN " . POSTS_TABLE . " p2 ON (p2.post_id = t.topic_first_post_id)
 			LEFT OUTER JOIN " . FORUMS_TABLE . " f ON (f.forum_id = p.forum_id)
@@ -367,9 +366,9 @@ for($i = 0; $i < count($line); $i++)
 	$first_time = create_date_simple($lang['DATE_FORMAT_VF'], $line[$i]['topic_time'], $board_config['board_timezone']);
 	// Old format
 	//$first_time = create_date2($board_config['default_dateformat'], $line[$i]['topic_time'], $board_config['board_timezone']);
-	$first_author = ($line[$i]['first_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['first_poster_id']) : (($line[$i]['first_poster_name'] != '') ? $line[$i]['first_poster_name'] : $lang['Guest']);
+	$first_author = ($line[$i]['first_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['first_poster_id'], $line[$i]['first_poster'], $line[$i]['first_poster_color'], $line[$i]['first_poster_active']) : (($line[$i]['first_poster_name'] != '') ? $line[$i]['first_poster_name'] : $lang['Guest']);
 	$last_time = create_date2($board_config['default_dateformat'], $line[$i]['post_time'], $board_config['board_timezone']);
-	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id']): (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
+	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id'], $line[$i]['last_poster'], $line[$i]['last_poster_color'], $line[$i]['last_poster_active']): (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
 	$last_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $line[$i]['topic_last_post_id']) . '#p' . $line[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 	// SELF AUTH - BEGIN
@@ -383,6 +382,7 @@ for($i = 0; $i < count($line); $i++)
 	}
 	*/
 	// SELF AUTH - END
+
 	if($mode == 'utview')
 	{
 		$last_time = $last_time = create_date2($board_config['default_dateformat'], $line[$i]['view_time'], $board_config['board_timezone']);;
@@ -465,7 +465,7 @@ $template->assign_vars(array(
 	'L_DAYS' => $lang['Recent_days'],
 	'L_SELECT_MODE' => $lang['Recent_select_mode'],
 	'L_SHOWING_POSTS' => $lang['Recent_showing_posts'],
-	'L_LASTPOST' => $lang['Last_Post'],
+	'L_LASTPOST' => ($mode == 'utview') ? $lang['Topic_time'] : $lang['Last_Post'],
 	'L_NO_TOPICS' => $lang['Recent_no_topics'],
 	'U_SORT_CAT' => append_sid('recent.' . PHP_EXT . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=cat&amp;start=' . $start),
 	'U_SORT_TIME' => append_sid('recent.' . PHP_EXT . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=time&amp;start=' . $start),

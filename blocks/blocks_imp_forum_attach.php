@@ -27,7 +27,6 @@ if(!function_exists('imp_forum_attach_block_func'))
 		global $template, $lang, $cms_config_vars, $block_id, $board_config, $bbcode, $images;
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		@include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 
 		$template->_tpldata['articles_fp.'] = array();
@@ -97,14 +96,14 @@ if(!function_exists('imp_forum_attach_block_func'))
 				'TOPIC_ID' => $fetchposts[$i]['topic_id'],
 				'TITLE' => $topic_title,
 				'POSTER' => $fetchposts[$i]['username'],
-				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id']),
+				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id'], $fetchposts[$i]['username'], $fetchposts[$i]['user_color'], $fetchposts[$i]['user_active']),
 				'TIME' => $fetchposts[$i]['topic_time'],
 				'TEXT' => $fetchposts[$i]['post_text'],
 				'REPLIES' => $fetchposts[$i]['topic_replies'],
 				'U_VIEW_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $fetchposts[$i]['post_id'] . '#p' . $fetchposts[$i]['post_id'], true),
 				'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 				'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
-				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
+				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
 				'U_READ_FULL' => append_sid($index_file . '?article=' . $i),
 				'L_READ_FULL' => $read_full,
 				'OPEN' => $open_bracket,

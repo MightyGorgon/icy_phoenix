@@ -25,7 +25,7 @@
 		<a href="{blocks.U_MOVE_UP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVE_UP}" title="{L_MOVE_UP}" /></a>&nbsp;
 		<a href="{blocks.U_MOVE_DOWN}"><img src="{IMG_CMS_ARROW_DOWN}" alt="{L_MOVE_DOWN}" title="{L_MOVE_DOWN}" /></a>&nbsp;
 		<a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;
-		<a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>
+		<!-- IF S_SHOW_CMS_MENU --><a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF -->
 	</td>
 	<td class="{blocks.ROW_CLASS}" style="background:none;"><a href="{blocks.U_EDIT}">{blocks.TITLE}</a></td>
 	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.POSITION}</td>
@@ -40,11 +40,13 @@
 <tr>
 	<td class="cat" colspan="9" align="center">
 		{S_HIDDEN_FIELDS}
+		<!-- IF S_SHOW_CMS_MENU -->
 		<input type="submit" name="add" value="{L_BLOCKS_ADD}" class="mainoption" />
 		&nbsp;&nbsp;<input type="submit" name="action_update" value="{L_BLOCKS_UPDATE}" class="liteoption" />
 		<!-- BEGIN duplicate_switch -->
 		&nbsp;&nbsp;<input type="submit" name="action_duplicate" value="{L_BLOCKS_DUPLICATE}" class="liteoption" />
 		<!-- END duplicate_switch -->
+		<!-- ENDIF -->
 	</td>
 </tr>
 </table>

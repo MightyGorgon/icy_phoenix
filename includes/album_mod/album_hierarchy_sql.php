@@ -709,7 +709,6 @@ function album_get_user_name($user_id)
 function album_get_last_pic_info($cats, &$last_pic_id)
 {
 	global $board_config, $lang, $db, $album_data , $album_config;
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	// check whter we are running an album with CLowN's SP mod..
 	// and correct album picture url
@@ -732,10 +731,10 @@ function album_get_last_pic_info($cats, &$last_pic_id)
 	}
 
 	// OK, we may do a query now... get last picture information
-	$sql = "SELECT p.pic_id, p.pic_title, p.pic_user_id, p.pic_username, p.pic_time, p.pic_cat_id, u.user_id, u.username
+	$sql = "SELECT p.pic_id, p.pic_title, p.pic_user_id, p.pic_username, p.pic_time, p.pic_cat_id, u.user_id, u.username, u.user_active, u.user_color
 			FROM " . ALBUM_TABLE . " AS p
 			LEFT JOIN " . USERS_TABLE . " AS u  ON p.pic_user_id = u.user_id
-			WHERE p.pic_cat_id IN (" . $categories  .") $pic_approval_sql
+			WHERE p.pic_cat_id IN (" . $categories .") $pic_approval_sql
 			ORDER BY p.pic_time DESC
 			LIMIT 1";
 
@@ -760,11 +759,11 @@ function album_get_last_pic_info($cats, &$last_pic_id)
 	// Write username of last poster
 	if (($row['user_id'] == ALBUM_GUEST) || ($row['username'] == ''))
 	{
-		$info .= ($row['pic_username'] == '') ? $lang['Guest'] : colorize_username($row['user_id']);
+		$info .= ($row['pic_username'] == '') ? $lang['Guest'] : $row['pic_username'];
 	}
 	else
 	{
-		$info .= $lang['Pic_Poster'] . ': ' . colorize_username($row['user_id']);
+		$info .= colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 	}
 
 	// Write the last pic's title. Truncate it if it's too long
@@ -864,7 +863,6 @@ function album_get_total_pic_cat($ss_cat_id)
 function album_get_last_comment_info($cats)
 {
 	global $board_config, $lang, $db, $album_data;
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$album_pic_url = 'album_showpage.' . PHP_EXT;
 
@@ -876,7 +874,7 @@ function album_get_last_comment_info($cats)
 	}
 
 	// get last comment information, and user, comment and pic informations
-	$sql = "SELECT c.comment_pic_id, c.comment_user_id, c.comment_username, c.comment_time, u.user_id, u.username, a.pic_id, a.pic_cat_id, a.pic_title
+	$sql = "SELECT c.comment_pic_id, c.comment_user_id, c.comment_username, c.comment_time, u.user_id, u.username, u.user_active, u.user_color, a.pic_id, a.pic_cat_id, a.pic_title
 		FROM " . ALBUM_COMMENT_TABLE . " AS c
 		LEFT JOIN " . USERS_TABLE . " AS u ON c.comment_user_id = u.user_id
 		LEFT JOIN " . ALBUM_TABLE . " AS a ON c.comment_pic_id = a.pic_id
@@ -904,11 +902,11 @@ function album_get_last_comment_info($cats)
 
 	if (($row['user_id'] == ALBUM_GUEST) || ($row['comment_username'] == ''))
 	{
-		$info .= ($row['comment_username'] == '') ? $lang['Guest'] : colorize_username($row['user_id']);
+		$info .= ($row['comment_username'] == '') ? $lang['Guest'] : $row['comment_username'];
 	}
 	else
 	{
-		$info .= colorize_username($row['user_id']);
+		$info .= colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 	}
 
 	$info .= '<br />' . $lang['Pic_Image'] . ': <a href="' . append_sid(album_append_uid($album_pic_url . '?pic_id=' . $row['pic_id'])) . '">' . $row['pic_title'] . '</a>';
@@ -1106,7 +1104,6 @@ function album_get_total_pics_old($cats)
 function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, $start, $sort_method, $sort_order, $total_pics)
 {
 	global $board_config, $album_data, $album_config, $template, $lang, $userdata, $db;
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$viewmode = (strpos($cat_ids, ',') != false) ? '&mode=' . ALBUM_VIEW_ALL : '';
 
@@ -1168,7 +1165,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 			$sort_method_sql = 'p.pic_id';
 	}
 
-	$sql = "SELECT ct.cat_user_id, ct.cat_id, ct.cat_title, p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments, MAX(c.comment_id) as new_comment
+	$sql = "SELECT ct.cat_user_id, ct.cat_id, ct.cat_title, p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments, MAX(c.comment_id) as new_comment
 			FROM ". ALBUM_TABLE ." AS p
 				LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 				LEFT JOIN ". ALBUM_RATE_TABLE ." AS r ON p.pic_id = r.rate_pic_id
@@ -1260,11 +1257,11 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 			if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
 			{
-				$pic_poster = ($picrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($picrow[$j]['user_id']);
+				$pic_poster = ($picrow[$j]['pic_username'] == '') ? $lang['Guest'] : $picrow[$j]['pic_username'];
 			}
 			else
 			{
-				$pic_poster = colorize_username($picrow[$j]['user_id']);
+				$pic_poster = colorize_username($picrow[$j]['user_id'], $picrow[$j]['username'], $picrow[$j]['user_color'], $picrow[$j]['user_active']);
 			}
 
 			$image_rating = ImageRating($picrow[$j]['rating']);
@@ -1365,7 +1362,6 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 function album_build_recent_pics($cats)
 {
 	global $db, $board_config, $album_config, $template, $lang, $profiledata;
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
@@ -1381,7 +1377,7 @@ function album_build_recent_pics($cats)
 
 	if (!empty($cats))
 	{
-		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+		$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 				FROM ". ALBUM_TABLE ." AS p
 					LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 					LEFT JOIN ". ALBUM_CAT_TABLE ." AS ct ON p.pic_cat_id = ct.cat_id
@@ -1446,11 +1442,11 @@ function album_build_recent_pics($cats)
 
 					if(($recentrow[$j]['user_id'] == ALBUM_GUEST) || ($recentrow[$j]['username'] == ''))
 					{
-						$recent_poster = ($recentrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($recentrow[$j]['user_id']);
+						$recent_poster = ($recentrow[$j]['pic_username'] == '') ? $lang['Guest'] : $recentrow[$j]['pic_username'];
 					}
 					else
 					{
-						$recent_poster = colorize_username($recentrow[$j]['user_id']);
+						$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
 					}
 
 					$image_rating = ImageRating($recentrow[$j]['rating']);
@@ -1499,7 +1495,6 @@ function album_build_recent_pics($cats)
 function album_build_highest_rated_pics($cats)
 {
 	global $db, $board_config, $album_config, $template, $lang;
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
@@ -1509,7 +1504,7 @@ function album_build_highest_rated_pics($cats)
 
 	if (!empty($cats))
 	{
-		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+		$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 			FROM ". ALBUM_TABLE ." AS p
 				LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 				LEFT JOIN ". ALBUM_CAT_TABLE ." AS ct ON p.pic_cat_id = ct.cat_id
@@ -1580,11 +1575,11 @@ function album_build_highest_rated_pics($cats)
 
 					if(($highestrow[$j]['user_id'] == ALBUM_GUEST) || ($highestrow[$j]['username'] == ''))
 					{
-						$highest_poster = ($highestrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($highestrow[$j]['user_id']);
+						$highest_poster = ($highestrow[$j]['pic_username'] == '') ? $lang['Guest'] : $highestrow[$j]['pic_username'];
 					}
 					else
 					{
-						$highest_poster = colorize_username($highestrow[$j]['user_id']);
+						$highest_poster = colorize_username($highestrow[$j]['user_id'], $highestrow[$j]['username'], $highestrow[$j]['user_color'], $highestrow[$j]['user_active']);
 					}
 
 					$image_rating = ImageRating($highestrow[$j]['rating']);
@@ -1643,7 +1638,6 @@ function album_build_highest_rated_pics($cats)
 function album_build_most_viewed_pics($cats)
 {
 	global $db, $board_config, $album_config, $template, $lang;
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
@@ -1652,7 +1646,7 @@ function album_build_most_viewed_pics($cats)
 
 	if (!empty($cats))
 	{
-		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+		$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 			FROM ". ALBUM_TABLE ." AS p
 				LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 				LEFT JOIN ". ALBUM_CAT_TABLE ." AS ct ON p.pic_cat_id = ct.cat_id
@@ -1719,11 +1713,11 @@ function album_build_most_viewed_pics($cats)
 
 					if(($mostviewed[$j]['user_id'] == ALBUM_GUEST) || ($mostviewed[$j]['username'] == ''))
 					{
-						$mostviewed_poster = ($mostviewed[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($mostviewed[$j]['user_id']);
+						$mostviewed_poster = ($mostviewed[$j]['pic_username'] == '') ? $lang['Guest'] : $mostviewed[$j]['pic_username'];
 					}
 					else
 					{
-						$mostviewed_poster = colorize_username($mostviewed[$j]['user_id']);
+						$mostviewed_poster = colorize_username($mostviewed[$j]['user_id'], $mostviewed[$j]['username'], $mostviewed[$j]['user_color'], $mostviewed[$j]['user_active']);
 					}
 
 					$image_rating = ImageRating($mostviewed[$j]['rating']);
@@ -1772,7 +1766,6 @@ function album_build_most_viewed_pics($cats)
 function album_build_random_pics($cats)
 {
 	global $db, $board_config, $album_config, $template, $lang;
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
@@ -1781,7 +1774,7 @@ function album_build_random_pics($cats)
 
 	if (!empty($cats))
 	{
-		$sql = "SELECT p.*, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
+		$sql = "SELECT p.*, u.user_id, u.username, u.user_active, u.user_color, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments
 				FROM ". ALBUM_TABLE ." AS p
 					LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 					LEFT JOIN ". ALBUM_CAT_TABLE ." AS ct ON p.pic_cat_id = ct.cat_id
@@ -1847,11 +1840,11 @@ function album_build_random_pics($cats)
 
 					if(($randrow[$j]['user_id'] == ALBUM_GUEST) || ($randrow[$j]['username'] == ''))
 					{
-						$rand_poster = ($randrow[$j]['pic_username'] == '') ? $lang['Guest'] : colorize_username($randrow[$j]['user_id']);
+						$rand_poster = ($randrow[$j]['pic_username'] == '') ? $lang['Guest'] : $randrow[$j]['pic_username'];
 					}
 					else
 					{
-						$rand_poster = colorize_username($randrow[$j]['user_id']);
+						$rand_poster = colorize_username($randrow[$j]['user_id'], $randrow[$j]['username'], $randrow[$j]['user_color'], $randrow[$j]['user_active']);
 					}
 
 					$image_rating = ImageRating($randrow[$j]['rating']);
@@ -1899,7 +1892,6 @@ function album_build_last_comments_info($cats)
 {
 	global $db, $board_config, $album_config, $template, $lang, $album_data, $bbcode, $userdata;
 
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 	$number_of_comments = 5;
@@ -1918,7 +1910,7 @@ function album_build_last_comments_info($cats)
 	$sql_group = '';
 
 	// get last comment information, and user, comment and pic informations
-	$sql = "SELECT c.*, u.user_id, u.username, a.*
+	$sql = "SELECT c.*, u.user_id, u.username, u.user_active, u.user_color, a.*
 		FROM " . ALBUM_COMMENT_TABLE . " AS c
 		LEFT JOIN " . USERS_TABLE . " AS u ON c.comment_user_id = u.user_id
 		LEFT JOIN " . ALBUM_TABLE . " AS a ON c.comment_pic_id = a.pic_id
@@ -1951,11 +1943,11 @@ function album_build_last_comments_info($cats)
 		{
 			if (($commentsrow[$i]['comment_username'] == ALBUM_GUEST) || ($commentsrow[$i]['comment_username'] == ''))
 			{
-				$poster = ($commentsrow[$i]['comment_username'] == '') ? $lang['Guest'] : colorize_username($commentsrow[$i]['user_id']);
+				$poster = ($commentsrow[$i]['comment_username'] == '') ? $lang['Guest'] : $commentsrow[$i]['comment_username'];
 			}
 			else
 			{
-				$poster = colorize_username($commentsrow[$i]['user_id']);
+				$poster = colorize_username($commentsrow[$i]['user_id'], $commentsrow[$i]['username'], $commentsrow[$i]['user_color'], $commentsrow[$i]['user_active']);
 			}
 
 			$info .= '<br />' . $lang['Pic_Image'] . ': <a href="' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $commentsrow[$i]['pic_title'] . '</a>';

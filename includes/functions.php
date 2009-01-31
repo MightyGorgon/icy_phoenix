@@ -223,13 +223,36 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 	return $var;
 }
 
+/**
+* Set config value. Creates missing config entry.
+*/
+function set_config($config_name, $config_value)
+{
+	global $db, $board_config;
+
+	$sql = "UPDATE " . CONFIG_TABLE . "
+		SET config_value = '" . $db->sql_escape($config_value) . "'
+		WHERE config_name = '" . $db->sql_escape($config_name) . "'";
+	$db->sql_query($sql);
+
+	if (!$db->sql_affectedrows() && !isset($board_config[$config_name]))
+	{
+		$sql = "INSERT INTO " . CONFIG_TABLE . " (`config_name`, `config_value`)
+						VALUES ('" . $db->sql_escape($config_name) . "', '" . $db->sql_escape($config_value) . "')";
+		$db->sql_query($sql);
+	}
+
+	$board_config[$config_name] = $config_value;
+	$db->clear_cache('config_');
+}
+
 if (!function_exists('htmlspecialchars_decode'))
 {
 	/**
 	* A wrapper for htmlspecialchars_decode
 	* @ignore
 	*/
-	function htmlspecialchars_decode($string, $quote_style = ENT_COMPAT)
+	function htmlspecialchars_decode($string, $quote_style = ENT_NOQUOTES)
 	{
 		return strtr($string, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
 	}
@@ -239,9 +262,20 @@ if (!function_exists('htmlspecialchars_decode'))
 * HTML Special Chars markup cleaning
 * @ignore
 */
-function htmlspecialchars_clean($string, $quote_style = ENT_COMPAT)
+function htmlspecialchars_clean($string, $quote_style = ENT_NOQUOTES)
 {
-	return str_replace(array('<', '%3C', '>', '%3E'), array('&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style));
+	return str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style));
+}
+
+/**
+* Icy Phoenix UTF8 Conditional Decode
+* @ignore
+*/
+function ip_utf8_decode($string)
+{
+	global $lang;
+	$string = ($lang['ENCODING'] == 'utf8') ? $string : utf8_decode($string);
+	return $string;
 }
 
 // Initialise user settings on page load
@@ -621,31 +655,21 @@ function check_page_auth($cms_page_id, $cms_page_name, $return = false)
 }
 
 /**
-* Our own generator of random values
-* This uses a constantly changing value as the base for generating the values
-* The board wide setting is updated once per page if this code is called
-* With thanks to Anthrax101 for the inspiration on this one
-* Added in phpBB 2.0.20
+* Return unique id
+* @param string $extra additional entropy
 */
-function dss_rand()
+function unique_id($extra = 'c')
 {
 	global $db, $board_config, $dss_seeded;
 
 	$val = $board_config['rand_seed'] . microtime();
 	$val = md5($val);
-	$board_config['rand_seed'] = md5($board_config['rand_seed'] . $val . 'a');
+	$board_config['rand_seed'] = md5($board_config['rand_seed'] . $val . $extra);
 
-	if($dss_seeded !== true)
+	if(($dss_seeded !== true) && ($board_config['rand_seed_last_update'] < (time() - rand(1,10))))
 	{
-		$sql = "UPDATE " . CONFIG_TABLE . " SET
-			config_value = '" . $board_config['rand_seed'] . "'
-			WHERE config_name = 'rand_seed'";
-
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Unable to reseed PRNG", "", __LINE__, __FILE__, $sql);
-		}
-
+		set_config('rand_seed', $board_config['rand_seed']);
+		set_config('rand_seed_last_update', time());
 		$dss_seeded = true;
 	}
 
@@ -720,6 +744,211 @@ function phpbb_rtrim($str, $charlist = false)
 function make_jumpbox($action, $match_forum_id = 0)
 {
 	return jumpbox($action, $match_forum_id);
+}
+
+/**
+* Checks if a path ($path) is absolute or relative
+*
+* @param string $path Path to check absoluteness of
+* @return boolean
+*/
+function is_absolute($path)
+{
+	return ($path[0] == '/' || (DIRECTORY_SEPARATOR == '\\' && preg_match('#^[a-z]:/#i', $path))) ? true : false;
+}
+
+/**
+* @author Chris Smith <chris@project-minerva.org>
+* @copyright 2006 Project Minerva Team
+* @param string $path The path which we should attempt to resolve.
+* @return mixed
+*/
+function phpbb_own_realpath($path)
+{
+	// Now to perform funky shizzle
+
+	// Switch to use UNIX slashes
+	$path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
+	$path_prefix = '';
+
+	// Determine what sort of path we have
+	if (is_absolute($path))
+	{
+		$absolute = true;
+
+		if ($path[0] == '/')
+		{
+			// Absolute path, *NIX style
+			$path_prefix = '';
+		}
+		else
+		{
+			// Absolute path, Windows style
+			// Remove the drive letter and colon
+			$path_prefix = $path[0] . ':';
+			$path = substr($path, 2);
+		}
+	}
+	else
+	{
+		// Relative Path
+		// Prepend the current working directory
+		if (function_exists('getcwd'))
+		{
+			// This is the best method, hopefully it is enabled!
+			$path = str_replace(DIRECTORY_SEPARATOR, '/', getcwd()) . '/' . $path;
+			$absolute = true;
+			if (preg_match('#^[a-z]:#i', $path))
+			{
+				$path_prefix = $path[0] . ':';
+				$path = substr($path, 2);
+			}
+			else
+			{
+				$path_prefix = '';
+			}
+		}
+		else if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME']))
+		{
+			// Warning: If chdir() has been used this will lie!
+			// Warning: This has some problems sometime (CLI can create them easily)
+			$path = str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['SCRIPT_FILENAME'])) . '/' . $path;
+			$absolute = true;
+			$path_prefix = '';
+		}
+		else
+		{
+			// We have no way of getting the absolute path, just run on using relative ones.
+			$absolute = false;
+			$path_prefix = '.';
+		}
+	}
+
+	// Remove any repeated slashes
+	$path = preg_replace('#/{2,}#', '/', $path);
+
+	// Remove the slashes from the start and end of the path
+	$path = trim($path, '/');
+
+	// Break the string into little bits for us to nibble on
+	$bits = explode('/', $path);
+
+	// Remove any . in the path, renumber array for the loop below
+	$bits = array_values(array_diff($bits, array('.')));
+
+	// Lets get looping, run over and resolve any .. (up directory)
+	for ($i = 0, $max = sizeof($bits); $i < $max; $i++)
+	{
+		// @todo Optimise
+		if ($bits[$i] == '..')
+		{
+			if (isset($bits[$i - 1]))
+			{
+				if ($bits[$i - 1] != '..')
+				{
+					// We found a .. and we are able to traverse upwards, lets do it!
+					unset($bits[$i]);
+					unset($bits[$i - 1]);
+					$i -= 2;
+					$max -= 2;
+					$bits = array_values($bits);
+				}
+			}
+			else if ($absolute) // ie. !isset($bits[$i - 1]) && $absolute
+			{
+				// We have an absolute path trying to descend above the root of the filesystem
+				// ... Error!
+				return false;
+			}
+		}
+	}
+
+	// Prepend the path prefix
+	array_unshift($bits, $path_prefix);
+
+	$resolved = '';
+
+	$max = sizeof($bits) - 1;
+
+	// Check if we are able to resolve symlinks, Windows cannot.
+	$symlink_resolve = (function_exists('readlink')) ? true : false;
+
+	foreach ($bits as $i => $bit)
+	{
+		if (@is_dir("$resolved/$bit") || ($i == $max && @is_file("$resolved/$bit")))
+		{
+			// Path Exists
+			if ($symlink_resolve && is_link("$resolved/$bit") && ($link = readlink("$resolved/$bit")))
+			{
+				// Resolved a symlink.
+				$resolved = $link . (($i == $max) ? '' : '/');
+				continue;
+			}
+		}
+		else
+		{
+			// Something doesn't exist here!
+			// This is correct realpath() behaviour but sadly open_basedir and safe_mode make this problematic
+			// return false;
+		}
+		$resolved .= $bit . (($i == $max) ? '' : '/');
+	}
+
+	// @todo If the file exists fine and open_basedir only has one path we should be able to prepend it
+	// because we must be inside that basedir, the question is where...
+	// @internal The slash in is_dir() gets around an open_basedir restriction
+	if (!@file_exists($resolved) || (!is_dir($resolved . '/') && !is_file($resolved)))
+	{
+		return false;
+	}
+
+	// Put the slashes back to the native operating systems slashes
+	$resolved = str_replace('/', DIRECTORY_SEPARATOR, $resolved);
+
+	// Check for DIRECTORY_SEPARATOR at the end (and remove it!)
+	if (substr($resolved, -1) == DIRECTORY_SEPARATOR)
+	{
+		return substr($resolved, 0, -1);
+	}
+
+	return $resolved; // We got here, in the end!
+}
+
+if (!function_exists('realpath'))
+{
+	/**
+	* A wrapper for realpath
+	* @ignore
+	*/
+	function phpbb_realpath($path)
+	{
+		return phpbb_own_realpath($path);
+	}
+}
+else
+{
+	/**
+	* A wrapper for realpath
+	*/
+	function phpbb_realpath($path)
+	{
+		$realpath = realpath($path);
+
+		// Strangely there are provider not disabling realpath but returning strange values. :o
+		// We at least try to cope with them.
+		if ($realpath === $path || $realpath === false)
+		{
+			return phpbb_own_realpath($path);
+		}
+
+		// Check for DIRECTORY_SEPARATOR at the end (and remove it!)
+		if (substr($realpath, -1) == DIRECTORY_SEPARATOR)
+		{
+			$realpath = substr($realpath, 0, -1);
+		}
+
+		return $realpath;
+	}
 }
 
 function create_server_url()
@@ -825,6 +1054,26 @@ function meta_refresh($time, $url)
 	$template->assign_vars(array('META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '" />'));
 
 	return $url;
+}
+
+/**
+* Setup basic lang
+*/
+function setup_basic_lang()
+{
+	global $board_config, $lang;
+
+	if (empty($lang))
+	{
+		if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT))
+		{
+			$board_config['default_lang'] = 'english';
+		}
+		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
+		// include all lang_extend_*.php
+		include(IP_ROOT_PATH . 'includes/lang_extend_mac.' . PHP_EXT);
+	}
 }
 
 /**
@@ -1027,7 +1276,8 @@ function create_date($format, $gmepoch, $tz)
 	global $board_config, $lang, $userdata;
 	static $translate;
 
-	if (empty($translate) && ($board_config['default_lang'] != 'english'))
+	// We need to force this ==> isset($lang['datetime']) <== otherwise we may have $lang initialized and we don't want that...
+	if (empty($translate) && ($board_config['default_lang'] != 'english') && isset($lang['datetime']))
 	{
 		@reset($lang['datetime']);
 		while (list($match, $replace) = @each($lang['datetime']))
@@ -1131,7 +1381,7 @@ function realdate($date_syntax = 'Ymd', $date = 0)
 }
 
 /*
-function realdate($date_syntax = 'Ymd',$date = 0)
+function realdate($date_syntax = 'Ymd', $date = 0)
 {
 	global $lang;
 	$i = 2;
@@ -1539,22 +1789,15 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	// If the header hasn't been parsed yet... then do it!
 	if (!defined('HEADER_INC') && ($msg_code != CRITICAL_ERROR))
 	{
-		if (empty($lang))
-		{
-			if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT))
-			{
-				$board_config['default_lang'] = 'english';
-			}
-			include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
-			include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
-			// include all lang_extend_*.php
-			include(IP_ROOT_PATH . 'includes/lang_extend_mac.' . PHP_EXT);
-		}
+		setup_basic_lang();
 
 		if (empty($template) || empty($theme))
 		{
 			$theme = setup_style($board_config['default_style'], $old_default_style);
 		}
+
+		$template->assign_var('HAS_DIED', true);
+		define('TPL_HAS_DIED', true);
 
 		// Load the Page Header
 		if (!defined('IN_ADMIN'))
@@ -1600,8 +1843,10 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			// Critical errors mean we cannot rely on _ANY_ DB information being
 			// available so we're going to dump out a simple echo'd statement
 			//
-			include(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT);
-			include(IP_ROOT_PATH . 'language/lang_english/lang_main_settings.' . PHP_EXT);
+
+			// We force english to make sure we have at least the default language
+			$board_config['default_lang'] = 'english';
+			setup_basic_lang();
 
 			if ($msg_text == '')
 			{
@@ -1653,6 +1898,12 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 	if ($msg_code != CRITICAL_ERROR)
 	{
+		// If we have already defined the var in header, let's output it in footer as well
+		if(defined('TPL_HAS_DIED'))
+		{
+			$template->assign_var('HAS_DIED', true);
+		}
+
 		if (!empty($lang[$msg_text]))
 		{
 			$msg_text = $lang[$msg_text];
@@ -1694,17 +1945,6 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	}
 
 	exit;
-}
-
-//
-// This function is for compatibility with PHP 4.x's realpath()
-// function.  In later versions of PHP, it needs to be called
-// to do checks with some functions.  Older versions of PHP don't
-// seem to need this, so we'll just return the original value.
-// dougk_ff7 <October 5, 2002>
-function phpbb_realpath($path)
-{
-	return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
 }
 
 // Mighty Gorgon - Full Album Pack - BEGIN
@@ -1947,6 +2187,135 @@ function sql_like_expression($expression)
 	return $like_expression;
 }
 
+/**
+* @return valid color or false
+* @param color as string
+* @desc Checks for a valid color string in #rrggbb, rrggbb, #rgb, rgb, rgb(rrr,ggg,bbb) format or color name defined in constant RGB_COLORS_LIST.
+*/
+function check_valid_color($color)
+{
+	$color = strtolower($color);
+	// hex colors
+	if (preg_match('/#[0-9,a-f]{6}/', $color) || preg_match('/#[0-9,a-f]{3}/', $color))
+	{
+		return $color;
+	}
+	// hex colors
+	if (preg_match('/[0-9,a-f]{6}/', $color) || preg_match('/[0-9,a-f]{3}/', $color))
+	{
+		return '#' . $color;
+	}
+	// rgb color
+	if(substr($color, 0, 4) === 'rgb(' && preg_match('/^rgb\([0-9]+,[0-9]+,[0-9]+\)$/', $color))
+	{
+		$colors = explode(',', substr($color, 4, strlen($color) - 5));
+		for($i = 0; $i < 3; $i++)
+		{
+			if($colors[$i] > 255)
+			{
+				return false;
+			}
+		}
+		return sprintf('#%02X%02X%02X', $colors[0], $colors[1], $colors[2]);
+	}
+	// text color in array
+	if (in_array($color, explode(',', RGB_COLORS_LIST)))
+	{
+		return $color;
+	}
+	// text color
+	if(preg_match('/^[a-z]+$/', $color))
+	{
+		return $color;
+	}
+	return false;
+}
+
+/**
+ * Create the sql needed to query the color... this is used also to precisely locate the cache file!
+*/
+function user_color_sql($user_id)
+{
+	$sql = "SELECT u.username, u.user_active, u.user_color, u.user_color_group
+		FROM " . USERS_TABLE . " u
+		WHERE u.user_id = '" . $user_id . "'
+			LIMIT 1";
+	return $sql;
+}
+
+/**
+ * Clear user color cache.
+ *
+ * @param => user_id
+ * @return => true on success
+*/
+function clear_user_color_cache($user_id)
+{
+	$dir = ((@file_exists(USERS_CACHE_FOLDER)) ? USERS_CACHE_FOLDER : @phpbb_realpath(USERS_CACHE_FOLDER));
+	@unlink($dir . 'sql_' . POST_USERS_URL . '_' . md5(user_color_sql($user_id)) . '.' . PHP_EXT);
+	return true;
+}
+
+/**
+ * Create a profile link for the user with his own color
+*/
+function colorize_username($user_id, $username = '', $user_color = '', $user_active = true, $no_profile = false, $get_only_color_style = false, $from_db = false, $force_cache = false)
+{
+	global $db, $board_config, $lang;
+
+	$user_id = empty($user_id) ? ANONYMOUS : $user_id;
+	$is_guest = ($user_id == ANONYMOUS) ? true : false;
+
+	if ((!$is_guest && $from_db) || (!$is_guest && empty($username) && empty($user_color)))
+	{
+		// Get the user info and see if they are assigned a color_group
+		$sql = user_color_sql($user_id);
+		$cache_cleared = (CACHE_COLORIZE && defined('IN_ADMIN')) ? clear_user_color_cache($user_id) : false;
+		$result = ((CACHE_COLORIZE || $force_cache) && !defined('IN_ADMIN')) ? $db->sql_query($sql, false, POST_USERS_URL . '_', USERS_CACHE_FOLDER) : $db->sql_query($sql);
+		$sql_row = array();
+		$row = array();
+		while ($sql_row = $db->sql_fetchrow($result))
+		{
+			$row = $sql_row;
+		}
+		$db->sql_freeresult($result);
+		$username = $row['username'];
+		$user_color = $row['user_color'];
+		$user_active = $row['user_active'];
+	}
+
+	$username = (($user_id == ANONYMOUS) || empty($username)) ? $lang['Guest'] : htmlspecialchars($username);
+	$user_link_style = '';
+	$user_link_begin = '<a href="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '"';
+	$user_link_end = '>' . $username . '</a>';
+
+	if (!$user_active || $is_guest)
+	{
+		$user_link = $user_link_begin . $user_link_style . $user_link_end;
+		$user_link = ($no_profile || $is_guest) ? $username : $user_link;
+		$user_link = ($get_only_color_style) ? '' : $user_link;
+	}
+	else
+	{
+		$user_color = check_valid_color($user_color);
+		$user_color = ($user_color != false) ? $user_color : $board_config['active_users_color'];
+		$user_link_style = ' style="font-weight: bold; text-decoration: none; color: ' . $user_color . ';"';
+
+		if ($no_profile)
+		{
+			$user_link = '<span' . $user_link_style . '>' . $username . '</span>';
+		}
+		else
+		{
+			$user_link = $user_link_begin . $user_link_style . $user_link_end;
+		}
+
+		$user_link = ($get_only_color_style) ? $user_link_style : $user_link;
+	}
+
+	return $user_link;
+}
+
 function get_default_avatar($user_id, $path_prefix = '')
 {
 	global $board_config;
@@ -1956,29 +2325,31 @@ function get_default_avatar($user_id, $path_prefix = '')
 	{
 		if (($board_config['default_avatar_set'] == 0) && ($user_id == ANONYMOUS) && ($board_config['default_avatar_guests_url'] != ''))
 		{
-			$avatar_img = '<img src="' . $path_prefix . $board_config['default_avatar_guests_url'] . '" alt="" />';
+			$avatar_img = $board_config['default_avatar_guests_url'];
 		}
 		elseif (($board_config['default_avatar_set'] == 1) && ($user_id != ANONYMOUS) && ($board_config['default_avatar_users_url'] != ''))
 		{
-			$avatar_img = '<img src="' . $path_prefix . $board_config['default_avatar_users_url'] . '" alt="" />';
+			$avatar_img = $board_config['default_avatar_users_url'];
 		}
 		elseif ($board_config['default_avatar_set'] == 2)
 		{
 			if (($user_id == ANONYMOUS) && ($board_config['default_avatar_guests_url'] != ''))
 			{
-				$avatar_img = '<img src="' . $path_prefix . $board_config['default_avatar_guests_url'] . '" alt="" />';
+				$avatar_img = $board_config['default_avatar_guests_url'];
 			}
 			elseif (($user_id != ANONYMOUS) && ($board_config['default_avatar_users_url'] != ''))
 			{
-				$avatar_img = '<img src="' . $path_prefix . $board_config['default_avatar_users_url'] . '" alt="" />';
+				$avatar_img = $board_config['default_avatar_users_url'];
 			}
 		}
 	}
 
+	$avatar_img = ($avatar_img == '&nbsp;') ? '&nbsp;' : '<img src="' . $path_prefix . $avatar_img . '" alt="avatar" />';
+
 	return $avatar_img;
 }
 
-function user_get_avatar($user_id, $user_avatar, $user_avatar_type, $user_allow_avatar, $path_prefix = '')
+function user_get_avatar($user_id, $user_level, $user_avatar, $user_avatar_type, $user_allow_avatar, $path_prefix = '')
 {
 	global $board_config;
 	$user_avatar_link = '';
@@ -1987,16 +2358,16 @@ function user_get_avatar($user_id, $user_avatar, $user_avatar_type, $user_allow_
 		switch($user_avatar_type)
 		{
 			case USER_AVATAR_UPLOAD:
-				$user_avatar_link = ($board_config['allow_avatar_upload']) ? '<img src="' . $path_prefix . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" style="margin-bottom: 3px;" />' : '';
+				$user_avatar_link = ($board_config['allow_avatar_upload']) ? '<img src="' . $path_prefix . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
 				break;
 			case USER_AVATAR_REMOTE:
-				$user_avatar_link = resize_avatar($user_avatar);
+				$user_avatar_link = resize_avatar($user_id, $user_level, $user_avatar);
 				break;
 			case USER_AVATAR_GALLERY:
-				$user_avatar_link = ($board_config['allow_avatar_local']) ? '<img src="' . $path_prefix . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" style="margin-bottom: 3px;" />' : '';
+				$user_avatar_link = ($board_config['allow_avatar_local']) ? '<img src="' . $path_prefix . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
 				break;
 			case USER_GRAVATAR:
-				$user_avatar_link = ($board_config['enable_gravatars']) ? '<img src="' . get_gravatar($user_avatar) . '" alt="" style="margin-bottom: 3px;" />' : '';
+				$user_avatar_link = ($board_config['enable_gravatars']) ? '<img src="' . get_gravatar($user_avatar) . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
 				break;
 			default:
 				$user_avatar_link = '';
@@ -2011,14 +2382,22 @@ function user_get_avatar($user_id, $user_avatar, $user_avatar_type, $user_allow_
 	return $user_avatar_link;
 }
 
-function resize_avatar($avatar_url)
+function resize_avatar($user_id, $user_level, $avatar_url)
 {
 	global $board_config;
-	$avatar_width = 80;
-	$avatar_height = 80;
-	/*
+
+	if ($user_level == ADMIN)
+	{
+		return '<img src="' . $avatar_url . '" alt="avatar" style="margin-bottom: 3px;" />';
+	}
+
+	// Set this to false if you want to force height as well
+	$force_width_only = true;
+
 	$avatar_width = $board_config['avatar_max_width'];
 	$avatar_height = $board_config['avatar_max_height'];
+
+	/*
 	if (function_exists('getimagesize'))
 	{
 		$pic_size = @getimagesize($avatar_url);
@@ -2042,7 +2421,11 @@ function resize_avatar($avatar_url)
 		}
 	}
 	*/
-	return ($board_config['allow_avatar_remote']) ? '<img src="' . $avatar_url . '" width="' . $avatar_width . '" height="' . $avatar_height . '" alt="" />' : '';
+
+	$avatar_img_dim = ($force_width_only) ? (' width="' . $avatar_width . '"') : (' width="' . $avatar_width . '" height="' . $avatar_height . '"');
+	$avatar_img = ($board_config['allow_avatar_remote']) ? '<img src="' . $avatar_url . '"' . $avatar_img_dim . ' alt="avatar" style="margin-bottom: 3px;" />' : '';
+
+	return $avatar_img;
 }
 
 function get_gravatar($email)
@@ -2135,7 +2518,72 @@ function get_founder_id($clear_cache = false)
 	return $founder_id;
 }
 
-function empty_cache_folders($cg = false)
+/*
+* Get AD
+*/
+function get_ad($ad_position)
+{
+	global $db, $board_config, $userdata;
+
+	$ad_text = '';
+	if (!$board_config['ads_' . $ad_position])
+	{
+		return $ad_text;
+	}
+
+	$user_auth = AUTH_ALL;
+	$user_level = ($userdata['user_id'] == ANONYMOUS) ? ANONYMOUS : $userdata['user_level'];
+	switch ($user_level)
+	{
+		case ADMIN:
+			$user_auth = AUTH_ADMIN;
+		break;
+		case MOD:
+			$user_auth = AUTH_MOD;
+		break;
+		case USER:
+			$user_auth = AUTH_REG;
+		break;
+	}
+
+	$sql = "SELECT *
+		FROM " . ADS_TABLE . "
+		WHERE ad_position = '" . $ad_position . "'
+			AND ad_active = 1
+			AND ad_auth >= " . $user_auth . "
+		ORDER BY ad_id";
+	if(!$result = $db->sql_query($sql, false, 'ads_'))
+	{
+		message_die(GENERAL_ERROR, 'Could not query ads table', $lang['Error'], __LINE__, __FILE__, $sql);
+	}
+
+	$active_ads = array();
+	while($row = $db->sql_fetchrow($result))
+	{
+		$active_ads[] = $row;
+	}
+	$db->sql_freeresult($result);
+
+	$total_ads = count($active_ads);
+	if ($total_ads > 0)
+	{
+		$selected_ad = rand(0, $total_ads - 1);
+		$ad_text = ((STRIP) ? stripslashes($active_ads[$selected_ad]['ad_text']) : $active_ads[$selected_ad]['ad_text']);
+		if ($active_ads[$selected_ad]['ad_format'])
+		{
+			global $bbcode;
+			@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+			$bbcode->allow_html = false;
+			$bbcode->allow_bbcode = true;
+			$bbcode->allow_smilies = true;
+			$ad_text = $bbcode->parse($ad_text);
+		}
+	}
+
+	return $ad_text;
+}
+
+function empty_cache_folders($cache_folder = '')
 {
 
 	$skip_files = array(
@@ -2154,24 +2602,23 @@ function empty_cache_folders($cg = false)
 	$cg_prefix = POST_USERS_URL . '_';
 	$dat_extension = '.dat';
 
-	$dirs_array = array(MAIN_CACHE_FOLDER, SQL_CACHE_FOLDER, TOPICS_CACHE_FOLDER, USERS_CACHE_FOLDER);
+	$dirs_array = array(MAIN_CACHE_FOLDER, FORUMS_CACHE_FOLDER, POSTS_CACHE_FOLDER, SQL_CACHE_FOLDER, TOPICS_CACHE_FOLDER, USERS_CACHE_FOLDER);
+	$dirs_array = ((empty($cache_folder) || !in_array($cache_folder, $dirs_array)) ? $dirs_array : array($cache_folder));
 	for ($i = 0; $i < count($dirs_array); $i++)
 	{
 		$dir = $dirs_array[$i];
-		$res = @opendir($dir);
+		$dir = ((is_dir($dir)) ? $dir : @phpbb_realpath($dir));
+		$res = opendir($dir);
 		while(($file = readdir($res)) !== false)
 		{
 			$file_full_path = $dir . $file;
 			if (!in_array($file, $skip_files))
 			{
+				@chmod($file_full_path, 0777);
 				$res2 = @unlink($file_full_path);
 			}
 		}
 		closedir($res);
-		if ($cg == true)
-		{
-			return true;
-		}
 	}
 	return true;
 }
@@ -2192,7 +2639,8 @@ function empty_images_cache_folders()
 	for ($i = 0; $i < count($dirs_array); $i++)
 	{
 		$dir = $dirs_array[$i];
-		$res = @opendir($dir);
+		$dir = ((is_dir($dir)) ? $dir : @phpbb_realpath($dir));
+		$res = opendir($dir);
 		while(($file = readdir($res)) !== false)
 		{
 			$file_full_path = $dir . $file;
@@ -2208,6 +2656,7 @@ function empty_images_cache_folders()
 						{
 							if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $subfile))
 							{
+								@chmod($subfile_full_path, 0777);
 								$res2 = @unlink($subfile_full_path);
 							}
 						}
@@ -2216,6 +2665,7 @@ function empty_images_cache_folders()
 				}
 				elseif(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $file))
 				{
+					@chmod($file_full_path, 0777);
 					$res2 = @unlink($file_full_path);
 				}
 			}

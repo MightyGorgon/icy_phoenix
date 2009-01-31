@@ -30,6 +30,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
 
 //--------------------------------
 //	constants
@@ -48,6 +49,7 @@ $forums_fields_list = array(
 	'forum_status'					=> 'status',
 	'forum_thanks'					=> 'forum_thanks',
 	'forum_similar_topics'	=> 'forum_similar_topics',
+	'forum_topic_views'			=> 'forum_topic_views',
 	'forum_tags'						=> 'forum_tags',
 	'forum_sort_box'				=> 'forum_sort_box',
 	'forum_kb_mode'					=> 'forum_kb_mode',
@@ -894,8 +896,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		{
 			$selected_id = $item['main'];
 			$error_msg .= $return_msg;
-			$db->clear_cache('forums_');
-			$db->clear_cache('', TOPICS_CACHE_FOLDER);
+			empty_cache_folders(FORUMS_CACHE_FOLDER);
+			empty_cache_folders(TOPICS_CACHE_FOLDER);
 			message_die(GENERAL_MESSAGE, $error_msg);
 		}
 
@@ -1283,6 +1285,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'FORUM_THANK_NO' => !$item['forum_thanks'] ? ' checked="checked"' : '',
 			'FORUM_SIMILAR_TOPICS_YES' => ($item['forum_similar_topics']) ? ' checked="checked"' : '',
 			'FORUM_SIMILAR_TOPICS_NO' => (!$item['forum_similar_topics']) ? ' checked="checked"' : '',
+			'FORUM_TOPIC_VIEWS_YES' => ($item['forum_topic_views']) ? ' checked="checked"' : '',
+			'FORUM_TOPIC_VIEWS_NO' => (!$item['forum_topic_views']) ? ' checked="checked"' : '',
 			'FORUM_TAGS_YES' => ($item['forum_tags']) ? ' checked="checked"' : '',
 			'FORUM_TAGS_NO' => (!$item['forum_tags']) ? ' checked="checked"' : '',
 			'FORUM_SORT_BOX_YES' => ($item['forum_sort_box']) ? ' checked="checked"' : '',
@@ -1636,287 +1640,5 @@ if ($mode == '')
 // dump
 $template->pparse('body');
 include('./page_footer_admin.' . PHP_EXT);
-
-// ------------------
-// Functions - BEGIN
-// ------------------
-
-function admin_add_error($msg)
-{
-	global $error, $error_msg, $lang;
-
-	$error = true;
-	$error_msg .= (empty($error_msg) ? '<br />' : '<br /><br />') . (isset($lang[$msg]) ? $lang[$msg] : $msg);
-}
-
-function admin_get_nav_cat_desc($cur='')
-{
-	global $nav_separator;
-
-	$nav_cat_desc = make_cat_nav_tree($cur, 'admin_forums_extend');
-	if (!empty($nav_cat_desc))
-	{
-		$nav_cat_desc = $nav_separator . $nav_cat_desc;
-	}
-	return $nav_cat_desc;
-}
-
-function delete_item($old, $new='', $topic_dest='')
-{
-	global $db;
-
-	// no changes
-	if ($old == $new) return;
-
-	// old type and id
-	$old_type = substr($old, 0, 1);
-	$old_id = intval(substr($old, 1));
-
-	// new type and id
-	$new_type = substr($new, 0, 1);
-	$new_id = intval(substr($new, 1));
-	if (($new_id == 0) || !in_array($new_type, array(POST_FORUM_URL, POST_CAT_URL)))
-	{
-		$new_type = POST_CAT_URL;
-		$new_id = 0;
-	}
-
-	// topic dest
-	$dst_type = substr($topic_dest, 0, 1);
-	$dst_id = intval(substr($topic_dest, 1));
-	if (($dst_id == 0) || ($dst_type != POST_FORUM_URL))
-	{
-		$topic_dest = '';
-	}
-
-	// re-attach all the content to the new id
-	if (!empty($new))
-	{
-		$sql = "UPDATE " . FORUMS_TABLE . "
-					SET main_type = '$new_type', cat_id = $new_id
-					WHERE main_type = '$old_type' AND cat_id = $old_id";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update forum attachement', '', __LINE__, __FILE__, $sql);
-		}
-
-		// categories
-		$sql = "UPDATE " . CATEGORIES_TABLE . "
-					SET cat_main_type = '$new_type', cat_main = $new_id
-					WHERE cat_main_type = '$old_type' AND cat_main = $old_id";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update categories attachement', '', __LINE__, __FILE__, $sql);
-		}
-	}
-
-	// topics move
-	if (!empty($topic_dest) && ($dst_type == POST_FORUM_URL))
-	{
-		if (($dst_type == POST_FORUM_URL) && ($old_type == POST_FORUM_URL))
-		{
-			// topics
-			$sql = "UPDATE " . TOPICS_TABLE . " SET forum_id = $dst_id WHERE forum_id = $old_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t move topics to other forum', '', __LINE__, __FILE__, $sql);
-			}
-
-			// posts
-			$sql = "UPDATE " . POSTS_TABLE . " SET forum_id = $dst_id WHERE forum_id = $old_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't move posts to other forum", "", __LINE__, __FILE__, $sql);
-			}
-			sync('forum', $dst_id);
-		}
-	}
-
-	// all what is attached to a forum
-	if ($old_type == POST_FORUM_URL)
-	{
-		// read current moderators for the old forum
-		$sql = "SELECT ug.user_id FROM " . AUTH_ACCESS_TABLE . " a, " . USER_GROUP_TABLE . " ug
-					WHERE a.forum_id = $old_id
-						AND a.auth_mod = 1
-						AND ug.group_id = a.group_id";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t obtain moderator list', '', __LINE__, __FILE__, $sql);
-		}
-		$user_ids = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$user_ids[] = $row['user_id'];
-		}
-
-		// remove moderator status for those ones
-		if (!empty($user_ids))
-		{
-			$old_moderators = implode(', ', $user_ids);
-
-			// check which ones remain moderators
-			$sql = "SELECT ug.user_id FROM " . AUTH_ACCESS_TABLE . " a, " . USER_GROUP_TABLE . " ug
-						WHERE a.forum_id <> $old_id
-							AND a.auth_mod = 1
-							AND ug.group_id = a.group_id
-							AND ug.user_id IN ($old_moderators)";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t obtain moderator list', '', __LINE__, __FILE__, $sql);
-			}
-			$user_ids = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$user_ids[] = $row['user_id'];
-			}
-			$new_moderators = empty($user_ids) ? '' : implode(', ', $user_ids);
-
-			// update users status
-			$sql = "UPDATE " . USERS_TABLE . "
-						SET user_level = " . USER . "
-						WHERE user_id IN ($old_moderators)
-							AND user_level NOT IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t update users mod level', '', __LINE__, __FILE__, $sql);
-			}
-			if (!empty($new_moderators))
-			{
-				$sql = "UPDATE " . USERS_TABLE . "
-							SET user_level = " . MOD . "
-							WHERE user_id IN ($new_moderators)
-								AND user_level NOT IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t update users mod level', '', __LINE__, __FILE__, $sql);
-				}
-			}
-		}
-
-		// remove auth for the old forum
-		$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . " WHERE forum_id = $old_id";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t remove from auth table', '', __LINE__, __FILE__, $sql);
-		}
-
-		// prune table
-		$sql = "DELETE FROM " . PRUNE_TABLE . " WHERE forum_id = $old_id";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t remove from prune table old forum type', '', __LINE__, __FILE__, $sql);
-		}
-
-		// polls
-		$sql = "SELECT v.vote_id FROM " . VOTE_DESC_TABLE . " v, " . TOPICS_TABLE . " t
-					WHERE t.forum_id = $old_id
-						AND v.topic_id = t.topic_id";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t obtain list of vote ids', '', __LINE__, __FILE__, $sql);
-		}
-		$vote_ids = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$vote_ids[] = $row['vote_id'];
-		}
-		$s_vote_ids = empty($vote_ids) ? '' : implode(', ', $vote_ids);
-		if (!empty($s_vote_ids))
-		{
-			$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . " WHERE vote_id IN ($s_vote_ids)";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t remove from vote results table', '', __LINE__, __FILE__, $sql);
-			}
-			$sql = "DELETE FROM " . VOTE_USERS_TABLE . " WHERE vote_id IN ($s_vote_ids)";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t remove from vote results table', '', __LINE__, __FILE__, $sql);
-			}
-			$sql = "DELETE FROM " . VOTE_DESC_TABLE . " WHERE vote_id IN ($s_vote_ids)";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t remove from vote desc table', '', __LINE__, __FILE__, $sql);
-			}
-		}
-
-		// topics
-		prune($old_id, 0, true); // Delete everything from forum
-	}
-
-	// delete forums rules
-	if ($old_type == POST_FORUM_URL)
-	{
-		$sql = "DELETE FROM " . FORUMS_RULES_TABLE . " WHERE forum_id = $old_id";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t delete forum rules', '', __LINE__, __FILE__, $sql);
-		}
-	}
-
-	// delete the old one
-	if ($old_type == POST_FORUM_URL)
-	{
-		$sql = "DELETE FROM " . FORUMS_TABLE . " WHERE forum_id = $old_id";
-	}
-	else
-	{
-		$sql = "DELETE FROM " . CATEGORIES_TABLE . " WHERE cat_id = $old_id";
-	}
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t delete old forum/category', '', __LINE__, __FILE__, $sql);
-	}
-
-}
-
-function reorder_tree()
-{
-	global $tree, $db;
-
-	// Make sure forums cache is empty...
-	$db->clear_cache('forums_');
-	$db->clear_cache('', TOPICS_CACHE_FOLDER);
-	// Read the tree
-	read_tree(true);
-
-	// Update with new order
-	$order = 0;
-	for ($i = 0; $i < count($tree['data']); $i++)
-	{
-		if (!empty($tree['id'][$i]))
-		{
-			$order += 10;
-			if ($tree['type'][$i] == POST_FORUM_URL)
-			{
-				$sql = "UPDATE " . FORUMS_TABLE . "
-							SET forum_order = $order
-							WHERE forum_id = " . intval($tree['id'][$i]);
-			}
-			else
-			{
-				$sql = "UPDATE " . CATEGORIES_TABLE . "
-							SET cat_order = $order
-							WHERE cat_id = " . intval($tree['id'][$i]);
-			}
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t reorder forums/categories table', '', __LINE__, __FILE__, $sql);
-			}
-		}
-	}
-
-	// Make sure forums cache is empty again...
-	$db->clear_cache('forums_');
-	$db->clear_cache('', TOPICS_CACHE_FOLDER);
-	// Re-cache the tree
-	cache_tree(true);
-	board_stats();
-}
-
-// ------------------
-// Functions - END
-// ------------------
 
 ?>

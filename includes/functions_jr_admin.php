@@ -179,7 +179,8 @@ function jr_admin_check_file_hashes($file)
 
 	//Include the file to get the module list
 	$setmodules = 1;
-	include(IP_ROOT_PATH . ADM . '/' . $file);
+	$file_full_path = IP_ROOT_PATH . ADM . '/' . $file;
+	include($file_full_path);
 	unset($setmodules);
 
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
@@ -193,7 +194,7 @@ function jr_admin_check_file_hashes($file)
 			//Remove sid if we find one
 			$module_file = preg_replace("/(\?|&|&amp;)sid=[A-Z,a-z,0-9]{32}/", '', $module_file);
 			//Make our unique ID
-			$file_hash = md5($cat.$module_name.$module_file);
+			$file_hash = md5($cat . $module_name . $module_file);
 			//See if it is in the array
 			if (in_array($file_hash, $user_modules))
 			{
@@ -296,8 +297,7 @@ function jr_admin_secure($file)
 {
 	global $db, $lang, $userdata;
 
-	/* Debugging in this function causes changes to the way ADMIN users
-	are interpreted.  You are warned */
+	/* Debugging in this function causes changes to the way ADMIN users are interpreted. You are warned */
 	$debug = false;
 
 	// We need this for regular expressions... to avoid errors!!!
@@ -314,7 +314,7 @@ function jr_admin_secure($file)
 			print '</pre></span></span><br />';
 		}
 	}
-	if ($userdata['user_level'] == ADMIN && !$debug)
+	if (($userdata['user_level'] == ADMIN) && !$debug)
 	{
 		//Admin always has access
 		return true;

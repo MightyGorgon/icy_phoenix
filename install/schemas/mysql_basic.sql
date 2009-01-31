@@ -1,3 +1,12 @@
+## Better to leave these input at the beginning... so they will be inserted as first values into tables
+## Roll on version
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.2.18.45');
+INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
+## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
+## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
+
+
 ## `phpbb_acronyms`
 ##
 
@@ -220,12 +229,16 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ask Jeeves', '', 'teoma', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Baidu [Spider]', '', 'Baiduspider', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Become', '', 'BecomeBot/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Bloglines', '', 'Bloglines/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Charlotte', '', 'Charlotte/1.1', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('DotBot', '', 'dotnetdotcom.org/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('eBay', '', '', '212.222.51');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('eDintorni Crawler', '', 'eDintorni', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Exabot', '', 'Exabot/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('FAST Enterprise [Crawler]', '', 'FAST Enterprise Crawler', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('FAST WebCrawler [Crawler]', '', 'FAST-WebCrawler/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('FeedBurner', '', 'FeedBurner/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Feedreader', '', 'Feedreader', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Francis', '', 'http://www.neomo.de/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Gigablast', '', '', '66.154.102, 66.154.103');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Gigabot', '', 'Gigabot/', '');
@@ -245,6 +258,8 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Majestic-12', '', 'MJ12bot/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Metager', '', 'MetagerBot/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Microsoft Research', '', 'MSRBOT', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Netvibes', '', 'Netvibes', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('NewsGatorOnline', '', 'NewsGatorOnline/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('NG-Search', '', 'NG-Search/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Noxtrum [Crawler]', '', 'noxtrumbot', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Nutch', '', 'http://lucene.apache.org/nutch/', '');
@@ -263,6 +278,7 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('SEOSearch [Crawler]', '', 'SEOsearch/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snap Bot', '', 'Snapbot/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snappy', '', 'Snappy/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Snarfer', '', 'Snarfer/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Speedy Spider', '', 'Speedy Spider', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Steeler [Crawler]', '', 'http://www.tkl.iis.u-tokyo.ac.jp/~crawler/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Synoo', '', 'SynooBot/', '');
@@ -275,6 +291,7 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('W3 [Sitesearch]', '', 'W3 SiteSearch Crawler', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('W3C [Linkcheck]', '', 'W3C-checklink/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('W3C [Validator]', '', 'W3C_', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WikioFeedBot', '', 'WikioFeedBot', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WiseNut', '', 'http://www.WISEnutbot.com', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('YaCy', '', 'yacybot', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yandex', '', 'Yandex/', '');
@@ -671,8 +688,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('url_rw', '0'
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('xmas_fx', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_header_table', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('header_table_text', 'Text');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_footer_table', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('footer_table_text', 'Text');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('fast_n_furious', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('new_msgs_mumber', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_last_msgs', '0');
@@ -686,7 +701,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('last_msgs_x'
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('posts_precompiled', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_links', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_birthday', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('db_cron', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_history', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smilies_topic_title', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('html_email', '1');
@@ -757,10 +771,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_custom_pages', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_ajax_chat', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wide_blocks_ajax_chat_archive', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_header_banner', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_viewtopic_banner', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('header_banner_text', 'Text');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('viewtopic_banner_text', 'Text');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('visit_counter_switch', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('emails_only_to_admins', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('no_right_click', '0');
@@ -818,10 +828,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_topi
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smart_header', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('page_title_simple', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_referrers', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_top_html_block', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('top_html_block_text', 'Text');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_bottom_html_block', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bottom_html_block_text', 'Text');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_php_cron_lock', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('mg_log_actions', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('active_users_color', '#224455');
@@ -856,6 +862,46 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_alpha_b
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('db_log_actions', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_topic_description', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bots_reg_auth', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_global_switch', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_lock', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_queue_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_queue_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_digests_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_digests_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_files_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_files_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_database_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_database_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_cache_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_cache_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sql_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sql_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_users_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_users_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_topics_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_topics_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sessions_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sessions_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_count', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_show_begin_for', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_show_not_optimized', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('rand_seed_last_update', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('gsearch_guests', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glt', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glb', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glh', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_glf', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_fix', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_fit', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_fib', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vfx', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vft', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vfb', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vtx', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vtt', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_vtb', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmt', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmb', '0');
 ## CASH - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_disable', 0);
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_display_after_posts', 1);
@@ -869,10 +915,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_adminbi
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_adminnavbar', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('points_name', 'Points');
 ## CASH - END
-## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('similar_topicdesc', '0');
-## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_calendar_box_index', '0');
-## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.22');
-## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.0.0');
 
 ## `phpbb_ctracker_config`
 ##
@@ -978,8 +1020,8 @@ INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VA
 INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (2, 1, 'png', '');
 INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (3, 1, 'jpeg', '');
 INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (4, 1, 'jpg', '');
-INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (5, 1, 'tif', '');
-INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (6, 1, 'tga', '');
+#INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (5, 1, 'tif', '');
+#INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (6, 1, 'tga', '');
 INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (7, 2, 'gtar', '');
 INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (8, 2, 'gz', '');
 INSERT INTO `phpbb_extensions` (`ext_id`, `group_id`, `extension`, `comment`) VALUES (9, 2, 'tar', '');
@@ -1401,10 +1443,6 @@ INSERT INTO `phpbb_news` (`news_id`, `news_category`, `news_image`) VALUES (1, '
 ##
 INSERT INTO `phpbb_notes` (`id`, `text`) VALUES (1, 'Write here your notes');
 
-## `phpbb_optimize_db`
-##
-INSERT INTO `phpbb_optimize_db` (`cron_enable`, `cron_every`, `cron_next`, `cron_count`, `cron_lock`, `show_begin_for`, `show_not_optimized`) VALUES ('1', 86400, 0, 0, '1', '', '0');
-
 ## `phpbb_pa_auth`
 ##
 
@@ -1652,7 +1690,7 @@ INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_
 
 ## `phpbb_themes`
 ##
-INSERT INTO `phpbb_themes` (`themes_id`, `template_name`, `style_name`, `head_stylesheet`, `body_background`, `body_bgcolor`, `tr_class1`, `tr_class2`, `tr_class3`, `td_class1`, `td_class2`, `td_class3`) VALUES (1, 'icy_phoenix', 'Icy Phoenix', 'style_ice.css', 'ice', '', 'row1', 'row2', 'row3', 'row1', 'row2', 'row3');
+INSERT INTO `phpbb_themes` (`themes_id`, `template_name`, `style_name`, `head_stylesheet`, `body_background`, `body_bgcolor`, `tr_class1`, `tr_class2`, `tr_class3`, `td_class1`, `td_class2`, `td_class3`) VALUES (1, 'icy_phoenix', 'Frozen Phoenix', 'style_cyan.css', 'cyan', '', 'row1', 'row2', 'row3', 'row1', 'row2', 'row3');
 
 ## `phpbb_title_infos`
 ##
@@ -1779,13 +1817,4 @@ INSERT INTO phpbb_dl_banlist (user_agent) VALUES ('n/a');
 INSERT INTO phpbb_dl_ext_blacklist (extention) VALUES
 	('asp'), ('cgi'), ('dhtm'), ('dhtml'), ('exe'), ('htm'), ('html'), ('jar'), ('js'), ('php'), ('php3'), ('pl'), ('sh'), ('shtm'), ('shtml');
 ## DOWNLOADS - END
-
-
-
-## Roll on version
-## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
-## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
-INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.2.15.42');
 

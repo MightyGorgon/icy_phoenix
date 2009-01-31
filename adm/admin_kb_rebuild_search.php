@@ -41,28 +41,31 @@ $page_title = $lang['Page_title'];
 
 if (isset ($_GET['start']))
 {
-	function onTime ()
+	if(!function_exists('onTime'))
 	{
-		global $start_time, $time_limit;
-		static $max_execution_time;
-
-		$current_time = time ();
-
-		if (empty ($max_execution_time))
+		function onTime()
 		{
-			if (ini_get ('safe_mode') == false)
-			{
-				set_time_limit (0);
+			global $start_time, $time_limit;
+			static $max_execution_time;
 
-				$max_execution_time = $time_limit;
-			}
-			else
+			$current_time = time ();
+
+			if (empty ($max_execution_time))
 			{
-				$max_execution_time = ini_get ('max_execution_time');
+				if (ini_get ('safe_mode') == false)
+				{
+					set_time_limit (0);
+
+					$max_execution_time = $time_limit;
+				}
+				else
+				{
+					$max_execution_time = ini_get ('max_execution_time');
+				}
 			}
+
+			return (($current_time - $start_time) < $max_execution_time) ? true : false;
 		}
-
-		return (($current_time - $start_time) < $max_execution_time) ? true : false;
 	}
 
 	$start = intval($_GET['start']);

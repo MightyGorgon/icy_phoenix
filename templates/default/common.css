@@ -369,6 +369,10 @@ a.text_yellow:link,
 a.text_yellow:active,
 a.text_yellow:visited { color: #ffffaa; font-weight: bold; }
 a.text_yellow:hover { color: #ffffaa; text-decoration: underline; }
+
+.post-it-row1 { background: #ffffff url('images/bg_post_it_01.gif') repeat-x top !important; }
+.post-it-row2 { background: #ffffff url('images/bg_post_it_02.gif') repeat-x top !important; }
+.post-it-row3 { background: #ffffff url('images/bg_post_it_03.gif') repeat-x top !important; }
 /* MG - END */
 
 .highlight-w {
@@ -491,11 +495,11 @@ img.pngimg {
 	margin: 0;
 	text-decoration: none;
 	/*color: #555555;*/
-	/*border-right: 1px solid #DADADA;*/
+	/*border-right: 1px solid #dadada;*/
 }
 
 .chromestyle ul li a:hover{
-	color: #DD2222;
+	color: #dd2222;
 }
 
 /*
@@ -519,8 +523,8 @@ content: " " url(downimage.gif);
 	z-index: 100;
 	width: 200px;
 	visibility: hidden;
-	filter: progid:DXImageTransform.Microsoft.Shadow(color=#CACACA,direction=135,strength=4); /*Add Shadow in IE. Remove if desired*/
-	background-color: #F8F8F8;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=#cacaca,direction=135,strength=4); /*Add Shadow in IE. Remove if desired*/
+	background-color: #f8f8f8;
 }
 
 .dropmenudiv a{
@@ -537,8 +541,8 @@ content: " " url(downimage.gif);
 }
 
 .dropmenudiv a:hover{ /*THEME CHANGE HERE*/
-	/* background: #F0F0F0 url(images/ice/bg_row_hover.gif) bottom right no-repeat; */
-	background-color: #F0F0F0;
+	/* background: #f0f0f0 url(images/ice/bg_row_hover.gif) bottom right no-repeat; */
+	background-color: #f0f0f0;
 }
 
 /*

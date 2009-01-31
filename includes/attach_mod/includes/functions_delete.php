@@ -339,7 +339,7 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$privmsgs_type = $row['privmsgs_type'];
-				if ($privmsgs_type == PRIVMSGS_READ_MAIL || $privmsgs_type == PRIVMSGS_NEW_MAIL || $privmsgs_type == PRIVMSGS_UNREAD_MAIL)
+				if (($privmsgs_type == PRIVMSGS_READ_MAIL) || ($privmsgs_type == PRIVMSGS_NEW_MAIL) || ($privmsgs_type == PRIVMSGS_UNREAD_MAIL))
 				{
 					if ($row['privmsgs_to_userid'] == $user_id)
 					{
@@ -382,6 +382,14 @@ function delete_attachment($post_id_array = 0, $attach_id_array = 0, $page = 0, 
 		$sql = 'DELETE FROM ' . ATTACHMENTS_TABLE . '
 			WHERE attach_id IN (' . implode(', ', $attach_id_array) . ")
 				AND $sql_id IN (" . implode(', ', $post_id_array) . ')';
+
+		if ( !($db->sql_query($sql)) )
+		{
+			message_die(GENERAL_ERROR, $lang['Error_deleted_attachments'], '', __LINE__, __FILE__, $sql);
+		}
+
+		$sql = 'DELETE FROM ' . ATTACHMENTS_STATS_TABLE . '
+			WHERE attach_id IN (' . implode(', ', $attach_id_array) . ')';
 
 		if ( !($db->sql_query($sql)) )
 		{

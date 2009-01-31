@@ -29,7 +29,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
 
 // Adding CPL_NAV only if needed
@@ -362,7 +361,7 @@ elseif ($mode == 'read')
 	// END PM Navigation MOD
 
 	// Major query obtains the message ...
-	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u2.username AS username_2, u2.user_id AS user_id_2, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*
+	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u.user_active AS user_active_1, u.user_color AS user_color_1, u2.username AS username_2, u2.user_id AS user_id_2, u2.user_active AS user_active_2, u2.user_color AS user_color_2, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*
 		FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
 		WHERE pm.privmsgs_id = $privmsgs_id
 			$pm_sql_user
@@ -647,9 +646,9 @@ elseif ($mode == 'read')
 		)
 	);
 
-	$username_from = colorize_username($privmsg['user_id_1']);
+	$username_from = colorize_username($privmsg['user_id_1'], $privmsg['username_1'], $privmsg['user_color_1'], $privmsg['user_active_1']);
 	$user_id_from = $privmsg['user_id_1'];
-	$username_to = colorize_username($privmsg['user_id_2']);
+	$username_to = colorize_username($privmsg['user_id_2'], $privmsg['username_2'], $privmsg['user_color_2'], $privmsg['user_active_2']);
 	$user_id_to = $privmsg['user_id_2'];
 	init_display_pm_attachments($privmsg['privmsgs_attachment']);
 
@@ -2287,7 +2286,7 @@ elseif($search_type === 'subject')
 // General SQL to obtain messages
 $sql_tot = "SELECT COUNT(privmsgs_id) AS total
 	FROM " . PRIVMSGS_TABLE . " ";
-$sql = "SELECT pm.privmsgs_type, pm.privmsgs_id, pm.privmsgs_date, pm.privmsgs_subject, u.user_id, u.username
+$sql = "SELECT pm.privmsgs_type, pm.privmsgs_id, pm.privmsgs_date, pm.privmsgs_subject, u.user_id, u.username, u.user_active, u.user_color
 	FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u ";
 switch($folder)
 {
@@ -2535,10 +2534,10 @@ if ($row = $db->sql_fetchrow($result))
 		$flag = $row['privmsgs_type'];
 
 		$icon_flag = ($flag == PRIVMSGS_NEW_MAIL || $flag == PRIVMSGS_UNREAD_MAIL) ? $images['pm_unreadmsg'] : $images['pm_readmsg'];
-  $icon_flag_alt = ($flag == PRIVMSGS_NEW_MAIL || $flag == PRIVMSGS_UNREAD_MAIL) ? $lang['Unread_message'] : $lang['Read_message'];
+		$icon_flag_alt = ($flag == PRIVMSGS_NEW_MAIL || $flag == PRIVMSGS_UNREAD_MAIL) ? $lang['Unread_message'] : $lang['Read_message'];
 
 		$msg_userid = $row['user_id'];
-		$msg_username = colorize_username($row['user_id']);
+		$msg_username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 
 		$u_from_user_profile = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $msg_userid);
 
@@ -2553,7 +2552,7 @@ if ($row = $db->sql_fetchrow($result))
 
 		$msg_date = create_date2($board_config['default_dateformat'], $row['privmsgs_date'], $board_config['board_timezone']);
 
-		if ($flag == PRIVMSGS_NEW_MAIL && $folder == 'inbox')
+		if (($flag == PRIVMSGS_NEW_MAIL) && ($folder == 'inbox'))
 		{
 			$msg_subject = '<b>' . $msg_subject . '</b>';
 			$msg_date = '<b>' . $msg_date . '</b>';
@@ -2579,24 +2578,27 @@ if ($row = $db->sql_fetchrow($result))
 			'S_MARK_ID' => $privmsg_id,
 
 			'U_READ' => $u_subject,
-			'U_FROM_USER_PROFILE' => $u_from_user_profile)
+			'U_FROM_USER_PROFILE' => $u_from_user_profile
+			)
 		);
 	}
 	while($row = $db->sql_fetchrow($result));
 
-	$search_pagination = $search_type ? '&searchvar=' . $search_type . '&searchvalue=' . urlencode($search_value) : '';
+	$search_pagination = $search_type ? ('&searchvar=' . $search_type . '&searchvalue=' . urlencode($search_value)) : '';
 	$template->assign_vars(array(
 		'PAGINATION' => generate_pagination('privmsg.' . PHP_EXT . '?folder=' . $folder . $search_pagination, $pm_total, $board_config['topics_per_page'], $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($pm_total / $board_config['topics_per_page'])),
 
-		'L_GOTO_PAGE' => $lang['Goto_page'])
+		'L_GOTO_PAGE' => $lang['Goto_page']
+		)
 	);
 
 }
 else
 {
 	$template->assign_vars(array(
-		'L_NO_MESSAGES' => $lang['No_messages_folder'])
+		'L_NO_MESSAGES' => $lang['No_messages_folder']
+		)
 	);
 
 	$template->assign_block_vars('switch_no_messages', array());

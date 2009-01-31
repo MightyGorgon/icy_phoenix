@@ -45,10 +45,11 @@ if (count($index))
 		/*
 		* latest downloads
 		*/
-		$sql = "SELECT d.*, u.username, c.cat_name FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c, " . USERS_TABLE . " u
+		$sql = "SELECT d.*, u.username, u.user_active, u.user_color, c.cat_name
+			FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c, " . USERS_TABLE . " u
 			WHERE d.cat = c.id
 				AND d.down_user = u.user_id
-				AND c.id IN (".implode(',', $access_cats).")
+				AND c.id IN (" . implode(',', $access_cats) . ")
 				$sql_where
 			ORDER BY d.last_time DESC
 			LIMIT 10";
@@ -75,11 +76,10 @@ if (count($index))
 
 				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
-				//$user_link = ($row['down_user'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['down_user']);
-				$user_link = colorize_username($row['down_user']);
+				$user_link = ($row['down_user'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($row['down_user'], $row['username'], $row['user_color'], $row['user_active']);
 				$user_name = ($row['down_user'] == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 
-				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('top_ten_latest', array(
 					'POS' => $dl_pos,
@@ -102,11 +102,12 @@ if (count($index))
 		/*
 		* lastest uploads
 		*/
-		$sql = "SELECT d.*, u.username, c.cat_name FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c, " . USERS_TABLE . " u
+		$sql = "SELECT d.*, u.username, u.user_active, u.user_color, c.cat_name
+			FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c, " . USERS_TABLE . " u
 			WHERE d.cat = c.id
 				AND d.add_user = u.user_id
 				AND approve = " . TRUE . "
-				AND c.id IN (".implode(',', $access_cats).")
+				AND c.id IN (" . implode(',', $access_cats) . ")
 			ORDER BY d.add_time DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -132,11 +133,10 @@ if (count($index))
 
 				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
-				//$user_link = ($row['add_user'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['add_user']);
-				$user_link = colorize_username($row['add_user']);
+				$user_link = ($row['add_user'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($row['add_user'], $row['username'], $row['user_color'], $row['user_active']);
 				$user_name = ($row['add_user'] == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 
-				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('top_ten_uploads', array(
 					'POS' => $dl_pos,
@@ -159,9 +159,10 @@ if (count($index))
 		/*
 		* top ten downloads this month
 		*/
-		$sql = "SELECT d.*, c.cat_name FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
+		$sql = "SELECT d.*, c.cat_name
+			FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
 			WHERE d.cat = c.id
-				AND c.id IN (".implode(',', $access_cats).")
+				AND c.id IN (" . implode(',', $access_cats) . ")
 			ORDER BY d.klicks DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -194,7 +195,8 @@ if (count($index))
 					'U_FILE_LINK' => $file_link,
 					'CAT_NAME' => $cat_name,
 					'DL_KLICKS' => $dl_klicks,
-					'ROW_CLASS' => $row_class)
+					'ROW_CLASS' => $row_class
+					)
 				);
 
 				$i++;
@@ -206,9 +208,10 @@ if (count($index))
 		/*
 		* top ten downloads overall
 		*/
-		$sql = "SELECT d.*, c.cat_name FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
+		$sql = "SELECT d.*, c.cat_name
+			FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
 			WHERE d.cat = c.id
-				AND c.id IN (".implode(',', $access_cats).")
+				AND c.id IN (" . implode(',', $access_cats) . ")
 			ORDER BY d.overall_klicks DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -233,7 +236,7 @@ if (count($index))
 
 				$file_link = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $file_id);
 
-				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('top_ten_dl_overall', array(
 					'POS' => $dl_pos,
@@ -254,9 +257,10 @@ if (count($index))
 		/*
 		* top ten traffic this month
 		*/
-		$sql = "SELECT (d.klicks * d.file_size) as month_traffic, d.*, c.cat_name FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
+		$sql = "SELECT (d.klicks * d.file_size) as month_traffic, d.*, c.cat_name
+			FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
 			WHERE d.cat = c.id
-				AND c.id IN (".implode(',', $access_cats).")
+				AND c.id IN (" . implode(',', $access_cats) . ")
 			ORDER BY month_traffic DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -302,9 +306,10 @@ if (count($index))
 		/*
 		* top ten traffic overall
 		*/
-		$sql = "SELECT (d.overall_klicks * d.file_size) as overall_traffic, d.*, c.cat_name FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
+		$sql = "SELECT (d.overall_klicks * d.file_size) as overall_traffic, d.*, c.cat_name
+			FROM " . DOWNLOADS_TABLE . " d, " . DL_CAT_TABLE . " c
 			WHERE d.cat = c.id
-				AND c.id IN (".implode(',', $access_cats).")
+				AND c.id IN (" . implode(',', $access_cats) . ")
 			ORDER BY overall_traffic DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -350,16 +355,18 @@ if (count($index))
 		/*
 		* enable/disable guest data on extended statistics
 		*/
-		$sql_where = ($dl_config['guest_stats_show'] == 1) ? '' : ' AND user_id <> ' . ANONYMOUS;
+		$sql_where = ($dl_config['guest_stats_show'] == 1) ? '' : ' AND s.user_id <> ' . ANONYMOUS;
 
 		/*
 		* top ten download counts
 		*/
-		$sql = "SELECT count(id) as dl_counts, user_id, username FROM " . DL_STATS_TABLE . "
-			WHERE direction = 0
-				AND cat_id IN (".implode(',', $access_cats).")
+		$sql = "SELECT count(s.id) as dl_counts, s.user_id, s.username, u.username as user_username, u.user_active, u.user_color
+			FROM " . DL_STATS_TABLE . " s, " . USERS_TABLE " u
+			WHERE s.direction = 0
+				AND s.cat_id IN (" . implode(',', $access_cats) . ")
 				$sql_where
-			GROUP BY user_id, username
+				AND u.user_id = s.user_id
+			GROUP BY s.user_id, user_username
 			ORDER BY dl_counts DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -374,8 +381,7 @@ if (count($index))
 			$dl_pos = 1;
 			while ($row = $db->sql_fetchrow($result))
 			{
-				//$user_link = ($row['user_id'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']);
-				$user_link = colorize_username($row['user_id']);
+				$user_link = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($row['user_id'], $row['user_username'], $row['user_color'], $row['user_active']);
 				$user_name = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 
 				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
@@ -398,11 +404,13 @@ if (count($index))
 		/*
 		* top ten download traffic
 		*/
-		$sql = "SELECT sum(traffic) as dl_traffic, user_id, username FROM " . DL_STATS_TABLE . "
-			WHERE direction = 0
-				AND cat_id IN (".implode(',', $access_cats).")
+		$sql = "SELECT sum(s.traffic) as dl_traffic, s.user_id, s.username, u.username as user_username, u.user_active, u.user_color
+			FROM " . DL_STATS_TABLE . " s, " . USERS_TABLE " u
+			WHERE s.direction = 0
+				AND s.cat_id IN (" . implode(',', $access_cats) . ")
 				$sql_where
-			GROUP BY user_id, username
+				AND u.user_id = s.user_id
+			GROUP BY s.user_id, user_username
 			ORDER BY dl_traffic DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -417,8 +425,7 @@ if (count($index))
 			$dl_pos = 1;
 			while ($row = $db->sql_fetchrow($result))
 			{
-				//$user_link = ($row['user_id'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']);
-				$user_link = colorize_username($row['user_id']);
+				$user_link = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($row['user_id'], $row['user_username'], $row['user_color'], $row['user_active']);
 				$user_name = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 				$dl_traffic = $dl_mod->dl_size($row['dl_traffic']);
 
@@ -442,11 +449,13 @@ if (count($index))
 		/*
 		* top ten upload counts
 		*/
-		$sql = "SELECT count(id) as dl_counts, user_id, username FROM " . DL_STATS_TABLE . "
-			WHERE direction = 1
-				AND cat_id IN (".implode(',', $access_cats).")
+		$sql = "SELECT count(s.id) as dl_counts, s.user_id, s.username, u.username as user_username, u.user_active, u.user_color
+			FROM " . DL_STATS_TABLE . " s, " . USERS_TABLE " u
+			WHERE s.direction = 1
+				AND s.cat_id IN (" . implode(',', $access_cats) . ")
 				$sql_where
-			GROUP BY user_id, username
+				AND u.user_id = s.user_id
+			GROUP BY s.user_id, user_username
 			ORDER BY dl_counts DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -461,11 +470,10 @@ if (count($index))
 			$dl_pos = 1;
 			while ($row = $db->sql_fetchrow($result))
 			{
-				//$user_link = ($row['user_id'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']);
-				$user_link = colorize_username($row['user_id']);
+				$user_link = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($row['user_id'], $row['user_username'], $row['user_color'], $row['user_active']);
 				$user_name = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 
-				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('top_ten_up_counts', array(
 					'POS' => $dl_pos,
@@ -485,11 +493,13 @@ if (count($index))
 		/*
 		* top ten upload traffic
 		*/
-		$sql = "SELECT sum(traffic) as dl_traffic, user_id, username FROM " . DL_STATS_TABLE . "
-			WHERE direction = 1
-				AND cat_id IN (".implode(',', $access_cats).")
+		$sql = "SELECT sum(s.traffic) as dl_traffic, s.user_id, s.username, u.username as user_username, u.user_active, u.user_color
+			FROM " . DL_STATS_TABLE . " s, " . USERS_TABLE " u
+			WHERE s.direction = 1
+				AND s.cat_id IN (" . implode(',', $access_cats) . ")
 				$sql_where
-			GROUP BY user_id, username
+				AND u.user_id = s.user_id
+			GROUP BY s.user_id, user_username
 			ORDER BY dl_traffic DESC
 			LIMIT 10";
 		if(!$result = $db->sql_query($sql))
@@ -504,12 +514,11 @@ if (count($index))
 			$dl_pos = 1;
 			while ($row = $db->sql_fetchrow($result))
 			{
-				//$user_link = ($row['user_id'] == ANONYMOUS) ? '' : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']);
-				$user_link = colorize_username($row['user_id']);
+				$user_link = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($row['user_id'], $row['user_username'], $row['user_color'], $row['user_active']);
 				$user_name = ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 				$dl_traffic = $dl_mod->dl_size($row['dl_traffic']);
 
-				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('top_ten_up_traffic', array(
 					'POS' => $dl_pos,

@@ -20,6 +20,46 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+
+/**
+ * Function needed to fix config values before passing them to DB
+*/
+function fix_config_values($config_name, $config_value)
+{
+	global $new;
+	if ($config_name == 'cookie_name')
+	{
+		$new['cookie_name'] = str_replace('.', '_', $new['cookie_name']);
+	}
+
+	// Attempt to prevent a common mistake with this value,
+	// http:// is the protocol and not part of the server name
+	if ($config_name == 'server_name')
+	{
+		$new['server_name'] = str_replace('http://', '', $new['server_name']);
+	}
+
+	if ($config_name == 'report_forum')
+	{
+		$new['report_forum'] = str_replace('f', '', $new['report_forum']);
+	}
+
+	if ($config_name == 'bin_forum')
+	{
+		$new['bin_forum'] = str_replace('f', '', $new['bin_forum']);
+	}
+
+	// Attempt to prevent a mistake with this value.
+	if ($config_name == 'avatar_path')
+	{
+		$new['avatar_path'] = trim($new['avatar_path']);
+		if (strstr($new['avatar_path'], "\0") || !is_dir(IP_ROOT_PATH . $new['avatar_path']) || !is_writable(IP_ROOT_PATH . $new['avatar_path']))
+		{
+			$new['avatar_path'] = $default_config['avatar_path'];
+		}
+	}
+}
+
 // Simple version of jumpbox, just lists authed forums
 function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 {
@@ -31,22 +71,22 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 		FROM ' . CATEGORIES_TABLE . ' c, ' . FORUMS_TABLE . ' f
 		WHERE f.cat_id = c.cat_id
 		ORDER BY c.cat_order, f.forum_order';
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Couldn not obtain forums information', '', __LINE__, __FILE__, $sql);
 	}
 
 	$forum_list = '';
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
-		if ( $is_auth_ary[$row['forum_id']]['auth_read'] && $ignore_forum != $row['forum_id'] )
+		if ($is_auth_ary[$row['forum_id']]['auth_read'] && $ignore_forum != $row['forum_id'])
 		{
-			$selected = ( $select_forum == $row['forum_id'] ) ? ' selected="selected"' : '';
+			$selected = ($select_forum == $row['forum_id']) ? ' selected="selected"' : '';
 			$forum_list .= '<option value="' . $row['forum_id'] . '"' . $selected .'>' . $row['forum_name'] . '</option>';
 		}
 	}
 
-	$forum_list = ( $forum_list == '' ) ? $lang['No_forums'] : '<select name="' . $box_name . '">' . $forum_list . '</select>';
+	$forum_list = ($forum_list == '') ? $lang['No_forums'] : '<select name="' . $box_name . '">' . $forum_list . '</select>';
 
 	return $forum_list;
 }
@@ -61,18 +101,18 @@ function make_topic_select($box_name, $forum_id)
 		FROM " . TOPICS_TABLE . "
 		WHERE forum_id = $forum_id
 		ORDER BY topic_title";
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Couldn not obtain topics information', '', __LINE__, __FILE__, $sql);
 	}
 
 	$topic_list = '';
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$topic_list .= '<option value="' . $row['topic_id'] . '">' . $row['topic_title'] . '</option>';
 	}
 
-	$topic_list = ( $topic_list == '' ) ? '<option value="-1">-- ! No Topics ! --</option>' : '<select name="' . $box_name . '">' . $topic_list . '</select>';
+	$topic_list = ($topic_list == '') ? '<option value="-1">-- ! No Topics ! --</option>' : '<select name="' . $box_name . '">' . $topic_list . '</select>';
 
 	return $topic_list;
 }
@@ -87,12 +127,12 @@ function sync($type, $id = false)
 		case 'all forums':
 			$sql = "SELECT forum_id
 				FROM " . FORUMS_TABLE;
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not get forum IDs', '', __LINE__, __FILE__, $sql);
 			}
 
-			while( $row = $db->sql_fetchrow($result) )
+			while($row = $db->sql_fetchrow($result))
 			{
 				sync('forum', $row['forum_id']);
 			}
@@ -101,12 +141,12 @@ function sync($type, $id = false)
 		case 'all topics':
 			$sql = "SELECT topic_id
 				FROM " . TOPICS_TABLE;
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
 			}
 
-			while( $row = $db->sql_fetchrow($result) )
+			while($row = $db->sql_fetchrow($result))
 			{
 				sync('topic', $row['topic_id']);
 			}
@@ -116,14 +156,14 @@ function sync($type, $id = false)
 			$sql = "SELECT MAX(post_id) AS last_post, COUNT(post_id) AS total
 				FROM " . POSTS_TABLE . "
 				WHERE forum_id = $id";
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
 			}
 
-			if ( $row = $db->sql_fetchrow($result) )
+			if ($row = $db->sql_fetchrow($result))
 			{
-				$last_post = ( $row['last_post'] ) ? $row['last_post'] : 0;
+				$last_post = ($row['last_post']) ? $row['last_post'] : 0;
 				$total_posts = ($row['total']) ? $row['total'] : 0;
 			}
 			else
@@ -135,17 +175,17 @@ function sync($type, $id = false)
 			$sql = "SELECT COUNT(topic_id) AS total
 				FROM " . TOPICS_TABLE . "
 				WHERE forum_id = $id";
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not get topic count', '', __LINE__, __FILE__, $sql);
 			}
 
-			$total_topics = ( $row = $db->sql_fetchrow($result) ) ? ( ( $row['total'] ) ? $row['total'] : 0 ) : 0;
+			$total_topics = ($row = $db->sql_fetchrow($result)) ? (($row['total']) ? $row['total'] : 0) : 0;
 
 			$sql = "UPDATE " . FORUMS_TABLE . "
 				SET forum_last_post_id = $last_post, forum_posts = $total_posts, forum_topics = $total_topics
 				WHERE forum_id = $id";
-			if ( !$db->sql_query($sql) )
+			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not update forum', '', __LINE__, __FILE__, $sql);
 			}
@@ -155,12 +195,12 @@ function sync($type, $id = false)
 			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM " . POSTS_TABLE . "
 				WHERE topic_id = $id";
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
 			}
 
-			if ( $row = $db->sql_fetchrow($result) )
+			if ($row = $db->sql_fetchrow($result))
 			{
 				if ($row['total_posts'])
 				{
@@ -219,7 +259,7 @@ function duplicate_auth($source_id, $target_id)
 
 	$sql = "SELECT * FROM " . FORUMS_TABLE . "
 					WHERE forum_id = '" . intval($source_id) . "'";
-	if( !$result = $db->sql_query($sql) )
+	if(!$result = $db->sql_query($sql))
 	{
 		return false;
 	}
@@ -242,7 +282,7 @@ function duplicate_auth($source_id, $target_id)
 	$sql = "UPDATE " . FORUMS_TABLE . "
 		SET ". $auth_sql . "
 		WHERE forum_id = '" . intval($target_id) . "'";
-	if( !$db->sql_query($sql) )
+	if(!$db->sql_query($sql))
 	{
 		return false;
 	}

@@ -169,6 +169,16 @@ function dss_rand()
 
 	return substr($val, 4, 16);
 }
+
+/**
+* Return unique id
+* @param string $extra additional entropy
+*/
+function unique_id($extra = 'c')
+{
+	return dss_rand();
+}
+
 //
 // Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
 //

@@ -20,14 +20,14 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 $article_id = !isset($article_id) ? intval($_GET['k']) : $article_id;
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
 
-$sql = "SELECT *
-		FROM " . KB_ARTICLES_TABLE . "
-		WHERE article_id = $article_id";
+$sql = "SELECT k.*, u.user_id, u.username, u.user_active, u.user_color
+				FROM " . KB_ARTICLES_TABLE . " k, " . USERS_TABLE . " u
+				WHERE article_id = $article_id
+					AND u.user_id = k.article_author_id";
 
 if (!($result = $db->sql_query($sql)))
 {
@@ -84,7 +84,7 @@ if (count($kb_row) > 0)
 	// author information
 
 	$author_id = $kb_row['article_author_id'];
-	$author_kb_art = ($author_id == -1) ? $lang['Guest'] : colorize_username ($kb_row['article_author_id']);
+	$author_kb_art = ($author_id == -1) ? $lang['Guest'] : colorize_username($kb_row['article_author_id']);
 
 	$art_pages = explode('[page]', stripslashes($kb_row['article_body']));
 	$article = trim($art_pages[$page_num]);

@@ -24,7 +24,6 @@ if (!defined('IN_ICYPHOENIX'))
 
 // get_quick_stats();
 // gets number of articles
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 function get_quick_stats($category_id = '')
 {
 	global $db, $template, $lang, $kb_config;
@@ -110,7 +109,7 @@ function get_kb_author($id, $get_all_userdata = false)
 		}
 		else
 		{
-			$name = colorize_username($row['user_id']);
+			$name = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		}
 	}
 	else
@@ -240,7 +239,7 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 
 	$server_url = create_server_url();
 
-	$sql = "SELECT t.*, u.user_id, u.user_rank, u.user_sig, u.user_allowsmile
+	$sql = "SELECT t.*, u.user_id, u.username, u.user_active, u.user_color, u.user_rank, u.user_sig, u.user_allowsmile
 			FROM " . KB_ARTICLES_TABLE . " t, " . USERS_TABLE . " u
 			WHERE ";
 
@@ -300,7 +299,7 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 		$article_date = create_date2($board_config['default_dateformat'], $article['article_date'], $board_config['board_timezone']);
 		// author information
 		$author_id = $article['article_author_id'];
-		$author = ($author_id == -1) ? $lang['Guest'] : colorize_username($article['article_author_id']);
+		$author = ($author_id == -1) ? $lang['Guest'] : colorize_username($article['article_author_id'], $article['username'], $article['user_color'], $article['user_active']);
 
 		$article_id = $article['article_id'];
 		$views = $article['views'];
@@ -429,25 +428,28 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 
 	$server_url = create_server_url();
 
-	$sql = "SELECT * FROM " . KB_ARTICLES_TABLE . " WHERE";
+	$sql = "SELECT k.*, u.user_id, u.username, u.user_active, u.user_color
+					FROM " . KB_ARTICLES_TABLE . " k, " . USERS_TABLE . " u
+					WHERE";
 
-	$sql .= " approved = " . $approve;
+	$sql .= " k.approved = " . $approve;
+	$sql .= "AND u.user_id = k.article_author_id";
 
 	if ($type)
 	{
 		if ($type == 'toprated')
 		{
-			$sql .= " AND article_totalvotes > 0";
-			$sql .= " ORDER BY article_rating/article_totalvotes DESC";
+			$sql .= " AND k.article_totalvotes > 0";
+			$sql .= " ORDER BY k.article_rating / k.article_totalvotes DESC";
 		}
 		elseif ($type == 'latest')
 		{
-			$sql .= " ORDER BY article_date DESC";
+			$sql .= " ORDER BY k.article_date DESC";
 		}
 		elseif ($type == 'mostpopular')
 		{
-			$sql .= " AND views > 0";
-			$sql .= " ORDER BY views DESC";
+			$sql .= " AND k.views > 0";
+			$sql .= " ORDER BY k.views DESC";
 		}
 	}
 
@@ -486,7 +488,7 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 		}
 		else
 		{
-			$author = colorize_username ($article['article_author_id']);
+			$author = colorize_username($article['article_author_id'], $article['username'], $article['user_color'], $article['user_active']);
 		}
 
 		$article_id = $article['article_id'];
@@ -1480,7 +1482,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 
 	// Go ahead and pull all data for this topic
 
-	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE p.topic_id = $topic_id
 			AND u.user_id = p.poster_id
@@ -1523,7 +1525,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 	for($i = $i_init; $i < $total_posts; $i++)
 	{
 		$poster_id = $postrow[$i]['user_id'];
-		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username ($postrow[$i]['user_id']);
+		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($postrow[$i]['user_id'], $postrow[$i]['username'], $postrow[$i]['user_color'], $postrow[$i]['user_active']);
 
 		$post_date = create_date2($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
 
@@ -1564,7 +1566,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 					$poster_avatar = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $postrow[$i]['user_avatar'] . '" alt="" />' : '';
 					break;
 				case USER_AVATAR_REMOTE:
-					$poster_avatar = resize_avatar($postrow[$i]['user_avatar']);
+					$poster_avatar = resize_avatar($poster_id, $postrow[$i]['user_level'], $postrow[$i]['user_avatar']);
 					break;
 				case USER_AVATAR_GALLERY:
 					$poster_avatar = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $postrow[$i]['user_avatar'] . '" alt="" />' : '';

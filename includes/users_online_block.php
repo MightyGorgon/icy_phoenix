@@ -13,11 +13,11 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if ($board_config['show_chat_online'] == true)
+if (defined('SHOW_ONLINE_CHAT') && $board_config['show_chat_online'])
 {
 	//$template->assign_block_vars('switch_ac_online', array());
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
-	$sql = "SELECT u.user_id, u.username, u.user_level
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
 	FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
 	WHERE s.session_time >= " . (time() - ONLINE_REFRESH) . "
 	AND s.session_user_id = u.user_id
@@ -31,7 +31,7 @@ if ($board_config['show_chat_online'] == true)
 	{
 		if($ac_online['user_id'] != ANONYMOUS)
 		{
-			$ac_username_lists .= ($ac_username_lists == '') ? colorize_username($ac_online['user_id']) : (', ' . colorize_username($ac_online['user_id']));
+			$ac_username_lists .= (($ac_username_lists == '') ? '' : ', ') . colorize_username($ac_online['user_id'], $ac_online['username'], $ac_online['user_color'], $ac_online['user_active']);
 			$ac_reg_online_counter++;
 		}
 		else
@@ -69,7 +69,7 @@ else
 	$user_forum_sql = '';
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_user_agent
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_user_agent
 	FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 	WHERE u.user_id = s.session_user_id
 	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
@@ -96,7 +96,7 @@ while($row = $db->sql_fetchrow($result))
 		// Skip multiple sessions for one user
 		if ($row['user_id'] != $prev_user_id)
 		{
-			$user_online_link = colorize_username($row['user_id']);
+			$user_online_link = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 			if ($row['user_allow_viewonline'])
 			{
 				$logged_visible_online++;
@@ -104,12 +104,12 @@ while($row = $db->sql_fetchrow($result))
 			else
 			{
 				$logged_hidden_online++;
-				$user_online_link = '<em>' . colorize_username($row['user_id']) . '</em>';
+				$user_online_link = '<em>' . $user_online_link . '</em>';
 			}
 
 			if ($row['user_allow_viewonline'] || ($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $row['user_id']))
 			{
-				$online_userlist .= ($online_userlist != '') ? ', ' . $user_online_link : $user_online_link;
+				$online_userlist .= (($online_userlist != '') ? ', ' : '') . $user_online_link;
 			}
 		}
 		$prev_user_id = $row['user_id'];
@@ -154,46 +154,29 @@ if (empty($online_userlist))
 if (isset($forum_id) && $userdata['session_logged_in'] && $userdata['user_allow_viewonline'])
 {
 
-	$user_browsing_link = colorize_username($userdata['user_id']);
+	$user_browsing_link = colorize_username($userdata['user_id'], $userdata['username'], $userdata['user_color'], $userdata['user_active']);
 
-		// if userlist shows `none` replace with user_browsing_link
+	// if userlist shows `none` replace with user_browsing_link
 	if ($online_userlist == $lang['None'])
 	{
 		$online_userlist = $user_browsing_link;
 	}
-		// add link if user is missing from list
 	elseif (substr_count($online_userlist, $user_browsing_link) == 0)
 	{
+		// add link if user is missing from list
 		$online_userlist .= ', ' . $user_browsing_link;
 	}
 }
 
 //$online_userlist = ((isset($forum_id)) ? $lang['Browsing_forum'] : $lang['Registered_users']) . ' ' . $online_userlist;
-$online_userlist = $lang['Registered_users'].' ' . $online_userlist;
+$online_userlist = $lang['Registered_users'] . ' ' . $online_userlist;
 
 $total_online_users = $logged_visible_online + $logged_hidden_online + $guests_online;
 
 if ($total_online_users > $board_config['record_online_users'])
 {
-	$board_config['record_online_users'] = $total_online_users;
-	$board_config['record_online_date'] = time();
-
-	$sql = "UPDATE " . CONFIG_TABLE . "
-		SET config_value = '$total_online_users'
-		WHERE config_name = 'record_online_users'";
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not update online user record (nr of users)', '', __LINE__, __FILE__, $sql);
-	}
-
-	$sql = "UPDATE " . CONFIG_TABLE . "
-		SET config_value = '" . $board_config['record_online_date'] . "'
-		WHERE config_name = 'record_online_date'";
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not update online user record (date)', '', __LINE__, __FILE__, $sql);
-	}
-	$db->clear_cache('config_');
+	set_config('record_online_users', $total_online_users);
+	set_config('record_online_date', time());
 }
 
 if ($total_online_users == 0)

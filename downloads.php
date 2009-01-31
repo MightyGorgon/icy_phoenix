@@ -25,7 +25,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Session management
 $userdata = session_pagestart($user_ip);
@@ -1652,11 +1651,11 @@ if (empty($view) && !$inc_module)
 	$username = $userdata['username'];
 	$user_traffic = $userdata['user_traffic'];
 
-	$sql = "SELECT c.parent, d.cat, d.id, d.change_time, d. description, d.change_user, u.username
+	$sql = "SELECT c.parent, d.cat, d.id, d.change_time, d. description, d.change_user, u.user_id, u.username, u.user_active, u.user_color
 		FROM " . DOWNLOADS_TABLE . " d, " . USERS_TABLE . " u, " . DL_CAT_TABLE . " c
-		WHERE d.change_user = u.user_id
+		WHERE d.cat = c.id
 			AND d.approve = " . TRUE . "
-			AND d.cat = c.id
+			AND u.user_id = d.change_user
 		ORDER BY cat, change_time DESC, id DESC";
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -1677,7 +1676,7 @@ if (empty($view) && !$inc_module)
 			$last_dl[$last_id]['time'] = create_date($board_config['default_dateformat'], $row['change_time'], $board_config['board_timezone']);
 			$last_dl[$last_id]['link'] = append_sid('downloads.' . PHP_EXT . '?view=detail&amp;df_id=' . $row['id']);
 			//$last_dl[$last_id]['user_link'] = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['change_user']);
-			$last_dl[$last_id]['user_link'] = colorize_username($row['change_user']);
+			$last_dl[$last_id]['user_link'] = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 		}
 	}
 	$db->sql_freeresult($result);

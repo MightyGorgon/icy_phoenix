@@ -61,12 +61,12 @@ if($mode == 'save')
 	$input_table = BOTS_TABLE;
 	// htmlspecialchars_decode is supported only since PHP 5+ (an alias has been added into functions.php, if you want to use a PHP 4 default function you can use html_entity_decode instead)
 	$input_array = array(
-		'bot_active' => addslashes($bot_active),
-		'bot_name' => '\'' . addslashes($bot_name) . '\'',
-		'bot_color' => '\'' . htmlspecialchars_decode(addslashes($bot_color)) . '\'',
-		'bot_agent' => '\'' . addslashes($bot_agent) . '\'',
-		'bot_ip' => '\'' . addslashes($bot_ip) . '\'',
-		'bot_visit_counter' => addslashes($bot_visit_counter),
+		'bot_active' => $bot_active,
+		'bot_name' => '\'' . ((STRIP) ? addslashes($bot_name) : $bot_name) . '\'',
+		'bot_color' => '\'' . ((STRIP) ? htmlspecialchars_decode(addslashes($bot_color)) : htmlspecialchars_decode($bot_color)) . '\'',
+		'bot_agent' => '\'' . ((STRIP) ? addslashes($bot_agent) : $bot_agent) . '\'',
+		'bot_ip' => '\'' . ((STRIP) ? addslashes($bot_ip) : $bot_ip) . '\'',
+		'bot_visit_counter' => ((STRIP) ? addslashes($bot_visit_counter) : $bot_visit_counter),
 	);
 
 	$input_fields_sql = '';
@@ -147,6 +147,8 @@ elseif ($mode == 'update')
 		}
 	}
 	$db->sql_freeresult($result);
+
+	$db->clear_cache('bots_list_');
 	$message = $lang['BOT_UPDATED'];
 	$message .= '<br /><br />' . sprintf($lang['CLICK_RETURN_BOTS'], '<a href="' . append_sid('admin_bots.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
@@ -163,7 +165,7 @@ elseif ($mode == 'add')
 			WHERE bot_id = " . $bot_id;
 		if(!$result = $db->sql_query($sql))
 		{
-			message_die(GENERAL_ERROR, 'Could not query autolinks table', $lang['Error'], __LINE__, __FILE__, $sql);
+			message_die(GENERAL_ERROR, 'Could not query bots table', $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
 		$row = $db->sql_fetchrow($result);
@@ -171,12 +173,12 @@ elseif ($mode == 'add')
 
 		$bot_id = $row['bot_id'];
 		$bot_active = $row['bot_active'];
-		$bot_name = stripslashes($row['bot_name']);
-		$bot_color = htmlspecialchars(stripslashes($row['bot_color']));
-		$bot_agent = stripslashes($row['bot_agent']);
-		$bot_ip = stripslashes($row['bot_ip']);
+		$bot_name = ((STRIP) ? stripslashes($row['bot_name']) : $row['bot_name']);
+		$bot_color = ((STRIP) ? htmlspecialchars(stripslashes($row['bot_color'])) : htmlspecialchars($row['bot_color']));
+		$bot_agent = ((STRIP) ? stripslashes($row['bot_agent']) : $row['bot_agent']);
+		$bot_ip = ((STRIP) ? stripslashes($row['bot_ip']) : $row['bot_ip']);
 		$bot_last_visit = $row['bot_last_visit'];
-		$bot_visit_counter = $row['bot_visit_counter'];
+		$bot_visit_counter = ((STRIP) ? stripslashes($row['bot_visit_counter']) : $row['bot_visit_counter']);
 	}
 
 	$bot_active = ($bot_id > 0) ? $bot_active : true;
@@ -259,9 +261,7 @@ else
 
 	if($i == 0)
 	{
-		$template->assign_block_vars('no_bots', array(
-			'L_NO_BOTS' => $lang['NO_BOTS'])
-		);
+		$template->assign_block_vars('no_bots', array());
 	}
 	$db->sql_freeresult($result);
 

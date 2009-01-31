@@ -299,7 +299,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		$topic_show_portal = ( $topic_show_portal == true ) ? 1 : 0;
 		$topic_calendar_duration = ( $topic_calendar_duration == '') ? 0 : $topic_calendar_duration;
 
-		$sql = ($mode != "editpost") ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_vote, topic_show_portal) VALUES ('$post_subject', '$topic_desc', " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_vote, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '$post_subject', news_id = $news_id, topic_desc = '$topic_desc', topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration " . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . ", topic_show_portal = $topic_show_portal
+		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_vote, topic_show_portal) VALUES ('$post_subject', '$topic_desc', " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_vote, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '$post_subject', news_id = $news_id, topic_desc = '$topic_desc', topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration " . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . ", topic_show_portal = $topic_show_portal
 		WHERE topic_id = $topic_id";
 
 		if (!$db->sql_query($sql))
@@ -347,7 +347,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_sig, enable_autolinks_acronyms) VALUES ($topic_id, $forum_id, " . $userdata['user_id'] . ", '$post_username', '$post_subject', '$post_message', $current_time, '$user_ip', $bbcode_on, $html_on, $smilies_on, $attach_sig, $acro_auto_on)" : "UPDATE " . POSTS_TABLE . " SET post_username = '$post_username',  post_text = '$post_message', post_text_compiled = '', post_subject = '$post_subject', enable_bbcode = $bbcode_on, enable_html = $html_on, enable_smilies = $smilies_on, enable_sig = $attach_sig" . $edited_sql . ", enable_autolinks_acronyms = " . $acro_auto_on . " WHERE post_id = $post_id";
 	if (!$db->sql_query($sql, BEGIN_TRANSACTION))
 	{
-		$db->clear_cache('posts_');
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 		message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
 	}
 
@@ -504,8 +504,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 	}
 
-	$db->clear_cache('posts_');
-	$db->clear_cache('forums_');
+	empty_cache_folders(POSTS_CACHE_FOLDER);
+	empty_cache_folders(FORUMS_CACHE_FOLDER);
 	board_stats();
 	cache_tree(true);
 
@@ -575,7 +575,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 					WHERE topic_id = $topic_id";
 				if (!($result = $db->sql_query($sql)))
 				{
-					$db->clear_cache('posts_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
 					message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 				}
 
@@ -592,7 +592,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 					WHERE forum_id = $forum_id";
 				if (!($result = $db->sql_query($sql)))
 				{
-					$db->clear_cache('posts_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
 					message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 				}
 
@@ -609,7 +609,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 				WHERE topic_id = $topic_id";
 			if (!($result = $db->sql_query($sql)))
 			{
-				$db->clear_cache('posts_');
+				empty_cache_folders(POSTS_CACHE_FOLDER);
 				message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 			}
 
@@ -640,7 +640,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 			WHERE forum_id = $forum_id";
 		if (!$db->sql_query($sql))
 		{
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
 		}
 	}
@@ -652,7 +652,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 			WHERE topic_id = $topic_id";
 		if (!$db->sql_query($sql))
 		{
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
 		}
 	}
@@ -665,7 +665,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 			WHERE forum_id = $forum_id AND forum_postcount = 0";
 		if (!($result = $db->sql_query($sql)))
 		{
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 		}
 		if ($row = $db->sql_fetchrow($result))
@@ -679,7 +679,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 			WHERE user_id = $user_id";
 		if (!$db->sql_query($sql, END_TRANSACTION))
 		{
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
 		}
 	}
@@ -700,8 +700,8 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		}
 	}
 
-	$db->clear_cache('posts_');
-	$db->clear_cache('forums_');
+	empty_cache_folders(POSTS_CACHE_FOLDER);
+	empty_cache_folders(FORUMS_CACHE_FOLDER);
 	board_stats();
 	cache_tree(true);
 
@@ -718,12 +718,12 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 	while ($group_data = $db->sql_fetchrow($result))
 	{
 		$user_already_added = (empty($group_data['user_id'])) ? false : true;
-		$user_add = ( ($group_data['group_count'] == $group_data['user_posts']) && ($user_id != ANONYMOUS)) ? true : false;
+		$user_add = (($group_data['group_count'] == $group_data['user_posts']) && ($user_id != ANONYMOUS)) ? true : false;
 		$user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? true : false;
 		if ($user_add && !$user_already_added)
 		{
-			update_user_color($user_id, $group_data['group_color'], $group_data['g_id']);
-			empty_cache_folders(true);
+			update_user_color($user_id, $group_data['group_color'], $group_data['g_id'], false, false);
+			empty_cache_folders(USERS_CACHE_FOLDER);
 			//user join a autogroup
 			$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 				VALUES (" . $group_data['g_id'] . ", $user_id, '0')";
@@ -732,10 +732,10 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 				message_die(GENERAL_ERROR, 'Error insert users, group count', '', __LINE__, __FILE__, $sql);
 			}
 		}
-		elseif ( $user_already_added && $user_remove)
+		elseif ($user_already_added && $user_remove)
 		{
-			clear_user_color($user_id, $group_data['group_color'], $group_data['g_id']);
-			empty_cache_folders(true);
+			update_user_color($user_id, $board_config['active_users_color'], 0);
+			empty_cache_folders(USERS_CACHE_FOLDER);
 			//remove user from auto group
 			$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 				WHERE group_id = '" . $group_data['g_id'] . "'
@@ -747,7 +747,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		}
 	}
 
-	$db->clear_cache('posts_');
+	empty_cache_folders(POSTS_CACHE_FOLDER);
 	return;
 }
 
@@ -773,7 +773,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			WHERE post_id = $post_id";
 		if (!$db->sql_query($sql))
 		{
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 		}
 
@@ -782,14 +782,14 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			WHERE post_id = $post_id";
 		if (!$db->sql_query($sql))
 		{
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in deleting post (UPI2DB)', '', __LINE__, __FILE__, $sql);
 		}
 		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
 			WHERE post_id = $post_id";
 		if (!$db->sql_query($sql))
 		{
-			$db->clear_cache('posts_');
+			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in deleting post (UPI2DB)', '', __LINE__, __FILE__, $sql);
 		}
 //<!-- END Unread Post Information to Database Mod -->
@@ -804,7 +804,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 						OR topic_moved_id = $topic_id";
 				if (!$db->sql_query($sql))
 				{
-					$db->clear_cache('posts_');
+					empty_cache_folders(POSTS_CACHE_FOLDER);
 					message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 				}
 
@@ -830,8 +830,8 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			}
 		}
 
-		$db->clear_cache('posts_');
-		$db->clear_cache('forums_');
+		empty_cache_folders(POSTS_CACHE_FOLDER);
+		empty_cache_folders(FORUMS_CACHE_FOLDER);
 		remove_search_post($post_id);
 	}
 
@@ -872,8 +872,8 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$message .=  '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . "=$forum_id") . '">', '</a>');
 
-	$db->clear_cache('posts_');
-	$db->clear_cache('forums_');
+	empty_cache_folders(POSTS_CACHE_FOLDER);
+	empty_cache_folders(FORUMS_CACHE_FOLDER);
 	board_stats();
 	cache_tree(true);
 
@@ -925,7 +925,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
 							WHERE ban_userid <> 0
 							ORDER BY ban_userid ASC";
-			if (!($result = $db->sql_query($sql, false, 'ban_')))
+			if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 			{
 				message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 			}
@@ -944,10 +944,11 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					AND tw.user_id NOT IN (" . $userdata['user_id'] . ", " . ANONYMOUS . $user_id_sql . ")
 					AND tw.notify_status = " . TOPIC_WATCH_UN_NOTIFIED . "
 					AND f.forum_id = $forum_id
-					AND u.user_id = tw.user_id";
+					AND u.user_id = tw.user_id
+					AND u.user_active = 1";
 			if (!($result = $db->sql_query($sql)))
 			{
-				$db->clear_cache('posts_');
+				empty_cache_folders(POSTS_CACHE_FOLDER);
 				message_die(GENERAL_ERROR, 'Could not obtain list of topic watchers', '', __LINE__, __FILE__, $sql);
 			}
 
@@ -990,12 +991,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				{
 					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 					$emailer = new emailer($board_config['smtp_delivery']);
-
-					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-					$script_name = ($script_name != '') ? $script_name . '/' . VIEWTOPIC_MG : VIEWTOPIC_MG;
-					$server_name = trim($board_config['server_name']);
-					$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-					$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
+					$server_url = create_server_url();
 
 					$orig_word = array();
 					$replacement_word = array();
@@ -1039,6 +1035,15 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 						// translators update their templates
 						$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
+						if ($board_config['url_rw'] == '1')
+						{
+							$topic_url = $server_url . str_replace ('--', '-', make_url_friendly($topic_title) . '-vp' . $post_id . '.html#p' . $post_id);
+						}
+						else
+						{
+							$topic_url = $server_url . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id;
+						}
+
 						$emailer->assign_vars(array(
 							'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 							'SITENAME' => $board_config['sitename'],
@@ -1048,10 +1053,10 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							'POST_TEXT' => $post_text,
 							'POSTERNAME' => $post_data['username'],
 							'FORUM_NAME' => $forum_name,
-							'ROOT' => $server_protocol . $server_name . $board_config['script_path'],
+							'ROOT' => $server_url,
 
-							'U_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
-							'U_STOP_WATCHING_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '?' . POST_TOPIC_URL . '=' . $topic_id . '&unwatch=topic'
+							'U_TOPIC' => $topic_url,
+							'U_STOP_WATCHING_TOPIC' => $server_url . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&unwatch=topic'
 							)
 						);
 
@@ -1061,7 +1066,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				}
 			}
 
-			$already_mailed = ( trim($update_watched_sql) == '' ) ? "" : "$update_watched_sql, ";
+			$already_mailed = (trim($update_watched_sql) == '') ? "" : "$update_watched_sql, ";
 			$db->sql_freeresult($result);
 
 			// start of reply forum notification
@@ -1071,10 +1076,11 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					AND fw.user_id NOT IN (" . $already_mailed . $userdata['user_id'] . ", " . ANONYMOUS . $user_id_sql . " )
 					AND f.forum_id = $forum_id
 					AND f.forum_notify = '1'
-					AND u.user_id = fw.user_id";
+					AND u.user_id = fw.user_id
+					AND u.user_active = 1";
 			if (!($result = $db->sql_query($sql)))
 			{
-				$db->clear_cache('posts_');
+				empty_cache_folders(POSTS_CACHE_FOLDER);
 				message_die(GENERAL_ERROR, 'Could not obtain list of topic watchers', '', __LINE__, __FILE__, $sql);
 			}
 
@@ -1116,13 +1122,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				{
 					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 					$emailer = new emailer($board_config['smtp_delivery']);
-
-					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-					$script_name_forum = ($script_name != '') ? $script_name . '/' . VIEWFORUM_MG : VIEWFORUM_MG;
-					$script_name = ($script_name != '') ? $script_name . '/' . VIEWTOPIC_MG : VIEWTOPIC_MG;
-					$server_name = trim($board_config['server_name']);
-					$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-					$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
+					$server_url = create_server_url();
 
 					$orig_word = array();
 					$replacement_word = array();
@@ -1174,6 +1174,15 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							// translators update their templates
 							$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
+							if ($board_config['url_rw'] == '1')
+							{
+								$topic_url = $server_url . str_replace ('--', '-', make_url_friendly($topic_title) . '-vp' . $post_id . '.html#p' . $post_id);
+							}
+							else
+							{
+								$topic_url = $server_url . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id;
+							}
+
 							$emailer->assign_vars(array(
 								'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 								'SITENAME' => $board_config['sitename'],
@@ -1183,10 +1192,10 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 								'POST_TEXT' => $post_text,
 								'POSTERNAME' => $post_data['username'],
 								'FORUM_NAME' => $forum_name,
-								'ROOT' => $server_protocol . $server_name . $board_config['script_path'],
+								'ROOT' => $server_url,
 
-								'U_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
-								'U_STOP_WATCHING_FORUM' => $server_protocol . $server_name . $server_port . $script_name_forum . '?' . POST_FORUM_URL . '=' . $forum_id . '&unwatch=forum'
+								'U_TOPIC' => $topic_url,
+								'U_STOP_WATCHING_FORUM' => $server_url . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&unwatch=forum'
 								)
 							);
 
@@ -1219,7 +1228,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
 							WHERE ban_userid <> 0
 							ORDER BY ban_userid ASC";
-			if (!($result = $db->sql_query($sql, false, 'ban_')))
+			if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 			{
 				message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
 			}
@@ -1238,10 +1247,11 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					AND fw.user_id NOT IN (" . $userdata['user_id'] . ", " . ANONYMOUS . $user_id_sql . ")
 					AND f.forum_id = $forum_id
 					AND f.forum_notify = '1'
-					AND u.user_id = fw.user_id";
+					AND u.user_id = fw.user_id
+					AND u.user_active = 1";
 			if (!($result = $db->sql_query($sql)))
 			{
-				$db->clear_cache('posts_');
+				empty_cache_folders(POSTS_CACHE_FOLDER);
 				message_die(GENERAL_ERROR, 'Could not obtain list of forum watchers', '', __LINE__, __FILE__, $sql);
 			}
 
@@ -1283,13 +1293,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				{
 					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 					$emailer = new emailer($board_config['smtp_delivery']);
-
-					$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-					$script_name_forum = ($script_name != '') ? $script_name . '/' . VIEWFORUM_MG : VIEWFORUM_MG;
-					$script_name = ($script_name != '') ? $script_name . '/' . VIEWTOPIC_MG : VIEWTOPIC_MG;
-					$server_name = trim($board_config['server_name']);
-					$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-					$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
+					$server_url = create_server_url();
 
 					$orig_word = array();
 					$replacement_word = array();
@@ -1341,6 +1345,15 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							// translators update their templates
 							$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
+							if ($board_config['url_rw'] == '1')
+							{
+								$topic_url = $server_url . str_replace ('--', '-', make_url_friendly($topic_title) . '-vp' . $post_id . '.html#p' . $post_id);
+							}
+							else
+							{
+								$topic_url = $server_url . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id;
+							}
+
 							$emailer->assign_vars(array(
 								'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
 								'SITENAME' => $board_config['sitename'],
@@ -1350,10 +1363,10 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 								'POST_TEXT' => $post_text,
 								'POSTERNAME' => $post_data['username'],
 								'FORUM_NAME' => $forum_name,
-								'ROOT' => $server_protocol . $server_name . $board_config['script_path'],
+								'ROOT' => $server_url,
 
-								'U_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
-								'U_STOP_WATCHING_FORUM' => $server_protocol . $server_name . $server_port . $script_name_forum . '?' . POST_FORUM_URL . '=' . $forum_id . '&unwatch=forum'
+								'U_TOPIC' => $topic_url,
+								'U_STOP_WATCHING_FORUM' => $server_url . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&unwatch=forum'
 								)
 							);
 

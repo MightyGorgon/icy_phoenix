@@ -29,6 +29,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 $db->clear_cache('config_');
 
 // get all the mods settings
@@ -157,7 +158,7 @@ while (list($menu_name, $menu) = each($mods))
 						{
 							if (!isset($field['user_only']) || !$field['user_only'])
 							{
-								$found=true;
+								$found = true;
 								break;
 							}
 						}
@@ -215,7 +216,7 @@ if (!$result = $db->sql_query($sql))
 $config = array();
 while ($row = $db->sql_fetchrow($result))
 {
-	$config[ $row['config_name'] ] = $row['config_value'];
+	$config[$row['config_name']] = $row['config_value'];
 }
 
 // validate
@@ -285,25 +286,11 @@ if ($submit)
 	{
 		if (isset($$field_name))
 		{
-			// update
-			$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = '" . $$field_name . "'
-					WHERE config_name = '" . $field_name . "'";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
-			}
+			set_config($field_name, $$field_name);
 		}
-		if (isset($_POST[$field_name . '_over']) && !empty($field['user']) && isset($userdata[ $field['user'] ]))
+		if (isset($_POST[$field_name . '_over']) && !empty($field['user']) && isset($userdata[$field['user']]))
 		{
-			// update
-			$sql = "UPDATE " . CONFIG_TABLE . "
-					SET config_value = '" . intval($_POST[$field_name . '_over']) . "'
-					WHERE config_name = '" . $field_name . "_over'";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
-			}
+			set_config(($field_name . '_over'), intval($_POST[$field_name . '_over']));
 		}
 	}
 
@@ -311,7 +298,6 @@ if ($submit)
 	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
-
 
 // template
 $template->set_filenames(array('body' => ADM_TPL . 'board_config_extend_body.tpl'));

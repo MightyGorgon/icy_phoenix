@@ -359,7 +359,7 @@ if (! empty($where_sql))
 		}
 	}
 
-	$db->clear_cache('ban_');
+	$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
 	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid("admin_user_ban." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 

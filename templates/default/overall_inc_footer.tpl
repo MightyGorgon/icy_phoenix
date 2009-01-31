@@ -12,15 +12,6 @@
 
 	</td>
 </tr>
-<!-- BEGIN switch_footer_table -->
-<tr>
-	<td width="100%" colspan="3">
-		<div style="padding-left:5px; padding-right:5px;">
-		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-			<tr><td class="row-header"><span>{L_STAFF_MESSAGE}</span></td></tr>
-			<tr><td><div class="post-text"><br />{switch_footer_table.FOOTER_TEXT}<br /><br /></div></td></tr>
-		</table>{IMG_TBR}
-		</div>
-	</td>
-</tr>
-<!-- END switch_footer_table -->
+<!-- IF FOOTER_BANNER_BLOCK -->
+<tr><td width="100%" colspan="3">{FOOTER_BANNER_BLOCK}</td></tr>
+<!-- ENDIF -->

@@ -14,7 +14,6 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -78,7 +77,7 @@ $not_group_allowed = false;
 if(!empty($layout_row['groups']))
 {
 	$not_group_allowed = true;
-	$group_content = explode(",", $layout_row['groups']);
+	$group_content = explode(',', $layout_row['groups']);
 	for ($i = 0; $i < count($group_content); $i++)
 	{
 		if(in_array(intval($group_content[$i]), cms_groups($userdata['user_id'])))
@@ -90,6 +89,13 @@ if(!empty($layout_row['groups']))
 
 if(($layout_template == '') || (!$lview) || ($not_group_allowed))
 {
+	if (!$userdata['session_logged_in'])
+	{
+		$page_array = array();
+		$page_array = extract_current_page(IP_ROOT_PATH);
+		redirect(append_sid(IP_ROOT_PATH . LOGIN_MG . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
+	}
+
 	$layout = $cms_config_vars['default_portal'];
 	$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE lid = '" . $layout . "'";
 	if(!($layout_result = $db->sql_query($sql, false, 'cms_')))

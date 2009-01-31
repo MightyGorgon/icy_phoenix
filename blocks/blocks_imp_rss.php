@@ -103,7 +103,8 @@ if(!function_exists('imp_rss_func'))
 						$item_count = count($rss_channel['items']);
 						for($j = 0; $j < $item_count; $j++)
 						{
-							$rss_ticker_content .= '&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="' . $rss_channel['items'][$j]['link'] . '" target="_blank" title="'. $rss_channel['items'][$j]['title'] . '"' . $xml_marquee_append . '><b>' . $rss_channel['items'][$j]['title'] . '</b></a>';
+							$title = htmlspecialchars_clean(ip_utf8_decode(strip_tags($rss_channel['items'][$j]['title'])));
+							$rss_ticker_content .= '&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="' . $rss_channel['items'][$j]['link'] . '" target="_blank" title="' . $title . '"' . $xml_marquee_append . '><b>' . $title . '</b></a>';
 							if (!$xml_style && !$xml_scroll)
 							{
 								$rss_ticker_content .= '<br />';
@@ -121,7 +122,8 @@ if(!function_exists('imp_rss_func'))
 					}
 				}
 
-				$xml_title = (!empty($xml_title) ? $xml_title : (empty($rss_channel['title']) ? 'No Source Info Available' : '<a href="' . $rss_channel['link'] . '" target="_blank">' . $rss_channel['title'] . '</a>'));
+				$rss_channel_title = (empty($rss_channel['title']) ? 'No Source Info Available' : ('<a href="' . $rss_channel['link'] . '" target="_blank">' . htmlspecialchars_clean(ip_utf8_decode(strip_tags($rss_channel['title']))) . '</a>'));
+				$xml_title = (!empty($xml_title) ? $xml_title : $rss_channel_title);
 				$template->assign_vars(array(
 					'RSS_TICKER_ID' => $xml_id,
 					'RSS_TICKER_FROM' => $xml_title,

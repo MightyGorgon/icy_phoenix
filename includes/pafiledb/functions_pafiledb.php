@@ -1078,7 +1078,7 @@ class pafiledb
 
 			if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
 			{
-				$url_file = append_sid (str_replace ('--', '-', make_url_friendly($file_rowset[$i]['file_name']) . '-df' . $file_rowset[$i]['file_id'] . '.html'));
+				$url_file = append_sid(str_replace ('--', '-', make_url_friendly($file_rowset[$i]['file_name']) . '-df' . $file_rowset[$i]['file_id'] . '.html'));
 			}
 			else
 			{
@@ -1573,7 +1573,7 @@ class pafiledb
 		$ss_size = !empty($_FILES['screen_shot']['size']) ? $_FILES['screen_shot']['size'] : '';
 
 		$file_upload = ( empty($_POST['download_url']) ) ? true : false;
-		//$file_remote_url = ( !empty($_POST['download_url']) ? urlencode(utf8_decode($_POST['download_url'])) : '' );
+		//$file_remote_url = ( !empty($_POST['download_url']) ? urlencode(ip_utf8_decode($_POST['download_url'])) : '' );
 		//$file_remote_url = ( !empty($_POST['download_url']) ? str_replace(' ', '%20', $_POST['download_url']) : '' );
 		$file_remote_url = ( !empty($_POST['download_url']) ? $_POST['download_url'] : '' );
 		$file_local = ( $_FILES['userfile']['tmp_name'] !== 'none') ? $_FILES['userfile']['tmp_name'] : '';

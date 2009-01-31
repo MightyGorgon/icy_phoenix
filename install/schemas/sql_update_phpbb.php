@@ -523,6 +523,8 @@ switch ($current_phpbb_version)
 		$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE;
 		$ip_sql->_sql($sql, $errored, $error_ary);
 
+	case '.0.21':
+	case '.0.22':
 		// update the version
 		$sql = "UPDATE " . CONFIG_TABLE . "
 			SET config_value = '" . $phpbb_version . "'

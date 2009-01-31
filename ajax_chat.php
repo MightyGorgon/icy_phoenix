@@ -15,8 +15,8 @@
 */
 
 // CTracker_Ignore: File checked by human
+define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
-define('MG_CTRACK_FLAG', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
@@ -88,7 +88,6 @@ else
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
-	include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 	// Include Post functions and BBCodes
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
@@ -180,7 +179,7 @@ else
 	// Set all counters to 0
 	$reg_online_counter = $guest_online_counter = $online_counter = 0;
 
-	$sql = "SELECT u.user_id, u.username
+	$sql = "SELECT u.user_id, u.username, u.user_color
 		FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
 		WHERE s.session_time >= " . $time_ago . "
 			AND s.session_user_id = u.user_id";
@@ -193,7 +192,7 @@ else
 
 		if($user_id != ANONYMOUS)
 		{
-			$username = colorize_username($user_id);
+			$username = colorize_username($user_id, $username, $online['user_color']);
 			$template->assign_block_vars('online_list', array(
 				'USERNAME' => $username
 				)
@@ -215,7 +214,7 @@ else
 	);
 
 	// Get the top ten shouters
-	$sql = "SELECT COUNT(*) AS user_shouts, s.user_id, u.username
+	$sql = "SELECT COUNT(*) AS user_shouts, s.user_id, u.username, u.user_color
 			FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
 			WHERE s.user_id != " . ANONYMOUS . "
 			AND u.user_id = s.user_id
@@ -227,7 +226,7 @@ else
 	while($top_shouters = $db->sql_fetchrow($results))
 	{
 		$template->assign_block_vars('top_shouters', array(
-			'USERNAME' => colorize_username($top_shouters['user_id']),
+			'USERNAME' => colorize_username($top_shouters['user_id'], $top_shouters['username'], $top_shouters['user_color']),
 			//'USER_LINK' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $top_shouters['user_id']),
 			'USER_SHOUTS' => $top_shouters['user_shouts']
 			)
@@ -237,14 +236,14 @@ else
 	// Gets the shouts for display
 	if (!empty($_GET['full']))
 	{
-		$sql = "SELECT sb.*, u.username
+		$sql = "SELECT sb.*, u.username, u.user_color
 				FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
 				WHERE sb.user_id = u.user_id
 				ORDER BY sb.shout_id ASC";
 	}
 	else
 	{
-		$sql = "SELECT sb.*, u.username
+		$sql = "SELECT sb.*, u.username, u.user_color
 				FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
 				WHERE sb.user_id = u.user_id
 				ORDER BY sb.shout_id DESC
@@ -278,7 +277,7 @@ else
 		{
 			$shouter = utf8dec($row[$x]['username']);
 			$shouter_link = append_sid(PROFILE_MG . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
-			$shouter_color = ' ' . colorize_username($row[$x]['user_id'], false, true);
+			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], true, false, true);
 		}
 
 		//$message = stripslashes($row[$x]['shout_text']);

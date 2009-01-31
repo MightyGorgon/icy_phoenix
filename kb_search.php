@@ -12,7 +12,6 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -293,10 +292,10 @@ switch ($mode)
 
 			if ($search_results != '')
 			{
-				$sql = "SELECT t.*, u.username, u.user_id
-				        FROM " . KB_ARTICLES_TABLE . " t, " . USERS_TABLE . " u
-					    WHERE t.article_id IN ($search_results)
-					        AND t.article_author_id = u.user_id";
+				$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color
+								FROM " . KB_ARTICLES_TABLE . " t, " . USERS_TABLE . " u
+								WHERE t.article_id IN ($search_results)
+									AND u.user_id = t.article_author_id";
 
 				$per_page = $board_config['topics_per_page'];
 
@@ -374,7 +373,7 @@ switch ($mode)
 
 			for($i = 0; $i < count($searchset); $i++)
 			{
-				$article_url = append_sid("./kb.php?mode=article&amp;k=" . $searchset[$i]['article_id'] . "&amp;highlight=$highlight_active", true );
+				$article_url = append_sid('kb.' . PHP_EXT . '?mode=article&amp;k=' . $searchset[$i]['article_id'] . '&amp;highlight=' . $highlight_active, true);
 
 				$post_date = create_date2($board_config['default_dateformat'], $searchset[$i]['article_date'], $board_config['board_timezone']);
 
@@ -398,30 +397,32 @@ switch ($mode)
 				//$article_author = '<a href="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '" class="name">';
 				//$article_author .= $searchset[$i]['username'];
 				//$article_author .= '</a>';
-				$article_author = colorize_username ($searchset[$i]['user_id']);
+				$article_author = colorize_username ($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']);
 				$template->assign_block_vars('searchresults', array('ARTICLE_ID' => $article_id,
-						'ARTICLE_AUTHOR' => $article_author,
-						'ARTICLE_TITLE' => $article_title,
-						'ARTICLE_DESCRIPTION' => $searchset[$i]['article_description'],
-						'ARTICLE_CATEGORY' => $category,
-						'ARTICLE_TYPE' => $type,
+					'ARTICLE_AUTHOR' => $article_author,
+					'ARTICLE_TITLE' => $article_title,
+					'ARTICLE_DESCRIPTION' => $searchset[$i]['article_description'],
+					'ARTICLE_CATEGORY' => $category,
+					'ARTICLE_TYPE' => $type,
 
-						'U_VIEW_ARTICLE' => $article_url)
-					);
+					'U_VIEW_ARTICLE' => $article_url
+					)
+				);
 			}
 
 
-		$base_url = this_kb_mxurl_search("search_id=$search_id", true);
+		$base_url = this_kb_mxurl_search('search_id=' . $search_id, true);
 
 		$template->assign_vars(array('PAGINATION' => generate_pagination($base_url, $total_match_count, $per_page, $start),
-				'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), ceil($total_match_count / $per_page)),
+			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), ceil($total_match_count / $per_page)),
 
-				'L_AUTHOR' => $lang['Author'],
-				'L_MESSAGE' => $lang['Message'],
-				'L_TOPICS' => $lang['Article'],
-				'L_TYPE' => $lang['Article_type'],
-				'L_CATEGORY' => $lang['Category'])
-			);
+			'L_AUTHOR' => $lang['Author'],
+			'L_MESSAGE' => $lang['Message'],
+			'L_TOPICS' => $lang['Article'],
+			'L_TYPE' => $lang['Article_type'],
+			'L_CATEGORY' => $lang['Category']
+			)
+		);
 
 		break;
 

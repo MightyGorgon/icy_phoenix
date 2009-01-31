@@ -2,10 +2,15 @@
 <div align="center">{XS_NEWS}</div>
 <!-- END switch_show_news -->
 
+<!-- IF not S_BOT -->
 {CALENDAR_BOX}
+<!-- ENDIF -->
 
+<!-- IF not S_BOT and FORUMINDEX_BANNER_TOP --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_TOP}</div><!-- ENDIF -->
 {BOARD_INDEX}
+<!-- IF not S_BOT and FORUMINDEX_BANNER_BOTTOM --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_BOTTOM}</div><!-- ENDIF -->
 
+<!-- IF not S_BOT -->
 <!-- IF S_VIEWONLINE -->
 <div id="viewonline_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('viewonline','viewonline_h','viewonline');" alt="{L_SHOW}" /><a href="{U_VIEWONLINE}" class="forumlink">{L_WHO_IS_ONLINE}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -169,6 +174,7 @@ if(GetCookie(tmp) == '2')
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
+<!-- ENDIF -->
 <!-- ENDIF -->
 
 <br />

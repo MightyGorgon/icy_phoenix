@@ -19,7 +19,6 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -175,10 +174,11 @@ if ($attach_id > 0)
 		)
 	);
 
-	$sql = "SELECT d.*, s.*
-		FROM " . $attach_desc_table . " d, " . $attach_stats_table . " s
+	$sql = "SELECT d.*, s.*, u.username, u.user_active, u.user_color
+		FROM " . $attach_desc_table . " d, " . $attach_stats_table . " s, " . USERS_TABLE . " u
 		WHERE d.attach_id = '" . $attach_id . "'
 			AND s.attach_id = '" . $attach_id . "'
+			AND u.user_id = s.user_id
 		ORDER BY $order_by";
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -192,7 +192,7 @@ if ($attach_id > 0)
 		$template->assign_block_vars('row', array(
 			'NUMBER' => $start + $counter,
 			'DATE' => create_date2($board_config['default_dateformat'], $row['download_time'], $board_config['board_timezone']),
-			'USER' => colorize_username($row['user_id'])
+			'USER' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active'])
 			)
 		);
 	}
