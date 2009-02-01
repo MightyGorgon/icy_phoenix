@@ -388,26 +388,26 @@ else
 	}
 	*/
 	// GZip - END
-	@chmod($cache_data_file, 0777)
-	@chmod($sitemap_xml_file, 0777)
+	@chmod($cache_data_file, 0777);
+	@chmod($sitemap_xml_file, 0777);
 	@unlink($cache_data_file);
 	@unlink($sitemap_xml_file);
 	$fp = fopen($cache_data_file, 'w');
 	@fwrite($fp, $xml_content);
 	@fclose($fp);
-	@chmod($cache_data_file, 0666)
+	@chmod($cache_data_file, 0666);
 	@copy($cache_data_file, $sitemap_xml_file);
-	@chmod($sitemap_xml_file, 0666)
+	@chmod($sitemap_xml_file, 0666);
 
 	if (ZIP_SITEMAP)
 	{
-		@chmod($sitemap_zip_file, 0777)
+		@chmod($sitemap_zip_file, 0777);
 		@unlink($sitemap_zip_file);
 		$archive = new zip_file($sitemap_zip_file);
 		$archive->set_options(array('overwrite' => 1, 'storepaths' => 0, 'comment' => 'Sitemap of ' . $board_config['sitename']));
 		$archive->add_files($cache_data_file);
 		$archive->create_archive();
-		@chmod($sitemap_zip_file, 0666)
+		@chmod($sitemap_zip_file, 0666);
 	}
 
 	//Compresss the sitemap with gzip
