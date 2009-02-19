@@ -82,7 +82,7 @@ class emailer
 		$this->extra_headers .= trim($headers) . "\n";
 	}
 
-	function use_template($template_file, $template_lang = '')
+	function use_template($template_file, $template_lang = '', $no_template = false)
 	{
 		global $board_config;
 
@@ -95,7 +95,8 @@ class emailer
 		{
 			$template_lang = $board_config['default_lang'];
 		}
-		if ($board_config['html_email'] == true)
+
+		if ($board_config['html_email'])
 		{
 			if (empty($this->tpl_msg[$template_lang . $template_file]))
 			{
@@ -120,45 +121,50 @@ class emailer
 				fclose($fd);
 			}
 
-			$tpl_header = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_header.tpl';
-
-			if (!@file_exists(@phpbb_realpath($tpl_header)))
+			$mail_header = '';
+			$mail_footer = '';
+			if (!$no_template)
 			{
-				$tpl_header = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_header.tpl';
+				$tpl_header = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_header.tpl';
+
+				if (!@file_exists(@phpbb_realpath($tpl_header)))
+				{
+					$tpl_header = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_header.tpl';
+				}
+
+				if (!($fd = @fopen($tpl_header, 'r')))
+				{
+					message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_header, '', __LINE__, __FILE__);
+				}
+
+				$mail_header = fread($fd, filesize($tpl_header));
+				fclose($fd);
+
+				// Mighty Gorgon - Add Site Url - BEGIN
+				$site_url = (($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://') . trim($board_config['server_name']) . (($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '') . preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path'])) . '/';
+				if (substr($site_url, (strlen($site_url) - 1), 1) <> '/')
+				{
+					$site_url = $site_url . '/';
+				}
+				$mail_header = str_replace('{ROOT}', $site_url, $mail_header);
+				$mail_header = str_replace('{SITENAME}', $board_config['sitename'], $mail_header);
+				// Mighty Gorgon - Add Site Url - END
+
+				$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_footer.tpl';
+
+				if (!@file_exists(@phpbb_realpath($tpl_footer)))
+				{
+					$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_footer.tpl';
+				}
+
+				if (!($fd = @fopen($tpl_footer, 'r')))
+				{
+					message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_footer, '', __LINE__, __FILE__);
+				}
+
+				$mail_footer = fread($fd, filesize($tpl_footer));
+				fclose($fd);
 			}
-
-			if (!($fd = @fopen($tpl_header, 'r')))
-			{
-				message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_header, '', __LINE__, __FILE__);
-			}
-
-			$mail_header = fread($fd, filesize($tpl_header));
-			fclose($fd);
-
-			// Mighty Gorgon - Add Site Url - BEGIN
-			$site_url = ( ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://' ) . trim($board_config['server_name']) . ( ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '') . preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path'])) . '/';
-			if (substr($site_url, (strlen($site_url) - 1), 1) <> '/')
-			{
-				$site_url = $site_url . '/';
-			}
-			$mail_header = str_replace('{ROOT}', $site_url, $mail_header);
-			$mail_header = str_replace('{SITENAME}', $board_config['sitename'], $mail_header);
-			// Mighty Gorgon - Add Site Url - END
-
-			$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_footer.tpl';
-
-			if (!@file_exists(@phpbb_realpath($tpl_footer)))
-			{
-				$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_footer.tpl';
-			}
-
-			if (!($fd = @fopen($tpl_footer, 'r')))
-			{
-				message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_footer, '', __LINE__, __FILE__);
-			}
-
-			$mail_footer = fread($fd, filesize($tpl_footer));
-			fclose($fd);
 
 			$this->msg = $mail_header . $this->tpl_msg[$template_lang . $template_file] . $mail_footer;
 

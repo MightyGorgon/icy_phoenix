@@ -23,8 +23,8 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 
@@ -38,7 +38,8 @@ init_userprefs($userdata);
 
 if (!$userdata['session_logged_in'] && $board_config['gsearch_guests'])
 {
-	redirect(append_sid('gsearch.' . PHP_EXT, true));
+	$google_q = request_var('search_keywords', '');
+	redirect(append_sid('gsearch.' . PHP_EXT . (!empty($google_q) ? ('?q=' . urlencode($google_q)) : ''), true));
 }
 
 // CrackerTracker v5.x
@@ -91,10 +92,10 @@ if($userdata['upi2db_access'])
 			$mark_read_text = $lang['upi2db_submit_topic_mark_read'];
 		}
 
-		$redirect_url = append_sid(SEARCH_MG . '?search_id=' . $search_mode . '&amp;s2=' . $s2);
+		$redirect_url = append_sid(SEARCH_MG . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : ''));
 		meta_refresh(3, $redirect_url);
 
-		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(SEARCH_MG . '?search_id=' . $search_mode . '&amp;s2=' . $s2) . '">', '</a> ');
+		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(SEARCH_MG . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '">', '</a> ');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	$count_new_posts = count($unread['new_posts']);
@@ -109,7 +110,7 @@ $cms_page_name = 'search';
 check_page_auth($cms_page_id, $cms_page_name);
 $cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
-if ($search_mode == 'bookmarks')
+if (isset($search_mode) && ($search_mode == 'bookmarks'))
 {
 	// TO DO: force to false, and decide if we would like to overwrite it with Profile Global Blocks settings...
 	//$cms_global_blocks = ($board_config['wide_blocks_profile'] == 1) ? true : false;
@@ -240,6 +241,9 @@ else
 $search_thanks = (($search_thanks >= '2') && ($board_config['disable_thanks_topics'] == false)) ? $search_thanks : false;
 
 $search_where = (isset($_POST['search_where'])) ? $_POST['search_where'] : 'Root';
+$search_where_topic = (isset($_POST['search_where_topic'])) ? (str_replace(POST_TOPIC_URL, '', $_POST['search_where_topic'])) : false;
+$search_where_topic = $search_where_topic ? intval($search_where_topic) : false;
+$search_where_topic = ($search_where_topic > 0) ? $search_where_topic : false;
 
 if (isset($_POST['sort_by']) || isset($_GET['sort_by']))
 {
@@ -752,14 +756,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$s_flist = '';
 		for ($i = 0; $i < count($keys['id']); $i++)
 		{
-			if (($tree['type'][ $keys['idx'][$i] ] == POST_FORUM_URL) && $tree['auth'][ $keys['id'][$i] ]['auth_read'])
+			if (isset($tree['type'][$keys['idx'][$i]]) && ($tree['type'][$keys['idx'][$i]] == POST_FORUM_URL) && isset($tree['auth'][$keys['id'][$i]]['auth_read']) && $tree['auth'][$keys['id'][$i]]['auth_read'])
 			{
-				$s_flist .= (($s_flist != '') ? ', ' : '') . $tree['id'][ $keys['idx'][$i] ];
+				$s_flist .= (($s_flist != '') ? ', ' : '') . $tree['id'][$keys['idx'][$i]];
 			}
 		}
+
 		if ($s_flist != '')
 		{
 			$auth_sql .= (($auth_sql != '') ? " AND" : '') . " f.forum_id IN ($s_flist) ";
+			$auth_sql .= ($search_where_topic ? (" AND p.topic_id = " . $search_where_topic) : '');
 		}
 		else
 		{
@@ -812,7 +818,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 					if ($search_time)
 					{
-						$where_sql .= ($search_author == '' && $auth_sql == '') ? " AND post_time >= $search_time " : " AND p.post_time >= $search_time ";
+						$where_sql .= (($search_author == '') && ($auth_sql == '')) ? " AND post_time >= $search_time " : " AND p.post_time >= $search_time ";
 					}
 
 					if (($search_author == '') && ($auth_sql == ''))
@@ -861,7 +867,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$total_match_count = count($search_ids);
 
 			}
-			elseif ($search_author != '' || $search_time || $auth_sql != '')
+			elseif (($search_author != '') || $search_time || ($auth_sql != ''))
 			{
 				$search_id_chunks = array();
 				$count = 0;
@@ -1105,7 +1111,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		for($i = 0; $i < count($store_vars); $i++)
 		{
-			$store_search_data[$store_vars[$i]] = $$store_vars[$i];
+			$store_search_data[$store_vars[$i]] = !empty($$store_vars[$i]) ? $$store_vars[$i] : '';
 		}
 
 		$result_array = serialize($store_search_data);
@@ -1404,27 +1410,30 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		$highlight_active = '';
 		$highlight_match = array();
-		for($j = 0; $j < count($split_search); $j++)
+		if (!empty($split_search))
 		{
-			$split_word = $split_search[$j];
-
-			if ($split_word != 'and' && $split_word != 'or' && $split_word != 'not')
+			for($j = 0; $j < count($split_search); $j++)
 			{
-				$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $split_word) . ')\b#is';
-				// Added by MG: creation of $highlight_match_string
-				$words[] = $split_word;
-				$highlight_active .= " " . $split_word;
+				$split_word = $split_search[$j];
 
-				for ($k = 0; $k < count($synonym_array); $k++)
+				if ($split_word != 'and' && $split_word != 'or' && $split_word != 'not')
 				{
-					list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$k])));
+					$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $split_word) . ')\b#is';
+					// Added by MG: creation of $highlight_match_string
+					$words[] = $split_word;
+					$highlight_active .= " " . $split_word;
 
-					if ($replace_synonym == $split_word)
+					for ($k = 0; $k < count($synonym_array); $k++)
 					{
-						$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $replace_synonym) . ')\b#is';
-						// Added by MG: creation of $highlight_match_string
-						$words[] = $replace_synonym;
-						$highlight_active .= ' ' . $match_synonym;
+						list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$k])));
+
+						if ($replace_synonym == $split_word)
+						{
+							$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $replace_synonym) . ')\b#is';
+							// Added by MG: creation of $highlight_match_string
+							$words[] = $replace_synonym;
+							$highlight_active .= ' ' . $match_synonym;
+						}
 					}
 				}
 			}
@@ -1471,9 +1480,9 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			}
 			// CrackerTracker v5.x
 
-			$forum_id = $searchset[$i]['forum_id'];
-			$topic_id = $searchset[$i]['topic_id'];
-			$post_id = $searchset[$i]['post_id'];
+			$forum_id = !empty($searchset[$i]['forum_id']) ? $searchset[$i]['forum_id'] : 0;
+			$topic_id = !empty($searchset[$i]['topic_id']) ? $searchset[$i]['topic_id'] : 0;
+			$post_id = !empty($searchset[$i]['post_id']) ? $searchset[$i]['post_id'] : 0;
 			$forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : '');
 			$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 			$post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
@@ -1485,12 +1494,10 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 			$post_date = create_date2($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
 
-			$message = $searchset[$i]['post_text'];
+			$message = !empty($searchset[$i]['post_text']) ? $searchset[$i]['post_text'] : '';
 			$message_compiled = empty($searchset[$i]['post_text_compiled']) ? false : $searchset[$i]['post_text_compiled'];
-			$topic_title = $searchset[$i]['topic_title'];
+			$topic_title = !empty($searchset[$i]['topic_title']) ? $searchset[$i]['topic_title'] : '';
 			$topic_title_prefix = (empty($searchset[$i]['title_compl_infos'])) ? '' : $searchset[$i]['title_compl_infos'] . ' ';
-			// AJAX Not Applied
-			//$topic_raw_title = $topic_title;
 
 			if ($show_results == 'posts')
 			{
@@ -1530,39 +1537,17 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$message = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match_string . ')(?!\w|[^<>]*>)#i', '<span class="highlight-w"><b>\1</b></span>', $message);
 				}
 
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 					$topic_raw_title = preg_replace($orig_word, $replacement_word, $topic_raw_title);
 					$post_subject = ($searchset[$i]['post_subject'] != '') ? preg_replace($orig_word, $replacement_word, $searchset[$i]['post_subject']) : $topic_title_prefix . $topic_title;
-					// AJAX Not Applied
-					//$post_subject = ($searchset[$i]['post_subject'] != "") ? preg_replace($orig_word, $replacement_word, $searchset[$i]['post_subject']) : '';
-
 					$message = preg_replace($orig_word, $replacement_word, $message);
 				}
 				else
 				{
 					$post_subject = ($searchset[$i]['post_subject'] != '') ? $searchset[$i]['post_subject'] : $topic_title_prefix . $topic_title;
-					// AJAX Not Applied
-					//$post_subject = $searchset[$i]['post_subject'];
 				}
-
-				// AJAX Not Applied
-				/*
-				$is_firstpost = ($searchset[$i]['post_id'] == $searchset[$i]['topic_first_post_id']) ? 1 : 0;
-				$edit_url = '';
-				$edit_img = '';
-				if ($can_edit = ($is_auth['auth_mod'] || (($searchset[$i]['user_id'] == $userdata['user_id'] && ($searchset[$i]['topic_status'] != TOPIC_LOCKED)) && $is_auth['auth_edit'])))
-				{
-					$raw_message = $searchset[$i]['post_text'];
-					$raw_message = str_replace('<', '&lt;', $raw_message);
-					$raw_message = str_replace('>', '&gt;', $raw_message);
-					$raw_message = str_replace('<br />', "\n", $raw_message);
-
-					$edit_url = append_sid('posting.' . PHP_EXT . '?mode=editpost&amp;' . POST_POST_URL . '=' . $searchset[$i]['post_id']);
-					$edit_img = '<a id="editimg_'. $searchset[$i]['post_id'] .'" onclick="return AJAXPostEdit('. $searchset[$i]['post_id'] .');" href="'. $edit_url .'"><img src="'. $images['icon_edit'] .'" alt="'. $lang['Edit_delete_post'] .'" title="'. $lang['Edit_delete_post'] .'" border="0" align="right" /></a><br />';
-				}
-				*/
 
 				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']) : (($searchset[$i]['post_username'] != '') ? $searchset[$i]['post_username'] : $lang['Guest']);
 				//$poster .= ($searchset[$i]['user_id'] != ANONYMOUS) ? $searchset[$i]['username'] : (($searchset[$i]['post_username'] != "") ? $searchset[$i]['post_username'] : $lang['Guest']);
@@ -1615,7 +1600,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					if($s2 == 'mark')
 					{
 						$post_id = $searchset[$i]['post_id'];
-						$mark_topic_unread = '<a href="' . append_sid(SEARCH_MG . '?search_id=upi2db&amp;s2=mark&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;do=unmark_post&amp;s2=' . $s2) . '"><img src="' . $images['unmark_img'] . '" alt="' . $lang['upi2db_unmark_post'] . '" title="' . $lang['upi2db_unmark_post'] . '" /></a>';
+						$mark_topic_unread = '<a href="' . append_sid(SEARCH_MG . '?search_id=upi2db&amp;s2=mark&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;do=unmark_post' . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '"><img src="' . $images['unmark_img'] . '" alt="' . $lang['upi2db_unmark_post'] . '" title="' . $lang['upi2db_unmark_post'] . '" /></a>';
 					}
 				}
 //<!-- END Unread Post Information to Database Mod -->
@@ -1679,7 +1664,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			{
 				$message = '';
 
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$topic_title = preg_replace($orig_word, $replacement_word, $searchset[$i]['topic_title']);
 				}
@@ -1761,9 +1746,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				$mark_link_start = '';//($userdata['session_logged_in']) ? '<a onclick="return AJAXMarkTopic('. $topic_id .');" href="#">' : '';
 				$mark_link_end = '';//($userdata['session_logged_in']) ? '</a>' : '';
-				//$this_auth = ($search_forums == -1) ? $is_auth : $is_auth_ary[$forum_id];
-				$this_auth2 = $this_auth[$searchset[$i]['forum_id']];
-				$can_edit = ($this_auth2['auth_mod'] || ((($searchset[$i]['topic_poster'] == $userdata['user_id']) && ($searchset[$i]['topic_status'] != TOPIC_LOCKED)) && $this_auth2['auth_edit']));
 
 				// SELF AUTH - BEGIN
 				// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
@@ -1820,7 +1802,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'LAST_POST_AUTHOR' => $last_post_author,
 					'LAST_POST_IMG' => $last_post_url,
 //<!-- BEGIN Unread Post Information to Database Mod -->
-					'NO_AGM' => ($mark_read_forbid || ($s2 == 'perm')) ? 'disabled' : '',
+					'NO_AGM' => ($mark_read_forbid || (isset($s2) && ($s2 == 'perm'))) ? 'disabled' : '',
 					'U_MARK_ALWAYS_READ' => $mark_always_read,
 //<!-- END Unread Post Information to Database Mod -->
 					'U_VIEW_FORUM' => $forum_url,
@@ -1838,7 +1820,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		$base_url = SEARCH_MG . '?search_id=' . $search_id . '&amp;psort=' . $psort;
 		$search_url_add = ($start > 0) ? ('&amp;start=' . $start) : '';
-		$search_url_add .= ($s2 == 'new') ? ('&amp;s2=' . $s2) : '';
+		$search_url_add .= (isset($s2) && ($s2 == 'new')) ? ('&amp;s2=' . $s2) : '';
 		$s_hidden_fields = '';
 		$s_hidden_fields .= '<input type="hidden" name="search_id" value="' . $search_id . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="search_mode" value="' . $search_mode . '" />';
@@ -1858,7 +1840,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 //<!-- BEGIN Unread Post Information to Database Mod -->
 			'L_MAR' => $lang['upi2db_search_mark_read'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],
-			'S_POST_ACTION' => append_sid(SEARCH_MG . '?search_id=' . $search_id . '&amp;s2=' . $s2),
+			'S_POST_ACTION' => append_sid(SEARCH_MG . '?search_id=' . $search_id . (isset($s2) ? ('&amp;s2=' . $s2) : '')),
 			'L_UNMARK_ALL' => $lang['Unmark_all'],
 			'L_MARK_ALL' => $lang['Mark_all'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],

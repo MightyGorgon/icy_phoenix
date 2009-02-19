@@ -269,7 +269,7 @@ switch ($mode_test)
 
 		$wip = $ip_functions->request_var('wip', false);
 		$search_word = urldecode($ip_functions->request_var('search_word', ''));
-		$replace_word = urldecode($ip_functions->request_var('replace_word', ''));
+		$replacement_word = urldecode($ip_functions->request_var('replacement_word', ''));
 
 		$remove_bbcode_uid = $ip_functions->request_var('remove_bbcode_uid', false);
 		$remove_guess_bbcode_uid = $ip_functions->request_var('remove_guess_bbcode_uid', false);
@@ -291,7 +291,7 @@ switch ($mode_test)
 			$url_append .= ($remove_guess_bbcode_uid ? ('remove_guess_bbcode_uid=true&amp;') : '');
 			$url_append .= ($fix_posted_images ? ('fix_posted_images=true&amp;') : '');
 
-			$url_append .= 'search_word=' . urlencode($search_word) . '&amp;' . 'replace_word=' . urlencode($replace_word);
+			$url_append .= 'search_word=' . urlencode($search_word) . '&amp;' . 'replacement_word=' . urlencode($replacement_word);
 
 			$url_append .= '&amp;';
 			$url_append .= 'posts_number=' . $posts_number . '&amp;' . 'post_start=' . $post_start . '&amp;' . 'total_posts=' . $total_posts . '&amp;' . 'total_posts_modified=' . $total_posts_modified;
@@ -348,7 +348,7 @@ switch ($mode_test)
 
 		$wip = $ip_functions->request_var('wip', false);
 		$search_word = urldecode($ip_functions->request_var('search_word', ''));
-		$replace_word = urldecode($ip_functions->request_var('replace_word', ''));
+		$replacement_word = urldecode($ip_functions->request_var('replacement_word', ''));
 
 		$remove_bbcode_uid = $ip_functions->request_var('remove_bbcode_uid', false);
 		$remove_guess_bbcode_uid = $ip_functions->request_var('remove_guess_bbcode_uid', false);
@@ -370,7 +370,7 @@ switch ($mode_test)
 			$url_append .= ($remove_guess_bbcode_uid ? ('remove_guess_bbcode_uid=true&amp;') : '');
 			$url_append .= ($fix_posted_images ? ('fix_posted_images=true&amp;') : '');
 
-			$url_append .= 'search_word=' . urlencode($search_word) . '&amp;' . 'replace_word=' . urlencode($replace_word);
+			$url_append .= 'search_word=' . urlencode($search_word) . '&amp;' . 'replacement_word=' . urlencode($replacement_word);
 
 			$url_append .= '&amp;';
 			$url_append .= 'posts_number=' . $posts_number . '&amp;' . 'post_start=' . $post_start . '&amp;' . 'total_posts=' . $total_posts . '&amp;' . 'total_posts_modified=' . $total_posts_modified;

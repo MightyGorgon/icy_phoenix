@@ -484,8 +484,7 @@ $lang = array_merge($lang, array(
 	'New_config_php' => 'This is your new config.' . PHP_EXT,
 // Options
 	'cls' => 'Clear all sessions',
-	'ecf' => 'Empty cache folder',
-	'fdt' => 'Fix def_tree.php',
+	'ecf' => 'Clear cache',
 	'rdb' => 'Repair database tables',
 	'cct' => 'Check config table',
 	'rpd' => 'Reset path data',
@@ -499,8 +498,7 @@ $lang = array_merge($lang, array(
 	'rcp' => 'Recreate config.php',
 // Info for options
 	'cls_info' => 'When proceeding all sessions will be cleared.',
-	'ecf_info' => 'When proceeding cache folder will be cleared.',
-	'fdt_info' => 'When proceeding def_tree.php will be repaired.',
+	'ecf_info' => 'When proceeding cache will be cleared.',
 	'rdb_info' => 'When proceeding the tables of the database will be repaired.',
 	'cct_info' => 'When proceeding the config table will be checked and missing entries be restored.',
 	'rpd_info' => 'When proceeding the config data will be updated if the recommended setting is selected.',
@@ -516,7 +514,6 @@ $lang = array_merge($lang, array(
 // Success messages for options
 	'cls_success' => 'All sessions were cleared successfully.',
 	'ecf_success' => 'Cache cleared successfully.',
-	'fdt_success' => 'def_tree.php restored successfully.',
 	'rdb_success' => 'The tables of the database were repaired.',
 	'rpd_success' => 'Site configuration updated successfully.',
 	'cct_success' => 'Config table checked successfully.',

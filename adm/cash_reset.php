@@ -180,7 +180,6 @@ switch ($mode)
 			while($c_cur = &$cash->currency_next($cm_i))
 			{
 				$i++;
-				$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('cashrow', array(
@@ -189,7 +188,6 @@ switch ($mode)
 					'DEFAULT' => $c_cur->data('cash_default'),
 
 					'ROW_CLASS' => $row_class,
-					'ROW_COLOR' => $row_color
 					)
 				);
 			}

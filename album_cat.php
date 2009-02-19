@@ -31,7 +31,7 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 // ------------------------------------
 // Check the request
 // ------------------------------------
-if( isset($_POST['cat_id']) )
+if(isset($_POST['cat_id']))
 {
 	$cat_id = intval($_POST['cat_id']);
 }

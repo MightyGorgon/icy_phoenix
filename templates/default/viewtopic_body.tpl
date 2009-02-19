@@ -9,41 +9,33 @@ function post_time_edit(url)
 <!-- INCLUDE breadcrumbs_vt.tpl -->
 <br clear="all" />
 
-<!-- BEGIN switch_forum_rules -->
+<!-- IF S_FORUM_RULES -->
 <table class="forumline" width="100%" cellspacing="0">
-<tr>
-	<td class="row-header">
-		<span>
-		<!-- BEGIN switch_display_title -->
-		{L_FORUM_RULES}
-		<!-- END switch_display_title -->
-		&nbsp;
-		</span>
-	</td>
-</tr>
+<tr><td class="row-header"><span><!-- IF S_FORUM_RULES_TITLE -->{L_FORUM_RULES}<!-- ENDIF -->&nbsp;</span></td></tr>
 <tr><td class="row1g-left" width="100%"><div class="post-text">{FORUM_RULES}</div></td></tr>
 </table>
 <br />
-<!-- END switch_forum_rules -->
+<!-- ENDIF -->
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom">
+		<h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2><br />
 		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}" /></a></span>&nbsp;
-		<!-- BEGIN switch_thanks -->
-		<span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>
-		<!-- END switch_thanks -->
+		<!-- IF S_THANKS --><span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span><!-- ENDIF -->
 		<!-- ELSE -->
 		&nbsp;
 		<!-- ENDIF -->
 	</td>
 	<td align="right" valign="bottom">
 		<span class="gen">{PAGE_NUMBER}</span><br />
-		<span class="pagination">{PAGINATION}</span>
-		<!-- BEGIN extended_pagination -->
-		<br /><form method="post" action="{U_VIEW_TOPIC}" style="display:inline;"><span class="gen">{L_GO_TO_PAGE_NUMBER}&nbsp;<input type="text" name="page_number" value="" size="3" class="post">&nbsp;&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" /></span></form>
-		<!-- END extended_pagination -->
+		<span class="pagination">{PAGINATION}</span><br />
+		<!-- IF S_EXTENDED_PAGINATION -->
+		<div style="margin-top: 3px;"><form method="post" action="{U_VIEW_TOPIC}"><span class="gen"><b>{L_GO_TO_PAGE_NUMBER}</b>&nbsp;<input type="text" name="page_number" value="" size="3" class="post" />&nbsp;&nbsp;<input type="submit" name="submit" value="{L_GO}" class="mainoption" /></span></form></div>
+		<!-- ENDIF -->
+		<!-- IF not S_BOT --><div style="margin-top: 3px;"><form action="{FULL_SITE_PATH}{U_SEARCH}" method="post"><input name="search_keywords" type="text" class="post search" style="width: 160px;" value="{L_SEARCH_THIS_TOPIC}" onclick="if(this.value=='{L_SEARCH_THIS_TOPIC}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH_THIS_TOPIC}';" /><input type="hidden" name="search_where" value="{FORUM_ID_FULL}" /><input type="hidden" name="search_where_topic" value="{TOPIC_ID_FULL}" />&nbsp;<input type="submit" class="mainoption" value="{L_SEARCH}" /></form></div><!-- ENDIF -->
 	</td>
 </tr>
 </table>
@@ -101,7 +93,7 @@ function open_postreview(ref)
 //-->
 </script>
 {IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<!-- IF not S_BOT and VIEWTOPIC_BANNER_TOP -->
+<!-- IF VIEWTOPIC_BANNER_TOP -->
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
 <!-- ENDIF -->
 {POLL_DISPLAY}
@@ -237,7 +229,7 @@ function open_postreview(ref)
 <!-- END switch_viewtopic_banner -->
 <!-- ENDIF -->
 <!-- END postrow -->
-<!-- IF not S_BOT and VIEWTOPIC_BANNER_BOTTOM -->
+<!-- IF VIEWTOPIC_BANNER_BOTTOM -->
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
 <!-- ENDIF -->
 <tr>
@@ -292,9 +284,7 @@ if(GetCookie(tmp) == '2')
 		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}"/></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}"/></a></span>&nbsp;
-		<!-- BEGIN switch_thanks -->
-		<span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>&nbsp;
-		<!-- END switch_thanks -->
+		<!-- IF S_THANKS --><span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>&nbsp;<!-- ENDIF -->
 		<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span>
 		<!-- ELSE -->
 		&nbsp;

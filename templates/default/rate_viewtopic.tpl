@@ -34,9 +34,7 @@
 			{rate.RATE_TOPIC_USER}
 			<!-- END rate -->
 
-			<!-- BEGIN switch_thanks -->
-			<br /><br /><input type="checkbox" name="thanks_user" value="1" />&nbsp;{L_THANKS_ADD_RATE}<br /><br />
-			<!-- END switch_thanks -->
+			<!-- IF S_THANKS --><br /><br /><input type="checkbox" name="thanks_user" value="1" />&nbsp;{L_THANKS_ADD_RATE}<br /><br /><!-- ENDIF -->
 
 			<!-- BEGIN noauth -->
 			{noauth.RATE_TOPIC_USER}

@@ -225,12 +225,12 @@ function InitForm()
 <form name="upload" action="{S_ALBUM_ACTION}" method="post" enctype="multipart/form-data" onSubmit="{S_ON_SUBMIT}">
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_PIC}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<!-- BEGIN switch_user_logged_out -->
+<!-- IF not S_LOGGED_IN -->
 <tr>
 	<td class="row1" width="30%" height="28"><span class="gen">{L_USERNAME}:</span></td>
 	<td class="row2"><input class="post" type="text" name="pic_username" size="32" maxlength="32" /></td>
 </tr>
-<!-- END switch_user_logged_out -->
+<!-- ENDIF -->
 <tr>
 	<td class="row1" height="28"><span class="gen">{L_PIC_TITLE}:</span></td>
 	<td class="row2"><input class="post" type="text" name="pic_title" size="60" /></td>

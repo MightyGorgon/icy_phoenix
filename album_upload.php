@@ -840,6 +840,7 @@ else
 				if ($dir_creation == true)
 				{
 					@copy($pic_base_path . 'index.html', $upload_path . 'index.html');
+					@chmod($upload_path . 'index.html', 0755);
 				}
 				else
 				{

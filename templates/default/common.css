@@ -16,7 +16,7 @@ body {
 
 .sitedes, .maintitle, h1, h2, h3, h4, h5, h6 {
 	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-	font-size: 20px;
+	/*font-size: 20px;*/
 }
 
 .sitedes {
@@ -34,30 +34,30 @@ body {
 	font-weight: bold;
 }
 
-.h1 {
+h1 {
 	font-size: 2.0em;
 	font-weight: bold;
 }
 
-.h2 {
-	font-size: 1.8em;
+h2 {
+	font-size: 1.6em;
 	font-weight: bold;
 }
 
-.h3 {
-	font-size: 1.5em;
+h3 {
+	font-size: 1.4em;
 	font-weight: bold;
 }
 
-.h4 {
+h4 {
 	font-size: 1.2em;
 }
 
-.h5 {
+h5 {
 	font-size: 1.1em;
 }
 
-.h6 {
+h6 {
 	font-size: 1em;
 }
 
@@ -156,6 +156,12 @@ hr.dashed {
 .extra-top-padding { }
 
 .row-post-text {
+}
+
+.topic-title-hide-flow {
+	min-width: 280px;
+	max-width: 500px;
+	overflow: hidden !important;
 }
 
 .post-text {
@@ -260,13 +266,13 @@ option {
 	padding-right: 1em;
 }
 
-/* inputs - fixing height */
-* html input.mainoption, * html input.altoption, * html input.liteoption { height: 20px; }
-input.mainoption, input.altoption, input.liteoption { height: 18px; }
-input.post { height: 16px; }
-select option { height: 15px; }
-input.jumpbox { height: 18px; }
-* html input.jumpbox { height: 18px; }
+/* inputs - fixing height and padding */
+* html input.mainoption, * html input.altoption, * html input.liteoption { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle;}
+input.mainoption, input.altoption, input.liteoption { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+input.post { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+* html input.jumpbox { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+input.jumpbox { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+select option { height: 16px; padding-left: 3px; padding-right: 3px; vertical-align: middle; }
 
 /* private message popup */
 .popup, .popuppm { display: none; }

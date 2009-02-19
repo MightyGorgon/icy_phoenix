@@ -68,8 +68,8 @@ if (isset($_POST['cancel']))
 
 }
 
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 $page_title = $lang['Signature'];
 $meta_description = '';
@@ -147,7 +147,7 @@ elseif ($preview)
 					$replacement_word = array();
 					obtain_word_list($orig_word, $replacement_word);
 				}
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$preview_sig = preg_replace($orig_word, $replacement_word, $preview_sig);
 				}

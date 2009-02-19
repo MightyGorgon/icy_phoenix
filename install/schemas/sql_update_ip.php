@@ -46,6 +46,7 @@ switch ($req_version)
 	case '121744': $current_ip_version = '1.2.17.44'; break;
 	case '121845': $current_ip_version = '1.2.18.45'; break;
 	case '121946': $current_ip_version = '1.2.19.46'; break;
+	case '122047': $current_ip_version = '1.2.20.47'; break;
 }
 
 // Icy Phoenix Part...
@@ -3514,9 +3515,15 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.2.18.45 */
 		case '1.2.18.45':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('adsense_code', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('google_analytics', '')";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ajax_shoutbox_sessions` CHANGE `session_id` `session_id` INT( 10 ) NOT NULL";
 
 		/* Updating from IP 1.2.19.46 */
 		case '1.2.19.46':
+
+		/* Updating from IP 1.2.20.47 */
+		case '1.2.20.47':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

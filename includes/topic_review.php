@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-function topic_review($topic_id, $is_inline_review)
+function topic_review($forum_id, $topic_id, $is_inline_review)
 {
 	global $db, $board_config, $template, $lang, $images, $theme, $bbcode;
 	global $userdata, $user_ip;
@@ -120,7 +120,10 @@ function topic_review($topic_id, $is_inline_review)
 		message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
 	}
 
-	init_display_review_attachments($is_auth);
+	if (!empty($is_auth))
+	{
+		init_display_review_attachments($is_auth);
+	}
 
 	// Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
 	if ($row = $db->sql_fetchrow($result))
@@ -155,20 +158,6 @@ function topic_review($topic_id, $is_inline_review)
 
 			$message = $row['post_text'];
 
-			// Quick Quote - BEGIN
-			$plain_message = $row['post_text'];
-			$plain_message = str_replace('-->', '--&gt;', $plain_message);
-			if(preg_match('/\[hide/i', $plain_message))
-			{
-				$search = array("/\[hide\](.*?)\[\/hide\]/");
-				$replace = array('[hide]' . $lang['xs_bbc_hide_quote_message'] . '[/hide]');
-				$plain_message =  preg_replace($search, $replace, $plain_message);
-			}
-			//$plain_message = str_replace('postrow -->', 'postrow --&gt;', $plain_message);
-			//$plain_message = str_replace('<', '&lt;', $plain_message);
-			//$plain_message = str_replace('>', '&gt;', $plain_message);
-			//$plain_message = str_replace('&amp;', '&', $plain_message);
-			//$plain_message = str_replace('<br />', "\n", $plain_message);
 			if (empty($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$orig_word = array();
@@ -176,12 +165,38 @@ function topic_review($topic_id, $is_inline_review)
 				obtain_word_list($orig_word, $replacement_word);
 			}
 
+			// Quick Quote - BEGIN
+			$look_up_array = array(
+				"\"",
+				"<",
+				">",
+				"\n",
+				chr(13),
+			);
+
+			$replacement_array = array(
+				"\\\"",
+				"&lt_mg;",
+				"&gt_mg;",
+				"\\n",
+				"",
+			);
+
+			$plain_message = $row['post_text'];
+			$plain_message = strtr($plain_message, array_flip(get_html_translation_table(HTML_ENTITIES)));
+			//Hide MOD
+			if(preg_match('/\[hide/i', $plain_message))
+			{
+				$search = array("/\[hide\](.*?)\[\/hide\]/");
+				$replace = array('[hide]' . $lang['xs_bbc_hide_quote_message'] . '[/hide]');
+				$plain_message =  preg_replace($search, $replace, $plain_message);
+			}
+			//Hide MOD
 			if (!empty($orig_word))
 			{
-				$plain_message = (!empty($plain_message)) ? preg_replace($orig_word, $replace_word, $plain_message) : '';
+				$plain_message = (!empty($plain_message)) ? preg_replace($orig_word, $replacement_word, $plain_message) : '';
 			}
-			$plain_message = addslashes($plain_message);
-			$plain_message = str_replace("\n", "\\n", $plain_message);
+			$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
 			// Quick Quote - END
 
 			if(!empty($row['post_text_compiled']))
@@ -196,7 +211,7 @@ function topic_review($topic_id, $is_inline_review)
 				$message = $bbcode->parse($message);
 			}
 
-			if (count($orig_word) && !$userdata['user_allowswearywords'])
+			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 				$message = preg_replace($orig_word, $replacement_word, $message);
@@ -214,15 +229,11 @@ function topic_review($topic_id, $is_inline_review)
 			{
 				$post_subject .= get_calendar_title($topic_calendar_time, $topic_calendar_duration);
 			}
-			//
-			// Again this will be handled by the templating
-			// code at some point
-			//
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
+
+			// Again this will be handled by the templating code at some point
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('postrow', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 
 				'MINI_POST_IMG' => $mini_post_img,
@@ -231,12 +242,15 @@ function topic_review($topic_id, $is_inline_review)
 				'POST_SUBJECT' => $post_subject,
 				'MESSAGE' => $message,
 				'U_POST_ID' => $row['post_id'],
-				'PLAIN_MESSAGE' => str_replace(chr(13), '', $plain_message),
+				'PLAIN_MESSAGE' => $plain_message,
 
-				'L_MINI_POST_ALT' => $mini_post_alt)
+				'L_MINI_POST_ALT' => $mini_post_alt
+				)
 			);
-			display_review_attachments($row['post_id'], $row['post_attachment'], $is_auth);
-
+			if (!empty($is_auth))
+			{
+				display_review_attachments($row['post_id'], $row['post_attachment'], $is_auth);
+			}
 
 			$i++;
 		}

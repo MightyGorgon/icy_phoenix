@@ -18,10 +18,7 @@
 <body>
 <a name="top"></a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td class="leftshadow" width="9" valign="top"><img src="../images/spacer.gif" alt="" width="9" height="1" /></td>
-		<td width="100%" valign="top">
+<div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" colspan="3" valign="top">
@@ -54,8 +51,8 @@
 					<li><a href="#fresh_installation">Fresh Installation</a></li>
 					<li><a href="#upgrade_phpbb">Upgrade from phpBB 2.0.x</a></li>
 					<li><a href="#upgrade_xs">Upgrade from phpBB XS</a></li>
-					<li><a href="#upgrade_ip">Upgrade from IP 1.2.0.27 or above</a></li>
 					<li><a href="#upgrade_ip_015">Upgrade from IP 1.1.0.15</a></li>
+					<li><a href="#upgrade_ip">Upgrade from IP 1.2.0.27 or above</a></li>
 					<li><a href="#support">Support</a></li>
 					<li><a href="#history">History</a></li>
 				</ul>
@@ -193,16 +190,15 @@
 							</ul>
 							<br />
 						</li>
+						<!--
 						<li>
 							Set the permissions to <span class="text_red">CHMOD 666</span> to the following files:<br />
 							<ul>
-								<li><b>includes/def_themes.php</b></li>
-								<li><b>includes/def_tree.php</b></li>
-								<li><b>includes/def_words.php</b></li>
-								<!-- <li><b>language/lang_*/lang_extend.php</b></li> -->
+								<li><b>language/lang_*/lang_extend.php</b></li>
 							</ul>
 							<br />
 						</li>
+						-->
 						<li>Launch the setup from the install folder: <b>install/install.php</b> (i.e. <a class="post-url" href="http://www.mysite.com/icyphoenix/install/install.php">http://www.mysite.com/forum/install/install.php</a>)</li>
 						<li>Follow all the instructions on the screen, fill all requested data and complete the setup.</li>
 						<li>Delete or rename <b>install</b> folder.</li>
@@ -264,12 +260,12 @@
 					<br />
 					If you're using phpBB XS, you can upgrade your board by following these instructions (based on phpBB XS 058 standard setup):<br />
 					<ol type="1">
-						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
-						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
-						<li>Copy your current <b>.htaccess</b>, <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b>, <b>includes/def_words.php</b> and keep them in a safe place.</li>
-						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
 						<li>Login as administrator.</li>
 						<li>Lock your site.</li>
+						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
+						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
+						<li>Copy your current <b>.htaccess</b> and <b>config.php</b> and keep them in a safe place.</li>
+						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
 						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
 						<li>Upload <b>install</b> folder to the root of your phpBB XS and launch <b>database_update.php</b> (i.e. http://www.mysite.com/xs/install/database_update.php).</li>
 						<li>Delete <b>install</b> folder.</li>
@@ -290,7 +286,7 @@
 								<li><b>docs</b></li>
 								<li><b>errors</b></li>
 								<li><b>hl</b></li>
-								<li><b>includes</b> (all but <b>includes/def_tree.php</b> and <b>includes/def_words.php</b>)</li>
+								<li><b>includes</b></li>
 								<li><b>language</b></li>
 								<li><b>mo</b></li>
 								<li><b>mods</b></li>
@@ -300,57 +296,9 @@
 							</ul>
 						</li>
 						<li>Remove <b>all files</b> but <b>config.php</b> in your phpBB XS root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Upload all Icy Phoenix files (all but <b>config.php</b>, <b>includes/def_tree.php</b> and <b>includes/def_words.php</b>) in the same folder where phpBB XS was installed and running. Pay attention that all older files eventually still there must be replaced by new ones.</li>
+						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where phpBB XS was installed and running. Pay attention that all older files eventually still there must be replaced by new ones.</li>
 						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
 						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS).</li>
-						<li>Unlock your site.</li>
-						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
-					</ol>
-					<br />
-				</div>
-			</td>
-		</tr>
-		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
-		</table>
-
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip">Upgrade from Icy Phoenix 1.1.0.27 or above</a></span></td>
-		</tr>
-		<tr>
-			<td class="row-post" colspan="3">
-				<div class="post-text">
-					<br />
-					If you're using Icy Phoenix 1.1.0.27 or above, you can upgrade your board by following these instructions:<br />
-					<ol type="1">
-						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
-						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
-						<li>Copy your current <b>.htaccess</b> (if you edit it), <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b>, <b>includes/def_words.php</b> and keep them in a safe place.</li>
-						<li>You may also want to backup the customized pages you have created using the CMS (if you did it).</li>
-						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Login as administrator.</li>
-						<li>Lock your site.</li>
-						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
-						<li>Upload <b>install</b> folder to the root of your Icy Phoenix and launch <b>database_update.php</b> (i.e. http://www.mysite.com/ip/install/database_update.php).</li>
-						<li>Delete <b>install</b> folder.</li>
-						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
-							<ul>
-								<li><b>adm</b></li>
-								<li><b>includes</b> (all but <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> and <b>includes/def_words.php</b>)</li>
-								<li><b>language</b></li>
-								<li><b>templates</b></li>
-							</ul>
-						</li>
-						<li>Remove <b>all files</b> but <b>config.php</b> in your Icy Phoenix root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Upload all Icy Phoenix files (all but <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> and <b>includes/def_words.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
-						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
-						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS). Here is a short list of some files you may want to edit manually:
-							<ul>
-								<li><b>common.php</b></li>
-								<li><b>config.php</b></li>
-								<li><b>includes/constants.php</b></li>
-								<li><b>language/lang_***/lang_main_settings.php</b></li>
-							</ul>
-						</li>
 						<li>Unlock your site.</li>
 						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
@@ -370,27 +318,76 @@
 					<br />
 					If you're using Icy Phoenix 1.1.0.15, you can upgrade your board by following these instructions:<br />
 					<ol type="1">
-						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
-						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
-						<li>Copy your current <b>.htaccess</b>, <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b>, <b>includes/def_words.php</b> and keep them in a safe place.</li>
-						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
 						<li>Login as administrator.</li>
 						<li>Lock your site.</li>
+						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
+						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
+						<li>Copy your current <b>.htaccess</b> and <b>config.php</b> and keep them in a safe place.</li>
+						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
 						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
 						<li>Upload <b>install</b> folder to the root of your Icy Phoenix and launch <b>database_update.php</b> (i.e. http://www.mysite.com/ip/install/database_update.php).</li>
 						<li>Delete <b>install</b> folder.</li>
 						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
 							<ul>
 								<li><b>adm</b></li>
-								<li><b>includes</b> (all but <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> and <b>includes/def_words.php</b>)</li>
+								<li><b>includes</b></li>
 								<li><b>language</b></li>
 								<li><b>templates</b></li>
 							</ul>
 						</li>
 						<li>Remove <b>all files</b> but <b>config.php</b> in your Icy Phoenix root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Upload all Icy Phoenix files (all but <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> and <b>includes/def_words.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
+						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
 						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
 						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS).</li>
+						<li>Unlock your site.</li>
+						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
+					</ol>
+					<br />
+				</div>
+			</td>
+		</tr>
+		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
+		</table>
+
+		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip">Upgrade from Icy Phoenix 1.2.0.27 or above</a></span></td>
+		</tr>
+		<tr>
+			<td class="row-post" colspan="3">
+				<div class="post-text">
+					<br />
+					If you're using Icy Phoenix 1.2.0.27 or above, you can upgrade your board by following these instructions:<br />
+					<ol type="1">
+						<li>Login as administrator.</li>
+						<li>Lock your site.</li>
+						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
+						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
+						<li>Copy your current <b>.htaccess</b> (if you edit it) and <b>config.php</b> and keep them in a safe place.</li>
+						<li>You may also want to backup the customized pages you have created using the CMS (if you have created some).</li>
+						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
+						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
+						<li>Upload <b>install</b> folder to the root of your Icy Phoenix and launch <b>database_update.php</b> (i.e. http://www.mysite.com/ip/install/database_update.php).</li>
+						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
+							<ul>
+								<li><b>adm</b></li>
+								<li><b>includes</b></li>
+								<li><b>language</b></li>
+								<li><b>templates</b></li>
+							</ul>
+						</li>
+						<li>Remove <b>all files</b> but <b>config.php</b> in your Icy Phoenix root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
+						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
+						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
+						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS). Here is a short list of some files you may want to edit manually:
+							<ul>
+								<li><b>common.php</b></li>
+								<li><b>config.php</b></li>
+								<li><b>includes/constants.php</b></li>
+								<li><b>language/lang_***/lang_main_settings.php</b></li>
+							</ul>
+						</li>
+						<li>Run <b>install/install.php</b> and complete the update by renaming and moving images (both posted and in album) and replacing all old links in posts: the automated procedure should be able to perform all these actions automatically, just follow the instructions.</li>
+						<li>Delete <b>install</b> folder.</li>
 						<li>Unlock your site.</li>
 						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
@@ -421,12 +418,12 @@
 				<br />
 				<div class="post-text">
 					<br />
-					<i>Version 1.2.0.27 (2008/03/03)</i>
-					<ul><li>Second official release.</li></ul>
-					<br />
-					<br />
 					<i>Version 1.1.0.15 (2007/05/20)</i>
 					<ul><li>First official release.</li></ul>
+					<br />
+					<br />
+					<i>Version 1.2.0.27 (2008/03/03)</i>
+					<ul><li>Second official release.</li></ul>
 					<br />
 				</div>
 				<br />
@@ -458,10 +455,7 @@
 	</td>
 </tr>
 </table>
-		</td>
-		<td class="rightshadow" width="9" valign="top"><img src="../images/spacer.gif" alt="" width="9" height="1" /></td>
-	</tr>
-</table>
+</div></div></div>
 </div>
 <a name="bottom"></a>
 </body>

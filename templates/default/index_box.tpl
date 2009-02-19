@@ -111,7 +111,7 @@ if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
 if (!$banner_processed)
 {
 ?>
-<!-- IF not S_BOT and FORUMINDEX_BANNER_ELEMENT -->
+<!-- IF FORUMINDEX_BANNER_ELEMENT -->
 <tr><td class="row1h-new" colspan="8"><span class="forumlink2-new">{FORUMINDEX_BANNER_ELEMENT}&nbsp;</span></td></tr>
 <!-- ENDIF -->
 <?php

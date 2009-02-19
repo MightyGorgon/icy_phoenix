@@ -168,14 +168,16 @@ $template->assign_block_vars('stats_row', array(
 	'DATE' => $lang['Sum_Table'],
 	'USER' => $user_sum,
 	'TOPIC' => $topic_sum,
-	'POST' => $post_sum));
+	'POST' => $post_sum
+	)
+);
 
 $template->assign_block_vars('stats_row', array(
 	'CLASS' => 'row2',
 	'DATE' => $lang['Avg_Table'],
-	'USER' => round($user_sum/$user_con,2),
-	'TOPIC' => (!$topic_sum == 0) ? round($topic_sum / $topic_con, 2) : 0,
-	'POST' => (!$post_sum == 0) ? round($post_sum / $post_con, 2) : 0,
+	'USER' => ($user_con > 0) ? round($user_sum / $user_con, 2) : 0,
+	'TOPIC' => ($topic_sum > 0) ? round($topic_sum / $topic_con, 2) : 0,
+	'POST' => ($post_sum > 0) ? round($post_sum / $post_con, 2) : 0,
 	)
 );
 

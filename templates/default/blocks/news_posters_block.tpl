@@ -1,4 +1,4 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_NEWS_POSTERS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0" border="0">
 <!-- BEGIN news_poster -->
 <tr>
 	<td class="row1" width="25%">{news_poster.USERNAME}</td>
@@ -30,4 +30,6 @@
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <!-- END news_poster_av -->
-</table>
+</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- IF PAGINATION --><div style="text-align: right;"><span class="gen">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></div><!-- ENDIF -->

@@ -446,7 +446,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit=fal
 		$topic_link = append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id']);
 
 		// censor topic_title
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 			$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
@@ -684,7 +684,7 @@ function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $
 		$month_end = $month;
 		if ($day_end < $day)
 		{
-			$month_end = ($month_end == 12) ? 1 : $month_end;
+			$month_end = ($month_end == 12) ? 1 : $month_end++;
 			$sql_where .= ' AND (((u.user_birthday_m = ' . $month_start . ') AND (u.user_birthday_d >= ' . $day . ')) OR ((u.user_birthday_m = ' . $month_end . ') AND (u.user_birthday_d <= ' . $day_end . ')))';
 		}
 		else

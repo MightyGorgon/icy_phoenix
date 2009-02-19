@@ -35,22 +35,15 @@ class base_extractor
 	var $format;
 	var $run_comp = false;
 
-	function base_extractor($download = false, $store = false, $format, $filename, $time)
+	function base_extractor($download = false, $store = false, $format = 'text', $time = '', $filepath = './', $filename = '')
 	{
 		$this->download = $download;
 		$this->store = $store;
-		$this->time = $time;
+		$this->time = (empty($time) ? time() : $time);
 		$this->format = $format;
 
 		switch ($format)
 		{
-			case 'text':
-				$ext = '.sql';
-				$open = 'fopen';
-				$this->write = 'fwrite';
-				$this->close = 'fclose';
-				$mimetype = 'text/x-sql';
-			break;
 			case 'bzip2':
 				$ext = '.sql.bz2';
 				$open = 'bzopen';
@@ -64,6 +57,14 @@ class base_extractor
 				$this->write = 'gzwrite';
 				$this->close = 'gzclose';
 				$mimetype = 'application/x-gzip';
+			break;
+			case 'text':
+			default:
+				$ext = '.sql';
+				$open = 'fopen';
+				$this->write = 'fwrite';
+				$this->close = 'fclose';
+				$mimetype = 'text/x-sql';
 			break;
 		}
 
@@ -95,9 +96,10 @@ class base_extractor
 
 		if ($store == true)
 		{
-			$file = IP_ROOT_PATH . BACKUP_PATH . $filename . $ext;
+			$file = $filepath . $filename . $ext;
 
-			$this->fp = $open($file, 'w');
+			//$this->fp = $open($file, 'w');
+			$this->fp = $open($file, 'a');
 
 			if (!$this->fp)
 			{
@@ -119,7 +121,7 @@ class base_extractor
 		}
 
 		// bzip2 must be written all the way at the end
-		if ($this->download && $this->format === 'bzip2')
+		if ($this->download && ($this->format === 'bzip2'))
 		{
 			$c = ob_get_clean();
 			echo bzcompress($c);
@@ -140,7 +142,7 @@ class base_extractor
 
 		if ($this->download === true)
 		{
-			if ($this->format === 'bzip2' || $this->format === 'text' || ($this->format === 'gzip' && !$this->run_comp))
+			if (($this->format === 'bzip2') || ($this->format === 'text') || (($this->format === 'gzip') && !$this->run_comp))
 			{
 				echo $data;
 			}
@@ -167,14 +169,18 @@ class base_extractor
 */
 class mysql_extractor extends base_extractor
 {
-	function write_start($table_prefix)
+	function write_start($table_prefix, $started = false)
 	{
-		$sql_data = "#\n";
-		$sql_data .= "# Icy Phoenix Backup Script\n";
-		$sql_data .= "# Dump of tables for $table_prefix\n";
-		$sql_data .= "# DATE : " . gmdate("d-m-Y H:i:s", $this->time) . " GMT\n";
-		$sql_data .= "#\n";
-		$sql_data .= "\n";
+		$sql_data = "";
+		if (!$started)
+		{
+			$sql_data .= "#\n";
+			$sql_data .= "# Icy Phoenix Backup Script\n";
+			$sql_data .= "# Dump of tables for $table_prefix\n";
+			$sql_data .= "# DATE : " . gmdate("d-m-Y H:i:s", $this->time) . " GMT\n";
+			$sql_data .= "#\n";
+			$sql_data .= "\n";
+		}
 		$this->flush($sql_data);
 	}
 
@@ -205,11 +211,17 @@ class mysql_extractor extends base_extractor
 		}
 	}
 
-	function write_data_mysql($table_name, $complete_insert = true, $extended_insert = false)
+	function write_data_mysql($table_name, $start = 0, $limit = ROWS_PER_STEP, $complete_insert = true, $extended_insert = false, $compact_line_breaks = false)
 	{
 		global $db;
-		$sql = "SELECT *
-			FROM $table_name";
+		$start = ($start <= 0) ? 0 : (int) $start;
+		$limit = ($limit <= 0) ? 0 : (int) $limit;
+		$limit_sql = '';
+		if (!empty($limit))
+		{
+			$limit_sql = ' LIMIT ' . $start . ', ' . $limit;
+		}
+		$sql = "SELECT * FROM " . $table_name . $limit_sql;
 		$result = mysql_unbuffered_query($sql, $db->db_connect_id);
 
 		if ($result != false)
@@ -232,29 +244,31 @@ class mysql_extractor extends base_extractor
 			$search = array("\\", "'", "\x00", "\x0a", "\x0d", "\x1a", '"');
 			$replace = array("\\\\", "\\'", '\0', '\n', '\r', '\Z', '\\"');
 			$fields = implode(', ', $field_set);
-			if ($complete_insert == true)
+			$sql_data = 'INSERT INTO ' . $table_name . ' ';
+			if ($complete_insert)
 			{
-				$sql_data = 'INSERT INTO ' . $table_name . ' (' . $fields . ') VALUES ';
+				$sql_data .= '(' . $fields . ') VALUES ';
 			}
 			else
 			{
-				$sql_data = 'INSERT INTO ' . $table_name . ' VALUES ';
+				$sql_data .= 'VALUES ';
 			}
 			$first_set = true;
 			$query = '';
 			$query_len = 0;
 			$max_len = get_usable_memory();
 
+			$rows_cnt = 0;
 			while ($row = mysql_fetch_row($result))
 			{
 				$values = array();
-				if (($first_set) || ($extended_insert == false))
+				if ($first_set || !$extended_insert)
 				{
-					$query .= $sql_data . '(';
+					$query .= $sql_data . (($extended_insert && !$compact_line_breaks) ? "\n" : '') . '(';
 				}
 				else
 				{
-					$query .= ',(';
+					$query .= ',' . (!$compact_line_breaks ? "\n" : '') . '(';
 				}
 
 				for ($j = 0; $j < $fields_cnt; $j++)
@@ -273,7 +287,7 @@ class mysql_extractor extends base_extractor
 					}
 				}
 				$query .= implode(', ', $values) . ')';
-				if ($extended_insert == false)
+				if (!$extended_insert)
 				{
 					$query .= ';' . "\n";
 				}
@@ -281,7 +295,7 @@ class mysql_extractor extends base_extractor
 				$query_len += strlen($query);
 				if ($query_len > $max_len)
 				{
-					if ($extended_insert == true)
+					if ($extended_insert)
 					{
 						$query .= ';' . "\n";
 					}
@@ -294,19 +308,22 @@ class mysql_extractor extends base_extractor
 				{
 					$first_set = false;
 				}
+				$rows_cnt++;
 			}
 			mysql_free_result($result);
 
 			// check to make sure we have nothing left to flush
 			if (!$first_set && $query)
 			{
-				if ($extended_insert == true)
+				if ($extended_insert)
 				{
 					$query .= ';' . "\n";
 				}
 				$this->flush($query . "\n\n");
 			}
+			return $rows_cnt;
 		}
+		return false;
 	}
 
 	function new_write_table($table_name)

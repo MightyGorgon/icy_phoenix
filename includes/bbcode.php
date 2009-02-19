@@ -27,7 +27,7 @@ if (!defined('IN_ICYPHOENIX'))
 Includes
 =================
 
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 =================
 Globals
@@ -720,7 +720,7 @@ class BBCode
 					if (in_array($pic_filetype, $thumb_ext_array))
 					{
 						$user_dir = '';
-						$users_images_path = str_replace('http://', '', str_replace('https://', '', create_server_url() . POSTED_IMAGES_PATH));
+						$users_images_path = str_replace('http://', '', str_replace('https://', '', create_server_url() . str_replace(IP_ROOT_PATH, '', POSTED_IMAGES_PATH)));
 						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
 						$pic_title_reg = ereg_replace("[^A-Za-z0-9]", '_', $pic_title);
 						$pic_thumbnail = 'mid_' . md5($pic_id) . '_' . $pic_filename;
@@ -979,6 +979,7 @@ class BBCode
 			}
 			else
 			{
+				$style = ($color || $bgcolor) ? (' style="' . ($color ? 'color: ' . $color . ';' : '') . ($bgcolor ? 'background-color: ' . $bgcolor . ';' : '') . '"') : '';
 				$html .= '<div class="mg_attachtitle"' . $style . '>' . $lang['Not_Authorised'] . '</div>';
 				$html .= '<div class="mg_attachdiv"><div style="text-align:center;">' . $lang['FILE_NOT_AUTH'] . '</div></div>';
 			}
@@ -1038,6 +1039,7 @@ class BBCode
 					if($last_item === false)
 					{
 						// change start position to end of [list]
+						$pos = !empty($pos) ? $pos : 0;
 						$pos2 = $item2['start'] + $item2['start_len'];
 						$item2['start'] = $pos;
 						$item2['start_len'] = $pos2 - $pos;

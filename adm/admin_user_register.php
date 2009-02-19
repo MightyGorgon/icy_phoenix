@@ -154,9 +154,9 @@ $db->sql_freeresult($result);
 // Check and initialize some variables if needed
 if (isset($_POST['submit']) || ($mode == 'register'))
 {
-	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 	$strip_var_list = array('username' => 'username', 'email' => 'email', 'new_password' => 'new_password', 'password_confirm' => 'password_confirm');
 

@@ -412,7 +412,7 @@ class lang_management
 		@chmod($filename, 0666);
 		@unlink($filename);
 		$f = @fopen($filename, 'w');
-		@fputs($f, $content);
+		@fwrite($f, $content);
 		@ftruncate($f);
 		@fclose($f);
 		@chmod($filename, 0666);

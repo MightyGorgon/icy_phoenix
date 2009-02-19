@@ -6,14 +6,13 @@
 <tr>
 	<th>{L_WORD}</th>
 	<th>{L_REPLACEMENT}</th>
-	<th colspan="2">{L_ACTION}</th>
+	<th>{L_ACTION}</th>
 </tr>
 <!-- BEGIN words -->
 <tr>
-	<td class="{words.ROW_CLASS} row-center">{words.WORD}</td>
-	<td class="{words.ROW_CLASS} row-center">{words.REPLACEMENT}</td>
-	<td class="{words.ROW_CLASS}"><a href="{words.U_WORD_EDIT}">{L_EDIT}</a></td>
-	<td class="{words.ROW_CLASS}"><a href="{words.U_WORD_DELETE}">{L_DELETE}</a></td>
+	<td class="{words.ROW_CLASS}">{words.WORD}</td>
+	<td class="{words.ROW_CLASS}">{words.REPLACEMENT}</td>
+	<td class="{words.ROW_CLASS} row-center"><a href="{words.U_WORD_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{words.U_WORD_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
 </tr>
 <!-- END words -->
 <tr><td colspan="5" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="add" value="{L_ADD_WORD}" class="mainoption" /></td></tr>

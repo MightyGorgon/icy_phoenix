@@ -137,7 +137,7 @@ if ($lang_extend_admin)
 
 		'IP_enable_new_messages_number' => 'Show the number of new messages since last visit',
 
-		'IP_disable_thanks_topics' => 'Disable Thanks',
+		'IP_disable_thanks_topics' => 'Disable Thanks (Global Switch)',
 
 		'IP_show_thanks_profile' => 'Show Thanks received when viewing profile',
 
@@ -332,6 +332,12 @@ if ($lang_extend_admin)
 
 		'IP_lofi_bots' => 'LoFi For Bots',
 		'IP_lofi_bots_explain' => 'By enabling this option LoFi will be enabled for bots.',
+
+		'IP_adsense_code' => 'Google AdSense Publisher Code',
+		'IP_adsense_code_explain' => 'Insert here your Google AdSense Publisher Code and it will be inserted in the Google Search page. If you don\'t want to use it, just leave this field blank.',
+
+		'IP_google_analytics' => 'Google Analytics Code',
+		'IP_google_analytics_explain' => 'Insert here your Google Analytics Code (the Javascript provided by Google site) and it will be automatically inserted at the bottom of every page.',
 
 //Sitemap
 		'Sitemap_settings' => 'Sitemap Settings',

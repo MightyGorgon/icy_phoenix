@@ -32,23 +32,24 @@ if(!function_exists('imp_news_posters_func'))
 
 		$page_link = htmlspecialchars($cms_config_vars['md_news_posters_page_link'][$block_id]);
 		//0 = alphabetical || 1 = News
-		$list_sort = ($cms_config_vars['md_news_posters_sort'][$block_id] == 1) ? 1 : 0;
+		$list_sort = request_var('list_sort', '');
+		$list_sort = (($list_sort == POST_TOPIC_URL) ? 1 : (($list_sort == POST_USERS_URL) ? 0 : false));
+		$list_sort = ($list_sort === false) ? (($cms_config_vars['md_news_posters_sort'][$block_id] == 1) ? 1 : 0) : $list_sort;
 		$show_avatars = ($cms_config_vars['md_news_posters_avatar'][$block_id] == 1) ? 1 : 0;
 
-		if ($list_sort == 1)
-		{
-			$sort_sql = "ORDER BY num_topics DESC";
-		}
-		else
-		{
-			$sort_sql = "ORDER BY u.username ASC";
-		}
+		$start = request_var('start', 0);
+		$start = ($start < 0) ? 0 : $start;
+		$per_page = request_var('per_page', $board_config['topics_per_page']);
+		$per_page = ($per_page < 0) ? $board_config['topics_per_page'] : $per_page;
 
-		$tpl_block_var_name = 'news_poster';
-		if ($show_avatars == 1)
-		{
-			$tpl_block_var_name .= '_av';
-		}
+		$index_file = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
+		$base_url = htmlspecialchars(urldecode($index_file));
+		$base_url .= '?list_sort=' . (($list_sort == 1) ? POST_TOPIC_URL : POST_USERS_URL);
+		$base_url .= '&amp;per_page=' . $per_page;
+		$base_url .= ((isset($_GET['page'])) ? ('&amp;page=' . htmlspecialchars(intval($_GET['page']))) : '');
+		$sort_sql = "ORDER BY " . (($list_sort == 1) ? "num_topics DESC" : "u.username ASC");
+
+		$tpl_block_var_name = 'news_poster' . (($show_avatars == 1) ? '_av' : '');
 
 		$sql = "SELECT t.topic_poster, COUNT(t.topic_poster) num_topics,
 							u.user_id, u.username, u.user_active, u.user_color, u.user_level, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_posts,
@@ -59,7 +60,8 @@ if(!function_exists('imp_news_posters_func'))
 							AND t.topic_status <> '" . TOPIC_MOVED . "'
 							AND u.user_id = t.topic_poster
 						GROUP BY t.topic_poster
-						" . $sort_sql;
+						" . $sort_sql . "
+						LIMIT " . $start . ", " . $per_page;
 		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query topics table', '', __LINE__, __FILE__, $sql);
@@ -146,9 +148,33 @@ if(!function_exists('imp_news_posters_func'))
 		$db->sql_freeresult($result);
 
 		$template->assign_vars(array(
+			'L_NEWS_POSTERS' => $lang['Title_news_posters'],
 			'L_USER_PROFILE' => $lang['Profile'],
 			'L_PM' => $lang['Private_Message'],
 			'L_USER_WWW' => $lang['Website'],
+			)
+		);
+
+		$sql = "SELECT COUNT(DISTINCT t.topic_poster) as news_posters
+						FROM " . TOPICS_TABLE . " t
+						WHERE t.news_id > 0
+							AND t.topic_status <> '" . TOPIC_MOVED . "'";
+		if(!($result = $db->sql_query($sql)))
+		{
+			message_die(GENERAL_ERROR, 'Could not query topics table', '', __LINE__, __FILE__, $sql);
+		}
+		$row = $db->sql_fetchrow($result);
+		$total_news_posters = $row['news_posters'];
+		$db->sql_freeresult($result);
+
+		$number_of_page = (ceil($total_news_posters / $per_page) == 0) ? 1 : ceil($total_news_posters / $per_page);
+		$pagination = generate_pagination($base_url, $total_news_posters, $per_page, $start);
+		$pagination = ((empty($pagination) || ($pagination == '&nbsp;')) ? false : $pagination);
+
+		$template->assign_vars(array(
+			'PAGINATION' => $pagination,
+			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), $number_of_page),
+			'L_GOTO_PAGE' => $lang['Goto_page']
 			)
 		);
 

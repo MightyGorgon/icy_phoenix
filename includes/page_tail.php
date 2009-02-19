@@ -38,7 +38,7 @@ else
 	$footer_tpl = 'simple_footer.tpl';
 }
 
-if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN')) && (($cms_global_blocks == true) || !empty($cms_page_id)) && (($board_config['board_disable'] == false) || ($userdata['user_level'] == ADMIN)))
+if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN')) && (!empty($cms_global_blocks) || !empty($cms_page_id)) && (!$board_config['board_disable'] || ($userdata['user_level'] == ADMIN)))
 {
 	$template->assign_var('SWITCH_CMS_GLOBAL_BLOCKS', true);
 	if (cms_parse_blocks($cms_page_id, !empty($cms_page_id), $cms_global_blocks, 'tailcenter'))
@@ -90,7 +90,7 @@ $template->assign_vars(array(
 	'L_STATUS_LOGIN' => ($ctracker_config->settings['login_ip_check'] ? sprintf($lang['ctracker_ipwarn_info'], $output_login_status) : ''),
 	// CrackerTracker v5.x
 
-	'CMS_ACP' => ($cms_acp_url == '') ? '' : $cms_acp_url,
+	'CMS_ACP' => (!empty($cms_acp_url) ? $cms_acp_url : ''),
 	'ADMIN_LINK' => $admin_link
 	)
 );
@@ -185,12 +185,10 @@ if ($board_config['page_gen'] == 1)
 			'SQL_QUERIES' => $lang['SQL_Queries'],
 			'SQL_PART' => $sql_part,
 			'PHP_PART' => $php_part,
-			'OVERALL_QUERIES_TODAY' => $show_in_footer_today,
-			'OVERALL_QUERIES_TOP' => $show_in_footer_top,
-			'OVERALL_PAGES_VIEWED' => $spvt,
 			'DEBUG_TEXT' => $debug_text,
 			'BOTTOM_HTML_BLOCK' => $bottom_html_block_text,
 			'FOOTER_BANNER_BLOCK' => $footer_banner_text,
+			'GOOGLE_ANALYTICS' => (STRIP ? stripslashes($board_config['google_analytics']) : $board_config['google_analytics']),
 			)
 		);
 
@@ -208,11 +206,7 @@ if ($board_config['page_gen'] == 1)
 
 $template->pparse('overall_footer');
 
-// Close our DB connection.
-if (!empty($db))
-{
-	$db->sql_close();
-}
+garbage_collection();
 
 // Compress buffered output if required and send to browser
 
@@ -226,7 +220,7 @@ else
 	$contents = ob_get_contents();
 }
 
-if(function_exists(ob_gzhandler) && ($board_config['gzip_compress'] == true))
+if(function_exists(ob_gzhandler) && $board_config['gzip_compress'])
 {
 	ob_end_clean();
 	ob_start('ob_gzhandler');
@@ -240,6 +234,7 @@ else
 }
 // URL Rewrite - END
 
+exit_handler();
 exit;
 
 ?>

@@ -1708,6 +1708,15 @@ DELETE FROM `phpbb_extensions` WHERE `extension` = 'tga';
 ########################################
 ##              BUILD 046             ##
 ########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('adsense_code', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_analytics', '');
+ALTER TABLE `phpbb_ajax_shoutbox_sessions` CHANGE `session_id` `session_id` INT( 10 ) NOT NULL;
+
+
+
+########################################
+##              BUILD 047             ##
+########################################
 
 
 
@@ -1720,4 +1729,4 @@ UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = '
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.2.18.45' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.2.20.47' WHERE config_name = 'ip_version';

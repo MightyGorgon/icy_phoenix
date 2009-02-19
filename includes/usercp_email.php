@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 global $bbcode, $board_config;
 
 // Is send through board enabled? No, return to index

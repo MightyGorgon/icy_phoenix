@@ -65,7 +65,7 @@ if(!function_exists('imp_random_user_func'))
 				$this_date = create_date('md', time(), $board_config['board_timezone']);
 				$poster_birthday = realdate('d/m/Y', $row['user_birthday']);
 				$poster_age = $this_year - realdate('Y', $row['user_birthday']);
-				if ($this_date < $poster_birthdate)
+				if ($this_date < $poster_birthday)
 				{
 					$poster_age--;
 				}
@@ -97,7 +97,7 @@ if(!function_exists('imp_random_user_func'))
 			$profile_link = '<a href="' . $profile_url . '">' . $lang['SEE_MORE_DETAILS'] . '</a>';
 
 			$pm_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
-			$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
+			$pm_img = '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 			$pm = '<a href="' . $pm_url . '">' . $lang['PM'] . '</a>';
 
 			// Start add - Gender MOD
@@ -204,8 +204,6 @@ if(!function_exists('imp_random_user_func'))
 				'PROFILE_IMG' => $profile_img,
 				'PROFILE' => $profile,
 				'PROFILE_LINK' => $profile_link,
-				'SEARCH_IMG' => $search_img,
-				'SEARCH' => $search,
 				'PM_IMG' => $pm_img,
 				'PM' => $pm,
 				'EMAIL_IMG' => (!$userdata['session_logged_in']) ? '' : $email_img,

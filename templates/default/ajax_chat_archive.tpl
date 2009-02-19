@@ -104,12 +104,11 @@ function handlehResponse()
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
 <tr valign="top">
 	<td width="67%">
+		<!-- BEGIN pag -->
+		<div style="float: right; text-align: right;"><span class="pagination">{pag.PAGINATION}</span></div>&nbsp;
+		<!-- END pag -->
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><th colspan="2">{L_SHOUTS}</th></tr>
-			<!-- BEGIN pag -->
-			<tr><td class="row2 row-center" colspan="2"><span class="postbody">{pag.PAGINATION}</span></td></tr>
-			<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-			<!-- END pag -->
 			<!-- BEGIN shouts -->
 			<tbody id="tbody{shouts.ID}">
 				<tr>
@@ -132,31 +131,27 @@ function handlehResponse()
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><th colspan="2">{L_STATS}</th></tr>
 			<tr>
-				<td class="row1"><span class="forumlink">{L_TOTAL_SHOUTS}</span></td>
-				<td class="row1"><span class="post-text">{TOTAL_SHOUTS}</span></td>
+				<td class="row1"><span class="topiclink"><b>{L_TOTAL_SHOUTS}</b></span></td>
+				<td class="row1"><span class="topiclink">{TOTAL_SHOUTS}</span></td>
 			</tr>
 			<tr>
-				<td class="row2"><span class="forumlink">{L_STORED_SHOUTS}</span></td>
-				<td class="row2"><span class="post-text">{STORED_SHOUTS}</span></td>
+				<td class="row2"><span class="topiclink"><b>{L_STORED_SHOUTS}</b></span></td>
+				<td class="row2"><span class="topiclink">{STORED_SHOUTS}</span></td>
 			</tr>
 			<tr>
-				<td class="row1"><span class="forumlink">{L_MY_SHOUTS}</span></td>
-				<td class="row1"><span class="post-text">{MY_SHOUTS}</span></td>
+				<td class="row1"><span class="topiclink"><b>{L_MY_SHOUTS}</b></span></td>
+				<td class="row1"><span class="topiclink">{MY_SHOUTS}</span></td>
 			</tr>
 			<tr>
-				<td class="row2"><span class="forumlink">{L_TODAY_SHOUTS}</span></td>
-				<td class="row2"><span class="post-text">{TODAY_SHOUTS}</span></td>
+				<td class="row2"><span class="topiclink"><b>{L_TODAY_SHOUTS}</b></span></td>
+				<td class="row2"><span class="topiclink">{TODAY_SHOUTS}</span></td>
 			</tr>
 		</table>
 		<br /><br />
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><th>{L_WIO}</th></tr>
 			<tr>
-				<td class="row1"><span class="post-text" id="online_list">
-					<!-- BEGIN online_list -->
-					&nbsp;&#8226;&nbsp;{online_list.USERNAME}<br />
-					<!-- END online_list -->
-				</span></td>
+				<td class="row1"><span class="post-text" id="online_list"><!-- BEGIN online_list -->&nbsp;&#8226;&nbsp;{online_list.USERNAME}<br /><!-- END online_list --></span></td>
 			</tr>
 			<tr>
 				<td class="row2 row-center">
@@ -170,8 +165,8 @@ function handlehResponse()
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><th colspan="2">{L_TOP_SHOUTERS}</th></tr>
 			<tr>
-				<td class="cat"><span class="cattitle">{L_USERNAME}</span></td>
-				<td class="cat"><span class="cattitle">{L_SHOUTS}</span></td>
+				<th>{L_USERNAME}</td>
+				<th>{L_SHOUTS}</td>
 			</tr>
 		<!-- BEGIN top_shouters -->
 			<tr>

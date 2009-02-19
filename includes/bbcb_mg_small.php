@@ -226,8 +226,6 @@ $parsing_template = array(
 	'L_FLASH_W_ERROR' => $lang['s_flash_w_error'],
 	'L_FLASH_H_INSERT' => $lang['s_flash_h_insert'],
 	'L_FLASH_H_ERROR' => $lang['s_flash_h_error'],
-	'L_ID_INSERT_TIP' => $lang['s_id_insert_tip'],
-	'L_ID_INSERT_ERROR' => $lang['s_id_insert_error'],
 	'L_FILE_INSERT_ERROR' => $lang['s_file_insert_error'],
 	'L_VIEW_MORE_CODE' => $lang['s_view_more_code'],
 
@@ -239,7 +237,7 @@ $parsing_template = array(
 	'L_STRIKE_HELP' => $lang['s_strike_help'],
 	'L_QUOTE_HELP' => $lang['s_quote_help'],
 	'L_CODE_HELP' => $lang['s_code_help'],
-	'L_SPOIL_HELP' => $lang['s_spoil_help'],
+	'L_SPOILER_HELP' => $lang['s_spoiler_help'],
 	'L_HIGHLIGHT_HELP' => $lang['s_highlight_help'],
 	'L_IMG_HELP' => $lang['s_img_help'],
 	'L_IMGL_HELP' => $lang['s_imgl_help'],

@@ -36,6 +36,7 @@ var SEARCH_MG = '{SEARCH_MG}';
 <script type="text/javascript" src="{FULL_SITE_PATH}language/lang_{CURRENT_LANG}/bbcb_mg.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/prototype.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/run_active_content.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}scriptaculous/scriptaculous.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/chrome.js"></script>
 
@@ -89,7 +90,7 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 		<a href="{U_CMS_STANDARD_PAGES}">&nbsp;<img src="images/cms/menu/cms_standard_pages.png" alt="" />&nbsp;{L_CMS_STANDARD_PAGES}</a>
 		<a href="{U_CMS_CUSTOM_PAGES}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES}</a>
 		<a href="{U_CMS_CUSTOM_PAGES_ADV}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES_ADV}</a>
-		<a href="{U_CMS_MENU}">&nbsp;<img src="images/cms/menu/cms_menu.png" alt="" />&nbsp;{L_CMS_MENU}</a>
+		<a href="{U_CMS_MENU}">&nbsp;<img src="images/cms/menu/cms_menu.png" alt="" />&nbsp;{L_CMS_MENU_PAGE}</a>
 	</div>
 
 	<!--

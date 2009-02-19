@@ -108,7 +108,7 @@ if(!function_exists('imp_poll_block_func'))
 
 				$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : 0) : 0;
 
-				if($user_voted || $view_result || $poll_expired || $forum_row['topic_status'] == TOPIC_LOCKED)
+				if($user_voted || $view_result || $poll_expired || ($pollrow[0]['topic_status'] == TOPIC_LOCKED))
 				{
 
 					$template->set_filenames(array('b_pollbox' => 'portal_poll_result.tpl'));
@@ -155,7 +155,7 @@ if(!function_exists('imp_poll_block_func'))
 						$vote_graphic_img_right = $images['voting_graphic_right'];
 						$vote_graphic = ($vote_graphic < $vote_graphic_max - 1) ? $vote_graphic + 1 : 0;
 
-						if(count($orig_word))
+						if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 						{
 							$vote_info[$i]['vote_option_text'] = preg_replace($orig_word, $replacement_word, $vote_info[$i]['vote_option_text']);
 						}
@@ -188,7 +188,7 @@ if(!function_exists('imp_poll_block_func'))
 						'B_POLL_OPTION_IMG_L' => $vote_graphic_img_left,
 						'B_POLL_OPTION_IMG_R' => $vote_graphic_img_right,
 						'B_L_VIEW_RESULTS' => $lang['View_results'],
-						'B_U_VIEW_RESULTS' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;vote=viewresult')
+						'B_U_VIEW_RESULTS' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;vote=viewresult')
 						)
 					);
 
@@ -199,7 +199,7 @@ if(!function_exists('imp_poll_block_func'))
 
 					for($i = 0; $i < $vote_options; $i++)
 					{
-						if(count($orig_word))
+						if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 						{
 							$vote_info[$i]['vote_option_text'] = preg_replace($orig_word, $replacement_word, $vote_info[$i]['vote_option_text']);
 						}
@@ -210,16 +210,29 @@ if(!function_exists('imp_poll_block_func'))
 						);
 					}
 					$template->assign_vars(array(
-						'B_LOGIN_TO_VOTE' => '<b><a href="' . append_sid(LOGIN_MG . '?redirect=' . PORTAL_MG) . '">' . $lang['Login_to_vote'] . '</a></b>')
+						'B_LOGIN_TO_VOTE' => '<b><a href="' . append_sid(LOGIN_MG . '?redirect=' . PORTAL_MG) . '">' . $lang['Login_to_vote'] . '</a></b>'
+						)
 					);
 
 					$s_hidden_fields = '<input type="hidden" name="topic_id" value="' . $topic_id . '" /><input type="hidden" name="mode" value="vote" />';
 				}
 
-				if(count($orig_word))
+				if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$vote_title = preg_replace($orig_word, $replacement_word, $vote_title);
 				}
+
+				$vote_color = 'green';
+
+				$voting_bar = 'voting_graphic_' . $vote_color;
+				$voting_bar_body = 'voting_graphic_' . $vote_color . '_body';
+				$voting_bar_left = 'voting_graphic_' . $vote_color . '_left';
+				$voting_bar_right = 'voting_graphic_' . $vote_color . '_right';
+
+				$voting_bar_img = $images[$voting_bar];
+				$voting_bar_body_img = $images[$voting_bar_body];
+				$voting_bar_left_img = $images[$voting_bar_left];
+				$voting_bar_right_img = $images[$voting_bar_right];
 
 				$template->assign_vars(array(
 					'POLL_GRAPHIC' => $voting_bar_img,
@@ -240,6 +253,18 @@ if(!function_exists('imp_poll_block_func'))
 		else
 		{
 			$template->set_filenames(array('pollbox' => 'portal_poll_ballot.tpl'));
+
+			$vote_color = 'green';
+
+			$voting_bar = 'voting_graphic_' . $vote_color;
+			$voting_bar_body = 'voting_graphic_' . $vote_color . '_body';
+			$voting_bar_left = 'voting_graphic_' . $vote_color . '_left';
+			$voting_bar_right = 'voting_graphic_' . $vote_color . '_right';
+
+			$voting_bar_img = $images[$voting_bar];
+			$voting_bar_body_img = $images[$voting_bar_body];
+			$voting_bar_left_img = $images[$voting_bar_left];
+			$voting_bar_right_img = $images[$voting_bar_right];
 
 			$template->assign_vars(array(
 				'POLL_GRAPHIC' => $voting_bar_img,

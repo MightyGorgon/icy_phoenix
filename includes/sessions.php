@@ -48,7 +48,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';
 	$page_array['page_full'] .= (!empty($topic_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_t_=' . (int) $topic_id . 'x' : '';
-	if (function_exists(mysql_real_escape_string))
+	if (function_exists('mysql_real_escape_string'))
 	{
 		$page_id = @mysql_real_escape_string(substr($page_array['page_full'], 0, 254));
 	}
@@ -166,7 +166,8 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		$sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $userdata['user_email']) . "'
 			OR ban_email LIKE '" . substr(str_replace("\'", "''", $userdata['user_email']), strpos(str_replace("\'", "''", $userdata['user_email']), "@")) . "'";
 	}
-	if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
+	$result = CACHE_BAN_INFO ? $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER) : $db->sql_query($sql);
+	if(!$result)
 	{
 		message_die(CRITICAL_ERROR, 'Could not obtain ban information', '', __LINE__, __FILE__, $sql);
 	}
@@ -347,6 +348,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	$userdata['session_admin'] = $admin;
 	$userdata['session_key'] = $sessiondata['autologinid'];
 //<!-- BEGIN Unread Post Information to Database Mod -->
+	$userdata['upi2db_access'] = false;
 	if (!$board_config['board_disable'] && $userdata['session_logged_in'] && $board_config['upi2db_on'])
 	{
 		$userdata['upi2db_access'] = check_upi2db_on($userdata);
@@ -417,7 +419,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';
 	$page_array['page_full'] .= (!empty($topic_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_t_=' . (int) $topic_id . 'x' : '';
-	if (function_exists(mysql_real_escape_string))
+	if (function_exists('mysql_real_escape_string'))
 	{
 		$thispage_id = @mysql_real_escape_string(substr($page_array['page_full'], 0, 254));
 	}
@@ -503,6 +505,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 					$userdata['session_key'] = $sessiondata['autologinid'];
 				}
 //<!-- BEGIN Unread Post Information to Database Mod -->
+				$userdata['upi2db_access'] = false;
 				if (!$board_config['board_disable'] && $userdata['session_logged_in'] && $board_config['upi2db_on'])
 				{
 					$userdata['upi2db_access'] = check_upi2db_on($userdata);
@@ -553,7 +556,18 @@ function session_pagestart($user_ip, $thispage_id = '')
 				}
 			}
 //<!-- BEGIN Unread Post Information to Database Mod -->
-//			$userdata['upi2db_access'] = check_upi2db_on($userdata);
+			//$userdata['upi2db_access'] = check_upi2db_on($userdata);
+			$userdata['upi2db_access'] = false;
+			if (!$board_config['board_disable'] && $userdata['session_logged_in'] && $board_config['upi2db_on'])
+			{
+				$userdata['upi2db_access'] = check_upi2db_on($userdata);
+				if ($userdata['upi2db_access'] != false)
+				{
+					$userdata['always_read'] = select_always_read($userdata);
+					$userdata['auth_forum_id'] = auth_forum_read($userdata);
+					sync_database($userdata);
+				}
+			}
 //<!-- END Unread Post Information to Database Mod -->
 
 			$userdata_processed = true;

@@ -11,25 +11,22 @@
 <tr>
 	<th nowrap="nowrap">{L_CATEGORY}</th>
 	<th nowrap="nowrap">{L_ARTICLES}</th>
-	<th nowrap="nowrap">{L_ORDER}</th>
 	<th nowrap="nowrap">{L_ACTION}</th>
 </tr>
 <!-- BEGIN catrow -->
 <tr>
 	<td class="{catrow.ROW_CLASS}"><span class="gen">{catrow.CATEGORY}<br />{catrow.CAT_DESCRIPTION}</span></td>
 	<td class="{catrow.ROW_CLASS} row-center"><span class="gen">{catrow.CAT_ARTICLES}</span></td>
-	<td class="{catrow.ROW_CLASS} row-center"><span class="gensmall">{catrow.U_UP} | {catrow.U_DOWN}</span></td>
-	<td class="{catrow.ROW_CLASS} row-center"><span class="gensmall">{catrow.U_EDIT} | {catrow.U_DELETE}</span></td>
+	<td class="{catrow.ROW_CLASS} row-center"><span class="gensmall">{catrow.U_EDIT}&nbsp;{catrow.U_DELETE}&nbsp;{catrow.U_UP}&nbsp;{catrow.U_DOWN}</span></td>
 </tr>
 <!-- BEGIN subrow -->
 <tr>
 	<td class="{catrow.subrow.ROW_CLASS}"><span class="gen">{catrow.subrow.INDENT}{catrow.subrow.CATEGORY}<br />&nbsp;&nbsp;&nbsp;&nbsp;{catrow.subrow.CAT_DESCRIPTION}</span></td>
 	<td class="{catrow.subrow.ROW_CLASS} row-center"><span class="gen">{catrow.subrow.CAT_ARTICLES}</span></td>
-	<td class="{catrow.subrow.ROW_CLASS} row-center"><span class="gensmall">{catrow.subrow.U_UP} | {catrow.subrow.U_DOWN}</span></td>
-	<td class="{catrow.subrow.ROW_CLASS} row-center"><span class="gensmall">{catrow.subrow.U_EDIT} {catrow.subrow.U_DELETE}</span></td>
+	<td class="{catrow.subrow.ROW_CLASS} row-center"><span class="gensmall">{catrow.subrow.U_EDIT}&nbsp;{catrow.subrow.U_DELETE}&nbsp;{catrow.subrow.U_UP}&nbsp;{catrow.subrow.U_DOWN}</span></td>
 </tr>
 	<!-- END subrow -->
 	<!-- END catrow -->
-<tr><td class="cat" colspan="4">&nbsp;</td></tr>
+<tr><td class="cat" colspan="3">&nbsp;</td></tr>
 </table>
 <br clear="all" />

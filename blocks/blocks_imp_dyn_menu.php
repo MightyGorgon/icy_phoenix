@@ -123,8 +123,8 @@ if(!function_exists('imp_dyn_menu_block_func'))
 				{
 					$cat_name = (($cat_item_data['menu_name'] != '') ? htmlspecialchars(stripslashes($cat_item_data['menu_name'])) : 'cat_item' . $cat_item_data['cat_id']);
 				}
-				$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_name . '" style="vertical-align:middle;" />&nbsp;&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />&nbsp;&nbsp;');
-				//$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_name . '" style="vertical-align:middle;" />&nbsp;&nbsp;' : '&nbsp;');
+				$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;&nbsp;');
+				//$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;&nbsp;' : '&nbsp;');
 				if ($cat_item_data['menu_link'] != '')
 				{
 					$cat_link = append_sid($cat_item_data['menu_link']);
@@ -178,8 +178,8 @@ if(!function_exists('imp_dyn_menu_block_func'))
 					if ($menu_allowed == true)
 					{
 						//echo($menu_cat_item_data['menu_name'] . '<br />');
-						//$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align:middle;" />' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />');
-						$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align:middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />&nbsp;');
+						//$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />');
+						$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;');
 						if ($menu_cat_item_data['menu_default'] == '0')
 						{
 							if (($menu_cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$menu_cat_item_data['menu_name_lang']]))
@@ -192,12 +192,12 @@ if(!function_exists('imp_dyn_menu_block_func'))
 							}
 							if ($menu_cat_item_data['menu_link_external'] == true)
 							{
-								$menu_link = $menu_cat_item_data['menu_link'];
+								$menu_link = htmlspecialchars($menu_cat_item_data['menu_link']);
 								$menu_link .= '" target="_blank';
 							}
 							else
 							{
-								$menu_link = append_sid($menu_cat_item_data['menu_link']);
+								$menu_link = append_sid(htmlspecialchars($menu_cat_item_data['menu_link']));
 							}
 							//$menu_url = '<td align="center" width="8">' . $menu_icon . '</td><td class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_name . '</a></td>';
 							//$menu_url = '<a href="' . $menu_link . '">' . $menu_name . '</a>';

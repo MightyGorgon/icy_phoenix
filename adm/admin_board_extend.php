@@ -99,7 +99,7 @@ while (list($menu_name, $menu) = each($mods))
 			{
 				if (!isset($field['user_only']) || !$field['user_only'])
 				{
-					$found=true;
+					$found = true;
 					break;
 				}
 			}
@@ -254,11 +254,13 @@ if ($submit)
 				case 'VARCHAR':
 				case 'TEXT':
 				case 'DATEFMT':
-					$$field_name = trim(str_replace("\'", "''", htmlspecialchars($_POST[$field_name])));
+					//$$field_name = trim(str_replace("\'", "''", htmlspecialchars($_POST[$field_name])));
+					$$field_name = trim(htmlspecialchars($_POST[$field_name]));
 					break;
 				case 'HTMLVARCHAR':
 				case 'HTMLTEXT':
-					$$field_name = trim(str_replace("\'", "''", $_POST[$field_name]));
+					//$$field_name = trim(str_replace("\'", "''", $_POST[$field_name]));
+					$$field_name = trim($_POST[$field_name]);
 					break;
 				default:
 					$$field_name = '';
@@ -274,7 +276,7 @@ if ($submit)
 			}
 			if ($error)
 			{
-				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 		}
@@ -287,6 +289,7 @@ if ($submit)
 		if (isset($$field_name))
 		{
 			set_config($field_name, $$field_name);
+			//set_config($field_name, (STRIP ? addslashes($$field_name) : $$field_name));
 		}
 		if (isset($_POST[$field_name . '_over']) && !empty($field['user']) && isset($userdata[$field['user']]))
 		{
@@ -295,7 +298,7 @@ if ($submit)
 	}
 
 	// send an update message
-	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -330,7 +333,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 	}
 	$template->assign_block_vars('menu', array(
 		'CLASS'		=> ($menu_id == $i) ? ((count($mod_keys[$i]) > 1) ? 'row3' : 'row1') : 'row2',
-		'U_MENU'	=> append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $i),
+		'U_MENU'	=> append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i),
 		'L_MENU'	=> sprintf((($menu_id == $i) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_menu)),
 		)
 	);
@@ -357,7 +360,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			$template->assign_block_vars('menu.mod', array(
 				'CLASS' => (($menu_id == $i) && ($mod_id == $j)) ? 'row1' : 'row2',
 				'ALIGN' => (($menu_id == $i) && ($mod_id == $j) && (count($sub_keys[$i][$j]) > 1)) ? 'left' : 'center',
-				'U_MOD' => append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j),
+				'U_MOD' => append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j),
 				'L_MOD' => sprintf(((($menu_id == $i) && ($mod_id == $j)) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_mod)),
 				)
 			);
@@ -370,7 +373,7 @@ for ($i = 0; $i < count($menu_keys); $i++)
 					{
 						$template->assign_block_vars('menu.mod.sub.row', array(
 							'CLASS' => (($menu_id == $i) && ($mod_id == $j) && ($sub_id == $k)) ? 'row1' : 'row2',
-							'U_MOD' => append_sid('./admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j . '&amp;msub=' . $k),
+							'U_MOD' => append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j . '&amp;msub=' . $k),
 							'L_MOD' => sprintf((($sub_id == $k) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($sub_keys[$i][$j][$k])),
 							)
 						);
@@ -431,11 +434,11 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			break;
 		case 'VARCHAR':
 		case 'HTMLVARCHAR':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . (STRIP ? stripslashes($config[$field_name]) : $config[$field_name]) . '" />';
 			break;
 		case 'TEXT':
 		case 'HTMLTEXT':
-			$input = '<textarea rows="5" cols="45" wrap="virtual" name="' . $field_name . '" class="post">' . $config[$field_name] . '</textarea>';
+			$input = '<textarea rows="5" cols="45" wrap="virtual" name="' . $field_name . '" class="post">' . (STRIP ? stripslashes($config[$field_name]) : $config[$field_name]) . '</textarea>';
 			break;
 		default:
 			$input = '';
@@ -477,7 +480,7 @@ $s_hidden_fields .= '<input type="hidden" name="menu_id" value="' . $menu_id . '
 $s_hidden_fields .= '<input type="hidden" name="mod_id" value="' . $mod_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="sub_id" value="' . $sub_id . '" />';
 $template->assign_vars(array(
-	'S_ACTION' => append_sid('./admin_board_extend.' . PHP_EXT),
+	'S_ACTION' => append_sid('admin_board_extend.' . PHP_EXT),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	)
 );

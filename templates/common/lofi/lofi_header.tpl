@@ -27,9 +27,9 @@
 			<a href="{FULL_SITE_PATH}{U_MEMBERLIST}">{L_MEMBERLIST}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_STATISTICS}">{L_STATISTICS}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_GROUP_CP}">{L_USERGROUPS}</a>&nbsp;&#8226;&nbsp;
-			<!-- BEGIN switch_user_logged_out -->
+			<!-- IF not S_LOGGED_IN -->
 			<a href="{FULL_SITE_PATH}{U_REGISTER}">{L_REGISTER}</a></span>&nbsp;&#8226;&nbsp;
-			<!-- END switch_user_logged_out -->
+			<!-- ENDIF -->
 			<a href="{FULL_SITE_PATH}{U_PROFILE}">{L_PROFILE}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a>&nbsp;
 		</div>

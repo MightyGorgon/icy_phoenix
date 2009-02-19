@@ -16,7 +16,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
+$userdata = session_pagestart($user_ip, false);
 init_userprefs($userdata);
 // End session management
 

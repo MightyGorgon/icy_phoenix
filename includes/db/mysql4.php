@@ -105,7 +105,7 @@ if(!defined('SQL_LAYER'))
 				}
 
 				// Mighty Gorgon: to be checked, maybe we should remove this...
-				if($this->query_result)
+				if(!empty($this->query_result))
 				{
 					@mysql_free_result($this->query_result);
 				}
@@ -191,14 +191,18 @@ if(!defined('SQL_LAYER'))
 			{
 				/*
 				$f = fopen($this->cache_folder . 'sql_' . $hash . '_.php', 'w');
-				@fputs($f, '\'' . $query . '\'');
+				@flock($f, LOCK_EX);
+				@fwrite($f, '\'' . $query . '\'');
+				@flock($f, LOCK_UN);
 				@fclose($f);
 				*/
 				// Cache SQL history in a file
 				if (!defined('IN_ADMIN'))
 				{
 					$f = fopen($this->cache_folder . 'sql_history.php', 'a+');
-					@fputs($f, date('Y/m/d - H:i:s') . ' => ' . $hash . "\n\n" . $query . "\n\n\n=========================\n\n");
+					@flock($f, LOCK_EX);
+					@fwrite($f, date('Y/m/d - H:i:s') . ' => ' . $hash . "\n\n" . $query . "\n\n\n=========================\n\n");
+					@flock($f, LOCK_UN);
 					@fclose($f);
 				}
 			}
@@ -391,6 +395,7 @@ if(!defined('SQL_LAYER'))
 				$this->sql_time += $this->sql_set_end_time() - $this->sql_start_time;
 				return $this->cache;
 			}
+			$result = false;
 
 			if(!$query_id)
 			{
@@ -603,7 +608,7 @@ if(!defined('SQL_LAYER'))
 			$f_content .= '$set = ' . $data . ';' . "\n";
 			$f_content .= '$cache_included = true;' . "\n" . 'return;' . "\n";
 			$f_content .= '?' . '>';
-			@fputs($f, $f_content);
+			@fwrite($f, $f_content);
 			@flock($f, LOCK_UN);
 			@fclose($f);
 			@chmod($cache_file_name, 0666);
@@ -612,7 +617,7 @@ if(!defined('SQL_LAYER'))
 			$this->cache = array();
 		}
 
-		function clear_cache($prefix = '', $cache_folder = SQL_CACHE_FOLDER)
+		function clear_cache($prefix = '', $cache_folder = SQL_CACHE_FOLDER, $files_per_step = 0)
 		{
 			$this->caching = false;
 			$this->cached = false;
@@ -624,11 +629,18 @@ if(!defined('SQL_LAYER'))
 			$res = opendir($this->cache_folder);
 			if($res)
 			{
+				$files_counter = 0;
 				while(($file = readdir($res)) !== false)
 				{
-					if(substr($file, 0, $prefix_len) === $prefix)
+					if(!is_dir($file) && substr($file, 0, $prefix_len) === $prefix)
 					{
 						@unlink($this->cache_folder . $file);
+						$files_counter++;
+					}
+					if (($files_per_step > 0) && ($files_counter >= $files_per_step))
+					{
+						closedir($res);
+						return $files_per_step;
 					}
 				}
 			}
@@ -670,11 +682,8 @@ if(!defined('SQL_LAYER'))
 
 <body>
 <a name="top"></a>
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td class="leftshadow" width="9" valign="top"><img src="' . IP_ROOT_PATH . 'images/spacer.gif" alt="" width="9" height="1" /></td>
-		<td width="100%" valign="top">
-<div style="text-align:center;">
+<div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
+<div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" colspan="3" valign="top">
@@ -724,11 +733,8 @@ if(!defined('SQL_LAYER'))
 	</td>
 </tr>
 </table>
+</div></div></div>
 </div>
-		</td>
-		<td class="rightshadow" width="9" valign="top"><img src="' . IP_ROOT_PATH . 'images/spacer.gif" alt="" width="9" height="1" /></td>
-	</tr>
-</table>
 </body>
 </html>
 ');

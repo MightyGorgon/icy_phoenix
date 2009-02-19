@@ -20,14 +20,15 @@ function open_postreview(ref)
 }
 //-->
 </script>
+<h2 style="text-align: left;"><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2>
 {IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<!-- IF not S_BOT and VIEWTOPIC_BANNER_TOP -->
+<!-- IF VIEWTOPIC_BANNER_TOP -->
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
 <!-- ENDIF -->
 <tr><th colspan="2">{L_ARTICLE}</th></tr>
 <!-- BEGIN postrow -->
 <tr>
-	<td class="row-post-buttons post-buttons" width="100%" colspan="2">
+	<td class="row-post-buttons post-buttons" colspan="2">
 		<div class="post-buttons-top post-buttons">
 			<!-- IF not S_BOT -->
 			{postrow.ARROWS}
@@ -43,7 +44,7 @@ function open_postreview(ref)
 </tr>
 <tr>
 	<!-- <td class="row-post-author"></td> -->
-	<td class="row-post" width="100%" height="100%" colspan="2">
+	<td class="row-post" height="100%" colspan="2">
 		&nbsp;
 		<div class="post-text">{postrow.MESSAGE}<br />{postrow.ATTACHMENTS}</div>
 		</div>
@@ -69,7 +70,7 @@ function open_postreview(ref)
 	</td>
 </tr>
 <tr>
-	<td class="row-post-buttons post-buttons" width="100%" colspan="2">
+	<td class="row-post-buttons post-buttons" colspan="2">
 		<div style="float:right;">{postrow.POSTER_ONLINE_STATUS_IMG}&nbsp;{postrow.PROFILE_IMG}&nbsp;{postrow.PM_IMG}&nbsp;{postrow.EMAIL_IMG}&nbsp;</div>
 		<span class="gensmall">&nbsp;{postrow.POSTER_NAME}&nbsp;[&nbsp;{postrow.POST_DATE}&nbsp;]</span>
 	</td>
@@ -78,7 +79,7 @@ function open_postreview(ref)
 <!-- IF not S_BOT -->
 <!-- BEGIN switch_viewtopic_banner -->
 <tr>
-	<td align="center" class="row-post-author">
+	<td align="center" class="row-post-author" width="140" style="width: 10px;">
 		<span class="post-name"><a href="#" style="font-weight:bold;text-decoration:none;">{L_SPONSORS_LINKS}</a></span><br />
 		<img src="images/ranks/rank_sponsor.png" alt="" /><br />
 		<img src="images/avatars/default_avatars/sponsor.gif" alt="" />
@@ -96,7 +97,7 @@ function open_postreview(ref)
 <tr><th colspan="2">{L_COMMENTS}</th></tr>
 <!-- END switch_first_post -->
 <!-- END postrow -->
-<!-- IF not S_BOT and VIEWTOPIC_BANNER_BOTTOM -->
+<!-- IF VIEWTOPIC_BANNER_BOTTOM -->
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
 <!-- ENDIF -->
 <tr>
@@ -151,19 +152,18 @@ if(GetCookie(tmp) == '2')
 		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}"/></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}"/></a></span>&nbsp;
-		<!-- BEGIN switch_thanks -->
-		<span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>&nbsp;
-		<!-- END switch_thanks -->
+		<!-- IF S_THANKS --><span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>&nbsp;<!-- ENDIF -->
 		<!-- ELSE -->
 		&nbsp;
 		<!-- ENDIF -->
 	</td>
 	<td align="right" valign="top">
 		<span class="gen">{PAGE_NUMBER}</span><br />
-		<span class="pagination">{PAGINATION}</span>
-		<!-- BEGIN extended_pagination -->
-		<br /><form method="post" action="{U_VIEW_TOPIC}" style="display:inline;"><span class="gen">{L_GO_TO_PAGE_NUMBER}&nbsp;<input type="text" name="page_number" value="" size="3" class="post">&nbsp;&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" /></span></form>
-		<!-- END extended_pagination -->
+		<span class="pagination">{PAGINATION}</span><br />
+		<!-- IF S_EXTENDED_PAGINATION -->
+		<div style="margin-top: 3px;"><form method="post" action="{U_VIEW_TOPIC}"><span class="gen"><b>{L_GO_TO_PAGE_NUMBER}</b>&nbsp;<input type="text" name="page_number" value="" size="3" class="post" />&nbsp;&nbsp;<input type="submit" name="submit" value="{L_GO}" class="mainoption" /></span></form></div>
+		<!-- ENDIF -->
+		<!-- IF not S_BOT --><div style="margin-top: 3px;"><form action="{FULL_SITE_PATH}{U_SEARCH}" method="post"><input name="search_keywords" type="text" class="post search" style="width: 160px;" value="{L_SEARCH_THIS_TOPIC}" onclick="if(this.value=='{L_SEARCH_THIS_TOPIC}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH_THIS_TOPIC}';" /><input type="hidden" name="search_where" value="{FORUM_ID_FULL}" /><input type="hidden" name="search_where_topic" value="{TOPIC_ID_FULL}" />&nbsp;<input type="submit" class="mainoption" value="{L_SEARCH}" /></form></div><!-- ENDIF -->
 	</td>
 </tr>
 </table>

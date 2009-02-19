@@ -2992,16 +2992,16 @@
 							$p_header['extra_len']);
 
 		// ----- Write the first 148 bytes of the header in the archive
-		fputs($this->zip_fd, $v_binary_data, 30);
+		fwrite($this->zip_fd, $v_binary_data, 30);
 
 		// ----- Write the variable fields
 		if (strlen($p_header['stored_filename']) != 0)
 		{
-			fputs($this->zip_fd, $p_header['stored_filename'], strlen($p_header['stored_filename']));
+			fwrite($this->zip_fd, $p_header['stored_filename'], strlen($p_header['stored_filename']));
 		}
 		if ($p_header['extra_len'] != 0)
 		{
-			fputs($this->zip_fd, $p_header['extra'], $p_header['extra_len']);
+			fwrite($this->zip_fd, $p_header['extra'], $p_header['extra_len']);
 		}
 
 		// ----- Return
@@ -3046,20 +3046,20 @@
 							$p_header['external'], $p_header['offset']);
 
 		// ----- Write the 42 bytes of the header in the zip file
-		fputs($this->zip_fd, $v_binary_data, 46);
+		fwrite($this->zip_fd, $v_binary_data, 46);
 
 		// ----- Write the variable fields
 		if (strlen($p_header['stored_filename']) != 0)
 		{
-			fputs($this->zip_fd, $p_header['stored_filename'], strlen($p_header['stored_filename']));
+			fwrite($this->zip_fd, $p_header['stored_filename'], strlen($p_header['stored_filename']));
 		}
 		if ($p_header['extra_len'] != 0)
 		{
-			fputs($this->zip_fd, $p_header['extra'], $p_header['extra_len']);
+			fwrite($this->zip_fd, $p_header['extra'], $p_header['extra_len']);
 		}
 		if ($p_header['comment_len'] != 0)
 		{
-			fputs($this->zip_fd, $p_header['comment'], $p_header['comment_len']);
+			fwrite($this->zip_fd, $p_header['comment'], $p_header['comment_len']);
 		}
 
 		// ----- Return
@@ -3085,12 +3085,12 @@
 							$p_offset, strlen($p_comment));
 
 		// ----- Write the 22 bytes of the header in the zip file
-		fputs($this->zip_fd, $v_binary_data, 22);
+		fwrite($this->zip_fd, $v_binary_data, 22);
 
 		// ----- Write the variable fields
 		if (strlen($p_comment) != 0)
 		{
-			fputs($this->zip_fd, $p_comment, strlen($p_comment));
+			fwrite($this->zip_fd, $p_comment, strlen($p_comment));
 		}
 
 		// ----- Return

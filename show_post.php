@@ -15,9 +15,9 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -152,7 +152,7 @@ if ($download)
 		$replace = array('(', ')', ':', '[', ']', '{', '}',);
 		$message =  preg_replace($search, $replace, $message);
 
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 			$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
@@ -336,7 +336,7 @@ if ($row = $db->sql_fetchrow($result))
 		// Note! The order used for parsing the message _is_ important, moving things around could break any output
 
 		// Replace naughty words
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			if ($user_sig != '')
 			{
@@ -404,15 +404,20 @@ if ($row = $db->sql_fetchrow($result))
 			}
 		}
 
-		$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $row['post_id']) . '#p' . $row['post_id'];
+		if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+		{
+			$mini_post_url = str_replace ('--', '-', make_url_friendly($row['post_subject']) . '-vp' . $row['post_id'] . '.html#p' . $row['post_id']);
+		}
+		else
+		{
+			$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $row['post_id']) . '#p' . $row['post_id'];
+		}
 
 		// Again this will be handled by the templating code at some point
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('postrow', array(
 			'DOWNLOAD_POST' => append_sid(VIEWTOPIC_MG . '?download=' . $row['post_id'] . '&amp;' . POST_TOPIC_URL . '=' .$topic_id),
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'POSTER_NAME' => $poster,
 			// Mighty Gorgon - Multiple Ranks - BEGIN

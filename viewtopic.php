@@ -29,7 +29,7 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
@@ -437,7 +437,7 @@ if ($download)
 		$replace = array('(', ')', ':', '[', ']', '{', '}',);
 		$message = preg_replace($search, $replace, $message);
 
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 			$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
@@ -469,7 +469,7 @@ if ($download)
 }
 
 //Begin Lo-Fi Mod
-if ($lofi)
+if (!empty($lofi))
 {
 	$lang['Reply_with_quote'] = $lang['quote_lofi'] ;
 	$lang['Edit_delete_post'] = $lang['edit_lofi'];
@@ -487,9 +487,11 @@ if ($lofi)
 //End Lo-Fi Mod
 
 // Force Topic Read - BEGIN
-$active ='';
+$active = 0;
+$install_time = time();
+$bypass = true;
 
-if ($board_config['disable_ftr'] == false)
+if (!$board_config['disable_ftr'])
 {
 	$viewed_mode = $_GET['mode'];
 	$check_viewed = GetUsersView($userdata['user_id']);
@@ -502,58 +504,55 @@ if ($board_config['disable_ftr'] == false)
 	$active = $row['active'];
 	$effected = $row['effected'];
 	$ins_date = $row['install_date'];
-}
-if ($active && (strlen($ins_date) != 10))
-{
-	$q = "UPDATE " . FORCE_READ_TABLE . " SET install_date = '" . $install_time . "'";
-	$r = $db -> sql_query($q);
-}
 
-if (strlen($ins_date) != 10)
-{
-	$ins_date = $install_time;
-}
-
-if (($viewed_mode == 'reading') || ($check_viewed != 'false'))
-{
-	$bypass = true;
-}
-
-if (!$active)
-{
-	$bypass = true;
-}
-elseif ($active && ($check_viewed == 'false') && !$bypass)
-{
-	if ($viewed_mode == 'read_this')
+	if ($active && (strlen($ins_date) != 10))
 	{
-		$q = "SELECT topic_number, message FROM " . FORCE_READ_TABLE;
+		$q = "UPDATE " . FORCE_READ_TABLE . " SET install_date = '" . $install_time . "'";
 		$r = $db -> sql_query($q);
-		$row = $db -> sql_fetchrow($r);
-		$db->sql_freeresult($r);
-		$ftr_topic = $row['topic_number'];
-		$msg = $row['message'];
-		InsertReadTopic($userdata['user_id']);
-		redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append_red . '&mode=reading'), true);
 	}
-	else
+
+	if (isset($ins_date) && (strlen($ins_date) != 10))
 	{
-		if ((($check_viewed == 'false') && ($effected <> 1) && ($ins_date <= $userdata['user_regdate'])) || (($check_viewed == 'false') && ($effected == '1')))
+		$ins_date = $install_time;
+	}
+
+	if (($viewed_mode == 'reading') || ($check_viewed != 'false'))
+	{
+		$bypass = true;
+	}
+
+	if ($active && ($check_viewed == 'false') && !$bypass)
+	{
+		if ($viewed_mode == 'read_this')
 		{
-			include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-			$q = "SELECT * FROM " . FORCE_READ_TABLE;
+			$q = "SELECT topic_number, message FROM " . FORCE_READ_TABLE;
 			$r = $db -> sql_query($q);
 			$row = $db -> sql_fetchrow($r);
 			$db->sql_freeresult($r);
 			$ftr_topic = $row['topic_number'];
 			$msg = $row['message'];
-			$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append . '&amp;mode=read_this') . '">', '</a>');
-			message_die(GENERAL_ERROR, $msg . $lng_msg, 'Error');
-			include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			InsertReadTopic($userdata['user_id']);
+			redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append_red . '&mode=reading'), true);
 		}
 		else
 		{
-			$bypass = true;
+			if ((($check_viewed == 'false') && ($effected <> 1) && ($ins_date <= $userdata['user_regdate'])) || (($check_viewed == 'false') && ($effected == '1')))
+			{
+				include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+				$q = "SELECT * FROM " . FORCE_READ_TABLE;
+				$r = $db -> sql_query($q);
+				$row = $db -> sql_fetchrow($r);
+				$db->sql_freeresult($r);
+				$ftr_topic = $row['topic_number'];
+				$msg = $row['message'];
+				$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append . '&amp;mode=read_this') . '">', '</a>');
+				message_die(GENERAL_ERROR, $msg . $lng_msg, 'Error');
+				include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			}
+			else
+			{
+				$bypass = true;
+			}
 		}
 	}
 }
@@ -1065,7 +1064,7 @@ if ($bypass)
 	// End Autolinks For phpBB Mod
 
 	// Censor topic title
-	if (count($orig_word))
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 	}
@@ -1147,7 +1146,7 @@ if ($bypass)
 	$thank_alt = $lang['thanks_alt'];
 	if ($show_thanks_button && ($postrow[0]['topic_poster'] != $userdata['user_id']))
 	{
-		$template->assign_block_vars('switch_thanks', array());
+		$template->assign_var('S_THANKS', true);
 	}
 	// End Thanks Mod
 
@@ -1418,13 +1417,13 @@ if ($bypass)
 	}
 //<!-- END Unread Post Information to Database Mod -->
 
-	// If we've got a hightlight set pass it on to pagination,
-	// I get annoyed when I lose my highlight after the first page.
 	if ($total_replies > (10 * $board_config['posts_per_page']))
 	{
-		$template->assign_block_vars('extended_pagination', array());
+		$template->assign_var('S_EXTENDED_PAGINATION', true);
 	}
 
+	// If we've got a hightlight set pass it on to pagination,
+	// I get annoyed when I lose my highlight after the first page.
 	$pagination = ($highlight != '') ? generate_pagination(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . $highlight, $total_replies, $board_config['posts_per_page'], $start) : generate_pagination(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order, $total_replies, $board_config['posts_per_page'], $start);
 	$current_page = get_page($total_replies, $board_config['posts_per_page'], $start);
 	$watch_topic_url = 'topic_view_users.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append;
@@ -1440,12 +1439,11 @@ if ($bypass)
 		$rules_bbcode = $bbcode->parse($rules_bbcode);
 		//BBcode Parsing for Olympus rules Start
 
-		$template->assign_block_vars('switch_forum_rules', array());
-		// display a title on top of the box?
-		if ($forum_topic_data['rules_display_title'])
-		{
-			$template->assign_block_vars('switch_forum_rules.switch_display_title', array());
-		}
+		$template->assign_vars(array(
+			'S_FORUM_RULES' => true,
+			'S_FORUM_RULES_TITLE' => ($forum_topic_data['rules_display_title']) ? true : false
+			)
+		);
 	}
 
 	$topic_viewed_link = '';
@@ -1477,9 +1475,11 @@ if ($bypass)
 	$topic_title = htmlspecialchars_clean($topic_title);
 	$template->assign_vars(array(
 		'FORUM_ID' => $forum_id,
+		'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
 		'FORUM_NAME' => $forum_name,
 		'FORUM_RULES' => $rules_bbcode,
 		'TOPIC_ID' => $topic_id,
+		'TOPIC_ID_FULL' => POST_TOPIC_URL . $topic_id,
 		'TOPIC_TITLE' => $topic_title,
 		'PAGINATION' => $pagination,
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / intval($board_config['posts_per_page'])) + 1), ceil($total_replies / intval($board_config['posts_per_page']))),
@@ -1569,12 +1569,13 @@ if ($bypass)
 		'S_AUTH_LIST' => $s_auth_can,
 		'S_TOPIC_ADMIN' => $topic_mod,
 		'IS_KB_MODE' => ($kb_mode == true) ? true : false,
-		'S_KB_MODE' => $s_kb_mode,
-		'S_KB_MODE_IMG' => $s_kb_mode_img,
-		'S_WATCH_TOPIC' => $s_watching_topic,
-		'S_WATCH_TOPIC_IMG' => $s_watching_topic_img,
+		'S_KB_MODE' => !empty($s_kb_mode) ? $s_kb_mode : '',
+		'S_KB_MODE_IMG' => !empty($s_kb_mode_img) ? $s_kb_mode_img : '',
+		'S_WATCH_TOPIC' => !empty($s_watching_topic) ? $s_watching_topic : '',
+		'S_WATCH_TOPIC_IMG' => !empty($s_watching_topic_img) ? $s_watching_topic_img : '',
 
 		'U_VIEW_TOPIC' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . (!empty($start) ? ('&amp;start=' . $start) : '') . (!empty($post_days) ? ('&amp;postdays=' . $post_days) : '') . (!empty($post_order) ? ('&amp;postorder=' . $post_order) : '') . (!empty($highlight) ? ('&amp;highlight=' . $highlight) : '') . (($kb_mode == true) ? '&amp;kb=on' : '')),
+		'U_VIEW_TOPIC_BASE' => append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		'U_MARK_ALWAYS_READ' => $mark_always_read,
 		'S_MARK_AR' => $s_mark_ar,
@@ -1682,7 +1683,7 @@ if ($bypass)
 					$vote_graphic_img = $images['voting_graphic'][$vote_graphic];
 					$vote_graphic = ($vote_graphic < $vote_graphic_max - 1) ? $vote_graphic + 1 : 0;
 
-					if (count($orig_word))
+					if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 					{
 						$vote_info[$i]['vote_option_text'] = preg_replace($orig_word, $replacement_word, $vote_info[$i]['vote_option_text']);
 					}
@@ -1716,7 +1717,7 @@ if ($bypass)
 
 				for($i = 0; $i < $vote_options; $i++)
 				{
-					if (count($orig_word))
+					if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 					{
 						$vote_info[$i]['vote_option_text'] = preg_replace($orig_word, $replacement_word, $vote_info[$i]['vote_option_text']);
 					}
@@ -1737,7 +1738,7 @@ if ($bypass)
 				$s_hidden_fields = '<input type="hidden" name="topic_id" value="' . $topic_id . '" /><input type="hidden" name="mode" value="vote" />';
 			}
 
-			if (count($orig_word))
+			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$vote_title = preg_replace($orig_word, $replacement_word, $vote_title);
 			}
@@ -1822,7 +1823,7 @@ if ($bypass)
 
 		$author_name = colorize_username($author[0]['user_id'], $author[0]['username'], $author[0]['user_color'], $author[0]['user_active']);
 
-		$thanks2 .= $lang['thanks_to'] . ' ' . $author_name . $lang['thanks_end'];
+		$thanks2 = $lang['thanks_to'] . ' ' . $author_name . $lang['thanks_end'];
 	}
 	// End Thanks Mod
 
@@ -1907,7 +1908,7 @@ if ($bypass)
 		if(!$userdata['upi2db_access'])
 		{
 //<!-- END Unread Post Information to Database Mod -->
-			if ($userdata['session_logged_in'] && $postrow[$i]['post_time'] > $userdata['user_lastvisit'] && $postrow[$i]['post_time'] > $topic_last_read)
+			if ($userdata['session_logged_in'] && ($postrow[$i]['post_time'] > $userdata['user_lastvisit']) && ($postrow[$i]['post_time'] > $topic_last_read))
 			{
 				$mini_post_img = $images['icon_minipost_new'];
 				$mini_post_alt = $lang['New_post'];
@@ -1925,14 +1926,15 @@ if ($bypass)
 		}
 //<!-- END Unread Post Information to Database Mod -->
 
-		//$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $postrow[$i]['post_id']) . '#p' . $postrow[$i]['post_id'];
 		if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 		{
 			$mini_post_url = str_replace ('--', '-', make_url_friendly($postrow[$i]['post_subject']) . '-vp' . $postrow[$i]['post_id'] . '.html#p' . $postrow[$i]['post_id']);
 		}
 		else
 		{
-			$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']) . '#p' . $postrow[$i]['post_id'];
+			// Mighty Gorgon: this is the full URL in case we would like to use it instead of the short form permalink... maybe for SEO purpose it is better using the short form
+			//$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']) . '#p' . $postrow[$i]['post_id'];
+			$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $postrow[$i]['post_id']) . '#p' . $postrow[$i]['post_id'];
 		}
 
 		// Mighty Gorgon - Multiple Ranks - BEGIN
@@ -2344,6 +2346,7 @@ if ($bypass)
 		if ($board_config['enable_quick_quote'] == true)
 		{
 			$look_up_array = array(
+				"\"",
 				"<",
 				">",
 				"\n",
@@ -2351,6 +2354,7 @@ if ($bypass)
 			);
 
 			$replacement_array = array(
+				"\\\"",
 				"&lt_mg;",
 				"&gt_mg;",
 				"\\n",
@@ -2371,7 +2375,6 @@ if ($bypass)
 			{
 				$plain_message = (!empty($plain_message)) ? preg_replace($orig_word, $replacement_word, $plain_message) : '';
 			}
-			$plain_message = addslashes($plain_message);
 			$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
 		}
 		// Mighty Gorgon - Quick Quote - END
@@ -2418,7 +2421,7 @@ if ($bypass)
 		$user_sig = ($postrow[$i]['enable_sig'] && (trim($postrow[$i]['user_sig']) != '') && $board_config['allow_sig']) ? $postrow[$i]['user_sig'] : '';
 
 		// Replace Naughty Words - BEGIN
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 			//$poster = (!empty($poster)) ? preg_replace($orig_word, $replacement_word, $poster) : '';
@@ -2442,7 +2445,7 @@ if ($bypass)
 			$bbcode->allow_bbcode = $board_config['allow_bbcode'] && $userdata['user_allowbbcode'];
 			//$bbcode->allow_smilies = true;
 			//$bbcode->allow_html = true;
-			$bbcode->allow_smilies = $board_config['allow_smilies'] && !$lofi;
+			$bbcode->allow_smilies = $board_config['allow_smilies'] && empty($lofi);
 			$bbcode->allow_html = $board_config['allow_html'] && $userdata['user_allowhtml'];
 			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
 			$user_sig = $bbcode->parse($user_sig);
@@ -2456,7 +2459,7 @@ if ($bypass)
 
 		$bbcode->allow_html = $board_config['allow_html'] && $userdata['user_allowhtml'] && $postrow[$i]['enable_html'];
 		$bbcode->allow_bbcode = $board_config['allow_bbcode'] && $userdata['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
-		$bbcode->allow_smilies = $board_config['allow_smilies'] && !$lofi && $postrow[$i]['enable_smilies'];
+		$bbcode->allow_smilies = $board_config['allow_smilies'] && empty($lofi) && $postrow[$i]['enable_smilies'];
 
 		if(preg_match('/\[code/i', $message))
 		{
@@ -2468,7 +2471,7 @@ if ($bypass)
 			$message_compiled = false;
 		}
 
-		if ($lofi)
+		if (!empty($lofi))
 		{
 			$message = $bbcode->parse($message);
 		}
@@ -2514,7 +2517,7 @@ if ($bypass)
 				$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
 			}
 			//$message = kb_word_wrap_pass($message);
-			if (count($orig_word) && !$postrow[$i]['user_allowswearywords'])
+			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$message = preg_replace($orig_word, $replacement_word, $message);
 			}
@@ -2631,21 +2634,19 @@ if ($bypass)
 		// Mighty Gorgon - Feedbacks - END
 
 		// Again this will be handled by the templating code at some point
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('postrow', array(
 			// Mighty Gorgon - Feedbacks - BEGIN
 			'FEEDBACKS' => $feedbacks_received . $feedback_add,
 			// Mighty Gorgon - Feedbacks - END
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'POSTER_NAME' => $poster,
 			'POSTER_NAME_QQ' => $poster_qq,
 			'POSTER_NAME_QR' => str_replace(array(' ', '?', '&'), array('%20', '%3F', '%26'), $poster_qq),
 			//'POSTER_NAME_QR' => htmlspecialchars($poster_qq),
 			'POSTER_AGE' => $poster_age,
-			'GEB_BILD' => $gebbild,
+			'GEB_BILD' => !empty($gebbild) ? $gebbild : '',
 			'USER_RANK_01' => $user_rank_01,
 			'USER_RANK_01_IMG' => $user_rank_01_img,
 			'USER_RANK_02' => $user_rank_02,
@@ -2740,7 +2741,7 @@ if ($bypass)
 			'SINGLE_POST' => $single_post,
 			'POSTER_NO' => $poster_number,
 			//'POSTER_NO' => $postrow[$i]['poster_id'],
-			'USER_WARNINGS' => $user_warnings,
+			'USER_WARNINGS' => !empty($user_warnings) ? $user_warnings : '',
 			'CARD_IMG' => $card_img,
 			'CARD_HIDDEN_FIELDS' => $card_hidden,
 			'CARD_EXTRA_SPACE' => ($r_card_img || $y_card_img || $g_card_img || $b_card_img) ? ' ' : '',
@@ -2748,7 +2749,7 @@ if ($bypass)
 			'U_MINI_POST' => $mini_post_url,
 //<!-- BEGIN Unread Post Information to Database Mod -->
 			'UNREAD_IMG' => $mark_topic_unread,
-			'UNREAD_COLOR' => $unread_color,
+			'UNREAD_COLOR' => !empty($unread_color) ? $unread_color : '',
 //<!-- END Unread Post Information to Database Mod -->
 			'U_G_CARD' => $g_card_img,
 			'U_Y_CARD' => $y_card_img,

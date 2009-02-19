@@ -828,7 +828,7 @@ $lang = array_merge($lang, array(
 	'Group_count_update' => 'Add/Update new users',
 	'Group_count_delete' => 'Delete/Update old users',
 	'User_allow_ag' => 'Activate Auto Group',
-	'group_count_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be added to this usergroup<br/> This only applies if "' . $lang['Group_count_enable'] . '" are enabled',
+	'group_count_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be added to this usergroup<br/> This only applies if "Users automatically added when posting" are enabled',
 
 // Start add - Bin Mod
 	'Bin_forum' => 'Bin forum',
@@ -1360,12 +1360,12 @@ $lang = array_merge($lang, array(
 /* lang_postcount.php - END */
 
 /* lang_megamail.php - BEGIN */
-	'Megamail_Explain' => 'This feature allows you to send private messages or email to either all of your users, or all users in a specific group. To do this, an email will be sent out to the administrative email address supplied, with a blind carbon copy sent to all recipients.<br />Emails will be sent in several batches: this should circumvent timeout and server-load issues. The status of the mass mail sending will be saved in the db. You can close the window when you want to pause mass-mail-sending (the current batch will be sent out). You can simply continue later from where you left off.<br /><b>If HTML emails are enabled, then you should write emails using HTML code, inserting &lt;br /&gt; for a line break.</b>',
+	'Megamail_Explain' => 'This feature allows you to send private messages or email to either all of your users, or all users in a specific group. To do this, an email will be sent out to the administrative email address supplied, with a blind carbon copy sent to all recipients.<br />Emails will be sent in several batches: this should circumvent timeout and server-load issues. The status of the mass mail sending will be saved in the db. You can close the window when you want to pause mass-mail-sending (the current batch will be sent out). You can simply continue later from where you left off.<br /><b>If HTML emails are enabled, then you should write emails using HTML code, inserting &lt;br /&gt; for a line break.</b><br /><b>If you chose to send FULL HTML emails, then remember that no template or css is used, so you have to insert a full html code, including HEAD and BODY tags.</b><br /><b>Please remember that Mass PM supports only BBCode, if you write a PM in HTML then it will not be correctly shown.</b>',
 	'megamail_inactive_users' => 'Non visiting users in the last {DAYS} days',
 	'megamail_header' => 'Your Email-Sessions',
 	'megamail_id' => 'Mail-ID',
 	'megamail_batchstart' => 'Processed',
-	'megamail_batchsize' => 'Messages per Batch',
+	'megamail_batchsize' => 'Batch',
 	'megamail_batchwait' => 'Pause',
 	'megamail_created_message' => 'The Mass Mail has been saved to the database.<br /><br/> To start sending %sclick here%s or wait until the Meta-Refresh takes you there...',
 	'megamail_send_message' => 'The Current Batch (%s - %s) has been sent .<br /><br/> To continue sending %sclick here%s or wait until the Meta-Refresh takes you there...',
@@ -1373,6 +1373,9 @@ $lang = array_merge($lang, array(
 	'megamail_proceed' => '%sProceed now%s',
 	'megamail_done' => 'DONE',
 	'megamail_none' => 'No records were found.',
+	'megamail_delete_confirm' => 'Do you really want to delete this email?',
+	'megamail_deleted' => 'Email deleted successfully',
+	'megamail_click_return' => 'Click %sHere%s to return to Mass Emails / PM',
 /* lang_megamail.php - END */
 
 /* lang_admin_voting.php - BEGIN */
@@ -1786,7 +1789,7 @@ $lang = array_merge($lang, array(
 
 // Backup
 	'ACP_BACKUP' => 'Backup Database',
-	'ACP_BACKUP_EXPLAIN' => 'Backup all your site related data. You can store the resulting archive in your <samp>backup/</samp> folder or download it directly. Your server configuration may also allow you to save the file in compressed gzip format.',
+	'ACP_BACKUP_EXPLAIN' => 'Backup all your site related data. Backup will be stored <b><samp>backup/</samp></b> (make sure this folder is <b>writable</b>) folder so you can download or restore it from the <b>Restore</b> page. Your server configuration may also allow you to save the file in compressed gzip format.<br /><br /><span class="text_red">Backup will be performed on several steps to avoid timeouts: the script should be able to perform the full process all automatically, so you have just to wait it to complete the automated task.</span><br /><br />',
 
 	'BACKUP_OPTIONS' => 'Backup Options',
 	'BACKUP_TYPE' => 'Backup type',
@@ -1801,16 +1804,27 @@ $lang = array_merge($lang, array(
 	'FILE_TYPE' => 'File type',
 	'FULL_BACKUP' => 'Full',
 
-	'Backup_Success' => 'The backup file has been created successfully.',
-	'Backup_Deleted' => 'The backup file has been deleted successfully.',
+	'BACKUP_TYPE_COMPLETE' => 'Complete',
+	'BACKUP_TYPE_EXTENDED' => 'Extended',
+	'BACKUP_TYPE_COMPACT' => 'Compact Line Breaks',
+
+	'BACKUP_SUCCESS' => 'The backup file has been created successfully.',
+	'BACKUP_DELETED' => 'The backup file has been deleted successfully.',
 
 	'TABLE_SELECT' => 'Table select',
+
+	'BACKUP_IN_PROGRESS' => 'Backup in progress...',
+	'BACKUP_IN_PROGRESS_TABLE' => 'Backing up table: <b>%s</b>',
+	'BACKUP_IN_PROGRESS_REDIRECT' => 'You will be automatically redirected to next step in few seconds',
+	'BACKUP_IN_PROGRESS_REDIRECT_CLICK' => 'If you are not automatically redirected within few seconds you may click %sHere%s',
+	'BACKUP_OPTIONS_RETURN' => 'Click %sHere%s to return to Backup Management',
+
 // Errors
 	'Table_Select_Error' => 'You must select at least one table.',
 
 // Restore
 	'ACP_RESTORE' => 'Restore Database',
-	'ACP_RESTORE_EXPLAIN' => 'Restore of all your database tables from a saved backup file. If your server supports it you can use a gzip or bzip2 compressed text file and it will be automatically decompressed. <strong>WARNING</strong> This will overwrite any existing data. The restore may take a long time to process, please <b>do not</b> move from this page until it is complete. Backups are stored in the <samp>backup/</samp> folder, and are assumed to be generated by this site backup functions. Restoring backups that were not created by the built in system may not work properly.',
+	'ACP_RESTORE_EXPLAIN' => 'Restore of all your database tables from a saved backup file. If your server supports it you can use a gzip or bzip2 compressed text file and it will be automatically decompressed. <strong>WARNING</strong> This will overwrite any existing data. The restore may take a long time to process, please <b>do not</b> move from this page until it is complete. Backups are stored in the <b><samp>backup/</samp></b> folder, and are assumed to be generated by this site backup functions. Restoring backups that were not created by the built in system may not work properly.<br /><br /><strong class="text_red">Please note that if the DB to be restored is too big this script may time out and you could not be able to use the site again. In case this will happen, you could try to download the backup from FTP and then restore it using a different method such as phpMyAdmin or MySQLDumper.</strong><br /><br />',
 	'RESTORE_OPTIONS' => 'Restore Options',
 
 	'Restore_Success' => 'The database has been successfully restored.<br />Your site should be back to the state it was in when the backup was made.',
@@ -1923,6 +1937,11 @@ $lang = array_merge($lang, array(
 	'ERR_AD_ADD' => 'Please fill all required fields',
 /* ADS - END */
 
+	'FULL_HTML' => 'Full HTML',
+	'ACTIONS' => 'Actions',
+	'EDIT' => 'Edit',
+	'DELETE' => 'Delete',
+
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'MG_Configuration' => 'Icy Phoenix Settings',
 	'MG_Configuration_Explain' => '<em><b>Advanced Icy Phoenix Settings</b></em>',
@@ -1945,6 +1964,10 @@ $lang = array_merge($lang, array(
 	'MG_SW_Empty_Precompiled_Posts_Explain' => 'Empty all precompiled posts.',
 	'MG_SW_Empty_Precompiled_Posts_Success' => 'Precompiled posts emptied correctly.',
 	'MG_SW_Empty_Precompiled_Posts_Fail' => 'Errors in emptying precompiled posts.',
+	'MG_SW_Empty_Precompiled_Posts_InProgress' => 'Emptying cache folders in progress...',
+	'MG_SW_Empty_Precompiled_Posts_InProgress_Redirect' => 'You will be automatically redirected to next step in three seconds',
+	'MG_SW_Empty_Precompiled_Posts_InProgress_Redirect_Click' => 'If you are not automatically redirected within three seconds you may click %sHere%s',
+	'MG_SW_Empty_Precompiled_Posts_Redirect_Click' => 'Click %sHere%s to return to Cache Management',
 
 	'MG_FNF_Header' => 'Quick Settings',
 	'MG_FNF_Header_Explain' => '<b>Configuration options for your site.</b><br /> These configuration packages have been created to easily allow users to mass change their settings without having to modify each option one by one in the configuration panel, and may be used as a starting point for future customizations: For example you can choose "Fast And Furious" and then modify only the options of this package that you don\'t want.<br /><br /><span class="text_red"><b>Please note! that once you have applied one of these set of options you cannot automatically restore your old settings, and you have to set them up again manually.</b></span>',

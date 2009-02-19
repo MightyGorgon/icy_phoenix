@@ -113,7 +113,7 @@ switch ($mode)
 			mx_message_die(GENERAL_ERROR, "Could not create type", '', __LINE__, __FILE__, $sql);
 		}
 
-		$message = $lang['Type_created'] . '<br /><br />' . sprintf($lang['Click_return_type_manager'], '<a href="' . append_sid("admin_kb_types." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+		$message = $lang['Type_created'] . '<br /><br />' . sprintf($lang['Click_return_type_manager'], '<a href="' . append_sid('admin_kb_types.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		mx_message_die(GENERAL_MESSAGE, $message);
 		break;
@@ -144,14 +144,14 @@ switch ($mode)
 				'L_CAT_SETTINGS' => $lang['Cat_settings'],
 				'L_CREATE' => $lang['Edit'],
 
-				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=edit'),
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_kb_types.' . PHP_EXT . '?mode=edit'),
 				'CAT_NAME' => $type,
 
 				'S_HIDDEN' => '<input type="hidden" name="typeid" value="' . $type_id . '">'
 				)
 			);
 		}
-		else if ($_POST['submit'])
+		elseif ($_POST['submit'])
 		{
 			$type_id = intval($_POST['typeid']);
 			$type_name = trim($_POST['catname']);
@@ -169,7 +169,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not update type", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Type_edited'] . '<br /><br />' . sprintf($lang['Click_return_type_manager'], '<a href="' . append_sid("admin_kb_types." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['Type_edited'] . '<br /><br />' . sprintf($lang['Click_return_type_manager'], '<a href="' . append_sid('admin_kb_types.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			mx_message_die(GENERAL_MESSAGE, $message);
 		}
@@ -209,13 +209,13 @@ switch ($mode)
 
 				'S_HIDDEN_FIELDS' => '<input type="hidden" name="typeid" value="' . $type_id . '">',
 				'S_SELECT_TO' => get_list_kb($type_id, 0),
-				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=delete'),
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_kb_types.' . PHP_EXT . '?mode=delete'),
 
 				'CAT_NAME' => $type_name
 				)
 			);
 		}
-		else if ($_POST['submit'])
+		elseif ($_POST['submit'])
 		{
 			$new_type = $_POST['move_id'];
 			$old_type = $_POST['typeid'];
@@ -236,7 +236,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not delete type", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Type_deleted'] . '<br /><br />' . sprintf($lang['Click_return_type_manager'], '<a href="' . append_sid("admin_kb_types." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['Type_deleted'] . '<br /><br />' . sprintf($lang['Click_return_type_manager'], '<a href="' . append_sid('admin_kb_types.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			mx_message_die(GENERAL_MESSAGE, $message);
 		}
@@ -257,12 +257,10 @@ switch ($mode)
 				'L_TYPE' => $lang['Article_type'],
 				'L_ACTION' => $lang['Art_action'],
 
-				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=create'))
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_kb_types.' . PHP_EXT . '?mode=create'))
 			);
 		// get categories
-		$sql = "SELECT *
-       		FROM " . KB_TYPES_TABLE;
-
+		$sql = "SELECT * FROM " . KB_TYPES_TABLE;
 		if (!($cat_result = $db->sql_query($sql)))
 		{
 			mx_message_die(GENERAL_ERROR, "Could not obtain types", '', __LINE__, __FILE__, $sql);
@@ -273,25 +271,23 @@ switch ($mode)
 			$type_id = $type['id'];
 			$type_name = $type['type'];
 
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=edit&amp;cat=' . $type_id);
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_types.' . PHP_EXT . '?mode=edit&amp;cat=' . $type_id);
 			//$edit = '<a href="' . $temp_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
 			$edit = '<a href="' . $temp_url . '">' . $lang['Edit'] . '</a>';
 
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_types.' . PHP_EXT . '?mode=delete&amp;cat=' . $type_id);
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_types.' . PHP_EXT . '?mode=delete&amp;cat=' . $type_id);
 			//$delete = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
 			$delete = '<a href="' . $temp_url . '">' . $lang['Delete'] . '</a>';
 
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('typerow', array(
-					'TYPE' => $type_name,
-					'U_EDIT' => $edit,
-					'U_DELETE' => $delete,
-					'ROW_COLOR' => '#' . $row_color,
-					'ROW_CLASS' => $row_class
-					)
-				);
+				'TYPE' => $type_name,
+				'U_EDIT' => $edit,
+				'U_DELETE' => $delete,
+				'ROW_CLASS' => $row_class
+				)
+			);
 			$i++;
 		}
 		break;

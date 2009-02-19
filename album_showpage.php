@@ -733,7 +733,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 					$commentrow[$i]['comment_text'] = autolink_transform($commentrow[$i]['comment_text'], $orig_autolink, $replacement_autolink);
 				}
 				//$commentrow[$i]['comment_text'] = kb_word_wrap_pass($commentrow[$i]['comment_text']);
-				$commentrow[$i]['comment_text'] = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $commentrow[$i]['comment_text']) : $commentrow[$i]['comment_text'];
+				$commentrow[$i]['comment_text'] = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $commentrow[$i]['comment_text']) : $commentrow[$i]['comment_text'];
 
 				$user_sig = ($board_config['allow_sig']) ? trim($commentrow[$i]['user_sig']) : '';
 				if($user_sig != '')

@@ -575,13 +575,16 @@ elseif ($group_id)
 							}
 						}
 
-						$sql_users = "UPDATE " . USERS_TABLE . "
-							SET user_color_group = '" . $group_id . "'
-							WHERE user_id IN ($sql_in)
-								AND user_color_group = '0'";
-						if (!$db->sql_query($sql_users))
+						if (!empty($group_color) && ($group_color != $board_config['active_users_color']))
 						{
-							message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
+							$sql_users = "UPDATE " . USERS_TABLE . "
+								SET user_color_group = '" . $group_id . "'
+								WHERE user_id IN ($sql_in)
+									AND user_color_group = '0'";
+							if (!$db->sql_query($sql_users))
+							{
+								message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
+							}
 						}
 
 						$sql_users = "UPDATE " . USERS_TABLE . "
@@ -1015,7 +1018,6 @@ elseif ($group_id)
 		'GROUP_DETAILS' => $group_details,
 		'GROUP_RANK' => $group_rank_image,
 		'GROUP_COLOR_STYLE' => ($group_color ? ' style="color:' . $group_color . ';font-weight:bold;"' : ' style="font-weight:bold;"'),
-		'ROW_COLOR' => '#' . $theme['td_color1'],
 		'ROW_CLASS' => $theme['td_class1'],
 		'USERNAME' => colorize_username($group_moderator['user_id'], $group_moderator['username'], $group_moderator['user_color'], $group_moderator['user_active']),
 		'FROM' => $user_info['from'],
@@ -1092,11 +1094,9 @@ elseif ($group_id)
 
 		if ($group_info['group_type'] != GROUP_HIDDEN || $is_group_member || $is_moderator)
 		{
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('memberrow', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'USER_ID' => $user_id,
 				'USERNAME' => colorize_username($group_members[$i]['user_id'], $group_members[$i]['username'], $group_members[$i]['user_color'], $group_members[$i]['user_active']),
@@ -1200,14 +1200,12 @@ elseif ($group_id)
 				$user_info = array();
 				$user_info = generate_user_info($modgroup_pending_list[$i], $board_config['default_dateformat'], $is_moderator);
 
-				$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$user_select = '<input type="checkbox" name="member[]" value="' . $user_id . '">';
 
 				$template->assign_block_vars('pending_members_row', array(
 					'ROW_CLASS' => $row_class,
-					'ROW_COLOR' => '#' . $row_color,
 					'USER_ID' => $user_id,
 					'USERNAME' => colorize_username($modgroup_pending_list[$i]['user_id'], $modgroup_pending_list[$i]['username'], $modgroup_pending_list[$i]['user_color'], $modgroup_pending_list[$i]['user_active']),
 					'FROM' => $user_info['from'],

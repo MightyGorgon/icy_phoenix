@@ -17,7 +17,7 @@ function checkSearch()
 <form name="search_block" method="post" action="{U_SEARCH}" onsubmit="return checkSearch()">
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr><td align="center"><br /><span class="gensmall">{L_SEARCH2}</span></td></tr>
-	<tr><td align="center"><input class="post" type="text" name="search_keywords" size="20" /></td></tr>
+	<tr><td align="center"><input class="post search" type="text" name="search_keywords" size="20" onclick="if(this.value=='{L_SEARCH}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH}';" value="{L_SEARCH}" /></td></tr>
 	<tr><td align="center"><span class="gensmall">{L_SEARCH_AT}</span></td></tr>
 	<tr>
 		<td align="center"><select class="post" name="search_engine">

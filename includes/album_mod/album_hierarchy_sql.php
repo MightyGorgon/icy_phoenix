@@ -1985,7 +1985,7 @@ function album_build_last_comments_info($cats)
 				$commentsrow[$i]['comment_text'] = autolink_transform($commentsrow[$i]['comment_text'], $orig_autolink, $replacement_autolink);
 			}
 			//$commentsrow[$i]['comment_text'] = kb_word_wrap_pass ($commentsrow[$i]['comment_text']);
-			$commentsrow[$i]['comment_text'] = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $commentsrow[$i]['comment_text']) : $commentsrow[$i]['comment_text'];
+			$commentsrow[$i]['comment_text'] = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $commentsrow[$i]['comment_text']) : $commentsrow[$i]['comment_text'];
 
 			$template->assign_block_vars('recent_comments_block.comment_row', array(
 				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])),

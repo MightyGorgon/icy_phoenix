@@ -393,7 +393,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 	{
 		case POSTING_MG:
 			// post-deletion, edits
-			if ($db_log_actions == true && $_post)
+			if ($db_log_actions && !empty($_post))
 			{
 				$sql = "SELECT poster_id FROM " . POSTS_TABLE . " WHERE post_id = '" . $_post . "'";
 				if(!$result = $db->sql_query($sql))

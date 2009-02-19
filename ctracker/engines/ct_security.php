@@ -458,35 +458,35 @@ function ct_debugger($checkstring, $checkmode)
 		$scriptname = ((substr($scriptname, 0, 1) == '/') ? '' : '/') . $scriptname;
 		$scriptname = str_replace('//', '/', $scriptname);
 
-		@fputs($debugstream, "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-		@fputs($debugstream, 'Script-Filename: ' . $scriptname . "\n----------------\n\n");
-		@fputs($debugstream, 'Attack-Time: ' . date('d.m.Y G:i a') . "\n------------\n\n");
-		@fputs($debugstream, 'Request-Method: ' . (strpos($checkmode, 'POST') !== false ? 'POST' : 'GET') . "\n\n");
-		@fputs($debugstream, $found_matches);
-		@fputs($debugstream, 'Possible solution:' . "\n------------------\n\n");
+		@fwrite($debugstream, "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+		@fwrite($debugstream, 'Script-Filename: ' . $scriptname . "\n----------------\n\n");
+		@fwrite($debugstream, 'Attack-Time: ' . date('d.m.Y G:i a') . "\n------------\n\n");
+		@fwrite($debugstream, 'Request-Method: ' . (strpos($checkmode, 'POST') !== false ? 'POST' : 'GET') . "\n\n");
+		@fwrite($debugstream, $found_matches);
+		@fwrite($debugstream, 'Possible solution:' . "\n------------------\n\n");
 		modcommand($debugstream, 'OPEN');
-		@fputs($debugstream, "$scriptname\n\n");
+		@fwrite($debugstream, "$scriptname\n\n");
 		modcommand($debugstream, 'FIND');
 		if (preg_match('#^/admin/(admin_|index\.php)#', $scriptname))
 		{
-			@fputs($debugstream, "require('./pagestart.' . " . PHP_EXT . ");\n\n");
+			@fwrite($debugstream, "require('./pagestart.' . " . PHP_EXT . ");\n\n");
 		}
 		else
 		{
-			@fputs($debugstream, "include(IP_ROOT_PATH . 'common.' . " . PHP_EXT . ");\n\n");
+			@fwrite($debugstream, "include(IP_ROOT_PATH . 'common.' . " . PHP_EXT . ");\n\n");
 		}
 		modcommand($debugstream, 'BEFORE, ADD');
-		@fputs($debugstream, "define('CT_SECLEVEL', 'MEDIUM');\n");
+		@fwrite($debugstream, "define('CT_SECLEVEL', 'MEDIUM');\n");
 		if (strpos($checkmode, 'POST') !== false)
 		{
-			@fputs($debugstream, "\$ct_ignorepvar = array($matching_vars);\n\n");
+			@fwrite($debugstream, "\$ct_ignorepvar = array($matching_vars);\n\n");
 		}
 		else
 		{
-			@fputs($debugstream, "\$ct_ignoregvar = array($matching_vars);\n\n");
+			@fwrite($debugstream, "\$ct_ignoregvar = array($matching_vars);\n\n");
 		}
 		modcommand($debugstream, 'SAVE/CLOSE ALL FILES');
-		@fputs($debugstream, "# EoM\n\n");
+		@fwrite($debugstream, "# EoM\n\n");
 
 		@fclose($debugstream);
 	}
@@ -494,9 +494,9 @@ function ct_debugger($checkstring, $checkmode)
 
 function modcommand($handle, $command)
 {
-	@fputs($handle,"#\n");
-	@fputs($handle,"#-----[ " . strtoupper($command) . " ]------------------------------------------\n");
-	@fputs($handle,"#\n");
+	@fwrite($handle,"#\n");
+	@fwrite($handle,"#-----[ " . strtoupper($command) . " ]------------------------------------------\n");
+	@fwrite($handle,"#\n");
 }
 
 // Function to walk through arrays

@@ -54,6 +54,27 @@ function selector(bool)
 	</td>
 </tr>
 <tr>
+	<td class="row1" nowrap="nowrap"><strong>{L_BACKUP_TYPE_COMPLETE}:</strong></td>
+	<td class="row1" width="100%">
+		<label><input type="radio" name="complete" value="1" id="type" checked="checked" />&nbsp;{L_YES}</label>
+		<label><input type="radio" name="complete" value="0" />&nbsp;{L_NO}</label>
+	</td>
+</tr>
+<tr>
+	<td class="row1" nowrap="nowrap"><strong>{L_BACKUP_TYPE_EXTENDED}:</strong></td>
+	<td class="row1" width="100%">
+		<label><input type="radio" name="extended" value="1" id="type" checked="checked" />&nbsp;{L_YES}</label>
+		<label><input type="radio" name="extended" value="0" />&nbsp;{L_NO}</label>
+	</td>
+</tr>
+<tr>
+	<td class="row1" nowrap="nowrap"><strong>{L_BACKUP_TYPE_COMPACT}:</strong></td>
+	<td class="row1" width="100%">
+		<label><input type="radio" name="compact" value="1" id="type" checked="checked" />&nbsp;{L_YES}</label>
+		<label><input type="radio" name="compact" value="0" />&nbsp;{L_NO}</label>
+	</td>
+</tr>
+<tr>
 	<td class="row1" nowrap="nowrap"><label for="method"><strong>{L_FILE_TYPE}:</strong></label></td>
 	<td class="row1" width="100%">
 	<!-- BEGIN methods -->
@@ -61,6 +82,7 @@ function selector(bool)
 	<!-- END methods -->
 	</td>
 </tr>
+<!--
 <tr>
 	<td class="row1" nowrap="nowrap"><strong><label for="where">{L_ACTION}:</label></strong></td>
 	<td class="row1" width="100%">
@@ -69,6 +91,7 @@ function selector(bool)
 		<label><input type="radio" class="radio" name="where" value="download" /> {L_DOWNLOAD}</label>
 	</td>
 </tr>
+-->
 <tr>
 	<td class="row1" nowrap="nowrap"><strong><label for="table">{L_TABLE_SELECT}:</label></strong></td>
 	<td class="row1 row-center" width="100%">
@@ -82,8 +105,9 @@ function selector(bool)
 </tr>
 <tr>
 	<td class="cat" colspan="2" align="center" id="submitbar">
+		<input type="hidden" name="where" value="store" />
 		<input class="mainoption" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-		<input class="liteoption" type="reset" id="reset" name="reset" value="{L_RESET}" />{S_FORM_TOKEN}
+		<input class="liteoption" type="reset" id="reset" name="reset" value="{L_RESET}" />
 	</td>
 </tr>
 </table>

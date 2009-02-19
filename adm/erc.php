@@ -21,6 +21,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'config.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
@@ -248,7 +249,7 @@ switch($mode)
 			<tr>
 				<td><b><?php echo $lang['Select_Language']; ?>:</b></td>
 				<td width="10">&nbsp;</td>
-				<td><?php echo language_select('english', 'lg', 'dbmtnc'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" /></td>
+				<td><?php echo language_select('english', 'lg', 'dbmtnc'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
 			</tr>
 		</table></td>
 	</tr>
@@ -279,7 +280,6 @@ switch($mode)
 ?>
 					<option value="cct"><?php echo $lang['cct']; ?></option>
 					<option value="ecf"><?php echo $lang['ecf']; ?></option>
-					<option value="fdt"><?php echo $lang['fdt']; ?></option>
 					<option value="rpd"><?php echo $lang['rpd']; ?></option>
 					<option value="rcd"><?php echo $lang['rcd']; ?></option>
 					<option value="rld"><?php echo $lang['rld']; ?></option>
@@ -289,7 +289,7 @@ switch($mode)
 					<option value="raa"><?php echo $lang['raa']; ?></option>
 					<option value="mua"><?php echo $lang['mua']; ?></option>
 					<option value="rcp"><?php echo $lang['rcp']; ?></option>
-				</select>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" /></td>
+				</select>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
 			</tr>
 			<tr>
 				<td colspan="3">&nbsp;</td>
@@ -356,12 +356,12 @@ switch($mode)
 							<tr>
 								<td><input type="radio" name="auth_method" value="board" checked="checked" /></td>
 								<td><?php echo $lang['Username']; ?>:</td>
-								<td><input type="text" name="board_user" size="30" maxlength="25" /></td>
+								<td><input type="text" name="board_user" size="30" maxlength="25" class="post" /></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
 								<td><?php echo $lang['Password']; ?>:</td>
-								<td><input type="password" name="board_password" size="30" maxlength="100" /></td>
+								<td><input type="password" name="board_password" size="30" maxlength="100" class="post" /></td>
 							</tr>
 						</table>
 					</td>
@@ -375,12 +375,12 @@ switch($mode)
 							<tr>
 								<td><input type="radio" name="auth_method" value="db" /></td>
 								<td><?php echo $lang['Username']; ?>:</td>
-								<td><input type="text" name="db_user" size="30" /></td>
+								<td><input type="text" name="db_user" size="30" class="post" /></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
 								<td><?php echo $lang['Password']; ?>:</td>
-								<td><input type="password" name="db_password" size="30" /></td>
+								<td><input type="password" name="db_password" size="30" class="post" /></td>
 							</tr>
 						</table>
 					</td>
@@ -413,11 +413,6 @@ switch($mode)
 			case 'ecf': // Clear Cache
 ?>
 	<tr><td><?php echo $lang['ecf_info']; ?></td></tr>
-<?php
-				break;
-			case 'fdt': // Fix def_tree.php
-?>
-	<tr><td><?php echo $lang['fdt_info']; ?></td></tr>
 <?php
 				break;
 			case 'rdb': // Repair Database
@@ -490,7 +485,7 @@ switch($mode)
 					<td><?php echo htmlspecialchars($domain_cur); ?></td>
 					<td>&nbsp;</td>
 					<td><input type="radio" name="domain_select" value="1"<?php echo ($domain_cur != $domain_rec) ? ' checked="checked"' : '' ?> /></td>
-					<td><input type="input" name="domain" value="<?php echo htmlspecialchars($domain_rec); ?>" maxlength="255" size="40" /></td>
+					<td><input type="input" name="domain" value="<?php echo htmlspecialchars($domain_rec); ?>" maxlength="255" size="40" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['port']; ?></b></td>
@@ -498,7 +493,7 @@ switch($mode)
 					<td><?php echo htmlspecialchars($port_cur); ?></td>
 					<td>&nbsp;</td>
 					<td><input type="radio" name="port_select" value="1"<?php echo ($port_cur != $port_rec) ? ' checked="checked"' : '' ?> /></td>
-					<td><input type="input" name="port" value="<?php echo htmlspecialchars($port_rec); ?>" maxlength="5" size="5" /></td>
+					<td><input type="input" name="port" value="<?php echo htmlspecialchars($port_rec); ?>" maxlength="5" size="5" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['path']; ?></b></td>
@@ -506,7 +501,7 @@ switch($mode)
 					<td><?php echo htmlspecialchars($path_cur); ?></td>
 					<td>&nbsp;</td>
 					<td><input type="radio" name="path_select" value="1"<?php echo ($path_cur != $path_rec) ? ' checked="checked"' : '' ?> /></td>
-					<td><input type="input" name="path" value="<?php echo htmlspecialchars($path_rec); ?>" maxlength="255" size="40" /></td>
+					<td><input type="input" name="path" value="<?php echo htmlspecialchars($path_rec); ?>" maxlength="255" size="40" class="post" /></td>
 				</tr>
 			</table>
 		</td>
@@ -527,15 +522,15 @@ switch($mode)
 			<table border="0" cellspacing="2" cellpadding="0">
 				<tr>
 					<td><b><?php echo $lang['Cookie_domain']; ?></b></td>
-					<td><input type="input" name="cookie_domain" value="<?php echo htmlspecialchars($cookie_domain); ?>" maxlength="255" size="40" /></td>
+					<td><input type="input" name="cookie_domain" value="<?php echo htmlspecialchars($cookie_domain); ?>" maxlength="255" size="40" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['Cookie_name']; ?></b></td>
-					<td><input type="input" name="cookie_name" value="<?php echo htmlspecialchars($cookie_name); ?>" maxlength="16" size="40" /></td>
+					<td><input type="input" name="cookie_name" value="<?php echo htmlspecialchars($cookie_name); ?>" maxlength="16" size="40" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['Cookie_path']; ?></b></td>
-					<td><input type="input" name="cookie_path" value="<?php echo htmlspecialchars($cookie_path); ?>" maxlength="255" size="40" /></td>
+					<td><input type="input" name="cookie_path" value="<?php echo htmlspecialchars($cookie_path); ?>" maxlength="255" size="40" class="post" /></td>
 				</tr>
 			</table>
 		</td>
@@ -628,7 +623,7 @@ switch($mode)
 			<table border="0" cellspacing="2" cellpadding="0">
 				<tr>
 					<td><b><?php echo $lang['new_admin_user']; ?>:</b></td>
-					<td><input type="input" name="username" maxlength="30" size="25" /></td>
+					<td><input type="input" name="username" maxlength="30" size="25" class="post" /></td>
 				</tr>
 			</table>
 		</td>
@@ -664,23 +659,23 @@ switch($mode)
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['DB_Host']; ?>:</b></td>
-					<td><input type="input" name="new_dbhost" size="30" /></td>
+					<td><input type="input" name="new_dbhost" size="30" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['DB_Name']; ?>:</b></td>
-					<td><input type="input" name="new_dbname" size="30" /></td>
+					<td><input type="input" name="new_dbname" size="30" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['DB_Username']; ?>:</b></td>
-					<td><input type="input" name="new_dbuser" size="30" /></td>
+					<td><input type="input" name="new_dbuser" size="30" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['DB_Password']; ?>:</b></td>
-					<td><input type="password" name="new_dbpasswd" size="30" /></td>
+					<td><input type="password" name="new_dbpasswd" size="30" class="post" /></td>
 				</tr>
 				<tr>
 					<td><b><?php echo $lang['Table_Prefix']; ?>:</b></td>
-					<td><input type="input" name="new_table_prefix" size="30" /></td>
+					<td><input type="input" name="new_table_prefix" size="30" class="post" /></td>
 				</tr>
 			</table>
 		</td>
@@ -704,7 +699,7 @@ switch($mode)
 			<input type="hidden" name="option" value="<?php echo $option; ?>" />
 			<input type="hidden" name="mode" value="execute" />
 			<input type="hidden" name="lg" value="<?php echo $lg ?>" />
-			<input type="submit" value="<?php echo $lang['Submit_text']; ?>" />
+			<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" />
 			- <a href="<?php echo $_SERVER['PHP_SELF'] . '?lg=' . $lg; ?>"><?php echo $lang['Cancel']; ?></a>
 		</td>
 	</tr>
@@ -715,6 +710,7 @@ switch($mode)
 	case 'execute':
 		switch ($option)
 		{
+
 			case 'cls': // Clear Sessions
 				check_authorisation();
 
@@ -741,32 +737,12 @@ switch($mode)
 
 				success_message($lang['cls_success']);
 				break;
-			case 'ecf': // Empty Cache
-				$db->clear_cache();
-				$db->clear_cache('', TOPICS_CACHE_FOLDER);
+
+			case 'ecf': // Clear Cache
 				empty_cache_folders();
 				success_message($lang['ecf_success']);
 				break;
-			case 'fdt': // Fix def_tree.php
-				$db->clear_cache();
-				$db->clear_cache('', TOPICS_CACHE_FOLDER);
-				empty_cache_folders();
-				$res = '<' . '?' . 'php' . "\n\n" . '?' . '>';
 
-				$fname = IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT;
-				@chmod($fname, 0666);
-				$handle = @fopen($fname, 'w');
-				@fwrite($handle, $res);
-				@fclose($handle);
-
-				$fname = IP_ROOT_PATH . './includes/def_tree.' . PHP_EXT;
-				@chmod($fname, 0666);
-				$handle = @fopen($fname, 'w');
-				@fwrite($handle, $res);
-				@fclose($handle);
-
-				success_message($lang['fdt_success']);
-				break;
 			case 'rdb': // Clear Sessions
 				check_authorisation();
 				if (!check_mysql_version())
@@ -828,6 +804,7 @@ switch($mode)
 					success_message($lang['rdb_success']);
 				}
 				break;
+
 			case 'cct': // Check config table
 				check_authorisation();
 

@@ -39,6 +39,59 @@ define('DAYS_INACTIVE', 180);
 @set_time_limit(1200);
 // SETTINGS - END
 
+$cancel = isset($_POST['cancel']);
+if ($cancel)
+{
+	redirect(ADM . '/' . append_sid('admin_megamail.' . PHP_EXT, true));
+}
+
+$modes_array = array('list', 'send', 'delete');
+$mode = request_var('mode', $modes_array[0]);
+$mode = in_array($mode, $modes_array) ? $mode : $mode_array[0];
+
+$mail_id = request_var('mail_id', 0);
+
+// Delete if needed...
+if (($mode == 'delete') && ($mail_id > 0))
+{
+	$confirm = isset($_POST['confirm']);
+
+	if($confirm)
+	{
+		$sql = "DELETE FROM " . MEGAMAIL_TABLE . "
+			WHERE mail_id = " . $mail_id;
+		$result = $db->sql_query($sql);
+		if(!$result)
+		{
+			message_die(GENERAL_ERROR, "Couldn't delete email", "", __LINE__, __FILE__, $sql);
+		}
+
+		$message = $lang['megamail_deleted'] . '<br /><br />' . sprintf($lang['megamail_click_return'], '<a href="' . append_sid('admin_megamail.' . PHP_EXT) . '">', '</a>');
+		message_die(GENERAL_MESSAGE, $message);
+	}
+	else
+	{
+		include('./page_header_admin.' . PHP_EXT);
+		$template->set_filenames(array('body' => ADM_TPL . 'confirm_body.tpl'));
+		$hidden_fields = '<input type="hidden" name="mode" value="delete" /><input type="hidden" name="mail_id" value="' . $mail_id . '" />';
+
+		$template->assign_vars(array(
+			'MESSAGE_TITLE' => $lang['Confirm'],
+			'MESSAGE_TEXT' => $lang['megamail_delete_confirm'],
+
+			'L_YES' => $lang['Yes'],
+			'L_NO' => $lang['No'],
+
+			'S_CONFIRM_ACTION' => append_sid('admin_megamail.' . PHP_EXT),
+			'S_HIDDEN_FIELDS' => $hidden_fields
+			)
+		);
+		$template->pparse('body');
+		include('./page_footer_admin.' . PHP_EXT);
+		exit;
+	}
+}
+
 $message = '';
 $subject = '';
 
@@ -49,17 +102,21 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 	$batchwait = (is_numeric($_POST['batchwait'])) ? intval($_POST['batchwait']) : $def_wait;
 	$mass_pm = request_var('mass_pm', 0);
 	$email_format = request_var('email_format', 0);
+	$subject = request_var('subject', '');
+	$subject = htmlspecialchars_decode($subject, ENT_QUOTES);
+	$message = request_var('message', '');
+	$message = htmlspecialchars_decode($message, ENT_QUOTES);
 
 	$mail_session_id = md5(uniqid(''));
-	$sql = "INSERT INTO " . MEGAMAIL_TABLE ." (mailsession_id, mass_pm, user_id, group_id, email_subject, email_body, email_format, batch_start, batch_size, batch_wait, status)
-			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . intval($_POST[POST_GROUPS_URL]) . ", '" . str_replace("\'", "''", trim($_POST['subject'])) . "', '" . str_replace("\'", "''", trim($_POST['message'])) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
+	$sql = "INSERT INTO " . MEGAMAIL_TABLE . " (mailsession_id, mass_pm, user_id, group_id, email_subject, email_body, email_format, batch_start, batch_size, batch_wait, status)
+			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . intval($_POST[POST_GROUPS_URL]) . ", '" . (STRIP ? addslashes($subject) : $subject) . "', '" . (STRIP ? addslashes($message) : $message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
 
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not insert the data into '. MEGAMAIL_TABLE, '', __LINE__, __FILE__, $sql);
 	}
 	$mail_id = $db->sql_nextid();
-	$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' .$mail_session_id);
+	$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
 
 	$redirect_url = ADM . '/' . $url;
 	meta_refresh($batchwait, $redirect_url);
@@ -90,19 +147,24 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	}
 	//Ok, the session exists
 
-	$subject = $mail_data['email_subject'];
-	$message = $mail_data['email_body'];
+	$subject = (STRIP ? stripslashes($mail_data['email_subject']) : $mail_data['email_subject']);
+	$message = (STRIP ? stripslashes($mail_data['email_body']) : $mail_data['email_body']);
 	$group_id = $mail_data['group_id'];
 	$mass_pm = $mail_data['mass_pm'];
 	$email_format = $mail_data['email_format'];
 
-	if (!$email_format)
+	if ($email_format == 1)
 	{
 		$board_config['html_email'] = 1;
 		$bbcode->allow_html = false;
 		$bbcode->allow_bbcode = true;
 		$bbcode->allow_smilies = true;
 		$message = $bbcode->parse($message);
+	}
+	elseif ($email_format == 2)
+	{
+		// We are in FULL HTML here
+		$board_config['html_email'] = 1;
 	}
 
 	//OLD HTML FORMAT
@@ -122,14 +184,14 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	*/
 
 	$sql_non_recent_login = '';
-	$process_gorups = (($group_id == -1) || ($group_id == -2)) ? false : true;
-	if ($group_id != -2)
+	$process_groups = (($group_id == -1) || ($group_id == -2)) ? false : true;
+	if ($group_id == -2)
 	{
 		$sql_non_recent_login = "AND u.user_lastlogon < '" . (time() - (86400 * DAYS_INACTIVE)) . "'";
 	}
 
 	//Now, let's see if we reached the upperlimit, if yes adjust the batch_size
-	if ($process_gorups)
+	if ($process_groups)
 	{
 		$sql = "SELECT COUNT(u.user_email)
 						FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
@@ -184,7 +246,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	$error = false;
 	$error_msg = '';
 
-	if ($process_gorups)
+	if ($process_groups)
 	{
 		$sql = "SELECT u.user_id, u.user_email
 						FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
@@ -235,7 +297,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	}
 	else
 	{
-		$message = ($process_gorups ? $lang['Group_not_exist'] : $lang['No_such_user']);
+		$message = ($process_groups ? $lang['Group_not_exist'] : $lang['No_such_user']);
 		$error = true;
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $message : $message;
 	}
@@ -261,7 +323,14 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
 		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
 
-		$emailer->use_template('admin_send_email', $board_config['default_lang']);
+		if ($email_format == 2)
+		{
+			$emailer->use_template('empty_email', $board_config['default_lang'], true);
+		}
+		else
+		{
+			$emailer->use_template('admin_send_email', $board_config['default_lang']);
+		}
 		$emailer->bcc($bcc_list);
 		$emailer->email_address($board_config['board_email']);
 		$emailer->from($board_config['board_email']);
@@ -328,7 +397,8 @@ if ($error)
 $sql = "SELECT m.*, u.username, u.user_active, u.user_color, g.group_name
 	FROM " . MEGAMAIL_TABLE . " m
 	LEFT JOIN " . USERS_TABLE . " u ON (m.user_id = u.user_id)
-	LEFT JOIN " . GROUPS_TABLE . " g ON (m.group_id = g.group_id)";
+	LEFT JOIN " . GROUPS_TABLE . " g ON (m.group_id = g.group_id)
+	ORDER BY m.mail_id ASC";
 if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_MESSAGE, 'Could not query megamail table!', '', __LINE__, __FILE__, $sql);
@@ -341,6 +411,7 @@ if ($mail_data = $db->sql_fetchrow($result))
 		$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_data['mail_id'] . '&amp;mail_session_id=' . $mail_data['mailsession_id']);
 
 		$look_up_array = array(
+			"\"",
 			"<",
 			">",
 			"\n",
@@ -348,30 +419,32 @@ if ($mail_data = $db->sql_fetchrow($result))
 		);
 
 		$replacement_array = array(
+			"\\\"",
 			"&lt_mg;",
 			"&gt_mg;",
 			"\\n",
 			"",
 		);
 
-		$plain_message = $mail_data['email_body'];
+		$plain_message = (STRIP ? stripslashes($mail_data['email_body']) : $mail_data['email_body']);
 		$plain_message = strtr($plain_message, array_flip(get_html_translation_table(HTML_ENTITIES)));
-		$plain_message = addslashes($plain_message);
 		$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
+		$delete_url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_data['mail_id'] . '&amp;mode=delete');
 
 		$template->assign_block_vars('mail_sessions',array(
 			'ROW' => ($row_class % 2) ? 'row2' : 'row1',
 			'ID' => $mail_data['mail_id'],
 			'GROUP' => ($mail_data['group_id'] != -1) ? $mail_data['group_name'] : $lang['All_users'],
-			'SUBJECT' => $mail_data['email_subject'],
+			'SUBJECT' => (STRIP ? stripslashes($mail_data['email_subject']) : $mail_data['email_subject']),
 			'MASS_PM' => $mail_data['mass_pm'] ? $lang['Yes'] : $lang['No'],
-			'EMAIL_FORMAT' => $mail_data['email_format'] ? $lang['BBCode'] : $lang['HTML'],
+			'EMAIL_FORMAT' => (($mail_data['email_format'] == 2) ? $lang['FULL_HTML'] : (($mail_data['email_format'] == 1) ? $lang['BBCode'] : $lang['HTML'])),
 			'MESSAGE_BODY' => $plain_message,
 			'BATCHSTART' => $mail_data['batch_start'],
 			'BATCHSIZE' => $mail_data['batch_size'],
 			'BATCHWAIT' => $mail_data['batch_wait'] . ' s.',
 			'SENDER' => colorize_username($mail_data['user_id'], $mail_data['username'], $mail_data['user_color'], $mail_data['user_active']),
 			'STATUS' => ($mail_data['status'] == 0) ? sprintf($lang['megamail_proceed'], '<a href="' . $url . '">', '</a>') : 'Done',
+			'U_DELETE' => $delete_url,
 			)
 		);
 		$row_class++;

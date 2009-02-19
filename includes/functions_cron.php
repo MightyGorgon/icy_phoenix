@@ -14,38 +14,6 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
-* Check MEM Limit
-*/
-function check_mem_limit()
-{
-	$mem_limit = @ini_get('memory_limit');
-	if (!empty($mem_limit))
-	{
-		$unit = strtolower(substr($mem_limit, -1, 1));
-		$mem_limit = (int) $mem_limit;
-
-		if ($unit == 'k')
-		{
-			$mem_limit = floor($mem_limit / 1024);
-		}
-		elseif ($unit == 'g')
-		{
-			$mem_limit *= 1024;
-		}
-		elseif (is_numeric($unit))
-		{
-			$mem_limit = floor((int) ($mem_limit . $unit) / 1048576);
-		}
-		$mem_limit = max(128, $mem_limit) . 'M';
-	}
-	else
-	{
-		$mem_limit = '128M';
-	}
-	return $mem_limit;
-}
-
-/**
 * Unlock cron script
 */
 function unlock_cron()
@@ -114,7 +82,7 @@ function process_files()
 	foreach ($files_array as $cron_file)
 	{
 		$cron_file_full = CRON_REAL_PATH . $cron_file;
-		include($cron_file_full);
+		@include($cron_file_full);
 	}
 	if (CRON_DEBUG == false)
 	{

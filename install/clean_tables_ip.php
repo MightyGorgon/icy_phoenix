@@ -394,11 +394,8 @@ while ($config_data = $db->sql_fetchrow($result))
 </head>
 
 <body>
-<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
-	<tr>
-		<td class="leftshadow" width="9" valign="top"><img src="./images/spacer.gif" alt="" width="9" height="1" /></td>
-		<td width="100%" valign="top">
-<div class="center-block">
+<div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
+<div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" colspan="3" valign="top">
@@ -537,10 +534,7 @@ else
 	</td>
 </tr>
 </table>
+</div></div></div>
 </div>
-		</td>
-		<td class="rightshadow" width="9" valign="top"><img src="./images/spacer.gif" alt="" width="9" height="1" /></td>
-	</tr>
-</table>
 </body>
 </html>

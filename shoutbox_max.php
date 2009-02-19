@@ -340,11 +340,9 @@ elseif ($mode == 'ip')
 			$ip = decode_ip($row['shout_ip']);
 			$ip = ($rdns_ip_num == $row['shout_ip'] || $rdns_ip_num == 'all') ? gethostbyaddr($ip) : $ip;
 
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('iprow', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'IP' => $ip,
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
@@ -379,11 +377,9 @@ elseif ($mode == 'ip')
 			$id = $row['user_id'];
 			$shout_username = ($id == ANONYMOUS) ? $lang['Guest'] : $row['username'];
 
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('userrow', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'SHOUT_USERNAME' => $shout_username,
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
@@ -522,7 +518,6 @@ if (!($result = $db->sql_query($sql)))
 while ($shout_row = $db->sql_fetchrow($result))
 {
 	$i++;
-	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 	$user_id = $shout_row['shout_user_id'];
 	$shout_username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['user_id'], $shout_row['username'], $shout_row['user_color'], $shout_row['user_active']);
@@ -585,7 +580,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	}
 
 	// Replace naughty words
-	if (count($orig_word))
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		if ($user_sig != '')
 		{
@@ -648,7 +643,6 @@ while ($shout_row = $db->sql_fetchrow($result))
 	}
 
 	$template->assign_block_vars('shoutrow', array(
-		'ROW_COLOR' => '#' . $row_color,
 		'ROW_CLASS' => $row_class,
 		'SHOUT' => $shout,
 		'TIME' => create_date2($board_config['default_dateformat'], $shout_row['shout_session_time'], $board_config['board_timezone']),

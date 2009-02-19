@@ -276,11 +276,9 @@ else
 	for($i = 0; $i < count($news_cats); $i++)
 	{
 		// Replace htmlentites for < and > with	actual character.
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('news_cats', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 
 			'TOPIC_COUNT' => $news_cats[$i]['topic_count'],

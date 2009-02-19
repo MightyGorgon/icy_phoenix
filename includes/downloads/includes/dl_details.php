@@ -160,7 +160,7 @@ if ($index[$cat_id]['comments'] && $dl_mod->cat_auth_comment_read($cat_id))
 				$replacement_word = array();
 				obtain_word_list($orig_word, $replacement_word);
 
-				if(count($orig_word))
+				if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
 				}

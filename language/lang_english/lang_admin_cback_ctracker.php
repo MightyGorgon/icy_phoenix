@@ -284,8 +284,6 @@ $lang = array_merge($lang, array(
 	'ctracker_ma_warning' => '<span class="text_red">CAUTION</span>',
 	'ctracker_ma_active' => '<span class="text_green">ACTIVE</span>',
 	'ctracker_ma_inactive' => '<span class="text_red">INACTIVE</span>',
-	'ctracker_ma_on' => 'ON',
-	'ctracker_ma_off' => 'OFF',
 	'ctracker_ma_ca' => '<span class="text_green">OK</span>',
 	'ctracker_ma_ci' => '<span class="text_red">NOT SET</span>',
 	'ctracker_ma_head' => 'Maintenance and System check',

@@ -23,7 +23,7 @@ if (!defined('IN_ICYPHOENIX'))
 // Versioning
 $fap_version = '1.5.0';
 $phpbb_version = '.0.23';
-$ip_version = '1.2.18.45';
+$ip_version = '1.2.20.47';
 
 // CHMOD
 $chmod_777 = array();
@@ -55,9 +55,6 @@ $chmod_777[] = '../images/avatars';
 $chmod_777[] = '../logs';
 
 $chmod_666 = array();
-$chmod_666[] = '../includes/def_themes.php';
-$chmod_666[] = '../includes/def_tree.php';
-$chmod_666[] = '../includes/def_words.php';
 //$chmod_666[] = '../language/lang_english/lang_extend.php';
 
 ?>

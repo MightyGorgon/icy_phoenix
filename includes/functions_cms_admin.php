@@ -524,6 +524,11 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 {
 	global $db, $lang, $images;
 
+	if (empty($b_id))
+	{
+		return false;
+	}
+
 	if ($cms_type == 'cms_standard')
 	{
 		$source_file = 'cms.';
@@ -590,7 +595,7 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	$hidden_fields .= '<input type="hidden" id="local_' . $b_id . '" value="' . $b_row['local'] . '" />';
 	$hidden_fields .= '<input type="hidden" id="background_' . $b_id . '" value="' . $b_row['background'] . '" />';
 
-	$u_move = '<img class="handle" src="' . $images['block_move'] . '" alt="' . $lang['Block_Move'] . '" title="' . $lang['BLOCK_MOVE'] . '" style="vertical-align:middle;cursor:move"/>&nbsp;';
+	$u_move = '<img class="handle" src="' . $images['block_move'] . '" alt="' . $lang['Block_Move'] . '" title="' . $lang['BLOCK_MOVE'] . '" style="vertical-align: middle; cursor: move"/>&nbsp;';
 
 	$u_active = '<img src="' . $img_active . '" alt="' . $lang['TURN_ACTIVE'] . '" title="' . $lang['TURN_ACTIVE'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 0, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 	$u_border = '<img src="' . $img_border . '" alt="' . $lang['TURN_BORDER'] . '" title="' . $lang['TURN_BORDER'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 1, ' . $b_id . ', ' . $cms_type_id . ')"/>';
@@ -609,17 +614,17 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 		$output .= '<div class="' . $block_class . '"><span>' . $b_position_l . '</span><ul class="sortable-list" id="list_' . $b_row['bposition'] . '">';
 	}
 	$output .= '<li class="cms-content" id="list_' . $b_row['bposition'] . '_id' . $b_id . '" >';
-	$output .= '<div class="row1" style="min-height:24px;">';
-	$output .= '<div style="text-align:center;float:left;">' . $u_move . '</div>';
-	$output .= '<div style="text-align:center;"><b>' . $b_row['title'] . '</b></div>';
+	$output .= '<div class="row1" style="min-height: 24px;">';
+	$output .= '<div style="text-align: center; float: left;">' . $u_move . '</div>';
+	$output .= '<div style="text-align: center;"><b>' . (STRIP ? htmlspecialchars(stripslashes($b_row['title'])) : htmlspecialchars($b_row['title'])) . '</b></div>';
 	$output .= '</div>';
 	$output .= '<div class="container row1">';
 	$output .= '<div class="left">' . $u_border . $u_titlebar . $u_local . $u_background . '<br />';
 	$output .= $b_content . '&nbsp;' . $b_type . '</div>';
 	$output .= '<div class="right">' . $u_active . '&nbsp;' . $u_edit . '&nbsp;' . $u_delete .'&nbsp;</div>';
 	$output .= '<div class="clearCol"></div></div>';
-	$output .= '<div class="row1" style="text-align:center;color:red">' . $b_view . '</div>';
-	$output .= '<div class="row1" style="text-align:center;color:blue">' . $groups . '</div>';
+	$output .= '<div class="row1" style="text-align: center; color: red;">' . $b_view . '</div>';
+	$output .= '<div class="row1" style="text-align: center; color: blue;">' . $groups . '</div>';
 	$output .= $hidden_fields;
 
 	$output .= '</li>';

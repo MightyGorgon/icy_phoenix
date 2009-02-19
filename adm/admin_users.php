@@ -27,10 +27,10 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-require(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-require(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
-require(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
@@ -458,7 +458,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 								{
 									if(@file_exists(@phpbb_realpath('./../' . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])))
 									{
-										@unlink('./../' . $board_config['avatar_path'] . "/". $this_userdata['user_avatar']);
+										@unlink('./../' . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar']);
 									}
 								}
 								@copy($user_avatar_loc, './../' . $board_config['avatar_path'] . "/$avatar_filename");
@@ -490,11 +490,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			}
 			elseif(!empty($user_avatar_url))
 			{
-				//
-				// First check what port we should connect
-				// to, look for a :[xxxx]/ or, if that doesn't
-				// exist assume port 80 (http)
-				//
+				// First check what port we should connect to, look for a :[xxxx]/ or, if that doesn't exist assume port 80 (http)
 				preg_match("/^(http:\/\/)?([\w\-\.]+)\:?([0-9]*)\/(.*)$/", $user_avatar_url, $url_ary);
 
 				if(!empty($url_ary[4]))
@@ -506,12 +502,10 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 					{
 						$base_get = "/" . $url_ary[4];
 
-						//
 						// Uses HTTP 1.1, could use HTTP 1.0 ...
-						//
-						@fputs($fsock, "GET $base_get HTTP/1.1\r\n");
-						@fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-						@fputs($fsock, "Connection: close\r\n\r\n");
+						@fwrite($fsock, "GET $base_get HTTP/1.1\r\n");
+						@fwrite($fsock, "HOST: " . $url_ary[2] . "\r\n");
+						@fwrite($fsock, "Connection: close\r\n\r\n");
 
 						unset($avatar_data);
 						while(!@feof($fsock))

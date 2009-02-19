@@ -40,7 +40,7 @@ function validate_username($username)
 	{
 		while ($row = $db->sql_fetchrow($result))
 		{
-			if ( ($userdata['session_logged_in'] && ($row['username'] != $userdata['username'])) || !$userdata['session_logged_in'])
+			if (($userdata['session_logged_in'] && ($row['username'] != $userdata['username'])) || !$userdata['session_logged_in'])
 			{
 				$db->sql_freeresult($result);
 				return array('error' => true, 'error_msg' => $lang['Username_taken']);
@@ -100,7 +100,7 @@ function validate_username($username)
 	}
 	$db->sql_freeresult($result);
 
-	if ( !preg_match("/^[a-z0-9&\-_ ]+$/i", $username) )
+	if (!preg_match("/^[a-z0-9&\-_ ]+$/i", $username))
 	{
 		return array('error' => true, 'error_msg' => $lang['Forbidden_characters']);
 	}
@@ -191,7 +191,7 @@ function validate_optional_fields(&$icq, &$aim, &$msnm, &$yim, &$skype, &$websit
 
 	// website has to start with http://, followed by something with length at least 3 that
 	// contains at least one dot.
-	if ($website != "")
+	if ($website != '')
 	{
 		if (!preg_match('#^http[s]?:\/\/#i', $website))
 		{

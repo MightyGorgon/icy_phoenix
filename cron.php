@@ -19,10 +19,13 @@
 define('IN_CRON', true);
 define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
+// Should we use this? Is absolute path always working fine?
+//if (!defined('IP_ROOT_PATH')) dirname(__FILE__) . DIRECTORY_SEPARATOR);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 
 // Do not update users last page entry
 // Start session management
@@ -96,6 +99,7 @@ $use_shutdown_function = false;
 
 if ($use_shutdown_function)
 {
+	//define('CRON_REAL_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 	define('CRON_REAL_PATH', @phpbb_realpath(IP_ROOT_PATH) . '/');
 }
 else

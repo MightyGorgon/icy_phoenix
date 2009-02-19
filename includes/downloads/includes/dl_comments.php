@@ -482,7 +482,7 @@ if ($action == 'view' || !$action)
 			$comment_time = $comment_row[$i]['comment_time'];
 			$comment_edit_time = $comment_row[$i]['comment_edit_time'];
 
-			if(count($orig_word))
+			if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
 			}

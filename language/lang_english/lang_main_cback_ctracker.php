@@ -42,6 +42,8 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ctracker_settings_on' => 'Enabled',
 	'ctracker_settings_off' => 'Disabled',
+	'ctracker_ma_on' => 'ON',
+	'ctracker_ma_off' => 'OFF',
 	'ctracker_blockmode_0' => 'Off',
 	'ctracker_blockmode_1' => 'Ban User',
 	'ctracker_blockmode_2' => 'Lock User',

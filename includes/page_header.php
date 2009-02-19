@@ -88,14 +88,20 @@ $meta_description = !empty($meta_description) ? $meta_description : '';
 $meta_keywords = !empty($meta_keywords) ? $meta_keywords : '';
 
 $page_url = pathinfo($_SERVER['PHP_SELF']);
-$no_meta_pages_array = array('privmsg.' . PHP_EXT, POSTING_MG);
+$no_meta_pages_array = array(LOGIN_MG, 'privmsg.' . PHP_EXT, POSTING_MG);
 if (!in_array($page_url['basename'], $no_meta_pages_array) && (!empty($meta_post_id) || !empty($meta_topic_id) || !empty($meta_forum_id) || !empty($meta_cat_id)))
 {
 	include(IP_ROOT_PATH . 'includes/meta_parsing.' . PHP_EXT);
 }
+else
+{
+	$page_title = (defined('IN_LOGIN') ? $lang['Login'] : $page_title);
+	$meta_description = $lang['Default_META_Description'];
+	$meta_keywords = $lang['Default_META_Keywords'];
+}
 
-$meta_description = !empty($meta_description) ? ($meta_description . (META_TAGS_ATTACH ? $lang['Default_META_Keywords'] : '')) : $lang['Default_META_Keywords'];
-$meta_keywords = !empty($meta_keywords) ? ($meta_keywords . (META_TAGS_ATTACH ? (' - ' . $lang['Default_META_Description']) : '')) : $lang['Default_META_Description'];
+$meta_description = !empty($meta_description) ? ($meta_description . (META_TAGS_ATTACH ? $lang['Default_META_Description'] : '')) : $lang['Default_META_Description'];
+$meta_keywords = !empty($meta_keywords) ? ($meta_keywords . (META_TAGS_ATTACH ? (' - ' . $lang['Default_META_Keywords']) : '')) : $lang['Default_META_Keywords'];
 
 $phpbb_meta = '<meta name="title" content="' . $page_title . '" />' . "\n";
 $phpbb_meta .= '<meta name="author" content="' . $lang['Default_META_Author'] . '" />' . "\n";
@@ -123,7 +129,7 @@ $doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 $doctype_html .= '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">' . "\n";
 
 $xhtml_doc_type = true;
-if ($board_config['smart_header'] == true)
+if ($board_config['smart_header'])
 {
 	$html_pages_array = array(PORTAL_MG, VIEWTOPIC_MG, 'album_showpage.' . PHP_EXT, POSTING_MG);
 	if (in_array($page_url['basename'], $html_pages_array))
@@ -436,7 +442,12 @@ else
 // Digests - BEGIN
 if ($board_config['enable_digests'] == true)
 {
-	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
+	if (!defined('DIGEST_SITE_URL'))
+	{
+		$digest_server_url = create_server_url();
+		define('DIGEST_SITE_URL', $digest_server_url);
+	}
+	@include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
 	if ($userdata['session_logged_in'])
 	{
 		$template->assign_block_vars('switch_show_digests', array());
@@ -594,6 +605,8 @@ $nav_links_html .= '<link rel="alternate" type="application/atom+xml" title="Ato
 // RSS Autodiscovery - END
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
+$upi2db_first_use = '';
+$u_display_new = array();
 if($userdata['upi2db_access'])
 {
 	$unread = unread();
@@ -643,7 +656,7 @@ $time_message = str_replace('GMT', 'UTC', $time_message);
 /*
  * CrackerTracker IP Range Scanner
  */
-if (($_GET['marknow'] == 'ipfeature') && $userdata['session_logged_in'])
+if (isset($_GET['marknow']) && ($_GET['marknow'] == 'ipfeature') && $userdata['session_logged_in'])
 {
 	// Mark IP Feature Read
 	$userdata['ct_last_ip'] = $userdata['ct_last_used_ip'];
@@ -659,7 +672,7 @@ if (($_GET['marknow'] == 'ipfeature') && $userdata['session_logged_in'])
 	}
 }
 
-if (($ctracker_config->settings['login_ip_check'] == 1) && ($userdata['ct_enable_ip_warn'] == 1) && $userdata['session_logged_in'])
+if (!empty($ctracker_config) && ($ctracker_config->settings['login_ip_check'] == 1) && ($userdata['ct_enable_ip_warn'] == 1) && $userdata['session_logged_in'])
 {
 	include_once(IP_ROOT_PATH . '/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 	$ctracker_user = new ct_userfunctions();
@@ -681,8 +694,7 @@ if (($ctracker_config->settings['login_ip_check'] == 1) && ($userdata['ct_enable
 /*
  * CrackerTracker Global Message Function
  */
-
-if (($_GET['marknow'] == 'globmsg') && $userdata['session_logged_in'])
+if (isset($_GET['marknow']) && ($_GET['marknow'] == 'globmsg') && $userdata['session_logged_in'])
 {
 	// Mark Global Message as read
 	$userdata['ct_global_msg_read'] = 0;
@@ -698,7 +710,7 @@ if (($_GET['marknow'] == 'globmsg') && $userdata['session_logged_in'])
 	}
 }
 
-if (($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && ($ctracker_config->settings['global_message'] != ''))
+if (!empty($ctracker_config) && ($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && ($ctracker_config->settings['global_message'] != ''))
 {
 	// Output Global Message
 	$global_message_output = '';
@@ -722,7 +734,10 @@ if (($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && 
 	);
 }
 
-((($ctracker_config->settings['login_history'] == 1) || ($ctracker_config->settings['login_ip_check'] == 1)) && ($userdata['session_logged_in'])) ? $template->assign_block_vars('login_sec_link', array()) : null;
+if (!empty($ctracker_config) && ((($ctracker_config->settings['login_history'] == 1) || ($ctracker_config->settings['login_ip_check'] == 1)) && ($userdata['session_logged_in'])))
+{
+	$template->assign_block_vars('login_sec_link', array());
+}
 
 /*
  * CrackerTracker Password Expirement Check
@@ -744,7 +759,7 @@ if ($userdata['session_logged_in'] && ($ctracker_config->settings['pw_control'] 
 /*
  * CrackerTracker Debug Mode Check
  */
-if ((CT_DEBUG_MODE === true) && ($userdata['user_level'] == ADMIN))
+if (defined('CT_DEBUG_MODE') && (CT_DEBUG_MODE === true) && ($userdata['user_level'] == ADMIN))
 {
 	$template->assign_block_vars('ctracker_message', array(
 		'ROW_COLOR' => 'ffdfdf',
@@ -771,7 +786,7 @@ $header_banner_text = get_ad('glh');
 $nav_menu_ads_top = get_ad('nmt');
 $nav_menu_ads_bottom = get_ad('nmb');
 
-if(is_array($css_style_include))
+if(!empty($css_style_include) && is_array($css_style_include))
 {
 	for ($i = 0; $i < count($css_style_include); $i++)
 	{
@@ -782,7 +797,7 @@ if(is_array($css_style_include))
 	}
 }
 
-if(is_array($css_include))
+if(!empty($css_include) && is_array($css_include))
 {
 	for ($i = 0; $i < count($css_include); $i++)
 	{
@@ -793,7 +808,7 @@ if(is_array($css_include))
 	}
 }
 
-if(is_array($js_include))
+if(!empty($js_include) && is_array($js_include))
 {
 	for ($i = 0; $i < count($js_include); $i++)
 	{
@@ -838,7 +853,7 @@ $template->assign_vars(array(
 	'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 	'TOTAL_USERS_ONLINE' => $l_online_users,
 	'LOGGED_IN_USER_LIST' => $online_userlist,
-	'BOT_LIST' => $online_botlist,
+	'BOT_LIST' => !empty($online_botlist) ? $online_botlist : '',
 	'AC_LIST_TEXT' => $ac_online_text,
 	'AC_LIST' => $ac_username_lists,
 	'RECORD_USERS' => sprintf($lang['Record_online_users'], $board_config['record_online_users'], create_date($board_config['default_dateformat'], $board_config['record_online_date'], $board_config['board_timezone'])),
@@ -893,27 +908,27 @@ $template->assign_vars(array(
 	'L_SEARCH_NEW' => $lang['Search_new'],
 	'L_SEARCH_NEW2' => $lang['Search_new2'],
 	'L_NEW' => $lang['New'],
-	'L_NEW2' => $lang['New2'],
-	'L_NEW3' => $lang['New3'],
+	'L_NEW2' => (empty($lang['New2']) ? $lang['New_Label'] : $lang['New2']),
+	'L_NEW3' => (empty($lang['New3']) ? $lang['New_Messages_Label'] : $lang['New3']),
 	'L_POSTS' => $lang['Posts'],
 //<!-- BEGIN Unread Post Information to Database Mod -->
-	'L_DISPLAY_ALL' => $u_display_new['all'],
-	'L_DISPLAY_U' => $u_display_new['u'],
-	'L_DISPLAY_M' => $u_display_new['m'],
-	'L_DISPLAY_P' => $u_display_new['p'],
-	'L_DISPLAY_UNREAD' => $u_display_new['unread'],
-	'L_DISPLAY_MARKED' => $u_display_new['marked'],
-	'L_DISPLAY_PERMANENT' => $u_display_new['permanent'],
+	'L_DISPLAY_ALL' => (!empty($u_display_new) ? $u_display_new['all'] : ''),
+	'L_DISPLAY_U' => (!empty($u_display_new) ? $u_display_new['u'] : ''),
+	'L_DISPLAY_M' => (!empty($u_display_new) ? $u_display_new['m'] : ''),
+	'L_DISPLAY_P' => (!empty($u_display_new) ? $u_display_new['p'] : ''),
+	'L_DISPLAY_UNREAD' => (!empty($u_display_new) ? $u_display_new['unread'] : ''),
+	'L_DISPLAY_MARKED' => (!empty($u_display_new) ? $u_display_new['marked'] : ''),
+	'L_DISPLAY_PERMANENT' => (!empty($u_display_new) ? $u_display_new['permanent'] : ''),
 
-	'L_DISPLAY_U_S' => $u_display_new['u_string_full'],
-	'L_DISPLAY_M_S' => $u_display_new['m_string_full'],
-	'L_DISPLAY_P_S' => $u_display_new['p_string_full'],
-	'L_DISPLAY_UNREAD_S' => $u_display_new['unread_string'],
-	'L_DISPLAY_MARKED_S' => $u_display_new['marked_string'],
-	'L_DISPLAY_PERMANENT_S' => $u_display_new['permanent_string'],
-	'U_DISPLAY_U' => $u_display_new['u_url'],
-	'U_DISPLAY_M' => $u_display_new['m_url'],
-	'U_DISPLAY_P' => $u_display_new['p_url'],
+	'L_DISPLAY_U_S' => (!empty($u_display_new) ? $u_display_new['u_string_full'] : ''),
+	'L_DISPLAY_M_S' => (!empty($u_display_new) ? $u_display_new['m_string_full'] : ''),
+	'L_DISPLAY_P_S' => (!empty($u_display_new) ? $u_display_new['p_string_full'] : ''),
+	'L_DISPLAY_UNREAD_S' => (!empty($u_display_new) ? $u_display_new['unread_string'] : ''),
+	'L_DISPLAY_MARKED_S' => (!empty($u_display_new) ? $u_display_new['marked_string'] : ''),
+	'L_DISPLAY_PERMANENT_S' => (!empty($u_display_new) ? $u_display_new['permanent_string'] : ''),
+	'U_DISPLAY_U' => (!empty($u_display_new) ? $u_display_new['u_url'] : ''),
+	'U_DISPLAY_M' => (!empty($u_display_new) ? $u_display_new['m_url'] : ''),
+	'U_DISPLAY_P' => (!empty($u_display_new) ? $u_display_new['p_url'] : ''),
 //<!-- END Unread Post Information to Database Mod -->
 	'L_SEARCH_UNANSWERED' => $lang['Search_unanswered'],
 	'L_BOARD_DISABLE' => $lang['Board_disabled'],
@@ -979,7 +994,6 @@ $template->assign_vars(array(
 	'U_BACK_BOTTOM' => '#bottom',
 
 	// Mighty Gorgon - Nav Links - BEGIN
-	'L_RATINGS' => $lang['Rating'],
 	'L_CALENDAR' => $lang['Calendar'],
 	'L_DOWNLOADS' => $lang['Downloads'],
 	'L_DOWNLOADS_ADV' => $lang['Downloads_ADV'],
@@ -1038,40 +1052,20 @@ $template->assign_vars(array(
 	'RANDOM_QUOTE' => $randomquote_phrase,
 	// Mighty Gorgon - Random Quote - End
 
-	// Mighty Gorgon - CMS - Begin
-	'L_CMS' => $lang['CMS_Title'],
-	'L_CMS_MANAGEMENT' => $lang['CMS_Management'],
+	// Mighty Gorgon - CMS - BEGIN
+	'L_CMS' => $lang['CMS_TITLE'],
 	'U_CMS' => append_sid('cms.' . PHP_EXT),
-	'L_CMS_CONFIG' => $lang['CMS_Config'],
 	'U_CMS_CONFIG' => append_sid('cms.' . PHP_EXT . '?mode=config'),
-	'L_CMS_PAGES_PERMISSIONS' => $lang['CMS_Page_Permissions'],
 	'U_CMS_PAGES_PERMISSIONS' => append_sid('cms_auth.' . PHP_EXT),
 	'U_CMS_ADS' => append_sid('cms_ads.' . PHP_EXT),
-	'L_CMS_MENU' => $lang['CMS_Menu_Page'],
 	'U_CMS_MENU' => append_sid('cms_menu.' . PHP_EXT),
 	'L_CMS_ACP' => $lang['Admin_panel'],
 	'U_CMS_ACP' => ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'],
-	'L_CMS_GUEST' => $lang['CMS_Guest'],
-	'L_CMS_REG' => $lang['CMS_Reg'],
-	'L_CMS_VIP' => $lang['CMS_VIP'],
-	'L_CMS_PUB' => $lang['CMS_Publisher'],
-	'L_CMS_REV' => $lang['CMS_Reviewer'],
-	'L_CMS_CM' => $lang['CMS_Content_Manager'],
-	'L_CMS_GLOBAL_BLOCKS' => $lang['CMS_Global_Blocks'],
 	'U_CMS_GLOBAL_BLOCKS' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=0&amp;action=editglobal'),
-	'L_CMS_STANDARD_PAGES' => $lang['Standard_Pages'],
 	'U_CMS_STANDARD_PAGES' => append_sid('cms.' . PHP_EXT . '?mode=layouts_special'),
-	'L_CMS_CUSTOM_PAGES' => $lang['Custom_Pages'],
 	'U_CMS_CUSTOM_PAGES' => append_sid('cms.' . PHP_EXT . '?mode=layouts'),
-	'L_CMS_CUSTOM_PAGES_ADV' => $lang['Custom_Pages_ADV'],
 	'U_CMS_CUSTOM_PAGES_ADV' => append_sid('cms.' . PHP_EXT . '?mode=layouts_adv'),
-	'IMG_LAYOUT_BLOCKS_EDIT' => $images['layout_blocks_edit'],
-	'IMG_LAYOUT_PREVIEW' => $images['layout_preview'],
-	'IMG_BLOCK_EDIT' => $images['block_edit'],
-	'IMG_BLOCK_DELETE' => $images['block_delete'],
-	'IMG_CMS_ARROW_UP' => $images['arrows_cms_up'],
-	'IMG_CMS_ARROW_DOWN' => $images['arrows_cms_down'],
-	// Mighty Gorgon - CMS - End
+	// Mighty Gorgon - CMS - END
 
 	// Mighty Gorgon - Change Lang/Style - Begin
 	'REQUEST_URI' => htmlspecialchars(urldecode($_SERVER['REQUEST_URI'])),
@@ -1084,7 +1078,6 @@ $template->assign_vars(array(
 
 	'U_PREFERENCES' => append_sid('profile_options.' . PHP_EXT),
 	'L_PREFERENCES' => $lang['Preferences'],
-	'I_PREFERENCES' => $images['Preferences'],
 
 	// Mighty Gorgon - CPL - BEGIN
 	'L_VIEWER' => $lang['Username'],
@@ -1164,6 +1157,21 @@ $template->assign_vars(array(
 	)
 );
 
+// Mighty Gorgon - CMS IMAGES - BEGIN
+if (defined('IN_CMS'))
+{
+	$template->assign_vars(array(
+		'IMG_LAYOUT_BLOCKS_EDIT' => $images['layout_blocks_edit'],
+		'IMG_LAYOUT_PREVIEW' => $images['layout_preview'],
+		'IMG_BLOCK_EDIT' => $images['block_edit'],
+		'IMG_BLOCK_DELETE' => $images['block_delete'],
+		'IMG_CMS_ARROW_UP' => $images['arrows_cms_up'],
+		'IMG_CMS_ARROW_DOWN' => $images['arrows_cms_down'],
+		)
+	);
+}
+// Mighty Gorgon - CMS IMAGES - END
+
 // Add no-cache control for cookies if they are set
 //$c_no_cache = (isset($_COOKIE[$board_config['cookie_name'] . '_sid']) || isset($_COOKIE[$board_config['cookie_name'] . '_data'])) ? 'no-cache="set-cookie", ' : '';
 
@@ -1214,6 +1222,7 @@ $nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp
 $nav_cat_desc = '';
 if (!isset($skip_nav_cat))
 {
+	$nav_pgm = empty($nav_pgm) ? '' : $nav_pgm;
 	$nav_cat_desc = make_cat_nav_tree($nav_key, $nav_pgm);
 }
 
@@ -1231,7 +1240,7 @@ if ($nav_cat_desc != '')
 // send to template
 $template->assign_vars(array(
 	//'SPACER' => $images['spacer'],
-	'S_PAGE_NAV' => (defined('IN_LOGIN') ? false : (isset($cms_page_nav) ? $cms_page_nav : true)),
+	'S_PAGE_NAV' => (isset($cms_page_nav) ? $cms_page_nav : true),
 	'NAV_SEPARATOR' => $nav_separator,
 	'NAV_CAT_DESC' => $nav_cat_desc,
 	'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($page_title_simple != $board_config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $page_title_simple . '</a>') : '') : $breadcrumbs_address),
@@ -1264,7 +1273,7 @@ if ($board_config['board_disable'] && ($userdata['user_level'] == ADMIN))
 	$template->assign_block_vars('switch_admin_disable_board', array());
 }
 
-if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN')) && (($cms_global_blocks == true) || !empty($cms_page_id)) && (($board_config['board_disable'] == false) || ($userdata['user_level'] == ADMIN)))
+if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN')) && (!empty($cms_global_blocks) || !empty($cms_page_id)) && (!$board_config['board_disable'] || ($userdata['user_level'] == ADMIN)))
 {
 	$template->assign_var('SWITCH_CMS_GLOBAL_BLOCKS', true);
 	cms_parse_blocks($cms_page_id, !empty($cms_page_id), $cms_global_blocks, 'header');

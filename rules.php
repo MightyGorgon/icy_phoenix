@@ -87,11 +87,9 @@ for($i = 0; $i < count($rules_block); $i++)
 
 		for($j = 0; $j < count($rules_block[$i]); $j++)
 		{
-			$row_color = (!($j % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($j % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('rules_block.rules_row', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'RULES_QUESTION' => $rules_block[$i][$j]['question'],
 				'RULES_ANSWER' => $rules_block[$i][$j]['answer'],
@@ -100,7 +98,6 @@ for($i = 0; $i < count($rules_block); $i++)
 			);
 
 			$template->assign_block_vars('rules_block_link.rules_row_link', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'RULES_LINK' => $rules_block[$i][$j]['question'],
 

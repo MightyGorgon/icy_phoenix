@@ -534,7 +534,7 @@ function xs_check_cache($filename)
 			return false;
 		}
 		$str .= sprintf($lang['xs_check_ok'], $filename) . "<br />\n";
-		fputs($file, '&nbsp;');
+		fwrite($file, '&nbsp;');
 		fclose($file);
 		@chmod($filename, 0777);
 		return true;

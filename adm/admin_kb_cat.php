@@ -129,7 +129,7 @@ switch ($mode)
 					'L_FORUM_ID_EXPLAIN' => $lang['Forum_id_explain'],
 					'FORUM_LIST' => get_forums(),
 
-					'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=create'),
+					'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=create'),
 					'CAT_NAME' => $new_cat_name,
 					'DESC' => '',
 					'NUMBER_ARTICLES' => '0',
@@ -213,7 +213,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not create category", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Cat_created'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid("admin_kb_cat." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['Cat_created'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid('admin_kb_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -249,96 +249,97 @@ switch ($mode)
 			$template->assign_block_vars('switch_cat.switch_edit_category', array());
 
 			$template->assign_vars(array('L_EDIT_TITLE' => $lang['Edit_cat'],
-					'L_EDIT_DESCRIPTION' => $lang['Edit_description'],
-					'L_CATEGORY' => $lang['Category'],
-					'L_DESCRIPTION' => $lang['Article_description'],
-					'L_NUMBER_ARTICLES' => $lang['Articles'],
-					'L_CAT_SETTINGS' => $lang['Cat_settings'],
-					'L_CREATE' => $lang['Edit'],
+				'L_EDIT_DESCRIPTION' => $lang['Edit_description'],
+				'L_CATEGORY' => $lang['Category'],
+				'L_DESCRIPTION' => $lang['Article_description'],
+				'L_NUMBER_ARTICLES' => $lang['Articles'],
+				'L_CAT_SETTINGS' => $lang['Cat_settings'],
+				'L_CREATE' => $lang['Edit'],
 
-					'L_PARENT' => $lang['Parent'],
-					'L_NONE' => $lang['None'],
+				'L_PARENT' => $lang['Parent'],
+				'L_NONE' => $lang['None'],
 
-					'PARENT_LIST' => get_kb_cat_list('', $parent, $parent, true, 0, true),
+				'PARENT_LIST' => get_kb_cat_list('', $parent, $parent, true, 0, true),
 
-					'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=edit'),
-					'CAT_NAME' => $cat_name,
-					'CAT_DESCRIPTION' => $cat_desc,
-					'NUMBER_ARTICLES' => $number_articles,
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=edit'),
+				'CAT_NAME' => $cat_name,
+				'CAT_DESCRIPTION' => $cat_desc,
+				'NUMBER_ARTICLES' => $number_articles,
 
-					'L_FORUM_ID' => $lang['Forum_id'],
-					'L_FORUM_ID_EXPLAIN' => $lang['Forum_id_explain'],
-					'FORUM_LIST' => get_forums($comments_forum_id),
+				'L_FORUM_ID' => $lang['Forum_id'],
+				'L_FORUM_ID_EXPLAIN' => $lang['Forum_id_explain'],
+				'FORUM_LIST' => get_forums($comments_forum_id),
 
-					// Cat permissions
-					'L_CAT_PERMISSIONS' => $lang['Category_Permissions'],
-					'L_VIEW_LEVEL' => $lang['View_level'],
-					'L_UPLOAD_LEVEL' => $lang['Upload_level'],
-					'L_RATE_LEVEL' => $lang['Rate_level'],
-					'L_COMMENT_LEVEL' => $lang['Comment_level'],
-					'L_EDIT_LEVEL' => $lang['Edit_level'],
-					'L_DELETE_LEVEL' => $lang['Delete_level'],
-					'L_APPROVAL_LEVEL' => $lang['Approval_level'],
-					'L_APPROVAL_EDIT_LEVEL' => $lang['Approval_edit_level'],
-					'L_GUEST' => $lang['Forum_ALL'],
-					'L_REG' => $lang['Forum_REG'],
-					'L_PRIVATE' => $lang['Forum_PRIVATE'],
-					'L_MOD' => $lang['Forum_MOD'],
-					'L_ADMIN' => $lang['Forum_ADMIN'],
+				// Cat permissions
+				'L_CAT_PERMISSIONS' => $lang['Category_Permissions'],
+				'L_VIEW_LEVEL' => $lang['View_level'],
+				'L_UPLOAD_LEVEL' => $lang['Upload_level'],
+				'L_RATE_LEVEL' => $lang['Rate_level'],
+				'L_COMMENT_LEVEL' => $lang['Comment_level'],
+				'L_EDIT_LEVEL' => $lang['Edit_level'],
+				'L_DELETE_LEVEL' => $lang['Delete_level'],
+				'L_APPROVAL_LEVEL' => $lang['Approval_level'],
+				'L_APPROVAL_EDIT_LEVEL' => $lang['Approval_edit_level'],
+				'L_GUEST' => $lang['Forum_ALL'],
+				'L_REG' => $lang['Forum_REG'],
+				'L_PRIVATE' => $lang['Forum_PRIVATE'],
+				'L_MOD' => $lang['Forum_MOD'],
+				'L_ADMIN' => $lang['Forum_ADMIN'],
 
-					'L_DISABLED' => $lang['Disabled'],
+				'L_DISABLED' => $lang['Disabled'],
 
-					'VIEW_GUEST' => ($kb_cat['auth_view'] == AUTH_ALL) ? 'selected="selected"' : '',
-					'VIEW_REG' => ($kb_cat['auth_view'] == AUTH_REG) ? 'selected="selected"' : '',
-					'VIEW_PRIVATE' => ($kb_cat['auth_view'] == AUTH_ACL) ? 'selected="selected"' : '',
-					'VIEW_MOD' => ($kb_cat['auth_view'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'VIEW_ADMIN' => ($kb_cat['auth_view'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'VIEW_GUEST' => ($kb_cat['auth_view'] == AUTH_ALL) ? 'selected="selected"' : '',
+				'VIEW_REG' => ($kb_cat['auth_view'] == AUTH_REG) ? 'selected="selected"' : '',
+				'VIEW_PRIVATE' => ($kb_cat['auth_view'] == AUTH_ACL) ? 'selected="selected"' : '',
+				'VIEW_MOD' => ($kb_cat['auth_view'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'VIEW_ADMIN' => ($kb_cat['auth_view'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'UPLOAD_GUEST' => ($kb_cat['auth_post'] == AUTH_ALL) ? 'selected="selected"' : '',
-					'UPLOAD_REG' => ($kb_cat['auth_post'] == AUTH_REG) ? 'selected="selected"' : '',
-					'UPLOAD_PRIVATE' => ($kb_cat['auth_post'] == AUTH_ACL) ? 'selected="selected"' : '',
-					'UPLOAD_MOD' => ($kb_cat['auth_post'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'UPLOAD_ADMIN' => ($kb_cat['auth_post'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'UPLOAD_GUEST' => ($kb_cat['auth_post'] == AUTH_ALL) ? 'selected="selected"' : '',
+				'UPLOAD_REG' => ($kb_cat['auth_post'] == AUTH_REG) ? 'selected="selected"' : '',
+				'UPLOAD_PRIVATE' => ($kb_cat['auth_post'] == AUTH_ACL) ? 'selected="selected"' : '',
+				'UPLOAD_MOD' => ($kb_cat['auth_post'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'UPLOAD_ADMIN' => ($kb_cat['auth_post'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'RATE_GUEST' => ($kb_cat['auth_rate'] == AUTH_ALL) ? 'selected="selected"' : '',
-					'RATE_REG' => ($kb_cat['auth_rate'] == AUTH_REG) ? 'selected="selected"' : '',
-					'RATE_PRIVATE' => ($kb_cat['auth_rate'] == AUTH_ACL) ? 'selected="selected"' : '',
-					'RATE_MOD' => ($kb_cat['auth_rate'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'RATE_ADMIN' => ($kb_cat['auth_rate'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'RATE_GUEST' => ($kb_cat['auth_rate'] == AUTH_ALL) ? 'selected="selected"' : '',
+				'RATE_REG' => ($kb_cat['auth_rate'] == AUTH_REG) ? 'selected="selected"' : '',
+				'RATE_PRIVATE' => ($kb_cat['auth_rate'] == AUTH_ACL) ? 'selected="selected"' : '',
+				'RATE_MOD' => ($kb_cat['auth_rate'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'RATE_ADMIN' => ($kb_cat['auth_rate'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'COMMENT_GUEST' => ($kb_cat['auth_comment'] == AUTH_ALL) ? 'selected="selected"' : '',
-					'COMMENT_REG' => ($kb_cat['auth_comment'] == AUTH_REG) ? 'selected="selected"' : '',
-					'COMMENT_PRIVATE' => ($kb_cat['auth_comment'] == AUTH_ACL) ? 'selected="selected"' : '',
-					'COMMENT_MOD' => ($kb_cat['auth_comment'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'COMMENT_ADMIN' => ($kb_cat['auth_comment'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'COMMENT_GUEST' => ($kb_cat['auth_comment'] == AUTH_ALL) ? 'selected="selected"' : '',
+				'COMMENT_REG' => ($kb_cat['auth_comment'] == AUTH_REG) ? 'selected="selected"' : '',
+				'COMMENT_PRIVATE' => ($kb_cat['auth_comment'] == AUTH_ACL) ? 'selected="selected"' : '',
+				'COMMENT_MOD' => ($kb_cat['auth_comment'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'COMMENT_ADMIN' => ($kb_cat['auth_comment'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'EDIT_REG' => ($kb_cat['auth_edit'] == AUTH_REG) ? 'selected="selected"' : '',
-					'EDIT_PRIVATE' => ($kb_cat['auth_edit'] == AUTH_ACL) ? 'selected="selected"' : '',
-					'EDIT_MOD' => ($kb_cat['auth_edit'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'EDIT_ADMIN' => ($kb_cat['auth_edit'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'EDIT_REG' => ($kb_cat['auth_edit'] == AUTH_REG) ? 'selected="selected"' : '',
+				'EDIT_PRIVATE' => ($kb_cat['auth_edit'] == AUTH_ACL) ? 'selected="selected"' : '',
+				'EDIT_MOD' => ($kb_cat['auth_edit'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'EDIT_ADMIN' => ($kb_cat['auth_edit'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'DELETE_REG' => ($kb_cat['auth_delete'] == AUTH_REG) ? 'selected="selected"' : '',
-					'DELETE_PRIVATE' => ($kb_cat['auth_delete'] == AUTH_ACL) ? 'selected="selected"' : '',
-					'DELETE_MOD' => ($kb_cat['auth_delete'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'DELETE_ADMIN' => ($kb_cat['auth_delete'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'DELETE_REG' => ($kb_cat['auth_delete'] == AUTH_REG) ? 'selected="selected"' : '',
+				'DELETE_PRIVATE' => ($kb_cat['auth_delete'] == AUTH_ACL) ? 'selected="selected"' : '',
+				'DELETE_MOD' => ($kb_cat['auth_delete'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'DELETE_ADMIN' => ($kb_cat['auth_delete'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'APPROVAL_DISABLED' => ($kb_cat['auth_approval'] == AUTH_ALL) ? 'selected="selected"' : '',
-					'APPROVAL_MOD' => ($kb_cat['auth_approval'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'APPROVAL_ADMIN' => ($kb_cat['auth_approval'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'APPROVAL_DISABLED' => ($kb_cat['auth_approval'] == AUTH_ALL) ? 'selected="selected"' : '',
+				'APPROVAL_MOD' => ($kb_cat['auth_approval'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'APPROVAL_ADMIN' => ($kb_cat['auth_approval'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'APPROVAL_EDIT_DISABLED' => ($kb_cat['auth_approval_edit'] == AUTH_ALL) ? 'selected="selected"' : '',
-					'APPROVAL_EDIT_MOD' => ($kb_cat['auth_approval_edit'] == AUTH_MOD) ? 'selected="selected"' : '',
-					'APPROVAL_EDIT_ADMIN' => ($kb_cat['auth_approval_edit'] == AUTH_ADMIN) ? 'selected="selected"' : '',
+				'APPROVAL_EDIT_DISABLED' => ($kb_cat['auth_approval_edit'] == AUTH_ALL) ? 'selected="selected"' : '',
+				'APPROVAL_EDIT_MOD' => ($kb_cat['auth_approval_edit'] == AUTH_MOD) ? 'selected="selected"' : '',
+				'APPROVAL_EDIT_ADMIN' => ($kb_cat['auth_approval_edit'] == AUTH_ADMIN) ? 'selected="selected"' : '',
 
-					'S_GUEST' => AUTH_ALL,
-					'S_USER' => AUTH_REG,
-					'S_PRIVATE' => AUTH_ACL,
-					'S_MOD' => AUTH_MOD,
-					'S_ADMIN' => AUTH_ADMIN,
+				'S_GUEST' => AUTH_ALL,
+				'S_USER' => AUTH_REG,
+				'S_PRIVATE' => AUTH_ACL,
+				'S_MOD' => AUTH_MOD,
+				'S_ADMIN' => AUTH_ADMIN,
 
 
-					'S_HIDDEN' => '<input type="hidden" name="catid" value="' . $cat_id . '">')
-				);
+				'S_HIDDEN' => '<input type="hidden" name="catid" value="' . $cat_id . '">'
+				)
+			);
 		}
 		else if ($_POST['submit'])
 		{
@@ -371,7 +372,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not update category", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Cat_edited'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid('admin_kb_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['Cat_edited'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid('admin_kb_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			mx_message_die(GENERAL_MESSAGE, $message);
 		}
@@ -398,24 +399,24 @@ switch ($mode)
 
 			// Generate page
 
-			$template->set_filenames(array('body' => ADM_TPL . 'kb_cat_del_body.tpl')
-				);
+			$template->set_filenames(array('body' => ADM_TPL . 'kb_cat_del_body.tpl'));
 
 			$template->assign_vars(array('L_DELETE_TITLE' => $lang['Cat_delete_title'],
-					'L_DELETE_DESCRIPTION' => $lang['Cat_delete_desc'],
-					'L_CAT_DELETE' => $lang['Cat_delete_title'],
-					'L_DELETE_ARTICLES' => $lang['Delete_all_articles'],
+				'L_DELETE_DESCRIPTION' => $lang['Cat_delete_desc'],
+				'L_CAT_DELETE' => $lang['Cat_delete_title'],
+				'L_DELETE_ARTICLES' => $lang['Delete_all_articles'],
 
-					'L_CAT_NAME' => $lang['Article_category'],
-					'L_MOVE_CONTENTS' => $lang['Move_contents'],
-					'L_DELETE' => $lang['Move_and_Delete'],
+				'L_CAT_NAME' => $lang['Article_category'],
+				'L_MOVE_CONTENTS' => $lang['Move_contents'],
+				'L_DELETE' => $lang['Move_and_Delete'],
 
-					'S_HIDDEN_FIELDS' => '<input type="hidden" name="catid" value="' . $cat_id . '">',
-					'S_SELECT_TO' => get_kb_cat_list('', $cat_id, 0, true, 0, true),
-					'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=delete'),
+				'S_HIDDEN_FIELDS' => '<input type="hidden" name="catid" value="' . $cat_id . '">',
+				'S_SELECT_TO' => get_kb_cat_list('', $cat_id, 0, true, 0, true),
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=delete'),
 
-					'CAT_NAME' => $cat_name)
-				);
+				'CAT_NAME' => $cat_name
+				)
+			);
 		}
 		elseif ($_POST['submit'])
 		{
@@ -484,7 +485,7 @@ switch ($mode)
 				mx_message_die(GENERAL_ERROR, "Could not delete category", '', __LINE__, __FILE__, $sql);
 			}
 
-			$message = $lang['Cat_deleted'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid('admin_kb_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . 'index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['Cat_deleted'] . '<br /><br />' . sprintf($lang['Click_return_cat_manager'], '<a href="' . append_sid('admin_kb_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			mx_message_die(GENERAL_MESSAGE, $message);
 		}
@@ -585,12 +586,12 @@ switch ($mode)
 				'L_ARTICLES' => $lang['Articles'],
 				'L_ORDER' => $lang['Update_order'],
 
-				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=create'))
+				'S_ACTION' => append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=create'))
 			);
 		// get categories
 		$sql = "SELECT *
-       		FROM " . KB_CATEGORIES_TABLE . "
-			WHERE parent = 0 ORDER BY cat_order ASC";
+					FROM " . KB_CATEGORIES_TABLE . "
+					WHERE parent = 0 ORDER BY cat_order ASC";
 
 		if (!($cat_result = $db->sql_query($sql)))
 		{
@@ -608,33 +609,32 @@ switch ($mode)
 			$temp_url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=cat&amp;cat=' . $category_id);
 			$category_link = '<a href="' . $temp_url . '" class="gen">' . $category_name . '</a>';
 
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=edit&amp;cat=' . $category_id);
-			$edit = '<a href="' . $temp_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit'] . '"></a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=edit&amp;cat=' . $category_id);
+			$edit = '<a href="' . $temp_url . '"><img src="../images/cms/b_edit.png" alt="' . $lang['Edit'] . '"></a>';
 
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=delete&amp;cat=' . $category_id);
-			$delete = '<a href="' . $temp_url . '" class="gen"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '"></a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=delete&amp;cat=' . $category_id);
+			$delete = '<a href="' . $temp_url . '"><img src="../images/cms/b_delete.png" alt="' . $lang['Delete'] . '"></a>';
 
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=up&amp;cat=' . $category_id);
-			$up = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_up'] . '</a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=up&amp;cat=' . $category_id);
+			$up = '<a href="' . $temp_url . '"><img src="../images/cms/arrow_up.png" alt="' . $lang['Move_up'] . '"></a>';
 
-			$temp_url = append_sid(IP_ROOT_PATH . ADM . 'admin_kb_cat.' . PHP_EXT . '?mode=down&amp;cat=' . $category_id);
-			$down = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_down'] . '</a>';
+			$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=down&amp;cat=' . $category_id);
+			$down = '<a href="' . $temp_url . '"><img src="../images/cms/arrow_down.png" alt="' . $lang['Move_down'] . '"></a>';
 
-			$row_color = (!($ss % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($ss % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('catrow', array('CATEGORY' => $category_link,
-					'CAT_DESCRIPTION' => $category_details,
-					'CAT_ARTICLES' => $category_articles,
+				'CAT_DESCRIPTION' => $category_details,
+				'CAT_ARTICLES' => $category_articles,
 
-					'U_EDIT' => $edit,
-					'U_DELETE' => $delete,
-					'U_UP' => $up,
-					'U_DOWN' => $down,
+				'U_EDIT' => $edit,
+				'U_DELETE' => $delete,
+				'U_UP' => $up,
+				'U_DOWN' => $down,
 
-					'ROW_COLOR' => '#' . $row_color,
-					'ROW_CLASS' => $row_class)
-				);
+				'ROW_CLASS' => $row_class
+				)
+			);
 
 			$i++;
 			$ss++;

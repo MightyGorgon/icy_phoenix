@@ -367,7 +367,32 @@ $download_mode = intval($download_mode[$attachment['extension']]);
 
 if ($thumbnail)
 {
-	$attachment['physical_filename'] = THUMB_DIR . '/t_' . $attachment['physical_filename'];
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
+	$thumbnail_path = THUMB_DIR . '/t_' . $attachment['physical_filename'];
+	if (!thumbnail_exists(basename($thumbnail_path)))
+	{
+		if (!intval($attach_config['allow_ftp_upload']))
+		{
+			$source = $upload_dir . '/' . basename($attachment['physical_filename']);
+			$dest_file = @amod_realpath($upload_dir);
+			$dest_file .= '/' . $thumbnail_path;
+		}
+		else
+		{
+			$source = $attachment['physical_filename'];
+			$dest_file = $thumbnail_path;
+		}
+
+		if (!create_thumbnail($source, $dest_file, $attachment['mimetype']))
+		{
+			$thumbnail = 0;
+		}
+		else
+		{
+			$attachment['physical_filename'] = $thumbnail_path;
+		}
+	}
 }
 
 // Update download count

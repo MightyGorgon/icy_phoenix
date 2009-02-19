@@ -24,6 +24,3 @@ chmod 777 files/thumbs
 chmod 777 images/avatars
 chmod 777 logs
 
-chmod 666 includes/def_themes.php
-chmod 666 includes/def_tree.php
-chmod 666 includes/def_words.php

@@ -1,14 +1,17 @@
 {XS_NEWS}
 
+<h2 style="text-align: left;"><a href="{U_VIEW_FORUM}" style="text-decoration: none;">{FORUM_NAME}</a></h2>
+
 {CALENDAR_BOX}
 
-<!-- BEGIN switch_forum_rules -->
+<!-- IF S_FORUM_RULES -->
 {IMG_TBL}<table class="forumline" width="100%" cellspacing="0">
-<tr><td class="row-header"><span><!-- BEGIN switch_display_title -->{L_FORUM_RULES}<!-- END switch_display_title -->&nbsp;</span></td></tr>
+<tr><td class="row-header"><span><!-- IF S_FORUM_RULES_TITLE -->{L_FORUM_RULES}<!-- ENDIF -->&nbsp;</span></td></tr>
 <tr><td class="row1g-left" width="100%"><div class="post-text">{FORUM_RULES}</div></td></tr>
 </table>{IMG_TBR}
 <br />
-<!-- END switch_forum_rules -->
+<!-- ENDIF -->
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom" width="65%">
@@ -16,10 +19,11 @@
 	</td>
 	<td align="right" valign="bottom" rowspan="2">
 		<span class="gen">{PAGE_NUMBER}</span><br />
-		<span class="pagination">{PAGINATION}</span>
-		<!-- BEGIN extended_pagination -->
-		<br /><form method="post" action="{U_VIEW_FORUM}" style="display:inline;"><span class="gen">{L_GO_TO_PAGE_NUMBER}&nbsp;<input type="text" name="page_number" value="" size="3" class="post" />&nbsp;&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" /></span></form>
-		<!-- END extended_pagination -->
+		<span class="pagination">{PAGINATION}</span><br />
+		<!-- IF S_EXTENDED_PAGINATION -->
+		<div style="margin-top: 3px;"><form method="post" action="{U_VIEW_FORUM}"><span class="gen"><b>{L_GO_TO_PAGE_NUMBER}</b>&nbsp;<input type="text" name="page_number" value="" size="3" class="post" />&nbsp;&nbsp;<input type="submit" name="submit" value="{L_GO}" class="mainoption" /></span></form></div>
+		<!-- ENDIF -->
+		<!-- IF not S_BOT --><div style="margin-top: 3px;"><form action="{FULL_SITE_PATH}{U_SEARCH}" method="post"><input name="search_keywords" type="text" class="post search" style="width: 160px;" value="{L_SEARCH_THIS_FORUM}" onclick="if(this.value=='{L_SEARCH_THIS_FORUM}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH_THIS_FORUM}';" /><input type="hidden" name="search_where" value="{FORUM_ID_FULL}" />&nbsp;<input type="submit" class="mainoption" value="{L_SEARCH}" /></form></div><!-- ENDIF -->
 	</td>
 </tr>
 <tr><td align="left" valign="middle"><!-- IF not S_BOT --><span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span><!-- ELSE -->&nbsp;<!-- ENDIF --></td></tr>
@@ -28,12 +32,12 @@
 
 <form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
 {IMG_THL}{IMG_THC}<a href="{U_VIEW_FORUM}" class="forumlink">{FORUM_NAME}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<!-- IF not S_BOT and VIEWFORUM_BANNER_TOP -->
+<!-- IF VIEWFORUM_BANNER_TOP -->
 <tr><td class="row3 row-center" colspan="7">{VIEWFORUM_BANNER_TOP}</td></tr>
 <!-- ENDIF -->
 <tr>
 	<th colspan="2"><a href="{U_VF_TITLE_SORT}" title="{L_CURRENT_SORT}">{L_TOPICS}{VF_TITLE_SORT}</a></th>
-	<th width="150"><a href="{U_VF_TIME_SORT}" title="{L_CURRENT_SORT}">{L_AUTHOR}{VF_TIME_SORT}</a></th>
+	<th><a href="{U_VF_TIME_SORT}" title="{L_CURRENT_SORT}">{L_AUTHOR}{VF_TIME_SORT}</a></th>
 	<th width="50"><a href="{U_VF_VIEWS_SORT}" title="{L_CURRENT_SORT}">{L_VIEWS}{VF_VIEWS_SORT}</a></th>
 	<th width="50"><a href="{U_VF_REPLIES_SORT}" title="{L_CURRENT_SORT}">{L_REPLIES}{VF_REPLIES_SORT}</a></th>
 	<!-- BEGIN rating_switch -->
@@ -47,22 +51,20 @@
 <!-- END divider -->
 <tr>
 	<td class="row1 row-center" width="20">{topicrow.U_MARK_ALWAYS_READ}</td>
-	<td class="row1h{topicrow.CLASS_NEW} row-forum" width="100%" onclick="window.location.href='{topicrow.U_VIEW_TOPIC}'">
-		<span class="topiclink{topicrow.CLASS_NEW}">
-			{topicrow.NEWEST_POST_IMG}{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE}<a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a>{topicrow.CALENDAR_TITLE}
-		</span><br />
+	<td class="row1h{topicrow.CLASS_NEW} row-forum" onclick="window.location.href='{topicrow.U_VIEW_TOPIC}'">
+		<div class="topic-title-hide-flow"><span class="topiclink{topicrow.CLASS_NEW}">{topicrow.NEWEST_POST_IMG}{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE}<a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a>{topicrow.CALENDAR_TITLE}</span></div><br />
 		<!-- BEGIN switch_topic_desc -->
 		<span class="gensmall">&nbsp;{topicrow.switch_topic_desc.TOPIC_DESCRIPTION}</span><br />
 		<!-- END switch_topic_desc -->
 		{topicrow.GOTO_PAGE}
 	</td>
-	<td class="row3 row-center-small" nowrap="nowrap" style="padding-top:0;padding-left:2px;padding-right:2px;">{topicrow.FIRST_POST_TIME}<br />{topicrow.TOPIC_AUTHOR}</td>
+	<td class="row3 row-center-small" nowrap="nowrap" style="padding-top: 0; padding-left: 2px; padding-right: 2px;">{topicrow.FIRST_POST_TIME}<br />{topicrow.TOPIC_AUTHOR}</td>
 	<td class="row2 row-center-small">{topicrow.VIEWS}</td>
 	<td class="row2 row-center-small">{topicrow.REPLIES}</td>
 	<!-- BEGIN rate_switch_msg -->
 	<td class="row2 row-center-small"><img src="images/rates/rate_{topicrow.TOPIC_RATING}.png" alt="{topicrow.TOPIC_RATING}" /></td>
 	<!-- END rate_switch_msg -->
-	<td class="row3 row-center-small" style="padding-top:0;padding-left:2px;padding-right:2px;" nowrap="nowrap">{topicrow.LAST_POST_TIME}<br />{topicrow.LAST_POST_AUTHOR} <!-- IF S_BOT -->&nbsp;<!-- ELSE -->{topicrow.LAST_POST_IMG}<!-- ENDIF --></td>
+	<td class="row3 row-center-small" style="padding-top: 0; padding-left: 2px; padding-right: 2px;" nowrap="nowrap">{topicrow.LAST_POST_TIME}<br />{topicrow.LAST_POST_AUTHOR} <!-- IF S_BOT -->&nbsp;<!-- ELSE -->{topicrow.LAST_POST_IMG}<!-- ENDIF --></td>
 </tr>
 <!-- IF not S_BOT -->
 <!-- BEGIN switch_viewforum_banner -->
@@ -76,7 +78,7 @@
 <!-- BEGIN switch_no_topics -->
 <tr><td class="row1 row-center" colspan="7" height="30"><span class="gen">{L_NO_TOPICS}</span></td></tr>
 <!-- END switch_no_topics -->
-<!-- IF not S_BOT and VIEWFORUM_BANNER_BOTTOM -->
+<!-- IF VIEWFORUM_BANNER_BOTTOM -->
 <tr><td class="row3 row-center" colspan="7">{VIEWFORUM_BANNER_BOTTOM}</td></tr>
 <!-- ENDIF -->
 <tr>

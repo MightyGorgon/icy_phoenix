@@ -50,6 +50,20 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'adsense_code' => array(
+		'lang_key' => 'IP_adsense_code',
+		'explain' => 'IP_adsense_code_explain',
+		'type' => 'VARCHAR',
+		'default' => '',
+		),
+
+	'google_analytics' => array(
+		'lang_key' => 'IP_google_analytics',
+		'explain' => 'IP_google_analytics_explain',
+		'type' => 'HTMLTEXT',
+		'default' => '',
+		),
+
 	'sitemap_topic_limit' => array(
 		'lang_key' => 'IP_sitemap_topic_limit',
 		'explain' => 'IP_sitemap_topic_limit_explain',

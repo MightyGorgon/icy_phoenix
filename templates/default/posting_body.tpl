@@ -58,13 +58,13 @@ function attach_rules(forum_id)
 {POST_PREVIEW_BOX}
 {ERROR_BOX}
 
-<!-- BEGIN switch_forum_rules -->
+<!-- IF S_FORUM_RULES -->
 <table class="forumline" width="100%" cellspacing="0">
-<tr><td class="row-header"><span>{L_FORUM_RULES}&nbsp;</span></td></tr>
+<tr><td class="row-header"><span><!-- IF S_FORUM_RULES_TITLE -->{L_FORUM_RULES}<!-- ENDIF -->&nbsp;</span></td></tr>
 <tr><td class="row1g-left" width="100%"><div class="post-text">{FORUM_RULES}</div></td></tr>
 </table>
 <br />
-<!-- END switch_forum_rules -->
+<!-- ENDIF -->
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_A}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN switch_username_select -->

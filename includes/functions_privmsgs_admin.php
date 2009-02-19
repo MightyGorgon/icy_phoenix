@@ -43,8 +43,9 @@ class aprvmUtils
 		global $filter_from, $filter_to, $order;
 		global $mode, $pmtype, $sort, $pmtype_text, $start;
 
-		$this->urlBase = basename(__FILE__). "?order=$order&amp;sort=$sort&amp;pmtype=$pmtype&filter_from=$filter_from&filter_to=$filter_to";
-		$this->urlPage = $this->urlBase. "&mode=$mode";
+		//$this->urlBase = basename(__FILE__) . "?order=$order&amp;sort=$sort&amp;pmtype=$pmtype&filter_from=$filter_from&filter_to=$filter_to";
+		$this->urlBase = 'admin_priv_msgs.' . PHP_EXT . '?order=' . $order . '&amp;sort=' . $sort . '&amp;pmtype=' . $pmtype . '&amp;filter_from=' . $filter_from . '&amp;filter_to=' . $filter_to;
+		$this->urlPage = $this->urlBase . "&mode=$mode";
 		$this->urlStart = $this->urlPage . '&start='.$start;
 	}
 
@@ -389,7 +390,7 @@ class aprvmManager
 		}
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$sql = 'INSERT INTO ' . PRIVMSGS_TABLE . $aprvmUtil->archiveText.' VALUES
+			$sql = 'INSERT INTO ' . PRIVMSGS_TABLE . $aprvmUtil->archiveText . ' VALUES
 				(' . $row['privmsgs_id'] . ', ' . $row['privmsgs_type'] . ", '" . addslashes($row['privmsgs_subject']) . "', '" . addslashes($row['privmsgs_text']) . "', " .
 				$row['privmsgs_from_userid'] . ', ' . $row['privmsgs_to_userid'] . ', ' . $row['privmsgs_date'] . ", '" .
 				$row['privmsgs_ip'] . "', " . $row['privmsgs_enable_bbcode'] . ', ' . $row['privmsgs_enable_html'] . ', ' .

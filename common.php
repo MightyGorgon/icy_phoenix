@@ -20,8 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-//error_reporting(E_ALL ^ E_NOTICE); // Report all errors, except notices
-error_reporting(E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
+error_reporting(E_ALL ^ E_NOTICE); // Report all errors, except notices
 
 // OLD extension.inc - BEGIN
 //@ini_set('memory_limit', '24M');
@@ -39,8 +38,9 @@ $starttime = $mtime;
 //$phpbb_root_path = IP_ROOT_PATH;
 //$phpEx = PHP_EXT;
 
-// Mighty Gorgon - Extra Debug - BEGIN
-@define('DEBUG_EXTRA', true);
+// Mighty Gorgon - Debug - BEGIN
+@define('DEBUG', true); // Debugging ON/OFF => TRUE/FALSE
+@define('DEBUG_EXTRA', true); // Extra Debugging ON/OFF => TRUE/FALSE
 if (defined('DEBUG_EXTRA') && (DEBUG_EXTRA == true))
 {
 	$base_memory_usage = 0;
@@ -49,7 +49,7 @@ if (defined('DEBUG_EXTRA') && (DEBUG_EXTRA == true))
 		$base_memory_usage = memory_get_usage();
 	}
 }
-// Mighty Gorgon - Extra Debug - END
+// Mighty Gorgon - Debug - END
 // OLD extension.inc - END
 
 // The following code (unsetting globals)
@@ -256,7 +256,7 @@ $unread = array();
 
 include(IP_ROOT_PATH . 'config.' . PHP_EXT);
 
-if(!defined('IP_INSTALLED'))
+if(!defined('IP_INSTALLED') && !defined('IN_INSTALL'))
 {
 	header('Location: ' . IP_ROOT_PATH . 'install/install.' . PHP_EXT);
 	exit;
@@ -296,6 +296,9 @@ unset($sql);
 $client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
 $user_ip = encode_ip($client_ip);
 $user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
+
+// Set PHP error handler to ours
+set_error_handler(defined('PHPBB_MSG_HANDLER') ? PHPBB_MSG_HANDLER : 'msg_handler');
 
 // CrackerTracker v5.x
 include(IP_ROOT_PATH . 'ctracker/engines/ct_varsetter.' . PHP_EXT);
@@ -356,7 +359,7 @@ unset($regs);
 
 // GET THE TIME TODAY AND YESTERDAY
 $today_ary = explode('|', create_date('m|d|Y', time(), $board_config['board_timezone']));
-$board_config['time_today'] = gmmktime(0 - $board_config['board_timezone'] - $board_config['summer_time'], 0, 0, $today_ary[0], $today_ary[1], $today_ary[2]);
+$board_config['time_today'] = gmmktime(0 - $board_config['board_timezone'], 0, 0, $today_ary[0], $today_ary[1], $today_ary[2]);
 $board_config['time_yesterday'] = $board_config['time_today'] - 86400;
 unset($today_ary);
 // Time Management - END
@@ -452,7 +455,7 @@ if ($board_config['admin_protect'])
 	$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 }
 
-if (intval($_GET['lofi']) || $_COOKIE['lofi'])
+if ((isset($_GET['lofi']) && (intval($_GET['lofi']) == 1)) || (isset($_COOKIE['lofi']) && (intval($_COOKIE['lofi']) == 1)))
 {
 	$lofi = 1;
 }

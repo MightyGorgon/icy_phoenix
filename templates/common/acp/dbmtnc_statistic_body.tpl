@@ -88,8 +88,8 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_VERSION_INFO}</th></tr>
 <tr>
-	<td class="row1" width="33%">{L_BOARD_VERSION}:</td>
-	<td class="row2" width="67%"><b>{PHPBB_VERSION}</b></td>
+	<td class="row1" width="33%">{L_IP_VERSION}:</td>
+	<td class="row2" width="67%"><b>{IP_VERSION}</b></td>
 </tr>
 <tr>
 	<td class="row1">{L_MOD_VERSION}:</td>

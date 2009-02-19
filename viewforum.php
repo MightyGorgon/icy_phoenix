@@ -160,13 +160,14 @@ check_page_auth($cms_page_id, $cms_page_name);
 $cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 // Force Topic Read - BEGIN
-$active ='';
+$active = 0;
+$install_time = time();
+$bypass = true;
 
-if ($board_config['disable_ftr'] == 0)
+if (!$board_config['disable_ftr'])
 {
-	$viewed_mode = $_GET['mode'];
+	$viewed_mode = isset($_GET['mode']) ? $_GET['mode'] : '';
 	$check_viewed = GetUsersView($userdata['user_id']);
-	$install_time = time();
 	$bypass = '';
 	$q = "SELECT active, effected, install_date FROM " . FORCE_READ_TABLE;
 	$r = $db -> sql_query($q);
@@ -175,58 +176,55 @@ if ($board_config['disable_ftr'] == 0)
 	$active = $row['active'];
 	$effected = $row['effected'];
 	$ins_date = $row['install_date'];
-}
-if (($active) && (strlen($ins_date) != 10))
-{
-	$q = "UPDATE " . FORCE_READ_TABLE . " SET install_date = '" . $install_time . "'";
-	$r = $db -> sql_query($q);
-}
 
-if (strlen($ins_date) != 10)
-{
-	$ins_date = $install_time;
-}
-
-if (($viewed_mode == 'reading') || ($check_viewed != 'false'))
-{
-	$bypass = true;
-}
-
-if (!$active)
-{
-	$bypass = true;
-}
-elseif ($active && ($check_viewed == 'false') && !$bypass)
-{
-	if ($viewed_mode == 'read_this')
+	if ($active && (strlen($ins_date) != 10))
 	{
-		$q = "SELECT topic_number, message FROM " . FORCE_READ_TABLE;
+		$q = "UPDATE " . FORCE_READ_TABLE . " SET install_date = '" . $install_time . "'";
 		$r = $db -> sql_query($q);
-		$row = $db -> sql_fetchrow($r);
-		$db->sql_freeresult($r);
-		$ftr_topic = $row['topic_number'];
-		$msg = $row['message'];
-		InsertReadTopic($userdata['user_id']);
-		redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append_red . '&mode=reading'), true);
 	}
-	else
+
+	if (isset($ins_date) && (strlen($ins_date) != 10))
 	{
-		if ((($check_viewed == 'false') && ($effected <> 1) && ($ins_date <= $userdata['user_regdate'])) || (($check_viewed == 'false') && ($effected == '1')))
+		$ins_date = $install_time;
+	}
+
+	if (($viewed_mode == 'reading') || ($check_viewed != 'false'))
+	{
+		$bypass = true;
+	}
+
+	if ($active && ($check_viewed == 'false') && !$bypass)
+	{
+		if ($viewed_mode == 'read_this')
 		{
-			include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-			$q = "SELECT * FROM " . FORCE_READ_TABLE;
+			$q = "SELECT topic_number, message FROM " . FORCE_READ_TABLE;
 			$r = $db -> sql_query($q);
 			$row = $db -> sql_fetchrow($r);
 			$db->sql_freeresult($r);
 			$ftr_topic = $row['topic_number'];
 			$msg = $row['message'];
-			$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append . '&amp;mode=read_this') . '">', '</a>');
-			message_die(GENERAL_ERROR, $msg . $lng_msg, 'Error');
-			include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			InsertReadTopic($userdata['user_id']);
+			redirect(append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append_red . '&mode=reading'), true);
 		}
 		else
 		{
-			$bypass = true;
+			if ((($check_viewed == 'false') && ($effected <> 1) && ($ins_date <= $userdata['user_regdate'])) || (($check_viewed == 'false') && ($effected == '1')))
+			{
+				include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+				$q = "SELECT * FROM " . FORCE_READ_TABLE;
+				$r = $db -> sql_query($q);
+				$row = $db -> sql_fetchrow($r);
+				$db->sql_freeresult($r);
+				$ftr_topic = $row['topic_number'];
+				$msg = $row['message'];
+				$lng_msg = '<br /><br />' . sprintf($lang['Click_read_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $ftr_topic . $kb_mode_append . '&amp;mode=read_this') . '">', '</a>');
+				message_die(GENERAL_ERROR, $msg . $lng_msg, 'Error');
+				include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			}
+			else
+			{
+				$bypass = true;
+			}
 		}
 	}
 }
@@ -282,7 +280,7 @@ if (!in_array($start_letter, $letters_array))
 	$start_letter = '';
 	$start_letter_sql = '';
 }
-else // we have a single letter, so lets sort alphabetically...
+else // we have a single letter, so let's sort alphabetically...
 {
 	$sort_dir = 'ASC';
 	$sort_order_sql = "t.topic_title " . $sort_dir;
@@ -589,7 +587,7 @@ if ($bypass)
 			$sql = "SELECT COUNT(topic_id) AS forum_topics
 				FROM " . TOPICS_TABLE . " t
 				WHERE t.forum_id = '" . $forum_id . "'
-					AND t.topic_title LIKE '" . $start_letter . "%'
+					" . $start_letter_sql . "
 				ORDER BY " . $sort_order_sql;
 			if (!($result = $db->sql_query($sql)))
 			{
@@ -709,7 +707,7 @@ if ($bypass)
 						$upi2db_post_announce
 						$start_letter_sql
 					ORDER BY t.topic_type DESC, " . $sort_order_sql . "
-					LIMIT $start, " . $board_config['topics_per_page'];
+					LIMIT " . $start . ", " . $board_config['topics_per_page'];
 // UPI2DB DELETE
 //#AND t.topic_type <> " . POST_GLOBAL_ANNOUNCE . "
 //<!-- END Unread Post Information to Database Mod -->
@@ -836,7 +834,7 @@ if ($bypass)
 //<!-- END Unread Post Information to Database Mod -->
 	$db->sql_freeresult($result);
 
-	if($cached1 || $cached2)
+	if((isset($cached1) && $cached1) || (isset($cached2) && $cached2))
 	{
 		$update_list = array();
 		for($i = 0; $i < count($topic_rowset); $i++)
@@ -976,11 +974,13 @@ if ($bypass)
 	$page_title = $forum_row['forum_name'];
 	$meta_description = '';
 	$meta_keywords = '';
+	$breadcrumbs_links_right = '';
 	if ($userdata['session_logged_in'])
 	{
 		$breadcrumbs_links_left = $marked_as_read;
-		$breadcrumbs_links_right = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . $menu_sep_char . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . $menu_sep_char . '&nbsp;' . $mark_always_read) : '');
+		$breadcrumbs_links_right = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . $mark_always_read) : '');
 	}
+	$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid('viewforumlist.' . PHP_EXT . '?' . $forum_id_append) . '">' . $lang['VF_ALL_TOPICS'] . '</a>';
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	if ($kb_mode == true)
@@ -1023,12 +1023,11 @@ if ($bypass)
 			$rules_bbcode = $bbcode->parse($rules_bbcode);
 			//BBcode Parsing for Olympus rules Start
 
-			$template->assign_block_vars('switch_forum_rules', array());
-			// display a title on top of the box?
-			if ($forum_info['rules_display_title'])
-			{
-				$template->assign_block_vars('switch_forum_rules.switch_display_title', array());
-			}
+			$template->assign_vars(array(
+				'S_FORUM_RULES' => true,
+				'S_FORUM_RULES_TITLE' => ($forum_info['rules_display_title']) ? true : false
+				)
+			);
 		}
 	}
 	display_index(POST_FORUM_URL . $forum_id);
@@ -1055,6 +1054,7 @@ if ($bypass)
 
 	$template->assign_vars(array(
 		'FORUM_ID' => $forum_id,
+		'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
 		'FORUM_NAME' => $forum_row['forum_name'],
 		'FORUM_RULES' => $rules_bbcode,
 		'MODERATORS' => $forum_moderators,
@@ -1156,7 +1156,7 @@ if ($bypass)
 			$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 			$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
-			$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
+			$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
 			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
 			$topic_title = $topic_title_prefix . $topic_title;
 			// Convert and clean special chars!
@@ -1246,7 +1246,6 @@ if ($bypass)
 
 			$views = $topic_rowset[$i]['topic_views'];
 
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 			$calendar_title = '';
 			$calendar_title = get_calendar_title($topic_rowset[$i]['topic_calendar_time'], $topic_rowset[$i]['topic_calendar_duration']);
@@ -1266,7 +1265,6 @@ if ($bypass)
 			}
 
 			$template->assign_block_vars('topicrow', array(
-				'ROW_COLOR' => $row_color,
 				'ROW_CLASS' => $row_class,
 				'FORUM_ID' => $forum_id,
 				'TOPIC_ID' => $topic_id,
@@ -1280,7 +1278,7 @@ if ($bypass)
 				'CLASS_NEW' => $topic_link['class_new'],
 				'NEWEST_POST_IMG' => $topic_link['newest_post_img'],
 				'TOPIC_ATTACHMENT_IMG' => topic_attachment_image($topic_rowset[$i]['topic_attachment']),
-				'TOPIC_RATING' => $rating2,
+				'TOPIC_RATING' => (!empty($rating2) ? $rating2 : ''),
 				'CALENDAR_TITLE' => $calendar_title,
 				//'GOTO_PAGE' => $goto_page,
 				'GOTO_PAGE' => (($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>'),
@@ -1312,7 +1310,7 @@ if ($bypass)
 
 			if (!empty($topic_rowset[$i]['topic_desc']) && $board_config['show_topic_description'])
 			{
-				$topic_desc = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_desc']) : $topic_rowset[$i]['topic_desc'];
+				$topic_desc = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_desc']) : $topic_rowset[$i]['topic_desc'];
 				// Convert and clean special chars!
 				$topic_desc = htmlspecialchars_clean($topic_desc);
 				// SMILEYS IN TITLE - BEGIN
@@ -1349,7 +1347,7 @@ if ($bypass)
 
 		if ($topics_count > (10 * $board_config['topics_per_page']))
 		{
-			$template->assign_block_vars('extended_pagination', array());
+			$template->assign_var('S_EXTENDED_PAGINATION', true);
 		}
 
 		$template->assign_vars(array(

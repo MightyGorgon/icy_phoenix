@@ -7,7 +7,7 @@
 		<!-- IF LAYOUT_NAME -->
 		{L_B_LAYOUT}: [ <a href="{PAGE_URL}">{LAYOUT_NAME}</a> ]&nbsp;|&nbsp;{L_B_PAGE}: [ {PAGE} ]
 		<!-- ELSE -->
-		<a href="{U_CMS}">{L_CMS_MANAGEMENT}</a>&nbsp;|&nbsp;<a href="{U_CMS_CONFIG}">{L_CMS_CONFIG}</a>&nbsp;|&nbsp;<a href="{U_CMS_PAGES_PERMISSIONS}">{L_CMS_PAGES_PERMISSIONS}</a>&nbsp;|&nbsp;<a href="{U_CMS_ADS}">{L_CMS_ADS}</a>&nbsp;|&nbsp;<a href="{U_CMS_MENU}">{L_CMS_MENU}</a>
+		<a href="{U_CMS}">{L_CMS_MANAGEMENT}</a>&nbsp;|&nbsp;<a href="{U_CMS_CONFIG}">{L_CMS_CONFIG}</a>&nbsp;|&nbsp;<a href="{U_CMS_PAGES_PERMISSIONS}">{L_CMS_PAGES_PERMISSIONS}</a>&nbsp;|&nbsp;<a href="{U_CMS_ADS}">{L_CMS_ADS}</a>&nbsp;|&nbsp;<a href="{U_CMS_MENU}">{L_CMS_MENU_PAGE}</a>
 		<!-- ENDIF -->
 	</div>
 </div>{IMG_TBR}

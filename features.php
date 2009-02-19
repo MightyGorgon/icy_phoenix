@@ -70,7 +70,7 @@ $features_array = array(
 		'acls' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'b_l' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'banning' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
-		'suspension' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'suspension' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'warn' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'u_l' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'u_p_ip_l' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
@@ -129,7 +129,7 @@ $features_array = array(
 		'a_i_t' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'a_t' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'm_a' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
-		'a_p' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'a_p' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 	),
 
 	'caching' => array(
@@ -150,7 +150,7 @@ $features_array = array(
 
 	'search_system' => array(
 		'ft_n' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
-		'c_t_s' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'c_t_s' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'c_f_s' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'my_sql_text' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'a_s' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
@@ -283,8 +283,8 @@ $features_array = array(
 		's_style' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'install_style' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'custom_style' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
-		'custom_themes' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
-		'custom_imageset' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'custom_themes' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
+		'custom_imageset' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 	),
 
 	'permission' => array(

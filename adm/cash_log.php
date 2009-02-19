@@ -183,7 +183,6 @@ while (list($key,) = each ($ar_action))
 {
 	$template->assign_block_vars('actionfilter', array(
 		'ROW_CLASS' => ((!($i % 2)) ? $theme['td_class1'] : $theme['td_class2']),
-		'ROW_COLOR' => ((!($i % 2)) ? $theme['td_color1'] : $theme['td_color2']),
 		'NAME' => $lang['Cash_' . $key],
 		'LINK' => append_sid('cash_log.' . PHP_EXT . '?saction=' . $key . '&amp;stime=' . $stime . '&amp;scount=' . $scount . '&amp;sindex=0'),
 		'DELETE' => $lang['Delete_' . ' . $key . ' . '_logs'],
@@ -205,7 +204,6 @@ while (list($key,) = each ($ar_time))
 {
 	$template->assign_block_vars('timefilter', array(
 		'ROW_CLASS' => ((!($i % 2)) ? $theme['td_class1'] : $theme['td_class2']),
-		'ROW_COLOR' => ((!($i % 2)) ? $theme['td_color1'] : $theme['td_color2']),
 		'NAME' => $lang[ucfirst($key)],
 		'LINK' => append_sid('cash_log.' . PHP_EXT . '?saction=' . $saction . '&amp;stime=' . $key . '&amp;scount=' . $scount . '&amp;sindex=0')
 		)
@@ -260,7 +258,6 @@ for ($i = 0; $i < count($data_log); $i++)
 	$entry = $data_log[$i];
 	$entry['log_time'] = create_date($board_config['default_dateformat'], $entry['log_time'], $board_config['board_timezone']);
 	$entry['log_action'] = '<span class="gen">' . cash_clause($lang['Cash_clause'][$entry['log_type']],$entry['log_action']) . '</span>';
-	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$template->assign_block_vars('logrow', array(
@@ -269,7 +266,7 @@ for ($i = 0; $i < count($data_log); $i++)
 		'TYPE' => $lang['Cash_' . $action_types[$entry['log_type']]],
 		'ACTION' => $entry['log_action'],
 		'ROW_CLASS' => $row_class,
-		'ROW_COLOR' => $row_color)
+		)
 	);
 }
 

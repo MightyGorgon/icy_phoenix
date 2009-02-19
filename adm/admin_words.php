@@ -140,14 +140,15 @@ if($mode != '')
 			message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
 		}
 
+		$db->clear_cache('word_censor_');
+
 		$message .= '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
-		cache_words();
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($mode == 'delete')
 	{
-		if(isset($_POST['id']) ||  isset($_GET['id']))
+		if(isset($_POST['id']) || isset($_GET['id']))
 		{
 			$word_id = (isset($_POST['id'])) ? $_POST['id'] : $_GET['id'];
 			$word_id = intval($word_id);
@@ -168,7 +169,9 @@ if($mode != '')
 			{
 				message_die(GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
 			}
-			cache_words();
+
+			$db->clear_cache('word_censor_');
+
 			$message = $lang['Word_removed'] . '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -234,11 +237,9 @@ else
 		$replacement = $word_rows[$i]['replacement'];
 		$word_id = $word_rows[$i]['word_id'];
 
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('words', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'WORD' => htmlspecialchars($word),
 			'REPLACEMENT' => htmlspecialchars($replacement),

@@ -126,8 +126,8 @@ function init_board_config($mod_name, $config_fields, $sub_name = '', $sub_sort 
 			}
 		}
 
-		// deliever it for input only if not hidden
-		if (!$config_data['hide'])
+		// deliver it for input only if not hidden
+		if (!isset($config_data['hide']) || !$config_data['hide'])
 		{
 			$mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$config_key] = $config_data;
 

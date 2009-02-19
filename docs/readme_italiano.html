@@ -18,10 +18,7 @@
 <body>
 <a name="top"></a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td class="leftshadow" width="9" valign="top"><img src="../images/spacer.gif" alt="" width="9" height="1" /></td>
-		<td width="100%" valign="top">
+<div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" colspan="3" valign="top">
@@ -55,8 +52,8 @@
 					<li><a href="#fresh_installation">Nuova Installazione</a></li>
 					<li><a href="#upgrade_phpbb">Upgrade da phpBB 2.0.x</a></li>
 					<li><a href="#upgrade_xs">Upgrade da phpBB XS</a></li>
-					<li><a href="#upgrade_ip">Upgrade da IP 1.2.0.27 o successiva</a></li>
 					<li><a href="#upgrade_ip_015">Upgrade da IP 1.1.0.15</a></li>
+					<li><a href="#upgrade_ip">Upgrade da IP 1.2.0.27 o successiva</a></li>
 					<li><a href="#support">Supporto</a></li>
 					<li><a href="#history">Cronologia</a></li>
 				</ul>
@@ -194,21 +191,20 @@
 							</ul>
 							<br />
 						</li>
+						<!--
 						<li>
 							Impostare i permessi a <span class="text_red">CHMOD 666</span> ai seguenti files:<br />
 							<ul>
-								<li><b>includes/def_themes.php</b></li>
-								<li><b>includes/def_tree.php</b></li>
-								<li><b>includes/def_words.php</b></li>
-								<!-- <li><b>language/lang_*/lang_extend.php</b></li> -->
+								<li><b>language/lang_*/lang_extend.php</b></li>
 							</ul>
 							<br />
 						</li>
+						-->
 						<li>Lanciare la procedura di installazione dalla cartella install: <b>install/install.php</b> (esempio: <a class="post-url" href="http://www.mysite.com/icyphoenix/install/install.php">http://www.mysite.com/forum/install/install.php</a>)</li>
 						<li>Seguire le istruzioni a video, inserendo ogni dato richiesto e terminare l'installazione.</li>
 						<li>Eliminare o rinominare la cartella <b>install</b>.</li>
 						<li>Personalizzate ciò che ritenete opportuno in files e db (alcuni files necessitano di modifiche manuali, mentre la maggior parte delle opzioni possono essere configurate da ACP e CMS).</li>
-						<li>Usare il nuovo <b>Icy Phoenix</b> Forum/CMS <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
+						<li>Usare il nuovo <b>Icy Phoenix</b> <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
 					<br />
 				</div>
@@ -246,8 +242,7 @@
 						<li>Caricare tutti i files di Icy Phoenix, (tranne il file <b>config.php</b>), nella stessa cartella dove phpBB &egrave; installato e funzionante. Prestare attenzione che tutti i file rimasti siano sostituiti dagli eventuali nuovi.</li>
 						<li>Applicare i permessi CHMOD richiesti per una <a class="post-url" href="#fresh_installation">nuova installazione</a>.</li>
 						<li>Personalizzate ci&ograve; che ritenete opportuno in files e db (alcuni files necessitano di modifiche manuali, mentre la maggior parte delle opzioni possono essere configurate da ACP e CMS).</li>
-						<li>Sboccare il forum.</li>
-						<li>Usare il nuovo <b>Icy Phoenix</b> Forum/CMS <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
+						<li>Usare il nuovo <b>Icy Phoenix</b> <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
 					<br />
 				</div>
@@ -265,12 +260,12 @@
 					<br />
 					Se usate phpBBXS, potete aggiornare il vostro forum seguendo queste semplici istruzioni (basate su un installazione standard di phpBB XS 058):<br />
 					<ol type="1">
+						<li>Fare il login come amministratore.</li>
+						<li>Disabilitare il sito.</li>
 						<li><span class="text_red">Fare un backup di tutti i files e del database</span> (se non fai il backup, non provare neanche a richiedere supporto! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
 						<li>E' stato fatto il backup? Se non &egrave; stato fatto, tornare al punto precedente.</li>
-						<li>Salvare in un luogo sicuro i files <b>.htaccess</b>, <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b>, <b>includes/def_words.php</b>.</li>
+						<li>Salvare in un luogo sicuro i files <b>.htaccess</b> e <b>config.php</b>.</li>
 						<li>Controllare che effettivamente il backup sia stato fatto e tenerlo in un luogo sicuro. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Fare il login come amministratore.</li>
-						<li>Disabilitare il forum.</li>
 						<li>Decomprimere il pacchetto di Icy Phoenix in una cartella del vostro HD.</li>
 						<li>Caricare la cartella <b>install</b> nella root del vostro forum phpBB XS e lanciare il file <b>database_update.php</b> (esempio: http://www.mysite.com/xs/database_update.php).</li>
 						<li>Eliminare la cartella <b>install</b>.</li>
@@ -291,7 +286,7 @@
 								<li><b>docs</b></li>
 								<li><b>errors</b></li>
 								<li><b>hl</b></li>
-								<li><b>includes</b> (tranne i files <b>includes/def_tree.php</b> e <b>includes/def_words.php</b>)</li>
+								<li><b>includes</b></li>
 								<li><b>language</b></li>
 								<li><b>mo</b></li>
 								<li><b>mods</b></li>
@@ -301,51 +296,11 @@
 							</ul>
 						</li>
 						<li>Rimuovere <b>tutti i files</b>, tranne il file <b>config.php</b>, all'interno della root del vostro forum phpBB XS (assicurarsi che non vi siano, in questi files, parti di MOD eventualmente installati, ma in ogni caso dovreste avere un backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Caricare tutti i files di Icy Phoenix, (tranne i files <b>config.php</b>, <b>includes/def_tree.php</b> e <b>includes/def_words.php</b>), nella stessa cartella dove phpBB XS &egrave; installato e funzionante. Prestare attenzione che tutti i file rimasti siano sostituiti dagli eventuali nuovi.</li>
+						<li>Caricare tutti i files di Icy Phoenix, (tranne il file <b>config.php</b>), nella stessa cartella dove phpBB XS &egrave; installato e funzionante. Prestare attenzione che tutti i file rimasti siano sostituiti dagli eventuali nuovi.</li>
 						<li>Applicare i permessi CHMOD richiesti per una <a class="post-url" href="#fresh_installation">nuova installazione</a>.</li>
 						<li>Personalizzate ci&ograve; che ritenete opportuno in files e db (alcuni files necessitano di modifiche manuali, mentre la maggior parte delle opzioni possono essere configurate da ACP e CMS).</li>
-						<li>Sboccare il forum.</li>
-						<li>Usare il nuovo <b>Icy Phoenix</b> Forum/CMS <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
-					</ol>
-					<br />
-				</div>
-			</td>
-		</tr>
-		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Sommario</a>&nbsp;&nbsp;</span></td></tr>
-		</table>
-
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip">Upgrade da Icy Phoenix 1.2.0.27 o successiva</a></span></td>
-		</tr>
-		<tr>
-			<td class="row-post" colspan="3">
-				<div class="post-text">
-					<br />
-					Se usate Icy Phoenix 1.2.0.27 o successiva, potete aggiornare il vostro sito seguendo queste semplici istruzioni:<br />
-					<ol type="1">
-						<li><span class="text_red">Fare un backup di tutti i files e del database</span> (se non fai il backup, non provare neanche a richiedere supporto! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
-						<li>E' stato fatto il backup? Se non &egrave; stato fatto, tornare al punto precedente.</li>
-						<li>Salvare in un luogo sicuro i files <b>.htaccess</b>, <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b>, <b>includes/def_words.php</b>.</li>
-						<li>Controllare che effettivamente il backup sia stato fatto e tenerlo in un luogo sicuro. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Fare il login come amministratore.</li>
-						<li>Disabilitare il forum.</li>
-						<li>Decomprimere il pacchetto di Icy Phoenix in una cartella del vostro HD.</li>
-						<li>Caricare la cartella <b>install</b> nella root del vostro Icy Phoenix e lanciare il file <b>database_update.php</b> (esempio: http://www.mysite.com/ip/database_update.php).</li>
-						<li>Eliminare la cartella <b>install</b>.</li>
-						<li>Rimuovere le seguenti cartelle (assicurarsi che non vi siano, in queste cartelle, parti di MOD eventualmente installati, ma in ogni caso dovreste avere un backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
-							<ul>
-								<li><b>adm</b></li>
-								<li><b>includes</b> (tranne i files <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> e <b>includes/def_words.php</b>)</li>
-								<li><b>language</b></li>
-								<li><b>templates</b></li>
-							</ul>
-						</li>
-						<li>Rimuovere <b>tutti i files</b>, tranne il file <b>config.php</b>, all'interno della root del vostro forum Icy Phoenix (assicurarsi che non vi siano, in questi files, parti di MOD eventualmente installati, ma in ogni caso dovreste avere un backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Caricare tutti i files di Icy Phoenix, (tranne i files <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> e <b>includes/def_words.php</b>), nella stessa cartella dove Icy Phoenix &egrave; installato e funzionante. Prestare attenzione che tutti i file rimasti siano sostituiti dagli eventuali nuovi.</li>
-						<li>Applicare i permessi CHMOD richiesti per una <a class="post-url" href="#fresh_installation">nuova installazione</a>.</li>
-						<li>Personalizzate ci&ograve; che ritenete opportuno in files e db (alcuni files necessitano di modifiche manuali, mentre la maggior parte delle opzioni possono essere configurate da ACP e CMS).</li>
-						<li>Sboccare il forum.</li>
-						<li>Usare il nuovo <b>Icy Phoenix</b> Forum/CMS <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
+						<li>Sboccare il sito.</li>
+						<li>Usare il nuovo <b>Icy Phoenix</b> <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
 					<br />
 				</div>
@@ -363,29 +318,77 @@
 					<br />
 					Se usate Icy Phoenix 1.1.0.15 o successiva, potete aggiornare il vostro sito seguendo queste semplici istruzioni:<br />
 					<ol type="1">
+						<li>Fare il login come amministratore.</li>
+						<li>Disabilitare il sito.</li>
 						<li><span class="text_red">Fare un backup di tutti i files e del database</span> (se non fai il backup, non provare neanche a richiedere supporto! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
 						<li>E' stato fatto il backup? Se non &egrave; stato fatto, tornare al punto precedente.</li>
-						<li>Salvare in un luogo sicuro i files <b>.htaccess</b>, <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b>, <b>includes/def_words.php</b>.</li>
+						<li>Salvare in un luogo sicuro i files <b>.htaccess</b> e <b>config.php</b>.</li>
 						<li>Controllare che effettivamente il backup sia stato fatto e tenerlo in un luogo sicuro. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Fare il login come amministratore.</li>
-						<li>Disabilitare il forum.</li>
 						<li>Decomprimere il pacchetto di Icy Phoenix in una cartella del vostro HD.</li>
 						<li>Caricare la cartella <b>install</b> nella root del vostro Icy Phoenix e lanciare il file <b>database_update.php</b> (esempio: http://www.mysite.com/ip/database_update.php).</li>
 						<li>Eliminare la cartella <b>install</b>.</li>
 						<li>Rimuovere le seguenti cartelle (assicurarsi che non vi siano, in queste cartelle, parti di MOD eventualmente installati, ma in ogni caso dovreste avere un backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
 							<ul>
 								<li><b>adm</b></li>
-								<li><b>includes</b> (tranne i files <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> e <b>includes/def_words.php</b>)</li>
+								<li><b>includes</b></li>
 								<li><b>language</b></li>
 								<li><b>templates</b></li>
 							</ul>
 						</li>
 						<li>Rimuovere <b>tutti i files</b>, tranne il file <b>config.php</b>, all'interno della root del vostro forum Icy Phoenix (assicurarsi che non vi siano, in questi files, parti di MOD eventualmente installati, ma in ogni caso dovreste avere un backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Caricare tutti i files di Icy Phoenix, (tranne i files <b>config.php</b>, <b>includes/def_themes.php</b>, <b>includes/def_tree.php</b> e <b>includes/def_words.php</b>), nella stessa cartella dove Icy Phoenix &egrave; installato e funzionante. Prestare attenzione che tutti i file rimasti siano sostituiti dagli eventuali nuovi.</li>
+						<li>Caricare tutti i files di Icy Phoenix, (tranne il file <b>config.php</b>), nella stessa cartella dove Icy Phoenix &egrave; installato e funzionante. Prestare attenzione che tutti i file rimasti siano sostituiti dagli eventuali nuovi.</li>
 						<li>Applicare i permessi CHMOD richiesti per una <a class="post-url" href="#fresh_installation">nuova installazione</a>.</li>
 						<li>Personalizzate ci&ograve; che ritenete opportuno in files e db (alcuni files necessitano di modifiche manuali, mentre la maggior parte delle opzioni possono essere configurate da ACP e CMS).</li>
-						<li>Sboccare il forum.</li>
-						<li>Usare il nuovo <b>Icy Phoenix</b> Forum/CMS <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
+						<li>Sboccare il sito.</li>
+						<li>Usare il nuovo <b>Icy Phoenix</b> <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
+					</ol>
+					<br />
+				</div>
+			</td>
+		</tr>
+		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Sommario</a>&nbsp;&nbsp;</span></td></tr>
+		</table>
+
+		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip">Upgrade da Icy Phoenix 1.2.0.27 o successiva</a></span></td>
+		</tr>
+		<tr>
+			<td class="row-post" colspan="3">
+				<div class="post-text">
+					<br />
+					Se usate Icy Phoenix 1.2.0.27 o successiva, potete aggiornare il vostro sito seguendo queste semplici istruzioni:<br />
+					<ol type="1">
+						<li>Fare il login come amministratore.</li>
+						<li>Disabilitare il sito.</li>
+						<li><span class="text_red">Fare un backup di tutti i files e del database</span> (se non fai il backup, non provare neanche a richiedere supporto! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
+						<li>E' stato fatto il backup? Se non &egrave; stato fatto, tornare al punto precedente.</li>
+						<li>Salvare in un luogo sicuro i files <b>.htaccess</b> e <b>config.php</b>.</li>
+						<li>Controllare che effettivamente il backup sia stato fatto e tenerlo in un luogo sicuro. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
+						<li>Decomprimere il pacchetto di Icy Phoenix in una cartella del vostro HD.</li>
+						<li>Caricare la cartella <b>install</b> nella root del vostro Icy Phoenix e lanciare il file <b>database_update.php</b> (esempio: http://www.mysite.com/ip/database_update.php).</li>
+						<li>Rimuovere le seguenti cartelle (assicurarsi che non vi siano, in queste cartelle, parti di MOD eventualmente installati, ma in ogni caso dovreste avere un backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
+							<ul>
+								<li><b>adm</b></li>
+								<li><b>includes</b></li>
+								<li><b>language</b></li>
+								<li><b>templates</b></li>
+							</ul>
+						</li>
+						<li>Rimuovere <b>tutti i files</b>, tranne il file <b>config.php</b>, all'interno della root del vostro forum Icy Phoenix (assicurarsi che non vi siano, in questi files, parti di MOD eventualmente installati, ma in ogni caso dovreste avere un backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
+						<li>Caricare tutti i files di Icy Phoenix, (tranne il file <b>config.php</b>), nella stessa cartella dove Icy Phoenix &egrave; installato e funzionante. Prestare attenzione che tutti i file rimasti siano sostituiti dagli eventuali nuovi.</li>
+						<li>Applicare i permessi CHMOD richiesti per una <a class="post-url" href="#fresh_installation">nuova installazione</a>.</li>
+						<li>Personalizzate ci&ograve; che ritenete opportuno in files e db (alcuni files necessitano di modifiche manuali, mentre la maggior parte delle opzioni possono essere configurate da ACP e CMS). Ecco una lista di alcuni files che potresti avere bisogno di modificare manualmente:
+							<ul>
+								<li><b>common.php</b></li>
+								<li><b>config.php</b></li>
+								<li><b>includes/constants.php</b></li>
+								<li><b>language/lang_***/lang_main_settings.php</b></li>
+							</ul>
+						</li>
+						<li>Esegui <b>install/install.php</b> e completa l'aggiornamento eseguendo lo spostamento delle immagini caricate e rimpiazzando tutti i vecchi link nei messaggi: la procedura automatizzata dovrebbe essere in grado di fare tutto automaticamente, devi soltanto seguire le istruzioni sullo schermo.</li>
+						<li>Eliminare la cartella <b>install</b>.</li>
+						<li>Sboccare il sito.</li>
+						<li>Usare il nuovo <b>Icy Phoenix</b> <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
 					<br />
 				</div>
@@ -414,12 +417,12 @@
 				<br />
 				<div class="post-text">
 					<br />
-					<i>Versione 1.2.0.27 (2008/03/03)</i>
-					<ul><li>Seconda versione ufficiale.</li></ul>
-					<br />
-					<br />
 					<i>Versione 1.1.0.15 (2007/05/20)</i>
 					<ul><li>Prima versione ufficiale.</li></ul>
+					<br />
+					<br />
+					<i>Versione 1.2.0.27 (2008/03/03)</i>
+					<ul><li>Seconda versione ufficiale.</li></ul>
 					<br />
 				</div>
 				<br />
@@ -451,10 +454,7 @@
 	</td>
 </tr>
 </table>
-		</td>
-		<td class="rightshadow" width="9" valign="top"><img src="../images/spacer.gif" alt="" width="9" height="1" /></td>
-	</tr>
-</table>
+</div></div></div>
 </div>
 <a name="bottom"></a>
 </body>

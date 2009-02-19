@@ -893,9 +893,8 @@ function album_comment_notify($pic_id)
 {
 	global $db, $board_config, $album_config, $lang, $userdata;
 
-	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
-					WHERE ban_userid <> 0
-					ORDER BY ban_userid ASC";
+	// One row SQL for caching purpose...
+	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid <> 0 ORDER BY ban_userid ASC";
 	if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
@@ -1165,6 +1164,7 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 					if ($dir_creation == true)
 					{
 						@copy($pic_info['base_path'] . 'index.html', $current_t_path . 'index.html');
+						@chmod($current_t_path . 'index.html', 0755);
 						$dir_exists = true;
 					}
 				}
@@ -1186,7 +1186,7 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 	return $pic_info;
 }
 
-if (!function_exists(setFlag))
+if (!function_exists('setFlag'))
 {
 	function setFlag($flags, $flag)
 	{
@@ -1194,7 +1194,7 @@ if (!function_exists(setFlag))
 	}
 }
 
-if (!function_exists(clearFlag))
+if (!function_exists('clearFlag'))
 {
 	function clearFlag($flags, $flag)
 	{
@@ -1202,7 +1202,7 @@ if (!function_exists(clearFlag))
 	}
 }
 
-if (!function_exists(checkFlag))
+if (!function_exists('checkFlag'))
 {
 	function checkFlag($flags, $flag)
 	{

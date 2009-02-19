@@ -56,7 +56,7 @@ if (($mode == false) || ($mode != 'archive'))
 	$page_title = $lang['Ajax_Chat'];
 	$meta_description = '';
 	$meta_keywords = '';
-	$breadcrumbs_links_right = '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>' . (($ajax_archive_link == true) ? ('&nbsp;' . $menu_sep_char . '&nbsp;' . '<a href="' . append_sid('ajax_chat.' . PHP_EXT . '?mode=archive') . '">' . $lang['Ajax_Archive'] . '</a>') : '');
+	$breadcrumbs_links_right = '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>' . (($ajax_archive_link == true) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . '<a href="' . append_sid('ajax_chat.' . PHP_EXT . '?mode=archive') . '">' . $lang['Ajax_Archive'] . '</a>') : '');
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => 'ajax_chat_body.tpl'));
@@ -174,12 +174,13 @@ else
 	);
 
 	// Get Who is Online in the shoutbox
-	$time_ago = time() - 30;
+	// Only get session data if the user was online SESSION_REFRESH seconds ago
+	$time_ago = time() - SESSION_REFRESH;
 
 	// Set all counters to 0
 	$reg_online_counter = $guest_online_counter = $online_counter = 0;
 
-	$sql = "SELECT u.user_id, u.username, u.user_color
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color
 		FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
 		WHERE s.session_time >= " . $time_ago . "
 			AND s.session_user_id = u.user_id";
@@ -187,14 +188,16 @@ else
 	$result = $db->sql_query($sql);
 	while($online = $db->sql_fetchrow($result))
 	{
-		$user_id = $online['user_id'];
-		$username = $online['username'];
-
 		if($user_id != ANONYMOUS)
 		{
-			$username = colorize_username($user_id, $username, $online['user_color']);
+			$username = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active']);
+			$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
 			$template->assign_block_vars('online_list', array(
-				'USERNAME' => $username
+				'USERNAME' => $username,
+				'USER' => $online['username'],
+				'USER_ID' => $online['user_id'],
+				'LINK' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
+				'LINK_STYLE' => $style_color,
 				)
 			);
 			$reg_online_counter++;
@@ -286,7 +289,7 @@ else
 		// BBCodes parsing not needed in this case!
 		/*
 		// Word Censor.
-		$message = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $message) : $message;
+		$message = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $message) : $message;
 
 		$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;

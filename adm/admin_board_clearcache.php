@@ -23,40 +23,58 @@ require('./pagestart.' . PHP_EXT);
 $db->clear_cache('config_');
 
 $confirmation = false;
-if(isset($_POST['confirm_clear_cache_main']))
+$meta_tag = '';
+if(isset($_POST['confirm_clear_cache_main']) || (isset($_GET['confirm_clear_cache_main']) && ($_GET['confirm_clear_cache_main'] == str_replace('sid=', '', $SID))))
 {
-	$db->clear_cache();
-	empty_cache_folders();
+	$files_deleted = empty_cache_folders('', CACHE_FILES_PER_STEP);
+	$redirect_url = append_sid('admin_board_clearcache.' . PHP_EXT . '?confirm_clear_cache_main=' . str_replace('sid=', '', $SID));
+	if ($files_deleted === CACHE_FILES_PER_STEP)
+	{
+		//meta_refresh(3, $redirect_url);
+		$meta_tag = '</body><head><meta http-equiv="refresh" content="3;url=' . $redirect_url . '"></head><body>';
+		$message .= $lang['MG_SW_Empty_Precompiled_Posts_InProgress'] . '<br /><br />' . $lang['MG_SW_Empty_Precompiled_Posts_InProgress_Redirect'] . '<br /><br />' . sprintf($lang['MG_SW_Empty_Precompiled_Posts_InProgress_Redirect_Click'], '<a href="' . $redirect_url . '">', '</a>');
+		message_die(GENERAL_MESSAGE, $meta_tag . $message);
+	}
 
-	$message = '<br /><br />' . $lang['Empty_Cache_Success'] . '<br /><br />';
+	$message = $lang['Empty_Cache_Success'] . '<br /><br />';
 	$confirmation = true;
 }
 
 if(isset($_POST['confirm_clear_cache_posts']))
 {
 	$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled = ''";
-
 	if(!$result = $db->sql_query($sql))
 	{
-		$meta_tag = '</body><head><meta http-equiv="refresh" content="3;url=' . append_sid('admin_board_posting.' . PHP_EXT) . '"></head><body>';
-		$message .=  '<br /><br />' . $lang['MG_SW_Empty_Precompiled_Posts_Fail'] . '<br /><br />';
+		$message .= '<br /><br />' . $lang['MG_SW_Empty_Precompiled_Posts_Fail'] . '<br /><br />';
+		message_die(GENERAL_MESSAGE, $message);
+	}
+
+	$message = $lang['MG_SW_Empty_Precompiled_Posts_Success'] . '<br /><br />';
+	$confirmation = true;
+}
+
+if(isset($_POST['confirm_clear_cache_thumbs']) || (isset($_GET['confirm_clear_cache_thumbs']) && ($_GET['confirm_clear_cache_thumbs'] == str_replace('sid=', '', $SID))))
+{
+	$files_deleted = empty_images_cache_folders(CACHE_FILES_PER_STEP);
+	$redirect_url = append_sid('admin_board_clearcache.' . PHP_EXT . '?confirm_clear_cache_thumbs=' . str_replace('sid=', '', $SID));
+	if ($files_deleted === CACHE_FILES_PER_STEP)
+	{
+		//meta_refresh(3, $redirect_url);
+		$meta_tag = '</body><head><meta http-equiv="refresh" content="3;url=' . $redirect_url . '"></head><body>';
+		$message .= $lang['MG_SW_Empty_Precompiled_Posts_InProgress'] . '<br /><br />' . $lang['MG_SW_Empty_Precompiled_Posts_InProgress_Redirect'] . '<br /><br />' . sprintf($lang['MG_SW_Empty_Precompiled_Posts_InProgress_Redirect_Click'], '<a href="' . $redirect_url . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $meta_tag . $message);
 	}
 
-	$message = '<br /><br />' . $lang['MG_SW_Empty_Precompiled_Posts_Success'] . '<br /><br />';
+	$message = $lang['Empty_Cache_Success'] . '<br /><br />';
 	$confirmation = true;
 }
 
-if(isset($_POST['confirm_clear_cache_thumbs']))
+if ($confirmation)
 {
-	empty_images_cache_folders();
-	$message = '<br /><br />' . $lang['Empty_Cache_Success'] . '<br /><br />';
-	$confirmation = true;
-}
-
-if ($confirmation == true)
-{
-	//$meta_tag = '</body><head><meta http-equiv="refresh" content="3;url=' . append_sid('admin_board_clearcache.' . PHP_EXT) . '"></head><body>';
+	$redirect_url = append_sid('admin_board_clearcache.' . PHP_EXT);
+	//meta_refresh(3, $redirect_url);
+	//$meta_tag = '</body><head><meta http-equiv="refresh" content="3;url=' . $redirect_url . '"></head><body>';
+	$message .= sprintf($lang['MG_SW_Empty_Precompiled_Posts_Redirect_Click'], '<a href="' . append_sid('admin_board_clearcache.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $meta_tag . $message);
 }
 

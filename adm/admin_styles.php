@@ -43,7 +43,7 @@ if(isset($_GET['mode']) || isset($_POST['mode']))
 }
 else
 {
-	$mode = "";
+	$mode = '';
 }
 
 switch($mode)
@@ -101,7 +101,7 @@ switch($mode)
 				message_die(GENERAL_ERROR, "Could not insert theme data!", "", __LINE__, __FILE__, $sql);
 			}
 
-			cache_themes();
+			$db->clear_cache('themes_');
 			$message = $lang['Theme_installed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -157,16 +157,15 @@ switch($mode)
 
 				for($i = 0; $i < count($installable_themes); $i++)
 				{
-					$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 					$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 					$template->assign_block_vars('styles', array(
 						'ROW_CLASS' => $row_class,
-						'ROW_COLOR' => '#' . $row_color,
 						'STYLE_NAME' => $installable_themes[$i]['style_name'],
 						'TEMPLATE_NAME' => $installable_themes[$i]['template_name'],
 
-						'U_STYLES_INSTALL' => append_sid('admin_styles.' . PHP_EXT . '?mode=addnew&amp;style=' . urlencode($installable_themes[$i]['style_name']) . '&amp;install_to=' . urlencode($installable_themes[$i]['template_name'])))
+						'U_STYLES_INSTALL' => append_sid('admin_styles.' . PHP_EXT . '?mode=addnew&amp;style=' . urlencode($installable_themes[$i]['style_name']) . '&amp;install_to=' . urlencode($installable_themes[$i]['template_name']))
+						)
 					);
 
 				}
@@ -230,16 +229,14 @@ switch($mode)
 					message_die(GENERAL_ERROR, "Could not update themes table!", "", __LINE__, __FILE__, $sql);
 				}
 
-				cache_themes();
+				$db->clear_cache('themes_');
 				$message = $lang['Theme_updated'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
-				//
 				// First, check if we already have a style by this name
-				//
 				$sql = "SELECT themes_id
 					FROM " . THEMES_TABLE . "
 					WHERE style_name = '" . str_replace("\'", "''", $updated['style_name']) . "'";
@@ -296,7 +293,7 @@ switch($mode)
 
 				$style_id = $db->sql_nextid();
 
-				cache_themes();
+				$db->clear_cache('themes_');
 				$message = $lang['Theme_created'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
@@ -304,7 +301,7 @@ switch($mode)
 		}
 		else
 		{
-			if($mode == "edit")
+			if($mode == 'edit')
 			{
 				$themes_title = $lang['Edit_theme'];
 				$themes_explain = $lang['Edit_theme_explain'];
@@ -313,9 +310,8 @@ switch($mode)
 
 				$selected_names = array();
 				$selected_values = array();
-				//
+
 				// Fetch the Theme Info from the db
-				//
 				$sql = "SELECT *
 					FROM " . THEMES_TABLE . "
 					WHERE themes_id = $style_id";
@@ -369,45 +365,46 @@ switch($mode)
 			$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
 
 			$template->assign_vars(array(
-				"L_THEMES_TITLE" => $themes_title,
-				"L_THEMES_EXPLAIN" => $themes_explain,
-				"L_THEME_NAME" => $lang['Theme_name'],
-				"L_TEMPLATE" => $lang['Template'],
-				"L_THEME_SETTINGS" => $lang['Theme_settings'],
-				"L_THEME_ELEMENT" => $lang['Theme_element'],
-				"L_SIMPLE_NAME" => $lang['Simple_name'],
-				"L_VALUE" => $lang['Value'],
-				"L_STYLESHEET_EXPLAIN" => $lang['Stylesheet_explain'],
-				"L_BACKGROUND_IMAGE" => $lang['Background_image'],
-				"L_BACKGROUND_COLOR" => $lang['Background_color'],
-				"L_TR_CLASS1" => $lang['Tr_class1'],
-				"L_TR_CLASS2" => $lang['Tr_class2'],
-				"L_TR_CLASS3" => $lang['Tr_class3'],
-				"L_TD_CLASS1" => $lang['Td_class1'],
-				"L_TD_CLASS2" => $lang['Td_class2'],
-				"L_TD_CLASS3" => $lang['Td_class3'],
-				"L_SAVE_SETTINGS" => $lang['Save_Settings'],
-				"THEME_NAME" => $selected['style_name'],
-				"HEAD_STYLESHEET" => $selected['head_stylesheet'],
-				"BODY_BACKGROUND" => $selected['body_background'],
-				"BODY_BGCOLOR" => $selected['body_bgcolor'],
-				"TR_CLASS1" => $selected['tr_class1'],
-				"TR_CLASS2" => $selected['tr_class2'],
-				"TR_CLASS3" => $selected['tr_class3'],
-				"TD_CLASS1" => $selected['td_class1'],
-				"TD_CLASS2" => $selected['td_class2'],
-				"TD_CLASS3" => $selected['td_class3'],
+				'L_THEMES_TITLE' => $themes_title,
+				'L_THEMES_EXPLAIN' => $themes_explain,
+				'L_THEME_NAME' => $lang['Theme_name'],
+				'L_TEMPLATE' => $lang['Template'],
+				'L_THEME_SETTINGS' => $lang['Theme_settings'],
+				'L_THEME_ELEMENT' => $lang['Theme_element'],
+				'L_SIMPLE_NAME' => $lang['Simple_name'],
+				'L_VALUE' => $lang['Value'],
+				'L_STYLESHEET_EXPLAIN' => $lang['Stylesheet_explain'],
+				'L_BACKGROUND_IMAGE' => $lang['Background_image'],
+				'L_BACKGROUND_COLOR' => $lang['Background_color'],
+				'L_TR_CLASS1' => $lang['Tr_class1'],
+				'L_TR_CLASS2' => $lang['Tr_class2'],
+				'L_TR_CLASS3' => $lang['Tr_class3'],
+				'L_TD_CLASS1' => $lang['Td_class1'],
+				'L_TD_CLASS2' => $lang['Td_class2'],
+				'L_TD_CLASS3' => $lang['Td_class3'],
+				'L_SAVE_SETTINGS' => $lang['Save_Settings'],
+				'THEME_NAME' => $selected['style_name'],
+				'HEAD_STYLESHEET' => $selected['head_stylesheet'],
+				'BODY_BACKGROUND' => $selected['body_background'],
+				'BODY_BGCOLOR' => $selected['body_bgcolor'],
+				'TR_CLASS1' => $selected['tr_class1'],
+				'TR_CLASS2' => $selected['tr_class2'],
+				'TR_CLASS3' => $selected['tr_class3'],
+				'TD_CLASS1' => $selected['td_class1'],
+				'TD_CLASS2' => $selected['td_class2'],
+				'TD_CLASS3' => $selected['td_class3'],
 
-				"S_THEME_ACTION" => append_sid('admin_styles.' . PHP_EXT),
-				"S_TEMPLATE_SELECT" => $s_template_select,
-				"S_HIDDEN_FIELDS" => $s_hidden_fields)
+				'S_THEME_ACTION' => append_sid('admin_styles.' . PHP_EXT),
+				'S_TEMPLATE_SELECT' => $s_template_select,
+				'S_HIDDEN_FIELDS' => $s_hidden_fields
+				)
 			);
 
 			$template->pparse('body');
 		}
 		break;
 
-	case "export";
+	case 'export';
 		if($_POST['export_template'])
 		{
 			$template_name = $_POST['export_template'];
@@ -427,14 +424,14 @@ switch($mode)
 				message_die(GENERAL_MESSAGE, $lang['No_themes']);
 			}
 
-			$theme_data = '<?php'."\n\n";
+			$theme_data = '<' . '?php' . "\n\n";
 			$theme_data .= "//\n// phpBB 2.x auto-generated theme config file for $template_name\n// Do not change anything in this file!\n//\n\n";
 
 			for($i = 0; $i < count($theme_rowset); $i++)
 			{
 				while(list($key, $val) = each($theme_rowset[$i]))
 				{
-					if(!intval($key) && $key != "0" && $key != "themes_id")
+					if(!intval($key) && ($key != "0") && ($key != 'themes_id'))
 					{
 						$theme_data .= '$' . $template_name . "[$i]['$key'] = \"" . addslashes($val) . "\";\n";
 					}
@@ -468,10 +465,10 @@ switch($mode)
 				exit();
 			}
 
-			$result = @fputs($fp, $theme_data, strlen($theme_data));
+			$result = @fwrite($fp, $theme_data, strlen($theme_data));
 			fclose($fp);
 
-			cache_themes();
+			$db->clear_cache('themes_');
 			$message = $lang['Theme_info_saved'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -513,7 +510,8 @@ switch($mode)
 				'L_SUBMIT' => $lang['Submit'],
 
 				'S_EXPORTER_ACTION' => append_sid('admin_styles.' . PHP_EXT . '?mode=export'),
-				'S_TEMPLATE_SELECT' => $s_template_select)
+				'S_TEMPLATE_SELECT' => $s_template_select
+				)
 			);
 
 			$template->pparse('body');
@@ -521,7 +519,7 @@ switch($mode)
 		}
 		break;
 
-	case "delete":
+	case 'delete':
 		$style_id = (isset($_GET['style_id'])) ? intval($_GET['style_id']) : intval($_POST['style_id']);
 
 		if(!$confirm)
@@ -533,24 +531,22 @@ switch($mode)
 
 			$hidden_fields = '<input type="hidden" name="mode" value="'.$mode.'" /><input type="hidden" name="style_id" value="'.$style_id.'" />';
 
-			//
 			// Set template files
-			//
 			$template->set_filenames(array('confirm' => ADM_TPL . 'confirm_body.tpl'));
 
 			$template->assign_vars(array(
-				"MESSAGE_TITLE" => $lang['Confirm'],
-				"MESSAGE_TEXT" => $lang['Confirm_delete_style'],
+				'MESSAGE_TITLE' => $lang['Confirm'],
+				'MESSAGE_TEXT' => $lang['Confirm_delete_style'],
 
-				"L_YES" => $lang['Yes'],
-				"L_NO" => $lang['No'],
+				'L_YES' => $lang['Yes'],
+				'L_NO' => $lang['No'],
 
-				"S_CONFIRM_ACTION" => append_sid('admin_styles.' . PHP_EXT),
-				"S_HIDDEN_FIELDS" => $hidden_fields
+				'S_CONFIRM_ACTION' => append_sid('admin_styles.' . PHP_EXT),
+				'S_HIDDEN_FIELDS' => $hidden_fields
 				)
 			);
 
-			$template->pparse("confirm");
+			$template->pparse('confirm');
 
 		}
 		else
@@ -574,7 +570,7 @@ switch($mode)
 				message_die(GENERAL_ERROR, "Could not update user style information", "", __LINE__, __FILE__, $sql);
 			}
 
-			cache_themes();
+			$db->clear_cache('themes_');
 			$message = $lang['Style_removed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -607,12 +603,10 @@ switch($mode)
 
 		for($i = 0; $i < count($style_rowset); $i++)
 		{
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('styles', array(
 				'ROW_CLASS' => $row_class,
-				'ROW_COLOR' => $row_color,
 				'STYLE_NAME' => $style_rowset[$i]['style_name'],
 				'TEMPLATE_NAME' => $style_rowset[$i]['template_name'],
 

@@ -110,6 +110,34 @@ function get_supported_image_types($type)
 	return array('gd' => false);
 }
 
+
+/**
+* Thumbnail copy
+*/
+function copy_thumbnail($source, $new_file, $mimetype)
+{
+	global $attach_config;
+
+	if (intval($attach_config['allow_ftp_upload']))
+	{
+		$result = ftp_file($new_file, $source, $mimetype, true); // True for disable error-mode
+		if (!$result)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		$result = @copy($source, $new_file);
+		@chmod($new_file, 0664);
+		if (!$result)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 /**
 * Create thumbnail
 */
@@ -121,9 +149,14 @@ function create_thumbnail($source, $new_file, $mimetype)
 	$min_filesize = (int) $attach_config['img_min_thumb_filesize'];
 	$img_filesize = (@file_exists($source)) ? @filesize($source) : false;
 
-	if (!$img_filesize || $img_filesize <= $min_filesize)
+	if (!$img_filesize || ($img_filesize <= $min_filesize))
 	{
-		return false;
+		$result = false;
+		if ($img_filesize <= $min_filesize)
+		{
+			$result = copy_thumbnail($source, $new_file, $mimetype);
+		}
+		return $result;
 	}
 
 	list($width, $height, $type, ) = getimagesize($source);
@@ -131,6 +164,12 @@ function create_thumbnail($source, $new_file, $mimetype)
 	if (!$width || !$height)
 	{
 		return false;
+	}
+
+	if (($width <= $attach_config['img_link_width']) && ($height <= $attach_config['img_link_height']))
+	{
+		$result = copy_thumbnail($source, $new_file, $mimetype);
+		return $result;
 	}
 
 	list($new_width, $new_height) = get_img_size_format($width, $height);
@@ -142,7 +181,7 @@ function create_thumbnail($source, $new_file, $mimetype)
 		$old_file = $new_file;
 
 		$tmp_path = explode('/', $source);
-		$tmp_path[count($tmp_path)-1] = '';
+		$tmp_path[count($tmp_path) - 1] = '';
 		$tmp_path = implode('/', $tmp_path);
 
 		if ($tmp_path == '')
@@ -197,7 +236,7 @@ function create_thumbnail($source, $new_file, $mimetype)
 					break;
 			}
 
-			if ($type['version'] == 1 || !$attach_config['use_gd2'])
+			if (($type['version'] == 1) || !$attach_config['use_gd2'])
 			{
 				$new_image = imagecreate($new_width, $new_height);
 				imagecopyresized($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);

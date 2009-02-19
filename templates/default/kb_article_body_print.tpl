@@ -89,5 +89,7 @@
 <!-- BEGIN switch_comments_show -->
 </table>
 <!-- END switch_comments_show -->
+
+{GOOGLE_ANALYTICS}
 </body>
 </html>

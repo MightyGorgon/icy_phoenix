@@ -18,14 +18,14 @@ body {
 }
 
 #global-wrapper {
-	width: 980px;
+	width: 980px !important;
 	clear: both;
 	margin: 0 auto;
 }
 
 /* wrapper */
 #wrapper {
-	width: 980px;
+	width: 980px !important;
 	display: table-cell;
 	background: #ffffff url('bg/bg_b_l.gif') top left repeat-y;
 }
@@ -818,13 +818,13 @@ option {
 	padding-right: 1em;
 }
 
-/* inputs - fixing height */
-* html input.mainoption, * html input.altoption, * html input.liteoption { height: 20px; }
-input.mainoption, input.altoption, input.liteoption { height: 18px; }
-input.post { height: 16px; }
-select option { height: 15px; }
-input.jumpbox { height: 18px; }
-* html input.jumpbox { height: 18px; }
+/* inputs - fixing height and padding */
+* html input.mainoption, * html input.altoption, * html input.liteoption { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle;}
+input.mainoption, input.altoption, input.liteoption { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+input.post { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+* html input.jumpbox { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+input.jumpbox { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
+select option { height: 16px; padding-left: 3px; padding-right: 3px; vertical-align: middle; }
 
 /* inputs colors */
 .helpline {

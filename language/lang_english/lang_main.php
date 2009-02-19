@@ -754,7 +754,7 @@ $lang = array_merge($lang, array(
 	'Flood_email_limit' => 'You cannot send another e-mail at this time. Try again later.',
 	'Recipient' => 'Recipient',
 	'Email_sent' => 'The e-mail has been sent.',
-	'Send_email' => 'Send e-mail',
+	'Send_Email' => 'Send e-mail',
 	'Empty_sender_email' => 'You must specify an email sender address.',
 	'Empty_subject_email' => 'You must specify a subject for the e-mail.',
 	'Empty_message_email' => 'You must enter a message to be e-mailed.',
@@ -1772,11 +1772,11 @@ $lang = array_merge($lang, array(
 // New MG - END
 
 // MG CMS - BEGIN
-	'CMS_Title' => 'CMS',
-	'CMS_Management' => 'CMS Management',
-	'CMS_Config' => 'CMS Configuration',
+	'CMS_TITLE' => 'CMS',
+	'CMS_MANAGEMENT' => 'CMS Management',
+	'CMS_CONFIG' => 'CMS Configuration',
 	'CMS_ACP' => 'Edit This Page',
-	'Custom_Page' => 'Customized Page',
+	'CUSTOM_PAGE' => 'Customized Page',
 // MG CMS - END
 
 // Icy Phoenix - BUILD 001
@@ -2124,7 +2124,7 @@ $lang = array_merge($lang, array(
 	'DETAILS_CHANGED' => '<b>Post details successfully changed.</b></span><br /><span class="postdetails">This window will be closed after 3 seconds.',
 
 	'Redirect' => 'Redirect',
-	'Redirect_to' => 'If your browser does not support meta redirection please click %sHERE% to be redirected',
+	'Redirect_to' => 'If your browser does not support meta redirection please click %sHere%s to be redirected',
 
 	'InProgress' => 'In progress',
 
@@ -2146,6 +2146,26 @@ $lang = array_merge($lang, array(
 
 	'GSEARCH' => 'Google Search',
 	'GSEARCH_ENGINE' => 'Use Google Search Engine',
+	'SEARCH_WHAT' => 'Search what',
+	'SEARCH_WHERE' => 'Search where',
+	'SEARCH_THIS_FORUM' => 'Search this forum...',
+	'SEARCH_THIS_TOPIC' => 'Search this topic...',
+	'VF_ALL_TOPICS' => 'All Topics',
+
+	'WHITE_LIST_MESSAGE' => 'This site require account confirmation via email. Please check that this domains in the white-list of your antispam system or you could never receive the activation message.',
+	'CLICK_RETURN_HOME' => 'Click %sHere%s to return to Home Page',
+
+	'WEEK_DAY_SUNDAY' => 'Sunday',
+	'WEEK_DAY_MONDAY' => 'Monday',
+	'WEEK_DAY_TUESDAY' => 'Tuesday',
+	'WEEK_DAY_WEDNESDAY' => 'Wednesday',
+	'WEEK_DAY_THURSDAY' => 'Thursday',
+	'WEEK_DAY_FRIDAY' => 'Friday',
+	'WEEK_DAY_SATURDAY' => 'Saturday',
+
+	'RATINGS' => 'Ratings',
+
+	'ERROR_TABLE' => 'Could not query %s table',
 
 	)
 );
@@ -2244,13 +2264,13 @@ $lang['tz']['12'] = '(GMT +12 Hours) Auckland, Fiji, Kamchatka, Marshall Island'
 $lang['tz']['13'] = '(GMT +13 Hours) Nuku\'alofa';
 // Timezones - END
 
-$lang['datetime']['Sunday'] = 'Sunday';
-$lang['datetime']['Monday'] = 'Monday';
-$lang['datetime']['Tuesday'] = 'Tuesday';
-$lang['datetime']['Wednesday'] = 'Wednesday';
-$lang['datetime']['Thursday'] = 'Thursday';
-$lang['datetime']['Friday'] = 'Friday';
-$lang['datetime']['Saturday'] = 'Saturday';
+$lang['datetime']['Sunday'] = $lang['WEEK_DAY_SUNDAY'];
+$lang['datetime']['Monday'] = $lang['WEEK_DAY_MONDAY'];
+$lang['datetime']['Tuesday'] = $lang['WEEK_DAY_TUESDAY'];
+$lang['datetime']['Wednesday'] = $lang['WEEK_DAY_WEDNESDAY'];
+$lang['datetime']['Thursday'] = $lang['WEEK_DAY_THURSDAY'];
+$lang['datetime']['Friday'] = $lang['WEEK_DAY_FRIDAY'];
+$lang['datetime']['Saturday'] = $lang['WEEK_DAY_SATURDAY'];
 $lang['datetime']['Sun'] = 'Sun';
 $lang['datetime']['Mon'] = 'Mon';
 $lang['datetime']['Tue'] = 'Tue';

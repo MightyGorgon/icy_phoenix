@@ -10,10 +10,11 @@
 	<div class="cse-branding-logo"><img src="http://www.google.com/images/poweredby_transparent/poweredby_FFFFFF.gif" alt="Google" /></div>
 	<div class="cse-branding-form">
 		<div>
+			{S_ADSENSE_CODE}
 			<input type="hidden" name="sitesearch" value="{S_SEARCH_DOMAIN}" />
 			<input type="hidden" name="cof" value="FORID:9" />
 			<input type="hidden" name="ie" value="ISO-8859-1" />
-			<input type="text" class="post" name="q" size="60" />
+			<input type="text" class="post search" name="q" size="60" onclick="if(this.value=='{L_SEARCH}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH}';" value="{L_SEARCH}" />
 			<input type="submit" class="post" name="sa" value="{L_SEARCH}" />
 		</div>
 	</div>

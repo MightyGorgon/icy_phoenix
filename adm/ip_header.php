@@ -77,9 +77,9 @@ if($check_update == true)
 		// Version cache mod end
 		if ($fsock = @fsockopen('www.icyphoenix.com', 80, $errno, $errstr, 15))
 		{
-			@fputs($fsock, "GET /version/ip.txt HTTP/1.1\r\n");
-			@fputs($fsock, "HOST: www.icyphoenix.com\r\n");
-			@fputs($fsock, "Connection: close\r\n\r\n");
+			@fwrite($fsock, "GET /version/ip.txt HTTP/1.1\r\n");
+			@fwrite($fsock, "HOST: www.icyphoenix.com\r\n");
+			@fwrite($fsock, "Connection: close\r\n\r\n");
 
 			$get_info = false;
 			while (!@feof($fsock))
@@ -152,7 +152,7 @@ $template->assign_vars(array(
 	'L_ADMIN_INDEX' => $lang['Admin_Index'],
 	'L_PREVIEW_FORUM' => $lang['Preview_forum'],
 	'L_PORTAL' => $lang['Portal'],
-	'L_CMS' => $lang['CMS_Title'],
+	'L_CMS' => $lang['CMS_TITLE'],
 	'L_PREVIEW_PORTAL' => $lang['Preview_Portal'],
 
 	'U_FORUM_INDEX' => append_sid('../' . FORUM_MG),

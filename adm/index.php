@@ -645,13 +645,11 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 
 				$location['url'] = append_sid(IP_ROOT_PATH . $location['url']);
 
-				$row_color = ($registered_users % 2) ? $theme['td_color1'] : $theme['td_color2'];
 				$row_class = ($registered_users % 2) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$reg_ip = decode_ip($onlinerow_reg[$i]['session_ip']);
 
 				$template->assign_block_vars('reg_user_row', array(
-					'ROW_COLOR' => '#' . $row_color,
 					'ROW_CLASS' => $row_class,
 					'USERNAME' => $username,
 					'STARTED' => create_date($board_config['default_dateformat'], $onlinerow_reg[$i]['session_start'], $board_config['board_timezone']),
@@ -738,7 +736,6 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 
 			$location['url'] = append_sid(IP_ROOT_PATH . $location['url']);
 
-			$row_color = ($guest_users % 2) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = ($guest_users % 2) ? $theme['td_class1'] : $theme['td_class2'];
 
 			// MG BOTS Parsing - BEGIN
@@ -756,7 +753,6 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 			// MG BOTS Parsing - END
 
 			$template->assign_block_vars('guest_user_row', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'USERNAME' => $name_guest,
 				'STARTED' => create_date($board_config['default_dateformat'], $onlinerow_guest[$i]['session_start'], $board_config['board_timezone']),
@@ -813,9 +809,9 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		// Version cache mod end
 		if ($fsock = @fsockopen('www.phpbb.com', 80, $errno, $errstr, 10))
 		{
-			@fputs($fsock, "GET /updatecheck/20x.txt HTTP/1.1\r\n");
-			@fputs($fsock, "HOST: www.phpbb.com\r\n");
-			@fputs($fsock, "Connection: close\r\n\r\n");
+			@fwrite($fsock, "GET /updatecheck/20x.txt HTTP/1.1\r\n");
+			@fwrite($fsock, "HOST: www.phpbb.com\r\n");
+			@fwrite($fsock, "Connection: close\r\n\r\n");
 
 			$get_info = false;
 			while (!@feof($fsock))

@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1000_Configuration']['130_UPI2DB_Mod'] = $file;
@@ -30,118 +30,47 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-//
-// Pull all config data
-//
-
-$sql = "SELECT * FROM " . $table_prefix . "upi2db_topic_read";
-if($result = $db->sql_query($sql))
-{
-	$message = '<b><u>UPI2DB Datenbank Installation</u></b>';
-	$message .= '<br /><br />';
-	$message .= 'A table from UPI2DB 2.x.x found.<br />You can update this now to use it later on or install a new one.<br /><br /> <a href="' . append_sid("../upi2db_db_update." . PHP_EXT) . '" class="mainmenu">Update UPI2DB Database</a>';
-	$message .= '<br /><br />';
-	$message .= '<a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">Install NEW UPI2DB tables</a>';
-	$message .= '<br /><hr><br />';
-	$message .= 'Es wurde eine UPI2DB Mod 2.x.x Datenbank gefunden.<br />Du kannst diese nun updaten und weiter verwenden oder eine neue installieren.<br /><br /> <a href="' . append_sid("../upi2db_db_update." . PHP_EXT) . '" class="mainmenu">UPI2DB Datenbank Updaten</a>';
-	$message .= '<br /><br />';
-	$message .= '<a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">UPI2DB Datenbank NEU Installieren</a>';
-
-	message_die(GENERAL_MESSAGE, $message);
-}
-
 $sql = "SELECT * FROM " . CONFIG_TABLE . " WHERE config_name LIKE \"upi2db_%\"";
-if( !$result = $db->sql_query($sql) )
+if(!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, "Could not read config data", '', __LINE__, __FILE__, $sql);
 }
 
-$counts = $db->sql_affectedrows($result);
-if($counts == 0)
-{
-	$message = '<b><u>UPI2DB Database installation</u></b>';
-	$message .= '<br /><br />';
-	$message .= 'The needed table installation was yet not done.<br /><br /> <a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">Install UPI2DB tables</a>';
-	$message .= '<br /><hr><br />';
-	$message .= '<b><u>UPI2DB Datenbank Installation</u></b>';
-	$message .= '<br /><br />';
-	$message .= 'Die notwendige Datenbank Installation wurde noch nicht durchgeführt.<br /><br /> <a href="' . append_sid("../upi2db_db_install." . PHP_EXT) . '" class="mainmenu">UPI2DB Datenbank Installieren</a>';
-
-	message_die(GENERAL_MESSAGE, $message);
-}
-
-$datei = '../upi2db_db_up2latest.php';
-if(file_exists($datei))
-{
-	$message = '<b><u>UPI2DB Database Update</u></b>';
-	$message .= '<br /><br />';
-	$message .= 'A UPI2DB Mod data base update file was found.<br />You can implement this file now with the following link. If you already implemented it, delete the file from the server.<br /><br /> <a href="' . append_sid($datei) . '" > >>>>>>> Update UPI2DB Database <<<<<<< </a><br /><br /><span class="text_red">PLEASE DELETE ALL upi2db_db_*.php FILES FROM THE SERVER!!!!!</span>';
-	$message .= '<br /><hr><br />';
-	$message .= '<b><u>UPI2DB Datenbank Update</u></b>';
-	$message .= '<br /><br />';
-	$message .= 'Es wurde eine UPI2DB Mod Datenbank Update Datei gefunden.<br />Du kannst diese Datei nun mit folgenden Link ausführen. Solltest du sie bereits ausgeführt haben lösche sie bitte vom Server.<br /><br /> <a href="' . append_sid($datei) . '"> >>>>>>> UPI2DB Datenbank Updaten <<<<<<< </a><br /><br /><span class="text_red">BITTE LÖSCHE ALLE upi2db_db_*.php DATEIEN VOM SERVER !!!!!</span>';
-
-	message_die(GENERAL_MESSAGE, $message);
-}
-
-$file_found = 0;
-$dir = @opendir("../");
-
-while( $file = @readdir($dir) )
-{
-	if( preg_match("/^upi2db_db_.*?\." . PHP_EXT . "$/", $file) )
-	{
-		$file_found = 1;
-	}
-}
-
-@closedir($dir);
-
-if($file_found)
-{
-	$message = '<span class="text_red">Please delete all upi2db_db_*.php files from your server!!!</span>';
-	$message .= '<br /><hr>';
-	$message .= '<span class="text_red">Bitte lösche alle upi2db_db_*.php Dateien von deinem Server!!!</span>';
-
-	message_die(GENERAL_MESSAGE, $message);
-}
-
-while( $row = $db->sql_fetchrow($result) )
+while($row = $db->sql_fetchrow($result))
 {
 	$config_name = $row['config_name'];
 	$config_value = $row['config_value'];
 	$default_config[$config_name] = $config_value;
 
-	$new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
+	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
 
-	if( isset($HTTP_POST_VARS['submit']) )
+	if(isset($_POST['submit']))
 	{
 		$sql = "UPDATE " . CONFIG_TABLE . " SET
 			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
 			WHERE config_name = '$config_name'";
-		if( !$db->sql_query($sql) )
+		if(!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, "Failed to update upi2db configuration for $config_name", "", __LINE__, __FILE__, $sql);
 		}
 	}
 }
 
+$upi2db_on_1 = ($new['upi2db_on'] == 1) ? 'checked="checked"' : '';
+$upi2db_on_0 = ($new['upi2db_on'] == 0) ? 'checked="checked"' : '';
+$upi2db_on_2 = ($new['upi2db_on'] == 2) ? 'checked="checked"' : '';
 
-$upi2db_on_1 = ( $new['upi2db_on'] == 1 ) ? 'checked="checked"' : '';
-$upi2db_on_0 = ( $new['upi2db_on'] == 0 ) ? 'checked="checked"' : '';
-$upi2db_on_2 = ( $new['upi2db_on'] == 2 ) ? 'checked="checked"' : '';
+$no_group_upi2db_on_yes = ($new['upi2db_no_group_upi2db_on']) ? 'checked="checked"' : '';
+$no_group_upi2db_on_no = (!$new['upi2db_no_group_upi2db_on']) ? 'checked="checked"' : '';
 
-$no_group_upi2db_on_yes = ( $new['upi2db_no_group_upi2db_on']) ? 'checked="checked"' : '';
-$no_group_upi2db_on_no = ( !$new['upi2db_no_group_upi2db_on']) ? 'checked="checked"' : '';
+$edit_as_new_yes = ($new['upi2db_edit_as_new']) ? 'checked="checked"' : '';
+$edit_as_new_no = (!$new['upi2db_edit_as_new']) ? 'checked="checked"' : '';
 
-$edit_as_new_yes = ( $new['upi2db_edit_as_new'] ) ? 'checked="checked"' : '';
-$edit_as_new_no = ( !$new['upi2db_edit_as_new'] ) ? 'checked="checked"' : '';
+$last_edit_as_new_yes = ($new['upi2db_last_edit_as_new']) ? 'checked="checked"' : '';
+$last_edit_as_new_no = (!$new['upi2db_last_edit_as_new']) ? 'checked="checked"' : '';
 
-$last_edit_as_new_yes = ( $new['upi2db_last_edit_as_new'] ) ? 'checked="checked"' : '';
-$last_edit_as_new_no = ( !$new['upi2db_last_edit_as_new'] ) ? 'checked="checked"' : '';
-
-$edit_topic_first_yes = ( $new['upi2db_edit_topic_first'] ) ? 'checked="checked"' : '';
-$edit_topic_first_no = ( !$new['upi2db_edit_topic_first'] ) ? 'checked="checked"' : '';
+$edit_topic_first_yes = ($new['upi2db_edit_topic_first']) ? 'checked="checked"' : '';
+$edit_topic_first_no = (!$new['upi2db_edit_topic_first']) ? 'checked="checked"' : '';
 
 $template->set_filenames(array('body' => ADM_TPL . 'upi2db_config_body.tpl'));
 
@@ -154,13 +83,13 @@ if(!$result = $db->sql_query($sql))
 }
 else
 {
-	if( isset($HTTP_POST_VARS['submit']) )
+	if(isset($_POST['submit']))
 	{
-		$group_upi2db_on = ( isset($HTTP_POST_VARS[group_upi2db_on]) ) ? $HTTP_POST_VARS[group_upi2db_on] : 0;
-		$group_min_posts = ( isset($HTTP_POST_VARS[group_min_posts]) ) ? $HTTP_POST_VARS[group_min_posts] : 0;
-		$group_min_regdays = ( isset($HTTP_POST_VARS[group_min_regdays]) ) ? $HTTP_POST_VARS[group_min_regdays] : 0;
+		$group_upi2db_on = (isset($_POST[group_upi2db_on])) ? $_POST[group_upi2db_on] : 0;
+		$group_min_posts = (isset($_POST[group_min_posts])) ? $_POST[group_min_posts] : 0;
+		$group_min_regdays = (isset($_POST[group_min_regdays])) ? $_POST[group_min_regdays] : 0;
 
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
 			$sql = "UPDATE " . GROUPS_TABLE . "
 				SET upi2db_on = " . $group_upi2db_on[$row['group_id']] . " ,
@@ -168,13 +97,13 @@ else
 				upi2db_min_regdays = " . $group_min_regdays[$row['group_id']] . "
 				WHERE group_id = " . $row['group_id'];
 
-			if ( !$db->sql_query($sql) )
+			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not update upi2db group auth', '', __LINE__, __FILE__, $sql);
 			}
 		}
 	}
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$group_upi2db_on_yes = $row['upi2db_on'] ? 'checked="checked"' : '';
 		$group_upi2db_on_no = !$row['upi2db_on'] ? 'checked="checked"' : '';
@@ -194,7 +123,7 @@ else
 	}
 }
 
-if( isset($HTTP_POST_VARS['submit']) )
+if(isset($_POST['submit']))
 {
 	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_upi2db.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 

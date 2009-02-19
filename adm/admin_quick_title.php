@@ -209,13 +209,11 @@ if( $mode != '' )
 		for( $i = 0; $i < $title_count; $i++)
 		{
 			$title_id=$title_rows[$i]['id'];
-			$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 			$perm = ($title_rows[$i]['admin_auth'] == 1) ? $lang['Administrator'].'</br>' : '';
 			$perm .= ($title_rows[$i]['mod_auth'] == 1) ? $lang['Moderator'].'</br>' : '';
 			$perm .= ($title_rows[$i]['poster_auth'] == 1) ? $lang['Topic_poster'] : '';
 			$template->assign_block_vars('title', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'TITLE' => $title_rows[$i]['title_info'],
 				'PERMISSIONS' => $perm,
@@ -272,14 +270,12 @@ else
 	for( $i = 0; $i < $title_count; $i++)
 	{
 		$title_id=$title_rows[$i]['id'];
-		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 		$perm = ($title_rows[$i]['admin_auth']==1) ? $lang['Administrator'].'<br />' : '';
 		$perm .= ($title_rows[$i]['mod_auth']==1) ? $lang['Moderator'].'<br />' : '';
 		$perm .= ($title_rows[$i]['poster_auth']==1) ? $lang['Topic_poster'] : '';
 
 		$template->assign_block_vars('title', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'TITLE' => $title_rows[$i]['title_info'],
 			'PERMISSIONS' => $perm,

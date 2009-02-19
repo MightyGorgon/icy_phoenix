@@ -134,11 +134,9 @@ if( isset($_POST['doprune']) )
 		$p_result = prune($forum_rows[$i]['forum_id'], $prunedate);
 		sync('forum', $forum_rows[$i]['forum_id']);
 
-		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('prune_results', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 //-- mod : categories hierarchy --------------------------------------------------------------------
 //-- delete

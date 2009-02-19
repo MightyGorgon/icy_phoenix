@@ -76,9 +76,9 @@ unset($logmanager);
 // Lets see what the new versions are (Uplink) [original code (C) phpBB Group]
 if ( $fsock = @fsockopen('www.community.cback.de', 80, $errno, $errstr, 10) )
 {
-	@fputs($fsock, "GET /uplink/ctracker.txt HTTP/1.1\r\n");
-	@fputs($fsock, "HOST: www.community.cback.de\r\n");
-	@fputs($fsock, "Connection: close\r\n\r\n");
+	@fwrite($fsock, "GET /uplink/ctracker.txt HTTP/1.1\r\n");
+	@fwrite($fsock, "HOST: www.community.cback.de\r\n");
+	@fwrite($fsock, "Connection: close\r\n\r\n");
 
 	$get_info = false;
 

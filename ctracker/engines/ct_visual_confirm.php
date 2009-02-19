@@ -33,12 +33,12 @@
 *
 */
 
-if( !defined('IN_ICYPHOENIX') || !defined('CRACKER_TRACKER_VCONFIRM') )
+if(!defined('IN_ICYPHOENIX') || !defined('CRACKER_TRACKER_VCONFIRM'))
 {
 	die('Hacking attempt!');
 }
 
-if ( ($user_id < 0) && isset($_GET['uid']) )
+if (isset($user_id) && ($user_id < 0) && isset($_GET['uid']))
 {
 	$user_id = $_GET['uid'];
 }

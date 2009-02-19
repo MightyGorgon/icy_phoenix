@@ -173,7 +173,7 @@ class NewsModule
 				$this->setBlockVariables('articles', array(
 					'L_TITLE' => $topic_title,
 					'ID' => $article['topic_id'],
-					'KEY' => $article['article_key'],
+					'KEY' => (!empty($article['article_key']) ? $article['article_key'] : ''),
 					'DAY' => $this->getDay($article['topic_time']),
 					'MONTH' => $this->getMonth($article['topic_time']),
 					'YEAR' => $this->getYear($article['topic_time']),
@@ -204,11 +204,11 @@ class NewsModule
 					)
 				);
 
-				if ($show_attachments == true)
+				if ($show_attachments)
 				{
 					display_attachments($article['post_id'], 'articles');
 				}
-				$post_id = $article[$i]['post_id'];
+				$post_id = $article['post_id'];
 			}
 		}
 
@@ -717,71 +717,53 @@ class NewsModule
 
 	}
 
-	// }}}
-
-	// {{{ decodeBBText()
-
-	/**
-	* Converts BBCode tags to their html equivelents.
-	*
-	* @access public
-	*
-	* @param string $text The body of text to be processed.
-	*
-	* @return string The resulting decoded text.
-	*/
-	function decodeBBText($text, $enable_bbcode = true, $enable_html = false, $enable_smilies = true, $enable_autolinks_acronyms = true)
+	function parseMessage($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms)
 	{
 		global $bbcode, $lofi, $userdata;
 
-		if(!isset($text) || (strlen($text) <= 0))
+		if(!empty($text))
 		{
-			return;
-		}
-
-		//$enable_autolinks_acronyms = true;
-		if ($enable_autolinks_acronyms == true)
-		{
-			// Start Autolinks For phpBB Mod
-			$orig_autolink = array();
-			$replacement_autolink = array();
-			obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-			// End Autolinks For phpBB Mod
-		}
-
-		// Parse message and/or sig for BBCode if reqd
-		$bbcode->allow_html = (($this->config['allow_html'] == true) && ($enable_html == true)) ? true : false;
-		$bbcode->allow_bbcode = (($this->config['allow_bbcode'] == true) && ($enable_bbcode == true)) ? true : false;
-		$bbcode->allow_smilies = (($this->config['allow_smilies'] == true) && (!$lofi == true) && ($enable_smilies == true)) ? true : false;
-		$text = $bbcode->parse($text);
-
-		if (!$userdata['user_allowswearywords'])
-		{
-			$orig_word = array();
-			$replacement_word = array();
-			obtain_word_list($orig_word, $replacement_word);
-		}
-		if ($enable_autolinks_acronyms == true)
-		{
-			$text = $bbcode->acronym_pass($text);
-			if(count($orig_autolink))
+			//$enable_autolinks_acronyms = true;
+			if ($enable_autolinks_acronyms == true)
 			{
-				$text = autolink_transform($text, $orig_autolink, $replacement_autolink);
+				// Start Autolinks For phpBB Mod
+				$orig_autolink = array();
+				$replacement_autolink = array();
+				obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
+				// End Autolinks For phpBB Mod
+			}
+
+			// Parse message and/or sig for BBCode if reqd
+			$bbcode->allow_html = (($this->config['allow_html'] == true) && ($enable_html == true)) ? true : false;
+			$bbcode->allow_bbcode = (($this->config['allow_bbcode'] == true) && ($enable_bbcode == true)) ? true : false;
+			$bbcode->allow_smilies = (($this->config['allow_smilies'] == true) && (!$lofi == true) && ($enable_smilies == true)) ? true : false;
+			$text = $bbcode->parse($text);
+
+			if (!$userdata['user_allowswearywords'])
+			{
+				$orig_word = array();
+				$replacement_word = array();
+				obtain_word_list($orig_word, $replacement_word);
+			}
+
+			if ($enable_autolinks_acronyms == true)
+			{
+				$text = $bbcode->acronym_pass($text);
+				if(!empty($orig_autolink) && count($orig_autolink))
+				{
+					$text = autolink_transform($text, $orig_autolink, $replacement_autolink);
+				}
+			}
+			//$text = kb_word_wrap_pass ($text);
+			if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
+			{
+				$text = preg_replace($orig_word, $replacement_word, $text);
 			}
 		}
-		//$text = kb_word_wrap_pass ($text);
-		if (count($orig_word))
+		else
 		{
-			$text = preg_replace($orig_word, $replacement_word, $text);
+			$text = '';
 		}
-		return $text;
-	}
-
-	// }}
-
-	function parseMessage($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms)
-	{
-		$text = $this->decodeBBText($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms);
 
 		// Strip out the <!--break--> delimiter.
 		$delim = htmlspecialchars('<!--break-->');

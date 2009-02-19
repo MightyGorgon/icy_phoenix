@@ -87,7 +87,7 @@ if(!function_exists('imp_recent_topics_block_func'))
 				'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $recent_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],
 				'L_TITLE' => $topic_title,
 				'L_BY' => $lang['By'],
-				'L_ON' => $lang['On'],
+				'L_ON' => $lang['POSTED_ON'],
 				'S_POSTER' => colorize_username($recent_topic_row[$i]['user_id'], $recent_topic_row[$i]['username'], $recent_topic_row[$i]['user_color'], $recent_topic_row[$i]['user_active']),
 				'S_POSTTIME' => create_date2($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
 				)

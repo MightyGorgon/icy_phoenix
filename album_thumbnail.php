@@ -181,6 +181,7 @@ $pic_height = $pic_size[1];
 if(($pic_width < $album_config['thumbnail_size']) && ($pic_height < $album_config['thumbnail_size']))
 {
 	$copy_success = @copy($pic_info['fullpath'], $pic_info['thumbnail_s_fullpath']);
+	@chmod($pic_info['thumbnail_s_fullpath'], 0777);
 	$sql = "UPDATE " . ALBUM_TABLE . "
 		SET pic_thumbnail = '" . $pic_info['thumbnail_new'] . "', pic_size = '" . $pic_filesize . "'
 		WHERE pic_id = '" . $pic_id . "'";

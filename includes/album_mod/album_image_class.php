@@ -2053,7 +2053,7 @@ function any_url_exists($url)
 			}
 			$page = isset($a_url['path']) ? $a_url['path'] : '';
 			$page .= isset($a_url['query']) ? '?' . $a_url['query'] : '';
-			fputs($fid, 'HEAD ' . $page . ' HTTP/1.0' . "\r\n" . 'Host: ' . $a_url['host'] . "\r\n\r\n");
+			fwrite($fid, 'HEAD ' . $page . ' HTTP/1.0' . "\r\n" . 'Host: ' . $a_url['host'] . "\r\n\r\n");
 			$head = fread($fid, 4096);
 			fclose($fid);
 			return preg_match('#^HTTP/.*\s+[200|302]+\s#i', $head);

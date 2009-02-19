@@ -404,7 +404,6 @@ for($i = 0; $i < $rank_count; $i++)
 		$rank_min = $rank_max = "-";
 	}
 
-	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	// Mighty Gorgon - Multiple Ranks - BEGIN
@@ -412,7 +411,6 @@ for($i = 0; $i < $rank_count; $i++)
 	// Mighty Gorgon - Multiple Ranks - END
 
 	$template->assign_block_vars('ranks', array(
-		'ROW_COLOR' => '#' . $row_color,
 		'ROW_CLASS' => $row_class,
 		'RANK' => $rank,
 		'SPECIAL_RANK' => $rank_is_special,

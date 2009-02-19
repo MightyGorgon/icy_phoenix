@@ -221,11 +221,9 @@ else
 		$description = $word_rows[$i]['description'];
 		$acronym_id = $word_rows[$i]['acronym_id'];
 
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('acronyms', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'ACRONYM' => $acronym,
 			'DESCRIPTION' => $description,

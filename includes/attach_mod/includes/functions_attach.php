@@ -311,7 +311,7 @@ function update_attachments_stats($attach_id)
 		message_die(GENERAL_ERROR, 'Couldn\'t update attachment download count', $lang['Error'], __LINE__, __FILE__, $sql);
 	}
 
-	if (USE_ATTACHMENTS_STATS == true)
+	if (($userdata['bot_id'] != false) && defined('USE_ATTACHMENTS_STATS') && (USE_ATTACHMENTS_STATS == true))
 	{
 		$sql = "INSERT INTO " . ATTACHMENTS_STATS_TABLE . " (`attach_id`, `user_id`, `user_ip`, `user_http_agents`, `download_time`)
 			VALUES ('" . $attach_id . "', '" . $userdata['user_id'] . "', '" . $user_ip . "', '" . addslashes($user_agent) . "', '" . time() . "')";

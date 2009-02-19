@@ -1282,41 +1282,44 @@ class ip_page
 
 		for ($i = 0; $i < count($chmod_items_array); $i++)
 		{
-			$table_output .= '<b>' . $chmod_langs_array[$i] . '</b><br />' . '<ul>';
-			for ($j = 0; $j < count($chmod_items_array[$i]); $j++ )
+			if (!empty($chmod_items_array[$i]))
 			{
-				$report_string = '';
-				$errored = false;
-				if (!file_exists($chmod_items_array[$i][$j]))
+				$table_output .= '<b>' . $chmod_langs_array[$i] . '</b><br />' . '<ul>';
+				for ($j = 0; $j < count($chmod_items_array[$i]); $j++ )
 				{
-					$errored = true;
-					$report_string = $lang['CHMOD_File_NotExists'];
-				}
-				else
-				{
-					if (!is_writable($chmod_items_array[$i][$j]))
+					$report_string = '';
+					$errored = false;
+					if (!file_exists($chmod_items_array[$i][$j]))
 					{
 						$errored = true;
-						$report_string = $lang['CHMOD_File_Exists_Read_Only'];
+						$report_string = $lang['CHMOD_File_NotExists'];
 					}
 					else
 					{
-						$report_string = $lang['CHMOD_File_Exists'];
+						if (!is_writable($chmod_items_array[$i][$j]))
+						{
+							$errored = true;
+							$report_string = $lang['CHMOD_File_Exists_Read_Only'];
+						}
+						else
+						{
+							$report_string = $lang['CHMOD_File_Exists'];
+						}
+					}
+
+					if ($errored)
+					{
+						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
+						$table_output .= '<li><span class="gensmall" style="color:' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_error . '</li>' . "\n";
+					}
+					else
+					{
+						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_ok . ';">' . $report_string . '</span>';
+						$table_output .= '<li><span class="gensmall" style="color:' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_ok . '</li>' . "\n";
 					}
 				}
-
-				if ($errored)
-				{
-					$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
-					$table_output .= '<li><span class="gensmall" style="color:' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_error . '</li>' . "\n";
-				}
-				else
-				{
-					$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_ok . ';">' . $report_string . '</span>';
-					$table_output .= '<li><span class="gensmall" style="color:' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_ok . '</li>' . "\n";
-				}
+				$table_output .= '</ul>' . '<br />';
 			}
-			$table_output .= '</ul>' . '<br />';
 		}
 
 		return $table_output;
@@ -1352,41 +1355,44 @@ class ip_page
 
 		for ($i = 0; $i < count($chmod_items_array); $i++)
 		{
-			$table_output .= '<tr><th colspan="3"><span class="gen"><b>' . $chmod_langs_array[$i] . '</b></span></th></tr>' . "\n";
-			$table_output .= '<tr><td class="row1 row-center" rowspan="' . (count($chmod_items_array[$i]) + 1) . '" width="90"><img src="' . $chmod_images_array[$i] . '" alt="' . $chmod_langs_array[$i] . '" title="' . $chmod_langs_array[$i] . '" /></td></tr>' . "\n";
-			for ($j = 0; $j < count($chmod_items_array[$i]); $j++ )
+			if (!empty($chmod_items_array[$i]))
 			{
-				$report_string = '';
-				$errored = false;
-				if (!file_exists($chmod_items_array[$i][$j]))
+				$table_output .= '<tr><th colspan="3"><span class="gen"><b>' . $chmod_langs_array[$i] . '</b></span></th></tr>' . "\n";
+				$table_output .= '<tr><td class="row1 row-center" rowspan="' . (count($chmod_items_array[$i]) + 1) . '" width="90"><img src="' . $chmod_images_array[$i] . '" alt="' . $chmod_langs_array[$i] . '" title="' . $chmod_langs_array[$i] . '" /></td></tr>' . "\n";
+				for ($j = 0; $j < count($chmod_items_array[$i]); $j++ )
 				{
-					$errored = true;
-					$report_string = $lang['CHMOD_File_NotExists'];
-				}
-				else
-				{
-					@chmod($chmod_items_array[$i][$j], $chmod_values_array[$i]);
-					if (!is_writable($chmod_items_array[$i][$j]))
+					$report_string = '';
+					$errored = false;
+					if (!file_exists($chmod_items_array[$i][$j]))
 					{
 						$errored = true;
-						$report_string = $lang['CHMOD_File_Exists_Read_Only'];
+						$report_string = $lang['CHMOD_File_NotExists'];
 					}
 					else
 					{
-						$report_string = $lang['CHMOD_File_Exists'];
+						@chmod($chmod_items_array[$i][$j], $chmod_values_array[$i]);
+						if (!is_writable($chmod_items_array[$i][$j]))
+						{
+							$errored = true;
+							$report_string = $lang['CHMOD_File_Exists_Read_Only'];
+						}
+						else
+						{
+							$report_string = $lang['CHMOD_File_Exists'];
+						}
 					}
-				}
 
-				if ($errored)
-				{
-					$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
-					$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color:' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_error . $report_string_append . '</td></tr>' . "\n";
-					$chmod_errors = true;
-				}
-				else
-				{
-					$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_ok . ';">' . $report_string . '</span>';
-					$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color:' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_ok . $report_string_append . '</td></tr>' . "\n";
+					if ($errored)
+					{
+						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
+						$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color:' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_error . $report_string_append . '</td></tr>' . "\n";
+						$chmod_errors = true;
+					}
+					else
+					{
+						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_ok . ';">' . $report_string . '</span>';
+						$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color:' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_ok . $report_string_append . '</td></tr>' . "\n";
+					}
 				}
 			}
 		}
@@ -1709,6 +1715,7 @@ class ip_page
 				{
 					$dir_creation = @mkdir($pic_base_path . $pic_extra_path, 0777);
 					@copy($pic_base_path . 'index.html', $pic_base_path . $pic_extra_path . 'index.html');
+					@chmod($pic_base_path . $pic_extra_path . 'index.html', 0755);
 				}
 
 				$sql = "SELECT *
@@ -1732,6 +1739,7 @@ class ip_page
 						{
 							$dir_creation = @mkdir($pic_new_path, 0777);
 							@copy($pic_base_path . 'index.html', $pic_new_path . 'index.html');
+							@chmod($pic_new_path . 'index.html', 0755);
 						}
 						@chmod($pic_old_file, 0755);
 						$copy_success = @copy($pic_old_file, $pic_new_file);
@@ -1819,7 +1827,7 @@ class ip_page
 	function fix_posts($action)
 	{
 		global $db, $lang, $language, $board_config;
-		global $wip, $search_word, $replace_word;
+		global $wip, $search_word, $replacement_word;
 		global $remove_bbcode_uid, $remove_guess_bbcode_uid, $fix_posted_images;
 		global $posts_number, $post_start, $total_posts, $total_posts_modified;
 
@@ -1866,7 +1874,7 @@ class ip_page
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$post_text_f = (defined('STRIP') ? stripslashes($row['post_text']) : $row['post_text']);
-					$post_text_f = str_replace($search_word, $replace_word, $post_text_f);
+					$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
 
 					$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
 
@@ -1885,7 +1893,18 @@ class ip_page
 						$post_text_f = mg_functions::img_replace($post_text_f);
 					}
 
-					$sql_update = "UPDATE " . POSTS_TABLE . " SET post_text = '" . (defined('STRIP') ? addslashes($post_text_f) : $post_text_f) . "' WHERE post_id = '" . $row['post_id'] . "'";
+					$real_posts_table = POSTS_TABLE;
+					if (defined('POSTS_TEXT_TABLE'))
+					{
+						$sql_tmp = "SHOW TABLES LIKE " . POSTS_TEXT_TABLE;
+						$result_tmp = $db->sql_query($sql_tmp);
+						if ($row = $db->sql_fetchrow($result_tmp))
+						{
+							$real_posts_table = POSTS_TEXT_TABLE;
+						}
+					}
+
+					$sql_update = "UPDATE " . $real_posts_table . " SET post_text = '" . (defined('STRIP') ? addslashes($post_text_f) : $post_text_f) . "' WHERE post_id = '" . $row['post_id'] . "'";
 
 					if (!$result_new = $db->sql_query($sql_update))
 					{
@@ -1925,7 +1944,7 @@ class ip_page
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row2"><span class="genmed">' . $lang['ReplaceWith'] . '&nbsp;</span></td>' . "\n";
-				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="replace_word" value="" size="80" /></span></td>' . "\n";
+				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="replacement_word" value="" size="80" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1"><span class="genmed">' . $lang['PostsPerStep'] . '&nbsp;</span></td>' . "\n";
@@ -1957,7 +1976,7 @@ class ip_page
 	function fix_signatures($action)
 	{
 		global $db, $lang, $language, $board_config;
-		global $wip, $search_word, $replace_word;
+		global $wip, $search_word, $replacement_word;
 		global $remove_bbcode_uid, $remove_guess_bbcode_uid, $fix_posted_images;
 		global $posts_number, $post_start, $total_posts, $total_posts_modified;
 
@@ -2004,7 +2023,7 @@ class ip_page
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$post_text_f = (defined('STRIP') ? stripslashes($row['user_sig']) : $row['user_sig']);
-					$post_text_f = str_replace($search_word, $replace_word, $post_text_f);
+					$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
 
 					$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
 
@@ -2063,7 +2082,7 @@ class ip_page
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row2"><span class="genmed">' . $lang['ReplaceWith'] . '&nbsp;</span></td>' . "\n";
-				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="replace_word" value="" size="80" /></span></td>' . "\n";
+				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="replacement_word" value="" size="80" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1"><span class="genmed">' . $lang['SignaturesPerStep'] . '&nbsp;</span></td>' . "\n";
@@ -2133,6 +2152,7 @@ class ip_page
 									{
 										$dir_creation = @mkdir($pic_path, 0777);
 										@copy($posted_images_folder . 'index.html', $posted_images_folder . $tmp_split[1] . '/index.html');
+										@chmod($posted_images_folder . $tmp_split[1] . 'index.html', 0755);
 									}
 									@chmod($pic_old_file, 0755);
 									$copy_success = @copy($pic_old_file, $pic_new_file);
@@ -2354,7 +2374,8 @@ class ip_page
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12734' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.7.34</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12936' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.9.36</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121239' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.12.39</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121542' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.15.42 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121542' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.15.42</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121845' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.18.45 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
 		$update_options .= '</ul></div>' . "\n";
 
 		// Output the spoiler
@@ -2372,27 +2393,6 @@ class ip_page
 		$table_update_options .= '<span style="color:#ffdd22;font-weight:bold">' . $lang['FixSignatures'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_signatures' . $lang_append) . '"><span class="text_red">' . $lang['FixSignaturesExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
-		$table_update_options .= '</ul></div>' . "\n";
-
-		// CHMOD
-		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#008888;font-weight:bold">' . $lang['CHMOD_Files'] . '</span><br />' . "\n";
-		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=chmod' . $lang_append) . '"><span class="text_red">' . $lang['CHMOD_Apply'] . '</span></a><br /><span class="gensmall">' . $lang['CHMOD_Apply_Warn'] . '</span><br /><br /></li>' . "\n";
-		$table_update_options .= '</ul></div>' . "\n";
-
-		// Clean Old Files
-		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#ff00ff;font-weight:bold">' . $lang['Clean_OldFiles'] . '</span><br />' . "\n";
-		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=clean_old_files' . $lang_append) . '"><span class="text_red">' . $lang['Clean_OldFiles_Explain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
-		$table_update_options .= '</ul></div>' . "\n";
-
-		// Fix Constants
-		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#0033cc;font-weight:bold">' . $lang['FixConstantsInFiles'] . '</span><br />' . "\n";
-		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants' . $lang_append) . '"><span class="text_red">' . $lang['FixConstantsInFilesExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Fix Pics
@@ -2414,6 +2414,27 @@ class ip_page
 		$table_update_options .= '<span style="color:#aa6622;font-weight:bold">' . $lang['FixBirthdays'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_birthdays' . $lang_append) . '"><span class="text_red">' . $lang['FixBirthdaysExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// Fix Constants
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color:#0033cc;font-weight:bold">' . $lang['FixConstantsInFiles'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants' . $lang_append) . '"><span class="text_red">' . $lang['FixConstantsInFilesExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// CHMOD
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color:#008888;font-weight:bold">' . $lang['CHMOD_Files'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=chmod' . $lang_append) . '"><span class="text_red">' . $lang['CHMOD_Apply'] . '</span></a><br /><span class="gensmall">' . $lang['CHMOD_Apply_Warn'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// Clean Old Files
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color:#ff00ff;font-weight:bold">' . $lang['Clean_OldFiles'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=clean_old_files' . $lang_append) . '"><span class="text_red">' . $lang['Clean_OldFiles_Explain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		$table_update_options .= '</div>' . "\n";

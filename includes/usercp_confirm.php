@@ -300,7 +300,7 @@ if ( $board_config['use_captcha'] == true )
 	}
 
 	// Font debug
-	if ($font_debug && !$rnd_font)
+	if (!empty($font_debug) && !$rnd_font)
 	{
 		imagestring($image, 5, 2, 0, $fonts[$font], $white);
 		imagestring($image, 5, 5, 0, $fonts[$font], $white);

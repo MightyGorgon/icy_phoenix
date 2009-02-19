@@ -34,8 +34,7 @@ $template->assign_vars(array(
 
 $template->pparse('page_footer');
 
-// Close our DB connection.
-$db->sql_close();
+garbage_collection();
 
 // Compress buffered output if required and send to browser
 if($do_gzip_compress)
@@ -56,6 +55,7 @@ if($do_gzip_compress)
 	echo pack('V', $gzip_size);
 }
 
+exit_handler();
 exit;
 
 ?>

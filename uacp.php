@@ -299,7 +299,6 @@ if (count($attachments) > 0)
 {
 	for ($i = 0; $i < count($attachments); $i++)
 	{
-		$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
 		// Is the Attachment assigned to more than one post?
@@ -427,7 +426,6 @@ if (count($attachments) > 0)
 
 			$template->assign_block_vars('attachrow', array(
 				'ROW_NUMBER' => $i + ($start + 1 ),
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 
 				'FILENAME' => $attachments[$i]['real_filename'],

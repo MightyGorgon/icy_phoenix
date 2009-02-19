@@ -702,7 +702,9 @@ if (defined('CM_POSTING'))
 				{
 					message_die(GENERAL_ERROR, 'Error in updating cash', '', __LINE__, __FILE__, $sql);
 				}
-				return $message_clause;
+				// Mighty Gorgon: to be fixed because it returns ARRAY
+				//return $message_clause;
+				return '';
 			}
 		}
 

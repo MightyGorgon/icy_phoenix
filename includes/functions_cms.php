@@ -170,6 +170,8 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 		$temp_type = 's' . strval($layout);
 	}
 
+	$is_global_block = false;
+	$is_gh_block = false;
 	if(!$is_special && !$global_blocks)
 	{
 		$sql = "SELECT *
@@ -194,8 +196,6 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 		{
 			$sql_where = "AND layout_special = '0'";
 		}
-		$is_global_block = false;
-		$is_gh_block = false;
 		switch ($type)
 		{
 			case 'ghtop':

@@ -91,19 +91,17 @@ for ($i = 0; $i < $nums; $i++)
 	$forum_url = append_sid(IP_ROOT_PATH . '/admin/admin_forums.' . PHP_EXT . '?mode=editforum&f=' . $forums[$i]['forum_id']);
 	$forum = '<a href="'. $forum_url .'">'. $forums[$i]['forum_name'] .'</a>';
 
-	$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$template->assign_block_vars('prune_overview',array(
-			'ROW_COLOR' => '#' . $row_color,
-			'ROW_CLASS' => $row_class,
-			'PRUNE_FORUM' => $forum,
-			'FORUM_ID' => $forums[$i]['forum_id'],
-			'PRUNE_DAYS' => $prune_days,
-			'PRUNE_FREQ' => $prune_freq,
+		'ROW_CLASS' => $row_class,
+		'PRUNE_FORUM' => $forum,
+		'FORUM_ID' => $forums[$i]['forum_id'],
+		'PRUNE_DAYS' => $prune_days,
+		'PRUNE_FREQ' => $prune_freq,
 
-			'S_PRUNE_ENABLED' => $prune_enabled,
-			'S_PRUNE_INDEX' => $i
+		'S_PRUNE_ENABLED' => $prune_enabled,
+		'S_PRUNE_INDEX' => $i
 		)
 	);
 } // End for ($i...

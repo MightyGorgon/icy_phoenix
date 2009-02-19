@@ -6,7 +6,7 @@
 
 #global-wrapper {
 /*
-	width: 980px;
+	width: 980px !important;
 	clear: both;
 	margin: 0 auto;
 */
@@ -57,16 +57,19 @@ body {
 	/*height: 150px;*/
 }
 
-.leftshadow{
-	background: url('images/gray/shadow_left.gif') repeat-y;
-	width: 9px;
-	vertical-align: top;
+.leftshadow {
+	background: url('images/gray/shadow_left.gif') top left repeat-y;
 }
 
-.rightshadow{
-	background: url('images/gray/shadow_right.gif') repeat-y;
-	width: 9px;
-	vertical-align: top;
+.rightshadow {
+	background: url('images/gray/shadow_right.gif') top right repeat-y;
+}
+
+#wrapper-inner {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 9px;
+	padding-right: 9px;
 }
 
 #forumtable {
@@ -904,6 +907,13 @@ select optgroup {
 select option {
 	background-color: #f0f0f0;
 	color: #333333;
+}
+
+input.search:hover, input.search:focus, input.search:active, input.search {
+	background-image: url('images/gray/icon_textbox_search.gif');
+	background-repeat: no-repeat;
+	background-position: left 1px;
+	padding-left: 17px;
 }
 
 /* private message popup */

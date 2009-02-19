@@ -305,7 +305,7 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 		$views = $article['views'];
 
 		$article_title = $article['article_title'];
-		if (count($orig_word) && !$userdata['user_allowswearywords'])
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$article_description = preg_replace($orig_word, $replacement_word, $article_description);
 			$article_title = preg_replace($orig_word, $replacement_word, $article_title);
@@ -1018,7 +1018,7 @@ function get_kb_cat_subs($parent, $kb_is_auth_all = false)
 
 function get_kb_cat_subs_admin($parent, $select = 1, $indent, $ss)
 {
-	global $db, $template, $images, $row_color, $row_class, $theme, $i, $lang, $board_config;
+	global $db, $template, $images, $row_class, $theme, $i, $lang, $board_config;
 
 	$server_url = create_server_url();
 
@@ -1065,7 +1065,6 @@ function get_kb_cat_subs_admin($parent, $select = 1, $indent, $ss)
 		$temp_url = append_sid(IP_ROOT_PATH . ADM . '/admin_kb_cat.' . PHP_EXT . '?mode=down&amp;cat=' . $category_id2);
 		$down2 = '<a href="' . $temp_url . '" class="gen">' . $lang['Move_down'] . '</a>';
 
-		$row_color = (!($ss % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($ss % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('catrow.subrow', array(
@@ -1081,7 +1080,6 @@ function get_kb_cat_subs_admin($parent, $select = 1, $indent, $ss)
 				'U_UP' => $up2,
 				'U_DOWN' => $down2,
 
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class
 				)
 			);
@@ -1641,7 +1639,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 			$replacement_word = array();
 			obtain_word_list($orig_word, $replacement_word);
 		}
-		if (count($orig_word) && !$userdata['user_allowswearywords'])
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$message = preg_replace($orig_word, $replacement_word, $message);
 		}

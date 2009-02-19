@@ -174,11 +174,11 @@ switch ($mode)
 								{
 									$result_list[$temp_row['article_id']] = 1;
 								}
-								else if ($current_match_type == 'or')
+								elseif ($current_match_type == 'or')
 								{
 									$result_list[$temp_row['article_id']] = 1;
 								}
-								else if ($current_match_type == 'not')
+								elseif ($current_match_type == 'not')
 								{
 									$result_list[$temp_row['article_id']] = 0;
 								}
@@ -233,10 +233,10 @@ switch ($mode)
 					$max_result_length = 60000;
 					if (strlen($search_results) > $max_result_length)
 					{
-				        $search_results = substr($search_results, 0, $max_result_length);
+						$search_results = substr($search_results, 0, $max_result_length);
 						$search_results = substr($search_results, 0, strrpos($search_results, ','));
 						$total_match_count = count(explode(', ', $search_results));
-				    }
+					}
 					*/
 
 				for($i = 0; $i < count($store_vars); $i++)
@@ -251,8 +251,8 @@ switch ($mode)
 				$search_id = mt_rand();
 
 				$sql = "UPDATE " . KB_SEARCH_TABLE . "
-				        SET search_id = $search_id, search_array = '" . str_replace("\'", "''", $result_array) . "'
-						WHERE session_id = '" . $userdata['session_id'] . "'";
+								SET search_id = $search_id, search_array = '" . str_replace("\'", "''", $result_array) . "'
+								WHERE session_id = '" . $userdata['session_id'] . "'";
 				if (!($result = $db->sql_query($sql)) || !$db->sql_affectedrows())
 				{
 					$sql = "INSERT INTO " . KB_SEARCH_TABLE . " (search_id, session_id, search_array)
@@ -269,9 +269,9 @@ switch ($mode)
 				if ($search_id)
 				{
 					$sql = "SELECT search_array
-					        FROM " . KB_SEARCH_TABLE . "
-						    WHERE search_id = $search_id
-						        AND session_id = '" . $userdata['session_id'] . "'";
+									FROM " . KB_SEARCH_TABLE . "
+									WHERE search_id = $search_id
+										AND session_id = '" . $userdata['session_id'] . "'";
 					if (!($result = $db->sql_query($sql)))
 					{
 						mx_message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
@@ -389,7 +389,7 @@ switch ($mode)
 
 				$message = '';
 
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word))
 				{
 					$article_title = preg_replace($orig_word, $replacement_word, $searchset[$i]['article_title']);
 				}

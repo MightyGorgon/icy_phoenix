@@ -25,7 +25,7 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 {
-	global $db, $board_config, $bbcode;
+	global $db, $board_config, $bbcode, $userdata;
 
 	$sql = 'SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_replies, p.post_id, p.enable_smilies, p.post_text, p.post_text_compiled, u.username, u.user_id, u.user_active, u.user_color
 			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . POSTS_TABLE . ' AS p
@@ -106,7 +106,7 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 			$replacement_word = array();
 			obtain_word_list($orig_word, $replacement_word);
 			// censor text and title
-			if (count($orig_word))
+			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$posts[$i]['topic_title'] = preg_replace($orig_word, $replacement_word, $posts[$i]['topic_title']);
 				$posts[$i]['post_text'] = preg_replace($orig_word, $replacement_word, $posts[$i]['post_text']);
@@ -265,7 +265,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 			$replacement_word = array();
 			obtain_word_list($orig_word, $replacement_word);
 			// censor text and title
-			if (count($orig_word))
+			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$posts[$i]['topic_title'] = preg_replace($orig_word, $replacement_word, $posts[$i]['topic_title']);
 				$posts[$i]['post_text'] = preg_replace($orig_word, $replacement_word, $posts[$i]['post_text']);

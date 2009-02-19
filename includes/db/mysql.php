@@ -92,7 +92,7 @@ if(!defined('SQL_LAYER'))
 
 			if($this->db_connect_id)
 			{
-				if($this->query_result)
+				if(!empty($this->query_result))
 				{
 					@mysql_free_result($this->query_result);
 				}
@@ -394,6 +394,7 @@ if(!defined('SQL_LAYER'))
 			}
 			$mtime = explode(' ', microtime());
 			$starttime = $mtime[1] + $mtime[0];
+			$result = false;
 
 			if(!$query_id)
 			{
@@ -667,7 +668,7 @@ if(!defined('SQL_LAYER'))
 			$f_content .= '$set = ' . $data . ';' . "\n";
 			$f_content .= '$cache_included = true;' . "\n" . 'return;' . "\n";
 			$f_content .= '?' . '>';
-			@fputs($f, $f_content);
+			@fwrite($f, $f_content);
 			@flock($f, LOCK_UN);
 			@fclose($f);
 			@chmod($cache_file_name, 0666);
@@ -676,7 +677,7 @@ if(!defined('SQL_LAYER'))
 			$this->cache = array();
 		}
 
-		function clear_cache($prefix = '', $cache_folder = SQL_CACHE_FOLDER)
+		function clear_cache($prefix = '', $cache_folder = SQL_CACHE_FOLDER, $files_per_step = 0)
 		{
 			$this->caching = false;
 			$this->cached = false;
@@ -688,11 +689,18 @@ if(!defined('SQL_LAYER'))
 			$res = opendir($this->cache_folder);
 			if($res)
 			{
+				$files_counter = 0;
 				while(($file = readdir($res)) !== false)
 				{
-					if(substr($file, 0, $prefix_len) === $prefix)
+					if(!is_dir($file) && substr($file, 0, $prefix_len) === $prefix)
 					{
 						@unlink($this->cache_folder . $file);
+						$files_counter++;
+					}
+					if (($files_per_step > 0) && ($files_counter >= $files_per_step))
+					{
+						closedir($res);
+						return $files_per_step;
 					}
 				}
 			}

@@ -264,7 +264,7 @@ if (!function_exists('htmlspecialchars_decode'))
 */
 function htmlspecialchars_clean($string, $quote_style = ENT_NOQUOTES)
 {
-	return str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style));
+	return trim(str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style)));
 }
 
 /**
@@ -541,7 +541,7 @@ function init_userprefs($userdata)
 
 			for($i = 0; $i < min($total_posts, $board_config['max_link_bookmarks']); $i++)
 			{
-				$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $post_rows[$i]['topic_title']) : $post_rows[$i]['topic_title'];
+				$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $post_rows[$i]['topic_title']) : $post_rows[$i]['topic_title'];
 				//
 				// Add an array to $nav_links for the Mozilla navigation bar.
 				// 'bookmarks' can create multiple items, therefore we are using a nested array.
@@ -590,7 +590,8 @@ function get_userdata($user, $force_str = false)
 	// Start Advanced IP Tools Pack MOD
 	if ($db->sql_affectedrows() == 0)
 	{
-		message_die(GENERAL_ERROR, 'User does not exist.');
+		//message_die(GENERAL_ERROR, 'User does not exist.');
+		return false;
 	}
 	// End Advanced IP Tools Pack MOD
 
@@ -683,6 +684,15 @@ function phpbb_clean_username($username)
 	$username = phpbb_rtrim($username, "\\");
 	$username = str_replace("'", "\'", $username);
 
+	return $username;
+}
+
+/*
+* Function to clear all unwanted chars in username
+*/
+function ip_clean_username($username)
+{
+	$username = ereg_replace("[^A-Za-z0-9&\-_ ]", "", $username);
 	return $username;
 }
 
@@ -808,7 +818,7 @@ function phpbb_own_realpath($path)
 				$path_prefix = '';
 			}
 		}
-		else if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME']))
+		elseif (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME']))
 		{
 			// Warning: If chdir() has been used this will lie!
 			// Warning: This has some problems sometime (CLI can create them easily)
@@ -1083,20 +1093,6 @@ function setup_style($style, $old_default_style, $old_style = false)
 {
 	global $db, $board_config, $template, $images, $themes_style;
 
-	if (defined('CACHE_THEMES'))
-	{
-		include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
-		if (empty($themes_style))
-		{
-			if (!@function_exists('cache_themes'))
-			{
-				@include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
-			}
-			cache_themes();
-			@include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
-		}
-	}
-
 	if (!empty($themes_style[$style]))
 	{
 		$row = $themes_style[$style];
@@ -1200,20 +1196,6 @@ function check_style_exists($style_id)
 
 	$style_exists = false;
 
-	if (defined('CACHE_THEMES'))
-	{
-		include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
-		if (empty($themes_style))
-		{
-			if (!@function_exists('cache_themes'))
-			{
-				@include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
-			}
-			cache_themes();
-			@include(IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT);
-		}
-	}
-
 	if (!empty($themes_style[$style_id]))
 	{
 		$style_exists = true;
@@ -1286,18 +1268,19 @@ function create_date($format, $gmepoch, $tz)
 		}
 	}
 
+	$time_mode = $board_config['default_time_mode'];
+	$dst_time_lag = $board_config['default_dst_time_lag'];
 	if (!empty($userdata) && !$userdata['session_logged_in'])
 	{
-		$time_mode = $board_config['default_time_mode'];
-		$dst_time_lag = $board_config['default_dst_time_lag'];
 		$userdata['user_time_mode'] = $board_config['default_time_mode'];
 		$userdata['user_dst_time_lag'] = $board_config['default_dst_time_lag'];
 	}
-	else
+	elseif (!empty($userdata))
 	{
 		$time_mode = $userdata['user_time_mode'];
 		$dst_time_lag = $userdata['user_dst_time_lag'];
 	}
+
 	switch ($time_mode)
 	{
 		case MANUAL_DST:
@@ -1604,67 +1587,196 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 	}
 	else
 	{
-		if (defined('CACHE_WORDS'))
+		// Define censored word matches
+		$sql = "SELECT word, replacement FROM " . WORDS_TABLE . " ORDER BY length(word) DESC";
+		if(!($result = $db->sql_query($sql, false, 'word_censor_')))
 		{
-			if (!@function_exists('cache_words'))
-			{
-				@include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
-			}
-			@include(IP_ROOT_PATH . './includes/def_words.' . PHP_EXT);
-			if (!isset($word_replacement))
-			{
-				cache_words();
-				@include(IP_ROOT_PATH . './includes/def_words.' . PHP_EXT);
-			}
+			message_die(GENERAL_ERROR, 'Could not get censored words from database', '', __LINE__, __FILE__, $sql);
 		}
-		if (isset($word_replacement))
-		{
-			$orig_word = array();
-			$replacement_word = array();
-			@reset($word_replacement);
-			while (list($word, $replacement) = @each($word_replacement))
-			{
-				$orig_word[] = '#\b(' . str_replace('\*', '\w*?', preg_quote(stripslashes($word), '#')) . ')\b#i';
-				$replacement_word[] = $replacement;
-			}
-		}
-		else
-		{
-			// Define censored word matches
-			$sql = "SELECT word, replacement
-							FROM " . WORDS_TABLE . " ORDER BY length(word) DESC";
-			if(!($result = $db->sql_query($sql, false, 'word_censor_')))
-			{
-				message_die(GENERAL_ERROR, 'Could not get censored words from database', '', __LINE__, __FILE__, $sql);
-			}
 
-			if ($row = $db->sql_fetchrow($result))
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$ic_word = '';
+			$ic_first = 0;
+			$ic_chars = preg_split('//', $row['word'], -1, PREG_SPLIT_NO_EMPTY);
+			foreach ($ic_chars as $char)
 			{
-				do
+				if (($ic_first == 1) && ($char != "*"))
 				{
-					$ic_word = ''; $ic_first = 0;
-					$ic_chars = preg_split('//', $row['word'], -1, PREG_SPLIT_NO_EMPTY);
-					foreach ($ic_chars as $char)
-					{
-						if (($ic_first == 1) && ($char != "*"))
-						{
-							$ic_word .= "_";
-						}
-						$ic_word .= $char; $ic_first = 1;
-					}
-					$ic_search = array('\*','z','s','a','b','l','i','o','p','_');
-					$ic_replace = array('\w*?','(?:z|2)','(?:s|\$)','(?:a|\@)','(?:b|8|3)','(?:l|1|i|\!)','(?:i|1|l|\!)','(?:o|0)','(?:p|\?)','(?:_|\W)*');
-					$orig_word[] = '#(?<=^|\W)(' . str_replace($ic_search, $ic_replace, phpbb_preg_quote($ic_word, '#')) . ')(?=\W|$)#i';
-					$replacement_word[] = $row['replacement'];
+					$ic_word .= '_';
 				}
-				while ($row = $db->sql_fetchrow($result));
+				$ic_word .= $char; $ic_first = 1;
 			}
+			$ic_search = array('\*','z','s','a','b','l','i','o','p','_');
+			$ic_replace = array('\w*?','(?:z|2)','(?:s|\$)','(?:a|\@)','(?:b|8|3)','(?:l|1|i|\!)','(?:i|1|l|\!)','(?:o|0)','(?:p|\?)','(?:_|\W)*');
+			$orig_word[] = '#(?<=^|\W)(' . str_replace($ic_search, $ic_replace, phpbb_preg_quote($ic_word, '#')) . ')(?=\W|$)#i';
+			$replacement_word[] = $row['replacement'];
 		}
+		$db->sql_freeresult($result);
+
 		$global_orig_word = $orig_word;
 		$global_replacement_word = $replacement_word;
 	}
 
 	return true;
+}
+
+/**
+* Error and message handler, call with trigger_error if reqd
+*/
+function msg_handler($errno, $msg_text, $errfile, $errline)
+{
+	global $board_config, $lang;
+	global $msg_title, $msg_long_text;
+
+	// Do not display notices if we suppress them via @
+	if (error_reporting() == 0)
+	{
+		return;
+	}
+
+	// Message handler is stripping text. In case we need it, we are possible to define long text...
+	if (isset($msg_long_text) && $msg_long_text && !$msg_text)
+	{
+		$msg_text = $msg_long_text;
+	}
+
+	switch ($errno)
+	{
+		case E_NOTICE:
+			// Mighty Gorgon: if you want to report uninitialized variables, comment the "BREAK" below...
+		break;
+		case E_WARNING:
+			// Check the error reporting level and return if the error level does not match
+
+			// If DEBUG is defined to FALSE then return
+			if (defined('DEBUG') && !DEBUG)
+			{
+				return;
+			}
+
+			// If DEBUG is defined the default level is E_ALL
+			if (($errno & ((defined('DEBUG')) ? E_ALL : error_reporting())) == 0)
+			{
+				return;
+			}
+
+			if (strpos($errfile, 'cache') === false && strpos($errfile, 'template.') === false)
+			{
+				// flush the content, else we get a white page if output buffering is on
+				if ((int) @ini_get('output_buffering') === 1 || strtolower(@ini_get('output_buffering')) === 'on')
+				{
+					@ob_flush();
+				}
+
+				// Another quick fix for those having gzip compression enabled, but do not flush if the coder wants to catch "something". ;)
+				if (!empty($board_config['gzip_compress']))
+				{
+					if (@extension_loaded('zlib') && !headers_sent() && !ob_get_level())
+					{
+						@ob_flush();
+					}
+				}
+
+				// remove complete path to installation, with the risk of changing backslashes meant to be there
+				$errfile = str_replace(array(phpbb_realpath(IP_ROOT_PATH), '\\'), array('', '/'), $errfile);
+				$msg_text = str_replace(array(phpbb_realpath(IP_ROOT_PATH), '\\'), array('', '/'), $msg_text);
+
+				echo '<b>[Icy Phoenix Debug] PHP Notice</b>: in file <b>' . $errfile . '</b> on line <b>' . $errline . '</b>: <b>' . $msg_text . '</b><br />' . "\n";
+			}
+
+			return;
+
+		break;
+
+		case E_USER_ERROR:
+
+			$msg_text = (!empty($lang[$msg_text])) ? $lang[$msg_text] : $msg_text;
+			$msg_title_default = (!empty($lang['General_Error'])) ? $lang['General_Error'] : 'General Error';
+			$msg_title = (!empty($lang[$msg_title])) ? $lang[$msg_title] : $msg_title_default;
+			$return_url = (!empty($lang['CLICK_RETURN_HOME'])) ? sprintf($lang['CLICK_RETURN_HOME'], '<a href="' . IP_ROOT_PATH . '">', '</a>') : ('<a href="' . IP_ROOT_PATH . '">Return to home page</a>');
+			garbage_collection();
+			html_message($msg_title, $msg_text, $return_url);
+			exit_handler();
+
+			// On a fatal error (and E_USER_ERROR *is* fatal) we never want other scripts to continue and force an exit here.
+			exit;
+		break;
+
+		case E_USER_WARNING:
+		case E_USER_NOTICE:
+			define('IN_ERROR_HANDLER', true);
+			message_die($msg_code, $msg_text, $msg_title, $errline, $errfile, '');
+	}
+}
+
+/**
+* Closing the cache object and the database
+*/
+function garbage_collection()
+{
+	global $db;
+
+	// Close our DB connection.
+	if (!empty($db))
+	{
+		$db->sql_close();
+	}
+}
+
+/**
+* Handler for exit calls in phpBB.
+*
+* Note: This function is called after the template has been outputted.
+*/
+function exit_handler()
+{
+	global $board_config;
+
+	// As a pre-caution... some setups display a blank page if the flush() is not there.
+	(empty($board_config['gzip_compress'])) ? @flush() : @ob_flush();
+
+	exit;
+}
+
+/**
+* HTML Message
+*/
+function html_message($msg_title, $msg_text, $return_url)
+{
+	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+	echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">';
+	echo '<head>';
+	echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
+	echo '<title>' . $msg_title . '</title>';
+	echo '<style type="text/css">';
+	echo "\n" . '/* <![CDATA[ */' . "\n";
+	echo '* { margin: 0; padding: 0; } html { font-size: 100%; height: 100%; margin-bottom: 1px; background-color: #e8eef8; } body { font-family: "Trebuchet MS", "Lucida Grande", Verdana, Helvetica, Arial, sans-serif; color: #225599; background: #e8eef8; font-size: 62.5%; margin: 0; } ';
+	echo 'a:link, a:active, a:visited { color: #336699; text-decoration: none; } a:hover { color: #dd2222; text-decoration: underline; } ';
+	echo '#wrap { padding: 0 20px 15px 20px; min-width: 615px; } #page-header { text-align: right; height: 40px; } #page-footer { clear: both; font-size: 1em; text-align: center; } ';
+	echo '.panel { margin: 4px 0; background-color: #ffffff; border: solid 1px #dde8ee; } ';
+	echo '#errorpage #page-header a { font-weight: bold; line-height: 6em; } #errorpage #content { padding: 10px; } #errorpage #content h1 { line-height: 1.2em; margin-bottom: 0; color: #dd2222; } ';
+	echo '#errorpage #content div { margin-top: 20px; margin-bottom: 5px; border-bottom: 1px solid #dddddd; padding-bottom: 5px; color: #333333; font: bold 1.2em "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif; text-decoration: none; line-height: 120%; text-align: left; } ';
+	echo "\n" . '/* ]]> */' . "\n";
+	echo '</style>';
+	echo '</head>';
+	echo '<body id="errorpage">';
+	echo '<div id="wrap">';
+	echo '	<div id="page-header">';
+	echo '		' . $return_url;
+	echo '	</div>';
+	echo '	<div class="panel">';
+	echo '		<div id="content">';
+	echo '			<h1>' . $msg_title . '</h1>';
+	echo '			<div>' . $msg_text . '</div>';
+	echo '		</div>';
+	echo '	</div>';
+	echo '	<div id="page-footer">';
+	echo '		Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a>';
+	echo '	</div>';
+	echo '</div>';
+	echo '</body>';
+	echo '</html>';
 }
 
 //
@@ -1943,6 +2055,9 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	{
 		echo "<html>\n<body>\n" . $msg_title . "\n<br /><br />\n" . $msg_text . "</body>\n</html>";
 	}
+
+	garbage_collection();
+	exit_handler();
 
 	exit;
 }
@@ -2583,7 +2698,7 @@ function get_ad($ad_position)
 	return $ad_text;
 }
 
-function empty_cache_folders($cache_folder = '')
+function empty_cache_folders($cache_folder = '', $files_per_step = 0)
 {
 
 	$skip_files = array(
@@ -2597,13 +2712,10 @@ function empty_cache_folders($cache_folder = '')
 
 	$sql_prefix = 'sql_';
 	$tpl_prefix = 'tpl_';
-	$phpbb_update_prefix = 'phpbb_';
-	$cache_prefix = 'cache_';
-	$cg_prefix = POST_USERS_URL . '_';
-	$dat_extension = '.dat';
 
 	$dirs_array = array(MAIN_CACHE_FOLDER, FORUMS_CACHE_FOLDER, POSTS_CACHE_FOLDER, SQL_CACHE_FOLDER, TOPICS_CACHE_FOLDER, USERS_CACHE_FOLDER);
 	$dirs_array = ((empty($cache_folder) || !in_array($cache_folder, $dirs_array)) ? $dirs_array : array($cache_folder));
+	$files_counter = 0;
 	for ($i = 0; $i < count($dirs_array); $i++)
 	{
 		$dir = $dirs_array[$i];
@@ -2612,10 +2724,16 @@ function empty_cache_folders($cache_folder = '')
 		while(($file = readdir($res)) !== false)
 		{
 			$file_full_path = $dir . $file;
-			if (!in_array($file, $skip_files))
+			if (!in_array($file, $skip_files) && !is_dir($file_full_path))
 			{
 				@chmod($file_full_path, 0777);
 				$res2 = @unlink($file_full_path);
+				$files_counter++;
+			}
+			if (($files_per_step > 0) && ($files_counter >= $files_per_step))
+			{
+				closedir($res);
+				return $files_per_step;
 			}
 		}
 		closedir($res);
@@ -2623,7 +2741,7 @@ function empty_cache_folders($cache_folder = '')
 	return true;
 }
 
-function empty_images_cache_folders()
+function empty_images_cache_folders($files_per_step = 0)
 {
 
 	$skip_files = array(
@@ -2636,6 +2754,7 @@ function empty_images_cache_folders()
 	);
 
 	$dirs_array = array(POSTED_IMAGES_THUMBS_PATH, IP_ROOT_PATH . ALBUM_CACHE_PATH, IP_ROOT_PATH . ALBUM_MED_CACHE_PATH, IP_ROOT_PATH . ALBUM_WM_CACHE_PATH);
+	$files_counter = 0;
 	for ($i = 0; $i < count($dirs_array); $i++)
 	{
 		$dir = $dirs_array[$i];
@@ -2652,12 +2771,18 @@ function empty_images_cache_folders()
 					while(($subfile = readdir($subres)) !== false)
 					{
 						$subfile_full_path = $file_full_path . '/' . $subfile;
-						if (!in_array($subfile, $skip_files))
+						if (!in_array($subfile, $skip_files) && !is_dir($subfile_full_path))
 						{
 							if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $subfile))
 							{
 								@chmod($subfile_full_path, 0777);
 								$res2 = @unlink($subfile_full_path);
+								$files_counter++;
+							}
+							if (($files_per_step > 0) && ($files_counter >= $files_per_step))
+							{
+								closedir($subres);
+								return $files_per_step;
 							}
 						}
 					}
@@ -2667,7 +2792,13 @@ function empty_images_cache_folders()
 				{
 					@chmod($file_full_path, 0777);
 					$res2 = @unlink($file_full_path);
+					$files_counter++;
 				}
+			}
+			if (($files_per_step > 0) && ($files_counter >= $files_per_step))
+			{
+				closedir($res);
+				return $files_per_step;
 			}
 		}
 		closedir($res);

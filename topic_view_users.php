@@ -223,12 +223,10 @@ while ($row = $db->sql_fetchrow($result))
 
 	$poster_avatar = $user_info['avatar'];
 
-	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$template->assign_block_vars('memberrow', array(
 		'ROW_NUMBER' => $i + (intval($_GET['start']) + 1),
-		'ROW_COLOR' => '#' . $row_color,
 		'ROW_CLASS' => $row_class,
 		'USERNAME' => ($user_id == ANONYMOUS) ? $lang['Guest'] : $username,
 

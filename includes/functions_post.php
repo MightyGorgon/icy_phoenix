@@ -124,12 +124,12 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 		//$message = addslashes($message);
 		// Mighty Gorgon - TO BE VERIFIED
 	}
-	elseif ($mode != 'delete' && $mode != 'poll_delete')
+	elseif (($mode != 'delete') && ($mode != 'poll_delete'))
 	{
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_message'] : $lang['Empty_message'];
 	}
 	// check calendar date
-	if ((!empty($topic_calendar_time)) && ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])))
+	if ((!empty($topic_calendar_time)) && (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])))
 	{
 		$year = intval(date('Y', $topic_calendar_time));
 		$month = intval(date('m', $topic_calendar_time));
@@ -168,7 +168,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	// Check to see if the user is last poster and is bumping
 	//if(($mode == 'reply' || $mode == 'quote') && ($board_config['no_bump'] == true) && ($new_post_while_posting == false))
 	$no_bump = ((($board_config['no_bump'] == 1) && ($userdata['user_level'] != ADMIN)) || (($board_config['no_bump'] == 2) && ($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))) ? true : false;
-	if(($mode == 'reply' || $mode == 'quote') && ($no_bump == true) && ($new_post_while_posting == false))
+	if((($mode == 'reply') || ($mode == 'quote')) && ($no_bump == true) && ($new_post_while_posting == false))
 	{
 		if(isset($topic_id))
 		{
@@ -192,7 +192,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	}
 
 	// Handle poll stuff
-	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+	if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post']))
 	{
 		$poll_length = (isset($poll_length)) ? max(0, intval($poll_length)) : 0;
 
@@ -218,11 +218,11 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 			{
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_few_poll_options'] : $lang['To_few_poll_options'];
 			}
-			else if (count($poll_options) > $board_config['max_poll_options'])
+			elseif (count($poll_options) > $board_config['max_poll_options'])
 			{
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_many_poll_options'] : $lang['To_many_poll_options'];
 			}
-			else if ($poll_title == '')
+			elseif ($poll_title == '')
 			{
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_poll_title'] : $lang['Empty_poll_title'];
 			}
@@ -239,7 +239,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	// CrackerTracker v5.x
 	global $ctracker_config;
 
-	if ( ($mode == 'newtopic' || $mode == 'reply') && ($ctracker_config->settings['spammer_blockmode'] > 0 || $ctracker_config->settings['spam_attack_boost'] == 1) && $userdata['user_level'] != ANONYMOUS )
+	if ((($mode == 'newtopic') || ($mode == 'reply')) && (($ctracker_config->settings['spammer_blockmode'] > 0) || ($ctracker_config->settings['spam_attack_boost'] == 1)) && ($userdata['user_level'] != ANONYMOUS))
 	{
 		include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 		$login_functions = new ct_userfunctions();
@@ -248,7 +248,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	}
 	// CrackerTracker v5.x
 	// BEGIN cmx_slash_news_mod
-	if( isset( $news_category ) && is_numeric( $news_category ) )
+	if(isset($news_category) && is_numeric($news_category))
 	{
 		$news_id = intval($news_category);
 		//$topic_type = POST_NEWS;
@@ -269,7 +269,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		$post_subject = ucwords($post_subject);
 	}
 
-	if ( ($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD) )
+	if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
 	{
 		// Flood control
 		$where_sql = ($userdata['user_id'] == ANONYMOUS) ? "poster_ip = '$user_ip'" : 'poster_id = ' . $userdata['user_id'];
@@ -417,7 +417,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			{
 				$dl_traffic = $dl_config['newtopic_traffic'];
 			}
-			elseif ($mode == 'reply' || $mode == 'quote')
+			elseif (($mode == 'reply') || ($mode == 'quote'))
 			{
 				$dl_traffic = $dl_config['reply_traffic'];
 			}
@@ -437,7 +437,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	// DOWNLOADS - END
 
 	// Add poll
-	if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && count($poll_options) >= 2)
+	if ((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll'])) && !empty($poll_title) && (count($poll_options) >= 2))
 	{
 		$sql = (!$post_data['has_poll']) ? "INSERT INTO " . VOTE_DESC_TABLE . " (topic_id, vote_text, vote_start, vote_length) VALUES ($topic_id, '$poll_title', $current_time, " . ($poll_length * 86400) . ")" : "UPDATE " . VOTE_DESC_TABLE . " SET vote_text = '$poll_title', vote_length = " . ($poll_length * 86400) . " WHERE topic_id = $topic_id";
 		if (!$db->sql_query($sql))
@@ -447,7 +447,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 		$delete_option_sql = '';
 		$old_poll_result = array();
-		if ($mode == 'editpost' && $post_data['has_poll'])
+		if (($mode == 'editpost') && $post_data['has_poll'])
 		{
 			$sql = "SELECT vote_option_id, vote_result
 				FROM " . VOTE_RESULTS_TABLE . "
@@ -481,9 +481,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			if (!empty($option_text))
 			{
 				$option_text = str_replace("\'", "''", htmlspecialchars($option_text));
-				$poll_result = ($mode == "editpost" && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
+				$poll_result = (($mode == 'editpost') && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
 
-				$sql = ($mode != "editpost" || !isset($old_poll_result[$option_id])) ? "INSERT INTO " . VOTE_RESULTS_TABLE . " (vote_id, vote_option_id, vote_option_text, vote_result) VALUES ($poll_id, $poll_option_id, '$option_text', $poll_result)" : "UPDATE " . VOTE_RESULTS_TABLE . " SET vote_option_text = '$option_text', vote_result = $poll_result WHERE vote_option_id = $option_id AND vote_id = $poll_id";
+				$sql = (($mode != 'editpost') || !isset($old_poll_result[$option_id])) ? "INSERT INTO " . VOTE_RESULTS_TABLE . " (vote_id, vote_option_id, vote_option_text, vote_result) VALUES ($poll_id, $poll_option_id, '$option_text', $poll_result)" : "UPDATE " . VOTE_RESULTS_TABLE . " SET vote_option_text = '$option_text', vote_result = $poll_result WHERE vote_option_id = $option_id AND vote_id = $poll_id";
 				if (!$db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Error in posting', '', __LINE__, __FILE__, $sql);
@@ -511,7 +511,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$cash_string = '';
 	// MG Cash MOD For IP - BEGIN
-	if ( defined('CASH_MOD') )
+	if (defined('CASH_MOD'))
 	{
 		$cash_message = $GLOBALS['cm_posting']->update_post($mode, $post_data, $forum_id, $topic_id, $post_id, $topic_type, $post_username, $post_message);
 		$cash_string = '<br />' . $cash_message;
@@ -867,10 +867,10 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	else
 	{
 		$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">';
-		$message = (($mode == 'poll_delete') ? $lang['Poll_delete'] : $lang['Deleted']) . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . "=$topic_id") . '">', '</a>');
+		$message = (($mode == 'poll_delete') ? $lang['Poll_delete'] : $lang['Deleted']) . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>');
 	}
 
-	$message .=  '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . "=$forum_id") . '">', '</a>');
+	$message .=  '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 
 	empty_cache_folders(POSTS_CACHE_FOLDER);
 	empty_cache_folders(FORUMS_CACHE_FOLDER);
@@ -922,9 +922,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 	{
 		if ($mode == 'reply')
 		{
-			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
-							WHERE ban_userid <> 0
-							ORDER BY ban_userid ASC";
+			// One row SQL for caching purpose...
+			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid <> 0 ORDER BY ban_userid ASC";
 			if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 			{
 				message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
@@ -1000,8 +999,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$emailer->from($board_config['board_email']);
 					$emailer->replyto($board_config['board_email']);
 
-					$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
-					$post_text = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($post_data['message'])) : unprepare_message($post_data['message']);
+					$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
+					$post_text = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, unprepare_message($post_data['message'])) : unprepare_message($post_data['message']);
 
 					if ($board_config['html_email'] == true)
 					{
@@ -1131,8 +1130,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$emailer->from($board_config['board_email']);
 					$emailer->replyto($board_config['board_email']);
 
-					$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
-					$post_text = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($post_data['message'])) : unprepare_message($post_data['message']);
+					$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
+					$post_text = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, unprepare_message($post_data['message'])) : unprepare_message($post_data['message']);
 
 					if ($board_config['html_email'] == true)
 					{
@@ -1222,12 +1221,10 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 		//
 		// code for newtopic forum notification
 		//
-
 		if ($mode == 'newtopic')
 		{
-			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
-							WHERE ban_userid <> 0
-							ORDER BY ban_userid ASC";
+			// One row SQL for caching purpose...
+			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid <> 0 ORDER BY ban_userid ASC";
 			if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 			{
 				message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
@@ -1302,8 +1299,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$emailer->from($board_config['board_email']);
 					$emailer->replyto($board_config['board_email']);
 
-					$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
-					$post_text = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, unprepare_message($post_data['message'])) : unprepare_message($post_data['message']);
+					$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, unprepare_message($topic_title)) : unprepare_message($topic_title);
+					$post_text = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, unprepare_message($post_data['message'])) : unprepare_message($post_data['message']);
 
 					if ($board_config['html_email'] == true)
 					{
@@ -1537,7 +1534,7 @@ function generate_smilies($mode)
 
 				if ($col == $smilies_split_row)
 				{
-					if( ($mode == 'inline' && $row == $inline_rows - 1) || (!$inline && $row == $per_page) )
+					if((($mode == 'inline') && ($row == $inline_rows - 1)) || (empty($inline) && ($row == $per_page)))
 					{
 						break;
 					}

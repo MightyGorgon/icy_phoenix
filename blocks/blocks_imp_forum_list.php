@@ -57,7 +57,7 @@ if(!function_exists('imp_forum_list_block_func'))
 			}
 			$sql = "SELECT f.*
 				FROM " . FORUMS_TABLE . " f
-				WHERE f.auth_view = '0'
+				WHERE f.auth_view = 0
 				" . $sql_where . "
 				ORDER BY f.cat_id, f.forum_order";
 			if (!($result = $db->sql_query($sql, false, 'forums_list_', FORUMS_CACHE_FOLDER)))

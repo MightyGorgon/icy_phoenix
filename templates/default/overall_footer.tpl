@@ -32,5 +32,7 @@
 <!-- IF not S_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
 
 </div>
+
+{GOOGLE_ANALYTICS}
 </body>
 </html>

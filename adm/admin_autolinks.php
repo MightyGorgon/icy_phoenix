@@ -239,13 +239,11 @@ else
 			$link_forum = $autolink_rows[$i]['link_forum'];
 			$link_int = $autolink_rows[$i]['link_int'];
 
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$forum_id2 = array_search($link_forum, $forum_ids);
 
 			$template->assign_block_vars('autolinks', array(
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'NUMBER' => $i + 1,
 				'KEYWORD' => $link_keyword,

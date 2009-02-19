@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{T_COMMON_TPL_PATH}print_version.css" type="text/css" />
 </head>
 <body>
-<div style="margin: 0 auto; display: block; width: 980px;">
+<div style="margin: 0 auto; display: block; width: 980px !important;">
 <div class="forumline" style="width: 100%;">
 <form name="printview_form" action="{S_ACTION}" method="post">
 <div class="genmed" style="text-align: right; float: right;">
@@ -32,5 +32,6 @@
 <div align="center"><br />Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></div>
 </div>
 </div>
+{GOOGLE_ANALYTICS}
 </body>
 </html>

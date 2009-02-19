@@ -26,10 +26,10 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
 
 // Adding CPL_NAV only if needed
 define('PARSE_CPL_NAV', true);
@@ -668,6 +668,7 @@ elseif ($mode == 'read')
 
 	// Mighty Gorgon - Quick Quote - BEGIN
 	$look_up_array = array(
+		"\"",
 		"<",
 		">",
 		"\n",
@@ -675,6 +676,7 @@ elseif ($mode == 'read')
 	);
 
 	$replacement_array = array(
+		"\\\"",
 		"&lt_mg;",
 		"&gt_mg;",
 		"\\n",
@@ -687,7 +689,6 @@ elseif ($mode == 'read')
 	{
 		$plain_message = (!empty($plain_message)) ? preg_replace($orig_word, $replacement_word, $plain_message) : '';
 	}
-	$plain_message = addslashes($plain_message);
 	$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
 	// Mighty Gorgon - Quick Quote - END
 
@@ -748,7 +749,7 @@ elseif ($mode == 'read')
 		obtain_word_list($orig_word, $replacement_word);
 	}
 
-	if (count($orig_word))
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 		$private_message = preg_replace($orig_word, $replacement_word, $private_message);
@@ -1908,7 +1909,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			$preview_message = $preview_message . '<br />' . $board_config['sig_line'] . '<br />' . $user_sig;
 		}
 
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$preview_subject = preg_replace($orig_word, $replacement_word, $privmsg_subject);
 			$preview_message = preg_replace($orig_word, $replacement_word, $preview_message);
@@ -2072,7 +2073,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		$replacement_word = array();
 		obtain_word_list($orig_word, $replacement_word);
 	}
-	if (count($orig_word) && !$userdata['user_allowswearywords'])
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$prv_msg_review = preg_replace($orig_word, $replacement_word, $prv_msg_review);
 	}
@@ -2543,7 +2544,7 @@ if ($row = $db->sql_fetchrow($result))
 
 		$msg_subject = $row['privmsgs_subject'];
 
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$msg_subject = preg_replace($orig_word, $replacement_word, $msg_subject);
 		}
@@ -2559,12 +2560,10 @@ if ($row = $db->sql_fetchrow($result))
 			$msg_username = '<b>' . $msg_username . '</b>';
 		}
 
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$i++;
 
 		$template->assign_block_vars('listrow', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'FROM' => $msg_username,
 			'SUBJECT' => $msg_subject,

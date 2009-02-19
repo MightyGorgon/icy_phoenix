@@ -6,9 +6,9 @@
 {CALENDAR_BOX}
 <!-- ENDIF -->
 
-<!-- IF not S_BOT and FORUMINDEX_BANNER_TOP --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_TOP}</div><!-- ENDIF -->
+<!-- IF FORUMINDEX_BANNER_TOP --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_TOP}</div><!-- ENDIF -->
 {BOARD_INDEX}
-<!-- IF not S_BOT and FORUMINDEX_BANNER_BOTTOM --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_BOTTOM}</div><!-- ENDIF -->
+<!-- IF FORUMINDEX_BANNER_BOTTOM --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_BOTTOM}</div><!-- ENDIF -->
 
 <!-- IF not S_BOT -->
 <!-- IF S_VIEWONLINE -->

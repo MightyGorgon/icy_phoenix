@@ -63,12 +63,13 @@ function compileForm(m_id)
 	<th>{L_BATCH_WAIT}</th>
 	<th>{L_SENDER}</th>
 	<th>{L_STATUS}</th>
+	<th>{L_ACTIONS}</th>
 </tr>
 <!-- BEGIN mail_sessions -->
 <tr>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.ID}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.GROUP}</td>
-	<td class="{mail_sessions.ROW} row-center"><a href="javascript:compileForm({mail_sessions.ID});">{mail_sessions.SUBJECT}</a></td>
+	<td class="{mail_sessions.ROW}"><a href="javascript:compileForm({mail_sessions.ID});">{mail_sessions.SUBJECT}</a></td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.MASS_PM}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.EMAIL_FORMAT}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.BATCHSTART}</td>
@@ -76,10 +77,11 @@ function compileForm(m_id)
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.BATCHWAIT}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.SENDER}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.STATUS}</td>
+	<td class="{mail_sessions.ROW} row-center"><a href="{mail_sessions.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
 </tr>
 <!-- END mail_sessions -->
 <!-- BEGIN switch_no_sessions -->
-<tr><td class="row2 row-center" colspan="10">{switch_no_sessions.EMPTY}</td></tr>
+<tr><td class="row2 row-center" colspan="11">{switch_no_sessions.EMPTY}</td></tr>
 <!-- END switch_no_sessions -->
 </table>
 
@@ -106,7 +108,7 @@ function compileForm(m_id)
 </tr>
 <tr>
 	<td class="row1" align="right"><b>{L_TEXT_FORMAT}</b></td>
-	<td class="row2"><span class="gen"><input type="radio" name="email_format" class="post" value="0" checked="checked" />&nbsp;{L_HTML}&nbsp;&nbsp;<input type="radio" name="email_format" class="post" value="1" />&nbsp;{L_BBCODE}</span></td>
+	<td class="row2"><span class="gen"><input type="radio" name="email_format" class="post" value="1" />&nbsp;{L_BBCODE}&nbsp;&nbsp;<input type="radio" name="email_format" class="post" value="0" checked="checked" />&nbsp;{L_HTML}&nbsp;&nbsp;<input type="radio" name="email_format" class="post" value="2" />&nbsp;{L_FULL_HTML}</span></td>
 </tr>
 <tr>
 	<td class="row1" align="right"><b>{L_EMAIL_SUBJECT}</b></td>

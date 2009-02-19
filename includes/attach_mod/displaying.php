@@ -465,7 +465,8 @@ function display_pm_attachments($privmsgs_id, $switch_attachment)
 
 	$template->assign_block_vars('switch_attachments', array());
 	$template->assign_vars(array(
-		'L_DELETE_ATTACHMENTS' => $lang['Delete_attachments'])
+		'L_DELETE_ATTACHMENTS' => $lang['Delete_attachments']
+		)
 	);
 }
 
@@ -571,7 +572,7 @@ function init_display_review_attachments($is_auth)
 /**
 * BEGIN DISPLAY ATTACHMENTS -> PREVIEW
 */
-function display_attachments_preview($attachment_list, $attachment_filesize_list, $attachment_filename_list, $attachment_comment_list, $attachment_extension_list, $attachment_thumbnail_list)
+function display_attachments_preview($attachment_id_list, $attachment_list, $attachment_filesize_list, $attachment_filename_list, $attachment_comment_list, $attachment_extension_list, $attachment_thumbnail_list)
 {
 	global $attach_config, $is_auth, $allowed_extensions, $lang, $userdata, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
 
@@ -588,9 +589,13 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 		{
 			$filename = $upload_dir . '/' . basename($attachment_list[$i]);
 			$thumb_filename = $upload_dir . '/' . THUMB_DIR . '/t_' . basename($attachment_list[$i]);
+			if (!file_exists($thumb_filename))
+			{
+				$thumb_filename = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachment_id_list[$i] . '&thumb=1');
+			}
 
 			$filesize = $attachment_filesize_list[$i];
-			$size_lang = ($filesize >= 1048576) ? $lang['MB'] : ( ($filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
+			$size_lang = ($filesize >= 1048576) ? $lang['MB'] : (($filesize >= 1024) ? $lang['KB'] : $lang['Bytes']);
 
 			if ($filesize >= 1048576)
 			{
@@ -646,9 +651,9 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 				{
 					$swf = true;
 				}
-				elseif (intval($display_categories[$extension]) == IMAGE_CAT && intval($attach_config['img_display_inlined']))
+				elseif ((intval($display_categories[$extension]) == IMAGE_CAT) && intval($attach_config['img_display_inlined']))
 				{
-					if (intval($attach_config['img_link_width']) != 0 || intval($attach_config['img_link_height']) != 0)
+					if ((intval($attach_config['img_link_width']) != 0) || (intval($attach_config['img_link_height']) != 0))
 					{
 						list($width, $height) = image_getdimension($filename);
 
@@ -658,7 +663,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 						}
 						else
 						{
-							if ($width <= intval($attach_config['img_link_width']) && $height <= intval($attach_config['img_link_height']))
+							if (($width <= intval($attach_config['img_link_width'])) && ($height <= intval($attach_config['img_link_height'])))
 							{
 								$image = true;
 							}
@@ -670,7 +675,7 @@ function display_attachments_preview($attachment_list, $attachment_filesize_list
 					}
 				}
 
-				if (intval($display_categories[$extension]) == IMAGE_CAT && intval($attachment_thumbnail_list[$i]) == 1)
+				if ((intval($display_categories[$extension]) == IMAGE_CAT) && (intval($attachment_thumbnail_list[$i]) == 1))
 				{
 					$thumbnail = true;
 					$image = false;
@@ -875,7 +880,7 @@ function display_attachments($post_id, $type = 'postrow')
 				{
 					list($width, $height) = image_getdimension($filename);
 
-					if ($width == 0 && $height == 0)
+					if (($width == 0) && ($height == 0))
 					{
 						$image = true;
 					}
@@ -921,7 +926,7 @@ function display_attachments($post_id, $type = 'postrow')
 				else
 				{
 					// Check if we can reach the file or if it is stored outside of the webroot
-					if ($attach_config['upload_dir'][0] == '/' || ( $attach_config['upload_dir'][0] != '/' && $attach_config['upload_dir'][1] == ':'))
+					if (($attach_config['upload_dir'][0] == '/') || (($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':')))
 					{
 						$img_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id']);
 						$download_link = true;
@@ -942,11 +947,11 @@ function display_attachments($post_id, $type = 'postrow')
 				$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
 				$script_name = ( $script_name == '' ) ? $script_name : '/' . $script_name;
 
-				if ( $max_image_width != 0 && $board_config['liw_attach_enabled'] == 1 && !isset($username_from) )
+				if (($max_image_width != 0) && ($board_config['liw_attach_enabled'] == 1) && !isset($username_from))
 				{
 					list($image_width, $image_height) = liw_get_dimensions($server_protocol . $server_name . $server_port . $script_name . '/' . $img_source, $post_id);
 
-					if ( $image_width && $image_width > $max_image_width || empty($image_width) || empty($image_height) )
+					if ($image_width && ($image_width > $max_image_width) || empty($image_width) || empty($image_height) )
 					{
 						$img_code = generate_liw_img_popup($img_source, $image_width, $image_height, $max_image_width);
 					}
@@ -983,26 +988,33 @@ function display_attachments($post_id, $type = 'postrow')
 			if ($thumbnail)
 			{
 				// Images, but display Thumbnail
-				// NOTE: If you want to use the download.php everytime an thumnmail is displayed inlined, replace the
+				// NOTE: If you want to use the download.php everytime an thumbnail is displayed inlined, replace the
 				// Section between BEGIN and END with (Without the // of course):
 				//	$thumb_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id'] . '&thumb=1');
 				//
-				if (intval($attach_config['allow_ftp_upload']) && trim($attach_config['download_path']) == '')
+				if (intval($attach_config['allow_ftp_upload']) && (trim($attach_config['download_path']) == ''))
 				{
 					$thumb_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id'] . '&thumb=1');
 				}
 				else
 				{
 					// Check if we can reach the file or if it is stored outside of the webroot
-					if ($attach_config['upload_dir'][0] == '/' || ( $attach_config['upload_dir'][0] != '/' && $attach_config['upload_dir'][1] == ':'))
+					if (($attach_config['upload_dir'][0] == '/') || (($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':')))
 					{
 						$thumb_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id'] . '&thumb=1');
 					}
 					else
 					{
-						// BEGIN
-						$thumb_source = $thumbnail_filename;
-						// END
+						if (file_exists($thumbnail_filename))
+						{
+							// BEGIN
+							$thumb_source = $thumbnail_filename;
+							// END
+						}
+						else
+						{
+							$thumb_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id'] . '&thumb=1');
+						}
 					}
 				}
 

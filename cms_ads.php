@@ -78,7 +78,7 @@ $ad_format = request_var('ad_format', 0);
 $ad_active = request_var('ad_active', 0);
 
 $ad_sort_by = request_var('sort_by', '');
-$ad_sort_by_array = array('ad_id', 'ad_title', 'ad_auth', 'ad_format', 'ad_active');
+$ad_sort_by_array = array('ad_position', 'ad_id', 'ad_title', 'ad_auth', 'ad_format', 'ad_active');
 $ad_sort_by = in_array($ad_sort_by, $ad_sort_by_array) ? $ad_sort_by : $ad_sort_by_array[0];
 $ad_sort_order = request_var('sort_order', '');
 
@@ -114,7 +114,7 @@ if($mode == 'save')
 	// htmlspecialchars_decode is supported only since PHP 5+ (an alias has been added into functions.php, if you want to use a PHP 4 default function you can use html_entity_decode instead)
 	$input_array = array(
 		'ad_title' => '\'' . ((STRIP) ? addslashes($ad_title) : $ad_title) . '\'',
-		'ad_text' => '\'' . ((STRIP) ? htmlspecialchars_decode(addslashes($ad_text)) : htmlspecialchars_decode($ad_text)) . '\'',
+		'ad_text' => '\'' . ((STRIP) ? htmlspecialchars_decode(addslashes($ad_text), ENT_COMPAT) : htmlspecialchars_decode($ad_text, ENT_COMPAT)) . '\'',
 		'ad_position' => '\'' . $ad_position . '\'',
 		'ad_auth' => $ad_auth,
 		'ad_format' => $ad_format,
@@ -310,7 +310,6 @@ else
 	while($row = $db->sql_fetchrow($result))
 	{
 		$i++;
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$ad_auth_lang = $lang['AD_AUTH_GUESTS'];
@@ -331,7 +330,6 @@ else
 		}
 
 		$template->assign_block_vars('ads', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'AD_ID' => $row['ad_id'],
 			'AD_ACTIVE' => ($row['ad_active'] ? $lang['YES'] : $lang['NO']),

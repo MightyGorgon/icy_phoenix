@@ -24,6 +24,7 @@ $board_config['script_path'] = '';
 
 // MANUAL CONFIG - END
 
+define('IN_INSTALL', true);
 define('IN_ICYPHOENIX', true);
 // Uncomment the following line to completely disable the ftp option...
 //define('NO_FTP', true);
@@ -446,7 +447,7 @@ else
 			exit;
 		}
 
-		$result = @fputs($fp, $config_data, strlen($config_data));
+		$result = @fwrite($fp, $config_data, strlen($config_data));
 		@fclose($fp);
 
 		// Ok we are basically done with the install process let's go on

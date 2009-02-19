@@ -35,15 +35,15 @@ if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 // Activity - END
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-$mark_always_read = (isset($_POST['always_read'])) ? $_POST['always_read'] : $_GET['always_read'];
-$mark_forum_id = (isset($_POST['forum_id'])) ? $_POST['forum_id'] : $_GET['forum_id'];
+$mark_always_read = request_var('always_read', '');
+$mark_forum_id = request_var('forum_id', 0);
 
 if($userdata['upi2db_access'])
 {
 	$always_read_topics_string = explode(',', $unread['always_read']['topics']);
 	$always_read_forums_string = explode(',', $unread['always_read']['forums']);
 
-	if ($mark_always_read)
+	if (!empty($mark_always_read))
 	{
 		$mark_always_read_text = always_read_forum($mark_forum_id, $mark_always_read);
 
@@ -224,6 +224,13 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 	}
 	else
 	{
+		$admins_today_list = '';
+		$mods_today_list = '';
+		$users_today_list = '';
+		$logged_hidden_today = 0;
+		$logged_visible_today = 0;
+		$users_lasthour = 0;
+
 		$time_now = time();
 		$time1Hour = $time_now - 3600;
 		$minutes = date('is', $time_now);
@@ -264,9 +271,6 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 			message_die(GENERAL_ERROR, "Couldn't retrieve user today data", "", __LINE__, __FILE__, $sql);
 		}
 
-		$admins_today_list = '';
-		$mods_today_list =  '';
-		$users_today_list =  '';
 		while($todayrow = $db->sql_fetchrow($result))
 		{
 			$todayrow['user_level'] = ($todayrow['user_level'] == JUNIOR_ADMIN) ? ADMIN : $todayrow['user_level'];
@@ -459,6 +463,12 @@ if ($board_config['index_links'] == true)
 	$template->assign_vars(array('S_LINKS' => true));
 	$db->sql_freeresult($result);
 }
+else
+{
+	$link_self_img = '';
+	$site_logo_height = '';
+	$site_logo_width = '';
+}
 
 if ($board_config['site_history'] == true)
 {
@@ -524,7 +534,7 @@ $meta_keywords = '';
 if ($userdata['session_logged_in'])
 {
 	$nav_server_url = create_server_url();
-	$breadcrumbs_links_right = '<a href="' . $nav_server_url . append_sid(FORUM_MG . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . $menu_sep_char . '&nbsp;<a href="' . $nav_server_url . append_sid(SEARCH_MG . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . $menu_sep_char . '&nbsp;<a href="' . $nav_server_url . append_sid(SEARCH_MG . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
+	$breadcrumbs_links_right = '<a href="' . $nav_server_url . append_sid(FORUM_MG . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(SEARCH_MG . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(SEARCH_MG . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
 }
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array('body' => 'index_body.tpl'));

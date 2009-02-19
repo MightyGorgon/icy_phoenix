@@ -380,7 +380,7 @@ if ($preview)
 		$preview_text = autolink_transform($preview_text, $orig_autolink, $replacement_autolink);
 	}
 	//$preview_text = kb_word_wrap_pass ($preview_text);
-	if (count($orig_word) && !$userdata['user_allowswearywords'])
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$preview_text = preg_replace($orig_word, $replacement_word, $preview_text);
 	}

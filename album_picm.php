@@ -220,6 +220,7 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 	if ($pic_info['filetype'] == 'gif')
 	{
 		$copy_success = @copy($pic_info['fullpath'], $pic_info['thumbnail_m_fullpath']);
+		@chmod($pic_info['thumbnail_m_fullpath'], 0777);
 		header('Content-type: image/gif');
 		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		readfile($pic_info['fullpath']);

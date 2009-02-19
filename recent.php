@@ -75,6 +75,7 @@ if (!in_array($mode, $mode_types))
 	$mode = $set_mode;
 }
 
+$amount_days = 0;
 if(isset($_GET['amount_days']) || isset($_POST['amount_days']))
 {
 	$amount_days = (isset($_GET['amount_days'])) ? intval($_GET['amount_days']) : intval($_POST['amount_days']);
@@ -320,7 +321,7 @@ for($i = 0; $i < count($line); $i++)
 	$topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append);
 	$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
-	$word_censor = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $line[$i]['topic_title']) : $line[$i]['topic_title'];
+	$word_censor = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $line[$i]['topic_title']) : $line[$i]['topic_title'];
 	$topic_title = (strlen($line[$i]['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...';
 	$topic_title_prefix = (empty($line[$i]['title_compl_infos'])) ? '' : $line[$i]['title_compl_infos'] . ' ';
 	$topic_title = $topic_title_prefix . $topic_title;

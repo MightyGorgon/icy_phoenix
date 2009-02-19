@@ -9,14 +9,14 @@
 <!-- <input type="hidden" name="domains" value="{GSEARCH_SITE};www.icyphoenix.com" /> -->
 <input type="hidden" name="domains" value="{GSEARCH_SITE};" />
 <!-- IF GSEARCH_HOR -->
-<input type="text" name="q" size="60" maxlength="255" value="{GSEARCH_TEXT}" class="post" />&nbsp;<input type="submit" name="sa" class="mainoption" value="{L_SEARCH}" /><br />
+<input type="text" name="q" size="60" maxlength="255" value="{GSEARCH_TEXT}" class="post search" onclick="if(this.value=='{GSEARCH_TEXT}')this.value='';" onblur="if(this.value=='')this.value='{GSEARCH_TEXT}';" />&nbsp;<input type="submit" name="sa" class="mainoption" value="{L_SEARCH}" /><br />
 <div style="width: 100%; text-align: center; padding: 10px;">
 <input type="radio" name="sitesearch" value="" checked="checked" /><span class="gensmall">Web</span>&nbsp;
 <input type="radio" name="sitesearch" value="{GSEARCH_SITE}" /><span class="gensmall">{GSEARCH_TEXT}</span>&nbsp;
 <!-- <input type="radio" name="sitesearch" value="www.icyphoenix.com" /><span class="gensmall">Icy Phoenix</span> -->
 </div>
 <!-- ELSE -->
-<input type="text" name="q" size="20" maxlength="255" value="{GSEARCH_TEXT}" class="post" /><br /><br />
+<input type="text" name="q" size="20" maxlength="255" value="{GSEARCH_TEXT}" class="post search" onclick="if(this.value=='{GSEARCH_TEXT}')this.value='';" onblur="if(this.value=='')this.value='{GSEARCH_TEXT}';" /><br /><br />
 <input type="submit" name="sa" class="mainoption" value="{L_SEARCH}" /><br /><br />
 <div style="width: 100%; text-align: left; padding-left: 20px;">
 <input type="radio" name="sitesearch" value="" checked="checked" /><span class="gensmall">Web</span><br />

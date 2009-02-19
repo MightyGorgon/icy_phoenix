@@ -49,7 +49,6 @@ $k = 0;
 
 for($i = 0; $i < $rank_count; $i++)
 {
-	$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$special_rank = $rank_rows[$i]['rank_special'];
@@ -78,7 +77,6 @@ for($i = 0; $i < $rank_count; $i++)
 	if ($special_rank > 0)
 	{
 		$template->assign_block_vars("ranks_special", array(
-			"ROW_COLOR" => "#" . $row_color,
 			"ROW_CLASS" => $row_class,
 			"IMAGE"=> $rank_rows[$i]['rank_image'],
 			"RANK" => $rank_rows[$i]['rank_title'],
@@ -90,7 +88,6 @@ for($i = 0; $i < $rank_count; $i++)
 	else
 	{
 		$template->assign_block_vars("ranks_normal", array(
-			"ROW_COLOR" => "#" . $row_color,
 			"ROW_CLASS" => $row_class,
 			"RANK" => $rank_rows[$i]['rank_title'],
 			"RANK_MIN" => $rank_rows[$i]['rank_min'],

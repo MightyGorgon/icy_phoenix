@@ -170,18 +170,18 @@ else
 }
 
 $template->set_filenames(array('body' => CMS_TPL . 'cms_pages_auth_body.tpl'));
-$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Page_Permissions']);
+$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_PAGES_PERMISSIONS']);
 
 $template->assign_vars(array(
 	'S_CONFIG_ACTION' => append_sid('cms_auth.' . PHP_EXT),
 
-	'L_CONFIGURATION_TITLE' => $lang['CMS_Page_Permissions'],
-	'L_CONFIGURATION_EXPLAIN' => $lang['CMS_Page_Permissions_Explain'],
+	'L_CONFIGURATION_TITLE' => $lang['CMS_PAGES_PERMISSIONS'],
+	'L_CONFIGURATION_EXPLAIN' => $lang['CMS_PAGES_PERMISSIONS_EXPLAIN'],
 	'L_GENERAL_CONFIG' => $lang['Portal_General_Config'],
 	'L_GENERAL_SETTINGS' => $lang['General_settings'],
 	'L_PAGE' => $lang['CMS_Page'],
 	'L_PERMISSION' => $lang['CMS_Permissions'],
-	'L_WIDE_BLOCKS' => $lang['CMS_Global_Blocks'],
+	'L_WIDE_BLOCKS' => $lang['CMS_GLOBAL_BLOCKS'],
 
 	'L_YES' => $lang['Yes'],
 	'L_NO' => $lang['No'],

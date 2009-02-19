@@ -72,7 +72,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 		$f_access = array();
 		if (!empty($forum_id))
 		{
-			$idx = $tree['keys'][ POST_FORUM_URL . $forum_id ];
+			$idx = $tree['keys'][POST_FORUM_URL . $forum_id];
 			$f_access = $tree['data'][$idx];
 		}
 		else
@@ -201,8 +201,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 
 	//
 	// If the user isn't logged on then all we need do is check if the forum
-	// has the type set to ALL, if yes they are good to go, if not then they
-	// are denied access
+	// has the type set to ALL, if yes they are good to go, if not then they are denied access
 	//
 	$u_access = array();
 	if ($userdata['session_logged_in'])
@@ -421,9 +420,8 @@ function build_exclusion_forums_list($only_auth_view = true)
 	global $db, $lang, $tree, $board_config;
 	global $userdata;
 
-	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post
-							FROM " . FORUMS_TABLE;
-	if(!$result_auth = $db->sql_query($sql_auth, false, 'excluded_forums_list_'))
+	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
+	if(!$result_auth = $db->sql_query($sql_auth, false, 'forums_excluded_list_', FORUMS_CACHE_FOLDER))
 	{
 		message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
 	}
@@ -477,9 +475,8 @@ function build_allowed_forums_list()
 	global $db, $lang, $tree, $board_config;
 	global $userdata;
 
-	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post
-							FROM " . FORUMS_TABLE;
-	if(!$result_auth = $db->sql_query($sql_auth, false, 'allowed_forums_list_'))
+	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
+	if(!$result_auth = $db->sql_query($sql_auth, false, 'forums_allowed_list_', FORUMS_CACHE_FOLDER))
 	{
 		message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
 	}

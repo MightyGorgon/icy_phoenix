@@ -496,7 +496,7 @@ if(defined('XS_CLONING'))
 
 if(count($install))
 {
-	cache_themes();
+	$db->clear_cache('themes_');
 }
 xs_message($lang['Information'], $lang['xs_import_installed'] . '<br /><br />' . $lang['xs_import_back']);
 

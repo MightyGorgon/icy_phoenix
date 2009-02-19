@@ -242,7 +242,6 @@ while($row = $db->sql_fetchrow($result))
 
 		$location['url'] = append_sid(IP_ROOT_PATH . $location['url']);
 
-		$row_color = ($$which_counter % 2) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = ($$which_counter % 2) ? $theme['td_class1'] : $theme['td_class2'];
 
 		// Start Advanced IP Tools Pack MOD
@@ -266,7 +265,6 @@ while($row = $db->sql_fetchrow($result))
 			'U_WHOIS' => 'http://whois.sc/' . decode_ip($row['session_ip']),
 			// End Advanced IP Tools Pack MOD
 
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => $username,
 			'LASTUPDATE' => create_date2($board_config['default_dateformat'], $row['session_time'], $board_config['board_timezone']),

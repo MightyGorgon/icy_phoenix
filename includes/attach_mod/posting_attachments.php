@@ -1541,7 +1541,7 @@ class attach_posting extends attach_parent
 			return false;
 		}
 
-		display_attachments_preview($this->attachment_list, $this->attachment_filesize_list, $this->attachment_filename_list, $this->attachment_comment_list, $this->attachment_extension_list, $this->attachment_thumbnail_list);
+		display_attachments_preview($this->attachment_id_list, $this->attachment_list, $this->attachment_filesize_list, $this->attachment_filename_list, $this->attachment_comment_list, $this->attachment_extension_list, $this->attachment_thumbnail_list);
 	}
 
 	/**

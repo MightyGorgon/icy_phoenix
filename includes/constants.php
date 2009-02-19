@@ -36,15 +36,16 @@ define('CRON_REFRESH', 900);
 define('CRON_FILES', '');
 // CRON - END
 
-// Output all SQL to a file in cache... do not use unless strictly needed!!!
-//@define('SQL_DEBUG_LOG', true);
-
-define('DEBUG', true); // Debugging ON/OFF => TRUE/FALSE
+//@define('SQL_DEBUG_LOG', true); // This will output all SQL to a file in cache... do not use unless strictly needed!!!
+define('CACHE_TREE', true); // Caching Forum Tree ON/OFF => TRUE/FALSE (do not disable this unless you need to debug or you have really good reasons!)
+define('CACHE_TREE_FILE', 'full_tree.' . PHP_EXT); // Caching Forum Tree ON/OFF => TRUE/FALSE (do not disable this unless you need to debug or you have really good reasons!)
 define('CACHE_SQL', true); // Caching SQL Queries ON/OFF => TRUE/FALSE
 define('CACHE_CFG', true); // Caching Config Tables ON/OFF => TRUE/FALSE
 define('CACHE_CH_SQL', true); // Caching CH SQL ON/OFF => TRUE/FALSE
 define('CACHE_TOPICS_META', false); // Caching Topics Meta KW And Descriptions ON/OFF => TRUE/FALSE (if you have thousands of topics, better switch it off)
-define('CACHE_COLORIZE', false); // Caching Users Colors ON/OFF => TRUE/FALSE (if you have thousands of topics, better switch it off)
+define('CACHE_BAN_INFO', false); // Caching Ban informations for each user ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
+define('CACHE_COLORIZE', false); // Caching Users Colors ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
+define('CACHE_FILES_PER_STEP', 500); // The number of files that will be deleted per step when emptying cache folder to avoid timeout
 define('META_TAGS_ATTACH', false); // Attach standard META TAGS (defined in lang_main_settings) to the ones specific for that page? ON/OFF => TRUE/FALSE
 
 // Script Time Limit: if your site is large you may want to set a time limit to force scripts shut down and avoid server overload
@@ -107,23 +108,23 @@ include_once(ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
 // Mighty Gorgon - FAP - END
 
 // Mighty Gorgon - ACTIVITY - BEGIN
-/*
-define('ACTIVITY_MOD', true);
+//define('ACTIVITY_MOD', true); // Decomment this line to enable ACTIVITY MOD
 define('ACTIVITY_MOD_PATH', 'amod/');
-*/
 // Mighty Gorgon - ACTIVITY - END
 
 // Mighty Gorgon - CASH - BEGIN
-//define('CASH_MOD', true);
+//define('CASH_MOD', true); // Decomment this line to enable CASH MOD
 // Mighty Gorgon - CASH - END
 
 // Mighty Gorgon - Feedbacks - BEGIN
-//define('MG_FEEDBACKS', true);
+//define('MG_FEEDBACKS', true); // Decomment this line to enable FEEDBACKS (this is a special feature... you need to have it installed apart!)
 // Mighty Gorgon - Feedbacks - END
 
-// Smilies Order
-define('TOP_LIST', -1);
-define('BOTTOM_LIST', 1);
+// CHMOD permissions
+@define('CHMOD_ALL', 7);
+@define('CHMOD_READ', 4);
+@define('CHMOD_WRITE', 2);
+@define('CHMOD_EXECUTE', 1);
 
 // User Levels <- Do not change the values of USER or ADMIN
 define('DELETED', -1);
@@ -272,6 +273,10 @@ define('SORT_DATE_DEC', 0);
 define('SORT_DATE_ASC', 1);
 define('SORT_ALPH_ASC', 2);
 define('SORT_ALPH_DEC', 3);
+
+// Smilies Order
+define('TOP_LIST', -1);
+define('BOTTOM_LIST', 1);
 
 // Custom Profile Fields MOD - BEGIN
 define('TEXT_FIELD', 0);

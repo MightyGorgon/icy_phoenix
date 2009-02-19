@@ -48,7 +48,7 @@ if(isset($_POST['mode']) || isset($_GET['mode']))
 }
 else
 {
-	$mode = "";
+	$mode = '';
 }
 
 $delimeter  = '=+:';
@@ -327,7 +327,7 @@ elseif ($mode != '')
 					message_die(GENERAL_ERROR, "Couldn't delete smiley", "", __LINE__, __FILE__, $sql);
 				}
 
-				$message = $lang['smiley_del_success'] . '<br /><br />' . sprintf($lang['Click_return_smileadmin'], '<a href="' . append_sid("admin_smilies." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $lang['smiley_del_success'] . '<br /><br />' . sprintf($lang['Click_return_smileadmin'], '<a href="' . append_sid('admin_smilies.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -670,11 +670,9 @@ else
 		$smilies[$i]['code'] = str_replace('&lt;', '<', $smilies[$i]['code']);
 		$smilies[$i]['code'] = str_replace('&gt;', '>', $smilies[$i]['code']);
 
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('smiles', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 
 			'SMILEY_ID' => $smilies[$i]['smilies_id'],

@@ -14,117 +14,6 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 //--------------------------------------------------------------------------------------------------
-// cache_words() : build the cache words file
-//--------------------------------------------------------------------------------------------------
-function cache_words()
-{
-	global $tree, $userdata, $db;
-
-	if ( !defined('CACHE_WORDS') )
-	{
-		return;
-	}
-
-	// template
-	include_once(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
-	$template = new Template(IP_ROOT_PATH);
-
-	$template->set_filenames(array('def_words' => 'includes/cache_tpls/def_words_def.tpl'));
-
-	$template->assign_vars(array(
-		'TIME' => date('Y-m-d H:i:s', time()) . ' (GMT)',
-		'USERNAME' => $userdata['username'],
-		)
-	);
-
-	$sql = "SELECT word, replacement FROM  " . WORDS_TABLE;
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, 'Could not get censored words from database', '', __LINE__, __FILE__, $sql);
-	}
-	while ( $row = $db->sql_fetchrow($result) )
-	{
-		$template->assign_block_vars('word', array(
-			'WORD' => str_replace( "'", "\'", $row['word']),
-			'REPLACEMENT' => str_replace( "'", "\'", $row['replacement']),
-			)
-		);
-	}
-
-	// transfert to a var
-	$template->assign_var_from_handle('def_words', 'def_words');
-	$res = '<' . '?' . 'php' . "\n" . $template->_tpldata['.'][0]['def_words'] . "\n" . 'return;' . "\n" . '?' . '>';
-	// output to file
-	$fname = IP_ROOT_PATH . './includes/def_words.' . PHP_EXT;
-	@chmod($fname, 0666);
-	$handle = @fopen($fname, 'w');
-	@fwrite($handle, $res);
-	@fclose($handle);
-}
-
-//--------------------------------------------------------------------------------------------------
-// cache_themes() : buid the cache theme file
-//--------------------------------------------------------------------------------------------------
-function cache_themes()
-{
-	global $tree, $userdata, $db;
-
-	if ( !defined('CACHE_THEMES') )
-	{
-		return;
-	}
-
-	// template
-	include_once(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
-	$template = new Template(IP_ROOT_PATH);
-
-	$template->set_filenames(array('def_themes' => 'includes/cache_tpls/def_themes_def.tpl'));
-
-	$template->assign_vars(array(
-		'TIME' => date('Y-m-d H:i:s', time()) . ' (GMT)',
-		'USERNAME' => $userdata['username'],
-		)
-	);
-
-	$sql = "SELECT * FROM " . THEMES_TABLE;
-	if( !$result = $db->sql_query($sql, false, 'themes_') )
-	{
-		message_die(GENERAL_ERROR, 'Could not read themes table', '', __LINE__, __FILE__, $sql);
-	}
-	while ( $row = $db->sql_fetchrow($result) )
-	{
-		$id = $row['themes_id'];
-		$cells = array();
-		@reset($row);
-		while ( list($key, $value) = @each($row) )
-		{
-			$nkey = intval($key);
-			if ( $key != "$nkey" )
-			{
-				$cells[] = sprintf( "'%s' => '%s'", str_replace("'", "\'", $key), str_replace("'", "\'", $value));
-			}
-		}
-		$s_cells = empty($cells) ? '' : implode(', ', $cells);
-
-		$template->assign_block_vars('theme', array(
-			'ID' => $id,
-			'CELLS' => $s_cells,
-			)
-		);
-	}
-
-	// transfert to a var
-	$template->assign_var_from_handle('def_themes', 'def_themes');
-	$res = '<' . '?' . 'php' . "\n" . $template->_tpldata['.'][0]['def_themes'] . "\n" . 'return;' . "\n" . '?' . '>';
-	// output to file
-	$fname = IP_ROOT_PATH . './includes/def_themes.' . PHP_EXT;
-	@chmod($fname, 0666);
-	$handle = @fopen($fname, 'w');
-	@fwrite($handle, $res);
-	@fclose($handle);
-}
-
-//--------------------------------------------------------------------------------------------------
 // get_tree_option_optg() : return a drop down menu list of <option></option>
 //--------------------------------------------------------------------------------------------------
 function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true)
@@ -139,7 +28,7 @@ function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true)
 	for ($i = 0; $i < count($keys['id']); $i++)
 	{
 		// only get object that are not forum links type
-		if ( ($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL) || empty($tree['data'][$keys['idx'][$i]]['forum_link']) )
+		if (($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL) || empty($tree['data'][$keys['idx'][$i]]['forum_link']))
 		{
 			$level = $keys['real_level'][$i];
 

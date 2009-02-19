@@ -86,6 +86,9 @@ $files_array = array(
 	'images/fap/fap_nothumbnail.jpg',
 	'images/smiles/makepak.php',
 
+	'includes/def_themes.php',
+	'includes/def_tree.php',
+	'includes/def_words.php',
 	'includes/functions_color_groups.php',
 	'includes/functions_mg_users.php',
 	'includes/functions_module.php',
@@ -141,6 +144,10 @@ $files_array = array(
 	'includes/album_mod/rating_star_red.png',
 	'includes/album_mod/rating_star_yellow.png',
 	'includes/album_mod/spacer.gif',
+
+	'includes/cache_tpls/def_themes_def.tpl',
+	'includes/cache_tpls/def_tree_def.tpl',
+	'includes/cache_tpls/def_words_def.tpl',
 
 	'includes/upi2db/upi2db_orig_xs.php',
 

@@ -45,11 +45,11 @@ $config_fields = array(
 	'calendar_week_start' => array(
 		'lang_key' => 'Calendar_week_start',
 		'type' => 'LIST_RADIO',
-		'default' => $lang['datetime']['Monday'],
+		'default' => 'WEEK_DAY_MONDAY',
 		'user' => 'user_calendar_week_start',
 		'values' => array(
-			$lang['datetime']['Sunday'] => 0,
-			$lang['datetime']['Monday'] => 1,
+			'WEEK_DAY_SUNDAY' => 0,
+			'WEEK_DAY_MONDAY' => 1,
 			),
 		),
 

@@ -20,7 +20,7 @@ function build_default_link_array()
 	$link_name_array = array(
 		'0' => '--&nbsp;' . $lang['CMS_Menu_No_default_link'] . '&nbsp;--',
 		'1' => $lang['Admin_panel'],
-		'2' => $lang['CMS_Title'],
+		'2' => $lang['CMS_TITLE'],
 		'3' => $lang['Home'],
 		'4' => $lang['Profile'],
 		'5' => $lang['Forum_Index'],

@@ -23,8 +23,8 @@ $ct_ignorepvar = array('mod_desc', 'long_desc', 'description', 'warning', 'todo'
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Session management
 $userdata = session_pagestart($user_ip);
@@ -161,7 +161,7 @@ if (($view == 'code') && $code)
 	imagefill($im, 0, 0, $background_color);
 	$text_color = imagecolorallocate ($im, 0, 0, 255);
 	imagestring ($im, 5, 2, 2, $code, $text_color);
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s") ." GMT");
+	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 	header("Pragma: no-cache");
 	header("Cache-Control: no-store, no-cache, max-age=0, must-revalidate");
 	header("Content-Type: image/jpeg");

@@ -293,7 +293,7 @@ $hostname = ($profiledata['user_registered_hostname'] == '') ? $lang['Not_record
 // End Advanced IP Tools Pack MOD
 
 // BBCode - BEGIN
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 global $bbcode;
 $bbcode->allow_html = $board_config['allow_html'];
 $bbcode->allow_bbcode = $board_config['allow_bbcode'];
@@ -625,7 +625,7 @@ $template->assign_vars(array(
 	'U_PERSONAL_GALLERY' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']),
 	'L_PERSONAL_GALLERY' => sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow),
 	'U_TOGGLE_VIEW_ALL' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_ALL),
-	'TOGGLE_VIEW_ALL_IMG' => $images['mini_all_pic_view_mode'],
+	'TOGGLE_VIEW_ALL_IMG' => $images['icon_tiny_search'],
 	'L_TOGGLE_VIEW_ALL' => sprintf($lang['Show_All_Pic_View_Mode_Profile'], $profiledata['username']),
 	'U_ALL_IMAGES_BY_USER' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST),
 	'L_ALL_IMAGES_BY_USER' => sprintf($lang['Picture_List_Of_User'], $profiledata['username']),

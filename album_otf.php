@@ -353,6 +353,7 @@ function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension,
 			if ($dir_creation == true)
 			{
 				@copy($pic_base_path . 'index.html', $upload_path . 'index.html');
+				@chmod($upload_path . 'index.html', 0755);
 			}
 			else
 			{

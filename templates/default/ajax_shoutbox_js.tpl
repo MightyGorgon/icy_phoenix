@@ -248,12 +248,15 @@ function handlehResponse(obj)
 						if ( (node.tagName == 'online') && (update_online == true) )
 						{
 							updating_s = 1;
-							var temp = new Array;
-							temp['id'] = arr['user_id'];
-							temp['username'] = arr['username'];
-							temp['link'] = arr['user_link'];
-							temp['style'] = arr['link_style'];
-							dbonline.push(temp);
+							if (array_search(arr['username']) == false)
+							{
+								var temp = new Array;
+								temp['id'] = arr['user_id'];
+								temp['username'] = arr['username'];
+								temp['link'] = arr['user_link'];
+								temp['style'] = arr['link_style'];
+								dbonline.push(temp);
+							}
 							arr['link_style'] = '';
 						}
 						if ( (node.tagName == 'onstats') && (update_online == true) )
@@ -564,6 +567,7 @@ var on_total, on_reg, on_guest = 0;
 
 // Tell the script to update the online list
 update_online = true;
+show_inline = true;
 
 function update_counters (ctotal, cusers, cguest)
 {
@@ -646,7 +650,15 @@ function updateOnline()
 			var li = document.createElement('span');
 			var style, bb, be;
 			li.setAttribute('id', dbonline[y]['username'])
-			li.setAttribute('align', 'left')
+			//li.setAttribute('align', 'left')
+			if (show_inline == true)
+			{
+				li.setAttribute('style', 'text-align: left; display: inline; margin-right: 5px;')
+			}
+			else
+			{
+				li.setAttribute('style', 'text-align: left; display: block; margin-right: 5px;')
+			}
 			if (dbonline[y]['style'] != '')
 			{
 				style = dbonline[y]['style'];
@@ -662,9 +674,9 @@ function updateOnline()
 			}
 
 			// Remove this if you want to display each user on a new line!
-			if (y > 0)
+			if ((y != (dbonline.length - 1)) && (show_inline == true))
 			{
-				bb = ', ';
+				be = ', ';
 			}
 
 			//li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="postlink" target="_blank"' + style + '>' + dbonline[y]['username'] + '</a>' + be;

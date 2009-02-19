@@ -65,7 +65,7 @@ if($action)
 			// Read session data for update
 			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
 			FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-			WHERE s.session_time >= " . (time() - 20) . "
+			WHERE s.session_time >= " . (time() - SESSION_REFRESH) . "
 				AND s.session_user_id = u.user_id
 			ORDER BY case u.user_level when 0 then 10 else u.user_level end";
 			$result = $db->sql_query($sql);
@@ -77,7 +77,6 @@ if($action)
 				if($online['user_id'] != ANONYMOUS)
 				{
 					$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
-
 					$template->assign_block_vars('online_list', array(
 						'USER' => $online['username'],
 						'USER_ID' => $online['user_id'],
@@ -166,7 +165,7 @@ if($action)
 			$message = $row[$x]['shout_text'];
 
 			// Word Censor.
-			$message = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $message) : $message;
+			$message = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $message) : $message;
 
 			//$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 			// Forced HTML to false to avoid problems

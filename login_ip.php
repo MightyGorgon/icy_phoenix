@@ -205,6 +205,7 @@ else
 		$page_title = $lang['Login'];
 		$meta_description = '';
 		$meta_keywords = '';
+		$skip_nav_cat = true;
 		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$template->set_filenames(array('body' => 'login_body.tpl'));

@@ -30,8 +30,8 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 
@@ -187,7 +187,7 @@ if ($mode == 'topicreview')
 {
 	require(IP_ROOT_PATH . 'includes/topic_review.' . PHP_EXT);
 
-	topic_review($topic_id, false);
+	topic_review($forum_id, $topic_id, false);
 	exit;
 }
 elseif ($mode == 'smilies')
@@ -1459,8 +1459,8 @@ else
 
 			if (!empty($orig_word))
 			{
-				$subject = (!empty($subject)) ? preg_replace($orig_word, $replace_word, $subject) : '';
-				$message = (!empty($message)) ? preg_replace($orig_word, $replace_word, $message) : '';
+				$subject = (!empty($subject)) ? preg_replace($orig_word, $replacement_word, $subject) : '';
+				$message = (!empty($message)) ? preg_replace($orig_word, $replacement_word, $message) : '';
 			}
 
 			if (!preg_match('/^Re:/', $subject) && strlen($subject) > 0)
@@ -1798,7 +1798,7 @@ $template->set_filenames(array(
 make_jumpbox(VIEWFORUM_MG);
 
 $rules_bbcode = '';
-if ($post_info['rules_in_posting'])
+if (!empty($post_info['rules_in_posting']))
 {
 	//BBcode Parsing for Olympus rules Start
 	$rules_bbcode = $post_info['rules'];
@@ -1808,12 +1808,11 @@ if ($post_info['rules_in_posting'])
 	$rules_bbcode = $bbcode->parse($rules_bbcode);
 	//BBcode Parsing for Olympus rules Start
 
-	$template->assign_block_vars('switch_forum_rules', array());
-	// display a title on top of the box?
-	if ($post_info['rules_display_title'])
-	{
-		$template->assign_block_vars('switch_forum_rules.switch_display_title', array());
-	}
+	$template->assign_vars(array(
+		'S_FORUM_RULES' => true,
+		'S_FORUM_RULES_TITLE' => ($post_info['rules_display_title']) ? true : false
+		)
+	);
 }
 
 $template->assign_vars(array(
@@ -1881,7 +1880,7 @@ if ($board_config['allow_drafts'] == true)
 
 // Convert and clean special chars!
 $subject = htmlspecialchars_clean($subject);
-$topic_desc = htmlspecialchars_clean($topic_desc);
+$topic_desc = !empty($topic_desc) ? htmlspecialchars_clean($topic_desc) : '';
 
 // Output the data to the template
 $template->assign_vars(array(
@@ -1954,15 +1953,15 @@ $template->assign_vars(array(
 	'TODAY_MONTH' => date('m', time()),
 	'TODAY_YEAR' => date('Y', time()),
 
-	'S_CALENDAR_YEAR' => $s_topic_calendar_year,
-	'S_CALENDAR_MONTH' => $s_topic_calendar_month,
-	'S_CALENDAR_DAY' => $s_topic_calendar_day,
+	'S_CALENDAR_YEAR' => (!empty($s_topic_calendar_year) ? $s_topic_calendar_year : ''),
+	'S_CALENDAR_MONTH' => (!empty($s_topic_calendar_month) ? $s_topic_calendar_month : ''),
+	'S_CALENDAR_DAY' => (!empty($s_topic_calendar_day) ? $s_topic_calendar_day : ''),
 
-	'CALENDAR_HOUR' => $topic_calendar_hour,
-	'CALENDAR_MIN' => $topic_calendar_min,
-	'CALENDAR_DURATION_DAY' => $topic_calendar_duration_day,
-	'CALENDAR_DURATION_HOUR' => $topic_calendar_duration_hour,
-	'CALENDAR_DURATION_MIN' => $topic_calendar_duration_min,
+	'CALENDAR_HOUR' => (!empty($topic_calendar_hour) ? $topic_calendar_hour : ''),
+	'CALENDAR_MIN' => (!empty($topic_calendar_min) ? $topic_calendar_min : ''),
+	'CALENDAR_DURATION_DAY' => (!empty($topic_calendar_duration_day) ? $topic_calendar_duration_day : ''),
+	'CALENDAR_DURATION_HOUR' => (!empty($topic_calendar_duration_hour) ? $topic_calendar_duration_hour : ''),
+	'CALENDAR_DURATION_MIN' => (!empty($topic_calendar_duration_min) ? $topic_calendar_duration_min : ''),
 	'S_HTML_CHECKED' => (!$html_on) ? 'checked="checked"' : '',
 	'S_ACRO_AUTO_CHECKED' => ($acro_auto_on == false) ? ' checked="checked"' : '',
 	'S_BBCODE_CHECKED' => (!$bbcode_on) ? 'checked="checked"' : '',
@@ -2036,7 +2035,7 @@ if(($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && 
 if($mode == 'reply' && $is_auth['auth_read'])
 {
 	require(IP_ROOT_PATH . 'includes/topic_review.' . PHP_EXT);
-	topic_review($topic_id, true);
+	topic_review($forum_id, $topic_id, true);
 
 	$template->assign_block_vars('switch_inline_mode', array());
 	$template->assign_var_from_handle('TOPIC_REVIEW_BOX', 'reviewbody');

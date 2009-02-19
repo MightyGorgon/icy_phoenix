@@ -18,7 +18,7 @@ if(GetCookie(tmp) == '2')
 <!-- ENDIF -->
 <span class="forumlink">{L_QUICK_LINKS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 
-<!-- IF not S_BOT and NAV_MENU_ADS_TOP -->
+<!-- IF NAV_MENU_ADS_TOP -->
 <tr>
 	<th style="cursor:pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
@@ -386,7 +386,7 @@ if(GetCookie(tmp) == '2')
 	</td>
 </tr>
 
-<!-- IF not S_BOT and NAV_MENU_ADS_BOTTOM -->
+<!-- IF NAV_MENU_ADS_BOTTOM -->
 <tr>
 	<th style="cursor:pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;

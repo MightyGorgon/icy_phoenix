@@ -175,11 +175,11 @@ if ($total_categories = $db->sql_numrows($q_categories))
 				$template->assign_block_vars('catrow.forumrow', array(
 					'FORUM_NAME' => $forum_rows[$j]['forum_name'],
 					'FORUM_DESC' => $forum_rows[$j]['forum_desc'],
-					'ROW_COLOR' => $row_color,
 					'NUM_TOPICS' => $forum_rows[$j]['forum_topics'],
 					'NUM_POSTS' => $forum_rows[$j]['forum_posts'],
 
-					'U_VIEWFORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id))
+					'U_VIEWFORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id)
+					)
 				);
 
 				while ($c_cur = &$cash->currency_next($cm_i))

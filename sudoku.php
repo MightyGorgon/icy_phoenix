@@ -672,11 +672,9 @@ while ($row = $db->sql_fetchrow($result))
 	$stat_gamenum = $row_a['game_num'];
 
 	// send to template
-	$row_color = (!($x % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 	$row_class = (!($x % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$template->assign_block_vars('leaderboard', array(
-		'ROW_COLOR' => '#' . $row_color,
 		'ROW_CLASS' => $row_class,
 		'USERNAME' => colorize_username($row['user_id']),
 		'POINTS' => $stat_points,

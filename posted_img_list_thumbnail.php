@@ -135,6 +135,7 @@ $pic_height = $pic_size[1];
 if(($pic_width < $album_config['thumbnail_size']) && ($pic_height < $album_config['thumbnail_size']))
 {
 	$copy_success = @copy($pic_fullpath, $pic_thumbnail_fullpath);
+	@chmod($pic_thumbnail_fullpath, 0777);
 	/*
 	$Image = new ImgObj();
 	$Image->ReadSourceFile($pic_fullpath);

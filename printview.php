@@ -19,7 +19,7 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 // gzip_compression
 $do_gzip_compress = false;
@@ -123,7 +123,7 @@ $replacement_word = array();
 obtain_word_list($orig_word, $replacement_word);
 
 // Censor topic title
-if(count($orig_word))
+if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 {
 	$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 }
@@ -151,7 +151,7 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	else
 	{
-		if(count($orig_word))
+		if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 			$message = preg_replace($orig_word, $replacement_word, $message);

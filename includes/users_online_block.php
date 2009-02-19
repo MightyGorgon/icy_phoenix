@@ -19,7 +19,7 @@ if (defined('SHOW_ONLINE_CHAT') && $board_config['show_chat_online'])
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
 	FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-	WHERE s.session_time >= " . (time() - ONLINE_REFRESH) . "
+	WHERE s.session_time >= " . (time() - SESSION_REFRESH) . "
 	AND s.session_user_id = u.user_id
 	ORDER BY case user_level when 0 then 10 else user_level end";
 	$result = $db->sql_query($sql);

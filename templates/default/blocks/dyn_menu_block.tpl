@@ -25,7 +25,7 @@ if(GetCookie(tmp) == '2')
 <!-- END show_hide_switch -->
 <span class="forumlink">{MAIN_MENU_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 
-<!-- IF not S_BOT and NAV_MENU_ADS_TOP -->
+<!-- IF NAV_MENU_ADS_TOP -->
 <tr>
 	<th style="cursor:pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
@@ -65,7 +65,7 @@ if(GetCookie(tmp) == '2')
 </tr>
 <!-- END cat_row -->
 
-<!-- IF not S_BOT and NAV_MENU_ADS_BOTTOM -->
+<!-- IF NAV_MENU_ADS_BOTTOM -->
 <tr>
 	<th style="cursor:pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;

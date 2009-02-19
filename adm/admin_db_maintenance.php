@@ -243,7 +243,7 @@ switch($mode_id)
 				}
 				$db->sql_freeresult($result);
 				$administrator_names = '';
-				$sql = "SELECT username
+				$sql = "SELECT user_id, username, user_active, user_color
 					FROM " . USERS_TABLE . "
 					WHERE user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")
 						AND user_id <> " . ANONYMOUS . "
@@ -254,7 +254,7 @@ switch($mode_id)
 				}
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$administrator_names .= (($administrator_names == '') ? '' : ', ') . $row['username'];
+					$administrator_names .= (($administrator_names == '') ? '' : ', ') . colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 				}
 				$db->sql_freeresult($result);
 				$template->assign_vars(array(
@@ -264,7 +264,7 @@ switch($mode_id)
 					'NUMBER_OF_DEACTIVATED_USERS' => $total_deactivated_users,
 					'NUMBER_OF_MODERATORS' => $total_moderators,
 					'NUMBER_OF_ADMINISTRATORS' => $total_administrators,
-					'NAMES_OF_ADMINISTRATORS' => htmlspecialchars($administrator_names)
+					'NAMES_OF_ADMINISTRATORS' => $administrator_names
 					)
 				);
 
@@ -299,6 +299,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 
 				$template->assign_vars(array(
+					'IP_VERSION' => $board_config['ip_version'],
 					'PHPBB_VERSION' => '2' . $board_config['version'],
 					'MOD_VERSION' => DBMTNC_VERSION,
 					'PHP_VERSION' => phpversion(),
@@ -322,6 +323,7 @@ switch($mode_id)
 					'L_DB_SIZE' => $lang['DB_size'],
 					'L_THEREOF_PHPBB_CORE' => $lang['Thereof_phpbb_core'],
 					'L_THEREOF_PHPBB_ADVANCED' => $lang['Thereof_phpbb_advanced'],
+					'L_IP_VERSION' => $lang['Version_of_ip'],
 					'L_BOARD_VERSION' => $lang['Version_of_board'],
 					'L_MOD_VERSION' => $lang['Version_of_mod'],
 					'L_PHP_VERSION' => $lang['Version_of_PHP'],

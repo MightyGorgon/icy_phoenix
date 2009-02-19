@@ -242,7 +242,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	{
 		$topic_item_type = substr($topic_rowset[$i]['topic_id'], 0, 1);
 		$topic_id = intval(substr($topic_rowset[$i]['topic_id'], 1));
-		$topic_title = (count($orig_word)) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
+		$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
 		$replies = $topic_rowset[$i]['topic_replies'];
 		$topic_type = $topic_rowset[$i]['topic_type'];
 		$user_replied = (!empty($user_topics) && isset($user_topics[$topic_rowset[$i]['topic_id']]));
@@ -253,6 +253,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		{
 			$topic_type = $lang['Birthday'] . ': ';
 		}
+		//elseif($topic_rowset[$i]['news_id'] > 0)
 		elseif($topic_type == POST_NEWS)
 		{
 			$topic_type = $lang['News'] . ': ';
@@ -305,6 +306,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 				$folder = $images['folder_birthday'];
 				$folder_new = $images['folder_birthday'];
 			}
+			//elseif($topic_rowset[$i]['news_id'] > 0)
 			elseif($topic_rowset[$i]['topic_type'] == POST_NEWS)
 			{
 				$folder = ($user_replied && defined('USER_REPLIED_ICON')) ? $images['topic_nor_read_own'] : $images['topic_nor_read'];

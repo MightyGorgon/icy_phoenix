@@ -332,9 +332,9 @@ class pafiledb_functions
 			}
 			else
 			{
-				fputs($fp, "HEAD $file_url HTTP/1.1\r\n");
-				fputs($fp, "HOST: $host\r\n");
-				fputs($fp, "Connection: close\r\n\r\n");
+				fwrite($fp, "HEAD $file_url HTTP/1.1\r\n");
+				fwrite($fp, "HOST: $host\r\n");
+				fwrite($fp, "Connection: close\r\n\r\n");
 
 				while (!feof($fp))
 				{
@@ -746,11 +746,11 @@ class user_info
 		{
 			$HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
 		}
-		else if (!empty($_SERVER['HTTP_USER_AGENT']))
+		elseif (!empty($_SERVER['HTTP_USER_AGENT']))
 		{
 			$HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
 		}
-		else if (!isset($HTTP_USER_AGENT))
+		elseif (!isset($HTTP_USER_AGENT))
 		{
 			$HTTP_USER_AGENT = '';
 		}

@@ -11,14 +11,13 @@
 /**
 *
 * @Extra credits for this file
-* Ptirhiik (admin@rpgnet-fr.com)
+* masterdavid - Ronald John David
 *
 */
 
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
-	exit;
 }
 
 ?>

@@ -38,8 +38,8 @@ $page_title = $lang['digest_page_title'];
 $meta_description = '';
 $meta_keywords = '';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
 
 if ( empty($board_config['enable_digests']) || ($board_config['enable_digests'] == 0) )
 {

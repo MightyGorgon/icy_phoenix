@@ -64,31 +64,19 @@ if (!in_array($mode, $mode_types) && !(strpos($mode, 'cash_') == 0))
 	$mode = 'joined';
 }
 
-if(isset($_POST['order']))
-{
-	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-elseif(isset($_GET['order']))
-{
-	$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else
-{
-	$sort_order = 'ASC';
-}
+$order = request_var('order', 'ASC');
+$order = ($order == 'DESC') ? 'DESC' : 'ASC';
 
 // Mighty Gorgon - Power Memberlist - BEGIN
-if (isset($_GET['alphanum']) || isset($_POST['alphanum']))
+$alphanum = request_var('alphanum', '');
+if (!empty($alphanum))
 {
-	$alphanum = (isset($_POST['alphanum'])) ? htmlspecialchars($_POST['alphanum']) : htmlspecialchars($_GET['alphanum']);
+	$alphanum = ($alphanum == '#') ? '#' : (phpbb_clean_username(ip_clean_username(urldecode($alphanum))));
 	$alpha_where = ($alphanum == '#') ? "AND username NOT RLIKE '^[A-Z]'" : "AND username LIKE '$alphanum%'";
 }
 
-if (isset($_GET['users_per_page']) || isset($_POST['users_per_page']))
-{
-	$board_config['topics_per_page'] = (isset($_POST['users_per_page'])) ? intval($_POST['users_per_page']) : intval($_GET['users_per_page']);
-}
-$users_per_page = ($board_config['topics_per_page'] > 200) ? 200 : $board_config['topics_per_page'];
+$users_per_page = request_var('users_per_page', $board_config['topics_per_page']);
+$users_per_page = ((!$users_per_page || ($users_per_page < 0) || ($users_per_page > 200)) ? $board_config['topics_per_page'] : $users_per_page);
 // Mighty Gorgon - Power Memberlist - END
 
 // MG Cash MOD For IP - BEGIN
@@ -171,8 +159,8 @@ $template->assign_vars(array(
 );
 
 // Mighty Gorgon - Power Memberlist - BEGIN
-$alpha_range = range('A','Z');
-$alphanum_range = array_merge(array('' => 'All'),array('%23' => '#'),$alpha_range);
+$alpha_range = range('A', 'Z');
+$alphanum_range = array_merge(array('' => 'All'), array('%23' => '#'), $alpha_range);
 foreach ($alphanum_range as $key => $alpha)
 {
 	if (in_array($alpha,$alpha_range)) $key = $alpha;
@@ -469,12 +457,10 @@ if ($row = $db->sql_fetchrow($result))
 		}
 
 		$deluser_url = (($userdata['user_level'] == ADMIN) ? append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) : '');
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$template->assign_block_vars('memberrow', array(
 			'ROW_NUMBER' => $i + ($start + 1),
 			//'ROW_NUMBER' => $i + ($_GET['start'] + 1) . (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 			'FROM' => $from,
@@ -606,7 +592,7 @@ if (($mode != 'topten') || ($users_per_page < 10))
 		$total_members = $total['total'];
 
 		//$pagination = generate_pagination('memberlist.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $users_per_page, $start). '&nbsp;';
-		$pagination = generate_pagination('memberlist.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;users_per_page=' . $users_per_page . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $users_per_page, $start);
+		$pagination = generate_pagination('memberlist.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;users_per_page=' . $users_per_page . (!empty($alphanum) ? '&amp;alphanum=' . htmlspecialchars($alphanum) : ''), $total_members, $users_per_page, $start);
 	}
 	$db->sql_freeresult($result);
 }

@@ -19,6 +19,9 @@
 	<th>{L_B_VIEW_BY}</th>
 	<th>{L_B_GROUPS}</th>
 </tr>
+<!-- IF S_NO_BLOCKS -->
+<tr><td class="row1" colspan="9"><div class="post-text">{L_NO_BLOCKS_AVAILABLE}</div></td></tr>
+<!-- ELSE -->
 <!-- BEGIN blocks -->
 <tr class="{blocks.ROW_CLASS} row1h" style="background-image:none;">
 	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">
@@ -36,6 +39,7 @@
 	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.GROUPS}</td>
 </tr>
 <!-- END blocks -->
+<!-- ENDIF -->
 <tr><td class="spaceRow" colspan="9"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
 	<td class="cat" colspan="9" align="center">

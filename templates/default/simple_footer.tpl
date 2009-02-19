@@ -38,5 +38,7 @@
 	The phpBB Group : 2002
 
 // -->
+
+{GOOGLE_ANALYTICS}
 </body>
 </html>

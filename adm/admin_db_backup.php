@@ -40,7 +40,6 @@ if ($_GET['action'] == 'download')
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_db_backup.' . PHP_EXT);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
@@ -49,6 +48,10 @@ if ($is_allowed == false)
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 // Mighty Gorgon - ACP Privacy - END
+
+// Define constants and then include functions
+define('ROWS_PER_STEP', 3000);
+include_once(IP_ROOT_PATH . 'includes/functions_db_backup.' . PHP_EXT);
 
 // Request some vars
 $mode = request_var('mode', '');
@@ -73,6 +76,39 @@ switch ($mode)
 				$table = request_var('table', array(''));
 				$format = request_var('method', '');
 				$where = request_var('where', '');
+				$complete = request_var('complete', 1);
+				$complete = $complete ? 1 : 0;
+				$extended = request_var('extended', 1);
+				$extended = $extended ? 1 : 0;
+				$compact = request_var('compact', 1);
+				$compact = $compact ? 1 : 0;
+
+				$table_get = request_var('table_get', '');
+				if (function_exists('gzcompress') && function_exists('gzuncompress') && !empty($table_get))
+				{
+					$table_get = unserialize(gzuncompress(stripslashes(base64_decode(strtr($table_get, '-_,', '+/=')))));
+				}
+				$start_default = 0;
+				$limit_default = ROWS_PER_STEP;
+				$started = request_var('started', false);
+				$start = request_var('start', $start_default);
+				$limit = request_var('limit', $limit_default);
+				$progress = request_var('progress', 'false');
+				$progress = ($progress == 'false') ? false : true;
+				$time = request_var('time', time());
+				$datecode = request_var('datecode', date('Ymd'));
+				$unique_id = request_var('unique_id', unique_id());
+
+				$filepath = IP_ROOT_PATH . BACKUP_PATH;
+				$filename = 'backup_' . $time . '_' . $datecode . '_' . $unique_id;
+
+				$table = (!empty($table_get) ? explode(',', $table_get) : $table);
+				$this_file_url = IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?started=1&amp;mode=' . $mode . '&amp;action=' . $action . '&amp;method=' . $format . '&amp;where=' . $where . '&amp;complete=' . $complete . '&amp;extended=' . $extended . '&amp;compact=' . $compact . '&amp;type=' . $type . '&amp;time=' . $time . '&amp;datecode=' . $datecode . '&amp;unique_id=' . $unique_id;
+
+				// Reassign these to boolean...
+				$complete = $complete ? true : false;
+				$extended = $extended ? true : false;
+				$compact = $compact ? true : false;
 
 				if (!count($table))
 				{
@@ -81,56 +117,91 @@ switch ($mode)
 
 				$store = $download = $structure = $schema_data = false;
 
-				if ($where == 'store_and_download' || $where == 'store')
+				if (($where == 'store_and_download') || ($where == 'store'))
 				{
 					$store = true;
 				}
 
-				if ($where == 'store_and_download' || $where == 'download')
+				if (($where == 'store_and_download') || ($where == 'download'))
 				{
 					$download = true;
 				}
 
-				if ($type == 'full' || $type == 'structure')
+				if (($type == 'full') || ($type == 'structure'))
 				{
 					$structure = true;
 				}
 
-				if ($type == 'full' || $type == 'data')
+				if (($type == 'full') || ($type == 'data'))
 				{
 					$schema_data = true;
 				}
 
 				@set_time_limit(1200);
 
-				$time = time();
-				$datecode = date('Ymd');
-				$filename = 'backup_' . $time . '_' . $datecode . '_' . unique_id();
+				$extractor = new mysql_extractor($download, $store, $format, $time, $filepath, $filename);
 
-				$extractor = new mysql_extractor($download, $store, $format, $filename, $time);
+				$extractor->write_start($table_prefix, $started);
 
-				$extractor->write_start($table_prefix);
+				if ($schema_data)
+				{
+					$archived_rows = 0;
+					$table_get = $table;
+				}
 
 				foreach ($table as $table_name)
 				{
-					// Get the table structure
-					if ($structure)
+					// Table Structure
+					if (!$progress)
 					{
-						$extractor->write_table($table_name);
-					}
-					else
-					{
-						$extractor->flush('TRUNCATE TABLE ' . $table_name . ";\n");
+						if ($structure)
+						{
+							$extractor->write_table($table_name);
+						}
+						else
+						{
+							$extractor->flush('TRUNCATE TABLE ' . $table_name . ";\n");
+						}
 					}
 
-					// Data
-
+					// Table Data
 					if ($schema_data)
 					{
-						// Save bandwidth and avoid timeouts by exporting extended inserts...
-						$extractor->write_data_mysql($table_name, true, true);
-						// Decomment this line if you don't want extended inserts
-						//$extractor->write_data_mysql($table_name, true, false);
+						$archived_rows_this_step = $extractor->write_data_mysql($table_name, $start, $limit, $complete, $extended, $compact);
+
+						$archived_rows_prev_step = $archived_rows;
+						$archived_rows += ($archived_rows_this_step !== false) ? $archived_rows_this_step : 0;
+						if (($limit > 0) && ($archived_rows_this_step !== false) && ($archived_rows >= $limit))
+						{
+							$extractor->write_end();
+
+							$limit = $limit_default;
+							if ($archived_rows_prev_step == 0)
+							{
+								$start += $archived_rows_this_step;
+							}
+
+							$table_get = implode(',', $table_get);
+							if (function_exists('gzcompress') && function_exists('gzuncompress') && !empty($table_get))
+							{
+								$table_get = strtr(base64_encode(addslashes(gzcompress(serialize($table_get), 9))), '+/=', '-_,');
+							}
+							$this_file_url .= '&amp;progress=true';
+							$this_file_url .= '&amp;table_get=' . $table_get;
+							$this_file_url .= '&amp;start=' . $start . '&amp;limit=' . $limit;
+
+							$redirect_url = append_sid($this_file_url);
+							$meta_tag = '</body><head><meta http-equiv="refresh" content="1;url=' . $redirect_url . '"></head><body>';
+							$message .= $lang['BACKUP_IN_PROGRESS'] . '<br /><br />' . sprintf($lang['BACKUP_IN_PROGRESS_TABLE'], $table_name) . '<br /><br />' . $lang['BACKUP_IN_PROGRESS_REDIRECT'] . '<br /><br />' . sprintf($lang['BACKUP_IN_PROGRESS_REDIRECT_CLICK'], '<a href="' . $redirect_url . '">', '</a>');
+							message_die(GENERAL_MESSAGE, $meta_tag . $message);
+						}
+						else
+						{
+							$progress = false;
+							$start = $start_default;
+							$limit -= (($limit > 0) && ($archived_rows_this_step !== false)) ? $archived_rows_this_step : 0;
+							$table_get = array_diff($table_get, array($table_name));
+						}
 					}
 				}
 
@@ -141,7 +212,7 @@ switch ($mode)
 					exit;
 				}
 
-				message_die(GENERAL_MESSAGE, $lang['Backup_Success'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=backup') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>'), $lang['Information']);
+				message_die(GENERAL_MESSAGE, $lang['BACKUP_SUCCESS'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=backup') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right') . '">', '</a>'), $lang['Information']);
 			break;
 
 			default:
@@ -241,7 +312,7 @@ switch ($mode)
 					else
 					{
 						@unlink($file_name);
-						message_die(GENERAL_MESSAGE, $lang['Backup_Deleted'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=restore') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right').'">', '</a>'), $lang['Information']);
+						message_die(GENERAL_MESSAGE, $lang['BACKUP_DELETED'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=restore') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?pane=right').'">', '</a>'), $lang['Information']);
 					}
 				}
 				else
@@ -352,11 +423,29 @@ switch ($mode)
 
 							if ($supported == 'true')
 							{
+								$tz = $board_config['board_timezone'];
+								$time_mode = $userdata['user_time_mode'];
+								$dst_time_lag = $userdata['user_dst_time_lag'];
+								switch ($time_mode)
+								{
+									case MANUAL_DST:
+										$dst_sec = $dst_time_lag * 60;
+										$backup_time = $matches[1] + (3600 * $tz) + $dst_sec;
+										break;
+									case SERVER_SWITCH:
+										$dst_sec = date('I', $matches[1]) * $dst_time_lag * 60;
+										$backup_time = $matches[1] + (3600 * $tz) + $dst_sec;
+										break;
+									default:
+										$backup_time = $matches[1] + (3600 * $tz);
+										break;
+								}
 								$template->assign_block_vars('restore.files', array(
 									'FILE' => $file,
-									'NAME' => gmdate("Y/m/d - H:i:s", $matches[1]),
+									'NAME' => gmdate("Y/m/d - H:i:s", $backup_time),
 									'SUPPORTED' => $supported
-								));
+									)
+								);
 							}
 						}
 					}
@@ -373,6 +462,6 @@ switch ($mode)
 }
 
 $template->pparse('body');
-include('./page_footer_admin.' . PHP_EXT);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

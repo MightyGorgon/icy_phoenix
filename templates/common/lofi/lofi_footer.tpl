@@ -9,5 +9,7 @@
 			</div>
 		</div><!-- content -->
 	</div><!-- wrapper -->
+
+{GOOGLE_ANALYTICS}
 </body>
 </html>

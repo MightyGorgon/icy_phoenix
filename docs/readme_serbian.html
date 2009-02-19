@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<link rel="stylesheet" href="../templates/common/acp.css" type="text/css" />
+	<meta name="author" content="Icy Phoenix Team" />
+	<title>Icy Phoenix 1.0.0</title>
+</head>
+
+<body>
+<div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
+<div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
+<table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
+<tr>
+	<td width="100%" colspan="3" valign="top">
+	<div id="top_logo">
+	<table class="" width="100%" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+	<td height="150" align="left" valign="middle">
+		<a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="../images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" border="0" /></a>
+	</td>
+	</tr>
+	</table>
+	</div>
+	</td>
+</tr>
+<tr><td colspan="3" class="forum-buttons" valign="middle">phpBB XS Instrukcije</td></tr>
+
+<tr>
+	<td colspan="3" id="content">
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span>phpBB XS 2.00</span></td></tr>
+		<tr><th><span>Sadr&#382;aj</span></th></tr>
+		<tr>
+			<td class="row-post">
+				<ul class="post-name">
+					<li><a href="#overview">Pregled</a></li>
+					<li><a href="#languages">Jezici</a></li>
+					<li><a href="#freshinstallation">Sveža Instalacija</a></li>
+					<li><a href="#upgrade">Upgrade iz phpBB XS 1.x.x</a></li>
+					<li><a href="#upgrade2">Upgrade iz phpBB 2.0.18</a></li>
+					<li><a href="#license">Dozvola</a></li>
+					<li><a href="#support">Podrška</a></li>
+					<li><a href="#history">Istorija</a></li>
+				</ul>
+			</td>
+		</tr>
+		</table>
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="overview">Pregled</a></span></td></tr>
+		<tr>
+			<td class="row-post"><br />
+			<p class="post-text"><b>phpBB </b>je veoma moæan, potpuno sposoban, i veoma promenljiv open-source bulletin board paket. Oficijalna strana je <a href="http://www.phpbb.com/" target="_blank">www.phpbb.com</a>.</p>
+			<br />
+			<p class="post-text"><b>phpBB XS 2.0.0</b> je premodifikovana verzija phpBB 2.0.19 sa nekoliko korisnih instaliranih modova. Ovaj paket dolazi sa <a href="http://www.icyphoenix.com" target="_blank">www.icyphoenix.com</a>.<br /><br />
+			Zasluge za sve MODove i njihove Autore mogu biti naðeni klikom na ovaj link: <a href="http://www.icyphoenix.com/credits.php" target="_blank">MOD Lista</a>.</p>
+			<br />
+			</td>
+		</tr>
+		</table>
+
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="languages">Jezici</a></span></td></tr>
+		<tr>
+			<td class="row-post"><br />
+			<p class="post-text">phpBB XS 2 ukljuèuje <b>Italijanski</b> i <b>Engleski</b> kao preinstalirane jezike. Ovaj paket biæe preveden i na ostale jezike koji æe biti dostupni na <a href="http://www.icyphoenix.com">www.icyphoenix.com</a> kada budu završeni.</p>
+			<br />
+			</td>
+		</tr>
+		</table>
+
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="freshinstallation">Sveža Instalacija</a></span></td></tr>
+		<tr>
+			<td class="row-post"><br />
+			<ol class="post-text">
+				<li>Kopiraj sve phpBB XS fajlove u jedan folder na tvom webserveru (i.e. /forum/) i onda pokreni setup <b>install/install.php</b> (i.e. <a href="http://www.mysite.com/forum/install/install.php">http://www.mysite.com/forum/install/install.php</a>)
+				<li>Popuni sva zahtevana polja i kompletiraj setup.
+				<li>Obriši ili reimenuj <b>install</b> folder.
+				<li>Setuj dozvole na <span class="text_red">CHMOD 777</span> za sledeæe foldere:<br />
+				<b>files/album<br />
+				files/album/cache<br />
+				files/album/med_cache<br />
+				files/album/wm_cache<br />
+				files/posted_images<br />
+				cache<br />
+				ctracker/logfiles/logfile_attempt_counter.txt<br />
+				ctracker/logfiles/logfile_blocklist.txt<br />
+				ctracker/logfiles/logfile_debug_mode.txt<br />
+				ctracker/logfiles/logfile_malformed_logins.txt<br />
+				ctracker/logfiles/logfile_spammer.txt<br />
+				ctracker/logfiles/logfile_worms.txt<br />
+				files<br />
+				files/thumbs<br />
+				images/avatars<br />
+				pafiledb/uploads<br />
+				</b><br />
+				<li>Setuj dozvole na <span class="text_red">CHMOD 666</span> za sledeæe fajlove:<br />
+				<b>includes/def_themes.php<br />
+				includes/def_tree.php<br />
+				includes/def_words.php<br /></b><br />
+				<li>Uživaj na tvom Novom Forumu <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />
+			</ol>
+			<br />
+			</td>
+		</tr>
+		</table>
+
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="upgrade">Upgrade iz phpBB XS 1.x.x</a></span></td>
+		</tr>
+		<tr>
+			<td class="row-post"><br />
+			Ako veæ koristiš phpBB XS 1.0.0, možeš lako upgradovati tvoj forum prateæi ove instrukcije:<br />
+			<ol class="post-text">
+				<li><span class="text_red">Napravi potpun backup svih fajlova i databaze</span> (ako nisi uradio backup, da se nisi usudio da tražiš podršku! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)
+				<li>Da li si sve backupovao? Ako nisi napravi backup, molim te, pogledaj prethodni korak.
+				<li>Kopiraj tvoj trenutni <b>config.php</b> i stavi ga na sigurno mesto.
+				<li>Proveri opet da li je tvoj backup u redu i stavi ga na sigurno mesto.
+				<li>Uloguj se kao administrator.
+				<li>Uploaduj i pokreni <b>install/update_to_ip.php</b> (i.e. http://www.mysite.com/forum/install/update_to_ip.php).<br />
+				<li>Uploaduj sve phpBB XS 2 fajlove u isti folder gde je phpBB XS instaliran i pokreni (sve fajlove osim <b>config.php</b>). Obrati pažnju da svi stari fajlovi moraju biti zamenjeni novima.<br />
+				<li>Stavi sve dozvole izlistane u <a href="#freshinstallation">Sve&#382;a Instalacija</a>.<br />
+				<li>Obriši ili reimenuj <b>install</b> folder.<br />
+				<li>Koristi tvoj Novi Forum <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.<br />
+			</ol>
+			<br />
+			</td>
+		</tr>
+		</table>
+
+
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="upgrade2">Upgrade iz phpBB 2.0.18 o inferiore</a></span></td></tr>
+		<tr>
+			<td class="row-post"><br />
+			Ako veæ koristiš phpBB 2.0.18 ili niži, možeš lako upgradovati tvoj forum prateæi ove instrukcije:<br />
+			<ol class="post-text">
+				<li><span class="text_red">Napravi potpun backup svih fajlova i databaze</span> (ako nisi uradio backup, da se nisi usudio da tražiš podršku! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)
+				<li>Da li si sve backupovao? Ako nisi napravi backup, molim te, pogledaj prethodni korak.
+				<li>Kopiraj tvoj trenutni <b>config.php</b> i stavi ga na sigurno mesto.
+				<li>Proveri opet da li je tvoj backup u redu i stavi ga na sigurno mesto.
+				<li>Uloguj se kao administrator.
+				<li>Uploaduj i pokreni <b>install/update_to_ip.php</b> (i.e. http://www.mysite.com/forum/install/update_to_ip.php).<br />
+				<li>Uploaduj sve phpBB XS 2 fajlove u isti folder gde je phpBB XS instaliran i pokreni (sve fajlove osim <b>config.php</b>). Obrati pažnju da svi stari fajlovi moraju biti zamenjeni novima.<br />
+				<li>Stavi sve dozvole izlistane u <a href="#freshinstallation">Sveža Instalacija</a>.<br />
+				<li>Obriši ili reimenuj <b>install</b> folder.<br />
+				<li>Koristi tvoj Novi Forum <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.<br />
+			</ol>
+			<br />
+			</td>
+		</tr>
+		</table>
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="license">Dozvola</a></span></td></tr>
+		<tr>
+			<td class="row-post"><br />
+			<p class="post-text">
+				phpBB &copy; 2006 <a href="http://www.phpbb.com/" target="_blank">phpBB Group</a>.<br />
+				phpBB XS &copy; 2006 <a href="http://www.icyphoenix.com/" target="_blank">phpBB XS Group</a>.
+			</p>
+			<br />
+			</td>
+		</tr>
+		</table>
+
+		<table cellspacing="0" cellpadding="0" width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="support">Podrška</a></span></td></tr>
+		<tr>
+			<td class="row-post"><br />
+			<p class="post-text">Za bilo koje zahteve i podršku, molim te referiraj na <a target="_blank" href="http://www.icyphoenix.com">http://www.icyphoenix.com/</a></p>
+			<br />
+			</td>
+		</tr>
+		</table>
+
+
+		<table cellspacing="0" cellpadding="0"  width="100%" class="forumline">
+		<tr><td class="row-header" colspan="3"><span><a name="history">Istorija</a></span></td></tr>
+		<tr>
+			<td class="row-post"><br /><div class="row-text">
+			<i>Verzija 2.0.0 (2005-12-31)</i>
+			<ul>
+				<li>Instalirano mnogo modova i prepravke kodova.</li>
+			</ul>
+			<br />
+			<i>Verzija 1.0.1 (2005-11-02)</i>
+			<ul>
+				<li>Upgrade na 2.0.18.</li>
+			</ul>
+			<br />
+			<i>Verzija 1.0.0 (2005-07-07)</i>
+			<ul>
+				<li>Prva Relizacija.</li>
+			</ul>
+			</div>
+			</td>
+		</tr>
+		</table>
+
+
+	</td>
+</tr>
+<tr>
+	<td width="100%" colspan="3">
+	<div id="bottom_logo_ext">
+	<div id="bottom_logo">
+		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+			<tr>
+				<td nowrap="nowrap" width="45%" align="left">
+					<span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span>
+				</td>
+				<td nowrap="nowrap" align="center"><div style="text-align:center;">&nbsp;</div></td>
+				<td nowrap="nowrap" width="45%" align="right">
+					<span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	</div>
+	</td>
+</tr>
+</table>
+</div></div></div>
+</div>
+</body>
+</html>

@@ -12,14 +12,14 @@ body {
 }
 
 #global-wrapper {
-	width: 980px;
+	width: 980px !important;
 	clear: both;
 	margin: 0 auto;
 }
 
 /* wrapper */
 #wrapper {
-	width: 980px;
+	width: 980px !important;
 	display: table-cell;
 	background: #ffffff url('./images/cyan/bg/bg_b_l.gif') top left repeat-y;
 }
@@ -930,6 +930,13 @@ select optgroup {
 select option {
 	background-color: #f4f8fb;
 	color: #333333;
+}
+
+input.search:hover, input.search:focus, input.search:active, input.search {
+	background-image: url('images/cyan/icon_textbox_search.gif');
+	background-repeat: no-repeat;
+	background-position: left 1px;
+	padding-left: 17px;
 }
 
 /* private message popup */

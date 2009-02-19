@@ -2421,7 +2421,7 @@ CREATE TABLE phpbb_ajax_shoutbox (
 
 
 CREATE TABLE `phpbb_ajax_shoutbox_sessions` (
-	`session_id` int(10) NOT NULL auto_increment,
+	`session_id` int(10) NOT NULL,
 	`session_user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`session_username` varchar(25) NOT NULL DEFAULT '',
 	`session_ip` varchar(8) NOT NULL DEFAULT '0',

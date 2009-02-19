@@ -118,6 +118,8 @@
 
 {ERROR_BOX}
 
+<!-- IF S_REGISTER_MESSAGE -->{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row1"><div class="post-text">{L_REGISTER_MESSAGE}</div></td></tr></table>{IMG_TBR}<!-- ENDIF -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_REGISTRATION_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- <tr><th colspan="2" valign="middle">{L_REGISTRATION_INFO}</th></tr> -->
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td></tr>

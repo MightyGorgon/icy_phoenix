@@ -237,11 +237,9 @@ else
 	while($row = $db->sql_fetchrow($result))
 	{
 		$i++;
-		$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('bots', array(
-			'ROW_COLOR' => '#' . $row_color,
 			'ROW_CLASS' => $row_class,
 			'BOT_ID' => $row['bot_id'],
 			'BOT_ACTIVE' => ($row['bot_active'] ? $lang['YES'] : $lang['NO']),

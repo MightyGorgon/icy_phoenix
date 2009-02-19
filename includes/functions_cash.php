@@ -828,7 +828,7 @@ class cash_currency
 		return $this->currency['cash_id'];
 	}
 
-	function name($surpress_image = false,$quotes = false)
+	function name($surpress_image = false, $quotes = false)
 	{
 				if ($this->mask(CURRENCY_IMAGE) && !$surpress_image)
 		{
@@ -847,9 +847,10 @@ class cash_currency
 
 	function display($amount, $surpress_image = false, $quotes = false)
 	{
+
 		if($this->mask(CURRENCY_PREFIX))
 		{
-			return ($this->name($surpress_image, $quotes, $bbcode) . ' ' . $amount);
+			return ($this->name($surpress_image, $quotes) . ' ' . $amount);
 		}
 		else
 		{

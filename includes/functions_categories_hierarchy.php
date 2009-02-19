@@ -19,12 +19,6 @@ if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
-//--------------------------------------------------------------------------------------------------
-// CACHE_* : comment these ones if you doesn't want to use the caches
-//--------------------------------------------------------------------------------------------------
-define('CACHE_TREE', true);
-//define('CACHE_WORDS', true);
-//define('CACHE_THEMES', true);
 
 //--------------------------------------------------------------------------------------------------
 // $nav_separator : used in the navigation sentence : ie Forum Index -> MainCat -> Forum -> Topic
@@ -139,8 +133,8 @@ function get_object_lang($cur, $field, $all=false)
 {
 	global $board_config, $lang, $tree;
 	$res = '';
-	$CH_this = $tree['keys'][$cur];
-	$type = $tree['type'][$CH_this];
+	$CH_this = (isset($tree['keys'][$cur]) ? $tree['keys'][$cur] : '');
+	$type = (isset($tree['type'][$CH_this]) ? $tree['type'][$CH_this] : '');
 	if ($cur == 'Root')
 	{
 		switch($field)
@@ -200,7 +194,7 @@ function cache_tree_output()
 	include_once(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 	$template = new Template(IP_ROOT_PATH);
 
-	$template->set_filenames(array('def_tree' => 'includes/cache_tpls/def_tree_def.tpl'));
+	$template->set_filenames(array('def_tree' => 'includes/def_tree_def.tpl'));
 
 	$template->assign_vars(array(
 		'TIME' => date('Y-m-d H:i:s', time()) . ' (GMT)',
@@ -328,9 +322,9 @@ function cache_tree_output()
 
 	// transfert to a var
 	$template->assign_var_from_handle('def_tree', 'def_tree');
-	$res = '<' . '?' . 'php' . "\n" . $template->_tpldata['.'][0]['def_tree'] . "\n" . 'return;' . "\n" . '?' . '>';
+	$res = '<' . '?' . 'php' . "\n" . $template->_tpldata['.'][0]['def_tree'] . "\n" . '$cache_included = true;' . "\n" . 'return;' . "\n" . '?' . '>';
 	// output to file
-	$fname = IP_ROOT_PATH . './includes/def_tree.' . PHP_EXT;
+	$fname = MAIN_CACHE_FOLDER . CACHE_TREE_FILE;
 	@chmod($fname, 0666);
 	$handle = @fopen($fname, 'w');
 	@fwrite($handle, $res);
@@ -389,13 +383,6 @@ function cache_tree($write = false)
 {
 	global $db, $tree, $userdata, $board_config;
 
-	// extended auth compliancy
-	$sql_extend_auth = '';
-	if (defined('EXTEND_AUTH_INSTALLED'))
-	{
-		$sql_extend_auth = ' AND aa.auth_type = ' . POST_FORUM_URL;
-	}
-
 	$parents = array();
 
 	// read categories
@@ -452,7 +439,6 @@ function cache_tree($write = false)
 				AND ug.group_id = aa.group_id
 				AND g.group_id = aa.group_id
 				AND u.user_id = ug.user_id
-				$sql_extend_auth
 			GROUP BY u.user_id, u.username, aa.forum_id
 			ORDER BY aa.forum_id, u.user_id";
 	if (!$result = $db->sql_query($sql, false, 'moderators_'))
@@ -475,7 +461,6 @@ function cache_tree($write = false)
 				AND g.group_type <> " . GROUP_HIDDEN . "
 				AND ug.group_id = aa.group_id
 				AND g.group_id = aa.group_id
-				$sql_extend_auth
 			GROUP BY g.group_id, g.group_name, aa.forum_id
 			ORDER BY aa.forum_id, g.group_id";
 	if (!$result = $db->sql_query($sql, false, 'moderators_'))
@@ -524,20 +509,14 @@ function read_tree($force = false)
 	$tracking_forums = (isset($_COOKIE[$board_config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
 	$tracking_all = (isset($_COOKIE[$board_config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$board_config['cookie_name'] . '_f_all']) : -1;
 
-	// extended auth compliancy
-	$sql_extend_auth = '';
-	if (defined('EXTEND_AUTH_INSTALLED'))
-	{
-		$sql_extend_auth = ' AND aa.auth_type = ' . POST_FORUM_URL;
-	}
-
 	// try the cache
 	$use_cache_file = false;
 	if (defined('CACHE_TREE'))
 	{
-		$cache_file = IP_ROOT_PATH . 'includes/def_tree.' . PHP_EXT;
+		$cache_included = false;
+		$cache_file = MAIN_CACHE_FOLDER . CACHE_TREE_FILE;
 		@include($cache_file);
-		if (empty($tree) || $force)
+		if (!$cache_included || empty($tree) || $force)
 		{
 			cache_tree(true);
 			@include($cache_file);
@@ -613,7 +592,7 @@ function read_tree($force = false)
 		if (isset($last_posts[$row['topic_last_post_id']]))
 		{
 			// topic title censor
-			if (count($orig_word))
+			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 			{
 				$row['topic_title'] = preg_replace($orig_word, $replacement_word, $row['topic_title']);
 			}
@@ -778,7 +757,9 @@ function set_tree_user_auth()
 		// grant the main level
 		if ($main != 'Root')
 		{
-			$tree['auth'][$main]['tree.auth_view'] = ($tree['auth'][$main]['tree.auth_view'] || $tree['auth'][$cur]['tree.auth_view']);
+			// Mighty Gorgon: this is the old working line... please restore it back if not working!!!
+			//$tree['auth'][$main]['tree.auth_view'] = ($tree['auth'][$main]['tree.auth_view'] || $tree['auth'][$cur]['tree.auth_view']);
+			$tree['auth'][$main]['tree.auth_view'] = (!empty($tree['auth'][$main]['tree.auth_view']) || !empty($tree['auth'][$cur]['tree.auth_view']));
 		}
 
 		//---------------------
@@ -835,8 +816,8 @@ function set_tree_user_auth()
 		}
 		if ($auth_view)
 		{
-			$tree['data'][$i]['tree.forum_posts'] += $tree['data'][$i]['forum_posts'];
-			$tree['data'][$i]['tree.forum_topics'] += $tree['data'][$i]['forum_topics'];
+			$tree['data'][$i]['tree.forum_posts'] += isset($tree['data'][$i]['forum_posts']) ? $tree['data'][$i]['forum_posts'] : 0;
+			$tree['data'][$i]['tree.forum_topics'] += isset($tree['data'][$i]['forum_topics']) ? $tree['data'][$i]['forum_topics'] : 0;
 			$tree['data'][$i]['tree.forum_online'] += (empty($forum_online[$i]) ? 0 : $forum_online[$i]);
 		}
 
@@ -873,14 +854,21 @@ function set_tree_user_auth()
 			if (empty($tree['data'][$i]['tree.topic_last_post_id']) || ($tree['data'][$i]['post_time'] > $tree['data'][$i]['tree.post_time']))
 			{
 				$tree['data'][$i]['tree.topic_last_post_auth'] = $auth_lp;
-				$tree['data'][$i]['tree.topic_last_post_id'] = $tree['data'][$i]['topic_last_post_id'];
-				$tree['data'][$i]['tree.post_time'] = $tree['data'][$i]['post_time'];
-				$tree['data'][$i]['tree.post_user_id'] = $tree['data'][$i]['user_id'];
-				$tree['data'][$i]['tree.post_username'] = ($tree['data'][$i]['user_id'] != ANONYMOUS) ? $tree['data'][$i]['username'] : ((!empty($tree['data'][$i]['post_username'])) ? $tree['data'][$i]['post_username'] : $lang['Guest']);
-				$tree['data'][$i]['tree.user_active'] = $tree['data'][$i]['user_active'];
-				$tree['data'][$i]['tree.user_color'] = $tree['data'][$i]['user_color'];
-				$tree['data'][$i]['tree.topic_title'] = $tree['data'][$i]['topic_title'];
-				$tree['data'][$i]['tree.unread_topics'] = $tree['unread_topics'][$i];
+				$tree['data'][$i]['tree.topic_last_post_id'] = isset($tree['data'][$i]['topic_last_post_id']) ? $tree['data'][$i]['topic_last_post_id'] : '';
+				$tree['data'][$i]['tree.post_time'] = isset($tree['data'][$i]['post_time']) ? $tree['data'][$i]['post_time'] : '';
+				$tree['data'][$i]['tree.post_user_id'] = isset($tree['data'][$i]['user_id']) ? $tree['data'][$i]['user_id'] : '';
+				if (isset($tree['data'][$i]['user_id']) && isset($tree['data'][$i]['username']))
+				{
+					$tree['data'][$i]['tree.post_username'] = ($tree['data'][$i]['user_id'] != ANONYMOUS) ? $tree['data'][$i]['username'] : ((!empty($tree['data'][$i]['post_username'])) ? $tree['data'][$i]['post_username'] :	$lang['Guest']);
+				}
+				else
+				{
+					$tree['data'][$i]['tree.post_username'] = '';
+				}
+				$tree['data'][$i]['tree.user_active'] = isset($tree['data'][$i]['user_active']) ? $tree['data'][$i]['user_active'] : '';
+				$tree['data'][$i]['tree.user_color'] = isset($tree['data'][$i]['user_color']) ? $tree['data'][$i]['user_color'] : '';
+				$tree['data'][$i]['tree.topic_title'] = isset($tree['data'][$i]['topic_title']) ? $tree['data'][$i]['topic_title'] : '';
+				$tree['data'][$i]['tree.unread_topics'] = isset($tree['unread_topics'][$i]) ? $tree['unread_topics'][$i] : '';
 			}
 		}
 
@@ -890,14 +878,14 @@ function set_tree_user_auth()
 			if (empty($tree['data'][$main_idx]['tree.topic_last_post_id']) || ($tree['data'][$i]['tree.post_time'] > $tree['data'][$main_idx]['tree.post_time']))
 			{
 				$tree['data'][$main_idx]['tree.topic_last_post_auth'] = $auth_lp;
-				$tree['data'][$main_idx]['tree.topic_last_post_id'] = $tree['data'][$i]['tree.topic_last_post_id'];
-				$tree['data'][$main_idx]['tree.post_time'] = $tree['data'][$i]['tree.post_time'];
-				$tree['data'][$main_idx]['tree.post_user_id'] = $tree['data'][$i]['tree.post_user_id'];
-				$tree['data'][$main_idx]['tree.post_username'] = $tree['data'][$i]['tree.post_username'];
-				$tree['data'][$main_idx]['tree.user_active'] = $tree['data'][$i]['user_active'];
-				$tree['data'][$main_idx]['tree.user_color'] = $tree['data'][$i]['user_color'];
-				$tree['data'][$main_idx]['tree.topic_title'] = $tree['data'][$i]['tree.topic_title'];
-				$tree['data'][$main_idx]['tree.unread_topics'] = $tree['data'][$i]['tree.unread_topics'];
+				$tree['data'][$main_idx]['tree.topic_last_post_id'] = isset($tree['data'][$i]['tree.topic_last_post_id']) ? $tree['data'][$i]['tree.topic_last_post_id'] : '';
+				$tree['data'][$main_idx]['tree.post_time'] = isset($tree['data'][$i]['tree.post_time']) ? $tree['data'][$i]['tree.post_time'] : '';
+				$tree['data'][$main_idx]['tree.post_user_id'] = isset($tree['data'][$i]['tree.post_user_id']) ? $tree['data'][$i]['tree.post_user_id'] : '';
+				$tree['data'][$main_idx]['tree.post_username'] = isset($tree['data'][$i]['tree.post_username']) ? $tree['data'][$i]['tree.post_username'] : '';
+				$tree['data'][$main_idx]['tree.user_active'] = isset($tree['data'][$i]['user_active']) ? $tree['data'][$i]['user_active'] : '';
+				$tree['data'][$main_idx]['tree.user_color'] = isset($tree['data'][$i]['user_color']) ? $tree['data'][$i]['user_color'] : '';
+				$tree['data'][$main_idx]['tree.topic_title'] = isset($tree['data'][$i]['tree.topic_title']) ? $tree['data'][$i]['tree.topic_title'] : '';
+				$tree['data'][$main_idx]['tree.unread_topics'] = isset($tree['data'][$i]['tree.unread_topics']) ? $tree['data'][$i]['tree.unread_topics'] : '';
 			}
 		}
 	}
@@ -976,20 +964,26 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 			$keys['idx'][$last_i] = (isset($tree['keys'][$cur]) ? $tree['keys'][$cur] : -1);
 
 			// get sub-levels
-			for ($i = 0; $i < count($tree['sub'][$cur]); $i++)
+			if (!empty($tree['sub'][$cur]))
 			{
-				$tkeys = array();
-				$tkeys = get_auth_keys($tree['sub'][$cur][$i], $all, $orig_level + 1, $max, $auth_key);
-
-				// add sub-levels
-				for ($j = 0; $j < count($tkeys['id']); $j++)
+				for ($i = 0; $i < count($tree['sub'][$cur]); $i++)
 				{
-					$last_i++;
-					$keys['keys'][$tkeys['id'][$j]] = $last_i;
-					$keys['id'][$last_i] = $tkeys['id'][$j];
-					$keys['real_level'][$last_i] = $tkeys['real_level'][$j];
-					$keys['level'][$last_i] = $tkeys['level'][$j];
-					$keys['idx'][$last_i] = $tkeys['idx'][$j];
+					$tkeys = array();
+					$tkeys = get_auth_keys($tree['sub'][$cur][$i], $all, $orig_level + 1, $max, $auth_key);
+
+					// add sub-levels
+					if (!empty($tkeys['id']))
+					{
+						for ($j = 0; $j < count($tkeys['id']); $j++)
+						{
+							$last_i++;
+							$keys['keys'][$tkeys['id'][$j]] = $last_i;
+							$keys['id'][$last_i] = $tkeys['id'][$j];
+							$keys['real_level'][$last_i] = $tkeys['real_level'][$j];
+							$keys['level'][$last_i] = $tkeys['level'][$j];
+							$keys['idx'][$last_i] = $tkeys['idx'][$j];
+						}
+					}
 				}
 			}
 		}
@@ -1208,9 +1202,9 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			}
 
 			// front icon
-			$link_class = ($data['tree.unread_topics']) ? '-new' : '';
-			$folder_image = ($data['tree.unread_topics']) ? $i_new : $i_norm;
-			$folder_alt = ($data['tree.unread_topics']) ? $a_new : $a_norm;
+			$link_class = !empty($data['tree.unread_topics']) ? '-new' : '';
+			$folder_image = !empty($data['tree.unread_topics']) ? $i_new : $i_norm;
+			$folder_alt = !empty($data['tree.unread_topics']) ? $a_new : $a_norm;
 			if ($data['tree.locked'])
 			{
 				$folder_image = $i_locked;
@@ -1231,7 +1225,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 			// last post
 			$last_post = $lang['No_Posts'];
-			if ($data['tree.topic_last_post_id'] && $data['tree.topic_last_post_auth'])
+			if ((isset($data['tree.topic_last_post_id']) && $data['tree.topic_last_post_id']) && (isset($data['tree.topic_last_post_auth']) && $data['tree.topic_last_post_auth']))
 			{
 				// resize
 				$topic_title = $data['tree.topic_title'];
@@ -1308,7 +1302,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 						else
 						{
 							$wi_new = $images['icon_minipost_new'];
-							$wa_new = $lang['icon_minipost'];
+							$wa_new = $lang['New_posts'];
 							$wi_norm = $images['icon_minipost'];
 							$wa_norm = $lang['No_new_posts'];
 							$wi_locked = $images['icon_minipost_lock'];
@@ -1491,13 +1485,19 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	}
 
 	// display sub-levels
-	for ($i = 0; $i < count($tree['sub'][$cur]); $i++) if (!empty($keys['keys'][$tree['sub'][$cur][$i]]))
+	if (!empty($tree['sub'][$cur]))
 	{
-		$wdisplay = build_index($tree['sub'][$cur][$i], $cat_break, $forum_moderators, $level + 1, $max_level, $keys);
-		if ($wdisplay) $display = true;
+		for ($i = 0; $i < count($tree['sub'][$cur]); $i++) if (!empty($keys['keys'][$tree['sub'][$cur][$i]]))
+		{
+			$wdisplay = build_index($tree['sub'][$cur][$i], $cat_break, $forum_moderators, $level + 1, $max_level, $keys);
+			if ($wdisplay)
+			{
+				$display = true;
+			}
+		}
 	}
 
-	if ($level >=0)
+	if ($level >= 0)
 	{
 		// forum footer row
 		if ($tree['type'][$CH_this] == POST_FORUM_URL)
@@ -1505,7 +1505,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 		}
 	}
 
-	if ($level >=0)
+	if ($level >= 0)
 	{
 		// cat footer
 		if (($tree['type'][$CH_this] == POST_CAT_URL) && $pull_down)
@@ -1594,6 +1594,10 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 {
 	global $tree, $board_config, $userdata, $db, $nav_separator;
 	global $global_orig_word, $global_replacement_word;
+
+	// Settings this to false will add the topic title to breadcrumbs
+	$skip_topics = true;
+
 	$kb_mode_append = '';
 	$kb_mode_var = request_var('kb', '');
 	if (!empty($kb_mode_var) && ($userdata['bot_id'] == false))
@@ -1635,7 +1639,7 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 					$replacement_word = array();
 					obtain_word_list($orig_word, $replacement_word);
 				}
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 				}
@@ -1662,7 +1666,7 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 					$replacement_word = array();
 					obtain_word_list($orig_word, $replacement_word);
 				}
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
 				}
@@ -1680,14 +1684,17 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 	$CH_this = isset($tree['keys'][$cur]) ? $tree['keys'][$cur] : -1;
 
 	$res = '';
-	$path_parts3 = pathinfo($_SERVER['SCRIPT_NAME']);
-	$filename3 = substr($path_parts3['basename'], 0, 5);
+
+	$cur_file_path_parts = pathinfo($_SERVER['SCRIPT_NAME']);
+	$cur_filename = substr($cur_file_path_parts['basename'], 0, 5);
+	$filenames_to_exclude = array('posti');
 
 	// Convert and clean special chars!
 	$topic_title = htmlspecialchars_clean($topic_title);
 	while (($CH_this >= 0) || ($fcur != ''))
 	{
 		$type = (substr($fcur, 0, 1) != '') ? substr($cur, 0, 1) : $tree['type'][$CH_this];
+		$is_topic = false;
 		switch($type)
 		{
 			case POST_CAT_URL:
@@ -1703,12 +1710,14 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 				$pgm_name = VIEWFORUM_MG;
 				break;
 			case POST_TOPIC_URL:
+				$is_topic = true;
 				$field_name = $topic_title;
 				$param_type = POST_TOPIC_URL;
 				$param_value = $id;
 				$pgm_name = VIEWTOPIC_MG ;
 				break;
 			case POST_POST_URL:
+				$is_topic = true;
 				$field_name = $topic_title;
 				$param_type = POST_POST_URL;
 				$param_value = $id . '#p' . $id;
@@ -1727,22 +1736,26 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 		}
 
 		//Dynamic Class Assignment - BEGIN
-		$k = $k + 1;
-		if (($k == 1) && ($filename3 != 'posti'))
+		$k = (empty($k) ? 1 : ($k + 1));
+		$process_res = false;
+		if ($k == 1)
 		{
-			$res = '<a href="' . append_sid($pgm_name . (($field_name != '') ? ('?' . $param_type . '=' . $param_value . $kb_mode_append) : '')) . '" class="nav-current">' . $field_name . '</a>' . (($res != '') ? $nav_separator . $res : '');
-		}
-		elseif ($k == 1)
-		{
-			$res = '<a href="' . append_sid($pgm_name . (($field_name != '') ? ('?' . $param_type . '=' . $param_value . $kb_mode_append) : '')) . '" class="nav">' . $field_name . '</a>' . (($res != '') ? $nav_separator . $res : '');
+			$process_res = ($skip_topics && $is_topic) ? false : true;
+			$res_class = (!in_array($cur_filename, $filenames_to_exclude) ? 'nav-current' : 'nav');
 		}
 		else
 		{
-			//Dynamic Class Assignment - END
 			if (!empty($field_name) && ($fcur == ''))
 			{
-				$res = '<a href="' . append_sid($pgm_name . (($field_name != '') ? ('?' . $param_type . '=' . $param_value . $kb_mode_append) : '')) . '" class="' . $nav_class . '">' . $field_name . '</a>' . (($res != '') ? $nav_separator . $res : '');
+				$process_res = true;
+				$res_class = $nav_class;
 			}
+		}
+		//Dynamic Class Assignment - END
+
+		if ($process_res)
+		{
+			$res = '<a href="' . append_sid($pgm_name . (($field_name != '') ? ('?' . $param_type . '=' . $param_value . $kb_mode_append) : '')) . '" class="' . $res_class . '">' . $field_name . '</a>' . (($res != '') ? $nav_separator . $res : '');
 		}
 
 		// find parent object
@@ -1773,11 +1786,12 @@ function get_tree_option($cur = '', $all = false)
 	$keys = array();
 	$keys = get_auth_keys('Root', $all);
 	$last_level = -1;
+	$res = '';
 
 	for ($i = 0; $i < count($keys['id']); $i++)
 	{
 		// only get object that are not forum links type
-		if (($tree['type'][ $keys['idx'][$i] ] != POST_FORUM_URL) || empty($tree['data'][ $keys['idx'][$i] ]['forum_link']))
+		if (empty($tree['type'][$keys['idx'][$i]]) || empty($tree['data'][$keys['idx'][$i]]['forum_link']) || ($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL))
 		{
 			$level = $keys['real_level'][$i];
 

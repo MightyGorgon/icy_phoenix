@@ -17,9 +17,8 @@ function query_ranks()
 {
 	global $db;
 
-	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
-					WHERE ban_userid <> 0
-					ORDER BY ban_userid ASC";
+	// One row SQL for caching purpose...
+	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid <> 0 ORDER BY ban_userid ASC";
 	if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
 	{
 		message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
@@ -79,7 +78,7 @@ function generate_ranks($user_row, $ranks_sql)
 		$is_guest = true;
 	}
 
-	if ($is_guest == false)
+	if (($is_guest == false) && !empty($ranks_sql['bannedrow']))
 	{
 		for($j = 0; $j < count($ranks_sql['bannedrow']); $j++)
 		{
@@ -94,7 +93,7 @@ function generate_ranks($user_row, $ranks_sql)
 	for($j = 0; $j < count($ranks_sql['ranksrow']); $j++)
 	{
 		$rank_tmp = $ranks_sql['ranksrow'][$j]['rank_title'];
-		$rank_img_tmp = ($ranks_sql['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_sql['ranksrow'][$j]['rank_image'] . '" alt="' . $ranks_tmp . '" title="' . $ranks_tmp . '" />' : '';
+		$rank_img_tmp = ($ranks_sql['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_sql['ranksrow'][$j]['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
 		if ($is_guest == true)
 		{
 			if ($ranks_sql['ranksrow'][$j]['rank_special'] == '2')

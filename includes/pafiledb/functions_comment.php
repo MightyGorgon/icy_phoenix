@@ -72,7 +72,7 @@ function display_comments(&$file_data)
 		$comments_text = $bbcode->parse($comments_text);
 		//bbcode parser End
 
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			if ($comments_text != '')
 			{

@@ -587,7 +587,7 @@ class Template {
 		$template = $theme['template_name'];
 		global $$template;
 		$theme_info = &$$template;
-		$exclude_tpl_array = array('def_themes_def.tpl', 'def_tree_def.tpl', 'def_words_def.tpl');
+		$exclude_tpl_array = array('def_tree_def.tpl');
 		if($board_config['xs_add_comments'] && $handle && !in_array($this->files[$handle], $exclude_tpl_array))
 		{
 			echo '<!-- template ', $this->files[$handle], ' start -->';
@@ -1778,8 +1778,10 @@ class Template {
 			$this->cache_writable = 0;
 			return false;
 		}
+		@flock($file, LOCK_EX);
 		fputs($file, '<' . '?php' . "\n\n// eXtreme Styles mod cache. Generated on " . date('r') . " (time=" . time() . ")\n\n" . '?' . '>');
 		fputs($file, $code);
+		@flock($file, LOCK_UN);
 		fclose($file);
 		@chmod($filename, 0777);
 		return true;

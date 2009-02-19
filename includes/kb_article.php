@@ -195,7 +195,7 @@ if ($highlight_match)
 
 // Replace naughty words
 
-if (count($orig_word))
+if (!empty($orig_word) && count($orig_word))
 {
 	$article_title = preg_replace($orig_word, $replacement_word, $article_title);
 
@@ -241,7 +241,7 @@ if (!$is_block || $print_version)
 if ($kb_config['formatting_fixup'])
 {
 	$kb_art_description = kb_decode_truncate_fixup($kb_art_description);
-	if (count($orig_word) && !$userdata['user_allowswearywords'])
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$kb_art_description = preg_replace($orig_word, $replacement_word, $kb_art_description);
 	}
@@ -485,7 +485,7 @@ else
 
 			// Replace naughty words
 
-			if (count($orig_word))
+			if (!empty($orig_word) && count($orig_word))
 			{
 				$article_toc = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $article_toc . '<'), 1, -1));
 			}

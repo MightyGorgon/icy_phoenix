@@ -19,12 +19,12 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 $ProgName = 'RSS Feed 2.2.4';
 $verinfo = 'V224';
-include(IP_ROOT_PATH . 'includes/rss_config.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/rss_functions.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/rss_config.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/rss_functions.' . PHP_EXT);
 // END Includes of phpBB scripts
 
 // MG: not all modes implemented yet
@@ -175,20 +175,20 @@ else
 // BEGIN Cache Mod
 if(($user_id == ANONYMOUS) && $use_cached)
 {
-	$MyETag='"RSS' . gmdate('YmdHis', $cachefiletime) . $verinfo . '"';
+	$MyETag = '"RSS' . gmdate('YmdHis', $cachefiletime) . $verinfo . '"';
 	$MyGMTtime = gmdate('D, d M Y H:i:s', $cachefiletime) . ' GMT';
 	if(!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2'))
 	{
-		header ('Cache-Control: no-cache, pre-check=0, post-check=0, max-age=0');
+		header('Cache-Control: no-cache, pre-check=0, post-check=0, max-age=0');
 	}
 	else
 	{
-		header ('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
+		header('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
 	}
 	header('Last-Modified: ' . $MyGMTtime);
 	header('Etag: ' . $MyETag);
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
-	header ('Content-Type: text/xml; charset=' . $encoding_charset);
+	header('Content-Type: text/xml; charset=' . $encoding_charset);
 	readfile($cache_file);
 }
 else
@@ -302,7 +302,7 @@ else
 	$sql_news = '';
 	if ($mode == 'news')
 	{
-		$sql_news = 'AND t.topic_type = \'' . POST_NEWS . '\'';
+		$sql_news = "AND t.news_id > 0";
 	}
 	$getdesc = ($forum_id <> '') ? ', f.forum_desc' : '';
 	$sql = "SELECT f.forum_name" . $getdesc . ", f.forum_topic_views, t.topic_id, t.topic_title, u.user_id, u.username, u.user_sig, u.user_allowsmile, p.*, t.topic_replies, t.topic_first_post_id
@@ -404,7 +404,7 @@ else
 			$message = $bbcode->parse($message);
 
 			// Replace naughty words
-			if(count($orig_word))
+			if(!empty($orig_word) && count($orig_word))
 			{
 				$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
 
@@ -540,16 +540,16 @@ else
 	// BEGIN XML and nocaching headers (copied from page_header.php)
 	if(!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2'))
 	{
-		header ('Cache-Control: no-cache, pre-check=0, post-check=0, max-age=0');
+		header('Cache-Control: no-cache, pre-check=0, post-check=0, max-age=0');
 	}
 	else
 	{
-		header ('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
+		header('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
 	}
 	header('Last-Modified: ' . $MyGMTtime);
 	header('Etag: ' . $MyETag);
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
-	header ('Content-Type: text/xml; charset=' . $encoding_charset);
+	header('Content-Type: text/xml; charset=' . $encoding_charset);
 	// End XML and nocaching headers
 
 	// BEGIN Output XML page
@@ -562,7 +562,7 @@ else
 		ob_end_flush();
 		if($f = @fopen($cache_file, 'w'))
 		{
-			@fwrite($f, $out,strlen($out));
+			@fwrite($f, $out, strlen($out));
 			@fclose($f);
 		}
 	}

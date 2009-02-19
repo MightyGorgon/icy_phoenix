@@ -488,7 +488,7 @@ function jr_admin_get_user_info($user_id)
 	sql_query_nivisec(
 	"SELECT * FROM " . JR_ADMIN_TABLE . "
 	WHERE user_id = '" . $user_id . "'",
-	sprintf($lang['Error_Table'], JR_ADMIN_TABLE), false, 1, true));
+	sprintf($lang['ERROR_TABLE'], JR_ADMIN_TABLE), false, 1, true));
 }
 
 function jr_admin_make_admin_link()
@@ -500,16 +500,17 @@ function jr_admin_make_admin_link()
 		return '&nbsp;';
 	}
 
+	$full_server_url = create_server_url();
 	if ($userdata['user_level'] == ADMIN)
 	{
-		return '<a href="'. ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
+		return '<a href="' . $full_server_url . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
 	}
 
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 
 	if (!empty($jr_admin_userdata['user_jr_admin']))
 	{
-		return '<a href="'. ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
+		return '<a href="' . $full_server_url . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>';
 	}
 	else
 	{

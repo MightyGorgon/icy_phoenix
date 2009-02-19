@@ -137,7 +137,7 @@ for($i = 0; $i < $count_similar; $i++)
 	}
 
 	// Censor topic title
-	if (count($orig_word))
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$similar['topic_title'] = @preg_replace($orig_word, $replacement_word, $similar['topic_title']);
 	}
@@ -185,7 +185,7 @@ for($i = 0; $i < $count_similar; $i++)
 	/*
 	if (!empty($similar['topic_desc']))
 	{
-		if (count($orig_word))
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 		{
 			$similar['topic_desc'] = @preg_replace($orig_word, $replacement_word, $similar['topic_desc']);
 		}

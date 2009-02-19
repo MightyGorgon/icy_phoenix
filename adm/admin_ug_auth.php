@@ -190,6 +190,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			}
 		}
 
+		$db->clear_cache();
 		cache_tree(true);
 
 		$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid($l_auth_url . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -480,7 +481,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
 		}
 
-		$unset_mod = "";
+		$unset_mod = '';
 		while($row = $db->sql_fetchrow($result))
 		{
 			$unset_mod .= (($unset_mod != '') ? ', ' : '') . $row['user_id'];
@@ -498,8 +499,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			}
 		}
 
-		$sql = 'SELECT user_id FROM ' . USER_GROUP_TABLE . "
-					WHERE group_id = $group_id";
+		$sql = "SELECT user_id FROM " . USER_GROUP_TABLE . " WHERE group_id = $group_id";
 		$result = $db->sql_query($sql);
 
 		$group_user = array();
@@ -552,8 +552,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				message_die(GENERAL_ERROR, "Couldn't update user level", "", __LINE__, __FILE__, $sql);
 			}
 		}
-		$sql = 'SELECT user_id FROM ' . USER_GROUP_TABLE . "
-			WHERE group_id = $group_id";
+		$sql = "SELECT user_id FROM " . USER_GROUP_TABLE . " WHERE group_id = $group_id";
 		$result = $db->sql_query($sql);
 
 		$group_user = array();
@@ -593,6 +592,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
 			}
 		}
+
+		$db->clear_cache();
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -879,12 +880,10 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 			$optionlist_mod .= '</select>';
 
 			$row_class = (!($i % 2)) ? 'row2' : 'row1';
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 
 			$template->assign_block_vars('row', array());
 			$template->assign_block_vars('row.forums', array(
 				'INC_SPAN' => $max_level - $level+1,
-				'ROW_COLOR' => '#' . $row_color,
 				'ROW_CLASS' => $row_class,
 				'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $tree['data'][ $keys['idx'][$i] ]['forum_id'], 'name'),
 				'U_FORUM_AUTH' => append_sid('admin_forumauth.' . PHP_EXT . '?f=' . $tree['data'][ $keys['idx'][$i] ]['forum_id']),

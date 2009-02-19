@@ -70,6 +70,7 @@ include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/digest_emailer.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);

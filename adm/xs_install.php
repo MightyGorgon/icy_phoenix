@@ -53,7 +53,7 @@ if(!empty($_GET['style']) && !defined('DEMO_MODE'))
 	}
 	if($res)
 	{
-		cache_themes();
+		$db->clear_cache('themes_');
 		xs_message($lang['Information'], $lang['xs_install_installed'] . '<br /><br />' . $lang['xs_install_back'] . '<br /><br />' . $lang['xs_goto_default']);
 	}
 	xs_error($lang['xs_install_error'] . '<br /><br />' . $lang['xs_install_back']);
@@ -86,10 +86,7 @@ if(!empty($_POST['total']) && !defined('DEMO_MODE'))
 				)
 			);
 		}
-		if(defined('XS_MODS_CATEGORY_HIERARCHY'))
-		{
-			cache_themes();
-		}
+		$db->clear_cache('themes_');
 		xs_message($lang['Information'], $lang['xs_install_installed'] . '<br /><br />' . $lang['xs_install_back'] . '<br /><br />' . $lang['xs_goto_default']);
 	}
 }

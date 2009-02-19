@@ -150,11 +150,9 @@ function show_coppa()
 
 			for($j = 0; $j < count($rules_block[$i]); $j++)
 			{
-				$row_color = (!($j % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 				$row_class = (!($j % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 				$template->assign_block_vars('rules_block.rules_row', array(
-					'ROW_COLOR' => '#' . $row_color,
 					'ROW_CLASS' => $row_class,
 					'RULES_QUESTION' => $rules_block[$i][$j]['question'],
 					'RULES_ANSWER' => $rules_block[$i][$j]['answer'],
@@ -164,7 +162,6 @@ function show_coppa()
 				);
 
 				$template->assign_block_vars('rules_block_link.rules_row_link', array(
-					'ROW_COLOR' => '#' . $row_color,
 					'ROW_CLASS' => $row_class,
 					'RULES_LINK' => $rules_block[$i][$j]['question'],
 
@@ -258,9 +255,9 @@ if (
 	isset($_POST['cancelavatar']) ||
 	$mode == 'register')
 {
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 	if ($mode == 'editprofile')
 	{
@@ -1666,7 +1663,7 @@ else
 	{
 
 		$template->set_filenames(array('body' => 'profile_register_body.tpl'));
-		if ($board_config['enable_confirm'] == 1)
+		if ($board_config['enable_confirm'])
 		{
 			$template->assign_block_vars('switch_confirm', array());
 		}
@@ -2278,6 +2275,7 @@ else
 	$form_enctype = (@$ini_val('file_uploads') == '0' || strtolower(@$ini_val('file_uploads') == 'off') || (phpversion() == '4.0.4pl1') || !$board_config['allow_avatar_upload'] || ((phpversion() < '4.0.3') && (@$ini_val('open_basedir') != ''))) ? '' : 'enctype="multipart/form-data"';
 
 	$template->assign_vars(array(
+		'S_REGISTER_MESSAGE' => (empty($lang['REGISTER_MESSAGE']) ? false : true),
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 		'USERNAME' => isset($username) ? $username : '',

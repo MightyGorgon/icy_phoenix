@@ -570,12 +570,10 @@ if ($view == 'username')
 			$total_attachments = $members[$i]['total_attachments'];
 			$total_size = $members[$i]['total_size'];
 
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('memberrow', array(
 				'ROW_NUMBER'		=> $i + (intval($_GET['start']) + 1),
-				'ROW_COLOR'			=> '#' . $row_color,
 				'ROW_CLASS'			=> $row_class,
 				'USERNAME'			=> $username,
 				'TOTAL_ATTACHMENTS'	=> $total_attachments,
@@ -732,7 +730,6 @@ if ($view == 'attachments')
 				}
 			}
 
-			$row_color = (!($i % 2)) ? $theme['td_color1'] : $theme['td_color2'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			// Is the Attachment assigned to more than one post ?
@@ -792,7 +789,6 @@ if ($view == 'attachments')
 
 			$template->assign_block_vars('attachrow', array(
 				'ROW_NUMBER'	=> $i + ($_GET['start'] + 1),
-				'ROW_COLOR'		=> '#' . $row_color,
 				'ROW_CLASS'		=> $row_class,
 
 				'FILENAME'		=> $attachments[$i]['real_filename'],

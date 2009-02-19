@@ -237,6 +237,7 @@ if(($pic_width < $board_config['thumbnail_size']) && ($pic_height < $board_confi
 	if($board_config['thumbnail_cache'] == true)
 	{
 		$copy_success = @copy($pic_fullpath, $pic_thumbnail_fullpath);
+		@chmod($pic_thumbnail_fullpath, 0777);
 	}
 	/*
 	$Image = new ImgObj();

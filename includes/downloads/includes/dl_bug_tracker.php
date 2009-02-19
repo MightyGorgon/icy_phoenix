@@ -434,7 +434,7 @@ if ($action == 'detail' && $fav_id)
 		// Autolinks - END
 	}
 
-	if (count($orig_word))
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
 		$report_title = preg_replace($orig_word, $replacement_word, $report_title);
 		$report_text = preg_replace($orig_word, $replacement_word, $report_text);
@@ -928,7 +928,7 @@ if (!$action)
 				$report_db = $row['report_db'];
 				$report_forum = $row['report_forum'];
 
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$report_title = preg_replace($orig_word, $replacement_word, $report_title);
 					$report_text = preg_replace($orig_word, $replacement_word, $report_text);
@@ -1143,7 +1143,7 @@ if (!$action)
 				$report_status = $row['report_status'];
 				$report_status_date = $row['report_status_date'];
 
-				if (count($orig_word))
+				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 				{
 					$report_title = preg_replace($orig_word, $replacement_word, $report_title);
 					$report_file_ver = preg_replace($orig_word, $replacement_word, $report_file_ver);

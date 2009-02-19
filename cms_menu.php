@@ -238,7 +238,8 @@ if($mode == 'menu_item')
 					$sql = "SELECT *
 						FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_parent_id = '" . $mi_menu_parent_id . "'
-							AND cat_parent_id = '0'";
+							AND cat_parent_id = '0'
+						ORDER BY menu_order ASC";
 					if(!($result = $db->sql_query($sql)))
 					{
 						message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
@@ -364,7 +365,8 @@ if($mode == 'menu_item')
 				$sql = "SELECT *
 					FROM " . CMS_NAV_MENU_TABLE . "
 					WHERE menu_parent_id = '" . $mi_menu_parent_id . "'
-						AND cat_parent_id = '0'";
+						AND cat_parent_id = '0'
+					ORDER BY menu_order ASC";
 				if (!($result = $db->sql_query($sql)))
 				{
 					message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
@@ -475,10 +477,10 @@ if($mode == 'menu_item')
 		}
 
 		$template->set_filenames(array('body' => CMS_TPL . 'cms_menu_item_edit_body.tpl'));
-		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Menu_Page']);
+		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_MENU_PAGE']);
 		$template->assign_vars(array(
-			'L_CMS_MENU_TITLE' => $lang['CMS_Menu_Page'],
-			'L_CMS_MENU_EXPLAIN' => $lang['CMS_Menu_Page_Explain'],
+			'L_CMS_MENU_TITLE' => $lang['CMS_MENU_PAGE'],
+			'L_CMS_MENU_EXPLAIN' => $lang['CMS_MENU_PAGE_EXPLAIN'],
 			'L_EDIT_MENU_ITEM' => $lang['CMS_Menu_Item_Add_Edit'],
 
 			'L_YES' => $lang['Yes'],
@@ -801,7 +803,7 @@ elseif($mode == 'menu_block')
 		}
 
 		$template->set_filenames(array('body' => CMS_TPL . 'cms_menu_block_list_body.tpl'));
-		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Menu_Page']);
+		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_MENU_PAGE']);
 
 		$menu_cat = array();
 		$cat_item = array();
@@ -961,8 +963,8 @@ elseif($mode == 'menu_block')
 		}
 
 		$template->assign_vars(array(
-			'L_CMS_MENU_TITLE' => $lang['CMS_Menu_Page'],
-			'L_CMS_MENU_EXPLAIN' => $lang['CMS_Menu_Page_Explain'],
+			'L_CMS_MENU_TITLE' => $lang['CMS_MENU_PAGE'],
+			'L_CMS_MENU_EXPLAIN' => $lang['CMS_MENU_PAGE_EXPLAIN'],
 			'L_CMS_ACTIONS' => $lang['CMS_Actions'],
 			'L_CMS_NAME' => $lang['CMS_Name'],
 			'L_CMS_DESCRIPTION' => $lang['CMS_Description'],
@@ -991,7 +993,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 	if(($action == 'edit') || ($action == 'add'))
 	{
 		$template->set_filenames(array('body' => CMS_TPL . 'cms_menu_menu_edit_body.tpl'));
-		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Menu_Page']);
+		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_MENU_PAGE']);
 
 		$mi_menu_name = '';
 		$mi_menu_name_lang = '';
@@ -1037,8 +1039,8 @@ elseif (($mode == 'menu_list') || ($mode == false))
 		}
 
 		$template->assign_vars(array(
-			'L_CMS_MENU_TITLE' => $lang['CMS_Menu_Page'],
-			'L_CMS_MENU_EXPLAIN' => $lang['CMS_Menu_Page_Explain'],
+			'L_CMS_MENU_TITLE' => $lang['CMS_MENU_PAGE'],
+			'L_CMS_MENU_EXPLAIN' => $lang['CMS_MENU_PAGE_EXPLAIN'],
 			'L_EDIT_MENU_ITEM' => $lang['CMS_Menu_Item_Add_Edit'],
 
 			'L_YES' => $lang['Yes'],
@@ -1190,8 +1192,8 @@ elseif (($mode == 'menu_list') || ($mode == false))
 		}
 
 		$template->assign_vars(array(
-			'L_CMS_MENU_TITLE' => $lang['CMS_Menu_Page'],
-			'L_CMS_MENU_EXPLAIN' => $lang['CMS_Menu_Page_Explain'],
+			'L_CMS_MENU_TITLE' => $lang['CMS_MENU_PAGE'],
+			'L_CMS_MENU_EXPLAIN' => $lang['CMS_MENU_PAGE_EXPLAIN'],
 			'L_CMS_ID' => $lang['CMS_ID'],
 			'L_CMS_ACTIONS' => $lang['CMS_Actions'],
 			'L_CMS_NAME' => $lang['CMS_Name'],
@@ -1516,7 +1518,7 @@ function build_default_link_auth($default_id)
 	$link_auth_array = array(
 		'0' => '',
 		'1' => '4', //$lang['Admin_panel'],
-		'2' => '4', //$lang['CMS_Title'],
+		'2' => '4', //$lang['CMS_TITLE'],
 		'3' => '0', //$lang['Home'],
 		'4' => '2', //$lang['Profile'],
 		'5' => '0', //$lang['Forum_Index'],
