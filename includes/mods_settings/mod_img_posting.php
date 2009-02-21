@@ -70,11 +70,19 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'thumbnail_highslide' => array(
+		'lang_key' => 'IP_thumbnail_highslide',
+		'explain' => 'IP_thumbnail_highslide_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'Yes',
+		'values' => $list_yes_no,
+		),
+
 	'thumbnail_lightbox' => array(
 		'lang_key' => 'IP_thumbnail_lightbox',
 		'explain' => 'IP_thumbnail_lightbox_explain',
 		'type' => 'LIST_RADIO',
-		'default' => 'Yes',
+		'default' => 'No',
 		'values' => $list_yes_no,
 		),
 

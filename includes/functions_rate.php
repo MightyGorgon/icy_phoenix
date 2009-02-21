@@ -451,7 +451,7 @@ function rate_auth($user_id, $forum_id, $topic_id)
 
 	//Get forum_id info
 	$sql = "SELECT auth_rate FROM " . FORUMS_TABLE . " WHERE forum_id = '" . $forum_id . "'";
-	if ( !$result = $db->sql_query($sql, false, 'auth_rate_') )
+	if (!$result = $db->sql_query($sql, false, 'auth_rate_'))
 	{
 		message_die(GENERAL_ERROR, "Error getting forum data.", "", __LINE__, __FILE__, $sql);
 	}

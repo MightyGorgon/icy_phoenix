@@ -1285,7 +1285,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 			$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
 			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
 			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
-			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+			$bbcode->is_sig = true;
 			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
 			$user_sig = str_replace('&amp;', '&', $user_sig);

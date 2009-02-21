@@ -2447,9 +2447,11 @@ if ($bypass)
 			//$bbcode->allow_html = true;
 			$bbcode->allow_smilies = $board_config['allow_smilies'] && empty($lofi);
 			$bbcode->allow_html = $board_config['allow_html'] && $userdata['user_allowhtml'];
-			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+			$bbcode->is_sig = true;
+			$bbcode->allow_hs = false;
 			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
+			$bbcode->allow_hs = true;
 			$sig_cache[$postrow[$i]['user_id']] = $user_sig;
 		}
 		elseif($user_sig)

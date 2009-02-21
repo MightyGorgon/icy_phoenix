@@ -37,6 +37,7 @@ function extract_current_page($root_path)
 	if (!$script_name)
 	{
 		$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
+		$script_name = (($pos = strpos($script_name, '?')) !== false) ? substr($script_name, 0, $pos) : $script_name;
 		$page_array['failover'] = 1;
 	}
 
@@ -44,32 +45,42 @@ function extract_current_page($root_path)
 	$script_name = str_replace(array('\\', '//'), '/', $script_name);
 
 	// Now, remove the sid and let us get a clean query string...
+	$use_args = array();
+
+	// Since some browser do not encode correctly we need to do this with some "special" characters...
+	// " -> %22, ' => %27, < -> %3C, > -> %3E
+	$find = array('"', "'", '<', '>');
+	$replace = array('%22', '%27', '%3C', '%3E');
+
 	foreach ($args as $key => $argument)
 	{
 		if (strpos($argument, 'sid=') === 0)
 		{
-			unset($args[$key]);
-			break;
+			continue;
 		}
+
+		$use_args[] = str_replace($find, $replace, $argument);
 	}
+	unset($args);
 
 	// The following examples given are for an request uri of {path to the phpbb directory}/adm/index.php?i=10&b=2
 
 	// The current query string
-	$query_string = trim(implode('&', $args));
+	$query_string = trim(implode('&', $use_args));
 
 	// basenamed page name (for example: index.php)
-	$page_name = htmlspecialchars(basename($script_name));
+	$page_name = basename($script_name);
+	$page_name = urlencode(htmlspecialchars($page_name));
 
 	// current directory within the phpBB root (for example: adm)
-	$root_dirs = explode('/', str_replace('\\', '/', realpath($root_path)));
-	$page_dirs = explode('/', str_replace('\\', '/', realpath('./')));
+	$root_dirs = explode('/', str_replace('\\', '/', phpbb_realpath($root_path)));
+	$page_dirs = explode('/', str_replace('\\', '/', phpbb_realpath('./')));
 	$intersection = array_intersect_assoc($root_dirs, $page_dirs);
 
 	$root_dirs = array_diff_assoc($root_dirs, $intersection);
 	$page_dirs = array_diff_assoc($page_dirs, $intersection);
 
-	$page_dir = str_repeat('../', count($root_dirs)) . implode('/', $page_dirs);
+	$page_dir = str_repeat('../', sizeof($root_dirs)) . implode('/', $page_dirs);
 
 	if ($page_dir && substr($page_dir, -1, 1) == '/')
 	{
@@ -79,15 +90,15 @@ function extract_current_page($root_path)
 	// Current page from phpBB root (for example: adm/index.php?i=10&b=2)
 	$page = (($page_dir) ? $page_dir . '/' : '') . $page_name . (($query_string) ? '?' . $query_string : '');
 
-	// The script path from the webroot to the current directory (for example: /phpBB2/adm/) : always prefixed with / and ends in /
+	// The script path from the webroot to the current directory (for example: /ip/adm/) : always prefixed with / and ends in /
 	$script_path = trim(str_replace('\\', '/', dirname($script_name)));
 
-	// The script path from the webroot to the phpBB root (for example: /phpBB2/)
+	// The script path from the webroot to the phpBB root (for example: /ip/)
 	$script_dirs = explode('/', $script_path);
-	array_splice($script_dirs, -count($page_dirs));
-	$root_script_path = implode('/', $script_dirs) . (count($root_dirs) ? '/' . implode('/', $root_dirs) : '');
+	array_splice($script_dirs, -sizeof($page_dirs));
+	$root_script_path = implode('/', $script_dirs) . (sizeof($root_dirs) ? '/' . implode('/', $root_dirs) : '');
 
-	// We are on the base level (phpBB root == webroot), lets adjust the variables abit...
+	// We are on the base level (phpBB root == webroot), lets adjust the variables a bit...
 	if (!$root_script_path)
 	{
 		$root_script_path = ($page_dir) ? str_replace($page_dir, '', $script_path) : $script_path;
@@ -97,17 +108,75 @@ function extract_current_page($root_path)
 	$root_script_path .= (substr($root_script_path, -1, 1) == '/') ? '' : '/';
 
 	$page_array += array(
-		'root_script_path'	=> htmlspecialchars($root_script_path),
-		'script_path'				=> htmlspecialchars($script_path),
-		'page'							=> $page,
+		'root_script_path'	=> str_replace(' ', '%20', htmlspecialchars($root_script_path)),
+		'script_path'				=> str_replace(' ', '%20', htmlspecialchars($script_path)),
 		'page_dir'					=> $page_dir,
 		'page_name'					=> $page_name,
+		'page'							=> $page,
 		'query_string'			=> $query_string,
+		'forum'							=> (isset($_REQUEST['f']) && $_REQUEST['f'] > 0) ? (int) $_REQUEST['f'] : 0,
 		'page_full'					=> $page_name . (($query_string) ? '?' . $query_string : ''),
 	);
 
 	return $page_array;
 }
+
+/**
+* Get valid hostname/port. HTTP_HOST is used, SERVER_NAME if HTTP_HOST not present.
+* function backported from phpBB3 - Olympus
+*/
+/*
+function extract_current_hostname()
+{
+	global $board_config;
+
+	// Get hostname
+	$host = (!empty($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : ((!empty($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : getenv('SERVER_NAME'));
+
+	// Should be a string and lowered
+	$host = (string) strtolower($host);
+
+	// If host is equal the cookie domain or the server name (if config is set), then we assume it is valid
+	if ((isset($board_config['cookie_domain']) && ($host === $board_config['cookie_domain'])) || (isset($board_config['server_name']) && ($host === $board_config['server_name'])))
+	{
+		return $host;
+	}
+
+	// Is the host actually a IP? If so, we use the IP... (IPv4)
+	if (long2ip(ip2long($host)) === $host)
+	{
+		return $host;
+	}
+
+	// Now return the hostname (this also removes any port definition). The http:// is prepended to construct a valid URL, hosts never have a scheme assigned
+	$host = @parse_url('http://' . $host);
+	$host = (!empty($host['host'])) ? $host['host'] : '';
+
+	// Remove any portions not removed by parse_url (#)
+	$host = str_replace('#', '', $host);
+
+	// If, by any means, the host is now empty, we will use a "best approach" way to guess one
+	if (empty($host))
+	{
+		if (!empty($board_config['server_name']))
+		{
+			$host = $board_config['server_name'];
+		}
+		elseif (!empty($board_config['cookie_domain']))
+		{
+			$host = (strpos($board_config['cookie_domain'], '.') === 0) ? substr($board_config['cookie_domain'], 1) : $board_config['cookie_domain'];
+		}
+		else
+		{
+			// Set to OS hostname or localhost
+			$host = (function_exists('php_uname')) ? php_uname('n') : 'localhost';
+		}
+	}
+
+	// It may be still no valid host, but for sure only a hostname (we may further expand on the cookie domain... if set)
+	return $host;
+}
+*/
 
 /**
 * Set variable, used by {@link request_var the request_var function}
@@ -2286,21 +2355,6 @@ function ajax_htmlspecialchars($text)
 	return preg_replace($html_entities_match, $html_entities_replace, $text);
 }
 // Ajaxed - END
-
-function sql_like_expression($expression)
-{
-	$expression = str_replace(array('_', '%'), array("\_", "\%"), $expression);
-	$expression = str_replace(array(chr(0) . "\_", chr(0) . "\%"), array('_', '%'), $expression);
-	if (function_exists('mysql_real_escape_string'))
-	{
-		$like_expression = ('LIKE \'' . @mysql_real_escape_string($expression) . '\'');
-	}
-	else
-	{
-		$like_expression = ('LIKE \'' . str_replace("'", '%27', $expression) . '\'');
-	}
-	return $like_expression;
-}
 
 /**
 * @return valid color or false

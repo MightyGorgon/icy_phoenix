@@ -117,6 +117,7 @@ $page_title = $lang['Error'];
 $meta_description = '';
 $meta_keywords = '';
 $board_config['thumbnail_lightbox'] = false;
+$board_config['thumbnail_highslide'] = false;
 $board_config['ajax_features'] = false;
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 

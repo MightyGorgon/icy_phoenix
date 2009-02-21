@@ -1925,7 +1925,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_poster_info_topic', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_bbcb_active_content', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('thumbnail_lightbox', '1')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('thumbnail_lightbox', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('enable_quick_quote', '0')";
 
 		$sql[] = "ALTER TABLE " . $table_prefix . "users ADD user_personal_pics_count INT DEFAULT '0' NOT NULL";
@@ -3518,6 +3518,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('adsense_code', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('google_analytics', '')";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "ajax_shoutbox_sessions` CHANGE `session_id` `session_id` INT( 10 ) NOT NULL";
+		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('thumbnail_highslide', '1')";
 
 		/* Updating from IP 1.2.19.46 */
 		case '1.2.19.46':

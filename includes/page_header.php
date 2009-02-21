@@ -871,10 +871,11 @@ $template->assign_vars(array(
 	'NAV_MENU_ADS_BOTTOM' => $nav_menu_ads_bottom,
 
 	// SWITCHES - BEGIN
-	'S_HEADER_DROPDOWN' => (($board_config['switch_header_dropdown'] == true) ? true : false),
-	'S_HEADER_DD_LOGGED_IN' => ((($board_config['switch_header_dropdown'] == true) && $userdata['upi2db_access']) ? true : false),
+	'S_HEADER_DROPDOWN' => ($board_config['switch_header_dropdown'] ? true : false),
+	'S_HEADER_DD_LOGGED_IN' => (($board_config['switch_header_dropdown'] && $userdata['upi2db_access']) ? true : false),
 	'S_HEADER_BANNER' => (empty($header_banner_text) ? false : true),
-	'S_LIGHTBOX' => (($board_config['thumbnail_lightbox'] == true) ? true : false),
+	'S_HIGHSLIDE' => ($board_config['thumbnail_highslide'] ? true : false),
+	'S_LIGHTBOX' => ((!$board_config['thumbnail_highslide'] && $board_config['thumbnail_lightbox']) ? true : false),
 	// SWITCHES - END
 
 	// CrackerTracker v5.x

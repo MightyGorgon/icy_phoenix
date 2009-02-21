@@ -786,7 +786,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_emai
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_header_dropdown', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_poster_info_topic', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_bbcb_active_content', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_lightbox', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_lightbox', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_quick_quote', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_xs_version_check', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_all_bbcode', '0');
@@ -904,6 +904,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmt', '0
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmb', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('adsense_code', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_analytics', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_highslide', '1');
 ## CASH - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_disable', 0);
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_display_after_posts', 1);

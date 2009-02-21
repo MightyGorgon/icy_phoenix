@@ -114,6 +114,7 @@ else
 {
 	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+	$board_config['allow_all_bbcode'] = 0;
 	$board_config['default_lang'] = 'english';
 	$board_config['server_name'] = 'icyphoenix.com';
 	$board_config['script_path'] = '/';
@@ -121,6 +122,7 @@ else
 	$board_config['liw_max_width'] = 0;
 	$board_config['thumbnail_cache'] = 0;
 	$board_config['thumbnail_posts'] = 0;
+	$board_config['thumbnail_highslide'] = 0;
 	$board_config['thumbnail_lightbox'] = 0;
 	$board_config['disable_html_guests'] = 0;
 	$board_config['quote_iterations'] = 3;
@@ -171,6 +173,7 @@ class BBCode
 	var $allow_styling = true;
 	var $allow_bbcode = true;
 	var $allow_smilies = true;
+	var $allow_hs = true;
 	var $is_sig = false;
 
 	var $params = array();
@@ -250,13 +253,13 @@ class BBCode
 
 		// All these tags require HTML 4 specification (NON XHTML) and only work with IE!
 		// Decomment below to use these properly...
+		/*
 		'glow'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'shadow'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'blur'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'wave'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'fliph'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'flipv'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		/*
 		*/
 
 		// Requires external file for parsing TEX
@@ -463,7 +466,7 @@ class BBCode
 		if($tag === 'rainbow')
 		{
 			/*
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -480,7 +483,7 @@ class BBCode
 		if($tag === 'gradient')
 		{
 			/*
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -560,7 +563,7 @@ class BBCode
 		// Single tags: HR
 		if($tag === 'hr')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -611,7 +614,7 @@ class BBCode
 		// IMG
 		if($tag === 'img')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -624,7 +627,14 @@ class BBCode
 
 			// additional allowed parameters
 			$extras = $this->allow_styling ? array('width', 'height', 'border', 'style', 'class', 'title', 'align') : array('width', 'height', 'border', 'title', 'align');
-			$slideshow = !empty($item['params']['slide']) ? 'lightbox[' . $this->process_text($item['params']['slide']) . ']' : 'lightbox';
+			if ($board_config['thumbnail_lightbox'])
+			{
+				$slideshow = !empty($item['params']['slide']) ? ', { slideshowGroup: \'' . $this->process_text($item['params']['slide']) . '\' } ' : '';
+			}
+			elseif ($board_config['thumbnail_lightbox'])
+			{
+				$slideshow = 'lightbox' . (!empty($item['params']['slide']) ? '[' . $this->process_text($item['params']['slide']) . ']' : '');
+			}
 			$liw_bypass = false;
 
 			// [img=blah]blah2[/img]
@@ -703,10 +713,10 @@ class BBCode
 				}
 			}
 
-			if (($board_config['thumbnail_posts'] == true) && ($liw_bypass == false))
+			if ($board_config['thumbnail_posts'] && ($liw_bypass == false))
 			{
 				$thumb_exists = false;
-				if($board_config['thumbnail_cache'] == true)
+				if($board_config['thumbnail_cache'])
 				{
 					$pic_id = $img_url;
 					$pic_fullpath = str_replace(array(' '), array('%20'), $pic_id);
@@ -780,7 +790,11 @@ class BBCode
 			*/
 			if(empty($item['inurl']))
 			{
-				if (($board_config['thumbnail_posts'] == 1) && ($board_config['thumbnail_lightbox'] == 1))
+				if ($this->allow_hs && $board_config['thumbnail_posts'] && $board_config['thumbnail_highslide'])
+				{
+					$extra_html = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ')"';
+				}
+				elseif ($this->allow_hs && $board_config['thumbnail_posts'] && $board_config['thumbnail_lightbox'])
 				{
 					$extra_html = ' rel="' . $slideshow . '" title="' . $this->process_text($params['alt']) . '"';
 				}
@@ -800,7 +814,7 @@ class BBCode
 		// ALBUMIMG
 		if($tag === 'albumimg')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -911,7 +925,7 @@ class BBCode
 		// ATTACHMENT
 		if(($tag === 'attachment') || ($tag === 'download'))
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -955,7 +969,7 @@ class BBCode
 					$params['title'] = $params['title'] ? $params['title'] : (!empty($attachment_details['real_filename']) ? $attachment_details['real_filename'] : '&nbsp;');
 					$params['description'] = $params['description'] ? $params['description'] : (!empty($attachment_details['comment']) ? $attachment_details['comment'] : '&nbsp;');
 					$params['icon'] = IP_ROOT_PATH . FILES_ICONS_DIR . ($params['icon'] ? $params['icon'] : 'default.png');
-					$download_url = 'download.' . PHP_EXT;
+					$download_url = IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $params['id'];
 				}
 				else
 				{
@@ -964,7 +978,7 @@ class BBCode
 					$params['icon'] = IP_ROOT_PATH . FILES_ICONS_DIR . ($params['icon'] ? $params['icon'] : (!empty($attachment_details['file_posticon']) ? $attachment_details['file_posticon'] : 'default.png'));
 					$attachment_details['filesize'] = $attachment_details['file_size'];
 					$attachment_details['download_count'] = $attachment_details['file_dls'];
-					$download_url = 'dload.' . PHP_EXT;
+					$download_url = IP_ROOT_PATH . 'dload.' . PHP_EXT . '?action=file&amp;file_id=' . $params['id'];
 				}
 				//$params['icon'] = strip_tags(ereg_replace("[^A-Za-z0-9_.]", "_", $params['icon']));
 				$params['icon'] = file_exists($params['icon']) ? $params['icon'] : (IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png');
@@ -972,7 +986,7 @@ class BBCode
 
 				$html .= '<div class="mg_attachtitle"' . $style . '>' . $params['title'] . '</div>';
 				$html .= '<div class="mg_attachdiv"><table width="100%" cellpadding="0" cellspacing="0" border="0">';
-				$html .= '<tr><td width="15%"><b class="gensmall">' . $lang['Description'] . ':</b></td><td width="75%"><span class="gensmall">' . $params['description'] . '</span></td><td rowspan="3" width="10%" class="row-center"><img src="' . $params['icon'] . '" alt="' . $params['description'] . '" /><br /><a href="' . append_sid(IP_ROOT_PATH . $download_url . '?id=' . $params['id']) . '"><b>' . $lang['Download'] . '</b></a></td></tr>';
+				$html .= '<tr><td width="15%"><b class="gensmall">' . $lang['Description'] . ':</b></td><td width="75%"><span class="gensmall">' . $params['description'] . '</span></td><td rowspan="3" width="10%" class="row-center"><img src="' . $params['icon'] . '" alt="' . $params['description'] . '" /><br /><a href="' . append_sid($download_url) . '"><b>' . $lang['Download'] . '</b></a></td></tr>';
 				$html .= '<tr><td><b class="gensmall">' . $lang['FILESIZE'] . ':</b></td><td><span class="gensmall">' . round(($attachment_details['filesize'] / 1024), 2) . ' KB</span></td></tr>';
 				$html .= '<tr><td><b class="gensmall">' . $lang['DOWNLOADED'] . ':</b></td><td><span class="gensmall">' . $attachment_details['download_count'] . '</span></td></tr>';
 				$html .= '</table></div>';
@@ -994,7 +1008,7 @@ class BBCode
 		// LIST
 		if(($tag === 'list') || ($tag === 'ul') || ($tag === 'ol'))
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1069,7 +1083,7 @@ class BBCode
 		// [*], LI
 		if(($tag === '*') || ($tag === 'li'))
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1371,7 +1385,7 @@ class BBCode
 		// QUOTE
 		if(($tag === 'quote') || ($tag === 'blockquote') || ($tag === 'ot'))
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1435,7 +1449,7 @@ class BBCode
 		// CODE
 		if($tag === 'code')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1731,7 +1745,7 @@ class BBCode
 		// CODEBLOCK
 		if($tag === 'codeblock')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1829,7 +1843,7 @@ class BBCode
 		// HIDE
 		if($tag === 'hide')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1885,7 +1899,7 @@ class BBCode
 		// SPOILER
 		if($tag === 'spoiler')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1990,7 +2004,7 @@ class BBCode
 		// MARQUEE
 		if($tag === 'marquee')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2024,7 +2038,7 @@ class BBCode
 			// FLASH, SWF, FLV, VIDEO, REAL, QUICK, STREAM, EMFF, YOUTUBE, GOOGLEVIDEO
 			if(($tag === 'flash') || ($tag === 'swf') || ($tag === 'flv') || ($tag === 'video') || ($tag === 'ram') || ($tag === 'quick') || ($tag === 'stream') || ($tag === 'emff') || ($tag === 'mp3') || ($tag === 'youtube') || ($tag === 'googlevideo'))
 			{
-				if($this->is_sig)
+				if($this->is_sig && !$board_config['allow_all_bbcode'])
 				{
 					return $error;
 				}
@@ -2085,7 +2099,7 @@ class BBCode
 		// SMILEY
 		if($tag === 'smiley')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2133,7 +2147,7 @@ class BBCode
 		// OPACITY
 		if($tag === 'opacity')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2161,7 +2175,7 @@ class BBCode
 		// FADE
 		if($tag === 'fade')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2238,7 +2252,7 @@ class BBCode
 			// BLUR
 			if($tag === 'blur')
 			{
-				if($this->is_sig)
+				if($this->is_sig && !$board_config['allow_all_bbcode'])
 				{
 					return $error;
 				}
@@ -2266,7 +2280,7 @@ class BBCode
 			// WAVE
 			if($tag === 'wave')
 			{
-				if($this->is_sig)
+				if($this->is_sig && !$board_config['allow_all_bbcode'])
 				{
 					return $error;
 				}
@@ -2294,7 +2308,7 @@ class BBCode
 			// FLIPH, FLIPV
 			if(($tag === 'fliph') || ($tag === 'flipv'))
 			{
-				if($this->is_sig)
+				if($this->is_sig && !$board_config['allow_all_bbcode'])
 				{
 					return $error;
 				}
@@ -2312,7 +2326,7 @@ class BBCode
 		// TEX
 		if($tag === 'tex')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2327,7 +2341,7 @@ class BBCode
 		// TABLE
 		if($tag === 'table')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2382,7 +2396,7 @@ class BBCode
 		// TR
 		if($tag === 'tr')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2398,7 +2412,7 @@ class BBCode
 		// TD
 		if($tag === 'td')
 		{
-			if($this->is_sig)
+			if($this->is_sig && !$board_config['allow_all_bbcode'])
 			{
 				return $error;
 			}

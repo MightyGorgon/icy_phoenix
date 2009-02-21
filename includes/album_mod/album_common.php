@@ -43,7 +43,7 @@ include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_album_main.' . PHP_
 
 // Get Album Config
 $album_config = array();
-$sql = "SELECT * FROM ". ALBUM_CONFIG_TABLE;
+$sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
 if(!$result = $db->sql_query($sql, false, 'album_config_'))
 {
 	message_die(GENERAL_ERROR, 'Could not query Album config information', '', __LINE__, __FILE__, $sql);

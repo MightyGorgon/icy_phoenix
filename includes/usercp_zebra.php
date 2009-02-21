@@ -23,9 +23,9 @@ if ($board_config['allow_zebra'] == false)
 
 $zmode = 'friends';
 $zmode_types = array('friends', 'foes');
-if ( isset($_GET['zmode']) || isset($_POST['zmode']) )
+if (isset($_GET['zmode']) || isset($_POST['zmode']))
 {
-	$zmode = ( isset($_GET['zmode']) ) ? htmlspecialchars($_GET['zmode']) : htmlspecialchars($_POST['zmode']);
+	$zmode = (isset($_GET['zmode'])) ? htmlspecialchars($_GET['zmode']) : htmlspecialchars($_POST['zmode']);
 	$zmode = htmlspecialchars($zmode);
 }
 $zmode = in_array($zmode, $zmode_types) ? $zmode : 'friends';
@@ -33,7 +33,7 @@ $zmode = in_array($zmode, $zmode_types) ? $zmode : 'friends';
 // Forced to friends...
 $zmode = 'friends';
 
-if ( isset($_POST['submit']) )
+if (isset($_POST['submit']))
 {
 	$data = array();
 	$error = array();
@@ -63,7 +63,7 @@ if ( isset($_POST['submit']) )
 				FROM ' . ZEBRA_TABLE . ' z, ' . USERS_TABLE . ' u
 				WHERE z.user_id = ' . $userdata['user_id'] . '
 					AND u.user_id = z.zebra_id';
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not query ZEBRA table', $lang['Error'], __LINE__, __FILE__, $sql);
 			}
@@ -110,7 +110,7 @@ if ( isset($_POST['submit']) )
 					WHERE username IN (' . $users_to_add . ')
 						AND user_active = 1';
 				//die($sql);
-				if( !$result = $db->sql_query($sql) )
+				if(!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, 'Could not query users table', $lang['Error'], __LINE__, __FILE__, $sql);
 				}
@@ -154,9 +154,9 @@ if ( isset($_POST['submit']) )
 						$sql_ary = array();
 						foreach ($user_id_ary as $zebra_id)
 						{
-							$sql = "INSERT INTO " . ZEBRA_TABLE . " (`user_id` , `zebra_id` , `friend` , `foe` )
+							$sql = "INSERT INTO " . ZEBRA_TABLE . " (`user_id` , `zebra_id` , `friend` , `foe`)
 											VALUES ('" . $userdata['user_id'] . "', '" . $zebra_id . "', " . $sql_values . ")";
-							if ( !($result = $db->sql_query($sql)) )
+							if (!($result = $db->sql_query($sql)))
 							{
 								message_die(GENERAL_ERROR, 'Could not update ZEBRA table', '', __LINE__, __FILE__, $sql);
 							}
@@ -175,7 +175,7 @@ if ( isset($_POST['submit']) )
 			$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
 				WHERE user_id = ' . $userdata['user_id'] . '
 					AND zebra_id IN (\'' . $users_to_del . '\')';
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Error in deleting ZEBRAS', '', __LINE__, __FILE__, $sql);
 			}
@@ -207,7 +207,7 @@ $sql = "SELECT z.*, u.username
 		AND " . $sql_and . "
 		AND u.user_id = z.zebra_id
 	ORDER BY u.username ASC";
-if( !$result = $db->sql_query($sql) )
+if(!$result = $db->sql_query($sql))
 {
 	message_die(GENERAL_ERROR, 'Could not query ZEBRA table', $lang['Error'], __LINE__, __FILE__, $sql);
 }

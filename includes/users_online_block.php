@@ -58,11 +58,11 @@ $any_char = chr(0) . '%';
 $one_char = chr(0) . '_';
 if (!empty($topic_id))
 {
-	$user_forum_sql = ' AND s.session_page ' . sql_like_expression("{$any_char}_t_={$topic_id}x{$any_char}");
+	$user_forum_sql = ' AND s.session_page ' . $db->sql_like_expression("{$any_char}_t_={$topic_id}x{$any_char}");
 }
 elseif (!empty($forum_id))
 {
-	$user_forum_sql = ' AND s.session_page ' . sql_like_expression("{$any_char}_f_={$forum_id}x{$any_char}");
+	$user_forum_sql = ' AND s.session_page ' . $db->sql_like_expression("{$any_char}_f_={$forum_id}x{$any_char}");
 }
 else
 {

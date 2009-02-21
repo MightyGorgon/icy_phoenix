@@ -354,7 +354,7 @@ if ($row = $db->sql_fetchrow($result))
 
 		if($user_sig && empty($sig_cache[$row['user_id']]))
 		{
-			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+			$bbcode->is_sig = true;
 			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
 			$sig_cache[$row['user_id']] = $user_sig;

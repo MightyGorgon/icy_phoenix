@@ -1711,6 +1711,7 @@ DELETE FROM `phpbb_extensions` WHERE `extension` = 'tga';
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('adsense_code', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_analytics', '');
 ALTER TABLE `phpbb_ajax_shoutbox_sessions` CHANGE `session_id` `session_id` INT( 10 ) NOT NULL;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_highslide', '1');
 
 
 

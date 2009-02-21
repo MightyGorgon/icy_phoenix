@@ -35,7 +35,7 @@ define('PORTAL_INIT', true);
 include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);
 cms_config_init($cms_config_vars);
 
-$page_filename = mysql_real_escape_string(basename($_SERVER['PHP_SELF']));
+$page_filename = $db->sql_escape(basename($_SERVER['PHP_SELF']));
 
 $sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE filename = '" . $page_filename . "'";
 if(!($layout_result = $db->sql_query($sql, false, 'cms_')))

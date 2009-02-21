@@ -57,11 +57,11 @@ if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] !=
 
 	if (isset($_POST['search']))
 	{
-		$s = mysql_real_escape_string($_POST['search']);
+		$s = $db->sql_escape($_POST['search']);
 	}
 	elseif (isset($_GET['search']))
 	{
-		$s = mysql_real_escape_string($_GET['search']);
+		$s = $db->sql_escape($_GET['search']);
 	}
 
 	if ($m == 'user')

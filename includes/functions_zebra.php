@@ -51,7 +51,9 @@ function user_get_zebra_list($ftype = 'friends')
 				AND " . $sql_f_check . " = '1'
 				AND u.user_id = z.zebra_id
 			ORDER BY u.username ASC";
-	if (!($result = $db->sql_query($sql, false, 'zebra_users_')))
+	// Maybe bettere do not cache this...
+	//if (!($result = $db->sql_query($sql, false, 'zebra_users_')))
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain friends information', '', __LINE__, __FILE__, $sql);
 	}

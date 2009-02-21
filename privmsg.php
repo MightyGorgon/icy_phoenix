@@ -727,7 +727,7 @@ elseif ($mode == 'read')
 		$bbcode->allow_html = $board_config['allow_html'];
 		$bbcode->allow_bbcode = $board_config['allow_bbcode'] ? true : false;
 		$bbcode->allow_smilies = $board_config['allow_smilies'];
-		$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+		$bbcode->is_sig = true;
 		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
 	}
@@ -1894,7 +1894,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			$bbcode->allow_html = ($html_on ? true : false);
 			$bbcode->allow_bbcode = ($bbcode_on ? true : false);
 			$bbcode->allow_smilies = ($smilies_on ? true : false);
-			$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+			$bbcode->is_sig = true;
 			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
 		}

@@ -313,7 +313,7 @@ if ($profiledata['user_attachsig'] && $board_config['allow_sig'])
 	$user_sig = $profiledata['user_sig'];
 	if ($user_sig != '')
 	{
-		$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+		$bbcode->is_sig = true;
 		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
 		if (!$userdata['user_allowswearywords'])
@@ -339,7 +339,7 @@ if ($selfdes == '')
 }
 else
 {
-	//$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? false : true;
+	//$bbcode->is_sig = true;
 	$selfdes = $bbcode->parse($selfdes);
 	//$bbcode->is_sig = false;
 }

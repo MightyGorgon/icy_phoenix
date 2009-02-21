@@ -6,7 +6,7 @@
 	<td class="row1g row-center" align="center">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{pic_row.pic_column.PIC_IMAGE}"><img src="{pic_row.pic_column.PIC_THUMB}" alt="{pic_row.pic_column.PIC_NAME}" title="{pic_row.pic_column.PIC_BBC}" /></a>
+			<!-- IF S_HIGHSLIDE --><a href="{pic_row.pic_column.PIC_IMAGE}" class="highslide" onclick="return hs.expand(this)"><!-- ELSE --><a href="{pic_row.pic_column.PIC_IMAGE}"><!-- ENDIF --><img src="{pic_row.pic_column.PIC_THUMB}" alt="{pic_row.pic_column.PIC_NAME}" title="{pic_row.pic_column.PIC_BBC}" /></a>
 		</div></div></td></tr></table>
 		</center>
 		<br />

@@ -642,6 +642,7 @@ $default_config = array(
 	'ads_nmb' => '0',
 	'adsense_code' => '',
 	'google_analytics' => '',
+	'thumbnail_highslide' => '1',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

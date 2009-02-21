@@ -22,7 +22,7 @@ $smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ?
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
 $bbcode->allow_smilies = $smilies_on;
-$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+$bbcode->is_sig = true;
 
 if (!empty($_POST['message']))
 {
@@ -136,7 +136,7 @@ elseif ($preview)
 			$preview_sig = stripslashes(prepare_message(addslashes(unprepare_message($preview_sig)), $html_on, $bbcode_on, $smilies_on));
 			if($preview_sig != '')
 			{
-				$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+				$bbcode->is_sig = true;
 				$preview_sig = $bbcode->parse($preview_sig);
 				$bbcode->is_sig = false;
 				$preview_sig = '<br />' . $board_config['sig_line'] . '<br />' . $preview_sig;
@@ -178,7 +178,7 @@ elseif ($mode)
 
 	if($user_sig != '')
 	{
-		$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+		$bbcode->is_sig = true;
 		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
 		if(!empty($orig_word))

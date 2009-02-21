@@ -130,7 +130,7 @@ if(!defined('SQL_LAYER'))
 			$this->cached = false;
 			$this->cache = array();
 			$this->cache_folder = $cache_folder;
-			$this->cache_folder = ((is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
+			$this->cache_folder = ((@is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
 			if(($query !== '') && $cache)
 			{
 				$hash = md5($query);
@@ -585,6 +585,17 @@ if(!defined('SQL_LAYER'))
 			return @mysql_real_escape_string($msg, $this->db_connect_id);
 		}
 
+		/**
+		* Build an SQL LIKE expression
+		*/
+		function sql_like_expression($expression)
+		{
+			$expression = str_replace(array('_', '%'), array("\_", "\%"), $expression);
+			$expression = str_replace(array(chr(0) . "\_", chr(0) . "\%"), array('_', '%'), $expression);
+			$like_expression = ('LIKE \'' . $this->sql_escape($expression) . '\'');
+			return $like_expression;
+		}
+
 		function sql_freeresult($query_id = 0)
 		{
 			if($query_id === 'cache')
@@ -606,7 +617,7 @@ if(!defined('SQL_LAYER'))
 				$query_id = $this->query_result;
 			}
 
-			if ( $query_id )
+			if ($query_id)
 			{
 				unset($this->row[$query_id]);
 				unset($this->rowset[$query_id]);
@@ -654,7 +665,7 @@ if(!defined('SQL_LAYER'))
 				return;
 			}
 			$this->cache_folder = (empty($this->cache_folder) ? SQL_CACHE_FOLDER : $this->cache_folder);
-			$this->cache_folder = ((is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
+			$this->cache_folder = ((@is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
 			$cache_file_name = $this->cache_folder . 'sql_' . $this->caching . '.php';
 			@unlink($cache_file_name);
 			$f = fopen($cache_file_name, 'w');
@@ -685,14 +696,14 @@ if(!defined('SQL_LAYER'))
 			$prefix = 'sql_' . $prefix;
 			$prefix_len = strlen($prefix);
 			$this->cache_folder = $cache_folder;
-			$this->cache_folder = ((is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
+			$this->cache_folder = ((@is_dir($this->cache_folder)) ? $this->cache_folder : @phpbb_realpath($this->cache_folder));
 			$res = opendir($this->cache_folder);
 			if($res)
 			{
 				$files_counter = 0;
 				while(($file = readdir($res)) !== false)
 				{
-					if(!is_dir($file) && substr($file, 0, $prefix_len) === $prefix)
+					if(!@is_dir($file) && substr($file, 0, $prefix_len) === $prefix)
 					{
 						@unlink($this->cache_folder . $file);
 						$files_counter++;

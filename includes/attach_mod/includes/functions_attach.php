@@ -226,9 +226,9 @@ function attach_mod_sql_escape($text)
 	{
 		case 'mysql':
 		case 'mysql4':
-			if (function_exists('mysql_escape_string'))
+			if (function_exists('mysql_real_escape_string'))
 			{
-				return mysql_escape_string($text);
+				return mysql_real_escape_string($text);
 			}
 			else
 			{

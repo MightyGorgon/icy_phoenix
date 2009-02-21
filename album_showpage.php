@@ -738,7 +738,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				$user_sig = ($board_config['allow_sig']) ? trim($commentrow[$i]['user_sig']) : '';
 				if($user_sig != '')
 				{
-					$bbcode->is_sig = ($board_config['allow_all_bbcode'] == 0) ? true : false;
+					$bbcode->is_sig = true;
 					$user_sig = $bbcode->parse($user_sig);
 					$bbcode->is_sig = false;
 				}
