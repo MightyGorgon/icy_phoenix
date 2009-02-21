@@ -82,15 +82,13 @@ function ip_user_kill($user_id)
 			message_die(GENERAL_ERROR, 'Could not update group moderators', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . USERS_TABLE . "
-			WHERE user_id = $user_id";
+		$sql = "DELETE FROM " . USERS_TABLE . " WHERE user_id = $user_id";
 		if(!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete user', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . USER_GROUP_TABLE . "
-			WHERE user_id = $user_id";
+		$sql = "DELETE FROM " . USER_GROUP_TABLE . " WHERE user_id = $user_id";
 		if(!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete user from user_group table', '', __LINE__, __FILE__, $sql);
@@ -98,15 +96,13 @@ function ip_user_kill($user_id)
 
 		if (!empty($row['group_id']))
 		{
-			$sql = "DELETE FROM " . GROUPS_TABLE . "
-				WHERE group_id = '" . $row['group_id'] . "'";
+			$sql = "DELETE FROM " . GROUPS_TABLE . " WHERE group_id = '" . $row['group_id'] . "'";
 			if(!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
 			}
 
-			$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
-				WHERE group_id = '" . $row['group_id'] . "'";
+			$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = '" . $row['group_id'] . "'";
 			if(!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
@@ -114,39 +110,32 @@ function ip_user_kill($user_id)
 		}
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-		$sql = "DELETE FROM " . UPI2DB_ALWAYS_READ_TABLE . "
-			WHERE user_id = $user_id";
-
+		$sql = "DELETE FROM " . UPI2DB_ALWAYS_READ_TABLE . " WHERE user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete always read', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
-			WHERE user_id = $user_id";
-
+		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . " WHERE user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete unread posts', '', __LINE__, __FILE__, $sql);
 		}
 //<!-- END Unread Post Information to Database Mod -->
 
-		$sql = "DELETE FROM " . BOOKMARK_TABLE . "
-			WHERE user_id = $user_id";
+		$sql = "DELETE FROM " . BOOKMARK_TABLE . " WHERE user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete user\'s bookmarks', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . DRAFTS_TABLE . "
-			WHERE user_id = $user_id";
+		$sql = "DELETE FROM " . DRAFTS_TABLE . " WHERE user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete user\'s drafts', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . BANLIST_TABLE . "
-			WHERE ban_userid = $user_id";
+		$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete user from banlist table', '', __LINE__, __FILE__, $sql);
@@ -154,15 +143,13 @@ function ip_user_kill($user_id)
 
 		$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
-		$sql = "DELETE FROM " . SESSIONS_TABLE . "
-			WHERE session_user_id = $user_id";
+		$sql = "DELETE FROM " . SESSIONS_TABLE . " WHERE session_user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete sessions for this user', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
-			WHERE user_id = $user_id";
+		$sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . " WHERE user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete auto-login keys for this user', '', __LINE__, __FILE__, $sql);
@@ -184,18 +171,28 @@ function ip_user_kill($user_id)
 			message_die(GENERAL_ERROR, 'Could not update album comment information for this user', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . DL_FAVORITES_TABLE . "
-			WHERE fav_user_id = $user_id";
+		$sql = "DELETE FROM " . DL_FAVORITES_TABLE . " WHERE fav_user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete favorite downloads for this user', '', __LINE__, __FILE__, $sql);
 		}
 
-		$sql = "DELETE FROM " . DL_NOTRAF_TABLE . "
-			WHERE user_id = $user_id";
+		$sql = "DELETE FROM " . DL_NOTRAF_TABLE . " WHERE user_id = $user_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not delete marked downloads for this user', '', __LINE__, __FILE__, $sql);
+		}
+
+		$sql = "DELETE FROM " . SUDOKU_STATS . " WHERE user_id = $user_id";
+		if (!$db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, 'Could not delete sudoku users', '', __LINE__, __FILE__, $sql);
+		}
+
+		$sql = "DELETE FROM " . SUDOKU_USERS . " WHERE user_id = $user_id";
+		if (!$db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, 'Could not delete sudoku users', '', __LINE__, __FILE__, $sql);
 		}
 
 		$sql = "SELECT privmsgs_id

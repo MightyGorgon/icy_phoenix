@@ -27,6 +27,10 @@ if (empty($_GET[POST_USERS_URL]) || $_GET[POST_USERS_URL] == ANONYMOUS)
 }
 
 $profiledata = get_userdata($_GET[POST_USERS_URL]);
+if (empty($profiledata['user_id']))
+{
+	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+}
 
 // Update the profile view list
 $user = $profiledata['user_id'];
@@ -37,7 +41,7 @@ if ($user <> $viewer_id)
 {
 	$sql = "UPDATE " . USERS_TABLE . "
 			SET user_profile_view = '1'
-			WHERE user_id = " . $user . "";
+			WHERE user_id = " . $user;
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, "Could not update user data.", '', __LINE__, __FILE__, $sql);
