@@ -1012,7 +1012,7 @@ if ($bypass)
 	}
 	else
 	{
-		include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 		sync('topic', $topic_id);
 		message_die(GENERAL_MESSAGE, $lang['No_posts_topic']);
 	}
@@ -1037,7 +1037,7 @@ if ($bypass)
 
 	if ($resync)
 	{
-		include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 		sync('topic', $topic_id);
 
 		$result = $db->sql_query('SELECT COUNT(post_id) AS total FROM ' . POSTS_TABLE . ' WHERE topic_id = ' . $topic_id);
