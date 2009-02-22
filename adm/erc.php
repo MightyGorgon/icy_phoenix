@@ -20,11 +20,11 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'config.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
 @set_time_limit(0);
 $mem_limit = check_mem_limit();

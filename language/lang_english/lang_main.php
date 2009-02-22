@@ -2167,6 +2167,12 @@ $lang = array_merge($lang, array(
 
 	'ERROR_TABLE' => 'Could not query %s table',
 
+	'SMILEYS' => 'Smileys',
+	'SMILEYS_NO_CATEGORIES' => 'No categories defined',
+	'SMILEYS_CATEGORY' => 'Category',
+	'SMILEYS_GALLERY' => 'Smileys Gallery',
+	'SMILEYS_STANDARD' => 'Standard Smileys',
+
 	)
 );
 

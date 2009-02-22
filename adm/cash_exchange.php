@@ -22,7 +22,7 @@ define('IN_CASHMOD', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 if ($board_config['cash_adminnavbar'])
 {

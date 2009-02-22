@@ -1421,7 +1421,7 @@ function generate_smilies($mode)
 	global $user_ip, $session_length, $starttime;
 	global $userdata;
 
-	if ( defined('IN_PA_POSTING') )
+	if (defined('IN_PA_POSTING'))
 	{
 		global $pafiledb_template;
 	}
@@ -1431,9 +1431,9 @@ function generate_smilies($mode)
 	$window_columns = $board_config['smilie_window_columns'];
 	$window_rows = $board_config['smilie_window_rows'];
 	$smilies_per_page = $window_columns * $window_rows;
-	$start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
+	$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 	$start = ($start < 0) ? 0 : $start;
-	$smilies_per_page = ( isset($_GET['smilies_per_page']) ) ? intval($_GET['smilies_per_page']) : ( isset($_POST['smilies_per_page']) ) ? intval($_POST['smilies_per_page']) : $smilies_per_page;
+	$smilies_per_page = (isset($_GET['smilies_per_page'])) ? intval($_GET['smilies_per_page']) : (isset($_POST['smilies_per_page'])) ? intval($_POST['smilies_per_page']) : $smilies_per_page;
 
 	if ($mode == 'window')
 	{
@@ -1449,7 +1449,7 @@ function generate_smilies($mode)
 		$meta_keywords = '';
 		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-		if ( defined('IN_PA_POSTING') )
+		if (defined('IN_PA_POSTING'))
 		{
 			$pafiledb_template->set_filenames(array('smiliesbody' => 'posting_smilies.tpl'));
 		}
@@ -1467,9 +1467,9 @@ function generate_smilies($mode)
 		$num_smilies = 0;
 		$rowset = array();
 		$rowset2 = array();
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
-			if( empty($rowset2[$row['smile_url']]) )
+			if(empty($rowset2[$row['smile_url']]))
 			{
 				$rowset2[$row['smile_url']] = $row['smile_url'];
 				$rowset[$num_smilies]['smile_url'] = $row['smile_url'];
@@ -1483,7 +1483,7 @@ function generate_smilies($mode)
 
 		if ($num_smilies)
 		{
-			if( ($mode == 'inline') || ($smilies_per_page == 0) )
+			if(($mode == 'inline') || ($smilies_per_page == 0))
 			{
 				$per_page = $num_smilies;
 				$smiley_start = 0;
@@ -1491,23 +1491,23 @@ function generate_smilies($mode)
 			}
 			else
 			{
-				$per_page = ( $smilies_per_page > $num_smilies ) ? $num_smilies : $smilies_per_page;
-				$page_num = ( $start <= 0 ) ? 1 : ($start / $per_page) + 1;
+				$per_page = ($smilies_per_page > $num_smilies) ? $num_smilies : $smilies_per_page;
+				$page_num = ($start <= 0) ? 1 : ($start / $per_page) + 1;
 				$smiley_start = ($per_page * $page_num) - $per_page;
-				$smiley_stop = ( ($per_page * $page_num) > $num_smilies ) ? $num_smilies : $smiley_start + $per_page;
+				$smiley_stop = (($per_page * $page_num) > $num_smilies) ? $num_smilies : $smiley_start + $per_page;
 			}
-			$smilies_count = ( $mode == 'inline' ) ? min( (($inline_columns * $inline_rows) - 1), $num_smilies) : $num_smilies;
+			$smilies_count = ($mode == 'inline') ? min((($inline_columns * $inline_rows) - 1), $num_smilies) : $num_smilies;
 			$smilies_split_row = ($mode == 'inline') ? $inline_columns - 1 : $window_columns - 1;
 
 			$s_colspan = 0;
 			$row = 0;
 			$col = 0;
 
-			for( $i = $smiley_start; $i < $smiley_stop; $i++ )
+			for($i = $smiley_start; $i < $smiley_stop; $i++)
 			{
 				if (!$col)
 				{
-					if ( defined('IN_PA_POSTING') )
+					if (defined('IN_PA_POSTING'))
 					{
 						$pafiledb_template->assign_block_vars('smilies_row', array());
 					}
@@ -1521,7 +1521,7 @@ function generate_smilies($mode)
 					'SMILEY_IMG' => 'http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $rowset[$i]['smile_url'],
 					'SMILEY_DESC' => $rowset[$i]['emoticon']
 				);
-				if ( defined('IN_PA_POSTING') )
+				if (defined('IN_PA_POSTING'))
 				{
 					$pafiledb_template->assign_block_vars('smilies_row.smilies_col', $parsing_template);
 				}
@@ -1553,7 +1553,7 @@ function generate_smilies($mode)
 					'L_MORE_SMILIES' => $lang['More_emoticons'],
 					'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies')
 				);
-				if ( defined('IN_PA_POSTING') )
+				if (defined('IN_PA_POSTING'))
 				{
 					$pafiledb_template->assign_block_vars('switch_smilies_extra', array());
 					$pafiledb_template->assign_vars($parsing_template);
@@ -1568,27 +1568,30 @@ function generate_smilies($mode)
 			$pagination = generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false);
 
 			$select_smileys_pp = '<select name="smilies_per_page" onchange="SetSmileysPerPage();" class="gensmall">';
-			$select_smileys_pp .= '<option value="' . ($window_columns * $window_rows) . '"' . (( $smilies_per_page == ($window_columns * $window_rows) ) ? ' selected="selected"' : '') . '>' . ($window_columns * $window_rows) . '</option>';
-			$select_smileys_pp .= '<option value="50"' . (( $smilies_per_page == 50 ) ? ' selected="selected"' : '') . '>50</option>';
-			$select_smileys_pp .= '<option value="100"' . (( $smilies_per_page == 100 ) ? ' selected="selected"' : '') . '>100</option>';
-			$select_smileys_pp .= '<option value="150"' . (( $smilies_per_page == 150 ) ? ' selected="selected"' : '') . '>150</option>';
-			$select_smileys_pp .= '<option value="250"' . (( $smilies_per_page == 250 ) ? ' selected="selected"' : '') . '>250</option>';
-			$select_smileys_pp .= '<option value="500"' . (( $smilies_per_page == 500 ) ? ' selected="selected"' : '') . '>500</option>';
-			$select_smileys_pp .= '<option value="1000"' . (( $smilies_per_page == 1000 ) ? ' selected="selected"' : '') . '>1000</option>';
-			$select_smileys_pp .= '<option value="5000"' . (( $smilies_per_page == 5000 ) ? ' selected="selected"' : '') . '>5000</option>';
+			$select_smileys_pp .= '<option value="' . ($window_columns * $window_rows) . '"' . (($smilies_per_page == ($window_columns * $window_rows)) ? ' selected="selected"' : '') . '>' . ($window_columns * $window_rows) . '</option>';
+			$select_smileys_pp .= '<option value="50"' . (($smilies_per_page == 50) ? ' selected="selected"' : '') . '>50</option>';
+			$select_smileys_pp .= '<option value="100"' . (($smilies_per_page == 100) ? ' selected="selected"' : '') . '>100</option>';
+			$select_smileys_pp .= '<option value="150"' . (($smilies_per_page == 150) ? ' selected="selected"' : '') . '>150</option>';
+			$select_smileys_pp .= '<option value="250"' . (($smilies_per_page == 250) ? ' selected="selected"' : '') . '>250</option>';
+			$select_smileys_pp .= '<option value="500"' . (($smilies_per_page == 500) ? ' selected="selected"' : '') . '>500</option>';
+			$select_smileys_pp .= '<option value="1000"' . (($smilies_per_page == 1000) ? ' selected="selected"' : '') . '>1000</option>';
+			$select_smileys_pp .= '<option value="5000"' . (($smilies_per_page == 5000) ? ' selected="selected"' : '') . '>5000</option>';
 			$select_smileys_pp .= '</select>';
 
 			$parsing_template = array(
 				'L_EMOTICONS' => $lang['Emoticons'],
 				'L_CLOSE_WINDOW' => $lang['Close_window'],
 				'L_SMILEYS_PER_PAGE' => $lang['Smileys_Per_Page'],
-				'DEFAULT_SMILEYS_PER_PAGE' => $window_columns * $window_rows,
+
 				'REQUEST_URI' => append_sid('posting.' . PHP_EXT . '?mode=smilies'),
+				'U_SMILEYS_GALLERY' => append_sid('smileys.' . PHP_EXT),
+
+				'DEFAULT_SMILEYS_PER_PAGE' => $window_columns * $window_rows,
 				'SELECT_SMILEYS_PP' => $select_smileys_pp,
 				'PAGINATION' => $pagination,
 				'S_SMILIES_COLSPAN' => $s_colspan
 			);
-			if ( defined('IN_PA_POSTING') )
+			if (defined('IN_PA_POSTING'))
 			{
 				$pafiledb_template->assign_vars($parsing_template);
 			}
@@ -1601,7 +1604,7 @@ function generate_smilies($mode)
 
 	if ($mode == 'window')
 	{
-		if ( defined('IN_PA_POSTING') )
+		if (defined('IN_PA_POSTING'))
 		{
 			$pafiledb_template->pparse('smiliesbody');
 		}
@@ -1616,7 +1619,7 @@ function generate_smilies($mode)
 function generate_smilies_row()
 {
 	global $db, $board_config, $template;
-	if ( defined('IN_PA_POSTING') )
+	if (defined('IN_PA_POSTING'))
 	{
 		global $pafiledb_template;
 	}
@@ -1636,7 +1639,7 @@ function generate_smilies_row()
 				'URL' => 'http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $row['smile_url'],
 				'DESC' => htmlspecialchars($row['emoticon'])
 			);
-			if ( defined('IN_PA_POSTING') )
+			if (defined('IN_PA_POSTING'))
 			{
 				$pafiledb_template->assign_block_vars('smilies', $parsing_template);
 			}
@@ -1671,7 +1674,7 @@ function generate_smilies_row()
 			'URL' => 'http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $smilies_data[$i]['smile_url'],
 			'DESC' => $smilies_data[$i]['emoticon']
 		);
-		if ( defined('IN_PA_POSTING') )
+		if (defined('IN_PA_POSTING'))
 		{
 			$pafiledb_template->assign_block_vars('smilies', $parsing_template);
 		}

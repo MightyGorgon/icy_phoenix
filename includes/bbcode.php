@@ -97,12 +97,24 @@ $text = kb_word_wrap_pass($text);
 
 */
 
+// If included via function we need to make sure to have the requested globals...
+global $db, $board_config, $lang;
+
+if (function_exists('create_server_url'))
+{
+	$server_url = create_server_url();
+}
+else
+{
+	$server_url = 'http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'];
+}
+$smileys_path = $server_url . $board_config['smilies_path'] . '/';
+
 define('BBCODE_UID_LEN', 10);
 define('BBCODE_NOSMILIES_START', '<!-- no smilies start -->');
 define('BBCODE_NOSMILIES_END', '<!-- no smilies end -->');
+define('BBCODE_SMILIES_PATH', $smileys_path);
 define('AUTOURL', time());
-// If included via function we need to make sure to have the requested globals...
-global $db, $board_config, $lang;
 
 // To use this file outside Icy Phoenix you need to comment the define below and remove the check on top of the file.
 define('IS_ICYPHOENIX', true);
@@ -713,7 +725,13 @@ class BBCode
 				}
 			}
 
-			if ($board_config['thumbnail_posts'] && ($liw_bypass == false))
+			$is_smiley = false;
+			if (substr($params['src'], 0, strlen(BBCODE_SMILIES_PATH)) == BBCODE_SMILIES_PATH)
+			{
+				$is_smiley = true;
+			}
+
+			if (!$is_smiley && $board_config['thumbnail_posts'] && ($liw_bypass == false))
 			{
 				$thumb_exists = false;
 				if($board_config['thumbnail_cache'])
@@ -788,7 +806,7 @@ class BBCode
 				$html = $this->process_text($params['alt']);
 			}
 			*/
-			if(empty($item['inurl']))
+			if(empty($item['inurl']) && !$is_smiley)
 			{
 				if ($this->allow_hs && $board_config['thumbnail_posts'] && $board_config['thumbnail_highslide'])
 				{
@@ -3717,8 +3735,8 @@ if (defined('SMILIES_TABLE'))
 		{
 			$arr = array(
 				'code' => $row['code'],
-				//'replace' => '<img src="http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $row['smile_url'] . '" alt="' . htmlspecialchars($row['emoticon']) . '" />'
-				'replace' => '<img src="http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $row['smile_url'] . '" alt="" />'
+				//'replace' => '<img src="' . BBCODE_SMILIES_PATH . $row['smile_url'] . '" alt="' . htmlspecialchars($row['emoticon']) . '" />'
+				'replace' => '<img src="' . BBCODE_SMILIES_PATH . $row['smile_url'] . '" alt="" />'
 			);
 			$bbcode->allowed_smilies[] = $arr;
 		}

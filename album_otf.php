@@ -21,10 +21,6 @@ init_userprefs($userdata);
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-/*
-global $album_config, $template, $lang, $images, $theme;
-*/
-
 if(isset($_GET['pic_id']))
 {
 	$pic_id = $_GET['pic_id'];

@@ -29,13 +29,13 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 $start_time = time ();
 $time_limit = $_GET['time_limit'];
-include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 $page_title = $lang['Page_title'];
 

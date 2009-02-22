@@ -80,6 +80,7 @@ function SetSmileysPerPage()
 </tr>
 <tr><td align="center"><span class="genmed">{L_SMILEYS_PER_PAGE}:&nbsp;{SELECT_SMILEYS_PP}</span></td></tr>
 <tr><td align="center"><span class="genmed">{PAGINATION}</span></td></tr>
+<tr><td class="cat"><span class="genmed"><a href="{U_SMILEYS_GALLERY}" class="genmed">{L_SMILEYS_GALLERY}</a></span></td></tr>
 <tr><td class="cat"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span></td></tr>
 </table>
 </form>

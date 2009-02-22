@@ -422,7 +422,7 @@ if ($bypass)
 		if ($forum_row['prune_next'] < time() && $forum_row['prune_enable'])
 		{
 			include(IP_ROOT_PATH . 'includes/prune.' . PHP_EXT);
-			require(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+			include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 			auto_prune($forum_id);
 		}
 	}

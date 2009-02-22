@@ -28,13 +28,13 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'config.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/kb_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_auth.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_field.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_kb_mx.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 // Pull all config data
 

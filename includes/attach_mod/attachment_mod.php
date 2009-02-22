@@ -39,23 +39,23 @@ $attach_config['board_lang'] = trim($board_config['default_lang']);
 // Needed to correctly process attachments!
 define('PAGE_PRIVMSGS', -10);
 
-include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
-include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_attach.' . PHP_EXT);
-include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . PHP_EXT);
+include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_attach.' . PHP_EXT);
+include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . PHP_EXT);
 if(defined('IN_DOWNLOAD') || defined('IN_ADMIN') || defined('ATTACH_DISPLAY') || defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_includes.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_includes.' . PHP_EXT);
 }
 if(defined('IN_DOWNLOAD') || defined('IN_ADMIN') || defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_posting.' . PHP_EXT);
-	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
-	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_posting.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
 }
 if(defined('IN_ADMIN'))
 {
-	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_selects.' . PHP_EXT);
-	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_selects.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
 }
 if(defined('ATTACH_PROFILE'))
 {

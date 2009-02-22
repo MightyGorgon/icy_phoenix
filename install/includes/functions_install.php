@@ -537,11 +537,29 @@ class mg_functions
 	function text_replace($text)
 	{
 		$look_up_array = array(
-			"phpbbxs.eu",
+			'phpbbxs.eu',
 		);
 
 		$replacement_array = array(
-			"icyphoenix.com",
+			'icyphoenix.com',
+		);
+
+		$text = str_replace($look_up_array, $replacement_array, $text);
+
+		return $text;
+	}
+
+	function custom_text_replace($text)
+	{
+		//Comment this line if you want to use this function...
+		return $text;
+
+		$look_up_array = array(
+			'phpbbxs.eu',
+		);
+
+		$replacement_array = array(
+			'icyphoenix.com',
 		);
 
 		$text = str_replace($look_up_array, $replacement_array, $text);
@@ -1875,6 +1893,8 @@ class ip_page
 				{
 					$post_text_f = (defined('STRIP') ? stripslashes($row['post_text']) : $row['post_text']);
 					$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
+
+					$post_text_f = mg_functions::custom_text_replace($post_text_f);
 
 					$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
 

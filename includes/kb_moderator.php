@@ -20,7 +20,7 @@ if(!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 $category_id = (isset($_GET['cat'])) ? intval ($_GET['cat'])  : intval ($_POST['cat']);
 $article_id = (isset($_GET['a'])) ? intval ($_GET['a'])  : intval ($_POST['a']);
