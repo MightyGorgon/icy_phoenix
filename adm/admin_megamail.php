@@ -104,8 +104,9 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 	$email_format = request_var('email_format', 0);
 	$subject = request_var('subject', '');
 	$subject = htmlspecialchars_decode($subject, ENT_QUOTES);
-	$message = request_var('message', '');
-	$message = htmlspecialchars_decode($message, ENT_QUOTES);
+	//$message = request_var('message', '');
+	//$message = htmlspecialchars_decode($message, ENT_QUOTES);
+	$message = $_POST['message'];
 
 	$mail_session_id = md5(uniqid(''));
 	$sql = "INSERT INTO " . MEGAMAIL_TABLE . " (mailsession_id, mass_pm, user_id, group_id, email_subject, email_body, email_format, batch_start, batch_size, batch_wait, status)
