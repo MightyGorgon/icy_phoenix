@@ -588,7 +588,8 @@ class Template {
 		global $$template;
 		$theme_info = &$$template;
 		$exclude_tpl_array = array('def_tree_def.tpl');
-		if($board_config['xs_add_comments'] && $handle && !in_array($this->files[$handle], $exclude_tpl_array))
+		//die(basename($this->files[$handle]));
+		if($board_config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
 		{
 			echo '<!-- template ', $this->files[$handle], ' start -->';
 		}
@@ -600,7 +601,7 @@ class Template {
 		{
 			eval($code);
 		}
-		if($board_config['xs_add_comments'] && $handle && !in_array($this->files[$handle], $exclude_tpl_array))
+		if($board_config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
 		{
 			echo '<!-- template ', $this->files[$handle], ' end -->';
 		}
