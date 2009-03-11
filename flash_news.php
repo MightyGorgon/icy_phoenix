@@ -97,7 +97,6 @@ if($news_cache && @file_exists($news_cache_file))
 }
 // Cache - END
 
-
 if($use_cache)
 {
 	$time = gmdate('D, d M Y H:i:s', $cache_file_time) . ' GMT';

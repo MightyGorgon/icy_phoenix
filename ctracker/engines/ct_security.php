@@ -211,6 +211,7 @@ $unchecked_post_fields = array(
 	'menu_name', 'menu_desc', 'menu_name_lang', 'remove', 'add', 'add_cat', 'add_item',
 	'autologin', 'current_email', 'download', 'menu_link', 'new_password', 'password_confirm',
 	'deleteall', 'cat_title', 'cat_desc', 'news_category_edit', 'pm_delete_attach',
+	'topic_title', 'topic_id', 'friendname', 'friendemail',
 	// '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 );
 
@@ -220,6 +221,7 @@ $unchecked_get_fields = array(
 	// Added by MG
 	'mode', 'cachefile', 'avatarfile',
 	'text_content', 'text_size', 'text_font', 'text_color', 'text_position',
+	'topic_title',
 );
 
 /*

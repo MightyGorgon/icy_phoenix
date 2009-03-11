@@ -290,13 +290,13 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 			if (album_check_permission($album_user_access, ALBUM_AUTH_CREATE_PERSONAL) == true)
 			{
 				$selected = (($userdata['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
-				$personal_gallery_list .= '<option value="-'.$userinfo[$idx]['user_id'].'" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
+				$personal_gallery_list .= '<option value="-' . $userinfo[$idx]['user_id'] . '" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
 			}
 		}
 
 		if (!empty($personal_gallery_list))
 		{
-			$personal_gallery_list = '<option value="'.ALBUM_JUMPBOX_SEPERATOR.'">------------------------------</option>' . $personal_gallery_list;
+			$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPERATOR . '">------------------------------</option>' . $personal_gallery_list;
 		}
 	}
 
@@ -457,10 +457,8 @@ else
 	// Check posted info
 	// --------------------------------
 
-	$pic_title = addslashes(str_replace("\'", "''", htmlspecialchars(trim($_POST['pic_title']))));
-
-	$pic_desc = addslashes(str_replace("\'", "''", htmlspecialchars(substr(trim($_POST['pic_desc']), 0, $album_config['desc_length']))));
-
+	$pic_title = addslashes(str_replace("\'", "''", trim($_POST['pic_title'])));
+	$pic_desc = addslashes(str_replace("\'", "''", substr(trim($_POST['pic_desc']), 0, $album_config['desc_length'])));
 	$pic_username = (!$userdata['session_logged_in']) ? addslashes(substr(str_replace("\'", "''", htmlspecialchars(trim($_POST['pic_username']))), 0, 32)) : addslashes(str_replace("'", "''", $userdata['username']));
 
 	if(!isset($_FILES['pic_file']))

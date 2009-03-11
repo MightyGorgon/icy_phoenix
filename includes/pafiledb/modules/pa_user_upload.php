@@ -25,7 +25,7 @@ class pafiledb_user_upload extends pafiledb_public
 		$custom_field = new custom_field();
 		$custom_field->init();
 
-		$cat_id = ( isset($_REQUEST['cat_id']) ) ? intval($_REQUEST['cat_id']) : 0;
+		$cat_id = (isset($_REQUEST['cat_id'])) ? intval($_REQUEST['cat_id']) : 0;
 // MX Addon
 		$do = (isset($_REQUEST['do'])) ? intval($_REQUEST['do']) : '';
 		$file_id = (isset($_REQUEST['file_id'])) ? intval($_REQUEST['file_id']) : 0;
@@ -93,7 +93,7 @@ class pafiledb_user_upload extends pafiledb_public
 		// IF submit then upload the file and update the sql for it
 		// =======================================================
 
-		if ( isset($_POST['submit']) )
+		if (isset($_POST['submit']))
 		{
 			if(!$file_id)
 			{
@@ -118,7 +118,7 @@ class pafiledb_user_upload extends pafiledb_public
 				$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
 //				$mode = 'edit';
 			}
-			$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=user_upload') . '">', '</a>');
+			$message .= '<br /><br />' . sprintf($lang['Click_return_upload'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=user_upload') . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
@@ -139,13 +139,13 @@ class pafiledb_user_upload extends pafiledb_public
 				$file_cat_list = (!$cat_id) ? $this->jumpmenu_option(0, 0, '', true) : $this->jumpmenu_option(0, 0, array($cat_id => 1), true, true);
 				$file_license = $pafiledb_functions->license_list();
 				$pin_checked_yes = '';
-				$pin_checked_no = ' checked';
+				$pin_checked_no = ' checked="checked"';
 				$file_download = 0;
 				$approved_checked_yes = '';
-				$approved_checked_no = ' checked';
+				$approved_checked_no = ' checked="checked"';
 				$file_ssurl = '';
 				$ss_checked_yes = '';
-				$ss_checked_no = ' checked';
+				$ss_checked_no = ' checked="checked"';
 				$file_url = '';
 				$custom_exist = $custom_field->display_edit();
 				$mode = 'ADD';
@@ -169,25 +169,25 @@ class pafiledb_user_upload extends pafiledb_public
 						message_die(GENERAL_MESSAGE, $message);
 					}
 
-					$file_name = $file_info['file_name'];
-					$file_desc = $file_info['file_desc'];
-					$file_long_desc = $file_info['file_longdesc'];
-					$file_author = $file_info['file_creator'];
-					$file_version = $file_info['file_version'];
-					$file_website = $file_info['file_docsurl'];
+					$file_name = htmlspecialchars($file_info['file_name']);
+					$file_desc = htmlspecialchars($file_info['file_desc']);
+					$file_long_desc =htmlspecialchars($file_info['file_longdesc']);
+					$file_author = htmlspecialchars($file_info['file_creator']);
+					$file_version = htmlspecialchars($file_info['file_version']);
+					$file_website = htmlspecialchars($file_info['file_docsurl']);
 					$file_posticons = $pafiledb_functions->post_icons($file_info['file_posticon']);
 					$file_cat_list = $this->jumpmenu_option(0, 0, array($file_info['file_catid'] => 1), true);
 					$file_license = $pafiledb_functions->license_list($file_info['file_license']);
-					$pin_checked_yes = ($file_info['file_pin']) ? ' checked' : '';
-					$pin_checked_no = (!$file_info['file_pin']) ? ' checked' : '';
+					$pin_checked_yes = ($file_info['file_pin']) ? ' checked="checked"' : '';
+					$pin_checked_no = (!$file_info['file_pin']) ? ' checked="checked"' : '';
 					$file_download = intval($file_info['file_dls']);
-					$approved_checked_yes = ($file_info['file_approved']) ? ' checked' : '';
-					$approved_checked_no = (!$file_info['file_approved']) ? ' checked' : '';
+					$approved_checked_yes = ($file_info['file_approved']) ? ' checked="checked"' : '';
+					$approved_checked_no = (!$file_info['file_approved']) ? ' checked="checked"' : '';
 					// MX addon
 					$file_approved = ($file_info['file_approved'] == '1') ? 1 : 0;
 					$file_ssurl = $file_info['file_ssurl'];
-					$ss_checked_yes = ($file_info['file_sshot_link']) ? ' checked' : '';
-					$ss_checked_no = (!$file_info['file_sshot_link']) ? ' checked' : '';
+					$ss_checked_yes = ($file_info['file_sshot_link']) ? ' checked="checked"' : '';
+					$ss_checked_no = (!$file_info['file_sshot_link']) ? ' checked="checked"' : '';
 					$file_url = $file_info['file_dlurl'];
 					$file_unique_name = $file_info['unique_name'];
 					$file_dir = $file_info['file_dir'];

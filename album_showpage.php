@@ -204,8 +204,8 @@ if ($album_config['slideshow_script'] == 1)
 			$pic_array_id = $i;
 		}
 		$pic_list .= 'Pic[' . $i . '] = \'' . append_sid(album_append_uid($pic_link . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']), true) . '\'; ' . "\n";
-		$tit_list .= 'Tit[' . $i . '] = \'' . str_replace('\'', '%27', $total_pic_rows[$i]['pic_title']) . '\'; ' . "\n";
-		$des_list .= 'Des[' . $i . '] = \'' . str_replace('\'', '%27', $total_pic_rows[$i]['pic_desc']) . '\'; ' . "\n";
+		$tit_list .= 'Tit[' . $i . '] = \'' . str_replace('\'', '%27', htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\'; ' . "\n";
+		$des_list .= 'Des[' . $i . '] = \'' . str_replace('\'', '%27', htmlspecialchars($total_pic_rows[$i]['pic_desc'])) . '\'; ' . "\n";
 		/*
 		$pic_list .= 'Pic[' . $i . '] = \'' . ALBUM_UPLOAD_PATH . $total_pic_rows[$i]['pic_filename'] . '\'; ' . "\n";
 		*/
@@ -326,7 +326,7 @@ if ($album_config['invert_nav_arrows'] == 0)
 		}
 		else
 		{
-			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes($total_pic_rows[$i]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes(htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 		}
 		if ($album_config['show_pics_nav'] == 1)
 		{
@@ -358,7 +358,7 @@ else
 		}
 		else
 		{
-			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes($total_pic_rows[$i]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes(htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 		}
 		if ($album_config['show_pics_nav'] == 1)
 		{
@@ -863,8 +863,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 	// Start output of page
 	$page_title = $lang['Album'];
-	$meta_description = $lang['Album'] . ' - ' . $thispic['cat_title'] . ' - ' . $thispic['pic_title'] . ' - ' . $thispic['pic_desc'];
-	$meta_keywords = $lang['Album'] . ', ' . $thispic['cat_title'] . ', ' . $thispic['pic_title'] . ', ' . $thispic['pic_desc'] . ', ';
+	$meta_description = $lang['Album'] . ' - ' . strip_tags($thispic['cat_title']) . ' - ' . htmlspecialchars($thispic['pic_title']) . ' - ' . $thispic['pic_desc'];
+	$meta_keywords = $lang['Album'] . ', ' . strip_tags($thispic['cat_title']) . ', ' . htmlspecialchars($thispic['pic_title']) . ', ' . htmlspecialchars($thispic['pic_desc']) . ', ';
 
 	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 	$template->set_filenames(array('body' => $show_template));
@@ -1152,7 +1152,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	{
 		$template->assign_block_vars('social_bookmarks', array());
 	}
-	$topic_title_enc = urlencode(ip_utf8_decode($thispic['pic_title']));
+	$topic_title_enc = urlencode(ip_utf8_decode(htmlspecialchars($thispic['pic_title'])));
 	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append));
 	$template->assign_vars(array(
 		// Social Bookmarks - BEGIN

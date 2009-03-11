@@ -15,7 +15,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
-$enable_visual_confirm = true;
+define('ENABLE_VISUAL_CONFIRM', true);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -68,11 +68,16 @@ if (time() - $userdata['user_emailtime'] < $board_config['flood_interval'])
 $sender = '';
 $subject = '';
 $message = '';
+
+$sender = ip_stripslashes($_POST['sender']);
+$subject = ip_stripslashes($_POST['subject']);
+$message = ip_stripslashes($_POST['message']);
+
 if (isset($_POST['submit']))
 {
 	$error = false;
 
-	if ($enable_visual_confirm && !$userdata['session_logged_in'])
+	if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
 	{
 		if (empty($_POST['confirm_id']))
 		{
@@ -124,30 +129,21 @@ if (isset($_POST['submit']))
 		}
 	}
 
-	if (!empty($_POST['sender']))
-	{
-		$sender = trim(stripslashes($_POST['sender']));
-	}
-	else
+	if (empty($sender))
 	{
 		$error = true;
 		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_sender_email'] : $lang['Empty_sender_email'];
 	}
 
-	if (!empty($_POST['subject']))
-	{
-		$subject = trim(stripslashes($_POST['subject']));
-	}
-	else
+	if (empty($subject))
 	{
 		$error = true;
 		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_subject_email'] : $lang['Empty_subject_email'];
 	}
 
-	if (!empty($_POST['message']))
+	if (!empty($message))
 	{
-		$message = trim(stripslashes($_POST['message']));
-		if ($account_delete == true)
+		if ($account_delete)
 		{
 			$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $userdata['username']) . "<br />\r\n<hr /><br />\r\n<br />\r\n" . $message;
 		}
@@ -194,7 +190,7 @@ if (isset($_POST['submit']))
 			$emailer->set_subject($subject);
 
 			$emailer->assign_vars(array(
-				'TEXT' => $message
+				'MESSAGE' => $message
 				)
 			);
 			$emailer->send();
@@ -209,7 +205,7 @@ if (isset($_POST['submit']))
 				$emailer->set_subject($subject);
 
 				$emailer->assign_vars(array(
-					'TEXT' => $message
+					'MESSAGE' => $message
 					)
 				);
 				$emailer->send();
@@ -221,7 +217,7 @@ if (isset($_POST['submit']))
 
 			$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(PORTAL_MG) . '">', '</a>');
 
-			if ($account_delete == true)
+			if ($account_delete)
 			{
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_active = '0'
@@ -259,7 +255,7 @@ if ($error)
 	$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
 }
 
-if ($enable_visual_confirm && !$userdata['session_logged_in'])
+if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
 {
 	// Visual Confirmation
 	$confirm_image = '';

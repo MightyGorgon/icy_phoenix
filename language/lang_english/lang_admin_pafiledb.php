@@ -283,6 +283,7 @@ $lang = array_merge($lang, array(
 	'License_title' => 'License',
 // ENd
 	'Click_return' => 'Click %sHere%s to return to the previous page',
+	'Click_return_upload' => 'Click %sHere%s to return to the upload page',
 	'Click_edit_permissions' => 'Click %sHere%s to edit the permissions for this category',
 
 //Java script messages and php errors

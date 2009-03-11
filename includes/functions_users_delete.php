@@ -252,6 +252,15 @@ function ip_user_kill($user_id)
 			message_die(GENERAL_ERROR, 'Could not update private messages saved from the user', '', __LINE__, __FILE__, $sql);
 		}
 
+		$cache_data_files = array(MAIN_CACHE_FOLDER . 'newest_user.dat');
+		for ($i = 0; $i < count($cache_data_files); $i++)
+		{
+			if (file_exists($cache_data_files[$i]))
+			{
+				@unlink($cache_data_files[$i]);
+			}
+		}
+
 		return true;
 	}
 

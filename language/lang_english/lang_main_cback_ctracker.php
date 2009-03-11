@@ -162,6 +162,7 @@ $lang = array_merge($lang, array(
 	'ctracker_pwreset_info' => 'Due to security reasons it is not possible to send a new password every %s minutes. Please contact the administrator if you are having difficulties!',
 	'ctracker_vc_guest_post' => 'Visual Confirmation for Guests',
 	'ctracker_vc_guest_expl' => 'Anti-Spam Security: Please enter the following code before submitting your post.',
+	'ctracker_dbg_mode' => '<b>CrackerTracker runs on DEBUG MODE. This should not be a permanent condition.<br />Please set back to normal mode as soon as possible.<br /><br /><u>This message cannot be deleted!</u></b>',
 	)
 );
 

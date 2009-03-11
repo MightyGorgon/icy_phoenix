@@ -39,7 +39,11 @@ init_userprefs($userdata);
 if (!$userdata['session_logged_in'] && $board_config['gsearch_guests'])
 {
 	$google_q = request_var('search_keywords', '');
-	redirect(append_sid('gsearch.' . PHP_EXT . (!empty($google_q) ? ('?q=' . urlencode($google_q)) : ''), true));
+	$google_sitesearch = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
+	$google_cof = 'FORID:9';
+	$google_ie = 'ISO-8859-1';
+	$google_url_append = '?q=' . urlencode($google_q) . '&sitesearch=' . $google_sitesearch . '&cof=' . $google_cof . '&ie=' . $google_ie;
+	redirect(append_sid('gsearch.' . PHP_EXT . (!empty($google_q) ? $google_url_append : ''), true));
 }
 
 // CrackerTracker v5.x
@@ -574,7 +578,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				$sql_from_ts = '';
 				$sql_where_ts = '';
-				if ($search_topic_starter == true)
+				if ($search_topic_starter)
 				{
 					$sql_from_ts = ", " . TOPICS_TABLE . " t";
 					$sql_where_ts = " AND p.post_id = t.topic_first_post_id";
@@ -835,8 +839,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 						if ($search_author != '')
 						{
-							$from_sql .= ", " . USERS_TABLE . " u";
-							$where_sql .= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author' ";
+							if ($search_topic_starter)
+							{
+								$from_sql .= ", " . USERS_TABLE . " u, " . TOPICS_TABLE . " t";
+								$where_sql .= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author' AND p.post_id = t.topic_first_post_id ";
+							}
+							else
+							{
+								$from_sql .= ", " . USERS_TABLE . " u";
+								$where_sql .= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author' ";
+							}
 						}
 
 						if ($auth_sql != '')
@@ -851,6 +863,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 								$where_sql
 							GROUP BY p.topic_id";
 					}
+					//die($sql);
 
 					if (!($result = $db->sql_query($sql)))
 					{

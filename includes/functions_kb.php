@@ -433,7 +433,7 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 					WHERE";
 
 	$sql .= " k.approved = " . $approve;
-	$sql .= "AND u.user_id = k.article_author_id";
+	$sql .= " AND u.user_id = k.article_author_id";
 
 	if ($type)
 	{
@@ -1605,8 +1605,18 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 			}
 		}
 
-		// Parse message and/or sig for BBCode if reqd
+		if (empty($orig_word) && !$userdata['user_allowswearywords'])
+		{
+			$orig_word = array();
+			$replacement_word = array();
+			obtain_word_list($orig_word, $replacement_word);
+		}
+		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
+		{
+			$message = preg_replace($orig_word, $replacement_word, $message);
+		}
 
+		// Parse message and/or sig for BBCode if reqd
 		$bbcode->allow_html = $board_config['allow_html'];
 		$bbcode->allow_bbcode = $board_config['allow_bbcode'];
 		$bbcode->allow_smilies = $board_config['allow_smilies'] && $postrow[$i]['user_allowsmile'] ? true : false;
@@ -1633,16 +1643,6 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 			}
 		}
 		//$message = kb_word_wrap_pass($message);
-		if (empty($orig_word) && !$userdata['user_allowswearywords'])
-		{
-			$orig_word = array();
-			$replacement_word = array();
-			obtain_word_list($orig_word, $replacement_word);
-		}
-		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-		{
-			$message = preg_replace($orig_word, $replacement_word, $message);
-		}
 		// Editing information
 
 		if ($postrow[$i]['post_edit_count'])

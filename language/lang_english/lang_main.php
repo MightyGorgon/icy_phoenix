@@ -32,40 +32,6 @@ if (empty($lang) || !is_array($lang))
 	$lang = array();
 }
 
-// Do not remove these even if duplicated...
-$lang['-12'] = 'GMT - 12 Hours';
-$lang['-11'] = 'GMT - 11 Hours';
-$lang['-10'] = 'GMT - 10 Hours';
-$lang['-9'] = 'GMT - 9 Hours';
-$lang['-8'] = 'GMT - 8 Hours';
-$lang['-7'] = 'GMT - 7 Hours';
-$lang['-6'] = 'GMT - 6 Hours';
-$lang['-5'] = 'GMT - 5 Hours';
-$lang['-4'] = 'GMT - 4 Hours';
-$lang['-3.5'] = 'GMT - 3.5 Hours';
-$lang['-3'] = 'GMT - 3 Hours';
-$lang['-2'] = 'GMT - 2 Hours';
-$lang['-1'] = 'GMT - 1 Hours';
-$lang['0'] = 'GMT';
-$lang['1'] = 'GMT + 1 Hour';
-$lang['2'] = 'GMT + 2 Hours';
-$lang['3'] = 'GMT + 3 Hours';
-$lang['3.5'] = 'GMT + 3.5 Hours';
-$lang['4'] = 'GMT + 4 Hours';
-$lang['4.5'] = 'GMT + 4.5 Hours';
-$lang['5'] = 'GMT + 5 Hours';
-$lang['5.5'] = 'GMT + 5.5 Hours';
-$lang['6'] = 'GMT + 6 Hours';
-$lang['6.5'] = 'GMT + 6.5 Hours';
-$lang['7'] = 'GMT + 7 Hours';
-$lang['8'] = 'GMT + 8 Hours';
-$lang['9'] = 'GMT + 9 Hours';
-$lang['9.5'] = 'GMT + 9.5 Hours';
-$lang['10'] = 'GMT + 10 Hours';
-$lang['11'] = 'GMT + 11 Hours';
-$lang['12'] = 'GMT + 12 Hours';
-$lang['13'] = 'GMT + 13 Hours';
-
 $lang['BBC_IP_CREDITS_STATIC'] = '
 <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="http://www.icyphoenix.com/images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br />
 <span style="color: #ff5500;"><b>Mighty Gorgon</b></span><br />
@@ -2173,6 +2139,9 @@ $lang = array_merge($lang, array(
 	'SMILEYS_GALLERY' => 'Smileys Gallery',
 	'SMILEYS_STANDARD' => 'Standard Smileys',
 
+	'QUICK_LIST' => 'Full List',
+	'NORMAL_LIST' => 'Normal List',
+
 	)
 );
 
@@ -2200,39 +2169,39 @@ $lang['Prune_explain'][5] = 'Who have never posted and not visited recently, <b>
 // Timezones - BEGIN
 $lang['All_times'] = 'All times are %s'; // eg. All times are GMT - 12 Hours (times from next block)
 
-// Do not remove these even if duplicated...
-$lang['-12'] = 'GMT - 12 Hours';
-$lang['-11'] = 'GMT - 11 Hours';
-$lang['-10'] = 'GMT - 10 Hours';
-$lang['-9'] = 'GMT - 9 Hours';
-$lang['-8'] = 'GMT - 8 Hours';
-$lang['-7'] = 'GMT - 7 Hours';
-$lang['-6'] = 'GMT - 6 Hours';
-$lang['-5'] = 'GMT - 5 Hours';
-$lang['-4'] = 'GMT - 4 Hours';
-$lang['-3.5'] = 'GMT - 3.5 Hours';
-$lang['-3'] = 'GMT - 3 Hours';
-$lang['-2'] = 'GMT - 2 Hours';
-$lang['-1'] = 'GMT - 1 Hours';
-$lang['0'] = 'GMT';
-$lang['1'] = 'GMT + 1 Hour';
-$lang['2'] = 'GMT + 2 Hours';
-$lang['3'] = 'GMT + 3 Hours';
-$lang['3.5'] = 'GMT + 3.5 Hours';
-$lang['4'] = 'GMT + 4 Hours';
-$lang['4.5'] = 'GMT + 4.5 Hours';
-$lang['5'] = 'GMT + 5 Hours';
-$lang['5.5'] = 'GMT + 5.5 Hours';
-$lang['6'] = 'GMT + 6 Hours';
-$lang['6.5'] = 'GMT + 6.5 Hours';
-$lang['7'] = 'GMT + 7 Hours';
-$lang['8'] = 'GMT + 8 Hours';
-$lang['9'] = 'GMT + 9 Hours';
-$lang['9.5'] = 'GMT + 9.5 Hours';
-$lang['10'] = 'GMT + 10 Hours';
-$lang['11'] = 'GMT + 11 Hours';
-$lang['12'] = 'GMT + 12 Hours';
-$lang['13'] = 'GMT + 13 Hours';
+// Time zones short
+$lang['tzs']['-12'] = 'GMT - 12 Hours';
+$lang['tzs']['-11'] = 'GMT - 11 Hours';
+$lang['tzs']['-10'] = 'GMT - 10 Hours';
+$lang['tzs']['-9'] = 'GMT - 9 Hours';
+$lang['tzs']['-8'] = 'GMT - 8 Hours';
+$lang['tzs']['-7'] = 'GMT - 7 Hours';
+$lang['tzs']['-6'] = 'GMT - 6 Hours';
+$lang['tzs']['-5'] = 'GMT - 5 Hours';
+$lang['tzs']['-4'] = 'GMT - 4 Hours';
+$lang['tzs']['-3.5'] = 'GMT - 3.5 Hours';
+$lang['tzs']['-3'] = 'GMT - 3 Hours';
+$lang['tzs']['-2'] = 'GMT - 2 Hours';
+$lang['tzs']['-1'] = 'GMT - 1 Hours';
+$lang['tzs']['0'] = 'GMT';
+$lang['tzs']['1'] = 'GMT + 1 Hour';
+$lang['tzs']['2'] = 'GMT + 2 Hours';
+$lang['tzs']['3'] = 'GMT + 3 Hours';
+$lang['tzs']['3.5'] = 'GMT + 3.5 Hours';
+$lang['tzs']['4'] = 'GMT + 4 Hours';
+$lang['tzs']['4.5'] = 'GMT + 4.5 Hours';
+$lang['tzs']['5'] = 'GMT + 5 Hours';
+$lang['tzs']['5.5'] = 'GMT + 5.5 Hours';
+$lang['tzs']['6'] = 'GMT + 6 Hours';
+$lang['tzs']['6.5'] = 'GMT + 6.5 Hours';
+$lang['tzs']['7'] = 'GMT + 7 Hours';
+$lang['tzs']['8'] = 'GMT + 8 Hours';
+$lang['tzs']['9'] = 'GMT + 9 Hours';
+$lang['tzs']['9.5'] = 'GMT + 9.5 Hours';
+$lang['tzs']['10'] = 'GMT + 10 Hours';
+$lang['tzs']['11'] = 'GMT + 11 Hours';
+$lang['tzs']['12'] = 'GMT + 12 Hours';
+$lang['tzs']['13'] = 'GMT + 13 Hours';
 
 // These are displayed in the timezone select box
 $lang['tz']['-12'] = '(GMT -12 Hours) Eniwetok, Kwajalein';

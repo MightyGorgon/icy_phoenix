@@ -1487,6 +1487,7 @@ if ($bypass)
 		'POST_IMG' => $post_img,
 		'REPLY_IMG' => $reply_img,
 		'THANKS_IMG' => $thank_img,
+		'IS_LOCKED' => $is_this_locked,
 
 		'TOPIC_TITLE_ENC' => $topic_title_enc,
 		'TOPIC_URL_ENC' => $topic_url_enc,
@@ -2468,7 +2469,7 @@ if ($bypass)
 			$bbcode->allow_html = false;
 		}
 
-		if(preg_match('/\[hide/i', $message) || preg_match('/\[xs/i', $message) || preg_match('/\[upgrade/i', $message))
+		if(preg_match('/\[hide/i', $message))
 		{
 			$message_compiled = false;
 		}
@@ -2519,10 +2520,6 @@ if ($bypass)
 				$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
 			}
 			//$message = kb_word_wrap_pass($message);
-			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-			{
-				$message = preg_replace($orig_word, $replacement_word, $message);
-			}
 		}
 		//Acronyms, AutoLinks, Wrap -END
 
@@ -2532,6 +2529,7 @@ if ($bypass)
 			// This has been back-ported from 3.0 CVS
 			$message = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*>)#i', '<span class="highlight-w"><b>\1</b></span>', $message);
 		}
+
 		// Replace newlines (we use this rather than nl2br because till recently it wasn't XHTML compliant)
 		if ($user_sig != '')
 		{

@@ -5,7 +5,7 @@
 	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_cms.png" alt="{L_CMS}" title="{L_CMS}" /></td>
 	<td class="row1" valign="top">
 		<!-- BEGIN cms_user -->
-		<div style="float:right">Proprietario: {cms_user.CMS_USERNAME}</div>
+		<div style="float: right">{L_CMS_OWNER}: {cms_user.CMS_USERNAME}</div>
 		<h1>{cms_user.CMS_PAGE_TITLE}</h1>
 		<!-- END cms_user -->
 		<span class="genmed">{L_LAYOUT_TEXT}</span>
@@ -13,7 +13,7 @@
 </tr>
 </table>
 
-		
+
 <!-- BEGIN layout -->
 <form method="post" action="{S_LAYOUT_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
@@ -35,7 +35,7 @@
 			<a href="{layout.l_row.U_EDIT_LAYOUT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;
 			<a href="{layout.l_row.U_DELETE_LAYOUT}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>
 		</td>
-		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;{layout.l_row.ROW_DEFAULT_STYLE}">&nbsp;<a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a>&nbsp;</td>
+		<td class="{layout.l_row.ROW_CLASS}" style="background:none;{layout.l_row.ROW_DEFAULT_STYLE}">&nbsp;<a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a>&nbsp;</td>
 		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;">&nbsp;{layout.l_row.LAYOUT_FILENAME}&nbsp;</td>
 		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;">&nbsp;{layout.l_row.LAYOUT_LAYOUT}&nbsp;</td>
 		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;">&nbsp;{layout.l_row.LAYOUT_TEMPLATE}&nbsp;</td>

@@ -302,6 +302,7 @@ $lang = array_merge($lang, array(
 	'CMS_PAGES_PERMISSIONS_EXPLAIN' => 'Configure the user level required to view standard pages. For each page you can also choose if the global blocks should be displayed or not (for this feature Global Blocks should be enabled in <b>CMS Configuration</b>).',
 	'CMS_Page' => 'Page',
 	'CMS_ADS' => 'Ads &amp; Sponsors',
+	'CMS_OWNER' => 'Owner',
 //	'CMS_' => '',
 // MG CMS - END
 

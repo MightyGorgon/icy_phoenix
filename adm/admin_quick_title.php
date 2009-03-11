@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1000_Configuration']['160_Title_infos'] = $file;
@@ -28,20 +28,20 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-$start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
+$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
-if( isset($_GET['mode']) || isset($_POST['mode']) )
+if(isset($_GET['mode']) || isset($_POST['mode']))
 {
 	$mode = ($_GET['mode']) ? $_GET['mode'] : $_POST['mode'];
 }
 else
 {
 	// These could be entered via a form button
-	if( isset($_POST['add']) )
+	if(isset($_POST['add']))
 	{
 		$mode = 'add';
 	}
-	elseif( isset($_POST['save']) )
+	elseif(isset($_POST['save']))
 	{
 		$mode = 'save';
 	}
@@ -52,18 +52,18 @@ else
 }
 
 
-if( $mode != '' )
+if($mode != '')
 {
-	if( $mode == 'edit' || $mode == 'add' )
+	if($mode == 'edit' || $mode == 'add')
 	{
 		// They want to add a new title info, show the form.
-		$title_id = ( isset($_GET['id']) ) ? intval($_GET['id']) : 0;
+		$title_id = (isset($_GET['id'])) ? intval($_GET['id']) : 0;
 
 		$s_hidden_fields = '';
 
-		if( $mode == 'edit' )
+		if($mode == 'edit')
 		{
-			if( empty($title_id) )
+			if(empty($title_id))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Must_select_title']);
 			}
@@ -109,17 +109,17 @@ if( $mode != '' )
 		);
 
 	}
-	elseif( $mode == 'save' )
+	elseif($mode == 'save')
 	{
 		// Ok, they sent us our info, let's update it.
-		$title_id = ( isset($_POST['id']) ) ? intval($_POST['id']) : 0;
-		$admin = (!empty($_POST['admin_auth']) ) ? 1 : 0 ;
-		$mod = (!empty($_POST['mod_auth']) ) ? 1 : 0 ;
-		$poster = (!empty($_POST['poster_auth']) ) ? 1 : 0 ;
-		$name = ( isset($_POST['title_info']) ) ? $_POST['title_info'] : '';
-		$date = ( isset($_POST['date_format']) ) ? trim($_POST['date_format']) : '';
+		$title_id = (isset($_POST['id'])) ? intval($_POST['id']) : 0;
+		$admin = (!empty($_POST['admin_auth'])) ? 1 : 0 ;
+		$mod = (!empty($_POST['mod_auth'])) ? 1 : 0 ;
+		$poster = (!empty($_POST['poster_auth'])) ? 1 : 0 ;
+		$name = (isset($_POST['title_info'])) ? $_POST['title_info'] : '';
+		$date = (isset($_POST['date_format'])) ? trim($_POST['date_format']) : '';
 
-		if( $name == '' )
+		if($name == '')
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_select_title']);
 		}
@@ -141,36 +141,41 @@ if( $mode != '' )
 			$message = $lang['Title_added'];
 		}
 
-		if( !$result = $db->sql_query($sql) )
+		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, "Couldn't update/insert into title_infos table", "", __LINE__, __FILE__, $sql);
 		}
+
+		$db->clear_cache('', TOPICS_CACHE_FOLDER);
 
 		$message .= '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 
 	}
-	elseif( $mode == 'delete' )
+	elseif($mode == 'delete')
 	{
 		// Ok, they want to delete the title
-		if( isset($_POST['id']) || isset($_GET['id']) )
+		if(isset($_POST['id']) || isset($_GET['id']))
 		{
-			$title_id = ( isset($_POST['id']) ) ? intval($_POST['id']) : intval($_GET['id']);
+			$title_id = (isset($_POST['id'])) ? intval($_POST['id']) : intval($_GET['id']);
 		}
 		else
 		{
 			$title_id = 0;
 		}
 
-		if( $title_id )
+		if($title_id)
 		{
 			$sql = "DELETE FROM " . TITLE_INFOS_TABLE . "
 							WHERE id = '" . $title_id . "'";
-			if( !$result = $db->sql_query($sql) )
+			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, "Couldn't delete title data", "", __LINE__, __FILE__, $sql);
 			}
+
+			$db->clear_cache('', TOPICS_CACHE_FOLDER);
+
 			$message = $lang['Title_removed'] . '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -185,7 +190,7 @@ if( $mode != '' )
 		$template->set_filenames(array('body' => ADM_TPL . 'title_list_body.tpl'));
 		$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . "
 						ORDER BY id ASC";
-		if( !$result = $db->sql_query($sql) )
+		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, "Couldn't obtain title data", "", __LINE__, __FILE__, $sql);
 		}
@@ -206,10 +211,10 @@ if( $mode != '' )
 			)
 		);
 
-		for( $i = 0; $i < $title_count; $i++)
+		for($i = 0; $i < $title_count; $i++)
 		{
 			$title_id=$title_rows[$i]['id'];
-			$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 			$perm = ($title_rows[$i]['admin_auth'] == 1) ? $lang['Administrator'].'</br>' : '';
 			$perm .= ($title_rows[$i]['mod_auth'] == 1) ? $lang['Moderator'].'</br>' : '';
 			$perm .= ($title_rows[$i]['poster_auth'] == 1) ? $lang['Topic_poster'] : '';
@@ -232,7 +237,7 @@ else
 
 	$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . "
 					ORDER BY id ASC LIMIT $start, 40";
-	if( !$result = $db->sql_query($sql) )
+	if(!$result = $db->sql_query($sql))
 	{
 		message_die(GENERAL_ERROR, "Couldn't obtain title data", "", __LINE__, __FILE__, $sql);
 	}
@@ -242,12 +247,12 @@ else
 
 	$sql = "SELECT count(*) AS total
 					FROM " . TITLE_INFOS_TABLE;
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Error getting total informations for title', '', __LINE__, __FILE__, $sql);
 	}
 
-	if ( $total = $db->sql_fetchrow($result) )
+	if ($total = $db->sql_fetchrow($result))
 	{
 		$total_records = $total['total'];
 		$pagination = generate_pagination('admin_quick_title.' . PHP_EXT . '?mode=' . $mode, $total_records, 40, $start). ' ';
@@ -267,10 +272,10 @@ else
 		)
 	);
 
-	for( $i = 0; $i < $title_count; $i++)
+	for($i = 0; $i < $title_count; $i++)
 	{
 		$title_id=$title_rows[$i]['id'];
-		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$perm = ($title_rows[$i]['admin_auth']==1) ? $lang['Administrator'].'<br />' : '';
 		$perm .= ($title_rows[$i]['mod_auth']==1) ? $lang['Moderator'].'<br />' : '';
 		$perm .= ($title_rows[$i]['poster_auth']==1) ? $lang['Topic_poster'] : '';

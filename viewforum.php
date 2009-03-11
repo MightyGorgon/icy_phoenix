@@ -333,7 +333,7 @@ if ($bypass)
 		if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
 		{
 			header('Refresh: 0; URL=' . $url);
-			echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta http-equiv="refresh" content="0; url=' . $url . '"><title>' . $lang['Redirect'] . '</title></head><body><div align="center">' . sprintf($lang['Rediect_to'], '<a href="' . $url . '">', '</a>') . '</div></body></html>';
+			echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta http-equiv="refresh" content="0; url=' . $url . '"><title>' . $lang['Redirect'] . '</title></head><body><div align="center">' . sprintf($lang['Redirect_to'], '<a href="' . $url . '">', '</a>') . '</div></body></html>';
 			exit;
 		}
 
@@ -1042,6 +1042,7 @@ if ($bypass)
 		include(IP_ROOT_PATH . 'includes/forum_wordgraph.' . PHP_EXT);
 	}
 
+	$is_this_locked = ($forum_row['forum_status'] == FORUM_LOCKED) ? true : false;
 	$sort_lang = ($sort_dir == 'ASC') ? $lang['Sort_Ascending'] : $lang['Sort_Descending'];
 	$sort_img = ($sort_dir == 'ASC') ? 'images/sort_asc.png' : 'images/sort_desc.png';
 	$sort_img_full = '<img src="' . $sort_img . '" alt="' . $sort_lang . '" title="' . $sort_lang . '" style="padding-left: 3px;" />';
@@ -1059,6 +1060,7 @@ if ($bypass)
 		'FORUM_RULES' => $rules_bbcode,
 		'MODERATORS' => $forum_moderators,
 		'POST_IMG' => ($forum_row['forum_status'] == FORUM_LOCKED) ? $images['post_locked'] : $images['post_new'],
+		'IS_LOCKED' => $is_this_locked,
 
 		'FOLDER_IMG' => $images['topic_nor_read'],
 		'FOLDER_NEW_IMG' => $images['topic_nor_unread'],

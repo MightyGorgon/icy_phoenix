@@ -20,7 +20,7 @@
 			<td width="80" align="center" style="background-color:#{ctracker_message.ROW_COLOR};"><img src="{ctracker_message.ICON_GLOB}" alt="" title="" /></td>
 			<td style="background-color:#{ctracker_message.ROW_COLOR};"><div class="gensmall">{ctracker_message.L_MESSAGE_TEXT}</div></td>
 		</tr>
-		<tr><td class="row1 row-center" colspan="2"><div class="gensmall"><b><a href="{ctracker_message.U_MARK_MESSAGE}">{ctracker_message.L_MARK_MESSAGE}</a></b></div><br /></td></tr>
+		<tr><td class="row1 row-center" colspan="2"><span class="gensmall"><!-- IF ctracker_message.U_MARK_MESSAGE --><b><a href="{ctracker_message.U_MARK_MESSAGE}">{ctracker_message.L_MARK_MESSAGE}</a></b><!-- ELSE -->&nbsp;<!-- ENDIF --></span><br /></td></tr>
 		</table>{IMG_TBR}
 	</div>
 	</td>

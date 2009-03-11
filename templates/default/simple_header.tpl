@@ -50,13 +50,13 @@ var SEARCH_MG = '{SEARCH_MG}';
 hs.graphicsDir = '{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/graphics/';
 hs.align = 'center';
 hs.transitions = ['expand', 'crossfade'];
-hs.outlineType = 'rounded-white';
+hs.outlineType = 'glossy-dark';
 hs.showCredits = false;
 hs.fadeInOut = true;
-//hs.numberOfImagesToPreload = 5;
-//hs.outlineWhileAnimating = 2; // 0 = never, 1 = always, 2 = HTML only
-//hs.loadingOpacity = 0.75;
-//hs.dimmingOpacity = 0.75;
+hs.numberOfImagesToPreload = 5;
+hs.outlineWhileAnimating = 2; // 0 = never, 1 = always, 2 = HTML only
+hs.loadingOpacity = 0.75;
+hs.dimmingOpacity = 0.75;
 
 // Add the controlbar
 hs.addSlideshow({

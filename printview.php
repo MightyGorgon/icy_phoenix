@@ -32,11 +32,11 @@ if($board_config['gzip_compress'])
 	}
 }
 
-header ('Cache-Control: no-store, no-cache, must-revalidate');
-header ('Cache-Control: pre-check=0, post-check=0, max-age=0', false);
-header ('Pragma: no-cache');
-header ('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
-header ('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: pre-check=0, post-check=0, max-age=0', false);
+header('Pragma: no-cache');
+header('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -138,29 +138,46 @@ for($i = 0; $i < $total_posts; $i++)
 	$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : '';
 	$message = $postrow[$i]['post_text'];
 
-	// Don't want any HTML on printview
-	if($postrow[$i]['enable_html'])
+	// Replace Naughty Words - BEGIN
+	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
 	{
-		$message = preg_replace("#(<)([\/]?.*?)(>)#is", "&lt;\\2&gt;", $message);
+		$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
+		$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
 	}
-	// But BBcode, links and smilies are OK, possible revision in future version?
-	if(!empty($postrow[$i]['post_text_compiled']))
+	// Replace Naughty Words - END
+
+	// Convert and clean special chars!
+	$post_subject = htmlspecialchars_clean($post_subject);
+
+	// SMILEYS IN TITLE - BEGIN
+	if (($board_config['smilies_topic_title'] == true) && !$lofi)
 	{
-		$message = $postrow[$i]['post_text_compiled'];
-		$message = preg_replace("#(<)([\/]?.*?)(>)#is", "&lt;\\2&gt;", $message);
-	}
-	else
-	{
-		if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-		{
-			$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
-			$message = preg_replace($orig_word, $replacement_word, $message);
-		}
-		$bbcode->allow_html = ($board_config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
-		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
 		$bbcode->allow_smilies = ($board_config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
-		$message = $bbcode->parse($message);
+		$post_subject = $bbcode->parse_only_smilies($post_subject);
 	}
+	// SMILEYS IN TITLE - END
+
+	// Mighty Gorgon - New BBCode Functions - BEGIN
+	$bbcode->allow_html = $board_config['allow_html'] && $userdata['user_allowhtml'] && $postrow[$i]['enable_html'];
+	$bbcode->allow_bbcode = $board_config['allow_bbcode'] && $userdata['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
+	$bbcode->allow_smilies = $board_config['allow_smilies'] && empty($lofi) && $postrow[$i]['enable_smilies'];
+
+	if(preg_match('/\[code/i', $message))
+	{
+		$bbcode->allow_html = false;
+	}
+
+	if(preg_match('/\[hide/i', $message))
+	{
+		$message_compiled = false;
+	}
+
+	$message = $bbcode->parse($message);
+	if ($bbcode->allow_bbcode == false)
+	{
+		$message = str_replace("\n", "<br />", preg_replace("/\r\n/", "\n", $message));
+	}
+	// Mighty Gorgon - New BBCode Functions - END
 
 	$template->assign_block_vars('postrow', array(
 		'POSTER_NAME' => $poster,
@@ -202,7 +219,7 @@ $template->assign_vars(array(
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
 	'S_CONTENT_ENCODING' => $lang['ENCODING'],
-	'S_TIMEZONE' => sprintf($lang['All_times'], $lang[number_format($board_config['board_timezone'])]),
+	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($board_config['board_timezone'], 1)))]),
 	)
 );
 

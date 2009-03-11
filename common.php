@@ -273,17 +273,18 @@ if (defined('IN_ADMIN'))
 	include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
 }
 include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
+// We do not need this any longer, unset for safety purposes
+unset($dbuser);
+unset($dbpasswd);
+unset($db->password);
+unset($sql);
+
 // MG Cash MOD For IP - BEGIN
 if (defined('CASH_MOD') && defined('IN_CASHMOD'))
 {
 	include(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
 }
 // MG Cash MOD For IP - END
-// We do not need this any longer, unset for safety purposes
-unset($dbuser);
-unset($dbpasswd);
-unset($db->password);
-unset($sql);
 
 //
 // Obtain and encode users IP

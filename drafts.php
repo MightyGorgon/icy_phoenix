@@ -23,7 +23,7 @@ if ($board_config['allow_drafts'] == false)
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 
-$mode = ( isset($_POST['mode']) ? $_POST['mode'] : ( isset($_GET['mode']) ? $_GET['mode'] : '' ) );
+$mode = (isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : ''));
 $mode_array = array('loadr', 'loadn', 'loadp', 'delete');
 $mode = (in_array($mode, $mode_array) ? $mode : '');
 
@@ -32,19 +32,19 @@ if (!empty($_POST['kill_drafts']))
 	$mode = 'delete';
 }
 
-$start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
+$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
 
-if ( !$userdata['session_logged_in'] )
+if (!$userdata['session_logged_in'])
 {
-	$redirect = ( isset($start) ) ? ('&start=' . $start) : '';
+	$redirect = (isset($start)) ? ('&start=' . $start) : '';
 	redirect(append_sid(LOGIN_MG . '?redirect=drafts.' . PHP_EXT . $redirect, true));
 }
 
-$draft_id = ( isset($_POST['d']) ? intval($_POST['d']) : ( isset($_GET['d']) ? intval($_GET['d']) : 0 ) );
+$draft_id = (isset($_POST['d']) ? intval($_POST['d']) : (isset($_GET['d']) ? intval($_GET['d']) : 0));
 $draft_id = ($draft_id < 0) ? 0 : $draft_id;
 
-if ( ($draft_id > 0) || !empty($_POST['kill_drafts']) )
+if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 {
 	if ($mode == 'loadr')
 	{
@@ -154,16 +154,16 @@ $template->assign_vars(array(
 );
 
 $sql = "SELECT COUNT(*) as drafts_count FROM " . DRAFTS_TABLE . " d WHERE d.user_id = " . $userdata['user_id'];
-if ( !($result = $db->sql_query($sql)) )
+if (!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not obtain drafts information', '', __LINE__, __FILE__, $sql);
 }
 $row = $db->sql_fetchrow($result);
-$drafts_count = ( $row['drafts_count'] ) ? $row['drafts_count'] : 0;
+$drafts_count = ($row['drafts_count']) ? $row['drafts_count'] : 0;
 $db->sql_freeresult($result);
 $no_drafts = ($drafts_count == 0) ? true : false;
 
-//die( ($no_drafts == false) ? 'FALSE' : 'TRUE' );
+//die(($no_drafts == false) ? 'FALSE' : 'TRUE');
 
 if ($no_drafts == false)
 {
@@ -173,14 +173,14 @@ if ($no_drafts == false)
 		ORDER BY d.save_time DESC
 		LIMIT $start, " . $board_config['topics_per_page'];
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain drafts', '', __LINE__, __FILE__, $sql);
 	}
 	$draft_row = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
-	for ( $i = 0; $i < count($draft_row); $i++ )
+	for ($i = 0; $i < count($draft_row); $i++)
 	{
 		if ($i == 0)
 		{
@@ -200,7 +200,7 @@ if ($no_drafts == false)
 				WHERE t.topic_id = '" . $draft_row[$i]['topic_id'] . "'
 					AND f.forum_id = t.forum_id
 				LIMIT 1";
-			if ( !($result_d = $db->sql_query($sql_d)) )
+			if (!($result_d = $db->sql_query($sql_d)))
 			{
 				message_die(GENERAL_ERROR, 'Could not obtain topic info', '', __LINE__, __FILE__, $sql_d);
 			}
@@ -220,7 +220,7 @@ if ($no_drafts == false)
 				FROM " . FORUMS_TABLE . " f
 				WHERE f.forum_id = '" . $draft_row[$i]['forum_id'] . "'
 				LIMIT 1";
-			if ( !($result_d = $db->sql_query($sql_d)) )
+			if (!($result_d = $db->sql_query($sql_d)))
 			{
 				message_die(GENERAL_ERROR, 'Could not obtain topic info', '', __LINE__, __FILE__, $sql_d);
 			}
@@ -230,7 +230,7 @@ if ($no_drafts == false)
 			$draft_type = $lang['Drafts_NT'];
 			$draft_load = 'loadn';
 			$draft_cat_link = append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
-			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=load&amp;d=' . $draft_row[$i]['draft_id']);
+			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $draft_row_data['forum_name'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
 		}
@@ -240,12 +240,12 @@ if ($no_drafts == false)
 			$draft_type = $lang['Drafts_NPM'];
 			$draft_load = 'loadp';
 			$draft_cat_link = append_sid(IP_ROOT_PATH . 'privmsg.' . PHP_EXT);
-			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=load&amp;d=' . $draft_row[$i]['draft_id']);
+			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $lang['Drafts_NPM'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
 		}
 
-		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$template->assign_block_vars('draft_row', array(
 			'ROW_CLASS' => $row_class,
 			'S_DRAFT_ID' => $draft_row[$i]['draft_id'],
@@ -254,7 +254,7 @@ if ($no_drafts == false)
 			'DRAFT_CAT_LINK' => $draft_cat_link,
 			'DRAFT_CAT' => $draft_row[$i]['draft_cat'],
 			'DRAFT_TITLE_LINK' => $draft_title_link,
-			'DRAFT_TITLE' => stripslashes($draft_row[$i]['draft_title']),
+			'DRAFT_TITLE' => ip_stripslashes($draft_row[$i]['draft_title']),
 			'DRAFT_TIME' => create_date2($board_config['default_dateformat'], $draft_row[$i]['save_time'], $board_config['board_timezone']),
 			'U_DRAFT_LOAD' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']),
 			'U_DRAFT_DELETE' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=delete&amp;d=' . $draft_row[$i]['draft_id']),

@@ -87,18 +87,18 @@ function extract_current_page($root_path)
 		$page_dir = substr($page_dir, 0, -1);
 	}
 
-	// Current page from phpBB root (for example: adm/index.php?i=10&b=2)
+	// Current page from Icy Phoenix root (for example: adm/index.php?i=10&b=2)
 	$page = (($page_dir) ? $page_dir . '/' : '') . $page_name . (($query_string) ? '?' . $query_string : '');
 
 	// The script path from the webroot to the current directory (for example: /ip/adm/) : always prefixed with / and ends in /
 	$script_path = trim(str_replace('\\', '/', dirname($script_name)));
 
-	// The script path from the webroot to the phpBB root (for example: /ip/)
+	// The script path from the webroot to the Icy Phoenix root (for example: /ip/)
 	$script_dirs = explode('/', $script_path);
 	array_splice($script_dirs, -sizeof($page_dirs));
 	$root_script_path = implode('/', $script_dirs) . (sizeof($root_dirs) ? '/' . implode('/', $root_dirs) : '');
 
-	// We are on the base level (phpBB root == webroot), lets adjust the variables a bit...
+	// We are on the base level (Icy Phoenix root == webroot), lets adjust the variables a bit...
 	if (!$root_script_path)
 	{
 		$root_script_path = ($page_dir) ? str_replace($page_dir, '', $script_path) : $script_path;
@@ -106,6 +106,7 @@ function extract_current_page($root_path)
 
 	$script_path .= (substr($script_path, -1, 1) == '/') ? '' : '/';
 	$root_script_path .= (substr($root_script_path, -1, 1) == '/') ? '' : '/';
+	$post_forum_url = (defined('POST_FORUM_URL') ? POST_FORUM_URL : 'f');
 
 	$page_array += array(
 		'root_script_path'	=> str_replace(' ', '%20', htmlspecialchars($root_script_path)),
@@ -114,7 +115,7 @@ function extract_current_page($root_path)
 		'page_name'					=> $page_name,
 		'page'							=> $page,
 		'query_string'			=> $query_string,
-		'forum'							=> (isset($_REQUEST['f']) && $_REQUEST['f'] > 0) ? (int) $_REQUEST['f'] : 0,
+		'forum'							=> (isset($_REQUEST[$post_forum_url]) && $_REQUEST[$post_forum_url] > 0) ? (int) $_REQUEST[$post_forum_url] : 0,
 		'page_full'					=> $page_name . (($query_string) ? '?' . $query_string : ''),
 	);
 
@@ -334,6 +335,33 @@ if (!function_exists('htmlspecialchars_decode'))
 function htmlspecialchars_clean($string, $quote_style = ENT_NOQUOTES)
 {
 	return trim(str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style)));
+}
+
+/**
+* Add slashes only if needed
+* @ignore
+*/
+function ip_addslashes($string)
+{
+	return (STRIP ? addslashes($string) : $string);
+}
+
+/**
+* Strip slashes only if needed
+* @ignore
+*/
+function ip_stripslashes($string)
+{
+	return (STRIP ? stripslashes($string) : $string);
+}
+
+/**
+* Escape single quotes for MySQL
+* @ignore
+*/
+function ip_mysql_escape($string)
+{
+	return str_replace("\'", "''", $string);
 }
 
 /**
@@ -993,23 +1021,17 @@ function phpbb_own_realpath($path)
 	return $resolved; // We got here, in the end!
 }
 
-if (!function_exists('realpath'))
+/**
+* A wrapper for realpath
+* @ignore
+*/
+function phpbb_realpath($path)
 {
-	/**
-	* A wrapper for realpath
-	* @ignore
-	*/
-	function phpbb_realpath($path)
+	if (!function_exists('realpath'))
 	{
 		return phpbb_own_realpath($path);
 	}
-}
-else
-{
-	/**
-	* A wrapper for realpath
-	*/
-	function phpbb_realpath($path)
+	else
 	{
 		$realpath = realpath($path);
 
@@ -1030,6 +1052,9 @@ else
 	}
 }
 
+/*
+* Creates a full server path
+*/
 function create_server_url()
 {
 	// usage: $server_url = create_server_url();

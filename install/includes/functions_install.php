@@ -250,6 +250,23 @@ class ip_functions
 		return $mem_limit;
 	}
 
+	function create_server_url()
+	{
+		// usage: $server_url = create_server_url();
+		global $board_config;
+
+		$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
+		$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
+		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
+		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
+		$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
+		$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
+		$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
+		//$server_url = 'icyphoenix.com/';
+
+		return $server_url;
+	}
+
 	function ip_realpath($path)
 	{
 		return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
@@ -286,7 +303,7 @@ class ip_functions
 				}
 			}
 
-			$result = (STRIP) ? stripslashes($result) : $result;
+			$result = (defined('STRIP') && STRIP) ? stripslashes($result) : $result;
 		}
 	}
 
@@ -564,6 +581,54 @@ class mg_functions
 
 		$text = str_replace($look_up_array, $replacement_array, $text);
 
+		return $text;
+	}
+
+	function smileys_list()
+	{
+		global $db, $board_config;
+		$server_url = ip_functions::create_server_url();
+		$smileys_path = $server_url . (!empty($board_config['smilies_path']) ? ($board_config['smilies_path'] . '/') : 'images/smiles/');
+
+		$sql = "SELECT code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
+		if ($result = $db->sql_query($sql))
+		{
+			$smileys_list = array();
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$arr = array(
+					'code' => $row['code'],
+					'replace' => '[img]' . $smileys_path . $row['smile_url'] . '[/img]'
+				);
+				$smileys_list[] = $arr;
+			}
+			$db->sql_freeresult($result);
+			unset($arr);
+		}
+		return $smileys_list;
+	}
+
+	function smileys_replace_sets($smileys_list)
+	{
+		$smileys_replace_sets = array();
+		$smileys_replace_sets['search_prev'] = array();
+		$smileys_replace_sets['search_next'] = array();
+		$smileys_replace_sets['replace_prev'] = array();
+		$smileys_replace_sets['replace_next'] = array();
+		for($i = 0; $i < count($smileys_list); $i++)
+		{
+			$smileys_replace_sets['search_prev'][] = ' ' . $smileys_list[$i]['code'];
+			$smileys_replace_sets['search_next'][] = $smileys_list[$i]['code'] . ' ';
+			$smileys_replace_sets['replace_prev'][] = ' ' . $smileys_list[$i]['replace'];
+			$smileys_replace_sets['replace_next'][] = $smileys_list[$i]['replace'] . ' ';
+		}
+		return $smileys_replace_sets;
+	}
+
+	function smileys_replace($text, $smileys_replace_sets)
+	{
+		$text = str_replace($smileys_replace_sets['search_prev'], $smileys_replace_sets['replace_prev'], $text);
+		$text = str_replace($smileys_replace_sets['search_next'], $smileys_replace_sets['replace_next'], $text);
 		return $text;
 	}
 
@@ -1883,6 +1948,12 @@ class ip_page
 					return $table_output;
 				}
 
+				// Special functions needed if you wanto to converts smileys to [IMG] BBCode
+				/*
+				$smileys_list = mg_functions::smileys_list();
+				$smileys_replace_sets = mg_functions::smileys_replace_sets($smileys_list);
+				*/
+
 				$sql = "SELECT *
 					FROM " . POSTS_TABLE . "
 					ORDER BY post_id ASC
@@ -1891,10 +1962,15 @@ class ip_page
 
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$post_text_f = (defined('STRIP') ? stripslashes($row['post_text']) : $row['post_text']);
+					$post_text_f = $row['post_text'];
+					$post_text_f = ((defined('STRIP') && STRIP)? stripslashes($post_text_f) : $post_text_f);
 					$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
 
-					$post_text_f = mg_functions::custom_text_replace($post_text_f);
+					// Special function which converts smileys to [IMG] BBCode
+					//$post_text_f = mg_functions::smileys_replace($post_text_f, $smileys_replace_sets);
+
+					// Special function which performs custom text replace, you need to customize it...
+					//$post_text_f = mg_functions::custom_text_replace($post_text_f);
 
 					$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
 
@@ -1924,7 +2000,9 @@ class ip_page
 						}
 					}
 
-					$sql_update = "UPDATE " . $real_posts_table . " SET post_text = '" . (defined('STRIP') ? addslashes($post_text_f) : $post_text_f) . "' WHERE post_id = '" . $row['post_id'] . "'";
+					$post_text_f = ((defined('STRIP') && STRIP)? addslashes($post_text_f) : $post_text_f);
+
+					$sql_update = "UPDATE " . $real_posts_table . " SET post_text = '" . $post_text_f . "' WHERE post_id = '" . $row['post_id'] . "'";
 
 					if (!$result_new = $db->sql_query($sql_update))
 					{
@@ -2042,7 +2120,8 @@ class ip_page
 
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$post_text_f = (defined('STRIP') ? stripslashes($row['user_sig']) : $row['user_sig']);
+					$post_text_f = $row['user_sig'];
+					$post_text_f = ((defined('STRIP') && STRIP)? stripslashes($post_text_f) : $post_text_f);
 					$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
 
 					$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
@@ -2062,7 +2141,9 @@ class ip_page
 						$post_text_f = mg_functions::img_replace($post_text_f);
 					}
 
-					$sql_update = "UPDATE " . USERS_TABLE . " SET user_sig = '" . (defined('STRIP') ? addslashes($post_text_f) : $post_text_f) . "' WHERE user_id = '" . $row['user_id'] . "'";
+					$post_text_f = ((defined('STRIP') && STRIP)? addslashes($post_text_f) : $post_text_f);
+
+					$sql_update = "UPDATE " . USERS_TABLE . " SET user_sig = '" . $post_text_f . "' WHERE user_id = '" . $row['user_id'] . "'";
 
 					if (!$result_new = $db->sql_query($sql_update))
 					{

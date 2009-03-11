@@ -8,6 +8,8 @@
 *
 */
 
+// CTracker_Ignore: File Checked By Human
+define('MG_KILL_CTRACK', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -49,7 +51,7 @@ if (is_dir($toc_folder))
 		}
 	}
 	closedir($dir);
-	@ksort($cats_list);
+	@asort($cats_list);
 	@reset($cats_list);
 }
 
@@ -107,7 +109,7 @@ for($i = 0; $i < $smileys_count; $i++)
 
 while (($i % $smileys_columns) != 0)
 {
-	$smiley_url = $server_url . 'images/blank.gif';
+	$smiley_url = $server_url . 'images/spacer.gif';
 	$template->assign_block_vars('smileys_row.smileys_column', array(
 		'SMILEY_IMG' => false,
 		'SMILEY_BBC_INPUT' => 'sm_' . $i,

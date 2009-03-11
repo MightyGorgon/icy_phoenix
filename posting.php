@@ -103,14 +103,14 @@ if (($board_config['allow_drafts'] == true) && ($draft_mode == 'draft_load') && 
 			}
 			//$_POST['subject'] = stripslashes($draft_row['draft_subject']);
 			//$_POST['message'] = stripslashes($draft_row['draft_message']);
-			$_POST['subject'] = $draft_row['draft_subject'];
-			$_POST['message'] = $draft_row['draft_message'];
+			$_POST['subject'] = htmlspecialchars_decode($draft_row['draft_subject'], ENT_COMPAT);
+			$_POST['message'] = htmlspecialchars_decode($draft_row['draft_message'], ENT_COMPAT);
 			$preview = true;
 		}
 		else
 		{
-			$_POST['subject'] = stripslashes($draft_row['draft_subject']);
-			$_POST['message'] = stripslashes($draft_row['draft_message']);
+			$_POST['subject'] = ip_stripslashes($draft_row['draft_subject']);
+			$_POST['message'] = ip_stripslashes($draft_row['draft_message']);
 			$preview = true;
 		}
 	}
@@ -995,7 +995,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			// MG Drafts - BEGIN
 			if (($board_config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'] && (($mode == 'reply') || ($mode == 'newtopic')))
 			{
-				save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, addslashes(strip_tags($subject)), addslashes($message));
+				save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, ip_addslashes(strip_tags($subject)), ip_addslashes($message));
 				//save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, str_replace("\'", "''", strip_tags($subject)), str_replace("\'", "''", $message));
 				$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 

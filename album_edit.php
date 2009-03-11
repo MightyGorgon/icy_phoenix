@@ -87,7 +87,7 @@ if ($album_user_access['edit'] == 0)
 }
 else
 {
-	if( (!$album_user_access['moderator']) && ($userdata['user_level'] != ADMIN) )
+	if((!$album_user_access['moderator']) && ($userdata['user_level'] != ADMIN))
 	{
 		if ($thispic['pic_user_id'] != $userdata['user_id'])
 		{
@@ -122,8 +122,8 @@ if( !isset($_POST['pic_title']) )
 		'L_PIC_ID' => $lang['Pic_ID'],
 		'L_PIC_TITLE' => $lang['Pic_Image'],
 		'PIC_ID' => $pic_id,
-		'PIC_TITLE' => $thispic['pic_title'],
-		'PIC_DESC' => $thispic['pic_desc'],
+		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
+		'PIC_DESC' => htmlspecialchars($thispic['pic_desc']),
 
 		'L_PIC_DESC' => $lang['Pic_Desc'],
 		'L_PLAIN_TEXT_ONLY' => $lang['Plain_text_only'],
@@ -150,9 +150,8 @@ else
 	// --------------------------------
 	// Check posted info
 	// --------------------------------
-	$pic_title = str_replace("\'", "''", htmlspecialchars(trim($_POST['pic_title'])));
-
-	$pic_desc = str_replace("\'", "''", htmlspecialchars(substr(trim($_POST['pic_desc']), 0, $album_config['desc_length'])));
+	$pic_title = str_replace("\'", "''", trim($_POST['pic_title']));
+	$pic_desc = str_replace("\'", "''", substr(trim($_POST['pic_desc']), 0, $album_config['desc_length']));
 
 	if( empty($pic_title) )
 	{

@@ -625,8 +625,8 @@ else
 
 // Time Management - BEGIN
 // Format Timezone. We are unable to use array_pop here, because of PHP3 compatibility
-$l_timezone = explode('.', $board_config['board_timezone']);
-$l_timezone = ((count($l_timezone) > 1) && ($l_timezone[count($l_timezone) - 1] != 0)) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
+$s_timezone = str_replace('.0', '', sprintf('%.1f', number_format($board_config['board_timezone'], 1)));
+$l_timezone = $lang['tzs'][$s_timezone];
 
 if (!$userdata['session_logged_in'])
 {

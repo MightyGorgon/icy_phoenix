@@ -1,3 +1,16 @@
+<!-- IF S_QUICK_LIST -->
+
+<div style="text-align: left; padding-top: 5px;">
+<div style="text-align: right; float: right;"><span class="gensmall">[ <a href="{U_NORMAL_LIST}">{L_NORMAL_LIST}</a> ]</span></div>
+<ul style="list-style-type: none;">
+<!-- BEGIN news_poster -->
+<li>{news_poster.USERNAME}&nbsp;<span class="gensmall"><a href="{news_poster.U_VIEWNEWS}"><b>[{news_poster.NEWS}]</b></a></span></li>
+<!-- END news_poster -->
+</ul>
+</div>
+
+<!-- ELSE -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_NEWS_POSTERS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0" border="0">
 <!-- BEGIN news_poster -->
 <tr>
@@ -32,4 +45,9 @@
 <!-- END news_poster_av -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<!-- IF PAGINATION --><div style="text-align: right;"><span class="gen">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></div><!-- ENDIF -->
+<div style="text-align: left; padding-top: 5px;">
+<!-- IF PAGINATION --><div style="text-align: right; float: right;"><span class="gen">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></div><!-- ENDIF -->
+<span class="gensmall">[ <a href="{U_QUICK_LIST}">{L_QUICK_LIST}</a> ]</span>
+</div>
+
+<!-- ENDIF -->

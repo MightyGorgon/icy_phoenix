@@ -60,7 +60,7 @@
 </tr>
 <tr>
 	<td class="row-post-date">{postrow.POST_DATE}</td>
-	<td class="row-post-buttons post-buttons">{postrow.PROFILE_IMG} {postrow.PM_IMG} {postrow.EMAIL_IMG} {postrow.WWW_IMG}</td>
+	<td class="row-post-buttons post-buttons">{postrow.PROFILE_IMG} {postrow.PM_IMG} {postrow.WWW_IMG}</td>
 </tr>
 <!-- END postrow -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

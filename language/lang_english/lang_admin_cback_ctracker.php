@@ -223,7 +223,6 @@ $lang = array_merge($lang, array(
 	'ctracker_glob_res_txt' => 'When you click on "Cancel current message" any current message will be cancelled.',
 	'ctracker_glob_msg_saved' => 'The global message was successfully saved.<br /><br />Click <a href="%s">HERE</a> to go back to CrackerTracker Management.',
 	'ctracker_glob_msg_reset_ok' => 'The global message was deleted from the user table. The entered message will not be shown any more.<br /><br />Click <a href="%s">HERE</a> to go back to CrackerTracker Management.',
-	'ctracker_dbg_mode' => '<b>CrackerTracker runs on DEBUG MODE. This should not be a permanent condition.<br />Please set back to normal mode as soon as possible.<br /><br /><u>This message cannot be deleted!</u></b>',
 
 /*
 * IP&Agent Blocker

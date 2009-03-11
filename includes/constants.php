@@ -78,7 +78,7 @@ define('COMMON_TPL', '../common/');
 define('ADM_TPL', COMMON_TPL . 'acp/');
 define('CMS_TPL', COMMON_TPL . 'cms/');
 define('STATS_TPL', 'stats_modules/');
-define('STYLES_PATH', 'styles/');
+define('STYLES_PATH', 'cms/styles/');
 define('ATTACH_MOD_PATH', 'includes/attach_mod/');
 define('DOWNLOADS_PATH', 'downloads/');
 define('DL_ROOT_PATH', 'includes/downloads/');

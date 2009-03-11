@@ -17,16 +17,16 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
+// Start session management
+$userdata = session_pagestart($user_ip);
+init_userprefs($userdata);
+// End session management
+
 $topic_title = request_var('topic_title', '');
 $topic_id = request_var('topic_id', 0);
 $friendname = request_var('friendname', '');
 $message = request_var('message', '');
 $PHP_SELF = $_SERVER['PHP_SELF'];
-
-// Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
-// End session management
 
 if (!$userdata['session_logged_in'])
 {
@@ -49,24 +49,27 @@ $mail_body = str_replace("{LINK}", $topic_link, $mail_body);
 $mail_body = str_replace("{SITENAME}", $board_config['sitename'], $mail_body);
 
 $template->assign_vars(array(
-	'L_TELL_FRIEND_BODY' => $mail_body,
-
 	'SUBMIT_ACTION' => append_sid($PHP_SELF, true),
 	'L_SUBMIT' => $lang['Send_email'],
 	'SITENAME' => $board_config['sitename'],
-	'TOPIC_TITLE' => trim(stripslashes($topic_title)),
-	'TOPIC_LINK' => $topic_link,
+
 	'SENDER_NAME' => $userdata['username'],
 	'SENDER_MAIL' => $userdata['user_email'],
+
+	'L_TELL_FRIEND_BODY' => $mail_body,
+
+	'TOPIC_TITLE' => trim(stripslashes($topic_title)),
+	'TOPIC_ID' => $topic_id,
+	'TOPIC_LINK' => $topic_link,
 	)
 );
 
 /**************/
-if ( isset($_POST['submit']) )
+if (isset($_POST['submit']))
 {
 	$error = false;
 
-	if ( !empty($_POST['friendemail']) && (strpos($_POST['friendemail'], "@")>0) )
+	if (!empty($_POST['friendemail']) && (strpos($_POST['friendemail'], "@") > 0))
 	{
 		$friendemail = trim(stripslashes($_POST['friendemail']));
 		if (!$_POST['friendname'])
@@ -80,8 +83,18 @@ if ( isset($_POST['submit']) )
 		$error_msg = $lang['Tell_Friend_Wrong_Email'];
 	}
 
-	if ( !$error )
+	if (!$error)
 	{
+		$topic_title = ip_stripslashes($_POST['topic_title']);
+		$message = ip_stripslashes($_POST['message']);
+		if ($board_config['html_email'])
+		{
+			$topic_title = htmlspecialchars($topic_title);
+			$message = htmlspecialchars($message);
+			$message = str_replace("\n", '<br />', $message);
+			$message = str_replace($topic_link, ('<a href="' . $topic_link . '">' . $topic_link . '</a>'), $message);
+		}
+
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer($board_config['smtp_delivery']);
 

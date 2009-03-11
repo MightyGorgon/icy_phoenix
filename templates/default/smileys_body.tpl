@@ -1,3 +1,5 @@
+<!-- INCLUDE smileys_js.tpl -->
+
 <form action="{S_ACTION}" method="post">
 <!-- {IMG_THL}{IMG_THC}<span class="forumlink">{L_SMILEYS_GALLERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0"> -->
 <table width="100%" cellspacing="0" class="forumline">
@@ -9,7 +11,7 @@
 <!-- BEGIN smileys_column -->
 	<td class="row1g row-center">
 		<!-- IF smileys_row.smileys_column.SMILEY_IMG -->
-		<br /><img src="{smileys_row.smileys_column.SMILEY_IMG}" alt="" /><br /><br />
+		<br /><img src="{smileys_row.smileys_column.SMILEY_IMG}" alt="" onmouseover="this.style.cursor='hand';" onclick="emoticon('{smileys_row.smileys_column.SMILEY_BBC}');" /><br /><br />
 		<input class="post" name="{smileys_row.smileys_column.SMILEY_BBC_INPUT}" style="width: 60px;" value="{smileys_row.smileys_column.SMILEY_BBC}" type="text" readonly="readonly" onClick="javascript:this.form.{smileys_row.smileys_column.SMILEY_BBC_INPUT}.focus(); this.form.{smileys_row.smileys_column.SMILEY_BBC_INPUT}.select();" />
 		<!-- ELSE -->
 		&nbsp;

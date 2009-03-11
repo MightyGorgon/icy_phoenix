@@ -68,7 +68,7 @@ class pafiledb_functions
 
 		while ($icon = @readdir($handle))
 		{
-			if (($icon != '.') && ($icon != '..') && ($icon != 'index.htm') && ($icon != 'index.html'))
+			if (($icon != '.') && ($icon != '..') && ($icon != 'index.htm') && ($icon != 'index.html') && ($icon != 'spacer.gif'))
 			{
 				if ($file_posticon == $icon)
 				{
@@ -699,7 +699,7 @@ function pafiledb_page_footer()
 		'JUMPMENU' => $pafiledb->modules[$pafiledb->module_name]->jumpmenu_option(),
 		'L_JUMP' => $lang['jump'],
 		'S_JUMPBOX_ACTION' => append_sid('dload.' . PHP_EXT),
-		'S_TIMEZONE' => sprintf($lang['All_times'], $lang[number_format($board_config['board_timezone'])])
+		'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($board_config['board_timezone'], 1)))])
 		)
 	);
 	$pafiledb->modules[$pafiledb->module_name]->_pafiledb();

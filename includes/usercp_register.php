@@ -1541,16 +1541,19 @@ else
 		switch($user_avatar_type)
 		{
 			case USER_AVATAR_UPLOAD:
-				$avatar_img = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="avatar" />' : '';
+				$avatar_img = ($board_config['allow_avatar_upload']) ? '<img src="' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
 				break;
 			case USER_AVATAR_REMOTE:
 				$avatar_img = resize_avatar($userdata['user_id'], $userdata['user_level'], $user_avatar);
 				break;
 			case USER_AVATAR_GALLERY:
-				$avatar_img = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="avatar" />' : '';
+				$avatar_img = ($board_config['allow_avatar_local']) ? '<img src="' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
 				break;
 			case USER_AVATAR_GENERATOR:
-				$avatar_img = ($board_config['allow_avatar_generator']) ? '<img src="' . $user_avatar . '" alt="avatar" />' : '';
+				$avatar_img = ($board_config['allow_avatar_generator']) ? '<img src="' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
+				break;
+			case USER_GRAVATAR:
+				$avatar_img = ($board_config['enable_gravatars']) ? '<img src="' . get_gravatar($user_avatar) . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
 				break;
 		}
 	}

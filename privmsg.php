@@ -1483,9 +1483,8 @@ elseif ($submit || $refresh || ($mode != ''))
 		// MG Drafts - BEGIN
 		if (($board_config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'])
 		{
-			save_draft($draft_id, $userdata['user_id'], 0, 0, addslashes(trim(strip_tags($_POST['subject']))), addslashes(trim($_POST['message'])));
+			save_draft($draft_id, $userdata['user_id'], 0, 0, ip_addslashes(trim(strip_tags($_POST['subject']))), ip_addslashes(trim($_POST['message'])));
 			//save_draft($draft_id, $userdata['user_id'], 0, 0, str_replace("\'", "''", trim(strip_tags($_POST['subject']))), str_replace("\'", "''", trim(strip_tags($_POST['message']))));
-			//save_draft($draft_id, $userdata['user_id'], 0, 0, str_replace("\'", "''", $privmsg_subject), str_replace("\'", "''", $privmsg_message));
 			$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
 
 			$redirect_url = append_sid('privmsg.' . PHP_EXT . '?folder=inbox');

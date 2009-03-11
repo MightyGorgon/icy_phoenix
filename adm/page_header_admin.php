@@ -81,10 +81,6 @@ else
 }
 // Mighty Gorgon - AJAX Features - End
 
-// Format Timezone. We are unable to use array_pop here, because of PHP3 compatibility
-$l_timezone = explode('.', $board_config['board_timezone']);
-$l_timezone = (count($l_timezone) > 1 && $l_timezone[count($l_timezone) - 1] != 0) ? $lang[sprintf('%.1f', $board_config['board_timezone'])] : $lang[number_format($board_config['board_timezone'])];
-
 if(is_array($css_style_include))
 {
 	for ($i = 0; $i < count($css_style_include); $i++)
@@ -180,7 +176,7 @@ $template->assign_vars(array(
 	'L_ACP_IP_SETTINGS' => $lang['120_MG_Configuration'],
 	'L_ACP_CACHE' => $lang['127_Clear_Cache'],
 
-	'S_TIMEZONE' => sprintf($lang['All_times'], $l_timezone),
+	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($board_config['board_timezone'], 1)))]),
 	'S_LOGIN_ACTION' => append_sid('../' . LOGIN_MG),
 	'S_JUMPBOX_ACTION' => append_sid('../' . VIEWFORUM_MG),
 	'S_CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),

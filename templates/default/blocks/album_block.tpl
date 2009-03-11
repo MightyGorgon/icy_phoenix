@@ -10,7 +10,7 @@
 	<td class="row1 row-center" width="{S_COL_WIDTH}">
 		<span class="genmed" style="line-height:150%">
 			<b>{recent_pics.recent_detail.TITLE}</b><br />
-			<a href="{recent_pics.recent_detail.U_PIC}" {TARGET_BLANK}><img src="{recent_pics.recent_detail.THUMBNAIL}" alt="{recent_pics.recent_detail.DESC}" title="{recent_pics.recent_detail.DESC}" /></a><br />
+			<a href="{recent_pics.recent_detail.U_PIC}" {TARGET_BLANK}><img src="{recent_pics.recent_detail.THUMBNAIL}" alt="{recent_pics.recent_detail.TITLE}" title="{recent_pics.recent_detail.TITLE}" /></a><br />
 			<b>{recent_pics.recent_detail.POSTER}</b><br />
 			{recent_pics.recent_detail.TIME}
 		</span>
@@ -18,7 +18,7 @@
 	</td>
 	<!-- END recent_detail -->
 	<!-- BEGIN recent_no_detail -->
-	<td class="row1 row-center"><span class="genmed" style="line-height:150%">&nbsp;</span><br /><br /></td>
+	<td class="row1 row-center"><span class="genmed" style="line-height: 150%">&nbsp;</span><br /><br /></td>
 	<!-- END recent_no_detail -->
 </tr>
 <!-- END recent_pics -->
