@@ -214,14 +214,14 @@ function openAllSmiles()
 		{L_MAX_LENGTH}: <b>{S_MAX_LENGTH}</b></span>
 	</td>
 	<td class="row1" valign="top">
-		<textarea name="comment" class="post" cols="80" rows="9" wrap="virtual" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" style="vertical-align: top;">{S_MESSAGE}</textarea>
+		<textarea name="comment" class="post" cols="80" rows="9" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" style="vertical-align: top;">{S_MESSAGE}</textarea>
 	</td>
 	<td class="row1 row-center" valign="middle" width="25%">
 		<table align="center" width="100%" cellpadding="5" cellspacing="0" border="0">
 		<tr>
 			<td align="center">
 			<!-- BEGIN smilies -->
-				<img src="{switch_comment_post.smilies.URL}" style="padding: 2px;" border="0" onmouseover="this.style.cursor='hand';" onclick="emoticon('{switch_comment_post.smilies.CODE}');" alt="{switch_comment_post.smilies.DESC}" />
+				<img src="{switch_comment_post.smilies.URL}" style="padding: 2px;" border="0" onmouseover="this.style.cursor='pointer';" onclick="emoticon('{switch_comment_post.smilies.CODE}');" alt="{switch_comment_post.smilies.DESC}" />
 			<!-- END smilies -->
 			</td>
 		</tr>

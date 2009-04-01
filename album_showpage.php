@@ -320,20 +320,26 @@ if ($album_config['invert_nav_arrows'] == 0)
 		{
 			$thumbnail_file = picture_quick_thumb($total_pic_rows[$i]['pic_filename'], $total_pic_rows[$i]['pic_thumbnail'], $thumbnail_file);
 		}
-		if ($album_config['lb_preview'] == 0)
+
+		$pic_preview = '';
+		$pic_preview_hs = '';
+		if ($album_config['lb_preview'])
 		{
-			$pic_preview = '';
-		}
-		else
-		{
+			$slideshow_cat = '';
+			$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+			$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes(htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 		}
+
 		if ($album_config['show_pics_nav'] == 1)
 		{
 			$template->assign_block_vars('pics_nav.pics', array(
 				'U_PIC_THUMB' => $thumbnail_file,
 				'U_PIC_LINK' => ($i == $new_pic_array_id) ? '#' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append)),
+				'U_PIC_LINK_HS' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])),
 				'PIC_TITLE' => htmlspecialchars($total_pic_rows[$i]['pic_title']),
+				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
 				)
@@ -352,20 +358,26 @@ else
 		{
 			$thumbnail_file = picture_quick_thumb($total_pic_rows[$i]['pic_filename'], $total_pic_rows[$i]['pic_thumbnail'], $thumbnail_file);
 		}
-		if ($album_config['lb_preview'] == 0)
+
+		$pic_preview = '';
+		$pic_preview_hs = '';
+		if ($album_config['lb_preview'])
 		{
-			$pic_preview = '';
-		}
-		else
-		{
+			$slideshow_cat = '';
+			$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+			$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes(htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 		}
+
 		if ($album_config['show_pics_nav'] == 1)
 		{
 			$template->assign_block_vars('pics_nav.pics', array(
 				'U_PIC_THUMB' => $thumbnail_file,
 				'U_PIC_LINK' => ($i == $new_pic_array_id) ? '#' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append)),
+				'U_PIC_LINK_HS' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])),
 				'PIC_TITLE' => htmlspecialchars($total_pic_rows[$i]['pic_title']),
+				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
 				)
@@ -1165,7 +1177,6 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 	// BBCBMG - BEGIN
 	//$bbcbmg_in_acp = true;
-	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 	$template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 	// BBCBMG - END

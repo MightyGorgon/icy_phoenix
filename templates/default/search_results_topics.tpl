@@ -41,7 +41,7 @@
 	<td class="row1 row-center-small">{searchresults.VIEWS}</td>
 	<td class="row2 row-center-small">{searchresults.LAST_POST_TIME}<br />{searchresults.LAST_POST_AUTHOR} {searchresults.LAST_POST_IMG}</td>
 	<!-- BEGIN switch_upi2db_on -->
-	<td class="row1 row-center-small" nowrap="nowrap"><input type="checkbox" name="mar_topic_id[]" value="{searchresults.TOPIC_ID}" {searchresults.NO_AGM}></td>
+	<td class="row1 row-center-small" nowrap="nowrap"><input type="checkbox" name="mar_topic_id[]" value="{searchresults.TOPIC_ID}" {searchresults.NO_AGM} /></td>
 	<!-- END switch_upi2db_on -->
 </tr>
 <!-- END searchresults -->

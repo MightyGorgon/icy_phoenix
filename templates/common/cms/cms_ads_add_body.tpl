@@ -20,7 +20,7 @@
 </tr>
 <tr>
 	<td class="row1"><strong>{L_AD_TEXT}</strong></td>
-	<td class="row2"><textarea name="ad_text" rows="15" cols="35" wrap="virtual" style="width:98%" class="post">{AD_TEXT}</textarea></td>
+	<td class="row2"><textarea name="ad_text" rows="15" cols="35" style="width: 98%" class="post">{AD_TEXT}</textarea></td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_AD_POSITION}</strong></td>

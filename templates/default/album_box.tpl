@@ -30,7 +30,7 @@
 	<!-- BEGIN catrow -->
 	<tr>
 		<td class="row1" style="padding-right:5px;"><img src="{catmain.catrow.CAT_IMG}" alt="" /></td>
-		<td class="row1h{catmain.catrow.XS_NEW} row-forum" onclick="window.location.href='{catmain.catrow.U_VIEWCAT}'"height="50" width="100%">
+		<td class="row1h{catmain.catrow.XS_NEW} row-forum" onclick="window.location.href='{catmain.catrow.U_VIEWCAT}'" height="50" width="100%">
 			<span class="forumlink{catmain.catrow.XS_NEW}">
 			<a href="{catmain.catrow.U_VIEWCAT}" class="forumlink{catmain.catrow.XS_NEW}">{catmain.catrow.CAT_TITLE}</a>
 				<!-- BEGIN newpics -->
@@ -76,7 +76,7 @@
 	<!-- BEGIN cat_public_footer -->
 		<!-- BEGIN show_all_pics_link -->
 		<tr>
-			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
+			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onmouseover="this.className='row2';" onmouseout="this.className='row1';">
 				<span class="forumlink">
 					&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_ALLPICS}" class="cattitle">{L_ALBUM_ALLPICS}</a>
 				</span>
@@ -85,24 +85,24 @@
 		<!-- END show_all_pics_link -->
 		<!-- BEGIN show_otf_link -->
 		<tr>
-			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
+			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onmouseover="this.className='row2';" onmouseout="this.className='row1';">
 				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_OTF}" class="cattitle">{L_ALBUM_OTF}</a></span>
 			</td>
 		</tr>
 		<!-- END show_otf_link -->
 		<tr>
-			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
+			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onmouseover="this.className='row2';" onmouseout="this.className='row1';">
 				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_HON}" class="cattitle">{L_ALBUM_HON}</a></span>
 			</td>
 		</tr>
 		<tr>
-			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
+			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onmouseover="this.className='row2';" onmouseout="this.className='row1';">
 				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{U_ALBUM_RDF}" class="cattitle">{L_ALBUM_RDF}</a>&nbsp;|&nbsp;<a href="{U_ALBUM_RSS}" class="cattitle">{L_ALBUM_RSS}</a></span>
 			</td>
 		</tr>
 		<!-- BEGIN show_personal_galleries_link -->
 		<tr>
-			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onMouseOver="this.className='row2';" onMouseOut="this.className='row1';">
+			<td class="row1" height="50" colspan="{catfooter.cat_public_footer.FOOTER_COL_SPAN}" onmouseover="this.className='row2';" onmouseout="this.className='row1';">
 				<span class="forumlink">&nbsp;{NAV_DOT}&nbsp;<a href="{catfooter.cat_public_footer.U_USERS_PERSONAL_GALLERIES}" class="cattitle">{catfooter.cat_public_footer.L_USERS_PERSONAL_GALLERIES}</a></span>
 				<br />
 				<img src="{SPACER}" width="5" height="15" alt="" />

@@ -15,11 +15,30 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
+if (!defined('IN_ICYPHOENIX'))
+{
+	die('Hacking attempt');
+}
 
 // some standard lists
-$list_yes_no = array('Yes' => 1, 'No' => 0);
 define('BOARD_ADMIN', 98);
+
+$list_yes_no = array('Yes' => 1, 'No' => 0);
+$list_time_intervals = array(
+	'Disabled' => 0,
+	'15M' => 900,
+	'30M' => 1800,
+	'1H' => 3600,
+	'2H' => 7200,
+	'3H' => 10800,
+	'6H' => 21600,
+	'12H' => 43200,
+	'1D' => 86400,
+	'3D' => 259200,
+	'7D' => 604800,
+	'14D' => 1209600,
+	'30D' => 2592000,
+);
 
 /*
 * mods_settings_get_lang() : translation keys

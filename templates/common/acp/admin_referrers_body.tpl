@@ -26,7 +26,7 @@ function toggle_check_all()
 	<th nowrap="nowrap">{L_FIRST}</th>
 	<th nowrap="nowrap">{L_LAST}</th>
 	<th nowrap="nowrap">{L_IP}</th>
-	<th width="1" nowrap="nowrap"><input type="checkbox" name="check_all_box" onClick="toggle_check_all()" /></th>
+	<th width="1" nowrap="nowrap"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
 </tr>
 <!-- BEGIN refersrow -->
 <tr>

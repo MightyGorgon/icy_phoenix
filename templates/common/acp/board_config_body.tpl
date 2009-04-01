@@ -99,7 +99,7 @@
 </tr>
 <tr>
 	<td class="row1"><strong>{L_HEADER_TABLE_TEXT}</strong></td>
-	<td class="row2"><textarea name="header_table_text" rows="10" cols="35" wrap="virtual" style="width:300" class="post" >{HEADER_TBL_TXT}</textarea></td>
+	<td class="row2"><textarea name="header_table_text" rows="10" cols="35" style="width:300" class="post" >{HEADER_TBL_TXT}</textarea></td>
 </tr>
 <tr><th colspan="2">{L_PRIVATE_MESSAGING}</th></tr>
 <tr>

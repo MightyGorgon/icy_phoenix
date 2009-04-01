@@ -949,6 +949,10 @@ function display_attachments($post_id, $type = 'postrow')
 
 				if (($max_image_width != 0) && ($board_config['liw_attach_enabled'] == 1) && !isset($username_from))
 				{
+					if (!function_exists('liw_get_dimensions'))
+					{
+						include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_includes.' . PHP_EXT);
+					}
 					list($image_width, $image_height) = liw_get_dimensions($server_protocol . $server_name . $server_port . $script_name . '/' . $img_source, $post_id);
 
 					if ($image_width && ($image_width > $max_image_width) || empty($image_width) || empty($image_height) )

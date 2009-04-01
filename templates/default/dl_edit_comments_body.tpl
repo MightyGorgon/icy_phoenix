@@ -4,7 +4,7 @@
 	<td class="row1" width="20%" valign="top" nowrap="nowrap">{BBCB_SMILEYS_MG}</td>
 	<td class="row2" valign="top">
 		{BBCB_MG}
-		<textarea name="message" rows="15" cols="75" wrap="virtual" style="width:98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{COMMENT_TEXT}</textarea>
+		<textarea name="message" rows="15" cols="75" style="width: 98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{COMMENT_TEXT}</textarea>
 	</td>
 </tr>
 <tr><td colspan="2" class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

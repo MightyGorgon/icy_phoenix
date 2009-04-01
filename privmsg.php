@@ -1125,13 +1125,13 @@ elseif ($download && $mark_list)
 		{
 			$sql = "SELECT pm.privmsgs_date, pm.privmsgs_subject, pm.privmsgs_text, us.username, us.user_id
 				FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " us
-				WHERE pm.privmsgs_text_id = " . $mark_list[$i] . " AND pm.privmsgs_id = " . $mark_list[$i] . "
+				WHERE pm.privmsgs_id = " . $mark_list[$i] . "
 				AND us.user_id = pm.privmsgs_from_userid";
 			if ($result = $db->sql_query($sql))
 			{
 				$db_row = $db->sql_fetchrow($result);
 				$tmpmsg = wordwrap($db_row['privmsgs_text'], 78, $crlf);
-				$from = ($folder=='inbox' || $folder=='savebox') ? $lang['From'] : $lang['To'];
+				$from = (($folder=='inbox') || ($folder=='savebox')) ? $lang['From'] : $lang['To'];
 				$pmtext .= '------------------------------------------------------------------------------' . $crlf;
 				$pmtext .= $lang['Mailbox'] . ': ' . $userdata['username'] . $crlf;
 				$pmtext .= $from . ': ' . $db_row['username'] . $crlf;
@@ -1146,7 +1146,8 @@ elseif ($download && $mark_list)
 			}
 			$i++;
 		}
-		$filename = $board_config['sitename'] . '_' . $disp_folder . '_' . date('Ymd', time()) . '.txt';
+		$filename = $board_config['sitename'] . '_' . $disp_folder . '_' . date('Ymd', time());
+		$filename = ereg_replace("[^A-Za-z0-9]", '_', strtolower($filename)) . '.txt';
 		header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 		header('Content-Disposition: attachment;filename=' . $filename);
 		header('Content-Transfer-Encoding: plain/text');
@@ -2191,7 +2192,6 @@ elseif ($submit || $refresh || ($mode != ''))
 	);
 
 	// BBCBMG - BEGIN
-	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 	$template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 	// BBCBMG - END

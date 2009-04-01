@@ -19,11 +19,11 @@ ob_start();
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width:98%" tabindex="2" class="post" value="{qr_subject}" /></td>
+	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%" tabindex="2" class="post" value="{qr_subject}" /></td>
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{SPACER}" width="200" height="1" alt="" /></b></span></td>
-	<td class="row2" align="left" width="100%"><textarea name="message" rows="15" cols="35" style="width:98%" tabindex="3" class="post"></textarea></td>
+	<td class="row2" align="left" width="100%"><textarea name="message" rows="15" cols="35" style="width: 98%" tabindex="3" class="post"></textarea></td>
 </tr>
 <tr>
 	<td class="row1" align="left" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Options']; ?>:</b></span></td>

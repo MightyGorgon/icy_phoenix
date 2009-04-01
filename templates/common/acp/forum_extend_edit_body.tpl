@@ -138,7 +138,7 @@ function update_icon(newimage)
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="genmed"><b>{L_FORUM_RULES}</b></span></td>
-	<td class="row2"><textarea rows="8" cols="70" wrap="virtual" name="rules" class="post">{RULES}</textarea></td>
+	<td class="row2"><textarea rows="8" cols="70" name="rules" class="post">{RULES}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="genmed"><b>{L_RULES_APPEAR_IN}</b></span></td>

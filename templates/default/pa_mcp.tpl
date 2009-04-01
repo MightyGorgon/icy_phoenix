@@ -112,8 +112,8 @@
 <tr>
 	<td class="cat" align="center">
 		{S_HIDDEN_FIELDS}
-		<input type="submit" class="liteoption" name="approve" value="{L_APPROVE_FILE}" onClick="set_add_file(false); set_delete_file(false);" />
-		<input type="submit" class="liteoption" name="unapprove" value="{L_UNAPPROVE_FILE}" onClick="set_add_file(false); set_delete_file(false);" />
+		<input type="submit" class="liteoption" name="approve" value="{L_APPROVE_FILE}" onclick="set_add_file(false); set_delete_file(false);" />
+		<input type="submit" class="liteoption" name="unapprove" value="{L_UNAPPROVE_FILE}" onclick="set_add_file(false); set_delete_file(false);" />
 	</td>
 </tr>
 </table>

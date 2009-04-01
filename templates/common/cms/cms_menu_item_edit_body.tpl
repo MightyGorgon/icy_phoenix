@@ -78,7 +78,7 @@ function option_disabled (form)
 			<td class="row1" height="27">{L_LINK_EXTERNAL}</td>
 			<td class="row2">
 				<table cellspacing="0" cellpadding="0"><tr>
-				<td width="17" align="center"><input type="radio" name="menu_link_external" value="1" {MI_MENU_LINK_EXTERNAL_YES} {MI_MENU_DISABLED} id="menu_external_yes"/></td> 
+				<td width="17" align="center"><input type="radio" name="menu_link_external" value="1" {MI_MENU_LINK_EXTERNAL_YES} {MI_MENU_DISABLED} id="menu_external_yes"/></td>
 				<td>{L_YES}&nbsp;&nbsp;</td>
 				<td width="17" align="center"><input type="radio" name="menu_link_external" value="0" {MI_MENU_LINK_EXTERNAL_NO} {MI_MENU_DISABLED} id="menu_external_no"/></td>
 				<td>{L_NO}</td>
@@ -92,7 +92,7 @@ function option_disabled (form)
 		</tr>
 		<tr>
 			<td class="row1">{L_LINK_DESC}</td>
-			<td class="row2"><textarea name="menu_desc" rows="6" cols="35" wrap="virtual" style="width:98%" class="post">{MI_MENU_DESC}</textarea></td>
+			<td class="row2"><textarea name="menu_desc" rows="6" cols="35" style="width: 98%" class="post">{MI_MENU_DESC}</textarea></td>
 		</tr>
 		<tr>
 			<td class="row1">{L_LINK_PERMISSION}</td>

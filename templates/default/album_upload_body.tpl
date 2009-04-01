@@ -254,7 +254,7 @@ function InitForm()
 	<tr>
 		<td class="row1" valign="top"><span class="gen">{L_UPLOAD_PIC_FROM_MACHINE}:</span></td>
 		<td class="row2">
-			<span id="addbutton" class="gen"><input type="button" value="{L_ADD_FILE}" onClick="AddFileField()" class="liteoption" /></span>
+			<span id="addbutton" class="gen"><input type="button" value="{L_ADD_FILE}" onclick="AddFileField()" class="liteoption" /></span>
 			<div id="file_browse" style="position:relative;"></div>
 		</td>
 	</tr>
@@ -329,7 +329,7 @@ function InitForm()
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
 		<!-- END switch_nuffload_enabled -->
 		<!-- BEGIN switch_nuffload_disabled -->
-		<input type="reset" value="{L_RESET}" class="liteoption" onClick="InitForm();" />&nbsp;&nbsp;&nbsp;
+		<input type="reset" value="{L_RESET}" class="liteoption" onclick="InitForm();" />&nbsp;&nbsp;&nbsp;
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
 		<!-- END switch_nuffload_disabled -->
 	</td>

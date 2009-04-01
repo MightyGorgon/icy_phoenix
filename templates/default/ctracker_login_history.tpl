@@ -34,7 +34,7 @@
 		</span>
 	</td>
 </tr>
-<tr><td class="cat" align="center" colspan="2"><input type="Submit" name="submit" value="{log_set.L_SEND}" class="mainoption" /></td></tr>
+<tr><td class="cat" align="center" colspan="2"><input type="submit" name="submit" value="{log_set.L_SEND}" class="mainoption" /></td></tr>
 </table>{IMG_TBR}
 </form>
 <!-- END log_set -->

@@ -47,7 +47,7 @@ function toggle_check_all()
 <form method="post" action="{S_MODE_ACTION}" name="delete_ids">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<th align="right" width="3%"><input type="checkbox" name="check_all_box" onClick="toggle_check_all()" /></th>
+	<th align="right" width="3%"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
 	<th align="left" width="45%">{L_TITLE}</th>
 	<th>{L_POSTER}</th>
 	<th>{L_TIME}</th>

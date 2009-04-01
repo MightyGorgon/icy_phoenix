@@ -262,7 +262,6 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				for($i = 0; $i < count($forum_access); $i++)
 				{
 					$forum_id = $forum_access[$i]['forum_id'];
-
 					for($j = 0; $j < count($forum_auth_fields); $j++)
 					{
 						$forum_auth_level_fields[$forum_id][$forum_auth_fields[$j]] = $forum_access[$i][$forum_auth_fields[$j]] == AUTH_ACL;
@@ -283,13 +282,30 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			else
 			{
 				$change_acl_list = array();
+				$used_forums = array();
 				for($j = 0; $j < count($forum_auth_fields); $j++)
 				{
 					$auth_field = $forum_auth_fields[$j];
-
 					while(list($forum_id, $value) = @each($_POST['private_' . $auth_field]))
 					{
 						$change_acl_list[$forum_id][$auth_field] = $value;
+					}
+
+					if (!isset($used_forums[$forum_id]))
+					{
+						$sql = ($mode == 'user') ? ("SELECT aa.*, g.group_single_user FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND aa.forum_id = $forum_id AND g.group_single_user = 1") : ("SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id AND forum_id = $forum_id");
+						if (!($result = $db->sql_query($sql)))
+						{
+							message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
+						}
+						if ($row = $db->sql_fetchrow($result))
+						{
+							for ($k = 0; $k < count($forum_auth_fields); $k++)
+							{
+								$change_acl_list[$forum_id][$forum_auth_fields[$k]] = $row[$forum_auth_fields[$k]];
+							}
+						}
+						$used_forums[$forum_id] = 1;
 					}
 				}
 			}
@@ -330,9 +346,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			{
 				$forum_id = $forum_access[$i]['forum_id'];
 
-				if (
-					(isset($auth_access[$forum_id]['auth_mod']) && $change_mod_list[$forum_id] != $auth_access[$forum_id]['auth_mod']) ||
-					(!isset($auth_access[$forum_id]['auth_mod']) && !empty($change_mod_list[$forum_id]))
+				if (isset($change_mod_list[$forum_id]) && ((isset($auth_access[$forum_id]['auth_mod']) && ($change_mod_list[$forum_id] != $auth_access[$forum_id]['auth_mod'])) || (!isset($auth_access[$forum_id]['auth_mod']) && !empty($change_mod_list[$forum_id])))
 				)
 				{
 					$update_mod_status[$forum_id] = $change_mod_list[$forum_id];
@@ -808,7 +822,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 						}
 					}
 
-					$optionlist_acl = '<select name="private[' . $forum_id . ']">';
+					$optionlist_acl = '<select id="private_id_' . $forum_id . '" name="private[' . $forum_id . ']">';
 
 					if ($is_admin || $user_ary['auth_mod'])
 					{
@@ -842,7 +856,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 
 							if($forum_access[$j][$field_name] == AUTH_ACL)
 							{
-								$optionlist_acl_adv[$forum_id][$k] = '<select name="private_' . $field_name . '[' . $forum_id . ']">';
+								$optionlist_acl_adv[$forum_id][$k] = '<select id="private_id_' . $field_name . '_' . $forum_id . '" name="private_' . $field_name . '[' . $forum_id . ']">';
 
 								if(isset($auth_field_acl[$forum_id][$field_name]) && !($is_admin || $user_ary['auth_mod']))
 								{
@@ -875,7 +889,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 				}
 			}
 
-			$optionlist_mod = '<select name="moderator[' . $forum_id . ']">';
+			$optionlist_mod = '<select id="moderator_id_' . $forum_id . '" name="moderator[' . $forum_id . ']">';
 			$optionlist_mod .= ($user_ary['auth_mod']) ? '<option value="1" selected="selected">' . $lang['Is_Moderator'] . '</option><option value="0">' . $lang['Not_Moderator'] . '</option>' : '<option value="1">' . $lang['Is_Moderator'] . '</option><option value="0" selected="selected">' . $lang['Not_Moderator'] . '</option>';
 			$optionlist_mod .= '</select>';
 

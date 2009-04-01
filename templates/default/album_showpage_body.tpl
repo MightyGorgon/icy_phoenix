@@ -93,7 +93,7 @@ function checkFormRate()
 		</tr>
 		<tr>
 			<td valign="top" align="right"><span class="genmed">{L_PIC_BBCODE}:</span></td>
-			<td valign="top" align="left"><form name="select_all" action=""><input class="post" name="BBCode" size="50" maxlength="200" value="{PIC_BBCODE}" type="text" readonly="readonly" onClick="javascript:this.form.BBCode.focus();this.form.BBCode.select();" /></form></td>
+			<td valign="top" align="left"><form name="select_all" action=""><input class="post" name="BBCode" size="50" maxlength="200" value="{PIC_BBCODE}" type="text" readonly="readonly" onclick="javascript:this.form.BBCode.focus();this.form.BBCode.select();" /></form></td>
 		</tr>
 		<tr>
 			<td valign="top" align="right"><span class="genmed">{L_POSTED}:</span></td>
@@ -162,7 +162,7 @@ function checkFormRate()
 	<td class="row1g row-center" width="20%" align="center">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{pics_nav.pics.U_PIC_LINK}"><img src="{pics_nav.pics.U_PIC_THUMB}" {THUMB_SIZE} alt="{pics_nav.pics.PIC_TITLE}" title="{pics_nav.pics.PIC_TITLE}" vspace="10" style="{pics_nav.pics.STYLE}" {pics_nav.pics.PIC_PREVIEW} /></a>
+			<a href="{pics_nav.pics.U_PIC_LINK}"><img src="{pics_nav.pics.U_PIC_THUMB}" {THUMB_SIZE} alt="{pics_nav.pics.PIC_TITLE}" title="{pics_nav.pics.PIC_TITLE}" vspace="10" style="{pics_nav.pics.STYLE}" /></a>
 		</div></div></td></tr></table>
 		</center>
 	</td>
@@ -237,7 +237,7 @@ function checkFormRate()
 	<td class="row1 row-center" width="20%"><br /><br /><br /><br />{BBCB_SMILEYS_MG}</td>
 	<td class="row2" valign="top">
 		{BBCB_MG}
-		<textarea name="message" rows="15" cols="35" wrap="virtual" style="width:96%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{S_MESSAGE}</textarea>
+		<textarea name="message" rows="15" cols="35" style="width:96%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{S_MESSAGE}</textarea>
 	</td>
 </tr>
 <tr><td class="cat" align="center" colspan="2" height="28"><input class="mainoption" type="submit" name="submit" value="{L_SUBMIT}" /></td></tr>

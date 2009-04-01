@@ -5,6 +5,7 @@
 		<tr><td align="center"><span class="gensmall"><b>{B_POLL_QUESTION}</b></span></td></tr>
 		<tr>
 			<td align="center">
+				<!-- IF S_SHOW_BALLOT -->
 				<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 				<!-- BEGIN b_poll_option -->
 				<tr>
@@ -13,6 +14,9 @@
 				</tr>
 				<!-- END b_poll_option -->
 				</table>
+				<!-- ELSE -->
+				&nbsp;
+				<!-- ENDIF -->
 			</td>
 		</tr>
 		<tr>

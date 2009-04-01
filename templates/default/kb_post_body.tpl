@@ -112,7 +112,7 @@ function attach_rules(forum_id)
 				<tr>
 					<td class="row2" valign="top" align="left">
 						{BBCB_MG}
-						<textarea name="message" rows="30" cols="35" wrap="virtual" style="width:98%" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{ARTICLE_BODY}</textarea>
+						<textarea name="message" rows="30" cols="35" style="width: 98%" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{ARTICLE_BODY}</textarea>
 						<!-- BEGIN formatting -->
 						<!--
 						<br /><span class="gen"><b><nobr>{L_FORMATTING}</nobr></b></span><hr><span class="gensmall"><b>{L_PAGES}</b><br />{L_PAGES_EXPLAIN}<br /><b>{L_TOC}</b><br />{L_TOC_EXPLAIN}<br /><b>{L_ABSTRACT}</b><br />{L_ABSTRACT_EXPLAIN}<br /><hr><b>{L_TITLE_FORMAT}</b><br />{L_TITLE_FORMAT_EXPLAIN}<br /><b>{L_SUBTITLE_FORMAT}</b><br />{L_SUBTITLE_FORMAT_EXPLAIN}<br /><b>{L_SUBSUBTITLE_FORMAT}</b><br />{L_SUBSUBTITLE_FORMAT_EXPLAIN}</span><br /><br />

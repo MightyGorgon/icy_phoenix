@@ -137,7 +137,7 @@ if ($board_config['page_gen'] == 1)
 		$gzip_text = ($board_config['gzip_compress']) ? 'GZIP ' . $lang['Enabled']: 'GZIP ' . $lang['Disabled'];
 		$debug_text = (DEBUG == true) ? $lang['Debug_On'] : $lang['Debug_Off'];
 		$memory_usage_text = '';
-		$excuted_queries = $db->num_queries;
+		$excuted_queries = $db->num_queries['total'];
 		$mtime = microtime();
 		$mtime = explode(" ", $mtime);
 		$mtime = $mtime[1] + $mtime[0];
@@ -177,6 +177,7 @@ if ($board_config['page_gen'] == 1)
 
 		$template->assign_vars(array(
 			'SPACER' => $images['spacer'],
+			'S_GENERATION_TIME' => true,
 			'PAGE_GEN_TIME' => $lang['Page_Generation_Time'] . ':',
 			'GENERATION_TIME' => $gentime,
 			'NUMBER_QUERIES' => $excuted_queries,
@@ -191,8 +192,6 @@ if ($board_config['page_gen'] == 1)
 			'GOOGLE_ANALYTICS' => (STRIP ? stripslashes($board_config['google_analytics']) : $board_config['google_analytics']),
 			)
 		);
-
-		$template->assign_block_vars('generation_time_switch', array());
 
 		/*
 		$gen_log_file = IP_ROOT_PATH . 'cache/gen_log.txt';

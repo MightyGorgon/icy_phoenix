@@ -679,8 +679,8 @@ function updateOnline()
 				be = ', ';
 			}
 
-			//li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="postlink" target="_blank"' + style + '>' + dbonline[y]['username'] + '</a>' + be;
-			li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="gensmall" target="_blank"' + dbonline[y]['style'] + '>' + dbonline[y]['username'] + '</a>' + be;
+			//li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="postlink" target="_blank"' + style + '>' + dbonline[y]['username'] + '<\/a>' + be;
+			li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="gensmall" target="_blank"' + dbonline[y]['style'] + '>' + dbonline[y]['username'] + '<\/a>' + be;
 			list.appendChild(li);
 			Fat.fade_element(dbonline[y]['username'], 30, 2000, '#ff5500');
 		}

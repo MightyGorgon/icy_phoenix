@@ -7,7 +7,7 @@
 <tr>
 	<td class="row1" width="50%">
 		<span class="gen">{field.L_NAME}</span>
-		<span class="gensmall">{field.L_EXPLAIN}</span>
+		<!-- IF field.L_EXPLAIN --><span class="gensmall">{field.L_EXPLAIN}</span><!-- ENDIF -->
 	</td>
 	<td class="row2" width="50%" nowrap="nowrap"><span class="gen">{field.INPUT}</span></td>
 </tr>

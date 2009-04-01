@@ -771,7 +771,7 @@ function album_get_sub_cat_ids($cur_cat_id = ALBUM_ROOT_CATEGORY, &$cats, $auth_
 	// do this for each sub category... recursive
 	for ($i = 0; $i < count($album_data['sub'][$cur_cat_id]); $i++)
 	{
-		album_get_sub_cat_ids($album_data['sub'][$cur_cat_id][$i], &$cats);
+		album_get_sub_cat_ids($album_data['sub'][$cur_cat_id][$i], $cats);
 	}
 }
 

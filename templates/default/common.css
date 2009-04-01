@@ -258,6 +258,10 @@ input, select, textarea {
 	-moz-box-sizing: content-box;
 }
 
+textarea {
+	overflow: auto;
+}
+
 select {
 	cursor: pointer;
 }

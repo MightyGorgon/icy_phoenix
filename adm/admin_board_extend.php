@@ -438,7 +438,7 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			break;
 		case 'TEXT':
 		case 'HTMLTEXT':
-			$input = '<textarea rows="5" cols="45" wrap="virtual" name="' . $field_name . '" class="post">' . (STRIP ? stripslashes($config[$field_name]) : $config[$field_name]) . '</textarea>';
+			$input = '<textarea rows="5" cols="45" name="' . $field_name . '" class="post">' . (STRIP ? stripslashes($config[$field_name]) : $config[$field_name]) . '</textarea>';
 			break;
 		default:
 			$input = '';

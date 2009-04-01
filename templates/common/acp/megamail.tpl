@@ -116,7 +116,7 @@ function compileForm(m_id)
 </tr>
 <tr>
 	<td class="row1" align="right" valign="top"><span class="gen"><b>{L_EMAIL_MSG}</b></span></td>
-	<td class="row2"><span class="gen"><textarea id="message" name="message" rows="15" cols="35" wrap="virtual" style="width:450px" tabindex="5" class="post">{MESSAGE}</textarea></span></td>
+	<td class="row2"><span class="gen"><textarea id="message" name="message" rows="15" cols="35" style="width:450px" tabindex="5" class="post">{MESSAGE}</textarea></span></td>
 </tr>
 <tr><td class="cat" colspan="2"><input type="submit" value="{L_SEND}" name="submit" class="mainoption" /></td></tr>
 </table>

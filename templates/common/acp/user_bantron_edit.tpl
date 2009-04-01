@@ -10,7 +10,7 @@
 	<td class="row2" style="width:350px;">
 		<input class="post" type="text" class="post" name="username" value="{username_row.USERNAME}" maxlength="50" size="20" />
 		<input type="hidden" name="mode" value="edit" />
-		<input type="button" name="usersubmit" value="{username_row.L_FIND_USERNAME}" class="liteoption" onClick="window.open('{username_row.U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');" />
+		<input type="button" name="usersubmit" value="{username_row.L_FIND_USERNAME}" class="liteoption" onclick="window.open('{username_row.U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');" />
 	</td>
 </tr>
 <!-- END username_row -->
@@ -28,7 +28,7 @@
 <!-- END email_row -->
 <tr>
 	<td class="row1">{L_PRIVATE_REASON}: <br /><span class="gensmall">{L_PRIVATE_REASON_EXPLAIN}</span></td>
-	<td class="row2"><textarea name="ban_priv_reason" rows="15" cols="35" wrap="virtual" style="width:340px;" class="post">{BAN_PRIV_REASON}</textarea></td>
+	<td class="row2"><textarea name="ban_priv_reason" rows="15" cols="35" style="width:340px;" class="post">{BAN_PRIV_REASON}</textarea></td>
 </tr>
 <tr>
 	<td class="row1">{L_PUBLIC_REASON}: <br /><span class="gensmall">{L_PUBLIC_REASON_EXPLAIN}</span></td>
@@ -39,7 +39,7 @@
 		<tr><td colspan="2"><input type="radio" name="ban_pub_reason_mode" value="2"{BAN_PUB_REASON_MODE_2} /> {L_OTHER}</td></tr>
 		<tr>
 			<td width="30">&nbsp;</td>
-			<td><textarea name="ban_pub_reason" rows="15" cols="35" wrap="virtual" style="width:310px;" class="post">{BAN_PUB_REASON}</textarea></td>
+			<td><textarea name="ban_pub_reason" rows="15" cols="35" style="width:310px;" class="post">{BAN_PUB_REASON}</textarea></td>
 		</tr>
 		</table>
 	</td>

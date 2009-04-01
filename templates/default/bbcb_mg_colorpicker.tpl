@@ -3,7 +3,6 @@
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/prototype_cp.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colormethods.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorvaluepicker.js"></script>
-<script type="text/javascript" src="{FULL_SITE_PATH}language/lang_{CURRENT_LANG}/bbcb_mg.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/slider.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorpicker.js"></script>
 

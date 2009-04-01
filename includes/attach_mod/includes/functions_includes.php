@@ -49,9 +49,9 @@ function attach_build_auth_levels($is_auth, &$s_auth_can)
 
 	// If you want to have the rules window link within the forum view too, comment out the two lines, and comment the third line
 //	$rules_link = '(<a href="' . IP_ROOT_PATH . 'attach_rules.' . PHP_EXT . '?f=' . $forum_id . '" target="_blank">Rules</a>)';
-//	$s_auth_can .= ( ( $is_auth['auth_attachments'] ) ? $rules_link . ' ' . $lang['Rules_attach_can'] : $lang['Rules_attach_cannot'] ) . '<br />';
-	$s_auth_can .= (($is_auth['auth_attachments']) ? $lang['Rules_attach_can'] : $lang['Rules_attach_cannot'] ) . '<br />';
-	$s_auth_can .= (($is_auth['auth_download']) ? $lang['Rules_download_can'] : $lang['Rules_download_cannot'] ) . '<br />';
+//	$s_auth_can .= (($is_auth['auth_attachments']) ? $rules_link . ' ' . $lang['Rules_attach_can'] : $lang['Rules_attach_cannot']) . '<br />';
+	$s_auth_can .= (($is_auth['auth_attachments']) ? $lang['Rules_attach_can'] : $lang['Rules_attach_cannot']) . '<br />';
+	$s_auth_can .= (($is_auth['auth_download']) ? $lang['Rules_download_can'] : $lang['Rules_download_cannot']) . '<br />';
 }
 
 /**
@@ -159,7 +159,7 @@ function get_attachments_from_pm($privmsgs_id_array)
 			AND a.attach_id = d.attach_id
 		ORDER BY d.filetime $display_order";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get Attachment Informations for private message number ' . $privmsgs_id_array, '', __LINE__, __FILE__, $sql);
 	}
@@ -168,7 +168,7 @@ function get_attachments_from_pm($privmsgs_id_array)
 	$attachments = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
-	if ($num_rows == 0 )
+	if ($num_rows == 0)
 	{
 		return array();
 	}
@@ -198,7 +198,7 @@ function get_total_attach_pm_filesize($direction, $user_id)
 			AND a.privmsgs_id <> 0 AND a.privmsgs_id = p.privmsgs_id
 			AND p.privmsgs_type <> " . PRIVMSGS_SENT_MAIL;
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not query Attachment Informations', '', __LINE__, __FILE__, $sql);
 	}
@@ -272,17 +272,17 @@ function liw_get_dimensions($image_source, $identifier = '')
 	$image_checksum = '';
 	$result_rowcount = 0;
 
-	if ( ( @extension_loaded('openssl') && strstr($image_source, 'https://') ) || strstr($image_source, 'http://') )
+	if ((@extension_loaded('openssl') && strstr($image_source, 'https://')) || strstr($image_source, 'http://'))
 	{
 		if ($handle = @fopen($image_source, 'rb'))
 		{
-			if ( strrchr($image_source, '.') == '.gif' )
+			if (strrchr($image_source, '.') == '.gif')
 			{
 				$image_checksum .= md5(@fgets($handle, 100) . $identifier);
 			}
 			else
 			{
-				for ( $line = 0; $line != 5; $line++ )
+				for ($line = 0; $line != 5; $line++)
 				{
 					$image_checksum .= md5(@fgets($handle, 100) . $identifier);
 				}
@@ -294,15 +294,15 @@ function liw_get_dimensions($image_source, $identifier = '')
 		}
 	}
 
-	if ( $image_checksum )
+	if ($image_checksum)
 	{
 		$sql = "SELECT image_width, image_height FROM " . LIW_CACHE_TABLE . " WHERE image_checksum = '" . $image_checksum . "'";
 
-		if ( $result = $db->sql_query($sql) )
+		if ($result = $db->sql_query($sql))
 		{
 			$result_rowcount = $db->sql_numrows();
 
-			if ( $result_rowcount > 0 )
+			if ($result_rowcount > 0)
 			{
 				$image_data = $db->sql_fetchrow();
 			}
@@ -311,24 +311,24 @@ function liw_get_dimensions($image_source, $identifier = '')
 
 	$return = array();
 
-	if ( !$handle )
+	if (!$handle)
 	{
 		$return[] = 1;
 		$return[] = 1;
 	}
 	else
 	{
-		if ( $result_rowcount == 0 )
+		if ($result_rowcount == 0)
 		{
-			if ( strstr($image_source, $board_config['server_name'] . $board_config['script_path']) )
+			if (strstr($image_source, $board_config['server_name'] . $board_config['script_path']))
 			{
-				$image_source = substr($image_source, ( strpos($image_source, $board_config['server_name'] . $board_config['script_path']) + strlen($board_config['server_name'] . $board_config['script_path']) ));
+				$image_source = substr($image_source, (strpos($image_source, $board_config['server_name'] . $board_config['script_path']) + strlen($board_config['server_name'] . $board_config['script_path'])));
 				$image_source = realpath('.') . '/' . $image_source;
 			}
 
 			list($image_width, $image_height) = @getimagesize($image_source);
 
-			if ( !empty($image_checksum) )
+			if (!empty($image_checksum))
 			{
 				$sql = "INSERT INTO " . LIW_CACHE_TABLE . " (image_checksum, image_width, image_height) VALUES ('" . $image_checksum . "', '" . $image_width . "', '" . $image_height . "')";
 				$db->sql_query($sql);
@@ -352,7 +352,7 @@ function generate_liw_img_popup($image_source, $image_width = '', $image_height 
 	global $lang;
 
 	$rand = rand(1, 10000);
-	$return = '<a name="img_' . $rand . '"><a href="#img_' . $rand . '" onClick="img_popup(\'' . str_replace("'", "\'", $image_source) . '\', ' . ( ( !empty($image_width) ) ? $image_width : '\'\'' ) . ', ' . ( ( !empty($image_height) ) ? $image_height : '\'\'' ) . ', ' . $rand  . ');"><img src="' . $image_source . '"' . ( ( !empty($image_width) ) ? ' width="' . $max_image_width . '"' : '' ) . ' alt="' . $lang['LIW_click_image'] . '" border="0"></a></a><br /><span class="gensmall">' . $lang['LIW_click_image_explain'] . '</span>';
+	$return = '<a name="img_' . $rand . '"><a href="#img_' . $rand . '" onclick="img_popup(\'' . str_replace("'", "\'", $image_source) . '\', ' . ((!empty($image_width)) ? $image_width : '\'\'') . ', ' . ((!empty($image_height)) ? $image_height : '\'\'') . ', ' . $rand  . ');"><img src="' . $image_source . '"' . ((!empty($image_width)) ? ' width="' . $max_image_width . '"' : '') . ' alt="' . $lang['LIW_click_image'] . '" border="0"></a></a><br /><span class="gensmall">' . $lang['LIW_click_image_explain'] . '</span>';
 
 	return $return;
 }

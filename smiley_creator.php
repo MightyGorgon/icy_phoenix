@@ -23,7 +23,7 @@ $page_title = $lang['Smiley_creator'];
 $meta_description = '';
 $meta_keywords = '';
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
 if (isset($_GET['mode']))
 {

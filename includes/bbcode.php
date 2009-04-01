@@ -998,6 +998,9 @@ class BBCode
 					$attachment_details['download_count'] = $attachment_details['file_dls'];
 					$download_url = IP_ROOT_PATH . 'dload.' . PHP_EXT . '?action=file&amp;file_id=' . $params['id'];
 				}
+
+				$params['title'] = htmlspecialchars($params['title']);
+				$params['description'] = htmlspecialchars($params['description']);
 				//$params['icon'] = strip_tags(ereg_replace("[^A-Za-z0-9_.]", "_", $params['icon']));
 				$params['icon'] = file_exists($params['icon']) ? $params['icon'] : (IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png');
 				$style = ($color || $bgcolor) ? (' style="' . ($color ? 'color: ' . $color . ';' : '') . ($bgcolor ? 'background-color: ' . $bgcolor . ';' : '') . '"') : '';
@@ -2182,7 +2185,7 @@ class BBCode
 				$opacity = '100';
 			}
 			$opacity_dec = $opacity / 100;
-			$html = '<div style="display:inline;width:100%;-moz-opacity:' . $opacity_dec . ';opacity:' . $opacity_dec . ';-khtml-opacity:' . $opacity_dec . ';filter:Alpha(Opacity=' . $opacity . ');" onMouseOut="fade2(this,' . $opacity . ');" onMouseOver="fade2(this,100);">';
+			$html = '<div style="display:inline;width:100%;-moz-opacity:' . $opacity_dec . ';opacity:' . $opacity_dec . ';-khtml-opacity:' . $opacity_dec . ';filter:Alpha(Opacity=' . $opacity . ');" onmouseout="fade2(this,' . $opacity . ');" onmouseover="fade2(this,100);">';
 			return array(
 				'valid' => true,
 				'start' => $html,

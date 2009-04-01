@@ -23,7 +23,7 @@
 		</tr>
 		<tr>
 			<td class="row1">{L_MENU_DESC}</td>
-			<td class="row2"><textarea name="menu_desc" rows="6" cols="35" style="width:98%" class="post">{MI_MENU_DESC}</textarea></td>
+			<td class="row2"><textarea name="menu_desc" rows="6" cols="35" style="width: 98%" class="post">{MI_MENU_DESC}</textarea></td>
 		</tr>
 		<!--
 		<tr>

@@ -160,12 +160,14 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 				$auth_data = album_permissions($album_user_id, $cat_id, $check_permissions, $row);
 				//$auth_data = album_get_auth_data($cat_id);
 
-				if ($album_config['lb_preview'] == 0)
+				$pic_preview = '';
+				$pic_preview_hs = '';
+				if ($album_config['lb_preview'])
 				{
-					$pic_preview = '';
-				}
-				else
-				{
+					$slideshow_cat = '';
+					$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+					$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 					$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) . '\',\'' . addslashes($row[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
@@ -180,8 +182,11 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
 
 						'L_PIC' => $row['pic_title'],
-						'U_PIC' => ($album_config['fullpic_popup'] == 1) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
+						'U_PIC_SP' => ($album_config['fullpic_popup'] == 1) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
+						'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
+
 						'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
+						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
 						'PIC_TITLE' => htmlspecialchars($row['pic_title']),
 						'DESC' => htmlspecialchars($row['pic_desc']),

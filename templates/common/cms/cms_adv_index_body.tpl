@@ -16,7 +16,7 @@ function icon_text(text)
 	<!--
 	<td width="33%" height="180" class="row1h row-center"><a href="{U_CMS_ADV_USERSLIST}" onmouseover="icon_text('{L_CMS_ADV_USERSLIST}')" onmouseout="icon_text('&nbsp;')"><img src="images/cms/cms_adv_index_userslist.png" alt="{L_CMS_ADV_USERSLIST}" title="{L_CMS_ADV_USERSLIST}" /></a><br /><b>{L_CMS_CS_USERS_LIST}</b></td>
 	-->
-	<td width="33%" class="row1h row-center"><a href="{U_CMS_CUSTOM_PAGES}" onmouseover="icon_text('{L_CMS_CUSTOM_PAGES}')" onMouseOut="icon_text('&nbsp;')"><img src="images/cms/cms_index_custom_pages.png" alt="{L_CMS_CUSTOM_PAGES}" title="{L_CMS_CUSTOM_PAGES}" /></a><br /><b>{L_CMS_CUSTOM_PAGES}</b></td>
+	<td width="33%" class="row1h row-center"><a href="{U_CMS_CUSTOM_PAGES}" onmouseover="icon_text('{L_CMS_CUSTOM_PAGES}')" onmouseout="icon_text('&nbsp;')"><img src="images/cms/cms_index_custom_pages.png" alt="{L_CMS_CUSTOM_PAGES}" title="{L_CMS_CUSTOM_PAGES}" /></a><br /><b>{L_CMS_CUSTOM_PAGES}</b></td>
 	<td width="34%" class="row1h row-center"><a href="{U_CMS_ADV_CUSTOM_PAGES}" onmouseover="icon_text('{L_CMS_ADV_CUSTOM_PAGES}')" onmouseout="icon_text('&nbsp;')"><img src="images/cms/cms_index_custom_pages.png" alt="{L_CMS_ADV_CUSTOM_PAGES}" title="{L_CMS_ADV_CUSTOM_PAGES}" /></a><br /><b>{L_CMS_ADV_CUSTOM_PAGES}</b></td>
 	<td width="33%" class="row1h row-center"><a href="{U_CMS_GLOBAL_BLOCKS}" onmouseover="icon_text('{L_CMS_GLOBAL_BLOCKS}')" onmouseout="icon_text('&nbsp;')"><img src="images/cms/cms_index_global_blocks.png" alt="{L_CMS_GLOBAL_BLOCKS}" title="{L_CMS_GLOBAL_BLOCKS}" /></a><br /><b>{L_CMS_GLOBAL_BLOCKS}</b></td>
 </tr>

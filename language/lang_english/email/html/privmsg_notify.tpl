@@ -13,8 +13,10 @@ You have received a new private message to your account on <b>"{SITENAME}"</b> a
 <b>Subject:</b> {SUBJECT}<br />
 
 <b>Text:</b><br /><br />
-{PRIV_MSG_TEXT}
+<div class="post-text">{PRIV_MSG_TEXT}</div>
 
+<br /><br />
+<b>Warning:</b> Do not reply to this email, since it is only a notification! To answer this message you need to login to the site and visit your Private Messages section.
 <br /><br />
 
 You can view your new message by clicking on the following link:<br /><br />

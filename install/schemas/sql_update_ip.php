@@ -48,6 +48,7 @@ switch ($req_version)
 	case '121946': $current_ip_version = '1.2.19.46'; break;
 	case '122047': $current_ip_version = '1.2.20.47'; break;
 	case '122148': $current_ip_version = '1.2.21.48'; break;
+	case '122249': $current_ip_version = '1.2.22.49'; break;
 }
 
 // Icy Phoenix Part...
@@ -3530,6 +3531,9 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.2.21.48 */
 		case '1.2.21.48':
+
+		/* Updating from IP 1.2.22.49 */
+		case '1.2.22.49':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

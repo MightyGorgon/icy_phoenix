@@ -589,7 +589,7 @@ if($show_time)
 	echo '<!-- Page generation time: '.$gentime .'s ';
 	$sql_time = round($db->sql_time, 4);
 	$sql_part = round($sql_time / $gentime * 100);
-	$excuted_queries = $db->num_queries;
+	$excuted_queries = $db->num_queries['total'];
 	$php_part = 100 - $sql_part;
 	echo '(PHP: ' . $php_part . '% - SQL: ' . $sql_part . '%) - SQL queries: ' . $excuted_queries;
 

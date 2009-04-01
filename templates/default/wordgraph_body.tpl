@@ -8,7 +8,7 @@
 	<tr>
 		<td class="row1g row-center">
 			<!-- BEGIN wordgraph_loop -->
-			<span style="font-size: {wordgraph_loop.WORD_FONT_SIZE}"><a href="{wordgraph_loop.WORD_SEARCH_URL}" style="font-size: {wordgraph_loop.WORD_FONT_SIZE}px">{wordgraph_loop.WORD}</a></span>
+			<span style="font-size: {wordgraph_loop.WORD_FONT_SIZE}px;"><a href="{wordgraph_loop.WORD_SEARCH_URL}" style="font-size: {wordgraph_loop.WORD_FONT_SIZE}px;">{wordgraph_loop.WORD}</a></span>
 			<!-- END wordgraph_loop -->
 		</td>
 	</tr>

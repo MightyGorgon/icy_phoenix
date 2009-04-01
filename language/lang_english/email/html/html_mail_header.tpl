@@ -32,9 +32,9 @@
 			table.disclaimer { background-color: #F8F8F8; border: 1px #999999 solid; }
 
 			.forumline th { background: #FFFFFF; color: #444444; font-weight: bold; font-size: 11px; height: 24px; padding: 0 5px; border: solid 1px #FFFFFF; border-right-color: #BBBBBB; border-bottom-color: #BBBBBB; white-space: nowrap; }
-			
+
 			.row1, .row2 { background-color: #F8F8F8; border: solid 1px #FFFFFF; border-right-color: #DDDDDD; border-bottom-color: #DDDDDD; }
-			
+
 			.post-text { font-size: 12px; }
 			.post-text blockquote { color: #444444; display: block; overflow: auto; margin: 5px 20px; width: auto; border: solid 1px #CCCCCC; background: #FFFFFF url({ROOT}templates/common/images/bg_quote_content.gif) bottom right no-repeat; padding: 5px; font-size: 12px; }
 			.post-text blockquote .quote-user, .post-text blockquote .quote-nouser { margin: 0; margin-bottom: 5px; padding-left: 18px; padding-bottom: 3px; border-bottom: solid 1px #DDDDDD; font-size: 11px; line-height: 1.2em; font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: normal; color: #808080; background: #FFFFFF url({ROOT}templates/common/images/bg_quote_header.gif) top left no-repeat; }

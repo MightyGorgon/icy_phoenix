@@ -86,6 +86,7 @@ $files_array = array(
 	'images/fap/fap_nothumbnail.jpg',
 	'images/smiles/makepak.php',
 
+	'includes/bbcb_mg_small.php',
 	'includes/def_themes.php',
 	'includes/def_tree.php',
 	'includes/def_words.php',
@@ -149,6 +150,8 @@ $files_array = array(
 	'includes/cache_tpls/def_tree_def.tpl',
 	'includes/cache_tpls/def_words_def.tpl',
 
+	'includes/db/mysql4.php',
+
 	'includes/upi2db/upi2db_orig_xs.php',
 
 	'templates/common/acp/admin_similar_topics_body.tpl',
@@ -169,6 +172,8 @@ $files_array = array(
 	'templates/common/acp/xs2_header.tpl',
 
 	'templates/common/lightbox.css',
+	'templates/common/js/bbcb_mg_ajax_chat.js',
+	'templates/common/js/color_bar_ajax_chat.js',
 	'templates/common/js/lightbox.js',
 	'templates/common/js/lightbox_alt.js',
 	'templates/common/js/mg_scripts.js',

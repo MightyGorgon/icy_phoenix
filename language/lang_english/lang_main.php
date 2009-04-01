@@ -2142,6 +2142,13 @@ $lang = array_merge($lang, array(
 	'QUICK_LIST' => 'Full List',
 	'NORMAL_LIST' => 'Normal List',
 
+	'RETURN_PAGE' => '%sReturn to the previous page%s',
+	'FILE_NOT_FOUND' => 'File not found',
+	'FSOCK_DISABLED' => 'FSOCK Disabled',
+
+	'MANAGEMENT' => 'Management',
+	'SORT_ORDER' => 'Sort by',
+	'SORT_DIR' => 'Sort direction',
 	)
 );
 
@@ -2208,10 +2215,10 @@ $lang['tz']['-12'] = '(GMT -12 Hours) Eniwetok, Kwajalein';
 $lang['tz']['-11'] = '(GMT -11 Hours) Midway Island, Samoa';
 $lang['tz']['-10'] = '(GMT -10 Hours) Hawaii';
 $lang['tz']['-9'] = '(GMT -9 Hours) Alaska';
-$lang['tz']['-8'] = '(GMT -8 Hours) Pacific Time (US & Canada)';
-$lang['tz']['-7'] = '(GMT -7 Hours) Mountain Time (US & Canada)';
-$lang['tz']['-6'] = '(GMT -6 Hours) Central Time (US & Canada), Mexico City';
-$lang['tz']['-5'] = '(GMT -5 Hours) Eastern Time (US & Canada), Bogota, Lima, Quito';
+$lang['tz']['-8'] = '(GMT -8 Hours) Pacific Time (US &amp; Canada)';
+$lang['tz']['-7'] = '(GMT -7 Hours) Mountain Time (US &amp; Canada)';
+$lang['tz']['-6'] = '(GMT -6 Hours) Central Time (US &amp; Canada), Mexico City';
+$lang['tz']['-5'] = '(GMT -5 Hours) Eastern Time (US &amp; Canada), Bogota, Lima, Quito';
 $lang['tz']['-4'] = '(GMT -4 Hours) Atlantic Time (Canada), Caracas, La Paz';
 $lang['tz']['-3.5'] = '(GMT -3.5 Hours) Newfoundland';
 $lang['tz']['-3'] = '(GMT -3 Hours) Brazil, Buenos Aires, Georgetown';

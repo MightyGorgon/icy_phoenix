@@ -332,8 +332,8 @@
 <tr>
 <td class="row1"><span class="gen">{L_PROFILE_VIEW_POPUP}:</span></td>
 		<td class="row2">
-		<label><input type="radio" name="profile_view_popup" value="1" {PROFILE_VIEW_POPUP_YES} /><span class="gen">&nbsp;{L_YES}</span>&nbsp;&nbsp;
-		<label><input type="radio" name="profile_view_popup" value="0" {PROFILE_VIEW_POPUP_NO} /><span class="gen">&nbsp;{L_NO}</span></td>
+		<label><input type="radio" name="profile_view_popup" value="1" {PROFILE_VIEW_POPUP_YES} /><span class="gen">&nbsp;{L_YES}</span></label>&nbsp;&nbsp;
+		<label><input type="radio" name="profile_view_popup" value="0" {PROFILE_VIEW_POPUP_NO} /><span class="gen">&nbsp;{L_NO}</span></label></td>
 	</tr>
 <tr>
 	<td class="row1"><span class="gen">{L_ALWAYS_ADD_SIGNATURE}:</span></td>

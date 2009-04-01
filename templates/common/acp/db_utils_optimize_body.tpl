@@ -36,7 +36,7 @@
 		<input type="submit" name="configure" value="{L_CONFIGURE}" class="liteoption" />
 		<!--
 		&nbsp;&nbsp;
-		<input type="submit" name="reset" value="{L_RESET}" class="liteoption" onClick="document.tablesForm.show_begin_for.value=''" />
+		<input type="submit" name="reset" value="{L_RESET}" class="liteoption" onclick="document.tablesForm.show_begin_for.value=''" />
 		-->
 	</td>
 </tr>

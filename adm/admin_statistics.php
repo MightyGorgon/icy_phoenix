@@ -397,7 +397,7 @@ if ($mode == 'auto_set')
 		$mtime = $mtime[1] + $mtime[0];
 		$starttime = $mtime;
 
-		$db->num_queries = 0;
+		$db->num_queries['total'] = 0;
 
 		$modules_dir = trim($module_info['dname']);
 		$return_limit = $__stats_config['return_limit'];
@@ -423,7 +423,7 @@ if ($mode == 'auto_set')
 		$endtime = $mtime;
 		$totaltime = ($endtime - $starttime);
 
-		$num_queries = $db->num_queries;
+		$num_queries = $db->num_queries['total'];
 
 		$update_time_recommend = 0;
 
@@ -830,7 +830,7 @@ if ($mode == 'edit')
 	$mtime = $mtime[1] + $mtime[0];
 	$starttime = $mtime;
 
-	$db->num_queries = 0;
+	$db->num_queries['total'] = 0;
 
 	$mod_lang = 'module_language_parse';
 	$__module_id = $module_id;
@@ -873,7 +873,7 @@ if ($mode == 'edit')
 	$endtime = $mtime;
 	$totaltime = ($endtime - $starttime);
 
-	$num_queries = $db->num_queries;
+	$num_queries = $db->num_queries['total'];
 
 	$update_time_recommend = 0;
 

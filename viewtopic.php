@@ -1842,10 +1842,11 @@ if ($bypass)
 	// Mighty Gorgon - Feedbacks - BEGIN
 	if (defined('MG_FEEDBACKS'))
 	{
-		$mg_root_path = IP_ROOT_PATH . 'mg/';
-		include_once($mg_root_path . 'includes/mg_functions_feedbacks.' . PHP_EXT);
-		include_once($mg_root_path . 'mg_common.' . PHP_EXT);
-		include_once($mg_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
+		define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
+		include_once(MG_ROOT_PATH . 'includes/mg_functions_feedbacks.' . PHP_EXT);
+		include_once(MG_ROOT_PATH . 'mg_common.' . PHP_EXT);
+		include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
+		include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
 		$feedbacks_allowed_forums = explode(',', MG_FEEDBACKS_FORUMS);
 		$feedback_disabled = false;
 		if (!in_array($forum_id, $feedbacks_allowed_forums))
@@ -2404,7 +2405,8 @@ if ($bypass)
 			}
 		}
 		// CrackerTracker v5.x
-		if ($is_miserable == true)
+
+		if ($is_miserable)
 		{
 			$message_compiled = false;
 		}
@@ -2469,17 +2471,17 @@ if ($bypass)
 			$bbcode->allow_html = false;
 		}
 
-		if(preg_match('/\[hide/i', $message))
-		{
-			$message_compiled = false;
-		}
-
 		if (!empty($lofi))
 		{
 			$message = $bbcode->parse($message);
 		}
-		elseif($board_config['posts_precompiled'] == '0')
+		elseif(!$board_config['posts_precompiled'])
 		{
+			if(preg_match('/\[hide/i', $message) || ($board_config['disable_html_guests'] && !$userdata['session_logged_in']))
+			{
+				$message_compiled = false;
+			}
+
 			if($message_compiled == false)
 			{
 				// $bbcode->allow_smilies = $board_config['allow_smilies'] && $postrow[$i]['user_allowsmile'] ? true : false;

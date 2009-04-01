@@ -1,9 +1,9 @@
+<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+
 <!-- BEGIN no_pics -->
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><td align="center" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
-</table>
 <!-- END no_pics -->
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+
 <!-- BEGIN recent_pics -->
 <tr>
 	<!-- BEGIN recent_detail -->
@@ -22,4 +22,5 @@
 	<!-- END recent_no_detail -->
 </tr>
 <!-- END recent_pics -->
+
 </table>

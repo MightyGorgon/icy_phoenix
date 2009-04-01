@@ -24,5 +24,5 @@
 <br />
 <!-- BEGIN popup_switch -->
 <br />
-<div class="gen" style="text-align:center;"><a href="#" onClick="JavaScript:window.close();">Close This Window</a></div>
+<div class="gen" style="text-align:center;"><a href="#" onclick="JavaScript:window.close();">Close This Window</a></div>
 <!-- END popup_switch -->

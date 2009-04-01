@@ -1,7 +1,9 @@
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/del_unchanged_selects.js"></script>
+
 <h1>{L_AUTH_TITLE}</h1>
 <h2>{L_USER_OR_GROUPNAME}: {USERNAME}</h2>
 
-<form method="post" action="{S_AUTH_ACTION}">
+<form id="acl_form" method="post" action="{S_AUTH_ACTION}" onsubmit="remove_unchanged_selects()">
 
 <!-- BEGIN switch_user_auth -->
 <p>{USER_LEVEL}</p>

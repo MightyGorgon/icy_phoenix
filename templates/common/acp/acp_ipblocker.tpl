@@ -31,7 +31,7 @@
 	</td>
 </tr>
 <!-- END added -->
-	<tr><td class="row1 row-center"><input type="text" name="entry" value="" maxlength="200" size="60" /></td></tr>
+	<tr><td class="row1 row-center"><input type="text" name="entry" class="post" value="" maxlength="200" size="60" /></td></tr>
 	<tr><td class="cat" align="center"><input type="submit" name="submit" value="{L_ADD_NOW}" class="mainoption" /></td></tr>
 </table>
 </div>

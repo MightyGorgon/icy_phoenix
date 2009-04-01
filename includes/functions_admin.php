@@ -20,7 +20,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-
 /**
  * Function needed to fix config values before passing them to DB
 */
@@ -319,6 +318,60 @@ function check_mem_limit()
 		$mem_limit = '128M';
 	}
 	return $mem_limit;
+}
+
+/**
+* Retrieve contents from remotely stored file
+*/
+function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port = 80, $timeout = 10)
+{
+	global $lang;
+
+	if ($fsock = @fsockopen($host, $port, $errno, $errstr, $timeout))
+	{
+		@fputs($fsock, "GET $directory/$filename HTTP/1.1\r\n");
+		@fputs($fsock, "HOST: $host\r\n");
+		@fputs($fsock, "Connection: close\r\n\r\n");
+
+		$file_info = '';
+		$get_info = false;
+
+		while (!@feof($fsock))
+		{
+			if ($get_info)
+			{
+				$file_info .= @fread($fsock, 1024);
+			}
+			else
+			{
+				$line = @fgets($fsock, 1024);
+				if ($line == "\r\n")
+				{
+					$get_info = true;
+				}
+				else if (stripos($line, '404 not found') !== false)
+				{
+					$errstr = $lang['FILE_NOT_FOUND'] . ': ' . $filename;
+					return false;
+				}
+			}
+		}
+		@fclose($fsock);
+	}
+	else
+	{
+		if ($errstr)
+		{
+			return false;
+		}
+		else
+		{
+			$errstr = $lang['FSOCK_DISABLED'];
+			return false;
+		}
+	}
+
+	return $file_info;
 }
 
 ?>

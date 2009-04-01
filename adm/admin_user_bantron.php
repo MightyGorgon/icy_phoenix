@@ -705,7 +705,7 @@ else
 
 		$ban_time = (isset ($row['ban_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_time'], $board_config['board_timezone']) : '-';
 		$ban_expire_time = (isset ($row['ban_expire_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_expire_time'], $board_config['board_timezone']) : '-';
-		$ban_reason = (isset ($row['ban_priv_reason']) || isset ($row['ban_pub_reason'])) ? "<a href=\"javascript:void (0);\" onClick=\"window.open ('" . append_sid('admin_user_bantron.' . PHP_EXT . '?mode=view_reasons&amp;ban_id=' . $ban_id) . "','ban_reason','scrollbars=yes,width=540,height=450')\">" . $lang['View'] . '</a>' : '-';
+		$ban_reason = (isset ($row['ban_priv_reason']) || isset ($row['ban_pub_reason'])) ? "<a href=\"javascript:void (0);\" onclick=\"window.open ('" . append_sid('admin_user_bantron.' . PHP_EXT . '?mode=view_reasons&amp;ban_id=' . $ban_id) . "','ban_reason','scrollbars=yes,width=540,height=450')\">" . $lang['View'] . '</a>' : '-';
 
 		$template->assign_block_vars('rowlist', array(
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],

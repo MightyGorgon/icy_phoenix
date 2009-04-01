@@ -1,99 +1,3 @@
-s_formerrors = 'You must insert some text to send a message';
-s_gen_error = ':: Error ::\n\n';
-s_url_insert = 'Insert the URL (eg. http://www.icyphoenix.com/)';
-s_url_insert_tip = 'http://';
-s_url_error = 'You didn\'t enter any URL';
-s_url_title_insert = 'Enter the title of the link';
-s_url_title_insert_tip = 'Link';
-s_url_title_error = 'You didn\'t write the page name';
-s_email_insert = 'Enter the Email Address';
-s_email_insert_tip = 'yourname@yourdomain.com';
-s_email_error = 'You didn\'t write the Email Address';
-s_img_insert = 'Enter the image URL';
-s_img_error = 'You didn\'t write the image URL';
-s_albumimg_insert = 'Enter the Album Image ID';
-s_albumimg_insert_tip = 'ID';
-s_albumimg_error = 'You didn\'t write the Album Image ID';
-s_ram_insert = 'Please write Real Media file URL';
-s_stream_insert = 'Please write audio file URL';
-s_video_insert = 'Please write video file URL';
-s_video_w_insert = 'Please specify video file width';
-s_video_w_error = 'You didn\'t specify video file width';
-s_video_h_insert = 'Please specify video file height';
-s_video_h_error = 'You didn\'t specify video file height';
-s_googlevideo_insert = 'Please write Google Video file ID';
-s_youtube_insert = 'Please write YouTube file ID';
-s_emff_insert = 'Please write mp3 file URL';
-s_flash_insert = 'Please write Flash file URL';
-s_flash_w_insert = 'Please specify Flash file width';
-s_flash_w_error = 'You didn\'t specify Flash file width';
-s_flash_h_insert = 'Please specify Flash file height';
-s_flash_h_error = 'You didn\'t specify Flash file height';
-s_id_insert_tip = 'ID';
-s_id_insert_error = 'You didn\'t specify an ID';
-s_file_insert_error = 'You didn\'t specify file URL';
-s_grad_select = 'Please select the text first';
-s_grad_error = 'This only works for less than 120 letters';
-s_grad_path = 'includes/grad.htm';
-s_view_more_code = 'View more code';
-s_image_upload = 'Upload image to PostImage.org and add it to the message';
-s_posticyimage = 'Upload image and add it to the message';
-
-// Helpline messages
-s_a_help = 'Close all open tags';
-s_b_help = 'Bold text: [b]text[/b]';
-s_i_help = 'Italic text: [i]text[/i]';
-s_u_help = 'Underline text: [u]text[/u]';
-s_strike_help = 'Strike text: [strike]text[/strike]';
-s_quote_help = 'Quote text: [quote]text[/quote]';
-s_code_help = 'Code display: [code]code[/code]';
-s_phpbbmod_help = 'phpBB Mod Template';
-s_highlight_help = 'Highlight: [highlight=#FFFFAA]text[/highlight]';
-s_img_help = 'Insert image: [img]http://image_url[/img]';
-s_imgl_help = 'Insert image with left alignment: [img align=left]http://image_url[/img]';
-s_imgr_help = 'Insert image with right alignment: [img align=right]http://image_url[/img]';
-s_albumimg_help = 'Insert image from album: [albumimg]Album Pic ID[/albumimg]';
-s_albumimgl_help = 'Insert image from album with left alignment: [albumimg align=left]Album Pic ID[/albumimg]';
-s_albumimgr_help = 'Insert image from album with right alignment: [albumimg align=right]Album Pic ID[/albumimg]';
-
-s_url_help = 'Insert URL: [url]http://url[/url] or [url=http://url]URL text[/url]';
-s_fc_help = 'Font color: [color=red]text[/color] (Tip: you can also use color=#FF0000)';
-s_fs_help = 'Font size: [size=9]small text[/size]';
-s_ft_help = 'Font type: [font=Andalus]text[/font]';
-s_table_help = 'Insert Table: [table]text[/table]';
-s_td_help = 'Insert Table Column: [td]text[/td]';
-s_mail_help = 'Insert Email: [email]Email Here[/email]';
-s_grad_help = 'Insert gradient text';
-s_right_help = 'Set text align to right: [align=right]text[/align]';
-s_left_help = 'Set text align to left: [align=left]text[/align]';
-s_center_help = 'Set text align to center: [align=center]text[/align]';
-s_justify_help = 'Justify text: [align=justify]text[/align]';
-s_marqr_help = 'Marque text to Right: [marquee direction=right]text[/marquee]';
-s_marql_help = 'Marque text to Left: [marquee direction=left]text[/marquee]';
-s_marqu_help = 'Marque text to up: [marquee direction=up]text[/marquee]';
-s_marqd_help = 'Marque text to down: [marquee direction=down]text[/marquee]';
-s_sup_help = 'Superscript: [sup]text[/sup]';
-s_sub_help = 'Subscript: [sub]text[/sub]';
-s_hr_help = 'Insert H-Line [hr]';
-s_bullet_help = 'Insert bullet point [*]';
-s_video_help = 'Insert video file: [video width=# height=#]file URL[/video]';
-s_googlevideo_help = 'Insert Google Video file: [googlevideo]Google Video ID[/googlevideo]';
-s_youtube_help = 'Insert YouTube video file: [youtube]YouTube ID[/youtube]';
-s_quick_help = 'Quicktime video: [quick]http://quicktime_video_url/[/quick]';
-s_flash_help = 'Insert flash file: [flash width=# height=#]flash URL[/flash]';
-s_ram_help = 'Insert Real Media file: [ram]File URL[/ram]';
-s_stream_help = 'Insert stream file: [stream]File URL[/stream]';
-s_emff_help = 'Insert mp3 file: [emff]File URL[/emff]';
-s_fade_help = 'Fade: [opacity]text[/opacity] or [opacity][img]http://image_url/[/img][/opacity]';
-s_spoiler_help = 'Spoiler: [spoiler]text[/spoiler]';
-s_cell_help = 'Cell: [cell]text[/cell]';
-s_list_help = 'List: [list]text[/list] (Tip: you can use [*] to insert bullet)';
-s_listo_help = 'Ordered list: [list=1|a]text[/list] (Tip: you can use [*] to insert bullet)';
-s_help_help = 'Open BBCode Help';
-s_image_upload_help = 'Upload image to PostImage.org and add it to the message';
-s_posticyimage_help = 'Upload image and add it to the message';
-s_smiley_creator = 'Smiley Creator: [smiley=1]Text[/smiley] insert a smiley with text';
-
 //var bbcb_mg_img_path = "images/bbcb_mg/images/";
 //var bbcb_mg_img_path = "images/bbcb_mg/images/png/";
 //var bbcb_mg_img_ext = "" + bbcb_mg_img_ext;
@@ -221,7 +125,7 @@ var baseHeight;
 
 function initInsertions()
 {
-	document.post.message.focus();
+	document.forms[form_name].elements[text_name].focus();
 	if (is_ie && typeof(baseHeight) != 'number')
 	{
 		baseHeight = document.selection.createRange().duplicate().boundingHeight;
@@ -235,7 +139,7 @@ function mozWrap(txtarea, open, close)
 	var selStart = txtarea.selectionStart;
 	var selEnd = txtarea.selectionEnd;
 	var scrollTop = txtarea.scrollTop;
-	if (selEnd == 1 || selEnd == 2) 
+	if (selEnd == 1 || selEnd == 2)
 	{
 		selEnd = selLength;
 	}
@@ -289,16 +193,16 @@ function bbcbmg_insert(text, spaces, popup)
 {
 	var txtarea;
 
-	if (!popup) 
+	if (!popup)
 	{
-		txtarea = document.post.message;
-	} 
-	else 
+		txtarea = document.forms[form_name].elements[text_name];
+	}
+	else
 	{
-		txtarea = opener.document.post.message;
+		txtarea = opener.document.forms[form_name].elements[text_name];
 	}
 
-	if (spaces) 
+	if (spaces)
 	{
 		text = ' ' + text + ' ';
 	}
@@ -343,8 +247,8 @@ function emoticon(text)
 // Shows the help messages in the helpline window
 function helpline(help)
 {
-	document.post.helpbox.value = eval("s_" + help + "_help");
-	document.post.helpbox.readOnly = "true";
+	document.getElementById('helpbox').innerHTML = eval("s_" + help + "_help");
+	//document.forms[form_name].helpbox.value = eval("s_" + help + "_help");
 }
 
 // Replacement for arrayname.length property
@@ -380,7 +284,7 @@ function arraypop(thearray)
 function checkForm()
 {
 	formErrors = false;
-	if (document.post.message.value.length < 2)
+	if (document.forms[form_name].elements[text_name].value.length < 2)
 	{
 		formErrors = s_formerrors;
 	}
@@ -400,7 +304,7 @@ function checkForm()
 
 function bbfontstyle(bbopen, bbclose)
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
 		theSelection = document.selection.createRange().text;
@@ -443,7 +347,7 @@ function bbfontstyle(bbopen, bbclose)
 
 function bbstyle(bbnumber)
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	donotinsert = false;
 	theSelection = false;
@@ -473,8 +377,8 @@ function bbstyle(bbnumber)
 			{
 				txtarea.value += bbtags[butnumber + 1];
 			}
-			buttext = eval('document.post.addbbcode' + butnumber + '.value');
-			eval('document.post.addbbcode' + butnumber + '.value ="' + buttext.substr(0,(buttext.length - 1)) + '"');
+			buttext = eval('document.forms[form_name].addbbcode' + butnumber + '.value');
+			eval('document.forms[form_name].addbbcode' + butnumber + '.value ="' + buttext.substr(0,(buttext.length - 1)) + '"');
 		}
 		imageTag = false; // All tags are closed including image tags :D
 		txtarea.focus();
@@ -530,8 +434,8 @@ function bbstyle(bbnumber)
 			{
 				txtarea.value += bbtags[butnumber + 1];
 			}
-			buttext = eval('document.post.addbbcode' + butnumber + '.value');
-			eval('document.post.addbbcode' + butnumber + '.value ="' + buttext.substr(0,(buttext.length - 1)) + '"');
+			buttext = eval('document.forms[form_name].addbbcode' + butnumber + '.value');
+			eval('document.forms[form_name].addbbcode' + butnumber + '.value ="' + buttext.substr(0,(buttext.length - 1)) + '"');
 			imageTag = false;
 		}
 		txtarea.focus();
@@ -561,7 +465,7 @@ function bbstyle(bbnumber)
 				txtarea.value += bbtags[15];
 			}
 			lastValue = arraypop(bbcode) - 1; // Remove the close image tag from the list
-			document.post.addbbcode14.value = "Img"; // Return button back to normal state
+			document.forms[form_name].addbbcode14.value = "Img"; // Return button back to normal state
 			imageTag = false;
 		}
 		// Open tag
@@ -638,8 +542,8 @@ function bbstyle(bbnumber)
 			{
 				imageTag = 1;
 			}
-			arraypush(bbcode,bbnumber + 1);
-			eval('document.post.addbbcode' + bbnumber + '.value += "*"');
+			arraypush(bbcode, bbnumber + 1);
+			eval('document.forms[form_name].addbbcode' + bbnumber + '.value += "*"');
 		}
 		txtarea.focus();
 		return;
@@ -650,14 +554,13 @@ function bbstyle(bbnumber)
 // Mighty Gorgon - Highlight/Copy
 function copymetasearch()
 {
-	document.post.message.select();
-	document.post.message.focus();
-	if ( (navigator.appName=="Microsoft Internet Explorer") && (parseInt(navigator.appVersion)>=4) )
+	document.forms[form_name].elements[text_name].select();
+	document.forms[form_name].elements[text_name].focus();
+	if ((navigator.appName=="Microsoft Internet Explorer") && (parseInt(navigator.appVersion)>=4))
 	{
-		textRange = document.post.message.createTextRange();
+		textRange = document.forms[form_name].elements[text_name].createTextRange();
 		textRange.execCommand("RemoveFormat");
 		textRange.execCommand("Copy");
-		// alert("Text copied to clipboard");
 	}
 }
 // Mighty Gorgon - Highlight/Copy
@@ -721,7 +624,7 @@ function BBCimg()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[img]"+enterURL+"[/img]";
+	var ToAdd = "[img]" + enterURL + "[/img]";
 	PostWrite(ToAdd);
 }
 
@@ -738,7 +641,7 @@ function BBCimgl()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[img align=left]"+enterURL+"[/img]";
+	var ToAdd = "[img align=left]" + enterURL + "[/img]";
 	PostWrite(ToAdd);
 }
 
@@ -755,7 +658,7 @@ function BBCimgr()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[img align=right]"+enterURL+"[/img]";
+	var ToAdd = "[img align=right]" + enterURL + "[/img]";
 	PostWrite(ToAdd);
 }
 
@@ -772,7 +675,7 @@ function BBCalbumimg()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[albumimg]"+enterURL+"[/albumimg]";
+	var ToAdd = "[albumimg]" + enterURL + "[/albumimg]";
 	PostWrite(ToAdd);
 }
 
@@ -789,7 +692,7 @@ function BBCalbumimgl()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[albumimg align=left]"+enterURL+"[/albumimg]";
+	var ToAdd = "[albumimg align=left]" + enterURL + "[/albumimg]";
 	PostWrite(ToAdd);
 }
 
@@ -806,7 +709,7 @@ function BBCalbumimgr()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[albumimg align=right]"+enterURL+"[/albumimg]";
+	var ToAdd = "[albumimg align=right]" + enterURL + "[/albumimg]";
 	PostWrite(ToAdd);
 }
 
@@ -823,7 +726,7 @@ function BBCram()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[ram]"+enterURL+"[/ram]";
+	var ToAdd = "[ram]" + enterURL + "[/ram]";
 	PostWrite(ToAdd);
 }
 
@@ -850,7 +753,7 @@ function BBCvideo()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[video width="+enterW+" height="+enterH+"]"+enterFURL+"[/video]";
+	var ToAdd = "[video width="+enterW+" height="+enterH+"]"+enterFURL + "[/video]";
 	PostWrite(ToAdd);
 }
 
@@ -877,7 +780,7 @@ function BBCflash()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[flash width="+enterW+" height="+enterH+"]"+enterFURL+"[/flash]";
+	var ToAdd = "[flash width="+enterW+" height="+enterH+"]"+enterFURL + "[/flash]";
 	PostWrite(ToAdd);
 }
 
@@ -894,7 +797,7 @@ function BBCstream()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[stream]"+enterURL+"[/stream]";
+	var ToAdd = "[stream]" + enterURL + "[/stream]";
 	PostWrite(ToAdd);
 }
 
@@ -911,7 +814,7 @@ function BBCgooglevideo()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[googlevideo]"+enterURL+"[/googlevideo]";
+	var ToAdd = "[googlevideo]" + enterURL + "[/googlevideo]";
 	PostWrite(ToAdd);
 }
 
@@ -928,7 +831,7 @@ function BBCyoutube()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[youtube]"+enterURL+"[/youtube]";
+	var ToAdd = "[youtube]" + enterURL + "[/youtube]";
 	PostWrite(ToAdd);
 }
 
@@ -945,13 +848,13 @@ function BBCemff()
 		alert(s_gen_error + FoundErrors);
 		return;
 	}
-	var ToAdd = "[emff]"+enterURL+"[/emff]";
+	var ToAdd = "[emff]" + enterURL + "[/emff]";
 	PostWrite(ToAdd);
 }
 
 function BBCbold()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -959,7 +862,7 @@ function BBCbold()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[b]" + theSelection + "[/b]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -972,13 +875,13 @@ function BBCbold()
 	if (Bold == 0)
 	{
 		ToAdd = "[b]";
-		document.post.bold_img.src = bbcb_mg_img_path + "bold1" + bbcb_mg_img_ext;
+		document.forms[form_name].bold_img.src = bbcb_mg_img_path + "bold1" + bbcb_mg_img_ext;
 		Bold = 1;
 	}
 	else
 	{
 		ToAdd = "[/b]";
-		document.post.bold_img.src = bbcb_mg_img_path + "bold" + bbcb_mg_img_ext;
+		document.forms[form_name].bold_img.src = bbcb_mg_img_path + "bold" + bbcb_mg_img_ext;
 		Bold = 0;
 	}
 	PostWrite(ToAdd);
@@ -986,7 +889,7 @@ function BBCbold()
 
 function BBCitalic()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -994,7 +897,7 @@ function BBCitalic()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[i]" + theSelection + "[/i]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1006,13 +909,13 @@ function BBCitalic()
 	if (Italic == 0)
 	{
 		ToAdd = "[i]";
-		document.post.italic.src = bbcb_mg_img_path + "italic1" + bbcb_mg_img_ext;
+		document.forms[form_name].italic.src = bbcb_mg_img_path + "italic1" + bbcb_mg_img_ext;
 		Italic = 1;
 	}
 	else
 	{
 		ToAdd = "[/i]";
-		document.post.italic.src = bbcb_mg_img_path + "italic" + bbcb_mg_img_ext;
+		document.forms[form_name].italic.src = bbcb_mg_img_path + "italic" + bbcb_mg_img_ext;
 		Italic = 0;
 	}
 	PostWrite(ToAdd);
@@ -1020,7 +923,7 @@ function BBCitalic()
 
 function BBCunder()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1028,7 +931,7 @@ function BBCunder()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[u]" + theSelection + "[/u]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1040,13 +943,13 @@ function BBCunder()
 	if (Underline == 0)
 	{
 		ToAdd = "[u]";
-		document.post.under.src = bbcb_mg_img_path + "under1" + bbcb_mg_img_ext;
+		document.forms[form_name].under.src = bbcb_mg_img_path + "under1" + bbcb_mg_img_ext;
 		Underline = 1;
 	}
 	else
 	{
 		ToAdd = "[/u]";
-		document.post.under.src = bbcb_mg_img_path + "under" + bbcb_mg_img_ext;
+		document.forms[form_name].under.src = bbcb_mg_img_path + "under" + bbcb_mg_img_ext;
 		Underline = 0;
 	}
 	PostWrite(ToAdd);
@@ -1054,7 +957,7 @@ function BBCunder()
 
 function BBCstrike()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1062,7 +965,7 @@ function BBCstrike()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[strike]" + theSelection + "[/strike]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1087,7 +990,7 @@ function BBCstrike()
 }
 
 function BBClist() {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1095,7 +998,7 @@ function BBClist() {
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[list]" + theSelection + "[/list]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1120,7 +1023,7 @@ function BBClist() {
 }
 
 function BBClistO() {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1128,7 +1031,7 @@ function BBClistO() {
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[list=1]" + theSelection + "[/list]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1154,7 +1057,7 @@ function BBClistO() {
 
 function BBCquick()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1162,7 +1065,7 @@ function BBCquick()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[quick]" + theSelection + "[/quick]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1188,7 +1091,7 @@ function BBCquick()
 
 function BBCsup()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1196,7 +1099,7 @@ function BBCsup()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[sup]" + theSelection + "[/sup]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1222,7 +1125,7 @@ function BBCsup()
 
 function BBCsub()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1230,7 +1133,7 @@ function BBCsub()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[sub]" + theSelection + "[/sub]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1256,7 +1159,7 @@ function BBCsub()
 
 function BBCgrad()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1264,7 +1167,7 @@ function BBCgrad()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[rainbow]" + theSelection + "[/rainbow]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1290,7 +1193,7 @@ function BBCgrad()
 
 function BBCgrad2() {
 	var oSelect,oSelectRange;
-	document.post.message.focus();
+	document.forms[form_name].elements[text_name].focus();
 	oSelect = document.selection;
 	oSelectRange = oSelect.createRange();
 	if (oSelectRange.text.length < 1)
@@ -1320,7 +1223,7 @@ function BBCbullet()
 
 function BBCmarqu()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1328,7 +1231,7 @@ function BBCmarqu()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[marquee direction=up]" + theSelection + "[/marquee]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1340,13 +1243,13 @@ function BBCmarqu()
 	if (marqu == 0)
 	{
 		ToAdd = "[marquee direction=up]";
-		document.post.marqu.src = bbcb_mg_img_path + "marqu1" + bbcb_mg_img_ext;
+		document.forms[form_name].marqu.src = bbcb_mg_img_path + "marqu1" + bbcb_mg_img_ext;
 		marqu = 1;
 	}
 	else
 	{
 		ToAdd = "[/marquee]";
-		document.post.marqu.src = bbcb_mg_img_path + "marqu" + bbcb_mg_img_ext;
+		document.forms[form_name].marqu.src = bbcb_mg_img_path + "marqu" + bbcb_mg_img_ext;
 		marqu = 0;
 	}
 	PostWrite(ToAdd);
@@ -1354,7 +1257,7 @@ function BBCmarqu()
 
 function BBCmarqd()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1362,7 +1265,7 @@ function BBCmarqd()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[marquee direction=down]" + theSelection + "[/marquee]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1374,13 +1277,13 @@ function BBCmarqd()
 	if (marqd == 0)
 	{
 		ToAdd = "[marquee direction=down]";
-		document.post.marqd.src = bbcb_mg_img_path + "marqd1" + bbcb_mg_img_ext;
+		document.forms[form_name].marqd.src = bbcb_mg_img_path + "marqd1" + bbcb_mg_img_ext;
 		marqd = 1;
 	}
 	else
 	{
 		ToAdd = "[/marquee]";
-		document.post.marqd.src = bbcb_mg_img_path + "marqd" + bbcb_mg_img_ext;
+		document.forms[form_name].marqd.src = bbcb_mg_img_path + "marqd" + bbcb_mg_img_ext;
 		marqd = 0;
 	}
 	PostWrite(ToAdd);
@@ -1388,7 +1291,7 @@ function BBCmarqd()
 
 function BBCmarql()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1396,7 +1299,7 @@ function BBCmarql()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[marquee direction=left]" + theSelection + "[/marquee]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1408,13 +1311,13 @@ function BBCmarql()
 	if (marql == 0)
 	{
 		ToAdd = "[marquee direction=left]";
-		document.post.marql.src = bbcb_mg_img_path + "marql1" + bbcb_mg_img_ext;
+		document.forms[form_name].marql.src = bbcb_mg_img_path + "marql1" + bbcb_mg_img_ext;
 		marql = 1;
 	}
 	else
 	{
 		ToAdd = "[/marquee]";
-		document.post.marql.src = bbcb_mg_img_path + "marql" + bbcb_mg_img_ext;
+		document.forms[form_name].marql.src = bbcb_mg_img_path + "marql" + bbcb_mg_img_ext;
 		marql = 0;
 	}
 	PostWrite(ToAdd);
@@ -1422,7 +1325,7 @@ function BBCmarql()
 
 function BBCmarqr()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1430,7 +1333,7 @@ function BBCmarqr()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[marquee direction=right]" + theSelection + "[/marquee]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1442,13 +1345,13 @@ function BBCmarqr()
 	if (marqr == 0)
 	{
 		ToAdd = "[marquee direction=right]";
-		document.post.marqr.src = bbcb_mg_img_path + "marqr1" + bbcb_mg_img_ext;
+		document.forms[form_name].marqr.src = bbcb_mg_img_path + "marqr1" + bbcb_mg_img_ext;
 		marqr = 1;
 	}
 	else
 	{
 		ToAdd = "[/marquee]";
-		document.post.marqr.src = bbcb_mg_img_path + "marqr" + bbcb_mg_img_ext;
+		document.forms[form_name].marqr.src = bbcb_mg_img_path + "marqr" + bbcb_mg_img_ext;
 		marqr = 0;
 	}
 	PostWrite(ToAdd);
@@ -1456,12 +1359,12 @@ function BBCmarqr()
 
 function BBCdir(dirc)
 {
-	document.post.message.dir=(dirc);
+	document.forms[form_name].elements[text_name].dir=(dirc);
 }
 
 function BBCfade()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1469,7 +1372,7 @@ function BBCfade()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[opacity]" + theSelection + "[/opacity]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1481,13 +1384,13 @@ function BBCfade()
 	if (fade == 0)
 	{
 		ToAdd = "[opacity]";
-		document.post.fade.src = bbcb_mg_img_path + "fade1" + bbcb_mg_img_ext;
+		document.forms[form_name].fade.src = bbcb_mg_img_path + "fade1" + bbcb_mg_img_ext;
 		fade = 1;
 	}
 	else
 	{
 		ToAdd = "[/opacity]";
-		document.post.fade.src = bbcb_mg_img_path + "fade" + bbcb_mg_img_ext;
+		document.forms[form_name].fade.src = bbcb_mg_img_path + "fade" + bbcb_mg_img_ext;
 		fade = 0;
 	}
 	PostWrite(ToAdd);
@@ -1495,7 +1398,7 @@ function BBCfade()
 
 function BBCspoiler()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1503,7 +1406,7 @@ function BBCspoiler()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[spoiler]" + theSelection + "[/spoiler]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1515,13 +1418,13 @@ function BBCspoiler()
 	if (Spoiler == 0)
 	{
 		ToAdd = "[spoiler]";
-		document.post.spoiler.src = bbcb_mg_img_path + "spoiler1.gif";
+		document.forms[form_name].spoiler.src = bbcb_mg_img_path + "spoiler1.gif";
 		Spoiler = 1;
 	}
 	else
 	{
 		ToAdd = "[/spoiler]";
-		document.post.spoiler.src = bbcb_mg_img_path + "spoiler.gif";
+		document.forms[form_name].spoiler.src = bbcb_mg_img_path + "spoiler.gif";
 		Spoiler = 0;
 	}
 	PostWrite(ToAdd);
@@ -1529,7 +1432,7 @@ function BBCspoiler()
 
 function BBCcell()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1537,7 +1440,7 @@ function BBCcell()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[cell class=spoiler]" + theSelection + "[/cell]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1549,13 +1452,13 @@ function BBCcell()
 	if (Cell == 0)
 	{
 		ToAdd = "[cell class=spoiler]";
-		document.post.cell.src = bbcb_mg_img_path + "cell1.gif";
+		document.forms[form_name].cell.src = bbcb_mg_img_path + "cell1.gif";
 		Cell = 1;
 	}
 	else
 	{
 		ToAdd = "[/cell]";
-		document.post.cell.src = bbcb_mg_img_path + "cell.gif";
+		document.forms[form_name].cell.src = bbcb_mg_img_path + "cell.gif";
 		Cell = 0;
 	}
 	PostWrite(ToAdd);
@@ -1563,7 +1466,7 @@ function BBCcell()
 
 function BBCjustify()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1571,7 +1474,7 @@ function BBCjustify()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[align=justify]" + theSelection + "[/align]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1583,13 +1486,13 @@ function BBCjustify()
 	if (justify == 0)
 	{
 		ToAdd = "[align=justify]";
-		document.post.justify.src = bbcb_mg_img_path + "justify1" + bbcb_mg_img_ext;
+		document.forms[form_name].justify.src = bbcb_mg_img_path + "justify1" + bbcb_mg_img_ext;
 		justify = 1;
 	}
 	else
 	{
 		ToAdd = "[/align]";
-		document.post.justify.src = bbcb_mg_img_path + "justify" + bbcb_mg_img_ext;
+		document.forms[form_name].justify.src = bbcb_mg_img_path + "justify" + bbcb_mg_img_ext;
 		justify = 0;
 	}
 	PostWrite(ToAdd);
@@ -1597,7 +1500,7 @@ function BBCjustify()
 
 function BBCleft()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1605,7 +1508,7 @@ function BBCleft()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[align=left]" + theSelection + "[/align]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1617,13 +1520,13 @@ function BBCleft()
 	if (left == 0)
 	{
 		ToAdd = "[align=left]";
-		document.post.left.src = bbcb_mg_img_path + "left1" + bbcb_mg_img_ext;
+		document.forms[form_name].left.src = bbcb_mg_img_path + "left1" + bbcb_mg_img_ext;
 		left = 1;
 	}
 	else
 	{
 		ToAdd = "[/align]";
-		document.post.left.src = bbcb_mg_img_path + "left" + bbcb_mg_img_ext;
+		document.forms[form_name].left.src = bbcb_mg_img_path + "left" + bbcb_mg_img_ext;
 		left = 0;
 	}
 	PostWrite(ToAdd);
@@ -1631,7 +1534,7 @@ function BBCleft()
 
 function BBCright()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1639,7 +1542,7 @@ function BBCright()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[align=right]" + theSelection + "[/align]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1651,13 +1554,13 @@ function BBCright()
 	if (right == 0)
 	{
 		ToAdd = "[align=right]";
-		document.post.right.src = bbcb_mg_img_path + "right1" + bbcb_mg_img_ext;
+		document.forms[form_name].right.src = bbcb_mg_img_path + "right1" + bbcb_mg_img_ext;
 		right = 1;
 	}
 	else
 	{
 		ToAdd = "[/align]";
-		document.post.right.src = bbcb_mg_img_path + "right" + bbcb_mg_img_ext;
+		document.forms[form_name].right.src = bbcb_mg_img_path + "right" + bbcb_mg_img_ext;
 		right = 0;
 	}
 	PostWrite(ToAdd);
@@ -1665,7 +1568,7 @@ function BBCright()
 
 function BBCcenter()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1673,7 +1576,7 @@ function BBCcenter()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[align=center]" + theSelection + "[/align]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1685,13 +1588,13 @@ function BBCcenter()
 	if (center == 0)
 	{
 		ToAdd = "[align=center]";
-		document.post.center.src = bbcb_mg_img_path + "center1" + bbcb_mg_img_ext;
+		document.forms[form_name].center.src = bbcb_mg_img_path + "center1" + bbcb_mg_img_ext;
 		center = 1;
 	}
 	else
 	{
 		ToAdd = "[/align]";
-		document.post.center.src = bbcb_mg_img_path + "center" + bbcb_mg_img_ext;
+		document.forms[form_name].center.src = bbcb_mg_img_path + "center" + bbcb_mg_img_ext;
 		center = 0;
 	}
 	PostWrite(ToAdd);
@@ -1699,76 +1602,76 @@ function BBCcenter()
 
 function BBCft()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
 		theSelection = document.selection.createRange().text;
 		if (theSelection != '')
 		{
-			document.selection.createRange().text = "[font="+document.post.ft.value+"]" + theSelection + "[/font]";
-			document.post.message.focus();
+			document.selection.createRange().text = "[font=" + document.forms[form_name].ft.value+"]" + theSelection + "[/font]";
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
 	else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
 	{
-		mozInsert(txtarea, "[font="+document.post.ft.value+"]", "[/font]");
+		mozInsert(txtarea, "[font=" + document.forms[form_name].ft.value+"]", "[/font]");
 		return;
 	}
-	ToAdd = "[font="+document.post.ft.value+"]"+" "+"[/font]";
+	ToAdd = "[font=" + document.forms[form_name].ft.value+"]"+" " + "[/font]";
 	PostWrite(ToAdd);
 }
 
 function BBCfs()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
 		theSelection = document.selection.createRange().text;
 		if (theSelection != '')
 		{
-			document.selection.createRange().text = "[size="+document.post.fs.value+"]" + theSelection + "[/size]";
-			document.post.message.focus();
+			document.selection.createRange().text = "[size=" + document.forms[form_name].fs.value+"]" + theSelection + "[/size]";
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
 	else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
 	{
-		mozInsert(txtarea, "[size="+document.post.fs.value+"]", "[/size]");
+		mozInsert(txtarea, "[size=" + document.forms[form_name].fs.value+"]", "[/size]");
 		return;
 	}
-	ToAdd = "[size="+document.post.fs.value+"]"+" "+"[/size]";
+	ToAdd = "[size=" + document.forms[form_name].fs.value+"]"+" " + "[/size]";
 	PostWrite(ToAdd);
 }
 
 function BBCfc()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
 		theSelection = document.selection.createRange().text;
 		if (theSelection != '')
 		{
-			document.selection.createRange().text = "[color="+document.post.fc.value+"]" + theSelection + "[/color]";
-			document.post.message.focus();
+			document.selection.createRange().text = "[color=" + document.forms[form_name].fc.value+"]" + theSelection + "[/color]";
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
 	else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
 	{
-		mozInsert(txtarea, "[color="+document.post.fc.value+"]", "[/color]");
+		mozInsert(txtarea, "[color=" + document.forms[form_name].fc.value+"]", "[/color]");
 		return;
 	}
-	ToAdd = "[color="+document.post.fc.value+"]"+" "+"[/color]";
+	ToAdd = "[color=" + document.forms[form_name].fc.value+"]"+" " + "[/color]";
 	PostWrite(ToAdd);
 }
 
 function BBChl()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1776,7 +1679,7 @@ function BBChl()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[highlight=#FFFFAA]" + theSelection + "[/highlight]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1785,13 +1688,13 @@ function BBChl()
 		mozInsert(txtarea, "[highlight=#FFFFAA]", "[/highlight]");
 		return;
 	}
-	ToAdd = "[highlight=#FFFFAA]"+" "+"[/highlight]";
+	ToAdd = "[highlight=#FFFFAA]"+" " + "[/highlight]";
 	PostWrite(ToAdd);
 }
 
 function BBCphpbbmod()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1799,7 +1702,7 @@ function BBCphpbbmod()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = theSelection + "OPEN [b][/b]\nFIND\n[codeblock][/codeblock]\nREPLACE WITH\n[codeblock][/codeblock]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1814,7 +1717,7 @@ function BBCphpbbmod()
 
 function BBCcode()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1822,7 +1725,7 @@ function BBCcode()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[code linenumbers=false]" + theSelection + "[/code]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1834,13 +1737,13 @@ function BBCcode()
 	if (Code == 0)
 	{
 		ToAdd = "[code linenumbers=false]";
-		document.post.code.src = bbcb_mg_img_path + "code1" + bbcb_mg_img_ext;
+		document.forms[form_name].code.src = bbcb_mg_img_path + "code1" + bbcb_mg_img_ext;
 		Code = 1;
 	}
 	else
 	{
 		ToAdd = "[/code]";
-		document.post.code.src = bbcb_mg_img_path + "code" + bbcb_mg_img_ext;
+		document.forms[form_name].code.src = bbcb_mg_img_path + "code" + bbcb_mg_img_ext;
 		Code = 0;
 	}
 	PostWrite(ToAdd);
@@ -1848,7 +1751,7 @@ function BBCcode()
 
 function BBCquote()
 {
-	var txtarea = document.post.message;
+	var txtarea = document.forms[form_name].elements[text_name];
 
 	if ((clientVer >= 4) && is_ie && is_win)
 	{
@@ -1856,7 +1759,7 @@ function BBCquote()
 		if (theSelection != '')
 		{
 			document.selection.createRange().text = "[quote]" + theSelection + "[/quote]";
-			document.post.message.focus();
+			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
@@ -1868,13 +1771,13 @@ function BBCquote()
 	if (Quote == 0)
 	{
 		ToAdd = "[quote]";
-		document.post.quote.src = bbcb_mg_img_path + "quote1" + bbcb_mg_img_ext;
+		document.forms[form_name].quote.src = bbcb_mg_img_path + "quote1" + bbcb_mg_img_ext;
 		Quote = 1;
 	}
 	else
 	{
 		ToAdd = "[/quote]";
-		document.post.quote.src = bbcb_mg_img_path + "quote" + bbcb_mg_img_ext;
+		document.forms[form_name].quote.src = bbcb_mg_img_path + "quote" + bbcb_mg_img_ext;
 		Quote = 0;
 	}
 	PostWrite(ToAdd);
@@ -1913,143 +1816,3 @@ function codeDivStart()
 	document.write('<div class="codetitle">Code:<img src="' + imgSrc + 'nav_expand.gif" width="14" height="10" title="' + s_view_more_code +'" onclick="resizeLayer(' + randomId + ', 200)" onmouseover="this.style.cursor = \'pointer\'" /><img src="' + imgSrc + 'nav_expand_more.gif" width="14" height="10" title="View Even More of this Code" onclick="resizeLayer(' + randomId + ', 500)" onmouseover="this.style.cursor = \'pointer\'" /><img src="' + imgSrc + 'nav_contract.gif" width="14" height="10" title="View Less of this Code" onclick="resizeLayer(' + randomId + ', 50)" onmouseover="this.style.cursor = \'pointer\'" /><img src="' + imgSrc + 'nav_select_all.gif" width="14" height="10" title="Select All of this Code" onclick="selectAll(' + randomId + ')" onmouseover="this.style.cursor = \'pointer\'" /></div><div class="codediv" id="' + randomId + '">');
 }
 
-// Fade js
-
-//gestion des objets selon les navigateurs
-function ob(id)
-{
-	if (dom)
-	{
-		obj = document.getElementById(id);
-	}
-	else if (ie4)
-	{
-		obj = document.all[id];
-	}
-	else if (ns4)
-	{
-		obj = document.anchors[id];
-	}
-	else
-	{
-		obj=false;
-	}
-	return obj;
-}
-
-// Fade
-Array.prototype.inArray=function(str)
-{//on modifie l'objet Array
-	for(i=0; i< this.length; i++)
-	{
-		if(this[i].toString()==str)
-		{
-			return i;
-		}
-	}
-return -1;
-}
-//On modifie l'objet String
-String.prototype.exist=function()
-{
-	return (this=="undefined"?false:true);
-};
-//Opacité
-function setOpacity(id,alpha,isObj)
-{
-	if(!dom)
-	{
-		return;
-	}
-	var object = isObj ? id : ob(id);
-	if(String(typeof object.filters).exist())
-	{
-		object.filters.alpha.opacity = alpha;
-	}
-	else if(String(typeof object.style.opacity).exist())
-	{
-		object.style.opacity = (alpha/100);
-	}
-	else if(String(typeof object.style.KhtmlOpacity).exist())
-	{
-		object.style.KhtmlOpacity = (alpha/100);
-	}
-	else if(String(typeof object.style.MozOpacity).exist())
-	{
-		object.style.MozOpacity = (alpha/100);
-	}
-}
-function getOpacity(id,isObj)
-{
-	if(!dom)
-	{
-		return;
-	}
-	var object = isObj?id:ob(id), alpha=null;
-	if(String(typeof object.filters).exist())
-	{
-		alpha = object.filters.alpha.opacity;
-	}
-	else if(String(typeof object.style.opacity).exist())
-	{
-		alpha = object.style.opacity*100;//css3 propertie
-	}
-	else if(String(typeof object.style.KhtmlOpacity).exist())
-	{
-		alpha = object.style.KhtmlOpacity*100;
-	}
-	else if(String(typeof object.style.MozOpacity).exist())
-	{
-		alpha = object.style.MozOpacity*100;
-	}
-	return alpha;
-}
-
-// Fading
-vit = 5; //temps entre chaque addition d'opacité(+ petit -> + de qualité -> + dur pour le navigateur)
-add = 4; //valeur à additionner (idem)
-nObj = 0;
-
-fadeObjects = new Object();
-fadeTimers = new Object();
-fadeIds = new Array();
-
-function fade2(object, destOp)
-{
-	if (!dom)
-	{
-		return;
-	}
-	if (object.toString().indexOf("[object") == -1)
-	{
-		setTimeout("fade2("+object+","+destOp+")",0);
-		return;
-	}
-	alpha = getOpacity(object,true);
-	index = fadeIds.inArray(object.id);
-	if(index>-1)
-	{
-		clearTimeout(fadeTimers[index]);
-	}
-	else
-	{
-		index = nObj++;
-		fadeIds[index] = object.id;
-	}
-	diff = destOp - alpha;
-	direction = 1;
-	if (alpha > destOp)
-	{
-		direction = -1;//de - en - opaque
-	}
-	alpha += direction * Math.min(direction * diff, add);//ajoute le + petit entre la diférence et add
-	setOpacity(object,alpha,true);
-	alpha = getOpacity(object,true);
-	object.offsetLeft;
-	if (Math.round(alpha) != destOp)
-	{
-		fadeObjects[index] = object;
-		fadeTimers[index] = setTimeout("fade2(fadeObjects[" + index + "]," + destOp + ")",vit);
-	}
-	return;
-}

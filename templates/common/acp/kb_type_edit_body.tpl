@@ -11,7 +11,7 @@
 <!-- BEGIN switch_cat -->
 <tr>
 	<td class="row1">{L_DESCRIPTION}</td>
-	<td class="row2"><textarea rows="5" cols="45" wrap="virtual" name="catdesc" class="post">{CAT_DESCRIPTION}</textarea></td>
+	<td class="row2"><textarea rows="5" cols="45" name="catdesc" class="post">{CAT_DESCRIPTION}</textarea></td>
 </tr>
 <tr>
 	<td class="row1">{L_PARENT}</td>

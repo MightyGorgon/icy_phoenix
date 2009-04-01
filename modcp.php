@@ -1291,7 +1291,7 @@ switch($mode)
 		);
 
 		$sql = "SELECT poster_ip, COUNT(*) AS postings FROM " . POSTS_TABLE . " WHERE poster_id = $poster_id
-			GROUP BY poster_ip ORDER BY " . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC";
+			GROUP BY poster_ip ORDER BY postings DESC";
 		if(!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'could not get IP information for this user.', '', __LINE__, __FILE__, $sql);

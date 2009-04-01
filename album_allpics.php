@@ -360,18 +360,22 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				$thumbnail_file = picture_quick_thumb($picrow[$j]['pic_filename'], $picrow[$j]['pic_thumbnail'], $thumbnail_file);
 			}
 
-			if ($album_config['lb_preview'] == 0)
+			$pic_preview = '';
+			$pic_preview_hs = '';
+			if ($album_config['lb_preview'])
 			{
-				$pic_preview = '';
-			}
-			else
-			{
+				$slideshow_cat = '';
+				$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+				$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '\',\'' . addslashes($picrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 			}
 
 			$template->assign_block_vars('picrow.piccol', array(
-				'U_PIC' => append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'] . '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method)),
+				'U_PIC_SP' => append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'] . '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method)),
+				'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])),
 				'THUMBNAIL' => $thumbnail_file,
+				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
 				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 				'DESC' => $picrow[$j]['pic_desc']

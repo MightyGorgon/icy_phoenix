@@ -1235,19 +1235,23 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 			{
 				$thumbnail_file = picture_quick_thumb($picrow[$j]['pic_filename'], $picrow[$j]['pic_thumbnail'], $thumbnail_file);
 			}
-			if ($album_config['lb_preview'] == 0)
+
+			$pic_preview = '';
+			$pic_preview_hs = '';
+			if ($album_config['lb_preview'])
 			{
-				$pic_preview = '';
-			}
-			else
-			{
+				$slideshow_cat = '';
+				$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+				$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '\',\'' . addslashes($picrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 			}
 
-
 			$template->assign_block_vars('index_pics_block.picrow.piccol', array(
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id='. $picrow[$j]['pic_id'] . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order)),
+				'U_PIC_SP' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id='. $picrow[$j]['pic_id'] . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order)),
+				'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])),
 				'THUMBNAIL' => $thumbnail_file,
+				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
 				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 				'DESC' => htmlspecialchars($picrow[$j]['pic_desc']),
@@ -1422,18 +1426,23 @@ function album_build_recent_pics($cats)
 					{
 						$thumbnail_file = picture_quick_thumb($recentrow[$j]['pic_filename'], $recentrow[$j]['pic_thumbnail'], $thumbnail_file);
 					}
-					if ($album_config['lb_preview'] == 0)
+
+					$pic_preview = '';
+					$pic_preview_hs = '';
+					if ($album_config['lb_preview'])
 					{
-						$pic_preview = '';
-					}
-					else
-					{
+						$slideshow_cat = '';
+						$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+						$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id'])) . '\',\'' . addslashes($recentrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
-						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url. '?pic_id='. $recentrow[$j]['pic_id'])),
+						'U_PIC_SP' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url. '?pic_id='. $recentrow[$j]['pic_id'])),
+						'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id'])),
 						'THUMBNAIL' => $thumbnail_file,
+						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
 						'PIC_TITLE' => htmlspecialchars($recentrow[$j]['pic_title']),
 						'DESC' => htmlspecialchars($recentrow[$j]['pic_desc'])
@@ -1552,20 +1561,24 @@ function album_build_highest_rated_pics($cats)
 						$thumbnail_file = picture_quick_thumb($highestrow[$j]['pic_filename'], $highestrow[$j]['pic_thumbnail'], $thumbnail_file);
 					}
 
-					if ($album_config['lb_preview'] == 0)
+					$pic_preview = '';
+					$pic_preview_hs = '';
+					if ($album_config['lb_preview'])
 					{
-						$pic_preview = '';
-					}
-					else
-					{
+						$slideshow_cat = '';
+						$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+						$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id'])) . '\',\'' . addslashes($highestrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					if ($highestrow[$j]['rating'] > 0)
 					{
 						$template->assign_block_vars('highest_pics_block.highest_pics.highest_col', array(
-							'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $highestrow[$j]['pic_id'])),
+							'U_PIC_SP' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $highestrow[$j]['pic_id'])),
+							'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $highestrow[$j]['pic_id'])),
 							'THUMBNAIL' => $thumbnail_file,
+							'PIC_PREVIEW_HS' => $pic_preview_hs,
 							'PIC_PREVIEW' => $pic_preview,
 							'PIC_TITLE' => htmlspecialchars($highestrow[$j]['pic_title']),
 							'DESC' => htmlspecialchars($highestrow[$j]['pic_desc'])
@@ -1693,18 +1706,22 @@ function album_build_most_viewed_pics($cats)
 						$thumbnail_file = picture_quick_thumb($mostviewed[$j]['pic_filename'], $mostviewed[$j]['pic_thumbnail'], $thumbnail_file);
 					}
 
-					if ($album_config['lb_preview'] == 0)
+					$pic_preview = '';
+					$pic_preview_hs = '';
+					if ($album_config['lb_preview'])
 					{
-						$pic_preview = '';
-					}
-					else
-					{
+						$slideshow_cat = '';
+						$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+						$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id'])) . '\',\'' . addslashes($mostviewed[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					$template->assign_block_vars('mostviewed_pics_block.mostviewed_pics.mostviewed_col', array(
-						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $mostviewed[$j]['pic_id'])),
+						'U_PIC_SP' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $mostviewed[$j]['pic_id'])),
+						'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $mostviewed[$j]['pic_id'])),
 						'THUMBNAIL' => $thumbnail_file,
+						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
 						'PIC_TITLE' => htmlspecialchars($mostviewed[$j]['pic_title']),
 						'DESC' => htmlspecialchars($mostviewed[$j]['pic_desc'])
@@ -1820,18 +1837,22 @@ function album_build_random_pics($cats)
 						$thumbnail_file = picture_quick_thumb($randrow[$j]['pic_filename'], $randrow[$j]['pic_thumbnail'], $thumbnail_file);
 					}
 
-					if ($album_config['lb_preview'] == 0)
+					$pic_preview = '';
+					$pic_preview_hs = '';
+					if ($album_config['lb_preview'])
 					{
-						$pic_preview = '';
-					}
-					else
-					{
+						$slideshow_cat = '';
+						$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+						$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 						$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id'])) . '\',\'' . addslashes($randrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 					}
 
 					$template->assign_block_vars('random_pics_block.rand_pics.rand_col', array(
-						'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $randrow[$j]['pic_id'])),
+						'U_PIC_SP' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $randrow[$j]['pic_id'])),
+						'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $randrow[$j]['pic_id'])),
 						'THUMBNAIL' => $thumbnail_file,
+						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
 						'PIC_TITLE' => htmlspecialchars($randrow[$j]['pic_title']),
 						'DESC' => htmlspecialchars($randrow[$j]['pic_desc'])
@@ -1960,12 +1981,14 @@ function album_build_last_comments_info($cats)
 				$thumbnail_file = picture_quick_thumb($commentsrow[$i]['pic_filename'], $commentsrow[$i]['pic_thumbnail'], $thumbnail_file);
 			}
 
-			if ($album_config['lb_preview'] == 0)
+			$pic_preview = '';
+			$pic_preview_hs = '';
+			if ($album_config['lb_preview'])
 			{
-				$pic_preview = '';
-			}
-			else
-			{
+				$slideshow_cat = '';
+				$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+				$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
 				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '\',\'' . addslashes($commentsrow[$i]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 			}
 
@@ -1988,8 +2011,10 @@ function album_build_last_comments_info($cats)
 			$commentsrow[$i]['comment_text'] = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $commentsrow[$i]['comment_text']) : $commentsrow[$i]['comment_text'];
 
 			$template->assign_block_vars('recent_comments_block.comment_row', array(
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])),
+				'U_PIC_SP' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])),
+				'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])),
 				'THUMBNAIL' => $thumbnail_file,
+				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
 				'PIC_TITLE' => htmlspecialchars($commentsrow[$j]['pic_title']),
 				'DESC' => htmlspecialchars($commentsrow[$i]['pic_desc']),

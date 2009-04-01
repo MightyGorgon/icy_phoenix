@@ -23,10 +23,12 @@ if (!defined('IN_ICYPHOENIX'))
 switch($dbms)
 {
 	case 'mysql':
+		define('SQL_LAYER', 'mysql');
 		include(IP_ROOT_PATH . 'includes/db/mysql.' . PHP_EXT);
 		break;
 	case 'mysql4':
-		include(IP_ROOT_PATH . 'includes/db/mysql4.' . PHP_EXT);
+		define('SQL_LAYER', 'mysql4');
+		include(IP_ROOT_PATH . 'includes/db/mysql.' . PHP_EXT);
 		break;
 }
 

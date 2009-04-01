@@ -461,9 +461,14 @@ if($userdata['user_level'] == ADMIN)
 }
 
 // BBCBMG - BEGIN
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/bbcb_mg_small.' . PHP_EXT);
-$template->assign_var_from_handle('BBCB_MG_SMALL', 'bbcb_mg_small');
+define('BBCB_MG_SMALL', true);
+include_once(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
+$template->assign_vars(array(
+	'BBCB_FORM_NAME' => 'chatForm',
+	'BBCB_TEXT_NAME' => 'chatbarText',
+	)
+);
+$template->assign_var_from_handle('BBCB_MG_SMALL', 'bbcb_mg');
 // BBCBMG - END
 
 if($shoutbox_template_parse)

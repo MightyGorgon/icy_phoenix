@@ -61,7 +61,7 @@
 	<td class="row1g row-center" align="center" width="{S_COL_WIDTH}">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{index_pics_block.picrow.piccol.U_PIC}" {TARGET_BLANK}><img src="{index_pics_block.picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{index_pics_block.picrow.piccol.PIC_TITLE}" title="{index_pics_block.picrow.piccol.PIC_TITLE}" vspace="10" border="0" {index_pics_block.picrow.piccol.PIC_PREVIEW} /></a>
+			<a href="{index_pics_block.picrow.piccol.U_PIC}"{index_pics_block.picrow.piccol.PIC_PREVIEW_HS}><img src="{index_pics_block.picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{index_pics_block.picrow.piccol.PIC_TITLE}" title="{index_pics_block.picrow.piccol.PIC_TITLE}" vspace="10" border="0" /></a>
 		</div></div></td></tr></table>
 		</center>
 		<span class="genmed"><br />{index_pics_block.picrow.piccol.APPROVAL}</span>
@@ -72,7 +72,7 @@
 	<!-- BEGIN pic_detail -->
 	<td class="row2 row-center">
 		<span class="gensmall">
-			{L_PIC_TITLE}: {index_pics_block.picrow.pic_detail.TITLE}<br />
+			{L_PIC_TITLE}: <a href="{index_pics_block.picrow.piccol.U_PIC_SP}">{index_pics_block.picrow.pic_detail.TITLE}</a><br />
 			{L_PIC_ID}: {index_pics_block.picrow.pic_detail.PIC_ID}<br />
 			<!-- BEGIN cats -->
 			{L_PIC_CAT}: <a href="{index_pics_block.picrow.pic_detail.cats.U_PIC_CAT}" {TARGET_BLANK}>{index_pics_block.picrow.pic_detail.cats.CATEGORY}</a><br />
@@ -125,11 +125,11 @@
 <tr>
 	<td class="row1 row-center" valign="middle">
 		<center><table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{recent_comments_block.comment_row.U_PIC}" {TARGET_BLANK}><img src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" vspace="10" border="0" {recent_comments_block.comment_row.PIC_PREVIEW} /></a>
+			<a href="{recent_comments_block.comment_row.U_PIC}"{recent_comments_block.comment_row.PIC_PREVIEW_HS}><img src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" vspace="10" border="0" /></a>
 		</div></div></td></tr></table></center>
 	</td>
 	<td class="row1" valign="top" nowrap="nowrap">
-		<div style="text-align: right; float: right;"><span class="gensmall"><b>{L_PIC_TITLE}</b>: {recent_comments_block.comment_row.TITLE}</span></div>
+		<div style="text-align: right; float: right;"><span class="gensmall"><b>{L_PIC_TITLE}</b>: <a href="{recent_comments_block.comment_row.U_PIC_SP}">{recent_comments_block.comment_row.TITLE}</a></span></div>
 		<span class="gensmall"><b>{L_POSTER}</b>:&nbsp;{recent_comments_block.comment_row.POSTER}&nbsp;[{recent_comments_block.comment_row.TIME}]</span>
 		<hr />
 		<div class="post-text">{recent_comments_block.comment_row.COMMENT_TEXT}</div>
@@ -159,7 +159,7 @@
 <td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 	<center>
 	<table><tr><td><div class="picshadow"><div class="picframe">
-		<a href="{recent_pics_block.recent_pics.recent_col.U_PIC}" {TARGET_BLANK}><img src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" vspace="10" border="0" {recent_pics_block.recent_pics.recent_col.PIC_PREVIEW} /></a>
+		<a href="{recent_pics_block.recent_pics.recent_col.U_PIC}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" vspace="10" border="0" /></a>
 	</div></div></td></tr></table>
 	</center>
 </td>
@@ -170,7 +170,7 @@
 	<td class="row2 row-center">
 		<span class="gensmall">
 			{L_POSTER}: {recent_pics_block.recent_pics.recent_detail.POSTER}<br />
-			{L_PIC_TITLE}: {recent_pics_block.recent_pics.recent_detail.TITLE}<br />
+			{L_PIC_TITLE}: <a href="{recent_pics_block.recent_pics.recent_detail.U_PIC_SP}">{recent_pics_block.recent_pics.recent_detail.TITLE}</a><br />
 			{L_PIC_ID}: {recent_pics_block.recent_pics.recent_detail.PIC_ID}<br />
 			{L_POSTED}: {recent_pics_block.recent_pics.recent_detail.TIME}<br />
 			{L_VIEW}: {recent_pics_block.recent_pics.recent_detail.VIEW}<br />
@@ -197,7 +197,7 @@
 <td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 	<center>
 	<table><tr><td><div class="picshadow"><div class="picframe">
-		<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC}" {TARGET_BLANK}><img src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" vspace="10" border="0" {mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW} /></a>
+		<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC}"{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW_HS}><img src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" vspace="10" border="0" /></a>
 	</div></div></td></tr></table>
 	</center>
 </td>
@@ -208,7 +208,7 @@
 	<td class="row2 row-center">
 		<span class="gensmall">
 			{L_POSTER}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_POSTER}<br />
-			{L_PIC_TITLE}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_TITLE}<br />
+			{L_PIC_TITLE}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_SP}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_TITLE}</a><br />
 			{L_PIC_ID}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_ID}<br />
 			{L_POSTED}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_TIME}<br />
 			{L_VIEW}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_VIEW}<br />

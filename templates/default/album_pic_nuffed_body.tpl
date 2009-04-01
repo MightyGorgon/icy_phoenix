@@ -29,7 +29,7 @@
 			</tr>
 			<tr>
 				<td valign="top" align="right"><span class="genmed">{L_PIC_BBCODE}:</span></td>
-				<td valign="top" align="left"><b><span class="genmed"><form name="select_all"><input name="BBCode" size="50" maxlength="100" value="{PIC_BBCODE}" type="text" readonly="readonly" onClick="javascript:this.form.BBCode.focus();this.form.BBCode.select();"/></form></span></b></td>
+				<td valign="top" align="left"><b><span class="genmed"><form name="select_all"><input name="BBCode" size="50" maxlength="100" value="{PIC_BBCODE}" type="text" readonly="readonly" onclick="javascript:this.form.BBCode.focus();this.form.BBCode.select();"/></form></span></b></td>
 			</tr>
 			<tr>
 				<td valign="top" align="right"><span class="genmed">{L_POSTED}:</span></td>

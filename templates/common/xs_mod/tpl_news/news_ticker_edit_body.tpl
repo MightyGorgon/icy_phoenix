@@ -14,7 +14,7 @@
 </tr>
 <tr> 
 	<td class="row1" align="left" valign="top"><strong>{L_XS_NEWS_TICKER_FEED}</strong><br /><span class="gensmall">{L_XS_NEWS_TICKER_FEED_EXPLAIN}</span></td>
-	<td class="row2"><textarea rows="4" cols="25" wrap="virtual" style="width:300px" tabindex="3" name="xml_feed" class="post">{XS_NEWS_TICKER_FEED}</textarea></td>
+	<td class="row2"><textarea rows="4" cols="25" style="width:300px" tabindex="3" name="xml_feed" class="post">{XS_NEWS_TICKER_FEED}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" align="left" valign="top"><strong>{L_XS_NEWS_TICKER_IS_FEED}</strong><br /><span class="gensmall">{L_XS_NEWS_TICKER_IS_FEED_EXPLAIN}</span></td>

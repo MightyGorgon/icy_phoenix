@@ -14,7 +14,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
- * Create a profile link for the user with his own color
+* Create a profile link for the user with his own color
 */
 // Mighty Gorgon: OLD COLORIZE FUNCTION - BEGIN
 /*
@@ -119,7 +119,7 @@ function groups_colorize_username($user_id, $no_profile = false, $get_only_color
 // Mighty Gorgon: OLD COLORIZE FUNCTION - END
 
 /**
- * Count all users in a group
+* Count all users in a group
 */
 function count_users_in_group($group_id)
 {
@@ -138,7 +138,7 @@ function count_users_in_group($group_id)
 }
 
 /**
- * Count all active users
+* Count all active users
 */
 function count_active_users()
 {
@@ -156,10 +156,10 @@ function count_active_users()
 }
 
 /**
- * Update all users colors and ranks.
- *
- * @param => group_id
- * @return => true on success
+* Update all users colors and ranks.
+*
+* @param => group_id
+* @return => true on success
 */
 function update_all_users_colors_ranks($group_id)
 {
@@ -201,12 +201,12 @@ function update_all_users_colors_ranks($group_id)
 }
 
 /**
- * Update user color and group.
- *
- * @param => user_id
- * @param => user_color
- * @param => user_color_group
- * @return => true on success
+* Update user color and group.
+*
+* @param => user_id
+* @param => user_color
+* @param => user_color_group
+* @return => true on success
 */
 function update_user_color($user_id, $user_color, $user_color_group = false, $force_color = false, $force_group_color = false)
 {
@@ -268,10 +268,10 @@ function update_user_color($user_id, $user_color, $user_color_group = false, $fo
 }
 
 /**
- * Creates a list with groups name and a link to the group page.
- *
- * @param => none
- * @return => array
+* Creates a list with groups name and a link to the group page.
+*
+* @param => none
+* @return => array
 */
 function build_groups_list_array()
 {
@@ -309,10 +309,10 @@ function build_groups_list_array()
 }
 
 /**
- * Creates a list with groups name and a link to the group page.
- *
- * @param => none
- * @return => template var
+* Creates a list with groups name and a link to the group page.
+*
+* @param => none
+* @return => template var
 */
 function build_groups_list_template()
 {
@@ -350,10 +350,10 @@ function build_groups_list_template()
 }
 
 /**
- * Creates a list with all the groups a member subscribed.
- *
- * @param => user_id
- * @return => array
+* Creates a list with all the groups a member subscribed.
+*
+* @param => user_id
+* @return => array
 */
 function build_groups_user($user_id, $show_hidden = true)
 {
@@ -399,10 +399,10 @@ function build_groups_user($user_id, $show_hidden = true)
 }
 
 /**
- * Query the group color.
- *
- * @param => group_id
- * @return => string
+* Query the group color.
+*
+* @param => group_id
+* @return => string
 */
 function get_group_color($group_id)
 {
@@ -431,10 +431,10 @@ function get_group_color($group_id)
 }
 
 /**
- * Query the group rank.
- *
- * @param => group_id
- * @return => string
+* Query the group rank.
+*
+* @param => group_id
+* @return => string
 */
 function get_group_rank($group_id)
 {
@@ -463,10 +463,10 @@ function get_group_rank($group_id)
 }
 
 /**
- * Query the user color.
- *
- * @param => user_id
- * @return => string
+* Query the user color.
+*
+* @param => user_id
+* @return => string
 */
 function get_user_color($user_id)
 {
@@ -495,11 +495,11 @@ function get_user_color($user_id)
 }
 
 /**
- * Query the user color.
- *
- * @param => group_id
- * @param => move: direction
- * @return => string
+* Query the user color.
+*
+* @param => group_id
+* @param => move: direction
+* @return => string
 */
 function change_legend_order($group_id, $move)
 {
@@ -563,7 +563,7 @@ function change_legend_order($group_id, $move)
 }
 
 /**
- * Adjust legend order.
+* Adjust legend order.
 */
 function adjust_legend_order()
 {
@@ -587,6 +587,73 @@ function adjust_legend_order()
 			message_die(GENERAL_ERROR, "Could not update groups table", $lang['Error'], __LINE__, __FILE__, $sql_alt);
 		}
 	}
+}
+
+/**
+* Add user(s) to group
+*
+* @return mixed false if no errors occurred, else the user lang string for the relevant error, for example 'NO_USER'
+*/
+function group_user_add($group_id, $user_id, $clear_cache = false)
+{
+	// 2 => User already member
+	// 1 => User added
+	// 0 => User not added
+	global $db, $lang;
+
+	$this_userdata = get_userdata($user_id);
+
+	$sql = "SELECT ug.user_id, g.group_type, g.group_rank, g.group_color, g.group_count, g.group_count_max
+		FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
+		WHERE g.group_id = '" . $group_id . "'
+			AND ug.group_id = g.group_id";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
+	}
+
+	if ($row = $db->sql_fetchrow($result))
+	{
+		$group_rank = $row['group_rank'];
+		$group_color = $row['group_color'];
+		do
+		{
+			if ($user_id == $row['user_id'])
+			{
+				return 2;
+			}
+		}
+		while ($row = $db->sql_fetchrow($result));
+	}
+	else
+	{
+		return 0;
+	}
+
+	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES (" . $group_id . ", " . $user_id . ", 0)";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, "Error inserting user group subscription", "", __LINE__, __FILE__, $sql);
+	}
+
+	update_user_color($user_id, $group_data['group_color'], $this_userdata['user_color_group'], false, false);
+
+	if (($this_userdata['user_rank'] == '0') && ($group_rank != '0'))
+	{
+		$sql_users = "UPDATE " . USERS_TABLE . "
+			SET user_rank = '" . $group_rank . "'
+			WHERE user_id = '" . $this_userdata['user_id'] . "'";
+		if (!$db->sql_query($sql_users))
+		{
+			message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
+		}
+	}
+
+	if ($clear_cache)
+	{
+		$db->clear_cache();
+	}
+	return 1;
 }
 
 ?>

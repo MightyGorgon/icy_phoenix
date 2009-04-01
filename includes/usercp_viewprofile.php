@@ -483,10 +483,11 @@ display_upload_attach_box_limits($profiledata['user_id']);
 // Mighty Gorgon - Feedbacks - BEGIN
 if (defined('MG_FEEDBACKS'))
 {
-	$mg_root_path = IP_ROOT_PATH . 'mg/';
-	include_once($mg_root_path . 'includes/mg_functions_feedbacks.' . PHP_EXT);
-	include_once($mg_root_path . 'mg_common.' . PHP_EXT);
-	include_once($mg_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
+	define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
+	include_once(MG_ROOT_PATH . 'includes/mg_functions_feedbacks.' . PHP_EXT);
+	include_once(MG_ROOT_PATH . 'mg_common.' . PHP_EXT);
+	include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
+	include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
 
 	$feedbacks_received = '';
 	$feedbacks_details = get_user_feedbacks_received($profiledata['user_id']);

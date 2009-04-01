@@ -1899,7 +1899,7 @@ class ImgObj
 	function Destroy()
 	{
 		$this->DestroyImage();
-		settype(&$this, 'null');
+		settype($this, 'null');
 	}
 }
 

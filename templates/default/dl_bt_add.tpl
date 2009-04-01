@@ -12,13 +12,13 @@
 	<td class="row1" width="20%" valign="top"><span class="gen"><b>BBCode</b></span></td>
 	<td class="row2" width="80%">
 		<span class="genmed">
-		<input type="button" class="button" name="addbbcode0" value=" b " style="font-weight:bold" onClick="bbstyle(0)" />
-		<input type="button" class="button" name="addbbcode2" value=" i " style="font-style:italic" onClick="bbstyle(2)" />
-		<input type="button" class="button" name="addbbcode4" value=" u " style="text-decoration:underline" onClick="bbstyle(4)" />
-		<input type="button" class="button" name="addbbcode6" value="Quote" onClick="bbstyle(6)" />
-		<input type="button" class="button" name="addbbcode8" value="Code" onClick="bbstyle(8)" />
-		<input type="button" class="button" name="addbbcode10" value="IMG" onClick="bbstyle(10)" />
-		<input type="button" class="button" name="addbbcode12" value="URL" onClick="bbstyle(12)" />
+		<input type="button" class="button" name="addbbcode0" value=" b " style="font-weight:bold" onclick="bbstyle(0)" />
+		<input type="button" class="button" name="addbbcode2" value=" i " style="font-style:italic" onclick="bbstyle(2)" />
+		<input type="button" class="button" name="addbbcode4" value=" u " style="text-decoration:underline" onclick="bbstyle(4)" />
+		<input type="button" class="button" name="addbbcode6" value="Quote" onclick="bbstyle(6)" />
+		<input type="button" class="button" name="addbbcode8" value="Code" onclick="bbstyle(8)" />
+		<input type="button" class="button" name="addbbcode10" value="IMG" onclick="bbstyle(10)" />
+		<input type="button" class="button" name="addbbcode12" value="URL" onclick="bbstyle(12)" />
 		<br />{L_FONT_COLOR}:
 		<select name="addbbcode14" onChange="bbfontstyle('[color=' + this.form.addbbcode14.options[this.form.addbbcode14.selectedIndex].value + ']', '[/color]')" >
 		  <option style="color:darkred; background-color: darkred" value="darkred" class="genmed">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>

@@ -6,7 +6,7 @@
 			<td cellspacing="0" cellpadding="0">
 				<table class="forumline" cellpadding="4" cellspacing="1" border="0">
 					<tr width="100%">
-						<td width="100%" class="{subtab_row.TAB_CLASS}"><a href="#" onClick="checkForm(null,'{subtab_row.TAB_SELECT_NAME}');" class="{subtab_row.TAB_LINKS}">{subtab_row.L_TAB_TITLE}</a></td>
+						<td width="100%" class="{subtab_row.TAB_CLASS}"><a href="#" onclick="checkForm(null,'{subtab_row.TAB_SELECT_NAME}');" class="{subtab_row.TAB_LINKS}">{subtab_row.L_TAB_TITLE}</a></td>
 					</tr>
 				</table>
 			</td>

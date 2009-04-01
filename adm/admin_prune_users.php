@@ -122,8 +122,8 @@ while (!empty($sql_up[$n]))
 			'L_PRUNE_EXPLAIN' => sprintf($lang['Prune_explain'][$n], $days[$n]),
 			'S_PRUNE_USERS' => append_sid('admin_prune_users.' . PHP_EXT),
 			'S_DAYS' => $select[$n],
-			//'U_PRUNE' => '<a href="' . append_sid(IP_ROOT_PATH . 'delete_users.' . PHP_EXT . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onClick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
-			'U_PRUNE' => '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_prune_users_loop.' . PHP_EXT . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onClick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
+			//'U_PRUNE' => '<a href="' . append_sid(IP_ROOT_PATH . 'delete_users.' . PHP_EXT . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onclick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
+			'U_PRUNE' => '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_prune_users_loop.' . PHP_EXT . '?mode=prune_' . $n . '&amp;days=' . $days[$n]) . '" onclick="return confirm(\'' . sprintf($lang['Prune_on_click'], $user_count) . '\')">' . $lang['Prune_commands'][$n] . '</a>',
 		)
 	);
 	$n++;

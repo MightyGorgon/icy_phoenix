@@ -38,7 +38,6 @@ class pafiledb_post_comment extends pafiledb_public
 		define('IN_PA_POSTING', true);
 		define('IN_ICYPHOENIX', true);
 		// BBCBMG - BEGIN
-		include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 		include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 		// BBCBMG - END
 		// BBCBMG SMILEYS - BEGIN

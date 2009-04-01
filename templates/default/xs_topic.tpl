@@ -128,11 +128,11 @@ if($can_reply)
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width:98%" tabindex="2" class="post" value="{L_RE}: {TOPIC_TITLE}" /></td>
+	<td class="row2" align="left" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%" tabindex="2" class="post" value="{L_RE}: {TOPIC_TITLE}" /></td>
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{T_TEMPLATE_PATH}/images/spacer.gif" width="200" height="1" alt="" /></b></span></td>
-	<td class="row2" align="left" width="100%"><textarea name="message" rows="15" cols="35" style="width:98%" tabindex="3" class="post"></textarea></td>
+	<td class="row2" align="left" width="100%"><textarea name="message" rows="15" cols="35" style="width: 98%" tabindex="3" class="post"></textarea></td>
 </tr>
 <tr>
 	<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b>{L_SMILEYS}:</b></span></td>
@@ -141,7 +141,7 @@ if($can_reply)
 		<tr>
 			<td align="center">
 				<!-- BEGIN smilies -->
-				<img src="{smilies.URL}" onmouseover="this.style.cursor='hand';" onclick="emoticon('{smilies.CODE}');" alt="{smilies.DESC}" title="{smilies.DESC}" />
+				<img src="{smilies.URL}" onmouseover="this.style.cursor='pointer';" onclick="emoticon('{smilies.CODE}');" alt="{smilies.DESC}" title="{smilies.DESC}" />
 				<!-- END smilies -->
 			</td>
 			<td align="center" valign="middle">&nbsp;<input type="button" class="button" name="SmilesButt" value="{L_SMILEYS_MORE}" onclick="openAllSmiles();" /></td>

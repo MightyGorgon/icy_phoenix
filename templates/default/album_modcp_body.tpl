@@ -85,8 +85,8 @@ function checkBoxInverse(field)
 		{APPROVAL_BUTTON}
 		{UNAPPROVAL_BUTTON}
 		&nbsp;&nbsp;
-		<input type="button" class="liteoption" name="checkButton" value="{L_CHECK_ALL}" onClick="this.value=checkBox(this)">
-		<input type="button" class="liteoption" name="inverseButton" value="{L_INVERSE_SELECTION}" onClick="checkBoxInverse(this)">
+		<input type="button" class="liteoption" name="checkButton" value="{L_CHECK_ALL}" onclick="this.value=checkBox(this)">
+		<input type="button" class="liteoption" name="inverseButton" value="{L_INVERSE_SELECTION}" onclick="checkBoxInverse(this)">
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

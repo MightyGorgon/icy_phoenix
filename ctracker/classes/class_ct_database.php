@@ -197,6 +197,8 @@ class ct_database
 		{
 			message_die(GENERAL_ERROR, $lang['ctracker_error_insert_blocklist'], '', __LINE__, __FILE__, $sql);
 		}
+
+		$db->clear_cache('ct_ip_blocker_');
 	}
 
 	/**
@@ -220,6 +222,8 @@ class ct_database
 		{
 			message_die(GENERAL_ERROR, $lang['ctracker_error_delete_blocklist'], '', __LINE__, __FILE__, $sql);
 		}
+
+		$db->clear_cache('ct_ip_blocker_');
 	}
 
 	/**

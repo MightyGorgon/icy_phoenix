@@ -103,7 +103,7 @@ function checkForm(tab,subtab)
 				<td>
 					<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
 						<tr>
-							<td width="100%" class="{header_row.HEADER_TAB_CLASS}"><a href="#" onClick="checkForm('{header_row.TAB_SELECT_NAME}');" class="{header_row.TAB_LINKS}">{header_row.L_TAB_TITLE}</a></td>
+							<td width="100%" class="{header_row.HEADER_TAB_CLASS}"><a href="#" onclick="checkForm('{header_row.TAB_SELECT_NAME}');" class="{header_row.TAB_LINKS}">{header_row.L_TAB_TITLE}</a></td>
 						</tr>
 					</table>
 				</td>

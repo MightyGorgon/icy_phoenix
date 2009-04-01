@@ -115,9 +115,9 @@ function select_switch(status)
 <table width="100%" cellspacing="0" border="0" align="center" cellpadding="0">
 <tr>
 	<td align="left" valign="middle"><span class="img-btn">{POST_PM_IMG}</span></td>
-	<td align="right" valign="middle" width="100%"><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td align="right" valign="middle" width="100%"><span class="gensmall"><!-- IF PAGE_NUMBER -->{PAGE_NUMBER}<!-- ELSE -->&nbsp;<!-- ENDIF --></span></td>
 </tr>
-<tr><td align="right" valign="top" nowrap="nowrap"><span class="gensmall"></span><br /><div class="pagination">{PAGINATION}</div></td></tr>
+<tr><td align="right" valign="top" nowrap="nowrap"><span class="gensmall"></span><br /><div class="pagination"><!-- IF PAGINATION -->{PAGINATION}<!-- ELSE -->&nbsp;<!-- ENDIF --></div></td></tr>
 </table>
 </form>
 

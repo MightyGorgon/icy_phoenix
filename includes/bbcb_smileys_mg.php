@@ -17,12 +17,13 @@ if (!defined('IN_ICYPHOENIX'))
 /*
 // BBCBMG SMILEYS - BEGIN
 define('IN_ICYPHOENIX', true);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 generate_smilies('inline');
 include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 */
+
+@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
 if ( defined('IN_PA_POSTING') )
 {

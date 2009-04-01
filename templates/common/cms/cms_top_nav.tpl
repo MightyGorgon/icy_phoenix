@@ -10,13 +10,13 @@ function icon_text(text)
 
 <br />
 <br />
-<a href="{U_PORTAL}" onmouseover="icon_text('{L_HOME}')" onMouseOut="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_home.png" alt="{L_HOME}" title="{L_HOME}" /></a>&nbsp;
-<a href="{U_CMS_ACP}" onmouseover="icon_text('{L_CMS_ACP}')" onMouseOut="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_acp.png" alt="{L_CMS_ACP}" title="{L_CMS_ACP}" /></a>&nbsp;
-<a href="{U_CMS}" onmouseover="icon_text('{L_CMS_MANAGEMENT}')" onMouseOut="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_cms.png" alt="{L_CMS_MANAGEMENT}" title="{L_CMS_MANAGEMENT}" /></a>&nbsp;
-<a href="{U_CMS_CONFIG}" onmouseover="icon_text('{L_CMS_CONFIG}')" onMouseOut="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_settings.png" alt="{L_CMS_CONFIG}" title="{L_CMS_CONFIG}" /></a>&nbsp;
-<a href="{U_CMS_MENU}" onmouseover="icon_text('{L_CMS_MENU_PAGE}')" onMouseOut="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_block.png" alt="{L_CMS_MENU_PAGE}" title="{L_CMS_MENU_PAGE}" /></a>&nbsp;
-<a href="{U_CMS_PAGES_PERMISSIONS}" onmouseover="icon_text('{L_CMS_PAGES_PERMISSIONS}')" onMouseOut="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_pages_permissions.png" alt="{L_CMS_PAGES_PERMISSIONS}" title="{L_CMS_PAGES_PERMISSIONS}" /></a>
-<a href="{U_CMS_ADS}" onmouseover="icon_text('{L_CMS_ADS}')" onMouseOut="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_ads.png" alt="{L_CMS_ADS}" title="{L_CMS_ADS}" /></a>
+<a href="{U_PORTAL}" onmouseover="icon_text('{L_HOME}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_home.png" alt="{L_HOME}" title="{L_HOME}" /></a>&nbsp;
+<a href="{U_CMS_ACP}" onmouseover="icon_text('{L_CMS_ACP}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_acp.png" alt="{L_CMS_ACP}" title="{L_CMS_ACP}" /></a>&nbsp;
+<a href="{U_CMS}" onmouseover="icon_text('{L_CMS_MANAGEMENT}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_cms.png" alt="{L_CMS_MANAGEMENT}" title="{L_CMS_MANAGEMENT}" /></a>&nbsp;
+<a href="{U_CMS_CONFIG}" onmouseover="icon_text('{L_CMS_CONFIG}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_settings.png" alt="{L_CMS_CONFIG}" title="{L_CMS_CONFIG}" /></a>&nbsp;
+<a href="{U_CMS_MENU}" onmouseover="icon_text('{L_CMS_MENU_PAGE}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_block.png" alt="{L_CMS_MENU_PAGE}" title="{L_CMS_MENU_PAGE}" /></a>&nbsp;
+<a href="{U_CMS_PAGES_PERMISSIONS}" onmouseover="icon_text('{L_CMS_PAGES_PERMISSIONS}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_pages_permissions.png" alt="{L_CMS_PAGES_PERMISSIONS}" title="{L_CMS_PAGES_PERMISSIONS}" /></a>
+<a href="{U_CMS_ADS}" onmouseover="icon_text('{L_CMS_ADS}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_ads.png" alt="{L_CMS_ADS}" title="{L_CMS_ADS}" /></a>
 <br />
 <br />
 <div id="description" class="cms-content" style="font-weight:bold"><br />&nbsp;<br /><br /></div>

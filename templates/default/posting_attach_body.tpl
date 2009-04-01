@@ -13,9 +13,8 @@
 		</td>
 	</tr>
 	<!-- END show_apcp -->
-	{S_HIDDEN}
-	<!-- BEGIN hidden_row -->
-	{hidden_row.S_HIDDEN}
-	<!-- END hidden_row -->
+
+	<tr><td colspan="2" style="height: 1px !important;">{S_HIDDEN}<!-- BEGIN hidden_row -->{hidden_row.S_HIDDEN}<!-- END hidden_row --></td></tr>
+
 	{ADD_ATTACHMENT_BODY}
 	{POSTED_ATTACHMENTS_BODY}

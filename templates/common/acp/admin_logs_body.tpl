@@ -27,7 +27,7 @@ function toggle_check_all()
 <div><b>{L_LOGS_ACTIONS_FILTER}</b>:&nbsp;{LOGS_ACTIONS_FILTER}&nbsp;</div>
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<th width="1" nowrap="nowrap"><input type="checkbox" name="check_all_box" onClick="toggle_check_all()" /></th>
+	<th width="1" nowrap="nowrap"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
 	<th nowrap="nowrap" width="100"><a href="{U_LOG_TIME_SORT}" title="{L_CURRENT_SORT}">{L_DATE}{LOG_TIME_SORT}</a></th>
 	<th nowrap="nowrap" width="250"><a href="{U_LOG_PAGE_SORT}" title="{L_CURRENT_SORT}">{L_LINK}{LOG_PAGE_SORT}</a></th>
 	<th nowrap="nowrap" width="100"><a href="{U_LOG_USER_ID_SORT}" title="{L_CURRENT_SORT}">{L_USERNAME}{LOG_USER_ID_SORT}</a></th>

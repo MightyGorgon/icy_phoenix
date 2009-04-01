@@ -279,6 +279,13 @@ unset($dbpasswd);
 unset($db->password);
 unset($sql);
 
+if (defined('CACHE_INC') && CACHE_INC)
+{
+	include(IP_ROOT_PATH . 'includes/functions_cache.' . PHP_EXT);
+	$cache = new ip_cache();
+}
+
+
 // MG Cash MOD For IP - BEGIN
 if (defined('CASH_MOD') && defined('IN_CASHMOD'))
 {

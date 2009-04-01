@@ -51,7 +51,6 @@ if(!function_exists('imp_poll_block_func'))
 			LIMIT
 				0,1';
 
-
 		if(!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, "Couldn't obtain poll information.", "", __LINE__, __FILE__, $sql);
@@ -209,7 +208,9 @@ if(!function_exists('imp_poll_block_func'))
 							'B_POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'])
 						);
 					}
+
 					$template->assign_vars(array(
+						'S_SHOW_BALLOT' => ($i > 0) ? true : false,
 						'B_LOGIN_TO_VOTE' => '<b><a href="' . append_sid(LOGIN_MG . '?redirect=' . PORTAL_MG) . '">' . $lang['Login_to_vote'] . '</a></b>'
 						)
 					);

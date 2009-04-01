@@ -21,7 +21,7 @@ function openAllSmiles()
 </tr>
 <tr>
 	<td class="row1" align="right" valign="top"><strong>{L_NEWS_ITEM}:</strong>&nbsp;</td>
-	<td class="row2"><textarea rows="4" cols="25" wrap="virtual" style="width:450px" tabindex="3" name="message" class="post">{NEWS_ITEM}</textarea></td>
+	<td class="row2"><textarea rows="4" cols="25" style="width:450px" tabindex="3" name="message" class="post">{NEWS_ITEM}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" align="right"><strong>{L_NEWS_DISPLAY}:</strong>&nbsp;</td>

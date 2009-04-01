@@ -83,16 +83,16 @@
 <tr>
 	<td class="row2" colspan="2">
 		{L_DO_FILE}&nbsp;&nbsp;
-		<input type="radio" name="file_mode" value="delete" checked onClick="disableFileMode();" />{L_DELETE}&nbsp;&nbsp;
-		<input type="radio" name="file_mode" value="move" onClick="disableFileMode();" />{L_MOVE}
+		<input type="radio" name="file_mode" value="delete" checked onclick="disableFileMode();" />{L_DELETE}&nbsp;&nbsp;
+		<input type="radio" name="file_mode" value="move" onclick="disableFileMode();" />{L_MOVE}
 	</td>
 </tr>
 <tr><td colspan="2" class="row2 row-center" valign="middle">{L_MOVE_TO}:&nbsp;&nbsp;<select name="file_to_cat_id" class="forminput">{S_FILE_SELECT_CAT}</select></td></tr>
 <tr>
 	<td class="row2" colspan="2">
 		{L_DO_CAT}&nbsp;&nbsp;
-		<input type="radio" name="subcat_mode" value="delete" checked onClick="disableSubcatMode();" />{L_DELETE}&nbsp;&nbsp;
-		<input type="radio" name="subcat_mode" value="move" onClick="disableSubcatMode();" />{L_MOVE}
+		<input type="radio" name="subcat_mode" value="delete" checked onclick="disableSubcatMode();" />{L_DELETE}&nbsp;&nbsp;
+		<input type="radio" name="subcat_mode" value="move" onclick="disableSubcatMode();" />{L_MOVE}
 	</td>
 </tr>
 <tr><td colspan="2" class="row2 row-center" valign="middle">{L_MOVE_TO}:&nbsp;&nbsp;<select name="subcat_to_cat_id" class="forminput">{S_SELECT_CAT}</select></td></tr>

@@ -34,7 +34,7 @@ var ns6 = document.getElementById && !document.all;
 
 if (ie4 || ns6)
 {
-	document.write('<div id="dropmenudiv" class="row1" style="visibility:hidden;width:' + menuwidth + ';" onMouseover="clearhidemenu()" onMouseout="dynamichide(event)"><\/div>');
+	document.write('<div id="dropmenudiv" class="row1" style="visibility:hidden;width:' + menuwidth + ';" onmouseover="clearhidemenu()" onmouseout="dynamichide(event)"><\/div>');
 }
 </script>
 
@@ -106,7 +106,7 @@ if (hidemenu_onclick == "yes")
 		<a href="{FULL_SITE_PATH}{U_PROFILE}">{L_PROFILE}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- ENDIF -->
 		<!-- IF S_HEADER_DROPDOWN -->
-		<a href="{FULL_SITE_PATH}{U_SEARCH}" onMouseover="dropdownmenu(this,event,menu1,'250px')" onMouseout="delayhidemenu()">{L_SEARCH}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
+		<a href="{FULL_SITE_PATH}{U_SEARCH}" onmouseover="dropdownmenu(this,event,menu1,'250px')" onmouseout="delayhidemenu()">{L_SEARCH}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- ELSE -->
 		<a href="{FULL_SITE_PATH}{U_SEARCH}">{L_SEARCH}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- ENDIF -->

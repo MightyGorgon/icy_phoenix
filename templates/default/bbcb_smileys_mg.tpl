@@ -3,7 +3,7 @@
 <!-- BEGIN smilies_row -->
 <tr>
 	<!-- BEGIN smilies_col -->
-	<td align="center"><a href="javascript:emoticon('{smilies_row.smilies_col.SMILEY_CODE}');"><img src="{smilies_row.smilies_col.SMILEY_IMG}" border="0" onmouseover="this.style.cursor='hand';" alt="{smilies_row.smilies_col.SMILEY_DESC}" title="{smilies_row.smilies_col.SMILEY_DESC}" /></a></td>
+	<td align="center"><a href="javascript:emoticon('{smilies_row.smilies_col.SMILEY_CODE}');"><img src="{smilies_row.smilies_col.SMILEY_IMG}" border="0" onmouseover="this.style.cursor='pointer';" alt="{smilies_row.smilies_col.SMILEY_DESC}" title="{smilies_row.smilies_col.SMILEY_DESC}" /></a></td>
 	<!-- END smilies_col -->
 </tr>
 <!-- END smilies_row -->

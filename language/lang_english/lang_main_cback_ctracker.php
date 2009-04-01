@@ -131,7 +131,7 @@ $lang = array_merge($lang, array(
 	'ctracker_ipwarn_pdes' => 'The IP Range Scanner checks the so-called IP Range for changes. If someone has logged into your account from another location you will get a short message (also if you are or have previously logged in from a different location).<br /> Please check the footer to see if the warning feature is still activated, as an aggressor could have deactivated this. Your Login however remains active, so you still have the ability to make changes after this warning.',
 	'ctracker_ipwarn_chng' => '<b>&raquo; ADVICE &laquo;</b><br />The IP Range for your account has changed. The actual Login took place from <b>%s</b>, the previous from <b>%s</b>. If you didn\'t log on previously from another location, then maybe an aggressor has used your account without authorisation!',
 	'ctracker_ipwarn_welc' => '<b>&raquo; ADVICE &laquo;</b><br />The IP Range Scanner for your Account has not been initialised yet. This happens after two Logins. If you would like to initialise the Scanner now, please log in and out twice.',
-	'ctracker_ipwarn_send' => 'Accept Settings',
+	'ctracker_ipwarn_send' => 'accept settings',
 
 /*
 * Language Strings for Login History

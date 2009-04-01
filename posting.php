@@ -2042,7 +2042,6 @@ if($mode == 'reply' && $is_auth['auth_read'])
 }
 
 // BBCBMG - BEGIN
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END

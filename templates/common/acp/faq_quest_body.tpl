@@ -39,7 +39,7 @@ tinyMCE.init(
 </tr>
 <tr>
 	<td class="row1">{L_ANSWER}</td>
-	<td class="row2"><textarea wrap="virtual" name="answer" rows="15" cols="35"  class="post" style="width:550px;">{ANSWER}</textarea></td>
+	<td class="row2"><textarea name="answer" rows="15" cols="35"  class="post" style="width:550px;">{ANSWER}</textarea></td>
 </tr>
 <tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>

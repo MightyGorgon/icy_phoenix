@@ -468,7 +468,7 @@ else
 					break;
 				case 'TEXT':
 				case 'HTMLTEXT':
-					$input = '<textarea rows="5" cols="45" wrap="virtual" name="' . $user_field . '" class="post">' . $view_userdata[$user_field] . '</textarea>';
+					$input = '<textarea rows="5" cols="45" name="' . $user_field . '" class="post">' . $view_userdata[$user_field] . '</textarea>';
 					break;
 				default:
 					$input = '';

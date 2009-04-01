@@ -189,7 +189,7 @@
 <!-- ENDIF -->
 <tr>
 	<td class="row1"><span class="genmed"><strong>{L_MIRRORS}</strong></span><br /><span class="gensmall">{L_MIRRORS_INFO}</span></td>
-	<td class="row2"><input class="mainoption" type="submit" value="{L_CLICK_HERE_MIRRORS}" name="mirrors"<!-- IF MODE_EDIT --> onClick="set_mirror_mode(true);"<!-- ENDIF --> />
+	<td class="row2"><input class="mainoption" type="submit" value="{L_CLICK_HERE_MIRRORS}" name="mirrors"<!-- IF MODE_EDIT --> onclick="set_mirror_mode(true);"<!-- ENDIF --> />
 	</td>
 </tr>
 <!-- IF CUSTOM_EXIST -->
@@ -197,6 +197,6 @@
 <!-- ENDIF -->
 
 <!-- INCLUDE pa_custom_field.tpl -->
-<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_FILE_TITLE}" name="submit" onClick="set_mirror_mode(false);" /></td></tr>
+<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_FILE_TITLE}" name="submit" onclick="set_mirror_mode(false);" /></td></tr>
 </table>
 </form>

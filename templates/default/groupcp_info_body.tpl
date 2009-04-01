@@ -126,7 +126,7 @@
 		<input type="text" class="post" name="username" id="username" maxlength="50" size="20" {S_AJAX_USER_CHECK} />&nbsp;
 		<span id="username_list" style="display:none;">&nbsp;<span id="username_select">&nbsp;</span></span>
 		<input type="submit" name="add" value="{L_ADD_MEMBER}" class="mainoption" />&nbsp;
-		<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onClick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes'); return false;" />
+		<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes'); return false;" />
 		</span>
 		<br />
 		<span id="username_error_tbl" style="display:none;"><span id="username_error_text" class="gen">&nbsp;</span></span>

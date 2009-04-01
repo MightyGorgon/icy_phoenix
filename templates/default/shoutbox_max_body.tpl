@@ -17,7 +17,7 @@
 		<tr>
 			<td colspan="9">
 				{BBCB_MG}
-				<textarea name="message" rows="15" cols="35" wrap="virtual" style="width:98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea>
+				<textarea name="message" rows="15" cols="35" style="width: 98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea>
 			</td>
 		</tr>
 		</table>

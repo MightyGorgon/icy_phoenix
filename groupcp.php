@@ -87,7 +87,7 @@ if (isset($_POST['groupstatus']) && $group_id)
 
 	$row = $db->sql_fetchrow($result);
 
-	if ($row['group_moderator'] != $userdata['user_id'] && $userdata['user_level'] != ADMIN)
+	if (($row['group_moderator'] != $userdata['user_id']) && ($userdata['user_level'] != ADMIN))
 	{
 		$redirect_url = append_sid(FORUM_MG);
 		meta_refresh(3, $redirect_url);

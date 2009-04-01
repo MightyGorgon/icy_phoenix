@@ -106,7 +106,7 @@ if(GetCookie(tmp) == '2')
 				<!--
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="javascript:void(0);" onClick="window.open('chatbox_mod/chatbox.php','_chatbox','resizable=yes,scrollbars=yes,width=600,height=460')">Chat</a></td>
+					<td class="genmed" align="left"><a href="javascript:void(0);" onclick="window.open('chatbox_mod/chatbox.php','_chatbox','resizable=yes,scrollbars=yes,width=600,height=460')">Chat</a></td>
 				</tr>
 				-->
 				<!-- ENDIF -->

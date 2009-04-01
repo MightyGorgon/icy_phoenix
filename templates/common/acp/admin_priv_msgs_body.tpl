@@ -78,9 +78,9 @@ function toggle_check_all()
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<th width="5%">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onClick="JavaScript:{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();" /></th>
+	<th width="5%">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onclick="JavaScript:{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();" /></th>
 <!-- BEGIN archive_avail_switch -->
-	<th width="5%">{L_ARCHIVE}<br /><input type="checkbox" name="check_all_arch_box" onClick="JavaScript:check_all_del_box.checked = false; toggle_check_all();" /></th>
+	<th width="5%">{L_ARCHIVE}<br /><input type="checkbox" name="check_all_arch_box" onclick="JavaScript:check_all_del_box.checked = false; toggle_check_all();" /></th>
 <!-- END archive_avail_switch -->
 	<th align="left">{L_SUBJECT}</th>
 	<th>{L_FROM}</th>
@@ -95,15 +95,15 @@ function toggle_check_all()
 <tr>
 	<td class="{msgrow.ROW_CLASS} row-center">
 		<span class="gen">&nbsp;
-		<input type="checkbox" name="delete_id_{msgrow.PM_ID}" onClick="JavaScript:{JS_ARCHIVE_COMMENT_1}archive_id_{msgrow.PM_ID}.checked = false{JS_ARCHIVE_COMMENT_2};" />&nbsp;
+		<input type="checkbox" name="delete_id_{msgrow.PM_ID}" onclick="JavaScript:{JS_ARCHIVE_COMMENT_1}archive_id_{msgrow.PM_ID}.checked = false{JS_ARCHIVE_COMMENT_2};" />&nbsp;
 		</span>
 	</td>
 	<!-- BEGIN archive_avail_switch_msg -->
 	<td class="{msgrow.ROW_CLASS} row-center">
-		<span class="gen">&nbsp;<input type="checkbox" name="archive_id_{msgrow.PM_ID}" onClick="JavaScript:delete_id_{msgrow.PM_ID}.checked = false;" />&nbsp;</span>
+		<span class="gen">&nbsp;<input type="checkbox" name="archive_id_{msgrow.PM_ID}" onclick="JavaScript:delete_id_{msgrow.PM_ID}.checked = false;" />&nbsp;</span>
 	</td>
 <!-- END archive_avail_switch_msg -->
-	<td class="{msgrow.ROW_CLASS}" align="left"><span class="genmed"><a href="{msgrow.U_INLINE_VIEWMSG}" onClick="{msgrow.U_VIEWMSG}">{msgrow.SUBJECT}</a></span></td>
+	<td class="{msgrow.ROW_CLASS}" align="left"><span class="genmed"><a href="{msgrow.U_INLINE_VIEWMSG}" onclick="{msgrow.U_VIEWMSG}">{msgrow.SUBJECT}</a></span></td>
 	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.FROM}{msgrow.FROM_IP}</span></td>
 	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.TO}</span></td>
 	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.DATE}</span></td>

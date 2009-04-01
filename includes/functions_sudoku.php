@@ -89,7 +89,7 @@ function sudoku_grid_build()
 					$tile_text=($tile[$tile_key] == 'x') ? $lang['suduko_blank_tile'] : $lang['suduko_user_tile'];
 					$tile_url=($tile[$tile_key] == 'x') ? append_sid('sudoku.' . PHP_EXT . '?mode=insert&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '#grid') : append_sid('sudoku.' . PHP_EXT . '?mode=edit&amp;tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;l=' . $level . '&amp;val=' . ($tile[$tile_key]-10) . '#grid');
 					$on_click = ($tile[$tile_key] == 'x') ? 'sudoku(\'' . append_sid('sudoku.' . PHP_EXT . '?tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;type=insert#grid') . "','','?')" : 'sudoku(\'' . append_sid('sudoku.' . PHP_EXT . '?tile=' . $line_key . '_' . $key . '&amp;p=' . $pack . '&amp;n=' . $num . '&amp;type=edit#grid') . "','" . ($tile[$tile_key]) . "','" . ($tile[$tile_key]-10) . "')";
-					$tile_object='<a href="' . $tile_url . '" onClick="' . $on_click . '; return false;"><img src="' . IP_ROOT_PATH . $images[$tile_image] . '" alt="' . $tile_text . '" title="' . $tile_text . '" hspace="0" vspace="0" border="0"></a>';
+					$tile_object='<a href="' . $tile_url . '" onclick="' . $on_click . '; return false;"><img src="' . IP_ROOT_PATH . $images[$tile_image] . '" alt="' . $tile_text . '" title="' . $tile_text . '" hspace="0" vspace="0" border="0"></a>';
 				}
 				else
 				{

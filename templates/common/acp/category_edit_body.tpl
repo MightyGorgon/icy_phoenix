@@ -27,7 +27,7 @@ function update_icon(newimage)
 </tr>
 <tr>
 	<td class="row1">{L_CAT_DESCRIPTION}</td>
-	<td class="row2"><textarea rows="5" cols="45" wrap="virtual" name="cat_desc" class="post">{CAT_DESCRIPTION}</textarea></td>
+	<td class="row2"><textarea rows="5" cols="45" name="cat_desc" class="post">{CAT_DESCRIPTION}</textarea></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_ICON}</span><span class="gensmall"><br />{L_ICON_EXPLAIN}</span></td>

@@ -80,7 +80,7 @@
 <!-- BEGIN bb_usage_switch_miscellaneous_info -->
 <tr>
 	<th nowrap="nowrap" colspan="8">
-		{bb_usage_switch_miscellaneous_info.L_BBUS_COLHDR_MISC}<a href="{URL_COLDESC}" class="gensmall" onClick="window.open('{URL_COLDESC}','_coldesc','width=400,height=250,resizable=yes');" >{L_BBUS_COL_DESCRIPTIONS_CAPTION}</a>
+		{bb_usage_switch_miscellaneous_info.L_BBUS_COLHDR_MISC}<a href="{URL_COLDESC}" class="gensmall" onclick="window.open('{URL_COLDESC}','_coldesc','width=400,height=250,resizable=yes');" >{L_BBUS_COL_DESCRIPTIONS_CAPTION}</a>
 	</th>
 </tr>
 

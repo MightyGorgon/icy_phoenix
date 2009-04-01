@@ -27,7 +27,7 @@ function update_icon(newimage)
 </tr>
 <tr>
 	<td class="row1"><b>{L_FORUM_DESCRIPTION}</b></td>
-	<td class="row2"><textarea rows="5" cols="45" wrap="virtual" name="forumdesc" class="post">{DESCRIPTION}</textarea></td>
+	<td class="row2"><textarea rows="5" cols="45" name="forumdesc" class="post">{DESCRIPTION}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" wrap="wrap" width="300"><b>{L_ICON}</b><br /><span class="gensmall">{L_ICON_EXPLAIN}</span></td>
@@ -137,7 +137,7 @@ function update_icon(newimage)
 </tr>
 <tr>
 	<td class="row1" valign="top"><b>{L_FORUM_RULES}</b></td>
-	<td class="row2"><textarea rows="8" cols="70" wrap="virtual" name="rules" class="post">{RULES}</textarea></td>
+	<td class="row2"><textarea rows="8" cols="70" name="rules" class="post">{RULES}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" valign="top"><b>{L_RULES_APPEAR_IN}</b></td>

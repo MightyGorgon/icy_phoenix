@@ -196,87 +196,6 @@ $lang = array_merge($lang, array(
 	'bbcb_mg_albumimgr' => 'Album Image Right',
 	'bbcode_help' => 'BBCode Help',
 
-	's_formerrors' => 'You have to write some text before posting a message',
-	's_gen_error' => ':: Error ::\n\n',
-	's_url_insert' => 'Insert the URL (eg. http://www.phpbb.com/)',
-	's_url_insert_tip' => 'http://',
-	's_url_error' => 'You didn\'t enter a URL',
-	's_url_title_insert' => 'Enter the title of the link',
-	's_url_title_insert_tip' => 'Link',
-	's_url_title_error' => 'You didn\'t write the page name',
-	's_email_insert' => 'Enter the Email Address',
-	's_email_insert_tip' => 'yourname@yourdomain.com',
-	's_email_error' => 'You didn\'t write the Email Address',
-	's_img_insert' => 'Enter the image URL',
-	's_img_error' => 'You didn\'t write the image URL',
-	's_albumimg_insert' => 'Enter the Album Image ID',
-	's_albumimg_insert_tip' => 'ID',
-	's_albumimg_error' => 'You didn\'t write the Album Image ID',
-	's_ram_insert' => 'Please write Real Media file URL',
-	's_stream_insert' => 'Please write audio file URL',
-	's_video_insert' => 'Please write video file URL',
-	's_video_w_insert' => 'Please specify video file width',
-	's_video_w_error' => 'You didn\'t specify video file width',
-	's_video_h_insert' => 'Please specify video file height',
-	's_video_h_error' => 'You didn\'t specify video file height',
-	's_flash_insert' => 'Please write Flash file URL',
-	's_flash_w_insert' => 'Please specify Flash file width',
-	's_flash_w_error' => 'You didn\'t specify Flash file width',
-	's_flash_h_insert' => 'Please specify Flash file height',
-	's_flash_h_error' => 'You didn\'t specify Flash file height',
-	's_file_insert_error' => 'You didn\'t specify file URL',
-	's_view_more_code' => 'View more code',
-
-// Helpline messages
-	's_a_help' => 'Close all open tags',
-	's_b_help' => 'Bold text: [b]text[/b]',
-	's_i_help' => 'Italic text: [i]text[/i]',
-	's_u_help' => 'Underline text: [u]text[/u]',
-	's_strike_help' => 'Strike text: [strike]text[/strike]',
-	's_quote_help' => 'Quote text: [quote]text[/quote]',
-	's_code_help' => 'Code display: [code]code[/code]',
-	's_phpbbmod_help' => 'phpBB Mod Template',
-	's_highlight_help' => 'Highlight: [highlight=#FFFFAA]text[/highlight]',
-	's_img_help' => 'Insert image: [img]http://image_url[/img]',
-	's_imgl_help' => 'Insert image with left alignment: [img align=left]http://image_url[/img]',
-	's_imgr_help' => 'Insert image with right alignment: [img align=right]http://image_url[/img]',
-	's_albumimg_help' => 'Insert image from album: [albumimg]Album Pic ID[/albumimg]',
-	's_albumimgl_help' => 'Insert image from album with left alignment: [albumimg align=left]Album Pic ID[/albumimg]',
-	's_albumimgr_help' => 'Insert image from album with right alignment: [albumimg align=right]Album Pic ID[/albumimg]',
-
-	's_url_help' => 'Insert URL: [url]http://url[/url] or [url=http://url]URL text[/url]',
-	's_fc_help' => 'Font colour: [color=red]text[/color] (Tip: you can also use color=#FF0000)',
-	's_fs_help' => 'Font size: [size=9]small text[/size]',
-	's_ft_help' => 'Font type: [font=Andalus]text[/font]',
-	's_table_help' => 'Insert Table: [table]text[/table]',
-	's_td_help' => 'Insert Table Column: [td]text[/td]',
-	's_mail_help' => 'Insert Email: [email]Email Here[/email]',
-	's_grad_help' => 'Insert gradient text',
-	's_right_help' => 'Set text align to right: [align=right]text[/align]',
-	's_left_help' => 'Set text align to left: [align=left]text[/align]',
-	's_center_help' => 'Set text align to centre: [align=center]text[/align]',
-	's_justify_help' => 'Justify text: [align=justify]text[/align]',
-	's_marqr_help' => 'Marquee text to Right: [marq=right]text[/marq]',
-	's_marql_help' => 'Marquee text to Left: [marq=left]text[/marq]',
-	's_marqu_help' => 'Marquee text to up: [marq=up]text[/marq]',
-	's_marqd_help' => 'Marquee text to down: [marq=down]text[/marq]',
-	's_ram_help' => 'Insert Real Media file: [ram]File URL[/ram]',
-	's_sup_help' => 'Superscript: [sup]text[/sup]',
-	's_sub_help' => 'Subscript: [sub]text[/sub]',
-	's_hr_help' => 'Insert H-Line [hr]',
-	's_bullet_help' => 'Insert bullet point [*]',
-	's_video_help' => 'Insert video file: [video width=# height=#]file URL[/video]',
-	's_googlevideo_help' => 'Insert Google Video file: [googlevideo]Google Video ID[/googlevideo]',
-	's_youtube_help' => 'Insert YouTube file: [youtube]YouTube ID[/youtube]',
-	's_quick_help' => 'Quicktime video: [quick]http://quicktime_video_url/[/quick]',
-	's_flash_help' => 'Insert flash file: [flash width=# height=#]flash URL[/flash]',
-	's_stream_help' => 'Insert stream file: [stream]File URL[/stream]',
-	's_emff_help' => 'Insert mp3 file: [emff]File URL[/emff]',
-	's_fade_help' => 'Fade: [fade]text[/fade] or [fade][img]http://image_url/[/img][/fade]',
-	's_spoiler_help' => 'Spoiler: [spoiler]text[/spoiler]',
-	's_cell_help' => 'Cell: [cell]text[/cell]',
-	's_list_help' => 'Ordered list: [list|=1|a]text[/list] (Tip: you can use [*] to insert bullet)',
-
 	'xs_bbc_hide_message' => 'Hidden Message',
 	'xs_bbc_hide_quote_message' => 'Quoted Hidden Message, which is still hidden.',
 	'xs_bbc_hide_message_explain' => 'Sorry, but you must be registered and also post a reply to view this message.',
@@ -287,5 +206,120 @@ $lang = array_merge($lang, array(
 	'bbcode_url_errors' => 'Error!',
 	)
 );
+
+// JavaScript Text - BEGIN
+// Forms
+$js_lang = array();
+
+$js_lang['s_formerrors'] = 'You must insert some text to send a message';
+$js_lang['s_gen_error'] = ':: Error ::\n\n';
+$js_lang['s_url_insert'] = 'Insert the URL (eg. http://www.icyphoenix.com/)';
+$js_lang['s_url_insert_tip'] = 'http://';
+$js_lang['s_url_error'] = 'You didn\'t enter any URL';
+$js_lang['s_url_title_insert'] = 'Enter the title of the link';
+$js_lang['s_url_title_insert_tip'] = 'Link';
+$js_lang['s_url_title_error'] = 'You didn\'t write the page name';
+$js_lang['s_email_insert'] = 'Enter the Email Address';
+$js_lang['s_email_insert_tip'] = 'yourname@yourdomain.com';
+$js_lang['s_email_error'] = 'You didn\'t write the Email Address';
+$js_lang['s_img_insert'] = 'Enter the image URL';
+$js_lang['s_img_error'] = 'You didn\'t write the image URL';
+$js_lang['s_albumimg_insert'] = 'Enter the Album Image ID';
+$js_lang['s_albumimg_insert_tip'] = 'ID';
+$js_lang['s_albumimg_error'] = 'You didn\'t write the Album Image ID';
+$js_lang['s_ram_insert'] = 'Please write Real Media file URL';
+$js_lang['s_stream_insert'] = 'Please write audio file URL';
+$js_lang['s_video_insert'] = 'Please write video file URL';
+$js_lang['s_video_w_insert'] = 'Please specify video file width';
+$js_lang['s_video_w_error'] = 'You didn\'t specify video file width';
+$js_lang['s_video_h_insert'] = 'Please specify video file height';
+$js_lang['s_video_h_error'] = 'You didn\'t specify video file height';
+$js_lang['s_googlevideo_insert'] = 'Please write Google Video file ID';
+$js_lang['s_youtube_insert'] = 'Please write YouTube file ID';
+$js_lang['s_emff_insert'] = 'Please write mp3 file URL';
+$js_lang['s_flash_insert'] = 'Please write Flash file URL';
+$js_lang['s_flash_w_insert'] = 'Please specify Flash file width';
+$js_lang['s_flash_w_error'] = 'You didn\'t specify Flash file width';
+$js_lang['s_flash_h_insert'] = 'Please specify Flash file height';
+$js_lang['s_flash_h_error'] = 'You didn\'t specify Flash file height';
+$js_lang['s_id_insert_tip'] = 'ID';
+$js_lang['s_id_insert_error'] = 'You didn\'t specify an ID';
+$js_lang['s_file_insert_error'] = 'You didn\'t specify file URL';
+$js_lang['s_grad_select'] = 'Please select the text first';
+$js_lang['s_grad_error'] = 'This only works for less than 120 letters';
+$js_lang['s_grad_path'] = 'includes/grad.htm';
+$js_lang['s_view_more_code'] = 'View more code';
+$js_lang['s_image_upload'] = 'Upload image to PostImage.org and add it to the message';
+$js_lang['s_posticyimage'] = 'Upload image and add it to the message';
+
+// Helpline messages
+$js_lang['s_a_help'] = 'Close all open tags';
+$js_lang['s_b_help'] = 'Bold text: [b]text[/b]';
+$js_lang['s_i_help'] = 'Italic text: [i]text[/i]';
+$js_lang['s_u_help'] = 'Underline text: [u]text[/u]';
+$js_lang['s_strike_help'] = 'Strike text: [strike]text[/strike]';
+$js_lang['s_quote_help'] = 'Quote text: [quote]text[/quote]';
+$js_lang['s_code_help'] = 'Code display: [code]code[/code]';
+$js_lang['s_phpbbmod_help'] = 'phpBB Mod Template';
+$js_lang['s_highlight_help'] = 'Highlight: [highlight=#FFFFAA]text[/highlight]';
+$js_lang['s_img_help'] = 'Insert image: [img]http://image_url[/img]';
+$js_lang['s_imgl_help'] = 'Insert image with left alignment: [img align=left]http://image_url[/img]';
+$js_lang['s_imgr_help'] = 'Insert image with right alignment: [img align=right]http://image_url[/img]';
+$js_lang['s_albumimg_help'] = 'Insert image from album: [albumimg]Album Pic ID[/albumimg]';
+$js_lang['s_albumimgl_help'] = 'Insert image from album with left alignment: [albumimg align=left]Album Pic ID[/albumimg]';
+$js_lang['s_albumimgr_help'] = 'Insert image from album with right alignment: [albumimg align=right]Album Pic ID[/albumimg]';
+$js_lang['s_url_help'] = 'Insert URL: [url]http://url[/url] or [url=http://url]URL text[/url]';
+$js_lang['s_fc_help'] = 'Font color: [color=red]text[/color] (Tip: you can also use color=#FF0000)';
+$js_lang['s_fs_help'] = 'Font size: [size=9]small text[/size]';
+$js_lang['s_ft_help'] = 'Font type: [font=Andalus]text[/font]';
+$js_lang['s_table_help'] = 'Insert Table: [table]text[/table]';
+$js_lang['s_td_help'] = 'Insert Table Column: [td]text[/td]';
+$js_lang['s_mail_help'] = 'Insert Email: [email]Email Here[/email]';
+$js_lang['s_grad_help'] = 'Insert gradient text';
+$js_lang['s_right_help'] = 'Set text align to right: [align=right]text[/align]';
+$js_lang['s_left_help'] = 'Set text align to left: [align=left]text[/align]';
+$js_lang['s_center_help'] = 'Set text align to center: [align=center]text[/align]';
+$js_lang['s_justify_help'] = 'Justify text: [align=justify]text[/align]';
+$js_lang['s_marqr_help'] = 'Marque text to Right: [marquee direction=right]text[/marquee]';
+$js_lang['s_marql_help'] = 'Marque text to Left: [marquee direction=left]text[/marquee]';
+$js_lang['s_marqu_help'] = 'Marque text to up: [marquee direction=up]text[/marquee]';
+$js_lang['s_marqd_help'] = 'Marque text to down: [marquee direction=down]text[/marquee]';
+$js_lang['s_sup_help'] = 'Superscript: [sup]text[/sup]';
+$js_lang['s_sub_help'] = 'Subscript: [sub]text[/sub]';
+$js_lang['s_hr_help'] = 'Insert H-Line [hr]';
+$js_lang['s_bullet_help'] = 'Insert bullet point [*]';
+$js_lang['s_video_help'] = 'Insert video file: [video width=# height=#]file URL[/video]';
+$js_lang['s_googlevideo_help'] = 'Insert Google Video file: [googlevideo]Google Video ID[/googlevideo]';
+$js_lang['s_youtube_help'] = 'Insert YouTube video file: [youtube]YouTube ID[/youtube]';
+$js_lang['s_quick_help'] = 'Quicktime video: [quick]http://quicktime_video_url/[/quick]';
+$js_lang['s_flash_help'] = 'Insert flash file: [flash width=# height=#]flash URL[/flash]';
+$js_lang['s_ram_help'] = 'Insert Real Media file: [ram]File URL[/ram]';
+$js_lang['s_stream_help'] = 'Insert stream file: [stream]File URL[/stream]';
+$js_lang['s_emff_help'] = 'Insert mp3 file: [emff]File URL[/emff]';
+$js_lang['s_fade_help'] = 'Fade: [opacity]text[/opacity] or [opacity][img]http://image_url/[/img][/opacity]';
+$js_lang['s_spoiler_help'] = 'Spoiler: [spoiler]text[/spoiler]';
+$js_lang['s_cell_help'] = 'Cell: [cell]text[/cell]';
+$js_lang['s_list_help'] = 'List: [list]text[/list] (Tip: you can use [*] to insert bullet)';
+$js_lang['s_listo_help'] = 'Ordered list: [list=1|a]text[/list] (Tip: you can use [*] to insert bullet)';
+$js_lang['s_help_help'] = 'Open BBCode Help';
+$js_lang['s_image_upload_help'] = 'Upload image to PostImage.org and add it to the message';
+$js_lang['s_posticyimage_help'] = 'Upload image and add it to the message';
+$js_lang['s_smiley_creator'] = 'Smiley Creator: [smiley=1]Text[/smiley] insert a smiley with text';
+
+// Please do not remove this!!!
+foreach ($js_lang as $k => $v)
+{
+	$lang[$k] = $v;
+}
+
+$javascript_lang_vars = '';
+foreach ($js_lang as $k => $v)
+{
+	$javascript_lang_vars .= 'var ' . $k . ' = \'' . str_replace("'", "\'", $v) . '\';' . "\n";
+}
+
+$lang['JAVASCRIPT_LANG_VARS'] = $javascript_lang_vars;
+unset($js_lang);
+// JavaScript Text - END
 
 ?>

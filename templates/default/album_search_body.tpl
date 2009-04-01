@@ -15,12 +15,12 @@
 	<td class="row1h row-center" align="center" valign="middle">
 		<center>
 		<div class="picshadow"><div class="picframe">
-		<a href="{switch_search_results.search_results.U_PIC}" class="genmed"><img src="{switch_search_results.search_results.THUMBNAIL}" {THUMB_SIZE} alt="{switch_search_results.search_results.PIC_TITLE}" border="0" {switch_search_results.search_results.PIC_PREVIEW} /></a>
+		<a href="{switch_search_results.search_results.U_PIC}"{switch_search_results.search_results.PIC_PREVIEW_HS}><img src="{switch_search_results.search_results.THUMBNAIL}" {THUMB_SIZE} alt="{switch_search_results.search_results.PIC_TITLE}" border="0" /></a>
 		</div></div>
 		</center>
 	</td>
 	<td class="row1h row-forum" onclick="window.location.href='{switch_search_results.search_results.U_CAT}'"><a href="{switch_search_results.search_results.U_CAT}" class="genmed"><b>{switch_search_results.search_results.L_CAT}</b></a></td>
-	<td class="row1"><a href="{switch_search_results.search_results.U_PIC}" class="genmed">{switch_search_results.search_results.L_PIC}</a></td>
+	<td class="row1"><a href="{switch_search_results.search_results.U_PIC_SP}" class="genmed">{switch_search_results.search_results.L_PIC}</a></td>
 	<td class="row1 row-center"><a href="{switch_search_results.search_results.U_PROFILE}" class="genmed"><b>{switch_search_results.search_results.L_USERNAME}</b></a></td>
 	<td class="row1 row-center"><span class="gensmall">{switch_search_results.search_results.L_TIME}</span></td>
 	</tr>

@@ -109,12 +109,11 @@ else
 	$album_copyright .= '</div>';
 }
 
-if ($album_config['lb_preview'] == 0)
+$preview_lb_div = '';
+if ($album_config['lb_preview'])
 {
-	$preview_lb_div = '';
-}
-else
-{
+	// Mighty Gorgon: currently disabled...
+	/*
 	$preview_lb_div = '<script type="text/javascript" src="templates/common/album/fap_loader.js"></script>';
 	$preview_lb_div .= '<div id="preview_div" style="display: none; position: absolute; z-index: 110; left: -600px; top: -600px;">';
 	$preview_lb_div .= '	<div class="border_preview" style="width: ' . $album_config['midthumb_width'] . 'px; height: ' . $album_config['midthumb_height'] . 'px;">';
@@ -133,6 +132,7 @@ else
 	$preview_lb_div .= '	</div>';
 	$preview_lb_div .= '</div>';
 	$preview_lb_div .= '<br /><br />';
+	*/
 }
 
 include_once(ALBUM_MOD_PATH . 'album_functions.' . PHP_EXT);

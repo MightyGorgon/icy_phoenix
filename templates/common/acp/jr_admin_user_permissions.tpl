@@ -92,13 +92,13 @@ function toggle_check_all(main, sub_num)
 </tr>
 <tr>
 	<td class="cat" align="right">&nbsp;</td>
-	<td class="cat" align="center" width="10%"><input type="checkbox" name="check_all_page" onClick="toggle_check_all(check_all_page, 1);" /></td>
+	<td class="cat" align="center" width="10%"><input type="checkbox" name="check_all_page" onclick="toggle_check_all(check_all_page, 1);" /></td>
 	<td class="cat" align="left"><span class="gensmall"><b>&nbsp;&nbsp;<-- {L_CHECK_ALL}&nbsp;&nbsp;</b></span></td>
 </tr>
 <!-- BEGIN catrow -->
 <tr>
 	<th><span class="cattitle">{catrow.CAT}</span></th>
-	<th width="10%" valign="middle"><input type="checkbox" name="check_all_{catrow.NUM}" onClick="toggle_check_all(check_all_{catrow.NUM}, {catrow.NUM});" /></th>
+	<th width="10%" valign="middle"><input type="checkbox" name="check_all_{catrow.NUM}" onclick="toggle_check_all(check_all_{catrow.NUM}, {catrow.NUM});" /></th>
 	<th align="left" valign="middle"><span class="gensmall">&nbsp;&nbsp;<-- {L_CHECK_ALL_IN_CAT}&nbsp;&nbsp;</span></th>
 </tr>
 <!-- BEGIN modulerow -->
@@ -118,7 +118,7 @@ function toggle_check_all(main, sub_num)
 <tr>
 	<td class="cat" align="right">&nbsp;</td>
 	<td class="cat" align="center" width="10%">
-		<input type="checkbox" name="check_all_page1" onClick="toggle_check_all(check_all_page, 1);" />
+		<input type="checkbox" name="check_all_page1" onclick="toggle_check_all(check_all_page, 1);" />
 	</td>
 	<td class="cat" align="left"><span class="gensmall"><b>&nbsp;&nbsp;<-- {L_CHECK_ALL}&nbsp;&nbsp;</b></span></td>
 	</tr>

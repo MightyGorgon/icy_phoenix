@@ -29,9 +29,11 @@ var VIEWTOPIC_MG = '{VIEWTOPIC_MG}';
 var PROFILE_MG = '{PROFILE_MG}';
 var POSTING_MG = '{POSTING_MG}';
 var SEARCH_MG = '{SEARCH_MG}';
+var form_name = 'post';
+var text_name = 'message';
 </script>
 
-<script type="text/javascript" src="{FULL_SITE_PATH}language/lang_{CURRENT_LANG}/bbcb_mg.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/prototype.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/run_active_content.js"></script>

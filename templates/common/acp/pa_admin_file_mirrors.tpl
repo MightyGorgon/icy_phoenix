@@ -113,7 +113,7 @@
 <!-- END cat_row -->
 <!-- IF ROW_NOT_EMPTY -->
 <tr>
-	<td align="center" class="cat" colspan="2"><input class="mainoption" type="submit" value="{L_MODIFY}" name="modify" onClick="set_check_delete(false); set_add_file(false);" />&nbsp;<input class="mainoption" type="submit" value="{L_DELETE}" name="delete_mirrors" onClick="set_check_delete(true);" /></td>
+	<td align="center" class="cat" colspan="2"><input class="mainoption" type="submit" value="{L_MODIFY}" name="modify" onclick="set_check_delete(false); set_add_file(false);" />&nbsp;<input class="mainoption" type="submit" value="{L_DELETE}" name="delete_mirrors" onclick="set_check_delete(true);" /></td>
 </tr>
 <tr><td colspan="2" class="row3" height="2"></td></tr>
 <!-- ENDIF -->
@@ -130,6 +130,6 @@
 	<td class="row1"><span class="genmed"><strong>{L_FILE_URL}</strong></span><br /><span class="gensmall">{L_FILE_URL_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="new_download_url" /></td>
 </tr>
-<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_ADD_NEW}" name="add_new" onClick="set_check_delete(false); set_add_file(true);" /></td></tr>
+<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_ADD_NEW}" name="add_new" onclick="set_check_delete(false); set_add_file(true);" /></td></tr>
 </table>
 </form>

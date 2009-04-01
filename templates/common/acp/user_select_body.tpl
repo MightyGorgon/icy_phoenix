@@ -14,7 +14,7 @@
 		<input type="hidden" name="mode" value="edit" />&nbsp;
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="submituser" value="{L_LOOK_UP}" class="mainoption" />&nbsp;
-		<input type="button" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onClick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');" />
+		<input type="button" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');" />
 	</td>
 </tr>
 <tr id="username_error_tbl" style="display:none;"><td class="row1" id="username_error_text">&nbsp;</td></tr>

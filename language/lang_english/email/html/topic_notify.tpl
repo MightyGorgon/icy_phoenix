@@ -11,9 +11,9 @@ You can use the following link to view the replies made:<br /><br />
 <br /><br />
 
 <b>Posted text:</b><br /><br />
-{POST_TEXT}<br /><br />
+<div class="post-text">{POST_TEXT}</div>
 
-
+<br /><br />
 You are receiving this email because you are watching the forum, <b>"{FORUM_NAME}"</b> forum at <b>{SITENAME}.</b> <br />
 If you no longer wish to watch this forum you can either click the "Stop watching this topic link" found at the bottom of the topic above, or by clicking the following link:
 <br /><br />

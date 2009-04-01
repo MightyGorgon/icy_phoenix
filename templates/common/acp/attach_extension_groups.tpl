@@ -82,7 +82,7 @@
 
 <tr>
 	<td class="cat" colspan="8" height="29">
-	<input type="submit" name="{L_CANCEL}" class="liteoption" value="{L_CANCEL}" onClick="self.location.href='{S_CANCEL_ACTION}'" />
+	<input type="submit" name="{L_CANCEL}" class="liteoption" value="{L_CANCEL}" onclick="self.location.href='{S_CANCEL_ACTION}'" />
 	<input type="submit" name="submit" class="liteoption" value="{L_SUBMIT}" />
 	</td>
 </tr>

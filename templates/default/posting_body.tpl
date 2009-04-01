@@ -76,7 +76,7 @@ function attach_rules(forum_id)
 <!-- BEGIN switch_privmsg -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_USERNAME}</b></span></td>
-	<td class="row2"><span class="genmed"><input type="text" class="post" name="username" maxlength="25" size="25" tabindex="1" value="{USERNAME}" {S_AJAX_PM_USER_CHECK} /><span id="pm_username_select">&nbsp;</span>&nbsp;<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onClick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=200,resizable=yes');return false;" /></span></td>
+	<td class="row2"><span class="genmed"><input type="text" class="post" name="username" maxlength="25" size="25" tabindex="1" value="{USERNAME}" {S_AJAX_PM_USER_CHECK} /><span id="pm_username_select">&nbsp;</span>&nbsp;<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=200,resizable=yes');return false;" /></span></td>
 </tr>
 <tr id="pm_username_error_tbl" style="display:none;">
 	<td class="row1">&nbsp;</td>
@@ -85,7 +85,7 @@ function attach_rules(forum_id)
 <!-- END switch_privmsg -->
 <tr>
 	<td class="row1" width="22%"><span class="gen"><b>{L_SUBJECT}</b></span></td>
-	<td class="row2" width="78%"><input type="text" name="subject" size="45" maxlength="120" style="width:98%" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
+	<td class="row2" width="78%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
 </tr>
 <!-- BEGIN switch_ajax_features -->
 <tr id="subject_error_tbl" style="display:none;">
@@ -101,7 +101,7 @@ function attach_rules(forum_id)
 <tr>
 	<td class="row1" width="22%"><span class="gen"><b>{L_TOPIC_DESCRIPTION}</b></span></td>
 	<td class="row2" width="78%">
-		<span class="gen"><input type="text" name="topic_desc" size="45" maxlength="60" style="width:98%" tabindex="2" class="post" value="{TOPIC_DESCRIPTION}" /></span>
+		<span class="gen"><input type="text" name="topic_desc" size="45" maxlength="60" style="width: 98%" tabindex="2" class="post" value="{TOPIC_DESCRIPTION}" /></span>
 	</td>
 </tr>
 <!-- END topic_description -->
@@ -143,18 +143,18 @@ function attach_rules(forum_id)
 	</td>
 	<td class="row2" valign="top">
 		{BBCB_MG}
-		<textarea name="message" rows="15" cols="35" wrap="virtual" style="width:98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea>
+		<textarea name="message" rows="15" cols="35" style="width: 98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea>
 	</td>
 </tr>
 <!-- BEGIN switch_edit -->
 <tr>
 	<td class="row1" width="22%"><span class="gen"><b>{L_EDIT_NOTES}</b></span></td>
-	<td class="row2" width="78%"><input type="text" name="notes" size="45" maxlength="60" style="width:98%" tabindex="2" class="post" value="{switch_edit.NOTES}" /></td>
+	<td class="row2" width="78%"><input type="text" name="notes" size="45" maxlength="60" style="width: 98%" tabindex="2" class="post" value="{switch_edit.NOTES}" /></td>
 </tr>
 <!-- END switch_edit -->
 <tr>
 	<td class="catBottom" colspan="2">
-		<input type="button" tabindex="4" class="liteoption" value="{L_POST_HIGHLIGHT}" onClick="copymetasearch();" />&nbsp;
+		<input type="button" tabindex="4" class="liteoption" value="{L_POST_HIGHLIGHT}" onclick="copymetasearch();" />&nbsp;
 		<input type="submit" tabindex="5" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;
 		<!-- BEGIN allow_drafts -->
 		<input type="submit" tabindex="6" name="draft" class="altoption" value="{L_DRAFT_SAVE}" />&nbsp;
@@ -206,7 +206,7 @@ function attach_rules(forum_id)
 
 <!-- BEGIN switch_type_cal -->
 <tr>
-	<td class="row1" valign="top"><span class="gen"><b>{L_CALENDAR_TITLE}</b></td>
+	<td class="row1" valign="top"><span class="gen"><b>{L_CALENDAR_TITLE}</b></span></td>
 	<td valign="top" class="row1">
 		<table cellpadding="2" cellspacing="0" width="100%" border="0">
 			<tr>
@@ -214,7 +214,7 @@ function attach_rules(forum_id)
 				<td align="left" width="100%">
 					<span class="genmed">
 						{S_CALENDAR_DAY}{S_CALENDAR_MONTH}{S_CALENDAR_YEAR}&nbsp;
-						<a href="#" name="#" class="genmed" onClick="document.post.topic_calendar_day.value={TODAY_DAY};document.post.topic_calendar_month.value={TODAY_MONTH};document.post.topic_calendar_year.value={TODAY_YEAR};" />{L_TODAY}</a>
+						<a href="#" class="genmed" onclick="document.post.topic_calendar_day.value={TODAY_DAY};document.post.topic_calendar_month.value={TODAY_MONTH};document.post.topic_calendar_year.value={TODAY_YEAR};">{L_TODAY}</a>
 					</span>
 				</td>
 			</tr>
@@ -222,8 +222,8 @@ function attach_rules(forum_id)
 				<td align="right" nowrap="nowrap"><span><b>{L_TIME}:&nbsp;</b></span></td>
 				<td align="left" width="100%">
 					<span class="genmed">
-						<input name="topic_calendar_hour" type="post" maxlength="2" size="3" value="{CALENDAR_HOUR}" class="post" />&nbsp;{L_HOURS}&nbsp;&nbsp;
-						<input name="topic_calendar_min" type="post" maxlength="2" size="3" value="{CALENDAR_MIN}" class="post" />&nbsp;{L_MINUTES}
+						<input name="topic_calendar_hour" type="text" maxlength="2" size="3" value="{CALENDAR_HOUR}" class="post" />&nbsp;{L_HOURS}&nbsp;&nbsp;
+						<input name="topic_calendar_min" type="text" maxlength="2" size="3" value="{CALENDAR_MIN}" class="post" />&nbsp;{L_MINUTES}
 					</span>
 				</td>
 			</tr>
@@ -231,9 +231,9 @@ function attach_rules(forum_id)
 				<td align="right" nowrap="nowrap"><span><b>{L_CALENDAR_DURATION}:&nbsp;</b></span></td>
 				<td align="left" width="100%">
 					<span class="genmed">
-						<input name="topic_calendar_duration_day" type="post" maxlength="5" size="3" value="{CALENDAR_DURATION_DAY}" class="post" />&nbsp;{L_DAYS}&nbsp;&nbsp;
-						<input name="topic_calendar_duration_hour" type="post" maxlength="5" size="3" value="{CALENDAR_DURATION_HOUR}" class="post" />&nbsp;{L_HOURS}&nbsp;&nbsp;
-						<input name="topic_calendar_duration_min" type="post" maxlength="5" size="3" value="{CALENDAR_DURATION_MIN}" class="post" />&nbsp;{L_MINUTES}
+						<input name="topic_calendar_duration_day" type="text" maxlength="5" size="3" value="{CALENDAR_DURATION_DAY}" class="post" />&nbsp;{L_DAYS}&nbsp;&nbsp;
+						<input name="topic_calendar_duration_hour" type="text" maxlength="5" size="3" value="{CALENDAR_DURATION_HOUR}" class="post" />&nbsp;{L_HOURS}&nbsp;&nbsp;
+						<input name="topic_calendar_duration_min" type="text" maxlength="5" size="3" value="{CALENDAR_DURATION_MIN}" class="post" />&nbsp;{L_MINUTES}
 					</span>
 				</td>
 			</tr>

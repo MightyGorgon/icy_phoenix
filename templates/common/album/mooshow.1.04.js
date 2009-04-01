@@ -70,11 +70,11 @@ var mooShows = null;
 		'		<img src=\'' + loadingImage + '\' id=\'' + showName + '_loading\' class=\'mooshow_loading\' /> \n' +
 		'		<div id=\'' + showName + '_copyright\' class=\'mooshow_copyright\'></div> \n' +
 		'		<div id=\'' + showName + '_overlayNav\' class=\'mooshow_overlayNav\' style=\'height:' + photoArray[0][2] + 'px; width:' + photoArray[0][1] + 'px;\'> \n' +
-		'			<a href=\'#' + shownumber + '\' id=\'' + showName + '_prevLink\' class=\'mooshow_prevLink\' onClick=\'mooShows[&#39;' + showName + '&#39;].prevImage();\' ></a> \n' +
-		'			<a href=\'#' + shownumber + '\' id=\'' + showName + '_nextLink\' class=\'mooshow_nextLink\' onClick=\'mooShows[&#39;' + showName + '&#39;].nextImage();\' ></a> \n' +
+		'			<a href=\'#' + shownumber + '\' id=\'' + showName + '_prevLink\' class=\'mooshow_prevLink\' onclick=\'mooShows[&#39;' + showName + '&#39;].prevImage();\' ></a> \n' +
+		'			<a href=\'#' + shownumber + '\' id=\'' + showName + '_nextLink\' class=\'mooshow_nextLink\' onclick=\'mooShows[&#39;' + showName + '&#39;].nextImage();\' ></a> \n' +
 		'		</div> \n' +
 		'		<div id=\'' + showName + '_IPTC\' class=\'mooshow_IPTC\' style=\'width:' + photoArray[0][1] + 'px;\'></div> \n' +
-		'		<a href=\'#' + shownumber + '\' ><img src=\'images/album/fap_info.gif\' id=\'' + showName + '_IPTCbutton\' class=\'mooshow_IPTCbutton\' onClick=\'mooShows[&#39;' + showName + '&#39;].updateIPTCinfoToggle();\' /></a> \n' +
+		'		<a href=\'#' + shownumber + '\' ><img src=\'images/album/fap_info.gif\' id=\'' + showName + '_IPTCbutton\' class=\'mooshow_IPTCbutton\' onclick=\'mooShows[&#39;' + showName + '&#39;].updateIPTCinfoToggle();\' /></a> \n' +
 		'	</div> \n' +
 		'	<div id=\'' + showName + '_extras\' class=\'mooshow_extras\'> \n' +
 		'		<div id=\'' + showName + '_captions\' class=\'mooshow_captions\' style=\'padding-top:' + this.border + 'px;padding-left:-' + this.border + 'px; width:' + photoArray[0][1] + 'px;\'>' + photoArray[0][7] + '&nbsp;</div> \n' +
@@ -247,7 +247,7 @@ mooshow.prototype = {
 			}
 			else
 			{
-				this.topNavContent = this.topNavContent + ' <a href=\'#' + i + '\' onClick=\'mooShows[&#39;' + showName + '&#39;].jumptoImage(' + i + ');\'>' + i + '</a>';
+				this.topNavContent = this.topNavContent + ' <a href=\'#' + i + '\' onclick=\'mooShows[&#39;' + showName + '&#39;].jumptoImage(' + i + ');\'>' + i + '</a>';
 			}
 			if(i<this.photoArray.length-1)
 			{
