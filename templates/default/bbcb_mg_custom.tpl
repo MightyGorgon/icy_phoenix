@@ -58,7 +58,7 @@ function bbcb_vars_reassign_end()
 			<span class="genmed">&nbsp;&nbsp;</span>
 			<a href="javascript:bbcb_vars_reassign_start();BBCimg();bbcb_vars_reassign_end();" accesskey="p"><img border="0" src="{BBCB_MG_IMG_PATH}image_link{BBCB_MG_IMG_EXT}" name="img" onmouseover="helpline('img')" alt="{L_BBCB_MG_IMG}" title="{L_BBCB_MG_IMG}" class="bbimages" /></a>
 			<!-- IF S_PIC_UPLOAD -->
-			<a href="{U_BBCODE_POSTICYIMAGE}" onclick="javascript:popup=window.open('{U_BBCODE_POSTICYIMAGE}','_upload_image','height=300,width=700,scrollbars=no,resizable=yes');" target="_upload_image" accesskey="g"><img src="{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
+			<a href="{U_BBCODE_POSTICYIMAGE}" onclick="popup('{U_BBCODE_POSTICYIMAGE}', 700, 300, '_upload_image'); return false;"><img src="{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
 			<!-- ENDIF -->
 
 			<span class="genmed">&nbsp;&nbsp;</span>
@@ -68,7 +68,7 @@ function bbcb_vars_reassign_end()
 			<a href="javascript:bbcb_vars_reassign_start();BBCgrad();bbcb_vars_reassign_end();"><img border="0" src="{BBCB_MG_IMG_PATH}grad{BBCB_MG_IMG_EXT}" name="rainb" onmouseover="helpline('grad')" alt="{L_BBCB_MG_GRAD}" title="{L_BBCB_MG_GRAD}" class="bbimages" /></a>
 			<!-- IF S_COLORPICKER -->
 			<!--
-			<a href="{U_BBCODE_COLORPICKER}" onclick="javascript:popup=window.open('{U_BBCODE_COLORPICKER}','_color_picker','height=420,width=530,scrollbars=no,resizable=yes');" target="_color_picker"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" class="bbimages" /></a>
+			<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 530, 420, '_color_picker'); return false;"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" class="bbimages" /></a>
 			-->
 			<!-- ENDIF -->
 

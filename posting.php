@@ -1889,7 +1889,7 @@ $template->assign_vars(array(
 	'SUBJECT' => $subject,
 	'MESSAGE' => $message,
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 	'SMILIES_STATUS' => $smilies_status,
 
 	'L_SUBJECT' => $lang['Subject'],

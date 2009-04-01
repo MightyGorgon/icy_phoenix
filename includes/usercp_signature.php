@@ -207,7 +207,7 @@ $template->assign_vars(array(
 	'L_SIGNATURE' => $lang['Signature'],
 	'L_SIGNATURE_EXPLAIN' => sprintf($lang['Signature_explain'], $board_config['max_sig_chars']),
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 	'SMILIES_STATUS' => $smilies_status,
 
 	'SIGNATURE' => stripslashes($signature),

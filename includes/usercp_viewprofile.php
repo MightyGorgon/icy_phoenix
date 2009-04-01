@@ -413,7 +413,7 @@ if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 	if (($board_config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
 	{
 		$template->assign_block_vars('trophy', array(
-			'PROFILE_TROPHY' => '<a href="javascript:Trophy_Popup(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&sid=' . $userdata['session_id'] . '\', \'New_Window\', \'400\', \'380\', \'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
+			'PROFILE_TROPHY' => '<a href="javascript:popup_open(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&sid=' . $userdata['session_id'] . '\', \'New_Window\', \'400\', \'380\', \'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
 			'TROPHY_TITLE' => $lang['Trohpy']
 			)
 		);

@@ -20,7 +20,7 @@
 			<input type="button" class="button" accesskey="i" name="addbbcode2" value=" i " style="font-style:italic; width: 30px" onclick="bbstyle(2)" />
 			<input type="button" class="button" accesskey="u" name="addbbcode4" value=" u " style="text-decoration: underline; width: 30px" onclick="bbstyle(4)" />
 			<input type="button" class="button" accesskey="q" name="addbbcode6" value="Quote" style="width: 50px" onclick="bbstyle(6)" />&nbsp;&nbsp;
-			<!-- <span class="nav"><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'width=250,height=300,resizable=yes,scrollbars=yes');return false;" target="_phpbbsmilies" class="nav">{L_SMILIES}</a></span> -->
+			<!-- <span class="nav"><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'width=250,height=300,resizable=yes,scrollbars=yes');return false;" class="nav">{L_SMILIES}</a></span> -->
 			<!-- END switch_bbcode -->
 			{L_SHOUT_TEXT}:&nbsp;
 			<input type="text" class="button" name="message" value="{MESSAGE}" size="25" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" />

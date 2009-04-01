@@ -145,7 +145,7 @@ class pafiledb_post_comment extends pafiledb_public
 
 			$pafiledb_template->assign_vars(array(
 				'HTML_STATUS' => $html_status,
-				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 				'SMILIES_STATUS' => $smilies_status,
 				'LINKS_STATUS' => $links_status,
 				'IMAGES_STATUS' => $images_status,

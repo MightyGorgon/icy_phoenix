@@ -123,6 +123,9 @@ var baseHeight;
 
 //window.onload = initInsertions;
 
+// phpBB3 onload function... not implemented yet in Icy Phoenix
+//onload_functions.push('initInsertions()');
+
 function initInsertions()
 {
 	document.forms[form_name].elements[text_name].focus();

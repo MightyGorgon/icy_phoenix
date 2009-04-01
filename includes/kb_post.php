@@ -466,7 +466,7 @@ $template->assign_vars(array(
 	'L_NAME' => $lang['Username'],
 
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 	'SMILIES_STATUS' => $smilies_status,
 
 	'L_EMPTY_MESSAGE' => $lang['Empty_message'],

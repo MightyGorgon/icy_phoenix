@@ -683,7 +683,7 @@ $template->assign_vars(array(
 	'USERNAME' => $username,
 	'NUMBER_OF_SHOUTS' => $total_shouts,
 	'HTML_STATUS' => $html_status,
-	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 	'L_SHOUTBOX_LOGIN' => $lang['Login_join'],
 	'L_POSTED' => $lang['Posted'],
 	'L_AUTHOR' => $lang['Author'],

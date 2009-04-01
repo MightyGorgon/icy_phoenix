@@ -90,7 +90,7 @@ function openAllSmiles()
 			<option style="color:black;" value="black" class="genmed">{L_COLOR_BLACK}</option>
 		</select>
 		<!-- IF S_COLORPICKER -->
-		<a href="{U_BBCODE_COLORPICKER}" onclick="javascript:popup=window.open('{U_BBCODE_COLORPICKER}','_color_picker','height=420,width=530,scrollbars=no,resizable=yes');" target="_color_picker"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align:middle;" class="bbimages" /></a>
+		<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 530, 420, '_color_picker'); return false;"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align:middle;" class="bbimages" /></a>
 		<!-- ENDIF -->
 	</td>
 	<td width="20%" align="right" nowrap="nowrap" valign="middle">
@@ -157,7 +157,7 @@ function openAllSmiles()
 					<span class="genmed">&nbsp;&nbsp;</span>
 
 					<!-- IF S_PIC_UPLOAD -->
-					<a href="{U_BBCODE_POSTICYIMAGE}" onclick="javascript:popup=window.open('{U_BBCODE_POSTICYIMAGE}','_upload_image','height=300,width=700,scrollbars=no,resizable=yes');" target="_upload_image" accesskey="g"><img src="{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
+					<a href="{U_BBCODE_POSTICYIMAGE}" onclick="popup('{U_BBCODE_POSTICYIMAGE}', 700, 300, '_upload_image'); return false;"><img src="{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
 					<!-- ENDIF -->
 					<!-- IF S_POSTIMAGE_ORG -->
 					<a href="{U_BBCODE_POSTIMAGE}" accesskey="g"><img src="{BBCB_MG_IMG_PATH}image_add{BBCB_MG_IMG_EXT}" name="uploadimg" onmouseover="helpline('image_upload')" alt="{L_BBCB_MG_UPLOAD_IMG}" title="{L_BBCB_MG_UPLOAD_IMG}" class="bbimages" /></a>

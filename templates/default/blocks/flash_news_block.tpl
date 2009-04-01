@@ -1,5 +1,5 @@
 <div style="text-align: center; margin: 0 auto;">
-<script language="javascript">
+<script type="text/javascript">
 if (AC_FL_RunContent == 0)
 {
 	alert("This page requires AC_RunActiveContent.js.");

@@ -2134,7 +2134,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		'MESSAGE' => $privmsg_message,
 		'HTML_STATUS' => $html_status,
 		'SMILIES_STATUS' => $smilies_status,
-		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 		'FORUM_NAME' => $lang['Private_Message'],
 		'BOX_NAME' => $l_box_name,
 		'INBOX_IMG' => $inbox_img,

@@ -533,7 +533,7 @@ class BBCode
 			{
 				return $error;
 			}
-			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'background-color:' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
+			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'background-color: ' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
 			return array(
 				'valid' => true,
 				'start' => $html,
@@ -560,11 +560,11 @@ class BBCode
 					case 6: $size = 24; break;
 				}
 			}
-			if($size < 6 || $size > 48)
+			if(($size < 6) || ($size > 48))
 			{
 				return $error;
 			}
-			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'font-size:' . $size . 'px;"' . $this->add_extras($item['params'], $extras) . '>';
+			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'font-size: ' . $size . 'px; line-height: 116%;"' . $this->add_extras($item['params'], $extras) . '>';
 			return array(
 				'valid' => true,
 				'start' => $html,
@@ -587,7 +587,7 @@ class BBCode
 			}
 			else
 			{
-				$html = '<' . $tag . ' color="' . $color . '" />';
+				$html = '<' . $tag . ' style="border-color: ' . $color . ';" />';
 			}
 			return array(
 				'valid' => true,
@@ -2099,7 +2099,7 @@ class BBCode
 				}
 				elseif (($tag === 'emff') || ($tag === 'mp3'))
 				{
-					$html = '<object data="emff_player.swf" type="application/x-shockwave-flash" width="200" height="55" align="top" ><param name="FlashVars" value="src=' . $content . '" /><param name="movie" value="emff_player.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#F8F8F8" /></object>';
+					$html = '<object data="emff_player.swf" type="application/x-shockwave-flash" width="200" height="55" align="top" ><param name="FlashVars" value="src=' . $content . '" /><param name="movie" value="emff_player.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#f8f8f8" /></object>';
 				}
 				elseif ($tag === 'youtube')
 				{
@@ -2245,7 +2245,7 @@ class BBCode
 				{
 					return $error;
 				}
-				$html = '<div style="display:inline;filter:glow(color=' . $color . ');height:20;">';
+				$html = '<div style="display: inline; filter: glow(color=' . $color . '); height: 20px;">';
 				return array(
 					'valid' => true,
 					'start' => $html,
@@ -2262,7 +2262,7 @@ class BBCode
 				{
 					return $error;
 				}
-				$html = '<div style="display:inline;filter:shadow(color=' . $color . ');height:20;">';
+				$html = '<div style="display: inline; filter: shadow(color=' . $color . '); height: 20;">';
 				return array(
 					'valid' => true,
 					'start' => $html,
@@ -2818,8 +2818,8 @@ class BBCode
 		$pos_start_html = $this->allow_html ? strpos($this->text, '<', $start) : false;
 		while($pos_start_bbcode !== false || $pos_start_html !== false)
 		{
-			$pos_start = $pos_start_bbcode === false ? $pos_start_html : ($pos_start_html === false ? $pos_start_bbcode : min($pos_start_bbcode, $pos_start_html));
-			$is_html = $pos_start_html === $pos_start ? true : false;
+			$pos_start = ($pos_start_bbcode === false) ? $pos_start_html : (($pos_start_html === false) ? $pos_start_bbcode : min($pos_start_bbcode, $pos_start_html));
+			$is_html = ($pos_start_html === $pos_start) ? true : false;
 			$prev_start = $start;
 			// found tag. get data.
 			$pos_end = strpos($this->text, $is_html ? '>' : ']', $pos_start);
@@ -2864,11 +2864,13 @@ class BBCode
 				{
 					$tag = substr($code, 1, strlen($code) - 2);
 				}
+
 				// do not process tag if it requires too much recursion
 				if($level > 12 && (!$tag_closing && !$tag_self_closing))
 				{
 					$tag_valid = false;
 				}
+
 				// special tags
 				if(in_array($code, $this->self_closing_tags) != false)
 				{
@@ -2917,7 +2919,7 @@ class BBCode
 							'pos' => $pos_end,
 							'start' => $pos_start,
 							'len' => strlen($code)
-							);
+						);
 					}
 				}
 				elseif($tag_self_closing)
@@ -2938,7 +2940,7 @@ class BBCode
 						'next' => array(),
 						'is_html' => $is_html,
 						'items' => array()
-						);
+					);
 				}
 				else
 				{
@@ -2962,7 +2964,7 @@ class BBCode
 							'next' => array(),
 							'is_html' => $is_html,
 							'items' => $result['items']
-							);
+						);
 						$start = $result['pos'];
 					}
 					else
@@ -2974,7 +2976,7 @@ class BBCode
 							'pos' => $result['pos'],
 							'start' => $result['start'],
 							'len' => $result['len']
-							);
+						);
 					}
 				}
 			}
@@ -2988,7 +2990,7 @@ class BBCode
 		return array(
 			'items' => $items,
 			'tag' => false,
-			);
+		);
 	}
 
 	// Debug fuction. Prints tree of bbcode

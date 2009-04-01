@@ -2378,7 +2378,7 @@ else
 		'DST_TIME_LAG' => $dst_time_lag,
 		'DATE_FORMAT' => date_select($user_dateformat,'dateformat'),
 		'HTML_STATUS' => $html_status,
-		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 		'SMILIES_STATUS' => $smilies_status,
 
 		'L_CURRENT_PASSWORD' => $lang['Current_password'],

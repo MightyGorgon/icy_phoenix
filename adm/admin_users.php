@@ -1725,7 +1725,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			'S_FORM_ENCTYPE' => $form_enctype,
 
 			'HTML_STATUS' => $html_status,
-			'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_phpbbcode">', '</a>'),
+			'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 			'SMILIES_STATUS' => $smilies_status,
 
 			'L_DELETE_USER' => $lang['User_delete'],
