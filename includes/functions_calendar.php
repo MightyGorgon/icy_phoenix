@@ -1048,7 +1048,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 				$template->assign_block_vars('_calendar_box._row._cell.switch_filled', array(
 					'EVENT_DATE' => $offset_date,
 					'TOGGLE_STATUS' => 'none',
-					'TOGGLE_ICON' => $images['down_arrow2'],
+					'TOGGLE_ICON' => $images['arrow_down'],
 					)
 				);
 
