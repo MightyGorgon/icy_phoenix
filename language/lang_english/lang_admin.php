@@ -70,7 +70,7 @@ $lang = array_merge($lang, array(
 
 // Index
 	'Admin' => 'Administration',
-	'Not_admin' => 'You are not authorised to administer this board',
+	'Not_admin' => 'You are not authorized to administer this board',
 	'Welcome_phpBB' => 'Welcome to Icy Phoenix',
 	'Admin_intro' => 'Thank you for choosing Icy Phoenix as your forum solution. This screen will give you a quick overview of all the various statistics of your site. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your board, click on the <u>Forum</u> link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your forum experience. Each secondary option link will have instructions on how to use the tools.',
 	'PayPalInfo' => 'Icy Phoenix is an open source project, you can show your appreciation and support future development by donating to the project.',
@@ -143,9 +143,9 @@ $lang = array_merge($lang, array(
 
 	'Group_auth_explain' => 'Alter the permissions and moderator status assigned to each user group. Do not forget when changing group permissions that individual user permissions may still allow the user entry to forums, etc. You will be warned if this is the case.',
 	'User_auth_explain' => 'Alter the permissions and moderator status assigned to each individual user. Do not forget when changing user permissions that group permissions may still allow the user entry to forums, etc. You will be warned if this is the case.',
-	'Forum_auth_explain' => 'Alter the authorisation levels of each forum. You will have both a simple and advanced method for doing this, where advanced offers greater control of each forum operation. Remember that changing the permission level of forums will affect which users can carry out the various operations within them.',
+	'Forum_auth_explain' => 'Alter the authorization levels of each forum. You will have both a simple and advanced method for doing this, where advanced offers greater control of each forum operation. Remember that changing the permission level of forums will affect which users can carry out the various operations within them.',
 // Start add Permission List
-	'Forum_auth_list_explain' => 'Alter the authorisation levels of each forum. Remember that changing the permission level of forums will affect which users can carry out the various operations within them.',
+	'Forum_auth_list_explain' => 'Alter the authorization levels of each forum. Remember that changing the permission level of forums will affect which users can carry out the various operations within them.',
 // End add Permission List
 
 	'Simple_mode' => 'Simple Mode',
@@ -157,7 +157,7 @@ $lang = array_merge($lang, array(
 	'Is_Moderator' => 'Is Moderator',
 	'Not_Moderator' => 'Not Moderator',
 
-	'Conflict_warning' => 'Authorisation Conflict Warning',
+	'Conflict_warning' => 'Authorization Conflict Warning',
 	'Conflict_access_userauth' => 'This user still has access rights to this forum via group membership. You may want to alter the group permissions or remove this user from the group to fully prevent them having access rights. The groups granting rights (and the forums involved) are noted below.',
 	'Conflict_mod_userauth' => 'This user still has moderator rights to this forum via group membership. You may want to alter the group permissions or remove this user from the group to fully prevent them having moderator rights. The groups granting rights (and the forums involved) are noted below.',
 
@@ -761,7 +761,7 @@ $lang = array_merge($lang, array(
 	'L_LISTOFADMINTEXT' => 'Successfully blocked access took place through',
 	'L_DELETEMSG' => 'Delete entries',
 	'L_DELETESUCMSG' => 'The entries were deleted successfully',
-	'L_ADMINEDITMSG' => 'You do not have permission to edit the profile data and/or the permissions of the first admin of the forum.<br /><br />This unauthorised access attempt was successfully blocked and recorded!',
+	'L_ADMINEDITMSG' => 'You do not have permission to edit the profile data and/or the permissions of the first admin of the forum.<br /><br />This unauthorized access attempt was successfully blocked and recorded!',
 	'use_thank' => 'Enable Thanks',
 	'Default_avatar' => 'Set a default avatar',
 	'Default_avatar_explain' => 'This gives users that haven\'t yet selected an avatar, a default one. Set the default avatar for guests and users, and then select whether you want the avatar to be displayed for registered users, guests, both or none.',
@@ -1503,8 +1503,8 @@ $lang = array_merge($lang, array(
 	'faq_block_delete' => 'Are you sure you want to delete this block?',
 	'faq_quest_delete' => 'Are you sure you want to delete this question (and its answer)?',
 
-	'faq_quest_edit' => 'Edit Question & Answer',
-	'faq_quest_create' => 'Create New Question & Answer',
+	'faq_quest_edit' => 'Edit Question &amp; Answer',
+	'faq_quest_create' => 'Create New Question &amp; Answer',
 
 	'faq_quest_edit_explain' => 'Edit the question and answer. Change the block if you wish.',
 	'faq_quest_create_explain' => 'Type the new question and answer and press Submit.',
@@ -1537,8 +1537,8 @@ $lang = array_merge($lang, array(
 	'rules_block_delete' => 'Are you sure you want to delete this block?',
 	'rules_quest_delete' => 'Are you sure you want to delete this question (and its answer)?',
 
-	'rules_quest_edit' => 'Edit Question & Answer',
-	'rules_quest_create' => 'Create New Question & Answer',
+	'rules_quest_edit' => 'Edit Question &amp; Answer',
+	'rules_quest_create' => 'Create New Question &amp; Answer',
 
 	'rules_quest_edit_explain' => 'Edit the question and answer. Change the block if you wish.',
 	'rules_quest_create_explain' => 'Type the new question and answer and press Submit.',
@@ -2170,7 +2170,7 @@ $lang['130_Album_Permissions'] = 'Permissions'; // admin_album_auth.php
 $lang['140_Personal_Galleries'] = 'Personal Galleries'; // admin_album_personal.php
 
 // FAQ
-$lang['2300_FAQ'] = 'FAQ & Rules'; // admin_faq_editor.php
+$lang['2300_FAQ'] = 'FAQ &amp; Rules'; // admin_faq_editor.php
 $lang['110_FAQ_BBCode'] = 'BBCode FAQ'; // admin_faq_editor.php
 $lang['120_FAQ_Board'] = 'Site FAQ'; // admin_faq_editor.php
 $lang['130_FAQ_Rules'] = 'Site Rules'; // admin_faq_editor.php

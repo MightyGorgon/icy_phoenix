@@ -115,7 +115,7 @@ function InsertReadTopic($user)
 }
 /* functions_ftr.php - END */
 
-function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_replies, $topic_news_id, $topic_vote, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
+function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $topic_vote, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
 {
 	//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
 	global $board_config, $lang, $images, $userdata, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
@@ -180,6 +180,13 @@ function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_replies
 		{
 			$topic_link['type'] = '';
 			$topic_link['icon'] = '<img src="' . $images['vf_topic_nor'] . '" alt="' . $lang['Topic'] . '" title="' . $lang['Topic'] . '" /> ';
+			// Event Registration - BEGIN
+			if($topic_reg)
+			{
+				$topic_link['type'] = '<img src="' . $images['vf_topic_event'] . '" alt="' . $lang['Topic_Event_nb'] . '" title="' . $lang['Topic_Event_nb'] . '" /> ' . $lang['Topic_Event'] . ' ';
+				$topic_link['icon'] .= '<img src="' . $images['vf_topic_event'] . '" alt="' . $lang['Topic_Event_nb'] . '" title="' . $lang['Topic_Event_nb'] . '" /> ';
+			}
+			// Event Registration - END
 			$topic_link['class'] = 'topiclink';
 			if($replies >= $board_config['hot_threshold'])
 			{

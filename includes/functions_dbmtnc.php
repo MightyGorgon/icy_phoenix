@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.2.21.48');
+define('ICYPHOENIX_VERSION', '1.2.22.49');
 
 // List of tables used
 $tables = array(
@@ -130,6 +130,8 @@ $tables = array(
 	'ranks',
 	'rate_results',
 	'referrers',
+	'registration',
+	'registration_desc',
 	'search_results',
 	'search_wordlist',
 	'search_wordmatch',
@@ -1395,7 +1397,7 @@ function style_select($default_style, $select_name = 'style', $dirname = 'templa
 	return $style_select;
 }
 
-function check_authorisation($die = true)
+function check_authorization($die = true)
 {
 	global $db, $lang, $dbuser, $dbpasswd, $option, $_POST;
 

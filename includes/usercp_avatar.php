@@ -139,7 +139,7 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 		{
 			break;
 		}
-		$user_avatar_size ++;
+		$user_avatar_size++;
 	}
 	while(true);
 	@fclose($remote_file);

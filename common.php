@@ -62,17 +62,17 @@ if (defined('DEBUG_EXTRA') && (DEBUG_EXTRA == true))
 function deregister_globals()
 {
 	$not_unset = array(
-		'GLOBALS'			=> true,
-		'_GET'				=> true,
-		'_POST'				=> true,
-		'_COOKIE'			=> true,
-		'_REQUEST'		=> true,
-		'_SERVER'			=> true,
-		'_SESSION'		=> true,
-		'_ENV'				=> true,
-		'_FILES'			=> true,
-		'no_page_header'	=> true,
-		'starttime'		=> true,
+		'GLOBALS'						=> true,
+		'_GET'							=> true,
+		'_POST'							=> true,
+		'_COOKIE'						=> true,
+		'_REQUEST'					=> true,
+		'_SERVER'						=> true,
+		'_SESSION'					=> true,
+		'_ENV'							=> true,
+		'_FILES'						=> true,
+		'no_page_header'		=> true,
+		'starttime'					=> true,
 		'base_memory_usage'	=> true,
 	);
 

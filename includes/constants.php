@@ -117,7 +117,7 @@ define('ACTIVITY_MOD_PATH', 'amod/');
 // Mighty Gorgon - CASH - END
 
 // Mighty Gorgon - Feedbacks - BEGIN
-//define('MG_FEEDBACKS', true); // Decomment this line to enable FEEDBACKS (this is a special feature... you need to have it installed apart!)
+//define('MG_FEEDBACKS', true); // Decomment this line to enable FEEDBACKS (this is a special feature... you need to have it installed separately!)
 // Mighty Gorgon - Feedbacks - END
 
 // CHMOD permissions
@@ -162,6 +162,8 @@ define('AUTH_ACL', 2);
 define('AUTH_MOD', 3);
 define('AUTH_JADMIN', 4);
 define('AUTH_ADMIN', 5);
+define('AUTH_MAIN_ADMIN', 6);
+define('AUTH_FOUNDER', 7);
 // Self AUTH - BEGIN
 define('AUTH_SELF', 9);
 // Self AUTH - END
@@ -329,6 +331,13 @@ define('AJAX_DELETE_TOPIC', 15);
 define('AJAX_TOPIC_TYPE', 16);
 define('AJAX_TOPIC_MOVE', 17);
 // Ajaxed - END
+
+// Event Registration - BEGIN
+define('REG_OPTION1', 1);
+define('REG_OPTION2', 2);
+define('REG_OPTION3', 3);
+define('REG_UNREGISTER', 4);
+// Event Registration - END
 
 // Some of the most used colors names
 define('RGB_COLORS_LIST', 'aqua,black,blue,brown,cadetblue,chocolate,crimson,cyan,darkblue,darkgreen,darkgrey,darkorchid,darkred,deepskyblue,fuchsia,gold,gray,green,indigo,lightgrey,lime,maroon,navy,olive,orange,peachpuff,purple,red,seagreen,silver,teal,violet,white,yellow');
@@ -503,5 +512,10 @@ define('PA_VOTES_TABLE', $table_prefix . 'pa_votes');
 define('PA_AUTH_ACCESS_TABLE', $table_prefix . 'pa_auth');
 define('PA_MIRRORS_TABLE', $table_prefix . 'pa_mirrors');
 // PA FILES - END
+
+// Event Registration - BEGIN
+define('REGISTRATION_TABLE', $table_prefix . 'registration');
+define('REGISTRATION_DESC_TABLE', $table_prefix . 'registration_desc');
+// Event Registration - END
 
 ?>

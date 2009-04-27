@@ -191,22 +191,27 @@ function set_var(&$result, $var, $type, $multibyte = false)
 
 	if ($type == 'string')
 	{
-		$result = trim(htmlspecialchars(str_replace(array("\r\n", "\r"), array("\n", "\n"), $result), ENT_COMPAT, 'UTF-8'));
-
-		if (!empty($result))
+		// Mighty Gorgon: I need to add this condition, because non UTF-8 lang will mess-up strings!!!
+		global $lang;
+		if (strtoupper($lang['ENCODING']) == 'UTF-8')
 		{
-			// Make sure multibyte characters are wellformed
-			if ($multibyte)
+			$result = trim(htmlspecialchars(str_replace(array("\r\n", "\r"), array("\n", "\n"), $result), ENT_COMPAT, 'UTF-8'));
+
+			if (!empty($result))
 			{
-				if (!preg_match('/^./u', $result))
+				// Make sure multibyte characters are wellformed
+				if ($multibyte)
 				{
-					$result = '';
+					if (!preg_match('/^./u', $result))
+					{
+						$result = '';
+					}
 				}
-			}
-			else
-			{
-				// no multibyte, allow only ASCII (0-127)
-				$result = preg_replace('/[\x80-\xFF]/', '?', $result);
+				else
+				{
+					// no multibyte, allow only ASCII (0-127)
+					$result = preg_replace('/[\x80-\xFF]/', '?', $result);
+				}
 			}
 		}
 
@@ -263,7 +268,7 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 		foreach ($_var as $k => $v)
 		{
 			set_var($k, $k, $key_type);
-			if ($type == 'array' && is_array($v))
+			if (($type == 'array') && is_array($v))
 			{
 				foreach ($v as $_k => $_v)
 				{
@@ -277,7 +282,7 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 			}
 			else
 			{
-				if ($type == 'array' || is_array($v))
+				if (($type == 'array') || is_array($v))
 				{
 					$v = null;
 				}
@@ -379,7 +384,7 @@ function ip_utf8_decode($string)
 function init_userprefs($userdata)
 {
 	global $board_config, $theme, $images, $template, $lang, $db, $nav_links;
-	global $mods, $list_yes_no, $tree;
+	global $mods, $list_yes_no, $list_time_intervals, $tree;
 
 	// Get all the mods settings
 	$dir = @opendir(IP_ROOT_PATH . 'includes/mods_settings');
@@ -706,6 +711,102 @@ function get_userdata($user, $force_str = false)
 	}
 }
 
+function get_founder_id($clear_cache = false)
+{
+	global $db, $board_config;
+	if ($clear_cache)
+	{
+		$db->clear_cache('founder_id_');
+	}
+	$founder_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : 2;
+	if ($founder_id != 2)
+	{
+		$sql = "SELECT user_id
+			FROM " . USERS_TABLE . "
+			WHERE user_id = '" . $founder_id . "'
+			LIMIT 1";
+		if (!($result = $db->sql_query($sql, false, 'founder_id_')))
+		{
+			message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
+		}
+		$founder_id = 2;
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$founder_id = $row['user_id'];
+		}
+		$db->sql_freeresult($result);
+	}
+	return $founder_id;
+}
+
+/*
+* Check auth level
+* Returns true in case the user has the requested level
+*/
+function check_auth_level($level_required)
+{
+	global $userdata, $board_config;
+
+	if ($level_required == AUTH_ALL)
+	{
+		return true;
+	}
+
+	if ($userdata['user_level'] == ADMIN)
+	{
+		if ($level_required == AUTH_FOUNDER)
+		{
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+			if ($userdata['user_id'] == $founder_id)
+			{
+				return true;
+			}
+		}
+		elseif ($level_required == AUTH_MAIN_ADMIN)
+		{
+			if (defined('MAIN_ADMINS_ID'))
+			{
+				$allowed_admins = explode(',', MAIN_ADMINS_ID);
+				if (in_array($userdata['user_id'], $allowed_admins))
+				{
+					return true;
+				}
+			}
+			else
+			{
+				// Force to AUTH_ADMIN just in case the user have removed MAIN_ADMINS_ID from constants.php
+				$level_required == AUTH_ADMIN;
+			}
+		}
+
+		if ($level_required == AUTH_ADMIN)
+		{
+			return true;
+		}
+	}
+
+	if (($level_required == AUTH_FOUNDER) || ($level_required == AUTH_MAIN_ADMIN))
+	{
+		// Force to AUTH_ADMIN since we already checked all cases for founder or main admins
+		$level_required = AUTH_ADMIN;
+	}
+
+	// Access level required is at least REG and user is not an admin!
+	// Remember that Junior Admin has the ADMIN level while not in CMS or ACP
+	$not_auth = false;
+	// Check if the user is REG or a BOT
+	$is_reg = ((($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) || $userdata['session_logged_in']) ? true : false;
+	$not_auth = (!$not_auth && ($level_required == AUTH_REG) && !$is_reg) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($userdata['user_level'] != MOD)) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($level_required == AUTH_ADMIN)) ? true : $not_auth;
+	if ($not_auth)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 /**
 * Check if the user is allowed to access a page
 */
@@ -714,21 +815,9 @@ function check_page_auth($cms_page_id, $cms_page_name, $return = false)
 	global $lang, $board_config, $userdata;
 
 	$auth_level_req = $board_config['auth_view_' . $cms_page_name];
-	// If access for all or user is admin, then return true
-	if (($auth_level_req == AUTH_ALL) || ($userdata['user_level'] == ADMIN))
-	{
-		return true;
-	}
+	$is_auth = check_auth_level($auth_level_req);
 
-	// Access level required is at least REG and user is not an admin!
-	// Remember that Junior Admin has the ADMIN level while not in CMS or ACP
-	$not_auth = false;
-	// Check if the user is REG or a BOT
-	$is_reg = ((($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) || $userdata['session_logged_in']) ? true : false;
-	$not_auth = (!$not_auth && ($auth_level_req == AUTH_REG) && !$is_reg) ? true : $not_auth;
-	$not_auth = (!$not_auth && ($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD)) ? true : $not_auth;
-	$not_auth = (!$not_auth && ($auth_level_req == AUTH_ADMIN)) ? true : $not_auth;
-	if ($not_auth)
+	if (!$is_auth)
 	{
 		if ($return)
 		{
@@ -2029,7 +2118,7 @@ function html_message($msg_title, $msg_text, $return_url)
 // $msg_code can be one of these constants:
 //
 // GENERAL_MESSAGE : Use for any simple text message, eg. results
-// of an operation, authorisation failures, etc.
+// of an operation, authorization failures, etc.
 //
 // GENERAL ERROR : Use for any error which occurs _AFTER_ the
 // common.php include and session code, ie. most errors in
@@ -2416,7 +2505,7 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 			$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
 			if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
 			{
-				message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 			if ($return_id == true)
 			{
@@ -2434,7 +2523,7 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 					$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
 					if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
 					{
-						message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+						message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 					}
 					if ($return_id == true)
 					{
@@ -2620,7 +2709,7 @@ function check_valid_color($color)
 }
 
 /**
- * Create the sql needed to query the color... this is used also to precisely locate the cache file!
+* Create the sql needed to query the color... this is used also to precisely locate the cache file!
 */
 function user_color_sql($user_id)
 {
@@ -2632,10 +2721,10 @@ function user_color_sql($user_id)
 }
 
 /**
- * Clear user color cache.
- *
- * @param => user_id
- * @return => true on success
+* Clear user color cache.
+*
+* @param => user_id
+* @return => true on success
 */
 function clear_user_color_cache($user_id)
 {
@@ -2876,34 +2965,6 @@ function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false, $im_url
 	$link_content = ($im_img !== false) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '" title="' . $im_id . '" />') : $im_lang;
 	$im_link = ($im_url !== false) ? $im_ref : '<a href="' . $im_ref . '">' . $link_content . '</a>';
 	return $im_link;
-}
-
-function get_founder_id($clear_cache = false)
-{
-	global $db, $board_config;
-	if ($clear_cache)
-	{
-		$db->clear_cache('founder_id_');
-	}
-	$founder_id = (intval($board_config['main_admin_id']) >= 2) ? $board_config['main_admin_id'] : '2';
-	if ($founder_id != '2')
-	{
-		$sql = "SELECT user_id
-			FROM " . USERS_TABLE . "
-			WHERE user_id = '" . $founder_id . "'
-			LIMIT 1";
-		if (!($result = $db->sql_query($sql, false, 'founder_id_')))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t obtain user id', '', __LINE__, __FILE__, $sql);
-		}
-		$founder_id = '2';
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$founder_id = $row['user_id'];
-		}
-		$db->sql_freeresult($result);
-	}
-	return $founder_id;
 }
 
 /*

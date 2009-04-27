@@ -419,7 +419,7 @@ function xs_get_style_header($filename, $str = '')
 	$header_size = $data['var1'];
 	$filesize = $data['var2'];
 	$total = ord($str{$start});
-	$start ++;
+	$start++;
 	if($total < 3)
 	{
 		$xs_header_error = $lang['xs_style_header_error_invalid'];

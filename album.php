@@ -115,7 +115,7 @@ if ($album_nav_cat_desc != '')
 // $catrows array now stores all categories which this user can view.
 // --------------------------------
 $allowed_cat = ''; // For Recent Public Pics below
-for ($i = 0; $i < count($catrows); $i ++)
+for ($i = 0; $i < count($catrows); $i++)
 {
 	// --------------------------------
 	// build list of allowd category id's

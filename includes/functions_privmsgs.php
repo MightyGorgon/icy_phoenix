@@ -25,8 +25,12 @@ class privmsgs
 	{
 		global $db;
 
-		$pm_subject = ((STRIP) ? addslashes($pm_subject) : $pm_subject);
-		$pm_text = ((STRIP) ? addslashes($pm_text) : $pm_text);
+		// We should not need this anymore...
+		/*
+		$pm_subject = ip_addslashes($pm_subject);
+		$pm_text = ip_addslashes($pm_text);
+		*/
+
 		$pm_time = time();
 
 		$sql_input_array = array(

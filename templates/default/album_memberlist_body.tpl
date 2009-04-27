@@ -34,7 +34,7 @@
 	<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{picrow.piccol.U_PIC}"{picrow.piccol.PIC_PREVIEW_HS}><img src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.PIC_TITLE}" title="{picrow.piccol.PIC_TITLE}" vspace="10" border="0" /></a>
+			<a href="{picrow.piccol.U_PIC_DL}"{picrow.piccol.PIC_PREVIEW_HS}><img src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.PIC_TITLE}" title="{picrow.piccol.PIC_TITLE}" vspace="10" border="0" /></a>
 		</div></div></td></tr></table>
 		</center>
 	</td>
@@ -45,6 +45,7 @@
 	<td class="row2">
 		<span class="gensmall">
 			{L_PIC_TITLE}: <a href="{picrow.pic_detail.U_PIC_SP}" {TARGET_BLANK}>{picrow.pic_detail.TITLE}</a><br />
+			{L_DOWNLOAD}: <a href="{picrow.pic_detail.U_PIC_DL}" {TARGET_BLANK}>{picrow.pic_detail.TITLE}</a><br />
 			{L_PIC_ID}: {picrow.pic_detail.PIC_ID}<br />
 			{L_PIC_CAT}: <a href="{picrow.pic_detail.U_PIC_CAT}" {TARGET_BLANK}>{picrow.pic_detail.CATEGORY}</a><br />
 			{L_POSTED}: {picrow.pic_detail.TIME}<br />

@@ -195,7 +195,7 @@
 						<!-- END switch_groups_on -->
 					</table>
 				</td>
-				<td width="2"><img src="{SPACER}" width="7" alt="" /></td>
+				<td width="2"><img src="{SPACER}" width="7" height="1" alt="" /></td>
 				<td width="50%" valign="top" class="forumline">
 					<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 						<tr><th colspan="2"><span class="genmed"><b>{L_INVISION_P_DETAILS}</b></span></th></tr>
@@ -226,6 +226,7 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_EXTRA_PROFILE_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1"><div class="post-text">{SELFDES}</div></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
 <!-- BEGIN recent_pics_block -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RECENT_PUBLIC_PICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN no_pics -->
@@ -235,19 +236,20 @@
 <tr>
 	<!-- BEGIN recent_col -->
 	<td class="row1 row-center" width="{S_COL_WIDTH}">
-		<a href="{recent_pics_block.recent_pics.recent_col.U_PIC}" {}><img src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" alt="{recent_pics_block.recent_pics.recent_col.DESC}" title="{recent_pics_block.recent_pics.recent_col.DESC}" vspace="10" /></a>
+		<a href="{recent_pics_block.recent_pics.recent_col.U_PIC_DL}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" alt="{recent_pics_block.recent_pics.recent_col.DESC}" title="{recent_pics_block.recent_pics.recent_col.DESC}" vspace="10" /></a>
 	</td>
 	<!-- END recent_col -->
 </tr>
 <tr>
 	<!-- BEGIN recent_detail -->
 	<td class="row1 row-center">
-		<span class="gensmall">
-			{L_PIC_TITLE}: {recent_pics_block.recent_pics.recent_detail.TITLE}<br />
+		<div class="gensmall">
+			{L_PIC_TITLE}: <a href="{recent_pics_block.recent_pics.recent_col.recent_detail.U_PIC_SP}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
+			{L_DOWNLOAD}: <a href="{recent_pics_block.recent_pics.recent_col.recent_detail.U_PIC_DL}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
 			{L_POSTER}: {recent_pics_block.recent_pics.recent_detail.POSTER}<br />
 			{L_POSTED}: {recent_pics_block.recent_pics.recent_detail.TIME}<br />
 			{L_VIEW}: {recent_pics_block.recent_pics.recent_detail.VIEW}<br />
-		</span>
+		</div>
 	</td>
 	<!-- END recent_detail -->
 </tr>

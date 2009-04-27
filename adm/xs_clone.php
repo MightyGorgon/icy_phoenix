@@ -141,7 +141,7 @@ if(!empty($_POST['clone_tpl']) && !defined('DEMO_MODE'))
 			$_POST['export_style_name_'.$i] = $_POST['clone_style_name_'.$i];
 			// prepare for import
 			$_POST['import_install_'.$count] = '1';
-			$count ++;
+			$count++;
 		}
 	}
 	if(!$count)

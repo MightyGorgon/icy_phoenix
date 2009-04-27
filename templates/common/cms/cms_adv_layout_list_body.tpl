@@ -27,19 +27,19 @@
 		<th width="10%" align="center">{L_CMS_BLOCKS}</th>
 	</tr>
 	<!-- BEGIN l_row -->
-	<tr class="{layout.l_row.ROW_CLASS} row1h" style="background-image:none;">
-		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;"><b>{layout.l_row.LAYOUT_ID}</b></td>
-		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;" nowrap="nowrap">
+	<tr class="{layout.l_row.ROW_CLASS} row1h" style="background-image: none;">
+		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><b>{layout.l_row.LAYOUT_ID}</b></td>
+		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;" nowrap="nowrap">
 			<a href="{layout.l_row.U_LAYOUT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CONFIGURE_BLOCKS}" title="{L_CONFIGURE_BLOCKS}" /></a>&nbsp;
 			<a href="{layout.l_row.U_PREVIEW_LAYOUT}"><img src="{IMG_LAYOUT_PREVIEW}" alt="{L_PREVIEW}" title="{L_PREVIEW}" /></a>&nbsp;
 			<a href="{layout.l_row.U_EDIT_LAYOUT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;
 			<a href="{layout.l_row.U_DELETE_LAYOUT}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>
 		</td>
-		<td class="{layout.l_row.ROW_CLASS}" style="background:none;{layout.l_row.ROW_DEFAULT_STYLE}">&nbsp;<a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a>&nbsp;</td>
-		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;">&nbsp;{layout.l_row.LAYOUT_FILENAME}&nbsp;</td>
-		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;">&nbsp;{layout.l_row.LAYOUT_LAYOUT}&nbsp;</td>
-		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;">&nbsp;{layout.l_row.LAYOUT_TEMPLATE}&nbsp;</td>
-		<td class="{layout.l_row.ROW_CLASS} row-center" style="background:none;">[&nbsp;{layout.l_row.LAYOUT_BLOCKS}&nbsp;]</td>
+		<td class="{layout.l_row.ROW_CLASS}" style="background: none;{layout.l_row.ROW_DEFAULT_STYLE}">&nbsp;<a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a>&nbsp;</td>
+		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">&nbsp;{layout.l_row.LAYOUT_FILENAME}&nbsp;</td>
+		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">&nbsp;{layout.l_row.LAYOUT_LAYOUT}&nbsp;</td>
+		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">&nbsp;{layout.l_row.LAYOUT_TEMPLATE}&nbsp;</td>
+		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">[&nbsp;{layout.l_row.LAYOUT_BLOCKS}&nbsp;]</td>
 	</tr>
 	<!-- END l_row -->
 	<tr><td class="spaceRow" colspan="7"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

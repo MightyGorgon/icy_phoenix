@@ -20,15 +20,15 @@
 			<th align="center">{L_CMS_DESCRIPTION}</th>
 		</tr>
 		<!-- BEGIN menu_row -->
-		<tr class="row1h" style="background-image:none;">
-			<td class="row1 row-center" style="background:none;"><b>{menu_row.MENU_ID}</b></td>
-			<td class="row1 row-center" style="background:none;" nowrap="nowrap">
+		<tr class="row1h" style="background-image: none;">
+			<td class="row1 row-center" style="background: none;"><b>{menu_row.MENU_ID}</b></td>
+			<td class="row1 row-center" style="background: none;" nowrap="nowrap">
 				<a href="{menu_row.U_ITEMS_EDIT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CMS_EDIT_MENU_ITEMS}" title="{L_CMS_EDIT_MENU_ITEMS}" /></a>&nbsp;
 				<a href="{menu_row.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;
 				<a href="{menu_row.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>
 			</td>
-			<td class="row1" style="padding-left:5px;background:none;"><a href="{menu_row.U_ITEMS_EDIT}">{menu_row.MENU_NAME}</a>&nbsp;</td>
-			<td class="row1" style="padding-left:5px;background:none;">{menu_row.MENU_DESCRIPTION}&nbsp;</td>
+			<td class="row1" style="padding-left:5px;background: none;"><a href="{menu_row.U_ITEMS_EDIT}">{menu_row.MENU_NAME}</a>&nbsp;</td>
+			<td class="row1" style="padding-left:5px;background: none;">{menu_row.MENU_DESCRIPTION}&nbsp;</td>
 		</tr>
 		<!-- END menu_row -->
 		</table>

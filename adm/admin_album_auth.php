@@ -56,13 +56,11 @@ if( !isset($_POST['submit']) )
 }
 else
 {
-	if( !isset($_GET['cat_id']) )
+	if(!isset($_GET['cat_id']))
 	{
 		$cat_id = intval($_POST['cat_id']);
 
-		$template->set_filenames(array(
-			'body' => ADM_TPL . 'album_auth_body.tpl')
-		);
+		$template->set_filenames(array('body' => ADM_TPL . 'album_auth_body.tpl'));
 
 		$template->assign_vars(array(
 			'L_ALBUM_AUTH_TITLE' => $lang['Album_Auth_Title'],
@@ -121,7 +119,10 @@ else
 
 		for ($i = 0; $i < count($groupdata); $i++)
 		{
+			$class = ($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
 			$template->assign_block_vars('grouprow', array(
+				'CLASS' => $class,
+
 				'GROUP_ID' => $groupdata[$i]['group_id'],
 				'GROUP_NAME' => $groupdata[$i]['group_name'],
 

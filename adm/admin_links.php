@@ -181,7 +181,7 @@ switch ($mode)
 					'LINK_HITS' => $row['link_hits']
 					)
 				);
-				$i ++;
+				$i++;
 			}
 			while ( $row = $db->sql_fetchrow($result) );
 		}

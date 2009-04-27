@@ -27,7 +27,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'Sudoku_Version' => 'Sudoku Mod Version %s &copy Majorflam 2005 - Latest Game Pack Installed: Pack %s',
+	'Sudoku_Version' => 'Sudoku Mod Version %s &copy; Majorflam 2005 - Latest Game Pack Installed: Pack %s',
 	'suduko_blank_tile' => 'Click To Enter Number',
 	'suduko_user_tile' => 'Click To Edit',
 	'sudoku_no_tile' => 'No Tile Specified!',

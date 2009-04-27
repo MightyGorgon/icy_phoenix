@@ -177,7 +177,7 @@ if (!album_check_permission($auth_data, ALBUM_AUTH_MODERATOR))
 	}
 	else
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 }
 // END permissions
@@ -608,7 +608,7 @@ else
 			}
 
 			// well, we got the array of pic_id but we must do a check to make sure all these
-			// pics are in this category (prevent some naughty moderators to access un-authorised pics)
+			// pics are in this category (prevent some naughty moderators to access un-authorized pics)
 			$sql = "SELECT pic_id
 					FROM " . ALBUM_TABLE . "
 					WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
@@ -618,7 +618,7 @@ else
 			}
 			if($db->sql_numrows($result) > 0)
 			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+				message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 			}
 
 			// Update the DB
@@ -668,7 +668,7 @@ else
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
-		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
+		// pics are in this category (prevent some naughty moderators to access un-authorized pics)
 		$sql = "SELECT pic_id
 				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
@@ -678,7 +678,7 @@ else
 		}
 		if($db->sql_numrows($result) > 0)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		// update the DB
@@ -738,7 +738,7 @@ else
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
-		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
+		// pics are in this category (prevent some naughty moderators to access un-authorized pics)
 		$sql = "SELECT pic_id
 				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
@@ -748,7 +748,7 @@ else
 		}
 		if($db->sql_numrows($result) > 0)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		// update the DB
@@ -808,7 +808,7 @@ else
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
-		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
+		// pics are in this category (prevent some naughty moderators to access un-authorized pics)
 		$sql = "SELECT pic_id
 				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
@@ -818,7 +818,7 @@ else
 		}
 		if($db->sql_numrows($result) > 0)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		// update the DB
@@ -867,7 +867,7 @@ else
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
-		// pics are in this category (prevent some naughty moderators to access un-authorised pics)
+		// pics are in this category (prevent some naughty moderators to access un-authorized pics)
 		$sql = "SELECT pic_id
 				FROM " . ALBUM_TABLE . "
 				WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
@@ -877,7 +877,7 @@ else
 		}
 		if($db->sql_numrows($result) > 0)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		// update the DB
@@ -1093,7 +1093,7 @@ else
 
 		if ($auth_data['delete'] == 0)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		if(!isset($_POST['confirm']))
@@ -1172,7 +1172,7 @@ else
 			}
 
 			// well, we got the array of pic_id but we must do a check to make sure all these
-			// pics are in this category (prevent some naughty moderators to access un-authorised pics)
+			// pics are in this category (prevent some naughty moderators to access un-authorized pics)
 			$sql = "SELECT pic_id
 					FROM " . ALBUM_TABLE . "
 					WHERE pic_id IN ($pic_id_sql) AND pic_cat_id <> $cat_id";
@@ -1182,7 +1182,7 @@ else
 			}
 			if($db->sql_numrows($result) > 0)
 			{
-				message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 
 			// Delete all comments

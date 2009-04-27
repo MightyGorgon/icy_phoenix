@@ -8,11 +8,11 @@
 <!-- BEGIN feature_cat -->
 <tr><th colspan="4">{feature_cat.CAT_NAME}</th></tr>
 <!-- BEGIN feature_item -->
-<tr class="{feature_cat.feature_item.ROW_CLASS} row1h" style="background-image:none;">
-	<td class="{feature_cat.feature_item.ROW_CLASS}" style="background:none;"><span class="gen">{feature_cat.feature_item.ITEM_NAME}</span></td>
-	<td class="{feature_cat.feature_item.ROW_CLASS} row-center" style="background:none;"><span class="gensmall">{feature_cat.feature_item.BB2}</span></td>
-	<td class="{feature_cat.feature_item.ROW_CLASS} row-center" style="background:none;"><span class="gensmall">{feature_cat.feature_item.IP}</span></td>
-	<td class="{feature_cat.feature_item.ROW_CLASS} row-center" style="background:none;"><span class="gensmall">{feature_cat.feature_item.BB3}</span></td>
+<tr class="{feature_cat.feature_item.ROW_CLASS} row1h" style="background-image: none;">
+	<td class="{feature_cat.feature_item.ROW_CLASS}" style="background: none;"><span class="gen">{feature_cat.feature_item.ITEM_NAME}</span></td>
+	<td class="{feature_cat.feature_item.ROW_CLASS} row-center" style="background: none;"><span class="gensmall">{feature_cat.feature_item.BB2}</span></td>
+	<td class="{feature_cat.feature_item.ROW_CLASS} row-center" style="background: none;"><span class="gensmall">{feature_cat.feature_item.IP}</span></td>
+	<td class="{feature_cat.feature_item.ROW_CLASS} row-center" style="background: none;"><span class="gensmall">{feature_cat.feature_item.BB3}</span></td>
 </tr>
 <!-- END feature_item -->
 <!-- END feature_cat -->

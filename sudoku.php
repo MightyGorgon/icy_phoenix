@@ -100,7 +100,7 @@ if ($mode == 'resynch')
 {
 	if ($userdata['user_level'] != ADMIN)
 	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Authorised'] . $redirect);
+		message_die(GENERAL_MESSAGE, $lang['Not_Authorized'] . $redirect);
 	}
 	sudoku_resynch();
 	message_die(GENERAL_MESSAGE, $lang['sudoku_resynch_success'] . $redirect);
@@ -110,7 +110,7 @@ if ($mode == 'reset_game')
 {
 	if ($userdata['user_level'] != ADMIN)
 	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Authorised'] . $redirect);
+		message_die(GENERAL_MESSAGE, $lang['Not_Authorized'] . $redirect);
 	}
 	if (!isset($_POST['confirm']) && !isset($_POST['cancel']))
 	{

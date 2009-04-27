@@ -83,7 +83,7 @@ if ($album_user_access['delete'] == 0)
 	}
 	else
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 }
 else
@@ -92,7 +92,7 @@ else
 	{
 		if ($thispic['pic_user_id'] != $userdata['user_id'])
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 	}
 }

@@ -106,7 +106,7 @@ $album_user_access = album_user_access($cat_id, $thiscat, 1, 0, 0, 0, 0, 0); // 
 
 if ($album_user_access['view'] == 0)
 {
-	die($lang['Not_Authorised']);
+	die($lang['Not_Authorized']);
 }
 
 // Check Pic Approval
@@ -116,7 +116,7 @@ if ($userdata['user_level'] != ADMIN)
 	{
 		if ($thispic['pic_approval'] != 1)
 		{
-			die($lang['Not_Authorised']);
+			die($lang['Not_Authorized']);
 		}
 	}
 }

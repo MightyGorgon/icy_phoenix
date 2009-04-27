@@ -47,16 +47,16 @@
 		<!-- BEGIN menu_row -->
 		<li id="item_{cat_row.menu_row.MENU_CB_ID}" style="cursor:move;">
 		<table class="nav-div" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
-		<tr class="row1h" style="background-image:none;">
-			<td class="row1 row-center" style="padding:0px;background:none;width:110px;">
+		<tr class="row1h" style="background-image: none;">
+			<td class="row1 row-center" style="padding:0px;background: none;width:110px;">
 				{cat_row.menu_row.U_MOVE_UP}
 				{cat_row.menu_row.U_MOVE_DOWN}
 				{cat_row.menu_row.U_EDIT}
 				{cat_row.menu_row.U_DELETE}
 			</td>
-			<td class="row1 row-center" style="padding:0px;background:none;width:30px;"><input type="checkbox" name="cb_mid[]" value="{cat_row.menu_row.MENU_CB_ID}"{cat_row.menu_row.MENU_CHECKED} /></td>
-			<td class="row1" style="padding-left:10px;background:none;width:288px;">{cat_row.menu_row.MENU_URL}</td>
-			<td class="row1" style="padding-left:5px;background:none;">{cat_row.menu_row.MENU_DESC}</td>
+			<td class="row1 row-center" style="padding:0px;background: none;width:30px;"><input type="checkbox" name="cb_mid[]" value="{cat_row.menu_row.MENU_CB_ID}"{cat_row.menu_row.MENU_CHECKED} /></td>
+			<td class="row1" style="padding-left:10px;background: none;width:288px;">{cat_row.menu_row.MENU_URL}</td>
+			<td class="row1" style="padding-left:5px;background: none;">{cat_row.menu_row.MENU_DESC}</td>
 		</tr>
 		</table>
 		</li>

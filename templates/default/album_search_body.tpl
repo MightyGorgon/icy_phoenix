@@ -15,7 +15,7 @@
 	<td class="row1h row-center" align="center" valign="middle">
 		<center>
 		<div class="picshadow"><div class="picframe">
-		<a href="{switch_search_results.search_results.U_PIC}"{switch_search_results.search_results.PIC_PREVIEW_HS}><img src="{switch_search_results.search_results.THUMBNAIL}" {THUMB_SIZE} alt="{switch_search_results.search_results.PIC_TITLE}" border="0" /></a>
+		<a href="{switch_search_results.search_results.U_PIC_DL}"{switch_search_results.search_results.PIC_PREVIEW_HS}><img src="{switch_search_results.search_results.THUMBNAIL}" {THUMB_SIZE} alt="{switch_search_results.search_results.PIC_TITLE}" border="0" /></a>
 		</div></div>
 		</center>
 	</td>

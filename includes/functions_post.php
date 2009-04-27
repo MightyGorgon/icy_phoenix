@@ -74,7 +74,7 @@ function unprepare_message($message)
 }
 
 // Prepare a message for posting
-function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
+function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_option1, &$reg_option2, &$reg_option3, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
 	global $board_config, $userdata, $lang;
 	global $topic_id;
@@ -227,12 +227,38 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_poll_title'] : $lang['Empty_poll_title'];
 			}
 		}
+
+		// Event Registration - BEGIN
+		if (($reg_active == 1) && empty($reg_option1) && empty($reg_option2) && empty($reg_option3))
+		{
+			$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Reg_no_options_specified'] : $lang['Reg_no_options_specified'];
+		}
+
+		if (!empty($reg_option1))
+		{
+			$reg_option1 = htmlspecialchars(trim($reg_option1));
+		}
+		if (!empty($reg_option2))
+		{
+			$reg_option2 = htmlspecialchars(trim($reg_option2));
+		}
+		if (!empty($reg_option3))
+		{
+			$reg_option3 = htmlspecialchars(trim($reg_option3));
+		}
+
+		$reg_active = (isset($reg_active)) ? max(0, intval($reg_active)) : 0;
+		$reg_max_option1 = (isset($reg_max_option1)) ? max(0, intval($reg_max_option1)) : 0;
+		$reg_max_option2 = (isset($reg_max_option2)) ? max(0, intval($reg_max_option2)) : 0;
+		$reg_max_option3 = (isset($reg_max_option3)) ? max(0, intval($reg_max_option3)) : 0;
+		$reg_length = (isset($reg_length)) ? max(0, intval($reg_length)) : 0;
+		// Event Registration - END
 	}
 	return;
 }
 
 // Post a new topic/reply/poll or edit existing post/poll
-function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0, &$news_category, &$topic_show_portal)
+function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_option1, &$reg_option2, &$reg_option3, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$news_category, &$topic_show_portal, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
 	global $board_config, $lang, $db;
 	global $userdata, $user_ip, $post_data;
@@ -299,7 +325,15 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		$topic_show_portal = ( $topic_show_portal == true ) ? 1 : 0;
 		$topic_calendar_duration = ( $topic_calendar_duration == '') ? 0 : $topic_calendar_duration;
 
-		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_vote, topic_show_portal) VALUES ('$post_subject', '$topic_desc', " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_vote, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '$post_subject', news_id = $news_id, topic_desc = '$topic_desc', topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration " . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . ", topic_show_portal = $topic_show_portal
+		// Event Registration - BEGIN
+		$topic_reg = 0;
+		if ($reg_active == 1)
+		{
+			$topic_reg = 1;
+		}
+		// Event Registration - END
+
+		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_reg, topic_vote, topic_show_portal) VALUES ('$post_subject', '$topic_desc', " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_reg, $topic_vote, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '$post_subject', news_id = $news_id, topic_desc = '$topic_desc', topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration, topic_reg = $topic_reg" . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . ", topic_show_portal = $topic_show_portal
 		WHERE topic_id = $topic_id";
 
 		if (!$db->sql_query($sql))
@@ -311,7 +345,64 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		{
 			$topic_id = $db->sql_nextid();
 		}
+		else
+		{
+			// Event Registration - BEGIN
+			if (empty($reg_option1))
+			{
+				if (!$db->sql_query("DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_status = 1 AND topic_id = $topic_id"))
+				{
+					message_die(GENERAL_ERROR, 'Could not clean up registration data from unused options', '', __LINE__, __FILE__, $sql);
+				}
+			}
+			if (empty($reg_option2))
+			{
+				if (!$db->sql_query("DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_status = 2 AND topic_id = $topic_id"))
+				{
+					message_die(GENERAL_ERROR, 'Could not clean up registration data from unused options', '', __LINE__, __FILE__, $sql);
+				}
+			}
+			if (empty($reg_option3))
+			{
+				if (!$db->sql_query("DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_status = 3 AND topic_id = $topic_id"))
+				{
+					message_die(GENERAL_ERROR, 'Could not clean up registration data from unused options', '', __LINE__, __FILE__, $sql);
+				}
+			}
+
+			if ($reg_reset)
+			{
+				$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id = $topic_id";
+
+				if (!$db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not delete registration data from table', '', __LINE__, __FILE__, $sql);
+				}
+			}
+			// Event Registration - END
+		}
 	}
+
+	// Event Registration - BEGIN
+	if ((($mode == 'newtopic') || ($mode == 'editpost')) && ($topic_reg == 1))
+	{
+		if ($mode == 'editpost')
+		{
+			$sql = "SELECT count(1) chk_reg FROM " . REGISTRATION_DESC_TABLE . " WHERE topic_id = $topic_id";
+			if (!($result = $db->sql_query($sql)))
+			{
+				message_die(GENERAL_ERROR, 'Could not check registration data for this topic', '', __LINE__, __FILE__, $sql);
+			}
+			$chk_reg = ($db->sql_fetchfield('chk_reg', 0, $result) != 0) ? true : false;
+		}
+
+		$sql = ($mode != 'editpost' || ($mode == 'editpost' && $chk_reg == false)) ? "INSERT INTO " . REGISTRATION_DESC_TABLE . " (topic_id, reg_active, reg_option1 , reg_option2, reg_option3, reg_max_option1, reg_max_option2, reg_max_option3, reg_start, reg_length) VALUES ($topic_id, $reg_active, '$reg_option1', '$reg_option2', '$reg_option3', $reg_max_option1, $reg_max_option2, $reg_max_option3, $current_time, " . ($reg_length * 86400) . ")" : "UPDATE " . REGISTRATION_DESC_TABLE . " SET reg_active = $reg_active, reg_option1 = '$reg_option1', reg_option2 = '$reg_option2', reg_option3 = '$reg_option3', reg_max_option1 = $reg_max_option1, reg_max_option2 = $reg_max_option2, reg_max_option3 = $reg_max_option3, reg_length = " . ($reg_length * 86400) . " WHERE topic_id = $topic_id";
+		if (!$db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, 'Could not store registration data', '', __LINE__, __FILE__, $sql);
+		}
+	}
+	// Event Registration - END
 
 	// To show also admins modifications decomment this line!!!
 	//if( ($userdata['user_level'] == ADMIN) && !$board_config['always_show_edit_by'] )
@@ -776,6 +867,23 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			empty_cache_folders(POSTS_CACHE_FOLDER);
 			message_die(GENERAL_ERROR, 'Error in deleting post', '', __LINE__, __FILE__, $sql);
 		}
+
+		// Event Registration - BEGIN
+		if ($post_data['first_post'])
+		{
+			$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id = $topic_id";
+			if (!$db->sql_query($sql))
+			{
+				message_die(GENERAL_ERROR, 'Could not delete registration entries from table', '', __LINE__, __FILE__, $sql);
+			}
+
+			$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . " WHERE topic_id = $topic_id";
+			if (!$db->sql_query($sql))
+			{
+				message_die(GENERAL_ERROR, 'Could not delete registration data from table', '', __LINE__, __FILE__, $sql);
+			}
+		}
+		// Event Registration - END
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . "

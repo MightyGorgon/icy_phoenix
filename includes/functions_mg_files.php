@@ -58,6 +58,11 @@ class files_management
 		return $file_details;
 	}
 
+	function get_file_extension($file)
+	{
+		return substr(strrchr($file, '.'), 1);
+	}
+
 	function get_dirs_path($full_path)
 	{
 		$dirs_path = array();
@@ -275,6 +280,159 @@ class files_management
 		}
 
 		return $output_array;
+	}
+
+	function list_files($source_folder)
+	{
+		$directory = @opendir($source_folder);
+		$files_list = array();
+		while (@$file = readdir($directory))
+		{
+			$full_path_file = $source_folder . '/' . $file;
+			if (!in_array($file, array('.', '..')))
+			{
+				if (is_dir($source_folder . '/' . $file))
+				{
+					$files_list = array_merge($files_list, $this->list_files($full_path_file));
+				}
+				else
+				{
+					$files_list[] = str_replace('//', '/', ($full_path_file));
+				}
+			}
+		}
+		@closedir($directory);
+		sort($files_list);
+		return $files_list;
+	}
+
+	function list_files_type($source_folder, $extension)
+	{
+		$directory = @opendir($source_folder);
+		$files_list = array();
+		while (@$file = readdir($directory))
+		{
+			$full_path_file = $source_folder . '/' . $file;
+			if (!in_array($file, array('.', '..')))
+			{
+				if (is_dir($source_folder . '/' . $file))
+				{
+					$files_list = array_merge($files_list, $this->list_files_type($full_path_file, $extension));
+				}
+				else
+				{
+					$file_details = $this->get_file_details($full_path_file);
+					if ($file_details['ext'] == $extension)
+					{
+						$files_list[] = str_replace('//', '/', ($full_path_file));
+					}
+				}
+			}
+		}
+		@closedir($directory);
+		sort($files_list);
+		return $files_list;
+	}
+
+	function duplicate_folder($source_folder, $target_folder, $extensions, $duplicate_subfolder = true)
+	{
+
+		$new_source_folder = $source_folder;
+		$new_target_folder = $target_folder;
+		$directory = @opendir($source_folder);
+		while (@$file = readdir($directory))
+		{
+			$full_path_file = $source_folder . '/' . $file;
+			if (!in_array($file, array('.', '..')))
+			{
+				if (is_dir($full_path_file))
+				{
+					if ($duplicate_subfolder == true)
+					{
+						$new_source_folder = $source_folder . '/' . $file;
+						$new_target_folder = $target_folder . '/' . $file;
+						@mkdir($new_target_folder, 0777);
+						//echo('<br />' . $new_source_folder . ' - ' . $new_target_folder);
+						$this->duplicate_folder($new_source_folder, $new_target_folder, $extensions, $duplicate_subfolder);
+					}
+				}
+				else
+				{
+					if (!is_dir($target_folder))
+					{
+						@mkdir($target_folder, 0777);
+					}
+					$current_file_extension = $this->get_file_extension($file);
+					if (empty($extensions) || (!is_array($extensions) && ($current_file_extension == $extensions)) || (is_array($extensions) && in_array($current_file_extension, $extensions)))
+					{
+						if (file_exists($target_folder . '/' . $file))
+						{
+							@unlink($target_folder . '/' . $file);
+						}
+						@copy($source_folder . '/' . $file, $target_folder . '/' . $file);
+					}
+				}
+			}
+		}
+	}
+
+	function create_subfolders_structure($path, $chmod = 0777)
+	{
+		$tmp_paths = array();
+		$tmp_paths = explode('/', $path);
+		$skip_sub_folder = false;
+		for ($i = 0; $i < count($tmp_paths); $i++)
+		{
+			if (!is_dir($tmp_paths[$i]))
+			{
+				@mkdir($tmp_paths[$i], $chmod);
+			}
+		}
+		return true;
+	}
+
+	function clear_dir($dir)
+	{
+		$res = @opendir($dir);
+		if($res === false) return;
+		while(($file = readdir($res)) !== false)
+		{
+			if(($file !== '.') && ($file !== '..'))
+			{
+				if(is_dir($dir . '/' . $file))
+				{
+					$this->clear_dir($dir . '/' . $file);
+					rmdir($dir . '/' . $file);
+				}
+				else
+				{
+					unlink($dir . '/' . $file);
+				}
+			}
+		}
+		closedir($res);
+	}
+
+	function empty_data_folder($folder_path)
+	{
+		$skip_files = array(
+			'.',
+			'..',
+			'.htaccess',
+			'index.html',
+		);
+
+		$dir = $folder_path;
+		$res = @opendir($dir);
+		while(@$file = readdir($res))
+		{
+			if (!in_array($file, $skip_files))
+			{
+				$res2 = @unlink($dir . '/' . $file);
+			}
+		}
+		closedir($res);
+		return true;
 	}
 
 	function compare_files($source_path, $target_path)

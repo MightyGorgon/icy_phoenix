@@ -93,7 +93,7 @@ $is_auth = auth(AUTH_ALL, $forum_id, $userdata);
 if ($mode == 'report_reset')
 {
 	if (! $is_auth['auth_mod'])
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 
 	$sql = 'SELECT p.post_subject, f.forum_name FROM ' . POSTS_TABLE . ' p, ' . FORUMS_TABLE . ' f WHERE p.post_id="' . $post_id . '" AND p.forum_id = f.forum_id';
 	if(!$result = $db->sql_query($sql))
@@ -117,7 +117,7 @@ elseif ($mode == 'report')
 {
 	if (!$is_auth['auth_bluecard'])
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 
 	$sql = 'SELECT f.forum_name, p.topic_id FROM ' . POSTS_TABLE . ' p, ' . FORUMS_TABLE . ' f WHERE p.post_id = "' . $post_id . '" AND  p.forum_id = f.forum_id';
@@ -210,7 +210,7 @@ elseif ($mode == 'unban')
 	$no_error_ban = false;
 	if (! $is_auth['auth_greencard'])
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 	// look up the user
 	$sql = 'SELECT user_active, user_warnings FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
@@ -241,7 +241,7 @@ elseif ($mode == 'ban')
 	$no_error_ban = false;
 	if (!$is_auth['auth_ban'])
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 	// look up the user
 	$sql = 'SELECT user_active, user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
@@ -303,7 +303,7 @@ elseif ($mode == 'block')
 	$no_error_ban = false;
 	if (! $is_auth['auth_ban'])
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 	// look up the user
 	$sql = 'SELECT user_active, user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
@@ -339,7 +339,7 @@ elseif ($mode == 'warn')
 	$no_error_ban = false;
 	if (!$is_auth['auth_ban'])
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 	// look up the user
 	$sql = 'SELECT user_active, user_warnings, user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';

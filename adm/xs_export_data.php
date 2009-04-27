@@ -96,7 +96,7 @@ if(!empty($_POST['export']) && !defined('DEMO_MODE'))
 		{
 			$params['export_id_'.$count] = intval($_POST['export_id_'.$i]);
 			$params['export_check_'.$count] = 'checked';
-			$count ++;
+			$count++;
 		}
 	}
 	$params['export_total'] = $count;

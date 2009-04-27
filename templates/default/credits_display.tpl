@@ -15,10 +15,10 @@
 
 <!-- BEGIN listrow -->
 <tr class="{listrow.ROW_CLASS} row1h">
-	<td class="{listrow.ROW_CLASS}" style="vertical-align:middle;background:none;"><span class="gen">&nbsp;{listrow.HACK_NAME}&nbsp;{listrow.HACK_VERSION}</span></td>
-	<td class="{listrow.ROW_CLASS} row-center" style="vertical-align:middle;background:none;"><span class="genmed">{listrow.HACK_AUTHOR}</span></td>
-	<td class="{listrow.ROW_CLASS}" style="vertical-align:middle;background:none;"><span class="genmed">{listrow.HACK_DESC}</span></td>
-	<td class="{listrow.ROW_CLASS} row-center" style="vertical-align:middle;background:none;"><span class="gensmall">{listrow.HACK_WEBSITE}</span></td>
+	<td class="{listrow.ROW_CLASS}" style="vertical-align:middle;background: none;"><span class="gen">&nbsp;{listrow.HACK_NAME}&nbsp;{listrow.HACK_VERSION}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" style="vertical-align:middle;background: none;"><span class="genmed">{listrow.HACK_AUTHOR}</span></td>
+	<td class="{listrow.ROW_CLASS}" style="vertical-align:middle;background: none;"><span class="genmed">{listrow.HACK_DESC}</span></td>
+	<td class="{listrow.ROW_CLASS} row-center" style="vertical-align:middle;background: none;"><span class="gensmall">{listrow.HACK_WEBSITE}</span></td>
 </tr>
 <!-- END listrow -->
 

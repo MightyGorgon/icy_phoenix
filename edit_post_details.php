@@ -21,7 +21,7 @@ init_userprefs($userdata);
 
 if ($userdata['user_level'] != ADMIN)
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
 // Get the needes values from post

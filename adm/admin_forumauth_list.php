@@ -94,7 +94,7 @@ if($_POST['submit'])
 // Default page
 $colspan = count($forum_auth_fields) + 2;
 
-// Output the authorisation details
+// Output the authorization details
 $template->set_filenames(array('body' => ADM_TPL . 'auth_forum_list_body.tpl'));
 
 $template->assign_vars(array(

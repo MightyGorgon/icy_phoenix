@@ -104,7 +104,7 @@ function generate_style_name($str)
 	{
 		$filename = sprintf($str, $num);
 		$found = @file_exists(XS_TEMP_DIR.$filename);
-		$num ++;
+		$num++;
 	}
 	return $filename;
 }

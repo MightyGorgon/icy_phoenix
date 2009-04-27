@@ -282,7 +282,7 @@ $attachment['physical_filename'] = basename($attachment['physical_filename']);
 $db->sql_freeresult($result);
 
 // get forum_id for attachment authorization or private message authorization
-$authorised = false;
+$authorized = false;
 
 $sql = 'SELECT *
 	FROM ' . ATTACHMENTS_TABLE . '
@@ -296,7 +296,7 @@ if (!($result = $db->sql_query($sql)))
 $auth_pages = $db->sql_fetchrowset($result);
 $num_auth_pages = $db->sql_numrows($result);
 
-for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
+for ($i = 0; $i < $num_auth_pages && $authorized == false; $i++)
 {
 	$auth_pages[$i]['post_id'] = intval($auth_pages[$i]['post_id']);
 
@@ -320,19 +320,19 @@ for ($i = 0; $i < $num_auth_pages && $authorised == false; $i++)
 
 		if ($is_auth['auth_download'])
 		{
-			$authorised = true;
+			$authorized = true;
 		}
 	}
 	else
 	{
 		if ((intval($attach_config['allow_pm_attach'])) && (($userdata['user_id'] == $auth_pages[$i]['user_id_2']) || ($userdata['user_id'] == $auth_pages[$i]['user_id_1'])) || ($userdata['user_level'] == ADMIN))
 		{
-			$authorised = true;
+			$authorized = true;
 		}
 	}
 }
 
-if (!$authorised)
+if (!$authorized)
 {
 	message_die(GENERAL_MESSAGE, $lang['Sorry_auth_view_attach']);
 }

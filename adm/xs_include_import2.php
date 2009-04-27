@@ -173,7 +173,7 @@ while($pos < strlen($str))
 				else
 				{
 					// write to temporary file
-					$tmp_count ++;
+					$tmp_count++;
 					$data['tmp'] = sprintf($tmp_name, $tmp_count);
 					$f = @fopen($data['tmp'], 'wb');
 					if(!$f)

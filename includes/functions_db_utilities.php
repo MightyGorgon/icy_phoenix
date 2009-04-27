@@ -25,7 +25,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 function gzip_PrintFourChars($Val)
 {
-	for ($i = 0; $i < 4; $i ++)
+	for ($i = 0; $i < 4; $i++)
 	{
 		$return .= chr($Val % 256);
 		$Val = floor($Val / 256);

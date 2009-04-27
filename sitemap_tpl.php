@@ -38,7 +38,7 @@ $row = 0;
 while($row <= count($ids) -1)
 {
 	$forumids .= $ids[$row]['forum_id'] . ",";
-	$row ++;
+	$row++;
 }
 $forumids = substr($forumids, 0, strlen($forumids)-1);
 

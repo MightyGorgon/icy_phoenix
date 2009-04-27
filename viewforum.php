@@ -25,6 +25,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
+// Event Registration - BEGIN
+include_once(IP_ROOT_PATH . 'includes/functions_events_reg.' . PHP_EXT);
+// Event Registration - END
 
 define('IN_VIEWFORUM', true);
 // Start initial var setup
@@ -882,7 +885,7 @@ if ($bypass)
 		)
 	);
 
-	// User authorisation levels output
+	// User authorization levels output
 	// Self AUTH - BEGIN
 	$lang['Rules_reply_can'] = ((intval($is_auth['auth_reply']) == AUTH_SELF) ? $lang['Rules_reply_can_own'] : $lang['Rules_reply_can']);
 	// Self AUTH - END
@@ -1178,10 +1181,107 @@ if ($bypass)
 			$replies = $topic_rowset[$i]['topic_replies'];
 			$topic_type = $topic_rowset[$i]['topic_type'];
 
-			$topic_link = build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+			$topic_link = build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
 
 			$topic_id = $topic_link['topic_id'];
 			$topic_id_append = $topic_link['topic_id_append'];
+
+			// Event Registration - BEGIN
+			if (($topic_rowset[$i]['topic_reg']) && check_reg_active($topic_id))
+			{
+				$regoption_array = array();
+
+				if ($userdata['session_logged_in'])
+				{
+					$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
+							WHERE topic_id = $topic_id
+							AND registration_user_id = " . $userdata['user_id'];
+
+					if (!($result = $db->sql_query($sql)))
+					{
+						message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+					}
+
+					if ($regrow = $db->sql_fetchrow($result))
+					{
+						$status = $regrow['registration_status'];
+						if ($status == REG_OPTION1)
+						{
+							$reg_user_own_reg .= '<span class="text_green">&#149;</span>';
+						}
+						elseif ($status == REG_OPTION2)
+						{
+							$reg_user_own_reg .= '<span class="text_blue">&#149;</span>';
+						}
+						elseif ($status == REG_OPTION3)
+						{
+							$reg_user_own_reg .= '<span class="text_red">&#149;</span>';
+						}
+					}
+
+					$db->sql_freeresult($result);
+				}
+
+				$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, r.registration_time, r.registration_status FROM " . REGISTRATION_TABLE . " r, " . USERS_TABLE . " u
+						WHERE r.topic_id = $topic_id
+						AND r.registration_user_id = u.user_id
+						ORDER BY registration_status, registration_time";
+
+				if (!($result = $db->sql_query($sql)))
+				{
+					message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
+				}
+				$reg_info = $db->sql_fetchrowset($result);
+				$db->sql_freeresult($result);
+
+				$numregs = count($reg_info);
+				$option1_count = 0;
+				$option2_count = 0;
+				$option3_count = 0;
+
+				for ($u = 0; $u < $numregs; $u++)
+				{
+					if ($reg_info[$u]['registration_status'] == REG_OPTION1)
+					{
+						$option1_count++;
+					}
+					elseif ($reg_info[$u]['registration_status'] == REG_OPTION2)
+					{
+						$option2_count++;
+					}
+					elseif ($reg_info[$u]['registration_status'] == REG_OPTION3)
+					{
+						$option3_count++;
+					}
+				}
+
+				if (check_option_exists($topic_id, 1) === true)
+				{
+					$option1_count = '<span class="text_green">' . (0 + $option1_count) . '</span>';
+					array_push($regoption_array, $option1_count);
+				}
+				if (check_option_exists($topic_id, 2) === true)
+				{
+					$option2_count = '<span class="text_blue">' . (0 + $option2_count) . '</span>';
+					array_push($regoption_array, $option2_count);
+				}
+				if (true === check_option_exists($topic_id, 3))
+				{
+					$option3_count = '<span class="text_red">' . (0 + $option3_count) . '</span>';
+					array_push($regoption_array, $option3_count);
+				}
+				$regoptions_count = count($regoption_array);
+
+				$v = 0;
+				$regoptions = '';
+				while ($v < $regoptions_count - 1)
+				{
+					$regoptions .= $regoption_array[$v] . '-';
+					$v++;
+				}
+				$regoptions .= array_pop($regoption_array);
+			}
+			// Event Registration - END
 
 			if(($replies + 1) > $board_config['posts_per_page'])
 			{
@@ -1291,6 +1391,10 @@ if ($bypass)
 				'LAST_POST_AUTHOR' => $last_post_author,
 				'LAST_POST_IMG' => $last_post_url,
 				'L_NEWS' => $news_label,
+				// Event Registration - BEGIN
+				'REG_OPTIONS' => $regoptions,
+				'REG_USER_OWN_REG' => $reg_user_own_reg,
+				// Event Registration - END
 //--------------------------------------------------------
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				'U_MARK_ALWAYS_READ' => $mark_always_read,
@@ -1299,16 +1403,25 @@ if ($bypass)
 				'U_VIEW_TOPIC' => $view_topic_url
 				)
 			);
+
 			if ($forum_row['auth_rate'] != -1)
 			{
 				$template->assign_block_vars('topicrow.rate_switch_msg', array());
 			}
+
 			if (array_key_exists($i, $dividers))
 			{
 				$template->assign_block_vars('topicrow.divider', array(
 					'L_DIV_HEADERS' => $dividers[$i])
 				);
 			}
+
+			// Event Registration - BEGIN
+			if (($topic_rowset[$i]['topic_reg']) && check_reg_active($topic_rowset[$i]['topic_id']))
+			{
+				$template->assign_block_vars('topicrow.display_reg', array());
+			}
+			// Event Registration - END
 
 			if (!empty($topic_rowset[$i]['topic_desc']) && $board_config['show_topic_description'])
 			{

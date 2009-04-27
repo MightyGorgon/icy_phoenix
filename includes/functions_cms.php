@@ -59,17 +59,9 @@ function cms_blocks_view($type = true)
 	}
 	else
 	{
-		$access_level = $is_reg ? USER : $userdata['user_level'];
-		switch($access_level)
+		// User is not a guest here...
+		switch($userdata['user_level'])
 		{
-			case USER:
-				$bview = '(0,2)';
-				$append = '02';
-				break;
-			case MOD:
-				$bview = '(0,2,3)';
-				$append = '023';
-				break;
 			case ADMIN:
 				// If you want admin to see also GUEST ONLY blocks you need to use these settings...
 				/*
@@ -79,9 +71,14 @@ function cms_blocks_view($type = true)
 				$bview = '(0,2,3,4)';
 				$append = '0234';
 				break;
+			case MOD:
+				$bview = '(0,2,3)';
+				$append = '023';
+				break;
 			default:
-				$bview = '(0)';
-				$append = '0';
+				$bview = '(0,2)';
+				$append = '02';
+				break;
 		}
 	}
 	$return_value = $type ? $bview : $append;

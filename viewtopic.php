@@ -35,6 +35,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+// Event Registration - BEGIN
+include_once(IP_ROOT_PATH . 'includes/functions_events_reg.' . PHP_EXT);
+// Event Registration - END
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -242,7 +245,7 @@ $count_sql = (!$post_id) ? '' : ", COUNT(p2.post_id) AS prev_posts";
 
 $order_sql = (!$post_id) ? '' : "GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard ORDER BY p.post_id ASC";
 
-$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, f.forum_name, f.forum_status, f.forum_id, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.forum_rules, f.auth_ban, f.auth_greencard, f.auth_bluecard, fr.*" . $count_sql . "
+$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, f.forum_name, f.forum_status, f.forum_id, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.forum_rules, f.auth_ban, f.auth_greencard, f.auth_bluecard, fr.*" . $count_sql . "
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $join_sql_table . "
 	WHERE $join_sql
 		AND f.forum_id = t.forum_id
@@ -1237,7 +1240,7 @@ if ($bypass)
 		include(IP_ROOT_PATH . 'includes/similar_topics.' . PHP_EXT);
 	}
 
-	// User authorisation levels output
+	// User authorization levels output
 	// Self AUTH - BEGIN
 	$lang['Rules_reply_can'] = ((intval($is_auth['auth_reply']) == AUTH_SELF) ? $lang['Rules_reply_can_own'] : $lang['Rules_reply_can']);
 	// Self AUTH - END
@@ -1506,6 +1509,7 @@ if ($bypass)
 		'MINIPOST_IMG' => $images['icon_minipost'],
 		'IMG_FLOPPY' => $images['floppy2'],
 		'IMG_REPLY' => $images['news_reply'],
+		'IMG_RECENT_TOPICS' => $images['recent_topics'],
 		'IMG_PRINT' => $images['printer_topic'],
 		'IMG_VIEWED' => $images['topic_viewed'],
 		'IMG_EMAIL' => $images['email_topic'],
@@ -1756,6 +1760,10 @@ if ($bypass)
 		}
 	}
 
+	// Event Registration - BEGIN
+	include(IP_ROOT_PATH . 'includes/viewtopic_events_reg.' . PHP_EXT);
+	// Event Registration - END
+
 	init_display_post_attachments($forum_topic_data['topic_attachment']);
 
 	// Don't update the topic view counter if viewer is poster
@@ -1843,8 +1851,8 @@ if ($bypass)
 	if (defined('MG_FEEDBACKS'))
 	{
 		define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
-		include_once(MG_ROOT_PATH . 'includes/mg_functions_feedbacks.' . PHP_EXT);
-		include_once(MG_ROOT_PATH . 'mg_common.' . PHP_EXT);
+		include_once(MG_ROOT_PATH . 'includes/functions_feedbacks.' . PHP_EXT);
+		include_once(MG_ROOT_PATH . 'common.' . PHP_EXT);
 		include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
 		include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
 		$feedbacks_allowed_forums = explode(',', MG_FEEDBACKS_FORUMS);
@@ -2385,31 +2393,28 @@ if ($bypass)
 		// Please, do not change anything here, if you're not confident with what you're doing!!!
 		//$message = $postrow[$i]['post_text'];
 		$message_compiled = empty($postrow[$i]['post_text_compiled']) ? false : $postrow[$i]['post_text_compiled'];
-		// CrackerTracker v5.x
-		$is_miserable = false;
-		if (($postrow[$i]['ct_miserable_user'] == 1) && ($postrow[$i]['user_id'] != $userdata['user_id']) && ($userdata['user_level'] == USER))
-		{
-			//$message = $lang['ctracker_message_dialog_title'] . '<br /><br />' . $lang['ctracker_ipb_deleted'];
-			$message = $lang['ctracker_message_dialog_title'] . "\n\n" . $lang['ctracker_ipb_deleted'];
-			$is_miserable = true;
-		}
-		else
-		{
-			$message = $postrow[$i]['post_text'];
-			//if (($postrow[$i]['ct_miserable_user'] == 1) && ($userdata['user_level'] == ADMIN))
-			if ($postrow[$i]['ct_miserable_user'] == 1)
-			{
-				//$message .= '<br /><br />' . $lang['ctracker_mu_success_bbc'];
-				$message .= "\n\n" . $lang['ctracker_mu_success_bbc'];
-				$is_miserable = true;
-			}
-		}
-		// CrackerTracker v5.x
+		$message = $postrow[$i]['post_text'];
 
-		if ($is_miserable)
+		// CrackerTracker v5.x
+		$poster_miserable = ($postrow[$i]['ct_miserable_user'] == 1) ? true : false;
+		$is_miserable = ($poster_miserable && ($postrow[$i]['user_id'] == $userdata['user_id'])) ? true : false;
+		if ($poster_miserable && !$is_miserable)
+		{
+			// Maybe we should hide the miserable user tag for guests? ==> if ($userdata['session_logged_in'])
+			if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
+			{
+				// Normal users and guests...
+				// If you want to hide the post text, just decomment the line below!
+				$message = '';
+			}
+			$message .= "\n\n" . $lang['ctracker_mu_success_bbc'];
+		}
+
+		if ($poster_miserable)
 		{
 			$message_compiled = false;
 		}
+		// CrackerTracker v5.x
 
 		// BEGIN CMX News Mod
 		// Strip out the <!--break--> delimiter.
@@ -2626,11 +2631,11 @@ if ($bypass)
 			{
 				$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
 				$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-				$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ($lang['FEEDBACKS_RECEIVED'] . ': [ <a href="' . append_sid('mg_feedbacks.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]<br /><img src="' . $feedbacks_average_img . '" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" /><br />') : '');
+				$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ($lang['FEEDBACKS_RECEIVED'] . ': [ <a href="' . append_sid(MG_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]<br /><img src="' . $feedbacks_average_img . '" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" /><br />') : '');
 			}
 			if (can_user_give_feedbacks_topic($userdata['user_id'], $topic_id) && can_user_give_feedbacks_global($userdata['user_id'], $topic_id) && ($userdata['user_id'] != $postrow[$i]['user_id']))
 			{
-				$feedback_add = '&nbsp;&nbsp;<a href="' . append_sid('mg_feedbacks.' . PHP_EXT . '?mode=input&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $lang['FEEDBACK_ADD'] . '</a><br />';
+				$feedback_add = '&nbsp;&nbsp;<a href="' . append_sid(MG_FEEDBACKS_FILE . '?mode=input&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $lang['FEEDBACK_ADD'] . '</a><br />';
 			}
 		}
 		// Mighty Gorgon - Feedbacks - END

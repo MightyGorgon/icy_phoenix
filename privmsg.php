@@ -654,6 +654,10 @@ elseif ($mode == 'read')
 
 	$post_date = create_date2($board_config['default_dateformat'], $privmsg['privmsgs_date'], $board_config['board_timezone']);
 
+	$privmsg['user_id'] = $privmsg['user_id_1'];
+	$privmsg['username'] = $privmsg['username_1'];
+	$privmsg['user_color'] = $privmsg['user_color_1'];
+	$privmsg['user_active'] = $privmsg['user_active_1'];
 	$user_info = array();
 	$user_info = generate_user_info($privmsg);
 	foreach ($user_info as $k => $v)

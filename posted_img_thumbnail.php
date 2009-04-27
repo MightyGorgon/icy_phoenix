@@ -46,6 +46,10 @@ $board_config['thumbnail_size'] = 400;
 $board_config['thumbnail_posts'] = 1;
 */
 
+// Mighty Gorgon: this code is reserved for generating extra thumbnail size on the fly...
+$req_thumb_size = request_var('thumbnail_size', $board_config['thumbnail_size']);
+$req_thumb_size = (($req_thumb_size > 600) || ($req_thumb_size < 30)) ? $board_config['thumbnail_size'] : $req_thumb_size;
+
 $pic_fullpath = str_replace(array(' '), array('%20'), $pic_id);
 $pic_id = str_replace('http://', '', str_replace('https://', '', $pic_id));
 $pic_path[] = array();
@@ -53,6 +57,8 @@ $pic_path = explode('/', $pic_id);
 $pic_filename = $pic_path[count($pic_path) - 1];
 $file_part = explode('.', strtolower($pic_filename));
 $pic_filetype = $file_part[count($file_part) - 1];
+// Mighty Gorgon: this prefix is needed to not overwrite standard thumbnails with the ones generated with the extra size...
+$pic_thumbnail_prefix = 'mid_' . (($req_thumb_size != $board_config['thumbnail_size']) ? ($req_thumb_size . '_') : '') . md5($pic_id);
 $thumb_ext_array = array('gif', 'jpg', 'png');
 $image_processed = false;
 if (!in_array($pic_filetype, $thumb_ext_array))
@@ -74,13 +80,13 @@ if (!in_array($pic_filetype, $thumb_ext_array))
 
 	$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
 	$pic_title_reg = ereg_replace("[^A-Za-z0-9]", '_', $pic_title);
-	$pic_thumbnail = 'mid_' . md5($pic_id) . '.' . $pic_filetype;
+	$pic_thumbnail = $pic_thumbnail_prefix . '.' . $pic_filetype;
 }
 else
 {
 	$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
 	$pic_title_reg = ereg_replace("[^A-Za-z0-9]", '_', $pic_title);
-	$pic_thumbnail = 'mid_' . md5($pic_id) . '_' . $pic_filename;
+	$pic_thumbnail = $pic_thumbnail_prefix . '_' . $pic_filename;
 }
 
 $pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $pic_thumbnail;
@@ -89,6 +95,8 @@ if (USERS_SUBFOLDERS_IMG == true)
 {
 	if ((count($pic_path) > 4) && (strpos($pic_id, $board_config['server_name']) !== false))
 	{
+		// Mighty Gorgon: this prefix is needed to not overwrite standard thumbnails with the ones generated with the extra size...
+		$pic_thumbnail_prefix = (($req_thumb_size != $board_config['thumbnail_size']) ? ('__' . $req_thumb_size . '__') : '');
 		// We need to add IP_ROOT_PATH because POSTED_IMAGES_PATH already includes it...
 		$pic_main_folder = IP_ROOT_PATH . $pic_path[count($pic_path) - 4] . '/' . $pic_path[count($pic_path) - 3] . '/';
 		if ($pic_main_folder == POSTED_IMAGES_PATH)
@@ -96,7 +104,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 			$pic_thumbnail_path = POSTED_IMAGES_THUMBS_PATH . $pic_path[count($pic_path) - 2];
 			if (is_dir($pic_thumbnail_path))
 			{
-				$pic_thumbnail = $pic_filename;
+				$pic_thumbnail = $pic_thumbnail_prefix . $pic_filename;
 				$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
 			}
 			else
@@ -104,13 +112,16 @@ if (USERS_SUBFOLDERS_IMG == true)
 				$dir_creation = @mkdir($pic_thumbnail_path, 0777);
 				if ($dir_creation == true)
 				{
-					$pic_thumbnail = $pic_filename;
+					$pic_thumbnail = $pic_thumbnail_prefix . $pic_filename;
 					$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
 				}
 			}
 		}
 	}
 }
+
+// This is needed to set up the new thumbnail size if requested via $_GET
+$board_config['thumbnail_size'] = $req_thumb_size;
 
 /*
 switch ($pic_filetype)

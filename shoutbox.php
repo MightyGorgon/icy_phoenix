@@ -47,7 +47,7 @@ switch ($userdata['user_level'])
 
 if(!$is_auth['auth_read'])
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 // End auth check
 

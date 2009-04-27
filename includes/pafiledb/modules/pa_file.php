@@ -19,12 +19,15 @@ class pafiledb_file extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata, $pafiledb_functions;
-		if ( isset($_REQUEST['file_id']))
+		global $pafiledb_template, $lang, $board_config, $bbcode, $pafiledb_config, $db, $images, $userdata, $pafiledb_functions;
+
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+
+		if (isset($_REQUEST['file_id']))
 		{
 			$file_id = intval($_REQUEST['file_id']);
 		}
-		elseif ($file_id == 0 && $action != '')
+		elseif (($file_id == 0) && ($action != ''))
 		{
 			$file_id_array = array();
 			$file_id_array = explode('=', $action);
@@ -114,14 +117,18 @@ class pafiledb_file extends pafiledb_public
 		$file_rating2 = ($file_data['rating'] != 0) ? sprintf("%.1f", round(($file_data['rating']), 0)/2) : '0.0';
 		$file_download_link = ($file_data['file_license'] > 0) ? append_sid('dload.' . PHP_EXT . '?action=license&amp;license_id=' . $file_data['file_license'] . '&amp;file_id=' . $file_id) : append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id);
 
-
 		$file_size = $pafiledb_functions->get_file_size($file_id, $file_data);
 		/*
-		$file_poster = ( $file_data['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid(PROFILE_MG.'?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $file_data['user_id']) . '">' : '';
-		$file_poster .= ( $file_data['user_id'] != ANONYMOUS ) ? $file_data['username'] : $lang['Guest'];
-		$file_poster .= ( $file_data['user_id'] != ANONYMOUS ) ? '</a>' : '';
+		$file_poster = ($file_data['user_id'] != ANONYMOUS) ? '<a href="' . append_sid(PROFILE_MG.'?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $file_data['user_id']) . '">' : '';
+		$file_poster .= ($file_data['user_id'] != ANONYMOUS) ? $file_data['username'] : $lang['Guest'];
+		$file_poster .= ($file_data['user_id'] != ANONYMOUS) ? '</a>' : '';
 		*/
 		$file_poster = ($file_data['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($file_data['user_id'], $file_data['username'], $file_data['user_color'], $file_data['user_active']);
+
+		$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
+		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
+		$file_long_desc = $bbcode->parse($file_data['file_longdesc']);
 
 		$pafiledb_template->assign_vars(array(
 			'L_CLICK_HERE' => $lang['Click_here'],
@@ -153,15 +160,16 @@ class pafiledb_file extends pafiledb_public
 			'SHOW_WEBSITE' => (!empty($file_website_url)) ? true : false,
 			'SS_AS_LINK' => ($file_data['file_sshot_link']) ? true : false,
 			'FILE_NAME' => $file_data['file_name'],
-		  'FILE_LONGDESC' => nl2br($file_data['file_longdesc']),
+			//'FILE_LONGDESC' => nl2br($file_data['file_longdesc']),
+			'FILE_LONGDESC' => $file_long_desc,
 			'FILE_SUBMITED_BY' => $file_poster,
 			'FILE_AUTHOR' => $file_author,
 			'FILE_VERSION' => $file_version,
 			'FILE_SCREENSHOT' => $file_screenshot_url,
 			'FILE_WEBSITE' => $file_website_url,
 // MX Addon
-			'AUTH_EDIT' => ( ($this->auth[$file_data['file_catid']]['auth_edit_file'] && $file_data['user_id'] == $userdata['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
-			'AUTH_DELETE' => ( ($this->auth[$file_data['file_catid']]['auth_delete_file'] && $file_data['user_id'] == $userdata['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
+			'AUTH_EDIT' => (($this->auth[$file_data['file_catid']]['auth_edit_file'] && $file_data['user_id'] == $userdata['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
+			'AUTH_DELETE' => (($this->auth[$file_data['file_catid']]['auth_delete_file'] && $file_data['user_id'] == $userdata['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
 
 			'AUTH_DOWNLOAD' => ($this->auth[$file_data['file_catid']]['auth_download']) ? true : false,
 			'AUTH_RATE' => ($this->auth[$file_data['file_catid']]['auth_rate']) ? true : false,

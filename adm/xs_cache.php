@@ -83,12 +83,12 @@ if(isset($_GET['clear']) && !defined('DEMO_MODE'))
 					if($res2)
 					{
 						$data .= str_replace('{FILE}', $file, $lang['xs_cache_log_deleted']) . "<br />\n";
-						$num ++;
+						$num++;
 					}
 					elseif(@is_file($dir . $file))
 					{
 						$data .= str_replace('{FILE}', $file, $lang['xs_cache_log_nodelete']) . "<br />\n";
-						$num_error ++;
+						$num_error++;
 					}
 				}
 			}
@@ -152,7 +152,7 @@ function compile_cache($dir, $subdir, $tpl)
 	if(!$res)
 	{
 		$data .= str_replace('{DIR}', $dir.$subdir, $lang['xs_cache_log_noaccess']) . "<br />\n";
-		$num_errors ++;
+		$num_errors++;
 		return;
 	}
 	while(($file = readdir($res)) !== false)
@@ -167,12 +167,12 @@ function compile_cache($dir, $subdir, $tpl)
 			if($res2)
 			{
 				$data .= str_replace('{FILE}', $dir.$subdir.$file, $lang['xs_cache_log_compiled2']) . "<br />\n";
-				$num_compiled ++;
+				$num_compiled++;
 			}
 			else
 			{
 				$data .= str_replace('{FILE}', $dir.$subdir.$file, $lang['xs_cache_log_nocompile']) . "<br />\n";
-				$num_errors ++;
+				$num_errors++;
 			}
 		}
 	}

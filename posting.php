@@ -34,6 +34,9 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
+// Event Registration - BEGIN
+include_once(IP_ROOT_PATH . 'includes/functions_events_reg.' . PHP_EXT);
+// Event Registration - END
 
 // Check and set various parameters
 // UI2DB ADD
@@ -277,6 +280,11 @@ switch($mode)
 	case 'vote':
 		$is_auth_type = 'auth_vote';
 		break;
+	// Event Registration - BEGIN
+	case 'register':
+		$is_auth_type = 'auth_vote';
+		break;
+	// Event Registration - END
 	case 'topicreview':
 		$is_auth_type = 'auth_read';
 		break;
@@ -309,6 +317,9 @@ switch ($mode)
 	case 'thank':
 	case 'reply':
 	case 'vote':
+	// Event Registration - BEGIN
+	case 'register':
+	// Event Registration - END
 		if (empty($topic_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['No_topic_id']);
@@ -355,7 +366,7 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-		$sql = "SELECT f.*, t.topic_id, t.topic_status, t.topic_type, t.topic_first_post_id, t.topic_last_post_id, t.topic_vote, t.topic_show_portal, p.post_id, p.poster_id" . $select_sql . "
+		$sql = "SELECT f.*, t.topic_id, t.topic_status, t.topic_type, t.topic_first_post_id, t.topic_last_post_id, t.topic_vote, t.topic_reg, t.topic_show_portal, p.post_id, p.poster_id" . $select_sql . "
 			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $from_sql . "
 			WHERE p.post_id = '" . $post_id . "'
 				AND t.topic_id = p.topic_id
@@ -437,6 +448,9 @@ if (($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)
 		$post_data['last_post'] = ($post_info['topic_last_post_id'] == $post_id) ? true : false;
 		$post_data['last_topic'] = ($post_info['forum_last_post_id'] == $post_id) ? true : false;
 		$post_data['has_poll'] = ($post_info['topic_vote']) ? true : false;
+		// Event Registration - BEGIN
+		$post_data['has_reg'] = ($post_info['topic_reg']) ? true : false;
+		// Event Registration - END
 		$post_data['topic_type'] = $post_info['topic_type'];
 		$topic_show_portal = ($topic_show_portal || $post_info['topic_show_portal']) ? true : false;
 		$post_data['topic_show_portal'] = $topic_show_portal;
@@ -501,6 +515,33 @@ if (($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)
 		{
 			message_die(GENERAL_MESSAGE, $lang['Cannot_delete_poll']);
 		}
+
+		// Event Registration - BEGIN
+		if ($post_data['first_post'] && $post_data['has_reg'])
+		{
+			$sql = "SELECT *
+				FROM " . REGISTRATION_DESC_TABLE . " rd
+				WHERE rd.topic_id = $topic_id";
+			if (!($result = $db->sql_query($sql)))
+			{
+				message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
+			}
+
+			if ($row = $db->sql_fetchrow($result))
+			{
+				$reg_active = ($row['reg_active'] == 1) ? 'checked="checked"' : '';
+				$reg_option1 = (!empty($row['reg_option1'])) ? $row['reg_option1'] : '';
+				$reg_option2 = (!empty($row['reg_option2'])) ? $row['reg_option2'] : '';
+				$reg_option3 = (!empty($row['reg_option3'])) ? $row['reg_option3'] : '';
+				$reg_max_option1 = (!empty($row['reg_max_option1'])) ? $row['reg_max_option1'] : '';
+				$reg_max_option2 = (!empty($row['reg_max_option2'])) ? $row['reg_max_option2'] : '';
+				$reg_max_option3 = (!empty($row['reg_max_option3'])) ? $row['reg_max_option3'] : '';
+
+				$reg_length = (!empty($row['reg_length'])) ? ($row['reg_length']/86400) : '';
+			}
+			$db->sql_freeresult($result);
+		}
+		// Event Registration - END
 	}
 	else
 	{
@@ -574,6 +615,9 @@ else
 // The user is not authed, if they're not logged in then redirect them, else show them an error message
 if (!$is_auth[$is_auth_type] || (!empty($is_auth_type_cal) && !$is_auth[$is_auth_type_cal]))
 {
+	// Event Registration - BEGIN
+	$reg_number_clicked = request_var('register', 0);
+	// Event Registration - END
 	if ($userdata['session_logged_in'])
 	{
 		if (!empty($is_auth_type_cal) && !$is_auth[$is_auth_type_cal])
@@ -597,6 +641,11 @@ if (!$is_auth[$is_auth_type] || (!empty($is_auth_type_cal) && !$is_auth[$is_auth
 		case 'editpost':
 			$redirect = 'mode=quote&' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . (!empty($topic_id_append) ? ($topic_id_append . '&') : '') . $post_id_append;
 			break;
+		// Event Registration - BEGIN
+		case 'register':
+			$redirect = 'mode=register&register=' . $reg_number_clicked . '&' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . $topic_id_append;
+			break;
+		// Event Registration - END
 	}
 	$redirect .= ($post_reportid) ? '&post_reportid=' . $post_reportid : '';
 	redirect(append_sid(LOGIN_MG . '?redirect=posting.' . PHP_EXT . '?' . $redirect, true));
@@ -946,6 +995,90 @@ elseif ($mode == 'vote')
 		redirect(append_sid(VIEWTOPIC_MG . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . $topic_id_append, true));
 	}
 }
+// Event Registration - BEGIN
+elseif ($mode == 'register')
+{
+	// Register for an event
+	if (!empty($_GET['register']))
+	{
+		$new_regstate = intval($_GET['register']);
+		$user_id = $userdata['user_id'];
+		$zeit = time();
+
+		$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
+						WHERE topic_id = $topic_id AND registration_user_id = $user_id";
+		if (!($result = $db->sql_query($sql)))
+		{
+			message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
+		}
+
+		if ($reg_info = $db->sql_fetchrow($result))
+		{
+			if ($new_regstate == 4) // cancel registration
+			{
+				$sql = "DELETE FROM " . REGISTRATION_TABLE . "
+				WHERE topic_id = $topic_id
+				AND registration_user_id = $user_id";
+
+				if (!$db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not remove registration', '', __LINE__, __FILE__, $sql);
+				}
+				$message = $lang['Reg_Unregister'];
+			}
+			else
+			{
+				$old_regstate = $reg_info['registration_status'];
+
+				if (check_max_registration($topic_id, $new_regstate) === false)
+				{
+					$message = $lang['Reg_Max_Registrations'];
+				}
+				else
+				{
+					$sql = "UPDATE " . REGISTRATION_TABLE . "
+						SET registration_user_ip = '$user_ip', registration_time = $zeit, registration_status = $new_regstate
+						WHERE topic_id = $topic_id
+						AND registration_user_id = $user_id";
+
+					if (!$db->sql_query($sql))
+					{
+						message_die(GENERAL_ERROR, 'Could not update registration', '', __LINE__, __FILE__, $sql);
+					}
+					$message = $lang['Reg_Change'];
+				}
+			}
+		}
+		else
+		{
+			if (check_max_registration($topic_id, $new_regstate) === false)
+			{
+				$message = sprintf($lang['Reg_Max_Registrations'], $num_max_reg);
+			}
+			else
+			{
+				$sql = "INSERT INTO " . REGISTRATION_TABLE . " (topic_id, registration_user_id, registration_user_ip, registration_time, registration_status)
+					VALUES ($topic_id, $user_id, '$user_ip', $zeit, $new_regstate)";
+				if (!$db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not insert user_id for registration', '', __LINE__, __FILE__, $sql);
+				}
+				$message = $lang['Reg_Insert'];
+			}
+		}
+
+		$redirect_url = append_sid(VIEWTOPIC_MG . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append);
+		meta_refresh(3, $redirect_url);
+
+		$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
+		message_die(GENERAL_MESSAGE, $message);
+	}
+	else
+	{
+		message_die(GENERAL_ERROR, 'Missing information for registration', '', __LINE__, __FILE__);
+	}
+}
+// Event Registration - END
 elseif ($submit || $confirm || ($draft && $draft_confirm))
 {
 	// Submit post/vote (newtopic, edit, reply, etc.)
@@ -988,9 +1121,20 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			$poll_title = (isset($_POST['poll_title']) && $is_auth['auth_pollcreate']) ? $_POST['poll_title'] : '';
 			$poll_options = (isset($_POST['poll_option_text']) && $is_auth['auth_pollcreate']) ? $_POST['poll_option_text'] : '';
 			$poll_length = (isset($_POST['poll_length']) && $is_auth['auth_pollcreate']) ? $_POST['poll_length'] : '';
+			// Event Registration - BEGIN
+			$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['start_registration'] : '';
+			$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reset_registration'] : '';
+			$reg_option1 = (!empty($_POST['reg_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_option1'] : '';
+			$reg_option2 = (!empty($_POST['reg_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_option2'] : '';
+			$reg_option3 = (!empty($_POST['reg_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_option3'] : '';
+			$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option1'] : '';
+			$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option2'] : '';
+			$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option3'] : '';
+			$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_length'] : '';
+			// Event Registration - END
 			$notes = empty($_POST['notes']) ? '' : trim(stripslashes($_POST['notes']));
 
-			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
+			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_length, $reg_active, $reg_reset, $reg_option1, $reg_option2, $reg_option3, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
 
 			// MG Drafts - BEGIN
 			if (($board_config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'] && (($mode == 'reply') || ($mode == 'newtopic')))
@@ -1073,7 +1217,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					$message = addslashes(sprintf($lang['Link_to_post'], $url, '[/url]')) . $message;
 				}
 
-				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $mark_edit, str_replace("\'", "''", $topic_desc), $topic_calendar_time, $topic_calendar_duration, $news_category, $topic_show_portal);
+				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $reg_active, $reg_reset, str_replace("\'", "''", $reg_option1), str_replace("\'", "''", $reg_option2), str_replace("\'", "''", $reg_option3), $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, str_replace("\'", "''", $topic_desc), $topic_calendar_time, $topic_calendar_duration);
 			}
 			break;
 
@@ -1248,6 +1392,18 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	{
 		$poll_options[] = htmlspecialchars(trim(stripslashes($_POST['add_poll_option_text'])));
 	}
+
+	// Event Registration - BEGIN
+	$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? 'checked="checked"' : '';
+	$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? 'checked="checked"' : '';
+	$reg_option1 = (!empty($_POST['reg_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? htmlspecialchars(trim(stripslashes($_POST['reg_option1']))) : '';
+	$reg_option2 = (!empty($_POST['reg_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? htmlspecialchars(trim(stripslashes($_POST['reg_option2']))) : '';
+	$reg_option3 = (!empty($_POST['reg_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? htmlspecialchars(trim(stripslashes($_POST['reg_option3']))) : '';
+	$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option1']) : '';
+	$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option2']) : '';
+	$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option3']) : '';
+	$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_length']) : '';
+	// Event Registration - END
 
 	if ($mode == 'newtopic' || $mode == 'reply')
 	{
@@ -1791,6 +1947,9 @@ include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 $template->set_filenames(array(
 	'body' => 'posting_body.tpl',
 	'pollbody' => 'posting_poll_body.tpl',
+	// Event Registration - BEGIN
+	'regbody' => 'posting_events_reg_body.tpl',
+	// Event Registration - END
 	'reviewbody' => 'posting_topic_review.tpl'
 	)
 );
@@ -2030,6 +2189,65 @@ if(($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && 
 
 	$template->assign_var_from_handle('POLLBOX', 'pollbody');
 }
+
+// Event Registration - BEGIN
+// Registration entry switch/output
+if(($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])) && $is_auth['auth_cal'])
+{
+	if($preview)
+	{
+		$reg_active = ($_POST['start_registration'] == 1) ? 'checked="checked"' : '';
+		$reg_option1 = (!empty($_POST['reg_option1'])) ? $_POST['reg_option1'] : '';
+		$reg_option2 = (!empty($_POST['reg_option2'])) ? $_POST['reg_option2'] : '';
+		$reg_option3 = (!empty($_POST['reg_option3'])) ? $_POST['reg_option3'] : '';
+
+		$reg_max_option1 = (!empty($_POST['reg_max_option1'])) ? $_POST['reg_max_option1'] : '';
+		$reg_max_option2 = (!empty($_POST['reg_max_option2'])) ? $_POST['reg_max_option2'] : '';
+		$reg_max_option3 = (!empty($_POST['reg_max_option3'])) ? $_POST['reg_max_option3'] : '';
+
+		$reg_length	= (!empty($_POST['reg_length'])) ? $_POST['reg_length'] : '';
+	}
+
+	// secure integer-values
+	$reg_max_option1 = (!empty($reg_max_option1)) ? max(0, intval($reg_max_option1)) : '';
+	$reg_max_option2 = (!empty($reg_max_option2)) ? max(0, intval($reg_max_option2)) : '';
+	$reg_max_option3 = (!empty($reg_max_option3)) ? max(0, intval($reg_max_option3)) : '';
+	$reg_length = (isset($reg_length)) ? max(0, intval($reg_length)) : 0;
+
+	$template->assign_vars(array(
+		'REG_ACTIVE' => $reg_active,
+
+		'L_REG_TITLE' => $lang['Reg_Title'],
+		'L_ADD_REGISTRATION' => $lang['Add_registration'],
+		'L_ADD_REG_EXPLAIN' => $lang['Add_reg_explain'],
+		'L_REG_ACTIVATE' => $lang['reg_activate'],
+		'L_REG_RESET' => $lang['reg_reset'],
+
+		//'L_REG_OPTION1_OPTION' => $lang['Reg_Green_Option'],
+		//'L_REG_OPTION2_OPTION' => $lang['Reg_Blue_Option'],
+		//'L_REG_OPTION3_OPTION' => $lang['Reg_Red_Option'],
+
+		'L_REG_OPTION1' => $lang['Reg_Do'],
+		'L_REG_OPTION2' => $lang['Reg_Maybe'],
+		'L_REG_OPTION3' => $lang['Reg_Dont'],
+
+		'L_REG_MAX_OPTION1' => $reg_max_option1,
+		'L_REG_MAX_OPTION2' => $reg_max_option2,
+		'L_REG_MAX_OPTION3' => $reg_max_option3,
+
+		'L_REG_MAX_REGISTRATIONS' => $lang['Reg_Value_Max_Registrations'],
+
+		'REG_LENGTH' => $reg_length,
+
+		'L_REG_LENGTH' => $lang['Reg_for'],
+		'L_REG_LENGTH_EXPLAIN' => $lang['Reg_for_explain'],
+		'L_REG_DAYS' => $lang['Days']
+		)
+	);
+
+	$template->assign_var_from_handle('REGBOX', 'regbody');
+}
+// Event Registration - END
 
 // Topic review
 if($mode == 'reply' && $is_auth['auth_read'])

@@ -23,20 +23,20 @@
 <tr><td class="row1" colspan="9"><div class="post-text">{L_NO_BLOCKS_AVAILABLE}</div></td></tr>
 <!-- ELSE -->
 <!-- BEGIN blocks -->
-<tr class="{blocks.ROW_CLASS} row1h" style="background-image:none;">
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">
+<tr class="{blocks.ROW_CLASS} row1h" style="background-image: none;">
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">
 		<a href="{blocks.U_MOVE_UP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVE_UP}" title="{L_MOVE_UP}" /></a>&nbsp;
 		<a href="{blocks.U_MOVE_DOWN}"><img src="{IMG_CMS_ARROW_DOWN}" alt="{L_MOVE_DOWN}" title="{L_MOVE_DOWN}" /></a>&nbsp;
 		<a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;
 		<!-- IF S_SHOW_CMS_MENU --><a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF -->
 	</td>
-	<td class="{blocks.ROW_CLASS}" style="background:none;"><a href="{blocks.U_EDIT}">{blocks.TITLE}</a></td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.POSITION}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;"><input type="checkbox" name="block[]" value="{blocks.BLOCK_CB_ID}"{blocks.BLOCK_CHECKED} /></td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.CONTENT}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.TYPE}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.VIEW}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.GROUPS}</td>
+	<td class="{blocks.ROW_CLASS}" style="background: none;"><a href="{blocks.U_EDIT}">{blocks.TITLE}</a></td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.POSITION}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="block[]" value="{blocks.BLOCK_CB_ID}"{blocks.BLOCK_CHECKED} /></td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.CONTENT}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.TYPE}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.VIEW}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.GROUPS}</td>
 </tr>
 <!-- END blocks -->
 <!-- ENDIF -->

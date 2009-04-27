@@ -204,7 +204,11 @@ function attach_rules(forum_id)
 	</td>
 </tr>
 
+{ATTACHBOX}
+{POLLBOX}
+{REGBOX}
 <!-- BEGIN switch_type_cal -->
+<tr><th colspan="2">{L_CALENDAR_TITLE}</th></tr>
 <tr>
 	<td class="row1" valign="top"><span class="gen"><b>{L_CALENDAR_TITLE}</b></span></td>
 	<td valign="top" class="row1">
@@ -241,8 +245,6 @@ function attach_rules(forum_id)
 	</td>
 </tr>
 <!-- END switch_type_cal -->
-{ATTACHBOX}
-{POLLBOX}
 
 <!-- BEGIN switch_confirm -->
 <tr><td class="row1 row-center" colspan="2"><br /><br />{CONFIRM_IMAGE}<br /><br /></td></tr>

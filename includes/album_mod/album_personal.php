@@ -78,7 +78,7 @@ if (!album_check_permission($auth_data, ALBUM_AUTH_VIEW))
 	}
 	else
 	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 	}
 }
 //

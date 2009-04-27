@@ -119,12 +119,36 @@ function groups_colorize_username($user_id, $no_profile = false, $get_only_color
 // Mighty Gorgon: OLD COLORIZE FUNCTION - END
 
 /**
+* Get all users in a group
+*/
+function get_users_in_group($group_id)
+{
+	global $db;
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_email, g.group_id, g.group_name
+		FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u, " . GROUPS_TABLE . " g
+		WHERE ug.group_id = " . $group_id . "
+			AND ug.user_pending = 0
+			AND u.user_id = ug.user_id
+			AND u.user_active = 1
+			AND g.group_id = ug.group_id";
+	if (!$result = $db->sql_query($sql))
+	{
+		message_die(GENERAL_ERROR, 'Error getting users information', '', __LINE__, __FILE__, $sql);
+	}
+	$users_array = array();
+	$users_array = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $users_array;
+}
+
+/**
 * Count all users in a group
 */
 function count_users_in_group($group_id)
 {
 	global $db;
-	$sql = "SELECT SUM(user_pending=0) as members, SUM(user_pending=1) as pending
+	$sql = "SELECT SUM(user_pending = 0) as members, SUM(user_pending = 1) as pending
 		FROM " . USER_GROUP_TABLE . "
 		WHERE group_id = '" . $group_id . "'";
 	if (!($result = $db->sql_query($sql)))

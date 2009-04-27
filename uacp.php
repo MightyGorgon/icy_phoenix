@@ -49,7 +49,7 @@ $profiledata = get_userdata($user_id);
 
 if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] != ADMIN)
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
 $page_title = $lang['User_acp_title'];

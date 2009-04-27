@@ -61,9 +61,9 @@ $bbcode->allow_smilies = $smilies_on;
 
 =================
 
-$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
-$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
-$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
+$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
+$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
+$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
 
 =================
 
@@ -159,8 +159,8 @@ else
 	$lang['DOWNLOADED'] = 'Downloaded';
 	$lang['FILESIZE'] = 'Filesize';
 	$lang['FILENAME'] = 'Filename';
-	$lang['Not_Authorised'] = 'Not Authorised';
-	$lang['FILE_NOT_AUTH'] = 'You are not authorised to download this file';
+	$lang['Not_Authorized'] = 'Not Authorized';
+	$lang['FILE_NOT_AUTH'] = 'You are not authorized to download this file';
 }
 
 $urls_local = array(
@@ -454,18 +454,12 @@ class BBCode
 		{
 			$extras = $this->allow_styling ? array('class') : array();
 			$color = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : false)));
+
 			if($color === false)
 			{
 				return $error;
 			}
-			/*
-			$html = '<div style="display:inline;' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'color: ' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div>',
-			);
-			*/
+
 			$html = '<span style="' . ($this->allow_styling && isset($item['params']['style']) ? htmlspecialchars($this->valid_style($item['params']['style'], '')) : '') . 'color: ' . $color . ';"' . $this->add_extras($item['params'], $extras) . '>';
 			return array(
 				'valid' => true,
@@ -526,7 +520,7 @@ class BBCode
 		if($tag === 'highlight')
 		{
 			$extras = $this->allow_styling ? array('class') : array();
-			$default_param = '#FFFFAA';
+			$default_param = '#ffffaa';
 			$color = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : $default_param));
 			$color = $this->valid_color($color);
 			if($color === false)
@@ -581,14 +575,8 @@ class BBCode
 			}
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 			$color = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : false)));
-			if($color === false)
-			{
-				$html = '<' . $tag . ' />';
-			}
-			else
-			{
-				$html = '<' . $tag . ' style="border-color: ' . $color . ';" />';
-			}
+
+			$html = '<' . $tag . (($color === false) ? ($this->allow_styling && isset($item['params']['style']) ? (' style="' . htmlspecialchars($this->valid_style($item['params']['style'], '')) . '"') : '') : (' style="border-color: ' . $color . ';"')) . ' />';
 			return array(
 				'valid' => true,
 				'html' => $html
@@ -603,14 +591,7 @@ class BBCode
 			$align = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['align']) ? $item['params']['align'] : $default_param));
 			if (($align === 'left') || ($align === 'right') || ($align === 'center') || ($align === 'justify'))
 			{
-				if ($align === 'center')
-				{
-					$html = '<div style="text-align:' . $align . ';margin-left:auto;margin-right:auto;">';
-				}
-				else
-				{
-					$html = '<div style="text-align:' . $align . ';">';
-				}
+				$html = '<div style="text-align: ' . $align . ';' . (($align === 'center') ? (' margin-left: auto; margin-right: auto;') : '') . '">';
 				return array(
 					'valid' => true,
 					'start' => $html,
@@ -1015,7 +996,7 @@ class BBCode
 			else
 			{
 				$style = ($color || $bgcolor) ? (' style="' . ($color ? 'color: ' . $color . ';' : '') . ($bgcolor ? 'background-color: ' . $bgcolor . ';' : '') . '"') : '';
-				$html .= '<div class="mg_attachtitle"' . $style . '>' . $lang['Not_Authorised'] . '</div>';
+				$html .= '<div class="mg_attachtitle"' . $style . '>' . $lang['Not_Authorized'] . '</div>';
 				$html .= '<div class="mg_attachdiv"><div style="text-align:center;">' . $lang['FILE_NOT_AUTH'] . '</div></div>';
 			}
 
@@ -1041,7 +1022,7 @@ class BBCode
 				$tag2 = $item['items'][$i]['tag'];
 				if(($tag2 === '*') || ($tag2 === 'li'))
 				{
-					$nested_count ++;
+					$nested_count++;
 				}
 			}
 			if(!$nested_count)
@@ -1168,7 +1149,7 @@ class BBCode
 		// CELL
 		if($tag === 'cell')
 		{
-			$extras = $this->allow_styling ? array('class', 'align', 'border') : array('class', 'align');
+			$extras = $this->allow_styling ? array('style', 'class', 'align', 'border') : array('class', 'align');
 
 			$width = (isset($item['params']['width']) ? (' width: ' . intval($item['params']['width']) . 'px;') : '');
 			$height = (isset($item['params']['height']) ? (' height: ' . intval($item['params']['height']) . 'px;') : '');
@@ -1687,10 +1668,10 @@ class BBCode
 						$found = 0;
 						while($pos !== false)
 						{
-							$num ++;
+							$num++;
 							if(isset($items['row' . $num]))
 							{
-								$found ++;
+								$found++;
 								$html = substr($html, 0, $pos) . $replace . substr($html, $pos + $search_len);
 								$pos += $replace_len;
 							}
@@ -1754,7 +1735,7 @@ class BBCode
 				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\')">' . $lang['Show'] . '</a>]</div>';
 				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position:relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
 
-				$this->code_counter ++;
+				$this->code_counter++;
 				return array(
 					'valid' => true,
 					'html' => $html,
@@ -1853,7 +1834,7 @@ class BBCode
 			$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\')">' . $lang['Show'] . '</a>]</div>';
 			$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position:relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
 
-			$this->code_counter ++;
+			$this->code_counter++;
 			return array(
 				'valid' => true,
 				'html' => $html,
@@ -1964,36 +1945,36 @@ class BBCode
 		// Parse the content only if in the same language of the user viewing it!!!
 		if($tag === 'language')
 		{
-			if($content == '')
-			{
-				return $error;
-			}
-
 			$language = '';
 			if(isset($item['params']['param']))
 			{
 				$language = $item['params']['param'];
 			}
 
-			if ($userdata['user_lang'] != $language)
+			$content = ($userdata['user_lang'] != $language) ? '' : $content;
+
+			// We need this trick to process BBCodes withing language BBCode
+			if(empty($content))
 			{
-				$html = '';
+				return array(
+					'valid' => true,
+					'html' => '',
+				);
 			}
 			else
 			{
-				$html = $content;
+				return array(
+					'valid' => true,
+					'start' => '',
+					'end' => ''
+				);
 			}
-
-			return array(
-				'valid' => true,
-				'html' => $html
-			);
 		}
 
 		// SEARCH
 		if($tag === 'search')
 		{
-			if($content == '')
+			if(empty($content))
 			{
 				return $error;
 			}
@@ -2640,9 +2621,9 @@ class BBCode
 	// Parse style
 	function valid_style($style, $error = false)
 	{
-		$style = str_replace(array('\\', '"', '@'), array('','',''), $style);
+		$style = str_replace(array('\\', '"', '@'), array('', '', ''), $style);
 		$str = strtolower($style);
-		if(strpos($str, 'expression') !== false || strpos($str, 'javascript:') !== false || strpos($str, 'vbscript:') !== false || strpos($str, 'about:') !== false)
+		if((strpos($str, 'expression') !== false) || (strpos($str, 'javascript:') !== false) || (strpos($str, 'vbscript:') !== false) || (strpos($str, 'about:') !== false))
 		{
 			// attempt to use javascript
 			return $error;
@@ -2669,16 +2650,19 @@ class BBCode
 			// attempt to use javascript
 			return $error;
 		}
+
 		if(substr($str, 0, 9) === 'vbscript:')
 		{
 			// attempt to use vbscript
 			return $error;
 		}
+
 		if(substr($str, 0, 6) === 'about:')
 		{
 			// attempt to use about: url
 			return $error;
 		}
+
 		return $url;
 	}
 
@@ -2773,7 +2757,7 @@ class BBCode
 					$param_start = $pos2 + 1;
 					if($quoted)
 					{
-						$param_start ++;
+						$param_start++;
 					}
 				}
 			}
@@ -3093,11 +3077,13 @@ class BBCode
 		for($i = 0; $i < count($items); $i++)
 		{
 			$item = &$items[$i];
+
 			// check code before item
 			if($item['start'] > $start)
 			{
 				$html .= $this->process_text(substr($this->text, $start, $item['start'] - $start));
 			}
+
 			if ($clean_tags === true)
 			{
 				// clean tag
@@ -3108,6 +3094,7 @@ class BBCode
 				// process tag
 				$result = $this->process_tag($item);
 			}
+
 			if($result['valid'] && !isset($result['html']))
 			{
 				$html .= $result['start'];
@@ -3136,6 +3123,7 @@ class BBCode
 					$html .= $this->process_text(substr($this->text, $item['end'], $item['end_len']));
 				}
 			}
+
 			$start = $item['end'] + $item['end_len'];
 		}
 		// process code after item
@@ -3233,7 +3221,7 @@ class BBCode
 				}
 				else
 				{
-					$pos ++;
+					$pos++;
 				}
 				$pos = strpos($this->html, $code, $pos);
 			}
@@ -4005,14 +3993,14 @@ function html2txt($document)
 	return $text;
 }
 
-function nl2any($string, $tag = 'p', $feed = '')
+function nl2any($text, $tag = 'p', $feed = '')
 {
 	// making tags
 	$start_tag = "<$tag" . ($feed ? ' '.$feed : '') . '>';
 	$end_tag = "</$tag>";
 
 	// exploding string to lines
-	$lines = preg_split('`[\n\r]+`', trim($string));
+	$lines = preg_split('`[\n\r]+`', trim($text));
 
 	// making new string
 	$string = '';
@@ -4022,18 +4010,21 @@ function nl2any($string, $tag = 'p', $feed = '')
 	return $string;
 }
 
-function any2nl($string, $tag = 'p')
+function any2nl($text, $tag = 'p')
 {
 	//exploding
-	preg_match_all("`<" . $tag . "[^>]*>(.*)</" . $tag . ">`Ui", $string, $results);
+	preg_match_all("`<" . $tag . "[^>]*>(.*)</" . $tag . ">`Ui", $text, $results);
 	// reimploding without tags
 	return implode("\n", array_filter($results[1]));
 }
 
-function br2nl($str)
+function br2nl($text, $remove_linebreaks = false)
 {
-	$str = preg_replace("/(\r\n|\n|\r)/", "", $str);
-	return preg_replace("=<br */?>=i", "\n", $str);
+	if ($remove_linebreaks)
+	{
+		$text = preg_replace("/(\r\n|\n|\r)/", "", $text);
+	}
+	return preg_replace("=<br */?>=i", "\n", $text);
 }
 
 function nl2br_mg($text)

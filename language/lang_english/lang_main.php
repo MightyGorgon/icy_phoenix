@@ -279,10 +279,12 @@ $lang = array_merge($lang, array(
 	'Topic_Sticky_nb' => 'Sticky',
 	'Topic_Moved_nb' => 'Moved',
 	'Topic_Poll_nb' => 'Poll',
+	'Topic_Event_nb' => 'Event',
 	'Topic_Announcement' => '<b>Announcement:</b>',
 	'Topic_Sticky' => '<b>Sticky:</b>',
 	'Topic_Moved' => '<b>Moved:</b>',
 	'Topic_Poll' => '<b>Poll:</b>',
+	'Topic_Event' => '<b>Event:</b>',
 	'Topic_global_announcement' => '<b>Global Announcement:</b>',
 	'Post_global_announcement' => 'Global Announcement',
 
@@ -867,7 +869,7 @@ $lang = array_merge($lang, array(
 	'Auth_Administrators' => '<b>administrators</b>',
 
 	'Not_Moderator' => 'You are not a moderator of this forum.',
-	'Not_Authorised' => 'Not Authorised',
+	'Not_Authorized' => 'Not Authorized',
 
 	'You_been_banned' => 'You have been banned from this forum.<br />Please contact the webmaster or board administrator for more information.',
 
@@ -2096,10 +2098,11 @@ $lang = array_merge($lang, array(
 
 	'HAPPY_BIRTHDAY' => 'Happy Birthday',
 
+	'DOWNLOAD' => 'Download',
 	'DOWNLOADED' => 'Downloaded',
 	'FILESIZE' => 'Filesize',
 	'FILENAME' => 'Filename',
-	'FILE_NOT_AUTH' => 'You are not authorised to download this file',
+	'FILE_NOT_AUTH' => 'You are not authorized to download this file',
 	'SHOW_POSTS_FROM' => 'Show posts from',
 	'SHOW_POSTS_TO' => 'to',
 
@@ -2149,6 +2152,49 @@ $lang = array_merge($lang, array(
 	'MANAGEMENT' => 'Management',
 	'SORT_ORDER' => 'Sort by',
 	'SORT_DIR' => 'Sort direction',
+
+	'TIME_YEAR' => 'Year',
+	'TIME_MONTH' => 'Month',
+	'TIME_DAY' => 'Day',
+	'TIME_HOUR' => 'Hour',
+	'TIME_MINUTE' => 'Minute',
+	'TIME_SECOND' => 'Second',
+
+	'CONTACTS' => 'Contacts',
+
+	// Event Registration - BEGIN
+	'Reg_Title' => 'Event Registration',
+	'Post_Registration' => 'Event Registration',
+	'Add_registration' => 'Add Event Registration',
+	'Add_reg_explain' => '&nbsp;&bull; Check <i>Activate</i> to show a registration form with this post. Uncheck to hide it.<br />&nbsp;&bull; Check <i>Reset</i> to delete all current registrations for this form.<br />&nbsp;&bull; Enter a number in <i>Slots</i> to limit registrations for an option. "0" or empty = unlimited.',
+	'reg_activate' => 'Activate',
+	'reg_reset' => 'Reset',
+	'Reg_Insert' => 'You registered for the event.',
+	'Reg_Change' => 'Registration changed.',
+	'Reg_Confirm' => 'Registration confirmed.',
+	'Reg_Unregister' => 'Registration cancelled.',
+	'Reg_Max_Registrations' => 'The maximum of registrations for this option is reached. No more registrations will be accepted.',
+	'Reg_No_Slots_Left' => 'No slots left to register.',
+	'Reg_One_Slot_Left' => 'One slot left to register.',
+	'Reg_Slots_Left' => '%s slots left to register.',
+	'Reg_Self_Unregister' => 'Unregister',
+	'Reg_Own_Confirmation' => 'Confirmation',
+	'Reg_Own_Confirmed' => 'confirmed',
+	'Reg_Green_Option' => 'Green Option',
+	'Reg_Blue_Option' => 'Blue Option',
+	'Reg_Red_Option' => 'Red Option',
+	'Reg_Value_Max_Registrations' => 'Slots',
+	'Reg_Do' => 'Sign Up',
+	'Reg_Maybe' => 'Not Sure',
+	'Reg_Dont' => 'Not This Time',
+	'Reg_Head_Username' => 'User:',
+	'Reg_Head_Time' => 'Date:',
+	'Reg_for' => 'Run registration for',
+	'Reg_for_explain' => '[ Enter 0 or leave blank for a never-ending registration ]',
+	'Reg_no_options_specified' => 'You have to specify at least one option to register for.',
+	'Reg_event_date' => '<b>Event date: </b>',
+	// Event Registration - END
+
 	)
 );
 

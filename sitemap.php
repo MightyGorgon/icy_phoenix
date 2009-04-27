@@ -295,7 +295,7 @@ else
 		$catrows = album_read_tree($album_user_id, $options);
 		album_read_tree($album_user_id);
 		$allowed_cat = ''; // For Recent Public Pics below
-		for ($i = 0; $i < count($catrows); $i ++)
+		for ($i = 0; $i < count($catrows); $i++)
 		{
 			$allowed_cat .= ($allowed_cat == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
 		}

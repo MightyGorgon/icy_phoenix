@@ -206,9 +206,14 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '\',\'' . addslashes($picrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 			}
 
+			$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']));
+			$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']));
+
 			$template->assign_block_vars('picrow.piccol', array(
-				'U_PIC_SP' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])),
-				'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])),
+				'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
+				'U_PIC_SP' => $pic_sp_link,
+				'U_PIC_DL' => $pic_dl_link,
+
 				'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])),
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
@@ -234,12 +239,17 @@ if ($total_pics > 0 && !empty($allowed_cat))
 			}
 
 			$image_cat_url = append_sid(album_append_uid($album_page_url . '?cat_id=' . $picrow[$j]['cat_id'] . '&amp;user_id=' . $picrow[$j]['cat_user_id']));
+			$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']));
+			$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']));
 
 			$template->assign_block_vars('picrow.pic_detail', array(
 				'PIC_ID' => $picrow[$j]['pic_id'],
 				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 				'TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) : append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])),
+
+				'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
+				'U_PIC_SP' => $pic_sp_link,
+				'U_PIC_DL' => $pic_dl_link,
 
 				'CATEGORY' => $picrow[$j]['cat_title'],
 				'U_PIC_CAT' => $image_cat_url,

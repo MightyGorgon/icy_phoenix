@@ -61,6 +61,8 @@ $lang = array_merge($lang, array(
 	'Album_delete_can' => 'You <b>can</b> delete your pics and comments in this category',
 	'Album_delete_cannot' => 'You <b>cannot</b> delete your pics and comments in this category',
 */
+	'Album_view_can' => 'You <b>can</b> view pics',
+	'Album_view_cannot' => 'You <b>cannot</b> view pics',
 	'Album_upload_can' => 'You <b>can</b> upload new pics',
 	'Album_upload_cannot' => 'You <b>cannot</b> upload new pics',
 	'Album_rate_can' => 'You <b>can</b> rate pics',
@@ -129,10 +131,10 @@ $lang = array_merge($lang, array(
 	'Picture_exceeded_maximum_size_INI' => 'Picture named \'%s\' is too big. Picture is skipped.<br />',
 	'Thumbnail_exceeded_maximum_size_INI' => 'Thumbnail named \'%s\' is too big. Picture and thumbnail are skipped.<br />',
 	'Execution_time_exceeded_skipping' => 'The maximum time allowed for script execution has been exceeded. The following files was skipped:<br />',
-	'Skipping_uploaded_picture_file' => '%s<br/>',
-	'Skipping_uploaded_picture_and_thumbnail_file' => '%s (thumbnail: %s)<br/>',
-	'Album_upload_not_successful' => 'None of your pictures has been uploaded successfully<br/><br/>',
-	'Album_upload_partially_successful' => 'Only a part of your pictures has been uploaded successfully<br/><br/>',
+	'Skipping_uploaded_picture_file' => '%s<br />',
+	'Skipping_uploaded_picture_and_thumbnail_file' => '%s (thumbnail: %s)<br />',
+	'Album_upload_not_successful' => 'None of your pictures has been uploaded successfully<br /><br />',
+	'Album_upload_partially_successful' => 'Only a part of your pictures has been uploaded successfully<br /><br />',
 	'No_pictures_selected_for_upload' => 'No pictures selected for upload or unknown error',
 
 // 'Bad_upload_file_size' => 'Your uploaded file is too large or corrupted',

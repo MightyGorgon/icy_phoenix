@@ -97,6 +97,7 @@ function open_postreview(ref)
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
 <!-- ENDIF -->
 {POLL_DISPLAY}
+{REG_DISPLAY}
 <tr>
 	<th width="150">{L_AUTHOR}</th>
 	<th width="100%">{L_MESSAGE}</th>

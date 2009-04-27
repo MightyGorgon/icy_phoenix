@@ -22,7 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 // ----------------------------------------------------------------------------
 // This function will return the access data of the current user for a category
-// Default returning value is "0" (means NOT AUTHORISED)
+// Default returning value is "0" (means NOT AUTHORIZED)
 //
 // All $*_check must be "1" or "0"
 //
@@ -77,7 +77,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	{
 		for ($i = 0; $i < count($album_user_access); $i++)
 		{
-			$album_user_access[$album_user_access_keys[$i]] = 1; // Authorised All
+			$album_user_access[$album_user_access_keys[$i]] = 1; // Authorized All
 		}
 
 		//
@@ -252,7 +252,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 
 			case ALBUM_ADMIN:
 				// ADMIN already returned before at the checking code
-				// at the top of this function. So this user cannot be authorised
+				// at the top of this function. So this user cannot be authorized
 				$album_user_access[$access_type[$i]] = 0;
 				break;
 
@@ -313,7 +313,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 
 	// --------------------------------
 	// If $moderator_check was called and this user is a MODERATOR he
-	// will be authorised for all accesses which were not set to ADMIN
+	// will be authorized for all accesses which were not set to ADMIN
 	// --------------------------------
 	if(($album_user_access['moderator'] == 1) && ($moderator_check == 1))
 	{

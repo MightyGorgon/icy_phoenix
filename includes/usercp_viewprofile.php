@@ -125,93 +125,118 @@ $user_browser = get_user_browser($profiledata['user_http_agents']);
 // Mighty Gorgon - HTTP AGENTS - END
 
 // Mighty Gorgon - Full Album Pack - BEGIN
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-
-$album_show_pic_url = 'album_showpage.' . PHP_EXT;
-$album_rate_pic_url = $album_show_pic_url;
-$album_comment_pic_url = $album_show_pic_url;
-
-$sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
-if(!$result = $db->sql_query($sql, false, 'album_config_'))
+if (check_page_auth('12', 'album', true))
 {
-	message_die(GENERAL_ERROR, "Could not query album config information", "", __LINE__, __FILE__, $sql);
-}
-while($row = $db->sql_fetchrow($result))
-{
-	$album_config_name = $row['config_name'];
-	$album_config_value = $row['config_value'];
-	$album_config[$album_config_name] = $album_config_value;
-}
-$db->sql_freeresult($result);
+	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
 
-$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
-$cols_per_page = $album_config['img_cols'];
+	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
+	$album_rate_pic_url = $album_show_pic_url;
+	$album_comment_pic_url = $album_show_pic_url;
 
-$sql = "SELECT p.*, c.*, u.user_id, u.username, u.user_active, u.user_color
-		FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c, " . USERS_TABLE . " u
-		WHERE c.cat_user_id = " . $profiledata['user_id'] . "
-			AND p.pic_cat_id = c.cat_id
-			AND p.pic_approval = 1
-			AND u.user_id = p.pic_user_id
-		ORDER BY pic_time DESC";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query recent pics information', '', __LINE__, __FILE__, $sql);
-}
-
-$recentrow = array();
-
-while($row = $db->sql_fetchrow($result))
-{
-	$recentrow[] = $row;
-}
-
-$totalpicrow = count($recentrow);
-
-$db->sql_freeresult($result);
-
-if ($totalpicrow > 0)
-{
-	$temp_url = append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']);
-	$album_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_album'] . '" alt="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" title="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" /></a>';
-	$album = '<a href="' . $temp_url . '">' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '</a>';
-
-	$template->assign_block_vars('recent_pics_block', array());
-	for ($i = 0; $i < (($totalpicrow < $limit_sql) ? $totalpicrow : $limit_sql); $i += $cols_per_page)
+	$sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
+	if(!$result = $db->sql_query($sql, false, 'album_config_'))
 	{
-		$template->assign_block_vars('recent_pics_block.recent_pics', array());
+		message_die(GENERAL_ERROR, "Could not query album config information", "", __LINE__, __FILE__, $sql);
+	}
+	while($row = $db->sql_fetchrow($result))
+	{
+		$album_config[$row['config_name']] = $row['config_value'];
+	}
+	$db->sql_freeresult($result);
 
-		for ($j = $i; $j < ($i + $cols_per_page); $j++)
+	$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
+	$cols_per_page = $album_config['img_cols'];
+
+	$sql = "SELECT p.*, c.*, u.user_id, u.username, u.user_active, u.user_color
+			FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c, " . USERS_TABLE . " u
+			WHERE c.cat_user_id = " . $profiledata['user_id'] . "
+				AND p.pic_cat_id = c.cat_id
+				AND p.pic_approval = 1
+				AND u.user_id = p.pic_user_id
+			ORDER BY pic_time DESC";
+
+	if(!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Could not query recent pics information', '', __LINE__, __FILE__, $sql);
+	}
+
+	$recentrow = array();
+
+	while($row = $db->sql_fetchrow($result))
+	{
+		$recentrow[] = $row;
+	}
+
+	$totalpicrow = count($recentrow);
+
+	$db->sql_freeresult($result);
+
+	if ($totalpicrow > 0)
+	{
+		$temp_url = append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']);
+		$album_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_album'] . '" alt="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" title="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" /></a>';
+		$album = '<a href="' . $temp_url . '">' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '</a>';
+
+		$template->assign_block_vars('recent_pics_block', array());
+		for ($i = 0; $i < (($totalpicrow < $limit_sql) ? $totalpicrow : $limit_sql); $i += $cols_per_page)
 		{
-			if($j >= $totalpicrow)
+			$template->assign_block_vars('recent_pics_block.recent_pics', array());
+
+			for ($j = $i; $j < ($i + $cols_per_page); $j++)
 			{
-				break;
+				if($j >= $totalpicrow)
+				{
+					break;
+				}
+
+				$pic_preview = '';
+				$pic_preview_hs = '';
+				if ($album_config['lb_preview'])
+				{
+					$slideshow_cat = 'Profile';
+					$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
+					$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
+
+					$pic_preview = 'onmouseover="showtrail(\'' . append_sid('album_picm.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']) . '\',\'' . addslashes($recentrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+				}
+
+				$pic_sp_link = append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
+				$pic_dl_link = append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
+
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
+					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
+					'U_PIC_SP' => $pic_sp_link,
+					'U_PIC_DL' => $pic_dl_link,
+
+					'THUMBNAIL' => append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']),
+					'PIC_PREVIEW_HS' => $pic_preview_hs,
+					'PIC_PREVIEW' => $pic_preview,
+					'DESC' => $recentrow[$j]['pic_desc']
+					)
+				);
+
+				$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
+					'PIC_TITLE' => htmlspecialchars($recentrow[$j]['pic_title']),
+					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . htmlspecialchars($recentrow[$j]['pic_title']) . '</a>',
+					'POSTER' => $recent_poster,
+					'TIME' => create_date($board_config['default_dateformat'], $recentrow[$j]['pic_time'], $board_config['board_timezone']),
+
+					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
+					'U_PIC_SP' => $pic_sp_link,
+					'U_PIC_DL' => $pic_dl_link,
+
+					'VIEW' => $recentrow[$j]['pic_view_count'],
+					)
+				);
 			}
-
-			$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
-				'U_PIC' => ($album_config['fullpic_popup']) ? append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']) : append_sid($album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id']),
-				'THUMBNAIL' => append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']),
-				'DESC' => $recentrow[$j]['pic_desc']
-				)
-			);
-
-			$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
-			$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
-				'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $recentrow[$j]['pic_title'] . '</a>',
-				'POSTER' => $recent_poster,
-				'TIME' => create_date($board_config['default_dateformat'], $recentrow[$j]['pic_time'], $board_config['board_timezone']),
-
-				'VIEW' => $recentrow[$j]['pic_view_count'],
-				)
-			);
 		}
 	}
-}
-else
-{
-	$album_img = '&nbsp;';
-	$album = '';
+	else
+	{
+		$album_img = '&nbsp;';
+		$album = '';
+	}
 }
 // Mighty Gorgon - Full Album Pack - END
 
@@ -484,8 +509,8 @@ display_upload_attach_box_limits($profiledata['user_id']);
 if (defined('MG_FEEDBACKS'))
 {
 	define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
-	include_once(MG_ROOT_PATH . 'includes/mg_functions_feedbacks.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'mg_common.' . PHP_EXT);
+	include_once(MG_ROOT_PATH . 'includes/functions_feedbacks.' . PHP_EXT);
+	include_once(MG_ROOT_PATH . 'common.' . PHP_EXT);
 	include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
 	include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
 
@@ -495,7 +520,7 @@ if (defined('MG_FEEDBACKS'))
 	{
 		$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
 		$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid('mg_feedbacks.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align:middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
+		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid(MG_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align:middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
 	}
 }
 // Mighty Gorgon - Feedbacks - END

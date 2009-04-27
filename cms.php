@@ -18,6 +18,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $common_cms_template = IP_ROOT_PATH . 'templates/common/cms/';
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
+define('CMS_PAGE', 'cms.' . PHP_EXT);
 $js_temp =  array('js/cms.js', 'scriptaculous/unittest.js');
 
 if(is_array($js_include))
@@ -98,17 +99,17 @@ if(isset($_POST['block_reset']))
 {
 	if ($ls_id == false)
 	{
-		redirect(append_sid('cms.' . PHP_EXT . '?mode=blocks&action=list&l_id=' . $l_id, true));
+		redirect(append_sid(CMS_PAGE . '?mode=blocks&action=list&l_id=' . $l_id, true));
 	}
 	else
 	{
-		redirect(append_sid('cms.' . PHP_EXT . '?mode=blocks&action=list&ls_id=' . $ls_id, true));
+		redirect(append_sid(CMS_PAGE . '?mode=blocks&action=list&ls_id=' . $ls_id, true));
 	}
 }
 
 if(isset($_POST['cancel']))
 {
-	redirect(append_sid('cms.' . PHP_EXT, true));
+	redirect(append_sid(CMS_PAGE, true));
 }
 
 if(isset($_POST['hascontent']))
@@ -580,6 +581,10 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			'L_NO' => $lang['No'],
 			'L_ENABLED' => $lang['Enabled'],
 			'L_DISABLED' => $lang['Disabled'],
+			'L_EDIT_BLOCK' => $lang['Block_Edit'],
+			'L_SUBMIT' => $lang['Submit'],
+			'L_PREVIEW' => $lang['Preview'],
+
 			'TITLE' => htmlspecialchars($b_title),
 			'POSITION' => $position['select'],
 			'ACTIVE' => ($b_active) ? 'checked="checked"' : '',
@@ -599,10 +604,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			'NO_BACKGROUND' => (!$b_background) ? 'checked="checked"' : '',
 			'GROUP' => $group,
 
-			'L_EDIT_BLOCK' => $lang['Block_Edit'],
-			'L_SUBMIT' => $lang['Submit'],
-			'L_PREVIEW' => $lang['Preview'],
-			'S_BLOCKS_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
+			'S_BLOCKS_ACTION' => append_sid(CMS_PAGE . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -847,7 +849,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		fix_weight_blocks($id_var_value, $table_name);
 		$db->clear_cache('cms_');
-		$message .= '<br /><br />' . $lang['Block_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
+		$message .= '<br /><br />' . $lang['Block_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
@@ -858,11 +860,13 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$template->set_filenames(array('confirm' => CMS_TPL . 'confirm_body.tpl'));
 
 			$template->assign_vars(array(
-				'MESSAGE_TITLE' => $lang['Confirm'],
-				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
-				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
+
+				'MESSAGE_TITLE' => $lang['Confirm'],
+				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
+
+				'S_CONFIRM_ACTION' => append_sid(CMS_PAGE . $s_append_url),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -886,7 +890,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 				$db->clear_cache('cms_');
 
-				$message = $lang['Block_removed'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value . $redirect_action) . '">', '</a>') . '<br />';
+				$message = $lang['Block_removed'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value . $redirect_action) . '">', '</a>') . '<br />';
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -972,7 +976,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 			fix_weight_blocks($id_var_value, $table_name);
 			$db->clear_cache('cms_');
-			$message = '<br /><br />' . $lang['Blocks_duplicated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value) . '">', '</a>') . '<br />';
+			$message = '<br /><br />' . $lang['Blocks_duplicated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value) . '">', '</a>') . '<br />';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
@@ -994,9 +998,9 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			{
 				if ($id_var_name == 'l_id')
 				{
-					if (($l_filename != '') && file_exists($l_filename . '.' . PHP_EXT))
+					if (($l_filename != '') && file_exists($l_filename))
 					{
-						$page_url = append_sid($l_filename . '.' . PHP_EXT);
+						$page_url = append_sid($l_filename);
 					}
 					else
 					{
@@ -1054,10 +1058,8 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				'L_B_DISPLAY' => $lang['B_Display'],
 				'L_B_TYPE' => $lang['B_Type'],
 				'L_B_LAYOUT' => $lang['B_Layout'],
+				'L_B_LAYOUT_EDIT' => $lang['B_Layout_Edit'],
 				'L_B_PAGE' => $lang['B_Page'],
-				'LAYOUT_NAME' => $l_name,
-				'PAGE_URL' => $page_url,
-				'PAGE' => strval($id_var_value),
 				'L_B_VIEW_BY' => $lang['B_View'],
 				'L_B_BORDER' => $lang['B_Border'],
 				'L_B_TITLEBAR' => $lang['B_Titlebar'],
@@ -1074,7 +1076,13 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				'L_PREVIEW' => $lang['CMS_Preview'],
 				'L_MOVE_UP' => $lang['B_Move_Up'],
 				'L_MOVE_DOWN' => $lang['B_Move_Down'],
-				'S_BLOCKS_ACTION' => append_sid('cms.' . PHP_EXT),
+
+				'LAYOUT_NAME' => $l_name,
+				'PAGE_URL' => $page_url,
+				'PAGE' => strval($id_var_value),
+				'U_LAYOUT_EDIT' => (($block_layout_field == 'layout') ? append_sid(CMS_PAGE . '?mode=layouts&amp;action=edit' . '&amp;' . $id_var_name . '=' . $id_var_value) : ''),
+
+				'S_BLOCKS_ACTION' => append_sid(CMS_PAGE),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -1142,10 +1150,11 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					'GROUPS' => $groups,
 					'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
 					'VIEW' => $b_view,
-					'U_EDIT' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-					'U_DELETE' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-					'U_MOVE_UP' => append_sid('cms.' . PHP_EXT . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-					'U_MOVE_DOWN' => append_sid('cms.' . PHP_EXT . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
+
+					'U_EDIT' => append_sid(CMS_PAGE . '?mode=blocks&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+					'U_DELETE' => append_sid(CMS_PAGE . '?mode=blocks&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+					'U_MOVE_UP' => append_sid(CMS_PAGE . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
+					'U_MOVE_DOWN' => append_sid(CMS_PAGE . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
 					)
 				);
 			}
@@ -1190,7 +1199,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				}
 				fix_weight_blocks($id_var_value, $table_name);
 				$db->clear_cache('cms_');
-				$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
+				$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -1225,7 +1234,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					}
 				}
 				$db->clear_cache('cms_');
-				redirect(append_sid('cms.' . PHP_EXT . '?mode=blocks_adv&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
+				redirect(append_sid(CMS_PAGE . '?mode=blocks_adv&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
 			}
 		}
 
@@ -1287,9 +1296,9 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		{
 			if ($id_var_name == 'l_id')
 			{
-				if (($l_filename != '') && file_exists($l_filename . '.' . PHP_EXT))
+				if (($l_filename != '') && file_exists($l_filename))
 				{
-					$page_url = append_sid($l_filename . '.' . PHP_EXT);
+					$page_url = append_sid($l_filename);
 				}
 				else
 				{
@@ -1331,10 +1340,8 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			'L_B_DISPLAY' => $lang['B_Display'],
 			'L_B_TYPE' => $lang['B_Type'],
 			'L_B_LAYOUT' => $lang['B_Layout'],
+			'L_B_LAYOUT_EDIT' => $lang['B_Layout_Edit'],
 			'L_B_PAGE' => $lang['B_Page'],
-			'LAYOUT_NAME' => $l_name,
-			'PAGE_URL' => $page_url,
-			'PAGE' => strval($id_var_value),
 			'L_B_VIEW_BY' => $lang['B_View'],
 			'L_B_BORDER' => $lang['B_Border'],
 			'L_B_TITLEBAR' => $lang['B_Titlebar'],
@@ -1351,7 +1358,13 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			'L_PREVIEW' => $lang['CMS_Preview'],
 			'L_MOVE_UP' => $lang['B_Move_Up'],
 			'L_MOVE_DOWN' => $lang['B_Move_Down'],
-			'S_BLOCKS_ACTION' => append_sid('cms.' . PHP_EXT),
+
+			'LAYOUT_NAME' => $l_name,
+			'PAGE_URL' => $page_url,
+			'PAGE' => strval($id_var_value),
+			'U_LAYOUT_EDIT' => (($block_layout_field == 'layout') ? append_sid(CMS_PAGE . '?mode=layouts&amp;action=edit' . '&amp;' . $id_var_name . '=' . $id_var_value) : ''),
+
+			'S_BLOCKS_ACTION' => append_sid(CMS_PAGE),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1451,10 +1464,11 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 							'GROUPS' => $groups,
 							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
 							'VIEW' => $b_view,
-							'U_EDIT' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-							'U_DELETE' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-							'U_MOVE_UP' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-							'U_MOVE_DOWN' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
+
+							'U_EDIT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+							'U_DELETE' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+							'U_MOVE_UP' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
+							'U_MOVE_DOWN' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
 							)
 						);
 					}
@@ -1662,7 +1676,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 	{
 		if($ls_id != false)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		$template->set_filenames(array('body' => CMS_TPL . 'cms_layout_edit_body.tpl'));
@@ -1792,6 +1806,9 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'L_NO' => $lang['No'],
 			'L_ENABLED' => $lang['Enabled'],
 			'L_DISABLED' => $lang['Disabled'],
+			'L_EDIT_LAYOUT' => $lang['Layout_Edit'],
+			'L_SUBMIT' => $lang['Submit'],
+
 			'NAME' => htmlspecialchars($l_info['name']),
 			'FILENAME' => $l_info['filename'],
 			'TEMPLATE' => $layout_details,
@@ -1802,9 +1819,8 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'NOT_GLOBAL_BLOCKS' => (!$l_info['global_blocks']) ? 'checked="checked"' : '',
 			'PAGE_NAV' => ($l_info['page_nav']) ? 'checked="checked"' : '',
 			'NOT_PAGE_NAV' => (!$l_info['page_nav']) ? 'checked="checked"' : '',
-			'L_EDIT_LAYOUT' => $lang['Layout_Edit'],
-			'L_SUBMIT' => $lang['Submit'],
-			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
+
+			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1813,7 +1829,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 	{
 		if($ls_id != false)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		$l_name = (isset($_POST['name'])) ? trim($_POST['name']) : '';
@@ -1932,7 +1948,6 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 
 				for($i = 0; $i < $layout_count_positions; $i++)
 				{
-
 					$sql_test = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . "
 						WHERE layout = '" . $l_id . "'
 							AND bposition = '" . $layout_block_positions[$i][1] . "'
@@ -2010,20 +2025,20 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				}
 
 				$message .= '<br /><br />' . $lang['Layout_BP_added'];
-				$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout_id) . '">', '</a>');
-
 			}
 		}
 
 		$db->clear_cache('cms_');
-		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=layouts&amp;action=edit&amp;l_id=' . $l_id) . '">', '</a>') . '<br /><br />';
+		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=layouts') . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;l_id=' . (!empty($layout_id) ? $layout_id : $l_id)) . '">', '</a>');
+		$message .= '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
 	{
 		if($ls_id != false)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 
 		if(!isset($_POST['confirm']))
@@ -2037,15 +2052,15 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			$template->set_filenames(array('confirm' => CMS_TPL . 'confirm_body.tpl'));
 
 			$template->assign_vars(array(
-				'MESSAGE_TITLE' => $lang['Confirm'],
-				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
-
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 				'L_ENABLED' => $lang['Enabled'],
 				'L_DISABLED' => $lang['Disabled'],
 
-				'S_CONFIRM_ACTION' => append_sid('cms.' . PHP_EXT . $s_append_url),
+				'MESSAGE_TITLE' => $lang['Confirm'],
+				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
+
+				'S_CONFIRM_ACTION' => append_sid(CMS_PAGE . $s_append_url),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -2077,7 +2092,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				}
 				$db->sql_freeresult($result_list);
 
-				$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid('cms.' . PHP_EXT) . '">', '</a>') . '<br /><br />';
+				$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE) . '">', '</a>') . '<br /><br />';
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -2110,7 +2125,8 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'L_DELETE' => $lang['CSM_Delete'],
 			'L_PREVIEW' => $lang['CMS_Preview'],
 			'L_LAYOUT_ADD' => $lang['Layout_Add'],
-			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
+
+			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -2149,10 +2165,11 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 				'LAYOUT_FILENAME' => ($l_rows[$i]['filename'] == '') ? $lang['None'] : $l_rows[$i]['filename'],
 				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lid'] . '\'', false, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lid'] . '\'', false, false),
 				'LAYOUT_TEMPLATE' => $l_rows[$i]['template'],
+
 				'U_PREVIEW_LAYOUT' => append_sid(($l_rows[$i]['filename'] == '') ? PORTAL_MG . '?page=' . $l_rows[$i]['lid'] : $l_rows[$i]['filename']),
-				'U_EDIT_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=edit'),
-				'U_DELETE_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=delete'),
-				'U_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=' . (($mode == 'layouts') ? 'blocks' : 'blocks_adv') . '&amp;l_id=' . $l_rows[$i]['lid'])
+				'U_EDIT_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=edit'),
+				'U_DELETE_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=delete'),
+				'U_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . (($mode == 'layouts') ? 'blocks' : 'blocks_adv') . '&amp;l_id=' . $l_rows[$i]['lid'])
 				)
 			);
 		}
@@ -2210,7 +2227,8 @@ if ($mode == 'layouts_special')
 			'L_DELETE' => $lang['CSM_Delete'],
 			'L_PREVIEW' => $lang['CMS_Preview'],
 			'L_LAYOUT_ADD' => $lang['Layout_Add'],
-			'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
+
+			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -2239,10 +2257,11 @@ if ($mode == 'layouts_special')
 				'LAYOUT_FILENAME' => ($l_rows[$i]['filename'] != '') ? append_sid($l_rows[$i]['filename'] . '.' . PHP_EXT) : $lang['None'],
 				'LAYOUT_TEMPLATE' => '',
 				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE,'\'' . $l_rows[$i]['lsid'] . '\'', true, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lsid'] . '\'', true, false),
+
 				'U_PREVIEW_LAYOUT' => append_sid(($l_rows[$i]['filename'] != '') ? ($l_rows[$i]['filename'] . '.' . PHP_EXT) : '#'),
 				'U_EDIT_LAYOUT' => '#',
 				'U_DELETE_LAYOUT' => '#',
-				'U_LAYOUT' => append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;ls_id=' . $l_rows[$i]['lsid'])
+				'U_LAYOUT' => append_sid(CMS_PAGE . '?mode=blocks&amp;ls_id=' . $l_rows[$i]['lsid'])
 				)
 			);
 		}
@@ -2317,14 +2336,14 @@ if($mode == 'config')
 		if(isset($_POST['save']))
 		{
 			$db->clear_cache('cms_');
-			$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid('cms.' . PHP_EXT) . '">', '</a>') . '<br /><br />';
+			$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid(CMS_PAGE . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid(CMS_PAGE) . '">', '</a>') . '<br /><br />';
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
 
 	$template->assign_vars(array(
-		'S_CONFIG_ACTION' => append_sid('cms.' . PHP_EXT),
+		'S_CONFIG_ACTION' => append_sid(CMS_PAGE),
 		'L_CONFIGURATION_TITLE' => $lang['CMS_CONFIG'],
 		'L_CONFIGURATION_EXPLAIN' => $lang['Portal_Explain'],
 		'L_GENERAL_CONFIG' => $lang['Portal_General_Config'],
@@ -2355,7 +2374,7 @@ if (($mode == false))
 		'L_DELETE' => $lang['CSM_Delete'],
 		'L_PREVIEW' => $lang['CMS_Preview'],
 		'L_LAYOUT_ADD' => $lang['Layout_Add'],
-		'S_LAYOUT_ACTION' => append_sid('cms.' . PHP_EXT),
+		'S_LAYOUT_ACTION' => append_sid(CMS_PAGE),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);

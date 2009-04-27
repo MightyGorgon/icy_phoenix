@@ -36,7 +36,7 @@ if(!$userdata['session_logged_in'])
 
 if($userdata['user_level'] != ADMIN)
 {
-	message_die(GENERAL_MESSAGE, 'You are not authorised to access this page');
+	message_die(GENERAL_MESSAGE, 'You are not authorized to access this page');
 }
 
 $stopwords_array = file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');

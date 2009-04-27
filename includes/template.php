@@ -697,7 +697,7 @@ class Template {
 		{
 			$precompile_num = 0;
 		}
-		$precompile_num ++;
+		$precompile_num++;
 		$handle = 'precompile_' . $precompile_num;
 		// save old configuration
 		$root = $this->root;
@@ -1166,7 +1166,7 @@ class Template {
 					// adding to list of switches
 					if(isset($sw[$found_var]))
 					{
-						$sw[$found_var] ++;
+						$sw[$found_var]++;
 					}
 					else
 					{
@@ -1178,7 +1178,7 @@ class Template {
 				$block_names[$block_nesting_level] = $var;
 				if(isset($block_items[$var]))
 				{
-					$block_items[$var] ++;
+					$block_items[$var]++;
 				}
 				else
 				{
@@ -1319,7 +1319,7 @@ class Template {
 				$line .= ' $this->set_filename(\'xs_include_' . $filehash . '\', \'' . $params_str . '\', true); ';
 				$line .= ' $this->pparse(\'xs_include_' . $filehash . '\'); ';
 				$line .= ' ?' . '>';
-				$this->include_count ++;
+				$this->include_count++;
 				$compiled[] = $line;
 				continue;
 			}
@@ -1338,7 +1338,7 @@ class Template {
 					$compiled[] = '<' . '?php ' . $str . ' ?' . '>';
 					if($keyword_type == XS_TAG_IF)
 					{
-						$count_if ++;
+						$count_if++;
 					}
 				}
 				else

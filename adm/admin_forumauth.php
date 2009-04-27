@@ -161,7 +161,7 @@ if(empty($forum_id))
 }
 else
 {
-	// Output the authorisation details if an id was specified
+	// Output the authorization details if an id was specified
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_forum_body.tpl'));
 
 	$sql = "SELECT f.*

@@ -40,16 +40,16 @@
 			<!-- <td class="row1" style="padding-left:5px;"><b>{cat_row.CAT_DESC}</b></td> -->
 		</tr>
 		<!-- BEGIN menu_row -->
-		<tr class="row1h" style="background-image:none;">
-			<td class="row1 row-center" width="80" style="padding:0px;background:none;">
+		<tr class="row1h" style="background-image: none;">
+			<td class="row1 row-center" width="80" style="padding:0px;background: none;">
 				{cat_row.menu_row.U_MOVE_UP}
 				{cat_row.menu_row.U_MOVE_DOWN}
 				{cat_row.menu_row.U_EDIT}
 				{cat_row.menu_row.U_DELETE}
 			</td>
-			<td class="row1 row-center" width="20" style="padding:0px;background:none;"><input type="checkbox" name="cb_mid[]" value="{cat_row.menu_row.MENU_CB_ID}"{cat_row.menu_row.MENU_CHECKED} /></td>
-			<td class="row1" style="padding-left:10px;background:none;">{cat_row.menu_row.MENU_URL}</td>
-			<td class="row1" style="padding-left:5px;background:none;">{cat_row.menu_row.MENU_DESC}</td>
+			<td class="row1 row-center" width="20" style="padding:0px;background: none;"><input type="checkbox" name="cb_mid[]" value="{cat_row.menu_row.MENU_CB_ID}"{cat_row.menu_row.MENU_CHECKED} /></td>
+			<td class="row1" style="padding-left:10px;background: none;">{cat_row.menu_row.MENU_URL}</td>
+			<td class="row1" style="padding-left:5px;background: none;">{cat_row.menu_row.MENU_DESC}</td>
 		</tr>
 		<!-- END menu_row -->
 		<!-- END cat_row -->

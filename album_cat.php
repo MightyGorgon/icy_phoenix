@@ -157,7 +157,7 @@ if( !$auth_data['view'] )
 	}
 	else
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 }
 // END check permissions
@@ -449,7 +449,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		// Build Recent Public Pics
 		// ------------------------------------
 		$has_sub_cats = album_has_sub_cats($cat_id);
-		if ( $has_sub_cats && ($album_config['show_recent_instead_of_nopics'] == 1) )
+		if ($has_sub_cats && ($album_config['show_recent_instead_of_nopics'] == 1))
 		{
 			album_build_recent_pics($allowed_cat);
 		}

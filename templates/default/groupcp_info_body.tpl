@@ -65,7 +65,7 @@
 	<td class="row1 row-center">&nbsp;{ONLINE_STATUS_IMG}&nbsp;</td>
 	<td class="row1 post-buttons-single">&nbsp;{PM_IMG}&nbsp;</td>
 	<td class="row1 post-buttons-single">&nbsp;{EMAIL_IMG}&nbsp;</td>
-	<td class="row3 post-buttons-single">&nbsp;{WWW_IMG}&nbsp;</td>
+	<td class="row1 post-buttons-single">&nbsp;{WWW_IMG}&nbsp;</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 

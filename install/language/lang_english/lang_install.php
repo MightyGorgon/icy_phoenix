@@ -14,8 +14,8 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'ENCODING' => 'iso-8859-1',
-	'ENCODING_ALT' => 'utf8',
+	'ENCODING' => 'ISO-8859-1',
+	'ENCODING_ALT' => 'UTF-8',
 	'DIRECTION' => 'ltr',
 	'HEADER_LANG' => 'en-gb',
 	'HEADER_XML_LANG' => 'en-gb',

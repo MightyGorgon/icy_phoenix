@@ -25,7 +25,7 @@ define('BOARD_ADMIN', 98);
 
 $list_yes_no = array('Yes' => 1, 'No' => 0);
 $list_time_intervals = array(
-	'Disabled' => 0,
+	'Cron_Disabled' => 0,
 	'15M' => 900,
 	'30M' => 1800,
 	'1H' => 3600,

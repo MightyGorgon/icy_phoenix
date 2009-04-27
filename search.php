@@ -27,6 +27,9 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
+// Event Registration - BEGIN
+include_once(IP_ROOT_PATH . 'includes/functions_events_reg.' . PHP_EXT);
+// Event Registration - END
 
 // Adding CPL_NAV only if needed
 define('PARSE_CPL_NAV', true);
@@ -1688,10 +1691,107 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$views = $searchset[$i]['topic_views'];
 				$replies = $searchset[$i]['topic_replies'];
 
-				$topic_link = build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['topic_vote'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies, $unread);
+				$topic_link = build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_reg'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['topic_vote'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies, $unread);
 
 				$topic_id = $topic_link['topic_id'];
 				$topic_id_append = $topic_link['topic_id_append'];
+
+				// Event Registration - BEGIN
+				if (($searchset[$i]['topic_reg']) && check_reg_active($topic_id))
+				{
+					$regoption_array = array();
+
+					if ($userdata['session_logged_in'])
+					{
+						$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
+								WHERE topic_id = $topic_id
+								AND registration_user_id = " . $userdata['user_id'];
+
+						if (!($result = $db->sql_query($sql)))
+						{
+							message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
+						}
+
+						if ($regrow = $db->sql_fetchrow($result))
+						{
+							$status = $regrow['registration_status'];
+							if ($status == REG_OPTION1)
+							{
+								$reg_user_own_reg .= '<span class="text_green">&#149;</span>';
+							}
+							elseif ($status == REG_OPTION2)
+							{
+								$reg_user_own_reg .= '<span class="text_blue">&#149;</span>';
+							}
+							elseif ($status == REG_OPTION3)
+							{
+								$reg_user_own_reg .= '<span class="text_red">&#149;</span>';
+							}
+						}
+
+						$db->sql_freeresult($result);
+					}
+
+					$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, r.registration_time, r.registration_status FROM " . REGISTRATION_TABLE . " r, " . USERS_TABLE . " u
+							WHERE r.topic_id = $topic_id
+							AND r.registration_user_id = u.user_id
+							ORDER BY registration_status, registration_time";
+
+					if (!($result = $db->sql_query($sql)))
+					{
+						message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
+					}
+					$reg_info = $db->sql_fetchrowset($result);
+					$db->sql_freeresult($result);
+
+					$numregs = count($reg_info);
+					$option1_count = 0;
+					$option2_count = 0;
+					$option3_count = 0;
+
+					for ($u = 0; $u < $numregs; $u++)
+					{
+						if ($reg_info[$u]['registration_status'] == REG_OPTION1)
+						{
+							$option1_count++;
+						}
+						elseif ($reg_info[$u]['registration_status'] == REG_OPTION2)
+						{
+							$option2_count++;
+						}
+						elseif ($reg_info[$u]['registration_status'] == REG_OPTION3)
+						{
+							$option3_count++;
+						}
+					}
+
+					if (check_option_exists($topic_id, 1) === true)
+					{
+						$option1_count = '<span class="text_green">' . (0 + $option1_count) . '</span>';
+						array_push($regoption_array, $option1_count);
+					}
+					if (check_option_exists($topic_id, 2) === true)
+					{
+						$option2_count = '<span class="text_blue">' . (0 + $option2_count) . '</span>';
+						array_push($regoption_array, $option2_count);
+					}
+					if (check_option_exists($topic_id, 3) === true)
+					{
+						$option3_count = '<span class="text_red">' . (0 + $option3_count) . '</span>';
+						array_push($regoption_array, $option3_count);
+					}
+					$regoptions_count = count($regoption_array);
+
+					$v = 0;
+					$regoptions = '';
+					while ($v < $regoptions_count - 1)
+					{
+						$regoptions .= $regoption_array[$v] . '-';
+						$v++;
+					}
+					$regoptions .= array_pop($regoption_array);
+				}
+				// Event Registration - END
 
 				if (($replies + 1) > $board_config['posts_per_page'])
 				{
@@ -1807,6 +1907,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'L_NEWS' => $news_label,
 					'TOPIC_ATTACHMENT_IMG' => topic_attachment_image($searchset[$i]['topic_attachment']),
 
+					// Event Registration - BEGIN
+					'REG_OPTIONS' => $regoptions,
+					'REG_USER_OWN_REG' => $reg_user_own_reg,
+					// Event Registration - END
+
 					'GOTO_PAGE' => $goto_page,
 					'REPLIES' => $replies,
 					'VIEWS' => $views,
@@ -1828,6 +1933,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$template->assign_block_vars('searchresults.switch_upi2db_on', array());
 				}
 //<!-- END Unread Post Information to Database Mod -->
+				// Event Registration - BEGIN
+				if (($searchset[$i]['topic_reg']) && check_reg_active($topic_id))
+				{
+					$template->assign_block_vars('searchresults.display_reg', array());
+				}
+				// Event Registration - END
 			}
 		}
 

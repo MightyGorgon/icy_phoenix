@@ -42,7 +42,7 @@ $meta_keywords = '';
 
 //
 //
-// User authorisation levels output
+// User authorization levels output
 //
 $kb_auth_can = '<br />' . ( ( $kb_is_auth['auth_post'] ) ? $lang['KB_Rules_post_can'] : $lang['KB_Rules_post_cannot'] ) . '<br />';
 $kb_auth_can .= ( ( $kb_is_auth['auth_edit'] ) ? $lang['KB_Rules_edit_can'] : $lang['KB_Rules_edit_cannot'] ) . '<br />';

@@ -34,7 +34,7 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 if( $album_config['comment'] == 0 )
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
 
@@ -147,7 +147,7 @@ if( ($album_user_access['comment'] == 0) || ($album_user_access['edit'] == 0) )
 	}
 	else
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 }
 else
@@ -156,7 +156,7 @@ else
 	{
 		if ($thiscomment['comment_user_id'] != $userdata['user_id'])
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 	}
 }
@@ -308,7 +308,7 @@ else
 	$redirect_url = append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id));
 	meta_refresh(3, $redirect_url);
 
-	$message = $lang['Stored'] . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id)) . '#' . $comment_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
+	$message = $lang['Stored'] . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id)) . '#c' . $comment_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }

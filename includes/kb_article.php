@@ -57,7 +57,7 @@ if (count($kb_row) > 0)
 	$kb_is_auth = $kb_is_auth_all[$article_category_id];
 	// End of auth check
 
-	// User authorisation levels output
+	// User authorization levels output
 	$kb_auth_can = '<br />' . (($kb_is_auth['auth_post']) ? $lang['KB_Rules_post_can'] : $lang['KB_Rules_post_cannot']) . '<br />';
 	$kb_auth_can .= (($kb_is_auth['auth_edit']) ? $lang['KB_Rules_edit_can'] : $lang['KB_Rules_edit_cannot']) . '<br />';
 	$kb_auth_can .= (($kb_is_auth['auth_delete']) ? $lang['KB_Rules_delete_can'] : $lang['KB_Rules_delete_cannot']) . '<br />';

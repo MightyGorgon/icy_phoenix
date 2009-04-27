@@ -86,7 +86,7 @@ if(empty($thispic) || ($pic_info['exists'] == false) || !file_exists($pic_info['
 $album_user_access = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_VIEW, $thispic);
 if ($album_user_access['view'] == false)
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
 // ------------------------------------
@@ -98,7 +98,7 @@ if ($userdata['user_level'] != ADMIN)
 	{
 		if ($thispic['pic_approval'] != 1)
 		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
 	}
 }
@@ -134,7 +134,7 @@ if (($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 
 	if ($errored)
 	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		/*
 		header('Content-type: image/jpeg');
 		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);

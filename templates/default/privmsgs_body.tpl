@@ -79,7 +79,7 @@ function select_switch(status)
 <tr>
 	<td class="row1 row-center" style="padding-right:3px;"><img src="{listrow.PRIVMSG_FOLDER_IMG}" alt="{listrow.L_PRIVMSG_FOLDER_ALT}" title="{listrow.L_PRIVMSG_FOLDER_ALT}" /></td>
 	<td class="row1h row-forum" onclick="window.location.href='{listrow.U_READ}'" valign="middle">{listrow.PRIVMSG_ATTACHMENTS_IMG}<span class="topiclink"><a href="{listrow.U_READ}" class="topiclink">{listrow.SUBJECT}</a></span></td>
-	<td class="row2 row-center"><a href="{listrow.U_FROM_USER_PROFILE}">{listrow.FROM}</a></td>
+	<td class="row2 row-center">{listrow.FROM}</td>
 	<td class="row2 row-center-small">{listrow.DATE}</td>
 	<td class="row3 row-center"><input type="checkbox" name="mark[]2" value="{listrow.S_MARK_ID}" /></td>
 </tr>
@@ -114,10 +114,9 @@ function select_switch(status)
 
 <table width="100%" cellspacing="0" border="0" align="center" cellpadding="0">
 <tr>
-	<td align="left" valign="middle"><span class="img-btn">{POST_PM_IMG}</span></td>
-	<td align="right" valign="middle" width="100%"><span class="gensmall"><!-- IF PAGE_NUMBER -->{PAGE_NUMBER}<!-- ELSE -->&nbsp;<!-- ENDIF --></span></td>
+	<td align="left" valign="top"><span class="img-btn">{POST_PM_IMG}</span></td>
+	<td align="right" valign="top" width="70%" nowrap="nowrap"><span class="gensmall"><!-- IF PAGE_NUMBER -->{PAGE_NUMBER}<!-- ELSE -->&nbsp;<!-- ENDIF --></span><br /><div class="pagination"><!-- IF PAGINATION -->{PAGINATION}<!-- ELSE -->&nbsp;<!-- ENDIF --></div></td>
 </tr>
-<tr><td align="right" valign="top" nowrap="nowrap"><span class="gensmall"></span><br /><div class="pagination"><!-- IF PAGINATION -->{PAGINATION}<!-- ELSE -->&nbsp;<!-- ENDIF --></div></td></tr>
 </table>
 </form>
 

@@ -240,11 +240,17 @@ if(!function_exists('imp_album_block_func'))
 									$thumbnail_file = picture_quick_thumb($recentrow[$image_counter]['pic_filename'], $recentrow[$image_counter]['pic_thumbnail'], $thumbnail_file);
 								}
 
+								$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']));
+								$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']));
+
 								$template->assign_block_vars('recent_pics.recent_detail', array(
-									'U_PIC' => ($album_config['fullpic_popup']) ? append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']) : append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$image_counter]['pic_id']),
+									'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
+									'U_PIC_SP' => $pic_sp_link,
+									'U_PIC_DL' => $pic_dl_link,
+
 									'THUMBNAIL' => $thumbnail_file,
-									'DESC' => $recentrow[$image_counter]['pic_desc'],
-									'TITLE' => $recentrow[$image_counter]['pic_title'],
+									'DESC' => htmlspecialchars($recentrow[$image_counter]['pic_desc']),
+									'TITLE' => htmlspecialchars($recentrow[$image_counter]['pic_title']),
 									'POSTER' => $recent_poster,
 									'TIME' => create_date2($board_config['default_dateformat'], $recentrow[$image_counter]['pic_time'], $board_config['board_timezone']),
 									'VIEW' => $recentrow[$image_counter]['pic_view_count'],

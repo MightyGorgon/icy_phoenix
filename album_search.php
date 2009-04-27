@@ -171,6 +171,9 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 					$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) . '\',\'' . addslashes($row[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
+				$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id']));
+				$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id']));
+
 				//if(!$auth_data['view'])
 				if ($auth_data['view'] >= 0)
 				{
@@ -181,9 +184,11 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 						'L_CAT' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
 						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
 
-						'L_PIC' => $row['pic_title'],
-						'U_PIC_SP' => ($album_config['fullpic_popup'] == 1) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
-						'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
+						'L_PIC' => htmlspecialchars($row['pic_title']),
+
+						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
+						'U_PIC_SP' => $pic_sp_link,
+						'U_PIC_DL' => $pic_dl_link,
 
 						'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
 						'PIC_PREVIEW_HS' => $pic_preview_hs,

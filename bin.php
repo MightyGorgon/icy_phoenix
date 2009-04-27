@@ -120,7 +120,7 @@ $is_auth = auth(AUTH_ALL, $forum_id, $userdata);
 
 if (!$is_auth['auth_mod'])
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Moderator'], $lang['Not_Authorised']);
+	message_die(GENERAL_MESSAGE, $lang['Not_Moderator'], $lang['Not_Authorized']);
 }
 // End Auth Check
 

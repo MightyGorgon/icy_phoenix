@@ -1731,6 +1731,34 @@ INSERT INTO `phpbb_flags` (`flag_name`, `flag_image`) VALUES ('Montenegro', 'mon
 ########################################
 ##              BUILD 049             ##
 ########################################
+CREATE TABLE phpbb_registration (
+	topic_id mediumint(8) unsigned NOT NULL default '0',
+	registration_user_id mediumint(8) NOT NULL default '0',
+	registration_user_ip varchar(8) NOT NULL default '',
+	registration_time int(11) NOT NULL default '0',
+	registration_status tinyint(1) NOT NULL default '0',
+	KEY topic_id (topic_id),
+	KEY registration_user_id (registration_user_id),
+	KEY registration_user_ip (registration_user_ip)
+);
+
+CREATE TABLE phpbb_registration_desc (
+	reg_id mediumint(8) unsigned NOT NULL auto_increment,
+	topic_id mediumint(8) unsigned NOT NULL default '0',
+	reg_active tinyint(1) NOT NULL default '0',
+	reg_option1 varchar(30) NOT NULL default '',
+	reg_option2 varchar(30) NOT NULL default '',
+	reg_option3 varchar(30) NOT NULL default '',
+	reg_max_option1 smallint(5) unsigned NOT NULL default '0',
+	reg_max_option2 smallint(5) unsigned NOT NULL default '0',
+	reg_max_option3 smallint(5) unsigned NOT NULL default '0',
+	reg_start int(11) NOT NULL default '0',
+	reg_length int(11) NOT NULL default '0',
+	PRIMARY KEY  (reg_id),
+	KEY `topic_id` (topic_id)
+);
+
+ALTER TABLE phpbb_topics ADD topic_reg TINYINT(1) DEFAULT '0' NOT NULL AFTER topic_calendar_duration;
 
 
 
@@ -1743,4 +1771,4 @@ UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = '
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.2.21.48' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.2.22.49' WHERE config_name = 'ip_version';

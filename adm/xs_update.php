@@ -182,7 +182,7 @@ if(!isset($_GET['doupdate']))
 	@reset($updates);
 	foreach($updates as $var => $item)
 	{
-		$counter ++;
+		$counter++;
 		$type = isset($lang['xs_update_types'][$item['update_type']]) ? $item['update_type'] : 0;
 		$row_class = $xs_row_class[$counter % 2];
 		$name = htmlspecialchars($item['update_name']);

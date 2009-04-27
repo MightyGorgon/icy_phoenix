@@ -52,7 +52,7 @@
 <tr>
 	<td class="row1 row-center" width="20">{topicrow.U_MARK_ALWAYS_READ}</td>
 	<td class="row1h{topicrow.CLASS_NEW} row-forum" onclick="window.location.href='{topicrow.U_VIEW_TOPIC}'">
-		<div class="topic-title-hide-flow"><span class="topiclink{topicrow.CLASS_NEW}">{topicrow.NEWEST_POST_IMG}{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE}<a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a>{topicrow.CALENDAR_TITLE}</span></div>
+		<div class="topic-title-hide-flow"><span class="topiclink{topicrow.CLASS_NEW}">{topicrow.NEWEST_POST_IMG}{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE}<a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a><!-- BEGIN display_reg --> [{topicrow.REG_OPTIONS}]&nbsp;{topicrow.REG_USER_OWN_REG}<!-- END display_reg -->{topicrow.CALENDAR_TITLE}</span></div>
 		<!-- BEGIN switch_topic_desc -->
 		<span class="gensmall">&nbsp;{topicrow.switch_topic_desc.TOPIC_DESCRIPTION}</span><br />
 		<!-- END switch_topic_desc -->

@@ -82,7 +82,7 @@ if ($album_user_access['edit'] == 0)
 	}
 	else
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 }
 else
@@ -91,7 +91,7 @@ else
 	{
 		if ($thispic['pic_user_id'] != $userdata['user_id'])
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 	}
 }
@@ -113,6 +113,12 @@ if( !isset($_POST['pic_title']) )
 
 	$template->set_filenames(array('body' => 'album_edit_body.tpl'));
 
+	$html_status = ($board_config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+	$bbcode_status = ($board_config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+	$bbcode_status = sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>');
+	$smilies_status = ($board_config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+	$formatting_status = '<br />' . $html_status . '<br />' . $bbcode_status . '<br />' . $smilies_status . '<br />';
+
 	$template->assign_vars(array(
 		'L_EDIT_PIC_INFO' => $lang['Edit_Pic_Info'],
 
@@ -126,7 +132,8 @@ if( !isset($_POST['pic_title']) )
 		'PIC_DESC' => htmlspecialchars($thispic['pic_desc']),
 
 		'L_PIC_DESC' => $lang['Pic_Desc'],
-		'L_PLAIN_TEXT_ONLY' => $lang['Plain_text_only'],
+		//'L_PLAIN_TEXT_ONLY' => $lang['Plain_text_only'],
+		'L_PLAIN_TEXT_ONLY' => $formatting_status,
 		'L_MAX_LENGTH' => $lang['Max_length'],
 
 		'L_UPLOAD_NO_TITLE' => $lang['Upload_no_title'],

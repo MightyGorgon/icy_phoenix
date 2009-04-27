@@ -156,7 +156,7 @@ if($mode == 'save')
 	}
 
 	$db->clear_cache('ads_');
-	$message .= '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 
 }
@@ -170,7 +170,7 @@ elseif ($mode == 'delete')
 	}
 
 	$db->clear_cache('ads_');
-	$message = $lang['AD_DELETED'] . '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$message = $lang['AD_DELETED'] . '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 
 }
@@ -207,7 +207,7 @@ elseif ($mode == 'update')
 
 	$db->clear_cache('ads_');
 	$message = $lang['AD_UPDATED'];
-	$message .= '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 
 }

@@ -111,7 +111,7 @@ if( isset($_POST['submit']) )
 //
 
 //
-// Output the authorisation details if an id was
+// Output the authorization details if an id was
 // specified
 //
 $pafiledb_template->set_filenames(array(

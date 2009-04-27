@@ -195,6 +195,14 @@ function ip_user_kill($user_id)
 			message_die(GENERAL_ERROR, 'Could not delete sudoku users', '', __LINE__, __FILE__, $sql);
 		}
 
+		// Event Registration - BEGIN
+		$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_user_id = $user_id";
+		if (!$db->sql_query($sql))
+		{
+			message_die(GENERAL_ERROR, 'Could not delete registration data from table', '', __LINE__, __FILE__, $sql);
+		}
+		// Event Registration - END
+
 		$sql = "SELECT privmsgs_id
 			FROM " . PRIVMSGS_TABLE . "
 			WHERE ((privmsgs_from_userid = $user_id

@@ -165,7 +165,7 @@ if ($album_user_access['upload'] == 0)
 	}
 	else
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 }
 
@@ -330,6 +330,12 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		$album_config['max_files_to_upload'] = 1;
 	}
 
+	$html_status = ($board_config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+	$bbcode_status = ($board_config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+	$bbcode_status = sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>');
+	$smilies_status = ($board_config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+	$formatting_status = '<br />' . $html_status . '<br />' . $bbcode_status . '<br />' . $smilies_status . '<br />';
+
 	$template->assign_vars(array(
 		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'CAT_TITLE' => $thiscat['cat_title'],
@@ -340,7 +346,8 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		'L_PIC_TITLE' => $lang['Pic_Image'],
 
 		'L_PIC_DESC' => $lang['Pic_Desc'],
-		'L_PLAIN_TEXT_ONLY' => $lang['Plain_text_only'],
+		//'L_PLAIN_TEXT_ONLY' => $lang['Plain_text_only'],
+		'L_PLAIN_TEXT_ONLY' => $formatting_status,
 		'L_MAX_LENGTH' => $lang['Max_length'],
 		'S_PIC_DESC_MAX_LENGTH' => $album_config['desc_length'],
 

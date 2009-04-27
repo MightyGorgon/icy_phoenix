@@ -278,7 +278,7 @@ if (!($mode == 'quick_title_edit'))
 
 	if (!$is_auth['auth_mod'])
 	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Moderator'], $lang['Not_Authorised']);
+		message_die(GENERAL_MESSAGE, $lang['Not_Moderator'], $lang['Not_Authorized']);
 	}
 }
 else
@@ -293,14 +293,14 @@ else
 		$qt_row = $db->sql_fetchrow($result_qt);
 		if ((($userdata['user_level'] == ADMIN) && ($qt_row['admin_auth'] == 0)) || (($userdata['user_level'] == MOD) && ($qt_row['mod_auth'] == 0)) || (($userdata['user_level'] == USER) && ($qt_row['poster_auth'] == 0)) || (($userdata['user_level'] == USER) && ($qt_row['poster_auth'] == 1) && ($userdata['user_id'] != $topic_row['topic_poster'])))
 		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
 	}
 	else
 	{
 		if (($userdata['user_level'] == USER) && ($userdata['user_id'] != $topic_row['topic_poster']))
 		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
 		$qt_row = array('title_info' => '');
 	}
@@ -401,17 +401,32 @@ switch($mode)
 			{
 				message_die(GENERAL_ERROR, 'Error in deleting Thanks post Information', '', __LINE__, __FILE__, $sql);
 			}
+
 			$sql = "DELETE FROM " . TOPICS_TABLE . " WHERE topic_id IN ($topic_id_sql) OR topic_moved_id IN ($topic_id_sql)";
 			if(!$db->sql_query($sql, BEGIN_TRANSACTION))
 			{
 				message_die(GENERAL_ERROR, 'could not delete topics.', '', __LINE__, __FILE__, $sql);
 			}
+
 			$sql = "DELETE FROM " . BOOKMARK_TABLE . "
 				WHERE topic_id IN ($topic_id_sql)";
 			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not delete bookmarks', '', __LINE__, __FILE__, $sql);
 			}
+
+			// Event Registration - BEGIN
+			$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id IN ($topic_id_sql)";
+			if (!$db->sql_query($sql))
+			{
+				message_die(GENERAL_ERROR, 'Could not delete registration data from table', '', __LINE__, __FILE__, $sql);
+			}
+			$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . " WHERE topic_id IN ($topic_id_sql)";
+			if (!$db->sql_query($sql))
+			{
+				message_die(GENERAL_ERROR, 'Could not delete registration data from table', '', __LINE__, __FILE__, $sql);
+			}
+			// Event Registration - END
 
 			if($post_id_sql != '')
 			{
@@ -1524,7 +1539,7 @@ switch($mode)
 	case 'news_category_edit':
 		if(!$is_auth['auth_news'])
 		{
-			message_die(MESSAGE, $lang['Not_Authorised']);
+			message_die(MESSAGE, $lang['Not_Authorized']);
 		}
 
 		if (empty($_POST['topic_id_list']) && empty($topic_id))
@@ -1761,7 +1776,7 @@ switch($mode)
 			$replies = $topic_rowset[$i]['topic_replies'];
 			$topic_type = $topic_rowset[$i]['topic_type'];
 
-			$topic_link = build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+			$topic_link = build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
 
 			$topic_id = $topic_link['topic_id'];
 			$topic_id_append = $topic_link['topic_id_append'];

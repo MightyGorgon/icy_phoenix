@@ -110,7 +110,7 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 
 	$mail_session_id = md5(uniqid(''));
 	$sql = "INSERT INTO " . MEGAMAIL_TABLE . " (mailsession_id, mass_pm, user_id, group_id, email_subject, email_body, email_format, batch_start, batch_size, batch_wait, status)
-			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . intval($_POST[POST_GROUPS_URL]) . ", '" . (STRIP ? addslashes($subject) : $subject) . "', '" . (STRIP ? addslashes($message) : $message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
+			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . intval($_POST[POST_GROUPS_URL]) . ", '" . ip_addslashes($subject) . "', '" . ip_addslashes($message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
 
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -148,8 +148,10 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	}
 	//Ok, the session exists
 
-	$subject = (STRIP ? stripslashes($mail_data['email_subject']) : $mail_data['email_subject']);
-	$message = (STRIP ? stripslashes($mail_data['email_body']) : $mail_data['email_body']);
+	$subject = ip_stripslashes($mail_data['email_subject']);
+	$message = ip_stripslashes($mail_data['email_body']);
+	// Store the clean version of the message for PM
+	$pm_message = $message;
 	$group_id = $mail_data['group_id'];
 	$mass_pm = $mail_data['mass_pm'];
 	$email_format = $mail_data['email_format'];
@@ -285,7 +287,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 		{
 			if ($mass_pm)
 			{
-				$privmsg->send($userdata['user_id'], $row['user_id'], $subject, $message);
+				$privmsg->send($userdata['user_id'], $row['user_id'], $subject, $pm_message);
 			}
 			$bcc_list .= (($bcc_list != '') ? ', ' : '') . $row['user_email'];
 		}
@@ -346,8 +348,9 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 		{
 			$server_url = create_server_url();
 			$pm_inbox_link = $server_url . 'privmsg.' . PHP_EXT . '?folder=inbox';
+			$pm_inbox_link = (!$board_config['html_email']) ? $pm_inbox_link : ('<a href="' . $pm_inbox_link . '">' . $pm_inbox_link . '</a>');
 			$message = str_replace(array('{SITENAME}', '{U_INBOX}'), array($board_config['sitename'], $pm_inbox_link), $lang['PM_NOTIFICATION']);
-			$message = ($board_config['html_email'] == 0) ? str_replace('<br />', "\r\n", $message) : $message;
+			$message = (!$board_config['html_email']) ? str_replace('<br />', "\r\n", $message) : $message;
 		}
 
 		$emailer->assign_vars(array(

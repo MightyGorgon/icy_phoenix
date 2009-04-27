@@ -34,7 +34,7 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 if($album_config['comment'] == 0)
 {
-	message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
 // ------------------------------------
@@ -144,7 +144,7 @@ if(($album_user_access['comment'] == 0) || ($album_user_access['delete'] == 0))
 	}
 	else
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
 }
 else
@@ -153,7 +153,7 @@ else
 	{
 		if ($thiscomment['comment_user_id'] != $userdata['user_id'])
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
 	}
 }

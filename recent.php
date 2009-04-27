@@ -55,10 +55,10 @@ $cms_page_name = 'recent';
 check_page_auth($cms_page_id, $cms_page_name);
 $cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
-$mode_types = array('today', 'yesterday', 'last24', 'lastweek', 'lastXdays', 'utopics');
-if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+$mode_types = array('today', 'yesterday', 'last24', 'lastweek', 'lastXdays', 'utopics', 'uposts');
+if ($userdata['user_level'] == ADMIN)
 {
-	$mode_types = array_merge($mode_types, array('uposts', 'utview'));
+	$mode_types = array_merge($mode_types, array('utview'));
 }
 
 if(isset($_GET['mode']) || isset($_POST['mode']))
@@ -331,7 +331,7 @@ for($i = 0; $i < count($line); $i++)
 	$views = $line[$i]['topic_views'];
 	$replies = $line[$i]['topic_replies'];
 
-	$topic_link = build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['topic_vote'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies, $unread);
+	$topic_link = build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_reg'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['topic_vote'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies, $unread);
 
 	$topic_id = $topic_link['topic_id'];
 	$topic_id_append = $topic_link['topic_id_append'];

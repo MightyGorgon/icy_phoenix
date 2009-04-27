@@ -318,7 +318,7 @@ $lang = array_merge($lang, array(
 	'Updating_invalid_prune_setting' => 'Updating invalid prune settings of one forum',
 	'Updating_invalid_prune_settings' => 'Updating invalid prune settings of %d forums',
 	'Checking_topic_watch_data' => 'Checking for invalid watched topics',
-	'Checking_auth_access_data' => 'Checking for invalid group authorisation data',
+	'Checking_auth_access_data' => 'Checking for invalid group authorization data',
 	'Must_synchronize' => 'You have to synchronize the post data before using the board. Click to proceed.',
 // check_vote
 	'Checking_vote_tables' => 'Check vote tables',

@@ -21,16 +21,16 @@
 	<th>{L_B_GROUPS}</th>
 </tr>
 <!-- BEGIN blocks -->
-<tr class="{blocks.ROW_CLASS} row1h" style="background-image:none;">
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;"><input type="checkbox" name="block[]" value="{blocks.BLOCK_CB_ID}" /></td>
-	<td class="{blocks.ROW_CLASS}" style="background:none;">{blocks.TITLE}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.POSITION}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.LNAME}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.ACTIVE}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.CONTENT}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.TYPE}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.VIEW}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background:none;">{blocks.GROUPS}</td>
+<tr class="{blocks.ROW_CLASS} row1h" style="background-image: none;">
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="block[]" value="{blocks.BLOCK_CB_ID}" /></td>
+	<td class="{blocks.ROW_CLASS}" style="background: none;">{blocks.TITLE}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.POSITION}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.LNAME}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.ACTIVE}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.CONTENT}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.TYPE}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.VIEW}</td>
+	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.GROUPS}</td>
 </tr>
 <!-- END blocks -->
 <tr><td class="spaceRow" colspan="9"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

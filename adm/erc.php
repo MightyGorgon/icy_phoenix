@@ -712,7 +712,7 @@ switch($mode)
 		{
 
 			case 'cls': // Clear Sessions
-				check_authorisation();
+				check_authorization();
 
 				$sql = "DELETE FROM " . SESSIONS_TABLE;
 				$result = $db->sql_query($sql);
@@ -744,7 +744,7 @@ switch($mode)
 				break;
 
 			case 'rdb': // Clear Sessions
-				check_authorisation();
+				check_authorization();
 				if (!check_mysql_version())
 				{
 ?>
@@ -806,7 +806,7 @@ switch($mode)
 				break;
 
 			case 'cct': // Check config table
-				check_authorisation();
+				check_authorization();
 
 				// Update config data to match current configuration
 				if (!empty($_SERVER['SERVER_PROTOCOL']) || !empty($_ENV['SERVER_PROTOCOL']))
@@ -872,7 +872,7 @@ switch($mode)
 				success_message($lang['cct_success']);
 				break;
 			case 'rpd': // Reset path data
-				check_authorisation();
+				check_authorization();
 				// Get variables
 				$secure_select = (isset($_POST['secure_select'])) ? intval($_POST['secure_select']) : 1;
 				$domain_select = (isset($_POST['domain_select'])) ? intval($_POST['domain_select']) : 1;
@@ -930,7 +930,7 @@ switch($mode)
 				success_message($lang['rpd_success']);
 				break;
 			case 'rcd': // Reset cookie data
-				check_authorisation();
+				check_authorization();
 				// Get variables
 				$cookie_domain = (isset($_POST['cookie_domain'])) ? str_replace("\\'", "''", $_POST['cookie_domain']) : '';
 				$cookie_name = (isset($_POST['cookie_name'])) ? str_replace("\\'", "''", $_POST['cookie_name']) : '';
@@ -963,7 +963,7 @@ switch($mode)
 				success_message($lang['rcd_success']);
 				break;
 			case 'rld': // Reset language data
-				check_authorisation();
+				check_authorization();
 				$new_lang = (isset($_POST['new_lang'])) ? str_replace("\\'", "''", $_POST['new_lang']) : '';
 				$board_user = isset($_POST['board_user']) ? trim(htmlspecialchars($_POST['board_user'])) : '';
 				$board_user = substr(str_replace("\\'", "'", $board_user), 0, 25);
@@ -995,7 +995,7 @@ switch($mode)
 				}
 				break;
 			case 'rtd': // Reset template data
-				check_authorisation();
+				check_authorization();
 				$method = (isset($_POST['method'])) ? htmlspecialchars($_POST['method']) : '';
 				$new_style = (isset($_POST['new_style'])) ? intval($_POST['new_style']) : 0;
 				$board_user = isset($_POST['board_user']) ? trim(htmlspecialchars($_POST['board_user'])) : '';
@@ -1040,7 +1040,7 @@ switch($mode)
 				}
 				break;
 			case 'dgc': // Disable GZip compression
-				check_authorisation();
+				check_authorization();
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '0'
 						WHERE config_name = 'gzip_compress'";
@@ -1052,7 +1052,7 @@ switch($mode)
 				success_message($lang['dgc_success']);
 				break;
 			case 'cbl': // Clear ban list
-				check_authorisation();
+				check_authorization();
 				$sql = "DELETE FROM " . BANLIST_TABLE;
 				$result = $db->sql_query($sql);
 				if(!$result)
@@ -1091,7 +1091,7 @@ switch($mode)
 				$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 				break;
 			case 'raa': // Remove all administrators
-				check_authorisation();
+				check_authorization();
 				// Get userdata to check for current user
 				$auth_method = (isset($_POST['auth_method'])) ? htmlspecialchars($_POST['auth_method']) : '';
 				$board_user = isset($_POST['board_user']) ? trim(htmlspecialchars($_POST['board_user'])) : '';
@@ -1157,7 +1157,7 @@ switch($mode)
 				success_message($lang['raa_success']);
 				break;
 			case 'mua': // Grant user admin privileges
-				check_authorisation();
+				check_authorization();
 				$username = (isset($_POST['username'])) ? str_replace("\\'", "''", $_POST['username']) : '';
 
 				$sql = "UPDATE " . USERS_TABLE . "

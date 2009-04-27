@@ -88,6 +88,10 @@ function checkFormRate()
 			<td valign="top" align="left"><b><span class="genmed">{PIC_TITLE}</span></b></td>
 		</tr>
 		<tr>
+			<td valign="top" align="right"><span class="genmed">{L_DOWNLOAD}:</span></td>
+			<td valign="top" align="left"><a href="{U_PIC_DL}" class="genmed"><b>{PIC_TITLE}</b></a></td>
+		</tr>
+		<tr>
 			<td valign="top" align="right"><span class="genmed">{L_PIC_DETAILS}:</span></td>
 			<td valign="top" align="left"><b><span class="genmed">{L_PIC_ID}:&nbsp;{PIC_ID}&nbsp;-&nbsp;{L_PIC_TYPE}:&nbsp;{PIC_TYPE}&nbsp;-&nbsp;{L_PIC_SIZE}:&nbsp;{PIC_SIZE}</span></b></td>
 		</tr>
@@ -125,7 +129,7 @@ function checkFormRate()
 		<!-- END rate_switch -->
 		<tr>
 			<td valign="top" align="right"><span class="genmed">{L_PIC_DESC}:</span></td>
-			<td valign="top" align="left"><b><span class="genmed">{PIC_DESC}</span></b></td>
+			<td valign="top" align="left"><div class="post-text">{PIC_DESC}</div></td>
 		</tr>
 		</table>
 	</td>
@@ -182,7 +186,7 @@ function checkFormRate()
 <!-- BEGIN commentrow -->
 <tr >
 	<td class="row-post-author" nowrap="nowrap">
-		<span class="post-name"><a name="{commentrow.ID}"></a>{commentrow.POSTER_NAME}</span><br />
+		<span class="post-name"><a name="c{commentrow.ID}"></a>{commentrow.POSTER_NAME}</span><br />
 		<div class="post-rank"><b>{commentrow.POSTER_RANK}</b><br />{commentrow.POSTER_RANK_IMAGE}</div>
 		<span class="post-images">{commentrow.POSTER_AVATAR}</span>
 		<div class="post-details">

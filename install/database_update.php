@@ -63,8 +63,8 @@ if (defined('IP_INSTALLED') || defined('PHPBB_INSTALLED'))
 		{
 			if ($userdata['user_level'] != ADMIN)
 			{
-				// We need to use $lang['Not_Authorised'] because the $lang['Not_Auth_View'] isn't available in standard phpBB
-				message_die(GENERAL_MESSAGE, $lang['Not_Authorised']);
+				// We need to use $lang['Not_Authorized'] because the $lang['Not_Auth_View'] isn't available in standard phpBB
+				message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 			}
 		}
 		@set_time_limit(0);

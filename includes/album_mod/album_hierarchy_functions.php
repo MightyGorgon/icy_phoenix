@@ -1413,7 +1413,7 @@ function album_generate_index_columns()
 		);
 
 		$indexes[] = 0;
-		$header_col_span ++;
+		$header_col_span++;
 	}
 
 	if ($album_config['show_index_total_pics'] == 1)
@@ -1434,7 +1434,7 @@ function album_generate_index_columns()
 		);
 
 		$indexes[] = 1;
-		$header_col_span ++;
+		$header_col_span++;
 	}
 
 	if ($album_config['show_index_total_comments'] == 1)
@@ -1454,7 +1454,7 @@ function album_generate_index_columns()
 		);
 
 		$indexes[] = 2;
-		$header_col_span ++;
+		$header_col_span++;
 	}
 
 	if ($album_config['show_index_pics'] == 1)
@@ -1473,7 +1473,7 @@ function album_generate_index_columns()
 		);
 
 		$indexes[] = 3;
-		$header_col_span ++;
+		$header_col_span++;
 	}
 
 	if ($album_config['show_index_comments'] == 1)
@@ -1491,7 +1491,7 @@ function album_generate_index_columns()
 		);
 
 		$indexes[] = 4;
-		$header_col_span ++;
+		$header_col_span++;
 	}
 
 	if ($album_config['show_index_last_comment'] == 1)
@@ -1508,7 +1508,7 @@ function album_generate_index_columns()
 		);
 
 		$indexes[] = 5;
-		$header_col_span ++;
+		$header_col_span++;
 	}
 
 	if ($album_config['show_index_last_pic'] == 1)
@@ -1519,7 +1519,7 @@ function album_generate_index_columns()
 			)
 		);
 		$indexes[] = 6;
-		$header_col_span ++;
+		$header_col_span++;
 	}
 
 	// create header and send it to template

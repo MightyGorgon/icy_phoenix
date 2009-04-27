@@ -74,7 +74,7 @@ $db->sql_freeresult($result);
 
 if ($user_row['user_level'] != ADMIN)
 {
-	message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+	message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 }
 
 $del_user = isset($_POST['del_user']) ? intval($_POST['del_user']) : (isset($_GET['del_user']) ? intval($_GET['del_user']) : '');

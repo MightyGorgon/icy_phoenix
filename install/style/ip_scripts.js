@@ -246,58 +246,6 @@ function SetLangTheme()
 	document.ChangeThemeLang.submit();
 	return true;
 }
-
-function img_popup(image_url, image_width, image_height, popup_rand)
-{
-	screenwidth = false;
-	screenwidth = screen.Width;
-	if ( !screenwidth )
-	{
-		screenwidth = window.outerWidth;
-	}
-
-	screenheight = false;
-	screenheight = screen.Height;
-	if ( !screenheight )
-	{
-		screenheight = window.outerHeight;
-	}
-
-	if ( screenwidth < ( image_width + 30 ) || screenheight < ( image_height + 30 ) || image_width == null || image_height == null )
-	{
-		window.open(image_url,'limit_image_mod_popup_img_' + popup_rand,'resizable=yes,top=0,left=0,screenX=0,screenY=0,scrollbars=yes',false);
-	}
-	else
-	{
-		window.open(image_url,'limit_image_mod_popup_img_' + popup_rand,'resizable=yes,top=0,left=0,screenX=0,screenY=0,height=' + ( image_height + 30 ) + ',width=' + ( image_width + 30 ), false);
-	}
-}
-
-function Gk_PopTart(mypage, myname, w, h, scroll)
-{
-	LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
-	TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
-	settings = 'height=' + h + ',width=' + w + ',top=' + TopPosition + ',left=' + LeftPosition + ',scrollbars=' + scroll + ',resizable';
-	win = window.open(mypage, myname, settings);
-}
-
-function Trophy_Popup(mypage, myname, w, h, scroll)
-{
-	LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
-	TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
-	settings = 'height=' + h + ',width=' + w + ',top=' + TopPosition + ',left=' + LeftPosition + ',scrollbars=' + scroll + ',resizable';
-	win = window.open(mypage, myname, settings);
-}
-
-function rss_news_help()
-{
-	window.open("rss_news_help.php?", '_rss_news_help', 'height=550,width=700,resizable=no,scrollbars=yes');
-}
-
-function links_me()
-{
-	window.open("links_popup.php", '_links_me', 'height=220, width=500,resizable=no, scrollbars=no');
-}
 // Images, Links, Popup, FORM - END
 
 

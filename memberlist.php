@@ -65,7 +65,7 @@ if (!in_array($mode, $mode_types) && !(strpos($mode, 'cash_') == 0))
 }
 
 $order = request_var('order', 'ASC');
-$order = ($order == 'DESC') ? 'DESC' : 'ASC';
+$sort_order = ($order == 'DESC') ? 'DESC' : 'ASC';
 
 // Mighty Gorgon - Power Memberlist - BEGIN
 $alphanum = request_var('alphanum', '');

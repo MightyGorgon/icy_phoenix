@@ -78,7 +78,7 @@ if( isset($_POST['submit']) )
 } // End of submit
 
 // Get required information, either all forums if no id was specified or just the requsted if it was
-// Output the authorisation details if an id was specified
+// Output the authorization details if an id was specified
 $template->set_filenames(array('body' => ADM_TPL . 'auth_forum_adv_body.tpl'));
 
 $forumlist = get_tree_option_optg('', true, false);

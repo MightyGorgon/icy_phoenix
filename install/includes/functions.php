@@ -706,7 +706,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 // $msg_code can be one of these constants:
 //
 // GENERAL_MESSAGE : Use for any simple text message, eg. results
-// of an operation, authorisation failures, etc.
+// of an operation, authorization failures, etc.
 //
 // GENERAL ERROR : Use for any error which occurs _AFTER_ the
 // common.php include and session code, ie. most errors in

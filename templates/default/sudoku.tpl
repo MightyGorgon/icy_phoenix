@@ -1,7 +1,7 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SUDOKU}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr>
-		<th>{HOW_TO}</td>
-		<th>{STATS}</td>
+		<th>{HOW_TO}</th>
+		<th>{STATS}</th>
 	</tr>
 	<tr>
 		<td class="row2" valign="top"><span class="gen">{INSTRUCTIONS}<br />&nbsp;</span></td>
@@ -9,11 +9,7 @@
 	</tr>
 	<tr>
 		<td class="row1" width="50%">
-			<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-				<tr>
-					<td><a name="grid"><span class="gen">{GAME_INFO}</span></td>
-				</tr>
-			</table>
+			<div style="text-align: center; width: 100%; margin: 0 auto; clear: both;"><span class="gen"><a name="grid" href="#grid">{GAME_INFO}</a></span></div><br />
 			<form id="sudoku_frm" action="sudoku.php" method="post">
 			<center>
 			<table class="forumline-no2" cellspacing="0" cellpadding="0" border="0">
@@ -196,19 +192,19 @@
 				</tr>
 			</table>
 			<br />
-			<div style="text-align:center;" style="display:none;" id="submit_sk">
+			<div id="submit_sk" style="text-align: center; display: none;">
 			<select name="num_input">
-				<option value="" selected="selected" id="num_input_d">?
-				<option value="-1">E
-				<option value="11">1
-				<option value="12">2
-				<option value="13">3
-				<option value="14">4
-				<option value="15">5
-				<option value="16">6
-				<option value="17">7
-				<option value="18">8
-				<option value="19">9
+				<option id="num_input_d" value="" selected="selected">?</option>
+				<option value="-1">E</option>
+				<option value="11">1</option>
+				<option value="12">2</option>
+				<option value="13">3</option>
+				<option value="14">4</option>
+				<option value="15">5</option>
+				<option value="16">6</option>
+				<option value="17">7</option>
+				<option value="18">8</option>
+				<option value="19">9</option>
 			</select>
 			<input class="liteoption" type="submit" value="{PLACE}" name="input_num" />
 			</div>

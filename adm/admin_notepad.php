@@ -32,7 +32,7 @@ $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
 
 //
-// Output the authorisation details
+// Output the authorization details
 //
 $template->set_filenames(array(
 	'body' => ADM_TPL . 'admin_notepad_body.tpl')

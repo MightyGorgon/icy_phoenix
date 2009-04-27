@@ -16,16 +16,16 @@
 	<th>{L_ACTION}</th>
 </tr>
 <!-- BEGIN bots -->
-<tr class="{bots.ROW_CLASS} row1h" style="background-image:none;">
-	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:30px;"><b class="gensmall">{bots.BOT_ID}</b></td>
-	<td class="{bots.ROW_CLASS}" style="background:none;"><b class="gensmall">{bots.BOT_NAME}</b></td>
-	<td class="{bots.ROW_CLASS}" style="background:none;"><span class="gensmall">{bots.BOT_COLOR}</span></td>
-	<td class="{bots.ROW_CLASS}" style="background:none;"><span class="gensmall">{bots.BOT_AGENT}</span></td>
-	<td class="{bots.ROW_CLASS}" style="background:none;"><span class="gensmall">{bots.BOT_IP}</span></td>
-	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:50px;"><input type="checkbox" name="bots[]" value="{bots.BOT_ID}"{bots.BOT_ACTIVE_CHECKED} /></td>
-	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:90px;" nowrap="nowrap"><span class="gensmall">{bots.BOT_LAST_VISIT}</span></td>
-	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:50px;" nowrap="nowrap"><b class="gensmall">{bots.BOT_COUNTER}</b></td>
-	<td class="{bots.ROW_CLASS} row-center" style="background:none;width:80px;"><b class="gensmall"><a href="{bots.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{bots.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></b></td>
+<tr class="{bots.ROW_CLASS} row1h" style="background-image: none;">
+	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:30px;"><b class="gensmall">{bots.BOT_ID}</b></td>
+	<td class="{bots.ROW_CLASS}" style="background: none;"><b class="gensmall">{bots.BOT_NAME}</b></td>
+	<td class="{bots.ROW_CLASS}" style="background: none;"><span class="gensmall">{bots.BOT_COLOR}</span></td>
+	<td class="{bots.ROW_CLASS}" style="background: none;"><span class="gensmall">{bots.BOT_AGENT}</span></td>
+	<td class="{bots.ROW_CLASS}" style="background: none;"><span class="gensmall">{bots.BOT_IP}</span></td>
+	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:50px;"><input type="checkbox" name="bots[]" value="{bots.BOT_ID}"{bots.BOT_ACTIVE_CHECKED} /></td>
+	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:90px;" nowrap="nowrap"><span class="gensmall">{bots.BOT_LAST_VISIT}</span></td>
+	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:50px;" nowrap="nowrap"><b class="gensmall">{bots.BOT_COUNTER}</b></td>
+	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:80px;"><b class="gensmall"><a href="{bots.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{bots.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></b></td>
 </tr>
 <!-- END bots -->
 <!-- BEGIN no_bots -->

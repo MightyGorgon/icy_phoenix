@@ -132,7 +132,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 		}
 	}
@@ -147,7 +147,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 		{
 			if ($thispic['pic_approval'] != 1)
 			{
-				message_die(GENERAL_ERROR, $lang['Not_Authorised']);
+				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 		}
 	}
