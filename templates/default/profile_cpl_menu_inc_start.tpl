@@ -1,7 +1,7 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td id="var_width" width="220" valign="top" align="left" style="padding-right:7px;">
-		<div id="quick_links_profile2" style="padding-top:5px;display:none;margin-left:0px;text-align:left;position:relative;float:left;"><a href="javascript:ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');setWidth(220);" title="{L_SHOW} {L_CPL_NAV}"><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_SHOW} {L_CPL_NAV}" /></a></div>
+	<td id="var_width" width="160" valign="top" align="left" style="padding-right:7px;">
+		<div id="quick_links_profile2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="javascript:ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');setWidth('var_width',160);setWidth('full_width','auto');" title="{L_SHOW} {L_CPL_NAV}"><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_SHOW} {L_CPL_NAV}" /></a></div>
 		<div id="quick_links_profile">
 		<script type="text/javascript">
 		<!--
@@ -9,21 +9,22 @@
 		if(GetCookie(tmp) == '2')
 		{
 			ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');
-			setWidth(16);
+			setWidth('var_width', 16);
+			//setWidth('full_width', '100%');
 		}
 		//-->
 		</script>
-		{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');setWidth(16);" alt="{L_SHOW}" />
+		{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_SHOW}" />
 		<span class="forumlink">{L_CPL_NAV}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<th style="cursor:pointer;" align="left" onclick="ShowHide('personal_profile','personal_profile2','personal_profile');">
 				<img src="{IMG_NAV_MENU_USERS}" alt="{L_CPL_PERSONAL_PROFILE}" title="{L_CPL_PERSONAL_PROFILE}" />&nbsp;
-				<a href="javascript:void(0);" title="{L_CPL_PERSONAL_PROFILE}" style="vertical-align:top;text-decoration:none;"><b>{L_CPL_PERSONAL_PROFILE}</b></a>
+				<a href="javascript:void(0);" title="{L_CPL_PERSONAL_PROFILE}" style="vertical-align: top; text-decoration: none;"><b>{L_CPL_PERSONAL_PROFILE}</b></a>
 			</th>
 		</tr>
 		<tr>
 			<td class="row5">
-				<div id="personal_profile2" style="display:none;position:relative;padding-top:0px;padding-bottom:0px;">
+				<div id="personal_profile2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
 					<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
@@ -55,7 +56,7 @@
 					</tr>
 					</table>
 				</div>
-				<div id="personal_profile" style="display:'';position:relative;">
+				<div id="personal_profile" style="display: inline; position: relative;">
 					<script type="text/javascript">
 					<!--
 					tmp = 'personal_profile';
@@ -69,14 +70,14 @@
 			</td>
 		</tr>
 		<tr>
-			<th style="cursor:pointer;" align="left" onclick="ShowHide('settings_options','settings_options2','settings_options');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('settings_options','settings_options2','settings_options');">
 				<img src="{IMG_NAV_MENU_WSETTINGS}" alt="{L_CPL_SETTINGS_OPTIONS}" title="{L_CPL_SETTINGS_OPTIONS}" />&nbsp;
-				<a href="javascript:void(0);" title="{L_CPL_SETTINGS_OPTIONS}" style="vertical-align:top;text-decoration:none;"><b>{L_CPL_SETTINGS_OPTIONS}</b></a>
+				<a href="javascript:void(0);" title="{L_CPL_SETTINGS_OPTIONS}" style="vertical-align: top; text-decoration: none;"><b>{L_CPL_SETTINGS_OPTIONS}</b></a>
 			</th>
 		</tr>
 		<tr>
 			<td class="row5">
-				<div id="settings_options2" style="display:none;position:relative;padding-top:0px;padding-bottom:0px;">
+				<div id="settings_options2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
 					<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
 						<td width="8" align="left" valign="middle">{IMG_NAV_MENU_SEP}</td>
@@ -102,7 +103,7 @@
 					<!-- END login_sec_link -->
 					</table>
 				</div>
-				<div id="settings_options" style="display:'';position:relative;">
+				<div id="settings_options" style="display: inline; position: relative;">
 					<script type="text/javascript">
 					<!--
 					tmp = 'settings_options';
@@ -116,14 +117,14 @@
 			</td>
 		</tr>
 		<tr>
-			<th style="cursor:pointer;" align="left" onclick="ShowHide('private_messages','private_messages2','private_messages');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('private_messages','private_messages2','private_messages');">
 				<img src="{IMG_NAV_MENU_PM}" alt="{L_CPL_PRIVATE_MESSAGES}" title="{L_CPL_PRIVATE_MESSAGES}" />&nbsp;
-				<a href="javascript:void(0)" title="{L_CPL_PRIVATE_MESSAGES}" style="vertical-align:top;text-decoration:none;"><b>{L_CPL_PRIVATE_MESSAGES}</b></a>
+				<a href="javascript:void(0)" title="{L_CPL_PRIVATE_MESSAGES}" style="vertical-align: top; text-decoration: none;"><b>{L_CPL_PRIVATE_MESSAGES}</b></a>
 			</th>
 		</tr>
 		<tr>
 			<td class="row5">
-				<div id="private_messages2" style="display:none;position:relative;padding-top:0px;padding-bottom:0px;">
+				<div id="private_messages2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
 					<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
 						<td width="8" align="left" valign="middle">{IMG_NAV_MENU_SEP}</td>
@@ -153,7 +154,7 @@
 					-->
 					</table>
 				</div>
-				<div id="private_messages" style="display:'';position:relative;">
+				<div id="private_messages" style="display: inline; position: relative;">
 					<script type="text/javascript">
 					<!--
 					tmp = 'private_messages';
@@ -167,14 +168,14 @@
 			</td>
 		</tr>
 		<tr>
-			<th style="cursor:pointer;" align="left" onclick="ShowHide('more_info','more_info2','more_info');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('more_info','more_info2','more_info');">
 				<img src="{IMG_NAV_MENU_STAR}" alt="{L_CPL_MORE_INFO}" title="{L_CPL_MORE_INFO}" />&nbsp;
-				<a href="javascript:void(0)" title="{L_CPL_MORE_INFO}" style="vertical-align:top;text-decoration:none;"><b>{L_CPL_MORE_INFO}</b></a>
+				<a href="javascript:void(0)" title="{L_CPL_MORE_INFO}" style="vertical-align: top; text-decoration: none;"><b>{L_CPL_MORE_INFO}</b></a>
 			</th>
 		</tr>
 		<tr>
 			<td class="row5">
-				<div id="more_info2" style="display:none;position:relative;padding-top:0px;padding-bottom:0px;">
+				<div id="more_info2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
 					<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
 						<td width="8" align="left" valign="middle">{IMG_NAV_MENU_SEP}</td>
@@ -208,7 +209,7 @@
 					</tr>
 					</table>
 				</div>
-				<div id="more_info" style="display:'';position:relative;">
+				<div id="more_info" style="display: inline; position: relative;">
 					<script type="text/javascript">
 					<!--
 					tmp = 'more_info';
@@ -225,4 +226,4 @@
 		{FRIENDS_ONLINE}
 		</div>
 	</td>
-	<td width="100%" valign="top" style="padding-left:7px;">
+	<td id="full_width" valign="top" style="padding-left: 7px;">

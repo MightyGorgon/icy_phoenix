@@ -170,7 +170,7 @@ if($link_title && $link_desc && $link_category && $link_url)
 
 					if (empty($board_config['privmsg_disable']) && $link_config['pm_notify'])
 					{
-						include_once(IP_ROOT_PATH . 'includes/functions_privmsgs.' . PHP_EXT);
+						include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
 
 						$html_on = 0;
 						$acro_auto_on = 0;
@@ -189,7 +189,7 @@ if($link_title && $link_desc && $link_category && $link_url)
 								$privmsg_message = sprintf($lang['Link_pm_notify_message'], $link_url);
 								$privmsg_message = stripslashes(prepare_message($privmsg_message, $html_on, $bbcode_on, $smilies_on));
 
-								$privmsg = new privmsgs();
+								$privmsg = new class_pm();
 								$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
 								$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
 								unset($privmsg);

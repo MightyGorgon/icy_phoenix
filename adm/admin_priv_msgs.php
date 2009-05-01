@@ -43,7 +43,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include_once('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_privmsgs_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/class_privmsgs_admin.' . PHP_EXT);
 
 define('PRIVMSGS_ALL_MAIL', -1);
 $aprvmUtil = new aprvmUtils();

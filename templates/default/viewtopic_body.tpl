@@ -20,7 +20,7 @@ function post_time_edit(url)
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom">
-		<h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2><br />
+		<div style="overflow: hidden; max-width: 720px;"><h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2></div><br />
 		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}" /></a></span>&nbsp;
@@ -302,7 +302,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF not S_BOT -->
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><b><br/>{TOTAL_USERS_ONLINE}<br/>{LOGGED_IN_USER_LIST}</b></span><br /><br /></td></tr>
+<tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><b><br />{TOTAL_USERS_ONLINE}<br />{LOGGED_IN_USER_LIST}</b></span><br /><br /></td></tr>
 </table>
 <!-- ENDIF -->
 

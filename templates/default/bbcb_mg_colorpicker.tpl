@@ -1,3 +1,5 @@
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
+
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}js/color_bar.js"></script>
 <!-- <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorpicker.js"></script> -->
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/prototype_cp.js"></script>
@@ -10,7 +12,7 @@
 
 <div style="width:420px;">
 
-<div style="display:inline;float:right;">
+<div style="display: inline; float: right;">
 <div id="cp1_Preview" onclick="javascript:InsertTagExt('#' + document.getElementById('cp1_Hex').value);" style="background-color:#FFFFFF;width:60px;height:60px;padding:0;margin:0;border: solid 1px #000000;"><br /></div><br />
 <input type="radio" id="cp1_HueRadio" name="cp1_Mode" value="0" tabindex="20" /><label for="cp1_HueRadio"><tt>H:</tt></label><input type="text" id="cp1_Hue" value="0" style="width:40px;" class="mainoption" tabindex="30" /> &deg;<br />
 <input type="radio" id="cp1_SaturationRadio" name="cp1_Mode" value="1" tabindex="21" /><label for="cp1_SaturationRadio"><tt>S:</tt></label><input type="text" id="cp1_Saturation" value="100" style="width:40px;" class="mainoption" tabindex="31" /> %<br />

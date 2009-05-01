@@ -15,7 +15,7 @@
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom" width="65%">
-		<span class="gensmall">{L_MODERATOR}:&nbsp;{MODERATORS}</span><br /><!-- IF not S_BOT --><span class="gensmall">{TOTAL_USERS_ONLINE}</span><br/><span class="gensmall">{LOGGED_IN_USER_LIST}</span><br /><span class="gensmall">{BOT_LIST}&nbsp;</span><br /><!-- ENDIF -->
+		<span class="gensmall">{L_MODERATOR}:&nbsp;{MODERATORS}</span><br /><!-- IF not S_BOT --><span class="gensmall">{TOTAL_USERS_ONLINE}&nbsp;</span><br /><span class="gensmall">{LOGGED_IN_USER_LIST}&nbsp;</span><br /><span class="gensmall">{BOT_LIST}&nbsp;</span><br /><!-- ENDIF -->
 	</td>
 	<td align="right" valign="bottom" rowspan="2">
 		<span class="gen">{PAGE_NUMBER}</span><br />
@@ -30,14 +30,14 @@
 </table>
 {BOARD_INDEX}
 
-<form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
+<form method="post" action="{S_POST_DAYS_ACTION}" style="display: inline;">
 {IMG_THL}{IMG_THC}<a href="{U_VIEW_FORUM}" class="forumlink">{FORUM_NAME}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- IF VIEWFORUM_BANNER_TOP -->
 <tr><td class="row3 row-center" colspan="7">{VIEWFORUM_BANNER_TOP}</td></tr>
 <!-- ENDIF -->
 <tr>
 	<th colspan="2"><a href="{U_VF_TITLE_SORT}" title="{L_CURRENT_SORT}">{L_TOPICS}{VF_TITLE_SORT}</a></th>
-	<th><a href="{U_VF_TIME_SORT}" title="{L_CURRENT_SORT}">{L_AUTHOR}{VF_TIME_SORT}</a></th>
+	<!-- <th><a href="{U_VF_TIME_SORT}" title="{L_CURRENT_SORT}">{L_AUTHOR}{VF_TIME_SORT}</a></th> -->
 	<th width="50"><a href="{U_VF_VIEWS_SORT}" title="{L_CURRENT_SORT}">{L_VIEWS}{VF_VIEWS_SORT}</a></th>
 	<th width="50"><a href="{U_VF_REPLIES_SORT}" title="{L_CURRENT_SORT}">{L_REPLIES}{VF_REPLIES_SORT}</a></th>
 	<!-- BEGIN rating_switch -->
@@ -56,9 +56,10 @@
 		<!-- BEGIN switch_topic_desc -->
 		<span class="gensmall">&nbsp;{topicrow.switch_topic_desc.TOPIC_DESCRIPTION}</span><br />
 		<!-- END switch_topic_desc -->
-		{topicrow.GOTO_PAGE}
+		<div style="float: right; display: block; height: auto; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{topicrow.GOTO_PAGE}</div>
+		<div class="gensmall" style="padding-top: 5px;">{topicrow.TOPIC_AUTHOR}&nbsp;&bull;&nbsp;{topicrow.FIRST_POST_TIME}</div>
 	</td>
-	<td class="row3 row-center-small" nowrap="nowrap" style="padding-top: 0; padding-left: 2px; padding-right: 2px;">{topicrow.FIRST_POST_TIME}<br />{topicrow.TOPIC_AUTHOR}</td>
+	<!-- <td class="row3 row-center-small" nowrap="nowrap" style="padding-top: 0; padding-left: 2px; padding-right: 2px;">{topicrow.FIRST_POST_TIME}<br />{topicrow.TOPIC_AUTHOR}</td> -->
 	<td class="row2 row-center-small">{topicrow.VIEWS}</td>
 	<td class="row2 row-center-small">{topicrow.REPLIES}</td>
 	<!-- BEGIN rate_switch_msg -->
@@ -107,11 +108,11 @@
 <tr>
 	<td align="left" valign="top" nowrap="nowrap">
 		<!-- IF not S_BOT --><span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span><br /><!-- ENDIF -->
-		<div style="margin-right:30px;">{IMG_TBL}<div id="icon_description_h" style="display: none;">
+		<div style="margin-right: 30px;">{IMG_TBL}<div id="icon_description_h" style="display: none;">
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display:inline;{SHOW_HIDE_PADDING}float:right;cursor:pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
+					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
 				</td>
 			</tr>
 			</table>
@@ -120,7 +121,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header" colspan="6">
-					<div style="display:inline;{SHOW_HIDE_PADDING}float:right;cursor:pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
+					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
 				</td>
 			</tr>
 			<tr>
@@ -187,7 +188,7 @@
 		}
 		//-->
 		</script>
-		<div style="margin-top:6px;margin-bottom:4px;">{JUMPBOX}</div><br />
+		<div style="margin-top: 6px; margin-bottom: 4px;">{JUMPBOX}</div><br />
 	</td>
 	<td width="40%" align="right" valign="top" nowrap="nowrap">
 		<span class="pagination">{PAGINATION}</span><br />
@@ -195,7 +196,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display:inline;{SHOW_HIDE_PADDING}float:right;cursor:pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			</table>
@@ -204,7 +205,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display:inline;{SHOW_HIDE_PADDING}float:right;cursor:pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			<tr><td class="row1">{S_AUTH_LIST}</td></tr>

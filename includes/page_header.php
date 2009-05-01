@@ -319,13 +319,13 @@ else
 
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
-			include_once(IP_ROOT_PATH . 'includes/functions_privmsgs.' . PHP_EXT);
+			include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
 			$privmsg_subject = sprintf($pm_subject, $board_config['sitename']);
 			$privmsg_message = sprintf($pm_text, $board_config['sitename'], $board_config['sitename']);
 			$privmsg_sender = $founder_id;
 			$privmsg_recipient = $userdata['user_id'];
 
-			$privmsg = new privmsgs();
+			$privmsg = new class_pm();
 			$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
 			$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
 			unset($privmsg);

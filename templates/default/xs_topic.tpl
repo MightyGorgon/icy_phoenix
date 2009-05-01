@@ -1,3 +1,4 @@
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 <script type="text/javascript">
 <!--
 function openAllSmiles()

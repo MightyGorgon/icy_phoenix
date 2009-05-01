@@ -772,7 +772,7 @@ li.code-row {
 	white-space: normal;
 	border-top: 1px #dddddd solid;
 	color: #bbbbbb;
-	wrap-option: emergency;
+	/*wrap-option: emergency;*/
 }
 
 .code-row-text {

@@ -3,7 +3,7 @@
 <head>
 <title>Links</title>
 <meta http-equiv="Content-Type" content="text/html; charset={S_CONTENT_ENCODING}">
-<!-- <link rel="stylesheet" href="{T_TPL_PATH}style_{TPL_COLOR}.css" type="text/css" /> -->
+<!-- <link rel="stylesheet" href="{T_TPL_PATH}style_{CSS_COLOR}.css" type="text/css" /> -->
 </head>
 <body style="margin-top:0px;margin-left:0px;">
 <script type="text/javascript">
@@ -29,7 +29,7 @@ function writeDiv()
 	}
 	else
 	{
-		for(var j=0; j<linkrow.length; j++)
+		for(var j = 0; j < linkrow.length; j++)
 		{
 			link_innerHTML += linkrow[j];
 		}

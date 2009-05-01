@@ -598,12 +598,14 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #dd2222; text-decoration:
 	background: #ffffff url('images/cyan/bg_nav2.gif') top left repeat-x;
 	border: #888888 1px solid;
 	color: #225599;
+	text-decoration: none;
 }
 
 .gotopage a:hover, .gotopage a:active, .pagination a:hover, .pagination a:active {
 	padding: 1px;
 	border: #dd2222 1px solid;
 	color: #336699;
+	text-decoration: none;
 }
 
 /* post */
@@ -811,7 +813,7 @@ li.code-row {
 	white-space: normal;
 	border-top: 1px #dddddd solid;
 	color: #bbbbbb;
-	wrap-option: emergency;
+	/*wrap-option: emergency;*/
 }
 
 .code-row-text {

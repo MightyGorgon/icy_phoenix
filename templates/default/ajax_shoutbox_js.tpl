@@ -1,6 +1,7 @@
 <!-- BEGIN view_shoutbox -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/fat.js"></script>
 <script type="text/javascript">
+// <![CDATA[
 // Based in the  XHTML live Chat (http://www.plasticshore.com)
 // This script is published under a creative commons license
 // license: http://creativecommons.org/licenses/by-nc-sa/2.0/
@@ -690,6 +691,7 @@ function updateOnline()
 	dbonline.length = 0;
 }
 //-->
+// ]]>
 </script>
 <!-- ONLINE BLOCK - END -->
 <!-- END view_shoutbox -->

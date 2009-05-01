@@ -279,8 +279,8 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	{
 		if ($mass_pm)
 		{
-			include_once(IP_ROOT_PATH . 'includes/functions_privmsgs.' . PHP_EXT);
-			$privmsg = new privmsgs();
+			include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
+			$privmsg = new class_pm();
 		}
 		$bcc_list = '';
 		do

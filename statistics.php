@@ -29,7 +29,7 @@ while ($row = $db->sql_fetchrow($result))
 }
 
 include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_stats_module.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/class_stats_module.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);

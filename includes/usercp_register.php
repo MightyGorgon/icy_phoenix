@@ -1154,13 +1154,13 @@ if (isset($_POST['submit']))
 
 			// PM ON REGISTER - BEGIN
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-			include_once(IP_ROOT_PATH . 'includes/functions_privmsgs.' . PHP_EXT);
+			include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
 			$privmsg_sender = $founder_id;
 			$privmsg_recipient = $user_id;
 			$privmsg_subject = sprintf($lang['register_pm_subject'], $board_config['sitename']);
 			$privmsg_message = sprintf($lang['register_pm'], $board_config['sitename'], $board_config['sitename']);
 
-			$privmsg = new privmsgs();
+			$privmsg = new class_pm();
 			$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
 			unset($privmsg);
 			// PM ON REGISTER - END

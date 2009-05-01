@@ -75,7 +75,7 @@ if (!defined('IP_ROOT_PATH'))
 <html>
 <head><title>CBACK CrackerTracker :: Security Alert</title></head>
 <body>
-<br/>
+<br />
 <div align="center">
 <table style="border:2px solid #000000" border="0" width="600" cellpadding="10" cellspacing="0">
 <tr>

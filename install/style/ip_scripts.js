@@ -193,10 +193,12 @@ function setWidth(tmpWidth)
 	if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
 	{
 		cellobject.style.width = tmpWidth;
+		//cellobject.style['min-width'] = tmpWidth;
 	}
 	else
 	{
 		cellobject.width = tmpWidth;
+		//cellobject.['min-width'] = tmpWidth;
 	}
 }
 // Set Width - END

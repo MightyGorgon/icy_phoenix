@@ -1,4 +1,34 @@
 <script type="text/javascript">
+// <![CDATA[
+var form_name_original = form_name;
+var text_name_original = text_name;
+var form_name_thisform = 'commentform';
+var text_name_thisform = 'comment';
+
+{JAVASCRIPT_LANG_VARS}
+
+s_help = "{L_BBCODE_S_HELP}";
+s_s_help = "{L_BBCODE_S_HELP}";
+
+var bbcb_mg_img_path = "{BBCB_MG_PATH_PREFIX}images/bbcb_mg/images/gif/";
+var bbcb_mg_img_ext = ".gif";
+
+function bbcb_vars_reassign_start()
+{
+	form_name = form_name_thisform;
+	text_name = text_name_thisform;
+}
+
+function bbcb_vars_reassign_end()
+{
+	form_name = form_name_original;
+	text_name = text_name_original;
+}
+// ]]>
+</script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
+
+<script type="text/javascript">
 <!--
 function checkForm()
 {
@@ -42,113 +72,6 @@ function checkFormRate()
 	}
 }
 
-// Startup variables
-var imageTag = false;
-var theSelection = false;
-
-// Check for Browser & Platform for PC & IE specific bits
-// More details from: http://www.mozilla.org/docs/web-developer/sniffer/browser_type.html
-var clientPC = navigator.userAgent.toLowerCase(); // Get client info
-var clientVer = parseInt(navigator.appVersion); // Get browser version
-
-var is_ie = ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1));
-var is_nav = ((clientPC.indexOf('mozilla')!=-1) && (clientPC.indexOf('spoofer')==-1)
-		&& (clientPC.indexOf('compatible') == -1) && (clientPC.indexOf('opera')==-1)
-		&& (clientPC.indexOf('webtv')==-1) && (clientPC.indexOf('hotjava')==-1));
-var is_moz = 0;
-
-var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1));
-var is_mac = (clientPC.indexOf("mac")!=-1);
-
-var baseHeight;
-
-//var oldonload = window.onload;
-//if(typeof(oldonload) == 'function')
-//{
-//	window.onload = function(){oldonload();initInsertions()};
-//}
-//else
-//{
-//	window.onload = function(){initInsertions()};
-//}
-
-//window.onload = initInsertions;
-
-function initInsertions()
-{
-	//document.commentform.comment.focus();
-	if (is_ie && typeof(baseHeight) != 'number') baseHeight = document.selection.createRange().duplicate().boundingHeight;
-}
-
-function emoticon(text)
-{
-	var txtarea = document.commentform.comment;
-	text = ' ' + text + ' ';
-	if (txtarea.createTextRange && txtarea.caretPos)
-	{
-		if (baseHeight != txtarea.caretPos.boundingHeight)
-		{
-			txtarea.focus();
-			storeCaret(txtarea);
-		}
-		var caretPos = txtarea.caretPos;
-		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
-		txtarea.focus();
-	}
-	else if ((txtarea.selectionEnd | txtarea.selectionEnd == 0) && (txtarea.selectionStart | txtarea.selectionStart == 0))
-	{
-		mozInsert(txtarea, text, "");
-		return;
-	}
-	else
-	{
-		txtarea.value += text;
-		txtarea.focus();
-	}
-}
-
-// Insert at Caret position. Code from
-// http://www.faqts.com/knowledge_base/view.phtml/aid/1052/fid/130
-function storeCaret(textEl)
-{
-	if (textEl.createTextRange) textEl.caretPos = document.selection.createRange().duplicate();
-}
-
-function mozWrap(txtarea, open, close)
-{
-	var selLength = txtarea.textLength;
-	var selStart = txtarea.selectionStart;
-	var selEnd = txtarea.selectionEnd;
-	if (selEnd == 1 || selEnd == 2)
-	{
-		selEnd = selLength;
-	}
-
-	var s1 = (txtarea.value).substring(0,selStart);
-	var s2 = (txtarea.value).substring(selStart, selEnd)
-	var s3 = (txtarea.value).substring(selEnd, selLength);
-	txtarea.value = s1 + open + s2 + close + s3;
-	return;
-}
-
-function mozInsert(txtarea, openTag, closeTag)
-{
-	if (txtarea.selectionEnd > txtarea.value.length)
-	{
-		txtarea.selectionEnd = txtarea.value.length;
-	}
-
-	var startPos = txtarea.selectionStart;
-	var endPos = txtarea.selectionEnd + openTag.length;
-
-	txtarea.value=txtarea.value.slice(0,startPos) + openTag + txtarea.value.slice(startPos);
-	txtarea.value=txtarea.value.slice(0,endPos) + closeTag + txtarea.value.slice(endPos);
-
-	txtarea.selectionStart = startPos + openTag.length;
-	txtarea.selectionEnd = endPos;
-	txtarea.focus();
-}
-
 //pops up a window with all smilies
 function openAllSmiles()
 {
@@ -159,11 +82,11 @@ function openAllSmiles()
 // -->
 </script>
 
-<form action="{S_ALBUM_ACTION}" method="post">
 <div style="margin-top: 5px; text-align: right;">
 {ALBUM_SEARCH_BOX}
 </div>
 
+<form action="{S_ALBUM_ACTION}" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{PIC_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1 row-center"><img src="{U_PIC}" border="0" vspace="10" alt="{PIC_TITLE}" title="{PIC_TITLE}" /></td></tr>
 <tr>
@@ -221,7 +144,7 @@ function openAllSmiles()
 		<tr>
 			<td align="center">
 			<!-- BEGIN smilies -->
-				<img src="{switch_comment_post.smilies.URL}" style="padding: 2px;" border="0" onmouseover="this.style.cursor='pointer';" onclick="emoticon('{switch_comment_post.smilies.CODE}');" alt="{switch_comment_post.smilies.DESC}" />
+				<img src="{switch_comment_post.smilies.URL}" style="padding: 2px;" border="0" onmouseover="this.style.cursor='pointer';" onclick="javascript:bbcb_vars_reassign_start();emoticon('{switch_comment_post.smilies.CODE}');bbcb_vars_reassign_end();" alt="{switch_comment_post.smilies.DESC}" />
 			<!-- END smilies -->
 			</td>
 		</tr>

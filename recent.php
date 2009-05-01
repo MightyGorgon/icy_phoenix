@@ -339,11 +339,12 @@ for($i = 0; $i < count($line); $i++)
 	if(($replies + 1) > $board_config['posts_per_page'])
 	{
 		$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
-		$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
+		//$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
+		$goto_page = ' <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;';
 		$times = '1';
 		for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 		{
-			$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
+			$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '" title="' . $lang['Goto_page'] . ' ' . $times . '"><b>' . $times . '</b></a>';
 			if(($times == '1') && ($total_pages > '4'))
 			{
 				$goto_page .= ' ... ';
@@ -352,11 +353,13 @@ for($i = 0; $i < count($line); $i++)
 			}
 			elseif($times < $total_pages)
 			{
-				$goto_page .= ', ';
+				//$goto_page .= ', ';
+				$goto_page .= ' ';
 			}
 			$times++;
 		}
-		$goto_page .= ' ] ';
+		//$goto_page .= ' ] ';
+		$goto_page .= ' ';
 	}
 	else
 	{

@@ -1,0 +1,36 @@
+input, select, textarea {
+	box-sizing: content-box;
+}
+
+.post-text {
+	/* this is set to avoid one line post being hidden by scrollers in IE */
+	height: auto !important; /* modern browsers */
+	/*height: 40px;*/ /* IE5.x and IE6 */
+	min-height: 40px; /* modern browsers */
+}
+
+.row1h, .row1h-new, .row2h, .row2h-new {
+	/*behavior: url('templates/common/pseudo-hover.htc');*/
+}
+
+li.code-row {
+	wrap-option: emergency;
+}
+
+/* IMG Fading - BEGIN */
+.imgfade{filter: alpha(opacity=80);}
+.imgfull{filter: alpha(opacity=100);}
+.imgfade_nm{filter: alpha(opacity=80);}
+.imgfull_nm{filter: alpha(opacity=100);}
+/* IMG Fading - END */
+
+/* MG PNG */
+img.pngimg {
+	behavior: url('templates/common/pngbehavior.htc');
+}
+
+/* ## ChromeStyle ## DropDown Menu ## */
+.dropmenudiv{
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=#cacaca,direction=135,strength=4); /*Add Shadow in IE. Remove if desired*/
+}
+

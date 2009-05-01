@@ -1,7 +1,7 @@
 <h1>{L_DETECTOR_TITLE}</h1>
 <form action="{S_ACTION}" method="post">
-<p>{L_DETECTOR_EXPLAIN}<br/></p>
-<br />
+<p>{L_DETECTOR_EXPLAIN}</p>
+<br /><br />
 
 <!-- BEGIN page -->
 <table width="100%" cellspacing="0" cellpadding="0" border="0">

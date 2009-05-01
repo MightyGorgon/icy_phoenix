@@ -27,6 +27,7 @@ function bbcb_vars_reassign_end()
 
 // ]]>
 </script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 
 <center>
 <table class="forumline" width="650" cellspacing="0" cellpadding="0">

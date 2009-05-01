@@ -281,7 +281,7 @@ unset($sql);
 
 if (defined('CACHE_INC') && CACHE_INC)
 {
-	include(IP_ROOT_PATH . 'includes/functions_cache.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
 	$cache = new ip_cache();
 }
 

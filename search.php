@@ -1717,15 +1717,15 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							$status = $regrow['registration_status'];
 							if ($status == REG_OPTION1)
 							{
-								$reg_user_own_reg .= '<span class="text_green">&#149;</span>';
+								$reg_user_own_reg .= '<span class="text_green">&bull;</span>';
 							}
 							elseif ($status == REG_OPTION2)
 							{
-								$reg_user_own_reg .= '<span class="text_blue">&#149;</span>';
+								$reg_user_own_reg .= '<span class="text_blue">&bull;</span>';
 							}
 							elseif ($status == REG_OPTION3)
 							{
-								$reg_user_own_reg .= '<span class="text_red">&#149;</span>';
+								$reg_user_own_reg .= '<span class="text_red">&bull;</span>';
 							}
 						}
 
@@ -1796,7 +1796,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if (($replies + 1) > $board_config['posts_per_page'])
 				{
 					$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
-					$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
+					$goto_page = ' [ <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
 
 					$times = 1;
 					for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])

@@ -16,7 +16,7 @@ if (!defined('IN_ICYPHOENIX'))
 /**
 * Private Messages Class
 */
-class privmsgs
+class class_pm
 {
 	/*
 	* PM Send

@@ -172,7 +172,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF not S_BOT -->
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><b><br/>{TOTAL_USERS_ONLINE}<br/>{LOGGED_IN_USER_LIST}</b></span><br /><br /></td></tr>
+<tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><b><br />{TOTAL_USERS_ONLINE}<br />{LOGGED_IN_USER_LIST}</b></span><br /><br /></td></tr>
 </table>
 <!-- ENDIF -->
 

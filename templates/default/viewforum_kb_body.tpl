@@ -4,7 +4,7 @@
 <tr>
 	<td align="left" valign="bottom" width="70%">
 		<!-- IF not S_BOT -->
-		<span class="gensmall">{TOTAL_USERS_ONLINE}<br/>{LOGGED_IN_USER_LIST}<br />{BOT_LIST}</span><br />
+		<span class="gensmall">{TOTAL_USERS_ONLINE}&nbsp;</span><br /><span class="gensmall">{LOGGED_IN_USER_LIST}&nbsp;</span><br /><span class="gensmall">{BOT_LIST}&nbsp;</span><br />
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span>
 		<!-- ELSE -->
 		&nbsp;

@@ -1,13 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="{S_CONTENT_DIRECTION}">
 <head>
-<!-- IE conditional comments: http://msdn.microsoft.com/workshop/author/dhtml/overview/ccomment_ovw.asp -->
-<!--[if IE]>
-<style type="text/css">
-/* IE hack to emulate the :hover & :focus pseudo-classes - Add the selectors below that required the extra attributes */
-.row1h, .row1h-new { behavior: url("{FULL_SITE_PATH}{T_COMMON_TPL_PATH}pseudo-hover.htc"); }
-</style>
-<![endif]-->
 <title>Icy Phoenix Administration</title>
 <meta http-equiv="Content-Type" content="text/html;" />
 <link rel="stylesheet" href="../templates/common/acp.css" type="text/css" />

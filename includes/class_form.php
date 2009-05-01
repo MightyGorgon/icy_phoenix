@@ -16,7 +16,7 @@ if (!defined('IN_ICYPHOENIX'))
 /**
 * This class is used to generate forms
 */
-class form_class
+class class_form
 {
 
 	/*

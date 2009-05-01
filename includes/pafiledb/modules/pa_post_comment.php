@@ -226,7 +226,7 @@ class pafiledb_post_comment extends pafiledb_public
 			$time = time();
 			if($length > $pafiledb_config['max_comment_chars'])
 			{
-				message_die(GENERAL_ERROR, 'Your comment is too long!<br/>The maximum length allowed in characters is ' . $pafiledb_config['max_comment_chars'] . '');
+				message_die(GENERAL_ERROR, 'Your comment is too long!<br />The maximum length allowed in characters is ' . $pafiledb_config['max_comment_chars'] . '');
 			}
 
 			$sql = 'INSERT INTO ' . PA_COMMENTS_TABLE . "(file_id, comments_text, comments_title, comments_time, poster_id)

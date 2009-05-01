@@ -699,6 +699,8 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 		if($b_id)
 		{
+			$message = $lang['Block_updated'];
+
 			$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
 				SET
 				title = '" . $b_title . "',
@@ -805,11 +807,12 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		else
 		{
+			$message = $lang['Block_added'];
+
 			$weight = get_max_blocks_position(CMS_BLOCKS_TABLE, $id_var_value, $b_bposition) + 1;
 			$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
 			$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $b_title . "', '" . $b_content . "', '" . $b_bposition . "', '" . $weight . "', '" . $b_active . "', '" . $b_type . "', '" . $b_blockfile . "', '" . $b_view . "', '" . $layout_value . "', '" . $layout_special_value . "', '" . $b_border . "', '" . $b_titlebar . "', '" . $b_background . "', '" . $b_local . "', '" . $b_group . "')";
-			$message = $lang['Block_added'];
 			if(!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not insert data into blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
@@ -849,7 +852,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		fix_weight_blocks($id_var_value, $table_name);
 		$db->clear_cache('cms_');
-		$message .= '<br /><br />' . $lang['Block_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
+		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')

@@ -20,7 +20,7 @@ function SetDays()
 <!-- BEGIN prune_list -->
 <tr>
 	<td class="row1">{prune_list.S_DAYS}</td>
-	<td class="row2">({prune_list.USER_COUNT})<br/>{prune_list.U_PRUNE}<br/>{prune_list.L_PRUNE_EXPLAIN}</td>
+	<td class="row2">({prune_list.USER_COUNT})<br />{prune_list.U_PRUNE}<br />{prune_list.L_PRUNE_EXPLAIN}</td>
 	<td class="row3">{prune_list.LIST}</td>
 </tr>
 <!-- END prune_list -->

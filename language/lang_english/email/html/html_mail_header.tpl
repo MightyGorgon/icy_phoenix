@@ -48,7 +48,7 @@
 			.code-content { padding: 0; }
 			.code-list { margin-top: 3px; margin-right: 0; margin-bottom: 3px; }
 			@media all and (min-width: 0px) { .code-list { margin-left: 40px; } }
-			li.code-row { white-space: normal; border-top: 1px #DDDDDD solid; color: #BBBBBB; wrap-option: emergency; }
+			li.code-row { white-space: normal; border-top: 1px #DDDDDD solid; color: #BBBBBB; /*wrap-option: emergency;*/ }
 			.code-row-text { color: #444444; }
 			div.code li.code-row-highlight { color: #FF2222; border-color: #D8D8D8; }
 			div.code li.code-row-highlight .code-row-text, div.code span.code-row-highlight { color: #FF2222; }

@@ -1,4 +1,4 @@
-<br/>
+<br />
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_BBUS_MOD_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0">
 <tr>
 	<th nowrap="nowrap">{L_BBUS_COLHEADER_FORUM}</th>

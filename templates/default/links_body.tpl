@@ -57,14 +57,14 @@ function checkForm()
 		</tr>
 		<!-- END linkrow -->
 		<tr>
-			<form method="post" action="{U_SITE_LINKS}">
-				<td class="cat" align="right" nowrap="nowrap" colspan="4">
+			<td class="cat" align="right" nowrap="nowrap" colspan="4">
+				<form method="post" action="{U_SITE_LINKS}">
 					<span class="genmed">
 						{L_SELECT_SORT_METHOD}:{S_MODE_SELECT}&nbsp;{L_ORDER}:{S_ORDER_SELECT}&nbsp;
 						<input type="submit" name="submit" value="{L_SORT}" class="liteoption" />&nbsp;
 					</span>
-				</td>
-			</form>
+				</form>
+			</td>
 		</tr>
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 		<br />

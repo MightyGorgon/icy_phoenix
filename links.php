@@ -285,7 +285,7 @@ if (($t == 'pop') || ($t == 'new'))
 
 			$template->assign_block_vars('linkrow', array(
 				'ROW_CLASS' => $row_class,
-				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']),
+				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']),
 				'LINK_TITLE' => $row['link_title'],
 				'LINK_DESC' => $row['link_desc'],
 				'LINK_LOGO_SRC' => $row['link_logo_src'],
@@ -391,8 +391,8 @@ if ($t == 'sub_pages')
 	}
 	$select_sort_order .= '</select>';
 
-	$select_sort_order = $select_sort_order . '<input type="hidden" name="t" value="' . $t .'">';
-	$select_sort_order = $select_sort_order . '<input type="hidden" name="cat" value="' . $cat .'">';
+	$select_sort_order = $select_sort_order . '<input type="hidden" name="t" value="' . $t . '" />';
+	$select_sort_order = $select_sort_order . '<input type="hidden" name="cat" value="' . $cat . '" />';
 
 	$template->assign_vars(array(
 		'L_SEARCH_SITE' => $lang['Search_site'],
@@ -460,7 +460,7 @@ if ($t == 'sub_pages')
 
 			$template->assign_block_vars('linkrow', array(
 				'ROW_CLASS' => $row_class,
-				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']),
+				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']),
 				'LINK_TITLE' => $row['link_title'],
 				'LINK_DESC' => $row['link_desc'],
 				'LINK_LOGO_SRC' => $row['link_logo_src'],

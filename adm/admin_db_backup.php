@@ -51,7 +51,7 @@ if ($is_allowed == false)
 
 // Define constants and then include functions
 define('ROWS_PER_STEP', 3000);
-include_once(IP_ROOT_PATH . 'includes/functions_db_backup.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/class_db_backup.' . PHP_EXT);
 
 // Request some vars
 $mode = request_var('mode', '');

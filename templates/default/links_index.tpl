@@ -45,24 +45,20 @@ function checkForm()
 		<!-- BEGIN linkrow1 -->
 		<tr>
 			<td class="row1 row-center" width="30" style="padding-right:5px;" nowrap="nowrap"><img src="{FOLDER_IMG}" alt="{linkrow1.LINK_TITLE}" title="{linkrow1.LINK_TITLE}" /></td>
-			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" width="100%" onclick="window.location.href='{linkrow1.LINK_URL}'">
-				<span class="forumlink"><a href="{linkrow1.LINK_URL}" class="forumlink">{linkrow1.LINK_TITLE}</a>
-			</td>
+			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" width="100%" onclick="window.location.href='{linkrow1.LINK_URL}'"><span class="forumlink"><a href="{linkrow1.LINK_URL}" class="forumlink">{linkrow1.LINK_TITLE}</a></span></td>
 			<td class="row2 row-center-small"><span class="genmed">{linkrow1.LINK_NUMBER}</span></td>
 		</tr>
 		<!-- END linkrow1 -->
 		<!-- BEGIN linkrow0 -->
 		<tr>
 			<td class="row1 row-center" width="30" style="padding-right:5px;" nowrap="nowrap"><img src="{FOLDER_IMG}" alt="{linkrow0.LINK_TITLE}" title="{linkrow0.LINK_TITLE}" /></td>
-			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" width="100%" onclick="window.location.href='{linkrow0.LINK_URL}'">
-				<span class="forumlink"><a href="{linkrow0.LINK_URL}" class="forumlink">{linkrow0.LINK_TITLE}</a>
-			</td>
+			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" width="100%" onclick="window.location.href='{linkrow0.LINK_URL}'"><span class="forumlink"><a href="{linkrow0.LINK_URL}" class="forumlink">{linkrow0.LINK_TITLE}</a></span></td>
 			<td class="row2 row-center"><span class="genmed">{linkrow0.LINK_NUMBER}</span></td>
 		</tr>
 		<!-- END linkrow0 -->
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 		<div align="center" style="font-family: Verdana; font-size: 10px; letter-spacing: -1px">
-			<br />Links MOD v1.2.2 by <a href="http://www.phpbb2.de" target="_blank">phpBB2.de</a> and OOHOO and <a href="http://mail.dhjh.tcc.edu.tw/~gzqbyr/" target="_gzqbyr">CRLin</a>.
+			<br />Links MOD v1.2.2 by <a href="http://www.phpbb2.de" target="_blank">phpBB2.de</a> and OOHOO and <a href="http://mail.dhjh.tcc.edu.tw/~gzqbyr/" target="_blank">CRLin</a>.
 		</div>
 	</td>
 </tr>

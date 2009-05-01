@@ -99,7 +99,7 @@ $lang['Cash_currency_dbfield'] = 'Database field for currency';
 $lang['Cash_currency_decimals'] = 'Number of decimals for currency';
 $lang['Cash_currency_default'] = 'Default value for currency';
 
-$lang['Bad_dbfield'] = 'Bad field name, must be in the form \'user_word\'<br /><br />%s<br /><br/>Examples:<br />user_points<br />user_cash<br />user_money<br />user_warnings<br /><br />';
+$lang['Bad_dbfield'] = 'Bad field name, must be in the form \'user_word\'<br /><br />%s<br /><br />Examples:<br />user_points<br />user_cash<br />user_money<br />user_warnings<br /><br />';
 
 // 0 currencies (most admin panels won't work... )
 $lang['Insufficient_currencies'] = 'You need to create Currencies before you can alter settings';

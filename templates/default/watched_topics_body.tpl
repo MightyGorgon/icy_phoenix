@@ -45,8 +45,8 @@ function setCheckboxes(theForm, elementName, isChecked)
 		{topic_watch_row.GOTO_PAGE}
 	</td>
 	<td class="row2 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_REPLIES}</span></td>
-	<td class="row1 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_START}<br/>{topic_watch_row.TOPIC_POSTER}</span></td>
-	<td class="row2 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_LAST}<br/>{topic_watch_row.LAST_POSTER}</span></td>
+	<td class="row1 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_START}<br />{topic_watch_row.TOPIC_POSTER}</span></td>
+	<td class="row2 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_LAST}<br />{topic_watch_row.LAST_POSTER}</span></td>
 	<td class="row1 row-center" nowrap="nowrap"><input type="checkbox" name="unwatch_list[]" value="{topic_watch_row.S_WATCHED_TOPIC_ID}" /></td>
 </tr>
 <!-- END topic_watch_row -->
@@ -61,7 +61,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 <!-- BEGIN switch_watched_topics_block -->
 <div align="right">
 	<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a>
-	<br/>
+	<br />
 	<!-- END switch_watched_topics_block -->
 	<div class="pagination"><!-- IF PAGINATION -->{PAGINATION}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>
 	<!-- BEGIN switch_watched_topics_block -->

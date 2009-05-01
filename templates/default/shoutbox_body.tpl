@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{T_URL}/style_{TPL_COLOR}.css" type="text/css">
 </head>
 
-<body style="margin:0px;padding:0px;">
+<body style="margin: 0px; padding: 0px;">
 <script src="{T_COMMON_TPL_PATH}js/bbcode.js" type="text/javascript" ></script>
 <form method="post" name="post" action="{U_SHOUTBOX}" onsubmit="return checkForm(this)">
 {ERROR_BOX}

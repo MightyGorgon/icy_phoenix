@@ -89,49 +89,42 @@ var theSelection = false;
 var clientPC = navigator.userAgent.toLowerCase(); // Get client info
 var clientVer = parseInt(navigator.appVersion); // Get browser version
 
-var is_ie = ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1));
-var is_nav = ((clientPC.indexOf('mozilla')!= -1) && (clientPC.indexOf('spoofer')== -1)
-		&& (clientPC.indexOf('compatible') == -1) && (clientPC.indexOf('opera')== -1)
-		&& (clientPC.indexOf('webtv')== -1) && (clientPC.indexOf('hotjava')== -1));
-var is_moz = 0;
-
-var is_win = ((clientPC.indexOf("win") != -1) || (clientPC.indexOf("16bit") != -1));
-var is_mac = (clientPC.indexOf("mac") != -1);
-
-// Other check in vars...
-var uAgent = navigator.userAgent;
-var ns4 = (document.layers) ? true : false;   //NS 4
-var ie4 = (document.all) ? true : false;   //IE 4
-var dom = (document.getElementById) ? true : false;   //DOM
-var ope = uAgent.indexOf("Opera") > -1 && dom ? true : false; // + OP5
-var ie5 = (dom && ie4 && !ope) ? true : false; // IE5
-var ns6 = (dom && uAgent.indexOf("Netscape")>-1) ? true : false; // + NS 6
-var khtml = uAgent.indexOf("khtml") > -1 ? true : false; // + Konqueror
-//alert("UserAgent: "+uAgent+"\nns4 :"+ns4+"\nie4 :"+ie4+"\ndom :"+dom+"\nie5 :"+ie5+"\nns6 :"+ns6+"\nope :"+ope+"\nkhtml :"+khtml);
+var is_ie = ((clientPC.indexOf('msie') != -1) && (clientPC.indexOf('opera') == -1));
+var is_win = ((clientPC.indexOf('win') != -1) || (clientPC.indexOf('16bit') != -1));
 
 var baseHeight;
 
-//var oldonload = window.onload;
-//if(typeof(oldonload) == 'function')
-//{
-//	window.onload = function(){oldonload();initInsertions()};
-//}
-//else
-//{
-//	window.onload = function(){initInsertions()};
-//}
-
-//window.onload = initInsertions;
-
-// phpBB3 onload function... not implemented yet in Icy Phoenix
+// phpBB3 onload function...
 //onload_functions.push('initInsertions()');
 
+/**
+* Fix a bug involving the TextRange object. From
+* http://www.frostjedi.com/terra/scripts/demo/caretBug.html
+*/
 function initInsertions()
 {
-	document.forms[form_name].elements[text_name].focus();
+	var doc;
+
+	if (document.forms[form_name])
+	{
+		doc = document;
+	}
+	else
+	{
+		doc = opener.document;
+	}
+
+	var textarea = doc.forms[form_name].elements[text_name];
+
 	if (is_ie && typeof(baseHeight) != 'number')
 	{
-		baseHeight = document.selection.createRange().duplicate().boundingHeight;
+		textarea.focus();
+		baseHeight = doc.selection.createRange().duplicate().boundingHeight;
+
+		if (!document.forms[form_name])
+		{
+			document.body.focus();
+		}
 	}
 }
 

@@ -156,7 +156,7 @@ function album_debug_dump_array_html($arr)
 		}
 	}
 
-	echo "</blockquote>$indent)<br/>";
+	echo "</blockquote>$indent)<br />";
 }
 
 function album_debug_render($variable, $array_level = 0)

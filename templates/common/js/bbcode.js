@@ -11,14 +11,8 @@ var theSelection = false;
 var clientPC = navigator.userAgent.toLowerCase(); // Get client info
 var clientVer = parseInt(navigator.appVersion); // Get browser version
 
-var is_ie = ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1));
-var is_nav  = ((clientPC.indexOf('mozilla')!=-1) && (clientPC.indexOf('spoofer')==-1)
-							&& (clientPC.indexOf('compatible') == -1) && (clientPC.indexOf('opera')==-1)
-							&& (clientPC.indexOf('webtv')==-1) && (clientPC.indexOf('hotjava')==-1));
-
-var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1));
-var is_mac = (clientPC.indexOf("mac")!=-1);
-
+var is_ie = ((clientPC.indexOf('msie') != -1) && (clientPC.indexOf('opera') == -1));
+var is_win = ((clientPC.indexOf('win') != -1) || (clientPC.indexOf('16bit') != -1));
 
 // Define the bbCode tags
 bbcode = new Array();

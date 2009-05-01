@@ -7,7 +7,7 @@
 </tr>
 <tr>
 	<td class="row5">
-		<div id="menu_cat_{cat_row.CAT_ID}_h" style="display:'';position:relative;padding-top:0px;padding-bottom:0px;">
+		<div id="menu_cat_{cat_row.CAT_ID}_h" style="display: inline; position: relative;padding-top:0px;padding-bottom:0px;">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<!-- BEGIN forum_row -->
 				<tr>
@@ -17,7 +17,7 @@
 				<!-- END forum_row -->
 			</table>
 		</div>
-		<div id="menu_cat_{cat_row.CAT_ID}" style="display:'';position:relative;">
+		<div id="menu_cat_{cat_row.CAT_ID}" style="display: inline; position: relative;">
 			<script type="text/javascript">
 			<!--
 			tmp = 'menu_cat_{cat_row.CAT_ID}';

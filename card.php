@@ -450,7 +450,7 @@ if ($no_error_ban)
 	}
 	else
 	{
-		$message .= '<br/><br/>' . $lang['user_no_email'];
+		$message .= '<br /><br />' . $lang['user_no_email'];
 	}
 }
 else

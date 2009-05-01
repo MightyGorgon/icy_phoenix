@@ -1760,6 +1760,20 @@ CREATE TABLE phpbb_registration_desc (
 
 ALTER TABLE phpbb_topics ADD topic_reg TINYINT(1) DEFAULT '0' NOT NULL AFTER topic_calendar_duration;
 
+## FIX FOR CMS_ADV
+ALTER TABLE `phpbb_cms_blocks` ADD `border` TINYINT(1) SET DEFAULT '1' AFTER `border_explain`;
+ALTER TABLE `phpbb_cms_blocks` ADD `titlebar` TINYINT(1) SET DEFAULT '1' AFTER `border`;
+UPDATE `phpbb_cms_blocks` SET border= '0' WHERE border_explain= '0,0,0,0';
+UPDATE `phpbb_cms_blocks` SET border= '1' WHERE border_explain= '1,1,1,1';
+UPDATE `phpbb_cms_blocks` SET titlebar= '0' WHERE titlebar_explain= '0,0';
+UPDATE `phpbb_cms_blocks` SET titlebar= '1' WHERE titlebar_explain= '1,1';
+
+
+
+########################################
+##              BUILD 050             ##
+########################################
+
 
 
 #####################
@@ -1771,4 +1785,4 @@ UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = '
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.2.22.49' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.2.23.50' WHERE config_name = 'ip_version';

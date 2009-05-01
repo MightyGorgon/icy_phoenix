@@ -58,7 +58,7 @@ function toggle_check_all()
 				<div id="log_desc_{log_row.LOG_ID}_h" style="display:none;position:relative;padding-top:0px;padding-bottom:0px;">
 					<div class="nav-div" style="padding:2px;">{log_row.LOG_DESC_EXTRA}</div>
 				</div>
-				<div id="log_desc_{log_row.LOG_ID}" style="display:'';position:relative;">
+				<div id="log_desc_{log_row.LOG_ID}" style="display: inline; position: relative;">
 					<script type="text/javascript">
 					<!--
 					tmp = 'log_desc_{log_row.LOG_ID}';

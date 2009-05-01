@@ -114,7 +114,7 @@ if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statisti
 include(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statistics.' . PHP_EXT);
 
 include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_stats_module.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/class_stats_module.' . PHP_EXT);
 
 // Mighty Gorgon: this should be not needed anymore...
 /*

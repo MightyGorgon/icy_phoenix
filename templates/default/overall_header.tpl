@@ -28,10 +28,6 @@ var disappeardelay = 250; //menu disappear speed onMouseout (in miliseconds)
 var hidemenu_onclick = "no"; //hide menu when user clicks within menu?
 
 /////No further editing needed
-
-var ie4 = document.all;
-var ns6 = document.getElementById && !document.all;
-
 if (ie4 || ns6)
 {
 	document.write('<div id="dropmenudiv" class="row1" style="visibility:hidden;width:' + menuwidth + ';" onmouseover="clearhidemenu()" onmouseout="dynamichide(event)"><\/div>');

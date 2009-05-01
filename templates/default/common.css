@@ -147,10 +147,10 @@ hr.dashed {
 }
 
 /* IMG Fading - BEGIN */
-.imgfade{filter: alpha(opacity=80); -moz-opacity: 0.80; margin-left: 3px;}
-.imgfull{filter: alpha(opacity=100); -moz-opacity: 1; margin-left: 3px;}
-.imgfade_nm{filter: alpha(opacity=80); -moz-opacity: 0.80;}
-.imgfull_nm{filter: alpha(opacity=100); -moz-opacity: 1;}
+.imgfade{-moz-opacity: 0.80; margin-left: 3px;}
+.imgfull{-moz-opacity: 1; margin-left: 3px;}
+.imgfade_nm{-moz-opacity: 0.80;}
+.imgfull_nm{-moz-opacity: 1;}
 /* IMG Fading - END */
 
 .extra-top-padding { }
@@ -160,7 +160,7 @@ hr.dashed {
 
 .topic-title-hide-flow {
 	min-width: 280px;
-	max-width: 500px;
+	max-width: 400px;
 	overflow: hidden !important;
 }
 
@@ -174,10 +174,6 @@ hr.dashed {
 	/*line-height: 1.2em;*/
 	/* to avoid vertical scrollbar with acronyms in last line */
 	padding-bottom: 3px;
-	/* this is set to avoid one line post being hidden by scrollers in IE */
-	height: auto !important; /* modern browsers */
-	/*height: 40px;*/ /* IE5.x and IE6 */
-	min-height: 40px; /* modern browsers */
 }
 
 .post-text li {
@@ -254,7 +250,7 @@ input, select, textarea {
 	font-size: 11px;
 	margin: 0;
 	vertical-align: middle;
-	box-sizing: content-box;
+	/* box-sizing: content-box; */
 	-moz-box-sizing: content-box;
 }
 
@@ -470,11 +466,6 @@ ul.sitemap li ul li {
 	padding-left: 5px;
 }
 
-/* MG PNG */
-img.pngimg {
-	behavior: url('templates/common/pngbehavior.htc');
-}
-
 /* ## ChromeStyle ## DropDown Menu ## */
 .chromestyle{
 	font-weight: bold;
@@ -533,7 +524,6 @@ content: " " url(downimage.gif);
 	z-index: 100;
 	width: 200px;
 	visibility: hidden;
-	filter: progid:DXImageTransform.Microsoft.Shadow(color=#cacaca,direction=135,strength=4); /*Add Shadow in IE. Remove if desired*/
 	background-color: #f8f8f8;
 }
 

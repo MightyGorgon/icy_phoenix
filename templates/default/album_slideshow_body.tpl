@@ -3,21 +3,8 @@
 <!-- END switch_slideshow -->
 
 <!-- BEGIN switch_slideshow_scripts -->
-<style type="text/css" media="screen, projection">
-	img {
-		filter: alpha(opacity=100);
-		border: none;
-	}
-
-	/* duplicate image positioning */
-	img.idupe {
-		position: absolute;
-		z-index: 30000;
-		visibility: hidden;
-	}
-</style>
-
 <script type="text/javascript">
+// <![CDATA[
 // (C) 2000 www.CodeLifter.com - http://www.codelifter.com
 // Free for all users, but leave in this  header
 
@@ -27,7 +14,7 @@
 
 // Usage
 // <img name="SlideShow" src="album_mod/upload/img_001.jpg" alt="Picture Des" />
-// <a href="javascript:runSlideShow()">SLIDESHOW</a>
+// <a href="javascript:runSlideShow()">SLIDESHOW< /a>
 
 
 // *****************************************************
@@ -43,11 +30,11 @@
 // Usage
 // <img id="SlideShow" src="album_mod/upload/img_001.jpg" alt="Picture Des" />
 // <!-- define crossfade (image-object, 'new src', 'seconds'[, 'new alt text']) -->
-// <a href="javascript:crossfade(document.getElementById('SlideShowPic'), 'album_mod/upload/img_001.jpg', '2', 'Picture Des')">NEXT</a>
+// <a href="javascript:crossfade(document.getElementById('SlideShowPic'), 'album_mod/upload/img_001.jpg', '2', 'Picture Des')">NEXT< /a>
 // <!-- define swapfade (image-object, 'new src', 'seconds'[, 'new alt text']) -->
-// <a href="javascript:swapfade(document.getElementById('SlideShowPic'), 'album_mod/upload/img_001.jpg', '2', 'Picture Des')">NEXT</a>
+// <a href="javascript:swapfade(document.getElementById('SlideShowPic'), 'album_mod/upload/img_001.jpg', '2', 'Picture Des')">NEXT< /a>
 // <!-- define crosswipe (image-object, 'new src', 'seconds', 'direction'[, 'new alt text']) -->
-// <a href="javascript:crosswipe(document.getElementById('SlideShowPic'), 'album_mod/upload/img_001.jpg', '2', 'Picture Des', 'lr')">NEXT</a>
+// <a href="javascript:crosswipe(document.getElementById('SlideShowPic'), 'album_mod/upload/img_001.jpg', '2', 'Picture Des', 'lr')">NEXT< /a>
 
 //global object
 var ssfx = { 'clock' : null, 'fade' : true, 'count' : 1 }
@@ -533,6 +520,7 @@ ssfx.getRealPosition = function()
 
 	return this.pos;
 };
+// ]]>
 </script>
 <!-- END switch_slideshow_scripts -->
 
@@ -542,17 +530,16 @@ ssfx.getRealPosition = function()
 		<form name="slideshow" action="{U_SLIDESHOW}" method="post" onsubmit="return true;">
 			<input type="submit" class="button" value="{L_SLIDESHOW_ONOFF}" style="width: 100px" /><br />
 			<!-- BEGIN switch_slideshow_no_scripts -->
-			<span class="genmed"><br /><b>{PIC_COUNT}</b></span><br />
+			<br /><span class="genmed"><b>{PIC_COUNT}</b></span><br />
 			<!-- END switch_slideshow_no_scripts -->
-			{U_PIC_L1}<div class="center-block"><img id="SlideShowPic" src="{U_PIC}" border="0" vspace="10" alt="{PIC_TITLE}" title="{PIC_TITLE}" /></div>{U_PIC_L2}
+			<div class="center-block">{U_PIC_L1}<img id="SlideShowPic" src="{U_PIC}" border="0" vspace="10" alt="{PIC_TITLE}" title="{PIC_TITLE}" />{U_PIC_L2}</div>
 		</form>
-		<span class="genmed">{U_PIC_CLICK}</span>
+		<!-- IF U_PIC_CLICK --><span class="genmed">{U_PIC_CLICK}</span><!-- ENDIF -->
 	</td>
 </tr>
 <tr>
 	<td align="center" width="100%">
-		<table width="100%" border="0" align="center" cellpadding="3" cellspacing="2" class="empty-table">
-			<div align="center">
+		<table class="empty-table" width="100%" align="center" cellpadding="3" cellspacing="2" border="0">
 			<!-- BEGIN switch_slideshow_no_scripts -->
 			<tr>
 				<td width="50%" align="right"><span class="genmed">{L_POSTER}:</span></td>
@@ -581,11 +568,11 @@ ssfx.getRealPosition = function()
 				<td width="50%" valign="top" align="right"><span class="genmed">{L_PIC_DESC}:</span></td>
 				<td align="left" valign="top"><b><span id="PicDes" class="genmed">{PIC_DESC}</span></b></td>
 			</tr>
-			</div>
 		</table>
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
+
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}

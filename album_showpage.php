@@ -204,8 +204,8 @@ if ($album_config['slideshow_script'] == 1)
 			$pic_array_id = $i;
 		}
 		$pic_list .= 'Pic[' . $i . '] = \'' . append_sid(album_append_uid($pic_link . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']), true) . '\'; ' . "\n";
-		$tit_list .= 'Tit[' . $i . '] = \'' . str_replace('\'', '%27', htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\'; ' . "\n";
-		$des_list .= 'Des[' . $i . '] = \'' . str_replace('\'', '%27', htmlspecialchars($total_pic_rows[$i]['pic_desc'])) . '\'; ' . "\n";
+		$tit_list .= 'Tit[' . $i . '] = \'' . str_replace("'", "\'", htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\'; ' . "\n";
+		$des_list .= 'Des[' . $i . '] = \'' . str_replace(array("\r\n", "\n", "\r"), array('\n', '\n', '\n'), str_replace("'", "\'", htmlspecialchars($total_pic_rows[$i]['pic_desc']))) . '\'; ' . "\n";
 		/*
 		$pic_list .= 'Pic[' . $i . '] = \'' . ALBUM_UPLOAD_PATH . $total_pic_rows[$i]['pic_filename'] . '\'; ' . "\n";
 		*/
@@ -874,6 +874,21 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	}
 
 	// Start output of page
+	$is_slideshow = ((isset($_GET['slideshow']) && (intval($_GET['slideshow']) > 0)) || (isset($_POST['slideshow']) && (intval($_POST['slideshow']) > 0))) ? true : false;
+	if ($is_slideshow)
+	{
+		$css_temp = array('fap_slideshow.css');
+		if(is_array($css_include))
+		{
+			$css_include = array_merge($css_include, $css_temp);
+		}
+		else
+		{
+			$css_include = $css_temp;
+		}
+		unset($css_temp);
+	}
+
 	$page_title = $lang['Album'];
 	$meta_description = $lang['Album'] . ' - ' . strip_tags($thispic['cat_title']) . ' - ' . htmlspecialchars($thispic['pic_title']) . ' - ' . $thispic['pic_desc'];
 	$meta_keywords = $lang['Album'] . ', ' . strip_tags($thispic['cat_title']) . ', ' . htmlspecialchars($thispic['pic_title']) . ', ' . htmlspecialchars($thispic['pic_desc']) . ', ';
@@ -917,7 +932,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Slideshow - BEGIN
-	if (((isset($_GET['slideshow']) && (intval($_GET['slideshow']) > 0)) || (isset($_POST['slideshow']) && (intval($_POST['slideshow']) > 0))))
+	if ($is_slideshow)
 	{
 		$template->assign_block_vars('switch_slideshow', array());
 		$slideshow_delay = (isset($_GET['slideshow']) ? intval($_GET['slideshow']) : intval($_POST['slideshow']));
@@ -980,7 +995,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	//$temp_js = '<script type="text/javascript">window.attachEvent(\'onload\', runSlideShow();)</script>';
 	if ($album_config['slideshow_script'] == 1)
 	{
-		$slideshow_refresh = '</body><body onload="runSlideShow()">';
+		//$slideshow_refresh = '</body><body onload="runSlideShow()">';
+		$slideshow_refresh = '<script type="text/javascript">onload_functions.push(\'runSlideShow()\');</script>';
 		//$slideshow_refresh = $temp_js;
 	}
 	else

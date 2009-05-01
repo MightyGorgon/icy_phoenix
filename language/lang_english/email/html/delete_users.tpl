@@ -6,7 +6,7 @@ Hello <b>{USERNAME}</b>,<br />
 
 This is an automated message to tell you that your account on <b>"{SITENAME}"</b> has been removed due to inactivity.<br />
 
-If you wish to become an active part of our online community again, please re-register using this link:<br /><br/>
+If you wish to become an active part of our online community again, please re-register using this link:<br /><br />
 
 <a href="{U_REGISTER}" target="_blank">{U_REGISTER}</a>
 <br /><br />

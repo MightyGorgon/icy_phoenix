@@ -117,7 +117,7 @@ elseif ($mode != '')
 				message_die(GENERAL_ERROR, "Couldn't update topics news category", "", __LINE__, __FILE__, $sql);
 			}
 
-			$db->clear_cache('news_cats_');
+			$db->clear_cache('news_');
 
 			$message = $lang['Category_Deleted'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news_cats.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -176,7 +176,8 @@ elseif ($mode != '')
 				'S_SMILEY_ACTION' => append_sid('admin_news_cats.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_FILENAME_OPTIONS' => $filename_list,
-				'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['news_path'])
+				'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['news_path']
+				)
 			);
 
 			$template->pparse('body');
@@ -208,7 +209,7 @@ elseif ($mode != '')
 				message_die(GENERAL_ERROR, "Couldn't update news info", "", __LINE__, __FILE__, $sql);
 			}
 
-			$db->clear_cache('news_cats_');
+			$db->clear_cache('news_');
 
 			$message = $lang['Category_Updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news_cats.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -240,7 +241,7 @@ elseif ($mode != '')
 				message_die(GENERAL_ERROR, "Couldn't insert	new	category", "", __LINE__, __FILE__, $sql);
 			}
 
-			$db->clear_cache('news_cats_');
+			$db->clear_cache('news_');
 
 			$message = $lang['Category_Added'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news_cats.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -250,7 +251,8 @@ elseif ($mode != '')
 }
 else
 {
-	// This is the main display of the page	before the admin has selected any options.
+	// This is the main display of the page before the admin has selected any options.
+	$db->clear_cache('news_');
 	$data_access = new NewsDataAccess(IP_ROOT_PATH);
 	$news_cats = $data_access->fetchCategories();
 

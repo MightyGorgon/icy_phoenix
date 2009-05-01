@@ -51,7 +51,8 @@ if(!$is_auth['auth_read'])
 }
 // End auth check
 
-$refresh = (isset($_POST['auto_refresh']) || isset($_POST['refresh'])) ? 1 : 0;
+//$refresh = (isset($_POST['auto_refresh']) || isset($_POST['refresh'])) ? 1 : 0;
+$refresh = (isset($_GET['auto_refresh']) || isset($_GET['refresh'])) ? 1 : 0;
 $submit = (isset($_POST['shout']) && isset($_POST['message'])) ? 1 : 0;
 if (!empty($_POST['mode']) || !empty($_GET['mode']))
 {
@@ -69,7 +70,7 @@ if (!$board_config['allow_html'])
 }
 else
 {
-	$html_on = ($submit || $refresh || preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_html'] : $userdata['user_allowhtml']);
+	$html_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_html'] : $userdata['user_allowhtml']);
 }
 if (!$board_config['allow_bbcode'])
 {
@@ -77,7 +78,7 @@ if (!$board_config['allow_bbcode'])
 }
 else
 {
-	$bbcode_on = ($submit || $refresh || preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode']);
+	$bbcode_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode']);
 }
 
 if (!$board_config['allow_smilies'])
@@ -86,7 +87,7 @@ if (!$board_config['allow_smilies'])
 }
 else
 {
-	$smilies_on = ($submit || $refresh || preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_smilies'] : $userdata['user_allowsmile']);
+	$smilies_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_smilies'] : $userdata['user_allowsmile']);
 	if ($smilies_on)
 	{
 		include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);

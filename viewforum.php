@@ -1207,15 +1207,15 @@ if ($bypass)
 						$status = $regrow['registration_status'];
 						if ($status == REG_OPTION1)
 						{
-							$reg_user_own_reg .= '<span class="text_green">&#149;</span>';
+							$reg_user_own_reg .= '<span class="text_green">&bull;</span>';
 						}
 						elseif ($status == REG_OPTION2)
 						{
-							$reg_user_own_reg .= '<span class="text_blue">&#149;</span>';
+							$reg_user_own_reg .= '<span class="text_blue">&bull;</span>';
 						}
 						elseif ($status == REG_OPTION3)
 						{
-							$reg_user_own_reg .= '<span class="text_red">&#149;</span>';
+							$reg_user_own_reg .= '<span class="text_red">&bull;</span>';
 						}
 					}
 
@@ -1286,12 +1286,13 @@ if ($bypass)
 			if(($replies + 1) > $board_config['posts_per_page'])
 			{
 				$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
-				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
+				//$goto_page = ' [ <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
+				$goto_page = ' <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;';
 
 				$times = 1;
 				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 				{
-					$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
+					$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '" title="' . $lang['Goto_page'] . ' ' . $times . '"><b>' . $times . '</b></a>';
 					if(($times == 1) && ($total_pages > 4))
 					{
 						$goto_page .= ' ... ';
@@ -1300,11 +1301,13 @@ if ($bypass)
 					}
 					elseif ($times < $total_pages)
 					{
-						$goto_page .= ', ';
+						//$goto_page .= ', ';
+						$goto_page .= ' ';
 					}
 					$times++;
 				}
-				$goto_page .= ' ] ';
+				//$goto_page .= ' ] ';
+				$goto_page .= ' ';
 			}
 			else
 			{

@@ -49,6 +49,7 @@ switch ($req_version)
 	case '122047': $current_ip_version = '1.2.20.47'; break;
 	case '122148': $current_ip_version = '1.2.21.48'; break;
 	case '122249': $current_ip_version = '1.2.22.49'; break;
+	case '122350': $current_ip_version = '1.2.23.50'; break;
 }
 
 // Icy Phoenix Part...
@@ -3560,8 +3561,19 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "ALTER TABLE " . $table_prefix . "topics ADD topic_reg TINYINT(1) DEFAULT '0' NOT NULL AFTER topic_calendar_duration";
 
+		// FIX FOR CMS_ADV
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `border` TINYINT(1) SET DEFAULT '1' AFTER `border_explain`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `titlebar` TINYINT(1) SET DEFAULT '1' AFTER `border`";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET border= '0' WHERE border_explain= '0,0,0,0'";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET border= '1' WHERE border_explain= '1,1,1,1'";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET titlebar= '0' WHERE titlebar_explain= '0,0'";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET titlebar= '1' WHERE titlebar_explain= '1,1'";
+
 		/* Updating from IP 1.2.22.49 */
 		case '1.2.22.49':
+
+		/* Updating from IP 1.2.23.50 */
+		case '1.2.23.50':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

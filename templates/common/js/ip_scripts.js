@@ -187,9 +187,9 @@ function hideMenu(id)
 // Show / Hide - END
 
 // Set Width - BEGIN
-function setWidth(tmpWidth)
+function setWidth(elementID, tmpWidth)
 {
-	cellobject = document.getElementById('var_width');
+	cellobject = document.getElementById(elementID);
 	if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
 	{
 		cellobject.style.width = tmpWidth;
@@ -197,6 +197,19 @@ function setWidth(tmpWidth)
 	else
 	{
 		cellobject.width = tmpWidth;
+	}
+}
+
+function getWidth(elementID)
+{
+	cellobject = document.getElementById(elementID);
+	if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+	{
+		return cellobject.style.width;
+	}
+	else
+	{
+		return cellobject.width;
 	}
 }
 // Set Width - END
@@ -339,9 +352,9 @@ function marklist(id, name, state)
 	}
 
 	var rb = parent.getElementsByTagName('input');
-	
+
 	for (var r = 0; r < rb.length; r++)
-	{	
+	{
 		if (rb[r].name.substr(0, name.length) == name)
 		{
 			rb[r].checked = state;
@@ -360,7 +373,7 @@ function viewableArea(e, itself)
 	{
 		e = e.parentNode;
 	}
-	
+
 	if (!e.vaHeight)
 	{
 		// Store viewable area height before changing style to auto
@@ -453,7 +466,7 @@ function printPage()
 * Show/hide groups of blocks
 * c = CSS style name
 * e = checkbox element
-* t = toggle dispay state (used to show 'grip-show' image in the profile block when hiding the profiles) 
+* t = toggle dispay state (used to show 'grip-show' image in the profile block when hiding the profiles)
 */
 function displayBlocks(c, e, t)
 {

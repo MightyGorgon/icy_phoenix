@@ -828,7 +828,7 @@ $lang = array_merge($lang, array(
 	'Group_count_update' => 'Add/Update new users',
 	'Group_count_delete' => 'Delete/Update old users',
 	'User_allow_ag' => 'Activate Auto Group',
-	'group_count_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be added to this usergroup<br/> This only applies if "Users automatically added when posting" are enabled',
+	'group_count_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be added to this usergroup<br /> This only applies if "Users automatically added when posting" are enabled',
 
 // Start add - Bin Mod
 	'Bin_forum' => 'Bin forum',
@@ -1367,8 +1367,8 @@ $lang = array_merge($lang, array(
 	'megamail_batchstart' => 'Processed',
 	'megamail_batchsize' => 'Batch',
 	'megamail_batchwait' => 'Pause',
-	'megamail_created_message' => 'The Mass Mail has been saved to the database.<br /><br/> To start sending %sclick here%s or wait until the Meta-Refresh takes you there...',
-	'megamail_send_message' => 'The Current Batch (%s - %s) has been sent .<br /><br/> To continue sending %sclick here%s or wait until the Meta-Refresh takes you there...',
+	'megamail_created_message' => 'The Mass Mail has been saved to the database.<br /><br /> To start sending %sclick here%s or wait until the Meta-Refresh takes you there...',
+	'megamail_send_message' => 'The Current Batch (%s - %s) has been sent .<br /><br /> To continue sending %sclick here%s or wait until the Meta-Refresh takes you there...',
 	'megamail_status' => 'Status',
 	'megamail_proceed' => '%sProceed now%s',
 	'megamail_done' => 'DONE',
