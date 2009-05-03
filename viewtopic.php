@@ -35,6 +35,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_rate.' . PHP_EXT);
 // Event Registration - BEGIN
 include_once(IP_ROOT_PATH . 'includes/functions_events_reg.' . PHP_EXT);
 // Event Registration - END
@@ -45,7 +46,6 @@ init_userprefs($userdata);
 // End session management
 
 include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_rate.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_rate.' . PHP_EXT);
 
 $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
@@ -1484,6 +1484,7 @@ if ($bypass)
 		'TOPIC_ID' => $topic_id,
 		'TOPIC_ID_FULL' => POST_TOPIC_URL . $topic_id,
 		'TOPIC_TITLE' => $topic_title,
+		'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 80) . '...' : $topic_title),
 		'PAGINATION' => $pagination,
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / intval($board_config['posts_per_page'])) + 1), ceil($total_replies / intval($board_config['posts_per_page']))),
 
@@ -2296,7 +2297,7 @@ if ($bypass)
 		{
 			if ($is_auth['auth_mod'])
 			{
-				$blue_card_img = (($postrow[$i]['post_bluecard'])) ? '<img src="' . $images['icon_bhot_card'] . '" alt="' . sprintf($lang['Clear_b_card'], $postrow[$i]['post_bluecard']) . '" />' : '<img src="' . $images['icon_b_card'] . '" alt="' . $lang['Give_b_card'] . '" />';
+				$blue_card_img = (($postrow[$i]['post_bluecard'])) ? '<img src="' . $images['icon_p_card'] . '" alt="' . sprintf($lang['Clear_b_card'], $postrow[$i]['post_bluecard']) . '" />' : '<img src="' . $images['icon_b_card'] . '" alt="' . $lang['Give_b_card'] . '" />';
 				$blue_card_action = ($postrow[$i]['post_bluecard']) ? 'return confirm(\'' . $lang['Clear_blue_card_warning'] . '\')' : 'return confirm(\'' . $lang['Blue_card_warning'] . '\')';
 				$temp_url = 'card.' . PHP_EXT . '?mode=' . (($postrow[$i]['post_bluecard']) ? 'report_reset' : 'report') . '&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $userdata['user_id'] . '&amp;sid=' . $userdata['session_id'];
 				$b_card_img = '<a href="' . $temp_url . '" onclick="' . $blue_card_action . '" title="' . $lang['Give_b_card'] . '">' . $blue_card_img . '</a>';

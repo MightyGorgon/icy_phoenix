@@ -39,7 +39,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if (!$userdata['session_logged_in'] && $board_config['gsearch_guests'])
+if (($_GET['search_id'] != 'unanswered') && !$userdata['session_logged_in'] && $board_config['gsearch_guests'])
 {
 	$google_q = request_var('search_keywords', '');
 	$google_sitesearch = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
@@ -1810,7 +1810,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 						}
 						elseif ($times < $total_pages)
 						{
-							$goto_page .= ', ';
+							//$goto_page .= ', ';
+							$goto_page .= ' ';
 						}
 						$times++;
 					}

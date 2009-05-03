@@ -20,7 +20,7 @@ function post_time_edit(url)
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="bottom">
-		<div style="overflow: hidden; max-width: 720px;"><h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2></div><br />
+		<div class="topic-title-hide-flow-header"><h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2></div><br />
 		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}" /></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}" /></a></span>&nbsp;
@@ -35,7 +35,7 @@ function post_time_edit(url)
 		<!-- IF S_EXTENDED_PAGINATION -->
 		<div style="margin-top: 3px;"><form method="post" action="{U_VIEW_TOPIC}"><span class="gen"><b>{L_GO_TO_PAGE_NUMBER}</b>&nbsp;<input type="text" name="page_number" value="" size="3" class="post" />&nbsp;&nbsp;<input type="submit" name="submit" value="{L_GO}" class="mainoption" /></span></form></div>
 		<!-- ENDIF -->
-		<!-- IF not S_BOT --><div style="margin-top: 3px;"><form action="{FULL_SITE_PATH}{U_SEARCH}" method="post"><input name="search_keywords" type="text" class="post search" style="width: 160px;" value="{L_SEARCH_THIS_TOPIC}" onclick="if(this.value=='{L_SEARCH_THIS_TOPIC}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH_THIS_TOPIC}';" /><input type="hidden" name="search_where" value="{FORUM_ID_FULL}" /><input type="hidden" name="search_where_topic" value="{TOPIC_ID_FULL}" />&nbsp;<input type="submit" class="mainoption" value="{L_SEARCH}" /></form></div><!-- ENDIF -->
+		<!-- IF not S_BOT --><div style="margin-top: 3px; white-space: nowrap;"><form action="{FULL_SITE_PATH}{U_SEARCH}" method="post"><input name="search_keywords" type="text" class="post search" style="width: 160px;" value="{L_SEARCH_THIS_TOPIC}" onclick="if(this.value=='{L_SEARCH_THIS_TOPIC}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH_THIS_TOPIC}';" /><input type="hidden" name="search_where" value="{FORUM_ID_FULL}" /><input type="hidden" name="search_where_topic" value="{TOPIC_ID_FULL}" />&nbsp;<input type="submit" class="mainoption" value="{L_SEARCH}" /></form></div><!-- ENDIF -->
 	</td>
 </tr>
 </table>
@@ -92,7 +92,7 @@ function open_postreview(ref)
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE_SHORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- IF VIEWTOPIC_BANNER_TOP -->
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
 <!-- ENDIF -->
@@ -246,13 +246,13 @@ function open_postreview(ref)
 <!-- BEGIN switch_topic_useful -->
 <a id="ratingblock"></a>
 <div id="rate_block_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1g row-center">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 
 <div id="rate_block">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 {RATING_VIEWTOPIC}
 <!-- BEGIN social_bookmarks -->
 <tr><th colspan="4">{L_SHARE_TOPIC}</th></tr>
@@ -313,7 +313,7 @@ if(GetCookie(tmp) == '2')
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display:inline;{SHOW_HIDE_PADDING}float:right;cursor:pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			</table>
@@ -322,7 +322,7 @@ if(GetCookie(tmp) == '2')
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display:inline;{SHOW_HIDE_PADDING}float:right;cursor:pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			<tr><td class="row1">{S_AUTH_LIST}</td></tr>

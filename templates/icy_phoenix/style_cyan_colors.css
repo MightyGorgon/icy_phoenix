@@ -93,6 +93,10 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 	padding: 5px;
 }
 
+.spoiler .code-header {
+	background-color: #fafafa !important;
+}
+
 .post-text .spoiler {
 	display: block;
 	/*overflow: hidden;*/

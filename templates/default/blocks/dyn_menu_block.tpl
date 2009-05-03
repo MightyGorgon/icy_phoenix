@@ -38,14 +38,14 @@ if(GetCookie(tmp) == '2')
 
 <!-- BEGIN cat_row -->
 <tr>
-	<th style="cursor: pointer; cursor: hand;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}','menu_cat_{cat_row.CAT_ID}_h','menu_cat_{cat_row.CAT_ID}');">
+	<th style="cursor: pointer;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}','menu_cat_{cat_row.CAT_ID}_h','menu_cat_{cat_row.CAT_ID}');">
 		{cat_row.CAT_ICON}<a href="javascript:void(0);" title="{cat_row.CAT_ITEM}" style="vertical-align: top; text-decoration: none;"><b>{cat_row.CAT_ITEM}</b></a>
 	</th>
 </tr>
 <tr>
 	<td>
 		<div id="menu_cat_{cat_row.CAT_ID}_h" style="display: inline; position: relative; padding-top: 0px; padding-bottom: 0px;">
-			<div class="nav-div" style="padding:2px;">
+			<div class="nav-div" style="padding: 2px;">
 				<!-- BEGIN menu_row -->
 				{cat_row.menu_row.MENU_URL}
 				<!-- END menu_row -->

@@ -469,6 +469,7 @@ function init_userprefs($userdata)
 
 	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_settings.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_upi2db.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_news.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_attach.' . PHP_EXT);

@@ -1,7 +1,7 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN cat_row -->
 <tr>
-	<th style="cursor:pointer;cursor:hand;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}','menu_cat_{cat_row.CAT_ID}_h','menu_cat_{cat_row.CAT_ID}');">
+	<th style="cursor: pointer;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}','menu_cat_{cat_row.CAT_ID}_h','menu_cat_{cat_row.CAT_ID}');">
 		{cat_row.CAT_ICON}<a href="javascript:void(0);" title="{cat_row.CAT_ITEM}" style="vertical-align:top;"><b>{cat_row.CAT_ITEM}</b></a>
 	</th>
 </tr>

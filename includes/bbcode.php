@@ -120,7 +120,8 @@ define('AUTOURL', time());
 define('IS_ICYPHOENIX', true);
 if(defined('IS_ICYPHOENIX'))
 {
-	@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+	// Include moved to functions... to avoid including wrong lang file ($board_config['default_lang'] is only assigned after session request)
+	//@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 }
 else
 {

@@ -2,13 +2,13 @@
 
 <p>{L_TITLE_EXPLAIN}</p>
 
-<div id="acp_cfg_h" style="padding:5px;display:none;text-align:left;float:left;width:20px;"><a href="javascript:ShowHide('acp_cfg','acp_cfg_h','acp_cfg');" title="{L_SHOW}"><img src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}images/application_view_tile.png" alt="{L_SHOW}" /></a></div>
+<div id="acp_cfg_h" style="padding: 5px; display: none; text-align: left; float: left; width: 20px;"><a href="javascript:ShowHide('acp_cfg','acp_cfg_h','acp_cfg');" title="{L_SHOW}"><img src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}images/application_view_tile.png" alt="{L_SHOW}" /></a></div>
 
-<div id="acp_cfg" style="padding-right:5px;width:180px;float:left;">
+<div id="acp_cfg" style="padding-right: 5px; width: 180px; float: left;">
 <!-- BEGIN menu -->
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN title_open -->
-<tr><th><img style="padding-top:3px;padding-right:6px;float:right;cursor:pointer;" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}images/minimise.gif" onclick="javascript:ShowHide('acp_cfg','acp_cfg_h','acp_cfg');" alt="{L_HIDE}" /><a href="{menu.U_MENU}" class="cattitle">{menu.L_MENU}</a></th></tr>
+<tr><th><img style="padding-top: 3px; padding-right: 6px; float: right; cursor: pointer;" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}images/minimise.gif" onclick="javascript:ShowHide('acp_cfg','acp_cfg_h','acp_cfg');" alt="{L_HIDE}" /><a href="{menu.U_MENU}" class="cattitle">{menu.L_MENU}</a></th></tr>
 <!-- END title_open -->
 <!-- BEGIN title_close -->
 <tr><td class="{menu.CLASS}" align="center"><a href="{menu.U_MENU}" class="gen">{menu.L_MENU}</a></td></tr>

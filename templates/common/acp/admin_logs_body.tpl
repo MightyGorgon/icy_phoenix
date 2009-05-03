@@ -49,14 +49,14 @@ function toggle_check_all()
 	<!-- ELSE -->
 	<table width="100%" cellspacing="0" cellpadding="0">
 		<tr>
-			<td class="gensmall" style="cursor:pointer;cursor:hand;" onclick="ShowHide('log_desc_{log_row.LOG_ID}','log_desc_{log_row.LOG_ID}_h','log_desc_{log_row.LOG_ID}');">
-				<a href="javascript:void(0);" style="vertical-align:top;text-decoration:none;">{log_row.LOG_DESC}</a>
+			<td class="gensmall" style="cursor: pointer;" onclick="ShowHide('log_desc_{log_row.LOG_ID}','log_desc_{log_row.LOG_ID}_h','log_desc_{log_row.LOG_ID}');">
+				<a href="javascript:void(0);" style="vertical-align: top; text-decoration: none;">{log_row.LOG_DESC}</a>
 			</td>
 		</tr>
 		<tr>
 			<td class="gensmall">
-				<div id="log_desc_{log_row.LOG_ID}_h" style="display:none;position:relative;padding-top:0px;padding-bottom:0px;">
-					<div class="nav-div" style="padding:2px;">{log_row.LOG_DESC_EXTRA}</div>
+				<div id="log_desc_{log_row.LOG_ID}_h" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+					<div class="nav-div" style="padding: 2px;">{log_row.LOG_DESC_EXTRA}</div>
 				</div>
 				<div id="log_desc_{log_row.LOG_ID}" style="display: inline; position: relative;">
 					<script type="text/javascript">

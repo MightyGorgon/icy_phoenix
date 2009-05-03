@@ -52,7 +52,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th style="cursor:pointer;" align="left" onclick="ShowHide('cms_settings_options','cms_settings_options2','cms_settings_options');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('cms_settings_options','cms_settings_options2','cms_settings_options');">
 				<img src="{IMG_NAV_MENU_WSETTINGS}" alt="{L_CPL_SETTINGS_OPTIONS}" title="{L_CPL_SETTINGS_OPTIONS}" />&nbsp;
 				<a href="javascript:void(0);" title="{L_CPL_SETTINGS_OPTIONS}" style="vertical-align: top; text-decoration: none;"><b>{L_CPL_SETTINGS_OPTIONS}</b></a>
 			</th>

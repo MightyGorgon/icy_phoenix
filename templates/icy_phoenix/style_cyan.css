@@ -433,6 +433,7 @@ hr {
 .tbl-title {
 	color: #336699;
 	margin-top: 5px;
+	overflow: hidden;
 }
 
 .tbl-h-c {
@@ -595,6 +596,8 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #dd2222; text-decoration:
 /* pagination */
 .gotopage a, .gotopage a:visited, .pagination a, .pagination a:visited {
 	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
 	background: #ffffff url('images/cyan/bg_nav2.gif') top left repeat-x;
 	border: #888888 1px solid;
 	color: #225599;
@@ -603,6 +606,8 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #dd2222; text-decoration:
 
 .gotopage a:hover, .gotopage a:active, .pagination a:hover, .pagination a:active {
 	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
 	border: #dd2222 1px solid;
 	color: #336699;
 	text-decoration: none;
@@ -674,7 +679,10 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #dd2222; text-decoration:
 	font-weight: bold;
 	font-size: 11px;
 	margin-bottom: 5px;
-	line-height: 20px;
+	line-height: 2em;
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 500px;
 }
 
 .row-post-date, .row-post-buttons {
@@ -725,8 +733,11 @@ blockquote {
 	overflow: auto;
 	margin: 5px 20px;
 	width: auto;
-	border: solid 1px #cccccc;
-	background: #ffffff url('images/cyan/bg_quote_content.gif') bottom right no-repeat;
+	/* border: solid 1px #cccccc; */
+	border: solid 1px #0099cc;
+	border-left: solid 3px #0099cc;
+	/* background: #ffffff url('images/cyan/bg_quote_content.gif') bottom right no-repeat; */
+	background-color: #ffffff;
 	padding: 5px;
 	font-size: 12px;
 }
@@ -746,11 +757,11 @@ blockquote {
 .post-text blockquote h6, .post-text blockquote .quote-user, .post-text blockquote .quote-nouser {
 	margin: 0;
 	margin-bottom: 5px;
-	padding-left: 18px;
+	padding-left: 20px;
 	padding-bottom: 3px;
 	border-bottom: solid 1px #dddddd;
 	font-size: 11px;
-	line-height: 1.2em;
+	line-height: 1.6em;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-weight: normal;
 	color: #808080;
@@ -762,7 +773,9 @@ blockquote {
 	display: block;
 	margin: 5px 20px;
 	width: auto;
-	border: solid 1px #cccccc;
+	/* border: solid 1px #cccccc; */
+	border: solid 1px #009900;
+	border-left: solid 3px #009900;
 	background-color: #ffffff;
 	padding: 5px;
 	font-size: 12px;
@@ -772,11 +785,11 @@ blockquote {
 .post-text .code h6, .post-text .code-header {
 	margin: 0;
 	margin-bottom: 5px;
-	padding-left: 18px;
+	padding-left: 20px;
 	padding-bottom: 3px;
 	border-bottom: solid 1px #dddddd;
 	font-size: 11px;
-	line-height: 1.2em;
+	line-height: 1.6em;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-weight: normal;
 	color: #808080;
@@ -795,7 +808,7 @@ blockquote {
 	border-bottom: dotted 1px #336699;
 }
 
-.code-header a:link, .code-header a:visited  { color: #666666; text-decoration: none; border-bottom: dotted 1px #666666; }
+.code-header a:link, .code-header a:visited { color: #666666; text-decoration: none; border-bottom: dotted 1px #666666; }
 .code-header a:hover, .code-header a:active { color: #336699; text-decoration: none; border-bottom: dotted 1px #336699; }
 .code-content {
 	/*overflow: hidden;*/

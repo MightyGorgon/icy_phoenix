@@ -165,7 +165,8 @@ if ($watch_count > 0)
 					}
 					elseif ($times < $total_pages)
 					{
-					$goto_page .= ', ';
+						//$goto_page .= ', ';
+						$goto_page .= ' ';
 					}
 					$times++;
 				}

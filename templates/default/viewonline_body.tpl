@@ -93,7 +93,7 @@
 <!-- END switch_show_recent -->
 <!-- IF S_SHOUTBOX -->
 <div id="shoutbox_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_SHOW}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_SHOW}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -107,7 +107,7 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_HIDE}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_HIDE}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td><iframe src="{U_SHOUTBOX}" scrolling="no" width="100%" height="190" frameborder="0" marginheight="0" marginwidth="0"></iframe></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>

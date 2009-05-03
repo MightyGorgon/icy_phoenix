@@ -120,13 +120,13 @@ function open_postreview(ref)
 <!-- BEGIN switch_topic_useful -->
 <a id="ratingblock"></a>
 <div id="rate_block_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1g row-center">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 
 <div id="rate_block">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 {RATING_VIEWTOPIC}
 <!-- BEGIN social_bookmarks -->
 <tr><th colspan="4">{L_SHARE_TOPIC}</th></tr>

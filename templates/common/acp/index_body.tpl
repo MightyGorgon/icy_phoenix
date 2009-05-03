@@ -46,7 +46,7 @@
 <!-- END switch_adminedit -->
 
 <br />
-<div id="site_stats_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('site_stats','site_stats_h','site_stats');" alt="{L_SHOW}" /><span>{L_SITE_STATS}</span></td></tr></table></div>
+<div id="site_stats_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('site_stats','site_stats_h','site_stats');" alt="{L_SHOW}" /><span>{L_SITE_STATS}</span></td></tr></table></div>
 <div id="site_stats">
 <script type="text/javascript">
 <!--
@@ -58,7 +58,7 @@ if(GetCookie(tmp) == '2')
 //-->
 </script>
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td class="row-header" colspan="6"><img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('site_stats','site_stats_h','site_stats');" alt="{L_HIDE}" /><span>{L_SITE_STATS}</span></td></tr>
+<tr><td class="row-header" colspan="6"><img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('site_stats','site_stats_h','site_stats');" alt="{L_HIDE}" /><span>{L_SITE_STATS}</span></td></tr>
 <tr>
 	<th width="25%" nowrap="nowrap" colspan="3">{L_STATISTIC}</th>
 	<th width="25%">{L_VALUE}</th>
@@ -161,7 +161,7 @@ if(GetCookie(tmp) == '2')
 -->
 
 <br />
-<div id="acp_online_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('acp_online','acp_online_h','acp_online');" alt="{L_SHOW}" /><span>{L_WHO_IS_ONLINE}</span></td></tr></table></div>
+<div id="acp_online_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('acp_online','acp_online_h','acp_online');" alt="{L_SHOW}" /><span>{L_WHO_IS_ONLINE}</span></td></tr></table></div>
 <div id="acp_online">
 <script type="text/javascript">
 <!--
@@ -173,7 +173,7 @@ if(GetCookie(tmp) == '2')
 //-->
 </script>
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td class="row-header" colspan="5"><img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('acp_online','acp_online_h','acp_online');" alt="{L_HIDE}" /><span>{L_WHO_IS_ONLINE}</span></td></tr>
+<tr><td class="row-header" colspan="5"><img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('acp_online','acp_online_h','acp_online');" alt="{L_HIDE}" /><span>{L_WHO_IS_ONLINE}</span></td></tr>
 <tr>
 	<th width="20%" height="25">&nbsp;{L_USERNAME}&nbsp;</th>
 	<th width="20%" height="25">&nbsp;{L_STARTED}&nbsp;</th>
@@ -205,7 +205,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF S_IS_FOUNDER -->
 <br />
-<div id="actions_log_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('actions_log','actions_log_h','actions_log');" alt="{L_SHOW}" /><span><a href="{U_ADMIN_LOGS}">{L_LOGS_TITLE}</a></span></td></tr></table></div>
+<div id="actions_log_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('actions_log','actions_log_h','actions_log');" alt="{L_SHOW}" /><span><a href="{U_ADMIN_LOGS}">{L_LOGS_TITLE}</a></span></td></tr></table></div>
 <div id="actions_log">
 <script type="text/javascript">
 <!--
@@ -217,7 +217,7 @@ if(GetCookie(tmp) == '2')
 //-->
 </script>
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td class="row-header" colspan="6"><img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('actions_log','actions_log_h','actions_log');" alt="{L_HIDE}" /><span><a href="{U_ADMIN_LOGS}">{L_LOGS_TITLE}</a></span></td></tr>
+<tr><td class="row-header" colspan="6"><img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('actions_log','actions_log_h','actions_log');" alt="{L_HIDE}" /><span><a href="{U_ADMIN_LOGS}">{L_LOGS_TITLE}</a></span></td></tr>
 <tr>
 	<th align="center" nowrap="nowrap" width="100">{L_DATE}</th>
 	<th align="center" nowrap="nowrap" width="250">{L_LINK}</th>
@@ -239,13 +239,13 @@ if(GetCookie(tmp) == '2')
 	<!-- ELSE -->
 	<table width="100%" cellspacing="0" cellpadding="0">
 		<tr>
-			<td class="gensmall" style="cursor:pointer;cursor:hand;" onclick="ShowHide('log_desc_{log_row.LOG_ID}','log_desc_{log_row.LOG_ID}_h','log_desc_{log_row.LOG_ID}');">
+			<td class="gensmall" style="cursor: pointer;" onclick="ShowHide('log_desc_{log_row.LOG_ID}','log_desc_{log_row.LOG_ID}_h','log_desc_{log_row.LOG_ID}');">
 				<a href="javascript:void(0);" style="vertical-align:top;text-decoration:none;">{log_row.LOG_DESC}</a>
 			</td>
 		</tr>
 		<tr>
 			<td class="gensmall">
-				<div id="log_desc_{log_row.LOG_ID}_h" style="display:none;position:relative;padding-top:0px;padding-bottom:0px;">
+				<div id="log_desc_{log_row.LOG_ID}_h" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
 					<div class="nav-div" style="padding:2px;">{log_row.LOG_DESC_EXTRA}</div>
 				</div>
 				<div id="log_desc_{log_row.LOG_ID}" style="display: inline; position: relative;">

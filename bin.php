@@ -66,9 +66,7 @@ else
 	$sid = '';
 }
 
-//
 // Obtain relevant data
-//
 if (!empty($topic_id))
 {
 	$sql = "SELECT f.forum_id, f.forum_name, f.forum_topics
@@ -85,7 +83,7 @@ if (!empty($topic_id))
 	$forum_id = $topic_row['forum_id'];
 	$forum_name = $topic_row['forum_name'];
 }
-else if (!empty($forum_id))
+elseif (!empty($forum_id))
 {
 	$sql = "SELECT forum_name, forum_topics
 		FROM " . FORUMS_TABLE . "

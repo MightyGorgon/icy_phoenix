@@ -339,7 +339,7 @@ for($i = 0; $i < count($line); $i++)
 	if(($replies + 1) > $board_config['posts_per_page'])
 	{
 		$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
-		//$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
+		$goto_page_prefix = ' [';
 		$goto_page = ' <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;';
 		$times = '1';
 		for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
@@ -358,7 +358,7 @@ for($i = 0; $i < count($line); $i++)
 			}
 			$times++;
 		}
-		//$goto_page .= ' ] ';
+		$goto_page_suffix = ' ]';
 		$goto_page .= ' ';
 	}
 	else
@@ -409,9 +409,8 @@ for($i = 0; $i < count($line); $i++)
 		'NEWEST_POST_IMG' => $topic_link['newest_post_img'],
 		'L_NEWS' => $news_label,
 		'TOPIC_ATTACHMENT_IMG' => topic_attachment_image($line[$i]['topic_attachment']),
-
-		//'GOTO_PAGE' => $goto_page,
-		'GOTO_PAGE' => (($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>'),
+		'GOTO_PAGE' => (($goto_page == '') ? '' : ('<span class="gotopage">' . $goto_page . '</span>')),
+		'GOTO_PAGE_FULL' => (($goto_page == '') ? '' : ('<span class="gotopage">' . $goto_page_prefix . ' ' . $lang['Goto_page'] . $goto_page . $goto_page_suffix . '</span>')),
 		'L_VIEWS' => $lang['Views'],
 		'VIEWS' => $views,
 

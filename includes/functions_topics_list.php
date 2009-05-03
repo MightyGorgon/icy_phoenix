@@ -438,7 +438,8 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 				}
 				else if ($times < $total_pages)
 				{
-					$goto_page .= ', ';
+					//$goto_page .= ', ';
+					$goto_page .= ' ';
 				}
 				$times++;
 			}

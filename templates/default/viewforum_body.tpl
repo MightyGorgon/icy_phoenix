@@ -37,7 +37,7 @@
 <!-- ENDIF -->
 <tr>
 	<th colspan="2"><a href="{U_VF_TITLE_SORT}" title="{L_CURRENT_SORT}">{L_TOPICS}{VF_TITLE_SORT}</a></th>
-	<!-- <th><a href="{U_VF_TIME_SORT}" title="{L_CURRENT_SORT}">{L_AUTHOR}{VF_TIME_SORT}</a></th> -->
+	<th><a href="{U_VF_TIME_SORT}" title="{L_CURRENT_SORT}">{L_AUTHOR}{VF_TIME_SORT}</a></th>
 	<th width="50"><a href="{U_VF_VIEWS_SORT}" title="{L_CURRENT_SORT}">{L_VIEWS}{VF_VIEWS_SORT}</a></th>
 	<th width="50"><a href="{U_VF_REPLIES_SORT}" title="{L_CURRENT_SORT}">{L_REPLIES}{VF_REPLIES_SORT}</a></th>
 	<!-- BEGIN rating_switch -->
@@ -52,14 +52,13 @@
 <tr>
 	<td class="row1 row-center" width="20">{topicrow.U_MARK_ALWAYS_READ}</td>
 	<td class="row1h{topicrow.CLASS_NEW} row-forum" onclick="window.location.href='{topicrow.U_VIEW_TOPIC}'">
-		<div class="topic-title-hide-flow"><span class="topiclink{topicrow.CLASS_NEW}">{topicrow.NEWEST_POST_IMG}{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE}<a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a><!-- BEGIN display_reg --> [{topicrow.REG_OPTIONS}]&nbsp;{topicrow.REG_USER_OWN_REG}<!-- END display_reg -->{topicrow.CALENDAR_TITLE}</span></div>
+		<div class="topic-title-hide-flow"><div style="float: right; display: inline; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE_ICON}</div>{topicrow.NEWEST_POST_IMG}<span class="topiclink{topicrow.CLASS_NEW}"><a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a><!-- BEGIN display_reg --> [{topicrow.REG_OPTIONS}]&nbsp;{topicrow.REG_USER_OWN_REG}<!-- END display_reg -->{topicrow.CALENDAR_TITLE}</span></div>
 		<!-- BEGIN switch_topic_desc -->
 		<span class="gensmall">&nbsp;{topicrow.switch_topic_desc.TOPIC_DESCRIPTION}</span><br />
 		<!-- END switch_topic_desc -->
-		<div style="float: right; display: block; height: auto; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{topicrow.GOTO_PAGE}</div>
-		<div class="gensmall" style="padding-top: 5px;">{topicrow.TOPIC_AUTHOR}&nbsp;&bull;&nbsp;{topicrow.FIRST_POST_TIME}</div>
+		{topicrow.GOTO_PAGE_FULL}
 	</td>
-	<!-- <td class="row3 row-center-small" nowrap="nowrap" style="padding-top: 0; padding-left: 2px; padding-right: 2px;">{topicrow.FIRST_POST_TIME}<br />{topicrow.TOPIC_AUTHOR}</td> -->
+	<td class="row3 row-center-small" nowrap="nowrap" style="padding-top: 0; padding-left: 2px; padding-right: 2px;">{topicrow.FIRST_POST_TIME}<br />{topicrow.TOPIC_AUTHOR}</td>
 	<td class="row2 row-center-small">{topicrow.VIEWS}</td>
 	<td class="row2 row-center-small">{topicrow.REPLIES}</td>
 	<!-- BEGIN rate_switch_msg -->
@@ -112,7 +111,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
+					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
 				</td>
 			</tr>
 			</table>
@@ -121,7 +120,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header" colspan="6">
-					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
+					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
 				</td>
 			</tr>
 			<tr>
@@ -196,7 +195,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			</table>
@@ -205,7 +204,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline;{SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			<tr><td class="row1">{S_AUTH_LIST}</td></tr>

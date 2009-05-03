@@ -21,6 +21,11 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
+// Start session management
+$userdata = session_pagestart($user_ip);
+init_userprefs($userdata);
+// End session management
+
 // gzip_compression
 $do_gzip_compress = false;
 if($board_config['gzip_compress'])
@@ -37,11 +42,6 @@ header('Cache-Control: pre-check=0, post-check=0, max-age=0', false);
 header('Pragma: no-cache');
 header('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-
-// Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
-// End session management
 
 // Make sure a topic id was passed
 $topic_id = request_var(POST_TOPIC_URL, 0);

@@ -1,12 +1,52 @@
-input, select, textarea {
-	box-sizing: content-box;
+#global-wrapper {
+}
+
+#forumtable {
+}
+
+.topic-title-hide-flow-header {
+	width: 680px;
+}
+
+.topic-title-hide-flow {
+	width: 400px;
+}
+
+.post-subject {
+	width: 400px;
 }
 
 .post-text {
+	width: 680px;
 	/* this is set to avoid one line post being hidden by scrollers in IE */
 	height: auto !important; /* modern browsers */
 	/*height: 40px;*/ /* IE5.x and IE6 */
-	min-height: 40px; /* modern browsers */
+	min-height: 20px; /* modern browsers */
+	/*line-height: 150%;*/
+	padding-bottom: 20px;
+	margin-bottom: 10px;
+}
+
+blockquote, .post-text blockquote, .code-content {
+	overflow: auto;
+}
+
+blockquote.quote .post-text {
+	width: 100%;
+	min-height: 20px;
+	padding-bottom: 20px;
+	margin-bottom: 0px;
+	/*overflow: auto;*/
+}
+
+.code-content .post-text {
+	width: 90%;
+	/*overflow: auto;*/
+}
+
+blockquote, .post-text blockquote, .code-content, .post-text .code-header {
+	/*padding-bottom: 10px;*/
+	/*margin-bottom: 20px;*/
 }
 
 .row1h, .row1h-new, .row2h, .row2h-new {
@@ -15,6 +55,16 @@ input, select, textarea {
 
 li.code-row {
 	wrap-option: emergency;
+}
+
+input, select, textarea {
+	box-sizing: content-box;
+}
+
+input.radio, input.radio:hover, input[type="radio"], input[type="radio"]:hover,
+input.post.radio, input.post.radio:hover, input[type="radio"].post, input[type="radio"].post:hover {
+	border-size: 0px !important;
+	border-size: none !important;
 }
 
 /* IMG Fading - BEGIN */

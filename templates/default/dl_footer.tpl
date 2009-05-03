@@ -27,7 +27,7 @@
 <br />
 
 <div id="dl_legend_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('dl_legend','dl_legend_h','dl_legend');" alt="{L_SHOW}" /><span class="forumlink">{L_LEGEND}</span>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('dl_legend','dl_legend_h','dl_legend');" alt="{L_SHOW}" /><span class="forumlink">{L_LEGEND}</span>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -41,7 +41,7 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('dl_legend','dl_legend_h','dl_legend');" alt="{L_HIDE}" /><span class="forumlink">{L_LEGEND}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('dl_legend','dl_legend_h','dl_legend');" alt="{L_HIDE}" /><span class="forumlink">{L_LEGEND}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" colspan="4">{DL_JUMPBOX}</td>
 	<td class="row1 row-center" colspan="4">{JUMPBOX}</td>

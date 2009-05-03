@@ -27,8 +27,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
-require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 // End session management
+
+require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 
 $cms_page_id = '13';
 $cms_page_name = 'links';

@@ -1,11 +1,11 @@
 <!-- BEGIN similar -->
 <div id="similar_block_h" style="display: none;">
-	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_SHOW}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_SHOW}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr><td class="row1g row-center">&nbsp;</td></tr>
 	</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 <div id="similar_block">
-	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_HIDE}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_HIDE}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<th colspan="2">{similar.L_TOPIC}</th>
 		<th>{similar.L_AUTHOR}</th>

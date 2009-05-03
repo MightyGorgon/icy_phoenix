@@ -179,7 +179,9 @@ function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $t
 		else
 		{
 			$topic_link['type'] = '';
-			$topic_link['icon'] = '<img src="' . $images['vf_topic_nor'] . '" alt="' . $lang['Topic'] . '" title="' . $lang['Topic'] . '" /> ';
+			//$topic_link['icon'] = '<img src="' . $images['vf_topic_nor'] . '" alt="' . $lang['Topic'] . '" title="' . $lang['Topic'] . '" /> ';
+			// Better empty icon for normal topics?
+			$topic_link['icon'] = '';
 			// Event Registration - BEGIN
 			if($topic_reg)
 			{
@@ -205,14 +207,14 @@ function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $t
 		{
 			//$topic_link['type'] = $lang['News_Cmx'] . ' ';
 			$topic_link['type'] = '<img src="' . $images['vf_topic_news'] . '" alt="' . $lang['Topic_News_nb'] . '" title="' . $lang['Topic_News_nb'] . '" /> ' . $topic_link['type'];
-			$topic_link['icon'] = $topic_link['icon'] . '<img src="' . $images['vf_topic_news'] . '" alt="' . $lang['Topic_News_nb'] . '" title="' . $lang['Topic_News_nb'] . '" /> ';
+			$topic_link['icon'] = '<img src="' . $images['vf_topic_news'] . '" alt="' . $lang['Topic_News_nb'] . '" title="' . $lang['Topic_News_nb'] . '" /> ' . $topic_link['icon'];
 		}
 
 		if($topic_vote)
 		{
 			//$topic_link['type'] .= $lang['Topic_Poll'] . ' ';
-			$topic_link['type'] .= '<img src="' . $images['vf_topic_poll'] . '" alt="' . $lang['Topic_Poll_nb'] . '" title="' . $lang['Topic_Poll_nb'] . '" /> ';
-			$topic_link['icon'] .= '<img src="' . $images['vf_topic_poll'] . '" alt="' . $lang['Topic_Poll_nb'] . '" title="' . $lang['Topic_Poll_nb'] . '" /> ';
+			$topic_link['type'] = '<img src="' . $images['vf_topic_poll'] . '" alt="' . $lang['Topic_Poll_nb'] . '" title="' . $lang['Topic_Poll_nb'] . '" /> ' . $topic_link['type'];
+			$topic_link['icon'] = '<img src="' . $images['vf_topic_poll'] . '" alt="' . $lang['Topic_Poll_nb'] . '" title="' . $lang['Topic_Poll_nb'] . '" /> ' . $topic_link['icon'];
 		}
 	}
 

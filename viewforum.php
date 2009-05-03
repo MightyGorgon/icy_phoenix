@@ -1286,9 +1286,8 @@ if ($bypass)
 			if(($replies + 1) > $board_config['posts_per_page'])
 			{
 				$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
-				//$goto_page = ' [ <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
+				$goto_page_prefix = ' [';
 				$goto_page = ' <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;';
-
 				$times = 1;
 				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
 				{
@@ -1306,7 +1305,7 @@ if ($bypass)
 					}
 					$times++;
 				}
-				//$goto_page .= ' ] ';
+				$goto_page_suffix = ' ]';
 				$goto_page .= ' ';
 			}
 			else
@@ -1385,8 +1384,8 @@ if ($bypass)
 				'TOPIC_ATTACHMENT_IMG' => topic_attachment_image($topic_rowset[$i]['topic_attachment']),
 				'TOPIC_RATING' => (!empty($rating2) ? $rating2 : ''),
 				'CALENDAR_TITLE' => $calendar_title,
-				//'GOTO_PAGE' => $goto_page,
-				'GOTO_PAGE' => (($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>'),
+				'GOTO_PAGE' => (($goto_page == '') ? '' : ('<span class="gotopage">' . $goto_page . '</span>')),
+				'GOTO_PAGE_FULL' => (($goto_page == '') ? '' : ('<span class="gotopage">' . $goto_page_prefix . ' ' . $lang['Goto_page'] . $goto_page . $goto_page_suffix . '</span>')),
 				'REPLIES' => $replies,
 				'VIEWS' => $views,
 				'FIRST_POST_TIME' => $first_post_time,

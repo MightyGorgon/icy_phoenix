@@ -1798,7 +1798,8 @@ switch($mode)
 					}
 					elseif ($times < $total_pages)
 					{
-						$goto_page .= ', ';
+						//$goto_page .= ', ';
+						$goto_page .= ' ';
 					}
 					$times++;
 				}

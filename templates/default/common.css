@@ -158,17 +158,9 @@ hr.dashed {
 .row-post-text {
 }
 
-.topic-title-hide-flow {
-	min-width: 280px;
-	max-width: 400px;
-	overflow: hidden !important;
-}
-
 .post-text {
 	width: 99%;
 	float: left;
-	/*overflow: hidden;*/
-	overflow: auto;
 	clear: both;
 	font-size: 12px;
 	/*line-height: 1.2em;*/
@@ -190,6 +182,34 @@ hr.dashed {
 
 .code-row li {
 	margin-left: 20px;
+}
+
+/* Overflows */
+.topic-title-hide-flow-header {
+	min-width: 280px;
+	max-width: 680px;
+	overflow: hidden !important;
+}
+
+.topic-title-hide-flow {
+	min-width: 280px;
+	max-width: 400px;
+	overflow: hidden !important;
+}
+
+.post-subject {
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 500px;
+}
+
+.post-text {
+	overflow: auto;
+	max-width: 740px;
+}
+
+blockquote, .post-text blockquote, .code-content {
+	overflow: auto;
 }
 
 /* main tables/divs */

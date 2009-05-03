@@ -46,7 +46,7 @@
 		var sOff = ''+objName+'_off';
 		var sOnStyle = bObjState ? ' style="display:none;" ':'';
 		var sOffStyle = !bObjState ? ' style="display:none;" ':'';
-		var sSymStyle = ' style="text-align: center;width: 13;height: 13;font-family: Arial,Verdana;font-size: 7pt;border-style: solid;border-width: 1;cursor: hand;color: #003344;background-color: #CACACA;" ';
+		var sSymStyle = ' style="text-align: center; width: 13; height: 13; font-family: Arial, Verdana; font-size: 7pt; border-style: solid; border-width: 1; cursor: pointer; color: #003344; background-color: #cacaca;" ';
 
 		if( (navigator.userAgent.indexOf("MSIE") >= 0) && document && document.body && document.body.style)
 		{
@@ -55,8 +55,8 @@
 		}
 		else
 		{
-			document.write('<span id="' + objName + '_on" onclick="__on(document.getElementById(\'' + objName + '\'));__off(document.getElementById(\'' + objName + '_on\'));__on(document.getElementById(\'' + objName + '_off\'));" title="Click here to show details" style="text-align: center;width: 13;height: 13;font-family: monospace;font-size: 7pt;border-style: solid;border-width: 1;cursor: pointer;color: #003344;background-color: #CACACA;' + (bObjState ? ' display:none;' : '') + '">&nbsp;+&nbsp;</span>');
-			document.write('<span id="' + objName + '_off" onclick="__off(document.getElementById(\'' + objName + '\'));__on(document.getElementById(\'' + objName + '_on\'));__off(document.getElementById(\'' + objName + '_off\'));" title="Click here to show details" style="text-align: center;width: 13;height: 13;font-family: monospace;font-size: 7pt;border-style: solid;border-width: 1;cursor: pointer;color: #003344;background-color: #CACACA;' + (!bObjState ? ' display:none;' : '') + '">&nbsp;&minus;&nbsp;</span>');
+			document.write('<span id="' + objName + '_on" onclick="__on(document.getElementById(\'' + objName + '\'));__off(document.getElementById(\'' + objName + '_on\'));__on(document.getElementById(\'' + objName + '_off\'));" title="Click here to show details" style="text-align: center; width: 13; height: 13; font-family: monospace; font-size: 7pt; border-style: solid; border-width: 1; cursor: pointer; color: #003344; background-color: #cacaca;' + (bObjState ? ' display: none;' : '') + '">&nbsp;+&nbsp;</span>');
+			document.write('<span id="' + objName + '_off" onclick="__off(document.getElementById(\'' + objName + '\'));__on(document.getElementById(\'' + objName + '_on\'));__off(document.getElementById(\'' + objName + '_off\'));" title="Click here to show details" style="text-align: center; width: 13; height: 13; font-family: monospace; font-size: 7pt; border-style: solid; border-width: 1; cursor: pointer; color: #003344; background-color: #cacaca;' + (!bObjState ? ' display: none;' : '') + '">&nbsp;&minus;&nbsp;</span>');
 		}
 	}
 // -->
@@ -65,7 +65,7 @@
 <p>{L_ADMIN_VOTE_EXPLAIN}</p>
 <br />
 <form method="post" name="vote_list" action="{S_MODE_ACTION}">
-<div style="text-align:right;padding:3px;">
+<div style="text-align: right; padding: 3px;">
 <span class="genmed"><strong>{L_SELECT_SORT_FIELD}:</strong>&nbsp;{S_FIELD_SELECT}&nbsp;&nbsp;<strong>{L_SORT}:</strong>&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" /></span>
 </div>
 </form>

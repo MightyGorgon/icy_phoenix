@@ -36,7 +36,7 @@
 <!-- BEGIN bb_usage_forum_row -->
 <tr>
 	<td class="row1" width="100%">
-		<span class="topiclink"><a style="cursor: pointer" onclick="document.forum_form_{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}.submit()">{bb_usage_section_row.bb_usage_forum_row.FORUM_NAME}</a></span>
+		<span class="topiclink"><a style="cursor: pointer;" onclick="document.forum_form_{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}.submit()">{bb_usage_section_row.bb_usage_forum_row.FORUM_NAME}</a></span>
 		<form name="forum_form_{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}" action="{bb_usage_section_row.bb_usage_forum_row.FORUM_URL}" method="post"><input name="search_forum" type="hidden" value="{bb_usage_section_row.bb_usage_forum_row.FORUM_ID}" /></form>
 	</td>
 	<td class="row2 row-center" valign="middle"><span class="gen">{bb_usage_section_row.bb_usage_forum_row.FORUM_POST_COUNT}</span></td>

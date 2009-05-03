@@ -1,11 +1,11 @@
 <!-- BEGIN forum_wordgraph -->
 <div id="wordgraph_table_h" style="display: none;">
-	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('wordgraph_table','wordgraph_table_h','wordgraph_table');" alt="{L_SHOW}" /><span class="forumlink">{forum_wordgraph.L_WORDGRAPH}</span>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('wordgraph_table','wordgraph_table_h','wordgraph_table');" alt="{L_SHOW}" /><span class="forumlink">{forum_wordgraph.L_WORDGRAPH}</span>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr><td class="row1g row-center">&nbsp;</td></tr>
 	</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 <div id="wordgraph_table">
-	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float:right;cursor:pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('wordgraph_table','wordgraph_table_h','wordgraph_table');" alt="{L_HIDE}" /><span class="forumlink">{forum_wordgraph.L_WORDGRAPH}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('wordgraph_table','wordgraph_table_h','wordgraph_table');" alt="{L_HIDE}" /><span class="forumlink">{forum_wordgraph.L_WORDGRAPH}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="row1g row-center">
 			<!-- BEGIN wordgraph_loop -->
