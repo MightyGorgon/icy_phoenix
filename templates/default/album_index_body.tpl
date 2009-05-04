@@ -54,7 +54,7 @@
 			<div style="text-align: right; float: right;"><span class="gensmall"><b>{L_PIC_TITLE}</b>: <a href="{recent_comments_block.comment_row.U_PIC_SP}">{recent_comments_block.comment_row.PIC_TITLE}</a></span></div>
 			<span class="gensmall"><b>{L_POSTER}</b>:&nbsp;{recent_comments_block.comment_row.POSTER}&nbsp;[{recent_comments_block.comment_row.TIME}]</span>
 			<hr />
-			<div class="post-text">{recent_comments_block.comment_row.COMMENT_TEXT}</div>
+			<div class="post-text post-text-hide-flow">{recent_comments_block.comment_row.COMMENT_TEXT}</div>
 		</td>
 	</tr>
 	<!-- END comment_row -->

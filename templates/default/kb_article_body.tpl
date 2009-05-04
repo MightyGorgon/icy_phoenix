@@ -35,7 +35,7 @@
 	</td>
 </tr>
 <!-- END switch_toc -->
-<tr><td class="row-post" wrap="wrap"><div class="post-text">{ARTICLE_TEXT}</div></td></tr>
+<tr><td class="row-post" wrap="wrap"><div class="post-text post-text-hide-flow">{ARTICLE_TEXT}</div></td></tr>
 <!-- BEGIN switch_pages -->
 <tr>
 	<td class="row1 row-center">
@@ -70,12 +70,12 @@
 	<td class="row-post" width="100%" height="100%">
 		<div class="post-buttons-top post-buttons">{postrow.ARROWS} {postrow.QUOTE_IMG} {postrow.EDIT_IMG} {postrow.DELETE_IMG} {postrow.IP_IMG} {postrow.TOPIC_VIEW_IMG} {postrow.U_R_CARD} {postrow.U_Y_CARD} {postrow.U_G_CARD} {postrow.U_B_CARD}</div>
 		<div class="post-subject"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
-		<div class="post-text">
+		<div class="post-text post-text-hide-flow">
 			{postrow.MESSAGE}<br />
 			{postrow.ATTACHMENTS}<br />
 			<span class="gensmall">{postrow.EDITED_MESSAGE}</span>
 		</div>
-		<div class="post-text"><br /><br /><br />{postrow.SIGNATURE}</div>
+		<div class="post-text post-text-hide-flow"><br /><br /><br />{postrow.SIGNATURE}</div>
 	</td>
 </tr>
 <tr>

@@ -144,7 +144,7 @@ function openAllSmiles()
 		<tr>
 			<td align="center">
 			<!-- BEGIN smilies -->
-				<img src="{switch_comment_post.smilies.URL}" style="padding: 2px;" border="0" onmouseover="this.style.cursor='pointer';" onclick="javascript:bbcb_vars_reassign_start();emoticon('{switch_comment_post.smilies.CODE}');bbcb_vars_reassign_end();" alt="{switch_comment_post.smilies.DESC}" />
+				<img src="{switch_comment_post.smilies.URL}" style="padding: 2px;" border="0" onmouseover="this.style.cursor='pointer';" onclick="bbcb_vars_reassign_start();emoticon('{switch_comment_post.smilies.CODE}');bbcb_vars_reassign_end();" alt="{switch_comment_post.smilies.DESC}" />
 			<!-- END smilies -->
 			</td>
 		</tr>

@@ -1086,8 +1086,8 @@ class ip_page
 		$img_minimise = '';
 		if (!empty($spoiler_id))
 		{
-			$img_maximise = '<div style="display:inline;float: right; cursor: pointer;"><img src="style/maximise.gif" onclick="javascript:ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
-			$img_minimise = '<div style="display:inline;float: right; cursor: pointer;"><img src="style/minimise.gif" onclick="javascript:ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
+			$img_maximise = '<div class="max-min-right"><img src="style/maximise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
+			$img_minimise = '<div class="max-min-right"><img src="style/minimise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
 			echo('<div id="' . $spoiler_id . '_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row-header">' . $img_maximise . '<span>' . $header . '</span></td></tr></table></div>' . "\n");
 			echo('<div id="' . $spoiler_id . '">' . "\n");
 		}

@@ -90,7 +90,7 @@ function check_uncheck_all_{topics_list_box.row.header_table.BOX_ID}()
 		<!-- BEGIN multi_selection -->
 		<td class="row2 row-center" valign="middle">
 			<span class="postdetails">
-				<input type="checkbox" name="{topics_list_box.FIELDNAME}[]{topics_list_box.row.BOX_ID}" value="{topics_list_box.row.FID}" onclick="javascript:check_uncheck_main_{topics_list_box.row.BOX_ID}();" {topics_list_box.row.L_SELECT} />
+				<input type="checkbox" name="{topics_list_box.FIELDNAME}[]{topics_list_box.row.BOX_ID}" value="{topics_list_box.row.FID}" onclick="check_uncheck_main_{topics_list_box.row.BOX_ID}();" {topics_list_box.row.L_SELECT} />
 			</span>
 		</td>
 		<!-- END multi_selection -->

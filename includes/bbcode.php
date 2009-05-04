@@ -1415,7 +1415,7 @@ class BBCode
 			$html = '<blockquote class="quote"';
 			if(isset($item['params']['post']) && intval($item['params']['post']))
 			{
-				$post_rev = '[<a href="#_somewhat" onclick="javascript:open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\');" class="genmed">' . $lang['ReviewPost'] . '</a>]';
+				$post_rev = '[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]';
 				$html .= ' cite="'. VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
 			}
 			$html .= '>';
@@ -1434,14 +1434,14 @@ class BBCode
 			{
 				if ($tag === 'ot')
 				{
-					$html .= '<div class="quote-nouser">&nbsp;<div class="error-message" style="display:inline;">' . $lang['OffTopic'] . '</div>:</div>';
+					$html .= '<div class="quote-nouser">&nbsp;<div class="error-message" style="display: inline;">' . $lang['OffTopic'] . '</div>:</div>';
 				}
 				else
 				{
 					$html .= '<div class="quote-nouser">' . $lang['Quote'] . ':</div>';
 				}
 			}
-			$html .= '<div class="post-text">';
+			$html .= '<div class="post-text post-text-hide-flow">';
 			return array(
 				'valid' => true,
 				'start' => $html,
@@ -1613,8 +1613,8 @@ class BBCode
 				}
 				$code_id = substr(md5($content . mt_rand()), 0, 8);
 				$str = BBCODE_NOSMILIES_START . '<div class="code">';
-				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position:relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\', \'codehdr2_' . $code_id . '\', \'\')">' . $lang['Hide'] . '</a>]</div>';
-				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\');ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\')">' . $lang['Show'] . '</a>]</div>';
+				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position:relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\', \'codehdr2_' . $code_id . '\', \'\'); return false;">' . $lang['Hide'] . '</a>]</div>';
+				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
 				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position:relative;"><ol class="code-list" start="' . $start . '">' . $html . '</ol></div></div>' . BBCODE_NOSMILIES_END;
 				// check highlight
 				// format: highlight="1,2,3-10"
@@ -1732,9 +1732,9 @@ class BBCode
 				}
 				$code_id = substr(md5($content . mt_rand()), 0, 8);
 				$str = BBCODE_NOSMILIES_START . '<div class="code">';
-				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position:relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\');ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\')">' . $lang['Hide'] . '</a>] [<a href="javascript:void(0)" onclick="select_text(\'code_' . $code_id . '\')">' . $lang['Select'] . '</a>]</div>';
-				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\')">' . $lang['Show'] . '</a>]</div>';
-				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position:relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
+				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position:relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
+				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
+				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
 
 				$this->code_counter++;
 				return array(
@@ -1831,9 +1831,9 @@ class BBCode
 			}
 			$code_id = substr(md5($content . mt_rand()), 0, 8);
 			$str = BBCODE_NOSMILIES_START . '<div class="code">';
-			$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position:relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\');ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\')">' . $lang['Hide'] . '</a>] [<a href="javascript:void(0)" onclick="select_text(\'code_' . $code_id . '\')">' . $lang['Select'] . '</a>]</div>';
-			$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="javascript:void(0)" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\')">' . $lang['Show'] . '</a>]</div>';
-			$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position:relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
+			$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
+			$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
+			$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
 
 			$this->code_counter++;
 			return array(
@@ -1880,7 +1880,7 @@ class BBCode
 				}
 			}
 			// generate html
-			$html = '<blockquote class="quote"><div class="quote-nouser">' . $lang['xs_bbc_hide_message'] . ':</div><div class="post-text">';
+			$html = '<blockquote class="quote"><div class="quote-nouser">' . $lang['xs_bbc_hide_message'] . ':</div><div class="post-text post-text-hide-flow">';
 			if(!$show)
 			{
 				return array(
@@ -1912,8 +1912,8 @@ class BBCode
 			}
 			$spoiler_id = substr(md5($content . mt_rand()), 0, 8);
 			$str = '<div class="spoiler">';
-			$str .= '<div class="code-header" id="spoilerhdr_' . $spoiler_id . '" style="position: relative;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="javascript:void(0)" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\')">' . $lang['Show'] . '</a> ]</div>';
-			$str .= '<div class="code-header" id="spoilerhdr2_' . $spoiler_id . '" style="position: relative; display: none;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="javascript:void(0)" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\')">' . $lang['Hide'] . '</a> ]</div>';
+			$str .= '<div class="code-header" id="spoilerhdr_' . $spoiler_id . '" style="position: relative;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="#" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\'); return false;">' . $lang['Show'] . '</a> ]</div>';
+			$str .= '<div class="code-header" id="spoilerhdr2_' . $spoiler_id . '" style="position: relative; display: none;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="#" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\'); return false;">' . $lang['Hide'] . '</a> ]</div>';
 			$str .= '<div class="spoiler-content" id="spoiler2_' . $spoiler_id . '" style="position: relative; display: none;">' . $html;
 			return array(
 				'valid' => true,

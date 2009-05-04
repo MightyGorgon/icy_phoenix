@@ -936,14 +936,14 @@ function ratings_view_topic()
 				if ($rating_inserted == false)
 				{
 					$template->assign_block_vars('rate_link.rate_row', array(
-						'RATE_LINK' => '<a href="#ratingblock" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $board_config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
+						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $board_config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
 						)
 					);
 				}
 				else
 				{
 					$template->assign_block_vars('rerate_link.rate_row', array(
-						'RATE_LINK' => '<a href="#ratingblock" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $board_config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
+						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $board_config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
 						)
 					);
 				}

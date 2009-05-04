@@ -224,7 +224,7 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_EXTRA_PROFILE_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row1"><div class="post-text">{SELFDES}</div></td></tr>
+<tr><td class="row1"><div class="post-text post-text-hide-flow">{SELFDES}</div></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <!-- BEGIN recent_pics_block -->

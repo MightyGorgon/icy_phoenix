@@ -54,7 +54,7 @@ if(isset($_POST['letter']))
 {
 	$by_letter = ($_POST['letter']) ? $_POST['letter'] : 'all';
 }
-else if(isset($_GET['letter']))
+elseif(isset($_GET['letter']))
 {
 	$by_letter = ($_GET['letter']) ? $_GET['letter'] : 'all';
 }
@@ -367,7 +367,7 @@ $template->assign_vars(array(
 	'L_REGISTERED_AWAITS' => ($action == 'inactive') ? $lang['Account_awaits'] : $lang['Account_registered'],
 	'L_ACTIVATION' => $l_activation,
 	'TOTAL_USERS' => ($total_users == '1') ? sprintf($lang['Account_total_user'], $total_users) : sprintf($lang['Account_total_users'], $total_users),
-	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . $letter, $total_users, $board_config['topics_per_page'], $start),
+	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . $by_letter, $total_users, $board_config['topics_per_page'], $start),
 	'PAGE_NUMBER' => ($total_users == '0') ? '' : sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_users / $board_config['topics_per_page'])),
 	'S_LETTER_SELECT' => $select_letter,
 	'S_LETTER_HIDDEN' => '<input type="hidden" name="letter" value="' . $by_letter . '">',

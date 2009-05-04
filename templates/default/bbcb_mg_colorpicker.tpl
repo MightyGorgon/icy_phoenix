@@ -13,7 +13,7 @@
 <div style="width:420px;">
 
 <div style="display: inline; float: right;">
-<div id="cp1_Preview" onclick="javascript:InsertTagExt('#' + document.getElementById('cp1_Hex').value);" style="background-color:#FFFFFF;width:60px;height:60px;padding:0;margin:0;border: solid 1px #000000;"><br /></div><br />
+<div id="cp1_Preview" onclick="InsertTagExt('#' + document.getElementById('cp1_Hex').value);" style="background-color:#FFFFFF;width:60px;height:60px;padding:0;margin:0;border: solid 1px #000000;"><br /></div><br />
 <input type="radio" id="cp1_HueRadio" name="cp1_Mode" value="0" tabindex="20" /><label for="cp1_HueRadio"><tt>H:</tt></label><input type="text" id="cp1_Hue" value="0" style="width:40px;" class="mainoption" tabindex="30" /> &deg;<br />
 <input type="radio" id="cp1_SaturationRadio" name="cp1_Mode" value="1" tabindex="21" /><label for="cp1_SaturationRadio"><tt>S:</tt></label><input type="text" id="cp1_Saturation" value="100" style="width:40px;" class="mainoption" tabindex="31" /> %<br />
 <input type="radio" id="cp1_BrightnessRadio" name="cp1_Mode" value="2" tabindex="22" /><label for="cp1_BrightnessRadio"><tt>B:</tt></label><input type="text" id="cp1_Brightness" value="100" style="width:40px;" class="mainoption" tabindex="32" /> %<br />

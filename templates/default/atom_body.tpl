@@ -21,7 +21,7 @@
 		<issued>{post_item.ATOM_TIME}</issued>
 		<modified>{post_item.ATOM_TIME_M}</modified>
 	<content type="text/html" mode="escaped">{L_AUTHOR}: {post_item.AUTHOR}&lt;br /&gt;
-	{post_item.POST_SUBJECT}{L_POSTED}: {post_item.POST_TIME}&lt;br /&gt;&lt;br /&gt;&lt;div class="post-text"&gt;
+	{post_item.POST_SUBJECT}{L_POSTED}: {post_item.POST_TIME}&lt;br /&gt;&lt;br /&gt;&lt;div class="post-text post-text-hide-flow"&gt;
 	{post_item.POST_TEXT}{post_item.USER_SIG}&lt;/div&gt;&lt;br /&gt;
 	</content>
 	</entry>

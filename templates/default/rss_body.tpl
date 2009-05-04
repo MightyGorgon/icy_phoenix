@@ -34,7 +34,7 @@
 {post_item.POST_SUBJECT}
 {L_POSTED}: {post_item.POST_TIME}<br />
 
-<br /><div class="post-text">{post_item.POST_TEXT}{post_item.USER_SIG}</div><br />
+<br /><div class="post-text post-text-hide-flow">{post_item.POST_TEXT}{post_item.USER_SIG}</div><br />
 ]]>
 </description>
 <dc:creator>{post_item.AUTHOR0}</dc:creator>

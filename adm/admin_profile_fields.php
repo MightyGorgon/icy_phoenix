@@ -20,8 +20,8 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1610_Users']['260_CPF_Add'] = $filename . '?mode=add&pfid=x';
-	$module['1610_Users']['270_CPF_Edit'] = $filename . '?mode=edit&pfid=x';
+	$module['1610_Users']['260_CPF_Add'] = $filename . '?mode=add&amp;pfid=x';
+	$module['1610_Users']['270_CPF_Edit'] = $filename . '?mode=edit&amp;pfid=x';
 	return;
 }
 

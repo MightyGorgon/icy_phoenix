@@ -17,7 +17,7 @@
 				<!-- END forum_row -->
 			</table>
 		</div>
-		<div id="menu_cat_{cat_row.CAT_ID}" style="display: inline; position: relative;">
+		<div id="menu_cat_{cat_row.CAT_ID}" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'menu_cat_{cat_row.CAT_ID}';

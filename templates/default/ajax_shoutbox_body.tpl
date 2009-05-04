@@ -25,12 +25,12 @@
 <div align="center">
 	<div class="box" align="center">
 		<div id="ajax_chat_h" style="display: none;">
-		{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_SHOW}" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_SHOW}" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 		<tr><td>&nbsp;</td></tr>
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 		</div>
 		<div id="ajax_chat">
-		{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_HIDE}" />&nbsp;<img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="act_indicator" alt="" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_HIDE}" />&nbsp;<img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="act_indicator" alt="" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 		<!-- BEGIN shout_allowed -->
 		<tr>
 			<td class="row1 row-center" valign="bottom">

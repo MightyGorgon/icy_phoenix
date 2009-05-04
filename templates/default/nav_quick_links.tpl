@@ -15,7 +15,7 @@ if(GetCookie(tmp) == '2')
 <form name="ChangeThemeLang" method="post" action="{REQUEST_URI}">
 {IMG_THL}{IMG_THC}
 <!-- IF SWITCH_CMS_GLOBAL_BLOCKS -->
-<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_HIDE}" />
+<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_HIDE}" />
 <!-- ENDIF -->
 <span class="forumlink">{L_QUICK_LINKS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 
@@ -23,7 +23,7 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
-		<a href="#" title="{L_SPONSORS_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_SPONSORS_LINKS}</b></a>
+		<a href="#" onclick="return false;" title="{L_SPONSORS_LINKS}" class="nav-menu-link"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>
 </tr>
 <tr><td class="row1">{NAV_MENU_ADS_TOP}</td></tr>
@@ -32,12 +32,12 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('main_links','main_links2','main_links');">
 		<img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_MAIN_LINKS}" title="{L_MAIN_LINKS}" />&nbsp;
-		<a href="javascript:void(0);" title="{L_MAIN_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_MAIN_LINKS}</b></a>
+		<a href="#" onclick="return false;" title="{L_MAIN_LINKS}" class="nav-menu-link"><b>{L_MAIN_LINKS}</b></a>
 	</th>
 </tr>
 <tr>
 	<td class="row5">
-		<div id="main_links2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="main_links2" class="nav-menu">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<!-- IF S_ADMIN -->
 				<tr>
@@ -107,7 +107,7 @@ if(GetCookie(tmp) == '2')
 				<!--
 				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="javascript:void(0);" onclick="window.open('chatbox_mod/chatbox.php','_chatbox','resizable=yes,scrollbars=yes,width=600,height=460')">Chat</a></td>
+					<td class="genmed" align="left"><a href="#" onclick="window.open('chatbox_mod/chatbox.php','_chatbox','resizable=yes,scrollbars=yes,width=600,height=460'); return false;">Chat</a></td>
 				</tr>
 				-->
 				<!-- ENDIF -->
@@ -135,7 +135,7 @@ if(GetCookie(tmp) == '2')
 				<!-- ENDIF -->
 			</table>
 		</div>
-		<div id="main_links" style="display: inline; position: relative;">
+		<div id="main_links" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'main_links';
@@ -151,12 +151,12 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('news2_links','news2_links2','news2_links');">
 		<img src="{IMG_NAV_MENU_NEWSPAPER}" alt="{L_NEWS_LINKS}" title="{L_NEWS_LINKS}" />&nbsp;
-		<a href="javascript:void(0);" title="{L_NEWS_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_NEWS_LINKS}</b></a>
+		<a href="#" onclick="return false;" title="{L_NEWS_LINKS}" class="nav-menu-link"><b>{L_NEWS_LINKS}</b></a>
 	</th>
 </tr>
 <tr>
 	<td class="row5">
-		<div id="news2_links2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="news2_links2" class="nav-menu">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
@@ -194,7 +194,7 @@ if(GetCookie(tmp) == '2')
 				<!-- END switch_show_digests -->
 			</table>
 		</div>
-		<div id="news2_links" style="display: inline; position: relative;">
+		<div id="news2_links" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'news2_links';
@@ -210,12 +210,12 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('info_links','info_links2','info_links');">
 		<img src="{IMG_NAV_MENU_INFORMATION}" alt="{L_INFO_LINKS}" title="{L_INFO_LINKS}" />&nbsp;
-		<a href="javascript:void(0)" title="{L_INFO_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_INFO_LINKS}</b></a>
+		<a href="javascript:void(0)" title="{L_INFO_LINKS}" class="nav-menu-link"><b>{L_INFO_LINKS}</b></a>
 	</th>
 </tr>
 <tr>
 	<td class="row5">
-		<div id="info_links2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="info_links2" class="nav-menu">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
@@ -239,7 +239,7 @@ if(GetCookie(tmp) == '2')
 				</tr>
 			</table>
 		</div>
-		<div id="info_links" style="display: inline; position: relative;">
+		<div id="info_links" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'info_links';
@@ -255,12 +255,12 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('users_links','users_links2','users_links');">
 		<img src="{IMG_NAV_MENU_GROUP}" alt="{L_USERS_LINKS}" title="{L_USERS_LINKS}" />&nbsp;
-		<a href="javascript:void(0)" title="{L_USERS_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_USERS_LINKS}</b></a>
+		<a href="javascript:void(0)" title="{L_USERS_LINKS}" class="nav-menu-link"><b>{L_USERS_LINKS}</b></a>
 	</th>
 </tr>
 <tr>
 	<td class="row5">
-		<div id="users_links2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="users_links2" class="nav-menu">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
@@ -280,7 +280,7 @@ if(GetCookie(tmp) == '2')
 				</tr>
 			</table>
 		</div>
-		<div id="users_links" style="display: inline; position: relative;">
+		<div id="users_links" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'users_links';
@@ -297,19 +297,19 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('style_select','style_select2','style_select');">
 		<img src="{IMG_NAV_MENU_PALETTE}" alt="{L_SELECT_STYLE}" title="{L_SELECT_STYLE}" />&nbsp;
-		<a href="javascript:void(0);" title="{L_SELECT_STYLE}" style="vertical-align: top; text-decoration: none;"><b>{L_SELECT_STYLE}</b></a>
+		<a href="#" onclick="return false;" title="{L_SELECT_STYLE}" class="nav-menu-link"><b>{L_SELECT_STYLE}</b></a>
 	</th>
 </tr>
 <tr>
 	<td class="row5">
-		<div id="style_select2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="style_select2" class="nav-menu">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<tr>
 					<td class="genmed" align="center">{STYLE_SELECT_H}</td>
 				</tr>
 			</table>
 		</div>
-		<div id="style_select" style="display: inline; position: relative;">
+		<div id="style_select" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'style_select';
@@ -327,12 +327,12 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('lang_select','lang_select2','lang_select');">
 		<img src="{IMG_NAV_MENU_WORLD}" alt="{L_SELECT_LANG}" title="{L_SELECT_LANG}" />&nbsp;
-		<a href="javascript:void(0);" title="{L_SELECT_LANG}" style="vertical-align: top; text-decoration: none;"><b>{L_SELECT_LANG}</b></a>
+		<a href="#" onclick="return false;" title="{L_SELECT_LANG}" class="nav-menu-link"><b>{L_SELECT_LANG}</b></a>
 	</th>
 </tr>
 <tr>
 	<td class="row5">
-		<div id="lang_select2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="lang_select2" class="nav-menu">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<!-- BEGIN lang_select -->
 				<tr>
@@ -343,7 +343,7 @@ if(GetCookie(tmp) == '2')
 				<!-- END lang_select -->
 			</table>
 		</div>
-		<div id="lang_select" style="display: inline; position: relative;">
+		<div id="lang_select" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'lang_select';
@@ -360,12 +360,12 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('rss_feed','rss_feed2','rss_feed');">
 		<img src="{IMG_NAV_MENU_FEED}" alt="{L_RSS_FEEDS}" title="{L_RSS_FEEDS}" />&nbsp;
-		<a href="javascript:void(0);" title="{L_RSS_FEEDS}" style="vertical-align: top; text-decoration: none;"><b>{L_RSS_FEEDS}</b></a>
+		<a href="#" onclick="return false;" title="{L_RSS_FEEDS}" class="nav-menu-link"><b>{L_RSS_FEEDS}</b></a>
 	</th>
 </tr>
 <tr>
 	<td class="row5">
-		<div id="rss_feed2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="rss_feed2" class="nav-menu">
 			<table class="forumline-no2" width="100%" cellspacing="0" cellpadding="2" border="0">
 				<tr>
 					<td width="8" align="left"><img src="{IMG_NAV_MENU_RSS_FEED}" alt="RSS" title="RSS" /></td>
@@ -373,7 +373,7 @@ if(GetCookie(tmp) == '2')
 				</tr>
 			</table>
 		</div>
-		<div id="rss_feed" style="display: inline; position: relative;">
+		<div id="rss_feed" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'rss_feed';
@@ -391,7 +391,7 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
-		<a href="#" title="{L_SPONSORS_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_SPONSORS_LINKS}</b></a>
+		<a href="#" title="{L_SPONSORS_LINKS}" class="nav-menu-link"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>
 </tr>
 <tr><td class="row1">{NAV_MENU_ADS_BOTTOM}</td></tr>
@@ -401,7 +401,7 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
-		<a href="javascript:void(0);" title="{L_SPONSORS_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_SPONSORS_LINKS}</b></a>
+		<a href="#" onclick="return false;" title="{L_SPONSORS_LINKS}" class="nav-menu-link"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>
 </tr>
 <tr>

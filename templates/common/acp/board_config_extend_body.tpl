@@ -8,7 +8,7 @@
 <!-- BEGIN menu -->
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN title_open -->
-<tr><th><img style="padding-top: 3px; padding-right: 6px; float: right; cursor: pointer;" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}images/minimise.gif" onclick="javascript:ShowHide('acp_cfg','acp_cfg_h','acp_cfg');" alt="{L_HIDE}" /><a href="{menu.U_MENU}" class="cattitle">{menu.L_MENU}</a></th></tr>
+<tr><th><img class="max-min-right" style="padding-top: 3px; padding-right: 6px;" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}images/minimise.gif" onclick="ShowHide('acp_cfg','acp_cfg_h','acp_cfg');" alt="{L_HIDE}" /><a href="{menu.U_MENU}" class="cattitle">{menu.L_MENU}</a></th></tr>
 <!-- END title_open -->
 <!-- BEGIN title_close -->
 <tr><td class="{menu.CLASS}" align="center"><a href="{menu.U_MENU}" class="gen">{menu.L_MENU}</a></td></tr>

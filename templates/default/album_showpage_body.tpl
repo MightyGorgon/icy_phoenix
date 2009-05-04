@@ -97,7 +97,7 @@ function checkFormRate()
 		</tr>
 		<tr>
 			<td valign="top" align="right"><span class="genmed">{L_PIC_BBCODE}:</span></td>
-			<td valign="top" align="left"><form name="select_all" action=""><input class="post" name="BBCode" size="50" maxlength="200" value="{PIC_BBCODE}" type="text" readonly="readonly" onclick="javascript:this.form.BBCode.focus();this.form.BBCode.select();" /></form></td>
+			<td valign="top" align="left"><form name="select_all" action=""><input class="post" name="BBCode" size="50" maxlength="200" value="{PIC_BBCODE}" type="text" readonly="readonly" onclick="this.form.BBCode.focus();this.form.BBCode.select();" /></form></td>
 		</tr>
 		<tr>
 			<td valign="top" align="right"><span class="genmed">{L_POSTED}:</span></td>
@@ -199,8 +199,8 @@ function checkFormRate()
 	<td class="row-post" width="100%" height="100%">
 		<div class="post-buttons-top post-buttons">{commentrow.EDIT} {commentrow.DELETE}</div>
 		<div class="post-subject">&nbsp;</div>
-		<div class="post-text">{commentrow.TEXT}<br /></div>
-		<div class="post-text"><br /><br /><br />_______________<br />{commentrow.POSTER_SIGNATURE}</div>
+		<div class="post-text post-text-hide-flow">{commentrow.TEXT}<br /></div>
+		<div class="post-text post-text-hide-flow"><br /><br /><br />_______________<br />{commentrow.POSTER_SIGNATURE}</div>
 	</td>
 </tr>
 <tr>

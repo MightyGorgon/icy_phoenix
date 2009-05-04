@@ -35,7 +35,7 @@
 	</td>
 </tr>
 <!-- END switch_toc -->
-<tr><td class="row1" colspan="2" wrap="wrap"><div class="post-text">{ARTICLE_TEXT}</div></td></tr>
+<tr><td class="row1" colspan="2" wrap="wrap"><div class="post-text post-text-hide-flow">{ARTICLE_TEXT}</div></td></tr>
 <!-- BEGIN switch_pages -->
 <tr>
 	<td class="row1 row-center" colspan="2">
@@ -68,7 +68,7 @@
 				<span class="postdetails">{L_POSTED}:&nbsp;{postrow.POST_DATE}&nbsp;&nbsp;&nbsp;{L_POST_SUBJECT}&nbsp;{postrow.POST_SUBJECT}</span>
 			</td>
 		</tr>
-		<tr><td><hr /><div class="post-text">{postrow.MESSAGE}</div></td></tr>
+		<tr><td><hr /><div class="post-text post-text-hide-flow">{postrow.MESSAGE}</div></td></tr>
 		</table>
 	</td>
 </tr>

@@ -1,5 +1,5 @@
 <div id="xs_news_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('xs_news','xs_news_h','xs_news');" alt="{L_SHOW}" /><span class="forumlink">{NEWS_TITLE}</span>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('xs_news','xs_news_h','xs_news');" alt="{L_SHOW}" /><span class="forumlink">{NEWS_TITLE}</span>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -13,7 +13,7 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('xs_news','xs_news_h','xs_news');" alt="{L_HIDE}" /><span class="forumlink">{NEWS_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('xs_news','xs_news_h','xs_news');" alt="{L_HIDE}" /><span class="forumlink">{NEWS_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td>
 

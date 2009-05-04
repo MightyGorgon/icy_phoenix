@@ -16,19 +16,19 @@
 		</script>
 		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
-			<td class="row-header">
-				<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('quick_links_cms','quick_links_cms2','quick_links_cms');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_SHOW}" />&nbsp;</div><span>{L_CMS}</span>
-			</td>
+			<th>
+				<span style="float: right;"><img class="max-min-right" style="padding-top: 3px; padding-right: 6px; vertical-align: top;" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links_cms','quick_links_cms2','quick_links_cms');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_SHOW}" /></span><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_CMS}" title="{L_CMS}" />&nbsp;<span style="vertical-align: top;">{L_CMS}</span>
+			</th>
 		</tr>
 		<tr>
-			<th style="cursor:pointer;" align="left" onclick="ShowHide('cms_management','cms_management2','cms_management');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('cms_management','cms_management2','cms_management');">
 				<img src="{IMG_BLOCK_EDIT}" alt="{L_CMS_MANAGEMENT}" title="{L_CMS_MANAGEMENT}" />&nbsp;
-				<a href="javascript:void(0);" title="{L_CMS_MANAGEMENT}" style="vertical-align: top; text-decoration: none;"><b>{L_CMS_MANAGEMENT}</b></a>
+				<a href="#" onclick="return false;" title="{L_CMS_MANAGEMENT}" class="nav-menu-link"><b>{L_CMS_MANAGEMENT}</b></a>
 			</th>
 		</tr>
 		<tr>
 			<td class="row1" style="padding: 0px;">
-				<div id="cms_management2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+				<div id="cms_management2" class="nav-menu">
 					<table class="forumlinenb" style="border-width:0px;" width="100%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
@@ -52,7 +52,7 @@
 					</tr>
 					</table>
 				</div>
-				<div id="cms_management" style="display: inline; position: relative;">
+				<div id="cms_management" class="js-sh-box">
 					<script type="text/javascript">
 					<!--
 					tmp = 'cms_management';
@@ -68,12 +68,12 @@
 		<tr>
 			<th style="cursor: pointer;" align="left" onclick="ShowHide('cms_settings_options','cms_settings_options2','cms_settings_options');">
 				<img src="{IMG_NAV_MENU_WSETTINGS}" alt="{L_CPL_SETTINGS_OPTIONS}" title="{L_CPL_SETTINGS_OPTIONS}" />&nbsp;
-				<a href="javascript:void(0);" title="{L_CPL_SETTINGS_OPTIONS}" style="vertical-align: top; text-decoration: none;"><b>{L_CPL_SETTINGS_OPTIONS}</b></a>
+				<a href="#" onclick="return false;" title="{L_CPL_SETTINGS_OPTIONS}" class="nav-menu-link"><b>{L_CPL_SETTINGS_OPTIONS}</b></a>
 			</th>
 		</tr>
 		<tr>
 			<td class="row1" style="padding:0px;">
-				<div id="cms_settings_options2" style="display: none; position: relative; padding-top: 0px; padding-bottom: 0px;">
+				<div id="cms_settings_options2" class="nav-menu">
 					<table class="forumlinenb" style="border-width: 0px;" width="100%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
@@ -89,7 +89,7 @@
 					</tr>
 					</table>
 				</div>
-				<div id="cms_settings_options" style="display: inline; position: relative;">
+				<div id="cms_settings_options" class="js-sh-box">
 					<script type="text/javascript">
 					<!--
 					tmp = 'cms_settings_options';

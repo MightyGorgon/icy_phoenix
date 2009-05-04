@@ -361,8 +361,8 @@ function insertNewContent(liId, liName, liText, liTime, last_id)
 	//newCell.innerHTML = newCell.innerHTML + '<div style="text-align: center;"><span class="gensmall"><a href="#" onclick="removeShout(\'outputList\', this.parentNode.parentNode.rowIndex, ' + liId + ')">[ {L_DELETE} ]<\/a><\/span><\/div>';
 	<!-- END user_is_admin -->
 
-	//newCell2.innerHTML = '<div class="post-text">' + liText + '<\/div>';
-	newCell2.innerHTML = '<div class="post-text">' + '<b>' + liName + '<\/b>' + ': ' + liText + '<\/div>';
+	//newCell2.innerHTML = '<div class="post-text post-text-hide-flow">' + liText + '<\/div>';
+	newCell2.innerHTML = '<div class="post-text post-text-hide-flow">' + '<b>' + liName + '<\/b>' + ': ' + liText + '<\/div>';
 
 	<!-- BEGIN user_is_admin -->
 	var newCell3 = newRow.insertCell(2);

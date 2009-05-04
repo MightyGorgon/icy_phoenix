@@ -22,7 +22,7 @@ if(GetCookie(tmp) == '2')
 <!-- END show_hide_switch -->
 {IMG_THL}{IMG_THC}
 <!-- BEGIN show_hide_switch -->
-<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_HIDE}" />
+<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_HIDE}" />
 <!-- END show_hide_switch -->
 <span class="forumlink">{MAIN_MENU_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 
@@ -30,7 +30,7 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
-		<a href="#" title="{L_SPONSORS_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_SPONSORS_LINKS}</b></a>
+		<a href="#" title="{L_SPONSORS_LINKS}" class="nav-menu-link"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>
 </tr>
 <tr><td class="row1">{NAV_MENU_ADS_TOP}</td></tr>
@@ -39,7 +39,7 @@ if(GetCookie(tmp) == '2')
 <!-- BEGIN cat_row -->
 <tr>
 	<th style="cursor: pointer;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}','menu_cat_{cat_row.CAT_ID}_h','menu_cat_{cat_row.CAT_ID}');">
-		{cat_row.CAT_ICON}<a href="javascript:void(0);" title="{cat_row.CAT_ITEM}" style="vertical-align: top; text-decoration: none;"><b>{cat_row.CAT_ITEM}</b></a>
+		{cat_row.CAT_ICON}<a href="#" onclick="return false;" title="{cat_row.CAT_ITEM}" class="nav-menu-link"><b>{cat_row.CAT_ITEM}</b></a>
 	</th>
 </tr>
 <tr>
@@ -51,7 +51,7 @@ if(GetCookie(tmp) == '2')
 				<!-- END menu_row -->
 			</div>
 		</div>
-		<div id="menu_cat_{cat_row.CAT_ID}" style="display: inline; position: relative;">
+		<div id="menu_cat_{cat_row.CAT_ID}" class="js-sh-box">
 			<script type="text/javascript">
 			<!--
 			tmp = 'menu_cat_{cat_row.CAT_ID}';
@@ -70,7 +70,7 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<th style="cursor: pointer;" align="left">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
-		<a href="#" title="{L_SPONSORS_LINKS}" style="vertical-align: top; text-decoration: none;"><b>{L_SPONSORS_LINKS}</b></a>
+		<a href="#" title="{L_SPONSORS_LINKS}" class="nav-menu-link"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>
 </tr>
 <tr><td class="row1">{NAV_MENU_ADS_BOTTOM}</td></tr>

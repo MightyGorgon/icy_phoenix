@@ -22,10 +22,10 @@
 <h1>{SITENAME}</h1><br />
 <h2>{FORUM_NAME} - {TOPIC_TITLE}</h2><br /><br />
 <!-- BEGIN postrow -->
-<div class="forumline" style="margin:10px;padding5px;width=100%">
+<div class="forumline" style="margin: 10px; padding: 5px; width: 100%;">
 <b>{postrow.POSTER_NAME}</b>&nbsp;[&nbsp;{postrow.POST_DATE}&nbsp;]<br />
-<b>{L_POST_SUBJECT}:&nbsp;</b>{postrow.POST_SUBJECT}<hr width="95%" class="sep"/>
-<div class="post-text">{postrow.MESSAGE}</div>
+<b>{L_POST_SUBJECT}:&nbsp;</b>{postrow.POST_SUBJECT}<hr width="95%" class="sep" />
+<div class="post-text post-text-hide-flow">{postrow.MESSAGE}</div>
 </div>
 <!-- END postrow -->
 <br />

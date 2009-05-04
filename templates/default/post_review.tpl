@@ -33,12 +33,12 @@
 	<td class="row-post" width="100%" height="100%">
 		<div class="post-buttons-top post-buttons">{postrow.QUOTE_IMG} <a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a></div>
 		<div class="post-subject"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
-		<div class="post-text">
+		<div class="post-text post-text-hide-flow">
 			{postrow.MESSAGE}<br />
 			{postrow.ATTACHMENTS}
 		</div>
 		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
-		<div class="post-text">
+		<div class="post-text post-text-hide-flow">
 			<br /><br /><br />
 			<!-- BEGIN above_sig -->
 			<span class="post-details"><br />{postrow.above_sig.ABOVE_VAL}</span>

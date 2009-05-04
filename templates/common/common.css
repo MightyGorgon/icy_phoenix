@@ -168,9 +168,20 @@ hr.dashed {
 .imgfull_nm{filter: alpha(opacity=100); -moz-opacity: 1;}
 /* IMG Fading - END */
 
+/* phpbbstyles.com bbcode */
 .post-text {
+	width: 99%;
+	float: left;
+	clear: both;
 	font-size: 12px;
 	/*line-height: 1.2em;*/
+	/* to avoid vertical scrollbar with acronyms in last line */
+	padding-bottom: 3px;
+}
+
+.post-text-hide-flow {
+	overflow: auto;
+	max-width: 740px;
 }
 
 /* main tables/divs */
@@ -369,6 +380,30 @@ a.text_yellow:hover { color: #ffffaa; text-decoration: underline; }
 	display: inline;
 	border: 0px;
 	margin: 0px auto;
+}
+
+/* Nav Menu */
+.nav-menu {
+	display: none;
+	position: relative;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+a.nav-menu-link {
+	vertical-align: top;
+	text-decoration: none;
+}
+
+.max-min-right {
+	display: inline;
+	float: right;
+	cursor: pointer;
+}
+
+.js-sh-box {
+	display: inline;
+	position: relative;
 }
 
 /* Sitemap */

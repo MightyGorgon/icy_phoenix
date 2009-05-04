@@ -22,12 +22,10 @@ function toggle_check_all()
 }
 -->
 </script>
+
 <!-- BEGIN statusrow -->
-<table width="100%" cellspacing="2" cellpadding="2" border="1" align="center">
-<tr>
-	<td align="center"><span class="gen">{L_STATUS}</span><br />
-	<span class="genmed"><b>{I_STATUS_MESSAGE}</b></span><br /></td>
-</tr>
+<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr><td class="row1 row-center"><span class="gen">{L_STATUS}</span><br /><span class="genmed"><b>{I_STATUS_MESSAGE}</b></span><br /></td></tr>
 </table>
 <!-- END statusrow -->
 
@@ -47,7 +45,7 @@ function toggle_check_all()
 <tr>
 	<td width="40%">
 		<span class="gen"><b>{L_UTILS}</b></span>
-		<ul style="margin-left:15px;">
+		<ul style="margin-left: 15px;">
 			<li><a href="{URL_ORPHAN}" class="genmed">{L_REMOVE_OLD}</a></li>
 			<li><a href="{URL_SENT}" class="genmed">{L_REMOVE_SENT}</a></li>
 		</ul>
@@ -78,9 +76,9 @@ function toggle_check_all()
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<th width="5%">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onclick="JavaScript:{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();" /></th>
+	<th width="5%">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onclick="{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();" /></th>
 <!-- BEGIN archive_avail_switch -->
-	<th width="5%">{L_ARCHIVE}<br /><input type="checkbox" name="check_all_arch_box" onclick="JavaScript:check_all_del_box.checked = false; toggle_check_all();" /></th>
+	<th width="5%">{L_ARCHIVE}<br /><input type="checkbox" name="check_all_arch_box" onclick="check_all_del_box.checked = false; toggle_check_all();" /></th>
 <!-- END archive_avail_switch -->
 	<th align="left">{L_SUBJECT}</th>
 	<th>{L_FROM}</th>
@@ -92,26 +90,26 @@ function toggle_check_all()
 <tr><td colspan="7" class="row1 row-center">{L_NO_PMS}</td></tr>
 <!-- END empty_switch -->
 <!-- BEGIN msgrow -->
-<tr>
-	<td class="{msgrow.ROW_CLASS} row-center">
+<tr class="{msgrow.ROW_CLASS}h">
+	<td class="{msgrow.ROW_CLASS}h row-center" style="background: none;">
 		<span class="gen">&nbsp;
-		<input type="checkbox" name="delete_id_{msgrow.PM_ID}" onclick="JavaScript:{JS_ARCHIVE_COMMENT_1}archive_id_{msgrow.PM_ID}.checked = false{JS_ARCHIVE_COMMENT_2};" />&nbsp;
+		<input type="checkbox" name="delete_id_{msgrow.PM_ID}" onclick="{JS_ARCHIVE_COMMENT_1}archive_id_{msgrow.PM_ID}.checked = false{JS_ARCHIVE_COMMENT_2};" />&nbsp;
 		</span>
 	</td>
 	<!-- BEGIN archive_avail_switch_msg -->
-	<td class="{msgrow.ROW_CLASS} row-center">
-		<span class="gen">&nbsp;<input type="checkbox" name="archive_id_{msgrow.PM_ID}" onclick="JavaScript:delete_id_{msgrow.PM_ID}.checked = false;" />&nbsp;</span>
+	<td class="{msgrow.ROW_CLASS}h row-center" style="background: none;">
+		<span class="gen">&nbsp;<input type="checkbox" name="archive_id_{msgrow.PM_ID}" onclick="delete_id_{msgrow.PM_ID}.checked = false;" />&nbsp;</span>
 	</td>
 <!-- END archive_avail_switch_msg -->
-	<td class="{msgrow.ROW_CLASS}" align="left"><span class="genmed"><a href="{msgrow.U_INLINE_VIEWMSG}" onclick="{msgrow.U_VIEWMSG}">{msgrow.SUBJECT}</a></span></td>
-	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.FROM}{msgrow.FROM_IP}</span></td>
-	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.TO}</span></td>
-	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.DATE}</span></td>
-	<td class="{msgrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{msgrow.PM_TYPE}</span></td>
+	<td class="{msgrow.ROW_CLASS}h" style="background: none;"><span class="genmed"><a href="{msgrow.U_INLINE_VIEWMSG}" onclick="{msgrow.U_VIEWMSG}">{msgrow.SUBJECT}</a></span></td>
+	<td class="{msgrow.ROW_CLASS}h row-center" style="background: none;"><span class="gensmall">{msgrow.FROM}{msgrow.FROM_IP}</span></td>
+	<td class="{msgrow.ROW_CLASS}h row-center" style="background: none;"><span class="gensmall">{msgrow.TO}</span></td>
+	<td class="{msgrow.ROW_CLASS}h row-center" style="background: none;"><span class="gensmall">{msgrow.DATE}</span></td>
+	<td class="{msgrow.ROW_CLASS}h row-center" style="background: none;"><span class="gensmall">{msgrow.PM_TYPE}</span></td>
 </tr>
 <!-- END msgrow -->
 <tr>
-	<td class="cat" colspan="8" height="28" align="center">
+	<td class="cat" colspan="8">
 		<input type="hidden" name="mode" value="{S_MODE}" />
 		<input type="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
 		<input type="reset" value="{L_RESET}" class="liteoption" />

@@ -16,6 +16,6 @@
 	<td class="row2"><span class="genmed">{SUBJECT}</span></td>
 	<td nowrap="nowrap" class="row2" align="right"> &nbsp; </td>
 </tr>
-<tr><td valign="top" colspan="3" class="row1"><div class="post-text">{MESSAGE}</div></td></tr>
+<tr><td valign="top" colspan="3" class="row1"><div class="post-text post-text-hide-flow">{MESSAGE}</div></td></tr>
 </table>
 <br />

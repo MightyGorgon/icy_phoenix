@@ -38,7 +38,7 @@ function toggle_check_all()
 	<td width="100%" class="row-post">
 		<span class="gensmall"><img src="{MINIPOST_IMG}" alt="{L_POST}" title="{L_POST}" />&nbsp;{L_POSTED}:&nbsp;{postrow.POST_DATE}</span><br />
 		<div class="post-subject">{postrow.POST_SUBJECT}&nbsp;</div>
-		<div class="post-text">{postrow.MESSAGE}</div>
+		<div class="post-text post-text-hide-flow">{postrow.MESSAGE}</div>
 	</td>
 	<td width="5%" class="row1g">&nbsp;{postrow.S_SPLIT_CHECKBOX}&nbsp;</td>
 </tr>

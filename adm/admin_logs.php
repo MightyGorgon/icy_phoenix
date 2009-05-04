@@ -115,7 +115,7 @@ foreach ($log_item as $log_item_data)
 	$template->assign_block_vars('log_row', array(
 			'LOG_ID' => $log_item_data['log_id'],
 			'LOG_TIME' => create_date2($board_config['default_dateformat'], $log_item_data['log_time'], $board_config['board_timezone']),
-			'LOG_PAGE' => $log_item_data['log_page'],
+			'LOG_PAGE' => htmlspecialchars($log_item_data['log_page']),
 			'LOG_ACTION' => $log_item_data['log_action'],
 			'LOG_USERNAME' => $log_username,
 			'LOG_TARGET' => $log_target,

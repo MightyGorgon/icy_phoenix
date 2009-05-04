@@ -36,7 +36,7 @@
 			<div class="forumlink"><a href="{INDEX_FILE}?topic_id={articles.ID}">{articles.L_TITLE}</a></div>
 			<div class="post-details">{articles.POST_DATE} by {articles.L_POSTER} | <a href="{articles.U_COMMENTS}">{articles.L_COMMENTS}</a></div>
 			<hr />
-			<div class="post-text">{articles.BODY}{articles.ATTACHMENTS}{articles.READ_MORE_LINK}</div>
+			<div class="post-text post-text-hide-flow">{articles.BODY}{articles.ATTACHMENTS}{articles.READ_MORE_LINK}</div>
 		</div>
 		<br />
 		<!-- END articles -->
@@ -47,7 +47,7 @@
 			<div class="forumlink">{comments.L_TITLE}</div>
 			<div class="post-details">{comments.POST_DATE} by {comments.L_POSTER}</div>
 			<hr />
-			<div class="post-text">{comments.BODY}</div>
+			<div class="post-text post-text-hide-flow">{comments.BODY}</div>
 		</div>
 		<br />
 		<!-- END comments -->

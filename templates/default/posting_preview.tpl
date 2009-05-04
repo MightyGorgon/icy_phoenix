@@ -31,14 +31,14 @@ function img_popup(image_url, image_width, image_height, popup_rand)
 <tr>
 	<td class="row-post" width="100%">
 		<div class="post-subject">{POST_SUBJECT}&nbsp;</div>
-		<div class="post-text">
+		<div class="post-text post-text-hide-flow">
 			{MESSAGE}
 			<!-- BEGIN postrow -->
 			<br />
 			{ATTACHMENTS}
 			<!-- END postrow -->
 		</div>
-		<div class="post-text"><br /><br /><br />{USER_SIG}</div>
+		<div class="post-text post-text-hide-flow"><br /><br /><br />{USER_SIG}</div>
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

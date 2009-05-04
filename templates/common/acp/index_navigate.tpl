@@ -1,5 +1,5 @@
 <script type="text/javascript">
-<!--
+// <![CDATA[
 
 var menuVersion = "Slide Menu v1.0.0";
 
@@ -15,7 +15,7 @@ var menuVersion = "Slide Menu v1.0.0";
  *	Enjoy! ;-)
  *************************************************************/
 
-menuVersion += ' &copy; 2004<br />by <a href="http://www.phpmix.com/" target="_blank" class="copyright">phpMiX</a>';
+menuVersion += ' &copy; 2004<br />by <a href="http://www.phpmix.com/" target="_blank" class="copyright">phpMiX<' + '/a>';
 
 function getCookie(name)
 {
@@ -53,6 +53,7 @@ function menuCat(id, rows)
 	this.cat_rows = rows;
 	this.status = 'block';
 }
+
 var menuCats = new Array();
 <!-- BEGIN catrow -->
 menuCats['menuCat_{catrow.MENU_CAT_ID}'] = new menuCat('{catrow.MENU_CAT_ID}', {catrow.MENU_CAT_ROWS});
@@ -167,7 +168,7 @@ function doOnLoadMenuACP()
 var oldOnLoadMenuACP = window.onload;
 window.onload = doOnLoadMenuACP;
 
-// -->
+// ]]>
 </script>
 <div class="forumline-no2" style="border: solid 1px #334466;">
 <table width="100%" cellspacing="0" cellpadding="0">

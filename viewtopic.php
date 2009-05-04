@@ -2620,7 +2620,7 @@ if ($bypass)
 		$post_edit_link = append_sid('edit_post_details.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']);
 		$post_edit_string = (!$userdata['user_id'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(\'' . $post_edit_link . '\')" style="text-decoration:none;">' . $lang['Edit_post_time_xs'] . '</a>';
 		//$post_edit_string = (!$userdata['user_level'] == MOD || !$userdata['user_id'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(' . $topic_id . ', ' . $post_id . ')" style="text-decoration:none;">' . $lang['Edit_post_time_xs']. '</a>';
-		$single_post = '<a href="#_Single_Post_View" onclick="javascript:open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\');" style="text-decoration:none;">#' . ($i + 1 + $start) . '</a>';
+		$single_post = '<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\');" style="text-decoration:none;">#' . ($i + 1 + $start) . '</a>';
 
 		// Mighty Gorgon - Feedbacks - BEGIN
 		$feedbacks_received = '';

@@ -157,12 +157,12 @@ function open_postreview(ref)
 		</div>
 		<div class="post-subject {postrow.UNREAD_COLOR}"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
 		&nbsp;
-		<div class="post-text">
+		<div class="post-text post-text-hide-flow">
 			{postrow.MESSAGE}<br />
 			{postrow.ATTACHMENTS}
 		</div>
 		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
-		<div class="post-text">
+		<div class="post-text post-text-hide-flow">
 			<br /><br /><br />
 			<!-- BEGIN above_sig -->
 			<span class="post-details"><br />{postrow.above_sig.ABOVE_VAL}</span>
@@ -246,13 +246,13 @@ function open_postreview(ref)
 <!-- BEGIN switch_topic_useful -->
 <a id="ratingblock"></a>
 <div id="rate_block_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1g row-center">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 
 <div id="rate_block">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 {RATING_VIEWTOPIC}
 <!-- BEGIN social_bookmarks -->
 <tr><th colspan="4">{L_SHARE_TOPIC}</th></tr>
@@ -313,7 +313,7 @@ if(GetCookie(tmp) == '2')
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MAXIMISE}" onclick="ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			</table>
@@ -322,7 +322,7 @@ if(GetCookie(tmp) == '2')
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MINIMISE}" onclick="ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			<tr><td class="row1">{S_AUTH_LIST}</td></tr>

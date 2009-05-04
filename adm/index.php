@@ -915,6 +915,8 @@ else
 	$template->set_filenames(array('body' => ADM_TPL . 'index_frameset.tpl'));
 
 	$template->assign_vars(array(
+		'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
+		'S_CONTENT_ENCODING' => $lang['ENCODING'],
 		'S_FRAME_HEADER' => append_sid('ip_header.' . PHP_EXT),
 		'S_FRAME_NAV' => append_sid('index.' . PHP_EXT . '?pane=left'),
 		'S_FRAME_MAIN' => append_sid('index.' . PHP_EXT . '?pane=right')

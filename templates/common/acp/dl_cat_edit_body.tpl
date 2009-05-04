@@ -3,32 +3,32 @@
 <tr><th colspan="3">{L_DL_CAT_TITLE} :: {L_DL_CAT_MODE}</th></tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_NAME}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_NAME_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_NAME_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%"><input type="text" class="post" name="cat_name" size="40" maxlength="255" value="{CAT_NAME}" /></td>
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_CAT_PATH}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_CAT_PATH_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_CAT_PATH_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%"><input type="text" class="post" name="path" size="40" maxlength="255" value="{CAT_PATH}" /></td>
 </tr>
 <tr>
 	<td class="row1" width="49%" valign="top"><span class="genmed"><strong>{L_DL_DESCRIPTION}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_DESCRIPTION_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_DESCRIPTION_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%"><textarea name="description" class="post" rows="3" cols="40">{DESCRIPTION}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" width="49%" valign="top"><span class="genmed"><strong>{L_DL_RULES}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_RULES_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_RULES_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%"><textarea name="rules" class="post" rows="3" cols="40">{RULES}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_PARENT}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_PARENT_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_PARENT_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">{CAT_PARENT}</td>
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_MUST_APPROVE}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_MUST_APPROVE_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_MUST_APPROVE_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="radio" name="must_approve" value="1" {MUST_APPROVE_YES} />&nbsp;{L_YES}&nbsp;
 		<input type="radio" name="must_approve" value="0" {MUST_APPROVE_NO} />&nbsp;{L_NO}
@@ -36,7 +36,7 @@
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_ALLOW_MOD_DESC}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_ALLOW_MOD_DESC_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_ALLOW_MOD_DESC_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="radio" name="allow_mod_desc" value="1" {ALLOW_MOD_DESC_YES} />&nbsp;{L_YES}&nbsp;
 		<input type="radio" name="allow_mod_desc" value="0" {ALLOW_MOD_DESC_NO} />&nbsp;{L_NO}
@@ -44,7 +44,7 @@
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_STATISTICS}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_STATISTICS_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_STATISTICS_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="radio" name="statistics" value="1" {STATS_YES} />&nbsp;{L_YES}&nbsp;
 		<input type="radio" name="statistics" value="0" {STATS_NO} />&nbsp;{L_NO}
@@ -52,12 +52,12 @@
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_STATS_PRUNE}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_STATS_PRUNE_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_STATS_PRUNE_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%"><input type="text" class="post" name="stats_prune" value="{STATS_PRUNE}" size="10" maxlength="8" /></td>
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_COMMENTS}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_COMMENTS_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_COMMENTS_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="radio" name="comments" value="1" {COMMENTS_YES} />&nbsp;{L_YES}&nbsp;
 		<input type="radio" name="comments" value="0" {COMMENTS_NO} />&nbsp;{L_NO}
@@ -65,7 +65,7 @@
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_APPROVE}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_APPROVE_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_APPROVE_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="radio" name="approve_comments" value="1" {APPROVE_COMMENTS_YES} />&nbsp;{L_YES}&nbsp;
 		<input type="radio" name="approve_comments" value="0" {APPROVE_COMMENTS_NO} />&nbsp;{L_NO}
@@ -74,7 +74,7 @@
 <!-- BEGIN thumbnails -->
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_THUMBNAIL}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_THUMBNAIL_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_THUMBNAIL_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="radio" name="allow_thumbs" value="1" {ALLOW_THUMBS_YES} />&nbsp;{L_YES}&nbsp;
 		<input type="radio" name="allow_thumbs" value="0" {ALLOW_THUMBS_NO} />&nbsp;{L_NO}
@@ -83,7 +83,7 @@
 <!-- END thumbnails -->
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_BUG_TRACKER}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_BUG_TRACKER_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_BUG_TRACKER_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="radio" name="bug_tracker" value="1" {BUG_TRACKER_YES} />&nbsp;{L_YES}&nbsp;
 		<input type="radio" name="bug_tracker" value="0" {BUG_TRACKER_NO} />&nbsp;{L_NO}
@@ -91,7 +91,7 @@
 </tr>
 <tr>
 	<td class="row1" width="49%"><span class="genmed"><strong>{L_DL_CAT_TRAFFIC}:</strong></span></td>
-	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="javascript:help_popup('{L_DL_CAT_TRAFFIC_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
+	<td class="row1" width="2%">&nbsp;[<a href="javascript:void(0)" onclick="help_popup('{L_DL_CAT_TRAFFIC_EXPLAIN}')" class="nav">?</a>]&nbsp;</td>
 	<td class="row2" width="49%">
 		<input type="text" class="post" name="cat_traffic" size="10" maxlength="10" value="{CAT_TRAFFIC}" />
 		<input name="cat_traffic_range" type="radio" value="KB" {CAT_TRAFFIC_RANGE_KB} />&nbsp;{L_DL_KB}&nbsp;&nbsp;&nbsp;

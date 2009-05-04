@@ -68,7 +68,7 @@ function open_postreview(ref)
 							</td>
 						</tr>
 					</table>
-					<div class="post-text">{postrow.MESSAGE}{postrow.ATTACHMENTS}</div>
+					<div class="post-text post-text-hide-flow">{postrow.MESSAGE}{postrow.ATTACHMENTS}</div>
 				</td>
 			</tr>
 			<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

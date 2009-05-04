@@ -203,9 +203,9 @@ hr.dashed {
 	max-width: 500px;
 }
 
-.post-text {
+.post-text-hide-flow {
 	overflow: auto;
-	max-width: 740px;
+	max-width: 960px;
 }
 
 blockquote, .post-text blockquote, .code-content {
@@ -418,6 +418,30 @@ a.text_yellow:hover { color: #ffffaa; text-decoration: underline; }
 	display: inline;
 	border: 0px;
 	margin: 0px auto;
+}
+
+/* Nav Menu */
+.nav-menu {
+	display: none;
+	position: relative;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+a.nav-menu-link {
+	vertical-align: top;
+	text-decoration: none;
+}
+
+.max-min-right {
+	display: inline;
+	float: right;
+	cursor: pointer;
+}
+
+.js-sh-box {
+	display: inline;
+	position: relative;
 }
 
 /* Sitemap */

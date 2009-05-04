@@ -11,7 +11,7 @@
 		</center>
 		<br />
 		<span class="genmed"><b>{pic_row.pic_column.PIC_NAME}</b></span>{pic_row.pic_column.PIC_DELETE}<br />
-		<input class="post" name="{pic_row.pic_column.PIC_BBC_INPUT}" size="20" maxlength="200" value="{pic_row.pic_column.PIC_BBC}" type="text" readonly="readonly" onclick="javascript:this.form.{pic_row.pic_column.PIC_BBC_INPUT}.focus(); this.form.{pic_row.pic_column.PIC_BBC_INPUT}.select();" />
+		<input class="post" name="{pic_row.pic_column.PIC_BBC_INPUT}" size="20" maxlength="200" value="{pic_row.pic_column.PIC_BBC}" type="text" readonly="readonly" onclick="this.form.{pic_row.pic_column.PIC_BBC_INPUT}.focus(); this.form.{pic_row.pic_column.PIC_BBC_INPUT}.select();" />
 	</td>
 <!-- END pic_column -->
 <!-- BEGIN pic_end_row -->

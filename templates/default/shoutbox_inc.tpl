@@ -21,7 +21,7 @@
 	<td class="row-post" width="100%" height="100%">
 		<div class="post-buttons-top post-buttons">{shoutrow.CENSOR_IMG}&nbsp;{shoutrow.DELETE_IMG}{shoutrow.IP_IMG}</div>
 		<div class="post-subject"><span class="genmed">{L_POSTED}:&nbsp;{shoutrow.TIME}</span></div>
-		<div class="post-text">{shoutrow.SHOUT}{shoutrow.SIGNATURE}</div>
+		<div class="post-text post-text-hide-flow">{shoutrow.SHOUT}{shoutrow.SIGNATURE}</div>
 	</td>
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

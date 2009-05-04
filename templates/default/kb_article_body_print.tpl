@@ -50,7 +50,7 @@
 </tr>
 <!-- END switch_toc -->
 <tr><td class="maintitle" nowrap="nowrap"><br />{ARTICLE_TITLE}&nbsp;<br /><hr></td></tr>
-<tr><td class="row1" wrap="wrap"><div class="post-text">{ARTICLE_TEXT}</div></td></tr>
+<tr><td class="row1" wrap="wrap"><div class="post-text post-text-hide-flow">{ARTICLE_TEXT}</div></td></tr>
 <!-- BEGIN switch_pages -->
 <tr>
 	<td class="row1 row-center"><span class="nav">{L_GOTO_PAGE}
@@ -80,7 +80,7 @@
 			<br />
 		</td>
 	</tr>
-	<tr><td><div class="post-text">{postrow.MESSAGE}</div></td></tr>
+	<tr><td><div class="post-text post-text-hide-flow">{postrow.MESSAGE}</div></td></tr>
 	</table>
 	</td>
 </tr>

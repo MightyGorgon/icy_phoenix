@@ -16,7 +16,7 @@ function select_switch(status)
 <!-- END switch_message -->
 
 <form method="post" name="users" action="{S_ACCOUNT_ACTION}">
-<table border="0" cellspacing="2" cellpadding="2" align="center" width="100%">
+<table align="center" width="100%" cellspacing="2" cellpadding="2" border="0">
 <tr>
 	<td align="left" nowrap="nowrap"><span class="gensmall">{L_SORT_PER_LETTER}:<br />{S_LETTER_SELECT}{S_LETTER_HIDDEN}</span></td>
 	<td valign="bottom" align="right" nowrap="nowrap">

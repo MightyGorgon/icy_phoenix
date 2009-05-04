@@ -119,7 +119,7 @@ function handlehResponse()
 				</tr>
 				<tr>
 					<td class="row1" width="10%" nowrap="nowrap"><span class="gensmall"><i>{shouts.DATE}</i></span></td>
-					<td class="row1"><div class="post-text">{shouts.MESSAGE}</div></td>
+					<td class="row1"><div class="post-text post-text-hide-flow">{shouts.MESSAGE}</div></td>
 				</tr>
 				<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 			</tbody>

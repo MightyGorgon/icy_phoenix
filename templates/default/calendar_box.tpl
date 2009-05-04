@@ -64,7 +64,7 @@ function destroyTitle()
 
 <!-- BEGIN _calendar_box -->
 <div id="calendarbox_h" style="display:none;">
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -78,7 +78,7 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img style="{SHOW_HIDE_PADDING}float: right; cursor: pointer;" src="{IMG_MINIMISE}" onclick="javascript:ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN switch_full_month -->
 <tr>
 	<!-- BEGIN _cell -->

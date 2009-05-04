@@ -111,7 +111,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
+					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MAXIMISE}" onclick="ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
 				</td>
 			</tr>
 			</table>
@@ -120,7 +120,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header" colspan="6">
-					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
+					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MINIMISE}" onclick="ShowHide('icon_description','icon_description_h','icon_description');" alt="" />&nbsp;</div><span>{L_ICON_DESCRIPTION}</span>
 				</td>
 			</tr>
 			<tr>
@@ -195,7 +195,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MAXIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MAXIMISE}" onclick="ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			</table>
@@ -204,7 +204,7 @@
 			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr>
 				<td class="row-header">
-					<div style="display: inline; {SHOW_HIDE_PADDING}float: right; cursor: pointer;"><img src="{IMG_MINIMISE}" onclick="javascript:ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
+					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MINIMISE}" onclick="ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
 				</td>
 			</tr>
 			<tr><td class="row1">{S_AUTH_LIST}</td></tr>

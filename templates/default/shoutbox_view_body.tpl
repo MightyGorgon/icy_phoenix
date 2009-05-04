@@ -25,15 +25,15 @@
 			<span class="gensmall">{shoutrow.TIME}</span>
 		</div>
 		<br />
-		<div class="post-text">{shoutrow.SHOUT}</div>
+		<div class="post-text post-text-hide-flow">{shoutrow.SHOUT}</div>
 	</td>
 </tr>
 <!-- END shoutrow -->
 <!-- ELSE -->
 <!-- BEGIN shoutrow -->
 <tr class="{shoutrow.ROW_CLASS}h">
-	<td class="{shoutrow.ROW_CLASS}h" style="background: none; min-width: 150px;" valign="top" nowrap="nowrap"><span class="gensmall">{shoutrow.USERNAME}&nbsp;&bull;&nbsp;[&nbsp;{shoutrow.TIME}&nbsp;]</span></td>
-	<td class="{shoutrow.ROW_CLASS}h" width="100%" style="background: none;" valign="top"><div class="post-text">{shoutrow.SHOUT}</div></td>
+	<td class="{shoutrow.ROW_CLASS}h" style="background: none; min-width: 150px;" nowrap="nowrap"><span class="gensmall">{shoutrow.USERNAME}&nbsp;&bull;&nbsp;[&nbsp;{shoutrow.TIME}&nbsp;]</span></td>
+	<td class="{shoutrow.ROW_CLASS}h" width="100%" style="background: none;"><div class="post-text post-text-hide-flow">{shoutrow.SHOUT}</div></td>
 </tr>
 <!-- END shoutrow -->
 <!-- ENDIF -->

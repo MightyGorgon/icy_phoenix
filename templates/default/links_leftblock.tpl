@@ -7,7 +7,7 @@
 		<form name="select_all" action="">
 			<br /><div class="gensmall"><div class="center-block"><img src="{U_SITE_LOGO}" alt="{SITENAME}" /></div><br />
 			{L_LINK_US_EXPLAIN}</div><br />
-			<textarea cols="15" rows="2" class="post" style="width: 160px" readonly="readonly" name="text_area" onclick="javascript:this.form.text_area.focus();this.form.text_area.select();">{LINK_US_SYNTAX}</textarea>
+			<textarea cols="15" rows="2" class="post" style="width: 160px" readonly="readonly" name="text_area" onclick="this.form.text_area.focus();this.form.text_area.select();">{LINK_US_SYNTAX}</textarea>
 		</form>
 		</td>
 	</tr>

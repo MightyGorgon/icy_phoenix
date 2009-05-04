@@ -10,7 +10,7 @@
 <!-- BEGIN block_preview -->
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 	<tr><td class="row-header"><span>{L_PREVIEW}</span></td></tr>
-	<tr><td class="row-post" width="100%"><div class="post-text-container"><div class="post-text">{block_preview.PREVIEW_MESSAGE}</div></div></td></tr>
+	<tr><td class="row-post" width="100%"><div class="post-text-container"><div class="post-text post-text-hide-flow">{block_preview.PREVIEW_MESSAGE}</div></div></td></tr>
 </table>
 <!-- END block_preview -->
 

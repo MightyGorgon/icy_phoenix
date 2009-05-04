@@ -3,4 +3,4 @@
 <tr><td class="row2"><span class="genmed">{HELP_STRING}</span></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
-<center><input type="button" onclick="javascript:window.close();" class="mainoption" value="{L_CLOSE}" /></center>
+<center><input type="button" onclick="window.close();" class="mainoption" value="{L_CLOSE}" /></center>

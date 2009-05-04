@@ -2,7 +2,7 @@
 <tr>
 	<td class="row-post" width="100%">
 		<div class="post-subject">{POST_SUBJECT}&nbsp;</div>
-		<div class="post-text">
+		<div class="post-text post-text-hide-flow">
 			{MESSAGE}
 			<!-- BEGIN postrow -->
 			<br />

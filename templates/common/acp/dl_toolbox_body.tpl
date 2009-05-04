@@ -17,7 +17,7 @@ function select_switch(status)
 <tr>
 	<td class="row1" width="70%"><span class="gensmall">{L_DL_MANAGE_EXPLAIN}</span></td>
 	<td class="row1 row-center" width="30%">
-		<input type="button" onclick="javascript:window.open('{U_DOWNLOADS_CHECK_FILES}', '_self');" class="mainoption" value="{L_DOWNLOADS_CHECK_FILES}" />
+		<input type="button" onclick="window.open('{U_DOWNLOADS_CHECK_FILES}', '_self');" class="mainoption" value="{L_DOWNLOADS_CHECK_FILES}" />
 		<!-- BEGIN create_dir_command -->
 		<br /><br />
 		<input type="text" class="post" name="dir_name" size="30" maxlength="200" />
@@ -26,11 +26,11 @@ function select_switch(status)
 		<!-- END create_dir_command -->
 		<!-- BEGIN unassigned_files -->
 		<br /><br />
-		<input type="button" onclick="javascript:window.open('{unassigned_files.U_UNASSIGNED_FILES}', '_self');" class="mainoption" value="{unassigned_files.L_UNASSIGNED_FILES}" />
+		<input type="button" onclick="window.open('{unassigned_files.U_UNASSIGNED_FILES}', '_self');" class="mainoption" value="{unassigned_files.L_UNASSIGNED_FILES}" />
 		<!-- END unassigned_files -->
 		<!-- BEGIN thumbnail_check -->
 		<br /><br />
-		<input type="button" onclick="javascript:window.open('{U_DOWNLOADS_CHECK_THUMB}', '_self');" class="mainoption" value="{L_DOWNLOADS_CHECK_THUMBS}" />
+		<input type="button" onclick="window.open('{U_DOWNLOADS_CHECK_THUMB}', '_self');" class="mainoption" value="{L_DOWNLOADS_CHECK_THUMBS}" />
 		<!-- END thumbnail_check -->
 	</td>
 </tr>

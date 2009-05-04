@@ -19,10 +19,10 @@
 	<td width="100%" class="row2"><span class="genmed">{SUBJECT}</span></td>
 	<td nowrap="nowrap" class="row2" align="right"> &nbsp; </td>
 </tr>
-<tr><td valign="top" colspan="3" class="row1"><div class="post-text"><span>{MESSAGE}</span></div></td></tr>
+<tr><td valign="top" colspan="3" class="row1"><div class="post-text post-text-hide-flow"><span>{MESSAGE}</span></div></td></tr>
 </table>
 <br />
 <!-- BEGIN popup_switch -->
 <br />
-<div class="gen" style="text-align:center;"><a href="#" onclick="JavaScript:window.close();">Close This Window</a></div>
+<div class="gen" style="text-align:center;"><a href="#" onclick="window.close();">Close This Window</a></div>
 <!-- END popup_switch -->
