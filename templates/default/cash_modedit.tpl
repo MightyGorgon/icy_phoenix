@@ -30,7 +30,7 @@
 	</table>
 	</center>
 	</td>
-	<td class="row1 row-center"><textarea name="message" rows="10" cols="35" style="width:450px" class="post"></textarea></td>
+	<td class="row1 row-center"><textarea name="message" rows="10" cols="35" style="width: 450px;"></textarea></td>
 </tr>
 <tr>
 	<td class="cat" colspan="2">

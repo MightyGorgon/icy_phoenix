@@ -1,6 +1,7 @@
 @import url("../default/common.css");
-@import url("../default/fap.css");
-@import url("../default/dock.css");
+@import url("../common/common_colors.css");
+@import url("../common/fap.css");
+@import url("../common/dock.css");
 @import url("style_cyan_colors.css");
 
 body {
@@ -68,10 +69,6 @@ body {
 #forumtable {
 }
 
-.post-text {
-	max-width: 740px !important;
-}
-
 #acp, #forumtable, p, td, th {
 	color: #000000;
 }
@@ -89,6 +86,29 @@ a:hover, a:active { color: #dd2222; text-decoration: underline;}
 hr {
 	border: 0px none #ffffff;
 	border-top: 1px solid #444444;
+}
+
+/* Overflows */
+.topic-title-hide-flow-header {
+	min-width: 280px;
+	max-width: 680px;
+}
+
+.topic-title-hide-flow {
+	min-width: 280px;
+	max-width: 350px;
+}
+
+.post-subject {
+	max-width: 500px;
+}
+
+.post-text-hide-flow {
+	max-width: 740px !important;
+}
+
+.post-text {
+	max-width: 740px !important;
 }
 
 /* header */

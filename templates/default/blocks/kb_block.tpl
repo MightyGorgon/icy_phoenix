@@ -5,7 +5,7 @@
 	<th width="150">{L_AUTHOR}</th>
 	<th width="150">{L_TIME}</th>
 	<!-- BEGIN rating_switch -->
-	<th width="100">{L_RATING}</th>
+	<th style="max-width: 100px;">{L_RATING}</th>
 	<!-- END rating_switch -->
 	<th width="150">&nbsp;&nbsp;&nbsp;&nbsp;{L_OPTIONS}&nbsp;&nbsp;&nbsp;&nbsp;</th>
 </tr>

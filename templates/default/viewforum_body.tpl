@@ -41,7 +41,7 @@
 	<th width="50"><a href="{U_VF_VIEWS_SORT}" title="{L_CURRENT_SORT}">{L_VIEWS}{VF_VIEWS_SORT}</a></th>
 	<th width="50"><a href="{U_VF_REPLIES_SORT}" title="{L_CURRENT_SORT}">{L_REPLIES}{VF_REPLIES_SORT}</a></th>
 	<!-- BEGIN rating_switch -->
-	<th width="100">{L_RATING}</th>
+	<th style="max-width: 100px;">{L_RATING}</th>
 	<!-- END rating_switch -->
 	<th><a href="{U_VF_LAST_POST_SORT}" title="{L_CURRENT_SORT}">{L_LASTPOST}{VF_LAST_POST_SORT}</a></th>
 </tr>

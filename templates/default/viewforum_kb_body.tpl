@@ -39,7 +39,7 @@
 	<th width="150">{L_AUTHOR}</th>
 	<th width="150">{L_LASTPOST}</th>
 	<!-- BEGIN rating_switch -->
-	<th width="100">{L_RATING}</th>
+	<th style="max-width: 100px;">{L_RATING}</th>
 	<!-- END rating_switch -->
 </tr>
 <!-- BEGIN topicrow -->

@@ -326,7 +326,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 				$xs_new = ($total > 0) ? '-new' : '';
 				$slideshow_img_xs = ($xs_new) ? $images['icon_minipost_new'] : $images['icon_minipost'];
 				$link_spacer = '<img src="' . $images['spacer'] . '" width="1" height="0" />';
-				$subfolder_img = '<img src="' . $slideshow_img_xs . '" valign="middle" title="' . $sub_total_pics . '" alt="' . $sub_total_pics . '"/>';
+				$subfolder_img = '<img src="' . $slideshow_img_xs . '" style="vertical-align: middle;" title="' . $sub_total_pics . '" alt="' . $sub_total_pics . '"/>';
 				$sub_cat_separator = ( $i != count ($sub_cats) ) ? ',':'';
 				//$slideshow_link = append_sid(album_append_uid("album_showpage." . PHP_EXT . "?pic_id=" . $last_pic_id . "&amp;slideshow=5"));
 				$link = $link_spacer . $subfolder_img . '&nbsp;<a href="' . $subpgm . '" title="' . $subdesc . '" class="forumlink2' . $new_images_class . '"><b>' . $subname . '</b></a><b>' . $sub_cat_separator .'</b>&nbsp;';

@@ -64,10 +64,17 @@ input, select, textarea {
 	box-sizing: content-box;
 }
 
-input.radio, input.radio:hover, input[type="radio"], input[type="radio"]:hover,
-input.post.radio, input.post.radio:hover, input[type="radio"].post, input[type="radio"].post:hover {
+.message-box textarea {
+	width: 560px !important;
+}
+
+textarea {
+}
+
+input[type="radio"], input[type="radio"]:hover, input[type="checkbox"], input[type="checkbox"]:hover {
+	background-color: transparent;
+	border: 0px none !important;
 	border-size: 0px !important;
-	border-size: none !important;
 }
 
 /* IMG Fading - BEGIN */

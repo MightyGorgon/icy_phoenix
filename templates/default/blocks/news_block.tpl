@@ -68,8 +68,8 @@
 			<td class="row-post" style="border-right-width: 0px;">
 				<div style="padding-left: 5px; padding-right: 5px; vertical-align: top; text-align: center"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={articles.CAT_ID}" title ="{articles.CATEGORY}"><img src="{articles.CAT_IMG}" alt="{articles.CATEGORY}" /></a></div>
 			</td>
-			<td class="row-post" style="border-left-width: 0px; width: auto;">
-				<div class="post-text post-text-hide-flow" style="padding: 2px;">{articles.BODY}</div>
+			<td class="row-post" style="border-left-width: 0px; width: 100%;">
+				<div class="post-text" style="padding: 2px;">{articles.BODY}</div>
 				<div class="content-padding">{articles.ATTACHMENTS}</div><br /><br />
 				<span class="gensmall">{articles.READ_MORE_LINK}&nbsp;</span><br /><br />
 			</td>
@@ -91,7 +91,7 @@
 		<!-- BEGIN comments -->
 		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 		<tr><th align="left"><span class="gensmall"><span style="float: right; text-align: right;">{comments.POST_DATE} {L_BY} {comments.L_POSTER}</span>{comments.L_TITLE}</span></th></tr>
-		<tr><td class="row-post" width="100%"><div class="post-text post-text-hide-flow">{comments.BODY}</div></td></tr>
+		<tr><td class="row-post" width="100%"><div class="post-text">{comments.BODY}</div></td></tr>
 		</table>{IMG_TBR}
 		<!-- END comments -->
 		<!-- BEGIN pagination -->

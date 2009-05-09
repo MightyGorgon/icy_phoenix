@@ -4,12 +4,10 @@
 	<td class="row1" width="20%" valign="top" nowrap="nowrap">{BBCB_SMILEYS_MG}</td>
 	<td class="row2" valign="top">
 		{BBCB_MG}
-		<textarea name="message" rows="15" cols="75" style="width: 98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{COMMENT_TEXT}</textarea>
+		<div class="message-box"><textarea id="message" name="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{COMMENT_TEXT}</textarea></div>
 	</td>
 </tr>
 <tr><td colspan="2" class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr>
-	<td colspan="2" class="cat">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" name="save" value="{L_SUBMIT}" />&nbsp;&nbsp;<input class="liteoption" type="submit" name="goback" value="{L_CANCEL}" /></td>
-</tr>
+<tr><td colspan="2" class="cat">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" name="save" value="{L_SUBMIT}" />&nbsp;&nbsp;<input class="liteoption" type="submit" name="goback" value="{L_CANCEL}" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>

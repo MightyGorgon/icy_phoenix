@@ -30,14 +30,14 @@ function checkForm(formObj) {
 </tr>
 <tr>
 	<td class="row1" width="22%"><span class="gen"><b>{L_SUBJECT}</b></span></td>
-	<td class="row2" width="78%"><span class="gen"><input type="text" name="subject" size="45" maxlength="100" style="width:450px" tabindex="2" class="post" value="{SUBJECT}" /></span></td>
+	<td class="row2" width="78%"><span class="gen"><input type="text" name="subject" size="45" maxlength="100" style="width: 450px;" tabindex="2" class="post" value="{SUBJECT}" /></span></td>
 </tr>
 <tr>
 	<td class="row1" valign="top">
 		<span class="gen"><b>{L_MESSAGE_BODY}</b></span><br />
 		<span class="gensmall">{L_MESSAGE_BODY_DESC}</span>
 	</td>
-	<td class="row2"><span class="gen"><textarea name="message" rows="25" cols="40" style="width:500px" tabindex="3" class="post">{MESSAGE}</textarea></span></td>
+	<td class="row2"><span class="gen"><textarea name="message" rows="25" cols="40" style="width: 500px;" tabindex="3" class="post">{MESSAGE}</textarea></span></td>
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="gen"><b>{L_OPTIONS}</b></span></td>

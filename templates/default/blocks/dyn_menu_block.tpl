@@ -13,7 +13,7 @@ function SetTheme_{MAIN_MENU_ID}()
 tmp = 'quick_links';
 if(GetCookie(tmp) == '2')
 {
-	ShowHide('quick_links','quick_links2','quick_links');
+	ShowHide('quick_links', 'quick_links2', 'quick_links');
 	setWidth('var_width', 16);
 	//setWidth('full_width', '100%');
 }
@@ -22,7 +22,7 @@ if(GetCookie(tmp) == '2')
 <!-- END show_hide_switch -->
 {IMG_THL}{IMG_THC}
 <!-- BEGIN show_hide_switch -->
-<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_HIDE}" />
+<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width',16); setWidth('full_width', '100%');" alt="{L_HIDE}" />
 <!-- END show_hide_switch -->
 <span class="forumlink">{MAIN_MENU_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 
@@ -38,13 +38,13 @@ if(GetCookie(tmp) == '2')
 
 <!-- BEGIN cat_row -->
 <tr>
-	<th style="cursor: pointer;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}','menu_cat_{cat_row.CAT_ID}_h','menu_cat_{cat_row.CAT_ID}');">
+	<th style="cursor: pointer;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}', 'menu_cat_{cat_row.CAT_ID}_h', 'menu_cat_{cat_row.CAT_ID}');">
 		{cat_row.CAT_ICON}<a href="#" onclick="return false;" title="{cat_row.CAT_ITEM}" class="nav-menu-link"><b>{cat_row.CAT_ITEM}</b></a>
 	</th>
 </tr>
 <tr>
 	<td>
-		<div id="menu_cat_{cat_row.CAT_ID}_h" style="display: inline; position: relative; padding-top: 0px; padding-bottom: 0px;">
+		<div id="menu_cat_{cat_row.CAT_ID}_h" class="nav-menu">
 			<div class="nav-div" style="padding: 2px;">
 				<!-- BEGIN menu_row -->
 				{cat_row.menu_row.MENU_URL}
@@ -57,7 +57,7 @@ if(GetCookie(tmp) == '2')
 			tmp = 'menu_cat_{cat_row.CAT_ID}';
 			if(GetCookie(tmp) == '2')
 			{
-				ShowHide('menu_cat_{cat_row.CAT_ID}','menu_cat_{cat_row.CAT_ID}_h','menu_cat_{cat_row.CAT_ID}');
+				ShowHide('menu_cat_{cat_row.CAT_ID}', 'menu_cat_{cat_row.CAT_ID}_h', 'menu_cat_{cat_row.CAT_ID}');
 			}
 			//-->
 			</script>

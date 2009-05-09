@@ -948,9 +948,9 @@ class attach_parent
 				'L_ADD_ATTACH_EXPLAIN' => $lang['Add_attachment_explain'],
 				'L_ADD_ATTACHMENT' => $lang['Add_attachment'],
 
-				'FILE_COMMENT' => $this->file_comment,
+				'FILE_COMMENT' => htmlspecialchars($this->file_comment),
 				'FILESIZE' => $attach_config['max_filesize'],
-				'FILENAME' => $this->filename,
+				'FILENAME' => htmlspecialchars($this->filename),
 
 				'S_FORM_ENCTYPE' => $form_enctype
 				)
@@ -984,11 +984,12 @@ class attach_parent
 
 				$template->assign_block_vars('attach_row', array(
 					'FILE_NAME' => $this->attachment_filename_list[$i],
-					'ATTACH_FILENAME' => $this->attachment_list[$i],
-					'FILE_COMMENT' => $this->attachment_comment_list[$i],
+					'ATTACH_FILENAME' => htmlspecialchars($this->attachment_list[$i]),
+					'FILE_COMMENT' => htmlspecialchars($this->attachment_comment_list[$i]),
 					'ATTACH_ID' => $this->attachment_id_list[$i],
 
-					'U_VIEW_ATTACHMENT' => $download_link)
+					'U_VIEW_ATTACHMENT' => $download_link
+					)
 				);
 
 				// Thumbnail there ? And is the User Admin or Mod ? Then present the 'Delete Thumbnail' Button
@@ -1072,7 +1073,7 @@ class attach_parent
 				{
 					$error_msg .= '<br />';
 				}
-				$ini_val = ( phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
+				$ini_val = (phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 
 				$max_size = @$ini_val('upload_max_filesize');
 

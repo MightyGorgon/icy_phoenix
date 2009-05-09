@@ -111,7 +111,7 @@ class class_form
 
 			case 'TEXT':
 			case 'HTMLTEXT':
-				$input = '<textarea rows="10" cols="35" style="width: 98%;" name="' . $name . '" class="post">' . $default . '</textarea>';
+				$input = '<div class="message-box"><textarea rows="10" cols="35" name="' . $name . '">' . $default . '</textarea></div>';
 				break;
 
 			default:

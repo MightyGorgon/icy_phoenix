@@ -1,23 +1,23 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td id="var_width" width="160" valign="top" align="left" style="padding-right:7px;">
-		<div id="quick_links_profile2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="javascript:ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');setWidth('var_width',160);setWidth('full_width','auto');" title="{L_SHOW} {L_CPL_NAV}"><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_SHOW} {L_CPL_NAV}" /></a></div>
+	<td id="var_width" width="160" valign="top" align="left" style="padding-right: 7px;">
+		<div id="quick_links_profile2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="#" onclick="ShowHide('quick_links_profile', 'quick_links_profile2', 'quick_links_profile'); setWidth('var_width', 160); setWidth('full_width', 'auto'); return false;" title="{L_SHOW} {L_CPL_NAV}"><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_SHOW} {L_CPL_NAV}" /></a></div>
 		<div id="quick_links_profile">
 		<script type="text/javascript">
 		<!--
 		tmp = 'quick_links_profile';
 		if(GetCookie(tmp) == '2')
 		{
-			ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');
+			ShowHide('quick_links_profile', 'quick_links_profile2', 'quick_links_profile');
 			setWidth('var_width', 16);
 			//setWidth('full_width', '100%');
 		}
 		//-->
 		</script>
-		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links_profile','quick_links_profile2','quick_links_profile');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_SHOW}" />
+		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links_profile', 'quick_links_profile2', 'quick_links_profile');setWidth('var_width',16);setWidth('full_width', '100%');" alt="{L_SHOW}" />
 		<span class="forumlink">{L_CPL_NAV}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
-			<th style="cursor:pointer;" align="left" onclick="ShowHide('personal_profile','personal_profile2','personal_profile');">
+			<th style="cursor:pointer;" align="left" onclick="ShowHide('personal_profile', 'personal_profile2', 'personal_profile');">
 				<img src="{IMG_NAV_MENU_USERS}" alt="{L_CPL_PERSONAL_PROFILE}" title="{L_CPL_PERSONAL_PROFILE}" />&nbsp;
 				<a href="#" onclick="return false;" title="{L_CPL_PERSONAL_PROFILE}" class="nav-menu-link"><b>{L_CPL_PERSONAL_PROFILE}</b></a>
 			</th>
@@ -62,7 +62,7 @@
 					tmp = 'personal_profile';
 					if(GetCookie(tmp) == '2')
 					{
-						ShowHide('personal_profile','personal_profile2','personal_profile');
+						ShowHide('personal_profile', 'personal_profile2', 'personal_profile');
 					}
 					//-->
 					</script>
@@ -70,7 +70,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th style="cursor: pointer;" align="left" onclick="ShowHide('settings_options','settings_options2','settings_options');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('settings_options', 'settings_options2', 'settings_options');">
 				<img src="{IMG_NAV_MENU_WSETTINGS}" alt="{L_CPL_SETTINGS_OPTIONS}" title="{L_CPL_SETTINGS_OPTIONS}" />&nbsp;
 				<a href="#" onclick="return false;" title="{L_CPL_SETTINGS_OPTIONS}" class="nav-menu-link"><b>{L_CPL_SETTINGS_OPTIONS}</b></a>
 			</th>
@@ -109,7 +109,7 @@
 					tmp = 'settings_options';
 					if(GetCookie(tmp) == '2')
 					{
-						ShowHide('settings_options','settings_options2','settings_options');
+						ShowHide('settings_options', 'settings_options2', 'settings_options');
 					}
 					//-->
 					</script>
@@ -117,9 +117,9 @@
 			</td>
 		</tr>
 		<tr>
-			<th style="cursor: pointer;" align="left" onclick="ShowHide('private_messages','private_messages2','private_messages');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('private_messages', 'private_messages2', 'private_messages');">
 				<img src="{IMG_NAV_MENU_PM}" alt="{L_CPL_PRIVATE_MESSAGES}" title="{L_CPL_PRIVATE_MESSAGES}" />&nbsp;
-				<a href="javascript:void(0)" title="{L_CPL_PRIVATE_MESSAGES}" class="nav-menu-link"><b>{L_CPL_PRIVATE_MESSAGES}</b></a>
+				<a href="#" onclick="return false;" title="{L_CPL_PRIVATE_MESSAGES}" class="nav-menu-link"><b>{L_CPL_PRIVATE_MESSAGES}</b></a>
 			</th>
 		</tr>
 		<tr>
@@ -160,7 +160,7 @@
 					tmp = 'private_messages';
 					if(GetCookie(tmp) == '2')
 					{
-						ShowHide('private_messages','private_messages2','private_messages');
+						ShowHide('private_messages', 'private_messages2', 'private_messages');
 					}
 					//-->
 					</script>
@@ -168,9 +168,9 @@
 			</td>
 		</tr>
 		<tr>
-			<th style="cursor: pointer;" align="left" onclick="ShowHide('more_info','more_info2','more_info');">
+			<th style="cursor: pointer;" align="left" onclick="ShowHide('more_info', 'more_info2', 'more_info');">
 				<img src="{IMG_NAV_MENU_STAR}" alt="{L_CPL_MORE_INFO}" title="{L_CPL_MORE_INFO}" />&nbsp;
-				<a href="javascript:void(0)" title="{L_CPL_MORE_INFO}" class="nav-menu-link"><b>{L_CPL_MORE_INFO}</b></a>
+				<a href="#" onclick="return false;" title="{L_CPL_MORE_INFO}" class="nav-menu-link"><b>{L_CPL_MORE_INFO}</b></a>
 			</th>
 		</tr>
 		<tr>
@@ -215,7 +215,7 @@
 					tmp = 'more_info';
 					if(GetCookie(tmp) == '2')
 					{
-						ShowHide('more_info','more_info2','more_info');
+						ShowHide('more_info', 'more_info2', 'more_info');
 					}
 					//-->
 					</script>

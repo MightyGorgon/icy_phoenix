@@ -26,7 +26,7 @@ function attach_rules(forum_id)
 <table width="100%" align="center" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" align="center" style="vertical-align:top;">
-		<div class="forumline" style="margin-left:5%;margin-right:5%">
+		<div class="forumline" style="margin-left: 5%; margin-right: 5%px;">
 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td width="25%" align="center">{INBOX_IMG}<br /><span class="forumlink">{INBOX}</span></td>
@@ -78,14 +78,14 @@ function attach_rules(forum_id)
 	<td class="row1"><span class="gen"><b>{L_USERNAME}</b></span></td>
 	<td class="row2"><span class="genmed"><input type="text" class="post" name="username" maxlength="25" size="25" tabindex="1" value="{USERNAME}" {S_AJAX_PM_USER_CHECK} /><span id="pm_username_select">&nbsp;</span>&nbsp;<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=200,resizable=yes');return false;" /></span></td>
 </tr>
-<tr id="pm_username_error_tbl" style="display:none;">
+<tr id="pm_username_error_tbl" style="display: none;">
 	<td class="row1">&nbsp;</td>
 	<td class="row2"><span class="gen" id="pm_username_error_text">&nbsp;</span></td>
 </tr>
 <!-- END switch_privmsg -->
 <tr>
-	<td class="row1" width="22%"><span class="gen"><b>{L_SUBJECT}</b></span></td>
-	<td class="row2" width="78%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
+	<td class="row1"><span class="gen"><b>{L_SUBJECT}</b></span></td>
+	<td class="row2"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%;" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
 </tr>
 <!-- BEGIN switch_ajax_features -->
 <tr id="subject_error_tbl" style="display:none;">
@@ -99,26 +99,26 @@ function attach_rules(forum_id)
 <!-- END switch_ajax_features -->
 <!-- BEGIN topic_description -->
 <tr>
-	<td class="row1" width="22%"><span class="gen"><b>{L_TOPIC_DESCRIPTION}</b></span></td>
-	<td class="row2" width="78%">
-		<span class="gen"><input type="text" name="topic_desc" size="45" maxlength="60" style="width: 98%" tabindex="2" class="post" value="{TOPIC_DESCRIPTION}" /></span>
+	<td class="row1"><span class="gen"><b>{L_TOPIC_DESCRIPTION}</b></span></td>
+	<td class="row2">
+		<span class="gen"><input type="text" name="topic_desc" size="45" maxlength="60" style="width: 98%;" tabindex="2" class="post" value="{TOPIC_DESCRIPTION}" /></span>
 	</td>
 </tr>
 <!-- END topic_description -->
 <!-- BEGIN switch_type_toggle -->
 <tr>
-	<td class="row1" width="22%"><span class="gen"><b>{L_TYPE_TOGGLE_TITLE}</b></span></td>
-	<td class="row2" width="78%"><span class="gen"><b>{S_TYPE_TOGGLE}</b></span></td>
+	<td class="row1"><span class="gen"><b>{L_TYPE_TOGGLE_TITLE}</b></span></td>
+	<td class="row2"><span class="gen"><b>{S_TYPE_TOGGLE}</b></span></td>
 </tr>
 <!-- END switch_type_toggle -->
 <!-- BEGIN switch_news_cat -->
 <tr>
-	<td class="row1" width="22%"><span class="gen"><b>{switch_news_cat.L_NEWS_CATEGORY}</b></span></td>
-	<td class="row2" width="78%"><select name="{switch_news_cat.S_NAME}">{switch_news_cat.S_CATEGORY_BOX}</select></td>
+	<td class="row1"><span class="gen"><b>{switch_news_cat.L_NEWS_CATEGORY}</b></span></td>
+	<td class="row2"><select name="{switch_news_cat.S_NAME}">{switch_news_cat.S_CATEGORY_BOX}</select></td>
 </tr>
 <!-- END switch_news_cat -->
 <tr>
-	<td class="row1" valign="top">
+	<td class="row1" width="22%" valign="top">
 		<table width="100%" border="0" cellspacing="0" cellpadding="1">
 			<tr><td><span class="gen"><b>{L_MESSAGE_BODY}</b></span></td></tr>
 			<tr>
@@ -141,15 +141,15 @@ function attach_rules(forum_id)
 			</tr>
 		</table>
 	</td>
-	<td class="row2" valign="top">
+	<td class="row2" width="78%" valign="top">
 		{BBCB_MG}
-		<textarea name="message" rows="15" cols="35" style="width: 98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea>
+		<div class="message-box"><textarea id="message" name="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea></div>
 	</td>
 </tr>
 <!-- BEGIN switch_edit -->
 <tr>
-	<td class="row1" width="22%"><span class="gen"><b>{L_EDIT_NOTES}</b></span></td>
-	<td class="row2" width="78%"><input type="text" name="notes" size="45" maxlength="60" style="width: 98%" tabindex="2" class="post" value="{switch_edit.NOTES}" /></td>
+	<td class="row1"><span class="gen"><b>{L_EDIT_NOTES}</b></span></td>
+	<td class="row2"><input type="text" name="notes" size="45" maxlength="60" style="width: 98%" tabindex="2" class="post" value="{switch_edit.NOTES}" /></td>
 </tr>
 <!-- END switch_edit -->
 <tr>

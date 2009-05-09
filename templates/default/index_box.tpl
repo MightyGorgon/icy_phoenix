@@ -67,7 +67,7 @@ if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
 	<!-- BEGIN inc -->
 	<td width="30" class="{catrow.cathead.inc.INC_CLASS}"><img src="{SPACER}" width="46" height="0" /></td>
 	<!-- END inc -->
-	<td class="forum-buttons2" colspan="6" align="left"><img src="{CAT_BLOCK_IMG}" valign="middle" />&nbsp;<a href="{catrow.cathead.U_VIEWCAT}" title="{catrow.cathead.CAT_DESC}">{catrow.cathead.CAT_TITLE}</a></td>
+	<td class="forum-buttons2" colspan="6" align="left"><img src="{CAT_BLOCK_IMG}" style="vertical-align: middle;" />&nbsp;<a href="{catrow.cathead.U_VIEWCAT}" title="{catrow.cathead.CAT_DESC}">{catrow.cathead.CAT_TITLE}</a></td>
 </tr>
 <!-- END cathead -->
 <?php

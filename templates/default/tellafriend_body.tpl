@@ -24,7 +24,7 @@
 		</tr>
 		<tr>
 			<td valign="top"><span class="gen"><b>{L_TELL_FRIEND_MSG}</b></span></td>
-			<td><textarea name="message" class="post" rows="10" cols="60">{L_TELL_FRIEND_BODY}</textarea></td>
+			<td><textarea name="message" rows="10" cols="60">{L_TELL_FRIEND_BODY}</textarea></td>
 		</tr>
 		</table>
 		<br />

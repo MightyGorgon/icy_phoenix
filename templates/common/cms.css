@@ -1,4 +1,5 @@
 @import url("common.css");
+@import url("common_colors.css");
 @import url("cms_common.css");
 
 #cms, p, td, th {

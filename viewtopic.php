@@ -1141,7 +1141,7 @@ if ($bypass)
 	else
 	{
 		$can_reply = true;
-		$template->assign_block_vars('switch_can_reply', array());
+		$template->assign_var('S_CAN_REPLY', true);
 	}
 
 	// Begin Thanks Mod

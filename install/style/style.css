@@ -1146,7 +1146,7 @@ a.text_yellow:hover { color: #ffffaa; text-decoration: underline; }
 
 /* Nav Menu */
 .nav-menu {
-	display: none;
+	display: inline;
 	position: relative;
 	padding-top: 0px;
 	padding-bottom: 0px;
