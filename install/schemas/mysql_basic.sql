@@ -430,8 +430,8 @@ INSERT INTO `phpbb_cms_layout` (`lid`, `name`, `template`, `global_blocks`, `vie
 ##
 
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('forum', 'forum', 'forum.php', 0, 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewf', 'viewf', 'viewforum.php', 0, 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewt', 'viewt', 'viewtopic.php', 0, 0, '');
+INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewfforum', 'viewforum', 'viewforum.php', 0, 0, '');
+INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewtopic', 'viewtopic', 'viewtopic.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewonline', 'viewonline', 'viewonline.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('search', 'search', 'search.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('profile', 'profile', 'profile.php', 0, 0, '');
