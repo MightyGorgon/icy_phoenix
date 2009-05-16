@@ -3551,8 +3551,8 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('ajax_chat_archive', 'ajax_chat_archive', 'ajax_chat.php', 0, 0, '')";
 		//$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('pic_upload', 'pic_upload', 'upload.php', 0, 0, '')";
 
-		$sql[] = "DELETE FROM `" . $table_prefix . "phpbb_config` WHERE config_name LIKE \"auth_view_%\" AND config_name <> 'auth_view_pic_upload'";
-		$sql[] = "DELETE FROM `" . $table_prefix . "phpbb_config` WHERE config_name LIKE \"wide_blocks_%\"";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name LIKE \"auth_view_%\" AND config_name <> 'auth_view_pic_upload'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name LIKE \"wide_blocks_%\"";
 
 
 		/* Updating from IP 1.2.24.51 */
