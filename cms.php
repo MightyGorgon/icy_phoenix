@@ -39,6 +39,7 @@ init_userprefs($userdata);
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
 
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT))

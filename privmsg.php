@@ -2244,7 +2244,7 @@ $meta_description = '';
 $meta_keywords = '';
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('privmsg.' . PHP_EXT . '?folder=inbox') . '" class="nav-current">' . $lang['Private_Messaging'] . '</a>';
-$breadcrumbs_links_right = '<a href="javascript:select_switch(true);" class="gensmall">' . $lang['Mark_all'] . '</a> :: <a href="javascript:select_switch(false);" class="gensmall">' . $lang['Unmark_all'] . '</a>';
+$breadcrumbs_links_right = '<a href="javascript:select_switch(true);" class="gensmall">' . $lang['Mark_all'] . '</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">' . $lang['Unmark_all'] . '</a>';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 

@@ -99,7 +99,7 @@
 		<tr>
 			<td align="left" valign="middle" nowrap="nowrap">{POST_PM}<br /></td>
 			<td align="left" valign="middle" width="100%"><span class="nav"></span></td>
-			<td align="right" valign="top" nowrap="nowrap"><b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a> :: <a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b><br /><span class="pagination">{PAGINATION}<br /></span><span class="gensmall">{S_TIMEZONE}</span></td>
+			<td align="right" valign="top" nowrap="nowrap"><b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b><br /><span class="pagination">{PAGINATION}<br /></span><span class="gensmall">{S_TIMEZONE}</span></td>
 		</tr>
 		</table>
 		{PAGE_NUMBER}

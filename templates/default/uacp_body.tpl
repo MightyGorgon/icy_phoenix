@@ -57,7 +57,7 @@
 <table class="empty-table" width="100%" align="center" cellspacing="0">
 <tr>
 	<td align="right" valign="top" nowrap="nowrap">
-		<span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span>
+		<span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span>
 	</td>
 </tr>
 </table>

@@ -60,7 +60,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- BEGIN switch_watched_topics_block -->
 <div align="right">
-	<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a>
+	<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes('unwatch_form', 'unwatch_list[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a>
 	<br />
 	<!-- END switch_watched_topics_block -->
 	<div class="pagination"><!-- IF PAGINATION -->{PAGINATION}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>

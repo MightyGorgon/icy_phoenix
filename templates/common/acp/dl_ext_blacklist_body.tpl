@@ -43,8 +43,7 @@ function select_switch(status)
 <table width="100%" cellpadding="3" cellspacing="1" border="0">
 <tr>
 	<td align="right" valign="top" nowrap="nowrap" colspan="2">
-		<a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a> ::
-		<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
+		<a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
 	</td>
 </tr>
 </table>

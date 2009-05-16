@@ -45,7 +45,7 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall">
-		<!-- BEGIN sort_asc --><a href="{U_SORT_ASC}" class="gensmall">{L_DL_ABC}</a>&nbsp;::&nbsp;<!-- END sort_asc --><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;::&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
+		<!-- BEGIN sort_asc --><a href="{U_SORT_ASC}" class="gensmall">{L_DL_ABC}</a>&nbsp;&bull;&nbsp;<!-- END sort_asc --><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a>
 		</span><br /><br /><span class="pagination">{PAGINATION}</span>
 	</td>
 </tr>

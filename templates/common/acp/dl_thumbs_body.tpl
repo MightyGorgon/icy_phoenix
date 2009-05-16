@@ -25,6 +25,6 @@ function select_switch(status)
 </table>
 
 <table width="50%" align="center" cellpadding="0" cellspacing="0" border="0">
-<tr><td nowrap="nowrap" align="right"><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a> :: <a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></td></tr>
+<tr><td nowrap="nowrap" align="right"><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></td></tr>
 </table>
 </form>

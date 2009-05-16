@@ -261,31 +261,25 @@ class log_manager
 	function ct_file_error()
 	{
 		// Generate HTML Output
-		$htmloutput = '<html>
-					     <head>
-    					   <title>CBACK CrackerTracker :: Error</title>
-  						 </head>
-  						 <body>
-    					   <br />
-	    				   <div align="center">
-    	  				   <table style="border:2px solid #000000" border="0" width="600" cellpadding="10" cellspacing="0">
-        	 			     <tr>
-          					   <td align="left" bgcolor="#000000"><font face="Tahoma, Arial, Helvetica" size="4" color="#FFFFFF"><b>ERROR MESSAGE &raquo; &raquo; &raquo; &raquo;</b></font></td>
-        					 </tr>
-        					 <tr>
-	          				   <td bgcolor="#FFF4BF" align="left">
-    	    						<font face="Tahoma, Arial, Helvetica" size="2" color="#000000">
-        	  						  CBACK CrackerTracker could not perform file operations.<br /><br />
- 									  Please ensure, that you have setted CHMOD777 to all required files
-          					          as shown in the install file of this MOD and ensure you really
-        	  						  have a PHP Interpreter Version >= 4.3.9 installed!
-        	  						</font>
-          					    </td>
-        					   </tr>
-      					     </table>
-    					   	</div>
-	  					 </body>
-					   </html>';
+		$htmloutput = '
+<html>
+	<head><title>CBACK CrackerTracker :: Error</title></head>
+	<body>
+	<br />
+	<div align="center">
+		<table style="border:2px solid #000000" border="0" width="600" cellpadding="10" cellspacing="0">
+		<tr>
+			<td align="left" bgcolor="#000000"><font face="Tahoma, Arial, Helvetica" size="4" color="#FFFFFF"><b>ERROR MESSAGE &raquo; &raquo; &raquo; &raquo;</b></font></td>
+		</tr>
+		<tr>
+			<td bgcolor="#FFF4BF" align="left">
+				<font face="Tahoma, Arial, Helvetica" size="2" color="#000000">CBACK CrackerTracker could not perform file operations.<br /><br />Please ensure, that you have setted CHMOD777 to all required files as shown in the install file of this MOD and ensure you really have a PHP Interpreter Version >= 4.3.9 installed!</font>
+			</td>
+		</tr>
+		</table>
+		</div>
+</body>
+</html>';
 
 		// Stop the script
 		die($htmloutput);

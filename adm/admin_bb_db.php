@@ -70,11 +70,11 @@ if(!function_exists('admin_db_prepare_sql'))
 		$linecount = count($lines);
 		$output    = '';
 
-		for ( $i = 0; $i < $linecount; $i++ )
+		for ($i = 0; $i < $linecount; $i++)
 		{
-			if ( ($i != ($linecount - 1)) || (strlen($lines[$i]) > 0) )
+			if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0))
 			{
-				if ( ($lines[$i][0] == '#') || ($lines[$i][0] == '-') )
+				if (($lines[$i][0] == '#') || ($lines[$i][0] == '-'))
 				{
 					$output .= "\n";
 				}
@@ -101,49 +101,53 @@ if ($is_allowed == false)
 include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_db_admin.' . PHP_EXT);
 
 
-if (isset( $_POST['mode'] ) || isset( $_GET['mode'] ))
+if (isset($_POST['mode']) || isset($_GET['mode']))
 {
-	$mode = ( isset( $_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
+	$mode = (isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode']);
 }
 else
 {
 	$mode = '';
 }
 
-if (isset( $_POST['action'] ) || isset( $_GET['action'] ))
+if (isset($_POST['action']) || isset($_GET['action']))
 {
-	$action = ( isset( $_POST['action']) ) ? $_POST['action'] : $_GET['action'];
+	$action = (isset($_POST['action']) ? $_POST['action'] : $_GET['action']);
 }
 else
 {
 	$action = '';
 }
 
-if (isset( $_POST['mass'] ) || isset( $_GET['mass'] ))
+if (isset($_POST['mass']) || isset($_GET['mass']))
 {
-	$mass = ( isset( $_POST['mass']) ) ? $_POST['mass'] : $_GET['mass'];
+	$mass = (isset($_POST['mass']) ? $_POST['mass'] : $_GET['mass']);
 }
 else
 {
 	$mass = '';
 }
 
-if (isset( $_POST['mass_change'] ) || isset( $_GET['mass_change'] ))
+if (isset($_POST['mass_change']) || isset($_GET['mass_change']))
 {
-	$mass_change = ( isset( $_POST['mass_change']) ) ? $_POST['mass_change'] : $_GET['mass_change'];
+	$mass_change = (isset($_POST['mass_change']) ? $_POST['mass_change'] : $_GET['mass_change']);
 }
 else
 {
 	$mass_change = '';
 }
 
-
-//==== Start: Only authorized admins can view this
-$allowed = $allowed_admins = '';
-$allowed_admins = array(2,1138);
-for ($x = 0; $x < count($allowed_admins); $x++)
+// Auth Check - BEGIN
+$allowed = false;
+$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+if ($userdata['user_id'] == $founder_id)
 {
-	if ($userdata['user_id'] == $allowed_admins[$x])
+	$allowed = true;
+}
+if (!$allowed && defined('MAIN_ADMINS_ID'))
+{
+	$allowed_admins = explode(',', MAIN_ADMINS_ID);
+	if (in_array($userdata['user_id'], $allowed_admins))
 	{
 		$allowed = true;
 	}
@@ -153,7 +157,7 @@ if (!$allowed)
 {
 	message_die(GENERAL_ERROR, $lang['db_unauthed']);
 }
-//==== End: Only authorized admins can view this
+// Auth Check - END
 
 $images = IP_ROOT_PATH . 'images/bb_admin/';
 echo '<table class="forumline" width="200" cellspacing="0" cellpadding="0" border="0">';
@@ -342,7 +346,7 @@ $start = (isset($_GET['start'])) ? intval($_GET['start']) : '0';
 $start = ($start < 0) ? 0 : $start;
 $order = (isset($_GET['order'])) ? $_GET['order'] : '';
 $way = (isset($_GET['way'])) ? $_GET['way'] : '';
-$order2 = ( ($order) && ($way) ) ? 'ORDER BY `'. $order .'` '. $way : '';
+$order2 = (($order) && ($way)) ? 'ORDER BY `'. $order .'` '. $way : '';
 
 $q = 'SHOW TABLE STATUS';
 $r = $db->sql_query($q);
@@ -384,8 +388,8 @@ $pagination 	= generate_pagination($_SERVER['PHP_SELF'] .'?mode=browse&amp;table
 else
 	$pagination = '&nbsp;';
 
-$page_number 	= sprintf($lang['Page_of'], ( floor( $start / 30 ) + 1 ), ceil( $rows / 30 ));
-$showing 		= "Showing ". number_format($start) ." - ". number_format($start + 30) ." ( ". number_format($rows) ." Total )";
+$page_number 	= sprintf($lang['Page_of'], (floor($start / 30) + 1), ceil($rows / 30));
+$showing 		= "Showing ". number_format($start) ." - ". number_format($start + 30) ." (". number_format($rows) ." Total)";
 
 echo '<table class="forumline" width="30%" cellspacing="0" cellpadding="0" border="0">';
 echo '	<tr>';
@@ -445,7 +449,7 @@ echo '	</tr>';
 echo '</table>';
 	}
 
-if ( (!$mode) && (!$mass_change) )
+if ((!$mode) && (!$mass_change))
 	{
 echo '<script type="text/javascript">';
 echo 'function select_switch(status)';
@@ -626,7 +630,7 @@ echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" bord
 echo '	<tr>';
 echo '		<td class="row2" colspan="4">';
 echo '			<span class="genmed">';
-echo '				'. $lang['db_with_sel'] .'&nbsp;&nbsp;<a href="javascript:select_switch(true);" class="gensmall">Check All</a>&nbsp;<b>::</b>&nbsp;<a href="javascript:select_switch(false);" class="gensmall">Un-Check All</a>';
+echo '				'. $lang['db_with_sel'] .'&nbsp;&nbsp;<a href="javascript:select_switch(true);" class="gensmall">Check All</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">Un-Check All</a>';
 echo '			</span>';
 echo '		</td>';
 echo '	</tr>';

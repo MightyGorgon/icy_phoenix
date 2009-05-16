@@ -100,7 +100,7 @@ function selector(bool)
 		<option value="{tables.TABLE}">{tables.TABLE}</option>
 		<!-- END tables -->
 		</select><br />
-		<a href="#" onclick="selector(true)">{L_SELECT_ALL}</a> :: <a href="#" onclick="selector(false)">{L_DESELECT_ALL}</a>
+		<a href="#" onclick="selector(true)">{L_SELECT_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="selector(false)">{L_DESELECT_ALL}</a>
 	</td>
 </tr>
 <tr>
