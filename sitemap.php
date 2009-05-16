@@ -244,7 +244,7 @@ else
 	// MG SITEMAP - FORUM - END
 
 	// MG SITEMAP - DOWNLOADS - BEGIN
-	if ($board_config['auth_view_download'] == 0)
+	if (isset($cms_config_layouts['download']['view']) && ($cms_config_layouts['download']['view'] == AUTH_ALL))
 	{
 		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_constants.' . PHP_EXT);
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
@@ -284,7 +284,7 @@ else
 	// MG SITEMAP - DOWNLOADS - END
 
 	// MG SITEMAP - ALBUM - BEGIN
-	if ($board_config['auth_view_album'] == 0)
+	if (isset($cms_config_layouts['album']['view']) && ($cms_config_layouts['album']['view'] == AUTH_ALL))
 	{
 		// Get general album information
 		include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);

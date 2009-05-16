@@ -81,10 +81,6 @@
 					</tr>
 					<tr>
 						<td width="8" align="left" valign="middle">{IMG_NAV_MENU_SEP}</td>
-						<td class="genmed" align="left"><a href="{U_CMS_PAGES_PERMISSIONS}">{L_CMS_PAGES_PERMISSIONS}</a></td>
-					</tr>
-					<tr>
-						<td width="8" align="left" valign="middle">{IMG_NAV_MENU_SEP}</td>
 						<td class="genmed" align="left"><a href="{U_CMS_ADS}">{L_CMS_ADS}</a></td>
 					</tr>
 					</table>

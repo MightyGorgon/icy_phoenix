@@ -57,22 +57,44 @@ define('ONLINE_REFRESH', 600); // Online Refresh Time (Seconds)
 
 define('LAST_LOGIN_DAYS_NEW_POSTS_RESET', 30); // Number of days after which new posts are not count (to avoid high CPU SQL request)
 define('UPI2DB_MAX_UNREAD_POSTS', 2500); // Maximum amount of stored unread messages if no limits is set... we don't want our dB to explode!!!
-define('UPI2DB_RESYNC_TIME', 30); // Seconds needed to refresh UPI2DB datas...
+define('UPI2DB_RESYNC_TIME', 30); // Seconds needed to refresh UPI2DB data...
 
 // Mighty Gorgon - Constants Pages And Paths - BEGIN
-define('LOGIN_MG', 'login_ip.' . PHP_EXT);
-//define('LOGIN_MG', 'login.' . PHP_EXT);
-define('PORTAL_MG', 'index.' . PHP_EXT);
-//define('PORTAL_MG', 'portal.' . PHP_EXT);
-define('FORUM_MG', 'forum.' . PHP_EXT);
-//define('FORUM_MG', 'index.' . PHP_EXT);
-define('VIEWFORUM_MG', 'viewforum.' . PHP_EXT);
-define('VIEWTOPIC_MG', 'viewtopic.' . PHP_EXT);
-define('PROFILE_MG', 'profile.' . PHP_EXT);
-define('POSTING_MG', 'posting.' . PHP_EXT);
-define('SEARCH_MG', 'search.' . PHP_EXT);
-define('DOWNLOADS_MG', 'dload.' . PHP_EXT);
-//define('DOWNLOADS_MG', 'downloads.' . PHP_EXT);
+define('CMS_PAGE_LOGIN', 'login_ip.' . PHP_EXT);
+define('CMS_PAGE_HOME', 'index.' . PHP_EXT);
+define('CMS_PAGE_FORUM', 'forum.' . PHP_EXT);
+define('CMS_PAGE_VIEWFORUM', 'viewforum.' . PHP_EXT);
+define('CMS_PAGE_VIEWTOPIC', 'viewtopic.' . PHP_EXT);
+define('CMS_PAGE_VIEWONLINE', 'viewonline.' . PHP_EXT);
+define('CMS_PAGE_SEARCH', 'search.' . PHP_EXT);
+define('CMS_PAGE_PROFILE', 'profile.' . PHP_EXT);
+define('CMS_PAGE_POSTING', 'posting.' . PHP_EXT);
+define('CMS_PAGE_MEMBERLIST', 'memberlist.' . PHP_EXT);
+define('CMS_PAGE_GROUP_CP', 'group_cp.' . PHP_EXT);
+define('CMS_PAGE_FAQ', 'faq.' . PHP_EXT);
+define('CMS_PAGE_RULES', 'rules.' . PHP_EXT);
+define('CMS_PAGE_DLOAD', 'dload.' . PHP_EXT);
+define('CMS_PAGE_DOWNLOADS', 'downloads.' . PHP_EXT);
+define('CMS_PAGE_ALBUM', 'album.' . PHP_EXT);
+define('CMS_PAGE_LINKS', 'links.' . PHP_EXT);
+define('CMS_PAGE_STATISTICS', 'statistics.' . PHP_EXT);
+define('CMS_PAGE_CALENDAR', 'calendar.' . PHP_EXT);
+define('CMS_PAGE_RECENT', 'recent.' . PHP_EXT);
+define('CMS_PAGE_REFERRERS', 'referrers.' . PHP_EXT);
+define('CMS_PAGE_SHOUTBOX', 'shoutbox_max.' . PHP_EXT);
+define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
+define('CMS_PAGE_CONTACT_US', 'contact_us.' . PHP_EXT);
+// Left here for backward compatibility... few constants won't waste too much memory!!!
+define('LOGIN_MG', CMS_PAGE_LOGIN);
+define('PORTAL_MG', CMS_PAGE_HOME);
+define('FORUM_MG', CMS_PAGE_FORUM);
+define('VIEWFORUM_MG', CMS_PAGE_VIEWFORUM);
+define('VIEWTOPIC_MG', CMS_PAGE_VIEWTOPIC);
+define('PROFILE_MG', CMS_PAGE_PROFILE);
+define('POSTING_MG', CMS_PAGE_POSTING);
+define('SEARCH_MG', CMS_PAGE_SEARCH);
+define('DOWNLOADS_MG', CMS_PAGE_DLOAD);
+//define('DOWNLOADS_MG', CMS_PAGE_DOWNLOADS);
 define('ADM', 'adm');
 define('COMMON_TPL', '../common/');
 define('ADM_TPL', COMMON_TPL . 'acp/');

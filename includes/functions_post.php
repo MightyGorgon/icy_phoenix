@@ -74,7 +74,7 @@ function unprepare_message($message)
 }
 
 // Prepare a message for posting
-function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_option1, &$reg_option2, &$reg_option3, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
+function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
 	global $board_config, $userdata, $lang;
 	global $topic_id;
@@ -229,24 +229,6 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 		}
 
 		// Event Registration - BEGIN
-		if (($reg_active == 1) && empty($reg_option1) && empty($reg_option2) && empty($reg_option3))
-		{
-			$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Reg_no_options_specified'] : $lang['Reg_no_options_specified'];
-		}
-
-		if (!empty($reg_option1))
-		{
-			$reg_option1 = htmlspecialchars(trim($reg_option1));
-		}
-		if (!empty($reg_option2))
-		{
-			$reg_option2 = htmlspecialchars(trim($reg_option2));
-		}
-		if (!empty($reg_option3))
-		{
-			$reg_option3 = htmlspecialchars(trim($reg_option3));
-		}
-
 		$reg_active = (isset($reg_active)) ? max(0, intval($reg_active)) : 0;
 		$reg_max_option1 = (isset($reg_max_option1)) ? max(0, intval($reg_max_option1)) : 0;
 		$reg_max_option2 = (isset($reg_max_option2)) ? max(0, intval($reg_max_option2)) : 0;
@@ -258,7 +240,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 }
 
 // Post a new topic/reply/poll or edit existing post/poll
-function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_option1, &$reg_option2, &$reg_option3, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$news_category, &$topic_show_portal, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
+function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$news_category, &$topic_show_portal, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
 	global $board_config, $lang, $db;
 	global $userdata, $user_ip, $post_data;
@@ -348,28 +330,6 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		else
 		{
 			// Event Registration - BEGIN
-			if (empty($reg_option1))
-			{
-				if (!$db->sql_query("DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_status = 1 AND topic_id = $topic_id"))
-				{
-					message_die(GENERAL_ERROR, 'Could not clean up registration data from unused options', '', __LINE__, __FILE__, $sql);
-				}
-			}
-			if (empty($reg_option2))
-			{
-				if (!$db->sql_query("DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_status = 2 AND topic_id = $topic_id"))
-				{
-					message_die(GENERAL_ERROR, 'Could not clean up registration data from unused options', '', __LINE__, __FILE__, $sql);
-				}
-			}
-			if (empty($reg_option3))
-			{
-				if (!$db->sql_query("DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_status = 3 AND topic_id = $topic_id"))
-				{
-					message_die(GENERAL_ERROR, 'Could not clean up registration data from unused options', '', __LINE__, __FILE__, $sql);
-				}
-			}
-
 			if ($reg_reset)
 			{
 				$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id = $topic_id";
@@ -396,7 +356,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			$chk_reg = ($db->sql_fetchfield('chk_reg', 0, $result) != 0) ? true : false;
 		}
 
-		$sql = ($mode != 'editpost' || ($mode == 'editpost' && $chk_reg == false)) ? "INSERT INTO " . REGISTRATION_DESC_TABLE . " (topic_id, reg_active, reg_option1 , reg_option2, reg_option3, reg_max_option1, reg_max_option2, reg_max_option3, reg_start, reg_length) VALUES ($topic_id, $reg_active, '$reg_option1', '$reg_option2', '$reg_option3', $reg_max_option1, $reg_max_option2, $reg_max_option3, $current_time, " . ($reg_length * 86400) . ")" : "UPDATE " . REGISTRATION_DESC_TABLE . " SET reg_active = $reg_active, reg_option1 = '$reg_option1', reg_option2 = '$reg_option2', reg_option3 = '$reg_option3', reg_max_option1 = $reg_max_option1, reg_max_option2 = $reg_max_option2, reg_max_option3 = $reg_max_option3, reg_length = " . ($reg_length * 86400) . " WHERE topic_id = $topic_id";
+		$sql = ($mode != 'editpost' || ($mode == 'editpost' && $chk_reg == false)) ? "INSERT INTO " . REGISTRATION_DESC_TABLE . " (topic_id, reg_active, reg_max_option1, reg_max_option2, reg_max_option3, reg_start, reg_length) VALUES ($topic_id, $reg_active, $reg_max_option1, $reg_max_option2, $reg_max_option3, $current_time, " . ($reg_length * 86400) . ")" : "UPDATE " . REGISTRATION_DESC_TABLE . " SET reg_active = $reg_active, reg_max_option1 = $reg_max_option1, reg_max_option2 = $reg_max_option2, reg_max_option3 = $reg_max_option3, reg_length = " . ($reg_length * 86400) . " WHERE topic_id = $topic_id";
 		if (!$db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Could not store registration data', '', __LINE__, __FILE__, $sql);

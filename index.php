@@ -20,8 +20,6 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-check_page_auth(0, 'portal');
-
 define('PORTAL_INIT', true);
 include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);
 cms_config_init($cms_config_vars);
@@ -51,43 +49,47 @@ $layout_template = $layout_row['template'];
 $cms_global_blocks = ($layout_row['global_blocks'] == 0) ? false : true;
 $cms_page_nav = ($layout_row['page_nav'] == 0) ? false : true;
 
+$is_auth_view = false;
 if ($userdata['user_id'] == ANONYMOUS)
 {
-	$lview = in_array($layout_row['view'], array(0,1));
+	$is_auth_view = in_array($layout_row['view'], array(0, 1));
 }
 else
 {
 	switch($userdata['user_level'])
 	{
 		case USER:
-			$lview = in_array($layout_row['view'], array(0,2));
+			$is_auth_view = in_array($layout_row['view'], array(0, 2));
 			break;
 		case MOD:
-			$lview = in_array($layout_row['view'], array(0,2,3));
+			$is_auth_view = in_array($layout_row['view'], array(0, 2, 3));
 			break;
 		case ADMIN:
-			$lview = in_array($layout_row['view'], array(0,1,2,3,4));
+			$is_auth_view = in_array($layout_row['view'], array(0, 1, 2, 3, 4));
 			break;
 		default:
-			$lview = in_array($layout_row['view'], array(0));
+			$is_auth_view = in_array($layout_row['view'], array(0));
 	}
 }
 
-$not_group_allowed = false;
-if(!empty($layout_row['groups']))
+if(!$is_auth_view)
 {
-	$not_group_allowed = true;
-	$group_content = explode(',', $layout_row['groups']);
-	for ($i = 0; $i < count($group_content); $i++)
+	if(!empty($layout_row['groups']))
 	{
-		if(in_array(intval($group_content[$i]), cms_groups($userdata['user_id'])))
+		$is_auth_view = false;
+		$group_content = explode(',', $layout_row['groups']);
+		for ($i = 0; $i < count($group_content); $i++)
 		{
-			$not_group_allowed = false;
+			if(in_array(intval($group_content[$i]), cms_groups($userdata['user_id'])))
+			{
+				$is_auth_view = true;
+				break;
+			}
 		}
 	}
 }
 
-if(($layout_template == '') || (!$lview) || ($not_group_allowed))
+if(!$is_auth_view)
 {
 	if (!$userdata['session_logged_in'])
 	{
@@ -95,7 +97,14 @@ if(($layout_template == '') || (!$lview) || ($not_group_allowed))
 		$page_array = extract_current_page(IP_ROOT_PATH);
 		redirect(append_sid(IP_ROOT_PATH . LOGIN_MG . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
 	}
+	else
+	{
+		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+	}
+}
 
+if(empty($layout_template))
+{
 	$layout = $cms_config_vars['default_portal'];
 	$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE lid = '" . $layout . "'";
 	if(!($layout_result = $db->sql_query($sql, false, 'cms_')))

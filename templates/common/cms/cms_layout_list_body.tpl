@@ -7,69 +7,48 @@
 </tr>
 </table>
 
-<!-- BEGIN layout_special -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-<tr>
-	<th width="5%">{L_CMS_ID}</th>
-	<th width="5%">{L_CMS_ACTIONS}</th>
-	<th width="35%">{L_CMS_NAME}</th>
-	<th width="35%">{L_CMS_FILENAME}</th>
-	<th width="20%">{L_CMS_BLOCKS}</th>
-</tr>
-<!-- BEGIN ls_row -->
-<tr class="{layout_special.ls_row.ROW_CLASS} row1h" style="background-image: none;">
-	<td class="{layout_special.ls_row.ROW_CLASS} row-center" style="background: none;"><b>{layout_special.ls_row.LAYOUT_ID}</b></td>
-	<td class="{layout_special.ls_row.ROW_CLASS} row-center" style="background: none;" nowrap="nowrap">
-		<a href="{layout_special.ls_row.U_LAYOUT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CONFIGURE_BLOCKS}" title="{L_CONFIGURE_BLOCKS}" /></a>&nbsp;
-		<a href="{layout_special.ls_row.U_PREVIEW_LAYOUT}"><img src="{IMG_LAYOUT_PREVIEW}" alt="{L_PREVIEW}" title="{L_PREVIEW}" /></a>&nbsp;
-	</td>
-	<td class="{layout_special.ls_row.ROW_CLASS}" style="background: none;">&nbsp;<a href="{layout_special.ls_row.U_LAYOUT}">{layout_special.ls_row.LAYOUT_NAME}</a>&nbsp;</td>
-	<td class="{layout_special.ls_row.ROW_CLASS} row-center" style="background: none;">&nbsp;{layout_special.ls_row.LAYOUT_FILENAME}&nbsp;</td>
-	<td class="{layout_special.ls_row.ROW_CLASS} row-center" style="background: none;">[&nbsp;{layout_special.ls_row.LAYOUT_BLOCKS}&nbsp;]</td>
-</tr>
-<!-- END ls_row -->
-<tr><td class="spaceRow" colspan="5"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr>
-	<td class="cat" colspan="5" align="center">
-		{S_HIDDEN_FIELDS}
-	</td>
-</tr>
-</table>
-<!-- END layout_special -->
+<!-- IF CMS_CHANGES_SAVED -->
+<script type="text/javascript">
+// <![CDATA[
+window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
+// ]]>
+</script>
+<div id="box-updated" class="row-center" style=" position: fixed; top: 0px; right: 0px; z-index: 1; background: none; border: none; width: 300px; padding: 3px;">
+	<div id="result-box" style="height: 16px; border: solid 1px green; background: #00ff00;"><span class="text_green">{L_CMS_CHANGES_SAVED}</span></div>
+</div>
+<!-- ENDIF -->
 
 <!-- BEGIN layout -->
 <form method="post" action="{S_LAYOUT_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<th width="5%" align="center">{L_CMS_ID}</th>
-	<th width="5%" align="center">{L_CMS_ACTIONS}</th>
-	<th width="30%" align="center">{L_CMS_NAME}</th>
-	<th width="25%" align="center">{L_CMS_FILENAME}</th>
-	<th width="25%" align="center">{L_CMS_TEMPLATE}</th>
-	<th width="10%" align="center">{L_CMS_BLOCKS}</th>
+	<th style="width: 30px;">{L_CMS_ID}</th>
+	<th style="width: 90px;">{L_CMS_ACTIONS}</th>
+	<th>{L_CMS_NAME}</th>
+	<th>{L_CMS_FILENAME}</th>
+	<!-- IF not S_LAYOUT_SPECIAL --><th>{L_CMS_TEMPLATE}</th><!-- ENDIF -->
+	<th style="width: 120px;" nowrap="nowrap">{L_CMS_PERMISSION}</th>
+	<th style="width: 95px;" nowrap="nowrap">{L_CMS_GLOBAL_BLOCKS}</th>
+	<th style="width: 90px;" nowrap="nowrap">{L_CMS_BREADCRUMBS}</th>
+	<th style="width: 70px;" nowrap="nowrap">{L_CMS_BLOCKS}</th>
 </tr>
 <!-- BEGIN l_row -->
 <tr class="{layout.l_row.ROW_CLASS} row1h" style="background-image: none;">
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><b>{layout.l_row.LAYOUT_ID}</b></td>
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;" nowrap="nowrap">
-		<a href="{layout.l_row.U_LAYOUT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CONFIGURE_BLOCKS}" title="{L_CONFIGURE_BLOCKS}" /></a>&nbsp;
-		<a href="{layout.l_row.U_PREVIEW_LAYOUT}"><img src="{IMG_LAYOUT_PREVIEW}" alt="{L_PREVIEW}" title="{L_PREVIEW}" /></a>&nbsp;
-		<a href="{layout.l_row.U_EDIT_LAYOUT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;
-		<a href="{layout.l_row.U_DELETE_LAYOUT}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>
+		<a href="{layout.l_row.U_LAYOUT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CONFIGURE_BLOCKS}" title="{L_CONFIGURE_BLOCKS}" style="margin-right: 3px;" /></a><a href="{layout.l_row.U_PREVIEW_LAYOUT}"><img src="{IMG_LAYOUT_PREVIEW}" alt="{L_PREVIEW}" title="{L_PREVIEW}" style="margin-right: 3px;" /></a><!-- IF not layout.l_row.LOCKED --><a href="{layout.l_row.U_EDIT_LAYOUT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" style="margin-right: 3px;" /></a><a href="{layout.l_row.U_DELETE_LAYOUT}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF -->
 	</td>
-	<td class="{layout.l_row.ROW_CLASS}" style="background: none;{layout.l_row.ROW_DEFAULT_STYLE}">&nbsp;<a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a>&nbsp;</td>
-	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">&nbsp;{layout.l_row.LAYOUT_FILENAME}&nbsp;</td>
-	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">&nbsp;{layout.l_row.LAYOUT_TEMPLATE}&nbsp;</td>
+	<td class="{layout.l_row.ROW_CLASS}" style="background: none;{layout.l_row.ROW_DEFAULT_STYLE}"><a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a></td>
+	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><!-- IF layout.l_row.LAYOUT_FILENAME -->{layout.l_row.LAYOUT_FILENAME}<!-- ELSE -->&nbsp;<!-- ENDIF --></td>
+	<!-- IF not S_LAYOUT_SPECIAL --><td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">{layout.l_row.LAYOUT_TEMPLATE}</td><!-- ENDIF -->
+	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">{layout.l_row.PAGE_AUTH}</td>
+	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="layout_gb[]" value="{layout.l_row.LAYOUT_ID}"{layout.l_row.GB_CHECKED} /></td>
+	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="layout_bc[]" value="{layout.l_row.LAYOUT_ID}"{layout.l_row.BC_CHECKED} /></td>
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">[&nbsp;{layout.l_row.LAYOUT_BLOCKS}&nbsp;]</td>
 </tr>
 <!-- END l_row -->
-<tr><td class="spaceRow" colspan="6"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr>
-	<td class="cat" colspan="6" align="center">
-		{S_HIDDEN_FIELDS}
-		<input type="submit" name="add" value="{L_LAYOUT_ADD}" class="mainoption" />
-	</td>
-</tr>
+<tr><td class="spaceRow" colspan="9"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
+<tr><td class="cat" colspan="9" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="action_update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" />&nbsp;&nbsp;<input type="submit" name="add" value="{L_LAYOUT_ADD}" class="mainoption" /></td></tr>
 </table>
 </form>
 <!-- END layout -->

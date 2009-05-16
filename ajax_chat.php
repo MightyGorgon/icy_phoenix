@@ -45,13 +45,21 @@ if(($board_config['shout_allow_guest'] == 0) && !$userdata['session_logged_in'])
 // Show shoutbox with header and footer if the user didn't request anything else
 if (($mode == false) || ($mode != 'archive'))
 {
-	$cms_page_id_tmp = '0';
-	$cms_page_name_tmp = 'ajax_chat';
-	check_page_auth($cms_page_id_tmp, $cms_page_name_tmp);
-	// I would shut wide blocks off since this may be run as stand alone
-	$cms_global_blocks = false;
+	if (!isset($cms_page_id))
+	{
+		$cms_page_id = 'ajax_chat';
+	}
+	// Set as tmp value to not overwrite page id if included as a block...
+	$cms_page_id_tmp = 'ajax_chat';
+	// Import settings from other vars if set... or force global blocks and page nav off since this may be run as stand alone
+	$cms_page_nav = isset($cms_page_nav) ? $cms_page_nav : false;
+	$cms_global_blocks = isset($cms_global_blocks) ? $cms_global_blocks : false;
+	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
+	check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp);
 
-	$ajax_archive_link = check_page_auth(0, 'ajax_chat_archive', true);
+	$cms_page_id_tmp = 'ajax_chat_archive';
+	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
+	$ajax_archive_link = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 
 	$page_title = $lang['Ajax_Chat'];
 	$meta_description = '';
@@ -75,11 +83,17 @@ if (($mode == false) || ($mode != 'archive'))
 }
 else
 {
-	$cms_page_id_tmp = '0';
-	$cms_page_name_tmp = 'ajax_chat_archive';
-	check_page_auth($cms_page_id_tmp, $cms_page_name_tmp);
-	// I would shut wide blocks off since this may be run as stand alone
-	$cms_global_blocks = false;
+	if (!isset($cms_page_id))
+	{
+		$cms_page_id = 'ajax_chat_archive';
+	}
+	// Set as tmp value to not overwrite page id if included as a block...
+	$cms_page_id_tmp = 'ajax_chat_archive';
+	// Import settings from other vars if set... or force global blocks and page nav off since this may be run as stand alone
+	$cms_page_nav = isset($cms_page_nav) ? $cms_page_nav : false;
+	$cms_global_blocks = isset($cms_global_blocks) ? $cms_global_blocks : false;
+	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
+	check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp);
 
 	$page_title = $lang['Ajax_Chat'];
 	$meta_description = '';

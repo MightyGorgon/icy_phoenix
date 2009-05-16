@@ -27,10 +27,11 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = '8';
-$cms_page_name = 'group_cp';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+$cms_page_id = 'groupcp';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 $script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
 $script_name = ($script_name != '') ? $script_name . '/groupcp.' . PHP_EXT : 'groupcp.' . PHP_EXT;

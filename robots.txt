@@ -370,7 +370,6 @@ Disallow: /album_search.php
 Disallow: /album_upload.php
 Disallow: /calendar_scheduler.php
 Disallow: /cms.php
-Disallow: /cms_auth.php
 Disallow: /cms_menu.php
 Disallow: /common.php
 Disallow: /config.php

@@ -34,7 +34,7 @@
 		</tr>
 		<tr>
 			<td class="row1" align="right">{L_B_VIEW_BY}</td>
-			<td class="row2"><select name="view" class="post">{VIEWBY}</select></td>
+			<td class="row2">{VIEWBY}</td>
 		</tr>
 		<tr>
 			<td class="row1" align="right">{L_B_BORDER}</td>

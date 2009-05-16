@@ -289,7 +289,7 @@ if ($submit)
 		if (isset($$field_name))
 		{
 			set_config($field_name, $$field_name);
-			//set_config($field_name, (STRIP ? addslashes($$field_name) : $$field_name));
+			//set_config($field_name, ip_addslashes($$field_name));
 		}
 		if (isset($_POST[$field_name . '_over']) && !empty($field['user']) && isset($userdata[$field['user']]))
 		{
@@ -434,11 +434,11 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			break;
 		case 'VARCHAR':
 		case 'HTMLVARCHAR':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . (STRIP ? stripslashes($config[$field_name]) : $config[$field_name]) . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . ip_stripslashes($config[$field_name]) . '" />';
 			break;
 		case 'TEXT':
 		case 'HTMLTEXT':
-			$input = '<textarea rows="5" cols="45" name="' . $field_name . '" class="post">' . (STRIP ? stripslashes($config[$field_name]) : $config[$field_name]) . '</textarea>';
+			$input = '<textarea rows="5" cols="45" name="' . $field_name . '" class="post">' . ip_stripslashes($config[$field_name]) . '</textarea>';
 			break;
 		default:
 			$input = '';

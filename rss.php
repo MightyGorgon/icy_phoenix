@@ -432,7 +432,7 @@ else
 			$topic_title = $post['topic_title'];
 			if($post['post_id'] != $post['topic_first_post_id'])
 			{
-				$topic_title = 'RE: ' . $topic_title;
+				$topic_title = $lang['REPLY_PREFIX'] . $topic_title;
 			}
 			// Variable reassignment and reformatting for author
 			$author = $post['username'];

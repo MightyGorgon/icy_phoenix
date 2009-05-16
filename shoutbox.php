@@ -20,10 +20,14 @@ $userdata = session_pagestart($user_ip, false);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id_tmp = '19';
-$cms_page_name_tmp = 'shoutbox';
-check_page_auth($cms_page_id_tmp, $cms_page_name_tmp);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name_tmp] == 1) ? true : false;
+$cms_page_id = 'shoutbox';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+// Force to false...
+$cms_page_nav = false;
+$cms_global_blocks = false;
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 // Start auth check
 switch ($userdata['user_level'])

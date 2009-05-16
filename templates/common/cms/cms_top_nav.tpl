@@ -15,7 +15,6 @@ function icon_text(text)
 <a href="{U_CMS}" onmouseover="icon_text('{L_CMS_MANAGEMENT}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_cms.png" alt="{L_CMS_MANAGEMENT}" title="{L_CMS_MANAGEMENT}" /></a>&nbsp;
 <a href="{U_CMS_CONFIG}" onmouseover="icon_text('{L_CMS_CONFIG}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_settings.png" alt="{L_CMS_CONFIG}" title="{L_CMS_CONFIG}" /></a>&nbsp;
 <a href="{U_CMS_MENU}" onmouseover="icon_text('{L_CMS_MENU_PAGE}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_block.png" alt="{L_CMS_MENU_PAGE}" title="{L_CMS_MENU_PAGE}" /></a>&nbsp;
-<a href="{U_CMS_PAGES_PERMISSIONS}" onmouseover="icon_text('{L_CMS_PAGES_PERMISSIONS}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_pages_permissions.png" alt="{L_CMS_PAGES_PERMISSIONS}" title="{L_CMS_PAGES_PERMISSIONS}" /></a>
 <a href="{U_CMS_ADS}" onmouseover="icon_text('{L_CMS_ADS}')" onmouseout="icon_text('&nbsp;')"><img src="{FULL_SITE_PATH}images/cms/cms_ads.png" alt="{L_CMS_ADS}" title="{L_CMS_ADS}" /></a>
 <br />
 <br />
@@ -42,7 +41,6 @@ function icon_text(text)
 	<a class="dock-item" href="{U_CMS}"><span>{L_CMS_MANAGEMENT}</span><img src="{FULL_SITE_PATH}images/cms/cms_cms.png" alt="{L_CMS_MANAGEMENT}" /></a>&nbsp;&nbsp;
 	<a class="dock-item" href="{U_CMS_CONFIG}"><span>{L_CMS_CONFIG}</span><img src="{FULL_SITE_PATH}images/cms/cms_settings.png" alt="{L_CMS_CONFIG}" /></a>&nbsp;&nbsp;
 	<a class="dock-item" href="{U_CMS_MENU}"><span>{L_CMS_MENU_PAGE}</span><img src="{FULL_SITE_PATH}images/cms/cms_block.png" alt="{L_CL_CMS_MENU_PAGEMS_MENU}" /></a>&nbsp;&nbsp;
-	<a class="dock-item" href="{U_CMS_PAGES_PERMISSIONS}"><span>{L_CMS_PAGES_PERMISSIONS}</span><img src="{FULL_SITE_PATH}images/cms/cms_pages_permissions.png" alt="{L_CMS_PAGES_PERMISSIONS}" /></a>&nbsp;&nbsp;
 	<a class="dock-item" href="{U_CMS_ADS}"><span>{L_CMS_ADS}</span><img src="{FULL_SITE_PATH}images/cms/cms_ads.png" alt="{L_CMS_ADS}" /></a>&nbsp;&nbsp;
 	</div>
 </div>

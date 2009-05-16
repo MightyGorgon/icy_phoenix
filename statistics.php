@@ -43,10 +43,11 @@ if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics
 }
 include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT);
 
-$cms_page_id = '14';
-$cms_page_name = 'statistics';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+$cms_page_id = 'statistics';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 $page_title = $lang['Statistics_title'];
 $meta_description = '';

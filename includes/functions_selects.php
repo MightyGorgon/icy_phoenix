@@ -20,40 +20,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-/*
-* Select Box Builder
-*/
-function build_select_box($select_name, $default, $options_array, $options_lang_array, $select_js = '')
-{
-	$select_js = (!empty($select_js) ? $select_js : '');
-	$select_box = '<select name="' . $select_name . '"' . $select_js . '>';
-	for($j = 0; $j < count($options_array); $j++)
-	{
-		$selected = ($options_array[$j] == $default) ? ' selected="selected"' : '';
-		$select_box .= '<option value="' . $options_array[$j] . '"' . $selected . '>' . $options_lang_array[$j] . '</option>';
-	}
-	$select_box .= '</select>';
-
-	return $select_box;
-}
-
-/*
-* Radio Box Builder
-*/
-function build_radio_box($radio_name, $default, $options_array, $options_lang_array, $radio_js = '')
-{
-	$radio_js = (!empty($radio_js) ? $radio_js : '');
-	$radio_box = '';
-	for($j = 0; $j < count($options_array); $j++)
-	{
-		$checked = ($options_array[$j] == $default) ? ' checked="checked"' : '';
-		$radio_box .= (($j > 0) ? '&nbsp;&nbsp;' : '');
-		$radio_box .= '<input type="radio" name="' . $radio_name . '" value="' . $options_array[$j] . '"' . $checked . $radio_js . ' />&nbsp;' . $options_lang_array[$j];
-	}
-
-	return $radio_box;
-}
-
 // Pick a language, any language ...
 function language_select($default, $select_name = 'language', $dirname='language')
 {
@@ -313,8 +279,6 @@ function select_gravatar_rating($default = '')
 function auth_select($default, $select_name)
 {
 	global $lang;
-	//$select_name = 'auth_view_portal'
-
 	$auth_array_lang = array($lang['Forum_ALL'], $lang['Forum_REG'], $lang['Forum_MOD'], $lang['Forum_ADMIN']);
 	//$auth_array = array(ANONYMOUS, USER, MOD, ADMIN);
 	$auth_array = array(AUTH_ALL, AUTH_REG, AUTH_MOD, AUTH_ADMIN);

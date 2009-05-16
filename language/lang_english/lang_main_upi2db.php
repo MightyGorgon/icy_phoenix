@@ -87,7 +87,7 @@ $lang = array_merge($lang, array(
 	'upi2db_mark_post_unread_cant' => 'This post cannot be marked as unread.',
 	'upi2db_mark_post_is_unread' => 'Post has been marked as unread.',
 
-	'upi2db_first_use_txt' => 'You are now able to use the UPI2DB system and all of its functions. You can find more details in our board FAQ.',
+	'upi2db_first_use_txt' => 'You are now able to use the UPI2DB system and all of its functions. You can find more details in FAQ page.',
 
 	'upi2db_u' => 'U',
 	'upi2db_m' => 'M',

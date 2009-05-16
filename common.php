@@ -357,6 +357,23 @@ while ($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
+// CMS Pages Config - BEGIN
+if (!defined('SKIP_CMS_CONFIG') && !defined('IN_ADMIN') && !defined('IN_CMS'))
+{
+	$cms_config_layouts = array();
+	$sql = "SELECT lsid, page_id, filename, global_blocks, page_nav, view FROM " . CMS_LAYOUT_SPECIAL_TABLE . " ORDER BY page_id";
+	if(!$result = $db->sql_query($sql, false, 'cms_config_'))
+	{
+		message_die(GENERAL_ERROR, 'Could not query layout table', '', __LINE__, __FILE__, $sql);
+	}
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$cms_config_layouts[$row['page_id']] = $row;
+	}
+	$db->sql_freeresult($result);
+}
+// CMS Pages Config - END
+
 // Time Management - BEGIN
 // PARSE DATEFORMAT TO GET TIME FORMAT
 $time_reg = '([gh][[:punct:][:space:]]{1,2}[i][[:punct:][:space:]]{0,2}[a]?[[:punct:][:space:]]{0,2}[S]?)';

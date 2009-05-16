@@ -154,12 +154,14 @@ $template->assign_vars(array(
 	'L_PORTAL' => $lang['Portal'],
 	'L_CMS' => $lang['CMS_TITLE'],
 	'L_PREVIEW_PORTAL' => $lang['Preview_Portal'],
+	'L_CACHE_CLEAR' => $lang['127_Clear_Cache'],
 
 	'U_FORUM_INDEX' => append_sid('../' . FORUM_MG),
 	'U_PORTAL' => append_sid('../' . PORTAL_MG),
 	'U_ADMIN_INDEX' => append_sid('index.' . PHP_EXT . '?pane=right'),
 	'U_CMS' => append_sid('../cms.' . PHP_EXT),
 	'U_MSQD' => append_sid('../msqd/'),
+	'U_CACHE_CLEAR' => append_sid('admin_board_clearcache.' . PHP_EXT . '?pane=right'),
 
 	'U_IP_MAIN' => '<a href="http://www.icyphoenix.com" target="_blank">' . $lang['IcyPhoenix_Main'] . '</a>',
 	'U_IP_DOWNLOAD' => '<a href="http://www.icyphoenix.com/dload.php" target="_blank">' . $lang['IcyPhoenix_Download'] . '</a>',

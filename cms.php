@@ -36,6 +36,9 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
+include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
+$class_form = new class_form();
+
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT))
@@ -202,7 +205,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 	if(($action == 'add') || ($action == 'edit'))
 	{
-		$message = isset($_POST['message']) ? (STRIP ? stripslashes(trim($_POST['message'])) : trim($_POST['message'])) : '';
+		$message = isset($_POST['message']) ? ip_stripslashes(trim($_POST['message'])) : '';
 
 		$l_row = get_global_blocks_layout($table_name, $field_name, $id_var_value);
 
@@ -254,28 +257,16 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					}
 				}
 
-				$view_array = array(
-					'0' => $lang['B_All'],
-					'1' => $lang['B_Guests'],
-					'2' => $lang['B_Reg'],
-					'3' => $lang['B_Mod'],
-					'4' => $lang['B_Admin']
-				);
-
-				$view ='';
 				$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : $b_info['view'];
-				for ($i = 0; $i < count($view_array); $i++)
-				{
-					$view .= '<option value="' . $i . '" ';
-					if($b_info['view'] == $i)
-					{
-						$view .= 'selected="selected"';
-						$block_view = $i;
-					}
-					$view .= '>' . $view_array[$i] . '</option>';
-				}
 
-				$message = isset($_POST['message']) ? (STRIP ? stripslashes(trim($_POST['message'])) : trim($_POST['message'])) : (!empty($b_info['content']) ? (STRIP ? stripslashes(trim($b_info['content'])) : trim($b_info['content'])) : '');
+				$select_name = 'view';
+				$default = $b_info['view'];
+				$options_array = array(0, 1, 2, 3, 4);
+				$options_langs_array = array($lang['B_All'], $lang['B_Guests'], $lang['B_Reg'], $lang['B_Mod'], $lang['B_Admin']);
+				$select_js = '';
+				$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
+
+				$message = isset($_POST['message']) ? ip_stripslashes(trim($_POST['message'])) : (!empty($b_info['content']) ? ip_stripslashes(trim($b_info['content'])) : '');
 
 				$group = get_all_usergroups($b_info['groups']);
 
@@ -323,26 +314,14 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				}
 			}
 
-			$view_array = array(
-				'0' => $lang['B_All'],
-				'1' => $lang['B_Guests'],
-				'2' => $lang['B_Reg'],
-				'3' => $lang['B_Mod'],
-				'4' => $lang['B_Admin']
-			);
-
-			$view ='';
 			$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : 0;
-			for ($i = 0; $i < count($view_array); $i++)
-			{
-				$view .= '<option value="' . $i .'" ';
-				if($b_info['view'] == $i)
-				{
-					$view .= 'selected="selected"';
-					$block_view = $i;
-				}
-				$view .= '>' . $view_array[$i] . '</option>';
-			}
+
+			$select_name = 'view';
+			$default = $b_info['view'];
+			$options_array = array(0, 1, 2, 3, 4);
+			$options_langs_array = array($lang['B_All'], $lang['B_Guests'], $lang['B_Reg'], $lang['B_Mod'], $lang['B_Admin']);
+			$select_js = '';
+			$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
 			$group = get_all_usergroups('');
 			if(empty($group))
@@ -351,7 +330,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 		}
 
-		$b_title = (isset($_POST['title'])) ? (STRIP ? stripslashes(trim($_POST['title'])) : trim($_POST['title'])) : (!empty($b_info['title']) ? (STRIP ? stripslashes(trim($b_info['title'])) : trim($b_info['title'])) : '');
+		$b_title = (isset($_POST['title'])) ? ip_stripslashes(trim($_POST['title'])) : (!empty($b_info['title']) ? ip_stripslashes(trim($b_info['title'])) : '');
 		//$b_bposition = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : "";
 		$b_active = (isset($_POST['active'])) ? intval($_POST['active']) : ($b_info['active'] ? $b_info['active'] : 0);
 		$b_type = (isset($_POST['type'])) ? intval($_POST['type']) : ($b_info['type'] ? $b_info['type'] : 0);
@@ -995,7 +974,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			{
 				$page_url = append_sid(PORTAL_MG);
 				$l_id_list = "'0'";
-				$l_name = $l_filename . '.' . PHP_EXT;
+				$l_name = $l_filename;
 			}
 			else
 			{
@@ -1013,8 +992,8 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				}
 				else
 				{
-					$page_url = append_sid($l_filename . '.' . PHP_EXT);
-					$l_name = $l_filename . '.' . PHP_EXT;
+					$page_url = append_sid($l_filename);
+					$l_name = $l_filename;
 				}
 				$l_id_list = "'" . $id_var_value . "'";
 			}
@@ -1310,7 +1289,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 			else
 			{
-				$page_url = append_sid($l_filename . '.' . PHP_EXT);
+				$page_url = append_sid($l_filename);
 			}
 			$l_id_list = "'" . $id_var_value . "'";
 		}
@@ -1321,7 +1300,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		else
 		{
-			$l_name = $l_filename . '.' . PHP_EXT;
+			$l_name = $l_filename;
 		}
 
 		if (($id_var_name == 'l_id') && ($id_var_value > 0))
@@ -1452,7 +1431,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 						$template->assign_block_vars('blocks', array(
 							'ROW_CLASS' => $row_class,
-							'TITLE' => (STRIP ? stripslashes(trim($b_rows[$i]['title'])) : trim($b_rows[$i]['title'])),
+							'TITLE' => ip_stripslashes(trim($b_rows[$i]['title'])),
 							'BLOCK_CB_ID' => $b_rows[$i]['bid'],
 							//'POSITION' => $position[$b_position],
 							'POSITION' => $b_position_l,
@@ -1631,22 +1610,31 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 	}
 }
 
-if (($mode == 'layouts') || ($mode == 'layouts_adv'))
+if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_adv'))
 {
-	/*
-	$var_name = 'l_id';
+	$id_var_name = 'l_id';
+	$id_var_value = $l_id;
 	$table_name = CMS_LAYOUT_TABLE;
 	$field_name = 'lid';
 	$block_layout_field = 'layout';
-	if($ls_id != false)
+	$mode_layout_name = 'layouts';
+	$mode_blocks_name = 'blocks';
+	$is_layout_special = false;
+	if ($mode == 'layouts_special')
 	{
-		$l_id = $ls_id;
-		$var_name = 'ls_id';
+		$id_var_name = 'ls_id';
+		$id_var_value = $ls_id;
 		$table_name = CMS_LAYOUT_SPECIAL_TABLE;
 		$field_name = 'lsid';
 		$block_layout_field = 'layout_special';
+		$mode_layout_name = 'layouts_special';
+		$mode_blocks_name = 'blocks';
+		$is_layout_special = true;
 	}
-	*/
+	elseif ($mode == 'layouts_adv')
+	{
+		$mode_blocks_name = 'blocks_adv';
+	}
 
 	$s_hidden_fields = '';
 	$s_append_url = '';
@@ -1654,136 +1642,112 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 	$s_append_url .= '?mode=' . $mode;
 	$s_hidden_fields .= '<input type="hidden" name="action" value="' . $action . '" />';
 	$s_append_url .= '&amp;action=' . $action;
-
-	if($l_id != false)
+	if($id_var_value != false)
 	{
-		$s_hidden_fields .= '<input type="hidden" name="l_id" value="' . $l_id . '" />';
-		$s_append_url .= '&amp;' . l_id . '=' . $l_id;
+		$s_hidden_fields .= '<input type="hidden" name="' . $id_var_name . '" value="' . $id_var_value . '" />';
+		$s_append_url .= '&amp;' . $id_var_name . '=' . $id_var_value;
 	}
 	else
 	{
-		$l_id = 0;
-	}
-
-	if($b_id != false)
-	{
-		$s_hidden_fields .= '<input type="hidden" name="b_id" value="' . $b_id . '" />';
-		$s_append_url .= '&amp;b_id=' . $b_id;
-	}
-	else
-	{
-		$b_id = 0;
+		$id_var_value = 0;
 	}
 
 	if(($action == 'edit') || ($action == 'add'))
 	{
-		if($ls_id != false)
-		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
-		}
-
 		$template->set_filenames(array('body' => CMS_TPL . 'cms_layout_edit_body.tpl'));
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Pages']);
 
-		if(($action == 'edit') && $l_id)
-		{
-			$l_info = get_layout_info(CMS_LAYOUT_TABLE, $l_id);
-			$s_hidden_fields .= '<input type="hidden" name="filename_old" value="' . $l_info['filename'] . '" />';
-		}
-
-		$template_name = 'default';
-		$template_dir = IP_ROOT_PATH . '/templates/' . $template_name . '/layout';
-
-		if ($mode == 'layouts')
-		{
-			$template->assign_var('S_LAYOUT_ADV', false);
-			$layout_details = get_layouts_details_select($template_dir, '.tpl');
-			$template->assign_vars(array(
-				'TEMPLATE' => $layout_details,
-				)
-			);
-		}
-		else
-		{
-			$template->assign_var('S_LAYOUT_ADV', true);
-			$layout_details = get_layouts_details($template_dir, '.tpl', $common_cms_template, 'template', $cms_type);
-			for ($i = 0; $i < count($layout_details); $i++)
-			{
-				$template->assign_block_vars('layouts', array(
-					'LAYOUT_IMG' => $layout_details[$i]['img'],
-					'LAYOUT_RADIO' => $layout_details[$i]['file']
-					)
-				);
-			}
-		}
-
-		$view_array = array(
-			'0' => $lang['B_All'],
-			'1' => $lang['B_Guests'],
-			'2' => $lang['B_Reg'],
-			'3' => $lang['B_Mod'],
-			'4' => $lang['B_Admin']
-		);
-
-		$view ='';
-		for ($i = 0; $i < count($view_array); $i++)
-		{
-			$view .= '<option value="' . $i .'" ';
-			if(!empty($l_info) && ($l_info['view'] == $i))
-			{
-				$view .= 'selected="selected"';
-			}
-			$view .= '>' . $view_array[$i] . '</option>';
-		}
-
-		$auth_array = array(
-			'0' => $lang['CMS_Guest'],
-			'1' => $lang['CMS_Reg'],
-			'2' => $lang['CMS_VIP'],
-			'3' => $lang['CMS_Publisher'],
-			'4' => $lang['CMS_Reviewer'],
-			'5' => $lang['CMS_Content_Manager']
-		);
-
-		$edit_auth ='';
-		for ($i = 3; $i <= 5; $i++)
-		{
-			$edit_auth .= '<option value="' . $i . '" ';
-			if(!empty($l_info) && ($l_info['edit_auth'] == $i))
-			{
-				$edit_auth .= 'selected="selected"';
-			}
-			$edit_auth .= '>' . $auth_array[$i] . '</option>';
-		}
-
-		$group = (!empty($l_info)) ? get_all_usergroups($l_info['groups']) : get_all_usergroups('');
-		if(empty($group))
-		{
-			$group = '&nbsp;&nbsp;' . $lang['None'];
-		}
-
-		if(($action == 'edit') && !$l_id)
+		$l_info = array();
+		if(($action == 'edit') && empty($id_var_value))
 		{
 			message_die(GENERAL_MESSAGE, $lang['No_layout_selected']);
 		}
 
-		if (file_exists('testing_write_access_permissions.test'))
+		if($action == 'edit')
 		{
-			@unlink('testing_write_access_permissions.test');
+			$l_info = get_layout_info($table_name, $field_name, $id_var_value);
+			$s_hidden_fields .= '<input type="hidden" name="filename_old" value="' . $l_info['filename'] . '" />';
 		}
-		$write_test = @copy('index_empty.' . PHP_EXT, 'testing_write_access_permissions.test');
-		if (file_exists('testing_write_access_permissions.test'))
+
+		if (!$is_layout_special)
 		{
-			@chmod('testing_write_access_permissions.test', 0777);
-			@unlink('testing_write_access_permissions.test');
-		}
-		if ($write_test)
-		{
-			$file_creation_auth = $lang['CMS_Filename_Explain_OK'];
+			if (file_exists('testing_write_access_permissions.test'))
+			{
+				@unlink('testing_write_access_permissions.test');
+			}
+			$write_test = @copy('index_empty.' . PHP_EXT, 'testing_write_access_permissions.test');
+			if (file_exists('testing_write_access_permissions.test'))
+			{
+				@chmod('testing_write_access_permissions.test', 0777);
+				@unlink('testing_write_access_permissions.test');
+			}
+			if ($write_test)
+			{
+				$file_creation_auth = $lang['CMS_Filename_Explain_OK'];
+			}
+			else
+			{
+				$file_creation_auth = $lang['CMS_Filename_Explain_NO'];
+			}
+
+			$l_info['page_id'] = '';
+			$template_name = 'default';
+			$template_dir = IP_ROOT_PATH . '/templates/' . $template_name . '/layout';
+
+			if ($mode == 'layouts')
+			{
+				$template->assign_var('S_LAYOUT_ADV', false);
+				$layout_details = get_layouts_details_select($template_dir, '.tpl');
+				$template->assign_vars(array(
+					'TEMPLATE' => $layout_details,
+					)
+				);
+			}
+			else
+			{
+				$template->assign_var('S_LAYOUT_ADV', true);
+				$layout_details = get_layouts_details($template_dir, '.tpl', $common_cms_template, 'template', $cms_type);
+				for ($i = 0; $i < count($layout_details); $i++)
+				{
+					$template->assign_block_vars('layouts', array(
+						'LAYOUT_IMG' => $layout_details[$i]['img'],
+						'LAYOUT_RADIO' => $layout_details[$i]['file']
+						)
+					);
+				}
+			}
+
+			$select_name = 'view';
+			$default = empty($l_info['view']) ? 0 : $l_info['view'];
+			$options_array = array(0, 1, 2, 3, 4);
+			$options_langs_array = array($lang['B_All'], $lang['B_Guests'], $lang['B_Reg'], $lang['B_Mod'], $lang['B_Admin']);
+			$select_js = '';
+			$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
+
+			$select_name = 'edit_auth';
+			$default = empty($l_info['edit_auth']) ? 0 : $l_info['edit_auth'];
+			$options_array = array(0, 1, 2, 3, 4, 5);
+			$options_langs_array = array($lang['CMS_Guest'], $lang['CMS_Reg'], $lang['CMS_VIP'], $lang['CMS_Publisher'], $lang['CMS_Reviewer'], $lang['CMS_Content_Manager']);
+			$select_js = '';
+			$edit_auth = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
+
+			$group = (!empty($l_info['groups'])) ? get_all_usergroups($l_info['groups']) : get_all_usergroups('');
+			if(empty($group))
+			{
+				$group = '&nbsp;&nbsp;' . $lang['None'];
+			}
 		}
 		else
 		{
-			$file_creation_auth = $lang['CMS_Filename_Explain_NO'];
+			if(($action == 'edit') && $l_info['locked'])
+			{
+				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
+			}
+
+			$edit_auth = '';
+			$group = '';
+			$default = empty($l_info['view']) ? 0 : $l_info['view'];
+			$view = auth_select($default, 'view');
 		}
 
 		$template->assign_vars(array(
@@ -1794,7 +1758,7 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'L_CMS_NAME' => $lang['CMS_Name'],
 			'L_CMS_FILENAME' => $lang['CMS_Filename'],
 			'L_CMS_FILENAME_EXPLAIN' => $lang['CMS_Filename_Explain'],
-			'L_CMS_FILENAME_AUTH' => $file_creation_auth,
+			'L_CMS_FILENAME_AUTH' => (empty($file_creation_auth) ? '' : $file_creation_auth),
 			'L_CMS_TEMPLATE' => $lang['CMS_Template'],
 			'L_LAYOUT_TITLE' => $lang['Layout_Title'],
 			'L_LAYOUT_TEXT' => $lang['Layout_Explain'],
@@ -1812,17 +1776,19 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'L_EDIT_LAYOUT' => $lang['Layout_Edit'],
 			'L_SUBMIT' => $lang['Submit'],
 
-			'NAME' => htmlspecialchars($l_info['name']),
-			'FILENAME' => $l_info['filename'],
+			'NAME' => (empty($l_info['name']) ? '' : htmlspecialchars($l_info['name'])),
+			'FILENAME' => (empty($l_info['filename']) ? '' : $l_info['filename']),
+			'PAGE_ID' => (empty($l_info['page_id']) ? '' : $l_info['page_id']),
 			'TEMPLATE' => $layout_details,
 			'VIEW' => $view,
 			'EDIT_AUTH' => $edit_auth,
 			'GROUPS' => $group,
-			'GLOBAL_BLOCKS' => ($l_info['global_blocks']) ? 'checked="checked"' : '',
-			'NOT_GLOBAL_BLOCKS' => (!$l_info['global_blocks']) ? 'checked="checked"' : '',
-			'PAGE_NAV' => ($l_info['page_nav']) ? 'checked="checked"' : '',
-			'NOT_PAGE_NAV' => (!$l_info['page_nav']) ? 'checked="checked"' : '',
+			'GLOBAL_BLOCKS' => ((!empty($l_info['global_blocks']) && $l_info['global_blocks']) ? 'checked="checked"' : ''),
+			'NOT_GLOBAL_BLOCKS' => (empty($l_info['global_blocks'])) ? 'checked="checked"' : '',
+			'PAGE_NAV' => ((!empty($l_info['page_nav']) && $l_info['page_nav']) ? 'checked="checked"' : ''),
+			'NOT_PAGE_NAV' => (empty($l_info['page_nav'])) ? 'checked="checked"' : '',
 
+			'S_LAYOUT_SPECIAL' => $is_layout_special,
 			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
@@ -1830,12 +1796,9 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 	}
 	elseif($action == 'save')
 	{
-		if($ls_id != false)
-		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
-		}
-
 		$l_name = (isset($_POST['name'])) ? trim($_POST['name']) : '';
+		$l_page_id = (isset($_POST['page_id']) ? (ereg_replace("[^a-zA-Z0-9_]", "", strtolower(htmlspecialchars(trim($_POST['page_id']))))) : '');
+		$l_locked = (isset($_POST['locked'])) ? intval($_POST['locked']) : 0;
 		$l_filename = (isset($_POST['filename'])) ? htmlspecialchars(trim($_POST['filename'])) : '';
 		$l_filename_old = (isset($_POST['filename_old'])) ? htmlspecialchars(trim($_POST['filename_old'])) : '';
 		$l_template = (isset($_POST['template'])) ? trim($_POST['template']) : '';
@@ -1844,36 +1807,177 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 		$l_view = (isset($_POST['view'])) ? intval($_POST['view']) : 0;
 		$l_edit_auth = (isset($_POST['edit_auth'])) ? intval($_POST['edit_auth']) : 0;
 
-		$max_group_id = get_max_group_id();
-		$l_group = '';
-		$not_first = false;
-		for($i = 1; $i <= $max_group_id; $i++)
+		if (!$is_layout_special)
 		{
-			if(isset($_POST['group' . strval($i)]))
+			$max_group_id = get_max_group_id();
+			$l_group = '';
+			$not_first = false;
+			for($i = 1; $i <= $max_group_id; $i++)
 			{
-				if($not_first)
+				if(isset($_POST['group' . strval($i)]))
 				{
-					$l_group .= ',' . strval($i);
+					if($not_first)
+					{
+						$l_group .= ',' . strval($i);
+					}
+					else
+					{
+						$l_group .= strval($i);
+						$not_first = true;
+					}
 				}
-				else
-				{
-					$l_group .= strval($i);
-					$not_first = true;
-				}
+			}
+
+			if(($l_name == '') || ($l_template == ''))
+			{
+				message_die(GENERAL_MESSAGE, $lang['Must_enter_layout']);
+			}
+		}
+		else
+		{
+			if(($l_name == '') || ($l_page_id == '') || ($l_filename == ''))
+			{
+				message_die(GENERAL_MESSAGE, $lang['CMS_MUST_FILL_ALL_FIELDS']);
 			}
 		}
 
-		if(($l_name == '') || ($l_template == ''))
+		if($id_var_value != 0)
 		{
-			message_die(GENERAL_MESSAGE, $lang['Must_enter_layout']);
-		}
-
-		if($l_id != 0)
-		{
-			if ($l_filename_old != $l_filename)
+			if (!$is_layout_special)
 			{
-				@unlink($l_filename_old);
+				if ($l_filename_old != $l_filename)
+				{
+					@unlink($l_filename_old);
 
+					if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
+					{
+						$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
+						if (file_exists($l_filename))
+						{
+							message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);
+						}
+						else
+						{
+							$creation_success = @copy('index_empty.' . PHP_EXT, $l_filename);
+							if ($creation_success)
+							{
+								@chmod($l_filename, 0755);
+								$message = $lang['CMS_FileCreationSuccess'] . '<br /><br />';
+							}
+							else
+							{
+								//message_die(GENERAL_MESSAGE, $lang['CMS_FileCreationError']);
+								$message = $lang['CMS_FileCreationError'] . '<br />' . $lang['CMS_FileCreationManual'] . '<br /><br />';
+							}
+						}
+					}
+				}
+
+				$sql = "UPDATE " . $table_name . "
+					SET name = '" . str_replace("\'", "''", $l_name) . "',
+					filename = '" . str_replace("\'", "''", $l_filename) . "',
+					template = '" . str_replace("\'", "''", $l_template) . "',
+					global_blocks = " . $l_global_blocks . ",
+					page_nav = " . $l_page_nav . ",
+					view = " . $l_view . ",
+					edit_auth = " . $l_edit_auth . ",
+					groups = '" . $l_group . "'
+					WHERE " . $field_name . " = " . $id_var_value;
+				if(!$result = $db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
+				}
+				$message .= $lang['Layout_updated'];
+
+				$template_name = 'default';
+
+				if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
+				{
+					include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
+
+					$sql_test = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = '" . $id_var_value . "'";
+					if(!$result_test = $db->sql_query($sql_test))
+					{
+						message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
+					}
+
+					while ($row_test = $db->sql_fetchrow($result_test))
+					{
+						$bp_found = false;
+						for($i = 0; $i < $layout_count_positions; $i++)
+						{
+							if (($row_test['bposition'] == str_replace("\'", "''", $layout_block_positions[$i][1])) && ($row_test['pkey'] == str_replace("\'", "''", $layout_block_positions[$i][0])))
+							{
+								$bp_found = true;
+							}
+						}
+						if ($bp_found == false)
+						{
+							$sql = "DELETE FROM " . CMS_BLOCK_POSITION_TABLE . "
+								WHERE layout = '" . $id_var_value . "'
+									AND bposition = '" . $row_test['bposition'] . "'";
+							if(!$result = $db->sql_query($sql))
+							{
+								message_die(GENERAL_ERROR, 'Could not remove data from blocks position table', $lang['Error'], __LINE__, __FILE__, $sql);
+							}
+						}
+					}
+					$db->sql_freeresult($result);
+
+					for($i = 0; $i < $layout_count_positions; $i++)
+					{
+						$sql_test = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . "
+							WHERE layout = '" . $id_var_value . "'
+								AND bposition = '" . $layout_block_positions[$i][1] . "'
+							LIMIT 1";
+						if(!$result_test = $db->sql_query($sql_test))
+						{
+							message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
+						}
+
+						if (!($db->sql_fetchrow($result_test)))
+						{
+							$sql = "INSERT INTO " . CMS_BLOCK_POSITION_TABLE . " (pkey, bposition, layout)
+								VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $id_var_value . "')";
+							if(!$result = $db->sql_query($sql))
+							{
+								message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if($l_locked)
+				{
+					message_die(GENERAL_ERROR, $lang['Not_Authorized']);
+				}
+				$sql = "UPDATE " . $table_name . "
+					SET name = '" . str_replace("\'", "''", $l_name) . "',
+					page_id = '" . str_replace("\'", "''", $l_page_id) . "',
+					filename = '" . str_replace("\'", "''", $l_filename) . "',
+					global_blocks = " . $l_global_blocks . ",
+					page_nav = " . $l_page_nav . ",
+					view = " . $l_view . ",
+					edit_auth = " . $l_edit_auth . ",
+					groups = '" . $l_group . "'
+					WHERE " . $field_name . " = " . $id_var_value;
+				if(!$result = $db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
+				}
+				$message .= $lang['Layout_updated'];
+			}
+		}
+		else
+		{
+			if (!$is_layout_special)
+			{
+				if ($l_filename_old != $l_filename)
+				{
+					@unlink($l_filename_old);
+				}
 				if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
 				{
 					$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
@@ -1896,159 +2000,70 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 						}
 					}
 				}
-			}
 
-			$sql = "UPDATE " . CMS_LAYOUT_TABLE . "
-				SET name = '" . str_replace("\'", "''", $l_name) . "',
-				filename = '" . str_replace("\'", "''", $l_filename) . "',
-				template = '" . str_replace("\'", "''", $l_template) . "',
-				global_blocks = '" . $l_global_blocks . "',
-				page_nav = '" . $l_page_nav . "',
-				view = '" . $l_view . "',
-				edit_auth = '" . $l_edit_auth . "',
-				groups = '" . $l_group . "'
-				WHERE lid = '" . $l_id . "'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-			$message .= $lang['Layout_updated'];
-
-			$template_name = 'default';
-
-			if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
-			{
-				include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
-
-				$sql_test = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = '" . $l_id . "'";
-				if(!$result_test = $db->sql_query($sql_test))
+				$sql = "INSERT INTO " . $table_name . " (name, filename, template, global_blocks, page_nav, view, edit_auth, groups)
+					VALUES ('" . str_replace("\'", "''", $l_name) . "', '" . str_replace("\'", "''", $l_filename) . "', '" . str_replace("\'", "''", $l_template) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
+				if(!$result = $db->sql_query($sql))
 				{
-					message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
+					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
 				}
+				$message .= $lang['Layout_added'];
 
-				while ($row_test = $db->sql_fetchrow($result_test))
+				$template_name = 'default';
+
+				if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
 				{
-					$bp_found = false;
+					include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
+
+					$layout_id = get_max_layout_id($table_name);
+
 					for($i = 0; $i < $layout_count_positions; $i++)
 					{
-						if (($row_test['bposition'] == str_replace("\'", "''", $layout_block_positions[$i][1])) && ($row_test['pkey'] == str_replace("\'", "''", $layout_block_positions[$i][0])))
-						{
-							$bp_found = true;
-						}
-					}
-					if ($bp_found == false)
-					{
-						$sql = "DELETE FROM " . CMS_BLOCK_POSITION_TABLE . "
-							WHERE layout = '" . $l_id . "'
-								AND bposition = '" . $row_test['bposition'] . "'";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not remove data from blocks position table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
-					}
-				}
-				$db->sql_freeresult($result);
-
-				for($i = 0; $i < $layout_count_positions; $i++)
-				{
-					$sql_test = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . "
-						WHERE layout = '" . $l_id . "'
-							AND bposition = '" . $layout_block_positions[$i][1] . "'
-						LIMIT 1";
-					if(!$result_test = $db->sql_query($sql_test))
-					{
-						message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
-					}
-
-					if (!($db->sql_fetchrow($result_test)))
-					{
 						$sql = "INSERT INTO " . CMS_BLOCK_POSITION_TABLE . " (pkey, bposition, layout)
-							VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $l_id . "')";
+							VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $layout_id . "')";
 						if(!$result = $db->sql_query($sql))
 						{
 							message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
 						}
 					}
+
+					$message .= '<br /><br />' . $lang['Layout_BP_added'];
 				}
 			}
-		}
-		else
-		{
-			if ($l_filename_old != $l_filename)
+			else
 			{
-				@unlink($l_filename_old);
-			}
-			if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
-			{
-				$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
-				if (file_exists($l_filename))
+				$sql = "INSERT INTO " . $table_name . " (name, page_id, locked, filename, global_blocks, page_nav, view, edit_auth, groups)
+					VALUES ('" . str_replace("\'", "''", $l_name) . "', '" . str_replace("\'", "''", $l_page_id) . "', 0, '" . str_replace("\'", "''", $l_filename) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
+				if(!$result = $db->sql_query($sql))
 				{
-					message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);
+					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
 				}
-				else
-				{
-					$creation_success = @copy('index_empty.' . PHP_EXT, $l_filename);
-					if ($creation_success)
-					{
-						@chmod($l_filename, 0755);
-						$message = $lang['CMS_FileCreationSuccess'] . '<br /><br />';
-					}
-					else
-					{
-						//message_die(GENERAL_MESSAGE, $lang['CMS_FileCreationError']);
-						$message = $lang['CMS_FileCreationError'] . '<br />' . $lang['CMS_FileCreationManual'] . '<br /><br />';
-					}
-				}
-			}
-
-			$sql = "INSERT INTO " . CMS_LAYOUT_TABLE . " (name, filename, template, global_blocks, page_nav, view, edit_auth, groups)
-				VALUES ('" . str_replace("\'", "''", $l_name) . "', '" . str_replace("\'", "''", $l_filename) . "', '" . str_replace("\'", "''", $l_template) . "', '" . $l_global_blocks . "', '" . $l_page_nav . "', '" . $l_view . "', '" . $l_edit_auth . "', '" . $l_group . "')";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-			$message .= $lang['Layout_added'];
-
-			$template_name = 'default';
-
-			if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
-			{
-				include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
-
-				$layout_id = get_max_layout_id(CMS_LAYOUT_TABLE);
-
-				for($i = 0; $i < $layout_count_positions; $i++)
-				{
-					$sql = "INSERT INTO " . CMS_BLOCK_POSITION_TABLE . " (pkey, bposition, layout)
-						VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $layout_id . "')";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
-					}
-				}
-
-				$message .= '<br /><br />' . $lang['Layout_BP_added'];
+				$message .= $lang['Layout_added'];
 			}
 		}
 
 		$db->clear_cache('cms_');
-		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=layouts') . '">', '</a>');
-		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;l_id=' . (!empty($layout_id) ? $layout_id : $l_id)) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode_layout_name) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . (!empty($layout_id) ? $layout_id : $id_var_value)) . '">', '</a>');
 		$message .= '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
 	{
-		if($ls_id != false)
+		if($is_layout_special)
 		{
-			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
+			$l_info = get_layout_info($table_name, $field_name, $id_var_value);
+			if (!empty($l_info['locked']))
+			{
+				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
+			}
 		}
 
 		if(!isset($_POST['confirm']))
 		{
 			$s_hidden_fields = '';
 			$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="l_id" value="' . $l_id . '" />';
+			$s_hidden_fields .= '<input type="hidden" name="' . $id_var_name . '" value="' . $id_var_value . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="action" value="' . $action . '" />';
 
 			// Set template files
@@ -2073,40 +2088,75 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 		}
 		else
 		{
-			if($l_id != 0)
+			if($id_var_value != 0)
 			{
-				if ((substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) && (file_exists($l_filename)))
+				if (!$is_layout_special)
 				{
-					@unlink($l_filename);
+					if ((substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) && (file_exists($l_filename)))
+					{
+						@unlink($l_filename);
+					}
+
+					delete_layout($table_name, CMS_BLOCK_POSITION_TABLE, $id_var_value);
+
+					$sql_list = "SELECT * FROM " . CMS_BLOCKS_TABLE . " WHERE " . $block_layout_field . " = " . $id_var_value;
+
+					if(!($result_list = $db->sql_query($sql_list)))
+					{
+						message_die(GENERAL_ERROR, 'Could not query blocks list', $lang['Error'], __LINE__, __FILE__, $sql);
+					}
+
+					while($b_row = $db->sql_fetchrow($result_list))
+					{
+						delete_block(CMS_BLOCKS_TABLE, $b_row['bid']);
+					}
+					$db->sql_freeresult($result_list);
 				}
-
-				delete_layout(CMS_LAYOUT_TABLE, CMS_BLOCK_POSITION_TABLE, $l_id);
-
-				$sql_list = "SELECT * FROM " . CMS_BLOCKS_TABLE . " WHERE layout = '" . $l_id. "'";
-
-				if(!($result_list = $db->sql_query($sql_list)))
+				else
 				{
-					message_die(GENERAL_ERROR, 'Could not query blocks list', $lang['Error'], __LINE__, __FILE__, $sql);
+					delete_layout_special($table_name, $block_layout_field, $field_name, $id_var_value);
 				}
-
-				while($b_row = $db->sql_fetchrow($result_list))
-				{
-					delete_block(CMS_BLOCKS_TABLE, $b_row['bid']);
-				}
-				$db->sql_freeresult($result_list);
-
-				$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE) . '">', '</a>') . '<br /><br />';
-
-				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
 				message_die(GENERAL_MESSAGE, $lang['No_layout_selected']);
 			}
+
+			$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode_layout_name) . '">', '</a>') . '<br /><br />';
+
+			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
 	elseif (($action == 'list') || ($action == false))
 	{
+		if(isset($_POST['action_update']))
+		{
+			$l_gb_checkbox = array();
+			$l_gb_checkbox = $_POST['layout_gb'];
+			$l_gb_checkbox_n = count($l_gb_checkbox);
+
+			$l_bc_checkbox = array();
+			$l_bc_checkbox = $_POST['layout_bc'];
+			$l_bc_checkbox_n = count($l_bc_checkbox);
+
+			$l_rows = get_layouts_list($table_name, $field_name);
+			$l_count = count($l_rows);
+
+			for($i = 0; $i < $l_count; $i++)
+			{
+				$view_value = isset($_POST['auth_view_' . $l_rows[$i][$field_name]]) ? intval($_POST['auth_view_' . $l_rows[$i][$field_name]]) : 0;
+				$gb_value = in_array($l_rows[$i][$field_name], $l_gb_checkbox) ? 1 : 0;
+				$bc_value = in_array($l_rows[$i][$field_name], $l_bc_checkbox) ? 1 : 0;
+				$sql = "UPDATE " . $table_name . " SET view = " . $view_value . ", global_blocks = " . $gb_value . ", page_nav = " . $bc_value . " WHERE " . $field_name . " = " . $l_rows[$i][$field_name];
+				if(!$result = $db->sql_query($sql))
+				{
+					message_die(GENERAL_ERROR, 'Could not update data in layouts table', $lang['Error'], __LINE__, __FILE__, $sql);
+				}
+			}
+			$db->clear_cache('cms_');
+			redirect(append_sid(CMS_PAGE . '?mode=' . $mode_layout_name . '&updated=true'));
+		}
+
 		$template->set_filenames(array('body' => CMS_TPL . 'cms_layout_list_body.tpl'));
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Pages']);
 
@@ -2120,8 +2170,9 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'L_CMS_FILENAME' => $lang['CMS_Filename'],
 			'L_CMS_FILENAME_EXPLAIN' => $lang['CMS_Filename_Explain'],
 			'L_CMS_TEMPLATE' => $lang['CMS_Template'],
-			'L_LAYOUT_TITLE' => $lang['CMS_CUSTOM_PAGES'],
-			'L_LAYOUT_TEXT' => $lang['Layout_Explain'],
+			'L_CMS_PERMISSION' => $lang['CMS_Permissions'],
+			'L_CMS_GLOBAL_BLOCKS' => $lang['CMS_GLOBAL_BLOCKS'],
+			'L_CMS_BREADCRUMBS' => $lang['CMS_BREADCRUMBS'],
 			'L_CHOOSE_LAYOUT' => $lang['Choose_Layout'],
 			'L_CONFIGURE_BLOCKS' => $lang['CMS_Configure_Blocks'],
 			'L_EDIT' => $lang['CMS_Edit'],
@@ -2129,142 +2180,81 @@ if (($mode == 'layouts') || ($mode == 'layouts_adv'))
 			'L_PREVIEW' => $lang['CMS_Preview'],
 			'L_LAYOUT_ADD' => $lang['Layout_Add'],
 
+			'L_LAYOUT_TITLE' => $is_layout_special ? $lang['CMS_STANDARD_PAGES'] : $lang['CMS_CUSTOM_PAGES'],
+			'L_LAYOUT_TEXT' => $is_layout_special ? $lang['Layout_Special_Explain'] : $lang['Layout_Explain'],
+
+			'S_LAYOUT_SPECIAL' => $is_layout_special,
+
 			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
+
+		if ($is_updated)
+		{
+			$template->assign_var('CMS_CHANGES_SAVED', true);
+		}
 
 		$template->assign_block_vars('layout', array());
 
-		$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " ORDER BY lid";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
-		$l_rows = $db->sql_fetchrowset($result);
-		$db->sql_freeresult($result);
+		$l_rows = get_layouts_list($table_name, $field_name);
 		$l_count = count($l_rows);
 
-		$sql = "SELECT config_value FROM " . CMS_CONFIG_TABLE . " WHERE bid = '0' AND config_name = 'default_portal'";
-		if(!$result = $db->sql_query($sql))
+		$default_portal_id = 0;
+		if (!$is_layout_special)
 		{
-			message_die(GENERAL_ERROR, 'Could not query layout table', $lang['Error'], __LINE__, __FILE__, $sql);
+			$sql = "SELECT config_value FROM " . CMS_CONFIG_TABLE . " WHERE bid = '0' AND config_name = 'default_portal'";
+			if(!$result = $db->sql_query($sql))
+			{
+				message_die(GENERAL_ERROR, 'Could not query layout table', $lang['Error'], __LINE__, __FILE__, $sql);
+			}
+
+			$c_row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+			$default_portal_id = $c_row['config_value'];
 		}
-
-		$c_row = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-		$default_portal_id = $c_row['config_value'];
-
-		for($i = 0; $i < $l_count; $i++)
-		{
-			$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
-
-			$template->assign_block_vars('layout.l_row', array(
-				'ROW_CLASS' => $row_class,
-				'ROW_DEFAULT_STYLE' => ($l_rows[$i]['lid'] == $default_portal_id) ? 'font-weight:bold;' : '',
-				'LAYOUT_ID' => $l_rows[$i]['lid'],
-				'LAYOUT_NAME' => htmlspecialchars($l_rows[$i]['name']),
-				'LAYOUT_FILENAME' => ($l_rows[$i]['filename'] == '') ? $lang['None'] : $l_rows[$i]['filename'],
-				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lid'] . '\'', false, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lid'] . '\'', false, false),
-				'LAYOUT_TEMPLATE' => $l_rows[$i]['template'],
-
-				'U_PREVIEW_LAYOUT' => append_sid(($l_rows[$i]['filename'] == '') ? PORTAL_MG . '?page=' . $l_rows[$i]['lid'] : $l_rows[$i]['filename']),
-				'U_EDIT_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=edit'),
-				'U_DELETE_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;l_id=' . $l_rows[$i]['lid'] . '&amp;action=delete'),
-				'U_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . (($mode == 'layouts') ? 'blocks' : 'blocks_adv') . '&amp;l_id=' . $l_rows[$i]['lid'])
-				)
-			);
-		}
-	}
-}
-
-if ($mode == 'layouts_special')
-{
-	$mode = 'layouts';
-	$s_hidden_fields = '';
-	$s_append_url = '';
-	$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
-	$s_append_url .= '?mode=' . $mode;
-	$s_hidden_fields .= '<input type="hidden" name="action" value="' . $action . '" />';
-	$s_append_url .= '&amp;action=' . $action;
-	if($l_id != false)
-	{
-		$s_hidden_fields .= '<input type="hidden" name="l_id" value="' . $l_id . '" />';
-		$s_append_url .= '&amp;' . l_id . '=' . $l_id;
-	}
-	else
-	{
-		$l_id = 0;
-	}
-	if($b_id != false)
-	{
-		$s_hidden_fields .= '<input type="hidden" name="b_id" value="' . $b_id . '" />';
-		$s_append_url .= '&amp;b_id=' . $b_id;
-	}
-	else
-	{
-		$b_id = 0;
-	}
-
-	if (($action == 'list') || ($action == false))
-	{
-		$template->set_filenames(array('body' => CMS_TPL . 'cms_layout_list_body.tpl'));
-		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Pages']);
-
-		$template->assign_vars(array(
-			'L_CMS_PAGES' => $lang['CMS_Pages'],
-			'L_CMS_ID' => $lang['CMS_ID'],
-			'L_CMS_ACTIONS' => $lang['CMS_Actions'],
-			'L_CMS_LAYOUT' => $lang['CMS_Layout'],
-			'L_CMS_BLOCKS' => $lang['CMS_Blocks'],
-			'L_CMS_NAME' => $lang['CMS_Name'],
-			'L_CMS_FILENAME' => $lang['CMS_Filename'],
-			'L_CMS_FILENAME_EXPLAIN' => $lang['CMS_Filename_Explain'],
-			'L_CMS_TEMPLATE' => $lang['CMS_Template'],
-			'L_LAYOUT_TITLE' => $lang['CMS_STANDARD_PAGES'],
-			'L_LAYOUT_TEXT' => $lang['Layout_Special_Explain'],
-			'L_CHOOSE_LAYOUT' => $lang['Choose_Layout'],
-			'L_CONFIGURE_BLOCKS' => $lang['CMS_Configure_Blocks'],
-			'L_EDIT' => $lang['CMS_Edit'],
-			'L_DELETE' => $lang['CSM_Delete'],
-			'L_PREVIEW' => $lang['CMS_Preview'],
-			'L_LAYOUT_ADD' => $lang['Layout_Add'],
-
-			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE),
-			'S_HIDDEN_FIELDS' => $s_hidden_fields
-			)
-		);
-
-		$template->assign_block_vars('layout_special', array());
-
-		$sql = "SELECT * FROM " . CMS_LAYOUT_SPECIAL_TABLE . " ORDER BY lsid";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
-		$l_rows = $db->sql_fetchrowset($result);
-		$db->sql_freeresult($result);
-		$l_count = count($l_rows);
 
 		for($i = 0; $i < $l_count; $i++)
 		{
 			$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
 			$lang_var = 'auth_view_' . $l_rows[$i]['name'];
+			$layout_id = $l_rows[$i][$field_name];
+			$layout_name = ($is_layout_special ? (isset($lang[$lang_var]) ? htmlspecialchars($lang[$lang_var]) : htmlspecialchars($l_rows[$i]['name'])) : htmlspecialchars($l_rows[$i]['name']));
+			$layout_filename = $l_rows[$i]['filename'];
+			$layout_preview = ($is_layout_special ? (empty($layout_filename) ? '#' : append_sid($layout_filename)) : (empty($layout_filename) ? (PORTAL_MG . '?page=' . $layout_id) : append_sid($layout_filename)));
+			$layout_locked = false;
 
-			$template->assign_block_vars('layout_special.ls_row', array(
+			$select_name = 'auth_view_' . $layout_id;
+			$default = $l_rows[$i]['view'];
+			$options_array = array(0, 1, 2, 3, 4);
+			$options_langs_array = array($lang['B_All'], $lang['B_Guests'], $lang['B_Reg'], $lang['B_Mod'], $lang['B_Admin']);
+			$select_js = '';
+			$auth_view_select_box = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
+
+			if ($is_layout_special)
+			{
+				$layout_locked = !empty($l_rows[$i]['locked']) ? true : false;
+				$auth_view_select_box = auth_select($l_rows[$i]['view'], 'auth_view_' . $layout_id);
+			}
+
+			$template->assign_block_vars('layout.l_row', array(
 				'ROW_CLASS' => $row_class,
-				'LAYOUT_ID' => $l_rows[$i]['lsid'],
-				'LAYOUT_NAME' => htmlspecialchars($lang[$lang_var]),
-				'LAYOUT_FILENAME' => ($l_rows[$i]['filename'] != '') ? append_sid($l_rows[$i]['filename'] . '.' . PHP_EXT) : $lang['None'],
-				'LAYOUT_TEMPLATE' => '',
-				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE,'\'' . $l_rows[$i]['lsid'] . '\'', true, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $l_rows[$i]['lsid'] . '\'', true, false),
+				'ROW_DEFAULT_STYLE' => ($layout_id == $default_portal_id) ? 'font-weight: bold;' : '',
+				'LAYOUT_ID' => $layout_id,
+				'LAYOUT_NAME' => $layout_name,
+				'LAYOUT_FILENAME' => (empty($layout_filename) ? $lang['None'] : htmlspecialchars($layout_filename)),
+				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $layout_id . '\'', $is_layout_special, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $layout_id . '\'', $is_layout_special, false),
+				'LAYOUT_TEMPLATE' => $l_rows[$i]['template'],
 
-				'U_PREVIEW_LAYOUT' => append_sid(($l_rows[$i]['filename'] != '') ? ($l_rows[$i]['filename'] . '.' . PHP_EXT) : '#'),
-				'U_EDIT_LAYOUT' => '#',
-				'U_DELETE_LAYOUT' => '#',
-				'U_LAYOUT' => append_sid(CMS_PAGE . '?mode=blocks&amp;ls_id=' . $l_rows[$i]['lsid'])
+				'LOCKED' => $layout_locked,
+				'PAGE_AUTH' => $auth_view_select_box,
+				'GB_CHECKED' => ($l_rows[$i]['global_blocks']) ? ' checked="checked"' : '',
+				'BC_CHECKED' => ($l_rows[$i]['page_nav']) ? ' checked="checked"' : '',
+
+				'U_PREVIEW_LAYOUT' => $layout_preview,
+				'U_EDIT_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $layout_id . '&amp;action=edit'),
+				'U_DELETE_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $layout_id . '&amp;action=delete'),
+				'U_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode_blocks_name . '&amp;' . $id_var_name . '=' . $layout_id)
 				)
 			);
 		}

@@ -25,7 +25,10 @@ $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 
 @include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
-$view_pic_upload = check_page_auth(0, 'pic_upload', true);
+// This page is not in layout special...
+$cms_page_id_tmp = 'pic_upload';
+$cms_auth_level_tmp = (isset($board_config['auth_view_pic_upload']) ? $board_config['auth_view_pic_upload'] : AUTH_ALL);
+$view_pic_upload = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 
 if (defined('IN_PA_POSTING'))
 {

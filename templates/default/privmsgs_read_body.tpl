@@ -1,8 +1,8 @@
 <?php
 global $userdata, $board_config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
-$post_subject = ( ( !preg_match('/^Re:/', $post_subject) ) ? 'Re: ' : '' ) . $post_subject;
+$post_subject = (((strlen($post_subject) > 0) && ((substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX']) || (substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX_OLD']))) ? '' : $lang['REPLY_PREFIX']) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
-$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:ShowHide(\'quick_reply\',\'quick_reply2\');"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
+$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="ShowHide(\'quick_reply\', \'quick_reply2\'); return false;"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
 $this->vars['privmsgs_id'] = $privmsgs_id;
 
 ob_start();
@@ -15,7 +15,7 @@ ob_start();
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" width="200"><span class="gen"><b>{L_TO}</b></span></td>
-	<td class="row2"  align="left" width="100%"><input type="text" class="post"  name="username" size="25" maxlength="25" tabindex="1" value="{RECIPIENT_QQ}" /></span></td>
+	<td class="row2"  align="left" width="100%"><input type="text" class="post"  name="username" size="25" maxlength="25" tabindex="1" value="{RECIPIENT_QQ}" /></td>
 </tr>
 <tr>
 	<td class="row1" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
@@ -71,7 +71,7 @@ ob_end_clean();
 $this->vars['CA_QUICK_REPLY_FORM'] = $str;
 ?>
 {CPL_MENU_OUTPUT}
-<div class="forumline" style="margin-left:5%;margin-right:5%">
+<div class="forumline" style="margin-left: 5%; margin-right: 5%;">
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td width="25%" align="center">{INBOX_IMG}<br /><b><span class="topiclink">{INBOX}</span></b></td>
@@ -186,5 +186,5 @@ function addquote(privmsgs_id, tag)
 </tr>
 </table>
 <table class="empty-table" width="100%" align="center" cellspacing="0">
-<tr><td valign="top" align="right"><span class="gensmall">{JUMPBOX}</span></td></tr>
+<tr><td valign="top" align="right">{JUMPBOX}</td></tr>
 </table>

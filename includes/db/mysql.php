@@ -567,7 +567,17 @@ class sql_db
 	*/
 	function sql_nextid()
 	{
-		return ($this->db_connect_id) ? @mysql_insert_id($this->db_connect_id) : false;
+		$this->sql_start_time = $this->sql_set_start_time();
+
+		$last_id = false;
+		if($this->db_connect_id)
+		{
+			$last_id = @mysql_insert_id($this->db_connect_id);
+		}
+
+		$this->sql_time += $this->sql_set_end_time() - $this->sql_start_time;
+
+		return $last_id;
 	}
 
 	/**

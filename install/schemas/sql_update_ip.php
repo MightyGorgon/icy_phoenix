@@ -50,6 +50,7 @@ switch ($req_version)
 	case '122148': $current_ip_version = '1.2.21.48'; break;
 	case '122249': $current_ip_version = '1.2.22.49'; break;
 	case '122350': $current_ip_version = '1.2.23.50'; break;
+	case '122451': $current_ip_version = '1.2.24.51'; break;
 }
 
 // Icy Phoenix Part...
@@ -1380,28 +1381,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` ADD `session_topic` INT(11) NOT NULL";
 		*/
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_portal', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_forum', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_viewf', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_viewt', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_faq', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_memberlist', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_group_cp', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_profile', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_search', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_album', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_links', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_calendar', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_attachments', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_download', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_kb', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_ranks', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_statistics', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_recent', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_referrers', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_rules', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_shoutbox', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_viewonline', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('show_random_quote', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "album_config (config_name, config_value) VALUES ('show_exif', '0')";
 
@@ -2084,32 +2063,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('quick_thumbs', '0');";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "album_cat` ADD `cat_wm` TEXT AFTER `cat_desc`;";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_portal', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_forum', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_viewf', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_viewt', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_faq', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_memberlist', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_group_cp', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_profile', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_search', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_album', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_links', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_calendar', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_attachments', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_download', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_kb', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_ranks', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_statistics', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_recent', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_referrers', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_rules', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_shoutbox', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_viewonline', '0')";
-
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_custom_pages', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_custom_pages', '0')";
-
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('set_memory', '0');";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('lb_preview', '0');";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('use_old_pics_gen', '0');";
@@ -2341,9 +2294,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('logs_path', 'logs')";
 		$sql[] = "ALTER TABLE " . $table_prefix . "search_results MODIFY COLUMN search_array MEDIUMTEXT NOT NULL";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_contact_us', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_contact_us', '1')";
-
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('upi2db_max_new_posts_admin', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('upi2db_max_new_posts_mod', '0')";
 
@@ -2378,10 +2328,6 @@ if (substr($mode, 0, 6) == 'update')
 			PRIMARY KEY (`session_id`)
 		)";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_ajax_chat', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_ajax_chat', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_ajax_chat_archive', '5')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wide_blocks_ajax_chat_archive', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ajax_features', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('show_rss_forum_icon', '0')";
 
@@ -2598,6 +2544,8 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "cms_layout_special` (
 			`lsid` int(10) unsigned NOT NULL auto_increment,
+			`page_id` varchar(100) NOT NULL DEFAULT '',
+			`locked` tinyint(1) NOT NULL DEFAULT '1',
 			`name` varchar(100) NOT NULL default '',
 			`filename` varchar(100) NOT NULL default '',
 			`template` varchar(100) NOT NULL default '',
@@ -2605,34 +2553,34 @@ if (substr($mode, 0, 6) == 'update')
 			`view` tinyint(1) NOT NULL default '0',
 			`edit_auth` tinyint(1) NOT NULL default '5',
 			`groups` tinytext NOT NULL,
-			PRIMARY KEY (`lsid`)
+			PRIMARY KEY (`lsid`),
+			UNIQUE KEY `page_id` (`page_id`)
 		)";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` CHANGE `global_blocks` `global_blocks` tinyint(1) NOT NULL default '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` CHANGE `layout` `layout` int(10) NOT NULL default '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `layout_special` int(10) NOT NULL default '0' AFTER `layout`";
 
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('1', 'forum', 'forum', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('2', 'viewf', 'viewforum', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('3', 'viewt', 'viewtopic', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('4', 'viewonline', 'viewonline', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('5', 'search', 'search', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('6', 'profile', 'profile', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('7', 'memberlist', 'memberlist', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('8', 'group_cp', 'groupcp', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('9', 'faq', 'faq', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('10', 'rules', 'rules', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('11', 'download', 'dload', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('12', 'album', 'album', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('13', 'links', 'links', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('14', 'statistics', 'statistics', 0, 0, '')";
-		//$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('15', 'site_hist', 'site_hist', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('16', 'calendar', 'calendar', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('17', 'recent', 'recent', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('18', 'referrers', 'referrers', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('19', 'shoutbox', 'shoutbox_max', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('20', 'kb', 'kb', 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`lsid`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('21', 'contact_us', 'contact_us', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('forum', 'forum', 'forum.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewf', 'viewf', 'viewforum.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewt', 'viewt', 'viewtopic.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewonline', 'viewonline', 'viewonline.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('search', 'search', 'search.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('profile', 'profile', 'profile.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('memberlist', 'memberlist', 'memberlist.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('group_cp', 'group_cp', 'groupcp.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('faq', 'faq', 'faq.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('rules', 'rules', 'rules.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('download', 'download', 'dload.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('album', 'album', 'album.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('links', 'links', 'links.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, 0, '')";
 
 		/* Updating from IP 1.1.3.18 */
 		case '1.1.3.18':
@@ -3369,8 +3317,6 @@ if (substr($mode, 0, 6) == 'update')
 		case '1.2.14.41':
 		//$sql[] = "DELETE FROM " . $table_prefix . "cms_layout_special WHERE `lsid` = 15";
 		$sql[] = "DELETE FROM " . $table_prefix . "cms_nav_menu WHERE `menu_link` = 'site_hist.php'";
-		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'auth_view_site_hist'";
-		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'wide_blocks_site_hist'";
 
 		$sql[] = "CREATE TABLE `___categories___` (
 			`cat_id` mediumint(8) unsigned NOT NULL auto_increment,
@@ -3547,9 +3493,6 @@ if (substr($mode, 0, 6) == 'update')
 				reg_id mediumint(8) unsigned NOT NULL auto_increment,
 				topic_id mediumint(8) unsigned NOT NULL default '0',
 				reg_active tinyint(1) NOT NULL default '0',
-				reg_option1 varchar(30) NOT NULL default '',
-				reg_option2 varchar(30) NOT NULL default '',
-				reg_option3 varchar(30) NOT NULL default '',
 				reg_max_option1 smallint(5) unsigned NOT NULL default '0',
 				reg_max_option2 smallint(5) unsigned NOT NULL default '0',
 				reg_max_option3 smallint(5) unsigned NOT NULL default '0',
@@ -3574,6 +3517,46 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.2.23.50 */
 		case '1.2.23.50':
+		$sql[] = "ALTER TABLE " . $table_prefix . "registration_desc DROP `reg_option1`";
+		$sql[] = "ALTER TABLE " . $table_prefix . "registration_desc DROP `reg_option2`";
+		$sql[] = "ALTER TABLE " . $table_prefix . "registration_desc DROP `reg_option3`";
+		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "cms_layout_special`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` ADD `page_id` varchar(100) NOT NULL DEFAULT '' AFTER `lsid`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` ADD UNIQUE (`page_id`)";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` ADD `locked` tinyint(1) NOT NULL DEFAULT '1' AFTER `page_id`";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('forum', 'forum', 'forum.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewf', 'viewf', 'viewforum.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewt', 'viewt', 'viewtopic.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('viewonline', 'viewonline', 'viewonline.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('search', 'search', 'search.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('profile', 'profile', 'profile.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('memberlist', 'memberlist', 'memberlist.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('group_cp', 'group_cp', 'groupcp.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('faq', 'faq', 'faq.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('rules', 'rules', 'rules.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('download', 'download', 'dload.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('album', 'album', 'album.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('links', 'links', 'links.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('attachments', 'attachments', 'attachments.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('ranks', 'ranks', 'ranks.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('ajax_chat', 'ajax_chat', 'ajax_chat.php', 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('ajax_chat_archive', 'ajax_chat_archive', 'ajax_chat.php', 0, 0, '')";
+		//$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('pic_upload', 'pic_upload', 'upload.php', 0, 0, '')";
+
+		$sql[] = "DELETE FROM `" . $table_prefix . "phpbb_config` WHERE config_name LIKE \"auth_view_%\" AND config_name <> 'auth_view_pic_upload'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "phpbb_config` WHERE config_name LIKE \"wide_blocks_%\"";
+
+
+		/* Updating from IP 1.2.24.51 */
+		case '1.2.24.51':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

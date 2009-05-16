@@ -22,6 +22,9 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
+include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
+$class_form = new class_form();
+
 include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
 include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
@@ -241,10 +244,10 @@ elseif ($mode == 'add')
 	$ad_active = ($ad_id > 0) ? $ad_active : 1;
 	$ad_auth = ($ad_id > 0) ? $ad_auth : AUTH_ADMIN;
 
-	$ad_position_select = build_select_box('ad_position', $row['ad_position'], $ad_positions_array, $ad_positions_lang_array, '');
-	$ad_auth_select = build_select_box('ad_auth', $ad_auth, $ad_auths_array, $ad_auths_lang_array, '');
-	$ad_format_radio = build_radio_box('ad_format', $row['ad_format'], $ad_format_array, $ad_format_lang_array, '');
-	$ad_active_radio = build_radio_box('ad_active', $ad_active, $ad_active_array, $ad_active_lang_array, '');
+	$ad_position_select = $class_form->build_select_box('ad_position', $row['ad_position'], $ad_positions_array, $ad_positions_lang_array, '');
+	$ad_auth_select = $class_form->build_select_box('ad_auth', $ad_auth, $ad_auths_array, $ad_auths_lang_array, '');
+	$ad_format_radio = $class_form->build_radio_box('ad_format', $row['ad_format'], $ad_format_array, $ad_format_lang_array, '');
+	$ad_active_radio = $class_form->build_radio_box('ad_active', $ad_active, $ad_active_array, $ad_active_lang_array, '');
 
 	$template->assign_vars(array(
 		'L_FORM_TITLE' => (($ad_id > 0) ? $lang['AD_EDIT'] : $lang['AD_ADD']),
@@ -287,7 +290,7 @@ else
 		$template->assign_block_vars('ads_cfg', array(
 			'ROW_CLASS' => $row_class,
 			'AD_CFG' => $ad_positions_lang_array[$i],
-			'AD_RADIO' => build_radio_box($ad_positions_cfg_array[$i], $board_config[$ad_positions_cfg_array[$i]], $ad_positions_cfg_value_array, $ad_positions_cfg_lang_array, ''),
+			'AD_RADIO' => $class_form->build_radio_box($ad_positions_cfg_array[$i], $board_config[$ad_positions_cfg_array[$i]], $ad_positions_cfg_value_array, $ad_positions_cfg_lang_array, ''),
 			)
 		);
 	}

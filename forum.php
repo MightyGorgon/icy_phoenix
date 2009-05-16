@@ -56,10 +56,11 @@ if($userdata['upi2db_access'])
 }
 //<!-- END Unread Post Information to Database Mod -->
 
-$cms_page_id = '1';
-$cms_page_name = 'forum';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+$cms_page_id = 'forum';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 
@@ -691,7 +692,7 @@ if (($board_config['display_viewonline'] == 2) || (($viewcat < 0) && ($board_con
 $display = display_index($viewcatkey);
 
 // check shoutbox permissions and display only to authorized users
-$auth_level_req = $board_config['auth_view_shoutbox'];
+$auth_level_req = (isset($cms_config_layouts['shoutbox']['view']) ? $cms_config_layouts['shoutbox']['view'] : AUTH_ALL);
 if ((($board_config['index_shoutbox'] == true) && (($userdata['user_level'] + 1) >= $auth_level_req) && ($userdata['session_logged_in'])) || (($board_config['index_shoutbox'] == true) && ($userdata['user_level'] == ADMIN)))
 {
 	$template->assign_vars(array('S_SHOUTBOX' => true));

@@ -430,7 +430,7 @@ if ($mail_data = $db->sql_fetchrow($result))
 			"",
 		);
 
-		$plain_message = (STRIP ? stripslashes($mail_data['email_body']) : $mail_data['email_body']);
+		$plain_message = ip_stripslashes($mail_data['email_body']);
 		$plain_message = strtr($plain_message, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
 		$delete_url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_data['mail_id'] . '&amp;mode=delete');
@@ -439,7 +439,7 @@ if ($mail_data = $db->sql_fetchrow($result))
 			'ROW' => ($row_class % 2) ? 'row2' : 'row1',
 			'ID' => $mail_data['mail_id'],
 			'GROUP' => ($mail_data['group_id'] != -1) ? $mail_data['group_name'] : $lang['All_users'],
-			'SUBJECT' => (STRIP ? stripslashes($mail_data['email_subject']) : $mail_data['email_subject']),
+			'SUBJECT' => ip_stripslashes($mail_data['email_subject']),
 			'MASS_PM' => $mail_data['mass_pm'] ? $lang['Yes'] : $lang['No'],
 			'EMAIL_FORMAT' => (($mail_data['email_format'] == 2) ? $lang['FULL_HTML'] : (($mail_data['email_format'] == 1) ? $lang['BBCode'] : $lang['HTML'])),
 			'MESSAGE_BODY' => $plain_message,

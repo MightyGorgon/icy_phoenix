@@ -31,7 +31,7 @@ function goForm(form)
 		<!-- BEGIN blocks_updated -->
 		<script type="text/javascript">
 		// <![CDATA[
-			//var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px green; background: #00FF00;"><span class="text_green">';
+			//var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px green; background: #00ff00;"><span class="text_green">';
 			//var box_end = '<\/span><\/div>';
 			//$('sort-info-box').innerHTML = box_begin + '{L_BLOCKS_POSITION_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('result-box',{duration: 0.5})", 2500);}});
 			window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);

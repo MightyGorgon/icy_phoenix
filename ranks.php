@@ -18,7 +18,11 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-check_page_auth(0, 'ranks');
+$cms_page_id = 'ranks';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 $page_title = $lang['Rank_Header'];
 $meta_description = '';

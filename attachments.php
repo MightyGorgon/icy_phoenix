@@ -27,12 +27,11 @@ init_userprefs($userdata);
 
 include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_attach.' . PHP_EXT);
 
-$cms_page_id = '11';
-$cms_page_name = 'attachments';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
-// set the cms page to download now...
-$cms_page_name = 'download';
+$cms_page_id = 'attachments';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 $real_filename = 'real_filename';
 $attach_table = ATTACHMENTS_TABLE;

@@ -23,8 +23,9 @@ init_userprefs($userdata);
 // End session management
 
 $account_delete = false;
-$cms_page_id = '21';
-$cms_page_name = 'contact_us';
+$cms_page_id = 'contact_us';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
 
 if (!empty($_GET['account_delete']) || !empty($_POST['account_delete']))
 {
@@ -38,9 +39,9 @@ if (!empty($_GET['account_delete']) || !empty($_POST['account_delete']))
 }
 else
 {
-	check_page_auth($cms_page_id, $cms_page_name);
+	$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+	check_page_auth($cms_page_id, $cms_auth_level);
 }
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
 
 // Set default email variables
 $script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));

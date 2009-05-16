@@ -18,11 +18,14 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = '12';
-$cms_page_name = 'pic_upload';
-check_page_auth($cms_page_id, $cms_page_name);
-// set now the page name to album
-$cms_page_name = 'album';
+// This page is not in layout special...
+$cms_page_id = 'pic_upload';
+$cms_page_nav = true;
+$cms_global_blocks = false;
+$cms_auth_level = (isset($board_config['auth_view_pic_upload']) ? $board_config['auth_view_pic_upload'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
+// Force the page_id to album
+$cms_page_id = 'album';
 
 if (!$userdata['session_logged_in'])
 {

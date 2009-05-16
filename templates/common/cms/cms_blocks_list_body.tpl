@@ -45,11 +45,11 @@
 	<td class="cat" colspan="9" align="center">
 		{S_HIDDEN_FIELDS}
 		<!-- IF S_SHOW_CMS_MENU -->
-		<input type="submit" name="add" value="{L_BLOCKS_ADD}" class="mainoption" />
-		&nbsp;&nbsp;<input type="submit" name="action_update" value="{L_BLOCKS_UPDATE}" class="liteoption" />
+		<input type="submit" name="action_update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" />
 		<!-- BEGIN duplicate_switch -->
 		&nbsp;&nbsp;<input type="submit" name="action_duplicate" value="{L_BLOCKS_DUPLICATE}" class="liteoption" />
 		<!-- END duplicate_switch -->
+		&nbsp;&nbsp;<input type="submit" name="add" value="{L_BLOCKS_ADD}" class="mainoption" />
 		<!-- ENDIF -->
 	</td>
 </tr>

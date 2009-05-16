@@ -407,6 +407,23 @@ class class_form
 	}
 
 	/*
+	* Radio Box Builder
+	*/
+	function build_radio_box($radio_name, $default, $options_array, $options_lang_array, $radio_js = '')
+	{
+		$radio_js = (!empty($radio_js) ? $radio_js : '');
+		$radio_box = '';
+		for($j = 0; $j < count($options_array); $j++)
+		{
+			$checked = ($options_array[$j] == $default) ? ' checked="checked"' : '';
+			$radio_box .= (($j > 0) ? '&nbsp;&nbsp;' : '');
+			$radio_box .= '<input type="radio" name="' . $radio_name . '" value="' . $options_array[$j] . '"' . $checked . $radio_js . ' />&nbsp;' . $options_lang_array[$j];
+		}
+
+		return $radio_box;
+	}
+
+	/*
 	* Create date input
 	*/
 	function date_input($name_prefix, $year = 1969, $month = 1, $day = 1)

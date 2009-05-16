@@ -457,7 +457,7 @@ $template->assign_vars(array(
 
 	'HEADER_TBL_YES' => $switch_header_table_yes,
 	'HEADER_TBL_NO' => $switch_header_table_no,
-	'HEADER_TBL_TXT' => (STRIP ? stripslashes($new['header_table_text']) : $new['header_table_text']),
+	'HEADER_TBL_TXT' => ip_stripslashes($new['header_table_text']),
 
 	'LOGIN_MAX_FAILED' => $new['login_tries'],
 	'LOGIN_TIME_LOCKED' => $new['login_locked_out'],

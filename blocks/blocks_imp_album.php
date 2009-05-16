@@ -25,9 +25,11 @@ if(!function_exists('imp_album_block_func'))
 	function imp_album_block_func()
 	{
 		global $template, $db, $board_config, $lang, $images, $userdata;
-		global $cms_global_blocks, $cms_page_id, $cms_config_vars, $block_id;
+		global $cms_global_blocks, $cms_page_id, $cms_config_vars, $cms_config_layouts, $block_id;
 
-		$process_block = check_page_auth(0, 'album', true);
+		$cms_page_id_tmp = 'album';
+		$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
+		$process_block = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 		if (!$process_block)
 		{
 			return;

@@ -50,10 +50,11 @@ if($userdata['upi2db_access'])
 }
 //<!-- END Unread Post Information to Database Mod -->
 
-$cms_page_id = '17';
-$cms_page_name = 'recent';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+$cms_page_id = 'recent';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 $mode_types = array('today', 'yesterday', 'last24', 'lastweek', 'lastXdays', 'utopics', 'uposts');
 if ($userdata['user_level'] == ADMIN)

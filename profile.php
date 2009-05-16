@@ -86,10 +86,11 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 
 	if ($mode == 'viewprofile')
 	{
-		$cms_page_id = '6';
-		$cms_page_name = 'profile';
-		check_page_auth($cms_page_id, $cms_page_name);
-		$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+		$cms_page_id = 'profile';
+		$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+		$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+		$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+		check_page_auth($cms_page_id, $cms_auth_level);
 
 		// Mighty Gorgon - Full Album Pack - BEGIN
 		include (ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);

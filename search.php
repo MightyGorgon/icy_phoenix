@@ -112,15 +112,16 @@ if($userdata['upi2db_access'])
 }
 //<!-- END Unread Post Information to Database Mod -->
 
-$cms_page_id = '5';
-$cms_page_name = 'search';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+$cms_page_id = 'search';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 if (isset($search_mode) && ($search_mode == 'bookmarks'))
 {
 	// TO DO: force to false, and decide if we would like to overwrite it with Profile Global Blocks settings...
-	//$cms_global_blocks = ($board_config['wide_blocks_profile'] == 1) ? true : false;
+	//$cms_global_blocks = (!empty($cms_config_layouts['profile']['global_blocks']) ? true : false);
 	$cms_global_blocks = false;
 }
 
@@ -1765,21 +1766,15 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 						}
 					}
 
-					if (check_option_exists($topic_id, 1) === true)
-					{
-						$option1_count = '<span class="text_green">' . (0 + $option1_count) . '</span>';
-						array_push($regoption_array, $option1_count);
-					}
-					if (check_option_exists($topic_id, 2) === true)
-					{
-						$option2_count = '<span class="text_blue">' . (0 + $option2_count) . '</span>';
-						array_push($regoption_array, $option2_count);
-					}
-					if (check_option_exists($topic_id, 3) === true)
-					{
-						$option3_count = '<span class="text_red">' . (0 + $option3_count) . '</span>';
-						array_push($regoption_array, $option3_count);
-					}
+					$option1_count = '<span class="text_green">' . (0 + $option1_count) . '</span>';
+					array_push($regoption_array, $option1_count);
+
+					$option2_count = '<span class="text_blue">' . (0 + $option2_count) . '</span>';
+					array_push($regoption_array, $option2_count);
+
+					$option3_count = '<span class="text_red">' . (0 + $option3_count) . '</span>';
+					array_push($regoption_array, $option3_count);
+
 					$regoptions_count = count($regoption_array);
 
 					$v = 0;

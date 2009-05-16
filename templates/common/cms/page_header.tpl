@@ -50,7 +50,6 @@
 
 	<div id="dropmenu_cms_settings" class="dropmenudiv">
 		<a href="{U_CMS_CONFIG}">&nbsp;<img src="images/cms/menu/cms_settings.png" alt="" />&nbsp;{L_CMS_CONFIG}</a>
-		<a href="{U_CMS_PAGES_PERMISSIONS}">&nbsp;<img src="images/cms/menu/cms_permissions.png" alt="" />&nbsp;{L_CMS_PAGES_PERMISSIONS}</a>
 		<a href="{U_CMS_ADS}">&nbsp;<img src="images/cms/menu/cms_ads.png" alt="" />&nbsp;{L_CMS_ADS}</a>
 	</div>
 

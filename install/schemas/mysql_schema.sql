@@ -2371,6 +2371,8 @@ CREATE TABLE `phpbb_cms_layout` (
 
 CREATE TABLE `phpbb_cms_layout_special` (
 	`lsid` int(10) unsigned NOT NULL auto_increment,
+	`page_id` varchar(100) NOT NULL DEFAULT '',
+	`locked` tinyint(1) NOT NULL DEFAULT '1',
 	`name` varchar(100) NOT NULL DEFAULT '',
 	`filename` varchar(100) NOT NULL DEFAULT '',
 	`template` varchar(100) NOT NULL DEFAULT '',
@@ -2380,7 +2382,8 @@ CREATE TABLE `phpbb_cms_layout_special` (
 	`view` tinyint(1) NOT NULL DEFAULT '0',
 	`edit_auth` tinyint(1) NOT NULL DEFAULT '5',
 	`groups` tinytext NOT NULL,
-	PRIMARY KEY (`lsid`)
+	PRIMARY KEY (`lsid`),
+	UNIQUE KEY `page_id` (`page_id`)
 );
 
 CREATE TABLE `phpbb_cms_nav_menu` (
@@ -2712,9 +2715,6 @@ CREATE TABLE phpbb_registration_desc (
 	reg_id mediumint(8) unsigned NOT NULL auto_increment,
 	topic_id mediumint(8) unsigned NOT NULL default '0',
 	reg_active tinyint(1) NOT NULL default '0',
-	reg_option1 varchar(30) NOT NULL default '',
-	reg_option2 varchar(30) NOT NULL default '',
-	reg_option3 varchar(30) NOT NULL default '',
 	reg_max_option1 smallint(5) unsigned NOT NULL default '0',
 	reg_max_option2 smallint(5) unsigned NOT NULL default '0',
 	reg_max_option3 smallint(5) unsigned NOT NULL default '0',

@@ -612,7 +612,7 @@ if($userdata['upi2db_access'])
 	$unread = unread();
 	$u_display_new = index_display_new($unread);
 	$template->assign_block_vars('switch_upi2db_on', array());
-	$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
+	$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? ('<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n" . 'alert ("' . $lang['upi2db_first_use_txt'] . '");' . "\n" . '// ]]>' . "\n" . '</script>') : '';
 }
 else
 {
@@ -775,7 +775,7 @@ if (defined('CT_DEBUG_MODE') && (CT_DEBUG_MODE === true) && ($userdata['user_lev
 if ($board_config['switch_header_table'])
 {
 	$template->assign_block_vars('switch_header_table', array(
-		'HEADER_TEXT' => (STRIP ? stripslashes($board_config['header_table_text']) : $board_config['header_table_text']),
+		'HEADER_TEXT' => ip_stripslashes($board_config['header_table_text']),
 		'L_STAFF_MESSAGE' => $lang['staff_message'],
 		)
 	);
@@ -1323,7 +1323,7 @@ if (($userdata['user_level'] != ADMIN) && $board_config['board_disable'] && !def
 		$sql = "SELECT config_value FROM " . CONFIG_TABLE . " WHERE config_name = 'board_disable_message'";
 		$gm_result = $db->sql_query($sql) or message_die(CRITICAL_ERROR, "Could not query config information", "", __LINE__, __FILE__, $sql);
 		$mon_message = mysql_result($gm_result, 0);
-		$mon_message = (STRIP ? stripslashes($mon_message) : $mon_message);
+		$mon_message = ip_stripslashes($mon_message);
 		message_die(GENERAL_MESSAGE, $mon_message);
 	}
 	else

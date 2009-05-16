@@ -13,6 +13,7 @@
 <tr>
 	<td class="row1" style="padding:0px" valign="top">
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+		<!-- IF not S_LAYOUT_SPECIAL -->
 		<!-- IF S_LAYOUT_ADV -->
 		<tr>
 			<td class="row1" colspan="2" style="text-align:center">
@@ -31,19 +32,28 @@
 			</td>
 		</tr>
 		<!-- ENDIF -->
+		<!-- ENDIF -->
 		<tr>
 			<td class="row1">{L_LAYOUT_NAME}</td>
 			<td class="row2"><input type="text" maxlength="100" size="30" name="name" value="{NAME}" class="post" /></td>
 		</tr>
+		<!-- IF S_LAYOUT_SPECIAL -->
 		<tr>
-			<td class="row1">{L_CMS_FILENAME}<br /><span class="gensmall">{L_CMS_FILENAME_EXPLAIN}</span><br /><span class="gensmall">{L_CMS_FILENAME_AUTH}</span></td>
+			<td class="row1">{L_CMS_LAYOUT_PAGE_ID}<br /><span class="gensmall">{L_CMS_LAYOUT_PAGE_ID_EXPLAIN}</span></td>
+			<td class="row2"><input type="text" maxlength="100" size="30" name="page_id" value="{PAGE_ID}" class="post" /></td>
+		</tr>
+		<!-- ENDIF -->
+		<tr>
+			<td class="row1">{L_CMS_FILENAME}<!-- IF not S_LAYOUT_SPECIAL --><br /><span class="gensmall">{L_CMS_FILENAME_EXPLAIN}</span><br /><span class="gensmall">{L_CMS_FILENAME_AUTH}</span><!-- ENDIF --></td>
 			<td class="row2"><input type="text" maxlength="100" size="30" name="filename" value="{FILENAME}" class="post" /></td>
 		</tr>
+		<!-- IF not S_LAYOUT_SPECIAL -->
 		<!-- IF not S_LAYOUT_ADV -->
 		<tr>
 			<td class="row1">{L_LAYOUT_TEMPLATE}</td>
 			<td class="row2"><select name="template" class="post">{TEMPLATE}</select></td>
 		</tr>
+		<!-- ENDIF -->
 		<!-- ENDIF -->
 		<tr>
 			<td class="row1">{L_LAYOUT_GLOBAL_BLOCKS}</td>
@@ -61,16 +71,18 @@
 		</tr>
 		<tr>
 			<td class="row1">{L_LAYOUT_VIEW}</td>
-			<td class="row2"><select name="view" class="post">{VIEW}</select></td>
+			<td class="row2">{VIEW}</td>
 		</tr>
+		<!-- IF not S_LAYOUT_SPECIAL -->
 		<tr>
 			<td class="row1">{L_PERMISSIONS}</td>
-			<td class="row2"><select name="edit_auth" class="post">{EDIT_AUTH}</select></td>
+			<td class="row2">{EDIT_AUTH}</td>
 		</tr>
 		<tr>
 			<td class="row1">{L_LAYOUT_GROUPS}</td>
 			<td class="row2">{GROUPS}</td>
 		</tr>
+		<!-- ENDIF -->
 		</table>
 	</td>
 </tr>

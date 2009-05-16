@@ -125,7 +125,10 @@ $user_browser = get_user_browser($profiledata['user_http_agents']);
 // Mighty Gorgon - HTTP AGENTS - END
 
 // Mighty Gorgon - Full Album Pack - BEGIN
-if (check_page_auth('12', 'album', true))
+$cms_page_id_tmp = 'album';
+$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
+$show_latest_pics = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
+if ($show_latest_pics)
 {
 	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
 

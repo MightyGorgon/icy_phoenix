@@ -50,6 +50,7 @@ $files_array = array(
 	'extension.inc',
 	'album_pclzip_lib.php',
 	'cpl_menu.php',
+	'cms_auth.php',
 	'db_generator.php',
 	'edit_post_time.php',
 	'site_hist.php',
@@ -176,6 +177,8 @@ $files_array = array(
 	'templates/common/acp/lang_extend_search_body.tpl',
 	'templates/common/acp/user_email_body.tpl',
 	'templates/common/acp/xs2_header.tpl',
+
+	'templates/common/cms/cms_pages_auth_body.tpl',
 
 	'templates/common/lightbox.css',
 	'templates/common/js/bbcb_mg_ajax_chat.js',

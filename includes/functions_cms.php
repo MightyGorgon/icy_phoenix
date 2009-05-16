@@ -27,8 +27,7 @@ function cms_config_init(&$cms_config_vars)
 	global $db;
 
 	$cms_config_vars = array();
-	$sql = "SELECT bid, config_name, config_value
-					FROM " . CMS_CONFIG_TABLE;
+	$sql = "SELECT bid, config_name, config_value FROM " . CMS_CONFIG_TABLE;
 	if(!($result = $db->sql_query($sql, false, 'cms_config_')))
 	{
 		message_die(CRITICAL_ERROR, "Could not query portal config table", "", __LINE__, __FILE__, $sql);
@@ -111,29 +110,22 @@ function cms_groups($user_id)
 
 function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 {
-	global $db, $template, $userdata, $board_config, $lang, $cms_config_vars, $bbcode, $block_id;
+	global $db, $template, $userdata, $board_config, $lang, $cms_config_vars, $cms_config_layouts, $bbcode, $block_id;
 
 	if(!$is_special)
 	{
 		$id_var_name = 'l_id';
-		$id_var_value = $layout;
 		$table_name = CMS_LAYOUT_TABLE;
 		$field_name = 'lid';
-		$block_layout_field = 'layout';
-		$layout_value = $id_var_value;
-		$layout_special_value = 0;
 		$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 	}
 	else
 	{
 		$id_var_name = 'ls_id';
-		$id_var_value = $layout;
 		$table_name = CMS_LAYOUT_SPECIAL_TABLE;
 		$field_name = 'lsid';
-		$block_layout_field = 'layout_special';
-		$layout_value = 0;
-		$layout_special_value = $id_var_value;
 		$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
+		$layout = (isset($cms_config_layouts[$layout][$field_name]) ? $cms_config_layouts[$layout][$field_name] : 0);
 	}
 
 	if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . PHP_EXT))
@@ -145,7 +137,7 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 	if(!$global_blocks && !$is_special)
 	{
 		$layout_pos = array();
-		$sql_pos = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = '" . $layout . "'";
+		$sql_pos = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = " . $layout;
 		if(!($block_pos_result = $db->sql_query($sql_pos, false, 'cms_bp_')))
 		{
 			message_die(CRITICAL_ERROR, "Could not query portal blocks position", "", __LINE__, __FILE__, $sql);
@@ -173,8 +165,8 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 	{
 		$sql = "SELECT *
 			FROM " . CMS_BLOCKS_TABLE . "
-			WHERE layout = '" . $layout . "'
-			AND active = '1'
+			WHERE layout = " . $layout . "
+			AND active = 1
 			AND view IN " . cms_blocks_view() . "
 			AND bposition NOT IN ('gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
 			ORDER BY bposition ASC, weight ASC";
@@ -183,15 +175,15 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 	{
 		if ($is_special && !$global_blocks)
 		{
-			$sql_where = "AND layout_special = '" . $layout . "'";
+			$sql_where = "AND layout_special = " . $layout;
 		}
 		elseif ($is_special && $global_blocks && ($layout != 0))
 		{
-			$sql_where = "AND layout_special IN('0', '" . $layout . "')";
+			$sql_where = "AND layout_special IN(0, " . $layout . ")";
 		}
 		else
 		{
-			$sql_where = "AND layout_special = '0'";
+			$sql_where = "AND layout_special = 0";
 		}
 		switch ($type)
 		{
@@ -243,9 +235,9 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 		}
 		$sql = "SELECT *
 			FROM " . CMS_BLOCKS_TABLE . "
-			WHERE layout = '0'
+			WHERE layout = 0
 			" . $sql_where . "
-			AND active = '1'
+			AND active = 1
 			AND view IN " . cms_blocks_view() . "
 			AND bposition = '" . $temp_pos . "'
 			ORDER BY layout ASC, weight ASC";

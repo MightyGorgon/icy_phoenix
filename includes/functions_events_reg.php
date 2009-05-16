@@ -159,23 +159,4 @@ function check_reg_active($topic_id)
 	return true;
 }
 
-function check_option_exists($topic_id, $option)
-{
-	global $db;
-	$reg_option = '';
-
-	$sql = "SELECT reg_option" . $option . " FROM " . REGISTRATION_DESC_TABLE . "
-					WHERE topic_id = $topic_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
-	}
-	$reg_option = $db->sql_fetchfield('reg_option' . $option, 0, $result);
-	if (empty($reg_option))
-	{
-		return false;
-	}
-	return true;
-}
-
 ?>

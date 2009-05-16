@@ -27,12 +27,14 @@ $userdata = session_pagestart($user_ip, false);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = '0';
-$cms_page_name = 'ajax_chat';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
-// I would shut wide blocks off since this may be run as stand alone
+$cms_page_id = 'ajax_chat';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+// Force to off...
+$cms_page_nav = false;
 $cms_global_blocks = false;
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 $shoutbox_template_parse = true;
 include(IP_ROOT_PATH . 'includes/ajax_shoutbox_inc.' . PHP_EXT);

@@ -30,27 +30,11 @@ include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 
-$auth_level_req = $board_config['auth_view_download'];
-if ($auth_level_req > AUTH_ALL)
-{
-	if (($auth_level_req == AUTH_REG) && (!$userdata['session_logged_in']))
-	{
-		redirect(append_sid(LOGIN_MG . '?redirect=downloads.' . PHP_EXT, true));
-	}
-	if ($userdata['user_level'] != ADMIN)
-	{
-		if ($auth_level_req == AUTH_ADMIN)
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-		if (($auth_level_req == AUTH_MOD) && ($userdata['user_level'] != MOD))
-		{
-			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-		}
-	}
-}
-$cms_global_blocks = ($board_config['wide_blocks_download'] == 1) ? true : false;
-
+$cms_page_id = 'download';
+$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_downloads.' . PHP_EXT);
 

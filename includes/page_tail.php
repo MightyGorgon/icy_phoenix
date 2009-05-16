@@ -189,7 +189,7 @@ if ($board_config['page_gen'] == 1)
 			'DEBUG_TEXT' => $debug_text,
 			'BOTTOM_HTML_BLOCK' => $bottom_html_block_text,
 			'FOOTER_BANNER_BLOCK' => $footer_banner_text,
-			'GOOGLE_ANALYTICS' => (STRIP ? stripslashes($board_config['google_analytics']) : $board_config['google_analytics']),
+			'GOOGLE_ANALYTICS' => ip_stripslashes($board_config['google_analytics']),
 			)
 		);
 

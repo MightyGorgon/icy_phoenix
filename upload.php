@@ -25,7 +25,12 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-check_page_auth(0, 'pic_upload');
+// This page is not in layout special...
+$cms_page_id = 'pic_upload';
+$cms_page_nav = false;
+$cms_global_blocks = false;
+$cms_auth_level = (isset($board_config['auth_view_pic_upload']) ? $board_config['auth_view_pic_upload'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 $gen_simple_header = true;
 $page_title = $lang['Upload_Image_Local'];

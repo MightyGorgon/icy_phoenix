@@ -49,7 +49,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 
 	$template->set_filenames(array('regbox' => 'viewtopic_events_reg.tpl'));
 
-	$sql = "SELECT topic_id, reg_option1, reg_option2, reg_option3, reg_max_option1, reg_max_option2, reg_max_option3, reg_start, reg_length
+	$sql = "SELECT topic_id, reg_max_option1, reg_max_option2, reg_max_option3, reg_start, reg_length
 			FROM " . REGISTRATION_DESC_TABLE . "
 			WHERE topic_id = $topic_id";
 
@@ -59,9 +59,6 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 	}
 	$row = $db->sql_fetchrow($result);
 
-	$reg_topic_option1 = $row['reg_option1'];
-	$reg_topic_option2 = $row['reg_option2'];
-	$reg_topic_option3 = $row['reg_option3'];
 	$reg_start = $row['reg_start'];
 	$reg_length = $row['reg_length'];
 
@@ -95,44 +92,23 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 		}
 	}
 
-	if (!empty($row['reg_option1']) && (($self_registered != REG_OPTION1) || ($self_registered == REG_OPTION1)))
-	{
-		$reg_option1_option = $lang['Reg_Do'];
-	}
+	$reg_option1_option = $lang['Reg_Do'];
+	$template->assign_block_vars('reg_option1', array(
+		'REG_OPTION1_DATA' => $reg_option1_data
+		)
+	);
 
-	if (!empty($row['reg_option2']) && (($self_registered != REG_OPTION2) || ($self_registered == REG_OPTION2)))
-	{
-		$reg_option2_option = $lang['Reg_Maybe'];
-	}
+	$reg_option2_option = $lang['Reg_Maybe'];
+	$template->assign_block_vars('reg_option2', array(
+		'REG_OPTION2_DATA' => $reg_option2_data
+		)
+	);
 
-	if (!empty($row['reg_option3']) && (($self_registered != REG_OPTION3) || ($self_registered == REG_OPTION3)))
-	{
-		$reg_option3_option = $lang['Reg_Dont'];
-	}
-
-	if (!empty($reg_topic_option1))
-	{
-		$template->assign_block_vars('reg_option1', array(
-			'REG_OPTION1_DATA' => $reg_option1_data
-			)
-		);
-	}
-
-	if (!empty($reg_topic_option2))
-	{
-		$template->assign_block_vars('reg_option2', array(
-			'REG_OPTION2_DATA' => $reg_option2_data
-			)
-		);
-	}
-
-	if (!empty($reg_topic_option3))
-	{
-		$template->assign_block_vars('reg_option3', array(
-			'REG_OPTION3_DATA' => $reg_option3_data
-			)
-		);
-	}
+	$reg_option3_option = $lang['Reg_Dont'];
+	$template->assign_block_vars('reg_option3', array(
+		'REG_OPTION3_DATA' => $reg_option3_data
+		)
+	);
 
 	if ($self_registered != 0)
 	{

@@ -367,10 +367,12 @@ if (isset($_GET['setbm']) || isset($_GET['removebm']))
 	redirect(append_sid($redirect, true));
 }
 
-$cms_page_id = '3';
-$cms_page_name = 'viewt';
-check_page_auth($cms_page_id, $cms_page_name);
-$cms_global_blocks = ($board_config['wide_blocks_' . $cms_page_name] == 1) ? true : false;
+$cms_page_id = 'viewtopic';
+// Comment out page_nav because viewtopic has its own breadcrumbs...
+//$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
+$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
+check_page_auth($cms_page_id, $cms_auth_level);
 
 if ($download)
 {

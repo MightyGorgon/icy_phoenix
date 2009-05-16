@@ -1818,12 +1818,12 @@ elseif ($submit || $refresh || ($mode != ''))
 				redirect(append_sid('privmsg.' . PHP_EXT . '?folder=' . $folder, true));
 			}
 
-			$privmsg_subject = ((!preg_match('/^Re:/', $privmsg['privmsgs_subject'])) ? 'Re: ' : '') . $privmsg['privmsgs_subject'];
+			$privmsg_subject = (((strlen($privmsg['privmsgs_subject']) > 0) && ((substr($privmsg['privmsgs_subject'], 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX']) || (substr($privmsg['privmsgs_subject'], 0, strlen($lang['REPLY_PREFIX']))) == $lang['REPLY_PREFIX_OLD'])) ? '' : $lang['REPLY_PREFIX']) . $privmsg['privmsgs_subject'];
 
 			$to_username = $privmsg['username'];
 			$to_userid = $privmsg['user_id'];
 
-			if ($mode == 'quote' || $mode == 'reply')
+			if (($mode == 'quote') || ($mode == 'reply'))
 			{
 				$privmsg_message = $privmsg['privmsgs_text'];
 				$privmsg_message = str_replace('<br />', "\n", $privmsg_message);

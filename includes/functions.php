@@ -811,12 +811,11 @@ function check_auth_level($level_required)
 /**
 * Check if the user is allowed to access a page
 */
-function check_page_auth($cms_page_id, $cms_page_name, $return = false)
+function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
 {
-	global $lang, $board_config, $userdata;
+	global $lang, $userdata;
 
-	$auth_level_req = $board_config['auth_view_' . $cms_page_name];
-	$is_auth = check_auth_level($auth_level_req);
+	$is_auth = check_auth_level($cms_auth_level);
 
 	if (!$is_auth)
 	{

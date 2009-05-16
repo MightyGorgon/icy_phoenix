@@ -19,7 +19,7 @@
 	<td class="{ads_cfg.ROW_CLASS} row-center" style="background: none;">{ads_cfg.AD_RADIO}</td>
 </tr>
 <!-- END ads_cfg -->
-<tr><td colspan="2" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="update" value="{L_ADS_UPDATE}" class="liteoption" /></td></tr>
+<tr><td colspan="2" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" /></td></tr>
 </table>
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -46,6 +46,6 @@
 <!-- BEGIN no_ads -->
 <tr><td colspan="9" class="row1 row-center">{L_AD_NO_ADS}</td></tr>
 <!-- END no_ads -->
-<tr><td colspan="9" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="update" value="{L_ADS_UPDATE}" class="liteoption" />&nbsp;&nbsp;<input type="submit" value="{L_AD_ADD}" class="mainoption" /></td></tr>
+<tr><td colspan="9" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" />&nbsp;&nbsp;<input type="submit" value="{L_AD_ADD}" class="mainoption" /></td></tr>
 </table>
 </form>

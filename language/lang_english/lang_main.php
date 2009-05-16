@@ -88,7 +88,6 @@ $lang = array_merge($lang, array(
 	'Category' => 'Category',
 	'Topic' => 'Topic',
 	'Topics' => 'Topics',
-	'RE' => 'Re',
 	'Replies' => 'Replies',
 	'Views' => 'Views',
 	'Post' => 'Post',
@@ -2195,6 +2194,8 @@ $lang = array_merge($lang, array(
 	'Reg_event_date' => '<b>Event date: </b>',
 	// Event Registration - END
 
+	'REPLY_PREFIX_OLD' => 'Re: ',
+	'REPLY_PREFIX' => 'Re: ',
 	)
 );
 

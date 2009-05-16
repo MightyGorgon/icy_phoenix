@@ -3,7 +3,7 @@
 <!--
 function openAllSmiles()
 {
-	smiles = window.open('{U_SMILEYS_MORE}','_xs_smileys','width=600,height=400,resizable=yes,scrollbars=yes');
+	smiles = window.open('{U_SMILEYS_MORE}', '_xs_smileys', 'width=600,height=400,resizable=yes,scrollbars=yes');
 	smiles.focus();
 	return false;
 }
@@ -117,19 +117,19 @@ if($can_reply)
 {
 	// quick reply button
 	global $images;
-	$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:ShowHide(%27quick_reply%27,%27quick_reply2%27);"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Quick_Reply'] . '" title="' . $lang['Quick_Reply'] . '" /></a>';
+	$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="ShowHide(\'quick_reply\', \'quick_reply2\'); return false;"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Quick_Reply'] . '" title="' . $lang['Quick_Reply'] . '" /></a>';
 	// quick reply form
 	ob_start();
 ?>
-<div id="quick_reply" style="display:none; position:relative;">
+<div id="quick_reply" style="display: none; position: relative;">
 <a id="quick"></a>
-<form action="<?php echo append_sid(POSTING_MG); ?>" method="post" name="post" style="display:inline;">
+<form action="<?php echo append_sid(POSTING_MG); ?>" method="post" name="post" style="display: inline;">
 {S_HIDDEN_FIELDS}
 <input type="hidden" name="post_time" value="<?php echo time(); ?>" />
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%" tabindex="2" class="post" value="{L_RE}: {TOPIC_TITLE}" /></td>
+	<td class="row2" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%" tabindex="2" class="post" value="{L_REPLY_PREFIX}{TOPIC_TITLE}" /></td>
 </tr>
 <tr>
 	<td class="row1" width="200" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{T_TEMPLATE_PATH}/images/spacer.gif" width="200" height="1" alt="" /></b></span></td>

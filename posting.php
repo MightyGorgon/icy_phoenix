@@ -530,9 +530,6 @@ if (($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)
 			if ($row = $db->sql_fetchrow($result))
 			{
 				$reg_active = ($row['reg_active'] == 1) ? 'checked="checked"' : '';
-				$reg_option1 = (!empty($row['reg_option1'])) ? $row['reg_option1'] : '';
-				$reg_option2 = (!empty($row['reg_option2'])) ? $row['reg_option2'] : '';
-				$reg_option3 = (!empty($row['reg_option3'])) ? $row['reg_option3'] : '';
 				$reg_max_option1 = (!empty($row['reg_max_option1'])) ? $row['reg_max_option1'] : '';
 				$reg_max_option2 = (!empty($row['reg_max_option2'])) ? $row['reg_max_option2'] : '';
 				$reg_max_option3 = (!empty($row['reg_max_option3'])) ? $row['reg_max_option3'] : '';
@@ -1124,9 +1121,6 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			// Event Registration - BEGIN
 			$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['start_registration'] : '';
 			$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reset_registration'] : '';
-			$reg_option1 = (!empty($_POST['reg_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_option1'] : '';
-			$reg_option2 = (!empty($_POST['reg_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_option2'] : '';
-			$reg_option3 = (!empty($_POST['reg_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_option3'] : '';
 			$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option1'] : '';
 			$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option2'] : '';
 			$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option3'] : '';
@@ -1134,7 +1128,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			// Event Registration - END
 			$notes = empty($_POST['notes']) ? '' : trim(stripslashes($_POST['notes']));
 
-			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_length, $reg_active, $reg_reset, $reg_option1, $reg_option2, $reg_option3, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
+			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_length, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
 
 			// MG Drafts - BEGIN
 			if (($board_config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'] && (($mode == 'reply') || ($mode == 'newtopic')))
@@ -1217,7 +1211,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					$message = addslashes(sprintf($lang['Link_to_post'], $url, '[/url]')) . $message;
 				}
 
-				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $reg_active, $reg_reset, str_replace("\'", "''", $reg_option1), str_replace("\'", "''", $reg_option2), str_replace("\'", "''", $reg_option3), $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, str_replace("\'", "''", $topic_desc), $topic_calendar_time, $topic_calendar_duration);
+				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, str_replace("\'", "''", $topic_desc), $topic_calendar_time, $topic_calendar_duration);
 			}
 			break;
 
@@ -1396,9 +1390,6 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	// Event Registration - BEGIN
 	$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? 'checked="checked"' : '';
 	$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? 'checked="checked"' : '';
-	$reg_option1 = (!empty($_POST['reg_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? htmlspecialchars(trim(stripslashes($_POST['reg_option1']))) : '';
-	$reg_option2 = (!empty($_POST['reg_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? htmlspecialchars(trim(stripslashes($_POST['reg_option2']))) : '';
-	$reg_option3 = (!empty($_POST['reg_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? htmlspecialchars(trim(stripslashes($_POST['reg_option3']))) : '';
 	$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option1']) : '';
 	$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option2']) : '';
 	$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option3']) : '';
@@ -1562,10 +1553,10 @@ else
 	{
 		$user_sig = ($userdata['user_sig'] != '') ? $userdata['user_sig'] : '';
 		$username = ($userdata['session_logged_in']) ? $userdata['username'] : '';
-		$subject = $lang['RE'] . ': ' . $post_info['topic_title'];
+		$subject = $lang['REPLY_PREFIX'] . $post_info['topic_title'];
 		$message = '';
 	}
-	elseif ($mode == 'quote' || $mode == 'editpost')
+	elseif (($mode == 'quote') || ($mode == 'editpost'))
 	{
 		$subject = ($post_data['first_post']) ? $post_info['topic_title'] : $post_info['post_subject'];
 		$message = $post_info['post_text'];
@@ -1619,11 +1610,7 @@ else
 				$message = (!empty($message)) ? preg_replace($orig_word, $replacement_word, $message) : '';
 			}
 
-			if (!preg_match('/^Re:/', $subject) && strlen($subject) > 0)
-			{
-				$subject = 'Re: ' . $subject;
-			}
-
+			$subject = (((strlen($subject) > 0) && ((substr($subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX']) || (substr($subject, 0, strlen($lang['REPLY_PREFIX']))) == $lang['REPLY_PREFIX_OLD'])) ? '' : $lang['REPLY_PREFIX']) . $subject;
 			$mode = 'reply';
 		}
 		else
@@ -2197,9 +2184,6 @@ if(($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])) &&
 	if($preview)
 	{
 		$reg_active = ($_POST['start_registration'] == 1) ? 'checked="checked"' : '';
-		$reg_option1 = (!empty($_POST['reg_option1'])) ? $_POST['reg_option1'] : '';
-		$reg_option2 = (!empty($_POST['reg_option2'])) ? $_POST['reg_option2'] : '';
-		$reg_option3 = (!empty($_POST['reg_option3'])) ? $_POST['reg_option3'] : '';
 
 		$reg_max_option1 = (!empty($_POST['reg_max_option1'])) ? $_POST['reg_max_option1'] : '';
 		$reg_max_option2 = (!empty($_POST['reg_max_option2'])) ? $_POST['reg_max_option2'] : '';
