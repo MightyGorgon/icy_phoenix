@@ -3047,6 +3047,9 @@ function empty_cache_folders($cache_folder = '', $files_per_step = 0)
 	$sql_prefix = 'sql_';
 	$tpl_prefix = 'tpl_';
 
+	// Make sure the forum tree is deleted...
+	@unlink(MAIN_CACHE_FOLDER . CACHE_TREE_FILE);
+
 	$dirs_array = array(MAIN_CACHE_FOLDER, FORUMS_CACHE_FOLDER, POSTS_CACHE_FOLDER, SQL_CACHE_FOLDER, TOPICS_CACHE_FOLDER, USERS_CACHE_FOLDER);
 	$dirs_array = ((empty($cache_folder) || !in_array($cache_folder, $dirs_array)) ? $dirs_array : array($cache_folder));
 	$files_counter = 0;
