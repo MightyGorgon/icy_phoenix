@@ -111,7 +111,7 @@ if(!function_exists('imp_dyn_menu_block_func'))
 				}
 			}
 
-			if ($cat_allowed == true)
+			if ($cat_allowed)
 			{
 				//echo($cat_item_data['menu_name'] . '<br />');
 				$cat_id = ($cat_item_data['cat_id']);
@@ -141,82 +141,85 @@ if(!function_exists('imp_dyn_menu_block_func'))
 					)
 				);
 
-				foreach($menu_cat[$cat_id] as $menu_cat_item_data)
+				if (!empty($menu_cat[$cat_id]))
 				{
+					foreach($menu_cat[$cat_id] as $menu_cat_item_data)
+					{
 
-					if ($menu_cat_item_data['menu_status'] == false)
-					{
-						$menu_allowed = false;
-					}
-					else
-					{
-						$menu_allowed = true;
-						$auth_level_req = $menu_cat_item_data['auth_view'];
-						switch($auth_level_req)
+						if ($menu_cat_item_data['menu_status'] == false)
 						{
-							case '0':
-								$menu_allowed = true;
-								break;
-							case '1':
-								$menu_allowed = ($userdata['session_logged_in'] ? false : true);
-								break;
-							case '2':
-								$menu_allowed = ($userdata['session_logged_in'] ? true : false);
-								break;
-							case '3':
-								$menu_allowed = ((($userdata['user_level'] == MOD) || ($userdata['user_level'] == ADMIN)) ? true : false);
-								break;
-							case '4':
-								$menu_allowed = (($userdata['user_level'] == ADMIN) ? true : false);
-								break;
-							default:
-								$menu_allowed = true;
-								break;
-						}
-					}
-
-					if ($menu_allowed == true)
-					{
-						//echo($menu_cat_item_data['menu_name'] . '<br />');
-						//$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />');
-						$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;');
-						if ($menu_cat_item_data['menu_default'] == '0')
-						{
-							if (($menu_cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$menu_cat_item_data['menu_name_lang']]))
-							{
-								$menu_name = $lang['menu_item'][$menu_cat_item_data['menu_name_lang']];
-							}
-							else
-							{
-								$menu_name = (($menu_cat_item_data['menu_name'] != '') ? htmlspecialchars(stripslashes($menu_cat_item_data['menu_name'])) : 'cat_item' . $menu_cat_item_data['cat_id']);
-							}
-							if ($menu_cat_item_data['menu_link_external'] == true)
-							{
-								$menu_link = htmlspecialchars($menu_cat_item_data['menu_link']);
-								$menu_link .= '" target="_blank';
-							}
-							else
-							{
-								$menu_link = append_sid(htmlspecialchars($menu_cat_item_data['menu_link']));
-							}
-							//$menu_url = '<td align="center" width="8">' . $menu_icon . '</td><td class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_name . '</a></td>';
-							//$menu_url = '<a href="' . $menu_link . '">' . $menu_name . '</a>';
-							$menu_url = '<div class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a></div>';
+							$menu_allowed = false;
 						}
 						else
 						{
-							$menu_url_temp = build_complete_url($menu_cat_item_data['menu_default'], $block_id, $menu_cat_item_data['menu_link'], $menu_icon);
-							//$menu_url = (($menu_url_temp != '') ? '<td align="center" width="8">' . $menu_icon . '</td><td class="genmed" align="left">' . $menu_url_temp . '</td>' : '');
-							//$menu_url = (($menu_url_temp != '') ? $menu_url_temp : '');
-							$menu_url = (($menu_url_temp != '') ? '<div class="genmed" align="left">' . $menu_url_temp . '</div>' : '');
+							$menu_allowed = true;
+							$auth_level_req = $menu_cat_item_data['auth_view'];
+							switch($auth_level_req)
+							{
+								case '0':
+									$menu_allowed = true;
+									break;
+								case '1':
+									$menu_allowed = ($userdata['session_logged_in'] ? false : true);
+									break;
+								case '2':
+									$menu_allowed = ($userdata['session_logged_in'] ? true : false);
+									break;
+								case '3':
+									$menu_allowed = ((($userdata['user_level'] == MOD) || ($userdata['user_level'] == ADMIN)) ? true : false);
+									break;
+								case '4':
+									$menu_allowed = (($userdata['user_level'] == ADMIN) ? true : false);
+									break;
+								default:
+									$menu_allowed = true;
+									break;
+							}
 						}
 
-						$template->assign_block_vars('cat_row.menu_row', array(
-							'MENU_ITEM' => $menu_name,
-							'MENU_ICON' => $menu_icon,
-							'MENU_URL' => $menu_url,
-							)
-						);
+						if ($menu_allowed)
+						{
+							//echo($menu_cat_item_data['menu_name'] . '<br />');
+							//$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />');
+							$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;');
+							if ($menu_cat_item_data['menu_default'] == '0')
+							{
+								if (($menu_cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$menu_cat_item_data['menu_name_lang']]))
+								{
+									$menu_name = $lang['menu_item'][$menu_cat_item_data['menu_name_lang']];
+								}
+								else
+								{
+									$menu_name = (($menu_cat_item_data['menu_name'] != '') ? htmlspecialchars(stripslashes($menu_cat_item_data['menu_name'])) : 'cat_item' . $menu_cat_item_data['cat_id']);
+								}
+								if ($menu_cat_item_data['menu_link_external'] == true)
+								{
+									$menu_link = htmlspecialchars($menu_cat_item_data['menu_link']);
+									$menu_link .= '" target="_blank';
+								}
+								else
+								{
+									$menu_link = append_sid(htmlspecialchars($menu_cat_item_data['menu_link']));
+								}
+								//$menu_url = '<td align="center" width="8">' . $menu_icon . '</td><td class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_name . '</a></td>';
+								//$menu_url = '<a href="' . $menu_link . '">' . $menu_name . '</a>';
+								$menu_url = '<div class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a></div>';
+							}
+							else
+							{
+								$menu_url_temp = build_complete_url($menu_cat_item_data['menu_default'], $block_id, $menu_cat_item_data['menu_link'], $menu_icon);
+								//$menu_url = (($menu_url_temp != '') ? '<td align="center" width="8">' . $menu_icon . '</td><td class="genmed" align="left">' . $menu_url_temp . '</td>' : '');
+								//$menu_url = (($menu_url_temp != '') ? $menu_url_temp : '');
+								$menu_url = (($menu_url_temp != '') ? '<div class="genmed" align="left">' . $menu_url_temp . '</div>' : '');
+							}
+
+							$template->assign_block_vars('cat_row.menu_row', array(
+								'MENU_ITEM' => $menu_name,
+								'MENU_ICON' => $menu_icon,
+								'MENU_URL' => $menu_url,
+								)
+							);
+						}
 					}
 				}
 			}
