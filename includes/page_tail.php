@@ -38,9 +38,10 @@ else
 	$footer_tpl = 'simple_footer.tpl';
 }
 
-if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN')) && (!empty($cms_global_blocks) || empty($cms_page_id)) && (!$board_config['board_disable'] || ($userdata['user_level'] == ADMIN)))
+$cms_global_blocks = empty($cms_global_blocks) ? false : true;
+$cms_global_blocks = (!isset($cms_page_id) || !$cms_global_blocks) ? false : true;
+if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN')) && $cms_global_blocks && (!$board_config['board_disable'] || ($userdata['user_level'] == ADMIN)))
 {
-	$cms_global_blocks = true;
 	$template->assign_var('SWITCH_CMS_GLOBAL_BLOCKS', true);
 	if (cms_parse_blocks($cms_page_id, !empty($cms_page_id), $cms_global_blocks, 'tailcenter'))
 	{
