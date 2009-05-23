@@ -169,7 +169,7 @@ function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, 
 			AND active = 1
 			AND view IN " . cms_blocks_view() . "
 			AND bposition NOT IN ('gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
-			ORDER BY bposition ASC, weight ASC";
+			ORDER BY bposition ASC, layout ASC, layout_special ASC, weight ASC";
 	}
 	else
 	{

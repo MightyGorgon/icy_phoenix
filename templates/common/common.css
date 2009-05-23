@@ -344,7 +344,7 @@ a.nav-menu-link {
 
 /* Sitemap */
 h2.sitemap, h2.maximise, h2.minimise {
-	background: url(images/maximise.gif) no-repeat center left;
+	background: url('images/maximise.gif') no-repeat center left;
 	cursor: pointer;
 	padding-left: 15px;
 	font-family: Tahoma, Arial, Helvetica, sans-serif;
@@ -352,7 +352,7 @@ h2.sitemap, h2.maximise, h2.minimise {
 }
 
 h2.minimise {
-	background: url(images/minimise.gif) no-repeat center left;
+	background: url('images/minimise.gif') no-repeat center left;
 	font-family: Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 }

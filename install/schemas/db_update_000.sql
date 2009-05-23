@@ -1735,9 +1735,9 @@ UPDATE `phpbb_cms_blocks` SET titlebar= '1' WHERE titlebar_explain= '1,1';
 ########################################
 ##              BUILD 051             ##
 ########################################
-ALTER TABLE `phpbb_registration_desc` DROP `reg_option1`
-ALTER TABLE `phpbb_registration_desc` DROP `reg_option2`
-ALTER TABLE `phpbb_registration_desc` DROP `reg_option3`
+ALTER TABLE `phpbb_registration_desc` DROP `reg_option1`;
+ALTER TABLE `phpbb_registration_desc` DROP `reg_option2`;
+ALTER TABLE `phpbb_registration_desc` DROP `reg_option3`;
 TRUNCATE TABLE `phpbb_cms_layout_special`;
 ALTER TABLE `phpbb_cms_layout_special` ADD `page_id` varchar(100) NOT NULL DEFAULT '' AFTER `lsid`;
 ALTER TABLE `phpbb_cms_layout_special` ADD UNIQUE (`page_id`);

@@ -99,10 +99,7 @@ function style_select($default_style, $select_name = 'style', $dirname = 'templa
 {
 	global $db;
 
-	$sql = "SELECT themes_id, style_name
-		FROM " . THEMES_TABLE . "
-		ORDER BY template_name, themes_id";
-
+	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY template_name, themes_id";
 	if (!($result = $db->sql_query($sql, false, 'themes_')))
 	{
 		message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);
@@ -123,9 +120,7 @@ function style_select_h($default_style, $select_name = STYLE_URL, $dirname = 'te
 {
 	global $db;
 
-	$sql = "SELECT themes_id, style_name
-		FROM " . THEMES_TABLE . "
-		ORDER BY template_name, themes_id";
+	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY template_name, themes_id";
 	if (!($result = $db->sql_query($sql, false, 'themes_')))
 	{
 		message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);

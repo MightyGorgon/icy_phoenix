@@ -337,7 +337,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		$b_type = (isset($_POST['type'])) ? intval($_POST['type']) : ($b_info['type'] ? $b_info['type'] : 0);
 		//$b_content = (isset($_POST['message'])) ? trim($_POST['message']) : "";
 		//$b_blockfile = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : ($blockfile ? $blockfile : '');
-		//$b_view = (isset($_POST['view'])) ? trim($_POST['view']) : ($view ? $view : 0);
+		$b_view = (isset($b_info['view']) ? $b_info['view'] : 0);
 		$b_local = (isset($_POST['local'])) ? intval($_POST['local']) : ($b_info['local'] ? $b_info['local'] : 0);
 		$b_titlebar = (isset($_POST['titlebar'])) ? intval($_POST['titlebar']) : ($b_info['titlebar'] ? $b_info['titlebar'] : 0);
 		$b_border = (isset($_POST['border'])) ? intval($_POST['border']) : ($b_info['border'] ? $b_info['border'] : 0);
@@ -369,7 +369,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$s_hidden_fields .= '<input type="hidden" name="titlebar" value="' . $b_titlebar . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="border" value="' . $b_border . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="background" value="' . $b_background . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="view" value="' . $block_view . '" />';
+			$s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_view . '" />';
 			$s_hidden_fields .= $b_group_hidden;
 		}
 		elseif($block_content != false)
@@ -386,7 +386,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$s_hidden_fields .= '<input type="hidden" name="titlebar" value="' . $b_titlebar . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="border" value="' . $b_border . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="background" value="' . $b_background . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="view" value="' . $block_view . '" />';
+			$s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_view . '" />';
 			$s_hidden_fields .= $b_group_hidden;
 
 			if (($b_id > 0) && ($block_content_file == $block_content_file_old))

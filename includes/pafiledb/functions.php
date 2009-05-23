@@ -155,6 +155,8 @@ class pafiledb_functions
 	{
 		global $lang, $board_config, $pafiledb_config, $userdata;
 
+		$upload_dir = (substr($upload_dir, 0, 1) == '/') ? substr($upload_dir, 1) : $upload_dir;
+
 		@set_time_limit(0);
 		$file_info = array();
 
@@ -162,14 +164,14 @@ class pafiledb_functions
 
 		if(file_exists(IP_ROOT_PATH . $upload_dir . $userfile_name))
 		{
-			$userfile_name = time() . $userfile_name;
+			$userfile_name = time() . '_' . $userfile_name;
 		}
 
 		// =======================================================
 		// if the file size is more than the allowed size another error message
 		// =======================================================
 
-		if ($userfile_size > $pafiledb_config['max_file_size'] && $userdata['user_level'] != ADMIN && $userdata['session_logged_in'])
+		if (($userfile_size > $pafiledb_config['max_file_size']) && ($userdata['user_level'] != ADMIN) && $userdata['session_logged_in'])
 		{
 			$file_info['error'] = true;
 			if(!empty($file_info['message']))
@@ -200,7 +202,7 @@ class pafiledb_functions
 				$file_info['message'] .= 'Couldn\'t Upload the File.';
 			}
 
-			$file_info['url'] = create_server_url() . '/' . $upload_dir . $userfile_name;
+			$file_info['url'] = create_server_url() . $upload_dir . $userfile_name;
 		}
 		return $file_info;
 	}

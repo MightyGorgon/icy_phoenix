@@ -38,7 +38,7 @@ class pafiledb_user_upload extends pafiledb_public
 		{
 			if(!$this->auth[$cat_id]['auth_upload'])
 			{
-				if ( !$userdata['session_logged_in'] )
+				if (!$userdata['session_logged_in'])
 				{
 					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=user_upload&cat_id=' . $cat_id, true));
 				}
@@ -51,7 +51,7 @@ class pafiledb_user_upload extends pafiledb_public
 		{
 			if(empty($dropmenu))
 			{
-				if ( !$userdata['session_logged_in'] )
+				if (!$userdata['session_logged_in'])
 				{
 					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=user_upload', true));
 				}
@@ -64,18 +64,18 @@ class pafiledb_user_upload extends pafiledb_public
 		// =======================================================
 		// MX Addon
 		// =======================================================
-		if($do == 'delete' )
+		if($do == 'delete')
 		{
 				$sql = 'SELECT *
 				FROM ' . PA_FILES_TABLE . "
 				WHERE file_id = $file_id";
-			if ( !($result = $db->sql_query($sql)) )
+			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 			}
 			$file_info = $db->sql_fetchrow($result);
 
-			if ( ($this->auth[$file_info['file_catid']]['auth_delete_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'] )
+			if (($this->auth[$file_info['file_catid']]['auth_delete_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
 			{
 			$this->delete_files($file_id);
 			$this->_pafiledb();
@@ -100,7 +100,7 @@ class pafiledb_user_upload extends pafiledb_public
 				$temp_id = $this->update_add_file();
 				$custom_field->file_update_data($temp_id);
 				$this->_pafiledb();
-				if ( $pafiledb_config['need_validation'] == '0')
+				if ($pafiledb_config['need_validation'] == '0')
 				{
 					$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $temp_id) . '">', '</a>');
 				}
@@ -151,19 +151,19 @@ class pafiledb_user_upload extends pafiledb_public
 				$mode = 'ADD';
 				$l_title = $lang['Afiletitle'];
 			}
-			elseif($file_id != '' )
+			elseif($file_id != '')
 			{
 					$sql = 'SELECT *
 						FROM ' . PA_FILES_TABLE . "
 						WHERE file_id = $file_id";
-					if ( !($result = $db->sql_query($sql)) )
+					if (!($result = $db->sql_query($sql)))
 					{
 						message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 					}
 					$file_info = $db->sql_fetchrow($result);
 
 					// AUTH CHECK
-					if ( !(($this->auth[$file_info['file_catid']]['auth_edit_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod']) )
+					if (!(($this->auth[$file_info['file_catid']]['auth_edit_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod']))
 					{
 						$message = sprintf($lang['Sorry_auth_edit'], $this->auth[$cat_id]['auth_upload_type']);
 						message_die(GENERAL_MESSAGE, $message);

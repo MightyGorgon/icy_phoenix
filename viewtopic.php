@@ -933,9 +933,7 @@ if ($bypass)
 	{
 		$parse_extra_user_info = true;
 		// Query Styles
-		$sql = "SELECT themes_id, style_name
-			FROM " . THEMES_TABLE . "
-			ORDER BY template_name, themes_id";
+		$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY template_name, themes_id";
 		if (!($result = $db->sql_query($sql, false, 'themes_')))
 		{
 			message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);

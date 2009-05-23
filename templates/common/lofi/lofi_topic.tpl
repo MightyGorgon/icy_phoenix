@@ -86,6 +86,7 @@ if($can_reply)
 	</div>
 	<br />
 	{POLL_DISPLAY}
+	{REG_DISPLAY}
 	<!-- BEGIN postrow -->
 	<div class="postwrapper">
 		<div class="posttopbar">

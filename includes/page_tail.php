@@ -38,9 +38,10 @@ else
 	$footer_tpl = 'simple_footer.tpl';
 }
 
-$cms_global_blocks = empty($cms_global_blocks) ? false : true;
-$cms_global_blocks = (!isset($cms_page_id) || !$cms_global_blocks) ? false : true;
-if(empty($gen_simple_header) && (!defined('HAS_DIED')) && (!defined('IN_LOGIN')) && $cms_global_blocks && (!$board_config['board_disable'] || ($userdata['user_level'] == ADMIN)))
+$cms_global_blocks = (empty($cms_global_blocks) ? false : true);
+//$cms_global_blocks = ((!isset($cms_page_id) || !$cms_global_blocks) ? false : true);
+$cms_page_blocks = ((empty($cms_page_id) || empty($cms_config_layouts[$cms_page_id])) ? false : true);
+if(empty($gen_simple_header) && !defined('HAS_DIED') && !defined('IN_LOGIN') && ($cms_global_blocks || $cms_page_blocks) && (!$board_config['board_disable'] || ($userdata['user_level'] == ADMIN)))
 {
 	$template->assign_var('SWITCH_CMS_GLOBAL_BLOCKS', true);
 	if (cms_parse_blocks($cms_page_id, !empty($cms_page_id), $cms_global_blocks, 'tailcenter'))
@@ -75,7 +76,7 @@ $output_login_status = ($userdata['ct_enable_ip_warn'] ? $lang['ctracker_ma_on']
 
 //Begin Lo-Fi Mod
 $path_parts = pathinfo($_SERVER['PHP_SELF']);
-$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars($_SERVER['QUERY_STRING']) . '&amp;lofi=' . (empty($_COOKIE['lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE['lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a><br />';
+$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars($_SERVER['QUERY_STRING']) . '&amp;lofi=' . (empty($_COOKIE['lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE['lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a>';
 $template->assign_vars(array(
 	'L_LOFI' => $lang['Lofi'],
 	'L_FULL_VERSION' => $lang['Full_Version'],
