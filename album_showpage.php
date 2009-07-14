@@ -719,7 +719,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 					$edit_info = ($commentrow[$i]['comment_edit_count'] == 1) ? $lang['Edited_time_total'] : $lang['Edited_times_total'];
 
-					$edit_info = '<br /><br />&raquo;&nbsp;' . sprintf($edit_info, colorize_username($lastedit_row['user_id'], $lastedit_row['username'], $lastedit_row['user_color']), create_date2($board_config['default_dateformat'], $commentrow[$i]['comment_edit_time'], $board_config['board_timezone']), $commentrow[$i]['comment_edit_count']) .'<br />';
+					$edit_info = '<br /><br />&raquo;&nbsp;' . sprintf($edit_info, colorize_username($lastedit_row['user_id'], $lastedit_row['username'], $lastedit_row['user_color']), create_date_ip($board_config['default_dateformat'], $commentrow[$i]['comment_edit_time'], $board_config['board_timezone']), $commentrow[$i]['comment_edit_count']) .'<br />';
 				}
 				else
 				{
@@ -818,7 +818,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				$template->assign_block_vars('commentrow', array(
 					'ID' => $commentrow[$i]['comment_id'],
 					'POSTER_NAME' => $poster,
-					'COMMENT_TIME' => create_date2($board_config['default_dateformat'], $commentrow[$i]['comment_time'], $board_config['board_timezone']),
+					'COMMENT_TIME' => create_date_ip($board_config['default_dateformat'], $commentrow[$i]['comment_time'], $board_config['board_timezone']),
 					'IP' => ($userdata['user_level'] == ADMIN) ? '<a href="' . $ip_url . '" target="_blank">' . decode_ip($commentrow[$i]['comment_user_ip']) .'</a><br />' : '',
 					'IP_IMG' => $ip_img,
 					'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
@@ -1137,7 +1137,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 		'POSTER' => $poster,
 
-		'PIC_TIME' => create_date2($board_config['default_dateformat'], $thispic['pic_time'], $board_config['board_timezone']),
+		'PIC_TIME' => create_date_ip($board_config['default_dateformat'], $thispic['pic_time'], $board_config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
 		'PIC_COMMENTS' => $total_comments,
 

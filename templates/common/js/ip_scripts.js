@@ -725,9 +725,33 @@ function set_rate(rate, max)
 	}
 }
 
+function hon_rate(rate, max)
+{
+	document.getElementById('rating').selectedIndex = rate;
+	if (rate == 0)
+	{
+		for (i = 1; i <= max; i++)
+		{
+			document.getElementById('rate' + i).className = 'img-rate-off';
+		}
+	}
+	else
+	{
+		for (i = 1; i <= rate; i++)
+		{
+			document.getElementById('rate' + i).className = 'img-rate-on';
+		}
+		for (i = (rate + 1); i <= max; i++)
+		{
+			document.getElementById('rate' + i).className = 'img-rate-off';
+		}
+	}
+}
+
 function submit_rate()
 {
 	document.ratingform.submit();
+	//document.forms['ratingform'].submit();
 	return true;
 }
 // Dynamic Rating - END

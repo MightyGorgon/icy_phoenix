@@ -78,17 +78,17 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 		if ($reg_info[$u]['registration_status'] == REG_OPTION1)
 		{
 			$option1_count++;
-			$reg_option1_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date2($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
+			$reg_option1_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
 		}
 		elseif ($reg_info[$u]['registration_status'] == REG_OPTION2)
 		{
 			$option2_count++;
-			$reg_option2_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date2($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
+			$reg_option2_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
 		}
 		elseif ($reg_info[$u]['registration_status'] == REG_OPTION3)
 		{
 			$option3_count++;
-			$reg_option3_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date2($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
+			$reg_option3_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
 		}
 	}
 

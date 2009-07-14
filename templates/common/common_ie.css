@@ -9,7 +9,10 @@
 }
 
 .topic-title-hide-flow {
-	width: 400px;
+	width: 360px;
+	vertical-align: top;
+	margin-bottom: 3px;
+	/*display: inline;*/
 }
 
 .post-subject {

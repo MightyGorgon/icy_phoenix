@@ -296,7 +296,7 @@ function get_kb_articles($id = false, $approve, $block_name, $start = -1, $artic
 		$type_id = $article['article_type'];
 		$article_type = get_kb_type($type_id);
 
-		$article_date = create_date2($board_config['default_dateformat'], $article['article_date'], $board_config['board_timezone']);
+		$article_date = create_date_ip($board_config['default_dateformat'], $article['article_date'], $board_config['board_timezone']);
 		// author information
 		$author_id = $article['article_author_id'];
 		$author = ($author_id == -1) ? $lang['Guest'] : colorize_username($article['article_author_id'], $article['username'], $article['user_color'], $article['user_active']);
@@ -479,7 +479,7 @@ function get_kb_stats($type = false, $approve, $block_name, $start = -1, $articl
 		$type_id = $article['article_type'];
 		$article_type = get_kb_type($type_id);
 
-		$article_date = create_date2($board_config['default_dateformat'], $article['article_date'], $board_config['board_timezone']);
+		$article_date = create_date_ip($board_config['default_dateformat'], $article['article_date'], $board_config['board_timezone']);
 		// author information
 		$author_id = $article['article_author_id'];
 		if ($author_id == -1)
@@ -1525,7 +1525,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 		$poster_id = $postrow[$i]['user_id'];
 		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($postrow[$i]['user_id'], $postrow[$i]['username'], $postrow[$i]['user_color'], $postrow[$i]['user_active']);
 
-		$post_date = create_date2($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
+		$post_date = create_date_ip($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
 
 		$poster_posts = ($postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $postrow[$i]['user_posts'] : '';
 
@@ -1649,7 +1649,7 @@ function get_kb_comments($topic_id = '', $start = -1, $show_num_comments = 0)
 		{
 			$l_edit_time_total = ($postrow[$i]['post_edit_count'] == 1) ? $lang['Edited_time_total'] : $lang['Edited_times_total'];
 			$l_edit_id = (intval($postrow[$i]['post_edit_id']) > 1) ? colorize_username($postrow[$i]['post_edit_id']) : $poster;
-			$l_edited_by = '<br /><br />' . sprintf($l_edit_time_total, $l_edit_id, create_date2($board_config['default_dateformat'], $postrow[$i]['post_edit_time'], $board_config['board_timezone']), $postrow[$i]['post_edit_count']);
+			$l_edited_by = '<br /><br />' . sprintf($l_edit_time_total, $l_edit_id, create_date_ip($board_config['default_dateformat'], $postrow[$i]['post_edit_time'], $board_config['board_timezone']), $postrow[$i]['post_edit_count']);
 		}
 		else
 		{

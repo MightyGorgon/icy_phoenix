@@ -242,9 +242,11 @@ if (isset($_POST['cancel']))
 $is_auth = array();
 $is_auth_type = '';
 $is_auth_type_cal = '';
+$read_only_write_auth_required = false;
 switch($mode)
 {
 	case 'newtopic':
+		$read_only_write_auth_required = true;
 		if ($topic_type == POST_GLOBAL_ANNOUNCE)
 		{
 			$is_auth_type = 'auth_globalannounce';
@@ -268,13 +270,16 @@ switch($mode)
 		break;
 	case 'reply':
 	case 'quote':
+		$read_only_write_auth_required = true;
 		$is_auth_type = 'auth_reply';
 		break;
 	case 'editpost':
+		$read_only_write_auth_required = true;
 		$is_auth_type = 'auth_edit';
 		break;
 	case 'delete':
 	case 'poll_delete':
+		$read_only_write_auth_required = true;
 		$is_auth_type = 'auth_delete';
 		break;
 	case 'vote':
@@ -294,6 +299,12 @@ switch($mode)
 	default:
 		message_die(GENERAL_MESSAGE, $lang['No_post_mode']);
 		break;
+}
+
+//if ($read_only_write_auth_required && $board_config['read_only_forum'])
+if ($read_only_write_auth_required && $board_config['read_only_forum'] && ($userdata['user_level'] != ADMIN))
+{
+	message_die(GENERAL_MESSAGE, $lang['READ_ONLY_FORUM']);
 }
 
 //
@@ -575,7 +586,9 @@ if (($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)
 	}
 
 	// BEGIN cmx_slash_news_mod
-	if($board_config['allow_news'] && $post_data['first_post'] && $is_auth['auth_post'] && ($is_auth['auth_news'] || ($is_auth['auth_mod'] && ($mode == 'editpost'))))
+	// If you want to allow moderators to change news category when editing post you can decomment this...
+	//if($board_config['allow_news'] && $post_data['first_post'] && $is_auth['auth_post'] && ($is_auth['auth_news'] || ($is_auth['auth_mod'] && ($mode == 'editpost'))))
+	if($board_config['allow_news'] && $post_data['first_post'] && $is_auth['auth_post'] && $is_auth['auth_news'])
 	{
 		if($mode == 'editpost')
 		{
@@ -597,7 +610,7 @@ if (($result = $db->sql_query($sql)) && ($post_info = $db->sql_fetchrow($result)
 		{
 			$post_data['news_id'] = 0;
 		}
-		$post_data['news_id'] = !empty($_POST['news_category']) ? $_POST['news_category'] : (!empty($post_data['news_id']) ? $post_data['news_id'] : 0);
+		$post_data['news_id'] = !empty($_POST['news_category']) ? intval($_POST['news_category']) : (!empty($post_data['news_id']) ? intval($post_data['news_id']) : 0);
 		$hidden_form_fields .= '<input type="hidden" name="news_category" value="' . $post_data['news_id'] . '" />';
 		$post_data['disp_news'] = false;
 	}
@@ -1491,7 +1504,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 			'TOPIC_TITLE' => $preview_subject,
 			'POST_SUBJECT' => $preview_subject,
 			'POSTER_NAME' => $preview_username,
-			'POST_DATE' => create_date2($board_config['default_dateformat'], time(), $board_config['board_timezone']),
+			'POST_DATE' => create_date_ip($board_config['default_dateformat'], time(), $board_config['board_timezone']),
 			'MESSAGE' => $preview_message,
 			'USER_SIG' => ($attach_sig) ? $user_sig : '',
 
@@ -1597,7 +1610,7 @@ else
 				obtain_word_list($orig_word, $replacement_word);
 			}
 
-			$msg_date = create_date2($board_config['default_dateformat'], $postrow['post_time'], $board_config['board_timezone']);
+			$msg_date = create_date_ip($board_config['default_dateformat'], $postrow['post_time'], $board_config['board_timezone']);
 
 			// Use trim to get rid of spaces placed there by MS-SQL 2000
 			$quote_username = (trim($post_info['post_username']) != '') ? $post_info['post_username'] : $post_info['username'];

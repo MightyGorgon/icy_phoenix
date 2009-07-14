@@ -381,12 +381,6 @@ eregi($time_reg, $board_config['default_dateformat'], $regs);
 $board_config['default_timeformat'] = $regs[1];
 unset($time_reg);
 unset($regs);
-
-// GET THE TIME TODAY AND YESTERDAY
-$today_ary = explode('|', create_date('m|d|Y', time(), $board_config['board_timezone']));
-$board_config['time_today'] = gmmktime(0 - $board_config['board_timezone'], 0, 0, $today_ary[0], $today_ary[1], $today_ary[2]);
-$board_config['time_yesterday'] = $board_config['time_today'] - 86400;
-unset($today_ary);
 // Time Management - END
 
 include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);

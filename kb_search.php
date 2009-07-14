@@ -375,7 +375,7 @@ switch ($mode)
 			{
 				$article_url = append_sid('kb.' . PHP_EXT . '?mode=article&amp;k=' . $searchset[$i]['article_id'] . '&amp;highlight=' . $highlight_active, true);
 
-				$post_date = create_date2($board_config['default_dateformat'], $searchset[$i]['article_date'], $board_config['board_timezone']);
+				$post_date = create_date_ip($board_config['default_dateformat'], $searchset[$i]['article_date'], $board_config['board_timezone']);
 
 				$message = $searchset[$i]['article_body'];
 				$article_title = $searchset[$i]['article_title'];

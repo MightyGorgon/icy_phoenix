@@ -304,10 +304,27 @@ class class_form
 					$value = ($tmp_value != '') ? $tmp_value : $value;
 				}
 
+				// Convert empty numbers fields to 0
+				if (!empty($v['is_number']) && empty($value))
+				{
+					$value = (int) 0;
+				}
+
 				// Apply number format if needed
 				if (!empty($v['number_format']))
 				{
 					$value = number_format($inputs_array[$k], $v['number_format']['decimals'], $v['number_format']['decimals_sep'], $v['number_format']['thousands_sep']);
+				}
+
+				// Create rating image
+				if (!empty($v['is_rating']))
+				{
+					$rating = $value;
+					$rating_path = !empty($v['rating_path']) ? $v['rating_path'] : (IP_ROOT_PATH . 'images/rates/');
+					$rating_min = !empty($v['rating_min']) ? $v['rating_min'] : 0;
+					$rating_max = !empty($v['rating_max']) ? $v['rating_max'] : 10;
+					$rating_extension = !empty($v['rating_extension']) ? $v['rating_extension'] : 'png';
+					$value = '<img src="' . $this->build_rating_image($rating, $rating_path, $rating_min, $rating_max, $rating_extension) . '" alt="' . $rating . '" title="' . $rating . '" />';
 				}
 
 				// Text processing... BBCode, HTML or plain text
@@ -326,7 +343,7 @@ class class_form
 				// Convert dates and times
 				if ($v['is_time'])
 				{
-					$value = create_date2($board_config['default_dateformat'], $inputs_array[$k], $board_config['board_timezone']);
+					$value = create_date_ip($board_config['default_dateformat'], $inputs_array[$k], $board_config['board_timezone']);
 				}
 
 				// Create user link
@@ -348,7 +365,7 @@ class class_form
 					'L_NAME' => $this->get_lang($v['lang_key']),
 					'L_EXPLAIN' => !empty($v['explain']) ? $this->get_lang($v['explain']) : '',
 					'S_BBCB' => $s_bbcb ? true : false,
-					'VALUE' => !empty($value) ? $value : '&nbsp;',
+					'VALUE' => (!empty($value) || ($value === 0)) ? $value : '&nbsp;',
 					)
 				);
 			}
@@ -570,6 +587,45 @@ class class_form
 		$unix_time = $unix_time + (3600 * $time_zone * $factor) + ($dst_sec * $factor);
 
 		return $unix_time;
+	}
+
+	/*
+	* Build rating image
+	*/
+	function build_rating_image($rating, $rating_img_path, $rating_min = 0, $rating_max = 10, $rating_img_extension = 'png')
+	{
+		$rating_scale = (($rating_max - $rating_min) == 0) ? 10 : ($rating_max - $rating_min);
+		$rating_level = round(($rating / $rating_scale) * 10, 0) / 2;
+		$rating_img_suffix = strval(number_format($rating_level, 1, '.', ''));
+		$rating_image = $rating_img_path . 'rate_' . $rating_img_suffix . '.' . $rating_img_extension;
+		return $rating_image;
+	}
+
+	/*
+	* image_output
+	* Outputs image with correct headers
+	*/
+	function image_output($pic_full_path, $pic_title_reg, $pic_filetype)
+	{
+		switch($pic_filetype)
+		{
+			case 'gif':
+				$file_header = 'image/gif';
+				break;
+			case 'jpg':
+			case 'jpeg':
+				$file_header = 'image/jpeg';
+				break;
+			case 'png':
+				$file_header = 'image/png';
+				break;
+			default:
+				$file_header = 'image/jpeg';
+				break;
+		}
+		header('Content-type: ' . $file_header);
+		header('Content-Disposition: filename=' . $pic_title_reg . '.' . $pic_filetype);
+		readfile($pic_full_path);
 	}
 
 }

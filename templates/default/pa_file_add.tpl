@@ -88,19 +88,11 @@
 </tr>
 <tr>
 	<td class="row1"><span class="genmed">{L_FILE_CAT}</span><br /><span class="gensmall">{L_FILE_CAT_INFO}</span></td>
-	<td class="row2">
-		<select name="cat_id" class="post">
-		{S_CAT_LIST}
-		</select>
-	</td>
+	<td class="row2"><select name="cat_id" class="post">{S_CAT_LIST}</select></td>
 </tr>
 <tr>
 	<td class="row1"><span class="genmed">{L_FILE_LICENSE}</span><br /><span class="gensmall">{L_FILE_LICENSE_INFO}</span></td>
-	<td class="row2">
-		<select name="license" class="post">
-		{S_LICENSE_LIST}
-		</select>
-	</td>
+	<td class="row2"><select name="license" class="post">{S_LICENSE_LIST}</select></td>
 </tr>
 <!-- IF IS_ADMIN or IS_MOD -->
 <tr>

@@ -31,7 +31,7 @@ if ( !($result = $db->sql_query($sql)) )
 
 if ($row = $db->sql_fetchrow($result))
 {
-	if ($row['user_active'] && trim($row['user_actkey']) == '')
+	if ($row['user_active'] && (trim($row['user_actkey']) == ''))
 	{
 		$redirect_url = append_sid(FORUM_MG);
 		meta_refresh(10, $redirect_url);
@@ -40,7 +40,7 @@ if ($row = $db->sql_fetchrow($result))
 	}
 	elseif ((trim($row['user_actkey']) == trim($_GET['act_key'])) && (trim($row['user_actkey']) != ''))
 	{
-		if (intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN && $row['user_newpasswd'] == '')
+		if ((intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN) && ($row['user_newpasswd'] == ''))
 		{
 			if (!$userdata['session_logged_in'])
 			{
@@ -62,7 +62,7 @@ if ($row = $db->sql_fetchrow($result))
 			message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql_update);
 		}
 
-		if (intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN && $sql_update_pass == '')
+		if ((intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN) && ($sql_update_pass == ''))
 		{
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer($board_config['smtp_delivery']);

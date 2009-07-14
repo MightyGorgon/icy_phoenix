@@ -74,7 +74,7 @@ if(!function_exists('imp_center_downloads_block_func'))
 				'ROW_CLASS' => $row_class,
 				'FILENAME_LATEST' => $file_latest['file_name'],
 				'DESCRIP_LATEST' => $file_latest['file_desc'],
-				'INFO_LATEST' => create_date2($board_config['default_dateformat'], $file_latest['file_time'], $board_config['board_timezone'])
+				'INFO_LATEST' => create_date_ip($board_config['default_dateformat'], $file_latest['file_time'], $board_config['board_timezone'])
 				)
 			);
 

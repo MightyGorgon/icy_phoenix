@@ -1774,6 +1774,14 @@ DELETE FROM `phpbb_config` WHERE config_name LIKE "auth_view_%" AND config_name 
 DELETE FROM `phpbb_config` WHERE config_name LIKE "wide_blocks_%";
 
 
+
+########################################
+##              BUILD 052             ##
+########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('read_only_forum', '0');
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
@@ -1783,4 +1791,4 @@ UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = '
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.2.24.51' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.0.53' WHERE config_name = 'ip_version';

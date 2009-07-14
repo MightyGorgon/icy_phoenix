@@ -92,11 +92,12 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 	$user_id = $shout_row['shout_user_id'];
 	$username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['user_id'], $shout_row['username'], $shout_row['user_color'], $shout_row['user_active'], true);
-	$shout = (!$shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'];
+	$shout = $shout_row['shout_text'];
 	$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
 	$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $shout_row['enable_bbcode'] ? true : false);
 	$bbcode->allow_smilies = ($board_config['allow_smilies'] && $shout_row['user_allowsmile'] && ($shout != '') && $shout_row['enable_smilies'] ? true : false);
 	$shout = $bbcode->parse($shout);
+	$shout = (!$shout_row['shout_active']) ? $shout : $lang['Shout_censor'];
 	$shout = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $shout) : $shout;
 	//$shout = str_replace("\n", "\n<br />\n", $shout);
 	$shout = (preg_match("/<a/", $shout)) ? str_replace("\">" , "\" target=\"_top\">", $shout) : $shout;
@@ -112,7 +113,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$template->assign_block_vars('shoutrow', array(
 		'ROW_CLASS' => $row_class,
 		'SHOUT' => $shout,
-		'TIME' => create_date2($lang['Shoutbox_date'], $shout_row['shout_session_time'], $board_config['board_timezone']),
+		'TIME' => create_date_ip($lang['Shoutbox_date'], $shout_row['shout_session_time'], $board_config['board_timezone']),
 		'USERNAME' => $username
 		)
 	);

@@ -621,7 +621,7 @@ class BBCode
 
 			// additional allowed parameters
 			$extras = $this->allow_styling ? array('width', 'height', 'border', 'style', 'class', 'title', 'align') : array('width', 'height', 'border', 'title', 'align');
-			if ($board_config['thumbnail_lightbox'])
+			if ($board_config['thumbnail_highslide'])
 			{
 				$slideshow = !empty($item['params']['slide']) ? ', { slideshowGroup: \'' . $this->process_text($item['params']['slide']) . '\' } ' : '';
 			}
@@ -2047,11 +2047,17 @@ class BBCode
 				}
 				$content = $this->process_text(isset($item['params']['param']) ? $item['params']['param'] : $content);
 
-				$default_width = '320';
+				$color_1 = $this->valid_color((isset($item['params']['colors']) ? $item['params']['colors'] : false));
+				$color_2 = $this->valid_color((isset($item['params']['colore']) ? $item['params']['colore'] : false));
+
+				$width_array = array('320', '425', '400', '480', '540', '640');
+				$height_array = array('240', '350', '300', '360', '420', '480', '385');
+
+				$default_width = ((($tag === 'youtube') || ($tag === 'googlevideo')) ? '425' : '320');
 				$width = (isset($item['params']['width']) ? intval($item['params']['width']) : $default_width);
 				$width = ((($width > 10) && ($width < 641)) ? $width : $default_width);
 
-				$default_height = '240';
+				$default_width = ((($tag === 'youtube') || ($tag === 'googlevideo')) ? '350' : '240');
 				$height = (isset($item['params']['height']) ? intval($item['params']['height']) : $default_height);
 				$height = ((($height > 10) && ($height < 481)) ? $height : $default_height);
 
@@ -2085,11 +2091,22 @@ class BBCode
 				}
 				elseif ($tag === 'youtube')
 				{
-					$html = '<object width="425" height="350"><param name="movie" value="http://www.youtube.com/v/' . $content . '" /><embed src="http://www.youtube.com/v/' . $content . '" type="application/x-shockwave-flash" width="425" height="350"></embed></object><br /><a href="http://youtube.com/watch?v=' . $content . '" target="_blank">Link</a><br />';
+					$color_append = '';
+					if ($color_1 || $color_1)
+					{
+						$color_append .= ($color_1 ? ('&amp;color1=0x' . str_replace('#', '', $color_1)) : '');
+						$color_append .= ($color_2 ? ('&amp;color2=0x' . str_replace('#', '', $color_2)) : '');
+					}
+
+					$width = in_array($width, $width_array) ? $width : '425';
+					$height = in_array($height, $height_array) ? $height : '350';
+					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $content . $color_append . '" /><embed src="http://www.youtube.com/v/' . $content . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object><br /><a href="http://youtube.com/watch?v=' . $content . $color_append . '" target="_blank">Link</a><br />';
 				}
 				elseif ($tag === 'googlevideo')
 				{
-					$html = '<object width="425" height="350"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:400px; height:326px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
+					$width = in_array($width, $width_array) ? $width : '425';
+					$height = in_array($height, $height_array) ? $height : '350';
+					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:' . $width . 'px; height:' . $height . 'px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
 				}
 				return array(
 					'valid' => true,

@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.2.24.51');
+define('ICYPHOENIX_VERSION', '1.3.0.53');
 
 // List of tables used
 $tables = array(
@@ -595,6 +595,7 @@ $default_config = array(
 	'adsense_code' => '',
 	'google_analytics' => '',
 	'thumbnail_highslide' => '1',
+	'read_only_forum' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

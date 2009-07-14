@@ -37,7 +37,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 <!-- END switch_drafts -->
 <!-- BEGIN draft_row -->
 <tr>
-	<td class="{draft_row.ROW_CLASS} row-center">{draft_row.DRAFT_IMG}&nbsp;</td>
+	<td class="{draft_row.ROW_CLASS} row-center" style="padding: 2px;">{draft_row.DRAFT_IMG}</td>
 	<td class="{draft_row.ROW_CLASS}h row-forum" onclick="window.location.href='{draft_row.DRAFT_CAT_LINK}'"><span class="topiclink">{draft_row.DRAFT_CAT}</span></td>
 	<td class="{draft_row.ROW_CLASS}h row-forum" onclick="window.location.href='{draft_row.DRAFT_TITLE_LINK}'"><span class="topiclink">{draft_row.DRAFT_TITLE}</span></td>
 	<td class="{draft_row.ROW_CLASS} row-center">

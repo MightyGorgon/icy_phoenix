@@ -26,6 +26,14 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'read_only_forum' => array(
+		'lang_key' => 'IP_read_only_forum',
+		'explain' => 'IP_read_only_forum_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
 	'allow_drafts' => array(
 		'lang_key' => 'IP_allow_drafts',
 		'explain' => 'IP_allow_drafts_explain',

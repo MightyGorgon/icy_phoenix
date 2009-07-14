@@ -461,8 +461,8 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 				$topic_author = ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' : '';
 				$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? $topic_rowset[$i]['username'] : (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']);
 				$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '</a>' : '';
-				$first_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
-				$last_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
+				$first_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
+				$last_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
 				$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '">' . $topic_rowset[$i]['user2'] . '</a>';
 				$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?'  . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 				$views = $topic_rowset[$i]['topic_views'];

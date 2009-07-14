@@ -70,7 +70,7 @@ if(!function_exists('imp_recent_articles_func'))
 							'TITLE' => $title,
 							'U_ARTICLE' => $url,
 							'AUTHOR' => $author,
-							'DATE' => create_date2($board_config['default_dateformat'], $row['article_date'], $board_config['board_timezone'])
+							'DATE' => create_date_ip($board_config['default_dateformat'], $row['article_date'], $board_config['board_timezone'])
 						)
 					);
 				}

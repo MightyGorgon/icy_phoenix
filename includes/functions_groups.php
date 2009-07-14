@@ -237,7 +237,7 @@ function update_user_color($user_id, $user_color, $user_color_group = false, $fo
 	global $db, $board_config;
 	$sql = "SELECT u.user_color, u.user_color_group
 					FROM " . USERS_TABLE . " as u
-					WHERE u.user_id = '" . $user_id . "'
+					WHERE u.user_id = " . $user_id . "
 					LIMIT 1";
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -280,7 +280,7 @@ function update_user_color($user_id, $user_color, $user_color_group = false, $fo
 	{
 		$sql_users = "UPDATE " . USERS_TABLE . "
 			SET " . $user_color_sql . "
-			WHERE user_id = '" . $user_id . "'";
+			WHERE user_id = " . $user_id;
 		if (!$db->sql_query($sql_users))
 		{
 			message_die(GENERAL_ERROR, 'Could not update user color group', '', __LINE__, __FILE__, $sql_users);
@@ -289,6 +289,106 @@ function update_user_color($user_id, $user_color, $user_color_group = false, $fo
 		clear_user_color_cache($user_id);
 	}
 	return true;
+}
+
+/**
+* Update user color simple
+*
+* @param => user_id
+* @param => user_color
+* @param => user_color_group
+* @param => force_color
+* @return => true on success
+*/
+function update_user_color_simple($user_id, $user_color, $user_color_group = false, $force_color = false)
+{
+	global $db, $board_config;
+	$sql = "SELECT u.user_color, u.user_color_group
+					FROM " . USERS_TABLE . " as u
+					WHERE u.user_id = " . $user_id . "
+					LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Could not obtain group color', '', __LINE__, __FILE__, $sql);
+	}
+
+	$row = $db->sql_fetchrow($result);
+	$current_user_color = $row['user_color'];
+	$current_user_color_group = $row['user_color_group'];
+	$db->sql_freeresult($result);
+
+	$user_color_sql = '';
+	$user_color = check_valid_color($user_color);
+	$user_color = ($user_color != false) ? $user_color : $board_config['active_users_color'];
+
+	if ($force_color || empty($current_user_color) || empty($current_user_color_group) || ($current_user_color == $board_config['active_users_color']))
+	{
+		$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("user_color = '" . $user_color . "'");
+		if (!empty($user_color_group) && intval($user_color_group))
+		{
+			$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("user_color_group = " . intval($user_color_group));
+		}
+	}
+
+	if (!empty($user_color_sql))
+	{
+		$sql_users = "UPDATE " . USERS_TABLE . "
+			SET " . $user_color_sql . "
+			WHERE user_id = " . $user_id;
+		if (!$db->sql_query($sql_users))
+		{
+			message_die(GENERAL_ERROR, 'Could not update user color group', '', __LINE__, __FILE__, $sql_users);
+		}
+
+		clear_user_color_cache($user_id);
+		return true;
+	}
+	return false;
+}
+
+/**
+* Update user rank simple
+*
+* @param => user_id
+* @param => user_rank
+* @param => force_rank
+* @return => true on success
+*/
+function update_user_rank_simple($user_id, $user_rank, $force_rank = false)
+{
+	global $db, $board_config;
+	$sql = "SELECT u.user_rank
+					FROM " . USERS_TABLE . " as u
+					WHERE u.user_id = " . $user_id . "
+					LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Could not obtain group color', '', __LINE__, __FILE__, $sql);
+	}
+
+	$row = $db->sql_fetchrow($result);
+	$current_user_rank = $row['user_rank'];
+	$db->sql_freeresult($result);
+
+	$user_rank_sql = '';
+
+	if ($force_rank || !empty($user_rank) || empty($current_user_rank))
+	{
+		$user_rank_sql .= (empty($user_rank_sql) ? '' : ', ') . ("user_rank = " . $user_rank);
+	}
+
+	if (!empty($user_rank_sql))
+	{
+		$sql_users = "UPDATE " . USERS_TABLE . "
+			SET " . $user_rank_sql . "
+			WHERE user_id = " . $user_id;
+		if (!$db->sql_query($sql_users))
+		{
+			message_die(GENERAL_ERROR, 'Could not update user rank', '', __LINE__, __FILE__, $sql_users);
+		}
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -497,7 +597,7 @@ function get_user_color($user_id)
 	global $db;
 	$sql = "SELECT u.user_color
 					FROM " . USERS_TABLE . " as u
-					WHERE u.group_id = '" . $user_id . "'
+					WHERE u.user_id = " . $user_id . "
 					LIMIT 1";
 	if (!($result = $db->sql_query($sql)))
 	{
@@ -516,6 +616,90 @@ function get_user_color($user_id)
 	{
 		return false;
 	}
+}
+
+/**
+* Query the user level.
+*
+* @param => user_id
+* @return => string
+*/
+function get_user_level($user_id)
+{
+	global $db;
+	$sql = "SELECT u.user_level
+					FROM " . USERS_TABLE . " as u
+					WHERE u.user_id = " . $user_id . "
+					LIMIT 1";
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, 'Could not obtain group color', '', __LINE__, __FILE__, $sql);
+	}
+
+	$row = $db->sql_fetchrow($result);
+	$user_level = $row['user_level'];
+	$db->sql_freeresult($result);
+
+	return $user_level;
+}
+
+/**
+* Reset all auths but auth_mod
+*
+* @param => user_id
+* @return => boolean
+*/
+function reset_all_auth($user_id)
+{
+	// Remember that AUTH_ACCESS_TABLE always refer to group_id field even if we are changing user permissions!
+	global $db, $forum_auth_fields;
+	$sql_forum_auth = '';
+	for ($i = 0; $i < count($forum_auth_fields); $i++)
+	{
+		$sql_forum_auth .= (empty($sql_forum_auth) ? '' : ', ') . $forum_auth_fields[$i] . ' = 0';
+	}
+	$sql = "UPDATE " . AUTH_ACCESS_TABLE . "
+		SET " . $sql_forum_auth . "
+		WHERE group_id = " . $user_id;
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, "Couldn't update auth access", "", __LINE__, __FILE__, $sql);
+	}
+	return true;
+}
+
+/**
+* Remove all auth for group/user from auth table.
+*
+* @param => group_id (can be a group id or a user id)
+* @not_mod => boolean (if set to true it will remove only auth settings where auth_mod = 0)
+* @return => boolean
+*/
+function delete_all_auth($group_id, $not_mod = false)
+{
+	global $db;
+	$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
+		WHERE group_id = " . $group_id .
+		($not_mod ? " AND auth_mod = 0" : "") ;
+	if (!($result = $db->sql_query($sql)))
+	{
+		message_die(GENERAL_ERROR, "Couldn't delete auth access info", "", __LINE__, __FILE__, $sql);
+	}
+	return true;
+}
+
+/**
+* Remove all auth for not mod forums and set all other auths to 0 because the user is now admin.
+* This function will not reset the 'auth_mod' field because you may want to show the user as admin in forums list
+*
+* @param => user_id
+* @return => boolean
+*/
+function reset_auth_for_admins($user_id)
+{
+	$auth_delete = delete_all_auth($user_id, true);
+	$auth_reset = reset_all_auth($user_id);
+	return true;
 }
 
 /**
@@ -657,21 +841,11 @@ function group_user_add($group_id, $user_id, $clear_cache = false)
 	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES (" . $group_id . ", " . $user_id . ", 0)";
 	if (!($result = $db->sql_query($sql)))
 	{
-		message_die(GENERAL_ERROR, "Error inserting user group subscription", "", __LINE__, __FILE__, $sql);
+		message_die(GENERAL_ERROR, 'Error inserting user group subscription', '', __LINE__, __FILE__, $sql);
 	}
 
-	update_user_color($user_id, $group_data['group_color'], $this_userdata['user_color_group'], false, false);
-
-	if (($this_userdata['user_rank'] == '0') && ($group_rank != '0'))
-	{
-		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_rank = '" . $group_rank . "'
-			WHERE user_id = '" . $this_userdata['user_id'] . "'";
-		if (!$db->sql_query($sql_users))
-		{
-			message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
-		}
-	}
+	update_user_color_simple($this_userdata['user_id'], $group_color, $group_id);
+	update_user_rank_simple($this_userdata['user_id'], $group_rank);
 
 	if ($clear_cache)
 	{

@@ -334,9 +334,13 @@ class files_management
 		return $files_list;
 	}
 
+	/*
+	* This function duplicates a folder with some options
+	* $extensions: allowed extensions
+	* $duplicate_subfolder: if set to true subfolders will be duplicated as well
+	*/
 	function duplicate_folder($source_folder, $target_folder, $extensions, $duplicate_subfolder = true)
 	{
-
 		$new_source_folder = $source_folder;
 		$new_target_folder = $target_folder;
 		$directory = @opendir($source_folder);

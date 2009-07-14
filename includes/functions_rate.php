@@ -689,7 +689,7 @@ function ratings_detailed($topic_id)
 			'USER_RATE' => $row['rating'],
 			'USER_MAX_RATE' => $board_config['rating_max'],
 			'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
-			'USER_RATE_DATE' => (create_date2($board_config['default_dateformat'], $row['rating_time'], $board_config['board_timezone'])),
+			'USER_RATE_DATE' => (create_date_ip($board_config['default_dateformat'], $row['rating_time'], $board_config['board_timezone'])),
 			//'USERNAME' => id_to_value($row['user_id'], 'user', true)
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active'])
 			)
@@ -735,7 +735,7 @@ function ratings_index()
 				'URL' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
 				'LAST_RATER' => id_to_value($last_rating_info['user_id'], 'user'),
 				'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $last_rating_info['user_id']),
-				'LAST_RATER_TIME' => create_date2($board_config['default_dateformat'], $last_rating_info['rate_time'], $board_config['board_timezone']),
+				'LAST_RATER_TIME' => create_date_ip($board_config['default_dateformat'], $last_rating_info['rate_time'], $board_config['board_timezone']),
 				'TITLE' => id_to_value($top_rated_row[$i]['topic_id'], 'topic'),
 				'FORUM' => id_to_value(id_to_value($top_rated_row[$i]['topic_id'], 'topictoforum'), 'forum'),
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
@@ -794,7 +794,7 @@ function ratings_header()
 				'URL' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
 				'LAST_RATER' => id_to_value($last_rating_info['user_id'], 'user'),
 				'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $last_rating_info['user_id']),
-				'LAST_RATER_TIME' => create_date2($board_config['default_dateformat'], $last_rating_info['rate_time'], $board_config['board_timezone']),
+				'LAST_RATER_TIME' => create_date_ip($board_config['default_dateformat'], $last_rating_info['rate_time'], $board_config['board_timezone']),
 				'TITLE' => id_to_value($top_rated_row[$i]['topic_id'], 'topic'),
 				'FORUM' => id_to_value(id_to_value($top_rated_row[$i]['topic_id'], 'topictoforum'), 'forum'),
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
@@ -845,7 +845,7 @@ function ratings_large()
 				'CLASS' => (!($rank % 2)) ? $theme['td_class2'] : $theme['td_class1'],
 				'URL' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
 				'LAST_RATER' => id_to_value($last_rate_info['user'], 'user'),
-				'LAST_RATER_TIME' => create_date2($board_config['default_dateformat'], $last_rate_info['time'], $board_config['board_timezone']),
+				'LAST_RATER_TIME' => create_date_ip($board_config['default_dateformat'], $last_rate_info['time'], $board_config['board_timezone']),
 				'TITLE' => id_to_value($top_rated_row[$i]['topic_id'], 'topic'),
 				'FORUM' => id_to_value(id_to_value($top_rated_row[$i]['topic_id'], 'topictoforum'), 'forum'),
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),

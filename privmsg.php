@@ -652,7 +652,7 @@ elseif ($mode == 'read')
 	$user_id_to = $privmsg['user_id_2'];
 	init_display_pm_attachments($privmsg['privmsgs_attachment']);
 
-	$post_date = create_date2($board_config['default_dateformat'], $privmsg['privmsgs_date'], $board_config['board_timezone']);
+	$post_date = create_date_ip($board_config['default_dateformat'], $privmsg['privmsgs_date'], $board_config['board_timezone']);
 
 	$privmsg['user_id'] = $privmsg['user_id_1'];
 	$privmsg['username'] = $privmsg['username_1'];
@@ -1829,7 +1829,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				$privmsg_message = str_replace('<br />', "\n", $privmsg_message);
 				//$privmsg_message = preg_replace('#</textarea>#si', '&lt;/textarea&gt;', $privmsg_message);
 
-				$msg_date =  create_date2($board_config['default_dateformat'], $privmsg['privmsgs_date'], $board_config['board_timezone']);
+				$msg_date =  create_date_ip($board_config['default_dateformat'], $privmsg['privmsgs_date'], $board_config['board_timezone']);
 
 				$privmsg_message = '[quote user="' . $to_username . '"]' . $privmsg_message . '[/quote]';
 
@@ -1949,7 +1949,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			'POST_SUBJECT' => $preview_subject,
 			'MESSAGE_TO' => $to_username,
 			'MESSAGE_FROM' => $userdata['username'],
-			'POST_DATE' => create_date2($board_config['default_dateformat'], time(), $board_config['board_timezone']),
+			'POST_DATE' => create_date_ip($board_config['default_dateformat'], time(), $board_config['board_timezone']),
 			'MESSAGE' => $preview_message,
 			'PLAIN_MESSAGE' => $plain_message,
 
@@ -2554,7 +2554,7 @@ if ($row = $db->sql_fetchrow($result))
 
 		$u_subject = append_sid('privmsg.' . PHP_EXT . '?folder=' . $folder . '&amp;mode=read&amp;' . POST_POST_URL . '=' . $privmsg_id);
 
-		$msg_date = create_date2($board_config['default_dateformat'], $row['privmsgs_date'], $board_config['board_timezone']);
+		$msg_date = create_date_ip($board_config['default_dateformat'], $row['privmsgs_date'], $board_config['board_timezone']);
 
 		if (($flag == PRIVMSGS_NEW_MAIL) && ($folder == 'inbox'))
 		{

@@ -58,7 +58,7 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 			$posts[$i]['forum_id'] = $row['forum_id'];
 			$posts[$i]['topic_id'] = $row['topic_id'];
 			$posts[$i]['topic_replies'] = $row['topic_replies'];
-			$posts[$i]['topic_time'] = create_date2($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
+			$posts[$i]['topic_time'] = create_date_ip($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
 			$posts[$i]['topic_title'] = $row['topic_title'];
 			$posts[$i]['topic_desc'] = $row['topic_desc'];
 			$posts[$i]['user_id'] = $row['user_id'];
@@ -215,7 +215,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 			$posts[$i]['forum_id'] = $row['forum_id'];
 			$posts[$i]['topic_id'] = $row['topic_id'];
 			$posts[$i]['topic_replies'] = $row['topic_replies'];
-			$posts[$i]['topic_time'] = create_date2($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
+			$posts[$i]['topic_time'] = create_date_ip($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
 			$posts[$i]['topic_title'] = $row['topic_title'];
 			$posts[$i]['user_id'] = $row['user_id'];
 			$posts[$i]['username'] = $row['username'];

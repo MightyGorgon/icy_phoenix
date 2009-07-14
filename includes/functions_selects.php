@@ -241,7 +241,7 @@ function date_select($default_format, $select_name = 'dateformat')
 	for($i = 0; $i < count($date_format_list); $i++)
 	{
 		$date_format = $date_format_list[$i][0];
-		$date_desc   = create_date($date_format_list[$i][0], time(), $board_config['board_timezone']);
+		$date_desc = create_date($date_format_list[$i][0], time(), $board_config['board_timezone']);
 
 		$selected = ($date_format == $default_format) ? ' selected="selected"' : '';
 		$date_select .= '<option value="' . $date_format . '"' . $selected . '>' . $date_desc . '</option>' . "\n";

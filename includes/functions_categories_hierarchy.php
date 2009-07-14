@@ -1250,7 +1250,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 				$topic_title = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
 
-				$last_post_time = create_date2($board_config['default_dateformat'], $data['tree.post_time'], $board_config['board_timezone']);
+				$last_post_time = create_date_ip($board_config['default_dateformat'], $data['tree.post_time'], $board_config['board_timezone']);
 				$last_post  = (($board_config['last_topic_title']) ? $topic_title : '');
 				$last_post .= $last_post_time . '<br />';
 				$last_post .= ($data['tree.post_user_id'] == ANONYMOUS) ? $data['tree.post_username'] . ' ' : colorize_username($data['tree.post_user_id'], $data['tree.post_username'], $data['tree.user_color'], $data['tree.user_active']);

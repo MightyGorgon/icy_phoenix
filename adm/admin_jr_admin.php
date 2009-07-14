@@ -168,8 +168,8 @@ if (!empty($user_id) && !isset($_POST['update_user']))
 		'USERNAME' => $row['username'],
 		'DISABLED' => $disabled,
 		'DISABLED_TEXT' => $disabled_text,
-		'START_DATE' => ($jr_admin_row['start_date']) ? create_date2($board_config['default_dateformat'], $jr_admin_row['start_date'], $board_config['board_timezone']) : $lang['Never'],
-		'UPDATE_DATE' => ($jr_admin_row['update_date']) ? create_date2($board_config['default_dateformat'], $jr_admin_row['update_date'], $board_config['board_timezone']) : $lang['Never'],
+		'START_DATE' => ($jr_admin_row['start_date']) ? create_date_ip($board_config['default_dateformat'], $jr_admin_row['start_date'], $board_config['board_timezone']) : $lang['Never'],
+		'UPDATE_DATE' => ($jr_admin_row['update_date']) ? create_date_ip($board_config['default_dateformat'], $jr_admin_row['update_date'], $board_config['board_timezone']) : $lang['Never'],
 		'NOTES' => $jr_admin_row['admin_notes'],
 		'NOTES_VIEW_CHECKED' => ($jr_admin_row['notes_view']) ? 'checked="checked"' : '',
 		'ADMIN_TEXT' => ($row['user_level'] == ADMIN) ? $lang['Admin_Note'] : ''

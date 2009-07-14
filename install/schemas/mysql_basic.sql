@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.2.24.51');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.0.53');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
@@ -857,6 +857,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmb', '0
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('adsense_code', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_analytics', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_highslide', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('read_only_forum', '0');
 ## CASH - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_disable', 0);
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_display_after_posts', 1);

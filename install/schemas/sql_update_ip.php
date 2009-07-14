@@ -51,6 +51,8 @@ switch ($req_version)
 	case '122249': $current_ip_version = '1.2.22.49'; break;
 	case '122350': $current_ip_version = '1.2.23.50'; break;
 	case '122451': $current_ip_version = '1.2.24.51'; break;
+	case '122552': $current_ip_version = '1.2.25.52'; break;
+	case '13053': $current_ip_version = '1.3.0.53'; break;
 }
 
 // Icy Phoenix Part...
@@ -3554,9 +3556,15 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name LIKE \"auth_view_%\" AND config_name <> 'auth_view_pic_upload'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name LIKE \"wide_blocks_%\"";
 
-
 		/* Updating from IP 1.2.24.51 */
 		case '1.2.24.51':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('read_only_forum', '0')";
+
+		/* Updating from IP 1.2.25.52 */
+		case '1.2.25.52':
+
+		/* Updating from IP 1.3.0.53 */
+		case '1.3.0.53':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

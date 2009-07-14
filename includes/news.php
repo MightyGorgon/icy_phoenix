@@ -181,8 +181,8 @@ class NewsModule
 					'CAT_ID' => $article['news_id'],
 					'COUNT_VIEWS' => $article['topic_views'],
 					'CAT_IMG' => $this->root_path . $board_config['news_path'] . '/' . $article['news_image'],
-					'POST_DATE' => create_date_simple($dateformat, $article['post_time'], $timezone),
-					'RFC_POST_DATE' => create_date_simple('r', $article['post_time'], $timezone),
+					'POST_DATE' => create_date_ip($dateformat, $article['post_time'], $timezone, true),
+					'RFC_POST_DATE' => create_date_ip('r', $article['post_time'], $timezone, true),
 					'L_POSTER' => colorize_username($article['user_id'], $article['username'], $article['user_color'], $article['user_active']),
 					'L_COMMENTS' => $article['topic_replies'],
 					/*
@@ -297,7 +297,7 @@ class NewsModule
 
 				$this->setBlockVariables('comments', array(
 					'L_TITLE' => $comment['post_subject'],
-					'POST_DATE' => create_date2($dateformat, $comment['post_time'], $timezone),
+					'POST_DATE' => create_date_ip($dateformat, $comment['post_time'], $timezone),
 					'L_POSTER' => colorize_username($comment['user_id'], $comment['username'], $comment['user_color'], $comment['user_active']),
 					'BODY' => $comment['post_text']
 					)
@@ -482,7 +482,7 @@ class NewsModule
 	}
 
 	/**
-	* Sets up the Sydication Specific template variables.
+	* Sets up the Syndication Specific template variables.
 	*
 	* @param integer Overides the number of items to be rendered.
 	* @return void

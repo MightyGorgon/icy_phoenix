@@ -60,7 +60,7 @@ function display_comments(&$file_data)
 
 	while ($comments_row = $db->sql_fetchrow($result))
 	{
-		$time = create_date2($board_config['default_dateformat'], $comments_row['comments_time'], $board_config['board_timezone']);
+		$time = create_date_ip($board_config['default_dateformat'], $comments_row['comments_time'], $board_config['board_timezone']);
 
 		$comments_text = $comments_row['comments_text'];
 		$comments_text = comment_suite($comments_text);

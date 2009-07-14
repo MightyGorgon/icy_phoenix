@@ -254,7 +254,7 @@ if(!function_exists('imp_album_block_func'))
 									'DESC' => htmlspecialchars($recentrow[$image_counter]['pic_desc']),
 									'TITLE' => htmlspecialchars($recentrow[$image_counter]['pic_title']),
 									'POSTER' => $recent_poster,
-									'TIME' => create_date2($board_config['default_dateformat'], $recentrow[$image_counter]['pic_time'], $board_config['board_timezone']),
+									'TIME' => create_date_ip($board_config['default_dateformat'], $recentrow[$image_counter]['pic_time'], $board_config['board_timezone']),
 									'VIEW' => $recentrow[$image_counter]['pic_view_count'],
 									'RATING' => ($album_config['rate'] == 1) ? ($lang['Rating'] . ': ' . $recentrow[$image_counter]['rating'] . '<br />') : '',
 									'COMMENTS' => ($album_config['comment'] == 1) ? ($lang['Comments'] . ': ' . $recentrow[$image_counter]['comments'] . '<br />') : '')

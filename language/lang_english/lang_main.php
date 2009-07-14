@@ -41,33 +41,32 @@ Interests: Heroes Of Might And Magic III, 69, #FF5522<br />
 Location: Homer\'s Head<br />
 <br />
 <br />
-<span style="color: #dd2222;"><b>hpl</b></span><br />
-<i>(Alessandro Drago)</i><br />
-<b><i>Developer</i></b><br />
-Interests: CMS, little animals<br />
-Location: Global Header<br />
-<br />
-<br />
 <span style="color: #dd2222;"><b>Bicet</b></span><br />
 <b><i>phpBB XS Developer</i></b><br />
+<br />
+<br />
+<span style="color: #dd2222;"><b>hpl</b></span><br />
+<b><i>Some Special Contributions</i></b><br />
 <br />
 <br />
 <b><i>Valued Contributors</i></b><br />
 <span style="color: #228822;"><b>Andrea75</b></span><br />
 <span style="color: #dd2222;"><b>Artie</b></span><br />
+<span style="color: #0000bb;"><b>brandsrus</b></span><br />
 <span style="color: #228822;"><b>buldo</b></span><br />
 <span style="color: #228822;"><b>casimedicos</b></span><br />
 <span style="color: #228822;"><b>Chaotic</b></span><br />
 <span style="color: #dd2222;"><b>CyberAlien</b></span><br />
 <span style="color: #228822;"><b>difus</b></span><br />
+<span style="color: #228822;"><b>DWho</b></span><br />
 <span style="color: #228822;"><b>fracs</b></span><br />
-<span style="color: #800080;"><b>ganesh</b></span><br />
+<span style="color: #880088;"><b>ganesh</b></span><br />
 <span style="color: #228822;"><b>JANU1535</b></span><br />
-<span style="color: #800080;"><b>jz</b></span><br />
+<span style="color: #880088;"><b>jz</b></span><br />
 <span style="color: #228822;"><b>KasLimon</b></span><br />
 <span style="color: #aaff00;"><b>KugeLSichA</b></span><br />
 <span style="color: #0000bb;"><b>Limun</b></span><br />
-<span style="color: #228822;"><b>Lopalong</b></span><br />
+<span style="color: #880088;"><b>Lopalong</b></span><br />
 <span style="color: #228822;"><b>moreteavicar</b></span><br />
 <span style="color: #228822;"><b>novice programmer</b></span><br />
 <span style="color: #228822;"><b>ThE KuKa</b></span><br />
@@ -1050,9 +1049,9 @@ $lang = array_merge($lang, array(
 	'Post_a_report' => 'Post a report',
 	'Report_stored' => 'Your report has been entered successfully',
 	'Send_report' => 'Click %sHere%s to go back to the original message',
-	'Red_card_warning' => 'You are about to give the user:%s a red card, this will ban the user, are you sure?',
-	'Yellow_card_warning' => 'You are about to give the user:%s a yellow card, this will issue a warning to the user, are you sure?',
-	'Green_card_warning' => 'You are about to give the user:%s a green card, this will unban the user, are you sure?',
+	'Red_card_warning' => 'You are about to give the user: %s a red card, this will ban the user, are you sure?',
+	'Yellow_card_warning' => 'You are about to give the user: %s a yellow card, this will issue a warning to the user, are you sure?',
+	'Green_card_warning' => 'You are about to give the user: %s a green card, this will unban the user, are you sure?',
 	'Blue_card_warning' => 'You are about to give the post a blue card, this will alert the moderators about this post, Are you sure you want to Alert the moderators about this post?',
 	'Clear_blue_card_warning' => 'You are about to reset the blue card counter for this post, Do you want to continue?',
 	'Warnings' => 'Warnings: %d', //shown beside users post, if any warnings given to the user
@@ -1471,7 +1470,7 @@ $lang = array_merge($lang, array(
 
 	'Shoutbox' => 'Shoutbox',
 	'Shoutbox_date' => ' d m Y h:i:s',
-	'Shout_censor' => 'Shout removed!',
+	'Shout_censor' => '<b>Shout removed!</b>',
 	'Shout_refresh' => 'Refresh',
 	'Shout_text' => 'Your text',
 	'Viewing_Shoutbox' => 'Viewing shoutbox',
@@ -2196,6 +2195,9 @@ $lang = array_merge($lang, array(
 
 	'REPLY_PREFIX_OLD' => 'Re: ',
 	'REPLY_PREFIX' => 'Re: ',
+
+	'READ_ONLY_FORUM' => 'We are sorry, but currently the forum is set in <b>READ ONLY</b> mode which means that you cannot post even if you have the right to. Please try again later.',
+
 	)
 );
 

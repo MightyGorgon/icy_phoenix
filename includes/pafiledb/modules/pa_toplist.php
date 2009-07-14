@@ -231,7 +231,7 @@ class pafiledb_toplist extends pafiledb_public
 						// Format the date for the given file
 						//===================================================
 
-						$date = create_date2($board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone']);
+						$date = create_date_ip($board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone']);
 
 						//===================================================
 						// Get rating for the file and format it
@@ -410,7 +410,7 @@ class pafiledb_toplist extends pafiledb_public
 					// Format the date for the given file
 					//===================================================
 
-					$date = create_date2($board_config['default_dateformat'], $searchset[$i]['file_time'], $board_config['board_timezone']);
+					$date = create_date_ip($board_config['default_dateformat'], $searchset[$i]['file_time'], $board_config['board_timezone']);
 
 					//===================================================
 					// Get rating for the file and format it

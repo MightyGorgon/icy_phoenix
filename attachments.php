@@ -190,7 +190,7 @@ if ($attach_id > 0)
 		$counter++;
 		$template->assign_block_vars('row', array(
 			'NUMBER' => $start + $counter,
-			'DATE' => create_date2($board_config['default_dateformat'], $row['download_time'], $board_config['board_timezone']),
+			'DATE' => create_date_ip($board_config['default_dateformat'], $row['download_time'], $board_config['board_timezone']),
 			'USER' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active'])
 			)
 		);
@@ -455,7 +455,7 @@ else
 			'COMMENT' => $comment_field,
 			'SIZE' => round(($attachments[$i]['filesize'] / 1024), 2),
 			'DOWNLOAD_COUNT' => $download_count_link,
-			'POST_TIME' => create_date2($board_config['default_dateformat'], $attachments[$i]['filetime'], $board_config['board_timezone']),
+			'POST_TIME' => create_date_ip($board_config['default_dateformat'], $attachments[$i]['filetime'], $board_config['board_timezone']),
 			'POST_TITLE' => $post_title,
 
 			'VIEW_ATTACHMENT' => $filename_link

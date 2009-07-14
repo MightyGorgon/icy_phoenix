@@ -205,8 +205,8 @@ $sql = "SELECT * FROM " . REFERRERS_TABLE ." ORDER BY $order_by";
 			'URL' => '<a href="' . htmlspecialchars($row['referrer_url']) . '" rel="nofollow" target="_blank">' . htmlspecialchars($url_name) . '</a>',
 			'IP' => '<a href="http://whois.sc/' . decode_ip($row['referrer_ip']) . '" target="_blank">' . decode_ip($row['referrer_ip']) . '</a>',
 			'HITS' => $row['referrer_hits'],
-			'FIRST' => create_date2($board_config['default_dateformat'], $row['referrer_firstvisit'], $board_config['board_timezone']),
-			'LAST' => create_date2($board_config['default_dateformat'], $row['referrer_lastvisit'], $board_config['board_timezone'])
+			'FIRST' => create_date_ip($board_config['default_dateformat'], $row['referrer_firstvisit'], $board_config['board_timezone']),
+			'LAST' => create_date_ip($board_config['default_dateformat'], $row['referrer_lastvisit'], $board_config['board_timezone'])
 			)
 		);
 		$i++;

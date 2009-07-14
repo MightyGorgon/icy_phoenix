@@ -193,6 +193,9 @@ if ($lang_extend_admin)
 		'IP_posts_precompiled' => 'Disable precompiled posts',
 		'IP_posts_precompiled_explain' => 'By enabling this option viewtopic will always compile posts text without using the precompiled text, (this is slower, but it can be useful in some cases).',
 
+		'IP_read_only_forum' => 'Disable posting in all forums (Read Only Mode)',
+		'IP_read_only_forum_explain' => 'This options allows to lock posting in all forums without having to change permissions. This may be useful for limited periods of time when admins would like to disallow users posting without having to lock the site or change all forum authorizations. Admins will still be able to post.',
+
 		'IP_allow_drafts' => 'Allow Drafts',
 		'IP_allow_drafts_explain' => 'Allow users to save posts as drafts',
 

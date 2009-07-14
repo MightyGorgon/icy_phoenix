@@ -168,7 +168,7 @@ if ($refresh || $preview)
 			$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 			$template->assign_vars(array(
 				'USERNAME' => $username,
-				'POST_DATE' => create_date2($board_config['default_dateformat'], time(), $board_config['board_timezone']),
+				'POST_DATE' => create_date_ip($board_config['default_dateformat'], time(), $board_config['board_timezone']),
 				'MESSAGE' => $preview_message,
 				'L_POSTED' => $lang['Posted'],
 				'L_PREVIEW' => $lang['Preview']
@@ -241,7 +241,7 @@ elseif (($mode == 'delete') || ($mode == 'censor'))
 	{
 		message_die(GENERAL_ERROR, 'Error no shout id specifyed for delete/censor.', '', __LINE__, __FILE__);
 	}
-	$sql = "SELECT s.shout_user_id, shout_ip FROM " . SHOUTBOX_TABLE . " s WHERE s.shout_id='$post_id'";
+	$sql = "SELECT s.shout_user_id, shout_ip FROM " . SHOUTBOX_TABLE . " s WHERE s.shout_id = $post_id";
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get shoutbox information', '', __LINE__, __FILE__, $sql);
@@ -249,17 +249,17 @@ elseif (($mode == 'delete') || ($mode == 'censor'))
 	$shout_identifyer = $db->sql_fetchrow($result);
 	$user_id = $shout_identifyer['shout_user_id'];
 
-	if (($userdata['user_id'] != ANONYMOUS || ($userdata['user_id'] == ANONYMOUS && $userdata['session_ip'] == $shout_identifyer['shout_ip'])) && (($userdata['user_id'] == $user_id && $is_auth['auth_delete']) || $is_auth['auth_mod']) && $mode == 'censor')
+	if ((($userdata['user_id'] != ANONYMOUS) || (($userdata['user_id'] == ANONYMOUS) && ($userdata['session_ip'] == $shout_identifyer['shout_ip']))) && ((($userdata['user_id'] == $user_id) && $is_auth['auth_delete']) || $is_auth['auth_mod']) && ($mode == 'censor'))
 	{
-		$sql = "UPDATE " . SHOUTBOX_TABLE . " SET shout_active='" . $userdata['user_id'] . "' WHERE shout_id='$post_id'";
+		$sql = "UPDATE " . SHOUTBOX_TABLE . " SET shout_active = " . $userdata['user_id'] . " WHERE shout_id = $post_id";
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error censor shout.', '', __LINE__, __FILE__, $sql);
 		}
 	}
-	elseif ($is_auth['auth_mod'] && $mode=='delete')
+	elseif ($is_auth['auth_mod'] && ($mode == 'delete'))
 	{
-		$sql = "DELETE FROM ".SHOUTBOX_TABLE." WHERE shout_id='$post_id'";
+		$sql = "DELETE FROM " . SHOUTBOX_TABLE . " WHERE shout_id = $post_id";
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, 'Error removing shout.', '', __LINE__, __FILE__, $sql);
@@ -285,14 +285,14 @@ elseif ($mode == 'ip')
 	{
 		message_die(GENERAL_ERROR, 'Error no shout id specifyed for show ip', '', __LINE__, __FILE__);
 	}
-	$sql = "SELECT s.shout_user_id, shout_username, shout_ip FROM " . SHOUTBOX_TABLE . " s WHERE s.shout_id='$post_id'";
+	$sql = "SELECT s.shout_user_id, shout_username, shout_ip FROM " . SHOUTBOX_TABLE . " s WHERE s.shout_id = $post_id";
 	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not get shoutbox information', '', __LINE__, __FILE__, $sql);
 	}
 	$shout_identifyer = $db->sql_fetchrow($result);
 	$poster_id = $shout_identifyer['shout_user_id'];
-	$rdns_ip_num = (isset($_GET['rdns'])) ? $_GET['rdns'] : "";
+	$rdns_ip_num = (isset($_GET['rdns'])) ? $_GET['rdns'] : '';
 
 	$ip_this_post = decode_ip($shout_identifyer['shout_ip']);
 	$ip_this_post = ($rdns_ip_num == $ip_this_post) ? gethostbyaddr($ip_this_post) : $ip_this_post;
@@ -334,7 +334,8 @@ elseif ($mode == 'ip')
 			if ($row['shout_ip'] == $post_row['shout_ip'])
 			{
 				$template->assign_vars(array(
-					'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']))
+					'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts'])
+					)
 				);
 				continue;
 			}
@@ -537,8 +538,8 @@ while ($shout_row = $db->sql_fetchrow($result))
 
 	$user_avatar = $user_info['avatar'];
 
-	$shout = (! $shout_row['shout_active']) ? $shout_row['shout_text'] : $lang['Shout_censor'] . (($is_auth['auth_mod']) ? '<br /><hr /><br />' . $shout_row['shout_text'] : '');
-	$user_sig = ($shout_row['enable_sig'] && $shout_row['user_sig'] != '' && $board_config['allow_sig']) ? $shout_row['user_sig'] : '';
+	$shout = $shout_row['shout_text'];
+	$user_sig = ($shout_row['enable_sig'] && ($shout_row['user_sig'] != '') && $board_config['allow_sig']) ? $shout_row['user_sig'] : '';
 
 	$rank_image = '';
 	if ($shout_row['user_rank'])
@@ -595,6 +596,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$bbcode->allow_smilies = ($board_config['allow_smilies'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
 
 	$shout = $bbcode->parse($shout);
+	$shout = ((!$shout_row['shout_active']) ? $shout : ($lang['Shout_censor'] . ($is_auth['auth_mod'] ? ('<br /><hr /><br />' . $shout) : '')));
 	$shout = str_replace("\n", "\n<br />\n", $shout);
 
 	$orig_autolink = array();
@@ -647,7 +649,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$template->assign_block_vars('shoutrow', array(
 		'ROW_CLASS' => $row_class,
 		'SHOUT' => $shout,
-		'TIME' => create_date2($board_config['default_dateformat'], $shout_row['shout_session_time'], $board_config['board_timezone']),
+		'TIME' => create_date_ip($board_config['default_dateformat'], $shout_row['shout_session_time'], $board_config['board_timezone']),
 		'SHOUT_USERNAME' => $shout_username,
 		'GENDER' => $gender,
 		'AVATAR' => $user_avatar,

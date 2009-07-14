@@ -1809,7 +1809,7 @@ if ($bypass)
 		for($i = 0; $i < $total_thank; $i++)
 		{
 			// Get thanks date
-			$thanks_date[$i] = create_date_simple($timeformat, $thanksrow[$i]['thanks_time'], $board_config['board_timezone']);
+			$thanks_date[$i] = create_date_ip($timeformat, $thanksrow[$i]['thanks_time'], $board_config['board_timezone'], true);
 			// Make thanker profile link
 			$thanks .= '<span class="gensmall">' . (($thanks != '') ? ', ' : '') . colorize_username($thanksrow[$i]['user_id'], $thanksrow[$i]['username'], $thanksrow[$i]['user_color'], $thanksrow[$i]['user_active']) . ' (' . $thanks_date[$i] . ')</span>';
 		}
@@ -1902,7 +1902,7 @@ if ($bypass)
 		}
 		// End add - Birthday MOD
 
-		$post_date = create_date2($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
+		$post_date = create_date_ip($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
 
 		$poster_posts = ($postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $postrow[$i]['user_posts'] : '';
 
@@ -2579,7 +2579,7 @@ if ($bypass)
 		{
 			$l_edit_time_total = ($postrow[$i]['post_edit_count'] == 1) ? $lang['Edited_time_total'] : $lang['Edited_times_total'];
 			$l_edit_id = (intval($postrow[$i]['post_edit_id']) > 1) ? colorize_username($postrow[$i]['post_edit_id']) : $poster;
-			$l_edited_by = sprintf($l_edit_time_total, $l_edit_id, create_date2($board_config['default_dateformat'], $postrow[$i]['post_edit_time'], $board_config['board_timezone']), $postrow[$i]['post_edit_count']);
+			$l_edited_by = sprintf($l_edit_time_total, $l_edit_id, create_date_ip($board_config['default_dateformat'], $postrow[$i]['post_edit_time'], $board_config['board_timezone']), $postrow[$i]['post_edit_count']);
 		}
 		else
 		{
@@ -2618,9 +2618,9 @@ if ($bypass)
 		$post_id = $postrow[$i]['post_id'];
 		$poster_number = ($postrow[$i]['poster_id'] == ANONYMOUS) ? '' : $lang['User_Number'] . ': ' . $postrow[$i]['poster_id'];
 		$post_edit_link = append_sid('edit_post_details.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']);
-		$post_edit_string = (!$userdata['user_id'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(\'' . $post_edit_link . '\')" style="text-decoration:none;">' . $lang['Edit_post_time_xs'] . '</a>';
-		//$post_edit_string = (!$userdata['user_level'] == MOD || !$userdata['user_id'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(' . $topic_id . ', ' . $post_id . ')" style="text-decoration:none;">' . $lang['Edit_post_time_xs']. '</a>';
-		$single_post = '<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\');" style="text-decoration:none;">#' . ($i + 1 + $start) . '</a>';
+		$post_edit_string = ($userdata['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $lang['Edit_post_time_xs'] . '</a>') : '';
+		//$post_edit_string = (!$userdata['user_level'] == MOD || !$userdata['user_level'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(' . $topic_id . ', ' . $post_id . ')" style="text-decoration:none;">' . $lang['Edit_post_time_xs']. '</a>';
+		$single_post = '<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\'); return false;" style="text-decoration: none;">#' . ($i + 1 + $start) . '</a>';
 
 		// Mighty Gorgon - Feedbacks - BEGIN
 		$feedbacks_received = '';
@@ -2902,7 +2902,7 @@ if ($bypass)
 						'POSTER_NAME' => colorize_username($list[$j]['poster']),
 						'POSTER_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $list[$j]['poster']),
 						'TEXT' => htmlspecialchars($list[$j]['text']),
-						'TIME' => create_date2($board_config['default_dateformat'], $list[$j]['time'], $board_config['board_timezone']),
+						'TIME' => create_date_ip($board_config['default_dateformat'], $list[$j]['time'], $board_config['board_timezone']),
 						'L_DELETE_NOTE' => $lang['Delete_note'],
 						'U_DELETE' => $is_auth['auth_mod'] ? ($template->vars['U_VIEW_TOPIC'] . '&amp;delnote=' . $item['U_POST_ID'] . '.' . $j) : '',
 					);

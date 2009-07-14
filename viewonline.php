@@ -268,7 +268,7 @@ while($row = $db->sql_fetchrow($result))
 
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => $username,
-			'LASTUPDATE' => create_date2($board_config['default_dateformat'], $row['session_time'], $board_config['board_timezone']),
+			'LASTUPDATE' => create_date_ip($board_config['default_dateformat'], $row['session_time'], $board_config['board_timezone']),
 			'FORUM_LOCATION' => $location['lang'],
 			// Mighty Gorgon - HTTP AGENTS - BEGIN
 			'USER_OS_IMG' => $user_os['img'],
@@ -396,7 +396,7 @@ if ($board_config['online_last_msgs'] == 1)
 			'L_TITLE' => $recent_topic_row[$i]['topic_title'],
 			'U_POSTER' => colorize_username($recent_topic_row[$i]['user_id'], $recent_topic_row[$i]['username'], $recent_topic_row[$i]['user_color'], $recent_topic_row[$i]['user_active']),
 			'S_POSTER' => $recent_topic_row[$i]['username'],
-			'S_POSTTIME' => create_date2($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
+			'S_POSTTIME' => create_date_ip($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
 			)
 		);
 	}
@@ -430,7 +430,7 @@ if ($board_config['online_last_msgs'] == 1)
 		$template->assign_block_vars('switch_show_recent.last_seen_row', array(
 				'U_LSEEN_LINK' => ($last_seen_row[$i]['user_allow_viewonline']) ? $username : (($userdata[user_level] == ADMIN) ? '<i>' . $username . '</i>' : $username),
 				'L_LSEEN_USERNAME' => $username_text,
-				'L_LSEEN_TIME' => create_date2($board_config['default_dateformat'], $last_seen_row[$i]['user_lastlogon'], $board_config['board_timezone']),
+				'L_LSEEN_TIME' => create_date_ip($board_config['default_dateformat'], $last_seen_row[$i]['user_lastlogon'], $board_config['board_timezone']),
 				//'L_LSEEN_TIME' => date("d.m.Y - H:i", $last_seen_row[$i]['user_lastlogon']),
 			)
 		);

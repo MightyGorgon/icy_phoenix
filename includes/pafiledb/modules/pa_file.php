@@ -98,11 +98,11 @@ class pafiledb_file extends pafiledb_public
 		// Prepare file info to display them
 		//===================================================
 
-		$file_time = create_date2($board_config['default_dateformat'], $file_data['file_time'], $board_config['board_timezone']);
+		$file_time = create_date_ip($board_config['default_dateformat'], $file_data['file_time'], $board_config['board_timezone']);
 
-		$file_last_download = ($file_data['file_last']) ? create_date2($board_config['default_dateformat'], $file_data['file_last'], $board_config['board_timezone']) : $lang['never'];
+		$file_last_download = ($file_data['file_last']) ? create_date_ip($board_config['default_dateformat'], $file_data['file_last'], $board_config['board_timezone']) : $lang['never'];
 
-		$file_update_time = ($file_data['file_update_time']) ? create_date2($board_config['default_dateformat'], $file_data['file_update_time'], $board_config['board_timezone']) : $lang['never'];
+		$file_update_time = ($file_data['file_update_time']) ? create_date_ip($board_config['default_dateformat'], $file_data['file_update_time'], $board_config['board_timezone']) : $lang['never'];
 
 		$file_author = trim($file_data['file_creator']);
 

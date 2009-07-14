@@ -93,7 +93,7 @@ if(!function_exists('imp_recent_topics_wide_block_func'))
 				'L_TITLE' => $topic_title,
 				'L_BY' => $lang['By'],
 				'S_POSTER' => colorize_username($recent_topic_row[$i]['user_id'], $recent_topic_row[$i]['username'], $recent_topic_row[$i]['user_color'], $recent_topic_row[$i]['user_active']),
-				'S_POSTTIME' => create_date2($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
+				'S_POSTTIME' => create_date_ip($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
 				)
 			);
 		}

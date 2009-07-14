@@ -40,25 +40,25 @@ if (isset($_POST['submit']))
 		message_die(GENERAL_ERROR, 'Error in obtaining userdata', '', __LINE__, __FILE__, $sql);
 	}
 
-	if ( !($row = $db->sql_fetchrow($result)) )
+	if (!($row = $db->sql_fetchrow($result)))
 	{
 		// No such name
 		message_die(GENERAL_ERROR, 'User_not_exist');
 	}
 
-	if ( $row['user_email'] != $email )
+	if ($row['user_email'] != $email)
 	{
 		// Wrong Email provided
 		message_die(GENERAL_ERROR, 'No_email_match');
 	}
 
-	if ( !empty($row['user_active']) )
+	if (!empty($row['user_active']))
 	{
 		// Already activated
 		message_die(GENERAL_ERROR, 'Already_activated');
 	}
 
-	if ( empty($row['user_actkey']) )
+	if (empty($row['user_actkey']))
 	{
 		// No activation key
 		message_die(GENERAL_ERROR, 'No_actkey');
@@ -66,7 +66,7 @@ if (isset($_POST['submit']))
 
 	$current_time = time();
 
-	if (intval($row['user_last_login_try']) > 0 && ($current_time - intval($row['user_last_login_try'])) < $board_config['login_reset_time'])
+	if ((intval($row['user_last_login_try']) > 0) && (($current_time - intval($row['user_last_login_try'])) < $board_config['login_reset_time']))
 	{
 		// Request flood
 		message_die(GENERAL_ERROR, 'Send_actmail_flood_error');
@@ -103,7 +103,7 @@ if (isset($_POST['submit']))
 		SET user_last_login_try = $current_time
 		WHERE username = '" . str_replace("\\'", "''", $username) . "'";
 
-	if ( !($result = $db->sql_query($sql)) )
+	if (!($result = $db->sql_query($sql)))
 	{
 		message_die(GENERAL_ERROR, 'Could not update userdata', '', __LINE__, __FILE__, $sql);
 	}

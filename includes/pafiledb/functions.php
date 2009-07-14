@@ -68,7 +68,7 @@ class pafiledb_functions
 
 		while ($icon = @readdir($handle))
 		{
-			if (($icon != '.') && ($icon != '..') && ($icon != 'index.htm') && ($icon != 'index.html') && ($icon != 'spacer.gif'))
+			if (($icon != '.') && ($icon != '..') && ($icon != 'index.htm') && ($icon != 'index.html') && ($icon != 'spacer.gif') && !is_dir($icon))
 			{
 				if ($file_posticon == $icon)
 				{

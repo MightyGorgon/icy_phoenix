@@ -187,8 +187,8 @@ if (USERS_SUBFOLDERS_IMG == true)
 
 	$template->set_filenames(array('body' => 'posted_img_list_body.tpl'));
 
-	$album_config['cols_per_page'] = ($album_config['cols_per_page'] == 0) ? '4' : $album_config['cols_per_page'];
-	$album_config['rows_per_page'] = ($album_config['rows_per_page'] == 0) ? '5' : $album_config['rows_per_page'];
+	$album_config['cols_per_page'] = ($album_config['cols_per_page'] == 0) ? 4 : $album_config['cols_per_page'];
+	$album_config['rows_per_page'] = ($album_config['rows_per_page'] == 0) ? 5 : $album_config['rows_per_page'];
 	$pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
 	$pic_row_count = 0;
 	$pic_col_count = 0;
@@ -339,8 +339,8 @@ else
 
 	$template->set_filenames(array('body' => 'posted_img_list_body.tpl'));
 
-	$album_config['cols_per_page'] = ($album_config['cols_per_page'] == 0) ? '4' : $album_config['cols_per_page'];
-	$album_config['rows_per_page'] = ($album_config['rows_per_page'] == 0) ? '5' : $album_config['rows_per_page'];
+	$album_config['cols_per_page'] = ($album_config['cols_per_page'] == 0) ? 4 : $album_config['cols_per_page'];
+	$album_config['rows_per_page'] = ($album_config['rows_per_page'] == 0) ? 5 : $album_config['rows_per_page'];
 	$pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
 	$pic_row_count = 0;
 	$pic_col_count = 0;

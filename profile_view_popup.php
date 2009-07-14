@@ -46,7 +46,7 @@ $sql = "SELECT p.*, u.username, u.user_active, u.user_color
 		$viewer = $row['viewer_id'];
 		$template->assign_block_vars('row', array(
 			'VIEW_BY' => colorize_username($viewer, $row['username'], $row['user_color'], $row['user_active']),
-			'STAMP' => create_date2($userdata['user_dateformat'], $row['view_stamp'], $userdata['user_timezone'])
+			'STAMP' => create_date_ip($userdata['user_dateformat'], $row['view_stamp'], $userdata['user_timezone'])
 			)
 		);
 	}

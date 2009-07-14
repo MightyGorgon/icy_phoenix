@@ -753,7 +753,7 @@ function album_get_last_pic_info($cats, &$last_pic_id)
 	$db->sql_freeresult($result);
 
 	// Write the Date
-	$info = create_date2($board_config['default_dateformat'], $row['pic_time'], $board_config['board_timezone']);
+	$info = create_date_ip($board_config['default_dateformat'], $row['pic_time'], $board_config['board_timezone']);
 	$info .= '<br />';
 
 	// Write username of last poster
@@ -897,7 +897,7 @@ function album_get_last_comment_info($cats)
 
 	$db->sql_freeresult($result);
 
-	$info = create_date2($board_config['default_dateformat'], $row['comment_time'], $board_config['board_timezone']);
+	$info = create_date_ip($board_config['default_dateformat'], $row['comment_time'], $board_config['board_timezone']);
 	$info .= '<br />' . $lang['Pic_Poster'] . ': ';
 
 	if (($row['user_id'] == ALBUM_GUEST) || ($row['comment_username'] == ''))
@@ -1288,7 +1288,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 				//'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'] . '">' . $picrow[$j]['pic_title'] . '</a>',
 				'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 				'POSTER' => $pic_poster,
-				'TIME' => create_date2($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
+				'TIME' => create_date_ip($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
 
 				'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 				'U_PIC_SP' => $pic_sp_link,
@@ -1478,7 +1478,7 @@ function album_build_recent_pics($cats)
 						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 						'POSTER' => $recent_poster,
-						'TIME' => create_date2($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
+						'TIME' => create_date_ip($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
 
 						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 						'U_PIC_SP' => $pic_sp_link,
@@ -1627,7 +1627,7 @@ function album_build_highest_rated_pics($cats)
 							'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 							'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 							'H_POSTER' => $highest_poster,
-							'H_TIME' => create_date2($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
+							'H_TIME' => create_date_ip($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
 
 							'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 							'U_PIC_SP' => $pic_sp_link,
@@ -1775,7 +1775,7 @@ function album_build_most_viewed_pics($cats)
 						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 						'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 						'H_POSTER' => $picrow_poster,
-						'H_TIME' => create_date2($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
+						'H_TIME' => create_date_ip($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
 
 						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 						'U_PIC_SP' => $pic_sp_link,
@@ -1916,7 +1916,7 @@ function album_build_random_pics($cats)
 						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
 						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 						'POSTER' => $rand_poster,
-						'TIME' => create_date2($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
+						'TIME' => create_date_ip($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
 
 						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 						'U_PIC_SP' => $pic_sp_link,
@@ -2068,7 +2068,7 @@ function album_build_last_comments_info($cats)
 				'PIC_ID' => $commentsrow[$i]['pic_id'],
 				'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $commentsrow[$i]['pic_title'] . '</a>',
 				'POSTER' => $poster,
-				'TIME' => create_date2($board_config['default_dateformat'], $commentsrow[$i]['comment_time'], $board_config['board_timezone']),
+				'TIME' => create_date_ip($board_config['default_dateformat'], $commentsrow[$i]['comment_time'], $board_config['board_timezone']),
 				'VIEW' => $commentsrow[$i]['pic_view_count'],
 				'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $commentsrow[$i]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 				'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',

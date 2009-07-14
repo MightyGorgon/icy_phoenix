@@ -292,7 +292,7 @@ if (($t == 'pop') || ($t == 'new'))
 				'LINK_LOGO_SRC' => $row['link_logo_src'],
 				'LINK_LOGO' => $tmp,
 				'LINK_CATEGORY' => $link_categories[$row['link_category']],
-				'LINK_JOINED' => create_date2($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
+				'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
 				'LINK_HITS' => $row['link_hits']
 				)
 			);
@@ -467,7 +467,7 @@ if ($t == 'sub_pages')
 				'LINK_LOGO_SRC' => $row['link_logo_src'],
 				'LINK_LOGO' => $tmp,
 				'LINK_CATEGORY' => $link_categories[$row['link_category']],
-				'LINK_JOINED' => create_date2($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
+				'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
 				'LINK_HITS' => $row['link_hits']
 				)
 			);
@@ -600,7 +600,7 @@ if ($t == 'search')
 					'LINK_LOGO_SRC' => $row['link_logo_src'],
 					'LINK_LOGO' => $tmp,
 					'LINK_CATEGORY' => $link_categories[$row['link_category']],
-					'LINK_JOINED' => create_date2($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
+					'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
 					'LINK_HITS' => $row['link_hits']
 					)
 				);

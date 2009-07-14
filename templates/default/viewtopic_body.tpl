@@ -195,7 +195,7 @@ function open_postreview(ref)
 	</td>
 </tr>
 <tr>
-	<td class="row-post-date"><div style="text-align:center;"><b>{postrow.SINGLE_POST}&nbsp;&nbsp;&nbsp;</b>{postrow.POST_DATE}<!-- IF S_ADMIN_MOD --><b>&nbsp;&nbsp;{postrow.POST_EDIT_STRING}&nbsp;</b><!-- ENDIF --></div></td>
+	<td class="row-post-date"><div style="text-align:center;"><b>{postrow.SINGLE_POST}&nbsp;&nbsp;</b>{postrow.POST_DATE}<!-- IF S_ADMIN_MOD --><b>&nbsp;&nbsp;{postrow.POST_EDIT_STRING}</b><!-- ENDIF --></div></td>
 	<td class="row-post-buttons post-buttons">
 		<div style="text-align:right;vertical-align:middle;">
 			<div class="extra-top-padding" style="position:relative;float:left;text-align:left;vertical-align:middle;">

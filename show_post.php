@@ -284,7 +284,7 @@ if ($row = $db->sql_fetchrow($result))
 			$$k = $v;
 		}
 
-		$post_date = create_date2($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
+		$post_date = create_date_ip($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
 		$poster_posts = ($row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $row['user_posts'] : '';
 		$poster_from = ($row['user_from'] && $row['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $row['user_from'] : '';
 		$poster_joined = ($row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']) : '';

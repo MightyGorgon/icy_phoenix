@@ -79,7 +79,7 @@ if (count($kb_row) > 0)
 	$temp_url = append_sid(this_kb_mxurl('mode=cat&amp;cat=' . $article_category_id));
 	$category = '<a href="' . $temp_url . '">' . $article_category_name . '</a>';
 
-	$date = create_date2($board_config['default_dateformat'], $kb_row['article_date'], $board_config['board_timezone']);
+	$date = create_date_ip($board_config['default_dateformat'], $kb_row['article_date'], $board_config['board_timezone']);
 
 	// author information
 

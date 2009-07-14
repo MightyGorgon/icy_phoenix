@@ -255,7 +255,7 @@ if ($no_drafts == false)
 			'DRAFT_CAT' => $draft_row[$i]['draft_cat'],
 			'DRAFT_TITLE_LINK' => $draft_title_link,
 			'DRAFT_TITLE' => ip_stripslashes($draft_row[$i]['draft_title']),
-			'DRAFT_TIME' => create_date2($board_config['default_dateformat'], $draft_row[$i]['save_time'], $board_config['board_timezone']),
+			'DRAFT_TIME' => create_date_ip($board_config['default_dateformat'], $draft_row[$i]['save_time'], $board_config['board_timezone']),
 			'U_DRAFT_LOAD' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']),
 			'U_DRAFT_DELETE' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=delete&amp;d=' . $draft_row[$i]['draft_id']),
 			)

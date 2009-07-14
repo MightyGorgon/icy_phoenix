@@ -153,51 +153,51 @@ class pafiledb_user_upload extends pafiledb_public
 			}
 			elseif($file_id != '')
 			{
-					$sql = 'SELECT *
-						FROM ' . PA_FILES_TABLE . "
-						WHERE file_id = $file_id";
-					if (!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-					}
-					$file_info = $db->sql_fetchrow($result);
+				$sql = 'SELECT *
+					FROM ' . PA_FILES_TABLE . "
+					WHERE file_id = $file_id";
+				if (!($result = $db->sql_query($sql)))
+				{
+					message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
+				}
+				$file_info = $db->sql_fetchrow($result);
 
-					// AUTH CHECK
-					if (!(($this->auth[$file_info['file_catid']]['auth_edit_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod']))
-					{
-						$message = sprintf($lang['Sorry_auth_edit'], $this->auth[$cat_id]['auth_upload_type']);
-						message_die(GENERAL_MESSAGE, $message);
-					}
-
-					$file_name = htmlspecialchars($file_info['file_name']);
-					$file_desc = htmlspecialchars($file_info['file_desc']);
-					$file_long_desc =htmlspecialchars($file_info['file_longdesc']);
-					$file_author = htmlspecialchars($file_info['file_creator']);
-					$file_version = htmlspecialchars($file_info['file_version']);
-					$file_website = htmlspecialchars($file_info['file_docsurl']);
-					$file_posticons = $pafiledb_functions->post_icons($file_info['file_posticon']);
-					$file_cat_list = $this->jumpmenu_option(0, 0, array($file_info['file_catid'] => 1), true);
-					$file_license = $pafiledb_functions->license_list($file_info['file_license']);
-					$pin_checked_yes = ($file_info['file_pin']) ? ' checked="checked"' : '';
-					$pin_checked_no = (!$file_info['file_pin']) ? ' checked="checked"' : '';
-					$file_download = intval($file_info['file_dls']);
-					$approved_checked_yes = ($file_info['file_approved']) ? ' checked="checked"' : '';
-					$approved_checked_no = (!$file_info['file_approved']) ? ' checked="checked"' : '';
-					// MX addon
-					$file_approved = ($file_info['file_approved'] == '1') ? 1 : 0;
-					$file_ssurl = $file_info['file_ssurl'];
-					$ss_checked_yes = ($file_info['file_sshot_link']) ? ' checked="checked"' : '';
-					$ss_checked_no = (!$file_info['file_sshot_link']) ? ' checked="checked"' : '';
-					$file_url = $file_info['file_dlurl'];
-					$file_unique_name = $file_info['unique_name'];
-					$file_dir = $file_info['file_dir'];
-					$custom_exist = $custom_field->display_edit($file_id);
-					$mode = 'EDIT';
-					$l_title = $lang['Efiletitle'];
-					$s_hidden_fields = '<input type="hidden" name="file_id" value="' . $file_id . '" />';
+				// AUTH CHECK
+				if (!(($this->auth[$file_info['file_catid']]['auth_edit_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod']))
+				{
+					$message = sprintf($lang['Sorry_auth_edit'], $this->auth[$cat_id]['auth_upload_type']);
+					message_die(GENERAL_MESSAGE, $message);
 				}
 
-				$s_hidden_fields .= '<input type="hidden" name="action" value="user_upload" />';
+				$file_name = htmlspecialchars($file_info['file_name']);
+				$file_desc = htmlspecialchars($file_info['file_desc']);
+				$file_long_desc =htmlspecialchars($file_info['file_longdesc']);
+				$file_author = htmlspecialchars($file_info['file_creator']);
+				$file_version = htmlspecialchars($file_info['file_version']);
+				$file_website = htmlspecialchars($file_info['file_docsurl']);
+				$file_posticons = $pafiledb_functions->post_icons($file_info['file_posticon']);
+				$file_cat_list = $this->jumpmenu_option(0, 0, array($file_info['file_catid'] => 1), true);
+				$file_license = $pafiledb_functions->license_list($file_info['file_license']);
+				$pin_checked_yes = ($file_info['file_pin']) ? ' checked="checked"' : '';
+				$pin_checked_no = (!$file_info['file_pin']) ? ' checked="checked"' : '';
+				$file_download = intval($file_info['file_dls']);
+				$approved_checked_yes = ($file_info['file_approved']) ? ' checked="checked"' : '';
+				$approved_checked_no = (!$file_info['file_approved']) ? ' checked="checked"' : '';
+				// MX addon
+				$file_approved = ($file_info['file_approved'] == '1') ? 1 : 0;
+				$file_ssurl = $file_info['file_ssurl'];
+				$ss_checked_yes = ($file_info['file_sshot_link']) ? ' checked="checked"' : '';
+				$ss_checked_no = (!$file_info['file_sshot_link']) ? ' checked="checked"' : '';
+				$file_url = $file_info['file_dlurl'];
+				$file_unique_name = $file_info['unique_name'];
+				$file_dir = $file_info['file_dir'];
+				$custom_exist = $custom_field->display_edit($file_id);
+				$mode = 'EDIT';
+				$l_title = $lang['Efiletitle'];
+				$s_hidden_fields = '<input type="hidden" name="file_id" value="' . $file_id . '" />';
+			}
+
+			$s_hidden_fields .= '<input type="hidden" name="action" value="user_upload" />';
 
 
 			$pafiledb_template->assign_vars(array(

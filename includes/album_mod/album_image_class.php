@@ -1279,11 +1279,11 @@ class ImgObj
 				$blue = $rgb & 0xFF;
 
 				$red = 255 - $red;
-				$green = 255 -$green;
+				$green = 255 - $green;
 				$blue = 255 - $blue;
 
-				$newcol = imagecolorallocate ($this->ImageID, $red,$green,$blue);
-				imagesetpixel ($this->ImageID, $x, $y, $newcol);
+				$newcol = imagecolorallocate($this->ImageID, $red,$green,$blue);
+				imagesetpixel($this->ImageID, $x, $y, $newcol);
 			}
 		}
 		$this->ChangeFlag = true;

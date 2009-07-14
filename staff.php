@@ -146,7 +146,7 @@ for($i = 0; $i < count($level_cat); $i++)
 			message_die(GENERAL_ERROR, 'Error getting user last post.', '', __LINE__, __FILE__, $sql_posts);
 		}
 		$row = $db->sql_fetchrow($results_posts);
-		//$last_post = (isset($row['post_time'])) ? '<a href="' . append_sid(VIEWTOPIC_MG . '?'. POST_POST_URL . '=' . $row[post_id] . '#p' . $row[post_id]) . '"  style="text-decoration:none">' . create_date2($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']) .'</a>' : $lang['None'];
+		//$last_post = (isset($row['post_time'])) ? '<a href="' . append_sid(VIEWTOPIC_MG . '?'. POST_POST_URL . '=' . $row[post_id] . '#p' . $row[post_id]) . '"  style="text-decoration:none">' . create_date_ip($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']) .'</a>' : $lang['None'];
 		$user_topics = $row['user_topics'];
 
 		$memberdays = max(1, round((time() - $staff['user_regdate']) / 86400));

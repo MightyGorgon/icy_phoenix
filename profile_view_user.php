@@ -77,7 +77,7 @@ while ($row = $db->sql_fetchrow($result))
 		'AVATAR' => $viewer_avatar,
 		'VIEW_BY' => colorize_username($viewer, $row['username'], $row['user_color'], $row['user_active']),
 		'NUMBER' => $row['counter'],
-		'STAMP' => create_date2($userdata['user_dateformat'], $row['view_stamp'], $userdata['user_timezone'])
+		'STAMP' => create_date_ip($userdata['user_dateformat'], $row['view_stamp'], $userdata['user_timezone'])
 		)
 	);
 }

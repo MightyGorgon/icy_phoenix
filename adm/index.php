@@ -890,7 +890,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		$log_action = parse_logs_action($log_item_data['log_id'], $log_item_data['log_action'], $log_item_data['log_desc'], $log_username, $log_target);
 		$template->assign_block_vars('log_row', array(
 				'LOG_ID' => $log_item_data['log_id'],
-				'LOG_TIME' => create_date2($board_config['default_dateformat'], $log_item_data['log_time'], $board_config['board_timezone']),
+				'LOG_TIME' => create_date_ip($board_config['default_dateformat'], $log_item_data['log_time'], $board_config['board_timezone']),
 				'LOG_PAGE' => $log_item_data['log_page'],
 				'LOG_ACTION' => $log_item_data['log_action'],
 				'LOG_USERNAME' => $log_username,

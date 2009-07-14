@@ -44,7 +44,7 @@
 			post-text .code a, .post-text .code a:visited { color: #777777; text-decoration: none; border-bottom: dotted 1px #666666; }
 			post-text .code a:hover, .post-text .code a:active { color: #ff2222; text-decoration: none; border-bottom: dotted 1px #ff2222; }
 			.post-text .code-header { margin: 0; margin-bottom: 5px; padding-left: 18px; padding-bottom: 3px; border-bottom: solid 1px #dddddd; font-size: 11px; line-height: 1.2em; font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: normal; color: #808080; background: #ffffff url({ROOT}templates/common/images/bg_code_header.gif) top left no-repeat; }
-			.code-header a:link, .code-header a:visited  { color: #666666; text-decoration: none; border-bottom: dotted 1px #666666; }
+			.code-header a:link, .code-header a:visited { color: #666666; text-decoration: none; border-bottom: dotted 1px #666666; }
 			.code-header a:hover, .code-header a:active { color: #ff1010; text-decoration: none; border-bottom: dotted 1px #ff2222; }
 			.code-content { padding: 0; }
 			.code-list { margin-top: 3px; margin-right: 0; margin-bottom: 3px; }

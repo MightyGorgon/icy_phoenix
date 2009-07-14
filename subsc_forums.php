@@ -76,7 +76,7 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 		{
 			$forum_topics = $subs_forums_name_line['forum_topics'];
 			$forum_posts = $subs_forums_name_line['forum_posts'];
-			$forum_last_post_time = create_date2($board_config['default_dateformat'], $subs_forums_name_line['post_time'], $board_config['board_timezone']);
+			$forum_last_post_time = create_date_ip($board_config['default_dateformat'], $subs_forums_name_line['post_time'], $board_config['board_timezone']);
 			$last_post = '';
 			$last_post .= ($subs_forums_name_line['user_id'] == ANONYMOUS) ? (($subs_forums_name_line['post_username'] != '') ? $subs_forums_name_line['post_username'] . ' ' : $lang['Guest'] . ' ') : colorize_username($subs_forums_name_line['user_id'], $subs_forums_name_line['username'], $subs_forums_name_line['user_color'], $subs_forums_name_line['user_active']);
 			$last_post .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $subs_forums_name_line['forum_last_post_id']) . '#p' . $subs_forums_name_line['forum_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';

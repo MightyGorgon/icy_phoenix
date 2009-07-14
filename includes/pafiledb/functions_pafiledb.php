@@ -794,7 +794,7 @@ class pafiledb
 
 					if(!empty($last_file_info['file_id']) && $this->auth[$subcat_id]['auth_read'])
 					{
-						$last_file_time = create_date2($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
+						$last_file_time = create_date_ip($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
 						$last_file = $last_file_time . '<br />';
 						$last_file_name = (strlen(stripslashes($last_file_info['file_name'])) > 20) ? substr(stripslashes($last_file_info['file_name']), 0, 20) . '...' : stripslashes($last_file_info['file_name']);
 						$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $last_file_info['file_id']) . '" alt="' . stripslashes($last_file_info['file_name']) . '" title="' . stripslashes($last_file_info['file_name']) . '">' . $last_file_name . '</a> ';
@@ -885,7 +885,7 @@ class pafiledb
 						{
 							if(!empty($last_file_info['file_id']) && $this->auth[$sub_cat_rowset[$k]['cat_id']]['auth_read'])
 							{
-								$last_file_time = create_date2($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
+								$last_file_time = create_date_ip($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
 								$last_file = $last_file_time . '<br />';
 								$last_file_name = (strlen(stripslashes($last_file_info['file_name'])) > 20) ? substr(stripslashes($last_file_info['file_name']), 0, 20) . '...' : stripslashes($last_file_info['file_name']);
 								$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $last_file_info['file_id']) . '">' . $last_file_name . '</a> ';
@@ -1028,7 +1028,7 @@ class pafiledb
 			// Format the date for the given file
 			//===================================================
 
-			$date = create_date2($board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone']);
+			$date = create_date_ip($board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone']);
 
 			//===================================================
 			// Get rating for the file and format it

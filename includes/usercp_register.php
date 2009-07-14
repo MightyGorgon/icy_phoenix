@@ -1895,7 +1895,7 @@ else
 		$s_hidden_fields .= '<input type="hidden" name="occupation" value="' . $occupation . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="interests" value="' . $interests . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="phone" value="' . $phone . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="selfdes" value="' . $selfdes . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="selfdes" value="' . htmlspecialchars($selfdes) . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="b_day" value="' . $birthday_day . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="b_md" value="' . $birthday_month . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="b_year" value="' . $birthday_year . '" />';

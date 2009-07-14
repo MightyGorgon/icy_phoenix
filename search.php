@@ -1509,7 +1509,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			$post_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append . '&amp;highlight=' . $highlight_active) . $post_id_append_url;
 			$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
-			$post_date = create_date2($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
+			$post_date = create_date_ip($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
 
 			$message = !empty($searchset[$i]['post_text']) ? $searchset[$i]['post_text'] : '';
 			$message_compiled = empty($searchset[$i]['post_text_compiled']) ? false : $searchset[$i]['post_text_compiled'];
@@ -1837,7 +1837,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 
 				$first_post_time = create_date($board_config['default_dateformat'], $searchset[$i]['topic_time'], $board_config['board_timezone']);
-				$last_post_time = create_date2($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
+				$last_post_time = create_date_ip($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
 				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($searchset[$i]['id2'], $searchset[$i]['user2'], $searchset[$i]['user_color2'], $searchset[$i]['user_active2']);
 
 				$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#p' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';

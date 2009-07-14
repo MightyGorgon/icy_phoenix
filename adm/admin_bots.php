@@ -248,7 +248,7 @@ else
 			'BOT_COLOR' => (($row['bot_color'] == '') ? '&nbsp;' : $row['bot_color']),
 			'BOT_AGENT' => (($row['bot_agent'] == '') ? '&nbsp;' : $row['bot_agent']),
 			'BOT_IP' => (($row['bot_ip'] == '') ? '&nbsp;' : $row['bot_ip']),
-			'BOT_LAST_VISIT' => (($row['bot_last_visit'] == 0) ? '-' : create_date2($board_config['default_dateformat'], $row['bot_last_visit'], $board_config['board_timezone'])),
+			'BOT_LAST_VISIT' => (($row['bot_last_visit'] == 0) ? '-' : create_date_ip($board_config['default_dateformat'], $row['bot_last_visit'], $board_config['board_timezone'])),
 			'BOT_COUNTER' => $row['bot_visit_counter'],
 
 			'U_EDIT' => append_sid('admin_bots.' . PHP_EXT . '?mode=add&amp;bot_id=' . $row['bot_id']),

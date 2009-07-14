@@ -1584,6 +1584,39 @@ function dateserial($year, $month, $day, $hour, $minute, $timezone = 'UTC')
 }
 */
 
+// Get DST
+function get_dst($gmepoch)
+{
+	global $board_config, $userdata;
+
+	if (!empty($userdata) && !$userdata['session_logged_in'])
+	{
+		$userdata['user_time_mode'] = $board_config['default_time_mode'];
+		$userdata['user_dst_time_lag'] = $board_config['default_dst_time_lag'];
+	}
+	elseif (!empty($userdata))
+	{
+		$board_config['default_time_mode'] = $userdata['user_time_mode'];
+		$board_config['default_dst_time_lag'] = $userdata['user_dst_time_lag'];
+	}
+	$time_mode = $board_config['default_time_mode'];
+	$dst_time_lag = $board_config['default_dst_time_lag'];
+
+	switch ($time_mode)
+	{
+		case MANUAL_DST:
+			$dst_sec = $dst_time_lag * 60;
+			break;
+		case SERVER_SWITCH:
+			$dst_sec = date('I', $gmepoch) * $dst_time_lag * 60;
+			break;
+		default:
+			$dst_sec = 0;
+			break;
+	}
+	return $dst_sec;
+}
+
 // Create date/time from format and timezone
 function create_date($format, $gmepoch, $tz)
 {
@@ -1600,82 +1633,36 @@ function create_date($format, $gmepoch, $tz)
 		}
 	}
 
-	$time_mode = $board_config['default_time_mode'];
-	$dst_time_lag = $board_config['default_dst_time_lag'];
-	if (!empty($userdata) && !$userdata['session_logged_in'])
-	{
-		$userdata['user_time_mode'] = $board_config['default_time_mode'];
-		$userdata['user_dst_time_lag'] = $board_config['default_dst_time_lag'];
-	}
-	elseif (!empty($userdata))
-	{
-		$time_mode = $userdata['user_time_mode'];
-		$dst_time_lag = $userdata['user_dst_time_lag'];
-	}
-
-	switch ($time_mode)
-	{
-		case MANUAL_DST:
-			$dst_sec = $dst_time_lag * 60;
-			return (!empty($translate)) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
-			break;
-		case SERVER_SWITCH:
-			$dst_sec = date('I', $gmepoch) * $dst_time_lag * 60;
-			return (!empty($translate)) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
-			break;
-		default:
-			return (!empty($translate)) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz)), $translate) : @gmdate($format, $gmepoch + (3600 * $tz));
-			break;
-	}
+	$dst_sec = get_dst($gmepoch);
+	$date = (!empty($translate) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec));
+	return $date;
 }
 
-function create_date_ex($format, $gmepoch, $tz)
-{
-	global $lang;
-	static $today, $yesterday, $time;
-	if(empty($today))
-	{
-		$today = array();
-		$yesterday = array();
-		$time = time();
-	}
-	$str = create_date($format, $gmepoch, $tz);
-	if(empty($today[$format]))
-	{
-		$today[$format] = create_date($format, $time, $tz);
-		$yesterday[$format] = create_date($format, $time - 86400, $tz);
-	}
-	if($str === $today[$format])
-	{
-		return $lang['Today_at'];
-	}
-	elseif($str === $yesterday[$format])
-	{
-		return $lang['Yesterday_at'];
-	}
-	return $str;
-}
-
-function create_date2($format, $gmepoch, $tz)
-{
-	$str = create_date_ex('d M Y', $gmepoch, $tz);
-	$str .= ' ' . create_date('H:i', $gmepoch, $tz);
-	return $str;
-}
-
-function create_date_simple($format, $gmepoch, $tz)
+function create_date_ip($format, $gmepoch, $tz, $day_only = false)
 {
 	global $board_config, $lang;
-	$date_day = create_date($format, $gmepoch, $tz);
+	if (empty($board_config['time_today']) || empty($board_config['time_yesterday']))
+	{
+		$today_ary = explode('|', create_date('m|d|Y', time(), $board_config['board_timezone']));
+		$dst_sec = get_dst($gmepoch);
+		$board_config['time_today'] = gmmktime(0, 0, 0, $today_ary[0], $today_ary[1], $today_ary[2]) - (3600 * $tz) - $dst_sec;
+		$board_config['time_yesterday'] = $board_config['time_today'] - 86400;
+		unset($today_ary);
+	}
+	$output_date = '';
+	$format_hour = 'H:i';
 	if ($board_config['time_today'] < $gmepoch)
 	{
-		$date_day = $lang['TODAY'];
+		$format = ($day_only) ? $format : $format_hour;
+		$output_date = ($day_only) ? $lang['TODAY'] : ($lang['Today_at'] . ' ');
 	}
 	elseif ($board_config['time_yesterday'] < $gmepoch)
 	{
-		$date_day = $lang['YESTERDAY'];
+		$format = ($day_only) ? $format : $format_hour;
+		$output_date = ($day_only) ? $lang['YESTERDAY'] : ($lang['Yesterday_at'] . ' ');
 	}
-	return $date_day;
+	$output_date = $output_date . (($day_only && !empty($output_date)) ? '' : create_date($format, $gmepoch, $tz));
+	return $output_date;
 }
 
 // Birthday - BEGIN
@@ -3042,6 +3029,7 @@ function empty_cache_folders($cache_folder = '', $files_per_step = 0)
 		'index.htm',
 		'index.html',
 		'index.' . PHP_EXT,
+		'empty_cache.bat',
 	);
 
 	$sql_prefix = 'sql_';

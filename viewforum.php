@@ -1320,10 +1320,10 @@ if ($bypass)
 			$topic_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']) : colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
 			$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '' : '';
 
-			//$first_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
-			$first_post_time = create_date_simple($lang['DATE_FORMAT_VF'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
+			//$first_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
+			$first_post_time = create_date_ip($lang['DATE_FORMAT_VF'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone'], true);
 
-			$last_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
+			$last_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
 
 			$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($topic_rowset[$i]['id2'], $topic_rowset[$i]['user2'], $topic_rowset[$i]['user_color2'], $topic_rowset[$i]['user_active2']);
 

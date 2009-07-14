@@ -1232,7 +1232,7 @@ switch($mode)
 				{
 					$message = $postrow[$i]['post_text'];
 					$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : $topic_title;
-					$post_date = create_date2($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
+					$post_date = create_date_ip($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
 
 					if(!empty($postrow[$i]['post_text_compiled']))
 					{
@@ -1810,13 +1810,13 @@ switch($mode)
 				$goto_page = '';
 			}
 
-			$first_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
+			$first_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
 			//$first_post_author = ($topic_rowset[$i]['topic_starter_id'] == ANONYMOUS) ? (($topic_rowset[$i]['topic_starter_guest'] != '') ? $topic_rowset[$i]['topic_starter_guest'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['topic_starter_id']) . '">' . $topic_rowset[$i]['topic_starter'] . '</a> ';
 			$first_post_author =  colorize_username($topic_rowset[$i]['topic_starter_id'], $topic_rowset[$i]['topic_starter'], $topic_rowset[$i]['topic_starter_color'], $topic_rowset[$i]['topic_starter_active']);
 
 			$first_post_url = ($type == 'shadow') ? '' : '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
-			$last_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
+			$last_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
 			//$last_post_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' . $topic_rowset[$i]['username'] . '</a> ';
 			$last_post_author =  colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
 			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
@@ -1824,7 +1824,7 @@ switch($mode)
 			$u_view_topic = 'modcp.' . PHP_EXT . '?mode=split&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 			$topic_replies = $topic_rowset[$i]['topic_replies'];
 
-			$last_post_time = create_date2($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
+			$last_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
 
 			$template->assign_block_vars('topicrow', array(
 				'U_VIEW_TOPIC' => $u_view_topic,

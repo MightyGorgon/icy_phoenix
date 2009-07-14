@@ -154,7 +154,6 @@ $lang = array_merge($lang, array(
 	'Registered_users' => 'Registered Users:',
 	'Remember_me' => 'Automatic Login',
 	'Save_Topic' => 'Save topic as a file',
-	'Shout_censor' => 'shout removed!',
 	'Shout_refresh' => 'Refresh',
 	'Shout_text' => 'Your text',
 	'Shoutbox_date' => 'D G:i \\w\r\o\t\e ',
