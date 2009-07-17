@@ -30,7 +30,7 @@ var hidemenu_onclick = "no"; //hide menu when user clicks within menu?
 /////No further editing needed
 if (ie4 || ns6)
 {
-	document.write('<div id="dropmenudiv" class="row1" style="visibility:hidden;width:' + menuwidth + ';" onmouseover="clearhidemenu()" onmouseout="dynamichide(event)"><\/div>');
+	document.write('<div id="dropmenudiv" class="row1" style="visibility: hidden; width:' + menuwidth + ';" onmouseover="clearhidemenu();" onmouseout="dynamichide(event);"><\/div>');
 }
 </script>
 
@@ -39,7 +39,7 @@ if (ie4 || ns6)
 <script type="text/javascript">
 if (hidemenu_onclick == "yes")
 {
-	document.onclick=hidemenu;
+	document.onclick = hidemenu;
 }
 </script>
 <!-- ENDIF -->
@@ -96,13 +96,13 @@ if (hidemenu_onclick == "yes")
 		<a href="{FULL_SITE_PATH}{U_SEARCH_NEW}">{L_NEW2}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- END switch_upi2db_off -->
 		<!-- BEGIN switch_upi2db_on -->
-		<span style="vertical-align:top;">{L_POSTS}:&nbsp;</span><a href="{FULL_SITE_PATH}{U_SEARCH_NEW}">{L_NEW2}</a><span style="vertical-align:top;">&nbsp;&#8226;&nbsp;</span>{L_DISPLAY_U}<span style="vertical-align:top;">&nbsp;&#8226;&nbsp;</span>{L_DISPLAY_M}<span style="vertical-align:top;">&nbsp;&#8226;&nbsp;</span>{L_DISPLAY_P}&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
+		<span style="vertical-align: top;">{L_POSTS}:&nbsp;</span><a href="{FULL_SITE_PATH}{U_SEARCH_NEW}">{L_NEW2}</a><span style="vertical-align: top;">&nbsp;&#8226;&nbsp;</span>{L_DISPLAY_U}<span style="vertical-align: top;">&nbsp;&#8226;&nbsp;</span>{L_DISPLAY_M}<span style="vertical-align: top;">&nbsp;&#8226;&nbsp;</span>{L_DISPLAY_P}&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- END switch_upi2db_on -->
 		<!-- IF S_LOGGED_IN -->
 		<a href="{FULL_SITE_PATH}{U_PROFILE}">{L_PROFILE}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- ENDIF -->
 		<!-- IF S_HEADER_DROPDOWN -->
-		<a href="{FULL_SITE_PATH}{U_SEARCH}" onmouseover="dropdownmenu(this,event,menu1,'250px')" onmouseout="delayhidemenu()">{L_SEARCH}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
+		<a href="{FULL_SITE_PATH}{U_SEARCH}" onmouseover="dropdownmenu(this, event, menu1, '250px');" onmouseout="delayhidemenu();">{L_SEARCH}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- ELSE -->
 		<a href="{FULL_SITE_PATH}{U_SEARCH}">{L_SEARCH}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" />&nbsp;
 		<!-- ENDIF -->

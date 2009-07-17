@@ -66,9 +66,7 @@ class pafiledb_user_upload extends pafiledb_public
 		// =======================================================
 		if($do == 'delete')
 		{
-				$sql = 'SELECT *
-				FROM ' . PA_FILES_TABLE . "
-				WHERE file_id = $file_id";
+			$sql = "SELECT * FROM " . PA_FILES_TABLE . " WHERE file_id = " . $file_id;
 			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);

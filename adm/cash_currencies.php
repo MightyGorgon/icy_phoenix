@@ -110,9 +110,7 @@ if (isset($_POST['set']))
 					default:
 						break;
 				}
-				//
 				// Update the Cash Table
-				//
 				$sql[] = "UPDATE " . CASH_TABLE . "
 						SET cash_name = '" . str_replace("\'", "''", $newname) . "', cash_default = '" . $newdefault . "', cash_decimals = '" . $newdecimal . "'
 						WHERE cash_id = " . $c_cur->id();
@@ -123,9 +121,8 @@ if (isset($_POST['set']))
 						message_die(CRITICAL_ERROR, "Could not update currency", "", __LINE__, __FILE__, $sql);
 					}
 				}
-				//
+
 				// Log the action
-				//
 				// [admin/mod id][admin/mod name][copied currency name][copied over currency name]
 
 				$action = array($userdata['user_id'],
@@ -134,6 +131,8 @@ if (isset($_POST['set']))
 								$newname
 					);
 				cash_create_log(CASH_LOG_ADMIN_RENAME_CURRENCY , $action);
+
+				$db->clear_cache('cash_');
 			}
 			break;
 		case 'deletecurrency': // Delete Currency
@@ -193,27 +192,24 @@ if (isset($_POST['set']))
 							message_die(CRITICAL_ERROR, "Could not update user table", "", __LINE__, __FILE__, $sql);
 						}
 					}
-					//
+
 					// Delete the cash table entry
-					//
 					$sql = "DELETE FROM " . CASH_TABLE . "
 							WHERE cash_id = " . $c_cur->id();
 					if (!($db->sql_query($sql)))
 					{
 						message_die(CRITICAL_ERROR, "Unable to remove cash table entry, It is recommended you remove it manually as soon as possible", "", __LINE__, __FILE__, $sql);
 					}
-					//
+
 					// Delete exchange table entries
-					//
 					$sql = "DELETE FROM " . CASH_EXCHANGE_TABLE . "
 							WHERE ex_cash_id1 = " . $c_cur->id() . " OR ex_cash_id2 = " . $c_cur->id();
 					if (!($db->sql_query($sql)))
 					{
 						message_die(CRITICAL_ERROR, "Unable to remove exchange table entries.", "", __LINE__, __FILE__, $sql);
 					}
-					//
+
 					// Log the action
-					//
 					// [admin/mod id][admin/mod name][currency name]
 					$action = array($userdata['user_id'],
 									$userdata['username'],
@@ -221,6 +217,8 @@ if (isset($_POST['set']))
 						);
 					cash_create_log(CASH_LOG_ADMIN_DELETE_CURRENCY , $action);
 					$_POST['submit'] = true;
+
+					$db->clear_cache('cash_');
 				}
 			}
 			break;
@@ -380,15 +378,16 @@ if (isset($_POST['set']))
 					message_die(CRITICAL_ERROR, "Unable to insert new record into cash table", "", __LINE__, __FILE__, $sql);
 				}
 				$cid = $db->sql_nextid();
-				//
+
 				// Log the action
-				//
 				// [admin/mod id][admin/mod name][currency name]
 				$action = array($userdata['user_id'],
 								$userdata['username'],
 								$new_name
 					);
 				cash_create_log(CASH_LOG_ADMIN_CREATE_CURRENCY , $action);
+
+				$db->clear_cache('cash_');
 			}
 			break;
 	}
@@ -435,6 +434,7 @@ if (isset($_GET['set']) && isset($_GET['cord']) && is_numeric($_GET['cord']))
 		message_die(GENERAL_ERROR, "Failed to fix Cash Mod order", "", __LINE__, __FILE__, $sql);
 	}
 	$cash->refresh_table();
+	$db->clear_cache('cash_');
 }
 
 $cash->reorder();

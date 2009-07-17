@@ -2145,6 +2145,8 @@ if ($bypass)
 		$search = '<a href="' . $search_url . '">' . sprintf($lang['Search_user_posts'], $postrow[$i]['username']) . '</a>';
 
 		$edit_url = '';
+		$edit_img = '';
+		$edit = '';
 		if ((($userdata['user_id'] == $poster_id) && $is_auth['auth_edit']) || $is_auth['auth_mod'])
 		{
 			if (($board_config['allow_mods_edit_admin_posts'] == false) && ($postrow[$i]['user_level'] == ADMIN) && ($userdata['user_level'] != ADMIN))
@@ -2159,14 +2161,13 @@ if ($bypass)
 				$edit = '<a href="' . $edit_url . '">' . $lang['Edit_delete_post'] . '</a>';
 			}
 		}
-		else
-		{
-			$edit_img = '';
-			$edit = '';
-		}
 
 		$delpost_url = '';
+		$delpost_img = '';
+		$delpost = '';
 		$ip_url = '';
+		$ip_img = '';
+		$ip = '';
 		if (($userdata['user_level'] == ADMIN) || $is_auth['auth_mod'])
 		{
 			$ip_url = 'modcp.' . PHP_EXT . '?mode=ip&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
@@ -2181,19 +2182,12 @@ if ($bypass)
 		}
 		else
 		{
-			$ip_img = '';
-			$ip = '';
 
 			if ($userdata['user_id'] == $poster_id && $is_auth['auth_delete'] && $forum_topic_data['topic_last_post_id'] == $postrow[$i]['post_id'])
 			{
 				$delpost_url = 'posting.' . PHP_EXT . '?mode=delete&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
 				$delpost_img = '<a href="' . $delpost_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';
 				$delpost = '<a href="' . $delpost_url . '">' . $lang['Delete_post'] . '</a>';
-			}
-			else
-			{
-				$delpost_img = '';
-				$delpost = '';
 			}
 		}
 

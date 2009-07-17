@@ -132,6 +132,7 @@ while ($c_cur = &$cash->currency_next($cm_i))
 if ($table_updated)
 {
 	$cash->refresh_table();
+	$db->clear_cache('cash_');
 }
 
 if (isset($_POST['submit']))

@@ -720,6 +720,7 @@ class cash_table
 				}
 			}
 			$this->refresh_table();
+			$db->clear_cache('cash_');
 		}
 	}
 

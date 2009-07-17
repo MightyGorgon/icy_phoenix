@@ -95,6 +95,7 @@ if (isset($_POST['submit']))
 		}
 	}
 	$cash->refresh_table();
+	$db->clear_cache('cash_');
 }
 
 // Start page proper

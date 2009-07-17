@@ -62,6 +62,7 @@ while ($c_cur = &$cash->currency_next($cm_i))
 	}
 	$exchange[] = array('id' => $c_cur->id(), 'name' => $c_cur->name(), 'exchange' => $exval);
 }
+$db->clear_cache('cash_');
 
 for ($i1 = 0; $i1 < count($exchange); $i1++)
 {
@@ -74,7 +75,7 @@ for ($i1 = 0; $i1 < count($exchange); $i1++)
 			$j = $exchange[$i2]['id'];
 			if (isset($_POST[$varname][$j]) && ($i != $j))
 			{
-				$sql = "";
+				$sql = '';
 				if ($_POST[$varname][$j] == $lang['Disabled'])
 				{
 					$sql = "INSERT INTO " . CASH_EXCHANGE_TABLE . "
