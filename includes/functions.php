@@ -755,40 +755,29 @@ function check_auth_level($level_required)
 
 	if ($userdata['user_level'] == ADMIN)
 	{
+		if ($level_required == AUTH_ADMIN)
+		{
+			return true;
+		}
+
 		if ($level_required == AUTH_FOUNDER)
 		{
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-			if ($userdata['user_id'] == $founder_id)
-			{
-				return true;
-			}
+			return ($userdata['user_id'] == $founder_id) ? true : false;
 		}
 		elseif ($level_required == AUTH_MAIN_ADMIN)
 		{
 			if (defined('MAIN_ADMINS_ID'))
 			{
 				$allowed_admins = explode(',', MAIN_ADMINS_ID);
-				if (in_array($userdata['user_id'], $allowed_admins))
-				{
-					return true;
-				}
+				return (in_array($userdata['user_id'], $allowed_admins)) ? true : false;
 			}
-			else
-			{
-				// Force to AUTH_ADMIN just in case the user have removed MAIN_ADMINS_ID from constants.php
-				$level_required == AUTH_ADMIN;
-			}
-		}
-
-		if ($level_required == AUTH_ADMIN)
-		{
-			return true;
 		}
 	}
 
+	// Force to AUTH_ADMIN since we already checked all cases for founder or main admins
 	if (($level_required == AUTH_FOUNDER) || ($level_required == AUTH_MAIN_ADMIN))
 	{
-		// Force to AUTH_ADMIN since we already checked all cases for founder or main admins
 		$level_required = AUTH_ADMIN;
 	}
 
@@ -798,7 +787,7 @@ function check_auth_level($level_required)
 	// Check if the user is REG or a BOT
 	$is_reg = ((($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) || $userdata['session_logged_in']) ? true : false;
 	$not_auth = (!$not_auth && ($level_required == AUTH_REG) && !$is_reg) ? true : $not_auth;
-	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($userdata['user_level'] != MOD)) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($userdata['user_level'] != MOD) && ($userdata['user_level'] != ADMIN)) ? true : $not_auth;
 	$not_auth = (!$not_auth && ($level_required == AUTH_ADMIN)) ? true : $not_auth;
 	if ($not_auth)
 	{
@@ -1634,7 +1623,8 @@ function create_date($format, $gmepoch, $tz)
 	}
 
 	$dst_sec = get_dst($gmepoch);
-	$date = (!empty($translate) ? strtr(@gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec), $translate) : @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec));
+	$date = @gmdate($format, $gmepoch + (3600 * $tz) + $dst_sec);
+	$date = (!empty($translate) ? strtr($date, $translate) : $date);
 	return $date;
 }
 

@@ -970,6 +970,9 @@ if(!empty($mode))
 
 				include(IP_ROOT_PATH . 'includes/prune.' . PHP_EXT);
 				prune($from_id, 0, true); // Delete everything from forum
+				empty_cache_folders(FORUMS_CACHE_FOLDER);
+				empty_cache_folders(TOPICS_CACHE_FOLDER);
+				sync('forum', $from_id);
 			}
 			else
 			{

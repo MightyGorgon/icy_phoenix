@@ -2333,6 +2333,18 @@ $lang['datetime']['SEP'] = 'Sep';
 $lang['datetime']['OCT'] = 'Oct';
 $lang['datetime']['NOV'] = 'Nov';
 $lang['datetime']['DEC'] = 'Dec';
+$lang['datetime']['Jan'] = $lang['datetime']['JAN'];
+$lang['datetime']['Feb'] = $lang['datetime']['FEB'];
+$lang['datetime']['Mar'] = $lang['datetime']['MAR'];
+$lang['datetime']['Apr'] = $lang['datetime']['APR'];
+$lang['datetime']['May'] = $lang['datetime']['MAY'];
+$lang['datetime']['Jun'] = $lang['datetime']['JUN'];
+$lang['datetime']['Jul'] = $lang['datetime']['JUL'];
+$lang['datetime']['Aug'] = $lang['datetime']['AUG'];
+$lang['datetime']['Sep'] = $lang['datetime']['SEP'];
+$lang['datetime']['Oct'] = $lang['datetime']['OCT'];
+$lang['datetime']['Nov'] = $lang['datetime']['NOV'];
+$lang['datetime']['Dec'] = $lang['datetime']['DEC'];
 
 // NOTE: Please do not translate the following 4 lines!
 // They are automatically translated into your language

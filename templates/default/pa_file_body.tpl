@@ -5,7 +5,7 @@
 <tr><th align="left" colspan="3">{FILE_NAME}</th></tr>
 <tr>
 	<td class="row2" valign="middle" width="20%"><span class="genmed">{L_DESC}:</span></td>
-	<td class="row1" valign="middle" width="80%" colspan="2"><span class="genmed">{FILE_LONGDESC}</span></td>
+	<td class="row1" valign="middle" width="80%" colspan="2"><div class="post-text">{FILE_LONGDESC}</div></td>
 </tr>
 <tr>
 	<td class="row2" valign="middle" width="20%"><span class="genmed">{L_SUBMITED_BY}:</span></td>

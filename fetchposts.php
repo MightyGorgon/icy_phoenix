@@ -88,7 +88,7 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 
 			if($message_compiled === false)
 			{
-				$bbcode->allow_smilies = $board_config['allow_smilies'] && $posts[$i]['enable_smilies'] ? true : false;
+				$bbcode->allow_smilies = ($board_config['allow_smilies'] && $posts[$i]['enable_smilies']) ? true : false;
 				$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
 			}
 			else
@@ -247,7 +247,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 
 			if($message_compiled === false)
 			{
-				$bbcode->allow_smilies = $board_config['allow_smilies'] && $posts[$i]['enable_smilies'] ? true : false;
+				$bbcode->allow_smilies = ($board_config['allow_smilies'] && $posts[$i]['enable_smilies']) ? true : false;
 				$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
 			}
 			else

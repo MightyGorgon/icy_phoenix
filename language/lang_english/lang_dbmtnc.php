@@ -43,17 +43,17 @@ $mtnc[] = array('--', '', '', '', 0);
 $mtnc[] = array('check_user',
 	'Check user and group tables',
 	'This will check the user and the group tables for errors and will restore missing single user groups.',
-	'You will loose all groups without any member by this action. Proceed?',
+	'You will lose all groups without any member by this action. Proceed?',
 	0);
 $mtnc[] = array('check_post',
 	'Check post and topic tables',
 	'This will check the post and the topic tables for errors.',
-	'You will loose all posts without any text. Proceed?',
+	'You will lose all posts without any text. Proceed?',
 	0);
 $mtnc[] = array('check_vote',
 	'Check vote tables',
 	'This will check the vote tables for errors.',
-	'You will loose all vote data without a corresponding vote. Proceed?',
+	'You will lose all vote data without a corresponding vote. Proceed?',
 	0);
 $mtnc[] = array('check_pm',
 	'Check private message tables',
@@ -101,7 +101,7 @@ $mtnc[] = array('reset_date',
 $mtnc[] = array('reset_sessions',
 	'Reset all sessions',
 	'This will reset all current sessions by emptying the session table.',
-	'All currently active users will loose their session and their search results. Proceed?',
+	'All currently active users will lose their session and their search results. Proceed?',
 	0);
 $mtnc[] = array('--', '', '', '', 8);
 $mtnc[] = array('sync_topics_subjects',

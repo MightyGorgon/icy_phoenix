@@ -2176,14 +2176,28 @@ if ($bypass)
 			// End Advanced IP Tools Pack MOD
 			$ip = '<a href="' . $ip_url . '">' . $lang['View_IP'] . '</a>';
 
-			$delpost_url = 'posting.' . PHP_EXT . '?mode=delete&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
-			$delpost_img = '<a href="' . $delpost_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';
-			$delpost = '<a href="' . $delpost_url . '">' . $lang['Delete_post'] . '</a>';
+			if (($board_config['allow_mods_edit_admin_posts'] == false) && ($postrow[$i]['user_level'] == ADMIN) && ($userdata['user_level'] != ADMIN))
+			{
+				$delpost_url = '';
+				$delpost_img = '';
+				$delpost = '';
+			}
+			else
+			{
+				$delpost_url = 'posting.' . PHP_EXT . '?mode=delete&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
+				$delpost_img = '<a href="' . $delpost_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';
+				$delpost = '<a href="' . $delpost_url . '">' . $lang['Delete_post'] . '</a>';
+			}
 		}
 		else
 		{
-
-			if ($userdata['user_id'] == $poster_id && $is_auth['auth_delete'] && $forum_topic_data['topic_last_post_id'] == $postrow[$i]['post_id'])
+			if (($board_config['allow_mods_edit_admin_posts'] == false) && ($postrow[$i]['user_level'] == ADMIN) && ($userdata['user_level'] != ADMIN))
+			{
+				$delpost_url = '';
+				$delpost_img = '';
+				$delpost = '';
+			}
+			elseif (($userdata['user_id'] == $poster_id) && $is_auth['auth_delete'] && ($forum_topic_data['topic_last_post_id'] == $postrow[$i]['post_id']))
 			{
 				$delpost_url = 'posting.' . PHP_EXT . '?mode=delete&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
 				$delpost_img = '<a href="' . $delpost_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';

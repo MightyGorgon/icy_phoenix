@@ -214,7 +214,7 @@ class class_form
 			}
 
 			// We want to force each value the user isn't allowed to add/edit to the default value
-			if (($k != $item_id) && ((($action == 'add') && !check_auth_level($v['input_level'])) || (($action == 'edit') && !check_auth_level($v['edit_level']))))
+			if (($k != $item_id) && ((($action == 'add') && !check_auth_level($v['input_level'])) || (($v['type'] != 'HIDDEN') && ($action == 'edit') && !check_auth_level($v['edit_level']))))
 			{
 				$inputs_array[$k] = $v['default'];
 			}

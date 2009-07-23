@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.0.53');
+define('ICYPHOENIX_VERSION', '1.3.1.54');
 
 // List of tables used
 $tables = array(

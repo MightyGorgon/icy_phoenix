@@ -327,7 +327,6 @@
 						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
 						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
 						<li>Upload <b>install</b> folder to the root of your Icy Phoenix and launch <b>database_update.php</b> (i.e. http://www.mysite.com/ip/install/database_update.php).</li>
-						<li>Delete <b>install</b> folder.</li>
 						<li>Move the following folders:
 							<ul>
 								<li><b>pafiledb/uploads/*.*</b> ==> <b>downloads/*.*</b></li>
@@ -344,7 +343,16 @@
 						<li>Remove <b>all files</b> but <b>config.php</b> in your Icy Phoenix root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
 						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
 						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
-						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS).</li>
+						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS). Here is a short list of some files you may want to edit manually:
+							<ul>
+								<li><b>common.php</b></li>
+								<li><b>config.php</b></li>
+								<li><b>includes/constants.php</b></li>
+								<li><b>language/lang_***/lang_main_settings.php</b></li>
+							</ul>
+						</li>
+						<li>Run <b>install/install.php</b> and complete the update by renaming and moving images (both posted and in album) and replacing all old links in posts: the automated procedure should be able to perform all these actions automatically, just follow the instructions.</li>
+						<li>Delete <b>install</b> folder.</li>
 						<li>Unlock your site.</li>
 						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>

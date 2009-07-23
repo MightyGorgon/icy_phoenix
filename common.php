@@ -273,7 +273,7 @@ if (defined('IN_ADMIN'))
 	include_once(IP_ROOT_PATH . 'includes/functions_extra.' . PHP_EXT);
 }
 include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
-// We do not need this any longer, unset for safety purposes
+// We do not need these any longer, unset for safety purpose
 unset($dbuser);
 unset($dbpasswd);
 unset($db->password);

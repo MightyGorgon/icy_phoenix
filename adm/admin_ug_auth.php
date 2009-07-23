@@ -263,30 +263,32 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			else
 			{
 				$change_acl_list = array();
-				$used_forums = array();
+				$forums_processed = array();
 				for($j = 0; $j < count($forum_auth_fields); $j++)
 				{
 					$auth_field = $forum_auth_fields[$j];
 					while(list($forum_id, $value) = @each($_POST['private_' . $auth_field]))
 					{
-						$change_acl_list[$forum_id][$auth_field] = $value;
-					}
-
-					if (!isset($used_forums[$forum_id]))
-					{
-						$sql = ($mode == 'user') ? ("SELECT aa.*, g.group_single_user FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND aa.forum_id = $forum_id AND g.group_single_user = 1") : ("SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id AND forum_id = $forum_id");
-						if (!($result = $db->sql_query($sql)))
+						// Mighty Gorgon: I have moved this part of code in this cycle to be able to use $forum_id var, otherwhise it was not assigned...
+						// FORUMS AUTH MOVED CODE - BEGIN
+						if (!isset($forums_processed[$forum_id]))
 						{
-							message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-						}
-						if ($row = $db->sql_fetchrow($result))
-						{
-							for ($k = 0; $k < count($forum_auth_fields); $k++)
+							$sql = ($mode == 'user') ? ("SELECT aa.*, g.group_single_user FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND aa.forum_id = $forum_id AND g.group_single_user = 1") : ("SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id AND forum_id = $forum_id");
+							if (!($result = $db->sql_query($sql)))
 							{
-								$change_acl_list[$forum_id][$forum_auth_fields[$k]] = $row[$forum_auth_fields[$k]];
+								message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
 							}
+							if ($row = $db->sql_fetchrow($result))
+							{
+								for ($k = 0; $k < count($forum_auth_fields); $k++)
+								{
+									$change_acl_list[$forum_id][$forum_auth_fields[$k]] = $row[$forum_auth_fields[$k]];
+								}
+							}
+							$forums_processed[$forum_id] = 1;
 						}
-						$used_forums[$forum_id] = 1;
+						// FORUMS AUTH MOVED CODE - END
+						$change_acl_list[$forum_id][$auth_field] = $value;
 					}
 				}
 			}
