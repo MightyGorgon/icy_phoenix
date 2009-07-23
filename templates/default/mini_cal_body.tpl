@@ -4,13 +4,13 @@
 {IMG_THL}{IMG_THC}<a href="{U_MINI_CAL_CALENDAR}" class="forumlink">{L_MINI_CAL_CALENDAR}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr><th colspan="7">{U_PREV_MONTH}&nbsp;&nbsp;{L_MINI_CAL_MONTH}&nbsp;&nbsp;{U_NEXT_MONTH}</th></tr>
 	<tr class="row3 row-center">
-		<td width="16%"><span class="gensmall">{L_MINI_CAL_SUN}</span></td>
-		<td width="14%"><span class="gensmall">{L_MINI_CAL_MON}</span></td>
+		<td width="15%"><span class="gensmall">{L_MINI_CAL_MON}</span></td>
 		<td width="14%"><span class="gensmall">{L_MINI_CAL_TUE}</span></td>
 		<td width="14%"><span class="gensmall">{L_MINI_CAL_WED}</span></td>
 		<td width="14%"><span class="gensmall">{L_MINI_CAL_THU}</span></td>
 		<td width="14%"><span class="gensmall">{L_MINI_CAL_FRI}</span></td>
 		<td width="14%"><span class="gensmall">{L_MINI_CAL_SAT}</span></td>
+		<td width="15%"><span class="gensmall">{L_MINI_CAL_SUN}</span></td>
 	</tr>
 	<!-- BEGIN mini_cal_row -->
 	<tr>

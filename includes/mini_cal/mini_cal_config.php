@@ -84,9 +84,7 @@ define('MINI_CAL_EVENT_AUTH_LEVEL', 'auth_post');
 
 
 /***************************************************************************
-
 You should NOT modify any values below here.
-
 ***************************************************************************/
 
 // DO NOT MODIFY THIS!

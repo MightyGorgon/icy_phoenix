@@ -50,18 +50,18 @@ function getFormattedDate($cal_weekday, $cal_month, $cal_monthday, $cal_year, $c
 		$lang['mini_cal']['day'][$cal_weekday],
 		$lang['mini_cal']['month'][$cal_month],
 		$cal_month,
-		( (strlen($cal_monthday) < 2 ) ? '0' : '' ) . $cal_monthday,
+		((strlen($cal_monthday) < 2) ? '0' : '') . $cal_monthday,
 		$cal_monthday,
-		( (strlen($cal_month) < 2 ) ? '0' : '' ) . $cal_month,
+		((strlen($cal_month) < 2) ? '0' : '') . $cal_month,
 		substr($cal_year, -2),
 		$cal_year,
-		( (strlen($cal_hour) < 2 ) ? '0' : '' ) . $cal_hour,
+		((strlen($cal_hour) < 2) ? '0' : '') . $cal_hour,
 		$cal_hour,
-		( (strlen($cal_hour) < 2 ) ? '0' : '' ) . ( ( $cal_hour > 12 ) ? $cal_hour - 12 : $cal_hour ),
-		( $cal_hour > 12 ) ? $cal_hour - 12 : $cal_hour,
+		((strlen($cal_hour) < 2) ? '0' : '') . (($cal_hour > 12) ? $cal_hour - 12 : $cal_hour),
+		($cal_hour > 12) ? $cal_hour - 12 : $cal_hour,
 		$cal_min,
 		$cal_sec,
-		( $cal_hour < 12 ) ? 'AM' : 'PM'
+		($cal_hour < 12) ? 'AM' : 'PM'
 	);
 
 	return preg_replace($cal_date_pattern, $cal_date_replace, $format);
@@ -89,7 +89,7 @@ function setQueryStringVal($var, $value)
 	}
 	else
 	{
-		$querystring = ereg_replace("($var=[[:digit:]]{1,3})", $var . '=' . $value, $querystring);
+		$querystring = ereg_replace("($var=[-][[:digit:]]{1,3})", $var . '=' . $value, $querystring);
 	}
 	return '?' . $querystring;
 }
@@ -116,10 +116,10 @@ function getPostForumsList($mini_cal_post_auth, $and_post_auth_sql = '')
 				AND f.forum_id IN (' . $mini_cal_post_auth . ')' .
 				$and_post_auth_sql;
 
-		if( $result = $db->sql_query($sql) )
+		if($result = $db->sql_query($sql))
 		{
 			$num_rows = $db->sql_numrows($result);
-			if ( $num_rows > 0 )
+			if ($num_rows > 0)
 			{
 				$template->assign_block_vars('switch_mini_cal_add_events', array());
 
@@ -132,7 +132,7 @@ function getPostForumsList($mini_cal_post_auth, $and_post_auth_sql = '')
 				}
 				$forums_list .= '</select>';
 
-				$template->assign_vars( array(
+				$template->assign_vars(array(
 					'S_MINI_CAL_EVENTS_FORUMS_LIST' => $forums_list
 					)
 				);

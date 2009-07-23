@@ -1033,9 +1033,8 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 
 		'U_USER_OR_GROUP' => append_sid('admin_ug_auth.' . PHP_EXT),
 		'U_SWITCH_MODE' => $u_switch_mode,
-		'SPACER' => './../' . $images['spacer'],
 		'INC_SPAN' => $max_level + 1,
-		'S_COLUMN_SPAN' => $s_column_span + $max_level+2,
+		'S_COLUMN_SPAN' => $s_column_span + $max_level + 2,
 		'S_AUTH_ACTION' => append_sid('admin_ug_auth.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)

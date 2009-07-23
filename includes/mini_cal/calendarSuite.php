@@ -70,7 +70,7 @@ if ( !defined('IN_MINI_CAL') )
 * @const language
 * default 0 / english
 **/
-define("language", "0");
+define('language', '0');
 
 
 /**
@@ -78,7 +78,7 @@ define("language", "0");
 * @const dateFormat
 * default
 **/
-define("dateFormat" , "0");
+define('dateFormat' , '0');
 
 
 class calendarSuite
@@ -255,7 +255,7 @@ class calendarSuite
 	**/
 	function dateLinker($stamp)
 	{
-		$link = "?stamp=".$stamp;
+		$link = "?stamp=" . $stamp;
 		return $link;
 	// end of function dateLinker
 	}

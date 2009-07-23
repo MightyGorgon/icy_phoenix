@@ -40,13 +40,13 @@ $lang['Mini_Cal_date_format_Time'] = '%H:%i';
 // if you change the first day of the week in constants.php, you should change values for the short day names accordingly
 // e.g. FDOW = Sunday -> $lang['mini_cal']['day'][1] = 'Su'; ... $lang['mini_cal']['day'][7] = 'Sa';
 //      FDOW = Monday -> $lang['mini_cal']['day'][1] = 'Mo'; ... $lang['mini_cal']['day'][7] = 'Su';
-$lang['mini_cal']['day'][7] = 'Su';
 $lang['mini_cal']['day'][1] = 'Mo';
 $lang['mini_cal']['day'][2] = 'Tu';
 $lang['mini_cal']['day'][3] = 'We';
 $lang['mini_cal']['day'][4] = 'Th';
 $lang['mini_cal']['day'][5] = 'Fr';
 $lang['mini_cal']['day'][6] = 'Sa';
+$lang['mini_cal']['day'][7] = 'Su';
 
 $lang['mini_cal']['month'][1] = 'Jan';
 $lang['mini_cal']['month'][2] = 'Feb';

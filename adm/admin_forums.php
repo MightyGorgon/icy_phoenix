@@ -455,6 +455,7 @@ if(!empty($mode))
 			// Make sure forums cache is empty before creating user_tree
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			admin_check_cat();
 			get_user_tree($userdata);
 			move_tree('Root', 0, 0);
@@ -475,6 +476,8 @@ if(!empty($mode))
 			}
 			// Empty forums cache again... just to be really sure we are not messing up things!
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
+			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 
@@ -610,6 +613,7 @@ if(!empty($mode))
 			}
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			if($_POST['notify_enable'] != '1')
@@ -681,6 +685,7 @@ if(!empty($mode))
 			// Make sure cache is empty again...
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 
@@ -849,6 +854,7 @@ if(!empty($mode))
 			$message = $lang['Forums_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumadmin'], '<a href="' . append_sid('admin_forums.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$err = admin_check_cat();
@@ -972,6 +978,7 @@ if(!empty($mode))
 				prune($from_id, 0, true); // Delete everything from forum
 				empty_cache_folders(FORUMS_CACHE_FOLDER);
 				empty_cache_folders(TOPICS_CACHE_FOLDER);
+				empty_cache_folders(SQL_CACHE_FOLDER);
 				sync('forum', $from_id);
 			}
 			else
@@ -1030,6 +1037,7 @@ if(!empty($mode))
 				}
 				empty_cache_folders(FORUMS_CACHE_FOLDER);
 				empty_cache_folders(TOPICS_CACHE_FOLDER);
+				empty_cache_folders(SQL_CACHE_FOLDER);
 				sync('forum', $to_id);
 			}
 
@@ -1163,6 +1171,7 @@ if(!empty($mode))
 			}
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$sql = "DELETE FROM " . FORUMS_WATCH_TABLE . "
@@ -1297,6 +1306,7 @@ if(!empty($mode))
 			$message = $lang['Forums_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumadmin'], '<a href="' . append_sid('admin_forums.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$err = admin_check_cat();
@@ -1316,6 +1326,7 @@ if(!empty($mode))
 			move_tree(POST_FORUM_URL, $forum_id, $move);
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$show_index = true;
@@ -1332,6 +1343,7 @@ if(!empty($mode))
 			$cat_id = $tree['id'][$tree['keys'][$main]];
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			empty_cache_folders(TOPICS_CACHE_FOLDER);
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			cache_tree(true);
 			board_stats();
 			$show_index = true;
