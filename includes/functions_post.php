@@ -1080,7 +1080,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					}
 					else
 					{
-						$post_text = $bbcode->plain_message($post_text);
+						$post_text = $bbcode->plain_message($post_text, '');
 					}
 
 					@reset($bcc_list_ary);

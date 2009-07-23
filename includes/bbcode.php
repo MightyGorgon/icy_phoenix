@@ -3618,7 +3618,7 @@ class BBCode
 		return $text;
 	}
 
-	function plain_message($text, $id)
+	function plain_message($text, $id = false)
 	{
 		// This function will strip from a message some BBCodes,
 		// all BBCodes $uid, and some other formattings.
