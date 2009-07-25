@@ -2626,8 +2626,8 @@ if ($bypass)
 		$post_id = $postrow[$i]['post_id'];
 		$poster_number = ($postrow[$i]['poster_id'] == ANONYMOUS) ? '' : $lang['User_Number'] . ': ' . $postrow[$i]['poster_id'];
 		$post_edit_link = append_sid('edit_post_details.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']);
+		$post_edit_string_short = ($userdata['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $post_date . '</a>') : '';
 		$post_edit_string = ($userdata['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $lang['Edit_post_time_xs'] . '</a>') : '';
-		//$post_edit_string = (!$userdata['user_level'] == MOD || !$userdata['user_level'] == ADMIN) ? '' : '<a href="javascript:post_time_edit(' . $topic_id . ', ' . $post_id . ')" style="text-decoration:none;">' . $lang['Edit_post_time_xs']. '</a>';
 		$single_post = '<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\'); return false;" style="text-decoration: none;">#' . ($i + 1 + $start) . '</a>';
 
 		// Mighty Gorgon - Feedbacks - BEGIN
@@ -2682,6 +2682,7 @@ if ($bypass)
 			'POSTER_AVATAR' => $poster_avatar,
 			'POST_DATE' => $post_date,
 			'POST_EDIT_STRING' => $post_edit_string,
+			'POST_EDIT_STRING_SHORT' => $post_edit_string_short,
 			//'POST_EDIT_LINK' => $post_edit_link,
 			'POST_SUBJECT' => $post_subject,
 			'MESSAGE' => $message,

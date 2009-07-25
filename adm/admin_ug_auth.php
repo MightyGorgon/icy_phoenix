@@ -253,7 +253,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				{
 					while(list($auth_field, $exists) = @each($forum_auth_level_fields[$forum_id]))
 					{
-						if ($exists)
+						if($exists)
 						{
 							$change_acl_list[$forum_id][$auth_field] = $value;
 						}
@@ -287,6 +287,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 							}
 							$forums_processed[$forum_id] = 1;
 						}
+						/*
+						*/
 						// FORUMS AUTH MOVED CODE - END
 						$change_acl_list[$forum_id][$auth_field] = $value;
 					}
@@ -352,15 +354,15 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				{
 					$auth_field = $forum_auth_fields[$j];
 
-					if($forum_access[$i][$auth_field] == AUTH_ACL && isset($change_acl_list[$forum_id][$auth_field]))
+					if(($forum_access[$i][$auth_field] == AUTH_ACL) && isset($change_acl_list[$forum_id][$auth_field]))
 					{
 						if ((empty($auth_access[$forum_id]['auth_mod']) &&
-							(isset($auth_access[$forum_id][$auth_field]) && $change_acl_list[$forum_id][$auth_field] != $auth_access[$forum_id][$auth_field]) ||
+							(isset($auth_access[$forum_id][$auth_field]) && ($change_acl_list[$forum_id][$auth_field] != $auth_access[$forum_id][$auth_field])) ||
 							(!isset($auth_access[$forum_id][$auth_field]) && !empty($change_acl_list[$forum_id][$auth_field]))) ||
 							!empty($update_mod_status[$forum_id])
 						)
 						{
-							$update_acl_status[$forum_id][$auth_field] = (!empty($update_mod_status[$forum_id])) ? 0 :  $change_acl_list[$forum_id][$auth_field];
+							$update_acl_status[$forum_id][$auth_field] = (!empty($update_mod_status[$forum_id])) ? 0 : $change_acl_list[$forum_id][$auth_field];
 
 							if (isset($auth_access[$forum_id][$auth_field]) && empty($update_acl_status[$forum_id][$auth_field]) && $forum_auth_action[$forum_id] != 'insert' && $forum_auth_action[$forum_id] != 'update')
 							{
@@ -376,7 +378,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 							}
 						}
 						elseif ((empty($auth_access[$forum_id]['auth_mod']) &&
-							(isset($auth_access[$forum_id][$auth_field]) && $change_acl_list[$forum_id][$auth_field] == $auth_access[$forum_id][$auth_field])) && $forum_auth_action[$forum_id] == 'delete')
+							(isset($auth_access[$forum_id][$auth_field]) && ($change_acl_list[$forum_id][$auth_field] == $auth_access[$forum_id][$auth_field]))) && ($forum_auth_action[$forum_id] == 'delete'))
 						{
 							$forum_auth_action[$forum_id] = 'update';
 						}
