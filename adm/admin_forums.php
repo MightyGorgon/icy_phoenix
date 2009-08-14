@@ -1467,7 +1467,7 @@ if ($nav_cat_desc != '')
 $template->assign_vars(array(
 	'SPACER' => $images['spacer'],
 	'NAV_CAT_DESC' => $nav_cat_desc,
-	'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+	'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 	)
 );
 

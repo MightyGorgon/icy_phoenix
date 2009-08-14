@@ -30,7 +30,7 @@ if(!function_exists('imp_style_block_func'))
 
 			$default_style = $board_config['default_style'];
 			$select_name = STYLE_URL;
-			$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY template_name, themes_id";
+			$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
 			if (!($result = $db->sql_query($sql, false, 'themes_')))
 			{
 				message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);

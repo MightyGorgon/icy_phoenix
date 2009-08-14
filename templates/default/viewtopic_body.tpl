@@ -41,7 +41,7 @@ function post_time_edit(url)
 </table>
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 
 <!-- BEGIN switch_quick_quote -->
 message = new Array();
@@ -53,44 +53,7 @@ message[{postrow.U_POST_ID}] = " user=\"{postrow.POSTER_NAME_QQ}\" post=\"{postr
 <!-- END switch_quick_quote -->
 <!-- END postrow -->
 
-<!-- BEGIN switch_quick_quote -->
-function addquote(post_id, tag)
-{
-	document.getElementById('quick_reply').style.display="";
-	str_find = new Array("&lt_mg;", "&gt_mg;");
-	str_replace = new Array("<", ">");
-	for(var i = 0; i < message[post_id].length; i++)
-	{
-		for (var j = 0; j < str_find.length; j++)
-		{
-			if (message[post_id].search(str_find[j]) != -1)
-			{
-				message[post_id] = message[post_id].replace(str_find[j],str_replace[j]);
-			}
-		}
-	}
-	document.post.message.value += "[" + tag + message[post_id] + tag + "]";
-	document.post.message.focus();
-	return;
-}
-<!-- END switch_quick_quote -->
-
-function quotename(username)
-{
-	document.getElementById('quick_reply').style.display="";
-	document.post.message.value += username;
-	document.post.message.focus();
-	return;
-}
-
-function open_postreview(ref)
-{
-	height = screen.height / 2.23;
-	width = screen.width / 2;
-	window.open(ref,'_phpbbpostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
-	return;
-}
-//-->
+// ]]>
 </script>
 {IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE_SHORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- IF VIEWTOPIC_BANNER_TOP -->
@@ -203,7 +166,7 @@ function open_postreview(ref)
 			</div>
 			<!-- IF not S_BOT -->
 			<!-- BEGIN switch_quick_quote -->
-			<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a><a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
+			<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27,true,false);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a><a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27,true,false);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
 			<!-- END switch_quick_quote -->
 			<!-- ENDIF -->
 			<a href="{U_BACK_TOP}"><img src="{IMG_ARU}" alt="{L_BACK_TOP}" title="{L_BACK_TOP}" /></a><a href="{U_BACK_BOTTOM}"><img src="{IMG_ARD}" alt="{L_BACK_BOTTOM}" title="{L_BACK_BOTTOM}" /></a>

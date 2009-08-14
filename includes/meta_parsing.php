@@ -29,12 +29,12 @@ if (isset($meta_post_id) && ($meta_post_id > 0))
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
 			$meta_topic_id = $meta_row['topic_id'];
-			$meta_row['cat_title'] = strip_tags($meta_row['cat_title']);
-			$meta_row['forum_name'] = strip_tags($meta_row['forum_name']);
-			$meta_row['topic_title'] = strip_tags($meta_row['topic_title']);
+			$meta_row['cat_title'] = strip_tags(ip_stripslashes($meta_row['cat_title']));
+			$meta_row['forum_name'] = strip_tags(ip_stripslashes($meta_row['forum_name']));
+			$meta_row['topic_title'] = strip_tags(ip_stripslashes($meta_row['topic_title']));
 			/*
-			$meta_description = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
-			$page_title = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $page_title;
+			$meta_description = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
+			$page_title = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $page_title;
 			*/
 			$meta_description = $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
 			$page_title = $meta_row['forum_name'] . ' :: ' . $page_title;
@@ -71,12 +71,12 @@ elseif (isset($meta_topic_id) && ($meta_topic_id > 0))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
-			$meta_row['cat_title'] = strip_tags($meta_row['cat_title']);
-			$meta_row['forum_name'] = strip_tags($meta_row['forum_name']);
-			$meta_row['topic_title'] = strip_tags($meta_row['topic_title']);
+			$meta_row['cat_title'] = strip_tags(ip_stripslashes($meta_row['cat_title']));
+			$meta_row['forum_name'] = strip_tags(ip_stripslashes($meta_row['forum_name']));
+			$meta_row['topic_title'] = strip_tags(ip_stripslashes($meta_row['topic_title']));
 			/*
-			$meta_description = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
-			$page_title = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $page_title;
+			$meta_description = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
+			$page_title = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'] . ' :: ' . $page_title;
 			*/
 			$meta_description = $meta_row['forum_name'] . ' :: ' . $meta_row['topic_title'];
 			$page_title = $meta_row['forum_name'] . ' :: ' . $page_title;
@@ -111,12 +111,12 @@ elseif (isset($meta_forum_id) && ($meta_forum_id > 0))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
-			$meta_row['cat_title'] = strip_tags($meta_row['cat_title']);
-			$meta_row['forum_name'] = strip_tags($meta_row['forum_name']);
+			$meta_row['cat_title'] = strip_tags(ip_stripslashes($meta_row['cat_title']));
+			$meta_row['forum_name'] = strip_tags(ip_stripslashes($meta_row['forum_name']));
 			/*
-			$meta_description = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'];
-			$meta_keywords = $board_config['sitename'] . ', ' . $meta_row['cat_title'] . ', ' . $meta_row['forum_name'] . ', ';
-			$page_title = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $page_title;
+			$meta_description = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'] . ' :: ' . $meta_row['forum_name'];
+			$meta_keywords = ip_stripslashes($board_config['sitename']) . ', ' . $meta_row['cat_title'] . ', ' . $meta_row['forum_name'] . ', ';
+			$page_title = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'] . ' :: ' . $page_title;
 			*/
 			$meta_description = $meta_row['forum_name'];
 			$meta_keywords = $meta_row['cat_title'] . ', ' . $meta_row['forum_name'] . ', ';
@@ -135,11 +135,11 @@ elseif (isset($meta_cat_id) && ($meta_cat_id > 0))
 	{
 		while ($meta_row = $db->sql_fetchrow($result))
 		{
-			$meta_row['cat_title'] = strip_tags($meta_row['cat_title']);
+			$meta_row['cat_title'] = strip_tags(ip_stripslashes($meta_row['cat_title']));
 			/*
-			$meta_description = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'];
-			$meta_keywords = $board_config['sitename'] . ', ' . $meta_row['cat_title'] . ', ';
-			$page_title = $board_config['sitename'] . ' :: ' . $meta_row['cat_title'] . ' :: ' . $page_title;
+			$meta_description = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'];
+			$meta_keywords = ip_stripslashes($board_config['sitename']) . ', ' . $meta_row['cat_title'] . ', ';
+			$page_title = ip_stripslashes($board_config['sitename']) . ' :: ' . $meta_row['cat_title'] . ' :: ' . $page_title;
 			*/
 			$meta_description = $meta_row['cat_title'];
 			$meta_keywords = $meta_row['cat_title'] . ', ';

@@ -239,9 +239,9 @@ elseif (isset($_POST['joingroup']) && $group_id)
 		$emailer->set_subject($lang['Group_request']);
 
 		$emailer->assign_vars(array(
-			'SITENAME' => $board_config['sitename'],
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
 			'GROUP_MODERATOR' => $moderator['username'],
-			'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+			'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 			'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id . '&validate=true'
 			)
 		);
@@ -528,9 +528,9 @@ elseif ($group_id)
 					$emailer->set_subject($lang['Group_added']);
 
 					$emailer->assign_vars(array(
-						'SITENAME' => $board_config['sitename'],
+						'SITENAME' => ip_stripslashes($board_config['sitename']),
 						'GROUP_NAME' => $group_name,
-						'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+						'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 
 						'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
 						)
@@ -751,9 +751,9 @@ elseif ($group_id)
 						$emailer->set_subject($lang['Group_approved']);
 
 						$emailer->assign_vars(array(
-							'SITENAME' => $board_config['sitename'],
+							'SITENAME' => ip_stripslashes($board_config['sitename']),
 							'GROUP_NAME' => $group_name,
-							'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+							'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 
 							'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id)
 						);

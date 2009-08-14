@@ -1,41 +1,13 @@
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 
 message = new Array();
 <!-- BEGIN postrow -->
 message[{postrow.U_POST_ID}] = " user=\"{postrow.POSTER_NAME}\" post=\"{postrow.U_POST_ID}\"]{postrow.PLAIN_MESSAGE}[/";
 <!-- END postrow -->
 
-function addquote(post_id, tag)
-{
-	str_find = new Array("&lt;","&gt;", "--&gt;","&quot;")
-	str_replace = new Array("&lt;","&gt;", "-->","\"")
-	for(var i = 0; i < message[post_id].length; i++)
-	{
-		for (var j = 0; j < str_find.length; j++)
-		{
-			if (message[post_id].search(str_find[j]) != -1)
-			{
-				message[post_id] = message[post_id].replace(str_find[j],str_replace[j]);
-			}
-		}
-	}
-	//message[post_id] = message[post_id].replace('&lt;','<')
-	//message[post_id] = message[post_id].replace('&gt;','>')
-	window.parent.document.post.message.value += "[" + tag + message[post_id] + tag + "]";
-	window.parent.document.post.message.focus();
-	return;
-}
-
-function open_postreview(ref)
-{
-	height = screen.height / 3;
-	width = screen.width / 2;
-	window.open(ref,'_phpbbpostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
-	return;
-}
-//-->
+// ]]>
 </script>
 
 <!-- BEGIN switch_inline_mode -->
@@ -62,8 +34,8 @@ function open_postreview(ref)
 							<td align="left"><div class="post-subject">{postrow.POST_SUBJECT}</div></td>
 							<td align="right">
 								<span class="post-buttons">
-									<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a>
-									<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
+									<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27,false,true);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a>
+									<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27,false,true);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
 								</span>
 							</td>
 						</tr>

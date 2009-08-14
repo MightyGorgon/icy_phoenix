@@ -50,8 +50,7 @@
 
 		if( (navigator.userAgent.indexOf("MSIE") >= 0) && document && document.body && document.body.style)
 		{
-				document.write( '<span '+sOnStyle+'onclick="__on('+sVar+');__off('+sOn+');__on('+sOff+');" id="'+sOn+'" title="Click here to show details"'+sSymStyle+'>+<\/span>' +
-					'<span '+sOffStyle+'onclick="__off('+sVar+');__off('+sOff+');__on('+sOn+');" id="'+sOff+'" title="Click here to hide details"'+sSymStyle+'>-<\/span>' );
+				document.write( '<span ' + sOnStyle + 'onclick="__on(' + sVar + ');__off(' + sOn + ');__on(' + sOff + ');" id="' + sOn + '" title="Click here to show details"' + sSymStyle + '>+<\/span>' + '<span ' + sOffStyle + 'onclick="__off(' + sVar + ');__off(' + sOff + ');__on(' + sOn + ');" id="' + sOff + '" title="Click here to hide details"' + sSymStyle+'>-<\/span>' );
 		}
 		else
 		{
@@ -72,22 +71,15 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<th height="20" nowrap="nowrap">{L_VOTE_ID}</th>
-	<th height="20" nowrap="nowrap">{L_POLL_TOPIC}</th>
-	<th height="20" nowrap="nowrap">{L_VOTE_USERNAME}</th>
-	<th height="20" nowrap="nowrap">{L_VOTE_END_DATE}</th>
+	<th nowrap="nowrap">{L_VOTE_ID}</th>
+	<th nowrap="nowrap">{L_POLL_TOPIC}</th>
+	<th nowrap="nowrap">{L_VOTE_USERNAME}</th>
+	<th nowrap="nowrap">{L_VOTE_END_DATE}</th>
 </tr>
 <!-- BEGIN votes -->
 <tr>
-	<td class="{votes.COLOR} row-center"><span class="gensmall">{votes.VOTE_ID}</span></td>
-	<td class="{votes.COLOR}"><span class="genmed">
-		<script type="text/javascript">
-		<!--
-		onoff('vote{votes.VOTE_ID}_switch', false);
-		//-->
-		</script>
-		<a href="{votes.LINK}">{votes.DESCRIPTION}</a></span><br />
-	</td>
+	<td class="{votes.COLOR} row-center" style="height: 32px;"><span class="gensmall">{votes.VOTE_ID}</span>&nbsp;&nbsp;<script type="text/javascript">onoff('vote{votes.VOTE_ID}_switch', false);</script>	</td>
+	<td class="{votes.COLOR}"><span class="genmed"><a href="{votes.LINK}"><b>{votes.DESCRIPTION}</b></a></span><br /></td>
 	<td class="{votes.COLOR}"><span class="gensmall">{votes.USER}</span></td>
 	<td class="{votes.COLOR} row-center"><span class="gensmall">{votes.VOTE_DURATION}</span></td>
 </tr>

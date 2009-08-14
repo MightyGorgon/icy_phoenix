@@ -46,12 +46,12 @@ else
 
 $mail_body = str_replace("{TOPIC}", trim(stripslashes(htmlspecialchars_decode($topic_title))), $lang['TELL_FRIEND_BODY']);
 $mail_body = str_replace("{LINK}", $topic_link, $mail_body);
-$mail_body = str_replace("{SITENAME}", $board_config['sitename'], $mail_body);
+$mail_body = str_replace("{SITENAME}", ip_stripslashes($board_config['sitename']), $mail_body);
 
 $template->assign_vars(array(
 	'SUBMIT_ACTION' => append_sid($PHP_SELF, true),
 	'L_SUBMIT' => $lang['Send_email'],
-	'SITENAME' => $board_config['sitename'],
+	'SITENAME' => ip_stripslashes($board_config['sitename']),
 
 	'SENDER_NAME' => $userdata['username'],
 	'SENDER_MAIL' => $userdata['user_email'],
@@ -111,7 +111,7 @@ if (isset($_POST['submit']))
 		$emailer->set_subject(trim(stripslashes($topic_title)));
 
 		$emailer->assign_vars(array(
-			'SITENAME' => $board_config['sitename'],
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
 			'BOARD_EMAIL' => $board_config['board_email'],
 			'FROM_USERNAME' => $userdata['username'],
 			'TO_USERNAME' => $friendname,

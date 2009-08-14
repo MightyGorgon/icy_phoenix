@@ -86,7 +86,7 @@ class pafiledb_license extends pafiledb_public
 		$this->generate_category_nav($file_data['file_catid']);
 
 		$pafiledb_template->assign_vars(array(
-			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
 
 			'L_HOME' => $lang['Home'],

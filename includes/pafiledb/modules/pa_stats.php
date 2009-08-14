@@ -298,7 +298,7 @@ class pafiledb_stats extends pafiledb_public
 			'S_ACTION_CHART' => append_sid('dload.' . PHP_EXT . '?action=stats'),
 
 			'L_STATISTICS' => $lang['Statistics'],
-			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 			'L_GENERAL_INFO' => $lang['General_Info'],
 			'L_DOWNLOADS_STATS' => $lang['Downloads_stats'],
 			'L_RATING_STATS' => $lang['Rating_stats'],

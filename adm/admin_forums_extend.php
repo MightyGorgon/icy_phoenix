@@ -1456,7 +1456,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		$s_hidden_fields .= '<input type="hidden" name="selected_id" value="' . $selected_id . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="fid" value="' . $fid . '" />';
 		$template->assign_vars(array(
-			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 			'NAV_CAT_DESC' => admin_get_nav_cat_desc($selected_id),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 			'U_INDEX' => append_sid('./admin_forums_extend.' . PHP_EXT),
@@ -1628,7 +1628,7 @@ if ($mode == '')
 	$s_hidden_fields = '';
 	$s_hidden_fields .= '<input type="hidden" name="selected_id" value="' . $selected_id . '" />';
 	$template->assign_vars(array(
-		'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+		'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 		'NAV_CAT_DESC' => admin_get_nav_cat_desc($selected_id),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'U_INDEX' => append_sid('./admin_forums_extend.' . PHP_EXT),

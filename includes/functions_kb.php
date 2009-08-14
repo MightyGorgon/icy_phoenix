@@ -803,8 +803,8 @@ function kb_insert_pm($to_id, $message, $subject, $from_id, $html_on = 0, $acro_
 
 		$emailer->assign_vars(array(
 			'USERNAME' => $to_username,
-			'SITENAME' => $board_config['sitename'],
-			'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
+			'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 
 			'U_INBOX' => $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox'
 			)

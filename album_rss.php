@@ -145,7 +145,7 @@ else
 	}
 }
 
-$board_config['sitename'] = str_replace('&', '&amp;', $board_config['sitename']);
+$board_config['sitename'] = str_replace('&', '&amp;', ip_stripslashes($board_config['sitename']));
 $board_config['site_desc'] = str_replace('&', '&amp;', $board_config['site_desc']);
 
 // Create RSS header

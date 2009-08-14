@@ -70,7 +70,7 @@ class pafiledb_toplist extends pafiledb_public
 			'L_NEWEST_FILE' => $lang['Latest_downloads'],
 			'L_MOST_POPULAR' => $lang['Most_downloads'],
 			'L_TOP_RATED' => $lang['Rated_downloads'],
-			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 			'L_TOPLIST' => $lang['Toplist'])
 		);
 

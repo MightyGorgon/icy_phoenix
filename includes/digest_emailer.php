@@ -143,7 +143,7 @@ class digest_emailer
 				$site_url = $site_url . '/';
 			}
 			$mail_header = str_replace('{ROOT}', $site_url, $mail_header);
-			$mail_header = str_replace('{SITENAME}', $board_config['sitename'], $mail_header);
+			$mail_header = str_replace('{SITENAME}', ip_stripslashes($board_config['sitename']), $mail_header);
 			// Mighty Gorgon - Add Site Url - END
 
 			$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_footer.tpl';

@@ -123,13 +123,13 @@ if(empty($layout_template))
 }
 
 // Start output of page
-$page_title = $board_config['sitename'];
+$page_title = ip_stripslashes($board_config['sitename']);
 $meta_description = '';
 $meta_keywords = '';
 //define('SHOW_ONLINE', true);
 if ($layout != $cms_config_vars['default_portal'])
 {
-	$page_title = $board_config['sitename'] . ' - ' . $layout_name;
+	$page_title = ip_stripslashes($board_config['sitename']) . ' - ' . $layout_name;
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $layout_name . '</a>';
 }
 include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);

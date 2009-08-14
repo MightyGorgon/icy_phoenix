@@ -463,7 +463,7 @@ if ($download)
 		$disp_folder = 'Download';
 	}
 
-	$filename = $board_config['sitename'] . '_' . (ereg_replace("[^A-Za-z0-9]", "_", $post_subject)) . '_' . $disp_folder . '_' . date('Ymd', time()) . '.txt';
+	$filename = ip_stripslashes($board_config['sitename']) . '_' . (ereg_replace("[^A-Za-z0-9]", "_", $post_subject)) . '_' . $disp_folder . '_' . date('Ymd', time()) . '.txt';
 	header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 	header('Content-Disposition: attachment;filename="' . $filename . '"');
 	header('Content-Transfer-Encoding: plain/text');
@@ -933,7 +933,7 @@ if ($bypass)
 	{
 		$parse_extra_user_info = true;
 		// Query Styles
-		$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY template_name, themes_id";
+		$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
 		if (!($result = $db->sql_query($sql, false, 'themes_')))
 		{
 			message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);
@@ -1906,9 +1906,9 @@ if ($bypass)
 
 		$poster_posts = ($postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $postrow[$i]['user_posts'] : '';
 
-		$poster_from = ($postrow[$i]['user_from'] && $postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $postrow[$i]['user_from'] : '';
+		$poster_from = ($postrow[$i]['user_from'] && ($postrow[$i]['user_id'] != ANONYMOUS)) ? $lang['Location'] . ': ' . $postrow[$i]['user_from'] : '';
 
-		$poster_from_flag = ($postrow[$i]['user_from_flag'] && $postrow[$i]['user_id'] != ANONYMOUS) ? '<img src="images/flags/' . $postrow[$i]['user_from_flag'] . '" alt="' . $postrow[$i]['user_from_flag'] . '" title="' . $postrow[$i]['user_from'] . '" />' : '';
+		$poster_from_flag = ($postrow[$i]['user_from_flag'] && ($postrow[$i]['user_id'] != ANONYMOUS)) ? '<img src="images/flags/' . $postrow[$i]['user_from_flag'] . '" alt="' . $postrow[$i]['user_from_flag'] . '" title="' . $postrow[$i]['user_from'] . '" />' : '';
 
 		$poster_joined = ($postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $postrow[$i]['user_regdate'], $board_config['board_timezone']) : '';
 
@@ -2365,7 +2365,8 @@ if ($bypass)
 		if ($board_config['enable_quick_quote'] == true)
 		{
 			$look_up_array = array(
-				"\"",
+				'\"',
+				'"',
 				"<",
 				">",
 				"\n",
@@ -2373,7 +2374,8 @@ if ($bypass)
 			);
 
 			$replacement_array = array(
-				"\\\"",
+				'&q_mg;',
+				'\"',
 				"&lt_mg;",
 				"&gt_mg;",
 				"\\n",

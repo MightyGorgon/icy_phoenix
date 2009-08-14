@@ -349,12 +349,12 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 			$server_url = create_server_url();
 			$pm_inbox_link = $server_url . 'privmsg.' . PHP_EXT . '?folder=inbox';
 			$pm_inbox_link = (!$board_config['html_email']) ? $pm_inbox_link : ('<a href="' . $pm_inbox_link . '">' . $pm_inbox_link . '</a>');
-			$message = str_replace(array('{SITENAME}', '{U_INBOX}'), array($board_config['sitename'], $pm_inbox_link), $lang['PM_NOTIFICATION']);
+			$message = str_replace(array('{SITENAME}', '{U_INBOX}'), array(ip_stripslashes($board_config['sitename']), $pm_inbox_link), $lang['PM_NOTIFICATION']);
 			$message = (!$board_config['html_email']) ? str_replace('<br />', "\r\n", $message) : $message;
 		}
 
 		$emailer->assign_vars(array(
-			'SITENAME' => $board_config['sitename'],
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
 			'BOARD_EMAIL' => $board_config['board_email'],
 			'MESSAGE' => $message
 			)
@@ -415,7 +415,8 @@ if ($mail_data = $db->sql_fetchrow($result))
 		$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_data['mail_id'] . '&amp;mail_session_id=' . $mail_data['mailsession_id']);
 
 		$look_up_array = array(
-			"\"",
+			'\"',
+			'"',
 			"<",
 			">",
 			"\n",
@@ -423,7 +424,8 @@ if ($mail_data = $db->sql_fetchrow($result))
 		);
 
 		$replacement_array = array(
-			"\\\"",
+			'&q_mg;',
+			'\"',
 			"&lt_mg;",
 			"&gt_mg;",
 			"\\n",

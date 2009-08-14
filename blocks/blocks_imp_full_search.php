@@ -30,7 +30,7 @@ if(!function_exists('imp_full_search_block_func'))
 			'L_SEARCH2' => $lang['search2'],
 			'L_SEARCH_AT' => $lang['search_at'],
 			'L_ADVANCED_SEARCH' => $lang['Advanced_search'],
-			'L_FORUM_OPTION' => (!empty($cms_config_vars['md_full_search_option_text'][$block_id])) ? $cms_config_vars['md_full_search_option_text'][$block_id] : $board_config['sitename']
+			'L_FORUM_OPTION' => (!empty($cms_config_vars['md_full_search_option_text'][$block_id])) ? $cms_config_vars['md_full_search_option_text'][$block_id] : ip_stripslashes($board_config['sitename'])
 			)
 		);
 	}

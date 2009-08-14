@@ -141,8 +141,8 @@ else
 	}
 }
 
-$board_config['sitename'] = str_replace('&', '&amp;', $board_config['sitename']);
-$board_config['site_desc'] = str_replace('&', '&amp;', $board_config['site_desc']);
+$board_config['sitename'] = str_replace('&', '&amp;', ip_stripslashes($board_config['sitename']));
+$board_config['site_desc'] = str_replace('&', '&amp;', ip_stripslashes($board_config['site_desc']));
 
 // Create RSS header
 $rdf_header = '<?xml version="1.0" encoding="ISO-8859-2" ?>

@@ -986,8 +986,8 @@ function album_comment_notify($pic_id)
 				$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
 				$emailer->assign_vars(array(
-					'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
-					'SITENAME' => $board_config['sitename'],
+					'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
+					'SITENAME' => ip_stripslashes($board_config['sitename']),
 					'PIC_TITLE' => $pic_title,
 					'U_PIC' => $server_protocol . $server_name . $server_port . $script_name . '?pic_id=' . $pic_id,
 					'U_STOP_WATCHING_COMMENT' => $server_protocol . $server_name . $server_port . $script_name . '?pic_id=' . $pic_id . '&unwatch=comment'

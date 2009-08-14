@@ -75,10 +75,10 @@ if ($row = $db->sql_fetchrow($result))
 			$emailer->set_subject($lang['Account_activated_subject']);
 
 			$emailer->assign_vars(array(
-				'SITENAME' => $board_config['sitename'],
+				'SITENAME' => ip_stripslashes($board_config['sitename']),
 				'USERNAME' => $row['username'],
 				'PASSWORD' => $password_confirm,
-				'EMAIL_SIG' => (!empty($board_config['board_email_sig']) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '')
+				'EMAIL_SIG' => (!empty($board_config['board_email_sig']) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '')
 				)
 			);
 			$emailer->send();

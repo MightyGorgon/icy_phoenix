@@ -496,8 +496,8 @@ if (($view == 'broken') && $df_id && $cat_id && ($userdata['session_logged_in'] 
 			$emailer->set_subject();
 
 			$emailer->assign_vars(array(
-				'BOARD_EMAIL' => $board_config['board_email_sig'],
-				'SITENAME' => $board_config['sitename'],
+				'BOARD_EMAIL' => ip_stripslashes($board_config['board_email_sig']),
+				'SITENAME' => ip_stripslashes($board_config['sitename']),
 				'REPORTER' => $username,
 				'USERNAME' => $row['username'],
 				'U_DOWNLOAD' => $server_url . 'downloads.' . PHP_EXT . '?view=detail&cat_id=' . $cat_id . '&df_id=' . $df_id

@@ -200,7 +200,7 @@ if ($total_pics > 0)
 	// $archive = new tar_file('archive.tar'); // save as tar
 	// $archive = new gzip_file('archive.tgz'); // save as gzip
 
-	$archive->set_options(array('inmemory' => 1, 'storepaths' => 0, 'comment' => 'Archived photos from ' . $board_config['sitename']));
+	$archive->set_options(array('inmemory' => 1, 'storepaths' => 0, 'comment' => 'Archived photos from ' . ip_stripslashes($board_config['sitename'])));
 	$DLpics = array();
 	while($row = $db->sql_fetchrow($result))
 	{

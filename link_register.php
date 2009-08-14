@@ -159,7 +159,7 @@ if($link_title && $link_desc && $link_category && $link_url)
 
 								$emailer->assign_vars(array(
 									'LINK_URL' => $link_url,
-									'SITENAME' => $board_config['sitename']
+									'SITENAME' => ip_stripslashes($board_config['sitename'])
 									)
 								);
 

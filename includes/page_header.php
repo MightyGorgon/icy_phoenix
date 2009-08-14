@@ -81,14 +81,14 @@ elseif (!empty($_GET[POST_CAT_URL]))
 	$meta_cat_id = (intval($_GET[POST_CAT_URL]) > 0) ? intval($_GET[POST_CAT_URL]) : 0;
 }
 
-$page_title = ($page_title == '') ? $board_config['sitename'] : strip_tags($page_title);
+$page_title = ($page_title == '') ? ip_stripslashes($board_config['sitename']) : strip_tags($page_title);
 $page_title_simple = strip_tags($page_title);
 
 $meta_description = !empty($meta_description) ? $meta_description : '';
 $meta_keywords = !empty($meta_keywords) ? $meta_keywords : '';
 
 $page_url = pathinfo($_SERVER['PHP_SELF']);
-$no_meta_pages_array = array(LOGIN_MG, 'privmsg.' . PHP_EXT, POSTING_MG);
+$no_meta_pages_array = array(LOGIN_MG, 'privmsg.' . PHP_EXT, POSTING_MG, 'sudoku.' . PHP_EXT, 'kb.' . PHP_EXT);
 if (!in_array($page_url['basename'], $no_meta_pages_array) && (!empty($meta_post_id) || !empty($meta_topic_id) || !empty($meta_forum_id) || !empty($meta_cat_id)))
 {
 	include(IP_ROOT_PATH . 'includes/meta_parsing.' . PHP_EXT);
@@ -102,6 +102,16 @@ else
 
 $meta_description = !empty($meta_description) ? ($meta_description . (META_TAGS_ATTACH ? $lang['Default_META_Description'] : '')) : $lang['Default_META_Description'];
 $meta_keywords = !empty($meta_keywords) ? ($meta_keywords . (META_TAGS_ATTACH ? (' - ' . $lang['Default_META_Keywords']) : '')) : $lang['Default_META_Keywords'];
+
+$meta_description = strip_tags($meta_description);
+$meta_keywords = strip_tags($meta_keywords);
+
+$forum_cat_pages_array = array(FORUM_MG);
+if (in_array($page_url['basename'], $forum_cat_pages_array))
+{
+	$page_title = ((!empty($meta_description) && ($meta_description <> strip_tags($lang['Default_META_Description']))) ? $meta_description : $lang['Forum']);
+	$page_title_simple = $page_title;
+}
 
 $phpbb_meta = '<meta name="title" content="' . $page_title . '" />' . "\n";
 $phpbb_meta .= '<meta name="author" content="' . $lang['Default_META_Author'] . '" />' . "\n";
@@ -320,8 +330,8 @@ else
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
 			include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
-			$privmsg_subject = sprintf($pm_subject, $board_config['sitename']);
-			$privmsg_message = sprintf($pm_text, $board_config['sitename'], $board_config['sitename']);
+			$privmsg_subject = sprintf($pm_subject, ip_stripslashes($board_config['sitename']));
+			$privmsg_message = sprintf($pm_text, ip_stripslashes($board_config['sitename']), ip_stripslashes($board_config['sitename']));
 			$privmsg_sender = $founder_id;
 			$privmsg_recipient = $userdata['user_id'];
 
@@ -840,9 +850,9 @@ $template->assign_vars(array(
 	'S_CONTENT_DIR_LEFT' => $lang['LEFT'],
 	'S_CONTENT_DIR_RIGHT' => $lang['RIGHT'],
 	'S_TIMEZONE' => $time_message,
-	'SITENAME' => $board_config['sitename'],
+	'SITENAME' => ip_stripslashes($board_config['sitename']),
 	'SITE_DESCRIPTION' => $board_config['site_desc'],
-	'PAGE_TITLE' => ($board_config['page_title_simple'] == true ? $page_title_simple : $page_title),
+	'PAGE_TITLE' => ($board_config['page_title_simple'] ? $page_title_simple : $page_title),
 	'L_PAGE_TITLE' => $page_title_simple,
 	'META_TAG' => $phpbb_meta,
 	'U_ACP' => '<a href="' . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>',
@@ -889,7 +899,7 @@ $template->assign_vars(array(
 	'L_LOGIN_LOGOUT2' => $l_login_logout2,
 	'L_LOGIN' => $lang['Login'],
 	'L_HOME' => $lang['Home'],
-	'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+	'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 	'L_REGISTER' => $lang['Register'],
 	'L_BOARDRULES' => $lang['BoardRules'],
 	'L_PROFILE' => $lang['Profile'],
@@ -1244,7 +1254,7 @@ $template->assign_vars(array(
 	'S_PAGE_NAV' => (isset($cms_page_nav) ? $cms_page_nav : true),
 	'NAV_SEPARATOR' => $nav_separator,
 	'NAV_CAT_DESC' => $nav_cat_desc,
-	'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($page_title_simple != $board_config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $page_title_simple . '</a>') : '') : $breadcrumbs_address),
+	'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($page_title_simple != ip_stripslashes($board_config['sitename'])) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $page_title_simple . '</a>') : '') : $breadcrumbs_address),
 	'S_BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : true),
 	'BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : $breadcrumbs_links_left),
 	'S_BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? false : true),

@@ -404,7 +404,7 @@ else
 		@chmod($sitemap_zip_file, 0777);
 		@unlink($sitemap_zip_file);
 		$archive = new zip_file($sitemap_zip_file);
-		$archive->set_options(array('overwrite' => 1, 'storepaths' => 0, 'comment' => 'Sitemap of ' . $board_config['sitename']));
+		$archive->set_options(array('overwrite' => 1, 'storepaths' => 0, 'comment' => 'Sitemap of ' . ip_stripslashes($board_config['sitename'])));
 		$archive->add_files($cache_data_file);
 		$archive->create_archive();
 		@chmod($sitemap_zip_file, 0666);

@@ -14,7 +14,7 @@
 
 <table class="forumline" width="100%" cellspacing="0">
 <tr>
-	<td class="row2">
+	<td class="row1" style="border-width: 0px;">
 		<span class="gensmall"><b>{L_ARTICLE_AUTHOR}</b></span>
 		<span class="gensmall">{ARTICLE_AUTHOR}</span>
 		<span class="gensmall"><b>{L_ARTICLE_DATE}</b></span>
@@ -40,7 +40,7 @@
 </tr>
 <!-- BEGIN switch_toc -->
 <tr>
-	<td class="row1" align="left"><span class="maintitle">{L_TOC}</span><br /><br />
+	<td class="row1" style="border-width: 0px;"><span class="maintitle">{L_TOC}</span><br /><br />
 		<span class="nav">
 		<!-- BEGIN pages -->
 		{switch_toc.pages.TOC_ITEM}
@@ -50,10 +50,10 @@
 </tr>
 <!-- END switch_toc -->
 <tr><td class="maintitle" nowrap="nowrap"><br />{ARTICLE_TITLE}&nbsp;<br /><hr></td></tr>
-<tr><td class="row1" wrap="wrap"><div class="post-text post-text-hide-flow">{ARTICLE_TEXT}</div></td></tr>
+<tr><td class="row1" wrap="wrap" style="border-width: 0px;"><div class="post-text post-text-hide-flow">{ARTICLE_TEXT}</div></td></tr>
 <!-- BEGIN switch_pages -->
 <tr>
-	<td class="row1 row-center"><span class="nav">{L_GOTO_PAGE}
+	<td class="row1 row-center" style="border-width: 0px;"><span class="nav">{L_GOTO_PAGE}
 		<!-- BEGIN pages -->
 		{switch_pages.pages.PAGE_LINK}
 		<!-- END pages -->
@@ -64,12 +64,12 @@
 </table>
 <br />
 <!-- BEGIN switch_comments_show -->
-<table align="center" width="100%" cellpadding="4" cellspacing="0" border="0" class="forumline">
+<table class="forumline" width="100%" cellspacing="0">
 <tr><td class="cattitle">{L_COMMENTS}&nbsp;</td></tr>
 <!-- END switch_comments_show -->
 <!-- BEGIN postrow -->
 <tr>
-	<td class="row1" width="100%" height="28" valign="top">
+	<td class="row1" width="100%" valign="top" style="border-width: 0px;">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="100%">

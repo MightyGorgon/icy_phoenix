@@ -123,7 +123,6 @@ $tables = array(
 	'posts',
 	'privmsgs',
 	'privmsgs_archive',
-	'privmsgs_text',
 	'profile_fields',
 	'profile_view',
 	'quota_limits',

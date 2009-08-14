@@ -32,14 +32,14 @@ if(!function_exists('imp_gsearch_block_func'))
 		$template->assign_vars(array(
 			'GSEARCH_BANNER' => $cms_config_vars['md_gsearch_banner'][$block_id],
 			'GSEARCH_SITE' => $cms_config_vars['md_gsearch_site'][$block_id],
-			'GSEARCH_SITENAME' => $board_config['sitename'],
+			'GSEARCH_SITENAME' => htmlspecialchars(ip_stripslashes($board_config['sitename'])),
 			'GSEARCH_HOR' => $cms_config_vars['md_gsearch_style'][$block_id],
 			'GSEARCH_TEXT' => htmlspecialchars($cms_config_vars['md_gsearch_text'][$block_id]),
 
 			'L_GSEARCH2' => $lang['GSearch2'],
 			'L_GSEARCH_AT' => $lang['GSearch_At'],
 			'L_ADVANCED_GSEARCH' => $lang['Advanced_GSearch'],
-			'L_FORUM_OPTION' => $board_config['sitename']
+			'L_FORUM_OPTION' => ip_stripslashes($board_config['sitename'])
 			)
 		);
 	}

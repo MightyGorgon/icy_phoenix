@@ -163,7 +163,7 @@ class pafiledb_post_comment extends pafiledb_public
 				'L_PREVIEW' => $lang['Preview'],
 				'L_SUBMIT' => $lang['Submit'],
 				'L_DOWNLOAD'=> $lang['Download'],
-				'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+				'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 				'L_CHECK_MSG_LENGTH' => $lang['Check_message_length'],
 				'L_MSG_LENGTH_1' => $lang['Msg_length_1'],
 				'L_MSG_LENGTH_2' => $lang['Msg_length_2'],

@@ -139,7 +139,7 @@ if ($result = $db->sql_query($sql))
 						$emailer->set_subject($subject);
 
 						$emailer->assign_vars(array(
-							'SITENAME' => $board_config['sitename'],
+							'SITENAME' => ip_stripslashes($board_config['sitename']),
 							'BOARD_EMAIL' => $board_config['board_email'],
 							'FROM_USERNAME' => $userdata['username'],
 							'TO_USERNAME' => $username,
@@ -158,7 +158,7 @@ if ($result = $db->sql_query($sql))
 							$emailer->set_subject($subject);
 
 							$emailer->assign_vars(array(
-								'SITENAME' => $board_config['sitename'],
+								'SITENAME' => ip_stripslashes($board_config['sitename']),
 								'BOARD_EMAIL' => $board_config['board_email'],
 								'FROM_USERNAME' => $userdata['username'],
 								'TO_USERNAME' => $username,

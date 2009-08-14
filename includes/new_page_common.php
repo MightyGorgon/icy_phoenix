@@ -116,7 +116,7 @@ if(!$is_auth_view)
 }
 
 // Start output of page
-$page_title = $board_config['sitename'] . ' - ' . $layout_name;
+$page_title = ip_stripslashes($board_config['sitename']) . ' - ' . $layout_name;
 $meta_description = '';
 $meta_keywords = '';
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $layout_name . '</a>';

@@ -239,7 +239,7 @@ function getMiniCalSearchURL($search_date)
 	$s_yy = substr($search_date, 0, 4);
 	$s_mm = substr($search_date, 4, 2);
 	$s_dd = substr($search_date, 6, 2);
-	$url = append_sid(IP_ROOT_PATH . 'calendar.' PHP_EXT . '?day=' . $s_dd . '&amp;month=' . $s_mm . '&amp;year=' . $s_yy . '&amp;mode=display');
+	$url = append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?day=' . $s_dd . '&amp;month=' . $s_mm . '&amp;year=' . $s_yy . '&amp;mode=display');
 	return $url;
 }
 
@@ -249,7 +249,7 @@ function calendarperm($user_id)
 {
 	global $db, $cal_config;
 	// Get the user permissions first.
-	$sql = "SELECT user_calendar_perm FROM " . USERS_TABLE . " WHERE user_id = '" . $user_id . "'";
+	$sql = "SELECT user_calendar_perm FROM " . USERS_TABLE . " WHERE user_id = " . $user_id;
 	if ( !($result = $db->sql_query($sql)) )
 	{
 		message_die(GENERAL_ERROR, 'Could not select Calendar permission from user table', '', __LINE__, __FILE__, $sql);
@@ -259,7 +259,7 @@ function calendarperm($user_id)
 
 	// Get the group permissions second.
 	$sql = "SELECT group_calendar_perm FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g
-		WHERE ug.user_id = '" . $user_id . "' AND g.group_id = ug.group_id";
+		WHERE ug.user_id = " . $user_id . " AND g.group_id = ug.group_id";
 	if ( !($result = $db->sql_query($sql)) )
 	{
 		message_die(GENERAL_ERROR, 'Could not select Calendar permission from user/usergroup table', '', __LINE__, __FILE__, $sql2);

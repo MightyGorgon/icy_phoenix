@@ -458,7 +458,7 @@ else
 	}
 	$template->assign_vars(array(
 		'U_INDEX' => append_sid(FORUM_MG),
-		'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename'])
+		'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']))
 		)
 	);
 

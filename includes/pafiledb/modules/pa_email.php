@@ -153,7 +153,7 @@ class pafiledb_email extends pafiledb_public
 				$emailer->set_subject($subject);
 
 				$emailer->assign_vars(array(
-					'SITENAME' => $board_config['sitename'],
+					'SITENAME' => ip_stripslashes($board_config['sitename']),
 					'BOARD_EMAIL' => $board_config['board_email'],
 					'FROM_USERNAME' => $sender_name,
 					'TO_USERNAME' => $username,
@@ -187,7 +187,7 @@ class pafiledb_email extends pafiledb_public
 			'S_EMAIL_ACTION' => append_sid('dload.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />',
 
-			'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 			'L_EMAIL' => $lang['Semail'],
 			'L_EMAIL' => $lang['Emailfile'],
 			'L_EMAILINFO' => $lang['Emailinfo'],

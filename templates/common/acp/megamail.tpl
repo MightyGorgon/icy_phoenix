@@ -1,11 +1,11 @@
 <script language="javascript" type="text/javascript">
+// <![CDATA[
 
 message = new Array();
 <!-- BEGIN mail_sessions -->
 message[{mail_sessions.ID}] = "{mail_sessions.MESSAGE_BODY}";
 <!-- END mail_sessions -->
 
-<!--
 function disableForm(theform)
 {
 	if (document.all || document.getElementById)
@@ -29,8 +29,8 @@ function disableForm(theform)
 
 function compileForm(m_id)
 {
-	str_find = new Array("&lt_mg;", "&gt_mg;");
-	str_replace = new Array("<", ">");
+	str_find = new Array("&q_mg;", "&lt_mg;", "&gt_mg;");
+	str_replace = new Array("\\\"", "<", ">");
 	for(var i = 0; i < message[m_id].length; i++)
 	{
 		for (var j = 0; j < str_find.length; j++)
@@ -46,7 +46,7 @@ function compileForm(m_id)
 	return;
 }
 
-//-->
+// ]]>
 </script>
 
 <h1>{L_MAIL_SESSION_HEADER}</h1>

@@ -252,7 +252,6 @@ function select_text(obj)
 }
 // Select Text - END
 
-
 // Images, Links, Popup, FORM - BEGIN
 function SetLangTheme()
 {
@@ -304,6 +303,55 @@ function links_me()
 	window.open("links_popup.php", '_links_me', 'height=220, width=500,resizable=no, scrollbars=no');
 }
 // Images, Links, Popup, FORM - END
+
+// Quick Quote - BEGIN
+function addquote(post_id, tag, quickr, parentf)
+{
+	if (quickr)
+	{
+		document.getElementById('quick_reply').style.display = "";
+	}
+	str_find = new Array("&q_mg;", "&lt_mg;", "&gt_mg;");
+	str_replace = new Array("\\\"", "<", ">");
+	for(var i = 0; i < message[post_id].length; i++)
+	{
+		for (var j = 0; j < str_find.length; j++)
+		{
+			if (message[post_id].search(str_find[j]) != -1)
+			{
+				message[post_id] = message[post_id].replace(str_find[j],str_replace[j]);
+			}
+		}
+	}
+	if (parentf == true)
+	{
+		target_textbox = window.parent.document.post.message;
+	}
+	else
+	{
+		target_textbox = document.post.message;
+	}
+	target_textbox.value += "[" + tag + message[post_id] + tag + "]";
+	target_textbox.focus();
+	return;
+}
+
+function quotename(username)
+{
+	document.getElementById('quick_reply').style.display = "";
+	document.post.message.value += username;
+	document.post.message.focus();
+	return;
+}
+
+function open_postreview(ref)
+{
+	height = screen.height / 2.23;
+	width = screen.width / 2;
+	window.open(ref,'_phpbbpostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
+	return;
+}
+// Quick Quote - END
 
 // phpBB3 Functions - BEGIN
 

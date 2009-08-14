@@ -915,7 +915,7 @@ if ($bypass)
 	// Mozilla navigation bar
 	$nav_links['up'] = array(
 		'url' => append_sid(FORUM_MG),
-		'title' => sprintf($lang['Forum_Index'], $board_config['sitename']
+		'title' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])
 		)
 	);
 

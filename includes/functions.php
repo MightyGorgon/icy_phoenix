@@ -564,11 +564,11 @@ function init_userprefs($userdata)
 	// Defined here to correctly assign the Language Variables and be able to change the variables within code.
 	$nav_links['top'] = array (
 		'url' => append_sid(PORTAL_MG),
-		'title' => $board_config['sitename']
+		'title' => ip_stripslashes($board_config['sitename'])
 	);
 	$nav_links['forum'] = array (
 		'url' => append_sid(FORUM_MG),
-		'title' => sprintf($lang['Forum_Index'], $board_config['sitename'])
+		'title' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']))
 	);
 	$nav_links['search'] = array (
 		'url' => append_sid(SEARCH_MG),

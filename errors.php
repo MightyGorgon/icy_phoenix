@@ -96,7 +96,7 @@ switch($result)
 $server_url = create_server_url();
 
 $notification_email = $board_config['board_email'];
-$sitename = $board_config['sitename'];
+$sitename = ip_stripslashes($board_config['sitename']);
 $datecode = date('Ymd');
 $logs_path = !empty($board_config['logs_path']) ? $board_config['logs_path'] : 'logs';
 $errors_log = $logs_path . '/errors_' . $datecode . '.txt';

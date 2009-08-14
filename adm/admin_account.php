@@ -131,9 +131,9 @@ if((($delete && $confirm) || $activate) && $mark_list)
 
 			$emailer->assign_vars(array(
 				'SUBJECT' => $subject,
-				'TEXT' => sprintf($text, $board_config['sitename']),
+				'TEXT' => sprintf($text, ip_stripslashes($board_config['sitename'])),
 				'USERNAME' => $mail['username'],
-				'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+				'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 				)
 			);
 			$emailer->send();

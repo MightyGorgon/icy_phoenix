@@ -209,8 +209,8 @@ else
 	$viewpost_url = $index_url . $viewpost;
 	$replypost_url = $index_url . $replypost;
 	// Reformat site name and description
-	$site_name = strip_tags($board_config['sitename']);
-	$site_description = strip_tags($board_config['site_desc']);
+	$site_name = strip_tags(ip_stripslashes($board_config['sitename']));
+	$site_description = strip_tags(ip_stripslashes($board_config['site_desc']));
 	// Set the fully qualified url to your smilies folder
 	$smilies_path = $board_config['smilies_path'];
 	$smilies_url = $index_url . $smilies_path;

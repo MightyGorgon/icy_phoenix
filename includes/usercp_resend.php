@@ -87,11 +87,11 @@ if (isset($_POST['submit']))
 	$emailer->set_subject($lang['Resend_activation_email']);
 
 	$emailer->assign_vars(array(
-		'SITENAME' => $board_config['sitename'],
+		'SITENAME' => ip_stripslashes($board_config['sitename']),
 		'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 		'PASSWORD' => '',
-		'WELCOME_MSG' => sprintf($lang['Welcome_subject'], $board_config['sitename']),
-		'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
+		'WELCOME_MSG' => sprintf($lang['Welcome_subject'], ip_stripslashes($board_config['sitename'])),
+		'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . ip_stripslashes(ip_stripslashes($board_config['board_email_sig']))),
 		'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . $row['user_actkey']
 		)
 	);

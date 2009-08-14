@@ -140,13 +140,13 @@ function get_object_lang($cur, $field, $all=false)
 		switch($field)
 		{
 			case 'name':
-				if (isset($lang[$board_config['sitename']]))
+				if (isset($lang[ip_stripslashes($board_config['sitename'])]))
 				{
-					$res = sprintf($lang['Forum_Index'], $lang[$board_config['sitename']]);
+					$res = sprintf($lang['Forum_Index'], $lang[ip_stripslashes($board_config['sitename'])]);
 				}
 				else
 				{
-					$res = sprintf($lang['Forum_Index'], $board_config['sitename']);
+					$res = sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']));
 				}
 				break;
 			case 'desc':

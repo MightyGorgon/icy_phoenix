@@ -167,7 +167,8 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 
 			// Quick Quote - BEGIN
 			$look_up_array = array(
-				"\"",
+				'\"',
+				'"',
 				"<",
 				">",
 				"\n",
@@ -175,7 +176,8 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 			);
 
 			$replacement_array = array(
-				"\\\"",
+				'&q_mg;',
+				'\"',
 				"&lt_mg;",
 				"&gt_mg;",
 				"\\n",

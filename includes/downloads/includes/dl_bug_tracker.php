@@ -223,8 +223,8 @@ if ($action == 'status' && $fav_id && $allow_bug_mod)
 		$emailer->set_subject();
 
 		$emailer->assign_vars(array(
-			'SITENAME' => $board_config['sitename'],
-			'BOARD_EMAIL' => $board_config['board_email_sig'],
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
+			'BOARD_EMAIL' => ip_stripslashes($board_config['board_email_sig']),
 			'USERNAME' => $userdata['username'],
 			'REPORT_TITLE' => $report_title,
 			'STATUS' => $lang['Dl_report_status'][$report_status],
@@ -319,8 +319,8 @@ if ($action == 'assign' && $df_id && $fav_id && $allow_bug_mod)
 		$emailer->set_subject();
 
 		$emailer->assign_vars(array(
-			'SITENAME' => $board_config['sitename'],
-			'BOARD_EMAIL' => $board_config['board_email_sig'],
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
+			'BOARD_EMAIL' => ip_stripslashes($board_config['board_email_sig']),
 			'USERNAME' => $userdata['username'],
 			'U_BUG_REPORT' => $server_url.'downloads.' . PHP_EXT . '?view=bug_tracker&action=detail&fav_id=' . $fav_id
 			)

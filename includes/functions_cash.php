@@ -544,8 +544,8 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 		//HTML Message
 		$emailer->assign_vars(array(
 			'USERNAME' => stripslashes($to_username),
-			'SITENAME' => $board_config['sitename'],
-			'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
+			'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 			// Mighty Gorgon - Begin
 			'FROM' => $userdata['username'],
 			'DATE' => create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']),

@@ -145,7 +145,7 @@ class pafiledb_download extends pafiledb_public
 			$this->generate_category_nav($file_data['file_catid']);
 
 			$pafiledb_template->assign_vars(array(
-				'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+				'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 				'L_MIRRORS' => $lang['Mirrors'],
 				'L_MIRROR_LOCATION' => $lang['Mirror_location'],
 				'L_DOWNLOAD' => $lang['Download_file'],
@@ -162,7 +162,7 @@ class pafiledb_download extends pafiledb_public
 
 			$pafiledb_template->assign_block_vars('mirror_row', array(
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=-1'),
-				'MIRROR_LOCATION' => $board_config['sitename'])
+				'MIRROR_LOCATION' => ip_stripslashes($board_config['sitename']))
 			);
 
 			foreach($mirrors_data as $mir_id => $mirror_data)

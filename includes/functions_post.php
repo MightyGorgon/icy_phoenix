@@ -1112,8 +1112,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 						}
 
 						$emailer->assign_vars(array(
-							'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
-							'SITENAME' => $board_config['sitename'],
+							'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
+							'SITENAME' => ip_stripslashes($board_config['sitename']),
 							//'USERNAME' => $users_ary[$bcc_list['0']],
 							//'USERNAME' => '',
 							'TOPIC_TITLE' => $topic_title,
@@ -1251,8 +1251,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							}
 
 							$emailer->assign_vars(array(
-								'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
-								'SITENAME' => $board_config['sitename'],
+								'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
+								'SITENAME' => ip_stripslashes($board_config['sitename']),
 								//'USERNAME' => $users_ary[$bcc_list['0']],
 								//'USERNAME' => '',
 								'TOPIC_TITLE' => $topic_title,
@@ -1420,8 +1420,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							}
 
 							$emailer->assign_vars(array(
-								'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
-								'SITENAME' => $board_config['sitename'],
+								'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
+								'SITENAME' => ip_stripslashes($board_config['sitename']),
 								//'USERNAME' => $users_ary[$bcc_list['0']],
 								//'USERNAME' => '',
 								'TOPIC_TITLE' => $topic_title,

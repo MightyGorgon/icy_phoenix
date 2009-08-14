@@ -552,7 +552,7 @@ while ($row = $db->sql_fetchrow($result))
 		$digest_emailer->assign_vars(array(
 			'BOARD_URL' => DIGEST_SITE_URL,
 			'LINK' => $link_tag,
-			'L_SITENAME' => $board_config['sitename'],
+			'L_SITENAME' => ip_stripslashes($board_config['sitename']),
 			'L_SALUTATION' => $lang['digest_salutation'],
 			'SALUTATION' => $row['username'],
 			'L_DIGEST_OPTIONS' => $lang['digest_your_digest_options'],

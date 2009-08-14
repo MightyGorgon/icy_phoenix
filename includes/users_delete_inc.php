@@ -158,7 +158,7 @@ while (isset($users_list[$i]['user_id']))
 			'U_REGISTER' => $profile_server_url,
 			'USER' => $userdata['username'],
 			'USERNAME' => $username,
-			'SITENAME' => $board_config['sitename'],
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
 			'BOARD_EMAIL' => $board_config['board_email']
 			)
 		);

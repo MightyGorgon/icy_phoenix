@@ -50,10 +50,10 @@ $template->set_filenames(array(
 );
 
 $template->assign_vars(array(
-	'L_LINK_US' => $lang['Link_us'] . $board_config['sitename'],
-	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], $board_config['sitename']),'L_SUBMIT' => $lang['Submit'],
+	'L_LINK_US' => $lang['Link_us'] . ip_stripslashes($board_config['sitename']),
+	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], ip_stripslashes($board_config['sitename'])),'L_SUBMIT' => $lang['Submit'],
 	'L_CLOSE_WINDOW'		=> $lang['Close_window'],
-	'LINK_US_SYNTAX' => str_replace(" ", "&nbsp;", sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $link_config['site_url'], $link_config['site_logo'], $link_config['width'],$link_config['height'], $board_config['sitename'])),
+	'LINK_US_SYNTAX' => str_replace(" ", "&nbsp;", sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $link_config['site_url'], $link_config['site_logo'], $link_config['width'],$link_config['height'], ip_stripslashes($board_config['sitename']))),
 
 	'U_SITE_LOGO' => $link_config['site_logo'],
 	)

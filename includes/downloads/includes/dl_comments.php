@@ -145,7 +145,7 @@ if ($action == 'save' && !$deny_post)
 			$emailer->set_subject();
 
 			$emailer->assign_vars(array(
-				'SITENAME' => $board_config['sitename'],
+				'SITENAME' => ip_stripslashes($board_config['sitename']),
 				'BOARD_EMAIL' => $board_config['board_email_sig'],
 				'CATEGORY' => $index[$cat_id]['cat_name'],
 				'USERNAME' => $row['username'],

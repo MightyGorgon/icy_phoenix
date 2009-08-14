@@ -196,7 +196,7 @@ elseif ($mode == 'report')
 				'FORUM_NAME' => $forum_name,
 				'USER' => '"' . $userdata['username'] . '"',
 				'NUMBER_OF_REPPORTS' => $blue_card,
-				'SITENAME' => $board_config['sitename'],
+				'SITENAME' => ip_stripslashes($board_config['sitename']),
 				'BOARD_EMAIL' => $board_config['board_email']));
 			$emailer->send();
 			$emailer->reset();
@@ -436,11 +436,11 @@ if ($no_error_ban)
 		//$emailer->set_subject($e_subj);
 
 		$emailer->assign_vars(array(
-			'SITENAME' => $board_config['sitename'],
+			'SITENAME' => ip_stripslashes($board_config['sitename']),
 			'WARNINGS' => $warning_data['user_warnings'],
 			'TOTAL_WARN' => $board_config['max_user_bancard'],
 			'POST_URL' => $viewtopic_server_url . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
-			'EMAIL_SIG' => str_replace("<br />", "\n", "-- \n" . $board_config['board_email_sig']),
+			'EMAIL_SIG' => str_replace("<br />", "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])),
 			'WARNER' => $userdata['username'],
 			'BLOCK_TIME' => $block_time,
 			'WARNED_POSTER' => $warning_data['username'])

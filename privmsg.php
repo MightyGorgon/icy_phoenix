@@ -672,7 +672,8 @@ elseif ($mode == 'read')
 
 	// Mighty Gorgon - Quick Quote - BEGIN
 	$look_up_array = array(
-		"\"",
+		'\"',
+		'"',
 		"<",
 		">",
 		"\n",
@@ -680,7 +681,8 @@ elseif ($mode == 'read')
 	);
 
 	$replacement_array = array(
-		"\\\"",
+		'&q_mg;',
+		'\"',
 		"&lt_mg;",
 		"&gt_mg;",
 		"\\n",
@@ -1122,7 +1124,7 @@ elseif ($download && $mark_list)
 	{
 		$i = 0;
 		$crlf = "\r\n";
-		$pmtext = $lang['Private_Messaging'] . ' (' . $board_config['sitename'] . ')' . $crlf;
+		$pmtext = $lang['Private_Messaging'] . ' (' . ip_stripslashes($board_config['sitename']) . ')' . $crlf;
 		$user_dateformat = ($userdata['user_dateformat']) ? $userdata['user_dateformat'] : $board_config['default_dateformat'];
 		$pmtext .= $disp_folder . ' (' . date($user_dateformat, time()) . ')' . $crlf;
 		while($mark_list[$i] != '')
@@ -1150,7 +1152,7 @@ elseif ($download && $mark_list)
 			}
 			$i++;
 		}
-		$filename = $board_config['sitename'] . '_' . $disp_folder . '_' . date('Ymd', time());
+		$filename = ip_stripslashes($board_config['sitename']) . '_' . $disp_folder . '_' . date('Ymd', time());
 		$filename = ereg_replace("[^A-Za-z0-9]", '_', strtolower($filename)) . '.txt';
 		header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 		header('Content-Disposition: attachment;filename=' . $filename);
@@ -1657,8 +1659,8 @@ elseif ($submit || $refresh || ($mode != ''))
 				}
 				$emailer->assign_vars(array(
 					'USERNAME' => stripslashes($to_username),
-					'SITENAME' => $board_config['sitename'],
-					'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+					'SITENAME' => ip_stripslashes($board_config['sitename']),
+					'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 					// Mighty Gorgon - Begin
 					'FROM' => $userdata['username'],
 					'DATE' => create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']),

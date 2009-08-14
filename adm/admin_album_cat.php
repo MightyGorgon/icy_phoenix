@@ -446,10 +446,10 @@ else
 			if ($db->sql_numrows($result) > 0)
 			{
 				$parent_cat_id = 0;
-				if (isset($lang[$board_config['sitename']]))
-					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[$board_config['sitename']]);
+				if (isset($lang[ip_stripslashes($board_config['sitename'])]))
+					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[ip_stripslashes($board_config['sitename'])]);
 				else
-					$parent_cat_title = sprintf($lang['Forum_Index'], $board_config['sitename']);
+					$parent_cat_title = sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']));
 
 				//it is so set the indicator that we are deleting a parent category
 				$parent_cat_deleted = true;

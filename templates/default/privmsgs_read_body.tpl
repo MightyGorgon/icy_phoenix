@@ -82,30 +82,12 @@ $this->vars['CA_QUICK_REPLY_FORM'] = $str;
 </table>
 </div>
 <script type="text/javascript">
-<!--
+// <![CDATA[
+
 message = new Array();
 message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 
-function addquote(privmsgs_id, tag)
-{
-	document.getElementById('quick_reply').style.display="";
-	str_find = new Array("&lt_mg;", "&gt_mg;")
-	str_replace = new Array("<", ">")
-	for(var i = 0; i < message[privmsgs_id].length; i++)
-	{
-		for (var j = 0; j < str_find.length; j++)
-		{
-			if (message[privmsgs_id].search(str_find[j]) != -1)
-			{
-				message[privmsgs_id] = message[privmsgs_id].replace(str_find[j],str_replace[j]);
-			}
-		}
-	}
-	document.post.message.value += "[" + tag + message[privmsgs_id] + tag + "]";
-	document.post.message.focus();
-	return;
-}
-//-->
+// ]]>
 </script>
 <br />
 <form method="post" action="{S_PRIVMSGS_ACTION}">
@@ -154,8 +136,8 @@ function addquote(privmsgs_id, tag)
 					{EMAIL_IMG}
 					{WWW_IMG}
 				</div>
-				<a href="javascript:addquote(%27{privmsgs_id}%27,%27quote%27);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a>
-				<a href="javascript:addquote(%27{privmsgs_id}%27,%27ot%27);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
+				<a href="javascript:addquote(%27{privmsgs_id}%27,%27quote%27,true,false);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a>
+				<a href="javascript:addquote(%27{privmsgs_id}%27,%27ot%27,true,false);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
 			</div>
 		</td>
 	</tr>

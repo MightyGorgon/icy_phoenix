@@ -680,11 +680,11 @@ function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $
 
 	if (($month > 0) && ($day_end > 0))
 	{
-		$month_start = $month;
-		$month_end = $month;
+		$month_start = (int) $month;
+		$month_end = (int) $month;
 		if ($day_end < $day)
 		{
-			$month_end = ($month_end == 12) ? 1 : $month_end++;
+			$month_end = ($month_end == 12) ? 1 : ($month_end + 1);
 			$sql_where .= ' AND (((u.user_birthday_m = ' . $month_start . ') AND (u.user_birthday_d >= ' . $day . ')) OR ((u.user_birthday_m = ' . $month_end . ') AND (u.user_birthday_d <= ' . $day_end . ')))';
 		}
 		else

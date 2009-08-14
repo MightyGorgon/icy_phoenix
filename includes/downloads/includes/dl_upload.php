@@ -342,8 +342,8 @@ if ($submit)
 				$emailer->set_subject();
 
 				$emailer->assign_vars(array(
-					'SITENAME' => $board_config['sitename'],
-					'BOARD_EMAIL' => $board_config['board_email_sig'],
+					'SITENAME' => ip_stripslashes($board_config['sitename']),
+					'BOARD_EMAIL' => ip_stripslashes($board_config['board_email_sig']),
 					'USERNAME' => $row['username'],
 					'DOWNLOAD' => $description,
 					'DESCRIPTION' => $long_desc,

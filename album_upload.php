@@ -1323,8 +1323,8 @@ else
 
 					$emailer->assign_vars(array(
 						'USERNAME' => $to_users['username'],
-						'SITENAME' => $board_config['sitename'],
-						'EMAIL_SIG' => str_replace('<br />', "\n", "----- \n" . $board_config['board_email_sig']),
+						'SITENAME' => ip_stripslashes($board_config['sitename']),
+						'EMAIL_SIG' => str_replace('<br />', "\n", "----- \n" . ip_stripslashes($board_config['board_email_sig'])),
 						'FROM' => $userdata['username'],
 						'PIC_TITLE' => $pic_title,
 						'PIC_ID' => $new_pic_id['pic_id'],

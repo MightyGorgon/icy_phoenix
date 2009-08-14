@@ -152,26 +152,31 @@ $template->assign_vars(array(
 	));
 
 // Assign Username array
-$sql = "SELECT DISTINCT u.user_id, u.username" .
-		" FROM " . USERS_TABLE . " AS u , " . VOTE_USERS_TABLE . " AS vv" .
-		" WHERE u.user_id = vv.vote_user_id";
+$sql = "SELECT DISTINCT u.user_id, u.username, u.user_active, u.user_color
+		FROM " . USERS_TABLE . " AS u , " . VOTE_USERS_TABLE . " AS vv
+		WHERE u.user_id = vv.vote_user_id";
 
 if(!($result = $db->sql_query($sql)))
 {
 	message_die(GENERAL_ERROR, 'Could not query users.', '', __LINE__, __FILE__, $sql);
 }
 
+$users_arr[] = array();
 while ($row = $db->sql_fetchrow($result))
 {
-		$user_id = $row['user_id'];
-		$username = $row['username'];
-		$user_arr[$user_id] = $username;
+	$user_id = $row['user_id'];
+	$username = $row['username'];
+	$user_arr[$user_id] = $username;
+	$users_arr[$user_id]['user_id'] = $row['user_id'];
+	$users_arr[$user_id]['username'] = $row['username'];
+	$users_arr[$user_id]['user_active'] = $row['user_active'];
+	$users_arr[$user_id]['user_color'] = $row['user_color'];
 }
 
 // Assign poll options array
-$sql = "SELECT *" .
-		" FROM ". VOTE_RESULTS_TABLE .
-		" ORDER BY vote_id";
+$sql = "SELECT *
+		FROM " . VOTE_RESULTS_TABLE . "
+		ORDER BY vote_id";
 
 if(!($result = $db->sql_query($sql)))
 {
@@ -184,14 +189,14 @@ while ($row = $db->sql_fetchrow($result))
 	$vote_option_id = $row['vote_option_id'];
 	$vote_option_text = $row['vote_option_text'];
 	$vote_result = $row['vote_result'];
-	$option_arr[$vote_id][$vote_option_id]["text"] = $vote_option_text;
-	$option_arr[$vote_id][$vote_option_id]["result"] = $vote_result;
+	$option_arr[$vote_id][$vote_option_id]['text'] = $vote_option_text;
+	$option_arr[$vote_id][$vote_option_id]['result'] = $vote_result;
 }
 
 // Assign individual vote results
-$sql = "SELECT vote_id, vote_user_id, vote_cast" .
-		" FROM ". VOTE_USERS_TABLE .
-		" ORDER BY vote_id";
+$sql = "SELECT vote_id, vote_user_id, vote_cast
+		FROM " . VOTE_USERS_TABLE . "
+		ORDER BY vote_id";
 
 if(!($result = $db->sql_query($sql)))
 {
@@ -207,9 +212,9 @@ while ($row = $db->sql_fetchrow($result))
 }
 
 
-$sql ="SELECT *" .
-		" FROM ". VOTE_DESC_TABLE .
-		" ORDER BY " . $order_by;
+$sql ="SELECT *
+		FROM " . VOTE_DESC_TABLE . "
+		ORDER BY " . $order_by;
 
 if(!($result = $db->sql_query($sql)))
 {
@@ -222,7 +227,7 @@ $i = 0;
 
 while ($row = $db->sql_fetchrow($result))
 {
-	$topic_row_color = (($i % 2) == 0) ? "row1" : "row2";
+	$topic_row_color = (($i % 2) == 0) ? 'row1' : 'row2';
 	$vote_id = $row['vote_id'];
 	$vote_text = $row['vote_text'];
 	$topic_id = $row['topic_id'];
@@ -232,34 +237,35 @@ while ($row = $db->sql_fetchrow($result))
 
 	if (time() < $vote_end)
 	{
-		$vote_duration = (date ("m/d/y",$vote_start)) . " - " . (date ("m/d/y",$vote_end)) . "(ongoing)";
+		$vote_duration = (date ('Y/m/d', $vote_start)) . " - " . (date ('Y/m/d', $vote_end)) . " (ongoing)";
 	}
 	elseif ($vote_length == 0)
 	{
-		$vote_duration = (date ("m/d/y",$vote_start)) . " - " . "Infinite .." ;
+		$vote_duration = (date ('Y/m/d', $vote_start)) . " - " . "Infinite..." ;
 	}
 	else
 	{
-		$vote_duration = (date ("m/d/y",$vote_start)) . " - " . (date ("m/d/y",$vote_end)) . "(completed)" ;
+		$vote_duration = (date ('Y/m/d', $vote_start)) . " - " . (date ('Y/m/d', $vote_end)) . " (completed)" ;
 	}
 
-	$user = "";
-	$users = "";
-	$user_option_arr = "";
+	$user = '';
+	$users = '';
+	$user_option_arr = '';
 
 	if (count($voter_arr[$vote_id]) > 0)
 	{
 		foreach($voter_arr[$vote_id] as $user_id => $option_id)
 		{
-			$user .= $user_arr[$user_id].", ";
-			$user_option_arr[$option_id] .= $user_arr[$user_id].", ";
+			$current_username = colorize_username($users_arr[$user_id]['user_id'], $users_arr[$user_id]['username'], $users_arr[$user_id]['user_color'], $users_arr[$user_id]['user_active']);
+			$user .= $current_username . ', ';
+			$user_option_arr[$option_id] .= $current_username . ', ';
 		}
-			$user = substr($user, "0", strrpos($user, ", "));
+		$user = substr($user, '0', strrpos($user, ', '));
 	}
 
 	$template->assign_block_vars('votes', array(
 		'COLOR' => $topic_row_color,
-		'LINK' => IP_ROOT_PATH . VIEWTOPIC_MG . '?t=' . $topic_id,
+		'LINK' => IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id,
 		'DESCRIPTION' => $vote_text,
 		'USER' => $user,
 		'ENDDATE' => $vote_end,
@@ -275,13 +281,14 @@ while ($row = $db->sql_fetchrow($result))
 			$option_text = $elem['text'];
 			$option_result = $elem['result'];
 			$user = $user_option_arr[$vote_option_id];
-			$user = substr($user, "0", strrpos($user, ", "));
+			$user = substr($user, '0', strrpos($user, ', '));
 
 			$template->assign_block_vars('votes.detail', array(
 				'OPTION' => $option_text,
 				'RESULT' => $option_result,
 				'USER' => $user
-			));
+				)
+			);
 		}
 	}
 
@@ -290,7 +297,6 @@ while ($row = $db->sql_fetchrow($result))
 }
 
 // Pagination routine
-//
 $sql = "SELECT count(*) AS total" .
 		" FROM " . VOTE_DESC_TABLE .
 		" WHERE vote_id > 0";
@@ -314,8 +320,6 @@ $template->assign_vars(array(
 	)
 );
 
-// I'm the boss...need the info...
-//
 $template->pparse('pollbody');
 
 include('./page_footer_admin.' . PHP_EXT);

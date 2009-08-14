@@ -86,10 +86,10 @@ if ( isset($_POST['submit']) )
 			$emailer->set_subject($lang['New_password_activation']);
 
 			$emailer->assign_vars(array(
-				'SITENAME' => $board_config['sitename'],
+				'SITENAME' => ip_stripslashes($board_config['sitename']),
 				'USERNAME' => $username,
 				'PASSWORD' => $user_password,
-				'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+				'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 				'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 				)
 			);

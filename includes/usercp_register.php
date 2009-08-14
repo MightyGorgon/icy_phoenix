@@ -1027,9 +1027,9 @@ if (isset($_POST['submit']))
 					$emailer->set_subject($lang['Reactivate']);
 
 					$emailer->assign_vars(array(
-						'SITENAME' => $board_config['sitename'],
+						'SITENAME' => ip_stripslashes($board_config['sitename']),
 						'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
-						'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']) : '',
+						'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
 						//'U_ACTIVATE' => $server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 						'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 						)
@@ -1059,7 +1059,7 @@ if (isset($_POST['submit']))
 
 						$emailer->assign_vars(array(
 							'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
-							'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
+							'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])),
 							//'U_ACTIVATE' => $server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 							'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 							)
@@ -1157,8 +1157,8 @@ if (isset($_POST['submit']))
 			include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
 			$privmsg_sender = $founder_id;
 			$privmsg_recipient = $user_id;
-			$privmsg_subject = sprintf($lang['register_pm_subject'], $board_config['sitename']);
-			$privmsg_message = sprintf($lang['register_pm'], $board_config['sitename'], $board_config['sitename']);
+			$privmsg_subject = sprintf($lang['register_pm_subject'], ip_stripslashes($board_config['sitename']));
+			$privmsg_message = sprintf($lang['register_pm'], ip_stripslashes($board_config['sitename']), ip_stripslashes($board_config['sitename']));
 
 			$privmsg = new class_pm();
 			$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
@@ -1221,15 +1221,15 @@ if (isset($_POST['submit']))
 
 			$emailer->use_template($email_template, stripslashes($user_lang));
 			$emailer->email_address($email);
-			$emailer->set_subject(sprintf($lang['Welcome_subject'], $board_config['sitename']));
+			$emailer->set_subject(sprintf($lang['Welcome_subject'], ip_stripslashes($board_config['sitename'])));
 
 			if($coppa)
 			{
 				$emailer->assign_vars(array(
-					'SITENAME' => $board_config['sitename'],
+					'SITENAME' => ip_stripslashes($board_config['sitename']),
 					'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 					'PASSWORD' => $password_confirm,
-					'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
+					'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])),
 
 					'FAX_INFO' => $board_config['coppa_fax'],
 					'MAIL_INFO' => $board_config['coppa_mail'],
@@ -1243,18 +1243,18 @@ if (isset($_POST['submit']))
 					'FROM' => $location,
 					'OCC' => $occupation,
 					'INTERESTS' => $interests,
-					'SITENAME' => $board_config['sitename']
+					'SITENAME' => ip_stripslashes($board_config['sitename'])
 					)
 				);
 			}
 			else
 			{
 				$emailer->assign_vars(array(
-					'SITENAME' => $board_config['sitename'],
-					'WELCOME_MSG' => sprintf($lang['Welcome_subject'], $board_config['sitename']),
+					'SITENAME' => ip_stripslashes($board_config['sitename']),
+					'WELCOME_MSG' => sprintf($lang['Welcome_subject'], ip_stripslashes($board_config['sitename'])),
 					'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 					'PASSWORD' => $password_confirm,
-					'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
+					'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])),
 					//'U_ACTIVATE' => $server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 					'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 					)
@@ -1286,7 +1286,7 @@ if (isset($_POST['submit']))
 
 					$emailer->assign_vars(array(
 						'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
-						'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . $board_config['board_email_sig']),
+						'EMAIL_SIG' => str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])),
 						'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 						)
 					);

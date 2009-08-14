@@ -139,7 +139,7 @@ $template->assign_vars(array(
 	'S_CONTENT_DIR_LEFT' => $lang['LEFT'],
 	'S_CONTENT_DIR_RIGHT' => $lang['RIGHT'],
 
-	'SITENAME' => $board_config['sitename'],
+	'SITENAME' => ip_stripslashes($board_config['sitename']),
 	'PAGE_TITLE' => $page_title,
 
 	// AJAX Features - BEGIN
@@ -148,7 +148,7 @@ $template->assign_vars(array(
 	// AJAX Features - END
 
 	'L_ADMIN' => $lang['Admin'],
-	'L_INDEX' => sprintf($lang['Forum_Index'], $board_config['sitename']),
+	'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
 	'L_FAQ' => $lang['FAQ'],
 
 	'U_INDEX' => append_sid(IP_ROOT_PATH . FORUM_MG),

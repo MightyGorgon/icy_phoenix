@@ -171,7 +171,7 @@ if ($download)
 		$disp_folder = 'Download';
 	}
 
-	$filename = $board_config['sitename'] . "_" . $disp_folder . "_" . date("Ymd",time()) . ".txt";
+	$filename = ip_stripslashes($board_config['sitename']) . "_" . $disp_folder . "_" . date("Ymd",time()) . ".txt";
 	header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 	header('Content-Disposition: attachment;filename="' . $filename . '"');
 	header('Content-Transfer-Encoding: plain/text');

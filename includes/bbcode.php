@@ -1278,9 +1278,9 @@ class BBCode
 				}
 			}
 			// generate html
-			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($url_local ? '' : ' target="_blank"') . $this->add_extras($item['params'], $extras) . '>';
+			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($url_local ? '' : (' target="_blank"' . (!empty($item['params']['nofollow']) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
-			if (($board_config['disable_html_guests'] == 1) && (!$userdata['session_logged_in']))
+			if ($board_config['disable_html_guests'] && !$userdata['session_logged_in'])
 			{
 				return array(
 					'valid' => true,
@@ -1464,8 +1464,8 @@ class BBCode
 					"\t"
 				);
 				$replace = array(
-					' &nbsp;',
-					' &nbsp; &nbsp;'
+					'&nbsp; ',
+					'&nbsp; &nbsp; '
 				);
 				$text = str_replace($search, $replace, $this->process_text($content, false, true));
 			}
@@ -1759,8 +1759,8 @@ class BBCode
 					"\t"
 				);
 				$replace = array(
-					' &nbsp;',
-					' &nbsp; &nbsp;'
+					'&nbsp; ',
+					'&nbsp; &nbsp; '
 				);
 				$text = str_replace($search, $replace, $this->process_text($content, false, true));
 			}
@@ -2718,7 +2718,7 @@ class BBCode
 		// get parameters
 		$pos_eq = strpos($tag, '=');
 		$pos_space = strpos($tag, ' ');
-		if($pos_space !== false && $pos_eq !== false && $pos_space < $pos_eq)
+		if(($pos_space !== false) && ($pos_eq !== false) && ($pos_space < $pos_eq))
 		{
 			// mutiple parameters
 			$param_start = 0;
@@ -2897,9 +2897,9 @@ class BBCode
 				}
 				else
 				{
-					if(strpos($tag, ' autourl=' . AUTOURL))
+					if(strpos($tag, ' autourl=' . AUTOURL . ' nofollow=1'))
 					{
-						$tag = str_replace(' autourl=' . AUTOURL, '', $tag);
+						$tag = str_replace(' autourl=' . AUTOURL . ' nofollow=1', '', $tag);
 					}
 					$tag = strtolower($tag);
 					if(!$this->valid_tag($tag, $is_html))
@@ -3061,10 +3061,10 @@ class BBCode
 	function process_text($text, $br = true, $chars = true)
 	{
 		$search = array(
-			'[url autourl=' . AUTOURL . ']',
-			'[/url autourl=' . AUTOURL  .']',
-			'[email autourl=' . AUTOURL . ']',
-			'[/email autourl=' . AUTOURL .']'
+			'[url autourl=' . AUTOURL . ' nofollow=1]',
+			'[/url autourl=' . AUTOURL .' nofollow=1]',
+			'[email autourl=' . AUTOURL . ' nofollow=1]',
+			'[/email autourl=' . AUTOURL . ' nofollow=1]'
 		);
 		$replace = array('', '', '', '');
 		$text = str_replace($search, $replace, $text);
@@ -3264,8 +3264,8 @@ class BBCode
 			"/([\s>])([_a-zA-Z0-9\-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9\-{$chars}]+(\.[a-zA-Z0-9\-{$chars}]+)*(\.[a-zA-Z]{2,}))/si",
 		);
 		$replace = array(
-			"\\1[url autourl=" . AUTOURL . "]\\2\\4[/url autourl=" . AUTOURL . "]",
-			"\\1[email autourl=" . AUTOURL . "]\\2[/email autourl=" . AUTOURL . "]",
+			"\\1[url autourl=" . AUTOURL . " nofollow=1]\\2\\4[/url autourl=" . AUTOURL . " nofollow=1]",
+			"\\1[email autourl=" . AUTOURL . " nofollow=1]\\2[/email autourl=" . AUTOURL . " nofollow=1]",
 		);
 		$this->text = preg_replace($search, $replace, ' ' . $this->text . ' ');
 		$this->text = substr($this->text, 1, strlen($this->text) - 2);
@@ -3319,7 +3319,7 @@ class BBCode
 		$this->data = array();
 		$this->html = '';
 		$this->prepare_smilies();
-		if ($light == false)
+		if (!$light)
 		{
 			$this->process_urls();
 		}
