@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{PIC_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1 row-center"><img src="{U_PIC}" border="0" vspace="10" alt="{PIC_TITLE}" title="{PIC_TITLE}" /></td></tr>
 <tr>
@@ -51,3 +53,5 @@
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

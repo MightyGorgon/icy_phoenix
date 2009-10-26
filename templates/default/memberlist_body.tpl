@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form method="post" action="{S_MODE_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -104,3 +106,5 @@
 	<td valign="top" align="right">{JUMPBOX}</td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -19,9 +19,9 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if (!defined('MG_CTRACK_FLAG'))
+if (!defined('CTRACKER_DISABLE_OUTPUT'))
 {
-	define('MG_CTRACK_FLAG', true);
+	define('CTRACKER_DISABLE_OUTPUT', true);
 }
 
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
@@ -36,6 +36,7 @@ if (!empty($_POST['act']) || !empty($_GET['act']))
 
 if($action)
 {
+	define('AJAX_HEADERS', true);
 	// Headers are sent to prevent browsers from caching... IE is still resistent sometimes
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
@@ -53,7 +54,7 @@ if($action)
 	if($action == 'read')
 	{
 		// Stop guest from reading the shoutbox if they aren't allowed
-		if (($board_config['shout_allow_guest'] == 0) && !$userdata['session_logged_in'])
+		if (($config['shout_allow_guest'] == 0) && !$userdata['session_logged_in'])
 		{
 			pseudo_die(SHOUTBOX_NO_ERROR, $lang['Shoutbox_no_auth']);
 		}
@@ -80,7 +81,7 @@ if($action)
 					$template->assign_block_vars('online_list', array(
 						'USER' => $online['username'],
 						'USER_ID' => $online['user_id'],
-						'LINK' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
+						'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
 						'LINK_STYLE' => $style_color,
 						)
 					);
@@ -101,20 +102,15 @@ if($action)
 			);
 		}
 
-		// Define censored word matches
-		$orig_word = array();
-		$replacement_word = array();
-		obtain_word_list($orig_word, $replacement_word);
-
 		// If the request does not provide the id of the last know message the id is set to 0
 		$lastID = ($_GET['lastID']) ? intval($_GET['lastID']) : 0;
 
 		$limit_sql = '';
 		// Check if there is a limit else, show all shouts
-		if($board_config['display_shouts'] > 0)
+		if($config['display_shouts'] > 0)
 		{
 			// Gets a limited number of entries
-			$limit_sql = " LIMIT " . $board_config['display_shouts'];
+			$limit_sql = " LIMIT " . $config['display_shouts'];
 		}
 
 		$sql = "SELECT sb.*, u.username, u.user_active, u.user_color
@@ -135,12 +131,12 @@ if($action)
 			pseudo_die(SHOUTBOX_NO_ERROR, $lang['Shoutbox_empty']);
 		}
 
-		for($x = 0; $x < count($row); $x++)
+		for($x = 0; $x < sizeof($row); $x++)
 		{
 			$id = $row[$x]['shout_id'];
-			//$time = utf8_encode(create_date($board_config['default_dateformat'], $row[$x]['shout_time'], $board_config['board_timezone']));
-			$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $board_config['board_timezone']));
-			//$time = utf8_encode(date('Y/m/d - H.i.s', $row[$x]['shout_time']));
+			//$time = utf8_encode(create_date($config['default_dateformat'], $row[$x]['shout_time'], $config['board_timezone']));
+			$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
+			//$time = utf8_encode(gmdate('Y/m/d - H.i.s', $row[$x]['shout_time']));
 
 			if ($row[$x]['user_id'] == ANONYMOUS)
 			{
@@ -150,7 +146,7 @@ if($action)
 			else
 			{
 				$shouter = utf8_encode($row[$x]['username']);
-				$shouter_link = append_sid(PROFILE_MG . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
+				$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
 			}
 
 			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], $row[$x]['user_active'], false, true);
@@ -163,15 +159,13 @@ if($action)
 			//$message = stripslashes($row[$x]['shout_text']);
 			//$message = utf8_encode($row[$x]['shout_text']);
 			$message = $row[$x]['shout_text'];
+			$message = censor_text($message);
 
-			// Word Censor.
-			$message = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $message) : $message;
-
-			//$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+			//$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
 			// Forced HTML to false to avoid problems
 			$bbcode->allow_html = false;
-			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
-			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 			/*
 			$bbcode->allow_html = true;
 			$bbcode->allow_bbcode = true;
@@ -203,12 +197,14 @@ if($action)
 		$sql = "SELECT MAX(shout_time) AS last_shout
 				FROM " . AJAX_SHOUTBOX_TABLE . "
 				WHERE shouter_ip = '" . $user_ip . "'";
-
-		if ($result = $db->sql_query($sql))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
 			if ($row = $db->sql_fetchrow($result))
 			{
-				if (($shout_time - intval($row['last_shout'])) < $board_config['shoutbox_floodinterval'])
+				if (($shout_time - intval($row['last_shout'])) < $config['shoutbox_floodinterval'])
 				{
 					// Display error
 					$error = AJAX_SHOUTBOX_ERROR;
@@ -226,7 +222,7 @@ if($action)
 		else
 		{
 			// Stop guest shouts if they are not allowed
-			if ($board_config['shout_allow_guest'] != 1)
+			if ($config['shout_allow_guest'] != 1)
 			{
 				pseudo_die(SHOUTBOX_ERROR, $lang['Shoutbox_no_auth']);
 			}
@@ -259,7 +255,7 @@ if($action)
 		$message = str_replace("'", "''", $message);
 
 		// we don't want users shouting images so we take them out before parsing the bbcodes
-		//$message = ereg_replace("\\[img\\]([^\[]*)\\[/img\\]", '', $message);
+		//$message = @ereg_replace("\\[img\\]([^\[]*)\\[/img\\]", '', $message);
 
 		/*
 		// The message is cut of after 500 letters
@@ -269,11 +265,11 @@ if($action)
 		}
 		*/
 
-		//$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
+		//$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
 		// Forced HTML to false to avoid problems
 		$bbcode->allow_html = false;
-		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 		//$message = addslashes($bbcode->parse($message));
 		$message = $bbcode->parse($message);
 		$message = str_replace('http://', 'http:_/_/', $message);
@@ -286,7 +282,10 @@ if($action)
 			// Add new data
 			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time) VALUES (" . $userdata['user_id'] . ", '" . $shouter . "', '" . $message . "', '" . $user_ip . "', " . $shout_time . ")";
 
-			if(!($results = $db->sql_query($sql)))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
 				/*
 				$error = AJAX_SHOUTBOX_ERROR;
@@ -297,15 +296,14 @@ if($action)
 			}
 
 			// Only do this if there is a limit.
-			if($board_config['stored_shouts'] > 1)
+			if($config['stored_shouts'] > 1)
 			{
-				$limit = $board_config['stored_shouts'] - 1;
+				$limit = $config['stored_shouts'] - 1;
 				// Keep the database with the selected number of entrys.
 				$sql = "SELECT shout_id
 						FROM " . AJAX_SHOUTBOX_TABLE . "
 						ORDER BY shout_id DESC
 						LIMIT " . $limit . ", 1";
-
 				$results = $db->sql_query($sql);
 				$row = $db->sql_fetchrowset($results);
 				$id = $row[0]['shout_id'];
@@ -334,8 +332,10 @@ if($action)
 
 			$sql = 'DELETE FROM ' . AJAX_SHOUTBOX_TABLE . '
 					WHERE shout_id =' . $shout_id;
-
-			if(!($result = $db->sql_query($sql)))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
 				$error = AJAX_SHOUTBOX_ERROR;
 				$error_msg = $lang['Shoutbox_unable'];
@@ -344,18 +344,11 @@ if($action)
 	}
 	pseudo_die($error, $error_msg);
 }
-// We're Out of PhpBB so call the Simple header and parser
-if ($shoutbox_template_parse == true)
+if (!$shoutbox_template_parse)
 {
-	$page_title = $lang['Ajax_Chat'];
-	$meta_description = '';
-	$meta_keywords = '';
-	$gen_simple_header = true;
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+	// Load templates
+	$template->set_filenames(array('shoutbox' => 'ajax_shoutbox_body.tpl'));
 }
-
-// Load templates
-$template->set_filenames(array('shoutbox' => 'ajax_shoutbox_body.tpl'));
 
 // Use special dimensions to the else use default.
 if(($_GET['width'] > 0) && ($_GET['height'] > 0))
@@ -395,7 +388,7 @@ $template->assign_vars(array(
 	)
 );
 
-if($board_config['shout_allow_guest'] > 0)
+if($config['shout_allow_guest'] > 0)
 {
 	// Guest and Users may see the shoutbox
 	$template->assign_block_vars('view_shoutbox', array(
@@ -405,11 +398,11 @@ if($board_config['shout_allow_guest'] > 0)
 		'DIV_HEIGHT' => $shoutbox_div_height,
 		'TABLE_WIDTH' => $shoutbox_table_width,
 		'TABLE_HEIGHT' => $shoutbox_table_height,
-		'REFRESH_TIME' => $board_config['shoutbox_refreshtime'],
+		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
-	if($board_config['shout_allow_guest'] == 1)
+	if($config['shout_allow_guest'] == 1)
 	{
 		// Guest and users may shout.
 		$template->assign_block_vars('view_shoutbox.shout_allowed', array());
@@ -440,7 +433,7 @@ else
 			'DIV_HEIGHT' => $shoutbox_div_height,
 			'TABLE_WIDTH' => $shoutbox_table_width,
 			'TABLE_HEIGHT' => $shoutbox_table_height,
-			'REFRESH_TIME' => $board_config['shoutbox_refreshtime'],
+			'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 			'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 			)
 		);
@@ -471,10 +464,11 @@ $template->assign_vars(array(
 $template->assign_var_from_handle('BBCB_MG_SMALL', 'bbcb_mg');
 // BBCBMG - END
 
-if($shoutbox_template_parse)
+if ($shoutbox_template_parse)
 {
-	$template->pparse('shoutbox');
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	// We're Out of PhpBB so call the Simple header and parser
+	$gen_simple_header = true;
+	full_page_generation('ajax_shoutbox_body.tpl', $lang['Ajax_Chat'], '', '');
 }
 else
 {

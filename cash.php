@@ -27,47 +27,39 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ( !$userdata['session_logged_in'] )
+if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cash.' . PHP_EXT, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cash.' . PHP_EXT, true));
 }
 
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : (''));
 
-switch( $mode )
+switch($mode)
 {
 //
 //========================================[ Donate Code ]===========================
 //
 	case 'donate':
 		$ref = isset($_GET['ref']) ? $_GET['ref'] : 'index';
-		$target = ( isset($_GET[POST_USERS_URL]) ) ? intval($_GET[POST_USERS_URL]) : (( isset($_GET['u']) ) ? intval($_GET['u']):0);
-		$post = ( isset($_GET[POST_POST_URL]) ) ? intval($_GET[POST_POST_URL]) : (( isset($_GET['p']) ) ? intval($_GET['p']):0);
-		if ( ($target == ANONYMOUS) || ($target == $userdata['user_id']) || (!($profiledata = get_userdata($target))) )
+		$target = (isset($_GET[POST_USERS_URL])) ? intval($_GET[POST_USERS_URL]) : ((isset($_GET['u'])) ? intval($_GET['u']):0);
+		$post = (isset($_GET[POST_POST_URL])) ? intval($_GET[POST_POST_URL]) : ((isset($_GET['p'])) ? intval($_GET['p']):0);
+		if (($target == ANONYMOUS) || ($target == $userdata['user_id']) || (!($profiledata = get_userdata($target))))
 		{
-			if ( ($ref == 'viewtopic') && ($post != 0) )
+			if (($ref == 'viewtopic') && ($post != 0))
 			{
 				redirect(append_sid('viewtopic.' . PHP_EXT . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
-		// Load templates
-		$template->set_filenames(array('body' => 'cash_donate.tpl'));
-
-		// Output page header
-		$page_title = $lang['Donate'];
-		$meta_description = '';
-		$meta_keywords = '';
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 		$hidden = '<input type="hidden" name="ref" value="' . $ref . '" />';
 		$hidden .= '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $target . '" />';
-		if ( $ref == 'viewtopic' )
+		if ($ref == 'viewtopic')
 		{
 			$hidden .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $post . '" />';
 		}
@@ -95,7 +87,7 @@ switch( $mode )
 			)
 		);
 
-		while ( $c_cur = &$cash->currency_next($cm_i,CURRENCY_ENABLED | CURRENCY_DONATE) )
+		while ($c_cur = &$cash->currency_next($cm_i,CURRENCY_ENABLED | CURRENCY_DONATE))
 		{
 			$template->assign_block_vars('cashrow',array(
 				'CASH_NAME' => $c_cur->name(),
@@ -106,54 +98,51 @@ switch( $mode )
 			);
 		}
 
-		$template->pparse('body');
-
-		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
+		full_page_generation('cash_donate.tpl', $lang['Donate'], '', '');
 		break;
 //
 //========================================[ Donated Code ]===========================
 //
 	case 'donated':
 		$ref = isset($_POST['ref']) ? $_POST['ref'] : 'index';
-		$target = ( isset($_POST[POST_USERS_URL]) ) ? intval($_POST[POST_USERS_URL]) : (( isset($_POST['u']) ) ? intval($_POST['u']):0);
-		$post = ( isset($_POST[POST_POST_URL]) ) ? intval($_POST[POST_POST_URL]) : (( isset($_POST['p']) ) ? intval($_POST['p']):0);
-		if ( ($target == ANONYMOUS) || ($target == $userdata['user_id']) || (!($profiledata = get_userdata($target))) )
+		$target = (isset($_POST[POST_USERS_URL])) ? intval($_POST[POST_USERS_URL]) : ((isset($_POST['u'])) ? intval($_POST['u']):0);
+		$post = (isset($_POST[POST_POST_URL])) ? intval($_POST[POST_POST_URL]) : ((isset($_POST['p'])) ? intval($_POST['p']):0);
+		if (($target == ANONYMOUS) || ($target == $userdata['user_id']) || (!($profiledata = get_userdata($target))))
 		{
-			if ( ($ref == 'viewtopic') && ($post != 0) )
+			if (($ref == 'viewtopic') && ($post != 0))
 			{
 				redirect(append_sid('viewtopic.' . PHP_EXT . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
 
 		$target = new cash_user($target,$profiledata);
 		$donater = new cash_user($userdata['user_id'],$userdata);
-		if ( ($target->id() != $donater->id()) && isset($_POST['cash']) && is_array($_POST['cash']) )
+		if (($target->id() != $donater->id()) && isset($_POST['cash']) && is_array($_POST['cash']))
 		{
 			$donate_array = array();
 			$donate = false;
-			while ( $c_cur = &$cash->currency_next($cm_i,CURRENCY_ENABLED | CURRENCY_DONATE) )
+			while ($c_cur = &$cash->currency_next($cm_i,CURRENCY_ENABLED | CURRENCY_DONATE))
 			{
-				if ( isset($_POST['cash'][$c_cur->id()]) &&
-					 is_numeric($_POST['cash'][$c_cur->id()]) )
+				if (isset($_POST['cash'][$c_cur->id()]) &&
+					 is_numeric($_POST['cash'][$c_cur->id()]))
 				{
 					$amount = cash_floatval($_POST['cash'][$c_cur->id()]);
-					if ( $amount > 0 )
+					if ($amount > 0)
 					{
-						$amount = ( $donater->has($c_cur->id(),$amount) ) ? $amount : $donater->amount($c_cur->id());
+						$amount = ($donater->has($c_cur->id(),$amount)) ? $amount : $donater->amount($c_cur->id());
 						$donate_array[$c_cur->id()] = $amount;
 						$message_clause[] = $c_cur->display($amount,true);
 						$donate = true;
 					}
 				}
 			}
-			if ( $donate )
+			if ($donate)
 			{
 				$donater->remove_by_id_array($donate_array);
 				$target->give_by_id_array($donate_array);
@@ -163,10 +152,10 @@ switch( $mode )
 								implode('</b>, <b>', $message_clause),
 								$target->id(),
 								$target->name());
-				$message = ( isset($_POST['message']) )?str_replace("\'", "''", $_POST['message']):'';
+				$message = (isset($_POST['message']))?str_replace("\'", "''", $_POST['message']):'';
 				cash_create_log(CASH_LOG_DONATE, $action, $message);
 
-				if ( ($message != '') && $userdata['user_allow_pm'] )
+				if (($message != '') && $userdata['user_allow_pm'])
 				{
 					$privmsg_subject = sprintf($lang['Donation_recieved'], $userdata['username']);
 
@@ -176,19 +165,19 @@ switch( $mode )
 					cash_pm($profiledata,$privmsg_subject,$message);
 				}
 			}
-			if ( $ref == 'viewprofile' )
+			if ($ref == 'viewprofile')
 			{
-				redirect(append_sid(PROFILE_MG . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target->id()));
+				redirect(append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target->id()));
 				exit;
 			}
-			else if ( ($ref == 'viewtopic') && ($post != 0) )
+			else if (($ref == 'viewtopic') && ($post != 0))
 			{
-				redirect(append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
@@ -198,48 +187,39 @@ switch( $mode )
 //
 	case 'modedit':
 		$ref = isset($_GET['ref']) ? $_GET['ref'] : 'index';
-		$target = ( isset($_GET[POST_USERS_URL]) ) ? intval($_GET[POST_USERS_URL]) : (( isset($_GET['u']) ) ? intval($_GET['u']):0);
-		$post = ( isset($_GET[POST_POST_URL]) ) ? intval($_GET[POST_POST_URL]) : (( isset($_GET['p']) ) ? intval($_GET['p']):0);
-		if ( ($target == ANONYMOUS) || (!($profiledata = get_userdata($target))) )
+		$target = (isset($_GET[POST_USERS_URL])) ? intval($_GET[POST_USERS_URL]) : ((isset($_GET['u'])) ? intval($_GET['u']):0);
+		$post = (isset($_GET[POST_POST_URL])) ? intval($_GET[POST_POST_URL]) : ((isset($_GET['p'])) ? intval($_GET['p']):0);
+		if (($target == ANONYMOUS) || (!($profiledata = get_userdata($target))))
 		{
-			if ( ($ref == 'viewtopic') && ($post != 0) )
+			if (($ref == 'viewtopic') && ($post != 0))
 			{
-				redirect(append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
-		if ( ($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
+		if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
 		{
 			if ($ref == 'viewprofile')
 			{
-				redirect(append_sid(PROFILE_MG . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target));
+				redirect(append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target));
 				exit;
 			}
 			else if (($ref == 'viewtopic') && ($post != 0))
 			{
-				redirect(append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
-		// Load templates
-		$template->set_filenames(array('body' => 'cash_modedit.tpl'));
-
-		// Output page header
-		$page_title = sprintf($lang['Mod_usercash'],$profiledata['username']);
-		$meta_description = '';
-		$meta_keywords = '';
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
 
 		$hidden = '<input type="hidden" name="ref" value="' . $ref . '" />';
 		$hidden .= '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $target . '" />';
@@ -274,8 +254,9 @@ switch( $mode )
 			'TITLE' => sprintf($lang['Mod_usercash'],$profiledata['username']),
 
 			'TARGET' => $profiledata['username'],
-			'DONATER' => $userdata['username'])
-			);
+			'DONATER' => $userdata['username']
+			)
+		);
 
 		$mask = false;
 		if ($userdata['user_level'] == MOD)
@@ -294,10 +275,7 @@ switch( $mode )
 			);
 		}
 
-		$template->pparse('body');
-
-		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
+		full_page_generation('cash_modedit.tpl', sprintf($lang['Mod_usercash'],$profiledata['username']), '', '');
 		break;
 //
 //========================================[ Modedited Code ]===========================
@@ -310,12 +288,12 @@ switch( $mode )
 		{
 			if (($ref == 'viewtopic') && ($post != 0))
 			{
-				redirect(append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
@@ -323,17 +301,17 @@ switch( $mode )
 		{
 			if ($ref == 'viewprofile')
 			{
-				redirect(append_sid(PROFILE_MG . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target));
+				redirect(append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target));
 				exit;
 			}
 			else if (($ref == 'viewtopic') && ($post != 0))
 			{
-				redirect(append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
@@ -445,17 +423,17 @@ switch( $mode )
 			}
 			if ($ref == 'viewprofile')
 			{
-				redirect(append_sid(PROFILE_MG . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target->id()));
+				redirect(append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&' . POST_USERS_URL . '=' . $target->id()));
 				exit;
 			}
 			else if (($ref == 'viewtopic') && ($post != 0))
 			{
-				redirect(append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
+				redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post) . '#p' . $post);
 				exit;
 			}
 			else
 			{
-				redirect(append_sid(FORUM_MG));
+				redirect(append_sid(CMS_PAGE_FORUM));
 				exit;
 			}
 		}
@@ -466,24 +444,12 @@ switch( $mode )
 //
 	case 'exchange':
 	default:
-		// Load templates
-		$template->set_filenames(array('body' => 'cash_exchange.tpl'));
-
-		// Output page header
-		$page_title = $lang['Exchange'];
-		$meta_description = '';
-		$meta_keywords = '';
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
 		if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE) < 2)
 		{
 			message_die(GENERAL_MESSAGE, $lang['Exchange_lack_of_currencies']);
 		}
 		$sql = "SELECT * FROM " . CASH_EXCHANGE_TABLE;
-		if (!($result = $db->sql_query($sql, false, 'cash_')))
-		{
-			message_die(GENERAL_ERROR, "Could not obtain exchange information", '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'cash_');
 		$exchange_data = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -532,7 +498,7 @@ switch( $mode )
 		$max_columns_per_row = 3;
 		$columnwidth = intval(floor(100/$max_columns_per_row));
 		$bresenham = 0;
-		$numrows = intval(ceil(count($indices)/$max_columns_per_row));
+		$numrows = intval(ceil(sizeof($indices)/$max_columns_per_row));
 		$i = 0;
 		while ($c_cur = &$cash->currency_next($cm_i,CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE))
 		{
@@ -556,7 +522,7 @@ switch( $mode )
 				)
 			);
 			$exchangecount = 0;
-			if (isset($exchange_data[$c_cur->id()]) && count($exchange_data[$c_cur->id()]))
+			if (isset($exchange_data[$c_cur->id()]) && sizeof($exchange_data[$c_cur->id()]))
 			{
 				$template->assign_block_vars('rowrow.cashtable.switch_exon', array());
 				while ($c_cur_j = &$cash->currency_next($cm_j, CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE))
@@ -578,10 +544,7 @@ switch( $mode )
 			$i++;
 		}
 
-		$template->pparse('body');
-
-		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
+		full_page_generation('cash_exchange.tpl', $lang['Exchange'], '', '');
 		break;
 	}
 

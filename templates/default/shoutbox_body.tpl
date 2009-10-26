@@ -23,7 +23,7 @@
 			<!-- <span class="nav"><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'width=250,height=300,resizable=yes,scrollbars=yes');return false;" class="nav">{L_SMILIES}</a></span> -->
 			<!-- END switch_bbcode -->
 			{L_SHOUT_TEXT}:&nbsp;
-			<input type="text" class="button" name="message" value="{MESSAGE}" size="25" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" />
+			<input type="text" class="post" name="message" value="{MESSAGE}" size="25" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" />
 			&nbsp;
 			<input type="submit" class="mainoption" value="{L_SHOUT_SUBMIT}" name="shout" />
 			<!-- END switch_auth_post -->

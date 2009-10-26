@@ -1,5 +1,7 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <?php
-global $userdata, $board_config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
+global $userdata, $config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
 $post_subject = (((strlen($post_subject) > 0) && ((substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX']) || (substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX_OLD']))) ? '' : $lang['REPLY_PREFIX']) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
 $this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="ShowHide(\'quick_reply\', \'quick_reply2\'); return false;"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
@@ -30,19 +32,19 @@ ob_start();
 	<td class="row2">
 	<span class="genmed">
 	<?php
-		$user_sig = ( $userdata['user_sig'] != '' && $board_config['allow_sig'] ) ? $userdata['user_sig'] : '';
-		$html_on = $board_config['allow_html'] ? $userdata['user_allowhtml'] : 1;
-		$bbcode_on = $board_config['allow_bbcode'] ? $userdata['user_allowbbcode'] : 0;
-		$smilies_on = $board_config['allow_smilies'] ? $userdata['user_allowsmile'] : 0;
+		$user_sig = ( $userdata['user_sig'] != '' && $config['allow_sig'] ) ? $userdata['user_sig'] : '';
+		$html_on = $config['allow_html'] ? $userdata['user_allowhtml'] : 1;
+		$bbcode_on = $config['allow_bbcode'] ? $userdata['user_allowbbcode'] : 0;
+		$smilies_on = $config['allow_smilies'] ? $userdata['user_allowsmile'] : 0;
 	?>
 	<label><input type="checkbox" name="disable_acro_auto" /><span class="genmed">&nbsp;<?php echo $lang['Disable_ACRO_AUTO_post']; ?></span></label><br />
-	<?php if($board_config['allow_html']) { ?>
+	<?php if($config['allow_html']) { ?>
 	<label><input type="checkbox" name="disable_html" <?php echo ($html_on ? '' : 'checked="checked"'); ?> /><span class="genmed">&nbsp;<?php echo $lang['Disable_HTML_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_html" value="checked" /><?php } ?>
-	<?php if($board_config['allow_bbcode']) { ?>
+	<?php if($config['allow_bbcode']) { ?>
 	<label><input type="checkbox" name="disable_bbcode" <?php echo ($bbcode_on ? '' : 'checked="checked"'); ?> /><span class="genmed">&nbsp;<?php echo $lang['Disable_BBCode_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_bbcode" value="checked" /><?php } ?>
-	<?php if($board_config['allow_smilies']) { ?>
+	<?php if($config['allow_smilies']) { ?>
 	<label><input type="checkbox" name="disable_smilies" <?php echo ($smilies_on ? '' : 'checked="checked"'); ?> /><span class="genmed">&nbsp;<?php echo $lang['Disable_Smilies_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_smilies" value="checked" /><?php } ?>
 	<?php if($user_sig) {  ?>
@@ -105,7 +107,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 	<tr>
 		<td class="row-post-author">
 			<span class="post-name">{MESSAGE_FROM}&nbsp;{POSTER_GENDER}</span><br />
-			{RANK_IMAGE}
+			<div class="post-rank"><b>{POSTER_RANK}</b>{RANK_IMAGE}</div>
 			<span class="post-images">{POSTER_AVATAR}</span>
 			<div class="post-details">
 			{ONLINE_STATUS_IMG}{IP_IMG}{AIM_IMG}{ICQ_IMG}{MSN_IMG}{SKYPE_IMG}{YIM_IMG}<br />
@@ -170,3 +172,5 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 <table class="empty-table" width="100%" align="center" cellspacing="0">
 <tr><td valign="top" align="right">{JUMPBOX}</td></tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

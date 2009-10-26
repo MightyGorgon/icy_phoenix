@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <?php
 $catrow_count = (isset($this->_tpldata['catrow.'])) ? count($this->_tpldata['catrow.']) : 0;
 for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
@@ -22,3 +24,5 @@ for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 
 ?>
 <!-- INCLUDE index_body.tpl -->
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -1,7 +1,7 @@
 <?php
 /*
   paFileDB 3.0
-  ©2001/2002 PHP Arena
+  Â©2001/2002 PHP Arena
   Written by Todd
   todd@phparena.net
   http://www.phparena.net
@@ -14,7 +14,7 @@ class pafiledb_user_upload extends pafiledb_public
 	function main($action)
 	{
 		global $pafiledb_config;
-		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $board_config;
+		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $config;
 
 		// =======================================================
 		// Get Vars
@@ -40,7 +40,7 @@ class pafiledb_user_upload extends pafiledb_public
 			{
 				if (!$userdata['session_logged_in'])
 				{
-					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=user_upload&cat_id=' . $cat_id, true));
+					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=user_upload&cat_id=' . $cat_id, true));
 				}
 
 				$message = sprintf($lang['Sorry_auth_upload'], $this->auth[$cat_id]['auth_upload_type']);
@@ -53,7 +53,7 @@ class pafiledb_user_upload extends pafiledb_public
 			{
 				if (!$userdata['session_logged_in'])
 				{
-					redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=user_upload', true));
+					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=user_upload', true));
 				}
 
 				$message = sprintf($lang['Sorry_auth_upload'], $this->auth[$cat_id]['auth_upload_type']);
@@ -67,10 +67,7 @@ class pafiledb_user_upload extends pafiledb_public
 		if($do == 'delete')
 		{
 			$sql = "SELECT * FROM " . PA_FILES_TABLE . " WHERE file_id = " . $file_id;
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$file_info = $db->sql_fetchrow($result);
 
 			if (($this->auth[$file_info['file_catid']]['auth_delete_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
@@ -154,10 +151,7 @@ class pafiledb_user_upload extends pafiledb_public
 				$sql = 'SELECT *
 					FROM ' . PA_FILES_TABLE . "
 					WHERE file_id = $file_id";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$file_info = $db->sql_fetchrow($result);
 
 				// AUTH CHECK
@@ -221,9 +215,9 @@ class pafiledb_user_upload extends pafiledb_public
 				'PIN_CHECKED_YES' => $pin_checked_yes,
 				'PIN_CHECKED_NO' => $pin_checked_no,
 				'L_HOME' => $lang['Home'],
-				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-				'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+				'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 				'L_UPLOAD' => $lang['User_upload'],
 				'L_FILE_TITLE' => $l_title,
 				'L_FILE_APPROVED' => $lang['Approved'],
@@ -275,7 +269,7 @@ class pafiledb_user_upload extends pafiledb_public
 // MX Addon
 				'MODE' => $mode,
 
-				'U_INDEX' => append_sid(PORTAL_MG),
+				'U_INDEX' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT)
 				)
 			);

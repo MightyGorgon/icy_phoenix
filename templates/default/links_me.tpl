@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <form name="select_all">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_LINK_US}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -9,3 +11,5 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
+<!-- INCLUDE simple_footer.tpl -->

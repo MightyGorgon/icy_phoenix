@@ -38,8 +38,8 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
 // the language files....
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
 // the debugging functions and the actual ACP helper functions...
 require_once(ALBUM_MOD_PATH . 'album_hierarchy_debug.' . PHP_EXT);
@@ -151,7 +151,7 @@ while( $config_file = @readdir($dir) )
 			// now find all the valid sub tabs for this valid tab
 			// (anyone knowing what I'm talking about?)
 			//------------------------------------------------------------------------
-			for ($i = 0; $i < count($album_config_tabs[$config_tabs_index]['sub_config']); $i++ )
+			for ($i = 0; $i < sizeof($album_config_tabs[$config_tabs_index]['sub_config']); $i++ )
 			{
 				if ( array_key_exists('selection', $album_config_tabs[$config_tabs_index]['sub_config'][$i]) )
 				{
@@ -233,7 +233,7 @@ if ( @!array_key_exists($selected_tab,$valid_tab_selections) )
 //------------------------------------------------------------------------
 // check if a valid sub tab selection has been made
 //------------------------------------------------------------------------
-if (is_array($valid_tab_selections) && count($valid_tab_selections) > 0)
+if (is_array($valid_tab_selections) && (sizeof($valid_tab_selections) > 0))
 {
 	if ( @!array_key_exists($selected_subtab,$valid_tab_selections[$selected_tab]) )
 	{
@@ -266,7 +266,7 @@ $template->set_filenames(array('body' => ALBUM_ACP_TEMPLATE));
 //------------------------------------------------------------------------
 $selected_tab_data = array();
 $selected_subtab_data = array();
-for ($outer = 0; $outer < count($album_config_tabs); $outer++)
+for ($outer = 0; $outer < sizeof($album_config_tabs); $outer++)
 {
 	$template->assign_block_vars('header_row', array(
 			'TAB_SELECT_NAME' => $album_config_tabs[$outer]['selection'],
@@ -285,7 +285,7 @@ for ($outer = 0; $outer < count($album_config_tabs); $outer++)
 		// now find the selected sub tab..if there are any sub tabs at all
 		// and get the data for it; template file etc....
 		//------------------------------------------------------------------------
-		for ($inner = 0; $inner < count($album_config_tabs[$outer]['sub_config']); $inner++)
+		for ($inner = 0; $inner < sizeof($album_config_tabs[$outer]['sub_config']); $inner++)
 		{
 			//------------------------------------------------------------------------
 			// sort the sub tabs according to the order key in the array
@@ -326,60 +326,45 @@ if( strcmp($_POST['save_config'], 'true') == 0 )
 	}
 
 	$sql = "SELECT * FROM " . $config_table;
+	$result = $db->sql_query($sql);
 
-	if(!$result = $db->sql_query($sql))
+	while( $row = $db->sql_fetchrow($result) )
 	{
-		message_die(CRITICAL_ERROR, "Could not query album config information", "", __LINE__, __FILE__, $sql);
+		$config_name = $row['config_name'];
+		$config_value = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $row['config_value'];
+
+		$sql = "UPDATE " . $config_table . " SET
+			config_value = '" . str_replace("\'", "''", $config_value) . "'
+			WHERE config_name = '$config_name'";
+		$db->sql_query($sql);
 	}
+	$db->sql_freeresult($result);
+
+	//------------------------------------------------------------------------
+	// did the user click 'submit' then display the standard confirmation page
+	//------------------------------------------------------------------------
+	if( isset($_POST['submitted']) )
+	{
+		if (isset($_POST['personal_gallery_view']))
+		{
+			$sql = "UPDATE " . ALBUM_CAT_TABLE . "
+				SET cat_view_level = '" . $_POST['personal_gallery_view'] . "'
+				WHERE cat_user_id != 0";
+			$result = $db->sql_query($sql);
+		}
+		$message = $lang['Album_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_album_config'], '<a href="' . append_sid(basename(__FILE__) . '?tab=' . $selected_tab . '&amp;subtab=' . $selected_subtab) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+		message_die(GENERAL_MESSAGE, $message);
+	}
+
+	//------------------------------------------------------------------------
+	// did she just change tab, when there was changes that needed to be saved ?
+	// display a message telling her that the changes was saved successfully
+	//------------------------------------------------------------------------
 	else
 	{
-		while( $row = $db->sql_fetchrow($result) )
-		{
-			$config_name = $row['config_name'];
-			$config_value = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $row['config_value'];
-
-			$sql = "UPDATE " . $config_table . " SET
-				config_value = '" . str_replace("\'", "''", $config_value) . "'
-				WHERE config_name = '$config_name'";
-
-			if( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Failed to update Album configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
-		}
-		$db->sql_freeresult($result);
-
-		//------------------------------------------------------------------------
-		// did the user click 'submit' then display the standard confirmation page
-		//------------------------------------------------------------------------
-		if( isset($_POST['submitted']) )
-		{
-			if (isset($_POST['personal_gallery_view']))
-			{
-				$sql = "UPDATE " . ALBUM_CAT_TABLE . "
-					SET cat_view_level = '" . $_POST['personal_gallery_view'] . "'
-					WHERE cat_user_id != 0";
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Could not update personal gallery table', '', __LINE__, __FILE__, $sql);
-				}
-				//$db->sql_freeresult($result);
-			}
-			$message = $lang['Album_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_album_config'], '<a href="' . append_sid(basename(__FILE__) . '?tab=' . $selected_tab . '&amp;subtab=' . $selected_subtab) . '">', '</a>');
-			$message .= '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-			message_die(GENERAL_MESSAGE, $message);
-		}
-
-		//------------------------------------------------------------------------
-		// did she just change tab, when there was changes that needed to be saved ?
-		// display a message telling her that the changes was saved successfully
-		//------------------------------------------------------------------------
-		else
-		{
-			$template->assign_block_vars('switch_on_save_confirmation', array());
-			$saved_info_message = sprintf($lang['Save_sucessfully_confimation'], ucfirst(strtolower($selected_tab_data['title'])));
-		}
+		$template->assign_block_vars('switch_on_save_confirmation', array());
+		$saved_info_message = sprintf($lang['Save_sucessfully_confimation'], ucfirst(strtolower($selected_tab_data['title'])));
 	}
 }
 
@@ -388,22 +373,16 @@ if( strcmp($_POST['save_config'], 'true') == 0 )
 //------------------------------------------------------------------------
 $default_config = array();
 $sql = "SELECT * FROM " . $selected_tab_data['config_table_name'];
-if(!$result = $db->sql_query($sql))
+$result = $db->sql_query($sql);
+while($row = $db->sql_fetchrow($result))
 {
-	message_die(CRITICAL_ERROR, "Could not query album config information", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	while( $row = $db->sql_fetchrow($result) )
-	{
-		$config_name = $row['config_name'];
-		$config_value = $row['config_value'];
-		$default_config[$config_name] = $config_value;
+	$config_name = $row['config_name'];
+	$config_value = $row['config_value'];
+	$default_config[$config_name] = $config_value;
 
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
-	}
-	//$db->sql_freeresult($result);
+	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
 }
+$db->sql_freeresult($result);
 
 //album_enable_debug();
 //album_debug('$selected_tab_data = %s', $selected_tab_data);
@@ -418,7 +397,7 @@ build_config_box($selected_tab_data);
 //  build the standard/common config page
 //------------------------------------------------------------------------
 $template->assign_vars(array(
-	'HEADER_COL_SPAN' => count($album_config_tabs)+1,
+	'HEADER_COL_SPAN' => sizeof($album_config_tabs) + 1,
 
 	'L_ASK_SAVE_CHANGES' => $lang['acp_ask_save_changes'],
 	'L_NOTHING_TO_SAVE' => $lang['acp_nothing_to_save'],

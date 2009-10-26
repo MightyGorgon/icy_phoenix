@@ -45,7 +45,7 @@ else
 	$mode = '';
 }
 
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_ftr.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_ftr.' . PHP_EXT);
 
 $update = $_POST['update'];
 
@@ -64,23 +64,19 @@ if($mode == 'users')
 {
 	$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 	$start = ($start < 0) ? 0 : $start;
-	$show = $board_config['topics_per_page'];
+	$show = $config['topics_per_page'];
 
 	echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
 	echo "	<tr>";
-	echo "		<th class=\"thHead\" colspan=\"2\">";
-	echo "			". $lang['Ftr_admin_users'];
+	echo "		<th colspan=\"2\">";
+	echo "			" . $lang['Ftr_admin_users'];
 	echo "		</th>";
 	echo "	</tr>";
 	echo "</table>";
 	echo '<br /><br />';
 
-	$sql = "SELECT COUNT(user) AS total
-			FROM ". FORCE_READ_USERS_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, $lang['Ftr_total_user_error'], '', __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT COUNT(user) AS total FROM ". FORCE_READ_USERS_TABLE;
+	$result = $db->sql_query($sql);
 
 	if($total = $db->sql_fetchrow($result))
 	{
@@ -114,12 +110,12 @@ if($mode == 'users')
 	echo "	<tr>";
 	echo "		<td class=\"row2 row-center\" width=\"50%\" valign=\"middle\">";
 	echo "			<span class=\"genmed\">";
-	echo "				". $lang['Ftr_username'];
+	echo "				" . $lang['Ftr_username'];
 	echo "			</span>";
 	echo "		</td>";
 	echo "		<td class=\"row2 row-center\" width=\"50%\" valign=\"middle\">";
 	echo "			<span class=\"genmed\">";
-	echo "				". $lang['Ftr_post_date_time'];
+	echo "				" . $lang['Ftr_post_date_time'];
 	echo "			</span>";
 	echo "		</td>";
 	echo "	</tr>";
@@ -137,9 +133,9 @@ if($mode == 'users')
 		$time = $row1['time'];
 		$time = strftime("%b. %d, %Y @ %H:%M:%S", $time);
 
-		$q = "SELECT username
+		$q = "SELECT username, user_color, user_active
 			FROM ". USERS_TABLE ."
-			WHERE user_id = '$user'";
+			WHERE user_id = " . $user;
 		$r = $db -> sql_query($q);
 		$row = $db -> sql_fetchrow($r);
 		$name = $row['username'];
@@ -147,7 +143,7 @@ if($mode == 'users')
 		echo "	<tr>";
 		echo "		<td class=\"row2\" width=\"50%\" valign=\"middle\">";
 		echo "			<span class=\"genmed\">";
-		echo "				<a href=\"". append_sid($_SERVER['PHP_SELF'] ."?mode=delete_user&user=". $user) ."\">$name</a>";
+		echo "				" . colorize_username($user, $name, $row['user_color'], $row['user_active']) . "&nbsp;[<a href=\"" . append_sid($_SERVER['PHP_SELF'] . "?mode=delete_user&amp;user=" . $user) ."\">" . $lang['Delete'] . "</a>]";
 		echo "			</span>";
 		echo "		</td>";
 		echo "		<td class=\"row2\" width=\"50%\" valign=\"middle\">";
@@ -249,9 +245,8 @@ elseif($mode == 'config')
 		echo "				<select size=\"1\" name=\"change_config_2\">";
 		echo "					<option selected value=\"\">". $lang['Ftr_default'] ."</option>";
 
-		$q1 = "SELECT forum_id, forum_name
-			FROM ". FORUMS_TABLE ."";
-		$r1 		= $db -> sql_query($q1);
+		$q1 = "SELECT forum_id, forum_name FROM " . FORUMS_TABLE . " WHERE forum_type = " . FORUM_POST;
+		$r1 = $db -> sql_query($q1);
 		while($row1 = $db -> sql_fetchrow($r1))
 		{
 			$id = $row1['forum_id'];

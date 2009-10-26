@@ -105,8 +105,8 @@ foreach($params as $var => $default)
 $status_message = '';
 $aprvmUtil->init();
 
-$topics_per_pg = max(1, $board_config['aprvmRows']); //Just in case someone manually changes it to be some crazy number, we'll show 1 row always
-$page_title = $lang['Private_Messages'];
+$topics_per_pg = max(1, $config['aprvmRows']); //Just in case someone manually changes it to be some crazy number, we'll show 1 row always
+$meta_content['page_title'] = $lang['Private_Messages'];
 $order_types = array('DESC', 'ASC');
 $sort_types = array('privmsgs_date', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_type');
 $pmtypes = array(PRIVMSGS_ALL_MAIL, PRIVMSGS_READ_MAIL, PRIVMSGS_NEW_MAIL, PRIVMSGS_SENT_MAIL, PRIVMSGS_SAVED_IN_MAIL, PRIVMSGS_SAVED_OUT_MAIL, PRIVMSGS_UNREAD_MAIL);
@@ -123,7 +123,7 @@ define('PRIVMSGS_UNREAD_MAIL', 5);
 /*******************************************************************************************
 /** Setup some options
 /******************************************************************************************/
-$archive_text = ($board_config['aprvmArchive'] && $mode == 'archive') ? '_archive' : '';
+$archive_text = ($config['aprvmArchive'] && $mode == 'archive') ? '_archive' : '';
 $pmtype_text = ($pmtype != PRIVMSGS_ALL_MAIL) ? "AND pm.privmsgs_type = $pmtype" : '';
 
 // Assign text filters if specified
@@ -138,7 +138,7 @@ if ($filter_to != '')
 	$filter_to_text = (!empty($filter_to_user)) ? "AND pm.privmsgs_to_userid = $filter_to_user" : '';
 }
 
-if (count($_POST))
+if (sizeof($_POST))
 {
 	$aprvmMan = new aprvmManager();
 	foreach($_POST as $key => $val)
@@ -146,7 +146,7 @@ if (count($_POST))
 		/*******************************************************************************************
 		/** Check for archive items
 		/******************************************************************************************/
-		if ($board_config['aprvmArchive'] && substr_count($key, 'archive_id_'))
+		if ($config['aprvmArchive'] && substr_count($key, 'archive_id_'))
 		{
 			$aprvmMan->addArchiveItem(substr($key, 11));
 		}
@@ -174,19 +174,16 @@ switch($pmaction)
 		$sql = 'SELECT pm.*
 			FROM ' . PRIVMSGS_TABLE . "$archive_text pm
 			WHERE pm.privmsgs_id = $view_id";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__);
-		}
+		$result = $db->sql_query($sql);
 		$privmsg = $db->sql_fetchrow($result);
 		/************************/
 		/* Just stole all the phpBB code for message processing :) And edited a ton of it out since we are all admins here */
 		/**********************/
 		$private_message = $privmsg['privmsgs_text'];
-		global $bbcode;
-		$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
-		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode'] ? true : false);
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'] ? true : false);
+
+		$bbcode->allow_html = ($config['allow_html'] ? true : false);
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'] ? true : false);
 		$private_message = $bbcode->parse($private_message);
 		$private_message = str_replace("\n", '<br />', $private_message);
 
@@ -199,15 +196,15 @@ switch($pmaction)
 			'L_PRIVATE_MESSAGES' => $aprvmUtil->modName,
 
 			'SUBJECT' => $privmsg['privmsgs_subject'],
-			'FROM' => $aprvmUtil->id_2_name($privmsg['privmsgs_from_userid']),
-			'FROM_IP' => ($board_config['aprvmIP']) ? ' : ('.decode_ip($privmsg['privmsgs_ip']).')' : '',
-			'TO' => $aprvmUtil->id_2_name($privmsg['privmsgs_to_userid']),
-			'DATE' => create_date($lang['DATE_FORMAT'], $privmsg['privmsgs_date'], $board_config['board_timezone']),
+			'FROM_IP' => ($config['aprvmIP']) ? ' : ('.decode_ip($privmsg['privmsgs_ip']).')' : '',
+			'FROM' => $aprvmUtil->id_2_name($privmsg['privmsgs_from_userid'], 'user_formatted'),
+			'TO' => $aprvmUtil->id_2_name($privmsg['privmsgs_to_userid'], 'user_formatted'),
+			'DATE' => create_date($lang['DATE_FORMAT'], $privmsg['privmsgs_date'], $config['board_timezone']),
 			'MESSAGE' => $private_message
 			)
 		);
 
-		if ($board_config['aprvmView'])
+		if ($config['aprvmView'])
 		{
 			$template->assign_block_vars('popup_switch', array());
 			$template->pparse('viewmsg_body');
@@ -226,11 +223,9 @@ switch($pmaction)
 			// Build user sql list
 			$user_id_sql_list = '';
 			$sql = 'SELECT user_id FROM '. USERS_TABLE .'
-			   WHERE user_id <> '. ANONYMOUS;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Other_Table'], '', __LINE__, __FILE__);
-			}
+							WHERE user_id <> '. ANONYMOUS;
+			$result = $db->sql_query($sql);
+
 			while($row = $db->sql_fetchrow($result))
 			{
 				$user_id_sql_list .= ($user_id_sql_list != '') ? ', '.$row['user_id'] : $row['user_id'];
@@ -241,10 +236,8 @@ switch($pmaction)
 			$sql = 'SELECT privmsgs_id FROM ' . PRIVMSGS_TABLE . "$archive_text
 				WHERE privmsgs_to_userid NOT IN ($user_id_sql_list)";
 			//print $sql;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
@@ -254,18 +247,12 @@ switch($pmaction)
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
 					WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
 				//print $sql;
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 
 			$status_message .= $lang['Removed_Old'];
@@ -280,10 +267,8 @@ switch($pmaction)
 			$priv_msgs_id_sql_list = '';
 			$sql = 'SELECT privmsgs_id FROM ' . PRIVMSGS_TABLE . "$archive_text
 				WHERE privmsgs_type = " . PRIVMSGS_SENT_MAIL;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
@@ -293,18 +278,12 @@ switch($pmaction)
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
 					WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
 				//print $sql;
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['Error_PM_Table'], '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 
 			$status_message .= $lang['Removed_Sent'];
@@ -320,32 +299,28 @@ switch($pmaction)
 				$filter_to_text
 				ORDER BY $sort $order
 				LIMIT $start, $topics_per_pg";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_PM_Archive_Table'], '', __LINE__, __FILE__);
-		}
+		$result = $db->sql_query($sql);
 
 		$i = 0;
 		while($row = $db->sql_fetchrow($result))
 		{
-			$view_url = (!$board_config['aprvmView']) ? append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) : '#';
-			$onclick_url = ($board_config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) . "','_privmsg','width=550,height=450,resizable=yes')" : '';
+			$view_url = (!$config['aprvmView']) ? append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) : '#';
+			$onclick_url = ($config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) . "','_privmsg','width=550,height=450,resizable=yes')" : '';
 			$template->assign_block_vars('msgrow', array(
 				'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
 				'ATTACHMENT_INFO' => (defined('ATTACH_VERSION')) ? 'Not Here Yet' : '',
 				'PM_ID' => $row['privmsgs_id'],
 				'PM_TYPE' => $lang['PM_' . $row['privmsgs_type']],
 				'SUBJECT' => $row['privmsgs_subject'],
-				'FROM' => $aprvmUtil->id_2_name($row['privmsgs_from_userid']),
-				'TO' => $aprvmUtil->id_2_name($row['privmsgs_to_userid']),
-				'FROM_IP' => ($board_config['aprvmIP']) ? '<br />('.decode_ip($row['privmsgs_ip']).')' : '',
+				'FROM_IP' => ($config['aprvmIP']) ? '<br />('.decode_ip($row['privmsgs_ip']).')' : '',
+				'FROM' => $aprvmUtil->id_2_name($row['privmsgs_from_userid'], 'user_formatted'),
+				'TO' => $aprvmUtil->id_2_name($row['privmsgs_to_userid'], 'user_formatted'),
 				'U_VIEWMSG' => $onclick_url,
 				'U_INLINE_VIEWMSG' => $view_url,
-				'DATE' => create_date($lang['DATE_FORMAT'], $row['privmsgs_date'], $board_config['board_timezone'])
+				'DATE' => create_date($lang['DATE_FORMAT'], $row['privmsgs_date'], $config['board_timezone'])
 				)
 			);
-			if ($mode != 'archive' && $board_config['aprvmArchive'])
+			if ($mode != 'archive' && $config['aprvmArchive'])
 			{
 				$template->assign_block_vars('msgrow.archive_avail_switch_msg', array());
 			}
@@ -359,7 +334,7 @@ switch($pmaction)
 
 		$aprvmUtil->do_pagination();
 
-		if ($mode != 'archive' && $board_config['aprvmArchive'])
+		if ($mode != 'archive' && $config['aprvmArchive'])
 		{
 			$template->assign_block_vars('archive_avail_switch', array());
 		}
@@ -393,7 +368,7 @@ switch($pmaction)
 			'L_VERSION' => $lang['Version'],
 			'VERSION' => $aprvmUtil->modVersion,
 			'L_CURRENT' => $lang['Current'],
-			'CURRENT_ROWS' => $board_config['aprvmRows'],
+			'CURRENT_ROWS' => $config['aprvmRows'],
 			'L_REMOVE_OLD' => $lang['Remove_Old'],
 			'L_REMOVE_SENT' => $lang['Remove_Sent'],
 			'L_UTILS' => $lang['Utilities'],
@@ -405,15 +380,15 @@ switch($pmaction)
 
 			'URL_ORPHAN' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_old'),
 			'URL_SENT' => append_sid($aprvmUtil->urlStart . '&pmaction=remove_sent'),
-			'URL_INLINE_MESSAGE_TYPE' => ($board_config['aprvmView'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=0') . "\">{$lang['Inline']}</a>" : $lang['Inline'],
-			'URL_POPUP_MESSAGE_TYPE' => ($board_config['aprvmView'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=1') . "\">{$lang['Pop_up']}</a>" : $lang['Pop_up'],
-			'URL_ROWS_PLUS_5' => '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']+5)) . "\">{$lang['Rows_Plus_5']}</a>",
-			'URL_ROWS_MINUS_5' => ($board_config['aprvmRows'] > 5) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($board_config['aprvmRows']-5)) . "\">{$lang['Rows_Minus_5']}</a>" : $lang['Rows_Minus_5'],
-			'URL_SHOW_IP_ON' => ($board_config['aprvmIP'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
-			'URL_SHOW_IP_OFF' => ($board_config['aprvmIP'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
-			'URL_ARCHIVE_ENABLE_LINK' => ($board_config['aprvmArchive'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
-			'URL_ARCHIVE_DISABLE_LINK' => ($board_config['aprvmArchive'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
-			'URL_SWITCH_MODE' => ($board_config['aprvmArchive'] == 1) ? ($mode == 'archive') ? '<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=normal') . "\">{$lang['Switch_Normal']}</a></b>" :'<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=archive') . "\">{$lang['Switch_Archive']}</a></b>" : '',
+			'URL_INLINE_MESSAGE_TYPE' => ($config['aprvmView'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=0') . "\">{$lang['Inline']}</a>" : $lang['Inline'],
+			'URL_POPUP_MESSAGE_TYPE' => ($config['aprvmView'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmView&config_value=1') . "\">{$lang['Pop_up']}</a>" : $lang['Pop_up'],
+			'URL_ROWS_PLUS_5' => '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($config['aprvmRows']+5)) . "\">{$lang['Rows_Plus_5']}</a>",
+			'URL_ROWS_MINUS_5' => ($config['aprvmRows'] > 5) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmRows&config_value='.strval($config['aprvmRows']-5)) . "\">{$lang['Rows_Minus_5']}</a>" : $lang['Rows_Minus_5'],
+			'URL_SHOW_IP_ON' => ($config['aprvmIP'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
+			'URL_SHOW_IP_OFF' => ($config['aprvmIP'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmIP&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
+			'URL_ARCHIVE_ENABLE_LINK' => ($config['aprvmArchive'] == 0) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=1') . "\">{$lang['Enable']}</a>" : $lang['Enable'],
+			'URL_ARCHIVE_DISABLE_LINK' => ($config['aprvmArchive'] == 1) ? '<a href="' . append_sid($aprvmUtil->urlStart . '&config_name=aprvmArchive&config_value=0') . "\">{$lang['Disable']}</a>" : $lang['Disable'],
+			'URL_SWITCH_MODE' => ($config['aprvmArchive'] == 1) ? ($mode == 'archive') ? '<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=normal') . "\">{$lang['Switch_Normal']}</a></b>" :'<b><a class="gen" href="' . append_sid($aprvmUtil->urlBase . '&mode=archive') . "\">{$lang['Switch_Archive']}</a></b>" : '',
 
 			'S_MODE' => $mode,
 			'S_PMTYPE' => $pmtype,
@@ -439,7 +414,7 @@ switch($pmaction)
 		}
 
 		$template->pparse('body');
-		$aprvmUtil->copyright($page_title, '2001-2003');
+		$aprvmUtil->copyright($meta_content['page_title'], '2001-2003');
 		include('page_footer_admin.' . PHP_EXT);
 		break;
 	}

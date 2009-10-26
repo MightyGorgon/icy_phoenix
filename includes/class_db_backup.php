@@ -492,7 +492,7 @@ function sanitize_data_generic($text)
 		{
 			$val[] = "'" . $value . "'";
 		}
-		if (count($matches[0]))
+		if (sizeof($matches[0]))
 		{
 			$val[] = "'" . array_shift($matches[0]) . "'";
 		}
@@ -534,7 +534,7 @@ function fgetd_seekless(&$fp, $delim, $read, $seek, $eof, $buffer = 8192)
 	static $array = array();
 	static $record = '';
 
-	if (!count($array))
+	if (!sizeof($array))
 	{
 		while (!$eof($fp))
 		{
@@ -556,7 +556,7 @@ function fgetd_seekless(&$fp, $delim, $read, $seek, $eof, $buffer = 8192)
 		}
 	}
 
-	if (count($array))
+	if (sizeof($array))
 	{
 		return array_shift($array);
 	}

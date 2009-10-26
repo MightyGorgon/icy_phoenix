@@ -19,14 +19,14 @@ class pafiledb_stats extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
+		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
 
 		if(!$this->auth_global['auth_stats'])
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_stats'], $this->auth_global['auth_stats_type']);
@@ -38,12 +38,7 @@ class pafiledb_stats extends pafiledb_public
 		$sql = "SELECT file_id
 			FROM " . PA_FILES_TABLE . "
 			WHERE file_approved = '1'";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$num['files'] = $db->sql_numrows($result);
 		$db->sql_freeresult($result);
 
@@ -51,12 +46,7 @@ class pafiledb_stats extends pafiledb_public
 			FROM ' . PA_FILES_TABLE . "
 			WHERE file_approved = '1'
 			ORDER BY file_time DESC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$newest = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -64,12 +54,7 @@ class pafiledb_stats extends pafiledb_public
 			FROM ' . PA_FILES_TABLE . "
 			WHERE file_approved = '1'
 			ORDER BY file_time ASC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$oldest = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -79,11 +64,7 @@ class pafiledb_stats extends pafiledb_public
 			AND f.file_approved = '1'
 			GROUP BY f.file_id
 			ORDER BY rating DESC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$popular = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -93,12 +74,7 @@ class pafiledb_stats extends pafiledb_public
 			AND f.file_approved = '1'
 			GROUP BY f.file_id
 			ORDER BY rating ASC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$lpopular = $db->sql_fetchrow($result);
 		$total_votes = $total_rating = 0;
 
@@ -112,12 +88,7 @@ class pafiledb_stats extends pafiledb_public
 			FROM " . PA_FILES_TABLE . "
 			WHERE file_approved = '1'
 			ORDER BY file_dls DESC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$mostdl = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -125,23 +96,14 @@ class pafiledb_stats extends pafiledb_public
 			FROM " . PA_FILES_TABLE . "
 			WHERE file_approved = '1'
 			ORDER BY file_dls ASC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$leastdl = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
 		$sql = "SELECT file_dls
 			FROM " . PA_FILES_TABLE . "
 			WHERE file_approved = '1'";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -153,7 +115,7 @@ class pafiledb_stats extends pafiledb_public
 
 		$avgdls = @round($totaldls/$num['files']);
 
-		require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_pafiledb.' . PHP_EXT);
+		require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_pafiledb.' . PHP_EXT);
 
 		$lang['Stats_text'] = str_replace("{total_files}", $num['files'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{total_categories}", $num['cats'], $lang['Stats_text']);
@@ -187,23 +149,18 @@ class pafiledb_stats extends pafiledb_public
 
 		$sql = "SELECT downloader_os, downloader_browser
 			FROM " . PA_DOWNLOAD_INFO_TABLE;
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain downloads info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row_downloads = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 
-		for($i = 0; $i < count($row_downloads); $i++)
+		for($i = 0; $i < sizeof($row_downloads); $i++)
 		{
 			$os_point[$row_downloads[$i]['downloader_os']]++;
 			$agent_point[$row_downloads[$i]['downloader_browser']]++;
 		}
 
 		$os_graphic = 0;
-		$os_graphic_max = count($images['voting_graphic']);
+		$os_graphic_max = sizeof($images['voting_graphic']);
 
 		foreach($os_point as $index => $point)
 		{
@@ -221,7 +178,7 @@ class pafiledb_stats extends pafiledb_public
 		}
 
 		$b_graphic = 0;
-		$b_graphic_max = count($images['voting_graphic']);
+		$b_graphic_max = sizeof($images['voting_graphic']);
 
 		foreach($agent_point as $index => $point)
 		{
@@ -243,23 +200,18 @@ class pafiledb_stats extends pafiledb_public
 
 		$sql = "SELECT voter_os, voter_browser
 			FROM " . PA_VOTES_TABLE;
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain downloads info', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row_ratings = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 
-		for($i = 0; $i < count($row_ratings); $i++)
+		for($i = 0; $i < sizeof($row_ratings); $i++)
 		{
 			$os_point[$row_ratings[$i]['voter_os']]++;
 			$agent_point[$row_ratings[$i]['voter_browser']]++;
 		}
 
 		$os_graphic = 0;
-		$os_graphic_max = count($images['voting_graphic']);
+		$os_graphic_max = sizeof($images['voting_graphic']);
 
 		foreach($os_point as $index => $point)
 		{
@@ -277,7 +229,7 @@ class pafiledb_stats extends pafiledb_public
 		}
 
 		$b_graphic = 0;
-		$b_graphic_max = count($images['voting_graphic']);
+		$b_graphic_max = sizeof($images['voting_graphic']);
 
 		foreach($agent_point as $index => $point)
 		{
@@ -298,16 +250,16 @@ class pafiledb_stats extends pafiledb_public
 			'S_ACTION_CHART' => append_sid('dload.' . PHP_EXT . '?action=stats'),
 
 			'L_STATISTICS' => $lang['Statistics'],
-			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'L_GENERAL_INFO' => $lang['General_Info'],
 			'L_DOWNLOADS_STATS' => $lang['Downloads_stats'],
 			'L_RATING_STATS' => $lang['Rating_stats'],
 			'L_OS' => $lang['Os'],
 			'L_BROWSERS' => $lang['Browsers'],
 			'L_HOME' => $lang['Home'],
-			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-			'U_INDEX' => append_sid(PORTAL_MG),
+			'U_INDEX' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 
 			'U_VOTE_LCAP' => $images['voting_graphic_left'],

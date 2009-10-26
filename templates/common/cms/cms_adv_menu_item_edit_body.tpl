@@ -1,3 +1,9 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <script type="text/javascript">
 <!--
 function update_icon(newimage)
@@ -92,7 +98,7 @@ function option_disabled (form)
 		</tr>
 		<tr>
 			<td class="row1">{L_LINK_DESC}</td>
-			<td class="row2"><textarea name="menu_desc" rows="6" cols="35" style="width: 98%" class="post">{MI_MENU_DESC}</textarea></td>
+			<td class="row2"><textarea name="menu_desc" rows="6" cols="35" style="width: 98%;" class="post">{MI_MENU_DESC}</textarea></td>
 		</tr>
 		<tr>
 			<td class="row1">{L_LINK_PERMISSION}</td>
@@ -118,3 +124,9 @@ function option_disabled (form)
 </tr>
 </table>
 </form>
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

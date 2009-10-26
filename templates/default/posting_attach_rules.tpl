@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RULES_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN switch_nothing -->
 <tr><td class="row1 row-center" width="100%"><span class="gen">{L_EMPTY_GROUP_PERMS}</span></td></tr>
@@ -22,3 +24,6 @@
 <!-- END group_row -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span>
+
+<!-- INCLUDE simple_footer.tpl -->
+

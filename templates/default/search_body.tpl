@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form action="{S_SEARCH_ACTION}" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_QUERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -66,3 +68,5 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <div align="right">{JUMPBOX}</div>
+
+<!-- INCLUDE overall_footer.tpl -->

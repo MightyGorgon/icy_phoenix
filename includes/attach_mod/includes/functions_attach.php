@@ -20,19 +20,6 @@
 */
 
 /**
-* html_entity_decode replacement (from php manual)
-*/
-if (!function_exists('html_entity_decode'))
-{
-	function html_entity_decode($given_html, $quote_style = ENT_QUOTES)
-	{
-		$trans_table = array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style));
-		$trans_table['&#39;'] = "'";
-		return (strtr($given_html, $trans_table));
-	}
-}
-
-/**
 * A simple dectobase64 function
 */
 function base64_pack($number)
@@ -177,7 +164,7 @@ function get_total_attach_filesize($attach_ids)
 {
 	global $db;
 
-	if (!is_array($attach_ids) || !count($attach_ids))
+	if (!is_array($attach_ids) || !sizeof($attach_ids))
 	{
 		return 0;
 	}
@@ -192,14 +179,9 @@ function get_total_attach_filesize($attach_ids)
 	$sql = 'SELECT filesize
 		FROM ' . ATTACHMENTS_DESC_TABLE . "
 		WHERE attach_id IN ($attach_ids)";
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not query Total Filesize', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$total_filesize = 0;
-
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$total_filesize += (int) $row['filesize'];
@@ -218,32 +200,7 @@ function amod_realpath($path)
 }
 
 /**
-* Escaping SQL
-*/
-function attach_mod_sql_escape($text)
-{
-	switch (SQL_LAYER)
-	{
-		case 'mysql':
-		case 'mysql4':
-			if (function_exists('mysql_real_escape_string'))
-			{
-				return mysql_real_escape_string($text);
-			}
-			else
-			{
-				return str_replace("'", "''", str_replace('\\', '\\\\', $text));
-			}
-		break;
-
-		default:
-			return str_replace("'", "''", str_replace('\\', '\\\\', $text));
-		break;
-	}
-}
-
-/**
-* get all attachments from a post (could be an post array too)
+* get all attachments from a post (could be an array of posts as well)
 */
 function get_attachments_from_post($post_id_array)
 {
@@ -278,12 +235,7 @@ function get_attachments_from_post($post_id_array)
 		WHERE a.post_id IN ($post_id_array)
 			AND a.attach_id = d.attach_id
 		ORDER BY d.filetime $display_order";
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not get Attachment Informations for post number ' . $post_id_array, '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$num_rows = $db->sql_numrows($result);
 	$attachments = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
@@ -301,24 +253,18 @@ function get_attachments_from_post($post_id_array)
 */
 function update_attachments_stats($attach_id)
 {
-	global $db, $userdata, $user_ip, $user_agent, $lang;
+	global $db, $userdata, $lang, $user_ip, $user_agent;
 
 	$sql = 'UPDATE ' . ATTACHMENTS_DESC_TABLE . '
 	SET download_count = download_count + 1
 	WHERE attach_id = ' . (int) $attach_id;
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t update attachment download count', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
-	if (($userdata['bot_id'] == false) && defined('USE_ATTACHMENTS_STATS') && USE_ATTACHMENTS_STATS)
+	if (!$userdata['is_bot'] && defined('USE_ATTACHMENTS_STATS') && USE_ATTACHMENTS_STATS)
 	{
 		$sql = "INSERT INTO " . ATTACHMENTS_STATS_TABLE . " (`attach_id`, `user_id`, `user_ip`, `user_http_agents`, `download_time`)
 			VALUES ('" . $attach_id . "', '" . $userdata['user_id'] . "', '" . $user_ip . "', '" . addslashes($user_agent) . "', '" . time() . "')";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert data into attachments stats table', $lang['Error'], __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 	return true;

@@ -20,14 +20,14 @@ $userdata = session_pagestart($user_ip, false);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = 'shoutbox';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
+$cms_page['page_id'] = 'shoutbox';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
 // Force to false...
-$cms_page_nav = false;
-$cms_global_blocks = false;
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_nav'] = false;
+$cms_page['global_blocks'] = false;
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // Start auth check
 switch ($userdata['user_level'])
@@ -68,30 +68,30 @@ else
 }
 
 // Set toggles for various options
-if (!$board_config['allow_html'])
+if (!$config['allow_html'])
 {
 	$html_on = 0;
 }
 else
 {
-	$html_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_html'] : $userdata['user_allowhtml']);
+	$html_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_html'] : $userdata['user_allowhtml']);
 }
-if (!$board_config['allow_bbcode'])
+if (!$config['allow_bbcode'])
 {
 	$bbcode_on = 0;
 }
 else
 {
-	$bbcode_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode']);
+	$bbcode_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_bbcode'] : $userdata['user_allowbbcode']);
 }
 
-if (!$board_config['allow_smilies'])
+if (!$config['allow_smilies'])
 {
 	$smilies_on = 0;
 }
 else
 {
-	$smilies_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_smilies'] : $userdata['user_allowsmile']);
+	$smilies_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_smilies'] : $userdata['user_allowsmile']);
 	if ($smilies_on)
 	{
 		include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
@@ -120,11 +120,14 @@ elseif ($submit || isset($_POST['message']))
 	$sql = "SELECT MAX(shout_session_time) AS last_post_time
 		FROM " . SHOUTBOX_TABLE . "
 		WHERE $where_sql";
-	if ($result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		if ($row = $db->sql_fetchrow($result))
 		{
-			if (($row['last_post_time'] > 0) && (($current_time - $row['last_post_time']) < $board_config['flood_interval']) && ($userdata['user_level'] != ADMIN))
+			if (($row['last_post_time'] > 0) && (($current_time - $row['last_post_time']) < $config['flood_interval']) && ($userdata['user_level'] != ADMIN))
 			{
 				$error = true;
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Flood_Error'] : $lang['Flood_Error'];
@@ -152,7 +155,7 @@ elseif ($submit || isset($_POST['message']))
 	{
 		include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
-		if ($board_config['img_shoutbox'] == true)
+		if ($config['img_shoutbox'] == true)
 		{
 			$message = preg_replace ("#\[url=(http://)([^ \"\n\r\t<]*)\]\[img\](http://)([^ \"\n\r\t<]*)\[/img\]\[/url\]#i", '[url=\\1\\2]\\4[/url]', $message);
 			$message = preg_replace ("#\[img\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $message);
@@ -161,18 +164,13 @@ elseif ($submit || isset($_POST['message']))
 		}
 		$sql = "INSERT INTO " . SHOUTBOX_TABLE . " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
 				VALUES ('$message', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $username . "', $bbcode_on, $html_on, $smilies_on)";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Error inserting shout.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		// auto prune
-		if ($board_config['prune_shouts'])
+		if ($config['prune_shouts'])
 		{
-			$sql = "DELETE FROM " . SHOUTBOX_TABLE . " WHERE shout_session_time<=" . (time() - (86400 * $board_config['prune_shouts']));
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error autoprune shouts.', '', __LINE__, __FILE__, $sql);
-			}
+			$sql = "DELETE FROM " . SHOUTBOX_TABLE . " WHERE shout_session_time<=" . (time() - (86400 * $config['prune_shouts']));
+			$result = $db->sql_query($sql);
 		}
 	}
 }

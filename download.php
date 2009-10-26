@@ -51,7 +51,7 @@ $allow_deny_order = ALLOWED_DENIED;
 // Partial Domain Names -> opentools.de
 //
 $sites = array(
-	$board_config['server_name'],	// This is your domain
+	$config['server_name'],	// This is your domain
 	'opentools.de',
 	'phpbb.com',
 	'phpbbhacks.com',
@@ -75,7 +75,7 @@ if ($url != '')
 {
 	$allowed = ($allow_deny_order == ALLOWED_DENIED) ? false : true;
 
-	for ($i = 0; $i < count($sites); $i++)
+	for ($i = 0; $i < sizeof($sites); $i++)
 	{
 		if (strstr($url, $sites[$i]))
 		{
@@ -266,12 +266,7 @@ if ($attach_config['disable_mod'] && ($userdata['user_level'] != ADMIN))
 $sql = 'SELECT *
 	FROM ' . ATTACHMENTS_DESC_TABLE . '
 	WHERE attach_id = ' . (int) $download_id;
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query attachment informations', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 if (!($attachment = $db->sql_fetchrow($result)))
 {
 	message_die(GENERAL_MESSAGE, $lang['Error_no_attachment']);
@@ -287,12 +282,7 @@ $authorized = false;
 $sql = 'SELECT *
 	FROM ' . ATTACHMENTS_TABLE . '
 	WHERE attach_id = ' . (int) $attachment['attach_id'];
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query attachment informations', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $auth_pages = $db->sql_fetchrowset($result);
 $num_auth_pages = $db->sql_numrows($result);
 
@@ -305,16 +295,9 @@ for ($i = 0; $i < $num_auth_pages && $authorized == false; $i++)
 		$sql = 'SELECT forum_id
 			FROM ' . POSTS_TABLE . '
 			WHERE post_id = ' . (int) $auth_pages[$i]['post_id'];
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query post information', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
-
 		$forum_id = $row['forum_id'];
-
 		$is_auth = array();
 		$is_auth = auth(AUTH_ALL, $forum_id, $userdata);
 
@@ -341,11 +324,7 @@ if (!$authorized)
 $sql = "SELECT e.extension, g.download_mode
 	FROM " . EXTENSION_GROUPS_TABLE . " g, " . EXTENSIONS_TABLE . " e
 	WHERE (g.allow_group = 1) AND (g.group_id = e.group_id)";
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query Allowed Extensions.', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 $rows = $db->sql_fetchrowset($result);
 $num_rows = $db->sql_numrows($result);
@@ -404,10 +383,10 @@ if (!$thumbnail)
 // Determine the 'presenting'-method
 if ($download_mode == PHYSICAL_LINK)
 {
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['server_name']));
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '/\1', trim($board_config['script_path']));
+	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+	$server_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['server_name']));
+	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
+	$script_name = preg_replace('/^\/?(.*?)\/?$/', '/\1', trim($config['script_path']));
 
 	if ($script_name[strlen($script_name)] != '/')
 	{

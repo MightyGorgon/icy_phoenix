@@ -10,7 +10,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1610_Users']['300_Picscount_Config'] = $filename;
@@ -21,15 +21,11 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
-if( isset($_POST['confirm_sync']) )
+if(isset($_POST['confirm_sync']))
 {
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_personal_pics_count = 0";
 	$result = $db->sql_query($sql);
-	if ( !$result )
-	{
-		message_die("Couldn't reset user pics counters!", __LINE__, __FILE__, $sql);
-	}
 
 	$sql = "SELECT u.user_id, u.username, u.user_personal_pics_count, a.pic_cat_id, Count(a.pic_user_id) AS new_counter
 		FROM " . USERS_TABLE . " u, " . ALBUM_TABLE . " a, " . ALBUM_CAT_TABLE . " ac
@@ -40,22 +36,21 @@ if( isset($_POST['confirm_sync']) )
 		GROUP BY u.user_id, u.username, u.user_personal_pics_count";
 	$result_array = array();
 	$result = $db->sql_query($sql);
-	if ( !$result )
-	{
-		message_die("Couldn't get user and pics data!", __LINE__, __FILE__, $sql);
-	}
+
 	$list_exec = '<span class="topic_ann">' . $lang['Pics_Count_Synchronized'] . '<br /><ul>';
 	$list_errors = '<span class="topic_glo">' . $lang['Pics_Count_Not_Synchronized'] . '<br /><ul>';
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
-		if ($row['new_counter'] != $row['user_personal_pics_count'] )
+		if ($row['new_counter'] != $row['user_personal_pics_count'])
 		{
 			$list_exec .= '<li>' . htmlspecialchars($row['username']) . '&nbsp;&raquo;&nbsp;' . $row['new_counter'] . '</li>';
 			$sql2 = "UPDATE " . USERS_TABLE . "
 				SET user_personal_pics_count = " . $row['new_counter'] . "
 				WHERE user_id = " . $row['user_id'];
+			$db->sql_return_on_error(true);
 			$result2 = $db->sql_query($sql2);
-			if ( !$result2 )
+			$db->sql_return_on_error(false);
+			if (!$result2)
 			{
 				$list_errors .= '<li>' . htmlspecialchars($row['username']) . '</li>';
 			}

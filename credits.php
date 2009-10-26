@@ -27,13 +27,6 @@ init_userprefs($userdata);
 
 include(IP_ROOT_PATH . 'includes/functions_credits.' . PHP_EXT);
 
-/****************************************************************************
-/** Constants and Main Vars.
-/***************************************************************************/
-$page_title = $lang['Hacks_List'];
-$meta_description = '';
-$meta_keywords = '';
-
 /*******************************************************************************************
 /** Get parameters.  'var_name' => 'default'
 /******************************************************************************************/
@@ -57,14 +50,10 @@ switch($mode)
 {
 	default:
 	{
-		$template->set_filenames(array('body' => 'credits_display.tpl'));
 		$sql = 'SELECT * FROM ' . HACKS_LIST_TABLE . "
 				WHERE hack_hide = 'No'
 				ORDER BY hack_name ASC";
-		if(!$result = $db->sql_query($sql, false, 'credits_'))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'credits_');
 		$i = 0;
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -89,7 +78,7 @@ switch($mode)
 	}
 }
 $template->assign_vars(array(
-	'L_PAGE_NAME' => $page_title,
+	'L_PAGE_NAME' => $meta_content['page_title'],
 	'S_MODE_ACTION' => append_sid(basename(__FILE__)),
 	'L_VERSION' => $lang['Version'],
 	'L_AUTHOR' => $lang['Author'],
@@ -100,9 +89,7 @@ $template->assign_vars(array(
 );
 
 //$template->assign_block_vars('google_ad', array());
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-$template->pparse('body');
-copyright_nivisec($page_title, '2003');
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+copyright_nivisec($meta_content['page_title'], '2003');
+full_page_generation('credits_display.tpl', $lang['Hacks_List'], '', '');
 
 ?>

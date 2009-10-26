@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <a name="TopPic"></a>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{NEXT_PIC}&nbsp;&nbsp;{PIC_TITLE}&nbsp;&nbsp;{PREV_PIC}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -71,3 +73,5 @@
 <!-- END pics_nav -->
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

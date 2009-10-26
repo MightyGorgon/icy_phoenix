@@ -21,14 +21,14 @@
 //
 function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin = 0, $admin = 0)
 {
-	global $db, $board_config, $lang;
+	global $db, $config, $lang;
 	global $SID;
 	global $user_agent;
 
-	$cookiename = $board_config['cookie_name'];
-	$cookiepath = $board_config['cookie_path'];
-	$cookiedomain = $board_config['cookie_domain'];
-	$cookiesecure = $board_config['cookie_secure'];
+	$cookiename = $config['cookie_name'];
+	$cookiepath = $config['cookie_path'];
+	$cookiedomain = $config['cookie_domain'];
+	$cookiesecure = $config['cookie_secure'];
 
 	if (isset($_COOKIE[$cookiename . '_sid']) || isset($_COOKIE[$cookiename . '_data']))
 	{
@@ -71,7 +71,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	// If allow_autologin is not set or is true then they are
 	// (same behaviour as old 2.0.x session code)
 	//
-	if (isset($board_config['allow_autologin']) && !$board_config['allow_autologin'])
+	if (isset($config['allow_autologin']) && !$config['allow_autologin'])
 	{
 		$enable_autologin = $sessiondata['autologinid'] = false;
 	}
@@ -92,11 +92,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 					AND u.user_active = 1
 					AND k.user_id = u.user_id
 					AND k.key_id = '" . md5($sessiondata['autologinid']) . "'";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$userdata = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
@@ -111,11 +107,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 				FROM ' . USERS_TABLE . '
 				WHERE user_id = ' . (int) $user_id . '
 					AND user_active = 1';
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$userdata = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
@@ -136,7 +128,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	// * User does not exist
 	// * User is inactive
 	//
-	if (!count($userdata) || !is_array($userdata) || !$userdata)
+	if (!sizeof($userdata) || !is_array($userdata) || !$userdata)
 	{
 		$sessiondata['autologinid'] = '';
 		$sessiondata['userid'] = $user_id = ANONYMOUS;
@@ -145,11 +137,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		$sql = 'SELECT *
 			FROM ' . USERS_TABLE . '
 			WHERE user_id = ' . (int) $user_id;
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$userdata = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 	}
@@ -166,21 +154,14 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		$sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $userdata['user_email']) . "'
 			OR ban_email LIKE '" . substr(str_replace("\'", "''", $userdata['user_email']), strpos(str_replace("\'", "''", $userdata['user_email']), "@")) . "'";
 	}
-	$result = CACHE_BAN_INFO ? $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER) : $db->sql_query($sql);
-	if(!$result)
-	{
-		message_die(CRITICAL_ERROR, 'Could not obtain ban information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = CACHE_BAN_INFO ? $db->sql_query($sql, 0, 'ban_', USERS_CACHE_FOLDER) : $db->sql_query($sql);
 
 	while ($ban_info = $db->sql_fetchrow($result))
 	{
 		if (($ban_info['ban_userid'] == ANONYMOUS) && ($ban_info['ban_ip'] == '') && ($ban_info['ban_email'] == null))
 		{
 			$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = '" . ANONYMOUS . "'";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_MESSAGE, 'Unable to access the Banlist Table.');
-			}
+			$db->sql_query($sql);
 			$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 		}
 		else
@@ -190,10 +171,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 				if (!empty($ban_info['ban_expire_time']) && ($ban_info['ban_expire_time'] <= time()))
 				{
 					$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_id = '" . $ban_info['ban_id'] . "'";
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_MESSAGE, 'Unable to access the Banlist Table.');
-					}
+					$db->sql_query($sql);
 					$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 				}
 				else
@@ -231,17 +209,17 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		SET session_ip = '$user_ip', session_start = $current_time, session_time = $current_time, session_page = '$page_id', session_logged_in = $login, session_user_agent = '" . addslashes($user_agent) . "', session_admin = $admin
 		WHERE session_id = '" . $session_id . "' $sql_ip
 			AND session_user_id = '$user_id'";
-	if (!$db->sql_query($sql) || !$db->sql_affectedrows())
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result || !$db->sql_affectedrows())
 	{
 		$session_id = md5(unique_id());
 
 		$sql = "INSERT INTO " . SESSIONS_TABLE . "
 			(session_id, session_user_id, session_start, session_time, session_ip, session_user_agent, session_page, session_logged_in, session_admin)
 			VALUES ('$session_id', $user_id, $current_time, $current_time, '$user_ip', '" . addslashes($user_agent) . "', '$page_id', $login, $admin)";
-		if (!$db->sql_query($sql))
-		{
-			message_die(CRITICAL_ERROR, 'Error creating new session', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	if ($user_id != ANONYMOUS)
@@ -253,30 +231,20 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_session_time = $current_time, user_http_agents = '" . addslashes($user_agent) . "', user_session_page = '$page_id', user_lastvisit = $last_visit, user_lastlogon = " . time() .  ", user_totallogon = (user_totallogon + 1)
 				WHERE user_id = $user_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(CRITICAL_ERROR, 'Error updating last visit time', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			// Start Advanced IP Tools Pack MOD
-			if ($board_config['disable_logins'] == 0)
+			if ($config['disable_logins'] == 0)
 			{
 				$sql = "INSERT INTO " . LOGINS_TABLE . "
 					(login_id, login_userid, login_ip, login_user_agent, login_time)
 					VALUES (NULL, $user_id, '$user_ip', '" . addslashes($user_agent) . "', $current_time)";
-				if (!$db->sql_query($sql))
-				{
-					message_die(CRITICAL_ERROR, 'Error: Seek Help', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				// Now get the results in groups based on how many topics per page parameter set in the admin panel
 				$sql = "SELECT * FROM " . LOGINS_TABLE . " WHERE login_userid = $user_id ORDER BY login_id ASC";
-
-				if (!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Error: Seek Help', '', __LINE__, __FILE__, $sql);
-				}
-
-				$max_logins = $board_config['last_logins_n'];
+				$result = $db->sql_query($sql);
+				$max_logins = $config['last_logins_n'];
 
 				if ($user_logins = $db->sql_numrows($result))
 				{
@@ -287,10 +255,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 						for($i = 0; $i < ($user_logins - $max_logins); $i++)
 						{
 							$sql = "DELETE FROM " . LOGINS_TABLE . " WHERE login_id = " . $login_rows[$i]['login_id'];
-							if (!$db->sql_query($sql))
-							{
-								message_die(CRITICAL_ERROR, 'Error: Seek Help', '', __LINE__, __FILE__, $sql);
-							}
+							$db->sql_query($sql);
 						}
 					}
 				}
@@ -320,11 +285,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 				$sql = 'INSERT INTO ' . SESSIONS_KEYS_TABLE . "(key_id, user_id, last_ip, last_login)
 					VALUES ('" . md5($auto_login_key) . "', $user_id, '$user_ip', $current_time)";
 			}
-
-			if (!$db->sql_query($sql))
-			{
-				message_die(CRITICAL_ERROR, 'Error updating session key', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 
 			$sessiondata['autologinid'] = $auto_login_key;
 			unset($auto_login_key);
@@ -349,7 +310,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	$userdata['session_key'] = $sessiondata['autologinid'];
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	$userdata['upi2db_access'] = false;
-	if (!$board_config['board_disable'] && $userdata['session_logged_in'] && $board_config['upi2db_on'])
+	if (!$config['board_disable'] && $userdata['session_logged_in'] && $config['upi2db_on'])
 	{
 		$userdata['upi2db_access'] = check_upi2db_on($userdata);
 		if ($userdata['upi2db_access'] != false)
@@ -374,14 +335,14 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 */
 function session_pagestart($user_ip, $thispage_id = '')
 {
-	global $db, $lang, $board_config;
+	global $db, $config, $lang;
 	global $user_agent;
 	global $SID;
 
-	$cookiename = $board_config['cookie_name'];
-	$cookiepath = $board_config['cookie_path'];
-	$cookiedomain = $board_config['cookie_domain'];
-	$cookiesecure = $board_config['cookie_secure'];
+	$cookiename = $config['cookie_name'];
+	$cookiepath = $config['cookie_path'];
+	$cookiedomain = $config['cookie_domain'];
+	$cookiesecure = $config['cookie_secure'];
 
 	$current_time = time();
 	unset($userdata);
@@ -435,18 +396,15 @@ function session_pagestart($user_ip, $thispage_id = '')
 	// Does a session exist?
 	if (!empty($session_id))
 	{
-		$expiry_time = $current_time - $board_config['session_length'] ;
+		$expiry_time = $current_time - $config['session_length'] ;
 		// session_id exists so go ahead and attempt to grab all data in preparation
 		$sql = "SELECT u.*, s.*
 			FROM " . SESSIONS_TABLE . " s, " . USERS_TABLE . " u
 			WHERE s.session_id = '$session_id'
 				AND u.user_id = s.session_user_id AND session_time > $expiry_time";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$userdata = $db->sql_fetchrow($result);
+
 		if (isset($userdata['user_level']) && ($userdata['user_level'] == JUNIOR_ADMIN))
 		{
 			define('IS_JUNIOR_ADMIN', true);
@@ -473,25 +431,19 @@ function session_pagestart($user_ip, $thispage_id = '')
 				if (((($current_time - $userdata['session_time']) > SESSION_REFRESH) || ($session_page_tmp != $thispage_id)) && ($parse_session === true) && empty($_REQUEST['explain']))
 				{
 					// A little trick to reset session_admin on session re-usage
-					$update_admin = (!defined('IN_ADMIN') && (($current_time - $userdata['session_time']) > ($board_config['session_length'] + SESSION_REFRESH))) ? ', session_admin = 0' : '';
+					$update_admin = (!defined('IN_ADMIN') && (($current_time - $userdata['session_time']) > ($config['session_length'] + SESSION_REFRESH))) ? ', session_admin = 0' : '';
 
 					$sql = "UPDATE " . SESSIONS_TABLE . "
 						SET session_time = " . $current_time . ", session_page = '" . $thispage_id . "'" . $update_admin . "
 						WHERE session_id = '" . $userdata['session_id'] . "'";
-					if (!$db->sql_query($sql))
-					{
-						message_die(CRITICAL_ERROR, 'Error updating sessions table', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 
 					if ($userdata['user_id'] != ANONYMOUS)
 					{
 						$sql = "UPDATE " . USERS_TABLE . "
 							SET user_session_time = " . $current_time . ", user_session_page = '" . $thispage_id . "', user_totalpages = user_totalpages + 1, user_totaltime = user_totaltime + ($current_time - " . $userdata['session_time'] . ")
 							WHERE user_id = " . $userdata['user_id'];
-						if (!$db->sql_query($sql))
-						{
-							message_die(CRITICAL_ERROR, 'Error updating sessions table', '', __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 					}
 
 					session_clean($userdata['session_id']);
@@ -506,7 +458,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 				}
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				$userdata['upi2db_access'] = false;
-				if (!$board_config['board_disable'] && $userdata['session_logged_in'] && $board_config['upi2db_on'])
+				if (!$config['board_disable'] && $userdata['session_logged_in'] && $config['upi2db_on'])
 				{
 					$userdata['upi2db_access'] = check_upi2db_on($userdata);
 					if ($userdata['upi2db_access'] != false)
@@ -531,12 +483,9 @@ function session_pagestart($user_ip, $thispage_id = '')
 				AND s.session_user_id = " . ANONYMOUS . "
 				AND u.user_id = s.session_user_id
 					LIMIT 0, 1";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(CRITICAL_ERROR, 'Error doing DB query userdata row fetch', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$userdata = $db->sql_fetchrow($result);
+
 		if (isset($userdata['user_level']) && ($userdata['user_level'] == JUNIOR_ADMIN))
 		{
 			define('IS_JUNIOR_ADMIN', true);
@@ -550,15 +499,12 @@ function session_pagestart($user_ip, $thispage_id = '')
 				$sql = "UPDATE " . SESSIONS_TABLE . "
 					SET session_time = $current_time, session_start = $current_time, session_page = '" . $thispage_id . "'
 					WHERE session_id = '" . $userdata['session_id'] . "'";
-				if (!$db->sql_query($sql))
-				{
-					message_die(CRITICAL_ERROR, 'Error updating sessions table', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 //<!-- BEGIN Unread Post Information to Database Mod -->
 			//$userdata['upi2db_access'] = check_upi2db_on($userdata);
 			$userdata['upi2db_access'] = false;
-			if (!$board_config['board_disable'] && $userdata['session_logged_in'] && $board_config['upi2db_on'])
+			if (!$config['board_disable'] && $userdata['session_logged_in'] && $config['upi2db_on'])
 			{
 				$userdata['upi2db_access'] = check_upi2db_on($userdata);
 				if ($userdata['upi2db_access'] != false)
@@ -589,13 +535,14 @@ function session_pagestart($user_ip, $thispage_id = '')
 	}
 
 	// Mighty Gorgon - BOT SESSION - BEGIN
+	$userdata['is_bot'] = false;
 	if ($userdata['user_id'] != ANONYMOUS)
 	{
 		$userdata['bot_id'] = false;
 	}
 	else
 	{
-		$userdata['bot_id'] = bots_parse($user_ip, $board_config['bots_color'], $user_agent, true);
+		$userdata['bot_id'] = bots_parse($user_ip, $config['bots_color'], $user_agent, true);
 		if ($userdata['bot_id'] !== false)
 		{
 			/*
@@ -603,7 +550,8 @@ function session_pagestart($user_ip, $thispage_id = '')
 			$userdata['session_user_id'] = BOT;
 			$userdata['session_logged_in'] = 1;
 			*/
-			bots_table_update(bots_parse($user_ip, $board_config['bots_color'], $user_agent, true, true));
+			$userdata['is_bot'] = true;
+			bots_table_update(bots_parse($user_ip, $config['bots_color'], $user_agent, true, true));
 		}
 	}
 	// Mighty Gorgon - BOT SESSION - END
@@ -617,13 +565,13 @@ function session_pagestart($user_ip, $thispage_id = '')
 */
 function session_end($session_id, $user_id)
 {
-	global $db, $lang, $board_config, $userdata;
+	global $db, $config, $userdata, $lang;
 	global $_COOKIE, $SID;
 
-	$cookiename = $board_config['cookie_name'];
-	$cookiepath = $board_config['cookie_path'];
-	$cookiedomain = $board_config['cookie_domain'];
-	$cookiesecure = $board_config['cookie_secure'];
+	$cookiename = $config['cookie_name'];
+	$cookiepath = $config['cookie_path'];
+	$cookiedomain = $config['cookie_domain'];
+	$cookiesecure = $config['cookie_secure'];
 
 	$current_time = time();
 
@@ -632,43 +580,28 @@ function session_end($session_id, $user_id)
 		return;
 	}
 
-	//
 	// Delete existing session
-	//
 	$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
 		WHERE session_id = '$session_id'
 			AND session_user_id = $user_id";
-	if (!$db->sql_query($sql))
-	{
-		message_die(CRITICAL_ERROR, 'Error removing user session', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
-	//
 	// Remove this auto-login entry (if applicable)
-	//
 	if (isset($userdata['session_key']) && $userdata['session_key'] != '')
 	{
 		$autologin_key = md5($userdata['session_key']);
 		$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
 			WHERE user_id = ' . (int) $user_id . "
 				AND key_id = '$autologin_key'";
-		if (!$db->sql_query($sql))
-		{
-			message_die(CRITICAL_ERROR, 'Error removing auto-login key', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
-	//
-	// We expect that message_die will be called after this function,
-	// but just in case it isn't, reset $userdata to the details for a guest
-	//
+	// We expect that message_die will be called after this function, but just in case it isn't, reset $userdata to the details for a guest
 	$sql = 'SELECT *
 		FROM ' . USERS_TABLE . '
 		WHERE user_id = ' . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(CRITICAL_ERROR, 'Error obtaining user details', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	if (!($userdata = $db->sql_fetchrow($result)))
 	{
 		message_die(CRITICAL_ERROR, 'Error obtaining user details', '', __LINE__, __FILE__, $sql);
@@ -687,26 +620,23 @@ function session_end($session_id, $user_id)
 */
 function session_clean($session_id)
 {
-	global $board_config, $db;
+	global $config, $db;
 
 	// Delete expired sessions
 	$sql = "DELETE FROM " . SESSIONS_TABLE . "
 		WHERE UNIX_TIMESTAMP() - session_time >= " . 172800 . "
 			AND session_id <> '$session_id'";
-	if (!$db->sql_query($sql))
-	{
-		message_die(CRITICAL_ERROR, 'Error clearing sessions table', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
 	//
 	// Delete expired auto-login keys
 	// If max_autologin_time is not set then keys will never be deleted
 	// (same behaviour as old 2.0.x session code)
 	//
-	if (!empty($board_config['max_autologin_time']) && $board_config['max_autologin_time'] > 0)
+	if (!empty($config['max_autologin_time']) && $config['max_autologin_time'] > 0)
 	{
 		$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
-			WHERE last_login < ' . (time() - (86400 * (int) $board_config['max_autologin_time']));
+			WHERE last_login < ' . (time() - (86400 * (int) $config['max_autologin_time']));
 		$db->sql_query($sql);
 	}
 
@@ -719,27 +649,20 @@ function session_clean($session_id)
 */
 function session_reset_keys($user_id, $user_ip)
 {
-	global $db, $userdata, $board_config;
+	global $db, $config, $userdata;
 
 	$key_sql = ($user_id == $userdata['user_id'] && !empty($userdata['session_key'])) ? "AND key_id != '" . md5($userdata['session_key']) . "'" : '';
 
 	$sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
 		WHERE user_id = ' . (int) $user_id . "
 			$key_sql";
-
-	if (!$db->sql_query($sql))
-	{
-		message_die(CRITICAL_ERROR, 'Error removing auto-login keys', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
 	$where_sql = 'session_user_id = ' . (int) $user_id;
 	$where_sql .= ($user_id == $userdata['user_id']) ? " AND session_id <> '" . $userdata['session_id'] . "'" : '';
 	$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
 		WHERE $where_sql";
-	if (!$db->sql_query($sql))
-	{
-		message_die(CRITICAL_ERROR, 'Error removing user session(s)', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
 	if (!empty($key_sql))
 	{
@@ -750,19 +673,15 @@ function session_reset_keys($user_id, $user_ip)
 		$sql = 'UPDATE ' . SESSIONS_KEYS_TABLE . "
 			SET last_ip = '$user_ip', key_id = '" . md5($auto_login_key) . "', last_login = $current_time
 			WHERE key_id = '" . md5($userdata['session_key']) . "'";
-
-		if (!$db->sql_query($sql))
-		{
-			message_die(CRITICAL_ERROR, 'Error updating session key', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		// And now rebuild the cookie
 		$sessiondata['userid'] = $user_id;
 		$sessiondata['autologinid'] = $auto_login_key;
-		$cookiename = $board_config['cookie_name'];
-		$cookiepath = $board_config['cookie_path'];
-		$cookiedomain = $board_config['cookie_domain'];
-		$cookiesecure = $board_config['cookie_secure'];
+		$cookiename = $config['cookie_name'];
+		$cookiepath = $config['cookie_path'];
+		$cookiedomain = $config['cookie_domain'];
+		$cookiesecure = $config['cookie_secure'];
 
 		setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
 

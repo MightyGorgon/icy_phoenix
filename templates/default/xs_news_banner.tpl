@@ -23,7 +23,7 @@ if(GetCookie(tmp) == '2')
 		<!-- END switch_ticker_subtitle -->
 		<!-- BEGIN news_ticker_row -->
 			<!-- BEGIN switch_show_feed -->
-			<p class="forum-buttons2" style="height:17px;valign:middle;"><span>{news_ticker_row.XS_NEWS_TICKER_FROM}</span></p>
+			<p class="forum-buttons2" style="height: 17px; valign: middle;"><span>{news_ticker_row.XS_NEWS_TICKER_FROM}</span></p>
 			<!-- END switch_show_feed -->
 
 			<p class="row1 row-news-tickers">
@@ -35,7 +35,7 @@ if(GetCookie(tmp) == '2')
 	<!-- END switch_news_ticker -->
 
 	<!-- BEGIN switch_news_subtitle -->
-	<p class="forum-buttons2" style="height:17px;valign:middle;">{XS_NEWS_ITEMS_TITLE}</p>
+	<p class="forum-buttons2" style="height: 17px; valign: middle;">{XS_NEWS_ITEMS_TITLE}</p>
 	<!-- END switch_news_subtitle -->
 	<p class="row1 row-news-tickers">
 		<!-- BEGIN newsitem -->

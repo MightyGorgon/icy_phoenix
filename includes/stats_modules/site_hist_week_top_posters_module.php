@@ -15,13 +15,13 @@ if (!defined('IN_ICYPHOENIX'))
 
 // Top Posting Users This Week (Site History)
 $current_time = time();
-$minutes = date('is', $current_time);
+$minutes = gmdate('is', $current_time);
 $hour_now = $current_time - (60 * ($minutes[0] . $minutes[1])) - ($minutes[2] . $minutes[3]);
-$dato = date('H', $current_time);
+$dato = gmdate('H', $current_time);
 $time_today = $hour_now - (3600 * $dato);
 $year = create_date('Y', $current_time, 0);
-$time_thismonth = $month [date('n') - 1];
-$time_thisweek = $time_today - ((date('w', $time_today) - 1) * 86400);
+$time_thismonth = $month [gmdate('n') - 1];
+$time_thisweek = $time_today - ((gmdate('w', $time_today) - 1) * 86400);
 if ((time() - $time_thisweek) < 0)
 {
 	$time_thisweek_poster = $time_thisweek - (60 * 60 * 24 * 7);
@@ -32,13 +32,13 @@ else
 	$time_thisweek_poster = $time_thisweek;
 	$time_today_poster = $time_today;
 }
-$this_month = create_date('n', $time_thismonth, $board_config['board_timezone']);
-$l_this_month = create_date('F', $time_thismonth, $board_config['board_timezone']);
-$l_this_day = create_date('D', $time_today, $board_config['board_timezone']);
+$this_month = create_date('n', $time_thismonth, $config['board_timezone']);
+$l_this_month = create_date('F', $time_thismonth, $config['board_timezone']);
+$l_this_day = create_date('D', $time_today, $config['board_timezone']);
 
 $template->assign_vars(array(
 	'L_MODULE_NAME' => $lang['module_name_site_hist_week_top_posters'],
-	'WEEK' => sprintf($lang['Week_Var'], (create_date('D', $time_thisweek, $board_config['board_timezone'])) . ' - ' . $l_this_day),
+	'WEEK' => sprintf($lang['Week_Var'], (create_date('D', $time_thisweek, $config['board_timezone'])) . ' - ' . $l_this_day),
 	'L_RANK' => $lang['Rank'],
 	'L_PERCENTAGE' => $lang['Percent'],
 	'L_GRAPH' => $lang['Graph'],
@@ -55,12 +55,7 @@ $sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, count(u.user_
 	GROUP BY u.user_id
 	ORDER BY user_posts DESC
 	LIMIT " . $return_limit;
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve topposters data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $total_posts_thisweek = 0;
 $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);

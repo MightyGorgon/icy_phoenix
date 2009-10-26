@@ -19,13 +19,13 @@ class pafiledb_search extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
+		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
 		if(!$this->auth_global['auth_search'])
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_search'], $this->auth_global['auth_search_type']);
@@ -139,10 +139,7 @@ class pafiledb_search extends pafiledb_public
 					$sql = "SELECT user_id
 						FROM " . USERS_TABLE . "
 						WHERE username LIKE '" . str_replace("\'", "''", $search_author) . "'";
-					if ( !($result = $db->sql_query($sql)) )
-					{
-						message_die(GENERAL_ERROR, "Couldn't obtain list of matching users (searching for: $search_author)", "", __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					$matching_userids = '';
 					if ( $row = $db->sql_fetchrow($result) )
@@ -161,11 +158,7 @@ class pafiledb_search extends pafiledb_public
 					$sql = "SELECT *
 						FROM " . PA_FILES_TABLE . "
 						WHERE user_id IN ($matching_userids)";
-
-					if ( !($result = $db->sql_query($sql)) )
-					{
-						message_die(GENERAL_ERROR, 'Could not obtain matched files list', '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					$search_ids = array();
 					while( $row = $db->sql_fetchrow($result) )
@@ -177,12 +170,12 @@ class pafiledb_search extends pafiledb_public
 					}
 					$db->sql_freeresult($result);
 
-					$total_match_count = count($search_ids);
+					$total_match_count = sizeof($search_ids);
 				}
 				else if ( $search_keywords != '' )
 				{
-					$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
-					$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt');
+					$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
+					$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
 
 					$split_search = array();
 					$split_search = ( !strstr($multibyte_charset, $lang['ENCODING']) ) ?  split_words(clean_words('search', stripslashes($search_keywords), $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
@@ -193,7 +186,7 @@ class pafiledb_search extends pafiledb_public
 					$word_match = array();
 					$result_list = array();
 
-					for($i = 0; $i < count($split_search); $i++)
+					for($i = 0; $i < sizeof($split_search); $i++)
 					{
 						switch ( $split_search[$i] )
 						{
@@ -222,11 +215,7 @@ class pafiledb_search extends pafiledb_public
 									OR file_creator LIKE '$match_word'
 									OR file_desc LIKE '$match_word'
 									OR file_longdesc LIKE '$match_word')";
-
-								if ( !($result = $db->sql_query($sql)) )
-								{
-									message_die(GENERAL_ERROR, 'Could not obtain matched files list', '', __LINE__, __FILE__, $sql);
-								}
+								$result = $db->sql_query($sql);
 
 							$row = array();
 							while( $temp_row = $db->sql_fetchrow($result) )
@@ -265,11 +254,7 @@ class pafiledb_search extends pafiledb_public
 									FROM " . PA_COMMENTS_TABLE . "
 									WHERE (comments_title LIKE '$match_word'
 									OR comments_text LIKE '$match_word')";
-
-								if ( !($result = $db->sql_query($sql)) )
-								{
-									message_die(GENERAL_ERROR, 'Could not obtain matched files list', '', __LINE__, __FILE__, $sql);
-								}
+								$result = $db->sql_query($sql);
 
 								$row = array();
 								while( $temp_row = $db->sql_fetchrow($result) )
@@ -320,7 +305,7 @@ class pafiledb_search extends pafiledb_public
 					}
 
 					unset($result_list);
-					$total_match_count = count($search_ids);
+					$total_match_count = sizeof($search_ids);
 				}
 			//
 			// Author name search
@@ -359,11 +344,7 @@ class pafiledb_search extends pafiledb_public
 							$where_sql
 							GROUP BY f.file_id";
 					}
-
-					if ( !($result = $db->sql_query($sql)) )
-					{
-						message_die(GENERAL_ERROR, 'Could not obtain file ids', '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					$search_ids = array();
 					while( $row = $db->sql_fetchrow($result) )
@@ -374,7 +355,7 @@ class pafiledb_search extends pafiledb_public
 						}
 					}
 					$db->sql_freeresult($result);
-					$total_match_count = count($search_ids);
+					$total_match_count = sizeof($search_ids);
 				}
 				else
 				{
@@ -385,12 +366,14 @@ class pafiledb_search extends pafiledb_public
 				// Finish building query (for all combinations)
 				// and run it ...
 				//
-				$expiry_time = $current_time - $board_config['session_length'];
+				$expiry_time = $current_time - $config['session_length'];
 				$sql = "SELECT session_id
 					FROM " . SESSIONS_TABLE ."
 					WHERE session_time > $expiry_time";
-
-				if ( $result = $db->sql_query($sql) )
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if ($result)
 				{
 					$delete_search_ids = array();
 					while( $row = $db->sql_fetchrow($result) )
@@ -398,14 +381,11 @@ class pafiledb_search extends pafiledb_public
 						$delete_search_ids[] = "'" . $row['session_id'] . "'";
 					}
 
-					if ( count($delete_search_ids) )
+					if ( sizeof($delete_search_ids) )
 					{
 						$sql = "DELETE FROM " . SEARCH_TABLE . "
 							WHERE session_id NOT IN (" . implode(", ", $delete_search_ids) . ")";
-						if ( !$result = $db->sql_query($sql) )
-						{
-							message_die(GENERAL_ERROR, 'Could not delete old search id sessions', '', __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 					}
 				}
 
@@ -416,7 +396,7 @@ class pafiledb_search extends pafiledb_public
 
 				$store_search_data = array();
 
-				for($i = 0; $i < count($store_vars); $i++)
+				for($i = 0; $i < sizeof($store_vars); $i++)
 				{
 					$store_search_data[$store_vars[$i]] = $$store_vars[$i];
 				}
@@ -430,14 +410,14 @@ class pafiledb_search extends pafiledb_public
 				$sql = "UPDATE " . SEARCH_TABLE . "
 					SET search_id = $search_id, search_array = '" . str_replace("\'", "''", $result_array) . "'
 					WHERE session_id = '" . $userdata['session_id'] . "'";
-				if ( !($result = $db->sql_query($sql)) || !$db->sql_affectedrows() )
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result || !$db->sql_affectedrows())
 				{
 					$sql = "INSERT INTO " . SEARCH_TABLE . " (search_id, session_id, search_array)
 						VALUES($search_id, '" . $userdata['session_id'] . "', '" . str_replace("\'", "''", $result_array) . "')";
-					if ( !($result = $db->sql_query($sql)) )
-					{
-						message_die(GENERAL_ERROR, 'Could not insert search results', '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 				}
 			}
 			else
@@ -449,15 +429,12 @@ class pafiledb_search extends pafiledb_public
 						FROM " . SEARCH_TABLE . "
 						WHERE search_id = $search_id
 						AND session_id = '" . $userdata['session_id'] . "'";
-					if ( !($result = $db->sql_query($sql)) )
-					{
-						message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					if ( $row = $db->sql_fetchrow($result) )
 					{
 						$search_data = unserialize($row['search_array']);
-						for($i = 0; $i < count($store_vars); $i++)
+						for($i = 0; $i < sizeof($store_vars); $i++)
 						{
 							$$store_vars[$i] = $search_data[$store_vars[$i]];
 						}
@@ -479,11 +456,7 @@ class pafiledb_search extends pafiledb_public
 					GROUP BY f1.file_id
 					ORDER BY $sort_method $sort_order
 					LIMIT $limit_sql";
-
-				if (!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not obtain search results', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				$searchset = array();
 				while($row = $db->sql_fetchrow($result))
@@ -500,7 +473,7 @@ class pafiledb_search extends pafiledb_public
 					)
 				);
 
-				for($i = 0; $i < count($searchset); $i++)
+				for($i = 0; $i < sizeof($searchset); $i++)
 				{
 					$cat_url = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $searchset[$i]['cat_id']);
 					$file_url = append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $searchset[$i]['file_id']);
@@ -508,7 +481,7 @@ class pafiledb_search extends pafiledb_public
 					// Format the date for the given file
 					//===================================================
 
-					$date = create_date_ip($board_config['default_dateformat'], $searchset[$i]['file_time'], $board_config['board_timezone']);
+					$date = create_date_ip($config['default_dateformat'], $searchset[$i]['file_time'], $config['board_timezone']);
 
 					//===================================================
 					// Get rating for the file and format it
@@ -553,7 +526,7 @@ class pafiledb_search extends pafiledb_public
 						'FILE_NEW_IMAGE' => $images['pa_file_new'],
 						'PIN_IMAGE' => $posticon,
 						'L_HOME' => $lang['Home'],
-						'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+						'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 						'XS_NEW' => $xs_new,
 						'IS_NEW_FILE' => $is_new,
 						'FILE_NAME' => $searchset[$i]['file_name'],
@@ -573,12 +546,12 @@ class pafiledb_search extends pafiledb_public
 					'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pafiledb_config['settings_file_page'] ) + 1 ), ceil( $total_match_count / $pafiledb_config['settings_file_page'] )),
 					'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 					'L_HOME' => $lang['Home'],
-					'U_INDEX' => append_sid(PORTAL_MG),
+					'U_INDEX' => append_sid(CMS_PAGE_HOME),
 					'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 					'L_HOME' => $lang['Home'],
-   				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+   				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 					'XS_NEW' => $xs_new,
-					'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+					'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 					'L_RATE' => $lang['DlRating'],
 					'L_DOWNLOADS' => $lang['Dls'],
 					'L_DATE' => $lang['Date'],
@@ -606,10 +579,10 @@ class pafiledb_search extends pafiledb_public
 
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 
-				'U_INDEX' => append_sid(PORTAL_MG),
+				'U_INDEX' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 				'L_HOME' => $lang['Home'],
-   			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+   			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 				'XS_NEW' => $xs_new,
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
@@ -625,7 +598,7 @@ class pafiledb_search extends pafiledb_public
 				'L_SORT_DIR' => $lang['Order'],
 				'L_SORT_ASCENDING' => $lang['Sort_Ascending'],
 				'L_SORT_DESCENDING' => $lang['Sort_Descending'],
-				'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+				'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 				'L_RATING' => $lang['DlRating'],
 				'L_DOWNLOADS' => $lang['Dls'],
 				'L_DATE' => $lang['Date'],

@@ -26,27 +26,14 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$page_title = $lang['Acronyms'];
-$meta_description = '';
-$meta_keywords = '';
-
-include('includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'acronym_body.tpl'));
-
-$sql = "SELECT * FROM " . ACRONYMS_TABLE . " ORDER BY acronym ASC";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Could not obtain acronym data", "", __LINE__, __FILE__, $sql);
-}
-
 $i = 0;
-
+$sql = "SELECT * FROM " . ACRONYMS_TABLE . " ORDER BY acronym ASC";
+$result = $db->sql_query($sql);
 while($acronym_row = $db->sql_fetchrow($result))
 {
 	$acronym = $acronym_row['acronym'];
 	$description = $acronym_row['description'];
-	$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 	$template->assign_block_vars('acronym_row', array(
 		'ROW_CLASS' => $row_class,
 		'ACRONYM' => $acronym,
@@ -63,7 +50,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
+full_page_generation('acronym_body.tpl', $lang['Acronyms'], '', '');
 
-include('includes/page_tail.' . PHP_EXT);
 ?>

@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <script type="text/javascript">
 <!--
 
@@ -78,3 +80,5 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 	</tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
+<!-- INCLUDE simple_footer.tpl -->

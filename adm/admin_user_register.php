@@ -25,19 +25,16 @@ $unhtml_specialchars_match = array('#>#', '#<#', '#"#', '#&#');
 $unhtml_specialchars_replace = array('>', '<', '"', '&');
 
 $error = false;
-$page_title = $lang['Register'];
+$meta_content['page_title'] = $lang['Register'];
 
 $coppa = (empty($_POST['coppa']) && empty($_GET['coppa'])) ? 0 : true;
 
 $sql = "SELECT config_value
 	FROM " . CONFIG_TABLE . "
 	WHERE config_name = 'board_timezone'";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not select default dateformat', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
-$board_config['board_timezone'] = $row['config_value'];
+$config['board_timezone'] = $row['config_value'];
 $db->sql_freeresult($result);
 
 // Check and initialize some variables if needed
@@ -60,7 +57,7 @@ if (isset($_POST['submit']) || ($mode == 'register'))
 		}
 	}
 
-	$user_style = (isset($_POST['style'])) ? intval($_POST['style']) : $board_config['default_style'];
+	$user_style = (isset($_POST['style'])) ? intval($_POST['style']) : $config['default_style'];
 
 	if (!empty($_POST['language']))
 	{
@@ -76,22 +73,19 @@ if (isset($_POST['submit']) || ($mode == 'register'))
 	}
 	else
 	{
-		$user_lang = $board_config['default_lang'];
+		$user_lang = $config['default_lang'];
 	}
 
-	$user_timezone = (isset($_POST['timezone'])) ? doubleval($_POST['timezone']) : $board_config['board_timezone'];
+	$user_timezone = (isset($_POST['timezone'])) ? doubleval($_POST['timezone']) : $config['board_timezone'];
 	$sql = "SELECT config_value
 		FROM " . CONFIG_TABLE . "
 		WHERE config_name = 'default_dateformat'";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not select default dateformat', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	$board_config['default_dateformat'] = $row['config_value'];
+	$config['default_dateformat'] = $row['config_value'];
 	$db->sql_freeresult($result);
 
-	$user_dateformat = (!empty($_POST['dateformat'])) ? trim(htmlspecialchars($_POST['dateformat'])) : $board_config['default_dateformat'];
+	$user_dateformat = (!empty($_POST['dateformat'])) ? trim(htmlspecialchars($_POST['dateformat'])) : $config['default_dateformat'];
 
 	if (!isset($_POST['submit']))
 	{
@@ -171,10 +165,7 @@ if (isset($_POST['submit']))
 	{
 		$sql = "SELECT MAX(user_id) AS total
 			FROM " . USERS_TABLE;
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain next user_id information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!($row = $db->sql_fetchrow($result)))
 		{
@@ -186,26 +177,19 @@ if (isset($_POST['submit']))
 
 		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
 			VALUES ($user_id, '" . str_replace("\'", "''", $username) . "', " . time() . ", '" . str_replace("\'", "''", $new_password) . "', '" . str_replace("\'", "''", $email) . "', $user_style, $user_timezone, '" . str_replace("\'", "''", $user_dateformat) . "', '" . str_replace("\'", "''", $user_lang) . "', 0, 1, 'user_actkey')";
-		if (!($result = $db->sql_query($sql, BEGIN_TRANSACTION)))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert data into users table', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_transaction('begin');
+		$result = $db->sql_query($sql);
 
 		$sql = "INSERT INTO " . GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator)
 			VALUES ('', 'Personal User', 1, 0)";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$group_id = $db->sql_nextid();
 
 		$sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
 			VALUES ($user_id, $group_id, 0)";
-		if(!($result = $db->sql_query($sql, END_TRANSACTION)))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert data into user_group table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+		$db->sql_transaction('commit');
 
 		board_stats();
 
@@ -236,7 +220,7 @@ $coppa = false;
 
 if (!isset($user_template))
 {
-	$selected_template = $board_config['system_template'];
+	$selected_template = $config['system_template'];
 }
 
 $s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="coppa" value="' . $coppa . '" />';
@@ -263,10 +247,10 @@ $template->assign_vars(array(
 	'NEW_PASSWORD' => $new_password,
 	'PASSWORD_CONFIRM' => $password_confirm,
 	'EMAIL' => $email,
-	'LANGUAGE_SELECT' => language_select($board_config['default_lang'], 'language'),
-	'STYLE_SELECT' => style_select($board_config['default_style'], 'style'),
-	'TIMEZONE_SELECT' => tz_select($board_config['board_timezone'], 'timezone'),
-	'DATE_FORMAT_SELECT' => date_select($board_config['default_dateformat'], 'dateformat'),
+	'LANGUAGE_SELECT' => language_select($config['default_lang'], 'language'),
+	'STYLE_SELECT' => style_select($config['default_style'], 'style'),
+	'TIMEZONE_SELECT' => tz_select($config['board_timezone'], 'timezone'),
+	'DATE_FORMAT_SELECT' => date_select($config['default_dateformat'], 'dateformat'),
 
 	'L_USERNAME' => $lang['Username'],
 	'L_CURRENT_PASSWORD' => $lang['Current_password'],

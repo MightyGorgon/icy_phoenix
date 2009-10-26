@@ -3,55 +3,55 @@
 
 <script type="text/javascript">
 <!--
-	var error_msg = "";
-	function checkAddForm()
+var error_msg = "";
+function checkAddForm()
+{
+	error_msg = "";
+	if (document.form.cat_id.value == -1)
 	{
-		error_msg = "";
-		if (document.form.cat_id.value == -1)
-		{
-			error_msg = "You can't add file to category that does not allow files on it";
-		}
+		error_msg = "You can't add file to category that does not allow files on it";
+	}
 
-		if(document.form.name.value == "")
-		{
-			if(error_msg != "")
-			{
-				error_msg += "\n";
-			}
-			error_msg += "Please fill the file name field";
-		}
-
-		if(document.form.long_desc.value == "")
-		{
-			if(error_msg != "")
-			{
-				error_msg += "\n";
-			}
-			error_msg += "Please fill the file long descritpion field";
-		}
-
-		<!-- IF MODE eq 'ADD' -->
-		if(document.form.userfile.value == "" && document.form.download_url.value == "")
-		{
-			if(error_msg != "")
-			{
-				error_msg += "\n";
-			}
-			error_msg += "Please fill the file url field or click browse to upload file from your machine";
-		}
-		<!-- ENDIF -->
-
+	if(document.form.name.value == "")
+	{
 		if(error_msg != "")
 		{
-			alert(error_msg);
-			error_msg = "";
-			return false;
+			error_msg += "\n";
 		}
-		else
-		{
-			return true;
-		}
+		error_msg += "Please fill the file name field";
 	}
+
+	if(document.form.long_desc.value == "")
+	{
+		if(error_msg != "")
+		{
+			error_msg += "\n";
+		}
+		error_msg += "Please fill the file long descritpion field";
+	}
+
+	<!-- IF MODE eq 'ADD' -->
+	if(document.form.userfile.value == "" && document.form.download_url.value == "")
+	{
+		if(error_msg != "")
+		{
+			error_msg += "\n";
+		}
+		error_msg += "Please fill the file url field or click browse to upload file from your machine";
+	}
+	<!-- ENDIF -->
+
+	if(error_msg != "")
+	{
+		alert(error_msg);
+		error_msg = "";
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
 // -->
 </script>
 

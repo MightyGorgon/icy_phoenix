@@ -244,7 +244,7 @@ class log_manager
 		{
 			$debug_array = file($path);
 			$debug_delimiter = $debug_array[0];
-			$logsize  = count($debug_array) - count(array_diff($debug_array, (array) $debug_delimiter));
+			$logsize  = sizeof($debug_array) - count(array_diff($debug_array, (array) $debug_delimiter));
 		}
 
 		return $logsize;

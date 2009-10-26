@@ -16,7 +16,7 @@
 	<td class="row2"><input class="post" type="text" maxlength="255" name="script_path" value="{SCRIPT_PATH}" /></td>
 </tr>
 <tr>
-	<td class="row1"><strong>{L_SITE_NAME}</strong><br /><span class="gensmall">{L_SITE_NAME_EXPLAIN}</span></td>
+	<td class="row1"><strong>{L_SITE_NAME}</strong><!-- <br /><span class="gensmall">{L_SITE_NAME_EXPLAIN}</span> --></td>
 	<td class="row2"><input class="post" type="text" size="25" maxlength="100" name="sitename" value="{SITENAME}" /></td>
 </tr>
 <tr>

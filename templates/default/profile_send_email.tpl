@@ -1,6 +1,9 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 <!--
-function checkForm(formObj) {
+function checkForm(formObj)
+{
 	formErrors = false;
 	if (formObj.message.value.length < 2)
 	{
@@ -55,3 +58,5 @@ function checkForm(formObj) {
 </form>
 <div align="right">{JUMPBOX}</div>
 {TPL_CONTENT_BOTTOM}
+
+<!-- INCLUDE overall_footer.tpl -->

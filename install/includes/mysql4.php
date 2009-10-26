@@ -286,6 +286,90 @@ class sql_db
 		}
 	}
 
+	/**
+	* Function for validating values
+	*/
+	function sql_validate_value($var)
+	{
+		if (is_null($var))
+		{
+			return 'NULL';
+		}
+		elseif (is_string($var))
+		{
+			return "'" . $this->sql_escape($var) . "'";
+		}
+		else
+		{
+			return (is_bool($var)) ? intval($var) : $var;
+		}
+	}
+
+	/**
+	* Escape string used in sql query
+	*/
+	function sql_escape($msg)
+	{
+		if (!$this->db_connect_id)
+		{
+			return @mysql_real_escape_string($msg);
+		}
+
+		return @mysql_real_escape_string($msg, $this->db_connect_id);
+	}
+
+	/**
+	* Build sql statement from array for insert/update/select statements
+	*
+	* Idea for this from Ikonboard
+	* Possible query values: INSERT, INSERT_SELECT, UPDATE, SELECT
+	*
+	*/
+	function sql_build_array($query, $assoc_ary = false)
+	{
+		if (!is_array($assoc_ary))
+		{
+			return false;
+		}
+
+		$fields = $values = array();
+
+		if (($query == 'INSERT') || ($query == 'INSERT_SELECT'))
+		{
+			foreach ($assoc_ary as $key => $var)
+			{
+				$fields[] = $key;
+
+				if (is_array($var) && is_string($var[0]))
+				{
+					// This is used for INSERT_SELECT(s)
+					$values[] = $var[0];
+				}
+				else
+				{
+					$values[] = $this->sql_validate_value($var);
+				}
+			}
+
+			$query = ($query == 'INSERT') ? ' (' . implode(', ', $fields) . ') VALUES (' . implode(', ', $values) . ')' : ' (' . implode(', ', $fields) . ') SELECT ' . implode(', ', $values) . ' ';
+		}
+		elseif ($query == 'MULTI_INSERT')
+		{
+			trigger_error('The MULTI_INSERT query value is no longer supported. Please use sql_multi_insert() instead.', E_USER_ERROR);
+		}
+		elseif (($query == 'UPDATE') || ($query == 'SELECT'))
+		{
+			$values = array();
+			foreach ($assoc_ary as $key => $var)
+			{
+				$values[] = "$key = " . $this->sql_validate_value($var);
+			}
+			$query = implode(($query == 'UPDATE') ? ', ' : ' AND ', $values);
+		}
+
+		return $query;
+	}
+
 	function sql_rowseek($rownum, $query_id = 0)
 	{
 		if( !$query_id )
@@ -321,6 +405,14 @@ class sql_db
 		{
 			return false;
 		}
+	}
+
+	/**
+	* return on error or display error message
+	*/
+	function sql_return_on_error($fail = false)
+	{
+		return true;
 	}
 
 	function sql_error()

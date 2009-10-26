@@ -1,3 +1,9 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
@@ -24,7 +30,7 @@
 	</td>
 	<td class="row2" valign="top" align="left">
 		{BBCB_MG}
-		<textarea name="message" rows="15" cols="35" style="width: 98%" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{CONTENT}</textarea>
+		<textarea name="message" rows="15" cols="35" style="width: 98%;" tabindex="3" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{CONTENT}</textarea>
 	</td>
 </tr>
 <tr>
@@ -46,3 +52,9 @@
 </tr>
 </table>
 </form>
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

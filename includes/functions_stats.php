@@ -45,7 +45,7 @@ function module_language_parse($lang_key, $lang_var)
 function sql_quote($data)
 {
 	//$data = str_replace("'", "\'", $data);
-	$data = ((STRIP) ? addslashes($data) : $data);
+	$data = addslashes($data);
 	return ($data);
 }
 
@@ -128,11 +128,7 @@ function generate_module_info($module_data, $install = false)
 			SET module_info_cache = '" . addslashes(serialize($ret_array)) . "',
 			module_info_time = " . filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '_info.txt') . "
 			WHERE module_id = " . intval($module_data['module_id']);
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not update Info Cache', '', __LINE__, __FILE__, $sql);
-		}
-
+		$db->sql_query($sql);
 	}
 
 	$ret_array['dname'] = $module_dir;
@@ -206,56 +202,32 @@ function update_module_list()
 			$modules_list .= ($modules_list == '') ? "'$module_name'" : ", '$module_name'";
 
 			$sql = "SELECT MAX(display_order) as max
-			FROM " . MODULES_TABLE;
-
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Unable to select display order', '', __LINE__, __FILE__, $sql);
-			}
-
+				FROM " . MODULES_TABLE;
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
-
 			$curr_max = $row['max'];
 
 			$sql = "SELECT module_id, name, display_order, active
-			FROM " . MODULES_TABLE . "
-			WHERE (name = '" . trim($module_name) . "')";
-
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query Modules Table', '', __LINE__, __FILE__, $sql);
-			}
+				FROM " . MODULES_TABLE . "
+				WHERE (name = '" . trim($module_name) . "')";
+			$result = $db->sql_query($sql);
 
 			if ($db->sql_numrows($result) == 0)
 			{
 				$sql = "SELECT MAX(module_id) as next_id FROM " . MODULES_TABLE;
-
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Unable to get next Module ID', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$next_id = $row['next_id'] + 1;
 
 				$sql = "INSERT INTO  " . MODULES_TABLE . "
-				(module_id, name, display_order, module_info_cache, module_db_cache, module_result_cache)
-				VALUES (" . $next_id . ", '" . trim($module_name) . "', " . ($curr_max + 10) . ", '', '', '')";
-
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not insert data into Modules Table', '', __LINE__, __FILE__, $sql);
-				}
+					(module_id, name, display_order, module_info_cache, module_db_cache, module_result_cache)
+					VALUES (" . $next_id . ", '" . trim($module_name) . "', " . ($curr_max + 10) . ", '', '', '')";
+				$db->sql_query($sql);
 
 				$sql = "SELECT module_id, display_order, active
-				FROM " . MODULES_TABLE . "
-				WHERE module_id = " . $next_id;
-
-				if (!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Unable to select created Module Entry', '', __LINE__, __FILE__, $sql);
-				}
-
+					FROM " . MODULES_TABLE . "
+					WHERE module_id = " . $next_id;
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 			}
 			else
@@ -268,12 +240,8 @@ function update_module_list()
 
 	// Kill old module folders that were deleted
 	$sql = "DELETE FROM " . MODULES_TABLE . "
-	WHERE (name NOT IN ($modules_list))";
-
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not delete obsolete Modules', '', __LINE__, __FILE__, $sql);
-	}
+		WHERE (name NOT IN ($modules_list))";
+	$db->sql_query($sql);
 }
 
 // Get complete Module List from Database
@@ -285,20 +253,16 @@ function get_module_list_from_db()
 	$ret_list = array();
 
 	$sql = "SELECT module_id, name, display_order
-	FROM " . MODULES_TABLE . "
-	WHERE (active = 1) AND (installed = 1)
-	ORDER BY display_order ASC";
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not get Module List', '', __LINE__, __FILE__, $sql);
-	}
+		FROM " . MODULES_TABLE . "
+		WHERE (active = 1) AND (installed = 1)
+		ORDER BY display_order ASC";
+	$result = $db->sql_query($sql);
 
 	if ($db->sql_numrows($result) != 0)
 	{
 		$rows = $db->sql_fetchrowset($result);
 
-		for ($i = 0; $i < count($rows); $i++)
+		for ($i = 0; $i < sizeof($rows); $i++)
 		{
 			$ret_list[$rows[$i]['module_id']] = $rows[$i]['name'];
 		}
@@ -316,14 +280,10 @@ function get_module_data_from_db()
 	$ret_list = array();
 
 	$sql = "SELECT *
-	FROM " . MODULES_TABLE . "
-	WHERE (active = 1) AND (installed = 1)
-	ORDER BY display_order ASC";
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not get Module List', '', __LINE__, __FILE__, $sql);
-	}
+		FROM " . MODULES_TABLE . "
+		WHERE (active = 1) AND (installed = 1)
+		ORDER BY display_order ASC";
+	$result = $db->sql_query($sql);
 
 	if (($num_rows = $db->sql_numrows($result)) != 0)
 	{
@@ -396,7 +356,7 @@ function module_auth_check($module_data, $userdata)
 // Used in TOP SMILEYS!
 function smilies_sort_multi_array_attachment ($sort_array, $key, $sort_order)
 {
-	$last_element = count($sort_array) - 1;
+	$last_element = sizeof($sort_array) - 1;
 
 	$string_sort = (is_string($sort_array[$last_element-1][$key])) ? true : false;
 

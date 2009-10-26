@@ -28,23 +28,15 @@ $attachment_mod_installed = true;
 $attachment_version = ATTACH_VERSION;
 @include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
 
-$total_topics = $board_config['max_topics'];
-$total_posts = $board_config['max_posts'];
-$total_users = $board_config['max_users'];
-$newest_userdata['user_id'] = $board_config['last_user_id'];
-$newest_user = '';
-$cache_data_file = MAIN_CACHE_FOLDER . 'newest_user.dat';
-if (file_exists($cache_data_file))
-{
-	@include($cache_data_file);
-	$newest_user = ((STRIP) ? stripslashes($newest_user) : $newest_user);
-}
-$newest_user = !empty($newest_user) ? $newest_user : colorize_username($newest_userdata['user_id']);
-$newest_uid = $newest_userdata['user_id'];
+$total_topics = $config['max_topics'];
+$total_posts = $config['max_posts'];
+$total_users = $config['max_users'];
+$newest_user = $cache->obtain_newest_user();
+$newest_uid = $config['last_user_id'];
 
-$start_date = create_date($board_config['default_dateformat'], $board_config['board_startdate'], $board_config['board_timezone']);
+$start_date = create_date($config['default_dateformat'], $config['board_startdate'], $config['board_timezone']);
 
-$boarddays = max(1, round((time() - $board_config['board_startdate']) / 86400));
+$boarddays = max(1, round((time() - $config['board_startdate']) / 86400));
 
 $posts_per_day = sprintf('%.2f', $total_posts / $boarddays);
 $topics_per_day = sprintf('%.2f', $total_topics / $boarddays);
@@ -52,13 +44,13 @@ $users_per_day = sprintf('%.2f', $total_users / $boarddays);
 
 $avatar_dir_size = 0;
 
-if ($avatar_dir = @opendir(IP_ROOT_PATH . $board_config['avatar_path']))
+if ($avatar_dir = @opendir(IP_ROOT_PATH . $config['avatar_path']))
 {
 	while($file = @readdir($avatar_dir))
 	{
 		if(($file != '.') && ($file != '..'))
 		{
-			$avatar_dir_size += @filesize(IP_ROOT_PATH . $board_config['avatar_path'] . '/' . $file);
+			$avatar_dir_size += @filesize(IP_ROOT_PATH . $config['avatar_path'] . '/' . $file);
 		}
 	}
 	@closedir($avatar_dir);
@@ -132,7 +124,10 @@ if (!$statistics->result_cache_used)
 	if(preg_match("/^mysql/", SQL_LAYER))
 	{
 		$sql = "SELECT VERSION() AS mysql_version";
-		if($result = $db->sql_query($sql))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
 			$row = $db->sql_fetchrow($result);
 			$version = $row['mysql_version'];
@@ -143,12 +138,15 @@ if (!$statistics->result_cache_used)
 
 				$sql = "SHOW TABLE STATUS
 				FROM " . $db_name;
-				if($result = $db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if ($result)
 				{
 					$tabledata_ary = $db->sql_fetchrowset($result);
 
 					$dbsize = 0;
-					for($i = 0; $i < count($tabledata_ary); $i++)
+					for($i = 0; $i < sizeof($tabledata_ary); $i++)
 					{
 						if($tabledata_ary[$i]['Type'] != "MRG_MyISAM")
 						{
@@ -221,11 +219,7 @@ $sql = 'SELECT user_regdate
 	FROM ' . USERS_TABLE . '
 	WHERE user_id = ' . $newest_uid . '
 	LIMIT 1';
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $newest_user_date = $row['user_regdate'];
 
@@ -233,20 +227,16 @@ $newest_user_date = $row['user_regdate'];
 $sql = "SELECT *
 	FROM " . CONFIG_TABLE . "
 	WHERE config_name = 'record_online_users' OR config_name = 'record_online_date'";
-if (!$result = $stat_db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve configuration data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrowset($result);
 $most_users_date = $lang['Not_available'];
 $most_users = $lang['Not_available'];
 
-for ($i = 0; $i < count($row); $i++)
+for ($i = 0; $i < sizeof($row); $i++)
 {
 	if ((intval($row[$i]['config_value']) > 0) && ($row[$i]['config_name'] == 'record_online_date'))
 	{
-		$most_users_date = create_date($board_config['default_dateformat'], intval($row[$i]['config_value']), $board_config['board_timezone']);
+		$most_users_date = create_date($config['default_dateformat'], intval($row[$i]['config_value']), $config['board_timezone']);
 	}
 	elseif ((intval($row[$i]['config_value']) > 0) && ($row[$i]['config_name'] == 'record_online_users'))
 	{
@@ -256,7 +246,7 @@ for ($i = 0; $i < count($row); $i++)
 
 $statistic_array = array($lang['Number_posts'], $lang['Posts_per_day'], $lang['Number_topics'], $lang['Topics_per_day'], $lang['Number_users'], $lang['Users_per_day'], $lang['Board_started'], $lang['Board_Up_Days'], $lang['Database_size'], $lang['Avatar_dir_size'], $lang['Latest_Reg_User_Date'], $lang['Latest_Reg_User'], $lang['Most_Ever_Online_Date'], $lang['Most_Ever_Online'], $lang['Gzip_compression']);
 
-$value_array = array($total_posts, $posts_per_day, $total_topics, $topics_per_day, $total_users, $users_per_day, $start_date, sprintf('%.2f', $boarddays), $dbsize, $avatar_dir_size, create_date($board_config['default_dateformat'], $newest_user_date, $board_config['board_timezone']), $newest_user, $most_users_date, $most_users, (($board_config['gzip_compress']) ? $lang['Enabled'] : $lang['Disabled']));
+$value_array = array($total_posts, $posts_per_day, $total_topics, $topics_per_day, $total_users, $users_per_day, $start_date, sprintf('%.2f', $boarddays), $dbsize, $avatar_dir_size, create_date($config['default_dateformat'], $newest_user_date, $config['board_timezone']), $newest_user, $most_users_date, $most_users, (($config['gzip_compress']) ? $lang['Enabled'] : $lang['Disabled']));
 
 // Disk Usage, if Attachment Mod is installed
 if ($attachment_mod_installed)
@@ -270,7 +260,7 @@ if ($attachment_mod_installed)
 $template->_tpldata['adminrow.'] = array();
 //reset($template->_tpldata['adminrow.']);
 
-for ($i = 0; $i < count($statistic_array); $i += 2)
+for ($i = 0; $i < sizeof($statistic_array); $i += 2)
 {
 	$template->assign_block_vars('adminrow', array(
 		'STATISTIC' => $statistic_array[$i],

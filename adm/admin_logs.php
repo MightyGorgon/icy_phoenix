@@ -53,10 +53,7 @@ if (isset($_POST['clear']))
 	if ($is_allowed)
 	{
 		$sql = "DELETE FROM " . LOGS_TABLE;
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Failed to update logs table', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 		delete_error_log_file();
 	}
 	else
@@ -72,16 +69,13 @@ if (isset($_POST['delete_sub']))
 		$file_array = array();
 		foreach($_POST as $key => $valx)
 		{
-			if (substr_count($key, 'delete_id_'))
+			if (substr_sizeof($key, 'delete_id_'))
 			{
 				$log_id = substr($key, 10);
 
 				$sql = "DELETE FROM " . LOGS_TABLE . "
 								WHERE log_id = '" . $log_id . "'";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Failed to update logs table', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 			$file_array[] = 'error_log_' . $log_id . '.txt';
 		}
@@ -105,7 +99,7 @@ $sort_dir = ($sort_dir == 'ASC') ? 'ASC' : 'DESC';
 $logs_actions_filter = request_var('logs_actions_filter', 'ALL');
 
 $log_item = array();
-$log_item = get_logs('', $start, $board_config['topics_per_page'], $sort_order, $sort_dir, $logs_actions_filter);
+$log_item = get_logs('', $start, $config['topics_per_page'], $sort_order, $sort_dir, $logs_actions_filter);
 
 foreach ($log_item as $log_item_data)
 {
@@ -114,7 +108,7 @@ foreach ($log_item as $log_item_data)
 	$log_action = parse_logs_action($log_item_data['log_id'], $log_item_data['log_action'], $log_item_data['log_desc'], $log_username, $log_target);
 	$template->assign_block_vars('log_row', array(
 			'LOG_ID' => $log_item_data['log_id'],
-			'LOG_TIME' => create_date_ip($board_config['default_dateformat'], $log_item_data['log_time'], $board_config['board_timezone']),
+			'LOG_TIME' => create_date_ip($config['default_dateformat'], $log_item_data['log_time'], $config['board_timezone']),
 			'LOG_PAGE' => htmlspecialchars($log_item_data['log_page']),
 			'LOG_ACTION' => $log_item_data['log_action'],
 			'LOG_USERNAME' => $log_username,
@@ -170,20 +164,18 @@ $logs_actions_filter_sql = (($logs_actions_filter == 'ALL') ? '' : (' WHERE log_
 $sql = "SELECT count(*) AS total
 				FROM " . LOGS_TABLE . "
 				" . $logs_actions_filter_sql;
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Error getting total logs', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
+
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_logs = $total['total'];
-	$pagination = generate_pagination('admin_logs.' . PHP_EXT . '?mode=list' . $logs_actions_filter_append . $sort_order_append . $sort_dir_append, $total_logs , $board_config['topics_per_page'], $start);
+	$pagination = generate_pagination('admin_logs.' . PHP_EXT . '?mode=list' . $logs_actions_filter_append . $sort_order_append . $sort_dir_append, $total_logs , $config['topics_per_page'], $start);
 }
 $db->sql_freeresult($result);
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_logs / $board_config['topics_per_page'])),
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_logs / $config['topics_per_page'])),
 	'L_GOTO_PAGE' => $lang['Goto_page']
 	)
 );

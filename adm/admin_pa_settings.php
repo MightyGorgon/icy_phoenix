@@ -16,7 +16,7 @@
 */
 
 define('IN_ICYPHOENIX', true);
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['2000_Downloads']['100_Settings'] = $file;
@@ -32,63 +32,54 @@ include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 $submit = (isset($_POST['submit'])) ? true : false;
 $size = (isset($_POST['max_size'])) ? $_POST['max_size'] : '';
 
-$sql = 'SELECT *
-	FROM ' . PA_CONFIG_TABLE;
+$sql = 'SELECT * FROM ' . PA_CONFIG_TABLE;
+$result = $db->sql_query($sql);
 
-if(!$result = $db->sql_query($sql))
+while($row = $db->sql_fetchrow($result))
 {
-	message_die(CRITICAL_ERROR, "Could not query config information in admin_board", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	while( $row = $db->sql_fetchrow($result) )
+	$config_name = $row['config_name'];
+	$config_value = $row['config_value'];
+	$default_config[$config_name] = $config_value;
+
+	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+
+	if ((empty($size)) && (!$submit) && ($config_name == 'max_file_size'))
 	{
-		$config_name = $row['config_name'];
-		$config_value = $row['config_value'];
-		$default_config[$config_name] = $config_value;
+		$size = (intval($default_config[$config_name]) >= 1048576) ? 'mb' : ((intval($default_config[$config_name]) >= 1024) ? 'kb' : 'b');
+	}
 
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
-
-		if ((empty($size)) && (!$submit) && ($config_name == 'max_file_size'))
+	if ((!$submit) && ($config_name == 'max_file_size'))
+	{
+		if($new[$config_name] >= 1048576)
 		{
-			$size = (intval($default_config[$config_name]) >= 1048576) ? 'mb' : ( (intval($default_config[$config_name]) >= 1024) ? 'kb' : 'b' );
+			$new[$config_name] = round($new[$config_name] / 1048576 * 100) / 100;
 		}
-
-		if ( (!$submit) && ($config_name == 'max_file_size') )
+		else if($new[$config_name] >= 1024)
 		{
-			if($new[$config_name] >= 1048576)
-			{
-				$new[$config_name] = round($new[$config_name] / 1048576 * 100) / 100;
-			}
-			else if($new[$config_name] >= 1024)
-			{
-				$new[$config_name] = round($new[$config_name] / 1024 * 100) / 100;
-			}
-		}
-
-		if($submit)
-		{
-
-			if ($config_name == 'max_file_size')
-			{
-				$new[$config_name] = ( $size == 'kb' ) ? round($new[$config_name] * 1024) : ( ($size == 'mb') ? round($new[$config_name] * 1048576) : $new[$config_name] );
-			}
-
-			$pafiledb_functions->set_config($config_name, $new[$config_name]);
+			$new[$config_name] = round($new[$config_name] / 1024 * 100) / 100;
 		}
 	}
 
 	if($submit)
 	{
-		$cache->unload();
-		$message = $lang['Settings_changed'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_settings." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-		message_die(GENERAL_MESSAGE, $message);
+
+		if ($config_name == 'max_file_size')
+		{
+			$new[$config_name] = ($size == 'kb') ? round($new[$config_name] * 1024) : (($size == 'mb') ? round($new[$config_name] * 1048576) : $new[$config_name]);
+		}
+
+		$pafiledb_functions->set_config($config_name, $new[$config_name]);
 	}
 }
 
-$template->set_filenames(array(
-	'admin' => ADM_TPL . 'pa_admin_settings.tpl')
-);
+if($submit)
+{
+	$pa_cache->unload();
+	$message = $lang['Settings_changed'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_settings." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	message_die(GENERAL_MESSAGE, $message);
+}
+
+$template->set_filenames(array('admin' => ADM_TPL . 'pa_admin_settings.tpl'));
 
 $cat_auth_levels = array('ALL', 'REG', 'PRIVATE', 'MOD', 'ADMIN');
 $cat_auth_const = array(AUTH_ALL, AUTH_REG, AUTH_ACL, AUTH_MOD, AUTH_ADMIN);
@@ -98,9 +89,9 @@ $auth_select = array();
 foreach($global_auth as $auth)
 {
 	$auth_select[$auth]	= '&nbsp;<select name="' . $auth . '">';
-	for($k = 0; $k < count($cat_auth_levels); $k++)
+	for($k = 0; $k < sizeof($cat_auth_levels); $k++)
 	{
-		$selected = ( $new[$auth] == $cat_auth_const[$k] ) ? ' selected="selected"' : '';
+		$selected = ($new[$auth] == $cat_auth_const[$k]) ? ' selected="selected"' : '';
 		$auth_select[$auth] .= '<option value="' . $cat_auth_const[$k] . '"' . $selected . '>' . $lang['Category_' . $cat_auth_levels[$k]] . '</option>';
 	}
 	$auth_select[$auth] .= '</select>&nbsp;';
@@ -281,7 +272,7 @@ $template->assign_vars(array(
 $template->pparse('admin');
 
 $pafiledb->_pafiledb();
-$cache->unload();
+$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/sitemap.js"></script>
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_FAQ_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -17,3 +19,5 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <div align="right">{JUMPBOX}</div>
+
+<!-- INCLUDE overall_footer.tpl -->

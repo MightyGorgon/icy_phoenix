@@ -48,24 +48,20 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 		$sql = "SELECT user_id, username, user_password, user_active, user_level, user_login_tries, user_last_login_try, ct_login_count
 			FROM " . USERS_TABLE . "
 			WHERE username = '" . str_replace("\\'", "''", $username) . "'";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Error in obtaining userdata', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if($row = $db->sql_fetchrow($result))
 		{
-			if(($row['user_level'] != ADMIN) && $board_config['board_disable'])
+			if(($row['user_level'] != ADMIN) && $config['board_disable'])
 			{
-				redirect(append_sid(FORUM_MG, true));
+				redirect(append_sid(CMS_PAGE_FORUM, true));
 			}
 			else
 			{
 				// If the last login is more than x minutes ago, then reset the login tries/time
-				if ($row['user_last_login_try'] && $board_config['login_reset_time'] && ($row['user_last_login_try'] < (time() - ($board_config['login_reset_time'] * 60))))
+				if ($row['user_last_login_try'] && $config['login_reset_time'] && ($row['user_last_login_try'] < (time() - ($config['login_reset_time'] * 60))))
 				{
 					$login_reset = mg_reset_login_system($row['user_id']);
-					//$db->sql_query('UPDATE ' . USERS_TABLE . ' SET user_login_tries = 0, user_last_login_try = 0 WHERE user_id = ' . $row['user_id']);
 					$row['user_last_login_try'] = $row['user_login_tries'] = 0;
 				}
 				// CrackerTracker v5.x
@@ -88,10 +84,10 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 				// CrackerTracker v5.x
 
 				// Check to see if user is allowed to login again... if his tries are exceeded
-				if ($row['user_last_login_try'] && $board_config['login_reset_time'] && $board_config['max_login_attempts'] &&
-					($row['user_last_login_try'] >= (time() - ($board_config['login_reset_time'] * 60))) && ($row['user_login_tries'] >= $board_config['max_login_attempts']) && ($userdata['user_level'] != ADMIN))
+				if ($row['user_last_login_try'] && $config['login_reset_time'] && $config['max_login_attempts'] &&
+					($row['user_last_login_try'] >= (time() - ($config['login_reset_time'] * 60))) && ($row['user_login_tries'] >= $config['max_login_attempts']) && ($userdata['user_level'] != ADMIN))
 				{
-					message_die(GENERAL_MESSAGE, sprintf($lang['Login_attempts_exceeded'], $board_config['max_login_attempts'], $board_config['login_reset_time']));
+					message_die(GENERAL_MESSAGE, sprintf($lang['Login_attempts_exceeded'], $config['max_login_attempts'], $config['login_reset_time']));
 				}
 				if((md5($password) == $row['user_password']) && $row['user_active'])
 				{
@@ -102,18 +98,16 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 						if ($_POST['online_status'] == 'hidden')
 						{
 							$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allow_viewonline = 0 WHERE user_id = ' . $row['user_id'];
-							if(!$db->sql_query($sql))
-							{
-								//message_die(CRITICAL_ERROR, "Could not update user online status.", "", __LINE__, __FILE__, $sql);
-							}
+							$db->sql_return_on_error(true);
+							$db->sql_query($sql);
+							$db->sql_return_on_error(false);
 						}
 						elseif ($_POST['online_status'] == 'visible')
 						{
 							$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allow_viewonline = 1 WHERE user_id = ' . $row['user_id'];
-							if(!$db->sql_query($sql))
-							{
-								//message_die(CRITICAL_ERROR, "Could not update user online status.", "", __LINE__, __FILE__, $sql);
-							}
+							$db->sql_return_on_error(true);
+							$db->sql_query($sql);
+							$db->sql_return_on_error(false);
 						}
 					}
 
@@ -121,11 +115,11 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 					$session_id = session_begin($row['user_id'], $user_ip, false, $autologin, $admin);
 
 					// Reset login tries
-					$db->sql_query('UPDATE ' . USERS_TABLE . ' SET user_login_tries = 0, user_last_login_try = 0 WHERE user_id = ' . $row['user_id']);
+					mg_reset_login_system($row['user_id']);
 
 					if($session_id)
 					{
-						$redirect_url = ($redirect_url == '') ? FORUM_MG : $redirect_url;
+						$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
 						redirect(append_sid($redirect_url, true));
 					}
 					else
@@ -158,17 +152,17 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 					}
 				}
 
-				meta_refresh(3, (LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url)));
+				meta_refresh(3, (CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url)));
 
-				$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
+				$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 		}
 		else
 		{
-			meta_refresh(3, (LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url)));
+			meta_refresh(3, (CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url)));
 
-			$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . LOGIN_MG . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
+			$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -185,12 +179,12 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 			session_end($userdata['session_id'], $userdata['user_id']);
 		}
 
-		$redirect_url = ($redirect_url == '') ? FORUM_MG : $redirect_url;
+		$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
 		redirect(append_sid($redirect_url, true));
 	}
 	else
 	{
-		$redirect_url = ($redirect_url == '') ? FORUM_MG : $redirect_url;
+		$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
 		redirect(append_sid($redirect_url, true));
 	}
 }
@@ -202,13 +196,7 @@ else
 
 	if(!$userdata['session_logged_in'] || (isset($_GET['admin']) && $userdata['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($userdata['user_level'] == ADMIN) || (($userdata['user_cms_level'] >= CMS_PUBLISHER)))))
 	{
-		$page_title = $lang['Login'];
-		$meta_description = '';
-		$meta_keywords = '';
 		$skip_nav_cat = true;
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-		$template->set_filenames(array('body' => 'login_body.tpl'));
 
 		if($redirect_url != '')
 		{
@@ -219,10 +207,10 @@ else
 				$forward_to = (!empty($forward_matches[3])) ? $forward_matches[3] : $forward_matches[1];
 				$forward_match = explode('&', $forward_to);
 
-				if(count($forward_match) > 1)
+				if(sizeof($forward_match) > 1)
 				{
 					$forward_page = '';
-					for($i = 1; $i < count($forward_match); $i++)
+					for($i = 1; $i < sizeof($forward_match); $i++)
 					{
 						if(!ereg("sid=", $forward_match[$i]))
 						{
@@ -247,7 +235,7 @@ else
 		$s_hidden_fields = '<input type="hidden" name="redirect" value="' . htmlspecialchars($forward_page) . '" />';
 		$s_hidden_fields .= (isset($_GET['admin'])) ? '<input type="hidden" name="admin" value="1" />' : '';
 
-		make_jumpbox(VIEWFORUM_MG);
+		make_jumpbox(CMS_PAGE_VIEWFORUM);
 		$template->assign_vars(array(
 			'USERNAME' => $username,
 
@@ -259,14 +247,14 @@ else
 			'L_VISIBLE' => $lang['Login_Visible'],
 			'L_DEFAULT' => $lang['Login_Default'],
 
-			'U_SEND_PASSWORD' => append_sid(PROFILE_MG . '?mode=sendpassword'),
-			'U_RESEND_ACTIVATION_EMAIL' => append_sid(PROFILE_MG . '?mode=resend'),
+			'U_SEND_PASSWORD' => append_sid(CMS_PAGE_PROFILE . '?mode=sendpassword'),
+			'U_RESEND_ACTIVATION_EMAIL' => append_sid(CMS_PAGE_PROFILE . '?mode=resend'),
 
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
-		if (!isset($_GET['admin']) && ($board_config['require_activation'] == USER_ACTIVATION_SELF))
+		if (!isset($_GET['admin']) && ($config['require_activation'] == USER_ACTIVATION_SELF))
 		{
 			$template->assign_block_vars('switch_resend_activation_email', array());
 		}
@@ -276,13 +264,11 @@ else
 			$template->assign_block_vars('switch_login_type', array());
 		}
 
-		$template->pparse('body');
-
-		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+		full_page_generation('login_body.tpl', $lang['Login'], '', '');
 	}
 	else
 	{
-		redirect(append_sid(FORUM_MG, true));
+		redirect(append_sid(CMS_PAGE_FORUM, true));
 	}
 }
 

@@ -37,7 +37,6 @@ if( $album_config['comment'] == 0 )
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
-
 // ------------------------------------
 // Check the request
 // ------------------------------------
@@ -60,26 +59,18 @@ else
 	message_die(GENERAL_ERROR, 'No comment_id specified');
 }
 
-
 // ------------------------------------
 // Get the comment info
 // ------------------------------------
 $sql = "SELECT *
 		FROM ". ALBUM_COMMENT_TABLE ."
 		WHERE comment_id = '$comment_id'";
-
-if( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not query this comment information', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $thiscomment = $db->sql_fetchrow($result);
-
-if( empty($thiscomment) )
+if(empty($thiscomment))
 {
 	message_die(GENERAL_ERROR, 'This comment does not exist');
 }
-
 
 // ------------------------------------
 // Get $pic_id from $comment_id
@@ -88,16 +79,9 @@ if( empty($thiscomment) )
 $sql = "SELECT comment_id, comment_pic_id
 		FROM ". ALBUM_COMMENT_TABLE ."
 		WHERE comment_id = '$comment_id'";
-
-if( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not query comment and pic information', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
-
 $pic_id = $row['comment_pic_id'];
-
 
 // ------------------------------------
 // Get this pic info and current category info
@@ -112,11 +96,7 @@ $sql = "SELECT p.*, cat.*, u.user_id, u.username, COUNT(c.comment_id) as comment
 			AND cat.cat_id = p.pic_cat_id
 		GROUP BY p.pic_id
 		LIMIT 1";
-
-if( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $thispic = $db->sql_fetchrow($result);
 
 $cat_id = $thispic['pic_cat_id'];
@@ -124,12 +104,12 @@ $cat_id = $thispic['pic_cat_id'];
 $album_user_id = $thispic['cat_user_id'];
 
 $total_comments = $thispic['comments_count'];
-$comments_per_page = $board_config['posts_per_page'];
+$comments_per_page = $config['posts_per_page'];
 
 $pic_filename = $thispic['pic_filename'];
 $pic_thumbnail = $thispic['pic_thumbnail'];
 
-if( empty($thispic) )
+if(empty($thispic))
 {
 	message_die(GENERAL_ERROR, $lang['Pic_not_exist']);
 }
@@ -143,7 +123,7 @@ if( ($album_user_access['comment'] == 0) || ($album_user_access['edit'] == 0) )
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . '?redirect=album_comment_edit.' . PHP_EXT . '?comment_id=' . $comment_id));
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_comment_edit.' . PHP_EXT . '?comment_id=' . $comment_id));
 	}
 	else
 	{
@@ -176,16 +156,8 @@ if( !isset($_POST['comment']) )
 	}
 	else
 	{
-		$poster = '<a href="'. append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $thispic['user_id']) . '">' . $thispic['username'] . '</a>';
+		$poster = '<a href="'. append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $thispic['user_id']) . '">' . $thispic['username'] . '</a>';
 	}
-
-	// Start output of page
-	$page_title = $lang['Album'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'album_comment_body.tpl'));
 
 	$template->assign_block_vars('switch_comment_post', array());
 
@@ -198,11 +170,7 @@ if( !isset($_POST['comment']) )
 		FROM ' . SMILIES_TABLE . '
 			GROUP BY smile_url
 			ORDER BY smilies_id LIMIT ' . $max_smilies;
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Couldn't retrieve smilies list", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$smilies_count = $db->sql_numrows($result);
 	$smilies_data = $db->sql_fetchrowset($result);
 
@@ -211,12 +179,12 @@ if( !isset($_POST['comment']) )
 	{
 		$template->assign_block_vars('switch_comment_post.smilies', array(
 			'CODE' => $smilies_data[$i - 1]['code'],
-			'URL' => $board_config['smilies_path'] . '/' . $smilies_data[$i - 1]['smile_url'],
+			'URL' => $config['smilies_path'] . '/' . $smilies_data[$i - 1]['smile_url'],
 			'DESC' => $smilies_data[$i - 1]['emoticon']
 			)
 		);
 
-		if ( is_integer($i / 5) )
+		if (is_integer($i / 5))
 		{
 			$template->assign_block_vars('switch_comment_post.smilies.new_col', array());
 		}
@@ -233,7 +201,7 @@ if( !isset($_POST['comment']) )
 		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
 		'PIC_DESC' => nl2br($thispic['pic_desc']),
 		'POSTER' => $poster,
-		'PIC_TIME' => create_date($board_config['default_dateformat'], $thispic['pic_time'], $board_config['board_timezone']),
+		'PIC_TIME' => create_date($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
 		'PIC_COMMENTS' => $total_comments,
 		'S_MESSAGE' => $thiscomment['comment_text'],
@@ -259,11 +227,7 @@ if( !isset($_POST['comment']) )
 		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_comment_edit.' . PHP_EXT . '?comment_id=' . $comment_id))
 		)
 	);
-
-	// Generate the page
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	full_page_generation('album_comment_body.tpl', $lang['Album'], '', '');
 }
 else
 {
@@ -278,31 +242,23 @@ else
 		message_die(GENERAL_ERROR, $lang['Comment_no_text']);
 	}
 
-
 	// --------------------------------
 	// Prepare variables
 	// --------------------------------
-
 	$comment_edit_time = time();
 	$comment_edit_user_id = $userdata['user_id'];
 
 	// --------------------------------
 	// Update the DB
 	// --------------------------------
-
 	$sql = "UPDATE ". ALBUM_COMMENT_TABLE ."
 			SET comment_text = '$comment_text', comment_edit_time = '$comment_edit_time', comment_edit_count = comment_edit_count + 1, comment_edit_user_id = '$comment_edit_user_id'
 			WHERE comment_id = '$comment_id'";
-
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, 'Could not update comment data', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	// --------------------------------
 	// Complete... now send a message to user
 	// --------------------------------
-
 	$return_url = 'album_showpage';
 
 	$redirect_url = append_sid(album_append_uid($return_url . '.' . PHP_EXT . '?pic_id=' . $pic_id));

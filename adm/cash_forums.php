@@ -22,9 +22,8 @@ define('IN_CASHMOD', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('admin_cash.' . PHP_EXT);
@@ -50,15 +49,14 @@ if (isset($_POST['submit']))
 {
 	$cash_forums = array();
 	$current_list = array();
-	$sql = "SELECT forum_id FROM " . FORUMS_TABLE;
-	if (!($result = $db->sql_query($sql)))
+
+	$forum_types = array(FORUM_POST);
+	$forums_array = get_forums_ids($forum_types, false, false);
+	foreach ($forums_array as $forum)
 	{
-		message_die(CRITICAL_ERROR, "Could not query forum information", "", __LINE__, __FILE__, $sql);
+		$cash_forums[] = $forum['forum_id'];
 	}
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$cash_forums[] = $row['forum_id'];
-	}
+
 	while ($c_cur = &$cash->currency_next($cm_i))
 	{
 		$varname = 'cash_' . $c_cur->id();
@@ -66,7 +64,7 @@ if (isset($_POST['submit']))
 			 is_array($_POST[$varname]))
 		{
 			$activated = array(array(),array());
-			for ($i = 0; $i < count($cash_forums); $i++)
+			for ($i = 0; $i < sizeof($cash_forums); $i++)
 			{
 				if (isset($_POST[$varname][$cash_forums[$i]]))
 				{
@@ -75,7 +73,7 @@ if (isset($_POST['submit']))
 			}
 			$sql_list = "";
 			$settings = $c_cur->data('cash_settings');
-			if (count($activated[0]) > count($activated[1]))
+			if (sizeof($activated[0]) > sizeof($activated[1]))
 			{
 				$sql_list = implode(",",$activated[1]);
 				$settings &= ~CURRENCY_FORUMLISTTYPE;
@@ -88,10 +86,7 @@ if (isset($_POST['submit']))
 			$sql = "UPDATE " . CASH_TABLE . "
 				SET cash_settings = $settings, cash_forumlist = '$sql_list'
 				WHERE cash_id = " . $c_cur->id();
-			if (!$db->sql_query($sql))
-			{
-				message_die(CRITICAL_ERROR, "Failed to update", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 	$cash->refresh_table();
@@ -124,13 +119,11 @@ while ($c_cur = &$cash->currency_next($cm_i))
 	);
 }
 
-$sql = "SELECT cat_id, cat_title, cat_order
-	FROM " . CATEGORIES_TABLE . "
-	ORDER BY cat_order";
-if (!$q_categories = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Could not query categories list", "", __LINE__, __FILE__, $sql);
-}
+$sql = "SELECT forum_id AS cat_id, forum_name AS cat_title, forum_order AS cat_order
+	FROM " . FORUMS_TABLE . "
+	WHERE forum_type = " . FORUM_CAT . "
+	ORDER BY forum_order";
+$q_categories = $db->sql_query($sql);
 
 if ($total_categories = $db->sql_numrows($q_categories))
 {
@@ -138,11 +131,9 @@ if ($total_categories = $db->sql_numrows($q_categories))
 
 	$sql = "SELECT *
 		FROM " . FORUMS_TABLE . "
-		ORDER BY cat_id, forum_order";
-	if (!$q_forums = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query forums information", "", __LINE__, __FILE__, $sql);
-	}
+		WHERE forum_type = " . FORUM_POST . "
+		ORDER BY forum_order";
+	$q_forums = $db->sql_query($sql);
 
 	if ($total_forums = $db->sql_numrows($q_forums))
 	{
@@ -163,7 +154,7 @@ if ($total_categories = $db->sql_numrows($q_categories))
 			'CAT_ID' => $cat_id,
 			'CAT_DESC' => $category_rows[$i]['cat_title'],
 
-			'U_VIEWCAT' => append_sid(IP_ROOT_PATH . FORUM_MG . '?' . POST_CAT_URL . '=' . $cat_id)
+			'U_VIEWCAT' => append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM . '?' . POST_CAT_URL . '=' . $cat_id)
 			)
 		);
 
@@ -179,7 +170,7 @@ if ($total_categories = $db->sql_numrows($q_categories))
 					'NUM_TOPICS' => $forum_rows[$j]['forum_topics'],
 					'NUM_POSTS' => $forum_rows[$j]['forum_posts'],
 
-					'U_VIEWFORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id)
+					'U_VIEWFORUM' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id)
 					)
 				);
 

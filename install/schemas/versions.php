@@ -23,12 +23,13 @@ if (!defined('IN_ICYPHOENIX'))
 // Versioning
 $fap_version = '1.5.0';
 $phpbb_version = '.0.23';
-$ip_version = '1.3.1.54';
+$ip_version = '1.3.2.55';
 
 // CHMOD
 $chmod_777 = array();
 $chmod_777[] = '../backup';
 $chmod_777[] = '../cache';
+$chmod_777[] = '../cache/cms';
 $chmod_777[] = '../cache/forums';
 $chmod_777[] = '../cache/posts';
 $chmod_777[] = '../cache/sql';

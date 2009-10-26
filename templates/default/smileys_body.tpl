@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <!-- INCLUDE smileys_js.tpl -->
 
 <form action="{S_ACTION}" method="post">
@@ -24,3 +26,5 @@
 <tr><td class="cat" colspan="{S_COLSPAN}"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span></td></tr>
 </table><!-- {IMG_TFL}{IMG_TFC}{IMG_TFR} -->
 </form>
+
+<!-- INCLUDE simple_footer.tpl -->

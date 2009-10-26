@@ -50,14 +50,14 @@ $mini_cal = new calendarSuite();
 // initialise the mini_cal lang files
 // for maximum efficiency you might want to move the mini_cal lang variables into lang_main
 // and remove these lines
-$use_lang = (!@file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_mini_cal.' . PHP_EXT)) ? 'english' : $board_config['default_lang'];
+$use_lang = (!@file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_mini_cal.' . PHP_EXT)) ? 'english' : $config['default_lang'];
 include(IP_ROOT_PATH . 'language/lang_' . $use_lang . '/lang_main_mini_cal.' . PHP_EXT);
 
 // setup our mini_cal template
 $template->set_filenames(array('mini_cal_body' => 'mini_cal_body.tpl'));
 
 // initialise some variables
-$mini_cal_today = create_date('Ymd', time(), $board_config['board_timezone']);
+$mini_cal_today = create_date('Ymd', time(), $config['board_timezone']);
 $s_cal_month = ($mini_cal_month != 0) ? $mini_cal_month . ' month' : $mini_cal_today;
 $mini_cal->getMonth($s_cal_month);
 $mini_cal_count = MINI_CAL_FDOW;
@@ -105,8 +105,8 @@ for($i = 0; $i < $mini_cal_month_days;)
 		}
 		else
 		{
-			$nix_mini_cal_today = gmmktime($board_config['board_timezone'], 0, 0, $mini_cal_this_month, $mini_cal_this_day, $mini_cal_this_year);
-			$mini_cal_day_link = '<a href="' . append_sid(IP_ROOT_PATH . SEARCH_MG . '?search_id=mini_cal&amp;d=' . $nix_mini_cal_today) . '" class="' . MINI_CAL_DAY_LINK_CLASS . '">' . ($mini_cal_day) . '</a>';
+			$nix_mini_cal_today = gmmktime($config['board_timezone'], 0, 0, $mini_cal_this_month, $mini_cal_this_day, $mini_cal_this_year);
+			$mini_cal_day_link = '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?search_id=mini_cal&amp;d=' . $nix_mini_cal_today) . '" class="' . MINI_CAL_DAY_LINK_CLASS . '">' . ($mini_cal_day) . '</a>';
 			$mini_cal_day = ($mini_cal_today >= $d_mini_cal_today) ? $mini_cal_day_link : $mini_cal_day;
 		}
 
@@ -158,8 +158,8 @@ $template->assign_vars(array(
 	'L_MINI_CAL_SUN' => $lang['mini_cal']['day'][7],
 	'U_PREV_MONTH' => $prev_month,
 	'U_NEXT_MONTH' => $next_month,
-	'L_WHOSBIRTHDAY_WEEK' => ($board_config['birthday_check_day'] > 1) ? sprintf((($birthday_week_list) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $board_config['birthday_check_day']).$birthday_week_list : '',
-	'L_WHOSBIRTHDAY_TODAY' => ($board_config['birthday_check_day']) ? ($birthday_today_list) ? $lang['Birthday_today'].$birthday_today_list : $lang['Nobirthday_today'] : '',
+	'L_WHOSBIRTHDAY_WEEK' => ($config['birthday_check_day'] > 1) ? sprintf((($birthdays_list['xdays']) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $config['birthday_check_day']).$birthdays_list['xdays'] : '',
+	'L_WHOSBIRTHDAY_TODAY' => ($config['birthday_check_day']) ? ($birthdays_list['today']) ? $lang['Birthday_today'].$birthdays_list['today'] : $lang['Nobirthday_today'] : '',
 	)
 );
 

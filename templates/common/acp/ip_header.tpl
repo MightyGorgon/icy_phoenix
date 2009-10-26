@@ -14,7 +14,7 @@
 	<div class="nav-links row-right" style="font-family: Arial, Helvetica, sans-serif; border-left-color: #dddddd;">
 		<b>
 		<a href="{U_ADMIN_INDEX}" target="main">{L_ADMIN_INDEX}</a> |
-		<a href="{U_CMS}" target="_parent">{L_CMS}</a> |
+		<a href="{U_CMS}" target="_parent">{L_CMS_TITLE}</a> |
 		<a href="{U_CACHE_CLEAR}" target="main">{L_CACHE_CLEAR}</a> |
 		<a href="{U_PORTAL}" target="_parent">{L_PORTAL}</a> |
 		<a href="{U_FORUM_INDEX}" target="_parent">{L_FORUM_INDEX}</a> |

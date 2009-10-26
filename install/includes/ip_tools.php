@@ -25,7 +25,7 @@ else
 
 if (!defined('IP_DB_UPDATE'))
 {
-	$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_birthdays', 'fix_constants', 'fix_images_album', 'fix_posts', 'fix_signatures', 'ren_move_images', 'update_phpbb', 'update');
+	$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_birthdays', 'fix_constants', 'fix_forums', 'fix_images_album', 'fix_posts', 'fix_signatures', 'ren_move_images', 'update_phpbb', 'update');
 }
 else
 {
@@ -188,6 +188,40 @@ switch ($mode_test)
 			$page_framework->box('red', 'red', $box_message);
 			echo('<br /><br />' . "\n");
 			echo($page_framework->fix_constants($action));
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+			$box_message = sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+			$page_framework->box('yellow', 'red', $box_message);
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+		}
+		echo('<br /><br />' . "\n");
+		$page_framework->page_footer(false);
+		break;
+
+	case 'fix_forums':
+
+		$page_framework->page_header($lang['IcyPhoenix'], '', false, false);
+		echo('<br /><br />' . "\n");
+		if (substr($action, 0, 3) == 'fix')
+		{
+			$box_message = $lang['FixingInProgress'];
+			$page_framework->box('yellow', 'red', $box_message);
+			echo('<br /><br />' . "\n");
+			echo($page_framework->fix_forums($action));
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+			$box_message = $lang['FixingComplete'] . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+			$page_framework->box('green', 'green', $box_message);
+			echo('<br clear="all" />' . "\n");
+			echo('<br /><br />' . "\n");
+		}
+		else
+		{
+			$box_message = $lang['ActionUndone'];
+			$page_framework->box('red', 'red', $box_message);
+			echo('<br /><br />' . "\n");
+			echo($page_framework->fix_forums($action));
 			echo('<br clear="all" />' . "\n");
 			echo('<br /><br />' . "\n");
 			$box_message = sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
@@ -516,9 +550,12 @@ switch ($mode_test)
 		$sql_results_ok = '';
 		$sql_results_error = '';
 		// Executing SQL
-		for($i = 0; $i < count($sql); $i++)
+		for($i = 0; $i < sizeof($sql); $i++)
 		{
-			if(!$result = $db->sql_query($sql[$i]))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql[$i]);
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
 				$error = $db->sql_error();
 				$sql_results_error .= '<li>' . $sql[$i] . '<br /> +++ <span style="color:' . $page_framework->color_error . ';"><b>' . $lang['Error'] . ':</b></span> ' . htmlspecialchars($error['message']) . '<br /><br /></li>' . "\n";

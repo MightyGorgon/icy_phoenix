@@ -26,19 +26,14 @@ $template->assign_vars(array(
 $percentage = 0;
 $bar_percent = 0;
 
-$total_topics = $board_config['max_topics'];
+$total_topics = $config['max_topics'];
 
 $sql = 'SELECT u.user_id, u.username, u.user_active, u.user_color, COUNT(t.topic_poster) num_topics
 	FROM ' . USERS_TABLE . ' u, ' . TOPICS_TABLE .' t
 	WHERE (t.topic_poster <> ' . ANONYMOUS . ') AND (u.user_posts > 0) AND (u.user_id = t.topic_poster)
 	GROUP BY t.topic_poster ORDER BY num_topics DESC
 	LIMIT ' . $return_limit;
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);
 

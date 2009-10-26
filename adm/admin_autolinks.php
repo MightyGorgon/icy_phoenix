@@ -51,12 +51,7 @@ if($mode == 'save')
 	{
 		$sql = "DELETE FROM " . AUTOLINKS . "
 			WHERE link_id = " . $link_id;
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not remove data from autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$db->clear_cache('autolinks_', TOPICS_CACHE_FOLDER);
 
 		$message = $lang['Autolink_removed'] . '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], '<a href="' . append_sid('admin_autolinks.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -85,12 +80,7 @@ if($mode == 'save')
 
 			$message = $lang['Autolink_added'];
 		}
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not insert data into autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$db->clear_cache('autolinks_', TOPICS_CACHE_FOLDER);
 
 		$message .= '<br /><br />' . sprintf($lang['Click_return_autolinkadmin'], '<a href="' . append_sid('admin_autolinks.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -107,11 +97,9 @@ else
 
 	$sql = "SELECT forum_id, forum_name
 		FROM " . FORUMS_TABLE . "
-		ORDER BY cat_id, forum_order ASC";
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain forums information', '', __LINE__, __FILE__, $sql);
-	}
+		WHERE forum_type = " . FORUM_POST . "
+		ORDER BY parent_id, forum_order ASC";
+	$result = $db->sql_query($sql);
 
 	$forum_ids = array();
 	$forum_names = array();
@@ -131,14 +119,10 @@ else
 		$sql = "SELECT *
 			FROM " . AUTOLINKS . "
 			WHERE link_id = " . $link_id_edit;
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not query autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 
-		if($total_forums = count($forum_ids))
+		if($total_forums = sizeof($forum_ids))
 		{
 			for($j = 0; $j < $total_forums; $j++)
 			{
@@ -177,7 +161,7 @@ else
 		$forum_list .= '<option value="0">' . $lang['Select_all_forums'] . '</option>';
 		$forum_list .= '<option value="0">&nbsp;</option>';
 
-		if($total_forums = count($forum_ids))
+		if($total_forums = sizeof($forum_ids))
 		{
 			for($j = 1; $j < $total_forums; $j++)
 			{
@@ -220,13 +204,10 @@ else
 	$sql = "SELECT *
 		FROM " . AUTOLINKS . "
 		ORDER BY link_keyword";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query autolinks table", $lang['Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$autolink_rows = $db->sql_fetchrowset($result);
-	if($autolink_count = count($autolink_rows))
+	if($autolink_count = sizeof($autolink_rows))
 	{
 		for($i = 0; $i < $autolink_count; $i++)
 		{

@@ -29,11 +29,7 @@ $sql = "SELECT user_from, COUNT(*) as number
 	GROUP BY user_from
 	ORDER BY number DESC
 	LIMIT " . $return_limit;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve user data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);
 

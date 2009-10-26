@@ -23,9 +23,9 @@ $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 */
 
-@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
-if ( defined('IN_PA_POSTING') )
+if (defined('IN_PA_POSTING'))
 {
 	$pafiledb_template->set_filenames(array('bbcb_smileys_mg' => 'bbcb_smileys_mg.tpl'));
 }
@@ -34,9 +34,9 @@ else
 	$template->set_filenames(array('bbcb_smileys_mg' => 'bbcb_smileys_mg.tpl'));
 }
 
-if ( $view_pic_upload == true )
+if ($view_pic_upload == true)
 {
-	if ( defined('IN_PA_POSTING') )
+	if (defined('IN_PA_POSTING'))
 	{
 		$pafiledb_template->assign_block_vars('switch_sm_pic_upload', array());
 	}
@@ -65,7 +65,7 @@ $parsing_template = array(
 	'U_UPLOAD_IMAGE' => append_sid('upload.' . PHP_EXT),
 );
 
-if ( defined('IN_PA_POSTING') )
+if (defined('IN_PA_POSTING'))
 {
 	$pafiledb_template->assign_vars($parsing_template);
 }

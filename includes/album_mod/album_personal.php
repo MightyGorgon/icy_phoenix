@@ -74,7 +74,7 @@ if (!album_check_permission($auth_data, ALBUM_AUTH_VIEW))
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . '?redirect=album.' . PHP_EXT . '&user_id=' . $album_user_id));
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album.' . PHP_EXT . '&user_id=' . $album_user_id));
 	}
 	else
 	{
@@ -88,7 +88,7 @@ if (!album_check_permission($auth_data, ALBUM_AUTH_VIEW))
 // ------------------------------------------------------------------------
 // Check personal gallery creation/upload permission
 // ------------------------------------------------------------------------
-if (!album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) && (count($album_data['data']) <= 1))
+if (!album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) && (sizeof($album_data['data']) <= 1))
 {
 	if ($album_user_id == $userdata['user_id'])
 	{
@@ -196,12 +196,7 @@ $sql = 'SELECT COUNT(p.pic_id) AS count
 		WHERE c.cat_user_id = '.$album_user_id.'
 			AND c.cat_id IN (' . $cat_ids . ')
 			AND p.pic_cat_id = c.cat_id';
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not count pics !!', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 
@@ -216,8 +211,8 @@ if ($total_pics == 0)
 		$breadcrumbs_address .= $ext_address;
 	}
 }
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-$template->set_filenames(array('body' => 'album_cat_body.tpl'));
+
+$template_to_parse = 'album_cat_body.tpl';
 
 // ------------------------------------------------------------------------
 // Build up the page
@@ -292,11 +287,7 @@ if ($total_pics == 0)
 				WHERE c.cat_user_id = ' . $album_user_id . '
 					AND c.cat_id IN (' . $allowed_cat.')
 					AND p.pic_cat_id = c.cat_id';
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not count pics!!', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -319,11 +310,7 @@ if ($total_pics == 0)
 				FROM ". ALBUM_CAT_TABLE ." AS c
 				WHERE c.cat_user_id = '$album_user_id' AND c.cat_parent = 0
 				LIMIT 1";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query category information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($db->sql_numrows($result) == 0)
 		{

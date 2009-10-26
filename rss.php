@@ -48,14 +48,17 @@ $deadline = 0;
 
 if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 {
-	$deadline = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+	$deadline = @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 	if(CACHE_TIME > 0) if((time() - $deadline) < CACHE_TIME)
 	{
 		ExitWithHeader('304 Not Modified');
 	}
 }
 $sql = "SELECT MAX(post_time) as pt FROM ". POSTS_TABLE;
-if(!($result = $db->sql_query($sql)))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	ExitWithHeader('500 Internal Server Error', 'Error in obtaining post data');
 }
@@ -95,7 +98,7 @@ if($use_cached && AUTOSTYLED && strpos($useragent,'MSIE'))
 	$use_cached = false;
 }
 
-if($board_config['gzip_compress'])
+if($config['gzip_compress'])
 {
 	$phpver = phpversion();
 	if($phpver >= '4.0.4pl1' && (strstr($useragent,'compatible') || strstr($useragent,'Gecko')))
@@ -148,7 +151,7 @@ if($topics_view != 0)
 
 // BEGIN Session management
 // Check user
-$user_id = ($needlogin)? rss_get_user() : ANONYMOUS;
+$user_id = ($needlogin ? rss_get_user() : ANONYMOUS);
 if(($user_id == ANONYMOUS) && AUTOLOGIN)
 {
 	$userdata = session_pagestart($user_ip);
@@ -195,24 +198,20 @@ else
 {
 	// END Cache Mod
 
-	// Define censored word matches
-	$orig_word = array();
-	$replacement_word = array();
-	obtain_word_list($orig_word, $replacement_word);
 
 	// BEGIN Create main board information (some code borrowed from functions_post.php)
 	// Build URL components
 	$index_url = create_server_url();
-	$viewpost = VIEWTOPIC_MG;
-	$replypost = POSTING_MG . '?mode=quote';
-	$index = PORTAL_MG;
+	$viewpost = CMS_PAGE_VIEWTOPIC;
+	$replypost = CMS_PAGE_POSTING . '?mode=quote';
+	$index = CMS_PAGE_HOME;
 	$viewpost_url = $index_url . $viewpost;
 	$replypost_url = $index_url . $replypost;
 	// Reformat site name and description
-	$site_name = strip_tags(ip_stripslashes($board_config['sitename']));
-	$site_description = strip_tags(ip_stripslashes($board_config['site_desc']));
+	$site_name = strip_tags($config['sitename']);
+	$site_description = strip_tags($config['site_desc']);
 	// Set the fully qualified url to your smilies folder
-	$smilies_path = $board_config['smilies_path'];
+	$smilies_path = $config['smilies_path'];
 	$smilies_url = $index_url . $smilies_path;
 	$smilies_path = preg_replace("/\//", "\/", $smilies_path);
 	// END Create main board information
@@ -287,7 +286,7 @@ else
 		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 		{
 			$NotErrorFlag = true;
-			$NotModifiedSince = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+			$NotModifiedSince = @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			if(SEE_MODIFYED)
 			{
 				$sql_limit_by_http =  "AND (p.post_time > " . $NotModifiedSince . " OR p.post_edit_time >" . $NotModifiedSince . ")";
@@ -318,8 +317,10 @@ else
 				$sql_topics_only_where
 				$sql_topic_view
 		ORDER BY p.post_time DESC LIMIT $count";
-	$posts_query = $db->sql_query($sql);
 	// END SQL statement to fetch active posts of public forums
+	$db->sql_return_on_error(true);
+	$posts_query = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
 
 	// BEGIN Query failure check
 	if(!$posts_query)
@@ -328,7 +329,7 @@ else
 	}
 
 	$allposts = $db->sql_fetchrowset($posts_query);
-	if(($forum_id <> '') && (count($allposts) != 0))
+	if(($forum_id <> '') && (sizeof($allposts) != 0))
 	{
 		$site_name = strip_tags($allposts[0]['forum_name']);
 		$site_description = $allposts[0]['forum_desc'];
@@ -340,7 +341,7 @@ else
 	$user_lang = $userdata['user_lang'];
 	if(empty($user_lang))
 	{
-		$user_lang = $board_config['default_lang'];
+		$user_lang = $config['default_lang'];
 	}
 	$template->assign_vars(array(
 		'S_CONTENT_ENCODING' => $lang['ENCODING'],
@@ -348,8 +349,8 @@ else
 		'BOARD_TITLE' => htmlspecialchars(undo_htmlspecialchars($site_name)),
 		'PROGRAM' => $ProgName,
 		'BOARD_DESCRIPTION' => htmlspecialchars(undo_htmlspecialchars($site_description)),
-		'BOARD_MANAGING_EDITOR' => $board_config['board_email'],
-		'BOARD_WEBMASTER' => $board_config['board_email'],
+		'BOARD_MANAGING_EDITOR' => $config['board_email'],
+		'BOARD_WEBMASTER' => $config['board_email'],
 		'BUILD_DATE' => gmdate('D, d M Y H:i:s') . ' GMT',
 		'ATOM_BUILD_DATE' => gmdate('Y-m-d\TH:i:s') . 'Z',
 		'READER' => $username,
@@ -362,7 +363,7 @@ else
 	);
 	// END Assign static variabless to template
 	$LastPostTime = 0;
-	if(count($allposts) == 0)
+	if(sizeof($allposts) == 0)
 	{
 		if($NotErrorFlag) ExitWithHeader('304 Not Modified');
 	}
@@ -388,11 +389,11 @@ else
 			$post_id = $post['post_id'];
 			$post_subject = ($post['post_subject'] != '') ? $post['post_subject'] : '';
 			$message = $post['post_text'];
-			$user_sig = ($post['enable_sig'] && $post['user_sig'] != '' && $board_config['allow_sig']) ? $post['user_sig'] : '';
+			$user_sig = ($post['enable_sig'] && $post['user_sig'] != '' && $config['allow_sig']) ? $post['user_sig'] : '';
 			// If the board has HTML off but the post has HTML on then we process it, else leave it alone
-			$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
-			$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
-			$smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? 1 : 0 ;
+			$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+			$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+			$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
 			$bbcode->allow_html = $html_on;
 			$bbcode->allow_bbcode = $bbcode_on;
@@ -403,23 +404,14 @@ else
 			$bbcode->is_sig = false;
 			$message = $bbcode->parse($message);
 
-			// Replace naughty words
-			if(!empty($orig_word) && count($orig_word))
-			{
-				$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
-
-				if($user_sig != '')
-				{
-					$user_sig = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $user_sig . '<'), 1, -1));
-				}
-
-				$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
-			}
+			$post_subject = censor_text($post_subject);
+			$user_sig = censor_text($user_sig);
+			$message = censor_text($message);
 
 			// Replace newlines (we use this rather than nl2br because till recently it wasn't XHTML compliant)
 			if($user_sig != '')
 			{
-				$user_sig = '<br />' . $board_config['sig_line'] . '<br />' . str_replace("\n", "\n<br />\n", $user_sig);
+				$user_sig = '<br />' . $config['sig_line'] . '<br />' . str_replace("\n", "\n<br />\n", $user_sig);
 				//$user_sig = '<br />_________________<br />' . str_replace("\n", "\n<br />\n", $user_sig);
 			}
 
@@ -439,7 +431,7 @@ else
 			$author0 = $author;
 			if($post['user_id'] != -1)
 			{
-				$author = '<a href="' . $index_url . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $post['user_id'] . '" target="_blank">' . $author . '</a>';
+				$author = '<a href="' . $index_url . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $post['user_id'] . '" target="_blank">' . $author . '</a>';
 			}
 			else
 			{
@@ -466,7 +458,7 @@ else
 				'TOPIC_TITLE' => undo_htmlspecialchars($topic_title),
 
 				'AUTHOR' => $author,
-				'POST_TIME' => create_date($board_config['default_dateformat'], $post['post_time'], $board_config['board_timezone']) . ' (GMT ' . $board_config['board_timezone'] . ')',
+				'POST_TIME' => create_date($config['default_dateformat'], $post['post_time'], $config['board_timezone']) . ' (GMT ' . $config['board_timezone'] . ')',
 				'POST_SUBJECT' => $post_subject,
 				//'POST_TEXT' => htmlspecialchars(preg_replace('|[\x00-\x08\x0B\x0C\x0E-\x1f]|', '', $message)),
 				'POST_TEXT' => $message,
@@ -484,38 +476,50 @@ else
 			foreach ($SeenTopics as $topic_id=>$tcount)
 			{
 				$updlist .= (empty($updlist)) ? $topic_id : ',' . $topic_id;
-				if (($board_config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_views'] == 1))
+				if (($config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_views'] == 1))
 				{
 					$sql = 'UPDATE ' . TOPIC_VIEW_TABLE . ' SET topic_id = "' . $topic_id . '", view_time = "' . time() . '", view_count = view_count + 1 WHERE topic_id = ' . $topic_id . ' AND user_id = ' . $user_id;
-					if(!$db->sql_query($sql) || !$db->sql_affectedrows())
+					$db->sql_return_on_error(true);
+					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
+					if(!$result || !$db->sql_affectedrows())
 					{
 						$sql = 'INSERT IGNORE INTO ' . TOPIC_VIEW_TABLE . ' (topic_id, user_id, view_time, view_count)
 						VALUES (' . $topic_id . ', "' . $user_id . '", "' . time() . '", "1")';
-						if(!($db->sql_query($sql)))
+						$db->sql_return_on_error(true);
+						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
+						if(!$result)
 						{
 							ExitWithHeader('500 Internal Server Error', 'Error create user view topic information');
 						}
 					}
 				}
 			}
-			if($updlist != '')
+			if (($updlist != '') && !$userdata['is_bot'])
 			{
 				// Update the topic view counter
 				$sql = "UPDATE " . TOPICS_TABLE . "
 				SET topic_views = topic_views + 1
 				WHERE topic_id IN ($updlist)";
-				if(!$db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if(!$result)
 				{
 					ExitWithHeader('500 Internal Server Error', 'Could not update topic views');
 				}
 			}
 		}
-		if(LV_MOD_INSTALLED and $user_id!=ANONYMOUS)
+		if(LV_MOD_INSTALLED && ($user_id != ANONYMOUS))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 			SET user_totalpages = user_totalpages + $PostCount
 			WHERE user_id = $user_id";
-			if(!$db->sql_query($sql))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
+			if(!$result)
 			{
 				ExitWithHeader('500 Internal Server Error', 'Error updating user totalpages ');
 			}
@@ -578,7 +582,7 @@ if(defined(TEMP_SESSION))
 	rss_session_end;
 }
 
-$gzip_text = ($board_config['gzip_compress']) ? 'GZIP enabled' : 'GZIP disabled';
+$gzip_text = ($config['gzip_compress']) ? 'GZIP enabled' : 'GZIP disabled';
 $mtime = microtime();
 $mtime = explode(" ", $mtime);
 $mtime = $mtime[1] + $mtime[0];

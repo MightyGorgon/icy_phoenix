@@ -34,32 +34,23 @@ require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . './includes/def_auth.' . PHP_EXT);
 
 // Get required information, for all forums
-/*
-$sql = "SELECT f.*
-		FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
-		WHERE c.cat_id = f.cat_id
-		ORDER BY c.cat_order ASC, f.forum_order ASC";
-*/
 $sql = "SELECT f.*
 		FROM " . FORUMS_TABLE . " f
-		ORDER BY f.cat_id ASC, f.forum_order ASC";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t obtain forum list', '', __LINE__, __FILE__, $sql);
-}
-
+		WHERE f.forum_type = " . FORUM_POST . "
+		ORDER BY f.forum_order ASC";
+$result = $db->sql_query($sql);
 $forum_rows = $db->sql_fetchrowset($result);
 $db->sql_freeresult($result);
 
 // Start program proper
 if($_POST['submit'])
 {
-	for($i = 0; $i < count($forum_rows); $i++)
+	for($i = 0; $i < sizeof($forum_rows); $i++)
 	{
 		$sql = '';
 		$forum_id = $forum_rows[$i]['forum_id'];
 
-		for($j = 0; $j < count($forum_auth_fields); $j++)
+		for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 		{
 			$value = $_POST[$forum_auth_fields[$j]][$forum_id];
 
@@ -75,11 +66,7 @@ if($_POST['submit'])
 		}
 
 		$sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update forum permissions', '', __LINE__, __FILE__, $sql);
-		}
-
+		$db->sql_query($sql);
 	}
 	cache_tree(true);
 
@@ -92,7 +79,7 @@ if($_POST['submit'])
 
 
 // Default page
-$colspan = count($forum_auth_fields) + 2;
+$colspan = sizeof($forum_auth_fields) + 2;
 
 // Output the authorization details
 $template->set_filenames(array('body' => ADM_TPL . 'auth_forum_list_body.tpl'));
@@ -112,7 +99,7 @@ $template->assign_block_vars('forum_auth_titles', array(
 	)
 );
 
-for($i = 0; $i < count($forum_auth_fields); $i++)
+for($i = 0; $i < sizeof($forum_auth_fields); $i++)
 {
 	$template->assign_block_vars('forum_auth_titles', array(
 		'CELL_TITLE' => $field_names[$forum_auth_fields[$i]]
@@ -125,7 +112,7 @@ $template->assign_block_vars('forum_auth_titles', array(
 	)
 );
 
-for ($i = 0; $i < count($forum_rows); $i++)
+for ($i = 0; $i < sizeof($forum_rows); $i++)
 {
 	$temp_url = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_rows[$i]['forum_id']);
 	$s_forum = '<a href="' . $temp_url . '">' . $forum_rows[$i]['forum_name'] . '</a>';
@@ -136,11 +123,11 @@ for ($i = 0; $i < count($forum_rows); $i++)
 		)
 	);
 
-	for($j = 0; $j < count($forum_auth_fields); $j++)
+	for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 	{
 		$custom_auth[$j] = '&nbsp;<select name="' . $forum_auth_fields[$j] . '[' . $forum_rows[$i]['forum_id'] . ']">';
 
-		for($k = 0; $k < count($forum_auth_levels); $k++)
+		for($k = 0; $k < sizeof($forum_auth_levels); $k++)
 		{
 			$selected = ($forum_rows[$i][$forum_auth_fields[$j]] == $forum_auth_const[$k]) ? ' selected="selected"' : '';
 			$custom_auth[$j] .= '<option value="' . $forum_auth_const[$k] . '"' . $selected . '>' . $lang['Forum_' . $forum_auth_levels[$k]] . '</option>';

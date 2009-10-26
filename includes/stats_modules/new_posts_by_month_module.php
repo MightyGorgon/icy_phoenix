@@ -37,11 +37,7 @@ $sql = 'SELECT YEAR(FROM_UNIXTIME(post_time)) as aar, MONTH(FROM_UNIXTIME(post_t
 	FROM ' . POSTS_TABLE . '
 	GROUP BY YEAR(FROM_UNIXTIME(post_time)),MONTH(FROM_UNIXTIME(post_time))
 	ORDER BY post_time';
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve posts data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $posts_count = $stat_db->sql_numrows($result);
 $posts_data = $stat_db->sql_fetchrowset($result);
 

@@ -9,12 +9,11 @@
 */
 
 // CTracker_Ignore: File Checked By Human
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include(IP_ROOT_PATH . 'cms/constants.' . PHP_EXT);
 
 // Define constant to keep page_header.php from sending headers
 define('AJAX_HEADERS', true);
@@ -24,24 +23,10 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-//========================
-//
-// Per il CMS bisogna mettere un controllo sullo USER_ID (passandolo via GET)
-// e dare il permesso a chi non è admin solo di modificare le proprie pagine
-//
-//
-//========================
+// We need to add a USER_ID check-in (passed via GET) to give proper AUTH to non admin users to edit only own pages
 
 // Get SID and check it
-if (isset($_POST['sid']) || isset($_GET['sid']))
-{
-	$sid = (isset($_POST['sid'])) ? $_POST['sid'] : $_GET['sid'];
-}
-else
-{
-	$sid = '';
-}
-
+$sid = request_var('sid', '');
 if ($sid != $userdata['session_id'])
 {
 	$result_ar = array(
@@ -107,10 +92,7 @@ switch ($mode)
 					exit;
 			}
 			$sql = "UPDATE " . $cms_block_table . " SET " . $field . " = '" . $new_status . "' WHERE bid = '" . $b_id . "'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert data into blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 		else
 		{
@@ -139,10 +121,7 @@ switch ($mode)
 			{
 				$item_order++;
 				$sql = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $menu_item_id . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update menu table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 		}
 		else
@@ -172,10 +151,7 @@ switch ($mode)
 			{
 				$item_order++;
 				$sql = "UPDATE " . MODULES_TABLE . " SET display_order = '" . ($item_order * 10) . "' WHERE module_id = '" . $module_item_id . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update stats table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 		}
 		else
@@ -205,11 +181,9 @@ switch ($mode)
 			{
 				$item_order++;
 				$sql = "UPDATE " . SMILIES_TABLE . " SET smilies_order = '" . $item_order . "' WHERE smilies_id = '" . $smiley_item_id . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update stats table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
+			$cache->destroy('_smileys');
 			$db->clear_cache('smileys_');
 		}
 		else
@@ -230,6 +204,8 @@ switch ($mode)
 		AJAX_message_die($result_ar);
 		exit;
 }
-$db->clear_cache('cms_');
+
+$cache->destroy('_cms_layouts_config');
+empty_cache_folders(CMS_CACHE_FOLDER);
 
 ?>

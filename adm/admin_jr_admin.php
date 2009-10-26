@@ -82,7 +82,7 @@ foreach($params as $var => $default)
 //*******************************************************************************************
 /** Check for edit user
 /******************************************************************************************/
-if (count($_POST))
+if (sizeof($_POST))
 {
 	foreach ($_POST as $key => $val)
 	{
@@ -92,7 +92,7 @@ if (count($_POST))
 		}
 	}
 }
-$page_title = $lang['Jr_Admin'];
+$meta_content['page_title'] = $lang['Jr_Admin'];
 $page_desc = $lang['Permissions_Page_Desc'];
 
 if (!empty($user_id) && !isset($_POST['update_user']))
@@ -100,10 +100,7 @@ if (!empty($user_id) && !isset($_POST['update_user']))
 	$sql = "SELECT username, user_id, user_active, user_color, user_level  FROM " . USERS_TABLE . "
 		WHERE user_id = '" . $user_id . "'
 		ORDER BY username ASC";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_User_Table'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	if ($debug)
 	{
@@ -168,8 +165,8 @@ if (!empty($user_id) && !isset($_POST['update_user']))
 		'USERNAME' => $row['username'],
 		'DISABLED' => $disabled,
 		'DISABLED_TEXT' => $disabled_text,
-		'START_DATE' => ($jr_admin_row['start_date']) ? create_date_ip($board_config['default_dateformat'], $jr_admin_row['start_date'], $board_config['board_timezone']) : $lang['Never'],
-		'UPDATE_DATE' => ($jr_admin_row['update_date']) ? create_date_ip($board_config['default_dateformat'], $jr_admin_row['update_date'], $board_config['board_timezone']) : $lang['Never'],
+		'START_DATE' => ($jr_admin_row['start_date']) ? create_date_ip($config['default_dateformat'], $jr_admin_row['start_date'], $config['board_timezone']) : $lang['Never'],
+		'UPDATE_DATE' => ($jr_admin_row['update_date']) ? create_date_ip($config['default_dateformat'], $jr_admin_row['update_date'], $config['board_timezone']) : $lang['Never'],
 		'NOTES' => $jr_admin_row['admin_notes'],
 		'NOTES_VIEW_CHECKED' => ($jr_admin_row['notes_view']) ? 'checked="checked"' : '',
 		'ADMIN_TEXT' => ($row['user_level'] == ADMIN) ? $lang['Admin_Note'] : ''
@@ -214,10 +211,7 @@ else
 			admin_notes = '$admin_notes',
 			notes_view = $notes_view
 			WHERE user_id = $user_id";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_User_Table'], '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 		$status_message .= $lang['Updated_Permissions'];
 		clear_user_color_cache($user_id);
 	}
@@ -234,7 +228,7 @@ else
 
 	$user_where = (isset($_POST['user_search'])) ? " AND u.username LIKE ('".$_POST['user_search']."')" : '';
 
-	$per_page = $board_config['topics_per_page'];
+	$per_page = $config['topics_per_page'];
 	if ($sort_item == 'user_modules')
 	{
 		$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_rank, u.user_allow_pm, u.user_allowavatar
@@ -256,10 +250,8 @@ else
 			ORDER BY u." . $sort_item . " " . $order . "
 			LIMIT $start, $per_page";
 	}
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_User_Table'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$jr_admin_row = jr_admin_get_user_info($row['user_id']);
@@ -302,10 +294,7 @@ else
 			$alpha_where
 			$user_where";
 	}
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_User_Table'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_numrows($result);
 	$total_users_count = $row;
 
@@ -338,10 +327,8 @@ else
 
 	$sql = "SELECT username FROM " . USERS_TABLE . "
 		WHERE user_id <> " . ANONYMOUS;
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_User_Table'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$test_letter = strtoupper(substr($row['username'], 0, 1));
@@ -365,14 +352,14 @@ else
 $template->assign_vars(array(
 	'S_ACTION' => append_sid(basename(__FILE__)),
 	'S_USER_PERM' => append_sid('admin_ug_auth.' . PHP_EXT),
-	'S_PROFILE' => append_sid(IP_ROOT_PATH . PROFILE_MG),
+	'S_PROFILE' => append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE),
 	'S_MANAGEMENT' => append_sid('admin_users.' . PHP_EXT),
 	'S_USER_POST_URL' => POST_USERS_URL,
 	'L_SEARCH' => $lang['Search'],
 	'L_NONE' => $lang['None'],
 	'L_ALLOW' => $lang['Allow_Access'],
 	'L_VERSION' => $lang['Version'],
-	'L_PAGE_NAME' => $page_title,
+	'L_PAGE_NAME' => $meta_content['page_title'],
 	'L_PAGE_DESC' => $page_desc,
 	'MOD_NUMBER' => MOD,
 	'L_COLOR_GROUP' => $lang['Color_Group'],
@@ -431,7 +418,7 @@ if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_V
 ************************************************************************/
 
 $template->pparse('body');
-copyright_nivisec($page_title, '2002-2003');
+copyright_nivisec($meta_content['page_title'], '2002-2003');
 include('page_footer_admin.' . PHP_EXT);
 
 ?>

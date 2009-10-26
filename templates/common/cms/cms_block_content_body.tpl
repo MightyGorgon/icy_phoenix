@@ -1,3 +1,9 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
@@ -30,7 +36,7 @@
 		</tr>
 		<tr>
 			<td class="row1" align="right">{L_B_BLOCK_FILE}</td>
-			<td class="row2"><select name="blockfile" class="post">{BLOCKFILE}</select></td>
+			<td class="row2">{BLOCKFILE}</td>
 		</tr>
 		<tr>
 			<td class="row1" align="right">{L_B_VIEW_BY}</td>
@@ -82,3 +88,9 @@
 </tr>
 </table>
 </form>
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

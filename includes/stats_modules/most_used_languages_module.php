@@ -22,17 +22,13 @@ $template->assign_vars(array(
 	)
 );
 
-$sql = "SELECT user_lang, count(*) as number
+$sql = "SELECT user_lang, COUNT(*) as number
 	FROM " . USERS_TABLE . "
 	WHERE user_lang <> ''
 	GROUP BY user_lang
 	ORDER BY number DESC
 	LIMIT " . $return_limit;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $lang_count = $stat_db->sql_numrows($result);
 $lang_data = $stat_db->sql_fetchrowset($result);
 

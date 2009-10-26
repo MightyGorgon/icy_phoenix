@@ -54,13 +54,13 @@ else
 $delimeter  = '=+:';
 
 // Read a listing of uploaded smilies for use in the add or edit smliey code...
-$dir = @opendir(IP_ROOT_PATH . $board_config['smilies_path']);
+$dir = @opendir(IP_ROOT_PATH . $config['smilies_path']);
 
 while($file = @readdir($dir))
 {
-	if(!@is_dir(@phpbb_realpath(IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $file)))
+	if(!@is_dir(@phpbb_realpath(IP_ROOT_PATH . $config['smilies_path'] . '/' . $file)))
 	{
-		$img_size = @getimagesize(IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $file);
+		$img_size = @getimagesize(IP_ROOT_PATH . $config['smilies_path'] . '/' . $file);
 
 		if($img_size[0] && $img_size[1])
 		{
@@ -90,30 +90,23 @@ if(isset($_GET['import_pack']) || isset($_POST['import_pack']))
 		{
 			$sql = "DELETE
 				FROM " . SMILIES_TABLE;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't delete current smilies", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 		else
 		{
 			$sql = "SELECT code
 				FROM ". SMILIES_TABLE;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't get current smilies", "", __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$cur_smilies = $db->sql_fetchrowset($result);
 
-			for($i = 0; $i < count($cur_smilies); $i++)
+			for($i = 0; $i < sizeof($cur_smilies); $i++)
 			{
 				$k = $cur_smilies[$i]['code'];
 				$smiles[$k] = 1;
 			}
 		}
 
-		$fcontents = @file(IP_ROOT_PATH . $board_config['smilies_path'] . '/'. $smile_pak);
+		$fcontents = @file(IP_ROOT_PATH . $config['smilies_path'] . '/'. $smile_pak);
 
 		if(empty($fcontents))
 		{
@@ -121,7 +114,7 @@ if(isset($_GET['import_pack']) || isset($_POST['import_pack']))
 		}
 
 //Smilies Order Start
-		if($board_config['smilies_insert'] == TOP_LIST)
+		if($config['smilies_insert'] == TOP_LIST)
 		{
 			$sql = "SELECT MIN(smilies_order) AS smilies_extreme
 				FROM " . SMILIES_TABLE;
@@ -133,20 +126,16 @@ if(isset($_GET['import_pack']) || isset($_POST['import_pack']))
 				FROM " . SMILIES_TABLE;
 			$shift_it = 10;
 		}
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't get extreme values from the smilies table", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 
 		$order_extreme = $row['smilies_extreme'] + $shift_it;
 //Smilies Order End
-		for($i = 0; $i < count($fcontents); $i++)
+		for($i = 0; $i < sizeof($fcontents); $i++)
 		{
 			$smile_data = explode($delimeter, trim(addslashes($fcontents[$i])));
 
-			for($j = 2; $j < count($smile_data); $j++)
+			for($j = 2; $j < sizeof($smile_data); $j++)
 			{
 				// Replace > and < with the proper html_entities for matching.
 				$smile_data[$j] = str_replace("<", "&lt;", $smile_data[$j]);
@@ -180,10 +169,6 @@ if(isset($_GET['import_pack']) || isset($_POST['import_pack']))
 				if($sql != '')
 				{
 					$result = $db->sql_query($sql);
-					if(!$result)
-					{
-						message_die(GENERAL_ERROR, "Couldn't update smilies!", "", __LINE__, __FILE__, $sql);
-					}
 				}
 			}
 		}
@@ -241,16 +226,11 @@ elseif(isset($_POST['export_pack']) || isset($_GET['export_pack']))
 		$sql = "SELECT *
 			FROM " . SMILIES_TABLE ."
 			ORDER BY smilies_order";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not get smiley list", "", __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$resultset = $db->sql_fetchrowset($result);
 
-		$smile_pak = "";
-		for($i = 0; $i < count($resultset); $i++)
+		$smile_pak = '';
+		for($i = 0; $i < sizeof($resultset); $i++)
 		{
 			$smile_pak .= $resultset[$i]['smile_url'] . $delimeter;
 			$smile_pak .= $resultset[$i]['emoticon'] . $delimeter;
@@ -276,8 +256,8 @@ elseif(isset($_POST['add']) || isset($_GET['add']))
 
 	$template->set_filenames(array('body' => ADM_TPL . 'smile_edit_body.tpl'));
 
-	$filename_list = "";
-	for($i = 0; $i < count($smiley_images); $i++)
+	$filename_list = '';
+	for($i = 0; $i < sizeof($smiley_images); $i++)
 	{
 		$filename_list .= '<option value="' . $smiley_images[$i] . '">' . $smiley_images[$i] . '</option>';
 	}
@@ -294,12 +274,12 @@ elseif(isset($_POST['add']) || isset($_GET['add']))
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
 
-		'SMILEY_IMG' => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smiley_images[0],
+		'SMILEY_IMG' => IP_ROOT_PATH . $config['smilies_path'] . '/' . $smiley_images[0],
 
 		'S_SMILEY_ACTION' => append_sid('admin_smilies.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'S_FILENAME_OPTIONS' => $filename_list,
-		'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['smilies_path']
+		'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $config['smilies_path']
 		)
 	);
 
@@ -322,13 +302,11 @@ elseif ($mode != '')
 				$sql = "DELETE FROM " . SMILIES_TABLE . "
 					WHERE smilies_id = " . $smiley_id;
 				$result = $db->sql_query($sql);
-				if(!$result)
-				{
-					message_die(GENERAL_ERROR, "Couldn't delete smiley", "", __LINE__, __FILE__, $sql);
-				}
 
 				$message = $lang['smiley_del_success'] . '<br /><br />' . sprintf($lang['Click_return_smileadmin'], '<a href="' . append_sid('admin_smilies.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
+				$cache->destroy('_smileys');
+				$db->clear_cache('smileys_');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -363,14 +341,10 @@ elseif ($mode != '')
 				FROM " . SMILIES_TABLE . "
 				WHERE smilies_id = " . $smiley_id;
 			$result = $db->sql_query($sql);
-			if(!$result)
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain emoticon information', "", __LINE__, __FILE__, $sql);
-			}
 			$smile_data = $db->sql_fetchrow($result);
 
 			$filename_list = "";
-			for($i = 0; $i < count($smiley_images); $i++)
+			for($i = 0; $i < sizeof($smiley_images); $i++)
 			{
 				if($smiley_images[$i] == $smile_data['smile_url'])
 				{
@@ -390,8 +364,8 @@ elseif ($mode != '')
 			$s_hidden_fields = '<input type="hidden" name="mode" value="save" /><input type="hidden" name="smile_id" value="' . $smile_data['smilies_id'] . '" />';
 
 			$template->assign_vars(array(
-				'SMILEY_CODE' => $smile_data['code'],
-				'SMILEY_EMOTICON' => $smile_data['emoticon'],
+				'SMILEY_CODE' => htmlspecialchars($smile_data['code']),
+				'SMILEY_EMOTICON' => htmlspecialchars($smile_data['emoticon']),
 
 				'L_SMILEY_TITLE' => $lang['smiley_title'],
 				'L_SMILEY_CONFIG' => $lang['smiley_config'],
@@ -402,12 +376,12 @@ elseif ($mode != '')
 				'L_SUBMIT' => $lang['Submit'],
 				'L_RESET' => $lang['Reset'],
 
-				'SMILEY_IMG' => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smiley_edit_img,
+				'SMILEY_IMG' => IP_ROOT_PATH . $config['smilies_path'] . '/' . $smiley_edit_img,
 
 				'S_SMILEY_ACTION' => append_sid('admin_smilies.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_FILENAME_OPTIONS' => $filename_list,
-				'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['smilies_path']
+				'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $config['smilies_path']
 				)
 			);
 
@@ -443,13 +417,12 @@ elseif ($mode != '')
 			$sql = "UPDATE " . SMILIES_TABLE . "
 				SET code = '" . str_replace("\'", "''", $smile_code) . "', smile_url = '" . str_replace("\'", "''", $smile_url) . "', emoticon = '" . str_replace("\'", "''", $smile_emotion) . "'
 				WHERE smilies_id = $smile_id";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update smilies info", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$message = $lang['smiley_edit_success'] . '<br /><br />' . sprintf($lang['Click_return_smileadmin'], '<a href="' . append_sid("admin_smilies." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
+			$cache->destroy('_smileys');
+			$db->clear_cache('smileys_');
 			message_die(GENERAL_MESSAGE, $message);
 			break;
 
@@ -478,7 +451,7 @@ elseif ($mode != '')
 
 			// Save the data to the smiley table.
 			// Smilies Order Begin
-			if($board_config['smilies_insert'] == TOP_LIST)
+			if($config['smilies_insert'] == TOP_LIST)
 			{
 				$sql = "SELECT MIN(smilies_order) AS smilies_extreme
 					FROM " . SMILIES_TABLE;
@@ -490,11 +463,7 @@ elseif ($mode != '')
 					FROM " . SMILIES_TABLE;
 				$shift_it = 10;
 			}
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't get extreme values from the smilies table", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 
 			$order_extreme = $row['smilies_extreme'] + $shift_it;
@@ -505,13 +474,11 @@ elseif ($mode != '')
 			$sql = "INSERT INTO " . SMILIES_TABLE . " (code, smile_url, emoticon, smilies_order)
 				VALUES ('" . str_replace("\'", "''", $smile_code) . "', '" . str_replace("\'", "''", $smile_url) . "', '" . str_replace("\'", "''", $smile_emotion) . "', $order_extreme)";
 			$result = $db->sql_query($sql);
-			if(!$result)
-			{
-				message_die(GENERAL_ERROR, "Couldn't insert new smiley", "", __LINE__, __FILE__, $sql);
-			}
 
 			$message = $lang['smiley_add_success'] . '<br /><br />' . sprintf($lang['Click_return_smileadmin'], '<a href="' . append_sid("admin_smilies." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
+			$cache->destroy('_smileys');
+			$db->clear_cache('smileys_');
 			message_die(GENERAL_MESSAGE, $message);
 			break;
 	}
@@ -524,14 +491,13 @@ else
 		$sql = "UPDATE " . CONFIG_TABLE . " SET
 			config_value = '" . $_POST['insert_position'] . "'
 			WHERE config_name = 'smilies_insert'";
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Failed to update general configuration for smilies_insert", "", __LINE__, __FILE__, $sql);
-		}
-		$board_config['smilies_insert'] = $_POST['insert_position'];
+		$db->sql_query($sql);
+		$config['smilies_insert'] = $_POST['insert_position'];
+		$cache->destroy('_smileys');
+		$db->clear_cache('smileys_');
 	}
 
-	if($board_config['smilies_insert'] == TOP_LIST)
+	if($config['smilies_insert'] == TOP_LIST)
 	{
 		$pos_top_checked = ' selected="selected"';
 		$pos_bot_checked = '';
@@ -543,17 +509,13 @@ else
 	}
 	$position_select = '<select name="insert_position"><option value="' . TOP_LIST . '"' . $pos_top_checked . '>' . $lang['before'] . '</option><option value="' . BOTTOM_LIST . '"' . $pos_bot_checked . '>' . $lang['after'] . '</option></select>';
 
-
 	if(isset($_GET['move']) && isset($_GET['id']))
 	{
 		$moveit = ($_GET['move'] == 'up') ? -15 : 15;
 		$sql = "UPDATE " . SMILIES_TABLE . "
 			SET smilies_order = smilies_order + $moveit
 			WHERE smilies_id = " . $_GET['id'];
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't change smilies order", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$i = 10;
 		$inc = 10;
@@ -561,10 +523,8 @@ else
 		$sql = "SELECT *
 			FROM " . SMILIES_TABLE . "
 			ORDER BY smilies_order";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't query smilies order", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		while ($row = $db->sql_fetchrow($result))
 		{
 			if ($row['smilies_order'] != $i)
@@ -572,16 +532,14 @@ else
 				$sql = "UPDATE " . SMILIES_TABLE . "
 					SET smilies_order = $i
 					WHERE smilies_id = " . $row['smilies_id'];
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 			$i += $inc;
 		}
-
+	$cache->destroy('_smileys');
+	$db->clear_cache('smileys_');
 	}
-	else if(isset($_GET['send']) && isset($_GET['id']))
+	elseif(isset($_GET['send']) && isset($_GET['id']))
 	{
 		if($_GET['send'] == 'top')
 		{
@@ -595,22 +553,16 @@ else
 				FROM " . SMILIES_TABLE;
 			$shift_it = 10;
 		}
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't get extreme values from the smilies table", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
-
 		$order_extreme = $row['smilies_extreme'] + $shift_it;
 
 		$sql = "UPDATE " . SMILIES_TABLE . "
 			SET smilies_order = $order_extreme
 			WHERE smilies_id = " . $_GET['id'];
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't change smilies order", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+		$cache->destroy('_smileys');
+		$db->clear_cache('smileys_');
 	}
 	// Smilies Order END
 
@@ -623,11 +575,6 @@ else
 		FROM " . SMILIES_TABLE . "
 		ORDER BY smilies_order";
 	$result = $db->sql_query($sql);
-	if(!$result)
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain smileys from database", "", __LINE__, __FILE__, $sql);
-	}
-
 	$smilies = $db->sql_fetchrowset($result);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'smile_list_body.tpl'));
@@ -664,7 +611,7 @@ else
 	);
 
 	// Loop throuh the rows of smilies setting block vars for the template.
-	for($i = 0; $i < count($smilies); $i++)
+	for($i = 0; $i < sizeof($smilies); $i++)
 	{
 		// Replace htmlentites for < and > with actual character.
 		$smilies[$i]['code'] = str_replace('&lt;', '<', $smilies[$i]['code']);
@@ -676,7 +623,7 @@ else
 			'ROW_CLASS' => $row_class,
 
 			'SMILEY_ID' => $smilies[$i]['smilies_id'],
-			'SMILEY_IMG' => IP_ROOT_PATH . $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
+			'SMILEY_IMG' => IP_ROOT_PATH . $config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
 			'CODE' => $smilies[$i]['code'],
 			'EMOT' => $smilies[$i]['emoticon'],
 

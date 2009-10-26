@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_TBL}<div class="forumline nav-div">
 	<p class="nav-header">
 		<a href="#" class="nav-current">{STATUS}</a>
@@ -28,7 +30,7 @@
 </tr>
 <!-- BEGIN recent -->
 <tr>
-	<td class="row1 row-center" width="22"><img src="{recent.TOPIC_FOLDER_IMG}" alt="{recent.L_TOPIC_FOLDER_ALT}" title="{recent.L_TOPIC_FOLDER_ALT}" style="margin-right:4px;" /></td>
+	<td class="row1 row-center" width="22"><img src="{recent.TOPIC_FOLDER_IMG}" alt="{recent.L_TOPIC_FOLDER_ALT}" title="{recent.L_TOPIC_FOLDER_ALT}" style="margin-right: 4px;" /></td>
 	<td class="row1h{recent.CLASS_NEW} row-forum" onclick="window.location.href='{recent.U_VIEW_FORUM}'">
 		<span class="topiclink{recent.CLASS_NEW}"><a href="{recent.U_VIEW_FORUM}">{recent.FORUM_NAME}</a></span>
 	</td>
@@ -53,3 +55,5 @@
 	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

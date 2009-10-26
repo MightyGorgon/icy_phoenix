@@ -49,12 +49,12 @@ if(isset($_REQUEST['sessionid']))
 
 	// Dump page header
 	$gen_simple_header = true;
-	$page_title = $lang['upload_in_progress'];
-	$meta_description = '';
-	$meta_keywords = '';
+	$meta_content['page_title'] = $lang['upload_in_progress'];
+	$meta_content['description'] = '';
+	$meta_content['keywords'] = '';
 	if(!$album_config['simple_format'])
 	{
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+		page_header();
 	}
 
 	// Load template
@@ -71,12 +71,7 @@ if(isset($_REQUEST['sessionid']))
 		)
 	);
 
-	//Output page
-	$template->pparse('body');
-
-	$template->set_filenames(array('overall_footer' => 'simple_footer.tpl'));
-
-	$template->pparse('overall_footer');
+	page_footer(false);
 
 	$db->sql_close();
 
@@ -90,18 +85,18 @@ if(isset($_REQUEST['sessionid']))
 		{
 			if ($fp = @fopen($info_file, 'r'))
 			{
-				$fd = fread($fp, 1000);
-				fclose($fp);
+				$fd = @fread($fp, 1000);
+				@fclose($fp);
 				$total_size = $fd;
 			}
 		}
 
 		$time_elapsed = time()- $start_time;
 		$previous_size = $current_size;
-		clearstatcache();
-		if (file_exists($data_file))
+		@clearstatcache();
+		if (@file_exists($data_file))
 		{
-			$current_size = filesize($data_file);
+			$current_size = @filesize($data_file);
 			$upload_started = true;
 		}
 		else

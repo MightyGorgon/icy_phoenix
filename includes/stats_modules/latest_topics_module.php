@@ -27,11 +27,8 @@ $auth_data_sql = '';
 
 $is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
 
-$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve forum_id data', '', __LINE__, __FILE__, $sql);
-}
+$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . 'WHERE forum_type = ' . FORUM_POST;
+$result = $stat_db->sql_query($sql);
 
 while ($row = $stat_db->sql_fetchrow($result))
 {
@@ -48,11 +45,7 @@ if ($auth_data_sql != '')
 		WHERE forum_id IN (' . $auth_data_sql . ') AND (topic_status <> 2)
 		ORDER BY topic_time DESC
 		LIMIT ' . $return_limit;
-	if (!($result = $stat_db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t retrieve topic data', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $stat_db->sql_query($sql);
 	$topic_count = $stat_db->sql_numrows($result);
 	$topic_data = $stat_db->sql_fetchrowset($result);
 }
@@ -69,14 +62,14 @@ for ($i = 0; $i < $topic_count; $i++)
 {
 	$class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
 
-	$posttime = create_date('d F Y, H:i', $topic_data[$i]['topic_time'], $board_config['board_timezone']);
+	$posttime = create_date('d F Y, H:i', $topic_data[$i]['topic_time'], $config['board_timezone']);
 
 	$template->assign_block_vars('stats_row', array(
 		'RANK' => $i + 1,
 		'CLASS' => $class,
 		'POSTTIME' => $posttime,
 		'TITLE' => $topic_data[$i]['topic_title'],
-		'URL' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG .'?' . POST_TOPIC_URL . '=' . $topic_data[$i]['topic_id'])
+		'URL' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC .'?' . POST_TOPIC_URL . '=' . $topic_data[$i]['topic_id'])
 		)
 	);
 }

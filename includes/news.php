@@ -48,6 +48,7 @@ class NewsModule
 	var $config;
 	var $name;
 	var $item_count;
+	var $is_topic = false;
 
 	/**
 	* Class constructor.
@@ -60,16 +61,16 @@ class NewsModule
 	*/
 	function NewsModule($root_path)
 	{
-		global $db, $template, $board_config;
+		global $db, $config, $template;
 
-		$this->root_path = 'http://' . $board_config['server_name'] . $board_config['script_path'];
+		$this->root_path = 'http://' . $config['server_name'] . $config['script_path'];
 		$this->root_path_link = IP_ROOT_PATH;
 		$this->template = &$template;
-		$this->config = &$board_config;
+		$this->config = &$config;
 		$this->name = 'news';
 		$this->item_count = 1;
 
-		//$index_file = PORTAL_MG;
+		//$index_file = CMS_PAGE_HOME;
 		$index_file = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
 		//$page_query = $_SERVER['QUERY_STRING'];
 		//$page_query = (!empty($_SERVER['QUERY_STRING'])) ? explode('&', $_SERVER['QUERY_STRING']) : explode('&', getenv('QUERY_STRING'));
@@ -98,7 +99,7 @@ class NewsModule
 	*/
 	function prepareArticles($articles, $show_abstract = false, $show_attachments = true)
 	{
-		global $lang, $board_config, $images, $is_auth, $theme, $userdata, $block_id, $cms_config_var;
+		global $lang, $config, $images, $is_auth, $theme, $userdata, $block_id, $cms_config_var;
 
 		if (isset($cms_config_var['md_news_length']))
 		{
@@ -131,8 +132,8 @@ class NewsModule
 
 				$sql = '';
 
-				$dateformat = ($userdata['user_id'] == ANONYMOUS) ? $board_config['default_dateformat'] : $userdata['user_dateformat'];
-				$timezone = ($userdata['user_id'] == ANONYMOUS) ? $board_config['board_timezone'] : $userdata['user_timezone'];
+				$dateformat = ($userdata['user_id'] == ANONYMOUS) ? $config['default_dateformat'] : $userdata['user_dateformat'];
+				$timezone = ($userdata['user_id'] == ANONYMOUS) ? $config['board_timezone'] : $userdata['user_timezone'];
 
 				$this->setVariables(array(
 					'L_REPLIES' => $lang['Replies'],
@@ -146,7 +147,7 @@ class NewsModule
 					)
 				);
 
-				//$index_file = PORTAL_MG;
+				//$index_file = CMS_PAGE_HOME;
 				$index_file = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
 				//$page_query = $_SERVER['QUERY_STRING'];
 				//$page_query = (!empty($_SERVER['QUERY_STRING'])) ? explode('&', $_SERVER['QUERY_STRING']) : explode('&', getenv('QUERY_STRING'));
@@ -180,18 +181,18 @@ class NewsModule
 					'CATEGORY' => $article['news_category'],
 					'CAT_ID' => $article['news_id'],
 					'COUNT_VIEWS' => $article['topic_views'],
-					'CAT_IMG' => $this->root_path . $board_config['news_path'] . '/' . $article['news_image'],
+					'CAT_IMG' => $this->root_path . $config['news_path'] . '/' . $article['news_image'],
 					'POST_DATE' => create_date_ip($dateformat, $article['post_time'], $timezone, true),
 					'RFC_POST_DATE' => create_date_ip('r', $article['post_time'], $timezone, true),
 					'L_POSTER' => colorize_username($article['user_id'], $article['username'], $article['user_color'], $article['user_active']),
 					'L_COMMENTS' => $article['topic_replies'],
 					/*
-					'U_COMMENTS' => $this->root_path . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
-					'U_COMMENT' => $this->root_path . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
+					'U_COMMENTS' => $this->root_path . CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
+					'U_COMMENT' => $this->root_path . CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
 					'U_VIEWS' => $this->root_path . 'topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $article['topic_id'],
 					*/
-					'U_COMMENTS' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
-					'U_COMMENT' => append_sid(VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
+					'U_COMMENTS' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
+					'U_COMMENT' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_VIEWS' => append_sid('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id']),
 					'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'] . '&amp;start=0'),
@@ -212,7 +213,7 @@ class NewsModule
 			}
 		}
 
-		if (count($articles) == 0)
+		if (sizeof($articles) == 0)
 		{
 			$this->setBlockVariables('no_articles', array(
 				'L_NO_NEWS' => $lang['No_articles']
@@ -280,7 +281,7 @@ class NewsModule
 	*/
 	function renderComments($article_id, $start = 0)
 	{
-		global $userdata, $lang, $board_config;
+		global $config, $userdata, $lang;
 		$trimmed = false;
 
 		$comments = $this->data->fetchPosts($article_id, $start);
@@ -292,8 +293,8 @@ class NewsModule
 			{
 				$comment['post_text'] = $this->parseMessage($comment['post_text'], $comment['enable_bbcode'], $comment['enable_html'], $comment['enable_smilies'], $comment['enable_autolinks_acronyms']);
 
-				$dateformat = ($userdata['user_id'] == ANONYMOUS) ? $board_config['default_dateformat'] : $userdata['user_dateformat'];
-				$timezone = ($userdata['user_id'] == ANONYMOUS) ? $board_config['board_timezone'] : $userdata['user_timezone'];
+				$dateformat = ($userdata['user_id'] == ANONYMOUS) ? $config['default_dateformat'] : $userdata['user_dateformat'];
+				$timezone = ($userdata['user_id'] == ANONYMOUS) ? $config['board_timezone'] : $userdata['user_timezone'];
 
 				$this->setBlockVariables('comments', array(
 					'L_TITLE' => $comment['post_subject'],
@@ -308,7 +309,7 @@ class NewsModule
 
 	function renderTopics()
 	{
-		global $board_config;
+		global $config;
 		$categories = $this->data->fetchCategories();
 
 		if(is_array($categories))
@@ -318,7 +319,7 @@ class NewsModule
 				$this->setBlockVariables('categories', array(
 					'ID' => $category['news_id'],
 					'TITLE' => $category['news_category'],
-					'IMAGE' => $this->root_path . $board_config['news_path'] . '/' . $category['news_image'],
+					'IMAGE' => $this->root_path . $config['news_path'] . '/' . $category['news_image'],
 					)
 				);
 			}
@@ -335,20 +336,20 @@ class NewsModule
 		);
 
 		$this->setBlockVariables('arch.year.month', array(
-			//'L_MONTH' => $lang['datetime'][date('F', gmmktime(0, 0, 0, $month, 1, $year))],
+			//'L_MONTH' => $lang['datetime'][gmdate('F', gmmktime(0, 0, 0, $month, 1, $year))],
 			// Changed to half month because of problems with timezones...
-			'L_MONTH' => $lang['datetime'][date('F', gmmktime(0, 0, 0, $month, 15, $year))],
+			'L_MONTH' => $lang['datetime'][gmdate('F', gmmktime(0, 0, 0, $month, 15, $year))],
 			'POST_COUNT' => '',
 			'MONTH' => $month
 			)
 		);
 
 		$this->setBlockVariables('arch.year.month.day', array(
-			//'L_DAY' => date('j', gmmktime(0, 0, 0, $month, $day, $year)),
-			//'L_DAY3' => $lang['datetime'][date('l', gmmktime(0, 0, 0, $month, $day, $year))],
+			//'L_DAY' => gmdate('j', gmmktime(0, 0, 0, $month, $day, $year)),
+			//'L_DAY3' => $lang['datetime'][gmdate('l', gmmktime(0, 0, 0, $month, $day, $year))],
 			// Changed to 12 o'clock because of problems with timezones...
-			'L_DAY' => date('j', gmmktime(12, 0, 0, $month, $day, $year)),
-			'L_DAY3' => $lang['datetime'][date('l', gmmktime(12, 0, 0, $month, $day, $year))],
+			'L_DAY' => gmdate('j', gmmktime(12, 0, 0, $month, $day, $year)),
+			'L_DAY3' => $lang['datetime'][gmdate('l', gmmktime(12, 0, 0, $month, $day, $year))],
 			'POST_COUNT' => '',
 			'DAY' => $day
 			)
@@ -363,10 +364,10 @@ class NewsModule
 	{
 		global $lang;
 
-		global $board_config, $userdata;
-		$tz = $board_config['board_timezone'];
-		$tm = $board_config['default_time_mode'];
-		$tl = $board_config['default_dst_time_lag'];
+		global $config, $userdata;
+		$tz = $config['board_timezone'];
+		$tm = $config['default_time_mode'];
+		$tl = $config['default_dst_time_lag'];
 		if ($userdata['session_logged_in'])
 		{
 			$tz = $userdata['user_timezone'];
@@ -379,7 +380,7 @@ class NewsModule
 				$td = ($tl + ($tz * 60)) * 60;
 				break;
 			case SERVER_SWITCH:
-				$td = ((date('I') * $tl) + ($tz * 60)) * 60;
+				$td = ((gmdate('I') * $tl) + ($tz * 60)) * 60;
 				break;
 			default:
 				$td = ($tl + ($tz * 60)) * 60;
@@ -391,9 +392,9 @@ class NewsModule
 		{
 			$month = 0;
 		}
-		//$last_day = date('d', gmmktime(0, 0, 0, $month + 1, 0, $year));
+		//$last_day = gmdate('d', gmmktime(0, 0, 0, $month + 1, 0, $year));
 		// Changed to 12 o'clock because of problems with timezones...
-		$last_day = date('d', gmmktime(12, 0, 0, $month + 1, 0, $year));
+		$last_day = gmdate('d', gmmktime(12, 0, 0, $month + 1, 0, $year));
 
 		//for($d = $last_day; $d >= 1; $d--)
 		for($d = 31; $d >= 1; $d--)
@@ -401,11 +402,11 @@ class NewsModule
 			if($days[$d] > 0)
 			{
 				$this->setBlockVariables('arch.year.month.day', array(
-					//'L_DAY' => date('j', gmmktime(0, 0, 0, $month, $d, $year)),
-					//'L_DAY2' => $lang['datetime'][date('l', gmmktime(0, 0, 0, $month, $d, $year))],
+					//'L_DAY' => gmdate('j', gmmktime(0, 0, 0, $month, $d, $year)),
+					//'L_DAY2' => $lang['datetime'][gmdate('l', gmmktime(0, 0, 0, $month, $d, $year))],
 					// Changed to 12 o'clock because of problems with timezones...
-					'L_DAY' => date('j', gmmktime(12, 0, 0, $month, $d, $year)),
-					'L_DAY2' => $lang['datetime'][date('l', gmmktime(12, 0, 0, $month, $d, $year))],
+					'L_DAY' => gmdate('j', gmmktime(12, 0, 0, $month, $d, $year)),
+					'L_DAY2' => $lang['datetime'][gmdate('l', gmmktime(12, 0, 0, $month, $d, $year))],
 					'POST_COUNT' => '(' . $days[$d] . ')',
 					'DAY' => $d
 					)
@@ -425,9 +426,9 @@ class NewsModule
 			if($months[$m] > 0)
 			{
 				$this->setBlockVariables('arch.year.month', array(
-					//'L_MONTH' => $lang['datetime'][date('F', gmmktime(0, 0, 0, $m, 1, 0))],
+					//'L_MONTH' => $lang['datetime'][gmdate('F', gmmktime(0, 0, 0, $m, 1, 0))],
 					// Changed to half month because of problems with timezones...
-					'L_MONTH' => $lang['datetime'][date('F', gmmktime(0, 0, 0, $m, 15, 0))],
+					'L_MONTH' => $lang['datetime'][gmdate('F', gmmktime(0, 0, 0, $m, 15, 0))],
 					'POST_COUNT' => '(' . $months[$m] . ')',
 					'MONTH' => $m
 					)
@@ -510,7 +511,7 @@ class NewsModule
 			'CATEGORY' => $this->config['news_rss_cat'],
 			'GENERATOR' => $sitename,
 			'CONTENT_ENCODING' => $encoding,
-			'PUB_DATE' => date('r', gmmktime(0, 0, 0, date('m'), date('d'), date('y')))
+			'PUB_DATE' => gmdate('r', gmmktime(0, 0, 0, gmdate('m'), gmdate('d'), gmdate('y')))
 			)
 		);
 
@@ -579,13 +580,19 @@ class NewsModule
 		else
 		{
 			$topic_id = 0;
-			if(isset($_GET['topic_id']))
+			if(!empty($_GET['topic_id']))
 			{
-				$topic_id = $_GET['topic_id'];
+				$topic_id = intval($_GET['topic_id']);
 			}
-			elseif(isset($_GET['news_id']))
+			elseif(!empty($_GET['news_id']))
 			{
-				$topic_id = $_GET['news_id'];
+				$topic_id = intval($_GET['news_id']);
+			}
+			$topic_id = ($topic_id < 0) ? 0 : $topic_id;
+
+			if (!empty($topic_id))
+			{
+				$this->is_topic = true;
 			}
 
 			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Articles']));
@@ -609,9 +616,14 @@ class NewsModule
 			$news_counter = $this->config['news_item_num'];
 		}
 
+		if ($this->is_topic)
+		{
+			$news_counter = $this->config['posts_per_page'];
+		}
+
 		if($this->item_count > $news_counter)
 		{
-			//$index_file = PORTAL_MG;
+			//$index_file = CMS_PAGE_HOME;
 			$index_file = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
 			$base_url = htmlspecialchars(urldecode($index_file)) . '?news=article';
 			if(isset($_GET['topic_id']))
@@ -719,19 +731,11 @@ class NewsModule
 
 	function parseMessage($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms)
 	{
-		global $bbcode, $lofi, $userdata;
+		global $db, $cache, $config, $userdata, $bbcode, $lofi;
 
 		if(!empty($text))
 		{
-			//$enable_autolinks_acronyms = true;
-			if ($enable_autolinks_acronyms == true)
-			{
-				// Start Autolinks For phpBB Mod
-				$orig_autolink = array();
-				$replacement_autolink = array();
-				obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-				// End Autolinks For phpBB Mod
-			}
+			$text = censor_text($text);
 
 			// Parse message and/or sig for BBCode if reqd
 			$bbcode->allow_html = (($this->config['allow_html'] == true) && ($enable_html == true)) ? true : false;
@@ -739,25 +743,10 @@ class NewsModule
 			$bbcode->allow_smilies = (($this->config['allow_smilies'] == true) && (!$lofi == true) && ($enable_smilies == true)) ? true : false;
 			$text = $bbcode->parse($text);
 
-			if (!$userdata['user_allowswearywords'])
-			{
-				$orig_word = array();
-				$replacement_word = array();
-				obtain_word_list($orig_word, $replacement_word);
-			}
-
-			if ($enable_autolinks_acronyms == true)
+			if ($enable_autolinks_acronyms)
 			{
 				$text = $bbcode->acronym_pass($text);
-				if(!empty($orig_autolink) && count($orig_autolink))
-				{
-					$text = autolink_transform($text, $orig_autolink, $replacement_autolink);
-				}
-			}
-			//$text = kb_word_wrap_pass ($text);
-			if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-			{
-				$text = preg_replace($orig_word, $replacement_word, $text);
+				$text = autolink_text($text, '999999');
 			}
 		}
 		else

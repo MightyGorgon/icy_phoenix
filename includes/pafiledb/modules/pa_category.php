@@ -19,7 +19,7 @@ class pafiledb_category extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $pafiledb_config, $userdata, $board_config;
+		global $pafiledb_template, $lang, $pafiledb_config, $userdata, $config;
 
 		// =======================================================
 		// Get the id
@@ -112,7 +112,7 @@ class pafiledb_category extends pafiledb_public
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=category&cat_id=' . $cat_id, true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=category&cat_id=' . $cat_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_view'], $this->auth[$cat_id]['auth_read_type']);
@@ -131,10 +131,10 @@ class pafiledb_category extends pafiledb_public
 
 		$pafiledb_template->assign_vars(array(
 			'L_HOME' => $lang['Home'],
-			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
 
-			'U_INDEX' => append_sid(PORTAL_MG),
+			'U_INDEX' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 
 			'DOWNLOAD' => $pafiledb_config['settings_dbname']

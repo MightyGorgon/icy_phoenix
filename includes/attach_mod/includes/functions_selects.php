@@ -35,14 +35,8 @@ function group_select($select_name, $default_group = 0)
 	$sql = 'SELECT group_id, group_name
 		FROM ' . EXTENSION_GROUPS_TABLE . '
 		ORDER BY group_name';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't query Extension Groups Table", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$group_select = '<select name="' . $select_name . '">';
-
 	$group_name = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -52,7 +46,7 @@ function group_select($select_name, $default_group = 0)
 		$group_name[$num_rows]['group_id'] = 0;
 		$group_name[$num_rows]['group_name'] = $lang['Not_assigned'];
 
-		for ($i = 0; $i < count($group_name); $i++)
+		for ($i = 0; $i < sizeof($group_name); $i++)
 		{
 			if (!$default_group)
 			{
@@ -84,11 +78,7 @@ function download_select($select_name, $group_id = 0)
 		$sql = 'SELECT download_mode
 			FROM ' . EXTENSION_GROUPS_TABLE . '
 			WHERE group_id = ' . (int) $group_id;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't query Extension Groups Table", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -102,7 +92,7 @@ function download_select($select_name, $group_id = 0)
 
 	$group_select = '<select name="' . $select_name . '">';
 
-	for ($i = 0; $i < count($types_download); $i++)
+	for ($i = 0; $i < sizeof($types_download); $i++)
 	{
 		if (!$group_id)
 		{
@@ -130,12 +120,7 @@ function category_select($select_name, $group_id = 0)
 
 	$sql = 'SELECT group_id, cat_id
 		FROM ' . EXTENSION_GROUPS_TABLE;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't select Category", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$rows = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -156,7 +141,7 @@ function category_select($select_name, $group_id = 0)
 	$types = array(NONE_CAT);
 	$modes = array('none');
 
-	for ($i = 0; $i < count($types_category); $i++)
+	for ($i = 0; $i < sizeof($types_category); $i++)
 	{
 		$types[] = $types_category[$i];
 		$modes[] = $modes_category[$i];
@@ -164,7 +149,7 @@ function category_select($select_name, $group_id = 0)
 
 	$group_select = '<select name="' . $select_name . '" style="width:100px">';
 
-	for ($i = 0; $i < count($types); $i++)
+	for ($i = 0; $i < sizeof($types); $i++)
 	{
 		if (!$group_id)
 		{
@@ -195,7 +180,7 @@ function size_select($select_name, $size_compare)
 
 	$select_field = '<select name="' . $select_name . '">';
 
-	for ($i = 0; $i < count($size_types_text); $i++)
+	for ($i = 0; $i < sizeof($size_types_text); $i++)
 	{
 		$selected = ($size_compare == $size_types[$i]) ? ' selected="selected"' : '';
 		$select_field .= '<option value="' . $size_types[$i] . '"' . $selected . '>' . $size_types_text[$i] . '</option>';
@@ -216,12 +201,7 @@ function quota_limit_select($select_name, $default_quota = 0)
 	$sql = 'SELECT quota_limit_id, quota_desc
 		FROM ' . QUOTA_LIMITS_TABLE . '
 		ORDER BY quota_limit ASC';
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't query Quota Limits Table", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$quota_select = '<select name="' . $select_name . '">';
 	$quota_name[0]['quota_limit_id'] = 0;
 	$quota_name[0]['quota_desc'] = $lang['Not_assigned'];
@@ -232,7 +212,7 @@ function quota_limit_select($select_name, $default_quota = 0)
 	}
 	$db->sql_freeresult($result);
 
-	for ($i = 0; $i < count($quota_name); $i++)
+	for ($i = 0; $i < sizeof($quota_name); $i++)
 	{
 		$selected = ($quota_name[$i]['quota_limit_id'] == $default_quota) ? ' selected="selected"' : '';
 		$quota_select .= '<option value="' . $quota_name[$i]['quota_limit_id'] . '"' . $selected . '>' . $quota_name[$i]['quota_desc'] . '</option>';
@@ -252,12 +232,7 @@ function default_quota_limit_select($select_name, $default_quota = 0)
 	$sql = 'SELECT quota_limit_id, quota_desc
 		FROM ' . QUOTA_LIMITS_TABLE . '
 		ORDER BY quota_limit ASC';
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't query Quota Limits Table", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$quota_select = '<select name="' . $select_name . '">';
 	$quota_name[0]['quota_limit_id'] = 0;
 	$quota_name[0]['quota_desc'] = $lang['No_quota_limit'];
@@ -268,7 +243,7 @@ function default_quota_limit_select($select_name, $default_quota = 0)
 	}
 	$db->sql_freeresult($result);
 
-	for ($i = 0; $i < count($quota_name); $i++)
+	for ($i = 0; $i < sizeof($quota_name); $i++)
 	{
 		$selected = ( $quota_name[$i]['quota_limit_id'] == $default_quota ) ? ' selected="selected"' : '';
 		$quota_select .= '<option value="' . $quota_name[$i]['quota_limit_id'] . '"' . $selected . '>' . $quota_name[$i]['quota_desc'] . '</option>';

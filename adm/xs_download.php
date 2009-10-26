@@ -46,7 +46,7 @@ if(isset($_GET['url']) && !defined('DEMO_MODE'))
 		'xs'		=> $template->xs_versiontxt,
 		'style'		=> STYLE_HEADER_VERSION,
 	);
-	$str = '<form action="' . $board_config[$var] . '" method="post" style="display: inline;" target="main"><input type="hidden" name="data" value="' . htmlspecialchars(serialize($import_data)) . '" /><input type="submit" value="' . $lang['xs_continue'] . '" class="post" /></form>';
+	$str = '<form action="' . $config[$var] . '" method="post" style="display: inline;" target="main"><input type="hidden" name="data" value="' . htmlspecialchars(serialize($import_data)) . '" /><input type="submit" value="' . $lang['xs_continue'] . '" class="post" /></form>';
 	$message = $lang['xs_import_download_warning'] . '<br /><br />' . $str . '<br /><br />' . str_replace('{URL}', append_sid('xs_download.' . PHP_EXT), $lang['xs_download_back']);
 	xs_message($lang['Information'], $message);
 }
@@ -57,8 +57,8 @@ if(isset($_GET['edit']))
 	$id = intval($_GET['edit']);
 	$template->assign_block_vars('edit', array(
 		'ID'		=> $id,
-		'TITLE'		=> $board_config['xs_downloads_title_'.$id],
-		'URL'		=> $board_config['xs_downloads_'.$id]
+		'TITLE'		=> $config['xs_downloads_title_'.$id],
+		'URL'		=> $config['xs_downloads_'.$id]
 		));
 }
 
@@ -69,7 +69,7 @@ if(isset($_POST['edit']) && !defined('DEMO_MODE'))
 	if(!empty($_POST['edit_delete']))
 	{
 		// delete link
-		$total = $board_config['xs_downloads_count'];
+		$total = $config['xs_downloads_count'];
 		$update['xs_downloads_count'] = $total - 1;
 		for($i=$id; $i<($total-1); $i++)
 		{
@@ -86,7 +86,7 @@ if(isset($_POST['edit']) && !defined('DEMO_MODE'))
 	}
 	foreach($update as $var => $value)
 	{
-		if(isset($board_config[$var]))
+		if(isset($config[$var]))
 		{
 			$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . xs_sql($value) . "' WHERE config_name='" . $var . "'";
 		}
@@ -95,28 +95,20 @@ if(isset($_POST['edit']) && !defined('DEMO_MODE'))
 			$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . $var . "', '" . xs_sql($value) . "')";
 		}
 		$db->sql_query($sql);
-		$board_config[$var] = $value;
-	}
-	// update config cache
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-	{
-		if(!empty($config))
-		{
-			$config->read(true);
-		}
+		$config[$var] = $value;
 	}
 }
 
 if(!empty($_POST['add_url']) && !defined('DEMO_MODE'))
 {
-	$id = $board_config['xs_downloads_count'];
+	$id = $config['xs_downloads_count'];
 	$update = array();
 	$update['xs_downloads_'.$id] = stripslashes($_POST['add_url']);
 	$update['xs_downloads_title_'.$id] = stripslashes($_POST['add_title']);
-	$update['xs_downloads_count'] = $board_config['xs_downloads_count'] + 1;
+	$update['xs_downloads_count'] = $config['xs_downloads_count'] + 1;
 	foreach($update as $var => $value)
 	{
-		if(isset($board_config[$var]))
+		if(isset($config[$var]))
 		{
 			$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . xs_sql($value) . "' WHERE config_name='" . $var . "'";
 		}
@@ -125,24 +117,19 @@ if(!empty($_POST['add_url']) && !defined('DEMO_MODE'))
 			$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . $var . "', '" . xs_sql($value) . "')";
 		}
 		$db->sql_query($sql);
-		$board_config[$var] = $value;
-	}
-	// update config cache
-	if( defined('XS_MODS_CATEGORY_HIERARCHY210') && !empty($config) )
-	{
-		$config->read(true);
+		$config[$var] = $value;
 	}
 }
 
-for($i=0; $i<$board_config['xs_downloads_count']; $i++)
+for($i = 0; $i < $config['xs_downloads_count']; $i++)
 {
 	$row_class = $xs_row_class[$i % 2];
 	$template->assign_block_vars('url', array(
 		'ROW_CLASS'		=> $row_class,
 		'NUM'			=> $i,
 		'NUM1'			=> $i + 1,
-		'URL'			=> htmlspecialchars($board_config['xs_downloads_'.$i]),
-		'TITLE'			=> htmlspecialchars($board_config['xs_downloads_title_'.$i]),
+		'URL'			=> htmlspecialchars($config['xs_downloads_'.$i]),
+		'TITLE'			=> htmlspecialchars($config['xs_downloads_title_'.$i]),
 		'U_DOWNLOAD'	=> append_sid('xs_download.' . PHP_EXT . '?url='.$i),
 		'U_EDIT'		=> append_sid('xs_download.' . PHP_EXT . '?edit='.$i),
 		));

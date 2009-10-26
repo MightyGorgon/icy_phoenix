@@ -27,6 +27,7 @@
 </table>
 {PAGE_END}
 
+<!-- IF GF_BLOCK --><!-- BEGIN gfooter_blocks_row -->{gfooter_blocks_row.CMS_BLOCK}<!-- END gfooter_blocks_row --><!-- ENDIF -->
 {BOTTOM_HTML_BLOCK}
 <span><a name="bottom"></a></span>
 <!-- IF not S_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->

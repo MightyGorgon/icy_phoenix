@@ -23,7 +23,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
-if( $board_config['allow_rss'] != 1 )
+if( $config['allow_rss'] != 1 )
 {
 	echo 'RSS has been disabled for this site';
 	return;

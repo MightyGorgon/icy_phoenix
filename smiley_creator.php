@@ -18,12 +18,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$gen_simple_header = true;
-$page_title = $lang['Smiley_creator'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
 if (isset($_GET['mode']))
 {
@@ -63,9 +58,6 @@ if($mode == 'text2shield')
 	//$smilies_js .= 'if(document.schilderstellung.smiley[' . $i . '].checked) var sm_id = document.schilderstellung.smiley[' . $i . '].value;' . "\n";
 }
 
-$template->set_filenames(array('body' => 'smiley_creator.tpl',));
-
-$jumpbox = make_jumpbox($forum_id);
 $template->assign_vars(array(
 	'L_GO' => $lang['Go'],
 	'SMILIES_WAHL' => $smilies_wahl,
@@ -123,15 +115,10 @@ $template->assign_vars(array(
 	'L_SELECT_FORUM' => $lang['Select_forum'],
 	'L_ANOTHER_SHIELD' => $lang['SC_another_shield'],
 	'L_NOTEXT_ERROR' => $lang['SC_notext_error'],
-
-	'S_JUMPBOX_LIST' => $jumpbox,
-	'S_JUMPBOX_ACTION' => append_sid(VIEWFORUM_MG)
 	)
 );
-$template->assign_var_from_handle('JUMPBOX', 'jumpbox');
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+$gen_simple_header = true;
+full_page_generation('smiley_creator.tpl', $lang['Smiley_creator'], '', '');
 
 ?>

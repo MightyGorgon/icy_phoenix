@@ -68,11 +68,7 @@ elseif ( $action == 'display' )
 	 */
 	$sql = 'SELECT * FROM ' . CTRACKER_FILESCANNER;
 	$table_class = false;
-
-	if ( (!$result = $db->sql_query($sql)) )
-	{
-		message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$template->assign_block_vars('header_table_cell', array());
 
@@ -154,7 +150,7 @@ else
 */
 $template->assign_vars(array(
 	'L_HEADLINE' => $lang['ctracker_fscan_head'],
-	'L_SUBHEADLINE' => sprintf($lang['ctracker_fscan_subhead'], date($board_config['default_dateformat'], $ctracker_config->settings['last_file_scan'])),
+	'L_SUBHEADLINE' => sprintf($lang['ctracker_fscan_subhead'], gmdate($config['default_dateformat'], $ctracker_config->settings['last_file_scan'])),
 	'L_FUNC_HEADER' => $lang['ctracker_fchk_funcheader'],
 	'L_TABLE_HEADER' => $lang['ctracker_fchk_tableheader'],
 	'L_OPTION_1' => $lang['ctracker_fscan_option1'],

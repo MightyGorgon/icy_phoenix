@@ -37,11 +37,7 @@ $sql ="SELECT user_id, username, user_active, user_color, user_posts, user_regda
 		AND (user_posts > 0)
 	ORDER BY rate DESC
 	LIMIT " . $return_limit;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);
 

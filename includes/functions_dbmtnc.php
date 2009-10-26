@@ -20,8 +20,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.1.54');
-
 // List of tables used
 $tables = array(
 	'acronyms',
@@ -148,6 +146,7 @@ $tables = array(
 	'sudoku_users',
 	'thanks',
 	'themes',
+	'tickets_cat',
 	'title_infos',
 	'topics',
 	'topics_watch',
@@ -162,12 +161,11 @@ $tables = array(
 	'vote_voters',
 	'words',
 	'xs_news',
-	'xs_news_cfg',
 	'xs_news_xml',
 	'zebra'
 );
 
-if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
+if (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED)
 {
 	$tables = array_merge($tables, array(
 		'ina_ban',
@@ -627,9 +625,9 @@ $default_config = array(
 );
 
 // append data added in later versions
-if (isset($board_config) && isset($board_config['version']))
+if (isset($config) && isset($config['version']))
 {
-	$phpbb_version = explode('.', substr($board_config['version'], 1));
+	$phpbb_version = explode('.', substr($config['version'], 1));
 }
 else
 {
@@ -654,28 +652,26 @@ if (($phpbb_version[0] == 0) && ($phpbb_version[1] >= 19))
 sort($tables);
 
 
-//
 // Function for updating the config_table
-//
 function update_config($name, $value)
 {
-	global $db, $board_config;
+	global $db, $config;
 
 	$sql = 'UPDATE ' . CONFIG_TABLE . " SET config_value = '$value' WHERE config_name = '$name'";
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't update forum configuration!", __LINE__, __FILE__, $sql);
 	}
-	$board_config[$name] = $value;
+	$config[$name] = $value;
 }
 
-//
 // This is the equivalent function for message_die. Since we do not use the template system when doing database work, message_die() will not work.
-//
 function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $template, $lang, $theme;
+	global $db, $template, $theme, $lang;
 	global $list_open;
 
 	$sql_store = $sql;
@@ -732,7 +728,7 @@ function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
 // Locks or unlocks the database
 function lock_db($unlock = false, $delay = true, $ignore_default = false)
 {
-	global $board_config, $db, $lang;
+	global $config, $db, $lang;
 	static $db_was_locked = false;
 
 	if ($unlock)
@@ -749,7 +745,7 @@ function lock_db($unlock = false, $delay = true, $ignore_default = false)
 	{
 		echo('<p class="gen"><b>' . $lang['Lock_db'] . '</b></p>' . "\n");
 		// Check current lock state
-		if ($board_config['board_disable'] == 1)
+		if ($config['board_disable'])
 		{
 			// DB is already locked. Write this to var and exit
 			$db_was_locked = true;
@@ -785,7 +781,7 @@ function lock_db($unlock = false, $delay = true, $ignore_default = false)
 // Checks several conditions for the menu
 function check_condition($check)
 {
-	global $db, $board_config;
+	global $db, $config;
 
 	switch ($check)
 	{
@@ -801,8 +797,10 @@ function check_condition($check)
 				return false;
 			}
 			$sql = "SHOW TABLE STATUS LIKE '" . SESSIONS_TABLE . "'";
+			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
-			if(!$result)
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
 				return false; // Status unknown
 			}
@@ -822,7 +820,7 @@ function check_condition($check)
 			}
 			break;
 		case 3: // DB locked
-			if ($board_config['board_disable'] == 1)
+			if ($config['board_disable'])
 			{
 				// DB is locked
 				return true;
@@ -833,10 +831,10 @@ function check_condition($check)
 			}
 			break;
 		case 4: // Search index in recreation
-			if($board_config['dbmtnc_rebuild_pos'] <> -1)
+			if($config['dbmtnc_rebuild_pos'] <> -1)
 			{
 				// Rebuilding was interrupted - check for end position
-				if ($board_config['dbmtnc_rebuild_end'] >= $board_config['dbmtnc_rebuild_pos'])
+				if ($config['dbmtnc_rebuild_end'] >= $config['dbmtnc_rebuild_pos'])
 				{
 					return true;
 				}
@@ -855,10 +853,10 @@ function check_condition($check)
 			return (CONFIG_LEVEL != 0) ? true : false;
 			break;
 		case 6: // User post counter disabled
-			return ($board_config['dbmtnc_disallow_postcounter'] != 1) ? true : false;
+			return ($config['dbmtnc_disallow_postcounter'] != 1) ? true : false;
 			break;
 		case 7: // Rebuilding disabled
-			return ($board_config['dbmtnc_disallow_rebuild'] != 1) ? true : false;
+			return ($config['dbmtnc_disallow_rebuild'] != 1) ? true : false;
 			break;
 		case 8: // Seperator for rebuilding
 			return (check_condition(4) || check_condition(7)) ? true : false;
@@ -874,8 +872,10 @@ function check_mysql_version()
 	global $db;
 
 	$sql = 'SELECT VERSION() AS mysql_version';
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't obtain MySQL Version", __LINE__, __FILE__, $sql);
 	}
@@ -922,8 +922,10 @@ function get_table_statistic()
 	$stat['core']['size'] = 0;
 
 	$sql = 'SHOW TABLE STATUS';
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't obtain table data", __LINE__, __FILE__, $sql);
 	}
@@ -938,7 +940,7 @@ function get_table_statistic()
 			$stat['advanced']['records'] += intval($row['Rows']);
 			$stat['advanced']['size'] += intval($row['Data_length']) + intval($row['Index_length']);
 		}
-		for ($i = 0; $i < count($tables); $i++)
+		for ($i = 0; $i < sizeof($tables); $i++)
 		{
 			if ($table_prefix . $tables[$i] == $row['Name'])
 			{
@@ -979,11 +981,13 @@ function create_cat()
 
 	if (!$cat_created)
 	{
-		// Höchten Wert von cat_order ermitteln
-		$sql = 'SELECT Max(cat_order) AS cat_order
-			FROM ' . CATEGORIES_TABLE;
+		// HÃ¶chten Wert von cat_order ermitteln
+		$sql = 'SELECT MAX(forum_id) AS forum_id, MAX(forum_order) AS forum_order
+			FROM ' . FORUMS_TABLE;
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't get categories data!", __LINE__, __FILE__, $sql);
 		}
@@ -993,12 +997,15 @@ function create_cat()
 		{
 			throw_error("Couldn't get categories data!", __LINE__, __FILE__, $sql);
 		}
-		$next_cat_order = $row['cat_order'] + 10;
+		$next_cat_id = $row['forum_id'] + 1;
+		$next_cat_order = $row['forum_order'] + 10;
 
-		$sql = 'INSERT INTO ' . CATEGORIES_TABLE . ' (cat_title, cat_order)
-			VALUES (\'' . $lang['New_cat_name'] . "', $next_cat_order)";
+		$sql = "INSERT INTO " . FORUMS_TABLE . " (forum_id, parent_id, forum_type, main_type, forum_name, forum_desc, forum_order)
+			VALUES (" . $next_cat_id . ", 0, " . FORUM_CAT . ", '" . POST_CAT_URL . "', '" . $lang['New_cat_name'] . "', '" . $lang['New_cat_name'] . "', " . $next_cat_order . ")";
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't update categories data!", __LINE__, __FILE__, $sql);
 		}
@@ -1019,11 +1026,13 @@ function create_forum()
 
 	if (!$forum_created)
 	{
-		// Höchten Wert von forum_id ermitteln
-		$sql = 'SELECT Max(forum_id) AS forum_id
-			FROM ' . FORUMS_TABLE;
+		// HÃ¶chten Wert von forum_id ermitteln
+		$sql = 'SELECT MAX(forum_id) AS forum_id
+						FROM ' . FORUMS_TABLE;
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't get forum data!", __LINE__, __FILE__, $sql);
 		}
@@ -1034,12 +1043,13 @@ function create_forum()
 			throw_error("Couldn't get forum data!", __LINE__, __FILE__, $sql);
 		}
 		$next_forum_id = $row['forum_id'] + 1;
-		// Höchten Wert von forum_order ermitteln
-		$sql = 'SELECT Max(forum_order) AS forum_order
-			FROM ' . FORUMS_TABLE . "
-			WHERE cat_id = $cat_id";
+		// HÃ¶chten Wert von forum_order ermitteln
+		$sql = 'SELECT MAX(forum_order) AS forum_order
+				FROM ' . FORUMS_TABLE;
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't get forum data!", __LINE__, __FILE__, $sql);
 		}
@@ -1052,17 +1062,21 @@ function create_forum()
 		$next_forum_order = $row['forum_order'] + 10;
 
 		$sql = "INSERT INTO " . FORUMS_RULES_TABLE . " (forum_id, rules) VALUES ('" . $next_forum_id . "', '')";
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't update forums rules data!", __LINE__, __FILE__, $sql);
 		}
 
 		$forum_permission = AUTH_ADMIN;
-		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, cat_id, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)
-			VALUES ($next_forum_id, $cat_id, '" . $lang['New_forum_name'] . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
+		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, forum_type, parent_id, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)
+			VALUES ($next_forum_id, " . FORUM_POST . ", $cat_id, '" . $lang['New_forum_name'] . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't update forums data!", __LINE__, __FILE__, $sql);
 		}
@@ -1085,8 +1099,10 @@ function create_topic()
 	{
 		$sql = 'INSERT INTO ' . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_vote, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id)
 			VALUES ($forum_id, '" . $lang['New_topic_name'] . "', -1, " . time() . ", 0, 0, " . TOPIC_UNLOCKED . ", 0, " . POST_NORMAL . ", 0, 0, 0)";
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't update topics data!", __LINE__, __FILE__, $sql);
 		}
@@ -1101,11 +1117,13 @@ function get_poster($topic_id)
 {
 	global $db;
 
-	$sql = 'SELECT Min(post_id) AS first_post
+	$sql = 'SELECT MIN(post_id) AS first_post
 		FROM ' . POSTS_TABLE . "
 		WHERE topic_id = $topic_id";
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get post data!", __LINE__, __FILE__, $sql);
 	}
@@ -1118,8 +1136,10 @@ function get_poster($topic_id)
 	$sql = 'SELECT poster_id
 		FROM ' . POSTS_TABLE . '
 		WHERE post_id = ' . $row['first_post'];
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get post data!", __LINE__, __FILE__, $sql);
 	}
@@ -1142,7 +1162,7 @@ function catch_error($errno, $errstr)
 // Gets the ID of a word or creates it
 function get_word_id($word)
 {
-	global $board_config, $db, $lang, $template, $theme;
+	global $db, $config, $template, $theme, $lang;
 	global $stopword_array, $synonym_array;
 
 	// Check whether word is in stopword array
@@ -1159,7 +1179,9 @@ function get_word_id($word)
 	$sql = "SELECT word_id, word_common
 		FROM " . SEARCH_WORD_TABLE . "
 		WHERE word_text = '$word'";
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
 	if (!$result)
 	{
 		include('./page_header_admin.' . PHP_EXT);
@@ -1178,9 +1200,11 @@ function get_word_id($word)
 	}
 	else // Word was not found
 	{
-		$sql = "INSERT INTO " . SEARCH_WORD_TABLE . " (word_text, word_common)
-			VALUES ('$word', 0)";
-		if (!$db->sql_query($sql))
+		$sql = "INSERT INTO " . SEARCH_WORD_TABLE . " (word_text, word_common) VALUES ('$word', 0)";
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			include('./page_header_admin.' . PHP_EXT);
 			throw_error("Couldn't insert search word data!", __LINE__, __FILE__, $sql);
@@ -1199,8 +1223,10 @@ function set_autoincrement($table, $column, $length, $unsigned = true)
 	if (check_mysql_version())
 	{
 		$sql2 = "SHOW COLUMNS FROM $table LIKE '$column'";
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql2);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't get table status!", __LINE__, __FILE__, $sql2);
 		}
@@ -1217,8 +1243,10 @@ function set_autoincrement($table, $column, $length, $unsigned = true)
 		else
 		{
 			echo("<li>$table: <b>" . $lang['Ai_message_update_table'] . '</b></li>' . "\n");
+			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
-			if(!$result)
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
 				throw_error("Couldn't alter table!", __LINE__, __FILE__, $sql);
 			}
@@ -1227,8 +1255,10 @@ function set_autoincrement($table, $column, $length, $unsigned = true)
 	else // old Version of MySQL - do the update in any case
 	{
 		echo("<li>$table: <b>" . $lang['Ai_message_update_table_old_mysql'] . '</b></li>' . "\n");
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		if(!$result)
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			throw_error("Couldn't alter table!", __LINE__, __FILE__, $sql);
 		}
@@ -1282,74 +1312,9 @@ function erc_throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = 
 	exit;
 }
 
-function language_select($default, $select_name = 'language', $file_to_check = 'main', $dirname = 'language')
-{
-	global $lang;
-
-	$dir = opendir(IP_ROOT_PATH . $dirname);
-
-	$lg = array();
-	while ($file = readdir($dir))
-	{
-		if (preg_match('#^lang_#i', $file) && !is_file(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)) && is_file(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file . '/lang_' . $file_to_check . '.' . PHP_EXT)))
-		{
-			$filename = trim(str_replace("lang_", "", $file));
-			$displayname = preg_replace("/^(.*?)_(.*)$/", "\\1 [ \\2 ]", $filename);
-			$displayname = preg_replace("/\[(.*?)_(.*)\]/", "[ \\1 - \\2 ]", $displayname);
-			$lg[$displayname] = $filename;
-		}
-	}
-
-	closedir($dir);
-
-	@asort($lg);
-	@reset($lg);
-
-	if (count($lg))
-	{
-		$lang_select = '<select name="' . $select_name . '">';
-		while (list($displayname, $filename) = @each($lg))
-		{
-			$selected = (strtolower($default) == strtolower($filename)) ? ' selected="selected"' : '';
-			$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
-		}
-		$lang_select .= '</select>';
-	}
-	else
-	{
-		$lang_select = $lang['No_selectable_language'];
-	}
-
-	return $lang_select;
-}
-
-function style_select($default_style, $select_name = 'style', $dirname = 'templates')
-{
-	global $db;
-
-	$sql = "SELECT themes_id, style_name
-		FROM " . THEMES_TABLE . "
-		ORDER BY template_name, themes_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		erc_throw_error('Couldn\'t query themes table', __LINE__, __FILE__, $sql);
-	}
-
-	$style_select = '<select name="' . $select_name . '">';
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$selected = ($row['themes_id'] == $default_style) ? ' selected="selected"' : '';
-		$style_select .= '<option value="' . $row['themes_id'] . '"' . $selected . '>' . htmlspecialchars($row['style_name']) . '</option>';
-	}
-	$db->sql_freeresult($result);
-	$style_select .= "</select>";
-
-	return $style_select;
-}
-
 function check_authorization($die = true)
 {
-	global $db, $lang, $dbuser, $dbpasswd, $option, $_POST;
+	global $db, $lang, $dbuser, $dbpasswd, $option;
 
 	$auth_method = (isset($_POST['auth_method'])) ? htmlspecialchars($_POST['auth_method']) : '';
 	$board_user = isset($_POST['board_user']) ? trim(htmlspecialchars($_POST['board_user'])) : '';
@@ -1370,7 +1335,10 @@ function check_authorization($die = true)
 			$sql = "SELECT user_id, username, user_password, user_active, user_level
 				FROM " . USERS_TABLE . "
 				WHERE username = '" . str_replace("\\'", "''", $board_user) . "'";
-			if (!($result = $db->sql_query($sql)))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
 				erc_throw_error('Error in obtaining userdata', __LINE__, __FILE__, $sql);
 			}
@@ -1423,7 +1391,9 @@ function get_config_data($option)
 	$sql = "SELECT config_value
 		FROM " . CONFIG_TABLE . "
 		WHERE config_name = '$option'";
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
 	if (!$result)
 	{
 		erc_throw_error("Couldn't get config data!", __LINE__, __FILE__, $sql);
@@ -1444,7 +1414,8 @@ function success_message($text)
 
 ?>
 	<p><?php echo $text; ?></p>
-	<p style="text-align:center"><a href="<?php echo $_SERVER['PHP_SELF'] . '?lg=' . $lg; ?>"><?php echo $lang['Return_ERC']; ?></a></p>
+	<p style="text-align: center;"><a href="<?php echo $_SERVER['PHP_SELF'] . '?lg=' . $lg; ?>"><?php echo $lang['Return_ERC']; ?></a></p>
 <?php
 }
+
 ?>

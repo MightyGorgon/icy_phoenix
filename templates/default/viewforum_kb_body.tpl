@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <h2 style="text-align: left;"><a href="{U_VIEW_FORUM}" style="text-decoration: none;">{FORUM_NAME}</a></h2>
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -96,3 +98,5 @@
 	<td width="40%" align="right" valign="top" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /></td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

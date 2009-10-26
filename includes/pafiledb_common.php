@@ -54,7 +54,7 @@ if (!get_magic_quotes_gpc())
 //===================================================
 // Get Language
 //===================================================
-$language = $board_config['default_lang'];
+$language = $config['default_lang'];
 
 include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_pafiledb.' . PHP_EXT);
 include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_pafiledb.' . PHP_EXT);
@@ -72,17 +72,17 @@ if (defined('IN_ADMIN'))
 	include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_pafiledb_admin.' . PHP_EXT);
 }
 
-$cache = new acm();
+$pa_cache = new acm();
 $pafiledb_functions = new pafiledb_functions();
 
-if ($cache->exists('config'))
+if ($pa_cache->exists('config'))
 {
-	$pafiledb_config = $cache->get('config');
+	$pafiledb_config = $pa_cache->get('config');
 }
 else
 {
 	$pafiledb_config = $pafiledb_functions->pafiledb_config();
-	$cache->put('config', $pafiledb_config);
+	$pa_cache->put('config', $pafiledb_config);
 }
 
 $pafiledb_user = new user_info();
@@ -101,7 +101,7 @@ if (file_exists($current_template_cfg_pa))
 }
 else
 {
-	$current_template_cfg_pa = IP_ROOT_PATH . $template_path . $board_config['xs_def_template'] . '/' . $board_config['xs_def_template'] . '_pa.cfg';
+	$current_template_cfg_pa = IP_ROOT_PATH . $template_path . $config['xs_def_template'] . '/' . $config['xs_def_template'] . '_pa.cfg';
 	if (file_exists($current_template_cfg_pa))
 	{
 		@include_once($current_template_cfg_pa);

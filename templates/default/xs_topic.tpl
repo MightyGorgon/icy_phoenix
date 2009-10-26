@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 <script type="text/javascript">
 <!--
@@ -14,7 +16,7 @@ function openAllSmiles()
 <?php
 
 // check if quick reply is enabled
-global $userdata, $board_config, $topic_id, $is_auth, $forum_topic_data, $lang, $images;
+global $userdata, $config, $topic_id, $is_auth, $forum_topic_data, $lang, $images;
 
 $can_reply = $userdata['session_logged_in'] ? true : false;
 //$can_reply = true;
@@ -123,13 +125,13 @@ if($can_reply)
 ?>
 <div id="quick_reply" style="display: none; position: relative;">
 <a id="quick"></a>
-<form action="<?php echo append_sid(POSTING_MG); ?>" method="post" name="post" style="display: inline;">
+<form action="<?php echo append_sid(CMS_PAGE_POSTING); ?>" method="post" name="post" style="display: inline;">
 {S_HIDDEN_FIELDS}
 <input type="hidden" name="post_time" value="<?php echo time(); ?>" />
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%" tabindex="2" class="post" value="{L_REPLY_PREFIX}{TOPIC_TITLE}" /></td>
+	<td class="row2" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%;" tabindex="2" class="post" value="{L_REPLY_PREFIX}{TOPIC_TITLE}" /></td>
 </tr>
 <tr>
 	<td class="row1" width="200" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{T_TEMPLATE_PATH}/images/spacer.gif" width="200" height="1" alt="" /></b></span></td>
@@ -154,19 +156,19 @@ if($can_reply)
 	<td class="row1" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Options']; ?>:</b></span></td>
 	<td class="row2">
 	<?php
-		$user_sig = ($userdata['user_sig'] != '' && $board_config['allow_sig']) ? $userdata['user_sig'] : '';
-		$html_on = $board_config['allow_html'] ? $userdata['user_allowhtml'] : 1;
-		$bbcode_on = $board_config['allow_bbcode'] ? $userdata['user_allowbbcode'] : 0;
-		$smilies_on = $board_config['allow_smilies'] ? $userdata['user_allowsmile'] : 0;
+		$user_sig = ($userdata['user_sig'] != '' && $config['allow_sig']) ? $userdata['user_sig'] : '';
+		$html_on = $config['allow_html'] ? $userdata['user_allowhtml'] : 1;
+		$bbcode_on = $config['allow_bbcode'] ? $userdata['user_allowbbcode'] : 0;
+		$smilies_on = $config['allow_smilies'] ? $userdata['user_allowsmile'] : 0;
 	?>
 	<label><input type="checkbox" name="disable_acro_auto" />&nbsp;<span class="genmed"><?php echo $lang['Disable_ACRO_AUTO_post']; ?></span></label><br />
-	<?php if($board_config['allow_html']) { ?>
+	<?php if($config['allow_html']) { ?>
 	<label><input type="checkbox" name="disable_html" <?php echo ($html_on ? '' : 'checked="checked"'); ?> />&nbsp;<span class="genmed"><?php echo $lang['Disable_HTML_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_html" value="checked" /><?php } ?>
-	<?php if($board_config['allow_bbcode']) { ?>
+	<?php if($config['allow_bbcode']) { ?>
 	<label><input type="checkbox" name="disable_bbcode" <?php echo ($bbcode_on ? '' : 'checked="checked"'); ?> />&nbsp;<span class="genmed"><?php echo $lang['Disable_BBCode_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_bbcode" value="checked" /><?php } ?>
-	<?php if($board_config['allow_smilies']) { ?>
+	<?php if($config['allow_smilies']) { ?>
 	<label><input type="checkbox" name="disable_smilies" <?php echo ($smilies_on ? '' : 'checked="checked"'); ?> />&nbsp;<span class="genmed"><?php echo $lang['Disable_Smilies_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_smilies" value="checked" /><?php } ?>
 	<?php if($user_sig) { ?>
@@ -204,3 +206,5 @@ if($can_reply)
 <!-- ELSE -->
 <!-- INCLUDE viewtopic_body.tpl -->
 <!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.tpl -->

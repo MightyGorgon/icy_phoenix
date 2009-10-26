@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <br />
 {IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th height="25" nowrap="nowrap" colspan="3">{L_HEADER_TEXT}</th></tr>
@@ -40,3 +42,5 @@
 <!-- END log_set -->
 
 <br />
+
+<!-- INCLUDE overall_footer.tpl -->

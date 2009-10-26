@@ -37,20 +37,13 @@ $start = ($start < 0) ? 0 : $start;
 $show_all = isset($_GET['show_all']) ? true : false;
 */
 
-$cms_page_id = 'viewonline';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'viewonline';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-// Output page header and load viewonline template
-$page_title = $lang['Who_is_Online'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'viewonline_body.tpl'));
-make_jumpbox(VIEWFORUM_MG);
+make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 $template->assign_vars(array(
 	// Start add - Fully integrated shoutbox MOD
@@ -74,18 +67,11 @@ $template->assign_vars(array(
 );
 
 // Forum info
-$sql = "SELECT forum_name, forum_id FROM " . FORUMS_TABLE;
-if ($result = $db->sql_query($sql, false, 'forums_info_', FORUMS_CACHE_FOLDER))
+$forum_types = array(FORUM_CAT, FORUM_POST, FORUM_LINK);
+$forums_array = get_forums_ids($forum_types, true, false);
+foreach ($forums_array as $forum)
 {
-	while($row = $db->sql_fetchrow($result))
-	{
-		//$forum_data[$row['forum_id']] = get_object_lang(POST_FORUM_URL . $row['forum_id'], 'name');
-		$forum_data[$row['forum_id']] = $row['forum_name'];
-	}
-}
-else
-{
-	message_die(GENERAL_ERROR, 'Could not obtain user/online forums information', '', __LINE__, __FILE__, $sql);
+	$forum_data[$forum['forum_id']] = $forum['forum_name'];
 }
 
 // Get auth data
@@ -100,7 +86,7 @@ if ($show_all)
 }
 else
 {
-	$sql_limit = 'LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+	$sql_limit = 'LIMIT ' . $start . ', ' . $config['topics_per_page'];
 }
 */
 
@@ -110,10 +96,7 @@ $sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_
 	WHERE u.user_id = s.session_user_id
 	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
 	ORDER BY u.username ASC, s.session_ip ASC";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain regd user/online information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 $guest_users = 0;
 $registered_users = 0;
@@ -165,7 +148,7 @@ while($row = $db->sql_fetchrow($result))
 		if ($row['session_ip'] != $prev_ip)
 		{
 			// MG BOTS Parsing - BEGIN
-			$bot_name_tmp = bots_parse($row['session_ip'], $board_config['bots_color'], $row['session_user_agent']);
+			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_user_agent']);
 			if ($bot_name_tmp != false)
 			{
 				$username = $bot_name_tmp;
@@ -186,7 +169,7 @@ while($row = $db->sql_fetchrow($result))
 
 	if ($view_online)
 	{
-		if ((strpos($row['session_page'], VIEWFORUM_MG) !== false) || (strpos($row['session_page'], VIEWTOPIC_MG) !== false))
+		if ((strpos($row['session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($row['session_page'], CMS_PAGE_VIEWTOPIC) !== false))
 		{
 			$results = array();
 			ereg('_f_=([0-9]*)x', $row['session_page'], $results);
@@ -208,23 +191,17 @@ while($row = $db->sql_fetchrow($result))
 		{
 			// Topic info
 			$sql_tt = "SELECT topic_title, forum_id FROM " . TOPICS_TABLE . " WHERE topic_id='" . $topic_id . "'";
-			if ($result_tt = $db->sql_query($sql_tt))
-			{
-				$topic_title = $db->sql_fetchrow($result_tt);
-			}
-			else
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain user/online forums information', '', __LINE__, __FILE__, $sql_tt);
-			}
+			$result_tt = $db->sql_query($sql_tt);
+			$topic_title = $db->sql_fetchrow($result_tt);
 			if ($is_auth_ary[$topic_title['forum_id']]['auth_read'] != false)
 			{
 				$location['lang'] = $forum_data[$topic_title['forum_id']] . '&nbsp;&raquo;&nbsp;' . $topic_title['topic_title'];
-				$location['url'] = VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $topic_title['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $topic_id;
+				$location['url'] = CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $topic_title['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $topic_id;
 			}
 			else
 			{
 				$location['lang'] = $lang['Forum_index'];
-				$location['url'] = FORUM_MG;
+				$location['url'] = CMS_PAGE_FORUM;
 			}
 		}
 		else
@@ -233,7 +210,7 @@ while($row = $db->sql_fetchrow($result))
 			//if (!empty($forum_id))
 			{
 				$location['lang'] = $forum_data[$forum_id];
-				$location['url'] = VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id;
+				$location['url'] = CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id;
 			}
 			else
 			{
@@ -268,13 +245,13 @@ while($row = $db->sql_fetchrow($result))
 
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => $username,
-			'LASTUPDATE' => create_date_ip($board_config['default_dateformat'], $row['session_time'], $board_config['board_timezone']),
+			'LASTUPDATE' => create_date_ip($config['default_dateformat'], $row['session_time'], $config['board_timezone']),
 			'FORUM_LOCATION' => $location['lang'],
 			// Mighty Gorgon - HTTP AGENTS - BEGIN
 			'USER_OS_IMG' => $user_os['img'],
 			'USER_BROWSER_IMG' => $user_browser['img'],
 			// Mighty Gorgon - HTTP AGENTS - END
-			'U_USER_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
+			'U_USER_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
 			'U_FORUM_LOCATION' => $location['url']
 			)
 		);
@@ -349,21 +326,21 @@ if ($guest_users == 0)
 		)
 	);
 }
-if ($board_config['online_shoutbox'] == 1)
+if ($config['online_shoutbox'] == 1)
 {
 	$template->assign_vars(array('S_SHOUTBOX' => true));
 }
 
 // Recent Topics - BEGIN
-if ($board_config['online_last_msgs'] == 1)
+if ($config['online_last_msgs'] == 1)
 {
 	$template->assign_block_vars('switch_show_recent', array());
 
 	$except_forums = build_exclusion_forums_list();
 
-	if(!empty($board_config['last_msgs_x']))
+	if(!empty($config['last_msgs_x']))
 	{
-		$except_forums .= ',' . $board_config['last_msgs_x'];
+		$except_forums .= ',' . $config['last_msgs_x'];
 	}
 
 	$except_forums = str_replace(' ', '', $except_forums);
@@ -376,11 +353,8 @@ if ($board_config['online_last_msgs'] == 1)
 				AND p.poster_id = u.user_id
 				AND f.forum_id = t.forum_id
 			ORDER BY p.post_id DESC
-			LIMIT " . intval($board_config['last_msgs_n']);
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query recent topics information', '', __LINE__, __FILE__, $sql);
-	}
+			LIMIT " . intval($config['last_msgs_n']);
+	$result = $db->sql_query($sql);
 	$number_recent_topics = $db->sql_numrows($result);
 	$recent_topic_row = array();
 	while($row = $db->sql_fetchrow($result))
@@ -390,13 +364,13 @@ if ($board_config['online_last_msgs'] == 1)
 	for($i = 0; $i < $number_recent_topics; $i++)
 	{
 		$template->assign_block_vars('switch_show_recent.recent_topic_row', array(
-			'U_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id']),
+			'U_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id']),
 			'L_FORUM' => $recent_topic_row[$i]['forum_name'],
-			'U_TITLE' => append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' .$recent_topic_row[$i]['post_id'],
+			'U_TITLE' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' .$recent_topic_row[$i]['post_id'],
 			'L_TITLE' => $recent_topic_row[$i]['topic_title'],
 			'U_POSTER' => colorize_username($recent_topic_row[$i]['user_id'], $recent_topic_row[$i]['username'], $recent_topic_row[$i]['user_color'], $recent_topic_row[$i]['user_active']),
 			'S_POSTER' => $recent_topic_row[$i]['username'],
-			'S_POSTTIME' => create_date_ip($board_config['default_dateformat'], $recent_topic_row[$i]['post_time'], $board_config['board_timezone'])
+			'S_POSTTIME' => create_date_ip($config['default_dateformat'], $recent_topic_row[$i]['post_time'], $config['board_timezone'])
 			)
 		);
 	}
@@ -406,8 +380,8 @@ if ($board_config['online_last_msgs'] == 1)
 	$sql = "SELECT username, user_id, user_active, user_color, user_lastlogon, user_level, user_allow_viewonline
 					FROM " . USERS_TABLE . "
 					WHERE user_id > 0 ORDER BY user_lastlogon DESC
-					LIMIT " . intval($board_config['last_msgs_n']);
-	if(!$result = $db->sql_query($sql)) { message_die(GENERAL_ERROR, 'Could not query last seen information', '', __LINE__, __FILE__, $sql); }
+					LIMIT " . intval($config['last_msgs_n']);
+	$result = $db->sql_query($sql);
 	$number_last_seen = $db->sql_numrows($result);
 	$last_seen_row = array();
 	while($row = $db->sql_fetchrow($result)) { $last_seen_row[] = $row; }
@@ -430,8 +404,8 @@ if ($board_config['online_last_msgs'] == 1)
 		$template->assign_block_vars('switch_show_recent.last_seen_row', array(
 				'U_LSEEN_LINK' => ($last_seen_row[$i]['user_allow_viewonline']) ? $username : (($userdata[user_level] == ADMIN) ? '<i>' . $username . '</i>' : $username),
 				'L_LSEEN_USERNAME' => $username_text,
-				'L_LSEEN_TIME' => create_date_ip($board_config['default_dateformat'], $last_seen_row[$i]['user_lastlogon'], $board_config['board_timezone']),
-				//'L_LSEEN_TIME' => date("d.m.Y - H:i", $last_seen_row[$i]['user_lastlogon']),
+				'L_LSEEN_TIME' => create_date_ip($config['default_dateformat'], $last_seen_row[$i]['user_lastlogon'], $config['board_timezone']),
+				//'L_LSEEN_TIME' => gmdate("d.m.Y - H:i", $last_seen_row[$i]['user_lastlogon']),
 			)
 		);
 	}
@@ -439,9 +413,6 @@ if ($board_config['online_last_msgs'] == 1)
 }
 // Recent Topics - END
 
-
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('viewonline_body.tpl', $lang['Who_is_Online'], '', '');
 
 ?>

@@ -28,7 +28,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function display_upload_attach_box_limits($user_id, $group_id = 0)
 {
-	global $attach_config, $board_config, $lang, $db, $template, $userdata, $profiledata, $images;
+	global $attach_config, $config, $lang, $db, $template, $userdata, $profiledata, $images;
 
 	if (intval($attach_config['disable_mod']))
 	{
@@ -69,11 +69,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 				AND q.quota_type = ' . QUOTA_UPLOAD_LIMIT . '
 				AND q.quota_limit_id = l.quota_limit_id
 			LIMIT 1';
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not get Group Quota', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($db->sql_numrows($result) > 0)
 		{
@@ -98,11 +94,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 					FROM ' . QUOTA_LIMITS_TABLE . '
 					WHERE quota_limit_id = ' . (int) $quota_id . '
 					LIMIT 1';
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Could not get Quota Limit', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				if ($db->sql_numrows($result) > 0)
 				{
@@ -166,12 +158,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 		WHERE user_id_1 = ' . (int) $user_id . '
 			AND privmsgs_id = 0
 		GROUP BY attach_id';
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$attach_ids = $db->sql_fetchrowset($result);
 	$num_attach_ids = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -182,7 +169,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 		$attach_id[] = intval($attach_ids[$j]['attach_id']);
 	}
 
-	$upload_filesize = (count($attach_id) > 0) ? get_total_attach_filesize($attach_id) : 0;
+	$upload_filesize = (sizeof($attach_id) > 0) ? get_total_attach_filesize($attach_id) : 0;
 
 	$size_lang = ($upload_filesize >= 1048576) ? $lang['MB'] : ( ($upload_filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 
@@ -200,10 +187,10 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 	}
 
 	$upload_limit_pct = ( $upload_filesize_limit > 0 ) ? round(( $upload_filesize / $upload_filesize_limit ) * 100) : 0;
-	$upload_limit_img_length = ( $upload_filesize_limit > 0 ) ? round(( $upload_filesize / $upload_filesize_limit ) * $board_config['privmsg_graphic_length']) : 0;
+	$upload_limit_img_length = ( $upload_filesize_limit > 0 ) ? round(( $upload_filesize / $upload_filesize_limit ) * $config['privmsg_graphic_length']) : 0;
 	if ($upload_limit_pct > 100)
 	{
-		$upload_limit_img_length = $board_config['privmsg_graphic_length'];
+		$upload_limit_img_length = $config['privmsg_graphic_length'];
 	}
 	$upload_limit_remain = ( $upload_filesize_limit > 0 ) ? $upload_filesize_limit - $upload_filesize : 100;
 	if ( $upload_limit_pct <= 30 )

@@ -1,3 +1,9 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <script type="text/javaScript">
 <!--
 function goForm(form)
@@ -65,3 +71,9 @@ function goForm(form)
 </tr>
 </table>
 </form>
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

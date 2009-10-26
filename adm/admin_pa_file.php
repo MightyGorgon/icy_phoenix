@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['2000_Downloads']['120_File_manage_title'] = $file;
@@ -38,7 +38,7 @@ $pafiledb->init();
 $cat_id = (isset($_REQUEST['cat_id'])) ? intval($_REQUEST['cat_id']) : 0;
 $file_id = (isset($_REQUEST['file_id'])) ? intval($_REQUEST['file_id']) : 0;
 $file_ids = (isset($_POST['file_ids'])) ? array_map('intval', $_POST['file_ids']) : array();
-$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
+$start = (isset($_REQUEST['start'])) ? intval($_REQUEST['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
 
 $mode = (isset($_REQUEST['mode'])) ? htmlspecialchars($_REQUEST['mode']) : '';
@@ -51,7 +51,7 @@ $mode = (empty($mode)) ? $mode_js : $mode;
 
 $mirrors = (isset($_POST['mirrors'])) ? TRUE : 0;
 
-if( isset($_REQUEST['sort_method']) )
+if(isset($_REQUEST['sort_method']))
 {
 	switch ($_REQUEST['sort_method'])
 	{
@@ -79,7 +79,7 @@ else
 	$sort_method = $pafiledb_config['sort_method'];
 }
 
-if( isset($_REQUEST['sort_order']) )
+if(isset($_REQUEST['sort_order']))
 {
 	switch ($_REQUEST['sort_order'])
 	{
@@ -240,15 +240,11 @@ if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove',
 
 			if($mode == '' || $mode == 'file_cat' || $mode == 'all_file')
 			{
-				if( (!$result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$total_files = $db->sql_numrows($result);
 			}
 
-		if ( !($result = $pafiledb_functions->sql_query_limit($sql, $pafiledb_config['settings_file_page'], $start)) )
+		if (!($result = $pafiledb_functions->sql_query_limit($sql, $pafiledb_config['settings_file_page'], $start)))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 		}
@@ -281,15 +277,11 @@ if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove',
 
 			if($mode == 'approved')
 			{
-				if( (!$result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$total_files = $db->sql_numrows($result);
 			}
 
-			if ( !($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)) )
+			if (!($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)))
 			{
 				message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 			}
@@ -309,15 +301,11 @@ if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove',
 
 			if($mode == 'broken')
 			{
-				if( (!$result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$total_files = $db->sql_numrows($result);
 			}
 
-			if ( !($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)) )
+			if (!($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)))
 			{
 				message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 			}
@@ -397,7 +385,7 @@ if(in_array($mode, array('', 'approved', 'broken', 'do_approve', 'do_unapprove',
 		'L_NO_FILES' => $lang['No_file'],
 
 		'PAGINATION' => generate_pagination(append_sid('admin_pa_file.' . PHP_EXT . '?mode=' . $mode . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . '&amp;cat_id=' . $cat_id), $total_files, $pafiledb_config['settings_file_page'], $start),
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pafiledb_config['settings_file_page'] ) + 1 ), ceil( $total_files / $pafiledb_config['settings_file_page'] )),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pafiledb_config['settings_file_page']) + 1), ceil($total_files / $pafiledb_config['settings_file_page'])),
 
 		'S_CAT_LIST' => $cat_list,
 		'S_MODE_SELECT' => $s_file_list)
@@ -476,10 +464,7 @@ elseif($mode == 'add' || $mode == 'edit' || $mirrors)
 		$sql = 'SELECT *
 			FROM ' . PA_FILES_TABLE . "
 			WHERE file_id = $file_id";
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$file_info = $db->sql_fetchrow($result);
 
 		$file_name = $file_info['file_name'];
@@ -594,12 +579,12 @@ elseif($mode == 'mirrors')
 	}
 	if(isset($_POST['add_new']))
 	{
-		$file_upload = ( empty($_POST['new_download_url']) ) ? TRUE : FALSE;
+		$file_upload = (empty($_POST['new_download_url'])) ? TRUE : FALSE;
 		$file_remote_url = (!empty($_POST['new_download_url'])) ? $_POST['new_download_url'] : '';
-		$file_local = ( $_FILES['new_userfile']['tmp_name'] !== 'none') ? $_FILES['new_userfile']['tmp_name'] : '';
-		$file_realname = ( $_FILES['new_userfile']['name'] !== 'none' ) ? $_FILES['new_userfile']['name'] : '';
-		$file_size = ( !empty($_FILES['new_userfile']['size']) ) ? $_FILES['new_userfile']['size'] : '';
-		$file_type = ( !empty($_FILES['new_userfile']['type']) ) ? $_FILES['new_userfile']['type'] : '';
+		$file_local = ($_FILES['new_userfile']['tmp_name'] !== 'none') ? $_FILES['new_userfile']['tmp_name'] : '';
+		$file_realname = ($_FILES['new_userfile']['name'] !== 'none') ? $_FILES['new_userfile']['name'] : '';
+		$file_size = (!empty($_FILES['new_userfile']['size'])) ? $_FILES['new_userfile']['size'] : '';
+		$file_type = (!empty($_FILES['new_userfile']['type'])) ? $_FILES['new_userfile']['type'] : '';
 		$mirror_location = (!empty($_POST['new_location'])) ? $_POST['new_location'] : '';
 
 		$pafiledb->mirror_add_update($file_id, $file_upload, $file_remote_url, $file_local, $file_realname, $file_size, $file_type, $mirror_location);
@@ -638,12 +623,12 @@ elseif($mode == 'mirrors')
 
 		foreach($data as $mirror_id => $mirror_data)
 		{
-			$file_upload = ( empty($mirror_data['download_url']) ) ? TRUE : FALSE;
+			$file_upload = (empty($mirror_data['download_url'])) ? TRUE : FALSE;
 			$file_remote_url = (!empty($mirror_data['download_url'])) ? $mirror_data['download_url'] : '';
-			$file_local = ( $mirror_data['tmp_name'] !== 'none') ? $mirror_data['tmp_name'] : '';
-			$file_realname = ( $mirror_data['name'] !== 'none' ) ? $mirror_data['name'] : '';
-			$file_size = ( !empty($mirror_data['size']) ) ? $mirror_data['size'] : '';
-			$file_type = ( !empty($mirror_data['type']) ) ? $mirror_data['type'] : '';
+			$file_local = ($mirror_data['tmp_name'] !== 'none') ? $mirror_data['tmp_name'] : '';
+			$file_realname = ($mirror_data['name'] !== 'none') ? $mirror_data['name'] : '';
+			$file_size = (!empty($mirror_data['size'])) ? $mirror_data['size'] : '';
+			$file_type = (!empty($mirror_data['type'])) ? $mirror_data['type'] : '';
 
 			$mirror_location = (!empty($mirror_data['location'])) ? $mirror_data['location'] : '';
 
@@ -657,11 +642,7 @@ elseif($mode == 'mirrors')
 		FROM ' . PA_MIRRORS_TABLE . " AS f
 		WHERE f.file_id = '" . $file_id . "'
 		ORDER BY mirror_id";
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Couldnt select download', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$mirrors_data = array();
 	while($row = $db->sql_fetchrow($result))
@@ -699,14 +680,14 @@ elseif($mode == 'mirrors')
 }
 
 $pafiledb_template->assign_vars(array(
-	'ERROR' => (count($pafiledb->error)) ? implode('<br />', $pafiledb->error) : ''
+	'ERROR' => (sizeof($pafiledb->error)) ? implode('<br />', $pafiledb->error) : ''
 	)
 );
 
 $pafiledb_template->display('admin');
 
 $pafiledb->_pafiledb();
-$cache->unload();
+$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

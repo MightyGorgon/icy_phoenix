@@ -20,7 +20,6 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-$db->clear_cache('config_');
 
 if (isset($_POST['mode']) || isset($_GET['mode']))
 {
@@ -136,8 +135,8 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "ctracker_config` SET `ct_config_value` = '1' WHERE `ct_config_name` = 'loginfeature'";
 		$sql[] = "UPDATE `" . $table_prefix . "ctracker_config` SET `ct_config_value` = '1' WHERE `ct_config_name` = 'reg_ip_scan'";
 
-		$sql[] = "UPDATE `" . $table_prefix . "xs_news_cfg` SET `config_value` = '1' WHERE `config_name` = 'xs_show_news'";
-		$sql[] = "UPDATE `" . $table_prefix . "xs_news_cfg` SET `config_value` = '1' WHERE `config_name` = 'xs_show_ticker'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'xs_show_news'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'xs_show_ticker'";
 	}
 
 	if ( $mode == 'set_fnf' )
@@ -247,8 +246,8 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "ctracker_config` SET `ct_config_value` = '0' WHERE `ct_config_name` = 'loginfeature'";
 		$sql[] = "UPDATE `" . $table_prefix . "ctracker_config` SET `ct_config_value` = '0' WHERE `ct_config_name` = 'reg_ip_scan'";
 
-		$sql[] = "UPDATE `" . $table_prefix . "xs_news_cfg` SET `config_value` = '0' WHERE `config_name` = 'xs_show_news'";
-		$sql[] = "UPDATE `" . $table_prefix . "xs_news_cfg` SET `config_value` = '0' WHERE `config_name` = 'xs_show_ticker'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'xs_show_news'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'xs_show_ticker'";
 	}
 
 	if ( $mode == 'set_mg_fav' )
@@ -364,8 +363,8 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "ctracker_config` SET `ct_config_value` = '0' WHERE `ct_config_name` = 'loginfeature'";
 		$sql[] = "UPDATE `" . $table_prefix . "ctracker_config` SET `ct_config_value` = '0' WHERE `ct_config_name` = 'reg_ip_scan'";
 
-		$sql[] = "UPDATE `" . $table_prefix . "xs_news_cfg` SET `config_value` = '0' WHERE `config_name` = 'xs_show_news'";
-		$sql[] = "UPDATE `" . $table_prefix . "xs_news_cfg` SET `config_value` = '0' WHERE `config_name` = 'xs_show_ticker'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'xs_show_news'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'xs_show_ticker'";
 	}
 
 	//
@@ -373,7 +372,7 @@ if (substr($mode, 0, 3) == 'set')
 	//
 
 	$output_message = '<span class="genmed"><ul type="circle">';
-	for( $i = 0; $i < count($sql); $i++ )
+	for( $i = 0; $i < sizeof($sql); $i++ )
 	{
 		if( !$result = $db->sql_query ($sql[$i]) )
 		{

@@ -19,18 +19,12 @@ init_userprefs($userdata);
 // End session management
 
 $gen_simple_header = true;
-$page_title = $lang['Greeting_Messaging'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-$year = create_date('Y', time(), $board_config['board_timezone']);
-$date_today = create_date('Ymd', time(), $board_config['board_timezone']);
+$year = create_date('Y', time(), $config['board_timezone']);
+$date_today = create_date('Ymd', time(), $config['board_timezone']);
 $user_birthday = realdate('md', $userdata['user_birthday']);
 $user_birthday2 = (($year . $user_birthday < $date_today) ? ($year + 1) : $year) . $user_birthday;
-$l_greeting = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], date('Y') - realdate('Y', $userdata['user_birthday'])) : sprintf($lang['Birthday_greeting_prev'], date('Y') - realdate('Y', $userdata['user_birthday']), realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $userdata['user_birthday']));
-
-$template->set_filenames(array('body' => 'greeting_popup.tpl'));
+$l_greeting = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], gmdate('Y') - realdate('Y', $userdata['user_birthday'])) : sprintf($lang['Birthday_greeting_prev'], gmdate('Y') - realdate('Y', $userdata['user_birthday']), realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $userdata['user_birthday']));
 
 $template->assign_vars(array(
 	'L_CLOSE_WINDOW' => $lang['Close_window'],
@@ -38,8 +32,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('greeting_popup.tpl', $lang['Greeting_Messaging'], '', '');
 
 ?>

@@ -45,15 +45,15 @@ $text = $bbcode->parse($text);
 BBCode Conditions
 =================
 
-$bbcode->allow_html = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? true : false;
-$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? true : false;
-$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? true : false;
+$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
+$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 
 =================
 
-$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
-$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
-$smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? 1 : 0 ;
+$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
@@ -61,44 +61,37 @@ $bbcode->allow_smilies = $smilies_on;
 
 =================
 
-$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
-$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
-$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
+$bbcode->allow_html = ($config['allow_html'] ? true : false);
+$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
+$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 
 =================
 
-$bbcode->allow_html = (($board_config['allow_html'] && $row['enable_bbcode']) ? true : false);
-$bbcode->allow_bbcode = (($board_config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
-$bbcode->allow_smilies = (($board_config['allow_smilies'] && $row['enable_smilies']) ? true : false);
+$bbcode->allow_html = (($config['allow_html'] && $row['enable_bbcode']) ? true : false);
+$bbcode->allow_bbcode = (($config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
+$bbcode->allow_smilies = (($config['allow_smilies'] && $row['enable_smilies']) ? true : false);
 
 =================
 
-$bbcode->allow_html = ($board_config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
-$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
-$bbcode->allow_smilies = ($board_config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
+$bbcode->allow_html = ($config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
+$bbcode->allow_bbcode = ($config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
+$bbcode->allow_smilies = ($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
 
 =================
 
 =================================
-Acronyms, Autolinks, Word Wrap
+Acronyms, Autolinks
 =================================
 
-$orig_autolink = array();
-$replacement_autolink = array();
-obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
 $text = $bbcode->acronym_pass($text);
-if(count($orig_autolink))
-{
-	$text = autolink_transform($text, $orig_autolink, $replacement_autolink);
-}
-$text = kb_word_wrap_pass($text);
+$text = autolink_text($text, $forum_id);
 ====================
 
 
 */
 
 // If included via function we need to make sure to have the requested globals...
-global $db, $board_config, $lang;
+global $db, $cache, $config, $lang;
 
 if (function_exists('create_server_url'))
 {
@@ -106,9 +99,9 @@ if (function_exists('create_server_url'))
 }
 else
 {
-	$server_url = 'http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'];
+	$server_url = 'http://' . $_SERVER['HTTP_HOST'] . $config['script_path'];
 }
-$smileys_path = $server_url . $board_config['smilies_path'] . '/';
+$smileys_path = $server_url . $config['smilies_path'] . '/';
 
 define('BBCODE_UID_LEN', 10);
 define('BBCODE_NOSMILIES_START', '<!-- no smilies start -->');
@@ -120,26 +113,26 @@ define('AUTOURL', time());
 define('IS_ICYPHOENIX', true);
 if(defined('IS_ICYPHOENIX'))
 {
-	// Include moved to functions... to avoid including wrong lang file ($board_config['default_lang'] is only assigned after session request)
-	//@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+	// Include moved to functions... to avoid including wrong lang file ($config['default_lang'] is only assigned after session request)
+	//@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 }
 else
 {
 	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-	$board_config['allow_all_bbcode'] = 0;
-	$board_config['default_lang'] = 'english';
-	$board_config['server_name'] = 'icyphoenix.com';
-	$board_config['script_path'] = '/';
-	$board_config['liw_enabled'] = 0;
-	$board_config['liw_max_width'] = 0;
-	$board_config['thumbnail_cache'] = 0;
-	$board_config['thumbnail_posts'] = 0;
-	$board_config['thumbnail_highslide'] = 0;
-	$board_config['thumbnail_lightbox'] = 0;
-	$board_config['disable_html_guests'] = 0;
-	$board_config['quote_iterations'] = 3;
-	$board_config['switch_bbcb_active_content'] = 1;
+	$config['allow_all_bbcode'] = 0;
+	$config['default_lang'] = 'english';
+	$config['server_name'] = 'icyphoenix.com';
+	$config['script_path'] = '/';
+	$config['liw_enabled'] = 0;
+	$config['liw_max_width'] = 0;
+	$config['thumbnail_cache'] = 0;
+	$config['thumbnail_posts'] = 0;
+	$config['thumbnail_highslide'] = 0;
+	$config['thumbnail_lightbox'] = 0;
+	$config['disable_html_guests'] = 0;
+	$config['quote_iterations'] = 3;
+	$config['switch_bbcb_active_content'] = 1;
 	$userdata['session_logged_in'] = 0;
 	$userdata['user_lang'] = 'english';
 	$lang['OpenNewWindow'] = 'Open in new window';
@@ -165,8 +158,8 @@ else
 }
 
 $urls_local = array(
-	'http://www.' . $board_config['server_name'] . $board_config['script_path'],
-	'http://' . $board_config['server_name'] . $board_config['script_path']
+	'http://www.' . $config['server_name'] . $config['script_path'],
+	'http://' . $config['server_name'] . $config['script_path']
 );
 
 if (function_exists('create_server_url'))
@@ -174,7 +167,7 @@ if (function_exists('create_server_url'))
 	array_merge(array(create_server_url()), $urls_local);
 }
 
-class BBCode
+class bbcode
 {
 	var $text = '';
 	var $html = '';
@@ -196,73 +189,74 @@ class BBCode
 	var $self_closing_tags = array('[*]', '[hr]');
 
 	var $allowed_bbcode = array(
-		'b'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'strong'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'em'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'i'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'u'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'tt'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'strike'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'sup'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'sub'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'b'						=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strong'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'em'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'i'						=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'u'						=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'tt'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strike'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sup'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sub'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
-		'color'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'highlight'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'rainbow'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'gradient'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'fade'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'opacity'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'color'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'highlight'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'rainbow'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'gradient'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'fade'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'opacity'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
-		'align'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'center'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'font'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'size'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'hr'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
+		'align'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'center'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'font'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'size'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'hr'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
 
-		'url'				=> array('nested' => false, 'inurl' => false),
-		'a'					=> array('nested' => false, 'inurl' => false),
-		'email'			=> array('nested' => false, 'inurl' => false),
+		'url'					=> array('nested' => false, 'inurl' => false),
+		'a'						=> array('nested' => false, 'inurl' => false),
+		'email'				=> array('nested' => false, 'inurl' => false),
 
-		'list'			=> array('nested' => true, 'inurl' => false),
-		'ul'				=> array('nested' => true, 'inurl' => false),
-		'ol'				=> array('nested' => true, 'inurl' => false),
-		'li'				=> array('nested' => true, 'inurl' => false),
-		'*'					=> array('nested' => true, 'inurl' => false),
+		'list'				=> array('nested' => true, 'inurl' => false),
+		'ul'					=> array('nested' => true, 'inurl' => false),
+		'ol'					=> array('nested' => true, 'inurl' => false),
+		'li'					=> array('nested' => true, 'inurl' => false),
+		'*'						=> array('nested' => true, 'inurl' => false),
 
-		'span'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'cell'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'spoiler'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'hide'			=> array('nested' => false, 'inurl' => true, 'allow_empty' => false),
+		'span'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'cell'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'spoiler'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'hide'				=> array('nested' => false, 'inurl' => true, 'allow_empty' => false),
 
-		'quote'			=> array('nested' => true, 'inurl' => false),
-		'ot'				=> array('nested' => true, 'inurl' => false),
-		'code'			=> array('nested' => false, 'inurl' => false),
-		'codeblock'	=> array('nested' => false, 'inurl' => false),
+		'quote'				=> array('nested' => true, 'inurl' => false),
+		'ot'					=> array('nested' => true, 'inurl' => false),
+		'code'				=> array('nested' => false, 'inurl' => false),
+		'codeblock'		=> array('nested' => false, 'inurl' => false),
 
-		'img'				=> array('nested' => false, 'inurl' => true),
-		'albumimg'	=> array('nested' => false, 'inurl' => true),
-		'attachment' => array('nested' => false, 'inurl' => false, 'allow_empty' => true),
-		'download'	=> array('nested' => false, 'inurl' => false, 'allow_empty' => true),
+		'img'					=> array('nested' => false, 'inurl' => true),
+		'albumimg'		=> array('nested' => false, 'inurl' => true),
+		'attachment'	=> array('nested' => false, 'inurl' => false, 'allow_empty' => true),
+		'download'		=> array('nested' => false, 'inurl' => false, 'allow_empty' => true),
 
-		'search'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'langvar'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
-		'language'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'search'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'tag'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'langvar'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
+		'language'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
-		'random'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
-		'marquee'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'smiley'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'random'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
+		'marquee'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'smiley'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 
-		'flash'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'swf'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'flv'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'video'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'ram'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'quick'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'stream'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'emff'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'mp3'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'youtube'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'googlevideo' => array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'flash'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'swf'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'flv'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'video'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'ram'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'quick'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'stream'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'emff'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'mp3'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'youtube'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'googlevideo'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
 		// All these tags require HTML 4 specification (NON XHTML) and only work with IE!
 		// Decomment below to use these properly...
@@ -383,9 +377,9 @@ class BBCode
 	*/
 	function process_tag(&$item)
 	{
-		global $lang, $board_config, $userdata;
+		global $db, $cache, $config, $userdata, $lang, $server_url, $topic_id;
 		//LIW - BEGIN
-		$max_image_width = intval($board_config['liw_max_width']);
+		$max_image_width = intval($config['liw_max_width']);
 		//LIW - END
 		$tag = $item['tag'];
 		//echo 'process_tag(', $tag, ')<br />';
@@ -473,7 +467,7 @@ class BBCode
 		if($tag === 'rainbow')
 		{
 			/*
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -490,7 +484,7 @@ class BBCode
 		if($tag === 'gradient')
 		{
 			/*
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -570,7 +564,7 @@ class BBCode
 		// Single tags: HR
 		if($tag === 'hr')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -608,7 +602,7 @@ class BBCode
 		// IMG
 		if($tag === 'img')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -621,11 +615,11 @@ class BBCode
 
 			// additional allowed parameters
 			$extras = $this->allow_styling ? array('width', 'height', 'border', 'style', 'class', 'title', 'align') : array('width', 'height', 'border', 'title', 'align');
-			if ($board_config['thumbnail_highslide'])
+			if ($config['thumbnail_highslide'])
 			{
 				$slideshow = !empty($item['params']['slide']) ? ', { slideshowGroup: \'' . $this->process_text($item['params']['slide']) . '\' } ' : '';
 			}
-			elseif ($board_config['thumbnail_lightbox'])
+			elseif ($config['thumbnail_lightbox'])
 			{
 				$slideshow = 'lightbox' . (!empty($item['params']['slide']) ? '[' . $this->process_text($item['params']['slide']) . ']' : '');
 			}
@@ -646,7 +640,7 @@ class BBCode
 				$img_url = $params['src'];
 				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
 				$params['alt'] = isset($item['params']['alt']) ? $item['params']['alt'] : $content;
-				for($i = 0; $i < count($extras); $i++)
+				for($i = 0; $i < sizeof($extras); $i++)
 				{
 					if(!empty($item['params'][$extras[$i]]))
 					{
@@ -672,7 +666,7 @@ class BBCode
 				$img_url = $params['src'];
 				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
 				// LIW - BEGIN
-				if (($board_config['liw_enabled'] == 1) && ($max_image_width > 0) && ($board_config['thumbnail_posts'] == 0))
+				if (($config['liw_enabled'] == 1) && ($max_image_width > 0) && ($config['thumbnail_posts'] == 0))
 				{
 					$liw_bypass = true;
 					if (isset($item['params']['width']))
@@ -687,7 +681,7 @@ class BBCode
 				}
 				// LIW - END
 				$params['alt'] = isset($item['params']['alt']) ? $item['params']['alt'] : (isset($params['title']) ? $params['title'] : 'Image');
-				for($i = 0; $i < count($extras); $i++)
+				for($i = 0; $i < sizeof($extras); $i++)
 				{
 					if(!empty($item['params'][$extras[$i]]))
 					{
@@ -713,26 +707,26 @@ class BBCode
 				$is_smiley = true;
 			}
 
-			if (!$is_smiley && $board_config['thumbnail_posts'] && ($liw_bypass == false))
+			if (!$is_smiley && $config['thumbnail_posts'] && ($liw_bypass == false))
 			{
 				$thumb_exists = false;
-				if($board_config['thumbnail_cache'])
+				if($config['thumbnail_cache'])
 				{
 					$pic_id = $img_url;
 					$pic_fullpath = str_replace(array(' '), array('%20'), $pic_id);
 					$pic_id = str_replace('http://', '', str_replace('https://', '', $pic_id));
 					$pic_path[] = array();
 					$pic_path = explode('/', $pic_id);
-					$pic_filename = $pic_path[count($pic_path) - 1];
+					$pic_filename = $pic_path[sizeof($pic_path) - 1];
 					$file_part = explode('.', strtolower($pic_filename));
-					$pic_filetype = $file_part[count($file_part) - 1];
+					$pic_filetype = $file_part[sizeof($file_part) - 1];
 					$thumb_ext_array = array('gif', 'jpg', 'png');
 					if (in_array($pic_filetype, $thumb_ext_array))
 					{
 						$user_dir = '';
-						$users_images_path = str_replace('http://', '', str_replace('https://', '', create_server_url() . str_replace(IP_ROOT_PATH, '', POSTED_IMAGES_PATH)));
+						$users_images_path = str_replace('http://', '', str_replace('https://', '', $server_url . str_replace(IP_ROOT_PATH, '', POSTED_IMAGES_PATH)));
 						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-						$pic_title_reg = ereg_replace("[^A-Za-z0-9]", '_', $pic_title);
+						$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
 						$pic_thumbnail = 'mid_' . md5($pic_id) . '_' . $pic_filename;
 						if (strpos($pic_id, $users_images_path) !== false)
 						{
@@ -743,7 +737,7 @@ class BBCode
 						if(file_exists($pic_thumbnail_fullpath))
 						{
 							$thumb_exists = true;
-							$params['src'] = $pic_thumbnail_fullpath;
+							$params['src'] = $server_url . str_replace(IP_ROOT_PATH, '', $pic_thumbnail_fullpath);
 						}
 					}
 				}
@@ -754,7 +748,7 @@ class BBCode
 					if ($item['params']['cache'] == 'false')
 					{
 						$cache_image = false;
-						$cache_append = 'cache=false&';
+						$cache_append = 'cache=false&amp;';
 					}
 					else
 					{
@@ -763,7 +757,7 @@ class BBCode
 				}
 				if (($thumb_exists == false) || ($cache_image == false))
 				{
-					$params['src'] = 'posted_img_thumbnail.' . PHP_EXT . '?' . $cache_append . 'pic_id=' . $img_url_enc;
+					$params['src'] = $server_url . 'posted_img_thumbnail.' . PHP_EXT . '?' . $cache_append . 'pic_id=' . $img_url_enc;
 				}
 			}
 
@@ -783,18 +777,18 @@ class BBCode
 			$html .= ' />';
 			// add url
 			/*
-			if (strpos($params['src'], trim($board_config['server_name'])) == false)
+			if (strpos($params['src'], trim($config['server_name'])) == false)
 			{
 				$html = $this->process_text($params['alt']);
 			}
 			*/
 			if(empty($item['inurl']) && !$is_smiley)
 			{
-				if ($this->allow_hs && $board_config['thumbnail_posts'] && $board_config['thumbnail_highslide'])
+				if ($this->allow_hs && $config['thumbnail_posts'] && $config['thumbnail_highslide'])
 				{
 					$extra_html = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ')"';
 				}
-				elseif ($this->allow_hs && $board_config['thumbnail_posts'] && $board_config['thumbnail_lightbox'])
+				elseif ($this->allow_hs && $config['thumbnail_posts'] && $config['thumbnail_lightbox'])
 				{
 					$extra_html = ' rel="' . $slideshow . '" title="' . $this->process_text($params['alt']) . '"';
 				}
@@ -814,7 +808,7 @@ class BBCode
 		// ALBUMIMG
 		if($tag === 'albumimg')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -838,7 +832,7 @@ class BBCode
 				$params['src'] = $item['params']['src'];
 				$pic_url = $item['params']['src'];
 				$params['alt'] = isset($item['params']['alt']) ? $item['params']['alt'] : $content;
-				for($i = 0; $i < count($extras); $i++)
+				for($i = 0; $i < sizeof($extras); $i++)
 				{
 					if(!empty($item['params'][$extras[$i]]))
 					{
@@ -863,7 +857,7 @@ class BBCode
 				$params['src'] = $content;
 				$pic_url = $content;
 				$params['alt'] = isset($item['params']['alt']) ? $item['params']['alt'] : (isset($params['title']) ? $params['title'] : '');
-				for($i = 0; $i < count($extras); $i++)
+				for($i = 0; $i < sizeof($extras); $i++)
 				{
 					if(!empty($item['params'][$extras[$i]]))
 					{
@@ -883,22 +877,22 @@ class BBCode
 				}
 			}
 			// generate html
-			$pic_url = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_url;
+			$pic_url = $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_url;
 			if(isset($item['params']['mode']))
 			{
 				$pic_mode = $item['params']['mode'];
 				if ($pic_mode === 'full')
 				{
-					$params['src'] = 'album_picm.' . PHP_EXT . '?pic_id=' . $params['src'];
+					$params['src'] = $server_url . 'album_picm.' . PHP_EXT . '?pic_id=' . $params['src'];
 				}
 				else
 				{
-					$params['src'] = 'album_thumbnail.' . PHP_EXT . '?pic_id=' . $params['src'];
+					$params['src'] = $server_url . 'album_thumbnail.' . PHP_EXT . '?pic_id=' . $params['src'];
 				}
 			}
 			else
 			{
-				$params['src'] = 'album_thumbnail.' . PHP_EXT . '?pic_id=' . $params['src'];
+				$params['src'] = $server_url . 'album_thumbnail.' . PHP_EXT . '?pic_id=' . $params['src'];
 			}
 			$html = '<img';
 			foreach($params as $var => $value)
@@ -925,14 +919,14 @@ class BBCode
 		// ATTACHMENT
 		if(($tag === 'attachment') || ($tag === 'download'))
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
 			$html = '';
 			$params['id'] = isset($item['params']['param']) ? intval($item['params']['param']) : (isset($item['params']['id']) ? intval($item['params']['id']) : false);
 			$params['title'] = isset($item['params']['title']) ? $this->process_text($item['params']['title']) : false;
-			$params['description'] = isset($item['params']['description']) ? $this->process_text($item['params']['description']) : false;
+			$params['description'] = isset($item['params']['description']) ? $this->process_text($item['params']['description']) : (!empty($content) ? $this->process_text($content) : false);
 			$params['icon'] = isset($item['params']['icon']) ? $this->process_text($item['params']['icon']) : false;
 			$color = $this->valid_color(isset($item['params']['color']) ? $item['params']['color'] : false);
 			$bgcolor = $this->valid_color(isset($item['params']['bgcolor']) ? $item['params']['bgcolor'] : false);
@@ -967,14 +961,14 @@ class BBCode
 				if ($tag === 'attachment')
 				{
 					$params['title'] = $params['title'] ? $params['title'] : (!empty($attachment_details['real_filename']) ? $attachment_details['real_filename'] : '&nbsp;');
-					$params['description'] = $params['description'] ? $params['description'] : (!empty($attachment_details['comment']) ? $attachment_details['comment'] : '&nbsp;');
+					$params['description'] = $params['description'] ? $params['description'] : (!empty($attachment_details['comment']) ? $attachment_details['comment'] : ' ');
 					$params['icon'] = IP_ROOT_PATH . FILES_ICONS_DIR . ($params['icon'] ? $params['icon'] : 'default.png');
 					$download_url = IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $params['id'];
 				}
 				else
 				{
 					$params['title'] = $params['title'] ? $params['title'] : (!empty($attachment_details['file_name']) ? $attachment_details['file_name'] : '&nbsp;');
-					$params['description'] = $params['description'] ? $params['description'] : (!empty($attachment_details['file_desc']) ? $attachment_details['file_desc'] : '&nbsp;');
+					$params['description'] = $params['description'] ? $params['description'] : (!empty($attachment_details['file_desc']) ? $attachment_details['file_desc'] : ' ');
 					$params['icon'] = IP_ROOT_PATH . FILES_ICONS_DIR . ($params['icon'] ? $params['icon'] : (!empty($attachment_details['file_posticon']) ? $attachment_details['file_posticon'] : 'default.png'));
 					$attachment_details['filesize'] = $attachment_details['file_size'];
 					$attachment_details['download_count'] = $attachment_details['file_dls'];
@@ -983,7 +977,6 @@ class BBCode
 
 				$params['title'] = htmlspecialchars($params['title']);
 				$params['description'] = htmlspecialchars($params['description']);
-				//$params['icon'] = strip_tags(ereg_replace("[^A-Za-z0-9_.]", "_", $params['icon']));
 				$params['icon'] = file_exists($params['icon']) ? $params['icon'] : (IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png');
 				$style = ($color || $bgcolor) ? (' style="' . ($color ? 'color: ' . $color . ';' : '') . ($bgcolor ? 'background-color: ' . $bgcolor . ';' : '') . '"') : '';
 
@@ -1011,14 +1004,14 @@ class BBCode
 		// LIST
 		if(($tag === 'list') || ($tag === 'ul') || ($tag === 'ol'))
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 			// check if nested tags are all [*]
 			$nested_count = 0;
-			for($i = 0; $i < count($item['items']); $i++)
+			for($i = 0; $i < sizeof($item['items']); $i++)
 			{
 				$tag2 = $item['items'][$i]['tag'];
 				if(($tag2 === '*') || ($tag2 === 'li'))
@@ -1045,7 +1038,7 @@ class BBCode
 			}
 			// valid tag. process subitems to make sure there are no extra items and remove all code between elements
 			$last_item = false;
-			for($i = 0; $i < count($item['items']); $i++)
+			for($i = 0; $i < sizeof($item['items']); $i++)
 			{
 				$item2 = &$item['items'][$i];
 				$tag2 = $item2['tag'];
@@ -1086,7 +1079,7 @@ class BBCode
 		// [*], LI
 		if(($tag === '*') || ($tag === 'li'))
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1222,14 +1215,14 @@ class BBCode
 			// check nested items
 			if(!$allow_nested)
 			{
-				for($i = 0; $i < count($item['items']); $i++)
+				for($i = 0; $i < sizeof($item['items']); $i++)
 				{
 					$item['items'][$i]['valid'] = false;
 				}
 			}
 			else
 			{
-				for($i = 0; $i < count($item['next']); $i++)
+				for($i = 0; $i < sizeof($item['next']); $i++)
 				{
 					$tag2 = $item['next'][$i]['tag'];
 					$is_html = $item['next'][$i]['item']['is_html'];
@@ -1259,7 +1252,7 @@ class BBCode
 			// check if url is local
 			$url_local = false;
 			global $urls_local;
-			for($i = 0; $i < count($urls_local); $i++)
+			for($i = 0; $i < sizeof($urls_local); $i++)
 			{
 				if(strlen($url) > strlen($urls_local[$i]) && strpos($url, $urls_local[$i]) === 0)
 				{
@@ -1280,7 +1273,7 @@ class BBCode
 			// generate html
 			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($url_local ? '' : (' target="_blank"' . (!empty($item['params']['nofollow']) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
-			if ($board_config['disable_html_guests'] && !$userdata['session_logged_in'])
+			if ($config['disable_html_guests'] && !$userdata['session_logged_in'])
 			{
 				return array(
 					'valid' => true,
@@ -1349,7 +1342,7 @@ class BBCode
 				return $error;
 			}
 			// disable nested items
-			for($i = 0; $i < count($item['items']); $i++)
+			for($i = 0; $i < sizeof($item['items']); $i++)
 			{
 				$item['items'][$i]['valid'] = false;
 			}
@@ -1388,11 +1381,11 @@ class BBCode
 		// QUOTE
 		if(($tag === 'quote') || ($tag === 'blockquote') || ($tag === 'ot'))
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
-			if($item['iteration'] > ($board_config['quote_iterations']))
+			if($item['iteration'] > ($config['quote_iterations']))
 			{
 				return $error;
 			}
@@ -1408,7 +1401,7 @@ class BBCode
 				$user = htmlspecialchars($item['params']['user']);
 				if(isset($item['params']['userid']) && intval($item['params']['userid']))
 				{
-					$user = '<a href="' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . intval($item['params']['userid']) . '">' . $user . '</a>';
+					$user = '<a href="' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . intval($item['params']['userid']) . '">' . $user . '</a>';
 				}
 			}
 			// generate html
@@ -1416,7 +1409,7 @@ class BBCode
 			if(isset($item['params']['post']) && intval($item['params']['post']))
 			{
 				$post_rev = '[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]';
-				$html .= ' cite="'. VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
+				$html .= ' cite="'. CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
 			}
 			$html .= '>';
 			if($user)
@@ -1452,7 +1445,7 @@ class BBCode
 		// CODE
 		if($tag === 'code')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1532,7 +1525,7 @@ class BBCode
 
 						$open_php_tag = 0;
 						$close_php_tag = 0;
-						for ($i = 0; $i < count($code_ary); $i++)
+						for ($i = 0; $i < sizeof($code_ary); $i++)
 						{
 							if (($code_ary[$i] == '') || ($code_ary[$i] == ' ') || ($code_ary[$i] == '&nbsp;') || ($code_ary[$i] == "\n") || ($code_ary[$i] == "\r") || ($code_ary[$i] == "\n\r"))
 							{
@@ -1628,13 +1621,13 @@ class BBCode
 					$items = array();
 					$str = $item['params']['highlight'];
 					$list = explode(',', $str);
-					for($i = 0; $i < count($list); $i++)
+					for($i = 0; $i < sizeof($list); $i++)
 					{
 						$str = trim($list[$i]);
 						if(strpos($str, '-'))
 						{
 							$row = explode('-', $str);
-							if(count($row) == 2)
+							if(sizeof($row) == 2)
 							{
 								$num1 = intval($row[0]);
 								if($num1 == 0)
@@ -1660,12 +1653,12 @@ class BBCode
 							}
 						}
 					}
-					if(count($items))
+					if(sizeof($items))
 					{
 						// process all lines
 						$num = $start - 1;
 						$pos = strpos($html, $search);
-						$total = count($items);
+						$total = sizeof($items);
 						$found = 0;
 						while($pos !== false)
 						{
@@ -1748,7 +1741,7 @@ class BBCode
 		// CODEBLOCK
 		if($tag === 'codeblock')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1846,7 +1839,7 @@ class BBCode
 		// HIDE
 		if($tag === 'hide')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1854,29 +1847,40 @@ class BBCode
 			{
 				return $error;
 			}
-			global $db, $topic_id, $mode;
 			$show = false;
 			if(defined('IS_ICYPHOENIX') && $userdata['session_logged_in'])
 			{
-				$sql = "SELECT p.poster_id, p.topic_id
-					FROM " . POSTS_TABLE . " p
-					WHERE p.topic_id = $topic_id
-					AND p.poster_id = " . $userdata['user_id'];
-				$resultat = $db->sql_query($sql);
-				$show = $db->sql_numrows($resultat) ? true : false;
-				$db->sql_freeresult($result);
-
-				$sql = "SELECT *
-					FROM " . THANKS_TABLE . "
-					WHERE topic_id = $topic_id
-					AND user_id = " . $userdata['user_id'];
-				$resultat = $db->sql_query($sql);
-				$show = ($db->sql_numrows($resultat) || ($show == true))? true : false;
-				$db->sql_freeresult($result);
-
 				if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 				{
 					$show = true;
+				}
+				else
+				{
+					$sql = "SELECT p.poster_id, p.topic_id
+						FROM " . POSTS_TABLE . " p
+						WHERE p.topic_id = " . intval($topic_id) . "
+						AND p.poster_id = " . $userdata['user_id'];
+					$db->sql_return_on_error(true);
+					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
+					if ($result)
+					{
+						$show = $db->sql_numrows($result) ? true : false;
+						$db->sql_freeresult($result);
+					}
+
+					$sql = "SELECT *
+						FROM " . THANKS_TABLE . "
+						WHERE topic_id = " . intval($topic_id) . "
+						AND user_id = " . $userdata['user_id'];
+					$db->sql_return_on_error(true);
+					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
+					if ($result)
+					{
+						$show = ($db->sql_numrows($result) || ($show == true))? true : false;
+						$db->sql_freeresult($result);
+					}
 				}
 			}
 			// generate html
@@ -1902,7 +1906,7 @@ class BBCode
 		// SPOILER
 		if($tag === 'spoiler')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -1979,7 +1983,22 @@ class BBCode
 			{
 				return $error;
 			}
-			$str = '<a href="' . SEARCH_MG . '?search_keywords=' . $this->process_text($content) . '">';
+			$str = '<a href="' . CMS_PAGE_SEARCH . '?search_keywords=' . urlencode($this->process_text($content)) . '">';
+			return array(
+				'valid' => true,
+				'start' => $str,
+				'end' => '</a>'
+			);
+		}
+
+		// TAG
+		if($tag === 'tag')
+		{
+			if(empty($content))
+			{
+				return $error;
+			}
+			$str = '<a href="tags.' . PHP_EXT . '?tag_text=' . urlencode($this->process_text($content)) . '">';
 			return array(
 				'valid' => true,
 				'start' => $str,
@@ -1994,8 +2013,8 @@ class BBCode
 			$max_n = intval((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['max']) ? $item['params']['max'] : 6)));
 			$max_n = ($max_n <= 0) ? 6 : $max_n;
 			/*
-			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
-			$randomquote_phrase = $randomquote[rand(0, count($randomquote) - 1)];
+			include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_randomquote.' . PHP_EXT);
+			$randomquote_phrase = $randomquote[rand(0, sizeof($randomquote) - 1)];
 			*/
 			$html = rand(1, $max_n);
 			return array(
@@ -2007,7 +2026,7 @@ class BBCode
 		// MARQUEE
 		if($tag === 'marquee')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2036,12 +2055,12 @@ class BBCode
 
 		// Active Content - BEGIN
 		// Added by Tom XS2 Build 054
-		if ($board_config['switch_bbcb_active_content'] == 1)
+		if ($config['switch_bbcb_active_content'] == 1)
 		{
 			// FLASH, SWF, FLV, VIDEO, REAL, QUICK, STREAM, EMFF, YOUTUBE, GOOGLEVIDEO
 			if(($tag === 'flash') || ($tag === 'swf') || ($tag === 'flv') || ($tag === 'video') || ($tag === 'ram') || ($tag === 'quick') || ($tag === 'stream') || ($tag === 'emff') || ($tag === 'mp3') || ($tag === 'youtube') || ($tag === 'googlevideo'))
 			{
-				if($this->is_sig && !$board_config['allow_all_bbcode'])
+				if($this->is_sig && !$config['allow_all_bbcode'])
 				{
 					return $error;
 				}
@@ -2119,7 +2138,7 @@ class BBCode
 		// SMILEY
 		if($tag === 'smiley')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2167,7 +2186,7 @@ class BBCode
 		// OPACITY
 		if($tag === 'opacity')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2184,7 +2203,7 @@ class BBCode
 				$opacity = '100';
 			}
 			$opacity_dec = $opacity / 100;
-			$html = '<div style="display:inline;width:100%;-moz-opacity:' . $opacity_dec . ';opacity:' . $opacity_dec . ';-khtml-opacity:' . $opacity_dec . ';filter:Alpha(Opacity=' . $opacity . ');" onmouseout="fade2(this,' . $opacity . ');" onmouseover="fade2(this,100);">';
+			$html = '<div style="display: inline; width: 100%; -moz-opacity: ' . $opacity_dec . '; opacity: ' . $opacity_dec . '; -khtml-opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ');" onmouseout="fade2(this,' . $opacity . ');" onmouseover="fade2(this,100);">';
 			return array(
 				'valid' => true,
 				'start' => $html,
@@ -2195,7 +2214,7 @@ class BBCode
 		// FADE
 		if($tag === 'fade')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2212,7 +2231,7 @@ class BBCode
 				$opacity = '100';
 			}
 			$opacity_dec = $opacity / 100;
-			$html = '<div style="display:inline;height:1;-moz-opacity:' . $opacity_dec . ';opacity:' . $opacity_dec . ';-khtml-opacity:' . $opacity_dec . ';filter:Alpha(Opacity=' . $opacity . ',FinishOpacity=0,Style=1,StartX=0,FinishX=100%);">';
+			$html = '<div style="display: inline; height: 1; -moz-opacity: ' . $opacity_dec . '; opacity: ' . $opacity_dec . '; -khtml-opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ',FinishOpacity=0,Style=1,StartX=0,FinishX=100%);">';
 			//$html = '<div style="display:inline;height:1;filter:Alpha(Opacity=' . $opacity . ',FinishOpacity=0,Style=1,StartX=0,FinishX=100%);">';
 			return array(
 				'valid' => true,
@@ -2272,7 +2291,7 @@ class BBCode
 			// BLUR
 			if($tag === 'blur')
 			{
-				if($this->is_sig && !$board_config['allow_all_bbcode'])
+				if($this->is_sig && !$config['allow_all_bbcode'])
 				{
 					return $error;
 				}
@@ -2289,7 +2308,7 @@ class BBCode
 					$strenght = '100';
 				}
 				$strenght_dec = $strenght / 100;
-				$html = '<div style="display:inline;width:100%;height:20;filter:Blur(add=1,direction=270,strength=' . $strenght . ');">';
+				$html = '<div style="display: inline; width: 100%; height: 20; filter: Blur(add=1,direction=270,strength=' . $strenght . ');">';
 				return array(
 					'valid' => true,
 					'start' => $html,
@@ -2300,7 +2319,7 @@ class BBCode
 			// WAVE
 			if($tag === 'wave')
 			{
-				if($this->is_sig && !$board_config['allow_all_bbcode'])
+				if($this->is_sig && !$config['allow_all_bbcode'])
 				{
 					return $error;
 				}
@@ -2317,7 +2336,7 @@ class BBCode
 					$strenght = '100';
 				}
 				$strenght_dec = $strenght / 100;
-				$html = '<div style="display:inline;width:100%;height:20;filter:Wave(add=1,direction=270,strength=' . $strenght . ');">';
+				$html = '<div style="display: inline; width: 100%; height: 20; filter: Wave(add=1,direction=270,strength=' . $strenght . ');">';
 				return array(
 					'valid' => true,
 					'start' => $html,
@@ -2328,11 +2347,11 @@ class BBCode
 			// FLIPH, FLIPV
 			if(($tag === 'fliph') || ($tag === 'flipv'))
 			{
-				if($this->is_sig && !$board_config['allow_all_bbcode'])
+				if($this->is_sig && !$config['allow_all_bbcode'])
 				{
 					return $error;
 				}
-				$html = '<div style="display:inline;filter:' . $tag . ';height:1;">';
+				$html = '<div style="display: inline; filter: ' . $tag . '; height: 1;">';
 				return array(
 					'valid' => true,
 					'start' => $html,
@@ -2346,11 +2365,11 @@ class BBCode
 		// TEX
 		if($tag === 'tex')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
-			$html = '<img src="cgi-bin/mimetex.cgi?' . $content . '" alt="" border="0" style="vertical-align:middle;" />';
+			$html = '<img src="cgi-bin/mimetex.cgi?' . $content . '" alt="" border="0" style="vertical-align: middle;" />';
 			return array(
 				'valid' => true,
 				'html' => $html,
@@ -2361,7 +2380,7 @@ class BBCode
 		// TABLE
 		if($tag === 'table')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2376,7 +2395,7 @@ class BBCode
 				$table_class = 'empty-table';
 			}
 
-			for($i = 0; $i < count($extras); $i++)
+			for($i = 0; $i < sizeof($extras); $i++)
 			{
 				if(!empty($item['params'][$extras[$i]]))
 				{
@@ -2416,7 +2435,7 @@ class BBCode
 		// TR
 		if($tag === 'tr')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
@@ -2432,14 +2451,14 @@ class BBCode
 		// TD
 		if($tag === 'td')
 		{
-			if($this->is_sig && !$board_config['allow_all_bbcode'])
+			if($this->is_sig && !$config['allow_all_bbcode'])
 			{
 				return $error;
 			}
 			// additional allowed parameters
 			$extras = $this->allow_styling ? array('class', 'align', 'width', 'height') : array('class', 'align', 'width', 'height');
 
-			for($i = 0; $i < count($extras); $i++)
+			for($i = 0; $i < sizeof($extras); $i++)
 			{
 				if(!empty($item['params'][$extras[$i]]))
 				{
@@ -2688,7 +2707,7 @@ class BBCode
 	function add_extras($params, $extras)
 	{
 		$html = '';
-		for($i = 0; $i < count($extras); $i++)
+		for($i = 0; $i < sizeof($extras); $i++)
 		{
 			if(isset($params[$extras[$i]]))
 			{
@@ -2998,7 +3017,7 @@ class BBCode
 	// Debug fuction. Prints tree of bbcode
 	function debug($items)
 	{
-		for($i = 0; $i < count($items); $i++)
+		for($i = 0; $i < sizeof($items); $i++)
 		{
 			$item = $items[$i];
 			if($item['tag'])
@@ -3025,7 +3044,7 @@ class BBCode
 	function add_pointers(&$items, $prev_tags)
 	{
 		$tags = array();
-		for($i = 0; $i < count($items); $i++)
+		for($i = 0; $i < sizeof($items); $i++)
 		{
 			$item = &$items[$i];
 			$tags[] = array(
@@ -3033,7 +3052,7 @@ class BBCode
 				'item' => &$items[$i]
 				);
 			$iterations = 0;
-			for($j = 0; $j < count($prev_tags); $j++)
+			for($j = 0; $j < sizeof($prev_tags); $j++)
 			{
 				if($prev_tags[$j]['tag'] === $item['tag'])
 				{
@@ -3044,7 +3063,7 @@ class BBCode
 			$item['prev'] = $prev_tags;
 			// todo: check if subitems are allowed
 			// parse sub-items
-			if(count($item['items']))
+			if(sizeof($item['items']))
 			{
 				$arr = array(
 					'tag' => $item['tag'],
@@ -3092,7 +3111,7 @@ class BBCode
 	function process($start, $end, &$items, $clean_tags = false)
 	{
 		$html = '';
-		for($i = 0; $i < count($items); $i++)
+		for($i = 0; $i < sizeof($items); $i++)
 		{
 			$item = &$items[$i];
 
@@ -3160,7 +3179,7 @@ class BBCode
 			return;
 		}
 		$this->replaced_smilies = array();
-		for($i = 0; $i < count($this->allowed_smilies); $i++)
+		for($i = 0; $i < sizeof($this->allowed_smilies); $i++)
 		{
 			if(strpos($this->text, $this->allowed_smilies[$i]['code']) !== false)
 			{
@@ -3172,13 +3191,13 @@ class BBCode
 	// Parse only smilies
 	function parse_only_smilies($text)
 	{
-		if(!$this->allow_smilies || (count($this->allowed_smilies) == 0))
+		if(!$this->allow_smilies || (sizeof($this->allowed_smilies) == 0))
 		{
 			return $text;
 		}
 		$smilies_code = array();
 		$smilies_replace = array();
-		for($i = 0; $i < count($this->allowed_smilies); $i++)
+		for($i = 0; $i < sizeof($this->allowed_smilies); $i++)
 		{
 			$smilies_code_prev[] = ' ' . $this->allowed_smilies[$i]['code'];
 			$smilies_code_next[] = $this->allowed_smilies[$i]['code'] . ' ';
@@ -3195,11 +3214,11 @@ class BBCode
 	{
 		$valid_chars_prev = array('', ' ', "\n", "\r", "\t", '>');
 		$valid_chars_next = array('', ' ', "\n", "\r", "\t", '<');
-		if(!$this->allow_smilies && !count($this->replaced_smilies))
+		if(!$this->allow_smilies && !sizeof($this->replaced_smilies))
 		{
 			return;
 		}
-		for($i = 0; $i < count($this->replaced_smilies); $i++)
+		for($i = 0; $i < sizeof($this->replaced_smilies); $i++)
 		{
 			$code = $this->replaced_smilies[$i]['code'];
 			$text = $this->replaced_smilies[$i]['replace'];
@@ -3636,18 +3655,18 @@ class BBCode
 	*/
 	function bbcode_clean($text, &$tags)
 	{
-		if (is_array($tags) && (count($tags) > 0))
+		if (is_array($tags) && (sizeof($tags) > 0))
 		{
-			for ($i = 0; $i < count($tags); $i++)
+			for ($i = 0; $i < sizeof($tags); $i++)
 			{
 				$tags[$i] = ($tags[$i] == '*') ? '\*' : $tags[$i];
-				$text = ereg_replace("\[" . $tags[$i] . "[^]^[]*\]", '', $text);
-				$text = ereg_replace("\[(/?)[^]^[]" . $tags[$i] . "\]", '', $text);
+				$text = @ereg_replace("\[" . $tags[$i] . "[^]^[]*\]", '', $text);
+				$text = @ereg_replace("\[(/?)[^]^[]" . $tags[$i] . "\]", '', $text);
 			}
 		}
 		else
 		{
-			$text = ereg_replace("\[(/?)[^]^[]*\]", '', $text);
+			$text = @ereg_replace("\[(/?)[^]^[]*\]", '', $text);
 		}
 
 		$text = nl2br($text);
@@ -3675,28 +3694,32 @@ class BBCode
 
 		if(!isset($orig))
 		{
-			global $db, $board_config;
+			global $db, $config;
 			$orig = $repl = array();
 
 			$sql = 'SELECT * FROM ' . ACRONYMS_TABLE;
-			if(!$result = $db->sql_query($sql, false, 'acronyms_', TOPICS_CACHE_FOLDER))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql, 0, 'acronyms_', TOPICS_CACHE_FOLDER);
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
-				message_die(GENERAL_ERROR, "Couldn't obtain acronyms data", "", __LINE__, __FILE__, $sql);
+				return $text;
 			}
 
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$acronyms[] = $row;
 			}
+			$db->sql_freeresult($result);
 
-			if(count($acronyms))
+			if(sizeof($acronyms))
 			{
 				//usort($acronyms, 'acronym_sort');
 				// This use acronym_sort calling it from within BBCode object
 				usort($acronyms, array('BBCode', 'acronym_sort'));
 			}
 
-			for ($i = 0; $i < count($acronyms); $i++)
+			for ($i = 0; $i < sizeof($acronyms); $i++)
 			{
 				/* OLD CODE FOR ACRONYMS
 				$orig[] = '#\b(' . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . ')\b#';
@@ -3707,7 +3730,7 @@ class BBCode
 			}
 		}
 
-		if(count($orig))
+		if(sizeof($orig))
 		{
 
 			$segments = preg_split('#(<acronym.+?>.+?</acronym>|<.+?>)#s' , $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -3717,7 +3740,7 @@ class BBCode
 
 			foreach($segments as $seg)
 			{
-				if($seg[0] != '<' && $seg[0] != '[')
+				if(($seg[0] != '<') && ($seg[0] != '['))
 				{
 					$text .= str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig, \$repl, '\\0')", '>' . $seg . '<'), 1, -1));
 				}
@@ -3733,36 +3756,74 @@ class BBCode
 
 }
 
-$bbcode = new BBCode();
+$bbcode = new bbcode();
 
 if (defined('SMILIES_TABLE'))
 {
-	//$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
-	$sql = "SELECT code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
-	if ($result = $db->sql_query($sql, false, 'smileys_'))
-	{
-		$bbcode->allowed_smilies = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$arr = array(
-				'code' => $row['code'],
-				//'replace' => '<img src="' . BBCODE_SMILIES_PATH . $row['smile_url'] . '" alt="' . htmlspecialchars($row['emoticon']) . '" />'
-				'replace' => '<img src="' . BBCODE_SMILIES_PATH . $row['smile_url'] . '" alt="" />'
-			);
-			$bbcode->allowed_smilies[] = $arr;
-		}
-		$db->sql_freeresult($result);
-		unset($arr);
-	}
-	else
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t retrieve smilies list', '', __LINE__, __FILE__, $sql);
-	}
+	$bbcode->allowed_smilies = array();
+	$bbcode->allowed_smilies = $cache->obtain_smileys(false);
 }
 
 // Need to initialize the random numbers only ONCE
 mt_srand((double) microtime() * 1000000);
 
+/**
+* For display of custom parsed text on user-facing pages
+* Expects $text to be the value directly from the database (stored value)
+*/
+function generate_text_for_display($text, $only_smileys = false, $censor = true, $acro_autolinks = false, $forum_id = '999999')
+{
+	global $bbcode, $config, $userdata;
+
+	if (empty($text))
+	{
+		return '';
+	}
+
+	if (defined('IS_ICYPHOENIX') && $censor)
+	{
+		$text = censor_text($text);
+	}
+
+	if (!class_exists('bbcode'))
+	{
+		include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	}
+
+	if (empty($bbcode))
+	{
+		$bbcode = new bbcode();
+		if (!$userdata['session_logged_in'])
+		{
+			$userdata['user_allowhtml'] = $config['allow_html'] ? true : false;
+			$userdata['user_allowbbcode'] = $config['allow_bbcode'] ? true : false;
+			$userdata['user_allowsmile'] = $config['allow_smilies'] ? true : false;
+		}
+		$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
+		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+	}
+
+	if ($only_smileys)
+	{
+		$text = $bbcode->parse_only_smilies($text);
+	}
+	else
+	{
+		$text = $bbcode->parse($text);
+		if (defined('IS_ICYPHOENIX') && $acro_autolinks)
+		{
+			$text = $bbcode->acronym_pass($text);
+			$text = autolink_text($text, $forum_id);
+		}
+	}
+
+	return $text;
+}
+
+/*
+* Generate bbcode uid
+*/
 function make_bbcode_uid()
 {
 	// Unique ID for this message..
@@ -3771,6 +3832,50 @@ function make_bbcode_uid()
 	return $uid;
 }
 
+/*
+* Generate a single row of smileys
+* Moved here from functions_post to optimize viewtopic and remove the full include of functions_post
+*/
+if (defined('SMILIES_TABLE'))
+{
+	function generate_smilies_row()
+	{
+		global $db, $cache, $config, $template;
+		if (defined('IN_PA_POSTING'))
+		{
+			global $pafiledb_template;
+		}
+
+		$max_smilies = (!empty($config['smilie_single_row']) ? intval($config['smilie_single_row']) : 20);
+
+		$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " GROUP BY smile_url ORDER BY smilies_order LIMIT " . $max_smilies;
+		$result = $db->sql_query($sql, 0, 'smileys_');
+
+		$orig = array();
+		$repl = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$parsing_template = array(
+				'CODE' => $row['code'],
+				'URL' => 'http://' . $_SERVER['HTTP_HOST'] . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'],
+				'DESC' => htmlspecialchars($row['emoticon'])
+			);
+			if (defined('IN_PA_POSTING'))
+			{
+				$pafiledb_template->assign_block_vars('smilies', $parsing_template);
+			}
+			else
+			{
+				$template->assign_block_vars('smilies', $parsing_template);
+			}
+		}
+		$db->sql_freeresult($result);
+	}
+}
+
+/*
+* Undo HTML special chars
+*/
 function undo_htmlspecialchars($input, $full_undo = false)
 {
 	if($full_undo)
@@ -3784,10 +3889,10 @@ function undo_htmlspecialchars($input, $full_undo = false)
 
 	if($full_undo)
 	{
-		if(preg_match_all('/&\#([0-9]+);/', $input, $matches) && count($matches))
+		if(preg_match_all('/&\#([0-9]+);/', $input, $matches) && sizeof($matches))
 		{
 			$list = array();
-			for($i = 0; $i < count($matches[1]); $i++)
+			for($i = 0; $i < sizeof($matches[1]); $i++)
 			{
 				$list[$matches[1][$i]] = true;
 			}
@@ -3805,6 +3910,9 @@ function undo_htmlspecialchars($input, $full_undo = false)
 	return $input;
 }
 
+/*
+* Make a link clickable
+*/
 function make_clickable($text)
 {
 	$text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1:", $text);
@@ -3837,95 +3945,98 @@ function make_clickable($text)
 
 // Autolinks - BEGIN
 //
-// Obtain list of autolink words and build preg style replacement arrays for use by the
-// calling script, note that the vars are passed as references this just makes it easier
-// to return both sets of arrays
+// Obtain list of autolink words and build preg style replacement arrays for use by the calling script, note that the vars are passed as references this just makes it easier to return both sets of arrays
 //
-// This is a copy of phpBB's obtain_word_list() function with slight changes.
-//
-function obtain_autolink_list(&$orig_autolink, &$replacement_autolink, $id)
+function obtain_autolinks_list($forum_id)
 {
 	global $db;
 
-	//$where = ($id) ? ' WHERE link_forum = 0 OR link_forum = ' . $id : ' WHERE link_forum = -1';
-	$where = ($id) ? ' WHERE link_forum = 0 OR link_forum IN (' . $id . ')' : ' WHERE link_forum = -1';
+	$where = ($forum_id) ? ' WHERE link_forum = 0 OR link_forum IN (' . $forum_id . ')' : ' WHERE link_forum = -1';
+	$sql = "SELECT * FROM " . AUTOLINKS . $where;
+	$result = $db->sql_query($sql, 0, 'autolinks_', TOPICS_CACHE_FOLDER);
 
-	$sql = "SELECT * FROM  " . AUTOLINKS . $where;
-	if(!($result = $db->sql_query($sql, false, 'autolinks_', TOPICS_CACHE_FOLDER)))
+	$autolinks = array();
+	while($row = $db->sql_fetchrow($result))
 	{
-		message_die(GENERAL_ERROR, 'Could not get autolink data from database', '', __LINE__, __FILE__, $sql);
-	}
+		// Munge word boundaries to stop autolinks from linking to
+		// themselves or other autolinks in step 2 in the function below.
+		$row['link_url'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_url']);
+		$row['link_comment'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_comment']);
 
-	if($row = $db->sql_fetchrow($result))
-	{
-		do
+		if($row['link_style'])
 		{
-			// Munge word boundaries to stop autolinks from linking to
-			// themselves or other autolinks in step 2 in the function below.
-			$row['link_url'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_url']);
-			$row['link_comment'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_comment']);
-
-			if($row['link_style'])
-			{
-				$row['link_style'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_style']);
-				$style = ' style="' . htmlspecialchars($row['link_style']) . '" ';
-			}
-			else
-			{
-				$style = ' ';
-			}
-			$orig_autolink[] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/'). ')(?![\/\w@:-])(?!\.\w)/i';
-			if($row['link_int'])
-			{
-				$replacement_autolink[] = '<a href="' . append_sid(htmlspecialchars($row['link_url'])) . '" target="_self"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
-			}
-			else
-			{
-				$replacement_autolink[] = '<a href="' . htmlspecialchars($row['link_url']) . '" target="_blank"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
-			}
+			$row['link_style'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_style']);
+			$style = ' style="' . htmlspecialchars($row['link_style']) . '" ';
 		}
-		while($row = $db->sql_fetchrow($result));
+		else
+		{
+			$style = ' ';
+		}
+		$autolinks['match'][] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/'). ')(?![\/\w@:-])(?!\.\w)/i';
+		if($row['link_int'])
+		{
+			$autolinks['replace'][] = '<a href="' . append_sid(htmlspecialchars($row['link_url'])) . '" target="_self"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
+		}
+		else
+		{
+			$autolinks['replace'][] = '<a href="' . htmlspecialchars($row['link_url']) . '" target="_blank"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
+		}
 	}
+	$db->sql_freeresult($result);
 
-	return true;
+	return $autolinks;
 }
 
-//
-// Taken from the POST-NUKE pnuserapi.php Autolinks user API file with slight changes.
-// Original Author - Jim McDonald.
-//
-function autolink_transform($message, $orig, $replacement)
+/**
+* Autolinks
+* Original Author - Jim McDonald - Edited by Mighty Gorgon
+*/
+function autolink_text($text, $forum_id = '')
 {
-	global $board_config;
+	static $autolinks;
 
-	// Step 1 - move all tags out of the text and replace them with placeholders
-	preg_match_all('/(<a\s+.*?\/a>|<[^>]+>)/i', $message, $matches);
-	$matchnum = count($matches[1]);
-	for($i = 0; $i < $matchnum; $i++)
+	if (empty($text))
 	{
-		$message = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', "ALPLACEHOLDER{$i}PH", $message, 1);
+		return $text;
 	}
 
-	// Step 2 - s/r of the remaining text
-	if($board_config['autolink_first'])
+	if (!isset($autolinks) || !is_array($autolinks))
 	{
-		$message = preg_replace($orig, $replacement, $message, 1);
-	}
-	else
-	{
-		$message = preg_replace($orig, $replacement, $message);
+		$autolinks = obtain_autolinks_list($forum_id);
 	}
 
-	// Step 3 - replace the spaces we munged in step 1
-	$message = preg_replace('/ALSPACEHOLDER/', '', $message);
-
-	// Step 4 - replace the HTML tags that we removed in step 1
-	for($i = 0; $i <$matchnum; $i++)
+	if (sizeof($autolinks))
 	{
-		$message = preg_replace("/ALPLACEHOLDER{$i}PH/", $matches[1][$i], $message, 1);
+		global $config;
+		// Step 1 - move all tags out of the text and replace them with placeholders
+		preg_match_all('/(<a\s+.*?\/a>|<[^>]+>)/i', $text, $matches);
+		$matchnum = sizeof($matches[1]);
+		for($i = 0; $i < $matchnum; $i++)
+		{
+			$text = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', "ALPLACEHOLDER{$i}PH", $text, 1);
+		}
+
+		// Step 2 - s/r of the remaining text
+		if($config['autolink_first'])
+		{
+			$text = preg_replace($autolinks['match'], $autolinks['replace'], $text, 1);
+		}
+		else
+		{
+			$text = preg_replace($autolinks['match'], $autolinks['replace'], $text);
+		}
+
+		// Step 3 - replace the spaces we munged in step 1
+		$text = preg_replace('/ALSPACEHOLDER/', '', $text);
+
+		// Step 4 - replace the HTML tags that we removed in step 1
+		for($i = 0; $i < $matchnum; $i++)
+		{
+			$text = preg_replace("/ALPLACEHOLDER{$i}PH/", $matches[1][$i], $text, 1);
+		}
 	}
 
-	return $message;
+	return $text;
 }
 // Autolinks - END
 
@@ -3943,10 +4054,9 @@ function get_attachment_details($attach_id)
 			AND a.post_id > 0
 			AND p.post_id = a.post_id
 		LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Cound not query attachment stats table', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -3971,10 +4081,9 @@ function get_download_details($file_id)
 			AND file_approved = '1'
 			AND c.cat_id = f.file_catid
 		LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Cound not query attachment stats table', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -4011,10 +4120,13 @@ function html2txt($document)
 	return $text;
 }
 
+/*
+* Convert newline to paragraph
+*/
 function nl2any($text, $tag = 'p', $feed = '')
 {
 	// making tags
-	$start_tag = "<$tag" . ($feed ? ' '.$feed : '') . '>';
+	$start_tag = "<$tag" . ($feed ? ' ' . $feed : '') . '>';
 	$end_tag = "</$tag>";
 
 	// exploding string to lines
@@ -4028,6 +4140,9 @@ function nl2any($text, $tag = 'p', $feed = '')
 	return $string;
 }
 
+/*
+* Convert paragraphs to newline
+*/
 function any2nl($text, $tag = 'p')
 {
 	//exploding
@@ -4036,6 +4151,9 @@ function any2nl($text, $tag = 'p')
 	return implode("\n", array_filter($results[1]));
 }
 
+/*
+* Convert BR to newline
+*/
 function br2nl($text, $remove_linebreaks = false)
 {
 	if ($remove_linebreaks)
@@ -4045,6 +4163,9 @@ function br2nl($text, $remove_linebreaks = false)
 	return preg_replace("=<br */?>=i", "\n", $text);
 }
 
+/*
+* Convert newline to BR
+*/
 function nl2br_mg($text)
 {
 	/*

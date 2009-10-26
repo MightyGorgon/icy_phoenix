@@ -27,7 +27,7 @@ if (!defined('IN_ICYPHOENIX'))
 //
 function validate_username($username)
 {
-	global $db, $lang, $userdata;
+	global $db, $userdata, $lang;
 
 	// Remove doubled up spaces
 	$username = preg_replace('#\s+#', ' ', trim($username));
@@ -36,7 +36,10 @@ function validate_username($username)
 	$sql = "SELECT username
 		FROM " . USERS_TABLE . "
 		WHERE LOWER(username) = '" . strtolower($username) . "'";
-	if ($result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -52,7 +55,10 @@ function validate_username($username)
 	$sql = "SELECT group_name
 		FROM " . GROUPS_TABLE . "
 		WHERE LOWER(group_name) = '" . strtolower($username) . "'";
-	if ($result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -64,7 +70,10 @@ function validate_username($username)
 
 	$sql = "SELECT disallow_username
 		FROM " . DISALLOW_TABLE;
-	if ($result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -83,7 +92,10 @@ function validate_username($username)
 
 	$sql = "SELECT word
 		FROM  " . WORDS_TABLE;
-	if ($result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -128,7 +140,10 @@ function validate_email($email)
 		{
 			$sql = "SELECT ban_email
 				FROM " . BANLIST_TABLE;
-			if ($result = $db->sql_query($sql))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
+			if ($result)
 			{
 				if ($row = $db->sql_fetchrow($result))
 				{
@@ -149,10 +164,7 @@ function validate_email($email)
 			$sql = "SELECT user_email
 				FROM " . USERS_TABLE . "
 				WHERE user_email = '" . str_replace("\'", "''", $email) . "'";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Couldn't obtain user email information.", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
 			{
@@ -175,7 +187,7 @@ function validate_optional_fields(&$icq, &$aim, &$msnm, &$yim, &$skype, &$websit
 {
 	$check_var_length = array('aim', 'msnm', 'yim', 'skype', 'location', 'occupation', 'interests', 'sig');
 
-	for($i = 0; $i < count($check_var_length); $i++)
+	for($i = 0; $i < sizeof($check_var_length); $i++)
 	{
 		if (strlen($$check_var_length[$i]) < 2)
 		{

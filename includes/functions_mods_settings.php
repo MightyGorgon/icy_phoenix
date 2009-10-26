@@ -50,40 +50,11 @@ function mods_settings_get_lang($key)
 }
 
 /*
-* init_board_config_key() : add a key and its value to the board config table
-*/
-function init_board_config_key($key, $value, $force = false)
-{
-	global $db, $board_config;
-
-	if (!isset($board_config[$key]))
-	{
-		$db->clear_cache('config_');
-		$board_config[$key] = $value;
-		$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES('$key', '$value')";
-		if (!$db->sql_query($sql))
-		{
-			//message_die(GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
-		}
-	}
-	elseif ($force)
-	{
-		$db->clear_cache('config_');
-		$board_config[$key] = $value;
-		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '$value' WHERE config_name = '$key'";
-		if (!$db->sql_query($sql))
-		{
-			//message_die(GENERAL_ERROR, 'Could not add key ' . $key . ' in config table', '', __LINE__, __FILE__, $sql);
-		}
-	}
-}
-
-/*
 * user_board_config_key() : get the user choice if defined
 */
 function user_board_config_key($key, $user_field = '', $over_field = '')
 {
-	global $board_config, $userdata;
+	global $config, $userdata;
 
 	// get the user fields name if not given
 	if (empty($user_field))
@@ -98,26 +69,26 @@ function user_board_config_key($key, $user_field = '', $over_field = '')
 	}
 
 	// does the key exists ?
-	if (!isset($board_config[$key])) return;
+	if (!isset($config[$key])) return;
 
 	// does the user field exists ?
 	if (!isset($userdata[$user_field])) return;
 
 	// does the overwrite switch exists ?
-	if (!isset($board_config[$over_field]))
+	if (!isset($config[$over_field]))
 	{
-		$board_config[$over_field] = 0; // no overwrite
+		$config[$over_field] = 0; // no overwrite
 	}
 
 	// overwrite with the user data only if not overwrite set, not anonymous, logged in
 	// if the user is admin we will not overwrite his setting either...
-	if ((!intval($board_config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in']) || ($userdata['user_level'] == ADMIN))
+	if ((!intval($config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in']) || ($userdata['user_level'] == ADMIN))
 	{
-		$board_config[$key] = $userdata[$user_field];
+		$config[$key] = $userdata[$user_field];
 	}
 	else
 	{
-		$userdata[$user_field] = $board_config[$key];
+		$userdata[$user_field] = $config[$key];
 	}
 }
 
@@ -126,7 +97,7 @@ function user_board_config_key($key, $user_field = '', $over_field = '')
 */
 function init_board_config($mod_name, $config_fields, $sub_name = '', $sub_sort = 0, $mod_sort = 0, $menu_name = 'Preferences', $menu_sort = 0)
 {
-	global $mods;
+	global $config, $mods;
 
 	@reset($config_fields);
 	while (list($config_key, $config_data) = each($config_fields))
@@ -134,11 +105,19 @@ function init_board_config($mod_name, $config_fields, $sub_name = '', $sub_sort 
 		if (!isset($config_data['user_only']) || !$config_data['user_only'])
 		{
 			// create the key value
-			init_board_config_key($config_key, (!empty($config_data['values']) ? $config_data['values'][ $config_data['default'] ] : $config_data['default']));
+			$config_value = (!empty($config_data['values']) ? $config_data['values'][$config_data['default']] : $config_data['default']);
+			if (!isset($config[$config_key]))
+			{
+				set_config($config_key, $config_value, true, true);
+			}
 			if (!empty($config_data['user']))
 			{
-				// create the "overwrite user choice" value
-				init_board_config_key($config_key . '_over', 0);
+				$config_key_over = $config_key . '_over';
+				if (!isset($config[$config_key_over]))
+				{
+					// create the "overwrite user choice" value
+					set_config($config_key_over, 0, true, true);
+				}
 
 				// get user choice value
 				user_board_config_key($config_key, $config_data['user']);

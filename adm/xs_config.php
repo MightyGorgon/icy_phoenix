@@ -51,7 +51,7 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 			$shownav += $num;
 		}
 	}
-	if($shownav !== $board_config['xs_shownav'])
+	if($shownav !== $config['xs_shownav'])
 	{
 		$template->assign_block_vars('left_refresh', array(
 			'ACTION' => append_sid('index.' . PHP_EXT . '?pane=left')
@@ -68,14 +68,17 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 		{
 			$new[$var] = 0;
 		}
-		if($board_config[$var] !== $new[$var])
+		if($config[$var] !== $new[$var])
 		{
 			$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . xs_sql($new[$var]) . "' WHERE config_name = '{$var}'";
-			if( !$db->sql_query($sql) )
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
+			if(!$result)
 			{
 				xs_error(str_replace('{VAR}', $var, $lang['xs_config_sql_error']) . '<br /><br />' . $lang['xs_config_back'], __LINE__, __FILE__);
 			}
-			$board_config[$var] = $new[$var];
+			$config[$var] = $new[$var];
 			if($var === 'xs_check_switches')
 			{
 				$update_time = true;
@@ -84,28 +87,23 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 	}
 	if($update_time)
 	{
-		$board_config['xs_template_time'] = time() + 10; // set time 10 seconds in future in case if some tpl file would be compiled right now with current settings
-		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . $board_config['xs_template_time'] . "' WHERE config_name = 'xs_template_time'";
-		if(!$db->sql_query($sql))
+		$config['xs_template_time'] = time() + 10; // set time 10 seconds in future in case if some tpl file would be compiled right now with current settings
+		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . $config['xs_template_time'] . "' WHERE config_name = 'xs_template_time'";
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if(!$result)
 		{
 			xs_error(str_replace('{VAR}', 'xs_template_time', $lang['xs_config_sql_error']) . '<br /><br />' . $lang['xs_config_back'], __LINE__, __FILE__);
 		}
 	}
-	// update config cache
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-	{
-		if (!empty($config))
-		{
-			$config->read(true);
-		}
-	}
-	$db->clear_cache('config_');
+	$cache->destroy('config');
 	$template->assign_block_vars('switch_updated', array());
 	$template->load_config($template->root, false);
 }
 
 // check ftp configuration
-$xs_ftp_host = $board_config['xs_ftp_host'];
+$xs_ftp_host = $config['xs_ftp_host'];
 if(empty($xs_ftp_host) && !empty($_SERVER['HTTP_HOST']))
 {
 	$str = $_SERVER['HTTP_HOST'];
@@ -115,7 +113,7 @@ if(empty($xs_ftp_host) && !empty($_SERVER['HTTP_HOST']))
 	);
 }
 $dir = getcwd();
-$xs_ftp_login = $board_config['xs_ftp_login'];
+$xs_ftp_login = $config['xs_ftp_login'];
 if(empty($xs_ftp_login))
 {
 	if(substr($dir, 0, 6) === '/home/')
@@ -132,7 +130,7 @@ if(empty($xs_ftp_login))
 		}
 	}
 }
-$xs_ftp_path = $board_config['xs_ftp_path'];
+$xs_ftp_path = $config['xs_ftp_path'];
 if(empty($xs_ftp_path))
 {
 	if(substr($dir, 0, 6) === '/home/');
@@ -154,21 +152,21 @@ if(empty($xs_ftp_path))
 }
 
 $template->assign_vars(array(
-	'XS_USE_CACHE_0'			=> $board_config['xs_use_cache'] ? '' : ' checked="checked"',
-	'XS_USE_CACHE_1'			=> $board_config['xs_use_cache'] ? ' checked="checked"' : '',
-	'XS_AUTO_COMPILE_0'			=> $board_config['xs_auto_compile'] ? '' : ' checked="checked"',
-	'XS_AUTO_COMPILE_1'			=> $board_config['xs_auto_compile'] ? ' checked="checked"' : '',
-	'XS_AUTO_RECOMPILE_0'		=> $board_config['xs_auto_recompile'] ? '' : ' checked="checked"',
-	'XS_AUTO_RECOMPILE_1'		=> $board_config['xs_auto_recompile'] ? ' checked="checked"' : '',
-	'XS_PHP'					=> htmlspecialchars($board_config['xs_php']),
-	'XS_DEF_TEMPLATE'			=> htmlspecialchars($board_config['xs_def_template']),
-	'XS_CHECK_SWITCHES_0'		=> !$board_config['xs_check_switches'] ? ' checked="checked"' : '', // no check
-	'XS_CHECK_SWITCHES_1'		=> $board_config['xs_check_switches'] == 1 ? ' checked="checked"' : '', // smart check
-	'XS_CHECK_SWITCHES_2'		=> $board_config['xs_check_switches'] == 2 ? ' checked="checked"' : '', // simple check
-	'XS_WARN_INCLUDES_0'		=> $board_config['xs_warn_includes'] ? '' : ' checked="checked"',
-	'XS_WARN_INCLUDES_1'		=> $board_config['xs_warn_includes'] ? ' checked="checked"' : '',
-	'XS_ADD_COMMENTS_0'			=> $board_config['xs_add_comments'] ? '' : ' checked="checked"',
-	'XS_ADD_COMMENTS_1'			=> $board_config['xs_add_comments'] ? ' checked="checked"' : '',
+	'XS_USE_CACHE_0'			=> $config['xs_use_cache'] ? '' : ' checked="checked"',
+	'XS_USE_CACHE_1'			=> $config['xs_use_cache'] ? ' checked="checked"' : '',
+	'XS_AUTO_COMPILE_0'			=> $config['xs_auto_compile'] ? '' : ' checked="checked"',
+	'XS_AUTO_COMPILE_1'			=> $config['xs_auto_compile'] ? ' checked="checked"' : '',
+	'XS_AUTO_RECOMPILE_0'		=> $config['xs_auto_recompile'] ? '' : ' checked="checked"',
+	'XS_AUTO_RECOMPILE_1'		=> $config['xs_auto_recompile'] ? ' checked="checked"' : '',
+	'XS_PHP'					=> htmlspecialchars($config['xs_php']),
+	'XS_DEF_TEMPLATE'			=> htmlspecialchars($config['xs_def_template']),
+	'XS_CHECK_SWITCHES_0'		=> !$config['xs_check_switches'] ? ' checked="checked"' : '', // no check
+	'XS_CHECK_SWITCHES_1'		=> $config['xs_check_switches'] == 1 ? ' checked="checked"' : '', // smart check
+	'XS_CHECK_SWITCHES_2'		=> $config['xs_check_switches'] == 2 ? ' checked="checked"' : '', // simple check
+	'XS_WARN_INCLUDES_0'		=> $config['xs_warn_includes'] ? '' : ' checked="checked"',
+	'XS_WARN_INCLUDES_1'		=> $config['xs_warn_includes'] ? ' checked="checked"' : '',
+	'XS_ADD_COMMENTS_0'			=> $config['xs_add_comments'] ? '' : ' checked="checked"',
+	'XS_ADD_COMMENTS_1'			=> $config['xs_add_comments'] ? ' checked="checked"' : '',
 	'XS_FTP_HOST'				=> defined('DEMO_MODE') ? '' : $xs_ftp_host,
 	'XS_FTP_LOGIN'				=> defined('DEMO_MODE') ? '' : $xs_ftp_login,
 	'XS_FTP_PATH'				=> defined('DEMO_MODE') ? '' : $xs_ftp_path,
@@ -183,7 +181,7 @@ for($i = 0; $i < XS_SHOWNAV_MAX; $i++)
 		$template->assign_block_vars('shownav', array(
 			'NUM' => $i,
 			'LABEL' => $lang['xs_config_shownav'][$i],
-			'CHECKED' => (($board_config['xs_shownav'] & $num) > 0) ? 'checked="checked"' : ''
+			'CHECKED' => (($config['xs_shownav'] & $num) > 0) ? 'checked="checked"' : ''
 			)
 		);
 	}

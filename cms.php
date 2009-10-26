@@ -10,7 +10,7 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -42,13 +42,13 @@ $class_form = new class_form();
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT))
+if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT))
 {
-	$board_config['default_lang'] = 'english';
+	$config['default_lang'] = 'english';
 }
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_blocks.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_blocks.' . PHP_EXT);
 
 $cms_type = 'cms_standard';
 
@@ -83,7 +83,7 @@ $redirect_append = (!empty($mode) ? ('&mode=' . $mode) : '') . (!empty($action) 
 
 if (!$userdata['session_admin'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cms.' . PHP_EXT . '&admin=1' . $redirect_append, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cms.' . PHP_EXT . '&admin=1' . $redirect_append, true));
 }
 
 $access_allowed = get_cms_access_auth('cms', $mode, $action, $l_id, $b_id);
@@ -131,18 +131,13 @@ else
 $block_content_file = $block_content;
 
 $show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
-
-$page_title = $lang['Home'];
-$meta_description = '';
-$meta_keywords = '';
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-if ($board_config['cms_dock'] == true)
+if ($config['cms_dock'])
 {
 	$template->assign_block_vars('cms_dock_on', array());
 }
@@ -153,6 +148,8 @@ else
 
 if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 {
+	$blocks_dir = IP_ROOT_PATH . 'blocks/';
+	$blocks_prefix = '';
 	if($l_id !== false)
 	{
 		$id_var_name = 'l_id';
@@ -206,7 +203,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 	if(($action == 'add') || ($action == 'edit'))
 	{
-		$message = isset($_POST['message']) ? ip_stripslashes(trim($_POST['message'])) : '';
+		$message = isset($_POST['message']) ? stripslashes(trim($_POST['message'])) : '';
 
 		$l_row = get_global_blocks_layout($table_name, $field_name, $id_var_value);
 
@@ -225,56 +222,6 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			if($b_id)
 			{
 				$b_info = get_block_info(CMS_BLOCKS_TABLE, $b_id);
-
-				$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : $b_info['bposition'];
-				$position = get_blocks_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
-
-				$block_dir = IP_ROOT_PATH . 'blocks';
-				$blocks = opendir($block_dir);
-
-				$block_content_file_old = $b_info['blockfile'];
-				$b_info['blockfile'] = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : $b_info['blockfile'];
-				$blockfile = '<option value="">-- ' . $lang['B_Text_Block'] . ' --</option>';
-				while ($file = readdir($blocks))
-				{
-					$pos = strpos($file, 'blocks_imp_');
-					if (($pos == 0) && ($pos !== false))
-					{
-						$pos = strpos($file, '.' . PHP_EXT);
-						if ($pos !== false)
-						{
-							$temp = ereg_replace('\.' . PHP_EXT, '', $file);
-							$temp1 = ereg_replace('blocks_imp_', '', $temp);
-							$temp2 = !empty($lang['cms_block_' . $temp1]) ? ('&nbsp;[' . $lang['cms_block_' . $temp1] . ']') : '';
-							$temp1 = ereg_replace('_', ' ', $temp1);
-							$blockfile .= '<option value="' . $temp . '" ';
-							if($b_info['blockfile'] == $temp)
-							{
-								$blockfile .= 'selected="selected"';
-								$block_content_file = $temp;
-							}
-							$blockfile .= '>' . $temp1 . $temp2 . '</option>';
-						}
-					}
-				}
-
-				$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : $b_info['view'];
-
-				$select_name = 'view';
-				$default = $b_info['view'];
-				$options_array = array(0, 1, 2, 3, 4);
-				$options_langs_array = array($lang['B_All'], $lang['B_Guests'], $lang['B_Reg'], $lang['B_Mod'], $lang['B_Admin']);
-				$select_js = '';
-				$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
-
-				$message = isset($_POST['message']) ? ip_stripslashes(trim($_POST['message'])) : (!empty($b_info['content']) ? ip_stripslashes(trim($b_info['content'])) : '');
-
-				$group = get_all_usergroups($b_info['groups']);
-
-				if(empty($group))
-				{
-					$group = '&nbsp;&nbsp;' . $lang['None'];
-				}
 			}
 			else
 			{
@@ -283,55 +230,53 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		else
 		{
-			$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : '';
-			$position = get_blocks_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
-
-			$block_dir = IP_ROOT_PATH . 'blocks';
-			$blocks = opendir($block_dir);
-
-			$block_content_file_old = $b_info['blockfile'];
-			$b_info['blockfile'] = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : $b_info['blockfile'];
-			$blockfile = '<option value="">-- ' . $lang['B_Text_Block'] . ' --</option>';
-			while ($file = readdir($blocks))
-			{
-				$pos = strpos($file, 'blocks_imp_');
-				if (($pos == 0) && ($pos !== false))
-				{
-					$pos = strpos($file, '.' . PHP_EXT);
-					if ($pos !== false)
-					{
-						$temp = ereg_replace('\.' . PHP_EXT, '', $file);
-						$temp1 = ereg_replace('blocks_imp_', '', $temp);
-						$temp2 = !empty($lang['cms_block_' . $temp1]) ? ('&nbsp;[' . $lang['cms_block_' . $temp1] . ']') : '';
-						$temp1 = ereg_replace('_', ' ', $temp1);
-						$blockfile .= '<option value="' . $temp .'" ';
-						if($b_info['blockfile'] == $temp)
-						{
-							$blockfile .= 'selected="selected"';
-							$block_content_file = $temp;
-						}
-						$blockfile .= '>' . $temp1 . $temp2 . '</option>';
-					}
-				}
-			}
-
-			$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : 0;
-
-			$select_name = 'view';
-			$default = $b_info['view'];
-			$options_array = array(0, 1, 2, 3, 4);
-			$options_langs_array = array($lang['B_All'], $lang['B_Guests'], $lang['B_Reg'], $lang['B_Mod'], $lang['B_Admin']);
-			$select_js = '';
-			$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
-
-			$group = get_all_usergroups('');
-			if(empty($group))
-			{
-				$group = '&nbsp;&nbsp;' . $lang['None'];
-			}
+			$b_info['bposition'] = '';
+			$b_info['blockfile'] = '';
+			$b_info['view'] = 0;
+			$b_info['groups'] = '';
 		}
 
-		$b_title = (isset($_POST['title'])) ? ip_stripslashes(trim($_POST['title'])) : (!empty($b_info['title']) ? ip_stripslashes(trim($b_info['title'])) : '');
+		$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : $b_info['bposition'];
+		$position = get_blocks_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
+
+		$blocks_array = get_blocks_files_list($blocks_dir, $blocks_prefix);
+		$options_array = array();
+		$options_langs_array = array();
+		$options_array[] = '';
+		$options_langs_array[] = '[&nbsp;' . $lang['B_Text_Block'] . '&nbsp;]';
+		foreach ($blocks_array as $block_file)
+		{
+			$options_array[] = $blocks_prefix . $block_file;
+			$options_langs_array[] = $block_file . (!empty($lang['cms_block_' . $block_file]) ? ('&nbsp;[' . $lang['cms_block_' . $block_file] . ']') : '');
+		}
+
+		$block_content_file_old = $b_info['blockfile'];
+		$b_info['blockfile'] = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : $b_info['blockfile'];
+
+		$select_name = 'blockfile';
+		$default = $b_info['blockfile'];
+		$select_js = '';
+		$blockfile = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
+
+		$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : $b_info['view'];
+
+		$select_name = 'view';
+		$default = $b_info['view'];
+		$options_array = array(0, 1, 2, 3, 4);
+		$options_langs_array = array($lang['B_All'], $lang['B_Guests'], $lang['B_Reg'], $lang['B_Mod'], $lang['B_Admin']);
+		$select_js = '';
+		$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
+
+		$message = isset($_POST['message']) ? stripslashes(trim($_POST['message'])) : (!empty($b_info['content']) ? stripslashes(trim($b_info['content'])) : '');
+
+		$group = get_all_usergroups($b_info['groups']);
+
+		if(empty($group))
+		{
+			$group = '&nbsp;&nbsp;' . $lang['None'];
+		}
+
+		$b_title = (isset($_POST['title'])) ? stripslashes(trim($_POST['title'])) : (!empty($b_info['title']) ? stripslashes(trim($b_info['title'])) : '');
 		//$b_bposition = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : "";
 		$b_active = (isset($_POST['active'])) ? intval($_POST['active']) : ($b_info['active'] ? $b_info['active'] : 0);
 		$b_type = (isset($_POST['type'])) ? intval($_POST['type']) : ($b_info['type'] ? $b_info['type'] : 0);
@@ -357,7 +302,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 		if($block_text == true)
 		{
-			$template->set_filenames(array('body' => CMS_TPL . 'cms_block_edit_text_body.tpl'));
+			$template_to_parse = CMS_TPL . 'cms_block_edit_text_body.tpl';
 			$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_02']);
 			//generate_smilies('inline');
 			$s_hidden_fields .= '<input type="hidden" name="blockfile" value="" />';
@@ -374,7 +319,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		elseif($block_content != false)
 		{
-			$template->set_filenames(array('body' => CMS_TPL . 'cms_block_edit_body.tpl'));
+			$template_to_parse = CMS_TPL . 'cms_block_edit_body.tpl';
 			$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_02']);
 			$s_hidden_fields .= '<input type="hidden" name="blockfile" value="' . $block_content_file . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="message" value="" />';
@@ -396,58 +341,52 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 										AND bv.bid = '" . $b_id . "'
 										AND c.config_name = bv.config_name
 									ORDER BY c.id";
+				$result = $db->sql_query($sql);
 
-				if(!$result = $db->sql_query($sql))
+				$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
+				$rows_counter = 0;
+				while($row = $db->sql_fetchrow($result))
 				{
-					message_die(CRITICAL_ERROR, 'Could not query portal config information', '', __LINE__, __FILE__, $sql);
+					$cms_field = array();
+					$cms_field = create_cms_field($row);
+
+					$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
+
+					if($cms_field[$row['config_name']]['type'] == '4')
+					{
+						$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
+					}
+					else
+					{
+						$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
+					}
+
+					$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
+
+					$template->assign_block_vars('cms_block', array(
+						'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
+						'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
+						'FIELD' => $cms_field[$row['config_name']]['output']
+						)
+					);
+					$rows_counter++;
 				}
-				else
+
+				if ($rows_counter == 0)
 				{
-					$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
-					$rows_counter = 0;
-					while($row = $db->sql_fetchrow($result))
-					{
-						$cms_field = array();
-						$cms_field = create_cms_field($row);
-
-						$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
-
-						if($cms_field[$row['config_name']]['type'] == '4')
-						{
-							$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
-						}
-						else
-						{
-							$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
-						}
-
-						$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
-
-						$template->assign_block_vars('cms_block', array(
-							'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-							'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . ereg_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
-							'FIELD' => $cms_field[$row['config_name']]['output']
-							)
-						);
-						$rows_counter++;
-					}
-
-					if ($rows_counter == 0)
-					{
-						$template->assign_block_vars('cms_no_bv', array(
-							'L_NO_BV' => $lang['No_bv_selected'],
-							)
-						);
-					}
+					$template->assign_block_vars('cms_no_bv', array(
+						'L_NO_BV' => $lang['No_bv_selected'],
+						)
+					);
 				}
 				$db->sql_freeresult($result);
 			}
 			else
 			{
-				if(file_exists(IP_ROOT_PATH . '/blocks/' . $block_content_file . '.cfg'))
+				if(file_exists($blocks_dir . $block_content_file . '.cfg'))
 				{
 					$block_count_variables = 0;
-					include(IP_ROOT_PATH . '/blocks/' . $block_content_file . '.cfg');
+					include($blocks_dir . $block_content_file . '.cfg');
 					if ($block_count_variables > 0)
 					{
 						for($i = 0; $i < $block_count_variables; $i++)
@@ -481,7 +420,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 							$template->assign_block_vars('cms_block', array(
 								'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-								'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . ereg_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
+								'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
 								'FIELD' => $cms_field[$row['config_name']]['output']
 								)
 							);
@@ -506,7 +445,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 		else
 		{
-			$template->set_filenames(array('body' => CMS_TPL . 'cms_block_content_body.tpl'));
+			$template_to_parse = CMS_TPL . 'cms_block_content_body.tpl';
 			$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_01']);
 			//$s_hidden_fields .= '<input type="hidden" name="message" value="' . $message . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="message" value="' . htmlspecialchars($message) . '" />';
@@ -599,10 +538,6 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 		$template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 		// BBCBMG SMILEYS - END
-
-		$template->pparse('body');
-
-		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 	}
 	elseif($action == 'save')
 	{
@@ -613,12 +548,12 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		}
 
 		$b_title = (isset($_POST['title'])) ? trim($_POST['title']) : '';
-		$b_title = ((STRIP) ? addslashes($b_title) : $b_title);
+		$b_title = addslashes($b_title);
 		$b_bposition = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : '';
 		$b_active = (isset($_POST['active'])) ? intval($_POST['active']) : 0;
 		$b_type = (isset($_POST['type'])) ? intval($_POST['type']) : 0;
 		$b_content = (isset($_POST['message'])) ? trim($_POST['message']) : '';
-		$b_content = ((STRIP) ? addslashes($b_content) : $b_content);
+		$b_content = addslashes($b_content);
 		$b_blockfile = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : '';
 		$b_view = (isset($_POST['view'])) ? trim($_POST['view']) : 0;
 		$b_border = (isset($_POST['border'])) ? intval($_POST['border']) : 0;
@@ -645,7 +580,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 		}
 
-		$gb_pos = array('gt', 'gb', 'gl', 'gr', 'hh', 'hl', 'hc', 'fc', 'fr', 'ff');
+		$gb_pos = array('gh', 'gf', 'gt', 'gb', 'gl', 'gr', 'hh', 'hl', 'hc', 'fc', 'fr', 'ff');
 		if(in_array($b_position, $gb_pos))
 		{
 			if ($id_var_name == 'l_id')
@@ -698,22 +633,15 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				background = '" . $b_background . "',
 				groups = '" . $b_group . "'
 				WHERE bid = $b_id";
+			$result = $db->sql_query($sql);
 
-			if(!$result = $db->sql_query($sql))
+			if(file_exists($blocks_dir . $b_blockfile . '.cfg'))
 			{
-				message_die(GENERAL_ERROR, 'Could not insert data into blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-
-			if(file_exists(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg'))
-			{
-				include(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg');
+				include($blocks_dir . $b_blockfile . '.cfg');
 
 				// let's empty the previously created config vars...
 				$sql = "SELECT * FROM " . CMS_CONFIG_TABLE . " WHERE bid = '" . $b_id . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query information from block variable table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				while($row = $db->sql_fetchrow($result))
 				{
@@ -740,9 +668,9 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 			if(!empty($b_blockfile))
 			{
-				if(file_exists(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg'))
+				if(file_exists($blocks_dir . $b_blockfile . '.cfg'))
 				{
-					include(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg');
+					include($blocks_dir . $b_blockfile . '.cfg');
 
 					//$message .= '<br /><br />' . $lang['B_BV_added'];
 
@@ -759,27 +687,18 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 						{
 							$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
 								VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][0]) . "', '" . str_replace("\'", "''", $block_variables[$i][1]) . "', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . str_replace("\'", "''", $block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . str_replace("\'", "''", $block_variables[$i][6]) . "')";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not insert data into block variable table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
 
 							$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
 								VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not insert data into portal config table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
 						}
 						else
 						{
 							$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET config_value = '" . $block_variables[$i][7] . "'
 											WHERE config_name = '" . str_replace("\'", "''", $block_variables[$i][2]) . "'
 												AND bid = " . $b_id;
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not insert data into portal config table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
 						}
 					}
 				}
@@ -793,16 +712,13 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
 			$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $b_title . "', '" . $b_content . "', '" . $b_bposition . "', '" . $weight . "', '" . $b_active . "', '" . $b_type . "', '" . $b_blockfile . "', '" . $b_view . "', '" . $layout_value . "', '" . $layout_special_value . "', '" . $b_border . "', '" . $b_titlebar . "', '" . $b_background . "', '" . $b_local . "', '" . $b_group . "')";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert data into blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if(!empty($b_blockfile))
 			{
-				if(file_exists(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg'))
+				if(file_exists($blocks_dir . $b_blockfile . '.cfg'))
 				{
-					include(IP_ROOT_PATH . '/blocks/' . $b_blockfile . '.cfg');
+					include($blocks_dir . $b_blockfile . '.cfg');
 
 					//$message .= '<br /><br />' . $lang['B_BV_added'];
 
@@ -815,23 +731,16 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 						$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
 							VALUES ('" . $b_id . "', '" . str_replace("\'", "''", $block_variables[$i][0]) . "', '" . str_replace("\'", "''", $block_variables[$i][1]) . "', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . str_replace("\'", "''", $block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . str_replace("\'", "''", $block_variables[$i][6]) . "')";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not insert data into block variable table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 
 						$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
 							VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not insert data into portal config table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 					}
 				}
 			}
 		}
 		fix_weight_blocks($id_var_value, $table_name);
-		$db->clear_cache('cms_');
 		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -839,9 +748,6 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 	{
 		if(!isset($_POST['confirm']))
 		{
-			// Set template files
-			$template->set_filenames(array('confirm' => CMS_TPL . 'confirm_body.tpl'));
-
 			$template->assign_vars(array(
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
@@ -853,9 +759,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
-			$template->pparse('confirm');
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-			exit();
+			full_page_generation(CMS_TPL . 'confirm_body.tpl', $lang['Confirm'], '', '');
 		}
 		else
 		{
@@ -871,10 +775,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$redirect_action = '&amp;action=list';
 				}
 
-				$db->clear_cache('cms_');
-
 				$message = $lang['Block_removed'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value . $redirect_action) . '">', '</a>') . '<br />';
-
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -891,7 +792,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		{
 			$blocks_dup = array();
 			$blocks_dup = $_POST['block'];
-			$blocks_dup_n = count($blocks_dup);
+			$blocks_dup_n = sizeof($blocks_dup);
 			/*
 			$sql_blocks_dup = '';
 			if ($blocks_dup_n > 0)
@@ -911,11 +812,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$sql = "SELECT *
 						FROM " . CMS_BLOCKS_TABLE . "
 						WHERE bid = '" . intval($blocks_dup[$i]) . "'";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-					}
-
+					$result = $db->sql_query($sql);
 					$b_info = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
 
@@ -923,48 +820,35 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
 					$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $b_info['title'] . "', '" . $b_info['content'] . "', '" . $b_info['bposition'] . "', '" . $b_info['weight'] . "', '" . $b_info['active'] . "', '" . $b_info['type'] . "', '" . $b_info['blockfile'] . "', '" . $b_info['view'] . "', '" . (($id_var_name == 'l_id') ? $id_var_value : 0) . "', '" . (($id_var_name == 'ls_id') ? $id_var_value : 0) . "', '" . $b_info['border'] . "', '" . $b_info['titlebar'] . "', '" . $b_info['background'] . "', '" . $b_info['local'] . "', '" . $b_info['groups'] . "')";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not insert data into blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					$sql_cfg = "SELECT * FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
 										WHERE c.bid = '" . intval($blocks_dup[$i]) . "'
 											AND bv.bid = '" . intval($blocks_dup[$i]) . "'
 											AND c.config_name = bv.config_name
 										ORDER BY c.id";
+					$result_cfg = $db->sql_query($sql_cfg);
 
-					if(!$result_cfg = $db->sql_query($sql_cfg))
-					{
-						message_die(CRITICAL_ERROR, 'Could not query portal config information', '', __LINE__, __FILE__, $sql_cfg);
-					}
 					while($row_cfg = $db->sql_fetchrow($result_cfg))
 					{
 						$portal_name = $row_cfg['config_name'];
 						$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
 							VALUES ('" . $b_id . "', '" . $row_cfg['label'] . "', '" . $row_cfg['sub_label'] . "', '" . $row_cfg['config_name'] . "', '" . $row_cfg['field_options'] . "', '" . $row_cfg['field_values'] . "', '" . $row_cfg['type'] . "', '" . $row_cfg['block'] . "')";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not insert data into block variable table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 
 						$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
 							VALUES ('" . $b_id ."', '" . $row_cfg['config_name'] . "', '" . $row_cfg['config_value'] . "')";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not insert data into portal config table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 					}
 				}
 			}
 			fix_weight_blocks($id_var_value, $table_name);
-			$db->clear_cache('cms_');
 			$message = '<br /><br />' . $lang['Blocks_duplicated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value) . '">', '</a>') . '<br />';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
 		{
-			$template->set_filenames(array('body' => CMS_TPL . 'cms_blocks_duplicate_body.tpl'));
+			$template_to_parse = CMS_TPL . 'cms_blocks_duplicate_body.tpl';
 			$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Title']);
 
 			$l_row = get_layout_name($table_name, $field_name, $id_var_value);
@@ -973,7 +857,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 			if (($id_var_value == 0) || ($id_var_name == 'ls_id'))
 			{
-				$page_url = append_sid(PORTAL_MG);
+				$page_url = append_sid(CMS_PAGE_HOME);
 				$l_id_list = "'0'";
 				$l_name = $l_filename;
 			}
@@ -987,7 +871,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					}
 					else
 					{
-						$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(PORTAL_MG . '?page=' . $id_var_value);
+						$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(CMS_PAGE_HOME . '?page=' . $id_var_value);
 					}
 					$l_name = ($l_name == '') ? $lang['Portal'] : $l_name;
 				}
@@ -1000,10 +884,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 
 			$sql = "SELECT bposition, pkey FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout IN (" . $l_id_list . ")";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query blocks position table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$position = array();
 			$position_list = '';
 			while ($row = $db->sql_fetchrow($result))
@@ -1023,14 +904,10 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 								AND l.lid = b.layout
 								" . $cms_level_sql . "
 							ORDER BY " . $sort_sql;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$b_rows = $db->sql_fetchrowset($result);
 			$db->sql_freeresult($result);
-			$b_count = count($b_rows);
+			$b_count = sizeof($b_rows);
 
 			$template->assign_vars(array(
 				'L_BLOCKS_TITLE' => $lang['B_Duplicate'],
@@ -1149,7 +1026,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		{
 			$blocks_upd = array();
 			$blocks_upd = $_POST['block'];
-			$blocks_upd_n = count($blocks_upd);
+			$blocks_upd_n = sizeof($blocks_upd);
 			$sql_no_gb = '';
 
 			if ($action == 'editglobal')
@@ -1167,7 +1044,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			if (($mode == 'blocks') || ($action == 'editglobal'))
 			{
 				$b_rows = get_blocks_from_layouts(CMS_BLOCKS_TABLE, $block_layout_field, $l_id_list, $sql_no_gb);
-				$b_count = !empty($b_rows) ? count($b_rows) : 0;
+				$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
 
 				for($i = 0; $i < $b_count; $i++)
 				{
@@ -1175,26 +1052,19 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
 									SET active = '" . $b_active . "'
 									WHERE bid = '" . $b_rows[$i]['bid'] . "'";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not update blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 				}
 				fix_weight_blocks($id_var_value, $table_name);
-				$db->clear_cache('cms_');
 				$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
 				$sql = "SELECT bposition FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = " . $l_id_list . "";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query blocks position table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$l_rows = $db->sql_fetchrowset($result);
 				$db->sql_freeresult($result);
-				$l_count = count($l_rows);
+				$l_count = sizeof($l_rows);
 
 				for($j = 0; $j < $l_count; $j++)
 				{
@@ -1204,25 +1074,21 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 						$block_debug = str_replace('list_' . $bposition . '[]=id', '', $_POST['list_' . $bposition]);
 						$block_debug_array = explode("&", $block_debug);
 
-						for ($i = 0; $i < count($block_debug_array); $i++)
+						for ($i = 0; $i < sizeof($block_debug_array); $i++)
 						{
 							$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
 								SET weight = '" . $i . "', bposition = '" . $bposition . "'
 								WHERE bid = '" . $block_debug_array[$i] . "'";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not update blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
 						}
 					}
 				}
-				$db->clear_cache('cms_');
 				redirect(append_sid(CMS_PAGE . '?mode=blocks_adv&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
 			}
 		}
 
 		$template_file = ($mode == 'blocks') ? 'cms_blocks_list_body.tpl' : 'cms_blocks_adv_list_body.tpl';
-		$template->set_filenames(array('body' => CMS_TPL . $template_file));
+		$template_to_parse = CMS_TPL . $template_file;
 		$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Title']);
 
 		$move = (isset($_GET['move'])) ? $_GET['move'] : -1;
@@ -1231,7 +1097,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		{
 			$b_weight = (isset($_GET['weight'])) ? $_GET['weight'] : 0;
 			$b_position = (isset($_GET['pos'])) ? $_GET['pos'] : 0;
-			$gb_pos = array('gt', 'gb', 'gl', 'gr', 'hh', 'hl', 'hc', 'fc', 'fr', 'ff');
+			$gb_pos = array('gh', 'gf', 'gt', 'gb', 'gl', 'gr', 'hh', 'hl', 'hc', 'fc', 'fr', 'ff');
 			if(in_array($b_position, $gb_pos))
 			{
 				if ($id_var_name == 'l_id')
@@ -1253,15 +1119,9 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$temp = $b_weight + 1;
 				}
 				$sql = "UPDATE " . CMS_BLOCKS_TABLE . " SET weight = '" . $b_weight . "' WHERE " . $block_layout_field . " = '" . $id_var_value . "' AND weight = '" . $temp . "' AND bposition = '" . $b_position . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update data in blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$sql = "UPDATE " . CMS_BLOCKS_TABLE . " SET weight = '" . $temp . "' WHERE bid = '" . $b_id . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update data in blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				fix_weight_blocks($id_var_value, $table_name);
 			}
 		}
@@ -1272,7 +1132,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 		if ($action == 'editglobal')
 		{
-			$page_url = append_sid(PORTAL_MG);
+			$page_url = append_sid(CMS_PAGE_HOME);
 			$l_id_list = "'0'";
 		}
 		else
@@ -1285,7 +1145,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				}
 				else
 				{
-					$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(PORTAL_MG . '?page=' . $id_var_value);
+					$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(CMS_PAGE_HOME . '?page=' . $id_var_value);
 				}
 			}
 			else
@@ -1361,7 +1221,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 
 			$b_rows = get_blocks_from_layouts(CMS_BLOCKS_TABLE, $block_layout_field, $l_id_list, '');
-			$b_count = !empty($b_rows) ? count($b_rows) : 0;
+			$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
 
 			// Reassign $l_id_list
 			if ($id_var_name == 'l_id')
@@ -1432,7 +1292,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 						$template->assign_block_vars('blocks', array(
 							'ROW_CLASS' => $row_class,
-							'TITLE' => ip_stripslashes(trim($b_rows[$i]['title'])),
+							'TITLE' => stripslashes(trim($b_rows[$i]['title'])),
 							'BLOCK_CB_ID' => $b_rows[$i]['bid'],
 							//'POSITION' => $position[$b_position],
 							'POSITION' => $b_position_l,
@@ -1465,19 +1325,13 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		else
 		{
 			$sql = "SELECT bposition, pkey FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = " . $id_var_value . "";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query blocks position table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$l_rows = $db->sql_fetchrowset($result);
 			$db->sql_freeresult($result);
-			$l_count = count($l_rows);
+			$l_count = sizeof($l_rows);
 
 			$sql = "SELECT template FROM " . CMS_LAYOUT_TABLE . " WHERE lid = " . $l_id_list . "";
-			if(!($layout_result = $db->sql_query($sql, false, 'cms_')))
-			{
-				message_die(CRITICAL_ERROR, "Could not query portal layout information", "", __LINE__, __FILE__, $sql);
-			}
+			$layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
 			$layout_row = $db->sql_fetchrow($layout_result);
 			$layout_type = $layout_row['template'];
 
@@ -1496,14 +1350,11 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			for($j = 0; $j < $l_count; $j++)
 			{
 				$sql = "SELECT bid FROM " . CMS_BLOCKS_TABLE . " WHERE layout = " . $l_id_list . " AND bposition = '" . $l_rows[$j]['bposition'] . "' ORDER BY weight";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$b_rows = $db->sql_fetchrowset($result);
 				$db->sql_freeresult($result);
 
-				$b_count = empty($b_rows) ? 0 : count($b_rows);
+				$b_count = empty($b_rows) ? 0 : sizeof($b_rows);
 				$b_position_l = !empty($lang['cms_pos_' . $l_rows[$j]['pkey']]) ? $lang['cms_pos_' . $l_rows[$j]['pkey']] : $l_rows[$j]['pkey'];
 
 				if ($b_count > 0)
@@ -1537,7 +1388,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					);
 				}
 
-				$template->assign_var('LAYOUT_BLOCKS', cms_assign_var_from_handle($template, 'layout_blocks'));
+				$template->assign_var('LAYOUT_BLOCKS', $ip_cms->cms_assign_var_from_handle($template, 'layout_blocks'));
 
 				$template->assign_block_vars('drop_blocks', array(
 					'BPOSITION' => $l_rows[$j]['bposition'],
@@ -1547,14 +1398,11 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 
 			$sql = "SELECT bid, bposition FROM " . CMS_BLOCKS_TABLE . " WHERE layout = " . $l_id_list . " AND bposition NOT IN (" . $b_position_array . ") ORDER BY weight";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$b_rows = $db->sql_fetchrowset($result);
 			$db->sql_freeresult($result);
 
-			$b_count = empty($b_rows) ? 0 : count($b_rows);
+			$b_count = empty($b_rows) ? 0 : sizeof($b_rows);
 			$invalid_position = array();
 			$invalid_position_count = 0;
 
@@ -1588,7 +1436,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 
 					}
 				}
-				$template->assign_var('INVALID_BLOCKS', cms_assign_var_from_handle($template, 'invalid_blocks'));
+				$template->assign_var('INVALID_BLOCKS', $ip_cms->cms_assign_var_from_handle($template, 'invalid_blocks'));
 			}
 
 			for($i = 0; $i < $invalid_position_count; $i++)
@@ -1655,7 +1503,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 
 	if(($action == 'edit') || ($action == 'add'))
 	{
-		$template->set_filenames(array('body' => CMS_TPL . 'cms_layout_edit_body.tpl'));
+		$template_to_parse = CMS_TPL . 'cms_layout_edit_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Pages']);
 
 		$l_info = array();
@@ -1708,7 +1556,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 			{
 				$template->assign_var('S_LAYOUT_ADV', true);
 				$layout_details = get_layouts_details($template_dir, '.tpl', $common_cms_template, 'template', $cms_type);
-				for ($i = 0; $i < count($layout_details); $i++)
+				for ($i = 0; $i < sizeof($layout_details); $i++)
 				{
 					$template->assign_block_vars('layouts', array(
 						'LAYOUT_IMG' => $layout_details[$i]['img'],
@@ -1727,8 +1575,12 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 
 			$select_name = 'edit_auth';
 			$default = empty($l_info['edit_auth']) ? 0 : $l_info['edit_auth'];
+			/*
 			$options_array = array(0, 1, 2, 3, 4, 5);
 			$options_langs_array = array($lang['CMS_Guest'], $lang['CMS_Reg'], $lang['CMS_VIP'], $lang['CMS_Publisher'], $lang['CMS_Reviewer'], $lang['CMS_Content_Manager']);
+			*/
+			$options_array = array(3, 4, 5);
+			$options_langs_array = array($lang['CMS_Publisher'], $lang['CMS_Reviewer'], $lang['CMS_Content_Manager']);
 			$select_js = '';
 			$edit_auth = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
@@ -1798,7 +1650,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 	elseif($action == 'save')
 	{
 		$l_name = (isset($_POST['name'])) ? trim($_POST['name']) : '';
-		$l_page_id = (isset($_POST['page_id']) ? (ereg_replace("[^a-zA-Z0-9_]", "", strtolower(htmlspecialchars(trim($_POST['page_id']))))) : '');
+		$l_page_id = (isset($_POST['page_id']) ? (preg_replace('/[^A-Za-z0-9_]*/', '', strtolower(htmlspecialchars(trim($_POST['page_id']))))) : '');
 		$l_locked = (isset($_POST['locked'])) ? intval($_POST['locked']) : 0;
 		$l_filename = (isset($_POST['filename'])) ? htmlspecialchars(trim($_POST['filename'])) : '';
 		$l_filename_old = (isset($_POST['filename_old'])) ? htmlspecialchars(trim($_POST['filename_old'])) : '';
@@ -1852,7 +1704,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 
 					if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
 					{
-						$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
+						$l_filename = preg_replace('/[^A-Za-z0-9_]*/', '', substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
 						if (file_exists($l_filename))
 						{
 							message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);
@@ -1884,23 +1736,17 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 					edit_auth = " . $l_edit_auth . ",
 					groups = '" . $l_group . "'
 					WHERE " . $field_name . " = " . $id_var_value;
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$message .= $lang['Layout_updated'];
 
 				$template_name = 'default';
 
-				if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
+				if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . str_replace('.tpl', '.cfg', $l_template)))
 				{
-					include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
+					include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . str_replace('.tpl', '.cfg', $l_template));
 
 					$sql_test = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = '" . $id_var_value . "'";
-					if(!$result_test = $db->sql_query($sql_test))
-					{
-						message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
-					}
+					$result_test = $db->sql_query($sql_test);
 
 					while ($row_test = $db->sql_fetchrow($result_test))
 					{
@@ -1917,10 +1763,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 							$sql = "DELETE FROM " . CMS_BLOCK_POSITION_TABLE . "
 								WHERE layout = '" . $id_var_value . "'
 									AND bposition = '" . $row_test['bposition'] . "'";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not remove data from blocks position table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
 						}
 					}
 					$db->sql_freeresult($result);
@@ -1931,19 +1774,13 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 							WHERE layout = '" . $id_var_value . "'
 								AND bposition = '" . $layout_block_positions[$i][1] . "'
 							LIMIT 1";
-						if(!$result_test = $db->sql_query($sql_test))
-						{
-							message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
+						$result_test = $db->sql_query($sql_test);
 
 						if (!($db->sql_fetchrow($result_test)))
 						{
 							$sql = "INSERT INTO " . CMS_BLOCK_POSITION_TABLE . " (pkey, bposition, layout)
 								VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $id_var_value . "')";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
 						}
 					}
 				}
@@ -1964,10 +1801,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 					edit_auth = " . $l_edit_auth . ",
 					groups = '" . $l_group . "'
 					WHERE " . $field_name . " = " . $id_var_value;
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$message .= $lang['Layout_updated'];
 			}
 		}
@@ -1981,7 +1815,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 				}
 				if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
 				{
-					$l_filename = ereg_replace("[^a-zA-Z0-9_]", "", substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
+					$l_filename = preg_replace('/[^A-Za-z0-9_]*/', '', substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
 					if (file_exists($l_filename))
 					{
 						message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);
@@ -2004,17 +1838,14 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 
 				$sql = "INSERT INTO " . $table_name . " (name, filename, template, global_blocks, page_nav, view, edit_auth, groups)
 					VALUES ('" . str_replace("\'", "''", $l_name) . "', '" . str_replace("\'", "''", $l_filename) . "', '" . str_replace("\'", "''", $l_template) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$message .= $lang['Layout_added'];
 
 				$template_name = 'default';
 
-				if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template)))
+				if(file_exists(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . str_replace('.tpl', '.cfg', $l_template)))
 				{
-					include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . ereg_replace('.tpl', '.cfg', $l_template));
+					include(IP_ROOT_PATH . '/templates/' . $template_name . '/layout/' . str_replace('.tpl', '.cfg', $l_template));
 
 					$layout_id = get_max_layout_id($table_name);
 
@@ -2022,10 +1853,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 					{
 						$sql = "INSERT INTO " . CMS_BLOCK_POSITION_TABLE . " (pkey, bposition, layout)
 							VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $layout_id . "')";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not insert data into block position table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 					}
 
 					$message .= '<br /><br />' . $lang['Layout_BP_added'];
@@ -2035,15 +1863,11 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 			{
 				$sql = "INSERT INTO " . $table_name . " (name, page_id, locked, filename, global_blocks, page_nav, view, edit_auth, groups)
 					VALUES ('" . str_replace("\'", "''", $l_name) . "', '" . str_replace("\'", "''", $l_page_id) . "', 0, '" . str_replace("\'", "''", $l_filename) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not insert data into layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$message .= $lang['Layout_added'];
 			}
 		}
 
-		$db->clear_cache('cms_');
 		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode_layout_name) . '">', '</a>');
 		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . (!empty($layout_id) ? $layout_id : $id_var_value)) . '">', '</a>');
 		$message .= '<br /><br />';
@@ -2067,9 +1891,6 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 			$s_hidden_fields .= '<input type="hidden" name="' . $id_var_name . '" value="' . $id_var_value . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="action" value="' . $action . '" />';
 
-			// Set template files
-			$template->set_filenames(array('confirm' => CMS_TPL . 'confirm_body.tpl'));
-
 			$template->assign_vars(array(
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
@@ -2083,9 +1904,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
-			$template->pparse('confirm');
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-			exit();
+			full_page_generation(CMS_TPL . 'confirm_body.tpl', $lang['Confirm'], '', '');
 		}
 		else
 		{
@@ -2101,12 +1920,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 					delete_layout($table_name, CMS_BLOCK_POSITION_TABLE, $id_var_value);
 
 					$sql_list = "SELECT * FROM " . CMS_BLOCKS_TABLE . " WHERE " . $block_layout_field . " = " . $id_var_value;
-
-					if(!($result_list = $db->sql_query($sql_list)))
-					{
-						message_die(GENERAL_ERROR, 'Could not query blocks list', $lang['Error'], __LINE__, __FILE__, $sql);
-					}
-
+					$result_list = $db->sql_query($sql_list);
 					while($b_row = $db->sql_fetchrow($result_list))
 					{
 						delete_block(CMS_BLOCKS_TABLE, $b_row['bid']);
@@ -2134,14 +1948,14 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 		{
 			$l_gb_checkbox = array();
 			$l_gb_checkbox = $_POST['layout_gb'];
-			$l_gb_checkbox_n = count($l_gb_checkbox);
+			$l_gb_checkbox_n = sizeof($l_gb_checkbox);
 
 			$l_bc_checkbox = array();
 			$l_bc_checkbox = $_POST['layout_bc'];
-			$l_bc_checkbox_n = count($l_bc_checkbox);
+			$l_bc_checkbox_n = sizeof($l_bc_checkbox);
 
 			$l_rows = get_layouts_list($table_name, $field_name);
-			$l_count = count($l_rows);
+			$l_count = sizeof($l_rows);
 
 			for($i = 0; $i < $l_count; $i++)
 			{
@@ -2149,16 +1963,12 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 				$gb_value = in_array($l_rows[$i][$field_name], $l_gb_checkbox) ? 1 : 0;
 				$bc_value = in_array($l_rows[$i][$field_name], $l_bc_checkbox) ? 1 : 0;
 				$sql = "UPDATE " . $table_name . " SET view = " . $view_value . ", global_blocks = " . $gb_value . ", page_nav = " . $bc_value . " WHERE " . $field_name . " = " . $l_rows[$i][$field_name];
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update data in layouts table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
-			$db->clear_cache('cms_');
 			redirect(append_sid(CMS_PAGE . '?mode=' . $mode_layout_name . '&updated=true'));
 		}
 
-		$template->set_filenames(array('body' => CMS_TPL . 'cms_layout_list_body.tpl'));
+		$template_to_parse = CMS_TPL . 'cms_layout_list_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Pages']);
 
 		$template->assign_vars(array(
@@ -2199,17 +2009,13 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 		$template->assign_block_vars('layout', array());
 
 		$l_rows = get_layouts_list($table_name, $field_name);
-		$l_count = count($l_rows);
+		$l_count = sizeof($l_rows);
 
 		$default_portal_id = 0;
 		if (!$is_layout_special)
 		{
 			$sql = "SELECT config_value FROM " . CMS_CONFIG_TABLE . " WHERE bid = '0' AND config_name = 'default_portal'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query layout table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$c_row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 			$default_portal_id = $c_row['config_value'];
@@ -2222,7 +2028,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 			$layout_id = $l_rows[$i][$field_name];
 			$layout_name = ($is_layout_special ? (isset($lang[$lang_var]) ? htmlspecialchars($lang[$lang_var]) : htmlspecialchars($l_rows[$i]['name'])) : htmlspecialchars($l_rows[$i]['name']));
 			$layout_filename = $l_rows[$i]['filename'];
-			$layout_preview = ($is_layout_special ? (empty($layout_filename) ? '#' : append_sid($layout_filename)) : (empty($layout_filename) ? (PORTAL_MG . '?page=' . $layout_id) : append_sid($layout_filename)));
+			$layout_preview = ($is_layout_special ? (empty($layout_filename) ? '#' : append_sid($layout_filename)) : (empty($layout_filename) ? (CMS_PAGE_HOME . '?page=' . $layout_id) : append_sid($layout_filename)));
 			$layout_locked = false;
 
 			$select_name = 'auth_view_' . $layout_id;
@@ -2264,7 +2070,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 
 if($mode == 'config')
 {
-	$template->set_filenames(array('body' => CMS_TPL . 'cms_config_body.tpl'));
+	$template_to_parse = CMS_TPL . 'cms_config_body.tpl';
 	$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_CONFIG']);
 
 	// Pull all config data
@@ -2280,60 +2086,49 @@ if($mode == 'config')
 			AND (p.bid = 0)
 			AND (p.config_name = b.config_name)
 		ORDER BY b.block, b.bvid, p.id";
-	if(!$result = $db->sql_query($sql))
+	$result = $db->sql_query($sql);
+	$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
+	while($row = $db->sql_fetchrow($result))
 	{
-		message_die(CRITICAL_ERROR, 'Could not query CMS config information', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-	else
-	{
-		$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
-		while($row = $db->sql_fetchrow($result))
+		$cms_field = array();
+		$cms_field = create_cms_field($row);
+		//$cms_field = array_merge($cms_field, create_cms_field($row));
+
+		$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
+
+		if($cms_field[$row['config_name']]['type'] == '4')
 		{
-			$cms_field = array();
-			$cms_field = create_cms_field($row);
-			//$cms_field = array_merge($cms_field, create_cms_field($row));
-
-			$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
-
-			if($cms_field[$row['config_name']]['type'] == '4')
-			{
-				$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
-			}
-			else
-			{
-				$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
-			}
-
-			if(isset($_POST['save']))
-			{
-				$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET
-					config_value = '" . str_replace("\'", "''", $new[$cms_field[$row['config_name']]['name']]) . "'
-					WHERE config_name = '" . $cms_field[$row['config_name']]['name'] . "'";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Failed to update configuration for " . $cms_field[$row['config_name']]['name'], "", __LINE__, __FILE__, $sql);
-				}
-			}
-			else
-			{
-				$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
-				$template->assign_block_vars('cms_block', array(
-					'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-					'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . ereg_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
-					'FIELD' => $cms_field[$row['config_name']]['output']
-					)
-				);
-			}
+			$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
 		}
-		$db->sql_freeresult($result);
+		else
+		{
+			$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
+		}
 
 		if(isset($_POST['save']))
 		{
-			$db->clear_cache('cms_');
-			$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid(CMS_PAGE . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid(CMS_PAGE) . '">', '</a>') . '<br /><br />';
-
-			message_die(GENERAL_MESSAGE, $message);
+			$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET
+				config_value = '" . str_replace("\'", "''", $new[$cms_field[$row['config_name']]['name']]) . "'
+				WHERE config_name = '" . $cms_field[$row['config_name']]['name'] . "'";
+			$result = $db->sql_query($sql);
 		}
+		else
+		{
+			$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
+			$template->assign_block_vars('cms_block', array(
+				'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
+				'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
+				'FIELD' => $cms_field[$row['config_name']]['output']
+				)
+			);
+		}
+	}
+	$db->sql_freeresult($result);
+
+	if(isset($_POST['save']))
+	{
+		$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid(CMS_PAGE . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid(CMS_PAGE) . '">', '</a>') . '<br /><br />';
+		message_die(GENERAL_MESSAGE, $message);
 	}
 
 	$template->assign_vars(array(
@@ -2349,7 +2144,7 @@ if($mode == 'config')
 
 if (($mode == false))
 {
-	$template->set_filenames(array('body' => CMS_TPL . 'cms_index_body.tpl'));
+	$template_to_parse = CMS_TPL . 'cms_index_body.tpl';
 	$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Pages']);
 	$template->assign_vars(array(
 		'L_CMS_PAGES' => $lang['CMS_Pages'],
@@ -2374,9 +2169,6 @@ if (($mode == false))
 	);
 }
 
-$db->clear_cache('cms_');
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $lang['Home'], '', '');
 
 ?>

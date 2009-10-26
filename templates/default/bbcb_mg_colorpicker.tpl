@@ -1,14 +1,14 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}js/color_bar.js"></script>
-<!-- <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorpicker.js"></script> -->
-<script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/prototype_cp.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colormethods.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorvaluepicker.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/slider.js"></script>
 <script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorpicker.js"></script>
 
-<div id="cpdiv" style="background-color:#888888;border: solid 1px #000000;padding:10px;margin:5px;width:440px;">
+<div id="cpdiv" style="background-color: #888888; border: solid 1px #000000; padding: 10px; margin: 5px; width: 440px;">
 
 <div style="width:420px;">
 
@@ -24,8 +24,8 @@
 <tt>#:</tt><input type="text" id="cp1_Hex" value="FF0000" style="width:60px;" class="mainoption" tabindex="36" /><br />
 </div>
 
-<div style="width:310px;">
-<div style="position:relative;float:right;"><div id="cp1_ColorBar"></div></div>
+<div style="width: 310px;">
+<div style="position: relative; float: right;"><div id="cp1_ColorBar"></div></div>
 <div id="cp1_ColorMap"></div>
 </div>
 
@@ -34,7 +34,7 @@
 </div>
 
 <br /><br />
-<div style="text-align:center;"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></div>
+<div style="text-align: center;"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></div>
 
 <div style="display:none;">
 <img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/rangearrows.gif" />
@@ -76,3 +76,4 @@ Event.observe(window,'load',function()
 //-->
 </script>
 
+<!-- INCLUDE simple_footer.tpl -->

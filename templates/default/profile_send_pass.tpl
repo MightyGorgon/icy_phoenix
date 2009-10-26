@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form action="{S_PROFILE_ACTION}" method="post">
 {ERROR_BOX}
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEND_PASSWORD}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -19,3 +21,5 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -1,3 +1,9 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
@@ -49,3 +55,9 @@
 <tr><td colspan="9" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" />&nbsp;&nbsp;<input type="submit" value="{L_AD_ADD}" class="mainoption" /></td></tr>
 </table>
 </form>
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

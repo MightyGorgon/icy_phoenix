@@ -37,21 +37,13 @@ $template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . ap
 //
 if(!empty($_GET['setdefault']) && !defined('DEMO_MODE'))
 {
-	$board_config['default_style'] = intval($_GET['setdefault']);
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . $board_config['default_style'] . "' WHERE config_name='default_style'";
+	$config['default_style'] = intval($_GET['setdefault']);
+	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . $config['default_style'] . "' WHERE config_name='default_style'";
 	if(defined('XS_MODS_ADMIN_TEMPLATES'))
 	{
 		$sql = str_replace(' WHERE config_name', ', theme_public=\'1\' WHERE config_name', $sql);
 	}
 	$db->sql_query($sql);
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-	{
-		// recache config table
-		if ( !empty($config) )
-		{
-			$config->read(true);
-		}
-	}
 }
 
 //
@@ -59,14 +51,9 @@ if(!empty($_GET['setdefault']) && !defined('DEMO_MODE'))
 //
 if(isset($_GET['setoverride']) && !defined('DEMO_MODE'))
 {
-	$board_config['override_user_style'] = intval($_GET['setoverride']);
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . $board_config['override_user_style'] . "' WHERE config_name='override_user_style'";
+	$config['override_user_style'] = intval($_GET['setoverride']);
+	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . $config['override_user_style'] . "' WHERE config_name='override_user_style'";
 	$db->sql_query($sql);
-	// recache config table
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210') && !empty($config))
-	{
-		$config->read(true);
-	}
 }
 
 //
@@ -128,23 +115,28 @@ if(defined('XS_MODS_ADMIN_TEMPLATES'))
 {
 	$sql = str_replace(', style_name', ', style_name, theme_public', $sql);
 }
-if(!$result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	xs_error($lang['xs_no_style_info'], __LINE__, __FILE__);
 }
 $style_rowset = $db->sql_fetchrowset($result);
 
-$style_override = $board_config['override_user_style'];
-$style_default = $board_config['default_style'];
+$style_override = $config['override_user_style'];
+$style_default = $config['default_style'];
 $num_users = 0;
 $style_ids = array();
 
-for($i=0; $i<count($style_rowset); $i++)
+for($i=0; $i< sizeof($style_rowset); $i++)
 {
 	$id = $style_rowset[$i]['themes_id'];
 	$style_ids[] = $id;
 	$sql = 'SELECT count(user_id) as total FROM ' . USERS_TABLE . ' WHERE user_style = ' . $id;
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
 	if(!$result)
 	{
 		$total = 0;
@@ -216,7 +208,9 @@ for($i=0; $i<count($style_rowset); $i++)
 
 // get number of users using default style
 $sql = 'SELECT count(user_id) as total FROM ' . USERS_TABLE . ' WHERE user_style = NULL';
+$db->sql_return_on_error(true);
 $result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
 if($result)
 {
 	$total = $db->sql_fetchrow($result);
@@ -226,7 +220,9 @@ if($result)
 
 // get number of users
 $sql = 'SELECT count(user_id) as total FROM ' . USERS_TABLE;
+$db->sql_return_on_error(true);
 $result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
 if(!$result)
 {
 	$total_users = 0;
@@ -258,12 +254,15 @@ if(isset($_GET['list']))
 	$id = intval($_GET['list']);
 	$template->assign_block_vars('list_users', array());
 	$sql = "SELECT user_id, username FROM " . USERS_TABLE . " WHERE user_style='{$id}' ORDER BY username ASC";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error('Could not get users list!', __LINE__, __FILE__);
 	}
 	$rowset = $db->sql_fetchrowset($result);
-	for($i=0; $i<count($rowset); $i++)
+	for($i=0; $i< sizeof($rowset); $i++)
 	{
 		$template->assign_block_vars('list_users.user', array(
 			'NUM'		=> $i + 1,

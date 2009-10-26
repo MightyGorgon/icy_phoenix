@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 <!-- BEGIN switch_current_sig -->
@@ -100,3 +102,5 @@
 <!-- END switch_save_sig -->
 
 <!-- INCLUDE profile_cpl_menu_inc_end.tpl -->
+
+<!-- INCLUDE overall_footer.tpl -->

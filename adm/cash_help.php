@@ -24,7 +24,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -38,13 +38,13 @@ $help = array();
 $help[0] = new cash_menucat($lang['Cmenu_cash_help']);
 $help[0]->additem(new cash_menuitem($j, 'Cmh_support', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#623226', $lang['Cmhe_support']));
 $help[0]->additem(new cash_menuitem($j, 'Cmh_troubleshooting', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#625402', $lang['Cmhe_troubleshooting']));
-$help[0]->additem(new cash_menuitem($j, 'Cmh_upgrading', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#648190', sprintf($lang['Cmhe_upgrading'], $board_config['cash_version'])));
+$help[0]->additem(new cash_menuitem($j, 'Cmh_upgrading', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#648190', sprintf($lang['Cmhe_upgrading'], $config['cash_version'])));
 $help[0]->additem(new cash_menuitem($j, 'Cmh_addons', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#655651', $lang['Cmhe_addons']));
 $help[0]->additem(new cash_menuitem($j, 'Cmh_demo_boards', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#658468', $lang['Cmhe_demo_boards']));
 $help[0]->additem(new cash_menuitem($j, 'Cmh_translations', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#662158', $lang['Cmhe_translations']));
 $help[0]->additem(new cash_menuitem($j, 'Cmh_features', 'http://www.phpbb.com/phpBB/viewtopic.php?p=623226#664549', $lang['Cmhe_features']));
 
-for ($i = 0; $i < count($help); $i++)
+for ($i = 0; $i < sizeof($help); $i++)
 {
 	$template->assign_block_vars('menucat', array('L_CATEGORY' => $help[$i]->category));
 	for ($j = 0; $j < $help[$i]->num(); $j++)

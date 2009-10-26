@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 <!--
 function checkFormComment()
@@ -187,7 +189,7 @@ function checkFormRate()
 <tr >
 	<td class="row-post-author" nowrap="nowrap">
 		<span class="post-name"><a name="c{commentrow.ID}"></a>{commentrow.POSTER_NAME}</span><br />
-		<div class="post-rank"><b>{commentrow.POSTER_RANK}</b><br />{commentrow.POSTER_RANK_IMAGE}</div>
+		<div class="post-rank"><b>{commentrow.POSTER_RANK}</b>{commentrow.POSTER_RANK_IMAGE}</div>
 		<span class="post-images">{commentrow.POSTER_AVATAR}</span>
 		<div class="post-details">
 			{commentrow.POSTER_ONLINE_STATUS_IMG}{commentrow.IP_IMG}{commentrow.AIM_IMG}{commentrow.YIM_IMG}{commentrow.MSNM_IMG}{commentrow.SKYPE_IMG}{commentrow.ICQ_IMG}<br />
@@ -264,3 +266,5 @@ function checkFormRate()
 {CM_PAGINATION}
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

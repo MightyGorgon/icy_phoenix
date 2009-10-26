@@ -40,8 +40,8 @@ function build_default_link_array()
 		'19' => $lang['BoardRules'],
 		//'20' => $lang['DBGenerator'],
 		'21' => $lang['Sudoku'],
-		'22' => $lang['NEWS_CAT'],
-		'23' => $lang['NEWS_ARC'],
+		'22' => $lang['LINK_NEWS_CAT'],
+		'23' => $lang['LINK_NEWS_ARC'],
 		'24' => $lang['New3'],
 		'25' => $lang['upi2db_unread'],
 		'26' => $lang['upi2db_marked'],
@@ -77,7 +77,7 @@ function build_default_link_name($default_id)
 
 function build_complete_url($default_id, $block_id, $link, $menu_icon)
 {
-	global $template, $lang, $board_config, $theme, $images, $userdata, $db;
+	global $db, $cache, $template, $config, $userdata, $lang, $theme, $images;
 	switch ($default_id)
 	{
 		case '1':
@@ -91,7 +91,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';
 			break;
 		case '25':
-			if( $userdata['upi2db_access'] )
+			if($userdata['upi2db_access'])
 			{
 				$unread = unread();
 				$u_display_new = index_display_new($unread);
@@ -104,7 +104,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '26':
-			if( $userdata['upi2db_access'] )
+			if($userdata['upi2db_access'])
 			{
 				$unread = unread();
 				$u_display_new = index_display_new($unread);
@@ -117,7 +117,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '27':
-			if( $userdata['upi2db_access'] )
+			if($userdata['upi2db_access'])
 			{
 				$unread = unread();
 				$u_display_new = index_display_new($unread);
@@ -130,7 +130,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '28':
-			if( $userdata['upi2db_access'] )
+			if($userdata['upi2db_access'])
 			{
 				$unread = unread();
 				$u_display_new = index_display_new($unread);
@@ -145,7 +145,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '29':
-			if ($board_config['enable_digests'] == true)
+			if ($config['enable_digests'])
 			{
 			$menu_name = stripslashes(build_default_link_name($default_id));
 			$menu_link = append_sid($link);
@@ -157,22 +157,18 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '40':
-			if ( ($board_config['select_theme'] == true) )
+			if ($config['select_theme'])
 			{
-				$default_style = $board_config['default_style'];
+				$default_style = $config['default_style'];
 				$select_name = STYLE_URL;
 				$dirname = 'templates';
 
-				$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
-				if ( !($result = $db->sql_query($sql, false, 'themes_')) )
-				{
-					message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);
-				}
 				$style_select = '<select name="' . $select_name . '" onchange="SetTheme_' . $block_id . '();" class="gensmall">';
-				while ( $row = $db->sql_fetchrow($result) )
+				$styles = $cache->obtain_styles(true);
+				foreach ($styles as $k => $v)
 				{
-					$selected = ( $row['themes_id'] == $default_style ) ? ' selected="selected"' : '';
-					$style_select .= '<option value="' . $row['themes_id'] . '"' . $selected . '>' . $row['style_name'] . '</option>';
+					$selected = ($k == $default_style) ? ' selected="selected"' : '';
+					$style_select .= '<option value="' . $k . '"' . $selected . '>' . htmlspecialchars($v) . '</option>';
 				}
 				$style_select .= '</select>';
 				$menu_url = '<form name="ChangeTheme_' . $block_id . '" method="post" action="' . htmlspecialchars(urldecode($_SERVER['REQUEST_URI'])) . '">' . $menu_icon . $style_select . '</form>';
@@ -183,16 +179,16 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '41':
-			if ( ($board_config['select_lang'] == true) )
+			if (($config['select_lang'] == true))
 			{
 				$menu_url = '';
 				include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
-				$lang_installed = language_select_h($board_config['default_lang'], 'language');
+				$lang_installed = language_select($config['default_lang'], LANG_URL, 'language', true);
 				while ( list($displayname) = @each($lang_installed) )
 				{
 					$lang_value = $displayname;
 					$lang_name = ucwords($displayname);
-					$lang_url = append_sid('changelang.' . PHP_EXT . '?' . LANG_URL . '=' . $lang_value);
+					$lang_url = append_sid(CMS_PAGE_HOME . '?' . LANG_URL . '=' . $lang_value);
 					$lang_icon = '<img src="language/lang_' . $displayname . '/flag.png" alt="" title="" style="vertical-align:middle;" />&nbsp;';
 					$menu_url .= '<a href="' . $lang_url . '">' . $lang_icon . $lang_name . '&nbsp;<br /></a>';
 				}
@@ -206,7 +202,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			$menu_url = '<a href="javascript:rss_news_help()">' . $menu_icon . $lang['Rss_news_feeds'] . '</a>';
 			break;
 		case '44':
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				$menu_link = 'login_ip.' . PHP_EXT . '?redirect=forum.' . PHP_EXT;
 				$menu_name = $lang['Login'];

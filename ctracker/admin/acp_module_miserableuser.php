@@ -60,12 +60,7 @@ if (isset($_POST['submit']))
 	{
 		// Mark user as miserable user
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_miserable_user = 1 WHERE user_id = ' . $this_userdata['user_id'];
-
-		// Execute SQL Command in database
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$template->assign_block_vars('infobox', array(
 			'COLOR' => 'ddffcc',
@@ -78,12 +73,7 @@ elseif ($_GET['mode'] == 'unmis')
 {
 	$userid = intval($_GET['userid']);
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_miserable_user = 0 WHERE user_id = ' . $userid;
-
-	// Execute SQL Command in database
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$template->assign_block_vars('infobox', array(
 		'COLOR' => 'ddffcc',
@@ -94,12 +84,8 @@ elseif ($_GET['mode'] == 'unmis')
 
 
 // List output
-$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE ct_miserable_user = 1';
-
-if ( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, $lang['ctracker_error_loading_config'], '', __LINE__, __FILE__, $sql);
-}
+$sql = 'SELECT username, user_id, user_active, user_color FROM ' . USERS_TABLE . ' WHERE ct_miserable_user = 1';
+$result = $db->sql_query($sql);
 
 // Define some vars
 $row_class = false;
@@ -109,11 +95,12 @@ while ($row = $db->sql_fetchrow($result))
 {
 	$row_class = !$row_class;	// row class changer without counter
 	$entry_def = true;				// yes, we have users in our list!
+	$username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 
 	$template->assign_block_vars('output', array(
 		'ROW_CLASS' => ($row_class) ? 'row1' : 'row2',
 		'U_DELLINK' => append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=8&mode=unmis&userid=' . $row['user_id']),
-		'L_USERNAME' => $row['username']
+		'L_USERNAME' => $username
 		)
 	);
 }

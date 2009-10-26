@@ -21,19 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-// Cached Query Config moved here by MG to reduce charge on common.php
-$xs_news_config = array();
-$sql = "SELECT * FROM " . XS_NEWS_CONFIG_TABLE;
-if(!($result = $db->sql_query($sql, false, 'xs_config_')))
-{
-	message_die(CRITICAL_ERROR, 'Could not query XS News config information', '', __LINE__, __FILE__, $sql);
-}
-while ($row = $db->sql_fetchrow($result))
-{
-	$xs_news_config[$row['config_name']] = $row['config_value'];
-}
-
-if($xs_news_config['xs_show_news'] != false)
+if($config['xs_show_news'] != false)
 {
 	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 	/*
@@ -45,7 +33,7 @@ if($xs_news_config['xs_show_news'] != false)
 	// Start script
 
 	// Set date format
-	switch ($xs_news_config['xs_news_dateformat'])
+	switch ($config['xs_news_dateformat'])
 	{
 		case 0:
 		$date_format = 'd M Y'; // displays '01 Jan 2005'
@@ -84,10 +72,7 @@ if($xs_news_config['xs_show_news'] != false)
 	// Get contents of News table (cached by MG)
 	$sql = "SELECT * FROM " . XS_NEWS_TABLE . "
 		ORDER BY news_date DESC";
-	if(!$q_news = $db->sql_query($sql, false, 'xs_news_'))
-	{
-		message_die(GENERAL_ERROR, "Could not query news table", "", __LINE__, __FILE__, $sql);
-	}
+	$q_news = $db->sql_query($sql, 0, 'xs_news_');
 
 	while ($test_row = $db->sql_fetchrow($q_news))
 	{
@@ -101,13 +86,13 @@ if($xs_news_config['xs_show_news'] != false)
 	$tick_displayed = 0;
 	$news_displayed = 0;
 
-	if($total_news = count($news_rows))
+	if($total_news = sizeof($news_rows))
 	{
 
 		for($i = 0; $i < $total_news; $i++)
 		{
 			$news_id = $news_rows[$i]['news_id'];
-			$news_date = create_date($date_format, $news_rows[$i]['news_date'], $board_config['board_timezone']);
+			$news_date = create_date($date_format, $news_rows[$i]['news_date'], $config['board_timezone']);
 			$news_text = xsm_unprepare_message($news_rows[$i]['news_text']);
 			$news_display = $news_rows[$i]['news_display'];
 			$news_smilies = $news_rows[$i]['news_smilies'];
@@ -133,7 +118,7 @@ if($xs_news_config['xs_show_news'] != false)
 	if($news_displayed == 0)
 	{
 		$template->assign_block_vars('newsitem', array(
-			'NEWS_ITEM_DATE' => create_date($date_format, time(), $board_config['board_timezone']),
+			'NEWS_ITEM_DATE' => create_date($date_format, time(), $config['board_timezone']),
 			'NEWS_ITEM' => $lang['xs_no_news']
 			)
 		);
@@ -142,27 +127,24 @@ if($xs_news_config['xs_show_news'] != false)
 	}
 
 	// Should the news subtitle be shown?
-	if($xs_news_config['xs_show_news_subtitle'])
+	if($config['xs_show_news_subtitle'])
 	{
 		$template->assign_block_vars('switch_news_subtitle', array());
 	}
 
 	// Should we show the XS News Ticker?
-	if($xs_news_config['xs_show_ticker'])
+	if($config['xs_show_ticker'])
 	{
 		$template->assign_block_vars('switch_news_ticker', array());
 
-		if($xs_news_config['xs_show_ticker_subtitle'])
+		if($config['xs_show_ticker_subtitle'])
 		{
 			$template->assign_block_vars('switch_news_ticker.switch_ticker_subtitle', array());
 		}
 
 		// Get contents of XML table (cached by MG)
 		$sql = "SELECT * FROM " . XS_NEWS_XML_TABLE . " ORDER BY xml_id ASC";
-		if(!$q_xml = $db->sql_query($sql, false, 'xs_news_xml_'))
-		{
-			message_die(GENERAL_ERROR, "Could not query News Ticker table", "", __LINE__, __FILE__, $sql);
-		}
+		$q_xml = $db->sql_query($sql, 0, 'xs_news_xml_');
 
 		while ($test_row = $db->sql_fetchrow($q_xml))
 		{
@@ -170,7 +152,7 @@ if($xs_news_config['xs_show_news'] != false)
 		}
 		unset($test_row);
 
-		if($total_xml = count($xml_row))
+		if($total_xml = sizeof($xml_row))
 		{
 
 			for($i = 0; $i < $total_xml; $i++)
@@ -231,16 +213,16 @@ if($xs_news_config['xs_show_news'] != false)
 
 								if (isset($rss_channel['items']))
 								{
-									if (count($rss_channel['items']) > 0)
+									if (sizeof($rss_channel['items']) > 0)
 									{
-										$item_count = count($rss_channel['items']);
+										$item_count = sizeof($rss_channel['items']);
 										for($j = 0; $j < $item_count; $j++)
 										{
 											$title = htmlspecialchars_clean(ip_utf8_decode(strip_tags($rss_channel['items'][$j]['title'])));
 											//$news_ticker_content .= '<a href="' . $rss_channel['items'][$j]["link"] . '" target="_blank" title="' . $rss_channel['items'][$j]["link"] . '\n' . str_replace("'", "\'", $title) . '"  onmouseover="scrollStop(\\\'news_ticker\\\');" onmouseout="scrollStart(\\\'news_ticker\\\');">' . str_replace("'", "\'", $title) . '</a>';
 											$news_ticker_content .= '<a href="' . $rss_channel['items'][$j]['link'] . '" target="_blank" title="'. $title .'" onmouseover="document.all.' . $news_ticker_id . '.stop();" onmouseout="document.all.' . $news_ticker_id . '.start();">' . $title . '</a>';
 
-											if($j != (count($rss_channel['items']) - 1))
+											if($j != (sizeof($rss_channel['items']) - 1))
 											{
 												$news_ticker_content .= '&nbsp;&nbsp;&raquo;&nbsp;&nbsp;';
 											}
@@ -338,7 +320,7 @@ if($xs_news_config['xs_show_news'] != false)
 		}
 	}
 
-	if(isset($board_config['xs_nav_version']))
+	if(isset($config['xs_nav_version']))
 	{
 		$xml_collapse = "onmouseover=\"showStatus('news_0'); return true;\" onmouseout=\"window.status=' '; return true;\"";
 	}
@@ -349,7 +331,7 @@ if($xs_news_config['xs_show_news'] != false)
 
 	$template->assign_vars(array(
 		'NEWS_TITLE' => $lang['xs_latest_news'],
-		'XS_NEWS_VERSION' => sprintf($lang['xs_news_version'], (!empty($board_config['xs_news_version']) ? $board_config['xs_news_version'] : 'ver error')),
+		'XS_NEWS_VERSION' => sprintf($lang['xs_news_version'], (!empty($config['xs_news_version']) ? $config['xs_news_version'] : 'ver error')),
 		'XS_NEWS_TICKERS_TITLE' => (($tick_displayed == 0 || $tick_displayed == 1) ? $lang['xs_news_ticker_title'] : $lang['xs_news_tickers_title']),
 		'XS_NEWS_ITEMS_TITLE' => (($news_displayed == 0 || $news_displayed == 1) ? $lang['xs_news_item_title'] : $lang['xs_news_items_title']),
 		'XS_NEWS_COLLAPSE' => $xml_collapse,

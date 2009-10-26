@@ -41,11 +41,7 @@ if (!$statistics->result_cache_used)
 
 	// With every new sql_query insult, the Statistics Mod will end the previous Control. ;)
 	$sql = "SELECT code, smile_url FROM " . SMILIES_TABLE;
-	if (!($result = $stat_db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t retrieve smilies data', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $stat_db->sql_query($sql);
 	$rows = $stat_db->sql_fetchrowset($result);
 	$num_rows = $stat_db->sql_numrows($result);
 
@@ -80,26 +76,21 @@ if (!$statistics->result_cache_used)
 	FROM " . POSTS_TABLE . "
 	WHERE " . $where_query . "
 	GROUP BY post_text";
-
-	if (!($result = $stat_db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t retrieve smilies data', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $stat_db->sql_query($sql);
 	$rows = $stat_db->sql_fetchrowset($result);
 	$message = '';
-	for ($i = 0; $i < count($rows); $i++)
+	for ($i = 0; $i < sizeof($rows); $i++)
 	{
 		$message .= $rows[$i]['post_text'];
 	}
 
 	//echo(';' . $message . ';');
 
-	for ($i = 0; $i < count($smile_group); $i++)
+	for ($i = 0; $i < sizeof($smile_group); $i++)
 	{
 		$found = false;
 		$match_regexp = '';
-		for ($j = 0; $j < count($smile_group[$i]['code']) && ($found == false); $j++)
+		for ($j = 0; $j < sizeof($smile_group[$i]['code']) && ($found == false); $j++)
 		{
 			if ($smile_pref == 0)
 			{
@@ -123,13 +114,13 @@ if (!$statistics->result_cache_used)
 	//			echo '<br /><br />' . $match_regexp . "<br />";
 	//			echo "#".$all_smilies[$i]['smile_url']."#";
 				preg_match_all($match_regexp, ' ' . $message . ' ', $matches);
-	//			echo "<br />-" . count($matches[0]) . "-<br />";
-				$all_smilies[$i]['count'] = $all_smilies[$i]['count'] + count($matches[0]);
+	//			echo "<br />-" . sizeof($matches[0]) . "-<br />";
+				$all_smilies[$i]['count'] = $all_smilies[$i]['count'] + sizeof($matches[0]);
 			}
 		}
 	}
 
-	for ($i = 0; $i < count($all_smilies); $i++)
+	for ($i = 0; $i < sizeof($all_smilies); $i++)
 	{
 		$total_smilies = $total_smilies + $all_smilies[$i]['count'];
 	}
@@ -137,7 +128,7 @@ if (!$statistics->result_cache_used)
 	// Sort array
 	$all_smilies = smilies_sort_multi_array_attachment($all_smilies, 'count', 'DESC');
 
-	$limit = ($return_limit > count($all_smilies)) ? count($all_smilies) : $return_limit;
+	$limit = ($return_limit > sizeof($all_smilies)) ? sizeof($all_smilies) : $return_limit;
 
 	$firstcount = $all_smilies[0]['count'];
 
@@ -159,7 +150,7 @@ if (!$statistics->result_cache_used)
 				'USES' => $all_smilies[$i]['count'],
 				'PERCENTAGE' => $statistics->percentage,
 				'BAR' => $statistics->bar_percent,
-				'URL' => '<img src="http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $all_smilies[$i]['smile_url'] . '" alt="' . $all_smilies[$i]['smile_url'] . '" />'
+				'URL' => '<img src="http://' . $_SERVER['HTTP_HOST'] . $config['script_path'] . $config['smilies_path'] . '/' . $all_smilies[$i]['smile_url'] . '" alt="' . $all_smilies[$i]['smile_url'] . '" />'
 				)
 			);
 		}

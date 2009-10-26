@@ -1,7 +1,7 @@
 <?php
 /*
   paFileDB 3.0
-  ©2001/2002 PHP Arena
+  Â©2001/2002 PHP Arena
   Written by Todd
   todd@phparena.net
   http://www.phparena.net
@@ -14,7 +14,7 @@ class pafiledb_viewall extends pafiledb_public
 	function main($action)
 	{
 		global $pafiledb_template,$lang, $pafiledb_config, $userdata;
-		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $board_config;
+		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $config;
 		$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
 		$start = ($start < 0) ? 0 : $start;
 
@@ -73,7 +73,7 @@ class pafiledb_viewall extends pafiledb_public
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=viewall', true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=viewall', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_viewall'], $this->auth_global['auth_viewall_type']);
@@ -82,11 +82,11 @@ class pafiledb_viewall extends pafiledb_public
 
 		$pafiledb_template->assign_vars(array(
 			'L_VIEWALL' => $lang['Viewall'],
-			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'L_HOME' => $lang['Home'],
-			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-			'U_INDEX' => append_sid(PORTAL_MG),
+			'U_INDEX' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 
 			'DOWNLOAD' => $pafiledb_config['settings_dbname']

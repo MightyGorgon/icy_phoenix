@@ -65,7 +65,7 @@
 */
 function auth($type, $forum_id, $userdata, $f_access = '')
 {
-	global $db, $lang, $tree, $board_config;
+	global $db, $config, $lang, $tree;
 
 	if (!empty($tree['data']))
 	{
@@ -77,7 +77,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 		}
 		else
 		{
-			for ($i = 0; $i < count($tree['data']); $i++)
+			for ($i = 0; $i < sizeof($tree['data']); $i++)
 			{
 				if ($tree['type'][$i] == POST_FORUM_URL)
 				{
@@ -184,11 +184,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 		$sql = "SELECT a.forum_id, $a_sql
 			FROM " . FORUMS_TABLE . " a
 			$forum_match_sql";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Failed obtaining forum access control lists', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$sql_fetchrow = ($forum_id != AUTH_LIST_ALL) ? 'sql_fetchrow' : 'sql_fetchrowset';
 
 		if (!($f_access = $db->$sql_fetchrow($result)))
@@ -214,10 +210,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 				AND ug.user_pending = 0
 				AND a.group_id = ug.group_id
 				$forum_match_sql";
-		if (!($result = $db->sql_query($sql, false, 'auth_')))
-		{
-			message_die(GENERAL_ERROR, 'Failed obtaining forum access control lists', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'auth_');
 
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -241,7 +234,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	//$is_admin = ((($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == JUNIOR_ADMIN)) && $userdata['session_logged_in']) ? true : 0;
 
 	$auth_user = array();
-	for($i = 0; $i < count($auth_fields); $i++)
+	for($i = 0; $i < sizeof($auth_fields); $i++)
 	{
 		$key = $auth_fields[$i];
 
@@ -270,7 +263,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 				case AUTH_REG:
 					$auth_user[$key] = ($userdata['session_logged_in']) ? true : 0;
 					// Check if the user is a BOT
-					$auth_user[$key] = (($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) ? true : $auth_user[$key];
+					$auth_user[$key] = (($config['bots_reg_auth'] == true) && $userdata['is_bot']) ? true : $auth_user[$key];
 					$auth_user[$key . '_type'] = $lang['Auth_Registered_Users'];
 					break;
 
@@ -307,7 +300,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 		}
 		else
 		{
-			for($k = 0; $k < count($f_access); $k++)
+			for($k = 0; $k < sizeof($f_access); $k++)
 			{
 				$value = $f_access[$k][$key];
 				$f_forum_id = $f_access[$k]['forum_id'];
@@ -323,7 +316,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 					case AUTH_REG:
 						$auth_user[$f_forum_id][$key] = ($userdata['session_logged_in']) ? true : 0;
 						// Check if the user is a BOT
-						$auth_user[$f_forum_id][$key] = (($board_config['bots_reg_auth'] == true) && ($userdata['bot_id'] !== false)) ? true : $auth_user[$f_forum_id][$key];
+						$auth_user[$f_forum_id][$key] = (($config['bots_reg_auth'] == true) && $userdata['is_bot']) ? true : $auth_user[$f_forum_id][$key];
 						$auth_user[$f_forum_id][$key . '_type'] = $lang['Auth_Registered_Users'];
 						break;
 
@@ -368,7 +361,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	}
 	else
 	{
-		for($k = 0; $k < count($f_access); $k++)
+		for($k = 0; $k < sizeof($f_access); $k++)
 		{
 			$f_forum_id = $f_access[$k]['forum_id'];
 			$u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
@@ -384,9 +377,9 @@ function auth_check_user($type, $key, $u_access, $is_admin)
 {
 	$auth_user = 0;
 
-	if (count($u_access))
+	if (sizeof($u_access))
 	{
-		for($j = 0; $j < count($u_access); $j++)
+		for($j = 0; $j < sizeof($u_access); $j++)
 		{
 			$result = 0;
 			switch($type)
@@ -417,14 +410,10 @@ function auth_check_user($type, $key, $u_access, $is_admin)
 // function needed to build a list of forum with no read access.
 function build_exclusion_forums_list($only_auth_view = true)
 {
-	global $db, $lang, $tree, $board_config;
-	global $userdata;
+	global $db, $config, $userdata, $lang, $tree;
 
-	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
-	if(!$result_auth = $db->sql_query($sql_auth, false, 'forums_excluded_list_', FORUMS_CACHE_FOLDER))
-	{
-		message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
-	}
+	$sql_auth = "SELECT forum_id, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
+	$result_auth = $db->sql_query($sql_auth, 0, 'forums_excluded_list_', FORUMS_CACHE_FOLDER);
 	$forum_data = array();
 	while($row_auth = $db->sql_fetchrow($result_auth))
 	{
@@ -436,7 +425,7 @@ function build_exclusion_forums_list($only_auth_view = true)
 	$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
 
 	$except_forums = '\'start\'';
-	for($f = 0; $f < count($forum_data); $f++)
+	for($f = 0; $f < sizeof($forum_data); $f++)
 	{
 		$exclude_this = false;
 
@@ -447,13 +436,13 @@ function build_exclusion_forums_list($only_auth_view = true)
 
 		// SELF AUTH - BEGIN
 		// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-		if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && ($board_config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
+		if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
 		{
 			$exclude_this = true;
 		}
 		// SELF AUTH - END
 
-		if ($exclude_this == true)
+		if ($exclude_this)
 		{
 			if($except_forums == '\'start\'')
 			{
@@ -472,14 +461,10 @@ function build_exclusion_forums_list($only_auth_view = true)
 // function needed to build a list of forum with read access.
 function build_allowed_forums_list()
 {
-	global $db, $lang, $tree, $board_config;
-	global $userdata;
+	global $db, $config, $userdata, $lang, $tree;
 
-	$sql_auth = "SELECT forum_id, cat_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
-	if(!$result_auth = $db->sql_query($sql_auth, false, 'forums_allowed_list_', FORUMS_CACHE_FOLDER))
-	{
-		message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
-	}
+	$sql_auth = "SELECT forum_id, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
+	$result_auth = $db->sql_query($sql_auth, 0, 'forums_allowed_list_', FORUMS_CACHE_FOLDER);
 	$forum_data = array();
 	while($row_auth = $db->sql_fetchrow($result_auth))
 	{
@@ -491,7 +476,7 @@ function build_allowed_forums_list()
 	$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
 
 	$allowed_forums = '0';
-	for($f = 0; $f < count($forum_data); $f++)
+	for($f = 0; $f < sizeof($forum_data); $f++)
 	{
 		$include_this = false;
 
@@ -502,13 +487,13 @@ function build_allowed_forums_list()
 
 		// SELF AUTH - BEGIN
 		// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-		if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && ($board_config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
+		if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
 		{
 			$include_this = false;
 		}
 		// SELF AUTH - END
 
-		if ($include_this == true)
+		if ($include_this)
 		{
 			$allowed_forums .= ', ' . $forum_data[$f]['forum_id'];
 		}

@@ -32,12 +32,7 @@ $statistics->init_bars();
 
 // get total regs
 $sql = "SELECT COUNT(user_id) as total_reg FROM " . USERS_TABLE;
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $total_reg = $row['total_reg'];
 
@@ -47,12 +42,7 @@ $sql = 'SELECT DAYOFWEEK(FROM_UNIXTIME(user_regdate)) as dow, COUNT(*) AS ct
 	WHERE user_id <> -1
 	GROUP BY DAYOFWEEK(FROM_UNIXTIME(user_regdate))
 	ORDER BY DAYOFWEEK(FROM_UNIXTIME(user_regdate)) ASC';
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $reg_data = $stat_db->sql_fetchrowset($result);
 
 // get highest new users' count

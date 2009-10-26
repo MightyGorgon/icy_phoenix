@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- BEGIN toprow_blocks_row -->{toprow_blocks_row.CMS_BLOCK}<!-- END toprow_blocks_row --><br />
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
@@ -6,3 +8,5 @@
 </tr>
 </table>
 <!-- BEGIN bottomrow_blocks_row -->{bottomrow_blocks_row.CMS_BLOCK}<!-- END bottomrow_blocks_row --><br />
+
+<!-- INCLUDE overall_footer.tpl -->

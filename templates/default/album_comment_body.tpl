@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 // <![CDATA[
 var form_name_original = form_name;
@@ -160,3 +162,5 @@ function openAllSmiles()
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

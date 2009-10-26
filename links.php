@@ -27,13 +27,13 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = 'links';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'links';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-require(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main_link.' . PHP_EXT);
+require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_link.' . PHP_EXT);
 
 // Count and forwrad
 if(($_GET['action'] == 'go') && ($_GET['link_id']))
@@ -47,26 +47,23 @@ if(($_GET['action'] == 'go') && ($_GET['link_id']))
 			FROM " . LINKS_TABLE . "
 			WHERE link_id = '" . $link_id . "'
 			AND link_active = 1";
-
-		if($result = $db->sql_query($sql))
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		if($link_url = $row['link_url'])
 		{
-			$row = $db->sql_fetchrow($result);
-			if($link_url = $row['link_url'])
+			if($user_ip != $row['last_user_ip'])
 			{
-				if($user_ip != $row['last_user_ip'])
-				{
-					// Update
-					$sql = "UPDATE " . LINKS_TABLE . "
-						SET link_hits = link_hits + 1, last_user_ip = '" . $user_ip . "'
-						WHERE link_id = '" . $link_id . "'";
-					$result = $db->sql_query($sql);
-				}
-
-				// Forward to website
-				// header("Location: $link_url");
-				echo '<script type="text/javascript">location.replace("' . $link_url . '")</script>';
-				exit;
+				// Update
+				$sql = "UPDATE " . LINKS_TABLE . "
+					SET link_hits = link_hits + 1, last_user_ip = '" . $user_ip . "'
+					WHERE link_id = '" . $link_id . "'";
+				$result = $db->sql_query($sql);
 			}
+
+			// Forward to website
+			// header("Location: $link_url");
+			echo '<script type="text/javascript">location.replace("' . $link_url . '")</script>';
+			exit;
 		}
 	}
 }
@@ -105,22 +102,15 @@ else
 
 // Grab link categories
 $sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " WHERE cat_id = '" . $cat . "'";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not query link categories list', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 $current_cat_title = $row['cat_title'];
 $db->sql_freeresult($result);
 
 // Output the basic page
-$page_title = $lang['Site_links'];
-$meta_description = '';
-$meta_keywords = '';
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('links.' . PHP_EXT) . '"' . (($t == 'sub_pages') ? '' : ' class="nav-current"') . '>' . $lang['Site_links'] . '</a>' . (($t == 'sub_pages') ? ($lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('links.' . PHP_EXT . '?cat=' . $cat) . '" class="nav-current"' . '>' . $current_cat_title . '</a>') : '');
 $breadcrumbs_links_right = '<a href="' . append_sid('links.' . PHP_EXT . '?t=search') . '">' . $lang['Search_site'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . append_sid('links.' . PHP_EXT . '?t=pop') . '">' . $lang['Descend_by_hits'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . append_sid('links.' . PHP_EXT . '?t=new') . '">' . $lang['Descend_by_joindate'] . '</a>';
-include('includes/page_header.' . PHP_EXT);
 
 switch($t)
 {
@@ -138,14 +128,11 @@ switch($t)
 		$tmp = 'links_index.tpl';
 }
 
-$template->set_filenames(array('body' => $tmp));
+$template_to_parse = $tmp;
 
 // Get Link Config
 $sql = "SELECT * FROM " . LINK_CONFIG_TABLE;
-if(!$result = $db->sql_query($sql, false, 'links_'))
-{
-	message_die(GENERAL_ERROR, "Could not query Link config information", "", __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql, 0, 'links_config_');
 while($row = $db->sql_fetchrow($result))
 {
 	$link_config_name = $row['config_name'];
@@ -193,15 +180,15 @@ $template->assign_vars(array(
 	'L_PLEASE_ENTER_YOUR' => $lang['Please_enter_your'],
 	'L_LINK_REGISTER' => $lang['Link_register'],
 	'L_SITE_LINKS' => $lang['Site_links'],
-	'L_LINK_US' => $lang['Link_us'] . ip_stripslashes($board_config['sitename']),
-	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], ip_stripslashes($board_config['sitename'])),'L_SUBMIT' => $lang['Submit'],
+	'L_LINK_US' => $lang['Link_us'] . htmlspecialchars($config['sitename']),
+	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], htmlspecialchars($config['sitename'])),'L_SUBMIT' => $lang['Submit'],
 	'U_SITE_LINKS' => append_sid('links.' . PHP_EXT),
 	'L_LINK_CATEGORY' => $lang['Link_category'],
 	'U_SITE_SEARCH' => append_sid('links.' . PHP_EXT . '?t=search'),
 	'U_SITE_TOP' => append_sid('links.' . PHP_EXT . '?t=pop'),
 	'U_SITE_NEW' => append_sid('links.' . PHP_EXT . '?t=new'),
 	'U_SITE_LOGO' => $link_config['site_logo'],
-	'LINK_US_SYNTAX' => str_replace(' ', '&nbsp;', sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $link_config['site_url'], $link_config['site_logo'], $link_config['width'],$link_config['height'], ip_stripslashes($board_config['sitename']))),
+	'LINK_US_SYNTAX' => str_replace(' ', '&nbsp;', sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $link_config['site_url'], $link_config['site_logo'], $link_config['width'], $link_config['height'], htmlspecialchars(str_replace('"', '', $config['sitename'])))),
 	'LINKS_HOME' => $lang['Links_home'],
 	'L_SEARCH_SITE' => $lang['Search_site'],
 	'L_DESCEND_BY_HITS' => $lang['Descend_by_hits'],
@@ -231,10 +218,7 @@ if (($t == 'pop') || ($t == 'new'))
 
 	// Grab link categories
 	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query link categories list', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -254,11 +238,7 @@ if (($t == 'pop') || ($t == 'new'))
 			ORDER BY link_joined DESC, link_id DESC
 			LIMIT $start, $linkspp";
 	}
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query links list', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -292,7 +272,7 @@ if (($t == 'pop') || ($t == 'new'))
 				'LINK_LOGO_SRC' => $row['link_logo_src'],
 				'LINK_LOGO' => $tmp,
 				'LINK_CATEGORY' => $link_categories[$row['link_category']],
-				'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
+				'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $config['board_timezone']),
 				'LINK_HITS' => $row['link_hits']
 				)
 			);
@@ -306,10 +286,7 @@ if (($t == 'pop') || ($t == 'new'))
 	$sql = "SELECT count(*) AS total
 		FROM " . LINKS_TABLE . "
 		WHERE link_active = 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query links number', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -337,11 +314,6 @@ if (($t == 'pop') || ($t == 'new'))
 		'LINK_CAT_OPTION' => $link_cat_option
 		)
 	);
-
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-	exit;
 }
 
 if ($t == 'sub_pages')
@@ -374,7 +346,7 @@ if ($t == 'sub_pages')
 	$mode = (in_array($mode, $mode_types) ? $mode : $mode_types[0]);
 
 	$select_sort_mode = '<select name="mode">';
-	for($i = 0; $i < count($mode_types_text); $i++)
+	for($i = 0; $i < sizeof($mode_types_text); $i++)
 	{
 		$selected = ($mode == $mode_types[$i]) ? ' selected="selected"' : '';
 		$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
@@ -409,11 +381,7 @@ if ($t == 'sub_pages')
 
 	// Grab link categories
 	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " WHERE cat_id = '" . $cat . "'";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query link categories list', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$link_categories[$row['cat_id']] = $row['cat_title'];
 	$template->assign_vars(array(
@@ -428,12 +396,7 @@ if ($t == 'sub_pages')
 				AND link_category = '" . $cat . "'
 			ORDER BY $mode $sort_order, link_id DESC
 			LIMIT $start, $linkspp";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query links list', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -467,7 +430,7 @@ if ($t == 'sub_pages')
 				'LINK_LOGO_SRC' => $row['link_logo_src'],
 				'LINK_LOGO' => $tmp,
 				'LINK_CATEGORY' => $link_categories[$row['link_category']],
-				'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
+				'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $config['board_timezone']),
 				'LINK_HITS' => $row['link_hits']
 				)
 			);
@@ -482,11 +445,7 @@ if ($t == 'sub_pages')
 		FROM " . LINKS_TABLE . "
 		WHERE link_active = 1
 			AND link_category = '" . $cat . "'";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query links number', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -513,11 +472,6 @@ if ($t == 'sub_pages')
 		'LINK_CAT_OPTION' => $link_cat_option
 		)
 	);
-
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-	exit;
 }
 
 if ($t == 'search')
@@ -544,10 +498,7 @@ if ($t == 'search')
 
 	// Grab link categories
 	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query link categories list', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -562,11 +513,7 @@ if ($t == 'search')
 			WHERE link_active = 1
 				AND (link_title LIKE '%$search_keywords%' OR link_desc LIKE '% $search_keywords%')
 			LIMIT $start, $linkspp";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query links list', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -600,7 +547,7 @@ if ($t == 'search')
 					'LINK_LOGO_SRC' => $row['link_logo_src'],
 					'LINK_LOGO' => $tmp,
 					'LINK_CATEGORY' => $link_categories[$row['link_category']],
-					'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
+					'LINK_JOINED' => create_date_ip($lang['DATE_FORMAT'], $row['link_joined'], $config['board_timezone']),
 					'LINK_HITS' => $row['link_hits']
 					)
 				);
@@ -615,10 +562,7 @@ if ($t == 'search')
 			FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
 				AND (link_title LIKE '%$search_keywords%' OR link_desc LIKE '%$search_keywords %')";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query links number', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -646,11 +590,6 @@ if ($t == 'search')
 		'LINK_CAT_OPTION' => $link_cat_option
 		)
 	);
-
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-	exit;
 }
 
 $template->assign_vars(array(
@@ -660,10 +599,7 @@ $template->assign_vars(array(
 
 // Grab link categories
 $sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not query link categories list', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 // Separate link categories into 2 columns
 $i = 0;
@@ -676,10 +612,7 @@ if ($row = $db->sql_fetchrow($result))
 		$sql = "SELECT link_category FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
 			AND link_category = '" . $row['cat_id'] . "'";
-		if(!$linknum = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query links list', '', __LINE__, __FILE__, $sql);
-		}
+		$linknum = $db->sql_query($sql);
 		$template->assign_block_vars('linkrow' . $i, array(
 			'LINK_URL' => append_sid('links.' . PHP_EXT . '?t=sub_pages&amp;cat=' . $row['cat_id']),
 			'LINK_TITLE' => $row['cat_title'],
@@ -702,8 +635,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $lang['Site_links'], '', '');
 
 ?>

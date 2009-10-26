@@ -36,6 +36,8 @@ function checkForm()
 //-->
 </script>
 
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- INCLUDE links_leftblock.tpl -->
 	<td width="100%" nowrap="nowrap" valign="top">
 	{IMG_THL}{IMG_THC}<span class="forumlink">{L_LINK_TITLE1}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -72,3 +74,5 @@ function checkForm()
 	</td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

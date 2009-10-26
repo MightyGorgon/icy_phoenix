@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_IP_TEAM}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1 row-center" align="center" nowrap="nowrap"><div class="post-text">{L_BBC_IP_CREDITS}</div></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
@@ -24,3 +26,5 @@
 
 <tr><td class="catbottom" colspan="4">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -15,32 +15,25 @@
 *
 */
 
+// CTracker_Ignore: File checked by human
+define('IN_VIEWFORUM', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 
-define('IN_VIEWFORUM', true);
-define('VIEWFORUMLIST_MG', 'viewforumlist.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+$class_topics = new class_topics();
+
+// Init common vars: forum_id, topic_id, post_id, etc.
+$class_topics->var_init(true);
+
+// CONFIG - BEGIN
 define('VIEWFORUMLIST_PER_PAGE', 1000);
+// CONFIG - END
 
 // Start initial var setup
-if (isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL]))
-{
-	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : intval($_POST[POST_FORUM_URL]);
-}
-elseif (isset($_GET['forum']))
-{
-	$forum_id = intval($_GET['forum']);
-}
-else
-{
-	$forum_id = '';
-}
-
-$forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : '');
-
 if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
 {
 	$selected_id = isset($_POST['selected_id']) ? $_POST['selected_id'] : $_GET['selected_id'];
@@ -54,7 +47,7 @@ if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
 	elseif (($type == POST_CAT_URL) || ($selected_id == 'Root'))
 	{
 		$parm = ($id != 0) ? '?' . POST_CAT_URL . '=' . $id : '';
-		redirect(append_sid(IP_ROOT_PATH . FORUM_MG . $parm));
+		redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM . $parm));
 		exit;
 	}
 }
@@ -64,13 +57,13 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$board_config['topics_per_page'] = VIEWFORUMLIST_PER_PAGE;
+$config['topics_per_page'] = VIEWFORUMLIST_PER_PAGE;
 
-$cms_page_id = 'viewforum';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'viewforum';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
@@ -78,7 +71,7 @@ $start = ($start < 0) ? 0 : $start;
 $page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
 $page_number = ($page_number < 1) ? false : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $board_config['topics_per_page']) - $board_config['topics_per_page']);
+$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
 
 // Topics Sorting - BEGIN
 $letters_array = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
@@ -150,6 +143,10 @@ if (empty($forum_row))
 	message_die(GENERAL_MESSAGE, 'Forum_not_exist');
 }
 
+$meta_content = array();
+$meta_content = $class_topics->meta_content_init($forum_row, 'forum');
+$meta_content['forum_id'] = $forum_id;
+
 // handle forum link type
 $selected_id = POST_FORUM_URL . $forum_id;
 $CH_this = isset($tree['keys'][$selected_id]) ? $tree['keys'][$selected_id] : -1;
@@ -167,7 +164,7 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 	if (!$userdata['session_logged_in'])
 	{
 		$redirect = $forum_id_append . ((isset($start)) ? '&start=' . $start : '');
-		redirect(append_sid(LOGIN_MG . '?redirect=' . VIEWFORUMLIST_MG . '&' . $redirect, true));
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_VIEWFORUMLIST . '&' . $redirect, true));
 	}
 
 	// The user is not authed to read this forum ...
@@ -186,10 +183,7 @@ if (!empty($start_letter))
 			AND t.topic_status <> " . TOPIC_MOVED . "
 			" . $start_letter_sql . "
 		ORDER BY " . $sort_order_sql;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get topic counts for letter search', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$topics_count = ($row['forum_topics']) ? $row['forum_topics'] : 1;
 	$db->sql_freeresult($result);
@@ -202,14 +196,13 @@ else
 
 $forum_row['forum_name'] = get_object_lang(POST_FORUM_URL . $forum_id, 'name');
 
-$page_title = $forum_row['forum_name'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+$meta_content['page_title'] = $forum_row['forum_name'];
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
 
-$template->set_filenames(array('body' => 'viewforumlist_body.tpl'));
+$template_to_parse = 'viewforumlist_body.tpl';
 
-make_jumpbox(VIEWFORUMLIST_MG);
+make_jumpbox(CMS_PAGE_VIEWFORUMLIST);
 
 $sort_lang = ($sort_dir == 'ASC') ? $lang['Sort_Ascending'] : $lang['Sort_Descending'];
 $sort_img = ($sort_dir == 'ASC') ? 'images/sort_asc.png' : 'images/sort_desc.png';
@@ -218,7 +211,7 @@ $start_letter_append = ($start_letter == '') ? '' : ('&amp;start_letter=' . $sta
 $sort_order_append = '&amp;sort_order=' . $sort_order;
 $sort_dir_append = '&amp;sort_dir=' . $sort_dir;
 $sort_dir_append_rev = '&amp;sort_dir=' . (($sort_dir == 'ASC') ? 'DESC' : 'ASC');
-$this_forum_address = VIEWFORUMLIST_MG . '?' . $forum_id_append . $start_letter_append;
+$this_forum_address = CMS_PAGE_VIEWFORUMLIST . '?' . $forum_id_append . $start_letter_append;
 
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
@@ -226,23 +219,20 @@ $template->assign_vars(array(
 	'FORUM_NAME' => $forum_row['forum_name'],
 	'FOLDER_IMG' => $images['vf_topic_nor'],
 	'L_TOPICS' => $lang['Topics'],
-	'U_VIEW_FORUM' => append_sid(VIEWFORUM_MG . '?' . $forum_id_append),
+	'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append),
 	)
 );
 // End header
 
 $topic_rowset = array();
-$sql = "SELECT t.topic_id, t.forum_id, t.topic_title, t.title_compl_infos
+$sql = "SELECT t.topic_id, t.forum_id, t.topic_title, t.topic_title_clean, t.title_compl_infos
 				FROM " . TOPICS_TABLE . " t
 				WHERE t.forum_id = " . $forum_id . "
 					AND t.topic_status <> " . TOPIC_MOVED . "
 					" . $start_letter_sql . "
 				ORDER BY " . $sort_order_sql . "
-				LIMIT " . $start . ", " . $board_config['topics_per_page'];
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
-}
+				LIMIT " . $start . ", " . $config['topics_per_page'];
+$result = $db->sql_query($sql);
 
 while($row = $db->sql_fetchrow($result))
 {
@@ -250,7 +240,7 @@ while($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
-$total_topics = count($topic_rowset);
+$total_topics = sizeof($topic_rowset);
 
 // Okay, lets dump out the page...
 if($total_topics)
@@ -262,20 +252,25 @@ if($total_topics)
 		$topic_id = $topic_rowset[$i]['topic_id'];
 		$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 
-		$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
+		$topic_title = censor_text($topic_rowset[$i]['topic_title']);
+		$topic_title_clean = (empty($topic_rowset[$i]['topic_title_clean'])) ? substr(ip_clean_string($topic_title, $lang['ENCODING']), 0, 254) : $topic_rowset[$i]['topic_title_clean'];
+		if (empty($topic_rowset[$i]['topic_title_clean']))
+		{
+			update_clean_topic_title($topic_id, $topic_title_clean);
+		}
 		$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
 		$topic_title = $topic_title_prefix . $topic_title;
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
 		$topic_title_plain = htmlspecialchars($topic_title);
 
-		if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 		{
 			$view_topic_url = append_sid(str_replace ('--', '-', make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
 		}
 		else
 		{
-			$view_topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append);
+			$view_topic_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append);
 		}
 
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
@@ -291,11 +286,11 @@ if($total_topics)
 		);
 	}
 
-	$number_of_page = (ceil($topics_count / $board_config['topics_per_page']) == 0) ? 1 : ceil($topics_count / $board_config['topics_per_page']);
+	$number_of_page = (ceil($topics_count / $config['topics_per_page']) == 0) ? 1 : ceil($topics_count / $config['topics_per_page']);
 
 	$template->assign_vars(array(
-		'PAGINATION' => generate_pagination(VIEWFORUMLIST_MG . '?' . $forum_id_append . '&amp;start_letter=' . $start_letter . '&amp;sort_order=' . $sort_order . '&amp;sort_dir=' . $sort_dir, $topics_count, $board_config['topics_per_page'], $start),
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), $number_of_page),
+		'PAGINATION' => generate_pagination(CMS_PAGE_VIEWFORUMLIST . '?' . $forum_id_append . '&amp;start_letter=' . $start_letter . '&amp;sort_order=' . $sort_order . '&amp;sort_dir=' . $sort_dir, $topics_count, $config['topics_per_page'], $start),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), $number_of_page),
 		'L_GOTO_PAGE' => $lang['Goto_page']
 		)
 	);
@@ -314,16 +309,16 @@ $divider_letters = ' ';
 // End Configuration Section
 
 // Do not change anything below this line.
-$total_letters_count = count($letters_array);
+$total_letters_count = sizeof($letters_array);
 $this_letter_number = 0;
 
 $template->assign_vars(array(
 	'S_SHOW_ALPHA_BAR' => true,
 	'DIVIDER' => $divider,
-	'U_NEWEST' => append_sid(VIEWFORUMLIST_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=newest'),
-	'U_OLDEST' => append_sid(VIEWFORUMLIST_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=oldest'),
-	'U_AZ' => append_sid(VIEWFORUMLIST_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=AZ'),
-	'U_ZA' => append_sid(VIEWFORUMLIST_MG . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=ZA'),
+	'U_NEWEST' => append_sid(CMS_PAGE_VIEWFORUMLIST . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=newest'),
+	'U_OLDEST' => append_sid(CMS_PAGE_VIEWFORUMLIST . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=oldest'),
+	'U_AZ' => append_sid(CMS_PAGE_VIEWFORUMLIST . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=AZ'),
+	'U_ZA' => append_sid(CMS_PAGE_VIEWFORUMLIST . '?' . $forum_id_append . '&amp;start_letter=&amp;sort_order=ZA'),
 	)
 );
 
@@ -332,17 +327,13 @@ foreach ($letters_array as $letter)
 	$this_letter_number++;
 	$template->assign_block_vars('alphabetical_sort', array(
 		'LETTER' => $letter,
-		'U_LETTER' => append_sid(VIEWFORUMLIST_MG . '?' . $forum_id_append . '&amp;start_letter=' . $letter),
+		'U_LETTER' => append_sid(CMS_PAGE_VIEWFORUMLIST . '?' . $forum_id_append . '&amp;start_letter=' . $letter),
 		'DIVIDER' => ($this_letter_number != $total_letters_count) ? $divider_letters : '',
 		)
 	);
 }
 // Topics Sorting - END
 
-// Parse the page and print
-$template->pparse('body');
-
-// Page footer
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 
 ?>

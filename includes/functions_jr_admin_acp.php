@@ -51,7 +51,7 @@ function jr_admin_make_rank_list($user_id, $user_rank)
 	$rank_list = '<select name="user_rank_list_"'.$user_id.'" class="post" size="1">';
 	$selected = (0 == $user_rank) ? 'selected="selected"' : '';
 	$rank_list .= '<option value="0" '.$selected.'>'.$lang['No_assigned_rank'].'</option>\n';
-	for($i = 0; $i < count($rowset); $i++)
+	for($i = 0; $i < sizeof($rowset); $i++)
 	{
 	$selected = ($rowset[$i]['rank_id'] == $user_rank) ? ' selected="selected"' : '';
 	$rank_list .= '<option value="'.$rowset[$i]['rank_id'].'"'.$selected.'>'.$rowset[$i]['rank_title'].'</option>\n';

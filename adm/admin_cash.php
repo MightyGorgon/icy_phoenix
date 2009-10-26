@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-if (!defined('CASH_MOD'))
+if (!defined('CASH_PLUGIN_ENABLED') || (defined('CASH_PLUGIN_ENABLED') && !CASH_PLUGIN_ENABLED))
 {
 	return;
 }
@@ -57,14 +57,14 @@ if (!empty($navbar) && defined('IN_ICYPHOENIX'))
 	$menu = array();
 	if (!defined('CASH_INCLUDE'))
 	{
-		message_die(GENERAL_ERROR, 'To enable Cash Mod open <b>includes/constants.php</b> and decomment this line: <b>//define(\'CASH_MOD\', true);</b>.<br /><br />To decomment the line just remove the double slashes //');
+		message_die(GENERAL_ERROR, 'To enable Cash Mod open <b>includes/constants.php</b> and check this line: <b>//define(\'CASH_PLUGIN_ENABLED\', true);</b>.<br /><br />Make sure the value is set to <b>true</b>');
 	}
 	admin_menu($menu);
 
 	$template->set_filenames(array('navbar' => ADM_TPL . 'cash_navbar.tpl'));
 
 	$class = 0;
-	for ($i = 0; $i < count($menu); $i++)
+	for ($i = 0; $i < sizeof($menu); $i++)
 	{
 		$template->assign_block_vars('navcat',array(
 			'L_CATEGORY' => $menu[$i]->category,
@@ -91,10 +91,10 @@ if (!empty($setmodules) && defined('IN_ICYPHOENIX'))
 			and we require these base-scope variables, we
 			copy them in from the global scope
 		*/
-		global $table_prefix, $board_config, $lang;
+		global $table_prefix, $config, $lang;
 		/*
 		$table_prefix = $GLOBALS['table_prefix'];
-		$board_config = $GLOBALS['board_config'];
+		$config = $GLOBALS['board_config'];
 		$lang = $GLOBALS['lang'];
 		*/
 	}
@@ -104,14 +104,14 @@ if (!empty($setmodules) && defined('IN_ICYPHOENIX'))
 	$menu = array();
 	admin_menu($menu);
 
-	if ($board_config['cash_adminbig'])
+	if ($config['cash_adminbig'])
 	{
-		for ($i = 0; $i < count($menu); $i++)
+		for ($i = 0; $i < sizeof($menu); $i++)
 		{
 			for ($j = 0; $j < $menu[$i]->num(); $j++)
 			{
-				$module['Cash Mod'][$menu[$i]->items[$j]->title] = $menu[$i]->items[$j]->linkage();
-				if (($j == $menu[$i]->num() - 1) && !($i == count($menu) - 1))
+				$module['3100_CASH'][$menu[$i]->items[$j]->title] = $menu[$i]->items[$j]->linkage();
+				if (($j == $menu[$i]->num() - 1) && !($i == sizeof($menu) - 1))
 				{
 					$lang[$menu[$i]->items[$j]->title] = $lang[$menu[$i]->items[$j]->title] . '</a></span></td></tr><tr><td class="row2" height="7"><span class="genmed"><a name="cm' . $menu[$i]->num() . '">';
 				}
@@ -121,9 +121,9 @@ if (!empty($setmodules) && defined('IN_ICYPHOENIX'))
 	else
 	{
 		$file = basename(__FILE__);
-		//$module['Cash Mod']['Cash_Admin'] = $file;
-		$module['Cash Mod']['Cash_Admin'] = 'cash_main.' . PHP_EXT;;
-		$module['Cash Mod']['Cash_Help'] = 'cash_help.' . PHP_EXT;
+		//$module['3100_CASH']['110_Cash_Admin'] = $file;
+		$module['3100_CASH']['110_Cash_Admin'] = 'cash_main.' . PHP_EXT;;
+		$module['3100_CASH']['120_Cash_Help'] = 'cash_help.' . PHP_EXT;
 	}
 	return;
 }
@@ -137,13 +137,13 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if (!defined('CASH_MOD'))
+if (!defined('CASH_PLUGIN_ENABLED') || (defined('CASH_PLUGIN_ENABLED') && !CASH_PLUGIN_ENABLED))
 {
-	message_die(GENERAL_ERROR, 'To enable Cash Mod open <b>includes/constants.php</b> and decomment this line: <b>//define(\'CASH_MOD\', true);</b>.<br /><br />To decomment the line just remove the double slashes //');
+	message_die(GENERAL_ERROR, 'To enable Cash Mod open <b>includes/constants.php</b> and decomment this line: <b>//define(\'CASH_PLUGIN_ENABLED\', true);</b>.<br /><br />To decomment the line just remove the double slashes //');
 }
 
 /*
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -154,7 +154,7 @@ admin_menu($menu);
 
 $template->set_filenames(array('body' => ADM_TPL . 'cash_menu.tpl'));
 
-for ($i = 0; $i < count($menu); $i++)
+for ($i = 0; $i < sizeof($menu); $i++)
 {
 	$template->assign_block_vars('menucat',array(
 		'L_CATEGORY' => $menu[$i]->category

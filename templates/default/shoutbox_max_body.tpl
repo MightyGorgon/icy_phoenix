@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {POST_PREVIEW_BOX}
 {ERROR_BOX}
 <form action="{U_SHOUTBOX}" method="post" name="post" onsubmit="return checkForm(this)">
@@ -59,3 +61,5 @@
 </table>
 
 <!-- INCLUDE shoutbox_inc.tpl -->
+
+<!-- INCLUDE overall_footer.tpl -->

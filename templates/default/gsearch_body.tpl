@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <style type="text/css">@import url('http://www.google.com/cse/api/branding.css');</style>
 <form action="{S_SEARCH_ACTION}" id="cse-search-box">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_QUERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -38,3 +40,5 @@ var googleSearchDomain = "www.google.com";
 var googleSearchPath = "/cse";
 </script>
 <script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -34,20 +34,16 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$page_title = $lang['digest_page_title'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
 
-if ( empty($board_config['enable_digests']) || ($board_config['enable_digests'] == 0) )
+if (empty($config['enable_digests']))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 
-// Get the server time zone. This is not necessarily what appears in $board_config['board_timezone']
-$board_timezone = date('Z') / 3600;
+// Get the server time zone. This is not necessarily what appears in $config['board_timezone']
+$board_timezone = gmdate('Z') / 3600;
 
 // Get current user's timezone
 $user_timezone = (float) $userdata['user_timezone'];
@@ -60,17 +56,13 @@ $offset = $board_timezone - $user_timezone;
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
 
-	if ( $userdata['session_logged_in'] )
+	if ($userdata['session_logged_in'])
 	{
-
-		$template->set_filenames(array('digests' => 'digests.tpl'));
+		$template_to_parse = 'digests.tpl';
 
 		// get current subscription data for this user, if any
 		$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not get count from '. DIGEST_SUBSCRIPTIONS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$create_new = ($row['count'] == 0) ? true : false;
 
@@ -91,11 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			// read current digest options into local variables, because we have one inherent connection
 
 			$sql = 'SELECT digest_type, format, show_text, show_mine, new_only, send_on_no_messages, send_hour, text_length FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
-
-			if ( !($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not get count from ' . DIGEST_SUBSCRIPTIONS_TABLE . 'table', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 
 			$digest_type = $row['digest_type'];
@@ -119,10 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 
 		// get current subscribed forums for this user, if any
 		$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not get count from ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$all_forums_new = ($row['count'] == 0) ? true : false;
 		$db->sql_freeresult ($result);
@@ -231,15 +216,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		);
 
 		// Retrieve a list of forum_ids that all members can access
-		$sql = 'SELECT f.forum_id, f.forum_name, c.cat_order, f.forum_order
-			FROM ' . FORUMS_TABLE . ' f, ' . CATEGORIES_TABLE . ' c
-			WHERE f.cat_id = c.cat_id AND auth_read IN (' . AUTH_ALL. ',' . AUTH_REG .')
-			ORDER BY c.cat_order, f.forum_order';
-
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query forum information', '', __LINE__, __FILE__, $sql);
-		}
+		$sql = 'SELECT f.forum_id, f.forum_name, c.forum_order AS cat_order, f.forum_order
+			FROM ' . FORUMS_TABLE . ' f, ' . FORUMS_TABLE . ' c
+			WHERE f.parent_id = c.forum_id
+				AND auth_read IN (' . AUTH_ALL. ',' . AUTH_REG .')
+			ORDER BY c.forum_order, f.forum_order';
+		$result = $db->sql_query($sql);
 
 		// We have to do a lot of array processing mainly because MySQL can't handle unions or
 		// intersections. Basically we need to figure out: of all forums, which are those this
@@ -253,10 +235,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		$i=0;
 		while ($row = $db->sql_fetchrow ($result))
 		{
-			$forum_ids [$i] = $row['forum_id'];
-			$forum_names [$i] = $row['forum_name'];
-			$cat_orders [$i] = $row['cat_order'];
-			$forum_orders [$i] = $row['forum_order'];
+			$forum_ids[$i] = $row['forum_id'];
+			$forum_names[$i] = $row['forum_name'];
+			$cat_orders[$i] = $row['cat_order'];
+			$forum_orders[$i] = $row['forum_order'];
 			$i++;
 		}
 		$db->sql_freeresult ($result);
@@ -264,24 +246,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		// Now we need to add to our forums array other forums that may be private for which
 		// the user has access.
 
-		$sql = 'SELECT DISTINCT a.forum_id, f.forum_name, c.cat_order, f.forum_order
-			FROM ' . AUTH_ACCESS_TABLE . ' a, ' . USER_GROUP_TABLE . ' ug, ' . FORUMS_TABLE . ' f, ' . CATEGORIES_TABLE . ' c
-			WHERE ug.user_id = ' . $userdata['user_id']
-			. ' AND ug.user_pending = 0
-			AND a.group_id = ug.group_id AND
-			a.forum_id = f.forum_id AND f.cat_id = c.cat_id';
-
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query forum information', '', __LINE__, __FILE__, $sql);
-		}
-
+		$sql = 'SELECT DISTINCT a.forum_id, f.forum_name, c.forum_order AS cat_order, f.forum_order
+			FROM ' . AUTH_ACCESS_TABLE . ' a, ' . USER_GROUP_TABLE . ' ug, ' . FORUMS_TABLE . ' f, ' . FORUMS_TABLE . ' c
+			WHERE ug.user_id = ' . $userdata['user_id'] . '
+				AND ug.user_pending = 0
+				AND a.group_id = ug.group_id
+				AND a.forum_id = f.forum_id
+				AND f.parent_id = c.forum_id';
+		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow ($result))
 		{
-			$forum_ids [$i] = $row['forum_id'];
-			$forum_names [$i] = $row['forum_name'];
-			$cat_orders [$i] = $row['cat_order'];
-			$forum_orders [$i] = $row['forum_order'];
+			$forum_ids[$i] = $row['forum_id'];
+			$forum_names[$i] = $row['forum_name'];
+			$cat_orders[$i] = $row['cat_order'];
+			$forum_orders[$i] = $row['forum_order'];
 			$i++;
 		}
 		$i--;
@@ -302,10 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 				if (!($all_forums_new))
 				{
 					$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE forum_id = ' . $forum_ids [$j] . ' AND user_id = ' . $userdata['user_id'];
-					if ( !($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Could not get count from ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);
 					if ($row['count'] == 0)
 					{
@@ -329,8 +304,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			}
 		}
 
-		$template->pparse('digests');
-
 	}
 }
 else
@@ -345,20 +318,11 @@ else
 		// user no longer wants a digest
 		// first remove all individual forum subscriptions
 		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
-
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not delete from ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// remove subscription itself
 		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
-
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not delete from ' . DIGEST_SUBSCRIPTIONS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$update_type = 'unsubscribe';
 
 	}
@@ -406,18 +370,12 @@ else
 				' WHERE user_id = ' . intval($userdata['user_id']);
 			$update_type = 'modify';
 		}
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert or update ' . DIGEST_SUBSCRIPTIONS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// next, if there are any individual forum subscriptions, remove the old ones and create the new ones
 
 		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
-		if ( !($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not delete from ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Note that if "all_forums" is checked, this is noted in the subscriptions table. It does not put
 		// each forum in the subscribed_forums table. This conserves disk space. "all_forums" means all
@@ -429,43 +387,39 @@ else
 			{
 				if (substr($key, 0, 6) == 'forum_')
 				{
-					$sql = 'INSERT INTO ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' (user_id, forum_id) VALUES (' .
-					$userdata['user_id'] . ', ' . htmlspecialchars(substr($key,6)) . ')';
-					if ( !($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Could not insert into ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-					}
+					$sql = 'INSERT INTO ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' (user_id, forum_id) VALUES (' . $userdata['user_id'] . ', ' . htmlspecialchars(substr($key,6)) . ')';
+					$result = $db->sql_query($sql);
 				}
 			}
 		}
 
 	}
 
-	$template->set_filenames(array('digests_post' => 'digests_post.tpl'));
+	$template_to_parse = 'digests_post.tpl';
 
 	// Show appropriate confirmation message
+	$confim_message = '<br /><br />' . sprintf($lang['digest_click_return'], '<a href="' . append_sid('digests.' . PHP_EXT) . '">', '</a>');
 	if ($update_type == 'unsubscribe')
 	{
-		$template->assign_vars(array('CREATE_MODIFY_UNSUBSCRIBE_MSG' => $lang['digest_unsubscribe']));
+		$confim_message = $lang['digest_unsubscribe'] . $confim_message;
 	}
 	elseif ($update_type == 'create')
 	{
-		$template->assign_vars(array('CREATE_MODIFY_UNSUBSCRIBE_MSG' => $lang['digest_create']));
+		$confim_message = $lang['digest_create'] . $confim_message;
 	}
 	else
 	{
-		$template->assign_vars(array('CREATE_MODIFY_UNSUBSCRIBE_MSG' => $lang['digest_modify']));
+		$confim_message = $lang['digest_modify'] . $confim_message;
 	}
 	$template->assign_vars(array(
-		'U_INDEX' => append_sid(FORUM_MG),
-		'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']))
+		'CREATE_MODIFY_UNSUBSCRIBE_MSG' => $confim_message,
+		'U_INDEX' => append_sid(CMS_PAGE_FORUM),
+		'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']))
 		)
 	);
 
-	$template->pparse('digests_post');
-
 }
 
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $lang['digest_page_title'], '', '');
 
 ?>

@@ -44,11 +44,7 @@ $sql = 'SELECT module_id, name
 		AND auth_value <= ' . $auth_level . '
 	ORDER BY display_order';
 
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(CRITICAL_ERROR, 'Couldn\'t query database for statistic modules.');
-}
-
+$result = $db->sql_query($sql);
 $module_count = $db->sql_numrows($result);
 $module_data = $db->sql_fetchrowset($result);
 

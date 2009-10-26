@@ -17,40 +17,40 @@ function get_online_page($page_id)
 {
 	global $lang;
 
-	if (strpos($page_id, PORTAL_MG) !== false)
+	if (strpos($page_id, CMS_PAGE_HOME) !== false)
 	{
 		$location['lang'] = $lang['Portal'];
-		$location['url'] = PORTAL_MG;
+		$location['url'] = CMS_PAGE_HOME;
 		return $location;
 	}
-	elseif (strpos($page_id, FORUM_MG) !== false)
+	elseif (strpos($page_id, CMS_PAGE_FORUM) !== false)
 	{
 		$location['lang'] = $lang['Forum_index'];
-		$location['url'] = FORUM_MG;
+		$location['url'] = CMS_PAGE_FORUM;
 		return $location;
 	}
-	elseif (strpos($page_id, POSTING_MG) !== false)
+	elseif (strpos($page_id, CMS_PAGE_POSTING) !== false)
 	{
 		$location['lang'] = $lang['Posting_message'];
-		$location['url'] = FORUM_MG;
+		$location['url'] = CMS_PAGE_FORUM;
 		return $location;
 	}
-	elseif (strpos($page_id, LOGIN_MG) !== false)
+	elseif (strpos($page_id, CMS_PAGE_LOGIN) !== false)
 	{
 		$location['lang'] = $lang['Logging_on'];
-		$location['url'] = FORUM_MG;
+		$location['url'] = CMS_PAGE_FORUM;
 		return $location;
 	}
-	elseif (strpos($page_id, SEARCH_MG) !== false)
+	elseif (strpos($page_id, CMS_PAGE_SEARCH) !== false)
 	{
 		$location['lang'] = $lang['Searching_forums'];
-		$location['url'] = SEARCH_MG;
+		$location['url'] = CMS_PAGE_SEARCH;
 		return $location;
 	}
-	elseif ( (strpos($page_id, PROFILE_MG) !== false) || (strpos($page_id, 'profile_') !== false) )
+	elseif ( (strpos($page_id, CMS_PAGE_PROFILE) !== false) || (strpos($page_id, 'profile_') !== false) )
 	{
 		$location['lang'] = $lang['Viewing_profile'];
-		$location['url'] = FORUM_MG;
+		$location['url'] = CMS_PAGE_FORUM;
 		return $location;
 	}
 	elseif (strpos($page_id, 'viewonline.' . PHP_EXT) !== false)
@@ -188,7 +188,7 @@ function get_online_page($page_id)
 	elseif (strpos($page_id, 'topic_view_users.' . PHP_EXT) !== false)
 	{
 		$location['lang'] = $lang['Topic_view_count'];
-		$location['url'] = FORUM_MG;
+		$location['url'] = CMS_PAGE_FORUM;
 		return $location;
 	}
 	elseif (strpos($page_id, 'album_allpics.' . PHP_EXT) !== false)
@@ -260,7 +260,7 @@ function get_online_page($page_id)
 	else
 	{
 		$location['lang'] = $lang['Portal'];
-		$location['url'] = PORTAL_MG;
+		$location['url'] = CMS_PAGE_HOME;
 		return $location;
 	}
 	return $location;

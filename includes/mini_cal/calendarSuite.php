@@ -171,7 +171,7 @@ class calendarSuite
 	**/
 	function makeTimestamp($date)
 	{
-		$this->stamp = strtotime($date);
+		$this->stamp = @strtotime($date);
 		return ($this->stamp);
 	// end of function makeTimestamp
 	}
@@ -183,24 +183,25 @@ class calendarSuite
 	function getMonth($callDate)
 	{
 		$this->makeTimestamp($callDate);
-		$this->dateYYYY = date("Y", $this->stamp);
-		$this->dateMM = date("n", $this->stamp);
-		$this->ext_dateMM = date("F", $this->stamp);
-		$this->dateDD = date("d", $this->stamp);
-		$this->daysMonth = date("t", $this->stamp);
-		$this->monthStart = date("w", $this->stamp);
+		$this->dateYYYY = gmdate('Y', $this->stamp);
+		$this->dateMM = gmdate('n', $this->stamp);
+		$this->ext_dateMM = gmdate('F', $this->stamp);
+		$this->dateDD = gmdate('d', $this->stamp);
+		$this->daysMonth = gmdate('t', $this->stamp);
+		$this->monthStart = gmdate('w', $this->stamp);
 	/*
 		$this->makeTimestamp($callDate);
-		$tadj = $this->stamp - 24*3600*( date("d") - 1 ) ;
-		$this->dateDD = date("d", $this->stamp);
-		$this->dateYYYY = date("Y", $tadj);
-		$this->dateMM = date("n", $tadj);
-		$this->ext_dateMM = date("F", $tadj);
-		$this->daysMonth = date("t", $tadj);
-		$this->monthStart = date("w", $tadj);
+		$tadj = $this->stamp - 24*3600*( gmdate('d') - 1 ) ;
+		$this->dateDD = gmdate('d', $this->stamp);
+		$this->dateYYYY = gmdate('Y', $tadj);
+		$this->dateMM = gmdate('n', $tadj);
+		$this->ext_dateMM = gmdate('F', $tadj);
+		$this->daysMonth = gmdate('t', $tadj);
+		$this->monthStart = gmdate('w', $tadj);
 	*/
 
-		for($i=1; $i < $this->daysMonth+1; $i++) {
+		for($i = 1; $i < $this->daysMonth + 1; $i++)
+		{
 			$this->makeTimestamp("$i $this->ext_dateMM $this->dateYYYY");
 			$this->day[] = array(
 													 "0" => "$i",
@@ -210,7 +211,7 @@ class calendarSuite
 													 "4" => $this->dateMM,
 													 "5" => $this->dateYYYY,
 													 "6" => $this->stamp,
-													 "7" => (date('w', $this->stamp)),
+													 "7" => (gmdate('w', $this->stamp)),
 													 "8" => (strftime('%j', $this->stamp)),
 													 "9" => (strftime('%U', $this->stamp)),
 													 "10" => $this->dateLinker($this->stamp),
@@ -226,22 +227,22 @@ class calendarSuite
 	**/
 	function getDayDetail($stamp)
 	{
-		$this->dateYYYY = date("Y", $stamp);
-		$this->dateMM = date("n", $stamp);
-		$this->dateDD = date("d", $stamp);
-		$this->ext_dateMM = date("F", $stamp);
-		$this->daysMonth = date("t", $stamp);
-		$this->monthStart = date("w", $stamp);
+		$this->dateYYYY = gmdate('Y', $stamp);
+		$this->dateMM = gmdate('n', $stamp);
+		$this->dateDD = gmdate('d', $stamp);
+		$this->ext_dateMM = gmdate('F', $stamp);
+		$this->daysMonth = gmdate('t', $stamp);
+		$this->monthStart = gmdate('w', $stamp);
 
 			$this->day = array(
-													 "0" => (date("j",$stamp)),
+													 "0" => (gmdate('j',$stamp)),
 													 "1" => (strftime('%a', $stamp)),
 													 "2" => (strftime('%A', $stamp)),
 													 "3" => $this->ext_dateMM,
 													 "4" => $this->dateMM,
 													 "5" => $this->dateYYYY,
 													 "6" => $stamp,
-													 "7" => (date('w', $stamp)),
+													 "7" => (gmdate('w', $stamp)),
 													 "8" => strftime('%j', $stamp),
 													 "9" => strftime('%U', $stamp)
 													);
@@ -269,35 +270,35 @@ class calendarSuite
 		switch ($option)
 		{
 			case 0:
-				$this->formatted = date("d n Y", $stamp);
+				$this->formatted = gmdate('d n Y', $stamp);
 				return $this->formatted;
 				break;
 			case 1:
-				$this->formatted = date("d Y M", $stamp);
+				$this->formatted = gmdate('d Y M', $stamp);
 				return $this->formatted;
 				break;
 			case 2:
-				$this->formatted = date("M d Y", $stamp);
+				$this->formatted = gmdate('M d Y', $stamp);
 				return $this->formatted;
 				break;
 			case 3:
-				$this->formatted = date("M Y d", $stamp);
+				$this->formatted = gmdate('M Y d', $stamp);
 				return $this->formatted;
 				break;
 			case 4:
-				$this->formatted = date("Y M d", $stamp);
+				$this->formatted = gmdate('Y M d', $stamp);
 				return $this->formatted;
 				break;
 			case 5:
-				$this->formatted = date("Y d M", $stamp);
+				$this->formatted = gmdate('Y d M', $stamp);
 				return $this->formatted;
 				break;
 			case 6:
-				$this->formatted = date("d M Y", $stamp);
+				$this->formatted = gmdate('d M Y', $stamp);
 				return $this->formatted;
 				break;
 			case 99:
-				$this->formatted = date("Y-m-d", $stamp);
+				$this->formatted = gmdate('Y-m-d', $stamp);
 				return $this->formatted;
 				break;
 		}

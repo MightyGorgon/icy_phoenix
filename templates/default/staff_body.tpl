@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_STAFF}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th>{L_USERNAME}</th>
@@ -11,11 +13,8 @@
 <tr>
 	<td class="row1g" valign="top">
 		<span class="gen">{user_level.staff.USERNAME}</span>
-		<span class="gensmall">
-			<br />{user_level.staff.RANK}
-			<br />{user_level.staff.RANK_IMAGE}
-			<br />{user_level.staff.AVATAR}
-		</span>
+		<div class="post-rank"><b>{user_level.staff.RANK}</b>{user_level.staff.RANK_IMAGE}</div>
+		<span class="post-images">{user_level.staff.AVATAR}</span>
 	</td>
 	<td class="row1g" valign="top"><span class="forumlink">{user_level.staff.FORUMS}</span></td>
 	<td class="row1g" valign="top">
@@ -35,3 +34,5 @@
 <!-- END user_level -->
 <tr><td class="cat" colspan="6">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- INCLUDE overall_footer.tpl -->

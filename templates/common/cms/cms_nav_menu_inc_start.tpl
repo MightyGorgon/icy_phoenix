@@ -1,7 +1,7 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td id="var_width" width="160" valign="top" align="left" style="padding-right: 7px;" nowrap="nowrap">
-		<div id="quick_links_cms2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="javascript:ShowHide('quick_links_cms','quick_links_cms2','quick_links_cms');setWidth('var_width',160);setWidth('full_width','auto');" title="{L_CMS}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CMS}" /></a></div>
+		<div id="quick_links_cms2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="javascript:ShowHide('quick_links_cms','quick_links_cms2','quick_links_cms');setWidth('var_width',160);setWidth('full_width','auto');" title="{L_CMS_TITLE}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CMS_TITLE}" /></a></div>
 		<div id="quick_links_cms">
 		<script type="text/javascript">
 		<!--
@@ -17,7 +17,7 @@
 		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<th>
-				<span style="float: right;"><img class="max-min-right" style="padding-top: 3px; padding-right: 6px; vertical-align: top;" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links_cms','quick_links_cms2','quick_links_cms');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_SHOW}" /></span><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_CMS}" title="{L_CMS}" />&nbsp;<span style="vertical-align: top;">{L_CMS}</span>
+				<span style="float: right;"><img class="max-min-right" style="padding-top: 3px; padding-right: 6px; vertical-align: top;" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links_cms','quick_links_cms2','quick_links_cms');setWidth('var_width',16);setWidth('full_width','100%');" alt="{L_SHOW}" /></span><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_CMS_TITLE}" title="{L_CMS_TITLE}" />&nbsp;<span style="vertical-align: top;">{L_CMS_TITLE}</span>
 			</th>
 		</tr>
 		<tr>

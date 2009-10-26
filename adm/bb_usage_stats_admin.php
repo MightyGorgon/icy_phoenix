@@ -22,7 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 include(IP_ROOT_PATH . 'includes/bb_usage_stats_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bb_usage_stats_functions.' . PHP_EXT);
 
 
@@ -46,10 +46,7 @@ function specialgrp_select($select_name, $selected_group)
 
 	/* Next, retrieve users groups from GROUPS_TABLE */
 	$sql = 'SELECT group_id, group_name FROM ' . GROUPS_TABLE . ' WHERE group_single_user <> ' . TRUE . ' ORDER BY group_name';
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Function specialgrp_select(): Unable to query the ' . GROUPS_TABLE . ' table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	/* Loop through query results adding each group to the pull-down list */
 	while ($row = $db->sql_fetchrow($result))
@@ -98,7 +95,7 @@ if(is_null($new[BBUS_CONFIGPROP_VIEWOPTIONS_NAME]))
  */
 else
 {
-	$viewoptions = $board_config[BBUS_CONFIGPROP_VIEWOPTIONS_NAME];
+	$viewoptions = $config[BBUS_CONFIGPROP_VIEWOPTIONS_NAME];
 }
 
 /* If the bb_usage_stats_specialgrp property is not in the board's configuration,

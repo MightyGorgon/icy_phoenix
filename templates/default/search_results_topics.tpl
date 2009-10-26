@@ -1,11 +1,13 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
-	function select_switch(status)
+function select_switch(status)
+{
+	for (i = 0; i < document.post.length; i++)
 	{
-		for (i = 0; i < document.post.length; i++)
-		{
-			document.post.elements[i].checked = status;
-		}
+		document.post.elements[i].checked = status;
 	}
+}
 </script>
 <form action="{S_POST_ACTION}" method="post" name="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -71,3 +73,5 @@
 </table>
 
 <div align="right">{JUMPBOX}</div>
+
+<!-- INCLUDE overall_footer.tpl -->

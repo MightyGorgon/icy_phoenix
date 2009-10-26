@@ -59,7 +59,7 @@ require_once(ALBUM_MOD_PATH . 'album_hierarchy_sql.' . PHP_EXT);
 //-----------------------------------------------
 function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_level = -1, $column_offset=1)
 {
-	global $db, $template, $lang, $images, $album_data, $userdata, $user_id;
+	global $db, $template, $images, $userdata, $lang, $user_id, $album_data;
 
 	static $username = '';
 
@@ -98,7 +98,7 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 		);
 
 		// get user name of the root category
-		$username = album_get_user_name( $album_data['data'][0]['cat_user_id'] ); //$album_data['data'][0]['username'];
+		$username = album_get_user_name($album_data['data'][0]['cat_user_id']); //$album_data['data'][0]['username'];
 
 		if (defined('IN_ADMIN'))
 		{
@@ -173,7 +173,7 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 	} // if we are above the root level
 
 	// display the sub-level
-	for ($i = 0; $i < count($album_data['sub'][$cur]); $i++)
+	for ($i = 0; $i < sizeof($album_data['sub'][$cur]); $i++)
 	{
 		$column_offset = album_display_admin_index($album_data['sub'][$cur][$i], $level + 1, $max_level, $column_offset);
 	}
@@ -208,7 +208,7 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 // --------------------------------
 function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, $real_level = ALBUM_ROOT_CATEGORY, $max_level = ALBUM_ROOT_CATEGORY, $newestpic = NULL)
 {
-	global $template, $db, $board_config, $album_config, $lang, $images, $userdata, $album_data;
+	global $template, $db, $config, $album_config, $lang, $images, $userdata, $album_data;
 
 	// init some variables
 	$display = false;
@@ -225,8 +225,8 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 	{
 		// get max inc level
 		$keys = array();
-		$keys = album_get_auth_keys($cur_cat_id, ALBUM_AUTH_VIEW ); //, true, -1, -1);
-		$max_level = album_get_max_depth($keys, ALBUM_AUTH_VIEW, $cur_cat_id ); //, false);
+		$keys = album_get_auth_keys($cur_cat_id, ALBUM_AUTH_VIEW); //, true, -1, -1);
+		$max_level = album_get_max_depth($keys, ALBUM_AUTH_VIEW, $cur_cat_id); //, false);
 		$newestpic = album_no_newest_pictures($album_config['new_pic_check_interval'], $album_data['id']);
 	}
 
@@ -259,7 +259,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		album_get_sub_cat_ids($cat_id, $cats, ALBUM_AUTH_VIEW, ALBUM_INCLUDE_PARENT_ID);
 
 		// we got the cat_id, we now need to get the value for the next sub category for this category
-		for ($j = 0; $j < count($album_data['sub'][$cur_cat_id]); $j++)
+		for ($j = 0; $j < sizeof($album_data['sub'][$cur_cat_id]); $j++)
 		{
 			$link = '';
 
@@ -290,10 +290,10 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 			// get the number of pictures in current sub category and its sub categories
 			$sub_total_pics = album_get_total_pics($sub_cats);
 			$new_images_flag = false;
-			for ($i = 0; $i < count($sub_cats); $i++)
+			for ($i = 0; $i < sizeof($sub_cats); $i++)
 			{
 				$total_new = $total_new + $newestpic[$sub_cats[$i]];
-				if ( ($new_images_flag == false) && ($total_new > 0) )
+				if (($new_images_flag == false) && ($total_new > 0))
 				{
 					$new_images_flag = true;
 				}
@@ -317,7 +317,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 			{
 				$total = 0;
 				// calculate for all the subcats in this branch
-				for ($i = 0; $i < count($sub_cats); $i++)
+				for ($i = 0; $i < sizeof($sub_cats); $i++)
 				{
 					$total = $total + $newestpic[ $sub_cats[$i] ];
 				}
@@ -327,7 +327,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 				$slideshow_img_xs = ($xs_new) ? $images['icon_minipost_new'] : $images['icon_minipost'];
 				$link_spacer = '<img src="' . $images['spacer'] . '" width="1" height="0" />';
 				$subfolder_img = '<img src="' . $slideshow_img_xs . '" style="vertical-align: middle;" title="' . $sub_total_pics . '" alt="' . $sub_total_pics . '"/>';
-				$sub_cat_separator = ( $i != count ($sub_cats) ) ? ',':'';
+				$sub_cat_separator = ($i != count ($sub_cats)) ? ',':'';
 				//$slideshow_link = append_sid(album_append_uid("album_showpage." . PHP_EXT . "?pic_id=" . $last_pic_id . "&amp;slideshow=5"));
 				$link = $link_spacer . $subfolder_img . '&nbsp;<a href="' . $subpgm . '" title="' . $subdesc . '" class="forumlink2' . $new_images_class . '"><b>' . $subname . '</b></a><b>' . $sub_cat_separator .'</b>&nbsp;';
 			}
@@ -336,14 +336,14 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 			{
 				$total = 0;
 				// calculate for all the subcats in this branch
-				for ($i = 0; $i < count($sub_cats); $i++)
+				for ($i = 0; $i < sizeof($sub_cats); $i++)
 				{
 					$total = $total + $newestpic[$sub_cats[$i]];
 				}
 
 				// Mighty Gorgon - Slideshow - BEGIN
 				$ss_cat_id = $album_data['sub'][$cur_cat_id][$j];
-				if ( (album_get_total_pic_cat($ss_cat_id) > 0) && ($album_config['show_slideshow'] == 1) )
+				if ((album_get_total_pic_cat($ss_cat_id) > 0) && $album_config['show_slideshow'])
 				{
 					//$xs_new = ($total > 0)  ? '-new' : '';
 					$first_pic_id = album_get_first_pic_id($cur_cat_id);
@@ -357,7 +357,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 					$slideshow_link_full = '';
 				}
 				// Mighty Gorgon - Slideshow - END
-				if ( $total > 0 )
+				if ($total > 0)
 				{
 					$new_text = ($total == 1) ? sprintf($lang['One_new_picture'], $total) : sprintf($lang['Multiple_new_pictures'], $total);
 					$newpics_sub_link = '&nbsp;<img src="' . $images['mini_new_pictures'] . '" alt="' . $new_text . '" title="' . $new_text . '">&nbsp;';
@@ -380,23 +380,23 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		{
 		// if we got some moderators AND some sub categories,
 		// then make sure the sub categories are on a new line
-			if ( !empty($links) && ($moderators = album_get_moderator_info($cat)) != '' )
+			if (!empty($links) && ($moderators = album_get_moderator_info($cat)) != '')
 			{
 				$moderators .= '<br />';
 			}
 		}
 
 		$cat_desc = album_get_object_lang($cur_cat_id, 'desc');
-		if ( !empty($cat_desc) && !empty($links) )
+		if (!empty($cat_desc) && !empty($links))
 		{
 			$cat_desc .= '<br />';
 		}
 
 		// Mighty Gorgon - Slideshow - BEGIN
-		$new_images = ((intval(($newestpic[$cur_cat_id])) != 0 ) || $new_images_flag) ? true : false;
-		$xs_new = ((intval(($newestpic[$cur_cat_id])) != 0 ) || $new_images_flag)  ? '-new' : '';
+		$new_images = ((intval(($newestpic[$cur_cat_id])) != 0) || $new_images_flag) ? true : false;
+		$xs_new = ((intval(($newestpic[$cur_cat_id])) != 0) || $new_images_flag)  ? '-new' : '';
 
-		if ((album_get_total_pic_cat($cur_cat_id) > 0) && ($album_config['show_slideshow'] == 1))
+		if ((album_get_total_pic_cat($cur_cat_id) > 0) && $album_config['show_slideshow'])
 		{
 			$first_pic_id = album_get_first_pic_id($cur_cat_id);
 			$slideshow_img_xs = ($xs_new) ? $images['icon_newest_reply'] : $images['icon_latest_reply'];
@@ -412,13 +412,13 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 
 		if ($xs_new)
 		{
-			$cat_img = ( intval(count($sub_cats)) >0 ) ? $images['forum_sub_unread'] : $cat_img = $images['forum_nor_unread'];
+			$cat_img = (intval(sizeof($sub_cats)) >0) ? $images['forum_sub_unread'] : $cat_img = $images['forum_nor_unread'];
 		}
 		else
 		{
-			$cat_img = ( intval(count($sub_cats)) >0 ) ? $images['forum_sub_read'] : $cat_img = $images['forum_nor_read'];
+			$cat_img = (intval(sizeof($sub_cats)) >0) ? $images['forum_sub_read'] : $cat_img = $images['forum_nor_read'];
 		}
-		if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
+		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 		{
 			$cat_url = append_sid(str_replace ('--', '-', make_url_friendly(album_get_object_lang($cur_cat_id, 'name')) . '-ac' . $cat_id . '.html'));
 		}
@@ -569,7 +569,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 	} // if ($level == 0)...
 
 	// display sub-levels
-	for ($i = 0; $i < count($album_data['sub'][$cur_cat_id]); $i++)
+	for ($i = 0; $i < sizeof($album_data['sub'][$cur_cat_id]); $i++)
 	{
 		if (!empty($keys['keys'][$album_data['sub'][$cur_cat_id][$i]]))
 		{
@@ -601,7 +601,7 @@ function album_build_tree(&$cats, &$parents, $level = ALBUM_ROOT_CATEGORY, $pare
 	$album_data_level = array();
 
 	// add the categories of this level
-	for ($i = 0; $i < count($parents[$parent]); $i++)
+	for ($i = 0; $i < sizeof($parents[$parent]); $i++)
 	{
 		$idx = $parents[$parent][$i];
 
@@ -633,9 +633,9 @@ function album_build_tree(&$cats, &$parents, $level = ALBUM_ROOT_CATEGORY, $pare
 
 	// add the tree_level to the tree
 	$level++;
-	for ($i = 0; $i < count($album_data_level['data']); $i++)
+	for ($i = 0; $i < sizeof($album_data_level['data']); $i++)
 	{
-		$AH_this = count($album_data['data']);
+		$AH_this = sizeof($album_data['data']);
 		$key = $album_data_level['id'][$i];
 		$album_data['sub'][$parent][] = $key;
 		$album_data['keys'][$key]     = $AH_this;
@@ -666,9 +666,9 @@ function album_append_uid($user_id, $url = '', $non_html_amp = false)
 		$user_id = $album_user_id;
 	}
 
-	if ( !empty($user_id) && $user_id != ALBUM_PUBLIC_GALLERY && !preg_match('#user_id=#', $url) )
+	if (!empty($user_id) && $user_id != ALBUM_PUBLIC_GALLERY && !preg_match('#user_id=#', $url))
 	{
-		$url .= ( ( strpos($url, '?') != false ) ? ( ( $non_html_amp ) ? '&' : '&amp;' ) : '?' ) . "user_id=$user_id";
+		$url .= ((strpos($url, '?') != false) ? (($non_html_amp) ? '&' : '&amp;') : '?') . "user_id=$user_id";
 	}
 
 	return $url;
@@ -678,9 +678,9 @@ function album_append_mode($url, $non_html_amp = false)
 {
 	global $album_view_mode;
 
-	if ( !empty($album_view_mode) && !preg_match('#mode=#', $url) )
+	if (!empty($album_view_mode) && !preg_match('#mode=#', $url))
 	{
-		$url .= ( ( strpos($url, '?') != false ) ? ( ( $non_html_amp ) ? '&' : '&amp;' ) : '?' ) . "mode=$album_view_mode";
+		$url .= ((strpos($url, '?') != false) ? (($non_html_amp) ? '&' : '&amp;') : '?') . "mode=$album_view_mode";
 	}
 
 	return $url;
@@ -690,9 +690,9 @@ function album_append_type($url, $non_html_amp = false)
 {
 	global $album_list_type;
 
-	if ( !empty($album_list_type) && !preg_match('#type=#', $url) )
+	if (!empty($album_list_type) && !preg_match('#type=#', $url))
 	{
-		$url .= ( ( strpos($url, '?') != false ) ? ( ( $non_html_amp ) ? '&' : '&amp;' ) : '?' ) . "type=$album_list_type";
+		$url .= ((strpos($url, '?') != false) ? (($non_html_amp) ? '&' : '&amp;') : '?') . "type=$album_list_type";
 	}
 
 	return $url;
@@ -700,11 +700,11 @@ function album_append_type($url, $non_html_amp = false)
 
 function album_append_ref($url, $non_html_amp = false)
 {
-	global $album_ref_value, $SID;
+	global $album_ref_value;
 
-	if ( !empty($album_ref_value) && !preg_match('#ref=#', $url) )
+	if (!empty($album_ref_value) && !preg_match('#ref=#', $url))
 	{
-		$url .= ( ( strpos($url, '?') != false ) ? ( ( $non_html_amp ) ? '&' : '&amp;' ) : '?' ) . "ref=$album_ref_value";
+		$url .= ((strpos($url, '?') != false) ? (($non_html_amp) ? '&' : '&amp;') : '?') . 'ref=' . $album_ref_value;
 	}
 
 	return $url;
@@ -726,7 +726,7 @@ function album_get_max_depth(&$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, $auth_ke
 	}
 
 	// loop through the keys to find the maximum level.. aka max level
-	for ($i = 0; $i < count($keys['id']); $i++)
+	for ($i = 0; $i < sizeof($keys['id']); $i++)
 	{
 		if ($keys['level'][$i] > $max_level)
 		{
@@ -753,7 +753,7 @@ function album_get_sub_cat_ids($cur_cat_id = ALBUM_ROOT_CATEGORY, &$cats, $auth_
 	}
 
 	// get all the sub category id for current sub category
-	for ($j = 0; $j < count($album_data['sub'][$cur_cat_id]); $j++)
+	for ($j = 0; $j < sizeof($album_data['sub'][$cur_cat_id]); $j++)
 	{
 		$subcur = $album_data['sub'][$cur_cat_id][$j];
 		$subthis = $album_data['keys'][$subcur];
@@ -769,7 +769,7 @@ function album_get_sub_cat_ids($cur_cat_id = ALBUM_ROOT_CATEGORY, &$cats, $auth_
 	}
 
 	// do this for each sub category... recursive
-	for ($i = 0; $i < count($album_data['sub'][$cur_cat_id]); $i++)
+	for ($i = 0; $i < sizeof($album_data['sub'][$cur_cat_id]); $i++)
 	{
 		album_get_sub_cat_ids($album_data['sub'][$cur_cat_id][$i], $cats);
 	}
@@ -790,7 +790,7 @@ function album_get_object_lang($cur_cat_id, $field)
 		case 'name':
 
 			// check wheter we are working on a personal category or not and if it is the root
-			if (album_is_personal_gallery($cur_cat_id) == true && album_get_personal_root_id($album_user_id) == $cur_cat_id )
+			if (album_is_personal_gallery($cur_cat_id) == true && album_get_personal_root_id($album_user_id) == $cur_cat_id)
 			{
 				return sprintf($lang['Personal_Gallery_Of_User'], $album_data['data'][$AH_this]['username']);
 			}
@@ -847,11 +847,11 @@ function album_make_nav_tree($cur_cat_id, $pgm, $nav_class = 'nav', $user_id = A
 			$pgm_name = $pgm;
 		}
 		$k = $k + 1;
-		if (!empty($field_name) && ( $album_data['auth'][$param_value]['view']==1) && $k == 1 )
+		if (!empty($field_name) && ($album_data['auth'][$param_value]['view']==1) && $k == 1)
 		{
 			$res = '<a href="' . append_sid(album_append_uid('./' . $pgm_name . (($field_name != '') ? "?$param_type=$param_value" : ''))) . '" class="nav-current">' . $field_name . '</a>' . (($res != '') ? ALBUM_NAV_ARROW . $res : '');
 		}
-		elseif (!empty($field_name) && ( $album_data['auth'][$param_value]['view']==1) )
+		elseif (!empty($field_name) && ($album_data['auth'][$param_value]['view']==1))
 		{
 			$res = '<a href="' . append_sid(album_append_uid('./' . $pgm_name . (($field_name != '') ? "?$param_type=$param_value" : ''))) . '" class="nav">' . $field_name . '</a>' . (($res != '') ? ALBUM_NAV_ARROW . $res : '');
 		}
@@ -869,7 +869,7 @@ function album_make_nav_tree($cur_cat_id, $pgm, $nav_class = 'nav', $user_id = A
 			$cur_cat_id = $album_data['parent'][$AH_this];
 		}
 
-		if ( isset($album_data['keys'][$cur_cat_id]) )
+		if (isset($album_data['keys'][$cur_cat_id]))
 		{
 			$AH_this = $album_data['keys'][$cur_cat_id];
 		}
@@ -905,10 +905,10 @@ function album_get_tree_option($selected_cat_id = ALBUM_ROOT_CATEGORY, $auth_key
 	$public_res = '';
 	$personal_res = '';
 
-	for ($i = $offset; $i < count($keys['id']); $i++)
+	for ($i = $offset; $i < sizeof($keys['id']); $i++)
 	{
 		// should we include the 'Root' cat id, or substitude it with a -1 ?
-		if ( ($keys['id'][$i] == ALBUM_ROOT_CATEGORY) && (!$include_root) )
+		if (($keys['id'][$i] == ALBUM_ROOT_CATEGORY) && (!$include_root))
 		{
 			$cat_id = ALBUM_ROOT_CATEGORY;
 		}
@@ -999,10 +999,10 @@ function album_get_simple_tree_option($selected_cat_id = ALBUM_ROOT_CATEGORY, $a
 	$public_res = '';
 	$personal_res = '';
 
-	for ($i = $offset; $i < count($keys['id']); $i++)
+	for ($i = $offset; $i < sizeof($keys['id']); $i++)
 	{
 		// should we include the 'Root' cat id, or substitude it with a -1 ?
-		if ( ($keys['id'][$i] == ALBUM_ROOT_CATEGORY) && (!$include_root) )
+		if (($keys['id'][$i] == ALBUM_ROOT_CATEGORY) && (!$include_root))
 		{
 			$cat_id = ALBUM_ROOT_CATEGORY;
 		}
@@ -1074,9 +1074,9 @@ function album_get_full_tree_option()
 	$public_res = '';
 	$personal_res = '';
 
-	for ($i = $offset; $i < count($keys['id']); $i++)
+	for ($i = $offset; $i < sizeof($keys['id']); $i++)
 	{
-		if ( ($keys['id'][$i] == ALBUM_ROOT_CATEGORY) && (!$include_root) )
+		if (($keys['id'][$i] == ALBUM_ROOT_CATEGORY) && (!$include_root))
 		{
 			$cat_id = ALBUM_ROOT_CATEGORY;
 		}
@@ -1154,17 +1154,17 @@ function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key
 {
 	global $lang, $album_data , $userdata;
 
-	if ( count($album_data['data']) == 0 )
+	if (sizeof($album_data['data']) == 0)
 	{
 		// if $user_id != 0 then it's a personal gallery
 			album_read_tree($user_id);
 	}
 
-	$user_ref = ( ($user_id == ALBUM_PUBLIC_GALLERY) ? "" : "?user_id=$user_id");
+	$user_ref = (($user_id == ALBUM_PUBLIC_GALLERY) ? "" : "?user_id=$user_id");
 
 	$javascript = "<script type=\"text/JavaScript\"><!-- \n";
 	$javascript .= "function onChangeCheck() {\n";
-	$javascript .= "    if( document.jumpbox.cat_id.value != " . ALBUM_JUMPBOX_SEPERATOR . ") {\n";
+	$javascript .= "    if(document.jumpbox.cat_id.value != " . ALBUM_JUMPBOX_SEPERATOR . ") {\n";
 	$javascript .= "        document.jumpbox.submit();";
 	$javascript .= "    }\n";
 	$javascript .= "}\n";
@@ -1237,7 +1237,7 @@ function album_get_album_data($cat_id)
 {
 	global $album_data;
 
-	if ( @!array_key_exists($cat_id, $album_data['keys']) )
+	if (@!array_key_exists($cat_id, $album_data['keys']))
 	{
 		return NULL;
 	}
@@ -1266,7 +1266,7 @@ function album_build_url_parameters($parameters)
 //-----------------------------------------------
 function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_header = false, $show_public_footer = false, $force_display = false)
 {
-	global $lang, $board_config, $template, $images, $album_data, $album_config, $userdata;
+	global $lang, $config, $template, $images, $album_data, $album_config, $userdata;
 	$keys = array();
 
 	// for testing ONLY
@@ -1292,7 +1292,7 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 	$keys = album_get_auth_keys($cur_cat_id, ALBUM_AUTH_VIEW);
 	$display = album_build_index($user_id, $keys, $cur_cat_id, ALBUM_ROOT_CATEGORY, ALBUM_ROOT_CATEGORY);
 
-	if (($force_display) && (!$is_personal_gallery) && (count($album_data) == 0))
+	if (($force_display) && (!$is_personal_gallery) && (sizeof($album_data) == 0))
 	{
 		$template->assign_block_vars('catmain', array());
 		$template->assign_block_vars('catmain.catrow', array(
@@ -1401,7 +1401,7 @@ function album_generate_index_columns()
 			$album_config['show_index_pics'] == 0 &&
 			$album_config['show_index_comments'] == 0 &&
 			$album_config['show_index_last_comment'] == 0 &&
-			$album_config['show_index_last_pic'] == 0 )
+			$album_config['show_index_last_pic'] == 0)
 		{
 			$table_head_class = "thCornerR";
 		}
@@ -1422,7 +1422,7 @@ function album_generate_index_columns()
 			$album_config['show_index_pics'] == 0 &&
 			$album_config['show_index_comments'] == 0 &&
 			$album_config['show_index_last_comment'] == 0 &&
-			$album_config['show_index_last_pic'] == 0 )
+			$album_config['show_index_last_pic'] == 0)
 		{
 			$table_head_class = "thCornerR";
 		}
@@ -1442,7 +1442,7 @@ function album_generate_index_columns()
 		if ($album_config['show_index_pics'] == 0 &&
 			$album_config['show_index_comments'] == 0 &&
 			$album_config['show_index_last_comment'] == 0 &&
-			$album_config['show_index_last_pic'] == 0 )
+			$album_config['show_index_last_pic'] == 0)
 		{
 			$table_head_class = "thCornerR";
 		}
@@ -1461,7 +1461,7 @@ function album_generate_index_columns()
 	{
 		if ($album_config['show_index_comments'] == 0 &&
 			$album_config['show_index_last_comment'] == 0 &&
-			$album_config['show_index_last_pic'] == 0 )
+			$album_config['show_index_last_pic'] == 0)
 		{
 			$table_head_class = 'th';
 		}
@@ -1479,7 +1479,7 @@ function album_generate_index_columns()
 	if ($album_config['show_index_comments'] == 1)
 	{
 		if ($album_config['show_index_last_comment'] == 0 &&
-			$album_config['show_index_last_pic'] == 0 )
+			$album_config['show_index_last_pic'] == 0)
 		{
 			$table_head_class = 'th';
 		}
@@ -1496,7 +1496,7 @@ function album_generate_index_columns()
 
 	if ($album_config['show_index_last_comment'] == 1)
 	{
-		if ($album_config['show_index_last_pic'] == 0 )
+		if ($album_config['show_index_last_pic'] == 0)
 		{
 			$table_head_class = 'th';
 		}
@@ -1593,7 +1593,7 @@ function album_generate_super_cells($columns, $indexes)
 			);
 		}
 
-		if ( ($album_config['show_index_total_pics'] == 1) && ($indexes[$i] == 1) )
+		if (($album_config['show_index_total_pics'] == 1) && ($indexes[$i] == 1))
 		{
 			$template->assign_vars(array(
 				'COL1' => $rowClass,

@@ -29,12 +29,12 @@ if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
 }
 else
 {
-	set_magic_quotes_runtime(0);
+	@set_magic_quotes_runtime(0);
 	if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on')
 	{
 		$ip_functions->deregister_globals();
 	}
-	define('STRIP', (get_magic_quotes_gpc()) ? true : false);
+	define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
 }
 
 // Try to override some limits - maybe it helps some...

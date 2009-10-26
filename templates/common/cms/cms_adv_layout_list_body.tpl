@@ -1,8 +1,14 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_cms.png" alt="{L_CMS}" title="{L_CMS}" /></td>
+	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_cms.png" alt="{L_CMS_TITLE}" title="{L_CMS_TITLE}" /></td>
 	<td class="row1" valign="top">
 		<!-- BEGIN cms_user -->
 		<div style="float: right">{L_CMS_OWNER}: {cms_user.CMS_USERNAME}</div>
@@ -52,3 +58,9 @@
 </table>
 </form>
 <!-- END layout -->
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

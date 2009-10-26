@@ -107,11 +107,11 @@ class pafiledb_Template
 	// be an absolute name, or a name relative to the rootdir for this Template object.
 	function make_filename($filename)
 	{
-		global $board_config;
+		global $config;
 		$file_check = (substr($filename, 0, 1) != '/') ? $this->root . '/' . $filename : $filename;
 		if (!file_exists($file_check))
 		{
-			$file_check = IP_ROOT_PATH . 'templates/' . $board_config['xs_def_template'] . '/' . $filename;
+			$file_check = IP_ROOT_PATH . 'templates/' . $config['xs_def_template'] . '/' . $filename;
 		}
 		// Check if it's an absolute or relative path.
 		return $file_check;
@@ -204,13 +204,13 @@ class pafiledb_Template
 		{
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = count($blocks) - 1;
+			$blockcount = sizeof($blocks) - 1;
 
 			$str = &$this->_tpldata;
 			for ($i = 0; $i < $blockcount; $i++)
 			{
 				$str = &$str[$blocks[$i]];
-				$str = &$str[count($str) - 1];
+				$str = &$str[sizeof($str) - 1];
 			}
 
 			// Now we add the block that we're actually assigning to.
@@ -287,14 +287,14 @@ class pafiledb_Template
 
 		preg_match_all('#<!-- (.*?) (.*?)?[ ]?-->#s', $code, $blocks);
 		$text_blocks = preg_split('#<!-- (.*?) (.*?)?[ ]?-->#s', $code);
-		for($i = 0; $i < count($text_blocks); $i++)
+		for($i = 0; $i < sizeof($text_blocks); $i++)
 		{
 			$this->compile_var_tags($text_blocks[$i]);
 		}
 
 		$compile_blocks = array();
 
-		for ($curr_tb = 0; $curr_tb < count($text_blocks); $curr_tb++)
+		for ($curr_tb = 0; $curr_tb < sizeof($text_blocks); $curr_tb++)
 		{
 			switch ($blocks[1][$curr_tb])
 			{
@@ -304,7 +304,7 @@ class pafiledb_Template
 					break;
 
 				case 'BEGINELSE':
-					$this->block_else_level[count($this->block_else_level) - 1] = true;
+					$this->block_else_level[sizeof($this->block_else_level) - 1] = true;
 					$compile_blocks[] = '<?php }} else { ?>';
 					break;
 
@@ -363,7 +363,7 @@ class pafiledb_Template
 		}
 
 		$template_php = '';
-		for ($i = 0; $i < count($text_blocks); $i++)
+		for ($i = 0; $i < sizeof($text_blocks); $i++)
 		{
 			$trim_check_text = trim($text_blocks[$i]);
 			$trim_check_block = trim($compile_blocks[$i]);
@@ -386,7 +386,7 @@ class pafiledb_Template
 		// This one will handle varrefs WITH namespaces
 		preg_match_all('#\{(([a-z0-9\-_]+?\.)+?)([a-z0-9\-_]+?)\}#is', $text_blocks, $varrefs);
 
-		for ($j = 0; $j < count($varrefs[1]); $j++)
+		for ($j = 0; $j < sizeof($varrefs[1]); $j++)
 		{
 			$namespace = $varrefs[1][$j];
 			$varname = $varrefs[3][$j];
@@ -433,10 +433,10 @@ class pafiledb_Template
 		$tag_template_php = '';
 		array_push($this->block_names, $tag_args);
 
-		if (count($this->block_names) < 2)
+		if (sizeof($this->block_names) < 2)
 		{
 			// Block is not nested.
-			$tag_template_php = '$_' . $tag_args . "_count = (isset(\$this->_tpldata['$tag_args'])) ?  count(\$this->_tpldata['$tag_args']) : 0;";
+			$tag_template_php = '$_' . $tag_args . "_count = (isset(\$this->_tpldata['$tag_args'])) ? sizeof(\$this->_tpldata['$tag_args']) : 0;";
 		}
 		else
 		{
@@ -450,7 +450,7 @@ class pafiledb_Template
 			$varref = $this->generate_block_data_ref($namespace, false);
 
 			// Create the for loop code to iterate over this block.
-			$tag_template_php = '$_' . $tag_args . '_count = (isset(' . $varref . ')) ? count(' . $varref . ') : 0;';
+			$tag_template_php = '$_' . $tag_args . '_count = (isset(' . $varref . ')) ? sizeof(' . $varref . ') : 0;';
 		}
 
 		$tag_template_php .= 'if ($_' . $tag_args . '_count) {';
@@ -475,7 +475,7 @@ class pafiledb_Template
 		$tokens = $match[0];
 		$is_arg_stack = array();
 
-		for ($i = 0; $i < count($tokens); $i++)
+		for ($i = 0; $i < sizeof($tokens); $i++)
 		{
 			$token = &$tokens[$i];
 
@@ -562,7 +562,7 @@ class pafiledb_Template
 
 					$new_tokens	= $this->_parse_is_expr($is_arg, array_slice($tokens, $i+1));
 
-					array_splice($tokens, $is_arg_start, count($tokens), $new_tokens);
+					array_splice($tokens, $is_arg_start, sizeof($tokens), $new_tokens);
 
 					$i = $is_arg_start;
 
@@ -691,7 +691,7 @@ class pafiledb_Template
 	{
 		// Get an array of the blocks involved.
 		$blocks = explode('.', $blockname);
-		$blockcount = count($blocks) - 1;
+		$blockcount = sizeof($blocks) - 1;
 		$varref = '$this->_tpldata';
 
 		// Build up the string with everything but the last child.

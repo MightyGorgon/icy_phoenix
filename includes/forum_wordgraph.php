@@ -24,11 +24,8 @@ $sql = 'SELECT w.word_text, COUNT(*) AS word_count
 	AND p.topic_id = t.topic_id
 	AND t.forum_id = ' . $forum_id . '
 	GROUP BY m.word_id
-	ORDER BY word_count DESC LIMIT ' . intval($board_config['word_graph_max_words']);
-if (!($result = $db->sql_query($sql, false, 'forums_wg_', FORUMS_CACHE_FOLDER)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain word list', '', __LINE__, __FILE__, $sql);
-}
+	ORDER BY word_count DESC LIMIT ' . intval($config['word_graph_max_words']);
+$result = $db->sql_query($sql, 0, 'forums_wg_', FORUMS_CACHE_FOLDER);
 
 while ($row = $db->sql_fetchrow($result))
 {
@@ -65,9 +62,9 @@ foreach ($words as $word)
 {
 	$ratio = intval(mt_rand(8, 14));
 	$template->assign_block_vars('forum_wordgraph.wordgraph_loop', array(
-		'WORD' => ($board_config['word_graph_word_counts']) ? $word . ' (' . $words_array[$word] . ')' : $word,
+		'WORD' => ($config['word_graph_word_counts']) ? $word . ' (' . $words_array[$word] . ')' : $word,
 		'WORD_FONT_SIZE' => $ratio,
-		'WORD_SEARCH_URL' => append_sid(SEARCH_MG . '?search_keywords=' . urlencode($word)),
+		'WORD_SEARCH_URL' => append_sid(CMS_PAGE_SEARCH . '?search_keywords=' . urlencode($word)),
 		)
 	);
 }

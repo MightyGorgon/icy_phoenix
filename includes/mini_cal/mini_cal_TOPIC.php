@@ -81,7 +81,7 @@ function getMiniCalEventDays($auth_view_forums)
 	if ($auth_view_forums != '')
 	{
 		// start and end date
-		$start_date = mktime(0, 0, 0, $mini_cal_this_month, 01, $mini_cal_this_year);
+		$start_date = gmmktime(0, 0, 0, $mini_cal_this_month, 01, $mini_cal_this_year);
 		$w_month = $mini_cal_this_month + 1;
 		$w_year = $mini_cal_this_year;
 		if ($w_month > 12)
@@ -89,7 +89,7 @@ function getMiniCalEventDays($auth_view_forums)
 			$w_month = 01;
 			$w_year++;
 		}
-		$end_date = mktime(0,0,0, $w_month, 01, $w_year);
+		$end_date = gmmktime(0, 0, 0, $w_month, 01, $w_year);
 
 		// we consider the duration
 		$sql = "SELECT DISTINCT topic_calendar_time, topic_calendar_duration
@@ -99,13 +99,15 @@ function getMiniCalEventDays($auth_view_forums)
 					AND topic_calendar_time < $end_date
 					AND topic_calendar_time IS NOT NULL
 					AND topic_calendar_time <> 0";
-
-		if ( $result = $db->sql_query($sql) )
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
 			$mini_cal_event_days_ww = array();
 			while( $row = $db->sql_fetchrow($result) )
 			{
-				$start_day = intval(date('d', $row['topic_calendar_time']));
+				$start_day = intval(gmdate('d', $row['topic_calendar_time']));
 				for ($i = 0; ( ($i <= intval($row['topic_calendar_duration'] / 86400)) && ( ($start_day + $i) <= 31) ); $i++)
 				{
 					$mini_cal_event_days_ww[ ($start_day + $i) ] = true;
@@ -137,7 +139,7 @@ function getMiniCalEvents($mini_cal_auth)
 	global $template, $db, $lang, $mini_cal_today, $mini_cal_this_month, $mini_cal_this_year, $mini_cal_this_day;
 
 	// start and end date
-	$start_date = mktime(0, 0, 0, intval(substr($mini_cal_today, 4, 2)), $mini_cal_this_day, $mini_cal_this_year);
+	$start_date = gmmktime(0, 0, 0, intval(substr($mini_cal_today, 4, 2)), $mini_cal_this_day, $mini_cal_this_year);
 
 	$w_month = $mini_cal_this_month;
 	$days_ahead_sql = '';
@@ -149,7 +151,7 @@ function getMiniCalEvents($mini_cal_auth)
 			$w_month = 01;
 			$w_year++;
 		}
-		$end_date = mktime(0, 0, 0, $w_month, $mini_cal_this_day + MINI_CAL_DAYS_AHEAD, $w_year);
+		$end_date = gmmktime(0, 0, 0, $w_month, $mini_cal_this_day + MINI_CAL_DAYS_AHEAD, $w_year);
 		$days_ahead_sql = " AND topic_calendar_time < $end_date ";
 	}
 
@@ -168,9 +170,10 @@ function getMiniCalEvents($mini_cal_auth)
 			t.topic_calendar_time ASC
 		LIMIT
 			0," . MINI_CAL_LIMIT;
-
-	// did we get a result?
-	if( $result = $db->sql_query($sql) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		$template->assign_block_vars('switch_mini_cal_events', array());
 		if ( $db->sql_numrows($result) > 0 )
@@ -181,16 +184,16 @@ function getMiniCalEvents($mini_cal_auth)
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$cal_time = $row['topic_calendar_time'];
-				$day_span = (date("Ymd", $cal_time) < date("Ymd", $cal_time+$row['topic_calendar_duration']));
-				$include_time = date("His", $cal_time) > 0;
+				$day_span = (gmdate('Ymd', $cal_time) < gmdate('Ymd', $cal_time+$row['topic_calendar_duration']));
+				$include_time = gmdate('His', $cal_time) > 0;
 				$cal_date = getFormattedDate(
-								date('w', $cal_time),
-								date('n', $cal_time),
-								date('d', $cal_time),
-								date('Y', $cal_time),
-								date('H', $cal_time),
-								date('i', $cal_time),
-								date('s', $cal_time),
+								gmdate('w', $cal_time),
+								gmdate('n', $cal_time),
+								gmdate('d', $cal_time),
+								gmdate('Y', $cal_time),
+								gmdate('H', $cal_time),
+								gmdate('i', $cal_time),
+								gmdate('s', $cal_time),
 								$lang['Mini_Cal_date_format'].((!$day_span && $include_time)?' '.$lang['Mini_Cal_date_format_Time']:'')
 							);
 
@@ -198,13 +201,13 @@ function getMiniCalEvents($mini_cal_auth)
 				{
 					$cal_time = $cal_time + $row['topic_calendar_duration'];
 					$cal_date .= ' - ' . getFormattedDate(
-											date('w', $cal_time),
-											date('n', $cal_time),
-											date('d', $cal_time),
-											date('Y', $cal_time),
-											date('H', $cal_time),
-											date('i', $cal_time),
-											date('s', $cal_time),
+											gmdate('w', $cal_time),
+											gmdate('n', $cal_time),
+											gmdate('d', $cal_time),
+											gmdate('Y', $cal_time),
+											gmdate('H', $cal_time),
+											gmdate('i', $cal_time),
+											gmdate('s', $cal_time),
 											((!$day_span)?$lang['Mini_Cal_date_format_Time']:$lang['Mini_Cal_date_format'])
 										);
 				}
@@ -213,7 +216,7 @@ function getMiniCalEvents($mini_cal_auth)
 						'MINI_CAL_EVENT_DATE' => $cal_date,
 						'S_MINI_CAL_EVENT' => $row['topic_title'],
 						//'S_MINI_CAL_EVENT' => $mini_cal_auth_sql,
-						'U_MINI_CAL_EVENT' => append_sid( IP_ROOT_PATH . VIEWTOPIC_MG ."?" . POST_TOPIC_URL . '=' . $row['topic_id'] )
+						'U_MINI_CAL_EVENT' => append_sid( IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC ."?" . POST_TOPIC_URL . '=' . $row['topic_id'] )
 						)
 				);
 			}
@@ -243,8 +246,8 @@ function getMiniCalSearchSql($search_date)
 	$s_yy = intval(substr($search_date, 0, 4));
 	$s_mm = intval(substr($search_date, 4, 2));
 	$s_dd = intval(substr($search_date, 6, 2));
-	$search_date = mktime(0,0,0, $s_mm, $s_dd, $s_yy);
-	$nix_tomorrow  = mktime (0,0,0, $s_mm, $s_dd + 1, $s_yy);
+	$search_date = gmmktime(0, 0 ,0, $s_mm, $s_dd, $s_yy);
+	$nix_tomorrow = gmmktime (0, 0, 0, $s_mm, $s_dd + 1, $s_yy);
 
 	$sql = "SELECT topic_first_post_id as post_id
 		FROM " . TOPICS_TABLE . "
@@ -268,7 +271,7 @@ function getMiniCalSearchURL($search_date)
 	$s_mm = intval(substr($search_date, 4, 2));
 	$s_dd = intval(substr($search_date, 6, 2));
 	$search_date = mktime(0,0,0, $s_mm, $s_dd, $s_yy);
-	//$url = append_sid(IP_ROOT_PATH . SEARCH_MG . '?search_id=mini_cal_events&amp;d=' . $search_date);
+	//$url = append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?search_id=mini_cal_events&amp;d=' . $search_date);
 	$url = append_sid(IP_ROOT_PATH . 'calendar_scheduler.' . PHP_EXT . '?d=' . $search_date);
 	return $url;
 }

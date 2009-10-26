@@ -1,117 +1,118 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
+function writediv(dest_div, dest_string)
+{
+	document.getElementById(dest_div).innerHTML = dest_string;
+}
 
-	function writediv(dest_div, dest_string)
+function verifyUsername(username)
+{
+	if(username != '')
 	{
-		document.getElementById(dest_div).innerHTML = dest_string;
-	}
-
-	function verifyUsername(username)
-	{
-		if(username != '')
+		if(username.length < 2)
 		{
-			if(username.length < 2)
+			writediv('pseudobox', '<span class="gensmall" style="color: #dd3333;"><strong>' + username + ' :<\/strong>{L_UN_SHORT}<\/span>');
+		}
+		else if(username.length > 36)
+		{
+			writediv('pseudobox', '<span class="gensmall" style="color: #dd3333;"><strong>' + username + ' :<\/strong>{L_UN_LONG}<\/span>');
+		}
+		else if(dest_string = file_request('{U_AJAX_VERIFY}?mode=username&verify=' + escape(username)))
+		{
+			if(dest_string == 1)
 			{
-				writediv('pseudobox', '<span class="gensmall" style="color:#DD3333;"><strong>' + username + ' :<\/strong>{L_UN_SHORT}<\/span>');
+				writediv('pseudobox', '<span class="gensmall" style="color: #dd3333;"><strong>' + username + ' :<\/strong>{L_UN_TAKEN}<\/span>');
 			}
-			else if(username.length > 30)
+			else if(dest_string == 2)
 			{
-				writediv('pseudobox', '<span class="gensmall" style="color:#DD3333;"><strong>' + username + ' :<\/strong>{L_UN_LONG}<\/span>');
+				writediv('pseudobox', '<span class="gensmall" style="color: #228822;"><strong>' + username + ' :<\/strong>{L_UN_FREE}<\/span>');
 			}
-			else if(dest_string = file_request('{U_AJAX_VERIFY}?mode=username&verify=' + escape(username)))
+			else
 			{
-				if(dest_string == 1)
-				{
-					writediv('pseudobox', '<span class="gensmall" style="color:#DD3333;"><strong>' + username + ' :<\/strong>{L_UN_TAKEN}<\/span>');
-				}
-				else if(dest_string == 2)
-				{
-					writediv('pseudobox', '<span class="gensmall" style="color:#228844;"><strong>' + username + ' :<\/strong>{L_UN_FREE}<\/span>');
-				}
-				else
-				{
-					writediv('pseudobox', dest_string);
-				}
+				writediv('pseudobox', dest_string);
 			}
 		}
 	}
+}
 
-	function verifyPWD(password)
+function verifyPWD(password)
+{
+	if(password != '')
 	{
-		if(password != '')
+		if(password.length < 2)
 		{
-			if(password.length < 2)
+			writediv('pwdbox', '<span class="gensmall" style="color: #dd3333;"><strong>' + password + ' :<\/strong>{L_PWD_SHORT}<\/span>');
+		}
+		else if(dest_string = file_request('{U_AJAX_VERIFY}?mode=password&verify=' + escape(password)))
+		{
+			if(dest_string == 1)
 			{
-				writediv('pwdbox', '<span class="gensmall" style="color:#DD3333;"><strong>' + password + ' :<\/strong>{L_PWD_SHORT}<\/span>');
+				writediv('pwdbox', '<span class="gensmall" style="color: #dd3333;"><strong>' + password + ' :<\/strong>{L_PWD_EASY}<\/span>');
 			}
-			else if(dest_string = file_request('{U_AJAX_VERIFY}?mode=password&verify=' + escape(password)))
+			else if(dest_string == 2)
 			{
-				if(dest_string == 1)
-				{
-					writediv('pwdbox', '<span class="gensmall" style="color:#DD3333;"><strong>' + password + ' :<\/strong>{L_PWD_EASY}<\/span>');
-				}
-				else if(dest_string == 2)
-				{
-					writediv('pwdbox', '<span class="gensmall" style="color:#228844;"><strong>' + password + ' :<\/strong>{L_PWD_OK}<\/span>');
-				}
-				else
-				{
-					writediv('pwdbox', dest_string);
-				}
+				writediv('pwdbox', '<span class="gensmall" style="color: #228822;"><strong>' + password + ' :<\/strong>{L_PWD_OK}<\/span>');
+			}
+			else
+			{
+				writediv('pwdbox', dest_string);
 			}
 		}
 	}
+}
 
-	function verifyEmail(emailaddress)
+function verifyEmail(emailaddress)
+{
+	if(emailaddress != '')
 	{
-		if(emailaddress != '')
+		if(emailaddress.length < 2)
 		{
-			if(emailaddress.length < 2)
+			writediv('emailbox', '<span class="gensmall" style="color: #dd3333;"><strong>' + emailaddress + ' :<\/strong>{L_EMAIL_INVALID}<\/span>');
+		}
+		else if(dest_string = file_request('{U_AJAX_VERIFY}?mode=email&verify=' + escape(emailaddress)))
+		{
+			if(dest_string == 1)
 			{
-				writediv('emailbox', '<span class="gensmall" style="color:#DD3333;"><strong>' + emailaddress + ' :<\/strong>{L_EMAIL_INVALID}<\/span>');
+				writediv('emailbox', '<span class="gensmall" style="color: #dd3333;"><strong>' + emailaddress + ' :<\/strong>{L_EMAIL_INVALID}<\/span>');
 			}
-			else if(dest_string = file_request('{U_AJAX_VERIFY}?mode=email&verify=' + escape(emailaddress)))
+			else if(dest_string == 2)
 			{
-				if(dest_string == 1)
-				{
-					writediv('emailbox', '<span class="gensmall" style="color:#DD3333;"><strong>' + emailaddress + ' :<\/strong>{L_EMAIL_INVALID}<\/span>');
-				}
-				else if(dest_string == 2)
-				{
-					writediv('emailbox', '<span class="gensmall" style="color:#228844;"><strong>' + emailaddress + ' :<\/strong>{L_EMAIL_OK}<\/span>');
-				}
-				else
-				{
-					writediv('emailbox', dest_string);
-				}
+				writediv('emailbox', '<span class="gensmall" style="color: #228822;"><strong>' + emailaddress + ' :<\/strong>{L_EMAIL_OK}<\/span>');
+			}
+			else
+			{
+				writediv('emailbox', dest_string);
 			}
 		}
 	}
+}
 
-	function file_request(file_requested)
+function file_request(file_requested)
+{
+	if(window.XMLHttpRequest) // FIREFOX
 	{
-		if(window.XMLHttpRequest) // FIREFOX
-		{
-			xhr_object = new XMLHttpRequest();
-		}
-		else if(window.ActiveXObject) // IE
-		{
-			xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		else
-		{
-			return(false);
-		}
-		xhr_object.open("GET", file_requested, false);
-		xhr_object.send(null);
-		if(xhr_object.readyState == 4)
-		{
-			return(xhr_object.responseText);
-		}
-		else
-		{
-			return(false);
-		}
+		xhr_object = new XMLHttpRequest();
 	}
+	else if(window.ActiveXObject) // IE
+	{
+		xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else
+	{
+		return(false);
+	}
+	xhr_object.open("GET", file_requested, false);
+	xhr_object.send(null);
+	if(xhr_object.readyState == 4)
+	{
+		return(xhr_object.responseText);
+	}
+	else
+	{
+		return(false);
+	}
+}
 </script>
 
 <form action="{S_PROFILE_ACTION}" {S_FORM_ENCTYPE} method="post">
@@ -133,16 +134,16 @@
 <!-- BEGIN switch_namechange_allowed -->
 <tr>
 	<td class="row1" width="38%"><span class="gen">{L_USERNAME}: *</span></td>
-	<td class="row2"><input type="text" class="post" style="width:200px" name="username" size="25" maxlength="40" value="{USERNAME}" {VERIFY_UN_JS} /><div id="pseudobox"></div></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="username" size="25" maxlength="40" value="{USERNAME}" {VERIFY_UN_JS} /><div id="pseudobox"></div></td>
 </tr>
 <!-- END switch_namechange_allowed -->
 <tr>
 	<td class="row1"><span class="gen">{L_EMAIL_ADDRESS}: *</span></td>
-	<td class="row2"><input type="text" class="post" style="width:200px" name="email" size="25" maxlength="255" value="{EMAIL}" {VERIFY_EMAIL_JS} /><div id="emailbox"></div></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="email" size="25" maxlength="255" value="{EMAIL}" {VERIFY_EMAIL_JS} /><div id="emailbox"></div></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_CONFIRM_EMAIL}: *</span></td>
-	<td class="row2"><input type="text" class="post" style="width:200px" name="email_confirm" size="25" maxlength="255" value="{EMAIL_CONFIRM}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="email_confirm" size="25" maxlength="255" value="{EMAIL_CONFIRM}" /></td>
 </tr>
 <!-- BEGIN switch_edit_profile -->
 <tr>
@@ -517,25 +518,25 @@
 <!-- BEGIN switch_avatar_local_upload -->
 <tr>
 	<td class="row1"><span class="gen">{L_UPLOAD_AVATAR_FILE}:</span></td>
-	<td class="row2"><input type="hidden" name="MAX_FILE_SIZE" value="{AVATAR_SIZE}" /><input type="file" name="avatar" class="post" style="width:200px" /></td>
+	<td class="row2"><input type="hidden" name="MAX_FILE_SIZE" value="{AVATAR_SIZE}" /><input type="file" name="avatar" class="post" style="width: 200px;" /></td>
 </tr>
 <!-- END switch_avatar_local_upload -->
 <!-- BEGIN switch_avatar_remote_upload -->
 <tr>
 	<td class="row1"><span class="gen">{L_UPLOAD_AVATAR_URL}:</span><br /><span class="gensmall">{L_UPLOAD_AVATAR_URL_EXPLAIN}</span></td>
-	<td class="row2"><input type="text" name="avatarurl" size="40" class="post" style="width:200px" /></td>
+	<td class="row2"><input type="text" name="avatarurl" size="40" class="post" style="width: 200px;" /></td>
 </tr>
 <!-- END switch_avatar_remote_upload -->
 <!-- BEGIN switch_avatar_remote_link -->
 <tr>
 	<td class="row1"><span class="gen">{L_LINK_REMOTE_AVATAR}:</span><br /><span class="gensmall">{L_LINK_REMOTE_AVATAR_EXPLAIN}</span></td>
-	<td class="row2"><input type="text" name="avatarremoteurl" size="40" class="post" style="width:200px" /></td>
+	<td class="row2"><input type="text" name="avatarremoteurl" size="40" class="post" style="width: 200px;" /></td>
 </tr>
 <!-- END switch_avatar_remote_link -->
 <!-- BEGIN switch_gravatar -->
 <tr>
 	<td class="row1"><span class="gen">{L_GRAVATAR}:</span><br /><span class="gensmall">{L_GRAVATAR_EXPLAIN}</span></td>
-	<td class="row2"><input type="text" name="gravatar" value="{GRAVATAR}" size="40" class="post" style="width:200px" /></td>
+	<td class="row2"><input type="text" name="gravatar" value="{GRAVATAR}" size="40" class="post" style="width: 200px;" /></td>
 </tr>
 <!-- END switch_gravatar -->
 <!-- BEGIN switch_avatar_local_gallery -->
@@ -563,3 +564,5 @@
 </table>
 <!-- END switch_cpl_menu -->
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

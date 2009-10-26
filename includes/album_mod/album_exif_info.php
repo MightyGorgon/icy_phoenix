@@ -23,7 +23,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 function make_exif($xkey, $xval)
 {
-	global $board_config;
+	global $config;
 	$exif_info = array(
 //		'FILE_FileName' => 'File Name',
 		'FILE_FileDateTime' => 'File Date and Time',
@@ -107,10 +107,10 @@ function make_exif($xkey, $xval)
 			9 => 'Fine weather',
 			10 => 'Cloudy weather',
 			11 => 'Shade',
-			12 => 'Daylight fluorescent (D 5700 – 7100K)',
-			13 => 'Day white fluorescent (N 4600 – 5400K)',
-			14 => 'Cool white fluorescent (W 3900 – 4500K)',
-			15 => 'White fluorescent (WW 3200 – 3700K)',
+			12 => 'Daylight fluorescent (D 5700 â€“ 7100K)',
+			13 => 'Day white fluorescent (N 4600 â€“ 5400K)',
+			14 => 'Cool white fluorescent (W 3900 â€“ 4500K)',
+			15 => 'White fluorescent (WW 3200 â€“ 3700K)',
 			17 => 'Standard light A',
 			18 => 'Standard light B',
 			19 => 'Standard light C',
@@ -262,7 +262,7 @@ function make_exif($xkey, $xval)
 			$rexif[$exif_info[$xkey[$i]]] = $xval[$i];
 			if ( $xkey[$i] == 'FILE_FileDateTime' )
 			{
-				$rexif[$exif_info[$xkey[$i]]] = create_date('Y:m:d H:i:s',  $xval[$i], $board_config['board_timezone']);
+				$rexif[$exif_info[$xkey[$i]]] = create_date('Y:m:d H:i:s',  $xval[$i], $config['board_timezone']);
 			}
 		}
 		$i++;

@@ -8,7 +8,7 @@
 	<tr>
 		<td class="row1" valign="top"><span class="gen"><b>{L_FILE_COMMENT}</b></span></td>
 		<td class="row2">
-			<span class="genmed"><textarea name="comment_list[]" rows="3" cols="35" style="width: 98%" size="40" class="post">{attach_row.FILE_COMMENT}</textarea></span>
+			<span class="genmed"><textarea name="comment_list[]" rows="3" cols="35" style="width: 98%;" size="40" class="post">{attach_row.FILE_COMMENT}</textarea></span>
 		</td>
 	</tr>
 	<tr>

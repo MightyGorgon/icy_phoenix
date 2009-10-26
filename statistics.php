@@ -18,10 +18,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $__stats_config = array();
 
 $sql = 'SELECT * FROM ' . STATS_CONFIG_TABLE;
-if (!($result = $db->sql_query($sql, false, 'stats_config_')))
-{
-	message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql, 0, 'stats_config_');
 
 while ($row = $db->sql_fetchrow($result))
 {
@@ -36,25 +33,18 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$language = $board_config['default_lang'];
+$language = $config['default_lang'];
 if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT))
 {
 	$language = 'english';
 }
 include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT);
 
-$cms_page_id = 'statistics';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
-
-$page_title = $lang['Statistics_title'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'statistics.tpl'));
+$cms_page['page_id'] = 'statistics';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $__module_rows = get_module_list_from_db();
 $__stat_module_data = get_module_data_from_db();
@@ -72,7 +62,7 @@ while (list($__module_id, $__module_name) = each($__module_rows))
 	$__count++;
 }
 
-for ($__count = 0; $__count < count($__stat_module_rows); $__count++)
+for ($__count = 0; $__count < sizeof($__stat_module_rows); $__count++)
 {
 	$__module_name = trim($__stat_module_rows[$__count]['module_name']);
 	$__module_id = intval($__stat_module_rows[$__count]['module_id']);
@@ -169,23 +159,17 @@ for ($__count = 0; $__count < count($__stat_module_rows); $__count++)
 $sql = "UPDATE " . STATS_CONFIG_TABLE . "
 SET config_value = " . (intval($__stats_config['page_views']) + 1) . "
 WHERE (config_name = 'page_views')";
-
-if (!$db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Unable to Update View Counter', '', __LINE__, __FILE__, $sql);
-}
+$db->sql_query($sql);
 
 $template->assign_vars(array(
 	'VIEWED_INFO' => sprintf($lang['Viewed_info'], $__stats_config['page_views']),
-	'INSTALL_INFO' => sprintf($lang['Install_info'], create_date($board_config['default_dateformat'], $__stats_config['install_date'], $board_config['board_timezone'])),
+	'INSTALL_INFO' => sprintf($lang['Install_info'], create_date($config['default_dateformat'], $__stats_config['install_date'], $config['board_timezone'])),
 	'VERSION_INFO' => (isset($lang['Version_info'])) ? sprintf($lang['Version_info'], $__stats_config['version']) : ''
 	)
 );
 
 $template->assign_block_vars('main_bottom',array());
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('statistics.tpl', $lang['Statistics_title'], '', '');
 
 ?>

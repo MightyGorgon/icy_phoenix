@@ -1,3 +1,7 @@
+<!-- BEGIN switch_privmsg -->
+<!-- INCLUDE overall_header.tpl -->
+<!-- END switch_privmsg -->
+
 <!-- BEGIN switch_ajax_features -->
 <script type="text/javascript">
 <!--
@@ -100,9 +104,7 @@ function attach_rules(forum_id)
 <!-- BEGIN topic_description -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_TOPIC_DESCRIPTION}</b></span></td>
-	<td class="row2">
-		<span class="gen"><input type="text" name="topic_desc" size="45" maxlength="60" style="width: 98%;" tabindex="2" class="post" value="{TOPIC_DESCRIPTION}" /></span>
-	</td>
+	<td class="row2"><span class="gen"><input type="text" name="topic_desc" size="45" maxlength="240" style="width: 98%;" tabindex="3" class="post" value="{TOPIC_DESCRIPTION}" /></span></td>
 </tr>
 <!-- END topic_description -->
 <!-- BEGIN switch_type_toggle -->
@@ -126,7 +128,7 @@ function attach_rules(forum_id)
 					<!-- Begin Lo-Fi Mod -->
 					<?php
 					global $lofi;
-					if ( !$lofi )
+					if (!$lofi)
 					{
 					?>
 					<!-- End Lo-Fi Mod -->
@@ -143,23 +145,35 @@ function attach_rules(forum_id)
 	</td>
 	<td class="row2" width="78%" valign="top">
 		{BBCB_MG}
-		<div class="message-box"><textarea id="message" name="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea></div>
+		<div class="message-box"><textarea id="message" name="message" rows="15" cols="76" tabindex="4" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea></div>
 	</td>
 </tr>
 <!-- BEGIN switch_edit -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_EDIT_NOTES}</b></span></td>
-	<td class="row2"><input type="text" name="notes" size="45" maxlength="60" style="width: 98%" tabindex="2" class="post" value="{switch_edit.NOTES}" /></td>
+	<td class="row2"><input type="text" name="notes" size="45" maxlength="60" style="width: 98%;" tabindex="5" class="post" value="{switch_edit.NOTES}" /></td>
 </tr>
 <!-- END switch_edit -->
+<!-- IF S_POSTING_TOPIC -->
+<!-- IF S_ADMIN or S_MOD -->
+<tr>
+	<td class="row1"><span class="gen"><b>{L_CLEAN_NAME}</b></span><br /><span class="gensmall">{L_CLEAN_NAME_EXPLAIN}</span></td>
+	<td class="row2"><span class="gen"><input type="text" name="topic_title_clean" size="45" maxlength="240" style="width: 98%;" tabindex="6" class="post" value="{TOPIC_TITLE_CLEAN}" /></span></td>
+</tr>
+<!-- ENDIF -->
+<tr>
+	<td class="row1"><span class="gen"><b>{L_TOPIC_TAGS}</b></span><br /><span class="gensmall">{L_TOPIC_TAGS_EXPLAIN}</span></td>
+	<td class="row2"><span class="gen"><input type="text" name="topic_tags" size="45" maxlength="240" style="width: 98%;" tabindex="7" class="post" value="{TOPIC_TAGS}" /></span></td>
+</tr>
+<!-- ENDIF -->
 <tr>
 	<td class="catBottom" colspan="2">
-		<input type="button" tabindex="4" class="liteoption" value="{L_POST_HIGHLIGHT}" onclick="copymetasearch();" />&nbsp;
-		<input type="submit" tabindex="5" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;
+		<input type="button" tabindex="8" class="liteoption" value="{L_POST_HIGHLIGHT}" onclick="copymetasearch();" />&nbsp;
+		<input type="submit" tabindex="9" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;
 		<!-- BEGIN allow_drafts -->
-		<input type="submit" tabindex="6" name="draft" class="altoption" value="{L_DRAFT_SAVE}" />&nbsp;
+		<input type="submit" tabindex="10" name="draft" class="altoption" value="{L_DRAFT_SAVE}" />&nbsp;
 		<!-- END allow_drafts -->
-		<input type="submit" accesskey="s" tabindex="7" name="post" class="mainoption" value="{L_SUBMIT}" />
+		<input type="submit" accesskey="s" tabindex="11" name="post" class="mainoption" value="{L_SUBMIT}" />
 	</td>
 </tr>
 <tr>
@@ -218,7 +232,7 @@ function attach_rules(forum_id)
 				<td align="left" width="100%">
 					<span class="genmed">
 						{S_CALENDAR_DAY}{S_CALENDAR_MONTH}{S_CALENDAR_YEAR}&nbsp;
-						<a href="#" class="genmed" onclick="document.post.topic_calendar_day.value={TODAY_DAY};document.post.topic_calendar_month.value={TODAY_MONTH};document.post.topic_calendar_year.value={TODAY_YEAR};">{L_TODAY}</a>
+						<a href="#" class="genmed" onclick="document.post.topic_calendar_day.value='{TODAY_DAY}';document.post.topic_calendar_month.value='{TODAY_MONTH}';document.post.topic_calendar_year.value='{TODAY_YEAR}';">{L_TODAY}</a>
 					</span>
 				</td>
 			</tr>
@@ -261,8 +275,8 @@ function attach_rules(forum_id)
 <tr>
 	<td class="cat" colspan="2">
 		{S_HIDDEN_FORM_FIELDS}
-		<input type="submit" tabindex="8" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;
-		<input type="submit" accesskey="s" tabindex="9" name="post" class="mainoption" value="{L_SUBMIT}" />
+		<input type="submit" tabindex="12" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;
+		<input type="submit" accesskey="s" tabindex="13" name="post" class="mainoption" value="{L_SUBMIT}" />
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
@@ -275,3 +289,5 @@ function attach_rules(forum_id)
 <div align="right">{JUMPBOX}</div>
 
 {TOPIC_REVIEW_BOX}
+
+<!-- INCLUDE overall_footer.tpl -->

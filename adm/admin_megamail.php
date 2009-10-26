@@ -61,10 +61,6 @@ if (($mode == 'delete') && ($mail_id > 0))
 		$sql = "DELETE FROM " . MEGAMAIL_TABLE . "
 			WHERE mail_id = " . $mail_id;
 		$result = $db->sql_query($sql);
-		if(!$result)
-		{
-			message_die(GENERAL_ERROR, "Couldn't delete email", "", __LINE__, __FILE__, $sql);
-		}
 
 		$message = $lang['megamail_deleted'] . '<br /><br />' . sprintf($lang['megamail_click_return'], '<a href="' . append_sid('admin_megamail.' . PHP_EXT) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
@@ -110,12 +106,8 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 
 	$mail_session_id = md5(uniqid(''));
 	$sql = "INSERT INTO " . MEGAMAIL_TABLE . " (mailsession_id, mass_pm, user_id, group_id, email_subject, email_body, email_format, batch_start, batch_size, batch_wait, status)
-			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . intval($_POST[POST_GROUPS_URL]) . ", '" . ip_addslashes($subject) . "', '" . ip_addslashes($message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not insert the data into '. MEGAMAIL_TABLE, '', __LINE__, __FILE__, $sql);
-	}
+			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . intval($_POST[POST_GROUPS_URL]) . ", '" . addslashes($subject) . "', '" . addslashes($message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
+	$result = $db->sql_query($sql);
 	$mail_id = $db->sql_nextid();
 	$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
 
@@ -136,10 +128,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 			FROM " . MEGAMAIL_TABLE . "
 			WHERE mail_id = '" . $mail_id . "'
 				AND mailsession_id LIKE '" . $mail_session_id . "'";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query '. MEGAMAIL_TABLE , '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$mail_data = $db->sql_fetchrow($result);
 
 	if (!($mail_data))
@@ -148,8 +137,8 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	}
 	//Ok, the session exists
 
-	$subject = ip_stripslashes($mail_data['email_subject']);
-	$message = ip_stripslashes($mail_data['email_body']);
+	$subject = stripslashes($mail_data['email_subject']);
+	$message = stripslashes($mail_data['email_body']);
 	// Store the clean version of the message for PM
 	$pm_message = $message;
 	$group_id = $mail_data['group_id'];
@@ -158,7 +147,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 
 	if ($email_format == 1)
 	{
-		$board_config['html_email'] = 1;
+		$config['html_email'] = 1;
 		$bbcode->allow_html = false;
 		$bbcode->allow_bbcode = true;
 		$bbcode->allow_smilies = true;
@@ -167,12 +156,12 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	elseif ($email_format == 2)
 	{
 		// We are in FULL HTML here
-		$board_config['html_email'] = 1;
+		$config['html_email'] = 1;
 	}
 
 	//OLD HTML FORMAT
 	/*
-	if ($board_config['html_email'] == false)
+	if ($config['html_email'] == false)
 	{
 		$message = $bbcode->bbcode_killer($message, '');
 		$message = strip_tags($mail_data['email_body'], '');
@@ -180,8 +169,8 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	else
 	{
 		$bbcode->allow_html = true;
-		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] ? $config['allow_bbcode'] : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] ? $config['allow_smilies'] : false);
 		$message = $bbcode->parse($message);
 	}
 	*/
@@ -213,10 +202,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 							" . $sql_non_recent_login;
 	}
 
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not select group members', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$totalrecipients = $db->sql_fetchrow($result);
 	$totalrecipients = $totalrecipients['COUNT(u.user_email)'];
 
@@ -239,11 +225,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	$sql = "UPDATE " . MEGAMAIL_TABLE . "
 			SET mailsession_id = '" . $mail_session_id . "', batch_start= " . ($mail_data['batch_start'] + $mail_data['batch_size']) . $is_done . "
 			WHERE mail_id = '" . $mail_id . "'";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not insert the data into '. MEGAMAIL_TABLE, '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	// OK, now let's start sending
 	$error = false;
@@ -269,11 +251,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	}
 
 	$sql .= " LIMIT " . $mail_data['batch_start'] . ", " . $mail_data['batch_size'];
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not select group members', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -309,35 +287,35 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	{
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		// Let's do some checking to make sure that mass mail functions are working in win32 versions of php.
-		if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
+		if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$config['smtp_delivery'])
 		{
 			$ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 
 			// We are running on windows, force delivery to use our smtp functions
 			// since php's are broken by default
-			$board_config['smtp_delivery'] = 1;
-			$board_config['smtp_host'] = @$ini_val('SMTP');
+			$config['smtp_delivery'] = 1;
+			$config['smtp_host'] = @$ini_val('SMTP');
 		}
 
-		$emailer = new emailer($board_config['smtp_delivery']);
+		$emailer = new emailer($config['smtp_delivery']);
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($board_config['server_name']) . "\n";
+		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
 		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
 		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
 		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
 
 		if ($email_format == 2)
 		{
-			$emailer->use_template('empty_email', $board_config['default_lang'], true);
+			$emailer->use_template('empty_email', $config['default_lang'], true);
 		}
 		else
 		{
-			$emailer->use_template('admin_send_email', $board_config['default_lang']);
+			$emailer->use_template('admin_send_email', $config['default_lang']);
 		}
 		$emailer->bcc($bcc_list);
-		$emailer->email_address($board_config['board_email']);
-		$emailer->from($board_config['board_email']);
-		$emailer->replyto($board_config['board_email']);
+		$emailer->email_address($config['board_email']);
+		$emailer->from($config['board_email']);
+		$emailer->replyto($config['board_email']);
 		$emailer->extra_headers($email_headers);
 		$emailer->set_subject($subject);
 
@@ -348,14 +326,14 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 		{
 			$server_url = create_server_url();
 			$pm_inbox_link = $server_url . 'privmsg.' . PHP_EXT . '?folder=inbox';
-			$pm_inbox_link = (!$board_config['html_email']) ? $pm_inbox_link : ('<a href="' . $pm_inbox_link . '">' . $pm_inbox_link . '</a>');
-			$message = str_replace(array('{SITENAME}', '{U_INBOX}'), array(ip_stripslashes($board_config['sitename']), $pm_inbox_link), $lang['PM_NOTIFICATION']);
-			$message = (!$board_config['html_email']) ? str_replace('<br />', "\r\n", $message) : $message;
+			$pm_inbox_link = (!$config['html_email']) ? $pm_inbox_link : ('<a href="' . $pm_inbox_link . '">' . $pm_inbox_link . '</a>');
+			$message = str_replace(array('{SITENAME}', '{U_INBOX}'), array($config['sitename'], $pm_inbox_link), $lang['PM_NOTIFICATION']);
+			$message = (!$config['html_email']) ? str_replace('<br />', "\r\n", $message) : $message;
 		}
 
 		$emailer->assign_vars(array(
-			'SITENAME' => ip_stripslashes($board_config['sitename']),
-			'BOARD_EMAIL' => $board_config['board_email'],
+			'SITENAME' => $config['sitename'],
+			'BOARD_EMAIL' => $config['board_email'],
 			'MESSAGE' => $message
 			)
 		);
@@ -403,10 +381,8 @@ $sql = "SELECT m.*, u.username, u.user_active, u.user_color, g.group_name
 	LEFT JOIN " . USERS_TABLE . " u ON (m.user_id = u.user_id)
 	LEFT JOIN " . GROUPS_TABLE . " g ON (m.group_id = g.group_id)
 	ORDER BY m.mail_id ASC";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_MESSAGE, 'Could not query megamail table!', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
+
 $row_class = 0;
 if ($mail_data = $db->sql_fetchrow($result))
 {
@@ -432,7 +408,7 @@ if ($mail_data = $db->sql_fetchrow($result))
 			"",
 		);
 
-		$plain_message = ip_stripslashes($mail_data['email_body']);
+		$plain_message = stripslashes($mail_data['email_body']);
 		$plain_message = strtr($plain_message, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
 		$delete_url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_data['mail_id'] . '&amp;mode=delete');
@@ -441,7 +417,7 @@ if ($mail_data = $db->sql_fetchrow($result))
 			'ROW' => ($row_class % 2) ? 'row2' : 'row1',
 			'ID' => $mail_data['mail_id'],
 			'GROUP' => ($mail_data['group_id'] != -1) ? $mail_data['group_name'] : $lang['All_users'],
-			'SUBJECT' => ip_stripslashes($mail_data['email_subject']),
+			'SUBJECT' => stripslashes($mail_data['email_subject']),
 			'MASS_PM' => $mail_data['mass_pm'] ? $lang['Yes'] : $lang['No'],
 			'EMAIL_FORMAT' => (($mail_data['email_format'] == 2) ? $lang['FULL_HTML'] : (($mail_data['email_format'] == 1) ? $lang['BBCode'] : $lang['HTML'])),
 			'MESSAGE_BODY' => $plain_message,
@@ -468,10 +444,7 @@ else
 $sql = "SELECT group_id, group_name
 	FROM " . GROUPS_TABLE . "
 	WHERE group_single_user <> 1";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain list of groups', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 $select_list = '';
 $select_list .= '<select name = "' . POST_GROUPS_URL . '">';

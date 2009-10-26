@@ -22,7 +22,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
 
 //Start Quick Administrator User Options and Information MOD
 if(isset($_POST['redirect']) || isset($_GET['redirect']))
@@ -64,10 +64,7 @@ if ($posted_user_cms_level !== false)
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_cms_level = '" . $posted_user_cms_level . "'
 		WHERE user_id = '" . $user_id . "'";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not update user cms level', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userauth'], '<a href="' . append_sid('admin_cms_auth.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
@@ -76,7 +73,7 @@ if ($posted_user_cms_level !== false)
 //Start Quick Administrator User Options and Information MOD
 if($redirect != '')
 {
-	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
+	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 }
 //End Quick Administrator User Options and Information MOD
 elseif ($user_id != false)
@@ -85,10 +82,7 @@ elseif ($user_id != false)
 	$sql = "SELECT u.*
 		FROM " . USERS_TABLE . " u
 		WHERE u.user_id = " . $user_id;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not select info from users table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$user_cms_level = $row['user_cms_level'];
 	$username = $row['username'];
@@ -140,7 +134,7 @@ else
 	$template->set_filenames(array('body' => ADM_TPL . 'user_select_body.tpl'));
 	$template->assign_vars(array(
 		'L_FIND_USERNAME' => $lang['Find_username'],
-		'U_SEARCH_USER' => append_sid('../' . SEARCH_MG . '?mode=searchuser')
+		'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser')
 		)
 	);
 

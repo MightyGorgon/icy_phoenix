@@ -26,7 +26,7 @@
 <div class="main-header">
 	<div class="chromestyle" id="chromemenu">
 		<ul>
-			<!-- IF not HAS_DIED and S_SHOW_CMS_MENU --><li><a href="#" rel="dropmenu_cms_management">{L_CMS}</a></li><!-- ENDIF -->
+			<!-- IF not HAS_DIED and S_SHOW_CMS_MENU --><li><a href="#" rel="dropmenu_cms_management">{L_CMS_TITLE}</a></li><!-- ENDIF -->
 			<!-- <li><a href="#" rel="dropmenu_cms_adv_management">{L_CMS_ADV}</a></li> -->
 			<!-- IF not HAS_DIED and S_SHOW_CMS_MENU --><li><a href="#" rel="dropmenu_cms_settings">{L_CMS_SETTINGS}</a></li><!-- ENDIF -->
 			<li><a href="#" rel="dropmenu_links">{L_CMS_LINKS}</a></li>
@@ -54,7 +54,7 @@
 	</div>
 
 	<div id="dropmenu_links" class="dropmenudiv">
-		<!-- IF not HAS_DIED and S_SHOW_CMS_MENU --><a href="{U_CMS_ACP}">&nbsp;<img src="images/cms/menu/cms_acp.png" alt="" />&nbsp;{L_CMS_ACP}</a><!-- ENDIF -->
+		<!-- IF not HAS_DIED and S_SHOW_CMS_MENU --><a href="{U_CMS_ACP}">&nbsp;<img src="images/cms/menu/cms_acp.png" alt="" />&nbsp;{L_LINK_ACP}</a><!-- ENDIF -->
 		<a href="{U_PORTAL}">&nbsp;<img src="images/cms/menu/cms_home.png" alt="" />&nbsp;{L_PORTAL}</a>
 		<a href="{U_INDEX}">&nbsp;<img src="images/cms/menu/cms_forum.png" alt="" />&nbsp;{L_INDEX}</a>
 		<hr />

@@ -118,17 +118,14 @@ else
 							LIMIT 800";
 }
 
-if(!$result = $db->sql_query($sql_full))
-{
-	message_die(GENERAL_ERROR, 'Error obtaining userdata', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql_full);
 $users_list = $db->sql_fetchrowset($result);
 
 $i = 0;
 $name_list = '';
 
 $server_url = create_server_url();
-$profile_server_url = $server_url . PROFILE_MG . '?mode=register';
+$profile_server_url = $server_url . CMS_PAGE_PROFILE . '?mode=register';
 
 while (isset($users_list[$i]['user_id']))
 {
@@ -141,25 +138,25 @@ while (isset($users_list[$i]['user_id']))
 
 	if (NOTIFY_USERS && !empty($user_email))
 	{
-		$emailer = new emailer($board_config['smtp_delivery']);
+		$emailer = new emailer($config['smtp_delivery']);
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($board_config['server_name']) . "\n";
+		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
 		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
 		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
 		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
 
 		$emailer->use_template('delete_users', (file_exists(IP_ROOT_PATH . 'language/lang_' . $user_lang . '/email/delete_users.tpl')) ? $user_lang : 'english');
 		$emailer->email_address($user_email);
-		$emailer->from($board_config['board_email']);
-		$emailer->replyto($board_config['board_email']);
+		$emailer->from($config['board_email']);
+		$emailer->replyto($config['board_email']);
 		$emailer->extra_headers($email_headers);
 
 		$emailer->assign_vars(array(
 			'U_REGISTER' => $profile_server_url,
 			'USER' => $userdata['username'],
 			'USERNAME' => $username,
-			'SITENAME' => ip_stripslashes($board_config['sitename']),
-			'BOARD_EMAIL' => $board_config['board_email']
+			'SITENAME' => $config['sitename'],
+			'BOARD_EMAIL' => $config['board_email']
 			)
 		);
 		$emailer->send();

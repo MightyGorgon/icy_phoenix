@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 <!--
 // tested with IE4+ and FireFox 0.8+
@@ -99,3 +101,5 @@ function checkBoxInverse(field)
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

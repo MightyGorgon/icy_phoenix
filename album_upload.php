@@ -118,16 +118,11 @@ $sql = "SELECT c.*, COUNT(p.pic_id) AS count, IF (cat_user_id > 0, 1, 0) AS pers
 		WHERE c.cat_id = '$cat_id'
 		GROUP BY c.cat_id
 		LIMIT 1";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query category information', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $thiscat = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 // check if its a personal gallery request and if the gallery exists (checking $thiscat)
-if (empty($thiscat) && $album_user_id != ALBUM_PUBLIC_GALLERY)
+if (empty($thiscat) && ($album_user_id != ALBUM_PUBLIC_GALLERY))
 {
 	//check if user exsts
 	$user_name = album_get_user_name($album_user_id);
@@ -161,7 +156,7 @@ if ($album_user_access['upload'] == 0)
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_upload.' . PHP_EXT . '?cat_id=' . $cat_id), true));
+		redirect(append_sid(album_append_uid(CMS_PAGE_LOGIN . '?redirect=album_upload.' . PHP_EXT . '?cat_id=' . $cat_id), true));
 	}
 	else
 	{
@@ -219,11 +214,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 				FROM " . ALBUM_TABLE . "
 				WHERE pic_user_id = '" . $userdata['user_id'] . "'
 					AND pic_cat_id = '$cat_id'";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not count your pic', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -242,11 +233,7 @@ else
 			FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
 			WHERE c.cat_user_id = '" . $album_user_id . "'
 				AND p.pic_cat_id = c.cat_id";
-
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not count your pic', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
@@ -275,9 +262,9 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		// build fake list of personal galleries (these will get created when needed later automatically
 		$userinfo = album_get_nonexisting_personal_gallery_info();
 
-		//for($idx=0; $idx < count($userinfo); $idx++)
+		//for($idx=0; $idx < sizeof($userinfo); $idx++)
 		//Replaced to fix slowdown
-		$count = count($userinfo);
+		$count = sizeof($userinfo);
 		for($idx=0; $idx < count; $idx++)
 		//End Replace
 		{
@@ -313,15 +300,9 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	album_free_album_data();
 
 	// Start output of page
-	$page_title = $lang['Album'];
-	$meta_description = '';
-	$meta_keywords = '';
 	$nav_server_url = create_server_url();
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '" class="nav-current">' . $thiscat['cat_title'] . '</a>';
 	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'album_upload_body.tpl'));
 
 	// make sure that if we have disabled dynamic generation and pre-generated upload fields
 	// we should then at least make sure we create at least on upload field.
@@ -330,10 +311,10 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		$album_config['max_files_to_upload'] = 1;
 	}
 
-	$html_status = ($board_config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
-	$bbcode_status = ($board_config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+	$html_status = ($config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+	$bbcode_status = ($config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
 	$bbcode_status = sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>');
-	$smilies_status = ($board_config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+	$smilies_status = ($config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 	$formatting_status = '<br />' . $html_status . '<br />' . $bbcode_status . '<br />' . $smilies_status . '<br />';
 
 	$template->assign_vars(array(
@@ -451,12 +432,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		);
 	}
 
-	//
-	// Generate the page
-	//
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	full_page_generation('album_upload_body.tpl', $lang['Album'], '', '');
 }
 else
 {
@@ -483,7 +459,7 @@ else
 	$thumb_count = 0;
 	$upload_files = $_FILES['pic_file'];
 	$thumbnail_upload_files = $_FILES['pic_thumbnail'];
-	for($index = 0; $index < count($upload_files['name']); $index++)
+	for($index = 0; $index < sizeof($upload_files['name']); $index++)
 	{
 		if (was_file_uploaded($upload_files, $index) == true)
 		{
@@ -515,7 +491,7 @@ else
 
 	// check if we are uploading ONLY one picture, if so, then check for picture title
 	/*
-	if ((count($_FILES['pic_file']['name']) == 1 || $pic_count == 1) && empty($pic_title))
+	if ((sizeof($_FILES['pic_file']['name']) == 1 || $pic_count == 1) && empty($pic_title))
 	{
 		message_die(GENERAL_ERROR, $lang['Missed_pic_title']);
 	}
@@ -606,7 +582,7 @@ else
 	{
 		$timeout = 29 - $time;
 	}
-	for($index = 0; $index < count($upload_files['name']);$index++)
+	for($index = 0; $index < sizeof($upload_files['name']);$index++)
 	{
 		// ----------------------------------------------------------------
 		// check the file exceeds the upload_max_filesize directive in php.ini
@@ -675,7 +651,7 @@ else
 		if ($timeout < 2)
 		{
 			$upload_error_msg = "";
-			for($inner_index = $index; $inner_index < count($upload_files['name']); $inner_index++)
+			for($inner_index = $index; $inner_index < sizeof($upload_files['name']); $inner_index++)
 			{
 				if ($album_config['gd_version'] == 0)
 				{
@@ -866,7 +842,7 @@ else
 		{
 			$pic_thumbnail = $pic_filename;
 		}
-		$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
+		$pic_thumbnail_fullpath = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_thumbnail;
 
 
 		// --------------------------------
@@ -1202,11 +1178,7 @@ else
 				FROM " . ALBUM_CAT_TABLE . " AS c
 				WHERE c.cat_id = '$cat_id'
 				LIMIT 1";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'This cat doesn\'t exist', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$this_cat_user_id = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
@@ -1230,10 +1202,7 @@ else
 
 		$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_thumbnail, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
 				VALUES ('" . $pic_extra_path . $pic_filename . "', '" . $pic_thumbnail . "', '" . $pic_title . "', '" . $pic_desc . "', '" . $pic_user_id . "', '" . $pic_user_ip . "', '" . $pic_username . "', '" . $pic_time . "', '" . $cat_id . "', '" . $pic_approval . "')";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert new entry', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($is_personal_gallery == true)
 		{
@@ -1241,20 +1210,14 @@ else
 				FROM " . ALBUM_TABLE . "
 				WHERE pic_user_id = '" . $userdata['user_id'] . "'
 				AND pic_cat_id = '" . $cat_id . "'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query personal pic count', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$personal_pics_count = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 			$userpics = $personal_pics_count['count'];
 
 			// Check which users category we are in so we don't update the wrong users pic count
 			$sql = 'SELECT cat_user_id FROM ' . ALBUM_CAT_TABLE . ' WHERE cat_id = (' . $cat_id . ') LIMIT 1';
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not get the cat user id of this category ', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$usercat = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 			$cat_user_id = $usercat['cat_user_id'];
@@ -1265,10 +1228,7 @@ else
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_personal_pics_count = '" . $userpics . "'
 					WHERE user_id = '" . $cat_user_id . "'";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 			unset($personal_pics_count);
 		}
@@ -1280,22 +1240,18 @@ else
 							WHERE pic_filename = '" . $pic_extra_path . $pic_filename . "'
 							AND pic_time = '" . $pic_time . "'
 							LIMIT 1";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query new pic', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$new_pic_id = $db->sql_fetchrow($result);
-
-			//$db->sql_freeresult($result);
+			$db->sql_freeresult($result);
 
 			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
-			$email_headers = 'From: ' . $board_config['board_email'] . "\nReturn-Path: " . $board_config['board_email'] . "\r\n";
+			$email_headers = 'From: ' . $config['board_email'] . "\nReturn-Path: " . $config['board_email'] . "\r\n";
 
-			$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-			$server_name = trim($board_config['server_name']);
-			$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
-			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
+			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+			$server_name = trim($config['server_name']);
+			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
+			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
 			$script_name = ($script_name == '') ? '' : $script_name . '/';
 			$server_path = $server_protocol . $server_name . $server_port . $script_name;
 
@@ -1304,17 +1260,13 @@ else
 				WHERE u.user_level = " . ADMIN . "
 				AND u.user_id <> " . ANONYMOUS . "
 				ORDER BY u.username ASC";
-
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain users information', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			while ($to_users = $db->sql_fetchrow($result))
 			{
 				if ($to_users['user_notify_pm'] && !empty($to_users['user_email']) && $to_users['user_active'])
 				{
-					$emailer = new emailer($board_config['smtp_delivery']);
+					$emailer = new emailer($config['smtp_delivery']);
 
 					$emailer->use_template('album_notify', $to_users['user_lang']);
 					$emailer->extra_headers($email_headers);
@@ -1323,13 +1275,13 @@ else
 
 					$emailer->assign_vars(array(
 						'USERNAME' => $to_users['username'],
-						'SITENAME' => ip_stripslashes($board_config['sitename']),
-						'EMAIL_SIG' => str_replace('<br />', "\n", "----- \n" . ip_stripslashes($board_config['board_email_sig'])),
+						'SITENAME' => $config['sitename'],
+						'EMAIL_SIG' => str_replace('<br />', "\n", "----- \n" . $config['board_email_sig']),
 						'FROM' => $userdata['username'],
 						'PIC_TITLE' => $pic_title,
 						'PIC_ID' => $new_pic_id['pic_id'],
 						'PIC_APPROVAL' => ($pic_approval ? $lang['Approvation_OK'] : $lang['Approvation_NO']),
-						'DATE' => create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']),
+						'DATE' => create_date($config['default_dateformat'], time(), $config['board_timezone']),
 						'SUBJECT' => $lang['Email_Notification'],
 						'U_PIC' => $server_path . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id']
 						)
@@ -1352,20 +1304,14 @@ else
 						WHERE pic_filename = '" . $pic_filename . "'
 						AND pic_time = '" . $pic_time . "'
 						LIMIT 1";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query new pic', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$new_pic_id = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
 				$pic_id = $new_pic_id['pic_id'];
 
 				$sql = "INSERT INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
 					VALUES ('" . $pic_id . "', '" . $userdata['user_id'] . "', 0)";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Could not insert comment watch information", '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 		}
 		// Watch pic for comments - END
@@ -1375,9 +1321,9 @@ else
 	// Complete... now send a message to user
 	// --------------------------------
 
-	if (count($upload_errors) > 0)
+	if (sizeof($upload_errors) > 0)
 	{
-		if ($pic_count == count($upload_errors))
+		if ($pic_count == sizeof($upload_errors))
 		{
 			$message = $lang['Album_upload_not_successful'];
 		}
@@ -1386,7 +1332,7 @@ else
 			$message = $lang['Album_upload_partially_successful'];
 		}
 
-		for ($index = 0; $index < count($upload_errors); $index++)
+		for ($index = 0; $index < sizeof($upload_errors); $index++)
 		{
 			$message .= $upload_errors[$index];
 		}
@@ -1400,7 +1346,7 @@ else
 		$message = $lang['Album_upload_need_approval'];
 	}
 
-	if ($thiscat['cat_approval'] == 0 && count($upload_errors) == 0)
+	if (($thiscat['cat_approval'] == 0) && (sizeof($upload_errors) == 0))
 	{
 		if (album_is_debug_enabled() == false)
 		{

@@ -36,7 +36,7 @@ if (defined('ONLY_FOUNDER_ACP') && (ONLY_FOUNDER_ACP == true))
 
 // gzip_compression
 $do_gzip_compress = false;
-if ($board_config['gzip_compress'])
+if ($config['gzip_compress'])
 {
 	$phpver = phpversion();
 
@@ -68,7 +68,7 @@ if ($board_config['gzip_compress'])
 $template->set_filenames(array('header' => ADM_TPL . 'page_header.tpl'));
 
 // Mighty Gorgon - AJAX Features - Begin
-if ($board_config['ajax_features'] == true)
+if ($config['ajax_features'] == true)
 {
 	$template->assign_block_vars('switch_ajax_features', array());
 	$ajax_blur = '';
@@ -83,7 +83,7 @@ else
 
 if(is_array($css_style_include))
 {
-	for ($i = 0; $i < count($css_style_include); $i++)
+	for ($i = 0; $i < sizeof($css_style_include); $i++)
 	{
 		$template->assign_block_vars('css_style_include', array(
 			'CSS_FILE' => $css_style_include[$i],
@@ -94,7 +94,7 @@ if(is_array($css_style_include))
 
 if(is_array($css_include))
 {
-	for ($i = 0; $i < count($css_include); $i++)
+	for ($i = 0; $i < sizeof($css_include); $i++)
 	{
 		$template->assign_block_vars('css_include', array(
 			'CSS_FILE' => $css_include[$i],
@@ -105,7 +105,7 @@ if(is_array($css_include))
 
 if(is_array($js_include))
 {
-	for ($i = 0; $i < count($js_include); $i++)
+	for ($i = 0; $i < sizeof($js_include); $i++)
 	{
 		$template->assign_block_vars('js_include', array(
 			'JS_FILE' => $js_include[$i],
@@ -113,7 +113,6 @@ if(is_array($js_include))
 		);
 	}
 }
-
 
 //
 // The following assigns all _common_ variables that may be used at any point
@@ -126,21 +125,21 @@ $template->assign_vars(array(
 	'POST_FORUM_URL' => POST_FORUM_URL,
 	'POST_TOPIC_URL' => POST_TOPIC_URL,
 	'POST_POST_URL' => POST_POST_URL,
-	'LOGIN_MG' => LOGIN_MG,
-	'PORTAL_MG' => PORTAL_MG,
-	'FORUM_MG' => FORUM_MG,
-	'VIEWFORUM_MG' => VIEWFORUM_MG,
-	'VIEWTOPIC_MG' => VIEWTOPIC_MG,
-	'PROFILE_MG' => PROFILE_MG,
-	'POSTING_MG' => POSTING_MG,
-	'SEARCH_MG' => SEARCH_MG,
+	'CMS_PAGE_LOGIN' => CMS_PAGE_LOGIN,
+	'CMS_PAGE_HOME' => CMS_PAGE_HOME,
+	'CMS_PAGE_FORUM' => CMS_PAGE_FORUM,
+	'CMS_PAGE_VIEWFORUM' => CMS_PAGE_VIEWFORUM,
+	'CMS_PAGE_VIEWTOPIC' => CMS_PAGE_VIEWTOPIC,
+	'CMS_PAGE_PROFILE' => CMS_PAGE_PROFILE,
+	'CMS_PAGE_POSTING' => CMS_PAGE_POSTING,
+	'CMS_PAGE_SEARCH' => CMS_PAGE_SEARCH,
 	'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
 	'S_CONTENT_ENCODING' => $lang['ENCODING'],
 	'S_CONTENT_DIR_LEFT' => $lang['LEFT'],
 	'S_CONTENT_DIR_RIGHT' => $lang['RIGHT'],
 
-	'SITENAME' => ip_stripslashes($board_config['sitename']),
-	'PAGE_TITLE' => $page_title,
+	'SITENAME' => htmlspecialchars($config['sitename']),
+	'PAGE_TITLE' => $meta_content['page_title'],
 
 	// AJAX Features - BEGIN
 	'S_AJAX_BLUR' => $ajax_blur,
@@ -148,13 +147,13 @@ $template->assign_vars(array(
 	// AJAX Features - END
 
 	'L_ADMIN' => $lang['Admin'],
-	'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+	'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 	'L_FAQ' => $lang['FAQ'],
 
-	'U_INDEX' => append_sid(IP_ROOT_PATH . FORUM_MG),
+	'U_INDEX' => append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM),
 
 	'ACP_IMAGES_PATH' => IP_ROOT_PATH . 'images/acp/',
-	'U_ACP_FORUMS' => append_sid('admin_forums.' . PHP_EXT),
+	'U_ACP_FORUMS' => append_sid('admin_forums_extend.' . PHP_EXT),
 	'U_ACP_USERS' => append_sid('admin_userlist.' . PHP_EXT),
 	'U_ACP_GROUPS' => append_sid('admin_groups.' . PHP_EXT),
 	'U_ACP_EMAIL' => append_sid('admin_megamail.' . PHP_EXT),
@@ -176,10 +175,10 @@ $template->assign_vars(array(
 	'L_ACP_IP_SETTINGS' => $lang['120_MG_Configuration'],
 	'L_ACP_CACHE' => $lang['127_Clear_Cache'],
 
-	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($board_config['board_timezone'], 1)))]),
-	'S_LOGIN_ACTION' => append_sid('../' . LOGIN_MG),
-	'S_JUMPBOX_ACTION' => append_sid('../' . VIEWFORUM_MG),
-	'S_CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
+	'S_LOGIN_ACTION' => append_sid('../' . CMS_PAGE_LOGIN),
+	'S_JUMPBOX_ACTION' => append_sid('../' . CMS_PAGE_VIEWFORUM),
+	'S_CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
 	//'SPACER' => '../' . $images['spacer'],
 

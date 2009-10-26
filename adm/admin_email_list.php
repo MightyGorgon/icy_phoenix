@@ -37,7 +37,7 @@ if ( isset($_GET['show']) || isset($_POST['show']) )
 }
 else
 {
-	$show = $board_config['topics_per_page'];
+	$show = $config['topics_per_page'];
 }
 
 // Generate page
@@ -55,10 +55,8 @@ $sql = "SELECT user_id, username, user_active, user_color, user_email FROM " . U
 				WHERE user_id <> " . ANONYMOUS . "
 				ORDER BY username ASC
 				LIMIT $start, $show";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Could not count Users", "", __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
+
 $i = 0;
 while($row = $db->sql_fetchrow($result))
 {
@@ -79,12 +77,7 @@ $db->sql_freeresult($result);
 $count_sql = "SELECT count(user_id) AS total
 	FROM " . USERS_TABLE . "
 	WHERE user_id <> " . ANONYMOUS;
-
-if ( !($count_result = $db->sql_query($count_sql)) )
-{
-	message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
-}
-
+$count_result = $db->sql_query($count_sql);
 if ($total = $db->sql_fetchrow($count_result))
 {
 	$total_members = $total['total'];

@@ -18,7 +18,7 @@
 /**
 * Watch and Manage Log Files CrackerTracker creates
 *
-* @author Christian Knerr (cback) and Tekin Birdüzen (cYbercOsmOnauT)
+* @author Christian Knerr (cback) and Tekin BirdÃ¼zen (cYbercOsmOnauT)
 * @package ctracker
 * @version 5.0.6
 * @since 26.07.2006 - 13:29:09
@@ -83,7 +83,7 @@ elseif ( ($mode == 'view') || ($mode == 'downloaddebug') )
 		$lastclean = 0;
 
 		echo('<tt>');
-		for ( $i = count($filename) - 1; $i >= 0; $i-- )
+		for ( $i = sizeof($filename) - 1; $i >= 0; $i-- )
 		{
 			echo($filename[$i] . "<br />\n");
 		}
@@ -112,7 +112,7 @@ elseif ( ($mode == 'view') || ($mode == 'downloaddebug') )
 	$a = 0;
 	$lastclean = 0;
 
-	for ( $i = count($filename) - 1; $i >= 0; $i-- )
+	for ( $i = sizeof($filename) - 1; $i >= 0; $i-- )
 	{
 		define('SPLIT', '|||');		// File Token
 		$line = explode(SPLIT, $filename[$i]);
@@ -122,7 +122,7 @@ elseif ( ($mode == 'view') || ($mode == 'downloaddebug') )
 			$lastclean = intval($line[1]);
 
 			$template->assign_block_vars('show_system_message', array(
-				'L_SYS_MSG'		=>	sprintf($lang['ctracker_log_manager_sysmsg'], date($board_config['default_dateformat'], $lastclean)),
+				'L_SYS_MSG'		=>	sprintf($lang['ctracker_log_manager_sysmsg'], gmdate($config['default_dateformat'], $lastclean)),
 				'L_DELETE'		=> $lang['ctracker_log_manager_delete'],
 				'S_DELETE'		=> append_sid('admin_cracker_tracker.' . PHP_EXT . '?modu=6&logid=' . $logid . '&mode=delete')
 				)
@@ -135,7 +135,7 @@ elseif ( ($mode == 'view') || ($mode == 'downloaddebug') )
 
 			$template->assign_block_vars('show_log', array(
 				'TABLE_CLASS'	=> ( $i % 2 == 0)? 'row1' : 'row2',
-				'L_OUTPUT_1'	=> date($board_config['default_dateformat'], $entrytime),
+				'L_OUTPUT_1'	=> gmdate($config['default_dateformat'], $entrytime),
 				'L_OUTPUT_2'	=> htmlspecialchars($line[2]),
 				'L_OUTPUT_3'	=> htmlspecialchars($line[3]),
 				'L_OUTPUT_4'	=> htmlspecialchars($line[4]),

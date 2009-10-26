@@ -53,18 +53,11 @@ if (!($auth['auth_attachments'] && $auth['auth_view']))
 	message_die(GENERAL_ERROR, 'You are not allowed to call this file (ID:2)');
 }
 
-$template->set_filenames(array('body' => 'posting_attach_rules.tpl'));
-
 $sql = 'SELECT group_id, group_name, max_filesize, forum_permissions
 	FROM ' . EXTENSION_GROUPS_TABLE . '
 	WHERE allow_group = 1
 	ORDER BY group_name ASC';
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query Extension Groups.', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $allowed_filesize = array();
 $rows = $db->sql_fetchrowset($result);
 $num_rows = $db->sql_numrows($result);
@@ -105,12 +98,7 @@ for ($i = 0; $i < $num_rows; $i++)
 			FROM ' . EXTENSIONS_TABLE . "
 			WHERE group_id = " . (int) $rows[$i]['group_id'] . "
 			ORDER BY extension ASC";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query Extensions.', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$e_rows = $db->sql_fetchrowset($result);
 		$e_num_rows = $db->sql_numrows($result);
 		$db->sql_freeresult($result);
@@ -125,10 +113,6 @@ for ($i = 0; $i < $num_rows; $i++)
 }
 
 $gen_simple_header = true;
-$page_title = $lang['Attach_rules_title'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $template->assign_vars(array(
 	'L_RULES_TITLE' => $lang['Attach_rules_title'],
@@ -142,6 +126,6 @@ if ($nothing)
 	$template->assign_block_vars('switch_nothing', array());
 }
 
-$template->pparse('body');
+full_page_generation('posting_attach_rules.tpl', $lang['Attach_rules_title'], '', '');
 
 ?>

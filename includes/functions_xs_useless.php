@@ -18,12 +18,12 @@
 
 function xsm_prepare_message($message)
 {
-	global $board_config;
+	global $config;
 
 	$html_entities_match = array('#&(?!(\#[0-9]+;))#', '#<#', '#>#');
 	$html_entities_replace = array('&amp;', '&lt;', '&gt;');
 
-	$allowed_html_tags = split(',', $board_config['allow_html_tags']);
+	$allowed_html_tags = split(',', $config['allow_html_tags']);
 
 	// Clean up the message
 	$message = trim($message);
@@ -48,48 +48,23 @@ function smilies_news($message)
 
 	if (!isset($orig))
 	{
-		global $db, $board_config;
+		global $db, $config;
 		$orig = $repl = array();
 
 		//$sql = "SELECT * FROM " . SMILIES_TABLE;
-		$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
-		if ($result = $db->sql_query($sql, false, 'smileys_'))
-		{
-			$orig = array();
-			$repl = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($row['code'], "/") . "(?=.\W|\W.|\W$)/";
-				$repl[] = '<img src="http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $row['smile_url'] . '" alt="' . htmlspecialchars($row['emoticon']) . '" />';
-			}
-		}
-		else
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain smilies data", "", __LINE__, __FILE__, $sql);
-		}
+		$sql = "SELECT code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
+		$result = $db->sql_query($sql, 0, 'smileys_');
 
-		/*
-		$sql = 'SELECT * FROM ' . SMILIES_TABLE;
-		if( !$result = $db->sql_query($sql) )
+		$orig = array();
+		$repl = array();
+		while ($row = $db->sql_fetchrow($result))
 		{
-			message_die(GENERAL_ERROR, "Couldn't obtain smilies data", "", __LINE__, __FILE__, $sql);
+			$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($row['code'], "/") . "(?=.\W|\W.|\W$)/";
+			$repl[] = '<img src="http://' . $_SERVER['HTTP_HOST'] . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'] . '" alt="" />';
 		}
-		$smilies = $db->sql_fetchrowset($result);
-
-		if (count($smilies))
-		{
-			usort($smilies, 'smiley_news_sort');
-		}
-
-		for ($i = 0; $i < count($smilies); $i++)
-		{
-			$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($smilies[$i]['code'], "/") . "(?=.\W|\W.|\W$)/";
-			$repl[] = '<img src="'. $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" />';
-		}
-		*/
 	}
 
-	if (count($orig))
+	if (sizeof($orig))
 	{
 		$message = preg_replace($orig, $repl, ' ' . $message . ' ');
 		$message = substr($message, 1, -1);
@@ -100,12 +75,12 @@ function smilies_news($message)
 
 function smiley_news_sort($a, $b)
 {
-	if ( strlen($a['code']) == strlen($b['code']) )
+	if (strlen($a['code']) == strlen($b['code']))
 	{
 		return 0;
 	}
 
-	return ( strlen($a['code']) > strlen($b['code']) ) ? -1 : 1;
+	return (strlen($a['code']) > strlen($b['code'])) ? -1 : 1;
 }
 
 //

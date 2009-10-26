@@ -24,7 +24,7 @@ if ($is_allowed == false)
 	return;
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_mods_settings.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'includes/functions_mods_settings.' . PHP_EXT);
 $mod_name = '80_Security';
 
 $config_fields = array(

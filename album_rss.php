@@ -31,12 +31,12 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // XML and nocaching headers
 // header ('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
-header ('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
+header ('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header ('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header ('Content-Type: text/xml');
 
 $time_start = getmicrotime();
-$rss_time = date('D, j M Y G:i:s T', $time_start);
+$rss_time = gmdate('D, j M Y G:i:s T', $time_start);
 
 // Create main board url
 $fap_full_url = fap_create_server_url();
@@ -46,8 +46,8 @@ $index_url = $fap_full_url . 'album_showpage.' . PHP_EXT;
 $thumb_url = $fap_full_url . 'album_thumbnail.' . PHP_EXT;
 
 // If not set, set the output count to 50
-$count = ( isset($_GET['np']) ) ? intval($_GET['np']) : 25;
-$count = ( $count == 0 ) ? 25 : $count;
+$count = (isset($_GET['np'])) ? intval($_GET['np']) : 25;
+$count = ($count == 0) ? 25 : $count;
 
 // BEGIN Recent Photos
 // Start check permissions
@@ -56,20 +56,17 @@ $check_sel = ($admin_mode) ? 0 : 1;
 if($userdata['user_level'] != ADMIN)
 {
 	$album_user_access = personal_gallery_access(true, false);
-	$not_allowed_cat = ($album_user_access['view'] == 1 ) ? '' : '0';
+	$not_allowed_cat = ($album_user_access['view'] == 1) ? '' : '0';
 	$sql = "SELECT c.*
 		FROM ". ALBUM_CAT_TABLE ." AS c
 		WHERE cat_id <> 0";
-	if( !($result = $db->sql_query($sql)) )
-	{
-		die("Could not query categories list");
-	}
-	while( $row = $db->sql_fetchrow($result) )
+	$result = $db->sql_query($sql);
+	while($row = $db->sql_fetchrow($result))
 	{
 		$album_user_access = album_user_access($row['cat_id'], $row, 1, 0, 0, 0, 0, 0); // VIEW
 		if($admin_mode)
 		{
-			if ( ($album_user_access['moderator'] != 1) || ($row['cat_approval'] != MOD) )
+			if (($album_user_access['moderator'] != 1) || ($row['cat_approval'] != MOD))
 			{
 				$not_allowed_cat .= ($not_allowed_cat == '') ? $row['cat_id'] : ',' . $row['cat_id'];
 			}
@@ -87,10 +84,10 @@ if($userdata['user_level'] != ADMIN)
 // End check permissions
 $NotErrorFlag = false;
 $sql_limit_time = "";
-if ( !$no_limit && isset($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']) )
+if (!$no_limit && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 {
 	$NotErrorFlag = true;
-	$NotModifiedSince = strtotime($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']);
+	$NotModifiedSince = @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 	if($NotModifiedSince > 0)
 	{
 		$sql_limit_time = "AND pic_time > " . $NotModifiedSince;
@@ -107,7 +104,7 @@ $sql = "SELECT pic_id, pic_title, pic_time, pic_desc, pic_username, pic_cat_id, 
 
 $picrow = $db->sql_query($sql);
 
-if ( !$picrow )
+if (!$picrow)
 {
 	die("Failed obtaining list of active pictures");
 }
@@ -119,14 +116,14 @@ $LastPostTime = 0;
 
 $rss = '';
 
-if ( count($topics) == 0 )
+if (sizeof($topics) == 0)
 {
 	die('No pictures found');
 }
 else
 {
 	// $topics contains all interesting data
-	for ($i = 0; $i < count($topics); $i++)
+	for ($i = 0; $i < sizeof($topics); $i++)
 	{
 		$title = $topics[$i]['pic_title'];
 		$title = str_replace('&', '&amp;', $title);
@@ -135,7 +132,7 @@ else
 		$description = '';
 		$description .= $lang['Pic_Desc'] . ': ' . nl2br($topics[$i]['pic_desc']);
 		$description .= htmlentities('<br /><a href="' . $url . '"><img src="' . $thumb . '" alt="" /></a><br /><br /><hr />');
-		$pic_time = date('D, j M Y G:i:s T', $topics[$i]['pic_time']);
+		$pic_time = gmdate('D, j M Y G:i:s T', $topics[$i]['pic_time']);
 		$rss .= '<item>
 			<title>' . $title . '</title>
 			<description>' . $description . '</description>
@@ -145,23 +142,23 @@ else
 	}
 }
 
-$board_config['sitename'] = str_replace('&', '&amp;', ip_stripslashes($board_config['sitename']));
-$board_config['site_desc'] = str_replace('&', '&amp;', $board_config['site_desc']);
+$config['sitename'] = htmlspecialchars($config['sitename']);
+$config['site_desc'] = htmlspecialchars($config['site_desc']);
 
 // Create RSS header
 $rss_header = '<?xml version="1.0" encoding="ISO-8859-2" ?>
 <rss version="2.0">
 <channel>
-	<title>' . $board_config['sitename'] . ' Album (XXX needs registering)</title>
+	<title>' . $config['sitename'] . ' Album (XXX needs registering)</title>
 	<link>' . $index_url . '</link>
-	<description>' . $board_config['site_desc'] . '</description>
+	<description>' . $config['site_desc'] . '</description>
 	<language>en-us</language>
 	<generator>FAP</generator>
 	<pubDate>' . $rss_time . '</pubDate>
 	<image>
-		<title>' . $board_config['sitename'] . '</title>
+		<title>' . $config['sitename'] . '</title>
 		<link>' . $index_site . '</link>
-		<description>' . $board_config['site_desc'] . '</description>
+		<description>' . $config['site_desc'] . '</description>
 	</image>';
 
 // Create RSS footer
@@ -172,9 +169,9 @@ $rss_footer = '
 $rss = $rss_header . $rss . $rss_footer;
 
 // Discritics Replace
-$rss = str_replace("&auml;", "ä", $rss);
-$rss = str_replace("&ouml;", "ö", $rss);
-$rss = str_replace("&uuml;", "ü", $rss);
+$rss = str_replace("&auml;", "Ã¤", $rss);
+$rss = str_replace("&ouml;", "Ã¶", $rss);
+$rss = str_replace("&uuml;", "Ã¼", $rss);
 
 // Output the RSS
 echo $rss;

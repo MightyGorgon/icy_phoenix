@@ -32,11 +32,7 @@ $statistics->init_bars();
 
 // get total topics
 $sql = "SELECT COUNT(topic_id) as total_topics FROM " . TOPICS_TABLE;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve topics data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $total_topics = $row['total_topics'];
 
@@ -45,12 +41,7 @@ $sql = 'SELECT DAYOFWEEK(FROM_UNIXTIME(topic_time)) as dow, COUNT(*) AS ct
 FROM ' . TOPICS_TABLE . '
 GROUP BY DAYOFWEEK(FROM_UNIXTIME(topic_time))
 ORDER BY DAYOFWEEK(FROM_UNIXTIME(topic_time)) ASC';
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve topics data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $topics_data = $stat_db->sql_fetchrowset($result);
 
 // get highest topic count

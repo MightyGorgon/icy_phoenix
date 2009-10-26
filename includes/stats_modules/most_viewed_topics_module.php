@@ -30,15 +30,11 @@ if ($auth_data_sql == '')
 }
 
 $sql = 'SELECT topic_id, topic_title, topic_views
-	FROM ' . TOPICS_TABLE .	'
+	FROM ' . TOPICS_TABLE . '
 	WHERE forum_id IN (' . $auth_data_sql . ') AND (topic_status <> 2) AND (topic_views > 0)
 	ORDER BY topic_views DESC
 	LIMIT ' . $return_limit;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve topic data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $topic_count = $stat_db->sql_numrows($result);
 $topic_data = $stat_db->sql_fetchrowset($result);
 
@@ -54,7 +50,8 @@ for ($i = 0; $i < $topic_count; $i++)
 		'CLASS' => $class,
 		'TITLE' => $topic_data[$i]['topic_title'],
 		'VIEWS' => $topic_data[$i]['topic_views'],
-		'URL' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_data[$i]['topic_id']))
+		'URL' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_data[$i]['topic_id'])
+		)
 	);
 }
 

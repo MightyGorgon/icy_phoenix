@@ -35,11 +35,7 @@ class custom_field
 		$sql = "SELECT *
 			FROM " . PA_CUSTOM_TABLE . "
 			ORDER BY field_order ASC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query Custom field', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -50,11 +46,7 @@ class custom_field
 
 		$sql = "SELECT *
 			FROM " . PA_CUSTOM_DATA_TABLE;
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query Custom field', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -128,11 +120,7 @@ class custom_field
 						$sql = "DELETE FROM " . PA_CUSTOM_DATA_TABLE . "
 							WHERE customdata_file = '$file_id'
 							AND customdata_custom = '$field_id'";
-
-						if ( !($db->sql_query($sql)) )
-						{
-							message_die(GENERAL_ERROR, 'Could not delete custom data', '', __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 					}
 				}
 			}
@@ -226,7 +214,7 @@ class custom_field
 			{
 				$pafiledb_template->assign_block_vars('radio.row', array(
 					'FIELD_VALUE' => $value,
-					'FIELD_SELECTED' => ($data == $value ) ? ' checked="checked"' : '')
+					'FIELD_SELECTED' => ($data == $value) ? ' checked="checked"' : '')
 				);
 			}
 		}
@@ -354,7 +342,7 @@ class custom_field
 			message_die(GENERAL_ERROR, $lang['Missing_field']);
 		}
 
-		if( (($field_type != INPUT && $field_type != TEXTAREA) && empty($data)) )
+		if((($field_type != INPUT && $field_type != TEXTAREA) && empty($data)))
 		{
 			message_die(GENERAL_ERROR, $lang['Missing_field']);
 		}
@@ -364,33 +352,20 @@ class custom_field
 		{
 			$sql = "INSERT INTO " . PA_CUSTOM_TABLE . " (custom_name, custom_description, data, regex, field_type)
 				VALUES('" . $field_name . "', '" . $field_desc . "', '" . $data . "', '" . $regex . "', '" . $field_type . "')";
-
-			if ( !($db->sql_query($sql)) )
-			{
-				message_die(GENERAL_ERROR, 'Could not add the new fields', '', __LINE__, __FILE__, $sql);
-			}
-
+			$db->sql_query($sql);
 			$field_id = $db->sql_nextid();
 
 			$sql = "UPDATE " . PA_CUSTOM_TABLE . "
 				SET field_order = '$field_id'
 				WHERE custom_id = $field_id";
-
-			if ( !($db->sql_query($sql)) )
-			{
-				message_die(GENERAL_ERROR, 'Could not set the order for the giving field', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 		else
 		{
 			$sql = "UPDATE " . PA_CUSTOM_TABLE . "
 				SET custom_name = '$field_name', custom_description = '$field_desc', data = '$data', regex = '$regex', field_order='$field_order'
 				WHERE custom_id = $field_id";
-
-			if ( !($db->sql_query($sql)) )
-			{
-				message_die(GENERAL_ERROR, 'Could not update information for the giving field', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -400,19 +375,11 @@ class custom_field
 
 		$sql = "DELETE FROM " . PA_CUSTOM_DATA_TABLE . "
 			WHERE customdata_custom = '$field_id'";
-
-		if ( !($db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not delete custom data', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		$sql = "DELETE FROM " . PA_CUSTOM_TABLE . "
 			WHERE custom_id = '$field_id'";
-
-		if ( !($db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not delete the selected field', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	function get_field_data($field_id)
@@ -459,21 +426,13 @@ class custom_field
 				$sql = "DELETE FROM " . PA_CUSTOM_DATA_TABLE . "
 					WHERE customdata_file = '$file_id'
 					AND customdata_custom = '$field_id'";
-
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete data from custom data table', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				if(!empty($data))
 				{
 					$sql = "INSERT INTO " . PA_CUSTOM_DATA_TABLE . " (customdata_file, customdata_custom, data)
 						VALUES('$file_id', '$field_id', '$data')";
-
-					if(!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not add additional data', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 				}
 			}
 		}

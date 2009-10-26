@@ -18,7 +18,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ($board_config['allow_drafts'] == false)
+if (!$config['allow_drafts'])
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
@@ -38,7 +38,7 @@ $start = ($start < 0) ? 0 : $start;
 if (!$userdata['session_logged_in'])
 {
 	$redirect = (isset($start)) ? ('&start=' . $start) : '';
-	redirect(append_sid(LOGIN_MG . '?redirect=drafts.' . PHP_EXT . $redirect, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=drafts.' . PHP_EXT . $redirect, true));
 }
 
 $draft_id = (isset($_POST['d']) ? intval($_POST['d']) : (isset($_GET['d']) ? intval($_GET['d']) : 0));
@@ -48,11 +48,11 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 {
 	if ($mode == 'loadr')
 	{
-		redirect(append_sid(POSTING_MG . '?d=' . $draft_id . '&mode=reply' . '&draft_mode=draft_load', true));
+		redirect(append_sid(CMS_PAGE_POSTING . '?d=' . $draft_id . '&mode=reply' . '&draft_mode=draft_load', true));
 	}
 	elseif ($mode == 'loadn')
 	{
-		redirect(append_sid(POSTING_MG . '?d=' . $draft_id . '&mode=newtopic' . '&draft_mode=draft_load', true));
+		redirect(append_sid(CMS_PAGE_POSTING . '?d=' . $draft_id . '&mode=newtopic' . '&draft_mode=draft_load', true));
 	}
 	elseif ($mode == 'loadp')
 	{
@@ -62,12 +62,8 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 	{
 		if(!isset($_POST['confirm']))
 		{
-			$page_title = $lang['Drafts'];
-			$meta_description = '';
-			$meta_keywords = '';
 			$nav_server_url = create_server_url();
-			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(PROFILE_MG) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
-			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
 
 			$ref_url = explode('/', $_SERVER['HTTP_REFERER']);
 
@@ -75,18 +71,15 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 
 			if (is_array($_POST['drafts_list']))
 			{
-				for ($i = 0; $i < count($_POST['drafts_list']); $i++)
+				for ($i = 0; $i < sizeof($_POST['drafts_list']); $i++)
 				{
 					$s_hidden_fields .= '<input type="hidden" name="drafts_list[]" value="' . $_POST['drafts_list'][$i] . '" />';
 				}
 				$s_hidden_fields .= '<input type="hidden" name="kill_drafts" value="true" />';
 			}
-			$s_hidden_fields .= '<input type="hidden" name="ref_url" value="' . htmlspecialchars($ref_url[count($ref_url) - 1]) . '" />';
+			$s_hidden_fields .= '<input type="hidden" name="ref_url" value="' . htmlspecialchars($ref_url[sizeof($ref_url) - 1]) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="d" value="' . $draft_id . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
-
-			// Set template files
-			$template->set_filenames(array('confirm' => 'confirm_body.tpl'));
 
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
@@ -99,9 +92,7 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
-			$template->pparse('confirm');
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-			exit();
+			full_page_generation('confirm_body.tpl', $lang['Drafts'], '', '');
 		}
 		else
 		{
@@ -109,34 +100,22 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 			{
 				$draft_ids = implode(',', $_POST['drafts_list']);
 				$sql_del = "DELETE FROM " . DRAFTS_TABLE . " WHERE draft_id IN (" . $draft_ids . ")";
-				if(!$result_del = $db->sql_query($sql_del))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete drafts', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result_del = $db->sql_query($sql_del);
 			}
 			else
 			{
 				$sql_del = "DELETE FROM " . DRAFTS_TABLE . " WHERE draft_id = '" . $draft_id . "'";
-				if(!$result_del = $db->sql_query($sql_del))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete drafts', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result_del = $db->sql_query($sql_del);
 			}
 		}
 	}
 }
 
 // Generate the page
-$page_title = $lang['Drafts'];
-$meta_description = '';
-$meta_keywords = '';
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
 $breadcrumbs_links_right = '<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', true); return false;">' . $lang['Mark_all'] . '</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', false); return false;">' . $lang['Unmark_all'] . '</a>';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'drafts_body.tpl'));
 
 $template->assign_vars(array(
 	'S_FORM_ACTION' => append_sid('drafts.' . PHP_EXT),
@@ -154,10 +133,7 @@ $template->assign_vars(array(
 );
 
 $sql = "SELECT COUNT(*) as drafts_count FROM " . DRAFTS_TABLE . " d WHERE d.user_id = " . $userdata['user_id'];
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain drafts information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 $drafts_count = ($row['drafts_count']) ? $row['drafts_count'] : 0;
 $db->sql_freeresult($result);
@@ -171,16 +147,12 @@ if ($no_drafts == false)
 		FROM " . DRAFTS_TABLE . " d
 		WHERE d.user_id = '" . $userdata['user_id'] . "'
 		ORDER BY d.save_time DESC
-		LIMIT $start, " . $board_config['topics_per_page'];
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain drafts', '', __LINE__, __FILE__, $sql);
-	}
+		LIMIT $start, " . $config['topics_per_page'];
+	$result = $db->sql_query($sql);
 	$draft_row = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
-	for ($i = 0; $i < count($draft_row); $i++)
+	for ($i = 0; $i < sizeof($draft_row); $i++)
 	{
 		if ($i == 0)
 		{
@@ -200,17 +172,14 @@ if ($no_drafts == false)
 				WHERE t.topic_id = '" . $draft_row[$i]['topic_id'] . "'
 					AND f.forum_id = t.forum_id
 				LIMIT 1";
-			if (!($result_d = $db->sql_query($sql_d)))
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain topic info', '', __LINE__, __FILE__, $sql_d);
-			}
+			$result_d = $db->sql_query($sql_d);
 			$draft_row_data = $db->sql_fetchrow($result_d);
 			$db->sql_freeresult($result_d);
 			$draft_image = '<img src="' . $images['topic_nor_read'] . '" alt="" />';
 			$draft_type = $lang['Drafts_NM'];
 			$draft_load = 'loadr';
-			$draft_cat_link = append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
-			$draft_title_link = append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?'  . POST_TOPIC_URL . '=' . $draft_row[$i]['topic_id']);
+			$draft_cat_link = append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
+			$draft_title_link = append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?'  . POST_TOPIC_URL . '=' . $draft_row[$i]['topic_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $draft_row_data['forum_name'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row_data['topic_title'] . '</a>';
 		}
@@ -220,16 +189,13 @@ if ($no_drafts == false)
 				FROM " . FORUMS_TABLE . " f
 				WHERE f.forum_id = '" . $draft_row[$i]['forum_id'] . "'
 				LIMIT 1";
-			if (!($result_d = $db->sql_query($sql_d)))
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain topic info', '', __LINE__, __FILE__, $sql_d);
-			}
+			$result_d = $db->sql_query($sql_d);
 			$draft_row_data = $db->sql_fetchrow($result_d);
 			$db->sql_freeresult($result_d);
 			$draft_image = '<img src="' . $images['topic_nor_unread'] . '" alt="" />';
 			$draft_type = $lang['Drafts_NT'];
 			$draft_load = 'loadn';
-			$draft_cat_link = append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
+			$draft_cat_link = append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $draft_row_data['forum_id']);
 			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $draft_row_data['forum_name'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
@@ -254,18 +220,18 @@ if ($no_drafts == false)
 			'DRAFT_CAT_LINK' => $draft_cat_link,
 			'DRAFT_CAT' => $draft_row[$i]['draft_cat'],
 			'DRAFT_TITLE_LINK' => $draft_title_link,
-			'DRAFT_TITLE' => ip_stripslashes($draft_row[$i]['draft_title']),
-			'DRAFT_TIME' => create_date_ip($board_config['default_dateformat'], $draft_row[$i]['save_time'], $board_config['board_timezone']),
+			'DRAFT_TITLE' => stripslashes($draft_row[$i]['draft_title']),
+			'DRAFT_TIME' => create_date_ip($config['default_dateformat'], $draft_row[$i]['save_time'], $config['board_timezone']),
 			'U_DRAFT_LOAD' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']),
 			'U_DRAFT_DELETE' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=delete&amp;d=' . $draft_row[$i]['draft_id']),
 			)
 		);
 	}
-	$pagination = generate_pagination('drafts.' . PHP_EXT . '?mode=list', $drafts_count, $board_config['topics_per_page'], $start);
+	$pagination = generate_pagination('drafts.' . PHP_EXT . '?mode=list', $drafts_count, $config['topics_per_page'], $start);
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($drafts_count / $board_config['topics_per_page'])),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($drafts_count / $config['topics_per_page'])),
 		'L_GOTO_PAGE' => $lang['Goto_page']
 		)
 	);
@@ -275,8 +241,6 @@ else
 	$template->assign_block_vars('switch_no_drafts', array());
 }
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('drafts_body.tpl', $lang['Drafts'], '', '');
 
 ?>

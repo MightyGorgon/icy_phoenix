@@ -15,9 +15,9 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // get the board & user settings ...
-$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
-$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
-$smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? 1 : 0 ;
+$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
@@ -56,7 +56,7 @@ $signature = str_replace('<br />', "\n", $signature);
 // if cancel pressed then redirect to the index page
 if (isset($_POST['cancel']))
 {
-	$redirect = FORUM_MG;
+	$redirect = CMS_PAGE_FORUM;
 
 // redirect 2.0.4 only
 	redirect(append_sid($redirect, true));
@@ -71,13 +71,9 @@ if (isset($_POST['cancel']))
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-$page_title = $lang['Signature'];
-$meta_description = '';
-$meta_keywords = '';
 $link_name = $lang['Signature'];
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // save new signature
 if ($submit)
@@ -86,7 +82,7 @@ if ($submit)
 
 	if (isset($signature))
 	{
-		if (strlen($signature) > $board_config['max_sig_chars'])
+		if (strlen($signature) > $config['max_sig_chars'])
 		{
 			$save_message = $lang['Signature_too_long'];
 		}
@@ -99,16 +95,8 @@ if ($submit)
 			$sql = "UPDATE " . USERS_TABLE . "
 			SET user_sig = '" . str_replace("\'", "''", $signature) . "'
 			WHERE user_id = $user_id";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql);
-			}
-
-			else
-			{
-				$save_message = $lang['sig_save_message'];
-			}
+			$result = $db->sql_query($sql);
+			$save_message = $lang['sig_save_message'];
 		}
 	}
 	else
@@ -126,7 +114,7 @@ elseif ($preview)
 	{
 		$preview_sig = $signature;
 
-		if (strlen($preview_sig) > $board_config['max_sig_chars'])
+		if (strlen($preview_sig) > $config['max_sig_chars'])
 		{
 			$preview_sig = $lang['Signature_too_long'];
 		}
@@ -139,20 +127,9 @@ elseif ($preview)
 				$bbcode->is_sig = true;
 				$preview_sig = $bbcode->parse($preview_sig);
 				$bbcode->is_sig = false;
-				$preview_sig = '<br />' . $board_config['sig_line'] . '<br />' . $preview_sig;
+				$preview_sig = '<br />' . $config['sig_line'] . '<br />' . $preview_sig;
 				//$preview_sig = nl2br($preview_sig);
-				if (!$userdata['user_allowswearywords'])
-				{
-					$orig_word = array();
-					$replacement_word = array();
-					obtain_word_list($orig_word, $replacement_word);
-				}
-				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-				{
-					$preview_sig = preg_replace($orig_word, $replacement_word, $preview_sig);
-				}
-				//$preview_sig = kb_word_wrap_pass ($preview_sig);
-
+				$preview_sig = censor_text($preview_sig);
 			}
 			else
 			{
@@ -165,7 +142,6 @@ elseif ($preview)
 		message_die(GENERAL_MESSAGE, 'An Error occured while submitting Signature');
 	}
 }
-
 // read current signature and prepare it for a preview
 elseif ($mode)
 {
@@ -181,11 +157,8 @@ elseif ($mode)
 		$bbcode->is_sig = true;
 		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
-		if(!empty($orig_word))
-		{
-			$user_sig = (!empty($user_sig)) ? preg_replace($orig_word, $replacement_word, $user_sig) : '';
-		}
-		$user_sig = '<br />' . $board_config['sig_line'] . '<br />' . $user_sig;
+		$user_sig = censor_text($user_sig);
+		$user_sig = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 		//$user_sig = nl2br($user_sig);
 	}
 	else
@@ -194,18 +167,16 @@ elseif ($mode)
 	}
 }
 
-$template->set_filenames(array('body' => 'profile_signature.tpl'));
-
 $template->assign_vars(array(
 	'SIG_SAVE' => $lang['sig_save'],
 	'SIG_CANCEL' => $lang['Cancel'],
 	'SIG_PREVIEW' => $lang['Preview'],
 	'SIG_EDIT' => $lang['sig_edit'],
 	'SIG_CURRENT' => $lang['sig_current'],
-	'SIG_LINK' => append_sid(PROFILE_MG . '?mode=signature'),
+	'SIG_LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=signature'),
 
 	'L_SIGNATURE' => $lang['Signature'],
-	'L_SIGNATURE_EXPLAIN' => sprintf($lang['Signature_explain'], $board_config['max_sig_chars']),
+	'L_SIGNATURE_EXPLAIN' => sprintf($lang['Signature_explain'], $config['max_sig_chars']),
 	'HTML_STATUS' => $html_status,
 	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 	'SMILIES_STATUS' => $smilies_status,
@@ -230,8 +201,6 @@ include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('profile_signature.tpl', $lang['Signature'], '', '');
 
 ?>

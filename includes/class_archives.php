@@ -709,7 +709,7 @@ class zip_file extends archive
 								'í'=>pack("C",161),'ó'=>pack("C",162),'ú'=>pack("C",163),'ñ'=>pack("C",164),'Ñ'=>pack("C",165));
 			$current['name2'] = strtr($current['name2'],$translate);
 
-			$timedate = explode(" ",date("Y n j G i s",$current['stat'][9]));
+			$timedate = explode(" ", gmdate("Y n j G i s", $current['stat'][9]));
 			$timedate = ($timedate[0] - 1980 << 25) | ($timedate[1] << 21) | ($timedate[2] << 16) |
 				($timedate[3] << 11) | ($timedate[4] << 5) | ($timedate[5]);
 

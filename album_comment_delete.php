@@ -54,26 +54,18 @@ else
 	message_die(GENERAL_ERROR, 'No comment_id specified');
 }
 
-
 // ------------------------------------
 // Get the comment info
 // ------------------------------------
 $sql = "SELECT *
 		FROM ". ALBUM_COMMENT_TABLE ."
 		WHERE comment_id = '$comment_id'";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query this comment information', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $thiscomment = $db->sql_fetchrow($result);
-
 if(empty($thiscomment))
 {
 	message_die(GENERAL_ERROR, 'This comment does not exist');
 }
-
 
 // ------------------------------------
 // Get $pic_id from $comment_id
@@ -82,21 +74,14 @@ if(empty($thiscomment))
 $sql = "SELECT comment_id, comment_pic_id
 		FROM ". ALBUM_COMMENT_TABLE ."
 		WHERE comment_id = '$comment_id'";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query comment and pic information', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
-
 if(empty($row))
 {
 	message_die(GENERAL_ERROR, 'This comment does not exist');
 }
 
 $pic_id = $row['comment_pic_id'];
-
 
 // ------------------------------------
 // Get this pic info and current category info
@@ -111,17 +96,14 @@ $sql = "SELECT p.*, cat.*, u.user_id, u.username, COUNT(c.comment_id) as comment
 			AND cat.cat_id = p.pic_cat_id
 		GROUP BY p.pic_id
 		LIMIT 1";
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $thispic = $db->sql_fetchrow($result);
 
 $cat_id = $thispic['pic_cat_id'];
 $album_user_id = $thispic['cat_user_id'];
 
 $total_comments = $thispic['comments_count'];
-$comments_per_page = $board_config['posts_per_page'];
+$comments_per_page = $config['posts_per_page'];
 
 $pic_filename = $thispic['pic_filename'];
 $pic_thumbnail = $thispic['pic_thumbnail'];
@@ -140,7 +122,7 @@ if(($album_user_access['comment'] == 0) || ($album_user_access['delete'] == 0))
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . '?redirect=album_comment_delete.' . PHP_EXT . '?comment_id=' . $comment_id));
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_comment_delete.' . PHP_EXT . '?comment_id=' . $comment_id));
 	}
 	else
 	{
@@ -158,13 +140,11 @@ else
 	}
 }
 
-
 /*
 +----------------------------------------------------------
 | Main work here...
 +----------------------------------------------------------
 */
-
 
 if(!isset($_POST['confirm']))
 {
@@ -181,14 +161,6 @@ if(!isset($_POST['confirm']))
 		exit;
 	}
 
-	// Start output of page
-	$page_title = $lang['Album'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'confirm_body.tpl'));
-
 	$template->assign_vars(array(
 		'MESSAGE_TITLE' => $lang['Confirm'],
 		'MESSAGE_TEXT' => $lang['Comment_delete_confirm'],
@@ -197,13 +169,7 @@ if(!isset($_POST['confirm']))
 		'S_CONFIRM_ACTION' => append_sid(album_append_uid('album_comment_delete.' . PHP_EXT . '?comment_id=' . $comment_id)),
 		)
 	);
-
-	//
-	// Generate the page
-	//
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
 }
 else
 {
@@ -214,11 +180,7 @@ else
 	$sql = "DELETE
 			FROM ". ALBUM_COMMENT_TABLE ."
 			WHERE comment_id = '$comment_id'";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not delete this comment', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	// --------------------------------
 	// Complete... now send a message to user

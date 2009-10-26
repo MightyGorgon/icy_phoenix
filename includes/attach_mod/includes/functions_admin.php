@@ -30,7 +30,7 @@ function auth_pack($auth_array)
 	$one_char = $two_char = false;
 	$auth_cache = '';
 
-	for ($i = 0; $i < count($auth_array); $i++)
+	for ($i = 0; $i < sizeof($auth_array); $i++)
 	{
 		$val = base64_pack(intval($auth_array[$i]));
 		if (strlen($val) == 1 && !$one_char)
@@ -114,7 +114,7 @@ function thumbnail_exists($filename)
 		$filename = 't_' . $filename;
 		$file_listing = @ftp_rawlist($conn_id, $filename);
 
-		for ($i = 0, $size = count($file_listing); $i < $size; $i++)
+		for ($i = 0, $size = sizeof($file_listing); $i < $size; $i++)
 		{
 			if (ereg("([-d])[rwxst-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)", $file_listing[$i], $regs))
 			{
@@ -211,14 +211,9 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 		// Show the contents
 		$sql = 'SELECT quota_limit_id, quota_type FROM ' . QUOTA_TABLE . '
 			WHERE user_id = ' . (int) $user_id;
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to get Quota Settings', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$pm_quota = $upload_quota = 0;
-
 		if ($row = $db->sql_fetchrow($result))
 		{
 			do
@@ -278,14 +273,9 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 		// Show the contents
 		$sql = 'SELECT quota_limit_id, quota_type FROM ' . QUOTA_TABLE . '
 			WHERE group_id = ' . (int) $group_id;
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to get Quota Settings', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$pm_quota = $upload_quota = 0;
-
 		if ($row = $db->sql_fetchrow($result))
 		{
 			do
@@ -364,11 +354,7 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
 				FROM ' . QUOTA_TABLE . "
 				WHERE user_id = $id
 					AND quota_type = $quota_type";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if ($db->sql_numrows($result) == 0)
 			{
@@ -379,7 +365,7 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
 					'quota_limit_id'=> (int) $quota_limit_id
 				);
 
-				$sql = 'INSERT INTO ' . QUOTA_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
+				$sql = 'INSERT INTO ' . QUOTA_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 			}
 			else
 			{
@@ -390,25 +376,16 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
 			}
 			$db->sql_freeresult($result);
 		}
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to update quota Settings', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 	}
-	else if ($mode == 'group')
+	elseif ($mode == 'group')
 	{
 		if (!$quota_limit_id)
 		{
 			$sql = 'DELETE FROM ' . QUOTA_TABLE . "
 				WHERE group_id = $id
 					AND quota_type = $quota_type";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Unable to delete quota Settings', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 		else
 		{
@@ -417,11 +394,7 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
 				FROM ' . QUOTA_TABLE . "
 				WHERE group_id = $id
 					AND quota_type = $quota_type";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if ($db->sql_numrows($result) == 0)
 			{
@@ -433,11 +406,7 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
 				$sql = 'UPDATE ' . QUOTA_TABLE . " SET quota_limit_id = $quota_limit_id
 					WHERE group_id = $id AND quota_type = $quota_type";
 			}
-
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Unable to update quota Settings', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 }
@@ -447,7 +416,7 @@ function process_quota_settings($mode, $id, $quota_type, $quota_limit_id = 0)
 */
 function sort_multi_array ($sort_array, $key, $sort_order, $pre_string_sort = 0)
 {
-	$last_element = count($sort_array) - 1;
+	$last_element = sizeof($sort_array) - 1;
 
 	if (!$pre_string_sort)
 	{
@@ -512,12 +481,7 @@ function entry_exists($attach_id)
 	$sql = 'SELECT post_id, privmsgs_id
 		FROM ' . ATTACHMENTS_TABLE . "
 		WHERE attach_id = $attach_id";
-
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
-	}
-
+	$db->sql_query($sql);
 	$ids = $db->sql_fetchrowset($result);
 	$num_ids = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -538,11 +502,7 @@ function entry_exists($attach_id)
 				FROM ' . PRIVMSGS_TABLE . '
 				WHERE privmsgs_id = ' . intval($ids[$i]['privmsgs_id']);
 		}
-
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not get Entry', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		if (($db->sql_numrows($result)) > 0)
 		{
@@ -596,7 +556,7 @@ function collect_attachments()
 			message_die(GENERAL_ERROR, 'Unable to get Raw File Listing. Please be sure the LIST command is enabled at your FTP Server.');
 		}
 
-		for ($i = 0; $i < count($file_listing); $i++)
+		for ($i = 0; $i < sizeof($file_listing); $i++)
 		{
 			if (ereg("([-d])[rwxst-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)", $file_listing[$i], $regs))
 			{
@@ -664,7 +624,7 @@ function get_formatted_dirsize()
 			return $upload_dir_size;
 		}
 
-		for ($i = 0; $i < count($file_listing); $i++)
+		for ($i = 0; $i < sizeof($file_listing); $i++)
 		{
 			if (ereg("([-d])[rwxst-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)", $file_listing[$i], $regs))
 			{
@@ -715,7 +675,7 @@ function search_attachments($order_by, &$total_rows)
 	// Get submitted Vars
 	$search_vars = array('search_keyword_fname', 'search_keyword_comment', 'search_author', 'search_size_smaller', 'search_size_greater', 'search_count_smaller', 'search_count_greater', 'search_days_greater', 'search_forum', 'search_cat');
 
-	for ($i = 0; $i < count($search_vars); $i++)
+	for ($i = 0; $i < sizeof($search_vars); $i++)
 	{
 		$$search_vars[$i] = request_var($search_vars[$i], '');
 	}
@@ -728,17 +688,13 @@ function search_attachments($order_by, &$total_rows)
 		$search_author = stripslashes(phpbb_clean_username($search_author));
 
 		// Prepare for directly going into sql query
-		$search_author = str_replace('*', '%', attach_mod_sql_escape($search_author));
+		$search_author = str_replace('*', '%', $db->sql_escape($search_author));
 
 		// We need the post_id's, because we want to query the Attachment Table
 		$sql = 'SELECT user_id
 			FROM ' . USERS_TABLE . "
 			WHERE username LIKE '$search_author'";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t obtain list of matching users (searching for: ' . $search_author . ')', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$matching_userids = '';
 		if ($row = $db->sql_fetchrow($result))
@@ -763,13 +719,13 @@ function search_attachments($order_by, &$total_rows)
 	if ($search_keyword_fname != '')
 	{
 		$match_word = str_replace('*', '%', $search_keyword_fname);
-		$where_sql[] = " (a.real_filename LIKE '" . attach_mod_sql_escape($match_word) . "') ";
+		$where_sql[] = " (a.real_filename LIKE '" . $db->sql_escape($match_word) . "') ";
 	}
 
 	if ($search_keyword_comment != '')
 	{
 		$match_word = str_replace('*', '%', $search_keyword_comment);
-		$where_sql[] = " (a.comment LIKE '" . attach_mod_sql_escape($match_word) . "') ";
+		$where_sql[] = " (a.comment LIKE '" . $db->sql_escape($match_word) . "') ";
 	}
 
 	// Search Download Count
@@ -815,7 +771,7 @@ function search_attachments($order_by, &$total_rows)
 	$sql = 'SELECT a.*, t.post_id, p.post_time, p.topic_id
 		FROM ' . ATTACHMENTS_TABLE . ' t, ' . ATTACHMENTS_DESC_TABLE . ' a, ' . POSTS_TABLE . ' p WHERE ';
 
-	if (count($where_sql) > 0)
+	if (sizeof($where_sql) > 0)
 	{
 		$sql .= implode('AND', $where_sql) . ' AND ';
 	}
@@ -825,12 +781,7 @@ function search_attachments($order_by, &$total_rows)
 	$total_rows_sql = $sql;
 
 	$sql .= $order_by;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$attachments = $db->sql_fetchrowset($result);
 	$num_attach = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -840,11 +791,7 @@ function search_attachments($order_by, &$total_rows)
 		message_die(GENERAL_MESSAGE, $lang['No_attach_search_match']);
 	}
 
-	if (!($result = $db->sql_query($total_rows_sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query attachments', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($total_rows_sql);
 	$total_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -857,7 +804,7 @@ function search_attachments($order_by, &$total_rows)
 function limit_array($array, $start, $pagelimit)
 {
 	// array from start - start+pagelimit
-	$limit = (count($array) < ($start + $pagelimit)) ? count($array) : $start + $pagelimit;
+	$limit = (sizeof($array) < ($start + $pagelimit)) ? sizeof($array) : $start + $pagelimit;
 
 	$limit_array = array();
 

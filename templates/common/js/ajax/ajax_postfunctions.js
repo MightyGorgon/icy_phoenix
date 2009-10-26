@@ -32,7 +32,7 @@ function AJAXSearch(keywords)
 	if (keywords != '')
 	{
 		ShowEmptyTitle(false);
-		var url = SEARCH_MG;
+		var url = CMS_PAGE_SEARCH;
 		var params = 'show_results=topics&is_ajax=1&search_fields=all&search_keywords=' + ajax_escape(keywords);
 		if (S_SID != '')
 		{
@@ -118,13 +118,13 @@ function AJAXFinishSearch(keywords, search_id, results)
 	else if (results == 1)
 	{
 		setInnerText(reslink, L_RESULT);
-		reslink.setAttribute('href', VIEWTOPIC_MG + '?' + POST_TOPIC_URL + '=' + search_id + '&highlight=' + keywords, 'false');
+		reslink.setAttribute('href', CMS_PAGE_VIEWTOPIC + '?' + POST_TOPIC_URL + '=' + search_id + '&highlight=' + keywords, 'false');
 		restable.style.display = '';
 	}
 	else
 	{
 		setInnerText(reslink, sprintf(L_RESULTS, results));
-		reslink.setAttribute('href', SEARCH_MG + '?search_id=' + search_id, 'false');
+		reslink.setAttribute('href', CMS_PAGE_SEARCH + '?search_id=' + search_id, 'false');
 		restable.style.display = '';
 	}
 }

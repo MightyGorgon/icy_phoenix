@@ -155,21 +155,16 @@ function get_forum_most_active($user)
 		$user = intval($user);
 	}
 
-	$sql_forum = "SELECT forum_id, forum_name FROM " . FORUMS_TABLE . " ORDER BY forum_id";
-	if (!($result = $db->sql_query($sql_forum, false, 'forums_', FORUMS_CACHE_FOLDER)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain forums list', '', __LINE__, __FILE__, $sql_forum);
-	}
-
 	$most_active_id = array();
-	while ( $line = $db->sql_fetchrow($result) )
+	$forum_types = array(FORUM_POST);
+	$forums_array = get_forums_ids($forum_types, true, false);
+	foreach ($forums_array as $forum)
 	{
-		$most_active_id[] = $line['forum_id'];
-		$most_active_name[$line['forum_id']] = $line['forum_name'];
+		$most_active_id[] = $forum['forum_id'];
+		$most_active_name[$forum['forum_id']] = $forum['forum_name'];
 	}
-	$db->sql_freeresult($result);
 
-	$count_most_active_id = count($most_active_id);
+	$count_most_active_id = sizeof($most_active_id);
 
 	$most_active_posts = 0;
 	$num_result = 0;
@@ -182,10 +177,7 @@ function get_forum_most_active($user)
 			$sql_most = "SELECT *
 				FROM " . POSTS_TABLE . "
 				WHERE forum_id = $i AND poster_id = $user";
-			if ( !($result = $db->sql_query($sql_most)) )
-			{
-				message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql_most);
-			}
+			$result = $db->sql_query($sql_most);
 
 			if ( $db->sql_numrows($result) > $most_active_posts )
 			{
@@ -202,21 +194,17 @@ function get_forum_most_active($user)
 function user_get_thanks_received($user_id)
 {
 	global $db;
+
 	$total_thanks_received = 0;
 	$sql = "SELECT COUNT(th.topic_id) AS total_thanks
 					FROM " . THANKS_TABLE . " th, " . TOPICS_TABLE . " t
 					WHERE t.topic_poster = '" . $user_id . "'
 						AND t.topic_id = th.topic_id";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query thanks informations", "", __LINE__, __FILE__, $sql);
-	}
-	if (!$row = $db->sql_fetchrow($result))
-	{
-		message_die(GENERAL_ERROR, "Could not query thanks informations", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
 	$total_thanks_received = $row['total_thanks'];
 	$db->sql_freeresult($result);
+
 	return $total_thanks_received;
 }
 
@@ -229,10 +217,7 @@ function get_fields($where_clause = '', $expect_multiple = true, $selection = '*
 	$sql = "SELECT $selection FROM " . PROFILE_FIELDS_TABLE . "
 		$where_clause
 		ORDER BY field_id ASC";
-	if(!($result = $db->sql_query($sql, false, 'profile_fields_')))
-	{
-		message_die(GENERAL_ERROR,'Could not select from ' . PROFILE_FIELDS_TABLE,'',__LINE__,__FILE__,$sql);
-	}
+	$result = $db->sql_query($sql, 0, 'profile_fields_');
 
 	if($expect_multiple)
 	{
@@ -288,7 +273,7 @@ function displayable_field_data($data, $type)
 				}
 			}
 			$data_list = $tmp;
-			$list_size = count($data_list);
+			$list_size = sizeof($data_list);
 			$data = str_replace(',', ', ', $data);
 
 			if($list_size == 0)

@@ -38,7 +38,7 @@ if(!defined('IN_ICYPHOENIX'))
 }
 
 $disable_ct_warning = false;
-if(defined('MG_CTRACK_FLAG'))
+if(defined('CTRACKER_DISABLE_OUTPUT'))
 {
 	$disable_ct_warning = true;
 }
@@ -211,7 +211,7 @@ $unchecked_post_fields = array(
 	'menu_name', 'menu_desc', 'menu_name_lang', 'remove', 'add', 'add_cat', 'add_item',
 	'autologin', 'current_email', 'download', 'menu_link', 'new_password', 'password_confirm',
 	'deleteall', 'cat_title', 'cat_desc', 'news_category_edit', 'pm_delete_attach',
-	'topic_title', 'topic_id', 'friendname', 'friendemail',
+	'topic_title', 'topic_id', 'friendname', 'friendemail', 'drafts_list',
 	// '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 );
 
@@ -452,7 +452,7 @@ function ct_debugger($checkstring, $checkmode)
 	$matching_vars = implode("','", $matching_vars);
 	$matching_vars = "'" . $matching_vars . "'";
 
-	if (count($matching_vars))
+	if (sizeof($matching_vars))
 	{
 		// let's open the debug file and write in some stuff ;)
 		$debugstream = @fopen(IP_ROOT_PATH . 'ctracker/logfiles/logfile_debug_mode.txt', 'ab');
@@ -462,7 +462,7 @@ function ct_debugger($checkstring, $checkmode)
 
 		@fwrite($debugstream, "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 		@fwrite($debugstream, 'Script-Filename: ' . $scriptname . "\n----------------\n\n");
-		@fwrite($debugstream, 'Attack-Time: ' . date('d.m.Y G:i a') . "\n------------\n\n");
+		@fwrite($debugstream, 'Attack-Time: ' . gmdate('d.m.Y G:i a') . "\n------------\n\n");
 		@fwrite($debugstream, 'Request-Method: ' . (strpos($checkmode, 'POST') !== false ? 'POST' : 'GET') . "\n\n");
 		@fwrite($debugstream, $found_matches);
 		@fwrite($debugstream, 'Possible solution:' . "\n------------------\n\n");

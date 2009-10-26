@@ -132,8 +132,8 @@ function album_generate_config_settings_box($config_data)
 		'WATERMARK_PLACEMENT_8' => ($new['disp_watermark_at'] == 8) ? 'checked="checked"' : '',
 		'WATERMARK_PLACEMENT_9' => ($new['disp_watermark_at'] == 9) ? 'checked="checked"' : '',
 
-		'SHOW_SLIDESHOW_ENABLED' => ($new['show_slideshow'] == 1) ? 'checked="checked"' : '',
-		'SHOW_SLIDESHOW_DISABLED' => ($new['show_slideshow'] == 0) ? 'checked="checked"' : '',
+		'SHOW_SLIDESHOW_ENABLED' => ($new['show_slideshow'] ? 'checked="checked"' : ''),
+		'SHOW_SLIDESHOW_DISABLED' => (!$new['show_slideshow'] ? 'checked="checked"' : ''),
 
 		'SLIDESHOW_SCRIPT_ENABLED' => ($new['slideshow_script'] == 1) ? 'checked="checked"' : '',
 		'SLIDESHOW_SCRIPT_DISABLED' => ($new['slideshow_script'] == 0) ? 'checked="checked"' : '',

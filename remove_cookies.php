@@ -25,34 +25,24 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$confirm = ( $_POST['confirm'] ) ? true : 0;
+$confirm = ($_POST['confirm'] ? true : 0);
 
-if ( isset($_POST['cancel']) )
+if (isset($_POST['cancel']))
 {
 	redirect(append_sid('index.' . PHP_EXT));
 }
 
 if ($confirm)
 {
-	setcookie($board_config['cookie_name'] . '_sid', $session_id, - 3600, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
-
-	setcookie($board_config['cookie_name'] . '_f_all', time(), - 3600, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
-
-	setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), - 3600, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
-
-	setcookie($board_config['cookie_name'] . '_f', serialize($tracking_forums), - 3600, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
-
-	setcookie($board_config['cookie_name'] . '_data', serialize($sessiondata), - 3600, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
-
+	setcookie($config['cookie_name'] . '_sid', $session_id, - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+	setcookie($config['cookie_name'] . '_f_all', time(), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+	setcookie($config['cookie_name'] . '_t', serialize($tracking_topics), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+	setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+	setcookie($config['cookie_name'] . '_data', serialize($sessiondata), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
 	message_die(GENERAL_MESSAGE, $lang['Cookies_deleted']);
 }
 else
 {
-	$page_title = $lang['Delete_cookies'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
 	// Not confirmed, show confirmation message
 	$template->set_filenames(array('confirm' => 'confirm_body.tpl'));
 	$template->assign_vars(array(
@@ -63,10 +53,7 @@ else
 		'S_CONFIRM_ACTION' => append_sid('remove_cookies.' . PHP_EXT)
 		)
 	);
-
-	$template->pparse('confirm');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	full_page_generation('confirm_body.tpl', $lang['Delete_cookies'], '', '');
 }
 
 ?>

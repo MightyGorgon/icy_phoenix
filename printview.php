@@ -28,7 +28,7 @@ init_userprefs($userdata);
 
 // gzip_compression
 $do_gzip_compress = false;
-if($board_config['gzip_compress'])
+if($config['gzip_compress'])
 {
 	$phpver = phpversion();
 	if(extension_loaded('zlib'))
@@ -65,10 +65,7 @@ $sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.top
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 	WHERE t.topic_id = '" . $topic_id . "'
 		AND f.forum_id = t.forum_id";
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t obtain topic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 if(!($forum_row = $db->sql_fetchrow($result)))
 {
@@ -89,7 +86,7 @@ if(!$is_auth['auth_read'])
 	if (!$userdata['session_logged_in'])
 	{
 		$redirect = POST_TOPIC_URL . '=' . $topic_id;
-		header('Location: ' . append_sid(LOGIN_MG . '?redirect=printview.' . PHP_EXT . '&' . $redirect, true));
+		header('Location: ' . append_sid(CMS_PAGE_LOGIN . '?redirect=printview.' . PHP_EXT . '&' . $redirect, true));
 	}
 	$message = sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
 	ob_end_clean();
@@ -104,10 +101,7 @@ $sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website,
 		AND u.user_id = p.poster_id
 	ORDER BY p.post_time $post_order
 	LIMIT $start, $limit";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t obtain post/user information.', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 if(!$total_posts = $db->sql_numrows($result))
 {
@@ -117,16 +111,7 @@ if(!$total_posts = $db->sql_numrows($result))
 $postrow = $db->sql_fetchrowset($result);
 $db->sql_freeresult($result);
 
-// Define censored word matches
-$orig_word = array();
-$replacement_word = array();
-obtain_word_list($orig_word, $replacement_word);
-
-// Censor topic title
-if(!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-{
-	$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
-}
+$topic_title = censor_text($topic_title);
 
 // Loop through the posts
 for($i = 0; $i < $total_posts; $i++)
@@ -134,33 +119,28 @@ for($i = 0; $i < $total_posts; $i++)
 	$poster_id = $postrow[$i]['user_id'];
 	$poster = $postrow[$i]['username'];
 
-	$post_date = create_date($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
+	$post_date = create_date($config['default_dateformat'], $postrow[$i]['post_time'], $config['board_timezone']);
 	$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : '';
 	$message = $postrow[$i]['post_text'];
 
-	// Replace Naughty Words - BEGIN
-	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-	{
-		$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
-		$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
-	}
-	// Replace Naughty Words - END
+	$post_subject = censor_text($post_subject);
+	$message = censor_text($message);
 
 	// Convert and clean special chars!
 	$post_subject = htmlspecialchars_clean($post_subject);
 
 	// SMILEYS IN TITLE - BEGIN
-	if (($board_config['smilies_topic_title'] == true) && !$lofi)
+	if (($config['smilies_topic_title'] == true) && !$lofi)
 	{
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
 		$post_subject = $bbcode->parse_only_smilies($post_subject);
 	}
 	// SMILEYS IN TITLE - END
 
 	// Mighty Gorgon - New BBCode Functions - BEGIN
-	$bbcode->allow_html = $board_config['allow_html'] && $userdata['user_allowhtml'] && $postrow[$i]['enable_html'];
-	$bbcode->allow_bbcode = $board_config['allow_bbcode'] && $userdata['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
-	$bbcode->allow_smilies = $board_config['allow_smilies'] && empty($lofi) && $postrow[$i]['enable_smilies'];
+	$bbcode->allow_html = $config['allow_html'] && $userdata['user_allowhtml'] && $postrow[$i]['enable_html'];
+	$bbcode->allow_bbcode = $config['allow_bbcode'] && $userdata['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
+	$bbcode->allow_smilies = $config['allow_smilies'] && empty($lofi) && $postrow[$i]['enable_smilies'];
 
 	if(preg_match('/\[code/i', $message))
 	{
@@ -189,18 +169,18 @@ for($i = 0; $i < $total_posts; $i++)
 }
 
 // Set up all the other template variables
-$page_title = $lang['View_topic'] . ' - ' . $topic_title;
-$meta_description = '';
-$meta_keywords = '';
+$meta_content['page_title'] = $lang['View_topic'] . ' - ' . $topic_title;
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
 $s_hidden_fields = '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" />';
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_NAME' => $forum_name,
 	'TOPIC_ID' => $topic_id,
 	'TOPIC_TITLE' => $topic_title,
-	'SITENAME' => ip_stripslashes($board_config['sitename']),
-	'SITE_DESCRIPTION' => ip_stripslashes($board_config['site_desc']),
-	'PAGE_TITLE' => $page_title,
+	'SITENAME' => htmlspecialchars($config['sitename']),
+	'SITE_DESCRIPTION' => htmlspecialchars($config['site_desc']),
+	'PAGE_TITLE' => $meta_content['page_title'],
 	'POSTS_START' => $start,
 	'POSTS_LIMIT' => $limit,
 
@@ -213,13 +193,13 @@ $template->assign_vars(array(
 	'L_FORUM' => $lang['Forum'],
 	'L_TOPICS' => $lang['Topics'],
 
-	'U_TOPIC' => append_sid('viewtopic.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id),
+	'U_TOPIC' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id),
 
 	'S_ACTION' => append_sid('printview.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
 	'S_CONTENT_ENCODING' => $lang['ENCODING'],
-	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($board_config['board_timezone'], 1)))]),
+	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
 	)
 );
 

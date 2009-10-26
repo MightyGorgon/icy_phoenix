@@ -29,80 +29,70 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-$db->clear_cache('config_');
+
+// CrackerTracker v5.x
+// Mighty Gorgon: This is not needed here so I remove it!!!
+/*
+if (isset($_POST['submit']) && $ctracker_config->settings['detect_misconfiguration'] == 1)
+{
+	// Let's detect some things of misconfiguration
+	if ($_POST['server_port'] == '21')
+	{
+		// FTP Port Mistake
+		message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_1']);
+	}
+
+	if ($_POST['session_length'] < '100')
+	{
+		// Session Length Error
+		message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_2']);
+	}
+
+	if (!preg_match('/\\A\/$|\\A\/.*\/$/', $_POST['script_path']))
+	{
+		// Script Path Error
+		message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_3']);
+	}
+
+	if (preg_match('/\/$/', $_POST['server_name']))
+	{
+		// Server Name Error
+		message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_4']);
+	}
+}
+*/
+// CrackerTracker v5.x
+
+if (isset($_POST['submit']) && $ctracker_config->settings['auto_recovery'] == 1)
+{
+	define('CTRACKER_ACP', true);
+	include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_adminfunctions.' . PHP_EXT);
+	$backup_system = new ct_adminfunctions();
+	$backup_system->recover_configuration();
+	unset($backup_system);
+}
 
 // Pull all config data
-$sql = "SELECT * FROM " . CONFIG_TABLE;
-if(!$result = $db->sql_query($sql))
+$tmp_config = array();
+$tmp_config = get_config(false);
+foreach ($tmp_config as $k => $v)
 {
-	message_die(CRITICAL_ERROR, "Could not query config information in admin_board", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	// CrackerTracker v5.x
-	// Mighty Gorgon: This is not needed here so I remove it!!!
-	/*
-	if (isset($_POST['submit']) && $ctracker_config->settings['detect_misconfiguration'] == 1)
-	{
-		// Let's detect some things of misconfiguration
-		if ($_POST['server_port'] == '21')
-		{
-			// FTP Port Mistake
-			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_1']);
-		}
-
-		if ($_POST['session_length'] < '100')
-		{
-			// Session Length Error
-			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_2']);
-		}
-
-		if (!preg_match('/\\A\/$|\\A\/.*\/$/', $_POST['script_path']))
-		{
-			// Script Path Error
-			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_3']);
-		}
-
-		if (preg_match('/\/$/', $_POST['server_name']))
-		{
-			// Server Name Error
-			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_pu_4']);
-		}
-	}
-	*/
-	// CrackerTracker v5.x
-
-	if (isset($_POST['submit']) && $ctracker_config->settings['auto_recovery'] == 1)
-	{
-		define('CTRACKER_ACP', true);
-		include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_adminfunctions.' . PHP_EXT);
-		$backup_system = new ct_adminfunctions();
-		$backup_system->recover_configuration();
-		unset($backup_system);
-	}
-	// CrackerTracker v5.x
-	while($row = $db->sql_fetchrow($result))
-	{
-		$config_name = $row['config_name'];
-		$config_value = $row['config_value'];
-		//$default_config[$config_name] = isset($_POST['submit']) ? addslashes($config_value) : $config_value;
-		$default_config[$config_name] = $config_value;
-		$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
-		fix_config_values($config_name, $config_value);
-
-		if(isset($_POST['submit']))
-		{
-			set_config($config_name, $new[$config_name]);
-		}
-	}
+	$default_config[$k] = $v;
+	$new[$k] = (isset($_POST[$k])) ? $_POST[$k] : $default_config[$k];
+	fix_config_values($k, $v);
 
 	if(isset($_POST['submit']))
 	{
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-
-		message_die(GENERAL_MESSAGE, $message);
+		set_config($k, $new[$k], false);
 	}
+}
+$cache->destroy('config');
+
+if(isset($_POST['submit']))
+{
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+
+	message_die(GENERAL_MESSAGE, $message);
 }
 
 $style_select = style_select($new['default_style'], 'default_style', '../templates');
@@ -230,47 +220,29 @@ $smtp_no = (!$new['smtp_delivery']) ? 'checked="checked"' : '';
 
 $template->set_filenames(array('body' => ADM_TPL . 'board_config_body.tpl'));
 
-//report forum selection
-$sql = "SELECT f.forum_name, f.forum_id
-	FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
-	WHERE c.cat_id = f.cat_id ORDER BY c.cat_order ASC, f.forum_order ASC";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, "Couldn't obtain forum list", "", __LINE__, __FILE__, $sql);
-}
-$report_forum_rows = $db->sql_fetchrowset($result);
-$db->sql_freeresult($result);
+// Report forum selection
 $report_forum_select_list = '<select name="report_forum">';
 $report_forum_select_list .= '<option value="0">' . $lang['None'] . '</option>' . get_tree_option_optg('f' . $new['report_forum'], true, true);
 $report_forum_select_list .= '</select>';
 $report_forum_select_list = str_replace("value=\"" . 'f' . $new['report_forum'] . "\" selected=\"selected\">", "value=\"" . 'f' . $new['report_forum'] . "\" selected=\"selected\">*" , $report_forum_select_list);
 
-//BIN forum selection
-$sql = "SELECT f.forum_name, f.forum_id
-	FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
-	WHERE c.cat_id = f.cat_id ORDER BY c.cat_order ASC, f.forum_order ASC";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, "Couldn't obtain forum list", "", __LINE__, __FILE__, $sql);
-}
-$bin_forum_rows = $db->sql_fetchrowset($result);
-$db->sql_freeresult($result);
+// BIN forum selection
 $bin_forum_select_list = '<select name="bin_forum">';
 $bin_forum_select_list .= '<option value="0">' . $lang['None'] . '</option>' . get_tree_option_optg('f' . $new['bin_forum'], true, true);
 $bin_forum_select_list .= '</select>';
 $bin_forum_select_list = str_replace("value=\"" . 'f' . $new['bin_forum'] . "\" selected=\"selected\">", "value=\"" . 'f' . $new['bin_forum'] . "\" selected=\"selected\">*" , $bin_forum_select_list);
-
-// Escape any quotes in the site description for proper display in the text box on the admin page
-$new['site_desc'] = str_replace('"', '&quot;', $new['site_desc']);
-$new['sitename'] = str_replace('"', '&quot;', strip_tags($new['sitename']));
-$new['registration_closed'] = str_replace('"', '&quot;', $new['registration_closed']);
-$new['sig_line'] = str_replace('"', '&quot;', $new['sig_line']);
 
 // Ajax Shoutbox - BEGIN
 $shoutguest_yes = ($new['shout_allow_guest'] == 1) ? 'checked="checked"' : '';
 $shoutguest_read = ($new['shout_allow_guest'] == 2) ? 'checked="checked"' : '';
 $shoutguest_no = ($new['shout_allow_guest'] == 0) ? 'checked="checked"' : '';
 // Ajax Shoutbox - END
+
+// Escape any quotes in the site description for proper display in the text box on the admin page
+/*
+$new['header_table_text'] = str_replace('"', '&quot;', $new['header_table_text']);
+$new['sig_line'] = str_replace('"', '&quot;', $new['sig_line']);
+*/
 
 $template->assign_vars(array(
 	'S_CONFIG_ACTION' => append_sid('admin_board.' . PHP_EXT),
@@ -457,7 +429,7 @@ $template->assign_vars(array(
 
 	'HEADER_TBL_YES' => $switch_header_table_yes,
 	'HEADER_TBL_NO' => $switch_header_table_no,
-	'HEADER_TBL_TXT' => ip_stripslashes($new['header_table_text']),
+	'HEADER_TBL_TXT' => htmlspecialchars($new['header_table_text']),
 
 	'LOGIN_MAX_FAILED' => $new['login_tries'],
 	'LOGIN_TIME_LOCKED' => $new['login_locked_out'],
@@ -563,7 +535,7 @@ $template->assign_vars(array(
 	'MAX_USER_AGE' => $new['max_user_age'],
 	'MIN_USER_AGE' => $new['min_user_age'],
 	'BIRTHDAY_LOOKFORWARD' => $new['birthday_check_day'],
-	'SIG_DIVIDERS' => $new['sig_line'],
+	'SIG_DIVIDERS' => htmlspecialchars($new['sig_line']),
 	'HTML_TAGS' => $html_tags,
 	'HTML_YES' => $html_yes,
 	'HTML_NO' => $html_no,

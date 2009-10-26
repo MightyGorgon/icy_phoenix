@@ -36,13 +36,13 @@ if( isset($_POST['submit']) )
 		$data[$var] = request_var($var, $default, true);
 	}
 
-	if (count($data['forums']))
+	if (sizeof($data['forums']))
 	{
 		$forums_to_auth = implode('\',\'', $data['forums']);
 
 		$sql = '';
 
-		for($i = 0; $i < count($forum_auth_fields); $i++)
+		for($i = 0; $i < sizeof($forum_auth_fields); $i++)
 		{
 			$value = intval($_POST[$forum_auth_fields[$i]]);
 
@@ -61,10 +61,7 @@ if( isset($_POST['submit']) )
 						SET $sql
 						WHERE forum_id IN ('" . $forums_to_auth . "')";
 		//die($sql);
-		if ( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, 'Could not update auth table', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	cache_tree(true);
@@ -84,11 +81,11 @@ $template->set_filenames(array('body' => ADM_TPL . 'auth_forum_adv_body.tpl'));
 $forumlist = get_tree_option_optg('', true, false);
 
 // Output values of individual fields
-for($j = 0; $j < count($forum_auth_fields); $j++)
+for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 {
 	$custom_auth[$j] = '&nbsp;<select name="' . $forum_auth_fields[$j] . '">';
 
-	for($k = 0; $k < count($forum_auth_levels); $k++)
+	for($k = 0; $k < sizeof($forum_auth_levels); $k++)
 	{
 		$selected = ( $simple_auth_ary[0][$j] == $forum_auth_const[$k] ) ? ' selected="selected"' : '';
 		$custom_auth[$j] .= '<option value="' . $forum_auth_const[$k] . '"' . $selected . '>' . $lang['Forum_' . $forum_auth_levels[$k]] . '</option>';

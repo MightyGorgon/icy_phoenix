@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 <!--
 function checkForm(formObj) {
@@ -45,19 +47,19 @@ function checkForm(formObj) {
 	<td class="row1"><span class="gen"><b>{L_SUBJECT}</b></span></td>
 	<td class="row2"><span class="gen"><input type="text" class="post" name="subject" size="45" maxlength="120" style="width:450px" tabindex="3" value="{SUBJECT}" /></span></td>
 </tr>
+<!-- IF S_TICKETS and SELECT_TICKET -->
+<tr>
+	<td class="row1"><span class="gen"><b>{L_TICKET_CAT}</b></span></td>
+	<td class="row2">&nbsp;{SELECT_TICKET}</td>
+</tr>
+<!-- ENDIF -->
 <tr>
 	<td class="row1" valign="top"><span class="gen"><b>{L_MESSAGE_BODY}</b></span><br /><span class="gensmall">{L_MESSAGE_BODY_DESC}</span></td>
 	<td class="row2"><span class="gen"><textarea name="message" rows="25" cols="40" style="width: 450px;" tabindex="4">{MESSAGE}</textarea></span></td>
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="gen"><b>{L_OPTIONS}</b></span></td>
-	<td class="row2">
-		<table cellspacing="0" cellpadding="1" border="0">
-		<tr>
-			<td><input type="checkbox" name="cc_email" value="1" checked="checked" /></td>
-			<td><span class="gen">{L_CC_EMAIL}</span></td></tr>
-		</table>
-	</td>
+	<td class="row2"><input type="checkbox" name="cc_email" value="1" checked="checked" />&nbsp;<span class="gen">{L_CC_EMAIL}</span></td>
 </tr>
 <!-- BEGIN switch_confirm -->
 <tr><td class="row1 row-center" colspan="2"><span class="gensmall">{L_CONFIRM_CODE_IMPAIRED}</span><br /><br />{CONFIRM_IMG}<br /><br /></td></tr>
@@ -72,3 +74,5 @@ function checkForm(formObj) {
 <tr><td class="cat" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" tabindex="6" name="submit" class="mainoption" value="{L_SEND_EMAIL}" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

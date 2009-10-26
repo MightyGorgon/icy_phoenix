@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- BEGIN switch_ajax_features -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- END switch_ajax_features -->
@@ -46,3 +48,5 @@ setTimeout('close_window();', 3000);
 //-->
 </script>
 <!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.tpl -->

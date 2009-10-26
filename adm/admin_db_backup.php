@@ -96,7 +96,7 @@ switch ($mode)
 				$progress = request_var('progress', 'false');
 				$progress = ($progress == 'false') ? false : true;
 				$time = request_var('time', time());
-				$datecode = request_var('datecode', date('Ymd'));
+				$datecode = request_var('datecode', gmdate('Ymd'));
 				$unique_id = request_var('unique_id', unique_id());
 
 				$filepath = IP_ROOT_PATH . BACKUP_PATH;
@@ -110,7 +110,7 @@ switch ($mode)
 				$extended = $extended ? true : false;
 				$compact = $compact ? true : false;
 
-				if (!count($table))
+				if (!sizeof($table))
 				{
 					message_die(GENERAL_ERROR, $lang['Table_Select_Error'] . '<br /><br />' . sprintf($lang['Click_return_lastpage'], '<a href="' . append_sid(IP_ROOT_PATH . ADM . '/admin_db_backup.' . PHP_EXT . '?mode=backup') . '">', '</a>'), $lang['Error']);
 				}
@@ -423,7 +423,7 @@ switch ($mode)
 
 							if ($supported == 'true')
 							{
-								$tz = $board_config['board_timezone'];
+								$tz = $config['board_timezone'];
 								$time_mode = $userdata['user_time_mode'];
 								$dst_time_lag = $userdata['user_dst_time_lag'];
 								switch ($time_mode)
@@ -433,7 +433,7 @@ switch ($mode)
 										$backup_time = $matches[1] + (3600 * $tz) + $dst_sec;
 										break;
 									case SERVER_SWITCH:
-										$dst_sec = date('I', $matches[1]) * $dst_time_lag * 60;
+										$dst_sec = gmdate('I', $matches[1]) * $dst_time_lag * 60;
 										$backup_time = $matches[1] + (3600 * $tz) + $dst_sec;
 										break;
 									default:
@@ -442,7 +442,7 @@ switch ($mode)
 								}
 								$template->assign_block_vars('restore.files', array(
 									'FILE' => $file,
-									'NAME' => gmdate("Y/m/d - H:i:s", $backup_time),
+									'NAME' => gmdate('Y/m/d - H:i:s', $backup_time),
 									'SUPPORTED' => $supported
 									)
 								);

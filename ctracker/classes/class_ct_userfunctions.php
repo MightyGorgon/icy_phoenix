@@ -164,7 +164,7 @@ class ct_userfunctions
 	 */
 	function check_ip_range()
 	{
-		global $lang, $userdata;
+		global $userdata, $lang;
 
 		if ( $userdata['ct_last_ip'] == '0.0.0.0' || $userdata['ct_last_used_ip'] == '0.0.0.0')
 		{
@@ -274,14 +274,14 @@ class ct_userfunctions
 			$match2		= array();
 			$match1 	= preg_split('/\\[url=|www\\.|http:\/\//', $_POST['message']);
 			$match2		= preg_split('/\\[url=|www\\.|http:\/\//', $_POST['subject']);
-			$url_count  = count($match1) + count($match2) - 2;
+			$url_count  = sizeof($match1) + sizeof($match2) - 2;
 
 			$eur_count  = 0;
 			$match1		= array();
 			$match2		= array();
 			$match1     = preg_split('/US|\\$|€/m', $_POST['message']);
 			$match2     = preg_split('/US|\\$|€/m', $_POST['subject']);
-			$eur_count  = count($match1) + count($match2) - 2;
+			$eur_count  = sizeof($match1) + sizeof($match2) - 2;
 
 			if ( $url_count > 6 || $eur_count > 6 )
 			{
@@ -297,7 +297,7 @@ class ct_userfunctions
 
 				include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
 
-				for($i = 0; $i < count($ct_spammer_def); $i++)
+				for($i = 0; $i < sizeof($ct_spammer_def); $i++)
 				{
 					$current_value = preg_quote($ct_spammer_def[$i]);
 		 			$current_value = str_replace('\*', '.*?', $current_value);
@@ -321,7 +321,7 @@ class ct_userfunctions
 	 */
 	function block_handler()
 	{
-		global $db, $lang, $ctracker_config, $userdata;
+		global $db, $userdata, $lang, $ctracker_config;
 
 		if ($userdata['user_id'] == ANONYMOUS)
 		{
@@ -393,7 +393,7 @@ class ct_userfunctions
 	 */
 	function handle_profile()
 	{
-		global $ctracker_config, $mode, $lang, $userdata;
+		global $ctracker_config, $mode, $userdata, $lang;
 
 		/*
 		 * Done this that Eclipse or another Code-Checker does not output
@@ -430,7 +430,7 @@ class ct_userfunctions
 		// Registration Scan blocked Mails
 		if ( isset($_POST['submit']) && intval($ctracker_config->settings['autoban_mails']) == 1 && $mode == 'register' )
 		{
-			for($i = 0; $i < count($ct_userspm_def); $i++)
+			for($i = 0; $i < sizeof($ct_userspm_def); $i++)
 			{
 				if ( $_POST['username'] == $ct_userspm_def[$i] )
 				{
@@ -438,7 +438,7 @@ class ct_userfunctions
 				}
 			}
 
-			for($i = 0; $i < count($ct_mailscn_def); $i++)
+			for($i = 0; $i < sizeof($ct_mailscn_def); $i++)
 			{
 				$current_value = preg_quote($ct_mailscn_def[$i]);
 		 		$current_value = str_replace('\*', '.*?', $current_value);
@@ -453,7 +453,7 @@ class ct_userfunctions
 		// Registration Scan blocked Words
 		if ( isset($_POST['submit']) && intval($ctracker_config->settings['spam_keyword_det']) >= 1 )
 		{
-			for($i = 0; $i < count($ct_spammer_def); $i++)
+			for($i = 0; $i < sizeof($ct_spammer_def); $i++)
 			{
 				$current_value = preg_quote($ct_spammer_def[$i]);
 				$current_value = str_replace('\*', '.*?', $current_value);
@@ -502,7 +502,7 @@ class ct_userfunctions
 	 */
 	function password_functions()
 	{
-		global $db, $ctracker_config, $lang, $mode, $userdata;
+		global $db, $userdata, $lang, $mode, $ctracker_config;
 
 		// Password length check
 		$pw_length = strlen($_POST['new_password']);

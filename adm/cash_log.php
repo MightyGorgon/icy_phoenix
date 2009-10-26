@@ -22,9 +22,8 @@ define('IN_CASHMOD', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('admin_cash.' . PHP_EXT);
@@ -82,10 +81,7 @@ if (isset($_GET['delete']) &&
 		$deleteclause = " WHERE " . $deleteclause;
 	}
 	$sql = "DELETE FROM " . CASH_LOGS_TABLE . $deleteclause;
-	if (!$db->sql_query($sql))
-	{
-		message_die(CRITICAL_ERROR, "Log deletion failed", "", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 }
 //
 // most of this is just stupid sorting stuff
@@ -126,11 +122,11 @@ if ($stime != 'all')
 
 }
 
-$numactionfilters = count($ar_action);
-$numtimefilters = count($ar_time);
+$numactionfilters = sizeof($ar_action);
+$numtimefilters = sizeof($ar_time);
 
 $sql_clause = "";
-if (count($clause) != 0)
+if (sizeof($clause) != 0)
 {
 	$sql_clause = "WHERE " . implode(" AND ", $clause);
 }
@@ -138,10 +134,8 @@ if (count($clause) != 0)
 $sql = "SELECT count(log_id) AS log_items
 	FROM " . CASH_LOGS_TABLE . "
 	$sql_clause";
-if (!$result = $db->sql_query($sql))
-{
-	message_die(CRITICAL_ERROR, "Could not query the logs table", "", __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
+
 if (!($row = $db->sql_fetchrow($result)))
 {
 	message_die(CRITICAL_ERROR, "Could not obtain log count", "", __LINE__, __FILE__, $sql);
@@ -241,10 +235,7 @@ $sql = "SELECT *
 	$sql_clause
 	ORDER BY log_time DESC
 	LIMIT $start, $range";
-if (!$result = $db->sql_query($sql))
-{
-	message_die(CRITICAL_ERROR, "Could not query log information", "", __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
@@ -253,10 +244,10 @@ while ($row = $db->sql_fetchrow($result))
 
 $i = 0;
 
-for ($i = 0; $i < count($data_log); $i++)
+for ($i = 0; $i < sizeof($data_log); $i++)
 {
 	$entry = $data_log[$i];
-	$entry['log_time'] = create_date($board_config['default_dateformat'], $entry['log_time'], $board_config['board_timezone']);
+	$entry['log_time'] = create_date($config['default_dateformat'], $entry['log_time'], $config['board_timezone']);
 	$entry['log_action'] = '<span class="gen">' . cash_clause($lang['Cash_clause'][$entry['log_type']],$entry['log_action']) . '</span>';
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 

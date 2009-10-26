@@ -847,7 +847,7 @@ String.prototype.exist = function()
 	return (this == "undefined" ? false : true);
 };
 
-//Opacité
+//OpacitÃ©
 function setOpacity(id, alpha, isObj)
 {
 	if(!dom)
@@ -900,8 +900,8 @@ function getOpacity(id, isObj)
 }
 
 // Fading
-vit = 5; //temps entre chaque addition d'opacité(+ petit -> + de qualité -> + dur pour le navigateur)
-add = 4; //valeur à additionner (idem)
+vit = 5; //temps entre chaque addition d'opacitÃ©(+ petit -> + de qualitÃ© -> + dur pour le navigateur)
+add = 4; //valeur Ã  additionner (idem)
 nObj = 0;
 
 fadeObjects = new Object();
@@ -936,7 +936,7 @@ function fade2(object, destOp)
 	{
 		direction = -1;//de - en - opaque
 	}
-	alpha += direction * Math.min(direction * diff, add);//ajoute le + petit entre la diférence et add
+	alpha += direction * Math.min(direction * diff, add);//ajoute le + petit entre la difÃ©rence et add
 	setOpacity(object,alpha,true);
 	alpha = getOpacity(object,true);
 	object.offsetLeft;

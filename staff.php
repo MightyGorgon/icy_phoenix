@@ -21,13 +21,6 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$page_title = $lang['Staff'];
-$meta_description = '';
-$meta_keywords = '';
-include('includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'staff_body.tpl'));
-
 $is_auth_ary = array();
 $is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata, $forum_data);
 
@@ -36,34 +29,22 @@ $sql_forums = "SELECT ug.user_id, f.forum_id, f.forum_name
 		WHERE aa.auth_mod = " . TRUE . "
 			AND ug.group_id = aa.group_id
 			AND f.forum_id = aa.forum_id";
-if(!$result_forums = $db->sql_query($sql_forums, false, 'staff_'))
-{
-	message_die(GENERAL_ERROR, 'Could not query forums.', '', __LINE__, __FILE__, $sql_forums);
-}
+$result_forums = $db->sql_query($sql_forums, 0, 'staff_');
+
 while($row = $db->sql_fetchrow($result_forums))
 {
 	$display_forums = ($is_auth_ary[$row['forum_id']]['auth_view']) ? true : false;
 	if($display_forums)
 	{
 		$forum_id = $row['forum_id'];
-		$staff2[$row['user_id']][$row['forum_id']] = '<a href="'. append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id) . '" class="genmed">'. $row['forum_name'] .'</a><br />';
+		$staff2[$row['user_id']][$row['forum_id']] = '<a href="'. append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '" class="genmed">'. $row['forum_name'] .'</a><br />';
 	}
 }
 
-$sql_ranks = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-if(!($results_ranks = $db->sql_query($sql_ranks, false, 'ranks_')))
-{
-	message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql_ranks);
-}
-$ranksrow = array();
-while($row = $db->sql_fetchrow($results_ranks))
-{
-	$ranksrow[] = $row;
-}
-$db->sql_freeresult($result);
+$ranks_array = $cache->obtain_ranks(false);
 
 $level_cat = $lang['Staff_level'];
-for($i = 0; $i < count($level_cat); $i++)
+for($i = 0; $i < sizeof($level_cat); $i++)
 {
 	$user_level = $level_cat[$i];
 	$template->assign_block_vars('user_level', array(
@@ -84,40 +65,35 @@ for($i = 0; $i < count($level_cat); $i++)
 	$sql_user = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang
 		FROM " . USERS_TABLE . " u
 		WHERE $where";
-	if(!($result_user = $db->sql_query($sql_user)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain user information.', '', __LINE__, __FILE__, $sql_user);
-	}
+	$result_user = $db->sql_query($sql_user);
+
 	while($staff = $db->sql_fetchrow($result_user))
 	{
 		$k = 0;
 		$row_class = (!($k % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$user_id = $staff['user_id'];
 
-		$rank = '';
-		$rank_image = '';
-		if($staff['user_rank'])
+		// Mighty Gorgon - Multiple Ranks - BEGIN
+		$user_ranks = generate_ranks($staff, $ranks_array);
+
+		$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
+		$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
+		$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
+		$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
+		$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
+		$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
+		$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
+		$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
+		$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
+		$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
+		if (($user_rank_01 == '') && ($user_rank_01_img  == '') && ($user_rank_02 == '') && ($user_rank_02_img == '') && ($user_rank_03 == '') && ($user_rank_03_img == '') && ($user_rank_04 == '') && ($user_rank_04_img == '') && ($user_rank_05 == '') && ($user_rank_05_img == ''))
 		{
-			for($j = 0; $j < count($ranksrow); $j++)
-			{
-				if($staff['user_rank'] == $ranksrow[$j]['rank_id'] && $ranksrow[$j]['rank_special'])
-				{
-					$rank = $ranksrow[$j]['rank_title'];
-					$rank_image = ($ranksrow[$j]['rank_image']) ? '<img src="' . $ranksrow[$j]['rank_image'] . '" alt="' . $rank . '" title="' . $rank . '" />' : '';
-				}
-			}
+			$user_rank_01 = '&nbsp;';
 		}
-		else
-		{
-			for($j = 0; $j < count($ranksrow); $j++)
-			{
-				if($staff['user_posts'] >= $ranksrow[$j]['rank_min'] && !$ranksrow[$j]['rank_special'])
-				{
-					$rank = $ranksrow[$j]['rank_title'];
-					$rank_image = ($ranksrow[$j]['rank_image']) ? '<img src="' . $ranksrow[$j]['rank_image'] . '" alt="' . $rank . '" title="' . $rank . '" />' : '';
-				}
-			}
-		}
+		// Mighty Gorgon - Multiple Ranks - END
+
+		$rank = $user_rank_01;
+		$rank_image = $user_rank_01_img;
 
 		$avatar = user_get_avatar($staff['user_id'], $staff['user_level'], $staff['user_avatar'], $staff['user_avatar_type'], $staff['user_allowavatar']);
 
@@ -141,12 +117,9 @@ for($i = 0; $i < count($level_cat); $i++)
 				FROM " . TOPICS_TABLE . " t
 				WHERE t.topic_poster = '$user_id'
 				LIMIT 1";
-		if(!($results_posts = $db->sql_query($sql_posts)))
-		{
-			message_die(GENERAL_ERROR, 'Error getting user last post.', '', __LINE__, __FILE__, $sql_posts);
-		}
+		$results_posts = $db->sql_query($sql_posts);
 		$row = $db->sql_fetchrow($results_posts);
-		//$last_post = (isset($row['post_time'])) ? '<a href="' . append_sid(VIEWTOPIC_MG . '?'. POST_POST_URL . '=' . $row[post_id] . '#p' . $row[post_id]) . '"  style="text-decoration:none">' . create_date_ip($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']) .'</a>' : $lang['None'];
+		//$last_post = (isset($row['post_time'])) ? '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?'. POST_POST_URL . '=' . $row[post_id] . '#p' . $row[post_id]) . '"  style="text-decoration:none">' . create_date_ip($config['default_dateformat'], $row['post_time'], $config['board_timezone']) .'</a>' : $lang['None'];
 		$user_topics = $row['user_topics'];
 
 		$memberdays = max(1, round((time() - $staff['user_regdate']) / 86400));
@@ -154,8 +127,8 @@ for($i = 0; $i < count($level_cat); $i++)
 		$topics_per_day = $user_topics / $memberdays;
 		if($staff['user_posts'] != '0')
 		{
-			$total_topics = $board_config['max_topics'];
-			$total_posts = $board_config['max_posts'];
+			$total_topics = $config['max_topics'];
+			$total_posts = $config['max_posts'];
 			$post_percent = ($total_posts) ? min(100, ($staff['user_posts'] / $total_posts) * 100) : 0;
 			$topic_percent = ($total_topics) ? min(100, ($user_topics / $total_topics) * 100) : 0;
 		}
@@ -167,7 +140,7 @@ for($i = 0; $i < count($level_cat); $i++)
 
 		$pmto = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $staff[user_id]);
 		$pm = '<a href="' . $pmto . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
-		$mailto = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $staff['user_id']) : 'mailto:' . $staff['user_email'];
+		$mailto = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $staff['user_id']) : 'mailto:' . $staff['user_email'];
 		$mail = ($staff['user_email']) ? '<a href="' . $mailto . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>' : '';
 
 		$user_info = array();
@@ -191,7 +164,7 @@ for($i = 0; $i < count($level_cat); $i++)
 			'TOPIC_PERCENT' => sprintf($lang['User_post_pct_stats'], $topic_percent),
 			'TOPICS_PER_DAY' => sprintf($lang['Staff_user_topic_day_stats'], $topics_per_day),
 			'LAST_POST' => $last_post,
-			'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $staff['user_regdate'], $board_config['board_timezone']),
+			'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $staff['user_regdate'], $config['board_timezone']),
 			'PERIOD' => sprintf($lang['Staff_period'], $memberdays),
 
 			'PROFILE_IMG' => $profile_img,
@@ -250,7 +223,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-include('includes/page_tail.' . PHP_EXT);
+full_page_generation('staff_body.tpl', $lang['Staff'], '', '');
 
 ?>

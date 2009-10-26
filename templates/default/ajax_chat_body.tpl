@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {SHOUTBOX_BODY}
 
 <!--
@@ -17,3 +19,5 @@
 </tr>
 </table>
 -->
+
+<!-- INCLUDE overall_footer.tpl -->

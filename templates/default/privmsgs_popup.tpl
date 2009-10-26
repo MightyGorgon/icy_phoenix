@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <script type="text/javascript">
 <!--
 function jump_to_inbox()
@@ -16,3 +18,5 @@ function jump_to_inbox()
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- INCLUDE simple_footer.tpl -->

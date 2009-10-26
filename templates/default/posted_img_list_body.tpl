@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form action="{S_ACTION}" name="select_all" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PIC_GALLERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN pic_row -->
@@ -29,3 +31,5 @@
 </tr>
 </table>
 <br />
+
+<!-- INCLUDE overall_footer.tpl -->

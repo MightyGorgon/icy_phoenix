@@ -88,14 +88,11 @@ class Statistics
 
 		$is_auth_ary = auth($auth, AUTH_LIST_ALL, $userdata);
 
-		$sql = 'SELECT forum_id
-			FROM ' . FORUMS_TABLE;
-
-		if (!($result = $db->sql_query($sql, false, 'stats_forums_auth_')))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t retrieve forum_id data', '', __LINE__, __FILE__, $sql);
-		}
-
+		$sql = "SELECT forum_id
+			FROM " . FORUMS_TABLE . "
+			WHERE forum_type = " . FORUM_POST . "
+			ORDER BY forum_order";
+		$result = $db->sql_query($sql, 0, 'forums_ids_');
 		while ($row = $db->sql_fetchrow($result))
 		{
 			if ($is_auth_ary[$row['forum_id']]['auth_view'])
@@ -156,7 +153,7 @@ class StatisticsDB
 		{
 			$this->db_cached = true;
 			$this->use_cache = true;
-			$data = unserialize(stripslashes($cached_data));
+			$data = unserialize($cached_data);
 			$this->numrows_data = $data->n;
 			$this->fetchrowset_data = $data->fs;
 			$this->fetchrow_data = $data->f;
@@ -273,6 +270,14 @@ class StatisticsDB
 		return ($result);
 	}
 
+	/**
+	* Escape string used in sql query
+	*/
+	function sql_escape($msg)
+	{
+		return @mysql_real_escape_string($msg);
+	}
+
 	function end_cached_query($module_id)
 	{
 		global $db;
@@ -291,16 +296,12 @@ class StatisticsDB
 		else
 		{
 			$data = new cached_db($this->numrows_data, $this->fetchrowset_data, $this->fetchrow_data);
-
 			$sql = "UPDATE " . MODULES_TABLE . "
-			SET module_db_cache = '" . sql_quote(serialize($data)) . "',
+			SET module_db_cache = '" . $this->sql_escape(serialize($data)) . "',
 			module_cache_time = " . time() . "
 			WHERE module_id = " . $module_id;
 		}
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Unable to update DB Cache', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 }
 
@@ -337,7 +338,8 @@ class Results
 		if ($cache_enabled)
 		{
 			$this->use_cache = true;
-			$data = unserialize(stripslashes($cached_data));
+			//$cached_data = stripslashes($cached_data);
+			$data = unserialize($cached_data);
 			$this->var_data = $data->var_data;
 		}
 	}
@@ -386,7 +388,7 @@ class Results
 	function assign_template_block_vars($blockname)
 	{
 		global $template;
-		$this->var_data[$blockname . '.'][] = $template->_tpldata[$blockname . '.'][count($template->_tpldata[$blockname . '.'])-1];
+		$this->var_data[$blockname . '.'][] = $template->_tpldata[$blockname . '.'][sizeof($template->_tpldata[$blockname . '.'])-1];
 	}
 
 	// Get Variable from Cache
@@ -408,7 +410,7 @@ class Results
 			return;
 		}
 
-		return (count($this->var_data[$blockname . '.']));
+		return (sizeof($this->var_data[$blockname . '.']));
 	}
 
 	// Get Variable Array from cached Block
@@ -433,6 +435,14 @@ class Results
 		return ($this->var_data[$blockname . '.'][$count][$key]);
 	}
 
+	/**
+	* Escape string used in sql query
+	*/
+	function sql_escape($msg)
+	{
+		return @mysql_real_escape_string($msg);
+	}
+
 	function end_cached_query($module_id)
 	{
 		global $db;
@@ -451,17 +461,12 @@ class Results
 		else
 		{
 			$data = new cached_result($this->var_data);
-
 			$sql = "UPDATE " . MODULES_TABLE . "
-			SET module_result_cache = '" . sql_quote(serialize($data)) . "',
+			SET module_result_cache = '" . $this->sql_escape(serialize($data)) . "',
 			module_cache_time = " . time() . "
 			WHERE module_id = " . $module_id;
 		}
-
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Unable to update Result Cache', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 }
 

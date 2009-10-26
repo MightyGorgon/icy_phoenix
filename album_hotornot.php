@@ -69,11 +69,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 							AND pic_user_id <> '" . $userdata['user_id'] . "'
 						ORDER BY RAND() LIMIT 1";
 	}
-
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$pic_id_temp = $db->sql_fetchrow($result);
 	$pic_id = $pic_id_temp['pic_id'];
 
@@ -97,11 +93,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 				AND cat.cat_id = p.pic_cat_id
 			" . $sql_where . "
 			GROUP BY p.pic_id";
-
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$thispic = $db->sql_fetchrow($result);
 
 	$cat_id = $thispic['pic_cat_id'];
@@ -128,7 +120,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=album_hotornot.' . PHP_EXT));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_hotornot.' . PHP_EXT));
 			}
 			else
 			{
@@ -158,21 +150,13 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 	+----------------------------------------------------------
 	*/
 
-	// Start output of page
-	$page_title = $lang['Album'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'album_hon.tpl'));
-
 	if(($thispic['pic_user_id'] == ALBUM_GUEST) or ($thispic['username'] == ''))
 	{
 		$poster = ($thispic['pic_username'] == '') ? $lang['Guest'] : $thispic['pic_username'];
 	}
 	else
 	{
-		$poster = '<a href="'. append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $thispic['user_id']) . '">' . $thispic['username'] . '</a>';
+		$poster = '<a href="'. append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $thispic['user_id']) . '">' . $thispic['username'] . '</a>';
 	}
 
 	//decide how user wants to show their rating
@@ -215,7 +199,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
 		'PIC_DESC' => nl2br(htmlspecialchars($thispic['pic_desc'])),
 		'POSTER' => $poster,
-		'PIC_TIME' => create_date($board_config['default_dateformat'], $thispic['pic_time'], $board_config['board_timezone']),
+		'PIC_TIME' => create_date($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
 		'PIC_RATING' => $image_rating,
 		'PIC_COMMENTS' => $thispic['comments'],
@@ -235,10 +219,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 		$template->assign_block_vars('comment_switch', array());
 	}
 
-	// Generate the page
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	full_page_generation('album_hon.tpl', $lang['Album'], '', '');
 }
 else
 {
@@ -268,20 +249,13 @@ else
 					WHERE rate_pic_id = '" . $pic_id . "'
 						AND rate_user_id = '" . $rate_user_id . "'
 						AND " . $rating_field . " > '0'";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query rating table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if (!($rated = $db->sql_fetchrow($result)))
 	{
 		$sql = "INSERT INTO " . ALBUM_RATE_TABLE . " (rate_pic_id, rate_user_id, rate_user_ip, " . $rating_field . ")
 				VALUES ('$pic_id', '$rate_user_id', '$rate_user_ip', '$rate_point')";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not insert new rating', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$rate_string = $lang['Album_rate_successfully'];
 	}
 	else

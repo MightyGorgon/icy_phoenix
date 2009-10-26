@@ -42,14 +42,8 @@ if (isset($_GET['view']))
 		$sql_ordering = ($_GET['view'] == 'next') ? 'ASC' : 'DESC';
 
 		$sql = "SELECT topic_id, post_time FROM " . POSTS_TABLE . " WHERE post_id = " . $post_id . " LIMIT 1";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
-
 		$topic_id = $row['topic_id'];
 		$post_time = $row['post_time'];
 
@@ -58,11 +52,7 @@ if (isset($_GET['view']))
 			AND post_time $sql_condition " . $post_time . "
 			ORDER BY post_time $sql_ordering
 			LIMIT 1";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Could not obtain newer/older post information", '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -87,14 +77,9 @@ $sql = "SELECT t.topic_title, t.topic_id, f.forum_id, f.auth_view, f.auth_read, 
 	WHERE p.post_id = $post_id
 		AND t.topic_id = p.topic_id
 		AND f.forum_id = t.forum_id";
+$result = $db->sql_query($sql);
 
 $tmp = '';
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
-}
-
 if (!($forum_row = $db->sql_fetchrow($result)))
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
@@ -108,38 +93,23 @@ if ($download)
 {
 	$sql_download = ($download != -1) ? " AND p.post_id = " . intval($download) . " " : '';
 
-	$orig_word = array();
-	$replacement_word = array();
-	obtain_word_list($orig_word, $replacement_word);
-	// Start Autolinks For phpBB Mod
-	$orig_autolink = array();
-	$replacement_autolink = array();
-	obtain_autolink_list($orig_autolink, $replacement_autolink, $forum_id);
-	// End Autolinks For phpBB Mod
-
-
 	$sql = "SELECT u.*, p.*
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE p.topic_id = $topic_id
 			$sql_download
 			AND u.user_id = p.poster_id
 			ORDER BY p.post_time ASC, p.post_id ASC";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not create download stream for post.', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$download_file = '';
-
 	$is_auth_read = array();
-
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$is_auth_read = auth(AUTH_ALL, $row['forum_id'], $userdata);
 
 		$poster_id = $row['user_id'];
 		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : $row['username'];
-		$post_date = create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
+		$post_date = create_date($config['default_dateformat'], $row['post_time'], $config['board_timezone']);
 		$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
 
 		$message = $row['post_text'];
@@ -152,11 +122,8 @@ if ($download)
 		$replace = array('(', ')', ':', '[', ']', '{', '}',);
 		$message =  preg_replace($search, $replace, $message);
 
-		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-		{
-			$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
-			$message = str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
-		}
+		$post_subject = censor_text($post_subject);
+		$message = censor_text($message);
 
 		$break = "\n\r";
 		$line = '-----------------------------------';
@@ -171,7 +138,7 @@ if ($download)
 		$disp_folder = 'Download';
 	}
 
-	$filename = ip_stripslashes($board_config['sitename']) . "_" . $disp_folder . "_" . date("Ymd",time()) . ".txt";
+	$filename = ip_clean_string($config['sitename'], $lang['ENCODING']) . '_' . $disp_folder . '_' . gmdate('Ymd') . '.txt';
 	header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 	header('Content-Disposition: attachment;filename="' . $filename . '"');
 	header('Content-Transfer-Encoding: plain/text');
@@ -188,24 +155,7 @@ if (!$is_auth['auth_read'])
 	message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
 }
 
-// Define censored word matches
-if (empty($orig_word) && empty($replacement_word))
-{
-	$orig_word = array();
-	$replacement_word = array();
-
-	obtain_word_list($orig_word, $replacement_word);
-}
-
-// Dump out the page header and load viewtopic body template
-$gen_simple_header = true;
-
-$page_title =  $topic_title;
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('reviewbody' => 'post_review.tpl'));
+$meta_content['page_title'] =  $topic_title;
 
 $view_prev_post_url = append_sid('show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . $post_id . '&amp;view=previous');
 $view_next_post_url = append_sid('show_post.' . PHP_EXT . '?' . POST_POST_URL .' =' . $post_id . '&amp;view=next');
@@ -238,7 +188,7 @@ $template->assign_vars(array(
 	)
 );
 
-if ($board_config['edit_notes'] == 1)
+if ($config['edit_notes'] == 1)
 {
 	$template->assign_vars(array(
 		'S_EDIT_NOTES' => true,
@@ -247,8 +197,7 @@ if ($board_config['edit_notes'] == 1)
 }
 
 // Mighty Gorgon - Multiple Ranks - BEGIN
-require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
-$ranks_sql = query_ranks();
+$ranks_array = $cache->obtain_ranks(false);
 // Mighty Gorgon - Multiple Ranks - END
 
 // Go ahead and pull all data for this topic
@@ -257,11 +206,7 @@ $sql = "SELECT u.*, p.*, t.topic_poster, t.title_compl_infos
 	WHERE p.post_id = $post_id
 	AND p.poster_id = u.user_id
 	LIMIT 1";
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 //init_display_review_attachments($is_auth);
 
@@ -284,16 +229,16 @@ if ($row = $db->sql_fetchrow($result))
 			$$k = $v;
 		}
 
-		$post_date = create_date_ip($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
+		$post_date = create_date_ip($config['default_dateformat'], $row['post_time'], $config['board_timezone']);
 		$poster_posts = ($row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $row['user_posts'] : '';
 		$poster_from = ($row['user_from'] && $row['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $row['user_from'] : '';
-		$poster_joined = ($row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']) : '';
+		$poster_joined = ($row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $config['board_timezone']) : '';
 		$poster_avatar = $user_info['avatar'];
 
 		// Check For Anonymous User
 		if ($userdata['user_id'] != '-1')
 		{
-			$name_link = '<a href="' . append_sid(PROFILE_MG . '?mode=editprofile&amp;' . $userdata['user_id']) . '">' . $userdata['username'] . '</a>';
+			$name_link = '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;' . $userdata['user_id']) . '">' . $userdata['username'] . '</a>';
 		}
 		else
 		{
@@ -301,7 +246,7 @@ if ($row = $db->sql_fetchrow($result))
 		}
 
 		// Mighty Gorgon - Multiple Ranks - BEGIN
-		$user_ranks = generate_ranks($row, $ranks_sql);
+		$user_ranks = generate_ranks($row, $ranks_array);
 
 		$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
 		$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
@@ -331,26 +276,17 @@ if ($row = $db->sql_fetchrow($result))
 		$message = $row['post_text'];
 		$message_compiled = empty($row['post_text_compiled']) ? false : $row['post_text_compiled'];
 
-		$user_sig = ($row['enable_sig'] && ($row['user_sig'] != '') && $board_config['allow_sig']) ? $row['user_sig'] : '';
+		$user_sig = ($row['enable_sig'] && ($row['user_sig'] != '') && $config['allow_sig']) ? $row['user_sig'] : '';
 
 		// Note! The order used for parsing the message _is_ important, moving things around could break any output
-
-		// Replace naughty words
-		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-		{
-			if ($user_sig != '')
-			{
-				$user_sig = preg_replace($orig_word, $replacement_word, $user_sig);
-			}
-
-			$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
-			$message = preg_replace($orig_word, $replacement_word, $message);
-		}
+		$user_sig = censor_text($user_sig);
+		$post_subject = censor_text($post_subject);
+		$message = censor_text($message);
 
 		// Parse message and/or sig for BBCode if reqd
-		$bbcode->allow_html = $board_config['allow_html'];
-		$bbcode->allow_bbcode = $board_config['allow_bbcode'];
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] && $row['user_allowsmile'] && !$lofi) ? true : false;
+		$bbcode->allow_html = $config['allow_html'];
+		$bbcode->allow_bbcode = $config['allow_bbcode'];
+		$bbcode->allow_smilies = ($config['allow_smilies'] && $row['user_allowsmile'] && !$lofi) ? true : false;
 
 		if($user_sig && empty($sig_cache[$row['user_id']]))
 		{
@@ -380,7 +316,7 @@ if ($row = $db->sql_fetchrow($result))
 		// Replace newlines (we use this rather than nl2br because till recently it wasn't XHTML compliant)
 		if ($user_sig != '')
 		{
-			$user_sig = '<br />' . $board_config['sig_line'] . '<br />' . $user_sig;
+			$user_sig = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 		}
 
 		// Editing information
@@ -388,36 +324,33 @@ if ($row = $db->sql_fetchrow($result))
 		{
 			$l_edit_time_total = ($row['post_edit_count'] == 1) ? $lang['Edited_time_total'] : $lang['Edited_times_total'];
 			$l_edit_id = (intval($row['post_edit_id']) > 1) ? colorize_username($row['post_edit_id']) : $poster;
-			$l_edited_by = '<br /><br />' . sprintf($l_edit_time_total, $l_edit_id, create_date($board_config['default_dateformat'], $row['post_edit_time'], $board_config['board_timezone']), $row['post_edit_count']);
+			$l_edited_by = '<br /><br />' . sprintf($l_edit_time_total, $l_edit_id, create_date($config['default_dateformat'], $row['post_edit_time'], $config['board_timezone']), $row['post_edit_count']);
 		}
 		else
 		{
 			$l_edited_by = '';
 		}
 
-		if ($row['enable_autolinks_acronyms'] == 1)
+		if ($row['enable_autolinks_acronyms'])
 		{
 			$message = $bbcode->acronym_pass($message);
-			if(count($orig_autolink))
-			{
-				$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
-			}
+			$message = autolink_text($message, $forum_id);
 		}
 
-		if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 		{
 			$mini_post_url = str_replace ('--', '-', make_url_friendly($row['post_subject']) . '-vp' . $row['post_id'] . '.html#p' . $row['post_id']);
 		}
 		else
 		{
-			$mini_post_url = append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $row['post_id']) . '#p' . $row['post_id'];
+			$mini_post_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $row['post_id']) . '#p' . $row['post_id'];
 		}
 
 		// Again this will be handled by the templating code at some point
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('postrow', array(
-			'DOWNLOAD_POST' => append_sid(VIEWTOPIC_MG . '?download=' . $row['post_id'] . '&amp;' . POST_TOPIC_URL . '=' .$topic_id),
+			'DOWNLOAD_POST' => append_sid(CMS_PAGE_VIEWTOPIC . '?download=' . $row['post_id'] . '&amp;' . POST_TOPIC_URL . '=' .$topic_id),
 			'ROW_CLASS' => $row_class,
 			'POSTER_NAME' => $poster,
 			// Mighty Gorgon - Multiple Ranks - BEGIN
@@ -508,7 +441,7 @@ else
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
 }
 
-$template->pparse('reviewbody');
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+$gen_simple_header = true;
+full_page_generation('post_review.tpl', $meta_content['page_title'], '', '');
 
 ?>

@@ -35,13 +35,11 @@ $hl_cache_list = array();
 
 function setup_hacks_list_array()
 {
-	global $db, $lang, $hl_cache_list;
+	global $db, $hl_cache_list;
 
 	$sql = 'SELECT * FROM ' . HACKS_LIST_TABLE;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	$i = 0;
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -59,9 +57,9 @@ function cryptize_hl_email($email)
 
 function scan_hl_files()
 {
-	global $board_config, $lang, $hl_cache_list;
+	global $config, $lang, $hl_cache_list;
 
-	if (DEBUG_THIS_MOD) $board_config['hacks_list_hl_dir'] = 'hl/';
+	if (DEBUG_THIS_MOD) $config['hacks_list_hl_dir'] = 'hl/';
 
 	// The list of dirs to scan.  By default this is the main phpbb root path and the dir set in the options.
 	$scan_dir_list = array(IP_ROOT_PATH, IP_ROOT_PATH . HL_DIR);
@@ -112,10 +110,7 @@ function update_hl_file_cache($filename)
 			$sql_2 .= (is_numeric($val) && $key != 'hack_version') ? $val : "'".addslashes($val)."'";
 		}
 		$sql = 'REPLACE INTO ' . HACKS_LIST_TABLE . " ($sql_1) VALUES ($sql_2)";
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 	else
 	{
@@ -127,7 +122,7 @@ function parse_hl_file($file_data)
 {
 	$data_array = array();
 	//Remove commented lines (##) from data
-	for ($i=0; $i < count($file_data); $i++)
+	for ($i=0; $i < sizeof($file_data); $i++)
 	{
 		if(substr(trim($file_data[$i]), 0, 2) == '##')
 		{
@@ -158,7 +153,7 @@ function parse_hl_file($file_data)
 		$found = false;
 		$continue = true;
 		$i = 0;
-		while ($i < count($file_data) && !$found)
+		while ($i < sizeof($file_data) && !$found)
 		{
 			//Our preg_xxxx pattern
 			$pattern = '/'.$search_item.'?[ ]=?[ ]/';

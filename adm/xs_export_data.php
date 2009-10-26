@@ -34,24 +34,25 @@ $template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . ap
 
 $lang['xs_export_data_back'] = str_replace('{URL}', append_sid('xs_export_data.' . PHP_EXT), $lang['xs_export_data_back']);
 
-//
 // export style
-//
 if(isset($_GET['export']))
 {
 	$export = str_replace(array('\\', '/'), array('',''), stripslashes($_GET['export']));
 	// get list of themes for style
 	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " WHERE template_name = '$export' ORDER BY style_name ASC";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_theme_data'] . '<br /><br />' . $lang['xs_export_data_back']);
 	}
 	$theme_rowset = $db->sql_fetchrowset($result);
-	if(count($theme_rowset) == 0)
+	if(sizeof($theme_rowset) == 0)
 	{
 		xs_error($lang['xs_no_themes'] . '<br /><br />' . $lang['xs_export_data_back']);
 	}
-	if(count($theme_rowset) == 1)
+	if(sizeof($theme_rowset) == 1)
 	{
 		$_POST['export'] = $_GET['export'];
 		$_POST['export_total'] = '1';
@@ -62,12 +63,12 @@ if(isset($_GET['export']))
 	{
 		$template->set_filenames(array('body' => XS_TPL_PATH . 'export_data2.tpl'));
 		$template->assign_vars(array(
-			'TOTAL'		=> count($theme_rowset),
+			'TOTAL'		=> sizeof($theme_rowset),
 			'EXPORT'	=> htmlspecialchars($export),
 			'U_ACTION'	=> append_sid("xs_export_data." . PHP_EXT)
 			)
 		);
-		for($i=0; $i<count($theme_rowset); $i++)
+		for($i=0; $i< sizeof($theme_rowset); $i++)
 		{
 			$row_class = $xs_row_class[$i % 2];
 			$template->assign_block_vars('styles', array(
@@ -129,12 +130,15 @@ if(!empty($_POST['export']) && !defined('DEMO_MODE'))
 		}
 	}
 	$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id IN (" . implode(', ', $export_list) . ") ORDER BY style_name ASC";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_style_info'] . '<br /><br />' . $lang['xs_export_data_back'], __LINE__, __FILE__);
 	}
 	$style_rowset = $db->sql_fetchrowset($result);
-	if(!count($style_rowset))
+	if(!sizeof($style_rowset))
 	{
 		xs_error($lang['xs_no_style_info'] . '<br /><br />' . $lang['xs_export_data_back'], __LINE__, __FILE__);
 	}
@@ -183,15 +187,14 @@ if(!empty($_POST['export']) && !defined('DEMO_MODE'))
 	xs_error($ftp_error . '<br /><br />' . $lang['xs_export_data_back']);
 }
 
-
-
-
 $template->set_filenames(array('body' => XS_TPL_PATH . 'export_data.tpl'));
-//
+
 // get list of installed styles
-//
 $sql = 'SELECT themes_id, template_name, style_name FROM ' . THEMES_TABLE . ' ORDER BY template_name';
-if(!$result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	xs_error($lang['xs_no_style_info'], __LINE__, __FILE__);
 }
@@ -201,7 +204,7 @@ $prev_id = -1;
 $prev_tpl = '';
 $style_names = array();
 $j = 0;
-for($i=0; $i<count($style_rowset); $i++)
+for($i=0; $i< sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	if($item['template_name'] === $prev_tpl)

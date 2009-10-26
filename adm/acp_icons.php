@@ -35,7 +35,7 @@ $acp_icon['2400_INFO'] = '../images/menu/information.png';
 $acp_icon['Statistics'] = '../images/menu/server_install.png';
 $acp_icon['ctracker_module_category'] = '../images/menu/radar.png';
 
-$acp_icon['Cash Mod'] = '../images/menu/blocks.png';
-$acp_icon['Activity'] = '../images/menu/blocks.png';
+$acp_icon['3000_ACTIVITY'] = '../images/menu/blocks.png';
+$acp_icon['3100_CASH'] = '../images/menu/blocks.png';
 
 ?>

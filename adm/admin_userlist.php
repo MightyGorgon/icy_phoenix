@@ -57,12 +57,12 @@ if (isset($_GET['show']) || isset($_POST['show']))
 }
 else
 {
-	$show = $board_config['topics_per_page'];
+	$show = $config['topics_per_page'];
 }
 	//Prevent zero or negative show number
 if ($show < 1)
 {
-	$show = $board_config['topics_per_page'];
+	$show = $config['topics_per_page'];
 }
 
 // sort method
@@ -148,7 +148,7 @@ switch($mode)
 			// show message
 			$i = 0;
 			$hidden_fields = '';
-			while($i < count($user_ids))
+			while($i < sizeof($user_ids))
 			{
 				$user_id = intval($user_ids[$i]);
 				$hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '[]" value="' . $user_id . '" />';
@@ -177,7 +177,7 @@ switch($mode)
 		{
 			// delete users
 			$i = 0;
-			while($i < count($user_ids))
+			while($i < sizeof($user_ids))
 			{
 				$user_id = intval($user_ids[$i]);
 				if($user_id == '2')
@@ -214,7 +214,7 @@ switch($mode)
 		{
 			$i = 0;
 			$hidden_fields = '';
-			while($i < count($user_ids))
+			while($i < sizeof($user_ids))
 			{
 				$user_id = intval($user_ids[$i]);
 				$hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '[]" value="' . $user_id . '" />';
@@ -242,7 +242,7 @@ switch($mode)
 		{
 			// ban users
 			$i = 0;
-			while($i < count($user_ids))
+			while($i < sizeof($user_ids))
 			{
 				$user_id = intval($user_ids[$i]);
 
@@ -255,12 +255,8 @@ switch($mode)
 					message_die(GENERAL_ERROR, 'Could not ban anonymous user');
 				}
 
-				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid)
-					VALUES ('$user_id')";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not obtain ban user', '', __LINE__, __FILE__, $sql);
-				}
+				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ('$user_id')";
+				$result = $db->sql_query($sql);
 
 				unset($user_id);
 				$i++;
@@ -278,15 +274,12 @@ switch($mode)
 
 		// activate or deactive the seleted users
 		$i = 0;
-		while($i < count($user_ids))
+		while($i < sizeof($user_ids))
 		{
 			$user_id = intval($user_ids[$i]);
 			$sql = "SELECT user_active FROM " . USERS_TABLE . "
 				WHERE user_id = $user_id";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain user information', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
@@ -295,10 +288,7 @@ switch($mode)
 			$sql = "UPDATE " .  USERS_TABLE . "
 				SET user_active = '" . $new_status . "'
 				WHERE user_id = " . $user_id;
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update user status', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if ($new_status == 0)
 			{
@@ -324,7 +314,7 @@ switch($mode)
 			// show form to select which group to add users to
 			$i = 0;
 			$hidden_fields = '';
-			while($i < count($user_ids))
+			while($i < sizeof($user_ids))
 			{
 				$user_id = intval($user_ids[$i]);
 				$hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '[]" value="' . $user_id . '" />';
@@ -353,11 +343,7 @@ switch($mode)
 			$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . "
 				WHERE group_single_user <> " . TRUE . "
 				ORDER BY group_name";
-
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not query groups', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			// loop through groups
 			while ($row = $db->sql_fetchrow($result))
@@ -374,10 +360,10 @@ switch($mode)
 			$group_id = intval($_POST[POST_GROUPS_URL]);
 
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($board_config['smtp_delivery']);
+			$emailer = new emailer($config['smtp_delivery']);
 
 			$i = 0;
-			while($i < count($user_ids))
+			while($i < sizeof($user_ids))
 			{
 				$user_id = intval($user_ids[$i]);
 
@@ -386,20 +372,13 @@ switch($mode)
 					FROM (" . GROUPS_TABLE . " g
 					LEFT JOIN " . AUTH_ACCESS_TABLE . " aa ON aa.group_id = g.group_id)
 					WHERE g.group_id = $group_id";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not get moderator information', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$group_info = $db->sql_fetchrow($result);
 
 				$sql = "SELECT user_id, user_email, user_lang, user_level
 					FROM " . USERS_TABLE . "
 					WHERE user_id = $user_id";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Could not get user information", $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 
 				$sql = "SELECT ug.user_id, u.user_level
@@ -407,29 +386,20 @@ switch($mode)
 					WHERE u.user_id = " . $row['user_id'] . "
 						AND ug.user_id = u.user_id
 						AND ug.group_id = $group_id";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not get user information', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				if (!($db->sql_fetchrow($result)))
 				{
 					$sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending)
 						VALUES (" . $row['user_id'] . ", $group_id, 0)";
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not add user to group', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 
 					if (($row['user_level'] != ADMIN) && ($row['user_level'] != JUNIOR_ADMIN) && ($row['user_level'] != MOD) && $group_info['auth_mod'])
 					{
 						$sql = "UPDATE " . USERS_TABLE . "
 							SET user_level = " . MOD . "
 							WHERE user_id = " . $row['user_id'];
-						if (!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 					}
 
 					// Get the group name
@@ -437,34 +407,29 @@ switch($mode)
 					$group_sql = "SELECT group_name
 						FROM " . GROUPS_TABLE . "
 						WHERE group_id = $group_id";
-					if (!($result = $db->sql_query($group_sql)))
-					{
-						message_die(GENERAL_ERROR, 'Could not get group information', '', __LINE__, __FILE__, $group_sql);
-					}
-
+					$result = $db->sql_query($group_sql);
 					$group_name_row = $db->sql_fetchrow($result);
-
 					$group_name = $group_name_row['group_name'];
 
-					$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
+					$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
 					$script_name = ($script_name != '') ? $script_name . '/groupcp.' . PHP_EXT : 'groupcp.' . PHP_EXT;
-					$server_name = trim($board_config['server_name']);
-					$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-					$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
+					$server_name = trim($config['server_name']);
+					$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+					$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
 
 					$server_url = $server_protocol . $server_name . $server_port . $script_name;
 
-					$emailer->from($board_config['board_email']);
-					$emailer->replyto($board_config['board_email']);
+					$emailer->from($config['board_email']);
+					$emailer->replyto($config['board_email']);
 
 					$emailer->use_template('group_added', $row['user_lang']);
 					$emailer->email_address($row['user_email']);
 					$emailer->set_subject($lang['Group_added']);
 
 					$emailer->assign_vars(array(
-						'SITENAME' => ip_stripslashes($board_config['sitename']),
+						'SITENAME' => $config['sitename'],
 						'GROUP_NAME' => $group_name,
-						'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
+						'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
 						'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
 						)
 					);
@@ -498,7 +463,7 @@ switch($mode)
 		$alpha_range = array_merge($alpha_start, $alpha_letters);
 
 		$i = 0;
-		while($i < count($alpha_range))
+		while($i < sizeof($alpha_range))
 		{
 
 			if ($alpha_range[$i] != $lang['All'])
@@ -519,7 +484,7 @@ switch($mode)
 			}
 
 			$template->assign_block_vars('alphanumsearch', array(
-				'SEARCH_SIZE' => floor(100/count($alpha_range)) . '%',
+				'SEARCH_SIZE' => floor(100 / sizeof($alpha_range)) . '%',
 				'SEARCH_TERM' => $alpha_range[$i],
 				'SEARCH_LINK' => $alphanum_search_url
 				)
@@ -533,7 +498,7 @@ switch($mode)
 		$select_sort_by_text = array($lang['User_id'], $lang['Active'], $lang['Username'], $lang['Joined'], $lang['Last_activity'], $lang['User_level'], $lang['Posts'], $lang['Rank'], $lang['Email'], $lang['Website'], $lang['Birthday'], $lang['Board_lang'], $lang['Board_style']);
 
 		$select_sort = '<select name="sort" class="post">';
-		for($i = 0; $i < count($select_sort_by); $i++)
+		for($i = 0; $i < sizeof($select_sort_by); $i++)
 		{
 			$selected = ($sort == $select_sort_by[$i]) ? ' selected="selected"' : '';
 			$select_sort .= '<option value="' . $select_sort_by[$i] . '"' . $selected . '>' . $select_sort_by_text[$i] . '</option>';
@@ -608,18 +573,11 @@ switch($mode)
 				$alpha_where
 			$order_by
 			LIMIT $start, $show";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Query Ranks
 		$rank_sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-		if (!($rank_result = $db->sql_query($rank_sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain ranks information', '', __LINE__, __FILE__, $sql);
-		}
+		$rank_result = $db->sql_query($rank_sql);
 
 		while ($rank_row = $db->sql_fetchrow($rank_result))
 		{
@@ -637,7 +595,7 @@ switch($mode)
 			$rank_image = '';
 			if ($row['user_rank'])
 			{
-				for($ji = 0; $ji < count($ranksrow); $ji++)
+				for($ji = 0; $ji < sizeof($ranksrow); $ji++)
 				{
 					if ($row['user_rank'] == $ranksrow[$ji]['rank_id'] && $ranksrow[$ji]['rank_special'])
 					{
@@ -648,7 +606,7 @@ switch($mode)
 			}
 			else
 			{
-				for($ji = 0; $ji < count($ranksrow); $ji++)
+				for($ji = 0; $ji < sizeof($ranksrow); $ji++)
 				{
 					if ($row['user_posts'] >= $ranksrow[$ji]['rank_min'] && !$ranksrow[$ji]['rank_special'])
 					{
@@ -666,15 +624,15 @@ switch($mode)
 				'USER_ID' => $row['user_id'],
 				'ACTIVE' => ($row['user_active'] == true) ? $lang['Yes'] : $lang['No'],
 				'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
-				'U_PROFILE' => append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+				'U_PROFILE' => append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 				'RANK' => $poster_rank,
 				'I_RANK' => $rank_image,
 				'I_AVATAR' => $avatar_img,
-				'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']),
+				'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $config['board_timezone']),
 				'BIRTHDAY' => ($row['user_birthday'] != 999999) ? realdate($lang['DATE_FORMAT_BIRTHDAY'], $row['user_birthday']) : '',
-				'LAST_ACTIVITY' => (!empty($row['user_session_time'])) ? create_date('d M Y @ h:ia', $row['user_session_time'], $board_config['board_timezone']) : $lang['Never'],
+				'LAST_ACTIVITY' => (!empty($row['user_session_time'])) ? create_date('d M Y @ h:ia', $row['user_session_time'], $config['board_timezone']) : $lang['Never'],
 				'POSTS' => ($row['user_posts']) ? $row['user_posts'] : 0,
-				'U_SEARCH' => append_sid(IP_ROOT_PATH . SEARCH_MG.'?search_author=' . urlencode(strip_tags($row['username'])) . '&amp;showresults=posts'),
+				'U_SEARCH' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH.'?search_author=' . urlencode(strip_tags($row['username'])) . '&amp;showresults=posts'),
 				'U_WEBSITE' => ($row['user_website']) ? $row['user_website'] : '',
 				'USER_LANG' => $row['user_lang'],
 				'USER_STYLE' => $row['user_style'],
@@ -691,11 +649,8 @@ switch($mode)
 				WHERE ug.user_id = " . $row['user_id'] . "
 					AND g.group_single_user <> 1
 					AND g.group_id = ug.group_id";
+			$group_result = $db->sql_query($group_sql);
 
-			if(!($group_result = $db->sql_query($group_sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not query groups', '', __LINE__, __FILE__, $group_sql);
-			}
 			$g = 0;
 			while ($group_row = $db->sql_fetchrow($group_result))
 			{
@@ -737,16 +692,11 @@ switch($mode)
 		$count_sql = "SELECT count(user_id) AS total
 			FROM " . USERS_TABLE . "
 			WHERE user_id <> " . ANONYMOUS . " $alpha_where";
-
-		if (!($count_result = $db->sql_query($count_sql)))
-		{
-			message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
-		}
+		$count_result = $db->sql_query($count_sql);
 
 		if ($total = $db->sql_fetchrow($count_result))
 		{
 			$total_members = $total['total'];
-
 			$pagination = generate_pagination(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $show, $start);
 		}
 

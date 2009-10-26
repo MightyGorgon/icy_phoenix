@@ -1,86 +1,87 @@
-<script type="text/javascript">
-<!--
-	var add_file = false;
-	var deletefile = false;
-
-	function set_add_file(status)
-	{
-		add_file = status;
-	}
-
-	function set_delete_file(status)
-	{
-		deletefile = status;
-	}
-
-
-	function delete_file(theURL)
-	{
-		if (confirm('Are you sure you want to delete this file??'))
-		{
-			window.location.href=theURL;
-		}
-		else
-		{
-			alert ('No Action has been taken.');
-		}
-	}
-
-	function disable_cat_list()
-	{
-		if(document.form.mode_js.options[document.form.mode_js.selectedIndex].value != 'file_cat')
-		{
-			document.form.cat_js_id.disabled = true;
-		}
-		if(document.form.mode_js.options[document.form.mode_js.selectedIndex].value == 'file_cat')
-		{
-			document.form.cat_js_id.disabled = false;
-		}
-	}
-
-	// Taking from the Attachment MOD of Acyd Burn
-	function select(status)
-	{
-		for (i = 0; i < document.file_ids.length; i++)
-		{
-			document.file_ids.elements[i].checked = status;
-		}
-	}
-
-	function check()
-	{
-		if(add_file)
-		{
-			return true;
-		}
-
-		for (i = 0; i < document.file_ids.length; i++)
-		{
-			if(document.file_ids.elements[i].checked == true)
-			{
-				if(deletefile)
-				{
-					if (confirm('Are you sure you want to delete these files??'))
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-		alert('Please Select at least one file.');
-		return false;
-	}
-// -->
-</script>
 <!-- INCLUDE pa_header.tpl -->
 <!-- INCLUDE pa_links.tpl -->
 
-<body onLoad="disable_cat_list();">
+<script type="text/javascript">
+<!--
+var add_file = false;
+var deletefile = false;
+
+function set_add_file(status)
+{
+	add_file = status;
+}
+
+function set_delete_file(status)
+{
+	deletefile = status;
+}
+
+
+function delete_file(theURL)
+{
+	if (confirm('Are you sure you want to delete this file??'))
+	{
+		window.location.href=theURL;
+	}
+	else
+	{
+		alert ('No Action has been taken.');
+	}
+}
+
+function disable_cat_list()
+{
+	if(document.form.mode_js.options[document.form.mode_js.selectedIndex].value != 'file_cat')
+	{
+		document.form.cat_js_id.disabled = true;
+	}
+	if(document.form.mode_js.options[document.form.mode_js.selectedIndex].value == 'file_cat')
+	{
+		document.form.cat_js_id.disabled = false;
+	}
+}
+
+// Taking from the Attachment MOD of Acyd Burn
+function select(status)
+{
+	for (i = 0; i < document.file_ids.length; i++)
+	{
+		document.file_ids.elements[i].checked = status;
+	}
+}
+
+function check()
+{
+	if(add_file)
+	{
+		return true;
+	}
+
+	for (i = 0; i < document.file_ids.length; i++)
+	{
+		if(document.file_ids.elements[i].checked == true)
+		{
+			if(deletefile)
+			{
+				if (confirm('Are you sure you want to delete these files??'))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	alert('Please Select at least one file.');
+	return false;
+}
+// -->
+</script>
+
+<!-- <body onload="disable_cat_list();"> -->
 <form method="post" action="{S_FILE_ACTION}" name="form">
 <div class="forumline genmed" style="text-align: center; margin-top: 10px; padding: 5px;">
 <b>{L_MCP_EXPLAIN}</b>&nbsp;&raquo;&nbsp;<b><span class="genmed">{L_MODE}:</span></b>&nbsp;<select name="mode_js" onchange="disable_cat_list();">{S_MODE_SELECT}</select>&nbsp;&nbsp;&nbsp;<b><span class="genmed">{L_CATEGORY}:</span></b>&nbsp;{S_CAT_LIST}&nbsp;&nbsp;&nbsp;<input type="submit" class="liteoption" name="go" value="{L_GO}" />

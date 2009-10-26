@@ -58,23 +58,17 @@ class ct_database
 	 */
 	function ct_database()
 	{
-		global $db, $lang;
+		global $db, $cache;
 
 		// Set Up UserIP
 		$this->user_ip_value = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
 
 		// Load CrackerTracker configuration from database
-		$sql = 'SELECT * FROM ' . CTRACKER_CONFIG;
-
-		if (!($result = $db->sql_query($sql, false, 'ct_config_')))
+		$config = $cache->obtain_ctracker_config(false);
+		foreach ($config as $k => $v)
 		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_loading_config'], '', __LINE__, __FILE__, $sql);
-		}
-
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$this->fieldnames_set[] = $row['ct_config_name'];
-			$this->settings[$row['ct_config_name']] = $row['ct_config_value'];
+			$this->fieldnames_set[] = $k;
+			$this->settings[$k] = $v;
 		}
 	}
 
@@ -89,26 +83,21 @@ class ct_database
 	 */
 	function change_configuration($setting, $value)
 	{
-		global $db, $lang;
+		global $db, $cache;
 		// Clean up the input
 		$setting = trim($setting);
 		$setting = str_replace("\'", "'", $setting);
 
-		$value   = trim($value);
-		$value   = str_replace("\'", "'", $value);
+		$value = trim($value);
+		$value = str_replace("\'", "'", $value);
 
 		// Generate SQL Query
-		$sql = 'UPDATE ' . CTRACKER_CONFIG . ' SET ct_config_value = \'' . $value . '\'' .
-				'WHERE ct_config_name = \'' . $setting . '\'';
-
-		// Execute SQL Command in database
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_config'], '', __LINE__, __FILE__, $sql);
-		}
+		$sql = 'UPDATE ' . CTRACKER_CONFIG . ' SET ct_config_value = \'' . $value . '\'' . 'WHERE ct_config_name = \'' . $setting . '\'';
+		$result = $db->sql_query($sql);
 
 		// Clear the cache
 		$db->clear_cache('ct_config_');
+		$cache->destroy('config_ctracker');
 	}
 
 	/**
@@ -121,7 +110,7 @@ class ct_database
 
 		// Initializing
 		$this->blocklist_count = 0;
-		$this->blocklist       = array();
+		$this->blocklist = array();
 
 		/*
 		 * Verbose  Mode active? This also saves ID Values from Database in
@@ -134,11 +123,7 @@ class ct_database
 
 		// Load CrackerTracker blocklist from database
 		$sql = 'SELECT * FROM ' . CTRACKER_IPBLOCKER . ' ORDER BY ct_blocker_value ASC';
-
-		if (!($result = $db->sql_query($sql, false, 'ct_ip_blocker_')))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_loading_blocklist'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'ct_ip_blocker_');
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -155,7 +140,7 @@ class ct_database
 		}
 
 		// How much entrys do we have?
-		$this->blocklist_count = count($this->blocklist);
+		$this->blocklist_count = sizeof($this->blocklist);
 	}
 
 	/**
@@ -177,10 +162,7 @@ class ct_database
 		}
 
 		$sql = "SELECT MAX(id) AS total FROM " . CTRACKER_IPBLOCKER;
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!($row = $db->sql_fetchrow($result)))
 		{
@@ -191,13 +173,7 @@ class ct_database
 		// Now build an SQL Query
 		$sql = 'INSERT INTO ' . CTRACKER_IPBLOCKER . ' (`id`, `ct_blocker_value`)' .
 				'VALUES (' . $newid . ', \'' . $blocklist_value . '\')';
-
-		// And lets write it into the database
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_insert_blocklist'], '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$db->clear_cache('ct_ip_blocker_');
 	}
 
@@ -209,20 +185,13 @@ class ct_database
 	 */
 	function delete_from_blocklist($blocklist_id)
 	{
-		global $db, $lang;
+		global $db;
 
 		// Clean up the input
 		$blocklist_id = intval($blocklist_id);
-
 		// Build an SQL Query
 		$sql = 'DELETE FROM ' . CTRACKER_IPBLOCKER . ' WHERE id = ' . $blocklist_id;
-
-		// And lets execute the command into database
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_delete_blocklist'], '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$db->clear_cache('ct_ip_blocker_');
 	}
 
@@ -287,31 +256,18 @@ class ct_database
 
 		// Create SQL Command to insert new login
 		$sql = 'INSERT INTO ' . CTRACKER_LOGINHISTORY . ' (ct_user_id, ct_login_ip, ct_login_time) VALUES ' . "($user_id, '$login_ip', $login_time)";
-
-		// Execute SQL Command
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_login_history'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Delete old values from the Database
 		$this->settings['login_history_count']--;
 		$sql = 'SELECT * FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user_id . ' ORDER BY ct_login_time DESC LIMIT ' . $this->settings['login_history_count'] . ',1';
+		$result = $db->sql_query($sql);
 
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_login_history'], '', __LINE__, __FILE__, $sql);
-		}
-
-		$row       = $db->sql_fetchrow($result);
- 		$temp_time = !empty($row['ct_login_time'])? $row['ct_login_time'] : 0;
+		$row = $db->sql_fetchrow($result);
+		$temp_time = !empty($row['ct_login_time'])? $row['ct_login_time'] : 0;
 
 		$sql = 'DELETE FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user_id . ' AND ct_login_time < ' . $temp_time;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_login_history'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 	/**
@@ -320,14 +276,9 @@ class ct_database
 	 */
 	function clean_up_login_history()
 	{
-		global $lang;
-
+		global $db;
 		$sql = 'TRUNCATE ' . CTRACKER_LOGINHISTORY;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_del_login_history'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 	/**
@@ -338,18 +289,12 @@ class ct_database
 	 */
 	function reset_login_system($user_id)
 	{
-		global $db, $lang;
+		global $db;
 
 		// Ensure that $user_id is integer
 		$user_id = intval($user_id);
-
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_login_vconfirm = 0, ct_login_count = 1 WHERE user_id = ' . $user_id;
-
-		// Execute SQL Command in database
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 	/**
@@ -360,29 +305,17 @@ class ct_database
 	 */
 	function set_user_ip($user_id)
 	{
-		global $db, $lang, $userdata;
+		global $db, $userdata;
 
 		// Ensure that $user_id is integer
 		$user_id = intval($user_id);
-
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_last_ip = ct_last_used_ip WHERE user_id = ' . $user_id;
-
-		// Execute SQL Command in database
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Update Userdata Array (wich is already available here!)
 		$userdata['ct_last_ip'] = $userdata['ct_last_used_ip'];
-
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_last_used_ip = \'' . $this->user_ip_value . '\' WHERE user_id = ' . $user_id;
-
-		// Execute SQL Command in database
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Update Userdata Array (wich is already available here!)
 		$userdata['ct_last_used_ip'] = $this->user_ip_value;
@@ -397,27 +330,17 @@ class ct_database
 	 */
 	function handle_wrong_login($user_id, $logincount)
 	{
-		global $db, $lang, $ctracker_config;
+		global $db, $ctracker_config;
 
 		if ($logincount < $ctracker_config->settings['logincount'])
 		{
 			$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_login_count = ct_login_count + 1 WHERE user_id = ' . $user_id;
-
-			// Execute SQL Command in database
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 		else
 		{
 			$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_login_vconfirm = 1 WHERE user_id = ' . $user_id;
-
-			// Execute SQL Command in database
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		} // else
 	} // handle_wrong_login
 
@@ -429,7 +352,7 @@ class ct_database
 	 */
 	function check_login_status($username)
 	{
-		global $lang, $db;
+		global $db;
 
 		// Secure submitted username
 		$username = phpbb_clean_username($username);
@@ -438,7 +361,10 @@ class ct_database
 		$sql = "SELECT ct_login_vconfirm, user_id FROM " . USERS_TABLE . " WHERE username = '" . str_replace("\'", "''", $username) . "'";
 
 		// Execute SQL Command in database
-		if ($result = $db->sql_query($sql))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
 			if ($row = $db->sql_fetchrow($result))
 			{
@@ -459,7 +385,7 @@ class ct_database
 	 */
 	function first_admin_protection($user_id)
 	{
-		global $lang, $userdata;
+		global $userdata, $lang;
 
 		if ($user_id != $userdata['user_id'])
 		{
@@ -478,16 +404,9 @@ function mg_reset_login_system($user_id)
 {
 	global $db, $lang;
 
-	// Ensure that $user_id is integer
 	$user_id = intval($user_id);
-
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_login_vconfirm = 0, ct_login_count = 1, user_login_tries = 0, user_last_login_try = 0 WHERE user_id = ' . $user_id;
-
-	// Execute SQL Command in database
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	return true;
 }

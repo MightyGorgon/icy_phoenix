@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- BEGIN switch_nuffload_enabled -->
 <script type="text/javascript">
 <!--
@@ -340,3 +342,5 @@ function InitForm()
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

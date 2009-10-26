@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%">
@@ -43,7 +45,7 @@
 		<!-- BEGIN comments -->
 		<hr />
 		<br />
-		<div style="border: #dddddd solid 1px; padding: 10px; margin: 10px 0 10px 20px; clear: both;">
+		<div class="forumline" style="padding: 10px; margin: 10px 0 10px 20px; clear: both;">
 			<div class="forumlink">{comments.L_TITLE}</div>
 			<div class="post-details">{comments.POST_DATE} by {comments.L_POSTER}</div>
 			<hr />
@@ -53,8 +55,10 @@
 		<!-- END comments -->
 		<!-- BEGIN pagination -->
 		<hr />
-		<div style="text-align:right;padding:10px;margin: 10px 0 10px 20px;clear:both;">{pagination.PAGINATION}</div>
+		<div style="text-align: right; padding: 10px; margin: 10px 0 10px 20px; clear: both;">{pagination.PAGINATION}</div>
 		<!-- END pagination -->
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -18,25 +18,14 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = 'ranks';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
-
-$page_title = $lang['Rank_Header'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'ranks_body.tpl'));
+$cms_page['page_id'] = 'ranks';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Couldn't obtain ranks data", "", __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $rank_count = $db->sql_numrows($result);
 $rank_rows = $db->sql_fetchrowset($result);
 
@@ -80,29 +69,29 @@ for($i = 0; $i < $rank_count; $i++)
 
 	if ($special_rank > 0)
 	{
-		$template->assign_block_vars("ranks_special", array(
-			"ROW_CLASS" => $row_class,
-			"IMAGE"=> $rank_rows[$i]['rank_image'],
-			"RANK" => $rank_rows[$i]['rank_title'],
-			"RANK_SPECIAL_DES" => $rank_special_des
+		$template->assign_block_vars('ranks_special', array(
+			'ROW_CLASS' => $row_class,
+			'IMAGE'=> $rank_rows[$i]['rank_image'],
+			'RANK' => $rank_rows[$i]['rank_title'],
+			'RANK_SPECIAL_DES' => $rank_special_des
 			)
 		);
 		$j++;
 	}
 	else
 	{
-		$template->assign_block_vars("ranks_normal", array(
-			"ROW_CLASS" => $row_class,
-			"RANK" => $rank_rows[$i]['rank_title'],
-			"RANK_MIN" => $rank_rows[$i]['rank_min'],
-			"RANK_SPECIAL_DES" => $rank_special_des
+		$template->assign_block_vars('ranks_normal', array(
+			'ROW_CLASS' => $row_class,
+			'RANK' => $rank_rows[$i]['rank_title'],
+			'RANK_MIN' => $rank_rows[$i]['rank_min'],
+			'RANK_SPECIAL_DES' => $rank_special_des
 			)
 		);
 		if ($rank_rows[$i]['rank_image'])
 		{
-			$template->assign_block_vars("ranks_normal.switch_image", array(
-				"IMAGE"=> $rank_rows[$i]['rank_image'],
-				"RANK" => $rank_rows[$i]['rank_title']
+			$template->assign_block_vars('ranks_normal.switch_image', array(
+				'IMAGE'=> $rank_rows[$i]['rank_image'],
+				'RANK' => $rank_rows[$i]['rank_title']
 				)
 			);
 		}
@@ -113,21 +102,20 @@ for($i = 0; $i < $rank_count; $i++)
 
 if ($j == 0)
 {
-	$template->assign_block_vars("ranks_no_special", array(
-		"L_RANK_NO_SPECIAL" => $lang['No_Ranks_Special']
+	$template->assign_block_vars('ranks_no_special', array(
+		'L_RANK_NO_SPECIAL' => $lang['No_Ranks_Special']
 		)
 	);
 }
 
 if ($k == 0)
 {
-	$template->assign_block_vars("ranks_no_normal", array(
-		"L_RANK_NO_NORMAL" => $lang['No_Ranks']
+	$template->assign_block_vars('ranks_no_normal', array(
+		'L_RANK_NO_NORMAL' => $lang['No_Ranks']
 		)
 	);
 }
 
-$template->pparse('body');
+full_page_generation('ranks_body.tpl', $lang['Rank_Header'], '', '');
 
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 ?>

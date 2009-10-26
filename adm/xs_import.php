@@ -264,16 +264,16 @@ if(!empty($_GET['importstyle']))
 		'STYLE_TEMPLATE'		=> htmlspecialchars($header['template']),
 		'STYLE_FILENAME'		=> htmlspecialchars($file),
 		'STYLE_COMMENT'			=> htmlspecialchars($header['comment']),
-		'DATE'					=> create_date($board_config['default_dateformat'], $header['date'], $board_config['board_timezone']),
+		'DATE'					=> create_date($config['default_dateformat'], $header['date'], $config['board_timezone']),
 		'STYLE_SIZE'			=> $header['filesize'],
 		'STYLE_NAME'			=> htmlspecialchars($header['styles'][0]),
-		'TOTAL'					=> count($header['styles']),
+		'TOTAL'					=> sizeof($header['styles']),
 		'L_XS_IMPORT_TPL'		=> str_replace('{TPL}', htmlspecialchars($header['template']), $lang['xs_import_tpl'])
 		));
-	if(count($header['styles']) > 1)
+	if(sizeof($header['styles']) > 1)
 	{
 		$template->assign_block_vars('switch_select_style', array());
-		for($i=0; $i<count($header['styles']); $i++)
+		for($i=0; $i< sizeof($header['styles']); $i++)
 		{
 			$template->assign_block_vars('switch_select_style.style', array(
 				'NUM'		=> $i,
@@ -334,10 +334,10 @@ if($dir)
 	closedir($dir);
 }
 
-if(count($files))
+if(sizeof($files))
 {
 
-	for($i=0; $i<count($files); $i++)
+	for($i=0; $i< sizeof($files); $i++)
 	{
 		$item = $files[$i];
 		$row_class = $xs_row_class[$i % 2];
@@ -347,7 +347,7 @@ if(count($files))
 			'FILE2'			=> htmlspecialchars($item['file2']),
 			'FILENAME'		=> htmlspecialchars($item['filename']),
 			'TEMPLATE'		=> htmlspecialchars($item['template']),
-			'DATE'			=> create_date($board_config['default_dateformat'], $item['date'], $board_config['board_timezone']),
+			'DATE'			=> create_date($config['default_dateformat'], $item['date'], $config['board_timezone']),
 			'COMMENT'		=> htmlspecialchars($item['comment']),
 			'U_DELETE'		=> append_sid('xs_import.' . PHP_EXT . '?del=' . urlencode($item['file'])),
 			'U_IMPORT'		=> append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($item['file'])),
@@ -356,7 +356,7 @@ if(count($files))
 			));
 		if(empty($item['error']))
 		{
-			for($j=0; $j<count($item['styles']); $j++)
+			for($j=0; $j< sizeof($item['styles']); $j++)
 			{
 				$template->assign_block_vars('styles.list', array(
 					'STYLE'		=> $item['styles'][$j]

@@ -163,7 +163,7 @@ class lang_management
 
 	function get_entries($modified = true)
 	{
-		global $board_config;
+		global $config;
 		global $countries, $packs;
 
 		// init
@@ -223,7 +223,7 @@ class lang_management
 			/* MG Lang DB - END */
 
 			// add the missing keys in a language
-			$default_lang = 'lang_' . $board_config['default_lang'];
+			$default_lang = 'lang_' . $config['default_lang'];
 			$english_lang = 'lang_english';
 			@reset($entries['pack']);
 			while (list($key_main, $data) = @each($entries['pack']))
@@ -366,7 +366,7 @@ class lang_management
 			$file_content .= "\n";
 			$file_content .= '?' . '>';
 
-			$edittime = date('Y-m-d H:i:s', time());
+			$edittime = gmdate('Y-m-d H:i:s');
 
 			$array_find = array(
 				'$' . 'Id' . '$',

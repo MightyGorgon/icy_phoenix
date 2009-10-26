@@ -33,8 +33,6 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
 
 if (!intval($attach_config['allow_ftp_upload']))
@@ -65,13 +63,11 @@ $check_upload = (isset($_POST['settings'])) ? true : false;
 $check_image_cat = (isset($_POST['cat_settings'])) ? true : false;
 $search_imagick = (isset($_POST['search_imagick'])) ? true : false;
 
-$db->clear_cache('attach_');
+$cache->destroy('config_attach');
+
 // Re-evaluate the Attachment Configuration
 $sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
-if (!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not find Attachment Config Table', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
@@ -150,48 +146,29 @@ while ($row = $db->sql_fetchrow($result))
 				$sql = 'UPDATE ' . EXTENSION_GROUPS_TABLE . '
 					SET max_filesize = ' . (int) $new_size . '
 					WHERE max_filesize = ' . (int) $old_size;
-
-				if (!($result_2 = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not update Extension Group informations', '', __LINE__, __FILE__, $sql);
-				}
+				$result_2 = $db->sql_query($sql);
 			}
 
 			$sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-				SET config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
-				WHERE config_name = '" . attach_mod_sql_escape($config_name) . "'";
+				SET config_value = '" . $db->sql_escape($new_attach[$config_name]) . "'
+				WHERE config_name = '" . $db->sql_escape($config_name) . "'";
 		}
 		else
 		{
 			$sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-				SET config_value = '" . attach_mod_sql_escape($new_attach[$config_name]) . "'
-				WHERE config_name = '" . attach_mod_sql_escape($config_name) . "'";
+				SET config_value = '" . $db->sql_escape($new_attach[$config_name]) . "'
+				WHERE config_name = '" . $db->sql_escape($config_name) . "'";
 		}
+		$db->sql_query($sql);
 
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Failed to update attachment configuration for ' . $config_name, '', __LINE__, __FILE__, $sql);
-		}
-
-		if ($config_name == 'max_filesize' || $config_name == 'attachment_quota' || $config_name == 'max_filesize_pm')
+		if (($config_name == 'max_filesize') || ($config_name == 'attachment_quota') || ($config_name == 'max_filesize_pm'))
 		{
 			$new_attach[$config_name] = $old;
 		}
 	}
 }
 $db->sql_freeresult($result);
-$db->clear_cache('attach_');
-
-$cache_dir = IP_ROOT_PATH . '/cache';
-$cache_file = $cache_dir . '/attach_config.php';
-
-if ((file_exists($cache_dir)) && (is_dir($cache_dir)))
-{
-	if (file_exists($cache_file))
-	{
-		@unlink($cache_file);
-	}
-}
+$cache->destroy('config_attach');
 
 $select_size_mode = size_select('size', $size);
 $select_quota_size_mode = size_select('quota_size', $quota_size);
@@ -215,7 +192,7 @@ if ($search_imagick)
 
 			if (is_array($paths))
 			{
-				for ($i = 0; $i < count($paths); $i++)
+				for ($i = 0; $i < sizeof($paths); $i++)
 				{
 					$path = basename($paths[$i]);
 
@@ -254,11 +231,7 @@ if ($check_upload)
 	$attach_config = array();
 
 	$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not find Attachment Config Table', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -384,7 +357,7 @@ if ($check_upload)
 
 	if (!$error)
 	{
-		$db->clear_cache('attach_');
+		$cache->destroy('config_attach');
 		message_die(GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=manage') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
 }
@@ -404,7 +377,7 @@ if ($mode == 'manage')
 
 	$yes_no_switches = array('disable_mod', 'allow_pm_attach', 'allow_ftp_upload', 'attachment_topic_review', 'display_order', 'show_apcp', 'ftp_pasv_mode');
 
-	for ($i = 0; $i < count($yes_no_switches); $i++)
+	for ($i = 0; $i < sizeof($yes_no_switches); $i++)
 	{
 		eval("\$" . $yes_no_switches[$i] . "_yes = (\$new_attach['" . $yes_no_switches[$i] . "'] != '0') ? 'checked=\"checked\"' : '';");
 		eval("\$" . $yes_no_switches[$i] . "_no = (\$new_attach['" . $yes_no_switches[$i] . "'] == '0') ? 'checked=\"checked\"' : '';");
@@ -521,7 +494,7 @@ if ($submit && ($mode == 'shadow'))
 	// Delete Attachments from file system...
 	$attach_file_list = request_var('attach_file_list', array(''));
 
-	for ($i = 0; $i < count($attach_file_list); $i++)
+	for ($i = 0; $i < sizeof($attach_file_list); $i++)
 	{
 		unlink_attach($attach_file_list[$i]);
 		unlink_attach($attach_file_list[$i], MODE_THUMBNAIL);
@@ -537,23 +510,15 @@ if ($submit && ($mode == 'shadow'))
 		$sql = 'DELETE
 			FROM ' . ATTACHMENTS_DESC_TABLE . '
 			WHERE attach_id IN (' . $attach_id_sql . ')';
-
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not delete attachment entries', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$sql = 'DELETE
 			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE attach_id IN (' . $attach_id_sql . ')';
-
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not delete attachment entries', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
-	$db->clear_cache('attach_');
+	$cache->destroy('config_attach');
 
 	$message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -595,11 +560,7 @@ if ($mode == 'shadow')
 	$sql = 'SELECT attach_id, physical_filename, comment
 		FROM ' . ATTACHMENTS_DESC_TABLE . '
 		ORDER BY attach_id';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get attachment informations', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$i = 0;
 	while ($row = $db->sql_fetchrow($result))
@@ -614,11 +575,7 @@ if ($mode == 'shadow')
 	$sql = 'SELECT attach_id
 		FROM ' . ATTACHMENTS_TABLE . '
 		GROUP BY attach_id';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get attachment informations', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -635,9 +592,9 @@ if ($mode == 'shadow')
 	// Now determine the needed Informations
 
 	// Go through all Files on the filespace and see if all are stored within the DB
-	for ($i = 0; $i < count($file_attachments); $i++)
+	for ($i = 0; $i < sizeof($file_attachments); $i++)
 	{
-		if (count($table_attachments['attach_id']) > 0)
+		if (sizeof($table_attachments['attach_id']) > 0)
 		{
 			if ($file_attachments[$i] != '')
 			{
@@ -661,7 +618,7 @@ if ($mode == 'shadow')
 	}
 
 	// Now look for Attachment ID's defined for posts or topics but not defined at the Attachments Description Table
-	for ($i = 0; $i < count($assign_attachments); $i++)
+	for ($i = 0; $i < sizeof($assign_attachments); $i++)
 	{
 		if (!in_array($assign_attachments[$i], $table_attachments['attach_id']))
 		{
@@ -671,7 +628,7 @@ if ($mode == 'shadow')
 		}
 	}
 	// Go through the Database and get those Files not stored at the Filespace
-	for ($i = 0; $i < count($table_attachments['attach_id']); $i++)
+	for ($i = 0; $i < sizeof($table_attachments['attach_id']); $i++)
 	{
 		if ($table_attachments['physical_filename'][$i] != '')
 		{
@@ -690,7 +647,7 @@ if ($mode == 'shadow')
 	}
 
 	// Now look at the missing posts and PM's
-	for ($i = 0; $i < count($table_attachments['attach_id']); $i++)
+	for ($i = 0; $i < sizeof($table_attachments['attach_id']); $i++)
 	{
 		if ($table_attachments['attach_id'][$i])
 		{
@@ -703,7 +660,7 @@ if ($mode == 'shadow')
 		}
 	}
 
-	for ($i = 0; $i < count($shadow_attachments); $i++)
+	for ($i = 0; $i < sizeof($shadow_attachments); $i++)
 	{
 		$template->assign_block_vars('file_shadow_row', array(
 			'ATTACH_ID'			=> $shadow_attachments[$i],
@@ -713,7 +670,7 @@ if ($mode == 'shadow')
 		);
 	}
 
-	for ($i = 0; $i < count($shadow_row['attach_id']); $i++)
+	for ($i = 0; $i < sizeof($shadow_row['attach_id']); $i++)
 	{
 		$template->assign_block_vars('table_shadow_row', array(
 			'ATTACH_ID'			=> $shadow_row['attach_id'][$i],
@@ -727,7 +684,7 @@ if ($submit && ($mode == 'cats'))
 {
 	if (!$error)
 	{
-		$db->clear_cache('attach_');
+		$cache->destroy('config_attach');
 
 		message_die(GENERAL_MESSAGE, $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=cats') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
@@ -745,30 +702,25 @@ if ($mode == 'cats')
 		FROM ' . EXTENSION_GROUPS_TABLE . '
 		WHERE cat_id > 0
 		ORDER BY cat_id';
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
 
 	$s_assigned_group_images = array();
 	$s_assigned_group_streams = array();
 	$s_assigned_group_flash = array();
 
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get Group Names from ' . EXTENSION_GROUPS_TABLE, '', __LINE__, __FILE__, $sql);
-	}
-
-	$row = $db->sql_fetchrowset($result);
-	$db->sql_freeresult($result);
-
-	for ($i = 0; $i < count($row); $i++)
+	for ($i = 0; $i < sizeof($row); $i++)
 	{
 		if ($row[$i]['cat_id'] == IMAGE_CAT)
 		{
 			$s_assigned_group_images[] = $row[$i]['group_name'];
 		}
-		else if ($row[$i]['cat_id'] == STREAM_CAT)
+		elseif ($row[$i]['cat_id'] == STREAM_CAT)
 		{
 			$s_assigned_group_streams[] = $row[$i]['group_name'];
 		}
-		else if ($row[$i]['cat_id'] == SWF_CAT)
+		elseif ($row[$i]['cat_id'] == SWF_CAT)
 		{
 			$s_assigned_group_flash[] = $row[$i]['group_name'];
 		}
@@ -853,11 +805,7 @@ if ($check_image_cat)
 	$attach_config = array();
 
 	$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not find Attachment Config Table', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -999,7 +947,7 @@ if ($check_image_cat)
 
 	if (!$error)
 	{
-		$db->clear_cache('attach_');
+		$cache->destroy('config_attach');
 
 		message_die(GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=cats') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
@@ -1013,10 +961,7 @@ if ($mode == 'sync')
 	echo (isset($lang['Sync_topics'])) ? $lang['Sync_topics'] : 'Sync Topics';
 
 	$sql = "SELECT topic_id FROM " . TOPICS_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	echo '<br />';
 
@@ -1043,11 +988,7 @@ if ($mode == 'sync')
 		WHERE a.user_id_2 = 0
 			AND p.post_id = a.post_id
 			AND a.user_id_1 <> p.poster_id';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	echo '<br />';
 
@@ -1059,7 +1000,6 @@ if ($mode == 'sync')
 	{
 		$sql = 'UPDATE ' . ATTACHMENTS_TABLE . ' SET user_id_1 = ' . intval($rows[$i]['poster_id']) . '
 			WHERE attach_id = ' . intval($rows[$i]['attach_id']) . ' AND post_id = ' . intval($rows[$i]['post_id']);
-
 		$db->sql_query($sql);
 
 		@flush();
@@ -1078,11 +1018,7 @@ if ($mode == 'sync')
 	// Go through all of them and make sure the Thumbnail exist. If it does not exist, unset the Thumbnail Flag
 	//$sql = "SELECT attach_id, physical_filename, thumbnail, mimetype FROM " . ATTACHMENTS_DESC_TABLE . " WHERE thumbnail = 1";
 	$sql = "SELECT attach_id, physical_filename, thumbnail, extension, mimetype FROM " . ATTACHMENTS_DESC_TABLE . " WHERE extension IN('png', 'jpg', 'jpeg')";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get thumbnail informations', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	echo '<br />';
 
@@ -1114,21 +1050,13 @@ if ($mode == 'sync')
 			{
 				$info .= sprintf($lang['Sync_thumbnail_resetted'], $row['physical_filename']) . '<br />';
 				$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = 0 WHERE attach_id = " . (int) $row['attach_id'];
-				if (!($db->sql_query($sql)))
-				{
-					$error = $db->sql_error();
-					die('Could not update thumbnail informations -> ' . $error['message'] . ' -> ' . $sql);
-				}
+				$db->sql_query($sql);
 			}
 			else
 			{
 				$info .= sprintf($lang['Sync_thumbnail_recreated'], $row['physical_filename']) . '<br />';
 				$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = 1 WHERE attach_id = " . (int) $row['attach_id'];
-				if (!($db->sql_query($sql)))
-				{
-					$error = $db->sql_error();
-					die('Could not update thumbnail informations -> ' . $error['message'] . ' -> ' . $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 		$i++;
@@ -1139,11 +1067,7 @@ if ($mode == 'sync')
 	// Get all Posts/PM's with the Thumbnail Flag NOT set
 	// Go through all of them and make sure the Thumbnail does NOT exist. If it does exist, delete it
 	$sql = "SELECT attach_id, physical_filename, thumbnail FROM " . ATTACHMENTS_DESC_TABLE . " WHERE thumbnail = 0";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get thumbnail informations', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	echo '<br />';
 
@@ -1166,7 +1090,7 @@ if ($mode == 'sync')
 	}
 	$db->sql_freeresult($result);
 
-	$db->clear_cache('attach_');
+	$cache->destroy('config_attach');
 	@flush();
 	die('<br /><br /><br />' . $lang['Attach_sync_finished'] . '<br /><br />' . $info);
 
@@ -1184,18 +1108,14 @@ if ($submit && $mode == 'quota')
 
 	$allowed_list = array();
 
-	for ($i = 0; $i < count($quota_change_list); $i++)
+	for ($i = 0; $i < sizeof($quota_change_list); $i++)
 	{
 		$filesize_list[$i] = ($size_select_list[$i] == 'kb') ? round($filesize_list[$i] * 1024) : (($size_select_list[$i] == 'mb') ? round($filesize_list[$i] * 1048576) : $filesize_list[$i]);
 
 		$sql = 'UPDATE ' . QUOTA_LIMITS_TABLE . "
-			SET quota_desc = '" . attach_mod_sql_escape($quota_desc_list[$i]) . "', quota_limit = " . (int) $filesize_list[$i] . "
+			SET quota_desc = '" . $db->sql_escape($quota_desc_list[$i]) . "', quota_limit = " . (int) $filesize_list[$i] . "
 			WHERE quota_limit_id = " . (int) $quota_change_list[$i];
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t update Quota Limits', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	// Delete Quota Limits
@@ -1208,21 +1128,13 @@ if ($submit && $mode == 'quota')
 		$sql = 'DELETE
 			FROM ' . QUOTA_LIMITS_TABLE . '
 			WHERE quota_limit_id IN (' . $quota_id_sql . ')';
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not delete Quota Limits', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Delete Quotas linked to this setting
 		$sql = 'DELETE
 			FROM ' . QUOTA_TABLE . '
 			WHERE quota_limit_id IN (' . $quota_id_sql . ')';
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not delete Quotas', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 	// Add Quota Limit ?
@@ -1236,12 +1148,7 @@ if ($submit && $mode == 'quota')
 		// check Quota Description
 		$sql = 'SELECT quota_desc
 			FROM ' . QUOTA_LIMITS_TABLE;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query Quota Limits Table', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrowset($result);
 		$num_rows = $db->sql_numrows($result);
 		$db->sql_freeresult($result);
@@ -1267,19 +1174,15 @@ if ($submit && $mode == 'quota')
 			$filesize = ($size_select == 'kb') ? round($filesize * 1024) : (($size_select == 'mb') ? round($filesize * 1048576) : $filesize);
 
 			$sql = "INSERT INTO " . QUOTA_LIMITS_TABLE . " (quota_desc, quota_limit)
-			VALUES ('" . attach_mod_sql_escape($quota_desc) . "', " . (int) $filesize . ")";
-
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not add Quota Limit', '', __LINE__, __FILE__, $sql);
-			}
+			VALUES ('" . $db->sql_escape($quota_desc) . "', " . (int) $filesize . ")";
+			$db->sql_query($sql);
 		}
 
 	}
 
 	if (!$error)
 	{
-		$db->clear_cache('attach_');
+		$cache->destroy('config_attach');
 
 		$message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=quota') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -1324,16 +1227,11 @@ if ($mode == 'quota')
 	);
 
 	$sql = "SELECT * FROM " . QUOTA_LIMITS_TABLE . " ORDER BY quota_limit DESC";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get quota limits', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$rows = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
-	for ($i = 0; $i < count($rows); $i++)
+	for ($i = 0; $i < sizeof($rows); $i++)
 	{
 		$size_format = ($rows[$i]['quota_limit'] >= 1048576) ? 'mb' : (($rows[$i]['quota_limit'] >= 1024) ? 'kb' : 'b');
 
@@ -1369,12 +1267,7 @@ if (($mode == 'quota') && ($e_mode == 'view_quota'))
 	$template->assign_block_vars('switch_quota_limit_desc', array());
 
 	$sql = "SELECT * FROM " . QUOTA_LIMITS_TABLE . " WHERE quota_limit_id = " . (int) $quota_id . " LIMIT 1";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get quota limits', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
@@ -1391,12 +1284,7 @@ if (($mode == 'quota') && ($e_mode == 'view_quota'))
 		WHERE q.quota_limit_id = ' . (int) $quota_id . '
 			AND q.user_id <> 0
 			AND q.user_id = u.user_id';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get quota limits', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$rows = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -1424,12 +1312,7 @@ if (($mode == 'quota') && ($e_mode == 'view_quota'))
 		WHERE q.quota_limit_id = ' . (int) $quota_id . '
 			AND q.group_id <> 0
 			AND q.group_id = g.group_id';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get quota limits', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$rows = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);

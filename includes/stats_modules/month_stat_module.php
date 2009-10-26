@@ -33,11 +33,7 @@ $sql = 'SELECT MONTH(FROM_UNIXTIME(post_time)) as mon, YEAR(FROM_UNIXTIME(post_t
 	GROUP BY year,mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,'. $nyear;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve posts data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $posts_count = $stat_db->sql_numrows($result);
 $posts_data = $stat_db->sql_fetchrowset($result);
 
@@ -47,11 +43,7 @@ $sql = 'SELECT MONTH(FROM_UNIXTIME(topic_time)) as mon,  YEAR(FROM_UNIXTIME(topi
 	GROUP BY year,mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,'. $nyear;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve topics data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $topics_count = $stat_db->sql_numrows($result);
 $topics_data = $stat_db->sql_fetchrowset($result);
 
@@ -61,11 +53,7 @@ $sql = 'SELECT MONTH(FROM_UNIXTIME(user_regdate)) as mon,  YEAR(FROM_UNIXTIME(us
 	GROUP BY year,mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,' . $nyear;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $users_count = $stat_db->sql_numrows($result);
 $users_data = $stat_db->sql_fetchrowset($result);
 
@@ -82,9 +70,9 @@ $template->_tpldata['stats_row.'] = array();
 for ($i = 0; $i < $nyear; $i= $i + 1)
 {
 	$class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
-	$date = (mktime (0, 0, 0, date("m") - $i, date("d"), date("Y")));
-	$datem = date("m", $date);
-	$datey = date("Y", $date);
+	$date = (mktime (0, 0, 0, gmdate('m') - $i, gmdate('d'), gmdate('Y')));
+	$datem = gmdate('m', $date);
+	$datey = gmdate('Y', $date);
 
 	$f = 0;
 
@@ -153,7 +141,7 @@ for ($i = 0; $i < $nyear; $i= $i + 1)
 		break;
 	}
 
-	$date = create_date("F Y", (mktime (0, 0, 0, date("m") - $i, date("d"), date("Y"))), $tz);
+	$date = create_date('F Y', (mktime (0, 0, 0, gmdate('m') - $i, gmdate('d'), gmdate('Y'))), $tz);
 	$template->assign_block_vars('stats_row', array(
 		'CLASS' => $class,
 		'DATE' => $date,

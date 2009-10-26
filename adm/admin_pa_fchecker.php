@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['2000_Downloads']['130_Fchecker'] = $file;
@@ -27,14 +27,14 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $this_dir = IP_ROOT_PATH . DOWNLOADS_PATH;
 
 $html_path = create_server_url() . DOWNLOADS_PATH;
 
-if( isset($_GET['safety']) || isset($_POST['safety']) )
+if(isset($_GET['safety']) || isset($_POST['safety']))
 {
 	$safety = (isset($_POST['safety'])) ? intval($_POST['safety']) : intval($_GET['safety']);
 }
@@ -57,11 +57,7 @@ if ($safety == 1)
 	);
 
 	$sql = "SELECT * FROM " . PA_FILES_TABLE;
-
-	if ( !($overall_result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-	}
+	$overall_result = $db->sql_query($sql);
 
 	while ($temp = $db->sql_fetchrow($overall_result))
 	{
@@ -73,11 +69,10 @@ if ($safety == 1)
 
 		if (!is_file($this_dir."/".str_replace($html_path, "", $temp_dlurl)))
 		{
-/*			$sql = "DELETE FROM " . PA_FILES_TABLE . " WHERE file_dlurl = '" . $temp_dlurl . "'";
-			if ( !($db->sql_query($sql)) )
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-			}*/
+			/*
+			$sql = "DELETE FROM " . PA_FILES_TABLE . " WHERE file_dlurl = '" . $temp_dlurl . "'";
+			$db->sql_query($sql);
+			*/
 			$template->assign_block_vars("check.check_step1", array(
 				'DEL_DURL' => $temp_dlurl)
 			);
@@ -88,11 +83,8 @@ if ($safety == 1)
 		'L_FILE_CHECKER_SP2' => $lang['Checker_sp2'])
 	);
 	$sql = "SELECT * FROM " . PA_FILES_TABLE;
+	$overall_result = $db->sql_query($sql);
 
-	if ( !($overall_result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-	}
 	while ($temp = $db->sql_fetchrow($overall_result))
 	{
 		$temp_ssurl = $temp['file_ssurl'];
@@ -104,12 +96,10 @@ if ($safety == 1)
 
 		if (!is_file($this_dir."/".str_replace($html_path, "", $temp_ssurl)))
 		{
-			/*$sql = "UPDATE " . PA_FILES_TABLE . " SET file_ssurl='' WHERE file_id = '" . $temp_file_id . "'";
-
-			if ( !($db->sql_query($sql)) )
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-			}*/
+			/*
+			$sql = "UPDATE " . PA_FILES_TABLE . " SET file_ssurl='' WHERE file_id = '" . $temp_file_id . "'";
+			$db->sql_query($sql);
+			*/
 
 			$template->assign_block_vars("check.check_step2", array(
 				'DEL_SSURL' => $temp_file_id)
@@ -134,10 +124,7 @@ if ($safety == 1)
 		}
 
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . " WHERE file_dlurl = '" . $html_path.$temp . "' OR file_ssurl = '" . $html_path.$temp . "'";
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$numhits = $db->sql_numrows($result);
 
 		if (!$numhits)

@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th align="center">{L_TOPICS}&nbsp;{L_FOR_FORUM}</th>
@@ -32,3 +34,5 @@
 <tr><td align="right"><span class="genmed"><b>{L_BY_FORUM}</b>&nbsp;&nbsp;{S_FORUMS}&nbsp;&nbsp;{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_VIEW}" class="mainoption" /></span></td></tr>
 </table>
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

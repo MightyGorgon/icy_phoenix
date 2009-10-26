@@ -28,21 +28,18 @@ $template->assign_vars(array(
 
 //Get a list of publicly viewable forums
 //Thanks to Kieran007 for supplying the sql for this
-$sql = "SELECT forum_id FROM " . FORUMS_TABLE . " WHERE auth_read=0";
-if ( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Error getting permissions', '', __LINE__, __FILE__, $sql);
-}
+$sql = "SELECT forum_id FROM " . FORUMS_TABLE . " WHERE auth_read = " . AUTH_ALL . " AND forum_type = " . FORUM_POST;
+$result = $db->sql_query($sql);
 $ids = $db->sql_fetchrowset($result);
 $row = 0;
-while($row <= count($ids) -1)
+while($row <= sizeof($ids) -1)
 {
 	$forumids .= $ids[$row]['forum_id'] . ",";
 	$row++;
 }
 $forumids = substr($forumids, 0, strlen($forumids)-1);
 
-if($board_config['sitemap_sort'] == "ASC")
+if($config['sitemap_sort'] == "ASC")
 {
 	$order = "DESC";
 }
@@ -51,10 +48,7 @@ else
 	$order = "ASC";
 }
 $sql = "SELECT topic_id FROM " . TOPICS_TABLE . " WHERE forum_id IN (" . $forumids . ") ORDER BY topic_id $order LIMIT 1";
-if ( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Error getting topic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $result = $db->sql_fetchrow($result);
 $lastid = $result['topic_id'];
 
@@ -63,7 +57,7 @@ while($lasttopic != $lastid)
 {
 	$result = "";
 	//Newest topics first
-	if(is_numeric($lasttopic) && $board_config['sitemap_sort'] == "ASC")
+	if(is_numeric($lasttopic) && $config['sitemap_sort'] == "ASC")
 	{
 		$lasttopic++;
 		$wheresql = "AND t.topic_id >= $lasttopic";
@@ -78,11 +72,8 @@ while($lasttopic != $lastid)
 	{
 		$wheresql = "";
 	}
-	$sql = "SELECT t.topic_id, t.topic_title, t.topic_type, t.topic_status, p.post_time FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p WHERE t.topic_last_post_id=p.post_id AND t.forum_id IN (" . $forumids . ") $wheresql ORDER BY t.topic_id " . $board_config['sitemap_sort'] . " LIMIT " . $board_config['sitemap_topic_limit'];
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Error obtaining topic data', '', __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT t.topic_id, t.topic_title, t.topic_type, t.topic_status, p.post_time FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p WHERE t.topic_last_post_id=p.post_id AND t.forum_id IN (" . $forumids . ") $wheresql ORDER BY t.topic_id " . $config['sitemap_sort'] . " LIMIT " . $config['sitemap_topic_limit'];
+	$result = $db->sql_query($sql);
 	$topics = $db->sql_fetchrowset($result);
 	$db->sql_freeresult();
 	foreach ($topics as $topic)
@@ -90,13 +81,13 @@ while($lasttopic != $lastid)
 		switch ($topic['topic_type'])
 		{
 			case 2:
-				$topic_priority = $board_config['sitemap_announce_priority'];
+				$topic_priority = $config['sitemap_announce_priority'];
 			break;
 			case 1:
-				$topic_priority = $board_config['sitemap_sticky_priority'];
+				$topic_priority = $config['sitemap_sticky_priority'];
 			break;
 			default:
-				$topic_priority = $board_config['sitemap_default_priority'];
+				$topic_priority = $config['sitemap_default_priority'];
 		}
 		if ($topic['topic_status'] == 1)
 		{
@@ -106,13 +97,13 @@ while($lasttopic != $lastid)
 		{
 			$topic_change = 'always';
 		}
-		if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
+		if ( ($config['url_rw'] == '1') || ( ($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
 		{
 			$url = $server_url. str_replace ('--', '-', make_url_friendly($topic['topic_title']) . '-vt' . $topic['topic_id'] . '.html');
 		}
 		else
 		{
-			$url = $server_url . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic['topic_id'];
+			$url = $server_url . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic['topic_id'];
 		}
 
 		$template->assign_block_vars('topics', array(
@@ -128,7 +119,7 @@ while($lasttopic != $lastid)
 
 //Compresss the sitemap with gzip
 //this isn't as pretty as the code in page_header.php, but it's simple & it works :)
-if( function_exists(ob_gzhandler) && ($board_config['gzip_compress'] == 1) )
+if( function_exists(ob_gzhandler) && ($config['gzip_compress'] == 1) )
 {
 	ob_start(ob_gzhandler);
 }

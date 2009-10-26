@@ -21,42 +21,31 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-$db->clear_cache('config_');
 
 // Pull all config data
-$sql = "SELECT * FROM " . CONFIG_TABLE;
-if(!$result = $db->sql_query($sql))
+$tmp_config = array();
+$tmp_config = get_config(false);
+foreach ($tmp_config as $k => $v)
 {
-	message_die(CRITICAL_ERROR, "Could not query config information in admin_board", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	while($row = $db->sql_fetchrow($result))
-	{
-		$config_name = $row['config_name'];
-		$config_value = $row['config_value'];
-		//$default_config[$config_name] = isset($_POST['submit']) ? addslashes($config_value) : $config_value;
-		$default_config[$config_name] = $config_value;
-		$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
-		fix_config_values($config_name, $config_value);
-
-		if(isset($_POST['submit']))
-		{
-			set_config($config_name, $new[$config_name]);
-		}
-	}
+	$default_config[$k] = $v;
+	$new[$k] = (isset($_POST[$k])) ? $_POST[$k] : $default_config[$k];
+	fix_config_values($k, $v);
 
 	if(isset($_POST['submit']))
 	{
-		set_config('board_disable_message', $_POST['message_board_disable_text']);
-
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_server.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-
-		message_die(GENERAL_MESSAGE, $message);
+		set_config($k, $new[$k], false);
 	}
 }
+$cache->destroy('config');
 
+if(isset($_POST['submit']))
+{
+	set_config('board_disable_message', $_POST['message_board_disable_text']);
+
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_server.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+
+	message_die(GENERAL_MESSAGE, $message);
+}
 
 $disable_board_yes = ($new['board_disable']) ? 'checked="checked"' : '';
 $disable_board_no = (!$new['board_disable']) ? 'checked="checked"' : '';
@@ -97,15 +86,16 @@ $prune_no = (!$new['prune_enable']) ? 'checked="checked"' : '';
 $smtp_yes = ($new['smtp_delivery']) ? 'checked="checked"' : '';
 $smtp_no = (!$new['smtp_delivery']) ? 'checked="checked"' : '';
 
-$template->set_filenames(array('body' => ADM_TPL . 'board_config_server_body.tpl'));
-
-
 // Escape any quotes in the site description for proper display in the text box on the admin page
-$new['site_desc'] = str_replace('"', '&quot;', $new['site_desc']);
+/*
 $new['sitename'] = str_replace('"', '&quot;', strip_tags($new['sitename']));
+$new['site_desc'] = str_replace('"', '&quot;', $new['site_desc']);
+$new['board_disable_message'] = str_replace('"', '&quot;', strip_tags($new['board_disable_message']));
 $new['registration_closed'] = str_replace('"', '&quot;', $new['registration_closed']);
-$new['sig_line'] = str_replace('"', '&quot;', $new['sig_line']);
+$new['board_email_sig'] = str_replace('"', '&quot;', $new['board_email_sig']);
+*/
 
+$template->set_filenames(array('body' => ADM_TPL . 'board_config_server_body.tpl'));
 
 $template->assign_vars(array(
 	'S_CONFIG_ACTION' => append_sid('admin_board_server.' . PHP_EXT),
@@ -190,16 +180,16 @@ $template->assign_vars(array(
 	'SERVER_NAME' => $new['server_name'],
 	'SCRIPT_PATH' => $new['script_path'],
 	'SERVER_PORT' => $new['server_port'],
-	'SITENAME' => htmlspecialchars(ip_stripslashes($new['sitename'])),
-	'SITE_DESCRIPTION' => htmlspecialchars(ip_stripslashes($new['site_desc'])),
-	'BOARD_DISABLE_MESSAGE' => htmlspecialchars(ip_stripslashes($new['board_disable_message'])),
+	'SITENAME' => htmlspecialchars($new['sitename']),
+	'SITE_DESCRIPTION' => htmlspecialchars($new['site_desc']),
+	'BOARD_DISABLE_MESSAGE' => htmlspecialchars($new['board_disable_message']),
 	'S_DISABLE_BOARD_YES' => $disable_board_yes,
 	'S_DISABLE_BOARD_NO' => $disable_board_no,
 	'S_REGISTRATION_STATUS_YES' => $registration_status_yes,
 	'S_REGISTRATION_STATUS_NO' => $registration_status_no,
 	'S_DISABLE_REGISTRATION_IP_CHECK_YES' => $disable_registration_ip_check_yes,
 	'S_DISABLE_REGISTRATION_IP_CHECK_NO' => $disable_registration_ip_check_no,
-	'REGISTRATION_CLOSED' => htmlspecialchars(ip_stripslashes($new['registration_closed'])),
+	'REGISTRATION_CLOSED' => htmlspecialchars($new['registration_closed']),
 	'S_MESSAGE_DISABLE_BOARD_NO' => $message_disable_board_no,
 	'S_MESSAGE_DISABLE_BOARD_YES' => $message_disable_board_yes,
 	'ACTIVATION_NONE' => USER_ACTIVATION_NONE,
@@ -229,7 +219,7 @@ $template->assign_vars(array(
 	'NAMECHANGE_YES' => $namechange_yes,
 	'NAMECHANGE_NO' => $namechange_no,
 	'EMAIL_FROM' => $new['board_email'],
-	'EMAIL_SIG' => htmlspecialchars(ip_stripslashes($new['board_email_sig'])),
+	'EMAIL_SIG' => htmlspecialchars($new['board_email_sig']),
 	'SMTP_YES' => $smtp_yes,
 	'SMTP_NO' => $smtp_no,
 	'SMTP_HOST' => $new['smtp_host'],

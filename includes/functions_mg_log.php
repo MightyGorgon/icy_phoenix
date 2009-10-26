@@ -16,9 +16,9 @@ if (!defined('IN_ICYPHOENIX'))
 function ip_log($content, $db_log, $error_log = false)
 {
 	global $REQUEST_URI, $REMOTE_ADDR, $HTTP_USER_AGENT, $SERVER_NAME, $HTTP_REFERER;
-	global $board_config, $lang, $userdata, $db;
+	global $config, $lang, $userdata, $db;
 
-	$db_log_actions = (($board_config['db_log_actions'] == '1') || ($board_config['db_log_actions'] == '2')) ? true : false;
+	$db_log_actions = (($config['db_log_actions'] == '1') || ($config['db_log_actions'] == '2')) ? true : false;
 
 	$page_array = extract_current_page(IP_ROOT_PATH);
 
@@ -27,22 +27,22 @@ function ip_log($content, $db_log, $error_log = false)
 		case 'memberlist.' . PHP_EXT:
 			return true;
 			break;
-		case POSTING_MG:
+		case CMS_PAGE_POSTING:
 			if ((strpos(strtolower($page_array['query_string']), strtolower('mode=quote')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=smilies')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=thank')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=topicreview')) !== false))
 			{
 				return true;
 			}
 			break;
-		case PROFILE_MG:
+		case CMS_PAGE_PROFILE:
 			if ($userdata['user_id'] == ANONYMOUS)
 			{
 				return true;
 			}
 			break;
-		case SEARCH_MG:
+		case CMS_PAGE_SEARCH:
 			return true;
 			break;
-		case VIEWTOPIC_MG:
+		case CMS_PAGE_VIEWTOPIC:
 			if ($userdata['user_id'] == ANONYMOUS)
 			{
 				return true;
@@ -55,9 +55,9 @@ function ip_log($content, $db_log, $error_log = false)
 	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getenv('HTTP_REFERER');
 	$referer = preg_replace('/sid=[A-Za-z0-9]{32}/', '', $referer);
 
-	if ($board_config['mg_log_actions'] == true)
+	if ($config['mg_log_actions'] == true)
 	{
-		$date = date('Y/m/d - H:i:s');
+		$date = gmdate('Y/m/d - H:i:s');
 
 		$message = '[' . $date . ']';
 		$message .= ' [USER_ID: ' . $userdata['user_id'] . ' ]';
@@ -70,12 +70,12 @@ function ip_log($content, $db_log, $error_log = false)
 		$message .= "\n";
 		$message .= "\n";
 
-		$datecode = date('Ymd');
-		$logs_path = !empty($board_config['logs_path']) ? $board_config['logs_path'] : 'logs';
+		$datecode = gmdate('Ymd');
+		$logs_path = !empty($config['logs_path']) ? $config['logs_path'] : 'logs';
 		$log_file = IP_ROOT_PATH . $logs_path . '/mg_log_' . $datecode . '.txt';
-		$fp = fopen ($log_file, 'a+');
-		fwrite($fp, $message);
-		fclose($fp);
+		$fp = @fopen ($log_file, 'a+');
+		@fwrite($fp, $message);
+		@fclose($fp);
 	}
 
 	if ($db_log_actions == true)
@@ -86,36 +86,28 @@ function ip_log($content, $db_log, $error_log = false)
 			foreach ($db_target as $db_target_data)
 			{
 				$sql = "INSERT INTO " . LOGS_TABLE . " (log_time, log_page, log_user_id, log_action, log_desc, log_target)
-					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . ((STRIP) ? addslashes($db_log['action']) : $db_log['action']) . "', '" . ((STRIP) ? addslashes($db_log['desc']) : $db_log['desc']) . "', '" . $db_target_data . "')";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not insert data into logs table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . addslashes($db_log['action']) . "', '" . addslashes($db_log['desc']) . "', '" . $db_target_data . "')";
+				$result = $db->sql_query($sql);
 			}
 		}
 		else
 		{
 			$sql = "SELECT MAX(log_id) max_log_id FROM " . LOGS_TABLE . "";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(CRITICAL_ERROR, 'Could not query log information', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 			$new_log_id = $row['max_log_id'] + 1;
 
 			$sql = "INSERT INTO " . LOGS_TABLE . " (log_id, log_time, log_page, log_user_id, log_action, log_desc, log_target)
-				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . ((STRIP) ? addslashes($db_log['action']) : $db_log['action']) . "', '" . ((STRIP) ? addslashes($db_log['desc']) : $db_log['desc']) . "', '')";
-			if(!$result = $db->sql_query($sql))
+				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . addslashes($db_log['action']) . "', '" . addslashes($db_log['desc']) . "', '')";
+			$result = $db->sql_query($sql);
+
+			if (($error_log) && $config['db_log_actions'] == '2')
 			{
-				message_die(GENERAL_ERROR, 'Could not insert data into logs table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-			if (($error_log) && $board_config['db_log_actions'] == '2')
-			{
-				$datecode = date('Ymd');
-				$logs_path = !empty($board_config['logs_path']) ? $board_config['logs_path'] : 'logs';
+				$datecode = gmdate('Ymd');
+				$logs_path = !empty($config['logs_path']) ? $config['logs_path'] : 'logs';
 				$log_file = IP_ROOT_PATH . $logs_path . '/error_log_' . $new_log_id . '.txt';
-				$fp = fopen ($log_file, "a+");
+				$fp = @fopen ($log_file, "a+");
 				$message = '';
 				//$message .= '[CODE: ' . $error_log['code'] . ']';
 				$message .= "\n";
@@ -123,8 +115,8 @@ function ip_log($content, $db_log, $error_log = false)
 				$message .= "\n";
 				$message .= "\n";
 				$message .= $error_log['text'] . "\n";
-				fwrite($fp, $message);
-				fclose($fp);
+				@fwrite($fp, $message);
+				@fclose($fp);
 			}
 		}
 	}

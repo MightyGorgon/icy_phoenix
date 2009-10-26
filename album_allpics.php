@@ -55,7 +55,7 @@ $catrows = album_read_tree($album_user_id, $options);
 
 album_read_tree($album_user_id);
 $allowed_cat = ''; // For Recent Public Pics below
-for ($i = 0; $i < count($catrows); $i++)
+for ($i = 0; $i < sizeof($catrows); $i++)
 {
 	$allowed_cat .= ($allowed_cat == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
 }
@@ -175,9 +175,9 @@ if ($album_config['comment'] == 1)
 +----------------------------------------------------------
 */
 
-$page_title = $lang['Album'];
-$meta_description = '';
-$meta_keywords = '';
+$meta_content['page_title'] = $lang['Album'];
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
 
 // ------------------------------------
 // Build the thumbnail page
@@ -301,13 +301,8 @@ switch (strtolower($album_view_type))
 // Count pics, comments or ratings
 // ------------------------------------
 
-if(!($result = $db->sql_query($count_sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not count ' . $album_view_type. 's', '', __LINE__, __FILE__, $count_sql);
-}
-
+$result = $db->sql_query($count_sql);
 $row = $db->sql_fetchrow($result);
-
 $total_pics = $row['count'];
 
 // ------------------------------------
@@ -319,13 +314,8 @@ $album_view_type_param = (!empty($album_view_type)) ? '&type=' . $album_view_typ
 
 if ($total_pics > 0 && !empty($allowed_cat))
 {
-	if(!($result = $db->sql_query($list_sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query memberlist information', '', __LINE__, __FILE__, $list_sql);
-	}
-
+	$result = $db->sql_query($list_sql);
 	$picrow = array();
-
 	while($row = $db->sql_fetchrow($result))
 	{
 		$picrow[] = $row;
@@ -343,13 +333,13 @@ if ($total_pics > 0 && !empty($allowed_cat))
 		$album_show_pic_url = 'album_pic.' . PHP_EXT;
 	}
 
-	for ($i = 0; $i < count($picrow); $i += $album_config['cols_per_page'])
+	for ($i = 0; $i < sizeof($picrow); $i += $album_config['cols_per_page'])
 	{
 		$template->assign_block_vars('picrow', array());
 
 		for ($j = $i; $j < ($i + $album_config['cols_per_page']); $j++)
 		{
-			if($j >= count($picrow))
+			if($j >= sizeof($picrow))
 			{
 				break;
 			}
@@ -420,7 +410,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'CATEGORY' => $picrow[$j]['cat_title'],
 				'U_PIC_CAT' => $image_cat_url,
 
-				'TIME' => create_date($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
+				'TIME' => create_date($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
 
 				'VIEW' => $picrow[$j]['pic_view_count'],
 
@@ -490,15 +480,12 @@ if($album_config['comment'] == 1)
 }
 
 // Start output of page
-$page_title = $lang['Album'];
-$meta_description = '';
-$meta_keywords = '';
+$meta_content['page_title'] = $lang['Album'];
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
 $nav_title = (strtolower($album_view_type) == 'comment') ? $lang['All_Comment_List_Of_User'] : ((strtolower($album_view_type) == 'rating') ? $lang['All_Rating_List_Of_User'] : $lang['All_Picture_List_Of_User']);
 $nav_server_url = create_server_url();
 $breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid(album_append_uid('album_allpics.' . PHP_EXT . '?mode=' . $album_view_mode . '&amp;type=' . $album_view_type)) . '">' . $nav_title . '</a>';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'album_memberlist_body.tpl'));
 
 switch (strtolower($album_view_type))
 {
@@ -570,9 +557,6 @@ $template->assign_vars(array(
 	)
 );
 
-// Generate the page
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('album_memberlist_body.tpl', $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 
 ?>

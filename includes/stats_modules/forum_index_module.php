@@ -14,10 +14,10 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 $template->assign_vars(array(
-	'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
-	'U_INDEX' => append_sid(PORTAL_MG),
+	'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
+	'U_INDEX' => append_sid(CMS_PAGE_HOME),
 	'L_STATISTICS' => $lang['Statistics'],
-	'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']))
+	'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']))
 	)
 );
 

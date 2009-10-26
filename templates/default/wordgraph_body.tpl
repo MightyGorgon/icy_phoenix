@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <div id="wordgraph_table_h" style="display: none;">
 	{IMG_THL}{IMG_THC}<span class="forumlink">{L_WORDGRAPH}</span>&nbsp;<b>[<a href="javascript:ShowHide('wordgraph_table','wordgraph_table_h','wordgraph_table');" title="{L_SHOW}">{L_SHOW}</a>]</b>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr><td class="row1g row-center">&nbsp;</td></tr>
@@ -23,3 +25,5 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
+
+<!-- INCLUDE overall_footer.tpl -->

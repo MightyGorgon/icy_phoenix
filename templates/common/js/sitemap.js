@@ -20,7 +20,7 @@ function sitemap()
 	// grab all unordered lists
 	var u = document.getElementsByTagName('ul');
 
-	for(i=0;i<u.length;i++)
+	for(i = 0; i < u.length; i++)
 	{
 		// hide all unordered lists with 'sitemap' class
 		if(u[i].className == 'sitemap')

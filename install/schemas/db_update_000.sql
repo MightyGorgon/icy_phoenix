@@ -79,13 +79,13 @@ INSERT INTO `phpbb_ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES
 INSERT INTO `phpbb_ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('footer_layout', '6');
 
 CREATE TABLE `phpbb_ctracker_filechk` (
-	`filepath` text,
+	`filepath` TEXT NOT NULL,
 	`hash` varchar(32) default NULL
 	);
 
 CREATE TABLE `phpbb_ctracker_filescanner` (
 	`id` smallint(5) NOT NULL,
-	`filepath` text,
+	`filepath` TEXT NOT NULL,
 	`safety` smallint(1) NOT NULL default '0',
 	PRIMARY KEY  (`id`)
 	);
@@ -225,7 +225,7 @@ CREATE TABLE `phpbb_cms_blocks` (
   `bid` int(10) NOT NULL auto_increment,
   `layout` int(10) NOT NULL default '0',
   `title` varchar(60) NOT NULL default '',
-  `content` text NOT NULL,
+  `content` TEXT NOT NULL,
   `bposition` char(2) NOT NULL default '',
   `weight` int(10) NOT NULL default '1',
   `active` tinyint(1) NOT NULL default '1',
@@ -237,7 +237,7 @@ CREATE TABLE `phpbb_cms_blocks` (
   `background` tinyint(1) NOT NULL default '1',
   `local` tinyint(1) NOT NULL default '0',
   `edit_auth` tinyint(1) NOT NULL default '5',
-  `groups` tinytext NOT NULL,
+  `groups` TINYTEXT NOT NULL,
   PRIMARY KEY  (`bid`)
 );
 
@@ -257,7 +257,7 @@ CREATE TABLE `phpbb_cms_layout` (
   `global_blocks` tinyint(1) NOT NULL default '0',
   `view` tinyint(1) NOT NULL default '0',
   `edit_auth` tinyint(1) NOT NULL default '5',
-  `groups` tinytext NOT NULL,
+  `groups` TINYTEXT NOT NULL,
   PRIMARY KEY  (`lid`)
 );
 
@@ -301,20 +301,20 @@ INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `co
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (20, 14, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph');
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (21, 14, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph');
 
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (1, 'Nav Links', '', 'hl', 1, 1, 'blocks_imp_nav_links', 0, 0, 0, 0, 0, 0, 0, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (2, 'Nav Links', '', 'l', 1, 1, 'blocks_imp_nav_links', 0, 1, 0, 0, 0, 0, 0, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (3, 'Recent', '', 'l', 3, 0, 'blocks_imp_recent_topics', 0, 1, 0, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (4, 'Poll', '', 'r', 4, 1, 'blocks_imp_poll', 0, 1, 0, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (5, 'Welcome', '', 'c', 1, 1, 'blocks_imp_welcome', 0, 1, 0, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (6, 'News', '', 'x', 1, 1, 'blocks_imp_news', 0, 1, 0, 0, 0, 0, 0, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (7, 'User Block', '', 'r', 1, 1, 'blocks_imp_user_block', 0, 1, 1, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (8, 'Top Posters', '', 'r', 5, 1, 'blocks_imp_top_posters', 0, 1, 0, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (9, 'Search', '', 'l', 1, 1, 'blocks_imp_search', 0, 1, 1, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (10, 'Who is Online', '', 'r', 2, 1, 'blocks_imp_online_users', 0, 1, 1, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (11, 'Album', '', 'l', 2, 1, 'blocks_imp_album', 0, 1, 0, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (12, 'Links', '', 'l', 4, 1, 'blocks_imp_links', 0, 1, 0, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (13, 'Statistics', '', 'r', 3, 1, 'blocks_imp_statistics', 0, 1, 0, 1, 1, 1, 1, '');
-INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (14, 'Wordgraph', '', 'b', 2, 1, 'blocks_imp_wordgraph', 0, 1, 0, 0, 0, 0, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (1, 'Nav Links', '', 'hl', 1, 1, 'nav_links', 0, 0, 0, 0, 0, 0, 0, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (2, 'Nav Links', '', 'l', 1, 1, 'nav_links', 0, 1, 0, 0, 0, 0, 0, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (3, 'Recent', '', 'l', 3, 0, 'recent_topics', 0, 1, 0, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (4, 'Poll', '', 'r', 4, 1, 'poll', 0, 1, 0, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (5, 'Welcome', '', 'c', 1, 1, 'welcome', 0, 1, 0, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (6, 'News', '', 'x', 1, 1, 'news', 0, 1, 0, 0, 0, 0, 0, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (7, 'User Block', '', 'r', 1, 1, 'user_block', 0, 1, 1, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (8, 'Top Posters', '', 'r', 5, 1, 'top_posters', 0, 1, 0, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (9, 'Search', '', 'l', 1, 1, 'search', 0, 1, 1, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (10, 'Who is Online', '', 'r', 2, 1, 'online_users', 0, 1, 1, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (11, 'Album', '', 'l', 2, 1, 'album', 0, 1, 0, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (12, 'Links', '', 'l', 4, 1, 'links', 0, 1, 0, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (13, 'Statistics', '', 'r', 3, 1, 'statistics', 0, 1, 0, 1, 1, 1, 1, '');
+INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (14, 'Wordgraph', '', 'b', 2, 1, 'wordgraph', 0, 1, 0, 0, 0, 0, 1, '');
 INSERT INTO `phpbb_cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (15, 'Welcome', '<table class=\\"empty-table\\" width=\\"100%\\" cellspacing=\\"0\\" cellpadding=\\"0\\" border=\\"0\\">\r\n	<tr>\r\n		<td width=\\"5%\\"><img src=\\"images/icy_phoenix_small.png\\" alt=\\"\\" /></td>\r\n		<td width=\\"90%\\" align=\\"center\\"><div class=\\"post-text\\">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width=\\"5%\\"><img src=\\"images/icy_phoenix_small_l.png\\" alt=\\"\\" /></td>\r\n	</tr>\r\n</table>', 'c', 2, 1, '', 0, 1, 0, 1, 1, 1, 1, '');
 
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (1, 0, 'default_portal', '1');
@@ -456,7 +456,7 @@ CREATE TABLE `phpbb_cms_nav_menu` (
 	`menu_icon` varchar(255) default NULL,
 	`menu_name_lang` varchar(150) default NULL,
 	`menu_name` varchar(150) default NULL,
-	`menu_desc` text,
+	`menu_desc` TEXT NOT NULL,
 	`menu_link` varchar(255) default NULL,
 	`menu_link_external` tinyint(1) NOT NULL default '0',
 	`auth_view` tinyint(2) NOT NULL default '0',
@@ -475,11 +475,10 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('global_disab
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('global_disable_autolinks', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('global_disable_censor', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_topic_view', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smart_header', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('page_title_simple', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_referrers', '0');
 
-ALTER TABLE `phpbb_config` CHANGE `config_value` `config_value` TEXT NOT NULL;
+ALTER TABLE `phpbb_config` CHANGE `config_value` `config_value` TEXT;
 
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (1, 1, 0, 0, 0, 0, 0, NULL, 'main_links', 'Main Links', 'Main Links Block', NULL, 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (2, 0, 1, 1, 0, 1, 1, './images/menu/application_view_tile.png', 'main_links', 'Main Links', 'Main Links', '', 0, 0, 0);
@@ -691,10 +690,10 @@ CREATE TABLE `phpbb_cms_layout_special` (
 	`template` varchar(100) NOT NULL DEFAULT '',
 	`global_blocks` tinyint(1) NOT NULL DEFAULT '0',
 	`page_nav` tinyint(1) NOT NULL DEFAULT '1',
-	`config_vars` text NOT NULL DEFAULT '',
+	`config_vars` TEXT NOT NULL,
 	`view` tinyint(1) NOT NULL DEFAULT '0',
 	`edit_auth` tinyint(1) NOT NULL DEFAULT '5',
-	`groups` tinytext NOT NULL,
+	`groups` TINYTEXT NOT NULL,
 	PRIMARY KEY (`lsid`),
 	UNIQUE KEY `page_id` (`page_id`)
 );
@@ -746,7 +745,7 @@ CREATE TABLE `phpbb_drafts` (
 	`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`save_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
 	`draft_subject` varchar(100) DEFAULT '' NOT NULL,
-	`draft_message` text,
+	`draft_message` TEXT NOT NULL,
 	PRIMARY KEY (`draft_id`),
 	KEY `save_time` (`save_time`)
 );
@@ -772,7 +771,7 @@ CREATE TABLE phpbb_downloads (
 	klicks INT(11) DEFAULT '0',
 	free TINYINT(1) DEFAULT '0',
 	extern TINYINT(1) DEFAULT '0',
-	long_desc TEXT DEFAULT '',
+	long_desc TEXT NOT NULL,
 	sort INT(11) DEFAULT '0',
 	cat INT(11) DEFAULT '0',
 	hacklist TINYINT(1) DEFAULT '0',
@@ -782,10 +781,10 @@ CREATE TABLE phpbb_downloads (
 	hack_version VARCHAR(32) DEFAULT '',
 	hack_dl_url TINYTEXT DEFAULT '',
 	test varchar(50) DEFAULT '',
-	req TEXT DEFAULT '',
-	todo TEXT DEFAULT '',
-	warning TEXT DEFAULT '',
-	mod_desc TEXT DEFAULT '',
+	req TEXT NOT NULL,
+	todo TEXT NOT NULL,
+	warning TEXT NOT NULL,
+	mod_desc TEXT NOT NULL,
 	mod_list TINYINT(1) DEFAULT '0',
 	file_size BIGINT(20) NOT NULL DEFAULT '0',
 	change_time INT(11) DEFAULT '0',
@@ -809,8 +808,8 @@ CREATE TABLE phpbb_downloads_cat (
 	path VARCHAR(255) DEFAULT '',
 	cat_name VARCHAR(255) DEFAULT '',
 	sort INT(11) DEFAULT '0',
-	description TEXT DEFAULT '',
-	rules TEXT DEFAULT '',
+	description TEXT NOT NULL,
+	rules TEXT NOT NULL,
 	auth_view TINYINT(1) NOT NULL DEFAULT '1',
 	auth_dl TINYINT(1) NOT NULL DEFAULT '1',
 	auth_up TINYINT(1) NOT NULL DEFAULT '0',
@@ -853,7 +852,7 @@ CREATE TABLE phpbb_dl_bug_tracker (
 	report_id INT(11) AUTO_INCREMENT NOT NULL,
 	df_id INT(11) NOT NULL DEFAULT '0',
 	report_title VARCHAR(255) DEFAULT '',
-	report_text TEXT,
+	report_text TEXT NOT NULL,
 	report_file_ver VARCHAR(50) DEFAULT '',
 	report_date INT(11) DEFAULT '0',
 	report_author_id MEDIUMINT(8) DEFAULT 0 NOT NULL,
@@ -885,7 +884,7 @@ CREATE TABLE phpbb_dl_comments (
 	username VARCHAR(32) NOT NULL DEFAULT '',
 	comment_time INT(11) NOT NULL DEFAULT '0',
 	comment_edit_time INT(11) NOT NULL DEFAULT '0',
-	comment_text TEXT NOT NULL DEFAULT '',
+	comment_text TEXT NOT NULL,
 	approve TINYINT(1) NOT NULL DEFAULT '0',
 PRIMARY KEY (dl_id)
 );
@@ -1106,10 +1105,10 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('no_bump', '0
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('link_this_topic', '0');
 ALTER TABLE `phpbb_cms_layout` CHANGE `forum_wide` `global_blocks` TINYINT(1) NOT NULL DEFAULT '0';
 ALTER TABLE `phpbb_cms_layout` ADD `page_nav` TINYINT(1) NOT NULL DEFAULT '1' AFTER `global_blocks`;
-ALTER TABLE `phpbb_cms_layout` ADD `config_vars` TEXT NOT NULL DEFAULT '' AFTER `page_nav`;
+ALTER TABLE `phpbb_cms_layout` ADD `config_vars` TEXT AFTER `page_nav`;
 ALTER TABLE `phpbb_cms_layout_special` CHANGE `forum_wide` `global_blocks` TINYINT(1) NOT NULL DEFAULT '0';
 ALTER TABLE `phpbb_cms_layout_special` ADD `page_nav` TINYINT(1) NOT NULL DEFAULT '1' AFTER `global_blocks`;
-ALTER TABLE `phpbb_cms_layout_special` ADD `config_vars` TEXT NOT NULL DEFAULT '' AFTER `page_nav`;
+ALTER TABLE `phpbb_cms_layout_special` ADD `config_vars` TEXT AFTER `page_nav`;
 INSERT INTO `phpbb_cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('ghtop', 'gt', 0);
 INSERT INTO `phpbb_cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('ghbottom', 'gb', 0);
 INSERT INTO `phpbb_cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('ghleft', 'gl', 0);
@@ -1361,19 +1360,19 @@ CREATE TABLE `___posts___` (
 	`poster_ip` varchar(8) NOT NULL default '',
 	`post_username` varchar(25) default NULL,
 	`post_subject` varchar(255) default NULL,
-	`post_text` text,
-	`post_text_compiled` text,
+	`post_text` TEXT NOT NULL,
+	`post_text_compiled` TEXT NOT NULL,
 	`enable_bbcode` tinyint(1) NOT NULL default '1',
 	`enable_html` tinyint(1) NOT NULL default '0',
 	`enable_smilies` tinyint(1) NOT NULL default '1',
+	`enable_autolinks_acronyms` tinyint(1) NOT NULL default '1',
 	`enable_sig` tinyint(1) NOT NULL default '1',
-	`edit_notes` mediumtext,
+	`edit_notes` MEDIUMTEXT,
 	`post_edit_time` int(11) default NULL,
 	`post_edit_count` smallint(5) unsigned NOT NULL default '0',
 	`post_edit_id` mediumint(8) NOT NULL default '0',
 	`post_attachment` tinyint(1) NOT NULL default '0',
 	`post_bluecard` tinyint(1) default NULL,
-	`enable_autolinks_acronyms` tinyint(1) NOT NULL default '1',
 	PRIMARY KEY (`post_id`),
 	KEY `forum_id` (`forum_id`),
 	KEY `topic_id` (`topic_id`),
@@ -1382,7 +1381,7 @@ CREATE TABLE `___posts___` (
 );
 
 INSERT INTO `___posts___`
-SELECT p.post_id, p.topic_id, p.forum_id, p.poster_id, p.post_time, p.poster_ip, p.post_username, t.post_subject, t.post_text, t.post_text_compiled, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_sig, t.edit_notes, p.post_edit_time, p.post_edit_count, p.post_edit_id, p.post_attachment, p.post_bluecard, p.enable_autolinks_acronyms
+SELECT p.post_id, p.topic_id, p.forum_id, p.poster_id, p.post_time, p.poster_ip, p.post_username, t.post_subject, t.post_text, t.post_text_compiled, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_autolinks_acronyms, p.enable_sig, t.edit_notes, p.post_edit_time, p.post_edit_count, p.post_edit_id, p.post_attachment, p.post_bluecard
 FROM `phpbb_posts` p, `phpbb_posts_text` t
 WHERE p.post_id = t.post_id
 ORDER BY p.post_id;
@@ -1395,7 +1394,7 @@ CREATE TABLE `___privmsgs___` (
 	`privmsgs_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`privmsgs_type` tinyint(4) NOT NULL default '0',
 	`privmsgs_subject` varchar(255) NOT NULL default '',
-	`privmsgs_text` text,
+	`privmsgs_text` TEXT NOT NULL,
 	`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_date` int(11) NOT NULL default '0',
@@ -1403,16 +1402,16 @@ CREATE TABLE `___privmsgs___` (
 	`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
 	`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
 	`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
+	`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '0',
 	`privmsgs_attach_sig` tinyint(1) NOT NULL default '1',
 	`privmsgs_attachment` tinyint(1) NOT NULL default '0',
-	`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '0',
 	PRIMARY KEY (`privmsgs_id`),
 	KEY `privmsgs_from_userid` (`privmsgs_from_userid`),
 	KEY `privmsgs_to_userid` (`privmsgs_to_userid`)
 );
 
 INSERT INTO `___privmsgs___`
-SELECT p.privmsgs_id, p.privmsgs_type, p.privmsgs_subject, t.privmsgs_text, p.privmsgs_from_userid, p.privmsgs_to_userid, p.privmsgs_date, p.privmsgs_ip, p.privmsgs_enable_bbcode, p.privmsgs_enable_html, p.privmsgs_enable_smilies, p.privmsgs_attach_sig, p.privmsgs_attachment, p.privmsgs_enable_autolinks_acronyms
+SELECT p.privmsgs_id, p.privmsgs_type, p.privmsgs_subject, t.privmsgs_text, p.privmsgs_from_userid, p.privmsgs_to_userid, p.privmsgs_date, p.privmsgs_ip, p.privmsgs_enable_bbcode, p.privmsgs_enable_html, p.privmsgs_enable_smilies, p.privmsgs_enable_autolinks_acronyms, p.privmsgs_attach_sig, p.privmsgs_attachment
 FROM `phpbb_privmsgs` p, `phpbb_privmsgs_text` t
 WHERE p.privmsgs_id = t.privmsgs_text_id
 ORDER BY p.privmsgs_id;
@@ -1433,7 +1432,7 @@ CREATE TABLE `___forums___` (
 	`cat_id` mediumint(8) unsigned NOT NULL default '0',
 	`main_type` char(1) default NULL,
 	`forum_name` varchar(150) default NULL,
-	`forum_desc` text,
+	`forum_desc` TEXT NOT NULL,
 	`forum_status` tinyint(4) NOT NULL default '0',
 	`forum_order` mediumint(8) unsigned NOT NULL default '1',
 	`forum_posts` mediumint(8) unsigned NOT NULL default '0',
@@ -1482,7 +1481,7 @@ CREATE TABLE `___forums___` (
 
 CREATE TABLE `phpbb_forums_rules` (
 	`forum_id` smallint(5) unsigned NOT NULL default '0',
-	`rules` text NOT NULL,
+	`rules` TEXT NOT NULL,
 	`rules_display_title` tinyint(1) NOT NULL default '1',
 	`rules_custom_title` varchar(80) NOT NULL default '',
 	`rules_in_viewforum` tinyint(1) unsigned NOT NULL default '0',
@@ -1519,7 +1518,7 @@ CREATE TABLE `___categories___` (
 	`cat_main` mediumint(8) unsigned NOT NULL default '0',
 	`cat_main_type` char(1) default NULL,
 	`cat_title` varchar(100) default NULL,
-	`cat_desc` text,
+	`cat_desc` TEXT NOT NULL,
 	`icon` varchar(255) default NULL,
 	`cat_order` mediumint(8) unsigned NOT NULL default '0',
 	PRIMARY KEY (`cat_id`),
@@ -1589,7 +1588,7 @@ CREATE TABLE `___megamail___` (
 	`user_id` mediumint(8) NOT NULL,
 	`group_id` mediumint(8) NOT NULL,
 	`email_subject` varchar(255) NOT NULL,
-	`email_body` text,
+	`email_body` TEXT NOT NULL,
 	`email_format` tinyint(1) NOT NULL default '0',
 	`batch_start` mediumint(8) NOT NULL,
 	`batch_size` smallint UNSIGNED NOT NULL,
@@ -1639,7 +1638,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ads_nmb', '0
 CREATE TABLE `phpbb_ads` (
 	`ad_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`ad_title` varchar(255) NOT NULL,
-	`ad_text` text,
+	`ad_text` TEXT NOT NULL,
 	`ad_position` varchar(255) NOT NULL,
 	`ad_auth` tinyint(1) NOT NULL default '0',
 	`ad_format` tinyint(1) NOT NULL default '0',

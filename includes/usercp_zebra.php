@@ -15,7 +15,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /*
-if ($board_config['allow_zebra'] == false)
+if ($config['allow_zebra'] == false)
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
@@ -49,7 +49,7 @@ if (isset($_POST['submit']))
 		$data[$var] = request_var($var, $default, true);
 	}
 
-	if (!empty($data['add']) || count($data['usernames']))
+	if (!empty($data['add']) || sizeof($data['usernames']))
 	{
 		if ($data['add'])
 		{
@@ -63,10 +63,8 @@ if (isset($_POST['submit']))
 				FROM ' . ZEBRA_TABLE . ' z, ' . USERS_TABLE . ' u
 				WHERE z.user_id = ' . $userdata['user_id'] . '
 					AND u.user_id = z.zebra_id';
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query ZEBRA table', $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$friends = array();
 			$foes = array();
 			while ($row = $db->sql_fetchrow($result))
@@ -83,20 +81,20 @@ if (isset($_POST['submit']))
 			$db->sql_freeresult($result);
 
 			// remove friends from the username array
-			$n = count($data['add']);
+			$n = sizeof($data['add']);
 			$data['add'] = array_diff($data['add'], $friends);
 
 			// remove foes from the username array
-			$n = count($data['add']);
+			$n = sizeof($data['add']);
 			$data['add'] = array_diff($data['add'], $foes);
 
 			// remove the user himself from the username array
-			$n = count($data['add']);
+			$n = sizeof($data['add']);
 			$data['add'] = array_diff($data['add'], array($userdata['username']));
 
 			unset($friends, $foes, $n);
 
-			if (count($data['add']))
+			if (sizeof($data['add']))
 			{
 				$users_to_add = '';
 				foreach ($data['add'] as $user_tmp)
@@ -110,10 +108,7 @@ if (isset($_POST['submit']))
 					WHERE username IN (' . $users_to_add . ')
 						AND user_active = 1';
 				//die($sql);
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query users table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				$user_id_ary = array();
 				$user_id_level = array();
@@ -127,7 +122,7 @@ if (isset($_POST['submit']))
 				}
 				$db->sql_freeresult($result);
 
-				if (count($user_id_ary))
+				if (sizeof($user_id_ary))
 				{
 					// Remove users from foe list if they are admins or moderators
 					if ($zmode == 'foes')
@@ -147,7 +142,7 @@ if (isset($_POST['submit']))
 						unset($perms);
 					}
 
-					if (count($user_id_ary))
+					if (sizeof($user_id_ary))
 					{
 						$sql_values = ($zmode == 'friends') ? '\'1\', \'0\'' : '\'0\', \'1\'';
 
@@ -156,10 +151,7 @@ if (isset($_POST['submit']))
 						{
 							$sql = "INSERT INTO " . ZEBRA_TABLE . " (`user_id` , `zebra_id` , `friend` , `foe`)
 											VALUES ('" . $userdata['user_id'] . "', '" . $zebra_id . "', " . $sql_values . ")";
-							if (!($result = $db->sql_query($sql)))
-							{
-								message_die(GENERAL_ERROR, 'Could not update ZEBRA table', '', __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
 						}
 						$updated = true;
 					}
@@ -167,7 +159,7 @@ if (isset($_POST['submit']))
 				}
 			}
 		}
-		elseif (count($data['usernames']))
+		elseif (sizeof($data['usernames']))
 		{
 			// Force integer values
 			$data['usernames'] = array_map('intval', $data['usernames']);
@@ -175,17 +167,14 @@ if (isset($_POST['submit']))
 			$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
 				WHERE user_id = ' . $userdata['user_id'] . '
 					AND zebra_id IN (\'' . $users_to_del . '\')';
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Error in deleting ZEBRAS', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$updated = true;
 		}
 
 		$db->clear_cache('zebra_users_');
 		if ($updated)
 		{
-			$redirect_url = append_sid(append_sid(PROFILE_MG . '?mode=zebra&amp;zmode=' . $zmode));
+			$redirect_url = append_sid(append_sid(CMS_PAGE_PROFILE . '?mode=zebra&amp;zmode=' . $zmode));
 			meta_refresh(3, $redirect_url);
 			message_die(GENERAL_MESSAGE, (($zmode == 'friends') ? $lang['FRIENDS_UPDATED'] : $lang['FOES_UPDATED']));
 		}
@@ -196,10 +185,6 @@ if (isset($_POST['submit']))
 	}
 }
 
-$page_title = $lang['UCP_ZEBRA_FRIENDS'];
-$meta_description = '';
-$meta_keywords = '';
-
 $sql_and = ($zmode == 'foes') ? 'z.foe = 1' : 'z.friend = 1';
 $sql = "SELECT z.*, u.username
 	FROM " . ZEBRA_TABLE . " z, " . USERS_TABLE . " u
@@ -207,10 +192,7 @@ $sql = "SELECT z.*, u.username
 		AND " . $sql_and . "
 		AND u.user_id = z.zebra_id
 	ORDER BY u.username ASC";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not query ZEBRA table', $lang['Error'], __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 $username_count = 0;
 $s_username_options = '';
@@ -224,9 +206,6 @@ $db->sql_freeresult($result);
 $link_name = $lang['UCP_ZEBRA_FRIENDS'];
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'profile_friends_mng_body.tpl'));
 
 if ($username_count > 0)
 {
@@ -262,14 +241,13 @@ $template->assign_vars(array(
 	'L_YOUR_FRIENDS_EXPLAIN' => $lang['YOUR_FRIENDS_EXPLAIN'],
 	'L_NO_FRIENDS' => $lang['NO_FRIENDS'],
 
-	'U_SEARCH_USER' => append_sid(SEARCH_MG . '?mode=searchuser'),
+	'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser'),
 	'S_USERNAME_OPTIONS' => $s_username_options,
-	'S_PROFILE_ACTION' => append_sid(PROFILE_MG . '?mode=zebra&amp;zmode=' . $zmode),
+	'S_PROFILE_ACTION' => append_sid(CMS_PAGE_PROFILE . '?mode=zebra&amp;zmode=' . $zmode),
 	'S_HIDDEN_FIELDS' => ''
 	)
 );
 
-$template->pparse('body');
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('profile_friends_mng_body.tpl', $lang['UCP_ZEBRA_FRIENDS'], '', '');
 
 ?>

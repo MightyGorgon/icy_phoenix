@@ -24,35 +24,13 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
-if(isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL]))
-{
-	$forum_id = (isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : intval($_GET[POST_FORUM_URL]);
-}
-else
-{
-	$forum_id = '';
-}
+@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+$class_topics = new class_topics();
 
-if(isset($_GET[POST_POST_URL]) || isset($_POST[POST_POST_URL]))
-{
-	$post_id = (isset($_POST[POST_POST_URL])) ? intval($_POST[POST_POST_URL]) : intval($_GET[POST_POST_URL]);
-}
-else
-{
-	$post_id = '';
-}
-
-if(isset($_GET[POST_TOPIC_URL]) || isset($_POST[POST_TOPIC_URL]))
-{
-	$topic_id = (isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : intval($_GET[POST_TOPIC_URL]);
-}
-else
-{
-	$topic_id = '';
-}
+// Init common vars: forum_id, topic_id, post_id, etc.
+$class_topics->var_init(true);
 
 $confirm = ($_POST['confirm']) ? true : 0;
 $confirm_recycle = true;
@@ -69,7 +47,7 @@ if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
 	elseif (($type == POST_CAT_URL) || ($selected_id == 'Root'))
 	{
 		$parm = ($id != 0) ? '?' . POST_CAT_URL . '=' . $id : '';
-		redirect(append_sid('./' . FORUM_MG . $parm));
+		redirect(append_sid('./' . CMS_PAGE_FORUM . $parm));
 		exit;
 	}
 }
@@ -203,9 +181,12 @@ switch($type)
 
 if(!empty($topic_id))
 {
-	$sql = "SELECT f.forum_id, f.forum_name, f.forum_topics, t.topic_poster  FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
+	$sql = "SELECT f.forum_id, f.forum_name, f.forum_topics, t.topic_poster FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 		WHERE t.topic_id = " . $topic_id . " AND f.forum_id = t.forum_id";
-	if(!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 	}
@@ -217,7 +198,10 @@ if(!empty($topic_id))
 elseif(!empty($forum_id))
 {
 	$sql = "SELECT COUNT(t.topic_id) AS total_topics FROM " . TOPICS_TABLE . " t WHERE t.forum_id = " . $forum_id . " $where_type";
-	if(!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		message_die(GENERAL_MESSAGE, 'Forum_not_exist');
 	}
@@ -243,15 +227,15 @@ if(isset($_POST['cancel']))
 {
 	if($topic_id)
 	{
-		$redirect = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id;
+		$redirect = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
 	}
 	elseif($forum_id)
 	{
-		$redirect = VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id;
+		$redirect = CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id;
 	}
 	else
 	{
-		$redirect = FORUM_MG;
+		$redirect = CMS_PAGE_FORUM;
 	}
 	redirect(append_sid($redirect, true));
 }
@@ -263,10 +247,7 @@ if(!function_exists('find_names'))
 		global $db;
 
 		$sql = "SELECT forum_name FROM " . FORUMS_TABLE . " WHERE forum_id = $id";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'error finding forum.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		return $row['forum_name'];
 	}
@@ -286,10 +267,7 @@ else
 	if ($qtnum > -1)
 	{
 		$sql_qt = "SELECT * FROM " . TITLE_INFOS_TABLE . " WHERE id = $qtnum";
-		if (!($result_qt = $db->sql_query($sql_qt)))
-		{
-			message_die(GENERAL_MESSAGE, 'Quick Title Add-on does not exist');
-		}
+		$result_qt = $db->sql_query($sql_qt);
 		$qt_row = $db->sql_fetchrow($result_qt);
 		if ((($userdata['user_level'] == ADMIN) && ($qt_row['admin_auth'] == 0)) || (($userdata['user_level'] == MOD) && ($qt_row['mod_auth'] == 0)) || (($userdata['user_level'] == USER) && ($qt_row['poster_auth'] == 0)) || (($userdata['user_level'] == USER) && ($qt_row['poster_auth'] == 1) && ($userdata['user_id'] != $topic_row['topic_poster'])))
 		{
@@ -307,8 +285,8 @@ else
 }
 // End Auth Check
 
-$meta_description = '';
-$meta_keywords = '';
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
 
 switch($mode)
 {
@@ -318,7 +296,7 @@ switch($mode)
 			message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_delete'], $is_auth['auth_delete_type']));
 		}
 
-		$page_title = $lang['Mod_CP'] . ' (' . $lang['Delete'] . ')';
+		$meta_content['page_title'] = $lang['Mod_CP'] . ' (' . $lang['Delete'] . ')';
 
 		if($confirm)
 		{
@@ -326,16 +304,14 @@ switch($mode)
 
 			$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 			$topic_id_sql = '';
-			for($i = 0; $i < count($topics); $i++)
+			for($i = 0; $i < sizeof($topics); $i++)
 			{
 				$topic_id_sql .= (($topic_id_sql != '') ? ', ' : '') . intval($topics[$i]);
 			}
 
 			$sql = "SELECT topic_id FROM " . TOPICS_TABLE . " WHERE topic_id IN ($topic_id_sql) AND forum_id = $forum_id";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get topic id information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$topic_id_sql = '';
 			while($row = $db->sql_fetchrow($result))
 			{
@@ -349,34 +325,26 @@ switch($mode)
 
 			$sql = "SELECT poster_id, COUNT(post_id) AS posts FROM " . POSTS_TABLE . "
 				WHERE topic_id IN ($topic_id_sql) GROUP BY poster_id";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get poster id information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$count_sql = array();
 			while($row = $db->sql_fetchrow($result))
 			{
-				$count_sql[] = "UPDATE " . USERS_TABLE . " SET user_posts = user_posts - " . $row['posts'] . "
-						WHERE user_id = " . $row['poster_id'];
+				$count_sql[] = "UPDATE " . USERS_TABLE . " SET user_posts = user_posts - " . $row['posts'] . " WHERE user_id = " . $row['poster_id'];
 			}
 			$db->sql_freeresult($result);
 
-			if(count($count_sql))
+			if(sizeof($count_sql))
 			{
-				for($i = 0; $i < count($count_sql); $i++)
+				for($i = 0; $i < sizeof($count_sql); $i++)
 				{
-					if(!$db->sql_query($count_sql[$i]))
-					{
-						message_die(GENERAL_ERROR, 'could not update user post count information.', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($count_sql[$i]);
 				}
 			}
 
 			$sql = "SELECT post_id FROM " . POSTS_TABLE . " WHERE topic_id IN ($topic_id_sql)";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get post id information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$post_id_sql = '';
 			while($row = $db->sql_fetchrow($result))
 			{
@@ -385,95 +353,68 @@ switch($mode)
 			$db->sql_freeresult($result);
 
 			$sql = "SELECT vote_id FROM " . VOTE_DESC_TABLE . " WHERE topic_id IN ($topic_id_sql)";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get vote id information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$vote_id_sql = '';
 			while($row = $db->sql_fetchrow($result))
 			{
 				$vote_id_sql .= (($vote_id_sql != '') ? ', ' : '') . $row['vote_id'];
 			}
 			$db->sql_freeresult($result);
-			$sql = "DELETE FROM " . THANKS_TABLE . "
-					WHERE topic_id IN ($topic_id_sql)";
-			if (!$db->sql_query($sql, BEGIN_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, 'Error in deleting Thanks post Information', '', __LINE__, __FILE__, $sql);
-			}
 
 			$sql = "DELETE FROM " . TOPICS_TABLE . " WHERE topic_id IN ($topic_id_sql) OR topic_moved_id IN ($topic_id_sql)";
-			if(!$db->sql_query($sql, BEGIN_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, 'could not delete topics.', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_transaction('begin');
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . THANKS_TABLE . "
+					WHERE topic_id IN ($topic_id_sql)";
+			$db->sql_query($sql);
 
 			$sql = "DELETE FROM " . BOOKMARK_TABLE . "
 				WHERE topic_id IN ($topic_id_sql)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete bookmarks', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 
 			// Event Registration - BEGIN
 			$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id IN ($topic_id_sql)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete registration data from table', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . " WHERE topic_id IN ($topic_id_sql)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete registration data from table', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 			// Event Registration - END
 
 			if($post_id_sql != '')
 			{
 				$sql = "DELETE FROM " . POSTS_TABLE . " WHERE post_id IN ($post_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete posts.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
+
 				remove_search_post($post_id_sql);
 			}
 
 			if($vote_id_sql != '')
 			{
 				$sql = "DELETE FROM " . VOTE_DESC_TABLE . " WHERE vote_id IN ($vote_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete vote descriptions.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . " WHERE vote_id IN ($vote_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete vote results.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$sql = "DELETE FROM " . VOTE_USERS_TABLE . " WHERE vote_id IN ($vote_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete vote users.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 
 			$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id IN ($topic_id_sql)";
-			if(!$db->sql_query($sql, END_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, 'could not delete watched post list.', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+			$db->sql_transaction('commit');
 
 			if(!empty($topic_id))
 			{
-				$redirect_page = VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
 				$l_redirect = sprintf($lang['Click_return_forum'], '<a href="'. $redirect_page .'">', '</a>');
 			}
 			else
 			{
 				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
-				$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
+				$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
 			}
 
 			$redirect_url = $redirect_page;
@@ -483,11 +424,10 @@ switch($mode)
 			empty_cache_folders(FORUMS_CACHE_FOLDER);
 			sync('forum', $forum_id);
 
-			message_die(GENERAL_MESSAGE, ((count($topics) == '1') ? $lang['Mod_CP_topic_removed'] : $lang['Topics_Removed']) . '<br /><br />' . $l_redirect);
+			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_removed'] : $lang['Topics_Removed']) . '<br /><br />' . $l_redirect);
 		}
 		else
 		{
-			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			if(empty($_POST['topic_id_list']) && empty($topic_id))
 			{
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
@@ -497,7 +437,7 @@ switch($mode)
 			if(isset($_POST['topic_id_list']))
 			{
 				$topics = $_POST['topic_id_list'];
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < sizeof($topics); $i++)
 				{
 					$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="'. intval($topics[$i]) .'" />';
 				}
@@ -507,7 +447,6 @@ switch($mode)
 				$hidden_fields .= '<input type="hidden" name="'. POST_TOPIC_URL .'" value="'. $topic_id .'" />';
 			}
 
-			$template->set_filenames(array('confirm' => 'confirm_body.tpl'));
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
 				'MESSAGE_TEXT' => $lang['Confirm_delete_topic'],
@@ -517,8 +456,7 @@ switch($mode)
 				'S_HIDDEN_FIELDS' => $hidden_fields,
 				)
 			);
-			$template->pparse('confirm');
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
 		}
 		break;
 
@@ -528,28 +466,23 @@ switch($mode)
 			message_die(MESSAGE, sprintf($lang['Sorry_auth_delete'], $is_auth['auth_delete_type']));
 		}
 
-		$page_title = $lang['Mod_CP'] . ' (' . $lang['Delete_poll'] . ')';
+		$meta_content['page_title'] = $lang['Mod_CP'] . ' (' . $lang['Delete_poll'] . ')';
 
 		if($confirm)
 		{
 			$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 			$topic_id_sql = '';
-			for($i = 0; $i < count($topics); $i++)
+			for($i = 0; $i < sizeof($topics); $i++)
 			{
 				$topic_id_sql .= (($topic_id_sql != '') ? ', ' : '') . intval($topics[$i]);
 			}
 
 			$sql = "UPDATE " . TOPICS_TABLE . " SET topic_vote = '0' WHERE topic_id IN ($topic_id_sql)";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not reset topic vote.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$sql = "SELECT vote_id FROM " . VOTE_DESC_TABLE . " WHERE topic_id IN ($topic_id_sql)";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get vote id information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$vote_id_sql = '';
 			while($row = $db->sql_fetchrow($result))
 			{
@@ -560,37 +493,27 @@ switch($mode)
 			if($vote_id_sql != '')
 			{
 				$sql = "DELETE FROM " . VOTE_DESC_TABLE . " WHERE vote_id IN ($vote_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete vote descriptions.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . " WHERE vote_id IN ($vote_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete vote results.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$sql = "DELETE FROM " . VOTE_USERS_TABLE . " WHERE vote_id IN ($vote_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not delete vote users.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 
 			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
-			$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
+			$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
 
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
 
 			empty_cache_folders(POSTS_CACHE_FOLDER);
 
-			message_die(GENERAL_MESSAGE, ((count($topics) == '1') ? $lang['Mod_CP_poll_removed'] : $lang['Mod_CP_polls_removed']) .'<br /><br />'. $l_redirect);
+			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_poll_removed'] : $lang['Mod_CP_polls_removed']) .'<br /><br />'. $l_redirect);
 		}
 		else
 		{
-			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 			if(empty($_POST['topic_id_list']) && empty($topic_id))
 			{
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
@@ -600,7 +523,7 @@ switch($mode)
 			if(isset($_POST['topic_id_list']))
 			{
 				$topics = $_POST['topic_id_list'];
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < sizeof($topics); $i++)
 				{
 					$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="' . intval($topics[$i]) . '" />';
 				}
@@ -610,23 +533,21 @@ switch($mode)
 				$hidden_fields .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" />';
 			}
 
-			$template->set_filenames(array('confirm' => 'confirm_body.tpl'));
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
-				'MESSAGE_TEXT' => (count($topics) == '1') ? $lang['Confirm_delete_poll'] : $lang['Mod_CP_confirm_delete_polls'],
+				'MESSAGE_TEXT' => (sizeof($topics) == '1') ? $lang['Confirm_delete_poll'] : $lang['Mod_CP_confirm_delete_polls'],
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 				'S_CONFIRM_ACTION' => append_sid('modcp.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields,
 				)
 			);
-			$template->pparse('confirm');
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
 		}
 		break;
 
 	case 'move':
-		$page_title = $lang['Mod_CP'] . ' (' . $lang['Move'] . ')';
+		$meta_content['page_title'] = $lang['Mod_CP'] . ' (' . $lang['Move'] . ')';
 
 		if($confirm)
 		{
@@ -651,49 +572,43 @@ switch($mode)
 			{
 				$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
 				$topic_list = '';
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < sizeof($topics); $i++)
 				{
 					$topic_list .= (($topic_list != '') ? ', ' : '') . intval($topics[$i]);
 				}
 
 				$sql = "SELECT * FROM " . TOPICS_TABLE . "
 					WHERE topic_id IN ($topic_list) AND forum_id = $old_forum_id AND topic_status <> " . TOPIC_MOVED;
-				if(!($result = $db->sql_query($sql, BEGIN_TRANSACTION)))
-				{
-					message_die(GENERAL_ERROR, 'could not select from topic table.', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrowset($result);
 				$db->sql_freeresult($result);
-				for($i = 0; $i < count($row); $i++)
+
+				$db->sql_transaction('begin');
+
+				for($i = 0; $i < sizeof($row); $i++)
 				{
 					$topic_id = $row[$i]['topic_id'];
 					if(isset($_POST['move_leave_shadow']))
 					{
 						$sql = "INSERT INTO " . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_status, topic_type, topic_vote, topic_views, topic_replies, topic_first_post_id, topic_last_post_id, topic_moved_id)
 							VALUES ($old_forum_id, '" . addslashes(str_replace("\'", "''", $row[$i]['topic_title'])) . "', '" . str_replace("\'", "''", $row[$i]['topic_poster']) . "', " . $row[$i]['topic_time'] . ", " . TOPIC_MOVED . ", " . POST_NORMAL . ", " . $row[$i]['topic_vote'] . ", " . $row[$i]['topic_views'] . ", " . $row[$i]['topic_replies'] . ", " . $row[$i]['topic_first_post_id'] . ", " . $row[$i]['topic_last_post_id'] . ", $topic_id)";
-						if(!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'could not insert shadow topic.', '', __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 					}
 
 					$sql = "UPDATE " . TOPICS_TABLE . " SET forum_id = $new_forum_id WHERE topic_id = $topic_id";
-					if(!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'could not update old topic.', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 
 					$sql = "UPDATE " . POSTS_TABLE . " SET forum_id = $new_forum_id WHERE topic_id = $topic_id";
-					if(!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'could not update post topic ids.', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 				}
+
+				$db->sql_transaction('commit');
+
 				empty_cache_folders(POSTS_CACHE_FOLDER);
 				empty_cache_folders(FORUMS_CACHE_FOLDER);
 				sync('forum', $new_forum_id);
 				sync('forum', $old_forum_id);
-				$message = ((count($topics) == '1') ? sprintf($lang['Mod_CP_topic_moved'], find_names($old_forum_id), find_names($new_forum_id)) : sprintf($lang['Mod_CP_topics_moved'], find_names($old_forum_id), find_names($new_forum_id))) .'<br /><br />';
+				$message = ((sizeof($topics) == '1') ? sprintf($lang['Mod_CP_topic_moved'], find_names($old_forum_id), find_names($new_forum_id)) : sprintf($lang['Mod_CP_topics_moved'], find_names($old_forum_id), find_names($new_forum_id))) .'<br /><br />';
 			}
 			else
 			{
@@ -702,7 +617,7 @@ switch($mode)
 
 			if(!empty($topic_id))
 			{
-				$redirect_page = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 				$message .= sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 			}
 			else
@@ -714,11 +629,11 @@ switch($mode)
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
 
-			message_die(GENERAL_MESSAGE, $message .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>'));
+			message_die(GENERAL_MESSAGE, $message .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>'));
 		}
 		else
 		{
-			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+			page_header($meta_content['page_title'], true);
 			if(empty($_POST['topic_id_list']) && empty($topic_id))
 			{
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
@@ -728,7 +643,7 @@ switch($mode)
 			if(isset($_POST['topic_id_list']))
 			{
 				$topics = $_POST['topic_id_list'];
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < sizeof($topics); $i++)
 				{
 					$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="' . intval($topics[$i]) . '" />';
 				}
@@ -754,7 +669,7 @@ switch($mode)
 
 			$template->pparse('movetopic');
 
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			page_footer(true, '', true);
 		}
 		break;
 
@@ -767,21 +682,18 @@ switch($mode)
 
 		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
 		$topic_id_sql = '';
-		for($i = 0; $i < count($topics); $i++)
+		for($i = 0; $i < sizeof($topics); $i++)
 		{
 			$topic_id_sql .= (($topic_id_sql != '') ? ', ' : '') . intval($topics[$i]);
 		}
 
 		$sql = "UPDATE " . TOPICS_TABLE . " SET topic_status = " . (($mode == 'lock') ? TOPIC_LOCKED : TOPIC_UNLOCKED) . "
 			WHERE topic_id IN ($topic_id_sql) AND forum_id = $forum_id AND topic_moved_id = 0";
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'could not update topics table.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if(!empty($topic_id))
 		{
-			$redirect_page = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 			$message = sprintf($lang['Click_return_topic'], '<a href="'. $redirect_page .'">', '</a>');
 		}
 		else
@@ -797,11 +709,11 @@ switch($mode)
 
 		if($mode == 'lock')
 		{
-			message_die(GENERAL_MESSAGE, ((count($topics) == '1') ? $lang['Mod_CP_topic_locked'] : $lang['Topics_Locked']) .'<br /><br />'. $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>'));
+			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_locked'] : $lang['Topics_Locked']) .'<br /><br />'. $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>'));
 		}
 		elseif($mode == 'unlock')
 		{
-			message_die(GENERAL_MESSAGE, ((count($topics) == '1') ? $lang['Mod_CP_topic_unlocked'] : $lang['Topics_Unlocked']) .'<br /><br />'. $message . '<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>'));
+			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_unlocked'] : $lang['Topics_Unlocked']) .'<br /><br />'. $message . '<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>'));
 		}
 		break;
 
@@ -831,7 +743,7 @@ switch($mode)
 
 		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
 		$topic_id_sql = '';
-		for($i = 0; $i < count($topics); $i++)
+		for($i = 0; $i < sizeof($topics); $i++)
 		{
 			$topic_id_sql .= (($topic_id_sql != "") ? ', ' : '') . $topics[$i];
 		}
@@ -853,14 +765,11 @@ switch($mode)
 			$topic_type = POST_NORMAL;
 		}
 		$sql = "UPDATE " . TOPICS_TABLE . " SET topic_type = " . $topic_type . " WHERE topic_id IN ($topic_id_sql) AND topic_moved_id = 0";
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'could not update topics table.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if(!empty($topic_id))
 		{
-			$redirect_page = append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id);
+			$redirect_page = append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id);
 			$message = sprintf($lang['Click_return_topic'], '<a href="'. $redirect_page .'">', '</a>');
 		}
 		else
@@ -872,18 +781,18 @@ switch($mode)
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
 
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="'. append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id) .'">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="'. append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) .'">', '</a>');
 
 		switch($mode)
 		{
 			case 'sticky':
-				$message = ((count($topics) == '1') ? $lang['Mod_CP_topic_sticked'] : $lang['Mod_CP_topics_sticked']) .'<br /><br />'. $message; break;
+				$message = ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_sticked'] : $lang['Mod_CP_topics_sticked']) .'<br /><br />'. $message; break;
 			case 'announce':
-				$message = ((count($topics) == '1') ? $lang['Mod_CP_topic_announced'] : $lang['Mod_CP_topics_announced']) .'<br /><br />'. $message; break;
+				$message = ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_announced'] : $lang['Mod_CP_topics_announced']) .'<br /><br />'. $message; break;
 			case 'super_announce':
-				$message = ((count($topics) == '1') ? $lang['Mod_CP_topic_globalized'] : $lang['Mod_CP_topics_globalized']) .'<br /><br />'. $message; break;
+				$message = ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_globalized'] : $lang['Mod_CP_topics_globalized']) .'<br /><br />'. $message; break;
 			case 'normalize':
-				$message = ((count($topics) == '1') ? $lang['Mod_CP_topic_normalized'] : $lang['Mod_CP_topics_normalized']) .'<br /><br />'. $message; break;
+				$message = ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_normalized'] : $lang['Mod_CP_topics_normalized']) .'<br /><br />'. $message; break;
 		}
 
 		empty_cache_folders(POSTS_CACHE_FOLDER);
@@ -891,7 +800,7 @@ switch($mode)
 		message_die(GENERAL_MESSAGE, $message);
 		break;
 	case 'merge':
-		$page_title = $lang['Mod_CP'] . ' (' . $lang['Merge_topic'] . ')';
+		$meta_content['page_title'] = $lang['Mod_CP'] . ' (' . $lang['Merge_topic'] . ')';
 
 		if ($confirm)
 		{
@@ -908,7 +817,9 @@ switch($mode)
 			$new_topic_id = $_POST['new_topic'];
 			$topic_id_list = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 
-			for ($i = 0; $i < count($topic_id_list); $i++)
+			$db->sql_transaction('begin');
+
+			for ($i = 0; $i < sizeof($topic_id_list); $i++)
 			{
 				$old_topic_id = $topic_id_list[$i];
 
@@ -917,11 +828,7 @@ switch($mode)
 					$sql = "UPDATE " . POSTS_TABLE . "
 						SET topic_id = '" . $new_topic_id . "'
 						WHERE topic_id = '" . $topic_id_list[$i] . "'";
-
-					if (!($result = $db->sql_query($sql, BEGIN_TRANSACTION)))
-					{
-						message_die(GENERAL_ERROR, 'Could not update posts', '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 					if($userdata['upi2db_access'])
@@ -932,41 +839,22 @@ switch($mode)
 						*/
 						$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
 							WHERE topic_id IN ($topic_id_list[$i])";
-
-						if (!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not delete topic reads', '', __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 
 						/*
 						$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . "
 							WHERE topic_id IN ($topic_id_sql)";
 						*/
-						$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . "
-							WHERE topic_id IN ($topic_id_list[$i])";
-
-						if (!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not delete topic reads', '', __LINE__, __FILE__, $sql);
-						}
+						$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . " WHERE topic_id IN ($topic_id_list[$i])";
+						$db->sql_query($sql);
 					}
 //<!-- END Unread Post Information to Database Mod -->
 
-					$sql = "DELETE FROM " . TOPICS_TABLE . "
-						WHERE topic_id = $topic_id_list[$i]";
+					$sql = "DELETE FROM " . TOPICS_TABLE . " WHERE topic_id = $topic_id_list[$i]";
+					$result = $db->sql_query($sql);
 
-					if (!($result = $db->sql_query($sql, BEGIN_TRANSACTION)))
-					{
-						message_die(GENERAL_ERROR, 'Could not update posts', '', __LINE__, __FILE__, $sql);
-					}
-
-					$sql = "DELETE FROM  " . TOPICS_WATCH_TABLE . "
-						WHERE topic_id = $topic_id_list[$i]";
-
-					if (!($result = $db->sql_query($sql, BEGIN_TRANSACTION)))
-					{
-						message_die(GENERAL_ERROR, 'Could not update posts', '', __LINE__, __FILE__, $sql);
-					}
+					$sql = "DELETE FROM  " . TOPICS_WATCH_TABLE . " WHERE topic_id = $topic_id_list[$i]";
+					$result = $db->sql_query($sql);
 
 					// Sync the forum indexes
 					empty_cache_folders(POSTS_CACHE_FOLDER);
@@ -983,9 +871,11 @@ switch($mode)
 
 			} // end for
 
+			$db->sql_transaction('commit');
+
 			if (!empty($topic_id))
 			{
-				$redirect_page = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $userdata['session_id'];
 				$message .= sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 			}
 			else
@@ -994,7 +884,7 @@ switch($mode)
 				$message .= sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 			}
 
-			$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
+			$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
@@ -1003,7 +893,7 @@ switch($mode)
 		}
 		else
 		{
-			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+			page_header($meta_content['page_title'], true);
 			if (empty($_POST['topic_id_list']) && empty($topic_id))
 			{
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
@@ -1016,7 +906,7 @@ switch($mode)
 			{
 				$topics = $_POST['topic_id_list'];
 
-				for($i = 0; $i < count($topics); $i++)
+				for($i = 0; $i < sizeof($topics); $i++)
 				{
 					$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="' . intval($topics[$i]) . '" />';
 				}
@@ -1046,17 +936,17 @@ switch($mode)
 
 			$template->pparse('mergetopic');
 
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			page_footer(true, '', true);
 		}
 		break;
 	case 'split':
-		$page_title = $lang['Mod_CP'] . ' (' . $lang['Split'] . ')';
+		$meta_content['page_title'] = $lang['Mod_CP'] . ' (' . $lang['Split'] . ')';
 
 		$post_id_sql = '';
 		if(isset($_POST['split_type_all']) || isset($_POST['split_type_beyond']))
 		{
 			$posts = $_POST['post_id_list'];
-			for($i = 0; $i < count($posts); $i++)
+			for($i = 0; $i < sizeof($posts); $i++)
 			{
 				$post_id_sql .= (($post_id_sql != '') ? ', ' : '') . intval($posts[$i]);
 			}
@@ -1065,10 +955,8 @@ switch($mode)
 		if($post_id_sql != '')
 		{
 			$sql = "SELECT post_id FROM " . POSTS_TABLE . " WHERE post_id IN ($post_id_sql) AND forum_id = $forum_id";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get post id information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$post_id_sql = '';
 			while($row = $db->sql_fetchrow($result))
 			{
@@ -1082,10 +970,8 @@ switch($mode)
 
 			$sql = "SELECT post_id, poster_id, topic_id, post_time FROM " . POSTS_TABLE . "
 				WHERE post_id IN ($post_id_sql) ORDER BY post_time ASC";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get post information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			if($row = $db->sql_fetchrow($result))
 			{
 				$first_poster = $row['poster_id'];
@@ -1128,42 +1014,31 @@ switch($mode)
 
 				$sql  = "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_poster, topic_time, forum_id, topic_status, topic_type)
 					VALUES ('" . str_replace("\'", "''", $post_subject) . "', $first_poster, " . $topic_time . ", $new_forum_id, " . TOPIC_UNLOCKED . ", " . POST_NORMAL . ")";
-				if(!($db->sql_query($sql, BEGIN_TRANSACTION)))
-				{
-					message_die(GENERAL_ERROR, 'could not insert new topic.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_transaction('begin');
+				$db->sql_query($sql);
 				$new_topic_id = $db->sql_nextid();
 
 				$sql = "UPDATE " . TOPICS_WATCH_TABLE . " SET topic_id = $new_topic_id
 					WHERE topic_id = $topic_id AND user_id IN ($user_id_sql)";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'could not update topics watch table.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$sql_where = (!empty($_POST['split_type_beyond'])) ? " post_time >= $post_time AND topic_id = $topic_id" : "post_id IN ($post_id_sql)";
 				$sql = "UPDATE " . POSTS_TABLE . " SET topic_id = $new_topic_id, forum_id = $new_forum_id WHERE $sql_where";
-				if(!$db->sql_query($sql, END_TRANSACTION))
-				{
-					message_die(GENERAL_ERROR, 'could not update posts table.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
+				$db->sql_transaction('commit');
+
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				$sql_where_upi = (!empty($_POST['split_type_beyond'])) ? " topic_id = $topic_id" : "post_id IN ($post_id_sql)";
 
 				$sql = "UPDATE " . UPI2DB_LAST_POSTS_TABLE . "
 					SET topic_id = $new_topic_id, forum_id = $new_forum_id
 					WHERE $sql_where_upi";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
+
 				$sql = "UPDATE " . UPI2DB_UNREAD_POSTS_TABLE . "
 					SET topic_id = $new_topic_id, forum_id = $new_forum_id
 					WHERE $sql_where_upi";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 //<!-- END Unread Post Information to Database Mod -->
 
 				empty_cache_folders(POSTS_CACHE_FOLDER);
@@ -1173,17 +1048,17 @@ switch($mode)
 				sync('forum', $new_forum_id);
 				sync('forum', $forum_id);
 
-				$redirect_url = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 				meta_refresh(3, $redirect_url);
 
-				$message = $lang['Topic_split'] . '<br /><br />' . sprintf($lang['Mod_CP_click_return_topic'], '<a href="' . $redirect_url . '">', '</a>', '<a href="' . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>').'<br /><br />'. sprintf($lang['Click_return_modcp'], '<a href="modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&sid=' . $userdata['session_id'] .'">', '</a>').'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
+				$message = $lang['Topic_split'] . '<br /><br />' . sprintf($lang['Mod_CP_click_return_topic'], '<a href="' . $redirect_url . '">', '</a>', '<a href="' . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>').'<br /><br />'. sprintf($lang['Click_return_modcp'], '<a href="modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&sid=' . $userdata['session_id'] .'">', '</a>').'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
 		}
 		else
 		{
-			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+			page_header($meta_content['page_title'], true);
 			$template->set_filenames(array('split_body' => 'modcp_split.tpl'));
 
 			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, p.*
@@ -1191,10 +1066,7 @@ switch($mode)
 				WHERE p.topic_id = $topic_id
 					AND p.poster_id = u.user_id
 				ORDER BY p.post_time ASC";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not get topic/post information.', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$s_hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" /><input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" /><input type="hidden" name="mode" value="split" />';
 
@@ -1217,22 +1089,18 @@ switch($mode)
 					'L_POST' => $lang['Post'],
 					'FORUM_NAME' => $forum_name,
 					'MINIPOST_IMG' => $images['icon_minipost'],
-					'U_VIEW_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id),
+					'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id),
 					'S_SPLIT_ACTION' => append_sid('modcp.' . PHP_EXT),
 					'S_HIDDEN_FIELDS' => $s_hidden_fields,
 					'S_FORUM_SELECT' => selectbox('new_forum_id', false, $forum_id),
 					)
 				);
 
-				$orig_word = array();
-				$replacement_word = array();
-				obtain_word_list($orig_word, $replacement_word);
-
 				for($i = 0; $i < $total_posts; $i++)
 				{
 					$message = $postrow[$i]['post_text'];
 					$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : $topic_title;
-					$post_date = create_date_ip($board_config['default_dateformat'], $postrow[$i]['post_time'], $board_config['board_timezone']);
+					$post_date = create_date_ip($config['default_dateformat'], $postrow[$i]['post_time'], $config['board_timezone']);
 
 					if(!empty($postrow[$i]['post_text_compiled']))
 					{
@@ -1240,9 +1108,9 @@ switch($mode)
 					}
 					else
 					{
-						$bbcode->allow_html = ($board_config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
-						$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
-						$bbcode->allow_smilies = ($board_config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
+						$bbcode->allow_html = ($config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
+						$bbcode->allow_bbcode = ($config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
+						$bbcode->allow_smilies = ($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
 						$message = $bbcode->parse($message);
 					}
 					$checkbox = ($i > 0) ? '<input type="checkbox" name="post_id_list[]" value="' . $postrow[$i]['post_id'] . '" />' : '&nbsp;';
@@ -1265,8 +1133,8 @@ switch($mode)
 		break;
 
 	case 'ip':
-		$page_title = $lang['Mod_CP'] . ' (' . $lang['IP'] . ')';
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+		$meta_content['page_title'] = $lang['Mod_CP'] . ' (' . $lang['IP'] . ')';
+		page_header($meta_content['page_title'], true);
 
 		$rdns_ip_num = (isset($_GET['rdns'])) ? $_GET['rdns'] : '';
 
@@ -1278,10 +1146,8 @@ switch($mode)
 		$template->set_filenames(array('viewip' => 'modcp_viewip.tpl'));
 
 		$sql = "SELECT poster_ip, poster_id FROM " . POSTS_TABLE . " WHERE post_id = $post_id AND forum_id = $forum_id";
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'could not get poster IP information.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		if(!($post_row = $db->sql_fetchrow($result)))
 		{
 			message_die(GENERAL_MESSAGE, $lang['No_such_post']);
@@ -1307,10 +1173,8 @@ switch($mode)
 
 		$sql = "SELECT poster_ip, COUNT(*) AS postings FROM " . POSTS_TABLE . " WHERE poster_id = $poster_id
 			GROUP BY poster_ip ORDER BY postings DESC";
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'could not get IP information for this user.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		if($row = $db->sql_fetchrow($result))
 		{
 			$i = 0;
@@ -1341,10 +1205,8 @@ switch($mode)
 			FROM " . USERS_TABLE . " u, " . POSTS_TABLE . " p
 			WHERE p.poster_id = u.user_id AND p.poster_ip = '" . $post_row['poster_ip'] . "'
 			GROUP BY u.user_id, u.username ORDER BY postings DESC";
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'could not get posters information based on IP.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		if($row = $db->sql_fetchrow($result))
 		{
 			$i = 0;
@@ -1355,10 +1217,10 @@ switch($mode)
 					'USERNAME' => ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'],
 					'POSTS' => $row['postings'] .' '. (($row['postings'] == '1') ? $lang['Post'] : $lang['Posts']),
 					'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], (($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'])),
-					'U_PROFILE' => ($row['user_id'] == ANONYMOUS) ? 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'] : append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
-					'U_SEARCHPOSTS' => append_sid(SEARCH_MG . '?search_author=' . (($id == ANONYMOUS) ? 'Anonymous' : urlencode($username)) . '&amp;showresults=topics'),
+					'U_PROFILE' => ($row['user_id'] == ANONYMOUS) ? 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'] : append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+					'U_SEARCHPOSTS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . (($id == ANONYMOUS) ? 'Anonymous' : urlencode($username)) . '&amp;showresults=topics'),
 					'U_PROFILE_COL' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
-					//'U_SEARCHPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode((($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'])) . '&amp;showresults=topics'),
+					//'U_SEARCHPOSTS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode((($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'])) . '&amp;showresults=topics'),
 					)
 				);
 				$i++;
@@ -1368,15 +1230,15 @@ switch($mode)
 		$template->pparse('viewip');
 		break;
 	case 'recycle':
-		$page_title = $lang['Mod_CP'];
+		$meta_content['page_title'] = $lang['Mod_CP'];
 
 		if ($confirm_recycle)
 		{
-			if (($board_config['bin_forum'] == 0) || (empty($_POST['topic_id_list']) && empty($topic_id)))
+			if (($config['bin_forum'] == 0) || (empty($_POST['topic_id_list']) && empty($topic_id)))
 			{
 				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
 				$message = sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
-				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
 				$redirect_url = $redirect_page;
 				meta_refresh(3, $redirect_url);
@@ -1386,7 +1248,7 @@ switch($mode)
 			elseif (isset($_POST['topic_id_list']))
 			{
 				// Define bin forum
-				$new_forum_id = intval($board_config['bin_forum']);
+				$new_forum_id = intval($config['bin_forum']);
 				$old_forum_id = $forum_id;
 
 				if ($new_forum_id != $old_forum_id)
@@ -1394,25 +1256,23 @@ switch($mode)
 					$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
 
 					$topic_list = '';
-					for($i = 0; $i < count($topics); $i++)
+					for($i = 0; $i < sizeof($topics); $i++)
 					{
 						$topic_list .= (($topic_list != '') ? ', ' : '') . intval($topics[$i]);
 					}
 
 					$sql = "SELECT *
 						FROM " . TOPICS_TABLE . "
-						WHERE topic_id IN ($topic_list)
+						WHERE topic_id IN (" . $topic_list . ")
 							AND forum_id = $old_forum_id
 							AND topic_status <> " . TOPIC_MOVED;
-					if (!($result = $db->sql_query($sql, BEGIN_TRANSACTION)))
-					{
-						message_die(GENERAL_ERROR, 'Could not select from topic table', '', __LINE__, __FILE__, $sql);
-					}
-
+					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrowset($result);
 					$db->sql_freeresult($result);
 
-					for($i = 0; $i < count($row); $i++)
+					$db->sql_transaction('begin');
+
+					for($i = 0; $i < sizeof($row); $i++)
 					{
 						$topic_id = $row[$i]['topic_id'];
 
@@ -1421,45 +1281,36 @@ switch($mode)
 							// Insert topic in the old forum that indicates that the forum has moved.
 							$sql = "INSERT INTO " . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_status, topic_type, topic_vote, topic_views, topic_replies, topic_first_post_id, topic_last_post_id, topic_moved_id)
 								VALUES ($old_forum_id, '" . addslashes(str_replace("\'", "''", $row[$i]['topic_title'])) . "', '" . str_replace("\'", "''", $row[$i]['topic_poster']) . "', " . $row[$i]['topic_time'] . ", " . TOPIC_MOVED . ", " . POST_NORMAL . ", " . $row[$i]['topic_vote'] . ", " . $row[$i]['topic_views'] . ", " . $row[$i]['topic_replies'] . ", " . $row[$i]['topic_first_post_id'] . ", " . $row[$i]['topic_last_post_id'] . ", $topic_id)";
-							if (!$db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not insert shadow topic', '', __LINE__, __FILE__, $sql);
-							}
+							$db->sql_query($sql);
 						}
 
 						$sql = "UPDATE " . TOPICS_TABLE . "
-							SET forum_id = $new_forum_id
-							WHERE topic_id = $topic_id";
-						if (!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
-						}
+							SET forum_id = " . $new_forum_id . "
+							WHERE topic_id = " . $topic_id;
+						$db->sql_query($sql);
+
+						$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id = " . $topic_id;
+						$db->sql_query($sql);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 						$sql = "UPDATE " . UPI2DB_LAST_POSTS_TABLE . "
-							SET forum_id = $new_forum_id
-							WHERE topic_id = $topic_id";
-						if (!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
-						}
+							SET forum_id = " . $new_forum_id . "
+							WHERE topic_id = " . $topic_id;
+						$db->sql_query($sql);
+
 						$sql = "UPDATE " . UPI2DB_UNREAD_POSTS_TABLE . "
-							SET forum_id = $new_forum_id
-							WHERE topic_id = $topic_id";
-						if (!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not update old topic', '', __LINE__, __FILE__, $sql);
-						}
+							SET forum_id = " . $new_forum_id . "
+							WHERE topic_id = " . $topic_id;
+						$db->sql_query($sql);
 //<!-- END Unread Post Information to Database Mod -->
 
 						$sql = "UPDATE " . POSTS_TABLE . "
-							SET forum_id = $new_forum_id
-							WHERE topic_id = $topic_id";
-						if (!$db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not update post topic ids', '', __LINE__, __FILE__, $sql);
-						}
+							SET forum_id = " . $new_forum_id . "
+							WHERE topic_id = " . $topic_id;
+						$db->sql_query($sql);
 					}
+
+					$db->sql_transaction('commit');
 
 					// Sync the forum indexes
 					empty_cache_folders(POSTS_CACHE_FOLDER);
@@ -1477,7 +1328,7 @@ switch($mode)
 				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
 				$message .= '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 
-				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
 				$redirect_url = $redirect_page;
 				meta_refresh(3, $redirect_url);
@@ -1495,13 +1346,13 @@ switch($mode)
 		}
 
 		$addon = str_replace('%mod%', addslashes($userdata['username']), $qt_row['title_info'] . ' ');
-		$dateqt = ($qt_row['date_format'] == '') ? create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']) : create_date($qt_row['date_format'], time(), $board_config['board_timezone']);
+		$dateqt = ($qt_row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_row['date_format'], time(), $config['board_timezone']);
 		$addon = str_replace('%date%', $dateqt, $addon);
 
 		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
 
 		$topic_id_sql = '';
-		for($i = 0; $i < count($topics); $i++)
+		for($i = 0; $i < sizeof($topics); $i++)
 		{
 			$topic_id_sql .= (($topic_id_sql != "") ? ', ' : '') . $topics[$i];
 		}
@@ -1510,14 +1361,11 @@ switch($mode)
 			SET title_compl_infos = '" . addslashes($addon) . "'
 			WHERE topic_id IN ($topic_id_sql)
 				AND topic_moved_id = 0";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!empty($topic_id))
 		{
-			$redirect_page = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 			$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 		else
@@ -1526,7 +1374,7 @@ switch($mode)
 			$message = sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
@@ -1550,7 +1398,7 @@ switch($mode)
 		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
 
 		$topic_id_sql = '';
-		for($i = 0; $i < count($topics); $i++)
+		for($i = 0; $i < sizeof($topics); $i++)
 		{
 			$topic_id_sql .= (($topic_id_sql != "") ? ', ' : '') . $topics[$i];
 		}
@@ -1559,14 +1407,11 @@ switch($mode)
 			SET news_id = '" . $news_category . "'
 			WHERE topic_id IN ($topic_id_sql)
 				AND topic_moved_id = 0";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!empty($topic_id))
 		{
-			$redirect_page = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 			$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 		else
@@ -1575,7 +1420,7 @@ switch($mode)
 			$message = sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
@@ -1586,12 +1431,12 @@ switch($mode)
 		break;
 
 	default:
-		$page_title = $lang['Mod_CP'];
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+		$meta_content['page_title'] = $lang['Mod_CP'];
+		page_header($meta_content['page_title'], true);
 
 		$u_topic_type = array('super_announce', 'announce', 'sticky', 'poll', 'locked');
 		$l_topic_type = array($lang['Display_global'], $lang['Display_announce'], $lang['Display_sticky'], $lang['Display_poll'], $lang['Display_locked']);
-		for($tt = 0; $tt < count($u_topic_type); $tt++)
+		for($tt = 0; $tt < sizeof($u_topic_type); $tt++)
 		{
 			$topic_types .= ($type == $u_topic_type[$tt]) ? $l_topic_type[$tt] .'&nbsp;|&nbsp;' : '<a href="modcp.' . PHP_EXT . '?'. POST_FORUM_URL .'='. $forum_id .'&amp;type='. $u_topic_type[$tt] .'&amp;sid='. $userdata['session_id'] .'" class="genmed">'. $l_topic_type[$tt] .'</a>&nbsp;|&nbsp;';
 		}
@@ -1604,15 +1449,12 @@ switch($mode)
 
 		// Quick Title
 		$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . " ORDER BY title_info ASC";
-		if (!($result = $db->sql_query($sql, false, 'topics_prefixes_', TOPICS_CACHE_FOLDER)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to query Quick Title Addon informations', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'topics_prefixes_', TOPICS_CACHE_FOLDER);
 		$select_title = '<select name="qtnum"><option value="-1">---</option>';
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$addon = str_replace('%mod%', addslashes($userdata['username']), $row['title_info']);
-			$dateqt = ($row['date_format'] == '') ? create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']) : create_date($row['date_format'], time(), $board_config['board_timezone']);
+			$dateqt = ($row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($row['date_format'], time(), $config['board_timezone']);
 			$addon = str_replace('%date%', $dateqt, $addon);
 			$select_title .= '<option value="' . $row['id'] . '">' . htmlspecialchars($addon) . '</option>';
 		}
@@ -1621,10 +1463,7 @@ switch($mode)
 
 		// News
 		$sql = 'SELECT * FROM ' . NEWS_TABLE . ' ORDER BY news_category';
-		if (!($result = $db->sql_query($sql, false, 'news_cats_')))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain news data', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'news_cats_');
 		$select_news_cats = '<select name="news_category"><option value="0">' . $lang['Regular_Post'] . '</option>';
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -1662,7 +1501,7 @@ switch($mode)
 			'L_RECYCLE' => $lang['Bin_recycle'],
 			'L_MARK_ALL' => $lang['Mark_all'],
 			'L_UNMARK_ALL' => $lang['Unmark_all'],
-			'U_VIEW_FORUM' => append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id),
+			'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id),
 			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />',
 			'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),
 			)
@@ -1712,15 +1551,6 @@ switch($mode)
 		$template->set_filenames(array('body' => 'modcp_body.tpl'));
 		make_jumpbox('modcp.' . PHP_EXT);
 
-		$orig_word = array();
-		$replacement_word = array();
-		obtain_word_list($orig_word, $replacement_word);
-
-		// Define censored word matches
-		$orig_word = array();
-		$replacement_word = array();
-		obtain_word_list($orig_word, $replacement_word);
-
 		$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, p.post_time, p.post_id, p.post_username, p.enable_smilies, u2.username AS topic_starter, u2.user_id AS topic_starter_id, u2.user_active AS topic_starter_active, u2.user_color AS topic_starter_color, p2.post_id, p2.post_username AS topic_starter_guest
 			FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2, " . POSTS_TABLE . " p2
 			WHERE t.forum_id = $forum_id
@@ -1728,11 +1558,8 @@ switch($mode)
 				AND t.topic_poster = u2.user_id
 				AND p.post_id = t.topic_last_post_id
 				AND p2.post_id = t.topic_first_post_id $where_type
-			ORDER BY t.topic_type DESC, p.post_time DESC LIMIT $start, " . $board_config['topics_per_page'];
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'could not obtain topic information.', '', __LINE__, __FILE__, $sql);
-		}
+			ORDER BY t.topic_type DESC, p.post_time DESC LIMIT $start, " . $config['topics_per_page'];
+		$result = $db->sql_query($sql);
 
 		$total_topics = 0;
 		while($row = $db->sql_fetchrow($result))
@@ -1745,7 +1572,7 @@ switch($mode)
 		// MG User Replied - BEGIN
 		// check if user replied to the topics
 		define('USER_REPLIED_ICON', true);
-		$user_topics = user_replied_array($topic_rowset);
+		$user_topics = $class_topics->user_replied_array($topic_rowset);
 		$unread = false;
 		// MG User Replied - END
 
@@ -1757,15 +1584,15 @@ switch($mode)
 			$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 			$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
-			$topic_title = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $topic_rowset[$i]['topic_title']) : $topic_rowset[$i]['topic_title'];
+			$topic_title = censor_text($topic_rowset[$i]['topic_title']);
 			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
 			$topic_title = $topic_title_prefix . $topic_title;
 			// Convert and clean special chars!
 			$topic_title = htmlspecialchars_clean($topic_title);
 			// SMILEYS IN TITLE - BEGIN
-			if (($board_config['smilies_topic_title'] == true) && !$lofi)
+			if (($config['smilies_topic_title'] == true) && !$lofi)
 			{
-				$bbcode->allow_smilies = (($board_config['allow_smilies'] && $topic_rowset[$i]['enable_smilies']) ? true : false);
+				$bbcode->allow_smilies = (($config['allow_smilies'] && $topic_rowset[$i]['enable_smilies']) ? true : false);
 				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
 			// SMILEYS IN TITLE - END
@@ -1776,25 +1603,25 @@ switch($mode)
 			$replies = $topic_rowset[$i]['topic_replies'];
 			$topic_type = $topic_rowset[$i]['topic_type'];
 
-			$topic_link = build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+			$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
 
 			$topic_id = $topic_link['topic_id'];
 			$topic_id_append = $topic_link['topic_id_append'];
 
-			if(($replies + 1) > $board_config['posts_per_page'])
+			if(($replies + 1) > $config['posts_per_page'])
 			{
-				$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
+				$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
 				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
 
 				$times = 1;
-				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
+				for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
 				{
-					$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
+					$goto_page .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
 					if(($times == 1) && ($total_pages > 4))
 					{
 						$goto_page .= ' ... ';
 						$times = $total_pages - 3;
-						$j += ($total_pages - 4) * $board_config['posts_per_page'];
+						$j += ($total_pages - 4) * $config['posts_per_page'];
 					}
 					elseif ($times < $total_pages)
 					{
@@ -1810,21 +1637,21 @@ switch($mode)
 				$goto_page = '';
 			}
 
-			$first_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['topic_time'], $board_config['board_timezone']);
-			//$first_post_author = ($topic_rowset[$i]['topic_starter_id'] == ANONYMOUS) ? (($topic_rowset[$i]['topic_starter_guest'] != '') ? $topic_rowset[$i]['topic_starter_guest'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['topic_starter_id']) . '">' . $topic_rowset[$i]['topic_starter'] . '</a> ';
+			$first_post_time = create_date_ip($config['default_dateformat'], $topic_rowset[$i]['topic_time'], $config['board_timezone']);
+			//$first_post_author = ($topic_rowset[$i]['topic_starter_id'] == ANONYMOUS) ? (($topic_rowset[$i]['topic_starter_guest'] != '') ? $topic_rowset[$i]['topic_starter_guest'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['topic_starter_id']) . '">' . $topic_rowset[$i]['topic_starter'] . '</a> ';
 			$first_post_author =  colorize_username($topic_rowset[$i]['topic_starter_id'], $topic_rowset[$i]['topic_starter'], $topic_rowset[$i]['topic_starter_color'], $topic_rowset[$i]['topic_starter_active']);
 
-			$first_post_url = ($type == 'shadow') ? '' : '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+			$first_post_url = ($type == 'shadow') ? '' : '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
-			$last_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
-			//$last_post_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' . $topic_rowset[$i]['username'] . '</a> ';
+			$last_post_time = create_date_ip($config['default_dateformat'], $topic_rowset[$i]['post_time'], $config['board_timezone']);
+			//$last_post_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '">' . $topic_rowset[$i]['username'] . '</a> ';
 			$last_post_author =  colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
-			$last_post_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+			$last_post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 			$u_view_topic = 'modcp.' . PHP_EXT . '?mode=split&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 			$topic_replies = $topic_rowset[$i]['topic_replies'];
 
-			$last_post_time = create_date_ip($board_config['default_dateformat'], $topic_rowset[$i]['post_time'], $board_config['board_timezone']);
+			$last_post_time = create_date_ip($config['default_dateformat'], $topic_rowset[$i]['post_time'], $config['board_timezone']);
 
 			$template->assign_block_vars('topicrow', array(
 				'U_VIEW_TOPIC' => $u_view_topic,
@@ -1854,8 +1681,8 @@ switch($mode)
 		}
 
 		$template->assign_vars(array(
-			'PAGINATION' => generate_pagination('modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'], $forum_topics, $board_config['topics_per_page'], $start),
-			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($forum_topics / $board_config['topics_per_page'])),
+			'PAGINATION' => generate_pagination('modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'], $forum_topics, $config['topics_per_page'], $start),
+			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($forum_topics / $config['topics_per_page'])),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)
 		);
@@ -1863,6 +1690,6 @@ switch($mode)
 		break;
 }
 
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+page_footer(true, '', true);
 
 ?>

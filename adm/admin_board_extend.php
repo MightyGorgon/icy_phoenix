@@ -29,21 +29,11 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-$db->clear_cache('config_');
 
-// get all the mods settings
+// Get all the mods settings
 define('BOARD_CONFIG', true);
-$mods = array();
-$dir = @opendir(IP_ROOT_PATH . 'includes/mods_settings');
-while($file = @readdir($dir))
-{
-	if(preg_match("/^mod_.*?\." . PHP_EXT . "$/", $file))
-	{
-		include(IP_ROOT_PATH . 'includes/mods_settings/' . $file);
-	}
-}
-@closedir($dir);
+setup_mods();
+
 
 // menu_id
 $menu_id = 0;
@@ -109,7 +99,7 @@ while (list($menu_name, $menu) = each($mods))
 	// menu ok
 	if ($found)
 	{
-		$i = count($menu_keys);
+		$i = sizeof($menu_keys);
 		$menu_keys[$i] = $menu_name;
 		$menu_sort[$i] = $menu['sort'];
 
@@ -137,7 +127,7 @@ while (list($menu_name, $menu) = each($mods))
 			}
 			if ($found)
 			{
-				$j = count($mod_keys[$i]);
+				$j = sizeof($mod_keys[$i]);
 				$mod_keys[$i][$j] = $mod_name;
 				$mod_sort[$i][$j] = $mod['sort'];
 
@@ -178,19 +168,19 @@ while (list($menu_name, $menu) = each($mods))
 @array_multisort($menu_sort, $menu_keys, $mod_sort, $mod_keys, $sub_sort, $sub_keys);
 
 // fix menu id
-if ($menu_id > count($menu_keys))
+if ($menu_id > sizeof($menu_keys))
 {
 	$menu_id = 0;
 }
 
 // fix mod id
-if ($mod_id > count($mod_keys[$menu_id]))
+if ($mod_id > sizeof($mod_keys[$menu_id]))
 {
 	$mod_id = 0;
 }
 
 // fix sub id
-if ($sub_id > count($sub_keys[$menu_id][$mod_id]))
+if ($sub_id > sizeof($sub_keys[$menu_id][$mod_id]))
 {
 	$sub_id = 0;
 }
@@ -208,16 +198,8 @@ $sub_name = $sub_keys[$menu_id][$mod_id][$sub_id];
 $submit = isset($_POST['submit']);
 
 // get the real value of board_config
-$sql = "SELECT * FROM " . CONFIG_TABLE;
-if (!$result = $db->sql_query($sql))
-{
-	message_die(CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
-}
-$config = array();
-while ($row = $db->sql_fetchrow($result))
-{
-	$config[$row['config_name']] = $row['config_value'];
-}
+$default_config = array();
+$default_config = get_config(false);
 
 // validate
 if ($submit)
@@ -276,7 +258,7 @@ if ($submit)
 			}
 			if ($error)
 			{
-				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 		}
@@ -288,17 +270,18 @@ if ($submit)
 	{
 		if (isset($$field_name))
 		{
-			set_config($field_name, $$field_name);
-			//set_config($field_name, ip_addslashes($$field_name));
+			set_config($field_name, $$field_name, false);
+			//set_config($field_name, addslashes($$field_name), false);
 		}
 		if (isset($_POST[$field_name . '_over']) && !empty($field['user']) && isset($userdata[$field['user']]))
 		{
-			set_config(($field_name . '_over'), intval($_POST[$field_name . '_over']));
+			set_config(($field_name . '_over'), intval($_POST[$field_name . '_over']), false);
 		}
 	}
+	$cache->destroy('config');
 
 	// send an update message
-	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id. '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -320,26 +303,26 @@ $template->assign_vars(array(
 );
 
 // send menu
-for ($i = 0; $i < count($menu_keys); $i++)
+for ($i = 0; $i < sizeof($menu_keys); $i++)
 {
 	$l_menu = $menu_keys[$i];
-	if (count($mod_keys[$i]) == 1)
+	if (sizeof($mod_keys[$i]) == 1)
 	{
 		$l_menu = $mod_keys[$i][0];
-		if (count($sub_keys[$i][0]) == 1)
+		if (sizeof($sub_keys[$i][0]) == 1)
 		{
 			$l_menu = $sub_keys[$i][0][0];
 		}
 	}
 	$template->assign_block_vars('menu', array(
-		'CLASS'		=> ($menu_id == $i) ? ((count($mod_keys[$i]) > 1) ? 'row3' : 'row1') : 'row2',
+		'CLASS'		=> ($menu_id == $i) ? ((sizeof($mod_keys[$i]) > 1) ? 'row3' : 'row1') : 'row2',
 		'U_MENU'	=> append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i),
 		'L_MENU'	=> sprintf((($menu_id == $i) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_menu)),
 		)
 	);
 	if ($menu_id == $i)
 	{
-		if (count($mod_keys[$i]) > 1)
+		if (sizeof($mod_keys[$i]) > 1)
 		{
 			$template->assign_block_vars('menu.title_open', array());
 		}
@@ -350,26 +333,26 @@ for ($i = 0; $i < count($menu_keys); $i++)
 	}
 	if ($menu_id == $i)
 	{
-		for ($j = 0; $j < count($mod_keys[$i]); $j++)
+		for ($j = 0; $j < sizeof($mod_keys[$i]); $j++)
 		{
 			$l_mod = $mod_keys[$i][$j];
-			if (count($sub_keys[$i][$j]) == 1)
+			if (sizeof($sub_keys[$i][$j]) == 1)
 			{
 				$l_mod = $sub_keys[$i][$j][0];
 			}
 			$template->assign_block_vars('menu.mod', array(
 				'CLASS' => (($menu_id == $i) && ($mod_id == $j)) ? 'row1' : 'row2',
-				'ALIGN' => (($menu_id == $i) && ($mod_id == $j) && (count($sub_keys[$i][$j]) > 1)) ? 'left' : 'center',
+				'ALIGN' => (($menu_id == $i) && ($mod_id == $j) && (sizeof($sub_keys[$i][$j]) > 1)) ? 'left' : 'center',
 				'U_MOD' => append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j),
 				'L_MOD' => sprintf(((($menu_id == $i) && ($mod_id == $j)) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_mod)),
 				)
 			);
 			if (($menu_id == $i) && ($mod_id == $j))
 			{
-				if (count($sub_keys[$i][$j]) > 1)
+				if (sizeof($sub_keys[$i][$j]) > 1)
 				{
 					$template->assign_block_vars('menu.mod.sub', array());
-					for ($k = 0; $k < count($sub_keys[$i][$j]); $k++)
+					for ($k = 0; $k < sizeof($sub_keys[$i][$j]); $k++)
 					{
 						$template->assign_block_vars('menu.mod.sub.row', array(
 							'CLASS' => (($menu_id == $i) && ($mod_id == $j) && ($sub_id == $k)) ? 'row1' : 'row2',
@@ -396,7 +379,7 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			@reset($field['values']);
 			while (list($key, $val) = @each($field['values']))
 			{
-				$selected = ($config[$field_name] == $val) ? ' checked="checked"' : '';
+				$selected = ($default_config[$field_name] == $val) ? ' checked="checked"' : '';
 				$l_key = mods_settings_get_lang($key);
 				$input .= '<input type="radio" name="' . $field_name . '" value="' . $val . '"' . $selected . ' />' . $l_key . '<br />';
 			}
@@ -405,7 +388,7 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			@reset($field['values']);
 			while (list($key, $val) = @each($field['values']))
 			{
-				$selected = ($config[$field_name] == $val) ? ' checked="checked"' : '';
+				$selected = ($default_config[$field_name] == $val) ? ' checked="checked"' : '';
 				$l_key = mods_settings_get_lang($key);
 				$input .= '<input type="radio" name="' . $field_name . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
 			}
@@ -414,37 +397,37 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			@reset($field['values']);
 			while (list($key, $val) = @each($field['values']))
 			{
-				$selected = ($config[$field_name] == $val) ? ' selected="selected"' : '';
+				$selected = ($default_config[$field_name] == $val) ? ' selected="selected"' : '';
 				$l_key = mods_settings_get_lang($key);
 				$input .= '<option value="' . $val . '"' . $selected . '>' . $l_key . '</option>';
 			}
 			$input = '<select name="' . $field_name . '">' . $input . '</select>';
 			break;
 		case 'TINYINT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="3" size="2" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="3" size="2" class="post" value="' . $default_config[$field_name] . '" />';
 			break;
 		case 'SMALLINT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="5" size="5" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="5" size="5" class="post" value="' . $default_config[$field_name] . '" />';
 			break;
 		case 'MEDIUMINT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="8" size="8" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="8" size="8" class="post" value="' . $default_config[$field_name] . '" />';
 			break;
 		case 'INT':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="13" size="11" class="post" value="' . $config[$field_name] . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="13" size="11" class="post" value="' . $default_config[$field_name] . '" />';
 			break;
 		case 'VARCHAR':
 		case 'HTMLVARCHAR':
-			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . ip_stripslashes($config[$field_name]) . '" />';
+			$input = '<input type="text" name="' . $field_name . '" maxlength="255" size="45" class="post" value="' . $default_config[$field_name] . '" />';
 			break;
 		case 'TEXT':
 		case 'HTMLTEXT':
-			$input = '<textarea rows="5" cols="45" name="' . $field_name . '" class="post">' . ip_stripslashes($config[$field_name]) . '</textarea>';
+			$input = '<textarea rows="5" cols="45" name="' . $field_name . '" class="post">' . $default_config[$field_name] . '</textarea>';
 			break;
 		default:
 			$input = '';
 			if (!empty($field['get_func']) && function_exists($field['get_func']))
 			{
-				$input = $field['get_func']($field_name, $config[$field_name]);
+				$input = $field['get_func']($field_name, $default_config[$field_name]);
 			}
 			break;
 	}
@@ -457,7 +440,7 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 		@reset($list_yes_no);
 		while (list($key, $val) = @each($list_yes_no))
 		{
-			$selected = ($config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
+			$selected = ($default_config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
 			$l_key = mods_settings_get_lang($key);
 			$override .= '<input type="radio" name="' . $field_name . '_over' . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
 		}

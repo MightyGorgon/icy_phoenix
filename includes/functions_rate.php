@@ -58,23 +58,19 @@ if (!function_exists('id_to_value'))
 			{
 				$sql = "SELECT username FROM " . USERS_TABLE . "
 					WHERE user_id = '" . $id . "'";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Couldn't query users table", "", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 
-				return ($row['username'] == "") ? $lang['Anonymous'] : $row['username'];
+				return ($row['username'] == '') ? $lang['Anonymous'] : $row['username'];
 				break;
 			}
 			case 'forum':
 			{
-				$sql = "SELECT forum_name FROM " . FORUMS_TABLE . "
-					WHERE forum_id = '" . $id . "'";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Couldn't query forums table", "", __LINE__, __FILE__, $sql);
-				}
+				$sql = "SELECT forum_name
+								FROM " . FORUMS_TABLE . "
+								WHERE forum_id = " . $id . "
+									AND forum_type = " . FORUM_POST;
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 
 				return $row['forum_name'];
@@ -84,10 +80,7 @@ if (!function_exists('id_to_value'))
 			{
 				$sql = "SELECT topic_title FROM " . TOPICS_TABLE . "
 					WHERE topic_id = '" . $id . "'";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Couldn't query topics table", "", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 
 				return $row['topic_title'];
@@ -97,10 +90,7 @@ if (!function_exists('id_to_value'))
 			{
 				$sql = "SELECT forum_id FROM " . TOPICS_TABLE . "
 					WHERE topic_id = '" . $id . "'";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Couldn't query topics table", "", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 
 				return $row['forum_id'];
@@ -119,6 +109,7 @@ if (!function_exists('get_forum_list'))
 	function get_forum_list()
 	{
 		global $db, $userdata;
+
 		$is_auth_ary = array();
 		$is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata, $forum_data);
 
@@ -136,7 +127,7 @@ if (!function_exists('make_forum_drop_down_box'))
 
 		$forum_list = '<select name="forum_top">';
 		$forum_list .= '<option value="-1" selected="selected">All</option>';
-		for ($i=1; $i < count($forums_row) + 1; $i++)
+		for ($i=1; $i < sizeof($forums_row) + 1; $i++)
 		{
 			if (isset($forums_row[$i]) && $forums_row[$i]['auth_view'])
 			{
@@ -184,7 +175,7 @@ if (!function_exists('nivisec_copyright'))
 */
 function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 {
-	global $db, $user_ip, $board_config, $template, $lang;
+	global $db, $config, $template, $lang, $user_ip;
 
 	if (!empty($_POST['thanks_user']))
 	{
@@ -192,12 +183,9 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 		$sql = "SELECT `topic_poster`
 				FROM " . TOPICS_TABLE . "
 				WHERE topic_id = '" . $topic_id . "'";
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t check for topic starter', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
-		if ( !($topic_starter_check = $db->sql_fetchrow($result)) )
+		if (!($topic_starter_check = $db->sql_fetchrow($result)))
 		{
 			message_die(GENERAL_ERROR, 'Couldn\'t check for topic starter', '', __LINE__, __FILE__, $sql);
 		}
@@ -205,18 +193,16 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 		if ($topic_starter_check['topic_poster'] == $userdata['user_id'])
 		{
 			$message = $lang['t_starter'];
-			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>');
+			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
 		$sql = "INSERT INTO " . THANKS_TABLE . " (topic_id, user_id, thanks_time)
 		VALUES ('" . $topic_id . "', '" . $user_id . "', '" . time() . "') ";
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not insert thanks information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		// MG Cash MOD For IP - BEGIN
-		if ( defined('CASH_MOD') )
+		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
 		{
 			$message .= '<br />' . $GLOBALS['cm_posting']->cash_update_thanks($topic_starter_check['topic_poster']);
 		}
@@ -228,19 +214,12 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 		$sql = "INSERT INTO " . RATINGS_TABLE . "
 			(user_id, topic_id, rating, user_ip, rating_time)
 			VALUES ('$user_id', '$topic_id', '$rating', '$user_ip', " . time() . ")";
+		$result = $db->sql_query($sql);
 
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-		}
 		$sql2 = "SELECT AVG(rating) AS average
 			FROM " . RATINGS_TABLE . "
 			WHERE topic_id = '" . $topic_id . "'";
-
-		if (!$result2 = $db->sql_query($sql2))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-		}
+		$result2 = $db->sql_query($sql2);
 		$row2 = $db->sql_fetchrow($result2);
 		$rating2 = $row2['average'];
 		if ( $rating2 == '')
@@ -251,14 +230,11 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 		$sql3 = 'UPDATE ' . TOPICS_TABLE . "
 			SET topic_rating = '" . $rating2 . "'
 			WHERE topic_id = '" . $topic_id . "'";
-		if (!$result3 = $db->sql_query($sql3))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-		}
+		$result3 = $db->sql_query($sql3);
 	}
 	elseif ($mode = 'rerate')
 	{
-		if (!$board_config['allow_rerate'])
+		if (!$config['allow_rerate'])
 		{
 			message_die(GENERAL_ERROR, $lang['Rerate_Not_Allowed'], '', __LINE__, __FILE__);
 		}
@@ -269,33 +245,23 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 				WHERE user_id = " . ANONYMOUS . "
 				AND user_ip = '" . $user_ip . "'
 				AND topic_id = '" . $topic_id . "'";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$sql2 = 'SELECT AVG(rating) AS average
 				FROM ' . RATINGS_TABLE . "
 				WHERE topic_id = '" . $topic_id . "'";
-
-			if (!$result2 = $db->sql_query($sql2))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-			}
+			$result2 = $db->sql_query($sql2);
 			$row2 = $db->sql_fetchrow($result2);
 			$rating2 = $row2['average'];
-			if ( $rating2 == '')
+			if ($rating2 == '')
 			{
 				$rating2 = 0;
 			}
 
-
 			$sql3 = 'UPDATE ' . TOPICS_TABLE . "
 				SET topic_rating = '" . $rating2 . "'
 				WHERE topic_id = '" . $topic_id . "'";
-			if (!$result3 = $db->sql_query($sql3))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-			}
+			$result3 = $db->sql_query($sql3);
 		}
 		else
 		{
@@ -303,18 +269,13 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 				SET rating = $rating, rating_time = " . time() . "
 				WHERE user_id = '" . $user_id . "'
 				AND topic_id = '" . $topic_id . "'";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$sql2 = 'SELECT AVG(rating) AS average
 				FROM ' . RATINGS_TABLE . "
 				WHERE topic_id = '" . $topic_id . "'";
 
-			if (!$result2 = $db->sql_query($sql2))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-			}
+			$result2 = $db->sql_query($sql2);
 			$row2 = $db->sql_fetchrow($result2);
 			$rating2 = $row2['average'];
 			if ( $rating2 == '')
@@ -325,23 +286,20 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 			$sql3 = 'UPDATE ' . TOPICS_TABLE . "
 				SET topic_rating = '" . $rating2 . "'
 				WHERE topic_id = '" . $topic_id . "'";
-			if (!$result3 = $db->sql_query($sql3))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-			}
+			$result3 = $db->sql_query($sql3);
 		}
 	}
-	$message = $lang['Topic_Rated'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>');
+	$message = $lang['Topic_Rated'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
 function rating_inserted($user_id, $topic_id)
 {
-	global $db, $user_ip, $board_config;
+	global $db, $config, $user_ip;
 
 	if ($user_id == ANONYMOUS)
 	{
-		if (!$board_config['check_anon_ip_when_rating'])
+		if (!$config['check_anon_ip_when_rating'])
 		{
 			return false;
 		}
@@ -358,27 +316,23 @@ function rating_inserted($user_id, $topic_id)
 			AND topic_id = '" . $topic_id . "'
 			LIMIT 1";
 	}
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
+
 	return (isset($row['rating']) ? true : false);
 }
 
 function rating_value($user_id, $topic_id)
 {
 	global $db;
+
 	$sql = 'SELECT rating FROM ' . RATINGS_TABLE . "
 		WHERE user_id = '" . $user_id . "'
 		AND topic_id = '" . $topic_id . "'
 		LIMIT 1";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
+
 	return $row['rating'];
 }
 
@@ -397,12 +351,9 @@ function rating_stats($topic_id)
 		COUNT(rating) AS number_of_rates
 		FROM " . RATINGS_TABLE . "
 		WHERE topic_id = '" . $topic_id . "'";
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
+
 	return $row;
 }
 
@@ -414,7 +365,7 @@ function rating_stats($topic_id)
 */
 function user_rating($user_id, $topic_id)
 {
-	global $db, $board_config, $user_ip;
+	global $db, $config, $user_ip;
 
 	if ($user_id == ANONYMOUS)
 	{
@@ -429,12 +380,9 @@ function user_rating($user_id, $topic_id)
 			WHERE user_id = '" . $user_id . "'
 			AND topic_id = '" . $topic_id . "'";
 	}
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
+
 	return $row['rating'];
 }
 
@@ -450,11 +398,11 @@ function rate_auth($user_id, $forum_id, $topic_id)
 	global $db, $userdata;
 
 	//Get forum_id info
-	$sql = "SELECT auth_rate FROM " . FORUMS_TABLE . " WHERE forum_id = '" . $forum_id . "'";
-	if (!$result = $db->sql_query($sql, false, 'auth_rate_'))
-	{
-		message_die(GENERAL_ERROR, "Error getting forum data.", "", __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT auth_rate
+					FROM " . FORUMS_TABLE . "
+					WHERE forum_id = " . $forum_id . "
+						AND forum_type = " . FORUM_POST;
+	$result = $db->sql_query($sql, 0, 'auth_rate_');
 	$row = $db->sql_fetchrow($result);
 	$forum_row = $row['auth_rate'];
 	$db->sql_freeresult($result);
@@ -497,13 +445,10 @@ function rate_auth($user_id, $forum_id, $topic_id)
 			AND g.group_id = aa.group_id
 			AND u.user_id = ug.user_id
 			ORDER BY aa.forum_id, g.group_id, u.user_id";
-		if(!$q_forum_mods = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not query forum moderator information", "", __LINE__, __FILE__, $sql);
-		}
+		$q_forum_mods = $db->sql_query($sql);
 		$forum_mods_list = $db->sql_fetchrowset($q_forum_mods);
 
-		for($i = 0; $i < count($forum_mods_list); $i++)
+		for($i = 0; $i < sizeof($forum_mods_list); $i++)
 		{
 			if($forum_mods_list[$i]['group_single_user'] || !$forum_mods_list[$i]['group_id'])
 			{
@@ -521,17 +466,14 @@ function rate_auth($user_id, $forum_id, $topic_id)
 			}
 		}
 
-		for($mods = 0; $mods < count($forum_mods_name[$forum_id]); $mods++)
+		for($mods = 0; $mods < sizeof($forum_mods_name[$forum_id]); $mods++)
 		{
 			if ($user_id == $forum_mods_id[$forum_id][$mods]) $value = 1;
 		}
 		$sql = "SELECT user_level
 						FROM " . USERS_TABLE . "
 						WHERE user_id = '" . $user_id . "'";
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, "Error getting user data.", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$auth_row = $row['user_level'];
 		if (($auth_row == JUNIOR_ADMIN) || ($auth_row == ADMIN))
@@ -546,10 +488,7 @@ function rate_auth($user_id, $forum_id, $topic_id)
 		$sql = "SELECT user_level
 						FROM " . USERS_TABLE . "
 						WHERE user_id = '" . $user_id . "'";
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, "Error getting user data.", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$auth_row = $row['user_level'];
 		if (($auth_row == JUNIOR_ADMIN) || ($auth_row == ADMIN))
@@ -577,16 +516,14 @@ function auth_rated_topics()
 	/* Get forum list */
 	$sql = "SELECT forum_id, forum_name
 					FROM " . FORUMS_TABLE . "
-					WHERE auth_rate <> -1 ";
-	if (!$result = $db->sql_query($sql, false, 'rate_auth_'))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Auth'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+					WHERE auth_rate <> -1
+						AND f.forum_type = " . FORUM_POST;
+	$result = $db->sql_query($sql, 0, 'rate_auth_');
 	$forums_row = $db->sql_fetchrowset($result);
 
 	/* Narrow Down the Forum List */
 	$forum_id_sql = '-1';
-	for ($i = 0; $i < count($forums_row); $i++)
+	for ($i = 0; $i < sizeof($forums_row); $i++)
 	{
 		$is_auth = auth(AUTH_VIEW, $forums_row[$i]['forum_id'], $userdata);
 		if ($is_auth['auth_view'])
@@ -599,14 +536,12 @@ function auth_rated_topics()
 	$sql = "SELECT t.topic_id FROM " . TOPICS_TABLE . " t, " . RATINGS_TABLE . " r
 					WHERE t.topic_id = r.topic_id
 					AND t.forum_id IN ($forum_id_sql)";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Auth'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
-	$topic_id_sql = "";
+	$result = $db->sql_query($sql);
+
+	$topic_id_sql = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$topic_id_sql .= ($topic_id_sql != "") ? ', ' . $row['topic_id'] : $row['topic_id'];
+		$topic_id_sql .= ($topic_id_sql != '') ? ', ' . $row['topic_id'] : $row['topic_id'];
 	}
 
 	return ($topic_id_sql == '') ? '-1' : $topic_id_sql;
@@ -619,7 +554,8 @@ function auth_rated_topics()
 */
 function top_rated_topics($return_limit = '10', $forum_id = '-1')
 {
-	global $db, $board_config;
+	global $db, $config;
+
 	$auth_topic_list = auth_rated_topics();
 
 	if ($forum_id == -1)
@@ -628,7 +564,7 @@ function top_rated_topics($return_limit = '10', $forum_id = '-1')
 			FROM " . RATINGS_TABLE . "
 			WHERE topic_id IN ($auth_topic_list)
 			GROUP BY topic_id DESC
-			HAVING rating_number >= " . $board_config['min_rates_number'] . "
+			HAVING rating_number >= " . $config['min_rates_number'] . "
 			ORDER BY average DESC
 			LIMIT $return_limit";
 	}
@@ -640,15 +576,13 @@ function top_rated_topics($return_limit = '10', $forum_id = '-1')
 			AND r.topic_id = t.topic_id
 			AND t.forum_id = '" . $forum_id . "'
 			GROUP BY r.topic_id DESC
-			HAVING rating_number >= " . $board_config['min_rates_number'] . "
+			HAVING rating_number >= " . $config['min_rates_number'] . "
 			ORDER BY average DESC
 			LIMIT $return_limit";
 	}
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrowset($result);
+
 	return ($row);
 }
 
@@ -662,7 +596,7 @@ function top_rated_topics($return_limit = '10', $forum_id = '-1')
 */
 function ratings_detailed($topic_id)
 {
-	global $template, $db, $board_config, $theme, $lang;
+	global $template, $db, $config, $theme, $lang;
 
 	$rank = 0;
 
@@ -676,10 +610,7 @@ function ratings_detailed($topic_id)
 		WHERE r.topic_id = '" . $topic_id . "'
 			AND u.user_id = r.user_id
 		ORDER BY r.rating_time";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -687,9 +618,9 @@ function ratings_detailed($topic_id)
 			'RANK' => ++$rank,
 			'CLASS' => (!($rank % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 			'USER_RATE' => $row['rating'],
-			'USER_MAX_RATE' => $board_config['rating_max'],
-			'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
-			'USER_RATE_DATE' => (create_date_ip($board_config['default_dateformat'], $row['rating_time'], $board_config['board_timezone'])),
+			'USER_MAX_RATE' => $config['rating_max'],
+			'U_VIEWPROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+			'USER_RATE_DATE' => (create_date_ip($config['default_dateformat'], $row['rating_time'], $config['board_timezone'])),
 			//'USERNAME' => id_to_value($row['user_id'], 'user', true)
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active'])
 			)
@@ -698,8 +629,8 @@ function ratings_detailed($topic_id)
 
 	$template->assign_vars(array(
 		'DEFAULT_CLASS' => $theme['td_class1'],
-		'TOPIC' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id),
-		'L_TOPIC_RETURN' => sprintf($lang['Click_return_topic'], '<a href="' . append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>'),
+		'TOPIC' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id),
+		'L_TOPIC_RETURN' => sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>'),
 		'L_TITLE' => sprintf($lang['Details_For_Topic'], id_to_value($topic_id, 'topic')),
 		'L_USER_RATED' => $lang['User_Rate'],
 		'L_USER_MAX_RATE' => $lang['Max_Rate'],
@@ -720,28 +651,28 @@ function ratings_detailed($topic_id)
 */
 function ratings_index()
 {
-	global $template, $db, $board_config, $theme, $lang;
+	global $template, $db, $config, $theme, $lang;
 
 	$rank = 0;
-	$top_rated_row = top_rated_topics($board_config['index_rating_return']);
-	if ( count($top_rated_row) )
+	$top_rated_row = top_rated_topics($config['index_rating_return']);
+	if ( sizeof($top_rated_row) )
 	{
-		for ($i=0; $i < count($top_rated_row); $i++)
+		for ($i=0; $i < sizeof($top_rated_row); $i++)
 		{
 			$last_rating_info = last_rating_info($top_rated_row[$i]['topic_id']);
 			$template->assign_block_vars('ratingrow', array(
 				'CLASS' => ( !($rank % 2) ) ? $theme['td_class2'] : $theme['td_class1'],
 				'RANK' => ++$rank,
-				'URL' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
+				'URL' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
 				'LAST_RATER' => id_to_value($last_rating_info['user_id'], 'user'),
-				'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $last_rating_info['user_id']),
-				'LAST_RATER_TIME' => create_date_ip($board_config['default_dateformat'], $last_rating_info['rate_time'], $board_config['board_timezone']),
+				'U_VIEWPROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $last_rating_info['user_id']),
+				'LAST_RATER_TIME' => create_date_ip($config['default_dateformat'], $last_rating_info['rate_time'], $config['board_timezone']),
 				'TITLE' => id_to_value($top_rated_row[$i]['topic_id'], 'topic'),
 				'FORUM' => id_to_value(id_to_value($top_rated_row[$i]['topic_id'], 'topictoforum'), 'forum'),
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
 				'MIN' => $top_rated_row[$i]['min'],
 				'MAX' => $top_rated_row[$i]['max'],
-				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : "",
+				'L_VIEW_DETAILS' => ($config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : "",
 				'NUMBER_OF_RATES' => $top_rated_row[$i]['rating_number']
 				)
 			);
@@ -756,7 +687,7 @@ function ratings_index()
 	}
 
 	$template->assign_vars(array(
-		'L_TOP_RATED' => sprintf($lang['Top_Topics'], $board_config['index_rating_return'])
+		'L_TOP_RATED' => sprintf($lang['Top_Topics'], $config['index_rating_return'])
 		)
 	);
 	$template->set_filenames(array('rating_index_body' => 'rating_index_body.tpl'));
@@ -769,38 +700,33 @@ function ratings_index()
 */
 function ratings_header()
 {
-	global $template, $db, $board_config, $theme, $lang;
+	global $template, $db, $config, $theme, $lang;
 
 	$sql = "SELECT config_value FROM " . CONFIG_TABLE . "
 					WHERE config_name = 'header_rating_return_limit'";
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Config'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 
 	$rank = 0;
 	$top_rated_row = top_rated_topics($row['config_value']);
-	if ( count($top_rated_row) )
+	if ( sizeof($top_rated_row) )
 	{
-		for ($i=0; $i < count($top_rated_row); $i++)
+		for ($i=0; $i < sizeof($top_rated_row); $i++)
 		{
 			$last_rating_info = last_rating_info($top_rated_row[$i]['topic_id']);
 			$template->assign_block_vars('hratingrow', array(
 				'CLASS' => ( !($rank % 2) ) ? $theme['td_class2'] : $theme['td_class1'],
 				'RANK' => ++$rank,
-				'URL' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
+				'URL' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
 				'LAST_RATER' => id_to_value($last_rating_info['user_id'], 'user'),
-				'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $last_rating_info['user_id']),
-				'LAST_RATER_TIME' => create_date_ip($board_config['default_dateformat'], $last_rating_info['rate_time'], $board_config['board_timezone']),
+				'U_VIEWPROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $last_rating_info['user_id']),
+				'LAST_RATER_TIME' => create_date_ip($config['default_dateformat'], $last_rating_info['rate_time'], $config['board_timezone']),
 				'TITLE' => id_to_value($top_rated_row[$i]['topic_id'], 'topic'),
 				'FORUM' => id_to_value(id_to_value($top_rated_row[$i]['topic_id'], 'topictoforum'), 'forum'),
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
 				'MIN' => $top_rated_row[$i]['min'],
 				'MAX' => $top_rated_row[$i]['max'],
-				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
+				'L_VIEW_DETAILS' => ($config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
 				'NUMBER_OF_RATES' => $top_rated_row[$i]['rating_number']
 				)
 			);
@@ -824,34 +750,34 @@ function ratings_header()
 
 function ratings_large()
 {
-	global $template, $db, $board_config, $theme, $lang, $page_title, $forum_top;
+	global $template, $db, $config, $theme, $lang, $meta_content, $forum_top;
 
 	if (!isset($forum_top))
 	{
 		$forum_top = -1;
 	}
 
-	$top_rated_row = top_rated_topics($board_config['large_rating_return_limit'], $forum_top);
+	$top_rated_row = top_rated_topics($config['large_rating_return_limit'], $forum_top);
 
 	$rank = 0;
-	if (count($top_rated_row))
+	if (sizeof($top_rated_row))
 	{
-		for ($i = 0; $i < count($top_rated_row); $i++)
+		for ($i = 0; $i < sizeof($top_rated_row); $i++)
 		{
 			$last_rate_info = last_rating_info($top_rated_row[$i]['topic_id']);
 
 			$template->assign_block_vars('topicrow', array(
 				'RANK' => ++$rank,
 				'CLASS' => (!($rank % 2)) ? $theme['td_class2'] : $theme['td_class1'],
-				'URL' => append_sid(VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
+				'URL' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
 				'LAST_RATER' => id_to_value($last_rate_info['user'], 'user'),
-				'LAST_RATER_TIME' => create_date_ip($board_config['default_dateformat'], $last_rate_info['time'], $board_config['board_timezone']),
+				'LAST_RATER_TIME' => create_date_ip($config['default_dateformat'], $last_rate_info['time'], $config['board_timezone']),
 				'TITLE' => id_to_value($top_rated_row[$i]['topic_id'], 'topic'),
 				'FORUM' => id_to_value(id_to_value($top_rated_row[$i]['topic_id'], 'topictoforum'), 'forum'),
 				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
 				'MIN' => $top_rated_row[$i]['min'],
 				'MAX' => $top_rated_row[$i]['max'],
-				'L_VIEW_DETAILS' => ($board_config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
+				'L_VIEW_DETAILS' => ($config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
 				'NUMBER_OF_RATES' => $top_rated_row[$i]['rating_number']
 				)
 			);
@@ -866,7 +792,7 @@ function ratings_large()
 	}
 
 	$template->assign_vars(array(
-		'PAGE_NAME' => $page_title,
+		'PAGE_NAME' => $meta_content['page_title'],
 		'L_FOR_FORUM' => ( $forum_top != -1 ) ? sprintf($lang['For_Forum'], id_to_value($forum_top, 'forum')) : $lang['All_Forums'],
 		'L_LAST_RATED' => $lang['Last_Rated'],
 		'L_RATES' => $lang['Number_of_Rates'],
@@ -886,7 +812,7 @@ function ratings_large()
 
 function ratings_view_topic()
 {
-	global $userdata, $template, $db, $board_config, $theme, $lang, $page_title, $forum_id, $topic_id;
+	global $db, $config, $template, $theme, $userdata, $lang, $forum_id, $topic_id;
 
 	$rath_auth_data = rate_auth($userdata['user_id'], $forum_id, $topic_id);
 
@@ -920,8 +846,8 @@ function ratings_view_topic()
 				$template->assign_block_vars('rerate_link', array());
 				$rate_value = rating_value($userdata['user_id'], $topic_id);
 			}
-			$select_rate_choices = '<select id="rating" name="rating" onchange="set_rate(this.selectedIndex+1,' . $board_config['rating_max'] . ')">';
-			for ($i = 1; $i <= $board_config['rating_max']; $i++)
+			$select_rate_choices = '<select id="rating" name="rating" onchange="set_rate(this.selectedIndex+1,' . $config['rating_max'] . ')">';
+			for ($i = 1; $i <= $config['rating_max']; $i++)
 			{
 				$selected = ($i == $rate_value) ? ' selected="selected"' : '';
 				$select_rate_choices .= '<option value="' . $i . '"' . $selected . '>' . $i . '</option>';
@@ -936,14 +862,14 @@ function ratings_view_topic()
 				if ($rating_inserted == false)
 				{
 					$template->assign_block_vars('rate_link.rate_row', array(
-						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $board_config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
+						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
 						)
 					);
 				}
 				else
 				{
 					$template->assign_block_vars('rerate_link.rate_row', array(
-						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $board_config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
+						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
 						)
 					);
 				}
@@ -964,7 +890,7 @@ function ratings_view_topic()
 			}
 			else
 			{
-				if ($board_config['allow_rerate'])
+				if ($config['allow_rerate'])
 				{
 					$template->assign_block_vars('rerate', array(
 						'L_CHANGE_RATING' => $lang['Change_Rating'],
@@ -985,7 +911,7 @@ function ratings_view_topic()
 		//Common Output Variables
 		$rating_row = rating_stats($topic_id);
 		$template->assign_vars(array(
-			'L_RATE_TOPIC_USER_ANON' => ($board_config['check_anon_ip_when_rating'] && $userdata['user_id'] == ANONYMOUS) ? sprintf($lang['Or_Someone_From_IP']) : '',
+			'L_RATE_TOPIC_USER_ANON' => ($config['check_anon_ip_when_rating'] && $userdata['user_id'] == ANONYMOUS) ? sprintf($lang['Or_Someone_From_IP']) : '',
 			'RATE_TOPIC_STATS' => sprintf($lang['Rate_Stats'], $rating_row['average'], $rating_row['minimum'], $rating_row['maximum'], $rating_row['number_of_rates']),
 			'RATE_AVERAGE' => $rating_row['average'],
 			'RATE_MINIMUM' => ( $rating_row['minimum'] == '' ) ? 0: $rating_row['minimum'],
@@ -995,7 +921,7 @@ function ratings_view_topic()
 			'L_SUMMARY' => $lang['Summary']
 			)
 		);
-		if ( $board_config['allow_ext_rating'] && ($rating_row['number_of_rates'] > 0) )
+		if ( $config['allow_ext_rating'] && ($rating_row['number_of_rates'] > 0) )
 		{
 			$template->assign_vars(array(
 				'FULL_STATS_URL' => '[ ' . sprintf($lang['View_Details'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $topic_id)) . ' ]'
@@ -1020,11 +946,7 @@ function ratings_check_forum($topic_id)
 	$sql = "SELECT f.auth_rate FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t
 					WHERE f.forum_id = t.forum_id
 					AND t.topic_id = '" . $topic_id . "'";
-
-	if (!$f_result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+	$f_result = $db->sql_query($sql);
 	$f_row = $db->sql_fetchrow($f_result);
 
 	if ($f_row['auth_rate'] != -1)
@@ -1053,14 +975,11 @@ function ratings_view_forum($topic_id)
 
 	$sql = "SELECT AVG(rating) AS average FROM " . RATINGS_TABLE . "
 					WHERE topic_id = '" . $topic_id . "'";
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Dbase_Ratings'], $lang['Database_Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 
 	$template->assign_var('L_RATING', $lang['Rating']);
+
 	return $row['average'];
 }
 

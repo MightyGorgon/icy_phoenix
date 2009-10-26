@@ -19,7 +19,7 @@ class pafiledb_license extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
+		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
 		if (isset($_REQUEST['license_id']))
 		{
@@ -42,11 +42,7 @@ class pafiledb_license extends pafiledb_public
 		$sql = 'SELECT file_catid, file_name
 			FROM ' . PA_FILES_TABLE . "
 			WHERE file_id = $file_id";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query file info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if(!$file_data = $db->sql_fetchrow($result))
 		{
@@ -59,7 +55,7 @@ class pafiledb_license extends pafiledb_public
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=license&license_id=' . $license_id . '&amp;file_id=' . $file_id, true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=license&license_id=' . $license_id . '&amp;file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_download'], $this->auth[$file_data['file_catid']]['auth_download_type']);
@@ -70,11 +66,7 @@ class pafiledb_license extends pafiledb_public
 		$sql = 'SELECT *
 			FROM ' . PA_LICENSE_TABLE . "
 			WHERE license_id = $license_id";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query license info for this file', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if(!$license = $db->sql_fetchrow($result))
 		{
@@ -86,8 +78,8 @@ class pafiledb_license extends pafiledb_public
 		$this->generate_category_nav($file_data['file_catid']);
 
 		$pafiledb_template->assign_vars(array(
-			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
-			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
 			'L_HOME' => $lang['Home'],
 			'L_LICENSE' => $lang['License'],
@@ -95,7 +87,7 @@ class pafiledb_license extends pafiledb_public
 			'L_AGREE' => $lang['Iagree'],
 			'L_NOT_AGREE' => $lang['Dontagree'],
 
-			'U_INDEX' => append_sid(PORTAL_MG),
+			'U_INDEX' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id),

@@ -24,7 +24,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -115,15 +115,12 @@ while ($c_cur = &$cash->currency_next($cm_i))
 			$updates[] = 'cash_settings = ' . $settings;
 		}
 		reset ($update_set);
-		if (count($updates) > 0)
+		if (sizeof($updates) > 0)
 		{
 			$sql = "UPDATE " . CASH_TABLE . "
 					SET " . implode(", ",$updates) . "
 					WHERE cash_id = " . $c_cur->id();
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Failed to update Cash Mod settings for Cash Mod set " . $c_cur->id(), "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 			$table_updated = true;
 		}
 	}

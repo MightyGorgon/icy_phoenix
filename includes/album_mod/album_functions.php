@@ -32,7 +32,7 @@ if (!defined('IN_ICYPHOENIX'))
 //
 function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check, $rate_check, $comment_check, $edit_check, $delete_check)
 {
-	global $db, $album_config, $userdata;
+	global $db, $userdata, $album_config;
 
 	// --------------------------------
 	// Force to check moderator status
@@ -75,7 +75,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	if ($userdata['user_level'] == ADMIN)
 	{
-		for ($i = 0; $i < count($album_user_access); $i++)
+		for ($i = 0; $i < sizeof($album_user_access); $i++)
 		{
 			$album_user_access[$album_user_access_keys[$i]] = 1; // Authorized All
 		}
@@ -180,7 +180,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 		$sql = 'SELECT cat_id, cat_user_id';
 
 
-	for ($i = 0; $i < count($access_type); $i++)
+	for ($i = 0; $i < sizeof($access_type); $i++)
 	{
 		$sql .= ', cat_'. $access_type[$i] .'_level, cat_'. $access_type[$i] .'_groups';
 	}
@@ -203,11 +203,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	if(!is_array($passed_auth))
 	{
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query Album Category information' ,'' , __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$thiscat = $db->sql_fetchrow($result);
 	}
 	else
@@ -224,7 +220,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// ... so we can skip some queries ;)
 	// --------------------------------
 	$groups_access = array();
-	for ($i = 0; $i < count($access_type); $i++)
+	for ($i = 0; $i < sizeof($access_type); $i++)
 	{
 		switch ($thiscat['cat_'. $access_type[$i] .'_level'])
 		{
@@ -290,16 +286,13 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// upto (6 + 1) loops maximum when this user logged in and All Levels
 	// are set to PRIVATE and this function was called to check all.
 	// So avoiding PRIVATE will speed up your album. However, these queries are very fast
-	for ($i = 0; $i < count($groups_access); $i++)
+	for ($i = 0; $i < sizeof($groups_access); $i++)
 	{
 		$sql = "SELECT group_id, user_id
 				FROM ". USER_GROUP_TABLE ."
 				WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
 					AND group_id IN (". $thiscat['cat_'. $groups_access[$i] .'_groups'] .")";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query User-Group information' ,'' , __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if($db->sql_numrows($result) > 0)
 		{
@@ -317,7 +310,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	if(($album_user_access['moderator'] == 1) && ($moderator_check == 1))
 	{
-		for ($i = 0; $i < count($album_user_access); $i++)
+		for ($i = 0; $i < sizeof($album_user_access); $i++)
 		{
 			if($thiscat['cat_'. $album_user_access_keys[$i] .'_level'] != ALBUM_ADMIN)
 			{
@@ -379,10 +372,7 @@ function personal_gallery_access($check_view, $check_upload)
 							FROM ". USER_GROUP_TABLE ."
 							WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
 								AND group_id IN (". $album_config['personal_gallery_private'] .")";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not query User-Group information' ,'' , __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					if($db->sql_numrows($result) > 0)
 					{
@@ -429,10 +419,7 @@ function personal_gallery_access($check_view, $check_upload)
 							FROM ". USER_GROUP_TABLE ."
 							WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
 								AND group_id IN (". $album_config['personal_gallery_private'] .")";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not query User-Group information' ,'' , __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					if($db->sql_numrows($result) > 0)
 					{
@@ -466,14 +453,8 @@ function init_personal_gallery_cat($user_id = 0)
 			FROM " . ALBUM_TABLE . ", ". ALBUM_CAT_TABLE . "
 			WHERE pic_cat_id = cat_id
 				AND cat_user_id = ". $user_id;
-
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not count pics for this personal gallery', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-
 	$count = $row['count'];
 
 	if ($user_id != $userdata['user_id'])
@@ -481,12 +462,7 @@ function init_personal_gallery_cat($user_id = 0)
 		$sql = "SELECT user_id, username
 				FROM ". USERS_TABLE ."
 				WHERE user_id = $user_id";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain user information', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$user_row = $db->sql_fetchrow($result);
 		$username = $user_row['username'];
 	}
@@ -695,7 +671,7 @@ function ImageRating($rating, $css_style = 'border-style:none')
 {
 //Pre: returns what type of rating style to display
 
-	global $db, $album_config, $lang;
+	global $db, $lang, $album_config;
 
 	//decide how user wants to show their rating
 	if ($album_config['rate_type'] == 0) //display only images
@@ -745,115 +721,10 @@ function ImageRating($rating, $css_style = 'border-style:none')
 	}
 }
 
-//to have smilies window popup
-function generate_smilies_album($mode, $page_id = 0) //borrowed from phpbbforums...modified to work with album
-{
-	global $db, $board_config, $template, $lang, $images, $theme;
-	global $user_ip, $session_length, $starttime, $userdata;
-	// Vars needed for CH 2.1.4
-	global $config, $user, $censored_words, $icons, $navigation, $themes, $smilies;
-
-	$inline_columns = 4;
-	$inline_rows = 5;
-	$window_columns = 8;
-
-	if ($mode == 'window')
-	{
-		$userdata = session_pagestart($user_ip);
-		init_userprefs($userdata);
-
-		$gen_simple_header = true;
-
-		$page_title = $lang['Emoticons'];
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-		$template->set_filenames(array('smiliesbody' => 'album_posting_smilies.tpl'));
-	}
-
-	$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_id";
-	if ($result = $db->sql_query($sql, false, 'smileys_'))
-	{
-		$num_smilies = 0;
-		$rowset = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if (empty($rowset[$row['smile_url']]))
-			{
-				$rowset[$row['smile_url']]['code'] = str_replace("'", "\\'", str_replace('\\', '\\\\', $row['code']));
-				$rowset[$row['smile_url']]['emoticon'] = $row['emoticon'];
-				$num_smilies++;
-			}
-		}
-
-		if ($num_smilies)
-		{
-			$smilies_count = ($mode == 'inline') ? min(19, $num_smilies) : $num_smilies;
-			$smilies_split_row = ($mode == 'inline') ? $inline_columns - 1 : $window_columns - 1;
-
-			$s_colspan = 0;
-			$row = 0;
-			$col = 0;
-
-			while (list($smile_url, $data) = @each($rowset))
-			{
-				if (!$col)
-				{
-					$template->assign_block_vars('smilies_row', array());
-				}
-
-				$template->assign_block_vars('smilies_row.smilies_col', array(
-					'SMILEY_CODE' => $data['code'],
-					'SMILEY_IMG' => 'http://' . $_SERVER['HTTP_HOST'] . $board_config['script_path'] . $board_config['smilies_path'] . '/' . $smile_url,
-					'SMILEY_DESC' => $data['emoticon']
-					)
-				);
-
-				$s_colspan = max($s_colspan, $col + 1);
-
-				if ($col == $smilies_split_row)
-				{
-					if (($mode == 'inline') && ($row == $inline_rows - 1))
-					{
-						break;
-					}
-					$col = 0;
-					$row++;
-				}
-				else
-				{
-					$col++;
-				}
-			}
-
-			if (($mode == 'inline') && ($num_smilies > $inline_rows * $inline_columns))
-			{
-				$template->assign_block_vars('switch_smilies_extra', array());
-
-				$template->assign_vars(array(
-					'L_MORE_SMILIES' => $lang['More_emoticons'],
-					'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies'))
-				);
-			}
-
-			$template->assign_vars(array(
-				'L_EMOTICONS' => $lang['Emoticons'],
-				'L_CLOSE_WINDOW' => $lang['Close_window'],
-				'S_SMILIES_COLSPAN' => $s_colspan)
-			);
-		}
-	}
-
-	if ($mode == 'window')
-	{
-		$template->pparse('smiliesbody');
-		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-	}
-}
-
 function CanRated ($picID, $userID)
 {
 //PRE: deside if user can rate things on hot or not
-	global $db, $album_config, $userdata;
+	global $db, $userdata, $album_config;
 
 	if (! $userdata['session_logged_in'] && $album_config['hon_rate_users'] == 1)
 	{
@@ -866,11 +737,7 @@ function CanRated ($picID, $userID)
 					WHERE rate_pic_id = $picID
 						AND rate_user_id = $userID
 					LIMIT 1";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query rating information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($db->sql_numrows($result) > 0)
 		{
@@ -891,14 +758,12 @@ function CanRated ($picID, $userID)
 
 function album_comment_notify($pic_id)
 {
-	global $db, $board_config, $album_config, $lang, $userdata;
+	global $db, $config, $userdata, $lang, $album_config;
 
 	// One row SQL for caching purpose...
 	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid <> 0 ORDER BY ban_userid ASC";
-	if (!($result = $db->sql_query($sql, false, 'ban_', USERS_CACHE_FOLDER)))
-	{
-		message_die(GENERAL_ERROR, "Could not obtain banned users information.", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql, 0, 'ban_', USERS_CACHE_FOLDER);
+
 	$user_id_sql = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -915,11 +780,7 @@ function album_comment_notify($pic_id)
 					AND cw.user_id NOT IN (" . $userdata['user_id'] . ", " . ANONYMOUS . $user_id_sql . ")
 					AND cw.notify_status = " . COMMENT_WATCH_UN_NOTIFIED . "
 					AND u.user_id = cw.user_id";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain list of topic watchers', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$bcc_list_ary = array();
 
@@ -944,36 +805,36 @@ function album_comment_notify($pic_id)
 		// Let's do some checking to make sure that mass mail functions
 		// are working in win32 versions of php.
 		//
-		if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$board_config['smtp_delivery'])
+		if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$config['smtp_delivery'])
 		{
 			$ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 
 			// We are running on windows, force delivery to use our smtp functions
 			// since php's are broken by default
-			$board_config['smtp_delivery'] = 1;
-			$board_config['smtp_host'] = @$ini_val('SMTP');
+			$config['smtp_delivery'] = 1;
+			$config['smtp_host'] = @$ini_val('SMTP');
 		}
 
-		if (count($bcc_list_ary))
+		if (sizeof($bcc_list_ary))
 		{
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($board_config['smtp_delivery']);
+			$emailer = new emailer($config['smtp_delivery']);
 
-			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
+			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
 			$script_name = ($script_name != '') ? $script_name . '/album_showpage.' . PHP_EXT : 'album_showpage.' . PHP_EXT;
-			$server_name = trim($board_config['server_name']);
-			$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-			$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
+			$server_name = trim($config['server_name']);
+			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
 
-			$emailer->from($board_config['board_email']);
-			$emailer->replyto($board_config['board_email']);
+			$emailer->from($config['board_email']);
+			$emailer->replyto($config['board_email']);
 
 			@reset($bcc_list_ary);
 			while (list($user_lang, $bcc_list) = each($bcc_list_ary))
 			{
 				$emailer->use_template('album_comment_notify', $user_lang);
 
-				for ($i = 0; $i < count($bcc_list); $i++)
+				for ($i = 0; $i < sizeof($bcc_list); $i++)
 				{
 					$emailer->bcc($bcc_list[$i]);
 				}
@@ -986,8 +847,8 @@ function album_comment_notify($pic_id)
 				$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
 				$emailer->assign_vars(array(
-					'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
-					'SITENAME' => ip_stripslashes($board_config['sitename']),
+					'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+					'SITENAME' => $config['sitename'],
 					'PIC_TITLE' => $pic_title,
 					'U_PIC' => $server_protocol . $server_name . $server_port . $script_name . '?pic_id=' . $pic_id,
 					'U_STOP_WATCHING_COMMENT' => $server_protocol . $server_name . $server_port . $script_name . '?pic_id=' . $pic_id . '&unwatch=comment'
@@ -1014,12 +875,12 @@ function album_comment_notify($pic_id)
 function fap_create_server_url()
 {
 	// usage: $server_url = create_server_url();
-	global $board_config;
+	global $config;
 
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-	$server_name = trim($board_config['server_name']);
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
+	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
+	$server_name = trim($config['server_name']);
+	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
 	$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
 	$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
 
@@ -1029,7 +890,7 @@ function fap_create_server_url()
 function mx_album_uploadfilename($UploadFile)
 {
 	$UploadFileNameTmp = explode('.', $UploadFile);
-	$y = count($UploadFileNameTmp) - 1;
+	$y = sizeof($UploadFileNameTmp) - 1;
 	$r = '';
 	for ($a = 0; $y > $a; $a++)
 	{
@@ -1041,7 +902,7 @@ function mx_album_uploadfilename($UploadFile)
 function mx_album_uploadfiletype($UploadFile)
 {
 	$UploadFileTypeTmp = explode('.', $UploadFile);
-	$y = count($UploadFileTypeTmp) - 1;
+	$y = sizeof($UploadFileTypeTmp) - 1;
 	$r = $UploadFileTypeTmp[$y];
 	return $r;
 }
@@ -1054,26 +915,26 @@ function picture_quick_thumb($pic_filename, $pic_thumbnail, $thumbnail_file)
 		{
 			$pic_path[] = array();
 			$pic_path = explode('/', $pic_filename);
-			$pic_filename = $pic_path[count($pic_path) - 1];
+			$pic_filename = $pic_path[sizeof($pic_path) - 1];
 		}
 	}
 
 	$file_part = explode('.', strtolower($pic_filename));
-	$pic_filetype = $file_part[count($file_part) - 1];
+	$pic_filetype = $file_part[sizeof($file_part) - 1];
 	$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-	$pic_base_path = ALBUM_UPLOAD_PATH;
+	$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 	$pic_extra_path = '';
 	$pic_new_filename = $pic_extra_path . $pic_filename;
 	$pic_fullpath = $pic_base_path . $pic_new_filename;
 	$pic_thumbnail = ($pic_thumbnail != '') ? $pic_thumbnail : (md5($pic_filename) . '.' . $pic_filetype);
-	$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
+	$pic_thumbnail_fullpath = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_thumbnail;
 
 	if (USERS_SUBFOLDERS_ALBUM == true)
 	{
-		if (count($pic_path) == 2)
+		if (sizeof($pic_path) == 2)
 		{
 			$pic_extra_path = $pic_path[0] . '/';
-			$pic_thumbnail_path = ALBUM_CACHE_PATH . $pic_extra_path;
+			$pic_thumbnail_path = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_extra_path;
 			if (is_dir($pic_thumbnail_path))
 			{
 				$pic_new_filename = $pic_extra_path . $pic_filename;
@@ -1103,12 +964,12 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 		{
 			$pic_path[] = array();
 			$pic_path = explode('/', $pic_info['filename']);
-			$pic_info['filename'] = $pic_path[count($pic_path) - 1];
+			$pic_info['filename'] = $pic_path[sizeof($pic_path) - 1];
 		}
 	}
 
 	$file_part = explode('.', strtolower($pic_info['filename']));
-	$pic_info['filetype'] = $file_part[count($file_part) - 1];
+	$pic_info['filetype'] = $file_part[sizeof($file_part) - 1];
 	$pic_info['filename_only'] = substr($pic_info['filename'], 0, strlen($pic_info['filename']) - strlen($pic_info['filetype']) - 1);
 	$pic_info['base_path'] = ALBUM_UPLOAD_PATH;
 	$pic_info['base_t_s_path'] = ALBUM_CACHE_PATH;
@@ -1120,7 +981,7 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 	$pic_info['thumbnail_new'] = md5($pic_info['filename']) . '.' . $pic_info['filetype'];
 	$pic_info['thumbnail'] = ($pic_info['thumbnail'] == '') ? $pic_info['thumbnail_new'] : $pic_info['thumbnail'];
 	$thumbs_prefixes = array('s', 'm', 'w');
-	for ($i = 0; $i < count($thumbs_prefixes); $i++)
+	for ($i = 0; $i < sizeof($thumbs_prefixes); $i++)
 	{
 		$cp = $thumbs_prefixes[$i];
 		$pic_info['thumbnail_' . $cp . '_fullpath'] = $pic_info['base_t_' . $cp . '_path'] . $pic_info['thumbnail'];
@@ -1131,11 +992,11 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 			$pic_info['thumbnail_new_' . $cp . '_f_fullpath'] = $pic_info['base_t_' . $cp . '_path'] . 'full_' . $pic_info['thumbnail_new'];
 		}
 	}
-	$pic_info['title_reg'] = ereg_replace("[^A-Za-z0-9]", "_", $pic_info['title']);
+	$pic_info['title_reg'] = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_info['title']);
 
 	if (USERS_SUBFOLDERS_ALBUM == true)
 	{
-		if (count($pic_path) == 2)
+		if (sizeof($pic_path) == 2)
 		{
 			$pic_info['extra_path'] = $pic_path[0] . '/';
 			if (is_dir($pic_info['base_path'] . $pic_info['extra_path']))
@@ -1149,7 +1010,7 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 				return $pic_info;
 			}
 
-			for ($i = 0; $i < count($thumbs_prefixes); $i++)
+			for ($i = 0; $i < sizeof($thumbs_prefixes); $i++)
 			{
 				$cp = $thumbs_prefixes[$i];
 				$dir_exists = false;

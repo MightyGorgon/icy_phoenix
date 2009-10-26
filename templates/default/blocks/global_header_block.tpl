@@ -1,4 +1,4 @@
-<!-- BEGIN style_select_on -->
+<!-- IF S_STYLES_SELECT -->
 <script type="text/javascript">
 function SetTheme_{MAIN_MENU_ID}()
 {
@@ -6,7 +6,7 @@ function SetTheme_{MAIN_MENU_ID}()
 	return true;
 }
 </script>
-<!-- END style_select_on -->
+<!-- ENDIF -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/chrome.js"></script>
 <div id="chromemenu_{MAIN_MENU_ID}" class="chromestyle">
 <ul>

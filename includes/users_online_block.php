@@ -13,15 +13,15 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if (defined('SHOW_ONLINE_CHAT') && $board_config['show_chat_online'])
+if (defined('SHOW_ONLINE_CHAT') && $config['show_chat_online'])
 {
 	//$template->assign_block_vars('switch_ac_online', array());
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
-	FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-	WHERE s.session_time >= " . (time() - SESSION_REFRESH) . "
-	AND s.session_user_id = u.user_id
-	ORDER BY case user_level when 0 then 10 else user_level end";
+		FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
+		WHERE s.session_time >= " . (time() - SESSION_REFRESH) . "
+		AND s.session_user_id = u.user_id
+		ORDER BY case user_level when 0 then 10 else user_level end";
 	$result = $db->sql_query($sql);
 
 	// Set all counters to 0
@@ -75,11 +75,7 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_allow_
 	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
 		$user_forum_sql
 	ORDER BY u.username ASC, s.session_ip ASC";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 $userlist_ary = array();
 $userlist_visible = array();
@@ -121,7 +117,7 @@ while($row = $db->sql_fetchrow($result))
 		{
 			$guests_online++;
 			// MG BOTS Parsing - BEGIN
-			$bot_name_tmp = bots_parse($row['session_ip'], $board_config['bots_color'], $row['session_user_agent']);
+			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_user_agent']);
 			if ($bot_name_tmp != false)
 			{
 				if (!in_array($bot_name_tmp, $tmp_bots_array))
@@ -173,7 +169,7 @@ $online_userlist = $lang['Registered_users'] . ' ' . $online_userlist;
 
 $total_online_users = $logged_visible_online + $logged_hidden_online + $guests_online;
 
-if ($total_online_users > $board_config['record_online_users'])
+if ($total_online_users > $config['record_online_users'])
 {
 	set_config('record_online_users', $total_online_users);
 	set_config('record_online_date', time());

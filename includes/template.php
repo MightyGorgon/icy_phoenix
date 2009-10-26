@@ -187,9 +187,9 @@ class Template {
 	*/
 	function load_config($root, $edit_db)
 	{
-		global $board_config;
+		global $config;
 		// getting mod version from config and comparing with real data
-		$ver = isset($board_config['xs_version']) ? $board_config['xs_version'] : 0;
+		$ver = isset($config['xs_version']) ? $config['xs_version'] : 0;
 		// check configuration
 		// set config values if there aren't any
 		$add = array();
@@ -224,36 +224,36 @@ class Template {
 		// checking if all variables exist
 		foreach($default as $var => $value)
 		{
-			if(!isset($board_config[$var]))
+			if(!isset($config[$var]))
 			{
-				$board_config[$var] = $value;
+				$config[$var] = $value;
 				$add[] = $var;
 			}
 		}
 		// checking if there are any outdated variables that should be deleted
-		for($i=0; $i<count($outdated); $i++)
+		for($i=0; $i< sizeof($outdated); $i++)
 		{
-			if(isset($board_config[$outdated[$i]]))
+			if(isset($config[$outdated[$i]]))
 			{
 				$del[] = $outdated[$i];
 			}
 		}
-		if(!isset($board_config['xs_version']))
+		if(!isset($config['xs_version']))
 		{
-			$board_config['xs_version'] = $this->xs_version;
+			$config['xs_version'] = $this->xs_version;
 			$add[] = 'xs_version';
 		}
-		elseif($board_config['xs_version'] != $this->xs_version)
+		elseif($config['xs_version'] != $this->xs_version)
 		{
-			$board_config['xs_version'] = $this->xs_version;
+			$config['xs_version'] = $this->xs_version;
 			$up[] = 'xs_version';
 		}
 		// check config
-		if(!empty($board_config['xs_auto_recompile']))
+		if(!empty($config['xs_auto_recompile']))
 		{
-			if(!$board_config['xs_auto_compile'])
+			if(!$config['xs_auto_compile'])
 			{
-				$board_config['xs_auto_compile'] = 1;
+				$config['xs_auto_compile'] = 1;
 				if(!in_array('xs_auto_compile', $up) && !in_array('xs_auto_compile', $add))
 				{
 					$up[] = 'xs_auto_compile';
@@ -261,9 +261,9 @@ class Template {
 			}
 		}
 		// install/upgrade
-		if($edit_db && ((count($add) > 0) || (count($up) > 0) || (count($del) > 0)))
+		if($edit_db && ((sizeof($add) > 0) || (sizeof($up) > 0) || (sizeof($del) > 0)))
 		{
-			$board_config['xs_template_time'] = time();
+			$config['xs_template_time'] = time();
 			if(!in_array('xs_template_time', $up))
 			{
 				$up[] = 'xs_template_time';
@@ -272,36 +272,30 @@ class Template {
 			if(!empty($db))
 			{
 				// adding new config values
-				for($i = 0; $i < count($add); $i++)
+				for($i = 0; $i < sizeof($add); $i++)
 				{
-					$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . $add[$i] . "', '" . str_replace('\\\'', '\'\'', addslashes($board_config[$add[$i]])) . "')";
+					$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . $add[$i] . "', '" . str_replace('\\\'', '\'\'', addslashes($config[$add[$i]])) . "')";
 					$db->sql_query($sql);
 				}
 				// removing old configuration variables that aren't used
-				for($i = 0; $i < count($del); $i++)
+				for($i = 0; $i < sizeof($del); $i++)
 				{
 					$sql = "DELETE FROM " . CONFIG_TABLE . " WHERE config_name='" . $del[$i] . "'";
 					$db->sql_query($sql);
 				}
 				// updating variables that should be overwritten
-				for($i = 0; $i < count($up); $i++)
+				for($i = 0; $i < sizeof($up); $i++)
 				{
-					$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($board_config[$up[$i]])) . "' WHERE config_name='" . $up[$i] . "'";
+					$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($config[$up[$i]])) . "' WHERE config_name='" . $up[$i] . "'";
 					$db->sql_query($sql);
-				}
-				// recache config table for cat_hierarchy 2.1.0
-				global $config;
-				if(isset($config->data) && $config->data === $board_config && isset($config->data['mod_cat_hierarchy']))
-				{
-					$config->read(true);
 				}
 			}
 		}
-		$this->php = $board_config['xs_php'];
-		$this->tpldef = $board_config['xs_def_template'];
-		$this->use_cache = $board_config['xs_use_cache'];
-		$this->auto_compile = $board_config['xs_auto_compile'];
-		$this->xs_check_switches = $board_config['xs_check_switches'];
+		$this->php = $config['xs_php'];
+		$this->tpldef = $config['xs_def_template'];
+		$this->use_cache = $config['xs_use_cache'];
+		$this->auto_compile = $config['xs_auto_compile'];
+		$this->xs_check_switches = $config['xs_check_switches'];
 		$this->cache_search = array('.', '\\', '/', '_tpl');
 		$this->cache_replace = array('_', XS_SEPARATOR, XS_SEPARATOR, '.' . $this->php);
 		$old_root = $this->root;
@@ -330,7 +324,7 @@ class Template {
 	*/
 	function set_rootdir($dir)
 	{
-		global $board_config;
+		global $config;
 		if (!@is_dir($dir))
 		{
 			return false;
@@ -491,7 +485,7 @@ class Template {
 	*/
 	function set_filename($handle, $filename, $xs_include = false, $quiet = false)
 	{
-		global $board_config;
+		global $config;
 		$can_cache = $this->use_cache;
 		if(strpos($filename, '..') !== false)
 		{
@@ -501,7 +495,7 @@ class Template {
 		$this->files_cache[$handle] = '';
 		$this->files_cache2[$handle] = '';
 		// check if we are in admin control panel and override extreme styles mod controls if needed
-		if(defined('XS_ADMIN_OVERRIDE') && XS_ADMIN_OVERRIDE === true && @function_exists('xs_admin_override'))
+		if(defined('XS_ADMIN_OVERRIDE') && (XS_ADMIN_OVERRIDE === true) && @function_exists('xs_admin_override'))
 		{
 			xs_admin_override();
 		}
@@ -552,7 +546,7 @@ class Template {
 			}
 			if($xs_include)
 			{
-				if($board_config['xs_warn_includes'])
+				if($config['xs_warn_includes'])
 				{
 					//die('Template->make_filename(): Error - included template file not found: ' . $this->tpl . $filename);
 					die('Template->make_filename(): Error - included template file not found: ' . $filename);
@@ -566,10 +560,10 @@ class Template {
 			}
 		}
 		// checking if we should recompile cache
-		if(!empty($this->files_cache[$handle]) && !empty($board_config['xs_auto_recompile']))
+		if(!empty($this->files_cache[$handle]) && !empty($config['xs_auto_recompile']))
 		{
 			$cache_time = @filemtime($this->files_cache[$handle]);
-			if(@filemtime($this->files[$handle]) > $cache_time || $board_config['xs_template_time'] > $cache_time)
+			if(@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time)
 			{
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)
 				$this->files_cache[$handle] = '';
@@ -583,13 +577,13 @@ class Template {
 	*/
 	function execute($filename, $code, $handle)
 	{
-		global $lang, $theme, $board_config;
+		global $lang, $theme, $config;
 		$template = $theme['template_name'];
 		global $$template;
 		$theme_info = &$$template;
 		$exclude_tpl_array = array('def_tree_def.tpl');
 		//die(basename($this->files[$handle]));
-		if($board_config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
+		if($config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
 		{
 			echo '<!-- template ', $this->files[$handle], ' start -->';
 		}
@@ -601,7 +595,7 @@ class Template {
 		{
 			eval($code);
 		}
-		if($board_config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
+		if($config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
 		{
 			echo '<!-- template ', $this->files[$handle], ' end -->';
 		}
@@ -615,7 +609,7 @@ class Template {
 	*/
 	function pparse($handle)
 	{
-		global $board_config;
+		global $config;
 		// Mighty Gorgon - Extra Debug - BEGIN
 		if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']))
 		{
@@ -692,7 +686,7 @@ class Template {
 	*/
 	function precompile($template, $filename)
 	{
-		global $precompile_num, $board_config;
+		global $precompile_num, $config;
 		if(empty($precompile_num))
 		{
 			$precompile_num = 0;
@@ -762,28 +756,60 @@ class Template {
 	*/
 	function assign_block_vars($blockname, $vararray)
 	{
-		if (strstr($blockname, '.'))
+		if (strpos($blockname, '.') !== false)
 		{
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = count($blocks) - 1;
+			$blockcount = sizeof($blocks) - 1;
 
 			$str = &$this->_tpldata;
 			for($i = 0; $i < $blockcount; $i++)
 			{
 				$str = &$str[$blocks[$i] . '.'];
-				$str = &$str[count($str) - 1];
+				$str = &$str[sizeof($str) - 1];
 			}
+
+			$s_row_count = isset($str[$blocks[$blockcount] . '.']) ? sizeof($str[$blocks[$blockcount] . '.']) : 0;
+			$vararray['S_ROW_COUNT'] = $s_row_count;
+
+			// Assign S_FIRST_ROW
+			if (!$s_row_count)
+			{
+				$vararray['S_FIRST_ROW'] = true;
+			}
+
+			// Now the tricky part, we always assign S_LAST_ROW and remove the entry before
+			// This is much more clever than going through the complete template data on display (phew)
+			$vararray['S_LAST_ROW'] = true;
+			if ($s_row_count > 0)
+			{
+				unset($str[$blocks[$blockcount] . '.'][($s_row_count - 1)]['S_LAST_ROW']);
+			}
+
 			// Now we add the block that we're actually assigning to.
-			// We're adding a new iteration to this block with the given
-			//	variable assignments.
+			// We're adding a new iteration to this block with the given variable assignments.
 			$str[$blocks[$blockcount] . '.'][] = $vararray;
 		}
 		else
 		{
 			// Top-level block.
-			// Add a new iteration to this block with the variable assignments
-			// we were given.
+			$s_row_count = (isset($this->_tpldata[$blockname . '.'])) ? sizeof($this->_tpldata[$blockname . '.']) : 0;
+			$vararray['S_ROW_COUNT'] = $s_row_count;
+
+			// Assign S_FIRST_ROW
+			if (!$s_row_count)
+			{
+				$vararray['S_FIRST_ROW'] = true;
+			}
+
+			// We always assign S_LAST_ROW and remove the entry before
+			$vararray['S_LAST_ROW'] = true;
+			if ($s_row_count > 0)
+			{
+				unset($this->_tpldata[$blockname . '.'][($s_row_count - 1)]['S_LAST_ROW']);
+			}
+
+			// Add a new iteration to this block with the variable assignments we were given.
 			$this->_tpldata[$blockname . '.'][] = $vararray;
 		}
 
@@ -820,7 +846,7 @@ class Template {
 	*/
 	function loadfile($handle)
 	{
-		global $board_config;
+		global $config;
 		// If cached file exists do nothing - it will be included via include()
 		if(!empty($this->files_cache[$handle]))
 		{
@@ -899,7 +925,7 @@ class Template {
 	{
 		// Get an array of the blocks involved.
 		$blocks = explode('.', $blockname);
-		$blockcount = count($blocks) - 1;
+		$blockcount = sizeof($blocks) - 1;
 		if($defop)
 		{
 			$varref = '$this->_tpldata[\'DEFINE\']';
@@ -923,7 +949,7 @@ class Template {
 		}
 		else
 		{
-			return '$' . $blocks[$blockcount-1] . '_item[\'' . $blocks[$blockcount] . '.\']';
+			return '$' . $blocks[$blockcount - 1] . '_item[\'' . $blocks[$blockcount] . '.\']';
 		}
 	}
 
@@ -950,7 +976,7 @@ class Template {
 
 		// Break it up into lines and put " -->" back.
 		$code_lines = explode(' -->', $code);
-		$count = count($code_lines);
+		$count = sizeof($code_lines);
 		for ($i = 0; $i < ($count - 1); $i++)
 		{
 			$code_lines[$i] .= ' -->';
@@ -964,14 +990,14 @@ class Template {
 
 		// prepare array for compiled code
 		$compiled = array();
-		$count_bugs = count($this->bugs);
+		$count_bugs = sizeof($this->bugs);
 
 		// array of switches
 		$sw = array();
 
 		// replace all short php tags
 		$new_code = array();
-		$line_count = count($code_lines);
+		$line_count = sizeof($code_lines);
 		for($i = 0; $i < $line_count; $i++)
 		{
 			$line = $code_lines[$i];
@@ -997,7 +1023,7 @@ class Template {
 		$code_lines = $new_code;
 
 		// main loop
-		$line_count = count($code_lines);
+		$line_count = sizeof($code_lines);
 		for($i = 0; $i < $line_count; $i++)
 		{
 			$line = $code_lines[$i];
@@ -1089,7 +1115,7 @@ class Template {
 			if($keyword_type == XS_TAG_BEGIN)
 			{
 				$params = explode(' ', $params_str);
-				$num_params = count($params);
+				$num_params = sizeof($params);
 				// get variable name
 				if($num_params == 1)
 				{
@@ -1190,11 +1216,11 @@ class Template {
 					$line = '<' . '?php' . "\n\n";
 					if($use_isset)
 					{
-						$line .= '$' . $var . '_count = ( isset($this->_tpldata[\'' . $var . '.\']) ) ? count($this->_tpldata[\'' . $var . '.\']) : 0;';
+						$line .= '$' . $var . '_count = ( isset($this->_tpldata[\'' . $var . '.\']) ) ? sizeof($this->_tpldata[\'' . $var . '.\']) : 0;';
 					}
 					else
 					{
-						$line .= '$' . $var . '_count = count($this->_tpldata[\'' . $var . '.\']);';
+						$line .= '$' . $var . '_count = sizeof($this->_tpldata[\'' . $var . '.\']);';
 					}
 					$line .= "\n" . 'for ($' . $var . '_i = 0; $' . $var . '_i < $' . $var . '_count; $' . $var . '_i++)';
 					$line .= "\n" . '{' . "\n";
@@ -1217,11 +1243,11 @@ class Template {
 					$line = '<' . '?php' . "\n\n";
 					if($use_isset)
 					{
-						$line .= '$' . $var . '_count = ( isset(' . $varref . ') ) ? count(' . $varref . ') : 0;';
+						$line .= '$' . $var . '_count = ( isset(' . $varref . ') ) ? sizeof(' . $varref . ') : 0;';
 					}
 					else
 					{
-						$line .= '$' . $var . '_count = count(' . $varref . ');';
+						$line .= '$' . $var . '_count = sizeof(' . $varref . ');';
 					}
 					$line .= "\n" . 'for ($' . $var . '_i = 0; $' . $var . '_i < $' . $var . '_count; $' . $var . '_i++)';
 					$line .= "\n" . '{'. "\n";
@@ -1239,7 +1265,7 @@ class Template {
 			if($keyword_type == XS_TAG_END)
 			{
 				$params = explode(' ', $params_str);
-				$num_params = count($params);
+				$num_params = sizeof($params);
 				if($num_params == 1)
 				{
 					$var = $params[0];
@@ -1308,7 +1334,7 @@ class Template {
 			if($keyword_type == XS_TAG_INCLUDE)
 			{
 				$params = explode(' ', $params_str);
-				$num_params = count($params);
+				$num_params = sizeof($params);
 				if($num_params != 1)
 				{
 					$compiled[] = $keyword_str;
@@ -1421,7 +1447,7 @@ class Template {
 		// This one will handle varrefs WITH namespaces
 		$varrefs = array();
 		preg_match_all('#\{(([a-z0-9\-_]+?\.)+?)([a-z0-9\-_]+?)\}#is', $code, $varrefs);
-		$varcount = count($varrefs[1]);
+		$varcount = sizeof($varrefs[1]);
 		$search = array();
 		$replace = array();
 		for ($i = 0; $i < $varcount; $i++)
@@ -1432,7 +1458,7 @@ class Template {
 			$search[] = $varrefs[0][$i];
 			$replace[] = $new;
 		}
-		if(count($search) > 0)
+		if(sizeof($search) > 0)
 		{
 			$code = str_replace($search, $replace, $code);
 		}
@@ -1458,7 +1484,7 @@ class Template {
 		$tokens = $match[0];
 		$is_arg_stack = array();
 
-		for ($i = 0; $i < count($tokens); $i++)
+		for ($i = 0; $i < sizeof($tokens); $i++)
 		{
 			$token = &$tokens[$i];
 
@@ -1545,7 +1571,7 @@ class Template {
 
 					$new_tokens = $this->_parse_is_expr($is_arg, array_slice($tokens, $i+1));
 
-					array_splice($tokens, $is_arg_start, count($tokens), $new_tokens);
+					array_splice($tokens, $is_arg_start, sizeof($tokens), $new_tokens);
 
 					$i = $is_arg_start;
 
@@ -1749,7 +1775,7 @@ class Template {
 					@chmod($path, 0777);
 				}
 			}
-			$count = count($dirs);
+			$count = sizeof($dirs);
 			if($count > 0)
 			for($i = 0; $i < ($count - 1); $i++)
 			{
@@ -1779,18 +1805,20 @@ class Template {
 			$this->cache_writable = 0;
 			return false;
 		}
+
+		$data = '<' . '?php' . "\n\n// eXtreme Styles mod cache. Generated on " . gmdate('r') . " (time = " . time() . ")\n\n" . "if (!defined('IN_ICYPHOENIX')) exit;\n\n" . '?' . '>' . $code;
+
 		@flock($file, LOCK_EX);
-		fputs($file, '<' . '?php' . "\n\n// eXtreme Styles mod cache. Generated on " . date('r') . " (time=" . time() . ")\n\n" . '?' . '>');
-		fputs($file, $code);
+		@fwrite ($file, $data);
 		@flock($file, LOCK_UN);
-		fclose($file);
+		@fclose($file);
 		@chmod($filename, 0777);
 		return true;
 	}
 
 	function xs_startup()
 	{
-		global $board_config;
+		global $config;
 		if(empty($this->xs_started))
 		{	// adding predefined variables
 			$this->xs_started = 1;
@@ -1809,7 +1837,7 @@ class Template {
 			$this->vars['PHP'] = isset($this->vars['PHP']) ? $this->vars['PHP'] : $php;
 			// adding language variable (eg: "english" or "german")
 			// can be used to make truly multi-lingual templates
-			$this->vars['LANG'] = isset($this->vars['LANG']) ? $this->vars['LANG'] : $board_config['default_lang'];
+			$this->vars['LANG'] = isset($this->vars['LANG']) ? $this->vars['LANG'] : $config['default_lang'];
 			// adding current template
 			$tpl = $this->root . '/'; // IP_ROOT_PATH . 'templates/' . $this->tpl . '/';
 			if(substr($tpl, 0, 2) === './')
@@ -1867,18 +1895,18 @@ class Template {
 		{
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = count($blocks) - 1;
+			$blockcount = sizeof($blocks) - 1;
 			$str = &$this->_tpldata;
 			for($i = 0; $i < $blockcount; $i++)
 			{
 				$str = &$str[$blocks[$i].'.'];
-				$str = &$str[count($str)-1];
+				$str = &$str[sizeof($str)-1];
 			}
 			// Now we add the block that we're actually assigning to.
 			// We're adding a new iteration to this block with the given
 			//   variable assignments.
 			$str = &$str[$blocks[$blockcount] . '.'];
-			$count = count($str) - 1;
+			$count = sizeof($str) - 1;
 			if($count >= 0)
 			{
 				// adding only if there is at least one item
@@ -1891,7 +1919,7 @@ class Template {
 			// Add a new iteration to this block with the variable assignments
 			// we were given.
 			$str = &$this->_tpldata[$blockname . '.'];
-			$count = count($str) - 1;
+			$count = sizeof($str) - 1;
 			if($count >= 0)
 			{
 				// adding only if there is at least one item
@@ -1908,7 +1936,7 @@ class Template {
 	{
 		// Top-level block.
 		// flush a existing block we were given.
-		$current_iteration = count($this->_tpldata[$blockname . '.']) - 1;
+		$current_iteration = sizeof($this->_tpldata[$blockname . '.']) - 1;
 		unset($this->_tpldata[$blockname . '.']);
 		return true;
 	}
@@ -1922,10 +1950,10 @@ class Template {
 		{
 			$style_config = array();
 			include(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg');
-			if(count($style_config))
+			if(sizeof($style_config))
 			{
-				global $board_config, $db;
-				for($i = 0; $i < count($style_config); $i++)
+				global $config, $db;
+				for($i = 0; $i < sizeof($style_config); $i++)
 				{
 					$this->style_config[$style_config[$i]['var']] = $style_config[$i]['default'];
 					if($add_vars)
@@ -1935,15 +1963,9 @@ class Template {
 				}
 				$str = $this->_serialize($this->style_config);
 				$config_name = 'xs_style_' . $tpl;
-				$board_config[$config_name] = $str;
+				$config[$config_name] = $str;
 				$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
 				$db->sql_query($sql);
-				// recache config table for cat_hierarchy 2.1.0
-				global $config;
-				if(isset($config->data) && $config->data === $board_config && isset($config->data['mod_cat_hierarchy']))
-				{
-					$config->read(true);
-				}
 				return true;
 			}
 		}
@@ -1953,9 +1975,9 @@ class Template {
 	function add_config($tpl)
 	{
 		$config_name = 'xs_style_' . $tpl;
-		global $board_config;
+		global $config;
 		$result = false;
-		if(empty($board_config[$config_name]))
+		if(empty($config[$config_name]))
 		{
 			$old = $this->style_config;
 			$result = $this->_add_config($tpl, false);
@@ -1973,10 +1995,10 @@ class Template {
 		{
 			$style_config = array();
 			include(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg');
-			if(count($style_config))
+			if(sizeof($style_config))
 			{
-				global $board_config, $db;
-				for($i = 0; $i < count($style_config); $i++)
+				global $config, $db;
+				for($i = 0; $i < sizeof($style_config); $i++)
 				{
 					if(!isset($this->style_config[$style_config[$i]['var']]))
 					{
@@ -1989,7 +2011,7 @@ class Template {
 				}
 				$str = $this->_serialize($this->style_config);
 				$config_name = 'xs_style_' . $tpl;
-				if(isset($board_config[$config_name]))
+				if(isset($config[$config_name]))
 				{
 					$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . str_replace('\\\'', '\'\'', addslashes($str)) . "' WHERE config_name='" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "'";
 				}
@@ -1998,13 +2020,7 @@ class Template {
 					$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . str_replace('\\\'', '\'\'', addslashes($config_name)) . "', '" . str_replace('\\\'', '\'\'', addslashes($str)) . "')";
 				}
 				$db->sql_query($sql);
-				$board_config[$config_name] = $str;
-				// recache config table for cat_hierarchy 2.1.0
-				global $config;
-				if(isset($config->data) && $config->data === $board_config && isset($config->data['mod_cat_hierarchy']))
-				{
-					$config->read(true);
-				}
+				$config[$config_name] = $str;
 				return true;
 			}
 		}
@@ -2041,8 +2057,8 @@ class Template {
 			$tpl = $this->tpl;
 		}
 		$config_name = 'xs_style_' . $tpl;
-		global $board_config;
-		if(empty($board_config[$config_name]))
+		global $config;
+		if(empty($config[$config_name]))
 		{
 			if($add_config)
 			{
@@ -2050,7 +2066,7 @@ class Template {
 			}
 			return $this->style_config;
 		}
-		$this->style_config = $this->_unserialize($board_config[$config_name]);
+		$this->style_config = $this->_unserialize($config[$config_name]);
 		if($tpl === $this->tpl)
 		{
 			foreach($this->style_config as $var => $value)
@@ -2107,10 +2123,10 @@ class Template {
 	{
 		$array = array();
 		$list = explode('|', $str);
-		for($i=0; $i<count($list); $i++)
+		for($i=0; $i< sizeof($list); $i++)
 		{
 			$row = explode('=', $list[$i], 2);
-			if(count($row) == 2)
+			if(sizeof($row) == 2)
 			{
 				$array[$row[0]] = $row[1];
 			}
@@ -2122,7 +2138,7 @@ class Template {
 
 function xs_switch($tpl, $name)
 {
-	return (isset($tpl->_tpldata[$name.'.']) && count($tpl->_tpldata[$name.'.']) > 0);
+	return (isset($tpl->_tpldata[$name.'.']) && sizeof($tpl->_tpldata[$name.'.']) > 0);
 }
 
 ?>

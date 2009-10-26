@@ -28,13 +28,13 @@ $start = ($start < 0) ? 0 : $start;
 $page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
 $page_number = ($page_number < 1) ? false : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $board_config['topics_per_page']) - $board_config['topics_per_page']);
+$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
 
-$cms_page_id = 'shoutbox';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'shoutbox';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // Start auth check
 switch ($userdata['user_level'])
@@ -78,30 +78,30 @@ else
 }
 
 // Set toggles for various options
-if (!$board_config['allow_html'])
+if (!$config['allow_html'])
 {
 	$html_on = 0;
 }
 else
 {
-	$html_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_html'] : $userdata['user_allowhtml']);
+	$html_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_html'] : $userdata['user_allowhtml']);
 }
-if (!$board_config['allow_bbcode'])
+if (!$config['allow_bbcode'])
 {
 	$bbcode_on = 0;
 }
 else
 {
-	$bbcode_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode']);
+	$bbcode_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_bbcode'] : $userdata['user_allowbbcode']);
 }
 
-if (!$board_config['allow_smilies'])
+if (!$config['allow_smilies'])
 {
 	$smilies_on = 0;
 }
 else
 {
-	$smilies_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $board_config['allow_smilies'] : $userdata['user_allowsmile']);
+	$smilies_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_smilies'] : $userdata['user_allowsmile']);
 }
 if(!$userdata['session_logged_in'] || ($mode == 'editpost' && $post_info['poster_id'] == ANONYMOUS))
 {
@@ -131,44 +131,31 @@ if ($refresh || $preview)
 	{
 		if ($preview)
 		{
-			if (!$userdata['user_allowswearywords'])
-			{
-				$orig_word = array();
-				$replacement_word = array();
-				obtain_word_list($orig_word, $replacement_word);
-			}
 
 			$preview_message = stripslashes(prepare_message(addslashes(unprepare_message($message)), $html_on, $bbcode_on, $smilies_on));
-			if ($board_config['img_shoutbox'] == true)
+			if ($config['img_shoutbox'])
 			{
 				$preview_message = preg_replace ("#\[url=(http://)([^ \"\n\r\t<]*)\]\[img\](http://)([^ \"\n\r\t<]*)\[/img\]\[/url\]#i", '[url=\\1\\2]\\4[/url]', $preview_message);
 				$preview_message = preg_replace ("#\[img\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $preview_message);
 				$preview_message = preg_replace ("#\[img align=left\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $preview_message);
 				$preview_message = preg_replace ("#\[img align=right\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $preview_message);
 			}
-			$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
-			$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $bbcode_on ? true : false);
-			$bbcode->allow_smilies = ($board_config['allow_smilies'] && $smilies_on ? true : false);
+
+			$preview_message = censor_text($preview_message);
+
+			$bbcode->allow_html = ($config['allow_html'] ? true : false);
+			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $bbcode_on ? true : false);
+			$bbcode->allow_smilies = ($config['allow_smilies'] && $smilies_on ? true : false);
 			$preview_message = $bbcode->parse($preview_message);
 
-			if(!empty($orig_word))
-			{
-				$preview_message = (!empty($preview_message)) ? preg_replace($orig_word, $replacement_word, $preview_message) : '';
-			}
-			$orig_autolink = array();
-			$replacement_autolink = array();
-			obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
 			$preview_message = $bbcode->acronym_pass($preview_message);
-			if(count($orig_autolink))
-			{
-				$preview_message = autolink_transform($preview_message, $orig_autolink, $replacement_autolink);
-			}
-			//$preview_message = kb_word_wrap_pass($preview_message);
+			$preview_message = autolink_text($preview_message, '999999');
+
 			$preview_message = str_replace("\n", '<br />', $preview_message);
 			$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 			$template->assign_vars(array(
 				'USERNAME' => $username,
-				'POST_DATE' => create_date_ip($board_config['default_dateformat'], time(), $board_config['board_timezone']),
+				'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
 				'MESSAGE' => $preview_message,
 				'L_POSTED' => $lang['Posted'],
 				'L_PREVIEW' => $lang['Preview']
@@ -185,13 +172,16 @@ elseif ($submit || isset($_POST['message']))
 	// Flood control
 	$where_sql = ($userdata['user_id'] == ANONYMOUS) ? "shout_ip = '$user_ip'" : 'shout_user_id = ' . $userdata['user_id'];
 	$sql = "SELECT MAX(shout_session_time) AS last_post_time
-	FROM " . SHOUTBOX_TABLE . "
-	WHERE $where_sql";
-	if ($result = $db->sql_query($sql))
+		FROM " . SHOUTBOX_TABLE . "
+		WHERE $where_sql";
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		if ($row = $db->sql_fetchrow($result))
 		{
-			if (($row['last_post_time'] > 0) && (($current_time - $row['last_post_time']) < $board_config['flood_interval']) && ($userdata['user_level'] != ADMIN))
+			if (($row['last_post_time'] > 0) && (($current_time - $row['last_post_time']) < $config['flood_interval']) && ($userdata['user_level'] != ADMIN))
 			{
 				$error = true;
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Flood_Error'] : $lang['Flood_Error'];
@@ -203,7 +193,7 @@ elseif ($submit || isset($_POST['message']))
 	// insert shout !
 	if (!empty($message) && $is_auth['auth_post'] && !$error)
 	{
-		if ($board_config['img_shoutbox'] == true)
+		if ($config['img_shoutbox'] == true)
 		{
 			$message = preg_replace ("#\[url=(http://)([^ \"\n\r\t<]*)\]\[img\](http://)([^ \"\n\r\t<]*)\[/img\]\[/url\]#i", '[url=\\1\\2]\\4[/url]', $message);
 			$message = preg_replace ("#\[img\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $message);
@@ -215,18 +205,13 @@ elseif ($submit || isset($_POST['message']))
 		//$message = (!get_magic_quotes_gpc()) ? addslashes($message) : stripslashes($message);
 		$sql = "INSERT INTO " . SHOUTBOX_TABLE. " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
 				VALUES ('$message', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $username . "', $bbcode_on, $html_on, $smilies_on)";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Error inserting shout.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		// auto prune
-		if ($board_config['prune_shouts'])
+		if ($config['prune_shouts'])
 		{
-			$sql = "DELETE FROM " . SHOUTBOX_TABLE . " WHERE shout_session_time<=" . (time() - (86400 * $board_config['prune_shouts']));
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error autoprune shouts.', '', __LINE__, __FILE__, $sql);
-			}
+			$sql = "DELETE FROM " . SHOUTBOX_TABLE . " WHERE shout_session_time<=" . (time() - (86400 * $config['prune_shouts']));
+			$result = $db->sql_query($sql);
 		}
 	}
 }
@@ -242,28 +227,19 @@ elseif (($mode == 'delete') || ($mode == 'censor'))
 		message_die(GENERAL_ERROR, 'Error no shout id specifyed for delete/censor.', '', __LINE__, __FILE__);
 	}
 	$sql = "SELECT s.shout_user_id, shout_ip FROM " . SHOUTBOX_TABLE . " s WHERE s.shout_id = $post_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get shoutbox information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$shout_identifyer = $db->sql_fetchrow($result);
 	$user_id = $shout_identifyer['shout_user_id'];
 
 	if ((($userdata['user_id'] != ANONYMOUS) || (($userdata['user_id'] == ANONYMOUS) && ($userdata['session_ip'] == $shout_identifyer['shout_ip']))) && ((($userdata['user_id'] == $user_id) && $is_auth['auth_delete']) || $is_auth['auth_mod']) && ($mode == 'censor'))
 	{
 		$sql = "UPDATE " . SHOUTBOX_TABLE . " SET shout_active = " . $userdata['user_id'] . " WHERE shout_id = $post_id";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Error censor shout.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 	elseif ($is_auth['auth_mod'] && ($mode == 'delete'))
 	{
 		$sql = "DELETE FROM " . SHOUTBOX_TABLE . " WHERE shout_id = $post_id";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Error removing shout.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 	else
 	{
@@ -286,23 +262,14 @@ elseif ($mode == 'ip')
 		message_die(GENERAL_ERROR, 'Error no shout id specifyed for show ip', '', __LINE__, __FILE__);
 	}
 	$sql = "SELECT s.shout_user_id, shout_username, shout_ip FROM " . SHOUTBOX_TABLE . " s WHERE s.shout_id = $post_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get shoutbox information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$shout_identifyer = $db->sql_fetchrow($result);
 	$poster_id = $shout_identifyer['shout_user_id'];
 	$rdns_ip_num = (isset($_GET['rdns'])) ? $_GET['rdns'] : '';
 
 	$ip_this_post = decode_ip($shout_identifyer['shout_ip']);
 	$ip_this_post = ($rdns_ip_num == $ip_this_post) ? gethostbyaddr($ip_this_post) : $ip_this_post;
-	$page_title = $lang['Shoutbox'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-	// Set template files
-	$template->set_filenames(array('viewip' => 'modcp_viewip.tpl'));
 	$template->assign_vars(array(
 		'L_IP_INFO' => $lang['IP_info'],
 		'L_THIS_POST_IP' => $lang['This_posts_IP'],
@@ -322,10 +289,8 @@ elseif ($mode == 'ip')
 		WHERE shout_user_id = $poster_id
 		GROUP BY shout_ip
 		ORDER BY postings DESC";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get IP information for this user', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$i = 0;
@@ -366,11 +331,7 @@ elseif ($mode == 'ip')
 			AND p.poster_ip = '" . $shout_identifyer['shout_ip'] . "'
 		GROUP BY u.user_id, u.username
 		ORDER BY postings DESC";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get posters information based on IP', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -389,8 +350,8 @@ elseif ($mode == 'ip')
 				'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], $shout_username),
 
 				'U_PROFILE_COL' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
-				'U_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $id),
-				'U_SEARCHPOSTS' => append_sid(SEARCH_MG . '?search_author=' . urlencode($shout_username) . '&amp;showresults=topics')
+				'U_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $id),
+				'U_SEARCHPOSTS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode($shout_username) . '&amp;showresults=topics')
 				)
 			);
 
@@ -399,18 +360,8 @@ elseif ($mode == 'ip')
 		while ($row = $db->sql_fetchrow($result));
 	}
 
-
-	$template->pparse('viewip');
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-	exit;
+	full_page_generation('modcp_viewip.tpl', $lang['Shoutbox'], '', '');
 }
-
-// display the defult page
-
-$page_title = $lang['Shoutbox'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // Was a highlight request part of the URI?
 $highlight_match = $highlight = '';
@@ -419,7 +370,7 @@ if (isset($_GET['highlight']))
 	// Split words and phrases
 	$words = explode(' ', trim(htmlspecialchars($_GET['highlight'])));
 
-	for($i = 0; $i < count($words); $i++)
+	for($i = 0; $i < sizeof($words); $i++)
 	{
 		if (trim($words[$i]) != '')
 		{
@@ -432,50 +383,28 @@ if (isset($_GET['highlight']))
 	$highlight_match = phpbb_rtrim($highlight_match, "\\");
 }
 
-
-$sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-if (!($result = $db->sql_query($sql, false, 'ranks_')))
-{
-	message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
-}
-$ranksrow = array();
-while ($row = $db->sql_fetchrow($result))
-{
-	$ranksrow[] = $row;
-}
-$db->sql_freeresult($result);
-
-// Define censored word matches
-if (!$userdata['user_allowswearywords'])
-{
-	$orig_word = array();
-	$replacement_word = array();
-	obtain_word_list($orig_word, $replacement_word);
-}
+$ranks_array = $cache->obtain_ranks(false);
 
 // get statistics
 $sql = "SELECT COUNT(*) as total FROM " . SHOUTBOX_TABLE;
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not get shoutbox stat information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $total_shouts = $db->sql_fetchrow($result);
 $total_shouts = $total_shouts['total'];
 // parse post permission
 if ($is_auth['auth_post'])
 {
-	$template->set_filenames(array('body' => 'shoutbox_max_body.tpl'));
+	$template_to_parse = 'shoutbox_max_body.tpl';
 }
 else
 {
-	$template->set_filenames(array('body' => 'shoutbox_max_guest_body.tpl'));
+	$template_to_parse = 'shoutbox_max_guest_body.tpl';
 }
 
 // Generate smilies listing for page output
 //generate_smilies('inline');
 
 // Smilies toggle selection
-if ($board_config['allow_smilies'])
+if ($config['allow_smilies'])
 {
 	$smilies_status = $lang['Smilies_are_ON'];
 	$template->assign_block_vars('switch_smilies_checkbox', array());
@@ -486,7 +415,7 @@ else
 }
 
 // HTML toggle selection
-if ($board_config['allow_html'])
+if ($config['allow_html'])
 {
 	$html_status = $lang['HTML_is_ON'];
 	$template->assign_block_vars('switch_html_checkbox', array());
@@ -497,7 +426,7 @@ else
 }
 
 // BBCode toggle selection
-if ($board_config['allow_bbcode'])
+if ($config['allow_bbcode'])
 {
 	$bbcode_status = $lang['BBCode_is_ON'];
 	$template->assign_block_vars('switch_bbcode_checkbox', array());
@@ -512,11 +441,8 @@ $sql = "SELECT s.*, u.username, u.user_id, u.user_active, u.user_color, u.user_p
 				FROM " . SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
 				WHERE s.shout_user_id = u.user_id
 				ORDER BY s.shout_session_time DESC
-				LIMIT $start, " . $board_config['posts_per_page'];
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not get shoutbox information', '', __LINE__, __FILE__, $sql);
-}
+				LIMIT $start, " . $config['posts_per_page'];
+$result = $db->sql_query($sql);
 
 while ($shout_row = $db->sql_fetchrow($result))
 {
@@ -534,42 +460,40 @@ while ($shout_row = $db->sql_fetchrow($result))
 
 	$user_posts = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $shout_row['user_posts'] : '';
 	$user_from = ($shout_row['user_from'] && ($shout_row['user_id'] != ANONYMOUS)) ? $lang['Location'] . ': ' . $shout_row['user_from'] : '';
-	$user_joined = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $shout_row['user_regdate'], $board_config['board_timezone']) : '';
+	$user_joined = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $shout_row['user_regdate'], $config['board_timezone']) : '';
 
 	$user_avatar = $user_info['avatar'];
 
 	$shout = $shout_row['shout_text'];
-	$user_sig = ($shout_row['enable_sig'] && ($shout_row['user_sig'] != '') && $board_config['allow_sig']) ? $shout_row['user_sig'] : '';
+	$user_sig = ($shout_row['enable_sig'] && ($shout_row['user_sig'] != '') && $config['allow_sig']) ? $shout_row['user_sig'] : '';
 
-	$rank_image = '';
-	if ($shout_row['user_rank'])
+	// Mighty Gorgon - Multiple Ranks - BEGIN
+	$user_ranks = generate_ranks($shout_row, $ranks_array);
+
+	$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
+	$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
+	$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
+	$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
+	$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
+	$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
+	$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
+	$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
+	$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
+	$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
+	if (($user_rank_01 == '') && ($user_rank_01_img  == '') && ($user_rank_02 == '') && ($user_rank_02_img == '') && ($user_rank_03 == '') && ($user_rank_03_img == '') && ($user_rank_04 == '') && ($user_rank_04_img == '') && ($user_rank_05 == '') && ($user_rank_05_img == ''))
 	{
-		for($j = 0; $j < count($ranksrow); $j++)
-		{
-			if ($shout_row['user_rank'] == $ranksrow[$j]['rank_id'] && $ranksrow[$j]['rank_special'])
-			{
-				$user_rank = ($shout_row['user_id'] != ANONYMOUS) ? $ranksrow[$j]['rank_title'] : '';
-				$rank_image = ($ranksrow[$j]['rank_image'] && $shout_row['user_id'] != ANONYMOUS) ? '<img src="' . $ranksrow[$j]['rank_image'] . '" alt="' . $user_rank . '" title="' . $user_rank . '" /><br />' : '';
-			}
-		}
+		$user_rank_01 = '&nbsp;';
 	}
-	else
-	{
-		for($j = 0; $j < count($ranksrow); $j++)
-		{
-			if ($shout_row['user_posts'] >= $ranksrow[$j]['rank_min'] && !$ranksrow[$j]['rank_special'])
-			{
-				$user_rank = ($shout_row['user_id'] != ANONYMOUS) ? $ranksrow[$j]['rank_title'] : '';
-				$rank_image = ($ranksrow[$j]['rank_image'] && $shout_row['user_id'] != ANONYMOUS) ? '<img src="' . $ranksrow[$j]['rank_image'] . '" alt="' . $user_rank . '" title="' . $user_rank . '" /><br />' : '';
-			}
-		}
-	}
+	// Mighty Gorgon - Multiple Ranks - END
+
+	$user_rank = $user_rank_01;
+	$rank_image = $user_rank_01_img;
 
 	if ($user_sig != '')
 	{
-		$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
-		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
+		$bbcode->allow_html = ($config['allow_html'] ? true : false);
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 		$bbcode->is_sig = true;
 		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
@@ -582,32 +506,20 @@ while ($shout_row = $db->sql_fetchrow($result))
 		$shout = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . str_replace('\\', '\\\\', addslashes($highlight_match)) . ")\b#i', '<span class=\"highlight-w\"><b>\\\\1</b></span>', '\\0')", '>' . $shout . '<'), 1, -1));
 	}
 
-	// Replace naughty words
-	if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-	{
-		if ($user_sig != '')
-		{
-			$user_sig = preg_replace($orig_word, $replacement_word, $user_sig);
-		}
-		$shout = preg_replace($orig_word, $replacement_word, $shout);
-	}
-	$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
-	$bbcode->allow_bbcode = ($board_config['allow_bbcode'] && $shout_row['enable_bbcode'] ? true : false);
-	$bbcode->allow_smilies = ($board_config['allow_smilies'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
+	$user_sig = censor_text($user_sig);
+	$shout = censor_text($shout);
+
+	$bbcode->allow_html = ($config['allow_html'] ? true : false);
+	$bbcode->allow_bbcode = ($config['allow_bbcode'] && $shout_row['enable_bbcode'] ? true : false);
+	$bbcode->allow_smilies = ($config['allow_smilies'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
 
 	$shout = $bbcode->parse($shout);
 	$shout = ((!$shout_row['shout_active']) ? $shout : ($lang['Shout_censor'] . ($is_auth['auth_mod'] ? ('<br /><hr /><br />' . $shout) : '')));
 	$shout = str_replace("\n", "\n<br />\n", $shout);
 
-	$orig_autolink = array();
-	$replacement_autolink = array();
-	obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
 	$shout = $bbcode->acronym_pass($shout);
-	if(count($orig_autolink))
-	{
-		$shout = autolink_transform($shout, $orig_autolink, $replacement_autolink);
-	}
-	//$shout = kb_word_wrap_pass($shout);
+	$shout = autolink_text($shout, '999999');
+
 	if ($is_auth['auth_mod'] && $is_auth['auth_delete'])
 	{
 		$ip_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
@@ -649,10 +561,11 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$template->assign_block_vars('shoutrow', array(
 		'ROW_CLASS' => $row_class,
 		'SHOUT' => $shout,
-		'TIME' => create_date_ip($board_config['default_dateformat'], $shout_row['shout_session_time'], $board_config['board_timezone']),
+		'TIME' => create_date_ip($config['default_dateformat'], $shout_row['shout_session_time'], $config['board_timezone']),
 		'SHOUT_USERNAME' => $shout_username,
 		'GENDER' => $gender,
 		'AVATAR' => $user_avatar,
+		'USER_RANK' => $user_rank,
 		'RANK_IMAGE' => $rank_image,
 		'JOINED' => $user_joined,
 		'POSTS' => $user_posts,
@@ -741,7 +654,7 @@ $template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 // BBCBMG SMILEYS - END
 
 // Generate pagination for shoutbox view
-$pagination = ($highlight_match) ? generate_pagination('shoutbox_max.' . PHP_EXT . '?highlight=' . $highlight, $total_shouts, $board_config['posts_per_page'], $start) : generate_pagination('shoutbox_max.' . PHP_EXT . '?dummy=1', $total_shouts, $board_config['posts_per_page'], $start);
+$pagination = ($highlight_match) ? generate_pagination('shoutbox_max.' . PHP_EXT . '?highlight=' . $highlight, $total_shouts, $config['posts_per_page'], $start) : generate_pagination('shoutbox_max.' . PHP_EXT . '?dummy=1', $total_shouts, $config['posts_per_page'], $start);
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
@@ -749,9 +662,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-
-// Include page tail
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $lang['Shoutbox'], '', '');
 
 ?>

@@ -42,7 +42,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true; // We do not send the page header right here to prevent problems with GZIP-compression
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
@@ -64,16 +63,17 @@ define('DBMTNC_VERSION', '1.3.6');
 define('CONFIG_LEVEL', 3); // Level of configuration available (see above)
 define('HEAP_SIZE', 500); // Limit of Heap-Table for session data
 require(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 // Set up timer
 $timer = getmicrotime();
 
 // Get language file for this mod
-if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT)))
+if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT)))
 {
-	$board_config['default_lang'] = 'english';
+	$config['default_lang'] = 'english';
 }
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT);
 
 //
 // Set up variables and constants
@@ -84,7 +84,7 @@ $mode_id = (isset($_GET['mode'])) ? htmlspecialchars(trim($_GET['mode'])) : '';
 reset ($config_data);
 while (list(, $value) = each ($config_data))
 {
-	if (!isset($board_config[$value]))
+	if (!isset($config[$value]))
 	{
 		message_die(GENERAL_MESSAGE, sprintf($lang['Incomplete_configuration'], $value));
 	}
@@ -107,7 +107,7 @@ if (isset($_POST['mode']) && $_POST['mode'] == 'perform')
 //
 if ($mode_id == 'start' || $mode_id == 'perform')
 {
-	$board_config['gzip_compress'] = false;
+	$config['gzip_compress'] = false;
 }
 if ($function != 'perform_rebuild') // Don't send header when rebuilding the search index
 {
@@ -131,9 +131,9 @@ switch($mode_id)
 		}
 		$warning_message_defined = false;
 
-		for($i = 0; $i < count($mtnc); $i++)
+		for($i = 0; $i < sizeof($mtnc); $i++)
 		{
-			if (count($mtnc[$i]) && $mtnc[$i][0] == $function)
+			if (sizeof($mtnc[$i]) && $mtnc[$i][0] == $function)
 			{
 				$warning_message = $mtnc[$i];
 				$warning_message_defined = true;
@@ -166,9 +166,9 @@ switch($mode_id)
 			$template->pparse('body');
 			break;
 		}
-		//
+
 		// We do not exit if no warning message is specified. In this case we will start directly with performing...
-		//
+
 	case 'perform': // Execute the commands
 		//
 		// phpBB-Template System not used here to allow output information directly to the screen
@@ -187,15 +187,23 @@ switch($mode_id)
 			case 'statistic': // Statistics
 				$template->set_filenames(array('body' => ADM_TPL . 'dbmtnc_statistic_body.tpl'));
 
-				// Get board statistics
-				$total_topics = get_db_stat('topiccount');
-				$total_posts = get_db_stat('postcount');
-				$total_users = get_db_stat('usercount');
+				if (empty($config['max_topics']) || empty($config['max_posts']) || empty($config['max_users']) || empty($config['last_user_id']))
+				{
+					board_stats();
+				}
+				$total_topics = $config['max_topics'];
+				$total_posts = $config['max_posts'];
+				$total_users = $config['max_users'];
+				$newest_user = $cache->obtain_newest_user();
+
 				$sql = "SELECT COUNT(user_id) AS total
 					FROM " . USERS_TABLE . "
 					WHERE user_active = 0
 						AND user_id <> " . ANONYMOUS;
-				if (!($result = $db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 				}
@@ -212,7 +220,10 @@ switch($mode_id)
 					FROM " . USERS_TABLE . "
 					WHERE user_level = " . MOD . "
 						AND user_id <> " . ANONYMOUS;
-				if (!($result = $db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 				}
@@ -229,7 +240,10 @@ switch($mode_id)
 					FROM " . USERS_TABLE . "
 					WHERE user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")
 						AND user_id <> " . ANONYMOUS;
-				if (!($result = $db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 				}
@@ -248,7 +262,10 @@ switch($mode_id)
 					WHERE user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")
 						AND user_id <> " . ANONYMOUS . "
 					ORDER BY username";
-				if (!($result = $db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 				}
@@ -289,7 +306,9 @@ switch($mode_id)
 
 				// Version information
 				$sql = "SELECT VERSION() AS mysql_version";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't obtain MySQL Version", __LINE__, __FILE__, $sql);
@@ -299,8 +318,8 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 
 				$template->assign_vars(array(
-					'IP_VERSION' => $board_config['ip_version'],
-					'PHPBB_VERSION' => '2' . $board_config['version'],
+					'IP_VERSION' => $config['ip_version'],
+					'PHPBB_VERSION' => '2' . $config['version'],
 					'MOD_VERSION' => DBMTNC_VERSION,
 					'PHP_VERSION' => phpversion(),
 					'MYSQL_VERSION' => $mysql_version,
@@ -333,6 +352,7 @@ switch($mode_id)
 
 				$template->pparse('body');
 				break;
+
 			case 'config': // Configuration
 				if(isset($_POST['submit']))
 				{
@@ -443,20 +463,20 @@ switch($mode_id)
 					'L_SUBMIT' => $lang['Submit'],
 					'L_RESET' => $lang['Reset'],
 
-					'DISALLOW_POSTCOUNTER_YES' => ($board_config['dbmtnc_disallow_postcounter']) ? 'checked="checked"' : '',
-					'DISALLOW_POSTCOUNTER_NO' => (!$board_config['dbmtnc_disallow_postcounter']) ? 'checked="checked"' : '',
-					'DISALLOW_REBUILD_YES' => ($board_config['dbmtnc_disallow_rebuild']) ? 'checked="checked"' : '',
-					'DISALLOW_REBUILD_NO' => (!$board_config['dbmtnc_disallow_rebuild']) ? 'checked="checked"' : '',
-					'REBUILDCFG_TIMELIMIT' => intval($board_config['dbmtnc_rebuildcfg_timelimit']),
-					'REBUILDCFG_MAXMEMORY' => intval($board_config['dbmtnc_rebuildcfg_maxmemory']),
-					'REBUILDCFG_TIMEOVERWRITE' => intval($board_config['dbmtnc_rebuildcfg_timeoverwrite']),
-					'REBUILDCFG_MINPOSTS' => intval($board_config['dbmtnc_rebuildcfg_minposts']),
-					'REBUILDCFG_PHP3ONLY_YES' => ($board_config['dbmtnc_rebuildcfg_php3only']) ? 'checked="checked"' : '',
-					'REBUILDCFG_PHP3ONLY_NO' => (!$board_config['dbmtnc_rebuildcfg_php3only']) ? 'checked="checked"' : '',
-					'REBUILDCFG_PHP4PPS' => intval($board_config['dbmtnc_rebuildcfg_php4pps']),
-					'REBUILDCFG_PHP3PPS' => intval($board_config['dbmtnc_rebuildcfg_php3pps']),
-					'REBUILD_POS' => intval($board_config['dbmtnc_rebuild_pos']),
-					'REBUILD_END' => intval($board_config['dbmtnc_rebuild_end'])
+					'DISALLOW_POSTCOUNTER_YES' => ($config['dbmtnc_disallow_postcounter']) ? 'checked="checked"' : '',
+					'DISALLOW_POSTCOUNTER_NO' => (!$config['dbmtnc_disallow_postcounter']) ? 'checked="checked"' : '',
+					'DISALLOW_REBUILD_YES' => ($config['dbmtnc_disallow_rebuild']) ? 'checked="checked"' : '',
+					'DISALLOW_REBUILD_NO' => (!$config['dbmtnc_disallow_rebuild']) ? 'checked="checked"' : '',
+					'REBUILDCFG_TIMELIMIT' => intval($config['dbmtnc_rebuildcfg_timelimit']),
+					'REBUILDCFG_MAXMEMORY' => intval($config['dbmtnc_rebuildcfg_maxmemory']),
+					'REBUILDCFG_TIMEOVERWRITE' => intval($config['dbmtnc_rebuildcfg_timeoverwrite']),
+					'REBUILDCFG_MINPOSTS' => intval($config['dbmtnc_rebuildcfg_minposts']),
+					'REBUILDCFG_PHP3ONLY_YES' => ($config['dbmtnc_rebuildcfg_php3only']) ? 'checked="checked"' : '',
+					'REBUILDCFG_PHP3ONLY_NO' => (!$config['dbmtnc_rebuildcfg_php3only']) ? 'checked="checked"' : '',
+					'REBUILDCFG_PHP4PPS' => intval($config['dbmtnc_rebuildcfg_php4pps']),
+					'REBUILDCFG_PHP3PPS' => intval($config['dbmtnc_rebuildcfg_php3pps']),
+					'REBUILD_POS' => intval($config['dbmtnc_rebuild_pos']),
+					'REBUILD_END' => intval($config['dbmtnc_rebuild_end'])
 					)
 				);
 
@@ -472,6 +492,7 @@ switch($mode_id)
 
 				$template->pparse('body');
 				break;
+
 			case 'check_user': // Check user tables
 				echo('<h1>' . $lang['Checking_user_tables'] . '</h1>' . "\n");
 				lock_db();
@@ -480,7 +501,9 @@ switch($mode_id)
 				echo('<p class="gen"><b>' . $lang['Checking_missing_anonymous'] . '</b></p>' . "\n");
 				$sql = "SELECT user_id FROM " . USERS_TABLE . "
 					WHERE user_id = " . ANONYMOUS;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user information!", __LINE__, __FILE__, $sql);
@@ -494,7 +517,9 @@ switch($mode_id)
 					// Recreate entry
 					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active)
 						VALUES (" . ANONYMOUS . ", 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', '', 0, 0, 1, 0, 1, 0, 1, 1, NULL, '', '', 0, '', '', '', 0, 0)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't add user data!", __LINE__, __FILE__, $sql);
@@ -509,7 +534,9 @@ switch($mode_id)
 				$sql = "UPDATE " . USER_GROUP_TABLE . "
 					SET user_pending = 1
 					WHERE user_pending IS NULL";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't update pending information!", __LINE__, __FILE__, $sql);
@@ -543,7 +570,9 @@ switch($mode_id)
 							AND g.group_single_user = 1";
 				}
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and group data!", __LINE__, __FILE__, $sql);
@@ -553,7 +582,7 @@ switch($mode_id)
 					$result_array[] = $row['group_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$db_updated = true;
 					$record_list = implode(',', $result_array);
@@ -561,7 +590,9 @@ switch($mode_id)
 					$sql = "UPDATE " . USER_GROUP_TABLE . "
 						SET user_pending = 0
 						WHERE group_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update pending information!", __LINE__, __FILE__, $sql);
@@ -583,7 +614,9 @@ switch($mode_id)
 					HAVING group_count <> 1 OR IsNull(group_count)";
 				$missig_groups = array();
 				$multiple_groups = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and group data!", __LINE__, __FILE__, $sql);
@@ -598,7 +631,7 @@ switch($mode_id)
 				}
 				$db->sql_freeresult($result);
 				// Check for multiple records
-				if (count($multiple_groups))
+				if (sizeof($multiple_groups))
 				{
 					$db_updated = true;
 					$record_list = implode(',', $multiple_groups);
@@ -626,7 +659,9 @@ switch($mode_id)
 								AND g.group_single_user = 1";
 					}
 					$result_array = array();
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't get group data!", __LINE__, __FILE__, $sql);
@@ -640,7 +675,9 @@ switch($mode_id)
 					echo("<li>" . $lang['Removing_groups'] . ": $record_list</li>\n");
 					$sql = "DELETE FROM " . GROUPS_TABLE . "
 						WHERE group_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete groups!", __LINE__, __FILE__, $sql);
@@ -648,7 +685,9 @@ switch($mode_id)
 					echo("<li>" . $lang['Removing_user_groups'] . ": $record_list</li>\n");
 					$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 						WHERE group_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete groups!", __LINE__, __FILE__, $sql);
@@ -657,17 +696,19 @@ switch($mode_id)
 					$list_open = false;
 				}
 				// Create single user groups
-				if (count($missing_groups))
+				if (sizeof($missing_groups))
 				{
 					$db_updated = true;
 					$record_list = implode(',', $missing_groups);
 					echo('<p class="gen">' . $lang['Recreating_SUG'] . ": $record_list</p>\n");
-					for($i = 0; $i < count($missing_groups); $i++)
+					for($i = 0; $i < sizeof($missing_groups); $i++)
 					{
 						$group_name = ($missing_groups[$i] == ANONYMOUS) ? 'Anonymous' : '';
 						$sql = "INSERT INTO " . GROUPS_TABLE . " (group_type, group_name, group_description, group_moderator, group_single_user)
 							VALUES (1, '$group_name', 'Personal User', 0, 1)";
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							throw_error("Couldn't add group data!", __LINE__, __FILE__, $sql);
@@ -675,7 +716,9 @@ switch($mode_id)
 						$group_id = $db->sql_nextid();
 						$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 							VALUES ($group_id, " . $missing_groups[$i] . ", 0)";
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							throw_error("Couldn't add user - group connection!", __LINE__, __FILE__, $sql);
@@ -694,7 +737,9 @@ switch($mode_id)
 						LEFT JOIN " . USERS_TABLE . " u ON g.group_moderator = u.user_id
 					WHERE g.group_single_user = 0
 						AND (u.user_id IS NULL OR u.user_id = " . ANONYMOUS . ")";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get group data!", __LINE__, __FILE__, $sql);
@@ -711,7 +756,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . GROUPS_TABLE . "
 						SET group_moderator = " . $userdata['user_id'] . "
 						WHERE group_id = " . $row['group_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update group data!", __LINE__, __FILE__, $sql2);
@@ -733,7 +780,9 @@ switch($mode_id)
 				$sql = "SELECT group_id, group_name, group_moderator
 					FROM " . GROUPS_TABLE . " g
 					WHERE g.group_single_user = 0";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get group data!", __LINE__, __FILE__, $sql);
@@ -744,7 +793,9 @@ switch($mode_id)
 						FROM " . USER_GROUP_TABLE . "
 						WHERE group_id = " . $row['group_id'] . "
 							AND user_id = " . $row['group_moderator'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't get group data!", __LINE__, __FILE__, $sql2);
@@ -760,7 +811,9 @@ switch($mode_id)
 						echo("<li>" . htmlspecialchars($row['group_name']) . " (" . $row['group_id'] . ") - " . $lang['Moderator_added'] . "</li>\n");
 						$sql3 = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 							VALUES (" . $row['group_id'] . ", " . $row['group_moderator'] . ", 0)";
+						$db->sql_return_on_error(true);
 						$result3 = $db->sql_query($sql3);
+						$db->sql_return_on_error(false);
 						if (!$result3)
 						{
 							throw_error("Couldn't insert data in user-group-table!", __LINE__, __FILE__, $sql3);
@@ -779,7 +832,9 @@ switch($mode_id)
 							SET user_pending = 0
 							WHERE group_id = " . $row['group_id'] . "
 								AND user_id = " . $row['group_moderator'];
+						$db->sql_return_on_error(true);
 						$result3 = $db->sql_query($sql3);
+						$db->sql_return_on_error(false);
 						if (!$result3)
 						{
 							throw_error("Couldn't update data in user-group-table!", __LINE__, __FILE__, $sql3);
@@ -806,7 +861,9 @@ switch($mode_id)
 					WHERE u.user_id IS NULL
 					GROUP BY ug.user_id";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and group data!", __LINE__, __FILE__, $sql);
@@ -816,12 +873,14 @@ switch($mode_id)
 					$result_array[] = $row['user_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 						WHERE user_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update user-group data!", __LINE__, __FILE__, $sql);
@@ -849,7 +908,9 @@ switch($mode_id)
 						LEFT JOIN " . USER_GROUP_TABLE . " ug ON g.group_id = ug.group_id
 					WHERE ug.group_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and group data!", __LINE__, __FILE__, $sql);
@@ -859,12 +920,14 @@ switch($mode_id)
 					$result_array[] = $row['group_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$sql = "DELETE FROM " . GROUPS_TABLE . "
 						WHERE group_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update group data!", __LINE__, __FILE__, $sql);
@@ -892,7 +955,9 @@ switch($mode_id)
 					WHERE g.group_id IS NULL
 					GROUP BY ug.group_id";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and group data!", __LINE__, __FILE__, $sql);
@@ -902,12 +967,14 @@ switch($mode_id)
 					$result_array[] = $row['group_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 						WHERE group_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update user-group data!", __LINE__, __FILE__, $sql);
@@ -934,7 +1001,9 @@ switch($mode_id)
 						LEFT JOIN " . RANKS_TABLE . " r ON u.user_rank = r.rank_id
 					WHERE r.rank_id IS NULL AND u.user_rank <> 0";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and rank data!", __LINE__, __FILE__, $sql);
@@ -956,14 +1025,16 @@ switch($mode_id)
 					echo("</ul></div>\n");
 					$list_open = false;
 				}
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					echo('<p class="gen">' . $lang['Removing_invalid_ranks'] . '</p>' . "\n");
 					$record_list = implode(',', $result_array);
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_rank = 0
 						WHERE user_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update user data!", __LINE__, __FILE__, $sql);
@@ -982,7 +1053,9 @@ switch($mode_id)
 					WHERE t.themes_id IS NULL AND u.user_id <> " . ANONYMOUS . "
 					GROUP BY u.user_style";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and theme data!", __LINE__, __FILE__, $sql);
@@ -996,7 +1069,9 @@ switch($mode_id)
 						$sql2 = "UPDATE " . USERS_TABLE . "
 							SET user_style = 0
 							WHERE user_style IS NULL AND user_id <> " . ANONYMOUS;
+						$db->sql_return_on_error(true);
 						$result2 = $db->sql_query($sql2);
+						$db->sql_return_on_error(false);
 						if (!$result2)
 						{
 							throw_error("Couldn't update themes data!", __LINE__, __FILE__, $sql2);
@@ -1009,14 +1084,16 @@ switch($mode_id)
 					}
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$new_style = 0;
 					$record_list = implode(',', $result_array);
 					$sql = "SELECT themes_id
 						FROM " . THEMES_TABLE . "
-						WHERE themes_id = " . $board_config['default_style'];
+						WHERE themes_id = " . $config['default_style'];
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't get themes data!", __LINE__, __FILE__, $sql);
@@ -1033,7 +1110,9 @@ switch($mode_id)
 							FROM " . THEMES_TABLE . "
 							WHERE themes_id = " . $userdata['user_style'];
 							echo($sql);
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							throw_error("Couldn't get themes data!", __LINE__, __FILE__, $sql);
@@ -1052,7 +1131,9 @@ switch($mode_id)
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_style = $new_style
 						WHERE user_style IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update themes data!", __LINE__, __FILE__, $sql);
@@ -1070,7 +1151,9 @@ switch($mode_id)
 					WHERE user_id <> " . ANONYMOUS . "
 					GROUP BY user_lang";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and theme data!", __LINE__, __FILE__, $sql);
@@ -1083,13 +1166,15 @@ switch($mode_id)
 					}
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					// Getting default board_language as long as the original one was changed in functions.php
 					$sql = "SELECT config_value
 						FROM " . CONFIG_TABLE . "
 						WHERE config_name = 'default_lang'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't get language data!", __LINE__, __FILE__, $sql);
@@ -1129,14 +1214,16 @@ switch($mode_id)
 					echo("<div class=\"post-text\"><ul>\n");
 					$list_open = true;
 
-					for($i = 0; $i < count($result_array); $i++)
+					for($i = 0; $i < sizeof($result_array); $i++)
 					{
 						echo("<li>" . sprintf($lang['Changing_language'], $result_array[$i], $default_lang) . "</li>\n");
 						$sql = "UPDATE " . USERS_TABLE . "
 							SET user_lang = '$default_lang'
 							WHERE user_lang = '" . $result_array[$i] . "'
 								AND user_id <> " . ANONYMOUS;
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							throw_error("Couldn't update language language data!", __LINE__, __FILE__, $sql);
@@ -1160,7 +1247,9 @@ switch($mode_id)
 						AND b.ban_userid > 0
 						AND b.ban_userid IS NOT NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get banlist and user data!", __LINE__, __FILE__, $sql);
@@ -1170,12 +1259,14 @@ switch($mode_id)
 					$result_array[] = $row['ban_userid'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$sql = "DELETE FROM " . BANLIST_TABLE . "
 						WHERE ban_userid IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update ban data!", __LINE__, __FILE__, $sql);
@@ -1206,7 +1297,9 @@ switch($mode_id)
 							OR k.user_id = " . ANONYMOUS . "
 							OR k.last_login > " . time();
 					$result_array = array();
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't get session key data!", __LINE__, __FILE__, $sql);
@@ -1216,12 +1309,14 @@ switch($mode_id)
 						$result_array[] = $row['key_id'];
 					}
 					$db->sql_freeresult($result);
-					if (count($result_array))
+					if (sizeof($result_array))
 					{
 						$record_list = '\'' . implode('\',\'', $result_array) . '\'';
 						$sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
 							WHERE key_id IN ($record_list)";
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							throw_error("Couldn't update session key data!", __LINE__, __FILE__, $sql);
@@ -1244,6 +1339,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'check_post': // Checks post data
 				echo('<h1>' . $lang['Checking_post_tables'] . '</h1>' . "\n");
 				$db_state = lock_db();
@@ -1258,7 +1354,9 @@ switch($mode_id)
 						LEFT JOIN " . USERS_TABLE . " u ON p.poster_id = u.user_id
 					WHERE u.user_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get post and user data!", __LINE__, __FILE__, $sql);
@@ -1268,7 +1366,7 @@ switch($mode_id)
 					$result_array[] = $row['post_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Invalid_poster_found'] . ": $record_list</p>\n");
@@ -1277,7 +1375,9 @@ switch($mode_id)
 						SET poster_id = " . DELETED . ",
 							post_username = ''
 						WHERE post_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update post information!", __LINE__, __FILE__, $sql);
@@ -1295,7 +1395,9 @@ switch($mode_id)
 						LEFT JOIN " . USERS_TABLE . " u ON t.topic_poster = u.user_id
 					WHERE u.user_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic and user data!", __LINE__, __FILE__, $sql);
@@ -1313,7 +1415,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . TOPICS_TABLE . "
 						SET topic_poster = $poster_id
 						WHERE topic_id = " . $row['topic_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql2);
@@ -1330,55 +1434,6 @@ switch($mode_id)
 					echo($lang['Nothing_to_do']);
 				}
 
-				// Check for forums with invalid categories
-				echo('<p class="gen"><b>' . $lang['Checking_invalid_forums'] . '</b></p>' . "\n");
-				$sql = "SELECT f.forum_id, f.forum_name
-					FROM " . FORUMS_TABLE . " f
-						LEFT JOIN " . CATEGORIES_TABLE . " c ON f.cat_id = c.cat_id
-					WHERE c.cat_id IS NULL
-						AND main_type = 'c'";
-				$result_array = array();
-				$result = $db->sql_query($sql);
-				if (!$result)
-				{
-					throw_error("Couldn't get categories and forums data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					if (!$list_open)
-					{
-						echo('<p class="gen">' . $lang['Invalid_forums_found'] . ":</p>\n");
-						echo("<div class=\"post-text\"><ul>\n");
-						$list_open = true;
-					}
-					echo("<li>" . htmlspecialchars($row['forum_name']) . " (" . $row['forum_id'] . ")</li>\n");
-					$result_array[] = $row['forum_id'];
-				}
-				$db->sql_freeresult($result);
-				if ($list_open)
-				{
-					echo("</ul></div>\n");
-					$list_open = false;
-				}
-				if (count($result_array))
-				{
-					$record_list = implode(',', $result_array);
-					$new_cat = create_cat();
-					echo('<p class="gen">' . sprintf($lang['Setting_category'], $lang['New_cat_name']) . " </p>\n");
-					$sql = "UPDATE " . FORUMS_TABLE . "
-						SET cat_id = $new_cat
-						WHERE forum_id IN ($record_list)";
-					$result = $db->sql_query($sql);
-					if (!$result)
-					{
-						throw_error("Couldn't update forum information!", __LINE__, __FILE__, $sql);
-					}
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
 				// Check for topics without a post
 				echo('<p class="gen"><b>' . $lang['Checking_topics_wo_post'] . '</b></p>' . "\n");
 				$sql = "SELECT t.topic_id, t.topic_title
@@ -1387,7 +1442,9 @@ switch($mode_id)
 					WHERE p.topic_id IS NULL
 						AND t.topic_status <> " . TOPIC_MOVED;
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic and post data!", __LINE__, __FILE__, $sql);
@@ -1409,13 +1466,15 @@ switch($mode_id)
 					echo("</ul></div>\n");
 					$list_open = false;
 				}
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Deleting_topics'] . " </p>\n");
 					$sql = "DELETE FROM " . TOPICS_TABLE . "
 						WHERE topic_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete topic data!", __LINE__, __FILE__, $sql);
@@ -1434,7 +1493,9 @@ switch($mode_id)
 						LEFT JOIN " . FORUMS_TABLE . " f ON t.forum_id = f.forum_id
 					WHERE f.forum_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic and forum data!", __LINE__, __FILE__, $sql);
@@ -1456,7 +1517,7 @@ switch($mode_id)
 					echo("</ul></div>\n");
 					$list_open = false;
 				}
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$new_forum = create_forum();
@@ -1464,7 +1525,9 @@ switch($mode_id)
 					$sql = "UPDATE " . TOPICS_TABLE . "
 						SET forum_id = $new_forum
 						WHERE topic_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
@@ -1472,7 +1535,9 @@ switch($mode_id)
 					$sql = "UPDATE " . POSTS_TABLE . "
 						SET forum_id = $new_forum
 						WHERE topic_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
@@ -1493,17 +1558,19 @@ switch($mode_id)
 					ORDER BY p.topic_id, p.post_time";
 				$current_topic = -1;
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get post and topic data!", __LINE__, __FILE__, $sql);
 				}
 				$row = $db->sql_fetchrow($result); // We need to do it outside the while-condition to prevent endless loops
-				while ($row || count($result_array))
+				while ($row || sizeof($result_array))
 				{
 					if ($current_topic != $row['topic_id'] || !$row)
 					{
-						if (count($result_array))
+						if (sizeof($result_array))
 						{
 							// Restoring topic
 							if (!$list_open)
@@ -1516,12 +1583,14 @@ switch($mode_id)
 							$new_forum = create_forum();
 							$first_post = implode(',', array_slice($result_array, 0, 1));
 							$last_post = implode(',', array_slice($result_array, -1, 1));
-							$post_replies = count($result_array) - 1;
+							$post_replies = sizeof($result_array) - 1;
 							// Get title for new topic
 							$sql2 = "SELECT post_subject
 								FROM " . POSTS_TABLE . "
 								WHERE post_id = $first_post";
+							$db->sql_return_on_error(true);
 							$result2 = $db->sql_query($sql2);
+							$db->sql_return_on_error(false);
 							if (!$result2)
 							{
 								throw_error("Couldn't get post information!", __LINE__, __FILE__, $sql2);
@@ -1537,7 +1606,9 @@ switch($mode_id)
 							$sql2 = "SELECT poster_id, post_time
 								FROM " . POSTS_TABLE . "
 								WHERE post_id = $first_post";
+							$db->sql_return_on_error(true);
 							$result2 = $db->sql_query($sql2);
+							$db->sql_return_on_error(false);
 							if (!$result2)
 							{
 								throw_error("Couldn't get post information!", __LINE__, __FILE__, $sql2);
@@ -1551,7 +1622,9 @@ switch($mode_id)
 							// Restore topic
 							$sql2 = 'INSERT INTO ' . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_vote, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id)
 								VALUES ($new_forum, '" . addslashes($topic_title) . "', " . $row2['poster_id'] . ", " . $row2['post_time'] . ", 0, $post_replies, " . TOPIC_UNLOCKED . ", 0, " . POST_NORMAL . ", $first_post, $last_post, 0)";
+							$db->sql_return_on_error(true);
 							$result2 = $db->sql_query($sql2);
+							$db->sql_return_on_error(false);
 							if (!$result2)
 							{
 								throw_error("Couldn't update topic data!", __LINE__, __FILE__, $sql2);
@@ -1562,7 +1635,9 @@ switch($mode_id)
 								SET forum_id = $new_forum,
 									topic_id = $new_topic
 								WHERE post_id IN ($record_list)";
+							$db->sql_return_on_error(true);
 							$result2 = $db->sql_query($sql2);
+							$db->sql_return_on_error(false);
 							if (!$result2)
 							{
 								throw_error("Couldn't update post information!", __LINE__, __FILE__, $sql2);
@@ -1603,7 +1678,9 @@ switch($mode_id)
 						LEFT JOIN " . FORUMS_TABLE . " fp ON p.forum_id = fp.forum_id
 						LEFT JOIN " . FORUMS_TABLE . " ft ON t.forum_id = ft.forum_id
 					WHERE p.forum_id <> t.forum_id";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get post and topic data!", __LINE__, __FILE__, $sql);
@@ -1620,7 +1697,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . POSTS_TABLE . "
 						SET forum_id = " . $row['t_forum_id'] . "
 						WHERE post_id = " . $row['post_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update post information!", __LINE__, __FILE__, $sql2);
@@ -1647,7 +1726,9 @@ switch($mode_id)
 					WHERE mt.topic_id IS NULL AND
 						t.topic_status = " . TOPIC_MOVED;
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic data!", __LINE__, __FILE__, $sql);
@@ -1657,14 +1738,16 @@ switch($mode_id)
 					$result_array[] = $row['topic_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Deleting_invalid_moved_topics'] . '</p>' . "\n");
 					$sql = "DELETE FROM " . TOPICS_TABLE . "
 						WHERE topic_id IN ($record_list)
 							AND topic_status = " . TOPIC_MOVED;
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
@@ -1686,7 +1769,9 @@ switch($mode_id)
 					SET topic_moved_id = 0
 					WHERE topic_moved_id <> 0
 						AND topic_status <> " . TOPIC_MOVED;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
@@ -1714,7 +1799,9 @@ switch($mode_id)
 					WHERE f.forum_id IS NULL
 					GROUP BY p.forum_id";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get forum and prune data!", __LINE__, __FILE__, $sql);
@@ -1730,7 +1817,9 @@ switch($mode_id)
 						LEFT JOIN " . FORUMS_TABLE . " f ON p.forum_id = f.forum_id
 					GROUP BY p.forum_id
 					HAVING Count(p.forum_id) > 1";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get forum and prune data!", __LINE__, __FILE__, $sql);
@@ -1740,14 +1829,16 @@ switch($mode_id)
 					$result_array[] = $row['forum_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					echo('<p class="gen">' . $lang['Removing_invalid_prune_settings'] . '</p>' . "\n");
 					$record_list = implode(',', $result_array);
 					$db_updated = true;
 					$sql = "DELETE FROM " . PRUNE_TABLE . "
 						WHERE forum_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update user data!", __LINE__, __FILE__, $sql);
@@ -1769,7 +1860,9 @@ switch($mode_id)
 					WHERE p.forum_id IS NULL
 						AND f.prune_enable = 1";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get forum and prune data!", __LINE__, __FILE__, $sql);
@@ -1779,13 +1872,15 @@ switch($mode_id)
 					$result_array[] = $row['forum_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$sql = "UPDATE " . FORUMS_TABLE . "
 						SET prune_enable = 0
 						WHERE forum_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update user data!", __LINE__, __FILE__, $sql);
@@ -1813,7 +1908,9 @@ switch($mode_id)
 					WHERE u.user_id IS NULL
 					GROUP BY tw.user_id";
 				$user_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic-watch and user data!", __LINE__, __FILE__, $sql);
@@ -1829,7 +1926,9 @@ switch($mode_id)
 					WHERE t.topic_id IS NULL
 					GROUP BY tw.topic_id";
 				$topic_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic-watch and topic data!", __LINE__, __FILE__, $sql);
@@ -1839,20 +1938,22 @@ switch($mode_id)
 					$topic_array[] = $row['topic_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($user_array) || count($topic_array))
+				if (sizeof($user_array) || sizeof($topic_array))
 				{
 					$sql_query = '';
-					if (count($user_array))
+					if (sizeof($user_array))
 					{
 						$sql_query = 'user_id IN (' . implode(',', $user_array) . ') ';
 					}
-					if (count($topic_array))
+					if (sizeof($topic_array))
 					{
 						$sql_query .= (($sql_query == '') ? '' : ' OR ') . 'topic_id IN (' . implode(',', $topic_array) . ') ';
 					}
 					$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
 						WHERE $sql_query";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update topic-watch data!", __LINE__, __FILE__, $sql);
@@ -1880,7 +1981,9 @@ switch($mode_id)
 					WHERE g.group_id IS NULL
 					GROUP BY aa.group_id";
 				$group_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get auth-access and group data!", __LINE__, __FILE__, $sql);
@@ -1896,7 +1999,9 @@ switch($mode_id)
 					WHERE f.forum_id IS NULL
 					GROUP BY aa.forum_id";
 				$forum_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get auth-access and forum data!", __LINE__, __FILE__, $sql);
@@ -1906,20 +2011,22 @@ switch($mode_id)
 					$forum_array[] = $row['forum_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($group_array) || count($forum_array))
+				if (sizeof($group_array) || sizeof($forum_array))
 				{
 					$sql_query = '';
-					if (count($group_array))
+					if (sizeof($group_array))
 					{
 						$sql_query = 'group_id IN (' . implode(',', $group_array) . ') ';
 					}
-					if (count($forum_array))
+					if (sizeof($forum_array))
 					{
 						$sql_query .= (($sql_query == '') ? '' : ' OR ') . 'forum_id IN (' . implode(',', $forum_array) . ') ';
 					}
 					$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
 						WHERE $sql_query";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update auth-access data!", __LINE__, __FILE__, $sql);
@@ -1939,6 +2046,21 @@ switch($mode_id)
 					echo($lang['Nothing_to_do']);
 				}
 
+				// Rebuild last posters and colors
+				echo('<p class="gen"><b>' . $lang['Rebuild_Last_Poster_Details'] . '</b></p>' . "\n");
+				if (!function_exists('rebuild_forums_topics_posters'))
+				{
+					@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+				}
+				rebuild_forums_topics_posters(true);
+				if (!function_exists('update_all_clean_forum_names'))
+				{
+					@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+				}
+				update_all_clean_forum_names();
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
+				echo('<br />' . "\n");
+
 				// If post or topic data has been updated, we interrupt here and add a link to resync the data
 				if ($update_post_data)
 				{
@@ -1953,6 +2075,7 @@ switch($mode_id)
 					lock_db(true);
 				}
 				break;
+
 			case 'check_vote': // Check vote tables
 				echo('<h1>' . $lang['Checking_vote_tables'] . '</h1>' . "\n");
 				lock_db();
@@ -1964,7 +2087,9 @@ switch($mode_id)
 						LEFT JOIN " . TOPICS_TABLE . " t ON v.topic_id = t.topic_id
 					WHERE t.topic_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get vote and topic data!", __LINE__, __FILE__, $sql);
@@ -1977,8 +2102,8 @@ switch($mode_id)
 						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
-					$start_time = create_date($board_config['default_dateformat'], $row['vote_start'], $board_config['board_timezone']);
-					$end_time = ($row['vote_length'] == 0) ? '-' : create_date($board_config['default_dateformat'], $row['vote_start'] + $row['vote_length'], $board_config['board_timezone']);
+					$start_time = create_date($config['default_dateformat'], $row['vote_start'], $config['board_timezone']);
+					$end_time = ($row['vote_length'] == 0) ? '-' : create_date($config['default_dateformat'], $row['vote_start'] + $row['vote_length'], $config['board_timezone']);
 					echo("<li>" . sprintf($lang['Invalid_vote'], htmlspecialchars($row['vote_text']), $row['vote_id'], $start_time, $end_time) . "</li>\n");
 					$result_array[] = $row['vote_id'];
 				}
@@ -1988,27 +2113,33 @@ switch($mode_id)
 					echo("</ul></div>\n");
 					$list_open = false;
 				}
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Deleting_Votes'] . " </p>\n");
 					$sql = "DELETE FROM " . VOTE_DESC_TABLE . "
 						WHERE vote_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
 					}
 					$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . "
 						WHERE vote_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
 					}
 					$sql = "DELETE FROM " . VOTE_USERS_TABLE . "
 						WHERE vote_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
@@ -2026,7 +2157,9 @@ switch($mode_id)
 						LEFT JOIN " . VOTE_RESULTS_TABLE . " vr ON v.vote_id = vr.vote_id
 					WHERE vr.vote_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get vote and result data!", __LINE__, __FILE__, $sql);
@@ -2039,8 +2172,8 @@ switch($mode_id)
 						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
-					$start_time = create_date($board_config['default_dateformat'], $row['vote_start'], $board_config['board_timezone']);
-					$end_time = ($row['vote_length'] == 0) ? '-' : create_date($board_config['default_dateformat'], $row['vote_start'] + $row['vote_length'], $board_config['board_timezone']);
+					$start_time = create_date($config['default_dateformat'], $row['vote_start'], $config['board_timezone']);
+					$end_time = ($row['vote_length'] == 0) ? '-' : create_date($config['default_dateformat'], $row['vote_start'] + $row['vote_length'], $config['board_timezone']);
 					echo("<li>" . sprintf($lang['Invalid_vote'], htmlspecialchars($row['vote_text']), $row['vote_id'], $start_time, $end_time) . "</li>\n");
 					$result_array[] = $row['vote_id'];
 				}
@@ -2050,27 +2183,33 @@ switch($mode_id)
 					echo("</ul></div>\n");
 					$list_open = false;
 				}
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Deleting_Votes'] . " </p>\n");
 					$sql = "DELETE FROM " . VOTE_DESC_TABLE . "
 						WHERE vote_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
 					}
 					$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . "
 						WHERE vote_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
 					}
 					$sql = "DELETE FROM " . VOTE_USERS_TABLE . "
 						WHERE vote_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
@@ -2090,7 +2229,9 @@ switch($mode_id)
 					WHERE v.vote_id IS NULL AND
 						t.topic_vote = 1";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic and vote data!", __LINE__, __FILE__, $sql);
@@ -2100,14 +2241,16 @@ switch($mode_id)
 					$result_array[] = $row['topic_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Updating_topics_wo_vote'] . '</p>' . "\n");
 					$sql = "UPDATE " . TOPICS_TABLE . "
 						SET topic_vote = 0
 						WHERE topic_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
@@ -2141,7 +2284,9 @@ switch($mode_id)
 							AND t.topic_vote = 0";
 				}
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic and vote data!", __LINE__, __FILE__, $sql);
@@ -2151,14 +2296,16 @@ switch($mode_id)
 					$result_array[] = $row['topic_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Updating_topics_w_vote'] . '</p>' . "\n");
 					$sql = "UPDATE " . TOPICS_TABLE . "
 						SET topic_vote = 1
 						WHERE topic_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
@@ -2186,7 +2333,9 @@ switch($mode_id)
 					FROM " . VOTE_RESULTS_TABLE . " vr
 						LEFT JOIN " . VOTE_DESC_TABLE . " v ON vr.vote_id = v.vote_id
 					WHERE v.vote_id IS NULL";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get vote data!", __LINE__, __FILE__, $sql);
@@ -2203,7 +2352,9 @@ switch($mode_id)
 					$sql2 = "DELETE FROM " . VOTE_RESULTS_TABLE . "
 						WHERE vote_id = " . $row['vote_id'] . "
 							AND vote_option_id = " . $row['vote_option_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't delete vote result data!", __LINE__, __FILE__, $sql2);
@@ -2228,7 +2379,9 @@ switch($mode_id)
 					WHERE u.user_id IS NULL
 					GROUP BY vu.vote_user_id";
 				$user_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get voters and user data!", __LINE__, __FILE__, $sql);
@@ -2244,7 +2397,9 @@ switch($mode_id)
 					WHERE v.vote_id IS NULL
 					GROUP BY vu.vote_id";
 				$vote_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get voters and vote data!", __LINE__, __FILE__, $sql);
@@ -2254,20 +2409,22 @@ switch($mode_id)
 					$vote_array[] = $row['vote_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($user_array) || count($vote_array))
+				if (sizeof($user_array) || sizeof($vote_array))
 				{
 					$sql_query = '';
-					if (count($user_array))
+					if (sizeof($user_array))
 					{
 						$sql_query = 'vote_user_id IN (' . implode(',', $user_array) . ') ';
 					}
-					if (count($vote_array))
+					if (sizeof($vote_array))
 					{
 						$sql_query .= (($sql_query == '') ? '' : ' OR ') . 'vote_id IN (' . implode(',', $vote_array) . ') ';
 					}
 					$sql = "DELETE FROM " . VOTE_USERS_TABLE . "
 						WHERE $sql_query";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update voters data!", __LINE__, __FILE__, $sql);
@@ -2289,6 +2446,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'check_pm': // Check private messages
 				echo('<h1>' . $lang['Checking_pm_tables'] . '</h1>' . "\n");
 				lock_db();
@@ -2300,7 +2458,9 @@ switch($mode_id)
 						LEFT JOIN " . USERS_TABLE . " u ON pm.privmsgs_from_userid = u.user_id
 					WHERE u.user_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get private message and user data!", __LINE__, __FILE__, $sql);
@@ -2310,7 +2470,7 @@ switch($mode_id)
 					$result_array[] = $row['privmsgs_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Invalid_pm_senders_found'] . ": $record_list</p>\n");
@@ -2318,7 +2478,9 @@ switch($mode_id)
 					$sql = "UPDATE " . PRIVMSGS_TABLE . "
 						SET privmsgs_from_userid = " . DELETED . "
 						WHERE privmsgs_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update private message information!", __LINE__, __FILE__, $sql);
@@ -2336,7 +2498,9 @@ switch($mode_id)
 						LEFT JOIN " . USERS_TABLE . " u ON pm.privmsgs_to_userid = u.user_id
 					WHERE u.user_id IS NULL";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get private message and user data!", __LINE__, __FILE__, $sql);
@@ -2346,7 +2510,7 @@ switch($mode_id)
 					$result_array[] = $row['privmsgs_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Invalid_pm_recipients_found'] . ": $record_list</p>\n");
@@ -2354,7 +2518,9 @@ switch($mode_id)
 					$sql = "UPDATE " . PRIVMSGS_TABLE . "
 						SET privmsgs_to_userid = " . DELETED . "
 						WHERE privmsgs_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update private message information!", __LINE__, __FILE__, $sql);
@@ -2372,7 +2538,9 @@ switch($mode_id)
 					WHERE (privmsgs_from_userid = " . DELETED . " AND privmsgs_type IN (" . PRIVMSGS_NEW_MAIL . "," . PRIVMSGS_UNREAD_MAIL . "," . PRIVMSGS_SENT_MAIL . "," . PRIVMSGS_SAVED_OUT_MAIL . ")) OR
 						(privmsgs_to_userid = " . DELETED . " AND privmsgs_type IN (" . PRIVMSGS_NEW_MAIL . "," . PRIVMSGS_UNREAD_MAIL . "," . PRIVMSGS_READ_MAIL . "," . PRIVMSGS_SAVED_IN_MAIL . "))";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get private message and user data!", __LINE__, __FILE__, $sql);
@@ -2382,14 +2550,16 @@ switch($mode_id)
 					$result_array[] = $row['privmsgs_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Invalid_pm_users_found'] . ": $record_list</p>\n");
 					echo('<p class="gen">' . $lang['Deleting_pms'] . '</p>' . "\n");
 					$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 						WHERE privmsgs_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete private message data!", __LINE__, __FILE__, $sql);
@@ -2422,7 +2592,9 @@ switch($mode_id)
 						GROUP BY u.user_id, u.username, u.user_new_privmsg";
 				}
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and private message data!", __LINE__, __FILE__, $sql);
@@ -2442,7 +2614,9 @@ switch($mode_id)
 						$sql2 = "UPDATE " . USERS_TABLE . "
 							SET user_new_privmsg = " . $row['new_counter'] . "
 							WHERE user_id = " . $row['user_id'];
+						$db->sql_return_on_error(true);
 						$result2 = $db->sql_query($sql2);
+						$db->sql_return_on_error(false);
 						if (!$result2)
 						{
 							throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -2451,7 +2625,7 @@ switch($mode_id)
 				}
 				$db->sql_freeresult($result);
 				// All other users
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$sql_string = 'user_id NOT IN (' . implode(',', $result_array) . ') AND';
 				}
@@ -2462,7 +2636,9 @@ switch($mode_id)
 				$sql = "SELECT user_id, username
 					FROM " . USERS_TABLE . "
 					WHERE $sql_string user_new_privmsg <> 0";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user data!", __LINE__, __FILE__, $sql);
@@ -2479,7 +2655,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . USERS_TABLE . "
 						SET user_new_privmsg = 0
 						WHERE user_id = " . $row['user_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -2518,7 +2696,9 @@ switch($mode_id)
 						GROUP BY u.user_id, u.username, u.user_unread_privmsg";
 				}
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and private message data!", __LINE__, __FILE__, $sql);
@@ -2538,7 +2718,9 @@ switch($mode_id)
 						$sql2 = "UPDATE " . USERS_TABLE . "
 							SET user_unread_privmsg = " . $row['new_counter'] . "
 							WHERE user_id = " . $row['user_id'];
+						$db->sql_return_on_error(true);
 						$result2 = $db->sql_query($sql2);
+						$db->sql_return_on_error(false);
 						if (!$result2)
 						{
 							throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -2547,7 +2729,7 @@ switch($mode_id)
 				}
 				$db->sql_freeresult($result);
 				// All other users
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$sql_string = 'user_id NOT IN (' . implode(',', $result_array) . ') AND';
 				}
@@ -2558,7 +2740,9 @@ switch($mode_id)
 				$sql = "SELECT user_id, username
 					FROM " . USERS_TABLE . "
 					WHERE $sql_string user_unread_privmsg <> 0";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user data!", __LINE__, __FILE__, $sql);
@@ -2575,7 +2759,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . USERS_TABLE . "
 						SET user_unread_privmsg = 0
 						WHERE user_id = " . $row['user_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -2594,6 +2780,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'check_config': // Check config table
 				echo('<h1>' . $lang['Checking_config_table'] . '</h1>' . "\n");
 				lock_db();
@@ -2623,7 +2810,10 @@ switch($mode_id)
 				}
 				$default_config['script_path'] = str_replace('admin', '', dirname($_SERVER['PHP_SELF']));
 				$sql = "SELECT Min(topic_time) as startdate FROM " . TOPICS_TABLE;
-				if ($result = $db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if ($result)
 				{
 					if (($row = $db->sql_fetchrow($result)) && $row['startdate'] > 0)
 					{
@@ -2637,7 +2827,9 @@ switch($mode_id)
 				{
 					$sql = 'SELECT config_value FROM ' . CONFIG_TABLE . "
 						WHERE config_name = '$key'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't query config table!", __LINE__, __FILE__, $sql);
@@ -2654,7 +2846,9 @@ switch($mode_id)
 						echo("<li><b>$key:</b> $value</li>\n");
 						$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value)
 							VALUES ('$key', '$value')";
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
@@ -2673,6 +2867,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'check_search_wordmatch': // Check search word match data
 				echo('<h1>' . $lang['Checking_search_wordmatch_tables'] . '</h1>' . "\n");
 				lock_db();
@@ -2685,7 +2880,9 @@ switch($mode_id)
 					WHERE p.post_id IS NULL
 					GROUP BY sm.post_id";
 				$post_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get search-match and post data!", __LINE__, __FILE__, $sql);
@@ -2702,7 +2899,9 @@ switch($mode_id)
 						OR sw.word_common = 1
 					GROUP BY sm.word_id";
 				$word_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get search-match and word data!", __LINE__, __FILE__, $sql);
@@ -2712,20 +2911,22 @@ switch($mode_id)
 					$word_array[] = $row['word_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($post_array) || count($word_array))
+				if (sizeof($post_array) || sizeof($word_array))
 				{
 					$sql_query = '';
-					if (count($post_array))
+					if (sizeof($post_array))
 					{
 						$sql_query = 'post_id IN (' . implode(',', $post_array) . ') ';
 					}
-					if (count($word_array))
+					if (sizeof($word_array))
 					{
 						$sql_query .= (($sql_query == '') ? '' : ' OR ') . 'word_id IN (' . implode(',', $word_array) . ') ';
 					}
 					$sql = "DELETE FROM " . SEARCH_MATCH_TABLE . "
 						WHERE $sql_query";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update search-match data!", __LINE__, __FILE__, $sql);
@@ -2747,6 +2948,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'check_search_wordlist': // Check search word list data
 				echo('<h1>' . $lang['Checking_search_wordlist_tables'] . '</h1>' . "\n");
 				lock_db();
@@ -2760,7 +2962,9 @@ switch($mode_id)
 						AND sw.word_common <> 1";
 				$result_array = array();
 				$affected_rows = 0;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get search data!", __LINE__, __FILE__, $sql);
@@ -2768,13 +2972,15 @@ switch($mode_id)
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$result_array[] = $row['word_id'];
-					if (count($result_array) >= 100)
+					if (sizeof($result_array) >= 100)
 					{
 						echo('<p class="gen">' . $lang['Removing_part_invalid_words'] . "...</p>\n");
 						$record_list = implode(',', $result_array);
 						$sql2 = "DELETE FROM " . SEARCH_WORD_TABLE . "
 							WHERE word_id IN ($record_list)";
+						$db->sql_return_on_error(true);
 						$result2 = $db->sql_query($sql2);
+						$db->sql_return_on_error(false);
 						if (!$result2)
 						{
 							throw_error("Couldn't update search words!", __LINE__, __FILE__, $sql2);
@@ -2784,13 +2990,15 @@ switch($mode_id)
 					}
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					echo('<p class="gen">' . $lang['Removing_invalid_words'] . '</p>' . "\n");
 					$record_list = implode(',', $result_array);
 					$sql = "DELETE FROM " . SEARCH_WORD_TABLE . "
 						WHERE word_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update search words!", __LINE__, __FILE__, $sql);
@@ -2812,6 +3020,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'sync_topics_subjects': // Synchronize Topics Subjects
 				echo('<h1>' . $lang['Sync_topics_subjects'] . '</h1>' . "\n");
 				$db_state = lock_db();
@@ -2822,7 +3031,9 @@ switch($mode_id)
 				$sql= "UPDATE " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
 					SET p.post_subject = t.topic_title
 					WHERE p.post_id = t.topic_first_post_id";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topics data!", __LINE__, __FILE__, $sql);
@@ -2843,6 +3054,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'rebuild_search_index': // Rebuild Search Index
 				echo('<h1>' . $lang['Rebuilding_search_index'] . '</h1>' . "\n");
 				$db_state = lock_db();
@@ -2850,17 +3062,26 @@ switch($mode_id)
 				// Clear Tables
 				echo('<p class="gen"><b>' . $lang['Deleting_search_tables'] . '</b></p>' . "\n");
 				$sql = "DELETE FROM " . SEARCH_TABLE;
-				if (!($db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't delete from search result table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "DELETE FROM " . SEARCH_WORD_TABLE;
-				if (!($db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't delete from search-word table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "DELETE FROM " . SEARCH_MATCH_TABLE;
-				if (!($db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't delete from search-match table!", __LINE__, __FILE__, $sql);
 				}
@@ -2869,7 +3090,10 @@ switch($mode_id)
 				// Reset auto increment
 				echo('<p class="gen"><b>' . $lang['Reset_search_autoincrement'] . '</b></p>' . "\n");
 				$sql = "ALTER TABLE " . SEARCH_WORD_TABLE . " AUTO_INCREMENT=1";
-				if (!($db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't reset auto_increment!", __LINE__, __FILE__, $sql);
 				}
@@ -2881,7 +3105,9 @@ switch($mode_id)
 				// Get data for end position
 				$sql = "SELECT Max(post_id) AS max_post_id
 					FROM " . POSTS_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get post data!", __LINE__, __FILE__, $sql);
@@ -2901,6 +3127,7 @@ switch($mode_id)
 				include('./page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
+
 			case 'proceed_rebuilding': // Proceed rebuilding search index
 				echo('<h1>' . $lang['Preparing_to_proceed'] . '</h1>' . "\n");
 				$db_state = lock_db();
@@ -2908,14 +3135,20 @@ switch($mode_id)
 				// Clear Tables
 				echo('<p class="gen"><b>' . $lang['Preparing_search_tables'] . '</b></p>' . "\n");
 				$sql = "DELETE FROM " . SEARCH_TABLE;
-				if (!($db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't delete from search result table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "DELETE FROM " . SEARCH_MATCH_TABLE . "
-					WHERE post_id > " . intval($board_config['dbmtnc_rebuild_pos']) . "
-						AND post_id <= " . intval($board_config['dbmtnc_rebuild_end']);
-				if (!($db->sql_query($sql)))
+					WHERE post_id > " . intval($config['dbmtnc_rebuild_pos']) . "
+						AND post_id <= " . intval($config['dbmtnc_rebuild_end']);
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't delete from search-match table!", __LINE__, __FILE__, $sql);
 				}
@@ -2927,20 +3160,21 @@ switch($mode_id)
 				include('./page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
+
 			case 'perform_rebuild': // Rebuild search index (perform part)
 				// ATTENTION: page_header not sent yet!
 				$db_state = (isset($_GET['db_state'])) ? intval($_GET['db_state']) : 0;
 				// Load functions
 				include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 				// Identify PHP version and time limit configuration
-				if (phpversion() >= '4.0.5' && ($board_config['dbmtnc_rebuildcfg_php3only'] == 0)) // Handle PHP beffore 4.0.5 as PHP 3 since array_search is not available
+				if (phpversion() >= '4.0.5' && ($config['dbmtnc_rebuildcfg_php3only'] == 0)) // Handle PHP beffore 4.0.5 as PHP 3 since array_search is not available
 				{
 					$php_ver = 4;
 					// try to reset time limit
 					$reset_allowed = true;
-					$execution_time = $board_config['dbmtnc_rebuildcfg_timelimit'];
+					$execution_time = $config['dbmtnc_rebuildcfg_timelimit'];
 					set_error_handler('catch_error');
-					set_time_limit($board_config['dbmtnc_rebuildcfg_timelimit']);
+					set_time_limit($config['dbmtnc_rebuildcfg_timelimit']);
 					restore_error_handler();
 					// Try to set unlimited execution time
 					@set_time_limit(0);
@@ -2957,24 +3191,26 @@ switch($mode_id)
 					$execution_time = 30; // Asume 30 if an error occurs
 				}
 				// Calculate posts to process
-				$posts_to_index = intval(($execution_time - 5) * (($php_ver == 4) ? $board_config['dbmtnc_rebuildcfg_php4pps'] : $board_config['dbmtnc_rebuildcfg_php3pps']));
-				if ($posts_to_index < $board_config['dbmtnc_rebuildcfg_minposts'])
+				$posts_to_index = intval(($execution_time - 5) * (($php_ver == 4) ? $config['dbmtnc_rebuildcfg_php4pps'] : $config['dbmtnc_rebuildcfg_php3pps']));
+				if ($posts_to_index < $config['dbmtnc_rebuildcfg_minposts'])
 				{
-					$posts_to_index = $board_config['dbmtnc_rebuildcfg_minposts'];
+					$posts_to_index = $config['dbmtnc_rebuildcfg_minposts'];
 				}
 				// Check whether a special limit was set
-				if (intval($board_config['dbmtnc_rebuildcfg_timeoverwrite']) != 0)
+				if (intval($config['dbmtnc_rebuildcfg_timeoverwrite']) != 0)
 				{
-					$posts_to_index = intval($board_config['dbmtnc_rebuildcfg_timeoverwrite']);
+					$posts_to_index = intval($config['dbmtnc_rebuildcfg_timeoverwrite']);
 				}
 				// We have all data so get the post information
 				$sql = "SELECT post_id, post_subject, post_text
 					FROM " . POSTS_TABLE . "
-					WHERE post_id > " . intval($board_config['dbmtnc_rebuild_pos']) . "
-						AND post_id <= " . intval($board_config['dbmtnc_rebuild_end']) . "
+					WHERE post_id > " . intval($config['dbmtnc_rebuild_pos']) . "
+						AND post_id <= " . intval($config['dbmtnc_rebuild_end']) . "
 					ORDER BY post_id
 					LIMIT $posts_to_index";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					include('./page_header_admin.' . PHP_EXT);
@@ -3021,8 +3257,8 @@ switch($mode_id)
 					case 4: // use advanced method if we have PHP 4+ (we can make use of the advanced array functions)
 						$post_size = strlen($row['post_text']) + strlen($row['post_subject']); // needed for controlling array size
 						// get stopword and synonym array
-						$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
-						$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
+						$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_stopwords.txt");
+						$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_synonyms.txt");
 						if (!is_array($stopword_array))
 						{
 							$stopword_array = array();
@@ -3033,12 +3269,12 @@ switch($mode_id)
 						}
 						$empty_array = array(); // We'll need this array for passing it to the clean_words function
 						// Convert arrays
-						for ($i = 0; $i < count($stopword_array); $i++)
+						for ($i = 0; $i < sizeof($stopword_array); $i++)
 						{
 							$stopword_array[$i] = trim(strtolower($stopword_array[$i]));
 						}
 						$result_array = array(array(), array());
-						for ($i = 0; $i < count($synonym_array); $i++)
+						for ($i = 0; $i < sizeof($synonym_array); $i++)
 						{
 							list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$i])));
 							$result_array[0][] = trim($replace_synonym);
@@ -3047,7 +3283,7 @@ switch($mode_id)
 						$synonym_array = $result_array;
 						$result_array = array(array(), array(), array());
 						$i = 0;
-						while ($row && ($post_size <= $board_config['dbmtnc_rebuildcfg_maxmemory'] * 1024 || $i < $board_config['dbmtnc_rebuildcfg_minposts']))
+						while ($row && ($post_size <= $config['dbmtnc_rebuildcfg_maxmemory'] * 1024 || $i < $config['dbmtnc_rebuildcfg_minposts']))
 						{
 							$last_post = $row['post_id'];
 							// handle text
@@ -3086,7 +3322,7 @@ switch($mode_id)
 						$cache_word_id = 0;
 						$insert_values = '';
 						$word_array = array();
-						$array_count = count($result_array[0]);
+						$array_count = sizeof($result_array[0]);
 						for ($i = 0; $i < $array_count; $i++)
 						{
 							if ($result_array[2][$i] !== $cache_word) // We have a new word (don't allow type conversions)
@@ -3101,7 +3337,10 @@ switch($mode_id)
 								$last_word_id = $cache_word_id;
 								$last_title_match = $result_array[1][$i];
 								$sql = "INSERT INTO " . SEARCH_MATCH_TABLE . " (post_id, word_id, title_match) VALUES ($last_post_id, $last_word_id, $last_title_match)";
-								if (!$db->sql_query($sql))
+								$db->sql_return_on_error(true);
+								$result_tmp = $db->sql_query($sql);
+								$db->sql_return_on_error(false);
+								if (!$result_tmp)
 								{
 									include('./page_header_admin.' . PHP_EXT);
 									throw_error("Couldn't insert into search match!", __LINE__, __FILE__, $sql);
@@ -3127,8 +3366,11 @@ switch($mode_id)
 				$posts_total = 0;
 				$sql = "SELECT Count(*) AS posts_total
 					FROM " . POSTS_TABLE . "
-					WHERE post_id <= " . intval($board_config['dbmtnc_rebuild_end']);
-				if ($result = $db->sql_query($sql))
+					WHERE post_id <= " . intval($config['dbmtnc_rebuild_end']);
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if ($result)
 				{
 					if ($row = $db->sql_fetchrow($result))
 					{
@@ -3140,7 +3382,10 @@ switch($mode_id)
 				$sql = "SELECT Count(*) AS posts_indexed
 					FROM " . POSTS_TABLE . "
 					WHERE post_id <= " . intval($last_post);
-				if ($result = $db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if ($result)
 				{
 					if ($row = $db->sql_fetchrow($result))
 					{
@@ -3156,7 +3401,9 @@ switch($mode_id)
 				include('./page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
+
 			case 'synchronize_post': // Synchronize post data
+
 			case 'synchronize_post_direct': // Run directly
 				echo('<h1>' . $lang['Synchronize_posts'] . '</h1>' . "\n");
 				if ($function == 'synchronize_post_direct')
@@ -3191,7 +3438,9 @@ switch($mode_id)
 							new_first_post_id <> t.topic_first_post_id OR
 							new_last_post_id <> t.topic_last_post_id";
 				}
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic and post data!", __LINE__, __FILE__, $sql);
@@ -3210,7 +3459,9 @@ switch($mode_id)
 							topic_first_post_id = " . $row['new_first_post_id'] . ",
 							topic_last_post_id = " . $row['new_last_post_id'] . "
 						WHERE topic_id = " . $row['topic_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql2);
@@ -3232,7 +3483,9 @@ switch($mode_id)
 				$sql = "SELECT topic_id, topic_title, topic_last_post_id, topic_moved_id
 					FROM " . TOPICS_TABLE . "
 					WHERE topic_status = " . TOPIC_MOVED;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get topic data!", __LINE__, __FILE__, $sql);
@@ -3245,7 +3498,9 @@ switch($mode_id)
 						WHERE topic_id = " . $row['topic_moved_id'] . " AND
 							post_id <= " . $row['topic_last_post_id'] . "
 						GROUP BY topic_id";
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't get post information!", __LINE__, __FILE__, $sql2);
@@ -3256,7 +3511,9 @@ switch($mode_id)
 							FROM " . TOPICS_TABLE . "
 							WHERE topic_id = " . $row['topic_id'] . " AND
 								(topic_replies <> " . $row2['topic_replies'] . " OR topic_first_post_id <> " . $row2['topic_first_post_id'] . " OR topic_last_post_id <> " . $row2['topic_last_post_id'] . ")";
+						$db->sql_return_on_error(true);
 						$result3 = $db->sql_query($sql3);
+						$db->sql_return_on_error(false);
 						if (!$result3)
 						{
 							throw_error("Couldn't get topic information!", __LINE__, __FILE__, $sql3);
@@ -3277,7 +3534,9 @@ switch($mode_id)
 									topic_first_post_id = " . $row2['topic_first_post_id'] . ",
 									topic_last_post_id = " . $row2['topic_last_post_id'] . "
 								WHERE topic_id = " . $row['topic_id'];
+							$db->sql_return_on_error(true);
 							$result3 = $db->sql_query($sql3);
+							$db->sql_return_on_error(false);
 							if (!$result3)
 							{
 								throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql3);
@@ -3320,7 +3579,9 @@ switch($mode_id)
 						GROUP BY f.forum_id, f.forum_name, f.forum_topics
 						HAVING new_topics <> f.forum_topics";
 				}
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get forum and topic data!", __LINE__, __FILE__, $sql);
@@ -3337,7 +3598,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . FORUMS_TABLE . "
 						SET forum_topics = " . $row['new_topics'] . "
 						WHERE forum_id = " . $row['forum_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update forum information!", __LINE__, __FILE__, $sql2);
@@ -3362,7 +3625,9 @@ switch($mode_id)
 					WHERE t.forum_id IS NULL AND
 						(f.forum_topics <> 0 OR f.forum_last_post_id <> 0)";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get forum and topic data!", __LINE__, __FILE__, $sql);
@@ -3372,14 +3637,16 @@ switch($mode_id)
 					$result_array[] = $row['forum_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$sql = "UPDATE " . FORUMS_TABLE . "
 						SET forum_topics = 0,
 							forum_last_post_id = 0
 						WHERE forum_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update forum data!", __LINE__, __FILE__, $sql);
@@ -3403,7 +3670,7 @@ switch($mode_id)
 				echo('<p class="gen"><b>' . $lang['Synchronize_forum_post_data'] . '</b></p>' . "\n");
 				if (check_mysql_version())
 				{
-					$sql = "SELECT f.forum_id, f.forum_name, f.forum_posts, f.forum_last_post_id, Count(p.post_id) AS new_posts, Max(p.post_id) AS new_last_post_id
+					$sql = "SELECT f.forum_id, f.forum_name, f.forum_posts, f.forum_last_post_id, COUNT(p.post_id) AS new_posts, MAX(p.post_id) AS new_last_post_id
 						FROM " . FORUMS_TABLE . " f
 							INNER JOIN " . POSTS_TABLE . " p ON f.forum_id = p.forum_id
 						GROUP BY f.forum_id, f.forum_name, f.forum_posts, f.forum_last_post_id
@@ -3412,7 +3679,7 @@ switch($mode_id)
 				}
 				else
 				{
-					$sql = "SELECT f.forum_id, f.forum_name, f.forum_posts, f.forum_last_post_id, Count(p.post_id) AS new_posts, Max(p.post_id) AS new_last_post_id
+					$sql = "SELECT f.forum_id, f.forum_name, f.forum_posts, f.forum_last_post_id, COUNT(p.post_id) AS new_posts, MAX(p.post_id) AS new_last_post_id
 						FROM " . FORUMS_TABLE . " f, " .
 							POSTS_TABLE . " p
 						WHERE f.forum_id = p.forum_id
@@ -3420,7 +3687,9 @@ switch($mode_id)
 						HAVING new_posts <> f.forum_posts OR
 							new_last_post_id <> f.forum_last_post_id";
 				}
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get forum and post data!", __LINE__, __FILE__, $sql);
@@ -3438,7 +3707,9 @@ switch($mode_id)
 						SET forum_posts = " . $row['new_posts'] . ",
 							forum_last_post_id = " . $row['new_last_post_id'] . "
 						WHERE forum_id = " . $row['forum_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update forum information!", __LINE__, __FILE__, $sql2);
@@ -3463,7 +3734,9 @@ switch($mode_id)
 					WHERE p.forum_id IS NULL AND
 						(f.forum_posts <> 0)";
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get forum and topic data!", __LINE__, __FILE__, $sql);
@@ -3473,13 +3746,15 @@ switch($mode_id)
 					$result_array[] = $row['forum_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$record_list = implode(',', $result_array);
 					$sql = "UPDATE " . FORUMS_TABLE . "
 						SET forum_posts = 0
 						WHERE forum_id IN ($record_list)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't update forum data!", __LINE__, __FILE__, $sql);
@@ -3499,6 +3774,17 @@ switch($mode_id)
 					echo($lang['Nothing_to_do']);
 				}
 
+				// Rebuild last posters and colors
+				echo('<p class="gen"><b>' . $lang['Rebuild_Last_Poster_Details'] . '</b></p>' . "\n");
+				if (!function_exists('rebuild_forums_topics_posters'))
+				{
+					@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+				}
+				rebuild_forums_topics_posters(true);
+				update_all_clean_forum_names();
+				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
+				echo('<br />' . "\n");
+
 				if ($function == 'synchronize_post_direct')
 				{
 					if ($db_state == 0)
@@ -3517,6 +3803,7 @@ switch($mode_id)
 				}
 
 				break;
+
 			case 'synchronize_user': // Synchronize post counter of users
 				echo('<h1>' . $lang['Synchronize_post_counters'] . '</h1>' . "\n");
 				lock_db();
@@ -3527,7 +3814,10 @@ switch($mode_id)
 				// List forum to not sync
 				$sql = "SELECT forum_id FROM " . FORUMS_TABLE . "
 								WHERE forum_postcount = 0";
-				if (!($result = $db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't query forum table!", __LINE__, __FILE__, $sql);
 				}
@@ -3561,7 +3851,9 @@ switch($mode_id)
 						GROUP BY u.user_id, u.username, u.user_posts";
 				}
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user and post data!", __LINE__, __FILE__, $sql);
@@ -3581,7 +3873,9 @@ switch($mode_id)
 						$sql2 = "UPDATE " . USERS_TABLE . "
 							SET user_posts = " . $row['new_counter'] . "
 							WHERE user_id = " . $row['user_id'];
+						$db->sql_return_on_error(true);
 						$result2 = $db->sql_query($sql2);
+						$db->sql_return_on_error(false);
 						if (!$result2)
 						{
 							throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -3590,7 +3884,7 @@ switch($mode_id)
 				}
 				$db->sql_freeresult($result);
 				// All other users
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$sql_string = 'user_id NOT IN (' . implode(',', $result_array) . ') AND';
 				}
@@ -3601,7 +3895,9 @@ switch($mode_id)
 				$sql = "SELECT user_id, username, user_posts
 					FROM " . USERS_TABLE . "
 					WHERE $sql_string user_posts <> 0";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user data!", __LINE__, __FILE__, $sql);
@@ -3618,7 +3914,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . USERS_TABLE . "
 						SET user_posts = 0
 						WHERE user_id = " . $row['user_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -3637,6 +3935,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'synchronize_mod_state': // Synchronize moderator status
 				echo('<h1>' . $lang['Synchronize_moderators'] . '</h1>' . "\n");
 				lock_db();
@@ -3662,7 +3961,9 @@ switch($mode_id)
 						GROUP BY ug.user_id";
 				}
 				$result_array = array();
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get moderator data!", __LINE__, __FILE__, $sql);
@@ -3672,7 +3973,7 @@ switch($mode_id)
 					$result_array[] = $row['user_id'];
 				}
 				$db->sql_freeresult($result);
-				if (count($result_array))
+				if (sizeof($result_array))
 				{
 					$moderator_list = implode(',', $result_array);
 				}
@@ -3688,7 +3989,9 @@ switch($mode_id)
 					FROM " . USERS_TABLE . "
 					WHERE user_level = " . MOD . "
 						AND user_id NOT IN ($moderator_list)";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user data!", __LINE__, __FILE__, $sql);
@@ -3705,7 +4008,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . USERS_TABLE . "
 						SET user_level = " . USER . "
 						WHERE user_id = " . $row['user_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -3728,7 +4033,9 @@ switch($mode_id)
 					FROM " . USERS_TABLE . "
 					WHERE user_level = " . USER . "
 						AND user_id IN ($moderator_list)";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't get user data!", __LINE__, __FILE__, $sql);
@@ -3745,7 +4052,9 @@ switch($mode_id)
 					$sql2 = "UPDATE " . USERS_TABLE . "
 						SET user_level = " . MOD . "
 						WHERE user_id = " . $row['user_id'];
+					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
+					$db->sql_return_on_error(false);
 					if (!$result2)
 					{
 						throw_error("Couldn't update user information!", __LINE__, __FILE__, $sql2);
@@ -3764,6 +4073,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'reset_date': // Reset dates
 				echo('<h1>' . $lang['Resetting_future_post_dates'] . '</h1>' . "\n");
 				lock_db();
@@ -3776,7 +4086,9 @@ switch($mode_id)
 				$sql = "UPDATE " . POSTS_TABLE . "
 					SET post_time = $time
 					WHERE post_time > $time";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't update post data!", __LINE__, __FILE__, $sql);
@@ -3800,7 +4112,9 @@ switch($mode_id)
 				$sql = "UPDATE " . PRIVMSGS_TABLE . "
 					SET privmsgs_date = $time
 					WHERE privmsgs_date > $time";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't update private message data!", __LINE__, __FILE__, $sql);
@@ -3824,7 +4138,9 @@ switch($mode_id)
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_emailtime = $time
 					WHERE user_emailtime > $time";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't update user data!", __LINE__, __FILE__, $sql);
@@ -3845,6 +4161,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'reset_sessions': // Reset sessions
 				echo('<h1>' . $lang['Resetting_sessions'] . '</h1>' . "\n");
 				lock_db();
@@ -3852,13 +4169,17 @@ switch($mode_id)
 				// Deleting tables
 				echo('<p class="gen"><b>' . $lang['Deleting_session_tables'] . '</b></p>' . "\n");
 				$sql = "DELETE FROM " . SESSIONS_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't delete from session table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "DELETE FROM " . SEARCH_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't delete from search result table!", __LINE__, __FILE__, $sql);
@@ -3886,7 +4207,9 @@ switch($mode_id)
 						(session_id, session_user_id, session_start, session_time, session_ip, session_page, session_logged_in)
 						VALUES ('" . $session_id . "', '" . $user_id . "', '" . $current_time . "', '" . $current_time . "', '" . $user_ip . "', '" . $page_id . "', '" . $login . "')";
 				}
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't restore session data!", __LINE__, __FILE__, $sql);
@@ -3895,6 +4218,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'check_db': // Check database
 				echo('<h1>' . $lang['Checking_db'] . '</h1>' . "\n");
 				if (!check_mysql_version())
@@ -3907,11 +4231,13 @@ switch($mode_id)
 				echo("<div class=\"post-text\"><ul>\n");
 				$list_open = true;
 
-				for($i = 0; $i < count($tables); $i++)
+				for($i = 0; $i < sizeof($tables); $i++)
 				{
 					$tablename = $table_prefix . $tables[$i];
 					$sql = "CHECK TABLE $tablename";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't check table!", __LINE__, __FILE__, $sql);
@@ -3946,6 +4272,7 @@ switch($mode_id)
 				$list_open = false;
 				lock_db(true);
 				break;
+
 			case 'repair_db': // Repair database
 				echo('<h1>' . $lang['Repairing_db'] . '</h1>' . "\n");
 				if (!check_mysql_version())
@@ -3958,11 +4285,13 @@ switch($mode_id)
 				echo("<div class=\"post-text\"><ul>\n");
 				$list_open = true;
 
-				for($i = 0; $i < count($tables); $i++)
+				for($i = 0; $i < sizeof($tables); $i++)
 				{
 					$tablename = $table_prefix . $tables[$i];
 					$sql = "REPAIR TABLE $tablename";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't repair table!", __LINE__, __FILE__, $sql);
@@ -3997,6 +4326,7 @@ switch($mode_id)
 				$list_open = false;
 				lock_db(true);
 				break;
+
 			case 'optimize_db': // Optimize database
 				echo('<h1>' . $lang['Optimizing_db'] . '</h1>' . "\n");
 				if (!check_mysql_version())
@@ -4010,11 +4340,13 @@ switch($mode_id)
 				echo("<div class=\"post-text\"><ul>\n");
 				$list_open = true;
 
-				for($i = 0; $i < count($tables); $i++)
+				for($i = 0; $i < sizeof($tables); $i++)
 				{
 					$tablename = $table_prefix . $tables[$i];
 					$sql = "OPTIMIZE TABLE $tablename";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't optimize table!", __LINE__, __FILE__, $sql);
@@ -4053,6 +4385,7 @@ switch($mode_id)
 				echo('<p class="gen">' . sprintf($lang['Optimization_statistic'], convert_bytes($old_stat['core']['size']), convert_bytes($new_stat['core']['size']), convert_bytes($reduction_absolute), $reduction_percent) . '</b></p>' . "\n");
 				lock_db(true);
 				break;
+
 			case 'reset_auto_increment': // Reset autoincrement values
 				echo('<h1>' . $lang['Reset_ai'] . '</h1>' . "\n");
 				lock_db();
@@ -4060,7 +4393,6 @@ switch($mode_id)
 				echo("<div class=\"post-text\"><ul>\n");
 
 				set_autoincrement(BANLIST_TABLE, 'ban_id', 8);
-				set_autoincrement(CATEGORIES_TABLE, 'cat_id', 8);
 				set_autoincrement(DISALLOW_TABLE, 'disallow_id', 8);
 				set_autoincrement(PRUNE_TABLE, 'prune_id', 8);
 				set_autoincrement(GROUPS_TABLE, 'group_id', 8, false);
@@ -4079,6 +4411,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'heap_convert': // Convert session table to HEAP
 				echo('<h1>' . $lang['Reset_ai'] . '</h1>' . "\n");
 				if (!check_mysql_version())
@@ -4091,7 +4424,10 @@ switch($mode_id)
 
 				// First check for current table size
 				$sql = "SELECT Count(*) as count FROM " . SESSIONS_TABLE;
-				if (!($result = $db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					throw_error("Couldn't get session data!", __LINE__, __FILE__, $sql);
 				}
@@ -4110,7 +4446,9 @@ switch($mode_id)
 						$sql .= " ORDER BY session_start
 							LIMIT " . (intval($row['count']) - HEAP_SIZE);
 					}
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't delete session data!", __LINE__, __FILE__, $sql);
@@ -4119,7 +4457,9 @@ switch($mode_id)
 
 				$sql = "ALTER TABLE " . SESSIONS_TABLE . "
 					TYPE=HEAP MAX_ROWS=" . HEAP_SIZE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					throw_error("Couldn't convert table!", __LINE__, __FILE__, $sql);
@@ -4127,6 +4467,7 @@ switch($mode_id)
 
 				lock_db(true);
 				break;
+
 			case 'unlock_db': // Unlock the database
 				echo('<h1>' . $lang['Unlocking_db'] . '</h1>' . "\n");
 				lock_db(true, true, true);
@@ -4143,18 +4484,19 @@ switch($mode_id)
 		$template->set_filenames(array('body' => ADM_TPL . 'dbmtnc_list_body.tpl'));
 
 		$template->assign_vars(array(
-			"L_DBMTNC_TITLE" => $lang['DB_Maintenance'],
-			"L_DBMTNC_TEXT" => $lang['DB_Maintenance_Description'],
-			"L_FUNCTION" => $lang['Function'],
-			"L_FUNCTION_DESCRIPTION" => $lang['Function_Description'])
+			'L_DBMTNC_TITLE' => $lang['DB_Maintenance'],
+			'L_DBMTNC_TEXT' => $lang['DB_Maintenance_Description'],
+			'L_FUNCTION' => $lang['Function'],
+			'L_FUNCTION_DESCRIPTION' => $lang['Function_Description']
+			)
 		);
 
 		//
 		// OK, let's list the functions
 		//
-		for($i = 0; $i < count($mtnc); $i++)
+		for($i = 0; $i < sizeof($mtnc); $i++)
 		{
-			if (count($mtnc[$i]) && check_condition($mtnc[$i][4]))
+			if (sizeof($mtnc[$i]) && check_condition($mtnc[$i][4]))
 			{
 				if ($mtnc[$i][0] == '--')
 				{

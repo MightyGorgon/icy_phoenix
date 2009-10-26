@@ -11,7 +11,7 @@
 /**
 *
 * @Extra credits for this file
-* Niels Chr. Rød (ncr@db9.dk) - (http://mods.db9.dk)
+* Niels Chr. RÃ¸d (ncr@db9.dk) - (http://mods.db9.dk)
 *
 */
 
@@ -44,7 +44,7 @@
 */
 
 // CTracker_Ignore: File Checked By Human
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 // to enable email notification to the user, after deletion, enable this
 define('NOTIFY_USERS', true);
 // to disable confirmation when executing PRUNE_MG
@@ -65,10 +65,7 @@ init_userprefs($userdata);
 // End session management
 
 $sql = 'SELECT user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $userdata['user_id'] . '" LIMIT 1';
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Couldn't obtain judge information.", "", __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $user_row = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 
@@ -94,21 +91,13 @@ if(isset($_POST['cancel']))
 
 if(!isset($_POST['confirm']) && !KILL_CONFIRM)
 {
-	$page_title = $lang['Home'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
 	$ref_url = explode('/', $_SERVER['HTTP_REFERER']);
 
 	$s_hidden_fields = '';
-	$s_hidden_fields .= '<input type="hidden" name="ref_url" value="' . htmlspecialchars($ref_url[count($ref_url) - 1]) . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="ref_url" value="' . htmlspecialchars($ref_url[sizeof($ref_url) - 1]) . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="del_user" value="' . $del_user . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="days" value="' . $days . '" />';
-
-	// Set template files
-	$template->set_filenames(array('confirm' => 'confirm_body.tpl'));
 
 	$template->assign_vars(array(
 		'MESSAGE_TITLE' => $lang['Confirm'],
@@ -121,9 +110,7 @@ if(!isset($_POST['confirm']) && !KILL_CONFIRM)
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
-	$template->pparse('confirm');
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-	exit();
+	full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
 }
 
 // Recall kill script!
@@ -139,7 +126,7 @@ if (($mode == 'prune_mg') && ($users_number == $i))
 }
 else
 {
-	$message .= '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
+	$message .= '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 }
 
 message_die(GENERAL_MESSAGE, $message);

@@ -20,7 +20,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bb_usage_stats_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -33,7 +33,7 @@ include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 $template->set_filenames(array('bbus_coldesc_template' => 'bb_usage_stats_coldesc.tpl'));
 
 /* If the %UTUP column is enabled, display its column description info. */
-if ( ($board_config[BBUS_CONFIGPROP_VIEWOPTIONS_NAME] & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0 )
+if ( ($config[BBUS_CONFIGPROP_VIEWOPTIONS_NAME] & BBUS_VIEWOPTION_PCTUTUP_COLUMN_VISIBLE) != 0 )
 {
 	$template->assign_block_vars('bb_usage_switch_pctutup_coldesc', array(
 		'L_BBUS_COLHEADER_PCTUTUP' => $lang['BBUS_ColHeader_PctUTUP'],

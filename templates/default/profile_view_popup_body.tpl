@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_VIEW_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th width="50%" nowrap="nowrap">{L_VIEWER}</th>
@@ -15,3 +17,5 @@
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><td align="center"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE}</a></span></td></tr>
 </table>
+
+<!-- INCLUDE simple_footer.tpl -->

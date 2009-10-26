@@ -52,12 +52,7 @@ if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] !
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
-$page_title = $lang['User_acp_title'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$language = $board_config['default_lang'];
+$language = $config['default_lang'];
 
 if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT))
 {
@@ -89,44 +84,44 @@ $order_by = '';
 switch ($mode)
 {
 	case 'filename':
-		$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+		$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 	break;
 
 	case 'comment':
-		$order_by = 'ORDER BY a.comment ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+		$order_by = 'ORDER BY a.comment ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 	break;
 
 	case 'extension':
-		$order_by = 'ORDER BY a.extension ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+		$order_by = 'ORDER BY a.extension ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 	break;
 
 	case 'filesize':
-		$order_by = 'ORDER BY a.filesize ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+		$order_by = 'ORDER BY a.filesize ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 	break;
 
 	case 'downloads':
-		$order_by = 'ORDER BY a.download_count ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+		$order_by = 'ORDER BY a.download_count ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 	break;
 
 	case 'post_time':
-		$order_by = 'ORDER BY a.filetime ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+		$order_by = 'ORDER BY a.filetime ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 	break;
 
 	default:
 		$mode = 'a.real_filename';
 		$sort_order = 'ASC';
-		$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+		$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 	break;
 }
 
 // Set select fields
 $select_sort_mode = $select_sort_order = '';
 
-if (count($mode_types_text) > 0)
+if (sizeof($mode_types_text) > 0)
 {
 	$select_sort_mode = '<select name="mode">';
 
-	for ($i = 0; $i < count($mode_types_text); $i++)
+	for ($i = 0; $i < sizeof($mode_types_text); $i++)
 	{
 		$selected = ($mode == $mode_types[$i]) ? ' selected="selected"' : '';
 		$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
@@ -150,19 +145,20 @@ $delete_id_list = (isset($_POST['delete_id_list'])) ? array_map('intval', $_POST
 
 $confirm = (isset($_POST['confirm']) && $_POST['confirm']) ? true : false;
 
-if ($confirm && count($delete_id_list) > 0)
+if ($confirm && sizeof($delete_id_list) > 0)
 {
 	$attachments = array();
 
-	for ($i = 0; $i < count($delete_id_list); $i++)
+	for ($i = 0; $i < sizeof($delete_id_list); $i++)
 	{
 		$sql = 'SELECT post_id, privmsgs_id
 			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE attach_id = ' . intval($delete_id_list[$i]) . '
 				AND (user_id_1 = ' . intval($profiledata['user_id']) . '
 					OR user_id_2 = ' . intval($profiledata['user_id']) . ')';
+		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-
+		$db->sql_return_on_error(false);
 		if ($result)
 		{
 			$row = $db->sql_fetchrow($result);
@@ -179,7 +175,7 @@ if ($confirm && count($delete_id_list) > 0)
 		}
 	}
 }
-else if ($delete && count($delete_id_list) > 0)
+elseif ($delete && sizeof($delete_id_list) > 0)
 {
 	// Not confirmed, show confirmation message
 	$hidden_fields = '<input type="hidden" name="view" value="' . $view . '" />';
@@ -189,14 +185,10 @@ else if ($delete && count($delete_id_list) > 0)
 	$hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
 	$hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
 
-	for ($i = 0; $i < count($delete_id_list); $i++)
+	for ($i = 0; $i < sizeof($delete_id_list); $i++)
 	{
 		$hidden_fields .= '<input type="hidden" name="delete_id_list[]" value="' . intval($delete_id_list[$i]) . '" />';
 	}
-
-	$template->set_filenames(array(
-		'confirm' => 'confirm_body.tpl')
-	);
 
 	$template->assign_vars(array(
 		'MESSAGE_TITLE' => $lang['Confirm'],
@@ -208,17 +200,10 @@ else if ($delete && count($delete_id_list) > 0)
 		'S_CONFIRM_ACTION' => append_sid(IP_ROOT_PATH . 'uacp.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $hidden_fields)
 	);
-
-	$template->pparse('confirm');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
-	exit;
+	full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
 }
 
 $hidden_fields = '';
-
-$template->set_filenames(array('body' => 'uacp_body.tpl'));
 
 $total_rows = 0;
 
@@ -257,12 +242,7 @@ $sql = "SELECT attach_id
 	FROM " . ATTACHMENTS_TABLE . "
 	WHERE user_id_1 = " . intval($profiledata['user_id']) . " OR user_id_2 = " . intval($profiledata['user_id']) . "
 	GROUP BY attach_id";
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $attach_ids = $db->sql_fetchrowset($result);
 $num_attach_ids = $db->sql_numrows($result);
 $db->sql_freeresult($result);
@@ -284,20 +264,15 @@ if ($num_attach_ids > 0)
 		FROM " . ATTACHMENTS_DESC_TABLE . " a
 		WHERE a.attach_id IN (" . implode(', ', $attach_id) . ") " .
 		$order_by;
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't query attachments", '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$attachments = $db->sql_fetchrowset($result);
 	$num_attach = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 }
 
-if (count($attachments) > 0)
+if (sizeof($attachments) > 0)
 {
-	for ($i = 0; $i < count($attachments); $i++)
+	for ($i = 0; $i < sizeof($attachments); $i++)
 	{
 		$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -308,12 +283,7 @@ if (count($attachments) > 0)
 		$sql = 'SELECT *
 			FROM ' . ATTACHMENTS_TABLE . '
 			WHERE attach_id = ' . (int) $attachments[$i]['attach_id'];
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$ids = $db->sql_fetchrowset($result);
 		$num_ids = $db->sql_numrows($result);
 		$db->sql_freeresult($result);
@@ -326,12 +296,7 @@ if (count($attachments) > 0)
 					FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 					WHERE p.post_id = " . (int) $ids[$j]['post_id'] . " AND p.topic_id = t.topic_id
 					GROUP BY t.topic_id, t.topic_title";
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t query topic', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
 
@@ -342,7 +307,7 @@ if (count($attachments) > 0)
 					$post_title = substr($post_title, 0, 30) . '...';
 				}
 
-				$view_topic = append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '#p' . $ids[$j]['post_id']);
+				$view_topic = append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $ids[$j]['post_id'] . '#p' . $ids[$j]['post_id']);
 
 				$post_titles[] = '<a href="' . $view_topic . '" class="gen" target="_blank">' . $post_title . '</a>';
 			}
@@ -353,11 +318,7 @@ if (count($attachments) > 0)
 				$sql = "SELECT privmsgs_type, privmsgs_to_userid, privmsgs_from_userid
 					FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id = " . (int) $ids[$j]['privmsgs_id'];
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t get Privmsgs Type', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				if ($db->sql_numrows($result) != 0)
 				{
@@ -404,11 +365,11 @@ if (count($attachments) > 0)
 		}
 
 		// Iron out those Attachments assigned to us, but not more controlled by us. ;) (PM's)
-		if (count($post_titles) > 0)
+		if (sizeof($post_titles) > 0)
 		{
 			$delete_box = '<input type="checkbox" name="delete_id_list[]" value="' . (int) $attachments[$i]['attach_id'] . '" />';
 
-			for ($j = 0; $j < count($delete_id_list); $j++)
+			for ($j = 0; $j < sizeof($delete_id_list); $j++)
 			{
 				if ($delete_id_list[$j] == $attachments[$i]['attach_id'])
 				{
@@ -433,7 +394,7 @@ if (count($attachments) > 0)
 				'EXTENSION' => $attachments[$i]['extension'],
 				'SIZE' => round(($attachments[$i]['filesize'] / MEGABYTE), 2),
 				'DOWNLOAD_COUNT' => $attachments[$i]['download_count'],
-				'POST_TIME' => create_date($board_config['default_dateformat'], $attachments[$i]['filetime'], $board_config['board_timezone']),
+				'POST_TIME' => create_date($config['default_dateformat'], $attachments[$i]['filetime'], $config['board_timezone']),
 				'POST_TITLE' => $post_titles,
 
 				'S_DELETE_BOX' => $delete_box,
@@ -446,19 +407,17 @@ if (count($attachments) > 0)
 }
 
 // Generate Pagination
-if ($do_pagination && $total_rows > $board_config['topics_per_page'])
+if ($do_pagination && $total_rows > $config['topics_per_page'])
 {
-	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
+	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $config['topics_per_page'], $start).'&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_rows / $board_config['topics_per_page'])),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_rows / $config['topics_per_page'])),
 		'L_GOTO_PAGE' => $lang['Goto_page'])
 	);
 }
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('uacp_body.tpl', $lang['User_acp_title'], '', '');
 
 ?>

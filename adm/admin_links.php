@@ -45,11 +45,7 @@ $template->set_filenames(array('body' => ($mode == 'view' ? ADM_TPL . 'admin_lin
 
 // Grab link categories
 $sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
-
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not query link categories list', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while($row = $db->sql_fetchrow($result))
 {
@@ -100,12 +96,9 @@ switch ($mode)
 	case 'view':
 		// Get Link Config
 		/*
-		$sql = "SELECT *
-			FROM ". LINK_CONFIG_TABLE;
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not query Link config information", "", __LINE__, __FILE__, $sql);
-		}
+		$sql = "SELECT * FROM ". LINK_CONFIG_TABLE;
+		$result = $db->sql_query($sql);
+
 		while( $row = $db->sql_fetchrow($result) )
 		{
 			$link_config_name = $row['config_name'];
@@ -151,10 +144,7 @@ switch ($mode)
 			$sql .= " ORDER BY link_id DESC LIMIT $start, $linkspp";
 		}
 
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn not query links list.", '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ( $row = $db->sql_fetchrow($result) )
 		{
@@ -173,8 +163,8 @@ switch ($mode)
 					'LINK_TITLE' => $row['link_title'],
 					'LINK_URL' => $row['link_url'],
 					'LINK_CATEGORY' => $link_categories[$row['link_category']],
-					'U_LINK_USER' => ($user_id != ANONYMOUS) ? ('<a href="../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id . '" target="_blank">' . $username . '</a>') : $username,
-					'LINK_JOINED' => create_date($lang['DATE_FORMAT'], $row['link_joined'], $board_config['board_timezone']),
+					'U_LINK_USER' => ($user_id != ANONYMOUS) ? ('<a href="../' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id . '" target="_blank">' . $username . '</a>') : $username,
+					'LINK_JOINED' => create_date($lang['DATE_FORMAT'], $row['link_joined'], $config['board_timezone']),
 					'LINK_USER_IP' => decode_ip($row['user_ip']),
 					'LINK_DESC' => $row['link_desc'],
 					'LINK_ACTIVE' => '<span class="text_' . ($row['link_active'] ? 'green">' . $lang['ON'] : 'red">' . $lang['OFF']) . '</span>',
@@ -200,10 +190,7 @@ switch ($mode)
 			);
 		}
 
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not query links number', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ( $row = $db->sql_fetchrow($result) )
 		{
@@ -226,13 +213,9 @@ switch ($mode)
 	case 'edit':
 	case 'delete':
 		$sql = "SELECT * FROM " . LINKS_TABLE . " WHERE link_id = '$link_id'";
+		$result = $db->sql_query($sql);
 
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain link information.", '', __LINE__, __FILE__, $sql);
-		}
-
-		if ( $row = $db->sql_fetchrow($result) )
+		if ($row = $db->sql_fetchrow($result))
 		{
 			// Link categories dropdown list
 			foreach($link_categories as $cat_id => $cat_title)
@@ -283,16 +266,9 @@ switch ($mode)
 				{
 					$sql = "INSERT INTO " . LINKS_TABLE . " (link_title, link_desc, link_category, link_url, link_logo_src, link_joined, link_active, user_id , user_ip)
 						VALUES ('$link_title', '$link_desc', '$link_category', '$link_url', '$link_logo_src', '$link_joined', '$link_active', '$user_id ', '$user_ip')";
-
-					if ( !$db->sql_query($sql) )
-					{
-						$message = $lang['Link_admin_add_fail'];
-					}
-					else
-					{
-						$message = $lang['Link_admin_add_success'];
-						$action_success = true;
-					}
+					$db->sql_query($sql);
+					$message = $lang['Link_admin_add_success'];
+					$action_success = true;
 				}
 				else
 				{
@@ -305,16 +281,9 @@ switch ($mode)
 
 					$sql = "UPDATE " . LINKS_TABLE . " SET link_title = '$link_title', link_desc = '$link_desc', link_url = '$link_url',
 									link_logo_src = '$link_logo_src', link_category = '$link_category', link_active = '$link_active' WHERE link_id = '$link_id'";
-
-					if ( !$db->sql_query($sql) )
-					{
-						$message = $lang['Link_admin_update_fail'];
-					}
-					else
-					{
-						$message = $lang['Link_admin_update_success'];
-						$action_success = true;
-					}
+					$db->sql_query($sql);
+					$message = $lang['Link_admin_update_success'];
+					$action_success = true;
 				}
 				else
 				{
@@ -326,16 +295,9 @@ switch ($mode)
 				if($link_id)
 				{
 					$sql = "DELETE FROM " . LINKS_TABLE . " WHERE link_id = '$link_id'";
-
-					if ( !$db->sql_query($sql) )
-					{
-						$message = $lang['Link_admin_delete_fail'];
-					}
-					else
-					{
-						$message = $lang['Link_admin_delete_success'];
-						$action_success = true;
-					}
+					$db->sql_query($sql);
+					$message = $lang['Link_admin_delete_success'];
+					$action_success = true;
 				}
 				else
 				{
@@ -350,6 +312,8 @@ switch ($mode)
 		}
 
 		$message .= '<br /><br />' . sprintf($lang['Click_return_admin_links'], '<a href="' . append_sid('admin_links.' . PHP_EXT . '?mode=view') . '">', '</a>');
+
+		$db->clear_cache('links_');
 		message_die(GENERAL_MESSAGE, $message);
 
 		break;

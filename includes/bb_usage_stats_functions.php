@@ -25,18 +25,14 @@ if (!defined('IN_ICYPHOENIX'))
  ******************************************************************************/
 function create_property($property_name, $property_value)
 {
-	global $db;
+	global $db, $cache;
 
 	/* Add a new group to the groups table using the admin retrieved above */
 	$sql = "INSERT INTO . " . CONFIG_TABLE . "(config_name, config_value) VALUES ('" . $property_name . "', '" . $property_value . "')";
 	//$sql = "UPDATE . " . CONFIG_TABLE . " SET config_value = '" . $property_value . "' WHERE config_name = '" . $property_name . "'";
+	$db->sql_query($sql);
 
-	if(!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Function create_property(): Failed to insert $property_name property into " . CONFIG_TABLE, "", __LINE__, __FILE__, $sql);
-	}
-
-	$db->clear_cache('config_');
+	$cache->destroy('config');
 	return true;
 }
 
@@ -52,10 +48,7 @@ function set_bb_usage_stats_property($property_name, $property_value)
 	/* First, determine if the $property_name row exists in the config table. */
 	$db_value = $db_not_found;
 	$sql = "SELECT config_name, config_value FROM " . CONFIG_TABLE . " WHERE config_name = '$property_name'";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Function set_bb_usage_stats_property(): Unable to obtain $property_name information from the' . CONFIG_TABLE . 'table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -75,12 +68,7 @@ function set_bb_usage_stats_property($property_name, $property_value)
 	elseif ($db_value != $property_value)
 	{
 		$sql = 'UPDATE ' . CONFIG_TABLE . " SET config_value = $property_value WHERE config_name = '" . $property_name . "'";
-
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR,
-				'Function set_bb_usage_stats_property(): Failed to update the $property_name row info in the' . CONFIG_TABLE . 'table', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	/* Return */
@@ -127,11 +115,7 @@ function is_user_member_of_group($user_id, $group_id)
 
 	/* Retrieve forum topic start data from database */
 	$sql = 'SELECT group_id, user_id FROM ' . USER_GROUP_TABLE . " WHERE group_id = $group_id AND user_id = $user_id";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Function is_user_member_of_group(): Could not obtain user/group membership data.', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$retval = false;
 	if ($row = $db->sql_fetchrow($result))

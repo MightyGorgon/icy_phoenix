@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form action="{S_PROFILE_ACTION}" method="post">
 {CPL_MENU_OUTPUT}
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_AVATAR_GENERATOR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -119,3 +121,5 @@ Some images &copy; <a href="http://www.phpbbstyles.com" target="_blank">phpBBSty
 	</td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

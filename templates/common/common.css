@@ -4,11 +4,12 @@
 }
 
 html {
+	font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
 	font-size: 100%;
 }
 
 body {
-	font-family: /*"Lucida Grande"*/, Verdana, Helvetica, Arial, sans-serif;
+	font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
 	/*font-size: 62.5%;*/ /* This sets the default font size to be equivalent to 10px */
 	font-size: 10px;
 }

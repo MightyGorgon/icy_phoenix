@@ -26,7 +26,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 {
-	global $board_config, $lang, $images, $userdata;
+	global $config, $lang, $images, $userdata;
 
 	$date_format = ($date_format == false) ? $lang['JOINED_DATE_FORMAT'] : $date_format;
 
@@ -34,13 +34,13 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	// Initialize everything...
 	$user_info = array();
-	for ($i = 0; $i < count($info_array); $i++)
+	for ($i = 0; $i < sizeof($info_array); $i++)
 	{
 		$user_info[$info_array[$i]] = '';
 	}
 
 	$user_info['from'] = (!empty($row['user_from'])) ? $row['user_from'] : '&nbsp;';
-	$user_info['joined'] = create_date($date_format, $row['user_regdate'], $board_config['board_timezone']);
+	$user_info['joined'] = create_date($date_format, $row['user_regdate'], $config['board_timezone']);
 	$user_info['posts'] = ($row['user_posts']) ? $row['user_posts'] : 0;
 	$user_info['style'] = ($row['style_name']) ? $row['style_name'] : '';
 
@@ -60,7 +60,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	}
 	elseif (!empty($row['user_viewemail']) || $is_moderator || $userdata['user_level'] == ADMIN)
 	{
-		$user_info['email_url'] = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
+		$user_info['email_url'] = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
 		$user_info['email_img'] = '<a href="' . $user_info['email_url'] . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
 		$user_info['email'] = '<a href="' . $user_info['email_url'] . '">' . $lang['Send_email'] . '</a>';
 	}
@@ -77,7 +77,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		$user_info['ip'] = '<a href="' . $user_info['ip_url'] . '">' . $lang['View_IP'] . '</a>';
 	}
 
-	$user_info['profile_url'] = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']);
+	$user_info['profile_url'] = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']);
 	$user_info['profile_img'] = '<a href="' . $user_info['profile_url'] . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
 	$user_info['profile'] = '<a href="' . $user_info['profile_url'] . '">' . $lang['Read_profile'] . '</a>';
 
@@ -85,7 +85,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['pm_img'] = '<a href="' . $user_info['pm_url'] . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 	$user_info['pm'] = '<a href="' . $user_info['pm_url'] . '">' . $lang['Send_private_message'] . '</a>';
 
-	$user_info['search_url'] = append_sid(SEARCH_MG . '?search_author=' . urlencode($username) . '&amp;showresults=posts');
+	$user_info['search_url'] = append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode($username) . '&amp;showresults=posts');
 	$user_info['search_img'] = '<a href="' . $search_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $username) . '" title="' . sprintf($lang['Search_user_posts'], $username) . '" /></a>';
 	$user_info['search'] = '<a href="' . $search_url . '">' . sprintf($lang['Search_user_posts'], $username) . '</a>';
 
@@ -118,7 +118,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['online_status_url'] = append_sid('viewonline.' . PHP_EXT);
 	$user_info['online_status_lang'] = $lang['Offline'];
 	$user_info['online_status_class'] = 'offline';
-	if (isset($row['user_allow_viewonline']) && ($row['user_session_time'] >= (time() - $board_config['online_time'])))
+	if (isset($row['user_allow_viewonline']) && ($row['user_session_time'] >= (time() - $config['online_time'])))
 	{
 		if ($row['user_allow_viewonline'])
 		{
@@ -169,7 +169,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	if (isset($row['user_birthday_y']))
 	{
 		$time_now = time();
-		$b_year = create_date('Y', $time_now, $board_config['board_timezone']);
+		$b_year = create_date('Y', $time_now, $config['board_timezone']);
 		$user_info['age'] = '(' . (intval($b_year) - intval($row['user_birthday_y'])) . ')';
 	}
 
@@ -238,6 +238,119 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 }
 
 /*
+* Generate Ranks
+*/
+function generate_ranks($user_row, $ranks_array)
+{
+	$user_fields_array = array(
+		'user_rank',
+		'user_rank2',
+		'user_rank3',
+		'user_rank4',
+		'user_rank5'
+	);
+
+	$user_ranks_array = array(
+		'rank_01', 'rank_01_img',
+		'rank_02', 'rank_02_img',
+		'rank_03', 'rank_03_img',
+		'rank_04', 'rank_04_img',
+		'rank_05', 'rank_05_img',
+	);
+
+	$user_ranks = array();
+
+	$is_banned = false;
+	$is_guest = false;
+	$rank_sw = false;
+
+	for($j = 0; $j < sizeof($user_ranks_array); $j++)
+	{
+		$user_ranks[$user_ranks_array[$j]] = '';
+	}
+
+	if ($user_row['user_id'] == ANONYMOUS)
+	{
+		$is_guest = true;
+	}
+
+	if (!$is_guest && !empty($ranks_array['bannedrow']))
+	{
+		for($j = 0; $j < sizeof($ranks_array['bannedrow']); $j++)
+		{
+			if ($ranks_array['bannedrow'][$j]['ban_userid'] == $user_row['user_id'])
+			{
+				$is_banned = true;
+				break;
+			}
+		}
+	}
+
+	for($j = 0; $j < sizeof($ranks_array['ranksrow']); $j++)
+	{
+		$rank_tmp = $ranks_array['ranksrow'][$j]['rank_title'];
+		$rank_img_tmp = ($ranks_array['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_array['ranksrow'][$j]['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
+		if ($is_guest == true)
+		{
+			if ($ranks_array['ranksrow'][$j]['rank_special'] == '2')
+			{
+				$user_ranks['rank_01'] = $rank_tmp;
+				$user_ranks['rank_01_img'] = $rank_img_tmp;
+			}
+		}
+		elseif ($is_banned == true)
+		{
+			if ($ranks_array['ranksrow'][$j]['rank_special'] == '3')
+			{
+				$user_ranks['rank_01'] = $rank_tmp;
+				$user_ranks['rank_01_img'] = $rank_img_tmp;
+			}
+		}
+		else
+		{
+			$day_diff = intval((time() - $user_row['user_regdate']) / 86400);
+
+			for($k = 0; $k < sizeof($user_fields_array); $k++)
+			{
+				switch ($ranks_array['ranksrow'][$j]['rank_special'])
+				{
+					case '1':
+						if ($user_row[$user_fields_array[$k]] == $ranks_array['ranksrow'][$j]['rank_id'])
+						{
+							$rank_sw = true;
+						}
+						break;
+					case '0':
+						if (($user_row[$user_fields_array[$k]] == '0') && ($user_row['user_posts'] >= $ranks_array['ranksrow'][$j]['rank_min']))
+						{
+							$rank_sw = true;
+						}
+						break;
+					case '-1':
+						if (($user_row[$user_fields_array[$k]] == '-1') && ($day_diff >= $ranks_array['ranksrow'][$j]['rank_min']))
+						{
+							$rank_sw = true;
+						}
+						break;
+					default:
+						break;
+				}
+
+				if ($rank_sw == true)
+				{
+					$user_ranks[$user_ranks_array[(($k + 1) * 2) - 2]] = $rank_tmp;
+					$user_ranks[$user_ranks_array[(($k + 1) * 2) - 1]] = $rank_img_tmp;
+					$rank_sw = false;
+				}
+			}
+
+		}
+	}
+
+	return $user_ranks;
+}
+
+/*
 * Top X Posters
 */
 function top_posters($user_limit, $show_admins = true, $show_mods = true, $only_array = false)
@@ -251,16 +364,13 @@ function top_posters($user_limit, $show_admins = true, $show_mods = true, $only_
 	" . $sql_level . "
 	ORDER BY u.user_posts DESC
 	LIMIT " . $user_limit;
-	if (!($result = $db->sql_query($sql, false, 'posts_top_posters_', POSTS_CACHE_FOLDER)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query forum top poster information', '', __LINE__, __FILE__, $SQL);
-	}
+	$result = $db->sql_query($sql, 0, 'posts_top_posters_', POSTS_CACHE_FOLDER);
 
 	$top_posters = '';
 	$top_posters_array = array();
 	while($row = $db->sql_fetchrow($result))
 	{
-		$top_posters .= (($top_posters == '') ? '' : ', ') . colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']) . '(' . $row['user_posts'] . ')';
+		$top_posters .= (($top_posters == '') ? '' : ', ') . colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']) . ' (' . $row['user_posts'] . ')';
 		$top_posters_array[] = $row;
 	}
 	$db->sql_freeresult($result);

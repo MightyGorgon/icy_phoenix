@@ -14,13 +14,13 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 $current_time = time();
-$minutes = date('is', $current_time);
+$minutes = gmdate('is', $current_time);
 $hour_now = $current_time - (60 * ($minutes[0] . $minutes[1])) - ($minutes[2] . $minutes[3]);
-$dato = date('H', $current_time);
+$dato = gmdate('H', $current_time);
 $time_today = $hour_now - (3600 * $dato);
-$year = create_date('Y', $current_time, $board_config['board_timezone']);
-$time_thismonth = $month [date('n') - 1];
-$time_thisweek = $time_today - ((date('w', $time_today) - 1) * 86400);
+$year = create_date('Y', $current_time, $config['board_timezone']);
+$time_thismonth = $month [gmdate('n') - 1];
+$time_thisweek = $time_today - ((gmdate('w', $time_today) - 1) * 86400);
 if ((time() - $time_thisweek) < 0)
 {
 	$time_thisweek_poster = $time_thisweek - (60 * 60 * 24 * 7);
@@ -31,9 +31,9 @@ else
 	$time_thisweek_poster = $time_thisweek;
 	$time_today_poster = $time_today;
 }
-$this_month = create_date('n', $time_thismonth, $board_config['board_timezone']);
-$l_this_month = create_date('F', $time_thismonth, $board_config['board_timezone']);
-$l_this_day = create_date('D', $time_today, $board_config['board_timezone']);
+$this_month = create_date('n', $time_thismonth, $config['board_timezone']);
+$l_this_month = create_date('F', $time_thismonth, $config['board_timezone']);
+$l_this_day = create_date('D', $time_today, $config['board_timezone']);
 
 $template->assign_vars(array(
 	'L_MODULE_NAME' => $lang['module_name_site_hist_hours_stats_current_day'],
@@ -59,23 +59,18 @@ for ($i = 0; $i < $return_limit; $i++)
 
 	if ($i == $return_limit - 1)
 	{
-		$l_currrent_time = '<strong>' . create_date('H:i', $hour_now, $board_config['board_timezone']) . '</strong>';
+		$l_currrent_time = '<strong>' . create_date('H:i', $hour_now, $config['board_timezone']) . '</strong>';
 	}
 	else
 	{
-		$l_currrent_time = create_date('H:i', $hour_now, $board_config['board_timezone']);
+		$l_currrent_time = create_date('H:i', $hour_now, $config['board_timezone']);
 	}
 
 	$sql = "SELECT COUNT(user_regdate) as new_users
 		FROM " . USERS_TABLE . "
 		WHERE user_regdate >= " . $hour_now . "
 			AND user_regdate < " . ($hour_now + 3599);
-
-	if (!($result = $stat_db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't retrieve site history", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $stat_db->sql_query($sql);
 	$new_users = $stat_db->sql_fetchrow($result);
 	$new_users = $new_users['new_users'];
 
@@ -85,11 +80,7 @@ for ($i = 0; $i < $return_limit; $i++)
 			AND date < " . ($hour_now + 3599) . "
 		GROUP BY (date >= " . $hour_now . "
 			AND date < " . ($hour_now + 3599) . ")";
-
-	if (!($result = $stat_db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't retrieve site history", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $stat_db->sql_query($sql);
 
 	if ($stat_db->sql_numrows($result))
 	{

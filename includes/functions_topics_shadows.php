@@ -59,29 +59,30 @@ function ts_id_2_name($id, $mode = 'user')
 
 	switch($mode)
 	{
+		case 'user_formatted':
+		{
+			$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE user_id = " . $id;
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			$formatted_username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
+			return $formatted_username;
+			break;
+		}
 		case 'user':
 		{
-			$sql = 'SELECT username FROM ' . USERS_TABLE . "
-					WHERE user_id = $id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
-			}
+			$sql = "SELECT username FROM " . USERS_TABLE . " WHERE user_id = " . $id;
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			return $row['username'];
 			break;
 		}
 		case 'forum':
 		{
-			$sql = 'SELECT f.forum_name FROM ' . FORUMS_TABLE . ' f, ' . TOPICS_TABLE . " t
-							WHERE t.topic_id = $id
-							AND t.forum_id = f.forum_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Err', '', __LINE__, __FILE__, $sql);
-			}
+			$sql = "SELECT f.forum_name
+				FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t
+				WHERE t.topic_id = " . $id . "
+					AND t.forum_id = f.forum_id";
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			return $row['forum_name'];
 			break;

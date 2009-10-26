@@ -18,15 +18,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_features.' . PHP_EXT);
-
-$page_title = $lang['Features'];
-$meta_description = '';
-$meta_keywords = '';
-
-include('includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'features_body.tpl'));
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_features.' . PHP_EXT);
 
 $img_true = '<img src="images/cms/b_ok.png" alt="True" />';
 $img_false = '<img src="images/cms/b_cancel.png" alt="False" />';
@@ -426,8 +418,6 @@ foreach ($features_array as $f_cat => $f_item)
 	}
 }
 
-$template->pparse('body');
-
-include('includes/page_tail.' . PHP_EXT);
+full_page_generation('features_body.tpl', $lang['Features'], '', '');
 
 ?>

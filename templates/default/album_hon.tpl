@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form action="{S_ACTION}" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RATE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN hon_rating -->
@@ -67,3 +69,5 @@
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

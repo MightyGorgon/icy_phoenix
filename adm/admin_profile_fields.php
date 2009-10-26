@@ -31,10 +31,11 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = false;
 require('./pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+$db->clear_cache('profile_fields_');
 
 if(!isset($_GET['mode']) || !isset($_GET['pfid']))
 {
-	message_die(GENERAL_ERROR,'Required GET variables not set','Could not reach admin page; Insufficient data',__LINE__,__FILE__);
+	message_die(GENERAL_ERROR, 'Required GET variables not set', 'Could not reach admin page; Insufficient data',__LINE__,__FILE__);
 }
 
 
@@ -58,8 +59,9 @@ if($mode == 'add')
 		'L_ADD_FIELD_TITLE' => $lang['add_field_title'],
 		'L_ADD_FIELD_EXPLAIN' => $lang['add_field_explain'],
 
-		'S_ADD_FIELD_ACTION' => append_sid("$filename?mode=update&pfid=x")
-		));
+		'S_ADD_FIELD_ACTION' => append_sid($filename . '?mode=update&amp;pfid=x')
+		)
+	);
 }
 elseif($mode == 'update')
 {
@@ -67,7 +69,9 @@ elseif($mode == 'update')
 
 	$name = htmlspecialchars($_POST['field_name']);
 	if(empty($name))
-		message_die(GENERAL_ERROR,$lang['enter_a_name']);
+	{
+		message_die(GENERAL_ERROR, $lang['enter_a_name']);
+	}
 
 	$description = htmlspecialchars($_POST['field_descrition']);
 
@@ -81,29 +85,37 @@ elseif($mode == 'update')
 
 	$radio_values = htmlspecialchars($_POST['radio_values']);
 	$radio_default_value = htmlspecialchars($_POST['radio_default_value']);
-	$radio_values = explode("\n",str_replace("\r",'',$radio_values));
+	$radio_values = explode("\n", str_replace("\r", '', $radio_values));
 	if(empty($radio_default_value))
+	{
 		$radio_default_value = $radio_values[0];
+	}
 	$temp = '';
 	foreach($radio_values as $val)
+	{
 		$temp .= $val . ',';
+	}
 	$radio_values = substr($temp,0,strlen($temp)-1);
 
 	$checkbox_values = htmlspecialchars($_POST['checkbox_values']);
 	$check_default_values = htmlspecialchars($_POST['check_default_values']);
-	$checkbox_values = explode("\n",str_replace("\r",'',$checkbox_values));
+	$checkbox_values = explode("\n", str_replace("\r", '', $checkbox_values));
 	if(!empty($check_default_values))
 	{
-		$check_default_values = explode("\n",str_replace("\r",'',$check_default_values));
+		$check_default_values = explode("\n", str_replace("\r", '', $check_default_values));
 		$temp = '';
 		foreach($check_default_values as $val)
+		{
 			$temp .= $val . ',';
-		$check_default_values = substr($temp,0,strlen($temp)-1);
+		}
+		$check_default_values = substr($temp, 0, strlen($temp) - 1);
 	}
 	$temp = '';
 	foreach($checkbox_values as $val)
+	{
 		$temp .= $val . ',';
-	$checkbox_values = substr($temp,0,strlen($temp)-1);
+	}
+	$checkbox_values = substr($temp,0,strlen($temp) - 1);
 
 	$required = intval($_POST['required']);
 	$user_can_view = intval($_POST['user_can_view']);
@@ -116,39 +128,43 @@ elseif($mode == 'update')
 	if($pfid == 'x')
 	{
 		$sql = "SELECT field_name FROM " . PROFILE_FIELDS_TABLE . "
-			WHERE field_name='$name'";
-		if(!($result = $db->sql_query($sql)))
-			message_die(GENERAL_ERROR,'Could not query database for field name information','',__LINE__,__FILE__,$sql);
+			WHERE field_name = '$name'";
+		$result = $db->sql_query($sql);
 		$temp = $db->sql_fetchrowset($result);
 		if(!empty($temp))
+		{
 			message_die(GENERAL_ERROR,$lang['field_exists']);
+		}
 	}
 
 	if($pfid == 'x')
+	{
 		$die_message = 'Could not insert new profile field';
+	}
 	else
+	{
 		$die_message = 'Could not update profile information';
+	}
 
 	if($pfid != 'x')
 	{
 		$sql = "SELECT field_name FROM " . PROFILE_FIELDS_TABLE . "
 			WHERE field_id = $pfid";
-		if(!($result = $db->sql_query($sql)))
-			message_die(GENERAL_ERROR,'Could not find old name','',__LINE__,__FILE__,$sql);
+		$result = $db->sql_query($sql);
 		$old_name = $db->sql_fetchrow($result);
 		$old_name = text_to_column($old_name['field_name']);
 	}
 
 	$name_display = $name;
-	$name = str_replace("\'","''",text_to_column($name));
-	$description = str_replace("\'","''",$description);
-	$text_field_default = str_replace("\'","''",$text_field_default);
-	$text_area_default = str_replace("\'","''",$text_area_default);
-	$text_area_maxlen = str_replace("\'","''",$text_area_maxlen);
-	$radio_default_value = str_replace("\'","''",$radio_default_value);
-	$radio_values = str_replace("\'","''",$radio_values);
-	$check_default_values = str_replace("\'","''",$check_default_values);
-	$checkbox_values = str_replace("\'","''",$checkbox_values);
+	$name = str_replace("\'", "''", text_to_column($name));
+	$description = str_replace("\'", "''", $description);
+	$text_field_default = str_replace("\'", "''", $text_field_default);
+	$text_area_default = str_replace("\'", "''", $text_area_default);
+	$text_area_maxlen = str_replace("\'", "''", $text_area_maxlen);
+	$radio_default_value = str_replace("\'", "''", $radio_default_value);
+	$radio_values = str_replace("\'", "''", $radio_values);
+	$check_default_values = str_replace("\'", "''", $check_default_values);
+	$checkbox_values = str_replace("\'", "''", $checkbox_values);
 
 	if($pfid == 'x')
 	{
@@ -184,8 +200,7 @@ elseif($mode == 'update')
 			WHERE field_id = $pfid";
 	}
 
-	if(!$db->sql_query($sql))
-		message_die(GENERAL_ERROR, $die_message, '', __LINE__, __FILE__, $sql);
+	$db->sql_query($sql);
 
 	if($pfid != 'x')
 	{
@@ -204,15 +219,11 @@ elseif($mode == 'update')
 			}
 			$sql = "ALTER TABLE " . USERS_TABLE . "
 				CHANGE $old_name $name $col_type";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR,'Could not change column name in '.USERS_TABLE,'',__LINE__,__FILE__,$sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
-	$sql = "ALTER TABLE " . USERS_TABLE . "
-		ADD $name";
+	$sql = "ALTER TABLE " . USERS_TABLE . " ADD $name";
 	switch($type)
 	{
 		case TEXT_FIELD:
@@ -227,17 +238,25 @@ elseif($mode == 'update')
 			break;
 	}
 
-	if($pfid == 'x' && !$db->sql_query($sql))
-		message_die(GENERAL_ERROR,'Could not expand users table for new profile field.','',__LINE__,__FILE__,$sql);
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(($pfid == 'x') && !$result)
+	{
+		message_die(GENERAL_ERROR, 'Could not expand users table for new profile field.', '', __LINE__, __FILE__, $sql);
+	}
 
 	$sql = "SELECT user_id FROM " . USERS_TABLE;
-	if(!($result = $db->sql_query($sql)))
-		message_die(GENERAL_ERROR,'Could not retrieve use and profile information','',__LINE__,__FILE__,$sql);
+	$result = $db->sql_query($sql);
 
 	$user_id_array = array();
-	while($temp = $db->sql_fetchrow($result))$user_id_array[] = $temp['user_id'];
+	while($temp = $db->sql_fetchrow($result))
+	{
+		$user_id_array[] = $temp['user_id'];
+	}
 
 	if($pfid == 'x')
+	{
 		foreach($user_id_array as $user_id)
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -260,15 +279,17 @@ elseif($mode == 'update')
 					break;
 			}
 
-			$sql = sprintf($sql,"'$val'");
+			$sql = sprintf($sql, "'$val'");
 
-			if(!$db->sql_query($sql))
-				message_die(GENERAL_ERROR,'Could not update users with default values','',__LINE__,__FILE__,$sql);
+			$db->sql_query($sql);
 		}
+	}
 
 	$template->assign_vars(array(
 		'MESSAGE_TITLE' => $pfid == 'x' ? $lang['profile_field_created'] : $lang['profile_field_updated'],
-		'MESSAGE_TEXT' => $lang['field_success'] . '<br /><br />' . $create_second_field_link));
+		'MESSAGE_TEXT' => $lang['field_success'] . '<br /><br />' . $create_second_field_link
+		)
+	);
 }
 elseif($mode == 'edit')
 {
@@ -284,15 +305,18 @@ elseif($mode == 'edit')
 			'L_ACTION' => $lang['profile_field_action'],
 			'L_EDIT' => $lang['Edit'],
 			'L_DELETE' => $lang['Delete']
-			));
+			)
+		);
 
 		$profile_rows = get_fields();
 
-		if(count($profile_rows) == 0)
-			$template->assign_block_vars('switch_no_fields',array('NO_FIELDS_EXIST' => $lang['no_profile_fields_exist']));
+		if(sizeof($profile_rows) == 0)
+		{
+			$template->assign_block_vars('switch_no_fields', array('NO_FIELDS_EXIST' => $lang['no_profile_fields_exist']));
+		}
 		else
 		{
-			$template->assign_block_vars('switch_fields',array());
+			$template->assign_block_vars('switch_fields', array());
 
 			foreach($profile_rows as $col => $val)
 			{
@@ -300,8 +324,8 @@ elseif($mode == 'edit')
 				$id = $val['field_id'];
 				$name = $val['field_name'];
 
-				$edit_url = append_sid("$filename?mode=edit&pfid=$id");
-				$delete_url = append_sid("$filename?mode=delete&pfid=$id");
+				$edit_url = append_sid($filename . '?mode=edit&amp;pfid=' . $id);
+				$delete_url = append_sid($filename . '?mode=delete&amp;pfid=' . $id);
 
 				$template->assign_block_vars('switch_fields.profile_fields',array(
 					'ROW_CLASS' => $row,
@@ -310,7 +334,8 @@ elseif($mode == 'edit')
 
 					'U_PROFILE_FIELD_EDIT' => $edit_url,
 					'U_PROFILE_FIELD_DELETE' => $delete_url
-					));
+					)
+				);
 			}
 		}
 	}
@@ -346,16 +371,17 @@ elseif($mode == 'edit')
 			'AUTHOR_CHECKED' => $profile_rows['topic_location'] == AUTHOR ? ' checked="checked"' : '',
 			'ABOVE_SIG_CHECKED' => $profile_rows['topic_location'] == ABOVE_SIGNATURE ? ' checked="checked"' : '',
 			'BELOW_SIG_CHECKED' => $profile_rows['topic_location'] == BELOW_SIGNATURE ? ' checked="checked"' : '',
-			'RADIO_VALUES' => str_replace(',',"\r\n",$profile_rows['radio_button_values']),
+			'RADIO_VALUES' => str_replace(',', "\r\n", $profile_rows['radio_button_values']),
 			'RADIO_DEFAULT' => $profile_rows['radio_button_default'],
-			'CHECKBOX_VALUES' => str_replace(',',"\r\n",$profile_rows['checkbox_values']),
-			'CHECKBOX_DEFAULT' => str_replace(',',"\r\n",$profile_rows['checkbox_default']),
+			'CHECKBOX_VALUES' => str_replace(',', "\r\n", $profile_rows['checkbox_values']),
+			'CHECKBOX_DEFAULT' => str_replace(',', "\r\n", $profile_rows['checkbox_default']),
 
 			'L_ADD_FIELD_TITLE' => $lang['edit_field_title'],
 			'L_ADD_FIELD_EXPLAIN' => $lang['edit_field_explain'],
 
-			'S_ADD_FIELD_ACTION' => append_sid("$filename?mode=update&pfid=$pfid")
-			));
+			'S_ADD_FIELD_ACTION' => append_sid($filename . '?mode=update&amp;pfid=' . $pfid)
+			)
+		);
 	}
 }
 elseif($mode == 'delete')
@@ -363,33 +389,33 @@ elseif($mode == 'delete')
 	$field_name = get_fields('WHERE field_id = '.$pfid,false,'field_name');
 	$name = text_to_column($field_name['field_name']);
 
-	$del_link = '<a href="' . append_sid("$filename?mode=confirmdelete&pfid=$pfid&name=$name") . '">' . $lang['Yes'] . '</a>';
-	$nodel_link = sprintf($lang['index_link'],$lang['No']);
+	$del_link = '<a href="' . append_sid($filename . '?mode=confirmdelete&amp;pfid=' . $pfid . '&amp;name=' . $name) . '">' . $lang['Yes'] . '</a>';
+	$nodel_link = sprintf($lang['index_link'], $lang['No']);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 	$template->assign_vars(array(
-		'MESSAGE_TITLE' => sprintf($lang['double_check_delete'],$field_name['field_name']),
+		'MESSAGE_TITLE' => sprintf($lang['double_check_delete'], $field_name['field_name']),
 		'MESSAGE_TEXT' => $del_link . ' &nbsp; ' . $nodel_link
-		));
+		)
+	);
 }
 elseif($mode == 'confirmdelete')
 {
 	$sql = "DELETE FROM " . PROFILE_FIELDS_TABLE . "
 		WHERE field_id = $pfid";
-	if(!$db->sql_query($sql))
-		message_die(GENERAL_ERROR,'Could not delete profile form database','',__LINE__,__FILE__,$sql);
+	$db->sql_query($sql);
 
 	$name = $_GET['name'];
 	$sql = "ALTER TABLE " . USERS_TABLE . "
 		DROP COLUMN $name";
-	if(!$db->sql_query($sql))
-		message_die(GENERAL_ERROR,'Could not remove column from '.USERS_TABLE,'',__LINE__,__FILE__,$sql);
+	$db->sql_query($sql);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 	$template->assign_vars(array(
 		'MESSAGE_TITLE' => $lang['field_deleted'],
 		'MESSAGE_TEXT' => $lang['click_here_here']
-		));
+		)
+	);
 }
 
 $template->assign_vars(array(
@@ -462,9 +488,12 @@ $template->assign_vars(array(
 	'S_AUTHOR' => AUTHOR,
 	'S_ABOVE_SIGNATURE' => ABOVE_SIGNATURE,
 	'S_BELOW_SIGNATURE' => BELOW_SIGNATURE
-	));
+	)
+);
 
 $template->pparse('body');
 
+$db->clear_cache('profile_fields_');
 include('./page_footer_admin.' . PHP_EXT);
+
 ?>

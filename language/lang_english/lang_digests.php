@@ -28,12 +28,12 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 // This block goes as default text in the emailed digest (mail_digests.php)
-	'digest_introduction' => 'As you requested, here is the latest digest of messages posted on ' . $board_config['sitename'] . ' forums. Please come and join the discussion!',
-	'digest_from_text_name' => $board_config['sitename'] . ' Digest Robot',
-	'digest_from_email_address' => $board_config['board_email'],
-	'digest_subject_line' => $board_config['sitename'] . ' Digests',
-	'digest_disclaimer_html' => "\n" . 'This digest is being sent to registered members of <a href="' . DIGEST_SITE_URL . '">' . $board_config['sitename'] . '</a> forums and only because you explicitly requested it. ' . $board_config['sitename'] . ' is completely commercial free. Your email address is never disclosed to outside parties. See our <a href="' . DIGEST_SITE_URL . 'faq.' . PHP_EXT . '">FAQ</a> for more information on our privacy policies. You can change or delete your subscription by logging into ' . $board_config['sitename'] . ' from the <a href="' . DIGEST_SITE_URL . 'digests.' . PHP_EXT . '">Digest Page</a>. (You must be logged in to change your digest settings.) If you have questions or feedback on the format of this digest please send it to the <a href="mailto:' . $board_config['board_email'] . '">' . $board_config['sitename'] . ' Webmaster</a>.',
-	'digest_disclaimer_text' => "\n" . 'This digest is being sent to registered members of ' . $board_config['sitename'] . ' forums and only because you explicitly requested it. ' . $board_config['sitename'] . ' is completely commercial free. Your email address is never disclosed to outside parties. See our FAQ for more information on our privacy policies. You can change or delete your subscription by logging into ' . $board_config['sitename'] . ' from the Digest Page. (You must be logged in to change your digest settings.) If you have questions or feedback on the format of this digest please send it to the ' . $board_config['board_email'] . '.',
+	'digest_introduction' => 'As you requested, here is the latest digest of messages posted on ' . $config['sitename'] . ' forums. Please come and join the discussion!',
+	'digest_from_text_name' => $config['sitename'] . ' Digest Robot',
+	'digest_from_email_address' => $config['board_email'],
+	'digest_subject_line' => $config['sitename'] . ' Digests',
+	'digest_disclaimer_html' => "\n" . 'This digest is being sent to registered members of <a href="' . DIGEST_SITE_URL . '">' . $config['sitename'] . '</a> forums and only because you explicitly requested it. ' . $config['sitename'] . ' is completely commercial free. Your email address is never disclosed to outside parties. See our <a href="' . DIGEST_SITE_URL . 'faq.' . PHP_EXT . '">FAQ</a> for more information on our privacy policies. You can change or delete your subscription by logging into ' . $config['sitename'] . ' from the <a href="' . DIGEST_SITE_URL . 'digests.' . PHP_EXT . '">Digest Page</a>. (You must be logged in to change your digest settings.) If you have questions or feedback on the format of this digest please send it to the <a href="mailto:' . $config['board_email'] . '">' . $config['sitename'] . ' Webmaster</a>.',
+	'digest_disclaimer_text' => "\n" . 'This digest is being sent to registered members of ' . $config['sitename'] . ' forums and only because you explicitly requested it. ' . $config['sitename'] . ' is completely commercial free. Your email address is never disclosed to outside parties. See our FAQ for more information on our privacy policies. You can change or delete your subscription by logging into ' . $config['sitename'] . ' from the Digest Page. (You must be logged in to change your digest settings.) If you have questions or feedback on the format of this digest please send it to the ' . $config['board_email'] . '.',
 	'digest_forum' => 'Forum: ',
 	'digest_topic' => 'Topic: ',
 	'digest_link' => 'Link',
@@ -108,6 +108,7 @@ $lang = array_merge($lang, array(
 	'digest_9pm' => '9 PM',
 	'digest_10pm' => '10 PM',
 	'digest_11pm' => '11 PM',
+	'digest_click_return' => 'Click %sHere%s to return to Digests settings', // %s's here are for uris, do not remove!
 	'digest_select_forums' => '<b>Send digests for these forums:</b>',
 	'digest_create' => 'Your digest settings were successfully created',
 	'digest_modify' => 'Your digest settings were successfully updated',

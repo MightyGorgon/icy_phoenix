@@ -27,16 +27,11 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 		WHERE r.topic_id = $topic_id
 		AND r.registration_user_id = u.user_id
 		ORDER BY registration_status, registration_time";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain user registration data for this topic', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$reg_info = $db->sql_fetchrowset($result);
-
 	$db->sql_freeresult($result);
-	$numregs = count($reg_info);
+
+	$numregs = sizeof($reg_info);
 	$option1_count = 0;
 	$option2_count = 0;
 	$option3_count = 0;
@@ -52,11 +47,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 	$sql = "SELECT topic_id, reg_max_option1, reg_max_option2, reg_max_option3, reg_start, reg_length
 			FROM " . REGISTRATION_DESC_TABLE . "
 			WHERE topic_id = $topic_id";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain button data for this registration topic', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 
 	$reg_start = $row['reg_start'];
@@ -78,17 +69,17 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 		if ($reg_info[$u]['registration_status'] == REG_OPTION1)
 		{
 			$option1_count++;
-			$reg_option1_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
+			$reg_option1_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']) . '</td></tr>';
 		}
 		elseif ($reg_info[$u]['registration_status'] == REG_OPTION2)
 		{
 			$option2_count++;
-			$reg_option2_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
+			$reg_option2_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']) . '</td></tr>';
 		}
 		elseif ($reg_info[$u]['registration_status'] == REG_OPTION3)
 		{
 			$option3_count++;
-			$reg_option3_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($board_config['default_dateformat'], $reg_info[$u]['registration_time'], $board_config['board_timezone']) . '</td></tr>';
+			$reg_option3_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']) . '</td></tr>';
 		}
 	}
 
@@ -114,7 +105,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 	{
 		$template->assign_block_vars('reg_unregister', array(
 			'REG_SELF_NAME' => $lang['Reg_Self_Unregister'],
-			'REG_SELF_URL' => append_sid(POSTING_MG . '?mode=register&amp;register=' . REG_UNREGISTER . '&amp;' . POST_TOPIC_URL . '=' . $topic_id)
+			'REG_SELF_URL' => append_sid(CMS_PAGE_POSTING . '?mode=register&amp;register=' . REG_UNREGISTER . '&amp;' . POST_TOPIC_URL . '=' . $topic_id)
 			)
 		);
 	}
@@ -193,13 +184,13 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 		'REG_HEAD_TIME' => $lang['Reg_Head_Time'],
 		'REG_OPTION1_NAME' => $reg_option1_option,
 		'REG_OPTION1_COUNT' => $option1_count,
-		'REG_OPTION1_URL' => append_sid(POSTING_MG . '?mode=register&amp;register=' . REG_OPTION1 . '&amp;' . POST_TOPIC_URL . '=' . $topic_id),
+		'REG_OPTION1_URL' => append_sid(CMS_PAGE_POSTING . '?mode=register&amp;register=' . REG_OPTION1 . '&amp;' . POST_TOPIC_URL . '=' . $topic_id),
 		'REG_OPTION2_NAME' => $reg_option2_option,
 		'REG_OPTION2_COUNT' => $option2_count,
-		'REG_OPTION2_URL' => append_sid(POSTING_MG . '?mode=register&amp;register=' . REG_OPTION2 . '&amp;' . POST_TOPIC_URL . '=' . $topic_id),
+		'REG_OPTION2_URL' => append_sid(CMS_PAGE_POSTING . '?mode=register&amp;register=' . REG_OPTION2 . '&amp;' . POST_TOPIC_URL . '=' . $topic_id),
 		'REG_OPTION3_NAME' => $reg_option3_option,
 		'REG_OPTION3_COUNT' => $option3_count,
-		'REG_OPTION3_URL' => append_sid(POSTING_MG . '?mode=register&amp;register=' . REG_OPTION3 . '&amp;' . POST_TOPIC_URL . '=' . $topic_id),
+		'REG_OPTION3_URL' => append_sid(CMS_PAGE_POSTING . '?mode=register&amp;register=' . REG_OPTION3 . '&amp;' . POST_TOPIC_URL . '=' . $topic_id),
 
 		'REG_OPTION1_READONLY' => $readonly_option1,
 		'REG_OPTION2_READONLY' => $readonly_option2,

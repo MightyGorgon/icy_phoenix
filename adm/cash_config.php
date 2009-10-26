@@ -23,7 +23,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -36,10 +36,8 @@ $reset_navbar = "";
 
 // Pull all config data
 $sql = "SELECT * FROM " . CONFIG_TABLE;
-if (!$result = $db->sql_query($sql))
-{
-	message_die(CRITICAL_ERROR, "Could not query config information in cash_config", "", __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
+
 $allowed_array = array('cash_disable' => true,
 						'cash_adminbig' => true,
 						'cash_adminnavbar' => true,
@@ -69,10 +67,7 @@ while ($row = $db->sql_fetchrow($result))
 		$sql = "UPDATE " . CONFIG_TABLE . " SET
 			config_value = '" . str_replace("\'", "''", $_POST[$config_name]) . "'
 			WHERE config_name = '$config_name'";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Failed to update Cash Mod configuration for $config_name", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 }
 

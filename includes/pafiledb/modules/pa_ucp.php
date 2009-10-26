@@ -19,7 +19,7 @@ class pafiledb_ucp extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $debug;
+		global $pafiledb_template, $lang, $config, $pafiledb_config, $debug;
 		return false;
 	}
 }

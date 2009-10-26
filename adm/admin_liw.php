@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1000_Configuration']['170_LIW'] = $file;
@@ -30,75 +30,53 @@ require('./pagestart.' . PHP_EXT);
 
 // Attempt to get the configuration values
 $sql = "SELECT config_name, config_value FROM " . CONFIG_TABLE . " WHERE config_name LIKE 'liw_%' OR config_name = 'liw_max_width'";
+$result = $db->sql_query($sql);
 
-if( !$db->sql_query($sql) || $db->sql_numrows() < 3 )
+while ($record = $db->sql_fetchrow())
 {
-	message_die(GENERAL_MESSAGE, "Could not query config information.<br /><br />Make sure that you executed all SQL queries when installing the MOD", "", __LINE__, __FILE__, $sql);
+	$default_config[$record['config_name']] = $record['config_value'];
 }
 
-while ( $record = $db->sql_fetchrow() )
-{
-	$config[$record['config_name']] = $record['config_value'];
-}
-
-
-//
 // Let's try to get the number of rows in phpbb_liw_cache
-//
 $sql = "SELECT COUNT(image_checksum) AS rowcount FROM " . LIW_CACHE_TABLE;
-
-if( !$db->sql_query($sql) )
-{
-	message_die(GENERAL_MESSAGE, "Could not query config information.<br /><br />Make sure that you executed all SQL queries when installing the MOD", "", __LINE__, __FILE__, $sql);
-}
-
-$record = $db->sql_fetchrow();
+$result = $db->sql_query($sql);
+$record = $db->sql_fetchrow($result);
 $cache_rowcount = $record['rowcount'];
 
 
-//
 // Get the size of the phpbb_liw_cache table
-// (MySQL only)
-//
-if( preg_match("/^mysql/", SQL_LAYER) )
+$sql = "SELECT VERSION() AS mysql_version";
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if ($result)
 {
-	$sql = "SELECT VERSION() AS mysql_version";
-
-	if ( $result = $db->sql_query($sql) )
+	$record = $db->sql_fetchrow($result);
+	if(preg_match("/^(3\.23|4\.)/", $record['mysql_version']))
 	{
-		$record = $db->sql_fetchrow($result);
-		if( preg_match("/^(3\.23|4\.)/", $record['mysql_version']) )
-		{
-			$sql = "SHOW TABLE STATUS FROM " . $dbname;
-			$result = $db->sql_query($sql);
+		$sql = "SHOW TABLE STATUS FROM " . $dbname;
+		$result = $db->sql_query($sql);
 
-			while ( $record = $db->sql_fetchrow($result) )
+		while ($record = $db->sql_fetchrow($result))
+		{
+			if ($record['Name'] == LIW_CACHE_TABLE)
 			{
-				if ( $record['Name'] == LIW_CACHE_TABLE )
-				{
-					$cache_rowcount .= ' (' . sprintf("%.2f KB", ( $record['Data_length'] / 1024 )) . ')';
-				}
+				$cache_rowcount .= ' (' . sprintf("%.2f KB", ($record['Data_length'] / 1024)) . ')';
 			}
 		}
 	}
 }
 
-//
 // If the form has been submitted update the config values
-//
-if ( isset($_POST['submit']) )
+if (isset($_POST['submit']))
 {
 	$config_fields = array('liw_enabled', 'liw_sig_enabled', 'liw_attach_enabled', 'liw_max_width', 'liw_max_width');
 	reset($config_fields);
 
-	while ( list($temp, $config_name) = each($config_fields) )
+	while (list($temp, $config_name) = each($config_fields))
 	{
 		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = " . intval($_POST[$config_name]) . " WHERE config_name = '" . $config_name . "'";
-
-		if( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_MESSAGE, "Could not update config information", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	$message = $lang['LIW_config_updated'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], '<a href="' . append_sid('admin_liw.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -109,14 +87,10 @@ if ( isset($_POST['submit']) )
 //
 // Are we going to empty the cache table?
 //
-if ( isset($_POST['empty_cache']) )
+if (isset($_POST['empty_cache']))
 {
 	$sql = "DELETE FROM " . LIW_CACHE_TABLE;
-
-	if( !$db->sql_query($sql) )
-	{
-		message_die(GENERAL_MESSAGE, "Could not empty cache table", "", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
 	$message = $lang['LIW_cache_emptied'] . '<br /><br />' . sprintf($lang['LIW_click_return_config'], '<a href="' . append_sid('admin_liw.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
@@ -132,7 +106,7 @@ $template->set_filenames(array(
 //
 
 // getimagesize() URL support
-if ( @phpversion() >= '4.0.5' )
+if (@phpversion() >= '4.0.5')
 {
 	$comp_getimagesize_status = '<span class="text_green">' . $lang['Available'] . '</span>';
 	$comp_getimagesize_text = $lang['LIW_getimagesize_available'];
@@ -144,9 +118,9 @@ else
 }
 
 // fopen URL wrappers
-$ini_val = ( phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
+$ini_val = (phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 
-if ( $ini_val('allow_url_fopen') )
+if ($ini_val('allow_url_fopen'))
 {
 	$comp_urlaware_status = '<span class="text_green">' . $lang['Available'] . '</span>';
 	$comp_urlaware_text = $lang['LIW_urlaware_available'];
@@ -158,7 +132,7 @@ else
 }
 
 // openSSL extension
-if ( @extension_loaded('openssl') )
+if (@extension_loaded('openssl'))
 {
 	$comp_openssl_status = '<span class="text_green">' . $lang['Available'] . '</span>';
 	$comp_openssl_text = $lang['LIW_openssl_available'];
@@ -169,7 +143,7 @@ else
 	$comp_openssl_text = $lang['LIW_openssl_unavailable'];
 }
 
-if (isset($config['liw_attach_enabled']))
+if (isset($default_config['liw_attach_enabled']))
 {
 	$template->assign_block_vars('switch_attach_mod_installed', array());
 }
@@ -179,14 +153,14 @@ $template->assign_vars(array(
 	'S_CONFIG_ACTION' => append_sid('admin_liw.' . PHP_EXT),
 
 	// Configuration
-	'S_ENABLED_YES' => ( ($config['liw_enabled']) ? 'checked="checked"' : '' ),
-	'S_ENABLED_NO' => ( ($config['liw_enabled']) ? '' : 'checked="checked"' ),
-	'S_SIG_ENABLED_YES' => ( ($config['liw_sig_enabled']) ? 'checked="checked"' : '' ),
-	'S_SIG_ENABLED_NO' => ( ($config['liw_sig_enabled']) ? '' : 'checked="checked"' ),
-	'S_ATTACH_ENABLED_YES' => ( ($config['liw_attach_enabled']) ? 'checked="checked"' : '' ),
-	'S_ATTACH_ENABLED_NO' => ( ($config['liw_attach_enabled']) ? '' : 'checked="checked"' ),
+	'S_ENABLED_YES' => (($default_config['liw_enabled']) ? 'checked="checked"' : ''),
+	'S_ENABLED_NO' => (($default_config['liw_enabled']) ? '' : 'checked="checked"'),
+	'S_SIG_ENABLED_YES' => (($default_config['liw_sig_enabled']) ? 'checked="checked"' : ''),
+	'S_SIG_ENABLED_NO' => (($default_config['liw_sig_enabled']) ? '' : 'checked="checked"'),
+	'S_ATTACH_ENABLED_YES' => (($default_config['liw_attach_enabled']) ? 'checked="checked"' : ''),
+	'S_ATTACH_ENABLED_NO' => (($default_config['liw_attach_enabled']) ? '' : 'checked="checked"'),
 
-	'MAX_IMG_WIDTH' => $config['liw_max_width'],
+	'MAX_IMG_WIDTH' => $default_config['liw_max_width'],
 
 	// Compatibility check
 	'L_COMP_GETIMAGESIZE_STATUS' => $comp_getimagesize_status,

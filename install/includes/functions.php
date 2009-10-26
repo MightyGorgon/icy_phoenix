@@ -147,16 +147,16 @@ function phpbb_rtrim($str, $charlist = false)
 */
 function dss_rand()
 {
-	global $db, $board_config, $dss_seeded;
+	global $db, $config, $dss_seeded;
 
-	$val = $board_config['rand_seed'] . microtime();
+	$val = $config['rand_seed'] . microtime();
 	$val = md5($val);
-	$board_config['rand_seed'] = md5($board_config['rand_seed'] . $val . 'a');
+	$config['rand_seed'] = md5($config['rand_seed'] . $val . 'a');
 
 	if($dss_seeded !== true)
 	{
 		$sql = "UPDATE " . CONFIG_TABLE . " SET
-			config_value = '" . $board_config['rand_seed'] . "'
+			config_value = '" . $config['rand_seed'] . "'
 			WHERE config_name = 'rand_seed'";
 
 		if( !$db->sql_query($sql) )
@@ -229,7 +229,7 @@ function make_jumpbox($action, $match_forum_id = 0)
 		$category_rows[] = $row;
 	}
 
-	if ( $total_categories = count($category_rows) )
+	if ( $total_categories = sizeof($category_rows) )
 	{
 		$sql = "SELECT *
 			FROM " . FORUMS_TABLE . "
@@ -247,7 +247,7 @@ function make_jumpbox($action, $match_forum_id = 0)
 			$forum_rows[] = $row;
 		}
 
-		if ( $total_forums = count($forum_rows) )
+		if ( $total_forums = sizeof($forum_rows) )
 		{
 			for($i = 0; $i < $total_categories; $i++)
 			{
@@ -317,7 +317,7 @@ function make_jumpbox($action, $match_forum_id = 0)
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
-	global $board_config, $theme, $images;
+	global $config, $theme, $images;
 	global $template, $lang, $db;
 	global $nav_links;
 
@@ -330,17 +330,17 @@ function init_userprefs($userdata)
 
 		if ( !empty($userdata['user_dateformat']) )
 		{
-			$board_config['default_dateformat'] = $userdata['user_dateformat'];
+			$config['default_dateformat'] = $userdata['user_dateformat'];
 		}
 
 		if ( isset($userdata['user_timezone']) )
 		{
-			$board_config['board_timezone'] = $userdata['user_timezone'];
+			$config['board_timezone'] = $userdata['user_timezone'];
 		}
 	}
 	else
 	{
-		$default_lang = phpbb_ltrim(basename(phpbb_rtrim($board_config['default_lang'])), "'");
+		$default_lang = phpbb_ltrim(basename(phpbb_rtrim($config['default_lang'])), "'");
 	}
 
 	if ( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.'.PHP_EXT)) )
@@ -348,7 +348,7 @@ function init_userprefs($userdata)
 		if ( $userdata['user_id'] != ANONYMOUS )
 		{
 			// For logged in users, try the board default language next
-			$default_lang = phpbb_ltrim(basename(phpbb_rtrim($board_config['default_lang'])), "'");
+			$default_lang = phpbb_ltrim(basename(phpbb_rtrim($config['default_lang'])), "'");
 		}
 		else
 		{
@@ -379,7 +379,7 @@ function init_userprefs($userdata)
 
 		$userdata['user_lang'] = $default_lang;
 	}
-	elseif ( $userdata['user_id'] === ANONYMOUS && $board_config['default_lang'] !== $default_lang )
+	elseif ( $userdata['user_id'] === ANONYMOUS && $config['default_lang'] !== $default_lang )
 	{
 		$sql = 'UPDATE ' . CONFIG_TABLE . "
 			SET config_value = '" . $default_lang . "'
@@ -391,24 +391,24 @@ function init_userprefs($userdata)
 		}
 	}
 
-	$board_config['default_lang'] = $default_lang;
+	$config['default_lang'] = $default_lang;
 
-	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main.' . PHP_EXT);
 
 	if ( defined('IN_ADMIN') )
 	{
-		if( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.'.PHP_EXT)) )
+		if( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.'.PHP_EXT)) )
 		{
-			$board_config['default_lang'] = 'english';
+			$config['default_lang'] = 'english';
 		}
 
-		include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.' . PHP_EXT);
 	}
 
 	//
 	// Set up style
 	//
-	if ( !$board_config['override_user_style'] )
+	if ( !$config['override_user_style'] )
 	{
 		if ( $userdata['user_id'] != ANONYMOUS && $userdata['user_style'] > 0 )
 		{
@@ -419,7 +419,7 @@ function init_userprefs($userdata)
 		}
 	}
 
-	$theme = setup_style($board_config['default_style']);
+	$theme = setup_style($config['default_style']);
 
 	//
 	// Mozilla navigation bar
@@ -429,7 +429,7 @@ function init_userprefs($userdata)
 	//
 	$nav_links['top'] = array (
 		'url' => append_sid(IP_ROOT_PATH . 'index.' . PHP_EXT),
-		'title' => sprintf($lang['Forum_Index'], $board_config['sitename'])
+		'title' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']))
 	);
 	$nav_links['search'] = array (
 		'url' => append_sid(IP_ROOT_PATH . 'search.' . PHP_EXT),
@@ -449,7 +449,7 @@ function init_userprefs($userdata)
 
 function setup_style($style)
 {
-	global $db, $board_config, $template, $images;
+	global $db, $config, $template, $images;
 
 	$sql = 'SELECT *
 		FROM ' . THEMES_TABLE . '
@@ -464,11 +464,11 @@ function setup_style($style)
 		// We are trying to setup a style which does not exist in the database
 		// Try to fallback to the board default (if the user had a custom style)
 		// and then any users using this style to the default if it succeeds
-		if ( $style != $board_config['default_style'])
+		if ( $style != $config['default_style'])
 		{
 			$sql = 'SELECT *
 				FROM ' . THEMES_TABLE . '
-				WHERE themes_id = ' . (int) $board_config['default_style'];
+				WHERE themes_id = ' . (int) $config['default_style'];
 			if (!($result = $db->sql_query($sql)))
 			{
 				message_die(CRITICAL_ERROR, 'Could not query database for theme info');
@@ -479,7 +479,7 @@ function setup_style($style)
 				$db->sql_freeresult($result);
 
 				$sql = 'UPDATE ' . USERS_TABLE . '
-					SET user_style = ' . (int) $board_config['default_style'] . "
+					SET user_style = ' . (int) $config['default_style'] . "
 					WHERE user_style = $style";
 				if (!($result = $db->sql_query($sql)))
 				{
@@ -512,7 +512,7 @@ function setup_style($style)
 			message_die(CRITICAL_ERROR, "Could not open $template_name template config file", '', __LINE__, __FILE__);
 		}
 
-		$img_lang = ( file_exists(@phpbb_realpath(IP_ROOT_PATH . $current_template_path . '/images/lang_' . $board_config['default_lang'])) ) ? $board_config['default_lang'] : 'english';
+		$img_lang = ( file_exists(@phpbb_realpath(IP_ROOT_PATH . $current_template_path . '/images/lang_' . $config['default_lang'])) ) ? $config['default_lang'] : 'english';
 
 		while( list($key, $value) = @each($images) )
 		{
@@ -543,10 +543,10 @@ function decode_ip($int_ip)
 //
 function create_date($format, $gmepoch, $tz)
 {
-	global $board_config, $lang;
+	global $config, $lang;
 	static $translate;
 
-	if ( empty($translate) && $board_config['default_lang'] != 'english' )
+	if ( empty($translate) && $config['default_lang'] != 'english' )
 	{
 		@reset($lang['datetime']);
 		while ( list($match, $replace) = @each($lang['datetime']) )
@@ -720,7 +720,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $template, $board_config, $theme, $lang, $nav_links, $gen_simple_header, $images;
+	global $db, $config, $template, $theme, $images, $lang, $nav_links, $gen_simple_header;
 	global $userdata, $user_ip, $session_length;
 	global $starttime;
 
@@ -773,9 +773,9 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	{
 		if ( empty($lang) )
 		{
-			if ( !empty($board_config['default_lang']) )
+			if ( !empty($config['default_lang']) )
 			{
-				include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_main.'.PHP_EXT);
+				include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main.'.PHP_EXT);
 			}
 			else
 			{
@@ -785,7 +785,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 		if ( empty($template) || empty($theme) )
 		{
-			$theme = setup_style($board_config['default_style']);
+			$theme = setup_style($config['default_style']);
 		}
 
 		//
@@ -917,7 +917,7 @@ function phpbb_realpath($path)
 
 function redirect($url, $return = false)
 {
-	global $db, $lang, $board_config;
+	global $db, $config, $lang;
 
 	if (!empty($db) && !$return)
 	{
@@ -933,10 +933,10 @@ function redirect($url, $return = false)
 		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url');
 	}
 
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
-	$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
+	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
+	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
+	$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['script_path']));
 	$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
 
 	$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));
@@ -1015,7 +1015,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 	//
 	// Filter out strange characters like ^, $, &, change "it's" to "its"
 	//
-	for($i = 0; $i < count($drop_char_match); $i++)
+	for($i = 0; $i < sizeof($drop_char_match); $i++)
 	{
 		$entry =  str_replace($drop_char_match[$i], $drop_char_replace[$i], $entry);
 	}
@@ -1030,7 +1030,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 
 	if ( !empty($stopword_list) )
 	{
-		for ($j = 0; $j < count($stopword_list); $j++)
+		for ($j = 0; $j < sizeof($stopword_list); $j++)
 		{
 			$stopword = trim($stopword_list[$j]);
 
@@ -1043,7 +1043,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 
 	if ( !empty($synonym_list) )
 	{
-		for ($j = 0; $j < count($synonym_list); $j++)
+		for ($j = 0; $j < sizeof($synonym_list); $j++)
 		{
 			list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_list[$j])));
 			if ( $mode == 'post' || ( $match_synonym != 'not' && $match_synonym != 'and' && $match_synonym != 'or' ) )
@@ -1060,7 +1060,7 @@ function split_words($entry, $mode = 'post')
 {
 	// If you experience problems with the new method, uncomment this block.
 /*
-	$rex = ( $mode == 'post' ) ? "/\b([\w±µ-ÿ][\w±µ-ÿ']*[\w±µ-ÿ]+|[\w±µ-ÿ]+?)\b/" : '/(\*?[a-z0-9±µ-ÿ]+\*?)|\b([a-z0-9±µ-ÿ]+)\b/';
+	$rex = ( $mode == 'post' ) ? "/\b([\wÂ±Âµ-Ã¿][\wÂ±Âµ-Ã¿']*[\wÂ±Âµ-Ã¿]+|[\wÂ±Âµ-Ã¿]+?)\b/" : '/(\*?[a-z0-9Â±Âµ-Ã¿]+\*?)|\b([a-z0-9Â±Âµ-Ã¿]+)\b/';
 	preg_match_all($rex, $entry, $split_entries);
 
 	return $split_entries[1];
@@ -1071,10 +1071,10 @@ function split_words($entry, $mode = 'post')
 
 function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
-	global $db, $board_config, $lang;
+	global $db, $config, $lang;
 
-	$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
-	$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_synonyms.txt");
+	$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_stopwords.txt");
+	$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_synonyms.txt");
 
 	$search_raw_words = array();
 	$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopword_array, $synonym_array));
@@ -1089,7 +1089,7 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 		$word_insert_sql[$word_in] = '';
 		if ( !empty($search_matches) )
 		{
-			for ($i = 0; $i < count($search_matches); $i++)
+			for ($i = 0; $i < sizeof($search_matches); $i++)
 			{
 				$search_matches[$i] = trim($search_matches[$i]);
 
@@ -1105,14 +1105,14 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 		}
 	}
 
-	if ( count($word) )
+	if ( sizeof($word) )
 	{
 		sort($word);
 
 		$prev_word = '';
 		$word_text_sql = '';
 		$temp_word = array();
-		for($i = 0; $i < count($word); $i++)
+		for($i = 0; $i < sizeof($word); $i++)
 		{
 			if ( $word[$i] != $prev_word )
 			{
@@ -1148,7 +1148,7 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 
 		$value_sql = '';
 		$match_word = array();
-		for ($i = 0; $i < count($word); $i++)
+		for ($i = 0; $i < sizeof($word); $i++)
 		{
 			$new_match = true;
 			if ( isset($check_words[$word[$i]]) )
@@ -1248,10 +1248,10 @@ function remove_common($mode, $fraction, $word_id_list = array())
 	{
 		$common_threshold = floor($row['total_posts'] * $fraction);
 
-		if ( $mode == 'single' && count($word_id_list) )
+		if ($mode == 'single' && sizeof($word_id_list))
 		{
 			$word_id_sql = '';
-			for($i = 0; $i < count($word_id_list); $i++)
+			for($i = 0; $i < sizeof($word_id_list); $i++)
 			{
 				$word_id_sql .= ( ( $word_id_sql != '' ) ? ', ' : '' ) . "'" . $word_id_list[$i] . "'";
 			}

@@ -32,11 +32,11 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = 'memberlist';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'memberlist';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
@@ -44,7 +44,7 @@ $start = ($start < 0) ? 0 : $start;
 $page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
 $page_number = ($page_number < 1) ? false : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $board_config['topics_per_page']) - $board_config['topics_per_page']);
+$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
 
 // Memberlist sorting
 $mode_types_text = array($lang['Fast'], $lang['Standard'], $lang['Staff'], $lang['Sort_Joined'], $lang['Sort_Username'], $lang['Sort_Location'], $lang['Sort_Posts'], $lang['Sort_Email'], $lang['Sort_Website'], $lang['Sort_Top_Ten'], $lang['Sort_Birthday'], $lang['Style'], $lang['Who_is_Online'], $lang['Sort_LastLogon']);
@@ -76,19 +76,19 @@ if (!empty($alphanum))
 	$alpha_where = ($alphanum == '#') ? "AND username NOT RLIKE '^[A-Z]'" : "AND username LIKE '$alphanum%'";
 }
 
-$users_per_page = request_var('users_per_page', $board_config['topics_per_page']);
-$users_per_page = ((!$users_per_page || ($users_per_page < 0) || ($users_per_page > 200)) ? $board_config['topics_per_page'] : $users_per_page);
+$users_per_page = request_var('users_per_page', $config['topics_per_page']);
+$users_per_page = ((!$users_per_page || ($users_per_page < 0) || ($users_per_page > 200)) ? $config['topics_per_page'] : $users_per_page);
 // Mighty Gorgon - Power Memberlist - END
 
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_MOD'))
+if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
 {
 	$cm_memberlist->droplists($mode_types_text, $mode_types);
 }
 // MG Cash MOD For IP - END
 
 $select_sort_mode = '<select name="mode">';
-for($i = 0; $i < count($mode_types_text); $i++)
+for($i = 0; $i < sizeof($mode_types_text); $i++)
 {
 	$selected = ($mode == $mode_types[$i]) ? ' selected="selected"' : '';
 	$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
@@ -106,14 +106,7 @@ else
 }
 $select_sort_order .= '</select>';
 
-// Generate page
-$page_title = $lang['Memberlist'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'memberlist_body.tpl'));
-make_jumpbox(VIEWFORUM_MG);
+make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 build_groups_list_template();
 
@@ -167,7 +160,7 @@ foreach ($alphanum_range as $key => $alpha)
 	if (in_array($alpha,$alpha_range)) $key = $alpha;
 	$alphanum_search_url = append_sid('memberlist.' . PHP_EXT . '?mode=' . ((isset($_GET['mode']) || isset($_POST['mode'])) ? $mode : 'username') . '&amp;sort=' . $sort_order . '&amp;alphanum=' . strtolower($key));
 	$template->assign_block_vars('alphanumsearch', array(
-		'SEARCH_SIZE' => floor(100 / count($alphanum_range)) . '%',
+		'SEARCH_SIZE' => floor(100 / sizeof($alphanum_range)) . '%',
 		'SEARCH_TERM' => $alpha,
 		'SEARCH_LINK' => $alphanum_search_url)
 	);
@@ -175,8 +168,7 @@ foreach ($alphanum_range as $key => $alpha)
 // Mighty Gorgon - Power Memberlist - END
 
 // Mighty Gorgon - Multiple Ranks - BEGIN
-require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
-$ranks_sql = query_ranks();
+$ranks_array = $cache->obtain_ranks(false);
 // Mighty Gorgon - Multiple Ranks - END
 
 $last_x_mins = time() - 300;
@@ -184,7 +176,7 @@ $sql_style = false;
 
 $cash_condition = false;
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_MOD'))
+if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
 {
 	switch($mode)
 	{
@@ -259,7 +251,7 @@ if ($cash_condition == false)
 	}
 }
 
-if ($board_config['inactive_users_memberlists'] == true)
+if ($config['inactive_users_memberlists'] == true)
 {
 	$sql_active_users = '';
 }
@@ -292,16 +284,13 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level,
 		ORDER BY $order_by";
 
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_MOD'))
+if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
 {
 	$cm_memberlist->generate_columns($template, $sql, 8);
 }
 // MG Cash MOD For IP - END
 
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 if ($row = $db->sql_fetchrow($result))
 {
@@ -314,7 +303,7 @@ if ($row = $db->sql_fetchrow($result))
 		$template->assign_block_vars('custom_field_names', array('FIELD_NAME' => $field['field_name']));
 	}
 
-	$template->assign_var('NUMCOLS', count($profile_data) + 12);
+	$template->assign_var('NUMCOLS', sizeof($profile_data) + 12);
 	// Custom Profile Fields MOD - END
 	$i = 0;
 	do
@@ -323,10 +312,10 @@ if ($row = $db->sql_fetchrow($result))
 		{
 			$username = $row['username'];
 			$user_id = $row['user_id'];
-			$temp_url = append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id);
+			$temp_url = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id);
 			$profile = '<a href="' . $temp_url . '">' . $lang['Read_profile'] . '</a>';
 			$from = (!empty($row['user_from'])) ? $row['user_from'] : '&nbsp;';
-			$joined = create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $board_config['board_timezone']);
+			$joined = create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $config['board_timezone']);
 			$posts = ($row['user_posts']) ? $row['user_posts'] : 0;
 
 			$user_rank_01 = '';
@@ -388,7 +377,7 @@ if ($row = $db->sql_fetchrow($result))
 			$user_id = $row['user_id'];
 
 			// Mighty Gorgon - Multiple Ranks - BEGIN
-			$user_ranks = generate_ranks($row, $ranks_sql);
+			$user_ranks = generate_ranks($row, $ranks_array);
 
 			$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
 			$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
@@ -445,8 +434,8 @@ if ($row = $db->sql_fetchrow($result))
 
 		if ($row['user_birthday'] != 999999)
 		{
-			$age = realdate('Y',(time() / 86400)) - realdate ('Y', $row['user_birthday']);
-			if (date('md') < realdate('md', $row['user_birthday']))
+			$age = realdate('Y', (time() / 86400)) - realdate('Y', $row['user_birthday']);
+			if (gmdate('md') < realdate('md', $row['user_birthday']))
 			{
 				$age--;
 			}
@@ -469,7 +458,7 @@ if ($row = $db->sql_fetchrow($result))
 			'DELETE' => (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . $deluser_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
 
 			// Start add - Last visit MOD
-			'LAST_LOGON' => ($userdata['user_level'] == ADMIN || (!$board_config['hidde_last_logon'] && $row['user_allow_viewonline'])) ? (($row['user_lastlogon'])? create_date($board_config['default_dateformat'], $row['user_lastlogon'], $board_config['board_timezone']) : $lang['Never_last_logon']) : $lang['Hidde_last_logon'],
+			'LAST_LOGON' => ($userdata['user_level'] == ADMIN || (!$config['hidde_last_logon'] && $row['user_allow_viewonline'])) ? (($row['user_lastlogon'])? create_date($config['default_dateformat'], $row['user_lastlogon'], $config['board_timezone']) : $lang['Never_last_logon']) : $lang['Hidde_last_logon'],
 			// End add - Last visit MOD
 
 			'POSTS' => $posts,
@@ -529,11 +518,11 @@ if ($row = $db->sql_fetchrow($result))
 			'USER_RANK_05_IMG' => $user_rank_05_img,
 			// Mighty Gorgon - Multiple Ranks - END
 
-			'U_VIEWPROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id)
+			'U_VIEWPROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id)
 			)
 		);
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_MOD'))
+		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
 		{
 			$cm_memberlist->listing($template, $row);
 		}
@@ -545,9 +534,7 @@ if ($row = $db->sql_fetchrow($result))
 			$name = text_to_column($field['field_name']);
 			$sql2 = "SELECT $name FROM " . USERS_TABLE . "
 				WHERE user_id = $user_id";
-			if(!($result2 = $db->sql_query($sql2)))
-				message_die(GENERAL_ERROR,'Could not get custom profile data', '', __LINE__, __FILE__, $sql2);
-
+			$result2 = $db->sql_query($sql2);
 			$val = $db->sql_fetchrow($result2);
 			$val = displayable_field_data($val[$name], $field['field_type']);
 
@@ -567,7 +554,7 @@ else
 
 if (($mode != 'topten') || ($users_per_page < 10))
 {
-	if ($board_config['inactive_users_memberlists'] == true)
+	if ($config['inactive_users_memberlists'] == true)
 	{
 		$sql_active_users = '';
 	}
@@ -582,11 +569,7 @@ if (($mode != 'topten') || ($users_per_page < 10))
 		$sql_active_users
 		$where_sql
 		$alpha_where";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($total = $db->sql_fetchrow($result))
 	{
@@ -609,8 +592,6 @@ $template->assign_vars(array(
 	'L_GOTO_PAGE' => $lang['Goto_page'])
 );
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('memberlist_body.tpl', $lang['Memberlist'], '', '');
 
 ?>

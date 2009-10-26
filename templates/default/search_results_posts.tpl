@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th width="150">{L_AUTHOR}</th>
@@ -40,3 +42,5 @@
 </table>
 
 <div align="right">{JUMPBOX}</div>
+
+<!-- INCLUDE overall_footer.tpl -->

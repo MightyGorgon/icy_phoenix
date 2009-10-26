@@ -91,13 +91,13 @@ function create_footer_layout($ct_gfn)
 		case 6: $ctracker_footer_template = sprintf($lang['ctracker_fdisplay_c'], $counter_value_now);
 			break;
 
-		case 7: $ctracker_footer_template = 'CrackerTracker &copy; 2004 - ' . date('Y') . ' <a href="http://www.cback.de" target="_blank">CBACK.de</a>';
+		case 7: $ctracker_footer_template = 'CrackerTracker &copy; 2004 - ' . gmdate('Y') . ' <a href="http://www.cback.de" target="_blank">CBACK.de</a>';
 			break;
 
 		case 8: $ctracker_footer_template = '<a href="http://www.cback.de" target="_blank">' . sprintf($lang['ctracker_fdisplay_g'], $counter_value_now) . '</a>';
 			break;
 
-		default: $ctracker_footer_template = $footer_mini . '<br />CrackerTracker &copy; 2004 - ' . date(Y) . ' <a href="http://www.cback.de" target="_blank">CBACK.de</a>';
+		default: $ctracker_footer_template = $footer_mini . '<br />CrackerTracker &copy; 2004 - ' . gmdate('Y') . ' <a href="http://www.cback.de" target="_blank">CBACK.de</a>';
 			break;
 	}
 

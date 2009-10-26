@@ -113,7 +113,7 @@ else
 (defined('protection_unit_one'))   ? $testvalue[1] = $lang['ctracker_ma_active'] : $testvalue[1] = $lang['ctracker_ma_inactive'];
 (defined('protection_unit_two'))   ? $testvalue[2] = $lang['ctracker_ma_active'] : $testvalue[2] = $lang['ctracker_ma_inactive'];
 (defined('protection_unit_three')) ? $testvalue[3] = $lang['ctracker_ma_active'] : $testvalue[3] = $lang['ctracker_ma_inactive'];
-(count($ct_rules) >= 260)          ? $testvalue[4] = $lang['ctracker_ma_active'] : $testvalue[4] = $lang['ctracker_ma_inactive'];
+(sizeof($ct_rules) >= 260)          ? $testvalue[4] = $lang['ctracker_ma_active'] : $testvalue[4] = $lang['ctracker_ma_inactive'];
 
 // PHP Version test
 if ( @phpversion() >= '5.0.0' )
@@ -170,11 +170,13 @@ if ( $mode == '1' )
 	// Delete all entrys in the CrackerTracker IP Blocker
 	$mode_selected = true;
 	$sql = 'TRUNCATE ' . CTRACKER_IPBLOCKER;
-
-	if ( !($result = $db->sql_query($sql)) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
-		 $operation_err = true;
-		 $error_message = __LINE__ . '<br />' . __FILE__ . '<br /><br />' . $sql;
+		$operation_err = true;
+		$error_message = __LINE__ . '<br />' . __FILE__ . '<br /><br />' . $sql;
 	}
 }
 elseif ( $mode == '2' )
@@ -182,7 +184,10 @@ elseif ( $mode == '2' )
 	// Delete all entrys in the CrackerTracker IP Blocker and insert the default values
 	$mode_selected = true;
 	$sql = 'TRUNCATE ' . CTRACKER_IPBLOCKER;
-	if ( !($result = $db->sql_query($sql)) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		$operation_err = true;
 		$error_message = __LINE__ . '<br />' . __FILE__ . '<br /><br />' . $sql;
@@ -222,9 +227,12 @@ elseif ( $mode == '2' )
 	$sql[] = "INSERT INTO " . CTRACKER_IPBLOCKER . " (`id`, `ct_blocker_value`) VALUES (31, 'lwp-*');";
 	$sql[] = "INSERT INTO " . CTRACKER_IPBLOCKER . " (`id`, `ct_blocker_value`) VALUES (32, '*anonym*');";
 
-	for ( $i = 0; $i < count($sql); $i++ )
+	for ( $i = 0; $i < sizeof($sql); $i++ )
 	{
-		if ( !$operation_err && !($result = $db->sql_query($sql[$i])) )
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql[$i]);
+		$db->sql_return_on_error(false);
+		if (!$operation_err && !$result)
 		{
 			$operation_err = true;
 			$error_message = __LINE__ . '<br />' . __FILE__ . '<br /><br />' . $sql[$i];
@@ -237,8 +245,10 @@ elseif ( $mode == '3' )
 	// Delete all entrys from Login-History
 	$mode_selected = true;
 	$sql = 'TRUNCATE ' . CTRACKER_LOGINHISTORY;
-
-	if ( !($result = $db->sql_query($sql)) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		$operation_err = true;
 		$error_message = __LINE__ . '<br />' . __FILE__ . '<br /><br />' . $sql;
@@ -249,8 +259,10 @@ elseif ( $mode == '4' )
 	// Delete all entrys from Hashsum Checker
 	$mode_selected = true;
 	$sql = 'TRUNCATE ' . CTRACKER_FILECHK;
-
-	if ( !($result = $db->sql_query($sql)) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		$operation_err = true;
 		$error_message = __LINE__ . '<br />' . __FILE__ . '<br /><br />' . $sql;
@@ -261,8 +273,10 @@ elseif ( $mode == '5' )
 	// Delete all entrys from CrackerTracker Filescanner
 	$mode_selected = true;
 	$sql = 'TRUNCATE ' . CTRACKER_FILESCANNER;
-
-	if ( !($result = $db->sql_query($sql)) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		$operation_err = true;
 		$error_message = __LINE__ . '<br />' . __FILE__ . '<br /><br />' . $sql;
@@ -299,7 +313,7 @@ $template->assign_vars(array(
 		'L_NAME_1' => $lang['ctracker_ma_name_1'],
 		'L_NAME_2' => $lang['ctracker_ma_name_2'],
 		'L_NAME_3' => $lang['ctracker_ma_name_3'],
-		'L_NAME_4' => sprintf($lang['ctracker_ma_name_4'], count($ct_rules) + count($ct_spammer_def) + count($ct_mailscn_def) + count($ct_userspm_def) + $ctracker_config->blocklist_count),
+		'L_NAME_4' => sprintf($lang['ctracker_ma_name_4'], sizeof($ct_rules) + sizeof($ct_spammer_def) + sizeof($ct_mailscn_def) + sizeof($ct_userspm_def) + $ctracker_config->blocklist_count),
 		'L_VAL_1' => $testvalue[1],
 		'L_VAL_2' => $testvalue[2],
 		'L_VAL_3' => $testvalue[3],
@@ -340,19 +354,19 @@ $template->assign_vars(array(
 		'L_SEC_INFO_D3' => $testvalue[9],
 
 		'L_SEC_INFO_4' => $lang['ctracker_ma_scheck_4'],
-		'L_SEC_INFO_V4' => '2' . $board_config['version'],
+		'L_SEC_INFO_V4' => '2' . $config['version'],
 		'L_SEC_INFO_OV4' => $uplink_values[3],
-		'L_SEC_INFO_D4' => ('2' . $board_config['version'] >= $uplink_values[3])? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
+		'L_SEC_INFO_D4' => ('2' . $config['version'] >= $uplink_values[3])? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
 
 		'L_SEC_INFO_4a' => $lang['ctracker_ma_scheck_4a'],
-		'L_SEC_INFO_V4a' => ($board_config['enable_confirm'] == 1)? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off'],
+		'L_SEC_INFO_V4a' => ($config['enable_confirm'] == 1)? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off'],
 		'L_SEC_INFO_OV4a'=> $lang['ctracker_ma_on'],
-		'L_SEC_INFO_D4a' => ($board_config['enable_confirm'] == 1)? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
+		'L_SEC_INFO_D4a' => ($config['enable_confirm'] == 1)? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
 
 		'L_SEC_INFO_4b' => $lang['ctracker_ma_scheck_4b'],
-		'L_SEC_INFO_V4b' => ($board_config['require_activation'] > 0)? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off'],
+		'L_SEC_INFO_V4b' => ($config['require_activation'] > 0)? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off'],
 		'L_SEC_INFO_OV4b'=> $lang['ctracker_ma_on'],
-		'L_SEC_INFO_D4b' => ($board_config['require_activation'] > 0)? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
+		'L_SEC_INFO_D4b' => ($config['require_activation'] > 0)? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
 
 		'L_SEC_INFO_5' => $lang['ctracker_ma_scheck_5'],
 		'L_SEC_INFO_V5' => CTRACKER_VERSION,

@@ -19,8 +19,11 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
-$code_id = isset($_GET['item']) ? intval($_GET['item']) : 0;
+$post_id = request_var('post', 0);
+$post_id = ($post_id < 0) ? 0 : $post_id;
+
+$code_id = request_var('item', 0);
+$code_id = ($code_id < 0) ? 0 : $code_id;
 
 if(!$post_id)
 {
@@ -28,8 +31,11 @@ if(!$post_id)
 }
 
 // get post
-$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE post_id='{$post_id}'";
-if (!($result = $db->sql_query($sql)))
+$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE post_id = " . $post_id;
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if (!$result)
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
@@ -46,7 +52,7 @@ define('EXTRACT_CODE', $code_id);
 
 // compile post
 $bbcode->allow_bbcode = true;
-$bbcode->allow_smilies = $board_config['allow_smilies'] && $postrow['user_allowsmile'] ? true : false;
+$bbcode->allow_smilies = $config['allow_smilies'] && $postrow['user_allowsmile'] ? true : false;
 $GLOBALS['code_post_id'] = $postrow['post_id'];
 $message = $bbcode->parse($postrow['post_text']);
 $GLOBALS['code_post_id'] = 0;

@@ -41,7 +41,7 @@ $skip_files = array(
 	'index.htm',
 	'index.html',
 	'index.' . PHP_EXT,
-	'attach_config.' . PHP_EXT,
+	'empty_cache.bat',
 );
 
 // clear cache
@@ -181,7 +181,10 @@ function compile_cache($dir, $subdir, $tpl)
 
 // get list of installed styles
 $sql = 'SELECT themes_id, template_name, style_name FROM ' . THEMES_TABLE . ' ORDER BY template_name';
-if(!$result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	xs_error($lang['xs_no_style_info'], __LINE__, __FILE__);
 }
@@ -193,7 +196,7 @@ $prev_id = -1;
 $prev_tpl = '';
 $style_names = array();
 $j = 0;
-for($i=0; $i<count($style_rowset); $i++)
+for($i=0; $i< sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	if($item['template_name'] === $prev_tpl)

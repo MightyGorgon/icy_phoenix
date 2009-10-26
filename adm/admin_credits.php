@@ -46,7 +46,7 @@ include(IP_ROOT_PATH . 'includes/functions_credits.' . PHP_EXT);
 /****************************************************************************
 /** Constants and Main Vars.
 /***************************************************************************/
-$page_title = $lang['Hacks_List'];
+$meta_content['page_title'] = $lang['Hacks_List'];
 $required_fields = array('hack_name', 'hack_desc', 'hack_author');
 $dbase_fields = array('hack_download_url', 'hack_hide', 'hack_name', 'hack_desc', 'hack_author', 'hack_author_email', 'hack_author_website', 'hack_version');
 $status_message = '';
@@ -70,7 +70,7 @@ foreach($params as $var => $default)
 
 $hack_id = intval($hack_id);
 
-if (count($_POST))
+if (sizeof($_POST))
 {
 	foreach($_POST as $key => $valx)
 	{
@@ -83,30 +83,17 @@ if (count($_POST))
 
 			$sql = 'SELECT hack_name FROM ' . HACKS_LIST_TABLE . "
 				WHERE hack_id = $hack_id";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 
 			$neat_bc_name = addslashes(str_replace(" ", "_", $row['hack_name'])) . '_list_info';
-			$sql = 'DELETE FROM ' . CONFIG_TABLE . "
-				WHERE config_name = '$neat_bc_name'";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-			}
+			$sql = 'DELETE FROM ' . CONFIG_TABLE . " WHERE config_name = '$neat_bc_name'";
+			$db->sql_query($sql);
 
-			$sql = "DELETE FROM " . HACKS_LIST_TABLE . "
-				WHERE hack_id = $hack_id";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-			}
-			else
-			{
-				$status_message .= sprintf($lang['Deleted_Hack'], stripslashes($row['hack_name']));
-			}
+			$sql = "DELETE FROM " . HACKS_LIST_TABLE . " WHERE hack_id = $hack_id";
+			$db->sql_query($sql);
+
+			$status_message .= sprintf($lang['Deleted_Hack'], stripslashes($row['hack_name']));
 		}
 
 		/*******************************************************************************************
@@ -131,14 +118,9 @@ if (count($_POST))
 			$sql = 'UPDATE ' . HACKS_LIST_TABLE . "
 				SET $update_sql
 				WHERE hack_id = '$hack_id'";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-			}
-			else
-			{
-				$status_message .= sprintf($lang['Updated_Hack'], stripslashes($_POST['hack_name']));
-			}
+			$db->sql_query($sql);
+
+			$status_message .= sprintf($lang['Updated_Hack'], stripslashes($_POST['hack_name']));
 		}
 
 		/*******************************************************************************************
@@ -165,14 +147,9 @@ if (count($_POST))
 				($insert_sql)
 				VALUES
 				($insert_val_sql)";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-			}
-			else
-			{
-				$status_message .= sprintf($lang['Added_Hack'], stripslashes($_POST['hack_name']));
-			}
+			$db->sql_query($sql);
+
+			$status_message .= sprintf($lang['Added_Hack'], stripslashes($_POST['hack_name']));
 		}
 	}
 }
@@ -188,10 +165,7 @@ switch($mode)
 		/* Fetch the data for the specified ID in edit mode, then do the same thing as add */
 		$sql = 'SELECT * FROM ' . HACKS_LIST_TABLE . "
 			WHERE hack_id = $hack_id";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 
 		$template->assign_vars(array(
@@ -226,10 +200,7 @@ switch($mode)
 		$template->set_filenames(array('body' => ADM_TPL . 'admin_credits_display.tpl'));
 		$sql = 'SELECT * FROM ' . HACKS_LIST_TABLE . "
 			ORDER BY hack_name ASC";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['Error_Hacks_List_Table'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$i = 0;
 		while ($row = $db->sql_fetchrow($result))
@@ -244,7 +215,7 @@ switch($mode)
 			'HACK_VERSION' => ($row['hack_version'] != '') ? ' v' . stripslashes($row['hack_version']) : '',
 			'S_ACTION_EDIT' => '<a href="' . append_sid(basename(__FILE__) . '?mode=edit&hack_id=' . $row['hack_id']) . '">' . $lang['Edit'] . '</a>',
 			'HACK_DISPLAY' => $lang[$row['hack_hide']],
-			'ADD_DATE' => create_date($lang['DATE_FORMAT'], $row['log_time'], $board_config['board_timezone'])));
+			'ADD_DATE' => create_date($lang['DATE_FORMAT'], $row['log_time'], $config['board_timezone'])));
 		}
 
 		if ($i == 0 || !isset($i))
@@ -259,7 +230,7 @@ switch($mode)
 $template->assign_vars(array(
 	'L_VERSION' => $lang['Version'],
 	'VERSION' => MOD_VERSION,
-	'L_PAGE_NAME' => $page_title,
+	'L_PAGE_NAME' => $meta_content['page_title'],
 	'S_ACTION_ADD' => '<a href="' . append_sid(basename(__FILE__) . '?mode=add') . '">' . $lang['Add_New_Hack'] . '</a>',
 
 	'S_MODE_ACTION' => append_sid(basename(__FILE__)),

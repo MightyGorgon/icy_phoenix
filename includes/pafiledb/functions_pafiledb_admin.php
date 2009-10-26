@@ -40,7 +40,7 @@ if(!function_exists('admin_display_category_auth'))
 					)
 				);
 
-				for($j = 0; $j < count($cat_auth_fields); $j++)
+				for($j = 0; $j < sizeof($cat_auth_fields); $j++)
 				{
 					$pafiledb_template->assign_block_vars('cat_row.aclvalues', array(
 						'S_ACL_SELECT' => $optionlist_acl_adv[$sub_cat_id][$j])
@@ -104,11 +104,7 @@ if(!function_exists('is_moderator'))
 			FROM " . PA_AUTH_ACCESS_TABLE . "
 			WHERE group_id = $group_id
 			AND auth_mod = '1'";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't check for moderator $sql", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		return ($is_mod = ($db->sql_fetchrow($result)) ? 1 : 0);
 	}
@@ -125,7 +121,7 @@ if(!function_exists('pa_size_select'))
 
 		$select_field = '<select name="' . $select_name . '">';
 
-		for ($i = 0; $i < count($size_types_text); $i++)
+		for ($i = 0; $i < sizeof($size_types_text); $i++)
 		{
 			$selected = ($size_compare == $size_types[$i]) ? ' selected="selected"' : '';
 
@@ -187,13 +183,13 @@ if (!function_exists('admin_display_cat_auth'))
 					'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_parent=' . $sub_cat_id))
 				);
 
-				for($j = 0; $j < count($cat_auth_fields); $j++)
+				for($j = 0; $j < sizeof($cat_auth_fields); $j++)
 				{
 					$custom_auth[$j] = '&nbsp;<select name="' . $cat_auth_fields[$j] . '[' . $sub_cat_id . ']' . '">';
 
-					for($k = 0; $k < count($cat_auth_levels); $k++)
+					for($k = 0; $k < sizeof($cat_auth_levels); $k++)
 					{
-						$selected = ( $cat_data[$cat_auth_fields[$j]] == $cat_auth_const[$k] ) ? ' selected="selected"' : '';
+						$selected = ($cat_data[$cat_auth_fields[$j]] == $cat_auth_const[$k]) ? ' selected="selected"' : '';
 						$custom_auth[$j] .= '<option value="' . $cat_auth_const[$k] . '"' . $selected . '>' . $lang['Category_' . $cat_auth_levels[$k]] . '</option>';
 					}
 					$custom_auth[$j] .= '</select>&nbsp;';

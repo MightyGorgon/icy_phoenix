@@ -9,6 +9,7 @@
 */
 
 // CTracker_Ignore: File Checked By Human
+define('IN_INSTALL', true);
 define('IN_ICYPHOENIX', true);
 define('IP_DB_UPDATE', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
@@ -70,7 +71,7 @@ if (defined('IP_INSTALLED') || defined('PHPBB_INSTALLED'))
 		@set_time_limit(0);
 		$mem_limit = $ip_functions->check_mem_limit();
 		@ini_set('memory_limit', $mem_limit);
-		$language = $board_config['default_lang'];
+		$language = $config['default_lang'];
 		$lang_request = $ip_functions->request_var('lang', '');
 		if (!empty($lang_request) && preg_match('#^[a-z_]+$#', $lang_request))
 		{

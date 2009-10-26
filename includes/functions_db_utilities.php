@@ -54,10 +54,6 @@ function get_table_def_mysql($table, $crlf)
 	$schema_create .= "CREATE TABLE $table($crlf";
 	// Ok lets grab the fields...
 	$result = $db->sql_query($field_query);
-	if(!$result)
-	{
-		message_die(GENERAL_ERROR, "Failed in get_table_def (show fields)", "", __LINE__, __FILE__, $field_query);
-	}
 
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -77,14 +73,10 @@ function get_table_def_mysql($table, $crlf)
 		$schema_create .= ",$crlf";
 	}
 	// Drop the last ',$crlf' off ;)
-	$schema_create = ereg_replace(',' . $crlf . '$', "", $schema_create);
+	$schema_create = @ereg_replace(',' . $crlf . '$', "", $schema_create);
 
 	// Get any Indexed fields from the database...
 	$result = $db->sql_query($key_query);
-	if(!$result)
-	{
-		message_die(GENERAL_ERROR, "FAILED IN get_table_def (show keys)", "", __LINE__, __FILE__, $key_query);
-	}
 
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -147,10 +139,8 @@ function get_table_content_mysql($table, $handler)
 	global $db;
 
 	// Grab the data from the table.
-	if (!($result = $db->sql_query("SELECT * FROM $table")))
-	{
-		message_die(GENERAL_ERROR, "Failed in get_table_content (select *)", "", __LINE__, __FILE__, "SELECT * FROM $table");
-	}
+	$sql = "SELECT * FROM $table";
+	$result = $db->sql_query($sql);
 
 	// Loop through the resulting rows and build the sql statement.
 	if ($row = $db->sql_fetchrow($result))

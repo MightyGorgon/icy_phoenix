@@ -24,7 +24,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -68,18 +68,14 @@ if (isset($_POST['set']))
 				$update_name = ($c_cur->data('cash_name') != $newname);
 				$update_default = ($c_cur->data('cash_default') != $newdefault);
 				$update_decimal = ($c_cur->data('cash_decimal') != $newdecimal);
-				//
+
 				// If it's points, update the config points variable (retro- Points System. bleh)
-				//
-				if ($c_cur->db() == "user_points")
+				if ($c_cur->db() == 'user_points')
 				{
 					$sql = "UPDATE " . CONFIG_TABLE . "
 							SET config_value = '" . str_replace("\'", "''", $new_name) . "'
 							WHERE config_name = 'points_name'";
-					if (!($db->sql_query($sql)))
-					{
-						message_die(CRITICAL_ERROR, "Could not update cash name", "", __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 				}
 				$sql = array();
 				switch (SQL_LAYER)
@@ -114,12 +110,9 @@ if (isset($_POST['set']))
 				$sql[] = "UPDATE " . CASH_TABLE . "
 						SET cash_name = '" . str_replace("\'", "''", $newname) . "', cash_default = '" . $newdefault . "', cash_decimals = '" . $newdecimal . "'
 						WHERE cash_id = " . $c_cur->id();
-				for($i = 0; $i < count($sql); $i++)
+				for($i = 0; $i < sizeof($sql); $i++)
 				{
-					if (!($db->sql_query($sql[$i])))
-					{
-						message_die(CRITICAL_ERROR, "Could not update currency", "", __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql[$i]);
 				}
 
 				// Log the action
@@ -144,7 +137,7 @@ if (isset($_POST['set']))
 					$s_hidden_fields = '<input type="hidden" name="set" value="deletecurrency" />';
 					$s_hidden_fields .= '<input type="hidden" name="cid" value="' . $c_cur->id() . '" />';
 					$l_confirm = sprintf($lang['Cash_confirm_delete'],$c_cur->name(true));
-					$template->set_filenames(array('confirm_body' => 'confirm_body.tpl'));
+					$template->set_filenames(array('confirm_body' => ADM_TPL . 'confirm_body.tpl'));
 					$template->assign_vars(array(
 						'MESSAGE_TITLE' => $lang['Information'],
 						'MESSAGE_TEXT' => $l_confirm,
@@ -154,13 +147,11 @@ if (isset($_POST['set']))
 						'S_HIDDEN_FIELDS' => $s_hidden_fields)
 					);
 					$template->pparse('confirm_body');
-					include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+					include('page_footer_admin.' . PHP_EXT);
 				}
 				else
 				{
-					//
 					// Delete the field
-					//
 					$sql = array();
 					switch (SQL_LAYER)
 					{
@@ -185,29 +176,20 @@ if (isset($_POST['set']))
 							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP " . $c_cur->db();
 							break;
 					}
-					for ($i = 0; $i < count($sql); $i++)
+					for ($i = 0; $i < sizeof($sql); $i++)
 					{
-						if (!$db->sql_query($sql[$i]))
-						{
-							message_die(CRITICAL_ERROR, "Could not update user table", "", __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql[$i]);
 					}
 
 					// Delete the cash table entry
 					$sql = "DELETE FROM " . CASH_TABLE . "
 							WHERE cash_id = " . $c_cur->id();
-					if (!($db->sql_query($sql)))
-					{
-						message_die(CRITICAL_ERROR, "Unable to remove cash table entry, It is recommended you remove it manually as soon as possible", "", __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 
 					// Delete exchange table entries
 					$sql = "DELETE FROM " . CASH_EXCHANGE_TABLE . "
 							WHERE ex_cash_id1 = " . $c_cur->id() . " OR ex_cash_id2 = " . $c_cur->id();
-					if (!($db->sql_query($sql)))
-					{
-						message_die(CRITICAL_ERROR, "Unable to remove exchange table entries.", "", __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 
 					// Log the action
 					// [admin/mod id][admin/mod name][currency name]
@@ -240,9 +222,7 @@ if (isset($_POST['set']))
 					$s_hidden_fields .= '<input type="hidden" name="cid1" value="' . $c_cur1->id() . '" />';
 					$s_hidden_fields .= '<input type="hidden" name="cid2" value="' . $c_cur2->id() . '" />';
 					$l_confirm = sprintf($lang['Cash_confirm_copy'],$c_cur1->name(true),$c_cur2->name(true));
-					$template->set_filenames(array(
-						'confirm_body' => 'confirm_body.tpl')
-					);
+					$template->set_filenames(array('confirm_body' => ADM_TPL . 'confirm_body.tpl'));
 					$template->assign_vars(array(
 						'MESSAGE_TITLE' => $lang['Information'],
 						'MESSAGE_TEXT' => $l_confirm,
@@ -252,38 +232,28 @@ if (isset($_POST['set']))
 						'S_HIDDEN_FIELDS' => $s_hidden_fields)
 					);
 					$template->pparse('confirm_body');
-					include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+					include('page_footer_admin.' . PHP_EXT);
 				}
 				else
 				{
-					//
 					// Copy the data
-					//
 					$sql = "UPDATE " . USERS_TABLE . " SET " . $c_cur2->db() . " = " . $c_cur1->db();
-					if (!$db->sql_query($sql))
-					{
-						message_die(CRITICAL_ERROR, "Could not update user table", "", __LINE__, __FILE__, $sql);
-					}
-					//
+					$db->sql_query($sql);
+
 					// Log the action
-					//
 					// [admin/mod id][admin/mod name][copied currency name][copied over currency name]
-					$action = array($userdata['user_id'],
-									$userdata['username'],
-									$c_cur1->name(true),
-									$c_cur2->name(true)
-						);
+					$action = array(
+						$userdata['user_id'],
+						$userdata['username'],
+						$c_cur1->name(true),
+						$c_cur2->name(true)
+					);
 					cash_create_log(CASH_LOG_ADMIN_COPY_CURRENCY , $action);
 				}
 			}
 			break;
 		case 'newcurrency': // Create Currency
-			if (isset($_POST['currency_name']) &&
-			     isset($_POST['currency_dbfield']) &&
-			     isset($_POST['currency_decimals']) &&
-			     isset($_POST['currency_default']) &&
-			     is_numeric($_POST['currency_decimals']) &&
-			     is_numeric($_POST['currency_default']))
+			if (isset($_POST['currency_name']) && isset($_POST['currency_dbfield']) && isset($_POST['currency_decimals']) && isset($_POST['currency_default']) && is_numeric($_POST['currency_decimals']) && is_numeric($_POST['currency_default']))
 			{
 				$regex = "/^user_[a-z]+$/";
 				$new_name = stripslashes($_POST['currency_name']);
@@ -325,7 +295,10 @@ if (isset($_POST['set']))
 						$sql = "ALTER TABLE " . USERS_TABLE . " ADD $new_field DECIMAL(11,$new_decimals) NOT NULL DEFAULT '$new_default'";
 						break;
 				}
-				if (!$db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					$flag = false;
 					while ($c_cur = &$cash->currency_next($cm_i))
@@ -348,10 +321,7 @@ if (isset($_POST['set']))
 					$sql = "UPDATE " . CONFIG_TABLE . "
 							SET config_value = '" . str_replace("\'", "''", $new_name) . "'
 							WHERE config_name = 'points_name'";
-					if (!($db->sql_query($sql)))
-					{
-						message_die(CRITICAL_ERROR, "Could not update points_name", "", __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 				}
 				//
 				// Insert new entry into the cash table
@@ -359,11 +329,9 @@ if (isset($_POST['set']))
 				$sql = "INSERT INTO " . CASH_TABLE . "
 						(cash_name, cash_dbfield, cash_order, cash_decimals)
 						VALUES ('" . str_replace("\'", "''", $new_name) . "','" . $new_field . "'," . $new_order . "," . $new_decimals . ")";
-				if (!$db->sql_query($sql))
-				{
-					message_die(CRITICAL_ERROR, "Unable to insert new record into cash table", "", __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 				$cid = $db->sql_nextid();
+
 				$sql = "UPDATE " . CASH_TABLE . "
 						SET cash_perpost = cash_perpost * $factor,
 							cash_postbonus = cash_postbonus * $factor,
@@ -373,18 +341,16 @@ if (isset($_POST['set']))
 							cash_perchar = cash_perchar * $factor,
 							cash_allowanceamount = cash_allowanceamount * $factor
 						WHERE cash_dbfield = '$new_field'";
-				if (!$db->sql_query($sql))
-				{
-					message_die(CRITICAL_ERROR, "Unable to insert new record into cash table", "", __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 				$cid = $db->sql_nextid();
 
 				// Log the action
 				// [admin/mod id][admin/mod name][currency name]
-				$action = array($userdata['user_id'],
-								$userdata['username'],
-								$new_name
-					);
+				$action = array(
+					$userdata['user_id'],
+					$userdata['username'],
+					$new_name
+				);
 				cash_create_log(CASH_LOG_ADMIN_CREATE_CURRENCY , $action);
 
 				$db->clear_cache('cash_');
@@ -429,10 +395,7 @@ if (isset($_GET['set']) && isset($_GET['cord']) && is_numeric($_GET['cord']))
 	$sql = "UPDATE " . CASH_TABLE . "
 			SET cash_order = $focal - cash_order
 			WHERE cash_order = $old OR cash_order = $new";
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Failed to fix Cash Mod order", "", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 	$cash->refresh_table();
 	$db->clear_cache('cash_');
 }
@@ -492,6 +455,6 @@ while ($c_cur = &$cash->currency_next($cm_i))
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include('page_footer_admin.' . PHP_EXT);
 
 ?>

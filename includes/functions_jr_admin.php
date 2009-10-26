@@ -39,11 +39,11 @@ if (!function_exists('find_lang_file_nivisec'))
 	*/
 	function find_lang_file_nivisec($filename)
 	{
-		global $lang, $board_config;
+		global $lang, $config;
 
-		if (file_exists(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $filename . '.' . PHP_EXT))
+		if (file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT))
 		{
-			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $filename . '.' . PHP_EXT);
+			include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT);
 		}
 		elseif (file_exists(IP_ROOT_PATH . "language/lang_english/$filename." . PHP_EXT))
 		{
@@ -68,20 +68,23 @@ if (!function_exists('config_update_nivisec'))
 	*/
 	function config_update_nivisec($item, $value, $prefix = '')
 	{
-		global $board_config, $db, $status_message, $lang;
+		global $config, $db, $status_message, $lang;
 
 		if ($prefix != '') $item = preg_replace("/^$prefix/", '', $item);
 		//Only bother updating if the value is different
-		if ($board_config[$item] != $value)
+		if ($config[$item] != $value)
 		{
 			$sql = 'UPDATE ' . CONFIG_TABLE . "
 				SET config_value = '$value'
 				WHERE config_name = '$item'";
-			if (!$db->sql_query($sql))
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
+			if (!$result)
 			{
 				return false;
 			}
-			$board_config[$item] = $value;
+			$config[$item] = $value;
 			$status_message .= sprintf($lang['Updated_Config'], $lang[$item]);
 		}
 		return true;
@@ -128,17 +131,11 @@ if (!function_exists('sql_query_nivisec'))
 			{
 				if ($cache_sql == true)
 				{
-					if (!$db->sql_query($sql, false, 'nivisec_'))
-					{
-						message_die(GENERAL_ERROR, $error, '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql, 0, 'nivisec_');
 				}
 				else
 				{
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, $error, '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 				}
 				return false;
 			}
@@ -146,18 +143,11 @@ if (!function_exists('sql_query_nivisec'))
 			{
 				if ($cache_sql == true)
 				{
-					//if (!$result = $db->sql_query($sql, false, 'nivisec_'))
-					if (!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, $error, '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 				}
 				else
 				{
-					if (!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, $error, '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 				}
 				if ($return_items != 1)
 				{
@@ -209,7 +199,7 @@ function jr_admin_check_file_hashes($file)
 
 function jr_admin_get_module_list($user_module_list = false)
 {
-	global $db, $lang, $board_config, $userdata;
+	global $db, $config, $userdata, $lang;
 
 	/* Debugging for this function. Debugging in this function causes changes to the way ADMIN users
 	are interpreted.  You are warned */
@@ -228,11 +218,37 @@ function jr_admin_get_module_list($user_module_list = false)
 	{
 		if (preg_match($pattern, $file))
 		{
-			//include(IP_ROOT_PATH . ADM . '/' . $file);
 			include_once(IP_ROOT_PATH . ADM . '/' . $file);
 		}
 	}
 	@closedir($dir);
+
+	// PLUGINS ADMIN MODULES - BEGIN
+	$plugins_dir = @opendir(IP_ROOT_PATH . PLUGINS_PATH);
+	while (($plugins_subdir = @readdir($plugins_dir)) !== false)
+	{
+		$exclude_dirs = array('.', '..');
+		if (!in_array($plugins_subdir, $exclude_dirs))
+		{
+			$plugin_adm_path = IP_ROOT_PATH . PLUGINS_PATH . $plugins_subdir . '/' . ADM . '/';
+			if (is_dir($plugin_adm_path))
+			{
+				$plugin_adm_dir = @opendir($plugin_adm_path);
+				$pattern = "/^admin_.+\.$phpEx$/";
+				while (($file = @readdir($plugin_adm_dir)) !== false)
+				{
+					if (preg_match($pattern, $file))
+					{
+						include_once($plugin_adm_path . $file);
+					}
+				}
+				@closedir($plugin_adm_dir);
+			}
+		}
+	}
+	@closedir($plugins_dir);
+	// PLUGINS ADMIN MODULES - END
+
 	unset($setmodules);
 
 	@ksort($module);
@@ -295,7 +311,7 @@ function jr_admin_get_module_list($user_module_list = false)
 
 function jr_admin_secure($file)
 {
-	global $db, $lang, $userdata;
+	global $db, $userdata, $lang;
 
 	/* Debugging in this function causes changes to the way ADMIN users are interpreted. You are warned */
 	$debug = false;
@@ -334,7 +350,7 @@ function jr_admin_secure($file)
 		//The user has access for sure by module_id security from GET vars only
 		return true;
 	}
-	elseif (!isset($_GET['module']) && count($_POST))
+	elseif (!isset($_GET['module']) && sizeof($_POST))
 	{
 		//This user likely entered a post form, so let's use some checking logic
 		//to make sure they are doing it from where they should be!
@@ -368,18 +384,18 @@ function jr_admin_secure($file)
 
 function jr_admin_include_all_lang_files()
 {
-	global $lang, $board_config;
+	global $lang, $config;
 
 	// We need this for regular expressions... to avoid errors!!!
 	$phpEx = PHP_EXT;
 
-	$dir = @opendir(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang']);
+	$dir = @opendir(IP_ROOT_PATH . 'language/lang_' . $config['default_lang']);
 	$pattern = "/^lang.+\.$phpEx$/";
 	while (($file = @readdir($dir)) !== false)
 	{
 		if (preg_match($pattern, $file))
 		{
-			include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $file);
+			include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $file);
 		}
 	}
 	@closedir($dir);
@@ -407,7 +423,7 @@ function jr_admin_make_left_pane()
 		$template->assign_block_vars('catrow', array(
 			//+MOD: DHTML Menu for ACP
 			'MENU_CAT_ID' => $menu_cat_id,
-			'MENU_CAT_ROWS' => count($action_array),
+			'MENU_CAT_ROWS' => sizeof($action_array),
 			'MENU_CAT_ICON' => $cat_icon,
 			//-MOD: DHTML Menu for ACP
 			'ADMIN_CATEGORY' => $cat_name
@@ -441,9 +457,9 @@ function jr_admin_make_left_pane()
 
 function jr_admin_make_info_box()
 {
-	global $template, $lang, $module, $userdata, $board_config;
+	global $template, $lang, $module, $userdata, $config;
 
-	/* Debug?  Changes the status stnading of ADMIN!!!  You are warned */
+	/* Debug? Changes the status stnading of ADMIN!!!  You are warned */
 	$debug = false;
 
 	if (($userdata['user_level'] != ADMIN) || $debug)
@@ -455,8 +471,8 @@ function jr_admin_make_info_box()
 		$template->set_filenames(array('JR_ADMIN_INFO' => ADM_TPL . 'jr_admin_user_info_header.tpl'));
 
 		$template->assign_vars(array(
-			'JR_ADMIN_START_DATE' => create_date($board_config['default_dateformat'], $jr_admin_userdata['start_date'], $board_config['board_timezone']),
-			'JR_ADMIN_UPDATE_DATE' => create_date($board_config['default_dateformat'], $jr_admin_userdata['update_date'], $board_config['board_timezone']),
+			'JR_ADMIN_START_DATE' => create_date($config['default_dateformat'], $jr_admin_userdata['start_date'], $config['board_timezone']),
+			'JR_ADMIN_UPDATE_DATE' => create_date($config['default_dateformat'], $jr_admin_userdata['update_date'], $config['board_timezone']),
 			'JR_ADMIN_ADMIN_NOTES' => $jr_admin_userdata['admin_notes'],
 			'L_VERSION' => $lang['Version'],
 			'L_JR_ADMIN_TITLE' => $lang['Junior_Admin_Info'],
@@ -493,7 +509,7 @@ function jr_admin_get_user_info($user_id)
 
 function jr_admin_make_admin_link()
 {
-	global $lang, $userdata;
+	global $userdata, $lang;
 
 	if (!$userdata['session_logged_in'])
 	{
@@ -537,7 +553,7 @@ function check_acp_module_access()
 		}
 		if ($is_allowed == false)
 		{
-			for ($i = 0; $i < count($allowed_admins); $i++)
+			for ($i = 0; $i < sizeof($allowed_admins); $i++)
 			{
 				if ($userdata['user_id'] == $allowed_admins[$i])
 				{

@@ -46,7 +46,7 @@ function album_create_user_auth($user_id)
 	{
 		$album_data['auth'] = array ();
 
-		for ($idx = 0; $idx < count($album_data['data']); $idx++)
+		for ($idx = 0; $idx < sizeof($album_data['data']); $idx++)
 		{
 			$cat = $album_data['data'][$idx];
 			$cat_id = $cat['cat_id'];
@@ -110,13 +110,13 @@ function album_get_auth_keys($cur_cat_id = ALBUM_ROOT_CATEGORY, $auth_key = ALBU
 			$keys['idx'][$last_i] = (isset ($album_data['keys'][$cur_cat_id]) ? $album_data['keys'][$cur_cat_id] : ALBUM_ROOT_CATEGORY);
 
 			// get sub-levels
-			for ($i = 0; $i < count($album_data['sub'][$cur_cat_id]); $i++)
+			for ($i = 0; $i < sizeof($album_data['sub'][$cur_cat_id]); $i++)
 			{
 				$subkeys = array ();
 				$subkeys = album_get_auth_keys($album_data['sub'][$cur_cat_id][$i], $auth_key, $all, $orig_level + 1, $max);
 
 				// add sub-levels
-				for ($j = 0; $j < count($subkeys['id']); $j++)
+				for ($j = 0; $j < sizeof($subkeys['id']); $j++)
 				{
 					$last_i++;
 					$keys['keys'][$subkeys['id'][$j]] = $last_i;
@@ -147,7 +147,7 @@ function album_get_auth_keys($cur_cat_id = ALBUM_ROOT_CATEGORY, $auth_key = ALBU
 // ------------------------------------------------------------------------
 function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 {
-	global $db, $lang, $userdata, $album_config, $album_data;
+	global $db, $userdata, $lang, $album_config, $album_data;
 
 	$moderator_check = 1;
 
@@ -184,11 +184,7 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 		$sql = "SELECT *
 				FROM ". ALBUM_CAT_TABLE ."
 				WHERE cat_id = '$cat_id'";
-
-		if( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, 'Could not query Album Category information for authentication' ,'' , __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// ------------------------------------------------------------------------
 		// did we find the category or not ?
@@ -360,7 +356,7 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 		{
 			$album_permission_keys = array_keys($album_permission);
 
-			for ($i = 0; $i < count($album_permission); $i++)
+			for ($i = 0; $i < sizeof($album_permission); $i++)
 			{
 				if( ($AH_thiscat['cat_'. $album_permission_keys[$i] .'_level'] != ALBUM_ADMIN) && ($album_permission_keys[$i] != 'manage') )
 				{
@@ -416,7 +412,7 @@ function album_check_permission($auth_data, $access_check, $or_check = false)
 	$access_to_check = array ();
 
 	// build up the array of checks to perform
-	for ($idx = 0; $idx < count($access_index); $idx++)
+	for ($idx = 0; $idx < sizeof($access_index); $idx++)
 	{
 		if (checkFlag($access_check, $access_index[$idx]))
 		{
@@ -426,7 +422,7 @@ function album_check_permission($auth_data, $access_check, $or_check = false)
 
 	$result = 0;
 	// now check every check in the acess_check array
-	for ($idx = 0; $idx < count($access_to_check); $idx++)
+	for ($idx = 0; $idx < sizeof($access_to_check); $idx++)
 	{
 		// $access_string should hold strings like 'view', 'upload' and so on
 		$access_string = $access_type[$access_to_check[$idx]];
@@ -456,7 +452,7 @@ function album_get_auth_data($cat_id)
 {
 	global $album_data;
 
-	if ( ($cat_id != ALBUM_ROOT_CATEGORY) && (!isset($album_data) || !is_array($album_data) || (count($album_data) == 0)) )
+	if ( ($cat_id != ALBUM_ROOT_CATEGORY) && (!isset($album_data) || !is_array($album_data) || (sizeof($album_data) == 0)) )
 	{
 		//$auth_data = //album_user_access($cat_id, 0, 1, 1, 1, 1, 1, 1);
 		$auth_data = album_permissions(0, $cat_id, 0, ALBUM_AUTH_ALL);
@@ -484,7 +480,7 @@ function album_get_auth_data($cat_id)
 // ------------------------------------------------------------------------
 function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_data = 0)
 {
-	global $lang, $userdata, $album_config;
+	global $userdata, $lang, $album_config;
 
 	$auth_list = '';
 
@@ -500,7 +496,7 @@ function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_da
 
 	$auth_key = array_keys($auth_data);
 
-	for ($i = 0; $i < (count($auth_data) - 1); $i++) // ignore MODERATOR in this loop
+	for ($i = 0; $i < (sizeof($auth_data) - 1); $i++) // ignore MODERATOR in this loop
 	{
 		// we should skip a loop if RATE and COMMENT is disabled
 		if ((($album_config['rate'] == 0) && ($auth_key[$i] == 'rate')) || (($album_config['comment'] == 0) && ($auth_key[$i] == 'comment')))

@@ -9,7 +9,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -70,7 +70,7 @@ $text = str_replace('&gt;', '>', $text);
 
 while(substr_count($text, '<'))
 {
-	$text = ereg_replace(substr($text, strpos($text, '<'), (strpos($text, '>') - strpos($text, '<') + 1)), '', $text);
+	$text = @ereg_replace(substr($text, strpos($text, '<'), (strpos($text, '>') - strpos($text, '<') + 1)), '', $text);
 }
 
 if(!$text)
@@ -117,13 +117,13 @@ else
 	$output[0] = $text;
 }
 
-if(count($output) > 12)
+if(sizeof($output) > 12)
 {
 	$output[12] = substr($output[12], 0, 30) . '...';
 }
 
 $width = ($zeichenzahl * $schriftwidth) + 6;
-$height = (count($output) * $schriftheight) + 34;
+$height = (sizeof($output) * $schriftheight) + 34;
 
 if($width < 60)
 {
@@ -181,7 +181,7 @@ if($sm_shadow == true)
 }
 
 $i = 0;
-while($i < count($output))
+while($i < sizeof($output))
 {
 	if(((!$gd_info['FreeType Support']) || (!file_exists($schriftdatei))))
 	{

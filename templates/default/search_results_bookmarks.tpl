@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {CPL_MENU_OUTPUT}
 <form method="post" action="{S_BM_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_BOOKMARKS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -45,3 +47,5 @@
 	</td>
 	</tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

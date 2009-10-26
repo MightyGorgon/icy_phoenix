@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- BEGIN switch_ajax_features -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- END switch_ajax_features -->
@@ -144,3 +146,5 @@
 </form>
 
 <table width="100%" cellspacing="2" border="0" align="center"><tr><td valign="top" align="right">{JUMPBOX}</td></tr></table>
+
+<!-- INCLUDE overall_footer.tpl -->

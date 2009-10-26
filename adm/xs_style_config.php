@@ -43,15 +43,10 @@ if(!@file_exists($filename))
 	$config_name = 'xs_style_' . $tpl;
 	$sql = "DELETE FROM " . CONFIG_TABLE . " WHERE config_name='" . addslashes($config_name) . "'";
 	$db->sql_query($sql);
-	// recache config table for cat_hierarchy 2.1.0
-	if(isset($GLOBALS['config']) && is_object($GLOBALS['config']))
-	{
-		global $config;
-		$config->read(true);
-	}
 	$template->assign_block_vars('left_refresh', array(
 			'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
-		));
+		)
+	);
 	xs_error($lang['xs_invalid_style_name']);
 }
 
@@ -59,7 +54,7 @@ if(!@file_exists($filename))
 $style_config = array();
 include($filename);
 $data = $template->get_config($tpl, false);
-for($i=0; $i<count($style_config); $i++)
+for($i = 0; $i < sizeof($style_config); $i++)
 {
 	if(!isset($data[$style_config[$i]['var']]))
 	{
@@ -71,7 +66,7 @@ for($i=0; $i<count($style_config); $i++)
 // check submitted form
 if(isset($_POST['tpl']) && !defined('DEMO_MODE'))
 {
-	for($i=0; $i<count($style_config); $i++)
+	for($i=0; $i< sizeof($style_config); $i++)
 	{
 		$item = &$style_config[$i];
 		$var = $style_config[$i]['var'];
@@ -94,7 +89,7 @@ if(isset($_POST['tpl']) && !defined('DEMO_MODE'))
 	// update config
 	$str = $template->_serialize($data);
 	$config_name = 'xs_style_' . $tpl;
-	if(isset($board_config[$config_name]))
+	if(isset($config[$config_name]))
 	{
 		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . addslashes($str) . "' WHERE config_name='" . addslashes($config_name) . "'";
 	}
@@ -103,18 +98,12 @@ if(isset($_POST['tpl']) && !defined('DEMO_MODE'))
 		$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('" . addslashes($config_name) . "', '" . addslashes($str) . "')";
 	}
 	$db->sql_query($sql);
-	$board_config[$config_name] = $str;
-	// recache config table for cat_hierarchy 2.1.0
-	if(isset($config) && is_object($config))
-	{
-		$config->read(true);
-	}
+	$config[$config_name] = $str;
 }
-
 
 // show form
 $last_cat = '';
-for($i=0; $i<count($style_config); $i++)
+for($i = 0; $i < sizeof($style_config); $i++)
 {
 	$item = &$style_config[$i];
 	$var = $style_config[$i]['var'];
@@ -143,7 +132,7 @@ for($i=0; $i<count($style_config); $i++)
 		foreach($item['selection'] as $var => $value)
 		{
 			$selected = false;
-			for($j=0; $j<count($values); $j++)
+			for($j=0; $j< sizeof($values); $j++)
 			{
 				if($values[$j] === $var)
 				{

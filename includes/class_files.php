@@ -51,9 +51,9 @@ class files_management
 		$file_tmp = str_replace(array('http://', 'https://'), array('', ''), $file_name);
 		$file_path[] = array();
 		$file_path = explode('/', $file_tmp);
-		$file_details['name_full'] = $file_path[count($file_path) - 1];
+		$file_details['name_full'] = $file_path[sizeof($file_path) - 1];
 		$file_part = explode('.', strtolower($file_details['name_full']));
-		$file_details['ext'] = $file_part[count($file_part) - 1];
+		$file_details['ext'] = $file_part[sizeof($file_part) - 1];
 		$file_details['name'] = substr($file_details['name_full'], 0, strlen($file_details['name_full']) - strlen($file_details['ext']) - 1);
 		return $file_details;
 	}
@@ -70,7 +70,7 @@ class files_management
 		$file_path[] = array();
 		$path_parts = pathinfo($full_path);
 		$file_path = explode('/', $path_parts['dirname']);
-		$dirs_path['indent'] = count($file_path);
+		$dirs_path['indent'] = sizeof($file_path);
 		$dirs_path['name'] = $path_parts['dirname'];
 		return $dirs_path;
 	}
@@ -82,7 +82,7 @@ class files_management
 		$file_path[] = array();
 		$path_parts = pathinfo($full_path);
 		$file_path = explode('/', $path_parts['dirname']);
-		//$last_subfolder['indent'] = count($file_path);
+		//$last_subfolder['indent'] = sizeof($file_path);
 		$last_subfolder['indent'] = substr_count($full_path, '/') + 1;
 		$last_subfolder['name'] = $file_path[$last_subfolder['indent'] - 1];
 		return $last_subfolder;
@@ -95,13 +95,13 @@ class files_management
 		$file_path[] = array();
 		$path_parts = pathinfo($full_path);
 		$file_path = explode('/', $path_parts['dirname']);
-		//$last_subfolder['indent'] = count($file_path);
+		//$last_subfolder['indent'] = sizeof($file_path);
 		$parent_subfolder['indent'] = substr_count($full_path, '/');
-		if (count($file_path) >= 2)
+		if (sizeof($file_path) >= 2)
 		{
 			$parent_subfolder['name'] = $file_path[$parent_subfolder['indent'] - 2] . '/';
 		}
-		elseif (count($file_path) == 1)
+		elseif (sizeof($file_path) == 1)
 		{
 			$parent_subfolder['name'] = '';
 		}
@@ -194,7 +194,7 @@ class files_management
 				// Directory found, so recall this function
 				if ($is_dir && $process_subdirs)
 				{
-					$files_list = array_merge($files_list, $this->create_files_list($dir . '/' . $file), $process_subdirs, $list_subdirs);
+					$files_list = array_merge($files_list, $this->create_files_list($dir . '/' . $file, $process_subdirs, $list_subdirs));
 				}
 			}
 		}
@@ -385,7 +385,7 @@ class files_management
 		$tmp_paths = array();
 		$tmp_paths = explode('/', $path);
 		$skip_sub_folder = false;
-		for ($i = 0; $i < count($tmp_paths); $i++)
+		for ($i = 0; $i < sizeof($tmp_paths); $i++)
 		{
 			if (!is_dir($tmp_paths[$i]))
 			{
@@ -472,7 +472,7 @@ class files_management
 		}
 		$lines = file($file_path);
 		$color = '#dd2222';
-		for ($i = 0; $i <= count($lines)-1; $i++)
+		for ($i = 0; $i <= sizeof($lines)-1; $i++)
 		{
 			$scanline = $lines[$i];
 			// convert to lower case
@@ -583,7 +583,7 @@ class files_management
 	{
 		$lines_output = array();
 		$lines = file($file_path);
-		for ($i = 0; $i <= count($lines)-1; $i++)
+		for ($i = 0; $i <= sizeof($lines)-1; $i++)
 		{
 			$scanline = $lines[$i];
 			// convert to lower case

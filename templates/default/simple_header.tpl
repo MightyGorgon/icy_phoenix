@@ -25,8 +25,7 @@
 <!-- Nifty End -->
 
 </head>
-<!-- <body onload="PreloadFlag = true;"> -->
-<body>
+<body <!-- IF S_SLIDESHOW_SCRIPT -->onload="runSlideShow()"<!-- ENDIF -->>
 <a name="top"></a>
 <div class="rounded_line">
 <table id="forumtable" width="100%" cellspacing="0" style="width: 100% !important;">

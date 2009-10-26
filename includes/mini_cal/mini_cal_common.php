@@ -89,7 +89,7 @@ function setQueryStringVal($var, $value)
 	}
 	else
 	{
-		$querystring = ereg_replace("($var=[-][[:digit:]]{1,3})", $var . '=' . $value, $querystring);
+		$querystring = @ereg_replace("($var=[-][[:digit:]]{1,3})", $var . '=' . $value, $querystring);
 	}
 	return '?' . $querystring;
 }
@@ -99,7 +99,7 @@ function setQueryStringVal($var, $value)
 	getPostForumsList
 
 	version:		1.0.0
-	parameters:	 $mini_cal_post_auth  - a comma seperated list of forms with post rights
+	parameters:	 $mini_cal_post_auth  - a comma seperated list of forums with post rights
 
 	returns:		adds a forums select list to the template output
 ***************************************************************************/
@@ -110,13 +110,15 @@ function getPostForumsList($mini_cal_post_auth, $and_post_auth_sql = '')
 		global $db, $template, $lang;
 
 			// get a list of events forums
-			$sql = 'SELECT c.cat_id, c.cat_title, f.forum_id, f.forum_name
-			FROM ' . FORUMS_TABLE . ' f, ' . CATEGORIES_TABLE . ' c
-			WHERE f.cat_id = c.cat_id
+			$sql = 'SELECT f.forum_id, f.forum_name
+			FROM ' . FORUMS_TABLE . ' f
+				AND f.forum_type = ' . FORUM_POST . '
 				AND f.forum_id IN (' . $mini_cal_post_auth . ')' .
 				$and_post_auth_sql;
-
-		if($result = $db->sql_query($sql))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
 			$num_rows = $db->sql_numrows($result);
 			if ($num_rows > 0)
@@ -125,10 +127,9 @@ function getPostForumsList($mini_cal_post_auth, $and_post_auth_sql = '')
 
 				$forums_list = '<select style="width: 100%" name="' . POST_FORUM_URL . '" onchange="if(this.options[this.selectedIndex].value > -1){ forms[\'mini_cal\'].submit() }">';
 
-				$cat_id = 0;
-					while ($row = $db->sql_fetchrow($result))
+				while ($row = $db->sql_fetchrow($result))
 				{
-					$forums_list .= '<option value="' . $row['forum_id'] . '"' . $selected . '> - ' . substr($row['forum_name'],0,20) . '</option>';
+					$forums_list .= '<option value="' . $row['forum_id'] . '"' . $selected . '> - ' . substr($row['forum_name'], 0, 20) . '</option>';
 				}
 				$forums_list .= '</select>';
 

@@ -24,10 +24,10 @@ class class_form
 	*/
 	function create_input($name, $properties)
 	{
-		global $board_config;
+		global $config;
 
 		$input = '';
-		$default = !empty($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', array_map('ip_stripslashes', $properties['default'])) : htmlspecialchars(ip_stripslashes($properties['default']))) : '';
+		$default = !empty($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', array_map('stripslashes', $properties['default'])) : htmlspecialchars(stripslashes($properties['default']))) : '';
 
 		switch ($properties['type'])
 		{
@@ -210,7 +210,7 @@ class class_form
 			{
 				$multibyte = (in_array($v['type'], array('HIDDEN', 'VARCHAR', 'HTMLVARCHAR', 'TEXT', 'HTMLTEXT'))) ? true : false;
 				$inputs_array[$k] = request_var($k, $v['default'], $multibyte);
-				$inputs_array[$k] = is_string($inputs_array[$k]) ? ip_addslashes($inputs_array[$k]) : $inputs_array[$k];
+				$inputs_array[$k] = is_string($inputs_array[$k]) ? addslashes($inputs_array[$k]) : $inputs_array[$k];
 			}
 
 			// We want to force each value the user isn't allowed to add/edit to the default value
@@ -226,7 +226,7 @@ class class_form
 	*/
 	function create_input_form($mode, $action, $items_row)
 	{
-		global $board_config, $template, $theme, $lang, $s_hidden_fields;
+		global $config, $template, $theme, $lang, $s_hidden_fields;
 		global $table_fields, $inputs_array, $current_time, $s_bbcb_global;
 
 		foreach ($table_fields as $k => $v)
@@ -255,10 +255,10 @@ class class_form
 				if (($v['type'] != 'HIDDEN') && (isset($v['bbcode_box']) && $v['bbcode_box']))
 				{
 					$s_bbcb_global = true;
-					$html_status = ($board_config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
-					$bbcode_status = ($board_config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+					$html_status = ($config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+					$bbcode_status = ($config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
 					$bbcode_status = sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>');
-					$smilies_status = ($board_config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+					$smilies_status = ($config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 					$formatting_rules = '<br />' . $html_status . '<br />' . $bbcode_status . '<br />' . $smilies_status . '<br />';
 					$template->assign_vars(array(
 						'BBCB_FORMATTING_RULES' => $formatting_rules,
@@ -276,13 +276,13 @@ class class_form
 	*/
 	function create_view_page($items_row)
 	{
-		global $board_config, $template, $theme, $lang, $bbcode;
+		global $config, $template, $theme, $lang, $bbcode;
 		global $table_fields, $inputs_array;
 
 		foreach ($table_fields as $k => $v)
 		{
 			$inputs_array[$k] = (isset($items_row[$k]) ? $items_row[$k] : $v['default']);
-			$inputs_array[$k] = is_string($inputs_array[$k]) ? ip_stripslashes($inputs_array[$k]) : $inputs_array[$k];
+			$inputs_array[$k] = is_string($inputs_array[$k]) ? stripslashes($inputs_array[$k]) : $inputs_array[$k];
 			// We convert HTML entities only if we do not need to pars HTML...
 			if (is_string($inputs_array[$k]) && empty($v['html_parse']))
 			{
@@ -343,7 +343,7 @@ class class_form
 				// Convert dates and times
 				if ($v['is_time'])
 				{
-					$value = create_date_ip($board_config['default_dateformat'], $inputs_array[$k], $board_config['board_timezone']);
+					$value = create_date_ip($config['default_dateformat'], $inputs_array[$k], $config['board_timezone']);
 				}
 
 				// Create user link
@@ -413,7 +413,7 @@ class class_form
 	{
 		$select_js = (!empty($select_js) ? $select_js : '');
 		$select_box = '<select name="' . $select_name . '"' . $select_js . '>';
-		for($j = 0; $j < count($options_array); $j++)
+		for($j = 0; $j < sizeof($options_array); $j++)
 		{
 			$selected = ($options_array[$j] == $default) ? ' selected="selected"' : '';
 			$select_box .= '<option value="' . $options_array[$j] . '"' . $selected . '>' . $options_langs_array[$j] . '</option>';
@@ -430,7 +430,7 @@ class class_form
 	{
 		$radio_js = (!empty($radio_js) ? $radio_js : '');
 		$radio_box = '';
-		for($j = 0; $j < count($options_array); $j++)
+		for($j = 0; $j < sizeof($options_array); $j++)
 		{
 			$checked = ($options_array[$j] == $default) ? ' checked="checked"' : '';
 			$radio_box .= (($j > 0) ? '&nbsp;&nbsp;' : '');
@@ -566,11 +566,11 @@ class class_form
 	*/
 	function fix_unix_time($unix_time, $factor = 1)
 	{
-		global $board_config, $lang, $userdata;
+		global $config, $lang, $userdata;
 
-		$time_zone = (isset($userdata['user_timezone']) ? $userdata['user_timezone'] : $board_config['board_timezone']);
-		$time_mode = (isset($userdata['user_time_mode']) ? $userdata['user_time_mode'] : $board_config['default_time_mode']);
-		$dst_time_lag = (isset($userdata['user_dst_time_lag']) ? $userdata['user_dst_time_lag'] : $board_config['default_dst_time_lag']);
+		$time_zone = (isset($userdata['user_timezone']) ? $userdata['user_timezone'] : $config['board_timezone']);
+		$time_mode = (isset($userdata['user_time_mode']) ? $userdata['user_time_mode'] : $config['default_time_mode']);
+		$dst_time_lag = (isset($userdata['user_dst_time_lag']) ? $userdata['user_dst_time_lag'] : $config['default_dst_time_lag']);
 
 		switch ($time_mode)
 		{
@@ -578,7 +578,7 @@ class class_form
 				$dst_sec = $dst_time_lag * 60;
 				break;
 			case SERVER_SWITCH:
-				$dst_sec = date('I', $unix_time) * $dst_time_lag * 60;
+				$dst_sec = @date('I', $unix_time + (3600 * $time_zone)) * $dst_time_lag * 60;
 				break;
 			default:
 				$dst_sec = 0;

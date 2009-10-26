@@ -28,15 +28,9 @@ init_userprefs($userdata);
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-$page_title = $lang['Search'];
-$meta_description = '';
-$meta_keywords = '';
 $nav_server_url = create_server_url();
 $album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_search.' . PHP_EXT) . '" class="nav-current">' . $lang['Search'] . '</a>';
 $breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'album_search_body.tpl'));
 
 if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] != '') || ($_GET['search'] != '')))
 {
@@ -120,28 +114,18 @@ if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] !=
 								AND p.pic_cat_id = c.cat_id
 								" . $where . "
 								" . $search_pg;
-
-	if(!($result = $db->sql_query($count_sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not count '.$m, '', __LINE__, __FILE__, $count_sql);
-	}
-
+	$result = $db->sql_query($count_sql);
 	$row = $db->sql_fetchrow($result);
-
 	$total_pics = $row['count'];
 
-$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username, p.pic_time, p.pic_cat_id, p.pic_approval, c.cat_id, c.cat_title, c.cat_user_id
-				FROM " . ALBUM_TABLE . ' AS p,' . ALBUM_CAT_TABLE . " AS c
-				WHERE p.pic_approval = 1
-					AND p.pic_cat_id = c.cat_id
-					" . $where . "
-					" . $search_pg . "
-				ORDER BY p.pic_time DESC LIMIT ".$limit_sql."";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain a list of matching information (searching for: $search)", "", __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username, p.pic_time, p.pic_cat_id, p.pic_approval, c.cat_id, c.cat_title, c.cat_user_id
+					FROM " . ALBUM_TABLE . ' AS p,' . ALBUM_CAT_TABLE . " AS c
+					WHERE p.pic_approval = 1
+						AND p.pic_cat_id = c.cat_id
+						" . $where . "
+						" . $search_pg . "
+					ORDER BY p.pic_time DESC LIMIT ".$limit_sql."";
+	$result = $db->sql_query($sql);
 
 	$numres = 0;
 
@@ -179,7 +163,7 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 				{
 					$template->assign_block_vars('switch_search_results.search_results', array(
 						'L_USERNAME' => $row['pic_username'],
-						'U_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&u=' . $row['pic_user_id']),
+						'U_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&u=' . $row['pic_user_id']),
 
 						'L_CAT' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
 						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
@@ -195,7 +179,7 @@ $sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_username,
 						'PIC_PREVIEW' => $pic_preview,
 						'PIC_TITLE' => htmlspecialchars($row['pic_title']),
 						'DESC' => htmlspecialchars($row['pic_desc']),
-						'L_TIME' => create_date($board_config['default_dateformat'], $row['pic_time'], $board_config['board_timezone'])
+						'L_TIME' => create_date($config['default_dateformat'], $row['pic_time'], $config['board_timezone'])
 						)
 					);
 
@@ -238,7 +222,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('album_search_body.tpl', $lang['Search'], '', '');
 
 ?>

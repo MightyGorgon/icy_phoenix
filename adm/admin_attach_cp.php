@@ -104,21 +104,21 @@ if ($view == 'username')
 	switch ($mode)
 	{
 		case 'username':
-			$order_by = 'ORDER BY u.username ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY u.username ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		case 'attachments':
-			$order_by = 'ORDER BY total_attachments ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY total_attachments ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		case 'filesize':
-			$order_by = 'ORDER BY total_size ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY total_size ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		default:
 			$mode = 'attachments';
 			$sort_order = 'DESC';
-			$order_by = 'ORDER BY total_attachments ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY total_attachments ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 	}
 }
@@ -127,33 +127,33 @@ else if ($view == 'attachments')
 	switch ($mode)
 	{
 		case 'filename':
-			$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		case 'comment':
-			$order_by = 'ORDER BY a.comment ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY a.comment ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		case 'extension':
-			$order_by = 'ORDER BY a.extension ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY a.extension ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		case 'filesize':
-			$order_by = 'ORDER BY a.filesize ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY a.filesize ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		case 'downloads':
-			$order_by = 'ORDER BY a.download_count ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY a.download_count ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		case 'post_time':
-			$order_by = 'ORDER BY a.filetime ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY a.filetime ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 
 		default:
 			$mode = 'a.real_filename';
 			$sort_order = 'ASC';
-			$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+			$order_by = 'ORDER BY a.real_filename ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page'];
 		break;
 	}
 }
@@ -164,18 +164,18 @@ $view_types = array('stats', 'search', 'username', 'attachments');
 
 $select_view = '<select name="view">';
 
-for($i = 0; $i < count($view_types_text); $i++)
+for($i = 0; $i < sizeof($view_types_text); $i++)
 {
 	$selected = ($view == $view_types[$i]) ? ' selected="selected"' : '';
 	$select_view .= '<option value="' . $view_types[$i] . '"' . $selected . '>' . $view_types_text[$i] . '</option>';
 }
 $select_view .= '</select>';
 
-if (count($mode_types_text) > 0)
+if (sizeof($mode_types_text) > 0)
 {
 	$select_sort_mode = '<select name="mode">';
 
-	for($i = 0; $i < count($mode_types_text); $i++)
+	for($i = 0; $i < sizeof($mode_types_text); $i++)
 	{
 		$selected = ($mode == $mode_types[$i]) ? ' selected="selected"' : '';
 		$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
@@ -200,13 +200,13 @@ $delete_id_list = request_var('delete_id_list', array(0));
 
 $confirm = ($_POST['confirm']) ? true : false;
 
-if ($confirm && count($delete_id_list) > 0)
+if ($confirm && sizeof($delete_id_list) > 0)
 {
 	$attachments = array();
 
 	delete_attachment(0, $delete_id_list);
 }
-else if ($delete && count($delete_id_list) > 0)
+else if ($delete && sizeof($delete_id_list) > 0)
 {
 	// Not confirmed, show confirmation message
 	$hidden_fields = '<input type="hidden" name="view" value="' . $view . '" />';
@@ -215,7 +215,7 @@ else if ($delete && count($delete_id_list) > 0)
 	$hidden_fields .= '<input type="hidden" name="u_id" value="' . $uid . '" />';
 	$hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
 
-	for ($i = 0; $i < count($delete_id_list); $i++)
+	for ($i = 0; $i < sizeof($delete_id_list); $i++)
 	{
 		$hidden_fields .= '<input type="hidden" name="delete_id_list[]" value="' . $delete_id_list[$i] . '" />';
 	}
@@ -261,7 +261,7 @@ if ($submit_change && $view == 'attachments')
 	// Generate correct Change List
 	$attachments = array();
 
-	for ($i = 0; $i < count($attach_change_list); $i++)
+	for ($i = 0; $i < sizeof($attach_change_list); $i++)
 	{
 		$attachments['_' . $attach_change_list[$i]]['comment'] = $attach_comment_list[$i];
 		$attachments['_' . $attach_change_list[$i]]['download_count'] = $attach_download_count_list[$i];
@@ -270,11 +270,7 @@ if ($submit_change && $view == 'attachments')
 	$sql = 'SELECT *
 		FROM ' . ATTACHMENTS_DESC_TABLE . '
 		ORDER BY attach_id';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t get Attachment informations', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while ($attachrow = $db->sql_fetchrow($result))
 	{
@@ -283,13 +279,9 @@ if ($submit_change && $view == 'attachments')
 			if ($attachrow['comment'] != $attachments['_' . $attachrow['attach_id']]['comment'] || $attachrow['download_count'] != $attachments['_' . $attachrow['attach_id']]['download_count'])
 			{
 				$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . "
-					SET comment = '" . attach_mod_sql_escape($attachments['_' . $attachrow['attach_id']]['comment']) . "', download_count = " . (int) $attachments['_' . $attachrow['attach_id']]['download_count'] . "
+					SET comment = '" . $db->sql_escape($attachments['_' . $attachrow['attach_id']]['comment']) . "', download_count = " . (int) $attachments['_' . $attachrow['attach_id']]['download_count'] . "
 					WHERE attach_id = " . (int) $attachrow['attach_id'];
-
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t update Attachments Informations', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 	}
@@ -318,12 +310,7 @@ if ($view == 'stats')
 
 	$sql = "SELECT count(*) AS total
 		FROM " . ATTACHMENTS_DESC_TABLE;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total attachments', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$total = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
@@ -333,12 +320,7 @@ if ($view == 'stats')
 		FROM " . ATTACHMENTS_TABLE . "
 		WHERE post_id <> 0
 		GROUP BY post_id";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total posts', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$number_of_posts = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -346,12 +328,7 @@ if ($view == 'stats')
 		FROM " . ATTACHMENTS_TABLE . "
 		WHERE privmsgs_id <> 0
 		GROUP BY privmsgs_id";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total private messages', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$number_of_pms = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -359,12 +336,7 @@ if ($view == 'stats')
 		FROM " . ATTACHMENTS_TABLE . " a, " . POSTS_TABLE . " p
 		WHERE a.post_id = p.post_id
 		GROUP BY p.topic_id";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total topics', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$number_of_topics = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -372,12 +344,7 @@ if ($view == 'stats')
 		FROM " . ATTACHMENTS_TABLE . "
 		WHERE (post_id <> 0)
 		GROUP BY user_id_1";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$number_of_users = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -407,24 +374,20 @@ if ($view == 'stats')
 if ($view == 'search')
 {
 	// Get Forums and Categories
-	$sql = "SELECT c.cat_title, c.cat_id, f.forum_name, f.forum_id
-		FROM " . CATEGORIES_TABLE . " c, " . FORUMS_TABLE . " f
-		WHERE f.cat_id = c.cat_id
-		ORDER BY c.cat_id, f.forum_order";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain forum_name/forum_id', '', __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT c.forum_name AS cat_title, c.forum_id AS cat_id, f.forum_name, f.forum_id
+		FROM " . FORUMS_TABLE . " c, " . FORUMS_TABLE . " f
+		WHERE f.parent_id = c.forum_id
+		ORDER BY f.forum_order";
+	$result = $db->sql_query($sql);
 
 	$s_forums = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$s_forums .= '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
 
-		if(empty($list_cat[$row['cat_id']]))
+		if(empty($list_cat[$row['parent_id']]))
 		{
-			$list_cat[$row['cat_id']] = $row['cat_title'];
+			$list_cat[$row['parent_id']] = $row['cat_title'];
 		}
 	}
 
@@ -435,9 +398,9 @@ if ($view == 'search')
 		// Category to search
 		$s_categories = '<option value="0">' . $lang['All_available'] . '</option>';
 
-		foreach ($list_cat as $cat_id => $cat_title)
+		foreach ($list_cat as $parent_id => $cat_title)
 		{
-			$s_categories .= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
+			$s_categories .= '<option value="' . $parent_id . '">' . $cat_title . '</option>';
 		}
 	}
 	else
@@ -445,9 +408,7 @@ if ($view == 'search')
 		message_die(GENERAL_MESSAGE, $lang['No_searchable_forums']);
 	}
 
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'attach_cp_search.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'attach_cp_search.tpl'));
 
 	$template->assign_vars(array(
 		'L_ATTACH_SEARCH_QUERY'		=> $lang['Attach_search_query'],
@@ -494,7 +455,7 @@ if ($view == 'username')
 
 
 	// Get all Users with their respective total attachments amount
-	$sql = "SELECT u.username, a.user_id_1 as user_id, count(*) as total_attachments
+	$sql = "SELECT u.username, a.user_id_1 as user_id, COUNT(*) as total_attachments
 		FROM " . ATTACHMENTS_TABLE . " a, " . USERS_TABLE . " u
 		WHERE a.user_id_1 = u.user_id
 		GROUP BY a.user_id_1, u.username";
@@ -504,11 +465,7 @@ if ($view == 'username')
 		$sql .= ' ' . $order_by;
 	}
 
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$members = $db->sql_fetchrowset($result);
 	$num_members = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
@@ -522,12 +479,7 @@ if ($view == 'username')
 				FROM " . ATTACHMENTS_TABLE . "
 				WHERE user_id_1 = " . intval($members[$i]['user_id']) . "
 				GROUP BY attach_id";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$attach_ids = $db->sql_fetchrowset($result);
 			$num_attach_ids = $db->sql_numrows($result);
 			$db->sql_freeresult($result);
@@ -539,18 +491,13 @@ if ($view == 'username')
 				$attach_id[] = intval($attach_ids[$j]['attach_id']);
 			}
 
-			if (count($attach_id))
+			if (sizeof($attach_id))
 			{
 				// Now get the total filesize
 				$sql = "SELECT sum(filesize) as total_size
 					FROM " . ATTACHMENTS_DESC_TABLE . "
 					WHERE attach_id IN (" . implode(', ', $attach_id) . ")";
-
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
 
@@ -561,10 +508,10 @@ if ($view == 'username')
 		if ($mode == 'filesize')
 		{
 			$members = sort_multi_array($members, 'total_size', $sort_order, false);
-			$members = limit_array($members, $start, $board_config['topics_per_page']);
+			$members = limit_array($members, $start, $config['topics_per_page']);
 		}
 
-		for ($i = 0; $i < count($members); $i++)
+		for ($i = 0; $i < sizeof($members); $i++)
 		{
 			$username = $members[$i]['username'];
 			$total_attachments = $members[$i]['total_attachments'];
@@ -586,12 +533,7 @@ if ($view == 'username')
 	$sql = "SELECT user_id_1
 		FROM " . ATTACHMENTS_TABLE . "
 		GROUP BY user_id_1";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$total_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 }
@@ -637,15 +579,9 @@ if ($view == 'attachments')
 		$sql = "SELECT username
 			FROM " . USERS_TABLE . "
 			WHERE user_id = " . intval($uid);
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Error getting username', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
-
 		$username = $row['username'];
 
 		$s_hidden = '<input type="hidden" name="u_id" value="' . intval($uid) . '" />';
@@ -661,12 +597,7 @@ if ($view == 'attachments')
 			FROM " . ATTACHMENTS_TABLE . "
 			WHERE user_id_1 = " . intval($uid) . "
 			GROUP BY attach_id";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$attach_ids = $db->sql_fetchrowset($result);
 		$num_attach_ids = $db->sql_numrows($result);
 		$db->sql_freeresult($result);
@@ -705,23 +636,19 @@ if ($view == 'attachments')
 
 	if (!$search_based)
 	{
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$attachments = $db->sql_fetchrowset($result);
 		$num_attach = $db->sql_numrows($result);
 		$db->sql_freeresult($result);
 	}
 
-	if (count($attachments) > 0)
+	if (sizeof($attachments) > 0)
 	{
-		for ($i = 0; $i < count($attachments); $i++)
+		for ($i = 0; $i < sizeof($attachments); $i++)
 		{
 			$delete_box = '<input type="checkbox" name="delete_id_list[]" value="' . intval($attachments[$i]['attach_id']) . '" />';
 
-			for ($j = 0; $j < count($delete_id_list); $j++)
+			for ($j = 0; $j < sizeof($delete_id_list); $j++)
 			{
 				if ($delete_id_list[$j] == $attachments[$i]['attach_id'])
 				{
@@ -739,12 +666,7 @@ if ($view == 'attachments')
 			$sql = "SELECT *
 				FROM " . ATTACHMENTS_TABLE . "
 				WHERE attach_id = " . intval($attachments[$i]['attach_id']);
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$ids = $db->sql_fetchrowset($result);
 			$num_ids = $db->sql_numrows($result);
 			$db->sql_freeresult($result);
@@ -757,12 +679,7 @@ if ($view == 'attachments')
 						FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 						WHERE p.post_id = " . intval($ids[$j]['post_id']) . " AND p.topic_id = t.topic_id
 						GROUP BY t.topic_id, t.topic_title";
-
-					if (!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Couldn\'t query topic', '', __LINE__, __FILE__, $sql);
-					}
-
+					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
 
@@ -796,7 +713,7 @@ if ($view == 'attachments')
 				'EXTENSION'		=> $attachments[$i]['extension'],
 				'SIZE'			=> round(($attachments[$i]['filesize'] / MEGABYTE), 2),
 				'DOWNLOAD_COUNT'=> $attachments[$i]['download_count'],
-				'POST_TIME'		=> create_date($board_config['default_dateformat'], $attachments[$i]['filetime'], $board_config['board_timezone']),
+				'POST_TIME'		=> create_date($config['default_dateformat'], $attachments[$i]['filetime'], $config['board_timezone']),
 				'POST_TITLE'	=> $post_titles,
 
 				'S_DELETE_BOX'	=> $delete_box,
@@ -813,12 +730,7 @@ if ($view == 'attachments')
 		if ($total_attachments == 0)
 		{
 			$sql = "SELECT attach_id FROM " . ATTACHMENTS_DESC_TABLE;
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not query Attachment Description Table', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$total_rows = $db->sql_numrows($result);
 			$db->sql_freeresult($result);
 		}
@@ -826,13 +738,13 @@ if ($view == 'attachments')
 }
 
 // Generate Pagination
-if ($do_pagination && $total_rows > $board_config['topics_per_page'])
+if ($do_pagination && $total_rows > $config['topics_per_page'])
 {
-	$pagination = generate_pagination('admin_attach_cp.' . PHP_EXT . '?view=' . $view . '&amp;mode=' . $mode . '&amp;order=' . $sort_order . '&amp;uid=' . $uid, $total_rows, $board_config['topics_per_page'], $start).'&nbsp;';
+	$pagination = generate_pagination('admin_attach_cp.' . PHP_EXT . '?view=' . $view . '&amp;mode=' . $mode . '&amp;order=' . $sort_order . '&amp;uid=' . $uid, $total_rows, $config['topics_per_page'], $start).'&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION'	=> $pagination,
-		'PAGE_NUMBER'	=> sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_rows / $board_config['topics_per_page'])),
+		'PAGE_NUMBER'	=> sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_rows / $config['topics_per_page'])),
 
 		'L_GOTO_PAGE'	=> $lang['Goto_page'])
 	);

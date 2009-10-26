@@ -19,13 +19,13 @@ class pafiledb_toplist extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $userdata;
+		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
 		if(!$this->auth_global['auth_toplist'])
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_toplist'], $this->auth_global['auth_toplist_type']);
@@ -58,9 +58,9 @@ class pafiledb_toplist extends pafiledb_public
 		$pafiledb_template->assign_vars(array(
 			'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 			'L_HOME' => $lang['Home'],
-			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-			'U_INDEX' => append_sid(PORTAL_MG),
+			'U_INDEX' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 			'U_NEWEST_FILE' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=newest'),
 			'U_MOST_POPULAR' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=downloads'),
@@ -70,7 +70,7 @@ class pafiledb_toplist extends pafiledb_public
 			'L_NEWEST_FILE' => $lang['Latest_downloads'],
 			'L_MOST_POPULAR' => $lang['Most_downloads'],
 			'L_TOP_RATED' => $lang['Rated_downloads'],
-			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'L_TOPLIST' => $lang['Toplist'])
 		);
 
@@ -78,11 +78,7 @@ class pafiledb_toplist extends pafiledb_public
 			FROM ' . PA_FILES_TABLE . "
 			WHERE file_approved = '1'
 			ORDER BY file_time DESC";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -100,7 +96,7 @@ class pafiledb_toplist extends pafiledb_public
 				//get number of files in the last week
 				$file_num_week = 0;
 				$day_time = (time()-(86400 * 7));
-				for($i = 0; $i < count($rowset); $i++)
+				for($i = 0; $i < sizeof($rowset); $i++)
 				{
 					if( ($rowset[$i]['file_time']) >= $day_time )
 					{
@@ -111,7 +107,7 @@ class pafiledb_toplist extends pafiledb_public
 				$file_num_month = 0;
 
 				$day_time = (time()-(86400 * 30));
-				for($i = 0; $i < count($rowset); $i++)
+				for($i = 0; $i < sizeof($rowset); $i++)
 				{
 					if( ($rowset[$i]['file_time']) >= $day_time )
 					{
@@ -146,11 +142,11 @@ class pafiledb_toplist extends pafiledb_public
 					for($j = 0; $j <= $days - 1; $j++)
 					{
 						$day_time = (time()-(86400 * $j));
-						$day_date = date('Y-m-d', $day_time);
+						$day_date = gmdate('Y-m-d', $day_time);
 						$file_num = 0;
-						for($i = 0; $i < count($rowset); $i++)
+						for($i = 0; $i < sizeof($rowset); $i++)
 						{
-							$file_date = date('Y-m-d', $rowset[$i]['file_time']);
+							$file_date = gmdate('Y-m-d', $rowset[$i]['file_time']);
 							if( $file_date == $day_date )
 							{
 								$file_num++;
@@ -159,7 +155,7 @@ class pafiledb_toplist extends pafiledb_public
 
 						$pafiledb_template->assign_block_vars('files_date', array(
 							'U_DATES' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest&amp;days=7&amp;selected_date=' . $day_time),
-							'DATES' => date('F d, Y', $day_time),
+							'DATES' => gmdate('F d, Y', $day_time),
 							'TOTAL_DOWNLOADS' => $file_num)
 						);
 					}
@@ -180,10 +176,10 @@ class pafiledb_toplist extends pafiledb_public
 					);
 
 					$file_ids = array();
-					for($i = 0; $i < count($rowset); $i++)
+					for($i = 0; $i < sizeof($rowset); $i++)
 					{
-						$formated_date = date('Y-m-d', $selected_date);
-						$file_date = date('Y-m-d', $rowset[$i]['file_time']);
+						$formated_date = gmdate('Y-m-d', $selected_date);
+						$file_date = gmdate('Y-m-d', $rowset[$i]['file_time']);
 						if($file_date == $formated_date)
 						{
 							$file_ids[] = $rowset[$i]['file_id'];
@@ -202,11 +198,7 @@ class pafiledb_toplist extends pafiledb_public
 							AND f1.file_approved = '1'
 							GROUP BY f1.file_id
 							ORDER BY file_time DESC";
-
-						if (!($result = $db->sql_query($sql)))
-						{
-							message_die(GENERAL_ERROR, 'Couldnt Query stat info', '', __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 
 						$file_rowset = array();
 						while($row = $db->sql_fetchrow($result))
@@ -222,7 +214,7 @@ class pafiledb_toplist extends pafiledb_public
 
 
 
-					for ($i = 0; $i < count($file_rowset); $i++)
+					for ($i = 0; $i < sizeof($file_rowset); $i++)
 					{
 
 						$cat_url = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $file_rowset[$i]['file_catid']);
@@ -231,7 +223,7 @@ class pafiledb_toplist extends pafiledb_public
 						// Format the date for the given file
 						//===================================================
 
-						$date = create_date_ip($board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone']);
+						$date = create_date_ip($config['default_dateformat'], $file_rowset[$i]['file_time'], $config['board_timezone']);
 
 						//===================================================
 						// Get rating for the file and format it
@@ -311,11 +303,7 @@ class pafiledb_toplist extends pafiledb_public
 					WHERE f.file_approved = '1'
 					$group_statement
 					ORDER BY f.file_time DESC";
-
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query category info for parent categories', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				$file_num = 0;
 
@@ -383,10 +371,7 @@ class pafiledb_toplist extends pafiledb_public
 						GROUP BY f1.file_id
 						ORDER BY $sort_method DESC
 						$sql_limit";
-					if (!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Couldnt Query category info for parent categories', '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 				}
 				$searchset = array();
 				while($row = $db->sql_fetchrow($result))
@@ -394,7 +379,7 @@ class pafiledb_toplist extends pafiledb_public
 					$searchset[] = $row;
 				}
 
-				for($i = 0; $i < count($searchset); $i++)
+				for($i = 0; $i < sizeof($searchset); $i++)
 				{
 					if($mode == 'rating')
 					{
@@ -410,7 +395,7 @@ class pafiledb_toplist extends pafiledb_public
 					// Format the date for the given file
 					//===================================================
 
-					$date = create_date_ip($board_config['default_dateformat'], $searchset[$i]['file_time'], $board_config['board_timezone']);
+					$date = create_date_ip($config['default_dateformat'], $searchset[$i]['file_time'], $config['board_timezone']);
 
 					//===================================================
 					// Get rating for the file and format it
@@ -455,9 +440,9 @@ class pafiledb_toplist extends pafiledb_public
 						'FILE_NEW_IMAGE' => $images['pa_file_new'],
 						'PIN_IMAGE' => $posticon,
 						'L_HOME' => $lang['Home'],
-						'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+						'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 						'L_HOME' => $lang['Home'],
-						'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+						'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 						'XS_NEW' => $xs_new,
 						'IS_NEW_FILE' => $is_new,
 						'FILE_NAME' => $searchset[$i]['file_name'],

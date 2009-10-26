@@ -104,14 +104,11 @@ class pafiledb
 		$sql = 'SELECT *
 			FROM ' . PA_CATEGORY_TABLE . '
 			ORDER BY cat_order ASC';
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t query categories info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$cat_rowset = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 		$this->auth($cat_rowset);
-		for($i = 0; $i < count($cat_rowset); $i++)
+		for($i = 0; $i < sizeof($cat_rowset); $i++)
 		{
 			if($this->auth[$cat_rowset[$i]['cat_id']]['auth_view'])
 			{
@@ -257,11 +254,7 @@ class pafiledb
 				WHERE file_approved = '1'
 				AND file_catid IN (" . $this->gen_cat_ids($cat_id) . ")
 				ORDER BY file_time DESC";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query Files info', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			while($row = $db->sql_fetchrow($result))
 			{
@@ -276,11 +269,7 @@ class pafiledb
 					cat_last_file_name = '" . addslashes($file_info['file_name']) . "',
 					cat_last_file_time = " . intval($file_info['file_time']) . "
 					WHERE cat_id = $cat_id";
-
-				if (!($db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query Files info', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 		else
@@ -303,10 +292,7 @@ class pafiledb
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET parents_data = '" . addslashes(serialize($cat_nav)) . "'
 				WHERE cat_parent = " . $this->cat_rowset[$cat_id]['cat_parent'];
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query categories info', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 		else
 		{
@@ -348,10 +334,7 @@ class pafiledb
 				FROM ' . PA_FILES_TABLE . '
 				WHERE file_id = ' . $file_id . '
 				LIMIT 1';
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t query files', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$file_name = htmlspecialchars(stripslashes($row['file_name']));
 			$cat_id = $row['file_catid'];
@@ -361,10 +344,8 @@ class pafiledb
 		$sql = 'SELECT *
 			FROM ' . PA_CATEGORY_TABLE . '
 			ORDER BY cat_order ASC';
-		if (!($result = $db->sql_query($sql, false, 'pafiledb_cats_')))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t query categories info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'pafiledb_cats_');
+
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$this->cat_rowset[$row['cat_id']] = $row;
@@ -447,19 +428,14 @@ class pafiledb
 	{
 		if($this->cat_rowset[$cat_id]['cat_files'] == -1 || $this->modified)
 		{
-			global $db, $db;
+			global $db;
 
 			$sql = 'SELECT COUNT(file_id) as total_files
 				FROM ' . PA_FILES_TABLE . "
 				WHERE file_approved = '1'
 				AND file_catid IN (" . $this->gen_cat_ids($cat_id) . ')
 				ORDER BY file_time DESC';
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query Files info', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$files_no = 0;
 			if($row = $db->sql_fetchrow($result))
 			{
@@ -469,11 +445,7 @@ class pafiledb
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 					SET cat_files = $files_no
 					WHERE cat_id = $cat_id";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query Files info', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 		else
 		{
@@ -486,7 +458,7 @@ class pafiledb
 
 	function new_file_in_cat($cat_id)
 	{
-		global $pafiledb_config, $board_config, $db, $_COOKIE;
+		global $pafiledb_config, $config, $db, $_COOKIE;
 
 		$files_new = 0;
 
@@ -498,12 +470,7 @@ class pafiledb
 			AND file_catid IN (" . $this->gen_cat_ids($cat_id) . ')
 			AND file_time > ' . $time . '
 			ORDER BY file_time DESC';
-
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query Files info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -535,7 +502,7 @@ class pafiledb
 
 	function auth($c_access)
 	{
-		global $db, $db, $lang, $userdata, $pafiledb_config;
+		global $db, $db, $userdata, $lang, $pafiledb_config;
 // Mx Addon
 		$a_sql = 'a.auth_view, a.auth_read, a.auth_view_file, a.auth_edit_file, a.auth_delete_file, a.auth_upload, a.auth_download, a.auth_rate, a.auth_email, a.auth_view_comment, a.auth_post_comment, a.auth_edit_comment, a.auth_delete_comment, a.auth_mod, a.auth_search, a.auth_stats, a.auth_toplist, a.auth_viewall';
 		$auth_fields = array('auth_view', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment');
@@ -555,10 +522,7 @@ class pafiledb
 				WHERE ug.user_id = {$userdata['user_id']}
 					AND ug.user_pending = 0
 					AND a.group_id = ug.group_id";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Failed obtaining category access control lists', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
 			{
@@ -579,7 +543,7 @@ class pafiledb
 
 		$is_admin = ($userdata['user_level'] == ADMIN && $userdata['session_logged_in']) ? true : 0;
 
-		for($i = 0; $i < count($auth_fields); $i++)
+		for($i = 0; $i < sizeof($auth_fields); $i++)
 		{
 			$key = $auth_fields[$i];
 
@@ -594,7 +558,7 @@ class pafiledb
 			// and admin automatically have access to an ACL forum, similarly we assume admins meet an
 			// auth requirement of MOD
 			//
-			for($k = 0; $k < count($c_access); $k++)
+			for($k = 0; $k < sizeof($c_access); $k++)
 			{
 				$value = $c_access[$k][$key];
 				$c_cat_id = $c_access[$k]['cat_id'];
@@ -633,13 +597,13 @@ class pafiledb
 				}
 			}
 		}
-		for($k = 0; $k < count($c_access); $k++)
+		for($k = 0; $k < sizeof($c_access); $k++)
 		{
 			$c_cat_id = $c_access[$k]['cat_id'];
 			$this->auth[$c_cat_id]['auth_mod'] = ($userdata['session_logged_in']) ? $this->auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$c_cat_id], $is_admin) : 0;
 		}
 
-		for($i = 0; $i < count($auth_fields_global); $i++)
+		for($i = 0; $i < sizeof($auth_fields_global); $i++)
 		{
 			$key = $auth_fields_global[$i];
 			$value = $pafiledb_config[$auth_fields_global[$i]];
@@ -683,9 +647,9 @@ class pafiledb
 	{
 		$auth_user = 0;
 
-		if (count($u_access))
+		if (sizeof($u_access))
 		{
-			for($j = 0; $j < count($u_access); $j++)
+			for($j = 0; $j < sizeof($u_access); $j++)
 			{
 				$result = 0;
 				switch($type)
@@ -760,15 +724,15 @@ class pafiledb
 
 	function category_display($cat_id = PA_ROOT_CAT)
 	{
-		global $db, $pafiledb_template, $lang, $userdata, $images;
-		global $pafiledb_config, $board_config, $debug;
+		global $db, $pafiledb_template, $userdata, $lang, $images;
+		global $pafiledb_config, $config, $debug;
 
 		if($this->cat_empty())
 		{
 			if (!$userdata['session_logged_in'])
 			{
 				$redirect = ($cat_id != PA_ROOT_CAT) ? 'dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $cat_id : 'dload.' . PHP_EXT;
-				redirect(append_sid(LOGIN_MG. '?redirect=' . $redirect, true));
+				redirect(append_sid(CMS_PAGE_LOGIN. '?redirect=' . $redirect, true));
 			}
 			message_die(GENERAL_ERROR, 'Either you are not allowed to view any category, or there is no category in the database');
 		}
@@ -794,7 +758,7 @@ class pafiledb
 
 					if(!empty($last_file_info['file_id']) && $this->auth[$subcat_id]['auth_read'])
 					{
-						$last_file_time = create_date_ip($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
+						$last_file_time = create_date_ip($config['default_dateformat'], $last_file_info['file_time'], $config['board_timezone']);
 						$last_file = $last_file_time . '<br />';
 						$last_file_name = (strlen(stripslashes($last_file_info['file_name'])) > 20) ? substr(stripslashes($last_file_info['file_name']), 0, 20) . '...' : stripslashes($last_file_info['file_name']);
 						$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $last_file_info['file_id']) . '" alt="' . stripslashes($last_file_info['file_name']) . '" title="' . stripslashes($last_file_info['file_name']) . '">' . $last_file_name . '</a> ';
@@ -814,7 +778,7 @@ class pafiledb
 
 					$xs_new = ($is_new)  ? '-new' : '';
 					$mini_img = $images['icon_minicat'];
-					if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+					if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 					{
 						$url_cat = append_sid(str_replace ('--', '-', make_url_friendly($subcat_row['cat_name']) . '-dc' . $subcat_id . '.html'));
 					}
@@ -860,7 +824,7 @@ class pafiledb
 				{
 					if($total_sub_cat)
 					{
-						if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+						if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 						{
 							$url_cat = append_sid(str_replace ('--', '-', make_url_friendly($subcat_row['cat_name']) . '-dc' . $subcat_id . '.html'));
 						}
@@ -885,7 +849,7 @@ class pafiledb
 						{
 							if(!empty($last_file_info['file_id']) && $this->auth[$sub_cat_rowset[$k]['cat_id']]['auth_read'])
 							{
-								$last_file_time = create_date_ip($board_config['default_dateformat'], $last_file_info['file_time'], $board_config['board_timezone']);
+								$last_file_time = create_date_ip($config['default_dateformat'], $last_file_info['file_time'], $config['board_timezone']);
 								$last_file = $last_file_time . '<br />';
 								$last_file_name = (strlen(stripslashes($last_file_info['file_name'])) > 20) ? substr(stripslashes($last_file_info['file_name']), 0, 20) . '...' : stripslashes($last_file_info['file_name']);
 								$last_file .= '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $last_file_info['file_id']) . '">' . $last_file_name . '</a> ';
@@ -905,7 +869,7 @@ class pafiledb
 
 							$sub_cat = $this->get_sub_cat($sub_cat_rowset[$k]['cat_id']);
 							$xs_new = ($is_new) ? '-new' : '';
-							if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+							if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 							{
 								$url_cat = append_sid(str_replace ('--', '-', make_url_friendly($sub_cat_rowset[$k]['cat_name']) . '-dc' . $sub_cat_rowset[$k]['cat_id'] . '.html'));
 							}
@@ -936,8 +900,8 @@ class pafiledb
 
 	function display_files($sort_method, $sort_order, $start, $show_file_message, $cat_id = false)
 	{
-		global $db, $pafiledb_config, $pafiledb_template, $board_config;
-		global $images, $lang, $pafiledb_functions, $board_config;
+		global $db, $pafiledb_config, $pafiledb_template, $config;
+		global $images, $lang, $pafiledb_functions, $config;
 
 		$filelist = false;
 
@@ -960,12 +924,7 @@ class pafiledb
 			$cat_where
 			GROUP BY f1.file_id
 			ORDER BY $sort_method $sort_order";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t get file info for this category', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$file_rowset = array();
 		$total_file = 0;
 
@@ -1010,25 +969,20 @@ class pafiledb
 			FROM " . PA_FILES_TABLE . "
 			WHERE file_approved='1'
 			$where_sql";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t get number of file', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
 		$total_file = $row['total_file'];
 		unset($row);
 
-		for ($i = 0; $i < count($file_rowset); $i++)
+		for ($i = 0; $i < sizeof($file_rowset); $i++)
 		{
 			//===================================================
 			// Format the date for the given file
 			//===================================================
 
-			$date = create_date_ip($board_config['default_dateformat'], $file_rowset[$i]['file_time'], $board_config['board_timezone']);
+			$date = create_date_ip($config['default_dateformat'], $file_rowset[$i]['file_time'], $config['board_timezone']);
 
 			//===================================================
 			// Get rating for the file and format it
@@ -1076,7 +1030,7 @@ class pafiledb
 			//===================================================
 			$xs_new = ($is_new)  ? '-new' : '';
 
-			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 			{
 				$url_file = append_sid(str_replace ('--', '-', make_url_friendly($file_rowset[$i]['file_name']) . '-df' . $file_rowset[$i]['file_id'] . '.html'));
 			}
@@ -1186,7 +1140,7 @@ class pafiledb
 			}
 		}
 
-		if(count($this->error))
+		if(sizeof($this->error))
 		{
 			return;
 		}
@@ -1212,22 +1166,14 @@ class pafiledb
 
 			$sql = 'INSERT INTO ' . PA_CATEGORY_TABLE . " (cat_name, cat_desc, cat_parent, cat_order, cat_allow_file, cat_allow_ratings, cat_allow_comments)
 				VALUES('$cat_name', '$cat_desc', $cat_parent, $cat_order, $cat_allow_file, $cat_allow_ratings, $cat_allow_comments)";
-
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t add a new category', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 		else
 		{
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET cat_name = '$cat_name', cat_desc = '$cat_desc', cat_parent = $cat_parent, cat_allow_file = $cat_allow_file, cat_allow_ratings = $cat_allow_ratings, cat_allow_comments = $cat_allow_comments
 				WHERE cat_id = $cat_id";
-
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t Edit this category', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 
 			if($cat_parent != $this->cat_rowset[$cat_id]['cat_parent'])
 			{
@@ -1272,19 +1218,14 @@ class pafiledb
 				$this->error[] = $lang['Cdelerror'];
 			}
 
-			if(count($this->error))
+			if(sizeof($this->error))
 			{
 				return;
 			}
 
 			$sql = 'DELETE FROM ' . PA_CATEGORY_TABLE . "
 				WHERE cat_id = $cat_id";
-
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query Info', '', __LINE__, __FILE__, $sql);
-			}
-
+			$db->sql_query($sql);
 			$this->reorder_cat($this->cat_rowset[$cat_id]['cat_parent']);
 
 			if ($file_mode == 'delete')
@@ -1319,11 +1260,7 @@ class pafiledb
 			$sql = 'SELECT file_id, unique_name, file_dir
 				FROM ' . PA_FILES_TABLE . "
 				WHERE file_catid = $id";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt select files', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			while($row = $db->sql_fetchrow($result))
 			{
@@ -1338,44 +1275,22 @@ class pafiledb
 			$sql = 'SELECT file_id, unique_name, file_dir
 				FROM ' . PA_FILES_TABLE . "
 				WHERE file_id = $id";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt select files', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$file_data = $db->sql_fetchrow($result);
-
 			$where_sql = "WHERE file_id = $id";
 		}
 
-		$sql = 'DELETE FROM ' . PA_FILES_TABLE . "
-			$where_sql";
-
-		unset($where_sql);
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt delete files', '', __LINE__, __FILE__, $sql);
-		}
+		$sql = 'DELETE FROM ' . PA_FILES_TABLE . " " . $where_sql;
+		$db->sql_query($sql);
 
 		$where_sql = ($mode != 'file' && !empty($file_ids)) ? ' IN (' . implode(', ', $file_ids) . ') ' : " = $id";
-
 		$sql = 'DELETE FROM ' . PA_CUSTOM_DATA_TABLE . "
 			WHERE customdata_file$where_sql";
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt delete custom data', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		$sql = 'DELETE FROM ' . PA_MIRRORS_TABLE . "
 			WHERE file_id$where_sql";
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt delete mirror for this file', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		if($mode == 'category')
 		{
@@ -1412,11 +1327,7 @@ class pafiledb
 		$sql = 'UPDATE ' . PA_FILES_TABLE . "
 			SET file_catid = $to_cat
 			WHERE file_catid = $from_cat";
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt move files', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 		$this->modified(true);
 		return;
 	}
@@ -1433,11 +1344,7 @@ class pafiledb
 
 			$sql = 'DELETE FROM ' . PA_CATEGORY_TABLE . "
 				WHERE cat_id = $sub_cat_id";
-
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Query Info', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 
 			if($file_mode == 'delete')
 			{
@@ -1460,11 +1367,7 @@ class pafiledb
 		$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 			SET cat_parent = $to_cat
 			WHERE cat_parent = $from_cat";
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt move Sub Category', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 		$this->modified(true);
 		return;
 	}
@@ -1477,11 +1380,7 @@ class pafiledb
 			FROM '. PA_CATEGORY_TABLE ."
 			WHERE cat_parent = $cat_parent
 			ORDER BY cat_order ASC";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not get list of Categories', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$i = 10;
 		while($row = $db->sql_fetchrow($result))
@@ -1491,17 +1390,14 @@ class pafiledb
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 					SET cat_order = $i
 					WHERE cat_id = $cat_id";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update order fields', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 			$i += 10;
 		}
 	}
 
 	function order_cat($cat_id)
 	{
-		global $db, $_GET;
+		global $db;
 
 		$move = (isset($_GET['move'])) ? intval($_GET['move']) : 15;
 		$cat_parent = $this->cat_rowset[$cat_id]['cat_parent'];
@@ -1509,12 +1405,7 @@ class pafiledb
 		$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET cat_order = cat_order + $move
 				WHERE cat_id = $cat_id";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not change category order', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$this->reorder_cat($cat_parent);
 		$this->init();
 	}
@@ -1529,11 +1420,7 @@ class pafiledb
 		$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 			SET parents_data = ''
 			WHERE cat_parent = " . $this->cat_rowset[$cat_id]['cat_parent'];
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query categories info', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET cat_files = '-1',
@@ -1541,11 +1428,8 @@ class pafiledb
 				cat_last_file_name = '',
 				cat_last_file_time = '0'
 				WHERE cat_id = '" . $cat_id . "'";
+		$db->sql_query($sql);
 
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query Files info', '', __LINE__, __FILE__, $sql);
-		}
 		if($init)
 		{
 			$this->init();
@@ -1564,7 +1448,7 @@ class pafiledb
 
 	function update_add_file($file_id = false)
 	{
-		global $db, $board_config, $userdata, $pafiledb_config, $pafiledb_functions, $user_ip;
+		global $db, $config, $userdata, $pafiledb_config, $pafiledb_functions, $user_ip;
 
 		$ss_upload = empty($_POST['screen_shot_url']) ? true : false;
 		$ss_remote_url = !empty($_POST['screen_shot_url']) ? $_POST['screen_shot_url'] : '';
@@ -1641,7 +1525,7 @@ class pafiledb
 			$this->error[] = 'You are not allowed to upload this type of files';
 		}
 
-		if(count($this->error))
+		if(sizeof($this->error))
 		{
 			return;
 		}
@@ -1653,14 +1537,8 @@ class pafiledb
 			$sql = 'SELECT file_dlurl, file_size, unique_name, file_dir, real_name, file_approved
 				FROM ' . PA_FILES_TABLE . "
 				WHERE file_id = '$file_id'";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt query Download URL', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$file_data = $db->sql_fetchrow($result);
-
 			$db->sql_freeresult($result);
 
 			if(!empty($file_remote_url) || !empty($file_local))
@@ -1806,11 +1684,7 @@ class pafiledb
 				file_approved = '$file_approved'
 				WHERE file_id = '$file_id'";
 		}
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Add the file information to the database', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		$this->modified(true);
 
@@ -1843,7 +1717,7 @@ class pafiledb
 			$this->error[] = 'You are not allowed to upload this type of files';
 		}
 
-		if(count($this->error))
+		if(sizeof($this->error))
 		{
 			return;
 		}
@@ -1855,14 +1729,8 @@ class pafiledb
 			$sql = 'SELECT file_dlurl, unique_name, file_dir
 				FROM ' . PA_MIRRORS_TABLE . "
 				WHERE mirror_id = $mirror_id";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt query Download URL', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$mirror_data = $db->sql_fetchrow($result);
-
 			$db->sql_freeresult($result);
 
 			if(!empty($file_remote_url) || !empty($file_local))
@@ -1913,11 +1781,7 @@ class pafiledb
 				mirror_location = '" . str_replace("\'", "''", $mirror_location) . "'
 				WHERE mirror_id = '$mirror_id'";
 		}
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Add the file information to the database', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	function delete_mirror($mirror_id)
@@ -1928,11 +1792,7 @@ class pafiledb
 
 		$sql = 'DELETE FROM ' . PA_MIRRORS_TABLE . "
 			WHERE mirror_id $where_sql";
-
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt delete mirror for this file', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql)
 	}
 
 	function file_maintenance()
@@ -1949,11 +1809,8 @@ class pafiledb
 		$sql = 'UPDATE ' . PA_FILES_TABLE . "
 			SET file_approved = $file_approved
 			WHERE file_id = $file_id";
+		$db->sql_query($sql);
 
-		if (!($db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Add the file information to the database', '', __LINE__, __FILE__, $sql);
-		}
 		$this->modified(true);
 	}
 

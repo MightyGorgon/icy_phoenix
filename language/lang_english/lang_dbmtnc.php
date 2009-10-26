@@ -320,6 +320,8 @@ $lang = array_merge($lang, array(
 	'Checking_topic_watch_data' => 'Checking for invalid watched topics',
 	'Checking_auth_access_data' => 'Checking for invalid group authorization data',
 	'Must_synchronize' => 'You have to synchronize the post data before using the board. Click to proceed.',
+// rebuild last poster details
+	'Rebuild_Last_Poster_Details' => 'Rebuilding last poster details',
 // check_vote
 	'Checking_vote_tables' => 'Check vote tables',
 	'Checking_votes_wo_topic' => 'Checking for votes without corresponding topic',

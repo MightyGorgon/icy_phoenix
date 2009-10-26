@@ -10,7 +10,7 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -25,8 +25,8 @@ init_userprefs($userdata);
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
 
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 $access_allowed = get_cms_access_auth('cms_ads');
@@ -38,7 +38,7 @@ if (!$access_allowed)
 
 if (!$userdata['session_admin'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cms_ads.' . PHP_EXT . '&admin=1', true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cms_ads.' . PHP_EXT . '&admin=1', true));
 }
 
 $ad_positions_array = array('glt', 'glb', 'glh', 'glf', 'fix', 'fit', 'fib', 'vfx', 'vft', 'vfb', 'vtx', 'vtt', 'vtb', 'nmt', 'nmb');
@@ -46,7 +46,7 @@ $ad_positions_cfg_value_array = array(1, 0);
 $ad_positions_cfg_lang_array = array($lang['Yes'], $lang['No']);
 $ad_positions_cfg_array = array();
 $ad_positions_lang_array = array();
-for ($i = 0; $i < count($ad_positions_array); $i++)
+for ($i = 0; $i < sizeof($ad_positions_array); $i++)
 {
 	$ad_positions_lang_array[] = $lang['AD_POS_' . strtoupper($ad_positions_array[$i])];
 	$ad_positions_cfg_array[] = 'ads_' . $ad_positions_array[$i];
@@ -86,18 +86,13 @@ $ad_sort_by = in_array($ad_sort_by, $ad_sort_by_array) ? $ad_sort_by : $ad_sort_
 $ad_sort_order = request_var('sort_order', '');
 
 $show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
-
-$page_title = $lang['Home'];
-$meta_description = '';
-$meta_keywords = '';
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-if ($board_config['cms_dock'] == true)
+if ($config['cms_dock'])
 {
 	$template->assign_block_vars('cms_dock_on', array());
 }
@@ -116,8 +111,8 @@ if($mode == 'save')
 	$input_table = ADS_TABLE;
 	// htmlspecialchars_decode is supported only since PHP 5+ (an alias has been added into functions.php, if you want to use a PHP 4 default function you can use html_entity_decode instead)
 	$input_array = array(
-		'ad_title' => '\'' . ((STRIP) ? addslashes($ad_title) : $ad_title) . '\'',
-		'ad_text' => '\'' . ((STRIP) ? htmlspecialchars_decode(addslashes($ad_text), ENT_COMPAT) : htmlspecialchars_decode($ad_text, ENT_COMPAT)) . '\'',
+		'ad_title' => '\'' . addslashes($ad_title) . '\'',
+		'ad_text' => '\'' . htmlspecialchars_decode(addslashes($ad_text), ENT_COMPAT) . '\'',
 		'ad_position' => '\'' . $ad_position . '\'',
 		'ad_auth' => $ad_auth,
 		'ad_format' => $ad_format,
@@ -142,53 +137,40 @@ if($mode == 'save')
 	{
 		$message = $lang['AD_UPDATED'];
 		$sql = "UPDATE " . $input_table . " SET " . $update_sql . $where_sql;
+		$result = $db->sql_query($sql);
 	}
 	elseif(!empty($input_fields_sql))
 	{
 		$message = $lang['AD_ADDED'];
 		$sql = "INSERT INTO " . $input_table . " " . $input_fields_sql . " VALUES " . $input_values_sql;
+		$result = $db->sql_query($sql);
 	}
 	else
 	{
 		$message = $lang['Error'];
 	}
-
-	if(($message != $lang['Error']) && !$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not insert data into ads table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
 	$db->clear_cache('ads_');
 	$message .= '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
-
 }
 elseif ($mode == 'delete')
 {
 	$sql = "DELETE FROM " . ADS_TABLE . "
 		WHERE ad_id = " . $ad_id;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not remove data from ads table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$db->clear_cache('ads_');
 	$message = $lang['AD_DELETED'] . '<br /><br />' . sprintf($lang['CLICK_RETURN_ADS'], '<a href="' . append_sid('cms_ads.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
-
 }
 elseif ($mode == 'update')
 {
 	$ads_upd = array();
 	$ads_upd = $_POST['ads'];
-	$ads_upd_n = count($ads_upd);
+	$ads_upd_n = sizeof($ads_upd);
 	$sql_no_gb = '';
 
 	$sql = "SELECT * FROM " . ADS_TABLE;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query ads table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -196,14 +178,11 @@ elseif ($mode == 'update')
 		$sql_upd = "UPDATE " . ADS_TABLE . "
 						SET ad_active = '" . $a_active . "'
 						WHERE ad_id = " . $row['ad_id'];
-		if(!$result_upd = $db->sql_query($sql_upd))
-		{
-			message_die(GENERAL_ERROR, 'Could not update ads table', $lang['Error'], __LINE__, __FILE__, $sql_upd);
-		}
+		$result_upd = $db->sql_query($sql_upd);
 	}
 	$db->sql_freeresult($result);
 
-	for ($i = 0; $i < count($ad_positions_array); $i++)
+	for ($i = 0; $i < sizeof($ad_positions_array); $i++)
 	{
 		set_config('ads_' . $ad_positions_array[$i], request_var('ads_' . $ad_positions_array[$i], 0));
 	}
@@ -216,7 +195,7 @@ elseif ($mode == 'update')
 }
 elseif ($mode == 'add')
 {
-	$template->set_filenames(array('body' => CMS_TPL . 'cms_ads_add_body.tpl'));
+	$template_to_parse = CMS_TPL . 'cms_ads_add_body.tpl';
 	$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_ADS']);
 
 	if ($ad_id > 0)
@@ -224,17 +203,13 @@ elseif ($mode == 'add')
 		$sql = "SELECT *
 			FROM " . ADS_TABLE . "
 			WHERE ad_id = " . $ad_id;
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query ads table', $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
 		$ad_id = $row['ad_id'];
-		$ad_title = ((STRIP) ? stripslashes($row['ad_title']) : $row['ad_title']);
-		$ad_text = ((STRIP) ? htmlspecialchars(stripslashes($row['ad_text'])) : htmlspecialchars($row['ad_text']));
+		$ad_title = stripslashes($row['ad_title']);
+		$ad_text = htmlspecialchars(stripslashes($row['ad_text']));
 		$ad_position = $row['ad_position'];
 		$ad_auth = $row['ad_auth'];
 		$ad_format = $row['ad_format'];
@@ -267,7 +242,7 @@ elseif ($mode == 'add')
 else
 {
 	// Main Page
-	$template->set_filenames(array('body' => CMS_TPL . 'cms_ads_body.tpl'));
+	$template_to_parse = CMS_TPL . 'cms_ads_body.tpl';
 	$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_ADS']);
 
 	$u_sort_order = (($ad_sort_order == 'ASC') ? 'DESC' : 'ASC');
@@ -284,13 +259,13 @@ else
 		)
 	);
 
-	for ($i = 0; $i < count($ad_positions_array); $i++)
+	for ($i = 0; $i < sizeof($ad_positions_array); $i++)
 	{
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$template->assign_block_vars('ads_cfg', array(
 			'ROW_CLASS' => $row_class,
 			'AD_CFG' => $ad_positions_lang_array[$i],
-			'AD_RADIO' => $class_form->build_radio_box($ad_positions_cfg_array[$i], $board_config[$ad_positions_cfg_array[$i]], $ad_positions_cfg_value_array, $ad_positions_cfg_lang_array, ''),
+			'AD_RADIO' => $class_form->build_radio_box($ad_positions_cfg_array[$i], $config[$ad_positions_cfg_array[$i]], $ad_positions_cfg_value_array, $ad_positions_cfg_lang_array, ''),
 			)
 		);
 	}
@@ -304,10 +279,7 @@ else
 	$sql = "SELECT *
 		FROM " . ADS_TABLE . "
 		ORDER BY " . $sql_sort;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query ads table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$i = 0;
 	while($row = $db->sql_fetchrow($result))
@@ -356,8 +328,6 @@ else
 
 }
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $lang['Home'], '', '');
 
 ?>

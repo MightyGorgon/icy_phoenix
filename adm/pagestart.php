@@ -25,8 +25,7 @@ if (!defined('IN_ADMIN'))
 	define('IN_ADMIN', true);
 }
 
-define('MG_KILL_CTRACK', true);
-//define('MG_CTRACK_FLAG', true);
+define('CTRACKER_DISABLED', true);
 
 // Include files
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
@@ -41,7 +40,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=' . ADM . '/index.' . PHP_EXT, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . ADM . '/index.' . PHP_EXT, true));
 }
 elseif (!jr_admin_secure(basename($_SERVER['REQUEST_URI'])))
 {
@@ -56,7 +55,7 @@ if ($_GET['sid'] != $userdata['session_id'])
 
 if (!$userdata['session_admin'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=' . ADM . '/index.' . PHP_EXT . '&admin=1', true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . ADM . '/index.' . PHP_EXT . '&admin=1', true));
 }
 
 if (empty($no_page_header))

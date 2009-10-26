@@ -29,7 +29,7 @@ $news_cache_freq = 86400;
 // Base address
 $news_base_address = create_server_url();
 // Viewtopic address
-$news_base_url = VIEWTOPIC_MG;
+$news_base_url = CMS_PAGE_VIEWTOPIC;
 // Options - END
 
 /*
@@ -37,18 +37,13 @@ $news_base_url = VIEWTOPIC_MG;
 */
 function flash_build_allowed_forums_list()
 {
-	global $db;
 	$allowed_forums = '';
-	$sql_auth = "SELECT forum_id FROM " . FORUMS_TABLE . " WHERE auth_view = 0 AND auth_read = 0";
-	if(!$result_auth = $db->sql_query($sql_auth, false, 'forums_allowed_list_', FORUMS_CACHE_FOLDER))
+	$forum_types = array(FORUM_POST);
+	$forums_array = get_forums_ids($forum_types, true, false, true, true);
+	foreach ($forums_array as $forum)
 	{
-		message_die(GENERAL_ERROR, 'could not query forums information.', '', __LINE__, __FILE__, $sql_auth);
+		$allowed_forums .= (empty($allowed_forums) ? '' : ',') . $forum['forum_id'];
 	}
-	while($row_auth = $db->sql_fetchrow($result_auth))
-	{
-		$allowed_forums .= (empty($allowed_forums) ? '' : ',') . $row_auth['forum_id'];
-	}
-	$db->sql_freeresult($result_auth);
 
 	return $allowed_forums;
 }
@@ -130,7 +125,9 @@ else
 				" . $sql_news . "
 		ORDER BY " . $sql_sort . "
 		LIMIT " . $news_items;
-	$result = ($news_recent ? $db->sql_query($sql, false, 'posts_flash_', POSTS_CACHE_FOLDER) : $db->sql_query($sql));
+	$db->sql_return_on_error(true);
+	$result = ($news_recent ? $db->sql_query($sql, 0, 'posts_flash_', POSTS_CACHE_FOLDER) : $db->sql_query($sql));
+	$db->sql_return_on_error(false);
 	if (!$result)
 	{
 		die('Error');

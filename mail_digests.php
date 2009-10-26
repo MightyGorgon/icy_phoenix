@@ -44,7 +44,7 @@ if (!defined('PHP_DIGESTS_CRON'))
 	init_userprefs($userdata);
 	// End session management
 
-	if (empty($board_config['enable_digests']) || ($board_config['enable_digests'] == 0))
+	if (empty($config['enable_digests']))
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 	}
@@ -72,9 +72,9 @@ include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_digests.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-if (($board_config['url_rw'] || $board_config['url_rw_guests']) && !function_exists('make_url_friendly'))
+if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_url_friendly'))
 {
 	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
@@ -92,7 +92,7 @@ $line_break = "\n";
 $digest_log_entry = '';
 
 // Is today the day to run the weekly digest?
-$today = getdate();
+$today = @getdate();
 $wday = $today['wday'];
 $current_hour = $today['hours'];
 $weekly_digest_text = ($wday == DIGEST_WEEKLY_DIGEST_DAY) ? " or (digest_type = 'WEEK' and send_hour = " . $current_hour . ")" : "";
@@ -109,19 +109,12 @@ $sql = "SELECT s.user_id, u.username, u.user_email, u.user_lastvisit, u.user_lan
 $sql = "SELECT s.user_id, u.username, u.user_email, u.user_lastvisit, u.user_lang, s.digest_type, s.format, s.show_text, s.show_mine, s.new_only, s.send_on_no_messages, s.send_hour, s.text_length
 	FROM " . DIGEST_SUBSCRIPTIONS_TABLE . " s, " . USERS_TABLE . " u
 	WHERE s.user_id = u.user_id AND ((digest_type = 'DAY' AND send_hour = " . $current_hour . ')' . $weekly_digest_text . ')';
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve list of users wanting a digest', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 // Retrieve a list of forum_ids that all registered users can access. Since digests go only to registered
 // users it's important to include those forums not accessible to the general public but accessible to users.
-$sql2 = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE auth_read IN (' . AUTH_ALL . ', ' . AUTH_REG . ')';
-
-if (!($result2 = $db->sql_query($sql2)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve list of forum_ids all members can access', '', __LINE__, __FILE__, $sql);
-}
+$sql2 = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE auth_read IN (' . AUTH_ALL . ', ' . AUTH_REG . ') AND forum_type = ' . FORUM_POST;
+$result2 = $db->sql_query($sql2);
 $i = 0;
 while ($row2 = $db->sql_fetchrow($result2))
 {
@@ -160,11 +153,7 @@ while ($row = $db->sql_fetchrow($result))
 		$sql3 = "SELECT max(post_time) AS last_post_date
 					FROM " . POSTS_TABLE . "
 					WHERE poster_id = " . $row['user_id'];
-
-		if (!($result3 = $db->sql_query($sql3)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to select last post date for user.', '', __LINE__, __FILE__, $sql);
-		}
+		$result3 = $db->sql_query($sql3);
 		$row3 = $db->sql_fetchrow($result3);
 		$last_post_date = ($row3['last_post_date'] <> '') ? $row3['last_post_date'] : 0;
 		$db->sql_freeresult($result3);
@@ -173,11 +162,7 @@ while ($row = $db->sql_fetchrow($result))
 		$sql3 = "SELECT max(session_time) AS last_session_date
 					FROM " . SESSIONS_TABLE . "
 					WHERE session_user_id = " . $row['user_id'];
-
-		if (!($result3 = $db->sql_query($sql3)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to get last session date for user', '', __LINE__, __FILE__, $sql);
-		}
+		$result3 = $db->sql_query($sql3);
 		$row3 = $db->sql_fetchrow($result3);
 		$last_session_date = ($row3['last_session_date'] <> '') ? $row3['last_session_date'] : 0;
 		$db->sql_freeresult($result3);
@@ -201,11 +186,7 @@ while ($row = $db->sql_fetchrow($result))
 		WHERE ug.user_id = " . $row['user_id'] . "
 		AND ug.user_pending = 0
 		AND a.group_id = ug.group_id";
-
-	if (!($result3 = $db->sql_query($sql3)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to retrieve list of elected forums', '', __LINE__, __FILE__, $sql);
-	}
+	$result3 = $db->sql_query($sql3);
 	while ($row3 = $db->sql_fetchrow($result3))
 	{
 		$elected_forums [$i] = $row3['forum_id'];
@@ -225,11 +206,7 @@ while ($row = $db->sql_fetchrow($result))
 	$sql3 = "SELECT forum_id
 		FROM " . DIGEST_SUBSCRIBED_FORUMS_TABLE . "
 		WHERE user_id = " . $row['user_id'];
-
-	if (!($result3 = $db->sql_query($sql3)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to retrieve list of subscribed forums', '', __LINE__, __FILE__, $sql);
-	}
+	$result3 = $db->sql_query($sql3);
 
 	while ($row3 = $db->sql_fetchrow($result3))
 	{
@@ -247,10 +224,14 @@ while ($row = $db->sql_fetchrow($result))
 
 	// Create a list of forums to be queried from the database. This is a comma delimited list of all forums
 	// the user is allowed to read that can be used with the SQL IN operation.
-	$forum_list = implode(',',$queried_forums);
+	$forums_list = implode(',', $queried_forums);
+	if (empty($forums_list))
+	{
+		continue;
+	}
 
 	// Format sender's email address (SMTP seems to have a problem with adding username)
-	$to = ($board_config['smtp_delivery']) ? $row['user_email'] : $row['username'] . ' <' . $row['user_email'] . '>';
+	$to = ($config['smtp_delivery']) ? $row['user_email'] : $row['username'] . ' <' . $row['user_email'] . '>';
 
 	// Show the text of the message?
 	$show_text = ($row['show_text'] == 'YES') ? true: false;
@@ -306,23 +287,20 @@ while ($row = $db->sql_fetchrow($result))
 
 	// Create a list of messages for this user that presumably have not been seen.
 	// Filter out unauthorized forums.
-	$sql2 = "SELECT c.cat_title, f.forum_name, t.topic_title, u.username AS 'Posted by', p.post_time, p.post_text, p.post_id, t.topic_id, f.forum_id
-		FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u, " . CATEGORIES_TABLE . " c
+	$sql2 = "SELECT f.forum_name, t.topic_title, u.username AS 'Posted by', p.post_time, p.post_text, p.post_id, t.topic_id, f.forum_id
+		FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u
 		WHERE p.topic_id = t.topic_id
 			AND t.forum_id = f.forum_id
 			AND p.poster_id = u.user_id
-			AND f.cat_id = c.cat_id
+			AND f.forum_type = " . FORUM_POST . "
 			AND p.post_time > " . $code . "
-			AND f.forum_id IN (" . $forum_list . ")
-		ORDER BY c.cat_order, f.forum_order, t.topic_title, p.post_time";
+			AND f.forum_id IN (" . $forums_list . ")
+		ORDER BY f.forum_order, t.topic_title, p.post_time";
 
 	// Uncomment next line to see SQL used
 	// $msg .= "**DEBUG**\r\n' . $sql2 . '\r\n**DEBUG**\r\n";
 
-	if (!($result2 = $db->sql_query($sql2)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to execute retrieve message summary for user', '', __LINE__, __FILE__, $sql);
-	}
+	$result2 = $db->sql_query($sql2);
 
 	// Format all the mail for this user
 
@@ -348,13 +326,13 @@ while ($row = $db->sql_fetchrow($result))
 		// Show name of forum only if it changes
 		if ($row2['forum_name'] <> $last_forum)
 		{
-			if ($board_config['url_rw'] == '1')
+			if ($config['url_rw'] == '1')
 			{
 				$forum_url = DIGEST_SITE_URL . str_replace ('--', '-', make_url_friendly($row2['forum_name']) . '-vf' . $row2['forum_id'] . '.html');
 			}
 			else
 			{
-				$forum_url = DIGEST_SITE_URL . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $row2['forum_id'];
+				$forum_url = DIGEST_SITE_URL . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $row2['forum_id'];
 			}
 			if ($html)
 			{
@@ -374,13 +352,13 @@ while ($row = $db->sql_fetchrow($result))
 		// Show name of topic only if it changes
 		if ($row2['topic_title'] <> $last_topic)
 		{
-			if ($board_config['url_rw'] == '1')
+			if ($config['url_rw'] == '1')
 			{
 				$topic_url = DIGEST_SITE_URL . str_replace ('--', '-', make_url_friendly($row2['topic_title']) . '-vt' . $row2['topic_id'] . '.html');
 			}
 			else
 			{
-				$topic_url = DIGEST_SITE_URL . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row2['topic_id'];
+				$topic_url = DIGEST_SITE_URL . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $row2['topic_id'];
 			}
 			if ($html)
 			{
@@ -394,18 +372,18 @@ while ($row = $db->sql_fetchrow($result))
 		}
 
 		// Show message information
-		if ($board_config['url_rw'] == '1')
+		if ($config['url_rw'] == '1')
 		{
 			$post_url = DIGEST_SITE_URL . str_replace ('--', '-', make_url_friendly($row2['topic_title']) . '-vp' . $row2['post_id'] . '.html#p' . $row2['post_id']);
 		}
 		else
 		{
-			$post_url = DIGEST_SITE_URL . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $row2['topic_id'] . '#p' . $row2['post_id'];
+			$post_url = DIGEST_SITE_URL . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $row2['topic_id'] . '#p' . $row2['post_id'];
 		}
 		if ($html)
 		{
 			$msg .= '<tr>' . $line_break;
-			$msg .= '<th style="text-align: left;">' . $lang['digest_link'] . ': <a href="' . $post_url . '">' . $row2['post_id'] . '</a> - ' . $lang['digest_post_time'] . ': ' . $display_time . ' ' . date('T', $row2['post_time']) . ' - ' . $lang['digest_author'] . ': ' . $row2['Posted by'] . '</th>' . $line_break;
+			$msg .= '<th style="text-align: left;">' . $lang['digest_link'] . ': <a href="' . $post_url . '">' . $row2['post_id'] . '</a> - ' . $lang['digest_post_time'] . ': ' . $display_time . ' ' . gmdate('T', $row2['post_time']) . ' - ' . $lang['digest_author'] . ': ' . $row2['Posted by'] . '</th>' . $line_break;
 			$msg .= '</tr>' . $line_break;
 			if ($show_text)
 			{
@@ -415,9 +393,9 @@ while ($row = $db->sql_fetchrow($result))
 				$this_msg = preg_replace('/\\n/', '<br />', $this_msg);
 				$msg .= $this_msg . $line_break;
 				*/
-				$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
-				$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : true);
-				$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : true);
+				$bbcode->allow_html = ($config['allow_html'] ? $config['allow_html'] : false);
+				$bbcode->allow_bbcode = ($config['allow_bbcode'] ? $config['allow_bbcode'] : true);
+				$bbcode->allow_smilies = ($config['allow_smilies'] ? $config['allow_smilies'] : true);
 				$post_text = $bbcode->parse($post_text);
 				$this_msg = '<td class="row1"><div class="post-text">' . $post_text . '</div></td>';
 				if ($bbcode->allow_bbcode == false)
@@ -434,7 +412,7 @@ while ($row = $db->sql_fetchrow($result))
 		}
 		else
 		{
-			$msg .= $lang['digest_posted_by'] . $row2['Posted by'] . $lang['digest_posted_at'] . $display_time . ' ' . date('T', $row2['post_time']) .
+			$msg .= $lang['digest_posted_by'] . $row2['Posted by'] . $lang['digest_posted_at'] . $display_time . ' ' . gmdate('T', $row2['post_time']) .
 				', ' . $post_url . '' . $line_break;
 
 			// If requested to show the message text
@@ -484,7 +462,7 @@ while ($row = $db->sql_fetchrow($result))
 
 		if (!(is_object($emailer)))
 		{
-			$digest_emailer = new digest_emailer($board_config['smtp_delivery']);
+			$digest_emailer = new digest_emailer($config['smtp_delivery']);
 		}
 
 		if ($html)
@@ -508,11 +486,8 @@ while ($row = $db->sql_fetchrow($result))
 					// Get the default style sheet to apply to the HTML email
 					$sql2 = 'SELECT style_name, head_stylesheet
 						FROM ' . THEMES_TABLE . '
-						WHERE themes_id = ' . $board_config['default_style'];
-					if (!($result2 = $db->sql_query($sql2)))
-					{
-						message_die(CRITICAL_ERROR, 'Could not query database for theme info');
-					}
+						WHERE themes_id = ' . $config['default_style'];
+					$result2 = $db->sql_query($sql2);
 					$row2 = $db->sql_fetchrow($result2);
 					$stylesheet = 'templates/' . $row2['style_name'] . '/' . $row2['head_stylesheet'];
 					$db->sql_freeresult($result2);
@@ -546,13 +521,13 @@ while ($row = $db->sql_fetchrow($result))
 		}
 
 		$digest_emailer->email_address($to);
-		//$digest_emailer->from($board_config['board_email']);
-		//$digest_emailer->replyto($board_config['board_email']);
+		//$digest_emailer->from($config['board_email']);
+		//$digest_emailer->replyto($config['board_email']);
 		$digest_emailer->set_subject($lang['digest_subject_line']);
 		$digest_emailer->assign_vars(array(
 			'BOARD_URL' => DIGEST_SITE_URL,
 			'LINK' => $link_tag,
-			'L_SITENAME' => ip_stripslashes($board_config['sitename']),
+			'L_SITENAME' => $config['sitename'],
 			'L_SALUTATION' => $lang['digest_salutation'],
 			'SALUTATION' => $row['username'],
 			'L_DIGEST_OPTIONS' => $lang['digest_your_digest_options'],
@@ -570,7 +545,7 @@ while ($row = $db->sql_fetchrow($result))
 			'L_SEND_DIGEST' => $lang['digest_send_if_no_new_messages'],
 			'SEND_DIGEST' => $row['send_on_no_messages'],
 			'L_SEND_TIME' => $lang['digest_hour_to_send_short'],
-			'SEND_TIME' => date('g A', mktime($send_hour)),
+			'SEND_TIME' => gmdate('g A', gmmktime($send_hour)),
 			'DIGEST_CONTENT' => $msg,
 			'DISCLAIMER' => ($html) ? $lang['digest_disclaimer_html'] : $lang['digest_disclaimer_text'],
 			'L_TEXT_LENGTH' => $lang['digest_message_size'],
@@ -612,9 +587,9 @@ if (DIGEST_SHOW_SUMMARY)
 		$summary_content .= '<hr />' . $line_break;
 	}
 	$summary_content .= $lang['digest_a_total_of'] . ' ' . $digests_sent . ' ' . $lang['digest_were_emailed'] . $break_type;
-	$summary_content .= $lang['digest_server_date'] . ' ' . date(DIGEST_SERVER_DATE_DISPLAY) . $break_type;
-	$summary_content .= $lang['digest_server_hour'] . ' ' . date('H') . $break_type;
-	$summary_content .= $lang['digest_server_time_zone'] . ' ' . date('Z') / 3600 . ' ' . $lang['digest_or'] . ' ' . date('T') .  $break_type;
+	$summary_content .= $lang['digest_server_date'] . ' ' . gmdate(DIGEST_SERVER_DATE_DISPLAY) . $break_type;
+	$summary_content .= $lang['digest_server_hour'] . ' ' . gmdate('H') . $break_type;
+	$summary_content .= $lang['digest_server_time_zone'] . ' ' . gmdate('Z') / 3600 . ' ' . $lang['digest_or'] . ' ' . gmdate('T') .  $break_type;
 	if (DIGEST_SHOW_SUMMARY_TYPE == 'html')
 	{
 		$summary_content .= '</body>' . $line_break;
@@ -628,13 +603,13 @@ if (DIGEST_SHOW_SUMMARY)
 	else
 	{
 		// MG Digests LOG - BEGIN
-		if ($board_config['write_digests_log'] == true)
+		if ($config['write_digests_log'] == true)
 		{
 			//echo($summary_content);
-			$datecode = date('Ymd');
-			$logs_path = !empty($board_config['logs_path']) ? $board_config['logs_path'] : 'logs';
+			$datecode = gmdate('Ymd');
+			$logs_path = !empty($config['logs_path']) ? $config['logs_path'] : 'logs';
 			$logdigests = $logs_path . '/digests_' . $datecode . '.txt';
-			$date = date('Y/m/d - H:i:s');
+			$date = gmdate('Y/m/d - H:i:s');
 			$log_message = '[' . $date . ']' . $line_break . $line_break;
 			$log_message .= $summary_content;
 			$log_message .= $line_break . $line_break;

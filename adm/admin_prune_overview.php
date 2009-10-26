@@ -28,7 +28,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
-if ( $board_config['prune_enable'] )
+if ( $config['prune_enable'] )
 {
 	$board_prune_enabled = "checked=\"checked\"";
 }
@@ -50,17 +50,15 @@ $template->assign_vars(array(
 	'L_ENABLE_PRUNE' => $lang['Enable_prune'],
 	'L_SUBMIT' => $lang['Submit'],
 	'ENABLE_PRUNE' => $board_prune_enabled,
-	'S_PRUNE_ACTION' => append_sid("admin_prune_overview." . PHP_EXT)
+	'S_PRUNE_ACTION' => append_sid('admin_prune_overview.' . PHP_EXT)
 	)
 );
 
 $sql = "SELECT forum_name, forum_id, prune_enable
-FROM ". FORUMS_TABLE ."
-ORDER BY forum_order ASC";
-if ( !($result = $db->sql_query($sql)) )
-{
- message_die(GENERAL_ERROR, 'Could not query forum information', '', __LINE__, __FILE__, $sql);
-}
+FROM " . FORUMS_TABLE . "
+	WHERE forum_type = " . FORUM_POST . "
+	ORDER BY forum_order ASC";
+$result = $db->sql_query($sql);
 $forums = $db->sql_fetchrowset($result);
 $nums = $db->sql_numrows($result);
 
@@ -71,11 +69,7 @@ for ($i = 0; $i < $nums; $i++)
 		$sql = "SELECT *
 			FROM " . PRUNE_TABLE . "
 			WHERE forum_id = '". $forums[$i]['forum_id'] ."'";
-		if(!$pr_result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't read auto_prune table.", __LINE__, __FILE__);
-		}
-
+		$pr_result = $db->sql_query($sql);
 		$pr_row = $db->sql_fetchrow($pr_result);
 		$prune_enabled = "checked=\"checked\"";
 		$prune_days = $pr_row['prune_days'];
@@ -88,10 +82,10 @@ for ($i = 0; $i < $nums; $i++)
 		$prune_freq = 1;
 	}
 
-	$forum_url = append_sid(IP_ROOT_PATH . '/admin/admin_forums.' . PHP_EXT . '?mode=editforum&f=' . $forums[$i]['forum_id']);
+	$forum_url = append_sid('admin_forums_extend.' . PHP_EXT . '?selected_id=' . POST_FORUM_URL . $forums[$i]['forum_id']);
 	$forum = '<a href="'. $forum_url .'">'. $forums[$i]['forum_name'] .'</a>';
 
-	$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$template->assign_block_vars('prune_overview',array(
 		'ROW_CLASS' => $row_class,
@@ -124,10 +118,7 @@ if ( isset($_POST['submit']) )
 		$sql = "UPDATE ". FORUMS_TABLE ."
 			SET prune_enable = ". $prune_enable[$i] ."
 			WHERE forum_id = ". $forum_id[$i];
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update prune table.", __LINE__, __FILE__);
-			}
+		$result = $db->sql_query($sql);
 
 			if( $prune_enable[$i] == 1 )
 			{
@@ -139,10 +130,7 @@ if ( isset($_POST['submit']) )
 					$sql = "SELECT *
 						FROM ". PRUNE_TABLE ."
 						WHERE forum_id = ". $forum_id[$i];
-					if( !$result = $db->sql_query($sql) )
-					{
-						message_die(GENERAL_ERROR, "Couldn't get forum Prune Information","",__LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 
 					if( $db->sql_numrows($result) > 0 )
 					{
@@ -156,10 +144,7 @@ if ( isset($_POST['submit']) )
 							VALUES(". $forum_id[$i] .", " . intval($prune_days[$i]) . ", " . intval($prune_freq[$i]) .")";
 					}
 
-					if( !$result = $db->sql_query($sql) )
-					{
-						message_die(GENERAL_ERROR, "Couldn't Update Forum Prune Information","",__LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 			}  // End if( $prune_enable[$i] == 1 )
 	} // End for($i...
 
@@ -168,10 +153,7 @@ if ( isset($_POST['submit']) )
 	$sql = "UPDATE " . CONFIG_TABLE . " SET
 	config_value = '$value'
 	WHERE config_name = 'prune_enable'";
-	if( !$db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Failed to update prune config", "", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
 	$message = $lang['Prune_update'] . '<br /><br />' . sprintf($lang['Click_return_admin_po'], '<a href="' . append_sid('admin_prune_overview.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);

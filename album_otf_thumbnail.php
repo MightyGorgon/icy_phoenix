@@ -56,9 +56,9 @@ $pic_fullpath = ALBUM_OTF_PATH . $pic_cat . '/' . $pic_filename;
 $pic_thumbnail = $pic_cat . '_' . $pic_filename;
 $pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
 $file_part = explode('.', strtolower($pic_filename));
-$pic_filetype = $file_part[count($file_part) - 1];
+$pic_filetype = $file_part[sizeof($file_part) - 1];
 $pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-$pic_title_reg = ereg_replace("[^A-Za-z0-9]", "_", $pic_title);
+$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
 
 switch ($pic_filetype)
 {

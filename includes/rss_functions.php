@@ -41,14 +41,14 @@ function FormatLanguage($lng)
 	return(($user_lang!='')?"\n<language>$user_lang</language>":'');
 }
 
-function RSSTimeFormat($utime,$uoffset=0)
+function RSSTimeFormat($utime, $uoffset = 0)
 {
 	global $user_id, $useragent;
 	if(CACHE_TO_FILE && ($user_id == ANONYMOUS) && empty($_GET))
 	{
 		$uoffset = 0;
 	}
-	if((isset($_GET['time']) && $_GET['time']=='local')|| (strpos($useragent,'Abilon')!==false)|| (strpos($useragent,'ActiveRefresh')!==false))
+	if((isset($_GET['time']) && ($_GET['time'] == 'local'))|| (strpos($useragent,'Abilon') !== false)|| (strpos($useragent,'ActiveRefresh') !== false))
 	{
 		$uoffset = intval($uoffset);
 	}
@@ -84,11 +84,11 @@ function ExitWithHeader($output,$message='')
 	{
 		header('Status: ' . $output);
 	}
-	$code=intval(substr($output,0,3));
-	if(($code==200)||($code==304))
+	$code=intval(substr($output, 0, 3));
+	if(($code == 200)||($code == 304))
 	{
-		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) header("Last-Modified: ".$_SERVER['HTTP_IF_MODIFIED_SINCE']);
-		if(isset($_SERVER['HTTP_IF_NONE_MATCH'])) header("Etag: ".$_SERVER['HTTP_IF_NONE_MATCH']);
+		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) header("Last-Modified: " . $_SERVER['HTTP_IF_MODIFIED_SINCE']);
+		if(isset($_SERVER['HTTP_IF_NONE_MATCH'])) header("Etag: " . $_SERVER['HTTP_IF_NONE_MATCH']);
 	}
 	if(!empty($message))
 	{
@@ -100,7 +100,7 @@ function ExitWithHeader($output,$message='')
 
 function rss_session_begin($user_id, $user_ip)
 {
-	global $db, $board_config;
+	global $db, $config;
 	$page_array = extract_current_page(IP_ROOT_PATH);
 	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : ((isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : '');
 	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
@@ -118,11 +118,14 @@ function rss_session_begin($user_id, $user_ip)
 	$password = md5($_SERVER['PHP_AUTH_PW']);
 	$last_visit = 0;
 	$current_time = time();
-	$expiry_time = $current_time - $board_config['session_length'];
+	$expiry_time = $current_time - $config['session_length'];
 	$sql = "SELECT *
 		FROM " . USERS_TABLE . "
-		WHERE user_id = $user_id";
-	if (!($result = $db->sql_query($sql)))
+		WHERE user_id = " . $user_id;
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		ExitWithHeader('500 Internal Server Error', 'Could not obtain lastvisit data from user table');
 	}
@@ -149,7 +152,11 @@ function rss_session_begin($user_id, $user_ip)
 		$sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $userdata['user_email']) . "'
 			OR ban_email LIKE '" . substr(str_replace("\'", "''", $userdata['user_email']), strpos(str_replace("\'", "''", $userdata['user_email']), "@")) . "'";
 	}
-	if (!($result = $db->sql_query($sql)))
+
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		ExitWithHeader("500 Internal Server Error","Could not obtain ban information");
 	}
@@ -168,7 +175,10 @@ function rss_session_begin($user_id, $user_ip)
 	$sql = "INSERT INTO " . SESSIONS_TABLE . "
 		(session_id, session_user_id, session_start, session_time, session_ip, session_page, session_logged_in, session_admin)
 		VALUES ('$session_id', $user_id, $current_time, $current_time, '$user_ip', '$page_id', $login, 0)";
-	if (!$db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		ExitWithHeader("500 Internal Server Error", "Error creating new session");
 	}
@@ -179,7 +189,10 @@ function rss_session_begin($user_id, $user_ip)
 		$sql .= ", user_lastlogon = $current_time, user_totallogon = (user_totallogon + 1)";
 	}
 	$sql .=" WHERE user_id = $user_id";
-	if (!$db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		ExitWithHeader("500 Internal Server Error", 'Error updating last visit time');
 	}
@@ -196,18 +209,45 @@ function rss_session_begin($user_id, $user_ip)
 	$userdata['session_key']='';
 	$SID = 'sid=' . $session_id;
 	define('TEMP_SESSION',true);
+
+	// Mighty Gorgon - BOT SESSION - BEGIN
+	$userdata['is_bot'] = false;
+	if ($userdata['user_id'] != ANONYMOUS)
+	{
+		$userdata['bot_id'] = false;
+	}
+	else
+	{
+		$userdata['bot_id'] = bots_parse($user_ip, $config['bots_color'], $user_agent, true);
+		if ($userdata['bot_id'] !== false)
+		{
+			/*
+			$userdata['user_id'] = BOT;
+			$userdata['session_user_id'] = BOT;
+			$userdata['session_logged_in'] = 1;
+			*/
+			$userdata['is_bot'] = true;
+			bots_table_update(bots_parse($user_ip, $config['bots_color'], $user_agent, true, true));
+		}
+	}
+	// Mighty Gorgon - BOT SESSION - END
+
 	return $userdata;
 }
 
 function rss_session_end()
 {
 	global $db, $userdata;
-	$session_id=$userdata['session_id'];
-	$user_id=$userdata['user_id'];
-		$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
+
+	$session_id = $userdata['session_id'];
+	$user_id = $userdata['user_id'];
+	$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
 		WHERE session_id = '$session_id'
 		AND session_user_id = $user_id";
-	if (!$db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		ExitWithHeader("500 Internal Server Error","Error delete session");
 	}
@@ -232,14 +272,13 @@ function rss_get_user()
 			$sql = "SELECT * FROM " . USERS_TABLE . " WHERE user_id = $uid";
 		}
 		else
+		{
 			$sql = "SELECT user_id, username, user_password, user_active, user_level
 			FROM " . USERS_TABLE . "
 			WHERE username = '" . str_replace("\\'", "''", $username) . "'";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Error in obtaining userdata', '', __LINE__, __FILE__, $sql);
 		}
+		$result = $db->sql_query($sql);
+
 		if($row = $db->sql_fetchrow($result))
 		{
 			if($password == $row['user_password'] && $row['user_active'])

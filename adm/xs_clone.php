@@ -51,7 +51,10 @@ if(!empty($_POST['clone_style']) && !defined('DEMO_MODE'))
 	$new_name = stripslashes($_POST['clone_name']);
 	// get theme data
 	$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id='{$style}'";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_style_info'] . '<br /><br />' . $lang['xs_clone_back'], __LINE__, __FILE__);
 	}
@@ -66,7 +69,10 @@ if(!empty($_POST['clone_style']) && !defined('DEMO_MODE'))
 	}
 	// check for clone
 	$sql = "SELECT themes_id FROM " . THEMES_TABLE . " WHERE style_name = '" . xs_sql($new_name) . "'";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_theme_data'] . '<br /><br />' . $lang['xs_clone_back'], __LINE__, __FILE__);
 	}
@@ -87,7 +93,10 @@ if(!empty($_POST['clone_style']) && !defined('DEMO_MODE'))
 		}
 	}
 	$sql = "INSERT INTO " . THEMES_TABLE . " (" . implode(', ', $vars) . ") VALUES ('" . implode("','", $values) . "')";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_error_new_row'] . '<br /><br />' . $lang['xs_clone_back'], __LINE__, __FILE__);
 	}
@@ -149,7 +158,7 @@ if(!empty($_POST['clone_tpl']) && !defined('DEMO_MODE'))
 		xs_error($lang['xs_clone_no_select'] . '<br /><br />' . $lang['xs_clone_back']);
 	}
 	$request = array();
-	for($i=0; $i<count($vars); $i++)
+	for($i=0; $i< sizeof($vars); $i++)
 	{
 		$request[$vars[$i]] = stripslashes($_POST[$vars[$i]]);
 	}
@@ -170,12 +179,15 @@ if(!empty($_POST['clone_tpl']) && !defined('DEMO_MODE'))
 	$exportas = $new_name;
 	// Generate theme_info.cfg
 	$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE template_name = '$export' AND themes_id IN (" . implode(', ', $list) . ")";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_theme_data'] . $lang['xs_clone_back']);
 	}
 	$theme_rowset = $db->sql_fetchrowset($result);
-	if(count($theme_rowset) == 0)
+	if(sizeof($theme_rowset) == 0)
 	{
 		xs_error($lang['xs_no_themes']  . '<br /><br />' . $lang['xs_clone_back']);
 	}
@@ -185,7 +197,7 @@ if(!empty($_POST['clone_tpl']) && !defined('DEMO_MODE'))
 	$pack_list = array();
 	$pack_replace = array('./theme_info.cfg' => $theme_data);
 	// pack style
-	for($i = 0; $i < count($theme_rowset); $i++)
+	for($i = 0; $i < sizeof($theme_rowset); $i++)
 	{
 		$id = $theme_rowset[$i]['themes_id'];
 		$theme_name = $theme_rowset[$i]['style_name'];
@@ -237,12 +249,15 @@ if(!empty($_GET['clone']))
 {
 	$style = stripslashes($_GET['clone']);
 	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " WHERE template_name = '" . xs_sql($style) . "' ORDER BY style_name ASC";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_theme_data'] . '<br /><br />' . $lang['xs_clone_back'], __LINE__, __FILE__);
 	}
 	$theme_rowset = $db->sql_fetchrowset($result);
-	if(count($theme_rowset) == 0)
+	if(sizeof($theme_rowset) == 0)
 	{
 		xs_error($lang['xs_no_themes'] . '<br /><br />' . $lang['xs_clone_back']);
 	}
@@ -253,11 +268,11 @@ if(!empty($_GET['clone']))
 			'CLONE_TEMPLATE'	=> htmlspecialchars($style),
 			'STYLE_ID'			=> $theme_rowset[0]['themes_id'],
 			'STYLE_NAME'		=> htmlspecialchars($theme_rowset[0]['style_name']),
-			'TOTAL'				=> count($theme_rowset),
+			'TOTAL'				=> sizeof($theme_rowset),
 			'L_CLONE_STYLE3'	=> str_replace('{STYLE}', htmlspecialchars($style), $lang['xs_clone_style3'])
 			));
 	// clone styles
-	for($i=0; $i<count($theme_rowset); $i++)
+	for($i=0; $i< sizeof($theme_rowset); $i++)
 	{
 		$template->assign_block_vars('styles', array(
 			'ID'		=> $theme_rowset[$i]['themes_id'],
@@ -266,7 +281,7 @@ if(!empty($_GET['clone']))
 			'L_CLONE'	=> str_replace('{STYLE}', htmlspecialchars($theme_rowset[$i]['style_name']), $lang['xs_clone_style2'])
 			));
 	}
-	if(count($theme_rowset) == 1)
+	if(sizeof($theme_rowset) == 1)
 	{
 		$template->assign_block_vars('switch_select_nostyle', array());
 		if($theme_rowset[0]['style_name'] === $style)
@@ -277,7 +292,7 @@ if(!empty($_GET['clone']))
 	else
 	{
 		$template->assign_block_vars('switch_select_style', array());
-		for($i=0; $i<count($theme_rowset); $i++)
+		for($i=0; $i< sizeof($theme_rowset); $i++)
 		{
 			$template->assign_block_vars('switch_select_style.style', array(
 				'NUM'		=> $i,
@@ -296,7 +311,10 @@ if(!empty($_GET['clone']))
 // get list of installed styles
 //
 $sql = 'SELECT themes_id, template_name, style_name FROM ' . THEMES_TABLE . ' ORDER BY template_name';
-if(!$result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	xs_error($lang['xs_no_style_info'], __LINE__, __FILE__);
 }
@@ -306,7 +324,7 @@ $prev_id = -1;
 $prev_tpl = '';
 $style_names = array();
 $j = 0;
-for($i=0; $i<count($style_rowset); $i++)
+for($i=0; $i< sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	if($item['template_name'] === $prev_tpl)

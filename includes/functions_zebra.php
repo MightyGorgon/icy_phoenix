@@ -21,10 +21,8 @@ function user_check_friend($target_id)
 				AND zebra_id = '" . $target_id . "'
 				AND friend = '1'
 			LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain friends information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$db->sql_freeresult($result);
@@ -51,12 +49,8 @@ function user_get_zebra_list($ftype = 'friends')
 				AND " . $sql_f_check . " = '1'
 				AND u.user_id = z.zebra_id
 			ORDER BY u.username ASC";
-	// Maybe bettere do not cache this...
-	//if (!($result = $db->sql_query($sql, false, 'zebra_users_')))
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain friends information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$zebra_list[] = $row;
@@ -83,10 +77,8 @@ function user_get_friends_online_list()
 					AND u.user_id = z.zebra_id
 					AND u.user_id = s.session_user_id
 					AND s.session_time >= " . (time() - ONLINE_REFRESH) . "";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain friends information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$friends_online_list[$row['user_id']]['username'] = $row['username'];
@@ -113,10 +105,8 @@ function user_check_admin_mod($target_id)
 			WHERE user_id = '" . $target_id . "'
 				AND user_level > 0
 			LIMIT 1";
-	if (!($result = $db->sql_query($sql, false, 'user_level_')))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain friends information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql, 0, 'user_level_');
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$db->sql_freeresult($result);
@@ -132,10 +122,8 @@ function user_check_pm_in_allowed($target_id)
 			WHERE user_id = '" . $target_id . "'
 				AND user_allow_pm_in = 1
 			LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain friends information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$db->sql_freeresult($result);

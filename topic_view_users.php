@@ -19,7 +19,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ($board_config['disable_topic_view'] == true)
+if ($config['disable_topic_view'])
 {
 	message_die(GENERAL_MESSAGE, $lang['Feature_Disabled']);
 }
@@ -34,17 +34,14 @@ if (empty($topic_id))
 
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=topic_view_users.' . PHP_EXT . '&' . POST_TOPIC_URL . '=' . $topic_id, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=topic_view_users.' . PHP_EXT . '&' . POST_TOPIC_URL . '=' . $topic_id, true));
 }
 
 // find the forum, in witch the topic are located
 $sql = "SELECT f.forum_id
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 	WHERE f.forum_id = t.forum_id AND t.topic_id = '" . $topic_id . "'";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, "Could not obtain topic information", '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 if (!($forum_topic_data = $db->sql_fetchrow($result)))
 {
@@ -97,7 +94,7 @@ $mode_types_text = array($lang['Sort_Username'], $lang['Sort_Email'], $lang['Sor
 $mode_types = array('username', 'email', 'joindate', 'topic_time', 'topic_count', 'website', 'topten');
 
 $select_sort_mode = '<select name="mode">';
-for($i = 0; $i < count($mode_types_text); $i++)
+for($i = 0; $i < sizeof($mode_types_text); $i++)
 {
 	$selected = ($mode == $mode_types[$i]) ? ' selected="selected"' : '';
 	$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
@@ -117,14 +114,7 @@ $select_sort_order .= '</select>';
 
 $select_sort_order .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '"/>';
 
-// Generate page
-$page_title = $lang['who_viewed'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'whoviewed_body.tpl'));
-make_jumpbox(VIEWFORUM_MG);
+make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 $template->assign_vars(array(
 	'L_PAGE_TITLE' => $lang['who_viewed'],
@@ -158,28 +148,28 @@ $template->assign_vars(array(
 switch($mode)
 {
 	case 'joined':
-		$order_by = "u.user_regdate $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "u.user_regdate $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'username':
-		$order_by = "u.username $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "u.username $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'topic_count':
-		$order_by = "tv.view_count $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "tv.view_count $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'topic_time':
-		$order_by = "tv.view_time $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "tv.view_time $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'email':
-		$order_by = "u.user_email $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "u.user_email $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'website':
-		$order_by = "u.user_website $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "u.user_website $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'topten':
 		$order_by = "u.user_posts $sort_order LIMIT 10";
 		break;
 	default:
-		$order_by = "u.user_regdate $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "u.user_regdate $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 }
 
@@ -199,11 +189,7 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level,
 		" . $sql_hidden . "
 	GROUP BY tv.user_id
 	ORDER BY $order_by";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 $i = 0;
 while ($row = $db->sql_fetchrow($result))
@@ -218,7 +204,7 @@ while ($row = $db->sql_fetchrow($result))
 		$$k = $v;
 	}
 
-	$topic_time = ($row['view_time']) ? create_date($board_config['default_dateformat'], $row['view_time'], $board_config['board_timezone']) : $lang['Never_last_logon'];
+	$topic_time = ($row['view_time']) ? create_date($config['default_dateformat'], $row['view_time'], $config['board_timezone']) : $lang['Never_last_logon'];
 	$view_count = ($row['view_count']) ? $row['view_count'] : '&nbsp;';
 
 	$poster_avatar = $user_info['avatar'];
@@ -283,22 +269,18 @@ while ($row = $db->sql_fetchrow($result))
 	$i++;
 }
 
-if ($mode != 'topten' || $board_config['topics_per_page'] < 10)
+if ($mode != 'topten' || $config['topics_per_page'] < 10)
 {
 
 	$sql = "SELECT count(*) AS total
 		FROM " . TOPIC_VIEW_TABLE . "
 		WHERE topic_id = " . $topic_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total_members = $total['total'];
-		$pagination = generate_pagination('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $board_config['topics_per_page'], $start) . '&nbsp;';
+		$pagination = generate_pagination('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $config['topics_per_page'], $start) . '&nbsp;';
 	}
 }
 else
@@ -309,13 +291,11 @@ else
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_members / $board_config['topics_per_page'])),
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_members / $config['topics_per_page'])),
 	'L_GOTO_PAGE' => $lang['Goto_page']
 	)
 );
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('whoviewed_body.tpl', $lang['who_viewed'], '', '');
 
 ?>

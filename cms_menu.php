@@ -10,12 +10,13 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_cms_menu_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
 // Start session management
@@ -23,8 +24,8 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_cms.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
 
 $access_allowed = get_cms_access_auth('cms_menu');
 
@@ -35,7 +36,7 @@ if (!$access_allowed)
 
 if (!$userdata['session_admin'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=cms_menu.' . PHP_EXT . '&admin=1', true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cms_menu.' . PHP_EXT . '&admin=1', true));
 }
 
 if(!empty($_GET['mode']) || !empty($_POST['mode']))
@@ -115,18 +116,13 @@ if(isset($_POST['cancel']) || isset($_POST['reset']))
 }
 
 $show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
-
-$page_title = $lang['Home'];
-$meta_description = '';
-$meta_keywords = '';
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-if($board_config['cms_dock'] == true)
+if($config['cms_dock'])
 {
 	$template->assign_block_vars('cms_dock_on', array());
 }
@@ -216,11 +212,7 @@ if($mode == 'menu_item')
 				$sql = "SELECT *
 					FROM " . CMS_NAV_MENU_TABLE . "
 					WHERE menu_item_id = '" . $mi_id . "'";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$m_info = $db->sql_fetchrow($result);
 				if(empty($m_info['menu_item_id']) || ($m_info['menu_item_id'] <= 0))
 				{
@@ -240,11 +232,7 @@ if($mode == 'menu_item')
 						WHERE menu_parent_id = '" . $mi_menu_parent_id . "'
 							AND cat_parent_id = '0'
 						ORDER BY menu_order ASC";
-					if(!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
-					}
-
+					$result = $db->sql_query($sql);
 					$mi_cat_parent_id = '';
 					while ($row = $db->sql_fetchrow($result))
 					{
@@ -298,7 +286,7 @@ if($mode == 'menu_item')
 					$link_default_array = build_default_link_array();
 					$mi_menu_default ='';
 					$mi_menu_disabled = ($m_info['menu_default'] != 0) ? 'disabled' : '';
-					for ($i = 0; $i < count($link_default_array); $i++)
+					for ($i = 0; $i < sizeof($link_default_array); $i++)
 					{
 						$mi_menu_default .= '<option value="' . $i .'"';
 						if($m_info['menu_default'] == $i)
@@ -319,7 +307,7 @@ if($mode == 'menu_item')
 				);
 
 				$mi_auth_view ='';
-				for ($i = 0; $i < count($view_array); $i++)
+				for ($i = 0; $i < sizeof($view_array); $i++)
 				{
 					$mi_auth_view .= '<option value="' . $i .'"';
 					if($m_info['auth_view'] == $i)
@@ -331,10 +319,7 @@ if($mode == 'menu_item')
 
 				//$mi_auth_view_group = $m_info['auth_view_group'];
 				$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . " WHERE group_single_user = 0 ORDER BY group_id";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(CRITICAL_ERROR, "Could not query user groups information", "", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$group_array = explode(",", $m_info['auth_view_group']);
 				$mi_auth_view_group = '';
 				while ($row = $db->sql_fetchrow($result))
@@ -367,10 +352,7 @@ if($mode == 'menu_item')
 					WHERE menu_parent_id = '" . $mi_menu_parent_id . "'
 						AND cat_parent_id = '0'
 					ORDER BY menu_order ASC";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				//$mi_cat_parent_id = $m_info['cat_parent_id'];
 				$parent_cat_item_parsed = false;
@@ -412,7 +394,7 @@ if($mode == 'menu_item')
 				$link_default_array = build_default_link_array();
 				$mi_menu_default ='';
 				$mi_menu_disabled = ($m_info['menu_default'] != 0) ? 'disabled' : '';
-				for ($i = 0; $i < count($link_default_array); $i++)
+				for ($i = 0; $i < sizeof($link_default_array); $i++)
 				{
 					$mi_menu_default .= '<option value="' . $i .'"';
 					if($m_info['menu_default'] == $i)
@@ -433,7 +415,7 @@ if($mode == 'menu_item')
 			);
 
 			$mi_auth_view ='';
-			for ($i = 0; $i < count($view_array); $i++)
+			for ($i = 0; $i < sizeof($view_array); $i++)
 			{
 				$mi_auth_view .= '<option value="' . $i .'"';
 				$mi_auth_view .= ' />' . $view_array[$i] . '</option>';
@@ -441,10 +423,7 @@ if($mode == 'menu_item')
 
 			//$mi_auth_view_group = $m_info['auth_view_group'];
 			$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . " WHERE group_single_user = 0 ORDER BY group_id";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(CRITICAL_ERROR, "Could not query user groups information", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$mi_auth_view_group = '';
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -476,7 +455,7 @@ if($mode == 'menu_item')
 			$link_url = $lang['CMS_Menu_New_link_url'];
 		}
 
-		$template->set_filenames(array('body' => CMS_TPL . 'cms_menu_item_edit_body.tpl'));
+		$template_to_parse = CMS_TPL . 'cms_menu_item_edit_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_MENU_PAGE']);
 		$template->assign_vars(array(
 			'L_CMS_MENU_TITLE' => $lang['CMS_MENU_PAGE'],
@@ -571,11 +550,7 @@ if($mode == 'menu_item')
 				if (intval(trim($_POST['old_cat_parent_id'])) != $mi_cat_parent_id)
 				{
 					$sql = "SELECT max(menu_order) max_menu_order FROM " . CMS_NAV_MENU_TABLE . " WHERE menu_parent_id ='" . $mi_menu_id . "' AND cat_parent_id ='" . $mi_cat_parent_id . "'";
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, "Could not query from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-					}
-
+					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);
 					$mi_menu_order = $row['max_menu_order'] + 1;
 					$sql_order = ' menu_order = \'' . $mi_menu_order . '\',';
@@ -600,10 +575,7 @@ if($mode == 'menu_item')
 				auth_view_group = '" . $mi_auth_view_group . "',
 				menu_default = '" . $mi_menu_default . "'
 				WHERE menu_item_id = '" . $mi_id . "'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not insert data into menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if($item_type == 'category_item')
 			{
@@ -618,12 +590,8 @@ if($mode == 'menu_item')
 		{
 			if($item_type == 'category_item')
 			{
-				$sql = "SELECT max(cat_id) max_cat_id, max(menu_order) max_menu_order FROM " . CMS_NAV_MENU_TABLE . " WHERE menu_parent_id ='" . $mi_menu_id . "' AND cat_parent_id ='0'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not query from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-				}
-
+				$sql = "SELECT MAX(cat_id) max_cat_id, MAX(menu_order) max_menu_order FROM " . CMS_NAV_MENU_TABLE . " WHERE menu_parent_id ='" . $mi_menu_id . "' AND cat_parent_id ='0'";
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$mi_cat_id = $row['max_cat_id'] ? ($row['max_cat_id'] + 1) : 1;
 				$mi_menu_order = $row['max_menu_order'] ? ($row['max_menu_order'] + 1) : 1;
@@ -631,20 +599,13 @@ if($mode == 'menu_item')
 			else
 			{
 				$sql = "SELECT max(menu_order) max_menu_order FROM " . CMS_NAV_MENU_TABLE . " WHERE menu_parent_id ='" . $mi_menu_id . "' AND cat_parent_id ='" . $mi_cat_parent_id . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not query from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$mi_menu_order = $row['max_menu_order'] + 1;
 			}
 
 			$sql = "INSERT INTO " . CMS_NAV_MENU_TABLE . " (menu_id, menu_parent_id, cat_id, cat_parent_id, menu_status, menu_order, menu_icon, menu_name_lang, menu_name, menu_desc, menu_link, menu_link_external, auth_view, auth_view_group, menu_default) VALUES ('" . $mi_menu_sql_id . "', '" . $mi_menu_parent_id . "', '" . $mi_cat_id . "', '" . $mi_cat_parent_id . "', '" . $mi_menu_status . "', '" . $mi_menu_order . "', '" . $mi_menu_icon . "', '" . $mi_menu_name_lang . "', '" . addslashes($mi_menu_name) . "', '" . addslashes($mi_menu_desc) . "', '" . $mi_menu_link . "', '" . $mi_menu_link_external . "', '" . $mi_auth_view . "', '" . $mi_auth_view_group . "', '" . $mi_menu_default . "')";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not insert data into menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if($item_type == 'category_item')
 			{
@@ -659,7 +620,6 @@ if($mode == 'menu_item')
 		{
 			adjust_item_order($mi_menu_parent_id, $mi_cat_parent_id);
 		}
-		$db->clear_cache('dyn_menu_');
 		$message .= '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block&amp;m_id=' . $mi_menu_id) . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -691,7 +651,6 @@ if($mode == 'menu_item')
 			$s_append_url .= '&amp;cat_id=' . $cat_id;
 			$s_append_url .= '&amp;mi_id=' . $mi_id;
 			// Set template files
-			$template->set_filenames(array('confirm' => CMS_TPL . 'confirm_body.tpl'));
 
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
@@ -706,9 +665,7 @@ if($mode == 'menu_item')
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
-			$template->pparse('confirm');
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-			exit();
+			full_page_generation(CMS_TPL . 'confirm_body.tpl', $lang['Confirm'], '', '');
 		}
 		else
 		{
@@ -734,11 +691,7 @@ if($mode == 'menu_item')
 					$sql = "DELETE FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_item_id = '" . $mi_id . "'";
 				}
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not remove data from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -756,10 +709,10 @@ elseif($mode == 'menu_block')
 		{
 			$menu_upd = array();
 			$menu_upd = $_POST['cb_mid'];
-			$menu_upd_n = count($menu_upd);
+			$menu_upd_n = sizeof($menu_upd);
 
 			$menu_item_id_list = build_menu_item_id_list($m_id);
-			$m_count = count($menu_item_id_list);
+			$m_count = sizeof($menu_item_id_list);
 
 			for($i = 0; $i < $m_count; $i++)
 			{
@@ -767,12 +720,8 @@ elseif($mode == 'menu_block')
 				$sql = "UPDATE " . CMS_NAV_MENU_TABLE . "
 								SET menu_status = '" . $m_active . "'
 								WHERE menu_item_id = '" . $menu_item_id_list[$i] . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not update menu table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
-			$db->clear_cache('cms_');
 			$message = '<br /><br />' . $lang['Menu_updated'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block&amp;m_id=' . $m_id) . '">', '</a>') . '<br />';
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -797,12 +746,9 @@ elseif($mode == 'menu_block')
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_parent_id = '" . $m_id . "'
 						ORDER BY cat_parent_id ASC, menu_order ASC";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
-		$template->set_filenames(array('body' => CMS_TPL . 'cms_menu_block_list_body.tpl'));
+		$template_to_parse = CMS_TPL . 'cms_menu_block_list_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_MENU_PAGE']);
 
 		$menu_cat = array();
@@ -859,16 +805,16 @@ elseif($mode == 'menu_block')
 				$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_Edit'] . '" title="' . $lang['CMS_Edit'] . '" /></a>&nbsp;';
 				$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete&amp;cat_id=' . $cat_item_data['cat_id'] . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_Delete'] . '" title="' . $lang['CSM_Delete'] . '" /></a>';
 
-				if ((count($cat_item) == 1) && ($cat_counter == 1))
+				if ((sizeof($cat_item) == 1) && ($cat_counter == 1))
 				{
 					$b_move_up = '';
 					$b_move_down = '';
 				}
-				elseif ((count($cat_item) > 1) && ($cat_counter == 1))
+				elseif ((sizeof($cat_item) > 1) && ($cat_counter == 1))
 				{
 					$b_move_up = '';
 				}
-				elseif (count($cat_item) == $cat_counter)
+				elseif (sizeof($cat_item) == $cat_counter)
 				{
 					$b_move_down = '';
 				}
@@ -929,16 +875,16 @@ elseif($mode == 'menu_block')
 						$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_Edit'] . '" title="' . $lang['CMS_Edit'] . '" /></a>&nbsp;';
 						$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete' . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_Delete'] . '" title="' . $lang['CSM_Delete'] . '" /></a>';
 
-						if ((count($menu_cat[$cat_id]) == 1) && ($item_counter == 1))
+						if ((sizeof($menu_cat[$cat_id]) == 1) && ($item_counter == 1))
 						{
 							$b_move_up = '';
 							$b_move_down = '';
 						}
-						elseif ((count($menu_cat[$cat_id]) > 1) && ($item_counter == 1))
+						elseif ((sizeof($menu_cat[$cat_id]) > 1) && ($item_counter == 1))
 						{
 							$b_move_up = '';
 						}
-						elseif (count($menu_cat[$cat_id]) == $item_counter)
+						elseif (sizeof($menu_cat[$cat_id]) == $item_counter)
 						{
 							$b_move_down = '';
 						}
@@ -992,7 +938,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 {
 	if(($action == 'edit') || ($action == 'add'))
 	{
-		$template->set_filenames(array('body' => CMS_TPL . 'cms_menu_menu_edit_body.tpl'));
+		$template_to_parse = CMS_TPL . 'cms_menu_menu_edit_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_MENU_PAGE']);
 
 		$mi_menu_name = '';
@@ -1004,11 +950,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 			{
 				$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 								WHERE menu_item_id = '" . $mi_id . "'";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$m_info = $db->sql_fetchrow($result);
 				$mi_menu_name = htmlspecialchars(stripslashes($m_info['menu_name']));
 				$mi_menu_desc = htmlspecialchars(stripslashes($m_info['menu_desc']));
@@ -1078,32 +1020,20 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				menu_name_lang = '" . $mi_menu_name_lang . "',
 				menu_desc = '" . addslashes($mi_menu_desc) . "'
 				WHERE menu_item_id = '" . $mi_id . "'";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not insert data into menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$message = $lang['Menu_updated'];
 		}
 		else
 		{
 			$sql = "SELECT max(menu_id) max_menu_id FROM " . CMS_NAV_MENU_TABLE;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not query from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$mi_menu_id = $row['max_menu_id'] + 1;
 
 			$sql = "INSERT INTO " . CMS_NAV_MENU_TABLE . " (menu_id, menu_name, menu_name_lang, menu_desc) VALUES ('" . $mi_menu_id . "', '" . addslashes($mi_menu_name) . "', '" . $mi_menu_name_lang . "', '" . addslashes($mi_menu_desc) . "')";
 			$message = $lang['Menu_created'];
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not insert data into menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
-		$db->clear_cache('dyn_menu_');
 		$message .= '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list') . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -1118,9 +1048,6 @@ elseif (($mode == 'menu_list') || ($mode == false))
 			$s_hidden_fields .= '<input type="hidden" name="action" value="' . $action . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="item_type" value="' . $item_type . '" />';
 
-			// Set template files
-			$template->set_filenames(array('confirm' => CMS_TPL . 'confirm_body.tpl'));
-
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
 				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
@@ -1134,9 +1061,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
-			$template->pparse('confirm');
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-			exit();
+			full_page_generation(CMS_TPL . 'confirm_body.tpl', $lang['Confirm'], '', '');
 		}
 		else
 		{
@@ -1145,14 +1070,10 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				$sql = "DELETE FROM " . CMS_NAV_MENU_TABLE . "
 					WHERE menu_item_id = '" . $mi_id . "'
 						OR menu_parent_id = '" . $m_id . "'";
+				$result = $db->sql_query($sql);
 
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not remove data from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-
-			$message = $lang['Menu_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list') . '">', '</a>') . '<br /><br />';
-			message_die(GENERAL_MESSAGE, $message);
+				$message = $lang['Menu_deleted'] . '<br /><br />' . sprintf($lang['Click_Return_CMS_Menu'], '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list') . '">', '</a>') . '<br /><br />';
+				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
@@ -1165,12 +1086,9 @@ elseif (($mode == 'menu_list') || ($mode == false))
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_parent_id = '0'
 						ORDER BY menu_name ASC";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Could not query menu table", "Error", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
-		$template->set_filenames(array('body' => CMS_TPL . 'cms_menu_list_body.tpl'));
+		$template_to_parse = CMS_TPL . 'cms_menu_list_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Menu_Page']);
 
 		$menu_item = array();
@@ -1213,409 +1131,6 @@ elseif (($mode == 'menu_list') || ($mode == false))
 
 }
 
-$db->clear_cache('dyn_menu_');
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
-/*
-=====================================
-Functions
-=====================================
-*/
-
-function change_cat_order($mi_id, $m_parent_id, $move)
-{
-	global $db, $lang;
-
-	$move = ($move == '1') ? '1' : '0';
-	$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-				WHERE menu_parent_id = '" . $m_parent_id . "'
-					AND cat_parent_id = '0'
-				ORDER BY menu_order ASC";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
-	$item_order = 0;
-	$weight_assigned = 0;
-	$last_mi_id = 0;
-	$to_change_mi_id = 0;
-	//echo($db->sql_numrows($result));
-	while($row = $db->sql_fetchrow($result))
-	{
-		$item_order++;
-
-		if ($row['menu_item_id'] == $mi_id)
-		{
-			$weight_assigned = $item_order;
-			if (($move == '0') && ($item_order > 1))
-			{
-				$to_change_mi_id = $last_mi_id;
-			}
-		}
-
-		if (($weight_assigned == ($item_order - 1)) && ($move == '1'))
-		{
-			$to_change_mi_id = $row['menu_item_id'];
-		}
-
-		$sql_alt = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $row['menu_item_id'] . "'";
-		if(!$result_alt = $db->sql_query($sql_alt))
-		{
-			message_die(GENERAL_ERROR, "Could not update menu table", $lang['Error'], __LINE__, __FILE__, $sql_alt);
-		}
-		$last_mi_id = $row['menu_item_id'];
-	}
-
-	if ($to_change_mi_id != 0)
-	{
-		$item_order = ($move == '1') ? ($weight_assigned + 1) : ($weight_assigned - 1);
-		$sql = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $mi_id . "'";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not update menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
-		$item_order = ($move == '1') ? ($weight_assigned - 1) : ($weight_assigned + 1);
-		$sql = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $to_change_mi_id . "'";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not update menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-	}
-}
-
-function change_item_order($mi_id, $cat_parent_id, $m_parent_id, $move)
-{
-	global $db, $lang;
-
-	$move = ($move == '1') ? '1' : '0';
-	$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-				WHERE menu_parent_id = '" . $m_parent_id . "'
-					AND cat_parent_id = '" . $cat_parent_id . "'
-				ORDER BY menu_order ASC";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
-	$item_order = 0;
-	$weight_assigned = 0;
-	$last_mi_id = 0;
-	$to_change_mi_id = 0;
-	//echo($db->sql_numrows($result));
-	while($row = $db->sql_fetchrow($result))
-	{
-		$item_order++;
-
-		if ($row['menu_item_id'] == $mi_id)
-		{
-			$weight_assigned = $item_order;
-			if (($move == '0') && ($item_order > 1))
-			{
-				$to_change_mi_id = $last_mi_id;
-			}
-		}
-
-		if (($weight_assigned == ($item_order - 1)) && ($move == '1') && ($item_order > 1))
-		{
-			$to_change_mi_id = $row['menu_item_id'];
-		}
-
-		$sql_alt = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $row['menu_item_id'] . "'";
-		if(!$result_alt = $db->sql_query($sql_alt))
-		{
-			message_die(GENERAL_ERROR, "Could not update menu table", $lang['Error'], __LINE__, __FILE__, $sql_alt);
-		}
-		$last_mi_id = $row['menu_item_id'];
-	}
-	if ($to_change_mi_id != 0)
-	{
-		$item_order = ($move == '1') ? ($weight_assigned + 1) : ($weight_assigned - 1);
-		$sql = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $mi_id . "'";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not update menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
-		//$item_order = ($move == '1') ? ($weight_assigned - 1) : ($weight_assigned + 1);
-		$item_order = $weight_assigned;
-		$sql = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $to_change_mi_id . "'";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not update menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-	}
-}
-
-function adjust_item_order($m_parent_id, $cat_parent_id)
-{
-	global $db, $lang;
-
-	$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-				WHERE menu_parent_id = '" . $m_parent_id . "'
-					AND cat_parent_id = '" . $cat_parent_id . "'
-				ORDER BY menu_order ASC";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
-	$item_order = 0;
-	while($row = $db->sql_fetchrow($result))
-	{
-		$item_order++;
-		$sql_alt = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $row['menu_item_id'] . "'";
-		if(!$result_alt = $db->sql_query($sql_alt))
-		{
-			message_die(GENERAL_ERROR, "Could not update menu table", $lang['Error'], __LINE__, __FILE__, $sql_alt);
-		}
-	}
-}
-
-function build_menu_list()
-{
-	global $db;
-
-	$sql = "SELECT *
-		FROM " . CMS_NAV_MENU_TABLE . "
-		WHERE menu_parent_id = 0
-			AND cat_parent_id = 0";
-
-	if(!$menu_list = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query menu table", "", __LINE__, __FILE__);
-	}
-	return $menu_list;
-}
-
-function build_menu_item_id_list($m_id)
-{
-	global $db;
-
-	$sql = "SELECT menu_item_id
-		FROM " . CMS_NAV_MENU_TABLE . "
-		WHERE menu_parent_id = '" . $m_id . "'";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query menu table", "", __LINE__, __FILE__);
-	}
-
-	$menu_item_id_list = array();
-	while($row = $db->sql_fetchrow($result))
-	{
-		$menu_item_id_list[] = $row['menu_item_id'];
-	}
-	return $menu_item_id_list;
-}
-
-function build_cat_list($m_id)
-{
-	global $db;
-
-	$sql = "SELECT *
-		FROM " . CMS_NAV_MENU_TABLE . "
-		WHERE menu_parent_id = '" . $m_id . "'
-			AND cat_parent_id = 0";
-
-	if(!$cat_list = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query menu table", "", __LINE__, __FILE__);
-	}
-	return $cat_list;
-}
-
-function build_menu_item_list($m_id, $c_id)
-{
-	global $db;
-
-	$sql = "SELECT *
-		FROM " . CMS_NAV_MENU_TABLE . "
-		WHERE menu_parent_id = '" . $m_id . "'
-			AND cat_parent_id = '" . $c_id . "'";
-
-	if(!$menu_item_list = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query menu table", "", __LINE__, __FILE__);
-	}
-	return $menu_item_list;
-}
-
-function build_icons_list($select_name = 'icon_img_sel', $input_name = 'icon_img_path', $selected_icon = '', $icons_path = '', $standard_icon = '')
-{
-	global $lang, $images;
-	$icons_list = '';
-	if ($icons_path == '')
-	{
-		$icons_path = 'images/menu/';
-	}
-
-	$filetypes = 'jpg,gif,png';
-	$types = explode(',', $filetypes);
-
-	if (is_dir($icons_path))
-	{
-		$dir = opendir($icons_path);
-		$l = 0;
-
-		while($file = readdir($dir))
-		{
-			$file_split = explode('.', strtolower($file));
-			$extension = $file_split[count($file_split) - 1];
-			if(in_array($extension, $types))
-			{
-				$file1[$l] = $file;
-				$l++;
-			}
-		}
-		closedir($dir);
-		$icons_list = '<select name="' . $select_name . '" onchange="update_icon(this.options[selectedIndex].value);">';
-		$std_icon_selected = '';
-		$no_icon_selected = '';
-		if ($selected_icon == '')
-		{
-			$no_icon_selected = ' selected="selected"';
-		}
-		else
-		{
-			if ($selected_icon == $standard_icon)
-			{
-				$std_icon_selected = ' selected="selected"';
-			}
-			$icons_list .= '<option value="' . $selected_icon . '" selected="selected">' . $selected_icon . '</option>';
-		}
-		/*
-		$icons_list .= '<option value=""' . $no_icon_selected . '>' . $lang['CMS_Menu_No_Icon'] . '</option>';
-		$icons_list .= '<option value="' . $standard_icon . '"' . $std_icon_selected . '>' . $lang['CMS_Menu_Standard_Icon'] . '</option>';
-		*/
-		// No icon = Standard icon!
-		$icons_list .= '<option value=""' . $no_icon_selected . '>' . $lang['CMS_Menu_Standard_Icon'] . '</option>';
-		for($k = 0; $k <= $l; $k++)
-		{
-			if ($file1[$k] != '')
-			{
-				$icons_list .= '<option value="' . $icons_path . $file1[$k] . '">' . $icons_path . $file1[$k] . '</option>';
-			}
-		}
-		$icon_img_sp = (($selected_icon != '') ? $selected_icon : $images['spacer']);
-		$icons_list .= '</select>';
-		$icons_list .= '&nbsp;&nbsp;<img name="icon_image" src="' . $icon_img_sp . '" alt="" align="middle" />';
-		$icons_list .= '<br /><br />';
-	}
-	$icon_img_path = ($selected_icon != '') ? $selected_icon : '';
-	$icons_list .= '<input class="post" type="text" name="' . $input_name . '" size="40" maxlength="512" value="' . $icon_img_path . '" /><br />';
-
-	return $icons_list;
-}
-
-function build_default_link_auth($default_id)
-{
-	// 0: All, 1: Only Guest, 2: Reg, 3: MOD, 4: ADMIN
-	$link_auth_array = '';
-	$link_auth_array = array(
-		'0' => '',
-		'1' => '4', //$lang['Admin_panel'],
-		'2' => '4', //$lang['CMS_TITLE'],
-		'3' => '0', //$lang['Home'],
-		'4' => '2', //$lang['Profile'],
-		'5' => '0', //$lang['Forum_Index'],
-		'6' => '0', //$lang['FAQ'],
-		'7' => '0', //$lang['Search'],
-		'8' => '0', //$lang['Sitemap'],
-		'9' => '0', //$lang['Album'],
-		'10' => '0', //$lang['Calendar'],
-		'11' => '0', //$lang['Downloads'],
-		'12' => '2', //$lang['Bookmarks'],
-		'13' => '2', //$lang['Drafts'],
-		'14' => '2', //$lang['Upload_Image_Local'],
-		'15' => '0', //$lang['Ajax_Chat'],
-		'16' => '0', //$lang['Links'],
-		'17' => '0', //$lang['KB_title'],
-		'18' => '0', //$lang['Contact_us'],
-		'19' => '0', //$lang['BoardRules'],
-		//'20' => '4', //$lang['DBGenerator'],
-		'21' => '2', //$lang['Sudoku'],
-		'22' => '', //$lang['NewsCat'],
-		'23' => '', //$lang['NewsArc'],
-		'24' => '2', //$lang['New3'],
-		'25' => '2', //$lang['upi2db_unread'],
-		'26' => '2', //$lang['upi2db_marked'],
-		'27' => '2', //$lang['upi2db_perm_read'],
-		'28' => '2', //$lang['Posts'] .': '. $lang['New2'] . ' - ' . $lang['upi2db_u'] . ' - ' . $lang['upi2db_m'] . ' - ' . $lang['upi2db_p'],
-		'29' => '2', //$lang['Digests'],
-		'30' => '0', //$lang['Hacks_List'],
-		'31' => '0', //$lang['Referrers'],
-		'32' => '0', //$lang['Who_is_Online'],
-		'33' => '0', //$lang['Statistics'],
-		//'34' => '0', //$lang['Site_Hist'],
-		'35' => '0', //$lang['Delete_cookies'],
-		'36' => '0', //$lang['Memberlist'],
-		'37' => '0', //$lang['Usergroups'],
-		'38' => '0', //$lang['Rank_Header'],
-		'39' => '0', //$lang['Staff'],
-		'40' => '0', //$lang['Change_Style'],
-		'41' => '1', //$lang['Change_Lang'],
-		'42' => '0', //$lang['Rss_news_feeds'],
-		'43' => '1', //$lang['Register'],
-		'44' => '0', //$lang['Login'] . ' - ' . $lang['Logout']
-	);
-	return $link_auth_array[$default_id];
-}
-
-function build_default_link_url($default_id)
-{
-	$link_url_array = '';
-	$link_url_array = array(
-		'0' => '',
-		'1' => 'adm/index.' . PHP_EXT,
-		'2' => 'cms.' . PHP_EXT,
-		'3' => 'index.' . PHP_EXT,
-		'4' => 'profile_main.' . PHP_EXT,
-		'5' => 'forum.' . PHP_EXT,
-		'6' => 'faq.' . PHP_EXT,
-		'7' => 'search.' . PHP_EXT,
-		'8' => 'sitemap.' . PHP_EXT,
-		'9' => 'album.' . PHP_EXT,
-		'10' => 'calendar.' . PHP_EXT,
-		'11' => 'dload.' . PHP_EXT,
-		'12' => 'search.' . PHP_EXT . '?search_id=bookmarks',
-		'13' => 'drafts.' . PHP_EXT,
-		'14' => 'posted_img_list.' . PHP_EXT,
-		'15' => 'ajax_chat.' . PHP_EXT,
-		'16' => 'links.' . PHP_EXT,
-		'17' => 'kb.' . PHP_EXT,
-		'18' => 'contact_us.' . PHP_EXT,
-		'19' => 'rules.' . PHP_EXT,
-		//'20' => 'db_generator.' . PHP_EXT,
-		'21' => 'sudoku.' . PHP_EXT,
-		'22' => 'index.' . PHP_EXT . '?news=categories',
-		'23' => 'index.' . PHP_EXT . '?news=archives',
-		'24' => 'search.' . PHP_EXT . '?search_id=newposts',
-		'25' => 'search.' . PHP_EXT . '?search_id=upi2db&s2=new',
-		'26' => 'search.' . PHP_EXT . '?search_id=upi2db&s2=mark',
-		'27' => 'search.' . PHP_EXT . '?search_id=upi2db&s2=perm',
-		'28' => '',
-		'29' => 'digests.' . PHP_EXT,
-		'30' => 'credits.' . PHP_EXT,
-		'31' => 'referrers.' . PHP_EXT,
-		'32' => 'viewonline.' . PHP_EXT,
-		'33' => 'statistics.' . PHP_EXT,
-		//'34' => 'site_hist.' . PHP_EXT,
-		'35' => 'remove_cookies.' . PHP_EXT,
-		'36' => 'memberlist.' . PHP_EXT,
-		'37' => 'groupcp.' . PHP_EXT,
-		'38' => 'ranks.' . PHP_EXT,
-		'39' => 'memberlist.' . PHP_EXT . '?mode=staff',
-		'40' => '',
-		'41' => '',
-		'42' => '',
-		'43' => 'profile.' . PHP_EXT . '?mode=register',
-		'44' => ''
-	);
-	return $link_url_array[$default_id];
-}
+full_page_generation($template_to_parse, $lang['Home'], '', '');
 
 ?>

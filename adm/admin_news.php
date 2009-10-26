@@ -10,7 +10,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1600_News_Admin']['100_News_Config'] = $filename;
@@ -46,49 +46,40 @@ $sql = "SELECT *
 	config_name = 'news_rss_item_count' OR
 	config_name = 'news_rss_show_abstract'";
 
-if(!$result = $db->sql_query($sql))
+$result = $db->sql_query($sql);
+
+while($row = $db->sql_fetchrow($result))
 {
-	message_die(CRITICAL_ERROR, "Could not query config information in admin_news", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	while( $row = $db->sql_fetchrow($result) )
+	$config_name = $row['config_name'];
+	$config_value = $row['config_value'];
+	$default_config[$config_name] = $config_value;
+
+	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+
+	if(isset($_POST['submit']))
 	{
-		$config_name = $row['config_name'];
-		$config_value = $row['config_value'];
-		$default_config[$config_name] = $config_value;
-
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
-
-		if( isset($_POST['submit']) )
-		{
-			$sql = "UPDATE " . CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-				WHERE config_name = '$config_name'";
-
-			if( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Failed to update news configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
-		}
-	}
-
-	if( isset($_POST['submit']) )
-	{
-		$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-
-		message_die(GENERAL_MESSAGE, $message);
+		$sql = "UPDATE " . CONFIG_TABLE . " SET
+			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
+			WHERE config_name = '$config_name'";
+		$db->sql_query($sql);
 	}
 }
 
-$news_yes = ( $new['allow_news'] ) ? "checked=\"checked\"" : "";
-$news_no = ( !$new['allow_news'] ) ? "checked=\"checked\"" : "";
+if(isset($_POST['submit']))
+{
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
-$rss_yes = ( $new['allow_rss'] ) ? "checked=\"checked\"" : "";
-$rss_no = ( !$new['allow_rss'] ) ? "checked=\"checked\"" : "";
+	message_die(GENERAL_MESSAGE, $message);
+}
 
-$rss_abstract_yes = ( $new['news_rss_show_abstract'] ) ? "checked=\"checked\"" : "";
-$rss_abstract_no = ( !$new['news_rss_show_abstract'] ) ? "checked=\"checked\"" : "";
+$news_yes = ($new['allow_news']) ? "checked=\"checked\"" : "";
+$news_no = (!$new['allow_news']) ? "checked=\"checked\"" : "";
+
+$rss_yes = ($new['allow_rss']) ? "checked=\"checked\"" : "";
+$rss_no = (!$new['allow_rss']) ? "checked=\"checked\"" : "";
+
+$rss_abstract_yes = ($new['news_rss_show_abstract']) ? "checked=\"checked\"" : "";
+$rss_abstract_no = (!$new['news_rss_show_abstract']) ? "checked=\"checked\"" : "";
 
 $template->set_filenames(array(
 	'body' => ADM_TPL . 'news_config_body.tpl')
@@ -98,11 +89,11 @@ $template->set_filenames(array(
 // Escape any quotes in the site description for proper display in the text
 // box on the admin page
 //
-$new['news_rss_name'] = str_replace( '"', '&quot;', $new['news_rss_name'] );
-$new['news_rss_desc'] = str_replace('"', '&quot;', strip_tags($new['news_rss_desc']) );
-$new['news_rss_language'] = str_replace( '"', '&quot;', $new['news_rss_language'] );
-$new['news_rss_cat'] = str_replace( '"', '&quot;', $new['news_rss_cat'] );
-$new['news_rss_image_desc'] = str_replace( '"', '&quot;', $new['news_rss_image_desc'] );
+$new['news_rss_name'] = str_replace('"', '&quot;', $new['news_rss_name']);
+$new['news_rss_desc'] = str_replace('"', '&quot;', strip_tags($new['news_rss_desc']));
+$new['news_rss_language'] = str_replace('"', '&quot;', $new['news_rss_language']);
+$new['news_rss_cat'] = str_replace('"', '&quot;', $new['news_rss_cat']);
+$new['news_rss_image_desc'] = str_replace('"', '&quot;', $new['news_rss_image_desc']);
 
 $template->assign_vars(array(
 	'S_CONFIG_ACTION' => append_sid("admin_news." . PHP_EXT),

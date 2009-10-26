@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IN_PROGRESS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td>
@@ -15,3 +17,5 @@
 <table border="0" width="100%" height="100%">
 <tr><td class="gensmall" align="center">Upload Powered by <a href="http://www.nuffmon.oftheweek.de">Nuffload</a> {L_NUFFLOAD_VERSION}</td></tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

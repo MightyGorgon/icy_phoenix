@@ -18,17 +18,10 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$template->set_filenames(array('body' => 'rss_news_help.tpl'));
-
 // Ok, only process those Groups allowed within this forum
 $nothing = true;
 
-$gen_simple_header = true;
-$page_title = $lang['Rss_news_help_title'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-$server_url = ( substr($server_url, strlen($server_url) - 1, 1) == '/' ) ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
+$server_url = (substr($server_url, strlen($server_url) - 1, 1) == '/') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
 
 $template->assign_vars(array(
 	'L_RSS_NEWS_HELP_TITLE'				=> $lang['Rss_news_help_title'],
@@ -54,7 +47,7 @@ if ($nothing)
 	$template->assign_block_vars('switch_nothing', array());
 }
 
-$template->pparse('body');
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+$gen_simple_header = true;
+full_page_generation('rss_news_help.tpl', $lang['Rss_news_help_title'], '', '');
 
 ?>

@@ -22,20 +22,13 @@ $template->assign_vars(array(
 
 // get total posts
 $sql = "SELECT COUNT(post_id) as total_posts FROM " . POSTS_TABLE;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve posts data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $total_posts = $row['total_posts'];
 
 // get total users
 $sql = "SELECT COUNT(user_id) as total_users FROM " . USERS_TABLE;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve users data', '', __LINE__, __FILE__, $sql);
-}
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $total_users = $row['total_users'];
 

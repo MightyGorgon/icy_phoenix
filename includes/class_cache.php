@@ -24,7 +24,7 @@ if (!defined('IN_ICYPHOENIX'))
 /**
 * Cache management class
 */
-class ip_cache
+class acm
 {
 	var $vars = array();
 	var $var_expires = array();
@@ -37,7 +37,7 @@ class ip_cache
 	/**
 	* Set cache path
 	*/
-	function ip_cache()
+	function acm()
 	{
 		$this->cache_dir = MAIN_CACHE_FOLDER;
 	}
@@ -89,7 +89,13 @@ class ip_cache
 		if ($fp = @fopen($this->cache_dir . 'data_global.' . PHP_EXT, 'wb'))
 		{
 			@flock($fp, LOCK_EX);
-			fwrite($fp, "<" . "?php\n\$this->vars = " . var_export($this->vars, true) . ";\n\n\$this->var_expires = " . var_export($this->var_expires, true) . "\n?" . ">");
+
+			$file_content = "<" . "?php\nif (!defined('IN_ICYPHOENIX')) exit;\n\n";
+			$file_content .= "\$created = " . time() . "; // " . gmdate('Y/m/d - H:i:s') . "\n";
+			$file_content .= "\n\$this->vars = " . var_export($this->vars, true) . ";\n\n\$this->var_expires = " . var_export($this->var_expires, true) . ";\n";
+			$file_content .= "\n?" . ">";
+
+			fwrite($fp, $file_content);
 			@flock($fp, LOCK_UN);
 			fclose($fp);
 
@@ -137,7 +143,7 @@ class ip_cache
 			@include($this->cache_dir . $entry);
 			if ($expired)
 			{
-				$this->remove_file($this->cache_dir . $entry);
+				$this->remove_file($this->cache_dir, $entry);
 			}
 		}
 		closedir($dir);
@@ -192,7 +198,14 @@ class ip_cache
 			if ($fp = @fopen($this->cache_dir . "data{$var_name}." . PHP_EXT, 'wb'))
 			{
 				@flock($fp, LOCK_EX);
-				fwrite($fp, "<" . "?php\n\$expired = (time() > " . (time() + $ttl) . ") ? true : false;\nif (\$expired) { return; }\n\n\$data =  " . (sizeof($var) ? "unserialize(" . var_export(serialize($var), true) . ");" : 'array();') . "\n\n?" . ">");
+
+				$file_content = "<" . "?php\nif (!defined('IN_ICYPHOENIX')) exit;\n\n";
+				$file_content .= "\$created = " . time() . "; // " . gmdate('Y/m/d - H:i:s') . "\n";
+				$file_content .= "\$expired = (time() > " . (time() + $ttl) . ") ? true : false;\nif (\$expired) { return; }\n";
+				$file_content .= "\n\$data = " . (sizeof($var) ? "unserialize(" . var_export(serialize($var), true) . ");" : 'array();') . "\n";
+				$file_content .= "\n?" . ">";
+
+				fwrite($fp, $file_content);
 				@flock($fp, LOCK_UN);
 				fclose($fp);
 
@@ -232,7 +245,7 @@ class ip_cache
 				continue;
 			}
 
-			$this->remove_file($this->cache_dir . $entry);
+			$this->remove_file($this->cache_dir, $entry);
 		}
 		closedir($dir);
 
@@ -299,7 +312,7 @@ class ip_cache
 
 				if ($found)
 				{
-					$this->remove_file($this->cache_dir . $entry);
+					$this->remove_file($this->cache_dir, $entry);
 				}
 			}
 			closedir($dir);
@@ -314,7 +327,7 @@ class ip_cache
 
 		if ($var_name[0] == '_')
 		{
-			$this->remove_file($this->cache_dir . 'data' . $var_name . '.' . PHP_EXT, true);
+			$this->remove_file($this->cache_dir, 'data' . $var_name . '.' . PHP_EXT, true);
 		}
 		elseif (isset($this->vars[$var_name]))
 		{
@@ -325,6 +338,55 @@ class ip_cache
 			// We save here to let the following cache hits succeed
 			$this->save();
 		}
+	}
+
+	/**
+	* Destroy cache data files
+	*/
+	function destroy_datafiles($datafiles, $cache_folder = '', $prefix = 'data', $prefix_lookup = false)
+	{
+		$deleted = 0;
+		if (empty($datafiles))
+		{
+			return $deleted;
+		}
+
+		$cache_dirs_array = array(MAIN_CACHE_FOLDER, CMS_CACHE_FOLDER, FORUMS_CACHE_FOLDER, POSTS_CACHE_FOLDER, SQL_CACHE_FOLDER, TOPICS_CACHE_FOLDER, USERS_CACHE_FOLDER);
+		$cache_folder = (!empty($cache_folder) && @is_dir($cache_folder) && in_array($cache_folder, $cache_dirs_array)) ? $cache_folder : $this->cache_dir;
+		$datafiles = !is_array($datafiles) ? array($datafiles) : $datafiles;
+
+		if (!$prefix_lookup)
+		{
+			foreach ($datafiles as $datafile)
+			{
+				$file_deleted = $this->remove_file($cache_folder, $prefix . $datafile . '.' . PHP_EXT, false);
+				$deleted = $file_deleted ? $deleted++ : $deleted;
+			}
+		}
+		else
+		{
+			$dir = @opendir($cache_folder);
+
+			if (!$dir)
+			{
+				return;
+			}
+
+			while (($entry = readdir($dir)) !== false)
+			{
+				foreach ($datafiles as $datafile)
+				{
+					if ((strpos($entry, $prefix . $datafile) === 0) && (substr($entry, -(strlen(PHP_EXT) + 1)) === ('.' . PHP_EXT)))
+					{
+						$file_deleted = $this->remove_file($cache_folder, $entry, false);
+						$deleted = $file_deleted ? $deleted++ : $deleted;
+						break;
+					}
+				}
+			}
+		}
+
+		return $deleted;
 	}
 
 	/**
@@ -353,21 +415,49 @@ class ip_cache
 	}
 
 	/**
+	* Build query Hash
+	*/
+	function sql_query_hash($query = '')
+	{
+		return md5($query);
+	}
+
+	/**
+	* Build query hash filename
+	*/
+	function sql_query_hash_file($query = '', $cache_prefix = '', $cache_folder = SQL_CACHE_FOLDER)
+	{
+		$cache_folder = !empty($cache_folder) ? $cache_folder : SQL_CACHE_FOLDER;
+		$hash = $this->sql_query_hash($query);
+		$cache_filename = $cache_folder . $cache_prefix . $hash . '.' . PHP_EXT;
+		return $cache_filename;
+	}
+
+	/**
 	* Load cached sql query
 	*/
-	function sql_load($query)
+	function sql_load($query, $cache_prefix = '', $cache_folder = SQL_CACHE_FOLDER)
 	{
+
+		$cache_prefix = 'sql_' . $cache_prefix;
+		$cache_folder = !empty($cache_folder) ? $cache_folder : SQL_CACHE_FOLDER;
+		// The code below should ensures that a correct folder is identified... but maybe it is better avoid extra checks to file system to save CPU and disk charge
+		/*
+		$cache_folder = (!empty($cache_folder) && @is_dir($cache_folder)) ? $cache_folder : SQL_CACHE_FOLDER;
+		$cache_folder = ((@is_dir($cache_folder)) ? $cache_folder : @phpbb_realpath($cache_folder));
+		*/
 
 		// Remove extra spaces and tabs
 		$query = preg_replace('/[\n\r\s\t]+/', ' ', $query);
 		$query_id = sizeof($this->sql_rowset);
+		$cache_filename = $this->sql_query_hash_file($query, $cache_prefix, $cache_folder);
 
-		if (!file_exists($this->cache_dir . 'sql_' . md5($query) . '.' . PHP_EXT))
+		if (!file_exists($cache_filename))
 		{
 			return false;
 		}
 
-		@include($this->cache_dir . 'sql_' . md5($query) . '.' . PHP_EXT);
+		@include($cache_filename);
 
 		if (!isset($expired))
 		{
@@ -375,7 +465,7 @@ class ip_cache
 		}
 		elseif ($expired)
 		{
-			$this->remove_file($this->cache_dir . 'sql_' . md5($query) . '.' . PHP_EXT, true);
+			$this->remove_file($cache_folder, $cache_prefix . md5($query) . '.' . PHP_EXT, true);
 			return false;
 		}
 
@@ -387,15 +477,19 @@ class ip_cache
 	/**
 	* Save sql query
 	*/
-	function sql_save($query, &$query_result, $ttl)
+	function sql_save($query, &$query_result, $ttl = CACHE_SQL_EXPIRY, $cache_prefix = '', $cache_folder = SQL_CACHE_FOLDER)
 	{
 		global $db;
 
+		$cache_prefix = 'sql_' . $cache_prefix;
+		$cache_folder = (!empty($cache_folder) && @is_dir($cache_folder)) ? $cache_folder : SQL_CACHE_FOLDER;
+		$cache_folder = ((@is_dir($cache_folder)) ? $cache_folder : @phpbb_realpath($cache_folder));
+
 		// Remove extra spaces and tabs
 		$query = preg_replace('/[\n\r\s\t]+/', ' ', $query);
-		$filename = $this->cache_dir . 'sql_' . md5($query) . '.' . PHP_EXT;
+		$cache_filename = $this->sql_query_hash_file($query, $cache_prefix, $cache_folder);
 
-		if ($fp = @fopen($filename, 'wb'))
+		if ($fp = @fopen($cache_filename, 'wb'))
 		{
 			@flock($fp, LOCK_EX);
 
@@ -409,10 +503,14 @@ class ip_cache
 			}
 			$db->sql_freeresult($query_result);
 
-			$file = "<?" . "php\n\n/* " . str_replace('*/', '*\/', $query) . " */\n";
-			$file .= "\n\$expired = (time() > " . (time() + $ttl) . ") ? true : false;\nif (\$expired) { return; }\n";
+			$file_content = "<" . "?php\nif (!defined('IN_ICYPHOENIX')) exit;\n\n";
+			$file_content .= "/* " . str_replace('*/', '*\/', $query) . " */\n";
+			$file_content .= "\$created = " . time() . "; // " . gmdate('Y/m/d - H:i:s') . "\n";
+			$file_content .= "\$expired = (time() > " . (time() + $ttl) . ") ? true : false;\nif (\$expired) { return; }\n";
+			$file_content .= "\n\$this->sql_rowset[\$query_id] = " . (sizeof($this->sql_rowset[$query_id]) ? "unserialize(" . var_export(serialize($this->sql_rowset[$query_id]), true) . ");" : 'array();') . "\n";
+			$file_content .= "\n?" . ">";
 
-			fwrite($fp, $file . "\n\$this->sql_rowset[\$query_id] = " . (sizeof($this->sql_rowset[$query_id]) ? "unserialize(" . var_export(serialize($this->sql_rowset[$query_id]), true) . ");" : 'array();') . "\n\n?" . ">");
+			fwrite($fp, $file_content);
 			@flock($fp, LOCK_UN);
 			fclose($fp);
 
@@ -421,7 +519,7 @@ class ip_cache
 				include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 			}
 
-			phpbb_chmod($filename, CHMOD_WRITE);
+			phpbb_chmod($cache_filename, CHMOD_WRITE);
 
 			$query_result = $query_id;
 		}
@@ -494,15 +592,22 @@ class ip_cache
 	/**
 	* Removes/unlinks file
 	*/
-	function remove_file($filename, $check = false)
+	function remove_file($cache_folder, $filename, $check = false)
 	{
-		if ($check && !@is_writable($this->cache_dir))
+		$cache_folder = !empty($cache_folder) ? $cache_folder : MAIN_CACHE_FOLDER;
+		// The code below should ensures that a correct folder is identified... but maybe it is better avoid extra checks to file system to save CPU and disk charge
+		/*
+		$cache_folder = (!empty($cache_folder) && @is_dir($cache_folder)) ? $cache_folder : MAIN_CACHE_FOLDER;
+		$cache_folder = ((@is_dir($cache_folder)) ? $cache_folder : @phpbb_realpath($cache_folder));
+		*/
+
+		if ($check && !@is_writable($cache_folder))
 		{
 			// E_USER_ERROR - not using language entry - intended.
-			trigger_error('Unable to remove files within ' . $this->cache_dir . '. Please check directory permissions.', E_USER_ERROR);
+			trigger_error('Unable to remove files within ' . $cache_folder . '. Please check directory permissions.', E_USER_ERROR);
 		}
 
-		return @unlink($filename);
+		return @unlink($cache_folder . $filename);
 	}
 }
 

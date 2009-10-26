@@ -32,8 +32,8 @@ define('XS_INCLUDED', true);
 // include language file
 if(!defined('XS_LANG_INCLUDED'))
 {
-	global $board_config, $lang;
-	$xs_lang_file = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_xs.' . PHP_EXT;
+	global $config, $lang;
+	$xs_lang_file = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_xs.' . PHP_EXT;
 	if( !@file_exists($xs_lang_file) )
 	{	// load english version if there is no translation to current language
 		$xs_lang_file = IP_ROOT_PATH . 'language/lang_english/lang_xs.' . PHP_EXT;
@@ -83,12 +83,12 @@ function xs_admin_override($modded = false)
 		return;
 	}
 	define('XS_ADMIN_OVERRIDE_FINISHED', true);
-	global $module, $xs_shownav_action, $board_config, $lang;
+	global $module, $xs_shownav_action, $config, $lang;
 	// remove default phpBB styles management
 	if(isset($module['Styles']))
 	{
 		$unset = array('Add_new', 'Create_new', 'Manage', 'Export');
-		for($i = 0; $i < count($unset); $i++)
+		for($i = 0; $i < sizeof($unset); $i++)
 		{
 			if(isset($module['Styles'][$unset[$i]]))
 			{
@@ -103,13 +103,13 @@ function xs_admin_override($modded = false)
 	for($i = 0; $i < XS_SHOWNAV_MAX; $i++)
 	{
 		$num = pow(2, $i);
-		if($i != XS_SHOWNAV_DOWNLOAD && ($board_config['xs_shownav'] & $num) > 0)
+		if($i != XS_SHOWNAV_DOWNLOAD && ($config['xs_shownav'] & $num) > 0)
 		{
 			$module[$module_name][$lang['xs_config_shownav'][$i]] = 'xs_frameset.' . PHP_EXT . '?action=' . $xs_shownav_action[$i];
 		}
 	}
 	// add menu for style configuration
-	foreach($board_config as $var => $value)
+	foreach($config as $var => $value)
 	{
 		if(substr($var, 0, 9) === 'xs_style_')
 		{
@@ -195,14 +195,14 @@ if(isset($theme['theme_public']))
 //
 function get_ftp_config($action, $post = array(), $allow_local = false, $show_error = '')
 {
-	global $template, $board_config, $db, $lang;
-	$board_config['xs_ftp_local'] = false;
+	global $db, $config, $template, $lang;
+	$config['xs_ftp_local'] = false;
 	// check if ftp can be used
 	if(!@function_exists('ftp_connect'))
 	{
 		if($allow_local && xs_dir_writable('../templates/'))
 		{
-			$board_config['xs_ftp_local'] = true;
+			$config['xs_ftp_local'] = true;
 			return true;
 		}
 		xs_error($lang['xs_ftp_error_fatal']);
@@ -211,31 +211,22 @@ function get_ftp_config($action, $post = array(), $allow_local = false, $show_er
 	if(!empty($_POST['get_ftp_config']))
 	{
 		$vars = array('xs_ftp_host', 'xs_ftp_login', 'xs_ftp_path');
-		for($i = 0; $i < count($vars); $i++)
+		for($i = 0; $i < sizeof($vars); $i++)
 		{
 			$var = $vars[$i];
-			if($board_config[$var] !== $_POST[$var])
+			if($config[$var] !== $_POST[$var])
 			{
-				$board_config[$var] = stripslashes($_POST[$var]);
-				$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . xs_sql($board_config[$var]) . "' WHERE config_name = '{$var}'";
+				$config[$var] = stripslashes($_POST[$var]);
+				$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . xs_sql($config[$var]) . "' WHERE config_name = '{$var}'";
 				$db->sql_query($sql);
 			}
 		}
-		$board_config['xs_ftp_pass'] = stripslashes($_POST['xs_ftp_pass']);
-		$board_config['xs_ftp_local'] = empty($_POST['xs_ftp_local']) ? false : true;
-		// recache config table
-		if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-		{
-			global $config;
-			if ( !empty($config) )
-			{
-				$config->read(true);
-			}
-		}
+		$config['xs_ftp_pass'] = stripslashes($_POST['xs_ftp_pass']);
+		$config['xs_ftp_local'] = empty($_POST['xs_ftp_local']) ? false : true;
 		return true;
 	}
 	// check ftp configuration
-	$xs_ftp_host = $board_config['xs_ftp_host'];
+	$xs_ftp_host = $config['xs_ftp_host'];
 	if(empty($xs_ftp_host))
 	{
 		$str = $_SERVER['HTTP_HOST'];
@@ -244,7 +235,7 @@ function get_ftp_config($action, $post = array(), $allow_local = false, $show_er
 			));
 	}
 	$dir = getcwd();
-	$xs_ftp_login = $board_config['xs_ftp_login'];
+	$xs_ftp_login = $config['xs_ftp_login'];
 	if(empty($xs_ftp_login))
 	{
 		if(substr($dir, 0, 6) === '/home/')
@@ -260,7 +251,7 @@ function get_ftp_config($action, $post = array(), $allow_local = false, $show_er
 			}
 		}
 	}
-	$xs_ftp_path = $board_config['xs_ftp_path'];
+	$xs_ftp_path = $config['xs_ftp_path'];
 	if(empty($xs_ftp_path))
 	{
 		if(substr($dir, 0, 6) === '/home/');
@@ -311,41 +302,41 @@ function get_ftp_config($action, $post = array(), $allow_local = false, $show_er
 // connect ftp
 function xs_ftp_connect($action, $post = array(), $allow_local = false)
 {
-	global $ftp, $board_config, $lang, $template;
+	global $ftp, $config, $lang, $template;
 	$_POST['get_ftp_config'] = '';
-	if($allow_local && !empty($board_config['xs_ftp_local']))
+	if($allow_local && !empty($config['xs_ftp_local']))
 	{
 		$ftp = XS_FTP_LOCAL;
 		return true;
 	}
-	$ftp = @ftp_connect($board_config['xs_ftp_host']);
+	$ftp = @ftp_connect($config['xs_ftp_host']);
 	if(!$ftp)
 	{
-		get_ftp_config($action, $post, $allow_local, str_replace('{HOST}', $board_config['xs_ftp_host'], $lang['xs_ftp_error_connect']));
+		get_ftp_config($action, $post, $allow_local, str_replace('{HOST}', $config['xs_ftp_host'], $lang['xs_ftp_error_connect']));
 	}
-	$res = @ftp_login($ftp, $board_config['xs_ftp_login'], $board_config['xs_ftp_pass']);
+	$res = @ftp_login($ftp, $config['xs_ftp_login'], $config['xs_ftp_pass']);
 	if(!$res)
 	{
 		get_ftp_config($action, $post, $allow_local, $lang['xs_ftp_error_login']);
 	}
-	$res = @ftp_chdir($ftp, $board_config['xs_ftp_path']);
+	$res = @ftp_chdir($ftp, $config['xs_ftp_path']);
 	if(!$res)
 	{
-		get_ftp_config($action, $post, $allow_local, str_replace('{DIR}', $board_config['xs_ftp_path'], $lang['xs_ftp_error_chdir']));
+		get_ftp_config($action, $post, $allow_local, str_replace('{DIR}', $config['xs_ftp_path'], $lang['xs_ftp_error_chdir']));
 	}
 	// check current directory
 	$current_dir = @ftp_pwd($ftp);
 	$list = @ftp_nlist($ftp, $current_dir);
-	for($i = 0; $i < count($list); $i++)
+	for($i = 0; $i < sizeof($list); $i++)
 	{
 		$list[$i] = strtolower(basename($list[$i]));
 	}
 	// check few files
 	$check = array('templates', 'xs_mod');
 	$found = array(false, false);
-	for($i = 0; $i < count($list); $i++)
+	for($i = 0; $i < sizeof($list); $i++)
 	{
-		for($j = 0; $j < count($check); $j++)
+		for($j = 0; $j < sizeof($check); $j++)
 		{
 			if($list[$i] === $check[$j])
 			{
@@ -354,7 +345,7 @@ function xs_ftp_connect($action, $post = array(), $allow_local = false)
 		}
 	}
 	$error = false;
-	for($i = 0; $i < count($check); $i++)
+	for($i = 0; $i < sizeof($check); $i++)
 	{
 		if(!$found[$i])
 		{
@@ -498,8 +489,8 @@ function xs_check_cache($filename)
 			{
 				$str .= sprintf($lang['xs_check_dir'] , $path) . "<br />\n";
 			}
-			if(count($dirs) > 0)
-			for($i = 0; $i < count($dirs)-1; $i++)
+			if(sizeof($dirs) > 0)
+			for($i = 0; $i < sizeof($dirs)-1; $i++)
 			{
 				if($i>0)
 				{
@@ -592,7 +583,7 @@ function ftp_remove_all($ftp)
 	// get list of files
 	$files = @ftp_nlist($ftp, $root_dir);
 	// remove files/directories
-	for($i = 0; $i < count($files); $i++)
+	for($i = 0; $i < sizeof($files); $i++)
 	{
 		$res = @ftp_chdir($ftp, $files[$i]);
 		if($res)
@@ -626,7 +617,7 @@ function ftp_myexec2($ftp, $list)
 	}
 	$current_dir = strlen($root_dir) ? $root_dir . '/' : '';
 	// run commands
-	for($i = 0; $i < count($list); $i++)
+	for($i = 0; $i < sizeof($list); $i++)
 	{
 		$item=$list[$i];
 		if($item['command'] == 'mkdir')
@@ -787,7 +778,10 @@ function xs_install_style($tpl, $num)
 		return false;
 	}
 	$sql = "SELECT themes_id FROM " . THEMES_TABLE . " WHERE style_name='" . xs_sql($data['style_name']) . "'";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		return false;
 	}
@@ -804,7 +798,10 @@ function xs_install_style($tpl, $num)
 		$values[] = xs_sql(stripslashes($value));
 	}
 	$sql = "INSERT INTO " . THEMES_TABLE . " (" . implode(', ', $vars) . ") VALUES ('" . implode("', '", $values) . "')";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		return false;
 	}
@@ -836,7 +833,7 @@ function xs_generate_themeinfo($theme_rowset, $export, $exportas, $total)
 	$vars = array('template_name', 'style_name', 'head_stylesheet', 'body_background', 'body_bgcolor', 'tr_class1', 'tr_class2', 'tr_class3', 'td_class1', 'td_class2', 'td_class3');
 	$theme_data = '<?php'."\n\n";
 	$theme_data .= "//\n// eXtreme Styles mod (compatible with phpBB 2.0.x) auto-generated theme config file for $exportas\n// Do not change anything in this file unless you know exactly what you are doing!\n//\n\n";
-	for($i = 0; $i < count($theme_rowset); $i++)
+	for($i = 0; $i < sizeof($theme_rowset); $i++)
 	{
 		$id = $theme_rowset[$i]['themes_id'];
 		$theme_name = $theme_rowset[$i]['style_name'];
@@ -848,7 +845,7 @@ function xs_generate_themeinfo($theme_rowset, $export, $exportas, $total)
 				$theme_rowset[$i]['style_name'] = $theme_name;
 			}
 		}
-		for($j=0; $j<count($vars); $j++)
+		for($j=0; $j< sizeof($vars); $j++)
 		{
 			$key = $vars[$j];
 			$val = $theme_rowset[$i][$key];
@@ -1022,7 +1019,7 @@ function pack_style($name, $newname, $themes, $comment)
 	$data = gzcompress(pack_dir(IP_ROOT_PATH . $template_dir . $name, '', $name, $newname));
 	$items_data = chr(strlen($newname)) . chr(strlen($comment));
 	$items_str = $newname . $comment;
-	for($i = 0; $i < count($themes); $i++)
+	for($i = 0; $i < sizeof($themes); $i++)
 	{
 		$str = $themes[$i]['style_name'];
 		$items_data .= chr(strlen($str));
@@ -1100,7 +1097,7 @@ function pack_dir($dir1, $dir2, $search, $replace)
 	$extra_str = '';
 	$str .= $header_str . $file_str . $extra_str;
 	// add all files
-	for($i = 0; $i < count($files); $i++)
+	for($i = 0; $i < sizeof($files); $i++)
 	{
 		$file = $files[$i];
 		$header['filename'] = $base_dir . $file;
@@ -1165,7 +1162,7 @@ function pack_dir($dir1, $dir2, $search, $replace)
 		$str .= $header_str . $file_str . $extra_str;
 	}
 	// add all directories
-	for($i = 0; $i < count($subdir); $i++)
+	for($i = 0; $i < sizeof($subdir); $i++)
 	{
 		$str .= pack_dir($dir1, $dir2 ? $dir2 . '/' . $subdir[$i] : $subdir[$i], $search, $replace);
 	}
@@ -1179,10 +1176,10 @@ function pack_dir($dir1, $dir2, $search, $replace)
 // save export configuration
 function set_export_method($method, $data)
 {
-	global $db, $board_config;
+	global $db, $config;
 	$data['method'] = $method;
 	$str = xs_sql(serialize($data));
-	$sql = isset($board_config['xs_export_data']) ? "UPDATE " . CONFIG_TABLE . " SET config_value='{$str}' WHERE config_name='xs_export_data'" : "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('xs_export_data', '{$str}')";
+	$sql = isset($config['xs_export_data']) ? "UPDATE " . CONFIG_TABLE . " SET config_value='{$str}' WHERE config_name='xs_export_data'" : "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('xs_export_data', '{$str}')";
 	$db->sql_query($sql);
 }
 

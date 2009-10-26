@@ -33,47 +33,37 @@ require('./pagestart.' . PHP_EXT);
 
 // Pull config data
 $sql = "SELECT * FROM " . CAPTCHA_CONFIG_TABLE;
-if(!$result = $db->sql_query($sql))
+$result = $db->sql_query($sql);
+while($row = $db->sql_fetchrow($result))
 {
-	message_die(CRITICAL_ERROR, "Could not query Lexicon config information", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	while($row = $db->sql_fetchrow($result))
-	{
-		$config_name = $row['config_name'];
-		$config_value = $row['config_value'];
-		$default_config[$config_name] = $config_value;
+	$config_name = $row['config_name'];
+	$config_value = $row['config_value'];
+	$default_config[$config_name] = $config_value;
 
-		$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
-
-		if(isset($_POST['submit']))
-		{
-			$sql = "UPDATE " . CAPTCHA_CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-				WHERE config_name = '$config_name'";
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Failed to update Lexicon configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
-		}
-	}
+	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
 
 	if(isset($_POST['submit']))
 	{
-		$message = $lang['captcha_config_updated'] . "<br />" . sprintf($lang['Click_return_captcha_config'], '<a href="' . append_sid("admin_captcha_config." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>') . '<br /><br />';
-
-		message_die(GENERAL_MESSAGE, $message);
+		$sql = "UPDATE " . CAPTCHA_CONFIG_TABLE . " SET
+			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
+			WHERE config_name = '$config_name'";
+		$db->sql_query($sql);
 	}
+}
+
+if(isset($_POST['submit']))
+{
+	$message = $lang['captcha_config_updated'] . "<br />" . sprintf($lang['Click_return_captcha_config'], '<a href="' . append_sid("admin_captcha_config." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>') . '<br /><br />';
+
+	message_die(GENERAL_MESSAGE, $message);
 }
 
 $template->set_filenames(array('body' => ADM_TPL . 'admin_captcha_config.tpl'));
 
-
 $template->assign_vars(array(
 	'L_CAPTCHA_CONFIGURATION' => $lang['VC_Captcha_Config'],
 	'L_CAPTCHA_CONFIGURATION_EXPLAIN' => $lang['captcha_config_explain'],
-	'L_VC_ACTIVE' => ($board_config['enable_confirm']) ? $lang['VC_active'] : $lang['VC_inactive'],
+	'L_VC_ACTIVE' => ($config['enable_confirm']) ? $lang['VC_active'] : $lang['VC_inactive'],
 	'L_BACKGROUND_CONFIG' => $lang['background_configs'],
 	'L_RANDOM' => $lang['Random'],
 	'L_DISABLED' => $lang['Disabled'],
@@ -120,7 +110,7 @@ $template->assign_vars(array(
 	'GAMMACORRECT' => $new['gammacorrect'],
 	'JPEG_QUALITY' => $new['jpeg_quality'],
 
-	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . PROFILE_MG . '?mode=confirm&amp;id=Admin') . '">',
+	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=confirm&amp;id=Admin') . '">',
 
 	'S_GREAT_PRE_LETTERS_YES' => ($new['pre_letters_great'] == 1) ? 'checked="checked"' : '',
 	'S_GREAT_PRE_LETTERS_NO' => ($new['pre_letters_great'] == 0) ? 'checked="checked"' : '',

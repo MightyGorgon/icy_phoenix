@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- BEGIN nav_blocks_row -->{nav_blocks_row.CMS_BLOCK}<!-- END nav_blocks_row -->
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
@@ -10,3 +12,5 @@
 	<td width="180" valign="top"><!-- BEGIN right_blocks_row -->{right_blocks_row.CMS_BLOCK}<!-- END right_blocks_row --></td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

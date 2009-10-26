@@ -50,10 +50,12 @@ function getMiniCalForumsAuth($userdata)
 	$mini_cal_auth['post'] = '';
 
 	$sql = "SELECT * FROM " . CAL_CONFIG;
-
-		if( $result = $db->sql_query($sql) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
 			$cal_config[$row['config_name']] = $row['config_value'];
 		}
@@ -90,9 +92,12 @@ function getMiniCalEventDays($auth_view_forums)
 			FROM " . CAL_TABLE . " c
 			WHERE YEAR(c.stamp) = $mini_cal_this_year
 				AND MONTH(c.stamp) = $mini_cal_this_month";
-		if( $result = $db->sql_query($sql) )
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
-			while( $row = $db->sql_fetchrow($result) )
+			while($row = $db->sql_fetchrow($result))
 			{
 				for ($i=$row['event_day']; $i<=$row['event_day_end']; $i++)
 				{
@@ -153,11 +158,14 @@ function getMiniCalEvents($mini_cal_auth)
 		// did we get a result?
 		// if not then the user does not have MyCalendar installed
 		// so just die quielty don't bother to output an error message
-		if( $result = $db->sql_query($sql) )
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
 			// ok we've got MyCalendar
 			$template->assign_block_vars('switch_mini_cal_events', array());
-			if ( $db->sql_numrows($result) > 0 )
+			if ($db->sql_numrows($result) > 0)
 			{
 				// we've even got some events
 				// initialise out date formatting patterns
@@ -195,7 +203,7 @@ function getMiniCalEvents($mini_cal_auth)
 					$template->assign_block_vars('mini_cal_events', array(
 							'MINI_CAL_EVENT_DATE' => $cal_date,
 							'S_MINI_CAL_EVENT' => $row['subject'],
-							'U_MINI_CAL_EVENT' => append_sid( IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?id=' . $row['id'] . '&mode=display' )
+							'U_MINI_CAL_EVENT' => append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?id=' . $row['id'] . '&mode=display')
 							)
 					);
 				}
@@ -250,20 +258,14 @@ function calendarperm($user_id)
 	global $db, $cal_config;
 	// Get the user permissions first.
 	$sql = "SELECT user_calendar_perm FROM " . USERS_TABLE . " WHERE user_id = " . $user_id;
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not select Calendar permission from user table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
 	// Get the group permissions second.
 	$sql = "SELECT group_calendar_perm FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g
 		WHERE ug.user_id = " . $user_id . " AND g.group_id = ug.group_id";
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not select Calendar permission from user/usergroup table', '', __LINE__, __FILE__, $sql2);
-	}
+	$result = $db->sql_query($sql);
 
 	$topgroup = 0;
 	while($rowg = $db->sql_fetchrow($result2))

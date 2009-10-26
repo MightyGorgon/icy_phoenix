@@ -95,19 +95,17 @@ else
 
 if((($delete && $confirm) || $activate) && $mark_list)
 {
-	if(count($mark_list))
+	if(sizeof($mark_list))
 	{
 		$email_id = '';
-		for($i = 0; $i < count($mark_list); $i++)
+		for($i = 0; $i < sizeof($mark_list); $i++)
 		{
 			$email_id .= (($email_id != '') ? ', ' : '') . intval($mark_list[$i]);
 		}
 
 		$sql_mail = "SELECT username, user_email, user_lang, user_active FROM " . USERS_TABLE . " WHERE user_id IN ($email_id)";
-		if(!($result_mail = $db->sql_query($sql_mail)))
-		{
-			message_die(GENERAL_ERROR, 'could not get mail addresses', '', __LINE__, __FILE__, $sql_mail);
-		}
+		$result_mail = $db->sql_query($sql_mail);
+
 		while($mail = $db->sql_fetchrow($result_mail))
 		{
 			if($delete)
@@ -122,18 +120,18 @@ if((($delete && $confirm) || $activate) && $mark_list)
 			}
 
 			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($board_config['smtp_delivery']);
-			$emailer->from($board_config['board_email']);
-			$emailer->replyto($board_config['board_email']);
+			$emailer = new emailer($config['smtp_delivery']);
+			$emailer->from($config['board_email']);
+			$emailer->replyto($config['board_email']);
 			$emailer->use_template('admin_account_action', stripslashes($mail['user_lang']));
 			$emailer->email_address($mail['user_email']);
 			$emailer->set_subject($subject);
 
 			$emailer->assign_vars(array(
 				'SUBJECT' => $subject,
-				'TEXT' => sprintf($text, ip_stripslashes($board_config['sitename'])),
+				'TEXT' => sprintf($text, $config['sitename']),
 				'USERNAME' => $mail['username'],
-				'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
+				'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
 				)
 			);
 			$emailer->send();
@@ -155,7 +153,7 @@ if($delete && $mark_list)
 		$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="delete" value="true" />';
 
-		for($i = 0; $i < count($mark_list); $i++)
+		for($i = 0; $i < sizeof($mark_list); $i++)
 		{
 			$s_hidden_fields .= '<input type="hidden" name="mark[]" value="' . intval($mark_list[$i]) . '" />';
 		}
@@ -163,7 +161,7 @@ if($delete && $mark_list)
 		$template->set_filenames(array('confirm_body' => ADM_TPL . 'confirm_body.tpl'));
 		$template->assign_vars(array(
 			'MESSAGE_TITLE' => $lang['Information'],
-			'MESSAGE_TEXT' => (count($mark_list) == '1') ? $lang['Account_delete_user'] : $lang['Account_delete_users'],
+			'MESSAGE_TEXT' => (sizeof($mark_list) == '1') ? $lang['Account_delete_user'] : $lang['Account_delete_users'],
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
 			'S_CONFIRM_ACTION' => append_sid('admin_account.' . PHP_EXT . '?action=' . $action),
@@ -175,10 +173,10 @@ if($delete && $mark_list)
 	}
 	elseif($confirm)
 	{
-		if(count($mark_list))
+		if(sizeof($mark_list))
 		{
 			$delete_id = '';
-			for($i = 0; $i < count($mark_list); $i++)
+			for($i = 0; $i < sizeof($mark_list); $i++)
 			{
 				$delete_id .= (($delete_id != '') ? ', ' : '') . intval($mark_list[$i]);
 			}
@@ -193,45 +191,36 @@ if($delete && $mark_list)
 					$delete_u_sql .= "user_active = '1'";
 					break;
 			}
-			if(!$db->sql_query($delete_u_sql, BEGIN_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, 'could not delete users.', '', __LINE__, __FILE__, $delete_u_sql);
-			}
+			$db->sql_transaction('begin');
+			$db->sql_query($delete_u_sql);
 
 			$delete_ug_sql = "DELETE FROM ". USER_GROUP_TABLE ." WHERE user_id IN ($delete_id) AND user_id <> ". ANONYMOUS;
-			if (!$db->sql_query($delete_ug_sql, END_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, 'could not delete user groups.', '', __LINE__, __FILE__, $delete_ug_sql);
-			}
+			$db->sql_query($delete_ug_sql);
+			$db->sql_transaction('commit');
 
 			$select_g_sql = "SELECT g.group_id FROM ". GROUPS_TABLE ." g
 											LEFT JOIN ". USER_GROUP_TABLE ." ug ON g.group_id = ug.group_id
 											WHERE group_single_user = 1 AND ug.group_id IS NULL";
-			if(!($result = $db->sql_query($select_g_sql)))
-			{
-				message_die(GENERAL_ERROR, 'could not obtain group information.', '', __LINE__, __FILE__, $select_g_sql);
-			}
+			$result = $db->sql_query($select_g_sql);
+
 			while($group = $db->sql_fetchrow($result))
 			{
 				$delete_g_sql = "DELETE FROM ". GROUPS_TABLE ." WHERE group_id = '". $group['group_id'] ."'";
-				if(!($db->sql_query($delete_g_sql)))
-				{
-					message_die(GENERAL_ERROR, 'could not delete group.', '', __LINE__, __FILE__, $delete_g_sql);
-				}
+				$db->sql_query($delete_g_sql);
 			}
 			$db->sql_freeresult($result);
 
-			$template->assign_vars(array('MESSAGE' => ((count($mark_list) == '1') ? $lang['Account_user_deleted'] : $lang['Account_users_deleted']).' '. $lang['Account_notification']));
+			$template->assign_vars(array('MESSAGE' => ((sizeof($mark_list) == '1') ? $lang['Account_user_deleted'] : $lang['Account_users_deleted']).' '. $lang['Account_notification']));
 			$template->assign_block_vars('switch_message', array());
 		}
 	}
 }
 elseif($activate && $mark_list)
 {
-	if(count($mark_list))
+	if(sizeof($mark_list))
 	{
 		$activate_id = '';
-		for ($i = 0; $i < count($mark_list); $i++)
+		for ($i = 0; $i < sizeof($mark_list); $i++)
 		{
 			$activate_id .= (($activate_id != '') ? ', ' : '') . intval($mark_list[$i]);
 		}
@@ -248,12 +237,9 @@ elseif($activate && $mark_list)
 				break;
 		}
 		$activate_sql .= " AND user_id IN ($activate_id)";
-		if(!$db->sql_query($activate_sql))
-		{
-			message_die(GENERAL_ERROR, 'could not activate users.', '', __LINE__, __FILE__, $activate_sql);
-		}
+		$db->sql_query($activate_sql);
 
-		$template->assign_vars(array('MESSAGE' => ((count($mark_list) == '1') ? (($action == 'active') ? $lang['Account_user_deactivated'] : $lang['Account_user_activated']) : (($action == 'active') ? $lang['Account_users_deactivated'] : $lang['Account_users_activated'])) . ' ' . $lang['Account_notification']));
+		$template->assign_vars(array('MESSAGE' => ((sizeof($mark_list) == '1') ? (($action == 'active') ? $lang['Account_user_deactivated'] : $lang['Account_user_activated']) : (($action == 'active') ? $lang['Account_users_deactivated'] : $lang['Account_users_activated'])) . ' ' . $lang['Account_notification']));
 		$template->assign_block_vars('switch_message', array());
 	}
 }
@@ -320,34 +306,25 @@ else
 	$post_days = 0;
 }
 
-$sql .= $limit_awaits . " ORDER BY user_regdate DESC LIMIT $start, " . $board_config['topics_per_page'];
+$sql .= $limit_awaits . " ORDER BY user_regdate DESC LIMIT $start, " . $config['topics_per_page'];
 $sql_all = $sql_count;
 $sql_count .= $limit_awaits_count;
-
-if(!($result = $db->sql_query($sql_count)))
-{
-	message_die(GENERAL_ERROR, 'could not query users information.', '', __LINE__, __FILE__, $sql_count);
-}
-
+$result = $db->sql_query($sql_count);
 $total_users = ($row = $db->sql_fetchrow($result)) ? $row['total_users'] : 0;
-if(!($result = $db->sql_query($sql_all)))
-{
-	message_die(GENERAL_ERROR, 'could not query users information.', '', __LINE__, __FILE__, $sql_all);
-}
-
+$result = $db->sql_query($sql_all);
 $all_total_users = ($row = $db->sql_fetchrow($result)) ? $row['total_users'] : 0;
 
 $previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
 $previous_days_text = array($lang['Account_all'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
 
 $select_days = '';
-for($i = 0; $i < count($previous_days); $i++)
+for($i = 0; $i < sizeof($previous_days); $i++)
 {
 	$selected = ($days == $previous_days[$i]) ? ' selected="selected"' : '';
 	$select_days .= '<option value="' . $previous_days[$i] . '"' . $selected . '>' . $previous_days_text[$i] . '</option>';
 }
 
-$l_activation = $lang['Account_activation'] . ': <b>' . (($board_config['require_activation'] == USER_ACTIVATION_SELF) ? $lang['Acc_User'] : (($board_config['require_activation'] == USER_ACTIVATION_ADMIN) ? $lang['Acc_Admin'] : $lang['None'])) . '</b>';
+$l_activation = $lang['Account_activation'] . ': <b>' . (($config['require_activation'] == USER_ACTIVATION_SELF) ? $lang['Acc_User'] : (($config['require_activation'] == USER_ACTIVATION_ADMIN) ? $lang['Acc_Admin'] : $lang['None'])) . '</b>';
 
 $template->assign_vars(array(
 	'L_ACCOUNT_ACTIONS' => $lang['Account_actions'],
@@ -367,8 +344,8 @@ $template->assign_vars(array(
 	'L_REGISTERED_AWAITS' => ($action == 'inactive') ? $lang['Account_awaits'] : $lang['Account_registered'],
 	'L_ACTIVATION' => $l_activation,
 	'TOTAL_USERS' => ($total_users == '1') ? sprintf($lang['Account_total_user'], $total_users) : sprintf($lang['Account_total_users'], $total_users),
-	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . $by_letter, $total_users, $board_config['topics_per_page'], $start),
-	'PAGE_NUMBER' => ($total_users == '0') ? '' : sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_users / $board_config['topics_per_page'])),
+	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . $by_letter, $total_users, $config['topics_per_page'], $start),
+	'PAGE_NUMBER' => ($total_users == '0') ? '' : sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_users / $config['topics_per_page'])),
 	'S_LETTER_SELECT' => $select_letter,
 	'S_LETTER_HIDDEN' => '<input type="hidden" name="letter" value="' . $by_letter . '">',
 	'S_ACCOUNT_ACTION' => append_sid('admin_account.' . PHP_EXT . '?action=' . $action),
@@ -377,10 +354,7 @@ $template->assign_vars(array(
 	)
 );
 
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'could not query users.', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 if($row = $db->sql_fetchrow($result))
 {
@@ -389,7 +363,7 @@ if($row = $db->sql_fetchrow($result))
 	{
 		$user_id = $row['user_id'];
 
-		$email_url = ($board_config['board_email_form']) ? append_sid('../' . PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL . '=' . $user_id) : 'mailto:' . $row['user_email'];
+		$email_url = ($config['board_email_form']) ? append_sid('../' . CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL . '=' . $user_id) : 'mailto:' . $row['user_email'];
 		$email = '<a href="' . $email_url . '" class="gensmall">' . $row['user_email'] . '</a>';
 
 		$i++;
@@ -398,7 +372,7 @@ if($row = $db->sql_fetchrow($result))
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 			'EMAIL' => $email,
-			'JOINED' => create_date($board_config['default_dateformat'], $row['user_regdate'], $board_config['board_timezone']),
+			'JOINED' => create_date($config['default_dateformat'], $row['user_regdate'], $config['board_timezone']),
 			'PERIOD' => period(time() - $row['user_regdate']),
 			'U_EDIT_USER' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $user_id),
 			'U_USER_AUTH' => append_sid('admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $user_id),

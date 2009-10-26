@@ -20,6 +20,8 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+define('ICYPHOENIX_VERSION', '1.3.2.55');
+
 // FOUNDER ID, this is the ID used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
 // ALLOW ONLY FOUNDER ACP, by setting this to true only the FOUNDER will be able to access ACP
@@ -38,10 +40,11 @@ define('CRON_FILES', '');
 
 //@define('SQL_DEBUG_LOG', true); // This will output all SQL to a file in cache... do not use unless strictly needed!!!
 define('CACHE_TREE', true); // Caching Forum Tree ON/OFF => TRUE/FALSE (do not disable this unless you need to debug or you have really good reasons!)
-define('CACHE_TREE_FILE', 'full_tree.' . PHP_EXT); // Caching Forum Tree ON/OFF => TRUE/FALSE (do not disable this unless you need to debug or you have really good reasons!)
+define('CACHE_TREE_FILE', 'data_full_tree.' . PHP_EXT); // Caching Forum Tree ON/OFF => TRUE/FALSE (do not disable this unless you need to debug or you have really good reasons!)
 define('CACHE_SQL', true); // Caching SQL Queries ON/OFF => TRUE/FALSE
 define('CACHE_CFG', true); // Caching Config Tables ON/OFF => TRUE/FALSE
 define('CACHE_CH_SQL', true); // Caching CH SQL ON/OFF => TRUE/FALSE
+define('CACHE_SQL_EXPIRY', 31536000); // (31536000 = 365 * 24 * 60 * 60) The default number of seconds before SQL cache expires
 define('CACHE_TOPICS_META', false); // Caching Topics Meta KW And Descriptions ON/OFF => TRUE/FALSE (if you have thousands of topics, better switch it off)
 define('CACHE_BAN_INFO', false); // Caching Ban informations for each user ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
 define('CACHE_COLORIZE', false); // Caching Users Colors ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
@@ -56,6 +59,7 @@ define('SESSION_REFRESH', 120); // Session Refresh Time (Seconds)
 define('ONLINE_REFRESH', 600); // Online Refresh Time (Seconds)
 
 define('LAST_LOGIN_DAYS_NEW_POSTS_RESET', 30); // Number of days after which new posts are not count (to avoid high CPU SQL request)
+define('LAST_LOGIN_NEW_POSTS_LIMIT', 2000); // Maximum number of posts for new posts counter (to avoid high CPU SQL request)
 define('UPI2DB_MAX_UNREAD_POSTS', 2500); // Maximum amount of stored unread messages if no limits is set... we don't want our dB to explode!!!
 define('UPI2DB_RESYNC_TIME', 30); // Seconds needed to refresh UPI2DB data...
 
@@ -64,6 +68,7 @@ define('CMS_PAGE_LOGIN', 'login_ip.' . PHP_EXT);
 define('CMS_PAGE_HOME', 'index.' . PHP_EXT);
 define('CMS_PAGE_FORUM', 'forum.' . PHP_EXT);
 define('CMS_PAGE_VIEWFORUM', 'viewforum.' . PHP_EXT);
+define('CMS_PAGE_VIEWFORUMLIST', 'viewforumlist.' . PHP_EXT);
 define('CMS_PAGE_VIEWTOPIC', 'viewtopic.' . PHP_EXT);
 define('CMS_PAGE_VIEWONLINE', 'viewonline.' . PHP_EXT);
 define('CMS_PAGE_SEARCH', 'search.' . PHP_EXT);
@@ -75,6 +80,8 @@ define('CMS_PAGE_FAQ', 'faq.' . PHP_EXT);
 define('CMS_PAGE_RULES', 'rules.' . PHP_EXT);
 define('CMS_PAGE_DLOAD', 'dload.' . PHP_EXT);
 define('CMS_PAGE_DOWNLOADS', 'downloads.' . PHP_EXT);
+define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DLOAD);
+//define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DOWNLOADS);
 define('CMS_PAGE_ALBUM', 'album.' . PHP_EXT);
 define('CMS_PAGE_LINKS', 'links.' . PHP_EXT);
 define('CMS_PAGE_STATISTICS', 'statistics.' . PHP_EXT);
@@ -84,6 +91,9 @@ define('CMS_PAGE_REFERRERS', 'referrers.' . PHP_EXT);
 define('CMS_PAGE_SHOUTBOX', 'shoutbox_max.' . PHP_EXT);
 define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
 define('CMS_PAGE_CONTACT_US', 'contact_us.' . PHP_EXT);
+define('CMS_PAGE_CREDITS', 'credits.' . PHP_EXT);
+define('CMS_PAGE_TAGS', 'tags.' . PHP_EXT);
+// OLD DEFAULT PAGES - BEGIN
 // Left here for backward compatibility... few constants won't waste too much memory!!!
 define('LOGIN_MG', CMS_PAGE_LOGIN);
 define('PORTAL_MG', CMS_PAGE_HOME);
@@ -93,22 +103,22 @@ define('VIEWTOPIC_MG', CMS_PAGE_VIEWTOPIC);
 define('PROFILE_MG', CMS_PAGE_PROFILE);
 define('POSTING_MG', CMS_PAGE_POSTING);
 define('SEARCH_MG', CMS_PAGE_SEARCH);
-define('DOWNLOADS_MG', CMS_PAGE_DLOAD);
-//define('DOWNLOADS_MG', CMS_PAGE_DOWNLOADS);
+// OLD DEFAULT PAGES - END
 define('ADM', 'adm');
 define('COMMON_TPL', '../common/');
 define('ADM_TPL', COMMON_TPL . 'acp/');
+//define('ADM_TPL', '../../' . ADM . '/templates/');
 define('CMS_TPL', COMMON_TPL . 'cms/');
 define('STATS_TPL', 'stats_modules/');
 define('STYLES_PATH', 'cms/styles/');
 define('ATTACH_MOD_PATH', 'includes/attach_mod/');
 define('DOWNLOADS_PATH', 'downloads/');
-define('DL_ROOT_PATH', 'includes/downloads/');
 define('PA_FILE_DB_PATH', 'includes/pafiledb/');
 define('FILES_ICONS_DIR', 'images/files/');
 define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
 define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
 define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
+define('CMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'cms/');
 define('FORUMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'forums/');
 define('POSTS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'posts/');
 define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
@@ -129,18 +139,21 @@ define('ALBUM_FILES_PATH', 'files/album/');
 include_once(ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
 // Mighty Gorgon - FAP - END
 
-// Mighty Gorgon - ACTIVITY - BEGIN
-//define('ACTIVITY_MOD', true); // Decomment this line to enable ACTIVITY MOD
-define('ACTIVITY_MOD_PATH', 'amod/');
-// Mighty Gorgon - ACTIVITY - END
-
-// Mighty Gorgon - CASH - BEGIN
-//define('CASH_MOD', true); // Decomment this line to enable CASH MOD
-// Mighty Gorgon - CASH - END
-
-// Mighty Gorgon - Feedbacks - BEGIN
-//define('MG_FEEDBACKS', true); // Decomment this line to enable FEEDBACKS (this is a special feature... you need to have it installed separately!)
-// Mighty Gorgon - Feedbacks - END
+// Mighty Gorgon - PLUGINS - BEGIN
+// Please note that you need to have these plugins downloaded and installed to make them work... do not enable them if you don't have the files, or you may have errors.
+define('PLUGINS_PATH', 'plugins/');
+// Downloads
+define('DL_PLUGIN_ENABLED', false); // Allowed values => true / false
+define('DL_PLUGIN_PATH', PLUGINS_PATH . 'downloads/');
+// Knowledge Base
+define('KB_PLUGIN_ENABLED', false); // Allowed values => true / false
+define('KB_PLUGIN_PATH', PLUGINS_PATH . 'kb/');
+// Activity
+define('ACTIVITY_PLUGIN_ENABLED', false); // Allowed values => true / false
+define('ACTIVITY_PLUGIN_PATH', PLUGINS_PATH . 'activity/');
+// Cash
+define('CASH_PLUGIN_ENABLED', false); // Allowed values => true / false
+// Mighty Gorgon - PLUGINS - END
 
 // CHMOD permissions
 @define('CHMOD_ALL', 7);
@@ -247,11 +260,14 @@ define('GROUP_OPEN', 0);
 define('GROUP_CLOSED', 1);
 define('GROUP_HIDDEN', 2);
 
+// Forum type
+define('FORUM_CAT', 0);
+define('FORUM_POST', 1);
+define('FORUM_LINK', 2);
+
 // Forum state
 define('FORUM_UNLOCKED', 0);
 define('FORUM_LOCKED', 1);
-define('FORUM_UNTHANKABLE', 0);
-define('FORUM_THANKABLE', 1);
 
 // Topic status
 define('TOPIC_UNLOCKED', 0);
@@ -266,10 +282,6 @@ define('POST_STICKY', 1);
 define('POST_ANNOUNCE', 2);
 define('POST_GLOBAL_ANNOUNCE', 3);
 define('POST_NEWS', 4);
-
-// SQL codes
-define('BEGIN_TRANSACTION', 1);
-define('END_TRANSACTION', 2);
 
 // Private messaging
 define('PRIVMSGS_READ_MAIL', 0);
@@ -381,7 +393,6 @@ define('BANLIST_TABLE', $table_prefix . 'banlist');
 define('BOOKMARK_TABLE', $table_prefix . 'bookmarks');
 define('BOTS_TABLE', $table_prefix . 'bots');
 define('CAPTCHA_CONFIG_TABLE', $table_prefix . 'captcha_config');
-define('CATEGORIES_TABLE', $table_prefix . 'categories');
 define('CONFIG_TABLE', $table_prefix . 'config');
 define('CONFIRM_TABLE', $table_prefix . 'confirm');
 define('DIGEST_SUBSCRIPTIONS_TABLE', $table_prefix . 'digest_subscriptions');
@@ -432,9 +443,12 @@ define('SUDOKU_STATS', $table_prefix . 'sudoku_stats');
 define('SUDOKU_USERS', $table_prefix . 'sudoku_users');
 define('THANKS_TABLE', $table_prefix . 'thanks');
 define('THEMES_TABLE', $table_prefix . 'themes');
+define('TICKETS_CAT_TABLE', $table_prefix . 'tickets_cat');
 define('TITLE_INFOS_TABLE', $table_prefix . 'title_infos');
 define('TOPIC_VIEW_TABLE', $table_prefix . 'topic_view');
 define('TOPICS_TABLE', $table_prefix . 'topics');
+define('TOPICS_TAGS_LIST_TABLE', $table_prefix . 'topics_tags_list');
+define('TOPICS_TAGS_MATCH_TABLE', $table_prefix . 'topics_tags_match');
 define('TOPICS_WATCH_TABLE', $table_prefix . 'topics_watch');
 define('USER_GROUP_TABLE', $table_prefix . 'user_group');
 define('USERS_TABLE', $table_prefix . 'users');
@@ -442,7 +456,6 @@ define('VOTE_DESC_TABLE', $table_prefix . 'vote_desc');
 define('VOTE_RESULTS_TABLE', $table_prefix . 'vote_results');
 define('VOTE_USERS_TABLE', $table_prefix . 'vote_voters');
 define('WORDS_TABLE', $table_prefix . 'words');
-define('XS_NEWS_CONFIG_TABLE', $table_prefix . 'xs_news_cfg');
 define('XS_NEWS_TABLE', $table_prefix . 'xs_news');
 define('XS_NEWS_XML_TABLE', $table_prefix . 'xs_news_xml');
 define('ZEBRA_TABLE', $table_prefix . 'zebra');

@@ -27,13 +27,13 @@ init_userprefs($userdata);
 
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=profile_options.' . PHP_EXT, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=profile_options.' . PHP_EXT, true));
 }
 
 // constant
 $nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 
-// functions
+// FUNCTIONS - BEGIN
 function is_auth($field_level, $user_level)
 {
 	$res = false;
@@ -49,6 +49,7 @@ function is_auth($field_level, $user_level)
 	}
 	return $res;
 }
+// FUNCTIONS - END
 
 // get the view userdata
 $view_user_id = '';
@@ -65,10 +66,8 @@ if (empty($view_user_id) || ($view_user_id == ANONYMOUS))
 else
 {
 	$sql = "SELECT * FROM " . USERS_TABLE . " WHERE user_id = '" . $view_user_id . "'";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Failed to read user', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	if (!$view_userdata = $db->sql_fetchrow($result))
 	{
 		message_die(GENERAL_INFO, $lang['No_such_user']);
@@ -93,10 +92,7 @@ if ($user_level == MOD)
 					AND aa.auth_mod = 1
 					AND ug.user_pending = 0
 				LIMIT 0, 1";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain moderator status', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 		if ($db->sql_numrows($result) <= 0)
 		{
 			$user_level = USER;
@@ -121,19 +117,8 @@ while (list($key, $data) = each($view_userdata))
 	}
 }
 
-//
-// get all the mods settings
-//
-$mods = array();
-$dir = @opendir(IP_ROOT_PATH . 'includes/mods_settings');
-while($file = @readdir($dir))
-{
-	if(preg_match("/^mod_.*?\." . PHP_EXT . "$/", $file))
-	{
-		include(IP_ROOT_PATH . 'includes/mods_settings/' . $file);
-	}
-}
-@closedir($dir);
+// Get all the mods settings
+setup_mods();
 
 // main_menu
 $menu_name = '';
@@ -181,16 +166,16 @@ while (list($mod_name, $mod) = @each($mods[$menu_name]['data']))
 		@reset($sub['data']);
 		while (list($field_name, $field) = @each($sub['data']))
 		{
-			if (((!empty($field['user']) && isset($view_userdata[ $field['user'] ]) && !$board_config[ $field_name . '_over']) || $field['system']) && is_auth($field['auth'], $user_level))
+			if (((!empty($field['user']) && isset($view_userdata[$field['user']]) && (!$config[$field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
 			{
-				$found=true;
+				$found = true;
 				break;
 			}
 		}
 	}
 	if ($found)
 	{
-		$i = count($mod_keys);
+		$i = sizeof($mod_keys);
 		$mod_keys[$i] = $mod_name;
 		$mod_sort[$i] = $mod['sort'];
 
@@ -209,9 +194,9 @@ while (list($mod_name, $mod) = @each($mods[$menu_name]['data']))
 				@reset($sub['data']);
 				while (list($field_name, $field) = @each($sub['data']))
 				{
-					if (((!empty($field['user']) && isset($view_userdata[ $field['user'] ]) && !$board_config[ $field_name . '_over']) || $field['system']) && is_auth($field['auth'], $user_level))
+					if (((!empty($field['user']) && isset($view_userdata[ $field['user'] ]) && (!$config[ $field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
 					{
-						$found=true;
+						$found = true;
 						break;
 					}
 				}
@@ -228,11 +213,11 @@ while (list($mod_name, $mod) = @each($mods[$menu_name]['data']))
 @array_multisort($mod_sort, $mod_keys, $sub_sort, $sub_keys);
 
 // fix mod id
-if ($mod_id > count($mod_keys))
+if ($mod_id > sizeof($mod_keys))
 {
 	$mod_id = 0;
 }
-if ($sub_id > count($sub_keys[$mod_id]))
+if ($sub_id > sizeof($sub_keys[$mod_id]))
 {
 	$sub_id = 0;
 }
@@ -331,16 +316,13 @@ if ($submit)
 	while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
 	{
 		$user_field = $field['user'];
-		if (((isset($$user_field) && !empty($user_field) && isset($view_userdata[$user_field]) && !$board_config[ $field_name . '_over']) || $field['system']) && is_auth($field['auth'], $user_level))
+		if (((isset($$user_field) && !empty($user_field) && isset($view_userdata[$user_field]) && (!$config[ $field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
 		{
 			// update
 			$sql = "UPDATE " . USERS_TABLE . "
 					SET $user_field='" . $$user_field . "'
 					WHERE user_id = " . $view_userdata['user_id'];
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Failed to update user configuration for ' . $field['user'], '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -358,24 +340,17 @@ else
 	// set the page title and include the page header
 	$pcp_section_url = append_sid('profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&amp;mod=' . $mod_id . '&amp;' . POST_USERS_URL . '=' . $view_user_id);
 	$pcp_section = mods_settings_get_lang($mod_name) . (!empty($sub_name) ? ' - ' . mods_settings_get_lang($sub_name) : '');
-	$page_title = $lang['Preferences'];
-	$meta_description = '';
-	$meta_keywords = '';
 	$link_name = $pcp_section;
 	$nav_server_url = create_server_url();
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . $pcp_section_url . '">' . $link_name . '</a>') : '');
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	// template
-	$template->set_filenames(array('body' => 'profile_options_body.tpl'));
 
 	// header
 	$template->assign_vars(array(
-		'L_OPTION' => $page_title,
+		'L_OPTION' => $meta_content['page_title'],
 		'U_OPTION' => $pcp_section_url,
 		'L_MOD_NAME' => $pcp_section,
-		'U_USER' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $view_user_id),
+		'U_USER' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $view_user_id),
 		'L_USER' => $view_userdata['username'],
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
@@ -383,21 +358,21 @@ else
 	);
 
 	// send menu
-	for ($i = 0; $i < count($mod_keys); $i++)
+	for ($i = 0; $i < sizeof($mod_keys); $i++)
 	{
 		$template->assign_block_vars('mod', array(
 			'CLASS' => ($mod_id == $i) ? $theme['td_class1'] : $theme['td_class2'],
-			'ALIGN' => (($mod_id == $i) && (count($sub_keys[$i]) > 1)) ? 'left' : 'center',
+			'ALIGN' => (($mod_id == $i) && (sizeof($sub_keys[$i]) > 1)) ? 'left' : 'center',
 			'U_MOD' => append_sid('./profile_options.' . PHP_EXT . '?sub=' . $menu_name . '&mod=' . $i . '&amp;' . POST_USERS_URL . '=' . $view_user_id),
 			'L_MOD' => sprintf((($mod_id == $i) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($mod_keys[$i])),
 			)
 		);
 		if ($mod_id == $i)
 		{
-			if (count($sub_keys[$i]) > 1)
+			if (sizeof($sub_keys[$i]) > 1)
 			{
 				$template->assign_block_vars('mod.sub', array());
-				for ($j=0; $j < count($sub_keys[$i]); $j++)
+				for ($j=0; $j < sizeof($sub_keys[$i]); $j++)
 				{
 					$template->assign_block_vars('mod.sub.row', array(
 						'CLASS' => ($sub_id == $j) ? $theme['td_class1'] : $theme['td_class2'],
@@ -416,7 +391,7 @@ else
 	{
 		// process only fields from users table
 		$user_field = $field['user'];
-		if (((!empty($user_field) && isset($view_userdata[$user_field]) && !$board_config[ $field_name . '_over']) || $field['system']) && is_auth($field['auth'], $user_level))
+		if (((!empty($user_field) && isset($view_userdata[$user_field]) && (!$config[ $field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
 		{
 			// get the field input statement
 			$input = '';
@@ -503,9 +478,7 @@ else
 		)
 	);
 
-	// page
-	$template->pparse('body');
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	full_page_generation('profile_options_body.tpl', $lang['Preferences'], '', '');
 }
 
 ?>

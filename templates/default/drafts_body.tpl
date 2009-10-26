@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 <!--
 function setCheckboxes(theForm, elementName, isChecked)
@@ -63,3 +65,5 @@ function setCheckboxes(theForm, elementName, isChecked)
 <!-- INCLUDE profile_cpl_menu_inc_end.tpl -->
 
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

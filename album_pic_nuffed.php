@@ -46,10 +46,7 @@ $sql = "SELECT p.*, c.*
 		WHERE pic_id = '" . $pic_id . "'
 			AND c.cat_id = p.pic_cat_id
 		LIMIT 1";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $thispic = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 
@@ -103,11 +100,11 @@ if(($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER']
 		$good_referers = explode(',', $album_config['hotlink_allowed']);
 	}
 
-	$good_referers[] = $board_config['server_name'] . $board_config['script_path'];
+	$good_referers[] = $config['server_name'] . $config['script_path'];
 
 	$errored = true;
 
-	for ($i = 0; $i < count($good_referers); $i++)
+	for ($i = 0; $i < sizeof($good_referers); $i++)
 	{
 		$good_referers[$i] = trim($good_referers[$i]);
 

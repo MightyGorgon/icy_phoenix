@@ -59,44 +59,33 @@ $mode         = $_GET['mode'];
 $user_id      = $_GET['uid'];
 
 // Ensure that a user is not logged in
-if ( $userdata['session_logged_in'] )
+if ($userdata['session_logged_in'])
 {
 	message_die(GENERAL_MESSAGE, $lang['ctracker_login_logged']);
 }
 
 /*
- * Just a little easter egg
- * Do you know the film "The Net"? Well but don't panic, our PI-Symbol can
- * not bring world domination or backdoors - but IMO its a nice joke. ;-)
- */
+* Just a little easter egg
+* Do you know the film "The Net"? Well but don't panic, our PI-Symbol can
+* not bring world domination or backdoors - but IMO its a nice joke. ;-)
+*/
 /*
 $easter_egg_link  = '';
 $easter_egg_array = array('http://www.abcp.de', 'http://www.cback.de', 'http://www.german-garrison.de', 'http://www.501st.com', 'http://www.cback.net', 'http://www.google.de', 'http://www.oxpus.de');
 
 srand((double)microtime()*1000000);
-$rnd = rand(0,count($easter_egg_array)-1);
+$rnd = rand(0, sizeof($easter_egg_array)-1);
 $easter_egg_link = $easter_egg_array[$rnd];
 */
 
-// Include the page_header
-$page_title = $lang['ctracker_login_title'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-
-// Define the Template for this file
-$template->set_filenames(array('body' => 'ctracker_login.tpl'));
-
-
 /*
- * Include Visual Confirmation System
- */
-if ( $ctracker_config->settings['loginfeature'] == 1 )
+* Include Visual Confirmation System
+*/
+if ($ctracker_config->settings['loginfeature'] == 1)
 {
 	define('CRACKER_TRACKER_VCONFIRM', true);
 	define('CTRACKER_ACCOUNT_FREE', true);
-	include_once( IP_ROOT_PATH . 'ctracker/engines/ct_visual_confirm.' . PHP_EXT );
+	include_once(IP_ROOT_PATH . 'ctracker/engines/ct_visual_confirm.' . PHP_EXT);
 }
 
 // Send some vars to the template
@@ -112,10 +101,6 @@ $template->assign_vars(array(
 	)
 );
 
-// Generate the page
-$template->pparse('body');
-
-// Include the page_tail.php file
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('ctracker_login.tpl', $lang['ctracker_login_title'], '', '');
 
 ?>

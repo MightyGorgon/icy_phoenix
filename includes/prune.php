@@ -20,8 +20,9 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
-require(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 function prune($forum_id, $prune_date, $prune_all = false)
 {
@@ -29,10 +30,7 @@ function prune($forum_id, $prune_date, $prune_all = false)
 	// Before pruning, lets try to clean up the invalid topic entries
 	$sql = 'SELECT topic_id FROM ' . TOPICS_TABLE . '
 		WHERE topic_last_post_id = 0';
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain lists of topics to sync', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -53,10 +51,7 @@ function prune($forum_id, $prune_date, $prune_all = false)
 		$sql .= " AND p.post_time < $prune_date";
 	}
 
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain lists of topics to prune', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql_topics = '';
 	while($row = $db->sql_fetchrow($result))
@@ -71,10 +66,7 @@ function prune($forum_id, $prune_date, $prune_all = false)
 			FROM " . POSTS_TABLE . "
 			WHERE forum_id = $forum_id
 				AND topic_id IN ($sql_topics)";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain list of posts to prune', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$sql_post = '';
 		while ($row = $db->sql_fetchrow($result))
@@ -86,40 +78,27 @@ function prune($forum_id, $prune_date, $prune_all = false)
 		if ($sql_post != '')
 		{
 			$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id IN ($sql_topics)";
-			if (!$db->sql_query($sql, BEGIN_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete watched topics during prune', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_transaction('begin');
+			$db->sql_query($sql);
 
 			$sql = "DELETE FROM " . TOPICS_TABLE . " WHERE topic_id IN ($sql_topics)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete topics during prune', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 
 			$pruned_topics = $db->sql_affectedrows();
 
 			// Event Registration - BEGIN
 			$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id IN ($sql_topics)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete registration data from table during prune', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 			// Event Registration - END
 
 			$sql = "DELETE FROM " . BOOKMARK_TABLE . " WHERE topic_id IN ($sql_topics)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete bookmarks during prune', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 
 			$sql = "DELETE FROM " . POSTS_TABLE . " WHERE post_id IN ($sql_post)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete posts during prune', '', __LINE__, __FILE__, $sql);
-			}
-
+			$db->sql_query($sql);
 			$pruned_posts = $db->sql_affectedrows();
+
+			$db->sql_transaction('commit');
 
 			remove_search_post($sql_post);
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -145,10 +124,7 @@ function auto_prune($forum_id = 0)
 	$sql = "SELECT *
 		FROM " . PRUNE_TABLE . "
 		WHERE forum_id = $forum_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not read auto_prune table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -163,10 +139,7 @@ function auto_prune($forum_id = 0)
 			$sql = "UPDATE " . FORUMS_TABLE . "
 				SET prune_next = $next_prune
 				WHERE forum_id = $forum_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update forum table', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 

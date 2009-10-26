@@ -48,14 +48,14 @@ function getMiniCalForumsAuth($userdata)
 	$mini_cal_auth['view'] = '';
 	$mini_cal_auth['post'] = '';
 
-	while ( list($mini_cal_forum_id, $mini_cal_auth_level) = each($mini_cal_auth_ary) )
+	while (list($mini_cal_forum_id, $mini_cal_auth_level) = each($mini_cal_auth_ary))
 	{
-		if ( $mini_cal_auth_level[MINI_CAL_EVENT_AUTH_LEVEL] )
+		if ($mini_cal_auth_level[MINI_CAL_EVENT_AUTH_LEVEL])
 		{
 			$mini_cal_auth['view'] .= ($mini_cal_auth['view'] == '') ? $mini_cal_forum_id : ', ' . $mini_cal_forum_id;
 		}
 
-		if ( ($mini_cal_auth_level['auth_post']) )
+		if (($mini_cal_auth_level['auth_post']))
 		{
 			$mini_cal_auth['post'] .= ($mini_cal_auth['post'] == '') ? $mini_cal_forum_id : ', ' . $mini_cal_forum_id;
 		}
@@ -83,12 +83,16 @@ function getMiniCalEventDays($auth_view_forums)
 		$sql = "SELECT DISTINCT DAYOFMONTH(c.cal_date) as event_day
 			FROM " . MYCALENDAR_TABLE . " c, " . FORUMS_TABLE . " f
 			WHERE f.forum_id = c.forum_id
+				AND f.forum_type = " . FORUM_POST . "
 				AND f.forum_id IN ($auth_view_forums)
 				AND YEAR(cal_date) = $mini_cal_this_year
 				AND MONTH(cal_date) = $mini_cal_this_month";
-		if( $result = $db->sql_query($sql) )
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
-			while( $row = $db->sql_fetchrow($result) )
+			while($row = $db->sql_fetchrow($result))
 			{
 				$mini_cal_event_days[] = $row['event_day'];
 			}
@@ -144,11 +148,14 @@ function getMiniCalEvents($mini_cal_auth)
 	// did we get a result?
 	// if not then the user does not have MyCalendar installed
 	// so just die quielty don't bother to output an error message
-	if( $result = $db->sql_query($sql) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		// ok we've got MyCalendar
 		$template->assign_block_vars('switch_mini_cal_events', array());
-		if ( $db->sql_numrows($result) > 0 )
+		if ($db->sql_numrows($result) > 0)
 		{
 			// we've even got some events
 			// initialise out date formatting patterns
@@ -172,7 +179,7 @@ function getMiniCalEvents($mini_cal_auth)
 				$template->assign_block_vars('mini_cal_events', array(
 						'MINI_CAL_EVENT_DATE' => $cal_date,
 						'S_MINI_CAL_EVENT' => $row['topic_title'],
-						'U_MINI_CAL_EVENT' => append_sid( IP_ROOT_PATH . VIEWTOPIC_MG ."?" . POST_TOPIC_URL . '=' . $row['topic_id'] )
+						'U_MINI_CAL_EVENT' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC ."?" . POST_TOPIC_URL . '=' . $row['topic_id'])
 						)
 				);
 			}
@@ -218,7 +225,7 @@ function getMiniCalSearchSql($search_id, $search_date)
  ***************************************************************************/
 function getMiniCalSearchURL($search_date)
 {
-	$url = append_sid(IP_ROOT_PATH . SEARCH_MG . '?search_id=mini_cal_events&amp;d=' . $search_date);
+	$url = append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?search_id=mini_cal_events&amp;d=' . $search_date);
 	return $url;
 }
 
@@ -240,7 +247,7 @@ function getMiniCalPostForumsList($mini_cal_post_auth)
 
 $template->assign_vars(array(
 	'U_MINI_CAL_CALENDAR' => append_sid(IP_ROOT_PATH . 'mycalendar.' . PHP_EXT),
-	'U_MINI_CAL_ADD_EVENT' => append_sid(IP_ROOT_PATH . 'posting.' . PHP_EXT . '?mode=newtopic&f=' . MINI_CAL_EVENTS_FORUM )
+	'U_MINI_CAL_ADD_EVENT' => append_sid(IP_ROOT_PATH . 'posting.' . PHP_EXT . '?mode=newtopic&f=' . MINI_CAL_EVENTS_FORUM)
 	)
 );
 

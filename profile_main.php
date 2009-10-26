@@ -19,25 +19,17 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ( !$userdata['session_logged_in'] )
+if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=profile_main.' . PHP_EXT, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=profile_main.' . PHP_EXT, true));
 	exit;
 }
 
 //Start Output of Page
-$page_title = $lang['Profile'];
-$meta_description = '';
-$meta_keywords = '';
 $link_name = '';
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
-$template->set_filenames(array('body' => 'profile_main_body.tpl'));
-
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('profile_main_body.tpl', $lang['Profile'], '', '');
 
 ?>

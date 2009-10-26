@@ -20,7 +20,6 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-$db->clear_cache('config_');
 
 $confirmation = false;
 $meta_tag = '';
@@ -43,7 +42,10 @@ if(isset($_POST['confirm_clear_cache_main']) || (isset($_GET['confirm_clear_cach
 if(isset($_POST['confirm_clear_cache_posts']))
 {
 	$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled = ''";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		$message .= '<br /><br />' . $lang['MG_SW_Empty_Precompiled_Posts_Fail'] . '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);

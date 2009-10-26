@@ -25,25 +25,7 @@ require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_mg_log_admin.' . PHP_EXT);
 
-// ---------------
-// Begin functions
-//
-function inarray($needle, $haystack)
-{
-	for($i = 0; $i < sizeof($haystack); $i++)
-	{
-		if($haystack[$i] == $needle)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-//
-// End functions
-// -------------
-
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
 
 // Generate relevant output
 if(isset($_GET['pane']) && ($_GET['pane'] == 'left'))
@@ -59,15 +41,15 @@ if(isset($_GET['pane']) && ($_GET['pane'] == 'left'))
 	$template->set_filenames(array('body' => ADM_TPL . 'index_navigate.tpl'));
 
 	$template->assign_vars(array(
-		'U_FORUM_INDEX' => append_sid(IP_ROOT_PATH . FORUM_MG),
-		'U_PORTAL' => append_sid(IP_ROOT_PATH . PORTAL_MG),
+		'U_FORUM_INDEX' => append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM),
+		'U_PORTAL' => append_sid(IP_ROOT_PATH . CMS_PAGE_HOME),
 		'U_ADMIN_INDEX' => append_sid('index.' . PHP_EXT . '?pane=right'),
 
 		//+MOD: DHTML Menu for ACP
-		'COOKIE_NAME' => $board_config['cookie_name'],
-		'COOKIE_PATH' => $board_config['cookie_path'],
-		'COOKIE_DOMAIN' => $board_config['cookie_domain'],
-		'COOKIE_SECURE' => $board_config['cookie_secure'],
+		'COOKIE_NAME' => $config['cookie_name'],
+		'COOKIE_PATH' => $config['cookie_path'],
+		'COOKIE_DOMAIN' => $config['cookie_domain'],
+		'COOKIE_SECURE' => $config['cookie_secure'],
 		//-MOD: DHTML Menu for ACP
 
 		'L_FORUM_INDEX' => $lang['Main_index'],
@@ -142,10 +124,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	);
 
 	$sql = "SELECT COUNT(*) AS total FROM " . ADMINEDIT_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_MESSAGE, 'SQL ERROR IN ADMINEDIT_TABLE - MODE = QUERY 0', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	if(($userdata['user_id'] == $founder_id) && ($row['total'] > 0))
 	{
@@ -156,33 +135,27 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	{
 		$mode = 'deleteedituser';
 	}
+
 	if($mode == 'deleteedituser')
 	{
 		$sql = "DELETE FROM " . ADMINEDIT_TABLE;
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "SQL ERROR IN ADMINEDIT_TABLE - MODE = DELETE", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		$message = $lang['L_DELETESUCMSG'] . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
+	}
 
-	}
 	$sql = "SELECT COUNT(*) AS total FROM " . ADMINEDIT_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_MESSAGE, 'SQL ERROR IN ADMINEDIT_TABLE - MODE = QUERY 1', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	if($row['total'] > 0)
 	{
 		$template->assign_block_vars('switch_adminedit', array());
 	}
 	$sql = "SELECT * FROM " . ADMINEDIT_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_MESSAGE, 'SQL ERROR IN ADMINEDIT_TABLE - MODE = QUERY 2', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	$i == '0';
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -197,14 +170,23 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	// Disallow other admins to delete or edit the first admin - END
 
 	// Get forum statistics
-	$total_posts = get_db_stat('postcount');
-	$total_users = get_db_stat('usercount');
-	$total_topics = get_db_stat('topiccount');
+	if (empty($config['max_topics']) || empty($config['max_posts']) || empty($config['max_users']) || empty($config['last_user_id']))
+	{
+		board_stats();
+	}
+	$total_topics = $config['max_topics'];
+	$total_posts = $config['max_posts'];
+	$total_users = $config['max_users'];
+	$newest_user = $cache->obtain_newest_user();
+
 	$sql = "SELECT COUNT(user_id) AS total
 					FROM " . USERS_TABLE . "
 					WHERE user_active = 0
 						AND user_id <> " . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -224,7 +206,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		WHERE user_active = 0
 			AND user_id <> " . ANONYMOUS . "
 		ORDER BY username";
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -239,7 +224,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . MOD . "
 			AND user_id <> " . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -259,7 +247,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		WHERE user_level = " . MOD . "
 			AND user_id <> " . ANONYMOUS . "
 		ORDER BY username";
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -274,7 +265,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . JUNIOR_ADMIN . "
 			AND user_id <> " . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -294,7 +288,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		WHERE user_level = " . JUNIOR_ADMIN . "
 			AND user_id <> " . ANONYMOUS . "
 		ORDER BY username";
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -308,7 +305,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . ADMIN . "
 			AND user_id <> " . ANONYMOUS;
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -328,7 +328,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		WHERE user_level = " . ADMIN . "
 			AND user_id <> " . ANONYMOUS . "
 		ORDER BY username";
-	if (!($result = $db->sql_query($sql)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		throw_error("Couldn't get statistic data!", __LINE__, __FILE__, $sql);
 	}
@@ -338,9 +341,9 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		$administrator_names .= (($administrator_names == '') ? '' : ', ') . $username;
 	}
 
-	$start_date = create_date($board_config['default_dateformat'], $board_config['board_startdate'], $board_config['board_timezone']);
+	$start_date = create_date($config['default_dateformat'], $config['board_startdate'], $config['board_timezone']);
 
-	$boarddays = (time() - $board_config['board_startdate']) / 86400;
+	$boarddays = (time() - $config['board_startdate']) / 86400;
 
 	$posts_per_day = sprintf("%.2f", $total_posts / $boarddays);
 	$topics_per_day = sprintf("%.2f", $total_topics / $boarddays);
@@ -348,13 +351,13 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 
 	$avatar_dir_size = 0;
 
-	if ($avatar_dir = @opendir(IP_ROOT_PATH . $board_config['avatar_path']))
+	if ($avatar_dir = @opendir(IP_ROOT_PATH . $config['avatar_path']))
 	{
 		while($file = @readdir($avatar_dir))
 		{
 			if(($file != '.') && ($file != '..'))
 			{
-				$avatar_dir_size += @filesize(IP_ROOT_PATH . $board_config['avatar_path'] . '/' . $file);
+				$avatar_dir_size += @filesize(IP_ROOT_PATH . $config['avatar_path'] . '/' . $file);
 			}
 		}
 		@closedir($avatar_dir);
@@ -406,7 +409,10 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	if(preg_match("/^mysql/", SQL_LAYER))
 	{
 		$sql = "SELECT VERSION() AS mysql_version";
-		if($result = $db->sql_query($sql))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if($result)
 		{
 			$row = $db->sql_fetchrow($result);
 			$version = $row['mysql_version'];
@@ -417,12 +423,15 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 
 				$sql = "SHOW TABLE STATUS
 					FROM " . $db_name;
-				if($result = $db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if($result)
 				{
 					$tabledata_ary = $db->sql_fetchrowset($result);
 
 					$dbsize = 0;
-					for($i = 0; $i < count($tabledata_ary); $i++)
+					for($i = 0; $i < sizeof($tabledata_ary); $i++)
 					{
 						if($tabledata_ary[$i]['Type'] != "MRG_MyISAM")
 						{
@@ -451,19 +460,6 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 			$dbsize = $lang['Not_available'];
 		}
 	}
-	elseif(preg_match("/^mssql/", SQL_LAYER))
-	{
-		$sql = "SELECT ((SUM(size) * 8.0) * 1024.0) as dbsize
-			FROM sysfiles";
-		if($result = $db->sql_query($sql))
-		{
-			$dbsize = ($row = $db->sql_fetchrow($result)) ? intval($row['dbsize']) : $lang['Not_available'];
-		}
-		else
-		{
-			$dbsize = $lang['Not_available'];
-		}
-	}
 	else
 	{
 		$dbsize = $lang['Not_available'];
@@ -485,7 +481,9 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		}
 	}
 	$sql = "SELECT VERSION() AS mysql_version";
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
 	if (!$result)
 	{
 		throw_error("Couldn't obtain MySQL Version", __LINE__, __FILE__, $sql);
@@ -503,8 +501,8 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		'USERS_PER_DAY' => $users_per_day,
 		'AVATAR_DIR_SIZE' => $avatar_dir_size,
 		'DB_SIZE' => $dbsize,
-		'IP_VERSION' => $board_config['ip_version'],
-		'PHPBB_VERSION' => '2' . $board_config['version'],
+		'IP_VERSION' => $config['ip_version'],
+		'PHPBB_VERSION' => '2' . $config['version'],
 		'PHP_VERSION' => phpversion(),
 		'MYSQL_VERSION' => $mysql_version,
 		'NUMBER_OF_DEACTIVATED_USERS' => $total_deactivated_users,
@@ -522,7 +520,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		'NAMES_OF_JUNIOR_ADMINISTRATORS' => $junior_administrator_names,
 		'NAMES_OF_ADMINISTRATORS' => $administrator_names,
 
-		'GZIP_COMPRESSION' => ($board_config['gzip_compress']) ? $lang['ON'] : $lang['OFF']
+		'GZIP_COMPRESSION' => ($config['gzip_compress']) ? $lang['ON'] : $lang['OFF']
 		)
 	);
 	// End forum statistics
@@ -535,10 +533,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 			AND u.user_id <> " . ANONYMOUS . "
 			AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
 		ORDER BY u.user_session_time DESC";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain regd user/online information.", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$onlinerow_reg = $db->sql_fetchrowset($result);
 
 	$sql = "SELECT session_page, session_logged_in, session_time, session_ip, session_start, session_user_agent
@@ -546,36 +541,26 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		WHERE session_logged_in = '0'
 			AND session_time >= " . (time() - ONLINE_REFRESH) . "
 		ORDER BY session_time DESC";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain guest user/online information.", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$onlinerow_guest = $db->sql_fetchrowset($result);
 
 	// Forum info
-	$sql = "SELECT forum_name, forum_id FROM " . FORUMS_TABLE;
-	if($forums_result = $db->sql_query($sql))
+	$forum_types = array(FORUM_CAT, FORUM_POST, FORUM_LINK);
+	$forums_array = get_forums_ids($forum_types, false, false);
+	foreach ($forums_array as $forum)
 	{
-		while($forumsrow = $db->sql_fetchrow($forums_result))
-		{
-			//$forum_data[$forumsrow['forum_id']] = get_object_lang(POST_FORUM_URL . $forumsrow['forum_id'], 'name');
-			$forum_data[$forumsrow['forum_id']] = $forumsrow['forum_name'];
-		}
-	}
-	else
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t obtain user/online forums information.', '', __LINE__, __FILE__, $sql);
+		$forum_data[$forum['forum_id']] = $forum['forum_name'];
 	}
 
 	$reg_userid_ary = array();
 
-	if(count($onlinerow_reg))
+	if(sizeof($onlinerow_reg))
 	{
 		$registered_users = 0;
 
-		for($i = 0; $i < count($onlinerow_reg); $i++)
+		for($i = 0; $i < sizeof($onlinerow_reg); $i++)
 		{
-			if(!inarray($onlinerow_reg[$i]['user_id'], $reg_userid_ary))
+			if(!in_array($onlinerow_reg[$i]['user_id'], $reg_userid_ary))
 			{
 				$reg_userid_ary[] = $onlinerow_reg[$i]['user_id'];
 
@@ -594,7 +579,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 
 				$forum_id = false;
 				$topic_id = false;
-				if ((strpos($onlinerow_reg[$i]['user_session_page'], VIEWFORUM_MG) !== false) || (strpos($onlinerow_reg[$i]['user_session_page'], VIEWTOPIC_MG) !== false))
+				if ((strpos($onlinerow_reg[$i]['user_session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($onlinerow_reg[$i]['user_session_page'], CMS_PAGE_VIEWTOPIC) !== false))
 				{
 					$results = array();
 					ereg('_f_=([0-9]*)x', $onlinerow_reg[$i]['user_session_page'], $results);
@@ -615,27 +600,22 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 				{
 					// Topic info
 					$sql_tt = "SELECT topic_title, forum_id FROM " . TOPICS_TABLE . " WHERE topic_id='" . $topic_id . "' LIMIT 1";
-					if ($result_tt = $db->sql_query($sql_tt))
-					{
-						$topic_title = $db->sql_fetchrow($result_tt);
-					}
-					else
-					{
-						message_die(GENERAL_ERROR, 'Could not obtain user/online forums information', '', __LINE__, __FILE__, $sql_tt);
-					}
+					$result_tt = $db->sql_query($sql_tt);
+					$topic_title = $db->sql_fetchrow($result_tt);
+
 					/*
 					$location['lang'] = ((!empty($forum_id)) ? ($forum_data[$forum_id] . '&nbsp;&raquo;&nbsp;') : '') . htmlspecialchars($topic_title['topic_title']);
-					$location['url'] = VIEWTOPIC_MG . '?' . ((!empty($forum_id)) ? (POST_FORUM_URL . '=' . $forum_id . '&amp;') : '') . POST_TOPIC_URL . '=' . $topic_id;
+					$location['url'] = CMS_PAGE_VIEWTOPIC . '?' . ((!empty($forum_id)) ? (POST_FORUM_URL . '=' . $forum_id . '&amp;') : '') . POST_TOPIC_URL . '=' . $topic_id;
 					*/
 					$location['lang'] = $forum_data[$topic_title['forum_id']] . '&nbsp;&raquo;&nbsp;' . htmlspecialchars($topic_title['topic_title']);
-					$location['url'] = VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $topic_title['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $topic_id;
+					$location['url'] = CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $topic_title['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $topic_id;
 				}
 				else
 				{
 					if (!empty($forum_id))
 					{
 						$location['lang'] = $forum_data[$forum_id];
-						$location['url'] = VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id;
+						$location['url'] = CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id;
 					}
 					else
 					{
@@ -652,8 +632,8 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 				$template->assign_block_vars('reg_user_row', array(
 					'ROW_CLASS' => $row_class,
 					'USERNAME' => $username,
-					'STARTED' => create_date($board_config['default_dateformat'], $onlinerow_reg[$i]['session_start'], $board_config['board_timezone']),
-					'LASTUPDATE' => create_date($board_config['default_dateformat'], $onlinerow_reg[$i]['user_session_time'], $board_config['board_timezone']),
+					'STARTED' => create_date($config['default_dateformat'], $onlinerow_reg[$i]['session_start'], $config['board_timezone']),
+					'LASTUPDATE' => create_date($config['default_dateformat'], $onlinerow_reg[$i]['user_session_time'], $config['board_timezone']),
 					'FORUM_LOCATION' => $location['lang'],
 					'IP_ADDRESS' => $reg_ip,
 
@@ -674,18 +654,18 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 	}
 
 	// Guest users
-	if(count($onlinerow_guest))
+	if(sizeof($onlinerow_guest))
 	{
 		$guest_users = 0;
 
-		for($i = 0; $i < count($onlinerow_guest); $i++)
+		for($i = 0; $i < sizeof($onlinerow_guest); $i++)
 		{
 			$guest_userip_ary[] = $onlinerow_guest[$i]['session_ip'];
 			$guest_users++;
 
 			$forum_id = false;
 			$topic_id = false;
-			if ((strpos($onlinerow_guest[$i]['session_page'], VIEWFORUM_MG) !== false) || (strpos($onlinerow_guest[$i]['session_page'], VIEWTOPIC_MG) !== false))
+			if ((strpos($onlinerow_guest[$i]['session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($onlinerow_guest[$i]['session_page'], CMS_PAGE_VIEWTOPIC) !== false))
 			{
 				$results = array();
 				ereg('_f_=([0-9]*)x', $onlinerow_guest[$i]['session_page'], $results);
@@ -706,27 +686,22 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 			{
 				// Topic info
 				$sql_tt = "SELECT topic_title, forum_id FROM " . TOPICS_TABLE . " WHERE topic_id='" . $topic_id . "'";
-				if ($result_tt = $db->sql_query($sql_tt))
-				{
-					$topic_title = $db->sql_fetchrow($result_tt);
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'Could not obtain user/online forums information', '', __LINE__, __FILE__, $sql_tt);
-				}
+				$result_tt = $db->sql_query($sql_tt);
+				$topic_title = $db->sql_fetchrow($result_tt);
+
 				/*
 				$location['lang'] = ((!empty($forum_id)) ? ($forum_data[$forum_id] . '&nbsp;&raquo;&nbsp;') : '') . $topic_title['topic_title'];
-				$location['url'] = VIEWTOPIC_MG . '?' . ((!empty($forum_id)) ? (POST_FORUM_URL . '=' . $forum_id . '&amp;') : '') . POST_TOPIC_URL . '=' . $topic_id;
+				$location['url'] = CMS_PAGE_VIEWTOPIC . '?' . ((!empty($forum_id)) ? (POST_FORUM_URL . '=' . $forum_id . '&amp;') : '') . POST_TOPIC_URL . '=' . $topic_id;
 				*/
 				$location['lang'] = $forum_data[$topic_title['forum_id']] . '&nbsp;&raquo;&nbsp;' . $topic_title['topic_title'];
-				$location['url'] = VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $topic_title['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $topic_id;
+				$location['url'] = CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $topic_title['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $topic_id;
 			}
 			else
 			{
 				if (!empty($forum_id))
 				{
 					$location['lang'] = $forum_data[$forum_id];
-					$location['url'] = VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $forum_id;
+					$location['url'] = CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id;
 				}
 				else
 				{
@@ -741,7 +716,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 			// MG BOTS Parsing - BEGIN
 			$guest_ip = decode_ip($onlinerow_guest[$i]['session_ip']);
 
-			$bot_name_tmp = bots_parse($onlinerow_guest[$i]['session_ip'], $board_config['bots_color']);
+			$bot_name_tmp = bots_parse($onlinerow_guest[$i]['session_ip'], $config['bots_color']);
 			if ($bot_name_tmp != false)
 			{
 				$name_guest = $bot_name_tmp;
@@ -755,8 +730,8 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 			$template->assign_block_vars('guest_user_row', array(
 				'ROW_CLASS' => $row_class,
 				'USERNAME' => $name_guest,
-				'STARTED' => create_date($board_config['default_dateformat'], $onlinerow_guest[$i]['session_start'], $board_config['board_timezone']),
-				'LASTUPDATE' => create_date($board_config['default_dateformat'], $onlinerow_guest[$i]['session_time'], $board_config['board_timezone']),
+				'STARTED' => create_date($config['default_dateformat'], $onlinerow_guest[$i]['session_start'], $config['board_timezone']),
+				'LASTUPDATE' => create_date($config['default_dateformat'], $onlinerow_guest[$i]['session_time'], $config['board_timezone']),
 				'FORUM_LOCATION' => $location['lang'],
 				'IP_ADDRESS' => $guest_ip,
 
@@ -775,101 +750,6 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		);
 	}
 	jr_admin_make_info_box();
-	// phpBB version check disabled since phpBB 2 is not supported any more!!!
-	/*
-	// Check for new version
-	$current_version = explode('.', '2' . $board_config['version']);
-	$minor_revision = (int) $current_version[2];
-
-	$errno = 0;
-	$errstr = $version_info = '';
-	// Version cache mod start
-	// Change following two variables if you need to:
-	$cache_update = 86400 * 30; // 24 hours cache timeout. change it to whatever you want
-	$cache_file = MAIN_CACHE_FOLDER . 'phpbb_update_' . $board_config['default_lang'] . $board_config['version'] . '.php'; // file where to store cache
-
-	$do_update = true;
-	if(@file_exists($cache_file))
-	{
-		$last_update = 0;
-		$version_info = '';
-		@include($cache_file);
-		if($last_update && !empty($version_info) && $last_update > (time() - $cache_update))
-		{
-			$do_update = false;
-		}
-		else
-		{
-			$version_info = '';
-		}
-	}
-
-	if($do_update)
-	{
-		// Version cache mod end
-		if ($fsock = @fsockopen('www.phpbb.com', 80, $errno, $errstr, 10))
-		{
-			@fwrite($fsock, "GET /updatecheck/20x.txt HTTP/1.1\r\n");
-			@fwrite($fsock, "HOST: www.phpbb.com\r\n");
-			@fwrite($fsock, "Connection: close\r\n\r\n");
-
-			$get_info = false;
-			while (!@feof($fsock))
-			{
-				if ($get_info)
-				{
-					$version_info .= @fread($fsock, 1024);
-				}
-				else
-				{
-					if (@fgets($fsock, 1024) == "\r\n")
-					{
-						$get_info = true;
-					}
-				}
-			}
-			@fclose($fsock);
-
-			$version_info = explode("\n", $version_info);
-			$latest_head_revision = (int) $version_info[0];
-			$latest_minor_revision = (int) $version_info[2];
-			$latest_version = (int) $version_info[0] . '.' . (int) $version_info[1] . '.' . (int) $version_info[2];
-
-			if ($latest_head_revision == 2 && $minor_revision == $latest_minor_revision)
-			{
-				$version_info = '<p style="color:green">' . $lang['Version_up_to_date'] . '</p>';
-			}
-			else
-			{
-				$version_info = '<p style="color:red">' . $lang['Version_not_up_to_date'];
-				$version_info .= '<br />' . sprintf($lang['Latest_version_info'], $latest_version) . ' ' . sprintf($lang['Current_version_info'], '2' . $board_config['version']) . '</p>';
-			}
-		}
-		else
-		{
-			if ($errstr)
-			{
-				$version_info = '<p style="color:red">' . sprintf($lang['Connect_socket_error'], $errstr) . '</p>';
-			}
-			else
-			{
-				$version_info = '<p>' . $lang['Socket_functions_disabled'] . '</p>';
-			}
-		}
-
-		$version_info .= '<p>' . $lang['Mailing_list_subscribe_reminder'] . '</p>';
-		// Version cache mod start
-		if(@$f = fopen($cache_file, 'w'))
-		{
-			$search = array('\\', '\'');
-			$replace = array('\\\\', '\\\'');
-			fwrite($f, '<' . '?php $last_update = ' . time() . '; $version_info = \'' . str_replace($search, $replace, $version_info) . '\'; ?' . '>');
-			fclose($f);
-			@chmod($cache_file, 0777);
-		}
-	}
-	// Version cache mod end
-	*/
 
 	$version_info = '<p style="color:green">' . $lang['Version_up_to_date'] . '</p>';
 	$version_info .= '<p>' . $lang['Mailing_list_subscribe_reminder'] . '</p>';
@@ -881,7 +761,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 
 	// Get latest logs entry - BEGIN
 	$log_item = array();
-	$log_item = get_logs('', 0, $board_config['posts_per_page'], 'log_id', 'DESC');
+	$log_item = get_logs('', 0, $config['posts_per_page'], 'log_id', 'DESC');
 
 	foreach ($log_item as $log_item_data)
 	{
@@ -890,7 +770,7 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		$log_action = parse_logs_action($log_item_data['log_id'], $log_item_data['log_action'], $log_item_data['log_desc'], $log_username, $log_target);
 		$template->assign_block_vars('log_row', array(
 				'LOG_ID' => $log_item_data['log_id'],
-				'LOG_TIME' => create_date_ip($board_config['default_dateformat'], $log_item_data['log_time'], $board_config['board_timezone']),
+				'LOG_TIME' => create_date_ip($config['default_dateformat'], $log_item_data['log_time'], $config['board_timezone']),
 				'LOG_PAGE' => $log_item_data['log_page'],
 				'LOG_ACTION' => $log_item_data['log_action'],
 				'LOG_USERNAME' => $log_username,
@@ -902,7 +782,6 @@ elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
 		);
 	}
 	// Get latest logs entry - END
-
 
 	$template->pparse('body');
 

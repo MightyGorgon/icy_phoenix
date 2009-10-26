@@ -24,7 +24,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -47,10 +47,8 @@ switch ($mode)
 		if (isset($_POST['new_event_name']))
 		{
 			$sql = "INSERT INTO " . CASH_EVENTS_TABLE . " (event_name, event_data) VALUES ('" . str_replace("\'","''",$_POST['new_event_name']) . "', '')";
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Could add event", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />');
 		}
 		break;
@@ -74,17 +72,15 @@ switch ($mode)
 					}
 				}
 			}
-			if (count($updates))
+			if (sizeof($updates))
 			{
 				$updated_data = implode(CASH_EVENT_DELIM1,$updates);
 			}
 			$sql = "UPDATE " . CASH_EVENTS_TABLE . "
 					SET event_data = '" . $updated_data . "'
 					WHERE event_name = '" . str_replace("\'","''",$event_name) . "'";
-			if (!($db->sql_query($sql)))
-			{
-				message_die(CRITICAL_ERROR, "Could not update event", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 		}
 		break;
@@ -98,19 +94,15 @@ switch ($mode)
 			if (isset($_POST['delete']))
 			{
 				$sql = "DELETE FROM " . CASH_EVENTS_TABLE . " WHERE event_name = '" . str_replace("\'","''",$event_name) . "'";
-				if (!($db->sql_query($sql)))
-				{
-					message_die(CRITICAL_ERROR, "Could not delete event", "", __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
+
 				message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 			}
 			$sql = "SELECT *
 					FROM " . CASH_EVENTS_TABLE . "
 					WHERE event_name = '" . str_replace("\'","''",$event_name) . "'";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(CRITICAL_ERROR, "Could not query events information", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			if (!($row = $db->sql_fetchrow($result)))
 			{
 				message_die(CRITICAL_ERROR, "Event does not exist", "", __LINE__, __FILE__, $sql);
@@ -160,10 +152,8 @@ switch ($mode)
 	default:
 		$sql = "SELECT *
 				FROM " . CASH_EVENTS_TABLE;
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(CRITICAL_ERROR, "Could not query events information", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		$events = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -188,11 +178,11 @@ switch ($mode)
 			)
 		);
 
-		for ($i = 0; $i < count($events); $i++)
+		for ($i = 0; $i < sizeof($events); $i++)
 		{
 			$template->assign_block_vars('eventrow',array('NAME' => $events[$i]['event_name']));
 		}
-		if (!count($events))
+		if (!sizeof($events))
 		{
 			$template->assign_block_vars('switch_noevents',array());
 		}

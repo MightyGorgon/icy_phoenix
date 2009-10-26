@@ -105,7 +105,7 @@ $lang = array_merge($lang, array(
 	'ctracker_info_password_cmplx_2' => 'Lower case',
 	'ctracker_info_password_cmplx_3' => 'Capitals',
 	'ctracker_info_password_cmplx_4' => 'Special Characters',
-	'ctracker_info_pw_expired' => 'The Administrator has decided that a password is only valid for <b>%s days</b>. We recommend for security reasons that you change your password now. (<a href="' . PROFILE_MG . '?mode=editprofile&amp;' . POST_USERS_URL . '=%d">Profile</a>)',
+	'ctracker_info_pw_expired' => 'The Administrator has decided that a password is only valid for <b>%s days</b>. We recommend for security reasons that you change your password now. (<a href="' . CMS_PAGE_PROFILE . '?mode=editprofile&amp;' . POST_USERS_URL . '=%d">Profile</a>)',
 
 /*
 * Language Strings used in ct_visual_confirm.php

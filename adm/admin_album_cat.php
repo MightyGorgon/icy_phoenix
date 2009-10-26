@@ -28,8 +28,8 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
 require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 require_once(ALBUM_MOD_PATH . 'album_acp_functions.' . PHP_EXT);
@@ -91,12 +91,9 @@ if(!isset($_POST['mode']))
 			$sql = "SELECT cat.*, cat2.cat_title AS cat_parent_title, cat2.cat_id AS cat_parent_id
 					FROM ". ALBUM_CAT_TABLE ." AS cat LEFT OUTER JOIN ". ALBUM_CAT_TABLE ." AS cat2
 					ON cat2.cat_id = cat.cat_parent WHERE cat.cat_id = '$cat_id'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query Album Categories information', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
-			if( $db->sql_numrows($result) == 0 )
+			if($db->sql_numrows($result) == 0)
 			{
 				message_die(GENERAL_ERROR, 'The requested category is not existed');
 			}
@@ -200,10 +197,7 @@ if(!isset($_POST['mode']))
 			$sql = "SELECT cat_id, cat_title, cat_order
 					FROM ". ALBUM_CAT_TABLE ."
 					ORDER BY cat_order ASC";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query Album Categories information', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$cat_found = false;
 			while( $row = $db->sql_fetchrow($result) )
@@ -356,10 +350,7 @@ else
 			$sql = "SELECT cat_order FROM ". ALBUM_CAT_TABLE ."
 					ORDER BY cat_order DESC
 					LIMIT 1";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query Album Categories information', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$last_order = $row['cat_order'];
 			$cat_order = $last_order + 10;
@@ -367,11 +358,7 @@ else
 			// Here we insert a new row into the db
 			$sql = "INSERT INTO ". ALBUM_CAT_TABLE ." (cat_title, cat_desc, cat_wm, cat_order, cat_view_level, cat_upload_level, cat_rate_level, cat_comment_level, cat_edit_level, cat_delete_level, cat_approval, cat_parent, cat_user_id)
 					VALUES ('$cat_title', '$cat_desc', '$cat_wm', '$cat_order', '$view_level', '$upload_level', '$rate_level', '$comment_level', '$edit_level', '$delete_level', '$cat_approval', '$cat_parent' ,'" . ALBUM_PUBLIC_GALLERY ."')";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not create new Album Category', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			// Return a message...
 			showResultMessage($lang['New_category_created']);
@@ -416,11 +403,7 @@ else
 		$sql = "UPDATE ". ALBUM_CAT_TABLE ."
 				SET cat_title = '$cat_title', cat_desc = '$cat_desc', cat_wm = '$cat_wm', cat_view_level = '$view_level', cat_upload_level = '$upload_level', cat_rate_level = '$rate_level', cat_comment_level = '$comment_level', cat_edit_level = '$edit_level', cat_delete_level = '$delete_level', cat_approval = '$cat_approval', cat_parent = '$cat_parent'
 				WHERE cat_id = '$cat_id'";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not update this Album Category', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Return a message...
 		showResultMessage($lang['Category_updated']);
@@ -434,22 +417,24 @@ else
 		$cat_id = intval($_GET['cat_id']);
 		$target = intval($_POST['target']);
 
-		if( $target == ALBUM_JUMPBOX_DELETE ) // Delete All
+		if($target == ALBUM_JUMPBOX_DELETE) // Delete All
 		{
 			// check if the selected category is a parent to another category
 			$sql = "SELECT cat_id FROM ". ALBUM_CAT_TABLE ." WHERE cat_parent = " . $cat_id .";";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query Album information for existing child categories', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			// the selected category is parent to another...proceed
 			if ($db->sql_numrows($result) > 0)
 			{
 				$parent_cat_id = 0;
-				if (isset($lang[ip_stripslashes($board_config['sitename'])]))
-					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[ip_stripslashes($board_config['sitename'])]);
+				if (isset($lang[$config['sitename']]))
+				{
+					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[htmlspecialchars($config['sitename'])]);
+				}
 				else
-					$parent_cat_title = sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']));
+				{
+					$parent_cat_title = sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']));
+				}
 
 				//it is so set the indicator that we are deleting a parent category
 				$parent_cat_deleted = true;
@@ -458,11 +443,7 @@ else
 				$sql = "SELECT cat.cat_id, parent.cat_title AS cat_parent_title, parent.cat_id AS cat_parent_id
 						FROM ". ALBUM_CAT_TABLE ." AS cat, ". ALBUM_CAT_TABLE ." AS parent
 						WHERE cat.cat_id = '$cat_id' AND parent.cat_id = cat.cat_parent";
-
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query Album information for existing parent categories', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				if ($db->sql_numrows($result) > 0)
 				{
@@ -483,10 +464,8 @@ else
 			$sql = "SELECT pic_id, pic_filename, pic_thumbnail, pic_cat_id
 					FROM ". ALBUM_TABLE ."
 					WHERE pic_cat_id = '$cat_id'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not query Album information', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$picrow = array();
 			while($row = $db ->sql_fetchrow($result))
 			{
@@ -494,10 +473,10 @@ else
 				$pic_id_row[] = $row['pic_id'];
 			}
 
-			if( count($picrow) != 0 ) // if this category is not empty
+			if(sizeof($picrow) != 0) // if this category is not empty
 			{
 				// Delete all physical pic & cached thumbnail files
-				for ($i = 0; $i < count($picrow); $i++)
+				for ($i = 0; $i < sizeof($picrow); $i++)
 				{
 					$pic_filename = $picrow[$i]['pic_filename'];
 
@@ -507,27 +486,28 @@ else
 						{
 							$pic_path[] = array();
 							$pic_path = explode('/', $pic_filename);
-							$pic_filename = $pic_path[count($pic_path) - 1];
+							$pic_filename = $pic_path[sizeof($pic_path) - 1];
 						}
 					}
 
 					$file_part = explode('.', strtolower($pic_filename));
-					$pic_filetype = $file_part[count($file_part) - 1];
+					$pic_filetype = $file_part[sizeof($file_part) - 1];
 					$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-					$pic_base_path = ALBUM_UPLOAD_PATH;
+					$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 					$pic_extra_path = '';
 					$pic_new_filename = $pic_extra_path . $pic_filename;
 					$pic_fullpath = $pic_base_path . $pic_new_filename;
 					$pic_thumbnail = $picrow[$i]['pic_thumbnail'];
-					$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
+					$pic_thumbnail_fullpath = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_thumbnail;
 
 					if (USERS_SUBFOLDERS_ALBUM == true)
 					{
-						if (count($pic_path) == 2)
+						if (sizeof($pic_path) == 2)
 						{
 							$pic_extra_path = $pic_path[0] . '/';
-							$pic_thumbnail_path = ALBUM_CACHE_PATH . $pic_extra_path;
-							if (is_dir($pic_path_only))
+							$pic_base_full_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH . $pic_extra_path;
+							$pic_thumbnail_path = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_extra_path;
+							if (is_dir($pic_base_full_path))
 							{
 								$pic_new_filename = $pic_extra_path . $pic_filename;
 								$pic_fullpath = $pic_base_path . $pic_new_filename;
@@ -551,35 +531,23 @@ else
 				// Delete all related ratings
 				$sql = "DELETE FROM ". ALBUM_RATE_TABLE ."
 						WHERE rate_pic_id IN ". $pic_id_sql;
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete Ratings information', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				// Delete all related comments
 				$sql = "DELETE FROM ". ALBUM_COMMENT_TABLE ."
 						WHERE comment_pic_id IN ". $pic_id_sql;
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete Comments information', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				// Delete pic entries in db
 				$sql = "DELETE FROM ". ALBUM_TABLE ."
 						WHERE pic_cat_id = '$cat_id'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not delete pic entries in the DB', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 
 			// This category is now emptied, we can remove it!
 			$sql = "DELETE FROM ". ALBUM_CAT_TABLE ."
 					WHERE cat_id = '$cat_id'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete this Category', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			// Re-order the rest of categories
 			album_reorder_cat();
@@ -597,19 +565,12 @@ else
 			$sql = "UPDATE ". ALBUM_TABLE ."
 					SET pic_cat_id = '$target'
 					WHERE pic_cat_id = '$cat_id'";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update this Category content', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			// This category is now emptied, we can remove it!
 			$sql = "DELETE FROM ". ALBUM_CAT_TABLE ."
 					WHERE cat_id = '$cat_id'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete this Category', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			// Re-order the rest of categories
 			album_reorder_cat();

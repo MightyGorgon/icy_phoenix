@@ -22,12 +22,8 @@ if (!defined('IN_ICYPHOENIX'))
 
 function topic_review($forum_id, $topic_id, $is_inline_review)
 {
-	global $db, $board_config, $template, $lang, $images, $theme, $bbcode;
-	global $userdata, $user_ip;
-	global $orig_word, $replacement_word;
-	global $orig_autolink, $replacement_autolink;
-	global $starttime;
-	global $tree;
+	global $db, $config, $template, $images, $theme, $userdata, $lang, $bbcode, $tree;
+	global $user_ip, $starttime, $gen_simple_header;
 
 	if (!$is_inline_review)
 	{
@@ -43,11 +39,7 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 				AND f.forum_id = t.forum_id";
 		$tmp = '';
 		attach_setup_viewtopic_auth($tmp, $sql);
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain topic information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!($forum_row = $db->sql_fetchrow($result)))
 		{
@@ -73,38 +65,12 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 		{
 			message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
 		}
-	}
 
-	//
-	// Define censored word matches
-	//
-	if (empty($orig_word) && !$userdata['user_allowswearywords'])
-	{
-		$orig_word = array();
-		$replacement_word = array();
-
-		obtain_word_list($orig_word, $replacement_word);
-	}
-	// Start Autolinks For phpBB Mod
-	if (empty($orig_autolink) && empty($replacement_autolink))
-	{
-		$orig_autolink = array();
-		$replacement_autolink = array();
-		obtain_autolink_list($orig_autolink, $replacement_autolink, $forum_id);
-	}
-
-	// End Autolinks For phpBB Mod
-
-	// Dump out the page header and load viewtopic body template
-	if (!$is_inline_review)
-	{
 		$gen_simple_header = true;
-
-		$page_title = $lang['Topic_review'] . ' - ' . $topic_title;
-		$meta_description = '';
-		$meta_keywords = '';
-		include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
+		$meta_content['page_title'] = $lang['Topic_review'] . ' - ' . $topic_title;
+		$meta_content['description'] = '';
+		$meta_content['keywords'] = '';
+		page_header($meta_content['page_title'], true);
 		$template->set_filenames(array('reviewbody' => 'posting_topic_review.tpl'));
 	}
 
@@ -114,11 +80,8 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 		WHERE p.topic_id = $topic_id
 			AND p.poster_id = u.user_id
 		ORDER BY p.post_time DESC
-		LIMIT " . $board_config['posts_per_page'];
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain post/user information', '', __LINE__, __FILE__, $sql);
-	}
+		LIMIT " . $config['posts_per_page'];
+	$result = $db->sql_query($sql);
 
 	if (!empty($is_auth))
 	{
@@ -140,7 +103,7 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 			$poster_id = $row['user_id'];
 			$poster = $row['username'];
 
-			$post_date = create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']);
+			$post_date = create_date($config['default_dateformat'], $row['post_time'], $config['board_timezone']);
 
 			// Handle anon users posting with usernames
 			if(($poster_id == ANONYMOUS) && ($row['post_username'] != ''))
@@ -157,13 +120,6 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 			$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
 
 			$message = $row['post_text'];
-
-			if (empty($orig_word) && !$userdata['user_allowswearywords'])
-			{
-				$orig_word = array();
-				$replacement_word = array();
-				obtain_word_list($orig_word, $replacement_word);
-			}
 
 			// Quick Quote - BEGIN
 			$look_up_array = array(
@@ -194,37 +150,28 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 				$plain_message =  preg_replace($search, $replace, $plain_message);
 			}
 			//Hide MOD
-			if (!empty($orig_word))
-			{
-				$plain_message = (!empty($plain_message)) ? preg_replace($orig_word, $replacement_word, $plain_message) : '';
-			}
+			$plain_message = censor_text($plain_message);
 			$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
 			// Quick Quote - END
 
+			$post_subject = censor_text($post_subject);
+			$message = censor_text($message);
 			if(!empty($row['post_text_compiled']))
 			{
 				$message = $row['post_text_compiled'];
 			}
 			else
 			{
-				$bbcode->allow_html = (($board_config['allow_html'] && $row['enable_bbcode']) ? true : false);
-				$bbcode->allow_bbcode = (($board_config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
-				$bbcode->allow_smilies = (($board_config['allow_smilies'] && $row['enable_smilies']) ? true : false);
+				$bbcode->allow_html = (($config['allow_html'] && $row['enable_bbcode']) ? true : false);
+				$bbcode->allow_bbcode = (($config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
+				$bbcode->allow_smilies = (($config['allow_smilies'] && $row['enable_smilies']) ? true : false);
 				$message = $bbcode->parse($message);
 			}
 
-			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-			{
-				$post_subject = preg_replace($orig_word, $replacement_word, $post_subject);
-				$message = preg_replace($orig_word, $replacement_word, $message);
-			}
-			if ($row['enable_autolinks_acronyms'] == 1)
+			if ($row['enable_autolinks_acronyms'])
 			{
 				$message = $bbcode->acronym_pass($message);
-				if (count($orig_autolink))
-				{
-					$message = autolink_transform($message, $orig_autolink, $replacement_autolink);
-				}
+				$message = autolink_text($message, $forum_id);
 			}
 			//$message = kb_word_wrap_pass ($message);
 			if (!empty($topic_calendar_time) && ($topic_first_post_id == $row['post_id']))
@@ -280,7 +227,7 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 	if (!$is_inline_review)
 	{
 		$template->pparse('reviewbody');
-		include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+		page_footer(true, '', true);
 	}
 }
 

@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if (!empty($setmodules))
 {
 	$file = basename(__FILE__);
-	$module['1200_Forums']['110_Manage_extend'] = $file;
+	$module['1200_Forums']['100_Manage'] = $file;
 	return;
 }
 
@@ -29,7 +29,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
 
 //--------------------------------
@@ -37,17 +36,20 @@ include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
 //--------------------------------
 define('POST_FLINK_URL', 'l');
 
-// fields presents in forums table, except auths ones :
+// fields in forums table, except auths ones:
 //		table_field => form_field
 $forums_fields_list = array(
 	'forum_id'							=> 'id',
-	'cat_id'								=> 'main_id',
+	'forum_type'						=> 'forum_type',
+	'parent_id'							=> 'main_id',
 	'main_type'							=> 'main_type',
 	'forum_order'						=> 'order',
 	'forum_name'						=> 'name',
+	'forum_name_clean'			=> 'name_clean',
 	'forum_desc'						=> 'desc',
 	'forum_status'					=> 'status',
 	'forum_thanks'					=> 'forum_thanks',
+	'forum_limit_edit_time'	=> 'forum_limit_edit_time',
 	'forum_similar_topics'	=> 'forum_similar_topics',
 	'forum_topic_views'			=> 'forum_topic_views',
 	'forum_tags'						=> 'forum_tags',
@@ -65,16 +67,18 @@ $forums_fields_list = array(
 	'icon'									=> 'icon',
 );
 
-// fields presents in categories table :
+// fields in categories table:
 //		table_field => form_field
 $categories_fields_list = array(
-	'cat_id'						=> 'id',
-	'cat_main'					=> 'main_id',
-	'cat_main_type'			=> 'main_type',
-	'cat_title'					=> 'name',
-	'cat_desc'					=> 'desc',
-	'icon'							=> 'icon',
-	'cat_order'					=> 'order',
+	'forum_id'							=> 'id',
+	'forum_type'						=> 'forum_type',
+	'parent_id'							=> 'main_id',
+	'main_type'							=> 'main_type',
+	'forum_order'						=> 'order',
+	'forum_name'						=> 'name',
+	'forum_name_clean'			=> 'name_clean',
+	'forum_desc'						=> 'desc',
+	'icon'									=> 'icon',
 );
 
 // type of the form fields
@@ -84,11 +88,13 @@ $fields_type = array(
 	'main_id'								=> 'INTEGER',
 	'main_type'							=> 'VARCHAR',
 	'order'									=> 'INTEGER',
-	'name'									=> 'VARCHAR',
+	'name'									=> 'HTML',
+	'name_clean'						=> 'VARCHAR',
 	'desc'									=> 'HTML',
 	'icon'									=> 'HTML',
 	'status'								=> 'INTEGER',
 	'forum_thanks'					=> 'INTEGER',
+	'forum_limit_edit_time'	=> 'INTEGER',
 	'forum_sort_box'				=> 'INTEGER',
 	'forum_kb_mode'					=> 'INTEGER',
 	'forum_index_icons'			=> 'INTEGER',
@@ -138,17 +144,6 @@ $forum_status_list = array(
 	FORUM_UNLOCKED		=> 'Status_unlocked',
 	FORUM_LOCKED			=> 'Status_locked'
 );
-
-// some compliancy
-$sql = "SELECT forum_display_sort, forum_display_order FROM " . FORUMS_TABLE . " LIMIT 0, 1";
-if ($db->sql_query($sql) && function_exists(get_forum_display_sort_option))
-{
-	define('TOPIC_DISPLAY_ORDER', true);
-	$forums_fields_list['forum_display_sort'] = 'display_sort';
-	$forums_fields_list['forum_display_order'] = 'display_order';
-	$fields_type['display_sort'] = 'INTEGER';
-	$fields_type['display_order'] = 'INTEGER';
-}
 
 // prune functions
 include(IP_ROOT_PATH . './includes/prune.' . PHP_EXT);
@@ -276,13 +271,13 @@ if (($mode == 'moveup') || ($mode == 'movedw'))
 	$prec = '';
 	$next = '';
 	$main = $tree['main'][$tree['keys'][$fid]];
-	for ($i = 0; $i < count($tree['sub'][$main]); $i++)
+	for ($i = 0; $i < sizeof($tree['sub'][$main]); $i++)
 	{
-		$prec = ($i == 0) ? $main : $tree['sub'][$main][$i-1];
+		$prec = ($i == 0) ? $main : $tree['sub'][$main][$i - 1];
 		$found = ($tree['sub'][$main][$i] == $fid);
 		if ($found)
 		{
-			$next = (($i + 1) < count($tree['sub'][$main])) ? $tree['sub'][$main][$i+1] : $tree['sub'][$main][$i];
+			$next = (($i + 1) < sizeof($tree['sub'][$main])) ? $tree['sub'][$main][$i+1] : $tree['sub'][$main][$i];
 			break;
 		}
 	}
@@ -294,32 +289,13 @@ if (($mode == 'moveup') || ($mode == 'movedw'))
 		if ((($mode == 'moveup') && ($ref != $main)) || (($mode == 'movedw') && ($ref != $fid)))
 		{
 			$idx = $tree['keys'][$ref];
-			if ($tree['type'][$idx] == POST_FORUM_URL)
-			{
-				$order = $tree['data'][$idx]['forum_order'] + $inc;
-			}
-			else
-			{
-				$order = $tree['data'][$idx]['cat_order'] + $inc;
-			}
+			$order = $tree['data'][$idx]['forum_order'] + $inc;
 
 			// update the current one
-			if (substr($fid, 0, 1) == POST_FORUM_URL)
-			{
-				$sql = "UPDATE " . FORUMS_TABLE . "
-							SET forum_order = $order
-							WHERE forum_id = " . intval(substr($fid, 1));
-			}
-			else
-			{
-				$sql = "UPDATE " . CATEGORIES_TABLE . "
-							SET cat_order = $order
-							WHERE cat_id = " . intval(substr($fid, 1));
-			}
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t update order in categories/forums table', '', __LINE__, __FILE__, $sql);
-			}
+			$sql = "UPDATE " . FORUMS_TABLE . "
+						SET forum_order = " . $order . "
+						WHERE forum_id = " . intval(substr($fid, 1));
+			$db->sql_query($sql);
 		}
 	}
 
@@ -336,7 +312,7 @@ if ($mode == 'resync')
 {
 	$tkeys = array();
 	$tkeys = get_auth_keys($fid, true);
-	for ($i = 0; $i < count($tkeys['id']); $i++)
+	for ($i = 0; $i < sizeof($tkeys['id']); $i++)
 	{
 		$wid = $tkeys['id'][$i];
 		if (substr($wid, 0, 1) == POST_FORUM_URL)
@@ -361,32 +337,11 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	$idx = isset($tree['keys'][$fid]) ? $tree['keys'][$fid] : '';
 	$item = array();
 
-	// Mighty Gorgon: unfortunately the tree array doesn't contain all vars... so I'll reassign here!
-	// RELOAD SOME FORUM OPTIONS
-	/*
-	$forum_info = array();
-	$sql = "SELECT * FROM " . FORUMS_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't get forum rules information", "", __LINE__, __FILE__, $sql);
-	}
-	while ($forum_info = $db->sql_fetchrow($result))
-	{
-		foreach ($forum_info as $k => $v)
-		{
-			$forums_array[$forum_info['forum_id']][$k] = $v;
-		}
-	}
-	$db->sql_freeresult($result);
-	*/
-
 	// LOAD RULES INTO A NEW ARRAY
 	$forum_info = array();
 	$sql = "SELECT * FROM " . FORUMS_RULES_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't get forum rules information", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($forum_info = $db->sql_fetchrow($result))
 	{
 		foreach ($forum_info as $k => $v)
@@ -412,6 +367,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			$fields_list = 'forums_fields_list';
 			break;
 		case POST_CAT_URL:
+			$process_forum_rules = true;
 			$fields_list = 'categories_fields_list';
 			break;
 		default:
@@ -456,20 +412,20 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	$found = false;
 	if (!empty($CH_this))
 	{
-		for ($i = 0; $i < count($tree['sub'][ $item['main'] ]); $i++)
+		for ($i = 0; $i < sizeof($tree['sub'][$item['main']]); $i++)
 		{
-			$item['position'] = ($i == 0) ? $item['main'] : $tree['sub'][ $item['main'] ][$i-1];
-			$found = ($tree['sub'][ $item['main'] ][$i] == $fid);
+			$item['position'] = ($i == 0) ? $item['main'] : $tree['sub'][$item['main']][$i - 1];
+			$found = ($tree['sub'][$item['main']][$i] == $fid);
 			if ($found)
 			{
 				break;
 			}
 		}
 	}
-	if (!$found && !empty($tree['sub'][ $item['main'] ]))
+	if (!$found && !empty($tree['sub'][$item['main']]))
 	{
-		$i = count($tree['sub'][ $item['main'] ]);
-		$item['position'] = $tree['sub'][ $item['main'] ][$i-1];
+		$i = sizeof($tree['sub'][$item['main']]);
+		$item['position'] = $tree['sub'][$item['main']][$i - 1];
 	}
 
 	// move topic : added field
@@ -478,6 +434,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	// links specific
 	if (!empty($item['link']) && ($item['type'] == POST_FORUM_URL))
 	{
+		$item['forum_type'] = FORUM_LINK;
 		$item['type'] = POST_FLINK_URL;
 	}
 
@@ -487,10 +444,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	{
 		// read the auto-prune table
 		$sql = "SELECT * FROM " . PRUNE_TABLE . " WHERE forum_id = " . $item['id'];
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Auto-Prune: Couldn\'t read auto_prune table.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		if (!$row = $db->sql_fetchrow($result))
 		{
 			$row = array();
@@ -545,14 +500,22 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	switch ($item['type'])
 	{
 		case POST_FLINK_URL:
+			$item['forum_type'] = FORUM_LINK;
+			$process_forum_rules = true;
+			$fields_list = 'forums_fields_list';
+			break;
 		case POST_FORUM_URL:
+			$item['forum_type'] = FORUM_POST;
 			$process_forum_rules = true;
 			$fields_list = 'forums_fields_list';
 			break;
 		case POST_CAT_URL:
+			$item['forum_type'] = FORUM_CAT;
+			$process_forum_rules = true;
 			$fields_list = 'categories_fields_list';
 			break;
 		default:
+			$item['forum_type'] = FORUM_POST;
 			$process_forum_rules = true;
 			$fields_list = 'forums_fields_list';
 			break;
@@ -683,7 +646,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	$forum_preset = -1;
 	if (isset($_POST['preset_choice']) && (intval($_POST['preset_choice']) == 1))
 	{
-		if (isset($simple_auth_ary[ intval($_POST['forum_preset']) ]))
+		if (isset($simple_auth_ary[intval($_POST['forum_preset'])]))
 		{
 			$forum_preset = intval($_POST['forum_preset']);
 			$preset_data = $simple_auth_ary[$forum_preset];
@@ -740,6 +703,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		{
 			admin_add_error('Forum_name_missing');
 		}
+		$item['name_clean'] = (empty($item['name_clean']) ? $item['name'] : $item['name_clean']);
+		$item['name_clean'] = substr(ip_clean_string($item['name_clean'], $lang['ENCODING']), 0, 254);
 
 		// check move dest
 		if (!empty($item['move']))
@@ -751,11 +716,11 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			{
 				$werror = true;
 			}
-			elseif (!isset($tree['keys'][ $type . $id ]))
+			elseif (!isset($tree['keys'][$type . $id]))
 			{
 				$werror = true;
 			}
-			elseif (!empty($tree['data'][ $tree['keys'][ $type . $id ] ]['forum_link']))
+			elseif (!empty($tree['data'][$tree['keys'][$type . $id]]['forum_link']))
 			{
 				$werror = true;
 			}
@@ -790,7 +755,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 					admin_add_error('Recursive_attachment');
 					break;
 				}
-				$main = $tree['main'][ $tree['keys'][$main] ];
+				$main = $tree['main'][$tree['keys'][$main]];
 			}
 		}
 
@@ -805,7 +770,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 					admin_add_error('Recursive_attachment');
 					break;
 				}
-				$main = $tree['main'][ $tree['keys'][$main] ];
+				$main = $tree['main'][$tree['keys'][$main]];
 			}
 		}
 
@@ -854,10 +819,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		{
 			// check if topics are present
 			$sql = "SELECT * FROM " . TOPICS_TABLE . " WHERE forum_id = $old_id LIMIT 0, 1";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t access topics table', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			if ($row = $db->sql_fetchrow($result))
 			{
 				$move_found = empty($item['move']); // empty = delete
@@ -867,7 +830,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 					$id = intval(substr($item['move'], 1));
 					if ($type == POST_FORUM_URL)
 					{
-						if (isset($tree['keys'][ $item['move'] ]) && ($item['move'] != $fid))
+						if (isset($tree['keys'][$item['move']]) && ($item['move'] != $fid))
 						{
 							$move_found = true;
 						}
@@ -905,8 +868,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		$item['order'] = 0;
 		if (!empty($item['position']) && ($item['position'] != 'Root'))
 		{
-			$order_idx = $tree['keys'][ $item['position'] ];
-			$item['order'] = ($tree['type'][$order_idx] == POST_CAT_URL) ? $tree['data'][$order_idx]['cat_order'] : $tree['data'][$order_idx]['forum_order'];
+			$order_idx = $tree['keys'][$item['position']];
+			$item['order'] = $tree['data'][$order_idx]['forum_order'];
 		}
 		$item['order'] += 5;
 
@@ -917,18 +880,9 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		{
 			$new_item = true;
 			$item['id'] = 0;
-			if ($item['type'] == POST_FORUM_URL)
-			{
-				$sql = "SELECT MAX(forum_id) AS max_id FROM " . FORUMS_TABLE;
-			}
-			else
-			{
-				$sql = "SELECT MAX(cat_id) AS max_id FROM " . CATEGORIES_TABLE;
-			}
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t get order number from forums/categories table', '', __LINE__, __FILE__, $sql);
-			}
+			$sql = "SELECT MAX(forum_id) AS max_id FROM " . FORUMS_TABLE;
+			$result = $db->sql_query($sql);
+
 			if ($row = $db->sql_fetchrow($result))
 			{
 				$item['id'] = $row['max_id'];
@@ -938,7 +892,9 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 		if (!$delete_forum)
 		{
-			if ($item['type'] == POST_FORUM_URL)
+			// Insert rules only for forums?
+			//if ($item['type'] == POST_FORUM_URL)
+			if (true)
 			{
 				// rules fields
 				$fields_list = 'rules_fields_list';
@@ -961,17 +917,14 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 				$index_value = intval($item['id']);
 				if ($new_item)
 				{
-					$sql = "INSERT INTO $table ($sql_fields) VALUES($sql_values)";
+					$sql = "INSERT INTO " . $table . " (" . $sql_fields . ") VALUES(" . $sql_values . ")";
 				}
 				else
 				{
-					$sql = "UPDATE $table SET $sql_update WHERE $index_field = $index_value";
+					$sql = "UPDATE " . $table . " SET " . $sql_update . " WHERE " . $index_field . " = " . $index_value;
 				}
 				//echo($sql . '<br />');
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t update forums rules table', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 
 			// update
@@ -981,7 +934,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			$sql_update = '';
 
 			$item['forum_rules'] = 0;
-			for ($i = 0; $i < count($zero_array); $i++)
+			for ($i = 0; $i < sizeof($zero_array); $i++)
 			{
 				$item['forum_rules'] = (($item[$zero_array[$i]] != 0) ? 1 : $item['forum_rules']);
 			}
@@ -1011,8 +964,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			}
 
 			// build the final sql request
-			$table = ($item['type'] == POST_FORUM_URL) ? FORUMS_TABLE : CATEGORIES_TABLE;
-			$index_field = ($item['type'] == POST_FORUM_URL) ? 'forum_id' : 'cat_id';
+			$table = FORUMS_TABLE;
+			$index_field = 'forum_id';
 			$index_value = intval($item['id']);
 			if ($new_item)
 			{
@@ -1023,10 +976,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 				$sql = "UPDATE $table SET $sql_update WHERE $index_field = $index_value";
 			}
 			//echo($sql . '<br />');
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t update forums / categories table', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 
 			if ($item['type'] == POST_FORUM_URL)
 			{
@@ -1043,19 +993,14 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			if (!$item['prune_enable'] || $delete_forum)
 			{
 				$sql = "DELETE FROM " . PRUNE_TABLE . " WHERE forum_id = " . intval($item['id']);
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t remove from prune table the forum', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 			else
 			{
 				$sql = "SELECT * FROM " . PRUNE_TABLE . " WHERE forum_id = " . intval($item['id']);
-				if (!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t access prune table', '', __LINE__, __FILE__, $sql);
-				}
-				if($db->sql_numrows($result) > 0)
+				$result = $db->sql_query($sql);
+
+			if($db->sql_numrows($result) > 0)
 				{
 					$sql = "UPDATE " . PRUNE_TABLE . "
 								SET prune_days = " . intval($item['prune_days']) . ",
@@ -1076,10 +1021,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 									" . intval($item['prune_freq']) . "
 								)";
 				}
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Couldn\'t update prune table', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 
@@ -1110,6 +1052,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 			'L_TYPE' => $lang['Forum_type'],
 			'L_NAME' => $lang['Forum_name'],
+			'L_NAME_CLEAN' => $lang['CLEAN_NAME'],
 			'L_DESC' => $lang['Forum_desc'],
 			'L_MAIN' => $lang['Category_attachment'],
 			'L_POSITION' => $lang['Position_after'],
@@ -1189,7 +1132,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		$s_post_opt = '';
 		$selected = ($item['position'] == $item['main']) ? ' selected="selected"' : '';
 		$s_pos_opt .= '<option value="' . $item['main'] . '"' . $selected . '>' . get_object_lang($item['main'], 'name', true) . '</option>';
-		for ($i = 0; $i < count($tree['sub'][ $item['main'] ]); $i++)
+		for ($i = 0; $i < sizeof($tree['sub'][ $item['main'] ]); $i++)
 		{
 			if ($tree['sub'][ $item['main'] ][$i] != $fid)
 			{
@@ -1210,51 +1153,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 		$icon = $item['icon'];
 		// Mighty Gorgon - Forum Icons Select - BEGIN
-		$icon_path = IP_ROOT_PATH . 'images/forums/';
-		if (is_dir($icon_path))
-		{
-			$dir = opendir($icon_path);
-			$l = 0;
-			while($file = readdir($dir))
-			{
-				if ((strpos($file, '.gif')) || (strpos($file, '.png')) || (strpos($file, '.jpg')))
-				{
-					$file1[$l] = $file;
-					$l++;
-				}
-			}
-			closedir($dir);
-			$icons_list = '<select name="icon_image_sel" onchange="update_icon(this.options[selectedIndex].value);">';
-			if ($icon == '')
-			{
-				$icons_list .= '<option value="" selected="selected">' . $lang['No_Icon_Image'] . '</option>';
-			}
-			else
-			{
-				$icons_list .= '<option value="">' . $lang['No_Icon_Image'] . '</option>';
-				$icons_list .= '<option value="' . $icon . '" selected="selected">' . str_replace($icon_path, '', $icon) . '</option>';
-			}
-			for($k=0; $k<=$l;$k++)
-			{
-				if ($file1[$k] != '')
-				{
-					$icons_list .= '<option value="images/forums/' . $file1[$k] . '">images/forums/' . $file1[$k] . '</option>';
-				}
-			}
-			$icon_img_sp = ($icon != '') ? (IP_ROOT_PATH . $icon) : (IP_ROOT_PATH . 'images/spacer.gif');
-			$icon_img_path = ($icon != '') ? $icon : '';
-			$icons_list .= '</select>';
-			$icons_list .= '&nbsp;&nbsp;<img name="icon_image" src="' . $icon_img_sp . '" alt="" align="middle" />';
-			$icons_list .= '<br /><br />';
-			$icons_list .= '&nbsp;<input class="post" type="text" name="icon" size="40" maxlength="255" value="' . $icon_img_path . '" />';
-			$icons_list .= '<br />';
-
-		}
-		else
-		{
-			$icon_img_path = ($icon != '') ? $icon : '';
-			$icons_list = '&nbsp;<input class="post" type="text" name="icon" size="40" maxlength="255" value="' . $icon_img_path . '" /><br />';
-		}
+		$icons_list = build_icons_select_box('../', 'images/forums/', 'icon', 'icon_image_sel', $icon, false, false, ' onchange="update_icon(this.options[selectedIndex].value);"');
 		// Mighty Gorgon - Forum Icons Select - END
 
 		// vars
@@ -1264,8 +1163,9 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'S_FORUM_LIST' => $forumlist,
 
 			'S_TYPE_OPT' => $s_type_opt,
-			'NAME' => str_replace("''", "'", $item['name']),
-			'DESC' => str_replace("''", "'", $item['desc']),
+			'NAME' => htmlspecialchars(str_replace("''", "'", $item['name'])),
+			'NAME_CLEAN' => str_replace("''", "'", $item['name_clean']),
+			'DESC' => htmlspecialchars(str_replace("''", "'", $item['desc'])),
 			'S_FORUMS_OPT' => get_tree_option($item['main'], true),
 			'S_POS_OPT' => $s_pos_opt,
 			'S_STATUS_OPT' => $s_status_opt,
@@ -1283,6 +1183,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'FORUM_LINK' => $item['link'],
 			'FORUM_THANK_YES' => $item['forum_thanks'] ? ' checked="checked"' : '',
 			'FORUM_THANK_NO' => !$item['forum_thanks'] ? ' checked="checked"' : '',
+			'FORUM_LIMIT_EDIT_TIME_YES' => $item['forum_limit_edit_time'] ? ' checked="checked"' : '',
+			'FORUM_LIMIT_EDIT_TIME_NO' => !$item['forum_limit_edit_time'] ? ' checked="checked"' : '',
 			'FORUM_SIMILAR_TOPICS_YES' => ($item['forum_similar_topics']) ? ' checked="checked"' : '',
 			'FORUM_SIMILAR_TOPICS_NO' => (!$item['forum_similar_topics']) ? ' checked="checked"' : '',
 			'FORUM_TOPIC_VIEWS_YES' => ($item['forum_topic_views']) ? ' checked="checked"' : '',
@@ -1360,10 +1262,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			// check if any topics in this forum
 			$topics = false;
 			$sql = "SELECT * FROM " . TOPICS_TABLE . " WHERE forum_id = $old_id LIMIT 0, 1";
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t access topics table', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			if ($row = $db->sql_fetchrow($result))
 			{
 				$topics = true;
@@ -1371,6 +1271,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			if ($topics || !empty($tree['sub'][$fid]))
 			{
 				$template->assign_block_vars('move', array());
+				$template->assign_var('S_FORUM_DELETE', true);
 			}
 		}
 
@@ -1387,7 +1288,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 				if (($item['type'] == POST_FORUM_URL) || ($key == 'auth_view'))
 				{
 					$s_auth_opt = '';
-					for ($i = 0; $i < count($forum_auth_const); $i++)
+					for ($i = 0; $i < sizeof($forum_auth_const); $i++)
 					{
 						$auth_key = $forum_auth_const[$i];
 						$auth_value = $forum_auth_levels[$i];
@@ -1430,24 +1331,10 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			if (($item['type'] == POST_FORUM_URL) && ($offset < 3))
 			{
 				$template->assign_block_vars('forum_link.auth.empty', array(
-					'SPAN'	=> 3 - $offset,
+					'SPAN' => 3 - $offset,
 					)
 				);
 			}
-		}
-
-		// topic display order
-		if (defined('TOPIC_DISPLAY_ORDER') && ($item['type'] != POST_CAT_URL))
-		{
-			$forum_display_sort_list = get_forum_display_sort_option($item['display_sort'], 'list', 'sort');
-			$forum_display_order_list = get_forum_display_sort_option($item['display_order'], 'list', 'order');
-			$template->assign_vars(array(
-				'L_FORUM_DISPLAY_SORT' => $lang['Sort_by'],
-				'S_FORUM_DISPLAY_SORT_LIST' => $forum_display_sort_list,
-				'S_FORUM_DISPLAY_ORDER_LIST' => $forum_display_order_list,
-				)
-			);
-			$template->assign_block_vars('forum.topic_display_order', array());
 		}
 
 		// footer
@@ -1456,7 +1343,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		$s_hidden_fields .= '<input type="hidden" name="selected_id" value="' . $selected_id . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="fid" value="' . $fid . '" />';
 		$template->assign_vars(array(
-			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'NAV_CAT_DESC' => admin_get_nav_cat_desc($selected_id),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 			'U_INDEX' => append_sid('./admin_forums_extend.' . PHP_EXT),
@@ -1510,7 +1397,7 @@ if ($mode == '')
 	}
 
 	$color = false;
-	for($i = 0; $i < count($tree['sub'][$selected_id]); $i++)
+	for($i = 0; $i < sizeof($tree['sub'][$selected_id]); $i++)
 	{
 		$CH_this = $tree['sub'][$selected_id][$i];
 		$idx = $tree['keys'][$CH_this];
@@ -1542,7 +1429,7 @@ if ($mode == '')
 		// is there some sub-levels for this level ?
 		$sub = isset($tree['sub'][$CH_this]);
 		$links = '';
-		for ($j = 0; $j < count($tree['sub'][$CH_this]); $j++)
+		for ($j = 0; $j < sizeof($tree['sub'][$CH_this]); $j++)
 		{
 			$sub_this = $tree['sub'][$CH_this][$j];
 			$sub_idx = $tree['keys'][$sub_this];
@@ -1573,7 +1460,7 @@ if ($mode == '')
 
 			// sub level link
 			$sub_folder = $sub_folder;
-			$link = '<a href="' . append_sid('admin_forums_extend.' . PHP_EXT . '?selected_id=' . $sub_this) . '" class="gensmall" style="text-decoration: none;" title="' . ereg_replace('<[^>]+>', '', get_object_lang($sub_this, 'desc', true)) . '">';
+			$link = '<a href="' . append_sid('admin_forums_extend.' . PHP_EXT . '?selected_id=' . $sub_this) . '" class="gensmall" style="text-decoration: none;" title="' . @ereg_replace('<[^>]+>', '', get_object_lang($sub_this, 'desc', true)) . '">';
 			$link .= '<img src="' . $sub_folder . '" alt="' . $sub_l_folder . '" title="' . $sub_l_folder . '" style="vertical-align: middle;" />';
 			$link .= '&nbsp;' . get_object_lang($sub_this, 'name', true) . '</a>';
 			$links .= (empty($links) ? '' : ', ') . $link;
@@ -1628,7 +1515,7 @@ if ($mode == '')
 	$s_hidden_fields = '';
 	$s_hidden_fields .= '<input type="hidden" name="selected_id" value="' . $selected_id . '" />';
 	$template->assign_vars(array(
-		'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+		'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 		'NAV_CAT_DESC' => admin_get_nav_cat_desc($selected_id),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'U_INDEX' => append_sid('./admin_forums_extend.' . PHP_EXT),

@@ -44,7 +44,7 @@ if (!defined('IN_ICYPHOENIX'))
  * If so we use our ct_database class to load the Blocklist from the
  * Database in an array and check if someone who was blocked is in the list.
  */
-if ($ctracker_config->settings['ipblock_enabled'] == 1)
+if ($ctracker_config->settings['ipblock_enabled'])
 {
 	// Fetch Blocklist from Database
 	$ctracker_config->unset_blocklist_verbose();
@@ -92,10 +92,10 @@ if ($ctracker_config->settings['ipblock_enabled'] == 1)
 					<div align="center">
 						<table style="border:2px solid #000000" border="0" width="600" cellpadding="10" cellspacing="0">
 							<tr>
-								<td align="left" bgcolor="#000000"><font face="Tahoma, Arial, Helvetica" size="4" color="#FFFFFF"><b>SECURITY ALERT&nbsp;&raquo;&nbsp;&raquo;&nbsp;&raquo;&nbsp;&raquo;</b></font></td>
+								<td align="left" bgcolor="#000000"><font face="Tahoma, Arial, Helvetica" size="4" color="#ffffff"><b>SECURITY ALERT&nbsp;&raquo;&nbsp;&raquo;&nbsp;&raquo;&nbsp;&raquo;</b></font></td>
 							</tr>
 							<tr>
-								<td bgcolor="#FFF2CF" align="left">
+								<td bgcolor="#fff2cf" align="left">
 								<font face="Tahoma, Arial, Helvetica" size="2" color="#000000"><b>CBACK CrackerTracker</b> blocked you because the Admin blocked your IP range, useragent or hostname from this board.<br /><br />
 								If you think you\'re banned without a reason please tell the Admin from this error message and ask him what happened that he has the possibility to unblock you.
 								</font>
@@ -119,6 +119,7 @@ if ($ctracker_config->settings['ipblock_enabled'] == 1)
 } // if
 
 // Tell the self test that this file was included correctly
-define('protection_unit_three', true);
+// Moved to common.php
+//define('protection_unit_three', true);
 
 ?>

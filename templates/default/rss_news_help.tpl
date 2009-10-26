@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row-header"><span>{L_RSS_NEWS_HELP_TITLE}</span></td></tr>
 <tr><th>{L_RSS_NEWS_HELP_HEADER}</th></tr>
@@ -27,3 +29,5 @@
 <tr><td class="row1"><span class="gensmall">{L_RSS_NEWS_HELP_RIGHTS}</span></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span>
+
+<!-- INCLUDE simple_footer.tpl -->

@@ -165,7 +165,7 @@ function AJAXQuickSearch(keywords)
 	//Send search results
 	if (keywords != '')
 	{
-		var url = SEARCH_MG;
+		var url = CMS_PAGE_SEARCH;
 		var params = 'show_results=topics&is_ajax=2&search_fields=all&search_keywords=' + ajax_escape(keywords);
 		if (S_SID != '')
 		{

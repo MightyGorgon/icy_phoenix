@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_WHO_VIEWED}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th width="30">#</th>
@@ -38,3 +40,5 @@
 	<td valign="top" align="right">{JUMPBOX}</td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

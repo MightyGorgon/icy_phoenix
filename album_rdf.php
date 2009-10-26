@@ -31,7 +31,7 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // XML and nocaching headers
 // header ('Cache-Control: private, pre-check=0, post-check=0, max-age=0');
-header ('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
+header ('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header ('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header ('Content-Type: text/xml');
 
@@ -57,11 +57,8 @@ if($userdata['user_level'] != ADMIN)
 	$sql = "SELECT c.*
 		FROM ". ALBUM_CAT_TABLE ." AS c
 		WHERE cat_id <> 0";
-	if( !($result = $db->sql_query($sql)) )
-	{
-		die("Could not query categories list");
-	}
-	while( $row = $db->sql_fetchrow($result) )
+	$result = $db->sql_query($sql);
+	while($row = $db->sql_fetchrow($result))
 	{
 		$album_user_access = album_user_access($row['cat_id'], $row, 1, 0, 0, 0, 0, 0); // VIEW
 		if($admin_mode)
@@ -87,7 +84,7 @@ $sql_limit_time = "";
 if ( !$no_limit && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) )
 {
 	$NotErrorFlag = true;
-	$NotModifiedSince = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+	$NotModifiedSince = @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 	if($NotModifiedSince > 0)
 	{
 		$sql_limit_time = "AND pic_time > " . $NotModifiedSince;
@@ -101,10 +98,8 @@ $sql = "SELECT pic_id, pic_title, pic_time, pic_desc, pic_username, pic_cat_id, 
 	$sql_not_allowed_cat $sql_cat_where $sql_limit_time
 	ORDER BY pic_time DESC
 	LIMIT $count";
-
 $picrow = $db->sql_query($sql);
-
-if ( !$picrow )
+if (!$picrow)
 {
 	die("Failed obtaining list of active pictures");
 }
@@ -116,14 +111,14 @@ $LastPostTime = 0;
 
 $rdf = '';
 
-if ( count($topics) == 0 )
+if (sizeof($topics) == 0)
 {
 	die('No pictures found');
 }
 else
 {
 	// $topics contains all interesting data
-	for ($i = 0; $i < count($topics); $i++)
+	for ($i = 0; $i < sizeof($topics); $i++)
 	{
 		$title = $topics[$i]['pic_title'];
 		$title = str_replace('&', '&amp;', $title);
@@ -132,7 +127,7 @@ else
 		$description = '<a href="' . $url . '"><img src="' . $thumb . '" alt="" /></a>';
 		$description = htmlentities($description);
 		$description .= $lang['Pic_Desc'] . ': ' . nl2br($topics[$i]['pic_desc']);
-		$pic_time = date('D, j M Y G:i:s T', $topics[$i]['pic_time']);
+		$pic_time = gmdate('D, j M Y G:i:s T', $topics[$i]['pic_time']);
 		$rdf .= '<item>
 			<title>' . $title . '</title>
 			<description>' . $description . '</description>
@@ -141,16 +136,16 @@ else
 	}
 }
 
-$board_config['sitename'] = str_replace('&', '&amp;', ip_stripslashes($board_config['sitename']));
-$board_config['site_desc'] = str_replace('&', '&amp;', ip_stripslashes($board_config['site_desc']));
+$config['sitename'] = htmlspecialchars($config['sitename']);
+$config['site_desc'] = htmlspecialchars($config['site_desc']);
 
 // Create RSS header
 $rdf_header = '<?xml version="1.0" encoding="ISO-8859-2" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 <channel>
-	<title>' . $board_config['sitename'] . ' Album (XXX needs registering)</title>
+	<title>' . $config['sitename'] . ' Album (XXX needs registering)</title>
 	<link>' . $index_url . '</link>
-	<description>' . $board_config['site_desc'] . '</description>
+	<description>' . $config['site_desc'] . '</description>
 	<language>en-us</language>
 	<generator>FAP</generator>
 </channel>';
@@ -161,9 +156,9 @@ $rdf_footer = '</rdf:RDF>';
 $rdf = $rdf_header . $rdf . $rdf_footer;
 
 // Discritics Replace
-$rdf = str_replace("&auml;", "ä", $rdf);
-$rdf = str_replace("&ouml;", "ö", $rdf);
-$rdf = str_replace("&uuml;", "ü", $rdf);
+$rdf = str_replace("&auml;", "Ã¤", $rdf);
+$rdf = str_replace("&ouml;", "Ã¶", $rdf);
+$rdf = str_replace("&uuml;", "Ã¼", $rdf);
 
 // Output the RDF
 echo $rdf;

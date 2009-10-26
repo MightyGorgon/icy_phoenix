@@ -145,7 +145,7 @@ $s_categories = '<select name="pic_cat">';
 while(list($key) = each($pic_images))
 {
 	$selected = ($key == $pic_cat) ? ' selected="selected"' : '';
-	if(count($pic_images[$key]))
+	if(sizeof($pic_images[$key]))
 	{
 		$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
 	}
@@ -154,7 +154,7 @@ $s_categories .= '</select>';
 
 $s_colspan = 0;
 
-$pic_cat_reg = ereg_replace("[^A-Za-z0-9]", "_", $pic_cat);
+$pic_cat_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_cat);
 $js_include = '';
 $js_images_list = '';
 /*
@@ -180,7 +180,7 @@ if($userdata['user_level'] == ADMIN)
 	$cat_id = ALBUM_ROOT_CATEGORY;
 	album_read_tree($userdata['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
 	$userinfo = album_get_nonexisting_personal_gallery_info();
-	$count = count($userinfo);
+	$count = sizeof($userinfo);
 	for($idx=0; $idx < count; $idx++)
 	{
 		$personal_gallery = init_personal_gallery_cat($userinfo[$idx]['user_id']);
@@ -208,28 +208,22 @@ if($userdata['user_level'] == ADMIN)
 }
 // Upload To Album - END
 
-$page_title = $lang['Album'];
-$meta_description = '';
-$meta_keywords = '';
 $nav_server_url = create_server_url();
 $breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid('album_otf.' . PHP_EXT) . '">' . $lang['Pic_Gallery'] . '</a>';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'album_otf_body.tpl'));
 
 // Upload To Album - BEGIN
 $upload_counter = 0;
 
 $otf_pic_time = time();
 
-for($i = 0; $i < count($pic_images[$pic_cat]); $i++)
+for($i = 0; $i < sizeof($pic_images[$pic_cat]); $i++)
 {
 	$template->assign_block_vars('pic_row', array());
 
-	$s_colspan = max($s_colspan, count($pic_images[$pic_cat][$i]));
+	$s_colspan = max($s_colspan, sizeof($pic_images[$pic_cat][$i]));
 	$s_colwidth = ($s_colspan == 0) ? '100%' : 100 / $s_colspan . '%';
 
-	for($j = 0; $j < count($pic_images[$pic_cat][$i]); $j++)
+	for($j = 0; $j < sizeof($pic_images[$pic_cat][$i]); $j++)
 	{
 		$otf_pic_time = $otf_pic_time + 1;
 		$pic_img_url = append_sid(ALBUM_OTF_PATH . $pic_images[$pic_cat][$i][$j]);
@@ -266,7 +260,7 @@ for($i = 0; $i < count($pic_images[$pic_cat]); $i++)
 			$otf_pic_path = ALBUM_OTF_PATH . $pic_images[$pic_cat][$i][$j];
 			$otf_pic_filename = $pic_file_names[$pic_cat][$i][$j];
 			$file_split = explode('.', $otf_pic_filename);
-			$otf_pic_extension = $file_split[count($file_split) - 1];
+			$otf_pic_extension = $file_split[sizeof($file_split) - 1];
 			$otf_pic_filename = substr($otf_pic_filename, 0, strlen($otf_pic_filename) - strlen($otf_pic_extension) - 1);
 			if (pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension, ucfirst($otf_pic_title), $pic_names[$pic_cat][$i][$j], $cat_to_upload, $otf_pic_time))
 			{
@@ -295,7 +289,7 @@ if (($upload_pics == true) && ($cat_to_upload > 0))
 	{
 		$message = $lang['Album_upload_successful'] . ' (' . $upload_counter . ')';
 	}
-	elseif ($upload_counter < count($pic_images[$pic_cat]))
+	elseif ($upload_counter < sizeof($pic_images[$pic_cat]))
 	{
 		$message = $lang['Album_upload_partially_successful'] . ' (' . $upload_counter . ')';
 	}
@@ -329,11 +323,9 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
+full_page_generation('album_otf_body.tpl', $lang['Album'], '', '');
 
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
-
+// FUNCTIONS - BEGIN
 function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension, $otf_pic_title, $otf_pic_des, $otf_pic_cat, $otf_pic_time)
 {
 	global $db, $userdata;
@@ -384,7 +376,10 @@ function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension,
 		@chmod($upload_path . $otf_pic_full_filename, 0777);
 		$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_thumbnail, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
 				VALUES ('" . ($pic_extra_path . $otf_pic_full_filename) . "', '', '" . $otf_pic_title . "', '" . $otf_pic_des . "', '" . $otf_pic_user_id . "', '" . $otf_pic_user_ip . "', '" . $otf_pic_username . "', '" . $otf_pic_time . "', '" . $otf_pic_cat . "', '1')";
-		if(!$result = $db->sql_query($sql))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			return false;
 		}
@@ -492,5 +487,6 @@ function get_images_list($path, $gallery_name)
 
 	return $js_images_list;
 }
+// FUNCTIONS - END
 
 ?>

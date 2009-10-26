@@ -60,7 +60,7 @@ if(!isset($_POST['confirm']) && !KILL_CONFIRM)
 	$ref_url = explode('/', $_SERVER['HTTP_REFERER']);
 
 	$s_hidden_fields = '';
-	$s_hidden_fields .= '<input type="hidden" name="ref_url" value="' . htmlspecialchars($ref_url[count($ref_url) - 1]) . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="ref_url" value="' . htmlspecialchars($ref_url[sizeof($ref_url) - 1]) . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="del_user" value="' . $del_user . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="days" value="' . $days . '" />';

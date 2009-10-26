@@ -1,6 +1,6 @@
 {IMG_TBL}<div class="forumline nav-div">
 	<p class="nav-header">
-		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_CMS}">{L_CMS}</a>{NAV_SEP}<a href="#" class="nav-current">{CMS_PAGE_TITLE}</a>
+		<a href="{U_PORTAL}">{L_HOME}</a>{NAV_SEP}<a href="{U_CMS}">{L_CMS_TITLE}</a>{NAV_SEP}<a href="#" class="nav-current">{CMS_PAGE_TITLE}</a>
 	</p>
 	<div class="nav-links">
 		<div class="nav-links-left">{CURRENT_TIME}</div>

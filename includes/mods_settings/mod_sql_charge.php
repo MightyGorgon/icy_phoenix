@@ -13,7 +13,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_mods_settings.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'includes/functions_mods_settings.' . PHP_EXT);
 $mod_name = '20_SQL_Charge';
 
 $config_fields = array(

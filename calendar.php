@@ -33,19 +33,13 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = 'calendar';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'calendar';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // get parameters
-
-// set the page title and include the page header
-$page_title = $lang['Calendar'];
-$meta_description = '';
-$meta_keywords = '';
-include (IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 // get paramters
 $start_date = 0;
@@ -61,7 +55,7 @@ if (isset($_GET['start']))
 	}
 	if (!empty($year))
 	{
-		$start_date = mktime(0,0,0, $month, $day, $year);
+		$start_date = gmmktime(0, 0, 0, $month, $day, $year);
 	}
 }
 
@@ -71,13 +65,13 @@ if (isset($_POST['start_month']))
 	$year = intval($_POST['start_year']);
 	if (($month > 0) && ($year > 0))
 	{
-		$start_date = mktime(0,0,0, $month, 01, $year);
+		$start_date = gmmktime(0, 0, 0, $month, 01, $year);
 	}
 }
 
 if (empty($start_date) || ($start_date <= 0))
 {
-	$start_date = mktime(0, 0, 0, intval(date('m', cal_date(time(),$board_config['board_timezone']))), intval(date('d', cal_date(time(),$board_config['board_timezone']))), intval(date('Y', cal_date(time(),$board_config['board_timezone']))));
+	$start_date = gmmktime(0, 0, 0, intval(create_date('m', cal_date(time(), $config['board_timezone']))), intval(create_date('d', cal_date(time(), $config['board_timezone']))), intval(create_date('Y', cal_date(time(), $config['board_timezone']))));
 }
 
 // get the forum id selected
@@ -102,8 +96,6 @@ if (isset($_POST['selected_id']) || isset($_GET['fid']))
 	}
 }
 
-$template->set_filenames(array('body' => 'calendar_body.tpl'));
-
 // Header
 $template->assign_vars(array(
 	'L_CALENDAR' => $lang['Calendar'],
@@ -123,8 +115,6 @@ $template->assign_vars(array(
 	)
 );
 
-// send to browser
-$template->pparse('body');
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('calendar_body.tpl', $lang['Calendar'], '', '');
 
 ?>

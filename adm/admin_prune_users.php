@@ -104,12 +104,9 @@ while (!empty($sql_up[$n]))
 							AND user_regdate < '" . (time() - (86400 * $days[$n])) . "'
 							ORDER BY username LIMIT 800";
 
-	if(!($result = $db->sql_query($sql_full)))
-	{
-		message_die(GENERAL_ERROR, 'Error obtaining userdata ' . $sql_up[$n], '', __LINE__, __FILE__, $sql_full);
-	}
+	$result = $db->sql_query($sql_full);
 	$user_list = $db->sql_fetchrowset($result);
-	$user_count = count($user_list);
+	$user_count = sizeof($user_list);
 	for($i = 0; $i < $user_count; $i++)
 	{
 		$list[$n] .= ' ' . colorize_username($user_list[$i]['user_id'], $user_list[$i]['username'], $user_list[$i]['user_color'], $user_list[$i]['user_active']);

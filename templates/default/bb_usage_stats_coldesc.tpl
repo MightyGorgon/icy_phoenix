@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <h2>{L_BBUS_COL_DESCRIPTIONS_CAPTION}</h2>
 
 {IMG_TBL}<table class="forumline" cellspacing="1" cellpadding="2" width="100%" align="center" border="0">
@@ -40,3 +42,6 @@
 	</td>
 </tr>
 </table>{IMG_TBR}
+
+<!-- INCLUDE simple_footer.tpl -->
+

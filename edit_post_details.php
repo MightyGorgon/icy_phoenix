@@ -64,9 +64,9 @@ if ($submit)
 		$hour += 12;
 	}
 
-	$edit_post_time = mktime($hour, $minute, $second, $month, $new_day, $year);
+	$edit_post_time = gmmktime($hour, $minute, $second, $month, $new_day, $year);
 	// Mighty Gorgon: alternative way... it needs to be checked though!!!
-	//$edit_post_time = gmmktime($hour, $minute, $second, $month, $new_day, $year) - (3600 * $board_config['board_timezone']);
+	//$edit_post_time = gmmktime($hour, $minute, $second, $month, $new_day, $year) - (3600 * $config['board_timezone']);
 
 	$time_changed = change_post_time($post_id, $edit_post_time);
 
@@ -74,14 +74,6 @@ if ($submit)
 	{
 		$poster_changed = change_poster_id($post_id, $new_poster);
 	}
-
-	$page_title = $lang['EDIT_POST_DETAILS'];
-	$meta_description = '';
-	$meta_keywords = '';
-	$gen_simple_header = true;
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'edit_post_details_body.tpl'));
 
 	$template->assign_block_vars('submit_finished', array());
 	$template->assign_vars(array(
@@ -91,13 +83,9 @@ if ($submit)
 		'CLOSE' => true,
 		'POST_EDIT_STRING' => $lang['DETAILS_CHANGED'],
 
-		'U_VIEWTOPIC' => append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id)
+		'U_VIEWTOPIC' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id)
 		)
 	);
-
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
 else
 {
@@ -113,10 +101,7 @@ else
 		$sql = "SELECT p.topic_id
 						FROM " . POSTS_TABLE . " p
 						WHERE p.post_id = '" . $post_id . "'";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not catch topic id for post', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$topic_id = $row['topic_id'];
@@ -126,10 +111,7 @@ else
 
 	// Check the post is first post in topic or not
 	$sql = "SELECT topic_first_post_id FROM " . TOPICS_TABLE . " WHERE topic_id = '" . $topic_id . "'";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not get first post id from topic', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$topic_first_post_id = $row['topic_first_post_id'];
@@ -145,10 +127,7 @@ else
 						FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u
 						WHERE t.topic_id = '" . $topic_id . "'
 							AND u.user_id = t.topic_poster";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not get topic time', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$edit_post_time = $row['topic_time'];
@@ -165,10 +144,7 @@ else
 						FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 						WHERE p.post_id = '" . $post_id . "'
 							AND u.user_id = p.poster_id";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not get post time and post edit time', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$edit_post_time = $row['post_time'];
@@ -269,14 +245,7 @@ else
 	$s_hidden_fields .= '<input type="hidden" value="' . $twelve_hours . '" name="twelve_hours" />';
 	$s_hidden_fields .= ($s_am_pm == '') ? '<input type="hidden" value="" name="' . $topic_post_time . '_ampm" />' : '';
 
-	$page_title = $lang['EDIT_POST_DETAILS'];
-	$meta_description = '';
-	$meta_keywords = '';
-	$gen_simple_header = true;
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
 	$template->assign_block_vars('entry_page', array());
-	$template->set_filenames(array('body' => 'edit_post_details_body.tpl'));
 
 	$template->assign_vars(array(
 		'L_POST_EDIT_TIME' => $lang['Edit_post_time'],
@@ -285,7 +254,7 @@ else
 		'L_RESET' => $lang['Reset'],
 		'L_FIND_USERNAME' => $lang['Find_username'],
 
-		'U_SEARCH_USER' => append_sid(SEARCH_MG . '?mode=searchuser'),
+		'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser'),
 
 		'POSTER_NAME' => $poster_name,
 		'POST_EDIT_STRING' => $post_edit_string,
@@ -294,10 +263,9 @@ else
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
-
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 }
+
+$gen_simple_header = true;
+full_page_generation('edit_post_details_body.tpl', $lang['EDIT_POST_DETAILS'], '', '');
 
 ?>

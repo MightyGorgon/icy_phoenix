@@ -23,11 +23,11 @@ $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END
 */
 
-@include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
 // This page is not in layout special...
 $cms_page_id_tmp = 'pic_upload';
-$cms_auth_level_tmp = (isset($board_config['auth_view_pic_upload']) ? $board_config['auth_view_pic_upload'] : AUTH_ALL);
+$cms_auth_level_tmp = (isset($config['auth_view_pic_upload']) ? $config['auth_view_pic_upload'] : AUTH_ALL);
 $view_pic_upload = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 
 if (defined('IN_PA_POSTING'))
@@ -61,7 +61,7 @@ else
 	}
 }
 
-if ($board_config['enable_postimage_org'] == true)
+if ($config['enable_postimage_org'] == true)
 {
 	if (defined('IN_PA_POSTING'))
 	{
@@ -73,7 +73,7 @@ if ($board_config['enable_postimage_org'] == true)
 	}
 }
 
-if ($board_config['enable_colorpicker'] == true)
+if ($config['enable_colorpicker'] == true)
 {
 	if (defined('IN_PA_POSTING'))
 	{
@@ -85,16 +85,16 @@ if ($board_config['enable_colorpicker'] == true)
 	}
 }
 
-if ($board_config['default_lang'] === 'catalan' || $board_config['default_lang'] === 'italian' || $board_config['default_lang'] === 'german' || $board_config['default_lang'] === 'spanish')
+if ($config['default_lang'] === 'catalan' || $config['default_lang'] === 'italian' || $config['default_lang'] === 'german' || $config['default_lang'] === 'spanish')
 {
-	$post_image_lang = 'javascript:void(0);" onclick="window.open(\'http://www.postimage.org/index.php?mode=phpbb&lang=' . $board_config['default_lang'] . '&tpl=.&forumurl=\' + escape(document.location.href),\'_imagehost\',\'width=500,height=400,resizable=yes\');';
+	$post_image_lang = 'javascript:void(0);" onclick="window.open(\'http://www.postimage.org/index.php?mode=phpbb&lang=' . $config['default_lang'] . '&tpl=.&forumurl=\' + escape(document.location.href),\'_imagehost\',\'width=500,height=400,resizable=yes\');';
 }
 else
 {
 	$post_image_lang = 'javascript:void(0);" onclick="window.open(\'http://www.postimage.org/index.php?mode=phpbb&tpl=.&forumurl=\' + escape(document.location.href), \'_imagehost\',\'width=500,height=400,resizable=yes\');';
 }
 
-if ($board_config['switch_bbcb_active_content'] == true)
+if ($config['switch_bbcb_active_content'] == true)
 {
 	if (defined('IN_PA_POSTING'))
 	{

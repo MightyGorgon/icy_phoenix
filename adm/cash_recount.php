@@ -33,7 +33,7 @@ if (isset($_POST['cids']))
 {
 	$cids = explode(",",$_POST['cids']);
 	$cash_check = array();
-	for ($i = 0; $i < count($cids);$i++)
+	for ($i = 0; $i < sizeof($cids);$i++)
 	{
 		$cash_check[$cids[$i]] = 1;
 	}
@@ -41,10 +41,8 @@ if (isset($_POST['cids']))
 
 	$sql = "SELECT user_id, username, user_level, user_posts
 			FROM " . USERS_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error retrieving data', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	$userlist = array();
 	$max_user = -1;
 	while ($row = $db->sql_fetchrow($result))
@@ -62,11 +60,9 @@ if (isset($_POST['cids']))
 	define('FLUSH','                                                                                                                                                                                                                                                                ');
 	$cm_groups->load(true, true);
 	$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('cash_resetting','-1,$max_user')";
-	if (!($db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error setting config data', '', __LINE__, __FILE__, $sql);
-	}
-	for ($i = 0; $i < count($userlist); $i++)
+	$db->sql_query($sql);
+
+	for ($i = 0; $i < sizeof($userlist); $i++)
 	{
 		if ($userlist['user_id'] != ANONYMOUS)
 		{
@@ -75,10 +71,8 @@ if (isset($_POST['cids']))
 					FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 					WHERE t.topic_id = p.topic_id AND p.poster_id = " . $c_user->id() . "
 					GROUP BY t.topic_id";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Error retrieving data', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			$forums = array();
 			$forum_list = array(CASH_POSTS => 0, CASH_BONUS => 0, CASH_REPLIES => 0);
 			//
@@ -118,7 +112,7 @@ if (isset($_POST['cids']))
 				{
 					$cash_counts = array(CASH_POSTS => 0,CASH_BONUS => 0,CASH_REPLIES => 0);
 					$cash_amount[$c_cur->id()] = $c_cur->data('cash_default');
-					for ($j = 0; $j < count($forum_list); $j++)
+					for ($j = 0; $j < sizeof($forum_list); $j++)
 					{
 						$forum_id = $forum_list[$j];
 						if ($c_cur->forum_active($forum_id))
@@ -136,19 +130,15 @@ if (isset($_POST['cids']))
 			$c_user->set_by_id_array($cash_amount);
 			$config_update = $c_user->id() . "," . $max_user;
 			$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '$config_update' WHERE config_name = 'cash_resetting'";
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Error updating config data', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			print(sprintf($lang['User_updated'],$c_user->name()).FLUSH);
 			flush();
 		}
 	}
 	$sql = "DELETE FROM " . CONFIG_TABLE . "  WHERE config_name = 'cash_resetting'";
-	if (!($db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error updating config data', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
+
 	ignore_user_abort($old_user_abort);
 	message_die(GENERAL_MESSAGE, '<br />' . sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . PHP_EXT) . '">', '</a>') . '<br /><br />');
 }

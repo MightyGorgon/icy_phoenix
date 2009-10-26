@@ -41,9 +41,9 @@ $cache_update = true;
 $cache_file_time = time();
 if (@file_exists($cache_data_file) && empty($cache_refresh))
 {
-	//$valid = (date('YzH', time()) - date('YzH', @filemtime($cache_data_file)) < 1) ? true : false;
+	//$valid = (gmdate('YzH', time()) - gmdate('YzH', @filemtime($cache_data_file)) < 1) ? true : false;
 	$cache_file_time = @filemtime($cache_data_file);
-	if (((date('YzH', time()) - date('YzH', $cache_file_time)) < 1) && ((date('Y', time()) == date('Y', $cache_file_time))))
+	if (((gmdate('YzH') - gmdate('YzH', $cache_file_time)) < 1) && ((gmdate('Y') == gmdate('Y', $cache_file_time))))
 	{
 		$cache_update = false;
 	}
@@ -67,7 +67,7 @@ if(strpos($useragent,'MSIE'))
 	$use_cached = false;
 }
 
-if($board_config['gzip_compress'])
+if($config['gzip_compress'])
 {
 	$phpver = phpversion();
 	if($phpver >= '4.0.4pl1' && (strstr($useragent,'compatible') || strstr($useragent,'Gecko')))
@@ -139,19 +139,15 @@ else
 
 	// MG SITEMAP - FORUM - BEGIN
 	//Get a list of publicly viewable forums
-	$sql = "SELECT forum_id FROM " . FORUMS_TABLE . " WHERE auth_read = 0";
-	//if (!($result = $db->sql_query($sql)))
-	if (!($result = $db->sql_query($sql, false, 'forums_sitemap_', FORUMS_CACHE_FOLDER)))
+	$forumids = '';
+	$forum_types = array(FORUM_POST);
+	$forums_array = get_forums_ids($forum_types, true, false, true, true);
+	foreach ($forums_array as $forum)
 	{
-		message_die(GENERAL_ERROR, 'Error getting permissions', '', __LINE__, __FILE__, $sql);
+		$forumids .= (empty($forumids) ? '' : ',') . $forum['forum_id'];
 	}
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$forumids .= $row['forum_id'] . ',';
-	}
-	$forumids = substr($forumids, 0, strlen($forumids) - 1);
 
-	if($board_config['sitemap_sort'] == 'ASC')
+	if($config['sitemap_sort'] == 'ASC')
 	{
 		$order = 'DESC';
 	}
@@ -160,10 +156,7 @@ else
 		$order = 'ASC';
 	}
 	$sql = "SELECT topic_id FROM " . TOPICS_TABLE . " WHERE forum_id IN (" . $forumids . ") ORDER BY topic_id $order LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting topic information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$result = $db->sql_fetchrow($result);
 	$lastid = $result['topic_id'];
 
@@ -172,7 +165,7 @@ else
 	{
 		$result = '';
 		//Newest topics first
-		if(is_numeric($lasttopic) && $board_config['sitemap_sort'] == 'ASC')
+		if(is_numeric($lasttopic) && $config['sitemap_sort'] == 'ASC')
 		{
 			$lasttopic++;
 			$wheresql = "AND t.topic_id >= $lasttopic";
@@ -191,12 +184,9 @@ else
 						FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p
 						WHERE t.topic_last_post_id=p.post_id
 						AND t.forum_id IN (" . $forumids . ") $wheresql
-						ORDER BY t.topic_id " . $board_config['sitemap_sort'] . "
-						LIMIT " . $board_config['sitemap_topic_limit'];
-		if (!($result = $db->sql_query($sql, false, 'topics_sitemap_', TOPICS_CACHE_FOLDER)))
-		{
-			message_die(GENERAL_ERROR, 'Error obtaining topic data', '', __LINE__, __FILE__, $sql);
-		}
+						ORDER BY t.topic_id " . $config['sitemap_sort'] . "
+						LIMIT " . $config['sitemap_topic_limit'];
+		$result = $db->sql_query($sql, 0, 'topics_sitemap_', TOPICS_CACHE_FOLDER);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -205,13 +195,13 @@ else
 			switch ($row['topic_type'])
 			{
 				case 2:
-					$topic_priority = $board_config['sitemap_announce_priority'];
+					$topic_priority = $config['sitemap_announce_priority'];
 				break;
 				case 1:
-					$topic_priority = $board_config['sitemap_sticky_priority'];
+					$topic_priority = $config['sitemap_sticky_priority'];
 				break;
 				default:
-					$topic_priority = $board_config['sitemap_default_priority'];
+					$topic_priority = $config['sitemap_default_priority'];
 			}
 			if ($row['topic_status'] == 1)
 			{
@@ -221,13 +211,13 @@ else
 			{
 				$topic_change = 'always';
 			}
-			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 			{
 				$url = $server_url . str_replace ('--', '-', make_url_friendly($row['topic_title']) . '-vt' . $row['topic_id'] . '.html');
 			}
 			else
 			{
-				$url = $server_url . VIEWTOPIC_MG . '?' . POST_FORUM_URL . '=' . $row['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $row['topic_id'];
+				$url = $server_url . CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $row['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $row['topic_id'];
 			}
 
 			$xml_sitemap_body .= '
@@ -250,12 +240,8 @@ else
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
 							ORDER BY file_time DESC";
-		if (!($result = $db->sql_query($sql, false, 'sitemap_files_')))
-		{
-			message_die(GENERAL_ERROR, 'Could not query downloads');
-		}
-
-		$dl_priority = $board_config['sitemap_announce_priority'];
+		$result = $db->sql_query($sql, 0, 'sitemap_files_');
+		$dl_priority = $config['sitemap_announce_priority'];
 		$dl_change = 'never';
 		while ($dl_sitemap = $db->sql_fetchrow($result))
 		{
@@ -263,7 +249,7 @@ else
 			$dl_sitemap['file_name'];
 			$dl_sitemap['file_desc'];
 			*/
-			if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 			{
 				$url = $server_url . str_replace ('--', '-', make_url_friendly($dl_sitemap['file_name']) . '-df' . $dl_sitemap['file_id'] . '.html');
 			}
@@ -295,12 +281,12 @@ else
 		$catrows = album_read_tree($album_user_id, $options);
 		album_read_tree($album_user_id);
 		$allowed_cat = ''; // For Recent Public Pics below
-		for ($i = 0; $i < count($catrows); $i++)
+		for ($i = 0; $i < sizeof($catrows); $i++)
 		{
 			$allowed_cat .= ($allowed_cat == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
 		}
 
-		if($board_config['sitemap_sort'] == 'ASC')
+		if($config['sitemap_sort'] == 'ASC')
 		{
 			$order = 'DESC';
 		}
@@ -311,10 +297,7 @@ else
 		$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
 						WHERE pic_cat_id IN (" . $allowed_cat . ")
 						ORDER BY pic_id $order LIMIT 1";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Error getting pic information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$result = $db->sql_fetchrow($result);
 		$lastid = $result['pic_id'];
 
@@ -323,7 +306,7 @@ else
 		{
 			$result = '';
 			//Newest pics first
-			if(is_numeric($lastpic) && $board_config['sitemap_sort'] == 'ASC')
+			if(is_numeric($lastpic) && $config['sitemap_sort'] == 'ASC')
 			{
 				$lastpic++;
 				$wheresql = "AND p.pic_id >= $lastpic";
@@ -342,18 +325,15 @@ else
 			$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_time, p.pic_lock
 							FROM " . ALBUM_TABLE . " AS p
 							WHERE p.pic_cat_id IN (" . $allowed_cat . ") $wheresql
-							ORDER BY p.pic_id " . $board_config['sitemap_sort'] . "
-							LIMIT " . $board_config['sitemap_topic_limit'];
-			if (!($result = $db->sql_query($sql, false, 'sitemap_pics_')))
-			{
-				message_die(GENERAL_ERROR, 'Error obtaining topic data', '', __LINE__, __FILE__, $sql);
-			}
+							ORDER BY p.pic_id " . $config['sitemap_sort'] . "
+							LIMIT " . $config['sitemap_topic_limit'];
+			$result = $db->sql_query($sql, 0, 'sitemap_pics_');
 
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$pic_priority = $board_config['sitemap_default_priority'];
+				$pic_priority = $config['sitemap_default_priority'];
 				$pic_change = 'never';
-				if (($board_config['url_rw'] == '1') || (($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+				if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 				{
 					$url = $server_url . str_replace ('--', '-', make_url_friendly($row['pic_title']) . '-asp' . $row['pic_id'] . '.html');
 				}
@@ -404,7 +384,7 @@ else
 		@chmod($sitemap_zip_file, 0777);
 		@unlink($sitemap_zip_file);
 		$archive = new zip_file($sitemap_zip_file);
-		$archive->set_options(array('overwrite' => 1, 'storepaths' => 0, 'comment' => 'Sitemap of ' . ip_stripslashes($board_config['sitename'])));
+		$archive->set_options(array('overwrite' => 1, 'storepaths' => 0, 'comment' => 'Sitemap of ' . strip_tags($config['sitename'])));
 		$archive->add_files($cache_data_file);
 		$archive->create_archive();
 		@chmod($sitemap_zip_file, 0666);
@@ -412,7 +392,7 @@ else
 
 	//Compresss the sitemap with gzip
 	//this isn't as pretty as the code in page_header.php, but it's simple & it works :)
-	if(function_exists(ob_gzhandler) && ($board_config['gzip_compress'] == 1))
+	if(function_exists(ob_gzhandler) && ($config['gzip_compress'] == 1))
 	{
 		//ob_start(ob_gzhandler);
 	}

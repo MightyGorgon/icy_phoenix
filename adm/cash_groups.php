@@ -24,7 +24,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -81,7 +81,7 @@ switch ($mode)
 					}
 				}
 			}
-			if (count($update_clause))
+			if (sizeof($update_clause))
 			{
 				$group_type = intval($_POST['group_type']);
 				$group_id = intval($_POST['group_id']);
@@ -102,10 +102,8 @@ switch ($mode)
 						$sql = "SELECT rank_min
 								FROM " . RANKS_TABLE . "
 								WHERE rank_id = " . $group_id . " AND rank_special = 0";
-						if (!($result = $db->sql_query($sql)))
-						{
-							message_die(GENERAL_ERROR, "Could not query rank information", "", __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
+
 						if (!($row = $db->sql_fetchrow($result)))
 						{
 							message_die(GENERAL_ERROR, "Rank does not exist", "", __LINE__, __FILE__, $sql);
@@ -116,24 +114,22 @@ switch ($mode)
 						$sql = "SELECT user_id
 								FROM " . USER_GROUP_TABLE . "
 								WHERE group_id = " . $group_id . "AND user_pending = 0";
-						if (!($result = $db->sql_query($sql)))
-						{
-							message_die(GENERAL_ERROR, "Could not query usergroup information", "", __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
+
 						$users = array();
 						while ($row = $db->sql_fetchrow($result))
 						{
 							$users[] = $row['user_id'];
 						}
-						if (count($users) > 20)
+						if (sizeof($users) > 20)
 						{
 							$group = cash_array_chunk($users,15);
-							for ($i = 0; $i < count($group); $i++)
+							for ($i = 0; $i < sizeof($group); $i++)
 							{
 								$where_clause[] = 'WHERE user_id = ' . implode(' OR user_id = ',$group[$i]);
 							}
 						}
-						else if (count($users))
+						else if (sizeof($users))
 						{
 							$where_clause[] = 'WHERE user_id = ' . implode(' OR user_id = ',$users);
 						}
@@ -141,17 +137,14 @@ switch ($mode)
 					default:
 						break;
 				}
-				if (count($where_clause))
+				if (sizeof($where_clause))
 				{
 					$clause = "UPDATE " . USERS_TABLE . "
 								SET " . implode(',',$update_clause) . " ";
-					for ($i = 0; $i < count($where_clause); $i++)
+					for ($i = 0; $i < sizeof($where_clause); $i++)
 					{
 						$sql = $clause . $where_clause[$i];
-						if (!($db->sql_query($sql)))
-						{
-							message_die(GENERAL_ERROR, "Could not update user information", "", __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 					}
 				}
 			}
@@ -218,33 +211,24 @@ switch ($mode)
 						}
 					}
 					reset ($update_set);
-					if (count($updates) > 0)
+					if (sizeof($updates) > 0)
 					{
 						if ($delete_this)
 						{
 							$sql = "DELETE FROM " . CASH_GROUPS_TABLE . " WHERE group_type = $group_type AND group_id = $group_id AND cash_id = " . $c_cur->id();
-							if (!$db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, "Failed to remove a Cash Mod group setting", "", __LINE__, __FILE__, $sql);
-							}
+							$db->sql_query($sql);
 						}
 						else
 						{
 							if (!isset($group->currency_settings[$c_cur->id()]))
 							{
 								$sql = "INSERT INTO " . CASH_GROUPS_TABLE . " (group_type, group_id, cash_id) VALUES ($group_type,$group_id," . $c_cur->id() . ")";
-								if (!$db->sql_query($sql))
-								{
-									message_die(GENERAL_ERROR, "Failed to create Cash Mod group settings", "", __LINE__, __FILE__, $sql);
-								}
+								$db->sql_query($sql);
 							}
 							$sql = "UPDATE " . CASH_GROUPS_TABLE . "
 									SET " . implode(", ",$updates) . "
 									WHERE group_type = $group_type AND group_id = $group_id AND cash_id = " . $c_cur->id();
-							if (!$db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, "Failed to update Cash Mod group settings", "", __LINE__, __FILE__, $sql);
-							}
+							$db->sql_query($sql);
 						}
 					}
 				}
@@ -410,24 +394,19 @@ switch ($mode)
 		$sql = "SELECT rank_id, rank_title, rank_min FROM " . RANKS_TABLE . "
 				WHERE rank_special = 0
 				ORDER BY rank_min DESC";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(CRITICAL_ERROR, "Could not query ranks information", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$groups[] = new cash_forumgroup(CASH_GROUPS_RANK,intval($row['rank_id']),$row['rank_title'],$row['rank_min'] . " " . $lang['Posts']);
 		}
-		//
+
 		// Usergroups
-		//
 		$sql = "SELECT group_id, group_name, group_description FROM " . GROUPS_TABLE . "
 				WHERE group_single_user = 0
 				ORDER BY group_id DESC";
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(CRITICAL_ERROR, "Could not query usergroup information", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$groups[] = new cash_forumgroup(CASH_GROUPS_USERGROUP,intval($row['group_id']),$row['group_name'],$row['group_description']);
@@ -435,7 +414,7 @@ switch ($mode)
 		//
 		// load up info for each group
 		//
-		for($i = 0; $i < count($groups); $i++)
+		for($i = 0; $i < sizeof($groups); $i++)
 		{
 			$groups[$i]->load();
 		}
@@ -467,19 +446,19 @@ switch ($mode)
 			'L_REMOVE' => $lang['Remove'],
 			'L_SET' => $lang['Set'],
 
-			'NUM_COLUMNS' => (count($cash_indices) + 2),
-			'NUM_CURRENCIES' => count($cash_indices)
+			'NUM_COLUMNS' => (sizeof($cash_indices) + 2),
+			'NUM_CURRENCIES' => sizeof($cash_indices)
 			)
 		);
 
-		for ($i = 0; $i < count($groups); $i++)
+		for ($i = 0; $i < sizeof($groups); $i++)
 		{
 			$hidden_fields = '<input type="hidden" name="group_type" value="' . $groups[$i]->group_type . '" />';
 			$hidden_fields .= '<input type="hidden" name="group_id" value="' . $groups[$i]->group_id . '" />';
 			$hidden_fields .= '<input type="hidden" name="group_name" value="' . $groups[$i]->group_name . '" />';
 			$hidden_fields .= '<input type="hidden" name="group_description" value="' . $groups[$i]->group_description . '" />';
-			$cell_width = floor(100/(count($cash_indices)+1));
-			$remainder_width = 100 - ($cell_width * count($cash_indices));
+			$cell_width = floor(100 / (sizeof($cash_indices) + 1));
+			$remainder_width = 100 - ($cell_width * sizeof($cash_indices));
 			$merge_width = 100 - $remainder_width;
 			$template->assign_block_vars('entryrow',array(
 				'NAME' => $groups[$i]->group_name,
@@ -503,7 +482,7 @@ switch ($mode)
 				$template->assign_block_vars('entryrow.switch_displayoff',array());
 			}
 
-			for ($j = 0; $j < count($cash_indices); $j++)
+			for ($j = 0; $j < sizeof($cash_indices); $j++)
 			{
 				$template->assign_block_vars('entryrow.cashrow',array(
 					'NAME' => $cash_names[$j],

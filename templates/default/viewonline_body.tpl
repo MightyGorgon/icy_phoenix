@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_WHO_IS_ONLINE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th width="35%">{L_USERNAME}</th>
@@ -120,3 +122,5 @@ if(GetCookie(tmp) == '2')
 </table>
 
 <div align="right">{JUMPBOX}</div>
+
+<!-- INCLUDE overall_footer.tpl -->

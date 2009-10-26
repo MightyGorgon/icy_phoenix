@@ -2655,7 +2655,7 @@
 			$p_header['mtime'] = $p_filedescr['mtime'];
 		}
 		else if ($p_filedescr['type'] == 'virtual_file') {
-			$p_header['mtime'] = mktime();
+			$p_header['mtime'] = gmmktime();
 		}
 		else {
 			$p_header['mtime'] = filemtime($p_filename);
@@ -2978,7 +2978,7 @@
 
 		// ----- Transform UNIX mtime to DOS format mdate/mtime
 		//--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Date : \''.date("d/m/y H:i:s", $p_header['mtime']).'\'');
-		$v_date = getdate($p_header['mtime']);
+		$v_date = @getdate($p_header['mtime']);
 		$v_mtime = ($v_date['hours']<<11) + ($v_date['minutes']<<5) + $v_date['seconds']/2;
 		$v_mdate = (($v_date['year']-1980)<<9) + ($v_date['mon']<<5) + $v_date['mday'];
 
@@ -3028,7 +3028,7 @@
 
 		// ----- Transform UNIX mtime to DOS format mdate/mtime
 		//--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Date : \''.date("d/m/y H:i:s", $p_header['mtime']).'\'');
-		$v_date = getdate($p_header['mtime']);
+		$v_date = @getdate($p_header['mtime']);
 		$v_mtime = ($v_date['hours']<<11) + ($v_date['minutes']<<5) + $v_date['seconds']/2;
 		$v_mdate = (($v_date['year']-1980)<<9) + ($v_date['mon']<<5) + $v_date['mday'];
 
@@ -4303,7 +4303,7 @@
 			$v_day = $p_header['mdate'] & 0x001F;
 
 			// ----- Get UNIX date format
-			$p_header['mtime'] = mktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
+			$p_header['mtime'] = gmmktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
 
 			//--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 3, 'Date : \''.date("d/m/y H:i:s", $p_header['mtime']).'\'');
 		}
@@ -4432,7 +4432,7 @@
 			$v_day = $p_header['mdate'] & 0x001F;
 
 			// ----- Get UNIX date format
-			$p_header['mtime'] = @mktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
+			$p_header['mtime'] = @gmmktime($v_hour, $v_minute, $v_seconde, $v_month, $v_day, $v_year);
 
 			//--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 4, 'Date : \''.date("d/m/y H:i:s", $p_header['mtime']).'\'');
 		}

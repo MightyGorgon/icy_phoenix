@@ -22,7 +22,9 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+
+@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+$class_topics = new class_topics();
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -35,7 +37,7 @@ $start = ($start < 0) ? 0 : $start;
 if (!$userdata['session_logged_in'])
 {
 	$redirect = (isset($start)) ? ('&start=' . $start) : '';
-	redirect(append_sid(LOGIN_MG . '?redirect=watched_topics.' . PHP_EXT . $redirect, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=watched_topics.' . PHP_EXT . $redirect, true));
 }
 
 // are we un-watching some topics?
@@ -45,20 +47,10 @@ if (isset($_POST['unwatch_list']))
 	$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
 		WHERE topic_id IN(" .  $topic_ids . ")
 		AND user_id = " . $userdata['user_id'];
-	if (!($result = $db->sql_query($sql)))
-	{
-			message_die(GENERAL_ERROR, "Could not delete topic watch information", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 }
 
-// Generate the page
-$page_title = $lang['Watched_Topics'];
-$meta_description = '';
-$meta_keywords = '';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'watched_topics_body.tpl'));
 
 $template->assign_vars(array(
 	'S_FORM_ACTION' => append_sid(IP_ROOT_PATH . 'watched_topics.' . PHP_EXT),
@@ -73,12 +65,8 @@ $template->assign_vars(array(
 	)
 );
 
-
 $sql = "SELECT COUNT(*) as watch_count FROM " . TOPICS_WATCH_TABLE . " w WHERE w.user_id = " . $userdata['user_id'];
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain watch topic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 $watch_count = ($row['watch_count']) ? $row['watch_count'] : 0;
 $db->sql_freeresult($result);
@@ -102,29 +90,25 @@ if ($watch_count > 0)
 			AND f.forum_id = t.forum_id
 			AND w.user_id = " . $userdata['user_id'] . "
 		ORDER BY t.topic_last_post_id DESC
-		LIMIT $start, " . $board_config['topics_per_page'];
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain watch topic information', '', __LINE__, __FILE__, $sql);
-	}
+		LIMIT $start, " . $config['topics_per_page'];
+	$result = $db->sql_query($sql);
 	$watch_rows = $db->sql_fetchrowset($result);
 
 	// are we currently watching any topics?
 	if ($watch_rows)
 	{
 
-		$tracking_topics = (isset($_COOKIE[$board_config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$board_config['cookie_name'] .'_t']) : array();
-		$tracking_forums = (isset($_COOKIE[$board_config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$board_config['cookie_name'] .'_f']) : array();
+		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_t']) : array();
+		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
 
 		// MG User Replied - BEGIN
 		// check if user replied to the topics
 		define('USER_REPLIED_ICON', true);
-		$user_topics = user_replied_array($watch_rows);
+		$user_topics = $class_topics->user_replied_array($watch_rows);
 		// MG User Replied - END
 
 		$template->assign_block_vars('switch_watched_topics_block', array());
-		for ($i = 0; $i < count($watch_rows); $i++)
+		for ($i = 0; $i < sizeof($watch_rows); $i++)
 		{
 			$forum_id = $watch_rows[$i]['forum_id'];
 			$topic_id = $watch_rows[$i]['topic_id'];
@@ -133,35 +117,35 @@ if ($watch_count > 0)
 			$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 			$post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
 			$post_id_append_url = (!empty($post_id) ? ('#p' . $post_id) : '');
-			$forum_url = append_sid(VIEWFORUM_MG . '?' . $forum_id_append);
-			$topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append);
-			$post_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append) . $post_id_append_url;
+			$forum_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append);
+			$topic_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append);
+			$post_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . $post_id_append) . $post_id_append_url;
 			$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
 			$last_poster = ($watch_rows[$i]['poster_id'] == ANONYMOUS) ? (($watch_rows[$i]['last_username'] != '') ? $watch_rows[$i]['last_username'] . ' ' : $lang['Guest'] . ' ') : colorize_username($watch_rows[$i]['poster_id'], $watch_rows[$i]['last_username'], $watch_rows[$i]['last_user_color'], $watch_rows[$i]['last_user_active']);
-			$last_poster .= '<a href="' . append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $watch_rows[$i]['topic_last_post_id']) . '#p' . $watch_rows[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+			$last_poster .= '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $watch_rows[$i]['topic_last_post_id']) . '#p' . $watch_rows[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 			$topic_poster = ($watch_rows[$i]['topic_poster'] == ANONYMOUS) ? (($watch_rows[$i]['author_username'] != '') ? $watch_rows[$i]['author_username'] . ' ' : $lang['Guest'] . ' ') : colorize_username($watch_rows[$i]['topic_poster'], $watch_rows[$i]['author_username'], $watch_rows[$i]['author_color'], $watch_rows[$i]['author_active']);
 
 			$news_label = ($watch_rows[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 
 			$replies = $watch_rows[$i]['topic_replies'];
 
-			$topic_link = build_topic_icon_link($watch_rows[$i]['forum_id'], $watch_rows[$i]['topic_id'], $watch_rows[$i]['topic_type'], $watch_rows[$i]['topic_reg'], $watch_rows[$i]['topic_replies'], $watch_rows[$i]['news_id'], $watch_rows[$i]['topic_vote'], $watch_rows[$i]['topic_status'], $watch_rows[$i]['topic_moved_id'], $watch_rows[$i]['post_time'], $user_replied, $replies, $unread);
+			$topic_link = $class_topics->build_topic_icon_link($watch_rows[$i]['forum_id'], $watch_rows[$i]['topic_id'], $watch_rows[$i]['topic_type'], $watch_rows[$i]['topic_reg'], $watch_rows[$i]['topic_replies'], $watch_rows[$i]['news_id'], $watch_rows[$i]['topic_vote'], $watch_rows[$i]['topic_status'], $watch_rows[$i]['topic_moved_id'], $watch_rows[$i]['post_time'], $user_replied, $replies, $unread);
 
-			if(($replies + 1) > $board_config['posts_per_page'])
+			if(($replies + 1) > $config['posts_per_page'])
 			{
-				$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
+				$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
 				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
 
 				$times = 1;
-				for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
+				for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
 				{
-					$goto_page .= '<a href="' . append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
+					$goto_page .= '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
 					if($times == 1 && $total_pages > 4)
 					{
 						$goto_page .= ' ... ';
 						$times = $total_pages - 3;
-						$j += ($total_pages - 4) * $board_config['posts_per_page'];
+						$j += ($total_pages - 4) * $config['posts_per_page'];
 					}
 					elseif ($times < $total_pages)
 					{
@@ -196,24 +180,24 @@ if ($watch_count > 0)
 				'S_WATCHED_TOPIC_ID' => $watch_rows[$i]['topic_id'],
 				'S_WATCHED_TOPIC' => $watch_rows[$i]['topic_title'],
 				'S_WATCHED_TOPIC_REPLIES' => $watch_rows[$i]['topic_replies'],
-				'S_WATCHED_TOPIC_START' => create_date_ip($board_config['default_dateformat'], $watch_rows[$i]['topic_time'], $board_config['board_timezone']),
-				'S_WATCHED_TOPIC_LAST' => create_date_ip($board_config['default_dateformat'], $watch_rows[$i]['post_time'], $board_config['board_timezone']),
+				'S_WATCHED_TOPIC_START' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['topic_time'], $config['board_timezone']),
+				'S_WATCHED_TOPIC_LAST' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['post_time'], $config['board_timezone']),
 				'FORUM_NAME' => $watch_rows[$i]['forum_name'],
 				'TOPIC_POSTER' => $topic_poster,
 				'LAST_POSTER' => $last_poster,
 				'GOTO_PAGE' => (($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>'),
 
-				'U_VIEW_FORUM' => append_sid(IP_ROOT_PATH . VIEWFORUM_MG . '?' . $forum_id_append),
-				'U_VIEW_TOPIC' => append_sid(IP_ROOT_PATH . VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append),
+				'U_VIEW_FORUM' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWFORUM . '?' . $forum_id_append),
+				'U_VIEW_TOPIC' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append),
 				)
 			);
 		}
 
-		$pagination = generate_pagination('watched_topics.' . PHP_EXT . '?mode=watched_topics', $watch_count, $board_config['topics_per_page'], $start);
+		$pagination = generate_pagination('watched_topics.' . PHP_EXT . '?mode=watched_topics', $watch_count, $config['topics_per_page'], $start);
 
 		$template->assign_vars(array(
 			'PAGINATION' => $pagination,
-			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($watch_count / $board_config['topics_per_page'])),
+			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($watch_count / $config['topics_per_page'])),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)
 		);
@@ -225,8 +209,6 @@ else
 	$template->assign_block_vars('switch_no_watched_topics', array());
 }
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('watched_topics_body.tpl', $lang['Watched_Topics'], '', '');
 
 ?>

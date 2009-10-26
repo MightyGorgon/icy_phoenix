@@ -45,11 +45,11 @@ function get_user_news_auth_access($forum_topic)
 	{
 		if ($forum_topic == 'forum')
 		{
-			$auth_sql .= " AND f.forum_id NOT IN ($ignore_forum_sql) ";
+			$auth_sql .= " AND f.forum_id NOT IN (" . $ignore_forum_sql . ") ";
 		}
 		else
 		{
-			$auth_sql .= " AND t.forum_id NOT IN ($ignore_forum_sql) ";
+			$auth_sql .= " AND t.forum_id NOT IN (" . $ignore_forum_sql . ") ";
 		}
 	}
 
@@ -99,11 +99,11 @@ class NewsDataAccess
 	**/
 	function NewsDataAccess($phpbb_root)
 	{
-		global $db, $board_config;
+		global $db, $config;
 
 		$this->db = &$db;
 		$this->root_path = $phpbb_root;
-		$this->config = &$board_config;
+		$this->config = &$config;
 
 		$this->setItemCount(DEFAULT_NUM_ITEMS);
 	}
@@ -124,7 +124,6 @@ class NewsDataAccess
 	function setItemCount($num_items)
 	{
 		$num_items = intval($num_items);
-
 		if($num_items > 0)
 		{
 			$this->num_items = $num_items;
@@ -183,11 +182,7 @@ class NewsDataAccess
 			break;
 		}
 
-		if(!($result = $this->db->sql_query($sql, false, 'news_')))
-		{
-			echo 'Error ' . __LINE__ . ' ' . __FILE__;
-			return array();
-		}
+		$result = $this->db->sql_query($sql, 0, 'news_');
 
 		$cats = array();
 
@@ -255,18 +250,14 @@ class NewsDataAccess
 			ORDER BY " . $news_sort_sql;
 		// End SQL Construction.
 
-		if(!($result = $this->db->sql_query($sql, false, 'news_')))
-		{
-			echo 'Error ' . __LINE__ . ' ' . __FILE__;
-			return array();
-		}
+		$result = $this->db->sql_query($sql, 0, 'news_');
 
 		$checked = array();
 		$recent = array();
 
 		while($row = $this->db->sql_fetchrow($result))
 		{
-			if(count($recent) >= $num_items)
+			if(sizeof($recent) >= $num_items)
 			{
 				break;
 			}
@@ -309,38 +300,21 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('forum');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT
-				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
-				n.*,
-				p.*,
-				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . FORUMS_TABLE . ' AS f,
-				' . USERS_TABLE . ' AS u,
-				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TABLE . ' AS p
-			WHERE
-				t.topic_first_post_id = p.post_id
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n, ' . POSTS_TABLE . ' AS p
+			WHERE t.topic_first_post_id = p.post_id
 				AND t.forum_id = f.forum_id
 				AND t.topic_poster = u.user_id
 				AND t.news_id = n.news_id
 				AND t.topic_id = ' . $article_id . '
 				' . $auth_sql . '
 			LIMIT 1';
-		if(!($result = $this->db->sql_query($sql)))
-		{
-			echo 'Error ' . __LINE__ . ' ' . __FILE__;
-			return array();
-		}
-
+		$result = $this->db->sql_query($sql);
 		$article = array();
-
 		if($row = $this->db->sql_fetchrow($result))
 		{
 			$article[] = $row;
 		}
-
 		$this->db->sql_freeresult($result);
 
 		return $article;
@@ -370,40 +344,24 @@ class NewsDataAccess
 			return array();
 		}
 
-		$num_items = $this->num_items;
-
+		$num_items = $this->config['posts_per_page'];
 		$auth_sql = get_user_news_auth_access('topic');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_attachment,
-				p.*,
-				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . USERS_TABLE . ' AS u,
-				' . POSTS_TABLE . ' AS p
-			WHERE
-				t.topic_id = ' . $topic_id . '
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_attachment, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . POSTS_TABLE . ' AS p
+			WHERE t.topic_id = ' . $topic_id . '
 				AND p.topic_id = t.topic_id
 				AND p.post_id <> t.topic_first_post_id
 				AND p.poster_id = u.user_id
 				' . $auth_sql . '
-			ORDER BY
-				p.post_time ASC LIMIT ' . $start . ', ' . $num_items;
-
-		if(!($result = $this->db->sql_query($sql)))
-		{
-			echo $sql;
-			return array();
-		}
-
+			ORDER BY p.post_time ASC LIMIT ' . $start . ', ' . $num_items;
+		$result = $this->db->sql_query($sql);
 		$article = array();
-
 		while($row = $this->db->sql_fetchrow($result))
 		{
 			$article[] = $row;
 		}
-
 		$this->db->sql_freeresult($result);
 
 		return $article;
@@ -434,30 +392,18 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('topic');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT
-				COUNT(t.topic_id) AS news_count
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . USERS_TABLE . ' AS u,
-				' . POSTS_TABLE . ' AS p
-			WHERE
-				t.topic_id = ' . $topic_id . '
-				AND p.topic_id = t.topic_id
+		$sql = 'SELECT COUNT(p.topic_id) AS news_count
+			FROM ' . TOPICS_TABLE . ' AS t, ' . POSTS_TABLE . ' AS p
+			WHERE p.topic_id = ' . $topic_id . '
 				AND p.post_id <> t.topic_first_post_id
-				AND p.poster_id = u.user_id
+				AND t.topic_id = p.topic_id
 				' . $auth_sql;
-
-		if(!($result = $this->db->sql_query($sql)))
-		{
-			return array();
-		}
-
+		$result = $this->db->sql_query($sql);
 		if($row = $this->db->sql_fetchrow($result))
 		{
 			$this->db->sql_freeresult($result);
 			return $row['news_count'];
 		}
-
 		$this->db->sql_freeresult($result);
 
 		return 0;
@@ -479,10 +425,11 @@ class NewsDataAccess
 	**/
 	function fetchDay($day, $month, $year)
 	{
-		global $board_config, $userdata;
-		$tz = $board_config['board_timezone'];
-		$tm = $board_config['default_time_mode'];
-		$tl = $board_config['default_dst_time_lag'];
+		global $config, $userdata;
+
+		$tz = $config['board_timezone'];
+		$tm = $config['default_time_mode'];
+		$tl = $config['default_dst_time_lag'];
 		if ($userdata['session_logged_in'])
 		{
 			$tz = $userdata['user_timezone'];
@@ -492,13 +439,16 @@ class NewsDataAccess
 		switch ($tm)
 		{
 			case MANUAL_DST:
-				$td = ($tl + ($tz * 60)) * 60;
+				//$td = ($tl + ($tz * 60)) * 60;
+				$td = $tl * 60;
 				break;
 			case SERVER_SWITCH:
-				$td = ((date('I') * $tl) + ($tz * 60)) * 60;
+				//$td = ((gmdate('I') * $tl) + ($tz * 60)) * 60;
+				$td = @date('I') * $tl * 60;
 				break;
 			default:
-				$td = ($tl + ($tz * 60)) * 60;
+				//$td = ($tl + ($tz * 60)) * 60;
+				$td = 0;
 				break;
 		}
 
@@ -517,19 +467,9 @@ class NewsDataAccess
 
 		$auth_sql = get_user_news_auth_access('topic');
 
-		$sql = 'SELECT
-				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
-				n.*,
-				p.*,
-				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . FORUMS_TABLE . ' AS f,
-				' . USERS_TABLE . ' AS u,
-				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TABLE . ' AS p
-			WHERE
-				p.post_id = t.topic_first_post_id
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n, ' . POSTS_TABLE . ' AS p
+			WHERE p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
 				' . $ubid_sql . '
 				AND u.user_id = t.topic_poster
@@ -538,22 +478,13 @@ class NewsDataAccess
 				AND t.topic_time >= ' . $interval_begin . '
 				AND t.topic_time <= ' . $interval_end . '
 				' . $auth_sql . '
-			ORDER BY
-				t.topic_time DESC';
-
-		if(!($result = $this->db->sql_query($sql)))
-		{
-			echo 'Error ' . __LINE__ . ' ' . __FILE__;
-			return array();
-		}
-
+			ORDER BY t.topic_time DESC';
+		$result = $this->db->sql_query($sql);
 		$articles = array();
-
 		while($row = $this->db->sql_fetchrow($result))
 		{
 			$articles[] = $row;
 		}
-
 		$this->db->sql_freeresult($result);
 
 		return $articles;
@@ -573,10 +504,10 @@ class NewsDataAccess
 	**/
 	function fetchDays($month, $year)
 	{
-		global $board_config, $userdata;
-		$tz = $board_config['board_timezone'];
-		$tm = $board_config['default_time_mode'];
-		$tl = $board_config['default_dst_time_lag'];
+		global $config, $userdata;
+		$tz = $config['board_timezone'];
+		$tm = $config['default_time_mode'];
+		$tl = $config['default_dst_time_lag'];
 		if ($userdata['session_logged_in'])
 		{
 			$tz = $userdata['user_timezone'];
@@ -586,13 +517,16 @@ class NewsDataAccess
 		switch ($tm)
 		{
 			case MANUAL_DST:
-				$td = ($tl + ($tz * 60)) * 60;
+				//$td = ($tl + ($tz * 60)) * 60;
+				$td = $tl * 60;
 				break;
 			case SERVER_SWITCH:
-				$td = ((date('I') * $tl) + ($tz * 60)) * 60;
+				//$td = ((gmdate('I') * $tl) + ($tz * 60)) * 60;
+				$td = @date('I') * $tl * 60;
 				break;
 			default:
-				$td = ($tl + ($tz * 60)) * 60;
+				//$td = ($tl + ($tz * 60)) * 60;
+				$td = 0;
 				break;
 		}
 
@@ -612,34 +546,22 @@ class NewsDataAccess
 
 		$auth_sql = get_user_news_auth_access('topic');
 
-		$sql = 'SELECT
-				t.topic_time
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . NEWS_TABLE . ' AS n
-			WHERE
-				n.news_id = t.news_id
+		$sql = 'SELECT t.topic_time
+			FROM ' . TOPICS_TABLE . ' AS t, ' . NEWS_TABLE . ' AS n
+			WHERE n.news_id = t.news_id
 				' . $ubid_sql . '
 				AND t.news_id > 0
 				AND t.topic_time > ' . $interval_begin . '
 				AND t.topic_time < ' . $interval_end . '
 				' . $auth_sql . '
-			ORDER BY
-				t.topic_time DESC';
-
-		if (!($result = $this->db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query forum news information', '', __LINE__, __FILE__, $sql);
-		}
-
+			ORDER BY t.topic_time DESC';
+		$result = $this->db->sql_query($sql);
 		$days = array_fill(1, 32, 0);
-
 		while($row = $this->db->sql_fetchrow($result))
 		{
 			$days[intval(create_date('j', $row['topic_time'], $tz))]++;
 			//$days[intval(create_date('j', $row['topic_time'], 0))]++;
 		}
-
 		$this->db->sql_freeresult($result);
 
 		return $days;
@@ -658,10 +580,10 @@ class NewsDataAccess
 	**/
 	function fetchMonths($year)
 	{
-		global $board_config, $userdata;
-		$tz = $board_config['board_timezone'];
-		$tm = $board_config['default_time_mode'];
-		$tl = $board_config['default_dst_time_lag'];
+		global $config, $userdata;
+		$tz = $config['board_timezone'];
+		$tm = $config['default_time_mode'];
+		$tl = $config['default_dst_time_lag'];
 		if ($userdata['session_logged_in'])
 		{
 			$tz = $userdata['user_timezone'];
@@ -671,13 +593,16 @@ class NewsDataAccess
 		switch ($tm)
 		{
 			case MANUAL_DST:
-				$td = ($tl + ($tz * 60)) * 60;
+				//$td = ($tl + ($tz * 60)) * 60;
+				$td = $tl * 60;
 				break;
 			case SERVER_SWITCH:
-				$td = ((date('I') * $tl) + ($tz * 60)) * 60;
+				//$td = ((gmdate('I') * $tl) + ($tz * 60)) * 60;
+				$td = @date('I') * $tl * 60;
 				break;
 			default:
-				$td = ($tl + ($tz * 60)) * 60;
+				//$td = ($tl + ($tz * 60)) * 60;
+				$td = 0;
 				break;
 		}
 
@@ -697,34 +622,22 @@ class NewsDataAccess
 
 		$auth_sql = get_user_news_auth_access('topic');
 
-		$sql = 'SELECT
-				t.topic_time
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . NEWS_TABLE . ' AS n
-			WHERE
-				n.news_id = t.news_id
+		$sql = 'SELECT t.topic_time
+			FROM ' . TOPICS_TABLE . ' AS t, ' . NEWS_TABLE . ' AS n
+			WHERE n.news_id = t.news_id
 				' . $ubid_sql . '
 				AND t.news_id > 0
 				AND t.topic_time > ' . $interval_begin . '
 				AND t.topic_time < ' . $interval_end . '
 				' . $auth_sql . '
-			ORDER BY
-				t.topic_time DESC';
-
-		if (!($result = $this->db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query forum news information', '', __LINE__, __FILE__, $sql);
-		}
-
+			ORDER BY t.topic_time DESC';
+		$result = $this->db->sql_query($sql);
 		$months = array_fill(1, 12, 0);
-
 		while($row = $this->db->sql_fetchrow($result))
 		{
 			$months[intval(create_date('n', $row['topic_time'], $tz))]++;
 			//$months[intval(create_date('n', $row['topic_time'], 0))]++;
 		}
-
 		$this->db->sql_freeresult($result);
 
 		return $months;
@@ -750,25 +663,14 @@ class NewsDataAccess
 			$ubid_sql = 'AND t.topic_poster = \'' . $ubid . '\'';
 		}
 
-		$sql = 'SELECT
-				MAX(t.topic_time) AS max_time,
-				MIN(t.topic_time) AS min_time
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . NEWS_TABLE . ' AS n
-			WHERE
-				n.news_id = t.news_id
+		$sql = 'SELECT MAX(t.topic_time) AS max_time, MIN(t.topic_time) AS min_time
+			FROM ' . TOPICS_TABLE . ' AS t, ' . NEWS_TABLE . ' AS n
+			WHERE n.news_id = t.news_id
 				' . $ubid_sql . '
 				AND t.news_id > 0
 				' . $auth_sql;
-
-		if (!($result = $this->db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not query forum news information', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $this->db->sql_query($sql);
 		$years = array();
-
 		if($row = $this->db->sql_fetchrow($result))
 		{
 			$years['min'] = intval(create_date('Y', $row['min_time'], $tz));
@@ -818,30 +720,18 @@ class NewsDataAccess
 		}
 
 		$num_items = $this->num_items;
-
 		$auth_sql = get_user_news_auth_access('forum');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT
-				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment,
-				n.*,
-				p.*,
-				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . FORUMS_TABLE . ' AS f,
-				' . USERS_TABLE . ' AS u,
-				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TABLE . ' AS p
-			WHERE
-				p.post_id = t.topic_first_post_id
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n, ' . POSTS_TABLE . ' AS p
+			WHERE p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
 				' . $ubid_sql . '
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id
 				AND t.news_id > 0
 				' . $auth_sql;
-
 		if($cat_id > 0)
 		{
 			$sql .= 'AND t.news_id = ' . $cat_id . ' ';
@@ -854,7 +744,7 @@ class NewsDataAccess
 			$sql .= 'ORDER BY RAND() LIMIT ';
 		}
 
-		if ($is_block == false)
+		if (!$is_block)
 		{
 			switch($sort)
 			{
@@ -876,22 +766,7 @@ class NewsDataAccess
 		$sql .= $start . ', ' . $num_items;
 		// End SQL Construction.
 
-		if ($is_block == true)
-		{
-			if(!($result = $this->db->sql_query($sql)))
-			{
-				echo 'Error ' . __LINE__ . ' ' . __FILE__;
-				return array();
-			}
-		}
-		else
-		{
-			if(!($result = $this->db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER)))
-			{
-				echo 'Error ' . __LINE__ . ' ' . __FILE__;
-				return array();
-			}
-		}
+		$result = (!$is_block ? $this->db->sql_query($sql, 0, 'posts_', POSTS_CACHE_FOLDER) : $this->db->sql_query($sql));
 
 		$articles = array();
 
@@ -935,36 +810,21 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('forum');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT
-				COUNT(t.topic_id) AS a_count
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . FORUMS_TABLE . ' AS f,
-				' . USERS_TABLE . ' AS u,
-				' . NEWS_TABLE . ' AS n,
-				' . POSTS_TABLE . ' AS p
-			WHERE
-				p.post_id = t.topic_first_post_id
+		$sql = 'SELECT COUNT(t.topic_id) AS a_count
+			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n
+			WHERE t.news_id > 0
 				AND f.forum_id = t.forum_id
 				' . $ubid_sql . '
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id
-				AND t.news_id > 0
 				' . $auth_sql;
-
 		if($cat_id > 0)
 		{
 			$sql .= 'AND t.news_id = ' . $cat_id . ' ';
 		}
-
 		// End SQL Construction.
 
-		if(!($result = $this->db->sql_query($sql)))
-		{
-			echo 'Error ' . __LINE__ . ' ' . __FILE__;
-			return array();
-		}
-
+		$result = $this->db->sql_query($sql);
 		if($row = $this->db->sql_fetchrow($result))
 		{
 			$this->db->sql_freeresult($result);
@@ -1013,21 +873,13 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('topic');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT
-				t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies,
-				n.*,
-				u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
-			FROM
-				' . TOPICS_TABLE . ' AS t,
-				' . USERS_TABLE . ' AS u,
-				' . NEWS_TABLE . ' AS n
-			WHERE
-				u.user_id = t.topic_poster
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, n.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n
+			WHERE u.user_id = t.topic_poster
 				' . $ubid_sql . '
 				AND n.news_id = t.news_id
 				AND t.news_id > 0
 				' . $auth_sql;
-
 		if($cat_id > 0)
 		{
 			$sql .= 'AND t.news_id = ' . $cat_id . ' ';
@@ -1052,19 +904,12 @@ class NewsDataAccess
 		$sql .= $start . ', ' . $num_items;
 		// End SQL Construction.
 
-		if(!($result = $this->db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER)))
-		{
-			echo 'Error ' . __LINE__ . ' ' . __FILE__;
-			return array();
-		}
-
+		$result = (empty($ubid_sql) ? $this->db->sql_query($sql, 0, 'posts_', POSTS_CACHE_FOLDER) : $this->db->sql_query($sql));
 		$titles = array();
-
 		while($row = $this->db->sql_fetchrow($result))
 		{
 			$titles[] = $row;
 		}
-
 		$this->db->sql_freeresult($result);
 
 		return $titles;
@@ -1072,4 +917,5 @@ class NewsDataAccess
 
 	// }}}
 }
+
 ?>

@@ -67,7 +67,7 @@ if(!function_exists('admin_db_prepare_sql'))
 	{
 		$lines     = explode("\n", trim($sql));
 		$sql       = '';
-		$linecount = count($lines);
+		$linecount = sizeof($lines);
 		$output    = '';
 
 		for ($i = 0; $i < $linecount; $i++)
@@ -98,7 +98,7 @@ if ($is_allowed == false)
 }
 // Mighty Gorgon - ACP Privacy - END
 
-include_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bb_db_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bb_db_admin.' . PHP_EXT);
 
 
 if (isset($_POST['mode']) || isset($_GET['mode']))
@@ -181,7 +181,7 @@ if (isset($_POST['field_dynamic']))
 	$r	= $db->sql_query($q);
 	$d	= $db->sql_fetchrowset($r);
 	$qs = $qd = array();
-	for ($x = 0; $x < count($d); $x++)
+	for ($x = 0; $x < sizeof($d); $x++)
 	{
 		if ($new_names[$x] != $old_names[$x])
 		{
@@ -191,7 +191,7 @@ if (isset($_POST['field_dynamic']))
 	}
 
 	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
-	for ($x = 0; $x < count($qs); $x++)
+	for ($x = 0; $x < sizeof($qs); $x++)
 	{
 		echo '	<tr>';
 		echo '		<th width="100%">';
@@ -208,7 +208,11 @@ if (isset($_POST['field_dynamic']))
 		echo '	<tr>';
 		echo '		<td class="row2">';
 		echo '			<span class="genmed">';
-		if (!$db->sql_query($qs[$x]))
+		$db->sql_return_on_error(true);
+		$r = $db->sql_query($qs[$x]);
+		$db->sql_return_on_error(false);
+
+		if (!$r)
 		{
 			$error = $db->sql_error();
 			echo $error['message'];
@@ -263,7 +267,7 @@ if ($mode == 'sql_change')
 			message_die(GENERAL_ERROR, $lang['db_no_query']);
 		}
 
-		for ($x = 0; $x < count($new_sql); $x++)
+		for ($x = 0; $x < sizeof($new_sql); $x++)
 		{
 			if ($new_sql[$x])
 			{
@@ -271,7 +275,7 @@ if ($mode == 'sql_change')
 			}
 		}
 
-		for ($x = 0; $x < count($sql_2); $x++)
+		for ($x = 0; $x < sizeof($sql_2); $x++)
 		{
 			if (!$sql_2[$x])
 			{
@@ -302,7 +306,11 @@ if ($mode == 'sql_change')
 			$q = stripslashes($sql_2[$x]);
 			if ($select_statement)
 				{
-				if (!($r = $db->sql_query($q)))
+					$db->sql_return_on_error(true);
+					$r = $db->sql_query($q);
+					$db->sql_return_on_error(false);
+
+				if (!$r)
 					{
 				$error = $db->sql_error();
 				echo $error['message'];
@@ -312,13 +320,17 @@ if ($mode == 'sql_change')
 				$row = $db->sql_fetchrow($r);
 				$keys = array_keys($row);
 				$vals = array_values($row);
-					for ($y = 0; $y < count($keys); $y++)
+					for ($y = 0; $y < sizeof($keys); $y++)
 						echo $keys[$y] .': '. $vals[$y] .'<br />';
 					}
 				}
 			else
 				{
-				if (!($r = $db->sql_query($q)))
+					$db->sql_return_on_error(true);
+					$r = $db->sql_query($q);
+					$db->sql_return_on_error(false);
+
+				if (!$r)
 					{
 				$error = $db->sql_error();
 				echo $error['message'];
@@ -352,7 +364,7 @@ $q = 'SHOW TABLE STATUS';
 $r = $db->sql_query($q);
 $tables = $db->sql_fetchrowset($r);
 
-	for ($x = 0; $x < count($tables); $x++)
+	for ($x = 0; $x < sizeof($tables); $x++)
 		{
 		if ($x == intval($_GET['table']))
 			{
@@ -419,8 +431,8 @@ echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" bord
 echo '	<tr>';
 $fields = '';
 $fields = array();
-$q 	= 'DESCRIBE '. $table_name;
-$r	= $db->sql_query($q);
+$q = 'DESCRIBE '. $table_name;
+$r = $db->sql_query($q);
 	while ($d = $db->sql_fetchrow($r))
 		{
 	if ($d['Field'])
@@ -433,10 +445,10 @@ $r	= $db->sql_query($q);
 		}
 echo '	</tr>';
 
-	for ($x = 0; $x < count($row); $x++)
+	for ($x = 0; $x < sizeof($row); $x++)
 		{
 	echo '	<tr>';
-		for ($y = 0; $y < count($fields); $y++)
+		for ($y = 0; $y < sizeof($fields); $y++)
 			{
 		echo '		<td class="row2">';
 		echo '			<span class="genmed">';
@@ -526,7 +538,7 @@ $tables = $db->sql_fetchrowset($r);
 
 $records = $size = $overhead = $table = 0;
 $selected_tables = array();
-	for ($x = 0; $x < count($tables); $x++)
+	for ($x = 0; $x < sizeof($tables); $x++)
 	{
 		echo '	<tr>';
 		echo '		<td class="row2">';
@@ -667,7 +679,7 @@ $q = 'SHOW TABLE STATUS';
 $r = $db->sql_query($q);
 $tables = $db->sql_fetchrowset($r);
 
-	for ($x = 0; $x < count($tables); $x++)
+	for ($x = 0; $x < sizeof($tables); $x++)
 		{
 		if ($x == intval($_GET['table']))
 			{
@@ -697,7 +709,7 @@ $q = 'SHOW TABLE STATUS';
 $r = $db->sql_query($q);
 $tables = $db->sql_fetchrowset($r);
 
-	for ($x = 0; $x < count($tables); $x++)
+	for ($x = 0; $x < sizeof($tables); $x++)
 		{
 		if ($x == intval($_GET['table']))
 			{
@@ -727,7 +739,7 @@ $q = 'SHOW TABLE STATUS';
 $r = $db->sql_query($q);
 $tables = $db->sql_fetchrowset($r);
 
-	for ($x = 0; $x < count($tables); $x++)
+	for ($x = 0; $x < sizeof($tables); $x++)
 		{
 		if ($x == intval($_GET['table']))
 			{
@@ -748,7 +760,7 @@ $q = 'SHOW TABLE STATUS';
 $r = $db->sql_query($q);
 $tables = $db->sql_fetchrowset($r);
 
-	for ($x = 0; $x < count($tables); $x++)
+	for ($x = 0; $x < sizeof($tables); $x++)
 		{
 		if ($x == intval($_GET['table']))
 			{
@@ -795,8 +807,8 @@ echo '			</span>';
 echo '		</td>';
 echo '	</tr>';
 
-$q 	= 'DESCRIBE '. $table_name;
-$r	= $db->sql_query($q);
+$q = 'DESCRIBE '. $table_name;
+$r = $db->sql_query($q);
 $f = 0;
 	while ($d = $db->sql_fetchrow($r))
 		{
@@ -849,7 +861,7 @@ if ($mass_change)
 	{
 unset($tables_to_change, $do_optimize, $do_truncate, $do_repair, $do_drop, $q, $l, $msg);
 $tables_to_change = isset($_POST['selected_tables']) ? $_POST['selected_tables'] : '';
-	if (count($tables_to_change) > '0')
+	if (sizeof($tables_to_change) > '0')
 		{
 	$do_optimize 	= isset($_POST['Optimize']) ? TRUE : '';
 	$do_repair 		= isset($_POST['Repair']) ? TRUE : '';
@@ -877,13 +889,18 @@ $tables_to_change = isset($_POST['selected_tables']) ? $_POST['selected_tables']
 		$l = $lang['db_dro_success'];
 			}
 
-		for ($x = 0; $x < count($tables_to_change); $x++)
+		for ($x = 0; $x < sizeof($tables_to_change); $x++)
 			{
 		$q2 = $q . $tables_to_change[$x];
-		if ($db->sql_query($q2))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($q2);
+		$db->sql_return_on_error(false);
+		if ($result)
+		{
 			$msg .= sprintf($l, $tables_to_change[$x]) .'<br />';
-			}
-	message_die(GENERAL_MESSAGE, $msg .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['PHP_SELF'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
+		}
+	}
+		message_die(GENERAL_MESSAGE, $msg .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['PHP_SELF'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
 		}
 	}
 

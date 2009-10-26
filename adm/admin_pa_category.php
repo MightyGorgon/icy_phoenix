@@ -39,7 +39,7 @@ if($mode == 'do_add' && !$cat_id)
 {
 	$cat_id = $pafiledb->update_add_cat();
 	$mode = 'add';
-	if(!count($pafiledb->error))
+	if(!sizeof($pafiledb->error))
 	{
 		$pafiledb->_pafiledb();
 		$message = $lang['Catadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $cat_id) . '">', '</a>');
@@ -49,7 +49,7 @@ if($mode == 'do_add' && !$cat_id)
 elseif($mode == 'do_add' && $cat_id)
 {
 	$cat_id = $pafiledb->update_add_cat($cat_id);
-	if(!count($pafiledb->error))
+	if(!sizeof($pafiledb->error))
 	{
 		$pafiledb->_pafiledb();
 		$message = $lang['Catedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $cat_id) . '">', '</a>');
@@ -59,7 +59,7 @@ elseif($mode == 'do_add' && $cat_id)
 elseif($mode == 'do_delete')
 {
 	$pafiledb->delete_cat($cat_id);
-	if(!count($pafiledb->error))
+	if(!sizeof($pafiledb->error))
 	{
 		$pafiledb->_pafiledb();
 		$message = $lang['Catsdeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -116,7 +116,7 @@ $pafiledb_template->set_filenames(array('admin' => $template_file));
 $pafiledb_template->assign_vars(array(
 	'L_CAT_TITLE' => $l_title,
 	'L_CAT_EXPLAIN' => $l_explain,
-	'ERROR' => (count($pafiledb->error)) ? implode('<br />', $pafiledb->error) : '',
+	'ERROR' => (sizeof($pafiledb->error)) ? implode('<br />', $pafiledb->error) : '',
 
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'S_CAT_ACTION' => append_sid('admin_pa_category.' . PHP_EXT)
@@ -263,7 +263,7 @@ elseif($mode == 'delete')
 $pafiledb_template->display('admin');
 
 $pafiledb->_pafiledb();
-$cache->unload();
+$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

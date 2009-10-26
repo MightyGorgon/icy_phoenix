@@ -70,14 +70,9 @@ if($mode != '')
 
 			$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . "
 				WHERE id = '" . $title_id . "'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't obtain title data", "", __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$title_info = $db->sql_fetchrow($result);
 			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $title_id . '" />';
-
 		}
 
 		$s_hidden_fields .= '<input type="hidden" name="mode" value="save" />';
@@ -140,12 +135,7 @@ if($mode != '')
 
 			$message = $lang['Title_added'];
 		}
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't update/insert into title_infos table", "", __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$db->clear_cache('', TOPICS_CACHE_FOLDER);
 
 		$message .= '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -169,11 +159,7 @@ if($mode != '')
 		{
 			$sql = "DELETE FROM " . TITLE_INFOS_TABLE . "
 							WHERE id = '" . $title_id . "'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't delete title data", "", __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$db->clear_cache('', TOPICS_CACHE_FOLDER);
 
 			$message = $lang['Title_removed'] . '<br /><br />' . sprintf($lang['Click_return_titleadmin'], '<a href="' . append_sid('admin_quick_title.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -190,13 +176,9 @@ if($mode != '')
 		$template->set_filenames(array('body' => ADM_TPL . 'title_list_body.tpl'));
 		$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . "
 						ORDER BY id ASC";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain title data", "", __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$title_rows = $db->sql_fetchrowset($result);
-		$title_count = count($title_rows);
+		$title_count = sizeof($title_rows);
 
 		$template->assign_vars(array(
 			'S_TITLE_ACTION' => append_sid('admin_quick_title.' . PHP_EXT),
@@ -237,20 +219,13 @@ else
 
 	$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . "
 					ORDER BY id ASC LIMIT $start, 40";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain title data", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$title_rows = $db->sql_fetchrowset($result);
-	$title_count = count($title_rows);
+	$title_count = sizeof($title_rows);
 
 	$sql = "SELECT count(*) AS total
 					FROM " . TITLE_INFOS_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Error getting total informations for title', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($total = $db->sql_fetchrow($result))
 	{

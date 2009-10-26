@@ -26,63 +26,55 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-define('PORTAL_INIT', true);
-include(IP_ROOT_PATH . 'includes/functions_cms.' . PHP_EXT);
-cms_config_init($cms_config_vars);
+define('CMS_INIT', true);
+$cms_config_vars = $cache->obtain_cms_config();
+$cms_config_global_blocks = $cache->obtain_cms_global_blocks_config(false);
 
-$page_filename = $db->sql_escape(basename($_SERVER['PHP_SELF']));
-
-$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE filename = '" . $page_filename . "'";
-if(!($layout_result = $db->sql_query($sql, false, 'cms_')))
+if (defined('IN_CMS_PAGE_INDEX'))
 {
-	message_die(CRITICAL_ERROR, "Could not query portal layout information", "", __LINE__, __FILE__, $sql);
-}
-while ($row = $db->sql_fetchrow($layout_result))
-{
-	$layout_row = $row;
-}
-$db->sql_freeresult($layout_result);
-
-$layout = intval($layout_row['lid']);
-$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
-
-$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE lid = '" . $layout . "'";
-if(!($layout_result = $db->sql_query($sql, false, 'cms_')))
-{
-	message_die(CRITICAL_ERROR, "Could not query portal layout information", "", __LINE__, __FILE__, $sql);
-}
-while ($row = $db->sql_fetchrow($layout_result))
-{
-	$layout_row = $row;
-}
-$db->sql_freeresult($layout_result);
-$layout_name = $layout_row['name'];
-$layout_template = $layout_row['template'];
-$cms_global_blocks = ($layout_row['global_blocks'] == 0) ? false : true;
-$cms_page_nav = ($layout_row['page_nav'] == 0) ? false : true;
-
-$is_auth_view = false;
-if ($userdata['user_id'] == ANONYMOUS)
-{
-	$is_auth_view = in_array($layout_row['view'], array(0, 1));
+	if(!empty($_GET['page']))
+	{
+		$layout = intval($_GET['page']);
+		$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
+	}
+	else
+	{
+		$layout = $cms_config_vars['default_portal'];
+	}
 }
 else
 {
-	switch($userdata['user_level'])
+	$page_filename = $db->sql_escape(basename($_SERVER['PHP_SELF']));
+
+	$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE filename = '" . $page_filename . "'";
+	$layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
+	while ($row = $db->sql_fetchrow($layout_result))
 	{
-		case USER:
-			$is_auth_view = in_array($layout_row['view'], array(0, 2));
-			break;
-		case MOD:
-			$is_auth_view = in_array($layout_row['view'], array(0, 2, 3));
-			break;
-		case ADMIN:
-			$is_auth_view = in_array($layout_row['view'], array(0, 1, 2, 3, 4));
-			break;
-		default:
-			$is_auth_view = in_array($layout_row['view'], array(0));
+		$layout_row = $row;
 	}
+	$db->sql_freeresult($layout_result);
+
+	$layout = intval($layout_row['lid']);
+	$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
 }
+
+$cms_default_page = (($layout == $cms_config_vars['default_portal']) ? true : false);
+
+$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE lid = '" . $layout . "'";
+$layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
+while ($row = $db->sql_fetchrow($layout_result))
+{
+	$layout_row = $row;
+}
+$db->sql_freeresult($layout_result);
+$layout_name = $cms_default_page ? false : $layout_row['name'];
+$layout_template = $layout_row['template'];
+$cms_page['global_blocks'] = ($layout_row['global_blocks'] == 0) ? false : true;
+$cms_page['page_nav'] = ($layout_row['page_nav'] == 0) ? false : true;
+
+$is_auth_view = false;
+$auth_level = $ip_cms->cms_blocks_view();
+$is_auth_view = in_array($layout_row['view'], $auth_level);
 
 if(!$is_auth_view)
 {
@@ -90,9 +82,9 @@ if(!$is_auth_view)
 	{
 		$is_auth_view = false;
 		$group_content = explode(',', $layout_row['groups']);
-		for ($i = 0; $i < count($group_content); $i++)
+		for ($i = 0; $i < sizeof($group_content); $i++)
 		{
-			if(in_array(intval($group_content[$i]), cms_groups($userdata['user_id'])))
+			if(in_array(intval($group_content[$i]), $ip_cms->cms_groups($userdata['user_id'])))
 			{
 				$is_auth_view = true;
 				break;
@@ -107,7 +99,7 @@ if(!$is_auth_view)
 	{
 		$page_array = array();
 		$page_array = extract_current_page(IP_ROOT_PATH);
-		redirect(append_sid(IP_ROOT_PATH . LOGIN_MG . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
+		redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
 	}
 	else
 	{
@@ -115,16 +107,32 @@ if(!$is_auth_view)
 	}
 }
 
-// Start output of page
-$page_title = ip_stripslashes($board_config['sitename']) . ' - ' . $layout_name;
-$meta_description = '';
-$meta_keywords = '';
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $layout_name . '</a>';
-//define('SHOW_ONLINE', true);
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+if(empty($layout_template))
+{
+	$layout = $cms_config_vars['default_portal'];
+	$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE lid = '" . $layout . "'";
+	$layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
+	while ($row = $db->sql_fetchrow($layout_result))
+	{
+		$layout_row = $row;
+	}
+	$db->sql_freeresult($layout_result);
+	$layout_name = false;
+	$layout_template = $layout_row['template'];
+	$cms_page['global_blocks'] = ($layout_row['global_blocks'] == 0) ? false : true;
+	$cms_page['page_nav'] = ($layout_row['page_nav'] == 0) ? false : true;
+}
 
-// Tell the template class which template to use.
-$template->set_filenames(array('body' => 'layout/' . $layout_template));
+
+$meta_content['page_title'] = htmlspecialchars($config['sitename']);
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
+
+if (!$cms_default_page)
+{
+	$meta_content['page_title'] = (!empty($layout_name) ? htmlspecialchars($layout_name) : htmlspecialchars($config['sitename']));
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
+}
 
 if (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] >= CMS_CONTENT_MANAGER))
 {
@@ -134,30 +142,35 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] >= CMS_CO
 }
 else
 {
-	$cms_acp_url;
+	$cms_acp_url = '';
 }
 
+$layout_name_add = '';
 $query = $_SERVER['QUERY_STRING'];
 if (preg_match("/news=categories/", $query))
 {
-	$layout_name = $layout_name . ' - ' . $lang['NEWS_CAT'];
+	$layout_name_add = $lang['LINK_NEWS_CAT'];
 }
 elseif (preg_match("/news=archives/", $query))
 {
-	$layout_name = $layout_name . ' - ' . $lang['NEWS_ARC'];
+	$layout_name_add = $lang['LINK_NEWS_ARC'];
+}
+
+if (!empty($layout_name_add))
+{
+	$layout_name = (empty($layout_name) ? '' : ($layout_name . ' - ')) . $layout_name_add;
 }
 
 $template->assign_vars(array(
-	'CMS_PAGE_TITLE' => htmlspecialchars($layout_name),
-	'S_PAGE_NAV' => $cms_page_nav,
-	'S_GLOBAL_BLOCKS' => $cms_global_blocks,
+	'CMS_PAGE_TITLE' => (!empty($layout_name) ? htmlspecialchars($layout_name) : htmlspecialchars($config['sitename'])),
+	'S_PAGE_NAV' => $cms_page['page_nav'],
+	'S_GLOBAL_BLOCKS' => $cms_page['global_blocks'],
 	)
 );
 
 // Start Blocks
-cms_parse_blocks($layout, false, false, '');
+$ip_cms->cms_parse_blocks($layout, false, false, '');
 
-$template->pparse('body');
+full_page_generation('layout/' . $layout_template, $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 ?>

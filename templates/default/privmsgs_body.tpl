@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {CPL_MENU_OUTPUT}
 <form method="post" name="privmsg_list" action="{S_PRIVMSGS_ACTION}">
 
@@ -65,7 +67,7 @@ function select_switch(status)
 </table>
 </div>
 
-<div style="text-align:left;"><span class="img-btn">{POST_PM_IMG}</span></div>
+<div style="text-align: left;"><span class="img-btn">{POST_PM_IMG}</span></div>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{BOX_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -124,3 +126,5 @@ function select_switch(status)
 	</td>
 	</tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

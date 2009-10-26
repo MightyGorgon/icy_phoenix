@@ -9,7 +9,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -95,14 +95,14 @@ switch($result)
 // Error notification details
 $server_url = create_server_url();
 
-$notification_email = $board_config['board_email'];
-$sitename = ip_stripslashes($board_config['sitename']);
-$datecode = date('Ymd');
-$logs_path = !empty($board_config['logs_path']) ? $board_config['logs_path'] : 'logs';
+$notification_email = $config['board_email'];
+$sitename = $config['sitename'];
+$datecode = gmdate('Ymd');
+$logs_path = !empty($config['logs_path']) ? $config['logs_path'] : 'logs';
 $errors_log = $logs_path . '/errors_' . $datecode . '.txt';
 //$errors_log = 'logs/errors.txt';
 
-if (($board_config['write_errors_log'] == true) && ($log[$result] == 'Y'))
+if (($config['write_errors_log'] == true) && ($log[$result] == 'Y'))
 {
 	errors_notification('L', $result, $sitename, $subject, $errors_log, $notification_email);
 }
@@ -113,25 +113,16 @@ if ($email[$result] == 'Y')
 }
 
 // Start output of page
-$page_title = $lang['Error'];
-$meta_description = '';
-$meta_keywords = '';
-$board_config['thumbnail_lightbox'] = false;
-$board_config['thumbnail_highslide'] = false;
-$board_config['ajax_features'] = false;
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'errors_body.tpl'));
+$config['thumbnail_lightbox'] = false;
+$config['thumbnail_highslide'] = false;
+$config['ajax_features'] = false;
 
 $template->assign_vars(array(
 	'ERROR_MESSAGE' => $error_msg
 	)
 );
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-
+full_page_generation('errors_body.tpl', $lang['Error'], '', '');
 
 function errors_notification($action, $result, $sitename, $subject, $errors_log, $notification_email)
 {
@@ -147,7 +138,7 @@ function errors_notification($action, $result, $sitename, $subject, $errors_log,
 	$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
 	$server_name = (!empty($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : getenv('SERVER_NAME');
 
-	$date = date('Y/m/d - H:i:s');
+	$date = gmdate('Y/m/d - H:i:s');
 
 	if ( ($action == 'L') || ($action == 'LM') )
 	{

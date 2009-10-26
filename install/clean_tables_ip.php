@@ -89,10 +89,10 @@ class html
 $html = new html();
 
 // Did the user submitted the form?
-if (isset($HTTP_POST_VARS['submit']))
+if (isset($_POST['submit']))
 {
-	reset($HTTP_POST_VARS);
-	while (list($key, $value) = each($HTTP_POST_VARS))
+	reset($_POST);
+	while (list($key, $value) = each($_POST))
 	{
 		$key = htmlspecialchars(addslashes($key));
 		$key = str_replace("\'", "''", $key);
@@ -108,11 +108,6 @@ if (isset($HTTP_POST_VARS['submit']))
 
 				$sql = "DELETE FROM " . CONFIG_TABLE . " WHERE config_name = '" . $field . "'";
 				$result = $db->sql_query($sql);
-
-				if (!$result)
-				{
-					message_die(GENERAL_ERROR, "Failed dropping configuration setting '$field'", '', __LINE__, __FILE__, $sql);
-				}
 			}
 
 			// Drop a field
@@ -123,11 +118,6 @@ if (isset($HTTP_POST_VARS['submit']))
 
 				$sql = "ALTER TABLE " . $table . " DROP " . $field;
 				$result = $db->sql_query($sql);
-
-				if (!$result)
-				{
-					message_die(GENERAL_ERROR, "Failed dropping $table.$field", '', __LINE__, __FILE__, $sql);
-				}
 			}
 
 			// Drop a table
@@ -137,11 +127,6 @@ if (isset($HTTP_POST_VARS['submit']))
 
 				$sql = "DROP TABLE " . $table;
 				$result = $db->sql_query($sql);
-
-				if (!$result)
-				{
-					message_die(GENERAL_ERROR, "Failed dropping $table", '', __LINE__, __FILE__, $sql);
-				}
 			}
 		}
 	}
@@ -180,7 +165,7 @@ $valid_fields = array(
 	$table_prefix . 'cash_exchange' => array('ex_cash_id1', 'ex_cash_id2', 'ex_cash_enabled'),
 	$table_prefix . 'cash_groups' => array('group_id', 'group_type', 'cash_id', 'cash_perpost', 'cash_postbonus', 'cash_perreply', 'cash_perthanks', 'cash_perchar', 'cash_maxearn', 'cash_perpm', 'cash_allowance', 'cash_allowanceamount', 'cash_allowancetime', 'cash_allowancenext'),
 	$table_prefix . 'cash_log' => array('log_id', 'log_time', 'log_type', 'log_action', 'log_text'),
-	$table_prefix . 'categories' => array('cat_id', 'cat_main', 'cat_main_type', 'cat_title', 'cat_desc', 'icon', 'cat_order'),
+	$table_prefix . 'categories' => array('cat_id', 'cat_main', 'cat_main_type', 'cat_title', 'cat_title_clean', 'cat_desc', 'icon', 'cat_order'),
 	$table_prefix . 'cms_block_position' => array('bpid', 'layout', 'pkey', 'bposition'),
 	$table_prefix . 'cms_block_variable' => array('bvid', 'bid', 'label', 'sub_label', 'config_name', 'field_options', 'field_values', 'type', 'block'),
 	$table_prefix . 'cms_blocks' => array('bid', 'layout', 'layout_special', 'title', 'content', 'bposition', 'weight', 'active', 'blockfile', 'view', 'cache', 'cache_time', 'type', 'border', 'titlebar', 'background', 'local', 'edit_auth', 'groups'),
@@ -221,7 +206,7 @@ $valid_fields = array(
 	$table_prefix . 'force_read' => array('topic_number', 'message', 'install_date', 'active', 'effected'),
 	$table_prefix . 'force_read_users' => array('user', 'read', 'time'),
 	$table_prefix . 'forum_prune' => array('prune_id', 'forum_id', 'prune_days', 'prune_freq'),
-	$table_prefix . 'forums' => array('forum_id', 'cat_id', 'main_type', 'forum_name', 'forum_desc', 'forum_status', 'forum_order', 'forum_posts', 'forum_topics', 'forum_last_post_id', 'forum_postcount', 'forum_thanks', 'forum_notify', 'forum_similar_topics', 'forum_tags', 'forum_index_icons', 'forum_rules', 'forum_link', 'forum_link_internal', 'forum_link_hit_count', 'forum_link_hit', 'icon', 'prune_next', 'prune_enable', 'auth_view', 'auth_read', 'auth_post', 'auth_reply', 'auth_edit', 'auth_delete', 'auth_sticky', 'auth_announce', 'auth_globalannounce', 'auth_news', 'auth_cal', 'auth_vote', 'auth_pollcreate', 'auth_attachments', 'auth_download', 'auth_ban', 'auth_greencard', 'auth_bluecard', 'auth_rate'),
+	$table_prefix . 'forums' => array('forum_id', 'forum_type', 'cat_id', 'main_type', 'forum_parents', 'forum_name', 'forum_name_clean', 'forum_desc', 'forum_status', 'forum_order', 'forum_posts', 'forum_topics', 'forum_last_post_id', 'forum_last_poster_id', 'forum_last_post_subject', 'forum_last_post_time', 'forum_last_poster_name', 'forum_last_poster_color', 'forum_postcount', 'forum_thanks', 'forum_notify', 'forum_limit_edit_time', 'forum_similar_topics', 'forum_tags', 'forum_index_icons', 'forum_rules', 'forum_link', 'forum_link_internal', 'forum_link_hit_count', 'forum_link_hit', 'icon', 'prune_next', 'prune_enable', 'auth_view', 'auth_read', 'auth_post', 'auth_reply', 'auth_edit', 'auth_delete', 'auth_sticky', 'auth_announce', 'auth_globalannounce', 'auth_news', 'auth_cal', 'auth_vote', 'auth_pollcreate', 'auth_attachments', 'auth_download', 'auth_ban', 'auth_greencard', 'auth_bluecard', 'auth_rate'),
 	$table_prefix . 'forums_rules' => array('forum_id', 'rules', 'rules_display_title', 'rules_custom_title', 'rules_in_viewforum', 'rules_in_viewtopic', 'rules_in_posting'),
 	$table_prefix . 'forums_watch' => array('forum_id', 'user_id', 'notify_status'),
 	$table_prefix . 'google_bot_detector' => array('detect_id', 'detect_time', 'detect_url'),
@@ -259,9 +244,9 @@ $valid_fields = array(
 	$table_prefix . 'pa_license' => array('license_id', 'license_name', 'license_text'),
 	$table_prefix . 'pa_mirrors' => array('mirror_id', 'file_id', 'unique_name', 'file_dir', 'file_dlurl', 'mirror_location'),
 	$table_prefix . 'pa_votes' => array('user_id', 'votes_ip', 'votes_file', 'rate_point', 'voter_os', 'voter_browser', 'browser_version'),
-	$table_prefix . 'posts' => array('post_id', 'topic_id', 'forum_id', 'poster_id', 'post_time', 'poster_ip', 'post_username', 'post_subject', 'post_text', 'post_text_compiled', 'enable_bbcode', 'enable_html', 'enable_smilies', 'enable_sig', 'edit_notes', 'post_edit_time', 'post_edit_count', 'post_edit_id', 'post_attachment', 'post_bluecard', 'enable_autolinks_acronyms'),
-	$table_prefix . 'privmsgs' => array('privmsgs_id', 'privmsgs_type', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_date', 'privmsgs_ip', 'privmsgs_enable_bbcode', 'privmsgs_enable_html', 'privmsgs_enable_smilies', 'privmsgs_attach_sig', 'privmsgs_attachment', 'privmsgs_enable_autolinks_acronyms'),
-	$table_prefix . 'privmsgs_archive' => array('privmsgs_id', 'privmsgs_type', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_date', 'privmsgs_ip', 'privmsgs_enable_bbcode', 'privmsgs_enable_html', 'privmsgs_enable_smilies', 'privmsgs_attach_sig', 'privmsgs_attachment', 'privmsgs_enable_autolinks_acronyms'),
+	$table_prefix . 'posts' => array('post_id', 'topic_id', 'forum_id', 'poster_id', 'post_time', 'poster_ip', 'post_username', 'post_subject', 'post_text', 'post_text_compiled', 'enable_bbcode', 'enable_html', 'enable_smilies', 'enable_autolinks_acronyms', 'enable_sig', 'edit_notes', 'post_edit_time', 'post_edit_count', 'post_edit_id', 'post_attachment', 'post_bluecard'),
+	$table_prefix . 'privmsgs' => array('privmsgs_id', 'privmsgs_type', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_date', 'privmsgs_ip', 'privmsgs_enable_bbcode', 'privmsgs_enable_html', 'privmsgs_enable_smilies', 'privmsgs_enable_autolinks_acronyms', 'privmsgs_attach_sig', 'privmsgs_attachment'),
+	$table_prefix . 'privmsgs_archive' => array('privmsgs_id', 'privmsgs_type', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_date', 'privmsgs_ip', 'privmsgs_enable_bbcode', 'privmsgs_enable_html', 'privmsgs_enable_smilies', 'privmsgs_enable_autolinks_acronyms', 'privmsgs_attach_sig', 'privmsgs_attachment'),
 	$table_prefix . 'privmsgs_text' => array('privmsgs_text_id', 'privmsgs_text'),
 	$table_prefix . 'profile_fields' => array('field_id', 'field_name', 'field_description', 'field_type', 'text_field_default', 'text_field_maxlen', 'text_area_default', 'text_area_maxlen', 'radio_button_default', 'radio_button_values', 'checkbox_default', 'checkbox_values', 'is_required', 'users_can_view', 'view_in_profile', 'profile_location', 'view_in_memberlist', 'view_in_topic', 'topic_location'),
 	$table_prefix . 'profile_view' => array('user_id', 'viewername', 'viewer_id', 'view_stamp', 'counter'),
@@ -288,21 +273,22 @@ $valid_fields = array(
 	$table_prefix . 'sudoku_users' => array('user_id', 'game_pack', 'game_num', 'game_level', 'line_1', 'line_2', 'line_3', 'line_4', 'line_5', 'line_6', 'line_7', 'line_8', 'line_9', 'points', 'done'),
 	$table_prefix . 'thanks' => array('topic_id', 'user_id', 'thanks_time'),
 	$table_prefix . 'themes' => array('themes_id', 'template_name', 'style_name', 'head_stylesheet', 'body_background', 'body_bgcolor', 'tr_class1', 'tr_class2', 'tr_class3', 'td_class1', 'td_class2', 'td_class3'),
+	$table_prefix . 'tickets_cat' => array('ticket_cat_id', 'ticket_cat_title', 'ticket_cat_des', 'ticket_cat_emails'),
 	$table_prefix . 'title_infos' => array('id', 'title_info', 'date_format', 'admin_auth', 'mod_auth', 'poster_auth'),
 	$table_prefix . 'topic_view' => array('topic_id', 'user_id', 'view_time', 'view_count'),
-	$table_prefix . 'topics' => array('topic_id', 'forum_id', 'topic_title', 'topic_desc', 'topic_poster', 'topic_time', 'topic_views', 'topic_replies', 'topic_status', 'topic_vote', 'topic_type', 'topic_first_post_id', 'topic_last_post_id', 'topic_moved_id', 'topic_attachment', 'title_compl_infos', 'news_id', 'topic_calendar_time', 'topic_calendar_duration', 'topic_reg', 'topic_rating', 'topic_show_portal'),
+	$table_prefix . 'topics' => array('topic_id', 'forum_id', 'topic_title', 'topic_title_clean', 'topic_ftitle_clean', 'topic_tags', 'topic_desc', 'topic_similar_topics', 'topic_poster', 'topic_time', 'topic_views', 'topic_replies', 'topic_status', 'topic_vote', 'topic_type', 'topic_first_post_id', 'topic_first_post_time', 'topic_first_poster_id', 'topic_first_poster_name', 'topic_first_poster_color', 'topic_last_post_id', 'topic_last_post_time', 'topic_last_poster_id', 'topic_last_poster_name', 'topic_last_poster_color', 'topic_moved_id', 'topic_attachment', 'title_compl_infos', 'news_id', 'topic_calendar_time', 'topic_calendar_duration', 'topic_reg', 'topic_rating', 'topic_show_portal'),
+	$table_prefix . 'topics_tags' => array('topic_id', 'tag_text'),
 	$table_prefix . 'topics_watch' => array('topic_id', 'user_id', 'notify_status'),
 	$table_prefix . 'upi2db_always_read' => array('topic_id', 'forum_id', 'user_id', 'last_update'),
 	$table_prefix . 'upi2db_last_posts' => array('post_id', 'topic_id', 'forum_id', 'poster_id', 'post_time', 'post_edit_time', 'topic_type', 'post_edit_by'),
 	$table_prefix . 'upi2db_unread_posts' => array('post_id', 'topic_id', 'forum_id', 'user_id', 'status', 'topic_type', 'last_update'),
 	$table_prefix . 'user_group' => array('group_id', 'user_id', 'user_pending'),
-	$table_prefix . 'users' => array('user_id', 'user_active', 'username', 'user_password', 'user_session_time', 'user_session_page', 'user_http_agents', 'user_lastvisit', 'user_regdate', 'user_level', 'user_cms_level', 'user_posts', 'user_timezone', 'user_style', 'user_lang', 'user_dateformat', 'user_new_privmsg', 'user_unread_privmsg', 'user_last_privmsg', 'user_emailtime', 'user_viewemail', 'user_profile_view_popup', 'user_attachsig', 'user_setbm', 'user_allowhtml', 'user_allowbbcode', 'user_allowsmile', 'user_allowavatar', 'user_allow_pm', 'user_allow_pm_in', 'user_allow_mass_email', 'user_allow_viewonline', 'user_notify', 'user_notify_pm', 'user_popup_pm', 'user_rank', 'user_rank2', 'user_rank3', 'user_rank4', 'user_rank5', 'user_avatar', 'user_avatar_type', 'user_email', 'user_icq', 'user_website', 'user_from', 'user_sig', 'user_aim', 'user_yim', 'user_msnm', 'user_occ', 'user_interests', 'user_actkey', 'user_newpasswd', 'ct_search_time', 'ct_search_count', 'ct_last_mail', 'ct_last_post', 'ct_post_counter', 'ct_last_pw_reset', 'ct_enable_ip_warn', 'ct_last_used_ip', 'ct_login_count', 'ct_login_vconfirm', 'ct_last_pw_change', 'ct_global_msg_read', 'ct_miserable_user', 'ct_last_ip', 'user_birthday', 'user_birthday_y', 'user_birthday_m', 'user_birthday_d', 'user_next_birthday_greeting', 'user_sub_forum', 'user_split_cat', 'user_last_topic_title', 'user_sub_level_links', 'user_display_viewonline', 'user_color_group', 'user_color', 'user_gender', 'user_lastlogon', 'user_totaltime', 'user_totallogon', 'user_totalpages', 'user_calendar_display_open', 'user_calendar_header_cells', 'user_calendar_week_start', 'user_calendar_nb_row', 'user_calendar_birthday', 'user_calendar_forum', 'user_warnings', 'user_time_mode', 'user_dst_time_lag', 'user_pc_timeOffsets', 'user_skype', 'user_registered_ip', 'user_registered_hostname', 'user_profile_view', 'user_last_profile_view', 'user_topics_per_page', 'user_hot_threshold', 'user_posts_per_page', 'user_allowswearywords', 'user_showavatars', 'user_showsignatures', 'user_login_tries', 'user_last_login_try', 'user_sudoku_playing', 'user_from_flag', 'user_phone', 'user_selfdes', 'user_upi2db_which_system', 'user_upi2db_disable', 'user_upi2db_datasync', 'user_upi2db_new_word', 'user_upi2db_edit_word', 'user_upi2db_unread_color', 'user_personal_pics_count', 'user_allow_new_download_email', 'user_allow_fav_download_email', 'user_allow_new_download_popup', 'user_allow_fav_download_popup', 'user_dl_update_time', 'user_new_download', 'user_traffic', 'user_download_counter', 'user_dl_note_type', 'user_dl_sort_fix', 'user_dl_sort_opt', 'user_dl_sort_dir'),
+	$table_prefix . 'users' => array('user_id', 'user_active', 'username', 'username_clean', 'user_password', 'user_session_time', 'user_session_page', 'user_http_agents', 'user_lastvisit', 'user_regdate', 'user_level', 'user_cms_level', 'user_posts', 'user_timezone', 'user_style', 'user_lang', 'user_dateformat', 'user_new_privmsg', 'user_unread_privmsg', 'user_last_privmsg', 'user_emailtime', 'user_viewemail', 'user_profile_view_popup', 'user_attachsig', 'user_setbm', 'user_allowhtml', 'user_allowbbcode', 'user_allowsmile', 'user_allowavatar', 'user_allow_pm', 'user_allow_pm_in', 'user_allow_mass_email', 'user_allow_viewonline', 'user_notify', 'user_notify_pm', 'user_popup_pm', 'user_rank', 'user_rank2', 'user_rank3', 'user_rank4', 'user_rank5', 'user_avatar', 'user_avatar_type', 'user_email', 'user_icq', 'user_website', 'user_from', 'user_sig', 'user_aim', 'user_yim', 'user_msnm', 'user_occ', 'user_interests', 'user_actkey', 'user_newpasswd', 'ct_search_time', 'ct_search_count', 'ct_last_mail', 'ct_last_post', 'ct_post_counter', 'ct_last_pw_reset', 'ct_enable_ip_warn', 'ct_last_used_ip', 'ct_login_count', 'ct_login_vconfirm', 'ct_last_pw_change', 'ct_global_msg_read', 'ct_miserable_user', 'ct_last_ip', 'user_birthday', 'user_birthday_y', 'user_birthday_m', 'user_birthday_d', 'user_next_birthday_greeting', 'user_sub_forum', 'user_split_cat', 'user_last_topic_title', 'user_sub_level_links', 'user_display_viewonline', 'user_color_group', 'user_color', 'user_gender', 'user_lastlogon', 'user_totaltime', 'user_totallogon', 'user_totalpages', 'user_calendar_display_open', 'user_calendar_header_cells', 'user_calendar_week_start', 'user_calendar_nb_row', 'user_calendar_birthday', 'user_calendar_forum', 'user_warnings', 'user_time_mode', 'user_dst_time_lag', 'user_pc_timeOffsets', 'user_skype', 'user_registered_ip', 'user_registered_hostname', 'user_profile_view', 'user_last_profile_view', 'user_topics_per_page', 'user_hot_threshold', 'user_posts_per_page', 'user_allowswearywords', 'user_showavatars', 'user_showsignatures', 'user_login_tries', 'user_last_login_try', 'user_sudoku_playing', 'user_from_flag', 'user_phone', 'user_selfdes', 'user_upi2db_which_system', 'user_upi2db_disable', 'user_upi2db_datasync', 'user_upi2db_new_word', 'user_upi2db_edit_word', 'user_upi2db_unread_color', 'user_personal_pics_count', 'user_allow_new_download_email', 'user_allow_fav_download_email', 'user_allow_new_download_popup', 'user_allow_fav_download_popup', 'user_dl_update_time', 'user_new_download', 'user_traffic', 'user_download_counter', 'user_dl_note_type', 'user_dl_sort_fix', 'user_dl_sort_opt', 'user_dl_sort_dir'),
 	$table_prefix . 'vote_desc' => array('vote_id', 'topic_id', 'vote_text', 'vote_start', 'vote_length'),
 	$table_prefix . 'vote_results' => array('vote_id', 'vote_option_id', 'vote_option_text', 'vote_result'),
 	$table_prefix . 'vote_voters' => array('vote_id', 'vote_user_id', 'vote_user_ip', 'vote_cast'),
 	$table_prefix . 'words' => array('word_id', 'word', 'replacement'),
 	$table_prefix . 'xs_news' => array('news_id', 'news_date', 'news_text', 'news_display', 'news_smilies'),
-	$table_prefix . 'xs_news_cfg' => array('config_name', 'config_value'),
 	$table_prefix . 'xs_news_xml' => array('xml_id', 'xml_title', 'xml_show', 'xml_feed', 'xml_is_feed', 'xml_width', 'xml_height', 'xml_font', 'xml_speed', 'xml_direction'),
 	$table_prefix . 'zebra' => array('user_id', 'zebra_id', 'friend', 'foe')
 );
@@ -371,10 +357,7 @@ while (list(, $table_name) = each($tables))
 $unknown_config = array();
 
 $sql = "SELECT config_name FROM " . CONFIG_TABLE . " WHERE config_name NOT IN ('" . implode("', '", $config_records) . "')";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, "Failed getting configuration records", '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while ($config_data = $db->sql_fetchrow($result))
 {
@@ -441,7 +424,7 @@ else
 	// Unknown fields
 	$html->title($lang['unknown_fields']);
 
-	if (count($unknown_fields) > 0)
+	if (sizeof($unknown_fields) > 0)
 	{
 		reset($unknown_fields);
 
@@ -466,7 +449,7 @@ else
 	// Unknown tables
 	$html->title($lang['unknown_tables']);
 
-	if (count($unknown_tables) > 0)
+	if (sizeof($unknown_tables) > 0)
 	{
 		reset($unknown_tables);
 
@@ -488,7 +471,7 @@ else
 	// Unknown config settings
 	$html->title($lang['unknown_config']);
 
-	if (count($unknown_config) > 0)
+	if (sizeof($unknown_config) > 0)
 	{
 		reset($unknown_config);
 
@@ -507,7 +490,7 @@ else
 		print '<tr><td class="row1 row-center" colspan="2"><span class="genmed"><br /><span class="text_green"><b>' . $lang['no_config_found'] . '</b></span><br />&nbsp;</span></td></tr>';
 	}
 
-	print '<tr><td class="cat" colspan="2"><input class="mainoption" name="submit" type="submit" value="' . $lang['submit_button_caption'] . '"' . ((count($unknown_fields) == 0 && count($unknown_tables) == 0 && count($unknown_config) == 0) ? ' disabled="disabled"' : '') .  '/></td></tr>';
+	print '<tr><td class="cat" colspan="2"><input class="mainoption" name="submit" type="submit" value="' . $lang['submit_button_caption'] . '"' . ((sizeof($unknown_fields) == 0 && sizeof($unknown_tables) == 0 && sizeof($unknown_config) == 0) ? ' disabled="disabled"' : '') .  '/></td></tr>';
 }
 ?>
 			</td>

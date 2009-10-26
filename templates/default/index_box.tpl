@@ -101,7 +101,7 @@ if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
 	<td class="row1 row-center-small" width="180" nowrap="nowrap"{catrow.forumrow.LINKS_ROWSPAN}><span class="gensmall"><!-- IF S_BOT -->&nbsp;<!-- ELSE -->{catrow.forumrow.LAST_POST}<!-- ENDIF --></span></td>
 	<!-- END forum_link_no -->
 	<!-- BEGIN forum_link -->
-	<td class="row1 row-center" align="center" valign="middle" height="50" colspan="3"{catrow.forumrow.LINKS_ROWSPAN}><span class="gensmall">{catrow.forumrow.forum_link.HIT_COUNT}</span></td>
+	<td class="row1 row-center" align="center" valign="middle" height="50" colspan="3"{catrow.forumrow.LINKS_ROWSPAN}><span class="gensmall">{catrow.forumrow.forum_link.HIT_COUNT}&nbsp;</span></td>
 	<!-- END forum_link -->
 </tr>
 <!-- IF catrow.forumrow.LINKS -->

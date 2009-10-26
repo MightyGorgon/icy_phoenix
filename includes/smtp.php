@@ -43,7 +43,7 @@ function server_parse($socket, $response, $line = __LINE__)
 // Replacement or substitute for PHP's mail command
 function smtpmail($mail_to, $subject, $message, $headers = '')
 {
-	global $board_config;
+	global $config;
 
 	// Fix any bare linefeeds in the message to make it RFC821 Compliant.
 	$message = preg_replace("#(?<!\r)\n#si", "\r\n", $message);
@@ -52,7 +52,7 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
 	{
 		if (is_array($headers))
 		{
-			if (count($headers) > 1)
+			if (sizeof($headers) > 1)
 			{
 				$headers = join("\n", $headers);
 			}
@@ -103,9 +103,9 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
 	}
 
 	// Ok we have error checked as much as we can to this point let's get on it already.
-	if( !$socket = @fsockopen($board_config['smtp_host'], 25, $errno, $errstr, 20) )
+	if( !$socket = @fsockopen($config['smtp_host'], 25, $errno, $errstr, 20) )
 	{
-		if ( $board_config['disable_email_error'] == 0 )
+		if ( $config['disable_email_error'] == 0 )
 		{
 			message_die(GENERAL_ERROR, "Could not connect to smtp host : $errno : $errstr", "", __LINE__, __FILE__);
 		}
@@ -120,29 +120,29 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
 
 	// Do we want to use AUTH?, send RFC2554 EHLO, else send RFC821 HELO
 	// This improved as provided by SirSir to accomodate
-	if( !empty($board_config['smtp_username']) && !empty($board_config['smtp_password']) )
+	if( !empty($config['smtp_username']) && !empty($config['smtp_password']) )
 	{
-		fwrite($socket, "EHLO " . $board_config['smtp_host'] . "\r\n");
+		fwrite($socket, "EHLO " . $config['smtp_host'] . "\r\n");
 		server_parse($socket, "250", __LINE__);
 
 		fwrite($socket, "AUTH LOGIN\r\n");
 		server_parse($socket, "334", __LINE__);
 
-		fwrite($socket, base64_encode($board_config['smtp_username']) . "\r\n");
+		fwrite($socket, base64_encode($config['smtp_username']) . "\r\n");
 		server_parse($socket, "334", __LINE__);
 
-		fwrite($socket, base64_encode($board_config['smtp_password']) . "\r\n");
+		fwrite($socket, base64_encode($config['smtp_password']) . "\r\n");
 		server_parse($socket, "235", __LINE__);
 	}
 	else
 	{
-		fwrite($socket, "HELO " . $board_config['smtp_host'] . "\r\n");
+		fwrite($socket, "HELO " . $config['smtp_host'] . "\r\n");
 		server_parse($socket, "250", __LINE__);
 	}
 
 	// From this point onward most server response codes should be 250
 	// Specify who the mail is from....
-	fwrite($socket, "MAIL FROM: <" . $board_config['board_email'] . ">\r\n");
+	fwrite($socket, "MAIL FROM: <" . $config['board_email'] . ">\r\n");
 	server_parse($socket, "250", __LINE__);
 
 	// Specify each user to send to and build to header.

@@ -67,10 +67,7 @@ if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
 			FROM " . GROUPS_TABLE . "
 			WHERE group_single_user <> " . TRUE . "
 			AND group_id = $group_id";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!($group_info = $db->sql_fetchrow($result)))
 		{
@@ -108,10 +105,7 @@ if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
 		$sql = "SELECT user_id, username
 			FROM " . USERS_TABLE . "
 			WHERE user_id = " . $group_info['group_moderator'];
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain user info for moderator list', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!($row = $db->sql_fetchrow($result)))
 		{
@@ -128,10 +122,7 @@ if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
 	$sql = "SELECT * FROM " . RANKS_TABLE . "
 		WHERE rank_special = 1
 		ORDER BY rank_title";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain ranks data', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$rank_select_box = '<option value="0">' . $lang['No_Rank_Special'] . '</option>';
 	while($row = $db->sql_fetchrow($result))
@@ -193,7 +184,7 @@ if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
 		'L_DELETE_MODERATOR_EXPLAIN' => $lang['delete_moderator_explain'],
 		'L_YES' => $lang['Yes'],
 
-		'U_SEARCH_USER' => append_sid('../' . SEARCH_MG . '?mode=searchuser'),
+		'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser'),
 
 		'S_GROUP_OPEN_TYPE' => GROUP_OPEN,
 		'S_GROUP_CLOSED_TYPE' => GROUP_CLOSED,
@@ -219,42 +210,27 @@ elseif (isset($_POST['group_update']))
 		// Is Group moderating a forum ?
 		$sql = "SELECT auth_mod FROM " . AUTH_ACCESS_TABLE . "
 			WHERE group_id = " . $group_id;
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not select auth_access', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		if (intval($row['auth_mod']) == 1)
 		{
 			// Yes, get the assigned users and update their Permission if they are no longer moderator of one of the forums
 			$sql = "SELECT user_id FROM " . USER_GROUP_TABLE . "
 				WHERE group_id = " . $group_id;
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not select user_group', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$rows = $db->sql_fetchrowset($result);
-			for ($i = 0; $i < count($rows); $i++)
+			for ($i = 0; $i < sizeof($rows); $i++)
 			{
 				$sql = "SELECT g.group_id FROM " . AUTH_ACCESS_TABLE . " a, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
 				WHERE (a.auth_mod = 1) AND (g.group_id = a.group_id) AND (a.group_id = ug.group_id) AND (g.group_id = ug.group_id)
 					AND (ug.user_id = " . intval($rows[$i]['user_id']) . ") AND (ug.group_id <> " . $group_id . ")";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not obtain moderator permissions', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				if ($db->sql_numrows($result) == 0)
 				{
 					$sql = "UPDATE " . USERS_TABLE . " SET user_level = " . USER . "
 					WHERE user_level = " . MOD . " AND user_id = " . intval($rows[$i]['user_id']);
-
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not update moderator permissions', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 				}
 			}
 		}
@@ -262,33 +238,20 @@ elseif (isset($_POST['group_update']))
 		// Delete Group
 		$sql = "DELETE FROM " . GROUPS_TABLE . "
 			WHERE group_id = " . $group_id;
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not update group', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 			WHERE group_id = " . $group_id;
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not update user_group', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
 			WHERE group_id = " . $group_id;
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not update auth_access', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color = '" . $board_config['active_users_color'] . "', user_color_group = '0'
+			SET user_color = '" . $config['active_users_color'] . "', user_color_group = '0'
 			WHERE user_color_group = " . $group_id;
-		if (!$db->sql_query($sql_users))
-		{
-			message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
-		}
-
+		$db->sql_query($sql_users);
 		empty_cache_folders(USERS_CACHE_FOLDER);
 
 		$message = $lang['Deleted_group'] . '<br /><br />' . sprintf($lang['Click_return_groupsadmin'], '<a href="' . append_sid('admin_groups.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -335,10 +298,7 @@ elseif (isset($_POST['group_update']))
 				FROM " . GROUPS_TABLE . "
 				WHERE group_single_user <> " . TRUE . "
 				AND group_id = " . $group_id;
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if(!($group_info = $db->sql_fetchrow($result)))
 			{
@@ -352,38 +312,26 @@ elseif (isset($_POST['group_update']))
 					$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 						WHERE user_id = " . $group_info['group_moderator'] . "
 							AND group_id = " . $group_id;
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not update group moderator', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 
 					$sql_users = "UPDATE " . USERS_TABLE . "
-						SET user_color = '" . $board_config['active_users_color'] . "', user_color_group = '0'
+						SET user_color = '" . $config['active_users_color'] . "', user_color_group = '0'
 						WHERE user_id = " . $group_info['group_moderator'] . "
 							AND user_color_group = " . $group_id;
-					if (!$db->sql_query($sql_users))
-					{
-						message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql_users);
 				}
 
 				$sql = "SELECT user_id
 					FROM " . USER_GROUP_TABLE . "
 					WHERE user_id = $group_moderator
 						AND group_id = $group_id";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Failed to obtain current group moderator info', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				if (!($row = $db->sql_fetchrow($result)))
 				{
 					$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 						VALUES (" . $group_id . ", " . $group_moderator . ", 0)";
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not update group moderator', '', __LINE__, __FILE__, $sql);
-					}
+					$db->sql_query($sql);
 				}
 			}
 
@@ -391,21 +339,16 @@ elseif (isset($_POST['group_update']))
 			$sql = "UPDATE " . GROUPS_TABLE . "
 				SET group_type = $group_type, group_name = '" . str_replace("\'", "''", $group_name) . "', group_description = '" . str_replace("\'", "''", $group_description) . "', group_moderator = $group_moderator, group_rank='$group_rank', group_color='$group_color', group_legend='$group_legend', group_count='$group_count', group_count_max='$group_count_max', group_count_enable='$group_count_enable'
 				WHERE group_id = $group_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update group', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			if ($group_count_delete)
 			{
 				//removing old users
 				$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 					WHERE group_id = '" . $group_id . "'
 					AND user_id NOT IN ('" . $group_moderator . "','" . ANONYMOUS . "')";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not remove users, group count', '', __LINE__, __FILE__, $sql);
-				}
-				$group_count_remove=$db->sql_affectedrows();
+				$db->sql_query($sql);
+				$group_count_remove = $db->sql_affectedrows();
 			}
 			if ($group_count_update)
 			{
@@ -415,20 +358,15 @@ elseif (isset($_POST['group_update']))
 					WHERE u.user_posts>='$group_count' AND u.user_posts<'$group_count_max'
 					AND ug.group_id is NULL
 					AND u.user_id NOT IN ('" . $group_moderator . "','" . ANONYMOUS . "')";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, $sql.'Could not select new users, group count', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
+
 				//inserting new users
 				$group_count_added=0;
 				while (($new_members = $db->sql_fetchrow($result)))
 				{
 					$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 						VALUES ('" . $group_id . "', " . $new_members['user_id'] . ", 0)";
-					if (!($result2 = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Error inserting user group, group count', '', __LINE__, __FILE__, $sql);
-					}
+					$result2 = $db->sql_query($sql);
 					$group_count_added++;
 				}
 			}
@@ -436,10 +374,7 @@ elseif (isset($_POST['group_update']))
 			$sql_users = "UPDATE " . USERS_TABLE . "
 				SET user_color = '" . $group_color . "', user_rank = '" . $group_rank . "'
 				WHERE user_color_group = " . $group_id;
-			if (!$db->sql_query($sql_users))
-			{
-				message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql_users);
 
 			empty_cache_folders(USERS_CACHE_FOLDER);
 
@@ -450,39 +385,28 @@ elseif (isset($_POST['group_update']))
 		elseif($mode == 'newgroup')
 		{
 			$sql = "SELECT max(group_legend_order) max_legend_order FROM " . GROUPS_TABLE;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not query from menu table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$group_legend_order = $row['max_legend_order'] + 1;
 
 			$sql = "INSERT INTO " . GROUPS_TABLE . " (group_type, group_name, group_description, group_moderator, group_rank, group_color, group_legend, group_legend_order, group_count, group_count_max, group_count_enable, group_single_user)
 				VALUES ($group_type, '" . str_replace("\'", "''", $group_name) . "', '" . str_replace("\'", "''", $group_description) . "', $group_moderator, '$group_rank', '$group_color', '$group_legend', '$group_legend_order', '$group_count', '$group_count_max', '$group_count_enable', '0')";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert new group', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 			$new_group_id = $db->sql_nextid();
 
 			adjust_legend_order();
 
 			$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 				VALUES ($new_group_id, $group_moderator, 0)";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert new user-group info', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			if ($group_count_delete)
 			{
 				//removing old users
 				$sql = "DELETE FROM " . USER_GROUP_TABLE . "
 					WHERE group_id=$new_group_id
 					AND user_id NOT IN ('$group_moderator','" . ANONYMOUS . "')";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not remove users, group count', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 				$group_count_remove=$db->sql_affectedrows();
 			}
 			if ($group_count_update)
@@ -493,20 +417,15 @@ elseif (isset($_POST['group_update']))
 					WHERE u.user_posts>='$group_count' AND u.user_posts<'$group_count_max'
 					AND ug.group_id is NULL
 					AND u.user_id NOT IN ('$group_moderator','" . ANONYMOUS . "')";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, $sql.'Could not select new users, group count', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
+
 				//inserting new users
 				$group_count_added=0;
 				while (($new_members = $db->sql_fetchrow($result)))
 				{
 					$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 						VALUES ($new_group_id, " . $new_members['user_id'] . ", 0)";
-					if (!($result2 = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Error inserting user group, group count', '', __LINE__, __FILE__, $sql);
-					}
+					$result2 = $db->sql_query($sql);
 					$group_count_added++;
 				}
 			}
@@ -530,10 +449,8 @@ elseif (isset($_POST['mass_update']))
 		FROM " . GROUPS_TABLE . "
 		WHERE group_single_user <> " . true . "
 		ORDER BY group_name ASC";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain group list', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$group_id = $row['group_id'];
@@ -544,18 +461,12 @@ elseif (isset($_POST['mass_update']))
 		$sql_ug = "UPDATE " . GROUPS_TABLE . "
 			SET group_color = '$group_color', group_legend = '$group_legend'
 			WHERE group_id = $group_id";
-		if (!$db->sql_query($sql_ug))
-		{
-			message_die(GENERAL_ERROR, 'Could not update groups', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql_ug);
 
 		$sql_users = "UPDATE " . USERS_TABLE . "
 			SET user_color = '$group_color'
 			WHERE user_color_group = $group_id";
-		if (!$db->sql_query($sql_users))
-		{
-			message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql_users);
 	}
 
 	$group_color = isset($_POST['active_users_color']) ? check_valid_color($_POST['active_users_color']) : false;
@@ -565,12 +476,9 @@ elseif (isset($_POST['mass_update']))
 	$sql_users = "UPDATE " . USERS_TABLE . "
 		SET user_color = '" . $group_color . "'
 		WHERE user_color_group = ''
-			AND user_color = '" . $board_config['active_users_color'] . "'
+			AND user_color = '" . $config['active_users_color'] . "'
 			AND user_active = 1";
-	if (!$db->sql_query($sql_users))
-	{
-		message_die(GENERAL_ERROR, 'Could not update users in groups', '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql_users);
 
 	$group_legend = isset($_POST['active_users_legend']) ? $_POST['active_users_legend'] : '0';
 	set_config('active_users_legend', $group_legend);
@@ -604,10 +512,7 @@ else
 		FROM " . GROUPS_TABLE . "
 		WHERE group_single_user <> " . true . "
 		ORDER BY group_legend_order ASC, group_name ASC";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain group list', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$select_list = '';
 	if ($row = $db->sql_fetchrow($result))
@@ -697,13 +602,13 @@ else
 		'L_ACTIVE_USERS_GROUP' => $lang['Active_Users_Group'],
 		'L_ACTIVE_USERS_COLOR' => $lang['Active_Users_Color'],
 
-		'ACTIVE_USERS_COLOR' => str_replace('#', '', $board_config['active_users_color']),
-		'ACTIVE_USERS_COLOR_STYLE' => ' style="' . ($board_config['active_users_color'] ? 'color: ' . $board_config['active_users_color'] . '; ' : '') . 'font-weight:bold;"',
-		'ACTIVE_USERS_LEGEND_CHECKED' => ($board_config['active_users_legend'] == 1) ? ' checked="checked"' : '',
+		'ACTIVE_USERS_COLOR' => str_replace('#', '', $config['active_users_color']),
+		'ACTIVE_USERS_COLOR_STYLE' => ' style="' . ($config['active_users_color'] ? 'color: ' . $config['active_users_color'] . '; ' : '') . 'font-weight:bold;"',
+		'ACTIVE_USERS_LEGEND_CHECKED' => ($config['active_users_legend'] == 1) ? ' checked="checked"' : '',
 		'ACTIVE_MEMBERS' => $counting_list['active_members'],
-		'BOTS_COLOR' => str_replace('#', '', $board_config['bots_color']),
-		'BOTS_COLOR_STYLE' => ' style="' . ($board_config['bots_color'] ? 'color: ' . $board_config['bots_color'] . '; ' : '') . 'font-weight:bold;"',
-		'BOTS_LEGEND_CHECKED' => ($board_config['bots_legend'] == 1) ? ' checked="checked"' : '',
+		'BOTS_COLOR' => str_replace('#', '', $config['bots_color']),
+		'BOTS_COLOR_STYLE' => ' style="' . ($config['bots_color'] ? 'color: ' . $config['bots_color'] . '; ' : '') . 'font-weight:bold;"',
+		'BOTS_LEGEND_CHECKED' => ($config['bots_legend'] == 1) ? ' checked="checked"' : '',
 		'S_GROUP_ACTION' => append_sid('admin_groups.' . PHP_EXT),
 		'S_GROUP_SELECT' => $select_list
 		)

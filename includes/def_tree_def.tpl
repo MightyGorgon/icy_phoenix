@@ -35,31 +35,31 @@ if (!defined('IN_ICYPHOENIX'))
 //		- id : full designation : ie Root, f3, c20
 //		- idx : rank order
 //
-//	$tree['keys'][id]			=> idx,
+//	$tree['keys'][id]				=> idx,
 //	$tree['type'][idx]			=> type of the row, can be 'c' for categories or 'f' for forums,
-//	$tree['id'][idx]			=> value of the row id : cat_id for cats, forum_id for forums,
+//	$tree['id'][idx]				=> value of the row id : forum_id for cats, forum_id for forums,
 //	$tree['data'][idx]			=> db table row,
 //	$tree['main'][idx]			=> parent id,
-//	$tree['sub'][id]			=> array of sub-level ids,
+//	$tree['sub'][id]				=> array of sub-level ids,
 //--------------------------------------------------------------------------------------------------
 
 $tree = array(
 	'keys'	=> array({KEYS}),
 	'type'	=> array({TYPES}),
-	'id'	=> array({IDS}),
+	'id'		=> array({IDS}),
 	'data'	=> array(
 		<!-- BEGIN data -->
 		array(
 			<!-- BEGIN field -->
-			'{data.field.FIELD_NAME}'	=> '{data.field.FIELD_VALUE}',
+			'{data.field.FIELD_NAME}' => '{data.field.FIELD_VALUE}',
 			<!-- END field -->
 		),
 		<!-- END data -->
 	),
 	'main'	=> array({MAINS}),
-	'sub'	=> array(
+	'sub'		=> array(
 		<!-- BEGIN sub -->
-		'{sub.THIS}'	=> array({sub.SUBS}),
+		'{sub.THIS}' => array({sub.SUBS}),
 		<!-- END sub -->
 	),
 	'mods'	=> array(

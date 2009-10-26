@@ -1,3 +1,6 @@
+<!-- INCLUDE pa_header.tpl -->
+<!-- INCLUDE pa_links.tpl -->
+
 <script type="text/javascript">
 <!--
 function checkForm(formObj) {
@@ -19,8 +22,6 @@ function checkForm(formObj) {
 }
 //-->
 </script>
-<!-- INCLUDE pa_header.tpl -->
-<!-- INCLUDE pa_links.tpl -->
 
 <form action="{S_EMAIL_ACTION}" method="post" onSubmit="return checkForm(this)" name="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_EMAIL}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

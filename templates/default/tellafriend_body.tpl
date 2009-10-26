@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {ERROR_BOX}
 
 <form action="{SUBMIT_ACTION}" method="post">
@@ -40,3 +42,5 @@
 <tr><td class="cat">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

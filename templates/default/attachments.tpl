@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form method="post" action="{S_MODE_ACTION}">
 <table class="empty-table" width="100%" align="center" cellspacing="0">
 <tr>
@@ -44,3 +46,5 @@
 </table>
 
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -1,6 +1,6 @@
 <?php
 // check if quick reply is enabled
-global $userdata, $board_config, $topic_id, $is_auth, $forum_topic_data, $lang;
+global $userdata, $config, $topic_id, $is_auth, $forum_topic_data, $lang;
 
 $can_reply = $userdata['session_logged_in'] ? true : false;
 if($can_reply)
@@ -49,11 +49,11 @@ if($can_reply)
 	<tr><th colspan="2"><span><?php echo $lang['quick_lofi']; ?></span></th></tr>
 	<tr>
 		<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-		<td class="row2" align="left" width="100%"><input name="subject" class="post" type="text" size="45" maxlength="120" style="width: 98%" tabindex="2" value="" /></td>
+		<td class="row2" align="left" width="100%"><input name="subject" class="post" type="text" size="45" maxlength="120" style="width: 98%;" tabindex="2" value="" /></td>
 	</tr>
 	<tr>
 		<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{T_TEMPLATE_PATH}/images/spacer.gif" width="200" height="1" alt="" /></b></span></td>
-		<td class="row2" align="left" width="100%"><textarea name="message" rows="15" cols="35" style="width: 98%" tabindex="3" class="post"></textarea></td>
+		<td class="row2" align="left" width="100%"><textarea name="message" rows="15" cols="35" style="width: 98%;" tabindex="3" class="post"></textarea></td>
 	</tr>
 
 	<tr>

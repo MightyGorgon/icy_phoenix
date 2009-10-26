@@ -60,7 +60,7 @@ switch($mode)
 			$template_name = $$install_to;
 			$found = false;
 
-			for($i = 0; $i < count($template_name) && !$found; $i++)
+			for($i = 0; $i < sizeof($template_name) && !$found; $i++)
 			{
 				if($template_name[$i]['style_name'] == $style_name)
 				{
@@ -74,10 +74,10 @@ switch($mode)
 
 			$sql = "INSERT INTO " . THEMES_TABLE . " (";
 
-			for($i = 0; $i < count($db_fields); $i++)
+			for($i = 0; $i < sizeof($db_fields); $i++)
 			{
 				$sql .= $db_fields[$i];
-				if($i != (count($db_fields) - 1))
+				if($i != (sizeof($db_fields) - 1))
 				{
 					$sql .= ", ";
 				}
@@ -86,22 +86,18 @@ switch($mode)
 
 			$sql .= ") VALUES (";
 
-			for($i = 0; $i < count($db_values); $i++)
+			for($i = 0; $i < sizeof($db_values); $i++)
 			{
 				$sql .= "'" . $db_values[$i] . "'";
-				if($i != (count($db_values) - 1))
+				if($i != (sizeof($db_values) - 1))
 				{
 					$sql .= ", ";
 				}
 			}
 			$sql .= ")";
+			$result = $db->sql_query($sql);
 
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not insert theme data!", "", __LINE__, __FILE__, $sql);
-			}
-
-			$db->clear_cache('themes_');
+			$db->clear_cache('styles_');
 			$message = $lang['Theme_installed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -121,7 +117,7 @@ switch($mode)
 						{
 							include(IP_ROOT_PATH . 'templates/' . $sub_dir . '/theme_info.cfg');
 
-							for($i = 0; $i < count($$sub_dir); $i++)
+							for($i = 0; $i < sizeof($$sub_dir); $i++)
 							{
 								$working_data = $$sub_dir;
 
@@ -130,10 +126,7 @@ switch($mode)
 								$sql = "SELECT themes_id
 									FROM " . THEMES_TABLE . "
 									WHERE style_name = '" . str_replace("\'", "''", $style_name) . "'";
-								if(!$result = $db->sql_query($sql))
-								{
-									message_die(GENERAL_ERROR, "Could not query themes table!", "", __LINE__, __FILE__, $sql);
-								}
+								$result = $db->sql_query($sql);
 
 								if(!$db->sql_numrows($result))
 								{
@@ -155,7 +148,7 @@ switch($mode)
 					'L_ACTION' => $lang['Action'])
 				);
 
-				for($i = 0; $i < count($installable_themes); $i++)
+				for($i = 0; $i < sizeof($installable_themes); $i++)
 				{
 					$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -222,14 +215,10 @@ switch($mode)
 					$count++;
 				}
 
-				$sql .= " WHERE themes_id = $style_id";
+				$sql .= " WHERE themes_id = " . $style_id;
+				$result = $db->sql_query($sql);
 
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not update themes table!", "", __LINE__, __FILE__, $sql);
-				}
-
-				$db->clear_cache('themes_');
+				$db->clear_cache('styles_');
 				$message = $lang['Theme_updated'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
@@ -240,10 +229,7 @@ switch($mode)
 				$sql = "SELECT themes_id
 					FROM " . THEMES_TABLE . "
 					WHERE style_name = '" . str_replace("\'", "''", $updated['style_name']) . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not query themes table", "", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				if($db->sql_numrows($result))
 				{
@@ -266,7 +252,7 @@ switch($mode)
 
 				$sql = "INSERT
 					INTO " . THEMES_TABLE . " (";
-				for($i = 0; $i < count($field_names); $i++)
+				for($i = 0; $i < sizeof($field_names); $i++)
 				{
 					if($i != 0)
 					{
@@ -276,7 +262,7 @@ switch($mode)
 				}
 
 				$sql .= ") VALUES (";
-				for($i = 0; $i < count($values); $i++)
+				for($i = 0; $i < sizeof($values); $i++)
 				{
 					if($i != 0)
 					{
@@ -286,14 +272,10 @@ switch($mode)
 				}
 				$sql .= ")";
 
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not update themes table!", "", __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$style_id = $db->sql_nextid();
 
-				$db->clear_cache('themes_');
+				$db->clear_cache('styles_');
 				$message = $lang['Theme_created'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
@@ -314,11 +296,8 @@ switch($mode)
 				// Fetch the Theme Info from the db
 				$sql = "SELECT *
 					FROM " . THEMES_TABLE . "
-					WHERE themes_id = $style_id";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not get data from themes table", "", __LINE__, __FILE__, $sql);
-				}
+					WHERE themes_id = " . $style_id;
+				$result = $db->sql_query($sql);
 
 				if ($selected_values = $db->sql_fetchrow($result))
 				{
@@ -412,14 +391,10 @@ switch($mode)
 			$sql = "SELECT *
 				FROM " . THEMES_TABLE . "
 				WHERE template_name = '" . str_replace("\'", "''", $template_name) . "'";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not get theme data for selected template", "", __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$theme_rowset = $db->sql_fetchrowset($result);
 
-			if(count($theme_rowset) == 0)
+			if(sizeof($theme_rowset) == 0)
 			{
 				message_die(GENERAL_MESSAGE, $lang['No_themes']);
 			}
@@ -427,7 +402,7 @@ switch($mode)
 			$theme_data = '<' . '?php' . "\n\n";
 			$theme_data .= "//\n// phpBB 2.x auto-generated theme config file for $template_name\n// Do not change anything in this file!\n//\n\n";
 
-			for($i = 0; $i < count($theme_rowset); $i++)
+			for($i = 0; $i < sizeof($theme_rowset); $i++)
 			{
 				while(list($key, $val) = each($theme_rowset[$i]))
 				{
@@ -468,7 +443,7 @@ switch($mode)
 			$result = @fwrite($fp, $theme_data, strlen($theme_data));
 			fclose($fp);
 
-			$db->clear_cache('themes_');
+			$db->clear_cache('styles_');
 			$message = $lang['Theme_info_saved'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -524,7 +499,7 @@ switch($mode)
 
 		if(!$confirm)
 		{
-			if($style_id == $board_config['default_style'])
+			if($style_id == $config['default_style'])
 			{
 				message_die(GENERAL_MESSAGE, $lang['Cannot_remove_style']);
 			}
@@ -555,22 +530,17 @@ switch($mode)
 			// The user has confirmed the delete. Remove the style, the style element
 			// names and update any users who might be using this style
 			//
-			$sql = "DELETE FROM " . THEMES_TABLE . "
-				WHERE themes_id = $style_id";
-			if(!$result = $db->sql_query($sql, BEGIN_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, "Could not remove style data!", "", __LINE__, __FILE__, $sql);
-			}
+			$sql = "DELETE FROM " . THEMES_TABLE . " WHERE themes_id = " . $style_id;
+			$db->sql_transaction('begin');
+			$result = $db->sql_query($sql);
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_style = " . $board_config['default_style'] . "
+				SET user_style = " . $config['default_style'] . "
 				WHERE user_style = $style_id";
-			if(!$result = $db->sql_query($sql, END_TRANSACTION))
-			{
-				message_die(GENERAL_ERROR, "Could not update user style information", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+			$db->sql_transaction('commit');
 
-			$db->clear_cache('themes_');
+			$db->clear_cache('styles_');
 			$message = $lang['Style_removed'] . '<br /><br />' . sprintf($lang['Click_return_styleadmin'], '<a href="' . append_sid('admin_styles.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
@@ -582,11 +552,7 @@ switch($mode)
 		$sql = "SELECT themes_id, template_name, style_name
 			FROM " . THEMES_TABLE . "
 			ORDER BY template_name";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not get style information!", "", __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$style_rowset = $db->sql_fetchrowset($result);
 
 		$template->set_filenames(array('body' => ADM_TPL . 'styles_list_body.tpl'));
@@ -601,7 +567,7 @@ switch($mode)
 			)
 		);
 
-		for($i = 0; $i < count($style_rowset); $i++)
+		for($i = 0; $i < sizeof($style_rowset); $i++)
 		{
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 

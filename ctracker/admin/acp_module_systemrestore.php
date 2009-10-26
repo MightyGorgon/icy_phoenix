@@ -69,18 +69,21 @@ elseif ( $_GET['mode'] == 'restore' )
 $save_status = '';
 $saved_now   = false;
 $sql = 'SELECT * FROM ' . CTRACKER_BACKUP . ' WHERE config_name = \'ct_last_backup\'';
-if ( !$result = $db->sql_query($sql) )
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if (!$result)
 {
 	$save_status = $lang['ctracker_rec_never_saved'];
 }
 else
 {
 	$saved_now = true;
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$backup[$row['config_name']] = $row['config_value'];
 	}
-	$save_status = sprintf($lang['ctracker_rec_last_saved'], date($board_config['default_dateformat'], $backup['ct_last_backup']));
+	$save_status = sprintf($lang['ctracker_rec_last_saved'], gmdate($config['default_dateformat'], $backup['ct_last_backup']));
 }
 
 

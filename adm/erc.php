@@ -24,6 +24,7 @@ include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
 @set_time_limit(0);
@@ -181,7 +182,7 @@ if ($lg == '')
 		}
 	}
 	closedir($dir);
-	if (count($lang_list) == 1)
+	if (sizeof($lang_list) == 1)
 	{
 		$lg = $lang_list[0];
 		include(IP_ROOT_PATH . 'language/lang_' . $lg . '/lang_dbmtnc.' . PHP_EXT);
@@ -560,7 +561,10 @@ switch($mode)
 			case 'rtd': // Reset template data
 				$sql = "SELECT count(*) AS themes_count
 					FROM " . THEMES_TABLE;
-				if (!($result = $db->sql_query($sql)))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't count records of themes table!", __LINE__, __FILE__, $sql);
 				}
@@ -715,22 +719,28 @@ switch($mode)
 				check_authorization();
 
 				$sql = "DELETE FROM " . SESSIONS_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't delete sessions table!", __LINE__, __FILE__, $sql);
 				}
 
 				$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't delete AJAX Shoubox sessions table!", __LINE__, __FILE__, $sql);
 				}
 
 				$sql = "DELETE FROM " . SEARCH_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't delete search result table!", __LINE__, __FILE__, $sql);
 				}
@@ -757,11 +767,13 @@ switch($mode)
 	<p><?php echo $lang['Repairing_tables'] ?>:</p>
 	<ul>
 <?php
-					for($i = 0; $i < count($tables); $i++)
+					for($i = 0; $i < sizeof($tables); $i++)
 					{
 						$tablename = $table_prefix . $tables[$i];
 						$sql = "REPAIR TABLE $tablename";
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							throw_error("Couldn't repair table!", __LINE__, __FILE__, $sql);
@@ -831,7 +843,10 @@ switch($mode)
 				}
 				$default_config['script_path'] = str_replace('admin', '', dirname($_SERVER['PHP_SELF']));
 				$sql = "SELECT Min(topic_time) as startdate FROM " . TOPICS_TABLE;
-				if ($result = $db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if ($result)
 				{
 					if (($row = $db->sql_fetchrow($result)) && $row['startdate'] > 0)
 					{
@@ -849,7 +864,9 @@ switch($mode)
 				{
 					$sql = 'SELECT config_value FROM ' . CONFIG_TABLE . "
 						WHERE config_name = '$key'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						erc_throw_error("Couldn't query config table!", __LINE__, __FILE__, $sql);
@@ -859,7 +876,9 @@ switch($mode)
 						echo("<li><b>$key:</b> $value</li>\n");
 						$sql = "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value)
 							VALUES ('$key', '$value')";
+						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
+						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
@@ -888,8 +907,10 @@ switch($mode)
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '$secure'
 						WHERE config_name = 'cookie_secure'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 					}
@@ -899,8 +920,10 @@ switch($mode)
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '$domain'
 						WHERE config_name = 'server_name'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 					}
@@ -910,8 +933,10 @@ switch($mode)
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '$port'
 						WHERE config_name = 'server_port'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 					}
@@ -921,8 +946,10 @@ switch($mode)
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '$path'
 						WHERE config_name = 'script_path'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 					}
@@ -939,24 +966,30 @@ switch($mode)
 				$sql = "UPDATE " . CONFIG_TABLE . "
 					SET config_value = '$cookie_domain'
 					WHERE config_name = 'cookie_domain'";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "UPDATE " . CONFIG_TABLE . "
 					SET config_value = '$cookie_name'
 					WHERE config_name = 'cookie_name'";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "UPDATE " . CONFIG_TABLE . "
 					SET config_value = '$cookie_path'
 					WHERE config_name = 'cookie_path'";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 				}
@@ -974,16 +1007,20 @@ switch($mode)
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_lang = '$new_lang'
 						WHERE username = '$board_user'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update user table!", __LINE__, __FILE__, $sql);
 					}
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '$new_lang'
 						WHERE config_name = 'default_lang'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 					}
@@ -1007,8 +1044,10 @@ switch($mode)
 					$sql = "INSERT INTO " . THEMES_TABLE . "
 						(template_name, style_name, head_stylesheet, body_background, td_class1, td_class2, td_class3) VALUES
 						('icy_phoenix', 'Icy Phoenix', 'style_ice.css', 'ice', 'row1', 'row2', 'row3')";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update themes table!", __LINE__, __FILE__, $sql);
 					}
@@ -1023,16 +1062,20 @@ switch($mode)
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_style = $new_style
 						WHERE username = '$board_user'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update user table!", __LINE__, __FILE__, $sql);
 					}
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '$new_style'
 						WHERE config_name = 'default_style'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 					}
@@ -1044,8 +1087,10 @@ switch($mode)
 					$sql = "UPDATE " . CONFIG_TABLE . "
 						SET config_value = '0'
 						WHERE config_name = 'gzip_compress'";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
-					if(!$result)
+					$db->sql_return_on_error(false);
+					if (!$result)
 					{
 						erc_throw_error("Couldn't update config table!", __LINE__, __FILE__, $sql);
 					}
@@ -1054,20 +1099,26 @@ switch($mode)
 			case 'cbl': // Clear ban list
 				check_authorization();
 				$sql = "DELETE FROM " . BANLIST_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't delete ban list table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "DELETE FROM " . DISALLOW_TABLE;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
-				if(!$result)
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					erc_throw_error("Couldn't delete disallowed users table!", __LINE__, __FILE__, $sql);
 				}
 				$sql = "SELECT user_id FROM " . USERS_TABLE . "
 					WHERE user_id = " . ANONYMOUS;
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					erc_throw_error("Couldn't get user information!", __LINE__, __FILE__, $sql);
@@ -1081,7 +1132,9 @@ switch($mode)
 					// Recreate entry
 					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active)
 						VALUES (" . ANONYMOUS . ", 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', '', 0, 0, 1, 0, 1, 0, 1, 1, NULL, '', '', 0, '', '', '', 0, 0)";
+					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
+					$db->sql_return_on_error(false);
 					if (!$result)
 					{
 						throw_error("Couldn't add user data!", __LINE__, __FILE__, $sql);
@@ -1100,7 +1153,9 @@ switch($mode)
 				$sql = "SELECT user_id, username
 					FROM " . USERS_TABLE . "
 					WHERE user_level IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if (!$result)
 				{
 					erc_throw_error("Couldn't get user data!", __LINE__, __FILE__, $sql);
@@ -1130,7 +1185,9 @@ switch($mode)
 									AND ug.user_id = " . $row['user_id'] . "
 									AND ug.user_pending <> 1 AND aa.auth_mod = 1";
 						}
+						$db->sql_return_on_error(true);
 						$result2 = $db->sql_query($sql2);
+						$db->sql_return_on_error(false);
 						if (!$result2)
 						{
 							erc_throw_error("Couldn't get moderator data!", __LINE__, __FILE__, $sql2);
@@ -1140,7 +1197,9 @@ switch($mode)
 						$sql2 = "UPDATE " . USERS_TABLE . "
 							SET user_level = $new_state
 							WHERE user_id = " . $row['user_id'];
+						$db->sql_return_on_error(true);
 						$result2 = $db->sql_query($sql2);
+						$db->sql_return_on_error(false);
 						if (!$result2)
 						{
 							erc_throw_error("Couldn't update user data!", __LINE__, __FILE__, $sql2);
@@ -1163,7 +1222,9 @@ switch($mode)
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_active = 1, user_level = " . ADMIN . "
 					WHERE username = '$username' AND user_id <> -1";
+				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
 				if(!$result)
 				{
 					erc_throw_error("Couldn't update user table!", __LINE__, __FILE__, $sql);

@@ -37,9 +37,9 @@ else
 	}
 	closedir($handle);
 
-	if (count($fileList) > 0)
+	if (sizeof($fileList) > 0)
 	{
-		$imageNumber = time() % count($fileList);
+		$imageNumber = time() % sizeof($fileList);
 		$img = $folder . $fileList[$imageNumber];
 	}
 }

@@ -77,7 +77,7 @@ class Template_plus extends Template
 	function assign_block_var_from_handle($varname, $handle)
 	{
 
-		global $board_config;
+		global $config;
 		$this->xs_startup();
 		if (!empty($this->files_cache[$handle]) && empty($this->uncompiled_code[$handle]))
 		{
@@ -137,8 +137,6 @@ class Template_plus extends Template
 		}
 
 		return true;
-
-
 	}
 
 	/**
@@ -152,12 +150,12 @@ class Template_plus extends Template
 		{
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = count($blocks);
+			$blockcount = sizeof($blocks);
 			$str = &$this->_tpldata;
 			for($i = 0; $i < $blockcount; $i++)
 			{
 				$str = &$str[$blocks[$i].'.'];
-				$str = &$str[count($str)-1];
+				$str = &$str[sizeof($str)-1];
 			}
 			// Now we add the block that we're actually assigning to.
 			foreach($vararray as $key => $val)
@@ -170,7 +168,7 @@ class Template_plus extends Template
 			// Top-level block.
 			// Add a new iteration to this block with the variable assignments
 			// we were given.
-			$lastiteration = count($this->_tpldata[$blockname . '.']) - 1;
+			$lastiteration = sizeof($this->_tpldata[$blockname . '.']) - 1;
 			foreach($vararray as $key => $val)
 			{
 				$this->_tpldata[$blockname . '.'][$lastiteration][$key] = $val;
@@ -194,12 +192,12 @@ class Template_plus extends Template
 			// but, who knows... Only the top-level block makes sense to me
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = count($blocks) - 1;
+			$blockcount = sizeof($blocks) - 1;
 			$str = &$this->_tpldata;
 			for ($i = 0; $i < $blockcount; $i++)
 			{
 				$str = &$str[$blocks[$i].'.'];
-				$str = &$str[count($str)-1];
+				$str = &$str[sizeof($str)-1];
 			}
 			// Now we add the block that we're actually assigning to.
 			// We're adding a new iteration to this block with the given
@@ -234,10 +232,8 @@ if (defined('CM_EVENT'))
 			global $db;
 			$this->events = array();
 			$sql = "SELECT * FROM " . CASH_EVENTS_TABLE;
-			if (!$result = $db->sql_query($sql, false, 'cash_'))
-			{
-				message_die(CRITICAL_ERROR, "Could not query events information", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql, 0, 'cash_');
+
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$this->events[$row['event_name']] = $row['event_data'];
@@ -246,8 +242,8 @@ if (defined('CM_EVENT'))
 
 		function get_event_data($string)
 		{
-			global $board_config;
-			if ($board_config['cash_disable'])
+			global $config;
+			if ($config['cash_disable'])
 			{
 				return array();
 			}
@@ -274,8 +270,8 @@ if (defined('CM_MEMBERLIST'))
 	{
 		function droplists(&$mode_types_text, &$mode_types)
 		{
-			global $board_config, $cash;
-			if ($board_config['cash_disable'])
+			global $config, $cash;
+			if ($config['cash_disable'])
 			{
 				return;
 			}
@@ -288,8 +284,8 @@ if (defined('CM_MEMBERLIST'))
 
 		function modecheck($mode)
 		{
-			global $board_config, $cash;
-			if ($board_config['cash_disable'])
+			global $config, $cash;
+			if ($config['cash_disable'])
 			{
 				return 'cash_mod';
 			}
@@ -313,8 +309,8 @@ if (defined('CM_MEMBERLIST'))
 
 		function generate_columns(&$template, &$sql, $num_columns = 8)
 		{
-			global $board_config, $cash;
-			if ($board_config['cash_disable'])
+			global $config, $cash;
+			if ($config['cash_disable'])
 			{
 				$template->assign_var('NUM_COLUMNS',$num_columns);
 				return;
@@ -338,8 +334,8 @@ if (defined('CM_MEMBERLIST'))
 
 		function listing(&$template,&$row)
 		{
-			global $board_config, $cash;
-			if ($board_config['cash_disable'])
+			global $config, $cash;
+			if ($config['cash_disable'])
 			{
 				return;
 			}
@@ -364,16 +360,14 @@ if (defined('CM_VIEWTOPIC'))
 
 		function generate_columns(&$template, $forum_id, &$sql)
 		{
-			global $board_config, $cash;
-			if ($board_config['cash_disable'])
+			global $config, $cash;
+			if ($config['cash_disable'])
 			{
 				return '';
 			}
 			$this->template = new Template_plus();
 			$this->template->set($template);
-			$this->template->set_filenames(array(
-				'cm_viewtopic' => 'cash_viewtopic.tpl')
-			);
+			$this->template->set_filenames(array('cm_viewtopic' => 'cash_viewtopic.tpl'));
 
 			if (strstr($sql, 'u.*'))
 			{
@@ -391,8 +385,8 @@ if (defined('CM_VIEWTOPIC'))
 		function post_vars(&$postdata, &$userdata, $forum_id)
 		{
 			$template = &$this->template;
-			global $board_config, $lang, $cash;
-			if ($board_config['cash_disable'])
+			global $config, $lang, $cash;
+			if ($config['cash_disable'])
 			{
 				return;
 			}
@@ -426,7 +420,7 @@ if (defined('CM_VIEWTOPIC'))
 						)
 					);
 				}
-				if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE,$forum_id) && ($userdata['user_id'] != $postdata['user_id']) && $userdata['session_logged_in'])
+				if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE, $forum_id) && ($userdata['user_id'] != $postdata['user_id']) && $userdata['session_logged_in'])
 				{
 					$template->assign_block_vars('cashlinks',array(
 						'U_LINK' => append_sid('cash.' . PHP_EXT . '?mode=donate&amp;ref=viewtopic&amp;' . POST_USERS_URL . '=' . $postdata['user_id'] . '&amp;' . POST_POST_URL . '=' . $postdata['post_id']),
@@ -438,7 +432,9 @@ if (defined('CM_VIEWTOPIC'))
 				{
 					$template->assign_block_vars('cashlinks',array(
 						'U_LINK' => append_sid('cash.' . PHP_EXT . '?mode=modedit&amp;ref=viewtopic&amp;' . POST_USERS_URL . '=' . $postdata['user_id'] . '&amp;' . POST_POST_URL . '='.$postdata['post_id']),
-						'L_NAME' => sprintf($lang['Mod_usercash'],$postdata['username'])));
+						'L_NAME' => sprintf($lang['Mod_usercash'],$postdata['username'])
+						)
+					);
 				}
 				$template->assign_block_var_from_handle('postrow.CASH', 'cm_viewtopic');
 				$template->clear_block_var('cashrow');
@@ -459,8 +455,8 @@ if (defined('CM_VIEWPROFILE'))
 	{
 		function post_vars(&$old_template, &$profiledata, &$userdata)
 		{
-			global $board_config, $lang, $cash;
-			if ($board_config['cash_disable'])
+			global $config, $lang, $cash;
+			if ($config['cash_disable'])
 			{
 				return;
 			}
@@ -531,8 +527,8 @@ if (defined('CM_POSTING'))
 
 		function update_post($mode, &$post_data, $forum_id, $topic_id, $post_id, $topic_type, $post_username, &$post_message)
 		{
-			global $board_config, $userdata;
-			if ($board_config['cash_disable'] || (($mode != 'newtopic') && ($mode != 'reply') && ($mode != 'editpost')))
+			global $config, $userdata;
+			if ($config['cash_disable'] || (($mode != 'newtopic') && ($mode != 'reply') && ($mode != 'editpost')))
 			{
 				return '';
 			}
@@ -557,8 +553,8 @@ if (defined('CM_POSTING'))
 
 		function update_delete($mode, &$post_data, $forum_id, $topic_id, $post_id)
 		{
-			global $board_config;
-			if ($board_config['cash_disable'] || ($mode != 'delete'))
+			global $config;
+			if ($config['cash_disable'] || ($mode != 'delete'))
 			{
 				return;
 			}
@@ -570,7 +566,7 @@ if (defined('CM_POSTING'))
 
 		function cash_update($mode, $poster_id, $first_post, &$old_message, &$new_message, $forum_id, $topic_id, $post_id, $topic_starter)
 		{
-			global $board_config, $lang, $db, $userdata, $cash;
+			global $config, $lang, $db, $userdata, $cash;
 
 			if (($mode == 'reply') && ($poster_id != $topic_starter) && ($topic_userdata = get_userdata($topic_starter)))
 			{
@@ -592,27 +588,25 @@ if (defined('CM_POSTING'))
 			$all_active = true;
 			$forumcount = array();
 			$forumlist = array();
-			if ((($mode == 'newtopic') || ($mode == 'reply')) && (intval($board_config['cash_disable_spam_num']) > 0))
+			if ((($mode == 'newtopic') || ($mode == 'reply')) && (intval($config['cash_disable_spam_num']) > 0))
 			{
 				$all_active = false;
-				$interval = time() - (3600 * intval($board_config['cash_disable_spam_time']));
+				$interval = time() - (3600 * intval($config['cash_disable_spam_time']));
 				$sum = 0;
 				$sql = "SELECT forum_id, count(post_id) as postcount
 					FROM " . POSTS_TABLE . "
 					WHERE poster_id = $poster_id
 						AND post_time > $interval
 					GROUP BY forum_id";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Error retrieving post data', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
+
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$forumlist[] = $row['forum_id'];
 					$forumcount[$row['forum_id']] = $row['postcount'];
 					$sum += $row['postcount'];
 				}
-				if ($sum < $board_config['cash_disable_spam_num'])
+				if ($sum < $config['cash_disable_spam_num'])
 				{
 					$all_active = true;
 				}
@@ -629,14 +623,14 @@ if (defined('CM_POSTING'))
 				if (!$all_active)
 				{
 					$sum = 0;
-					for ($i = 0; $i < count($forumlist); $i++)
+					for ($i = 0; $i < sizeof($forumlist); $i++)
 					{
 						if ($c_cur->forum_active($forumlist[$i]))
 						{
 							$sum += $forumcount[$forumlist[$i]];
 						}
 					}
-					if ($sum < $board_config['cash_disable_spam_num'])
+					if ($sum < $config['cash_disable_spam_num'])
 					{
 						$this_enabled = true;
 						$all_spam = false;
@@ -664,25 +658,22 @@ if (defined('CM_POSTING'))
 			}
 			if ($all_spam)
 			{
-				return $board_config['cash_disable_spam_message'];
+				return $config['cash_disable_spam_message'];
 			}
-			if (count($sql_clause) > 0)
+			if (sizeof($sql_clause) > 0)
 			{
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET " . implode(', ', $sql_clause) . "
 					WHERE user_id = " . $poster_id;
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Error in updating cash', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
-				return (($userdata['user_id'] == $poster_id) && ($board_config['cash_display_after_posts'] == 1)) ? sprintf($board_config['cash_post_message'], implode(', ', $message_clause)) : '';
+				return (($userdata['user_id'] == $poster_id) && ($config['cash_display_after_posts'] == 1)) ? sprintf($config['cash_post_message'], implode(', ', $message_clause)) : '';
 			}
 		}
 
 		function cash_update_thanks($poster_id)
 		{
-			global $board_config, $lang, $db, $userdata, $cash;
+			global $config, $lang, $db, $userdata, $cash;
 
 			$posting_user = new cash_user($poster_id);
 			$sql_clause = array();
@@ -693,15 +684,13 @@ if (defined('CM_POSTING'))
 				$sql_clause[] = $c_cur->db() . ' = ' . $c_cur->db() . ' + ' . $perthanks;
 				$message_clause[] = $c_cur->display($perthanks);
 			}
-			if (count($sql_clause) > 0)
+			if (sizeof($sql_clause) > 0)
 			{
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET " . implode(', ', $sql_clause) . "
 					WHERE user_id = " . $poster_id;
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Error in updating cash', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
+
 				// Mighty Gorgon: to be fixed because it returns ARRAY
 				//return $message_clause;
 				return '';

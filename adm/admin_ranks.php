@@ -60,9 +60,9 @@ else
 // Restrict mode input to valid options
 $mode = (in_array($mode, array('add', 'edit', 'save', 'delete'))) ? $mode : '';
 
-if($mode != "")
+if($mode != '')
 {
-	if($mode == "edit" || $mode == "add")
+	if($mode == 'edit' || $mode == 'add')
 	{
 		//
 		// They want to add a new rank, show the form.
@@ -71,20 +71,15 @@ if($mode != "")
 
 		$s_hidden_fields = "";
 
-		if($mode == "edit")
+		if($mode == 'edit')
 		{
 			if(empty($rank_id))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
 			}
 
-			$sql = "SELECT * FROM " . RANKS_TABLE . "
-				WHERE rank_id = $rank_id";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't obtain rank data", "", __LINE__, __FILE__, $sql);
-			}
-
+			$sql = "SELECT * FROM " . RANKS_TABLE . " WHERE rank_id = $rank_id";
+			$result = $db->sql_query($sql);
 			$rank_info = $db->sql_fetchrow($result);
 			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $rank_id . '" />';
 
@@ -104,7 +99,7 @@ if($mode != "")
 		$rank_is_guest = ($rank_info['rank_special'] == '2') ? "checked=\"checked\"" : "";
 		$rank_is_banned = ($rank_info['rank_special'] == '3') ? "checked=\"checked\"" : "";
 
-		$rank_path = "../images/ranks/";
+		$rank_path = '../images/ranks/';
 		if (is_dir($rank_path))
 		{
 			$dir = opendir($rank_path);
@@ -151,54 +146,52 @@ if($mode != "")
 		}
 		// Mighty Gorgon - Multiple Ranks - END
 
-		$template->set_filenames(array(
-			'body' => ADM_TPL . 'ranks_edit_body.tpl')
-		);
+		$template->set_filenames(array('body' => ADM_TPL . 'ranks_edit_body.tpl'));
 
 		$template->assign_vars(array(
-			"RANK" => $rank_info['rank_title'],
+			'RANK' => $rank_info['rank_title'],
 			// Mighty Gorgon - Multiple Ranks - BEGIN
-			"NO_RANK" => $rank_no_rank,
-			"DAYS_RANK" => $rank_day_counter,
-			"NOT_SPECIAL_RANK" => $rank_is_not_special,
-			"MINIMUM" => (($rank_info['rank_special'] == '0') || ($rank_info['rank_special'] == '-1')) ? $rank_info['rank_min'] : "",
-			"SPECIAL_RANK" => $rank_is_special,
-			"GUEST_RANK" => $rank_is_guest,
-			"BANNED_RANK" => $rank_is_banned,
-			"RANK_LIST" => $ranks_list,
-			"RANK_IMG" => ($rank_info['rank_image'] != "") ? '../' . $rank_info['rank_image'] : $images['spacer'],
+			'NO_RANK' => $rank_no_rank,
+			'DAYS_RANK' => $rank_day_counter,
+			'NOT_SPECIAL_RANK' => $rank_is_not_special,
+			'MINIMUM' => (($rank_info['rank_special'] == '0') || ($rank_info['rank_special'] == '-1')) ? $rank_info['rank_min'] : '',
+			'SPECIAL_RANK' => $rank_is_special,
+			'GUEST_RANK' => $rank_is_guest,
+			'BANNED_RANK' => $rank_is_banned,
+			'RANK_LIST' => $ranks_list,
+			'RANK_IMG' => ($rank_info['rank_image'] != '') ? '../' . $rank_info['rank_image'] : $images['spacer'],
 
-			"L_NO_RANK" => $lang['No_Rank'],
-			"L_DAYS_RANK" => $lang['Rank_Days_Count'],
-			"L_POSTS_RANK" => $lang['Rank_Posts_Count'],
-			"L_MIN_M_D" => $lang['Rank_Min_Des'],
-			"L_SPECIAL_RANK" => $lang['Rank_Special'],
-			"L_GUEST" => $lang['Guest_User'],
-			"L_BANNED" => $lang['Banned_User'],
-			"L_CURRENT_RANK" => $lang['Current_Rank_Image'],
+			'L_NO_RANK' => $lang['No_Rank'],
+			'L_DAYS_RANK' => $lang['Rank_Days_Count'],
+			'L_POSTS_RANK' => $lang['Rank_Posts_Count'],
+			'L_MIN_M_D' => $lang['Rank_Min_Des'],
+			'L_SPECIAL_RANK' => $lang['Rank_Special'],
+			'L_GUEST' => $lang['Guest_User'],
+			'L_BANNED' => $lang['Banned_User'],
+			'L_CURRENT_RANK' => $lang['Current_Rank_Image'],
 			// Mighty Gorgon - Multiple Ranks - END
-			"IMAGE" => ($rank_info['rank_image'] != "") ? $rank_info['rank_image'] : "",
-			"IMAGE_DISPLAY" => ($rank_info['rank_image'] != "") ? '<img src="../' . $rank_info['rank_image'] . '" />' : "",
+			'IMAGE' => ($rank_info['rank_image'] != '') ? $rank_info['rank_image'] : '',
+			'IMAGE_DISPLAY' => ($rank_info['rank_image'] != '') ? '<img src="../' . $rank_info['rank_image'] . '" />' : '',
 
-			"L_RANKS_TITLE" => $lang['Ranks_title'],
-			"L_RANKS_TEXT" => $lang['Ranks_explain'],
-			"L_RANK_TITLE" => $lang['Rank_title'],
-			"L_RANK_SPECIAL" => $lang['Rank_special'],
-			"L_RANK_MINIMUM" => $lang['Rank_minimum'],
-			"L_RANK_IMAGE" => $lang['Rank_image'],
-			"L_RANK_IMAGE_EXPLAIN" => $lang['Rank_image_explain'],
-			"L_SUBMIT" => $lang['Submit'],
-			"L_RESET" => $lang['Reset'],
-			"L_YES" => $lang['Yes'],
-			"L_NO" => $lang['No'],
+			'L_RANKS_TITLE' => $lang['Ranks_title'],
+			'L_RANKS_TEXT' => $lang['Ranks_explain'],
+			'L_RANK_TITLE' => $lang['Rank_title'],
+			'L_RANK_SPECIAL' => $lang['Rank_special'],
+			'L_RANK_MINIMUM' => $lang['Rank_minimum'],
+			'L_RANK_IMAGE' => $lang['Rank_image'],
+			'L_RANK_IMAGE_EXPLAIN' => $lang['Rank_image_explain'],
+			'L_SUBMIT' => $lang['Submit'],
+			'L_RESET' => $lang['Reset'],
+			'L_YES' => $lang['Yes'],
+			'L_NO' => $lang['No'],
 
-			"S_RANK_ACTION" => append_sid('admin_ranks.' . PHP_EXT),
-			"S_HIDDEN_FIELDS" => $s_hidden_fields
+			'S_RANK_ACTION' => append_sid('admin_ranks.' . PHP_EXT),
+			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
 
 	}
-	elseif($mode == "save")
+	elseif($mode == 'save')
 	{
 		//
 		// Ok, they sent us our info, let's update it.
@@ -212,7 +205,7 @@ if($mode != "")
 		$rank_image = ((isset($_POST['rank_image_path']))) ? trim($_POST['rank_image_path']) : '';
 		// Mighty Gorgon - Multiple Ranks - END
 
-		if($rank_title == "")
+		if($rank_title == '')
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
 		}
@@ -228,7 +221,7 @@ if($mode != "")
 		//
 		// The rank image has to be a jpg, gif or png
 		//
-		if($rank_image != "")
+		if($rank_image != '')
 		{
 			if (!preg_match("/(\.gif|\.png|\.jpg)$/is", $rank_image))
 			{
@@ -246,11 +239,7 @@ if($mode != "")
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_rank = 0
 					WHERE user_rank = $rank_id";
-
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 			*/
 			$sql = "UPDATE " . RANKS_TABLE . "
@@ -266,23 +255,18 @@ if($mode != "")
 
 			$message = $lang['Rank_added'];
 		}
+		$result = $db->sql_query($sql);
 
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Couldn't update/insert into ranks table", "", __LINE__, __FILE__, $sql);
-		}
-
+		$cache->destroy('_ranks');
+		$db->clear_cache('ranks_');
 		$message .= '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid("admin_ranks." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 
 	}
-	elseif($mode == "delete")
+	elseif($mode == 'delete')
 	{
-		//
 		// Ok, they want to delete their rank
-		//
-
 		if(isset($_POST['id']) || isset($_GET['id']))
 		{
 			$rank_id = (isset($_POST['id'])) ? intval($_POST['id']) : intval($_GET['id']);
@@ -298,34 +282,23 @@ if($mode != "")
 		{
 			$sql = "DELETE FROM " . RANKS_TABLE . "
 				WHERE rank_id = $rank_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't delete rank data", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_rank = 0
 				WHERE user_rank = $rank_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$sql = "UPDATE " . GROUPS_TABLE . "
 				SET group_rank = 0
 				WHERE group_rank = $rank_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$message = $lang['Rank_removed'] . '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid("admin_ranks." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
+			$cache->destroy('_ranks');
+			$db->clear_cache('ranks_');
 			message_die(GENERAL_MESSAGE, $message);
-
 		}
 		elseif($rank_id && !$confirm)
 		{
@@ -363,28 +336,24 @@ $template->set_filenames(array(
 	'body' => ADM_TPL . 'ranks_list_body.tpl')
 );
 
-$sql = "SELECT * FROM " . RANKS_TABLE . "
-	ORDER BY rank_min ASC, rank_special ASC";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Couldn't obtain ranks data", "", __LINE__, __FILE__, $sql);
-}
+$sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_min ASC, rank_special ASC";
+$result = $db->sql_query($sql);
 $rank_count = $db->sql_numrows($result);
-
 $rank_rows = $db->sql_fetchrowset($result);
 
 $template->assign_vars(array(
-	"L_RANKS_TITLE" => $lang['Ranks_title'],
-	"L_RANKS_TEXT" => $lang['Ranks_explain'],
-	"L_RANK" => $lang['Rank_title'],
-	"L_RANK_MINIMUM" => $lang['Rank_minimum'],
-	"L_SPECIAL_RANK" => $lang['Rank_special'],
-	"L_EDIT" => $lang['Edit'],
-	"L_DELETE" => $lang['Delete'],
-	"L_ADD_RANK" => $lang['Add_new_rank'],
-	"L_ACTION" => $lang['Action'],
+	'L_RANKS_TITLE' => $lang['Ranks_title'],
+	'L_RANKS_TEXT' => $lang['Ranks_explain'],
+	'L_RANK' => $lang['Rank_title'],
+	'L_RANK_MINIMUM' => $lang['Rank_minimum'],
+	'L_SPECIAL_RANK' => $lang['Rank_special'],
+	'L_EDIT' => $lang['Edit'],
+	'L_DELETE' => $lang['Delete'],
+	'L_ADD_RANK' => $lang['Add_new_rank'],
+	'L_ACTION' => $lang['Action'],
 
-	"S_RANKS_ACTION" => append_sid("admin_ranks." . PHP_EXT))
+	'S_RANKS_ACTION' => append_sid('admin_ranks.' . PHP_EXT)
+	)
 );
 
 for($i = 0; $i < $rank_count; $i++)

@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_IP_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><th>{L_THIS_POST_IP}</th></tr>
 <tr>
@@ -37,3 +39,5 @@
 </tr>
 <!-- END iprow -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- INCLUDE overall_footer.tpl -->

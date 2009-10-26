@@ -64,23 +64,16 @@ function xsm_get_info($mode, $id)
 
 	$sql = "SELECT count(*) as total
 		FROM $table";
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, $err_count, "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$count = $db->sql_fetchrow($result);
 	$count = $count['total'];
 
 	$sql = "SELECT *
 		FROM $table
 		WHERE $idfield = $id";
+	$result = $db->sql_query($sql);
 
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, $err_info, "", __LINE__, __FILE__, $sql);
-	}
-
-	if( $db->sql_numrows($result) != 1 )
+	if($db->sql_numrows($result) != 1)
 	{
 		message_die(GENERAL_ERROR, $err_items . ' ' . $id, "", __LINE__, __FILE__);
 	}
@@ -123,14 +116,9 @@ function xsm_get_list($mode, $id, $select)
 	{
 		$sql .= " WHERE $idfield <> $id";
 	}
-
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't get list of Blocks/Menus", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$block_list = "";
-
 	while( $row = $db->sql_fetchrow($result) )
 	{
 		$s = "";
@@ -175,25 +163,16 @@ function xsm_renumber_order($mode, $block = 0)
 		$sql .= " WHERE $blockfield = $block";
 	}
 	$sql .= " ORDER BY $orderfield ASC";
-
-
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't get list of Blocks", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$i = 10;
 	$inc = 10;
-
 	while( $row = $db->sql_fetchrow($result) )
 	{
 		$sql = "UPDATE $table
 			SET $orderfield = $i
 			WHERE $idfield = " . $row[$idfield];
-		if( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 		$i += 10;
 	}
 

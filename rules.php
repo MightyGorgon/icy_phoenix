@@ -18,18 +18,18 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$cms_page_id = 'rules';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'rules';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // Load the appropriate Rules file
 $lang_file = 'lang_rules';
 $l_title = $lang['BoardRules'];
 
 // Include the rules settings
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT);
 
 //
 // Pull the array data from the lang pack
@@ -40,7 +40,7 @@ $counter_2 = 0;
 $rules_block = array();
 $rules_block_titles = array();
 
-for($i = 0; $i < count($faq); $i++)
+for($i = 0; $i < sizeof($faq); $i++)
 {
 	if($faq[$i][0] != '--')
 	{
@@ -61,23 +61,17 @@ for($i = 0; $i < count($faq); $i++)
 	}
 }
 
-// Lets build a page ...
-$page_title = $lang['BoardRules'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'rules_body.tpl'));
-make_jumpbox(VIEWFORUM_MG, $forum_id);
+make_jumpbox(CMS_PAGE_VIEWFORUM, $forum_id);
 
 $template->assign_vars(array(
 	'L_RULES_TITLE' => $l_title,
-	'L_BACK_TO_TOP' => $lang['Back_to_top'])
+	'L_BACK_TO_TOP' => $lang['Back_to_top']
+	)
 );
 
-for($i = 0; $i < count($rules_block); $i++)
+for($i = 0; $i < sizeof($rules_block); $i++)
 {
-	if(count($rules_block[$i]))
+	if(sizeof($rules_block[$i]))
 	{
 		$template->assign_block_vars('rules_block', array(
 			'BLOCK_TITLE' => $rules_block_titles[$i])
@@ -86,7 +80,7 @@ for($i = 0; $i < count($rules_block); $i++)
 			'BLOCK_TITLE' => $rules_block_titles[$i])
 		);
 
-		for($j = 0; $j < count($rules_block[$i]); $j++)
+		for($j = 0; $j < sizeof($rules_block[$i]); $j++)
 		{
 			$row_class = (!($j % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -108,8 +102,6 @@ for($i = 0; $i < count($rules_block); $i++)
 	}
 }
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('rules_body.tpl', $lang['BoardRules'], '', '');
 
 ?>

@@ -15,7 +15,9 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+
+@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+$class_topics = new class_topics();
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -28,11 +30,11 @@ $start = ($start < 0) ? 0 : $start;
 $page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
 $page_number = ($page_number < 1) ? false : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $board_config['topics_per_page']) - $board_config['topics_per_page']);
+$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
 
 // ############         Edit below         ########################################
 $topic_length = '60'; // length of topic title
-$topic_limit = $board_config['topics_per_page'];
+$topic_limit = $config['topics_per_page'];
 $special_forums = '0'; // specify forums ('0' = no; '1' = yes)
 $forum_ids = ''; // IDs of forums; separate them with a comma
 $set_mode = 'last24'; // set default mode ('today', 'yesterday', 'last24', 'lastweek', 'lastXdays')
@@ -43,18 +45,18 @@ $set_days = '7'; // set default days (used for lastXdays mode)
 if($userdata['upi2db_access'])
 {
 	$unread = unread();
-	$count_new_posts = count($unread['new_posts']);
-	$count_edit_posts = count($unread['edit_posts']);
-	$count_always_read = count($unread['always_read']['topics']);
-	$count_mark_unread = count($unread['mark_posts']);
+	$count_new_posts = sizeof($unread['new_posts']);
+	$count_edit_posts = sizeof($unread['edit_posts']);
+	$count_always_read = sizeof($unread['always_read']['topics']);
+	$count_mark_unread = sizeof($unread['mark_posts']);
 }
 //<!-- END Unread Post Information to Database Mod -->
 
-$cms_page_id = 'recent';
-$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'recent';
+$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $mode_types = array('today', 'yesterday', 'last24', 'lastweek', 'lastXdays', 'utopics', 'uposts');
 if ($userdata['user_level'] == ADMIN)
@@ -97,11 +99,7 @@ if(isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL]))
 		$sql = "SELECT username
 			FROM " . USERS_TABLE . "
 			WHERE user_id = '" . $user_id . "'";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Could not get user information", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$username = $row['username'];
 		if ($username == '')
@@ -128,12 +126,8 @@ if (!in_array($psort, $psort_types))
 	$psort = $psort_types[0];
 }
 
-$page_title = $lang['Recent_topics'];
-$meta_description = '';
-$meta_keywords = '';
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('recent.' . PHP_EXT) . '" class="nav-current">' . $lang['Recent_topics'] . '</a>';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 
 $except_forums = build_exclusion_forums_list();
 
@@ -165,27 +159,14 @@ $sql_end = "LIMIT $start, $topic_limit";
 
 if (!$userdata['session_logged_in'])
 {
-	$userdata['user_time_mode'] = $board_config['default_time_mode'];
-	$userdata['user_timezone'] = $board_config['board_timezone'];
-	$userdata['user_dst_time_lag'] = $board_config['default_dst_time_lag'];
+	$userdata['user_time_mode'] = $config['default_time_mode'];
+	$userdata['user_timezone'] = $config['board_timezone'];
+	$userdata['user_dst_time_lag'] = $config['default_dst_time_lag'];
 }
 
-switch($userdata['user_time_mode'])
-{
-	case MANUAL_DST:
-		$adj_time = (3600 * $userdata['user_timezone']) + ($userdata['user_dst_time_lag'] * 60);
-		break;
-	case SERVER_SWITCH:
-		$adj_time = (3600 * $userdata['user_timezone']) + (date('I', time()) * $userdata['user_dst_time_lag'] * 60);
-		break;
-	default:
-		$adj_time = 3600 * $userdata['user_timezone'];
-		break;
-}
-
-//$adj_time = ($userdata['session_logged_in']) ? 3600 * $userdata['user_timezone'] : 3600 * $board_config['board_timezone'];
+$dst_sec = get_dst(time(), $userdata['user_timezone']);
+$adj_time = (3600 * $userdata['user_timezone']) + $dst_sec;
 $int_day_sec = intval((time() + $adj_time) / 86400) * 86400;
-//$int_day_sec = (intval(time() / 86400) * 86400) - $adj_time;
 
 $mode_pagination = '&amp;amount_days=' . $amount_days;
 $total_topics = 0;
@@ -241,10 +222,8 @@ switch($mode)
 		$sql = "SELECT DISTINCT(topic_id)
 			FROM " . POSTS_TABLE . "
 			WHERE poster_id = '" . $user_id . "'";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain matched posts list', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		$search_ids = array();
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -252,7 +231,7 @@ switch($mode)
 		}
 		$db->sql_freeresult($result);
 		$sql_add = '';
-		$total_topics = count($search_ids);
+		$total_topics = sizeof($search_ids);
 		if ($total_topics > 0)
 		{
 			$sql_add = " AND t.topic_id IN (" . implode(',', $search_ids) . ") ";
@@ -280,15 +259,13 @@ switch($mode)
 		break;
 
 	default:
-		$message = $lang['Recent_wrong_mode'] . '<br /><br />' . sprintf($lang['Recent_click_return'], '<a href="' . append_sid('recent.' . PHP_EXT) . '">', '</a>') . '<br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
+		$message = $lang['Recent_wrong_mode'] . '<br /><br />' . sprintf($lang['Recent_click_return'], '<a href="' . append_sid('recent.' . PHP_EXT) . '">', '</a>') . '<br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 		break;
 }
 
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'could not obtain main information.', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
+
 $line = array();
 while($row = $db->sql_fetchrow($result))
 {
@@ -296,32 +273,26 @@ while($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
-$template->set_filenames(array('body' => 'recent_body.tpl'));
-
-$orig_word = array();
-$replacement_word = array();
-obtain_word_list($orig_word, $replacement_word);
-
-$tracking_topics = (isset($_COOKIE[$board_config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$board_config['cookie_name'] .'_t']) : array();
-$tracking_forums = (isset($_COOKIE[$board_config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$board_config['cookie_name'] .'_f']) : array();
+$tracking_topics = (isset($_COOKIE[$config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_t']) : array();
+$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
 
 // MG User Replied - BEGIN
 // check if user replied to the topics
 define('USER_REPLIED_ICON', true);
-$user_topics = user_replied_array($line);
+$user_topics = $class_topics->user_replied_array($line);
 // MG User Replied - END
 
-for($i = 0; $i < count($line); $i++)
+for($i = 0; $i < sizeof($line); $i++)
 {
 	$forum_id = $line[$i]['forum_id'];
 	$topic_id = $line[$i]['topic_id'];
 	$forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : '');
 	$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
-	$forum_url = append_sid(VIEWFORUM_MG . '?' . $forum_id_append);
-	$topic_url = append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append);
+	$forum_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append);
+	$topic_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append);
 	$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
-	$word_censor = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $line[$i]['topic_title']) : $line[$i]['topic_title'];
+	$word_censor = censor_text($line[$i]['topic_title']);
 	$topic_title = (strlen($line[$i]['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...';
 	$topic_title_prefix = (empty($line[$i]['title_compl_infos'])) ? '' : $line[$i]['title_compl_infos'] . ' ';
 	$topic_title = $topic_title_prefix . $topic_title;
@@ -332,25 +303,25 @@ for($i = 0; $i < count($line); $i++)
 	$views = $line[$i]['topic_views'];
 	$replies = $line[$i]['topic_replies'];
 
-	$topic_link = build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_reg'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['topic_vote'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies, $unread);
+	$topic_link = $class_topics->build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_reg'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['topic_vote'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies, $unread);
 
 	$topic_id = $topic_link['topic_id'];
 	$topic_id_append = $topic_link['topic_id_append'];
 
-	if(($replies + 1) > $board_config['posts_per_page'])
+	if(($replies + 1) > $config['posts_per_page'])
 	{
-		$total_pages = ceil(($replies + 1) / $board_config['posts_per_page']);
+		$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
 		$goto_page_prefix = ' [';
 		$goto_page = ' <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;';
 		$times = '1';
-		for($j = 0; $j < $replies + 1; $j += $board_config['posts_per_page'])
+		for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
 		{
-			$goto_page .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '" title="' . $lang['Goto_page'] . ' ' . $times . '"><b>' . $times . '</b></a>';
+			$goto_page .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '" title="' . $lang['Goto_page'] . ' ' . $times . '"><b>' . $times . '</b></a>';
 			if(($times == '1') && ($total_pages > '4'))
 			{
 				$goto_page .= ' ... ';
 				$times = $total_pages - 3;
-				$j += ($total_pages - 4) * $board_config['posts_per_page'];
+				$j += ($total_pages - 4) * $config['posts_per_page'];
 			}
 			elseif($times < $total_pages)
 			{
@@ -367,13 +338,13 @@ for($i = 0; $i < count($line); $i++)
 		$goto_page = '';
 	}
 
-	$first_time = create_date_ip($lang['DATE_FORMAT_VF'], $line[$i]['topic_time'], $board_config['board_timezone'], true);
+	$first_time = create_date_ip($lang['DATE_FORMAT_VF'], $line[$i]['topic_time'], $config['board_timezone'], true);
 	// Old format
-	//$first_time = create_date_ip($board_config['default_dateformat'], $line[$i]['topic_time'], $board_config['board_timezone']);
+	//$first_time = create_date_ip($config['default_dateformat'], $line[$i]['topic_time'], $config['board_timezone']);
 	$first_author = ($line[$i]['first_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['first_poster_id'], $line[$i]['first_poster'], $line[$i]['first_poster_color'], $line[$i]['first_poster_active']) : (($line[$i]['first_poster_name'] != '') ? $line[$i]['first_poster_name'] : $lang['Guest']);
-	$last_time = create_date_ip($board_config['default_dateformat'], $line[$i]['post_time'], $board_config['board_timezone']);
+	$last_time = create_date_ip($config['default_dateformat'], $line[$i]['post_time'], $config['board_timezone']);
 	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id'], $line[$i]['last_poster'], $line[$i]['last_poster_color'], $line[$i]['last_poster_active']): (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
-	$last_url = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $line[$i]['topic_last_post_id']) . '#p' . $line[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+	$last_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $line[$i]['topic_last_post_id']) . '#p' . $line[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 	// SELF AUTH - BEGIN
 	// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
@@ -389,7 +360,7 @@ for($i = 0; $i < count($line); $i++)
 
 	if($mode == 'utview')
 	{
-		$last_time = $last_time = create_date_ip($board_config['default_dateformat'], $line[$i]['view_time'], $board_config['board_timezone']);;
+		$last_time = $last_time = create_date_ip($config['default_dateformat'], $line[$i]['view_time'], $config['board_timezone']);;
 		$last_author = '';
 		$last_url = '';
 	}
@@ -436,10 +407,7 @@ if ($total_topics == 0)
 					FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p" . $extra_tables . "
 					WHERE $where_count
 					AND p.post_id = t.topic_last_post_id";
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'error getting total topics.', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	if($total = $db->sql_fetchrow($result))
 	{
 		$total_topics = $total['total_topics'];
@@ -479,7 +447,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('recent_body.tpl', $lang['Recent_topics'], '', '');
 
 ?>

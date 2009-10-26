@@ -58,19 +58,14 @@ if ($refresh)
 		FROM ' . CONFIRM_TABLE . "
 		WHERE confirm_id = '" . $confirm_id . "'
 			AND session_id = '" . $userdata['session_id'] . "'";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, $lang['ctracker_code_dbconn'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '$confirm_id'
 				AND session_id = '" . $userdata['session_id'] . "'";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_code_dbconn'], __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 }
 
@@ -93,10 +88,8 @@ if ( $mode == 'check' || defined('POST_CONFIRM_CHECK') )
 			FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '" . $confirm_id . "'
 				AND session_id = '" . $userdata['session_id'] . "'";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_code_dbconn'], __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
+
 		if ($row = $db->sql_fetchrow($result))
 		{
 			if ($row['code'] != $confirm_code)
@@ -109,10 +102,7 @@ if ( $mode == 'check' || defined('POST_CONFIRM_CHECK') )
 				$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 					WHERE confirm_id = '$confirm_id'
 						AND session_id = '" . $userdata['session_id'] . "'";
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['ctracker_code_dbconn'], __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 		else
@@ -138,7 +128,7 @@ if ( $mode == 'check' || defined('POST_CONFIRM_CHECK') )
 		$login_reset = mg_reset_login_system($user_id);
 		$message_text = '';
 		//$message_text = $user_id;
-		$message_text = sprintf($lang['ctracker_login_success'], LOGIN_MG);
+		$message_text = sprintf($lang['ctracker_login_success'], CMS_PAGE_LOGIN);
 		message_die(GENERAL_MESSAGE, $message_text);
 	}
 }
@@ -147,10 +137,7 @@ else
 	$confirm_image = '';
 	$sql = 'SELECT session_id
 			FROM ' . SESSIONS_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -163,10 +150,7 @@ else
 
 		$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 			WHERE session_id NOT IN ($confirm_sql)";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_code_dbconn'], '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	$db->sql_freeresult($result);
@@ -174,11 +158,7 @@ else
 	$sql = 'SELECT COUNT(session_id) AS attempts
 		FROM ' . CONFIRM_TABLE . "
 		WHERE session_id = '" . $userdata['session_id'] . "'";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, $lang['ctracker_code_dbconn'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -199,15 +179,11 @@ else
 
 	$sql = 'INSERT INTO ' . CONFIRM_TABLE . " (confirm_id, session_id, code)
 		VALUES ('$confirm_id', '". $userdata['session_id'] . "', '$code')";
-
-	if (!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['ctracker_code_dbconn'], '', __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 
 	unset($code);
 
-	$confirm_image = '<img src="' . append_sid(PROFILE_MG . '?mode=confirm&amp;id=' . $confirm_id) . '" alt="" title="" />';
+	$confirm_image = '<img src="' . append_sid(CMS_PAGE_PROFILE . '?mode=confirm&amp;id=' . $confirm_id) . '" alt="" title="" />';
 	$s_hidden_fields .= '<input type="hidden" name="confirm_id" value="' . $confirm_id . '" />';
 }
 

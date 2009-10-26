@@ -181,7 +181,7 @@ function create_thumbnail($source, $new_file, $mimetype)
 		$old_file = $new_file;
 
 		$tmp_path = explode('/', $source);
-		$tmp_path[count($tmp_path) - 1] = '';
+		$tmp_path[sizeof($tmp_path) - 1] = '';
 		$tmp_path = implode('/', $tmp_path);
 
 		if ($tmp_path == '')

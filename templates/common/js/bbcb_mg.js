@@ -91,6 +91,7 @@ var clientVer = parseInt(navigator.appVersion); // Get browser version
 
 var is_ie = ((clientPC.indexOf('msie') != -1) && (clientPC.indexOf('opera') == -1));
 var is_win = ((clientPC.indexOf('win') != -1) || (clientPC.indexOf('16bit') != -1));
+var is_iphone = ((clientPC.indexOf('iphone'))!=-1);
 
 var baseHeight;
 
@@ -280,7 +281,7 @@ function arraypop(thearray)
 function checkForm()
 {
 	formErrors = false;
-	if (document.forms[form_name].elements[text_name].value.length < 2)
+	if (document.forms[form_name].elements[text_name].value.length < 4)
 	{
 		formErrors = s_formerrors;
 	}

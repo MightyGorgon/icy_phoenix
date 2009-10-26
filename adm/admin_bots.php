@@ -21,7 +21,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_bots.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bots.' . PHP_EXT);
 
 $mode_array = array('add', 'delete', 'save', 'update');
 $mode = request_var('mode', '');
@@ -62,11 +62,11 @@ if($mode == 'save')
 	// htmlspecialchars_decode is supported only since PHP 5+ (an alias has been added into functions.php, if you want to use a PHP 4 default function you can use html_entity_decode instead)
 	$input_array = array(
 		'bot_active' => $bot_active,
-		'bot_name' => '\'' . ((STRIP) ? addslashes($bot_name) : $bot_name) . '\'',
-		'bot_color' => '\'' . ((STRIP) ? htmlspecialchars_decode(addslashes($bot_color)) : htmlspecialchars_decode($bot_color)) . '\'',
-		'bot_agent' => '\'' . ((STRIP) ? addslashes($bot_agent) : $bot_agent) . '\'',
-		'bot_ip' => '\'' . ((STRIP) ? addslashes($bot_ip) : $bot_ip) . '\'',
-		'bot_visit_counter' => ((STRIP) ? addslashes($bot_visit_counter) : $bot_visit_counter),
+		'bot_name' => '\'' . addslashes($bot_name) . '\'',
+		'bot_color' => '\'' . htmlspecialchars_decode(addslashes($bot_color)) . '\'',
+		'bot_agent' => '\'' . addslashes($bot_agent) . '\'',
+		'bot_ip' => '\'' . addslashes($bot_ip) . '\'',
+		'bot_visit_counter' => addslashes($bot_visit_counter),
 	);
 
 	$input_fields_sql = '';
@@ -98,7 +98,11 @@ if($mode == 'save')
 		$message = $lang['Error'];
 	}
 
-	if(($message != $lang['Error']) && !$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+
+	if(($message != $lang['Error']) && !$result)
 	{
 		message_die(GENERAL_ERROR, 'Could not insert data into bots table', $lang['Error'], __LINE__, __FILE__, $sql);
 	}
@@ -112,12 +116,9 @@ elseif ($mode == 'delete')
 {
 	$sql = "DELETE FROM " . BOTS_TABLE . "
 		WHERE bot_id = " . $bot_id;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not remove data from bots table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$db->clear_cache('bots_list_');
+
 	$message = $lang['BOT_DELETED'] . '<br /><br />' . sprintf($lang['CLICK_RETURN_BOTS'], '<a href="' . append_sid('admin_bots.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 
@@ -126,14 +127,11 @@ elseif ($mode == 'update')
 {
 	$bots_upd = array();
 	$bots_upd = $_POST['bots'];
-	$bots_upd_n = count($bots_upd);
+	$bots_upd_n = sizeof($bots_upd);
 	$sql_no_gb = '';
 
 	$sql = "SELECT * FROM " . BOTS_TABLE;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query bots table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -141,10 +139,7 @@ elseif ($mode == 'update')
 		$sql_upd = "UPDATE " . BOTS_TABLE . "
 						SET bot_active = '" . $b_active . "'
 						WHERE bot_id = " . $row['bot_id'];
-		if(!$result_upd = $db->sql_query($sql_upd))
-		{
-			message_die(GENERAL_ERROR, 'Could not update bots table', $lang['Error'], __LINE__, __FILE__, $sql_upd);
-		}
+		$result_upd = $db->sql_query($sql_upd);
 	}
 	$db->sql_freeresult($result);
 
@@ -163,22 +158,18 @@ elseif ($mode == 'add')
 		$sql = "SELECT *
 			FROM " . BOTS_TABLE . "
 			WHERE bot_id = " . $bot_id;
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not query bots table', $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 
 		$bot_id = $row['bot_id'];
 		$bot_active = $row['bot_active'];
-		$bot_name = ((STRIP) ? stripslashes($row['bot_name']) : $row['bot_name']);
-		$bot_color = ((STRIP) ? htmlspecialchars(stripslashes($row['bot_color'])) : htmlspecialchars($row['bot_color']));
-		$bot_agent = ((STRIP) ? stripslashes($row['bot_agent']) : $row['bot_agent']);
-		$bot_ip = ((STRIP) ? stripslashes($row['bot_ip']) : $row['bot_ip']);
+		$bot_name = stripslashes($row['bot_name']);
+		$bot_color = htmlspecialchars(stripslashes($row['bot_color']));
+		$bot_agent = stripslashes($row['bot_agent']);
+		$bot_ip = stripslashes($row['bot_ip']);
 		$bot_last_visit = $row['bot_last_visit'];
-		$bot_visit_counter = ((STRIP) ? stripslashes($row['bot_visit_counter']) : $row['bot_visit_counter']);
+		$bot_visit_counter = stripslashes($row['bot_visit_counter']);
 	}
 
 	$bot_active = ($bot_id > 0) ? $bot_active : true;
@@ -228,10 +219,7 @@ else
 	$sql = "SELECT *
 		FROM " . BOTS_TABLE . "
 		ORDER BY " . $sql_sort;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query bots table', $lang['Error'], __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$i = 0;
 	while($row = $db->sql_fetchrow($result))
@@ -248,7 +236,7 @@ else
 			'BOT_COLOR' => (($row['bot_color'] == '') ? '&nbsp;' : $row['bot_color']),
 			'BOT_AGENT' => (($row['bot_agent'] == '') ? '&nbsp;' : $row['bot_agent']),
 			'BOT_IP' => (($row['bot_ip'] == '') ? '&nbsp;' : $row['bot_ip']),
-			'BOT_LAST_VISIT' => (($row['bot_last_visit'] == 0) ? '-' : create_date_ip($board_config['default_dateformat'], $row['bot_last_visit'], $board_config['board_timezone'])),
+			'BOT_LAST_VISIT' => (($row['bot_last_visit'] == 0) ? '-' : create_date_ip($config['default_dateformat'], $row['bot_last_visit'], $config['board_timezone'])),
 			'BOT_COUNTER' => $row['bot_visit_counter'],
 
 			'U_EDIT' => append_sid('admin_bots.' . PHP_EXT . '?mode=add&amp;bot_id=' . $row['bot_id']),

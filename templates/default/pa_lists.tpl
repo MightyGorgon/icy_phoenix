@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- BEGIN recent_pics_block -->
 <table class="forumline" width="100%" cellspacing="0">
 <tr><td class="row2" align="left" colspan="{S_COLS}" nowrap="nowrap"><span class="cattitle">&nbsp;{L_RECENT_PUBLIC_PICS}</span></td></tr>
@@ -97,3 +99,5 @@
 </table>
 <br />
 <!-- END random_pics_block -->
+
+<!-- INCLUDE overall_footer.tpl -->

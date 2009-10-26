@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 <form method="post" action="{S_ACTION}">
@@ -22,3 +24,5 @@
 </form>
 
 <!-- INCLUDE profile_cpl_menu_inc_end.tpl -->
+
+<!-- INCLUDE overall_footer.tpl -->

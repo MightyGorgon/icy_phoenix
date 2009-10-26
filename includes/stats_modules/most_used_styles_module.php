@@ -29,11 +29,7 @@ $sql = "SELECT COUNT(u.user_style) as used_counter, t.style_name
 	GROUP BY t.themes_id, t.style_name
 	ORDER BY used_counter DESC
 	LIMIT " . $return_limit;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $themes_count = $stat_db->sql_numrows($result);
 $themes_data = $stat_db->sql_fetchrowset($result);
 

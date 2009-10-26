@@ -11,7 +11,7 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_COMMENT_ADD}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1" width="22%"><span class="gen"><b>{L_COMMENT_TITLE}</b></span></td>
-	<td class="row2" width="78%"><input type="text" name="subject" size="45" maxlength="60" style="width: 98%" tabindex="2" class="post" value="{SUBJECT}" /></td></td>
+	<td class="row2" width="78%"><input type="text" name="subject" size="45" maxlength="60" style="width: 98%;" tabindex="2" class="post" value="{SUBJECT}" /></td></td>
 </tr>
 <tr>
 	<td class="row1" valign="top">

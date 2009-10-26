@@ -57,7 +57,7 @@ function attachment_exists($filename)
 
 		$file_listing = @ftp_rawlist($conn_id, $filename);
 
-		for ($i = 0, $size = count($file_listing); $i < $size; $i++)
+		for ($i = 0, $size = sizeof($file_listing); $i < $size; $i++)
 		{
 			if (ereg("([-d])[rwxst-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)", $file_listing[$i], $regs))
 			{
@@ -105,12 +105,7 @@ function attachment_exists_db($post_id, $page = 0)
 		FROM ' . ATTACHMENTS_TABLE . "
 		WHERE $sql_id = $post_id
 		LIMIT 1";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get attachment informations for specific posts', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -132,20 +127,15 @@ function get_extension_informations()
 	global $db;
 
 	$extensions = array();
-
 	// Don't count on forbidden extensions table, because it is not allowed to allow forbidden extensions at all
 	$sql = 'SELECT e.extension, g.cat_id, g.download_mode, g.upload_icon
 		FROM ' . EXTENSIONS_TABLE . ' e, ' . EXTENSION_GROUPS_TABLE . ' g
 		WHERE e.group_id = g.group_id
 			AND g.allow_group = 1';
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query Allowed Extensions.', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$extensions = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
+
 	return $extensions;
 }
 
@@ -183,7 +173,7 @@ function init_complete_extensions_data()
 	$extension_informations = get_extension_informations();
 	$allowed_extensions = array();
 
-	for ($i = 0, $size = count($extension_informations); $i < $size; $i++)
+	for ($i = 0, $size = sizeof($extension_informations); $i < $size; $i++)
 	{
 		$extension = strtolower(trim($extension_informations[$i]['extension']));
 		$allowed_extensions[] = $extension;
@@ -198,7 +188,7 @@ function init_complete_extensions_data()
 */
 function init_display_template($template_var, $replacement, $filename = 'viewtopic_attach_body.tpl')
 {
-	global $template, $board_config;
+	global $template, $config;
 
 	// This function is adapted from the old template class
 	// I wish i had the functions from the 3.x one. :D (This class rocks, can't await to use it in Mods)
@@ -229,7 +219,7 @@ function init_display_template($template_var, $replacement, $filename = 'viewtop
 		$complete_filename = $template->root . '/' . $complete_filename;
 		if (!file_exists($complete_filename))
 		{
-			$complete_filename = IP_ROOT_PATH . 'templates/' . $board_config['xs_def_template'] . '/' . $filename;
+			$complete_filename = IP_ROOT_PATH . 'templates/' . $config['xs_def_template'] . '/' . $filename;
 		}
 	}
 
@@ -334,7 +324,7 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 		$switch_attachment = $article['topic_attachment'];
 	}
 
-	if ( count($article) == 0 )
+	if ( sizeof($article) == 0 )
 	{
 		if ( (intval($switch_attachment) == 0) || intval($attach_config['disable_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])) )
 		{
@@ -344,7 +334,7 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 
 	$post_id_array = array();
 
-	if ( count($article) == 0 )
+	if ( sizeof($article) == 0 )
 	{
 		for ($i = 0; $i < $total_posts; $i++)
 		{
@@ -361,13 +351,13 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 			$post_id_array[] = $article['post_id'];
 		}
 	}
-	if (count($post_id_array) == 0)
+	if (sizeof($post_id_array) == 0)
 	{
 		return;
 	}
 
 	$rows = get_attachments_from_post($post_id_array);
-	$num_rows = count($rows);
+	$num_rows = sizeof($rows);
 
 	if ($num_rows == 0)
 	{
@@ -381,7 +371,7 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 		$attachments['_' . $rows[$i]['post_id']][] = $rows[$i];
 	}
 
-	if ( count($article) == 0 )
+	if ( sizeof($article) == 0 )
 	{
 		init_display_template('body', '{postrow.ATTACHMENTS}');
 	}
@@ -496,7 +486,7 @@ function init_display_pm_attachments($switch_attachment)
 	@reset($attachments);
 	$attachments['_' . $privmsgs_id] = get_attachments_from_pm($privmsgs_id);
 
-	if (count($attachments['_' . $privmsgs_id]) == 0)
+	if (sizeof($attachments['_' . $privmsgs_id]) == 0)
 	{
 		return;
 	}
@@ -539,7 +529,7 @@ function display_review_attachments($post_id, $switch_attachment, $is_auth)
 	@reset($attachments);
 	$attachments['_' . $post_id] = get_attachments_from_post($post_id);
 
-	if (count($attachments['_' . $post_id]) == 0)
+	if (sizeof($attachments['_' . $post_id]) == 0)
 	{
 		return;
 	}
@@ -574,9 +564,9 @@ function init_display_review_attachments($is_auth)
 */
 function display_attachments_preview($attachment_id_list, $attachment_list, $attachment_filesize_list, $attachment_filename_list, $attachment_comment_list, $attachment_extension_list, $attachment_thumbnail_list)
 {
-	global $attach_config, $is_auth, $allowed_extensions, $lang, $userdata, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
+	global $attach_config, $is_auth, $allowed_extensions, $userdata, $lang, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
 
-	if (count($attachment_list) != 0)
+	if (sizeof($attachment_list) != 0)
 	{
 		init_display_template('preview', '{ATTACHMENTS}');
 
@@ -585,7 +575,7 @@ function display_attachments_preview($attachment_id_list, $attachment_list, $att
 		$template->assign_block_vars('postrow', array());
 		$template->assign_block_vars('postrow.attach', array());
 
-		for ($i = 0, $size = count($attachment_list); $i < $size; $i++)
+		for ($i = 0, $size = sizeof($attachment_list); $i < $size; $i++)
 		{
 			$filename = $upload_dir . '/' . basename($attachment_list[$i]);
 			$thumb_filename = $upload_dir . '/' . THUMB_DIR . '/t_' . basename($attachment_list[$i]);
@@ -792,9 +782,9 @@ function display_attachments_preview($attachment_id_list, $attachment_list, $att
 */
 function display_attachments($post_id, $type = 'postrow')
 {
-	global $template, $upload_dir, $userdata, $allowed_extensions, $display_categories, $download_modes;
-	global $db, $lang, $attachments, $upload_icons, $attach_config, $board_config, $username_from;
-	$num_attachments = count($attachments['_' . $post_id]);
+	global $db, $config, $template, $userdata, $lang;
+	global $attach_config, $upload_dir, $allowed_extensions, $display_categories, $download_modes, $attachments, $upload_icons, $username_from;
+	$num_attachments = sizeof($attachments['_' . $post_id]);
 	if ($num_attachments == 0)
 	{
 		return;
@@ -939,15 +929,15 @@ function display_attachments($post_id, $type = 'postrow')
 						// END
 					}
 				}
-				$max_image_width = intval($board_config['liw_max_width']);
+				$max_image_width = intval($config['liw_max_width']);
 
-				$server_protocol = ( $board_config['cookie_secure'] ) ? 'https://' : 'http://';
-				$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-				$server_port = ( $board_config['server_port'] <> 80 ) ? ':' . trim($board_config['server_port']) : '';
-				$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['script_path']));
+				$server_protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
+				$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
+				$server_port = ( $config['server_port'] <> 80 ) ? ':' . trim($config['server_port']) : '';
+				$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['script_path']));
 				$script_name = ( $script_name == '' ) ? $script_name : '/' . $script_name;
 
-				if (($max_image_width != 0) && ($board_config['liw_attach_enabled'] == 1) && !isset($username_from))
+				if (($max_image_width != 0) && ($config['liw_attach_enabled'] == 1) && !isset($username_from))
 				{
 					if (!function_exists('liw_get_dimensions'))
 					{

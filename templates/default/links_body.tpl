@@ -36,6 +36,8 @@ function checkForm()
 //-->
 </script>
 
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- INCLUDE links_leftblock.tpl -->
 	<td width="100%" valign="top">
 		{IMG_THL}{IMG_THC}<span class="forumlink">{LINK_CATEGORY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -69,11 +71,13 @@ function checkForm()
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 		<br />
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-			<tr>
-				<td align="left" valign="top"><span class="gensmall">{PAGE_NUMBER}</span></td>
-				<td align="right"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
-			</tr>
+		<tr>
+			<td align="left" valign="top"><span class="gensmall">{PAGE_NUMBER}</span></td>
+			<td align="right"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
+		</tr>
 		</table>
 	</td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

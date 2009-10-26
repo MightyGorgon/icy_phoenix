@@ -19,7 +19,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['2100_Links']['100_Configuration'] = $filename;
@@ -32,60 +32,49 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
 
-//
 // Pull all config data
-//
 $sql = "SELECT * FROM " . LINK_CONFIG_TABLE;
-if(!$result = $db->sql_query($sql))
+$result = $db->sql_query($sql);
+
+while($row = $db->sql_fetchrow($result))
 {
-	message_die(CRITICAL_ERROR, "Could not query Links config information", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	while( $row = $db->sql_fetchrow($result) )
+	$config_name = $row['config_name'];
+	$config_value = $row['config_value'];
+	$default_config[$config_name] = $config_value;
+
+	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+
+	if(isset($_POST['submit']))
 	{
-		$config_name = $row['config_name'];
-		$config_value = $row['config_value'];
-		$default_config[$config_name] = $config_value;
-
-		$new[$config_name] = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $default_config[$config_name];
-
-		if( isset($_POST['submit']) )
-		{
-			$sql = "UPDATE " . LINK_CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-				WHERE config_name = '$config_name'";
-			if( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Failed to update Link configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
-		}
-	}
-
-	if( isset($_POST['submit']) )
-	{
-		$message = $lang['Link_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_config'], '<a href="' . append_sid('admin_links_config.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-
-		message_die(GENERAL_MESSAGE, $message);
+		$sql = "UPDATE " . LINK_CONFIG_TABLE . " SET
+			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
+			WHERE config_name = '$config_name'";
+		$db->sql_query($sql);
 	}
 }
 
-$template->set_filenames(array(
-	'body' => ADM_TPL . 'admin_link_config_body.tpl')
-);
+if(isset($_POST['submit']))
+{
+	$message = $lang['Link_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_link_config'], '<a href="' . append_sid('admin_links_config.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
-$lock_submit_site_yes = ( $new['lock_submit_site'] ) ? "checked=\"checked\"" : "";
-$lock_submit_site_no = ( !$new['lock_submit_site'] ) ? "checked=\"checked\"" : "";
-// $allow_guest_submit_site_yes = ( $new['allow_guest_submit_site'] ) ? "checked=\"checked\"" : "";
-// $allow_guest_submit_site_no = ( !$new['allow_guest_submit_site'] ) ? "checked=\"checked\"" : "";
-$allow_no_logo_yes = ( $new['allow_no_logo'] ) ? "checked=\"checked\"" : "";
-$allow_no_logo_no = ( !$new['allow_no_logo'] ) ? "checked=\"checked\"" : "";
-$display_links_logo_yes = ( $new['display_links_logo'] ) ? "checked=\"checked\"" : "";
-$display_links_logo_no = ( !$new['display_links_logo'] ) ? "checked=\"checked\"" : "";
-$email_yes = ( $new['email_notify'] ) ? "checked=\"checked\"" : "";
-$email_no = ( !$new['email_notify'] ) ? "checked=\"checked\"" : "";
-$pm_yes = ( $new['pm_notify'] ) ? "checked=\"checked\"" : "";
-$pm_no = ( !$new['pm_notify'] ) ? "checked=\"checked\"" : "";
+	$db->clear_cache('links_');
+	message_die(GENERAL_MESSAGE, $message);
+}
+
+$template->set_filenames(array('body' => ADM_TPL . 'admin_link_config_body.tpl'));
+
+$lock_submit_site_yes = ($new['lock_submit_site']) ? "checked=\"checked\"" : "";
+$lock_submit_site_no = (!$new['lock_submit_site']) ? "checked=\"checked\"" : "";
+// $allow_guest_submit_site_yes = ($new['allow_guest_submit_site']) ? "checked=\"checked\"" : "";
+// $allow_guest_submit_site_no = (!$new['allow_guest_submit_site']) ? "checked=\"checked\"" : "";
+$allow_no_logo_yes = ($new['allow_no_logo']) ? "checked=\"checked\"" : "";
+$allow_no_logo_no = (!$new['allow_no_logo']) ? "checked=\"checked\"" : "";
+$display_links_logo_yes = ($new['display_links_logo']) ? "checked=\"checked\"" : "";
+$display_links_logo_no = (!$new['display_links_logo']) ? "checked=\"checked\"" : "";
+$email_yes = ($new['email_notify']) ? "checked=\"checked\"" : "";
+$email_no = (!$new['email_notify']) ? "checked=\"checked\"" : "";
+$pm_yes = ($new['pm_notify']) ? "checked=\"checked\"" : "";
+$pm_no = (!$new['pm_notify']) ? "checked=\"checked\"" : "";
 
 $template->assign_vars(array(
 	'L_LINK_CONFIG' => $lang['Link_Config'],

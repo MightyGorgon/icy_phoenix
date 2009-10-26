@@ -121,7 +121,7 @@ if ( defined('IN_ADMIN') )
 
 	// Default for new forum in admin_forums.php
 	$forum_auth_ary = array();
-	for($i = 0; $i < count($forum_auth_fields); $i++)
+	for($i = 0; $i < sizeof($forum_auth_fields); $i++)
 	{
 		$forum_auth_ary[$forum_auth_fields[$i]] = $simple_auth_ary[0][$i];
 	}

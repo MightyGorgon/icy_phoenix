@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-if (empty($_GET[POST_USERS_URL]) || $_GET[POST_USERS_URL] == ANONYMOUS)
+if (empty($_GET[POST_USERS_URL]) || ($_GET[POST_USERS_URL] == ANONYMOUS))
 {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
@@ -37,42 +37,33 @@ $user = $profiledata['user_id'];
 $viewer = addslashes($userdata['username']);
 $viewer_id = $userdata['user_id'];
 $current_time = time();
-if ($user <> $viewer_id)
+if ($user != $viewer_id)
 {
 	$sql = "UPDATE " . USERS_TABLE . "
 			SET user_profile_view = '1'
 			WHERE user_id = " . $user;
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not update user data.", '', __LINE__, __FILE__, $sql);
-		}
+	$db->sql_query($sql);
 
 	$sql = "SELECT * FROM " . PROFILE_VIEW_TABLE . "
 		WHERE user_id = " . $user . "
 		AND viewer_id = " . $viewer_id;
-
-	if ($result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if ($result)
 	{
 		if (!$row = $db->sql_fetchrow($result))
 		$sql = "INSERT INTO " . PROFILE_VIEW_TABLE . "
 			(user_id, viewername, viewer_id, view_stamp, counter)
 			VALUES ('$user', '$viewer', '$viewer_id', '$current_time', '1')";
-		if (!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not insert profile views.", '', __LINE__, __FILE__, $sql);
-		}
-		else
-		{
-			$count = $row['counter'] + 1;
-			$sql = "UPDATE " . PROFILE_VIEW_TABLE . "
-					SET view_stamp = '$current_time', counter = '$count'
-					WHERE user_id = " . $user. "
-					AND viewer_id = " . $viewer_id;
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not update profile views.", '', __LINE__, __FILE__, $sql);
-			}
-		}
+		$db->sql_query($sql);
+		$count = $row['counter'] + 1;
+
+		$sql = "UPDATE " . PROFILE_VIEW_TABLE . "
+				SET view_stamp = '$current_time', counter = '$count'
+				WHERE user_id = " . $user. "
+				AND viewer_id = " . $viewer_id;
+		$db->sql_query($sql);
 	}
 }
 if (!$profiledata)
@@ -80,15 +71,11 @@ if (!$profiledata)
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
 // Mighty Gorgon - Multiple Ranks - BEGIN
-require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
-$ranks_sql = query_ranks();
+@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+$ranks_array = $cache->obtain_ranks(false);
 // Mighty Gorgon - Multiple Ranks - END
 
-//
-// Output page header and profile_view template
-//
-$template->set_filenames(array('body' => 'profile_view_body.tpl'));
-make_jumpbox(VIEWFORUM_MG);
+make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 //
 // Calculate the number of days this user has been a member ($memberdays)
@@ -101,7 +88,7 @@ $posts_per_day = $profiledata['user_posts'] / $memberdays;
 // Get the users percentage of total posts
 if ($profiledata['user_posts'] != 0 )
 {
-	$total_posts = $board_config['max_posts'];
+	$total_posts = $config['max_posts'];
 	$percentage = ($total_posts) ? min(100, ($profiledata['user_posts'] / $total_posts) * 100) : 0;
 }
 else
@@ -111,7 +98,7 @@ else
 
 // Mighty Gorgon - Thanks Received - BEGIN
 $total_thanks_received = 0;
-if (($board_config['show_thanks_profile'] == true) && ($board_config['disable_thanks_topics'] == false))
+if ($config['show_thanks_profile'] && !$config['disable_thanks_topics'])
 {
 	$total_thanks_received = user_get_thanks_received($profiledata['user_id']);
 	$template->assign_block_vars('show_thanks_profile', array());
@@ -130,17 +117,15 @@ $cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $c
 $show_latest_pics = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 if ($show_latest_pics)
 {
-	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
 
 	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
 	$album_comment_pic_url = $album_show_pic_url;
 
 	$sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
-	if(!$result = $db->sql_query($sql, false, 'album_config_'))
-	{
-		message_die(GENERAL_ERROR, "Could not query album config information", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql, 0, 'album_config_');
+
 	while($row = $db->sql_fetchrow($result))
 	{
 		$album_config[$row['config_name']] = $row['config_value'];
@@ -157,20 +142,15 @@ if ($show_latest_pics)
 				AND p.pic_approval = 1
 				AND u.user_id = p.pic_user_id
 			ORDER BY pic_time DESC";
-
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query recent pics information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$recentrow = array();
-
 	while($row = $db->sql_fetchrow($result))
 	{
 		$recentrow[] = $row;
 	}
 
-	$totalpicrow = count($recentrow);
+	$totalpicrow = sizeof($recentrow);
 
 	$db->sql_freeresult($result);
 
@@ -223,7 +203,7 @@ if ($show_latest_pics)
 					'PIC_TITLE' => htmlspecialchars($recentrow[$j]['pic_title']),
 					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . htmlspecialchars($recentrow[$j]['pic_title']) . '</a>',
 					'POSTER' => $recent_poster,
-					'TIME' => create_date($board_config['default_dateformat'], $recentrow[$j]['pic_time'], $board_config['board_timezone']),
+					'TIME' => create_date($config['default_dateformat'], $recentrow[$j]['pic_time'], $config['board_timezone']),
 
 					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 					'U_PIC_SP' => $pic_sp_link,
@@ -246,7 +226,7 @@ if ($show_latest_pics)
 $avatar_img = user_get_avatar($profiledata['user_id'], $profiledata['user_level'], $profiledata['user_avatar'], $profiledata['user_avatar_type'], $profiledata['user_allowavatar']);
 
 // Mighty Gorgon - Multiple Ranks - BEGIN
-$user_ranks = generate_ranks($profiledata, $ranks_sql);
+$user_ranks = generate_ranks($profiledata, $ranks_array);
 
 $user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
 $user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
@@ -279,7 +259,7 @@ if (empty($userdata['user_id']) || ($userdata['user_id'] == ANONYMOUS))
 }
 elseif (!empty($profiledata['user_viewemail']) || $userdata['user_level'] == ADMIN)
 {
-	$email_url = ($board_config['board_email_form']) ? append_sid(PROFILE_MG . '?mode=email&amp;' . POST_USERS_URL .'=' . $profiledata['user_id']) : 'mailto:' . $profiledata['user_email'];
+	$email_url = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $profiledata['user_id']) : 'mailto:' . $profiledata['user_email'];
 	$email_img = '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
 	$email = '<a href="' . $email_url . '">' . $lang['Send_email'] . '</a>';
 }
@@ -315,7 +295,7 @@ $yim_img = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiled
 $yim = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false) : '&nbsp;';
 $yim_url = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false, true) : '';
 
-$temp_url = append_sid(SEARCH_MG . '?search_author=' . urlencode($profiledata['username']) . '&amp;showresults=posts');
+$temp_url = append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode($profiledata['username']) . '&amp;showresults=posts');
 $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" title="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" /></a>';
 $search = '<a href="' . $temp_url . '">' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '</a>';
 // Start Advanced IP Tools Pack MOD
@@ -325,13 +305,12 @@ $hostname = ($profiledata['user_registered_hostname'] == '') ? $lang['Not_record
 // End Advanced IP Tools Pack MOD
 
 // BBCode - BEGIN
-include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-global $bbcode;
-$bbcode->allow_html = $board_config['allow_html'];
-$bbcode->allow_bbcode = $board_config['allow_bbcode'];
-if ($board_config['allow_smilies'] && $profiledata['user_allowsmile'] && !$lofi)
+@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+$bbcode->allow_html = $config['allow_html'];
+$bbcode->allow_bbcode = $config['allow_bbcode'];
+if ($config['allow_smilies'] && $profiledata['user_allowsmile'] && !$lofi)
 {
-	$bbcode->allow_smilies = $board_config['allow_smilies'];
+	$bbcode->allow_smilies = $config['allow_smilies'];
 }
 else
 {
@@ -340,24 +319,15 @@ else
 // BBCode - END
 
 $user_sig = '';
-if ($profiledata['user_attachsig'] && $board_config['allow_sig'])
+if ($profiledata['user_attachsig'] && $config['allow_sig'])
 {
 	$user_sig = $profiledata['user_sig'];
 	if ($user_sig != '')
 	{
+		$user_sig = censor_text($user_sig);
 		$bbcode->is_sig = true;
 		$user_sig = $bbcode->parse($user_sig);
 		$bbcode->is_sig = false;
-		if (!$userdata['user_allowswearywords'])
-		{
-			$orig_word = !empty($orig_word) ? $orig_word : array();
-			$replacement_word = !empty($replacement_word) ? $replacement_word : array();
-			obtain_word_list($orig_word, $replacement_word);
-			if(!empty($orig_word))
-			{
-				$user_sig = preg_replace($orig_word, $replacement_word, $user_sig);
-			}
-		}
 	}
 	//$template->assign_block_vars('switch_user_sig_block', array());
 }
@@ -365,6 +335,8 @@ if ($profiledata['user_attachsig'] && $board_config['allow_sig'])
 $user_sig = ($user_sig == '') ? '&nbsp;' : $user_sig;
 
 $selfdes = $profiledata['user_selfdes'];
+$selfdes = censor_text($selfdes);
+
 if ($selfdes == '')
 {
 	$selfdes = $lang['UserNoInfo'];
@@ -376,16 +348,6 @@ else
 	//$bbcode->is_sig = false;
 }
 
-if (!$userdata['user_allowswearywords'])
-{
-	$orig_word = !empty($orig_word) ? $orig_word : array();
-	$replacement_word = !empty($replacement_word) ? $replacement_word : array();
-	obtain_word_list($orig_word, $replacement_word);
-	if(!empty($orig_word))
-	{
-		$selfdes = preg_replace($orig_word, $replacement_word, $selfdes);
-	}
-}
 if ($user_sig != '')
 {
 	$selfdes = $selfdes . '<br /><br /><hr />' . $user_sig;
@@ -395,7 +357,7 @@ if ($user_sig != '')
 if ($profiledata['user_id'])
 {
 	$user_most_active = get_forum_most_active($profiledata['user_id']);
-	$user_most_active_forum_url = append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . urlencode($user_most_active['forum_id']));
+	$user_most_active_forum_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . urlencode($user_most_active['forum_id']));
 	$user_most_active_forum_name = $user_most_active['forum_name'];
 	$user_most_active_posts = $user_most_active['posts'];
 }
@@ -433,12 +395,11 @@ $flag = (!empty($profiledata['user_from_flag'])) ? '<img src="images/flags/' . $
 $location .= '&nbsp;' . $flag ;
 
 // Activity - BEGIN
-//if (defined('ACTIVITY_MOD'))
-if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
+if (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED)
 {
-	include_once(IP_ROOT_PATH . ACTIVITY_MOD_PATH . 'includes/functions_amod_plus.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ACTIVITY_PLUGIN_PATH . 'common.' . PHP_EXT);
 	unset($trophy_count, $trophy_holder, $trophy);
-	if (($board_config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
+	if (($config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
 	{
 		$template->assign_block_vars('trophy', array(
 			'PROFILE_TROPHY' => '<a href="javascript:popup_open(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&sid=' . $userdata['session_id'] . '\', \'New_Window\', \'400\', \'380\', \'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
@@ -453,9 +414,8 @@ if (defined('ACTIVITY_MOD') && (ACTIVITY_MOD == true))
 		)
 	);
 
-	if (($board_config['ina_char_show_viewprofile']) && ($profiledata['ina_char_name']) && ($profile_data['user_id'] != ANONYMOUS))
+	if (($config['ina_char_show_viewprofile']) && ($profiledata['ina_char_name']) && ($profile_data['user_id'] != ANONYMOUS))
 	{
-		//include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		$template->assign_block_vars('profile_char', array(
 			'CHAR_PROFILE' => AMP_Profile_Char($profiledata['user_id'], '')
 			)
@@ -476,17 +436,13 @@ else
 }
 
 // Generate page
-$page_title = $lang['Viewing_profile'];
-$meta_description = '';
-$meta_keywords = '';
 $link_name = htmlspecialchars(stripslashes($profiledata['username']));
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
-$breadcrumbs_links_right = '<a href="' . append_sid(SEARCH_MG . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . sprintf($lang['Search_user_topics_started'], $profiledata['username']) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(SEARCH_MG . '?search_author=' . $u_search_author) . '">' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+$breadcrumbs_links_right = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . sprintf($lang['Search_user_topics_started'], $profiledata['username']) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
 
 // Start add - Online/Offline/Hidden Mod
-if ($profiledata['user_session_time'] >= (time() - $board_config['online_time']))
+if ($profiledata['user_session_time'] >= (time() - $config['online_time']))
 {
 	if ($profiledata['user_allow_viewonline'])
 	{
@@ -509,13 +465,13 @@ else
 display_upload_attach_box_limits($profiledata['user_id']);
 
 // Mighty Gorgon - Feedbacks - BEGIN
-if (defined('MG_FEEDBACKS'))
+if (defined('FEEDBACKS_PLUGIN_ENABLED') && FEEDBACKS_PLUGIN_ENABLED)
 {
 	define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
 	include_once(MG_ROOT_PATH . 'includes/functions_feedbacks.' . PHP_EXT);
 	include_once(MG_ROOT_PATH . 'common.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_mg.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
+	include_once(MG_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_mg.' . PHP_EXT);
+	include_once(MG_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
 
 	$feedbacks_received = '';
 	$feedbacks_details = get_user_feedbacks_received($profiledata['user_id']);
@@ -533,11 +489,11 @@ $template->assign_vars(array(
 	'FEEDBACKS' => $feedbacks_received,
 	// Mighty Gorgon - Feedbacks - END
 	'USERNAME' => $profiledata['username'],
-	'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $profiledata['user_regdate'], $board_config['board_timezone']),
+	'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $profiledata['user_regdate'], $config['board_timezone']),
 
 	// Start add - Last visit MOD
 	'L_LOGON' => $lang['Last_logon'],
-	'LAST_LOGON' => ($userdata['user_level'] == ADMIN || (!$board_config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($board_config['default_dateformat'], $profiledata['user_lastlogon'], $board_config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
+	'LAST_LOGON' => ($userdata['user_level'] == ADMIN || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($config['default_dateformat'], $profiledata['user_lastlogon'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
 	'L_TOTAL_ONLINE_TIME' => $lang['Total_online_time'],
 	'TOTAL_ONLINE_TIME' => make_hours($profiledata['user_totaltime']),
 	'L_LAST_ONLINE_TIME' => $lang['Last_online_time'],
@@ -565,7 +521,7 @@ $template->assign_vars(array(
 	'PERCENTAGE' => $percentage . '%',
 	'POST_DAY_STATS' => sprintf($lang['User_post_day_stats'], $posts_per_day),
 	'POST_PERCENT_STATS' => sprintf($lang['User_post_pct_stats'], $percentage),
-	'THANKS_RECEIVED' => (($total_thanks_received > 0) ? ('<a href="' . append_sid(SEARCH_MG . '?search_thanks=' . $profiledata['user_id']) . '">' . $total_thanks_received . '</a>') : $total_thanks_received),
+	'THANKS_RECEIVED' => (($total_thanks_received > 0) ? ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_thanks=' . $profiledata['user_id']) . '">' . $total_thanks_received . '</a>') : $total_thanks_received),
 	'INVISION_AVATAR_IMG' => $avatar_img,
 	'INVISION_MOST_ACTIVE_FORUM_URL' => $user_most_active_forum_url,
 	'INVISION_MOST_ACTIVE_FORUM_NAME' => $user_most_active_forum_name,
@@ -647,7 +603,7 @@ $template->assign_vars(array(
 	'L_PHONE' => $lang['UserPhone'],
 	'L_EXTRA_PROFILE_INFO' => $lang['Extra_profile_info'],
 	'L_EXTRA_WINDOW'=> $lang['Extra_window']. " :: " . $profiledata['username'],
-	'U_EXTRA_WINDOW' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&extra_mode=window'),
+	'U_EXTRA_WINDOW' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&extra_mode=window'),
 	// Mighty Gorgon - HTTP AGENTS - BEGIN
 	'USER_OS_IMG' => $user_os['img'],
 	'USER_BROWSER_IMG' => $user_browser['img'],
@@ -707,8 +663,8 @@ $template->assign_vars(array(
 	'L_BIRTHDAY' => $lang['Birthday'],
 // End add - Birthday MOD
 
-	'U_SEARCH_USER' => append_sid(SEARCH_MG . '?search_author=' . $u_search_author),
-	'U_SEARCH_USER_TOPICS' => append_sid(SEARCH_MG . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics'),
+	'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author),
+	'U_SEARCH_USER_TOPICS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics'),
 	// Start Advanced IP Tools Pack MOD
 	'L_MODERATOR_IP_INFORMATION' => $lang['Moderator_ip_information'],
 	'L_REGISTERED_IP_ADDRESS' => $lang['Registered_ip_address'],
@@ -725,14 +681,14 @@ $template->assign_vars(array(
 	'U_USER_RECENT_POSTS' => append_sid('recent.' . PHP_EXT . '?mode=uposts&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
 	'U_USER_RECENT_TOPICS_VIEW' => append_sid('recent.' . PHP_EXT . '?mode=utview&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
 
-	'S_PROFILE_ACTION' => append_sid(PROFILE_MG)
+	'S_PROFILE_ACTION' => append_sid(CMS_PAGE_PROFILE)
 	)
 );
 
 
 // Custom Profile Fields - BEGIN
 // Include Language
-$language = $board_config['default_lang'];
+$language = $config['default_lang'];
 if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT))
 {
 	$language = 'english';
@@ -762,11 +718,7 @@ foreach($profile_data as $field)
 
 	$sql = "SELECT $col_name FROM " . USERS_TABLE . "
 		WHERE user_id = $id";
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR,'Could not obtain field value', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$temp = $db->sql_fetchrow($result);
 	$profile_names[$name] = displayable_field_data($temp[$col_name], $field['field_type']);
 	$tmp_field = $profile_names[$name];
@@ -819,19 +771,22 @@ $sql = '
 	ORDER BY
 		g.group_name,
 		g.group_id';
-if (!($result = $db->sql_query($sql))) message_die(GENERAL_ERROR, 'Could not read groups', '', __LINE__, __FILE__, $sql);
-while ($group = $db->sql_fetchrow($result)) $groups[] = $group;
+$result = $db->sql_query($sql);
+while ($group = $db->sql_fetchrow($result))
+{
+	$groups[] = $group;
+}
 
 $template->assign_vars(array(
 	'L_USERGROUPS' => $lang['Usergroups'],
 	)
 );
-if (count($groups) > 0)
+if (sizeof($groups) > 0)
 {
 	$template->assign_block_vars('switch_groups_on', array());
 }
 {
-	for ($i=0; $i < count($groups); $i++)
+	for ($i=0; $i < sizeof($groups); $i++)
 	{
 		$is_ok = false;
 		// groupe invisible ?
@@ -842,8 +797,8 @@ if (count($groups) > 0)
 		else
 		{
 			$group_id = $groups[$i]['group_id'];
-			$sql = 'SELECT * FROM '.USER_GROUP_TABLE.' WHERE group_id='.$group_id.' AND user_id='.$user_id.' AND user_pending=0';
-			if (!($result = $db->sql_query($sql))) message_die(GENERAL_ERROR, 'Couldn\'t obtain viewer group list', '', __LINE__, __FILE__, $sql);
+			$sql = 'SELECT * FROM ' . USER_GROUP_TABLE . ' WHERE group_id = ' . $group_id . ' AND user_id = ' . $user_id . ' AND user_pending = 0';
+			$result = $db->sql_query($sql);
 			$is_ok = ($group = $db->sql_fetchrow($result));
 		}  // end if ($view_list[$i]['group_type'] == GROUP_HIDDEN)
 		// groupe visible : afficher
@@ -859,8 +814,8 @@ if (count($groups) > 0)
 				)
 			);
 		}  // end if ($is_ok)
-	}  // end for ($i=0; $i < count($groups); $i++)
-}  // end if (count($groups) > 0)
+	}  // end for ($i=0; $i < sizeof($groups); $i++)
+}  // end if (sizeof($groups) > 0)
 //====
 //==== Author: Disturbed One [http://anthonycoy.com] =================== |
 //==== End Invision View Profile ======================================= |
@@ -875,11 +830,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 	if ($encoded_ip != '')
 	{
 		$sql = 'SELECT COUNT(user_id) AS total_users FROM ' . USERS_TABLE . ' WHERE user_registered_ip = "' . $encoded_ip . '" AND user_id != "' . $profiledata['user_id'] . '"';
-
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Error: could not determine total users registering under this IP.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!$row = $db->sql_fetchrow($result))
 		{
@@ -892,32 +843,28 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 		{
 			$u_start = (isset($_GET['u_start'])) ? intval($_GET['u_start']) : 0;
 
-			$sql = "SELECT user_id, username, user_regdate, user_registered_ip, user_registered_hostname FROM " . USERS_TABLE . " WHERE user_registered_ip = '" . $encoded_ip . "' AND user_id != '" . $profiledata['user_id'] . "' ORDER BY user_regdate DESC LIMIT $u_start, " . $board_config['topics_per_page'];
-
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error: could not look up other registered IP addresses.', '', __LINE__, __FILE__, $sql);
-			}
+			$sql = "SELECT user_id, username, user_regdate, user_registered_ip, user_registered_hostname FROM " . USERS_TABLE . " WHERE user_registered_ip = '" . $encoded_ip . "' AND user_id != '" . $profiledata['user_id'] . "' ORDER BY user_regdate DESC LIMIT $u_start, " . $config['topics_per_page'];
+			$result = $db->sql_query($sql);
 
 			$template->assign_block_vars('switch_user_admin_or_mod.switch_other_user_ips', array());
 
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$template->assign_block_vars('switch_user_admin_or_mod.switch_other_user_ips.OTHER_REGISTERED_IPS', array(
-						'USER_NAME' => $row['username'],
-						'U_PROFILE' => append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
-						'USER_HOSTNAME' => htmlspecialchars($row['user_registered_hostname']),
-						'TIME' => create_date($userdata['user_dateformat'], $row['user_regdate'], $userdata['user_timezone']),
-						)
-					);
-				}
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$template->assign_block_vars('switch_user_admin_or_mod.switch_other_user_ips.OTHER_REGISTERED_IPS', array(
+					'USER_NAME' => $row['username'],
+					'U_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+					'USER_HOSTNAME' => htmlspecialchars($row['user_registered_hostname']),
+					'TIME' => create_date($userdata['user_dateformat'], $row['user_regdate'], $userdata['user_timezone']),
+					)
+				);
+			}
 
-			$base_url = PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
-			$pagination = generate_pagination($base_url, $total_users, $board_config['topics_per_page'], $u_start, TRUE, 'u_start');
+			$base_url = CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
+			$pagination = generate_pagination($base_url, $total_users, $config['topics_per_page'], $u_start, TRUE, 'u_start');
 
 			$template->assign_vars(array(
 				'USERS_PAGINATION' => $pagination,
-				'USERS_PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($u_start / $board_config['topics_per_page']) + 1), ceil($total_users / $board_config['topics_per_page'])),
+				'USERS_PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($u_start / $config['topics_per_page']) + 1), ceil($total_users / $config['topics_per_page'])),
 			));
 		}
 
@@ -943,11 +890,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 	// All IP addresses this user has posted from section
 	$total_ips = 0;
 	$sql = 'SELECT poster_ip, COUNT(*) AS postings FROM ' . POSTS_TABLE . ' WHERE poster_id = "' . $profiledata['user_id'] . '" GROUP BY poster_ip ORDER BY ' . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . ' DESC';
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Error: could not look up all IP addresses this user has posted from.', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -958,33 +901,29 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 	{
 		$i_start = (isset($_GET['i_start'])) ? intval($_GET['i_start']) : 0;
 
-		$sql = 'SELECT poster_ip, COUNT(*) AS postings FROM ' . POSTS_TABLE . ' WHERE poster_id = "' . $profiledata['user_id'] . '" GROUP BY poster_ip ORDER BY ' . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC LIMIT $i_start, " . $board_config['topics_per_page'];
-
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Error: could not look up all IP addresses this user has posted from.', '', __LINE__, __FILE__, $sql);
-		}
+		$sql = 'SELECT poster_ip, COUNT(*) AS postings FROM ' . POSTS_TABLE . ' WHERE poster_id = "' . $profiledata['user_id'] . '" GROUP BY poster_ip ORDER BY ' . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC LIMIT $i_start, " . $config['topics_per_page'];
+		$result = $db->sql_query($sql);
 
 		$template->assign_block_vars('switch_user_admin_or_mod.switch_other_posted_ips', array());
 
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$poster_ip = decode_ip($row['poster_ip']);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$poster_ip = decode_ip($row['poster_ip']);
 
-				$template->assign_block_vars('switch_user_admin_or_mod.switch_other_posted_ips.ALL_IPS_POSTED_FROM', array(
-					'U_POSTER_IP' => 'http://whois.sc/' . $poster_ip,
-					'POSTER_IP' => $poster_ip,
-					'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
-					'U_POSTS_LINK' => append_sid(SEARCH_MG . '?mode=results&amp;search_author=' . urlencode($profiledata['username']) . '&amp;search_ip=' . $poster_ip),
-				));
-			}
+			$template->assign_block_vars('switch_user_admin_or_mod.switch_other_posted_ips.ALL_IPS_POSTED_FROM', array(
+				'U_POSTER_IP' => 'http://whois.sc/' . $poster_ip,
+				'POSTER_IP' => $poster_ip,
+				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
+				'U_POSTS_LINK' => append_sid(CMS_PAGE_SEARCH . '?mode=results&amp;search_author=' . urlencode($profiledata['username']) . '&amp;search_ip=' . $poster_ip),
+			));
+		}
 
-		$base_url = PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
-		$pagination = generate_pagination($base_url, $total_ips, $board_config['topics_per_page'], $i_start, TRUE, 'i_start');
+		$base_url = CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
+		$pagination = generate_pagination($base_url, $total_ips, $config['topics_per_page'], $i_start, TRUE, 'i_start');
 
 		$template->assign_vars(array(
 			'IPS_PAGINATION' => $pagination,
-			'IPS_PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($i_start / $board_config['topics_per_page']) + 1), ceil($total_ips / $board_config['topics_per_page'])),
+			'IPS_PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($i_start / $config['topics_per_page']) + 1), ceil($total_ips / $config['topics_per_page'])),
 			)
 		);
 	}
@@ -998,17 +937,13 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 		$template->assign_block_vars('switch_user_admin_or_mod.switch_no_other_posted_ips', array());
 	}
 
-	if ($board_config['disable_logins'] == 0)
+	if (!$config['disable_logins'])
 	{
 		$template->assign_var('S_LOGINS_HISTORY', true);
 		// All logins section
 		// Obtain the total logins for this user
 		$sql = 'SELECT COUNT(login_id) AS total_logins FROM ' . LOGINS_TABLE . ' WHERE login_userid = ' . $profiledata['user_id'];
-
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Error: could not determine total logins.', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if (!$row = $db->sql_fetchrow($result))
 		{
@@ -1022,31 +957,27 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 			$l_start = (isset($_GET['l_start'])) ? intval($_GET['l_start']) : 0;
 
 			// Now get the results in groups based on how many topics per page parameter set in the admin panel
-			$sql = 'SELECT * FROM ' . LOGINS_TABLE . ' WHERE login_userid = ' . $profiledata['user_id'] . " ORDER BY login_time DESC LIMIT $l_start, " . $board_config['topics_per_page'];
+			$sql = 'SELECT * FROM ' . LOGINS_TABLE . ' WHERE login_userid = ' . $profiledata['user_id'] . " ORDER BY login_time DESC LIMIT $l_start, " . $config['topics_per_page'];
+			$result = $db->sql_query($sql);
 
-				if (!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Error: could not retrieve last login.', '', __LINE__, __FILE__, $sql);
-				}
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$ip = decode_ip($row['login_ip']);
 
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$ip = decode_ip($row['login_ip']);
+				$template->assign_block_vars('switch_user_admin_or_mod.USER_LOGINS', array(
+					'U_IP' => 'http://whois.sc/' . $ip,
+					'IP' => $ip,
+					'USER_AGENT' => htmlspecialchars($row['login_user_agent']),
+					'LOGIN_TIME' => create_date($userdata['user_dateformat'], $row['login_time'], $userdata['user_timezone']),
+				));
+			}
 
-					$template->assign_block_vars('switch_user_admin_or_mod.USER_LOGINS', array(
-						'U_IP' => 'http://whois.sc/' . $ip,
-						'IP' => $ip,
-						'USER_AGENT' => htmlspecialchars($row['login_user_agent']),
-						'LOGIN_TIME' => create_date($userdata['user_dateformat'], $row['login_time'], $userdata['user_timezone']),
-					));
-				}
-
-			$base_url = PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
-			$pagination = generate_pagination($base_url, $total_logins, $board_config['topics_per_page'], $l_start, true, 'l_start');
+			$base_url = CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
+			$pagination = generate_pagination($base_url, $total_logins, $config['topics_per_page'], $l_start, true, 'l_start');
 
 			$template->assign_vars(array(
 				'LOGINS_PAGINATION' => $pagination,
-				'LOGINS_PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($l_start / $board_config['topics_per_page']) + 1), ceil($total_logins / $board_config['topics_per_page'])),
+				'LOGINS_PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($l_start / $config['topics_per_page']) + 1), ceil($total_logins / $config['topics_per_page'])),
 				)
 			);
 		}
@@ -1072,7 +1003,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 }
 // End Advanced IP Tools Pack MOD
 // Mighty Gorgon - Full Album Pack - BEGIN
-if ($album_config['show_all_in_personal_gallery'] == 1)
+if ($album_config['show_all_in_personal_gallery'])
 {
 	$template->assign_block_vars('enable_view_toggle', array());
 }
@@ -1084,11 +1015,7 @@ if ($userdata['user_level'] == ADMIN)
 }
 
 $sql = "SELECT * FROM " . BANLIST_TABLE . " WHERE ban_userid = " . $profiledata['user_id'] . " OR ban_email = '" . $profiledata['user_email'] . "'";
-
-if (! ($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not look up banned status', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
@@ -1114,13 +1041,12 @@ $template->assign_vars(array(
 //End Quick Administrator User Options and Information MOD
 include(IP_ROOT_PATH . 'includes/bb_usage_stats.' . PHP_EXT);
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_MOD'))
+if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
 {
 	$cm_viewprofile->post_vars($template, $profiledata, $userdata);
 }
 // MG Cash MOD For IP - END
-$template->pparse('body');
 
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('profile_view_body.tpl', $lang['Viewing_profile'], '', '');
 
 ?>

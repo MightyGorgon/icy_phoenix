@@ -53,7 +53,9 @@ switch ($req_version)
 	case '122451': $current_ip_version = '1.2.24.51'; break;
 	case '122552': $current_ip_version = '1.2.25.52'; break;
 	case '13053': $current_ip_version = '1.3.0.53'; break;
+	case '13053a': $current_ip_version = '1.3.0.53a'; break;
 	case '13154': $current_ip_version = '1.3.1.54'; break;
+	case '13255': $current_ip_version = '1.3.2.55'; break;
 }
 
 // Icy Phoenix Part...
@@ -63,7 +65,7 @@ if (substr($mode, 0, 6) == 'update')
 	switch ($current_ip_version)
 	{
 		case '':
-		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT NOT NULL";
+		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "acronyms` (
 			`acronym_id` mediumint(9) NOT NULL auto_increment,
@@ -84,7 +86,7 @@ if (substr($mode, 0, 6) == 'update')
 			`pic_filename` varchar(255) NOT NULL default '',
 			`pic_thumbnail` varchar(255) NULL default '',
 			`pic_title` varchar(255) NOT NULL default '',
-			`pic_desc` text,
+			`pic_desc` TEXT NOT NULL,
 			`pic_user_id` mediumint(8) NOT NULL default '0',
 			`pic_username` varchar(32) NULL default '',
 			`pic_user_ip` varchar(8) NOT NULL default '0',
@@ -102,7 +104,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "album_cat` (
 			`cat_id` mediumint(8) unsigned NOT NULL auto_increment,
 			`cat_title` varchar(255) NOT NULL default '',
-			`cat_desc` text,
+			`cat_desc` TEXT NOT NULL,
 			`cat_order` mediumint(8) NOT NULL default '0',
 			`cat_view_level` tinyint(3) NOT NULL default '-1',
 			`cat_upload_level` tinyint(3) NOT NULL default '0',
@@ -138,7 +140,7 @@ if (substr($mode, 0, 6) == 'update')
 			`comment_username` varchar(32) default '',
 			`comment_user_ip` varchar(8) NOT NULL default '',
 			`comment_time` int(11) unsigned NOT NULL default '0',
-			`comment_text` text,
+			`comment_text` TEXT NOT NULL,
 			`comment_edit_time` int(11) unsigned default NULL,
 			`comment_edit_count` smallint(5) unsigned NOT NULL default '0',
 			`comment_edit_user_id` mediumint(8) default NULL,
@@ -279,12 +281,12 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_main_type` CHAR(1) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_main` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_desc` TEXT NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_desc` TEXT";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `icon` VARCHAR(255) DEFAULT NULL";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "force_read` (
 			`topic_number` int(25) NOT NULL default '0',
-			`message` text NOT NULL,
+			`message` TEXT NOT NULL,
 			`install_date` int(15) NOT NULL default '0',
 			`active` tinyint(2) NOT NULL default '1',
 			`effected` tinyint(1) NOT NULL default '1'
@@ -310,7 +312,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `auth_greencard` TINYINT(2) DEFAULT '5' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `auth_bluecard` TINYINT(2) DEFAULT '1' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `auth_rate` TINYINT(2) DEFAULT '-1' NOT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules` TEXT NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules` TEXT";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `rules_display_title` TINYINT(1) DEFAULT '1' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `rules_custom_title` VARCHAR(80) NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `rules_in_viewforum` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL";
@@ -343,10 +345,10 @@ if (substr($mode, 0, 6) == 'update')
 			`hack_desc` varchar(255) NOT NULL default '',
 			`hack_author` varchar(255) NOT NULL default '',
 			`hack_author_email` varchar(255) NOT NULL default '',
-			`hack_author_website` tinytext NOT NULL,
+			`hack_author_website` TINYTEXT NOT NULL,
 			`hack_version` varchar(32) NOT NULL default '',
 			`hack_hide` enum('Yes','No') NOT NULL default 'No',
-			`hack_download_url` tinytext NOT NULL,
+			`hack_download_url` TINYTEXT NOT NULL,
 			`hack_file` varchar(255) NOT NULL default '',
 			`hack_file_mtime` int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY (`hack_id`),
@@ -357,10 +359,10 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "jr_admin_users` (
 			`user_id` mediumint(9) NOT NULL default '0',
-			`user_jr_admin` longtext NOT NULL,
+			`user_jr_admin` LONGTEXT NOT NULL,
 			`start_date` int(10) unsigned NOT NULL default '0',
 			`update_date` int(10) unsigned NOT NULL default '0',
-			`admin_notes` text NOT NULL,
+			`admin_notes` TEXT NOT NULL,
 			`notes_view` tinyint(1) NOT NULL default '0',
 			PRIMARY KEY (`user_id`)
 		)";
@@ -373,7 +375,7 @@ if (substr($mode, 0, 6) == 'update')
 			`article_date` varchar(255) binary NOT NULL default '',
 			`article_author_id` mediumint(8) NOT NULL default '0',
 			`username` varchar(255) default NULL,
-			`article_body` text NOT NULL,
+			`article_body` TEXT NOT NULL,
 			`article_type` mediumint(8) unsigned NOT NULL default '0',
 			`approved` tinyint(1) unsigned NOT NULL default '0',
 			`topic_id` mediumint(8) unsigned NOT NULL default '0',
@@ -419,9 +421,9 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "kb_custom` (
 			`custom_id` int(50) NOT NULL auto_increment,
-			`custom_name` text NOT NULL,
-			`custom_description` text NOT NULL,
-			`data` text NOT NULL,
+			`custom_name` TEXT NOT NULL,
+			`custom_description` TEXT NOT NULL,
+			`data` TEXT NOT NULL,
 			`field_order` int(20) NOT NULL default '0',
 			`field_type` tinyint(2) NOT NULL default '0',
 			`regex` varchar(255) NOT NULL default '',
@@ -431,13 +433,13 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "kb_customdata` (
 			`customdata_file` int(50) NOT NULL default '0',
 			`customdata_custom` int(50) NOT NULL default '0',
-			`data` text NOT NULL
+			`data` TEXT
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "kb_results` (
 			`search_id` int(11) unsigned NOT NULL default '0',
 			`session_id` varchar(32) NOT NULL default '',
-			`search_array` text NOT NULL,
+			`search_array` TEXT NOT NULL,
 			PRIMARY KEY (`search_id`),
 			KEY `session_id` (`session_id`)
 		)";
@@ -445,7 +447,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "kb_search` (
 			`search_id` int(11) unsigned NOT NULL default '0',
 			`session_id` varchar(32) NOT NULL default '',
-			`search_array` text NOT NULL,
+			`search_array` TEXT NOT NULL,
 			PRIMARY KEY (`search_id`),
 			KEY `session_id` (`session_id`)
 		)";
@@ -562,10 +564,10 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_cat` (
 			`cat_id` int(10) NOT NULL auto_increment,
-			`cat_name` text,
-			`cat_desc` text,
+			`cat_name` TEXT NOT NULL,
+			`cat_desc` TEXT NOT NULL,
 			`cat_parent` int(50) default NULL,
-			`parents_data` text NOT NULL,
+			`parents_data` TEXT NOT NULL,
 			`cat_order` int(50) default NULL,
 			`cat_allow_file` tinyint(2) NOT NULL default '0',
 			`cat_allow_ratings` tinyint(2) NOT NULL default '1',
@@ -593,8 +595,8 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_comments` (
 			`comments_id` int(10) NOT NULL auto_increment,
 			`file_id` int(10) NOT NULL default '0',
-			`comments_text` text NOT NULL,
-			`comments_title` text NOT NULL,
+			`comments_text` TEXT NOT NULL,
+			`comments_title` TEXT NOT NULL,
 			`comments_time` int(50) NOT NULL default '0',
 			`poster_id` mediumint(8) NOT NULL default '0',
 			PRIMARY KEY (`comments_id`)
@@ -608,9 +610,9 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_custom` (
 			`custom_id` int(50) NOT NULL auto_increment,
-			`custom_name` text NOT NULL,
-			`custom_description` text NOT NULL,
-			`data` text NOT NULL,
+			`custom_name` TEXT NOT NULL,
+			`custom_description` TEXT NOT NULL,
+			`data` TEXT NOT NULL,
 			`field_order` int(20) NOT NULL default '0',
 			`field_type` tinyint(2) NOT NULL default '0',
 			`regex` varchar(255) NOT NULL default '',
@@ -620,7 +622,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_customdata` (
 			`customdata_file` int(50) NOT NULL default '0',
 			`customdata_custom` int(50) NOT NULL default '0',
-			`data` text NOT NULL
+			`data` TEXT
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_download_info` (
@@ -636,27 +638,27 @@ if (substr($mode, 0, 6) == 'update')
 			`file_id` int(10) NOT NULL auto_increment,
 			`user_id` mediumint(8) NOT NULL default '0',
 			`poster_ip` varchar(8) NOT NULL default '',
-			`file_name` text,
+			`file_name` TEXT NOT NULL,
 			`file_size` int(20) NOT NULL default '0',
 			`unique_name` varchar(255) NOT NULL default '',
 			`real_name` varchar(255) NOT NULL default '',
 			`file_dir` varchar(255) NOT NULL default '',
-			`file_desc` text,
-			`file_creator` text,
-			`file_version` text,
-			`file_longdesc` text,
-			`file_ssurl` text,
+			`file_desc` TEXT NOT NULL,
+			`file_creator` TEXT NOT NULL,
+			`file_version` TEXT NOT NULL,
+			`file_longdesc` TEXT NOT NULL,
+			`file_ssurl` TEXT NOT NULL,
 			`file_sshot_link` tinyint(2) NOT NULL default '0',
-			`file_dlurl` text,
+			`file_dlurl` TEXT NOT NULL,
 			`file_time` int(50) default NULL,
 			`file_update_time` int(50) NOT NULL default '0',
 			`file_catid` int(10) default NULL,
-			`file_posticon` text,
+			`file_posticon` TEXT NOT NULL,
 			`file_license` int(10) default NULL,
 			`file_dls` int(10) default NULL,
 			`file_last` int(50) default NULL,
 			`file_pin` int(2) default NULL,
-			`file_docsurl` text,
+			`file_docsurl` TEXT NOT NULL,
 			`file_approved` tinyint(1) NOT NULL default '1',
 			`file_broken` tinyint(1) NOT NULL default '0',
 			PRIMARY KEY (`file_id`)
@@ -664,8 +666,8 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_license` (
 			`license_id` int(10) NOT NULL auto_increment,
-			`license_name` text,
-			`license_text` text,
+			`license_name` TEXT NOT NULL,
+			`license_text` TEXT NOT NULL,
 			PRIMARY KEY (`license_id`)
 		)";
 
@@ -704,9 +706,9 @@ if (substr($mode, 0, 6) == 'update')
 			`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
 			`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
 			`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
+			`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '0',
 			`privmsgs_attach_sig` tinyint(1) NOT NULL default '1',
 			`privmsgs_attachment` tinyint(1) NOT NULL default '0',
-			`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '0',
 			PRIMARY KEY (`privmsgs_id`),
 			KEY `privmsgs_from_userid` (`privmsgs_from_userid`),
 			KEY `privmsgs_to_userid` (`privmsgs_to_userid`)
@@ -761,7 +763,7 @@ if (substr($mode, 0, 6) == 'update')
 			`shout_group_id` mediumint(8) NOT NULL default '0',
 			`shout_session_time` int(11) NOT NULL default '0',
 			`shout_ip` varchar(8) NOT NULL default '',
-			`shout_text` text NOT NULL,
+			`shout_text` TEXT NOT NULL,
 			`shout_active` mediumint(8) NOT NULL default '0',
 			`enable_bbcode` tinyint(1) NOT NULL default '0',
 			`enable_html` tinyint(1) NOT NULL default '0',
@@ -887,23 +889,17 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "xs_news` (
 			`news_id` mediumint(8) unsigned NOT NULL auto_increment,
 			`news_date` int(11) NOT NULL default '0',
-			`news_text` text NOT NULL,
+			`news_text` TEXT NOT NULL,
 			`news_display` tinyint(1) NOT NULL default '1',
 			`news_smilies` tinyint(1) NOT NULL default '0',
 			PRIMARY KEY (`news_id`)
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "xs_news_cfg` (
-			`config_name` varchar(255) NOT NULL default '',
-			`config_value` varchar(255) NOT NULL default '',
-			PRIMARY KEY (`config_name`)
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "xs_news_xml` (
 			`xml_id` mediumint(8) NOT NULL auto_increment,
 			`xml_title` varchar(255) NOT NULL default '',
 			`xml_show` tinyint(1) NOT NULL default '0',
-			`xml_feed` text NOT NULL,
+			`xml_feed` TEXT NOT NULL,
 			`xml_is_feed` tinyint(1) NOT NULL default '1',
 			`xml_width` varchar(4) NOT NULL default '98%',
 			`xml_height` char(3) NOT NULL default '20',
@@ -1361,11 +1357,11 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('modules_dir', 'includes/stat_modules')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('page_views', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('install_date', '1132930604')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_cfg` VALUES ('xs_show_news', '1')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_cfg` VALUES ('xs_show_ticker', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_cfg` VALUES ('xs_news_dateformat', '2')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_cfg` VALUES ('xs_show_ticker_subtitle', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_cfg` VALUES ('xs_show_news_subtitle', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` VALUES ('xs_show_news', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` VALUES ('xs_show_ticker', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` VALUES ('xs_news_dateformat', '2')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` VALUES ('xs_show_ticker_subtitle', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` VALUES ('xs_show_news_subtitle', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_xml` VALUES (1, 'BBC News UK Edition', 1, 'http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml', 1, '98%', '20', '0', '3', 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_xml` VALUES (2, 'Simple Text Test', 1, 'This is just some text I want to scroll, it could contain just about anything you like', 0, '98%', '20', '13', '3', 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "xs_news_xml` VALUES (3, 'Exchange', 1, 'http://rss.msexchange.org/allnews.xml', 1, '98%', '20', '0', '3', 0)";
@@ -1377,8 +1373,8 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE " . $table_prefix . "smilies ADD smilies_order INT(5) NOT NULL";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('smilies_insert', '1')";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_show_portal` TINYINT(1) NOT NULL DEFAULT '0'";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `enable_autolinks_acronyms` TINYINT(1) NOT NULL DEFAULT '1'";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs` ADD `privmsgs_enable_autolinks_acronyms` TINYINT(1) NOT NULL DEFAULT '0'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `enable_autolinks_acronyms` TINYINT(1) NOT NULL DEFAULT '1' AFTER `enable_smilies`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs` ADD `privmsgs_enable_autolinks_acronyms` TINYINT(1) NOT NULL DEFAULT '0' AFTER `privmsgs_enable_smilies`";
 		/*
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_session_topic` INT(11) NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` ADD `session_topic` INT(11) NOT NULL";
@@ -1578,7 +1574,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('search_min_chars', '3')";
 
 		/* Updating from 049 */
-		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT NOT NULL";
+		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_registration_ip_check', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_html_guests', '0')";
@@ -1924,7 +1920,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('allow_all_bbcode', '0')";
 
 		/* Updating from 058 */
-		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT NOT NULL";
+		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
 		$sql[] = "DROP TABLE `" . $table_prefix . "ctrack`";
 		$sql[] = "DROP TABLE `" . $table_prefix . "ct_filter`";
@@ -2004,14 +2000,14 @@ if (substr($mode, 0, 6) == 'update')
 
 		// Create File Check Table
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ctracker_filechk` (
-				`filepath` text,
+				`filepath` TEXT NOT NULL,
 				`hash` varchar(32) default NULL
 				);";
 
 		// Create File Scanner Table
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ctracker_filescanner` (
 				`id` smallint(5) NOT NULL,
-				`filepath` text,
+				`filepath` TEXT NOT NULL,
 				`safety` smallint(1) NOT NULL default '0',
 				PRIMARY KEY (`id`)
 				);";
@@ -2147,7 +2143,7 @@ if (substr($mode, 0, 6) == 'update')
 			`layout` int(10) NOT NULL default '0',
 			`layout_special` int(10) NOT NULL default '0',
 			`title` varchar(60) NOT NULL default '',
-			`content` text NOT NULL,
+			`content` TEXT NOT NULL,
 			`bposition` char(2) NOT NULL default '',
 			`weight` int(10) NOT NULL default '1',
 			`active` tinyint(1) NOT NULL default '1',
@@ -2161,7 +2157,7 @@ if (substr($mode, 0, 6) == 'update')
 			`background` tinyint(1) NOT NULL default '1',
 			`local` tinyint(1) NOT NULL default '0',
 			`edit_auth` tinyint(1) NOT NULL default '5',
-			`groups` tinytext NOT NULL,
+			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`bid`)
 		)";
 
@@ -2181,7 +2177,7 @@ if (substr($mode, 0, 6) == 'update')
 			`global_blocks` tinyint(1) NOT NULL default '0',
 			`view` tinyint(1) NOT NULL default '0',
 			`edit_auth` tinyint(1) NOT NULL default '5',
-			`groups` tinytext NOT NULL,
+			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`lid`)
 		)";
 
@@ -2225,20 +2221,20 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (20, 14, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (21, 14, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph')";
 
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (1, 'Nav Links', '', 'hl', 1, 1, 'blocks_imp_nav_links', 0, 0, 0, 0, 0, 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (2, 'Nav Links', '', 'l', 1, 1, 'blocks_imp_nav_links', 0, 1, 0, 0, 0, 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (3, 'Recent', '', 'l', 3, 0, 'blocks_imp_recent_topics', 0, 1, 0, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (4, 'Poll', '', 'r', 4, 1, 'blocks_imp_poll', 0, 1, 0, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (5, 'Welcome', '', 'c', 1, 1, 'blocks_imp_welcome', 0, 1, 0, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (6, 'News', '', 'x', 1, 1, 'blocks_imp_news', 0, 1, 0, 0, 0, 0, 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (7, 'User Block', '', 'r', 1, 1, 'blocks_imp_user_block', 0, 1, 1, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (8, 'Top Posters', '', 'r', 5, 1, 'blocks_imp_top_posters', 0, 1, 0, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (9, 'Search', '', 'l', 1, 1, 'blocks_imp_search', 0, 1, 1, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (10, 'Who is Online', '', 'r', 2, 1, 'blocks_imp_online_users', 0, 1, 1, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (11, 'Album', '', 'l', 2, 1, 'blocks_imp_album', 0, 1, 0, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (12, 'Links', '', 'l', 4, 1, 'blocks_imp_links', 0, 1, 0, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (13, 'Statistics', '', 'r', 3, 1, 'blocks_imp_statistics', 0, 1, 0, 1, 1, 1, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (14, 'Wordgraph', '', 'b', 2, 1, 'blocks_imp_wordgraph', 0, 1, 0, 0, 0, 0, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (1, 'Nav Links', '', 'hl', 1, 1, 'nav_links', 0, 0, 0, 0, 0, 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (2, 'Nav Links', '', 'l', 1, 1, 'nav_links', 0, 1, 0, 0, 0, 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (3, 'Recent', '', 'l', 3, 0, 'recent_topics', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (4, 'Poll', '', 'r', 4, 1, 'poll', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (5, 'Welcome', '', 'c', 1, 1, 'welcome', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (6, 'News', '', 'x', 1, 1, 'news', 0, 1, 0, 0, 0, 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (7, 'User Block', '', 'r', 1, 1, 'user_block', 0, 1, 1, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (8, 'Top Posters', '', 'r', 5, 1, 'top_posters', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (9, 'Search', '', 'l', 1, 1, 'search', 0, 1, 1, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (10, 'Who is Online', '', 'r', 2, 1, 'online_users', 0, 1, 1, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (11, 'Album', '', 'l', 2, 1, 'album', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (12, 'Links', '', 'l', 4, 1, 'links', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (13, 'Statistics', '', 'r', 3, 1, 'statistics', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (14, 'Wordgraph', '', 'b', 2, 1, 'wordgraph', 0, 1, 0, 0, 0, 0, 1, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (15, 'Welcome', '<table class=\"empty-table\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n	<tr>\r\n		<td width=\"5%\"><img src=\"images/icy_phoenix_small.png\" alt=\"\" /></td>\r\n		<td width=\"90%\" align=\"center\"><div class=\"post-text\">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width=\"5%\"><img src=\"images/icy_phoenix_small_l.png\" alt=\"\" /></td>\r\n	</tr>\r\n</table>', 'c', 2, 1, '', 0, 1, 0, 1, 1, 1, 1, '')";
 
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (1, 0, 'default_portal', '1')";
@@ -2302,7 +2298,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.0.5.5 */
 		case '1.0.5.5':
-		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT NOT NULL";
+		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('url_rw_guests', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('lofi_bots', '1')";
@@ -2345,7 +2341,7 @@ if (substr($mode, 0, 6) == 'update')
 			`menu_icon` varchar(255) default NULL,
 			`menu_name_lang` varchar(150) default NULL,
 			`menu_name` varchar(150) default NULL,
-			`menu_desc` text,
+			`menu_desc` TEXT NOT NULL,
 			`menu_link` varchar(255) default NULL,
 			`menu_link_external` tinyint(1) NOT NULL default '0',
 			`auth_view` tinyint(2) NOT NULL default '0',
@@ -2389,13 +2385,12 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.0.10.10 */
 		case '1.0.10.10':
-		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT NOT NULL";
+		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('global_disable_acronyms', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('global_disable_autolinks', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('global_disable_censor', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_topic_view', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('smart_header', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('page_title_simple', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_referrers', '0')";
 
@@ -2555,7 +2550,7 @@ if (substr($mode, 0, 6) == 'update')
 			`global_blocks` tinyint(1) NOT NULL default '0',
 			`view` tinyint(1) NOT NULL default '0',
 			`edit_auth` tinyint(1) NOT NULL default '5',
-			`groups` tinytext NOT NULL,
+			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`lsid`),
 			UNIQUE KEY `page_id` (`page_id`)
 		)";
@@ -2599,7 +2594,7 @@ if (substr($mode, 0, 6) == 'update')
 			`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 			`save_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
 			`draft_subject` varchar(100) DEFAULT '' NOT NULL,
-			`draft_message` text,
+			`draft_message` TEXT NOT NULL,
 			PRIMARY KEY (`draft_id`),
 			KEY `save_time` (`save_time`)
 		)";
@@ -2620,7 +2615,7 @@ if (substr($mode, 0, 6) == 'update')
 			klicks INT(11) DEFAULT '0',
 			free TINYINT(1) DEFAULT '0',
 			extern TINYINT(1) DEFAULT '0',
-			long_desc TEXT DEFAULT '',
+			long_desc TEXT NOT NULL,
 			sort INT(11) DEFAULT '0',
 			cat INT(11) DEFAULT '0',
 			hacklist TINYINT(1) DEFAULT '0',
@@ -2630,10 +2625,10 @@ if (substr($mode, 0, 6) == 'update')
 			hack_version VARCHAR(32) DEFAULT '',
 			hack_dl_url TINYTEXT DEFAULT '',
 			test varchar(50) DEFAULT '',
-			req TEXT DEFAULT '',
-			todo TEXT DEFAULT '',
-			warning TEXT DEFAULT '',
-			mod_desc TEXT DEFAULT '',
+			req TEXT NOT NULL,
+			todo TEXT NOT NULL,
+			warning TEXT NOT NULL,
+			mod_desc TEXT NOT NULL,
 			mod_list TINYINT(1) DEFAULT '0',
 			file_size BIGINT(20) NOT NULL DEFAULT '0',
 			change_time INT(11) DEFAULT '0',
@@ -2657,8 +2652,8 @@ if (substr($mode, 0, 6) == 'update')
 			path VARCHAR(255) DEFAULT '',
 			cat_name VARCHAR(255) DEFAULT '',
 			sort INT(11) DEFAULT '0',
-			description TEXT DEFAULT '',
-			rules TEXT DEFAULT '',
+			description TEXT NOT NULL,
+			rules TEXT NOT NULL,
 			auth_view TINYINT(1) NOT NULL DEFAULT '1',
 			auth_dl TINYINT(1) NOT NULL DEFAULT '1',
 			auth_up TINYINT(1) NOT NULL DEFAULT '0',
@@ -2701,7 +2696,7 @@ if (substr($mode, 0, 6) == 'update')
 			report_id INT(11) AUTO_INCREMENT NOT NULL,
 			df_id INT(11) NOT NULL DEFAULT '0',
 			report_title VARCHAR(255) DEFAULT '',
-			report_text TEXT,
+			report_text TEXT NOT NULL,
 			report_file_ver VARCHAR(50) DEFAULT '',
 			report_date INT(11) DEFAULT '0',
 			report_author_id MEDIUMINT(8) DEFAULT 0 NOT NULL,
@@ -2733,7 +2728,7 @@ if (substr($mode, 0, 6) == 'update')
 			username VARCHAR(32) NOT NULL DEFAULT '',
 			comment_time INT(11) NOT NULL DEFAULT '0',
 			comment_edit_time INT(11) NOT NULL DEFAULT '0',
-			comment_text TEXT NOT NULL DEFAULT '',
+			comment_text TEXT NOT NULL,
 			approve TINYINT(1) NOT NULL DEFAULT '0',
 		PRIMARY KEY (dl_id)
 		)";
@@ -2935,10 +2930,10 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('link_this_topic', '0')";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` CHANGE `forum_wide` `global_blocks` TINYINT(1) NOT NULL DEFAULT '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` ADD `page_nav` TINYINT(1) NOT NULL DEFAULT '1' AFTER `global_blocks`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` ADD `config_vars` TEXT NOT NULL DEFAULT '' AFTER `page_nav`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` ADD `config_vars` TEXT AFTER `page_nav`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` CHANGE `forum_wide` `global_blocks` TINYINT(1) NOT NULL DEFAULT '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` ADD `page_nav` TINYINT(1) NOT NULL DEFAULT '1' AFTER `global_blocks`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` ADD `config_vars` TEXT NOT NULL DEFAULT '' AFTER `page_nav`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` ADD `config_vars` TEXT AFTER `page_nav`";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('link_this_topic', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('ghtop', 'gt', 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('ghbottom', 'gb', 0)";
@@ -3163,19 +3158,19 @@ if (substr($mode, 0, 6) == 'update')
 				`poster_ip` varchar(8) NOT NULL default '',
 				`post_username` varchar(25) default NULL,
 				`post_subject` varchar(255) default NULL,
-				`post_text` text,
-				`post_text_compiled` text,
+				`post_text` TEXT NOT NULL,
+				`post_text_compiled` TEXT NOT NULL,
 				`enable_bbcode` tinyint(1) NOT NULL default '1',
 				`enable_html` tinyint(1) NOT NULL default '0',
 				`enable_smilies` tinyint(1) NOT NULL default '1',
+				`enable_autolinks_acronyms` tinyint(1) NOT NULL default '1',
 				`enable_sig` tinyint(1) NOT NULL default '1',
-				`edit_notes` mediumtext,
+				`edit_notes` MEDIUMTEXT,
 				`post_edit_time` int(11) default NULL,
 				`post_edit_count` smallint(5) unsigned NOT NULL default '0',
 				`post_edit_id` mediumint(8) NOT NULL default '0',
 				`post_attachment` tinyint(1) NOT NULL default '0',
 				`post_bluecard` tinyint(1) default NULL,
-				`enable_autolinks_acronyms` tinyint(1) NOT NULL default '1',
 				PRIMARY KEY (`post_id`),
 				KEY `forum_id` (`forum_id`),
 				KEY `topic_id` (`topic_id`),
@@ -3184,7 +3179,7 @@ if (substr($mode, 0, 6) == 'update')
 			)";
 
 			$sql[] = "INSERT INTO `___posts___`
-				SELECT p.post_id, p.topic_id, p.forum_id, p.poster_id, p.post_time, p.poster_ip, p.post_username, t.post_subject, t.post_text, t.post_text_compiled, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_sig, t.edit_notes, p.post_edit_time, p.post_edit_count, p.post_edit_id, p.post_attachment, p.post_bluecard, p.enable_autolinks_acronyms
+				SELECT p.post_id, p.topic_id, p.forum_id, p.poster_id, p.post_time, p.poster_ip, p.post_username, t.post_subject, t.post_text, t.post_text_compiled, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_autolinks_acronyms, p.enable_sig, t.edit_notes, p.post_edit_time, p.post_edit_count, p.post_edit_id, p.post_attachment, p.post_bluecard
 				FROM `" . $table_prefix . "posts` p, `" . $table_prefix . "posts_text` t
 				WHERE p.post_id = t.post_id
 				ORDER BY p.post_id";
@@ -3202,7 +3197,7 @@ if (substr($mode, 0, 6) == 'update')
 				`privmsgs_id` mediumint(8) unsigned NOT NULL auto_increment,
 				`privmsgs_type` tinyint(4) NOT NULL default '0',
 				`privmsgs_subject` varchar(255) NOT NULL default '',
-				`privmsgs_text` text,
+				`privmsgs_text` TEXT NOT NULL,
 				`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
 				`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
 				`privmsgs_date` int(11) NOT NULL default '0',
@@ -3210,16 +3205,16 @@ if (substr($mode, 0, 6) == 'update')
 				`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
 				`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
 				`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
+				`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '0',
 				`privmsgs_attach_sig` tinyint(1) NOT NULL default '1',
 				`privmsgs_attachment` tinyint(1) NOT NULL default '0',
-				`privmsgs_enable_autolinks_acronyms` tinyint(1) NOT NULL default '0',
 				PRIMARY KEY (`privmsgs_id`),
 				KEY `privmsgs_from_userid` (`privmsgs_from_userid`),
 				KEY `privmsgs_to_userid` (`privmsgs_to_userid`)
 			)";
 
 			$sql[] = "INSERT INTO `___privmsgs___`
-				SELECT p.privmsgs_id, p.privmsgs_type, p.privmsgs_subject, t.privmsgs_text, p.privmsgs_from_userid, p.privmsgs_to_userid, p.privmsgs_date, p.privmsgs_ip, p.privmsgs_enable_bbcode, p.privmsgs_enable_html, p.privmsgs_enable_smilies, p.privmsgs_attach_sig, p.privmsgs_attachment, p.privmsgs_enable_autolinks_acronyms
+				SELECT p.privmsgs_id, p.privmsgs_type, p.privmsgs_subject, t.privmsgs_text, p.privmsgs_from_userid, p.privmsgs_to_userid, p.privmsgs_date, p.privmsgs_ip, p.privmsgs_enable_bbcode, p.privmsgs_enable_html, p.privmsgs_enable_smilies, p.privmsgs_enable_autolinks_acronyms, p.privmsgs_attach_sig, p.privmsgs_attachment
 				FROM `" . $table_prefix . "privmsgs` p, `" . $table_prefix . "privmsgs_text` t
 				WHERE p.privmsgs_id = t.privmsgs_text_id
 				ORDER BY p.privmsgs_id";
@@ -3242,7 +3237,7 @@ if (substr($mode, 0, 6) == 'update')
 				`cat_id` mediumint(8) unsigned NOT NULL default '0',
 				`main_type` char(1) default NULL,
 				`forum_name` varchar(150) default NULL,
-				`forum_desc` text,
+				`forum_desc` TEXT NOT NULL,
 				`forum_status` tinyint(4) NOT NULL default '0',
 				`forum_order` mediumint(8) unsigned NOT NULL default '1',
 				`forum_posts` mediumint(8) unsigned NOT NULL default '0',
@@ -3291,7 +3286,7 @@ if (substr($mode, 0, 6) == 'update')
 
 			$sql[] = "CREATE TABLE `" . $table_prefix . "forums_rules` (
 				`forum_id` smallint(5) unsigned NOT NULL default '0',
-				`rules` text NOT NULL,
+				`rules` TEXT NOT NULL,
 				`rules_display_title` tinyint(1) NOT NULL default '1',
 				`rules_custom_title` varchar(80) NOT NULL default '',
 				`rules_in_viewforum` tinyint(1) unsigned NOT NULL default '0',
@@ -3326,7 +3321,7 @@ if (substr($mode, 0, 6) == 'update')
 			`cat_main` mediumint(8) unsigned NOT NULL default '0',
 			`cat_main_type` char(1) default NULL,
 			`cat_title` varchar(100) default NULL,
-			`cat_desc` text,
+			`cat_desc` TEXT NOT NULL,
 			`icon` varchar(255) default NULL,
 			`cat_order` mediumint(8) unsigned NOT NULL default '0',
 			PRIMARY KEY (`cat_id`),
@@ -3394,7 +3389,7 @@ if (substr($mode, 0, 6) == 'update')
 				`user_id` mediumint(8) NOT NULL,
 				`group_id` mediumint(8) NOT NULL,
 				`email_subject` varchar(255) NOT NULL,
-				`email_body` text,
+				`email_body` TEXT NOT NULL,
 				`email_format` tinyint(1) NOT NULL default '0',
 				`batch_start` mediumint(8) NOT NULL,
 				`batch_size` smallint UNSIGNED NOT NULL,
@@ -3442,7 +3437,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ads` (
 			`ad_id` mediumint(8) unsigned NOT NULL auto_increment,
 			`ad_title` varchar(255) NOT NULL,
-			`ad_text` text,
+			`ad_text` TEXT NOT NULL,
 			`ad_position` varchar(255) NOT NULL,
 			`ad_auth` tinyint(1) NOT NULL default '0',
 			`ad_format` tinyint(1) NOT NULL default '0',
@@ -3566,9 +3561,124 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.0.53 */
 		case '1.3.0.53':
+		case '1.3.0.53a':
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('gheader', 'gh', 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('gfooter', 'gf', 0)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "tickets_cat` (
+				ticket_cat_id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+				ticket_cat_title VARCHAR(255) NOT NULL DEFAULT '',
+				ticket_cat_des TEXT NOT NULL,
+				ticket_cat_emails TEXT NOT NULL,
+				PRIMARY KEY (ticket_cat_id)
+			)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "tickets_cat` (ticket_cat_title, ticket_cat_des) VALUES ('General', 'General')";
+
+		$sql[] = "UPDATE `" . $table_prefix . "cms_layout_special` SET page_id = 'viewforum' WHERE page_id = 'viewfforum'";
 
 		/* Updating from IP 1.3.1.54 */
 		case '1.3.1.54':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('forum_limit_edit_time_interval', '1440')";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` CHANGE `cat_id` `parent_id` mediumint(8) UNSIGNED NOT NULL DEFAULT '0'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` CHANGE `cat_title` `cat_title` varchar(255) DEFAULT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` CHANGE `forum_name` `forum_name` varchar(255) DEFAULT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` CHANGE `group_color` `group_color` VARCHAR(16) NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `username` `username` varchar(36) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_color` `user_color` VARCHAR(16) NOT NULL";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_title_clean` varchar(255) DEFAULT '' NOT NULL AFTER `cat_title`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_type` tinyint(4) DEFAULT '0' NOT NULL AFTER `forum_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_parents` MEDIUMTEXT NOT NULL AFTER `main_type`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `right_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `main_type`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `left_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `main_type`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_name_clean` varchar(255) DEFAULT '' NOT NULL AFTER `forum_name`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_limit_edit_time` tinyint(1) default '0' NOT NULL AFTER `forum_notify`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_last_topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `forum_topics`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_last_poster_color` varchar(16) DEFAULT '' NOT NULL AFTER `forum_last_post_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_last_poster_name` varchar(255) DEFAULT '' NOT NULL AFTER `forum_last_post_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_last_post_time` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `forum_last_post_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_last_post_subject` varchar(255) DEFAULT '' NOT NULL AFTER `forum_last_post_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_last_poster_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `forum_last_post_id`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_tags` varchar(255) DEFAULT '' NOT NULL AFTER `topic_title`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_similar_topics` varchar(255) DEFAULT '' NOT NULL AFTER `topic_desc`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_title_clean` varchar(255) DEFAULT '' NOT NULL AFTER `topic_title`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_ftitle_clean` varchar(255) DEFAULT '' NOT NULL AFTER `topic_title_clean`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_first_post_time` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `topic_first_post_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_first_poster_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `topic_first_post_time`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_first_poster_name` varchar(255) DEFAULT '' NOT NULL AFTER `topic_first_poster_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_first_poster_color` varchar(16) DEFAULT '' NOT NULL AFTER `topic_first_poster_name`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_last_post_time` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `topic_last_post_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_last_poster_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `topic_last_post_time`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_last_poster_name` varchar(255) DEFAULT '' NOT NULL AFTER `topic_last_post_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_last_poster_color` varchar(16) DEFAULT '' NOT NULL AFTER `topic_last_poster_name`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `username_clean` varchar(255) DEFAULT '' NOT NULL AFTER `username`";
+
+		$sql[] = "UPDATE `" . $table_prefix . "forums` SET forum_type = 1";
+
+		$sql[] = "UPDATE `" . $table_prefix . "forums` f, `" . $table_prefix . "topics` t, `" . $table_prefix . "posts` p, `" . $table_prefix . "users` u SET f.forum_last_topic_id = p.topic_id, f.forum_last_poster_id = p.poster_id, f.forum_last_post_subject = t.topic_title, f.forum_last_post_time = p.post_time, f.forum_last_poster_name = u.username, f.forum_last_poster_color = u.user_color
+		WHERE f.forum_last_post_id = p.post_id
+		AND t.topic_id = p.topic_id
+		AND p.poster_id = u.user_id";
+
+		$sql[] = "UPDATE `" . $table_prefix . "topics` t, `" . $table_prefix . "posts` p, `" . $table_prefix . "posts` p2, `" . $table_prefix . "users` u, `" . $table_prefix . "users` u2 SET t.topic_first_post_id = p.post_id, t.topic_first_post_time = p.post_time, t.topic_first_poster_id = p.poster_id, t.topic_first_poster_name = u.username, t.topic_first_poster_color = u.user_color, t.topic_last_post_id = p2.post_id, t.topic_last_post_time = p2.post_time, t.topic_last_poster_id = p2.poster_id, t.topic_last_poster_name = u2.username, t.topic_last_poster_color = u2.user_color
+		WHERE t.topic_first_post_id = p.post_id
+		AND p.poster_id = u.user_id
+		AND t.topic_last_post_id = p2.post_id
+		AND p2.poster_id = u2.user_id";
+
+		/*
+		$sql = "UPDATE " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . USERS_TABLE . " u
+						SET f.forum_last_poster_id = p.poster_id, f.forum_last_post_subject = t.topic_title, f.forum_last_post_time = p.post_time, f.forum_last_poster_name = u.username, f.forum_last_poster_color = u.user_color
+						WHERE f.forum_last_post_id = p.post_id
+						AND t.topic_id = p.topic_id
+						AND p.poster_id = u.user_id";
+
+		$sql = "UPDATE " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
+						SET t.topic_first_post_id = p.post_id, t.topic_first_post_time = p.post_time, t.topic_first_poster_id = p.poster_id, t.topic_first_poster_name = u.username, t.topic_first_poster_color = u.user_color, t.topic_last_post_id = p2.post_id, t.topic_last_post_time = p2.post_time, t.topic_last_poster_id = p2.poster_id, t.topic_last_poster_name = u2.username, t.topic_last_poster_color = u2.user_color
+						WHERE t.topic_first_post_id = p.post_id
+						AND p.poster_id = u.user_id
+						AND t.topic_last_post_id = p2.post_id
+						AND p2.poster_id = u2.user_id";
+		*/
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "topics_tags_list` (
+			`tag_text` varchar(50) binary NOT NULL DEFAULT '',
+			`tag_id` mediumint(8) unsigned NOT NULL auto_increment,
+			`tag_count` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			PRIMARY KEY (`tag_text`),
+			KEY `tag_id` (`tag_id`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "topics_tags_match` (
+			`tag_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			KEY `tag_id` (`tag_id`),
+			KEY `topic_id` (`topic_id`)
+		)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config`
+		SELECT x.config_name, x.config_value
+		FROM `" . $table_prefix . "xs_news_cfg` x";
+		$sql[] = "RENAME TABLE `" . $table_prefix . "xs_news_cfg` TO `_old_" . $table_prefix . "xs_news_cfg`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ina_scores` ADD `user_plays` int(6) default '0' AFTER `score`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ina_scores` ADD `play_time` int(11) default '0' AFTER `user_plays`";
+
+		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET blockfile = REPLACE(blockfile,'blocks_imp_','')";
+
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'smart_header'";
+
+		/* Updating from IP 1.3.2.55 */
+		case '1.3.2.55':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

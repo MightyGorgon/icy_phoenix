@@ -26,10 +26,7 @@ function check_max_registration($topic_id, $regstate)
 
 	$sql = "SELECT reg_max_option1, reg_max_option2, reg_max_option3 FROM " . REGISTRATION_DESC_TABLE ."
 					WHERE topic_id = $topic_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 
 	$reg_max_option1 = $row['reg_max_option1'];
@@ -55,10 +52,7 @@ function check_max_registration($topic_id, $regstate)
 		// we have to check if maximum of accepted registrations is already reached
 		$sql = "SELECT COUNT(registration_status) cnt_status FROM " . REGISTRATION_TABLE . "
 						WHERE topic_id = $topic_id AND registration_status = $regstate";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$cnt_status = $db->sql_fetchfield('cnt_status', 0, $result);
 
 		if ($cnt_status >= $num_max_reg)
@@ -79,10 +73,7 @@ function check_slots_left($topic_id, $regstate)
 	// check if maximum amount of registrations is reached
 	$sql = "SELECT reg_max_option1, reg_max_option2, reg_max_option3 FROM " . REGISTRATION_DESC_TABLE ."
 					WHERE topic_id = $topic_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 
 	$reg_max_option1 = $row['reg_max_option1'];
@@ -113,10 +104,7 @@ function check_slots_left($topic_id, $regstate)
 		$sql = "SELECT COUNT(registration_status) cnt_status FROM " . REGISTRATION_TABLE . "
 						WHERE topic_id = $topic_id
 						AND registration_status = $regstate";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$cnt_status = $db->sql_fetchfield('cnt_status', 0, $result);
 
 		$slots_left = ($num_max_reg - $cnt_status);
@@ -131,10 +119,7 @@ function check_user_registered($topic_id, $user_id, $regstate)
 					WHERE topic_id = $topic_id
 					AND registration_status = $regstate
 					AND registration_user_id = $user_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain registration data for this topic', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$cnt_status = $db->sql_fetchfield('cnt_status', 0, $result);
 
 	if ($cnt_status > 0)
@@ -152,7 +137,10 @@ function check_reg_active($topic_id)
 	global $db;
 	$sql = "SELECT reg_active FROM " . REGISTRATION_DESC_TABLE . "
 					WHERE topic_id = $topic_id";
-	if (!($result = $db->sql_query($sql)) || (1 != $db->sql_fetchfield('reg_active', 0, $result)))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result || (1 != $db->sql_fetchfield('reg_active', 0, $result)))
 	{
 		return false;
 	}

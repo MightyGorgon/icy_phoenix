@@ -32,11 +32,7 @@ $statistics->init_bars();
 
 // get total posts
 $sql = "SELECT COUNT(post_id) as total_posts FROM " . POSTS_TABLE;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve posts data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $total_posts = $row['total_posts'];
 
@@ -45,11 +41,7 @@ $sql = 'SELECT DAYOFWEEK(FROM_UNIXTIME(post_time)) as dow, COUNT(*) AS ct
 	FROM ' . POSTS_TABLE . '
 	GROUP BY DAYOFWEEK(FROM_UNIXTIME(post_time))
 	ORDER BY DAYOFWEEK(FROM_UNIXTIME(post_time)) ASC';
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Unable to retrieve posts data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $posts_data = $stat_db->sql_fetchrowset($result);
 
 // get highest post count

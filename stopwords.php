@@ -26,10 +26,10 @@ init_userprefs($userdata);
 
 if(!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=stopwords.' . PHP_EXT, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=stopwords.' . PHP_EXT, true));
 	/*
 	$header_location = (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE'))) ? 'Refresh: 0; URL=' : 'Location: ';
-	header($header_location . append_sid(LOGIN_MG . "?redirect=stopwords." . PHP_EXT, true));
+	header($header_location . append_sid(CMS_PAGE_LOGIN . "?redirect=stopwords." . PHP_EXT, true));
 	exit;
 	*/
 }
@@ -39,7 +39,7 @@ if($userdata['user_level'] != ADMIN)
 	message_die(GENERAL_MESSAGE, 'You are not authorized to access this page');
 }
 
-$stopwords_array = file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt');
+$stopwords_array = file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
 
 $exclude_list = '';
 foreach($stopwords_array as $curr_word)
@@ -49,11 +49,14 @@ foreach($stopwords_array as $curr_word)
 
 // Smileys
 $sql = "SELECT code FROM " . SMILIES_TABLE;
-if ($result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql, 0, 'smileys_');
+$db->sql_return_on_error(false);
+if ($result !== false)
 {
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$exclude_list .= (($exclude_list != '') ? ', ' : '') . "'" . trim(ereg_replace("[^A-Za-z0-9]", '', $row['code'])) . "'";
+		$exclude_list .= (($exclude_list != '') ? ', ' : '') . "'" . trim(preg_replace('/[^A-Za-z0-9]*/', '', $row['code'])) . "'";
 	}
 	$db->sql_freeresult($result);
 }
@@ -61,10 +64,7 @@ if ($result = $db->sql_query($sql))
 $sql = "SELECT word_id
 	FROM " . SEARCH_WORD_TABLE . "
 	WHERE word_text IN (" . $exclude_list . ")";
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain common word list', '', __LINE__, __FILE__, $sql);
-}
+$db->sql_query($sql);
 
 $common_word_id = '';
 while ($row = $db->sql_fetchrow($result))
@@ -82,27 +82,17 @@ if ($common_word_id == '')
 
 $sql = "DELETE FROM " . SEARCH_WORD_TABLE . "
 	WHERE word_id IN ($common_word_id)";
-if (!$db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not delete word match entry', '', __LINE__, __FILE__, $sql);
-}
+$db->sql_query($sql);
+
 $sql = "OPTIMIZE TABLE " . SEARCH_WORD_TABLE;
-if (!$db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not optimize', '', __LINE__, __FILE__, $sql);
-}
+$db->sql_query($sql);
 
 $sql = "DELETE FROM " . SEARCH_MATCH_TABLE . "
 	WHERE word_id IN ($common_word_id)";
-if (!$db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not delete word match entry', '', __LINE__, __FILE__, $sql);
-}
+$db->sql_query($sql);
+
 $sql = "OPTIMIZE TABLE " . SEARCH_MATCH_TABLE;
-if (!$db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, 'Could not optimize', '', __LINE__, __FILE__, $sql);
-}
+$db->sql_query($sql);
 
 $db->clear_cache();
 

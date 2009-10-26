@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1000_Configuration']['195_Yahoo_search'] = $filename;
@@ -29,7 +29,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
 
-if ( ! strtolower(@ini_get('safe_mode')) )
+if (! strtolower(@ini_get('safe_mode')))
 {
 	set_time_limit(180);
 }
@@ -50,34 +50,30 @@ $sql = 'SELECT config_name, config_value
 	OR config_name = "server_name"
 	OR config_name = "server_port"
 	OR config_name = "script_path"';
+$result = $db->sql_query($sql);
 
-if ( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not get configuration information', '', __LINE__, __FILE__, $sql);
-}
-
-while( $row = $db->sql_fetchrow($result) )
+while($row = $db->sql_fetchrow($result))
 {
 	$config_name = $row['config_name'];
 	$config_value = $row['config_value'];
 
-	$config[$config_name] = $config_value;
+	$default_config[$config_name] = $config_value;
 }
 
 // Has the forum been submitted?
-if ( isset($_POST['submit']) )
+if (isset($_POST['submit']))
 {
 	$forums_sql = '';
 
-	if ( isset($_POST['forums_select']) )
+	if (isset($_POST['forums_select']))
 	{
 		$forums_select = $_POST['forums_select'];
 
-		for ( $i = 0; $i < count($forums_select); $i++ )
+		for ($i = 0; $i < sizeof($forums_select); $i++)
 		{
-			if ( $forums_select[$i] )
+			if ($forums_select[$i])
 			{
-				$forums_sql .= ( ( $forums_sql != '' ) ? ', ' : '' ) . intval($forums_select[$i]);
+				$forums_sql .= (($forums_sql != '') ? ', ' : '') . intval($forums_select[$i]);
 			}
 		}
 	}
@@ -88,11 +84,11 @@ if ( isset($_POST['submit']) )
 	}
 
 	// Compress the file?
-	if ( $_POST['compress_file'] )
+	if ($_POST['compress_file'])
 	{
 		$phpversion = phpversion();
 
-		if ( $phpversion >= '4.0' && extension_loaded('zlib') )
+		if ($phpversion >= '4.0' && extension_loaded('zlib'))
 		{
 			$out = '';
 
@@ -100,26 +96,22 @@ if ( isset($_POST['submit']) )
 				FROM ' . TOPICS_TABLE . "
 				WHERE forum_id IN ($forums_sql)
 				ORDER BY topic_time DESC";
+			$result = $db->sql_query($sql);
 
-			if ( !($result = $db->sql_query($sql)) )
+			while ($row = $db->sql_fetchrow($result))
 			{
-				message_die(GENERAL_ERROR, 'Could not get list of topic IDs.', '', __LINE__, __FILE__, $sql);
-			}
-
-			while ( $row = $db->sql_fetchrow($result) )
-			{
-				$protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
-				$server_name = $config['server_name'];
-				$server_port = ( $config['server_port'] == '80' ) ? '' : ':' . $config['server_port'];
-				$script_path = $config['script_path'];
+				$protocol = ($default_config['cookie_secure']) ? 'https://' : 'http://';
+				$server_name = $default_config['server_name'];
+				$server_port = ($default_config['server_port'] == '80') ? '' : ':' . $default_config['server_port'];
+				$script_path = $default_config['script_path'];
 				//URL REWRITE MOD START
-				if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
+				if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 				{
 					$viewtopic_url = str_replace ('--', '-', make_url_friendly($row['topic_title']) . '-vt' . $row['topic_id'] . '.html');
 				}
 				else
 				{
-					$viewtopic_url = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
+					$viewtopic_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
 				}
 				//URL REWRITE MOD END
 				//$viewtopic_url = 'viewtopic.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
@@ -127,11 +119,11 @@ if ( isset($_POST['submit']) )
 				$out .= $protocol . $server_name . $server_port . $script_path . $viewtopic_url . "\r\n";
 			}
 
-			$out .= ( $_POST['additional_urls'] ) ? trim($_POST['additional_urls']) : '';
+			$out .= ($_POST['additional_urls']) ? trim($_POST['additional_urls']) : '';
 
 			$filename = IP_ROOT_PATH . '/' . $_POST['search_savepath'] . '/urllist.txt.gz';
 
-			if ( preg_match('#^[0-9]$#', $_POST['compression_level']) )
+			if (preg_match('#^[0-9]$#', $_POST['compression_level']))
 			{
 				$compression_level = $_POST['compression_level'];
 			}
@@ -141,62 +133,46 @@ if ( isset($_POST['submit']) )
 				$compression_level = 9;
 			}
 
-			if ( !$file_handle = gzopen($filename, 'wb' . $compression_level ) )
+			if (!$file_handle = gzopen($filename, 'wb' . $compression_level))
 			{
-				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unopenable_file'], $filename) );
+				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unopenable_file'], $filename));
 			}
 
-			if ( !gzwrite($file_handle, $out) )
+			if (!gzwrite($file_handle, $out))
 			{
-				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unwritable_file'], $filename) );
+				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unwritable_file'], $filename));
 			}
 
-			if ( gzclose($file_handle) === FALSE )
+			if (gzclose($file_handle) === FALSE)
 			{
-				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unclosable_file'], $filename) );
+				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unclosable_file'], $filename));
 			}
 
 			// Update settings
 			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 				config_value = "' . str_replace("\'", "''", $_POST['search_savepath']) . '"
 				WHERE config_name = "yahoo_search_savepath"';
-
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_savepath') );
-			}
+			$db->sql_query($sql);
 
 			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 				config_value = "' . str_replace("\'", "''", $_POST['additional_urls']) . '"
 				WHERE config_name = "yahoo_search_additional_urls"';
-
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_additional_urls') );
-			}
+			$db->sql_query($sql);
 
 			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 				config_value = "' . str_replace("\'", "''", $_POST['compress_file']) . '"
 				WHERE config_name = "yahoo_search_compress"';
-
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_compress') );
-			}
+			$db->sql_query($sql);
 
 			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 				config_value = "' . str_replace("\'", "''", $_POST['compression_level']) . '"
 				WHERE config_name = "yahoo_search_compression_level"';
-
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_compression_level') );
-			}
+			$db->sql_query($sql);
 
 			// It looks like everything worked okay....
-			if ( file_exists($filename) && filesize($filename) > 1 )
+			if (file_exists($filename) && filesize($filename) > 1)
 			{
-				message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $_POST['search_savepath'] . '/urllist.txt.gz' ) );
+				message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $_POST['search_savepath'] . '/urllist.txt.gz'));
 			}
 
 			// Maybe not
@@ -215,31 +191,27 @@ if ( isset($_POST['submit']) )
 	else
 	{
 		$out = '';
-		global $board_config;
+		global $config;
 		$sql = 'SELECT topic_id, topic_title
 			FROM ' . TOPICS_TABLE . "
 			WHERE forum_id IN ($forums_sql)
 			ORDER BY topic_time DESC";
+		$result = $db->sql_query($sql);
 
-		if ( !($result = $db->sql_query($sql)) )
+		while ($row = $db->sql_fetchrow($result))
 		{
-			message_die(GENERAL_ERROR, 'Could not get list of topic IDs.', '', __LINE__, __FILE__, $sql);
-		}
-
-		while ( $row = $db->sql_fetchrow($result) )
-		{
-			$protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
-			$server_name = $config['server_name'];
-			$server_port = ( $config['server_port'] == '80' ) ? '' : ':' . $config['server_port'];
-			$script_path = $config['script_path'];
+			$protocol = ($default_config['cookie_secure']) ? 'https://' : 'http://';
+			$server_name = $default_config['server_name'];
+			$server_port = ($default_config['server_port'] == '80') ? '' : ':' . $default_config['server_port'];
+			$script_path = $default_config['script_path'];
 			//URL REWRITE MOD START
-			if ( ($board_config['url_rw'] == '1') || ( ($board_config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
 			{
 				$viewtopic_url = str_replace ('--', '-', make_url_friendly($row['topic_title']) . '-vt' . $row['topic_id'] . '.html');
 			}
 			else
 			{
-				$viewtopic_url = VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
+				$viewtopic_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $row['topic_id'];
 			}
 			//URL REWRITE MOD END
 
@@ -248,66 +220,50 @@ if ( isset($_POST['submit']) )
 			$out .= $protocol . $server_name . $server_port . $script_path . $viewtopic_url . "\r\n";
 		}
 
-		$out .= ( $_POST['additional_urls'] ) ? trim($_POST['additional_urls']) : '';
+		$out .= ($_POST['additional_urls']) ? trim($_POST['additional_urls']) : '';
 
 		$filename = IP_ROOT_PATH . $_POST['search_savepath'] . '/urllist.txt';
 
-		if ( !$file_handle = fopen($filename, 'w') )
+		if (!$file_handle = fopen($filename, 'w'))
 		{
-			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unopenable_file'], $filename) );
+			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unopenable_file'], $filename));
 		}
 
-		if ( fwrite($file_handle, $out) === FALSE )
+		if (fwrite($file_handle, $out) === FALSE)
 		{
-			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unwritable_file'], $filename) );
+			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unwritable_file'], $filename));
 		}
 
-		if ( fclose($file_handle) === FALSE )
+		if (fclose($file_handle) === FALSE)
 		{
-			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unclosable_file'], $filename) );
+			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unclosable_file'], $filename));
 		}
 
 		// Update settings
 		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 			config_value = "' . str_replace("\'", "''", $_POST['search_savepath']) . '"
 			WHERE config_name = "yahoo_search_savepath"';
-
-		if ( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_savepath') );
-		}
+		$db->sql_query($sql);
 
 		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 			config_value = "' . str_replace("\'", "''", $_POST['additional_urls']) . '"
 			WHERE config_name = "yahoo_search_additional_urls"';
-
-		if ( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_additional_urls') );
-		}
+		$db->sql_query($sql);
 
 		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 			config_value = "' . str_replace("\'", "''", $_POST['compress_file']) . '"
 			WHERE config_name = "yahoo_search_compress"';
-
-		if ( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_compress') );
-		}
+		$db->sql_query($sql);
 
 		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
 			config_value = "' . str_replace("\'", "''", $_POST['compression_level']) . '"
 			WHERE config_name = "yahoo_search_compression_level"';
-
-		if ( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_update_sql'], 'yahoo_search_compression_level') );
-		}
+		$db->sql_query($sql);
 
 		// It looks like everything worked okay....
-		if ( file_exists($filename) && filesize($filename) > 1 )
+		if (file_exists($filename) && filesize($filename) > 1)
 		{
-			message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $_POST['search_savepath'] . '/urllist.txt' ) );
+			message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $_POST['search_savepath'] . '/urllist.txt'));
 		}
 
 		// Maybe not
@@ -321,56 +277,46 @@ if ( isset($_POST['submit']) )
 // Display the admin page
 else
 {
-	$sql = 'SELECT c.cat_id, c.cat_title, c.cat_order
-			FROM ' . CATEGORIES_TABLE . ' AS c, '. FORUMS_TABLE . ' AS f
-			WHERE f.cat_id = c.cat_id
-			GROUP BY c.cat_id, c.cat_title, c.cat_order
-			ORDER BY c.cat_order';
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain category list.', '', __LINE__, __FILE__, $sql);
-	}
+	$sql = 'SELECT c.forum_id AS cat_id, c.forum_name AS cat_title, c.forum_order AS cat_order
+			FROM ' . FORUMS_TABLE . ' AS c
+			WHERE c.forum_type = ' . FORUM_CAT . '
+			ORDER BY c.forum_order';
+	$result = $db->sql_query($sql);
 
 	$category_rows = array();
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$category_rows[] = $row;
 	}
 
-	if ( $total_categories = count($category_rows) )
+	if ($total_categories = sizeof($category_rows))
 	{
 		$sql = 'SELECT *
 			FROM ' . FORUMS_TABLE . '
-			ORDER BY cat_id, forum_order';
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain forums information.', '', __LINE__, __FILE__, $sql);
-		}
-
+			WHERE c.forum_type <> ' . FORUM_CAT . '
+			ORDER BY forum_order';
+		$result = $db->sql_query($sql);
 		$forums_select = '<select name="forums_select[]" multiple="multiple" size="10" style="width: 250px;">';
 
 		$forum_rows = array();
-		while ( $row = $db->sql_fetchrow($result) )
+		while ($row = $db->sql_fetchrow($result))
 		{
 			$forum_rows[] = $row;
 		}
 
-		if ( $total_forums = count($forum_rows) )
+		if ($total_forums = sizeof($forum_rows))
 		{
-			for ( $i = 0; $i < $total_categories; $i++ )
+			for ($i = 0; $i < $total_categories; $i++)
 			{
 				$boxstring_forums = '';
-				for ( $j = 0; $j < $total_forums; $j++ )
+				for ($j = 0; $j < $total_forums; $j++)
 				{
-					if ( $forum_rows[$j]['cat_id'] == $category_rows[$i]['cat_id'] )
+					if ($forum_rows[$j]['parent_id'] == $category_rows[$i]['cat_id'])
 					{
-						if ( $forum_rows[$j]['auth_view'] == AUTH_ALL )
+						if ($forum_rows[$j]['auth_view'] == AUTH_ALL)
 						{
 							$boxstring_forums .=  '<option value="' . $forum_rows[$j]['forum_id'] . '" selected="selected">' . $forum_rows[$j]['forum_name'] . '</option>';
 						}
-
 						else
 						{
 							$boxstring_forums .=  '<option value="' . $forum_rows[$j]['forum_id'] . '">' . $forum_rows[$j]['forum_name'] . '</option>';
@@ -378,7 +324,7 @@ else
 					}
 				}
 
-				if ( $boxstring_forums != '' )
+				if ($boxstring_forums != '')
 				{
 					$forums_select .= '<optgroup label="' . $category_rows[$i]['cat_title'] . '">';
 					$forums_select .= $boxstring_forums;
@@ -409,13 +355,13 @@ else
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 
-		'SEARCH_SAVEPATH' => $config['yahoo_search_savepath'],
-		'ADDITIONAL_URLS' => $config['yahoo_search_additional_urls'],
+		'SEARCH_SAVEPATH' => $default_config['yahoo_search_savepath'],
+		'ADDITIONAL_URLS' => $default_config['yahoo_search_additional_urls'],
 		'S_USER_ACTION' => append_sid('admin_yahoo_search.' . PHP_EXT),
 		'S_FORUMS_SELECT' => $forums_select,
-		'S_COMPRESS_FILE_YES' => ( $config['yahoo_search_compress'] ) ? 'checked="checked"' : '',
-		'S_COMPRESS_FILE_NO' => ( !$config['yahoo_search_compress'] ) ? 'checked="checked"' : '',
-		'COMPRESSION_LEVEL' => $config['yahoo_search_compression_level'],
+		'S_COMPRESS_FILE_YES' => ($default_config['yahoo_search_compress']) ? 'checked="checked"' : '',
+		'S_COMPRESS_FILE_NO' => (!$default_config['yahoo_search_compress']) ? 'checked="checked"' : '',
+		'COMPRESSION_LEVEL' => $default_config['yahoo_search_compression_level'],
 	));
 
 	$template->pparse('body');

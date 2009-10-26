@@ -9,14 +9,14 @@
 */
 
 // CTracker_Ignore: File checked by human
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 $fonts_path = 'images/fonts/';
-$generator_template_path = $board_config['avatar_generator_template_path'] . '/';
+$generator_template_path = $config['avatar_generator_template_path'] . '/';
 
 $dest_pic = htmlspecialchars($_GET['cachefile']);
 $source_pic = htmlspecialchars($_GET['avatarfile']);
@@ -26,7 +26,7 @@ $text_size = (isset($_GET['text_size'])) ? intval($_GET['text_size']) : '10';
 //$text_font = (isset($_GET['text_font'])) ? htmlspecialchars($_GET['text_font']) : 'triplex_bold.ttf';
 $text_font = (isset($_GET['text_font'])) ? htmlspecialchars($_GET['text_font']) : 'denmark.ttf';
 $text_font = $fonts_path . $text_font;
-$text_color = (isset($_GET['text_color'])) ? htmlspecialchars($_GET['text_color']) : '#FFFFFF';
+$text_color = (isset($_GET['text_color'])) ? htmlspecialchars($_GET['text_color']) : '#ffffff';
 $text_position = (isset($_GET['text_position'])) ? htmlspecialchars($_GET['text_position']) : '0';
 
 $avatars_array = array('ip.gif', 'a69_02.gif', 'agreen.gif', 'aphro_lite.gif', 'aphrodite.gif', 'blue.gif', 'darkblue.gif', 'firefox.gif', 'gray.gif', 'green.gif', 'opera.gif', 'pink.gif', 'purple.gif', 'red.gif', 'sblue.gif', 'av01.gif', 'av02.gif', 'av03.gif', 'av04.gif', 'av05.gif', 'av06.gif', 'av07.gif', 'av08.gif', 'av09.gif', 'av10.gif', 'av11.gif', 'av12.gif', 'av13.gif', 'av14.gif', 'av15.gif', 'av16.gif', 'av17.gif');
@@ -37,7 +37,7 @@ if (in_array($source_pic_full, $avatars_array))
 }
 else
 {
-	$num = mt_rand(1, count($avatars_array));
+	$num = mt_rand(1, sizeof($avatars_array));
 	$source_pic = $generator_template_path . $avatars_array[$num];
 }
 

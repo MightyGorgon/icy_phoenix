@@ -28,7 +28,7 @@ else
 	if ($friends_online_list == false)
 	{
 		$template->assign_block_vars('no_friends_online', array());
-		for ($i = 0; $i < count($friends_list); $i++)
+		for ($i = 0; $i < sizeof($friends_list); $i++)
 		{
 			$template->assign_block_vars('friends_offline', array(
 				'USERNAME_FULL' => colorize_username($friends_list[$i]['zebra_id'], $friends_list[$i]['username'], $friends_list[$i]['user_color'], $friends_list[$i]['user_active']),
@@ -40,7 +40,7 @@ else
 	{
 		$uon = 0;
 		$uoff = 0;
-		for ($i = 0; $i < count($friends_list); $i++)
+		for ($i = 0; $i < sizeof($friends_list); $i++)
 		{
 			// array_key_exists($friends_list[$i]['zebra_id'], $friends_online_list)
 			if (isset($friends_online_list[$friends_list[$i]['zebra_id']]['user_allow_viewonline']))

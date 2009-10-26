@@ -1,3 +1,9 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
@@ -20,7 +26,7 @@
 </tr>
 <tr>
 	<td class="row1"><strong>{L_AD_TEXT}</strong></td>
-	<td class="row2"><textarea name="ad_text" rows="15" cols="35" style="width: 98%" class="post">{AD_TEXT}</textarea></td>
+	<td class="row2"><textarea name="ad_text" rows="15" cols="35" style="width: 98%;" class="post">{AD_TEXT}</textarea></td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_AD_POSITION}</strong></td>
@@ -37,3 +43,9 @@
 <tr><td colspan="2" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>
 </form>
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

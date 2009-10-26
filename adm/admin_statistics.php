@@ -42,7 +42,7 @@ if (!function_exists('gen_auth_select'))
 
 		$select_list = '<select name="auth_fields">';
 
-		for($i = 0; $i < count($auth_levels); $i++)
+		for($i = 0; $i < sizeof($auth_levels); $i++)
 		{
 			$selected = ($default_auth_value == $auth_const[$i]) ? ' selected="selected"' : '';
 			$select_list .= '<option value="' . $auth_const[$i] . '"' . $selected . '>' . $lang['Forum_' . $auth_levels[$i]] . '</option>';
@@ -61,11 +61,7 @@ if (!function_exists('renumbering_order'))
 
 		$sql = "SELECT module_id FROM " . MODULES_TABLE . "
 		ORDER BY display_order ASC";
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t get list of Modules', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$i = 10;
 		$inc = 10;
@@ -75,38 +71,30 @@ if (!function_exists('renumbering_order'))
 			$sql = "UPDATE " . MODULES_TABLE . "
 			SET display_order = " . $i . "
 			WHERE module_id = " . $row['module_id'];
-
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 			$i += $inc;
 		}
 	}
 }
 // FUNCTIONS - END
 
-if (!empty($board_config))
+if (!empty($config))
 {
-	include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_statistics.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_statistics.' . PHP_EXT);
 }
 
 $__stats_config = array();
 
 $db->clear_cache('stats_config_');
-$sql = 'SELECT *
-FROM ' . STATS_CONFIG_TABLE;
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
-}
+$sql = 'SELECT * FROM ' . STATS_CONFIG_TABLE;
+$result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
 	$__stats_config[$row['config_name']] = trim($row['config_value']);
 }
 
-$stats_lang = $board_config['default_lang'];
+$stats_lang = $config['default_lang'];
 if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statistics.' . PHP_EXT))
 {
 	$language = 'english';
@@ -129,7 +117,7 @@ while (list($key, $value) = each($images))
 }
 
 // Now try to re-assign the smilies
-$board_config['smilies_path'] = './../' . $board_config['smilies_path'];
+$config['smilies_path'] = './../' . $config['smilies_path'];
 */
 
 // Init Vars
@@ -153,14 +141,10 @@ if(isset($_POST['update']))
 	$modules_upd = $_POST['module_status'];
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . " ORDER BY module_id ASC";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t query modules table', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$m_rows = array();
 	$m_rows = $db->sql_fetchrowset($result);
-	$m_count = count($m_rows);
+	$m_count = sizeof($m_rows);
 
 	for($i = 0; $i < $m_count; $i++)
 	{
@@ -168,10 +152,7 @@ if(isset($_POST['update']))
 		$sql = "UPDATE " . MODULES_TABLE . "
 						SET active = '" . $m_active . "', update_time = '" . intval($_POST['module_time_' . $m_rows[$i]['module_id']]) . "'
 						WHERE module_id = '" . $m_rows[$i]['module_id'] . "'";
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not update modules table', $lang['Error'], __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 	$mode = 'manage';
 }
@@ -184,14 +165,8 @@ if ($mode == 'order')
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET display_order = display_order + $move
 	WHERE module_id = " . $module_id;
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Couldn't change Module order", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	renumbering_order();
-
 	$mode = 'manage';
 }
 
@@ -206,12 +181,7 @@ if ($submit && ($mode == 'config'))
 			$sql = "UPDATE " . STATS_CONFIG_TABLE . "
 			SET config_value = '$update_value'
 			WHERE (config_name = 'return_limit')";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Unable to update the Statistics Config Table', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Return_limit'];
 		}
 	}
@@ -221,12 +191,7 @@ if ($submit && ($mode == 'config'))
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET module_info_time = 0,
 		module_cache_time = 0";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to update Modules Table', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Clear_cache'];
 	}
 
@@ -239,12 +204,7 @@ if ($submit && ($mode == 'config'))
 			$sql = "UPDATE " . STATS_CONFIG_TABLE . "
 			SET config_value = '$update_value'
 			WHERE (config_name = 'modules_dir')";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Unable to update Statistics Config Table', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Modules_directory'];
 		}
 	}
@@ -257,10 +217,7 @@ if ($mode == 'config')
 	$__stats_config = array();
 
 	$sql = 'SELECT * FROM ' . STATS_CONFIG_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query statistics config table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -301,24 +258,13 @@ if ($mode == 'activate')
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET active = 1
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to activate Module', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
-
 	$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Activated'] . ' : ' . $module_info['name'];
-
 	$mode = 'manage';
 }
 
@@ -327,24 +273,13 @@ if ($mode == 'deactivate')
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET active = 0
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to deactivate Module', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
-
 	$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Deactivated'] . ' : ' . $module_info['name'];
-
 	$mode = 'manage';
 }
 
@@ -353,23 +288,13 @@ if ($mode == 'uninstall')
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET installed = 0, active = 0
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to unsinstall Module', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
-
 	$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Uninstalled'] . ' : ' . $module_info['name'];
-
 	$mode = 'manage';
 }
 
@@ -440,13 +365,7 @@ if ($mode == 'auto_set')
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET update_time = " . intval($update_time_recommend) . "
 		WHERE module_id = " . $module_id;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			$error = $db->sql_error();
-			die('Unable to update Module -> <br />' . $error['message'] . ' -> <br />' . $sql);
-		}
-
+		$result = $db->sql_query($sql);
 	}
 
 	print '<br /><br /><br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=manage') . '">' . $lang['Back_to_management'] . '</a>';
@@ -459,14 +378,8 @@ if ($mode == 'manage')
 
 	$sql = "SELECT MAX(display_order) as max, MIN(display_order) as min
 	FROM " . MODULES_TABLE;
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Display Order Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-
 	$curr_max = $row['max'];
 	$curr_min = $row['min'];
 
@@ -476,12 +389,7 @@ if ($mode == 'manage')
 	$sql = "SELECT *
 	FROM " . MODULES_TABLE . "
 	ORDER BY display_order ASC";
-
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$rows = $db->sql_fetchrowset($result);
 	$num_rows = $db->sql_numrows($result);
 
@@ -586,14 +494,8 @@ if ($mode == 'install')
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result), true);
-
 	$default_update_time = intval($module_info['default_update_time']);
 
 	// Need to use inline print functions here to take care of dynamic things with the sql parse.
@@ -658,7 +560,7 @@ if ($mode == 'install')
 			$sql_query = $remove_remarks($sql_query);
 			$sql_query = split_sql_file($sql_query, $delimiter);
 
-			$sql_count = count($sql_query);
+			$sql_count = sizeof($sql_query);
 
 			if ($sql_count == 0)
 			{
@@ -669,8 +571,10 @@ if ($mode == 'install')
 			{
 				print "Running :: " . $sql_query[$i];
 				flush();
-
-				if (!($result = $db->sql_query($sql_query[$i])))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql_query[$i]);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					$errored = true;
 					$error = $db->sql_error();
@@ -688,11 +592,7 @@ if ($mode == 'install')
 			$sql = "UPDATE " . MODULES_TABLE . "
 			SET installed = 1, update_time = " . $default_update_time . "
 			WHERE module_id = " . $module_id;
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Unable to Install Module', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 		else
 		{
@@ -706,12 +606,7 @@ if ($mode == 'install')
 				$sql = "UPDATE " . MODULES_TABLE . "
 				SET active = 1
 				WHERE module_id = " . $module_id;
-
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Unable to Activate Module', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				print '<br />' . $lang['Updated'] . ' : ' . $lang['Activated'] . ' : ' . $module_info['name'];
 			}
 		}
@@ -727,24 +622,13 @@ if ($submit && ($mode == 'edit'))
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET auth_value = " . $auth_value . "
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to Set Auth Value', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
-
 	$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Auth_settings_updated'] . ' : ' . $module_info['name'];
-
 	$update_value = (isset($_POST['active'])) ? intval($_POST['active']) : 0;
 
 	if (intval($module_info['active']) != $update_value)
@@ -752,12 +636,7 @@ if ($submit && ($mode == 'edit'))
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET active = " . intval($update_value) . "
 		WHERE module_id = " . $module_id;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to change Activation Setting', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Active'] . ' : ' . $module_info['name'];
 	}
 
@@ -768,12 +647,7 @@ if ($submit && ($mode == 'edit'))
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET update_time = " . intval($update_value) . "
 		WHERE module_id = " . $module_id;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to update Update Time', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Update_time'] . ' : ' . $module_info['name'];
 	}
 
@@ -782,12 +656,7 @@ if ($submit && ($mode == 'edit'))
 		$sql = "UPDATE " . MODULES_TABLE . "
 		SET installed = 0, active = 0
 		WHERE module_id = " . $module_id;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Unable to Uninstall Module', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$msg .= '<br />' . $lang['Updated'] . ' : ' . $lang['Uninstalled'] . ' : ' . $module_info['name'];
 	}
 }
@@ -799,12 +668,7 @@ if ($mode == 'edit')
 	// Set up Preview Page
 	$sql = "SELECT * FROM " . MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Unable to get Module Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$__stat_module_data[$module_id] = $db->sql_fetchrow($result);
 	$module_info = generate_module_info($__stat_module_data[$module_id]);
 	$module_name = trim($module_info['dname']);
@@ -841,7 +705,7 @@ if ($mode == 'edit')
 	$__module_root_path = './../' . IP_ROOT_PATH;
 	$__module_data = $__stat_module_data[$__module_id];
 
-	$__language = $board_config['default_lang'];
+	$__language = $config['default_lang'];
 
 	if (!@file_exists(@realpath(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT)))
 	{
@@ -853,7 +717,7 @@ if ($mode == 'edit')
 		include(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT);
 	}
 
-	$__language = $board_config['default_lang'];
+	$__language = $config['default_lang'];
 
 	$statistics->result_cache_used = false;
 	$statistics->db_cache_used = false;
@@ -925,7 +789,7 @@ if ($mode == 'edit')
 
 $template->assign_vars(array(
 	'VIEWED_INFO' => sprintf($lang['Viewed_info'], $__stats_config['page_views']),
-	'INSTALL_INFO' => sprintf($lang['Install_info'], create_date($board_config['default_dateformat'], $__stats_config['install_date'], $board_config['board_timezone'])),
+	'INSTALL_INFO' => sprintf($lang['Install_info'], create_date($config['default_dateformat'], $__stats_config['install_date'], $config['board_timezone'])),
 	'VERSION_INFO' => sprintf($lang['Version_info'], $__stats_config['version'])
 	)
 );

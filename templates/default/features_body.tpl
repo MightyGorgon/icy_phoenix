@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_FEATURES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th>{L_FEATURES}</th>
@@ -21,3 +23,5 @@
 
 <br /><br />
 <div class="gensmall">{L_PHPBB_FEATURES_PAGE}</div>
+
+<!-- INCLUDE overall_footer.tpl -->

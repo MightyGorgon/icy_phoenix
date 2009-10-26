@@ -1,5 +1,6 @@
 <!-- INCLUDE pa_header.tpl -->
 <!-- INCLUDE pa_links.tpl -->
+
 <script type="text/javascript">
 <!--
 function checkRateForm()

@@ -1,11 +1,13 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <script type="text/javascript">
 <!--
-	function open_postreview(ref)
-	{
-		height = screen.height / 3;
-		width = screen.width / 2;
-		window.open(ref,'_phpbbpostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
-	}
+function open_postreview(ref)
+{
+	height = screen.height / 3;
+	width = screen.width / 2;
+	window.open(ref,'_phpbbpostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
+}
 //-->
 </script>
 {IMG_THL}{IMG_THC}<span class="forumlink"><!-- BEGIN postrow -->{postrow.POST_SUBJECT}&nbsp;[<a href="{postrow.DOWNLOAD_POST}">{L_DOWNLOAD_POST}</a>]<!-- END postrow --></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -65,3 +67,5 @@
 <!-- END postrow -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <a href="javascript:window.close()">{CLOSE_WINDOW}</a>
+
+<!-- INCLUDE simple_footer.tpl -->

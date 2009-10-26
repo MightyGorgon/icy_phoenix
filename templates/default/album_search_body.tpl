@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- BEGIN switch_search -->
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="right" valign="middle">{ALBUM_SEARCH_BOX}</td></tr></table>
 <!-- BEGIN switch_search_results -->
@@ -38,3 +40,5 @@
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -86,20 +86,26 @@ message[{postrow.U_POST_ID}] = " user=\"{postrow.POSTER_NAME_QQ}\" post=\"{postr
 		<span class="post-images"><a href="javascript:quotename(%27[b]{postrow.POSTER_NAME_QR}[/b],%27);">{postrow.POSTER_AVATAR}</a></span>
 		<!-- END switch_showavatars -->
 		<div class="post-details">
-		{postrow.POSTER_ONLINE_STATUS_IMG}{postrow.IP_IMG}{postrow.AIM_IMG}{postrow.ICQ_IMG}{postrow.MSN_IMG}{postrow.SKYPE_IMG}{postrow.YIM_IMG}<br />
+			<!-- IF not S_BOT -->
+			{postrow.POSTER_ONLINE_STATUS_IMG}{postrow.IP_IMG}{postrow.AIM_IMG}{postrow.ICQ_IMG}{postrow.MSN_IMG}{postrow.SKYPE_IMG}{postrow.YIM_IMG}<br />
+			<!-- ENDIF -->
 			<!-- {postrow.POSTER_NO}<br /> -->
 			{postrow.POSTER_JOINED}<br />
+			<!-- IF not S_BOT -->
 			{postrow.POSTER_POSTS}<br />
 			{postrow.POSTER_THANKS_RECEIVED}
+			<!-- ENDIF -->
 			{postrow.POSTER_AGE}
 			{postrow.POSTER_FROM}<br />
 			<!-- IF postrow.FEEDBACKS -->{postrow.FEEDBACKS}<!-- ENDIF -->
+			<!-- IF not S_BOT -->
 			<!-- BEGIN switch_poster_info -->
 			{postrow.CASH}<br />
 			{postrow.POSTER_NO}<br />
 			{postrow.POSTER_LANG}
 			{postrow.POSTER_STYLE}
 			<!-- END switch_poster_info -->
+			<!-- ENDIF -->
 			<!-- BEGIN author_profile -->
 			{postrow.author_profile.AUTHOR_VAL}<br />
 			<!-- END author_profile -->
@@ -239,7 +245,9 @@ if(GetCookie(tmp) == '2')
 <!-- ENDIF -->
 
 {SIMILAR_VIEWTOPIC}
+<!-- IF not S_BOT -->
 {CA_QUICK_REPLY_FORM}
+<!-- ENDIF -->
 
 <br />
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -265,7 +273,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF not S_BOT -->
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><b><br />{TOTAL_USERS_ONLINE}<br />{LOGGED_IN_USER_LIST}</b></span><br /><br /></td></tr>
+<tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><br />{TOTAL_USERS_ONLINE}<br />{LOGGED_IN_USER_LIST}</span><br /><br /></td></tr>
 </table>
 <!-- ENDIF -->
 
@@ -302,7 +310,9 @@ if(GetCookie(tmp) == '2')
 		</script>
 	</td>
 	<td align="right" valign="top">
+		<!-- IF not S_BOT -->
 		{S_TOPIC_ADMIN}<br /><br /><br />
+		<!-- ENDIF -->
 		{JUMPBOX}
 	</td>
 </tr>

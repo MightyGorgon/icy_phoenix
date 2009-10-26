@@ -76,11 +76,11 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 	}
 	elseif ($_POST['ban_expire_time_mode'] == 'relative')
 	{
-		$ban_expire_time = strtotime('+' . $_POST['ban_expire_time_relative'] . ' ' . $_POST['ban_expire_time_relative_units']);
+		$ban_expire_time = @strtotime('+' . $_POST['ban_expire_time_relative'] . ' ' . $_POST['ban_expire_time_relative_units']);
 	}
 	elseif ($_POST['ban_expire_time_mode'] == 'absolute')
 	{
-		$ban_expire_time = strtotime($_POST['ban_expire_time_absolute_hour'] . ':' . $_POST['ban_expire_time_absolute_minute'] . ' ' . $_POST['ban_expire_time_absolute_ampm'] .' '. $_POST['ban_expire_time_absolute_month'] . '/' . $_POST['ban_expire_time_absolute_mday'] . '/' . $_POST['ban_expire_time_absolute_year']);
+		$ban_expire_time = @strtotime($_POST['ban_expire_time_absolute_hour'] . ':' . $_POST['ban_expire_time_absolute_minute'] . ' ' . $_POST['ban_expire_time_absolute_ampm'] .' '. $_POST['ban_expire_time_absolute_month'] . '/' . $_POST['ban_expire_time_absolute_mday'] . '/' . $_POST['ban_expire_time_absolute_year']);
 	}
 
 	$user_list = array ();
@@ -100,7 +100,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 	{
 		$ip_list_temp = explode(',', $_POST['ban_ip']);
 
-		for ($i = 0; $i < count($ip_list_temp); $i++)
+		for ($i = 0; $i < sizeof($ip_list_temp); $i++)
 		{
 			if (preg_match('/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})[ ]*\-[ ]*([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/', trim($ip_list_temp[$i]), $ip_range_explode))
 			{
@@ -165,7 +165,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			{
 				$ip = gethostbynamel(trim($ip_list_temp[$i]));
 
-				for ($j = 0; $j < count($ip); $j++)
+				for ($j = 0; $j < sizeof($ip); $j++)
 				{
 					if (!empty($ip[$j]))
 					{
@@ -185,7 +185,7 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 	{
 		$email_list_temp = explode(',', $_POST['ban_email']);
 
-		for ($i = 0; $i < count($email_list_temp); $i++)
+		for ($i = 0; $i < sizeof($email_list_temp); $i++)
 		{
 			//
 			// This ereg match is based on one by php@unreelpro.com
@@ -222,10 +222,10 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 		$db->sql_freeresult ($result);
 
 		$kill_session_sql = '';
-		for ($i = 0; $i < count($user_list); $i++)
+		for ($i = 0; $i < sizeof($user_list); $i++)
 		{
 			$in_banlist = false;
-			for ($j = 0; $j < count($current_banlist); $j++)
+			for ($j = 0; $j < sizeof($current_banlist); $j++)
 			{
 				if ($user_list[$i] == $current_banlist[$j]['ban_userid'])
 				{
@@ -246,10 +246,10 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			}
 		}
 
-		for ($i = 0; $i < count($ip_list); $i++)
+		for ($i = 0; $i < sizeof($ip_list); $i++)
 		{
 			$in_banlist = false;
-			for ($j = 0; $j < count($current_banlist); $j++)
+			for ($j = 0; $j < sizeof($current_banlist); $j++)
 			{
 				if ($ip_list[$i] == $current_banlist[$j]['ban_ip'])
 				{
@@ -294,10 +294,10 @@ elseif (isset ($_POST['submit_add']) || isset ($_POST['submit_update']))
 			}
 		}
 
-		for ($i = 0; $i < count($email_list); $i++)
+		for ($i = 0; $i < sizeof($email_list); $i++)
 		{
 			$in_banlist = false;
-			for ($j = 0; $j < count($current_banlist); $j++)
+			for ($j = 0; $j < sizeof($current_banlist); $j++)
 			{
 				if ($email_list[$i] == $current_banlist[$j]['ban_email'])
 				{
@@ -452,7 +452,7 @@ elseif (isset ($_POST['add']) || $_GET['mode'] == 'edit')
 			$template->assign_block_vars('username_row', array(
 				'L_USERNAME' => $lang['Username'],
 				'L_FIND_USERNAME' => $lang['Find_username'],
-				'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . SEARCH_MG . '?mode=searchuser'),
+				'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser'),
 				'USERNAME' => $row['username']
 				)
 			);
@@ -477,7 +477,7 @@ elseif (isset ($_POST['add']) || $_GET['mode'] == 'edit')
 
 		if (isset($row['ban_expire_time']))
 		{
-			$ban_expire_time = getdate($row['ban_expire_time']);
+			$ban_expire_time = @getdate($row['ban_expire_time']);
 
 			if ($ban_expire_time['hours'] < 13)
 			{
@@ -533,7 +533,7 @@ elseif (isset ($_POST['add']) || $_GET['mode'] == 'edit')
 		$template->assign_block_vars('username_row', array(
 			'L_USERNAME' => $lang['Username'],
 			'L_FIND_USERNAME' => $lang['Find_username'],
-			'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . SEARCH_MG . '?mode=searchuser')
+			'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser')
 			)
 		);
 
@@ -612,7 +612,7 @@ else
 				WHERE u.user_id = b.ban_userid
 					AND b.ban_userid != 0
 					AND u.user_id != ". ANONYMOUS ."
-				ORDER BY u.username $order LIMIT $start, ". $board_config['topics_per_page'];
+				ORDER BY u.username $order LIMIT $start, ". $config['topics_per_page'];
 
 			break;
 
@@ -628,7 +628,7 @@ else
 			$sql = "SELECT *
 				FROM ". BANLIST_TABLE ."
 				WHERE ban_ip != ''
-				ORDER BY ban_email $order LIMIT $start, ". $board_config['topics_per_page'];
+				ORDER BY ban_email $order LIMIT $start, ". $config['topics_per_page'];
 
 			break;
 
@@ -644,7 +644,7 @@ else
 			$sql = "SELECT *
 				FROM ". BANLIST_TABLE ."
 				WHERE ban_email IS NOT NULL
-				ORDER BY ban_email $order LIMIT $start, ". $board_config['topics_per_page'];
+				ORDER BY ban_email $order LIMIT $start, ". $config['topics_per_page'];
 
 			break;
 
@@ -669,7 +669,7 @@ else
 			$sql = "SELECT b.*, u.username
 				FROM ". BANLIST_TABLE ." b LEFT JOIN ". USERS_TABLE ." u
 				ON b.ban_userid = u.user_id
-				ORDER BY ban_id $order LIMIT $start, ". $board_config['topics_per_page'];
+				ORDER BY ban_id $order LIMIT $start, ". $config['topics_per_page'];
 
 			break;
 	}
@@ -703,8 +703,8 @@ else
 			$ban_by = '-';
 		}
 
-		$ban_time = (isset ($row['ban_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_time'], $board_config['board_timezone']) : '-';
-		$ban_expire_time = (isset ($row['ban_expire_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_expire_time'], $board_config['board_timezone']) : '-';
+		$ban_time = (isset ($row['ban_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_time'], $config['board_timezone']) : '-';
+		$ban_expire_time = (isset ($row['ban_expire_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_expire_time'], $config['board_timezone']) : '-';
 		$ban_reason = (isset ($row['ban_priv_reason']) || isset ($row['ban_pub_reason'])) ? "<a href=\"javascript:void (0);\" onclick=\"window.open ('" . append_sid('admin_user_bantron.' . PHP_EXT . '?mode=view_reasons&amp;ban_id=' . $ban_id) . "','ban_reason','scrollbars=yes,width=540,height=450')\">" . $lang['View'] . '</a>' : '-';
 
 		$template->assign_block_vars('rowlist', array(
@@ -771,11 +771,11 @@ else
 
 	$num_bans = $db->sql_fetchrow ($result);
 
-	$pagination = generate_pagination('admin_user_bantron.' . PHP_EXT . '?show=' . $show . '&amp;order=' . $order, $num_bans['total'], $board_config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_user_bantron.' . PHP_EXT . '?show=' . $show . '&amp;order=' . $order, $num_bans['total'], $config['topics_per_page'], $start). '&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf ($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($num_bans['total'] / $board_config['topics_per_page'])),
+		'PAGE_NUMBER' => sprintf ($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($num_bans['total'] / $config['topics_per_page'])),
 		'L_GOTO_PAGE' => $lang['Goto_page']
 		)
 	);

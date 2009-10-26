@@ -98,7 +98,7 @@ function album_debug_dump_array($array, $level = 0)
 	$counted_keys = 1;
 	$result = "<i>array</i> = (";
 
-	if ( 0 != ($total_keys =count($array)) )
+	if ( 0 != ($total_keys =sizeof($array)) )
 	{
 		$result .= "\n";
 		$indent = str_repeat("\t", $level + 1);

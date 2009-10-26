@@ -52,17 +52,20 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 {
 	// Get list of styles
 	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " WHERE template_name = '$export' ORDER BY style_name ASC";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_theme_data'] . '<br /><br />' . $lang['xs_export_back']);
 	}
 	$theme_rowset = $db->sql_fetchrowset($result);
-	if(count($theme_rowset) == 0)
+	if(sizeof($theme_rowset) == 0)
 	{
 		xs_error($lang['xs_no_themes'] . '<br /><br />' . $lang['xs_export_back']);
 	}
 	$template->set_filenames(array('body' => XS_TPL_PATH . 'export2.tpl'));
-	$xs_send_method = isset($board_config['xs_export_data']) ? $board_config['xs_export_data'] : '';
+	$xs_send_method = isset($config['xs_export_data']) ? $config['xs_export_data'] : '';
 	$xs_send = @unserialize($xs_send_method);
 	$xs_send_method = $xs_send['method'] == 'ftp' ? 'ftp' : ($xs_send['method'] == 'file' ? 'file' : 'save');
 	$template->assign_vars(array(
@@ -70,7 +73,7 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 			'EXPORT_TEMPLATE'	=> htmlspecialchars($export),
 			'STYLE_ID'			=> $theme_rowset[0]['themes_id'],
 			'STYLE_NAME'		=> htmlspecialchars($theme_rowset[0]['style_name']),
-			'TOTAL'				=> count($theme_rowset),
+			'TOTAL'				=> sizeof($theme_rowset),
 			'SEND_METHOD_'.strtoupper($xs_send_method)	=> ' checked="checked"',
 			'SEND_DATA_DIR'		=> isset($xs_send['dir']) ? htmlspecialchars($xs_send['dir']) : '',
 			'SEND_DATA_HOST'	=> isset($xs_send['host']) ? htmlspecialchars($xs_send['host']) : '',
@@ -78,14 +81,14 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 			'SEND_DATA_FTPDIR'	=> isset($xs_send['ftpdir']) ? htmlspecialchars($xs_send['ftpdir']) : '',
 			'L_TITLE'			=> str_replace('{TPL}', $export, $lang['xs_export_style_title']),
 			));
-	if(count($theme_rowset) == 1)
+	if(sizeof($theme_rowset) == 1)
 	{
 		$template->assign_block_vars('switch_select_nostyle', array());
 	}
 	else
 	{
 		$template->assign_block_vars('switch_select_style', array());
-		for($i=0; $i<count($theme_rowset); $i++)
+		for($i=0; $i< sizeof($theme_rowset); $i++)
 		{
 			$template->assign_block_vars('switch_select_style.style', array(
 				'NUM'		=> $i,
@@ -115,7 +118,7 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 			$list[] = intval($_POST['export_style_id_'.$i]);
 		}
 	}
-	if(!count($list))
+	if(!sizeof($list))
 	{
 		xs_error($lang['xs_export_noselect_themes'] . '<br /><br /> ' . $lang['xs_export_back']);
 	}
@@ -124,12 +127,15 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 	$exportas = xs_tpl_name($exportas);
 	// Generate theme_info.cfg
 	$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE template_name = '$export' AND themes_id IN (" . implode(', ', $list) . ")";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_theme_data'] . $lang['xs_export_back']);
 	}
 	$theme_rowset = $db->sql_fetchrowset($result);
-	if(count($theme_rowset) == 0)
+	if(sizeof($theme_rowset) == 0)
 	{
 		xs_error($lang['xs_no_themes']  . '<br /><br />' . $lang['xs_export_back']);
 	}
@@ -141,7 +147,7 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 	$pack_replace = array('./theme_info.cfg' => $theme_data);
 
 	// pack style
-	for($i=0; $i<count($theme_rowset); $i++)
+	for($i=0; $i< sizeof($theme_rowset); $i++)
 	{
 		$id = $theme_rowset[$i]['themes_id'];
 		$theme_name = $theme_rowset[$i]['style_name'];
@@ -248,11 +254,12 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'export.tpl'));
 
-//
 // get list of installed styles
-//
 $sql = 'SELECT themes_id, template_name, style_name FROM ' . THEMES_TABLE . ' ORDER BY template_name';
-if(!$result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	xs_error($lang['xs_no_style_info'], __LINE__, __FILE__);
 }
@@ -262,7 +269,7 @@ $prev_id = -1;
 $prev_tpl = '';
 $style_names = array();
 $j = 0;
-for($i=0; $i<count($style_rowset); $i++)
+for($i=0; $i< sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	if($item['template_name'] === $prev_tpl)

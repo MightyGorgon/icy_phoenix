@@ -46,7 +46,7 @@ else
 // Is the user logged in.
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=album_avatar.' . PHP_EXT . '?pic_id=' . $pic_id));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_avatar.' . PHP_EXT . '?pic_id=' . $pic_id));
 }
 
 // Is the user allowed avatars
@@ -59,10 +59,7 @@ if (!$userdata['user_allowavatar'])
 $sql = "SELECT *
 		FROM " . ALBUM_TABLE . "
 		WHERE pic_id = '$pic_id'";
-if( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $thispic = $db->sql_fetchrow($result);
 
 $cat_id = $thispic['pic_cat_id'];
@@ -70,7 +67,7 @@ $user_id = $thispic['pic_user_id'];
 
 $pic_filename = $thispic['pic_filename'];
 $file_part = explode('.', strtolower($pic_filename));
-$pic_filetype = $file_part[count($file_part) - 1];
+$pic_filetype = $file_part[sizeof($file_part) - 1];
 $pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
 
 if( empty($thispic) )
@@ -84,11 +81,7 @@ if ($cat_id != PERSONAL_GALLERY)
 	$sql = "SELECT *
 			FROM " . ALBUM_CAT_TABLE . "
 			WHERE cat_id = '$cat_id'";
-	if( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not query category information', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$thiscat = $db->sql_fetchrow($result);
 }
 else
@@ -156,17 +149,17 @@ if($album_config['gd_version'] > 0)
 		$gd_errored = true;
 		$pic_resize = '';
 	}
-	elseif( ($pic_width > $board_config['avatar_max_width']) or ($pic_height > $board_config['avatar_max_height']) )
+	elseif( ($pic_width > $config['avatar_max_width']) or ($pic_height > $config['avatar_max_height']) )
 	{
-		if ( (($pic_width / $pic_height) > ($board_config['avatar_max_width'] / $board_config['avatar_max_height'])) )
+		if ( (($pic_width / $pic_height) > ($config['avatar_max_width'] / $config['avatar_max_height'])) )
 		{
-			$resize_width = $board_config['avatar_max_width'];
-			$resize_height = $board_config['avatar_max_width'] * ($pic_height/$pic_width);
+			$resize_width = $config['avatar_max_width'];
+			$resize_height = $config['avatar_max_width'] * ($pic_height/$pic_width);
 		}
 		else
 		{
-			$resize_height = $board_config['avatar_max_height'];
-			$resize_width = $board_config['avatar_max_height'] * ($pic_width/$pic_height);
+			$resize_height = $config['avatar_max_height'];
+			$resize_width = $config['avatar_max_height'] * ($pic_width/$pic_height);
 		}
 
 		$resize = ($album_config['gd_version'] == 1) ? @imagecreate($resize_width, $resize_height) : @imagecreatetruecolor($resize_width, $resize_height);
@@ -184,13 +177,13 @@ if($album_config['gd_version'] > 0)
 		{
 			case 'gif':
 			case 'jpg':
-				@imagejpeg($resize, @phpbb_realpath('./' . $board_config['avatar_path']) . '/' . $avatar_filename, $album_config['thumbnail_quality']);
+				@imagejpeg($resize, @phpbb_realpath('./' . $config['avatar_path']) . '/' . $avatar_filename, $album_config['thumbnail_quality']);
 				break;
 			case 'png':
-				@imagepng($resize, @phpbb_realpath('./' . $board_config['avatar_path']) . '/' . $avatar_filename);
+				@imagepng($resize, @phpbb_realpath('./' . $config['avatar_path']) . '/' . $avatar_filename);
 				break;
 		}
-		@chmod(@phpbb_realpath('./' . $board_config['avatar_path']) . '/' . $avatar_filename, 0777);
+		@chmod(@phpbb_realpath('./' . $config['avatar_path']) . '/' . $avatar_filename, 0777);
 	} // End IF $gd_errored
 } // End Picture Resize
 
@@ -198,12 +191,9 @@ if($album_config['gd_version'] > 0)
 $sql = "UPDATE ". USERS_TABLE ."
 		SET user_avatar = '$avatar_filename', user_avatar_type = '1'
 		WHERE user_id = '" . $userdata['user_id'] . "'";
-if( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not update user profile', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
-@unlink(@phpbb_realpath('./' . $board_config['avatar_path']) . '/' . $userdata['user_avatar']);
+@unlink(@phpbb_realpath('./' . $config['avatar_path']) . '/' . $userdata['user_avatar']);
 
 $message = 'Your profile avatar has been updated.<br />Click <a href="album_cat.' . PHP_EXT . '?cat_id=' . $cat_id . '&amp;user_id=' . $user_id . '">here</a> to go to image category.<br />Click <a href="album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;user_id=' . $user_id . '">here</a> to go to image.<br />';
 message_die(GENERAL_MESSAGE, $message);

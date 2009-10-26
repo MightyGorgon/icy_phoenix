@@ -33,7 +33,7 @@ else
 	{
 		$mode = 'add';
 	}
-	else if(isset($_POST['save']))
+	elseif(isset($_POST['save']))
 	{
 		$mode = 'save';
 	}
@@ -49,9 +49,7 @@ if($mode != '')
 	{
 		$acronym_id = (isset($_GET['id'])) ? intval($_GET['id']) : 0;
 
-		$template->set_filenames(array(
-			'body' => ADM_TPL . 'acronyms_edit_body.tpl')
-		);
+		$template->set_filenames(array('body' => ADM_TPL . 'acronyms_edit_body.tpl'));
 
 		$s_hidden_fields = '';
 
@@ -62,12 +60,7 @@ if($mode != '')
 				$sql = 'SELECT *
 					FROM ' . ACRONYMS_TABLE . "
 					WHERE acronym_id = $acronym_id";
-
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not query acronym table", "Error", __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$acronym_info = $db->sql_fetchrow($result);
 				$s_hidden_fields .= '<input type="hidden" name="id" value="' . $acronym_id . '" />';
 			}
@@ -118,11 +111,7 @@ if($mode != '')
 		else
 		{
 			$sql = 'SELECT acronym FROM ' . ACRONYMS_TABLE . " WHERE acronym = '" . str_replace("\'", "''", htmlspecialchars($acronym)) . "'";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			if($db->sql_fetchrow($result))
 			{
@@ -142,11 +131,7 @@ if($mode != '')
 			$message = $lang['Acronym_added'];
 		}
 
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$db->clear_cache('acronyms_', TOPICS_CACHE_FOLDER);
 
 		$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -166,14 +151,8 @@ if($mode != '')
 
 		if($acronym_id)
 		{
-			$sql = "DELETE FROM " . ACRONYMS_TABLE . "
-				WHERE acronym_id = $acronym_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-
+			$sql = "DELETE FROM " . ACRONYMS_TABLE . " WHERE acronym_id = $acronym_id";
+			$result = $db->sql_query($sql);
 			$db->clear_cache('acronyms_', TOPICS_CACHE_FOLDER);
 
 			$message = $lang['Acronym_removed'] . '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -193,13 +172,9 @@ else
 	$sql = "SELECT *
 		FROM " . ACRONYMS_TABLE . "
 		ORDER BY acronym";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query words table", $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$word_rows = $db->sql_fetchrowset($result);
-	$word_count = count($word_rows);
+	$word_count = sizeof($word_rows);
 
 	$template->assign_vars(array(
 		'L_ACRONYMS_TITLE' => $lang['Acronyms_title'],

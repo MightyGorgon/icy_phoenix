@@ -9,7 +9,7 @@
 */
 
 // CTracker_Ignore: File Checked By Human
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -23,7 +23,7 @@ init_userprefs($userdata);
 $cat = request_var('cat', '');
 
 $server_url = create_server_url();
-$smileys_base_path = $board_config['smilies_path'] . '/';
+$smileys_base_path = $config['smilies_path'] . '/';
 $toc_folder = $smileys_base_path . 'cats/';
 if (is_dir($toc_folder))
 {
@@ -42,7 +42,7 @@ if (is_dir($toc_folder))
 	while($file = @readdir($dir))
 	{
 		$file_part = explode('.', strtolower($file));
-		$file_ext = $file_part[count($file_part) - 1];
+		$file_ext = $file_part[sizeof($file_part) - 1];
 		if(!is_dir($file) && !in_array($file, $skip_files) && ($file_ext == PHP_EXT))
 		{
 			$files_list[] = $file;
@@ -60,14 +60,6 @@ if (empty($files_list))
 	message_die(GENERAL_ERROR, $lang['SMILEYS_NO_CATEGORIES']);
 }
 
-$page_title = $lang['SMILEYS'];
-$meta_description = '';
-$meta_keywords = '';
-$gen_simple_header = true;
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'smileys_body.tpl'));
-
 $cat = empty($cat) ? $files_list[0] : $cat;
 if (!array_search($cat, $files_list))
 {
@@ -84,9 +76,9 @@ $s_categories .= '</select>';
 
 require($toc_folder . $cat);
 
-$smileys_columns = $board_config['smilie_window_columns'];
-$smileys_rows = $board_config['smilie_window_rows'];
-$smileys_count = count($smileys_list);
+$smileys_columns = $config['smilie_window_columns'];
+$smileys_rows = $config['smilie_window_rows'];
+$smileys_count = sizeof($smileys_list);
 $s_colspan = $smileys_columns;
 $s_colwidth = ($s_colspan == 0) ? '100%' : 100 / $s_colspan . '%';
 
@@ -130,8 +122,7 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+$gen_simple_header = true;
+full_page_generation('smileys_body.tpl', $lang['SMILEYS'], '', '');
 
 ?>

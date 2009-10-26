@@ -25,29 +25,22 @@ class pafiledb_functions
 {
 	function set_config($config_name, $config_value)
 	{
-		global $cache, $pafiledb_config, $db;
+		global $pa_cache, $pafiledb_config, $db;
 
 		$sql = "UPDATE " . PA_CONFIG_TABLE . " SET
 			config_value = '" . str_replace("\'", "''", $config_value) . "'
 			WHERE config_name = '$config_name'";
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Failed to update pafiledb configuration for $config_name", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		if (!$db->sql_affectedrows() && !isset($pafiledb_config[$config_name]))
 		{
 			$sql = 'INSERT INTO ' . PA_CONFIG_TABLE . " (config_name, config_value)
 				VALUES ('$config_name', '" . str_replace("\'", "''", $config_value) . "')";
-
-			if(!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Failed to update pafiledb configuration for $config_name", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 
 		$pafiledb_config[$config_name] = $config_value;
-		$cache->destroy('config');
+		$pa_cache->destroy('config');
 	}
 
 	function post_icons($file_posticon = '')
@@ -108,11 +101,7 @@ class pafiledb_functions
 		$sql = 'SELECT *
 			FROM ' . PA_LICENSE_TABLE . '
 			ORDER BY license_id';
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while ($license = $db->sql_fetchrow($result))
 		{
@@ -153,7 +142,7 @@ class pafiledb_functions
 
 	function upload_file($userfile, $userfile_name, $userfile_size, $upload_dir = '', $local = false)
 	{
-		global $lang, $board_config, $pafiledb_config, $userdata;
+		global $lang, $config, $pafiledb_config, $userdata;
 
 		$upload_dir = (substr($upload_dir, 0, 1) == '/') ? substr($upload_dir, 1) : $upload_dir;
 
@@ -250,13 +239,8 @@ class pafiledb_functions
 	{
 		global $db;
 
-		$sql = "SELECT *
-			FROM " . PA_CONFIG_TABLE;
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt query Download configuration', '', __LINE__, __FILE__, $sql);
-		}
+		$sql = "SELECT * FROM " . PA_CONFIG_TABLE;
+		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -279,14 +263,8 @@ class pafiledb_functions
 			$sql = "SELECT file_dlurl, file_size, unique_name, file_dir
 				FROM " . PA_FILES_TABLE . "
 				WHERE file_id = '" . $file_id . "'";
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt query Download URL', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$file_data = $db->sql_fetchrow($result);
-
 			$db->sql_freeresult($result);
 		}
 
@@ -356,11 +334,7 @@ class pafiledb_functions
 			$sql = 'UPDATE ' . PA_FILES_TABLE . "
 				SET file_size = '$file_size'
 				WHERE file_id = '$file_id'";
-
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update filesize', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 
 		if ($file_size < 1024)
@@ -387,157 +361,12 @@ class pafiledb_functions
 		$sql = "SELECT AVG(rate_point) AS rating
 			FROM " . PA_VOTES_TABLE . "
 			WHERE votes_file = '" . $file_id . "'";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt rating info for the giving file', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 		$file_rating = $row['rating'];
 
 		return ($file_rating != 0) ? round($file_rating, 2) . ' / 10' : $lang['Not_rated'];
-	}
-
-	/*
-	//===================================================
-	// since that I can't use the original function with new template system
-	// I just copy it and change it
-	//===================================================
-	function pa_generate_smilies($mode)
-	{
-		global $db, $board_config, $pafiledb_template, $lang, $images, $theme, $user_ip, $session_length, $starttime, $userdata;
-
-		$inline_columns = 4;
-		$inline_rows = 5;
-		$window_columns = 8;
-
-		if ($mode == 'window')
-		{
-			// Start session management
-			$userdata = session_pagestart($user_ip);
-			init_userprefs($userdata);
-			// End session management
-
-			$gen_simple_header = true;
-
-			$page_title = $lang['Review_topic'] . " - $topic_title";
-			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-			$pafiledb_template->set_filenames(array(
-				'smiliesbody' => 'posting_smilies.tpl')
-			);
-		}
-
-		$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
-		if ($result = $db->sql_query($sql, false, 'smileys_'))
-		{
-			$num_smilies = 0;
-			$rowset = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				if (empty($rowset[$row['smile_url']]))
-				{
-					$rowset[$row['smile_url']]['code'] = str_replace("'", "\\'", str_replace('\\', '\\\\', $row['code']));
-					$rowset[$row['smile_url']]['emoticon'] = $row['emoticon'];
-					$num_smilies++;
-				}
-			}
-
-			if ($num_smilies)
-			{
-				$smilies_count = ($mode == 'inline') ? min((($inline_columns * $inline_rows) - 1), $num_smilies) : $num_smilies;
-				$smilies_split_row = ($mode == 'inline') ? $inline_columns - 1 : $window_columns - 1;
-
-				$s_colspan = 0;
-				$row = 0;
-				$col = 0;
-
-				while (list($smile_url, $data) = @each($rowset))
-				{
-					if (!$col)
-					{
-						$pafiledb_template->assign_block_vars('smilies_row', array());
-					}
-
-					$pafiledb_template->assign_block_vars('smilies_row.smilies_col', array(
-						'SMILEY_CODE' => $data['code'],
-						'SMILEY_IMG' => $board_config['smilies_path'] . '/' . $smile_url,
-						'SMILEY_DESC' => $data['emoticon']
-						)
-					);
-
-					$s_colspan = max($s_colspan, $col + 1);
-
-					if ($col == $smilies_split_row)
-					{
-						if ($mode == 'inline' && $row == $inline_rows - 1)
-						{
-							break;
-						}
-						$col = 0;
-						$row++;
-					}
-					else
-					{
-						$col++;
-					}
-				}
-
-				if ($mode == 'inline' && $num_smilies > $inline_rows * $inline_columns)
-				{
-					$pafiledb_template->assign_block_vars('switch_smilies_extra', array());
-
-					$pafiledb_template->assign_vars(array(
-						'L_MORE_SMILIES' => $lang['More_emoticons'],
-						'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies')
-						)
-					);
-				}
-
-				$pafiledb_template->assign_vars(array(
-					'L_EMOTICONS' => $lang['Emoticons'],
-					'L_CLOSE_WINDOW' => $lang['Close_window'],
-					'S_SMILIES_COLSPAN' => $s_colspan)
-				);
-			}
-		}
-
-		if ($mode == 'window')
-		{
-			$pafiledb_template->display('smiliesbody');
-
-			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
-		}
-	}
-	*/
-
-	function obtain_ranks(&$ranks)
-	{
-		global $db, $cache;
-
-		if ($cache->exists('ranks'))
-		{
-			$ranks = $cache->get('ranks');
-		}
-		else
-		{
-			$sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-			if (!($result = $db->sql_query($sql, false, 'ranks_')))
-			{
-				message_die(GENERAL_ERROR, "Could not obtain ranks information.", '', __LINE__, __FILE__, $sql);
-			}
-
-			$ranks = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$ranks[] = $row;
-			}
-
-			$db->sql_freeresult($result);
-			$cache->put('ranks', $ranks);
-		}
 	}
 
 	function pafiledb_unlink($filename)
@@ -562,7 +391,6 @@ class pafiledb_functions
 		return ($deleted);
 	}
 
-
 	function pafiledb_realpath($path)
 	{
 
@@ -574,57 +402,67 @@ class pafiledb_functions
 		global $db;
 
 		$query .= ' LIMIT ' . ((!empty($offset)) ? $offset . ', ' . $total : $total);
-		return $db->sql_query($query);
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($query);
+		$db->sql_return_on_error(false);
+
+		return $result;
 	}
 }
 
 function pafiledb_page_header($page_title)
 {
-	global $pafiledb_config, $lang, $pafiledb_template, $userdata, $images, $action, $pafiledb;
-	global $template, $db, $theme, $gen_simple_header, $starttime, $board_config, $user_ip, $table_prefix;
-	global $admin_level, $level_prior, $tree, $do_gzip_compress;
-	global $cms_global_blocks, $cms_page_id, $cms_config_vars, $var_cache;
+	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
+	global $table_prefix, $SID, $_SID, $user_ip;
+	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
+	global $ctracker_config, $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
+	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $css_include, $css_style_include, $js_include;
+
+	global $pa_cache, $pafiledb, $pafiledb_config, $pafiledb_template, $action;
+	global $admin_level, $level_prior, $debug;
 
 	if($action != 'download')
 	{
-		$page_title = $lang['Downloads'];
-		$meta_description = '';
-		$meta_keywords = '';
+		$meta_content['page_title'] = $lang['Downloads'];
+		$meta_content['description'] = '';
+		$meta_content['keywords'] = '';
 		$nav_server_url = create_server_url();
-		$nav_links = '';
+		$bc_nav_links = '';
 		$file_id = request_var('file_id', 0);
 		$cat_id = request_var('cat_id', 0);
 		switch ($action)
 		{
 			case 'user_upload':
-				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['User_upload'] . '</a>';
+				$bc_nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['User_upload'] . '</a>';
 				break;
 			case 'license':
-				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['License'] . '</a>';
+				$bc_nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['License'] . '</a>';
 				break;
 			case 'mcp':
-				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['MCP_title'] . '</a>';
+				$bc_nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['MCP_title'] . '</a>';
 				break;
 			case 'stats':
-				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Statistics'] . '</a>';
+				$bc_nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Statistics'] . '</a>';
 				break;
 			case 'search':
-				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Search'] . '</a>';
+				$bc_nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Search'] . '</a>';
 				break;
 			case 'toplist':
-				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Toplist'] . '</a>';
+				$bc_nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Toplist'] . '</a>';
 				break;
 			case 'viewall':
-				$nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Viewall'] . '</a>';
+				$bc_nav_links = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '" class="nav-current">' . $lang['Viewall'] . '</a>';
 				break;
 		}
 		if ($cat_id || $file_id)
 		{
-			$nav_links = $pafiledb->generate_category_nav_links($cat_id, $file_id);
+			$bc_nav_links = $pafiledb->generate_category_nav_links($cat_id, $file_id);
 		}
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '"' . (($nav_links == '') ? ' class="nav-current"' : '') . '>' . $lang['Downloads'] . '</a>' . $nav_links;
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '"' . (($bc_nav_links == '') ? ' class="nav-current"' : '') . '>' . $lang['Downloads'] . '</a>' . $bc_nav_links;
 		$breadcrumbs_links_right = '';
-		include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+		page_header($meta_content['page_title'], true);
 	}
 
 	if($action == 'category')
@@ -692,16 +530,22 @@ function pafiledb_page_header($page_title)
 //===================================================
 function pafiledb_page_footer()
 {
-	global $cache, $lang, $pafiledb_template, $board_config, $pafiledb, $userdata;
-	global $template, $do_gzip_compress, $debug, $db, $starttime, $gen_simple_header, $images;
-	//global $cms_config_vars, $var_cache;
-	global $cms_global_blocks, $cms_page_id;
+	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
+	global $table_prefix, $SID, $_SID, $user_ip;
+	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
+	global $ctracker_config, $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
+	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $css_include, $css_style_include, $js_include;
+
+	global $pa_cache, $pafiledb, $pafiledb_config, $pafiledb_template, $action;
+	global $admin_level, $level_prior, $debug;
 
 	$pafiledb_template->assign_vars(array(
 		'JUMPMENU' => $pafiledb->modules[$pafiledb->module_name]->jumpmenu_option(),
 		'L_JUMP' => $lang['jump'],
 		'S_JUMPBOX_ACTION' => append_sid('dload.' . PHP_EXT),
-		'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($board_config['board_timezone'], 1)))])
+		'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))])
 		)
 	);
 	$pafiledb->modules[$pafiledb->module_name]->_pafiledb();
@@ -709,11 +553,11 @@ function pafiledb_page_footer()
 	{
 		$pafiledb_template->display('body');
 	}
-	$cache->unload();
+	$pa_cache->unload();
 
 	if($action != 'download')
 	{
-		include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+		page_footer(true, '', true);
 	}
 }
 
@@ -849,20 +693,13 @@ class user_info
 		$sql = "SELECT user_id, downloader_ip
 			FROM " . PA_DOWNLOAD_INFO_TABLE . "
 			WHERE $where_sql";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query User id', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if(!$db->sql_numrows($result))
 		{
 			$sql = "INSERT INTO " . PA_DOWNLOAD_INFO_TABLE . " (file_id, user_id, download_time, downloader_ip, downloader_os, downloader_browser, browser_version)
 						VALUES('" . $file_id . "', '" . $userdata['user_id'] . "', '" . time() . "', '" . $user_ip . "', '" . $this->platform . "', '" . $this->agent . "', '" . $this->ver . "')";
-			if(!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Update Downloader Table Info', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 
 		$db->sql_freeresult($result);
@@ -879,20 +716,13 @@ class user_info
 			WHERE $where_sql
 			AND votes_file = '" . $file_id . "'
 			LIMIT 1";
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query User id', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if(!$db->sql_numrows($result))
 		{
 			$sql = "INSERT INTO " . PA_VOTES_TABLE . " (user_id, votes_ip, votes_file, rate_point, voter_os, voter_browser, browser_version)
 						VALUES('" . $userdata['user_id'] . "', '" . $user_ip . "', '" . $file_id . "','" . $rating ."', '" . $this->platform . "', '" . $this->agent . "', '" . $this->ver . "')";
-			if(!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldnt Update Votes Table Info', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 		else
 		{

@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['2000_Downloads']['150_License_title'] = $file;
@@ -29,7 +29,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
-if( isset($_GET['license']) || isset($_POST['license']) )
+if(isset($_GET['license']) || isset($_POST['license']))
 {
 	$license = (isset($_POST['license'])) ? $_POST['license'] : $_GET['license'];
 
@@ -41,26 +41,22 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 				'admin' => ADM_TPL . 'pa_admin_license_add.tpl')
 			);
 
-			if ( isset($_GET['add']) || isset($_POST['add']) )
+			if (isset($_GET['add']) || isset($_POST['add']))
 			{
-				$add = ( isset($_GET['add']) ) ? $_GET['add'] : $_POST['add'];
+				$add = (isset($_GET['add'])) ? $_GET['add'] : $_POST['add'];
 			}
 
 			if ($add == 'do')
 			{
-				if ( isset($_GET['form']) || isset($_POST['form']) )
+				if (isset($_GET['form']) || isset($_POST['form']))
 				{
-					$form = ( isset($_GET['form']) ) ? $_GET['form'] : $_POST['form'];
+					$form = (isset($_GET['form'])) ? $_GET['form'] : $_POST['form'];
 				}
 
 				//$form['text'] = str_replace("\n", "<br />", $form['text']);
 
 				$sql = "INSERT INTO " . PA_LICENSE_TABLE . " VALUES('NULL', '" . $form['name'] . "', '" . $form['text'] . "')";
-
-				if ( !($db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$message = $lang['Licenseadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -89,31 +85,27 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 				'admin' => ADM_TPL . 'pa_admin_license_edit.tpl')
 			);
 
-			if ( isset($_GET['edit']) || isset($_POST['edit']) )
+			if (isset($_GET['edit']) || isset($_POST['edit']))
 			{
-				$edit = ( isset($_GET['edit']) ) ? $_GET['edit'] : $_POST['edit'];
+				$edit = (isset($_GET['edit'])) ? $_GET['edit'] : $_POST['edit'];
 			}
 
 			if ($edit == 'do')
 			{
-				if ( isset($_GET['form']) || isset($_POST['form']) )
+				if (isset($_GET['form']) || isset($_POST['form']))
 				{
-					$form = ( isset($_GET['form']) ) ? $_GET['form'] : $_POST['form'];
+					$form = (isset($_GET['form'])) ? $_GET['form'] : $_POST['form'];
 				}
 
-				if ( isset($_GET['id']) || isset($_POST['id']) )
+				if (isset($_GET['id']) || isset($_POST['id']))
 				{
-					$id = ( isset($_GET['id']) ) ? intval($_GET['id']) : intval($_POST['id']);
+					$id = (isset($_GET['id'])) ? intval($_GET['id']) : intval($_POST['id']);
 				}
 
 				//$form['text'] = str_replace("\n", "<br />", $form['text']);
 
 				$sql = "UPDATE " . PA_LICENSE_TABLE . " SET license_name = '" . $form['name'] . "', license_text = '" . $form['text'] . "' WHERE license_id = '" . $id . "'";
-
-				if ( !($db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 
 				$message = $lang['Licenseedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -122,20 +114,14 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 
 			if ($edit == 'form')
 			{
-				if ( isset($_GET['select']) || isset($_POST['select']) )
+				if (isset($_GET['select']) || isset($_POST['select']))
 				{
-					$select = ( isset($_GET['select']) ) ? $_GET['select'] : $_POST['select'];
+					$select = (isset($_GET['select'])) ? $_GET['select'] : $_POST['select'];
 				}
 
 				$sql = "SELECT * FROM " . PA_LICENSE_TABLE . " WHERE license_id = '" . $select . "'";
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$license = $db->sql_fetchrow($result);
-
 				$text = str_replace("<br />", "\n", $license['license_text']);
 
 				$template->assign_block_vars("license_form", array());
@@ -155,11 +141,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 			if (empty($edit))
 			{
 				$sql = "SELECT * FROM " . PA_LICENSE_TABLE;
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				while ($license = $db->sql_fetchrow($result))
 				{
@@ -187,16 +169,16 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 				'admin' => ADM_TPL . 'pa_admin_license_delete.tpl')
 			);
 
-			if ( isset($_GET['delete']) || isset($_POST['delete']) )
+			if (isset($_GET['delete']) || isset($_POST['delete']))
 			{
-				$delete = ( isset($_GET['delete']) ) ? $_GET['delete'] : $_POST['delete'];
+				$delete = (isset($_GET['delete'])) ? $_GET['delete'] : $_POST['delete'];
 			}
 
 			if ($delete == 'do')
 			{
-				if ( isset($_GET['select']) || isset($_POST['select']) )
+				if (isset($_GET['select']) || isset($_POST['select']))
 				{
-					$select = ( isset($_GET['select']) ) ? $_GET['select'] : $_POST['select'];
+					$select = (isset($_GET['select'])) ? $_GET['select'] : $_POST['select'];
 				}
 
 				if (empty($select))
@@ -210,18 +192,10 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 					foreach ($select as $key => $value)
 					{
 						$sql = "DELETE FROM " . PA_LICENSE_TABLE . " WHERE license_id = '" . $key . "'";
-
-						if ( !($db->sql_query($sql)) )
-						{
-							message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 
 						$sql = "UPDATE " . PA_FILES_TABLE . " SET file_license = '0' WHERE file_license = '$key'";
-
-						if ( !($db->sql_query($sql)) )
-						{
-							message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-						}
+						$db->sql_query($sql);
 					}
 
 					$message = $lang['Ldeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -233,11 +207,7 @@ if( isset($_GET['license']) || isset($_POST['license']) )
 			if (empty($delete))
 			{
 				$sql = "SELECT * FROM " . PA_LICENSE_TABLE;
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				while ($license = $db->sql_fetchrow($result))
 				{
@@ -268,11 +238,7 @@ else
 			);
 
 				$sql = "SELECT * FROM " . PA_LICENSE_TABLE;
-
-				if ( !($result = $db->sql_query($sql)) )
-				{
-					message_die(GENERAL_ERROR, 'Couldnt Query info', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 
 				while ($license = $db->sql_fetchrow($result))
 				{

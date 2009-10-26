@@ -59,7 +59,7 @@ class attach_pm extends attach_parent
 	*/
 	function insert_attachment_pm($a_privmsgs_id)
 	{
-		global $db, $mode, $attach_config, $privmsg_sent_id, $userdata, $to_userdata, $_POST;
+		global $db, $userdata, $mode, $attach_config, $privmsg_sent_id, $to_userdata;
 
 		$a_privmsgs_id = (int) $a_privmsgs_id;
 
@@ -74,16 +74,12 @@ class attach_pm extends attach_parent
 			$this->do_insert_attachment('attach_list', 'pm', $a_privmsgs_id);
 			$this->do_insert_attachment('last_attachment', 'pm', $a_privmsgs_id);
 
-			if ((count($this->attachment_list) > 0 || $this->post_attach) && !isset($_POST['update_attachment']))
+			if ((sizeof($this->attachment_list) > 0 || $this->post_attach) && !isset($_POST['update_attachment']))
 			{
 				$sql = 'UPDATE ' . PRIVMSGS_TABLE . '
 					SET privmsgs_attachment = 1
 					WHERE privmsgs_id = ' . (int) $a_privmsgs_id;
-
-				if (!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Unable to update Private Message Table.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 	}
@@ -100,11 +96,7 @@ class attach_pm extends attach_parent
 			$sql = 'SELECT *
 				FROM ' . ATTACHMENTS_TABLE . '
 				WHERE privmsgs_id = ' . (int) $original_privmsg_id;
-
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Couldn\'t query Attachment Table', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$rows = $db->sql_fetchrowset($result);
 			$num_rows = $db->sql_numrows($result);
 			$db->sql_freeresult($result);
@@ -121,22 +113,14 @@ class attach_pm extends attach_parent
 						'user_id_2' => (int) $rows[$i]['user_id_2'],
 					);
 
-					$sql = 'INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . attach_mod_sql_build_array('INSERT', $sql_ary);
-
-					if (!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Couldn\'t store Attachment for sent Private Message', '', __LINE__, __FILE__, $sql);
-					}
+					$sql = 'INSERT INTO ' . ATTACHMENTS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+					$result = $db->sql_query($sql);
 				}
 
 				$sql = 'UPDATE ' . PRIVMSGS_TABLE . '
 					SET privmsgs_attachment = 1
 					WHERE privmsgs_id = ' . (int) $new_privmsg_id;
-
-				if (!($db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Unable to update Private Message Table.', '', __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 	}
@@ -148,10 +132,10 @@ class attach_pm extends attach_parent
 	{
 		global $confirm, $delete_all;
 
-		if (count($mark_list))
+		if (sizeof($mark_list))
 		{
 			$delete_sql_id = '';
-			for ($i = 0; $i < count($mark_list); $i++)
+			for ($i = 0; $i < sizeof($mark_list); $i++)
 			{
 				$delete_sql_id .= (($delete_sql_id != '') ? ', ' : '') . intval($mark_list[$i]);
 			}
@@ -168,7 +152,7 @@ class attach_pm extends attach_parent
 	*/
 	function display_attach_box_limits()
 	{
-		global $folder, $attach_config, $board_config, $template, $lang, $userdata, $db;
+		global $folder, $attach_config, $config, $template, $userdata, $lang, $db;
 
 		if (!$attach_config['allow_pm_attach'] && $userdata['user_level'] != ADMIN)
 		{
@@ -182,10 +166,10 @@ class attach_pm extends attach_parent
 		$pm_filesize_total = get_total_attach_pm_filesize('to_user', (int) $userdata['user_id']);
 
 		$attach_limit_pct = ( $pm_filesize_limit > 0 ) ? round(( $pm_filesize_total / $pm_filesize_limit ) * 100) : 0;
-		$attach_limit_img_length = ( $pm_filesize_limit > 0 ) ? round(( $pm_filesize_total / $pm_filesize_limit ) * $board_config['privmsg_graphic_length']) : 0;
+		$attach_limit_img_length = ( $pm_filesize_limit > 0 ) ? round(( $pm_filesize_total / $pm_filesize_limit ) * $config['privmsg_graphic_length']) : 0;
 		if ($attach_limit_pct > 100)
 		{
-			$attach_limit_img_length = $board_config['privmsg_graphic_length'];
+			$attach_limit_img_length = $config['privmsg_graphic_length'];
 		}
 		$attach_limit_remain = ( $pm_filesize_limit > 0 ) ? $pm_filesize_limit - $pm_filesize_total : 100;
 		if ( $attach_limit_pct <= 30 )
@@ -215,7 +199,7 @@ class attach_pm extends attach_parent
 	*/
 	function privmsgs_attachment_mod($mode)
 	{
-		global $attach_config, $template, $lang, $userdata, $db;
+		global $attach_config, $template, $userdata, $lang, $db;
 		global $confirm, $delete, $delete_all, $post_id, $privmsgs_id, $privmsg_id, $submit, $refresh, $mark_list, $folder;
 
 		if ($folder != 'outbox')
@@ -247,19 +231,19 @@ class attach_pm extends attach_parent
 
 		$mark_list = request_var('mark', array(0));
 
-		if (($this->pm_delete_attachments || $delete) && count($mark_list))
+		if (($this->pm_delete_attachments || $delete) && sizeof($mark_list))
 		{
 			if (!$userdata['session_logged_in'])
 			{
 				$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
-				header($header_location . append_sid(IP_ROOT_PATH . LOGIN_MG . '?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));
+				header($header_location . append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));
 				exit;
 			}
 
-			if (count($mark_list))
+			if (sizeof($mark_list))
 			{
 				$delete_sql_id = '';
-				for ($i = 0; $i < count($mark_list); $i++)
+				for ($i = 0; $i < sizeof($mark_list); $i++)
 				{
 					$delete_sql_id .= (($delete_sql_id != '') ? ', ' : '') . intval($mark_list[$i]);
 				}

@@ -60,7 +60,7 @@ if ( isset($_POST['submit']) )
 	{
 		$ip_list_temp = explode(',', $_POST['ban_ip']);
 
-		for($i = 0; $i < count($ip_list_temp); $i++)
+		for($i = 0; $i < sizeof($ip_list_temp); $i++)
 		{
 			if ( preg_match('/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})[ ]*\-[ ]*([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/', trim($ip_list_temp[$i]), $ip_range_explode) )
 			{
@@ -125,7 +125,7 @@ if ( isset($_POST['submit']) )
 			{
 				$ip = gethostbynamel(trim($ip_list_temp[$i]));
 
-				for($j = 0; $j < count($ip); $j++)
+				for($j = 0; $j < sizeof($ip); $j++)
 				{
 					if ( !empty($ip[$j]) )
 					{
@@ -161,7 +161,7 @@ if ( isset($_POST['submit']) )
 		// CrackerTracker v5.x
 		$email_list_temp = explode(',', $_POST['ban_email']);
 
-		for($i = 0; $i < count($email_list_temp); $i++)
+		for($i = 0; $i < sizeof($email_list_temp); $i++)
 		{
 			//
 			// This ereg match is based on one by php@unreelpro.com
@@ -176,19 +176,15 @@ if ( isset($_POST['submit']) )
 	}
 
 	$sql = "SELECT * FROM " . BANLIST_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain banlist information", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$current_banlist = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
 	$kill_session_sql = '';
-	for($i = 0; $i < count($user_list); $i++)
+	for($i = 0; $i < sizeof($user_list); $i++)
 	{
 		$in_banlist = false;
-		for($j = 0; $j < count($current_banlist); $j++)
+		for($j = 0; $j < sizeof($current_banlist); $j++)
 		{
 			if ( $user_list[$i] == $current_banlist[$j]['ban_userid'] )
 			{
@@ -202,24 +198,19 @@ if ( isset($_POST['submit']) )
 
 			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid)
 				VALUES (" . $user_list[$i] . ")";
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
+
 			$sql = "UPDATE " . USERS_TABLE . "
-					SET user_warnings=".$board_config['max_user_bancard']."
+					SET user_warnings=".$config['max_user_bancard']."
 					WHERE user_id=".$user_list[$i];
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Couldn't update users warnings info".$sql, "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
-	for($i = 0; $i < count($ip_list); $i++)
+	for($i = 0; $i < sizeof($ip_list); $i++)
 	{
 		$in_banlist = false;
-		for($j = 0; $j < count($current_banlist); $j++)
+		for($j = 0; $j < sizeof($current_banlist); $j++)
 		{
 			if ( $ip_list[$i] == $current_banlist[$j]['ban_ip'] )
 			{
@@ -242,10 +233,7 @@ if ( isset($_POST['submit']) )
 
 			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_ip)
 				VALUES ('" . $ip_list[$i] . "')";
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Couldn't insert ban_ip info into database", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -258,16 +246,13 @@ if ( isset($_POST['submit']) )
 	{
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE $kill_session_sql";
-		if ( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, "Couldn't delete banned sessions from database", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
-	for($i = 0; $i < count($email_list); $i++)
+	for($i = 0; $i < sizeof($email_list); $i++)
 	{
 		$in_banlist = false;
-		for($j = 0; $j < count($current_banlist); $j++)
+		for($j = 0; $j < sizeof($current_banlist); $j++)
 		{
 			if ( $email_list[$i] == $current_banlist[$j]['ban_email'] )
 			{
@@ -279,10 +264,7 @@ if ( isset($_POST['submit']) )
 		{
 			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email)
 				VALUES ('" . str_replace("\'", "''", $email_list[$i]) . "')";
-			if ( !$db->sql_query($sql) )
-			{
-				message_die(GENERAL_ERROR, "Couldn't insert ban_email info into database", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -292,7 +274,7 @@ if ( isset($_POST['submit']) )
 	{
 		$user_list = $_POST['unban_user'];
 
-		for($i = 0; $i < count($user_list); $i++)
+		for($i = 0; $i < sizeof($user_list); $i++)
 		{
 			if ( $user_list[$i] != -1 )
 			{
@@ -303,10 +285,8 @@ if (! empty($where_sql))
 {
 	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
 		WHERE ban_id IN ($where_sql)";
-	if ( !($result = $db->sql_query($sql) ))
-	{
-		message_die(GENERAL_ERROR, "Couldn't get user warnings info from database".$sql, "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	while ($user_id_list = $db->sql_fetchrow($result))
 	{
 		$where_user_sql .= ( ( $where_user_sql != '' ) ? ', ' : '' ) . $user_id_list['ban_userid'];
@@ -314,10 +294,7 @@ if (! empty($where_sql))
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_warnings='0'
 		WHERE user_id IN ($where_user_sql)";
-	if ( !$db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't update user warnings info from database".$sql, "", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 }
 
 
@@ -327,7 +304,7 @@ if (! empty($where_sql))
 	{
 		$ip_list = $_POST['unban_ip'];
 
-		for($i = 0; $i < count($ip_list); $i++)
+		for($i = 0; $i < sizeof($ip_list); $i++)
 		{
 			if ( $ip_list[$i] != -1 )
 			{
@@ -340,7 +317,7 @@ if (! empty($where_sql))
 	{
 		$email_list = $_POST['unban_email'];
 
-		for($i = 0; $i < count($email_list); $i++)
+		for($i = 0; $i < sizeof($email_list); $i++)
 		{
 			if ( $email_list[$i] != -1 )
 			{
@@ -353,10 +330,7 @@ if (! empty($where_sql))
 	{
 		$sql = "DELETE FROM " . BANLIST_TABLE . "
 			WHERE ban_id IN ($where_sql)";
-		if ( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, "Couldn't delete ban info from database", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 
 	$db->clear_cache('ban_', USERS_CACHE_FOLDER);
@@ -403,16 +377,12 @@ else
 			AND b.ban_userid <> 0
 			AND u.user_id <> " . ANONYMOUS . "
 		ORDER BY u.user_id ASC";
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not select current user_id ban list', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$user_list = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
 	$select_userlist = '';
-	for($i = 0; $i < count($user_list); $i++)
+	for($i = 0; $i < sizeof($user_list); $i++)
 	{
 		$select_userlist .= '<option value="' . $user_list[$i]['ban_id'] . '">' . $user_list[$i]['username'] . '</option>';
 		$userban_count++;
@@ -426,18 +396,14 @@ else
 	$select_userlist = '<select name="unban_user[]" multiple="multiple" size="5">' . $select_userlist . '</select>';
 
 	$sql = "SELECT ban_id, ban_ip, ban_email FROM " . BANLIST_TABLE;
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not select current ip ban list', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$banlist = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
 	$select_iplist = '';
 	$select_emaillist = '';
 
-	for($i = 0; $i < count($banlist); $i++)
+	for($i = 0; $i < sizeof($banlist); $i++)
 	{
 		$ban_id = $banlist[$i]['ban_id'];
 
@@ -479,7 +445,7 @@ else
 		'L_LOOK_UP' => $lang['Look_up_User'],
 		'L_FIND_USERNAME' => $lang['Find_username'],
 
-		'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . SEARCH_MG . '?mode=searchuser'),
+		'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser'),
 		'S_UNBAN_USERLIST_SELECT' => $select_userlist,
 		'S_UNBAN_IPLIST_SELECT' => $select_iplist,
 		'S_UNBAN_EMAILLIST_SELECT' => $select_emaillist,

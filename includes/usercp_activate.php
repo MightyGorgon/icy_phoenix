@@ -24,27 +24,24 @@ if (!defined('IN_ICYPHOENIX'))
 $sql = "SELECT user_active, user_id, username, user_email, user_newpasswd, user_lang, user_actkey
 	FROM " . USERS_TABLE . "
 	WHERE user_id = " . intval($_GET[POST_USERS_URL]);
-if ( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not obtain user information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 if ($row = $db->sql_fetchrow($result))
 {
 	if ($row['user_active'] && (trim($row['user_actkey']) == ''))
 	{
-		$redirect_url = append_sid(FORUM_MG);
+		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(10, $redirect_url);
 
 		message_die(GENERAL_MESSAGE, $lang['Already_activated']);
 	}
 	elseif ((trim($row['user_actkey']) == trim($_GET['act_key'])) && (trim($row['user_actkey']) != ''))
 	{
-		if ((intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN) && ($row['user_newpasswd'] == ''))
+		if ((intval($config['require_activation']) == USER_ACTIVATION_ADMIN) && ($row['user_newpasswd'] == ''))
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=' . PROFILE_MG . '&mode=activate&' . POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($_GET['act_key'])));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=activate&' . POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($_GET['act_key'])));
 			}
 			elseif ($userdata['user_level'] != ADMIN)
 			{
@@ -57,41 +54,38 @@ if ($row = $db->sql_fetchrow($result))
 		$sql = "UPDATE " . USERS_TABLE . "
 			SET user_active = 1, user_actkey = ''" . $sql_update_pass . "
 			WHERE user_id = " . $row['user_id'];
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not update users table', '', __LINE__, __FILE__, $sql_update);
-		}
+		$result = $db->sql_query($sql);
 
-		if ((intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN) && ($sql_update_pass == ''))
+		if ((intval($config['require_activation']) == USER_ACTIVATION_ADMIN) && ($sql_update_pass == ''))
 		{
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($board_config['smtp_delivery']);
+			$emailer = new emailer($config['smtp_delivery']);
 
-			$emailer->from($board_config['board_email']);
-			$emailer->replyto($board_config['board_email']);
+			$emailer->from($config['board_email']);
+			$emailer->replyto($config['board_email']);
 
 			$emailer->use_template('admin_welcome_activated', $row['user_lang']);
 			$emailer->email_address($row['user_email']);
 			$emailer->set_subject($lang['Account_activated_subject']);
 
 			$emailer->assign_vars(array(
-				'SITENAME' => ip_stripslashes($board_config['sitename']),
+				'SITENAME' => $config['sitename'],
 				'USERNAME' => $row['username'],
 				'PASSWORD' => $password_confirm,
-				'EMAIL_SIG' => (!empty($board_config['board_email_sig']) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '')
+				'EMAIL_SIG' => (!empty($config['board_email_sig']) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '')
 				)
 			);
 			$emailer->send();
 			$emailer->reset();
 
-			$redirect_url = append_sid(FORUM_MG);
+			$redirect_url = append_sid(CMS_PAGE_FORUM);
 			meta_refresh(10, $redirect_url);
 
 			message_die(GENERAL_MESSAGE, $lang['Account_active_admin']);
 		}
 		else
 		{
-			$redirect_url = append_sid(FORUM_MG);
+			$redirect_url = append_sid(CMS_PAGE_FORUM);
 			meta_refresh(10, $redirect_url);
 
 			$message = ($sql_update_pass == '') ? $lang['Account_active'] : $lang['Password_activated'];

@@ -60,7 +60,7 @@ $lang = array_merge($lang, array(
 
 // Added in 1.0.2
 	'Ftr_user_deleted' => 'User Deleted!',
-	'Ftr_deactivate' => '<strong>Deactivate FTR?</strong><br /><span class="gensmall"><b>Yes</b> will turn off FTR.</span>',
+	'Ftr_deactivate' => '<strong>Deactivate FTR?</strong><br /><span class="gensmall"><b>Yes</b> will turn off FTR (Please note that this setting may be overridden by <b><i>ACP &raquo; Config &raquo; Icy Phoenix &raquo; Posting and Messages &raquo; Completely disable Force Topic Read</i></b>).</span>',
 	'Ftr_whos_effected' => '<strong>Who is forced to read this?</strong><br /><span class="gensmall">\'New Members\' only affect new registrations.</span>',
 	'Ftr_whos_effected_a' => 'All Members',
 	'Ftr_whos_effected_n' => 'New Members',

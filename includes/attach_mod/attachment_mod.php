@@ -22,19 +22,10 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // Mighty Gorgon: new attachments cache.
-$sql = "SELECT * FROM " . ATTACH_CONFIG_TABLE;
-if (!($result = $db->sql_query($sql, false, 'attach_')))
-{
-	message_die(GENERAL_ERROR, 'Could not query attachment information', '', __LINE__, __FILE__, $sql);
-}
-
-while ($row = $db->sql_fetchrow($result))
-{
-	$attach_config[$row['config_name']] = trim($row['config_value']);
-}
+$attach_config = $cache->obtain_attachments_config(false);
 
 // We assign the original default board language here, because it gets overwritten later with the users default language
-$attach_config['board_lang'] = trim($board_config['default_lang']);
+$attach_config['board_lang'] = trim($config['default_lang']);
 
 // Needed to correctly process attachments!
 define('PAGE_PRIVMSGS', -10);
@@ -54,8 +45,8 @@ if(defined('IN_DOWNLOAD') || defined('IN_ADMIN') || defined('ATTACH_PM') || defi
 }
 if(defined('IN_ADMIN'))
 {
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_selects.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_selects.' . PHP_EXT);
 }
 if(defined('ATTACH_PROFILE'))
 {

@@ -41,19 +41,19 @@ else
 $template->set_filenames(array('body' => ADM_TPL . 'ip_header.tpl'));
 
 // Check for new version
-$current_version = explode('.', $board_config['ip_version']);
+$current_version = explode('.', $config['ip_version']);
 $minor_revision = (int) $current_version[3];
 $errno = 0;
 $errstr = $version_info = '';
 // Version cache mod start
 // Change following two variables if you need to:
 $cache_update = 86400; // 24 hours cache timeout. change it to whatever you want
-$cache_file = MAIN_CACHE_FOLDER . 'ip_update_' . $board_config['default_lang'] . $board_config['ip_version'] . '.php'; // file where to store cache
+$cache_file = MAIN_CACHE_FOLDER . 'ip_update_' . $config['default_lang'] . $config['ip_version'] . '.php'; // file where to store cache
 
-//global $board_config;
+//global $config;
 $do_update = true;
 //$check_update = false;
-$check_update = $board_config['enable_xs_version_check'];
+$check_update = $config['enable_xs_version_check'];
 
 if($check_update == true)
 {
@@ -105,7 +105,7 @@ if($check_update == true)
 			$latest_version_text = $version_info[0] . '.' . $version_info[1] . '.' . $version_info[2] . '.' . $version_info[3];
 
 			//if (($latest_head_revision == 1) && ($minor_revision == $latest_minor_revision))
-			if ($latest_version_text == $board_config['ip_version'])
+			if ($latest_version_text == $config['ip_version'])
 			{
 				$version_info = '<span class="text_green">' . $lang['Version_up_to_date_ip'] . '</span>';
 			}
@@ -143,7 +143,6 @@ else
 	$version_info = '<span class="text_orange">' . $lang['Version_not_checked'] . '</span>';
 }
 
-
 $template->assign_vars(array(
 	'VERSION_INFO' => $version_info,
 	'L_VERSION_INFORMATION' => $lang['Version_information'],
@@ -152,12 +151,11 @@ $template->assign_vars(array(
 	'L_ADMIN_INDEX' => $lang['Admin_Index'],
 	'L_PREVIEW_FORUM' => $lang['Preview_forum'],
 	'L_PORTAL' => $lang['Portal'],
-	'L_CMS' => $lang['CMS_TITLE'],
 	'L_PREVIEW_PORTAL' => $lang['Preview_Portal'],
 	'L_CACHE_CLEAR' => $lang['127_Clear_Cache'],
 
-	'U_FORUM_INDEX' => append_sid('../' . FORUM_MG),
-	'U_PORTAL' => append_sid('../' . PORTAL_MG),
+	'U_FORUM_INDEX' => append_sid('../' . CMS_PAGE_FORUM),
+	'U_PORTAL' => append_sid('../' . CMS_PAGE_HOME),
 	'U_ADMIN_INDEX' => append_sid('index.' . PHP_EXT . '?pane=right'),
 	'U_CMS' => append_sid('../cms.' . PHP_EXT),
 	'U_MSQD' => append_sid('../msqd/'),

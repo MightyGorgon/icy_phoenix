@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <br />
 <form action="{S_FORM_ACTION}" method="post" target="_top">
 <center>
@@ -24,3 +26,5 @@
 </center>
 <br />
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

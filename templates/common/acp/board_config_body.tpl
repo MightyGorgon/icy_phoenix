@@ -200,7 +200,7 @@
 </tr>
 <tr>
 	<td class="row1"><strong>{L_GENDER_REQUIRED}</strong></td>
-	<td class="row2"><input type="radio" name="gender_required" value="1"{GENDER_REQUIRED_YES} /> {L_YES}</span>&nbsp;&nbsp;<input type="radio" name="gender_required" value="0"{GENDER_REQUIRED_NO} /> {L_NO}</td>
+	<td class="row2"><input type="radio" name="gender_required" value="1"{GENDER_REQUIRED_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="gender_required" value="0"{GENDER_REQUIRED_NO} /> {L_NO}</td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_BIRTHDAY_REQUIRED}</strong><br /></td>
@@ -211,11 +211,11 @@
 	<td class="row2"><input type="radio" name="birthday_greeting" value="1" {BIRTHDAY_GREETING_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="birthday_greeting" value="0" {BIRTHDAY_GREETING_NO} /> {L_NO}</td>
 </tr>
 <tr>
-	<td class="row1"><strong>{L_MAX_USER_AGE}</strong><br /></td>
+	<td class="row1"><strong>{L_MAX_USER_AGE}</strong></td>
 	<td class="row2"><input class="post" type="text" size="4" maxlength="4" name="max_user_age" value="{MAX_USER_AGE}" /></td>
 </tr>
 <tr>
-	<td class="row1"><strong>{L_MIN_USER_AGE}</strong><br /><span class="gensmall">{L_MIN_USER_AGE_EXPLAIN}</span></td>
+	<td class="row1"><strong>{L_MIN_USER_AGE}</strong></td>
 	<td class="row2"><input class="post" type="text" size="4" maxlength="4" name="min_user_age" value="{MIN_USER_AGE}" /></td>
 </tr>
 <tr>
@@ -242,7 +242,6 @@
 			</tr>
 			<tr>
 				<td colspan="2"><input type="radio" name="default_avatar_set" value="2" {DEFAULT_AVATAR_BOTH} /> {L_DEFAULT_AVATAR_BOTH}</td>
-			</tr>
 				<td colspan="2"><input type="radio" name="default_avatar_set" value="3" {DEFAULT_AVATAR_NONE} /> {L_DEFAULT_AVATAR_NONE}</td>
 			</tr>
 		</table>
@@ -269,10 +268,8 @@
 	<td class="row2"><input class="post" type="text" size="4" maxlength="10" name="avatar_filesize" value="{AVATAR_FILESIZE}" /> Bytes</td>
 </tr>
 <tr>
-	<td class="row1"><strong>{L_MAX_AVATAR_SIZE}</strong><br />
-		<span class="gensmall">{L_MAX_AVATAR_SIZE_EXPLAIN}</span>
-	</td>
-	<td class="row2"><input class="post" type="text" size="3" maxlength="4" name="avatar_max_height" value="{AVATAR_MAX_HEIGHT}" /> x <input class="post" type="text" size="3" maxlength="4" name="avatar_max_width" value="{AVATAR_MAX_WIDTH}"></td>
+	<td class="row1"><strong>{L_MAX_AVATAR_SIZE}</strong><br /><span class="gensmall">{L_MAX_AVATAR_SIZE_EXPLAIN}</span></td>
+	<td class="row2"><input class="post" type="text" size="3" maxlength="4" name="avatar_max_height" value="{AVATAR_MAX_HEIGHT}" /> x <input class="post" type="text" size="3" maxlength="4" name="avatar_max_width" value="{AVATAR_MAX_WIDTH}" /></td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_AVATAR_STORAGE_PATH}</strong><br /><span class="gensmall">{L_AVATAR_STORAGE_PATH_EXPLAIN}</span></td>

@@ -53,12 +53,12 @@ unset ($protocol);
 function create_digest_server_url()
 {
 	// usage: $server_url = create_server_url();
-	global $board_config;
+	global $config;
 
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-	$server_name = trim($board_config['server_name']);
-	$server_protocol = ( $board_config['cookie_secure'] ) ? 'https://' : 'http://';
-	$server_port = ( $board_config['server_port'] <> 80 ) ? ':' . trim($board_config['server_port']) . '/' : '/';
+	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
+	$server_name = trim($config['server_name']);
+	$server_protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
+	$server_port = ( $config['server_port'] <> 80 ) ? ':' . trim($config['server_port']) . '/' : '/';
 	$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
 	$server_url = ( substr($server_url, strlen($server_url) - 2, 2) == '//' ) ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
 

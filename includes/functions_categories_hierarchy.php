@@ -21,92 +21,6 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 //--------------------------------------------------------------------------------------------------
-// $nav_separator : used in the navigation sentence : ie Forum Index -> MainCat -> Forum -> Topic
-//--------------------------------------------------------------------------------------------------
-$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
-
-//--------------------------------------------------------------------------------------------------
-// board_stats : update the board stats (topics, posts and users)
-//--------------------------------------------------------------------------------------------------
-function board_stats()
-{
-	global $db, $board_config;
-
-	$config_updated = false;
-	// max users
-	$sql = "SELECT COUNT(user_id) AS user_total FROM " . USERS_TABLE . " WHERE user_id > 0";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t access users table', '', __LINE__, __FILE__, $sql);
-	}
-	$row = $db->sql_fetchrow($result);
-	$max_users = intval($row['user_total']);
-
-	// update
-	if ($board_config['max_users'] != $max_users)
-	{
-		set_config('max_users', $max_users);
-	}
-
-	// newest user
-	if ($board_config['inactive_users_memberlists'] == true)
-	{
-		$sql_active_users = '';
-	}
-	else
-	{
-		$sql_active_users = 'AND user_active = 1';
-	}
-	$sql = "SELECT user_id, username
-		FROM " . USERS_TABLE . "
-		WHERE user_id <> " . ANONYMOUS . "
-		$sql_active_users
-		ORDER BY user_id DESC
-		LIMIT 1";
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t access users table', '', __LINE__, __FILE__, $sql);
-	}
-	$row = $db->sql_fetchrow($result);
-	$newest_user_id = intval($row['user_id']);
-
-	// update
-	$cache_data_file = MAIN_CACHE_FOLDER . 'newest_user.dat';
-	if (($board_config['last_user_id'] != $newest_user_id) || !file_exists($cache_data_file))
-	{
-		set_config('last_user_id', $newest_user_id);
-		$cache_data_file = MAIN_CACHE_FOLDER . 'newest_user.dat';
-		$newest_user = colorize_username($newest_user_id);
-		$data = '<' . '?php' . "\n";
-		$data .= '$newest_user = \'' . ((STRIP) ? addslashes($newest_user) : $newest_user) . '\';' . "\n";
-		$data .= '?' . '>';
-		$fp = fopen($cache_data_file, 'w');
-		@fwrite($fp, $data);
-		@fclose($fp);
-	}
-
-	// topics and posts
-	$sql = "SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total FROM " . FORUMS_TABLE;
-	if (!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t access forums table', '', __LINE__, __FILE__, $sql);
-	}
-	$row = $db->sql_fetchrow($result);
-	$max_topics = intval($row['topic_total']);
-	$max_posts = intval($row['post_total']);
-
-	// update
-	if ($board_config['max_topics'] != $max_topics)
-	{
-		set_config('max_topics', $max_topics);
-	}
-	if ($board_config['max_posts'] != $max_posts)
-	{
-		set_config('max_posts', $max_posts);
-	}
-}
-
-//--------------------------------------------------------------------------------------------------
 //
 // $tree : designed to get all the hierarchy
 // ------
@@ -120,18 +34,17 @@ function board_stats()
 //	$tree['sub'][id] => array of sub-level ids,
 //	$tree['main'][idx] => parent id,
 //	$tree['type'][idx] => type of the row, can be 'c' for categories or 'f' for forums,
-//	$tree['id'][idx] => value of the row id : cat_id for cats, forum_id for forums,
+//	$tree['id'][idx] => value of the row id : forum_id for cats, forum_id for forums,
 //	$tree['data'][idx] => db table row,
 //	$tree['unread_topics'][idx] => boolean value to true if there is new topics
 //--------------------------------------------------------------------------------------------------
-$tree = array();
 
 //--------------------------------------------------------------------------------------------------
 // get_object_lang() : return the translated value of field depending on row type in the hierarchy
 //--------------------------------------------------------------------------------------------------
-function get_object_lang($cur, $field, $all=false)
+function get_object_lang($cur, $field, $all = false)
 {
-	global $board_config, $lang, $tree;
+	global $config, $lang, $tree;
 	$res = '';
 	$CH_this = (isset($tree['keys'][$cur]) ? $tree['keys'][$cur] : '');
 	$type = (isset($tree['type'][$CH_this]) ? $tree['type'][$CH_this] : '');
@@ -140,24 +53,10 @@ function get_object_lang($cur, $field, $all=false)
 		switch($field)
 		{
 			case 'name':
-				if (isset($lang[ip_stripslashes($board_config['sitename'])]))
-				{
-					$res = sprintf($lang['Forum_Index'], $lang[ip_stripslashes($board_config['sitename'])]);
-				}
-				else
-				{
-					$res = sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename']));
-				}
+				$res = sprintf($lang['Forum_Index'], isset($lang[htmlspecialchars($config['sitename'])]) ? $lang[htmlspecialchars($config['sitename'])] : htmlspecialchars($config['sitename']));
 				break;
 			case 'desc':
-				if (isset($lang[$board_config['site_desc']]))
-				{
-					$res = $lang[$board_config['site_desc']];
-				}
-				else
-				{
-					$res = $board_config['site_desc'];
-				}
+				$res = isset($lang[htmlspecialchars($config['site_desc'])]) ? $lang[htmlspecialchars($config['site_desc'])] : htmlspecialchars($config['site_desc']);
 				break;
 		}
 	}
@@ -166,10 +65,10 @@ function get_object_lang($cur, $field, $all=false)
 		switch($field)
 		{
 			case 'name':
-				$field = ($type == POST_CAT_URL) ? 'cat_title' : 'forum_name';
+				$field = 'forum_name';
 				break;
 			case 'desc':
-				$field = ($type == POST_CAT_URL) ? 'cat_desc' : 'forum_desc';
+				$field = 'forum_desc';
 				break;
 		}
 		$res = ($tree['auth'][$cur]['auth_view'] || $all) ? $tree['data'][$CH_this][$field] : '';
@@ -197,7 +96,7 @@ function cache_tree_output()
 	$template->set_filenames(array('def_tree' => 'includes/def_tree_def.tpl'));
 
 	$template->assign_vars(array(
-		'TIME' => date('Y-m-d H:i:s', time()) . ' (GMT)',
+		'TIME' => gmdate('Y-m-d H:i:s') . ' (GMT)',
 		'USERNAME' => $userdata['username'],
 		)
 	);
@@ -213,7 +112,7 @@ function cache_tree_output()
 
 	// types
 	$cells = array();
-	for ($i = 0; $i < count($tree['type']); $i++)
+	for ($i = 0; $i < sizeof($tree['type']); $i++)
 	{
 		$cells[] = sprintf("'%s'", $tree['type'][$i]);
 	}
@@ -221,7 +120,7 @@ function cache_tree_output()
 
 	// ids
 	$cells = array();
-	for ($i = 0; $i < count($tree['id']); $i++)
+	for ($i = 0; $i < sizeof($tree['id']); $i++)
 	{
 		$cells[] = sprintf("'%s'", $tree['id'][$i]);
 	}
@@ -229,7 +128,7 @@ function cache_tree_output()
 
 	// mains
 	$cells = array();
-	for ($i = 0; $i < count($tree['main']); $i++)
+	for ($i = 0; $i < sizeof($tree['main']); $i++)
 	{
 		$cells[] = sprintf("'%s'", $tree['main'][$i]);
 	}
@@ -244,7 +143,7 @@ function cache_tree_output()
 	);
 
 	// data
-	for ($i = 0; $i < count($tree['data']); $i++)
+	for ($i = 0; $i < sizeof($tree['data']); $i++)
 	{
 		$template->assign_block_vars('data', array());
 
@@ -268,7 +167,7 @@ function cache_tree_output()
 	while (list($main, $data) = @each($tree['sub']))
 	{
 		$cells = array();
-		for ($i = 0; $i < count($data); $i++)
+		for ($i = 0; $i < sizeof($data); $i++)
 		{
 			$cells[] = sprintf("'%s'", $data[$i]);
 		}
@@ -288,22 +187,22 @@ function cache_tree_output()
 		$s_user_actives = empty($data['user_active']) ? '' : implode(', ', $data['user_active']);
 		$s_group_ids = empty($data['group_id']) ? '' : implode(', ', $data['group_id']);
 		$s_usernames = '';
-		for ($j = 0; $j < count($data['username']); $j++)
+		for ($j = 0; $j < sizeof($data['username']); $j++)
 		{
 			$s_usernames .= (empty($s_usernames) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['username'][$j]));
 		}
 		$s_user_colors = '';
-		for ($j = 0; $j < count($data['user_color']); $j++)
+		for ($j = 0; $j < sizeof($data['user_color']); $j++)
 		{
 			$s_user_colors .= (empty($s_user_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['user_color'][$j]));
 		}
 		$s_group_names = '';
-		for ($j = 0; $j < count($data['group_name']); $j++)
+		for ($j = 0; $j < sizeof($data['group_name']); $j++)
 		{
 			$s_group_names .= (empty($s_group_names) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_name'][$j]));
 		}
 		$s_group_colors = '';
-		for ($j = 0; $j < count($data['group_color']); $j++)
+		for ($j = 0; $j < sizeof($data['group_color']); $j++)
 		{
 			$s_group_colors .= (empty($s_group_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_color'][$j]));
 		}
@@ -339,7 +238,7 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 	$tree_level = array();
 
 	// get the forums of the level
-	for ($i = 0; $i < count($parents[POST_FORUM_URL][$main]); $i++)
+	for ($i = 0; $i < sizeof($parents[POST_FORUM_URL][$main]); $i++)
 	{
 		$idx = $parents[POST_FORUM_URL][$main][$i];
 		$tree_level['type'][] = POST_FORUM_URL;
@@ -349,12 +248,12 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 	}
 
 	// add the categories of this level
-	for ($i = 0; $i < count($parents[POST_CAT_URL][$main]); $i++)
+	for ($i = 0; $i < sizeof($parents[POST_CAT_URL][$main]); $i++)
 	{
 		$idx = $parents[POST_CAT_URL][$main][$i];
 		$tree_level['type'][] = POST_CAT_URL;
-		$tree_level['id'][] = $cats[$idx]['cat_id'];
-		$tree_level['sort'][] = $cats[$idx]['cat_order'];
+		$tree_level['id'][] = $cats[$idx]['forum_id'];
+		$tree_level['sort'][] = $cats[$idx]['forum_order'];
 		$tree_level['data'][] = $cats[$idx];
 	}
 
@@ -363,9 +262,9 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 
 	// add the tree_level to the tree
 	$order = 0;
-	for ($i = 0; $i < count($tree_level['data']); $i++)
+	for ($i = 0; $i < sizeof($tree_level['data']); $i++)
 	{
-		$CH_this = count($tree['data']);
+		$CH_this = sizeof($tree['data']);
 		$key = $tree_level['type'][$i] . $tree_level['id'][$i];
 		$order = $order + 10;
 		$tree['keys'][$key] = $CH_this;
@@ -381,98 +280,98 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 
 function cache_tree($write = false)
 {
-	global $db, $tree, $userdata, $board_config;
+	global $db, $cache, $config, $userdata, $lang, $tree;
 
 	$parents = array();
 
 	// read categories
 	$cats = array();
-	$sql = "SELECT * FROM " . CATEGORIES_TABLE . " ORDER BY cat_order, cat_id";
-	if (!$result = $db->sql_query($sql, false, 'forums_cats_', FORUMS_CACHE_FOLDER))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t access list of Categories', '', __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT forum_id, parent_id, main_type, forum_name, forum_name_clean, forum_desc, icon, forum_order
+					FROM " . FORUMS_TABLE . "
+					WHERE forum_type = " . FORUM_CAT . "
+					ORDER BY forum_order, forum_id";
+	$result = $db->sql_query($sql, 0, 'forums_cats_', FORUMS_CACHE_FOLDER);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
-		if ($row['cat_main'] == $row['cat_id'])
+		if ($row['parent_id'] == $row['forum_id'])
 		{
-			$row['cat_main'] = 0;
+			$row['parent_id'] = 0;
 		}
-		if (empty($row['cat_main_type']))
+		if (empty($row['main_type']))
 		{
-			$row['cat_main_type'] = POST_CAT_URL;
-			$row['cat_order'] = $row['cat_order'] + 9000000;
+			$row['main_type'] = POST_CAT_URL;
+			$row['forum_order'] = $row['forum_order'] + 9000000;
 		}
-		$row['main'] = ($row['cat_main'] == 0) ? 'Root' : $row['cat_main_type'] . $row['cat_main'];
-		$idx = count($cats);
+		$row['main'] = ($row['parent_id'] == 0) ? 'Root' : $row['main_type'] . $row['parent_id'];
+		$idx = sizeof($cats);
+		if (empty($row['forum_name_clean']))
+		{
+			if (!function_exists('update_clean_forum_name'))
+			{
+				@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+			}
+			$row['forum_name_clean'] = substr(ip_clean_string($row['forum_name_clean'], $lang['ENCODING']), 0, 254);
+			update_clean_forum_name($row['forum_id'], $row['forum_name_clean']);
+		}
 		$cats[$idx] = $row;
-		$parents[POST_CAT_URL][ $row['main'] ][] = $idx;
+		$parents[POST_CAT_URL][$row['main']][] = $idx;
 	}
+	$db->sql_freeresult($result);
 
 	// read forums
-	$sql = "SELECT * FROM " . FORUMS_TABLE . " ORDER BY forum_order, forum_id";
-	if (!$result = $db->sql_query($sql, false, 'forums_', FORUMS_CACHE_FOLDER))
-	{
-		message_die(GENERAL_ERROR, "Couldn't access list of Forums", "", __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT * FROM " . FORUMS_TABLE . " WHERE forum_type <> " . FORUM_CAT . " ORDER BY forum_order, forum_id";
+	$result = $db->sql_query($sql, 0, 'forums_', FORUMS_CACHE_FOLDER);
+
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$main_type = (empty($row['main_type'])) ? POST_CAT_URL : $row['main_type'];
-		$row['main'] = ($row['cat_id'] == 0) ? 'Root' : $main_type . $row['cat_id'];
-		$idx = count($forums);
+		$row['main'] = ($row['parent_id'] == 0) ? 'Root' : $main_type . $row['parent_id'];
+		$idx = sizeof($forums);
+		if (empty($row['forum_name_clean']))
+		{
+			if (!function_exists('update_clean_forum_name'))
+			{
+				@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+			}
+			$row['forum_name_clean'] = substr(ip_clean_string($row['forum_name'], $lang['ENCODING']), 0, 254);
+			update_clean_forum_name($row['forum_id'], $row['forum_name_clean']);
+		}
 		$forums[$idx] = $row;
 		$parents[POST_FORUM_URL][$row['main']][] = $idx;
 	}
+	$db->sql_freeresult($result);
 
 	// build the tree
 	$tree = array();
 	cache_tree_level('Root', $parents, $cats, $forums);
 
-	//
 	// Obtain list of moderators of each forum
-	// First users, then groups ... broken into two queries
-	//
-	$sql = "SELECT aa.forum_id, u.user_id, u.username, u.user_active, u.user_color
-			FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u
-			WHERE aa.auth_mod = " . TRUE . "
-				AND g.group_single_user = 1
-				AND ug.group_id = aa.group_id
-				AND g.group_id = aa.group_id
-				AND u.user_id = ug.user_id
-			GROUP BY u.user_id, u.username, aa.forum_id
-			ORDER BY aa.forum_id, u.user_id";
-	if (!$result = $db->sql_query($sql, false, 'moderators_'))
+	$moderators = array();
+	$moderators = $cache->obtain_moderators(true);
+	foreach ($moderators as $k => $v)
 	{
-		message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
-	}
-	while($row = $db->sql_fetchrow($result))
-	{
-		$idx = $tree['keys'][ POST_FORUM_URL . $row['forum_id'] ];
-		$tree['mods'][$idx]['user_id'][] = $row['user_id'];
-		$tree['mods'][$idx]['username'][] = $row['username'];
-		$tree['mods'][$idx]['user_active'][] = $row['user_active'];
-		$tree['mods'][$idx]['user_color'][] = $row['user_color'];
-	}
-
-	$sql = "SELECT aa.forum_id, g.group_id, g.group_name, g.group_color
-			FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
-			WHERE aa.auth_mod = " . TRUE . "
-				AND g.group_single_user = 0
-				AND g.group_type <> " . GROUP_HIDDEN . "
-				AND ug.group_id = aa.group_id
-				AND g.group_id = aa.group_id
-			GROUP BY g.group_id, g.group_name, aa.forum_id
-			ORDER BY aa.forum_id, g.group_id";
-	if (!$result = $db->sql_query($sql, false, 'moderators_'))
-	{
-		message_die(GENERAL_ERROR, 'Could not query forum moderator information', '', __LINE__, __FILE__, $sql);
-	}
-	while($row = $db->sql_fetchrow($result))
-	{
-		$idx = $tree['keys'][ POST_FORUM_URL . $row['forum_id'] ];
-		$tree['mods'][$idx]['group_id'][] = $row['group_id'];
-		$tree['mods'][$idx]['group_name'][] = $row['group_name'];
-		$tree['mods'][$idx]['group_color'][] = $row['group_color'];
+		if ($k == 'users')
+		{
+			foreach ($moderators[$k] as $moderator_row)
+			{
+				$idx = $tree['keys'][POST_FORUM_URL . $moderator_row['forum_id']];
+				$tree['mods'][$idx]['user_id'][] = $moderator_row['user_id'];
+				$tree['mods'][$idx]['username'][] = $moderator_row['username'];
+				$tree['mods'][$idx]['user_active'][] = $moderator_row['user_active'];
+				$tree['mods'][$idx]['user_color'][] = $moderator_row['user_color'];
+			}
+		}
+		elseif ($k == 'groups')
+		{
+			foreach ($moderators[$k] as $moderator_row)
+			{
+				$idx = $tree['keys'][POST_FORUM_URL . $moderator_row['forum_id']];
+				$tree['mods'][$idx]['group_id'][] = $moderator_row['group_id'];
+				$tree['mods'][$idx]['group_name'][] = $moderator_row['group_name'];
+				$tree['mods'][$idx]['group_color'][] = $moderator_row['group_color'];
+			}
+		}
 	}
 
 	if ($write)
@@ -487,7 +386,7 @@ function cache_tree($write = false)
 function read_tree($force = false)
 {
 
-	global $db, $userdata, $board_config, $tree;
+	global $db, $config, $userdata, $tree;
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if($userdata['upi2db_access'])
@@ -496,18 +395,10 @@ function read_tree($force = false)
 	}
 //<!-- END Unread Post Information to Database Mod -->
 
-	// get censored words
-	if (!$userdata['user_allowswearywords'])
-	{
-		$orig_word = array();
-		$replacement_word = array();
-		obtain_word_list($orig_word, $replacement_word);
-	}
-
 	// read the user cookie
-	$tracking_topics = (isset($_COOKIE[$board_config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
-	$tracking_forums = (isset($_COOKIE[$board_config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
-	$tracking_all = (isset($_COOKIE[$board_config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$board_config['cookie_name'] . '_f_all']) : -1;
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+	$tracking_all = (isset($_COOKIE[$config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$config['cookie_name'] . '_f_all']) : -1;
 
 	// try the cache
 	$use_cache_file = false;
@@ -531,74 +422,20 @@ function read_tree($force = false)
 		cache_tree();
 	}
 
-	// read the last post
-	$sql = "SELECT forum_id, forum_last_post_id FROM " . FORUMS_TABLE;
-	if (CACHE_CH_SQL == true)
-	{
-		if (!$result = $db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t access list of last posts from forums', '', __LINE__, __FILE__, $sql);
-		}
-	}
-	else
-	{
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t access list of last posts from forums', '', __LINE__, __FILE__, $sql);
-		}
-	}
-	$s_last_posts = '';
-	$last_posts = array();
+	// New SQL based only on Forums table
+	// Get last posts details for each forum
+	$sql = "SELECT f.forum_id, f.forum_last_post_id, f.forum_last_topic_id as topic_id, f.forum_last_post_time as post_time, f.forum_last_post_subject as topic_title, f.forum_last_poster_id as user_id, f.forum_last_poster_name as username, f.forum_last_poster_color as user_color
+				FROM " . FORUMS_TABLE . " f
+				ORDER BY f.forum_id";
+	$result = CACHE_CH_SQL ? $db->sql_query($sql, 3600, 'posts_', POSTS_CACHE_FOLDER) : $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
 		if (!empty($row['forum_last_post_id']))
 		{
-			$last_posts[ $row['forum_last_post_id'] ] = $row['forum_id'];
-			$s_last_posts .= (empty($s_last_posts) ? '' : ', ') . $row['forum_last_post_id'];
-		}
-	}
-
-	$sql_last_posts = empty($s_last_posts) ? '' : " OR p.post_id IN ($s_last_posts)";
-
-	// read the last or unread posts
-	$user_lastvisit = $userdata['session_logged_in'] ? $userdata['user_lastvisit'] : 99999999999;
-	$sql = "SELECT p.forum_id, p.topic_id, p.post_time, p.post_username, u.username, u.user_id, u.user_active, u.user_color, t.topic_poster, t.topic_last_post_id, t.topic_title, t.title_compl_infos
-				FROM ((" . POSTS_TABLE . " p
-					LEFT JOIN " . TOPICS_TABLE . " t ON t.topic_id = p.topic_id AND t.forum_id = p.forum_id AND t.topic_moved_id = 0)
-					LEFT JOIN " . USERS_TABLE . " u ON u.user_id = p.poster_id)
-				WHERE (p.post_time > $user_lastvisit $sql_last_posts)
-					AND p.post_id = t.topic_last_post_id";
-	if (CACHE_CH_SQL == true)
-	{
-		if (!$result = $db->sql_query($sql, false, 'posts_', POSTS_CACHE_FOLDER))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t access list of unread posts from forums', '', __LINE__, __FILE__, $sql);
-		}
-	}
-	else
-	{
-		if (!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t access list of unread posts from forums', '', __LINE__, __FILE__, $sql);
-		}
-	}
-	$new_topic_data = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		if ($row['post_time'] > $user_lastvisit)
-		{
-			$new_topic_data[$row['forum_id']][$row['topic_id']] = $row['post_time'];
-		}
-		if (isset($last_posts[$row['topic_last_post_id']]))
-		{
-			// topic title censor
-			if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-			{
-				$row['topic_title'] = preg_replace($orig_word, $replacement_word, $row['topic_title']);
-			}
-
+			$row['user_active'] = 1;
+			$row['topic_title'] = censor_text($row['topic_title']);
 			// store the added columns
-			$idx = $tree['keys'][POST_FORUM_URL . $row['forum_id'] ];
+			$idx = $tree['keys'][POST_FORUM_URL . $row['forum_id']];
 			@reset($row);
 			while (list($key, $value) = @each($row))
 			{
@@ -610,14 +447,39 @@ function read_tree($force = false)
 			}
 		}
 	}
+	$db->sql_freeresult($result);
 
 	// set the unread flag
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if(!$userdata['upi2db_access'])
 	{
 //<!-- END Unread Post Information to Database Mod -->
+
+		// Get new posts since last visit... only for registered users
+		if ($userdata['session_logged_in'])
+		{
+			$time_limit = time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60);
+			$user_lastvisit = ($userdata['user_lastvisit'] < $time_limit) ? $time_limit : $userdata['user_lastvisit'];
+			$sql_limit = " LIMIT " . LAST_LOGIN_NEW_POSTS_LIMIT;
+
+			$sql = "SELECT p.forum_id, p.topic_id, p.post_time
+						FROM " . POSTS_TABLE . " p
+						WHERE (p.post_time > " . $user_lastvisit . ")
+						ORDER BY p.post_time DESC
+						" . $sql_limit;
+			//$result = (CACHE_CH_SQL ? $db->sql_query($sql, 3600, 'posts_', POSTS_CACHE_FOLDER) : $db->sql_query($sql));
+			$result = $db->sql_query($sql);
+
+			$new_topic_data = array();
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$new_topic_data[$row['forum_id']][$row['topic_id']] = $row['post_time'];
+			}
+			$db->sql_freeresult($result);
+		}
+
 		$tree['unread_topics'] = array();
-		for ($i = 0; $i < count($tree['data']); $i++)
+		for ($i = 0; $i < sizeof($tree['data']); $i++)
 		{
 			if ($tree['type'][$i] == POST_FORUM_URL)
 			{
@@ -669,7 +531,7 @@ function read_tree($force = false)
 	}
 	else
 	{
-		for ($i = 0; $i < count($tree['data']); $i++)
+		for ($i = 0; $i < sizeof($tree['data']); $i++)
 		{
 			if ($tree['type'][$i] == POST_FORUM_URL)
 			{
@@ -692,26 +554,22 @@ function read_tree($force = false)
 //--------------------------------------------------------------------------------------------------
 function set_tree_user_auth()
 {
-	global $board_config, $userdata, $lang, $db;
+	global $config, $userdata, $lang, $db;
 	global $tree;
 
 	// Get users online for each forum
-	if ($board_config['show_forums_online_users'] == true)
+	if ($config['show_forums_online_users'] == true)
 	{
 
 		$sql = "SELECT s.session_page
 			FROM " . SESSIONS_TABLE . " s
 			WHERE s.session_time >= " . (time() - ONLINE_REFRESH);
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain user/online information', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$forum_online = array();
 		while($row = $db->sql_fetchrow($result))
 		{
-			if ((strpos($row['session_page'], VIEWFORUM_MG) !== false) || (strpos($row['session_page'], VIEWTOPIC_MG) !== false))
+			if ((strpos($row['session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($row['session_page'], CMS_PAGE_VIEWTOPIC) !== false))
 			{
 				$results = array();
 				ereg('_f_=([0-9]*)x', $row['session_page'], $results);
@@ -723,9 +581,10 @@ function set_tree_user_auth()
 			}
 		}
 	}
+	$db->sql_freeresult($result);
 
 	// read the tree from the bottom
-	for ($i = count($tree['data']) - 1; $i >= 0; $i--)
+	for ($i = sizeof($tree['data']) - 1; $i >= 0; $i--)
 	{
 		//---------------------
 		// full ids
@@ -771,7 +630,7 @@ function set_tree_user_auth()
 		{
 			// forum auth
 			$auth_read = $tree['auth'][$cur]['auth_read'];
-			//if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && ($board_config['allow_mods_view_self'] == false))) && (intval($tree['auth'][$cur]['auth_read']) == AUTH_SELF))
+			//if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($tree['auth'][$cur]['auth_read']) == AUTH_SELF))
 			if(($userdata['user_level'] != ADMIN) && (intval($tree['auth'][$cur]['auth_read']) == AUTH_SELF))
 			{
 				$auth_lp = false;
@@ -851,10 +710,10 @@ function set_tree_user_auth()
 		if ($auth_read)
 		{
 			// fill the sub
-			if (empty($tree['data'][$i]['tree.topic_last_post_id']) || ($tree['data'][$i]['post_time'] > $tree['data'][$i]['tree.post_time']))
+			if (empty($tree['data'][$i]['tree.forum_last_post_id']) || ($tree['data'][$i]['post_time'] > $tree['data'][$i]['tree.post_time']))
 			{
 				$tree['data'][$i]['tree.topic_last_post_auth'] = $auth_lp;
-				$tree['data'][$i]['tree.topic_last_post_id'] = isset($tree['data'][$i]['topic_last_post_id']) ? $tree['data'][$i]['topic_last_post_id'] : '';
+				$tree['data'][$i]['tree.forum_last_post_id'] = isset($tree['data'][$i]['forum_last_post_id']) ? $tree['data'][$i]['forum_last_post_id'] : '';
 				$tree['data'][$i]['tree.post_time'] = isset($tree['data'][$i]['post_time']) ? $tree['data'][$i]['post_time'] : '';
 				$tree['data'][$i]['tree.post_user_id'] = isset($tree['data'][$i]['user_id']) ? $tree['data'][$i]['user_id'] : '';
 				if (isset($tree['data'][$i]['user_id']) && isset($tree['data'][$i]['username']))
@@ -875,10 +734,10 @@ function set_tree_user_auth()
 		// grant the main level
 		if ($main != 'Root')
 		{
-			if (empty($tree['data'][$main_idx]['tree.topic_last_post_id']) || ($tree['data'][$i]['tree.post_time'] > $tree['data'][$main_idx]['tree.post_time']))
+			if (empty($tree['data'][$main_idx]['tree.forum_last_post_id']) || ($tree['data'][$i]['tree.post_time'] > $tree['data'][$main_idx]['tree.post_time']))
 			{
 				$tree['data'][$main_idx]['tree.topic_last_post_auth'] = $auth_lp;
-				$tree['data'][$main_idx]['tree.topic_last_post_id'] = isset($tree['data'][$i]['tree.topic_last_post_id']) ? $tree['data'][$i]['tree.topic_last_post_id'] : '';
+				$tree['data'][$main_idx]['tree.forum_last_post_id'] = isset($tree['data'][$i]['tree.forum_last_post_id']) ? $tree['data'][$i]['tree.forum_last_post_id'] : '';
 				$tree['data'][$main_idx]['tree.post_time'] = isset($tree['data'][$i]['tree.post_time']) ? $tree['data'][$i]['tree.post_time'] : '';
 				$tree['data'][$main_idx]['tree.post_user_id'] = isset($tree['data'][$i]['tree.post_user_id']) ? $tree['data'][$i]['tree.post_user_id'] : '';
 				$tree['data'][$main_idx]['tree.post_username'] = isset($tree['data'][$i]['tree.post_username']) ? $tree['data'][$i]['tree.post_username'] : '';
@@ -936,7 +795,7 @@ function get_user_tree(&$userdata)
 //--------------------------------------------------------------------------------------------------
 function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $auth_key = 'auth_view')
 {
-	global $board_config;
+	global $config;
 	global $tree;
 
 	$keys = array();
@@ -952,7 +811,7 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 			$orig_level = $level;
 			if (!$all)
 			{
-				if (($level > 0) && ((substr($cur, 0, 1) == POST_FORUM_URL) || (intval($board_config['sub_forum']) > 0)) && (substr($tree['main'][$tree['keys'][$cur]], 0, 1) == POST_CAT_URL)) $level = $level-1;
+				if (($level > 0) && ((substr($cur, 0, 1) == POST_FORUM_URL) || (intval($config['sub_forum']) > 0)) && (substr($tree['main'][$tree['keys'][$cur]], 0, 1) == POST_CAT_URL)) $level = $level-1;
 			}
 
 			// store this level
@@ -966,7 +825,7 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 			// get sub-levels
 			if (!empty($tree['sub'][$cur]))
 			{
-				for ($i = 0; $i < count($tree['sub'][$cur]); $i++)
+				for ($i = 0; $i < sizeof($tree['sub'][$cur]); $i++)
 				{
 					$tkeys = array();
 					$tkeys = get_auth_keys($tree['sub'][$cur][$i], $all, $orig_level + 1, $max, $auth_key);
@@ -974,7 +833,7 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 					// add sub-levels
 					if (!empty($tkeys['id']))
 					{
-						for ($j = 0; $j < count($tkeys['id']); $j++)
+						for ($j = 0; $j < sizeof($tkeys['id']); $j++)
 						{
 							$last_i++;
 							$keys['keys'][$tkeys['id'][$j]] = $last_i;
@@ -1005,7 +864,7 @@ function get_max_depth($cur = 'Root', $all = false, $level = -1, &$keys, $max = 
 	}
 
 	$max_level = 0;
-	for ($i = 0; $i < count($keys['id']); $i++)
+	for ($i = 0; $i < sizeof($keys['id']); $i++)
 	{
 		if ($keys['level'][$i] > $max_level)
 		{
@@ -1020,20 +879,18 @@ function get_max_depth($cur = 'Root', $all = false, $level = -1, &$keys, $max = 
 //--------------------------------------------------------------------------------------------------
 function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $real_level = -1, $max_level = -1, &$keys)
 {
-	global $template, $board_config, $lang, $images, $theme;
+	global $template, $db, $cache, $config, $lang, $images, $theme;
 	global $tree, $bbcode, $lofi;
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	global $userdata, $unread;
 //<!-- END Unread Post Information to Database Mod -->
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
-	//
 	// init
-	//
 	$display = false;
 
 	// get the sub_forum switch value
-	$sub_forum = intval($board_config['sub_forum']);
+	$sub_forum = intval($config['sub_forum']);
 	if (($sub_forum == 2) && defined('IN_VIEWFORUM'))
 	{
 		$sub_forum = 1;
@@ -1046,9 +903,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	// display the level
 	$CH_this = isset($tree['keys'][$cur]) ? $tree['keys'][$cur] : -1;
 
-	//
 	// display each kind of row
-	//
 
 	// root level head
 	if ($real_level == -1)
@@ -1063,16 +918,16 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	}
 
 	// table header
-	if (($board_config['split_cat'] && $cat_break && ($real_level == 0)) || ((!$board_config['split_cat'] || !$cat_break) && ($real_level == -1)))
+	if (($config['split_cat'] && $cat_break && ($real_level == 0)) || ((!$config['split_cat'] || !$cat_break) && ($real_level == -1)))
 	{
 		// if break, get the local max level
-		if ($board_config['split_cat'] && $cat_break && ($real_level == 0))
+		if ($config['split_cat'] && $cat_break && ($real_level == 0))
 		{
 			$max_level = 0;
 			// the array is sorted
 			$start = false;
 			$stop = false;
-			for ($i = 0; ($i < count($keys['id']) && !$stop); $i++)
+			for ($i = 0; ($i < sizeof($keys['id']) && !$stop); $i++)
 			{
 				if ($start && ($tree['main'][$keys['idx'][$i]] == $tree['main'][$CH_this]))
 				{
@@ -1129,14 +984,14 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			);
 			$template->assign_block_vars('catrow.cathead', array(
 				'CAT_TITLE' => get_object_lang($cur, 'name'),
-				'CAT_DESC' => ereg_replace('<[^>]+>', '', get_object_lang($cur, 'desc')),
+				'CAT_DESC' => @ereg_replace('<[^>]+>', '', get_object_lang($cur, 'desc')),
 
 				'CLASS_CATLEFT' => $class_catLeft,
 				'CLASS_CAT' => $class_cat,
 				'CLASS_ROWPIC' => $class_rowpic,
 				'INC_SPAN' => $max_level - $level + 2,
 
-				'U_VIEWCAT' => append_sid(FORUM_MG . '?' . POST_CAT_URL . '=' . $cat_id),
+				'U_VIEWCAT' => append_sid(CMS_PAGE_FORUM . '?' . POST_CAT_URL . '=' . $cat_id),
 				)
 			);
 
@@ -1216,53 +1071,53 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			$moderator_list = '';
 			if ($type == POST_FORUM_URL)
 			{
-				if (count($forum_moderators[$id]) > 0)
+				if (sizeof($forum_moderators[$id]) > 0)
 				{
-					$l_moderators = (count($forum_moderators[$id]) == 1) ? $lang['Moderator'] : $lang['Moderators'];
+					$l_moderators = (sizeof($forum_moderators[$id]) == 1) ? $lang['Moderator'] : $lang['Moderators'];
 					$moderator_list = implode(', ', $forum_moderators[$id]);
 				}
 			}
 
 			// last post
 			$last_post = $lang['No_Posts'];
-			if ((isset($data['tree.topic_last_post_id']) && $data['tree.topic_last_post_id']) && (isset($data['tree.topic_last_post_auth']) && $data['tree.topic_last_post_auth']))
+			if ((isset($data['tree.forum_last_post_id']) && $data['tree.forum_last_post_id']) && (isset($data['tree.topic_last_post_auth']) && $data['tree.topic_last_post_auth']))
 			{
 				// resize
 				$topic_title = $data['tree.topic_title'];
 				$topic_title = (empty($data['title_compl_infos'])) ? $topic_title : $data['title_compl_infos'] . ' ' . $topic_title;
 				$topic_title_plain = $topic_title;
 				$topic_title_short = $topic_title;
-				if (strlen($topic_title) > (intval($board_config['last_topic_title_length']) - 3))
+				if (strlen($topic_title) > (intval($config['last_topic_title_length']) - 3))
 				{
-					$topic_title_short = substr($topic_title, 0, intval($board_config['last_topic_title_length'])) . '...';
+					$topic_title_short = substr($topic_title, 0, intval($config['last_topic_title_length'])) . '...';
 				}
 
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($topic_title_short);
 				$topic_title_plain = htmlspecialchars_clean($topic_title_plain);
 				// SMILEYS IN TITLE - BEGIN
-				if (($board_config['smilies_topic_title'] == true) && !$lofi)
+				if ($config['smilies_topic_title'] && !$lofi)
 				{
-					$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
+					$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 					$topic_title = $bbcode->parse_only_smilies($topic_title);
 				}
 				// SMILEYS IN TITLE - END
 
-				$topic_title = '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
+				$topic_title = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.forum_last_post_id']) . '#p' . $data['tree.forum_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
 
-				$last_post_time = create_date_ip($board_config['default_dateformat'], $data['tree.post_time'], $board_config['board_timezone']);
-				$last_post  = (($board_config['last_topic_title']) ? $topic_title : '');
+				$last_post_time = create_date_ip($config['default_dateformat'], $data['tree.post_time'], $config['board_timezone']);
+				$last_post  = (($config['last_topic_title']) ? $topic_title : '');
 				$last_post .= $last_post_time . '<br />';
 				$last_post .= ($data['tree.post_user_id'] == ANONYMOUS) ? $data['tree.post_username'] . ' ' : colorize_username($data['tree.post_user_id'], $data['tree.post_username'], $data['tree.user_color'], $data['tree.user_active']);
 
-				$last_post .= '<a href="' . append_sid(VIEWTOPIC_MG . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.topic_last_post_id']) . '#p' . $data['tree.topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (($data['tree.unread_topics']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
+				$last_post .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.forum_last_post_id']) . '#p' . $data['tree.forum_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (($data['tree.unread_topics']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 			}
 
 			// links to sub-levels
 			$links = '';
-			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && (intval($board_config['sub_level_links']) > 0))
+			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && (intval($config['sub_level_links']) > 0))
 			{
-				for ($j = 0; $j < count($tree['sub'][$cur]); $j++) if ($tree['auth'][$tree['sub'][$cur][$j]]['auth_view'])
+				for ($j = 0; $j < sizeof($tree['sub'][$cur]); $j++) if ($tree['auth'][$tree['sub'][$cur][$j]]['auth_view'])
 				{
 					$wcur = $tree['sub'][$cur][$j];
 					$wthis = $tree['keys'][$wcur];
@@ -1272,20 +1127,20 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 					switch($tree['type'][$wthis])
 					{
 						case POST_FORUM_URL:
-							$wpgm = append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $tree['id'][$wthis]);
+							$wpgm = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $tree['id'][$wthis]);
 							break;
 						case POST_CAT_URL:
-							$wpgm = append_sid(FORUM_MG . '?' . POST_CAT_URL . '=' . $tree['id'][$wthis]);
+							$wpgm = append_sid(CMS_PAGE_FORUM . '?' . POST_CAT_URL . '=' . $tree['id'][$wthis]);
 							break;
 						default:
-							$wpgm = append_sid(FORUM_MG);
+							$wpgm = append_sid(CMS_PAGE_FORUM);
 							break;
 					}
 					$link = '';
-					$wdesc = ereg_replace('<[^>]+>', '', $wdesc);
+					$wdesc = @ereg_replace('<[^>]+>', '', $wdesc);
 
 
-					if (intval($board_config['sub_level_links']) == 2)
+					if (intval($config['sub_level_links']) == 2)
 					{
 						$wsub = (!empty($tree['sub'][$wcur]) && $tree['auth'][$wcur]['tree.auth_view']);
 
@@ -1334,7 +1189,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 						}
 						else
 						{
-							$wlast_post = '<a href="' . append_sid(VIEWTOPIC_MG . '?'  . POST_POST_URL . '=' . $wdata['tree.topic_last_post_id']) . '#p' . $wdata['tree.topic_last_post_id'] . '">';
+							$wlast_post = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?'  . POST_POST_URL . '=' . $wdata['tree.forum_last_post_id']) . '#p' . $wdata['tree.forum_last_post_id'] . '">';
 							$wlast_post .= '<img src="' . $wfolder_image . '" alt="' . $wfolder_alt . '" title="' . $wfolder_alt . '" /></a>&nbsp;';
 						}
 					}
@@ -1363,11 +1218,11 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				{
 					if(!in_array($forum_id, $unread['always_read']['forums']))
 					{
-						$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . '&amp;always_read=set') . '"><img src="' . $folder_image . '" alt="' . $lang['upi2db_always_read_forum']. '" title="' . $lang['upi2db_always_read_forum'] . '" /></a>';
+						$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . '&amp;always_read=set') . '"><img src="' . $folder_image . '" alt="' . $lang['upi2db_always_read_forum']. '" title="' . $lang['upi2db_always_read_forum'] . '" /></a>';
 					}
 					else
 					{
-						$mark_always_read = '<a href="' . append_sid(FORUM_MG . '?forum_id=' . $forum_id . '&amp;always_read=unset') . '"><img src="' . $folder_image_ar_big . '" alt="' . $lang['upi2db_always_read_forum_unset'] . '" title="' . $lang['upi2db_always_read_forum_unset'] . '" /></a>';
+						$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . '&amp;always_read=unset') . '"><img src="' . $folder_image_ar_big . '" alt="' . $lang['upi2db_always_read_forum_unset'] . '" title="' . $lang['upi2db_always_read_forum_unset'] . '" /></a>';
 					}
 				}
 				else
@@ -1387,21 +1242,21 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				$mark_always_read = '<img src="' . $folder_image . '" alt="' . $folder_alt . '" title="' . $folder_alt . '" />';
 			}
 //<!-- END Unread Post Information to Database Mod -->
-			if (($board_config['url_rw'] == true) || (($board_config['url_rw_guests'] == true) && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == true) || (($config['url_rw_guests'] == true) && ($userdata['user_id'] == ANONYMOUS)))
 			{
 				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(str_replace ('--', '-', make_url_friendly($title) . '-vf' . $id . '.html')) : append_sid(str_replace ('--', '-', make_url_friendly($title) . '-vc' . $id . '.html'));
 			}
 			else
 			{
-				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $id) : append_sid(FORUM_MG . '?' . POST_CAT_URL . '=' . $id);
+				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $id) : append_sid(CMS_PAGE_FORUM . '?' . POST_CAT_URL . '=' . $id);
 			}
 			// send to template
-			if (($board_config['show_rss_forum_icon'] == 1) && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
+			if (($config['show_rss_forum_icon'] == 1) && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
 			{
 				$rss_feed_icon = '';
 				if (!$data['tree.locked'] && $userdata['session_logged_in'])
 				{
-					$rss_feed_icon .= '&nbsp;<a href="' . append_sid(POSTING_MG . '?mode=newtopic&amp;' . POST_FORUM_URL . '=' . $id) . '"><img src="' . $images['vf_topic_nor'] . '" alt="' . $lang['Post_new_topic'] . '" title="' . $lang['Post_new_topic'] . '" /></a>';
+					$rss_feed_icon .= '&nbsp;<a href="' . append_sid(CMS_PAGE_POSTING . '?mode=newtopic&amp;' . POST_FORUM_URL . '=' . $id) . '"><img src="' . $images['vf_topic_nor'] . '" alt="' . $lang['Post_new_topic'] . '" title="' . $lang['Post_new_topic'] . '" /></a>';
 				}
 				$rss_feed_icon .= '&nbsp;<a href="' . append_sid('rss.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $id) . '"><img src="' . $images['nav_menu_feed'] . '" alt="' . $lang['Rss_news_feeds'] . '" title="' . $lang['Rss_news_feeds'] . '" /></a>';
 			}
@@ -1422,7 +1277,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				'FORUM_DESC' => $desc,
 				'POSTS' => $data['tree.forum_posts'],
 				'TOPICS' => $data['tree.forum_topics'],
-				'ONLINE' => (($board_config['show_forums_online_users'] == true) ? ('<br />' . $lang['Online'] . ':&nbsp;' . $data['tree.forum_online']) : ''),
+				'ONLINE' => (($config['show_forums_online_users'] == true) ? ('<br />' . $lang['Online'] . ':&nbsp;' . $data['tree.forum_online']) : ''),
 				'LAST_POST' => $last_post,
 				'MODERATORS' => $moderator_list,
 				'L_MODERATOR' => empty($moderator_list) ? '' : (empty($l_moderators) ? '<br />' : '<br /><b>' . $l_moderators . ':</b>&nbsp;'),
@@ -1437,8 +1292,8 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 //<!-- END Unread Post Information to Database Mod -->
 				'L_POST_NEW_TOPIC' => $lang['Post_new_topic'],
 				'U_VIEWFORUM' => $url_viewforum,
-				//'U_VIEWFORUM' => ($type == POST_FORUM_URL) ? append_sid(VIEWFORUM_MG . "?" . POST_FORUM_URL . "=$id") : append_sid(FORUM_MG . "?" . POST_CAT_URL . "=$id"),
-				'U_POST_NEW_TOPIC' => append_sid(POSTING_MG . '?mode=newtopic&amp;' . POST_FORUM_URL . '=' . $id),
+				//'U_VIEWFORUM' => ($type == POST_FORUM_URL) ? append_sid(CMS_PAGE_VIEWFORUM . "?" . POST_FORUM_URL . "=$id") : append_sid(CMS_PAGE_FORUM . "?" . POST_CAT_URL . "=$id"),
+				'U_POST_NEW_TOPIC' => append_sid(CMS_PAGE_POSTING . '?mode=newtopic&amp;' . POST_FORUM_URL . '=' . $id),
 
 				'LINK_CLASS' => $link_class,
 				'INC_SPAN' => $max_level- $level + 1,
@@ -1487,7 +1342,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	// display sub-levels
 	if (!empty($tree['sub'][$cur]))
 	{
-		for ($i = 0; $i < count($tree['sub'][$cur]); $i++) if (!empty($keys['keys'][$tree['sub'][$cur][$i]]))
+		for ($i = 0; $i < sizeof($tree['sub'][$cur]); $i++) if (!empty($keys['keys'][$tree['sub'][$cur][$i]]))
 		{
 			$wdisplay = build_index($tree['sub'][$cur][$i], $cat_break, $forum_moderators, $level + 1, $max_level, $keys);
 			if ($wdisplay)
@@ -1526,7 +1381,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	}
 
 	// root level footer
-	if (($board_config['split_cat'] && $cat_break && $real_level == 0) || ((!$board_config['split_cat'] || !$cat_break) && $real_level == -1))
+	if (($config['split_cat'] && $cat_break && $real_level == 0) || ((!$config['split_cat'] || !$cat_break) && $real_level == -1))
 	{
 		$template->assign_block_vars('catrow', array());
 		$template->assign_block_vars('catrow.tablefoot', array());
@@ -1540,9 +1395,11 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 //--------------------------------------------------------------------------------------------------
 function display_index($cur = 'Root')
 {
-	global $board_config, $template, $userdata, $lang, $db, $nav_links;
-	global $images, $nav_separator, $nav_cat_desc;
+	global $db, $config, $template, $images, $userdata, $lang;
+	global $nav_separator, $nav_cat_desc;
 	global $tree;
+
+	$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 
 	$template->set_filenames(array('index' => 'index_box.tpl'));
 
@@ -1553,11 +1410,11 @@ function display_index($cur = 'Root')
 	{
 		if ($tree['type'][$idx] == POST_FORUM_URL)
 		{
-			for ($i = 0; $i < count($data['user_id']); $i++)
+			for ($i = 0; $i < sizeof($data['user_id']); $i++)
 			{
-				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid(PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $data['user_id'][$i]) . '">' . $data['username'][$i] . '</a>';
+				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $data['user_id'][$i]) . '">' . $data['username'][$i] . '</a>';
 			}
-			for ($i = 0; $i < count($data['group_id']); $i++)
+			for ($i = 0; $i < sizeof($data['group_id']); $i++)
 			{
 				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
 			}
@@ -1566,7 +1423,7 @@ function display_index($cur = 'Root')
 
 	// let's dump all of this on the template
 	$keys = array();
-	$display = build_index($cur, $board_config['split_cat'], $forum_moderators, -1, -1, $keys);
+	$display = build_index($cur, $config['split_cat'], $forum_moderators, -1, -1, $keys);
 
 	// constants
 	$template->assign_vars(array(
@@ -1590,17 +1447,19 @@ function display_index($cur = 'Root')
 //--------------------------------------------------------------------------------------------------
 // make_cat_nav_tree() : build the nav sentence
 //--------------------------------------------------------------------------------------------------
-function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
+function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'nav')
 {
-	global $tree, $board_config, $userdata, $db, $nav_separator;
+	global $tree, $config, $userdata, $db, $nav_separator;
 	global $global_orig_word, $global_replacement_word;
+
+	$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
 
 	// Settings this to false will add the topic title to breadcrumbs
 	$skip_topics = true;
 
 	$kb_mode_append = '';
 	$kb_mode_var = request_var('kb', '');
-	if (!empty($kb_mode_var) && ($userdata['bot_id'] == false))
+	if (!empty($kb_mode_var) && !$userdata['is_bot'])
 	{
 		if ($kb_mode_var == 'on')
 		{
@@ -1617,61 +1476,36 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 	$id = intval(substr($cur, 1));
 	$topic_title = '';
 	$fcur = '';
-	switch ($type)
+	if (($type == POST_TOPIC_URL) || ($type == POST_POST_URL))
 	{
-		case POST_TOPIC_URL:
-			$sql = "SELECT forum_id, topic_title, title_compl_infos
-							FROM " . TOPICS_TABLE . "
-							WHERE topic_id = $id
-							LIMIT 1";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not query topics information', '', __LINE__, __FILE__, $sql);
-			}
+		if ($type == POST_TOPIC_URL)
+		{
+			$sql_where = " WHERE t.topic_id = " . $id . " LIMIT 1";
+		}
+		elseif ($type == POST_POST_URL)
+		{
+			$sql_from = ", " . POSTS_TABLE . " p";
+			$sql_where = " WHERE t.topic_id = p.topic_id AND p.post_id = " . $id . " LIMIT 1";
+		}
+
+		if (empty($meta_content['forum_id']) || empty($meta_content['topic_title']))
+		{
+			$sql = "SELECT t.forum_id, t.topic_title, t.title_compl_infos
+							FROM " . TOPICS_TABLE . " t" . $sql_from . $sql_where;
+			$result = $db->sql_query($sql);
+
 			if ($row = $db->sql_fetchrow($result))
 			{
-				$fcur = POST_FORUM_URL . $row['forum_id'];
-				$topic_title = $row['topic_title'];
-				$topic_title = (empty($row['title_compl_infos'])) ? $topic_title : $row['title_compl_infos'] . ' ' . $topic_title;
-				if (!$userdata['user_allowswearywords'])
-				{
-					$orig_word = array();
-					$replacement_word = array();
-					obtain_word_list($orig_word, $replacement_word);
-				}
-				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-				{
-					$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
-				}
+				$meta_content['forum_id'] = $row['forum_id'];
+				$meta_content['topic_title'] = $row['topic_title'];
+				$meta_content['title_compl_infos'] = $row['title_compl_infos'];
 			}
-			break;
-		case POST_POST_URL:
-			$sql = "SELECT t.forum_id, t.topic_title, title_compl_infos
-							FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
-							WHERE t.topic_id = p.topic_id
-								AND post_id = $id
-							LIMIT 1";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not query posts information', '', __LINE__, __FILE__, $sql);
-			}
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$fcur = POST_FORUM_URL . $row['forum_id'];
-				$topic_title = $row['topic_title'];
-				$topic_title = (empty($row['title_compl_infos'])) ? $topic_title : $row['title_compl_infos'] . $topic_title;
-				if (!$userdata['user_allowswearywords'])
-				{
-					$orig_word = array();
-					$replacement_word = array();
-					obtain_word_list($orig_word, $replacement_word);
-				}
-				if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-				{
-					$topic_title = preg_replace($orig_word, $replacement_word, $topic_title);
-				}
-			}
-			break;
+			$db->sql_freeresult($result);
+		}
+
+		$fcur = POST_FORUM_URL . $meta_content['forum_id'];
+		$topic_title = (empty($meta_content['title_compl_infos']) ? '' : ($meta_content['title_compl_infos'] . ' ')) . $meta_content['topic_title'];
+		$topic_title = censor_text($topic_title);
 	}
 
 	// keep the compliancy with prec versions
@@ -1701,33 +1535,33 @@ function make_cat_nav_tree($cur, $pgm = '', $nav_class = 'nav')
 				$field_name = get_object_lang($cur, 'name');
 				$param_type = POST_CAT_URL;
 				$param_value = $tree['id'][$CH_this];
-				$pgm_name = FORUM_MG;
+				$pgm_name = CMS_PAGE_FORUM;
 				break;
 			case POST_FORUM_URL:
 				$field_name = get_object_lang($cur, 'name');
 				$param_type = POST_FORUM_URL;
 				$param_value = $tree['id'][$CH_this];
-				$pgm_name = VIEWFORUM_MG;
+				$pgm_name = CMS_PAGE_VIEWFORUM;
 				break;
 			case POST_TOPIC_URL:
 				$is_topic = true;
 				$field_name = $topic_title;
 				$param_type = POST_TOPIC_URL;
 				$param_value = $id;
-				$pgm_name = VIEWTOPIC_MG ;
+				$pgm_name = CMS_PAGE_VIEWTOPIC ;
 				break;
 			case POST_POST_URL:
 				$is_topic = true;
 				$field_name = $topic_title;
 				$param_type = POST_POST_URL;
 				$param_value = $id . '#p' . $id;
-				$pgm_name = VIEWTOPIC_MG;
+				$pgm_name = CMS_PAGE_VIEWTOPIC;
 				break;
 			default :
 				$field_name = '';
 				$param_type = '';
 				$param_value = '';
-				$pgm_name = FORUM_MG;
+				$pgm_name = CMS_PAGE_FORUM;
 				break;
 		}
 		if ($pgm != '')
@@ -1788,7 +1622,7 @@ function get_tree_option($cur = '', $all = false)
 	$last_level = -1;
 	$res = '';
 
-	for ($i = 0; $i < count($keys['id']); $i++)
+	for ($i = 0; $i < sizeof($keys['id']); $i++)
 	{
 		// only get object that are not forum links type
 		if (empty($tree['type'][$keys['idx'][$i]]) || empty($tree['data'][$keys['idx'][$i]]['forum_link']) || ($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL))
@@ -1843,53 +1677,32 @@ function get_tree_option($cur = '', $all = false)
 	return $res;
 }
 
-//--------------------------------------------------------------------------------------------------
-// jumpbox() : replace the original phpBB make_jumpbox()
-//--------------------------------------------------------------------------------------------------
-function jumpbox($action, $match_forum_id = 0)
+/**
+* Get Forums ID for several purpose
+*/
+function get_forums_ids($forum_types, $from_cache = false, $all_fields = false, $auth_view = false, $auth_read = false)
 {
-	global $template, $userdata, $lang, $db, $nav_links, $SID;
-	global $links;
+	global $db, $cache;
 
-	// build the jumpbox
-	$boxstring  = '<select name="selected_id" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }">';
-	$boxstring .= get_tree_option(POST_FORUM_URL . $match_forum_id);
-	$boxstring .= '</select>';
+	$forums_array = array();
+	$forum_types = (empty($forum_types) || !is_array($forum_types)) ? array(FORUM_POST) : $forum_types;
+	$sql_what = $all_fields ? "*" : "forum_id, forum_name";
+	$sql_append = '';
+	$sql_append .= $auth_view ? (" AND auth_view = " . AUTH_ALL) : '';
+	$sql_append .= $auth_read ? (" AND auth_read = " . AUTH_ALL) : '';
+	$sql = "SELECT " . $sql_what . "
+		FROM " . FORUMS_TABLE . "
+		WHERE " . $db->sql_in_set('forum_type', $forum_types) . $sql_append . "
+		ORDER BY forum_order";
+	$result = $from_cache ? $db->sql_query($sql, 0, 'forums_', FORUMS_CACHE_FOLDER) : $db->sql_query($sql);
 
-	// add SID if missing
-	/*
-	if (!empty($SID))
+	while ($row = $db->sql_fetchrow($result))
 	{
-		$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+		$forums_array[] = $row;
 	}
-	*/
-	$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$db->sql_freeresult($result);
 
-	// dump this to template
-	$template->set_filenames(array('jumpbox' => 'jumpbox.tpl'));
-	$template->assign_vars(array(
-		'L_GO' => $lang['Go'],
-		'L_JUMP_TO' => $lang['Jump_to'],
-		'L_SELECT_FORUM' => $lang['Select_forum'],
-
-		'S_JUMPBOX_SELECT' => $boxstring,
-		'S_JUMPBOX_ACTION' => append_sid($action)
-		)
-	);
-	$template->assign_var_from_handle('JUMPBOX', 'jumpbox');
-
-	return;
-}
-
-//--------------------------------------------------------------------------------------------------
-// selectbox() : replace the original phpBB function_admin/make_forum_select()
-//--------------------------------------------------------------------------------------------------
-function selectbox($box_name, $ignore_forum = false, $select_forum = '', $all = false)
-{
-	$s_id = ($select_forum != '') ? POST_FORUM_URL . $select_forum : '';
-	$s_list = get_tree_option($select_forum, $all);
-	$res = '<select name="' . $box_name . '">' . $s_list . '</select>';
-	return $res;
+	return $forums_array;
 }
 
 ?>

@@ -1865,7 +1865,7 @@ $lang = array_merge($lang, array(
 	'LOGS_CARD_BAN' => 'banned',
 	'LOGS_CARD_WARN' => 'warned',
 	'LOGS_CARD_UNBAN' => 'unbanned',
-	'LOGS_ADMIN_CAT_ADD' => 'added a forum category',
+	'LOGS_ADMIN_CAT_ADD' => 'added a forum',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP' => 'DB backup %s',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_full' => 'full',
 	'LOGS_ADMIN_DB_UTILITIES_BACKUP_structure' => 'structure only',
@@ -1941,6 +1941,27 @@ $lang = array_merge($lang, array(
 	'ACTIONS' => 'Actions',
 	'EDIT' => 'Edit',
 	'DELETE' => 'Delete',
+
+	// Tickets Submission - BEGIN
+	'TICKETS_EMAILS' => 'Email Tickets',
+	'TICKETS_EMAILS_EXPLAIN' => 'This section lets you specify several categories which could be chosen in "Contact Us" page when sending emails. For each category one or more email address can be specified, so the user will be allowed to choose a specific subject and the email will be sent to the linked email addresses.',
+	'TICKET_CAT' => 'Category',
+	'TICKET_CAT_TITLE' => 'Title',
+	'TICKET_CAT_DES' => 'Description',
+	'TICKET_CAT_EMAILS' => 'Email Addresses',
+	'TICKET_CAT_EMAILS_EXPLAIN' => 'Insert here all email addresses you want the email to be sent.<br />Separate all addresses by semicolon (a@a.com;b@b.com;c@c.com).',
+	'TICKETS_NO_TICKETS' => 'No Tickets',
+	'TICKETS_NO_TICKET_SEL' => 'No ticket selected',
+	'TICKETS_NO_TICKET_TITLE' => 'You have to enter at least title field',
+	'TICKETS_DB_ADD' => 'Add Category',
+	'TICKETS_DB_ADDED' => 'Category Added Successfully',
+	'TICKETS_DB_UPDATED' => 'Category Updated Successfully',
+	'TICKETS_DB_DELETED' => 'Category Deleted Successfully',
+	'TICKETS_DB_CLICK' => 'Click %sHere%s to return to Email Tickets',
+	// Tickets Submission - END
+
+	'FORUM_LIMIT_EDIT_TIME' => 'Limit User Post Edit Time',
+	'FORUM_LIMIT_EDIT_TIME_EXPLAIN' => 'By enabling this option users will be allowed to edit own messages only within the limit set in Posts configuration of Icy Phoenix (ACP &raquo; Configuration &raquo; Icy Phoenix &raquo; Posting And Messages)',
 
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'MG_Configuration' => 'Icy Phoenix Settings',
@@ -2034,12 +2055,13 @@ $lang['110_Autolinks'] = 'Autolinks'; // admin_autolinks.php
 $lang['120_Ads'] = 'Ads &amp; Sponsors'; // admin_ads.php
 $lang['130_Mass_Email'] = 'Mass Email'; // admin_mass_email.php
 $lang['140_Mega_Mail'] = 'Mass Email / PM'; // admin_megamail.php
-$lang['150_FTR_Config'] = 'FTR'; // admin_force_read.php
-$lang['160_FTR_Users'] = 'FTR User'; // admin_force_read.php
+$lang['150_FTR_Config'] = 'Force Topic Read'; // admin_force_read.php
+$lang['160_FTR_Users'] = 'Force Topic Read Users'; // admin_force_read.php
 $lang['170_Smilies'] = 'Smileys'; // admin_smilies.php
 $lang['180_Word_Censor'] = 'Word Censor'; // admin_words.php
 $lang['200_Notepad'] = 'Admin Notepad'; // admin_notepad.php
 $lang['210_Help_Desk'] = 'Help Desk'; // admin_helpdesk.php
+$lang['220_Tickets_Emails'] = 'Emails Categories'; // admin_tickets.php
 $lang['240_Replace_title'] = 'Replace In Posts'; // admin_replace.php
 
 // Forum
@@ -2182,6 +2204,27 @@ $lang['120_PHP_INFO'] = 'PHP Info'; // admin_phpinfo.php
 $lang['130_GD_Info'] = 'GD Info'; // admin_gd_info.php
 $lang['140_HTTP_REF'] = 'HTTP Referrers'; // admin_referrers.php
 $lang['150_Google_BOT'] = 'Google Bot Detector'; // admin_google_bot_detector.php
+
+// Activity
+$lang['3000_ACTIVITY'] = 'Activity / Games'; // admin_activity.php, admin_ina_ban.php, admin_ina_bulk_add.php, admin_ina_category.php, admin_ina_disable.php, admin_ina_in_un.php, admin_ina_mass.php, admin_ina_xtras.php
+$lang['110_Configuration'] = 'Configuration'; // admin_activity.php
+$lang['120_Add_Game'] = 'Add Game'; // admin_activity.php
+$lang['130_Edit_Games'] = 'Edit Games'; // admin_activity.php
+$lang['140_User_Ban'] = 'Ban Users'; // admin_ina_ban.php
+$lang['150_Bulk_Add_Games'] = 'Bulk Add Games'; // admin_ina_bulk_add.php
+$lang['160_Category'] = 'Categories Management'; // admin_ina_category.php
+$lang['170_Char_Settings'] = 'Chars Settings'; // admin_ina_char.php
+$lang['180_Hide_Show_Games'] = 'Show/Hide Games'; // admin_ina_disable.php
+$lang['190_DB_Adjustments'] = 'DB Adjustments'; // admin_ina_in_un.php
+$lang['200_Mass_Change'] = 'Mass Configuration'; // admin_ina_mass.php
+$lang['210_Scores_Editor'] = 'Edit Hi-Scores'; // admin_ina_scores.php
+$lang['220_Xtras'] = 'Extra Settings'; // admin_ina_xtras.php
+$lang['230_Check_Games'] = 'Games List'; // admin_ina_xtras.php
+
+// Cash
+$lang['3100_CASH'] = 'Cash / Points'; // admin_cash.php
+$lang['110_Cash_Admin'] = 'Cash Management'; // admin_cash.php
+$lang['120_Cash_Help'] = 'Help'; // admin_cash.php
 
 // ####################### [ ACP Navigation END ] #######################
 

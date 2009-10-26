@@ -15,10 +15,10 @@ if (!defined('IN_ICYPHOENIX'))
 
 // SETTINGS - BEGIN
 $mg_themes_array = array('floreal', 'icy_phoenix', 'mg_themes', 'morpheus', 'pearl', 'squared');
-$templates_array = array('ca_aphrodite', 'default', 'fk_themes', 'floreal', 'icy_phoenix', 'mg_themes', 'morpheus', 'pearl', 'prosilver', 'squared');
+$templates_array = array('ca_aphrodite', 'default', 'fk_themes', 'floreal', 'icy_phoenix', 'mg_themes', 'morpheus', 'pearl', 'prosilver_ip', 'squared');
 
 $template_colors_array = array();
-for ($i = 0; $i < count($templates_array); $i++)
+for ($i = 0; $i < sizeof($templates_array); $i++)
 {
 	$source_folder = IP_ROOT_PATH . 'templates/' . $templates_array[$i] . '/images/';
 	$directory = @opendir($source_folder);
@@ -49,6 +49,8 @@ $output_paths_lang = array('lang_catala/', 'lang_dutch/', 'lang_english/', 'lang
 $files_array = array(
 	'extension.inc',
 	'album_pclzip_lib.php',
+	'changelang.php',
+	'changestyle.php',
 	'cpl_menu.php',
 	'cms_auth.php',
 	'db_generator.php',
@@ -58,23 +60,24 @@ $files_array = array(
 	'uptime.php',
 	'usercp.php',
 
-	'adm/xs2_head.php',
-	'adm/xs_avatar_generator.cfg',
-	'adm/xs_direct_img.cfg',
-	'adm/xs_ipb_profile.cfg',
-	'adm/xs_lo_fi_mod.cfg',
-	'adm/xs_news.cfg',
-
 	'adm/admin_board_headers_banners.php',
 	'adm/admin_board_main.php',
 	'adm/admin_board_posting.php',
 	'adm/admin_board_queries.php',
 	'adm/admin_color_groups.php',
 	'adm/admin_db_generator.php',
+	'adm/admin_forums.php',
 	'adm/admin_lang_extend.php',
 	'adm/admin_mass_email.php',
 	'adm/admin_similar_topics.php',
 	'adm/pa_block_config.php',
+
+	'adm/xs2_head.php',
+	'adm/xs_avatar_generator.cfg',
+	'adm/xs_direct_img.cfg',
+	'adm/xs_ipb_profile.cfg',
+	'adm/xs_lo_fi_mod.cfg',
+	'adm/xs_news.cfg',
 
 	'docs/hl/Color Groups.hl',
 	'docs/hl/DB Generator.hl',
@@ -91,18 +94,24 @@ $files_array = array(
 	'includes/def_themes.php',
 	'includes/def_tree.php',
 	'includes/def_words.php',
+	'includes/functions_admin_extra.php',
 	'includes/functions_archives.php',
 	'includes/functions_cache.php',
+	'includes/functions_cms.php',
 	'includes/functions_color_groups.php',
 	'includes/functions_db_backup.php',
 	'includes/functions_mg_files.php',
+	'includes/functions_mg_ranks.php',
 	'includes/functions_mg_users.php',
 	'includes/functions_module.php',
 	'includes/functions_portal.php',
 	'includes/functions_privmsgs.php',
 	'includes/functions_privmsgs_admin.php',
 	'includes/functions_profile_fields.php',
-	'includes/news_common.php',
+	'includes/lang_extend_mac.php',
+	'includes/meta_parsing.php',
+	'includes/page_header.php',
+	'includes/page_tail.php',
 	'includes/optimize_database_cron.php',
 	'includes/phpbb_template.php',
 
@@ -159,6 +168,9 @@ $files_array = array(
 
 	'includes/db/mysql4.php',
 
+	'includes/upi2db/upi2db_orig_all.php',
+	'includes/upi2db/upi2db_orig_full.php',
+	'includes/upi2db/upi2db_orig_ip.php',
 	'includes/upi2db/upi2db_orig_xs.php',
 
 	'templates/common/acp/admin_similar_topics_body.tpl',
@@ -167,8 +179,11 @@ $files_array = array(
 	'templates/common/acp/board_config_main_body.tpl',
 	'templates/common/acp/board_config_posting_body.tpl',
 	'templates/common/acp/board_config_queries.tpl',
+	'templates/common/acp/category_edit_body.tpl',
 	'templates/common/acp/color_groups_manager.tpl',
 	'templates/common/acp/color_groups_user_list.tpl',
+	'templates/common/acp/forum_admin_body.tpl',
+	'templates/common/acp/forum_edit_body.tpl',
 	'templates/common/acp/guestbook_config_body.tpl',
 	'templates/common/acp/lang_extend_body.tpl',
 	'templates/common/acp/lang_extend_def.tpl',
@@ -191,7 +206,7 @@ $files_array = array(
 );
 // OLD FILES - END
 
-for ($i = 0; $i < count($languages_array); $i++)
+for ($i = 0; $i < sizeof($languages_array); $i++)
 {
 	$files_array[] = 'language/lang_' . $languages_array[$i] . '/db_generator.tpl';
 
@@ -207,7 +222,7 @@ for ($i = 0; $i < count($languages_array); $i++)
 	$files_array[] = 'language/lang_' . $languages_array[$i] . '/lang_extend_topic_calendar.php';
 }
 
-for ($i = 0; $i < count($templates_array); $i++)
+for ($i = 0; $i < sizeof($templates_array); $i++)
 {
 	$files_array[] = 'templates/' . $templates_array[$i] . '/breadcrumbs.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/breadcrumbs_a.tpl';
@@ -236,14 +251,14 @@ for ($i = 0; $i < count($templates_array); $i++)
 	$files_array[] = 'templates/' . $templates_array[$i] . '/xs/xs_topic.tpl';
 }
 
-for ($i = 0; $i < count($templates_array); $i++)
+for ($i = 0; $i < sizeof($templates_array); $i++)
 {
-	for ($j = 0; $j < count($template_colors_array[$templates_array[$i]]); $j++)
+	for ($j = 0; $j < sizeof($template_colors_array[$templates_array[$i]]); $j++)
 	{
 		$current_full_path = 'templates/' . $templates_array[$i] . '/images/' . $template_colors_array[$templates_array[$i]][$j] . '/';
 		if (is_dir(IP_ROOT_PATH . $current_full_path))
 		{
-			for ($k = 0; $k < count($extensions_array); $k++)
+			for ($k = 0; $k < sizeof($extensions_array); $k++)
 			{
 				if (!in_array($templates_array[$i], $mg_themes_array) && ($extensions_array[$k] == 'png'))
 				{
@@ -330,7 +345,7 @@ for ($i = 0; $i < count($templates_array); $i++)
 					$input_images = array('arrow', 'arrow_down', 'arrow_down_alt', 'arrow_down_blue', 'arrow_down_rounded', 'arrow_down_rounded', 'arrow_left', 'arrow_left_alt', 'arrow_left_blue', 'arrow_left_rounded', 'arrow_left_rounded', 'arrow_next_blue', 'arrow_previous_blue', 'arrow_right', 'arrow_right_alt', 'arrow_right_blue', 'arrow_right_rounded', 'arrow_right_rounded', 'arrow_up', 'arrow_up_alt', 'arrow_up_blue', 'arrow_up_rounded', 'arrow_up_rounded', 'cat_block', 'forum_link', 'forum_nor_ar_read', 'forum_nor_locked_read', 'forum_nor_read', 'forum_nor_unread', 'forum_sub_ar_read', 'forum_sub_locked_read', 'forum_sub_locked_unread', 'forum_sub_read', 'forum_sub_unread', 'icon_aim2', 'icon_down_arrow', 'icon_download2', 'icon_email2', 'icon_empty_squared', 'icon_hidden2', 'icon_icq2', 'icon_ip2', 'icon_jabber2', 'icon_minicat', 'icon_minicat_lock', 'icon_minicat_new', 'icon_minilink', 'icon_minipost', 'icon_minipost_lock', 'icon_minipost_new', 'icon_msn2', 'icon_offline2', 'icon_online2', 'icon_post', 'icon_post_new', 'icon_reply', 'icon_reply_new', 'icon_skype2', 'icon_tiny_topic', 'icon_topic_reported', 'icon_topic_unapproved', 'icon_up_arrow', 'icon_view2', 'icon_yim2', 'icon_yim2', 'maximise', 'maximise_', 'menu_sep', 'menu_sep_np', 'minimise', 'minimise_', 'pm_inbox', 'pm_outbox', 'pm_read', 'pm_replied', 'pm_savebox', 'pm_sentbox', 'pm_unread', 'post_next', 'post_next_', 'post_prev', 'post_prev_', 'topic_ann_locked_read', 'topic_ann_locked_read_own', 'topic_ann_locked_unread', 'topic_ann_locked_unread_own', 'topic_ann_read', 'topic_ann_read_own', 'topic_ann_unread', 'topic_ann_unread_own', 'topic_ar_read', 'topic_glo_locked_read', 'topic_glo_locked_read_own', 'topic_glo_locked_unread', 'topic_glo_locked_unread_own', 'topic_glo_read', 'topic_glo_read_own', 'topic_glo_unread', 'topic_glo_unread_own', 'topic_hot_locked_read', 'topic_hot_locked_read_own', 'topic_hot_locked_unread', 'topic_hot_locked_unread_own', 'topic_hot_read', 'topic_hot_read_own', 'topic_hot_unread', 'topic_hot_unread_own', 'topic_imp_locked_read', 'topic_imp_locked_read_own', 'topic_imp_locked_unread', 'topic_imp_locked_unread_own', 'topic_imp_read', 'topic_imp_read_own', 'topic_imp_unread', 'topic_imp_unread_own', 'topic_moved', 'topic_nor_locked_read', 'topic_nor_locked_read_own', 'topic_nor_locked_unread', 'topic_nor_locked_unread_own', 'topic_nor_read', 'topic_nor_read_own', 'topic_nor_unread', 'topic_nor_unread_own', 'upi2db_mark', 'upi2db_unmark', 'upi2db_unread');
 
 					$output_images = array();
-					for ($n = 0; $n < count($input_images); $n++)
+					for ($n = 0; $n < sizeof($input_images); $n++)
 					{
 						$output_images[$n] = $buttons_folder . $input_images[$n];
 					}
@@ -341,7 +356,7 @@ for ($i = 0; $i < count($templates_array); $i++)
 						copy(IP_ROOT_PATH . $current_full_path . 'index.html', IP_ROOT_PATH . $current_full_path . $buttons_folder . 'index.html');
 					}
 
-					for ($m = 0; $m < count($input_images); $m++)
+					for ($m = 0; $m < sizeof($input_images); $m++)
 					{
 						$input_image = $input_images[$m];
 						$output_image = $output_images[$m];
@@ -360,7 +375,7 @@ for ($i = 0; $i < count($templates_array); $i++)
 
 					$output_images_lang = array('modcp_announce', 'button_pm_new', 'button_pm_reply', 'button_download', 'modcp_global', 'icon_im_aim', 'icon_user_album', 'icon_post_approve', 'icon_post_censor', 'icon_post_delete', 'icon_post_download', 'icon_post_edit', 'icon_user_email', 'icon_user_email2', 'modcp_global_announce_l', 'icon_user_hidden', 'icon_im_icq', 'icon_user_ip', 'icon_im_jabber', 'icon_im_msn', 'icon_user_offline', 'icon_post_offtopic', 'icon_user_online', 'button_pa_download', 'button_pa_email', 'button_pa_post_comment', 'button_pa_rate', 'button_pa_upload', 'icon_user_pm', 'icon_user_profile', 'icon_post_quick_quote', 'icon_post_quote', 'icon_user_search', 'icon_im_skype', 'modcp_sticky_l', 'icon_post_unapprove', 'icon_post_view', 'icon_user_www', 'icon_im_yahoo', 'button_jupload_pic', 'button_locked', 'button_manage_pic', 'button_new_post', 'button_new_topic', 'modcp_normal', 'button_normal_view', 'button_pm_reply_small', 'button_post_reply', 'button_quick_reply', 'button_show_all_comments', 'button_show_all_pics', 'button_show_all_ratings', 'button_showall', 'button_simple_view', 'modcp_sticky', 'button_thanks', 'modcp_bin', 'modcp_copy', 'modcp_delete', 'modcp_lock', 'modcp_merge', 'modcp_move', 'modcp_split', 'modcp_unlock', 'button_upload', 'button_upload_pic');
 
-					for ($m = 0; $m < count($input_images); $m++)
+					for ($m = 0; $m < sizeof($input_images); $m++)
 					{
 						$input_image = $input_images[$m];
 						$output_image = $output_images[$m];
@@ -369,11 +384,11 @@ for ($i = 0; $i < count($templates_array); $i++)
 						$action_result = (file_exists($input_file) ? rename($input_file, $output_file) : false);
 					}
 
-					for ($l = 0; $l < count($input_paths_lang); $l++)
+					for ($l = 0; $l < sizeof($input_paths_lang); $l++)
 					{
 						if (is_dir(IP_ROOT_PATH . $current_full_path . $input_paths_lang[$l]))
 						{
-							for ($m = 0; $m < count($input_images_lang); $m++)
+							for ($m = 0; $m < sizeof($input_images_lang); $m++)
 							{
 								$input_file = IP_ROOT_PATH . $current_full_path . $input_paths_lang[$l] . $input_images_lang[$m] . '.' . $extensions_array[$k];
 								$output_file = IP_ROOT_PATH . $current_full_path . $output_paths_lang[$l] . $output_images_lang[$m] . '.' . $extensions_array[$k];
@@ -388,9 +403,9 @@ for ($i = 0; $i < count($templates_array); $i++)
 					$buttons_folder = 'buttons/';
 					$buttons_types = array('glo', 'ann', 'imp', 'hot');
 					$input_images = array('locked_read', 'locked_read_own', 'locked_unread', 'locked_unread_own', 'read', 'read_own', 'unread', 'unread_own');
-					for ($l = 0; $l < count($buttons_types); $l++)
+					for ($l = 0; $l < sizeof($buttons_types); $l++)
 					{
-						for ($m = 0; $m < count($input_images); $m++)
+						for ($m = 0; $m < sizeof($input_images); $m++)
 						{
 							$input_image = 'topic_nor_' . $input_images[$m] . '.' . $extensions_array[$k];
 							$output_image = 'topic_' . $buttons_types[$l] . '_' . $input_images[$m] . '.' . $extensions_array[$k];
@@ -408,11 +423,11 @@ for ($i = 0; $i < count($templates_array); $i++)
 				$input_images_lang = array('modcp_split');
 				$output_images_lang = array('modcp_copy');
 
-				for ($l = 0; $l < count($input_paths_lang); $l++)
+				for ($l = 0; $l < sizeof($input_paths_lang); $l++)
 				{
 					if (is_dir(IP_ROOT_PATH . $current_full_path . $input_paths_lang[$l]))
 					{
-						for ($m = 0; $m < count($input_images_lang); $m++)
+						for ($m = 0; $m < sizeof($input_images_lang); $m++)
 						{
 							$input_file = IP_ROOT_PATH . $current_full_path . $input_paths_lang[$l] . $input_images_lang[$m] . '.' . $extensions_array[$k];
 							$output_file = IP_ROOT_PATH . $current_full_path . $output_paths_lang[$l] . $output_images_lang[$m] . '.' . $extensions_array[$k];
@@ -431,7 +446,7 @@ for ($i = 0; $i < count($templates_array); $i++)
 /*
 $old_pafile_folders = array(IP_ROOT_PATH . 'pafiledb/uploads/', IP_ROOT_PATH . 'pafiledb/images/screenshots/');
 $new_pafile_folders = array(IP_ROOT_PATH . 'downloads/', IP_ROOT_PATH . 'files/screenshots/');
-for ($pac = 0; $pac < count($old_pafile_folders); $pac++)
+for ($pac = 0; $pac < sizeof($old_pafile_folders); $pac++)
 {
 	if (is_dir($old_pafile_folders[$pac] . $file) && is_dir($new_pafile_folders[$pac] . $file))
 	{

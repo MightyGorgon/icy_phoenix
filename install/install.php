@@ -17,9 +17,9 @@
 
 // Just in case these are needed...
 /*
-$board_config['server_name'] = 'http://www.icyphoenix.com';
-$board_config['server_port'] = '';
-$board_config['script_path'] = '';
+$config['server_name'] = 'http://www.icyphoenix.com';
+$config['server_port'] = '';
+$config['script_path'] = '';
 */
 
 // MANUAL CONFIG - END
@@ -72,8 +72,8 @@ if (!isset($_POST['install_step']))
 
 			if (!$userdata['session_logged_in'])
 			{
-				if (!defined('LOGIN_MG')) define('LOGIN_MG', 'login.' . PHP_EXT);
-				redirect(append_sid(LOGIN_MG . '?redirect=' . THIS_PATH . THIS_FILE));
+				if (!defined('CMS_PAGE_LOGIN')) define('CMS_PAGE_LOGIN', 'login.' . PHP_EXT);
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . THIS_PATH . THIS_FILE));
 				exit;
 			}
 
@@ -96,7 +96,7 @@ if (!isset($_POST['install_step']))
 			@set_time_limit(0);
 			$mem_limit = $ip_functions->check_mem_limit();
 			@ini_set('memory_limit', $mem_limit);
-			$language = $board_config['default_lang'];
+			$language = $config['default_lang'];
 			$lang_request = $ip_functions->request_var('lang', '');
 			if (!empty($lang_request) && preg_match('#^[a-z_]+$#', $lang_request))
 			{
@@ -284,11 +284,12 @@ else
 		$sql_query = $ip_sql->remove_remarks($sql_query);
 		$sql_query = $ip_sql->split_sql_file($sql_query, $delimiter);
 
-		for ($i = 0; $i < count($sql_query); $i++)
+		for ($i = 0; $i < sizeof($sql_query); $i++)
 		{
 			if (trim($sql_query[$i]) != '')
 			{
-				if (!($result = $db->sql_query($sql_query[$i])))
+				$result = $db->sql_query($sql_query[$i]);
+				if (!$result)
 				{
 					$error = $db->sql_error();
 					$page_framework->page_header($lang['Welcome_install'], $lang['Install'], '');
@@ -306,11 +307,12 @@ else
 		$sql_query = $ip_sql->remove_remarks($sql_query);
 		$sql_query = $ip_sql->split_sql_file($sql_query, $delimiter_basic);
 
-		for($i = 0; $i < count($sql_query); $i++)
+		for($i = 0; $i < sizeof($sql_query); $i++)
 		{
 			if (trim($sql_query[$i]) != '')
 			{
-				if (!($result = $db->sql_query($sql_query[$i])))
+				$result = $db->sql_query($sql_query[$i]);
+				if (!$result)
 				{
 					$error = $db->sql_error();
 					$page_framework->page_header($lang['Welcome_install'], $lang['Install'], '');
@@ -352,11 +354,12 @@ else
 			'http://' . $server_name . $script_path
 		);
 
-		for ($i = 0; $i < count($tables_ary); $i++)
+		for ($i = 0; $i < sizeof($tables_ary); $i++)
 		{
 			$sql = "INSERT INTO " . $table_prefix . $tables_ary[$i] . " (config_name, config_value)
 				VALUES ('" . $cnames_ary[$i] . "', '" . $cvalues_ary[$i] . "')";
-			if (!$db->sql_query($sql))
+			$result = $db->sql_query($sql);
+			if (!$result)
 			{
 				$error .= "Could not insert data in config :: " . $sql . " :: " . __LINE__ . " :: " . __FILE__ . '<br /><br />';
 			}
@@ -375,7 +378,8 @@ else
 			$sql = "UPDATE " . $table_prefix . "config
 				SET config_value = '" . $config_value . "'
 				WHERE config_name = '" . $config_name . "'";
-			if (!$db->sql_query($sql))
+			$result = $db->sql_query($sql);
+			if (!$result)
 			{
 				$error .= "Could not update config table :: " . $sql . " :: " . __LINE__ . " :: " . __FILE__ . '<br /><br />';
 			}
@@ -386,14 +390,16 @@ else
 		$sql = "UPDATE " . $table_prefix . "users
 			SET username = '" . str_replace("\'", "''", $admin_name) . "', user_password='" . str_replace("\'", "''", $admin_pass_md5) . "', user_lang = '" . str_replace("\'", "''", $language) . "', user_email='" . str_replace("\'", "''", $board_email) . "'
 			WHERE username = 'Admin'";
-		if (!$db->sql_query($sql))
+		$result = $db->sql_query($sql);
+		if (!$result)
 		{
 			$error .= "Could not update admin info :: " . $sql . " :: " . __LINE__ . " :: " . __FILE__ . '<br /><br />';
 		}
 
 		$sql = "UPDATE " . $table_prefix . "users
 			SET user_regdate = " . time();
-		if (!$db->sql_query($sql))
+		$result = $db->sql_query($sql);
+		if (!$result)
 		{
 			$error .= "Could not update user registration date :: " . $sql . " :: " . __LINE__ . " :: " . __FILE__ . '<br /><br />';
 		}

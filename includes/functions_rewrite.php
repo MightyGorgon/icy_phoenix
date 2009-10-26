@@ -20,98 +20,8 @@ function make_url_friendly($url)
 	global $lang;
 
 	// Remove Re: in case of replies
-	$url = strtolower(str_replace('Re: ', '', strip_tags($url)));
-
-	// Remove all HTML tags
-	$url = strip_tags($url);
-	// Convert &
-	$url = str_replace(array('&amp;', '&nbsp;', '&quot;'), array('&', ' ', ''), $url);
-	// Decode all HTML entities
-	$url = html_entity_decode($url, ENT_COMPAT, $lang['ENCODING']);
-
-	// Some common chars replacements
-	// are we sure we may replace "&"???
-	$find = array(' ', '&', '@', '©', '®', '€', '$', '£');
-	$repl = array('-', 'and', 'at', 'copyright', 'rights', 'euro', 'dollar', 'pound');
-	$url = str_replace($find, $repl, $url);
-
-	// Attempt to convert all HTML numeric entities.
-	if (preg_match('@\&\#\d+;@s', $url))
-	{
-		$url = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $url);
-	}
-
-	// Convert back all HTML entities into their aliases
-	$url = htmlentities($url, ENT_COMPAT, $lang['ENCODING']);
-
-	// Replace some known HTML entities
-	$find = array(
-		'&#268;', '&#269;', // c
-		'&#356;', '&#357;', // t
-		'&#270;', '&#271;', // d
-		'&#317;', '&#318;', // L, l
-		'&#327;', '&#328;', // N, n
-		'&#381;', '&#382;', 'Ž', 'ž', // z
-		'œ', '&#338;', '&#339;', // OE, oe
-		'&#198;', '&#230;', // AE, ae
-		'&#223;', '&#946;', // ß
-		'š', 'Š', // 'š','Š'
-		'&#273;', '&#272;', // ?', '?', // 'dj','dj'
-		'`', '‘', '’',
-	);
-
-	$repl = array(
-		'c', 'c',
-		't', 't',
-		'd', 'd',
-		'l', 'l',
-		'n', 'n',
-		'z', 'z', 'z', 'z',
-		'oe', 'oe', 'oe',
-		'ae', 'ae',
-		'sz', 'sz',
-		's', 's',
-		'dj', 'dj',
-		'-', '-', '-',
-	);
-
-	$url = str_replace($find, $repl, $url);
-
-	// Convert localized special chars
-	$url = preg_replace('/&([a-z][ez]?)(?:acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig);/','$1', $url);
-
-	// Convert all remaining special chars
-	$url = preg_replace('/&([a-z]+);/', '$1', $url);
-
-	// If still some unrecognized HTML entities are there... kill them!!!
-	$url = preg_replace('@\&\#\d+;@s', '', $url);
-
-	// Replace all illegal chars with '-'
-	$url = preg_replace('![^a-z0-9\-]!s', '-', $url);
-
-	// Convert every white space char with "-"
-	$url = preg_replace('!\s+!s', '-', $url);
-	// Replace multiple "-"
-	$url = preg_replace('!-+!s', '-', $url);
-	// Replace multiple "_"
-	$url = preg_replace('!_+!s', '_', $url);
-	// Remove leading / trailing "-"/"_"...
-	$url = preg_replace('!^[-_]|[-_]$!s', '', $url);
-
-	// Old ending cleaning code
-	/*
-	$find = array(
-		'/[^a-z0-9\-<>]/', '/[\-]+/', '/<[^>]*>/',
-	);
-
-	$repl = array(
-		'', '-', '',
-	);
-
-	$url = preg_replace($find, $repl, $url);
-
-	$url = str_replace('--', '-', $url);
-	*/
+	$url = strtolower(str_replace('Re: ', '', $url));
+	$url = ip_clean_string($url, $lang['ENCODING']);
 
 	$url = ($url == '') ? 'urlrw' : $url;
 
@@ -131,30 +41,31 @@ function rewrite_urls($content)
 
 	$url_in = array(
 		// Forums, topics and posts
-		//'/(?<!\/)' . PORTAL_MG . '\?topic_id=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		//'/(?<!\/)' . CMS_PAGE_HOME . '\?topic_id=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
 
-		'/(?<!\/)' . FORUM_MG . '\?' . POST_CAT_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_FORUM . '\?' . POST_CAT_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
 
-		'/(?<!\/)' . VIEWFORUM_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWFORUM . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
 
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}(.*?)title=\"(.*?)(["]+>){1}([^>]+>)(.*?)<\/a>/e',
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)alt=\"(.*?)\"(.*?)<\/a>/e',
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}(.*?)title=\"(.*?)(["]+>){1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)alt=\"(.*?)\"(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
 
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}(.*?)title=\"(.*?)(["]+>){1}([^>]+>)(.*?)<\/a>/e',
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}(.*?)title=\"(.*?)(["]+>){1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}(.*?)title=\"(.*?)(["]+>){1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}(.*?)title=\"(.*?)(["]+>){1}([^>]+>)(.*?)<\/a>/e',
 
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)alt=\"(.*?)\"(.*?)<\/a>/e',
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)alt=\"(.*?)\"(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)alt=\"(.*?)\"(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)alt=\"(.*?)\"(.*?)<\/a>/e',
 
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_FORUM_URL . '=([0-9]+)((&amp;)|(&))' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
 
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
-		'/(?<!\/)' . VIEWTOPIC_MG . '\?' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_TOPIC_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)' . CMS_PAGE_VIEWTOPIC . '\?' . POST_POST_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
 
 		// Profile
-		'/(?<!\/)(.\/){0,1}' . PROFILE_MG . '\?mode=viewprofile((&amp;)|(&)){0,1}' . POST_USERS_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
+		'/(?<!\/)(.\/){0,1}' . CMS_PAGE_PROFILE . '\?mode=viewprofile((&amp;)|(&)){0,1}' . POST_USERS_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)title=\"(.*?)\"(.*?)<\/a>/e',
+		'/(?<!\/)(.\/){0,1}' . CMS_PAGE_PROFILE . '\?mode=viewprofile((&amp;)|(&)){0,1}' . POST_USERS_URL . '=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
 
 		// Album
 		'/(?<!\/)album_cat.php\?cat_id=([0-9]+)((&amp;)|(&)){0,1}([^>]+>)(.*?)<\/a>/e',
@@ -212,6 +123,7 @@ function rewrite_urls($content)
 		"make_url_friendly('\\6') . '-vp\\1.html' . if_query('\\2') . stripslashes('\\5\\6') . '</a>'",
 
 		// Profile
+		"make_url_friendly('\\11') . '-profile-u\\5.html' . if_query('\\6') . stripslashes('\\9\\10') . 'title=\"' . stripslashes('\\11\"\\12') . '</a>'",
 		"make_url_friendly('\\10') . '-profile-u\\5.html' . if_query('\\6') . stripslashes('\\9\\10') . '</a>'",
 
 		// Album

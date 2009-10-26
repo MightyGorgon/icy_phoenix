@@ -30,28 +30,26 @@ $PHP_SELF = $_SERVER['PHP_SELF'];
 
 if (!$userdata['session_logged_in'])
 {
-	redirect(append_sid(LOGIN_MG . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id, true));
 }
 
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-if (($board_config['url_rw'] == true) || ($board_config['url_rw_guests'] == true))
+if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
 {
 	$topic_link = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html';
 }
 else
 {
-	$topic_link = create_server_url() . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id;
+	$topic_link = create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
 }
 
 $mail_body = str_replace("{TOPIC}", trim(stripslashes(htmlspecialchars_decode($topic_title))), $lang['TELL_FRIEND_BODY']);
 $mail_body = str_replace("{LINK}", $topic_link, $mail_body);
-$mail_body = str_replace("{SITENAME}", ip_stripslashes($board_config['sitename']), $mail_body);
+$mail_body = str_replace("{SITENAME}", $config['sitename'], $mail_body);
 
 $template->assign_vars(array(
 	'SUBMIT_ACTION' => append_sid($PHP_SELF, true),
 	'L_SUBMIT' => $lang['Send_email'],
-	'SITENAME' => ip_stripslashes($board_config['sitename']),
+	'SITENAME' => $config['sitename'],
 
 	'SENDER_NAME' => $userdata['username'],
 	'SENDER_MAIL' => $userdata['user_email'],
@@ -85,9 +83,9 @@ if (isset($_POST['submit']))
 
 	if (!$error)
 	{
-		$topic_title = ip_stripslashes($_POST['topic_title']);
-		$message = ip_stripslashes($_POST['message']);
-		if ($board_config['html_email'])
+		$topic_title = stripslashes($_POST['topic_title']);
+		$message = stripslashes($_POST['message']);
+		if ($config['html_email'])
 		{
 			$topic_title = htmlspecialchars($topic_title);
 			$message = htmlspecialchars($message);
@@ -96,9 +94,9 @@ if (isset($_POST['submit']))
 		}
 
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-		$emailer = new emailer($board_config['smtp_delivery']);
+		$emailer = new emailer($config['smtp_delivery']);
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($board_config['server_name']) . "\n";
+		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
 		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
 		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
 		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
@@ -111,8 +109,8 @@ if (isset($_POST['submit']))
 		$emailer->set_subject(trim(stripslashes($topic_title)));
 
 		$emailer->assign_vars(array(
-			'SITENAME' => ip_stripslashes($board_config['sitename']),
-			'BOARD_EMAIL' => $board_config['board_email'],
+			'SITENAME' => $config['sitename'],
+			'BOARD_EMAIL' => $config['board_email'],
 			'FROM_USERNAME' => $userdata['username'],
 			'TO_USERNAME' => $friendname,
 			'MESSAGE' => $message
@@ -121,10 +119,10 @@ if (isset($_POST['submit']))
 		$emailer->send();
 		$emailer->reset();
 
-		$redirect_url = append_sid(FORUM_MG);
+		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(5, $redirect_url);
 
-		$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(FORUM_MG) . '">', '</a>');
+		$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -141,9 +139,6 @@ if (isset($_POST['submit']))
 
 }
 
-$template->set_filenames(array('body' => 'tellafriend_body.tpl'));
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('tellafriend_body.tpl', '', '', '');
 
 ?>

@@ -20,7 +20,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang['RandomQuote'] = 'Random Quote';
 
-//$randomquote[rand(0,count($randomquote)-1)]);
+//$randomquote[rand(0,sizeof($randomquote)-1)]);
 
 $randomquote = array(
 	'He is a man whom it is impossible to please, because he is never pleased with himself. (Johann Wolfgang von Goethe)',

@@ -19,7 +19,7 @@ class pafiledb_file extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $bbcode, $pafiledb_config, $db, $images, $userdata, $pafiledb_functions;
+		global $db, $cache, $config, $images, $userdata, $lang, $bbcode, $pafiledb_config, $pafiledb_template, $pafiledb_functions;
 
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
@@ -50,10 +50,7 @@ class pafiledb_file extends pafiledb_public
 			WHERE f.file_id = $file_id
 			AND f.file_approved = 1
 			GROUP BY f.file_id ";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Query file info', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		//===================================================
 		// file doesn't exist'
@@ -72,7 +69,7 @@ class pafiledb_file extends pafiledb_public
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_view'], $this->auth[$file_data['file_catid']]['auth_view_file_type']);
@@ -82,11 +79,11 @@ class pafiledb_file extends pafiledb_public
 		$this->generate_category_nav($file_data['file_catid']);
 
 		$pafiledb_template->assign_vars(array(
-			'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'L_HOME' => $lang['Home'],
-			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-			'U_INDEX' => append_sid(PORTAL_MG),
+			'U_INDEX' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 
 			'FILE_NAME' => $file_data['file_name'],
@@ -98,11 +95,11 @@ class pafiledb_file extends pafiledb_public
 		// Prepare file info to display them
 		//===================================================
 
-		$file_time = create_date_ip($board_config['default_dateformat'], $file_data['file_time'], $board_config['board_timezone']);
+		$file_time = create_date_ip($config['default_dateformat'], $file_data['file_time'], $config['board_timezone']);
 
-		$file_last_download = ($file_data['file_last']) ? create_date_ip($board_config['default_dateformat'], $file_data['file_last'], $board_config['board_timezone']) : $lang['never'];
+		$file_last_download = ($file_data['file_last']) ? create_date_ip($config['default_dateformat'], $file_data['file_last'], $config['board_timezone']) : $lang['never'];
 
-		$file_update_time = ($file_data['file_update_time']) ? create_date_ip($board_config['default_dateformat'], $file_data['file_update_time'], $board_config['board_timezone']) : $lang['never'];
+		$file_update_time = ($file_data['file_update_time']) ? create_date_ip($config['default_dateformat'], $file_data['file_update_time'], $config['board_timezone']) : $lang['never'];
 
 		$file_author = trim($file_data['file_creator']);
 
@@ -119,15 +116,15 @@ class pafiledb_file extends pafiledb_public
 
 		$file_size = $pafiledb_functions->get_file_size($file_id, $file_data);
 		/*
-		$file_poster = ($file_data['user_id'] != ANONYMOUS) ? '<a href="' . append_sid(PROFILE_MG.'?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $file_data['user_id']) . '">' : '';
+		$file_poster = ($file_data['user_id'] != ANONYMOUS) ? '<a href="' . append_sid(CMS_PAGE_PROFILE.'?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $file_data['user_id']) . '">' : '';
 		$file_poster .= ($file_data['user_id'] != ANONYMOUS) ? $file_data['username'] : $lang['Guest'];
 		$file_poster .= ($file_data['user_id'] != ANONYMOUS) ? '</a>' : '';
 		*/
 		$file_poster = ($file_data['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($file_data['user_id'], $file_data['username'], $file_data['user_color'], $file_data['user_active']);
 
-		$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
-		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
+		$bbcode->allow_html = ($config['allow_html'] ? true : false);
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 		$file_long_desc = $bbcode->parse($file_data['file_longdesc']);
 
 		$pafiledb_template->assign_vars(array(

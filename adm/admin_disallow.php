@@ -49,10 +49,7 @@ if( isset($_POST['add_name']) )
 		$sql = "INSERT INTO " . DISALLOW_TABLE . " (disallow_username)
 			VALUES('" . str_replace("\'", "''", $disallowed_user) . "')";
 		$result = $db->sql_query( $sql );
-		if ( !$result )
-		{
-			message_die(GENERAL_ERROR, "Could not add disallowed user.", "",__LINE__, __FILE__, $sql);
-		}
+
 		$message = $lang['Disallow_successful'];
 	}
 
@@ -64,13 +61,8 @@ else if( isset($_POST['delete_name']) )
 {
 	$disallowed_id = ( isset($_POST['disallowed_id']) ) ? intval( $_POST['disallowed_id'] ) : intval( $_GET['disallowed_id'] );
 
-	$sql = "DELETE FROM " . DISALLOW_TABLE . "
-		WHERE disallow_id = $disallowed_id";
+	$sql = "DELETE FROM " . DISALLOW_TABLE . " WHERE disallow_id = $disallowed_id";
 	$result = $db->sql_query($sql);
-	if( !$result )
-	{
-		message_die(GENERAL_ERROR, "Couldn't removed disallowed user.", "",__LINE__, __FILE__, $sql);
-	}
 
 	$message .= $lang['Disallowed_deleted'] . '<br /><br />' . sprintf($lang['Click_return_disallowadmin'], '<a href="' . append_sid('admin_disallow.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -78,17 +70,9 @@ else if( isset($_POST['delete_name']) )
 
 }
 
-//
 // Grab the current list of disallowed usernames...
-//
-$sql = "SELECT *
-	FROM " . DISALLOW_TABLE;
+$sql = "SELECT * FROM " . DISALLOW_TABLE;
 $result = $db->sql_query($sql);
-if( !$result )
-{
-	message_die(GENERAL_ERROR, "Couldn't get disallowed users.", "", __LINE__, __FILE__, $sql );
-}
-
 $disallowed = $db->sql_fetchrowset($result);
 
 //
@@ -104,7 +88,7 @@ if( trim($disallowed) == "" )
 else
 {
 	$user = array();
-	for( $i = 0; $i < count($disallowed); $i++ )
+	for( $i = 0; $i < sizeof($disallowed); $i++ )
 	{
 		$disallow_select .= '<option value="' . $disallowed[$i]['disallow_id'] . '">' . $disallowed[$i]['disallow_username'] . '</option>';
 	}

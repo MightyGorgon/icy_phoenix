@@ -153,7 +153,10 @@ if(!empty($_POST['edit']) && !defined('DEMO_MODE'))
 	}
 	// update item
 	$sql = "UPDATE " . THEMES_TABLE . " SET " . implode(',', $data_item_update) . " WHERE themes_id='{$id}'";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_edittpl_error_updating'] . '<br /><br />' . $lang['xs_edittpl_back_edit'] . '<br /><br />' . $lang['xs_edittpl_back_list'], __LINE__, __FILE__);
 	}
@@ -179,7 +182,10 @@ if(!empty($_GET['edit']))
 {
 	$id = intval($_GET['edit']);
 	$sql = "SELECT * FROM " . THEMES_TABLE . " WHERE themes_id='{$id}'";
-	if(!$result = $db->sql_query($sql))
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if(!$result)
 	{
 		xs_error($lang['xs_no_style_info'], __LINE__, __FILE__);
 	}
@@ -261,19 +267,19 @@ if(!empty($_GET['edit']))
 	xs_exit();
 }
 
-
-//
 // show list of installed styles
-//
 $sql = 'SELECT themes_id, template_name, style_name FROM ' . THEMES_TABLE . ' ORDER BY style_name';
-if(!$result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	xs_error($lang['xs_no_style_info'], __LINE__, __FILE__);
 }
 $style_rowset = $db->sql_fetchrowset($result);
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'edit_data_list.tpl'));
-for($i=0; $i<count($style_rowset); $i++)
+for($i=0; $i< sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	$row_class = $xs_row_class[$i % 2];

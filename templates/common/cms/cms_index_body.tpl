@@ -1,3 +1,9 @@
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_header_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
+<!-- ENDIF -->
+
 <script type="text/javaScript">
 <!--
 function icon_text(text)
@@ -23,3 +29,9 @@ function icon_text(text)
 	<td class="row1h row-center"><a href="{U_CMS_ADS}" onmouseover="icon_text('{L_CMS_ADS}')" onmouseout="icon_text('&nbsp;')"><img src="images/cms/cms_index_ads.png" alt="{L_CMS_ADS}" title="{L_CMS_ADS}" /></a><br /><b>{L_CMS_ADS}</b></td>
 </tr>
 </table>
+
+<!-- IF CMS_STD_TPL -->
+<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->
+<!-- ENDIF -->

@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // Pick a language, any language ...
-function language_select($default, $select_name = 'language', $dirname='language')
+function language_select($default, $select_name = 'language', $dirname = 'language', $return_array = false)
 {
 
 	$dir = opendir(IP_ROOT_PATH . $dirname);
@@ -43,107 +43,35 @@ function language_select($default, $select_name = 'language', $dirname='language
 	@asort($lang);
 	@reset($lang);
 
-	$lang_select = '<select name="' . $select_name . '">';
-	while (list($displayname, $filename) = @each($lang))
+	if ($return_array)
 	{
-		$selected = (strtolower($default) == strtolower($filename)) ? ' selected="selected"' : '';
-		$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
+		$result = $lang;
 	}
-	$lang_select .= '</select>';
-
-	return $lang_select;
-}
-
-function language_select_h($default, $select_name = LANG_URL, $dirname = 'language')
-{
-	$dir = opendir(IP_ROOT_PATH . $dirname);
-
-	$lang = array();
-	while ($file = readdir($dir))
+	else
 	{
-		if (preg_match('#^lang_#i', $file) && !is_file(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . $dirname . '/' . $file)))
+		$lang_select = '<select name="' . $select_name . '">';
+		while (list($displayname, $filename) = @each($lang))
 		{
-			$filename = trim(str_replace("lang_", "", $file));
-			$displayname = preg_replace("/^(.*?)_(.*)$/", "\\1 [ \\2 ]", $filename);
-			$displayname = preg_replace("/\[(.*?)_(.*)\]/", "[ \\1 - \\2 ]", $displayname);
-			$lang[$displayname] = $filename;
+			$selected = (strtolower($default) == strtolower($filename)) ? ' selected="selected"' : '';
+			$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
 		}
+		$lang_select .= '</select>';
+		$result = $lang_select;
 	}
-
-	closedir($dir);
-
-	@asort($lang);
-	@reset($lang);
-
-	/*
-	$lang_select = '<select name="' . $select_name . '" onchange="SetLangTheme();" class="gensmall">';
-	while (list($displayname, $filename) = @each($lang))
-	{
-		$selected = (strtolower($default) == strtolower($filename)) ? ' selected="selected"' : '';
-		$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
-		// <img src="' . $dirname . '/lang_' . $filename . '/flag.png" />
-	}
-	$lang_select .= '</select>';
-
-	return $lang_select;
-	*/
-
-	$lang_installed = array();
-	$lang_installed = $lang;
-
-	return $lang_installed;
+	return $result;
 }
 
 // Pick a template/theme combo,
-function style_select($default_style, $select_name = 'style', $dirname = 'templates')
+function style_select($default_style, $select_name = 'style', $dirname = 'templates', $js_append = '')
 {
-	global $db;
+	global $db, $cache;
 
-	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
-	if (!($result = $db->sql_query($sql, false, 'themes_')))
+	$style_select = '<select name="' . $select_name . '"' . $js_append . '>';
+	$styles = $cache->obtain_styles(true);
+	foreach ($styles as $k => $v)
 	{
-		message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);
-	}
-
-	$style_select = '<select name="' . $select_name . '">';
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$selected = ($row['themes_id'] == $default_style) ? ' selected="selected"' : '';
-		$style_select .= '<option value="' . $row['themes_id'] . '"' . $selected . '>' . $row['style_name'] . '</option>';
-	}
-	$style_select .= '</select>';
-
-	return $style_select;
-}
-
-function style_select_h($default_style, $select_name = STYLE_URL, $dirname = 'templates')
-{
-	global $db;
-
-	//$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY template_name, themes_id";
-	$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
-	if (!($result = $db->sql_query($sql, false, 'themes_')))
-	{
-		message_die(GENERAL_ERROR, "Couldn't query themes table", "", __LINE__, __FILE__, $sql);
-	}
-
-	$style_select = '<select name="' . $select_name . '" onchange="SetLangTheme();" class="gensmall">';
-	while ($row = $db->sql_fetchrow($result))
-	{
-		/*
-		$tsql = "SELECT COUNT(user_style) AS total_style
-			FROM " . USERS_TABLE . "
-			WHERE user_style = " . $row['themes_id'];
-		if (!($tresult = $db->sql_query($tsql, false, 'themes_users_')))
-		{
-			message_die(GENERAL_ERROR, "Couldn't query user table", "", __LINE__, __FILE__, $tsql);
-		}
-		$trow = $db->sql_fetchrow($tresult);
-		*/
-
-		$selected = ($row['themes_id'] == $default_style) ? ' selected="selected"' : '';
-		//$style_select .= '<option value="' . $row['themes_id'] . '"' . $selected . '>' . $row['style_name'] . ' [' . $trow['total_style'] . ']</option>';
-		$style_select .= '<option value="' . $row['themes_id'] . '"' . $selected . '>' . $row['style_name'] . '</option>';
+		$selected = ($k == $default_style) ? ' selected="selected"' : '';
+		$style_select .= '<option value="' . $k . '"' . $selected . '>' . htmlspecialchars($v) . '</option>';
 	}
 	$style_select .= '</select>';
 
@@ -174,7 +102,7 @@ function tz_select($default, $select_name = 'timezone')
 // Visual pick Date Format for non technical users
 function date_select($default_format, $select_name = 'dateformat')
 {
-	global $lang, $board_config;
+	global $lang, $config;
 
 	//---------------------------------------------------
 	$date_format_list[] = array('Y/m/d - H:i');
@@ -239,10 +167,10 @@ function date_select($default_format, $select_name = 'dateformat')
 
 
 	$date_select = '<select name="' . $select_name . '">' . "\n";
-	for($i = 0; $i < count($date_format_list); $i++)
+	for($i = 0; $i < sizeof($date_format_list); $i++)
 	{
 		$date_format = $date_format_list[$i][0];
-		$date_desc = create_date($date_format_list[$i][0], time(), $board_config['board_timezone']);
+		$date_desc = create_date($date_format_list[$i][0], time(), $config['board_timezone']);
 
 		$selected = ($date_format == $default_format) ? ' selected="selected"' : '';
 		$date_select .= '<option value="' . $date_format . '"' . $selected . '>' . $date_desc . '</option>' . "\n";
@@ -252,23 +180,6 @@ function date_select($default_format, $select_name = 'dateformat')
 	$date_select .= '</select>' . "\n";
 
 	return $date_select;
-}
-
-function select_gravatar_rating($default = '')
-{
-	global $lang;
-
-	$symbols = array('G', 'PG', 'R', 'X');
-
-	$select_box = '<select name="gravatar_rating"><option value="">' . $lang['None'] . '</option>';
-	foreach($symbols as $rating)
-	{
-		$selected = ($rating == $default) ? ' selected="selected"' : '';
-		$select_box .= '<option value="' . $rating . '"' . $selected . '>' . $rating . '</option>';
-	}
-	$select_box .= '</select>';
-
-	return $select_box;
 }
 
 // Auth List
@@ -281,7 +192,7 @@ function auth_select($default, $select_name)
 
 	$auth_select = '<select name="' . $select_name . '">';
 
-	for($j = 0; $j < count($auth_array); $j++)
+	for($j = 0; $j < sizeof($auth_array); $j++)
 	{
 		$selected = ($auth_array[$j] == $default) ? ' selected="selected"' : '';
 		$auth_select .= '<option value="' . $auth_array[$j] . '"' . $selected . '>' . $auth_array_lang[$j] . '</option>';

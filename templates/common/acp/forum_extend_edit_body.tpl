@@ -31,6 +31,12 @@ function update_icon(newimage)
 <form method="post" name="edit" action="{S_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="2" width="70%">{L_TITLE}</th></tr>
+<!-- BEGIN move -->
+<tr>
+	<td class="row1"><span class="genmed"><b>{L_MOVE}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<select name="move">{S_MOVE_OPT}</select></span></td>
+</tr>
+<!-- END move -->
 <tr>
 	<td class="row1" width="40%"><span class="genmed"><b>{L_TYPE}</b></span></td>
 	<td class="row2" width="60%"><span class="genmed">&nbsp;<select name="type" onchange="this.form.submit();">{S_TYPE_OPT}</select></span></td>
@@ -40,6 +46,10 @@ function update_icon(newimage)
 	<td class="row2"><span class="genmed">&nbsp;<input name="name" value="{NAME}" type="text" class="post" size="60" /></span></td>
 </tr>
 <tr>
+	<td class="row1"><span class="genmed"><b>{L_NAME_CLEAN}</b></span></td>
+	<td class="row2"><span class="genmed">&nbsp;<input name="name_clean" value="{NAME_CLEAN}" type="text" class="post" size="60" /></span></td>
+</tr>
+<tr>
 	<td class="row1"><span class="genmed"><b>{L_DESC}</b></span></td>
 	<td class="row2"><span class="genmed">&nbsp;<textarea name="desc" rows="5" cols="60" class="post">{DESC}</textarea></span></td>
 </tr>
@@ -47,6 +57,7 @@ function update_icon(newimage)
 	<td class="row1"><span class="genmed"><b>{L_MAIN}</b></span></td>
 	<td class="row2"><span class="genmed">&nbsp;<select name="main" onchange="this.form.submit();">{S_FORUMS_OPT}</select></span></td>
 </tr>
+<!-- IF not S_FORUM_DELETE -->
 <tr>
 	<td class="row1"><span class="genmed"><b>{L_COPY_AUTH}</b></span><!-- <br /><span class="gensmall">{L_COPY_AUTH_EXPLAIN}</span> --></td>
 	<td class="row2"><span class="genmed">&nbsp;<select name="dup_auth">{S_FORUM_LIST}</select></span></td>
@@ -64,20 +75,10 @@ function update_icon(newimage)
 	<td class="row1"><span class="genmed"><b>{L_STATUS}</b></span></td>
 	<td class="row2"><span class="genmed">&nbsp;<select name="status">{S_STATUS_OPT}</select></span></td>
 </tr>
-<!-- BEGIN topic_display_order -->
 <tr>
-	<td class="row1"><span class="genmed"><b>{L_FORUM_DISPLAY_SORT}</b></span></td>
-	<td class="row2"><span class="genmed">&nbsp;<select name="forum_display_sort">{S_FORUM_DISPLAY_SORT_LIST}</select>&nbsp;<select name="forum_display_order">{S_FORUM_DISPLAY_ORDER_LIST}</select></span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_LIMIT_EDIT_TIME}</b></span><br /><span class="gensmall">{L_FORUM_LIMIT_EDIT_TIME_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_limit_edit_time" value="1"{FORUM_LIMIT_EDIT_TIME_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_limit_edit_time" value="0"{FORUM_LIMIT_EDIT_TIME_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>
-<!-- END topic_display_order -->
-<!-- END forum -->
-<!-- BEGIN move -->
-<tr>
-	<td class="row1"><span class="genmed"><b>{L_MOVE}</b></span></td>
-	<td class="row2"><span class="genmed">&nbsp;<select name="move">{S_MOVE_OPT}</select></span></td>
-</tr>
-<!-- END move -->
-<!-- BEGIN forum -->
 <tr>
 	<td class="row1"><span class="genmed"><b>{L_FORUM_THANK}</b></span></td>
 	<td class="row2"><input type="radio" name="forum_thanks" value="1"{FORUM_THANK_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_thanks" value="0"{FORUM_THANK_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
@@ -149,6 +150,7 @@ function update_icon(newimage)
 	</td>
 </tr>
 <!-- END forum -->
+<!-- ENDIF -->
 <!-- BEGIN link -->
 <tr><th class="cat" colspan="2">{L_LINK}</th></tr>
 <tr>

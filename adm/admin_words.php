@@ -76,11 +76,7 @@ if($mode != '')
 				$sql = "SELECT *
 					FROM " . WORDS_TABLE . "
 					WHERE word_id = $word_id";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Could not query words table", "Error", __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$word_info = $db->sql_fetchrow($result);
 				$s_hidden_fields .= '<input type="hidden" name="id" value="' . $word_id . '" />';
 			}
@@ -134,13 +130,8 @@ if($mode != '')
 				VALUES ('" . str_replace("\'", "''", $word) . "', '" . str_replace("\'", "''", $replacement) . "')";
 			$message = $lang['Word_added'];
 		}
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Could not insert data into words table", $lang['Error'], __LINE__, __FILE__, $sql);
-		}
-
-		$db->clear_cache('word_censor_');
+		$result = $db->sql_query($sql);
+		$cache->destroy('_word_censors');
 
 		$message .= '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -164,13 +155,8 @@ if($mode != '')
 		{
 			$sql = "DELETE FROM " . WORDS_TABLE . "
 				WHERE word_id = $word_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not remove data from words table", $lang['Error'], __LINE__, __FILE__, $sql);
-			}
-
-			$db->clear_cache('word_censor_');
+			$result = $db->sql_query($sql);
+			$cache->destroy('_word_censors');
 
 			$message = $lang['Word_removed'] . '<br /><br />' . sprintf($lang['Click_return_wordadmin'], '<a href="' . append_sid('admin_words.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -207,14 +193,10 @@ else
 	$sql = "SELECT *
 		FROM " . WORDS_TABLE . "
 		ORDER BY word";
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query words table", $lang['Error'], __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$word_rows = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
-	$word_count = count($word_rows);
+	$word_count = sizeof($word_rows);
 
 	$template->assign_vars(array(
 		'L_WORDS_TITLE' => $lang['Words_title'],

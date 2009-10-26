@@ -48,8 +48,8 @@ function attach_build_auth_levels($is_auth, &$s_auth_can)
 	}
 
 	// If you want to have the rules window link within the forum view too, comment out the two lines, and comment the third line
-//	$rules_link = '(<a href="' . IP_ROOT_PATH . 'attach_rules.' . PHP_EXT . '?f=' . $forum_id . '" target="_blank">Rules</a>)';
-//	$s_auth_can .= (($is_auth['auth_attachments']) ? $rules_link . ' ' . $lang['Rules_attach_can'] : $lang['Rules_attach_cannot']) . '<br />';
+	//$rules_link = '(<a href="' . IP_ROOT_PATH . 'attach_rules.' . PHP_EXT . '?f=' . $forum_id . '" target="_blank">Rules</a>)';
+	//$s_auth_can .= (($is_auth['auth_attachments']) ? $rules_link . ' ' . $lang['Rules_attach_can'] : $lang['Rules_attach_cannot']) . '<br />';
 	$s_auth_can .= (($is_auth['auth_attachments']) ? $lang['Rules_attach_can'] : $lang['Rules_attach_cannot']) . '<br />';
 	$s_auth_can .= (($is_auth['auth_download']) ? $lang['Rules_download_can'] : $lang['Rules_download_cannot']) . '<br />';
 }
@@ -76,12 +76,7 @@ function user_in_group($user_id, $group_id)
 			AND u.user_id = $user_id
 			AND g.group_id = $group_id
 		LIMIT 1";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get User Group', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -109,13 +104,9 @@ function physical_filename_already_stored($filename)
 
 	$sql = 'SELECT attach_id
 		FROM ' . ATTACHMENTS_DESC_TABLE . "
-		WHERE physical_filename = '" . attach_mod_sql_escape($filename) . "'
+		WHERE physical_filename = '" . $db->sql_escape($filename) . "'
 		LIMIT 1";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get attachment information for filename: ' . htmlspecialchars($filename), '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$num_rows = $db->sql_numrows($result);
 	$db->sql_freeresult($result);
 
@@ -158,12 +149,7 @@ function get_attachments_from_pm($privmsgs_id_array)
 		WHERE a.privmsgs_id IN ($privmsgs_id_array)
 			AND a.attach_id = d.attach_id
 		ORDER BY d.filetime $display_order";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not get Attachment Informations for private message number ' . $privmsgs_id_array, '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$num_rows = $db->sql_numrows($result);
 	$attachments = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
@@ -197,12 +183,7 @@ function get_total_attach_pm_filesize($direction, $user_id)
 		WHERE $user_sql
 			AND a.privmsgs_id <> 0 AND a.privmsgs_id = p.privmsgs_id
 			AND p.privmsgs_type <> " . PRIVMSGS_SENT_MAIL;
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query Attachment Informations', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$pm_filesize_total = 0;
 	$attach_id = array();
 	$num_rows = $db->sql_numrows($result);
@@ -267,7 +248,7 @@ function prune_attachments($sql_post)
 // Limit Image Width MOD --- BEGIN
 function liw_get_dimensions($image_source, $identifier = '')
 {
-	global $db, $board_config;
+	global $db, $config;
 
 	$image_checksum = '';
 	$result_rowcount = 0;
@@ -297,8 +278,10 @@ function liw_get_dimensions($image_source, $identifier = '')
 	if ($image_checksum)
 	{
 		$sql = "SELECT image_width, image_height FROM " . LIW_CACHE_TABLE . " WHERE image_checksum = '" . $image_checksum . "'";
-
-		if ($result = $db->sql_query($sql))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
 		{
 			$result_rowcount = $db->sql_numrows();
 
@@ -320,9 +303,9 @@ function liw_get_dimensions($image_source, $identifier = '')
 	{
 		if ($result_rowcount == 0)
 		{
-			if (strstr($image_source, $board_config['server_name'] . $board_config['script_path']))
+			if (strstr($image_source, $config['server_name'] . $config['script_path']))
 			{
-				$image_source = substr($image_source, (strpos($image_source, $board_config['server_name'] . $board_config['script_path']) + strlen($board_config['server_name'] . $board_config['script_path'])));
+				$image_source = substr($image_source, (strpos($image_source, $config['server_name'] . $config['script_path']) + strlen($config['server_name'] . $config['script_path'])));
 				$image_source = realpath('.') . '/' . $image_source;
 			}
 

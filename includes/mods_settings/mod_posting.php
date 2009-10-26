@@ -13,7 +13,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_mods_settings.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'includes/functions_mods_settings.' . PHP_EXT);
 $mod_name = '30_Posting';
 
 $config_fields = array(
@@ -48,6 +48,13 @@ $config_fields = array(
 		'type' => 'LIST_RADIO',
 		'default' => 'No',
 		'values' => $list_yes_no,
+		),
+
+	'forum_limit_edit_time_interval' => array(
+		'lang_key' => 'IP_forum_limit_edit_time_interval',
+		'explain' => 'IP_forum_limit_edit_time_interval_explain',
+		'type' => 'VARCHAR',
+		'default' => '1440',
 		),
 
 	'force_large_caps_mods' => array(

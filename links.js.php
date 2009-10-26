@@ -24,7 +24,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // gzip_compression
 $do_gzip_compress = false;
-if($board_config['gzip_compress'])
+if($config['gzip_compress'])
 {
 	$phpver = phpversion();
 
@@ -54,7 +54,7 @@ if($board_config['gzip_compress'])
 header ("Cache-Control: no-store, no-cache, must-revalidate");
 header ("Cache-Control: pre-check=0, post-check=0, max-age=0", false);
 header ("Pragma: no-cache");
-header ("Expires: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+header ("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 
 // Start session management
@@ -65,58 +65,51 @@ init_userprefs($userdata);
 $template->set_filenames(array('body' => 'links_js_body.tpl'));
 
 // Grab data
-$sql = "SELECT *
-		FROM ". LINK_CONFIG_TABLE;
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not query Link config information", "", __LINE__, __FILE__, $sql);
-	}
-
-	while( $row = $db->sql_fetchrow($result) )
-	{
-		$link_config_name = $row['config_name'];
-		$link_config_value = $row['config_value'];
-		$link_config[$link_config_name] = $link_config_value;
-		$link_self_img = $link_config['site_logo'];
-		$site_logo_height = $link_config['height'];
-		$site_logo_width = $link_config['width'];
-		$display_interval = $link_config['display_interval'];
-		$display_logo_num = $link_config['display_logo_num'];
-	}
+$sql = "SELECT * FROM ". LINK_CONFIG_TABLE;
+$result = $db->sql_query($sql, 0, 'links_config_');
+while( $row = $db->sql_fetchrow($result) )
+{
+	$link_config_name = $row['config_name'];
+	$link_config_value = $row['config_value'];
+	$link_config[$link_config_name] = $link_config_value;
+	$link_self_img = $link_config['site_logo'];
+	$site_logo_height = $link_config['height'];
+	$site_logo_width = $link_config['width'];
+	$display_interval = $link_config['display_interval'];
+	$display_logo_num = $link_config['display_logo_num'];
+}
+$db->sql_freeresult($result);
 
 $sql = "SELECT link_id, link_title, link_logo_src
 	FROM " . LINKS_TABLE . "
 	WHERE link_active = 1
 	ORDER BY link_hits DESC";
-
-// If failed just ignore
-if( $result = $db->sql_query($sql) )
+$result = $db->sql_query($sql);
+$links_logo = '';
+while($row = $db->sql_fetchrow($result))
 {
-	$links_logo = '';
-	while($row = $db->sql_fetchrow($result))
+	//if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
+	if ($row['link_logo_src'])
 	{
-		//if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
-		if ($row['link_logo_src'])
-		{
-			//$links_logo .= ('"<a href=\"' . append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']) . '\" target=\"_blank\"><img src=\"' . $row['link_logo_src'] . '\" alt=\"' . stripslashes($row['link_title']) . '\" width=\"' . $site_logo_width . '\" height=\"' . $site_logo_height . '\" border=\"0\" hspace=\"1\" \/><\/a>\",' . "\n");
-			$links_logo .= ('\'<a href="' . append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']) . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . stripslashes($row['link_title']) . '" width="' . $site_logo_width . '" height="' . $site_logo_height . '" border="0" hspace="1" \/><\/a>\',' . "\n");
-		}
+		//$links_logo .= ('"<a href=\"' . append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']) . '\" target=\"_blank\"><img src=\"' . $row['link_logo_src'] . '\" alt=\"' . stripslashes($row['link_title']) . '\" width=\"' . $site_logo_width . '\" height=\"' . $site_logo_height . '\" border=\"0\" hspace=\"1\" \/><\/a>\",' . "\n");
+		$links_logo .= ('\'<a href="' . append_sid('links.' . PHP_EXT . '?action=go&link_id=' . $row['link_id']) . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . stripslashes($row['link_title']) . '" width="' . $site_logo_width . '" height="' . $site_logo_height . '" border="0" hspace="1" \/><\/a>\',' . "\n");
 	}
+}
+$db->sql_freeresult($result);
 
-	if ($links_logo)
-	{
-		$links_logo = substr($links_logo, 0, -2);
+if($links_logo)
+{
+	$links_logo = substr($links_logo, 0, -2);
 
-		$template->assign_vars(array(
-			'S_CONTENT_ENCODING' => $lang['ENCODING'],
-			'T_BODY_BGCOLOR' => '#' . $theme['td_color1'],
+	$template->assign_vars(array(
+		'S_CONTENT_ENCODING' => $lang['ENCODING'],
+		'T_BODY_BGCOLOR' => '#' . $theme['td_color1'],
 
-			'DISPLAY_INTERVAL' => $display_interval,
-			'DISPLAY_LOGO_NUM' => $display_logo_num,
-			'LINKS_LOGO' => $links_logo
-			)
-		);
-	}
+		'DISPLAY_INTERVAL' => $display_interval,
+		'DISPLAY_LOGO_NUM' => $display_logo_num,
+		'LINKS_LOGO' => $links_logo
+		)
+	);
 }
 
 $template->pparse('body');

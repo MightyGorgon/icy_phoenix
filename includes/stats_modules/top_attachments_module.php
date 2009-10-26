@@ -54,7 +54,7 @@ else
 	$sql_query = FALSE;
 }
 
-$language = $board_config['default_lang'];
+$language = $config['default_lang'];
 
 if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT))
 {
@@ -66,15 +66,8 @@ include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PH
 $order_by = 'download_count DESC LIMIT ' . $return_limit;
 
 // Get Valid Forum ID's to search
-$sql = "SELECT forum_id
-FROM " . FORUMS_TABLE . "
-GROUP BY forum_id";
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not obtain forum_name/forum_id', '', __LINE__, __FILE__, $sql);
-}
-
+$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . 'WHERE forum_type = ' . FORUM_POST;
+$result = $stat_db->sql_query($sql);
 $is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
 $is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $userdata);
 
@@ -87,23 +80,18 @@ while($row = $stat_db->sql_fetchrow($result))
 	}
 }
 
-/*if (count($forum_ids) == 0)
+/*if (sizeof($forum_ids) == 0)
 {
 	message_die(GENERAL_MESSAGE, "You are not authorized to view Attachments at all.");
 }*/
 
-if (count($forum_ids) > 0)
+if (sizeof($forum_ids) > 0)
 {
 	$sql = "SELECT a.post_id, t.topic_title, d.*
 	FROM " . $attach_table . " a, " . $attach_desc_table . " d, "  . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
 	WHERE (a.post_id = p.post_id) AND (p.forum_id IN (" . implode(', ', $forum_ids) . ")) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
 	ORDER BY $order_by";
-
-	if (!($result = $stat_db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $stat_db->sql_query($sql);
 	$attachments = $stat_db->sql_fetchrowset($result);
 	$num_attachments = $stat_db->sql_numrows($result);
 }
@@ -128,7 +116,7 @@ for ($i = 0; $i < $num_attachments; $i++)
 		$post_title_2 = substr($post_title, 0, 30) . '...';
 	}
 
-	$view_topic = append_sid(VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $attachments[$i]['post_id'] . '#p' . $attachments[$i]['post_id']);
+	$view_topic = append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $attachments[$i]['post_id'] . '#p' . $attachments[$i]['post_id']);
 	if ($post_title_2 != '')
 	{
 		$post_title = '<a href="' . $view_topic . '" class="gen" title="' . $post_title . '" target="_blank">' . $post_title_2 . '</a>';
@@ -182,7 +170,7 @@ for ($i = 0; $i < $num_attachments; $i++)
 		'COMMENT' => $comment_field,
 		'SIZE' => round(($attachments[$i]['filesize'] / 1024), 2),
 		'DOWNLOAD_COUNT' => $attachments[$i]['download_count'],
-		'POST_TIME' => create_date($board_config['default_dateformat'], $attachments[$i]['filetime'], $board_config['board_timezone']),
+		'POST_TIME' => create_date($config['default_dateformat'], $attachments[$i]['filetime'], $config['board_timezone']),
 		'POST_TITLE' => $post_title,
 
 		'VIEW_ATTACHMENT' => $filename_link

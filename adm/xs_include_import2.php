@@ -262,7 +262,7 @@ if($list_only)
 	$str .= $lang['xs_import_list_comment'] . $header['comment'] . '<br />';
 	$str .= $lang['xs_import_list_styles'] . implode(', ', $header['styles']) . '<br />';
 	ksort($list_data);
-	$str .= '<br />' . str_replace('{NUM}', count($list_data), $lang['xs_import_list_files']) . '<br />';
+	$str .= '<br />' . str_replace('{NUM}', sizeof($list_data), $lang['xs_import_list_files']) . '<br />';
 	$str .= '<table border="0" cellspacing="0" cellpadding="1" align="left">';
 	foreach($list_data as $var => $value)
 	{
@@ -320,7 +320,7 @@ if(!$write_local)
 	print_r($ftp_log);
 	echo "\n\n -->"; */
 	// remove temporary files
-	for($i=0; $i<count($items); $i++)
+	for($i=0; $i< sizeof($items); $i++)
 	{
 		if(!empty($items[$i]['tmp']))
 		{
@@ -361,7 +361,7 @@ for($i=0; $i<$total; $i++)
 		}
 	}
 }
-if(!count($install))
+if(!sizeof($install))
 {
 	if(defined('XS_CLONING'))
 	{
@@ -369,12 +369,14 @@ if(!count($install))
 	}
 	xs_message($lang['Information'], $lang['xs_import_uploaded'] . '<br /><br />' . $lang['xs_import_back']);
 }
-//
+
 // Get list of installed styles
-//
 $tpl = $header['template'];
 $sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " WHERE template_name='" . xs_sql($tpl) . "'";
-if(!$result = $db->sql_query($sql))
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if(!$result)
 {
 	if(defined('XS_CLONING'))
 	{
@@ -385,7 +387,7 @@ if(!$result = $db->sql_query($sql))
 $style_rowset = $db->sql_fetchrowset($result);
 // run theme_info.cfg
 $data = xs_get_themeinfo($tpl);
-if(!@count($data))
+if(!@sizeof($data))
 {
 	if(defined('XS_CLONING'))
 	{
@@ -395,12 +397,12 @@ if(!@count($data))
 }
 // install styles
 $default_id = 0;
-for($i = 0; $i < count($install); $i++)
+for($i = 0; $i < sizeof($install); $i++)
 {
 	$style_name = $install[$i];
 	$style_data = false;
 	// find entry in theme_info.cfg
-	for($j = 0; $j < count($data); $j++)
+	for($j = 0; $j < sizeof($data); $j++)
 	{
 		if($data[$j]['style_name'] === $style_name)
 		{
@@ -409,7 +411,7 @@ for($i = 0; $i < count($install); $i++)
 	}
 	// check if already installed
 	$installed = 0;
-	for($j=0; $j<count($style_rowset); $j++)
+	for($j=0; $j< sizeof($style_rowset); $j++)
 	{
 		if($style_rowset[$j]['style_name'] === $style_name)
 		{
@@ -443,7 +445,10 @@ for($i = 0; $i < count($install); $i++)
 	{
 		// install
 		$sql = "SELECT MAX(themes_id) AS total FROM " . THEMES_TABLE;
-		if ( !($result = $db->sql_query($sql)) )
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			if(defined('XS_CLONING'))
 			{
@@ -474,7 +479,10 @@ for($i = 0; $i < count($install); $i++)
 		}
 		$sql = "INSERT INTO " . THEMES_TABLE . " (" . $sql1 . ") VALUES (" . $sql2 . ")";
 	}
-	if ( !($result = $db->sql_query($sql)) )
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
 	{
 		if(defined('XS_CLONING'))
 		{
@@ -485,7 +493,7 @@ for($i = 0; $i < count($install); $i++)
 	if($default_name === $style_name)
 	{
 		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='{$installed}' WHERE config_name='default_style'";
-		$board_config['default_style'] = $installed;
+		$config['default_style'] = $installed;
 		$db->sql_query($sql);
 	}
 }
@@ -494,9 +502,9 @@ if(defined('XS_CLONING'))
 	@unlink($tmp_filename);
 }
 
-if(count($install))
+if(sizeof($install))
 {
-	$db->clear_cache('themes_');
+	$db->clear_cache('styles_');
 }
 xs_message($lang['Information'], $lang['xs_import_installed'] . '<br /><br />' . $lang['xs_import_back']);
 

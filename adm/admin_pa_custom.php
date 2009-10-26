@@ -198,7 +198,7 @@ elseif($mode == 'edit' || $mode == 'delete' || $mode == 'select' )
 $pafiledb_template->display('admin');
 
 $pafiledb->_pafiledb();
-$cache->unload();
+$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

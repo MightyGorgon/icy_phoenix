@@ -39,9 +39,9 @@ if (!function_exists('check_auth'))
 	{
 		$auth_user = 0;
 
-		if(count($u_access))
+		if(sizeof($u_access))
 		{
-			for($j = 0; $j < count($u_access); $j++)
+			for($j = 0; $j < sizeof($u_access); $j++)
 			{
 				$result = 0;
 				switch($type)
@@ -93,11 +93,8 @@ if (($user_id == $founder_id) && ($userdata['user_id'] != $founder_id))
 	$edituser = $userdata['username'];
 	$editok = $userdata['user_id'];
 	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . str_replace("\'", "''", $edituser) . "','" . $editok . "')";
-	if(!($result = $db->sql_query($sql)))
-	{
-	message_die(GENERAL_ERROR, 'Could not obtain adminedit information for this user', '', __LINE__, __FILE__, $sql);
-	}
-		message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG']);
+	$result = $db->sql_query($sql);
+	message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG']);
 }
 // Disallow other admins to delete or edit the first admin - END
 
@@ -141,16 +138,10 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				AND ug.user_id = u.user_id
 				AND g.group_id = ug.group_id
 				AND g.group_single_user = " . TRUE;
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not select info from user/user_group table', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
-
 		$group_id = $row['group_id'];
 		$user_level = $row['user_level'];
-
 		$db->sql_freeresult($result);
 	}
 
@@ -171,11 +162,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_level = '" . $new_level . "'
 				WHERE user_id = " . $user_id;
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$auth_reset = reset_auth_for_admins($user_id);
 		}
 
@@ -199,10 +186,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_level = " . USER . "
 					WHERE user_id = " . $user_id;
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 
 			$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid($l_auth_url . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -217,21 +201,18 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				// OLD SQL
 				/*
 				$sql = "SELECT f.*
-					FROM " . FORUMS_TABLE . " f, " . CATEGORIES_TABLE . " c
-					WHERE f.cat_id = c.cat_id
-					ORDER BY c.cat_order, f.forum_order ASC";
+					FROM " . FORUMS_TABLE . " f, " . FORUMS_TABLE . " c
+					WHERE f.parent_id = c.forum_id
+					ORDER BY f.forum_order ASC";
 				*/
 				$sql = "SELECT f.*
-					FROM " . FORUMS_TABLE . " f, " . FORUMS_TABLE . " f2, " . CATEGORIES_TABLE . " c
-					WHERE (f.cat_id = c.cat_id AND f.main_type = 'c')
-						OR (f.cat_id = 0 AND f.main_type = 'c')
-						OR (f.cat_id = f2.forum_id AND f.main_type = 'f')
+					FROM " . FORUMS_TABLE . " f, " . FORUMS_TABLE . " f2
+					WHERE (f.forum_type = " . FORUM_POST . " AND f2.forum_type = " . FORUM_POST . " AND f.main_type = 'c')
+						OR (f.parent_id = 0 AND f.main_type = 'c')
+						OR (f.parent_id = f2.forum_id AND f.main_type = 'f')
 					GROUP BY f.forum_id
-					ORDER BY c.cat_order, f.forum_order ASC";
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Couldn't obtain forum information", "", __LINE__, __FILE__, $sql);
-				}
+					ORDER BY f.forum_order ASC";
+				$result = $db->sql_query($sql);
 
 				$forum_access = $forum_auth_level_fields = array();
 				while($row = $db->sql_fetchrow($result))
@@ -240,10 +221,10 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				}
 				$db->sql_freeresult($result);
 
-				for($i = 0; $i < count($forum_access); $i++)
+				for($i = 0; $i < sizeof($forum_access); $i++)
 				{
 					$forum_id = $forum_access[$i]['forum_id'];
-					for($j = 0; $j < count($forum_auth_fields); $j++)
+					for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 					{
 						$forum_auth_level_fields[$forum_id][$forum_auth_fields[$j]] = $forum_access[$i][$forum_auth_fields[$j]] == AUTH_ACL;
 					}
@@ -264,7 +245,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			{
 				$change_acl_list = array();
 				$forums_processed = array();
-				for($j = 0; $j < count($forum_auth_fields); $j++)
+				for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 				{
 					$auth_field = $forum_auth_fields[$j];
 					while(list($forum_id, $value) = @each($_POST['private_' . $auth_field]))
@@ -274,13 +255,11 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 						if (!isset($forums_processed[$forum_id]))
 						{
 							$sql = ($mode == 'user') ? ("SELECT aa.*, g.group_single_user FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND aa.forum_id = $forum_id AND g.group_single_user = 1") : ("SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id AND forum_id = $forum_id");
-							if (!($result = $db->sql_query($sql)))
-							{
-								message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-							}
+							$result = $db->sql_query($sql);
+
 							if ($row = $db->sql_fetchrow($result))
 							{
-								for ($k = 0; $k < count($forum_auth_fields); $k++)
+								for ($k = 0; $k < sizeof($forum_auth_fields); $k++)
 								{
 									$change_acl_list[$forum_id][$forum_auth_fields[$k]] = $row[$forum_auth_fields[$k]];
 								}
@@ -302,7 +281,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 
 			// extract forums
 			$forum_access = array();
-			for ($i = 0; $i < count($keys['id']); $i++)
+			for ($i = 0; $i < sizeof($keys['id']); $i++)
 			{
 				if ($tree['type'][ $keys['idx'][$i] ] == POST_FORUM_URL)
 				{
@@ -311,10 +290,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			}
 
 			$sql = ($mode == 'user') ? "SELECT aa.* FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = " . TRUE : "SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 
 			$auth_access = array();
 			while($row = $db->sql_fetchrow($result))
@@ -327,7 +303,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			$update_acl_status = array();
 			$update_mod_status = array();
 
-			for($i = 0; $i < count($forum_access); $i++)
+			for($i = 0; $i < sizeof($forum_access); $i++)
 			{
 				$forum_id = $forum_access[$i]['forum_id'];
 
@@ -350,7 +326,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 					}
 				}
 
-				for($j = 0; $j < count($forum_auth_fields); $j++)
+				for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 				{
 					$auth_field = $forum_auth_fields[$j];
 
@@ -425,10 +401,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 							WHERE group_id = $group_id
 								AND forum_id = $forum_id";
 					}
-					if(!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, "Couldn't update private forum permissions", "", __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 				}
 			}
 
@@ -437,10 +410,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				$sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
 					WHERE group_id = $group_id
 						AND forum_id IN ($delete_sql)";
-				if(!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Couldn't delete permission entries", "", __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 
 			$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid($l_auth_url . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -455,10 +425,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				AND u.user_level NOT IN (" . MOD . ", " . JUNIOR_ADMIN . ", " . ADMIN . ")
 			GROUP BY u.user_id
 			HAVING SUM(aa.auth_mod) > 0";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$set_mod = '';
 		while($row = $db->sql_fetchrow($result))
@@ -475,10 +442,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			WHERE u.user_level NOT IN (" . USER . ", " . JUNIOR_ADMIN . ", " . ADMIN . ")
 			GROUP BY u.user_id
 			HAVING SUM(aa.auth_mod) = 0";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$unset_mod = '';
 		while($row = $db->sql_fetchrow($result))
@@ -492,10 +456,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_level = " . MOD . "
 				WHERE user_id IN ($set_mod)";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update user level", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 
 		$sql = "SELECT user_id FROM " . USER_GROUP_TABLE . " WHERE group_id = $group_id";
@@ -514,10 +475,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 						AND aa.group_id = ug.group_id
 						AND aa.auth_mod = 1
 					GROUP BY ug.user_id";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain moderator status', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -528,15 +486,12 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 		}
 		$db->sql_freeresult($result);
 
-		if (count($group_user))
+		if (sizeof($group_user))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 							SET user_level = " . USER . "
 								WHERE user_id IN (" . implode(', ', $group_user) . ") AND user_level = " . MOD;
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 
 		cache_tree(true);
@@ -546,10 +501,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_level = " . USER . "
 				WHERE user_id IN ($unset_mod)";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update user level", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 		$sql = "SELECT user_id FROM " . USER_GROUP_TABLE . " WHERE group_id = $group_id";
 		$result = $db->sql_query($sql);
@@ -567,10 +519,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				AND aa.group_id = ug.group_id
 				AND aa.auth_mod = 1
 			GROUP BY ug.user_id";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, 'Could not obtain moderator status', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -581,15 +530,12 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 		}
 		$db->sql_freeresult($result);
 
-		if (count($group_user))
+		if (sizeof($group_user))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_level = " . USER . "
 				WHERE user_id IN (" . implode(', ', $group_user) . ") AND user_level = " . MOD;
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update user level', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 
 		$db->clear_cache();
@@ -600,7 +546,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 //Start Quick Administrator User Options and Information MOD
 if($redirect != '')
 {
-	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
+	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 }
 //End Quick Administrator User Options and Information MOD
 elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode == 'group') && $group_id))
@@ -621,14 +567,14 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 
 	// get the maximum level
 	$max_level = 0;
-	for ($i = 0; $i < count($keys['id']); $i++)
+	for ($i = 0; $i < sizeof($keys['id']); $i++)
 	{
 		if ($keys['real_level'][$i] > $max_level) $max_level = $keys['real_level'][$i];
 	}
 
 	// extract forums
 	$forum_access = array();
-	for ($i=0; $i < count($keys['id']); $i++)
+	for ($i=0; $i < sizeof($keys['id']); $i++)
 	{
 		if ($tree['type'][ $keys['idx'][$i] ] == POST_FORUM_URL)
 		{
@@ -638,13 +584,13 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 
 	if(empty($adv))
 	{
-		for($i = 0; $i < count($forum_access); $i++)
+		for($i = 0; $i < sizeof($forum_access); $i++)
 		{
 			$forum_id = $forum_access[$i]['forum_id'];
 
 			$forum_auth_level[$forum_id] = AUTH_ALL;
 
-			for($j = 0; $j < count($forum_auth_fields); $j++)
+			for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 			{
 				$forum_access[$i][$forum_auth_fields[$j]] . ' :: ';
 				if ($forum_access[$i][$forum_auth_fields[$j]] == AUTH_ACL)
@@ -657,24 +603,18 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	}
 	$sql = "SELECT count(*) AS total FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug WHERE ";
 	$sql .= ($mode == 'user') ? "u.user_id = $user_id AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = $group_id AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't count user/group information", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$count_ug_info = $db->sql_fetchrow($result);
 	$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 	$start = ($start < 0) ? 0 : $start;
 	$pagination_url = 'admin_ug_auth.' . PHP_EXT . '?' . (($mode == 'user') ? POST_USERS_URL . '=' . $user_id : POST_GROUPS_URL . '=' . $group_id) . '&amp;mode=' . $mode . '&amp;adv=' . $adv;
-	$pagination = generate_pagination($pagination_url, $count_ug_info['total'], $board_config['posts_per_page'], $start);
+	$pagination = generate_pagination($pagination_url, $count_ug_info['total'], $config['posts_per_page'], $start);
 
 	$sql = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user, g.group_color, ug.user_pending FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug WHERE ";
 	$sql .= ($mode == 'user') ? "u.user_id = $user_id AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = $group_id AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
-	$sql .= " ORDER BY u.username, g.group_name LIMIT $start, " . $board_config['posts_per_page'];
+	$sql .= " ORDER BY u.username, g.group_name LIMIT $start, " . $config['posts_per_page'];
+	$result = $db->sql_query($sql);
 
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
-	}
 	$ug_info = array();
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -683,10 +623,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	$db->sql_freeresult($result);
 
 	$sql = ($mode == 'user') ? "SELECT aa.*, g.group_single_user FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$auth_access = array();
 	$auth_access_count = array();
@@ -701,12 +638,12 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	$is_jadmin = ($mode == 'user') ? ((($ug_info[0]['user_level'] == JUNIOR_ADMIN) && ($ug_info[0]['user_id'] != ANONYMOUS)) ? 1 : 0) : 0;
 	$is_admin_select = ((($ug_info[0]['user_level'] == JUNIOR_ADMIN) && ($ug_info[0]['user_id'] != ANONYMOUS)) ? JUNIOR_ADMIN : $is_admin);
 
-	for($i = 0; $i < count($forum_access); $i++)
+	for($i = 0; $i < sizeof($forum_access); $i++)
 	{
 		$forum_id = $forum_access[$i]['forum_id'];
 
 		unset($prev_acl_setting);
-		for($j = 0; $j < count($forum_auth_fields); $j++)
+		for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 		{
 			$key = $forum_auth_fields[$j];
 			$value = $forum_access[$i][$key];
@@ -755,11 +692,11 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	$s_column_span = 2 + $max_level; // Two columns always present
 	if($adv)
 	{
-		$s_column_span = $s_column_span + count($forum_auth_fields) - 1;
+		$s_column_span = $s_column_span + sizeof($forum_auth_fields) - 1;
 	}
 
 	// read the objects without the index forum (i=0)
-	for ($i = 1; $i < count($keys['id']); $i++)
+	for ($i = 1; $i < sizeof($keys['id']); $i++)
 	{
 		$CH_this = $keys['idx'][$i];
 		$level = $keys['real_level'][$i];
@@ -776,7 +713,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 			for ($k = 1; $k <= $level; $k++) $template->assign_block_vars('row.cathead.inc', array());
 			if ($adv)
 			{
-				for ($j = 0; $j < count($forum_auth_fields); $j++)
+				for ($j = 0; $j < sizeof($forum_auth_fields); $j++)
 				{
 					$template->assign_block_vars('row.cathead.aclvalues', array());
 				}
@@ -798,7 +735,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 				{
 					$allowed = 1;
 
-					for($j = 0; $j < count($forum_auth_level_fields[$forum_id]); $j++)
+					for($j = 0; $j < sizeof($forum_auth_level_fields[$forum_id]); $j++)
 					{
 						if (!$auth_ug[$forum_id][$forum_auth_level_fields[$forum_id][$j]])
 						{
@@ -830,11 +767,11 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 			}
 			else
 			{
-				for($j = 0; $j < count($forum_access); $j++)
+				for($j = 0; $j < sizeof($forum_access); $j++)
 				{
 					if ($forum_access[$j]['forum_id'] == $forum_id)
 					{
-						for($k = 0; $k < count($forum_auth_fields); $k++)
+						for($k = 0; $k < sizeof($forum_auth_fields); $k++)
 						{
 							$field_name = $forum_auth_fields[$k];
 
@@ -902,7 +839,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 			}
 			else
 			{
-				for($j = 0; $j < count($forum_auth_fields); $j++)
+				for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 				{
 					$template->assign_block_vars('row.forums.aclvalues', array(
 						'S_ACL_SELECT' => $optionlist_acl_adv[$forum_id][$j]
@@ -932,7 +869,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	$name = array();
 	$id = array();
 	$color = array();
-	for($i = 0; $i < count($ug_info); $i++)
+	for($i = 0; $i < sizeof($ug_info); $i++)
 	{
 		if((($mode == 'user') && !$ug_info[$i]['group_single_user']) || ($mode == 'group'))
 		{
@@ -944,9 +881,9 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 
 	$t_usergroup_list = '';
 	$t_pending_list = '';
-	if(count($name))
+	if(sizeof($name))
 	{
-		for($i = 0; $i < count($name); $i++)
+		for($i = 0; $i < sizeof($name); $i++)
 		{
 			$ug = ($mode == 'user') ? 'group&amp;' . POST_GROUPS_URL : 'user&amp;' . POST_USERS_URL;
 			if (!$ug_info[$i]['user_pending'])
@@ -973,7 +910,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	}
 	else
 	{
-		for($i = 0; $i < count($forum_auth_fields); $i++)
+		for($i = 0; $i < sizeof($forum_auth_fields); $i++)
 		{
 			$cell_title = $field_names[$forum_auth_fields[$i]];
 
@@ -1053,7 +990,7 @@ else
 	{
 		$template->assign_vars(array(
 			'L_FIND_USERNAME' => $lang['Find_username'],
-			'U_SEARCH_USER' => append_sid('../' . SEARCH_MG . '?mode=searchuser')
+			'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser')
 			)
 		);
 	}
@@ -1063,11 +1000,7 @@ else
 			FROM " . GROUPS_TABLE . "
 			WHERE group_single_user <> " . TRUE . "
 			ORDER BY group_name";
-
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't get group list", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
 		{

@@ -50,8 +50,8 @@ if (hidemenu_onclick == "yes")
 <div id="global-wrapper">
 <span><a name="top"></a></span>
 {TOP_HTML_BLOCK}
-{PROFILE_VIEW}
-<!-- {GREETING_POPUP} -->
+<!-- IF GH_BLOCK --><!-- BEGIN gheader_blocks_row -->{gheader_blocks_row.CMS_BLOCK}<!-- END gheader_blocks_row --><!-- ENDIF -->
+<!-- IF PROFILE_VIEW --><script type="text/javascript">window.open('{U_PROFILE_VIEW}','_blank','height=800,width=250,resizable=yes');</script><!-- ENDIF -->
 
 {PAGE_BEGIN}
 <table id="forumtable" cellspacing="0" cellpadding="0">

@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!--
 <table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1"><div class="post-text">{L_PROFILE_EXPLAIN}</div></td></tr>
@@ -224,3 +226,5 @@
 <!-- <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr> -->
 <tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- INCLUDE overall_footer.tpl -->

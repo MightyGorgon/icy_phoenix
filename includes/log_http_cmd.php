@@ -31,7 +31,7 @@ $_prot = $_SERVER['REQUEST_METHOD'];
 $update_log = false;
 $content = '';
 $db_log = array();
-$db_log_actions = (($board_config['db_log_actions'] == '1') || ($board_config['db_log_actions'] == '2')) ? true : false;
+$db_log_actions = (($config['db_log_actions'] == '1') || ($config['db_log_actions'] == '2')) ? true : false;
 
 // Simplify often used variables
 $_mode = '';
@@ -80,7 +80,7 @@ if (isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL]))
 /*
 switch($page_array['page_name'])
 {
-	case POSTING_MG:
+	case CMS_PAGE_POSTING:
 		$content .= 'POSTING';
 		if($mode == 'topicreview')
 		{
@@ -103,15 +103,15 @@ if(($page_array['page_dir'] == ADM) || ($page_array['page_dir'] == ('../' . ADM)
 	// ACP Logging
 	switch($page_array['page_name'])
 	{
-		case 'admin_forums.' . PHP_EXT:
-			if(isset($_POST['addcategory']) && !empty($_POST['categoryname']))
+		case 'admin_forums_extend.' . PHP_EXT:
+			if(isset($_POST['update']) && !empty($_POST['name']))
 			{
-				$content .= '[Category: ' . $_POST['categoryname'] . ']';
+				$content .= '[Forum: ' . $_POST['name'] . ']';
 				if ($db_log_actions == true)
 				{
 					$db_log = array(
 						'action' => 'ADMIN_CAT_ADD',
-						'desc' => $_POST['categoryname'],
+						'desc' => addslashes($_POST['name']),
 						'target' => '',
 					);
 				}
@@ -291,11 +291,7 @@ if(($page_array['page_dir'] == ADM) || ($page_array['page_dir'] == ('../' . ADM)
 						if(!empty($_POST['username']))
 						{
 							$sql = "SELECT user_id FROM " . USERS_TABLE . " WHERE username = '" . phpbb_clean_username($_POST['username']) . "'";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not query users table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
-
+							$result = $db->sql_query($sql);
 							$user_row = $db->sql_fetchrow($result);
 							$db->sql_freeresult($result);
 						}
@@ -391,16 +387,12 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 {
 	switch($page_array['page_name'])
 	{
-		case POSTING_MG:
+		case CMS_PAGE_POSTING:
 			// post-deletion, edits
 			if ($db_log_actions && !empty($_post))
 			{
 				$sql = "SELECT poster_id FROM " . POSTS_TABLE . " WHERE post_id = '" . $_post . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query posts table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$post_row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
 			}
@@ -464,7 +456,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					}
 
 					$_data = '';
-					for($i = 0; $i < count($_varary); $i++)
+					for($i = 0; $i < sizeof($_varary); $i++)
 					{
 						$_data .= (($_data != '') ? ', ' : '') . intval($_varary[$i]);
 					}
@@ -485,11 +477,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					if ($db_log_actions == true)
 					{
 						$sql = "SELECT user_id FROM " . USERS_TABLE . " WHERE username = '" . phpbb_clean_username($_POST['username']) . "'";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not query users table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
-
+						$result = $db->sql_query($sql);
 						$user_row = $db->sql_fetchrow($result);
 						$db->sql_freeresult($result);
 
@@ -517,7 +505,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 			}
 			break;
 		/*
-		case PROFILE_MG:
+		case CMS_PAGE_PROFILE:
 			if($_mode == 'register' && isset($_POST['agreed']) && $_prot == 'POST')
 			{
 				if(!empty($_POST['username']) && !empty($_POST['website']))
@@ -540,18 +528,14 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 				$_data = '';
 				$_users = '';
 				$user_ids = array();
-				for($i = 0; $i < count($_varary); $i++)
+				for($i = 0; $i < sizeof($_varary); $i++)
 				{
 					$_data .= (($_data != '') ? ', ' : '') . intval($_varary[$i]);
 
 					if ($db_log_actions == true)
 					{
 						$sql = "SELECT topic_poster FROM " . TOPICS_TABLE . " WHERE topic_id = '" . intval($_varary[$i]) . "'";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not query topics table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
-
+						$result = $db->sql_query($sql);
 						$user_id = $db->sql_fetchrow($result);
 						$db->sql_freeresult($result);
 
@@ -583,11 +567,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 						if ($db_log_actions == true)
 						{
 							$sql = "SELECT forum_name FROM " . FORUMS_TABLE . " WHERE forum_id = '" . $new_forum_id . "'";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not query forums table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
-
+							$result = $db->sql_query($sql);
 							$forum_row = $db->sql_fetchrow($result);
 							$db->sql_freeresult($result);
 
@@ -604,11 +584,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 						if ($db_log_actions == true)
 						{
 							$sql = "SELECT topic_title FROM " . TOPICS_TABLE . " WHERE topic_id = '" . intval($_POST['new_topic']) . "'";
-							if(!$result = $db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not query topics table', $lang['Error'], __LINE__, __FILE__, $sql);
-							}
-
+							$result = $db->sql_query($sql);
 							$topic_row = $db->sql_fetchrow($result);
 							$db->sql_freeresult($result);
 
@@ -667,7 +643,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 				{
 					$_varary = $_POST['post_id_list'];
 
-					for ($i = 0; $i < count($_varary); $i++)
+					for ($i = 0; $i < sizeof($_varary); $i++)
 					{
 						$_data .= (($_data != '') ? ', ' : '') . intval($_varary[$i]);
 					}
@@ -676,11 +652,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					if ($db_log_actions == true)
 					{
 						$sql = "SELECT forum_name FROM " . FORUMS_TABLE . " WHERE forum_id = '" . $new_forum_id . "'";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not query forums table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
-
+						$result = $db->sql_query($sql);
 						$forum_row = $db->sql_fetchrow($result);
 						$db->sql_freeresult($result);
 
@@ -699,11 +671,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 			if ($db_log_actions == true)
 			{
 				$sql = "SELECT topic_title, topic_poster FROM " . TOPICS_TABLE . " WHERE topic_id = '" . intval($_topic) . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query topics table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$topic_row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
 
@@ -725,11 +693,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					if ($db_log_actions == true)
 					{
 						$sql = "SELECT topic_title, topic_poster FROM " . TOPICS_TABLE . " WHERE topic_id = " . intval($_topic) . "";
-						if(!$result = $db->sql_query($sql))
-						{
-							message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-						}
-
+						$result = $db->sql_query($sql);
 						$topic_row = $db->sql_fetchrow($result);
 						$db->sql_freeresult($result);
 
@@ -747,11 +711,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 			if ($db_log_actions == true)
 			{
 				$sql = "SELECT poster_id FROM " . POSTS_TABLE . " WHERE post_id = '" . intval($_GET['post_id']) . "'";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query posts table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$post_row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
 			}

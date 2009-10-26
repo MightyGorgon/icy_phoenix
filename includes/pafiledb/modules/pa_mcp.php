@@ -19,7 +19,7 @@ class pafiledb_mcp extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images, $debug, $userdata, $pafiledb_functions;
+		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $debug, $userdata, $pafiledb_functions;
 
 //		$custom_field = new custom_field();
 //		$custom_field->init();
@@ -27,7 +27,7 @@ class pafiledb_mcp extends pafiledb_public
 
 		$file_id = (isset($_REQUEST['file_id'])) ? intval($_REQUEST['file_id']) : 0;
 		$file_ids = (isset($_POST['file_ids'])) ? array_map('intval', $_POST['file_ids']) : array();
-		$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
+		$start = (isset($_REQUEST['start'])) ? intval($_REQUEST['start']) : 0;
 		$start = ($start < 0) ? 0 : $start;
 
 		$mode = (isset($_REQUEST['mode'])) ? htmlspecialchars($_REQUEST['mode']) : '';
@@ -38,7 +38,7 @@ class pafiledb_mcp extends pafiledb_public
 		$mode = (isset($_POST['unapprove'])) ? 'do_unapprove' : $mode;
 
 
-		if ( empty($mode) )
+		if (empty($mode))
 		{
 			$mode = $mode_js;
 			$cat_id = (isset($_REQUEST['cat_js_id'])) ? intval($_REQUEST['cat_js_id']) : intval($_REQUEST['cat_id']);
@@ -59,7 +59,7 @@ class pafiledb_mcp extends pafiledb_public
 		{
 			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_mcp'], $this->auth[$cat_id]['auth_mod']);
@@ -67,7 +67,7 @@ class pafiledb_mcp extends pafiledb_public
 		}
 
 
-		if( isset($_REQUEST['sort_method']) )
+		if(isset($_REQUEST['sort_method']))
 		{
 			switch ($_REQUEST['sort_method'])
 			{
@@ -95,7 +95,7 @@ class pafiledb_mcp extends pafiledb_public
 			$sort_method = $pafiledb_config['sort_method'];
 		}
 
-		if( isset($_REQUEST['sort_order']) )
+		if(isset($_REQUEST['sort_order']))
 		{
 			switch ($_REQUEST['sort_order'])
 			{
@@ -143,7 +143,7 @@ class pafiledb_mcp extends pafiledb_public
 
 		if(($mode == 'do_approve') || ($mode == 'do_unapprove'))
 		{
-			if ( ($pafiledb_config['validator'] == 'validator_mod' && $this->auth[$cat_id]['auth_mod']) || $userdata['user_level'] == ADMIN )
+			if (($pafiledb_config['validator'] == 'validator_mod' && $this->auth[$cat_id]['auth_mod']) || $userdata['user_level'] == ADMIN)
 			{
 				if(is_array($file_ids) && !empty($file_ids))
 				{
@@ -172,9 +172,9 @@ class pafiledb_mcp extends pafiledb_public
 		$pafiledb_template->assign_vars(array(
 				'L_INDEX' => $lang['Home'],
 				'L_HOME' => $lang['Home'],
-				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-				'U_INDEX' => append_sid(PORTAL_MG),
+				'U_INDEX' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD_HOME' => append_sid('dload.php'),
 				'U_DOWNLOAD' => append_sid('dload.php'),
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
@@ -201,17 +201,13 @@ class pafiledb_mcp extends pafiledb_public
 					$where_sql
 					ORDER BY file_time DESC";
 
-					if($mode == '' || $mode == 'file_cat' || $mode == 'all_file')
+					if(($mode == '') || ($mode == 'file_cat') || ($mode == 'all_file'))
 					{
-						if( (!$result = $db->sql_query($sql)) )
-						{
-							message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-						}
-
+						$result = $db->sql_query($sql);
 						$total_files = $db->sql_numrows($result);
 					}
 
-				if ( !($result = $pafiledb_functions->sql_query_limit($sql, $pafiledb_config['settings_file_page'], $start)) )
+				if (!($result = $pafiledb_functions->sql_query_limit($sql, $pafiledb_config['settings_file_page'], $start)))
 				{
 					message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 				}
@@ -245,15 +241,11 @@ class pafiledb_mcp extends pafiledb_public
 
 					if($mode == 'approved')
 					{
-						if( (!$result = $db->sql_query($sql)) )
-						{
-							message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-						}
-
+						$result = $db->sql_query($sql);
 						$total_files = $db->sql_numrows($result);
 					}
 
-					if ( !($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)) )
+					if (!($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)))
 					{
 						message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 					}
@@ -274,15 +266,11 @@ class pafiledb_mcp extends pafiledb_public
 
 					if($mode == 'broken')
 					{
-						if( (!$result = $db->sql_query($sql)) )
-						{
-							message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
-						}
-
+						$result = $db->sql_query($sql);
 						$total_files = $db->sql_numrows($result);
 					}
 
-					if ( !($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)) )
+					if (!($result = $pafiledb_functions->sql_query_limit($sql, $limit, $temp_start)))
 					{
 						message_die(GENERAL_ERROR, 'Couldn\'t get file info', '', __LINE__, __FILE__, $sql);
 					}
@@ -402,7 +390,7 @@ class pafiledb_mcp extends pafiledb_public
 				'L_NO_FILES' => $lang['No_file'],
 
 				'PAGINATION' => generate_pagination(append_sid('dload.' . PHP_EXT . '?action=mcp&amp;mode=' . $mode . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . '&amp;cat_id=' . $cat_id), $total_files, $pafiledb_config['settings_file_page'], $start),
-				'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pafiledb_config['settings_file_page'] ) + 1 ), ceil( $total_files / $pafiledb_config['settings_file_page'] )),
+				'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pafiledb_config['settings_file_page']) + 1), ceil($total_files / $pafiledb_config['settings_file_page'])),
 
 				'S_CAT_LIST' => $cat_list,
 				'S_MODE_SELECT' => $s_file_list
@@ -456,7 +444,7 @@ class pafiledb_mcp extends pafiledb_public
 		}
 
 		$pafiledb_template->assign_vars(array(
-			'ERROR' => (count($this->error)) ? implode('<br />', $this->error) : '')
+			'ERROR' => (sizeof($this->error)) ? implode('<br />', $this->error) : '')
 		);
 
 
@@ -465,7 +453,7 @@ class pafiledb_mcp extends pafiledb_public
 		// $pafiledb_template->display('admin');
 
 		$this->_pafiledb();
-		//$cache->unload();
+		//$pa_cache->unload();
 
 		/* Original
 		include('./page_footer_admin.' . PHP_EXT);

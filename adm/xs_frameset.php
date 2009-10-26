@@ -52,7 +52,7 @@ if(isset($_POST['action']) && $_POST['action'] === 'web')
 	}
 }
 
-$get_data = PHP_EXT . (count($get_data) ? ('?' . implode('&', $get_data)) : '');
+$get_data = PHP_EXT . (sizeof($get_data) ? ('?' . implode('&', $get_data)) : '');
 
 $content_url = array(
 	'config'		=> append_sid('xs_config.' . $get_data),

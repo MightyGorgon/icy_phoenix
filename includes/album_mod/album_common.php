@@ -25,15 +25,15 @@ define('ALBUM_NAV_ARROW', $lang['Nav_Separator']);
 
 if (!defined('IMG_THUMB'))
 {
-	$cms_page_id = 'album';
-	$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-	$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-	$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-	check_page_auth($cms_page_id, $cms_auth_level);
+	$cms_page['page_id'] = 'album';
+	$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+	$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+	$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+	check_page_auth($cms_page['page_id'], $cms_auth_level);
 }
 
 // Include Language
-$language = $board_config['default_lang'];
+$language = $config['default_lang'];
 
 if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_album_main.' . PHP_EXT))
 {
@@ -45,10 +45,7 @@ include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_album_main.' . PHP_
 // Get Album Config
 $album_config = array();
 $sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
-if(!$result = $db->sql_query($sql, false, 'album_config_'))
-{
-	message_die(GENERAL_ERROR, 'Could not query Album config information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql, 0, 'album_config_');
 while($row = $db->sql_fetchrow($result))
 {
 	$album_config[$row['config_name']] = $row['config_value'];
@@ -90,7 +87,7 @@ if ($album_config['show_inline_copyright'] == 0)
 	$album_copyright .= '</div>';
 	*/
 	$album_copyright = '<div align="center" class="gensmall" style="font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px">';
-	$album_copyright .= 'Photo Album Powered by:&nbsp;<a href="http://www.icyphoenix.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'] . '&nbsp;&copy;&nbsp;2007<br />';
+	$album_copyright .= 'Photo Album Powered by:&nbsp;<a href="http://www.icyphoenix.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'] . '&nbsp;&copy;&nbsp;2009<br />';
 	$album_copyright .= '[based on <a href="http://smartor.is-root.com" target="_blank">Smartor</a> Photo Album plus IdleVoid\'s Album CH &amp; CLowN SP1]';
 	$album_copyright .= '</div>';
 }
@@ -105,7 +102,7 @@ else
 	$album_copyright .= '</div>';
 	*/
 	$album_copyright = '<div align="center" class="gensmall" style="font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px">';
-	$album_copyright .= 'Photo Album Powered by:&nbsp;<a href="http://www.icyphoenix.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'] . '&nbsp;&copy;&nbsp;2007';
+	$album_copyright .= 'Photo Album Powered by:&nbsp;<a href="http://www.icyphoenix.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'] . '&nbsp;&copy;&nbsp;2009';
 	$album_copyright .= '&nbsp;[based on <a href="http://smartor.is-root.com" target="_blank">Smartor</a> Photo Album plus IdleVoid\'s Album CH &amp; CLowN SP1]';
 	$album_copyright .= '</div>';
 }

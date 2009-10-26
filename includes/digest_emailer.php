@@ -85,7 +85,7 @@ class digest_emailer
 
 	function use_template($template_file, $template_lang = '')
 	{
-		global $board_config;
+		global $config;
 
 		if (trim($template_file) == '')
 		{
@@ -94,9 +94,9 @@ class digest_emailer
 
 		if (trim($template_lang) == '')
 		{
-			$template_lang = $board_config['default_lang'];
+			$template_lang = $config['default_lang'];
 		}
-		if ($board_config['html_email'] == true)
+		if ($config['html_email'] == true)
 		{
 			if (empty($this->tpl_msg[$template_lang . $template_file]))
 			{
@@ -104,7 +104,7 @@ class digest_emailer
 
 				if (!@file_exists(@phpbb_realpath($tpl_file)))
 				{
-					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/' . $template_file . '.tpl';
+					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/html/' . $template_file . '.tpl';
 
 					if (!@file_exists(@phpbb_realpath($tpl_file)))
 					{
@@ -125,7 +125,7 @@ class digest_emailer
 
 			if (!@file_exists(@phpbb_realpath($tpl_header)))
 			{
-				$tpl_header = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_header.tpl';
+				$tpl_header = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/html/html_mail_header.tpl';
 			}
 
 			if (!($fd = @fopen($tpl_header, 'r')))
@@ -137,20 +137,20 @@ class digest_emailer
 			fclose($fd);
 
 			// Mighty Gorgon - Add Site Url - BEGIN
-			$site_url = ( ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://' ) . trim($board_config['server_name']) . ( ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '') . preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path'])) . '/';
+			$site_url = ( ($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://' ) . trim($config['server_name']) . ( ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '') . preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path'])) . '/';
 			if (substr($site_url, (strlen($site_url) - 1), 1) <> '/')
 			{
 				$site_url = $site_url . '/';
 			}
 			$mail_header = str_replace('{ROOT}', $site_url, $mail_header);
-			$mail_header = str_replace('{SITENAME}', ip_stripslashes($board_config['sitename']), $mail_header);
+			$mail_header = str_replace('{SITENAME}', $config['sitename'], $mail_header);
 			// Mighty Gorgon - Add Site Url - END
 
 			$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_footer.tpl';
 
 			if (!@file_exists(@phpbb_realpath($tpl_footer)))
 			{
-				$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/html/html_mail_footer.tpl';
+				$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/html/html_mail_footer.tpl';
 			}
 
 			if (!($fd = @fopen($tpl_footer, 'r')))
@@ -173,7 +173,7 @@ class digest_emailer
 
 				if (!@file_exists(@phpbb_realpath($tpl_file)))
 				{
-					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/email/txt/' . $template_file . '.tpl';
+					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/txt/' . $template_file . '.tpl';
 
 					if (!@file_exists(@phpbb_realpath($tpl_file)))
 					{
@@ -205,7 +205,7 @@ class digest_emailer
 	// Send the mail out to the recipients set previously in var $this->address
 	function send($is_html)
 	{
-		global $board_config, $lang, $db;
+		global $config, $lang, $db;
 		// Escape all quotes, else the eval will fail.
 		$this->msg = str_replace ("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
@@ -257,18 +257,18 @@ class digest_emailer
 
 		$to = $this->addresses['to'];
 
-		$cc = (count($this->addresses['cc'])) ? implode(', ', $this->addresses['cc']) : '';
-		$bcc = (count($this->addresses['bcc'])) ? implode(', ', $this->addresses['bcc']) : '';
+		$cc = (sizeof($this->addresses['cc'])) ? implode(', ', $this->addresses['cc']) : '';
+		$bcc = (sizeof($this->addresses['bcc'])) ? implode(', ', $this->addresses['bcc']) : '';
 
 		// Build header
 		// This is the one line of code modified from emailer.php so mail_digests.php can send HTML
 		if ($is_html)
 		{
- 			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $board_config['board_email'] . "\n") . "Return-Path: " . $board_config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $board_config['server_name'] . ">\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
+			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nContent-transfer-encoding: 8bit\nDate: " . gmdate('r') . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
 		}
 		else
 		{
-			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $board_config['board_email'] . "\n") . "Return-Path: " . $board_config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $board_config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
+			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . gmdate('r') . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
 		}
 
 		// Send message ... removed $this->encode() from subject for time being
@@ -284,11 +284,11 @@ class digest_emailer
 		else
 		{
 			$empty_to_header = ($to == '') ? true : false;
-			$to = ($to == '') ? (($board_config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
+			$to = ($to == '') ? (($config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
 
 			$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
 
-			if (!$result && !$board_config['sendmail_fix'] && $empty_to_header)
+			if (!$result && !$config['sendmail_fix'] && $empty_to_header)
 			{
 				$to = ' ';
 				set_config('sendmail_fix', 1);
@@ -360,10 +360,10 @@ class digest_emailer
 		{
 			$this->mimeOut .= "From: ".$szFromAddress."\n";
 			$this->mimeOut .= "To: ".$this->emailAddress."\n";
-			$this->mimeOut .= "Date: ".date("D, d M Y H:i:s") . " UT\n";
+			$this->mimeOut .= "Date: " . gmdate("D, d M Y H:i:s") . " UT\n";
 			$this->mimeOut .= "Reply-To:".$szFromAddress."\n";
 			$this->mimeOut .= "Subject: ".$this->mailSubject."\n";
-			$this->mimeOut .= "X-Mailer: PHP/".phpversion()."\n";
+			$this->mimeOut .= "X-Mailer: PHP/" . phpversion()."\n";
 			$this->mimeOut .= "MIME-Version: 1.0\n";
 		}
 

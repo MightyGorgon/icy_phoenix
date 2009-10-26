@@ -45,7 +45,7 @@ class acm
 			return;
 		}
 
-		$file = '<?php $this->vars=' . $this->format_array($this->vars) . ";\n\$this->vars_ts=" . $this->format_array($this->vars_ts) . ' ?>';
+		$file = '<' . '?php $this->vars=' . $this->format_array($this->vars) . ";\n\$this->vars_ts=" . $this->format_array($this->vars_ts) . ' ?' . '>';
 		/*
 		if ($fp = @fopen($this->cache_dir . 'pa_file_data_global.' . PHP_EXT, 'wb'))
 		{

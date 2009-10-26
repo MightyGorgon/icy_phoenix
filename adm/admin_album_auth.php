@@ -28,8 +28,8 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
 require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 $album_user_id = ALBUM_PUBLIC_GALLERY;
@@ -87,12 +87,9 @@ else
 				FROM " . GROUPS_TABLE . "
 				WHERE group_single_user <> " . TRUE ."
 				ORDER BY group_name ASC";
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Could not get group list', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
-		while( $row = $db->sql_fetchrow($result) )
+		while($row = $db->sql_fetchrow($result))
 		{
 			$groupdata[] = $row;
 		}
@@ -101,11 +98,7 @@ else
 		$sql = "SELECT cat_id, cat_title, cat_view_groups, cat_upload_groups, cat_rate_groups, cat_comment_groups, cat_edit_groups, cat_delete_groups, cat_moderator_groups
 				FROM ". ALBUM_CAT_TABLE ."
 				WHERE cat_id = '$cat_id'";
-		if( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, 'Could not get Category information', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$thiscat = $db->sql_fetchrow($result);
 
 		$view_groups = @explode(',', $thiscat['cat_view_groups']);
@@ -117,7 +110,7 @@ else
 
 		$moderator_groups = @explode(',', $thiscat['cat_moderator_groups']);
 
-		for ($i = 0; $i < count($groupdata); $i++)
+		for ($i = 0; $i < sizeof($groupdata); $i++)
 		{
 			$class = ($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
 			$template->assign_block_vars('grouprow', array(
@@ -163,10 +156,7 @@ else
 		$sql = "UPDATE ". ALBUM_CAT_TABLE ."
 				SET cat_view_groups = '$view_groups', cat_upload_groups = '$upload_groups', cat_rate_groups = '$rate_groups', cat_comment_groups = '$comment_groups', cat_edit_groups = '$edit_groups', cat_delete_groups = '$delete_groups',	cat_moderator_groups = '$moderator_groups'
 				WHERE cat_id = '$cat_id'";
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, 'Could not update Album config table', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// okay, return a message...
 		$message = $lang['Album_Auth_successfully'] . '<br /><br />' . sprintf($lang['Click_return_album_auth'], '<a href="' . append_sid("admin_album_auth." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');

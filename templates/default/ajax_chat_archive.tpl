@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 <!--
 // Delete shout from DB
@@ -178,3 +180,5 @@ function handlehResponse()
 	</td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

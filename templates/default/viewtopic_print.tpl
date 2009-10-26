@@ -16,7 +16,8 @@
 	<![endif]-->
 </head>
 <body>
-<div style="margin: 0 auto; display: block; width: 980px !important;">
+<!-- <div style="margin: 0 auto; display: block; width: 960px !important;"> -->
+<div style="margin: 0 auto; display: block; width: 680px !important;">
 <div class="forumline" style="width: 100%;">
 <form name="printview_form" action="{S_ACTION}" method="post">
 <div class="genmed" style="text-align: right; float: right;">
@@ -34,7 +35,8 @@
 <b>{postrow.POSTER_NAME}</b>&nbsp;[&nbsp;{postrow.POST_DATE}&nbsp;]<br />
 <b>{L_POST_SUBJECT}:&nbsp;</b>{postrow.POST_SUBJECT}
 <hr width="95%" class="sep" />
-<div class="post-text post-text-hide-flow">{postrow.MESSAGE}</div>
+<!-- <div class="post-text post-text-hide-flow">&nbsp;</div> -->
+<div class="post-text">{postrow.MESSAGE}</div>
 <br clear="all" />
 <br clear="all" />
 </div>

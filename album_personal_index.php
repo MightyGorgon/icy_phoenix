@@ -61,7 +61,7 @@ $mode_types_text = array($lang['Sort_Joined'], $lang['Sort_Username'], $lang['Pi
 $mode_types = array('joindate', 'username', 'pics', 'last_pic');
 
 $select_sort_mode = '<select name="mode">';
-for($i = 0; $i < count($mode_types_text); $i++)
+for($i = 0; $i < sizeof($mode_types_text); $i++)
 {
 	$selected = ( $mode == $mode_types[$i] ) ? ' selected="selected"' : '';
 	$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
@@ -86,15 +86,9 @@ $select_sort_order .= '</select>';
 +----------------------------------------------------------
 */
 
-$page_title = $lang['Album'];
-$meta_description = '';
-$meta_keywords = '';
 $nav_server_url = create_server_url();
 $album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_personal_index.' . PHP_EXT) . '" class="nav-current">' . $lang['Users_Personal_Galleries'] . '</a>';
 $breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'album_personal_index_body.tpl'));
 
 $template->assign_vars(array(
 	'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
@@ -112,19 +106,19 @@ $template->assign_vars(array(
 switch($mode)
 {
 	case 'joined':
-		$order_by = "user_regdate ASC LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "user_regdate ASC LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'username':
-		$order_by = "username $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "username $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'pics':
-		$order_by = "pics $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "pics $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	case 'last_pic':
-		$order_by = "last_pic $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "last_pic $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 	default:
-		$order_by = "user_regdate $sort_order LIMIT $start, " . $board_config['topics_per_page'];
+		$order_by = "user_regdate $sort_order LIMIT $start, " . $config['topics_per_page'];
 		break;
 }
 
@@ -135,27 +129,21 @@ $sql = "SELECT u.username, u.user_id, u.user_regdate, COUNT(p.pic_id) AS pics, M
 			AND c.cat_id = p.pic_cat_id
 		GROUP BY user_id
 		ORDER BY $order_by";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query users', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $memberrow = array();
-
 while($row = $db->sql_fetchrow($result))
 {
 	$memberrow[] = $row;
 }
 
-for ($i = 0; $i < count($memberrow); $i++)
+for ($i = 0; $i < sizeof($memberrow); $i++)
 {
 	$template->assign_block_vars('memberrow', array(
 		'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
 		'USERNAME' => $memberrow[$i]['username'],
 		'U_VIEWGALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $memberrow[$i]['user_id'])),
 		//'U_VIEWGALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($memberrow[$i]['user_id']) . 'user_id=' . $memberrow[$i]['user_id'])),
-		'JOINED' => create_date($lang['DATE_FORMAT'], $memberrow[$i]['user_regdate'], $board_config['board_timezone']),
+		'JOINED' => create_date($lang['DATE_FORMAT'], $memberrow[$i]['user_regdate'], $config['board_timezone']),
 		'PICS' => $memberrow[$i]['pics']
 		)
 	);
@@ -166,28 +154,19 @@ $sql = "SELECT COUNT(DISTINCT u.user_id) AS total
 		WHERE u.user_id <> " . ANONYMOUS . "
 			AND c.cat_user_id = u.user_id
 			AND c.cat_id = p.pic_cat_id";
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Error getting total galleries', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_galleries = $total['total'];
-
-	$pagination = generate_pagination('album_personal_index.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $board_config['topics_per_page'], $start) . '&nbsp;';
+	$pagination = generate_pagination('album_personal_index.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $config['topics_per_page'], $start) . '&nbsp;';
 }
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $board_config['topics_per_page'] ) + 1 ), ceil( $total_galleries / $board_config['topics_per_page'] ))
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $config['topics_per_page'] ) + 1 ), ceil( $total_galleries / $config['topics_per_page'] ))
 	)
 );
 
-// Generate the page
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('album_personal_index_body.tpl', $lang['Album'], '', '');
 
 ?>

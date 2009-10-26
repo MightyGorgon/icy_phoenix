@@ -24,7 +24,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -34,7 +34,7 @@ admin_menu($menu);
 
 $template->set_filenames(array('body' => ADM_TPL . 'cash_menu.tpl'));
 
-for ($i = 0; $i < count($menu); $i++)
+for ($i = 0; $i < sizeof($menu); $i++)
 {
 	$template->assign_block_vars('menucat',array(
 		'L_CATEGORY' => $menu[$i]->category

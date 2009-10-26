@@ -83,7 +83,7 @@ if ($album_user_id != ALBUM_PUBLIC_GALLERY)
 	{
 		if (!$userdata['session_logged_in'])
 		{
-			redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album.' . PHP_EXT, true)));
+			redirect(append_sid(album_append_uid(CMS_PAGE_LOGIN . '?redirect=album.' . PHP_EXT, true)));
 		}
 		else
 		{
@@ -115,7 +115,7 @@ if ($album_nav_cat_desc != '')
 // $catrows array now stores all categories which this user can view.
 // --------------------------------
 $allowed_cat = ''; // For Recent Public Pics below
-for ($i = 0; $i < count($catrows); $i++)
+for ($i = 0; $i < sizeof($catrows); $i++)
 {
 	// --------------------------------
 	// build list of allowd category id's
@@ -262,17 +262,15 @@ if ($album_user_id != ALBUM_PUBLIC_GALLERY)
 | Start output the page
 +----------------------------------------------------------
 */
+$meta_content['page_title'] = $lang['Album'];
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
 
-$page_title = $lang['Album'];
-$meta_description = '';
-$meta_keywords = '';
 
 // is it a public gallery ?
 if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 {
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'album_index_body.tpl'));
+	$template_to_parse = 'album_index_body.tpl';
 
 	$cols = ($album_config['img_cols'] == 0 ? 4 : $album_config['img_cols']);
 	$cols_width = (100 / $cols) . '%';
@@ -308,7 +306,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	}
 
 	$template->assign_vars(array(
-		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($page_title_simple != $board_config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $page_title_simple . '</a>') : '') : $breadcrumbs_address),
+		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != htmlspecialchars($config['sitename'])) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
 
 		'ALBUM_NAV' => $album_nav_cat_desc,
 		'S_COLS' => $cols,
@@ -359,9 +357,6 @@ if (empty($album_view_mode))
 	album_display_index($album_user_id, ALBUM_ROOT_CATEGORY, true, true, true);
 }
 
-// Generate the page
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 
 ?>

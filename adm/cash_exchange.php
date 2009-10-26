@@ -22,9 +22,8 @@ define('IN_CASHMOD', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
-if ($board_config['cash_adminnavbar'])
+if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
 	include('./admin_cash.' . PHP_EXT);
@@ -54,23 +53,20 @@ while ($c_cur = &$cash->currency_next($cm_i))
 		$sql = "UPDATE " . CASH_TABLE . "
 				SET cash_exchange = $newvalue
 				WHERE cash_id = " . $c_cur->id();
-		if (!($db->sql_query($sql)))
-		{
-			message_die(CRITICAL_ERROR, "Could not update exchange information", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 		$exval = $newvalue / $c_cur->factor();
 	}
 	$exchange[] = array('id' => $c_cur->id(), 'name' => $c_cur->name(), 'exchange' => $exval);
 }
 $db->clear_cache('cash_');
 
-for ($i1 = 0; $i1 < count($exchange); $i1++)
+for ($i1 = 0; $i1 < sizeof($exchange); $i1++)
 {
 	$i = $exchange[$i1]['id'];
 	$varname = 'exchange_' . $i;
 	if (isset($_POST[$varname]) && is_array($_POST[$varname]))
 	{
-		for ($i2 = 0; $i2 < count($exchange); $i2++)
+		for ($i2 = 0; $i2 < sizeof($exchange); $i2++)
 		{
 			$j = $exchange[$i2]['id'];
 			if (isset($_POST[$varname][$j]) && ($i != $j))
@@ -87,26 +83,18 @@ for ($i1 = 0; $i1 < count($exchange); $i1++)
 					$sql = "DELETE FROM " . CASH_EXCHANGE_TABLE . "
 							WHERE ex_cash_id1 = " .  $i . " AND ex_cash_id2 = " . $j;
 				}
-				if (!($db->sql_query($sql)))
-				{
-					message_die(CRITICAL_ERROR, "Could not update exchange information", "", __LINE__, __FILE__, $sql);
-				}
+				$db->sql_query($sql);
 			}
 		}
 	}
 }
 
 $sql = "SELECT * FROM " . CASH_EXCHANGE_TABLE;
-if (!($result = $db->sql_query($sql)))
+$result = $db->sql_query($sql);
+
+while ($row = $db->sql_fetchrow($result))
 {
-	message_die(CRITICAL_ERROR, "Could not query config information", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$exchange_table[$row['ex_cash_id1']][$row['ex_cash_id2']] = 1;
-	}
+	$exchange_table[$row['ex_cash_id1']][$row['ex_cash_id2']] = 1;
 }
 
 // Start page proper
@@ -125,10 +113,10 @@ $template->assign_vars(array(
 	'CORNER_CLASS' => $theme['td_class1'],
 	'SIDE_CLASS' => 'row3',
 
-	'NUM_COLUMNS' => count($exchange))
+	'NUM_COLUMNS' => sizeof($exchange))
 );
 
-for ($i = 0; $i < count($exchange); $i++)
+for ($i = 0; $i < sizeof($exchange); $i++)
 {
 	$template->assign_block_vars('cashrow',array(
 		'ROW_CLASS' => ((!(($i - 1) % 3)) ? $theme['td_class2'] : $theme['td_class1']),
@@ -139,7 +127,7 @@ for ($i = 0; $i < count($exchange); $i++)
 	);
 }
 
-for ($i = 0; $i < count($exchange); $i++)
+for ($i = 0; $i < sizeof($exchange); $i++)
 {
 	$template->assign_block_vars('siderow', array(
 		'ROW_CLASS' => ((!(($i - 1) % 3)) ? $theme['td_class2'] : $theme['td_class1']),
@@ -151,7 +139,7 @@ for ($i = 0; $i < count($exchange); $i++)
 		$template->assign_block_vars('siderow.switch_first', array());
 	}
 
-	for ($j = 0; $j < count($exchange); $j++)
+	for ($j = 0; $j < sizeof($exchange); $j++)
 	{
 		$node = ($i != $j);
 		$row_class = (((!(($j - 1) % 3)) || (!(($i - 1) % 3))) ? $theme['td_class2'] : $theme['td_class1']);

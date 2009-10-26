@@ -35,7 +35,7 @@ if(isset($_POST['cat_id']))
 {
 	$cat_id = intval($_POST['cat_id']);
 }
-elseif( isset($_GET['cat_id']) )
+elseif(isset($_GET['cat_id']))
 {
 	$cat_id = intval($_GET['cat_id']);
 }
@@ -51,14 +51,12 @@ $sql = "SELECT cat_user_id
 				FROM " . ALBUM_CAT_TABLE . "
 				WHERE cat_id = '" . $cat_id . "'
 				LIMIT 1";
-if ( !($result = $db->sql_query($sql, false, 'album_cat_')) )
-{
-	message_die(GENERAL_ERROR, 'Could not query cat information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql, 0, 'album_cat_');
+
 // if no user_id was supplied then we aren't going to show a personal gallery category
 $album_user_id = ALBUM_PUBLIC_GALLERY;
 $catsrow = array();
-while ( $row = $db->sql_fetchrow($result) )
+while ($row = $db->sql_fetchrow($result))
 {
 	$catsrow[] = $row;
 	$album_user_id = $row['cat_user_id'];
@@ -66,11 +64,11 @@ while ( $row = $db->sql_fetchrow($result) )
 $db->sql_freeresult($result);
 
 /*
-if( isset($_POST['user_id']) )
+if(isset($_POST['user_id']))
 {
 	$album_user_id = intval($_POST['user_id']);
 }
-elseif( isset($_GET['user_id']) )
+elseif(isset($_GET['user_id']))
 {
 	$album_user_id = intval($_GET['user_id']);
 }
@@ -126,16 +124,16 @@ $thiscat = array(); // this category
 $catrows = array(); // all categories for jumpbox
 $auth_data = array(); // the authothentication data for current category for current user
 
-if ( ($album_user_id != ALBUM_PUBLIC_GALLERY) && !album_check_user_exists($album_user_id) )
+if (($album_user_id != ALBUM_PUBLIC_GALLERY) && !album_check_user_exists($album_user_id))
 {
 	redirect(append_sid(album_append_uid('album.' . PHP_EXT)));
 }
 
-$read_options = ($album_view_mode == ALBUM_VIEW_LIST ) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
+$read_options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
 $catrows = album_read_tree($album_user_id, $read_options);
 
 // check if the category exists in the album_tree data
-if (@!array_key_exists($cat_id, $album_data['keys']) )
+if (@!array_key_exists($cat_id, $album_data['keys']))
 {
 	message_die(GENERAL_MESSAGE, $lang['Category_not_exist']);
 }
@@ -149,11 +147,11 @@ $auth_data = album_get_auth_data($cat_id);
 // ------------------------------------
 // Check permissions
 // ------------------------------------
-if( !$auth_data['view'] )
+if(!$auth_data['view'])
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(album_append_uid(LOGIN_MG . '?redirect=album_cat.' . PHP_EXT . '&cat_id=' . $cat_id)));
+		redirect(append_sid(album_append_uid(CMS_PAGE_LOGIN . '?redirect=album_cat.' . PHP_EXT . '&cat_id=' . $cat_id)));
 	}
 	else
 	{
@@ -173,7 +171,7 @@ if (empty($thiscat))
 $subcats = array();
 $allowed_cat = $cat_id;
 album_get_sub_cat_ids($cat_id, $subcats);
-for ($i = 0; $i < count($subcats); $i++)
+for ($i = 0; $i < sizeof($subcats); $i++)
 {
 	$allowed_cat .= ',' . $subcats[$i];
 }
@@ -194,7 +192,7 @@ $auth_list = album_build_auth_list($album_user_id, $cat_id);
 $grouprows = array();
 $moderators_list = '';
 
-if ( ($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups'] != '') )
+if (($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups'] != ''))
 {
 	// Get the namelist of moderator usergroups
 	$sql = "SELECT group_id, group_name, group_type, group_single_user
@@ -203,19 +201,15 @@ if ( ($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups
 				AND group_type <> ". GROUP_HIDDEN ."
 				AND group_id IN (". $thiscat['cat_moderator_groups'] .")
 			ORDER BY group_name ASC";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, 'Could not get group list', '', __LINE__, __FILE__, $sql);
-	}
-
-	while( $row = $db->sql_fetchrow($result) )
+	$result = $db->sql_query($sql);
+	while($row = $db->sql_fetchrow($result))
 	{
 		$grouprows[] = $row;
 	}
 
-	if( count($grouprows) > 0 )
+	if(sizeof($grouprows) > 0)
 	{
-		for ($j = 0; $j < count($grouprows); $j++)
+		for ($j = 0; $j < sizeof($grouprows); $j++)
 		{
 			$group_link = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?'. POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
 
@@ -242,7 +236,7 @@ $start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']
 $start = ($start < 0) ? 0 : $start;
 
 $sort_methods_array = array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment');
-if( isset($_GET['sort_method']) || isset($_POST['sort_method']) )
+if(isset($_GET['sort_method']) || isset($_POST['sort_method']))
 {
 	$sort_method = isset($_GET['sort_method']) ? $_GET['sort_method'] : $_POST['sort_method'];
 	$sort_method = in_array($sort_method, $sort_methods_array) ? $sort_method : $album_config['sort_method'];
@@ -279,7 +273,7 @@ switch ($sort_method)
 		$sort_method_sql = 'p.pic_id';
 }
 
-if( isset($_GET['sort_order']) )
+if(isset($_GET['sort_order']))
 {
 	switch ($_GET['sort_order'])
 	{
@@ -293,7 +287,7 @@ if( isset($_GET['sort_order']) )
 			$sort_order = $album_config['sort_order'];
 	}
 }
-elseif( isset($_POST['sort_order']) )
+elseif(isset($_POST['sort_order']))
 {
 	switch ($_POST['sort_order'])
 	{
@@ -320,13 +314,13 @@ $sort_rating_option = '';
 $sort_username_option = '';
 $sort_comments_option = '';
 $sort_new_comment_option = '';
-if( $album_config['rate'] == 1 )
+if($album_config['rate'] == 1)
 {
 	$sort_rating_option = '<option value="rating" ';
 	$sort_rating_option .= ($sort_method == 'rating') ? 'selected="selected"' : '';
 	$sort_rating_option .= '>' . $lang['Rating'] .'</option>';
 }
-if( $album_config['comment'] == 1 )
+if($album_config['comment'] == 1)
 {
 	$sort_comments_option = '<option value="comments" ';
 	$sort_comments_option .= ($sort_method == 'comments') ? 'selected="selected"' : '';
@@ -337,7 +331,7 @@ if( $album_config['comment'] == 1 )
 	$sort_new_comment_option .= '>' . $lang['New_Comment'] .'</option>';
 }
 
-if( $album_user_id == ALBUM_PUBLIC_GALLERY )
+if($album_user_id == ALBUM_PUBLIC_GALLERY)
 {
 	$sort_username_option = '<option value="username" ';
 	$sort_username_option .= ($sort_method == 'username') ? 'selected="selected"' : '';
@@ -359,14 +353,14 @@ $jupload_link = append_sid(album_append_uid('album_jupload.' . PHP_EXT . '?cat_i
 $jupload_full_link = '<a href="' . $jupload_link . '"><img src="' . $jupload_img .'" alt="' . $lang['JUpload_Pic'] . '" title="' . $lang['Jupload_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>';
 
 $download_img = $images['download_pic'];
-$download_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . $cat_id . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . ( ($start != '') ? '&start=' . $start : '' )));
+$download_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . $cat_id . (($sort_method != '') ? '&amp;sort_method=' . $sort_method : '') . (($sort_order != '') ? '&amp;sort_order=' . $sort_order : '') . (($start != '') ? '&start=' . $start : '')));
 $download_full_link = '<a href="' . $download_link . '"><img src="' . $download_img . '" alt="' . $lang['Download_page'] . '" title="' . $lang['Download_page'] . '" style="border:0px;vertical-align:middle;" /></a>';
 
 $download_all_img = $images['download_all_pic'];
-$download_all_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . $cat_id . ( ($sort_method != '') ? '&amp;sort_method=' . $sort_method : '' ) . ( ($sort_order != '') ? '&amp;sort_order=' . $sort_order : '' ) . '&amp;download_all_pics=true'));
+$download_all_link = append_sid(album_append_uid('album_download.' . PHP_EXT . '?cat_id=' . $cat_id . (($sort_method != '') ? '&amp;sort_method=' . $sort_method : '') . (($sort_order != '') ? '&amp;sort_order=' . $sort_order : '') . '&amp;download_all_pics=true'));
 $download_all_full_link = '<a href="' . $download_all_link . '"><img src="' . $download_all_img . '" alt="' . $lang['Download_page'] . '" title="' . $lang['Download_page'] . '" style="border:0px;vertical-align:middle;" /></a>';
 
-if( $auth_data['upload'] == true )
+if($auth_data['upload'] == true)
 {
 	$enable_picture_upload_switch = true;
 	$template->assign_block_vars('enable_picture_upload', array());
@@ -374,7 +368,7 @@ if( $auth_data['upload'] == true )
 
 // Enable download only for own personal galleries
 //if ($thiscat['cat_user_id'] == $userdata['user_id'])
-if( (($userdata['user_level'] == ADMIN) || (($album_config['show_download'] == 1) && ($auth_data['upload'] == true)) || (($album_config['show_download'] == 2)) ) && ($total_pics > 0))
+if((($userdata['user_level'] == ADMIN) || (($album_config['show_download'] == 1) && ($auth_data['upload'] == true)) || (($album_config['show_download'] == 2))) && ($total_pics > 0))
 {
 	$enable_picture_download_switch = true;
 	$template->assign_block_vars('enable_picture_download', array());
@@ -382,15 +376,15 @@ if( (($userdata['user_level'] == ADMIN) || (($album_config['show_download'] == 1
 
 // Start output of page
 
-//$page_title = $lang['Album'];
-$page_title = $thiscat['cat_title'];
-$meta_description = $lang['Album'] . ' - ' . $thiscat['cat_title'] . ' - ' . $cat_desc;
-$meta_keywords = $lang['Album'] . ', ' . $thiscat['cat_title'] . ', ' . $cat_desc . ', ';
+//$meta_content['page_title'] = $lang['Album'];
+$meta_content['page_title'] = $thiscat['cat_title'];
+$meta_content['description'] = $lang['Album'] . ' - ' . $thiscat['cat_title'] . ' - ' . $cat_desc;
+$meta_content['keywords'] = $lang['Album'] . ', ' . $thiscat['cat_title'] . ', ' . $cat_desc . ', ';
 
 
 if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 {
-	if( empty($moderators_list) )
+	if(empty($moderators_list))
 	{
 		$moderators_list = $lang['None'];
 	}
@@ -404,7 +398,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
-	if (($album_config['show_slideshow'] == 1) && ($total_pics > 0))
+	if ($album_config['show_slideshow'] && ($total_pics > 0))
 	{
 		$first_pic_id = album_get_first_pic_id($cat_id);
 		$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
@@ -416,9 +410,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		$slideshow_link_full = '';
 	}
 
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'album_cat_body.tpl'));
+	$template_to_parse = 'album_cat_body.tpl';
 
 	if ($total_pics > 0)
 	{
@@ -591,9 +583,6 @@ if (empty($album_view_mode))
 	album_display_index($album_user_id, $cat_id, true, $show_personal_gallery_link, true);
 }
 
-// Generate the page
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation($template_to_parse, $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 
 ?>

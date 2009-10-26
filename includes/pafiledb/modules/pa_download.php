@@ -19,12 +19,12 @@ class pafiledb_download extends pafiledb_public
 {
 	function main($action)
 	{
-		global $lang, $db, $pafiledb_user, $pafiledb_config, $userdata;
-		global $pafiledb_functions;
-		global $template, $theme, $gen_simple_header, $starttime, $pafiledb_template, $debug;
-		global $board_config, $cms_global_blocks, $cms_page_id, $cms_config_vars;
+		global $db, $config, $template, $theme, $userdata, $lang;
+		global $gen_simple_header, $starttime, $debug;
+		global $cms_config_vars, $cms_page;
+		global $pafiledb_config, $pafiledb_template, $pafiledb_user, $pafiledb_functions;
 
-		if ( isset($_REQUEST['file_id']) )
+		if (isset($_REQUEST['file_id']))
 		{
 			$file_id = intval($_REQUEST['file_id']);
 		}
@@ -39,16 +39,12 @@ class pafiledb_download extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
 
-		$mirror_id = ( isset($_REQUEST['mirror_id']) ) ? intval($_REQUEST['mirror_id']) : false;
+		$mirror_id = (isset($_REQUEST['mirror_id'])) ? intval($_REQUEST['mirror_id']) : false;
 
 		$sql = 'SELECT *
 			FROM ' . PA_FILES_TABLE . " AS f
 			WHERE f.file_id = $file_id";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt select download', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		//=========================================================================
 		// Id doesn't match with any file in the database another nice error message
@@ -65,11 +61,11 @@ class pafiledb_download extends pafiledb_public
 		// Check if the user is authorized to download the file
 		//=========================================================================
 
-		if( (!$this->auth[$file_data['file_catid']]['auth_download']) )
+		if((!$this->auth[$file_data['file_catid']]['auth_download']))
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
-				redirect(append_sid(LOGIN_MG . '?redirect=dload.' . PHP_EXT . '&action=download&file_id=' . $file_id, true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=download&file_id=' . $file_id, true));
 			}
 
 			$message = sprintf($lang['Sorry_auth_download'], $this->auth[$file_data['file_catid']]['auth_download_type']);
@@ -88,7 +84,7 @@ class pafiledb_download extends pafiledb_public
 			$url_referer = trim($_SERVER['HTTP_REFERER']);
 		}
 
-		if( ($pafiledb_config['hotlink_prevent']) and (!empty($url_referer)) )
+		if(($pafiledb_config['hotlink_prevent']) and (!empty($url_referer)))
 		{
 			$check_referer = explode('?', $url_referer);
 			$check_referer = trim($check_referer[0]);
@@ -100,15 +96,15 @@ class pafiledb_download extends pafiledb_public
 				$good_referers = explode(',', $pafiledb_config['hotlink_allowed']);
 			}
 
-			$good_referers[] = $board_config['server_name'];
+			$good_referers[] = $config['server_name'];
 
 			$errored = true;
 
-			for ($i = 0; $i < count($good_referers); $i++)
+			for ($i = 0; $i < sizeof($good_referers); $i++)
 			{
 				$good_referers[$i] = trim($good_referers[$i]);
 
-				if( (strstr($check_referer, $good_referers[$i])) and ($good_referers[$i] != '') )
+				if((strstr($check_referer, $good_referers[$i])) and ($good_referers[$i] != ''))
 				{
 					$errored = false;
 				}
@@ -125,11 +121,7 @@ class pafiledb_download extends pafiledb_public
 			FROM ' . PA_MIRRORS_TABLE . " AS f
 			WHERE f.file_id = $file_id
 			ORDER BY mirror_id";
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt select download', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		$mirrors_data = array();
 		while($row = $db->sql_fetchrow($result))
@@ -145,14 +137,14 @@ class pafiledb_download extends pafiledb_public
 			$this->generate_category_nav($file_data['file_catid']);
 
 			$pafiledb_template->assign_vars(array(
-				'L_INDEX' => sprintf($lang['Forum_Index'], ip_stripslashes($board_config['sitename'])),
+				'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 				'L_MIRRORS' => $lang['Mirrors'],
 				'L_MIRROR_LOCATION' => $lang['Mirror_location'],
 				'L_DOWNLOAD' => $lang['Download_file'],
 				'L_HOME' => $lang['Home'],
-				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($board_config['default_dateformat'], time(), $board_config['board_timezone'])),
+				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-				'U_INDEX' => append_sid(PORTAL_MG),
+				'U_INDEX' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 
 				'FILE_NAME' => $file_data['file_name'],
@@ -162,7 +154,7 @@ class pafiledb_download extends pafiledb_public
 
 			$pafiledb_template->assign_block_vars('mirror_row', array(
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=-1'),
-				'MIRROR_LOCATION' => ip_stripslashes($board_config['sitename']))
+				'MIRROR_LOCATION' => $config['sitename'])
 			);
 
 			foreach($mirrors_data as $mir_id => $mirror_data)
@@ -173,9 +165,9 @@ class pafiledb_download extends pafiledb_public
 				);
 			}
 
-			include_once(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+			page_header('', true);
 			$this->display($lang['Download'], 'pa_mirrors_body.tpl');
-			include_once(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+			page_footer(true, '', true);
 		}
 		elseif((!empty($mirrors_data) && $mirror_id == -1) || (empty($mirrors_data)))
 		{
@@ -208,11 +200,7 @@ class pafiledb_download extends pafiledb_public
 		$sql = 'UPDATE ' . PA_FILES_TABLE . "
 			SET file_dls = $file_dls, file_last = $current_time
 			WHERE file_id = $file_id";
-
-		if ( !($db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Couldnt Update Files table', '', __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 
 		//=========================================================================
 		// Update downloader Info for the given file
@@ -300,7 +288,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 
 	$user_agent = (!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : ((!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
-	if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $user_agent, $log_version))
+	if (ereg('Opera(/|)([0-9].[0-9]{1,2})', $user_agent, $log_version))
 	{
 		$browser_version = $log_version[2];
 		$browser_agent = 'opera';
@@ -339,9 +327,9 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	//
 	// Correct the Mime Type, if it's an octetstream
 	//
-	if ( ($mimetype == 'application/octet-stream') || ($mimetype == 'application/octetstream') )
+	if (($mimetype == 'application/octet-stream') || ($mimetype == 'application/octetstream'))
 	{
-		if ( ($browser_agent == 'ie') || ($browser_agent == 'opera') )
+		if (($browser_agent == 'ie') || ($browser_agent == 'opera'))
 		{
 			$mimetype = 'application/octetstream';
 		}
@@ -361,7 +349,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	//
 	if ($browser_agent == 'ie')
 	{
-		header( 'Content-Type: ' . $mimetype . '; name="' . $real_filename . '"' );
+		header('Content-Type: ' . $mimetype . '; name="' . $real_filename . '"');
 		header('Content-Disposition: inline; filename="' . $real_filename . '"');
 	}
 	else
@@ -399,7 +387,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 
 function pa_redirect($file_url)
 {
-	global $cache, $db,$lang;
+	global $pa_cache, $db, $lang;
 
 	// Close our DB connection.
 	if (!empty($db))
@@ -407,9 +395,9 @@ function pa_redirect($file_url)
 		$db->sql_close();
 	}
 
-	if(isset($cache))
+	if(isset($pa_cache))
 	{
-		$cache->unload();
+		$pa_cache->unload();
 	}
 
 	// Make sure no &amp;'s are in, this will break the redirect

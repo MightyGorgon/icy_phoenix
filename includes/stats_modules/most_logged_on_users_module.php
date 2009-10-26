@@ -29,11 +29,7 @@ $template->assign_vars(array(
 $sql = "SELECT SUM(user_totaltime) as total_time
 	FROM " . USERS_TABLE . "
 	WHERE user_id <> " . ANONYMOUS;
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $total_time = $row['total_time'];
 
@@ -42,12 +38,7 @@ $sql = 'SELECT user_id, username, user_active, user_color, user_totaltime
 	WHERE (user_id <> ' . ANONYMOUS . ') AND (user_totaltime > 0)
 	ORDER BY user_totaltime DESC
 	LIMIT ' . $return_limit;
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);
 

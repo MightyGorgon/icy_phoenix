@@ -26,6 +26,10 @@ if ((isset($_GET['mode']) && ($_GET['mode'] == 'viewprofile')) || (isset($_POST[
 	define('ATTACH_PROFILE', true);
 	define('ATTACH_POSTING', true);
 }
+else
+{
+	//define('CTRACKER_DISABLED', true);
+}
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -51,19 +55,19 @@ else
 }
 
 // Set default email variables
-$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
-$script_name = ($script_name != '') ? $script_name . '/' . PROFILE_MG : PROFILE_MG;
-$server_name = trim($board_config['server_name']);
-$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
+$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
+$script_name = ($script_name != '') ? $script_name . '/' . CMS_PAGE_PROFILE : CMS_PAGE_PROFILE;
+$server_name = trim($config['server_name']);
+$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
 $server_url = $server_protocol . $server_name . $server_port . $script_name;
 
 $server_url = create_server_url();
-$profile_server_url = $server_url . PROFILE_MG;
+$profile_server_url = $server_url . CMS_PAGE_PROFILE;
 
-$page_title = $lang['Profile'];
-$meta_description = '';
-$meta_keywords = '';
+$meta_content['page_title'] = $lang['Profile'];
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
 
 // Page specific functions
 function gen_rand_string($hash)
@@ -86,11 +90,11 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 
 	if ($mode == 'viewprofile')
 	{
-		$cms_page_id = 'profile';
-		$cms_page_nav = (!empty($cms_config_layouts[$cms_page_id]['page_nav']) ? true : false);
-		$cms_global_blocks = (!empty($cms_config_layouts[$cms_page_id]['global_blocks']) ? true : false);
-		$cms_auth_level = (isset($cms_config_layouts[$cms_page_id]['view']) ? $cms_config_layouts[$cms_page_id]['view'] : AUTH_ALL);
-		check_page_auth($cms_page_id, $cms_auth_level);
+		$cms_page['page_id'] = 'profile';
+		$cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
+		$cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
+		$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
+		check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 		// Mighty Gorgon - Full Album Pack - BEGIN
 		include (ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
@@ -102,8 +106,8 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 	{
 		if (!$userdata['session_logged_in'] && ($mode == 'editprofile'))
 		{
-			redirect(append_sid(LOGIN_MG . '?redirect=' . PROFILE_MG . '&mode=editprofile', true));
-			//redirect(append_sid(LOGIN_MG . '?redirect=' . PROFILE_MG . '&mode=editprofile&cpl_mode=reg_info', true));
+			redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=editprofile', true));
+			//redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=editprofile&cpl_mode=reg_info', true));
 		}
 		include(IP_ROOT_PATH . 'includes/usercp_register.' . PHP_EXT);
 		exit;
@@ -113,7 +117,7 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 		if (!$userdata['session_logged_in'] && ($mode == 'signature'))
 		{
 			$header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
-			header($header_location . append_sid(LOGIN_MG . '?redirect=' . PROFILE_MG . '&mode=signature', true));
+			header($header_location . append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=signature', true));
 			exit;
 		}
 
@@ -157,6 +161,6 @@ if (isset($_GET['mode']) || isset($_POST['mode']))
 	}
 }
 
-redirect(append_sid(FORUM_MG, true));
+redirect(append_sid(CMS_PAGE_FORUM, true));
 
 ?>

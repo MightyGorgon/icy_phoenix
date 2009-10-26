@@ -38,11 +38,7 @@ $sql = "SELECT YEAR(FROM_UNIXTIME(user_regdate)) as aar, MONTH(FROM_UNIXTIME(use
 	WHERE (user_id <> " . ANONYMOUS . ")
 	GROUP BY YEAR(FROM_UNIXTIME(user_regdate)), MONTH(FROM_UNIXTIME(user_regdate))
 	ORDER BY user_regdate";
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve users data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);
 

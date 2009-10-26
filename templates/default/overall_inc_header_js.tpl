@@ -8,6 +8,7 @@ var clientVer = parseInt(navigator.appVersion); // Get browser version
 
 var is_ie = ((clientPC.indexOf('msie') != -1) && (clientPC.indexOf('opera') == -1));
 var is_win = ((clientPC.indexOf('win') != -1) || (clientPC.indexOf('16bit') != -1));
+var is_iphone = ((clientPC.indexOf('iphone'))!=-1);
 
 // Other check in vars...
 var uAgent = navigator.userAgent;
@@ -35,25 +36,43 @@ var php_ext = '{PHP_EXT}';
 var POST_FORUM_URL = '{POST_FORUM_URL}';
 var POST_TOPIC_URL = '{POST_TOPIC_URL}';
 var POST_POST_URL = '{POST_POST_URL}';
-var LOGIN_MG = '{LOGIN_MG}';
-var PORTAL_MG = '{PORTAL_MG}';
-var FORUM_MG = '{FORUM_MG}';
-var VIEWFORUM_MG = '{VIEWFORUM_MG}';
-var VIEWTOPIC_MG = '{VIEWTOPIC_MG}';
-var PROFILE_MG = '{PROFILE_MG}';
-var POSTING_MG = '{POSTING_MG}';
-var SEARCH_MG = '{SEARCH_MG}';
+var CMS_PAGE_LOGIN = '{CMS_PAGE_LOGIN}';
+var CMS_PAGE_HOME = '{CMS_PAGE_HOME}';
+var CMS_PAGE_FORUM = '{CMS_PAGE_FORUM}';
+var CMS_PAGE_VIEWFORUM = '{CMS_PAGE_VIEWFORUM}';
+var CMS_PAGE_VIEWTOPIC = '{CMS_PAGE_VIEWTOPIC}';
+var CMS_PAGE_PROFILE = '{CMS_PAGE_PROFILE}';
+var CMS_PAGE_POSTING = '{CMS_PAGE_POSTING}';
+var CMS_PAGE_SEARCH = '{CMS_PAGE_SEARCH}';
 var form_name = 'post';
 var text_name = 'message';
 var onload_functions = new Array();
 var onunload_functions = new Array();
+
+/**
+* New function for handling multiple calls to window.onload and window.unload by pentapenguin
+*/
+window.onload = function()
+{
+	for (var i = 0; i < onload_functions.length; i++)
+	{
+		eval(onload_functions[i]);
+	}
+}
+
+window.onunload = function()
+{
+	for (var i = 0; i < onunload_functions.length; i++)
+	{
+		eval(onunload_functions[i]);
+	}
+}
 // ]]>
 </script>
 
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/prototype.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/run_active_content.js"></script>
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}scriptaculous/scriptaculous.js"></script>
 
 <!-- IE conditional comments: http://msdn.microsoft.com/workshop/author/dhtml/overview/ccomment_ovw.asp -->
 <!--[if IE]>
@@ -64,19 +83,9 @@ var onunload_functions = new Array();
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/pngfix.js"></script>
 <![endif]-->
 
-<!-- BEGIN switch_ajax_features -->
-<script type="text/javascript">
-<!--
-var ajax_core_defined = 0;
-var ajax_page_charset = '{S_CONTENT_ENCODING}';
-//-->
-</script>
-
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script>
-<!-- END switch_ajax_features -->
-
 <!-- IF S_LIGHTBOX -->
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}lightbox/lightbox_old.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}scriptaculous/scriptaculous.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}lightbox/lightbox_old.js"></script>
 <!-- ENDIF -->
 
@@ -111,29 +120,21 @@ hs.addSlideshow({
 </script>
 <!-- ENDIF -->
 
+<!-- BEGIN switch_ajax_features -->
+<script type="text/javascript">
+<!--
+var ajax_core_defined = 0;
+var ajax_page_charset = '{S_CONTENT_ENCODING}';
+//-->
+</script>
+
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script>
+<!-- END switch_ajax_features -->
+
 <!-- BEGIN js_include -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{js_include.JS_FILE}"></script>
 <!-- END js_include -->
 
-<script type="text/javascript">
-// <![CDATA[
-/**
-* New function for handling multiple calls to window.onload and window.unload by pentapenguin
-*/
-window.onload = function()
-{
-	for (var i = 0; i < onload_functions.length; i++)
-	{
-		eval(onload_functions[i]);
-	}
-}
-
-window.onunload = function()
-{
-	for (var i = 0; i < onunload_functions.length; i++)
-	{
-		eval(onunload_functions[i]);
-	}
-}
-// ]]>
-</script>
+<!-- IF S_SLIDESHOW -->
+<!-- INCLUDE album_slideshow_inc_js.tpl -->
+<!-- ENDIF -->

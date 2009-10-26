@@ -17,7 +17,7 @@
 
 // CTracker_Ignore: File Checked By Human
 define('IN_CRON', true);
-define('MG_KILL_CTRACK', true);
+define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 // Should we use this? Is absolute path always working fine?
 //if (!defined('IP_ROOT_PATH')) dirname(__FILE__) . DIRECTORY_SEPARATOR);
@@ -51,7 +51,7 @@ $cron_queue_functions = array();
 
 $cron_time = time();
 
-for ($i = 0; $i < count($cron_types); $i++)
+for ($i = 0; $i < sizeof($cron_types); $i++)
 {
 	$cron_queue_vars[$cron_types[$i]] = request_var($cron_types[$i], 0);
 	if (!empty($cron_queue_vars[$cron_types[$i]]))
@@ -69,7 +69,7 @@ for ($i = 0; $i < count($cron_types); $i++)
 			break;
 
 			case 'digests':
-				if ($board_config['enable_digests'] == false)
+				if (!$config['enable_digests'])
 				{
 					$skip_this = true;
 				}
@@ -85,8 +85,8 @@ for ($i = 0; $i < count($cron_types); $i++)
 			continue;
 		}
 
-		$cron_trigger = $cron_time - $board_config['cron_' . $cron_types[$i] . '_interval'];
-		if ($force_this || (($board_config['cron_' . $cron_types[$i] . '_interval'] > 0) && ($cron_trigger > $board_config['cron_' . $cron_types[$i] . '_last_run'])))
+		$cron_trigger = $cron_time - $config['cron_' . $cron_types[$i] . '_interval'];
+		if ($force_this || (($config['cron_' . $cron_types[$i] . '_interval'] > 0) && ($cron_trigger > $config['cron_' . $cron_types[$i] . '_last_run'])))
 		{
 			$cron_queue[] = $cron_types[$i];
 			$cron_queue_functions[] = $cron_functions[$i];
@@ -120,16 +120,16 @@ if (CRON_DEBUG == false)
 	// flush();
 }
 
-if (!isset($board_config['cron_lock']))
+if (!isset($config['cron_lock']))
 {
 	set_config('cron_lock', '0');
 }
 
 // make sure cron doesn't run multiple times in parallel
-if ($board_config['cron_lock'])
+if ($config['cron_lock'])
 {
 	// if the other process is running more than CRON_REFRESH already we have to assume it aborted without cleaning the lock
-	$time = explode(' ', $board_config['cron_lock']);
+	$time = explode(' ', $config['cron_lock']);
 	$time = $time[0];
 
 	if ((($time + CRON_REFRESH) >= time()) && (CRON_DEBUG == false))
@@ -143,10 +143,10 @@ define('CRON_ID', time() . ' ' . unique_id());
 $sql = "UPDATE " . CONFIG_TABLE . "
 	SET config_value = '" . $db->sql_escape(CRON_ID) . "'
 	WHERE config_name = 'cron_lock'
-		AND config_value = '" . $db->sql_escape($board_config['cron_lock']) . "'";
+		AND config_value = '" . $db->sql_escape($config['cron_lock']) . "'";
 $db->sql_query($sql);
 
-$db->clear_cache('config_');
+$cache->destroy('config');
 
 // another cron process altered the table between script start and UPDATE query so exit
 if (($db->sql_affectedrows() != 1) && (CRON_DEBUG == false))
@@ -157,7 +157,7 @@ if (($db->sql_affectedrows() != 1) && (CRON_DEBUG == false))
 /**
 * Run cron-like action
 */
-for ($i = 0; $i < count($cron_queue); $i++)
+for ($i = 0; $i < sizeof($cron_queue); $i++)
 {
 	$skip_this = false;
 	// Cron specific cases
@@ -171,7 +171,7 @@ for ($i = 0; $i < count($cron_queue); $i++)
 		break;
 
 		case 'digests':
-			if ($board_config['enable_digests'] == false)
+			if (!$config['enable_digests'])
 			{
 				$skip_this = true;
 			}

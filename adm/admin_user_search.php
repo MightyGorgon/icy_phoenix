@@ -29,9 +29,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_user_search.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_user_search.' . PHP_EXT);
 
-$page_title = $lang['Search_users_advanced'];
+$meta_content['page_title'] = $lang['Search_users_advanced'];
 
 if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 {
@@ -39,11 +39,7 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 				FROM " . GROUPS_TABLE . "
 					WHERE group_single_user = 0
 						ORDER BY group_name ASC";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not select group data', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$group_list = '';
 
@@ -53,21 +49,17 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 
 		while($row = $db->sql_fetchrow($result))
 		{
-			$group_list .= '<option value="'.$row['group_id'].'">'.strip_tags(htmlspecialchars($row['group_name'])).'</option>';
+			$group_list .= '<option value="' . $row['group_id'] . '">' . strip_tags(htmlspecialchars($row['group_name'])) . '</option>';
 		}
 	}
 
 	$language_list = language_select('', 'language_type');
 	$timezone_list = tz_select('', 'timezone_type');
 
-	$sql = "SELECT f.forum_id, f.forum_name, c.cat_id, c.cat_title
-				FROM (". FORUMS_TABLE ." AS f INNER JOIN ". CATEGORIES_TABLE ." AS c ON c.cat_id = f.cat_id)
-				ORDER BY c.cat_order, f.forum_order ASC";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not select forum data', '', __LINE__, __FILE__, $sql);
-	}
+	$sql = "SELECT f.forum_id, f.forum_name, c.forum_id AS cat_id, c.forum_name AS cat_title
+				FROM (". FORUMS_TABLE ." AS f INNER JOIN ". FORUMS_TABLE ." AS c ON c.forum_id = f.parent_id)
+				ORDER BY f.forum_order ASC";
+	$result = $db->sql_query($sql);
 
 	$forums = array();
 
@@ -83,11 +75,11 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 		{
 			if($row['cat_id'] != $last_cat_id)
 			{
-				$forums_list .= '<optgroup label="'.$row['cat_title'].'">';
-				$last_cat_id = $row['cat_id'];
+				$forums_list .= '<optgroup label="' . $row['cat_title'] . '">';
+				$last_cat_id = $row['parent_id'];
 			}
 
-			$forums_list .= '<option value="'.$row['forum_id'].'">'.$row['forum_name'].'</option>';
+			$forums_list .= '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
 		}
 	}
 
@@ -154,9 +146,9 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 		'L_MODERATORS_OF_EXPLAIN' => $lang['Search_users_moderators_explain'],
 		'L_MISC_EXPLAIN' => $lang['Search_users_misc_explain'],
 
-		'YEAR' => date("Y"),
-		'MONTH' => date("m"),
-		'DAY' => date("d"),
+		'YEAR' => gmdate('Y'),
+		'MONTH' => gmdate('m'),
+		'DAY' => gmdate('d'),
 		'GROUP_LIST' => $group_list,
 		'LANGUAGE_LIST' => $language_list,
 		'TIMEZONE_LIST' => $timezone_list,
@@ -472,7 +464,7 @@ else
 				$ip_split = explode('.', $ip_address);
 
 				// Now we'll work with which type of wildcard we have
-				switch(count($ip_split))
+				switch(sizeof($ip_split))
 				{
 					// xxx.xxx.xxx.*
 					case 4:
@@ -564,13 +556,9 @@ else
 							WHERE poster_id <> " . ANONYMOUS . "
 								AND ($where_sql)
 							GROUP BY poster_id";
+			$result = $db->sql_query($sql);
 
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Could not count users", '', __LINE__, __FILE__, $sql);
-			}
-
-			if($db->sql_numrows($result)==0)
+			if($db->sql_numrows($result) == 0)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_no_results']);
 			}
@@ -624,7 +612,7 @@ else
 
 			$text = sprintf($lang['Search_for_date'], strip_tags(htmlspecialchars(stripslashes($date_type))), $date_year, $date_month, $date_day);
 
-			$time = mktime(0, 0, 0, $date_month, $date_day, $date_year);
+			$time = gmmktime(0, 0, 0, $date_month, $date_day, $date_year);
 
 			if($date_type == 'before')
 			{
@@ -658,13 +646,9 @@ else
 							FROM " . GROUPS_TABLE . "
 							WHERE group_id = $group_id
 								AND group_single_user = 0";
+			$result = $db->sql_query($sql);
 
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not select group data', '', __LINE__, __FILE__, $sql);
-			}
-
-			if($db->sql_numrows($result)==0)
+			if($db->sql_numrows($result) == 0)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_group']);
 			}
@@ -922,15 +906,11 @@ else
 			$style_type = intval($style_type);
 
 			$sql = "SELECT style_name
-							FROM ".THEMES_TABLE."
-							WHERE themes_id = ".$style_type;
+							FROM " . THEMES_TABLE . "
+							WHERE themes_id = " . $style_type;
+			$result = $db->sql_query($sql);
 
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not select style data', '', __LINE__, __FILE__, $sql);
-			}
-
-			if($db->sql_numrows($result)==0)
+			if($db->sql_numrows($result) == 0)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_style']);
 			}
@@ -954,13 +934,8 @@ else
 
 			$sql = "SELECT forum_name
 							FROM " . FORUMS_TABLE . "
-							WHERE forum_id = ".$moderators_forum;
-
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not select forum data', '', __LINE__, __FILE__, $sql);
-			}
+							WHERE forum_id = " . $moderators_forum;
+			$result = $db->sql_query($sql);
 
 			if($db->sql_numrows($result)==0)
 			{
@@ -1124,20 +1099,16 @@ else
 	}
 	else
 	{
-		$offset = (($page - 1) * $board_config['topics_per_page']);
+		$offset = (($page - 1) * $config['topics_per_page']);
 	}
 
-	$limit = "LIMIT $offset, ".$board_config['topics_per_page'];
+	$limit = "LIMIT $offset, ".$config['topics_per_page'];
 
 	$select_sql .= " $limit";
 
 	if(!is_null($total_sql))
 	{
-		if(!$result = $db->sql_query($total_sql))
-		{
-			message_die(GENERAL_ERROR, "Could not count users", '', __LINE__, __FILE__, $total_sql);
-		}
-
+		$result = $db->sql_query($total_sql);
 		$total_pages = $db->sql_fetchrow($result);
 
 		if($total_pages['total'] == 0)
@@ -1145,7 +1116,7 @@ else
 			message_die(GENERAL_MESSAGE, $lang['Search_no_results']);
 		}
 	}
-	$num_pages = ceil(($total_pages['total'] / $board_config['topics_per_page']));
+	$num_pages = ceil(($total_pages['total'] / $config['topics_per_page']));
 
 	$pagination = '';
 
@@ -1192,15 +1163,10 @@ else
 		)
 	);
 
-	if(!$result = $db->sql_query($select_sql))
-	{
-		message_die(GENERAL_ERROR, "Could not select user data", '', __LINE__, __FILE__, $select_sql);
-	}
-
+	$result = $db->sql_query($select_sql);
 	$rowset = $db->sql_fetchrowset($result);
 
 	$users_sql = '';
-
 	foreach($rowset as $array)
 	{
 		$users_sql .= ($users_sql == '') ? $array['user_id'] : ', '.$array['user_id'];
@@ -1209,14 +1175,9 @@ else
 	$sql = "SELECT ban_userid AS user_id
 					FROM " . BANLIST_TABLE . "
 					WHERE ban_userid IN ($users_sql)";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, "Could not select banned data", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	unset($banned);
-
 	$banned = array();
 
 	while($row = $db->sql_fetchrow($result))
@@ -1224,7 +1185,7 @@ else
 		$banned[$row['user_id']] = true;
 	}
 
-	for($i = 0; $i < count($rowset); $i++)
+	for($i = 0; $i < sizeof($rowset); $i++)
 	{
 		$row_class = (($i % 2) == 1) ? $theme['td_class1'] : $theme['td_class2'];
 
@@ -1232,14 +1193,14 @@ else
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => $rowset[$i]['username'],
 			'EMAIL' => $rowset[$i]['user_email'],
-			'JOINDATE' => create_date($board_config['default_dateformat'], $rowset[$i]['user_regdate'], $board_config['board_timezone']),
-			'LASTVISIT' => create_date($board_config['default_dateformat'], $rowset[$i]['user_lastvisit'], $board_config['board_timezone']),
+			'JOINDATE' => create_date($config['default_dateformat'], $rowset[$i]['user_regdate'], $config['board_timezone']),
+			'LASTVISIT' => create_date($config['default_dateformat'], $rowset[$i]['user_lastvisit'], $config['board_timezone']),
 			'POSTS' => $rowset[$i]['user_posts'],
 			'BAN' => ((!isset($banned[$rowset[$i]['user_id']])) ? $lang['Not_banned'] : $lang['Banned']),
 			'ABLED' => (($rowset[$i]['user_active']) ? $lang['Enabled'] : $lang['Disabled']),
 
-			'U_VIEWPROFILE' => append_sid('../' . PROFILE_MG . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
-			'U_VIEWPOSTS' => append_sid('../' . SEARCH_MG . '?search_author=' . rawurlencode($rowset[$i]['username'])),
+			'U_VIEWPROFILE' => append_sid('../' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
+			'U_VIEWPOSTS' => append_sid('../' . CMS_PAGE_SEARCH . '?search_author=' . rawurlencode($rowset[$i]['username'])),
 			'U_MANAGE' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
 			'U_PERMISSIONS' => append_sid('admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $rowset[$i]['user_id']),
 			)

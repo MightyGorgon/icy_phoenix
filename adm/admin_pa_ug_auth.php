@@ -99,10 +99,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 			WHERE ug.user_id = $user_id
 			AND g.group_id = ug.group_id
 			AND g.group_single_user = '1'";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$group_id = $row['group_id'];
 		$db->sql_freeresult($result);
@@ -111,7 +108,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 	$change_mod_list = (isset($_POST['moderator'])) ? $_POST['moderator'] : array();
 
 	$change_acl_list = array();
-	for($j = 0; $j < count($cat_auth_fields); $j++)
+	for($j = 0; $j < sizeof($cat_auth_fields); $j++)
 	{
 		$auth_field = $cat_auth_fields[$j];
 
@@ -122,10 +119,8 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 	}
 
 	$sql = ($mode == 'user') ? "SELECT aa.* FROM " . PA_AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = " . TRUE : "SELECT * FROM " . PA_AUTH_ACCESS_TABLE . " WHERE group_id = $group_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	$auth_access = array();
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -160,7 +155,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 			}
 		}
 
-		for($j = 0; $j < count($cat_auth_fields); $j++)
+		for($j = 0; $j < sizeof($cat_auth_fields); $j++)
 		{
 			$auth_field = $cat_auth_fields[$j];
 
@@ -237,10 +232,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 					WHERE group_id = $group_id
 					AND cat_id = $cat_id";
 			}
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update private forum permissions", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 	}
 
@@ -249,10 +241,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 		$sql = "DELETE FROM " . PA_AUTH_ACCESS_TABLE . "
 			WHERE group_id = $group_id
 			AND cat_id IN ($delete_sql)";
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't delete permission entries", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 	$l_auth_return = ($mode == 'user') ? $lang['Click_return_userauth'] : $lang['Click_return_groupauth'];
@@ -268,17 +257,14 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 			WHERE ug.user_id = $user_id
 			AND g.group_id = ug.group_id
 			AND g.group_single_user = '1'";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$group_id = $row['group_id'];
 		$db->sql_freeresult($result);
 	}
 
 	$change_acl_list = array();
-	for($j = 0; $j < count($global_auth_fields); $j++)
+	for($j = 0; $j < sizeof($global_auth_fields); $j++)
 	{
 		$auth_field = $global_auth_fields[$j];
 		$change_acl_list[$auth_field] = $_POST['private_' . $auth_field];
@@ -286,10 +272,7 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 	}
 
 	$sql = ($mode == 'glob_user') ? "SELECT aa.* FROM " . PA_AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = " . TRUE . " AND aa.cat_id = '0'" : "SELECT * FROM " . PA_AUTH_ACCESS_TABLE . " WHERE group_id = $group_id AND cat_id = '0'";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$auth_access = '';
 	if($row = $db->sql_fetchrow($result))
@@ -301,7 +284,7 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 	$global_auth_action = array();
 	$update_acl_status = array();
 
-	for($j = 0; $j < count($global_auth_fields); $j++)
+	for($j = 0; $j < sizeof($global_auth_fields); $j++)
 	{
 		$auth_field = $global_auth_fields[$j];
 
@@ -371,10 +354,7 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 					WHERE group_id = $group_id
 					AND cat_id = 0";
 		}
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't update private forum permissions", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 
@@ -383,10 +363,7 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 		$sql = "DELETE FROM " . PA_AUTH_ACCESS_TABLE . "
 			WHERE group_id = $group_id
 			AND cat_id = 0";
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't delete permission entries", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 	$l_auth_return = ($mode == 'glob_user') ? $lang['Click_return_userauth'] : $lang['Click_return_groupauth'];
@@ -408,10 +385,8 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 	// Front end
 	$sql = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug WHERE ";
 	$sql .= ($mode == 'user') ? "u.user_id = $user_id AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = $group_id AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	$ug_info = array();
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -420,10 +395,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 	$db->sql_freeresult($result);
 
 	$sql = ($mode == 'user') ? "SELECT aa.*, g.group_single_user FROM " . PA_AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1" : "SELECT * FROM " . PA_AUTH_ACCESS_TABLE . " WHERE group_id = $group_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$auth_access = array();
 	$auth_access_count = array();
@@ -438,7 +410,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 
 	foreach($pafiledb->cat_rowset as $cat_id => $cat_data)
 	{
-		for($j = 0; $j < count($cat_auth_fields); $j++)
+		for($j = 0; $j < sizeof($cat_auth_fields); $j++)
 		{
 			$key = $cat_auth_fields[$j];
 			$value = $cat_data[$key];
@@ -480,7 +452,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 
 	foreach($auth_ug as $cat_id => $user_ary)
 	{
-		for($k = 0; $k < count($cat_auth_fields); $k++)
+		for($k = 0; $k < sizeof($cat_auth_fields); $k++)
 		{
 			$field_name = $cat_auth_fields[$k];
 
@@ -533,7 +505,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 
 	$name = array();
 	$id = array();
-	for($i = 0; $i < count($ug_info); $i++)
+	for($i = 0; $i < sizeof($ug_info); $i++)
 	{
 		if(($mode == 'user' && !$ug_info[$i]['group_single_user']) || $mode == 'group')
 		{
@@ -542,10 +514,10 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		}
 	}
 
-	if(count($name))
+	if(sizeof($name))
 	{
 		$t_usergroup_list = '';
-		for($i = 0; $i < count($ug_info); $i++)
+		for($i = 0; $i < sizeof($ug_info); $i++)
 		{
 			$ug = ($mode == 'user') ? 'group&amp;' . POST_GROUPS_URL : 'user&amp;' . POST_USERS_URL;
 			$user_color = ($mode == 'user') ? '' : (' ' . colorize_username($id[$i], '', '', '', false, true));
@@ -557,7 +529,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		$t_usergroup_list = $lang['None'];
 	}
 
-	for($i = 0; $i < count($cat_auth_fields); $i++)
+	for($i = 0; $i < sizeof($cat_auth_fields); $i++)
 	{
 		$cell_title = $field_names[$cat_auth_fields[$i]];
 
@@ -582,7 +554,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 			'USER' => TRUE,
 			'USERNAME' => $t_username,
 			'USER_LEVEL' => $lang['User_Level'],
-			'USER_GROUP_MEMBERSHIPS' => sprintf($lang['Group_memberships'], count($name)) . ': ' . $t_usergroup_list
+			'USER_GROUP_MEMBERSHIPS' => sprintf($lang['Group_memberships'], sizeof($name)) . ': ' . $t_usergroup_list
 			)
 		);
 	}
@@ -591,7 +563,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		$pafiledb_template->assign_vars(array(
 			'USER' => FALSE,
 			'USERNAME' => $t_groupname,
-			'GROUP_MEMBERSHIP' => sprintf($lang['Usergroup_members'], count($name)) . ': ' . $t_usergroup_list
+			'GROUP_MEMBERSHIP' => sprintf($lang['Usergroup_members'], sizeof($name)) . ': ' . $t_usergroup_list
 			)
 		);
 	}
@@ -639,10 +611,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 			WHERE ug.user_id = $user_id
 			AND g.group_id = ug.group_id
 			AND g.group_single_user = '1'";
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$group_id = $row['group_id'];
 		$db->sql_freeresult($result);
@@ -651,10 +620,8 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 
 	$sql = "SELECT u.user_id, u.username, u.user_level, g.group_id, g.group_name, g.group_single_user FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug WHERE ";
 	$sql .= ($mode == 'glob_user') ? "u.user_id = $user_id AND ug.user_id = u.user_id AND g.group_id = ug.group_id" : "g.group_id = $group_id AND ug.group_id = g.group_id AND u.user_id = ug.user_id";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group information", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
+
 	$ug_info = array();
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -663,11 +630,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 	$db->sql_freeresult($result);
 
 	$sql = ($mode == 'glob_user') ? "SELECT aa.*, g.group_single_user FROM " . PA_AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = 1 AND aa.cat_id = '0'" : "SELECT * FROM " . PA_AUTH_ACCESS_TABLE . " WHERE group_id = $group_id AND cat_id = '0'";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Couldn't obtain user/group permissions", "", __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$auth_access = array();
 	$auth_access_count = 0;
 	if($row = $db->sql_fetchrow($result))
@@ -679,7 +642,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 
 	$is_admin = ($mode == 'glob_user') ? ((($ug_info[0]['user_level'] == ADMIN) && ($ug_info[0]['user_id'] != ANONYMOUS)) ? 1 : 0) : 0;
 
-	for($j = 0; $j < count($global_auth_fields); $j++)
+	for($j = 0; $j < sizeof($global_auth_fields); $j++)
 	{
 		$key = $global_auth_fields[$j];
 		$value = $pafiledb_config[$key];
@@ -711,7 +674,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 	}
 
 
-	for($k = 0; $k < count($global_auth_fields); $k++)
+	for($k = 0; $k < sizeof($global_auth_fields); $k++)
 	{
 		$field_name = $global_auth_fields[$k];
 
@@ -755,7 +718,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		'U_CAT' => append_sid('admin_pa_settings.' . PHP_EXT))
 	);
 
-	for($j = 0; $j < count($global_auth_fields); $j++)
+	for($j = 0; $j < sizeof($global_auth_fields); $j++)
 	{
 		$pafiledb_template->assign_block_vars('cat_row.aclvalues', array(
 			'S_ACL_SELECT' => $optionlist_acl_adv[$j]
@@ -774,7 +737,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 
 	$name = array();
 	$id = array();
-	for($i = 0; $i < count($ug_info); $i++)
+	for($i = 0; $i < sizeof($ug_info); $i++)
 	{
 		if(($mode == 'glob_user' && !$ug_info[$i]['group_single_user']) || $mode == 'glob_group')
 		{
@@ -783,10 +746,10 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		}
 	}
 
-	if(count($name))
+	if(sizeof($name))
 	{
 		$t_usergroup_list = '';
-		for($i = 0; $i < count($ug_info); $i++)
+		for($i = 0; $i < sizeof($ug_info); $i++)
 		{
 			$ug = ($mode == 'glob_user') ? 'glob_group&amp;' . POST_GROUPS_URL : 'glob_user&amp;' . POST_USERS_URL;
 			$user_color = ($mode == 'glob_user') ? '' : (' ' . colorize_username($id[$i], '', '', '', false, true));
@@ -798,7 +761,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		$t_usergroup_list = $lang['None'];
 	}
 
-	for($i = 0; $i < count($global_auth_fields); $i++)
+	for($i = 0; $i < sizeof($global_auth_fields); $i++)
 	{
 		$cell_title = $global_fields_names[$global_auth_fields[$i]];
 
@@ -822,7 +785,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 			'USER' => TRUE,
 			'USERNAME' => $t_username,
 			'USER_LEVEL' => $lang['User_Level'],
-			'USER_GROUP_MEMBERSHIPS' => sprintf($lang['Group_memberships'], count($name)) . ': ' . $t_usergroup_list
+			'USER_GROUP_MEMBERSHIPS' => sprintf($lang['Group_memberships'], sizeof($name)) . ': ' . $t_usergroup_list
 			)
 		);
 	}
@@ -831,7 +794,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		$pafiledb_template->assign_vars(array(
 			'USER' => FALSE,
 			'USERNAME' => $t_groupname,
-			'GROUP_MEMBERSHIP' => sprintf($lang['Usergroup_members'], count($name)) . ': ' . $t_usergroup_list
+			'GROUP_MEMBERSHIP' => sprintf($lang['Usergroup_members'], sizeof($name)) . ': ' . $t_usergroup_list
 			)
 		);
 	}
@@ -868,7 +831,7 @@ else
 		$pafiledb_template->assign_vars(array(
 			'L_FIND_USERNAME' => $lang['Find_username'],
 
-			'U_SEARCH_USER' => append_sid('../' . SEARCH_MG . '?mode=searchuser')
+			'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser')
 			)
 		);
 	}
@@ -877,10 +840,7 @@ else
 		$sql = "SELECT group_id, group_name
 			FROM " . GROUPS_TABLE . "
 			WHERE group_single_user <> " . TRUE;
-		if (!($result = $db->sql_query($sql)))
-		{
-			message_die(GENERAL_ERROR, "Couldn't get group list", "", __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -920,7 +880,7 @@ else
 $pafiledb_template->display('body');
 
 $pafiledb->_pafiledb();
-$cache->unload();
+$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

@@ -13,6 +13,11 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+if (!defined('IN_INSTALL'))
+{
+	define('IN_INSTALL', true);
+}
+
 /**
 * Some Icy Phoenix Functions
 */
@@ -253,12 +258,12 @@ class ip_functions
 	function create_server_url()
 	{
 		// usage: $server_url = create_server_url();
-		global $board_config;
+		global $config;
 
-		$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-		$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($board_config['server_name']));
-		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) : '';
-		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
+		$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+		$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
+		$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
+		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
 		$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
 		$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
 		$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
@@ -473,7 +478,7 @@ class ip_functions
 		if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 		{
 			$accept_lang_ary = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-			for ($i = 0; $i < count($accept_lang_ary); $i++)
+			for ($i = 0; $i < sizeof($accept_lang_ary); $i++)
 			{
 				@reset($match_lang);
 				while (list($lang, $match) = each($match_lang))
@@ -510,12 +515,12 @@ class mg_functions
 		);
 
 		$replacement_array = array(
-			"à",
-			"è",
-			"ì",
-			"ò",
-			"ù",
-			"é",
+			"Ã ",
+			"Ã¨",
+			"Ã¬",
+			"Ã²",
+			"Ã¹",
+			"Ã©",
 			" ",
 		);
 
@@ -527,12 +532,12 @@ class mg_functions
 	function html_text_format($text)
 	{
 		$look_up_array = array(
-			"à",
-			"è",
-			"ì",
-			"ò",
-			"ù",
-			"é",
+			"Ã ",
+			"Ã¨",
+			"Ã¬",
+			"Ã²",
+			"Ã¹",
+			"Ã©",
 			" ",
 		);
 
@@ -586,9 +591,9 @@ class mg_functions
 
 	function smileys_list()
 	{
-		global $db, $board_config;
+		global $db, $config;
 		$server_url = ip_functions::create_server_url();
-		$smileys_path = $server_url . (!empty($board_config['smilies_path']) ? ($board_config['smilies_path'] . '/') : 'images/smiles/');
+		$smileys_path = $server_url . (!empty($config['smilies_path']) ? ($config['smilies_path'] . '/') : 'images/smiles/');
 
 		$sql = "SELECT code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
 		if ($result = $db->sql_query($sql))
@@ -615,7 +620,7 @@ class mg_functions
 		$smileys_replace_sets['search_next'] = array();
 		$smileys_replace_sets['replace_prev'] = array();
 		$smileys_replace_sets['replace_next'] = array();
-		for($i = 0; $i < count($smileys_list); $i++)
+		for($i = 0; $i < sizeof($smileys_list); $i++)
 		{
 			$smileys_replace_sets['search_prev'][] = ' ' . $smileys_list[$i]['code'];
 			$smileys_replace_sets['search_next'][] = $smileys_list[$i]['code'] . ' ';
@@ -701,10 +706,10 @@ class mg_functions
 
 	function img_replace($text)
 	{
-		global $board_config;
-		$server_name = trim($board_config['server_name']);
-		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
-		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
+		global $config;
+		$server_name = trim($config['server_name']);
+		$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
+		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
 		$server_url = $server_name . $server_port . $script_name . '/';
 		$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
 		//$server_url = 'icyphoenix.com/';
@@ -774,7 +779,7 @@ class ip_sql
 		$output = "";
 
 		// try to keep mem. use down
-		$linecount = count($lines);
+		$linecount = sizeof($lines);
 
 		$in_comment = false;
 		for($i = 0; $i < $linecount; $i++)
@@ -809,7 +814,7 @@ class ip_sql
 		// try to keep mem. use down
 		$sql = "";
 
-		$linecount = count($lines);
+		$linecount = sizeof($lines);
 		$output = "";
 
 		for ($i = 0; $i < $linecount; $i++)
@@ -849,8 +854,8 @@ class ip_sql
 		// we don't actually care about the matches preg gives us.
 		$matches = array();
 
-		// this is faster than calling count($oktens) every time thru the loop.
-		$token_count = count($tokens);
+		// this is faster than calling sizeof($oktens) every time thru the loop.
+		$token_count = sizeof($tokens);
 		for ($i = 0; $i < $token_count; $i++)
 		{
 			// Don't wanna add an empty string as the last thing in the array.
@@ -971,7 +976,7 @@ class ip_page
 		echo('	<link rel="stylesheet" href="style/style.css" type="text/css" />' . "\n");
 		if (!empty($extra_css))
 		{
-			for ($i = 0; $i < count($extra_css); $i++)
+			for ($i = 0; $i < sizeof($extra_css); $i++)
 			{
 				echo('	<link rel="stylesheet" href="' . $extra_css[$i] . '" type="text/css" />' . "\n");
 			}
@@ -980,7 +985,7 @@ class ip_page
 		echo('	<script type="text/javascript" src="style/ip_scripts.js"></script>' . "\n");
 		if (!empty($extra_js))
 		{
-			for ($i = 0; $i < count($extra_js); $i++)
+			for ($i = 0; $i < sizeof($extra_js); $i++)
 			{
 				echo('	<script type="text/javascript" src="' . $extra_js[$i] . '"></script>' . "\n");
 			}
@@ -1183,8 +1188,8 @@ class ip_page
 
 		echo('<h2>' . $lang['VersionInformation'] . '</h2><br />' . "\n");
 		echo('<div class="genmed"><ul type="circle">' . "\n");
-		echo('<li><b>' . $lang['Current_phpBB_Version'] . '</b> :: <b style="color:' . $phpbb_color . ';">' . $phpbb_version_full . '</b> &raquo; ' . $lang['Latest_Release'] . ' :: <b style="color:' . $this->color_ok . ';">2' . $phpbb_version . '</b></li>' . "\n");
-		echo('<li><b>' . $lang['Current_IP_Version'] . '</b> :: <b style="color:' . $ip_color . ';">' . $ip_version_full . '</b> &raquo; ' . $lang['Latest_Release'] . ' :: <b style="color:' . $this->color_ok . ';">' . $ip_version . '</b></li>' . "\n");
+		echo('<li><b>' . $lang['Current_phpBB_Version'] . '</b> :: <b style="color:' . $phpbb_color . ';">' . $phpbb_version_full . '</b> &raquo; ' . $lang['Latest_Release'] . ' :: <b style="color: ' . $this->color_ok . ';">2' . $phpbb_version . '</b></li>' . "\n");
+		echo('<li><b>' . $lang['Current_IP_Version'] . '</b> :: <b style="color:' . $ip_color . ';">' . $ip_version_full . '</b> &raquo; ' . $lang['Latest_Release'] . ' :: <b style="color: ' . $this->color_ok . ';">' . $ip_version . '</b></li>' . "\n");
 		echo('<li><b>' . $lang['dbms'] . '</b> :: <b>' . SQL_LAYER . '</b></li>' . "\n");
 		echo('<li><b>' . $lang['FileWriting'] . '</b> :: <b style="color:' . $file_creation_color . ';">' . $file_creation_text . '</b></li>' . "\n");
 		if ($ip_version_full != $lang['NotInstalled'])
@@ -1250,7 +1255,7 @@ class ip_page
 		echo('	<tr><th colspan="3">' . $lang['Admin_config'] . '</th></tr>' . "\n");
 		if ($error)
 		{
-			echo('	<tr><td class="row1" colspan="3" align="center"><span class="gen" style="color:' . $this->color_error . '">' . $error . '</span></td></tr>' . "\n");
+			echo('	<tr><td class="row1" colspan="3" align="center"><span class="gen" style="color: ' . $this->color_error . '">' . $error . '</span></td></tr>' . "\n");
 		}
 		echo('	<tr><td class="row1 row-center" rowspan="9" width="90"><img src="style/server_install.png" alt="' . $lang['Initial_config'] . '" title="' . $lang['Initial_config'] . '" /></td></tr>' . "\n");
 		echo('	<!--' . "\n");
@@ -1344,6 +1349,8 @@ class ip_page
 		echo('	<tr><td class="cat" colspan="2" align="center" style="border-width: 0px;"><?php $hidden_fields; ?><input class="mainoption" type="submit" value="' . $lang['Finish_Install'] . '" /></td></tr>' . "\n");
 		echo('' . "\n");
 		echo('	</table>' . "\n");
+
+		$this->fix_last_posters();
 	}
 
 	function read_chmod()
@@ -1363,12 +1370,12 @@ class ip_page
 
 		$table_output = '';
 
-		for ($i = 0; $i < count($chmod_items_array); $i++)
+		for ($i = 0; $i < sizeof($chmod_items_array); $i++)
 		{
 			if (!empty($chmod_items_array[$i]))
 			{
 				$table_output .= '<b>' . $chmod_langs_array[$i] . '</b><br />' . '<ul>';
-				for ($j = 0; $j < count($chmod_items_array[$i]); $j++ )
+				for ($j = 0; $j < sizeof($chmod_items_array[$i]); $j++ )
 				{
 					$report_string = '';
 					$errored = false;
@@ -1392,13 +1399,13 @@ class ip_page
 
 					if ($errored)
 					{
-						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
-						$table_output .= '<li><span class="gensmall" style="color:' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_error . '</li>' . "\n";
+						$report_string_append = '&nbsp;<span class="genmed" style="color: ' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
+						$table_output .= '<li><span class="gensmall" style="color: ' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_error . '</li>' . "\n";
 					}
 					else
 					{
-						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_ok . ';">' . $report_string . '</span>';
-						$table_output .= '<li><span class="gensmall" style="color:' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_ok . '</li>' . "\n";
+						$report_string_append = '&nbsp;<span class="genmed" style="color: ' . $this->color_ok . ';">' . $report_string . '</span>';
+						$table_output .= '<li><span class="gensmall" style="color: ' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span>&nbsp;' . $img_ok . '</li>' . "\n";
 					}
 				}
 				$table_output .= '</ul>' . '<br />';
@@ -1436,13 +1443,13 @@ class ip_page
 		$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
 		$table_output .= '<tr><td class="row-header" colspan="3"><span>' . $lang['CHMOD_Files'] . '</span></td></tr>' . "\n";
 
-		for ($i = 0; $i < count($chmod_items_array); $i++)
+		for ($i = 0; $i < sizeof($chmod_items_array); $i++)
 		{
 			if (!empty($chmod_items_array[$i]))
 			{
 				$table_output .= '<tr><th colspan="3"><span class="gen"><b>' . $chmod_langs_array[$i] . '</b></span></th></tr>' . "\n";
-				$table_output .= '<tr><td class="row1 row-center" rowspan="' . (count($chmod_items_array[$i]) + 1) . '" width="90"><img src="' . $chmod_images_array[$i] . '" alt="' . $chmod_langs_array[$i] . '" title="' . $chmod_langs_array[$i] . '" /></td></tr>' . "\n";
-				for ($j = 0; $j < count($chmod_items_array[$i]); $j++ )
+				$table_output .= '<tr><td class="row1 row-center" rowspan="' . (sizeof($chmod_items_array[$i]) + 1) . '" width="90"><img src="' . $chmod_images_array[$i] . '" alt="' . $chmod_langs_array[$i] . '" title="' . $chmod_langs_array[$i] . '" /></td></tr>' . "\n";
+				for ($j = 0; $j < sizeof($chmod_items_array[$i]); $j++ )
 				{
 					$report_string = '';
 					$errored = false;
@@ -1467,14 +1474,14 @@ class ip_page
 
 					if ($errored)
 					{
-						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
-						$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color:' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_error . $report_string_append . '</td></tr>' . "\n";
+						$report_string_append = '&nbsp;<span class="genmed" style="color: ' . $this->color_error . ';"><b>' . $report_string . '</b></span>';
+						$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color: ' . $this->color_error . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_error . $report_string_append . '</td></tr>' . "\n";
 						$chmod_errors = true;
 					}
 					else
 					{
-						$report_string_append = '&nbsp;<span class="genmed" style="color:' . $this->color_ok . ';">' . $report_string . '</span>';
-						$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color:' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_ok . $report_string_append . '</td></tr>' . "\n";
+						$report_string_append = '&nbsp;<span class="genmed" style="color: ' . $this->color_ok . ';">' . $report_string . '</span>';
+						$table_output .= '<tr><td class="row1" width="40%"><span class="gen" style="color: ' . $this->color_ok . ';"><b>' . $chmod_items_array[$i][$j] . '</b></span></td><td class="row2">' . $img_ok . $report_string_append . '</td></tr>' . "\n";
 					}
 				}
 			}
@@ -1511,7 +1518,7 @@ class ip_page
 		if ($action == 'clean')
 		{
 			require('schemas/old_files.' . PHP_EXT);
-			$tot_items = count($files_array);
+			$tot_items = sizeof($files_array);
 			$killed_counter = 0;
 			$not_killed_counter = 0;
 			$not_found_counter = 0;
@@ -1529,12 +1536,12 @@ class ip_page
 					if ($killed)
 					{
 						$killed_counter++;
-						$killed_output .= '<li>' . $files_array[$i] . '<br /> +++ <span style="color:' . $this->color_ok . ';"><b>' . $lang['FileDeletion_OK'] . '</b></span></li>' . "\n";
+						$killed_output .= '<li>' . $files_array[$i] . '<br /> +++ <span style="color: ' . $this->color_ok . ';"><b>' . $lang['FileDeletion_OK'] . '</b></span></li>' . "\n";
 					}
 					else
 					{
 						$not_killed_counter++;
-						$not_killed_output .= '<li>' . $files_array[$i] . '<br /> +++ <span style="color:' . $this->color_error . ';"><b>' . $lang['FileDeletion_ERROR'] . '</b></span></li>' . "\n";
+						$not_killed_output .= '<li>' . $files_array[$i] . '<br /> +++ <span style="color: ' . $this->color_error . ';"><b>' . $lang['FileDeletion_ERROR'] . '</b></span></li>' . "\n";
 					}
 				}
 				else
@@ -1550,9 +1557,9 @@ class ip_page
 			$table_output .= '<br /><br />' . "\n";
 
 			$table_output .= '<br /><br />' . "\n";
-			$table_output .= '<span style="color:' . $this->color_ok . ';">' . $killed_counter . ' ' . $lang['FilesDeletion_OK'] . '!</span><br />' . "\n";
-			$table_output .= '<span style="color:' . $this->color_error . ';">' . $not_killed_counter . ' ' . $lang['FilesDeletion_ERROR'] . '!</span><br />' . "\n";
-			$table_output .= '<span style="color:' . $this->color_blue . ';">' . $not_found_counter . ' ' . $lang['FilesDeletion_NF'] . '!</span><br />' . "\n";
+			$table_output .= '<span style="color: ' . $this->color_ok . ';">' . $killed_counter . ' ' . $lang['FilesDeletion_OK'] . '!</span><br />' . "\n";
+			$table_output .= '<span style="color: ' . $this->color_error . ';">' . $not_killed_counter . ' ' . $lang['FilesDeletion_ERROR'] . '!</span><br />' . "\n";
+			$table_output .= '<span style="color: ' . $this->color_blue . ';">' . $not_found_counter . ' ' . $lang['FilesDeletion_NF'] . '!</span><br />' . "\n";
 			$table_output .= '</div>' . "\n";
 
 		}
@@ -1572,7 +1579,7 @@ class ip_page
 
 	function fix_birthdays($action)
 	{
-		global $db, $lang, $language, $board_config;
+		global $db, $config, $lang, $language;
 		global $wip;
 		global $birthdays_number, $birthday_start, $total_birthdays, $total_birthdays_modified;
 
@@ -1601,9 +1608,9 @@ class ip_page
 					$wip = false;
 					$table_output .= '<br /><br />' . "\n";
 					$table_output .= '<div class="post-text">' . "\n";
-					$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . $lang['FixingBirthdaysComplete'] . '</b></span></li>' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_blue . ';"><b>' . $total_birthdays_modified . $lang['FixingBirthdaysModified'] . '</b></span></li>' . "\n";
+					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingBirthdaysComplete'] . '</b></span></li>' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_birthdays_modified . $lang['FixingBirthdaysModified'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
 					$table_output .= '<br clear="all" />' . "\n";
@@ -1620,9 +1627,9 @@ class ip_page
 
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$birthday_year = date('Y', ($row['user_birthday'] * 86400) + 1);
-					$birthday_month = date('n', ($row['user_birthday'] * 86400) + 1);
-					$birthday_day = date('j', ($row['user_birthday'] * 86400) + 1);
+					$birthday_year = gmdate('Y', ($row['user_birthday'] * 86400) + 1);
+					$birthday_month = gmdate('n', ($row['user_birthday'] * 86400) + 1);
+					$birthday_day = gmdate('j', ($row['user_birthday'] * 86400) + 1);
 					$sql_update = "UPDATE " . USERS_TABLE . " SET user_birthday_y = '" . $birthday_year . "', user_birthday_m = '" . $birthday_month . "', user_birthday_d = '" . $birthday_day . "' WHERE user_id = '" . $row['user_id'] . "'";
 
 					if (!$result_new = $db->sql_query($sql_update))
@@ -1640,9 +1647,9 @@ class ip_page
 
 				$table_output .= '<br /><br />' . "\n";
 				$table_output .= '<div class="post-text">' . "\n";
-				$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . sprintf($lang['FixingBirthdaysFrom'], ($birthday_start + 1), ((($birthday_start + $birthdays_number) > $total_birthdays) ? $total_birthdays : ($birthday_start + $birthdays_number))) . '</b></span></li>' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_purple . ';"><b>' . sprintf($lang['FixingBirthdaysTotal'], $total_birthdays_modified, $total_birthdays) . '</b></span></li>' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . sprintf($lang['FixingBirthdaysFrom'], ($birthday_start + 1), ((($birthday_start + $birthdays_number) > $total_birthdays) ? $total_birthdays : ($birthday_start + $birthdays_number))) . '</b></span></li>' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingBirthdaysTotal'], $total_birthdays_modified, $total_birthdays) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
 				$table_output .= '<br clear="all" />' . "\n";
@@ -1662,7 +1669,7 @@ class ip_page
 				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="birthdays_number" value="100" size="10" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="cat" colspan="2" style="border-right-width:0px;border-bottom-width:0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '</table>' . "\n";
 				$table_output .= '</form>' . "\n";
@@ -1713,7 +1720,7 @@ class ip_page
 							$files_array[] = $filename_path;
 						}
 					}
-					for ($i = 0; $i < count($files_array); $i++)
+					for ($i = 0; $i < sizeof($files_array); $i++)
 					{
 						$filename_tmp = $files_array[$i];
 						$content = ip_functions::cms_page_content();
@@ -1723,7 +1730,7 @@ class ip_page
 						$content_output .= '<li><span class="genmed"><b style="color:' . $color . '">' . $filename_tmp . '</b>&nbsp;' . $img . '</span></li>' . "\n";
 					}
 				}
-				$content_output = ($content_output == '') ? ('<li><span class="genmed"><b style="color:' . $this->color_ok . '">' . $lang['None'] . '</b></span></li>' . "\n") : $content_output;
+				$content_output = ($content_output == '') ? ('<li><span class="genmed"><b style="color: ' . $this->color_ok . '">' . $lang['None'] . '</b></span></li>' . "\n") : $content_output;
 
 				$table_output .= '<div class="post-text">' . "\n";
 				$table_output .= '<b>' . $lang['FilesProcessed'] . '</b><br /><ul>' . $content_output . '</ul><br /><br />' . "\n";
@@ -1752,7 +1759,7 @@ class ip_page
 
 	function fix_pics($action)
 	{
-		global $db, $lang, $language, $board_config;
+		global $db, $config, $lang, $language;
 		global $wip;
 		global $pics_number, $pic_start, $total_pics, $total_pics_modified;
 
@@ -1781,9 +1788,9 @@ class ip_page
 					$wip = false;
 					$table_output .= '<br /><br />' . "\n";
 					$table_output .= '<div class="post-text">' . "\n";
-					$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . $lang['FixingPicsComplete'] . '</b></span></li>' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_blue . ';"><b>' . $total_pics_modified . $lang['FixingPicsModified'] . '</b></span></li>' . "\n";
+					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingPicsComplete'] . '</b></span></li>' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_pics_modified . $lang['FixingPicsModified'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
 					$table_output .= '<br clear="all" />' . "\n";
@@ -1864,16 +1871,16 @@ class ip_page
 
 				$table_output .= '<br /><br />' . "\n";
 				$table_output .= '<div class="post-text">' . "\n";
-				$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . sprintf($lang['FixingPicsFrom'], ($pic_start + 1), ((($pic_start + $pics_number) > $total_pics) ? $total_pics : ($pic_start + $pics_number))) . '</b></span></li>' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_purple . ';"><b>' . sprintf($lang['FixingPicsTotal'], $total_pics_modified, $total_pics) . '</b></span></li>' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . sprintf($lang['FixingPicsFrom'], ($pic_start + 1), ((($pic_start + $pics_number) > $total_pics) ? $total_pics : ($pic_start + $pics_number))) . '</b></span></li>' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingPicsTotal'], $total_pics_modified, $total_pics) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
 				$table_output .= '<br clear="all" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
 				$table_output .= '<div class="post-text" style="width:90%">' . "\n";
-				$table_output .= '<ul type="circle" style="align:left;">' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
 				$table_output .= $pics_moved . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
@@ -1898,7 +1905,7 @@ class ip_page
 				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="pic_start" value="0" size="10" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="cat" colspan="2" style="border-right-width:0px;border-bottom-width:0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '</table>' . "\n";
 				$table_output .= '</form>' . "\n";
@@ -1909,7 +1916,7 @@ class ip_page
 
 	function fix_posts($action)
 	{
-		global $db, $lang, $language, $board_config;
+		global $db, $config, $lang, $language;
 		global $wip, $search_word, $replacement_word;
 		global $remove_bbcode_uid, $remove_guess_bbcode_uid, $fix_posted_images;
 		global $posts_number, $post_start, $total_posts, $total_posts_modified;
@@ -1938,9 +1945,9 @@ class ip_page
 					$wip = false;
 					$table_output .= '<br /><br />' . "\n";
 					$table_output .= '<div class="post-text">' . "\n";
-					$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . $lang['FixingPostsComplete'] . '</b></span></li>' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang['FixingPostsModified'] . '</b></span></li>' . "\n";
+					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingPostsComplete'] . '</b></span></li>' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang['FixingPostsModified'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
 					$table_output .= '<br clear="all" />' . "\n";
@@ -1984,7 +1991,7 @@ class ip_page
 						$post_text_f = mg_functions::bbcuid_clean($post_text_f, false);
 					}
 
-					if ($fix_posted_images && !empty($board_config))
+					if ($fix_posted_images && !empty($config))
 					{
 						$post_text_f = mg_functions::img_replace($post_text_f);
 					}
@@ -2019,9 +2026,9 @@ class ip_page
 
 				$table_output .= '<br /><br />' . "\n";
 				$table_output .= '<div class="post-text">' . "\n";
-				$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . sprintf($lang['FixingPostsFrom'], ($post_start + 1), ((($post_start + $posts_number) > $total_posts) ? $total_posts : ($post_start + $posts_number))) . '</b></span></li>' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_purple . ';"><b>' . sprintf($lang['FixingPostsTotal'], $total_posts_modified, $total_posts) . '</b></span></li>' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . sprintf($lang['FixingPostsFrom'], ($post_start + 1), ((($post_start + $posts_number) > $total_posts) ? $total_posts : ($post_start + $posts_number))) . '</b></span></li>' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingPostsTotal'], $total_posts_modified, $total_posts) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
 				$table_output .= '<br clear="all" />' . "\n";
@@ -2054,7 +2061,7 @@ class ip_page
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" colspan="2">' . "\n";
-				$table_output .= '	<div style="text-align:left;padding:5px;">' . "\n";
+				$table_output .= '	<div style="text-align: left;padding:5px;">' . "\n";
 				$table_output .= '	<label><input type="checkbox" name="remove_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID'] . '</label><br />' . "\n";
 				$table_output .= '	<label><input type="checkbox" name="remove_guess_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID_Guess'] . '</label><br />' . "\n";
 				$table_output .= '	<label><input type="checkbox" name="fix_posted_images" />&nbsp;' . $lang['FixPostedImagesPaths'] . '</label><br />' . "\n";
@@ -2062,7 +2069,7 @@ class ip_page
 				$table_output .= '	</td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="cat" colspan="2" style="border-right-width:0px;border-bottom-width:0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '</table>' . "\n";
 				$table_output .= '</form>' . "\n";
@@ -2073,7 +2080,7 @@ class ip_page
 
 	function fix_signatures($action)
 	{
-		global $db, $lang, $language, $board_config;
+		global $db, $config, $lang, $language;
 		global $wip, $search_word, $replacement_word;
 		global $remove_bbcode_uid, $remove_guess_bbcode_uid, $fix_posted_images;
 		global $posts_number, $post_start, $total_posts, $total_posts_modified;
@@ -2102,9 +2109,9 @@ class ip_page
 					$wip = false;
 					$table_output .= '<br /><br />' . "\n";
 					$table_output .= '<div class="post-text">' . "\n";
-					$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . $lang['FixingSignaturesComplete'] . '</b></span></li>' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang['FixingSignaturesModified'] . '</b></span></li>' . "\n";
+					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingSignaturesComplete'] . '</b></span></li>' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang['FixingSignaturesModified'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
 					$table_output .= '<br clear="all" />' . "\n";
@@ -2136,7 +2143,7 @@ class ip_page
 						$post_text_f = mg_functions::bbcuid_clean($post_text_f, false);
 					}
 
-					if ($fix_posted_images && !empty($board_config))
+					if ($fix_posted_images && !empty($config))
 					{
 						$post_text_f = mg_functions::img_replace($post_text_f);
 					}
@@ -2160,9 +2167,9 @@ class ip_page
 
 				$table_output .= '<br /><br />' . "\n";
 				$table_output .= '<div class="post-text">' . "\n";
-				$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . sprintf($lang['FixingSignaturesFrom'], ($post_start + 1), ((($post_start + $posts_number) > $total_posts) ? $total_posts : ($post_start + $posts_number))) . '</b></span></li>' . "\n";
-				$table_output .= '<li><span style="color:' . $this->color_purple . ';"><b>' . sprintf($lang['FixingSignaturesTotal'], $total_posts_modified, $total_posts) . '</b></span></li>' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . sprintf($lang['FixingSignaturesFrom'], ($post_start + 1), ((($post_start + $posts_number) > $total_posts) ? $total_posts : ($post_start + $posts_number))) . '</b></span></li>' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingSignaturesTotal'], $total_posts_modified, $total_posts) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
 				$table_output .= '<br clear="all" />' . "\n";
@@ -2195,7 +2202,7 @@ class ip_page
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" colspan="2">' . "\n";
-				$table_output .= '	<div style="text-align:left;padding:5px;">' . "\n";
+				$table_output .= '	<div style="text-align: left;padding:5px;">' . "\n";
 				$table_output .= '	<label><input type="checkbox" name="remove_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID'] . '</label><br />' . "\n";
 				$table_output .= '	<label><input type="checkbox" name="remove_guess_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID_Guess'] . '</label><br />' . "\n";
 				$table_output .= '	<label><input type="checkbox" name="fix_posted_images" />&nbsp;' . $lang['FixPostedImagesPaths'] . '</label><br />' . "\n";
@@ -2203,7 +2210,7 @@ class ip_page
 				$table_output .= '	</td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="cat" colspan="2" style="border-right-width:0px;border-bottom-width:0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '</table>' . "\n";
 				$table_output .= '</form>' . "\n";
@@ -2212,9 +2219,155 @@ class ip_page
 		return $table_output;
 	}
 
+	function fix_forums($action)
+	{
+		global $db, $config, $lang, $language;
+
+		$lang_append = '&amp;lang=' . $language;
+
+		$table_output = '';
+
+		switch ($action)
+		{
+			case 'fix':
+				$this->convert_forums();
+				$table_output .= '<br /><br />' . "\n";
+				$table_output .= '<div class="post-text">' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingForumsComplete'] . '</b></span></li>' . "\n";
+				$table_output .= '</ul>' . "\n";
+				$table_output .= '</div>' . "\n";
+				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br /><br />' . "\n";
+				break;
+
+			default:
+				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_forums&amp;action=fix' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
+				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixForums'] . '</span></td></tr>' . "\n";
+				$table_output .= '<tr><td class="row1" colspan="2"><div class="post-text">' . $lang['FixForumsExplain'] . '</div></td></tr>' . "\n";
+				$table_output .= '<tr>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '</tr>' . "\n";
+				$table_output .= '</table>' . "\n";
+				$table_output .= '</form>' . "\n";
+		}
+
+		return $table_output;
+	}
+
+	/**
+	* Insert/Convert forums
+	*/
+	function convert_forums()
+	{
+		global $db, $table_prefix;
+
+		if (!defined('CATEGORIES_TABLE'))
+		{
+			define('CATEGORIES_TABLE', $table_prefix . 'categories');
+		}
+
+		if (!defined('FORUM_CAT'))
+		{
+			define('FORUM_CAT', 0);
+		}
+
+		// Determine the highest id used within the old forums table (we add the categories after the forum ids)
+		$sql = 'SELECT MAX(forum_id) AS max_forum_id
+			FROM ' . FORUMS_TABLE;
+		$result = $db->sql_query($sql);
+		$max_forum_id = (int) $db->sql_fetchfield('max_forum_id');
+		$db->sql_freeresult($result);
+
+		$max_forum_id++;
+
+		// Determine the highest order
+		$sql = 'SELECT MAX(forum_order) AS max_forum_order
+			FROM ' . FORUMS_TABLE;
+		$result = $db->sql_query($sql);
+		$max_forum_order = (int) $db->sql_fetchfield('max_forum_order');
+		$db->sql_freeresult($result);
+
+		$max_forum_order = $max_forum_order + 10;
+
+		// Insert categories
+		$sql = 'SELECT *
+			FROM ' . CATEGORIES_TABLE . '
+			ORDER BY cat_order';
+		$result = $db->sql_query($sql);
+
+		$cats_added = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$sql_ary = array(
+				'forum_id' => $max_forum_id,
+				'rules' => '',
+			);
+
+			$sql = 'INSERT INTO ' . FORUMS_RULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
+
+			$sql_ary = array(
+				'forum_id' => $max_forum_id,
+				'parent_id' => empty($row['cat_main']) ? 0 : $row['cat_main'],
+				'main_type' => empty($row['cat_main_type']) ? 'c' : $row['cat_main_type'],
+				'forum_order' => $row['cat_order'], //$max_forum_order
+				'forum_name' => $row['cat_title'],
+				'forum_desc' => $row['cat_desc'],
+				'forum_type' => FORUM_CAT,
+				'icon' => $row['icon']
+			);
+
+			$sql = 'INSERT INTO ' . FORUMS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+			$db->sql_query($sql);
+
+			$cats_added[$row['cat_id']] = $max_forum_id;
+			$max_forum_id++;
+			$max_forum_order = $max_forum_order + 10;
+		}
+		$db->sql_freeresult($result);
+
+		foreach ($cats_added as $k => $v)
+		{
+			$sql = 'UPDATE ' . FORUMS_TABLE . ' SET parent_id = ' . $v . ' WHERE parent_id = ' . $k . ' AND main_type = \'c\'';
+			$db->sql_query($sql);
+		}
+		$sql = 'RENAME TABLE `' . CATEGORIES_TABLE . '` TO `_old_' . CATEGORIES_TABLE . '`';
+		$db->sql_query($sql);
+
+		$this->fix_last_posters();
+	}
+
+	/**
+	* Fix last posters
+	*/
+	function fix_last_posters()
+	{
+		global $db, $table_prefix;
+
+		$sql = "UPDATE `" . $table_prefix . "forums` f, `" . $table_prefix . "topics` t, `" . $table_prefix . "posts` p, `" . $table_prefix . "users` u SET f.forum_last_topic_id = p.topic_id, f.forum_last_poster_id = p.poster_id, f.forum_last_post_subject = t.topic_title, f.forum_last_post_time = p.post_time, f.forum_last_poster_name = u.username, f.forum_last_poster_color = u.user_color
+		WHERE f.forum_last_post_id = p.post_id
+		AND t.topic_id = p.topic_id
+		AND p.poster_id = u.user_id";
+		$db->sql_query($sql);
+
+		$sql = "UPDATE `" . $table_prefix . "topics` t, `" . $table_prefix . "posts` p, `" . $table_prefix . "posts` p2, `" . $table_prefix . "users` u, `" . $table_prefix . "users` u2 SET t.topic_first_post_id = p.post_id, t.topic_first_post_time = p.post_time, t.topic_first_poster_id = p.poster_id, t.topic_first_poster_name = u.username, t.topic_first_poster_color = u.user_color, t.topic_last_post_id = p2.post_id, t.topic_last_post_time = p2.post_time, t.topic_last_poster_id = p2.poster_id, t.topic_last_poster_name = u2.username, t.topic_last_poster_color = u2.user_color
+		WHERE t.topic_first_post_id = p.post_id
+		AND p.poster_id = u.user_id
+		AND t.topic_last_post_id = p2.post_id
+		AND p2.poster_id = u2.user_id";
+		$db->sql_query($sql);
+
+		return true;
+	}
+
+	/**
+	* Rename and move images
+	*/
 	function ren_move_images($action)
 	{
-		global $db, $lang, $language, $board_config;
+		global $db, $config, $lang, $language;
 		global $wip;
 		global $pics_number, $total_pics_modified;
 
@@ -2275,8 +2428,8 @@ class ip_page
 					$wip = false;
 					$table_output .= '<br /><br />' . "\n";
 					$table_output .= '<div class="post-text">' . "\n";
-					$table_output .= '<ul type="circle" style="align:left;">' . "\n";
-					$table_output .= '<li><span style="color:' . $this->color_green . ';"><b>' . $lang['FixingPicsComplete'] . '</b></span></li>' . "\n";
+					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingPicsComplete'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
 					$table_output .= '<br clear="all" />' . "\n";
@@ -2285,7 +2438,7 @@ class ip_page
 				}
 
 				$table_output .= '<div class="post-text" style="width:90%">' . "\n";
-				$table_output .= '<ul type="circle" style="align:left;">' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
 				$table_output .= $pics_moved . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
@@ -2296,7 +2449,7 @@ class ip_page
 				/*
 				$old_pafile_folders = array(IP_ROOT_PATH . 'pafiledb/uploads/', IP_ROOT_PATH . 'pafiledb/images/screenshots/');
 				$new_pafile_folders = array(IP_ROOT_PATH . 'downloads/', IP_ROOT_PATH . 'files/screenshots/');
-				for ($pac = 0; $pac < count($old_pafile_folders); $pac++)
+				for ($pac = 0; $pac < sizeof($old_pafile_folders); $pac++)
 				{
 					if (is_dir($old_pafile_folders[$pac] . $file) && is_dir($new_pafile_folders[$pac] . $file))
 					{
@@ -2328,7 +2481,7 @@ class ip_page
 				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="pics_number" value="100" size="10" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="cat" colspan="2" style="border-right-width:0px;border-bottom-width:0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '</table>' . "\n";
 				$table_output .= '</form>' . "\n";
@@ -2415,6 +2568,7 @@ class ip_page
 		$table_update_options .= '<div class="genmed"><br /><ol type="1">' . "\n";
 		$table_update_options .= '<li><span class="text_red"><strong>' . $lang['MakeFullBackup'] . '</strong></span><br /><br /></li>' . "\n";
 		//$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_gray">' . $lang['Update_phpBB'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_forums' . $lang_append) . '"><span class="text_orange">' . $lang['FixForums'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_orange">' . $lang['Remove_BBCodeUID'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_orange">' . $lang['Merge_PostsTables'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_orange">' . $lang['Update_IcyPhoenix'] . '</span></a><br /><br /></li>' . "\n";
@@ -2476,64 +2630,72 @@ class ip_page
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12936' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.9.36</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121239' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.12.39</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121542' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.15.42</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121845' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.18.45 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121845' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.18.45</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_13053' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.3.0.53 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
 		$update_options .= '</ul></div>' . "\n";
 
 		// Output the spoiler
 		$table_update_options .= $this->spoiler('update_options', $update_options, false);
 
+		// Fix Forums
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color: #dd2222; font-weight: bold;">' . $lang['FixForums'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_forums' . $lang_append) . '"><span class="text_red">' . $lang['FixForumsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
 		// Fix Posts
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#228822;font-weight:bold">' . $lang['FixPosts'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #228822; font-weight: bold;">' . $lang['FixPosts'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_red">' . $lang['FixPostsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Fix Signatures
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#ffdd22;font-weight:bold">' . $lang['FixSignatures'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #ffdd22; font-weight: bold;">' . $lang['FixSignatures'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_signatures' . $lang_append) . '"><span class="text_red">' . $lang['FixSignaturesExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Fix Pics
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#ff5500;font-weight:bold">' . $lang['FixPics'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #ff5500; font-weight: bold;">' . $lang['FixPics'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_images_album' . $lang_append) . '"><span class="text_red">' . $lang['FixPicsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Rename And Move Posted Pics
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#aa0022;font-weight:bold">' . $lang['RenMovePics'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #aa0022; font-weight: bold;">' . $lang['RenMovePics'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=ren_move_images' . $lang_append) . '"><span class="text_red">' . $lang['RenMovePicsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Fix Birthdays
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#aa6622;font-weight:bold">' . $lang['FixBirthdays'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #aa6622; font-weight: bold;">' . $lang['FixBirthdays'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_birthdays' . $lang_append) . '"><span class="text_red">' . $lang['FixBirthdaysExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Fix Constants
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#0033cc;font-weight:bold">' . $lang['FixConstantsInFiles'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #0033cc; font-weight: bold;">' . $lang['FixConstantsInFiles'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants' . $lang_append) . '"><span class="text_red">' . $lang['FixConstantsInFilesExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// CHMOD
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#008888;font-weight:bold">' . $lang['CHMOD_Files'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #008888; font-weight: bold;">' . $lang['CHMOD_Files'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=chmod' . $lang_append) . '"><span class="text_red">' . $lang['CHMOD_Apply'] . '</span></a><br /><span class="gensmall">' . $lang['CHMOD_Apply_Warn'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Clean Old Files
 		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color:#ff00ff;font-weight:bold">' . $lang['Clean_OldFiles'] . '</span><br />' . "\n";
+		$table_update_options .= '<span style="color: #ff00ff; font-weight: bold;">' . $lang['Clean_OldFiles'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=clean_old_files' . $lang_append) . '"><span class="text_red">' . $lang['Clean_OldFiles_Explain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";

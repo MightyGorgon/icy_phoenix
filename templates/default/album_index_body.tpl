@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="right">{ALBUM_SEARCH_BOX}</td></tr></table>
 
 {ALBUM_BOARD_INDEX}
@@ -221,3 +223,5 @@
 <br clear="all" />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

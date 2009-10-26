@@ -158,15 +158,9 @@ if ((!$auth_view) || (($album_config['show_download'] == 0) && ($userdata['user_
 $sql = "SELECT COUNT(pic_id) AS count
 		FROM " . ALBUM_TABLE . "
 		WHERE pic_cat_id = $cat_id";
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not count pics', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
-
 $total_pics = $row['count'];
-
 
 // ------------------------------------
 // Build archive
@@ -187,10 +181,7 @@ if ($total_pics > 0)
 			WHERE pic_cat_id = $cat_id
 			ORDER BY $sort_method $sort_order
 			$limit_sql";
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query pics information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	// ------------------------------------
 	// If you wish to use a format other than zip uncomment the necessary line, "archive" can also be renamed
@@ -200,14 +191,14 @@ if ($total_pics > 0)
 	// $archive = new tar_file('archive.tar'); // save as tar
 	// $archive = new gzip_file('archive.tgz'); // save as gzip
 
-	$archive->set_options(array('inmemory' => 1, 'storepaths' => 0, 'comment' => 'Archived photos from ' . ip_stripslashes($board_config['sitename'])));
+	$archive->set_options(array('inmemory' => 1, 'storepaths' => 0, 'comment' => 'Archived photos from ' . $config['sitename']));
 	$DLpics = array();
 	while($row = $db->sql_fetchrow($result))
 	{
 		$DLpics[] = $row;
 	}
 
-	for ($num = 0; $num < count($DLpics); $num++)
+	for ($num = 0; $num < sizeof($DLpics); $num++)
 	{
 		$archive->add_files(ALBUM_UPLOAD_PATH . $DLpics[$num]['pic_filename']);
 	}

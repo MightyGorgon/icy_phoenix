@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {XS_NEWS}
 
 <h2 style="text-align: left;"><a href="{U_VIEW_FORUM}" style="text-decoration: none;">{FORUM_NAME}</a></h2>
@@ -92,7 +94,7 @@
 		</table>
 	</td>
 </tr>
-<!-- IF S_SHOW_ALPHA_BAR -->
+<!-- IF S_SHOW_ALPHA_BAR and not S_BOT -->
 <tr>
 	<td class="cat" align="center" valign="middle" colspan="7">
 	<span class="gensmall">{L_SORT_TOPICS}:{DIVIDER}<a href="{U_NEWEST}">{L_SORT_TOPICS_NEWEST}</a>{DIVIDER}<a href="{U_OLDEST}">{L_SORT_TOPICS_OLDEST}</a>{DIVIDER}<a href="{U_AZ}">A-Z</a>{DIVIDER}<a href="{U_ZA}" >Z-A</a>{DIVIDER}<!-- BEGIN alphabetical_sort --><a href="{alphabetical_sort.U_LETTER}" >{alphabetical_sort.LETTER}</a>{alphabetical_sort.DIVIDER}<!-- END alphabetical_sort -->{DIVIDER}</span>
@@ -223,3 +225,5 @@
 </tr>
 </table>
 {FORUM_WORDGRAPH}
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -19,13 +19,13 @@ init_userprefs($userdata);
 // End session management
 
 // This page is not in layout special...
-$cms_page_id = 'pic_upload';
-$cms_page_nav = true;
-$cms_global_blocks = false;
-$cms_auth_level = (isset($board_config['auth_view_pic_upload']) ? $board_config['auth_view_pic_upload'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
+$cms_page['page_id'] = 'pic_upload';
+$cms_page['page_nav'] = true;
+$cms_page['global_blocks'] = false;
+$cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_pic_upload'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 // Force the page_id to album
-$cms_page_id = 'album';
+$cms_page['page_id'] = 'album';
 
 if (!$userdata['session_logged_in'])
 {
@@ -94,7 +94,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 	if (@is_file($cache_data_file))
 	{
 		$cache_file_time = @filemtime($cache_data_file);
-		if (((date('YzH', time()) - date('YzH', $cache_file_time)) < 30) && ((date('Y', time()) == date('Y', $cache_file_time))))
+		if (((gmdate('YzH') - gmdate('YzH', $cache_file_time)) < 30) && ((gmdate('Y') == gmdate('Y', $cache_file_time))))
 		{
 			$cache_update = false;
 		}
@@ -135,7 +135,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 						{
 							if(preg_match('/(\.gif$|\.tif$|\.png$|\.jpg$|\.jpeg$)$/is', $subfile))
 							{
-								$pic_time[$total_pics] = date('U', @filemtime($tmp_subfolder_path . $subfile));
+								$pic_time[$total_pics] = gmdate('U', @filemtime($tmp_subfolder_path . $subfile));
 								$pic_images[$total_pics] = $file . '/' . $subfile;
 								$total_pics++;
 							}
@@ -150,7 +150,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 				{
 					if(preg_match('/(\.gif$|\.tif$|\.png$|\.jpg$|\.jpeg$)$/is', $file))
 					{
-						$pic_time[$total_pics] = date('U', @filemtime($posted_images_folder . $file));
+						$pic_time[$total_pics] = gmdate('U', @filemtime($posted_images_folder . $file));
 						$pic_images[$total_pics] = $pic_user_id . '/' . $file;
 						$total_pics++;
 					}
@@ -178,14 +178,8 @@ if (USERS_SUBFOLDERS_IMG == true)
 		@fclose($fp);
 	}
 
-	$page_title = $lang['Uploaded_Images_Local'];
-	$meta_description = '';
-	$meta_keywords = '';
 	$nav_server_url = create_server_url();
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('posted_img_list.' . PHP_EXT) . '">' . $lang['Uploaded_Images_Local'] . '</a>';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'posted_img_list_body.tpl'));
 
 	$album_config['cols_per_page'] = ($album_config['cols_per_page'] == 0) ? 4 : $album_config['cols_per_page'];
 	$album_config['rows_per_page'] = ($album_config['rows_per_page'] == 0) ? 5 : $album_config['rows_per_page'];
@@ -195,7 +189,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 	$s_colspan = $album_config['cols_per_page'];
 	$s_colwidth = ((100 / $s_colspan) . '%');
 
-	$start = ($start >= count($pic_images)) ? 0 : $start;
+	$start = ($start >= sizeof($pic_images)) ? 0 : $start;
 	$end_counter = $start + $pics_per_page;
 	$end_counter = ($end_counter > $total_pics) ? $total_pics : $end_counter;
 	$pics_parsed = 0;
@@ -272,7 +266,7 @@ else
 	if (@is_file($cache_data_file))
 	{
 		$cache_file_time = @filemtime($cache_data_file);
-		if (((date('YzH', time()) - date('YzH', $cache_file_time)) < 30) && ((date('Y', time()) == date('Y', $cache_file_time))))
+		if (((gmdate('YzH') - gmdate('YzH', $cache_file_time)) < 30) && ((gmdate('Y') == gmdate('Y', $cache_file_time))))
 		{
 			$cache_update = false;
 		}
@@ -304,7 +298,7 @@ else
 
 					if ($own_pics == true)
 					{
-						$pic_time[$total_pics] = date('U', @filemtime(POSTED_IMAGES_PATH . $file));
+						$pic_time[$total_pics] = gmdate('U', @filemtime(POSTED_IMAGES_PATH . $file));
 						$pic_images[$total_pics] = $file;
 						$total_pics++;
 					}
@@ -332,13 +326,6 @@ else
 
 	}
 
-	$page_title = $lang['Uploaded_Images_Local'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'posted_img_list_body.tpl'));
-
 	$album_config['cols_per_page'] = ($album_config['cols_per_page'] == 0) ? 4 : $album_config['cols_per_page'];
 	$album_config['rows_per_page'] = ($album_config['rows_per_page'] == 0) ? 5 : $album_config['rows_per_page'];
 	$pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
@@ -347,7 +334,7 @@ else
 	$s_colspan = $album_config['cols_per_page'];
 	$s_colwidth = ((100 / $s_colspan) . '%');
 
-	$start = ($start >= count($pic_images)) ? 0 : $start;
+	$start = ($start >= sizeof($pic_images)) ? 0 : $start;
 	$end_counter = $start + $pics_per_page;
 	$end_counter = ($end_counter > $total_pics) ? $total_pics : $end_counter;
 	$pics_parsed = 0;
@@ -427,8 +414,6 @@ $template->assign_vars(array(
 	)
 );
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+full_page_generation('posted_img_list_body.tpl', $lang['Uploaded_Images_Local'], '', '');
 
 ?>

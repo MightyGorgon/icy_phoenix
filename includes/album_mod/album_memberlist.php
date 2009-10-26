@@ -140,13 +140,8 @@ switch (strtolower($album_view_type))
 // Count pics, comments or ratings
 // ------------------------------------
 
-if(!($result = $db->sql_query($count_sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not count ' . $album_view_type. 's', '', __LINE__, __FILE__, $count_sql);
-}
-
+$result = $db->sql_query($count_sql);
 $row = $db->sql_fetchrow($result);
-
 $total_pics = $row['count'];
 
 // ------------------------------------
@@ -158,13 +153,9 @@ $album_view_type_param = (!empty($album_view_type)) ? '&type=' . $album_view_typ
 
 if ($total_pics > 0 && !empty($allowed_cat))
 {
-	if(!($result = $db->sql_query($list_sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query memberlist information', '', __LINE__, __FILE__, $list_sql);
-	}
+	$result = $db->sql_query($list_sql);
 
 	$picrow = array();
-
 	while($row = $db->sql_fetchrow($result))
 	{
 		$picrow[] = $row;
@@ -178,13 +169,13 @@ if ($total_pics > 0 && !empty($allowed_cat))
 	$album_rate_pic_url = $album_show_pic_url;
 	$album_comment_pic_url = $album_show_pic_url;
 
-	for ($i = 0; $i < count($picrow); $i += $album_config['cols_per_page'])
+	for ($i = 0; $i < sizeof($picrow); $i += $album_config['cols_per_page'])
 	{
 		$template->assign_block_vars('picrow', array());
 
 		for ($j = $i; $j < ($i + $album_config['cols_per_page']); $j++)
 		{
-			if($j >= count($picrow))
+			if($j >= sizeof($picrow))
 			{
 				break;
 			}
@@ -254,7 +245,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'CATEGORY' => $picrow[$j]['cat_title'],
 				'U_PIC_CAT' => $image_cat_url,
 
-				'TIME' => create_date($board_config['default_dateformat'], $picrow[$j]['pic_time'], $board_config['board_timezone']),
+				'TIME' => create_date($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
 
 				'VIEW' => $picrow[$j]['pic_view_count'],
 
@@ -324,12 +315,10 @@ if($album_config['comment'] == 1)
 }
 
 // Start output of page
-$page_title = $lang['Album'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-$template->set_filenames(array('body' => 'album_memberlist_body.tpl'));
+$meta_content['page_title'] = $lang['Album'];
+$meta_content['description'] = '';
+$meta_content['keywords'] = '';
+$template_to_parse = 'album_memberlist_body.tpl';
 
 switch (strtolower($album_view_type))
 {
@@ -400,10 +389,5 @@ $template->assign_vars(array(
 	'SORT_ASC' => ($sort_order == 'ASC') ? 'selected="selected"' : '',
 	'SORT_DESC' => ($sort_order == 'DESC') ? 'selected="selected"' : '')
 );
-
-// Generate the page
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 
 ?>

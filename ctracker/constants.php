@@ -37,7 +37,14 @@ if (!defined('IN_ICYPHOENIX'))
  * Constants we need
  */
 define('CTRACKER_VERSION', '5.0.6');		// CrackerTracker Version
-define('CT_FIRST_ADMIN_UID', '2');			// UserID of the first Admin
+if (defined('FOUNDER_ID'))
+{
+	define('CT_FIRST_ADMIN_UID', FOUNDER_ID);
+}
+else
+{
+	define('CT_FIRST_ADMIN_UID', '2');		// UserID of the first Admin
+}
 
 /*
  * Extended Definitions

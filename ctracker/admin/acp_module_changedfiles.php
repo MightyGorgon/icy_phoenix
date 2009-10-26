@@ -65,11 +65,7 @@ elseif ($action == 'chk')
 	*/
 	$sql = 'SELECT * FROM ' . CTRACKER_FILECHK;
 	$table_class = false;
-
-	if ((!$result = $db->sql_query($sql)))
-	{
-		message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$template->assign_block_vars('header_table_cell', array());
 
@@ -78,7 +74,7 @@ elseif ($action == 'chk')
 		$table_class    = !$table_class;
 
 		$current_hash = '';
-		$current_hash = @filesize($row['filepath']) . '-' . count(@file($row['filepath']));
+		$current_hash = @filesize($row['filepath']) . '-' . sizeof(@file($row['filepath']));
 
 		if ($current_hash == '-1')
 		{
@@ -129,7 +125,7 @@ $template->set_filenames(array('ct_body' => ADM_TPL . 'acp_changedfiles.tpl'));
 */
 $template->assign_vars(array(
 	'L_HEADLINE' 		=> $lang['ctracker_fchk_head'],
-	'L_SUBHEADLINE'		=> sprintf($lang['ctracker_fchk_subhead'], date($board_config['default_dateformat'], $ctracker_config->settings['last_checksum_scan'])),
+	'L_SUBHEADLINE'		=> sprintf($lang['ctracker_fchk_subhead'], gmdate($config['default_dateformat'], $ctracker_config->settings['last_checksum_scan'])),
 	'L_FUNC_HEADER'		=> $lang['ctracker_fchk_funcheader'],
 	'L_TABLE_HEADER'	=> $lang['ctracker_fchk_tableheader'],
 	'L_OPTION_1'		=> $lang['ctracker_fchk_option1'],

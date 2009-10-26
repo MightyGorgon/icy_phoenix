@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!--
 # Advanced Users will probably want to customize their template table
 # Below is a list of other items you can add between the <--! BEGIN ratingrow - -> and END of it
@@ -17,9 +19,11 @@
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_TOP_RATED}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN notopics -->
-<tr><td class="row1" valign="top"><span class="gensmall">{notopics.MESSAGE}</span></td></tr>
+<tr><td class="{ratingrow.CLASS}" valign="top"><span class="gensmall">{notopics.MESSAGE}</span></td></tr>
 <!-- END notopics -->
 <!-- BEGIN ratingrow -->
-<tr><td class="row1" valign="top"><span class="gensmall">{ratingrow.RATING}&nbsp;:&nbsp;<a href="{ratingrow.URL}">{ratingrow.TITLE}</a></span></td></tr>
+<tr><td class="{ratingrow.CLASS}" valign="top"><span class="gensmall">{ratingrow.RATING}&nbsp;:&nbsp;<a href="{ratingrow.URL}">{ratingrow.TITLE}</a></span></td></tr>
 <!-- END ratingrow -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<!-- INCLUDE overall_footer.tpl -->

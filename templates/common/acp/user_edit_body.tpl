@@ -3,11 +3,11 @@
 function ColorExample(ColorCode)
 {
 	var color_example_box = window.document.getElementById('color_group_example');
-	if ( (ColorCode.length == 6) || (ColorCode.length == 3) )
+	if ((ColorCode.length == 6) || (ColorCode.length == 3))
 	{
 		color_example_box.style.color = '#' + ColorCode;
 	}
-	else if ( ((ColorCode.length == 7) || (ColorCode.length == 4)) && (ColorCode.charAt(0) == '#') )
+	else if (((ColorCode.length == 7) || (ColorCode.length == 4)) && (ColorCode.charAt(0) == '#'))
 	{
 		color_example_box.style.color = ColorCode;
 	}
@@ -359,20 +359,20 @@ function ColorExample(ColorCode)
 	<td class="row1"><span class="gen">{L_UPLOAD_AVATAR_FILE}</span></td>
 	<td class="row2">
 		<input type="hidden" name="MAX_FILE_SIZE" value="{AVATAR_SIZE}" />
-		<input type="file" name="avatar" class="post" style="width:200px" />
+		<input type="file" name="avatar" class="post" style="width: 200px;" />
 	</td>
 </tr>
 <!-- END avatar_local_upload -->
 <!-- BEGIN avatar_remote_upload -->
 <tr>
 	<td class="row1"><span class="gen">{L_UPLOAD_AVATAR_URL}</span></td>
-	<td class="row2"><input class="post" type="text" name="avatarurl" size="40" style="width:200px" /></td>
+	<td class="row2"><input class="post" type="text" name="avatarurl" size="40" style="width: 200px;" /></td>
 </tr>
 <!-- END avatar_remote_upload -->
 <!-- BEGIN avatar_remote_link -->
 <tr>
 	<td class="row1"><span class="gen">{L_LINK_REMOTE_AVATAR}</span></td>
-	<td class="row2"><input class="post" type="text" name="avatarremoteurl" size="40" style="width:200px" /></td>
+	<td class="row2"><input class="post" type="text" name="avatarremoteurl" size="40" style="width: 200px;" /></td>
 </tr>
 <!-- END avatar_remote_link -->
 <!-- BEGIN avatar_local_gallery -->
@@ -384,7 +384,7 @@ function ColorExample(ColorCode)
 <!-- BEGIN switch_gravatar -->
 <tr>
 	<td class="row1"><span class="gen">{L_GRAVATAR}</span><br /><span class="gensmall">{L_GRAVATAR_EXPLAIN}</span></td>
-	<td class="row2"><input class="post" type="text" name="gravatar" value="{GRAVATAR}" size="40" class="post" style="width:200px" /></td>
+	<td class="row2"><input class="post" type="text" name="gravatar" value="{GRAVATAR}" size="40" class="post" style="width: 200px;" /></td>
 </tr>
 <!-- END switch_gravatar -->
 <tr><td class="cat" colspan="2">&nbsp;</td></tr>
@@ -465,14 +465,14 @@ function ColorExample(ColorCode)
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_BANCARD}:</span><br /><span class="gensmall">{L_BANCARD_EXPLAIN}<br /></td>
-	<td class="row2"><input type="text" class="post" style="width: 40px" name="user_ycard" size="4" maxlength="4" value="{BANCARD}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 40px;" name="user_ycard" size="4" maxlength="4" value="{BANCARD}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_POSTCOUNT}:</span><br /><span class="gensmall">{L_POSTCOUNT_EXPLAIN}<br /></td>
-	<td class="row2"><input type="text" class="post" style="width: 40px" name="user_posts" size="4" maxlength="7" value="{POSTS}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 40px;" name="user_posts" size="4" maxlength="7" value="{POSTS}" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_DELETE_USER}?</span></td>
+	<td class="row1"><span class="gen">{L_DELETE_USER}</span></td>
 	<td class="row2"><input type="checkbox" name="deleteuser" />&nbsp;{L_DELETE_USER_EXPLAIN}</td>
 </tr>
 <tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>

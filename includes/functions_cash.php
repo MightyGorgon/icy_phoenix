@@ -107,7 +107,7 @@ function preversion($ver)
 {
 	$version = explode('.',phpversion());
 	$ver = explode('.',$ver);
-	for($i = 0; $i < count($ver); $i++)
+	for($i = 0; $i < sizeof($ver); $i++)
 	{
 		if (intval($version[$i]) < intval($ver[$i]))
 		{
@@ -154,7 +154,7 @@ function quoteslash($text,$quotes)
 {
 	if (is_array($quotes))
 	{
-		for ($i = 0; $i < count($quotes); $i++)
+		for ($i = 0; $i < sizeof($quotes); $i++)
 		{
 			if ($quotes[$i] == '\'')
 			{
@@ -240,7 +240,7 @@ function cash_array_chunk(&$array, $chunk_size)
 	{
 		if (preversion('4.0'))
 		{
-			for ($i = 0; $i < count($array); $i++)
+			for ($i = 0; $i < sizeof($array); $i++)
 			{
 				$return_array[floor($i/$chunk_size)][] = $array[$i];
 			}
@@ -248,7 +248,7 @@ function cash_array_chunk(&$array, $chunk_size)
 		}
 		else
 		{
-			for ($i = 0; $i < ceil(count($array) / $chunk_size); $i++)
+			for ($i = 0; $i < ceil(sizeof($array) / $chunk_size); $i++)
 			{
 				$return_array[] = array_slice($array,($i*$chunk_size),$chunk_size);
 			}
@@ -277,10 +277,7 @@ function cash_create_log($type, $action, $message = '')
 	$sql = "INSERT INTO " . CASH_LOGS_TABLE . "
 			(log_time,log_type,log_action,log_text)
 			VALUES(" . $current_time . ", " . $type . ", '" . str_replace("'","''",$action) . "', '" . $message . "')";
-	if (!($db->sql_query($sql)))
-	{
-		message_die(CRITICAL_ERROR, "Unable to log event", "", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_query($sql);
 }
 
 function cash_clause($clause, $action)
@@ -309,7 +306,7 @@ function cash_event_unpack($string)
 	if (strlen($string))
 	{
 		$cash_entries = explode(CASH_EVENT_DELIM1,$string);
-		for ($i = 0; $i < count($cash_entries); $i++)
+		for ($i = 0; $i < sizeof($cash_entries); $i++)
 		{
 			if (strlen($cash_entries[$i]))
 			{
@@ -349,14 +346,14 @@ function cash_quotematch(&$message)
 		$current_position = strpos($message, $endtag, $locater);
 	}
 	$endarray[] = $length + 10;
-	if (count($startarray) > 1)
+	if (sizeof($startarray) > 1)
 	{
 		$start = 0;
 		$end = 0;
 		$stack = 0;
 		$startpos = 0;
 		$endpos = 0;
-		for ($i = 0; $i < (count($startarray) + count($endarray) - 2); $i++)
+		for ($i = 0; $i < (sizeof($startarray) + sizeof($endarray) - 2); $i++)
 		{
 			if ($stack == 0)
 			{
@@ -390,8 +387,7 @@ function cash_quotematch(&$message)
 
 function cash_pm(&$targetdata, $privmsg_subject, &$message)
 {
-	global $db, $board_config, $lang, $userdata, $html_entities_match, $html_entities_replace;
-	global $bbcode;
+	global $db, $cache, $config, $userdata, $lang, $bbcode, $html_entities_match, $html_entities_replace;
 	//
 	// It looks like we're sending a PM!
 	// NOTE: most of the following code is shamelessly "reproduced" from privmsg.php
@@ -400,164 +396,42 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-	//
-	// Toggles
-	//
-	if (!$board_config['allow_html'])
-	{
-		$html_on = 0;
-	}
-	else
-	{
-		$html_on = $userdata['user_allowhtml'];
-	}
-
-	$bbcode_on = 1;
-
-	if (!$board_config['allow_smilies'])
-	{
-		$smilies_on = 0;
-	}
-	else
-	{
-		$smilies_on = $userdata['user_allowsmile'];
-	}
-
-	$acro_auto_on = 0;
-	$bbcode->allow_html = $html_on;
-	$bbcode->allow_bbcode = $bbcode_on;
-	$bbcode->allow_smilies = $smilies_on;
-
 	$attach_sig = $userdata['user_attachsig'];
+	$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
+	$bbcode->allow_bbcode = true;
+	$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+	$html_status = $bbcode->allow_html;
+	$bbcode_status = $bbcode->allow_bbcode;
+	$smilies_status = $bbcode->allow_smilies;
+	$acro_auto_status = false;
 
-	//
-	// Flood control
-	//
-	$sql = "SELECT MAX(privmsgs_date) AS last_post_time
-		FROM " . PRIVMSGS_TABLE . "
-		WHERE privmsgs_from_userid = " . $userdata['user_id'];
-	if ($result = $db->sql_query($sql))
+	include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
+	$privmsg_message = prepare_message($message, $html_status, $bbcode_status, $smilies_status);
+	$privmsg_sender = $userdata['user_id'];
+	$privmsg_recipient = $targetdata['user_id'];
+
+	$privmsg = new class_pm();
+	if (($userdata['user_level'] != ADMIN) && $privmsg->is_flood())
 	{
-		$db_row = $db->sql_fetchrow($result);
-
-		$last_post_time = $db_row['last_post_time'];
-		$current_time = time();
-
-		if (($current_time - $last_post_time) < $board_config['flood_interval'])
-		{
-			message_die(GENERAL_MESSAGE, $lang['Flood_Error']);
-		}
+		message_die(GENERAL_MESSAGE, $lang['Flood_Error']);
 	}
-	//
-	// End Flood control
-	//
+	$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
+	$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message, $attach_sig, $html_status, $bbcode_status, $smilies_status, $acro_auto_status);
+	unset($privmsg);
 
-	$msg_time = time();
-	$privmsg_message = prepare_message($message, $html_on, $bbcode_on, $smilies_on);
-
-	//
-	// See if recipient is at their inbox limit
-	//
-	$sql = "SELECT COUNT(privmsgs_id) AS inbox_items, MIN(privmsgs_date) AS oldest_post_time
-		FROM " . PRIVMSGS_TABLE . "
-		WHERE (privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-				OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")
-			AND privmsgs_to_userid = " . $targetdata['user_id'];
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_MESSAGE, $lang['No_such_user']);
-	}
-
-	if ($inbox_info = $db->sql_fetchrow($result))
-	{
-		if ($inbox_info['inbox_items'] >= $board_config['max_inbox_privmsgs'])
-		{
-			$sql = "SELECT privmsgs_id FROM " . PRIVMSGS_TABLE . "
-				WHERE (privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-						OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
-						OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . " )
-					AND privmsgs_date = " . $inbox_info['oldest_post_time'] . "
-					AND privmsgs_to_userid = " . $targetdata['user_id'];
-			if (!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not find oldest privmsgs (inbox)', '', __LINE__, __FILE__, $sql);
-			}
-			$old_privmsgs_id = $db->sql_fetchrow($result);
-			$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
-
-			$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
-				WHERE privmsgs_id = $old_privmsgs_id";
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not delete oldest privmsgs (inbox)' . $sql, '', __LINE__, __FILE__, $sql);
-			}
-		}
-	}
-
-	$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_attach_sig, privmsgs_enable_autolinks_acronyms)
-		VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . str_replace("\'", "''", $privmsg_subject) . "', '" . str_replace("\'", "''", $privmsg_message) . "', " . $userdata['user_id'] . ", " . $targetdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $attach_sig, $acro_auto_on)";
-	if (!($result = $db->sql_query($sql_info, BEGIN_TRANSACTION)))
-	{
-		message_die(GENERAL_ERROR, "Could not insert/update private message sent info.", "", __LINE__, __FILE__, $sql_info);
-	}
-
-	// Add to the users new pm counter
-	$sql = "UPDATE " . USERS_TABLE . "
-		SET user_new_privmsg = user_new_privmsg + 1, user_last_privmsg = " . time() . "
-		WHERE user_id = " . $targetdata['user_id'];
-	if (!$status = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not update private message new/read status for user', '', __LINE__, __FILE__, $sql);
-	}
 
 	if ($targetdata['user_notify_pm'] && !empty($targetdata['user_email']) && $targetdata['user_active'])
 	{
-		$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($board_config['script_path']));
-		$script_name = ($script_name != '') ? $script_name . '/privmsg.' . PHP_EXT : 'privmsg.' . PHP_EXT;
-		$server_name = trim($board_config['server_name']);
-		$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-		$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
-
-		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-		$emailer = new emailer($board_config['smtp_delivery']);
-
-		$emailer->from($board_config['board_email']);
-		$emailer->replyto($board_config['board_email']);
-
-		$emailer->use_template('privmsg_notify', $to_userdata['user_lang']);
-		$emailer->email_address($to_userdata['user_email']);
-		$emailer->set_subject($lang['Notification_subject']);
-
-		global $board_config;
-		$clean_tags = false;
-		if ($board_config['html_email'] == false)
-		{
-			$clean_tags = true;
-		}
 		//HTML Message
-		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? $board_config['allow_bbcode'] : false);
-		$bbcode->allow_html = ($board_config['allow_html'] ? $board_config['allow_html'] : false);
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? $board_config['allow_smilies'] : false);
+		$clean_tags = $config['html_email'] ? false : true;
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] ? $config['allow_bbcode'] : false);
+		$bbcode->allow_html = ($config['allow_html'] ? $config['allow_html'] : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] ? $config['allow_smilies'] : false);
 		$message = $bbcode->parse($privmsg_message, '', false, $clean_tags);
 		$message = stripslashes($message);
 		//HTML Message
-		$emailer->assign_vars(array(
-			'USERNAME' => stripslashes($to_username),
-			'SITENAME' => ip_stripslashes($board_config['sitename']),
-			'EMAIL_SIG' => (!empty($board_config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . ip_stripslashes($board_config['board_email_sig'])) : '',
-			// Mighty Gorgon - Begin
-			'FROM' => $userdata['username'],
-			'DATE' => create_date($board_config['default_dateformat'], time(), $board_config['board_timezone']),
-			'SUBJECT' => $privmsg_subject,
-			'PRIV_MSG_TEXT' => $message,
-			// Mighty Gorgon - End
-			'FROM_USERNAME' => $userdata['username'],
-			'U_INBOX' => $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox')
-		);
 
-		$emailer->send();
-		$emailer->reset();
+		$privmsg->notification($privmsg_sender, $privmsg_recipient, $targetdata['user_email'], $lang['Notification_subject'], $message, false, $privmsg_subject, $targetdata['username'], $targetdata['user_lang'], false);
 	}
 }
 
@@ -580,7 +454,7 @@ class cash_menucat
 	}
 	function num()
 	{
-		return count($this->items);
+		return sizeof($this->items);
 	}
 }
 
@@ -658,14 +532,8 @@ class cash_table
 		$this->id_list = array();
 
 		$sql = "SELECT * FROM " . CASH_TABLE . " ORDER BY cash_order ASC";
-		if (!($result = $db->sql_query($sql, false, 'cash_')))
-		{
-			if (defined('IN_ADMIN'))
-			{
-				message_die(GENERAL_ERROR, 'Error retrieving Cash Mod data<br /><br /><i>Please make sure that you have run <b>sql_install.php</b> from your browser</i>.', '', __LINE__, $sql);
-			}
-			message_die(GENERAL_ERROR, 'Error retrieving cash data', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'cash_');
+
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$cash_id = $row['cash_id'];
@@ -684,10 +552,8 @@ class cash_table
 		$this->count_cache = array();
 
 		$sql = "SELECT * FROM " . CASH_TABLE . " ORDER BY cash_order ASC";
-		if (!($result = $db->sql_query($sql, false, 'cash_')))
-		{
-			message_die(GENERAL_ERROR, 'Error retrieving cash data', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'cash_');
+
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$cash_id = $row['cash_id'];
@@ -702,7 +568,7 @@ class cash_table
 		global $db;
 		$bad_ordering = false;
 		$sql = array();
-		for ($i = 0; $i < count($this->ordered_list); $i++)
+		for ($i = 0; $i < sizeof($this->ordered_list); $i++)
 		{
 			if ($this->currencies[$this->ordered_list[$i]]->data('cash_order') != ($i + 1))
 			{
@@ -712,12 +578,9 @@ class cash_table
 		}
 		if ($bad_ordering)
 		{
-			for ($i = 0; $i < count($sql); $i++)
+			for ($i = 0; $i < sizeof($sql); $i++)
 			{
-				if (!$db->sql_query($sql[$i]))
-				{
-					message_die(GENERAL_ERROR, 'Error reordering cash data', '', __LINE__, __FILE__, $sql[$i]);
-				}
+				$db->sql_query($sql[$i]);
 			}
 			$this->refresh_table();
 			$db->clear_cache('cash_');
@@ -739,7 +602,7 @@ class cash_table
 		{
 			$iterater = 0;
 		}
-		if (!($iterater < count($this->ordered_list)))
+		if (!($iterater < sizeof($this->ordered_list)))
 		{
 			$iterater = 0;
 			return false;
@@ -755,7 +618,7 @@ class cash_table
 		while (!$this->currencies[$cash_id]->mask($mask,$forum_id))
 		{
 			$iterater++;
-			if (!($iterater < count($this->ordered_list)))
+			if (!($iterater < sizeof($this->ordered_list)))
 			{
 				$iterater = 0;
 				return false;
@@ -770,12 +633,12 @@ class cash_table
 	{
 		if (!$mask)
 		{
-			return count($this->ordered_list);
+			return sizeof($this->ordered_list);
 		}
 		$count = 0;
 		$i = 0;
 
-		while ($i < count($this->ordered_list))
+		while ($i < sizeof($this->ordered_list))
 		{
 			$cash_id = $this->ordered_list[$i];
 			if ($this->currencies[$cash_id]->mask($mask,$forum_id))
@@ -811,7 +674,7 @@ class cash_currency
 			if (strlen($data['cash_forumlist']))
 			{
 				$templist = explode(',',$data['cash_forumlist']);
-				for ($i = 0; $i < count($templist); $i++)
+				for ($i = 0; $i < sizeof($templist); $i++)
 				{
 					$this->forumlist[$templist[$i]] = 1;
 				}
@@ -993,7 +856,7 @@ class cash_groups
 				$currencies_array[] = $c_cur->id();
 			}
 		}
-		if (count($currencies_array) || $all_entries)
+		if (sizeof($currencies_array) || $all_entries)
 		{
 			if (!$all_entries)
 			{
@@ -1005,10 +868,8 @@ class cash_groups
 			{
 				$sql = "SELECT * FROM " . CASH_GROUPS_TABLE;
 			}
-			if (!($result = $db->sql_query($sql, false, 'cash_')))
-			{
-				message_die(GENERAL_ERROR, 'Error retrieving groups data', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql, 0, 'cash_');
+
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$type = $row['group_type'];
@@ -1025,10 +886,8 @@ class cash_groups
 				FROM " . RANKS_TABLE . "
 				WHERE rank_special = 0
 				ORDER BY rank_min ASC";
-		if (!($result = $db->sql_query($sql, false, 'ranks_')))
-		{
-			message_die(GENERAL_ERROR, 'Error retrieving rank data', '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql, 0, 'ranks_');
+
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$this->ranks[] = $row;
@@ -1040,26 +899,26 @@ class cash_groups
 	{
 		if (isset($this->groups[CASH_GROUPS_LEVEL][$level]))
 		{
-			for ($j = 0; $j < count($this->groups[CASH_GROUPS_LEVEL][$level]); $j++)
+			for ($j = 0; $j < sizeof($this->groups[CASH_GROUPS_LEVEL][$level]); $j++)
 			{
 				$returnarray[$this->groups[CASH_GROUPS_LEVEL][$level][$j]->id()][] = &$this->groups[CASH_GROUPS_LEVEL][$level][$j];
 			}
 		}
-		for ($i = 0; $i < count($this->ranks); $i++)
+		for ($i = 0; $i < sizeof($this->ranks); $i++)
 		{
 			if (isset($this->groups[CASH_GROUPS_RANK][$this->ranks[$i]['rank_id']]) && ($this->ranks[$i]['rank_min'] <= $postcount))
 			{
-				for ($j = 0; $j < count($this->groups[CASH_GROUPS_RANK][$this->ranks[$i]['rank_id']]); $j++)
+				for ($j = 0; $j < sizeof($this->groups[CASH_GROUPS_RANK][$this->ranks[$i]['rank_id']]); $j++)
 				{
 					$returnarray[$this->groups[CASH_GROUPS_RANK][$this->ranks[$i]['rank_id']][$j]->id()][] = &$this->groups[CASH_GROUPS_RANK][$this->ranks[$i]['rank_id']][$j];
 				}
 			}
 		}
-		for ($i = 0; $i < count($usergroups); $i++)
+		for ($i = 0; $i < sizeof($usergroups); $i++)
 		{
 			if (isset($this->groups[CASH_GROUPS_USERGROUP][$usergroups[$i]]))
 			{
-				for ($j = 0; $j < count($this->groups[CASH_GROUPS_USERGROUP][$usergroups[$i]]); $j++)
+				for ($j = 0; $j < sizeof($this->groups[CASH_GROUPS_USERGROUP][$usergroups[$i]]); $j++)
 				{
 					$returnarray[$this->groups[CASH_GROUPS_USERGROUP][$usergroups[$i]][$j]->id()][] = &$this->groups[CASH_GROUPS_USERGROUP][$usergroups[$i]][$j];
 				}
@@ -1071,7 +930,7 @@ class cash_groups
 	{
 		if (isset($this->groups[$type]) && is_array($this->groups[$type]) && isset($this->groups[$type][$id]) && is_array($this->groups[$type][$id]))
 		{
-			for ($i = 0; $i < count($this->groups[$type][$id]); $i++)
+			for ($i = 0; $i < sizeof($this->groups[$type][$id]); $i++)
 			{
 				$returnarray[$this->groups[$type][$id][$i]->id()] = &$this->groups[$type][$id][$i];
 				$this->groups[$type][$id][$i]->load();
@@ -1084,15 +943,15 @@ class cash_groups
 		global $db;
 		$clause_1 = array();
 		$types = array(CASH_GROUPS_LEVEL, CASH_GROUPS_RANK, CASH_GROUPS_USERGROUP);
-		for ($pre_i = 0; $pre_i < count($types); $pre_i++)
+		for ($pre_i = 0; $pre_i < sizeof($types); $pre_i++)
 		{
 			$clause_2 = array();
 			$i = $types[$pre_i];
-			for ($pre_j = 0; $pre_j < count($this->groups_ordered_list[$i]); $pre_j++)
+			for ($pre_j = 0; $pre_j < sizeof($this->groups_ordered_list[$i]); $pre_j++)
 			{
 				$clause_3 = array();
 				$j = $this->groups_ordered_list[$i][$pre_j];
-				for ($pre_k = 0; $pre_k < count($this->groups[$i][$j]); $pre_k++)
+				for ($pre_k = 0; $pre_k < sizeof($this->groups[$i][$j]); $pre_k++)
 				{
 					if(!$this->groups[$i][$j][$pre_k]->is_loaded())
 					{
@@ -1100,13 +959,13 @@ class cash_groups
 						$clause_3[] = 'cash_id = ' . $k;
 					}
 				}
-				if (count($clause_3))
+				if (sizeof($clause_3))
 				{
-					if (count($clause_3) == count($this->groups[$i][$j]))
+					if (sizeof($clause_3) == sizeof($this->groups[$i][$j]))
 					{
 						$clause_2[] = 'group_id = ' . $j;
 					}
-					else if (count($clause_3) == 1)
+					elseif (sizeof($clause_3) == 1)
 					{
 						$clause_2[] = 'group_id = ' . $j . ' AND ' . $clause_3[0];
 					}
@@ -1116,9 +975,9 @@ class cash_groups
 					}
 				}
 			}
-			if (count($clause_2))
+			if (sizeof($clause_2))
 			{
-				if (count($clause_2) == 1)
+				if (sizeof($clause_2) == 1)
 				{
 					$clause_1[] = 'group_type = ' . $i . ' AND ' . $clause_2[0];
 				}
@@ -1128,10 +987,10 @@ class cash_groups
 				}
 			}
 		}
-		if (count($clause_1))
+		if (sizeof($clause_1))
 		{
 			$whereclause = '';
-			if (count($clause_1) == 1)
+			if (sizeof($clause_1) == 1)
 			{
 				$whereclause = $clause_1[0];
 			}
@@ -1141,10 +1000,7 @@ class cash_groups
 			}
 			$sql = "DELETE FROM " . CASH_GROUPS_TABLE . "
 					WHERE " . $whereclause;
-			if (!($db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Error purging old group data', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 }
@@ -1174,7 +1030,7 @@ class cash_forumgroup
 
 	function has_entries()
 	{
-		return (count($this->currency_settings) > 0);
+		return (sizeof($this->currency_settings) > 0);
 	}
 }
 
@@ -1275,10 +1131,8 @@ class cash_user
 					WHERE user_id = " . $this->user_id . "
 						AND user_pending = 0
 					ORDER BY group_id ASC";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Error retrieving group data', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
+
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$this->usergroups[] = $row['group_id'];
@@ -1302,7 +1156,7 @@ class cash_user
 		}
 		$this->get_cashgroups();
 		$sum = 0;
-		for ($i = 0; $i < count($this->cashgroups[$cash_id]); $i++)
+		for ($i = 0; $i < sizeof($this->cashgroups[$cash_id]); $i++)
 		{
 			$sum += intval($this->cashgroups[$cash_id][$i]->data($attribute));
 		}
@@ -1328,15 +1182,12 @@ class cash_user
 				$this->userdata[$c_cur->db()] += $sum;
 			}
 		}
-		if (count($clause))
+		if (sizeof($clause))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 					SET " . implode(',',$clause) . "
 					WHERE user_id = " . $this->user_id;
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error updating user data', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -1358,15 +1209,12 @@ class cash_user
 				$this->userdata[$c_cur->db()] += $sum;
 			}
 		}
-		if (count($clause))
+		if (sizeof($clause))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 					SET " . implode(',',$clause) . "
 					WHERE user_id = " . $this->user_id;
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error updating user data', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -1403,15 +1251,12 @@ class cash_user
 				}
 			}
 		}
-		if (count($sql_update))
+		if (sizeof($sql_update))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 					SET " . implode(', ',$sql_update) . "
 					WHERE user_id = " . $this->user_id;
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error updating user data', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -1434,15 +1279,12 @@ class cash_user
 				}
 			}
 		}
-		if (count($sql_update))
+		if (sizeof($sql_update))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 					SET " . implode(', ',$sql_update) . "
 					WHERE user_id = " . $this->user_id;
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error updating user data', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 
@@ -1465,15 +1307,12 @@ class cash_user
 				}
 			}
 		}
-		if (count($sql_update))
+		if (sizeof($sql_update))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 					SET " . implode(', ',$sql_update) . "
 					WHERE user_id = " . $this->user_id;
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Error updating user data', '', __LINE__, __FILE__, $sql);
-			}
+			$db->sql_query($sql);
 		}
 	}
 }

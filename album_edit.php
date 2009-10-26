@@ -51,11 +51,7 @@ $sql = "SELECT p.*, c.*
 		FROM ". ALBUM_TABLE ." AS p, ". ALBUM_CAT_TABLE ."  AS c
 		WHERE p.pic_id = '$pic_id'
 			AND c.cat_id = p.pic_cat_id";
-
-if( !($result = $db->sql_query($sql)) )
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $thispic = $db->sql_fetchrow($result);
 
 $cat_id = $thispic['cat_id'];
@@ -78,7 +74,7 @@ if ($album_user_access['edit'] == 0)
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . '?redirect=album_edit.' . PHP_EXT . '?pic_id=' . $pic_id));
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_edit.' . PHP_EXT . '?pic_id=' . $pic_id));
 	}
 	else
 	{
@@ -105,18 +101,10 @@ else
 
 if( !isset($_POST['pic_title']) )
 {
-	// Start output of page
-	$page_title = $lang['Album'];
-	$meta_description = '';
-	$meta_keywords = '';
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-
-	$template->set_filenames(array('body' => 'album_edit_body.tpl'));
-
-	$html_status = ($board_config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
-	$bbcode_status = ($board_config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+	$html_status = ($config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+	$bbcode_status = ($config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
 	$bbcode_status = sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>');
-	$smilies_status = ($board_config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+	$smilies_status = ($config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 	$formatting_status = '<br />' . $html_status . '<br />' . $bbcode_status . '<br />' . $smilies_status . '<br />';
 
 	$template->assign_vars(array(
@@ -146,11 +134,7 @@ if( !isset($_POST['pic_title']) )
 		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $pic_id)),
 		)
 	);
-
-	// Generate the page
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	full_page_generation('album_edit_body.tpl', $lang['Album'], '', '');
 }
 else
 {
@@ -165,18 +149,13 @@ else
 		message_die(GENERAL_ERROR, $lang['Missed_pic_title']);
 	}
 
-
 	// --------------------------------
 	// Update the DB
 	// --------------------------------
 	$sql = "UPDATE ". ALBUM_TABLE ."
 			SET pic_title = '" . $pic_title . "', pic_desc= '" . $pic_desc . "'
 			WHERE pic_id = '" . $pic_id . "'";
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, 'Could not update pic information', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 
 	// --------------------------------
 	// Complete... now send a message to user
@@ -191,7 +170,6 @@ else
 	$message .= '<br /><br />' . sprintf($lang['Click_return_album_index'], '<a href="' . append_sid('album.' . PHP_EXT) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
-
 }
 
 ?>

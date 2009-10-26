@@ -115,9 +115,9 @@ flush();
 
 $error_ary = array();
 $errored = false;
-if (count($sql))
+if (sizeof($sql))
 {
-	for ($i = 0; $i < count($sql); $i++)
+	for ($i = 0; $i < sizeof($sql); $i++)
 	{
 		$ip_sql->_sql($sql[$i], $errored, $error_ary);
 	}
@@ -130,7 +130,7 @@ if (count($sql))
 		echo '<b>' . $lang['Update_Errors'] . '</b></p><br /><br />';
 		echo '<div class="genmed"><ul type="circle">';
 
-		for ($i = 0; $i < count($error_ary['sql']); $i++)
+		for ($i = 0; $i < sizeof($error_ary['sql']); $i++)
 		{
 			echo '<li>' . $error_ary['sql'][$i] . '<br /> +++ <span style="color:' . $page_framework->color_error . ';"><b>' . $lang['Error'] . ':</b></span> ' . htmlspecialchars($error_ary['error_code'][$i]['message']) . '<br /><br /></li>';
 		}
@@ -215,7 +215,7 @@ switch ($current_phpbb_version)
 		}
 		$db->sql_freeresult($result);
 
-		if (count($mod_user))
+		if (sizeof($mod_user))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_level = " . MOD . "
@@ -549,7 +549,7 @@ if ($errored)
 	echo '<p>' . $lang['Result'] . ' :: <b>' . $lang['Update_Errors'] . '</b></p><br /><br />';
 	echo '<div class="genmed"><ul type="circle">';
 
-	for ($i = 0; $i < count($error_ary['sql']); $i++)
+	for ($i = 0; $i < sizeof($error_ary['sql']); $i++)
 	{
 		echo '<li>' . $error_ary['sql'][$i] . '<br /> +++ <span style="color:' . $page_framework->color_error . ';"><b>' . $lang['Error'] . ':</b></span> ' . htmlspecialchars($error_ary['error_code'][$i]['message']) . '<br /><br /></li>';
 	}

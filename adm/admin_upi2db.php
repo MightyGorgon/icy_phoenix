@@ -31,10 +31,7 @@ require('./pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 $sql = "SELECT * FROM " . CONFIG_TABLE . " WHERE config_name LIKE \"upi2db_%\"";
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Could not read config data", '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while($row = $db->sql_fetchrow($result))
 {
@@ -49,10 +46,7 @@ while($row = $db->sql_fetchrow($result))
 		$sql = "UPDATE " . CONFIG_TABLE . " SET
 			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
 			WHERE config_name = '$config_name'";
-		if(!$db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, "Failed to update upi2db configuration for $config_name", "", __LINE__, __FILE__, $sql);
-		}
+		$db->sql_query($sql);
 	}
 }
 
@@ -77,51 +71,43 @@ $template->set_filenames(array('body' => ADM_TPL . 'upi2db_config_body.tpl'));
 $sql = "SELECT *
 	FROM " . GROUPS_TABLE . "
 	WHERE group_single_user <> " . TRUE;
-if(!$result = $db->sql_query($sql))
-{
-	message_die(CRITICAL_ERROR, "Could not query upi2db config information", "", __LINE__, __FILE__, $sql);
-}
-else
-{
-	if(isset($_POST['submit']))
-	{
-		$group_upi2db_on = (isset($_POST[group_upi2db_on])) ? $_POST[group_upi2db_on] : 0;
-		$group_min_posts = (isset($_POST[group_min_posts])) ? $_POST[group_min_posts] : 0;
-		$group_min_regdays = (isset($_POST[group_min_regdays])) ? $_POST[group_min_regdays] : 0;
+$result = $db->sql_query($sql);
 
-		while($row = $db->sql_fetchrow($result))
-		{
-			$sql = "UPDATE " . GROUPS_TABLE . "
-				SET upi2db_on = " . $group_upi2db_on[$row['group_id']] . " ,
-				upi2db_min_posts = " . $group_min_posts[$row['group_id']] . ",
-				upi2db_min_regdays = " . $group_min_regdays[$row['group_id']] . "
-				WHERE group_id = " . $row['group_id'];
+if(isset($_POST['submit']))
+{
+	$group_upi2db_on = (isset($_POST[group_upi2db_on])) ? $_POST[group_upi2db_on] : 0;
+	$group_min_posts = (isset($_POST[group_min_posts])) ? $_POST[group_min_posts] : 0;
+	$group_min_regdays = (isset($_POST[group_min_regdays])) ? $_POST[group_min_regdays] : 0;
 
-			if (!$db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not update upi2db group auth', '', __LINE__, __FILE__, $sql);
-			}
-		}
-	}
 	while($row = $db->sql_fetchrow($result))
 	{
-		$group_upi2db_on_yes = $row['upi2db_on'] ? 'checked="checked"' : '';
-		$group_upi2db_on_no = !$row['upi2db_on'] ? 'checked="checked"' : '';
-
-		$upi2db_min_posts = (empty($row['upi2db_min_posts'])) ? 0 : $row['upi2db_min_posts'];
-		$upi2db_min_regdays = (empty($row['upi2db_min_regdays'])) ? 0 : $row['upi2db_min_regdays'];
-
-		$template->assign_block_vars('group_loop',array(
-			'GROUP_ID' => $row['group_id'],
-			'GROUP_NAME' => $row['group_name'],
-			'GROUP_MIN_POSTS' => $upi2db_min_posts,
-			'GROUP_MIN_REGDAYS' => $upi2db_min_regdays,
-			'GROUP_UPI2DB_ON_YES' => $group_upi2db_on_yes,
-			'GROUP_UPI2DB_ON_NO' => $group_upi2db_on_no
-			)
-		);
+		$sql = "UPDATE " . GROUPS_TABLE . "
+			SET upi2db_on = " . $group_upi2db_on[$row['group_id']] . " ,
+			upi2db_min_posts = " . $group_min_posts[$row['group_id']] . ",
+			upi2db_min_regdays = " . $group_min_regdays[$row['group_id']] . "
+			WHERE group_id = " . $row['group_id'];
+		$db->sql_query($sql);
 	}
 }
+while($row = $db->sql_fetchrow($result))
+{
+	$group_upi2db_on_yes = $row['upi2db_on'] ? 'checked="checked"' : '';
+	$group_upi2db_on_no = !$row['upi2db_on'] ? 'checked="checked"' : '';
+
+	$upi2db_min_posts = (empty($row['upi2db_min_posts'])) ? 0 : $row['upi2db_min_posts'];
+	$upi2db_min_regdays = (empty($row['upi2db_min_regdays'])) ? 0 : $row['upi2db_min_regdays'];
+
+	$template->assign_block_vars('group_loop',array(
+		'GROUP_ID' => $row['group_id'],
+		'GROUP_NAME' => $row['group_name'],
+		'GROUP_MIN_POSTS' => $upi2db_min_posts,
+		'GROUP_MIN_REGDAYS' => $upi2db_min_regdays,
+		'GROUP_UPI2DB_ON_YES' => $group_upi2db_on_yes,
+		'GROUP_UPI2DB_ON_NO' => $group_upi2db_on_no
+		)
+	);
+}
+
 
 if(isset($_POST['submit']))
 {
@@ -136,7 +122,7 @@ $template->assign_vars(array(
 	'UPI2DB_ON_1' => $upi2db_on_1,
 	'UPI2DB_ON_0' => $upi2db_on_0,
 	'UPI2DB_ON_2' => $upi2db_on_2,
-	'UPI2DB_VERSION_NUMBER' => $board_config['upi2db_version'],
+	'UPI2DB_VERSION_NUMBER' => $config['upi2db_version'],
 
 	'NO_GROUP_UPI2DB_ON_YES' => $no_group_upi2db_on_yes,
 	'NO_GROUP_UPI2DB_ON_NO' => $no_group_upi2db_on_no,

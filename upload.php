@@ -26,17 +26,11 @@ init_userprefs($userdata);
 // End session management
 
 // This page is not in layout special...
-$cms_page_id = 'pic_upload';
-$cms_page_nav = false;
-$cms_global_blocks = false;
-$cms_auth_level = (isset($board_config['auth_view_pic_upload']) ? $board_config['auth_view_pic_upload'] : AUTH_ALL);
-check_page_auth($cms_page_id, $cms_auth_level);
-
-$gen_simple_header = true;
-$page_title = $lang['Upload_Image_Local'];
-$meta_description = '';
-$meta_keywords = '';
-include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
+$cms_page['page_id'] = 'pic_upload';
+$cms_page['page_nav'] = false;
+$cms_page['global_blocks'] = false;
+$cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_pic_upload'] : AUTH_ALL);
+check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $upload_dir = POSTED_IMAGES_PATH;
 $filetypes = 'jpg,gif,png';
@@ -47,7 +41,7 @@ if(isset($_FILES['userfile']))
 	$filename = strtolower($_FILES['userfile']['name']);
 	$types = explode(',', $filetypes);
 	$file = explode('.', $filename);
-	$extension = $file[count($file) - 1];
+	$extension = $file[sizeof($file) - 1];
 	$filename = substr($filename, 0, strlen($filename) - strlen($extension) - 1);
 
 	if(!in_array($extension, $types))
@@ -55,17 +49,17 @@ if(isset($_FILES['userfile']))
 		message_die(GENERAL_MESSAGE, $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.');
 	}
 
-	$template->set_filenames(array('body' => 'uploaded_image_bbc_popup.tpl'));
+	$template_to_parse = 'uploaded_image_bbc_popup.tpl';
 
 	$server_path = create_server_url();
 
 	if ($userdata['user_id'] < 0)
 	{
-		$filename = 'guest_' . ereg_replace("[^a-z0-9]", "_", $filename);
+		$filename = 'guest_' . preg_replace('/[^a-z0-9]*/', '_', $filename);
 	}
 	else
 	{
-		$filename = ereg_replace("[^a-z0-9]", "_", $filename);
+		$filename = preg_replace('/[^a-z0-9]*/', '_', $filename);
 		if (USERS_SUBFOLDERS_IMG == true)
 		{
 			if (is_dir($upload_dir . $userdata['user_id']))
@@ -148,7 +142,7 @@ if(isset($_FILES['userfile']))
 }
 else
 {
-	$template->set_filenames(array('body' => 'upload_image_popup.tpl'));
+	$template_to_parse = 'upload_image_popup.tpl';
 
 	$template->assign_vars(array(
 		'S_ACTION' => append_sid('upload.' . PHP_EXT),
@@ -161,8 +155,7 @@ else
 
 }
 
-$template->pparse('body');
-
-include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+$gen_simple_header = true;
+full_page_generation($template_to_parse, $lang['Upload_Image_Local'], '', '');
 
 ?>

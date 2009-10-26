@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PROFILE_VIEWED}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -21,3 +23,5 @@
 </table>
 
 <!-- INCLUDE profile_cpl_menu_inc_end.tpl -->
+
+<!-- INCLUDE overall_footer.tpl -->

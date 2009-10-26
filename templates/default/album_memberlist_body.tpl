@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td width="100%"><span class="genmed">{L_MEMBERLIST_GALLERY_EXPLAIN}</span></td>
@@ -107,3 +109,5 @@
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
+
+<!-- INCLUDE overall_footer.tpl -->

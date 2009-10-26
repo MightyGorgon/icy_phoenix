@@ -18,14 +18,14 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function unlock_cron()
 {
-	global $db;
+	global $db, $cache;
 
 	$sql = "UPDATE " . CONFIG_TABLE . "
 		SET config_value = '0'
 		WHERE config_name = 'cron_lock'
 			AND config_value = '" . $db->sql_escape(CRON_ID) . "'";
 	$db->sql_query($sql);
-	$db->clear_cache('config_');
+	$cache->destroy('config');
 }
 
 /**
@@ -33,10 +33,10 @@ function unlock_cron()
 */
 function process_digests()
 {
-	global $db, $table_prefix, $board_config, $userdata;
+	global $db, $config, $userdata, $table_prefix;
 
 	// Digests - BEGIN
-	if ($board_config['enable_digests'] == true)
+	if ($config['enable_digests'])
 	{
 		/*
 		// MG PHP Cron Emulation For Digests - BEGIN
@@ -44,15 +44,15 @@ function process_digests()
 		// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
 		$is_allowed = (!$userdata['session_logged_in']) ? true : false;
 		$page_url = pathinfo($_SERVER['PHP_SELF']);
-		$digests_pages_array = array(PROFILE_MG, POSTING_MG);
-		if (($board_config['digests_php_cron'] == true) && $is_allowed && !in_array($page_url['basename'], $digests_pages_array))
-		//if (($board_config['digests_php_cron'] == true) && ($board_config['digests_php_cron_lock'] == false) && (!$userdata['session_logged_in']) && !in_array($page_url['basename'], $digests_pages_array))
+		$digests_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
+		if ($config['digests_php_cron'] && $is_allowed && !in_array($page_url['basename'], $digests_pages_array))
+		//if ($config['digests_php_cron'] && ($config['digests_php_cron_lock'] == false) && (!$userdata['session_logged_in']) && !in_array($page_url['basename'], $digests_pages_array))
 		{
-			if ((time() - $board_config['digests_last_send_time']) > CRON_REFRESH)
+			if ((time() - $config['digests_last_send_time']) > CRON_REFRESH)
 			{
-				$board_config['digests_last_send_time'] = ($board_config['digests_last_send_time'] == 0) ? (time() - 3600) : $board_config['digests_last_send_time'];
-				$last_send_time = getdate($board_config['digests_last_send_time']);
-				$cur_time = getdate();
+				$config['digests_last_send_time'] = ($config['digests_last_send_time'] == 0) ? (time() - 3600) : $config['digests_last_send_time'];
+				$last_send_time = @getdate($config['digests_last_send_time']);
+				$cur_time = @getdate();
 				if ($cur_time['hours'] <> $last_send_time['hours'])
 				{
 					set_config('digests_php_cron_lock', 1);
@@ -95,7 +95,7 @@ function process_files()
 */
 function tidy_database()
 {
-	global $dbname, $db, $board_config, $userdata;
+	global $dbname, $db, $config, $userdata;
 
 	$is_allowed = true;
 	// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
@@ -120,16 +120,14 @@ function tidy_database()
 		foreach ($all_tables as $table_name)
 		{
 			$sql = "OPTIMIZE TABLES $table_name";
-			if (!$result = $db->sql_query($sql))
-			{
-				// Comment the die message, because we don't want the CRON to hang...
-				//message_die(GENERAL_ERROR, "Couldn't optimize database", "", __LINE__, __FILE__, $sql);
-			}
+			$db->sql_return_on_error(true);
+			$result = $db->sql_query($sql);
+			$db->sql_return_on_error(false);
 		}
 
 		if (CRON_DEBUG == false)
 		{
-			set_config('cron_db_count', ($board_config['cron_db_count'] + 1));
+			set_config('cron_db_count', ($config['cron_db_count'] + 1));
 			set_config('cron_database_last_run', time());
 		}
 	}
@@ -191,28 +189,23 @@ function tidy_topics()
 function tidy_sessions()
 {
 	global $db;
-/*
+	/*
 	$sql = "DELETE FROM " . SESSIONS_TABLE;
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
-	{
-		//message_die("Couldn't delete sessions table!", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_return_on_error(false);
 
 	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE;
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
-	{
-		//message_die("Couldn't delete AJAX Shoutbox sessions table!", __LINE__, __FILE__, $sql);
-	}
+	$db->sql_return_on_error(false);
 
 	$sql = "DELETE FROM " . SEARCH_TABLE;
+	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
-	if(!$result)
-	{
-		//message_die("Couldn't delete search result table!", __LINE__, __FILE__, $sql);
-	}
-*/
+	$db->sql_return_on_error(false);
+	*/
+
 	if (CRON_DEBUG == false)
 	{
 		set_config('cron_session_last_run', time());

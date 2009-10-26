@@ -28,8 +28,8 @@ if( !empty($setmodules) )
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
 if( !isset($_POST['submit']) )
 {
@@ -40,12 +40,9 @@ if( !isset($_POST['submit']) )
 			FROM " . GROUPS_TABLE . "
 			WHERE group_single_user <> " . TRUE ."
 			ORDER BY group_name ASC";
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't get group list", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$groupdata[] = $row;
 	}
@@ -54,10 +51,7 @@ if( !isset($_POST['submit']) )
 	$sql = "SELECT *
 			FROM ". ALBUM_CONFIG_TABLE ."
 			WHERE config_name = 'personal_gallery_private'";
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, "Couldn't get Album info", "", __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$private_groups = explode(',', $row['config_value']);
 
@@ -66,12 +60,7 @@ if( !isset($_POST['submit']) )
 			FROM ". ALBUM_CAT_TABLE ."
 			WHERE cat_parent = 0 and cat_user_id != 0
 			LIMIT 1";
-
-	if( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, 'Could not get Category information', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$thiscat = $db->sql_fetchrow($result);
 
 	$view_groups = @explode(',', $thiscat['cat_view_groups']);
@@ -83,7 +72,7 @@ if( !isset($_POST['submit']) )
 
 	$moderator_groups = @explode(',', $thiscat['cat_moderator_groups']);
 
-	for($i = 0; $i < count($groupdata); $i++)
+	for($i = 0; $i < sizeof($groupdata); $i++)
 	{
 		$template->assign_block_vars('creation_grouprow', array(
 			'GROUP_ID' => $groupdata[$i]['group_id'],
@@ -144,19 +133,12 @@ else
 	$sql = "UPDATE ". ALBUM_CONFIG_TABLE ."
 			SET config_value = '$private_groups'
 			WHERE config_name = 'personal_gallery_private'";
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not update Album config table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE ". ALBUM_CAT_TABLE ."
 		SET cat_view_groups = '$view_groups', cat_upload_groups = '$upload_groups', cat_rate_groups = '$rate_groups', cat_comment_groups = '$comment_groups', cat_edit_groups = '$edit_groups', cat_delete_groups = '$delete_groups', cat_moderator_groups = '$moderator_groups'
 		WHERE cat_user_id != 0";
-
-	if ( !($result = $db->sql_query($sql)) )
-	{
-		message_die(GENERAL_ERROR, 'Could not update personal gallery group information table', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	// okay, return a message...
 	$message = $lang['Album_personal_successfully'] . '<br /><br />' . sprintf($lang['Click_return_album_personal'], '<a href="' . append_sid("admin_album_personal." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');

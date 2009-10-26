@@ -69,21 +69,20 @@ foreach($params as $var => $default)
 /***************************************************************************/
 /* Make a new output buffer for this page in order to not screw up cookie
 setting.  If this is disabled, settings will NEVER be saved */
-if(!DISABLE_PREFERENCE_SAVING && !$board_config['gzip_compress']) ob_start();
+if(!DISABLE_PREFERENCE_SAVING && !$config['gzip_compress']) ob_start();
 
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-@setcookie(MOD_COOKIE_PREF_NAME, serialize($preference_cookie), time() + 31536000, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+@setcookie(MOD_COOKIE_PREF_NAME, serialize($preference_cookie), time() + 31536000, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
 
 /* Flush the output buffer to display the page header, if the ob_start() is
 removed, this one must be removed as well or strange things will happen */
-if(!DISABLE_PREFERENCE_SAVING && !$board_config['gzip_compress']) ob_end_flush();
+if(!DISABLE_PREFERENCE_SAVING && !$config['gzip_compress']) ob_end_flush();
 
 /****************************************************************************
 /** Constants and Main Vars.
 /***************************************************************************/
 $mode_types = array('topic_time', 'topic_title');
 $order_types = array('DESC', 'ASC');
-$page_title = $lang['Topic_Shadow'];
+$meta_content['page_title'] = $lang['Topic_Shadow'];
 $status_message = '';
 
 /*******************************************************************************************
@@ -111,26 +110,19 @@ if ($delete_all_before_date)
 	}
 	/* END Error Checking */
 
-	$set_time = mktime(0, 0, 0, $del_month, $del_day, $del_year);
+	$set_time = gmmktime(0, 0, 0, $del_month, $del_day, $del_year);
 	$sql = 'DELETE FROM ' . TOPICS_TABLE . '
 					WHERE topic_status = ' . TOPIC_MOVED . "
 					AND topic_time < $set_time";
-
-	if(!$db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
-	}
-	else
-	{
-		$status_message .= sprintf($lang['Del_Before_Date'], date("M-d-Y", $set_time));
-		$status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
-		sync('all_forums');
-		$status_message .= sprintf($lang['Resync_Ran_On'], $lang['All_Forums']);
-	}
+	$db->sql_query($sql);
+	$status_message .= sprintf($lang['Del_Before_Date'], gmdate('M-d-Y', $set_time));
+	$status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+	sync('all_forums');
+	$status_message .= sprintf($lang['Resync_Ran_On'], $lang['All_Forums']);
 }
 else
 {
-	if (count($_POST))
+	if (sizeof($_POST))
 	{
 		foreach($_POST as $key => $val)
 		{
@@ -142,25 +134,16 @@ else
 				$sql = 'SELECT f.forum_id, f.forum_name, t.topic_title FROM ' . TOPICS_TABLE . ' t, ' . FORUMS_TABLE . " f
 								WHERE t.topic_id = $topic_id
 								AND t.forum_id = f.forum_id";
-				if (!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$forum_data_row = $db->sql_fetchrow($result);
 
 				$sql = 'DELETE FROM ' . TOPICS_TABLE . '
 								WHERE topic_status = ' . TOPIC_MOVED . "
 								AND topic_id = $topic_id";
-				if(!$db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
-				}
-				else
-				{
-					$status_message .= sprintf($lang['Deleted_Topic'], $forum_data_row['topic_title']);
-					sync('forum', $forum_data_row['forum_id']);
-					$status_message .= sprintf($lang['Resync_Ran_On'], $forum_data_row['forum_name']);
-				}
+				$db->sql_query($sql);
+				$status_message .= sprintf($lang['Deleted_Topic'], $forum_data_row['topic_title']);
+				sync('forum', $forum_data_row['forum_id']);
+				$status_message .= sprintf($lang['Resync_Ran_On'], $forum_data_row['forum_name']);
 			}
 		}
 	}
@@ -187,7 +170,7 @@ $template->assign_vars(array(
 	'L_TIME' => $lang['Time'],
 	'L_POSTER' => $lang['Poster'],
 	'L_MOVED_TO' => $lang['Moved_To'],
-	'L_PAGE_NAME' => $page_title,
+	'L_PAGE_NAME' => $meta_content['page_title'],
 	'L_ORDER' => $lang['Order'],
 	'L_SORT' => $lang['Sort'],
 	'L_DELETE' => $lang['Delete'],
@@ -201,9 +184,9 @@ $template->assign_vars(array(
 
 	'I_STATUS_MESSAGE' => $status_message,
 
-	'S_MONTH' => date('m'),
-	'S_DAY' => date('d'),
-	'S_YEAR' => date('Y'),
+	'S_MONTH' => gmdate('m'),
+	'S_DAY' => gmdate('d'),
+	'S_YEAR' => gmdate('Y'),
 	'S_MODE' => $mode,
 	'S_ORDER' => $order,
 	'S_MODE_SELECT' => topic_shadow_make_drop_box('mode'),
@@ -214,11 +197,7 @@ $template->assign_vars(array(
 
 /* See if we actually have any shadow topics */
 $sql = "SELECT COUNT(topic_status) as count FROM " . TOPICS_TABLE . " WHERE topic_status = '" . TOPIC_MOVED . "'";
-
-if(!$result = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 if ($row['count'] <= 0)
 {
@@ -230,23 +209,20 @@ else
 	$sql = "SELECT * FROM " . TOPICS_TABLE . "
 					WHERE topic_status = " . TOPIC_MOVED . "
 					ORDER BY $mode $order";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, $lang['Error_Topics_Table'], '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$i = 0;
 	while ($messages = $db->sql_fetchrow($result))
 	{
 		$template->assign_block_vars('topicrow', array(
-		'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
-		'TITLE' => $messages['topic_title'],
-		'MOVED_TO' => ts_id_2_name($messages['topic_moved_id'], 'forum'),
-		'MOVED_FROM' => ts_id_2_name($messages['topic_id'], 'forum'),
-		'POSTER' => ts_id_2_name($messages['topic_poster']),
-		'TIME' => create_date($lang['DATE_FORMAT'], $messages['topic_time'], $board_config['board_timezone']),
-		'TOPIC_ID' => $messages['topic_id'])
+			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
+			'TITLE' => $messages['topic_title'],
+			'MOVED_TO' => ts_id_2_name($messages['topic_moved_id'], 'forum'),
+			'MOVED_FROM' => ts_id_2_name($messages['topic_id'], 'forum'),
+			'POSTER' => ts_id_2_name($messages['topic_poster'], 'user_formatted'),
+			'TIME' => create_date($lang['DATE_FORMAT'], $messages['topic_time'], $config['board_timezone']),
+			'TOPIC_ID' => $messages['topic_id']
+			)
 		);
 		$i++;
 	}
@@ -264,7 +240,7 @@ if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_V
 ************************************************************************/
 
 $template->pparse('body');
-copyright_nivisec($page_title, '2001-2003');
+copyright_nivisec($meta_content['page_title'], '2001-2003');
 include('page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -1,3 +1,5 @@
+<!-- INCLUDE simple_header.tpl -->
+
 <form action="{S_ACTION}" name="upload_img" method="post" enctype="multipart/form-data">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IMAGE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr>
@@ -15,3 +17,5 @@
 	</tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
+<!-- INCLUDE simple_footer.tpl -->

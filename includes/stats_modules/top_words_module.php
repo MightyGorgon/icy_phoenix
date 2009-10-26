@@ -27,26 +27,19 @@ $template->assign_vars(array(
 $rank = 0;
 
 $sql = "SELECT COUNT(word_id) total_words FROM ".SEARCH_MATCH_TABLE;
-if (!$result = $stat_db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Couldn't retrieve words data", "", __LINE__, __FILE__, $sql);
-}
+$result = $stat_db->sql_query($sql);
 $words_data = $stat_db->sql_fetchrowset($result);
 $total_words = $words_data[0]['total_words'];
 
 // Top words SQL
 $sql = "SELECT COUNT(swm.word_id) word_count, swm.word_id word_id, swl.word_text word_text FROM " . SEARCH_MATCH_TABLE . " swm, " . SEARCH_WORD_TABLE . " swl WHERE swm.word_id = swl.word_id GROUP BY swm.word_id ORDER BY word_count DESC LIMIT ".$return_limit*10;
-if (!$result = $stat_db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Couldn't retrieve words data", "", __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $words_count = $stat_db->sql_numrows($result);
 $words_data = $stat_db->sql_fetchrowset($result);
 $percentage = 0;
 $bar_percent = 0;
 
-$stopwords_array = @file(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . "/search_stopwords.txt");
+$stopwords_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_stopwords.txt");
 @array_push($stopwords_array, 'quot');
 
 $template->_tpldata['stats_row.'] = array();
@@ -57,7 +50,7 @@ $firstcount = 0;
 for ($i = 0; $i < $words_count && $j<=($return_limit); $i++)
 {
 	$stopword_found = false;
-	for ($k = 0; $k < count($stopwords_array); $k++)
+	for ($k = 0; $k < sizeof($stopwords_array); $k++)
 	{
 		$stopword = trim($stopwords_array[$k]);
 		if ($words_data[$i]['word_text'] == $stopword)

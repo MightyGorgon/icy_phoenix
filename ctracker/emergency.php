@@ -55,7 +55,7 @@ define('IN_ICYPHOENIX', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 
-error_reporting  (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
+error_reporting (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
 set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
 
 // The following code (unsetting globals)
@@ -241,10 +241,7 @@ if ( $mode == 'restore' )
 {
 	// Drop existing Config Table
 	$sql = 'DROP TABLE IF EXISTS ' . PREFIX . 'config';
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	// Create Config table
 	$sql = 'CREATE TABLE ' . PREFIX . 'config (
@@ -252,34 +249,21 @@ if ( $mode == 'restore' )
 				`config_value` text NOT NULL ,
 				PRIMARY KEY ( `config_name` )
 				)';
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	// Insert config data
-		$sql = 'SELECT * FROM ' . PREFIX . 'ctracker_backup';
+	$sql = 'SELECT * FROM ' . PREFIX . 'ctracker_backup';
+	$result = $db->sql_query($sql);
 
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, 'Database Query Failed!', '', __LINE__, __FILE__, $sql);
-		}
-
-		while ( $row = $db->sql_fetchrow($result) )
-		{
-			$sql2 = 'INSERT INTO ' . PREFIX . 'config (`config_name`, `config_value`) VALUES (\''. $row['config_name'] . '\', \''. $row['config_value'] . '\')';
-			if ( !$result2 = $db->sql_query($sql2) )
-			{
-				message_die(GENERAL_ERROR, 'Database Query Failed!', '', __LINE__, __FILE__, $sql);
-			}
-		}
+	while ( $row = $db->sql_fetchrow($result) )
+	{
+		$sql2 = 'INSERT INTO ' . PREFIX . 'config (`config_name`, `config_value`) VALUES (\''. $row['config_name'] . '\', \''. $row['config_value'] . '\')';
+		$result2 = $db->sql_query($sql2);
+	}
 
 	// Remove Backup Timestamp
 	$sql = 'DELETE FROM ' . PREFIX . 'config WHERE config_name = \'ct_last_backup\'';
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$template->assign_block_vars('ok', array());
 }
@@ -288,66 +272,42 @@ else if ( $mode == 'psrt' )
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['cookie_name']) . "'
 				WHERE config_name = 'cookie_name'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['cookie_path']) . "'
 				WHERE config_name = 'cookie_path'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['cookie_domain']) . "'
 				WHERE config_name = 'cookie_domain'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['cookie_secure']) . "'
 				WHERE config_name = 'cookie_secure'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['server_name']) . "'
 				WHERE config_name = 'server_name'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['server_port']) . "'
 				WHERE config_name = 'server_port'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['script_path']) . "'
 				WHERE config_name = 'script_path'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$sql = "UPDATE " . PREFIX . "config SET
 				config_value = '" . str_replace("\'", "''", $HTTP_POST_VARS['session_length']) . "'
 				WHERE config_name = 'session_length'";
-	if ( !$result = $db->sql_query($sql) )
-	{
-		message_die(GENERAL_ERROR, "Database Query Failed!", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	$template->assign_block_vars('ok', array());
 }
@@ -359,18 +319,21 @@ else if ( $mode == 'psrt' )
 $save_status = '';
 $saved_now   = false;
 $sql = 'SELECT * FROM ' . PREFIX . 'ctracker_backup WHERE config_name = \'ct_last_backup\'';
-if ( !$result = $db->sql_query($sql) )
+$db->sql_return_on_error(true);
+$result = $db->sql_query($sql);
+$db->sql_return_on_error(false);
+if (!$result)
 {
 	$save_status = 'no configuration backup available';
 }
 else
 {
 	$saved_now = true;
-	while ( $row = $db->sql_fetchrow($result) )
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$backup[$row['config_name']] = $row['config_value'];
 	}
-	$save_status = date('d.m.Y - H:i', $backup['ct_last_backup']);
+	$save_status = gmdate('d.m.Y - H:i', $backup['ct_last_backup']);
 }
 
 

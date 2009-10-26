@@ -40,19 +40,8 @@ if(empty($template->xs_version) || $template->xs_version < 6)
 	message_die(GENERAL_ERROR, 'One of the following is probably true:<br /><br />1. eXtreme Styles mod is not installed<br />2. you forgot to upload includes/template.php<br />3. Your using an old version of eXtreme Styles mod');
 }
 
-// Query Config
-$sql = "SELECT * FROM " . XS_NEWS_CONFIG_TABLE;
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(CRITICAL_ERROR, 'Could not query XS News config information', '', __LINE__, __FILE__, $sql);
-}
-while ($row = $db->sql_fetchrow($result))
-{
-	$xs_news_config[$row['config_name']] = $row['config_value'];
-}
-
 // load the admin language file
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
 
 // Mode setting
 if(isset($_POST['mode']) || isset($_GET['mode']))
@@ -199,22 +188,14 @@ if(!empty($mode))
 
 			$sql = "SELECT MAX(xml_id) AS max_id
 				FROM " . XS_NEWS_XML_TABLE;
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't get next ID number from News Ticker table", "", __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
-
 			$max_id = $row['max_id'];
 			$next_id = $max_id + 1;
 
 			$sql = "INSERT INTO " . XS_NEWS_XML_TABLE . " (xml_id, xml_title, xml_show, xml_feed, xml_is_feed, xml_width, xml_height, xml_font, xml_speed, xml_direction" . ")
 				VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $_POST['xml_title']) . "', '" . intval($_POST['xml_show']) . "', '" . str_replace("\'", "''", $xml_feed) . "', '" . intval($_POST['xml_is_feed']) . "', '" . str_replace("\'", "''", $_POST['xml_width']) . "', '" . str_replace("\'", "''", $_POST['xml_height']) . "', '" . str_replace("\'", "''", $_POST['xml_font']) . "', '" . str_replace("\'", "''", $_POST['xml_speed']) . "', '" . intval($_POST['xml_direction']) . "')";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't insert row in news table", "", __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
 
 			$message = $lang['n_xml_news_item_added'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -230,11 +211,7 @@ if(!empty($mode))
 			$sql = "UPDATE " . XS_NEWS_XML_TABLE . "
 				SET xml_title = '" . str_replace("\'", "''", $_POST['xml_title']) . "', xml_show = " . intval($_POST['xml_show']) . ", xml_feed = '" . str_replace("\'", "''", $xml_feed) . "', xml_is_feed = '" . intval($_POST['xml_is_feed']) . "', xml_width = '" . str_replace("\'", "''", $_POST['xml_width']). "', xml_height = '" . str_replace("\'", "''", $_POST['xml_height']). "', xml_font = '" . str_replace("\'", "''", $_POST['xml_font']). "', xml_speed = '" . str_replace("\'", "''", $_POST['xml_speed']). "', xml_direction = " . intval($_POST['xml_direction']). "
 				WHERE xml_id = " . intval($_POST['id']);
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update XML Feed information", "", __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
 
 			$message = $lang['n_xml_news_updated'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -258,11 +235,7 @@ if(!empty($mode))
 			{
 				$sql = "DELETE FROM " . XS_NEWS_XML_TABLE . "
 					WHERE xml_id = $xml_id";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, "Couldn't delete XML Feed", "", __LINE__, __FILE__, $sql);
-				}
-
+				$result = $db->sql_query($sql);
 				$db->clear_cache('xs_');
 
 				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -307,7 +280,7 @@ if(!empty($mode))
 // Start page proper
 $template->set_filenames(array('body' => XS_TPL_PATH . 'news_ticker_list_body.tpl'));
 
-$master_switch = (($xs_news_config['xs_show_ticker'] == 1) ? true : false);
+$master_switch = (($config['xs_show_ticker'] == 1) ? true : false);
 
 $template->assign_vars(array(
 	'S_FORUM_ACTION' => append_sid("admin_xs_news_xml." . PHP_EXT),
@@ -327,10 +300,7 @@ $template->assign_vars(array(
 
 $sql = "SELECT xml_id, xml_title, xml_show FROM " . XS_NEWS_XML_TABLE . "
 	ORDER BY xml_id ASC";
-if(!$q_xml = $db->sql_query($sql))
-{
-	message_die(GENERAL_ERROR, "Could not query xml news ticker item list", "", __LINE__, __FILE__, $sql);
-}
+$q_xml = $db->sql_query($sql);
 
 if($total_xml = $db->sql_numrows($q_xml))
 {

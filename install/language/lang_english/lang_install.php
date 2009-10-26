@@ -216,6 +216,11 @@ $lang = array_merge($lang, array(
 	'NotFixed' => 'Not Fixed',
 	'FilesProcessed' => 'Files processed',
 
+	'FixForums' => 'Convert Forums',
+	'FixForumsExplain' => 'This feature will convert forums and categories into the new format.',
+	'FixingForumsInProgress' => 'Conversion in progress...',
+	'FixingForumsComplete' => 'Work complete!',
+
 	'FixPosts' => 'Fix Posts',
 	'FixPostsExplain' => 'This feature will allow you to fix all posts in your forums. You can use this feature to: find and replace any text in your posts, remove all BBCode UID, automatically adjust the address of posted images.',
 	'FixingPostsInProgress' => 'Fixing posts in progress',

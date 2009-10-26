@@ -77,11 +77,11 @@ if (empty($sort_field))
 }
 
 // Set select fields
-if (count($sort_fields_text) > 0)
+if (sizeof($sort_fields_text) > 0)
 {
 	$select_sort_field = '<select name="field">';
 
-	for($i = 0; $i < count($sort_fields_text); $i++)
+	for($i = 0; $i < sizeof($sort_fields_text); $i++)
 	{
 		$selected = ($sort_field == $sort_fields[$i]) ? ' selected="selected"' : '';
 		$select_sort_field .= '<option value="' . $sort_fields[$i] . '"' . $selected . '>' . $sort_fields_text[$i] . '</option>';
@@ -110,21 +110,21 @@ switch($sort_field)
 {
 	case 'vote_id':
 		$order_by = 'vote_id ' . $sort_order .
-					' LIMIT ' . $start . ", " . $board_config['topics_per_page'];
+					' LIMIT ' . $start . ", " . $config['topics_per_page'];
 		break;
 	case 'poll_topic':
 		$order_by = 'vote_text ' . $sort_order .
-					' LIMIT ' . $start . ", " . $board_config['topics_per_page'];
+					' LIMIT ' . $start . ", " . $config['topics_per_page'];
 		break;
 	case 'vote_start':
 		$order_by = 'vote_start ' . $sort_order .
-					' LIMIT ' . $start . ", " . $board_config['topics_per_page'];
+					' LIMIT ' . $start . ", " . $config['topics_per_page'];
 		break;
 	default:
 		$sort_field = 'vote_id';
 		$sort_order = 'ASC';
 		$order_by = 'vote_id ' . $sort_order .
-					' LIMIT ' . $start . ", " . $board_config['topics_per_page'];
+					' LIMIT ' . $start . ", " . $config['topics_per_page'];
 		break;
 }
 
@@ -155,11 +155,7 @@ $template->assign_vars(array(
 $sql = "SELECT DISTINCT u.user_id, u.username, u.user_active, u.user_color
 		FROM " . USERS_TABLE . " AS u , " . VOTE_USERS_TABLE . " AS vv
 		WHERE u.user_id = vv.vote_user_id";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query users.', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 $users_arr[] = array();
 while ($row = $db->sql_fetchrow($result))
@@ -177,11 +173,7 @@ while ($row = $db->sql_fetchrow($result))
 $sql = "SELECT *
 		FROM " . VOTE_RESULTS_TABLE . "
 		ORDER BY vote_id";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query poll options.', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
@@ -197,11 +189,7 @@ while ($row = $db->sql_fetchrow($result))
 $sql = "SELECT vote_id, vote_user_id, vote_cast
 		FROM " . VOTE_USERS_TABLE . "
 		ORDER BY vote_id";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query vote results.', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
@@ -215,16 +203,10 @@ while ($row = $db->sql_fetchrow($result))
 $sql ="SELECT *
 		FROM " . VOTE_DESC_TABLE . "
 		ORDER BY " . $order_by;
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query poll description.', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $num_polls = $db->sql_numrows($result);
 
 $i = 0;
-
 while ($row = $db->sql_fetchrow($result))
 {
 	$topic_row_color = (($i % 2) == 0) ? 'row1' : 'row2';
@@ -252,7 +234,7 @@ while ($row = $db->sql_fetchrow($result))
 	$users = '';
 	$user_option_arr = '';
 
-	if (count($voter_arr[$vote_id]) > 0)
+	if (sizeof($voter_arr[$vote_id]) > 0)
 	{
 		foreach($voter_arr[$vote_id] as $user_id => $option_id)
 		{
@@ -265,7 +247,7 @@ while ($row = $db->sql_fetchrow($result))
 
 	$template->assign_block_vars('votes', array(
 		'COLOR' => $topic_row_color,
-		'LINK' => IP_ROOT_PATH . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $topic_id,
+		'LINK' => IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id,
 		'DESCRIPTION' => $vote_text,
 		'USER' => $user,
 		'ENDDATE' => $vote_end,
@@ -274,7 +256,7 @@ while ($row = $db->sql_fetchrow($result))
 		)
 	);
 
-	if (count($voter_arr[$vote_id]) > 0)
+	if (sizeof($voter_arr[$vote_id]) > 0)
 	{
 		foreach($option_arr[$vote_id] as $vote_option_id => $elem)
 		{
@@ -300,21 +282,17 @@ while ($row = $db->sql_fetchrow($result))
 $sql = "SELECT count(*) AS total" .
 		" FROM " . VOTE_DESC_TABLE .
 		" WHERE vote_id > 0";
-
-if (!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Error getting total users', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_polls = $total['total'];
-	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $total_polls, $board_config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $total_polls, $config['topics_per_page'], $start). '&nbsp;';
 }
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $board_config['topics_per_page']) + 1), ceil($total_polls / $board_config['topics_per_page'])),
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_polls / $config['topics_per_page'])),
 
 	'L_GOTO_PAGE' => $lang['Goto_page']
 	)

@@ -79,8 +79,8 @@ else
 	}
 }
 
-//$board_config['use_captcha'] = true;
-if ( $board_config['use_captcha'] == true )
+//$config['use_captcha'] = true;
+if ( $config['use_captcha'] == true )
 {
 	srand((double)microtime()*1000000);
 	//include(IP_ROOT_PATH . 'includes/functions_captcha.' . PHP_EXT);
@@ -88,11 +88,9 @@ if ( $board_config['use_captcha'] == true )
 	// Read the config table
 	$sql = "SELECT *
 		FROM " . CAPTCHA_CONFIG_TABLE;
-	if( !($result = $db->sql_query($sql)) )
-	{
-		message_die(CRITICAL_ERROR, "Could not query captcha config information", "", __LINE__, __FILE__, $sql);
-	}
-	while ( $row = $db->sql_fetchrow($result) )
+	$result = $db->sql_query($sql);
+
+	while ($row = $db->sql_fetchrow($result))
 	{
 		$captcha_config[$row['config_name']] = $row['config_value'];
 	}
@@ -148,7 +146,7 @@ if ( $board_config['use_captcha'] == true )
 			closedir($img_dir);
 		}
 		// Grab a random Background Image or set FALSE if none was found
-		$bg_img = ( count($bg_imgs) ) ? rand(0, (count($bg_imgs)-1)) : false;
+		$bg_img = ( sizeof($bg_imgs) ) ? rand(0, (sizeof($bg_imgs)-1)) : false;
 	}
 
 	$fonts = array();
@@ -163,7 +161,7 @@ if ( $board_config['use_captcha'] == true )
 		}
 		closedir($fonts_dir);
 	}
-	$font = rand(0, (count($fonts)-1));
+	$font = rand(0, (sizeof($fonts)-1));
 
 	// Generate
 	$image = (gdVersion() >= 2) ? imagecreatetruecolor($total_width, $total_height) : imagecreate($total_width, $total_height);
@@ -237,7 +235,7 @@ if ( $board_config['use_captcha'] == true )
 		$char = $code{$i};
 		//$size = mt_rand(18, ceil($total_height / 2.8));
 		$size = mt_rand(floor($total_height / 3.5), ceil($total_height / 2.8));
-		$font = ($rnd_font) ? rand(0, (count($fonts)-1)) : $font;
+		$font = ($rnd_font) ? rand(0, (sizeof($fonts)-1)) : $font;
 		$angle = mt_rand(-30, 30);
 
 		$char_pos = array();
@@ -255,7 +253,7 @@ if ( $board_config['use_captcha'] == true )
 		{
 			$pre_angle = $angle + mt_rand(-20, 20);
 
-			$text_color = $pre_text_color_array[mt_rand(0,count($pre_text_color_array)-1)];
+			$text_color = $pre_text_color_array[mt_rand(0,sizeof($pre_text_color_array)-1)];
 			$text_color = explode(",", $text_color);
 			$textcolor = imagecolorallocate($image, $text_color[0], $text_color[1], $text_color[2]);
 
@@ -267,7 +265,7 @@ if ( $board_config['use_captcha'] == true )
 		}
 
 	//	Final letters
-		$text_color = $text_color_array[mt_rand(0,count($text_color_array)-1)];
+		$text_color = $text_color_array[mt_rand(0,sizeof($text_color_array)-1)];
 		$text_color = explode(",", $text_color);
 		$textcolor = imagecolorallocate($image, $text_color[0], $text_color[1], $text_color[2]);
 

@@ -153,9 +153,12 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 	{
 		$sql = 'SELECT user_id
 						FROM '. USERS_TABLE ."
-						WHERE username='$username'
-						AND user_id <> ". ANONYMOUS;
-		if (!($result = $db->sql_query($sql)))
+						WHERE username = '$username'
+						AND user_id <> " . ANONYMOUS;
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			$result_ar = array(
 				'result' => AJAX_OP_COMPLETED
@@ -184,7 +187,10 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 						WHERE username LIKE '" . $username . "'
 						AND user_id <> " . ANONYMOUS . "
 						ORDER BY username";
-		if (!($result = $db->sql_query($sql)))
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
 			$result_ar = array(
 				'result' => AJAX_OP_COMPLETED
@@ -194,7 +200,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 		$username_rows = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 
-		if (!($username_count = count($username_rows)))
+		if (!($username_count = sizeof($username_rows)))
 		{
 			$result_ar = array(
 				'result' => AJAX_PM_USERNAME_ERROR,

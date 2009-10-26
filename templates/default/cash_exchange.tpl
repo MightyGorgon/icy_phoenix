@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <form action="{S_EXCHANGE_ACTION}" method="post">
 {IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2" nowrap="nowrap">{L_EXCHANGE}</th></tr>
@@ -65,3 +67,5 @@
 </tr>
 </table>
 <!-- END rowrow -->
+
+<!-- INCLUDE overall_footer.tpl -->

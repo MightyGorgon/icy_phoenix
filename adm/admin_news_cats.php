@@ -35,7 +35,7 @@ else
 	$mode = "";
 }
 
-$dir = @opendir(IP_ROOT_PATH . $board_config['news_path']);
+$dir = @opendir(IP_ROOT_PATH . $config['news_path']);
 
 if(!$dir)
 {
@@ -44,9 +44,9 @@ if(!$dir)
 
 while($file = @readdir($dir))
 {
-	if(!@is_dir(IP_ROOT_PATH . $board_config['news_path'] . '/' . $file))
+	if(!@is_dir(IP_ROOT_PATH . $config['news_path'] . '/' . $file))
 	{
-		$img_size = @getimagesize(IP_ROOT_PATH . $board_config['news_path'] . '/' . $file);
+		$img_size = @getimagesize(IP_ROOT_PATH . $config['news_path'] . '/' . $file);
 
 		if($img_size[0] && $img_size[1])
 		{
@@ -68,7 +68,7 @@ if(isset($_POST['add']) || isset($_GET['add']))
 	$template->set_filenames(array('body' => ADM_TPL . 'news_cat_edit_body.tpl'));
 
 	$filename_list = '';
-	for($i = 0; $i < count($category_images); $i++)
+	for($i = 0; $i < sizeof($category_images); $i++)
 	{
 		$filename_list .= '<option value="' . $category_images[$i] . '">' . $category_images[$i] . '</option>';
 	}
@@ -84,12 +84,12 @@ if(isset($_POST['add']) || isset($_GET['add']))
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
 
-		'I_NEWS_IMG' => IP_ROOT_PATH . $board_config['news_path'] . '/' . $category_images[0],
+		'I_NEWS_IMG' => IP_ROOT_PATH . $config['news_path'] . '/' . $category_images[0],
 
 		'S_NEWS_ACTION' => append_sid('admin_news_cats.' . PHP_EXT),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'S_FILENAME_OPTIONS' => $filename_list,
-		'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['news_path']
+		'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $config['news_path']
 		)
 	);
 
@@ -105,18 +105,9 @@ elseif ($mode != '')
 
 			$sql = "DELETE FROM " . NEWS_TABLE . " WHERE news_id = " . $news_id;
 			$result = $db->sql_query($sql);
-			if(!$result)
-			{
-				message_die(GENERAL_ERROR, "Couldn't delete news category", "", __LINE__, __FILE__, $sql);
-			}
 
 			$sql = "UPDATE " . TOPICS_TABLE . " SET news_id = 0 WHERE news_id = " . $news_id;
 			$result = $db->sql_query($sql);
-			if(!$result)
-			{
-				message_die(GENERAL_ERROR, "Couldn't update topics news category", "", __LINE__, __FILE__, $sql);
-			}
-
 			$db->clear_cache('news_');
 
 			$message = $lang['Category_Deleted'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news_cats.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -131,16 +122,11 @@ elseif ($mode != '')
 			$sql = "SELECT *
 				FROM " . NEWS_TABLE . "
 				WHERE news_id = " . $news_id;
-
 			$result = $db->sql_query($sql);
-			if(!$result)
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain news information', "", __LINE__, __FILE__, $sql);
-			}
 			$category_data = $db->sql_fetchrow($result);
 
 			$filename_list = '';
-			for($i = 0; $i < count($category_images); $i++)
+			for($i = 0; $i < sizeof($category_images); $i++)
 			{
 				if($category_images[$i] == $category_data['news_image'])
 				{
@@ -161,7 +147,7 @@ elseif ($mode != '')
 
 			$template->assign_vars(array(
 				'NEWS_CATEGORY' => $category_data['news_category'],
-				'NEWS_ICON' => IP_ROOT_PATH . $board_config['news_path'] . '/' . $category_data['news_image'],
+				'NEWS_ICON' => IP_ROOT_PATH . $config['news_path'] . '/' . $category_data['news_image'],
 
 				'L_NEWS_TITLE' => $lang['News_Editing_Utility'],
 				'L_NEWS_CONFIG' => $lang['News_Config'],
@@ -171,12 +157,12 @@ elseif ($mode != '')
 				'L_SUBMIT' => $lang['Submit'],
 				'L_RESET' => $lang['Reset'],
 
-				'I_NEWS_IMG' => IP_ROOT_PATH . $board_config['news_path'] . '/'. $category_edit_img,
+				'I_NEWS_IMG' => IP_ROOT_PATH . $config['news_path'] . '/'. $category_edit_img,
 
 				'S_SMILEY_ACTION' => append_sid('admin_news_cats.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields,
 				'S_FILENAME_OPTIONS' => $filename_list,
-				'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $board_config['news_path']
+				'S_SMILEY_BASEDIR' => IP_ROOT_PATH . $config['news_path']
 				)
 			);
 
@@ -204,11 +190,7 @@ elseif ($mode != '')
 			$sql = "UPDATE " . NEWS_TABLE . "
 				SET  news_category = '$news_category', news_image = '$news_image'
 				WHERE news_id = $news_id";
-			if(!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Couldn't update news info", "", __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$db->clear_cache('news_');
 
 			$message = $lang['Category_Updated'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news_cats.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -236,11 +218,6 @@ elseif ($mode != '')
 			$sql = "INSERT INTO " . NEWS_TABLE . " (news_image, news_category)
 				VALUES ('$news_image', '$news_category')";
 			$result = $db->sql_query($sql);
-			if(!$result)
-			{
-				message_die(GENERAL_ERROR, "Couldn't insert	new	category", "", __LINE__, __FILE__, $sql);
-			}
-
 			$db->clear_cache('news_');
 
 			$message = $lang['Category_Added'] . '<br /><br />' . sprintf($lang['Click_return_newsadmin'], '<a href="' . append_sid('admin_news_cats.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -275,7 +252,7 @@ else
 	);
 
 	// Loop throuh the rows	of smilies setting block vars	for	the	template.
-	for($i = 0; $i < count($news_cats); $i++)
+	for($i = 0; $i < sizeof($news_cats); $i++)
 	{
 		// Replace htmlentites for < and > with	actual character.
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
@@ -285,7 +262,7 @@ else
 
 			'TOPIC_COUNT' => $news_cats[$i]['topic_count'],
 
-			'CATEGORY_IMG' => IP_ROOT_PATH . $board_config['news_path']	.	'/'	.	$news_cats[$i]['news_image'],
+			'CATEGORY_IMG' => IP_ROOT_PATH . $config['news_path']	.	'/'	.	$news_cats[$i]['news_image'],
 			'L_CATEGORY' => $news_cats[$i]['news_category'],
 
 			'U_NEWS_EDIT' => append_sid('admin_news_cats.' . PHP_EXT . '?mode=edit&amp;id=' . $news_cats[$i]['news_id']),

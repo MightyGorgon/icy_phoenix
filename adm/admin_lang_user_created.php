@@ -24,8 +24,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/class_lang_user_created.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $board_config['default_lang'] . '/lang_admin_extend_lang.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_extend_lang.' . PHP_EXT);
 
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
@@ -179,7 +178,7 @@ if ($mode == 'key')
 		// check values
 		$error = false;
 		$error_msg = false;
-		$dft_country = 'lang_' . $board_config['default_language'];
+		$dft_country = 'lang_' . $config['default_language'];
 		@reset($countries);
 		while (list($country_dir, $country_name) = @each($countries))
 		{
@@ -480,7 +479,7 @@ if ($mode == 'search')
 			exit;
 		}
 		$w_words = explode(' ', strtolower(str_replace('_', ' ', str_replace("\'", "'", str_replace("''", "'", $search_words)))));
-		for ($i = 0; $i < count($w_words); $i++)
+		for ($i = 0; $i < sizeof($w_words); $i++)
 		{
 			if (!empty($w_words[$i]))
 			{
@@ -503,7 +502,7 @@ if ($mode == 'search')
 					$w_words = explode(' ', $w_key);
 
 					$words_key = array();
-					for ($i = 0; $i < count($w_words); $i++)
+					for ($i = 0; $i < sizeof($w_words); $i++)
 					{
 						if (!empty($w_words[$i]))
 						{
@@ -518,7 +517,7 @@ if ($mode == 'search')
 						if (empty($search_country) || ($country == $search_country))
 						{
 							$w_words_val = explode(' ', strtolower(str_replace("\'", "'", str_replace("''", "'", $entries['value'][$key_main][$key_sub][$country]))));
-							for ($i = 0; $i < count($w_words_val); $i++)
+							for ($i = 0; $i < sizeof($w_words_val); $i++)
 							{
 								if (!empty($w_words_val[$i]))
 								{
@@ -533,7 +532,7 @@ if ($mode == 'search')
 
 					// is this key convenient ?
 					$ok = ($search_logic == 0);
-					for ($i = 0; $i < count($words); $i++)
+					for ($i = 0; $i < sizeof($words); $i++)
 					{
 						$found = ((($search_in != 1) && in_array($words[$i], $words_key)) || (($search_in != 0) && in_array($words[$i], $words_val)));
 						if (($search_logic == 1) && $found)
@@ -573,7 +572,7 @@ if ($mode == 'search')
 		);
 
 		$color = false;
-		for ($i = 0; $i < count($results); $i++)
+		for ($i = 0; $i < sizeof($results); $i++)
 		{
 			// get data
 			$key_main	= $results[$i]['main'];
@@ -627,7 +626,7 @@ if ($mode == 'search')
 			);
 		}
 
-		if (count($results) == 0)
+		if (sizeof($results) == 0)
 		{
 			$template->assign_block_vars('none', array());
 		}
@@ -656,7 +655,7 @@ if ($mode == '')
 	$search_words = isset($_POST['search_words']) ? str_replace("\'", "'", urldecode($_POST['search_words'])) : '';
 	$search_logic = isset($_POST['search_logic']) ? intval($_POST['search_logic']) : 0;
 	$search_in = isset($_POST['search_in']) ? intval($_POST['search_in']) : 2;
-	$search_country = isset($_POST['search_language']) ? str_replace("\'", "'", urldecode($_POST['search_language'])) : 'lang_' . $board_config['default_language'];
+	$search_country = isset($_POST['search_language']) ? str_replace("\'", "'", urldecode($_POST['search_language'])) : 'lang_' . $config['default_language'];
 	$search_admin = isset($_POST['search_admin']) ? intval($_POST['search_admin']) : 2;
 
 	// template

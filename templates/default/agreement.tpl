@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 {ERROR_BOX}
 <form method="post" action="{S_AGREE_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{SITENAME} - {REGISTRATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -23,3 +25,5 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -1,3 +1,5 @@
+<!-- INCLUDE overall_header.tpl -->
+
 <script type="text/javascript">
 <!--
 function checkForm()
@@ -69,3 +71,5 @@ function checkForm()
 	</td>
 </tr>
 </table>
+
+<!-- INCLUDE overall_footer.tpl -->

@@ -28,8 +28,8 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('./pagestart.' . PHP_EXT);
 
-$str_old = trim(htmlspecialchars($HTTP_POST_VARS['str_old']));
-$str_new = trim(htmlspecialchars($HTTP_POST_VARS['str_new']));
+$str_old = trim(htmlspecialchars($_POST['str_old']));
+$str_new = trim(htmlspecialchars($_POST['str_new']));
 
 if ($_POST['submit'] && !empty($str_old) && $str_old != $str_new)
 {
@@ -42,10 +42,7 @@ if ($_POST['submit'] && !empty($str_old) && $str_old != $str_new)
 		AND p.forum_id = f.forum_id
 		AND p.poster_id = u.user_id
 		ORDER BY p.post_id DESC;";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not obtain posts', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($db->sql_numrows($result) >= 1)
 	{
@@ -57,21 +54,18 @@ if ($_POST['submit'] && !empty($str_old) && $str_old != $str_new)
 				'FORUM_NAME' => $row['forum_name'],
 				'TOPIC_TITLE' => $row['topic_title'],
 				'AUTHOR' => $row['username'],
-				'POST' => create_date($board_config['default_dateformat'], $row['post_time'], $board_config['board_timezone']),
+				'POST' => create_date($config['default_dateformat'], $row['post_time'], $config['board_timezone']),
 
-				'U_FORUM' => append_sid('../' . VIEWFORUM_MG . '?' . POST_FORUM_URL . '=' . $row['forum_id']),
-				'U_TOPIC' => append_sid('../' . VIEWTOPIC_MG . '?' . POST_TOPIC_URL . '=' . $row['topic_id']),
-				'U_AUTHOR' => append_sid('../' . PROFILE_MG . '?mode=viewprofile&' . POST_USERS_URL . '=' . $row['user_id']),
-				'U_POST' => append_sid('../' . VIEWTOPIC_MG . '?' . POST_POST_URL . '=' . $row['post_id']) . '#p' . $row['post_id'])
+				'U_FORUM' => append_sid('../' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $row['forum_id']),
+				'U_TOPIC' => append_sid('../' . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $row['topic_id']),
+				'U_AUTHOR' => append_sid('../' . CMS_PAGE_PROFILE . '?mode=viewprofile&' . POST_USERS_URL . '=' . $row['user_id']),
+				'U_POST' => append_sid('../' . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $row['post_id']) . '#p' . $row['post_id'])
 			);
 
 			$sql = "UPDATE " . POSTS_TABLE . "
 				SET post_text = '" . str_replace($str_old, $str_new, addslashes($row['post_text'])) . "'
 				WHERE post_id = '" . $row['post_id'] . "';";
-			if (!($result_update = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, 'Could not update posts', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 
 	}

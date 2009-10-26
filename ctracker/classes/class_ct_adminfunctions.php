@@ -188,11 +188,7 @@ class ct_adminfunctions
 
 		// First we truncate the Database Table
 		$sql = 'TRUNCATE TABLE ' . CTRACKER_FILECHK;
-
-		if( !($result = $db->sql_query($sql)) )
-		{
-			message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Checksum checker ;)
 		$this->recursive_filechk(IP_ROOT_PATH, '', PHP_EXT);
@@ -230,15 +226,11 @@ class ct_adminfunctions
 				// Fill it in our File Array if the found file is matching the extension
 				if( preg_match("/^.*?\." . $extension . "$/", $temp_path) && !preg_match('/cache\\//m', $temp_path) )
 				{
-					$filehash = @filesize($temp_path) . '-' . count(@file($temp_path));
+					$filehash = @filesize($temp_path) . '-' . sizeof(@file($temp_path));
 					$filehash = md5($filehash);
 
 					$sql = 'INSERT INTO ' . CTRACKER_FILECHK . " (`filepath`, `hash`) VALUES ('$temp_path', '$filehash')";
-
-					if(!($result = $db->sql_query($sql)))
-					{
-						message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-					}
+					$result = $db->sql_query($sql);
 				}
 
 				// Directory found, so recall this function
@@ -272,11 +264,7 @@ class ct_adminfunctions
 		global $db, $lang;
 
 		$sql = 'SELECT id, filepath FROM ' . CTRACKER_FILESCANNER;
-
-		if((!$result = $db->sql_query($sql)))
-		{
-			message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -301,7 +289,7 @@ class ct_adminfunctions
 			$filename        = file($row['filepath']);
 			$file_db_id      = intval($row['id']);
 
-			for ($i = 0; $i <= count($filename)-1; $i++)
+			for ($i = 0; $i <= sizeof($filename)-1; $i++)
 			{
 				$scanline = $filename[$i];
 				$scanline = strtolower($scanline);
@@ -476,10 +464,7 @@ class ct_adminfunctions
 
 			// Write value back to database
 			$write_back = 'UPDATE ' . CTRACKER_FILESCANNER . ' SET safety = ' . intval($security_risk) . ' WHERE id = ' . $row['id'];
-			if((!$backwriter = $db->sql_query($write_back)))
-			{
-				message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $write_back);
-			}
+			$backwriter = $db->sql_query($write_back);
 		} // while
 	}
 
@@ -493,11 +478,7 @@ class ct_adminfunctions
 		global $db, $lang;
 
 		$sql = 'TRUNCATE TABLE ' . CTRACKER_FILESCANNER;
-
-		if(!($result = $db->sql_query($sql)))
-		{
-			message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 
@@ -538,11 +519,8 @@ class ct_adminfunctions
 					if( !preg_match('/language\\/|lang_|db\\/|config\\.php|cache\\/|common\\.php/m', $temp_path) )
 					{
 						$sql = "SELECT MAX(id) AS total FROM " . CTRACKER_FILESCANNER;
-						if ( !($result = $db->sql_query($sql)) )
-						{
-							message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-						}
-						if ( !($row = $db->sql_fetchrow($result)) )
+						$result = $db->sql_query($sql);
+						if (!($row = $db->sql_fetchrow($result)))
 						{
 							message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
 						}
@@ -550,11 +528,7 @@ class ct_adminfunctions
 
 						$sql = 'INSERT INTO ' . CTRACKER_FILESCANNER . ' (`id`, `filepath`, `safety`)
 									VALUES (' . $newid . ', \'' . $temp_path . '\', 10)';
-
-						if(!($result = $db->sql_query($sql)))
-						{
-							message_die(CRITICAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-						}
+						$result = $db->sql_query($sql);
 					}
 				}
 
@@ -580,11 +554,7 @@ class ct_adminfunctions
 		global $db, $lang;
 
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_global_msg_read = 1';
-
-		if( !($result = $db->sql_query($sql)) )
-		{
-			message_die(CRITICAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 
@@ -597,11 +567,7 @@ class ct_adminfunctions
 		global $db, $lang;
 
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_global_msg_read = 0';
-
-		if( !($result = $db->sql_query($sql)) )
-		{
-			message_die(CRITICAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 
@@ -615,10 +581,7 @@ class ct_adminfunctions
 
 		// Drop existing Backup Table
 		$sql = 'DROP TABLE IF EXISTS ' . CTRACKER_BACKUP;
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Create Backup table
 		$sql = 'CREATE TABLE ' . CTRACKER_BACKUP . ' (
@@ -626,36 +589,23 @@ class ct_adminfunctions
 					`config_value` text NOT NULL ,
 					PRIMARY KEY ( `config_name` )
 					)';
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Insert config data
 		$sql = 'SELECT * FROM ' . CONFIG_TABLE;
+		$result = $db->sql_query($sql);
 
-		if ( !($result = $db->sql_query($sql)) )
+		while ($row = $db->sql_fetchrow($result))
 		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_loading_config'], '', __LINE__, __FILE__, $sql);
-		}
-
-		while ( $row = $db->sql_fetchrow($result) )
-		{
-			$row['config_name'] = addslashes($row['config_name']);
-			$row['config_value'] = addslashes($row['config_value']);
-			$sql2 = 'INSERT INTO ' . CTRACKER_BACKUP . ' (`config_name`, `config_value`) VALUES ("' . $row['config_name'] . '", "'. $row['config_value'] . '")';
-			if ( !$result2 = $db->sql_query($sql2) )
-			{
-				message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql2);
-			}
+			$row['config_name'] = $row['config_name'];
+			$row['config_value'] = $row['config_value'];
+			$sql2 = "INSERT INTO " . CTRACKER_BACKUP . " (`config_name`, `config_value`) VALUES ('" . $row['config_name'] . "', '" . $db->sql_escape($row['config_value']) . "')";
+			$result2 = $db->sql_query($sql2);
 		}
 
 		// Insert Backup Timestamp
 		$sql = 'INSERT INTO ' . CTRACKER_BACKUP . ' (`config_name`, `config_value`) VALUES (\'ct_last_backup\', \'' . time() . '\')';
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 
 
@@ -669,10 +619,7 @@ class ct_adminfunctions
 
 		// Drop existing Config Table
 		$sql = 'DROP TABLE IF EXISTS ' . CONFIG_TABLE;
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Create Config table
 		$sql = 'CREATE TABLE ' . CONFIG_TABLE . ' (
@@ -680,34 +627,21 @@ class ct_adminfunctions
 					`config_value` text NOT NULL ,
 					PRIMARY KEY ( `config_name` )
 					)';
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		// Insert config data
 		$sql = 'SELECT * FROM ' . CTRACKER_BACKUP;
-
-		if ( !($result = $db->sql_query($sql)) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_loading_config'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 
 		while ( $row = $db->sql_fetchrow($result) )
 		{
 			$sql2 = 'INSERT INTO ' . CONFIG_TABLE . ' (`config_name`, `config_value`) VALUES (\''. $row['config_name'] . '\', \''. $row['config_value'] . '\')';
-			if ( !$result2 = $db->sql_query($sql2) )
-			{
-				message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-			}
+			$result2 = $db->sql_query($sql2);
 		}
 
 		// Remove Backup Timestamp
 		$sql = 'DELETE FROM ' . CONFIG_TABLE . ' WHERE config_name = \'ct_last_backup\'';
-		if ( !$result = $db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, $lang['ctracker_error_database_op'], '', __LINE__, __FILE__, $sql);
-		}
+		$result = $db->sql_query($sql);
 	}
 }
 

@@ -17,15 +17,15 @@ if (!defined('IN_ICYPHOENIX'))
 $statistics->init_bars();
 
 $current_time = time();
-$minutes = date('is', $current_time);
+$minutes = gmdate('is', $current_time);
 $hour_now = $current_time - (60 * ($minutes[0] . $minutes[1])) - ($minutes[2] . $minutes[3]);
-$dato = date('H', $current_time);
+$dato = gmdate('H', $current_time);
 $time_today = $hour_now - (3600 * $dato);
-$year = create_date('Y', $current_time, $board_config['board_timezone']);
+$year = create_date('Y', $current_time, $config['board_timezone']);
 $month = array();
-$month [0] = mktime (0, 0, 0, 1, 1, $year) - ($board_config['board_timezone'] * 3600) + 3600;
+$month [0] = mktime (0, 0, 0, 1, 1, $year) - ($config['board_timezone'] * 3600) + 3600;
 $month [1] = $month [0] + 2678400;
-$month [2] = mktime (0, 0, 0, 3, 1, $year) - ($board_config['board_timezone'] * 3600) + 3600;
+$month [2] = mktime (0, 0, 0, 3, 1, $year) - ($config['board_timezone'] * 3600) + 3600;
 $month [3] = $month [2] + 2678400;
 $month [4] = $month [3] + 2592000;
 $month [5] = $month [4] + 2678400;
@@ -36,8 +36,8 @@ $month [9] = $month [8] + 2592000;
 $month [10] = $month [9] + 2678400;
 $month [11] = $month [10] + 2592000;
 $month [12] = $month [11] + 2678400;
-$time_thismonth = $month[date('n') - 1];
-$time_thisweek = $time_today - ((date('w', $time_today) - 1) * 86400);
+$time_thismonth = $month[gmdate('n') - 1];
+$time_thisweek = $time_today - ((gmdate('w', $time_today) - 1) * 86400);
 if ((time() - $time_thisweek) < 0)
 {
 	$time_thisweek_poster = $time_thisweek - (60 * 60 * 24 * 7);
@@ -48,13 +48,13 @@ else
 	$time_thisweek_poster = $time_thisweek;
 	$time_today_poster = $time_today;
 }
-$this_month = create_date('n', $time_thismonth, $board_config['board_timezone']);
-$l_this_month = create_date('F', $time_thismonth, $board_config['board_timezone']);
-$l_this_day = create_date('D', $time_today, $board_config['board_timezone']);
+$this_month = create_date('n', $time_thismonth, $config['board_timezone']);
+$l_this_month = create_date('F', $time_thismonth, $config['board_timezone']);
+$l_this_day = create_date('D', $time_today, $config['board_timezone']);
 
 $template->assign_vars(array(
 	'L_MODULE_NAME' => $lang['module_name_site_hist_month_top_posters'],
-	'MONTH' => sprintf($lang['Month_Var'], ($l_this_month . ' ' . create_date('Y', $time_thismonth, $board_config['board_timezone']))),
+	'MONTH' => sprintf($lang['Month_Var'], ($l_this_month . ' ' . create_date('Y', $time_thismonth, $config['board_timezone']))),
 	'L_RANK' => $lang['Rank'],
 	'L_PERCENTAGE' => $lang['Percent'],
 	'L_GRAPH' => $lang['Graph'],
@@ -72,12 +72,7 @@ $sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, count(u.user_
 	GROUP BY u.user_id
 	ORDER BY user_posts DESC
 	LIMIT " . $return_limit;
-
-if (!($result = $stat_db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Couldn\'t retrieve topposters data', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $stat_db->sql_query($sql);
 $total_posts_thismonth = 0;
 $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);

@@ -42,7 +42,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('./pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_db_utilities.' . PHP_EXT);
 
@@ -102,16 +101,13 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 			// If has been clicked the button optimize
 			if(!isset($_POST['optimize']))
 			{
-				$sql = "SHOW TABLE STATUS LIKE '" . $board_config['cron_db_show_begin_for'] . "%' ";
+				$sql = "SHOW TABLE STATUS LIKE '" . $config['cron_db_show_begin_for'] . "%' ";
 				$result = $db->sql_query($sql);
-				if(!$result)
-				{
-					message_die(GENERAL_ERROR, "Couldn't obtain databases list", "", __LINE__, __FILE__, $sql);
-				}
+
 				$i = 0;
 				while ($opt = $db->sql_fetchrow($result))
 				{
-					if (($opt['Data_free'] != 0) || !$board_config['cron_db_show_not_optimized'])
+					if (($opt['Data_free'] != 0) || !$config['cron_db_show_not_optimized'])
 					{
 						$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 						$dbsize = $opt['Data_length'] + $opt['Index_length'];
@@ -239,21 +235,21 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 				$cron_intervals_select .= '<select name="cron_every">';
 				foreach ($list_cron_intervals as $k => $v)
 				{
-					$cron_intervals_select .= '<option value="' . $v . '"' . (($board_config['cron_database_interval'] == $v) ? ' selected="selected"' : '') . '>' . $lang[$k] . '</option>';
+					$cron_intervals_select .= '<option value="' . $v . '"' . (($config['cron_database_interval'] == $v) ? ' selected="selected"' : '') . '>' . $lang[$k] . '</option>';
 				}
 				$cron_intervals_select .= '</select>';
 
-				$board_config['cron_db_show_not_optimized'] != '1' ? ($enable_not_optimized_no = ' checked="checked"') : ($enable_not_optimized_yes = ' checked="checked"');
+				$config['cron_db_show_not_optimized'] != '1' ? ($enable_not_optimized_no = ' checked="checked"') : ($enable_not_optimized_yes = ' checked="checked"');
 
-				if (($board_config['cron_database_interval'] == 0) || ($board_config['cron_database_last_run'] == 0))
+				if (($config['cron_database_interval'] == 0) || ($config['cron_database_last_run'] == 0))
 				{
 					$next_cron = ' - - ';
 					$performed_cron = ' - - ';
 				}
 				else
 				{
-					$next_cron = create_date('d M Y H:i:s', ($board_config['cron_database_last_run'] + $board_config['cron_database_interval']), $board_config['board_timezone']);
-					$performed_cron = $board_config['cron_db_count'];
+					$next_cron = create_date('d M Y H:i:s', ($config['cron_database_last_run'] + $config['cron_database_interval']), $config['board_timezone']);
+					$performed_cron = $config['cron_db_count'];
 				}
 
 				// Build the template
@@ -264,7 +260,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 					'TOT_SIZE' => $total_size,
 					'TOT_STATUS' => $total_stat,
 					'NEXT_CRON' => $next_cron,
-					'CURRENT_TIME' => create_date('d M Y H:i:s', $current_time, $board_config['board_timezone']),
+					'CURRENT_TIME' => create_date('d M Y H:i:s', $current_time, $config['board_timezone']),
 					'PERFORMED_CRON' => $performed_cron,
 					'CRON_INTERVALS_SELECT' => $cron_intervals_select,
 
@@ -296,7 +292,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 					'S_DBUTILS_ACTION' => append_sid('admin_db_utilities.' . PHP_EXT),
 					'S_ENABLE_CRON_YES' => $enable_cron_yes,
 					'S_ENABLE_CRON_NO' => $enable_cron_no,
-					'S_SHOW_BEGIN_FOR' => $board_config['cron_db_show_begin_for'],
+					'S_SHOW_BEGIN_FOR' => $config['cron_db_show_begin_for'],
 					'S_ENABLE_NOT_OPTIMIZED_YES' => $enable_not_optimized_yes,
 					'S_ENABLE_NOT_OPTIMIZED_NO' => $enable_not_optimized_no,
 					'S_HIDDEN_FIELDS' => $s_hidden_fields
@@ -315,7 +311,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 					$i = 1;
 					foreach ($_POST['selected_tbl'] as $var => $value)
 					{
-						if($i<count($_POST['selected_tbl']))
+						if($i< sizeof($_POST['selected_tbl']))
 						{
 							$sql .= "`$value`, ";
 						}
@@ -328,7 +324,10 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 				}
 				$sql .= ' ;';
 
-				if (!$result = $db->sql_query($sql))
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if (!$result)
 				{
 					$optimize_notablechecked = true;
 				}
@@ -419,7 +418,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 				{
 					$additional_tables = split(",", $additional_tables);
 
-					for($i = 0; $i < count($additional_tables); $i++)
+					for($i = 0; $i < sizeof($additional_tables); $i++)
 					{
 						$tables[] = trim($additional_tables[$i]);
 					}
@@ -493,7 +492,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 					}
 				}
 			}
-			$gendate = str_replace(' ', '_', create_date($lang['DATE_FORMAT'], time(), $board_config['board_timezone']));
+			$gendate = str_replace(' ', '_', create_date($lang['DATE_FORMAT'], time(), $config['board_timezone']));
 
 			if($do_gzip_compress)
 			{
@@ -515,7 +514,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 			echo "#\n# DATE : " .  gmdate("d-m-Y H:i:s", time()) . " GMT\n";
 			echo "#\n";
 
-			for($i = 0; $i < count($tables); $i++)
+			for($i = 0; $i < sizeof($tables); $i++)
 			{
 				$table_name = $tables[$i];
 				$table_def_function = 'get_table_def_mysql';
@@ -642,7 +641,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 					$sql_query = remove_remarks($sql_query);
 					$pieces = split_sql_file($sql_query, ";");
 
-					$sql_count = count($pieces);
+					$sql_count = sizeof($pieces);
 					for($i = 0; $i < $sql_count; $i++)
 					{
 						$sql = trim($pieces[$i]);
@@ -654,13 +653,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 								echo "Executing: $sql\n<br />";
 								flush();
 							}
-
 							$result = $db->sql_query($sql);
-
-							if(!$result && (!(SQL_LAYER == 'postgresql' && eregi("drop table", $sql))))
-							{
-								message_die(GENERAL_ERROR, "Error importing backup file", "", __LINE__, __FILE__, $sql);
-							}
 						}
 					}
 				}

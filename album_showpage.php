@@ -37,7 +37,7 @@ if (isset($_POST['message']))
 	$_POST['comment'] = $_POST['message'];
 }
 
-if(isset($_GET['mode']) && $_GET['mode'] == 'smilies')
+if(isset($_GET['mode']) && ($_GET['mode'] == 'smilies'))
 {
 	generate_smilies('window');
 	exit;
@@ -111,7 +111,8 @@ $sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_o
 // ------------------------------------
 // TEMPLATE ASSIGNEMENT
 // ------------------------------------
-if ((isset($_GET['slideshow']) && (intval($_GET['slideshow']) > 0)) || (isset($_POST['slideshow']) && (intval($_POST['slideshow']) > 0)))
+$is_slideshow = ((isset($_GET['slideshow']) && (intval($_GET['slideshow']) > 0)) || (isset($_POST['slideshow']) && (intval($_POST['slideshow']) > 0))) ? true : false;
+if ($is_slideshow)
 {
 	$gen_simple_header = true;
 	$show_template = 'album_slideshow_body.tpl';
@@ -149,16 +150,10 @@ else
 // ------------------------------------
 
 $sql = "SELECT pic_id, pic_cat_id, pic_user_id, pic_time
-		FROM ". ALBUM_TABLE ."
-		WHERE pic_id = $pic_id";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
-
+		FROM " . ALBUM_TABLE . "
+		WHERE pic_id = " . $pic_id;
+$result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
-
 if(empty($row))
 {
 	message_die(GENERAL_ERROR, $lang['Pic_not_exist']);
@@ -177,17 +172,12 @@ $sql = "SELECT *
 		WHERE a.pic_cat_id = " . $pic_cat_id_tmp . "
 			AND a.pic_approval = 1
 		" . $sql_order;
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
-
+$result = $db->sql_query($sql);
 $total_pic_count = $db->sql_numrows($result);
 $total_pic_rows = $db->sql_fetchrowset($result);
 $db->sql_freeresult($result);
 
-if ($album_config['slideshow_script'] == 1)
+if ($album_config['slideshow_script'])
 {
 	$template->assign_block_vars('switch_slideshow_scripts', array());
 
@@ -212,6 +202,7 @@ if ($album_config['slideshow_script'] == 1)
 	}
 
 	$template->assign_vars(array(
+		'S_SLIDESHOW_SCRIPTS' => true,
 		'PIC_LIST' => $pic_list,
 		'TIT_LIST' => $tit_list,
 		'DES_LIST' => $des_list,
@@ -309,7 +300,7 @@ if ($album_config['show_pics_nav'] == 1)
 	);
 }
 
-if ($album_config['invert_nav_arrows'] == 0)
+if (!$album_config['invert_nav_arrows'])
 {
 	$max_pic_counter = min(($total_pic_count - 1), ($new_pic_array_id + 2));
 	$min_pic_counter = max(0, ($new_pic_array_id - 2));
@@ -332,7 +323,7 @@ if ($album_config['invert_nav_arrows'] == 0)
 			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes(htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 		}
 
-		if ($album_config['show_pics_nav'] == 1)
+		if ($album_config['show_pics_nav'])
 		{
 			$template->assign_block_vars('pics_nav.pics', array(
 				'U_PIC_THUMB' => $thumbnail_file,
@@ -411,14 +402,8 @@ if(isset($comment_id) && $album_config['comment'] == 1)
 	$sql = "SELECT comment_id, comment_pic_id
 			FROM ". ALBUM_COMMENT_TABLE ."
 			WHERE comment_id = '$comment_id'";
-
-	if(!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Could not query comment and pic information', '', __LINE__, __FILE__, $sql);
-	}
-
+	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-
 	if(empty($row))
 	{
 		message_die(GENERAL_ERROR, 'This comment does not exist');
@@ -440,18 +425,14 @@ $sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_active, u.user_color, u.
 			AND ac.cat_id = p.pic_cat_id
 		GROUP BY p.pic_id
 		LIMIT 1";
-
-if(!($result = $db->sql_query($sql)))
-{
-	message_die(GENERAL_ERROR, 'Could not query pic information', '', __LINE__, __FILE__, $sql);
-}
+$result = $db->sql_query($sql);
 $thispic = $db->sql_fetchrow($result);
 
 $cat_id = ($thispic['pic_cat_id'] != 0) ? $thispic['pic_cat_id'] : $thispic['cat_id'];
 $album_user_id = $thispic['cat_user_id'];
 
 $total_comments = $thispic['comments_count'];
-$comments_per_page = $board_config['posts_per_page'];
+$comments_per_page = $config['posts_per_page'];
 
 if(empty($thispic))
 {
@@ -468,7 +449,7 @@ if ($auth_data['view'] == 0)
 {
 	if (!$userdata['session_logged_in'])
 	{
-		redirect(append_sid(LOGIN_MG . '?redirect=album_showpage.' . PHP_EXT . '&amp;pic_id=' . $pic_id));
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_showpage.' . PHP_EXT . '&amp;pic_id=' . $pic_id));
 		exit;
 	}
 	else
@@ -488,11 +469,7 @@ if($userdata['session_logged_in'])
 			WHERE rate_pic_id = '$pic_id'
 				AND rate_user_id = '". $userdata['user_id'] ."'
 			LIMIT 1";
-
-	if(!$result = $db->sql_query($sql))
-	{
-		message_die(GENERAL_ERROR, 'Could not query rating information', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($db->sql_numrows($result) > 0)
 	{
@@ -523,10 +500,7 @@ if($userdata['session_logged_in'])
 		WHERE pic_id = $pic_id
 			AND user_id = " . $userdata['user_id'] . "
 		LIMIT 1";
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, "Could not obtain comment watch information", '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -538,10 +512,7 @@ if($userdata['session_logged_in'])
 				$sql = "DELETE FROM " . ALBUM_COMMENT_WATCH_TABLE . "
 					WHERE pic_id = $pic_id
 						AND user_id = " . $userdata['user_id'];
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Could not delete comment watch information", '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 				$is_watching_comment = false;
 			}
 
@@ -561,10 +532,7 @@ if($userdata['session_logged_in'])
 					SET notify_status = 0
 					WHERE pic_id = $pic_id
 						AND user_id = " . $userdata['user_id'];
-				if (!($result = $db->sql_query($sql)))
-				{
-					message_die(GENERAL_ERROR, "Could not update comment watch information", '', __LINE__, __FILE__, $sql);
-				}
+				$result = $db->sql_query($sql);
 			}
 		}
 	}
@@ -575,10 +543,7 @@ if($userdata['session_logged_in'])
 		{
 			$sql = "INSERT INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
 				VALUES ($pic_id, " . $userdata['user_id'] . ", 0)";
-			if (!($result = $db->sql_query($sql)))
-			{
-				message_die(GENERAL_ERROR, "Could not insert comment watch information", '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 		}
 
 		$redirect_url = append_sid('album.' . PHP_EXT);
@@ -616,7 +581,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	// Get the comments thread
 	// Beware: when this script was called with comment_id (without start)
 	// ------------------------------------
-	if ($album_config['comment'] == 1)
+	if ($album_config['comment'])
 	{
 		if(!isset($comment_id))
 		{
@@ -630,14 +595,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 					FROM ". ALBUM_COMMENT_TABLE ."
 					WHERE comment_pic_id = $pic_id
 						AND comment_id < $comment_id";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain comments information from the database', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
-
 			if(!empty($row))
 			{
 				$start = floor($row['count'] / $comments_per_page) * $comments_per_page;
@@ -662,43 +621,19 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				WHERE c.comment_pic_id = '$pic_id'
 				ORDER BY c.comment_id $comment_sort_order
 				LIMIT $limit_sql";
-
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain comments information from the database', '', __LINE__, __FILE__, $sql);
-			}
-
+			$result = $db->sql_query($sql);
 			$commentrow = array();
 			while($row = $db->sql_fetchrow($result))
 			{
 				$commentrow[] = $row;
 			}
 			$db->sql_freeresult($result);
-			$orig_autolink = array();
-			$replacement_autolink = array();
-			obtain_autolink_list($orig_autolink, $replacement_autolink, 99999999);
-			if (!$userdata['user_allowswearywords'])
-			{
-				$orig_word = array();
-				$replacement_word = array();
-				obtain_word_list($orig_word, $replacement_word);
-			}
 
-			//rank & rank image
-			$sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_special ASC, rank_min ASC";
-			if (!($result = $db->sql_query($sql, false, 'ranks_')))
-			{
-				message_die(GENERAL_ERROR, 'Could not obtain ranks information.', '', __LINE__, __FILE__, $sql);
-			}
+			// Ranks
+			@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+			$ranks_array = $cache->obtain_ranks(false);
 
-			$ranksrow = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$ranksrow[] = $row;
-			}
-			$db->sql_freeresult($result);
-
-			for ($i = 0; $i < count($commentrow); $i++)
+			for ($i = 0; $i < sizeof($commentrow); $i++)
 			{
 				$poster = ($commentrow[$i]['comment_username'] == '') ? $lang['Guest'] : colorize_username($commentrow[$i]['user_id'], $commentrow[$i]['username'], $commentrow[$i]['user_color']);
 
@@ -709,28 +644,22 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 								LEFT JOIN " . USERS_TABLE . " AS u ON c.comment_edit_user_id = u.user_id
 							WHERE c.comment_id = '".$commentrow[$i]['comment_id']."'
 							LIMIT 1";
-
-					if(!$result = $db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not obtain last edit information from the database', '', __LINE__, __FILE__, $sql);
-					}
-
+					$result = $db->sql_query($sql);
 					$lastedit_row = $db->sql_fetchrow($result);
-
 					$edit_info = ($commentrow[$i]['comment_edit_count'] == 1) ? $lang['Edited_time_total'] : $lang['Edited_times_total'];
-
-					$edit_info = '<br /><br />&raquo;&nbsp;' . sprintf($edit_info, colorize_username($lastedit_row['user_id'], $lastedit_row['username'], $lastedit_row['user_color']), create_date_ip($board_config['default_dateformat'], $commentrow[$i]['comment_edit_time'], $board_config['board_timezone']), $commentrow[$i]['comment_edit_count']) .'<br />';
+					$edit_info = '<br /><br />&raquo;&nbsp;' . sprintf($edit_info, colorize_username($lastedit_row['user_id'], $lastedit_row['username'], $lastedit_row['user_color']), create_date_ip($config['default_dateformat'], $commentrow[$i]['comment_edit_time'], $config['board_timezone']), $commentrow[$i]['comment_edit_count']) .'<br />';
 				}
 				else
 				{
 					$edit_info = '';
 				}
 
+				$commentrow[$i]['comment_text'] = censor_text($commentrow[$i]['comment_text']);
+
 				// Smilies
-				global $bbcode;
-				$html_on = ($userdata['user_allowhtml'] && $board_config['allow_html']) ? 1 : 0 ;
-				$bbcode_on = ($userdata['user_allowbbcode'] && $board_config['allow_bbcode']) ? 1 : 0 ;
-				$smilies_on = ($userdata['user_allowsmile'] && $board_config['allow_smilies']) ? 1 : 0 ;
+				$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+				$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+				$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 				$bbcode->allow_html = $html_on;
 				$bbcode->allow_bbcode = $bbcode_on;
 				$bbcode->allow_smilies = $smilies_on;
@@ -739,15 +668,9 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				$commentrow[$i]['comment_text'] = strtr($commentrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
 
 				$commentrow[$i]['comment_text'] = $bbcode->acronym_pass($commentrow[$i]['comment_text']);
+				$commentrow[$i]['comment_text'] = autolink_text($commentrow[$i]['comment_text'], '999999');
 
-				if(count($orig_autolink))
-				{
-					$commentrow[$i]['comment_text'] = autolink_transform($commentrow[$i]['comment_text'], $orig_autolink, $replacement_autolink);
-				}
-				//$commentrow[$i]['comment_text'] = kb_word_wrap_pass($commentrow[$i]['comment_text']);
-				$commentrow[$i]['comment_text'] = (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords']) ? preg_replace($orig_word, $replacement_word, $commentrow[$i]['comment_text']) : $commentrow[$i]['comment_text'];
-
-				$user_sig = ($board_config['allow_sig']) ? trim($commentrow[$i]['user_sig']) : '';
+				$user_sig = ($config['allow_sig']) ? trim($commentrow[$i]['user_sig']) : '';
 				if($user_sig != '')
 				{
 					$bbcode->is_sig = true;
@@ -764,34 +687,27 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 				$poster_avatar = $user_info['avatar'];
 
-				$poster_rank = '&nbsp;';
-				$rank_image = '';
-				if ($commentrow[$i]['user_id'] == ANONYMOUS)
+				// Mighty Gorgon - Multiple Ranks - BEGIN
+				$user_ranks = generate_ranks($commentrow[$i], $ranks_array);
+
+				$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
+				$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
+				$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
+				$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
+				$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
+				$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
+				$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
+				$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
+				$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
+				$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
+				if (($user_rank_01 == '') && ($user_rank_01_img  == '') && ($user_rank_02 == '') && ($user_rank_02_img == '') && ($user_rank_03 == '') && ($user_rank_03_img == '') && ($user_rank_04 == '') && ($user_rank_04_img == '') && ($user_rank_05 == '') && ($user_rank_05_img == ''))
 				{
-					$poster_rank = $lang['Guest'];
+					$user_rank_01 = '&nbsp;';
 				}
-				elseif ($commentrow[$i]['user_rank'])
-				{
-					for($j = 0; $j < count($ranksrow); $j++)
-					{
-						if ($commentrow[$i]['user_rank'] == $ranksrow[$j]['rank_id'] && $ranksrow[$j]['rank_special'])
-						{
-							$poster_rank = $ranksrow[$j]['rank_title'];
-							$rank_image = ($ranksrow[$j]['rank_image']) ? '<img src="' . $ranksrow[$j]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" style="border:0px;vertical-align:middle;" /><br />' : '';
-						}
-					}
-				}
-				else
-				{
-					for($j = 0; $j < count($ranksrow); $j++)
-					{
-						if ($commentrow[$i]['user_posts'] >= $ranksrow[$j]['rank_min'] && !$ranksrow[$j]['rank_special'])
-						{
-							$poster_rank = $ranksrow[$j]['rank_title'];
-							$rank_image = ($ranksrow[$j]['rank_image']) ? '<img src="' . $ranksrow[$j]['rank_image'] . '" alt="' . $poster_rank . '" title="' . $poster_rank . '" style="border:0px;vertical-align:middle;" /><br />' : '';
-						}
-					}
-				}
+				// Mighty Gorgon - Multiple Ranks - END
+
+				$poster_rank = $user_rank_01;
+				$rank_image = $user_rank_01_img;
 
 				// Handle anon users posting with usernames
 				if (($commentrow[$i]['user_id'] == ANONYMOUS) && ($commentrow[$i]['post_username'] != ''))
@@ -818,7 +734,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				$template->assign_block_vars('commentrow', array(
 					'ID' => $commentrow[$i]['comment_id'],
 					'POSTER_NAME' => $poster,
-					'COMMENT_TIME' => create_date_ip($board_config['default_dateformat'], $commentrow[$i]['comment_time'], $board_config['board_timezone']),
+					'COMMENT_TIME' => create_date_ip($config['default_dateformat'], $commentrow[$i]['comment_time'], $config['board_timezone']),
 					'IP' => ($userdata['user_level'] == ADMIN) ? '<a href="' . $ip_url . '" target="_blank">' . decode_ip($commentrow[$i]['comment_user_ip']) .'</a><br />' : '',
 					'IP_IMG' => $ip_img,
 					'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
@@ -851,7 +767,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 					'POSTER_AVATAR' => $poster_avatar,
 					'POSTER_RANK' => $poster_rank,
 					'POSTER_RANK_IMAGE' => $rank_image,
-					'POSTER_JOINED' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $commentrow[$i]['user_regdate'], $board_config['board_timezone']) : '',
+					'POSTER_JOINED' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $commentrow[$i]['user_regdate'], $config['board_timezone']) : '',
 					'POSTER_POSTS' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $commentrow[$i]['user_posts'] : '',
 					'POSTER_FROM' => ($commentrow[$i]['user_from'] && $commentrow[$i]['user_id'] != ANONYMOUS) ? $lang['Location'] . ': ' . $commentrow[$i]['user_from'] : '',
 					'POSTER_SIGNATURE' => $user_sig,
@@ -873,10 +789,11 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		}
 	}
 
-	// Start output of page
-	$is_slideshow = ((isset($_GET['slideshow']) && (intval($_GET['slideshow']) > 0)) || (isset($_POST['slideshow']) && (intval($_POST['slideshow']) > 0))) ? true : false;
+	// Mighty Gorgon - Slideshow - BEGIN
 	if ($is_slideshow)
 	{
+		$template->assign_var('S_SLIDESHOW', true);
+
 		$css_temp = array('fap_slideshow.css');
 		if(is_array($css_include))
 		{
@@ -887,54 +804,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 			$css_include = $css_temp;
 		}
 		unset($css_temp);
-	}
 
-	$page_title = $lang['Album'];
-	$meta_description = $lang['Album'] . ' - ' . strip_tags($thispic['cat_title']) . ' - ' . htmlspecialchars($thispic['pic_title']) . ' - ' . $thispic['pic_desc'];
-	$meta_keywords = $lang['Album'] . ', ' . strip_tags($thispic['cat_title']) . ', ' . htmlspecialchars($thispic['pic_title']) . ', ' . htmlspecialchars($thispic['pic_desc']) . ', ';
-
-	include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
-	$template->set_filenames(array('body' => $show_template));
-
-	$poster = ($thispic['username'] == '') ? $lang['Guest'] : colorize_username($thispic['user_id'], $thispic['username'], $thispic['user_color'], $thispic['user_active']);
-
-	//---------------------------------
-	// Comment Posting Form
-	//---------------------------------
-
-	if (($auth_data['comment'] == 1) && ($album_config['comment'] == 1))
-	{
-		$template->assign_block_vars('switch_comment_post', array());
-
-		if(!$userdata['session_logged_in'])
-		{
-			$template->assign_block_vars('switch_comment_post.logout', array());
-		}
-	}
-
-	// Rating System
-	if ($album_config['rate'] == 1)
-	{
-		$image_rating = ImageRating($thispic['rating']);
-		$template->assign_block_vars('rate_switch', array());
-
-		if ($auth_data['rate'] == 1 && ($already_rated == false) && (($own_pic_rate == false) || ($userdata['user_level'] == ADMIN)))
-		{
-			$template->assign_block_vars('rate_switch.rate_row', array());
-			for ($i = 0; $i < $album_config['rate_scale']; $i++)
-			{
-				$template->assign_block_vars('rate_switch.rate_row.rate_scale_row', array(
-					'POINT' => ($i + 1)
-					)
-				);
-			}
-		}
-	}
-
-	// Mighty Gorgon - Slideshow - BEGIN
-	if ($is_slideshow)
-	{
-		$template->assign_block_vars('switch_slideshow', array());
 		$slideshow_delay = (isset($_GET['slideshow']) ? intval($_GET['slideshow']) : intval($_POST['slideshow']));
 		$slideshow_select = '';
 		$slideshow_onoff = $lang['Slideshow_Off'];
@@ -961,7 +831,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	}
 	else
 	{
-		if ($album_config['show_slideshow'] == 1)
+		if ($album_config['show_slideshow'])
 		{
 			$template->assign_block_vars('switch_slideshow_enabled', array());
 		}
@@ -993,17 +863,78 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	}
 
 	//$temp_js = '<script type="text/javascript">window.attachEvent(\'onload\', runSlideShow();)</script>';
-	if ($album_config['slideshow_script'] == 1)
+	if ($album_config['slideshow_script'])
 	{
+		$template->assign_var('S_SLIDESHOW_SCRIPT', true);
 		//$slideshow_refresh = '</body><body onload="runSlideShow()">';
-		$slideshow_refresh = '<script type="text/javascript">onload_functions.push(\'runSlideShow()\');</script>';
+		//$slideshow_refresh = '<script type="text/javascript">onload_functions.push(\'runSlideShow()\');</script>';
 		//$slideshow_refresh = $temp_js;
 	}
 	else
 	{
-		$slideshow_refresh = '</body><head><meta http-equiv="refresh" content="' . $slideshow_delay .  ';url=' . $next_pic_url . '"></head><body>';
+		$slideshow_refresh = '<meta http-equiv="refresh" content="' . $slideshow_delay .  ';url=' . $next_pic_url . '">';
 	}
+
+	$template->assign_vars(array(
+		// Mighty Gorgon - Slideshow - BEGIN
+		'L_SLIDESHOW' => $lang['Slideshow'],
+		'L_SLIDESHOW_DELAY' => $lang['Slideshow_Delay'],
+		'L_SLIDESHOW_ONOFF' => $slideshow_onoff,
+
+		'S_SLIDESHOW_REFRESH' => $slideshow_refresh,
+
+		'SLIDESHOW_SELECT' => $slideshow_select,
+		'SLIDESHOW_DELAY' => $slideshow_delay,
+
+		'U_SLIDESHOW' => $slideshow_link,
+		'U_SLIDESHOW_FULL' => $slideshow_link_full,
+		'U_SLIDESHOW_REFRESH' => $slideshow_refresh,
+		'U_SLIDESHOW_REFRESH_META' => '<meta http-equiv="refresh" content="' . $slideshow_delay .  ';url=' . $next_pic_url . '">',
+		// Mighty Gorgon - Slideshow - END
+		)
+	);
+
 	// Mighty Gorgon - Slideshow - END
+
+	// Start output of page
+	$meta_content['page_title'] = $lang['Album'] . ' - ' . htmlspecialchars($thispic['pic_title']);
+	$meta_content['description'] = $lang['Album'] . ' - ' . strip_tags($thispic['cat_title']) . ' - ' . htmlspecialchars($thispic['pic_title']) . ' - ' . htmlspecialchars($thispic['pic_desc']);
+	$meta_content['keywords'] = $lang['Album'] . ', ' . strip_tags($thispic['cat_title']) . ', ' . htmlspecialchars($thispic['pic_title']) . ', ' . htmlspecialchars($thispic['pic_desc']) . ', ';
+
+	$poster = ($thispic['username'] == '') ? $lang['Guest'] : colorize_username($thispic['user_id'], $thispic['username'], $thispic['user_color'], $thispic['user_active']);
+
+	//---------------------------------
+	// Comment Posting Form
+	//---------------------------------
+
+	if (($auth_data['comment'] == 1) && $album_config['comment'])
+	{
+		$template->assign_block_vars('switch_comment_post', array());
+
+		if(!$userdata['session_logged_in'])
+		{
+			$template->assign_block_vars('switch_comment_post.logout', array());
+		}
+	}
+
+	// Rating System
+	if ($album_config['rate'])
+	{
+		$image_rating = ImageRating($thispic['rating']);
+		$template->assign_block_vars('rate_switch', array());
+
+		if ($auth_data['rate'] == 1 && ($already_rated == false) && (($own_pic_rate == false) || ($userdata['user_level'] == ADMIN)))
+		{
+			$template->assign_block_vars('rate_switch.rate_row', array());
+			for ($i = 0; $i < $album_config['rate_scale']; $i++)
+			{
+				$template->assign_block_vars('rate_switch.rate_row.rate_scale_row', array(
+					'POINT' => ($i + 1)
+					)
+				);
+			}
+		}
+	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
 	$pic_fullpath = ALBUM_UPLOAD_PATH . $thispic['pic_filename'];
@@ -1024,10 +955,10 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		}
 	}
 
-	$server_protocol = ($board_config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = trim($board_config['server_name']);
-	$server_port = ($board_config['server_port'] <> 80) ? ':' . trim($board_config['server_port']) . '/' : '/';
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($board_config['script_path']));
+	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+	$server_name = trim($config['server_name']);
+	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
+	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
 	$script_name = ($script_name == '') ? '' : $script_name . '/';
 	$server_path = $server_protocol . $server_name . $server_port . $script_name;
 
@@ -1065,9 +996,9 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	$parse_desc_bbcode = true;
 	if ($parse_desc_bbcode)
 	{
-		$bbcode->allow_html = ($board_config['allow_html'] ? true : false);
-		$bbcode->allow_bbcode = ($board_config['allow_bbcode'] ? true : false);
-		$bbcode->allow_smilies = ($board_config['allow_smilies'] ? true : false);
+		$bbcode->allow_html = ($config['allow_html'] ? true : false);
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 		$pic_desc = $bbcode->parse($pic_desc);
 	}
 	else
@@ -1107,18 +1038,6 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		'NEXT_PIC' => $next_pic,
 		'PREV_PIC' => $prev_pic,
 
-		// Mighty Gorgon - Slideshow - BEGIN
-		'L_SLIDESHOW' => $lang['Slideshow'],
-		'L_SLIDESHOW_DELAY' => $lang['Slideshow_Delay'],
-		'L_SLIDESHOW_ONOFF' => $slideshow_onoff,
-		'SLIDESHOW_SELECT' => $slideshow_select,
-		'SLIDESHOW_DELAY' => $slideshow_delay,
-		'U_SLIDESHOW' => $slideshow_link,
-		'U_SLIDESHOW_FULL' => $slideshow_link_full,
-		'U_SLIDESHOW_REFRESH' => $slideshow_refresh,
-		'U_SLIDESHOW_REFRESH_META' => '<meta http-equiv="refresh" content="' . $slideshow_delay .  ';url=' . $next_pic_url . '">',
-		// Mighty Gorgon - Slideshow - END
-
 		// Mighty Gorgon - Pic Size - BEGIN
 		'L_PIC_DETAILS' => $lang['Pic_Details'],
 		'L_PIC_SIZE' => $lang['Pic_Size'],
@@ -1137,7 +1056,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 		'POSTER' => $poster,
 
-		'PIC_TIME' => create_date_ip($board_config['default_dateformat'], $thispic['pic_time'], $board_config['board_timezone']),
+		'PIC_TIME' => create_date_ip($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
 		'PIC_COMMENTS' => $total_comments,
 
@@ -1195,7 +1114,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	);
 
 	// Social Bookmarks
-	if ($board_config['show_social_bookmarks'] == true)
+	if ($config['show_social_bookmarks'] == true)
 	{
 		$template->assign_block_vars('social_bookmarks', array());
 	}
@@ -1232,10 +1151,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		$template->assign_block_vars('comment_switcharo_bottom', array());
 	}
 
-	// Generate the page
-	$template->pparse('body');
-
-	include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
+	$template_to_parse = $show_template;
+	full_page_generation($template_to_parse, $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 }
 else
 {
@@ -1255,7 +1172,7 @@ else
 	{
 		if (!$userdata['session_logged_in'])
 		{
-			redirect(append_sid(LOGIN_MG . '?redirect=album_showpage.' . PHP_EXT . '&amp;pic_id=' . $pic_id));
+			redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_showpage.' . PHP_EXT . '&amp;pic_id=' . $pic_id));
 		}
 		else
 		{
@@ -1298,14 +1215,8 @@ else
 		// Get $comment_id
 		$sql = "SELECT MAX(comment_id) AS max
 				FROM ". ALBUM_COMMENT_TABLE;
-
-		if(!$result = $db->sql_query($sql))
-		{
-			message_die(GENERAL_ERROR, 'Could not found comment_id', '', __LINE__, __FILE__, $sql);
-		}
-
+		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
-
 		$comment_id = $row['max'] + 1;
 
 		// Insert into DB
@@ -1314,10 +1225,7 @@ else
 		{
 			$sql = "INSERT INTO " . ALBUM_COMMENT_TABLE ." (comment_id, comment_pic_id, comment_cat_id, comment_user_id, comment_username, comment_user_ip, comment_time, comment_text)
 					VALUES ('$comment_id', '$pic_id', '$cat_id', '$comment_user_id', '$comment_username', '$comment_user_ip', '$comment_time', '$comment_text')";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert new entry', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			// Watch pic for comments - BEGIN
 			// Here we send email notification
 			album_comment_notify($pic_id);
@@ -1362,10 +1270,7 @@ else
 
 			$sql = "INSERT INTO " . ALBUM_RATE_TABLE . " (rate_pic_id, rate_user_id, rate_user_ip, rate_point)
 					VALUES ('$pic_id', '$rate_user_id', '$rate_user_ip', '$rate_point')";
-			if(!$result = $db->sql_query($sql))
-			{
-				message_die(GENERAL_ERROR, 'Could not insert new rating', '', __LINE__, __FILE__, $sql);
-			}
+			$result = $db->sql_query($sql);
 			$message = $lang['Album_rate_successfully'] . '<br /><br />';
 		}
 	}

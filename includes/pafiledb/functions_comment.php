@@ -17,19 +17,10 @@
 
 function display_comments(&$file_data)
 {
-	global $pafiledb_template, $lang, $board_config, $pafiledb_config, $db, $images;
-	global $userdata, $db, $pafiledb, $pafiledb_functions, $bbcode;
-	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-	include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
-	require_once(IP_ROOT_PATH . 'includes/functions_mg_ranks.' . PHP_EXT);
-	$ranks_sql = query_ranks();
-	//
-	// Define censored word matches
-	//
-
-	$orig_word = array();
-	$replacement_word = array();
-	obtain_word_list($orig_word, $replacement_word);
+	global $pafiledb_template, $pafiledb, $pafiledb_functions, $pafiledb_config;
+	global $db, $cache, $config, $images, $userdata, $lang, $bbcode;
+	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 
 	$pafiledb_template->assign_vars(array(
 		'L_COMMENTS' => $lang['Comments']
@@ -41,11 +32,7 @@ function display_comments(&$file_data)
 			LEFT JOIN ' . USERS_TABLE . " AS u ON c.poster_id = u.user_id
 		WHERE c.file_id = '" . $file_data['file_id'] . "'
 		ORDER BY c.comments_time ASC";
-
-	if (!($result = $db->sql_query($sql)))
-	{
-		message_die(GENERAL_ERROR, 'Couldnt select comments', '', __LINE__, __FILE__, $sql);
-	}
+	$result = $db->sql_query($sql);
 
 	if (!($comment_number = $db->sql_numrows($result)))
 	{
@@ -55,15 +42,16 @@ function display_comments(&$file_data)
 		);
 	}
 
-	$ranksrow = array();
-	$pafiledb_functions->obtain_ranks($ranksrow);
+	$ranks_array = $cache->obtain_ranks(false);
 
 	while ($comments_row = $db->sql_fetchrow($result))
 	{
-		$time = create_date_ip($board_config['default_dateformat'], $comments_row['comments_time'], $board_config['board_timezone']);
+		$time = create_date_ip($config['default_dateformat'], $comments_row['comments_time'], $config['board_timezone']);
 
 		$comments_text = $comments_row['comments_text'];
 		$comments_text = comment_suite($comments_text);
+
+		$comments_text = censor_text($comments_text);
 
 		//bbcode parser Start
 		$bbcode->allow_html = ($pafiledb_config['allow_html'] ? true : false);
@@ -71,14 +59,6 @@ function display_comments(&$file_data)
 		$bbcode->allow_smilies = ($pafiledb_config['allow_smilies'] ? true : false);
 		$comments_text = $bbcode->parse($comments_text);
 		//bbcode parser End
-
-		if (!empty($orig_word) && count($orig_word) && !$userdata['user_allowswearywords'])
-		{
-			if ($comments_text != '')
-			{
-				$comments_text = preg_replace($orig_word, $replacement_word, $comments_text);
-			}
-		}
 
 		$poster = ($comments_row['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($comments_row['user_id'], $comments_row['username'], $comments_row['user_color'], $comments_row['user_active']);
 
@@ -95,7 +75,7 @@ function display_comments(&$file_data)
 		$poster_avatar = $user_info['avatar'];
 
 		// Mighty Gorgon - Multiple Ranks - BEGIN
-		$user_ranks = generate_ranks($comments_row, $ranks_sql);
+		$user_ranks = generate_ranks($comments_row, $ranks_array);
 
 		$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
 		$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
