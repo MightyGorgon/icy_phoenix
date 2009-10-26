@@ -572,7 +572,8 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('birthday_che
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bluecard_limit', '3');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bluecard_limit_2', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_user_bancard', '10');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('report_forum', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('report_forum', '4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bin_forum', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_rating_return', '10');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('min_rates_number', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('rating_max', '10');
@@ -618,7 +619,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_grava
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('gravatar_rating', 'PG');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('gravatar_default_image', 'images/avatars/default_avatars/member.gif');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('default_avatar_set', '2');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bin_forum', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('liw_enabled', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('liw_sig_enabled', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('liw_max_width', '500');
