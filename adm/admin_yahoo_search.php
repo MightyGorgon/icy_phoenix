@@ -27,7 +27,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 
 if (! strtolower(@ini_get('safe_mode')))
 {
@@ -278,7 +278,7 @@ if (isset($_POST['submit']))
 else
 {
 	$sql = 'SELECT c.forum_id AS cat_id, c.forum_name AS cat_title, c.forum_order AS cat_order
-			FROM ' . FORUMS_TABLE . ' AS c
+			FROM ' . FORUMS_TABLE . ' c
 			WHERE c.forum_type = ' . FORUM_CAT . '
 			ORDER BY c.forum_order';
 	$result = $db->sql_query($sql);
@@ -292,9 +292,9 @@ else
 	if ($total_categories = sizeof($category_rows))
 	{
 		$sql = 'SELECT *
-			FROM ' . FORUMS_TABLE . '
+			FROM ' . FORUMS_TABLE . ' c
 			WHERE c.forum_type <> ' . FORUM_CAT . '
-			ORDER BY forum_order';
+			ORDER BY c.forum_order';
 		$result = $db->sql_query($sql);
 		$forums_select = '<select name="forums_select[]" multiple="multiple" size="10" style="width: 250px;">';
 

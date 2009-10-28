@@ -111,6 +111,15 @@ DELETE FROM `phpbb_config` WHERE config_name = 'smart_header';
 ########################################
 ##              BUILD 056             ##
 ########################################
+DELETE FROM `phpbb_config` WHERE config_name = 'disable_ftr';
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_topic_number', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_message', 'Before going on... please make sure you have read and understood this post. It contains important informations regarding this site.');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_install_time', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_disable', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_all_users', '0');
+
+DROP TABLE `phpbb_force_read`;
+ALTER TABLE `phpbb_force_read_users` DROP `read`;
 
 
 

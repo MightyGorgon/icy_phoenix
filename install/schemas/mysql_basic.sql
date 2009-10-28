@@ -708,7 +708,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smilies_topi
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('html_email', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('config_cache', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('admin_protect', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_ftr', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_disable', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_logins', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('last_logins_n', '20');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('edit_notes', '1');
@@ -856,6 +856,10 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_analy
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_highslide', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('read_only_forum', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('forum_limit_edit_time_interval', '1440');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_topic_number', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_message', 'Before going on... please make sure you have read and understood this post. It contains important informations regarding this site.');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_install_time', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_all_users', '0');
 ## CASH - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_disable', 0);
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_display_after_posts', 1);
@@ -1260,10 +1264,6 @@ INSERT INTO `phpbb_forbidden_extensions` (`ext_id`, `extension`) VALUES (4, 'pht
 INSERT INTO `phpbb_forbidden_extensions` (`ext_id`, `extension`) VALUES (5, 'pl');
 INSERT INTO `phpbb_forbidden_extensions` (`ext_id`, `extension`) VALUES (6, 'asp');
 INSERT INTO `phpbb_forbidden_extensions` (`ext_id`, `extension`) VALUES (7, 'cgi');
-
-## `phpbb_force_read`
-##
-INSERT INTO `phpbb_force_read` (`topic_number`, `message`, `install_date`, `active`, `effected`) VALUES (1, 'Before going on... please make sure you have read and understood this post. It contains important informations regarding this site.', 0, 1, 1);
 
 ## `phpbb_force_read_users`
 ##

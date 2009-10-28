@@ -19,7 +19,7 @@ if(!empty($setmodules))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 
 // DB CLASS - BEGIN
 include(IP_ROOT_PATH . 'includes/class_db.' . PHP_EXT);

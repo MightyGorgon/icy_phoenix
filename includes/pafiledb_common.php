@@ -72,7 +72,7 @@ if (defined('IN_ADMIN'))
 	include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_pafiledb_admin.' . PHP_EXT);
 }
 
-$pa_cache = new acm();
+$pa_cache = new pa_acm();
 $pafiledb_functions = new pafiledb_functions();
 
 if ($pa_cache->exists('config'))

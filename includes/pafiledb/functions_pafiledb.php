@@ -1790,9 +1790,8 @@ class pafiledb
 
 		$where_sql = (is_array($mirror_id)) ? 'IN (' . implode(', ', $mirror_id) . ')' : "= $mirror_id";
 
-		$sql = 'DELETE FROM ' . PA_MIRRORS_TABLE . "
-			WHERE mirror_id $where_sql";
-		$db->sql_query($sql)
+		$sql = 'DELETE FROM ' . PA_MIRRORS_TABLE . " WHERE mirror_id $where_sql";
+		$db->sql_query($sql);
 	}
 
 	function file_maintenance()

@@ -28,7 +28,7 @@ if( !empty($setmodules) )
 // Include required files, get PHP_EXT and check permissions
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 
 if( isset($_POST['add_name']) )
 {

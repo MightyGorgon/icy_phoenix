@@ -66,7 +66,7 @@ include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PH
 $order_by = 'download_count DESC LIMIT ' . $return_limit;
 
 // Get Valid Forum ID's to search
-$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . 'WHERE forum_type = ' . FORUM_POST;
+$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE forum_type = ' . FORUM_POST;
 $result = $stat_db->sql_query($sql);
 $is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
 $is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $userdata);

@@ -155,17 +155,12 @@ $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $c
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // Force Topic Read - BEGIN
-$ftr_disabled = true;
-if (!$config['disable_ftr'])
+$ftr_disabled = $config['ftr_disable'] ? true : false;
+if (!$ftr_disabled)
 {
 	@include(IP_ROOT_PATH . 'includes/topic_ftr.' . PHP_EXT);
 }
 // Force Topic Read - END
-
-if (!$ftr_disabled)
-{
-	exit;
-}
 
 // Topics Sorting - BEGIN
 $letters_array = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');

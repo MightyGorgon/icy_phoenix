@@ -82,31 +82,6 @@ function get_dividers($topics)
 }
 /* functions_separate.php - END */
 
-/* functions_ftr.php - END */
-function ftr_get_users_view($user)
-{
-	global $db, $table_prefix;
-	$q1 = "SELECT * FROM ". FORCE_READ_USERS_TABLE . " WHERE user = '$user'";
-	$r1 = $db -> sql_query($q1);
-	$row1 = $db -> sql_fetchrow($r1);
-	$user = $row1['user'];
-	$read = $row1['read'];
-	$viewed = (($user) && ($read == '1')) ? 'true' : 'false';
-
-	return $viewed;
-}
-
-function ftr_insert_read_topic($user)
-{
-	global $db, $table_prefix;
-	$time = time();
-	$q = "INSERT INTO ". FORCE_READ_USERS_TABLE . " VALUES ('$user', '1', '$time')";
-	$r = $db -> sql_query($q);
-
-	return true;
-}
-/* functions_ftr.php - END */
-
 /* functions_bookmark.php - BEGIN */
 // Checks whether a bookmark is set or not
 function is_bookmark_set($topic_id)
@@ -180,7 +155,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 
 		$topics_array = $similar_topics_ids;
 		$sql = "SELECT t.*, u.user_id, u.username, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, f.forum_id, f.forum_name, p.post_time, p.post_username
-					FROM ". TOPICS_TABLE ." t, ". USERS_TABLE ." u, ". FORUMS_TABLE ." f, ". POSTS_TABLE ." p, " . USERS_TABLE . " u2
+					FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . FORUMS_TABLE . " f, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
 					WHERE t.topic_id IN (" . $topics_array . ")
 					AND t.forum_id = f.forum_id
 					AND p.poster_id = u2.user_id

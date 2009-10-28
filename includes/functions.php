@@ -3785,19 +3785,6 @@ function page_header($title = '', $parse_template = false)
 		'PRIVATE_MESSAGE_NEW_FLAG' => $s_privmsg_new,
 		'PRIVMSG_IMG' => $icon_pm,
 
-		// Mighty Gorgon - CMS - BEGIN
-		'U_CMS_ACP' => IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'],
-		'U_ACP' => '<a href="' . IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . $lang['Admin_panel'] . '</a>',
-		'U_CMS' => IP_ROOT_PATH . 'cms.' . PHP_EXT . '?sid=' . $userdata['session_id'],
-		'U_CMS_CONFIG' => append_sid(IP_ROOT_PATH . 'cms.' . PHP_EXT . '?mode=config'),
-		'U_CMS_ADS' => append_sid(IP_ROOT_PATH . 'cms_ads.' . PHP_EXT),
-		'U_CMS_MENU' => append_sid(IP_ROOT_PATH . 'cms_menu.' . PHP_EXT),
-		'U_CMS_GLOBAL_BLOCKS' => append_sid(IP_ROOT_PATH . 'cms.' . PHP_EXT . '?mode=blocks&amp;l_id=0&amp;action=editglobal'),
-		'U_CMS_STANDARD_PAGES' => append_sid(IP_ROOT_PATH . 'cms.' . PHP_EXT . '?mode=layouts_special'),
-		'U_CMS_CUSTOM_PAGES' => append_sid(IP_ROOT_PATH . 'cms.' . PHP_EXT . '?mode=layouts'),
-		'U_CMS_CUSTOM_PAGES_ADV' => append_sid(IP_ROOT_PATH . 'cms.' . PHP_EXT . '?mode=layouts_adv'),
-		// Mighty Gorgon - CMS - END
-
 		'L_USERNAME' => $lang['Username'],
 		'L_PASSWORD' => $lang['Password'],
 		'L_LOGIN_LOGOUT' => $l_login_logout,

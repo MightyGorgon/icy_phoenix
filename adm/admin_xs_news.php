@@ -27,7 +27,7 @@ if(!empty($setmodules))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 $db->clear_cache('xs_');
 require_once(IP_ROOT_PATH . 'includes/functions_xs_admin.' . PHP_EXT);
 require_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);

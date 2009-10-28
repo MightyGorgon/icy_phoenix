@@ -19,5 +19,3 @@ Powered by paFileDB 3.1 ©2002 <a href="http://www.phparena.net/" target="_blank"
 This script (pafiledb integration v 0.0.9d + <a href="http://www.mx-system.com/" target="_blank">MX Addon 1.0</a>) is modified by <a href="http://www.hostsector.com/~mohd/" target="_blank">Mohd</a><br />
 </span>
 </div>
-
-<!-- INCLUDE overall_footer.tpl -->

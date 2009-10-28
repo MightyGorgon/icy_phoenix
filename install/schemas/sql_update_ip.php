@@ -56,6 +56,7 @@ switch ($req_version)
 	case '13053a': $current_ip_version = '1.3.0.53a'; break;
 	case '13154': $current_ip_version = '1.3.1.54'; break;
 	case '13255': $current_ip_version = '1.3.2.55'; break;
+	case '13356': $current_ip_version = '1.3.3.56'; break;
 }
 
 // Icy Phoenix Part...
@@ -1245,7 +1246,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('html_email', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('config_cache', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('admin_protect', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_ftr', '1')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ftr_disable', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_logins', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('last_logins_n', '20')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('edit_notes', '1')";
@@ -3679,6 +3680,18 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.2.55 */
 		case '1.3.2.55':
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'disable_ftr'";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ftr_topic_number', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ftr_message', 'Before going on... please make sure you have read and understood this post. It contains important informations regarding this site.')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ftr_install_time', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ftr_disable', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ftr_all_users', '0')";
+
+		$sql[] = "DROP TABLE `" . $table_prefix . "force_read`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "force_read_users` DROP `read`";
+
+		/* Updating from IP 1.3.3.56 */
+		case '1.3.3.56':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

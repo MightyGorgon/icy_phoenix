@@ -134,7 +134,7 @@ define('IN_CASHMOD', true);
 // Let's set the root dir for phpBB
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (!defined('CASH_PLUGIN_ENABLED') || (defined('CASH_PLUGIN_ENABLED') && !CASH_PLUGIN_ENABLED))

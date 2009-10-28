@@ -27,7 +27,7 @@ $auth_data_sql = '';
 
 $is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
 
-$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . 'WHERE forum_type = ' . FORUM_POST;
+$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE forum_type = ' . FORUM_POST;
 $result = $stat_db->sql_query($sql);
 
 while ($row = $stat_db->sql_fetchrow($result))

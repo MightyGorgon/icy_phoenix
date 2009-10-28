@@ -26,7 +26,7 @@ if(!empty($setmodules))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 
 // Attempt to get the configuration values
 $sql = "SELECT config_name, config_value FROM " . CONFIG_TABLE . " WHERE config_name LIKE 'liw_%' OR config_name = 'liw_max_width'";

@@ -487,26 +487,10 @@ CREATE TABLE `phpbb_forbidden_extensions` (
 
 ## --------------------------------------------------------
 
-## `phpbb_force_read`
-
-CREATE TABLE `phpbb_force_read` (
-	`topic_number` int(25) NOT NULL DEFAULT '0',
-	`message` TEXT NOT NULL,
-	`install_date` int(15) NOT NULL DEFAULT '0',
-	`active` tinyint(2) NOT NULL DEFAULT '1',
-	`effected` tinyint(1) NOT NULL DEFAULT '1'
-);
-
-## `phpbb_force_read`
-
-
-## --------------------------------------------------------
-
 ## `phpbb_force_read_users`
 
 CREATE TABLE `phpbb_force_read_users` (
 	`user` varchar(255) NOT NULL DEFAULT '',
-	`read` int(1) NOT NULL DEFAULT '0',
 	`time` int(10) NOT NULL DEFAULT '0'
 );
 

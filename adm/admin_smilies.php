@@ -34,7 +34,7 @@ if (!empty($_GET['export_pack']) && $_GET['export_pack'] == 'send')
 {
 	$no_page_header = true;
 }
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 if ($cancel)
 {
 	redirect(ADM . '/' . append_sid('admin_smilies.' . PHP_EXT, true));

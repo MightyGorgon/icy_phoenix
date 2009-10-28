@@ -19,7 +19,7 @@ if(!empty($setmodules))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 
 if(!function_exists('period'))

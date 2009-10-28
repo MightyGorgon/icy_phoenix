@@ -30,7 +30,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $confirm = isset($_POST['confirm']) ? true : false;
 $cancel = isset($_POST['cancel']) ? true : false;
 $no_page_header = (!empty($_POST['send_file']) || $cancel) ? true : false;
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 if ($cancel)
 {
 	redirect(ADM . '/'  . append_sid('admin_styles.' . PHP_EXT, true));

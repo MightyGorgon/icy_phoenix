@@ -47,7 +47,6 @@ $tables = array(
 	'cash_exchange',
 	'cash_groups',
 	'cash_log',
-	'categories',
 	'cms_blocks',
 	'cms_block_position',
 	'cms_block_variable',
@@ -451,7 +450,7 @@ $default_config = array(
 	'html_email' => '1',
 	'config_cache' => '1',
 	'admin_protect' => '0',
-	'disable_ftr' => '1',
+	'ftr_disable' => '1',
 	'disable_logins' => '1',
 	'last_logins_n' => '10',
 	'edit_notes' => '1',
@@ -593,6 +592,11 @@ $default_config = array(
 	'google_analytics' => '',
 	'thumbnail_highslide' => '1',
 	'read_only_forum' => '0',
+	'forum_limit_edit_time_interval' => '1440',
+	'ftr_topic_number' => '0',
+	'ftr_message' => 'Before going on... please make sure you have read and understood this post. It contains important informations regarding this site.',
+	'ftr_install_time' => '0',
+	'ftr_all_users' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

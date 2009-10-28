@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.2.55');
+define('ICYPHOENIX_VERSION', '1.3.3.56');
 
 // FOUNDER ID, this is the ID used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');

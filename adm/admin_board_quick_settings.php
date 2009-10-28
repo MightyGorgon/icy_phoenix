@@ -19,7 +19,7 @@ if( !empty($setmodules) )
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 
 if (isset($_POST['mode']) || isset($_GET['mode']))
 {
@@ -110,7 +110,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'config_cache'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'site_history'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'admin_protect'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_ftr'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'ftr_disable'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_logins'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '20' WHERE `config_name` = 'last_logins_n'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'page_gen'";
@@ -218,7 +218,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'config_cache'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'site_history'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'admin_protect'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_ftr'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'ftr_disable'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_logins'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '5' WHERE `config_name` = 'last_logins_n'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'page_gen'";
@@ -335,7 +335,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'config_cache'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'site_history'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'admin_protect'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_ftr'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'ftr_disable'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_logins'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '10' WHERE `config_name` = 'last_logins_n'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'page_gen'";

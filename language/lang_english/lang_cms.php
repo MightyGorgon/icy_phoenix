@@ -383,7 +383,7 @@ $lang = array_merge($lang, array(
 	'TURN_LOCAL' => 'Enable/Disable Location Title',
 	'TURN_BACKGROUND' => 'Enable/Disable Background',
 
-	'BLOCKS_POSITION_SAVE' => 'Save blocks position',
+	'BLOCKS_POSITION_SAVE' => 'Save Blocks Positions',
 	'BLOCKS_POSITION_UPDATED' => 'Blocks location successfully updated',
 
 	'INVALID_BLOCKS' => 'Invalid blocks position',

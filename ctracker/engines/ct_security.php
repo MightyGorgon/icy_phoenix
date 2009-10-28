@@ -471,7 +471,7 @@ function ct_debugger($checkstring, $checkmode)
 		modcommand($debugstream, 'FIND');
 		if (preg_match('#^/admin/(admin_|index\.php)#', $scriptname))
 		{
-			@fwrite($debugstream, "require('./pagestart.' . " . PHP_EXT . ");\n\n");
+			@fwrite($debugstream, "require('pagestart.' . " . PHP_EXT . ");\n\n");
 		}
 		else
 		{

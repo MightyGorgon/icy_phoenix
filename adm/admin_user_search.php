@@ -26,7 +26,7 @@ if(!empty($setmodules))
 // Load default header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_user_search.' . PHP_EXT);

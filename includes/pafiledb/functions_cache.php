@@ -15,13 +15,13 @@
 *
 */
 
-class acm
+class pa_acm
 {
 	var $vars = '';
 	var $vars_ts = array();
 	var $modified = FALSE;
 
-	function acm()
+	function pa_acm()
 	{
 		$this->cache_dir = MAIN_CACHE_FOLDER;
 	}

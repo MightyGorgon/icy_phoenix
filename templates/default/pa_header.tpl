@@ -1,5 +1,3 @@
-<!-- INCLUDE overall_header.tpl -->
-
 <script type="text/javascript">
 <!--
 function mpFoto(img)

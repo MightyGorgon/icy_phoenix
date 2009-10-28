@@ -331,17 +331,12 @@ if (!empty($lofi))
 //End Lo-Fi Mod
 
 // Force Topic Read - BEGIN
-$ftr_disabled = true;
-if (!$config['disable_ftr'])
+$ftr_disabled = $config['ftr_disable'] ? true : false;
+if (!$ftr_disabled)
 {
 	@include(IP_ROOT_PATH . 'includes/topic_ftr.' . PHP_EXT);
 }
 // Force Topic Read - END
-
-if (!$ftr_disabled)
-{
-	exit;
-}
 
 $similar_topics_enabled = false;
 if ($config['similar_topics'] && $forum_topic_data['forum_similar_topics'])

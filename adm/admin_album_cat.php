@@ -27,7 +27,7 @@ if( !empty($setmodules) )
 // Let's set the root dir for phpBB
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
 require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
@@ -521,8 +521,8 @@ else
 					}
 
 					@unlink($pic_thumbnail_fullpath);
-					@unlink(ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
-					@unlink(ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink(IP_ROOT_PATH . ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink(IP_ROOT_PATH . ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
 					@unlink($pic_fullpath);
 				}
 

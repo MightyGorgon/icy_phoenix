@@ -1025,9 +1025,7 @@ if(!function_exists(auth_forum_read))
 	{
 		global $config, $db, $lang;
 
-		$sql = "SELECT *
-						FROM " . FORUMS_TABLE . "
-						AND forum_type = " . FORUM_POST;
+		$sql = "SELECT * FROM " . FORUMS_TABLE . " WHERE forum_type = " . FORUM_POST;
 		$result = $db->sql_query($sql, 0, 'forums_', FORUMS_CACHE_FOLDER);
 
 		$forum_data = array();

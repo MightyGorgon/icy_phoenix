@@ -26,7 +26,7 @@ if(!empty ($setmodules))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 
 $str_old = trim(htmlspecialchars($_POST['str_old']));
 $str_new = trim(htmlspecialchars($_POST['str_new']));

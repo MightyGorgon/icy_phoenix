@@ -20,7 +20,7 @@ if(!empty($setmodules))
 // Load default header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 
 if(isset($_GET['mode']) || isset($_POST['mode']))
 {

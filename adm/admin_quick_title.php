@@ -27,7 +27,7 @@ if(!empty($setmodules))
 // Let's set the root dir for phpBB
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 $start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
 if(isset($_GET['mode']) || isset($_POST['mode']))

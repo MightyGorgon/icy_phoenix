@@ -23,7 +23,7 @@ if (empty($_POST['mode']) && empty($_GET['mode']))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('./pagestart.' . PHP_EXT);
+require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);

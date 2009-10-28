@@ -152,9 +152,9 @@ $config_fields = array(
 		'default' => '2',
 		),
 
-	'disable_ftr' => array(
-		'lang_key' => 'IP_disable_ftr',
-		'explain' => 'IP_disable_ftr_explain',
+	'ftr_disable' => array(
+		'lang_key' => 'IP_ftr_disable',
+		'explain' => 'IP_ftr_disable_explain',
 		'type' => 'LIST_RADIO',
 		'default' => 'Yes',
 		'values' => $list_yes_no,

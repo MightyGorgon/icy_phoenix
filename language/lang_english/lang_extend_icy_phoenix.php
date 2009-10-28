@@ -239,8 +239,8 @@ if ($lang_extend_admin)
 
 		'IP_quote_iterations' => 'Max number of nested quotes',
 
-		'IP_disable_ftr' => 'Completely disable Force Topic Read',
-		'IP_disable_ftr_explain' => 'By enabling this option Force Topic Read will be completely disabled',
+		'IP_ftr_disable' => 'Disable Force Topic Read',
+		'IP_ftr_disable_explain' => 'By enabling this option Force Topic Read will be disabled',
 
 		'IP_disable_html_guests' => 'Disable HTML links for guests',
 
