@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/lofi_header.tpl -->
+
 <table cellspacing="2" cellpadding="2" border="0" align="center">
 <tr>
 <td valign="middle"><span class="cattitle">{INBOX} &nbsp;</span></td>
@@ -44,3 +46,5 @@
 
 
 </div><br />
+
+<!-- INCLUDE ../common/lofi/lofi_footer.tpl -->

@@ -116,7 +116,7 @@ $lang = array_merge($lang, array(
 	'Personal_Gallery_MOD' => 'Personal gallery can be moderated by owner',
 	'Personal_Sub_Cat_Limit' => 'Maximum number of subcategories (-1 = unlimited)',
 	'User_Can_Create_Personal_SubCats' => 'Users can create subcategories in own personal gallery',
-	'Click_return_personal_gallery_index' => 'Click %shere%s to return to the personal gallery index',
+	'Click_return_personal_gallery_index' => 'Click %sHere%s to return to the personal gallery index',
 	'Show_Recent_In_Personal_Subcats' => 'Show recent pictures in personal subcategories',
 	'Show_Recent_Instead_of_Personal_NoPics' => 'Show recent pictures instead of no picture message in personal gallery',
 

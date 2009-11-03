@@ -2032,7 +2032,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$user_sig = $sig_cache[$postrow[$i]['user_id']];
 	}
 
-	$bbcode->allow_html = $config['allow_html'] && $userdata['user_allowhtml'] && $postrow[$i]['enable_html'];
+	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $postrow[$i]['enable_html'];
 	$bbcode->allow_bbcode = $config['allow_bbcode'] && $userdata['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
 	$bbcode->allow_smilies = $config['allow_smilies'] && empty($lofi) && $postrow[$i]['enable_smilies'];
 

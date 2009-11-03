@@ -72,7 +72,6 @@ $tables = array(
 	'extension_groups',
 	'flags',
 	'forbidden_extensions',
-	'force_read',
 	'force_read_users',
 	'forums',
 	'forums_watch',
@@ -597,6 +596,7 @@ $default_config = array(
 	'ftr_message' => 'Before going on... please make sure you have read and understood this post. It contains important informations regarding this site.',
 	'ftr_install_time' => '0',
 	'ftr_all_users' => '0',
+	'allow_html_only_for_admins' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,
@@ -1318,7 +1318,7 @@ function erc_throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = 
 
 function check_authorization($die = true)
 {
-	global $db, $lang, $dbuser, $dbpasswd, $option;
+	global $db, $cache, $lang, $dbuser, $dbpasswd, $option;
 
 	$auth_method = (isset($_POST['auth_method'])) ? htmlspecialchars($_POST['auth_method']) : '';
 	$board_user = isset($_POST['board_user']) ? trim(htmlspecialchars($_POST['board_user'])) : '';

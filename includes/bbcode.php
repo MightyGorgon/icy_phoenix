@@ -222,6 +222,7 @@ class bbcode
 		'li'					=> array('nested' => true, 'inurl' => false),
 		'*'						=> array('nested' => true, 'inurl' => false),
 
+		'div'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'span'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'cell'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'spoiler'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
@@ -273,14 +274,14 @@ class bbcode
 		//'tex'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
 		// To use tables you just need to decomment this... no need to decomment even TR and TD
-		//'table'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		//'table'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		/*
-		'tr'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'td'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'tr'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'td'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		*/
 
-		// To use IFRAMES you just need to decomment this line... good luck!
-		//'iframe'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		// To use IFRAMES you just need to decomment this line (and the block some hundreds lines below)... good luck!
+		//'iframe'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => true),
 	);
 
 	var $allowed_html = array(
@@ -294,15 +295,16 @@ class bbcode
 		'sup'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'sub'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
-		'span'			=> array('nested' => true, 'inurl' => true),
-		'center'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'hr'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'div'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'span'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'center'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'hr'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 
 		'a'					=> array('nested' => false, 'inurl' => false),
-		'ul'				=> array('nested' => true, 'inurl' => false),
-		'ol'				=> array('nested' => true, 'inurl' => false),
-		'li'				=> array('nested' => true, 'inurl' => false),
-		'blockquote' => array('nested' => true, 'inurl' => false),
+		'ul'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'ol'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'li'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'blockquote' => array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 
 		'table'			=> array('nested' => true, 'inurl' => false),
 		/*
@@ -310,8 +312,8 @@ class bbcode
 		'td' => array('nested' => true, 'inurl' => false),
 		*/
 
-		// To use IFRAMES you just need to decomment this line... good luck!
-		//'iframe' => array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		// To use IFRAMES you just need to decomment this line (and the block some hundreds lines below)... good luck!
+		//'iframe' => array('nested' => true, 'inurl' => false, 'allow_empty' => true),
 	);
 
 	var $allowed_smilies = array(
@@ -432,8 +434,8 @@ class bbcode
 			}
 		}
 
-		// Simple tags: B, EM, STRONG, I, U, TT, STRIKE, SUP, SUB, SPAN, CENTER
-		if(($tag === 'b') || ($tag === 'em') || ($tag === 'strong') || ($tag === 'i') || ($tag === 'u') || ($tag === 'tt') || ($tag === 'strike') || ($tag === 'sup') || ($tag === 'sub') || ($tag === 'span') || ($tag === 'center'))
+		// Simple tags: B, EM, STRONG, I, U, TT, STRIKE, SUP, SUB, DIV, SPAN, CENTER
+		if(($tag === 'b') || ($tag === 'em') || ($tag === 'strong') || ($tag === 'i') || ($tag === 'u') || ($tag === 'tt') || ($tag === 'strike') || ($tag === 'sup') || ($tag === 'sub') || ($tag === 'div') || ($tag === 'span') || ($tag === 'center'))
 		{
 			$extras = $this->allow_styling ? array('style', 'class', 'name') : array('class', 'name');
 			$html = '<' . $tag . $this->add_extras($item['params'], $extras) . '>';
@@ -2385,7 +2387,7 @@ class bbcode
 				return $error;
 			}
 			// additional allowed parameters
-			$extras = $this->allow_styling ? array('class', 'align', 'width', 'height', 'border', 'cellspacing', 'cellpadding') : array('class', 'align', 'width');
+			$extras = $this->allow_styling ? array('style', 'class', 'align', 'width', 'height', 'border', 'cellspacing', 'cellpadding') : array('style', 'class', 'align', 'width');
 			if(isset($item['params']['param']))
 			{
 				$table_class = $item['params']['param'];
@@ -2491,11 +2493,12 @@ class bbcode
 		}
 		*/
 
+		// To use IFRAMES you just need to decomment this block of code (and allow the tag on top of this file)... good luck!
 		// IFRAME
-		/*
 		//<iframe src="index.html" scrolling="no" width="100%" height="190" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 		//[iframe height=100]docs/index.html[/iframe]
 		//[iframe src=docs/index.html height=100] [/iframe]
+		/*
 		if($tag === 'iframe')
 		{
 			if(isset($item['params']['param']))

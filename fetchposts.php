@@ -27,17 +27,17 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 {
 	global $db, $cache, $config, $userdata, $bbcode;
 
-	$sql = 'SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_replies, p.post_id, p.enable_smilies, p.post_text, p.post_text_compiled, u.username, u.user_id, u.user_active, u.user_color
-			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . POSTS_TABLE . ' AS p
-			WHERE t.forum_id IN (' . $forum_sql . ')
-				AND t.topic_time <= ' . time() . '
+	$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_replies, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_text, p.post_text_compiled, u.username, u.user_id, u.user_active, u.user_color
+			FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
+			WHERE t.forum_id IN (" . $forum_sql . ")
+				AND t.topic_time <= " . time() . "
 				AND t.topic_poster = u.user_id
 				AND t.topic_first_post_id = p.post_id
 				AND t.topic_status <> 2
-			ORDER BY t.topic_time DESC';
+			ORDER BY t.topic_time DESC";
 	if ($number_of_posts != 0)
 	{
-		$sql .= ' LIMIT 0,' . $number_of_posts;
+		$sql .= " LIMIT 0," . $number_of_posts;
 	}
 
 	// query the database
@@ -65,8 +65,8 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 
 			$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
 
-			$bbcode->allow_bbcode = $config['allow_bbcode'];
-			$bbcode->allow_html = $config['allow_html'];
+			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['allow_bbcode']);
+			$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html'];
 			if ($config['allow_smilies'] && !$lofi)
 			{
 				$bbcode->allow_smilies = $config['allow_smilies'];
@@ -162,7 +162,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 	if ($single_post)
 	{
 		$single_post_id = $forum_sql;
-		$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
+		$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
 				FROM " . POSTS_TABLE . " AS p, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
 				WHERE p.post_id = '" . $single_post_id . "'
 					" . $add_to_sql . "
@@ -171,7 +171,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 	}
 	else
 	{
-		$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
+		$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
 				FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
 				WHERE t.topic_time <= " . time() . "
 					" . $add_to_sql . "
@@ -209,8 +209,8 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 
 			$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
 
-			$bbcode->allow_bbcode = $config['allow_bbcode'];
-			$bbcode->allow_html = $config['allow_html'];
+			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['allow_bbcode']);
+			$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html'];
 			if ($config['allow_smilies'] && !$lofi)
 			{
 				$bbcode->allow_smilies = $config['allow_smilies'];

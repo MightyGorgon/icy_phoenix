@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_header.tpl -->
+
 <b>{FORUM_NAME}</b>
 <div class="nav"><a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}<br />{CURRENT_TIME}</div>
 <div class="pagination">{PAGINATION}</div>
@@ -15,3 +17,5 @@
 	{JUMPBOX}
 </div>
 <br />
+
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_footer.tpl -->

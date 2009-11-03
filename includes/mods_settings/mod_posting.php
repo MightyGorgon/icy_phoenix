@@ -189,11 +189,19 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'allow_html_only_for_admins' => array(
+		'lang_key' => 'IP_allow_html_only_for_admins',
+		'explain' => 'IP_allow_html_only_for_admins_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'Yes',
+		'values' => $list_yes_no,
+		),
+
 	'allow_all_bbcode' => array(
 		'lang_key' => 'IP_allow_all_bbcode',
 		'explain' => 'IP_allow_all_bbcode_explain',
 		'type' => 'LIST_RADIO',
-		'default' => 'Yes',
+		'default' => 'No',
 		'values' => $list_yes_no,
 		),
 

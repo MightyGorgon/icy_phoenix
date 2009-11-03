@@ -162,7 +162,7 @@ if($can_reply)
 		$smilies_on = $config['allow_smilies'] ? $userdata['user_allowsmile'] : 0;
 	?>
 	<label><input type="checkbox" name="disable_acro_auto" />&nbsp;<span class="genmed"><?php echo $lang['Disable_ACRO_AUTO_post']; ?></span></label><br />
-	<?php if($config['allow_html']) { ?>
+	<?php if($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins'])) { ?>
 	<label><input type="checkbox" name="disable_html" <?php echo ($html_on ? '' : 'checked="checked"'); ?> />&nbsp;<span class="genmed"><?php echo $lang['Disable_HTML_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_html" value="checked" /><?php } ?>
 	<?php if($config['allow_bbcode']) { ?>

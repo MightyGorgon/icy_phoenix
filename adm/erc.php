@@ -122,7 +122,7 @@ if ($mode == 'download')
 	}
 
 	// Create the config.php
-	$data = "<?php\n" .
+	$data = "<" . "?php\n" .
 		"\n" .
 		"//\n" .
 		"// Icy Phoenix auto-generated config file\n" .
@@ -140,9 +140,9 @@ if ($mode == 'download')
 		"\n" .
 		"define('IP_INSTALLED', true);\n" .
 		"\n" .
-		"?>";
+		"?" . ">";
 	header('Content-type: text/plain');
-	header("Content-Disposition: attachment; filename=config." . PHP_EXT);
+	header('Content-Disposition: attachment; filename=config.' . PHP_EXT);
 	echo $data;
 	exit;
 }
@@ -250,7 +250,7 @@ switch($mode)
 			<tr>
 				<td><b><?php echo $lang['Select_Language']; ?>:</b></td>
 				<td width="10">&nbsp;</td>
-				<td><?php echo language_select('english', 'lg', 'dbmtnc'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
+				<td><?php echo language_select('english', 'lg'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
 			</tr>
 		</table></td>
 	</tr>
@@ -639,12 +639,8 @@ switch($mode)
 				break;
 			case 'rcp': // Recreate config.php
 				$available_dbms = array(
-					'mysql'=> array(
-					'LABEL'			=> 'MySQL 3.x'
-					),
-					'mysql4' => array(
-					'LABEL'			=> 'MySQL 4.x or greater'
-					)
+					'mysql' => array('LABEL' => 'MySQL 3.x'),
+					'mysql4' => array('LABEL' => 'MySQL 4.x or greater')
 				);
 				$dbms_select = '<select name="new_dbms">';
 				while (list($dbms_name, $details) = @each($available_dbms))
@@ -749,6 +745,7 @@ switch($mode)
 				break;
 
 			case 'ecf': // Clear Cache
+				check_authorization();
 				empty_cache_folders();
 				success_message($lang['ecf_success']);
 				break;
@@ -1249,8 +1246,8 @@ switch($mode)
 				}
 
 ?>
-	<p><b><?php echo $lang['New_config_php']; ?>:</b></p>
-	<table border="0" cellspacing="0" cellpadding="0">
+	<p><b><?php echo $lang['New_config_php']; ?>:</b></p><br />
+	<table width="100%" class="forumline" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td width="20">&nbsp;</td>
 			<td>
@@ -1276,6 +1273,7 @@ switch($mode)
 			</td>
 		</tr>
 	</table>
+	<br /><br />
 <?php
 				$ndbms = urlencode($new_dbms);
 				$ndbh = urlencode($new_dbhost);

@@ -120,8 +120,8 @@ $lang = array_merge($lang, array(
 
 	'Missed_pic_title' => 'You must enter your pic title',
 
-	'Click_return_category' => 'Click %shere%s to return to the category',
-	'Click_return_album_index' => 'Click %shere%s to return to the Album Index',
+	'Click_return_category' => 'Click %sHere%s to return to the category',
+	'Click_return_album_index' => 'Click %sHere%s to return to the Album Index',
 
 	'Add_File' => 'Add File',
 	'File_thumbnail_count_mismatch' => 'The number of uploaded pictures and thumbnails doesn\'t match',
@@ -219,7 +219,7 @@ $lang = array_merge($lang, array(
 	'Already_rated' => 'You have already rated this pic',
 	'Own_Pic_Rate' => 'You cannot rate your pictures',
 	'Album_rate_successfully' => 'Your pic has been rated successfully.',
-	'Click_rate_more' => 'Click %shere%s to rate more pictures.',
+	'Click_rate_more' => 'Click %sHere%s to rate more pictures.',
 	'Hot_Or_Not' => 'Hot Or Not',
 
 // Comment
@@ -233,7 +233,7 @@ $lang = array_merge($lang, array(
 	'Personal_Gallery_Explain' => 'You can view the personal galleries of other members by clicking on the link in their profiles',
 	'Personal_gallery_not_created' => 'The personal gallery of %s has not been created',
 	'Not_allowed_to_create_personal_gallery' => 'Sorry, the administrators of this board do not allow you to create your personal gallery',
-	'Click_return_personal_gallery' => 'Click %shere%s to return to the personal gallery',
+	'Click_return_personal_gallery' => 'Click %sHere%s to return to the personal gallery',
 
 // Download Archive
 	'Download_pics' => 'Download Pics (ZIP)',
@@ -358,7 +358,7 @@ $lang = array_merge($lang, array(
 	'Pic_comment_watch_checkbox' => 'Check box to be notified on pic comments:',
 	'Watch_pic' => 'Watch this pic for comments',
 	'Unwatch_pic' => 'Stop watching this pic for comments',
-	'Click_return_pic' => 'Click %shere%s to return to pic',
+	'Click_return_pic' => 'Click %sHere%s to return to pic',
 
 	'Pic_RDF' => 'RSS Feed 1.0',
 	'Pic_RSS' => 'RSS Feed 2.0',

@@ -415,7 +415,7 @@ else
 }
 
 // HTML toggle selection
-if ($config['allow_html'])
+if ($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
 {
 	$html_status = $lang['HTML_is_ON'];
 	$template->assign_block_vars('switch_html_checkbox', array());

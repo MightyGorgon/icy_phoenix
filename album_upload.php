@@ -808,7 +808,7 @@ else
 
 		srand((double)microtime() * 1000000); // for older than version 4.2.0 of PHP
 
-		$pic_base_path = ALBUM_UPLOAD_PATH;
+		$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 		$pic_extra_path = '';
 		$upload_path = $pic_base_path . $pic_extra_path;
 		if (USERS_SUBFOLDERS_ALBUM == true)

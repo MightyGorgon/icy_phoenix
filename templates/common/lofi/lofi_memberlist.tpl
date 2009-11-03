@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/lofi_header.tpl -->
+
 <form method="post" action="{S_MODE_ACTION}">
 	<table align="center" width="100%" cellspacing="2" cellpadding="2" border="0">
 	<tr>
@@ -47,3 +49,5 @@
 </form>
 <table width="100%" cellspacing="2" border="0" align="center"><tr><td valign="top" align="right">{JUMPBOX}</td></tr></table>
 <br />
+
+<!-- INCLUDE ../common/lofi/lofi_footer.tpl -->

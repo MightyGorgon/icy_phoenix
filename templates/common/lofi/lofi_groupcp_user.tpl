@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/lofi_header.tpl -->
+
 <table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
 <tr><td align="left"><span class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a></span></td></tr>
 </table>
@@ -66,3 +68,5 @@
 </div>
 </div>
 <br />
+
+<!-- INCLUDE ../common/lofi/lofi_footer.tpl -->

@@ -348,7 +348,7 @@ $lang = array_merge($lang, array(
 	'CMS_Menu_New_cat_link_url' => 'URL of the category (if no URL is entered, clicking on category link you can expand/collapse category items)',
 	'CMS_Menu_Update' => 'Update Menu',
 
-	'Click_Return_CMS_Menu' => 'Click %shere%s to return to the menu administration',
+	'Click_Return_CMS_Menu' => 'Click %sHere%s to return to the menu administration',
 
 	'Menu_created' => 'Menu successfully created.',
 	'Cat_created' => 'Category successfully created.',

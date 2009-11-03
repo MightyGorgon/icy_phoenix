@@ -251,6 +251,9 @@ if ($lang_extend_admin)
 		'IP_enable_quick_quote' => 'Enable Quick Quote and Off Topic',
 		'IP_enable_quick_quote_explain' => 'Quick Quote allows users to quote any post in a topic with a simple click. This feature uses JavaScript, and enabling it can result in large pages if there are a lot of posts with a lot of text in a topic.',
 
+		'IP_allow_html_only_for_admins' => 'Enable HTML for Administrators only',
+		'IP_allow_html_only_for_admins_explain' => 'Enabling this option will allow administrators to use HTML tags in posts. Please notice that this feature may lead to security issues or wrong page formatting if not used properly.',
+
 		'IP_allow_all_bbcode' => 'Enable all BBCodes',
 		'IP_allow_all_bbcode_explain' => 'Enabling this option will allow all BBCodes in signatures and other places where usually they are not active. BBCodes which are usually disabled in signature are: IMG, ALBUMIMG and some intensive formatting BBCodes. If you enable this option, some signatures may result in consuming both space and resources.',
 

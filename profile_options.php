@@ -194,7 +194,7 @@ while (list($mod_name, $mod) = @each($mods[$menu_name]['data']))
 				@reset($sub['data']);
 				while (list($field_name, $field) = @each($sub['data']))
 				{
-					if (((!empty($field['user']) && isset($view_userdata[ $field['user'] ]) && (!$config[ $field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
+					if (((!empty($field['user']) && isset($view_userdata[ $field['user'] ]) && (!$config[$field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
 					{
 						$found = true;
 						break;
@@ -316,7 +316,7 @@ if ($submit)
 	while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
 	{
 		$user_field = $field['user'];
-		if (((isset($$user_field) && !empty($user_field) && isset($view_userdata[$user_field]) && (!$config[ $field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
+		if (((isset($$user_field) && !empty($user_field) && isset($view_userdata[$user_field]) && (!$config[$field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
 		{
 			// update
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -391,7 +391,7 @@ else
 	{
 		// process only fields from users table
 		$user_field = $field['user'];
-		if (((!empty($user_field) && isset($view_userdata[$user_field]) && (!$config[ $field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
+		if (((!empty($user_field) && isset($view_userdata[$user_field]) && (!$config[$field_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $field['system']) && is_auth($field['auth'], $user_level))
 		{
 			// get the field input statement
 			$input = '';

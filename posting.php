@@ -668,10 +668,11 @@ elseif (intval($is_auth[$is_auth_type]) == AUTH_SELF)
 	{
 		case 'quote':
 		case 'reply':
-			$sql = "SELECT t.topic_id FROM " . TOPICS_TABLE . " t, " . USERS_TABLE. " u
-				WHERE t.topic_id = '" . $topic_id . "'
-				AND t.topic_poster = u.user_id
-				AND u.user_id = '" . $userdata['user_id'] . "'";
+			$sql = "SELECT t.topic_id
+				FROM " . TOPICS_TABLE . " t, " . USERS_TABLE. " u
+				WHERE t.topic_id = " . $topic_id . "
+					AND t.topic_poster = u.user_id
+					AND u.user_id = " . $userdata['user_id'];
 			break;
 	}
 	$result = $db->sql_query($sql);
@@ -692,6 +693,8 @@ else
 {
 	$html_on = ($submit || $refresh) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_html'] : $userdata['user_allowhtml']);
 }
+
+$html_on = (!empty($_POST['disable_html']) ? 0 : ((($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']) ? 1 : $html_on));
 
 $acro_auto_on = ($submit || $refresh) ? ((!empty($_POST['disable_acro_auto'])) ? 0 : 1) : 1;
 
@@ -985,7 +988,7 @@ elseif ($mode == 'register')
 			{
 				$sql = "DELETE FROM " . REGISTRATION_TABLE . "
 				WHERE topic_id = $topic_id
-				AND registration_user_id = $user_id";
+					AND registration_user_id = $user_id";
 				$db->sql_query($sql);
 				$message = $lang['Reg_Unregister'];
 			}
@@ -1002,7 +1005,7 @@ elseif ($mode == 'register')
 					$sql = "UPDATE " . REGISTRATION_TABLE . "
 						SET registration_user_ip = '$user_ip', registration_time = $zeit, registration_status = $new_regstate
 						WHERE topic_id = $topic_id
-						AND registration_user_id = $user_id";
+							AND registration_user_id = $user_id";
 					$db->sql_query($sql);
 					$message = $lang['Reg_Change'];
 				}
@@ -1052,7 +1055,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		case 'newtopic':
 		case 'reply':
 			// CrackerTracker v5.x
-			if ($ctracker_config->settings['vconfirm_guest'] == 1 && !$userdata['session_logged_in'])
+			if (($ctracker_config->settings['vconfirm_guest'] == 1) && !$userdata['session_logged_in'])
 			{
 				define('CRACKER_TRACKER_VCONFIRM', true);
 				define('POST_CONFIRM_CHECK', true);
@@ -1612,7 +1615,7 @@ if($user_sig != '')
 }
 
 // HTML toggle selection
-if ($config['allow_html'])
+if ($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
 {
 	$html_status = $lang['HTML_is_ON'];
 	$template->assign_block_vars('switch_html_checkbox', array());

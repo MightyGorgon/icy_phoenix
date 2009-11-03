@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/lofi_header.tpl -->
+
 <div class="index">
 	<form action="{S_GROUPCP_ACTION}" method="post">
 		<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
@@ -120,3 +122,5 @@
 	<table width="100%" align="center" cellspacing="2" border="0"><tr><td valign="top" align="right">{JUMPBOX}</td></tr></table>
 </div>
 <br />
+
+<!-- INCLUDE ../common/lofi/lofi_footer.tpl -->

@@ -21,16 +21,16 @@
 		<div class="nav-toolbar">
 			<a href="{FULL_SITE_PATH}{U_PORTAL}">{L_HOME}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_INDEX}">{L_FORUM}</a>&nbsp;&#8226;&nbsp;
-			<a href="{FULL_SITE_PATH}{U_CALENDAR}">{L_CALENDAR}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_FAQ}">{L_FAQ}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_SEARCH}">{L_SEARCH}</a>&nbsp;&#8226;&nbsp;
+			<a href="{FULL_SITE_PATH}{U_RECENT}">{L_RECENT}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_MEMBERLIST}">{L_MEMBERLIST}</a>&nbsp;&#8226;&nbsp;
-			<a href="{FULL_SITE_PATH}{U_STATISTICS}">{L_STATISTICS}</a>&nbsp;&#8226;&nbsp;
-			<a href="{FULL_SITE_PATH}{U_GROUP_CP}">{L_USERGROUPS}</a>&nbsp;&#8226;&nbsp;
 			<!-- IF not S_LOGGED_IN -->
-			<a href="{FULL_SITE_PATH}{U_REGISTER}">{L_REGISTER}</a></span>&nbsp;&#8226;&nbsp;
-			<!-- ENDIF -->
+			<a href="{FULL_SITE_PATH}{U_REGISTER}">{L_REGISTER}</a>&nbsp;&#8226;&nbsp;
+			<!-- ELSE -->
+			<a href="{FULL_SITE_PATH}{U_GROUP_CP}">{L_USERGROUPS}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_PROFILE}">{L_PROFILE}</a>&nbsp;&#8226;&nbsp;
+			<!-- ENDIF -->
 			<a href="{FULL_SITE_PATH}{U_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a>&nbsp;
 		</div>
 		<div id="content" class="content">

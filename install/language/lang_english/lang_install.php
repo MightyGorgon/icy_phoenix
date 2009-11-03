@@ -152,8 +152,8 @@ $lang = array_merge($lang, array(
 	'IcyPhoenix_Version_NotInstalled' => 'Icy Phoenix is not installed',
 	'phpBB_Version_UpToDate' => 'Your phpBB is version is up-to-date',
 	'phpBB_Version_NotUpToDate' => 'Your phpBB is version is not up-to-date',
-	'ClickUpdate' => 'Please click %shere%s to update!',
-	'ClickReturn' => 'Please click %shere%s to return to menu!',
+	'ClickUpdate' => 'Please click %sHere%s to update!',
+	'ClickReturn' => 'Please click %sHere%s to return to menu!',
 
 	'Clean_OldFiles_Explain' => 'Remove all unused Icy Phoenix (files still on your server from older versions)',
 	'ActionUndone' => 'Please note that this action cannot be undone. Make sure you have a backup!!!',

@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_header.tpl -->
+
 <div class="nav"><a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}</div>
 <span class="pagination">{CURRENT_TIME}</span><br />
 <div class="pagination"></div>
@@ -17,3 +19,5 @@
 <!-- END forumrow -->
 <!-- END catrow -->
 </div>
+
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_footer.tpl -->

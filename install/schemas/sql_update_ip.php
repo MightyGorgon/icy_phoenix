@@ -57,6 +57,7 @@ switch ($req_version)
 	case '13154': $current_ip_version = '1.3.1.54'; break;
 	case '13255': $current_ip_version = '1.3.2.55'; break;
 	case '13356': $current_ip_version = '1.3.3.56'; break;
+	case '13457': $current_ip_version = '1.3.4.57'; break;
 }
 
 // Icy Phoenix Part...
@@ -3690,8 +3691,13 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DROP TABLE `" . $table_prefix . "force_read`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "force_read_users` DROP `read`";
 
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('allow_html_only_for_admins', '0')";
+
 		/* Updating from IP 1.3.3.56 */
 		case '1.3.3.56':
+
+		/* Updating from IP 1.3.4.57 */
+		case '1.3.4.57':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

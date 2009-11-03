@@ -24,9 +24,9 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 {
 	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, r.registration_time, r.registration_status
 		FROM " . REGISTRATION_TABLE . " r, " . USERS_TABLE . " u
-		WHERE r.topic_id = $topic_id
-		AND r.registration_user_id = u.user_id
-		ORDER BY registration_status, registration_time";
+		WHERE r.topic_id = " . $topic_id . "
+			AND r.registration_user_id = u.user_id
+		ORDER BY r.registration_status, r,registration_time";
 	$result = $db->sql_query($sql);
 	$reg_info = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
@@ -46,7 +46,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 
 	$sql = "SELECT topic_id, reg_max_option1, reg_max_option2, reg_max_option3, reg_start, reg_length
 			FROM " . REGISTRATION_DESC_TABLE . "
-			WHERE topic_id = $topic_id";
+			WHERE topic_id = " . $topic_id;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 

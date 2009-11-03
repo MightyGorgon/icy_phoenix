@@ -1132,8 +1132,8 @@ else
 				}
 
 				@unlink($pic_thumbnail_fullpath);
-				@unlink(ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
-				@unlink(ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+				@unlink(IP_ROOT_PATH . ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+				@unlink(IP_ROOT_PATH . ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
 				@unlink($pic_fullpath);
 			}
 

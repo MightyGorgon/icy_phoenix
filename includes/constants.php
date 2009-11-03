@@ -400,7 +400,6 @@ define('DIGEST_SUBSCRIBED_FORUMS_TABLE', $table_prefix . 'digest_subscribed_foru
 define('DISALLOW_TABLE', $table_prefix . 'disallow');
 define('DRAFTS_TABLE', $table_prefix . 'drafts');
 define('FLAG_TABLE', $table_prefix . 'flags');
-define('FORCE_READ_TABLE', $table_prefix . 'force_read');
 define('FORCE_READ_USERS_TABLE', $table_prefix . 'force_read_users');
 define('FORUMS_TABLE', $table_prefix . 'forums');
 define('FORUMS_RULES_TABLE', $table_prefix . 'forums_rules');

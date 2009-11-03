@@ -678,7 +678,7 @@ elseif ($mode == 'read')
 		$bbcode->is_sig = false;
 	}
 
-	$bbcode->allow_html = $config['allow_html'] && $privmsg['privmsgs_enable_html'];
+	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $privmsg['privmsgs_enable_html'];
 	$bbcode->allow_bbcode = $config['allow_bbcode'] ? true : false;
 	$bbcode->allow_smilies = $config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'];
 	$private_message = $bbcode->parse($private_message);
@@ -1822,7 +1822,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	$template->assign_var('S_POSTING_PM', true);
 
 	// HTML toggle selection
-	if ($config['allow_html'])
+	if ($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
 	{
 		$html_status = $lang['HTML_is_ON'];
 		$template->assign_block_vars('switch_html_checkbox', array());
@@ -1881,18 +1881,18 @@ elseif ($submit || $refresh || ($mode != ''))
 	{
 		$s_hidden_fields .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $privmsg_id . '" />';
 	}
-/* Start Private Message Review By aUsTiN */
 
+/* Start Private Message Review By aUsTiN */
 	$post_to_review = $_GET['p'];
 
-	$q = "SELECT privmsgs_text
+	$q = "SELECT *
 			FROM " . PRIVMSGS_TABLE . "
 			WHERE privmsgs_id = '" . $post_to_review . "'";
-	$r = $db -> sql_query($q);
-	$row = $db -> sql_fetchrow($r);
+	$r = $db->sql_query($q);
+	$row = $db->sql_fetchrow($r);
 
 	$prv_msg_review = $row['privmsgs_text'];
-	$bbcode->allow_html = ($config['allow_html'] ? true : false);
+	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['privmsgs_enable_html'];
 	$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
 	$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 	$prv_msg_review = $bbcode->parse($prv_msg_review);

@@ -1,3 +1,10 @@
+<!-- IF S_LOFI -->
+<!-- IF S_LOFI_BOTS -->
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_header.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/lofi/lofi_header.tpl -->
+<!-- ENDIF -->
+<!-- ELSE -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}">
 <head>
@@ -31,3 +38,4 @@
 <table id="forumtable" width="100%" cellspacing="0" style="width: 100% !important;">
 <tr>
 	<td id="content">
+<!-- ENDIF -->

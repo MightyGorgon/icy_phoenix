@@ -203,7 +203,7 @@ $ranks_array = $cache->obtain_ranks(false);
 // Go ahead and pull all data for this topic
 $sql = "SELECT u.*, p.*, t.topic_poster, t.title_compl_infos
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t
-	WHERE p.post_id = $post_id
+	WHERE p.post_id = " . $post_id . "
 	AND p.poster_id = u.user_id
 	LIMIT 1";
 $result = $db->sql_query($sql);
@@ -283,13 +283,11 @@ if ($row = $db->sql_fetchrow($result))
 		$post_subject = censor_text($post_subject);
 		$message = censor_text($message);
 
-		// Parse message and/or sig for BBCode if reqd
-		$bbcode->allow_html = $config['allow_html'];
-		$bbcode->allow_bbcode = $config['allow_bbcode'];
-		$bbcode->allow_smilies = ($config['allow_smilies'] && $row['user_allowsmile'] && !$lofi) ? true : false;
-
 		if($user_sig && empty($sig_cache[$row['user_id']]))
 		{
+			$bbcode->allow_html = ($config['allow_html'] && $userdata['user_allowhtml']) ? true : false;
+			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode']) ? true : false;
+			$bbcode->allow_smilies = ($config['allow_smilies'] && $userdata['user_allowsmile'] && !$lofi) ? true : false;
 			$bbcode->is_sig = true;
 			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
@@ -299,6 +297,12 @@ if ($row = $db->sql_fetchrow($result))
 		{
 			$user_sig = $sig_cache[$row['user_id']];
 		}
+
+		// Parse message and/or sig for BBCode if reqd
+		$bbcode->allow_html = ((($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['enable_html']) ? true : false;
+		$bbcode->allow_bbcode = (($config['allow_bbcode'] && $userdata['user_allowbbcode']) && $row['enable_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($config['allow_smilies'] && $userdata['user_allowsmile'] && $row['enable_smilies'] && !$lofi) ? true : false;
+
 		if($message_compiled === false)
 		{
 			$GLOBALS['code_post_id'] = $row['post_id'];

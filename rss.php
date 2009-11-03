@@ -391,9 +391,9 @@ else
 			$message = $post['post_text'];
 			$user_sig = ($post['enable_sig'] && $post['user_sig'] != '' && $config['allow_sig']) ? $post['user_sig'] : '';
 			// If the board has HTML off but the post has HTML on then we process it, else leave it alone
-			$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-			$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-			$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
+			$html_on = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) ? 1 : 0 ;
+			$bbcode_on = ($config['allow_bbcode'] && $userdata['user_allowbbcode']) ? 1 : 0 ;
+			$smilies_on = ($config['allow_smilies'] && $userdata['user_allowsmile']) ? 1 : 0 ;
 
 			$bbcode->allow_html = $html_on;
 			$bbcode->allow_bbcode = $bbcode_on;

@@ -138,7 +138,7 @@ for($i = 0; $i < $total_posts; $i++)
 	// SMILEYS IN TITLE - END
 
 	// Mighty Gorgon - New BBCode Functions - BEGIN
-	$bbcode->allow_html = $config['allow_html'] && $userdata['user_allowhtml'] && $postrow[$i]['enable_html'];
+	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $postrow[$i]['enable_html'];
 	$bbcode->allow_bbcode = $config['allow_bbcode'] && $userdata['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
 	$bbcode->allow_smilies = $config['allow_smilies'] && empty($lofi) && $postrow[$i]['enable_smilies'];
 

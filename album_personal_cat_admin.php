@@ -661,22 +661,22 @@ else
 					$file_part = explode('.', strtolower($pic_filename));
 					$pic_filetype = $file_part[sizeof($file_part) - 1];
 					$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-					$pic_base_path = ALBUM_UPLOAD_PATH;
+					$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 					$pic_extra_path = '';
 					$pic_new_filename = $pic_extra_path . $pic_filename;
 					$pic_fullpath = $pic_base_path . $pic_new_filename;
 					$pic_title = $picrow[$i]['pic_title'];
 					$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
 					$pic_thumbnail = $picrow[$i]['pic_thumbnail'];
-					$pic_thumbnail_fullpath = ALBUM_CACHE_PATH . $pic_thumbnail;
+					$pic_thumbnail_fullpath = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_thumbnail;
 
 					if (USERS_SUBFOLDERS_ALBUM == true)
 					{
 						if (sizeof($pic_path) == 2)
 						{
 							$pic_extra_path = $pic_path[0] . '/';
-							$pic_base_full_path = ALBUM_UPLOAD_PATH . $pic_extra_path;
-							$pic_thumbnail_path = ALBUM_CACHE_PATH . $pic_extra_path;
+							$pic_base_full_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH . $pic_extra_path;
+							$pic_thumbnail_path = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_extra_path;
 							if (is_dir($pic_base_full_path))
 							{
 								$pic_new_filename = $pic_extra_path . $pic_filename;
@@ -691,8 +691,8 @@ else
 					}
 
 					@unlink($pic_thumbnail_fullpath);
-					@unlink(ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
-					@unlink(ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink(IP_ROOT_PATH . ALBUM_MED_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
+					@unlink(IP_ROOT_PATH . ALBUM_WM_CACHE_PATH . $pic_extra_path . $pic_thumbnail);
 					@unlink($pic_fullpath);
 				}
 

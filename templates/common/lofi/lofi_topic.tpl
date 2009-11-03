@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/lofi_header.tpl -->
+
 <?php
 // check if quick reply is enabled
 global $userdata, $config, $topic_id, $is_auth, $forum_topic_data, $lang;
@@ -10,7 +12,7 @@ if($can_reply)
 	{
 		$can_reply = false;
 	}
-	elseif (($forum_topic_data['forum_status'] == FORUM_LOCKED || $forum_topic_data['topic_status'] == TOPIC_LOCKED) && !$is_auth['auth_mod'])
+	elseif ((($forum_topic_data['forum_status'] == FORUM_LOCKED) || ($forum_topic_data['topic_status'] == TOPIC_LOCKED)) && !$is_auth['auth_mod'])
 	{
 		$can_reply = false;
 	}
@@ -20,7 +22,7 @@ if($can_reply)
 	$this->assign_block_vars('xs_quick_reply', array());
 }
 
-$postrow_count = ( isset($this->_tpldata['postrow.']) ) ?  count($this->_tpldata['postrow.']) : 0;
+$postrow_count = (isset($this->_tpldata['postrow.'])) ? count($this->_tpldata['postrow.']) : 0;
 for ($postrow_i = 0; $postrow_i < $postrow_count; $postrow_i++)
 {
 	$postrow_item = &$this->_tpldata['postrow.'][$postrow_i];
@@ -42,7 +44,7 @@ if($can_reply)
 	// quick reply form
 	ob_start();
 ?>
-<div id="quick_reply" style="display: none; position: relative; ">
+<div id="quick_reply" style="display: none; position: relative;">
 	<form action="<?php echo append_sid('posting.' . PHP_EXT); ?>" method="post" name="post" style="display: inline;">
 	{S_HIDDEN_FIELDS}
 	<table class="forumline" width="100%" cellspacing="0">
@@ -95,15 +97,16 @@ if($can_reply)
 			<div class="postinfo">{postrow.POSTER_POSTS} {postrow.POSTER_FROM}<br /></div>
 			<div class="postdate">{postrow.POST_DATE}</div>
 		</div>
+		<a id="p{postrow.U_POST_ID}"></a>
 		<span class="desc">{L_SUBJECT}: {postrow.POST_SUBJECT}</span>
 		<div class="postcontent">{postrow.MESSAGE}</div>
-			<br />
-			<span class="signature">{postrow.EDITED_MESSAGE}</span>
-			{postrow.ATTACHMENTS}
-			<div class="posttopbar">
-				<span class="desc">{postrow.PROFILE} {postrow.PM} {postrow.EMAIL} {postrow.WWW} {postrow.AIM} {postrow.YIM} {postrow.MSN} {postrow.SKYPE} {postrow.ICQ}</span>
-			</div>
+		<br />
+		<span class="signature">{postrow.EDITED_MESSAGE}</span>
+		{postrow.ATTACHMENTS}
+		<div class="posttopbar">
+			<span class="desc">{postrow.PROFILE} {postrow.PM} {postrow.EMAIL} {postrow.WWW} {postrow.AIM} {postrow.YIM} {postrow.MSN} {postrow.SKYPE} {postrow.ICQ}</span>
 		</div>
+	</div>
 	<!-- END postrow -->
 
 	{LOFI_QUICK_REPLY_FORM}
@@ -119,3 +122,5 @@ if($can_reply)
 	</div>
 </div>
 <br />
+
+<!-- INCLUDE ../common/lofi/lofi_footer.tpl -->

@@ -1,3 +1,10 @@
+<!-- IF S_LOFI -->
+<!-- IF S_LOFI_BOTS -->
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_footer.tpl -->
+<!-- ELSE -->
+<!-- INCLUDE ../common/lofi/lofi_footer.tpl -->
+<!-- ENDIF -->
+<!-- ELSE -->
 <!-- INCLUDE overall_inc_footer.tpl -->
 <tr>
 	<td colspan="3">
@@ -37,3 +44,4 @@
 {GOOGLE_ANALYTICS}
 </body>
 </html>
+<!-- ENDIF -->

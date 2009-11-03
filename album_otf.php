@@ -330,7 +330,7 @@ function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension,
 {
 	global $db, $userdata;
 
-	$pic_base_path = ALBUM_UPLOAD_PATH;
+	$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 	$pic_extra_path = '';
 	$upload_path = $pic_base_path . $pic_extra_path;
 	if (USERS_SUBFOLDERS_ALBUM == true)

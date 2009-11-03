@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/lofi_header.tpl -->
+
 <script type="text/javascript">
 	//
 	// Should really check the browser to stop this whining ...
@@ -108,3 +110,5 @@
 	<table width="100%" border="0"><tr><td align="right" valign="top">{JUMPBOX}</td></tr></table>
 </div>
 <br />
+
+<!-- INCLUDE ../common/lofi/lofi_footer.tpl -->

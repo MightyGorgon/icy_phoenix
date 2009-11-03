@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_header.tpl -->
+
 <b>{TOPIC_TITLE}</b>
 <div class="nav"><a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}</div><br />
 <div class="pagination">{PAGINATION}</div>
@@ -18,3 +20,5 @@
 	{JUMPBOX}
 </div>
 <br />
+
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_footer.tpl -->

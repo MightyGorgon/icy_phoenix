@@ -165,7 +165,7 @@ else
 	// Delete File
 	// --------------------------------
 	$pic_filename = $thispic['pic_filename'];
-	$pic_base_path = ALBUM_UPLOAD_PATH;
+	$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 	$pic_extra_path = '';
 	$pic_new_filename = $pic_extra_path . $pic_filename;
 	$pic_fullpath = $pic_base_path . $pic_new_filename;

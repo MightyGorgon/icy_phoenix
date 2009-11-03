@@ -1,3 +1,4 @@
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_header.tpl -->
 
 <div class="forumline nav-div">
 	<p class="nav-header">
@@ -64,3 +65,5 @@
 		<td align="right" valign="top"></td>
 	</tr>
 </table>
+
+<!-- INCLUDE ../common/lofi/bots/lofi_bots_footer.tpl -->

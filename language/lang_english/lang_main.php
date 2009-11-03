@@ -1236,7 +1236,7 @@ $lang = array_merge($lang, array(
 	'Pic_Upload_Explain' => 'Allowed types are JPG, GIF and PNG. Maximum file size is %s bytes. Maximum image dimensions are %sx%s pixels.',
 	'Album_full' => 'Sorry, the album has reached the maximum number of uploaded pics. Please contact the album administrator for more information.',
 	'Album_upload_successful' => 'Thank you, your pic has been uploaded successfully.',
-	'Click_return_album' => 'Click %shere%s to return to the Album.',
+	'Click_return_album' => 'Click %sHere%s to return to the Album.',
 	'Invalid_upload' => 'Invalid Upload<br /><br />Your pic is too big or its type is not allowed.',
 	'Image_too_big' => 'Sorry, your image dimensions are too large.',
 	'Uploaded_by' => 'Uploaded by',
@@ -1330,7 +1330,7 @@ $lang = array_merge($lang, array(
 	'Recent_title_lastXdays' => ' from the last %s days', // %s = days
 	'Recent_no_topics' => 'No topics were found.',
 	'Recent_wrong_mode' => 'You have selected a wrong mode.',
-	'Recent_click_return' => 'Click %shere%s to return to recent site.',
+	'Recent_click_return' => 'Click %sHere%s to return to recent site.',
 
 	'Profile_view_option' => 'Pop up window on Profile View',
 	'Profile_viewed' => 'My Profile Views',
@@ -1393,7 +1393,7 @@ $lang = array_merge($lang, array(
 	'Mod_CP_topic_globalized' => 'The selected topic has been globalized.',
 	'Mod_CP_topics_normalized' => 'The selected topics have been normalized.',
 	'Mod_CP_topic_normalized' => 'The selected topic has been normalized.',
-	'Mod_CP_click_return_topic' => 'Click %shere%s to return to the old topic or %shere%s to return to the new one.',
+	'Mod_CP_click_return_topic' => 'Click %sHere%s to return to the old topic or %sHere%s to return to the new one.',
 
 	't_starter' => 'You cannot thank yourself',
 	'Watched_Topics' => 'Watched Topics',
@@ -2036,7 +2036,7 @@ $lang = array_merge($lang, array(
 	'CannotEditAdminsPosts' => 'You cannot edit admins posts',
 	'Random_Number' => 'Random Number',
 
-	'New_download' => 'A new download was uploaded or updated.<br />Click %shere%s to view it.',
+	'New_download' => 'A new download was uploaded or updated.<br />Click %sHere%s to view it.',
 	'Dl_bug_tracker' => 'Bug Tracker',
 	'Downloads_ADV' => 'Downloads ADV',
 

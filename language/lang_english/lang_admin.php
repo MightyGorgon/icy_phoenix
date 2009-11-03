@@ -690,7 +690,7 @@ $lang = array_merge($lang, array(
 	'User_deleted_successfully' => 'User(s) deleted successfully!',
 	'User_add_group_successfully' => 'User(s) added to group successfully!',
 
-	'Click_return_userlist' => 'Click %shere%s to return to the User List',
+	'Click_return_userlist' => 'Click %sHere%s to return to the User List',
 //
 // Admin Userlist End
 
@@ -863,7 +863,7 @@ $lang = array_merge($lang, array(
 
 	'LIW_config_updated' => 'The Limit Image Width MOD configuration has been successfully updated',
 	'LIW_cache_emptied' => 'The cache table has been successfully emptied',
-	'LIW_click_return_config' => 'Click %shere%s to return the Limit Image Width MOD configuration page',
+	'LIW_click_return_config' => 'Click %sHere%s to return the Limit Image Width MOD configuration page',
 
 	'LIW_getimagesize' => 'getimagesize() URL support',
 	'LIW_getimagesize_explain' => 'Available in PHP 4.0.5',

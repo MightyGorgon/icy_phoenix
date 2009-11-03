@@ -50,12 +50,12 @@ function get_user_os($http_user_agent_str)
 
 	if (strpos($http_user_agent_str, 'Win'))
 	{
-		if (strpos($http_user_agent_str, 'Windows NT 7.0'))
+		if (strpos($http_user_agent_str, 'Windows NT 6.1'))
 		{
 			$user_os_ver = 'Windows 7';
 			$user_os_img .= 'winlong.png';
 		}
-		elseif (strpos($http_user_agent_str, 'Windows NT 6.0') || (strpos($http_user_agent_str, 'Windows NT 6.1')))
+		elseif (strpos($http_user_agent_str, 'Windows NT 6.0'))
 		{
 			$user_os_ver = 'Windows Vista';
 			$user_os_img .= 'winlong.png';
