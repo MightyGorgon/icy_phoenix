@@ -186,26 +186,17 @@ if(($config['thumbnail_cache'] == true) && file_exists($pic_thumbnail_fullpath))
 $server_path = create_server_url();
 $pic_exists = false;
 $pic_local = false;
-$pic_localpath = '';
 if ((strpos($pic_fullpath, $server_path) !== false) || @file_exists($pic_fullpath))
 {
 	$pic_local = true;
-	$pic_localpath = str_replace($server_path, '', $pic_fullpath);
-	// Mighty Gorgon - Are we sure that this won't cause other issues??? Test please...
-	$pic_fullpath = $pic_localpath;
-	if(file_exists($pic_fullpath))
-	{
-		$pic_exists = true;
-	}
 }
-else
+
+if(any_url_exists($pic_fullpath))
 {
-	if(any_url_exists($pic_fullpath))
-	{
-		$pic_exists = true;
-	}
+	$pic_exists = true;
 }
-if($pic_exists == false)
+
+if(!$pic_exists)
 {
 	header('Content-type: image/jpeg');
 	header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
@@ -217,14 +208,7 @@ if($pic_exists == false)
 
 if ($image_processed == false)
 {
-	if ($pic_local == true)
-	{
-		$pic_size = get_full_image_info($pic_fullpath, null, true);
-	}
-	else
-	{
-		$pic_size = get_full_image_info($pic_fullpath);
-	}
+	$pic_size = get_full_image_info($pic_fullpath, null, $pic_local);
 
 	if($pic_size == false)
 	{
