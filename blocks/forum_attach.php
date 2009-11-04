@@ -24,7 +24,7 @@ if(!function_exists('cms_block_forum_attach'))
 {
 	function cms_block_forum_attach()
 	{
-		global $db, $cache, $config, $template, $images, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $images, $lang, $bbcode, $block_id, $cms_config_vars;
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 

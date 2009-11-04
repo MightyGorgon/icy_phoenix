@@ -211,14 +211,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 
 			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['allow_bbcode']);
 			$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html'];
-			if ($config['allow_smilies'] && !$lofi)
-			{
-				$bbcode->allow_smilies = $config['allow_smilies'];
-			}
-			else
-			{
-				$bbcode->allow_smilies = false;
-			}
+			$bbcode->allow_smilies = ($config['allow_smilies'] && !$lofi) ? $config['allow_smilies'] : false;
 
 			$clean_tags = false;
 			if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))

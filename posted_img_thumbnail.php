@@ -189,9 +189,23 @@ $pic_local = false;
 if ((strpos($pic_fullpath, $server_path) !== false) || @file_exists($pic_fullpath))
 {
 	$pic_local = true;
+	$pic_localpath = str_replace($server_path, '', $pic_fullpath);
+	if(@file_exists($pic_localpath))
+	{
+		// Mighty Gorgon - Are we sure that this won't cause other issues??? Test please...
+		$pic_fullpath = $pic_localpath;
+		$pic_exists = true;
+	}
+	else
+	{
+		if (@file_exists(array_shift(explode('?', basename($pic_localpath)))))
+		{
+			$pic_exists = true;
+		}
+	}
 }
 
-if(any_url_exists($pic_fullpath))
+if(!$pic_exists && any_url_exists($pic_fullpath))
 {
 	$pic_exists = true;
 }

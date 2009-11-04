@@ -371,7 +371,7 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 		$attachments['_' . $rows[$i]['post_id']][] = $rows[$i];
 	}
 
-	if ( sizeof($article) == 0 )
+	if (sizeof($article) == 0)
 	{
 		init_display_template('body', '{postrow.ATTACHMENTS}');
 	}

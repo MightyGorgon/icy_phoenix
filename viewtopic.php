@@ -809,6 +809,8 @@ if($userdata['upi2db_access'])
 //<!-- END Unread Post Information to Database Mod -->
 
 $template_to_parse = ($kb_mode) ? 'viewtopic_kb_body.tpl' : 'viewtopic_body.tpl';
+// Needed for attachments... do not remove!
+$template->set_filenames(array('body' => $template_to_parse));
 
 make_jumpbox(CMS_PAGE_VIEWFORUM, $forum_id);
 
