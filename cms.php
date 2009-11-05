@@ -815,11 +815,12 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					$result = $db->sql_query($sql);
 					$b_info = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
+					$db->sql_transaction('begin');
 
 					$weight = get_max_blocks_position(CMS_BLOCKS_TABLE, $id_var_value, $b_bposition, 'layout') + 1;
 					$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
-					$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $b_info['title'] . "', '" . $b_info['content'] . "', '" . $b_info['bposition'] . "', '" . $b_info['weight'] . "', '" . $b_info['active'] . "', '" . $b_info['type'] . "', '" . $b_info['blockfile'] . "', '" . $b_info['view'] . "', '" . (($id_var_name == 'l_id') ? $id_var_value : 0) . "', '" . (($id_var_name == 'ls_id') ? $id_var_value : 0) . "', '" . $b_info['border'] . "', '" . $b_info['titlebar'] . "', '" . $b_info['background'] . "', '" . $b_info['local'] . "', '" . $b_info['groups'] . "')";
+					$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . addslashes(stripslashes($b_info['title'])) . "', '" . addslashes(stripslashes($b_info['content'])) . "', '" . $b_info['bposition'] . "', '" . $b_info['weight'] . "', '" . $b_info['active'] . "', '" . $b_info['type'] . "', '" . $b_info['blockfile'] . "', '" . $b_info['view'] . "', '" . (($id_var_name == 'l_id') ? $id_var_value : 0) . "', '" . (($id_var_name == 'ls_id') ? $id_var_value : 0) . "', '" . $b_info['border'] . "', '" . $b_info['titlebar'] . "', '" . $b_info['background'] . "', '" . $b_info['local'] . "', '" . $b_info['groups'] . "')";
 					$result = $db->sql_query($sql);
 
 					$sql_cfg = "SELECT * FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
@@ -833,13 +834,14 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 					{
 						$portal_name = $row_cfg['config_name'];
 						$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-							VALUES ('" . $b_id . "', '" . $row_cfg['label'] . "', '" . $row_cfg['sub_label'] . "', '" . $row_cfg['config_name'] . "', '" . $row_cfg['field_options'] . "', '" . $row_cfg['field_values'] . "', '" . $row_cfg['type'] . "', '" . $row_cfg['block'] . "')";
+							VALUES ('" . $b_id . "', '" . $row_cfg['label'] . "', '" . $row_cfg['sub_label'] . "', '" . $row_cfg['config_name'] . "', '" . $row_cfg['field_options'] . "', '" . addslashes(stripslashes($row_cfg['field_values'])) . "', '" . $row_cfg['type'] . "', '" . $row_cfg['block'] . "')";
 						$result = $db->sql_query($sql);
 
 						$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
-							VALUES ('" . $b_id ."', '" . $row_cfg['config_name'] . "', '" . $row_cfg['config_value'] . "')";
+							VALUES ('" . $b_id . "', '" . $row_cfg['config_name'] . "', '" . addslashes(stripslashes($row_cfg['config_value'])) . "')";
 						$result = $db->sql_query($sql);
 					}
+					$db->sql_transaction('commit');
 				}
 			}
 			fix_weight_blocks($id_var_value, $table_name);

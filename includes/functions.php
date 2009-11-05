@@ -3130,7 +3130,7 @@ function page_header($title = '', $parse_template = false)
 
 	// RSS Autodiscovery - BEGIN
 	$rss_url = $nav_base_url . 'rss.' . PHP_EXT;
-	$rss_forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]): 0;
+	$rss_forum_id = (isset($_GET[POST_FORUM_URL]) ? intval($_GET[POST_FORUM_URL]) : 0);
 	$rss_url_append = '';
 	$rss_a_url_append = '';
 	if($rss_forum_id != 0)
@@ -4648,7 +4648,8 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		// Load the Page Header
 		if (!defined('IN_ADMIN'))
 		{
-			page_header('', true);
+			$parse_template = defined('IN_CMS') ? false : true;
+			page_header('', $parse_template);
 		}
 		else
 		{
@@ -4784,7 +4785,8 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 		if (!defined('IN_ADMIN'))
 		{
-			page_footer(true, '', true);
+			$parse_template = defined('IN_CMS') ? false : true;
+			page_footer(true, '', $parse_template);
 		}
 		else
 		{
