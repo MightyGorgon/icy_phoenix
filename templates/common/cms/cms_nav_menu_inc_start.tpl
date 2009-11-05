@@ -67,8 +67,8 @@
 		</tr>
 		<tr>
 			<th style="cursor: pointer;" align="left" onclick="ShowHide('cms_settings_options','cms_settings_options2','cms_settings_options');">
-				<img src="{IMG_NAV_MENU_WSETTINGS}" alt="{L_CPL_SETTINGS_OPTIONS}" title="{L_CPL_SETTINGS_OPTIONS}" />&nbsp;
-				<a href="#" onclick="return false;" title="{L_CPL_SETTINGS_OPTIONS}" class="nav-menu-link"><b>{L_CPL_SETTINGS_OPTIONS}</b></a>
+				<img src="{IMG_NAV_MENU_WSETTINGS}" alt="{L_CMS_SETTINGS}" title="{L_CMS_SETTINGS}" />&nbsp;
+				<a href="#" onclick="return false;" title="{L_CMS_SETTINGS}" class="nav-menu-link"><b>{L_CMS_SETTINGS}</b></a>
 			</th>
 		</tr>
 		<tr>

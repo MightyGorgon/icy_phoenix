@@ -1783,6 +1783,7 @@ $lang = array_merge($lang, array(
 	'CMS_TITLE' => 'CMS',
 	'CMS_MANAGEMENT' => 'CMS Management',
 	'CMS_CONFIG' => 'CMS Configuration',
+	'CMS_SETTINGS' => 'CMS Settings',
 	'CMS_ACP' => 'Edit This Page',
 	'CUSTOM_PAGE' => 'Customized Page',
 // MG CMS - END
