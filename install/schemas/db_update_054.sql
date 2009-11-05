@@ -12,7 +12,7 @@ CREATE TABLE phpbb_tickets_cat (
 	ticket_cat_emails TEXT NOT NULL,
 	PRIMARY KEY (ticket_cat_id)
 );
-INSERT INTO phpbb_tickets_cat (ticket_cat_title, ticket_cat_des) VALUES ('General', 'General');
+INSERT INTO phpbb_tickets_cat (ticket_cat_title, ticket_cat_des, ticket_cat_emails) VALUES ('General', 'General', '');
 ## TICKETS - END
 UPDATE `phpbb_cms_layout_special` SET page_id = 'viewforum' WHERE page_id = 'viewfforum';
 
