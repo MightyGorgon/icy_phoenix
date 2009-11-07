@@ -4021,6 +4021,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $css_include, $css_style_include, $js_include;
+	global $cms_acp_url;
 
 	if (!defined('IN_CMS'))
 	{

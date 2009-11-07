@@ -1844,7 +1844,7 @@ CREATE TABLE `phpbb_topics` (
 	KEY `topic_moved_id` (`topic_moved_id`),
 	KEY `topic_status` (`topic_status`),
 	KEY `topic_type` (`topic_type`)
-);
+) ENGINE = MyISAM;
 
 ALTER TABLE `phpbb_topics` ADD FULLTEXT (topic_title);
 ## ALTER TABLE `phpbb_topics` ADD FULLTEXT (topic_desc);
@@ -2526,9 +2526,9 @@ CREATE TABLE phpbb_downloads (
 	hacklist TINYINT(1) DEFAULT '0',
 	hack_author VARCHAR(255) DEFAULT '',
 	hack_author_email VARCHAR(255) DEFAULT '',
-	hack_author_website TINYTEXT DEFAULT '',
+	hack_author_website TINYTEXT,
 	hack_version VARCHAR(32) DEFAULT '',
-	hack_dl_url TINYTEXT DEFAULT '',
+	hack_dl_url TINYTEXT,
 	test varchar(50) DEFAULT '',
 	req TEXT NOT NULL,
 	todo TEXT NOT NULL,

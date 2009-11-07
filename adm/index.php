@@ -36,7 +36,7 @@ if(isset($_GET['pane']) && ($_GET['pane'] == 'left'))
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 	$module = jr_admin_get_module_list($jr_admin_userdata['user_jr_admin']);
 
-	include('./page_header_admin.' . PHP_EXT);
+	include('page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'index_navigate.tpl'));
 

@@ -2623,9 +2623,9 @@ if (substr($mode, 0, 6) == 'update')
 			hacklist TINYINT(1) DEFAULT '0',
 			hack_author VARCHAR(255) DEFAULT '',
 			hack_author_email VARCHAR(255) DEFAULT '',
-			hack_author_website TINYTEXT DEFAULT '',
+			hack_author_website TINYTEXT,
 			hack_version VARCHAR(32) DEFAULT '',
-			hack_dl_url TINYTEXT DEFAULT '',
+			hack_dl_url TINYTEXT,
 			test varchar(50) DEFAULT '',
 			req TEXT NOT NULL,
 			todo TEXT NOT NULL,
@@ -2895,7 +2895,7 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.1.10.25 */
 		case '1.1.10.25':
 		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD COLUMN group_legend_order MEDIUMINT(8) DEFAULT '0' NOT NULL AFTER `group_legend`";
-		//$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_edit_count` `post_edit_count` TINYTEXT DEFAULT ''";
+		//$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_edit_count` `post_edit_count` TINYTEXT";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD COLUMN `post_edit_id` MEDIUMINT(8) DEFAULT '0' NOT NULL AFTER `post_edit_count`";
 
 		/* Updating from IP 1.2.0.27 */
