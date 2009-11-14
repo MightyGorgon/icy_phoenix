@@ -69,7 +69,7 @@ if (isset($_POST['delete_sub']))
 		$file_array = array();
 		foreach($_POST as $key => $valx)
 		{
-			if (substr_sizeof($key, 'delete_id_'))
+			if (substr_count($key, 'delete_id_'))
 			{
 				$log_id = substr($key, 10);
 

@@ -103,7 +103,7 @@ if (sizeof($_POST))
 	foreach($_POST as $key => $valx)
 	{
 		// Check for deletion items
-		if (substr_sizeof($key, 'delete_id_'))
+		if (substr_count($key, 'delete_id_'))
 		{
 			$referrer_id = substr($key, 10);
 
