@@ -58,6 +58,7 @@ switch ($req_version)
 	case '13255': $current_ip_version = '1.3.2.55'; break;
 	case '13356': $current_ip_version = '1.3.3.56'; break;
 	case '13457': $current_ip_version = '1.3.4.57'; break;
+	case '13558': $current_ip_version = '1.3.5.58'; break;
 }
 
 // Icy Phoenix Part...
@@ -3695,9 +3696,14 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.3.56 */
 		case '1.3.3.56':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('display_tags_box', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('allow_moderators_edit_tags', '0')";
 
 		/* Updating from IP 1.3.4.57 */
 		case '1.3.4.57':
+
+		/* Updating from IP 1.3.5.58 */
+		case '1.3.5.58':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

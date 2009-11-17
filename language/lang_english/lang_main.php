@@ -2252,6 +2252,7 @@ $lang = array_merge($lang, array(
 	'TOPIC_TAGS_EXPLAIN' => 'Separate each tag using comma',
 	'TAG_COUNT' => 'Counter',
 	'TAG_TEXT' => 'Tag',
+	'TAG_RESULTS' => 'Selected tag: <b>%s</b>',
 	'TAGS_NO_TAGS' => 'No tags have been defined',
 	'TAGS_NO_TAG' => 'Specified tag doesn\'t exist',
 

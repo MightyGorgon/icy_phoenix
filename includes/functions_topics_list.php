@@ -160,7 +160,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		$tpl => $tpl . '.tpl')
 	);
 
-	// check if user replied to the topics
+	// check if user replied to the topic
 	$user_topics = array();
 	if ($userdata['user_id'] != ANONYMOUS)
 	{

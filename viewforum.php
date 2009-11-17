@@ -1018,6 +1018,7 @@ $template->assign_vars(array(
 	'L_PERMISSIONS_LIST' => $lang['Permissions_List'],
 	'S_AUTH_LIST' => $s_auth_can,
 	'S_WATCH_FORUM' => $s_watching_forum,
+	'S_TOPIC_TAGS' => !empty($config['display_tags_box']) ? true : false,
 	'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append),
 	//<!-- BEGIN Unread Post Information to Database Mod -->
 	//'U_MARK_READ' => append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . '&amp;mark=topics'),
@@ -1030,7 +1031,7 @@ $template->assign_vars(array(
 // End header
 
 // MG User Replied - BEGIN
-// check if user replied to the topics
+// check if user replied to the topic
 define('USER_REPLIED_ICON', true);
 $user_topics = $class_topics->user_replied_array($topic_rowset);
 // MG User Replied - END

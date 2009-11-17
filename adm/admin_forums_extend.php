@@ -1377,8 +1377,10 @@ if ($mode == '')
 		'L_MOVEDW' => $lang['Move_down'],
 		'IMG_MOVEUP' => $images['acp_up_arrow2'],
 		'IMG_MOVEDW' => $images['acp_down_arrow2'],
-		'L_EXPAND' => $lang['Expand'],
-		'L_COLLAPSE' => $lang['Collapse'],
+		'L_EXPAND' => $lang['Forum_Expand'],
+		'L_COLLAPSE' => $lang['Forum_Collapse'],
+		'L_EXPAND_ALL' => $lang['Forum_Expand_all'],
+		'L_COLLAPSE_ALL' => $lang['Forum_Collapse_all'],
 		'L_RESYNC' => $lang['Resync'],
 
 		'L_CREATE_FORUM' => $lang['Create_forum'],
@@ -1415,7 +1417,10 @@ if ($mode == '')
 
 	// footer
 	$s_hidden_fields = '';
-	$s_hidden_fields .= '<input type="hidden" name="selected_id" value="' . $selected_id . '" />';
+	$s_hidden_fields .= '<input type="hidden" id="selected_id" name="selected_id" value="' . $selected_id . '" />';
+	// fields for javascript collapsing (all)
+	$s_hidden_fields .= '<input type="hidden" id="nr-sub-' . $selected_id . '" value="' . sizeof($tree['sub'][$selected_id]) . '" />';
+	$s_hidden_fields .= '<input type="hidden" id="collapsed-' . $selected_id . '" value="0" />';
 	$template->assign_vars(array(
 		'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 		'NAV_CAT_DESC' => admin_get_nav_cat_desc($selected_id),
@@ -1513,8 +1518,48 @@ function add_row($idx, $CH_this, $level, $id)
 	// is there some sub-levels for this level ?
 	if (isset($tree['sub'][$CH_this]))
 	{
-		$template->assign_block_vars('row.has_sublevels', array());
+		// build sub-levels links (collapsed)
+		$links = '';
+		for ($i = 0; $i < sizeof($tree['sub'][$CH_this]); $i++)
+		{
+			$sub_this = $tree['sub'][$CH_this][$i];
+			$sub_idx = $tree['keys'][$sub_this];
 
+			$sub_folder = $images['acp_icon_minipost'];
+			$sub_l_folder = $lang['Forum'];
+			if ($tree['data'][$sub_idx]['forum_status'] == FORUM_LOCKED)
+			{
+				$sub_folder = $images['acp_icon_minipost_lock'];
+				$sub_l_folder = $lang['Forum_locked'];
+			}
+			if (($tree['type'][$sub_idx] == POST_CAT_URL) || !empty($tree['sub'][$sub_this]))
+			{
+				$sub_folder = $images['acp_icon_minicat'];
+				$sub_l_folder = $lang['Category'];
+				if ($tree['data'][$sub_idx]['forum_status'] == FORUM_LOCKED)
+				{
+					$sub_folder = $images['acp_icon_minicat_locked'];
+					$sub_l_folder = $lang['Category_locked'];
+				}
+			}
+			if (!empty($tree['data'][$sub_idx]['forum_link']))
+			{
+				$sub_folder = $images['acp_icon_minilink'];
+				$sub_l_folder = $lang['Forum_link'];
+			}
+
+			$link = '<a href="' . append_sid('admin_forums_extend.' . PHP_EXT . '?selected_id=' . $sub_this) . '" class="gensmall" style="text-decoration: none;">';
+			$link .= '<img src="' . $sub_folder . '" alt="' . $sub_l_folder . '" style="vertical-align: middle;" />';
+			$link .= '&nbsp;' . get_object_lang($sub_this, 'name', true) . '</a>';
+			$links .= (empty($links) ? '' : ', ') . $link;
+		}
+
+		$template->assign_block_vars('row.has_sublevels', array(
+			'LINKS' => $links
+			)
+		);
+
+		// build sub-levels (expanded)
 		for ($i = 0; $i < sizeof($tree['sub'][$CH_this]); $i++)
 		{
 			$sub_this = $tree['sub'][$CH_this][$i];

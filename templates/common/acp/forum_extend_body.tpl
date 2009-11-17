@@ -1,31 +1,46 @@
 <script type="text/javascript">
 // <![CDATA[
-function Collapse(id, hiding)
+function Collapse_Expand(id, force_collapse, force_expand)
 {
 	var i;
 	var count = document.getElementById('nr-sub-' + id).value;
-	if ((document.getElementById('collapsed-' + id).value == 0) || hiding)
+	var collapse = (((document.getElementById('collapsed-' + id).value == 0) || force_collapse) && !force_expand) ? true : false;
+	for (i = 0; i < count; i++)
 	{
-		for (i = 0; i < count; i++)
+		if (collapse)
 		{
 			document.getElementById('sub-' + id + '-' + i).style.display = 'none';
+			document.getElementById('sublevels-' + id).style.display = '';
 			document.getElementById('i-' + id).src = '{IMG_MAXIMISE}';
 			document.getElementById('i-' + id).alt = '+';
-			Collapse(document.getElementById('sub-id-' + id + '-' + i).value, true);
+			document.getElementById('i-' + id).title = '{L_EXPAND}';
+			Collapse_Expand(document.getElementById('sub-id-' + id + '-' + i).value, true, false);
 		}
-		document.getElementById('collapsed-' + id).value = 1;
-	}
-	else
-	{
-		for (i = 0; i < count; i++)
+		else
 		{
 			document.getElementById('sub-' + id + '-' + i).style.display = '';
+			document.getElementById('sublevels-' + id).style.display = 'none';
 			document.getElementById('i-' + id).src = '{IMG_MINIMISE}';
 			document.getElementById('i-' + id).alt = '-';
-			// If you activate this, when you click to show a category, it will expand everything besides it
-			// Collapse(document.getElementById('sub-id-'+id+'-'+i).value);
+			document.getElementById('i-' + id).title = '{L_COLLAPSE}';
+			if (force_expand)
+			{
+				Collapse_Expand(document.getElementById('sub-id-'+id+'-'+i).value, false, true);
+			}
 		}
-		document.getElementById('collapsed-' + id).value = 0;
+	}
+	
+	document.getElementById('collapsed-' + id).value = (collapse) ? 1 : 0;
+}
+
+function Collapse_Expand_All(collapse)
+{
+	var id = document.getElementById('selected_id').value;
+	var count = document.getElementById('nr-sub-' + id).value;
+	for (i = 0; i < count; i++)
+	{
+		var to_collapse = document.getElementById('sub-id-' + id + '-' + i).value;
+		Collapse_Expand(to_collapse, collapse, !collapse);
 	}
 }
 // ]]>
@@ -35,7 +50,7 @@ function Collapse(id, hiding)
 
 <div class="forumline nav-div">
 	<p class="nav-header">
-		<a href="{U_INDEX}" class="nav">{L_INDEX}</a>{NAV_CAT_DESC}</span>
+		<a href="{U_INDEX}" class="nav">{L_INDEX}</a>{NAV_CAT_DESC}
 	</p>
 	<div class="nav-links">
 		<div class="nav-links-left">
@@ -46,6 +61,9 @@ function Collapse(id, hiding)
 </div>
 
 <form action="{S_ACTION}" name="post" method="post">
+<div class="gensmall">
+	<br /><a href="#" onclick="javascript:Collapse_Expand_All(false);">{L_EXPAND_ALL}</a> - <a href="#" onclick="javascript:Collapse_Expand_All(true);">{L_COLLAPSE_ALL}</a>
+</div>
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th>{L_FORUM}</th>
@@ -58,13 +76,13 @@ function Collapse(id, hiding)
 	<td class="row1">
 		<table width="100%" height="47" cellpadding="2" cellspacing="0" border="0">
 		<tr>
-			<td nowrap="nowrap" width="{row.LEVEL_WIDTH}"><img src="{SPACER}" height="1" width="{row.LEVEL_WIDTH}" /></td>
+			<td nowrap="nowrap" width="{row.LEVEL_WIDTH}"><img src="{SPACER}" height="1" width="{row.LEVEL_WIDTH}" alt="" /></td>
 			<td width="24" align="center" style="width: 24px; text-align: center; vertical-align: middle;">
 			<!-- BEGIN has_sublevels -->
-				<a id="{row.ID}" title="{L_COLLAPSE}" onclick="Collapse('{row.ID}');"><img id="i-{row.ID}" src="{IMG_MINIMISE}" alt="-" /></a>
+				<a id="{row.ID}" onclick="Collapse_Expand('{row.ID}', false, false);"><img id="i-{row.ID}" src="{IMG_MINIMISE}" alt="{L_COLLAPSE}" title="{L_COLLAPSE}" /></a>
 			<!-- END has_sublevels -->
 			<!-- BEGIN has_no_sublevels -->
-				<img src="{SPACER}" height="1" width="11" />
+				<img src="{SPACER}" height="1" width="11" alt="" />
 			<!-- END has_no_sublevels -->
 			</td>
 			<td width="46" align="center"><img src="{row.FOLDER}" alt="{row.L_FOLDER}" title="{row.L_FOLDER}" /></td>
@@ -74,7 +92,11 @@ function Collapse(id, hiding)
 			<td width="100%">
 				<span class="forumlink"><a href="{row.U_FORUM}" class="forumlink">{row.FORUM_NAME}</a></span>
 				<span class="genmed"><br />{row.FORUM_DESC}</span>
-				<span class="gensmall">{row.LINKS}</span>
+				<span class="gensmall" id="sublevels-{row.ID}" style="display: none;">
+					<!-- BEGIN has_sublevels -->
+					<br />{row.has_sublevels.LINKS}
+					<!-- END has_sublevels -->
+				</span>
 			</td>
 		</tr>
 		</table>

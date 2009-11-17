@@ -1438,7 +1438,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 
 		// MG User Replied - BEGIN
-		// check if user replied to the topics
+		// check if user replied to the topic
 		define('USER_REPLIED_ICON', true);
 		$user_topics = $class_topics->user_replied_array($searchset);
 		// MG User Replied - END

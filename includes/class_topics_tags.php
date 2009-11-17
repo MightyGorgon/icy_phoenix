@@ -224,14 +224,16 @@ class class_topics_tags
 	/*
 	* Get tags
 	*/
-	function get_tags($start, $limit)
+	function get_tags($sort_order, $sort_dir, $start, $limit)
 	{
 		global $db, $lang;
+
+		$sql_sort = ($sort_order == 'tag_count') ? ("l.tag_count " . $sort_dir . ", l.tag_text ASC") : ("l.tag_text " . $sort_dir);
 
 		$tags = array();
 		$sql = "SELECT l.*
 						FROM " . TOPICS_TAGS_LIST_TABLE . " l
-						ORDER BY l.tag_count DESC, l.tag_text
+						ORDER BY " . $sql_sort . "
 						LIMIT " . $start . ", " . $limit;
 		$result = $db->sql_query($sql);
 		$tags = $db->sql_fetchrowset($result);
@@ -273,18 +275,39 @@ class class_topics_tags
 		$limit_sql = (!empty($start) ? (" LIMIT " . $start . (!empty($limit) ? (", " . $limit) : '')) : '');
 
 		$topics = array();
-		$sql = "SELECT t.*
-						FROM " . TOPICS_TAGS_MATCH_TABLE . " m, " . TOPICS_TAGS_LIST_TABLE . " l, " . TOPICS_TABLE . " t
+		$sql = "SELECT t.*, f.forum_name
+						FROM " . TOPICS_TAGS_MATCH_TABLE . " m, " . TOPICS_TAGS_LIST_TABLE . " l, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 						WHERE " . $db->sql_in_set('l.tag_text', $tags) . "
 							AND l.tag_id = m.tag_id
 							AND t.topic_id = m.topic_id
-						ORDER BY t.topic_id"
+							AND f.forum_id = t.forum_id
+						ORDER BY t.topic_last_post_time DESC"
 						. $limit_sql;
 		$result = $db->sql_query($sql);
 		$topics = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 
 		return $topics;
+	}
+
+	/*
+	* Build tags list
+	*/
+	function build_tags_list($topics_ids_array)
+	{
+		global $db, $lang;
+
+		$topic_tags_links = '';
+		$topic_tags = $this->get_topics_tags($topics_ids_array);
+		if (!empty($topic_tags))
+		{
+			foreach ($topic_tags as $tag)
+			{
+				$topic_tags_links .= (!empty($topic_tags_links) ? ', ' : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($tag))) . '">' . htmlspecialchars($tag) . '</a>';
+			}
+		}
+
+		return $topic_tags_links;
 	}
 
 	/*

@@ -2631,7 +2631,8 @@ class ip_page
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121239' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.12.39</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121542' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.15.42</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121845' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.18.45</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_13053' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.3.0.53 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_13053' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.3.0.53</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_13356' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.3.3.56 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
 		$update_options .= '</ul></div>' . "\n";
 
 		// Output the spoiler

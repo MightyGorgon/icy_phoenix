@@ -79,12 +79,6 @@ $tables = array(
 	'google_bot_detector',
 	'groups',
 	'hacks_list',
-	/*
-	'helpdesk_emails',
-	'helpdesk_importance',
-	'helpdesk_msgs',
-	'helpdesk_reply',
-	*/
 	'jr_admin_users',
 	'kb_articles',
 	'kb_categories',
@@ -147,6 +141,8 @@ $tables = array(
 	'tickets_cat',
 	'title_infos',
 	'topics',
+	'topics_tags_list',
+	'topics_tags_match',
 	'topics_watch',
 	'topic_view',
 	'upi2db_always_read',
@@ -597,6 +593,8 @@ $default_config = array(
 	'ftr_install_time' => '0',
 	'ftr_all_users' => '0',
 	'allow_html_only_for_admins' => '0',
+	'display_tags_box' => '0',
+	'allow_moderators_edit_tags' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

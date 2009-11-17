@@ -405,7 +405,7 @@ if ($result && $post_info)
 	$lock = (isset($_POST['lock'])) ? true : false;
 	$unlock = (isset($_POST['unlock'])) ? true : false;
 
-	if (($submit || $confirm) && ($lock || $unlock) && ($is_auth['auth_mod']) && ($mode != 'newtopic') && (!$refresh))
+	if (($submit || $confirm) && ($lock || $unlock) && $is_auth['auth_mod'] && ($mode != 'newtopic') && (!$refresh))
 	{
 		$t_id = (!isset($post_info['topic_id'])) ? $topic_id : $post_info['topic_id'];
 
@@ -1966,6 +1966,10 @@ if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])
 	if ($config['show_topic_description'])
 	{
 		$template->assign_block_vars('topic_description', array());
+	}
+	if ($config['display_tags_box'] && (($userdata['user_level'] == ADMIN) || ($is_auth['auth_mod'] && $config['allow_moderators_edit_tags'])))
+	{
+		$template->assign_var('S_TOPIC_TAGS', true);
 	}
 }
 

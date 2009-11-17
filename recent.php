@@ -277,7 +277,7 @@ $tracking_topics = (isset($_COOKIE[$config['cookie_name'] .'_t'])) ? unserialize
 $tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
 
 // MG User Replied - BEGIN
-// check if user replied to the topics
+// check if user replied to the topic
 define('USER_REPLIED_ICON', true);
 $user_topics = $class_topics->user_replied_array($line);
 // MG User Replied - END
@@ -343,7 +343,7 @@ for($i = 0; $i < sizeof($line); $i++)
 	//$first_time = create_date_ip($config['default_dateformat'], $line[$i]['topic_time'], $config['board_timezone']);
 	$first_author = ($line[$i]['first_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['first_poster_id'], $line[$i]['first_poster'], $line[$i]['first_poster_color'], $line[$i]['first_poster_active']) : (($line[$i]['first_poster_name'] != '') ? $line[$i]['first_poster_name'] : $lang['Guest']);
 	$last_time = create_date_ip($config['default_dateformat'], $line[$i]['post_time'], $config['board_timezone']);
-	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id'], $line[$i]['last_poster'], $line[$i]['last_poster_color'], $line[$i]['last_poster_active']): (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
+	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id'], $line[$i]['last_poster'], $line[$i]['last_poster_color'], $line[$i]['last_poster_active']) : (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
 	$last_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $line[$i]['topic_last_post_id']) . '#p' . $line[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 	// SELF AUTH - BEGIN

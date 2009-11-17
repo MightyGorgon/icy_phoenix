@@ -1052,10 +1052,23 @@ if (($config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_view
 	$topic_viewed_link = append_sid('topic_view_users.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append);
 }
 
-if ($config['show_social_bookmarks'] == true)
+if ($config['show_social_bookmarks'])
 {
 	$template->assign_block_vars('social_bookmarks', array());
 }
+
+if ($config['display_tags_box'])
+{
+	@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
+	$class_topics_tags = new class_topics_tags();
+	$topic_tags_links = $class_topics_tags->build_tags_list(array($topic_id));
+	$template->assign_vars(array(
+		'S_TOPIC_TAGS' => true,
+		'TOPIC_TAGS' => $topic_tags_links,
+		)
+	);
+}
+
 $topic_title_enc = urlencode(ip_utf8_decode($topic_title));
 // URL Rewrite - BEGIN
 // Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled

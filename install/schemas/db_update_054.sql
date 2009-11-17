@@ -107,7 +107,6 @@ DELETE FROM `phpbb_config` WHERE config_name = 'smart_header';
 
 
 
-
 ########################################
 ##              BUILD 056             ##
 ########################################
@@ -128,6 +127,8 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_html_o
 ########################################
 ##              BUILD 057             ##
 ########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_tags_box', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_moderators_edit_tags', '0');
 
 
 

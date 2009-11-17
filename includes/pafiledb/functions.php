@@ -61,7 +61,9 @@ class pafiledb_functions
 
 		while ($icon = @readdir($handle))
 		{
-			if (($icon != '.') && ($icon != '..') && ($icon != 'index.htm') && ($icon != 'index.html') && ($icon != 'spacer.gif') && !is_dir($icon))
+			$file_extensions = array('gif', 'jpg', 'jpeg', 'png');
+			$file_extension = substr(strrchr($icon, '.'), 1);
+			if (($icon != '.') && ($icon != '..') && in_array($file_extension, $file_extensions) && ($icon != 'spacer.gif') && !is_dir(IP_ROOT_PATH . $icon))
 			{
 				if ($file_posticon == $icon)
 				{

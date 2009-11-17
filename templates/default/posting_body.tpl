@@ -161,10 +161,12 @@ function attach_rules(forum_id)
 	<td class="row2"><span class="gen"><input type="text" name="topic_title_clean" size="45" maxlength="240" style="width: 98%;" tabindex="6" class="post" value="{TOPIC_TITLE_CLEAN}" /></span></td>
 </tr>
 <!-- ENDIF -->
+<!-- IF S_TOPIC_TAGS -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_TOPIC_TAGS}</b></span><br /><span class="gensmall">{L_TOPIC_TAGS_EXPLAIN}</span></td>
 	<td class="row2"><span class="gen"><input type="text" name="topic_tags" size="45" maxlength="240" style="width: 98%;" tabindex="7" class="post" value="{TOPIC_TAGS}" /></span></td>
 </tr>
+<!-- ENDIF -->
 <!-- ENDIF -->
 <tr>
 	<td class="catBottom" colspan="2">

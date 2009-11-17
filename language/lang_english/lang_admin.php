@@ -371,6 +371,10 @@ $lang = array_merge($lang, array(
 	'Resync' => 'Resync',
 	'No_mode' => 'No mode was set',
 	'Forum_edit_delete_explain' => 'Customize all the general board options. For User and Forum configurations use the related links on the left hand side',
+	'Forum_Expand' => 'Expand',
+	'Forum_Collapse' => 'Collapse',
+	'Forum_Expand_all' => 'Expand all',
+	'Forum_Collapse_all' => 'Collapse all',
 
 	'Move_contents' => 'Move all contents',
 	'Forum_delete' => 'Delete Forum',

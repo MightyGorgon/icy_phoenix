@@ -85,6 +85,22 @@ $config_fields = array(
 			),
 		),
 
+	'display_tags_box' => array(
+		'lang_key' => 'IP_display_tags_box',
+		'explain' => 'IP_display_tags_box_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
+	'allow_moderators_edit_tags' => array(
+		'lang_key' => 'IP_allow_moderators_edit_tags',
+		'explain' => 'IP_allow_moderators_edit_tags_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
 	'show_topic_description' => array(
 		'lang_key' => 'IP_show_topic_description',
 		'explain' => 'IP_show_topic_description_explain',

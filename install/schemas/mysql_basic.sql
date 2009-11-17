@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.3.56');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.4.57');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
@@ -861,6 +861,8 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_message'
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_install_time', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftr_all_users', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_html_only_for_admins', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_tags_box', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_moderators_edit_tags', '0');
 ## CASH - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_disable', 0);
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cash_display_after_posts', 1);

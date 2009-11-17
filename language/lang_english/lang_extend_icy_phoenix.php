@@ -215,6 +215,12 @@ if ($lang_extend_admin)
 		'IP_no_bump_explain' => 'Enabling this option last posters won\'t be able to post within 24 hours from their last post unless someone else has posted a reply (never applies to admins)',
 		'MODS_ALLOWED' => 'Moderators Can Posts',
 
+		'IP_display_tags_box' => 'Display Topics Tags',
+		'IP_display_tags_box_explain' => 'Enabling this option will enable Topics Tags (tags could be used for indexing purpose): tags could be inserted / edited only by administrators (or moderators if you enable the switch below) to avoid spam',
+
+		'IP_allow_moderators_edit_tags' => 'Allow Moderators To Edit Tags',
+		'IP_allow_moderators_edit_tags_explain' => 'Enabling this option will allow Moderators to edit Topics Tags',
+
 		'IP_show_topic_description' => 'Enable Topic Description',
 		'IP_show_topic_description_explain' => 'Enabling this option will enable Topic Description while posting and browsing forums',
 

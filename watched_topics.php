@@ -102,7 +102,7 @@ if ($watch_count > 0)
 		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
 
 		// MG User Replied - BEGIN
-		// check if user replied to the topics
+		// check if user replied to the topic
 		define('USER_REPLIED_ICON', true);
 		$user_topics = $class_topics->user_replied_array($watch_rows);
 		// MG User Replied - END
