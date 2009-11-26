@@ -65,7 +65,7 @@ function sitemap()
 
 					// toggle between maximise.gif and minimise.gif
 					imgStatus = (ulStatus == 'block') ? 'minimise' : 'maximise';
-					this.src = 'templates/common/images/' + imgStatus + '.gif';
+					this.src = 'templates/common/images/switch_' + imgStatus + '.gif';
 				}
 			}
 		}

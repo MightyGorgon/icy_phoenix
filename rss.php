@@ -28,9 +28,28 @@ include_once(IP_ROOT_PATH . 'includes/rss_functions.' . PHP_EXT);
 // END Includes of phpBB scripts
 
 // MG: not all modes implemented yet
-$mode_types = array('all', 'ann', 'cats', 'glo', 'imp', 'news');
+$mode_types = array('all', 'ann', 'cats', 'glo', 'imp', 'news', 'topic', 'forum_topic');
 $mode = request_var('mode', $mode_types[0]);
 $mode = (!in_array($mode, $mode_types) ? $mode_types[0] : $mode);
+
+$display_types = array('posts', 'topics');
+$display = request_var('display', $display_types[0]);
+$display = (!in_array($display, $display_types) ? $display_types[0] : $display);
+
+$forum_id = request_var(POST_FORUM_URL, 0);
+$forum_id = ($forum_id <= 0) ? 0 : $forum_id;
+
+$topic_id = request_var(POST_TOPIC_URL, 0);
+$topic_id = ($topic_id <= 0) ? 0 : $topic_id;
+
+// How many posts do you want to returnd (count)?
+// Specified in the URL with "c=".  Defaults to 25, upper limit of 50.
+$count = request_var('c', DEFAULT_ITEMS);
+$count = ($count <= 0) ? DEFAULT_ITEMS : $count;
+$count = ($count > MAX_ITEMS) ? MAX_ITEMS : $count;
+
+$no_limit = (isset($_GET['nolimit'])) ? true : false;
+$needlogin = (isset($_GET['login']) || isset($_GET['uid'])) ? true : false;
 
 $deadline = 0;
 
@@ -112,30 +131,11 @@ if($config['gzip_compress'])
 }
 // end gzip block
 
-// How many posts do you want to returnd (count)?
-// Specified in the URL with "c=".  Defaults to 25, upper limit of 50.
-$count = (isset($_GET['c'])) ? intval($_GET['c']) : DEFAULT_ITEMS;
-$count = ($count == 0) ? DEFAULT_ITEMS : $count;
-$count = ($count > MAX_ITEMS) ? MAX_ITEMS : $count;
-// Which forum do you want posts from (forum_id)?  specified in the url with "f=".  Defaults to all (public) forums.
-$forum_id = (isset($_GET['f'])) ? intval($_GET['f']) : '';
-$no_limit = (isset($_GET['nolimit'])) ? true : false;
-$needlogin = (isset($_GET['login']) or isset($_GET['uid'])) ? true : false;
+$sql_forum_where = !empty($forum_id) ? (' AND f.forum_id = ' . $forum_id) : ' ';
+$sql_topic_view = !empty($topic_id) ? (' AND t.topic_id = ' . $topic_id) : '';
+$sql_topics_only_where = ($display == 'topics') ? ' AND p.post_id = t.topic_first_post_id' : '';
 
-$sql_forum_where = (!empty($forum_id)) ? ' AND f.forum_id = ' . $forum_id : ' ';
-
-// Return topics only, or all posts?  Specified in the URL with "t=".  Defaults to all posts (0).
-$topics_only = (isset($_GET['t'])) ? intval($_GET['t']) : 0;
-$topics_view = (isset($_GET['topic'])) ? intval($_GET['topic']) : 0;
-$sql_topics_only_where = '';
-if($topics_only == 1)
-{
-	$sql_topics_only_where = 'AND p.post_id = t.topic_first_post_id';
-}
-if($topics_view != 0)
-{
-	$sql_topic_view = 'AND t.topic_id =' . $topics_view;
-}
+$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT'];
 
 // BEGIN Session management
 // Check user
@@ -153,15 +153,6 @@ else
 init_userprefs($userdata);
 $username = $userdata['username'];
 // END session management
-
-if(strpos($useragent, 'MSIE'))
-{
-	$encoding_charset = $lang['ENCODING'];
-}
-else
-{
-	$encoding_charset = $lang['ENCODING_ALT'];
-}
 
 // BEGIN Cache Mod
 if(($user_id == ANONYMOUS) && $use_cached)
@@ -205,7 +196,7 @@ else
 	// END Create main board information
 
 	// Auth check
-	$sql_forum_where='';
+	$sql_forum_where = '';
 	if($userdata['user_level'] <> ADMIN)
 	{
 		$is_auth = array();
@@ -231,7 +222,7 @@ else
 				}
 				else
 				{
-					header('Location: ' . $index_url . 'rss.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . (($no_limit) ? '&nolimit' : '') . (isset($_GET['atom']) ? '&atom' : '') . (isset($_GET['c']) ? '&c=' . $count : '') . (isset($_GET['t']) ? '&t=' . $topics_only : '') . (isset($_GET['styled']) ? '&styled' : '') . '&login');
+					header('Location: ' . $index_url . 'rss.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&display=' . $display . (($no_limit) ? '&nolimit' : '') . (isset($_GET['atom']) ? '&atom' : '') . (isset($_GET['c']) ? ('&c=' . $count) : '') . (isset($_GET['styled']) ? '&styled' : '') . '&login');
 					ExitWithHeader('301 Moved Permanently');
 				}
 			}
@@ -268,7 +259,7 @@ else
 	// BEGIN SQL statement to fetch active posts of allowed forums
 	$sql_limit_by_http = '';
 	$MaxRecordAge = time() - MAX_WEEKS_AGO * 604800;
-	$sql_limit_time = (MAX_WEEKS_AGO > 0) ? "p.post_time > " . $MaxRecordAge : "1";
+	$sql_limit_time = (MAX_WEEKS_AGO > 0) ? (" p.post_time > " . $MaxRecordAge) : " 1 ";
 	if(!$no_limit)
 	{
 		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
@@ -277,11 +268,11 @@ else
 			$NotModifiedSince = @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			if(SEE_MODIFYED)
 			{
-				$sql_limit_by_http =  "AND (p.post_time > " . $NotModifiedSince . " OR p.post_edit_time >" . $NotModifiedSince . ")";
+				$sql_limit_by_http = "AND (p.post_time > " . $NotModifiedSince . " OR p.post_edit_time >" . $NotModifiedSince . ")";
 			}
 			elseif($NotModifiedSince > $MaxRecordAge)
 			{
-				$sql_limit_time = "p.post_time > " . $NotModifiedSince;
+				$sql_limit_time = " p.post_time > " . $NotModifiedSince;
 			}
 		}
 	}
@@ -370,14 +361,14 @@ else
 			{
 				$LastPostTime = $post['post_edit_time'];
 			}
-			$topic_id = $post['topic_id'];
+			$rss_topic_id = $post['topic_id'];
 			$PostCount++;
-			$SeenTopics[$topic_id]++;
+			$SeenTopics[$rss_topic_id]++;
 			// Variable reassignment and reformatting for post text
 			$post_id = $post['post_id'];
 			$post_subject = ($post['post_subject'] != '') ? $post['post_subject'] : '';
 			$message = $post['post_text'];
-			$user_sig = ($post['enable_sig'] && $post['user_sig'] != '' && $config['allow_sig']) ? $post['user_sig'] : '';
+			$user_sig = ($post['enable_sig'] && ($post['user_sig'] != '') && $config['allow_sig']) ? $post['user_sig'] : '';
 			// If the board has HTML off but the post has HTML on then we process it, else leave it alone
 			$html_on = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) ? 1 : 0 ;
 			$bbcode_on = ($config['allow_bbcode'] && $userdata['user_allowbbcode']) ? 1 : 0 ;
@@ -461,19 +452,19 @@ else
 		if(($user_id != ANONYMOUS) && UPDATE_VIEW_COUNT)
 		{
 			$updlist = '';
-			foreach ($SeenTopics as $topic_id=>$tcount)
+			foreach ($SeenTopics as $rss_topic_id => $tcount)
 			{
-				$updlist .= (empty($updlist)) ? $topic_id : ',' . $topic_id;
+				$updlist .= (empty($updlist)) ? $rss_topic_id : ',' . $rss_topic_id;
 				if (($config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_views'] == 1))
 				{
-					$sql = 'UPDATE ' . TOPIC_VIEW_TABLE . ' SET topic_id = "' . $topic_id . '", view_time = "' . time() . '", view_count = view_count + 1 WHERE topic_id = ' . $topic_id . ' AND user_id = ' . $user_id;
+					$sql = 'UPDATE ' . TOPIC_VIEW_TABLE . ' SET topic_id = "' . $rss_topic_id . '", view_time = "' . time() . '", view_count = view_count + 1 WHERE topic_id = ' . $rss_topic_id . ' AND user_id = ' . $user_id;
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
 					if(!$result || !$db->sql_affectedrows())
 					{
 						$sql = 'INSERT IGNORE INTO ' . TOPIC_VIEW_TABLE . ' (topic_id, user_id, view_time, view_count)
-						VALUES (' . $topic_id . ', "' . $user_id . '", "' . time() . '", "1")';
+						VALUES (' . $rss_topic_id . ', "' . $user_id . '", "' . time() . '", "1")';
 						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
 						$db->sql_return_on_error(false);

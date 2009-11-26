@@ -1972,7 +1972,7 @@ $lang = array_merge($lang, array(
 
 	// Custom BBCodes - BEGIN
 	'BBCODES_CUSTOM_BBCODES' => 'Custom BBCodes',
-	'BBCODES_CUSTOM_BBCODES_EXPLAIN' => 'BBCode is a special implementation of HTML offering greater control over what and how something is displayed. From this page you can add, remove and edit custom BBCodes.',
+	'BBCODES_CUSTOM_BBCODES_EXPLAIN' => 'BBCode is a special implementation of HTML offering greater control over what and how something is displayed. From this page you can add, remove and edit custom BBCodes. To be able to use these Custom BBCodes you need to enable <b>Enable Custom BBCodes</b> in <b>Configuration &raquo; Icy Phoenix &raquo; Posting And Messages</b> section.',
 	'BBCODES_NO_BBCODES' => 'No BBCodes',
 	'BBCODES_NO_BBCODES_SEL' => 'No BBCode selected',
 	'BBCODES_NO_BBCODES_INPUT' => 'You have to fill the BBCode tag',

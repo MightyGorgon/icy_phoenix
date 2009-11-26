@@ -39,10 +39,19 @@ if(!function_exists('cms_block_poll'))
 			$order_sql = 'ORDER BY RAND()';
 		}
 
+		if ($cms_config_vars['md_poll_type'][$block_id] != 2)
+		{
+			$in_sql = 't.forum_id IN (' . $cms_config_vars['md_poll_forum_id'][$block_id] . ') AND';
+		}
+		else
+		{
+			$in_sql = 't.topic_id = ' . $cms_config_vars['md_poll_topic_id'][$block_id] . ' AND';
+		}
+
 		$sql = 'SELECT t.*, vd.*
 			FROM ' . TOPICS_TABLE . ' AS t, ' . VOTE_DESC_TABLE . ' AS vd
 			WHERE
-				t.forum_id IN (' . $cms_config_vars['md_poll_forum_id'][$block_id] . ') AND
+				' . $in_sql . '
 				t.topic_status <> 1 AND
 				t.topic_status <> 2 AND
 				t.topic_vote = 1 AND
