@@ -6,6 +6,8 @@
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
+<!-- INCLUDE ../common/cms/cms_ajax_block_bbcb_mg_js.tpl -->
+
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_01}" title="{L_BLOCKS_PAGE_01}" /></td>
@@ -20,7 +22,7 @@
 	<td class="row1" style="padding:0px" valign="top">
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td class="row1">{L_B_TITLE}</td>
+			<td class="row1" width="200">{L_B_TITLE}</td>
 			<td class="row2"><input type="text" maxlength="60" size="30" name="title" value="{TITLE}" class="post" /></td>
 		</tr>
 		<tr>
@@ -37,6 +39,10 @@
 		<tr>
 			<td class="row1" align="right">{L_B_BLOCK_FILE}</td>
 			<td class="row2">{BLOCKFILE}</td>
+		</tr>
+		<tr>
+			<td class="row1" align="right" valign="top">{L_CMS_BLOCK_CONFIG}</td>
+			<td class="row2"><div id="block_config">{BLOCK_CONFIG}</div></td>
 		</tr>
 		<tr>
 			<td class="row1" align="right">{L_B_VIEW_BY}</td>
@@ -81,8 +87,10 @@
 <tr>
 	<td class="cat" align="center">
 		{S_HIDDEN_FIELDS}
-		<input type="submit" name="block_content_setup" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
+		<!-- <input type="submit" name="block_content_setup" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp; -->
+		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
 		<input type="submit" name="reset" class="liteoption" value="{L_RESET}" />
+		<input type="submit" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;&nbsp;
 		<!-- <input type="reset" name="reset" class="liteoption" value="{L_RESET}" /> -->
 	</td>
 </tr>

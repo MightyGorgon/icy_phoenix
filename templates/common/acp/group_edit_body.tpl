@@ -14,14 +14,16 @@ function ColorExample(ColorCode)
 }
 //-->
 </script>
-<!-- BEGIN switch_ajax_features -->
+
+<!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <script type="text/javascript">
 <!--
 last_username = '{GROUP_MODERATOR}';
 //-->
 </script>
-<!-- END switch_ajax_features -->
+<!-- ENDIF -->
+
 <h1>{L_GROUP_TITLE}</h1>
 
 <form action="{S_GROUP_ACTION}" method="post" name="post">

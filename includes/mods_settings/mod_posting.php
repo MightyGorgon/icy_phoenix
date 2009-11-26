@@ -213,6 +213,14 @@ $config_fields = array(
 		'values' => $list_yes_no,
 		),
 
+	'enable_custom_bbcodes' => array(
+		'lang_key' => 'IP_enable_custom_bbcodes',
+		'explain' => 'IP_enable_custom_bbcodes_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
 	'allow_all_bbcode' => array(
 		'lang_key' => 'IP_allow_all_bbcode',
 		'explain' => 'IP_allow_all_bbcode_explain',

@@ -1,8 +1,8 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<!-- BEGIN switch_ajax_features -->
+<!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
-<!-- END switch_ajax_features -->
+<!-- ENDIF -->
 
 <form action="{S_GROUPCP_ACTION}" method="post">
 

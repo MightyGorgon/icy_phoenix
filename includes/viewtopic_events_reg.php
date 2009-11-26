@@ -26,7 +26,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 		FROM " . REGISTRATION_TABLE . " r, " . USERS_TABLE . " u
 		WHERE r.topic_id = " . $topic_id . "
 			AND r.registration_user_id = u.user_id
-		ORDER BY r.registration_status, r,registration_time";
+		ORDER BY r.registration_status, r.registration_time";
 	$result = $db->sql_query($sql);
 	$reg_info = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);

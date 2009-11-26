@@ -185,6 +185,7 @@ $lang = array_merge($lang, array(
 //	'cms_pos_' => '',
 
 	'cms_block_ads' => 'Ads',
+	'cms_block_ads_tla' => 'Ads TLA',
 	'cms_block_ajax_shoutbox' => 'AJAX Chat',
 	'cms_block_album' => 'Album',
 	'cms_block_birthdays' => 'Birthdays',
@@ -377,16 +378,20 @@ $lang = array_merge($lang, array(
 	'CMS_ADV_DEFAULT_TEMPLATE_OPTION' => '-- Template default --',
 
 	'BLOCK_MOVE' => 'Move Block',
-	'TURN_ACTIVE' => 'Enable/Disable Block',
-	'TURN_BORDER' => 'Enable/Disable Border',
-	'TURN_TITLEBAR' => 'Enable/Disable Title Bar',
-	'TURN_LOCAL' => 'Enable/Disable Location Title',
-	'TURN_BACKGROUND' => 'Enable/Disable Background',
+	'TURN_ACTIVE' => 'Enable / Disable Block',
+	'TURN_BORDER' => 'Enable / Disable Border',
+	'TURN_TITLEBAR' => 'Enable / Disable Title Bar',
+	'TURN_LOCAL' => 'Enable / Disable Location Title',
+	'TURN_BACKGROUND' => 'Enable / Disable Background',
 
 	'BLOCKS_POSITION_SAVE' => 'Save Blocks Positions',
 	'BLOCKS_POSITION_UPDATED' => 'Blocks location successfully updated',
 
 	'INVALID_BLOCKS' => 'Invalid blocks position',
+
+	'CMS_BLOCK_CONFIG' => 'Block Configuration',
+	'CMS_BLOCK_CONFIG_EDIT' => 'Edit Configuration',
+	'CMS_BLOCK_CONFIG_NO_VARS' => 'No block variables',
 // CMS - ADV - END
 	)
 );

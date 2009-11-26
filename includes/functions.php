@@ -3079,7 +3079,6 @@ function page_header($title = '', $parse_template = false)
 	$ajax_user_check_alt = '';
 	if ($config['ajax_features'])
 	{
-		$template->assign_block_vars('switch_ajax_features', array());
 		$ajax_user_check = 'onkeyup="AJAXUsernameSearch(this.value, 0);"';
 		$ajax_user_check_alt = 'onkeyup="AJAXUsernameSearch(this.value, 1);"';
 	}

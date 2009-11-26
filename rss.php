@@ -29,20 +29,8 @@ include_once(IP_ROOT_PATH . 'includes/rss_functions.' . PHP_EXT);
 
 // MG: not all modes implemented yet
 $mode_types = array('all', 'ann', 'cats', 'glo', 'imp', 'news');
-
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_GET['mode'])) ? htmlspecialchars($_GET['mode']) : htmlspecialchars($_POST['mode']);
-}
-else
-{
-	$mode = $mode_types[0];
-}
-
-if (!in_array($mode, $mode_types))
-{
-	$mode = $mode_types[0];
-}
+$mode = request_var('mode', $mode_types[0]);
+$mode = (!in_array($mode, $mode_types) ? $mode_types[0] : $mode);
 
 $deadline = 0;
 

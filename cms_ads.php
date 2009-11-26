@@ -25,8 +25,8 @@ init_userprefs($userdata);
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
+setup_extra_lang(array('lang_admin', 'lang_cms'));
+
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 $access_allowed = get_cms_access_auth('cms_ads');

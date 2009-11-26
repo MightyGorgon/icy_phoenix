@@ -2,7 +2,7 @@
 <!-- INCLUDE overall_header.tpl -->
 <!-- END switch_privmsg -->
 
-<!-- BEGIN switch_ajax_features -->
+<!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript">
 <!--
 var L_RESULTS = '{L_SEARCH_RESULTS}';
@@ -14,7 +14,7 @@ var L_AJAX_NO_RESULTS = '{L_AJAX_NO_RESULTS}';
 
 <!-- <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script> -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_postfunctions.js"></script>
-<!-- END switch_ajax_features -->
+<!-- ENDIF -->
 
 <script type="text/javascript">
 <!--
@@ -91,7 +91,7 @@ function attach_rules(forum_id)
 	<td class="row1"><span class="gen"><b>{L_SUBJECT}</b></span></td>
 	<td class="row2"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%;" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
 </tr>
-<!-- BEGIN switch_ajax_features -->
+<!-- IF S_AJAX_FEATURES -->
 <tr id="subject_error_tbl" style="display:none;">
 	<td class="row1">&nbsp;</td>
 	<td class="row2"><span class="gen">{L_EMPTY_SUBJECT}</span></td>
@@ -100,7 +100,7 @@ function attach_rules(forum_id)
 	<td class="row1">&nbsp;</td>
 	<td class="row2"><span class="gen"><a href="#" target="_blank" class="gen" id="searchresults_lnk">{L_AJAX_NO_RESULTS}</a></span></td>
 </tr>
-<!-- END switch_ajax_features -->
+<!-- ENDIF -->
 <!-- BEGIN topic_description -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_TOPIC_DESCRIPTION}</b></span></td>

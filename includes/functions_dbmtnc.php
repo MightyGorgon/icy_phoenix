@@ -40,6 +40,7 @@ $tables = array(
 	'auth_access',
 	'autolinks',
 	'banlist',
+	'bbcodes',
 	'bookmarks',
 	'captcha_config',
 	'cash',
@@ -595,6 +596,7 @@ $default_config = array(
 	'allow_html_only_for_admins' => '0',
 	'display_tags_box' => '0',
 	'allow_moderators_edit_tags' => '0',
+	'enable_custom_bbcodes' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

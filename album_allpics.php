@@ -309,8 +309,8 @@ $total_pics = $row['count'];
 // Build up
 // ------------------------------------
 
-$album_view_mode_param = (!empty($album_view_mode)) ? '&mode=' . $album_view_mode : '';
-$album_view_type_param = (!empty($album_view_type)) ? '&type=' . $album_view_type : '';
+$album_view_mode_param = (!empty($album_view_mode)) ? '&amp;mode=' . $album_view_mode : '';
+$album_view_type_param = (!empty($album_view_type)) ? '&amp;type=' . $album_view_type : '';
 
 if ($total_pics > 0 && !empty($allowed_cat))
 {

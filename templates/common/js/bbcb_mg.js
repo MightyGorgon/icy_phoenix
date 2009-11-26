@@ -132,7 +132,7 @@ function initInsertions()
 // From http://www.massless.org/mozedit/
 function mozWrap(txtarea, open, close)
 {
-	var selLength = txtarea.textLength;
+	var selLength = (typeof(txtarea.textLength) == 'undefined') ? txtarea.value.length : txtarea.textLength;
 	var selStart = txtarea.selectionStart;
 	var selEnd = txtarea.selectionEnd;
 	var scrollTop = txtarea.scrollTop;

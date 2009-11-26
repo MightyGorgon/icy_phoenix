@@ -331,6 +331,32 @@ class ip_cache extends acm
 	}
 
 	/*
+	* Get bbcodes
+	*/
+	function obtain_bbcodes($from_cache = false)
+	{
+		global $db, $config;
+
+		if (($bbcodes = $this->get('_bbcodes')) === false)
+		{
+			$bbcodes = array();
+
+			$sql = "SELECT * FROM " . BBCODES_TABLE . " ORDER BY bbcode_id";
+			$result = $from_cache ? $db->sql_query($sql, 0, 'bbcodes_') : $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$bbcodes[] = $row;
+			}
+			$db->sql_freeresult($result);
+
+			$this->put('_bbcodes', $bbcodes);
+		}
+
+		return $bbcodes;
+	}
+
+	/*
 	* Get ranks
 	*/
 	function obtain_ranks($from_cache = false)

@@ -3376,9 +3376,247 @@ class bbcode
 		$this->html = $this->process(0, strlen($this->text), $this->data, $clean_tags);
 		$this->process_smilies();
 
+		if(defined('IN_ICYPHOENIX'))
+		{
+			global $db, $cache, $config, $lang;
+			if (!empty($config['enable_custom_bbcodes']))
+			{
+				$bbcodes = $cache->obtain_bbcodes(true);
+				if (!empty($bbcodes))
+				{
+					$bbcode_regexp = array();
+					foreach ($bbcodes as $k => $v)
+					{
+						$v = array_map('stripslashes', $v);
+						$bbcode_regexp = $this->build_regexp($v['bbcode_match'], $v['bbcode_tpl']);
+						$this->html = preg_replace($bbcode_regexp['second_pass_match'], $bbcode_regexp['second_pass_replace'], $this->html);
+					}
+				}
+			}
+		}
+
 		return $this->html;
 	}
 
+	/*
+	* Build regular expression for custom bbcode
+	*/
+	function build_regexp(&$bbcode_match, &$bbcode_tpl)
+	{
+		$bbcode_match = trim($bbcode_match);
+		$bbcode_tpl = trim($bbcode_tpl);
+
+		$fp_match = preg_quote($bbcode_match, '!');
+		$fp_replace = preg_replace('#^\[(.*?)\]#', '[$1]', $bbcode_match);
+		$fp_replace = preg_replace('#\[/(.*?)\]$#', '[/$1]', $fp_replace);
+
+		$sp_match = preg_quote($bbcode_match, '!');
+		$sp_match = preg_replace('#^\\\\\[(.*?)\\\\\]#', '\[$1\]', $sp_match);
+		$sp_match = preg_replace('#\\\\\[/(.*?)\\\\\]$#', '\[/$1\]', $sp_match);
+		$sp_replace = $bbcode_tpl;
+
+		// @todo Make sure to change this too if something changed in message parsing
+		$tokens = array(
+			'URL' => array(
+				'!(?:(' . str_replace(array('!', '\#'), array('\!', '#'), $this->get_preg_expression('url')) . ')|(' . str_replace(array('!', '\#'), array('\!', '#'), $this->get_preg_expression('www_url')) . '))!ie' => "\$this->bbcode_specialchars(('\$1') ? '\$1' : 'http://\$2')"
+			),
+			'LOCAL_URL' => array(
+				'!(' . str_replace(array('!', '\#'), array('\!', '#'), $this->get_preg_expression('relative_url')) . ')!e' => "\$this->bbcode_specialchars('$1')"
+			),
+			'EMAIL' => array(
+				'!(' . $this->get_preg_expression('email') . ')!ie' => "\$this->bbcode_specialchars('$1')"
+			),
+			'TEXT' => array(
+				'!(.*?)!es' => "str_replace(array(\"\\r\\n\", '\\\"', '\\'', '(', ')'), array(\"\\n\", '\"', '&#39;', '&#40;', '&#41;'), trim('\$1'))"
+			),
+			'SIMPLETEXT' => array(
+				'!([a-zA-Z0-9-+.,_ ]+)!' => "$1"
+			),
+			'IDENTIFIER' => array(
+				'!([a-zA-Z0-9-_]+)!' => "$1"
+			),
+			'COLOR' => array(
+				'!([a-z]+|#[0-9abcdef]+)!i' => '$1'
+			),
+			'NUMBER' => array(
+				'!([0-9]+)!' => '$1'
+			)
+		);
+
+		$sp_tokens = array(
+			'URL' => '(?i)((?:' . str_replace(array('!', '\#'), array('\!', '#'), $this->get_preg_expression('url')) . ')|(?:' . str_replace(array('!', '\#'), array('\!', '#'), $this->get_preg_expression('www_url')) . '))(?-i)',
+			'LOCAL_URL' => '(?i)(' . str_replace(array('!', '\#'), array('\!', '#'), $this->get_preg_expression('relative_url')) . ')(?-i)',
+			'EMAIL' => '(' . $this->get_preg_expression('email') . ')',
+			'TEXT' => '(.*?)',
+			'SIMPLETEXT' => '([a-zA-Z0-9-+.,_ ]+)',
+			'IDENTIFIER' => '([a-zA-Z0-9-_]+)',
+			'COLOR' => '([a-zA-Z]+|#[0-9abcdefABCDEF]+)',
+			'NUMBER' => '([0-9]+)',
+		);
+
+		$pad = 0;
+		$modifiers = 'i';
+
+		if (preg_match_all('/\{(' . implode('|', array_keys($tokens)) . ')[0-9]*\}/i', $bbcode_match, $m))
+		{
+			foreach ($m[0] as $n => $token)
+			{
+				$token_type = $m[1][$n];
+
+				reset($tokens[strtoupper($token_type)]);
+				list($match, $replace) = each($tokens[strtoupper($token_type)]);
+
+				// Pad backreference numbers from tokens
+				if (preg_match_all('/(?<!\\\\)\$([0-9]+)/', $replace, $repad))
+				{
+					$repad = $pad + sizeof(array_unique($repad[0]));
+					$replace = preg_replace('/(?<!\\\\)\$([0-9]+)/e', "'\${' . (\$1 + \$pad) . '}'", $replace);
+					$pad = $repad;
+				}
+
+				// Obtain pattern modifiers to use and alter the regex accordingly
+				$regex = preg_replace('/!(.*)!([a-z]*)/', '$1', $match);
+				$regex_modifiers = preg_replace('/!(.*)!([a-z]*)/', '$2', $match);
+
+				for ($i = 0, $size = strlen($regex_modifiers); $i < $size; ++$i)
+				{
+					if (strpos($modifiers, $regex_modifiers[$i]) === false)
+					{
+						$modifiers .= $regex_modifiers[$i];
+
+						if ($regex_modifiers[$i] == 'e')
+						{
+							$fp_replace = "'" . str_replace("'", "\\'", $fp_replace) . "'";
+						}
+					}
+
+					if ($regex_modifiers[$i] == 'e')
+					{
+						$replace = "'.$replace.'";
+					}
+				}
+
+				$fp_match = str_replace(preg_quote($token, '!'), $regex, $fp_match);
+				$fp_replace = str_replace($token, $replace, $fp_replace);
+
+				$sp_match = str_replace(preg_quote($token, '!'), $sp_tokens[$token_type], $sp_match);
+				$sp_replace = str_replace($token, '${' . ($n + 1) . '}', $sp_replace);
+			}
+
+			$fp_match = '!' . $fp_match . '!' . $modifiers;
+			$sp_match = '!' . $sp_match . '!s';
+
+			if (strpos($fp_match, 'e') !== false)
+			{
+				$fp_replace = str_replace("'.'", '', $fp_replace);
+				$fp_replace = str_replace(".''.", '.', $fp_replace);
+			}
+		}
+		else
+		{
+			// No replacement is present, no need for a second-pass pattern replacement
+			// A simple str_replace will suffice
+			$fp_match = '!' . $fp_match . '!' . $modifiers;
+			$sp_match = $fp_replace;
+			$sp_replace = '';
+		}
+
+		// Lowercase tags
+		$bbcode_tag = preg_replace('/.*?\[([a-z0-9_-]+=?).*/i', '$1', $bbcode_match);
+		$bbcode_search = preg_replace('/.*?\[([a-z0-9_-]+)=?.*/i', '$1', $bbcode_match);
+
+		if (!preg_match('/^[a-zA-Z0-9_-]+=?$/', $bbcode_tag))
+		{
+			return false;
+		}
+
+		$fp_match = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $fp_match);
+		$fp_replace = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $fp_replace);
+		$sp_match = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $sp_match);
+		$sp_replace = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $sp_replace);
+
+		return array(
+			'bbcode_tag'						=> $bbcode_tag,
+			'first_pass_match'			=> $fp_match,
+			'first_pass_replace'		=> $fp_replace,
+			'second_pass_match'			=> $sp_match,
+			'second_pass_replace'		=> $sp_replace
+		);
+	}
+
+
+	/**
+	* This function returns a regular expression pattern for commonly used expressions
+	* Use with / as delimiter for email mode and # for url modes
+	* mode can be: email|bbcode_htm|url|url_inline|www_url|www_url_inline|relative_url|relative_url_inline|ipv4|ipv6
+	*/
+	function get_preg_expression($mode)
+	{
+		switch ($mode)
+		{
+			case 'email':
+				return '(?:[a-z0-9\'\.\-_\+\|]++|&amp;)+@[a-z0-9\-]+\.(?:[a-z0-9\-]+\.)*[a-z]+';
+			break;
+
+			case 'bbcode_htm':
+				return array(
+					'#<!\-\- e \-\-><a href="mailto:(.*?)">.*?</a><!\-\- e \-\->#',
+					'#<!\-\- l \-\-><a (?:class="[\w-]+" )?href="(.*?)(?:(&amp;|\?)sid=[0-9a-f]{32})?">.*?</a><!\-\- l \-\->#',
+					'#<!\-\- ([mw]) \-\-><a (?:class="[\w-]+" )?href="(.*?)">.*?</a><!\-\- \1 \-\->#',
+					'#<!\-\- s(.*?) \-\-><img src="\{SMILIES_PATH\}\/.*? \/><!\-\- s\1 \-\->#',
+					'#<!\-\- .*? \-\->#s',
+					'#<.*?>#s',
+				);
+			break;
+
+			// Whoa these look impressive!
+			// The code to generate the following two regular expressions which match valid IPv4/IPv6 addresses can be found in the develop directory
+			case 'ipv4':
+				return '#^(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$#';
+			break;
+
+			case 'ipv6':
+				return '#^(?:(?:(?:[\dA-F]{1,4}:){6}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:::(?:[\dA-F]{1,4}:){5}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:):(?:[\dA-F]{1,4}:){4}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,2}:(?:[\dA-F]{1,4}:){3}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,3}:(?:[\dA-F]{1,4}:){2}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,4}:(?:[\dA-F]{1,4}:)(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,5}:(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,6}:[\dA-F]{1,4})|(?:(?:[\dA-F]{1,4}:){1,7}:))$#i';
+			break;
+
+			case 'url':
+			case 'url_inline':
+				$inline = ($mode == 'url') ? ')' : '';
+				$scheme = ($mode == 'url') ? '[a-z\d+\-.]' : '[a-z\d+]'; // avoid automatic parsing of "word" in "last word.http://..."
+				// generated with regex generation file in the develop folder
+				return "[a-z]$scheme*:/{2}(?:(?:[a-z0-9\-._~!$&'($inline*+,;=:@|]+|%[\dA-F]{2})+|[0-9.]+|\[[a-z0-9.]+:[a-z0-9.]+:[a-z0-9.:]+\])(?::\d*)?(?:/(?:[a-z0-9\-._~!$&'($inline*+,;=:@|]+|%[\dA-F]{2})*)*(?:\?(?:[a-z0-9\-._~!$&'($inline*+,;=:@/?|]+|%[\dA-F]{2})*)?(?:\#(?:[a-z0-9\-._~!$&'($inline*+,;=:@/?|]+|%[\dA-F]{2})*)?";
+			break;
+
+			case 'www_url':
+			case 'www_url_inline':
+				$inline = ($mode == 'www_url') ? ')' : '';
+				return "www\.(?:[a-z0-9\-._~!$&'($inline*+,;=:@|]+|%[\dA-F]{2})+(?::\d*)?(?:/(?:[a-z0-9\-._~!$&'($inline*+,;=:@|]+|%[\dA-F]{2})*)*(?:\?(?:[a-z0-9\-._~!$&'($inline*+,;=:@/?|]+|%[\dA-F]{2})*)?(?:\#(?:[a-z0-9\-._~!$&'($inline*+,;=:@/?|]+|%[\dA-F]{2})*)?";
+			break;
+
+			case 'relative_url':
+			case 'relative_url_inline':
+				$inline = ($mode == 'relative_url') ? ')' : '';
+				return "(?:[a-z0-9\-._~!$&'($inline*+,;=:@|]+|%[\dA-F]{2})*(?:/(?:[a-z0-9\-._~!$&'($inline*+,;=:@|]+|%[\dA-F]{2})*)*(?:\?(?:[a-z0-9\-._~!$&'($inline*+,;=:@/?|]+|%[\dA-F]{2})*)?(?:\#(?:[a-z0-9\-._~!$&'($inline*+,;=:@/?|]+|%[\dA-F]{2})*)?";
+			break;
+		}
+
+		return '';
+	}
+
+	/**
+	* Transform some characters in valid bbcodes
+	*/
+	function bbcode_specialchars($text)
+	{
+		$str_from = array('<', '>', '[', ']', '.', ':');
+		$str_to = array('&lt;', '&gt;', '&#91;', '&#93;', '&#46;', '&#58;');
+
+		return str_replace($str_from, $str_to, $text);
+	}
+
+	/**
+	* Load rainbow colors
+	*/
 	function load_rainbow_colors()
 	{
 		return array(
@@ -3392,6 +3630,9 @@ class bbcode
 		);
 	}
 
+	/**
+	* Apply rainbow effect
+	*/
 	function rainbow($text)
 	{
 		// Returns text highlighted in rainbow colours

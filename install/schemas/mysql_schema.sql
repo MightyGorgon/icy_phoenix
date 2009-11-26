@@ -340,6 +340,28 @@ CREATE TABLE `phpbb_banlist` (
 
 ## --------------------------------------------------------
 
+## `phpbb_bbcodes`
+
+CREATE TABLE `phpbb_bbcodes` (
+	bbcode_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+	bbcode_tag varchar(16) DEFAULT '' NOT NULL,
+	bbcode_helpline varchar(255) DEFAULT '' NOT NULL,
+	display_on_posting tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	bbcode_match text NOT NULL,
+	bbcode_tpl mediumtext NOT NULL,
+	first_pass_match mediumtext NOT NULL,
+	first_pass_replace mediumtext NOT NULL,
+	second_pass_match mediumtext NOT NULL,
+	second_pass_replace mediumtext NOT NULL,
+	PRIMARY KEY (bbcode_id),
+	KEY display_on_post (display_on_posting)
+);
+
+## `phpbb_bbcodes`
+
+
+## --------------------------------------------------------
+
 ## `phpbb_bookmarks`
 
 CREATE TABLE `phpbb_bookmarks` (

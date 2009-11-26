@@ -73,10 +73,6 @@ if($mode != 'list')
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
-
-		$template->pparse('body');
-
-		include('./page_footer_admin.' . PHP_EXT);
 	}
 	elseif($mode == 'save')
 	{

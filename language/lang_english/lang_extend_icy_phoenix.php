@@ -260,6 +260,9 @@ if ($lang_extend_admin)
 		'IP_allow_html_only_for_admins' => 'Enable HTML for Administrators only',
 		'IP_allow_html_only_for_admins_explain' => 'Enabling this option will allow administrators to use HTML tags in posts. Please notice that this feature may lead to security issues or wrong page formatting if not used properly.',
 
+		'IP_enable_custom_bbcodes' => 'Enable Customized BBCodes',
+		'IP_enable_custom_bbcodes_explain' => 'This option will enable customized BBCodes created in ACP.',
+
 		'IP_allow_all_bbcode' => 'Enable all BBCodes',
 		'IP_allow_all_bbcode_explain' => 'Enabling this option will allow all BBCodes in signatures and other places where usually they are not active. BBCodes which are usually disabled in signature are: IMG, ALBUMIMG and some intensive formatting BBCodes. If you enable this option, some signatures may result in consuming both space and resources.',
 

@@ -39,6 +39,10 @@
 			<td class="row2">{BLOCKFILE}</td>
 		</tr>
 		<tr>
+			<td class="row1" align="right">{L_B_BLOCK_FILE}</td>
+			<td class="row2"><div id="block_config"></div></td>
+		</tr>
+		<tr>
 			<td class="row1" align="right">{L_B_VIEW_BY}</td>
 			<td class="row2">{VIEWBY}></td>
 		</tr>

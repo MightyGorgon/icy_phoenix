@@ -1,6 +1,7 @@
-<!-- BEGIN switch_ajax_features -->
+<!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
-<!-- END switch_ajax_features -->
+<!-- ENDIF -->
+
 <h1>{L_USER_TITLE}</h1>
 <p>{L_USER_EXPLAIN}</p>
 

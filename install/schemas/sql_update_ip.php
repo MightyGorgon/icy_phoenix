@@ -3698,6 +3698,22 @@ if (substr($mode, 0, 6) == 'update')
 		case '1.3.3.56':
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('display_tags_box', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('allow_moderators_edit_tags', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('enable_custom_bbcodes', '0')";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "bbcodes` (
+			bbcode_id mediumint(8) UNSIGNED NOT NULL auto_increment,
+			bbcode_tag varchar(16) DEFAULT '' NOT NULL,
+			bbcode_helpline varchar(255) DEFAULT '' NOT NULL,
+			display_on_posting tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+			bbcode_match text NOT NULL,
+			bbcode_tpl mediumtext NOT NULL,
+			first_pass_match mediumtext NOT NULL,
+			first_pass_replace mediumtext NOT NULL,
+			second_pass_match mediumtext NOT NULL,
+			second_pass_replace mediumtext NOT NULL,
+			PRIMARY KEY (bbcode_id),
+			KEY display_on_post (display_on_posting)
+		)";
 
 		/* Updating from IP 1.3.4.57 */
 		case '1.3.4.57':

@@ -123,7 +123,7 @@ hs.addSlideshow({
 </script>
 <!-- ENDIF -->
 
-<!-- BEGIN switch_ajax_features -->
+<!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript">
 <!--
 var ajax_core_defined = 0;
@@ -132,7 +132,7 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 </script>
 
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script>
-<!-- END switch_ajax_features -->
+<!-- ENDIF -->
 
 <!-- BEGIN js_include -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{js_include.JS_FILE}"></script>

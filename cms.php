@@ -19,7 +19,7 @@ $common_cms_template = IP_ROOT_PATH . 'templates/common/cms/';
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
 define('CMS_PAGE', 'cms.' . PHP_EXT);
-$js_temp =  array('js/cms.js', 'scriptaculous/unittest.js');
+$js_temp = array('js/cms.js', 'scriptaculous/unittest.js');
 
 if(is_array($js_include))
 {
@@ -42,13 +42,8 @@ $class_form = new class_form();
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT))
-{
-	$config['default_lang'] = 'english';
-}
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_blocks.' . PHP_EXT);
+
+setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
 
 $cms_type = 'cms_standard';
 
@@ -250,12 +245,18 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$options_langs_array[] = $block_file . (!empty($lang['cms_block_' . $block_file]) ? ('&nbsp;[' . $lang['cms_block_' . $block_file] . ']') : '');
 		}
 
-		$block_content_file_old = $b_info['blockfile'];
+		// AJAX Replace - BEGIN
+		//$block_content_file_old = $b_info['blockfile'];
+		$block_content_file = $b_info['blockfile'];
+		// AJAX Replace - END
 		$b_info['blockfile'] = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : $b_info['blockfile'];
 
 		$select_name = 'blockfile';
 		$default = $b_info['blockfile'];
-		$select_js = '';
+		// AJAX Replace - BEGIN
+		//$select_js = '';
+		$select_js = ' id="blockfile" onchange="javascript:ajaxpage(\'cms_ajax.php\', \'?mode=block_config&amp;blockfile=\'+this.form.blockfile.options[this.form.blockfile.selectedIndex].value, \'block_config\');"';
+		// AJAX Replace - END
 		$blockfile = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
 		$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : $b_info['view'];
@@ -300,6 +301,8 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 		}
 
+		// AJAX Replace - BEGIN
+		/*
 		if($block_text == true)
 		{
 			$template_to_parse = CMS_TPL . 'cms_block_edit_text_body.tpl';
@@ -452,6 +455,11 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$s_hidden_fields .= '<input type="hidden" name="type" value="' . $b_type . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
 		}
+		*/
+		$template_to_parse = CMS_TPL . 'cms_block_content_body.tpl';
+		$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_01']);
+		$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
+		// AJAX Replace - END
 
 		if ($preview_block == true)
 		{
@@ -476,6 +484,33 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				)
 			);
 		}
+
+		// AJAX Replace - BEGIN
+		if ($block_content_file)
+		{
+			$sql = "SELECT count(*) count_fields FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
+								WHERE c.bid = '" . $b_id . "'
+									AND bv.bid = '" . $b_id . "'
+									AND c.config_name = bv.config_name
+								ORDER BY c.id";
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+
+			if ($row['count_fields'] > 0)
+			{
+				$block_config = '<a href="#" onclick="ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=' . $block_content_file . '&amp;action=edit&amp;b_id=' . $b_id . '&amp;b_type=' . $b_type . '\', \'block_config\'); return false;">' . $lang['CMS_BLOCK_CONFIG_EDIT'] . '</a>';
+			}
+			else
+			{
+				$block_config = $lang['CMS_BLOCK_CONFIG_NO_VARS'];
+			}
+		}
+		else
+		{
+			$block_config = '<a href="#" onclick="ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=' . $block_content_file . '&amp;action=edit&amp;b_id=' . $b_id . '&amp;b_type=' . $b_type . '\', \'block_config\'); return false;">' . $lang['CMS_BLOCK_CONFIG_EDIT'] . '</a>';
+		}
+		// AJAX Replace - END
 
 		$template->assign_vars(array(
 			'L_BLOCKS_TITLE' => $lang['Blocks_Title'],
@@ -512,6 +547,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			'BBCODE' => ($b_type) ? 'checked="checked"' : '',
 			'CONTENT' => htmlspecialchars($message),
 			'BLOCKFILE' => $blockfile,
+			'BLOCK_CONFIG' => $block_config,
 			'VIEWBY' => $view,
 			'BORDER' => ($b_border) ? 'checked="checked"' : '',
 			'NO_BORDER' => (!$b_border) ? 'checked="checked"' : '',
@@ -560,6 +596,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		$b_titlebar = (isset($_POST['titlebar'])) ? intval($_POST['titlebar']) : 0;
 		$b_local = (isset($_POST['local'])) ? intval($_POST['local']) : 0;
 		$b_background = (isset($_POST['background'])) ? intval($_POST['background']) : 0;
+		$is_config = (isset($_GET['isconfig']) ? true : (isset($_POST['isconfig']) ? true : false));
 
 		$max_group_id = get_max_group_id();
 		$b_group = '';
@@ -616,92 +653,113 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		{
 			$message = $lang['Block_updated'];
 
-			$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
-				SET
-				title = '" . $b_title . "',
-				bposition = '" . $b_bposition . "',
-				active = '" . $b_active . "',
-				type = '" . $b_type . "',
-				content = '" . $b_content . "',
-				blockfile = '" . $b_blockfile . "',
-				layout = '" . $layout_value . "',
-				layout_special = '" . $layout_special_value . "',
-				view = '" . $b_view . "',
-				border = '" . $b_border . "',
-				titlebar = '" . $b_titlebar . "',
-				local = '" . $b_local . "',
-				background = '" . $b_background . "',
-				groups = '" . $b_group . "'
-				WHERE bid = $b_id";
-			$result = $db->sql_query($sql);
-
-			if(file_exists($blocks_dir . $b_blockfile . '.cfg'))
+			if ($is_config)
 			{
-				include($blocks_dir . $b_blockfile . '.cfg');
-
-				// let's empty the previously created config vars...
-				$sql = "SELECT * FROM " . CMS_CONFIG_TABLE . " WHERE bid = '" . $b_id . "'";
+				$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
+					SET
+					title = '" . $b_title . "',
+					bposition = '" . $b_bposition . "',
+					active = '" . $b_active . "',
+					type = '" . $b_type . "',
+					content = '" . $b_content . "',
+					blockfile = '" . $b_blockfile . "',
+					layout = '" . $layout_value . "',
+					layout_special = '" . $layout_special_value . "',
+					view = '" . $b_view . "',
+					border = '" . $b_border . "',
+					titlebar = '" . $b_titlebar . "',
+					local = '" . $b_local . "',
+					background = '" . $b_background . "',
+					groups = '" . $b_group . "'
+					WHERE bid = $b_id";
 				$result = $db->sql_query($sql);
 
-				while($row = $db->sql_fetchrow($result))
-				{
-					$delete_var = true;
-					for($i = 0; $i < $block_count_variables; $i++)
-					{
-						if ($row['config_name'] == $block_variables[$i][2])
-						{
-							$delete_var = false;
-						}
-					}
-
-					if ($delete_var == true)
-					{
-						delete_block_config_single(CMS_CONFIG_TABLE, CMS_BLOCK_VARIABLE_TABLE, $b_id, $row['config_name']);
-					}
-				}
-				$db->sql_freeresult($result);
-			}
-			else
-			{
-				delete_block_config_all(CMS_CONFIG_TABLE, CMS_BLOCK_VARIABLE_TABLE, $b_id);
-			}
-
-			if(!empty($b_blockfile))
-			{
 				if(file_exists($blocks_dir . $b_blockfile . '.cfg'))
 				{
 					include($blocks_dir . $b_blockfile . '.cfg');
 
-					//$message .= '<br /><br />' . $lang['B_BV_added'];
+					// let's empty the previously created config vars...
+					$sql = "SELECT * FROM " . CMS_CONFIG_TABLE . " WHERE bid = '" . $b_id . "'";
+					$result = $db->sql_query($sql);
 
-					for($i = 0; $i < $block_count_variables; $i++)
+					while($row = $db->sql_fetchrow($result))
 					{
-						if ((!empty($_POST[$block_variables[$i][2]])) || ($_POST[$block_variables[$i][2]] == '0'))
+						$delete_var = true;
+						for($i = 0; $i < $block_count_variables; $i++)
 						{
-							$block_variables[$i][7] = str_replace("\'", "''", $_POST[$block_variables[$i][2]]);
+							if ($row['config_name'] == $block_variables[$i][2])
+							{
+								$delete_var = false;
+							}
 						}
 
-						$existing = get_existing_block_var(CMS_BLOCK_VARIABLE_TABLE, $b_id, $block_variables[$i][2]);
-
-						if(!$existing)
+						if ($delete_var == true)
 						{
-							$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-								VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][0]) . "', '" . str_replace("\'", "''", $block_variables[$i][1]) . "', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . str_replace("\'", "''", $block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . str_replace("\'", "''", $block_variables[$i][6]) . "')";
-							$result = $db->sql_query($sql);
-
-							$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
-								VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
-							$result = $db->sql_query($sql);
+							delete_block_config_single(CMS_CONFIG_TABLE, CMS_BLOCK_VARIABLE_TABLE, $b_id, $row['config_name']);
 						}
-						else
+					}
+					$db->sql_freeresult($result);
+				}
+				else
+				{
+					delete_block_config_all(CMS_CONFIG_TABLE, CMS_BLOCK_VARIABLE_TABLE, $b_id);
+				}
+
+				if(!empty($b_blockfile))
+				{
+					if(file_exists($blocks_dir . $b_blockfile . '.cfg'))
+					{
+						include($blocks_dir . $b_blockfile . '.cfg');
+
+						//$message .= '<br /><br />' . $lang['B_BV_added'];
+
+						for($i = 0; $i < $block_count_variables; $i++)
 						{
-							$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET config_value = '" . $block_variables[$i][7] . "'
-											WHERE config_name = '" . str_replace("\'", "''", $block_variables[$i][2]) . "'
-												AND bid = " . $b_id;
-							$result = $db->sql_query($sql);
+							if ((!empty($_POST[$block_variables[$i][2]])) || ($_POST[$block_variables[$i][2]] == '0'))
+							{
+								$block_variables[$i][7] = str_replace("\'", "''", $_POST[$block_variables[$i][2]]);
+							}
+
+							$existing = get_existing_block_var(CMS_BLOCK_VARIABLE_TABLE, $b_id, $block_variables[$i][2]);
+
+							if(!$existing)
+							{
+								$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
+									VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][0]) . "', '" . str_replace("\'", "''", $block_variables[$i][1]) . "', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . str_replace("\'", "''", $block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . str_replace("\'", "''", $block_variables[$i][6]) . "')";
+								$result = $db->sql_query($sql);
+
+								$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
+									VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
+								$result = $db->sql_query($sql);
+							}
+							else
+							{
+								$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET config_value = '" . $block_variables[$i][7] . "'
+												WHERE config_name = '" . str_replace("\'", "''", $block_variables[$i][2]) . "'
+													AND bid = " . $b_id;
+								$result = $db->sql_query($sql);
+							}
 						}
 					}
 				}
+			}
+			else
+			{
+				$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
+					SET
+					title = '" . $b_title . "',
+					bposition = '" . $b_bposition . "',
+					active = '" . $b_active . "',
+					layout = '" . $layout_value . "',
+					layout_special = '" . $layout_special_value . "',
+					view = '" . $b_view . "',
+					border = '" . $b_border . "',
+					titlebar = '" . $b_titlebar . "',
+					local = '" . $b_local . "',
+					background = '" . $b_background . "',
+					groups = '" . $b_group . "'
+					WHERE bid = $b_id";
+				$result = $db->sql_query($sql);
 			}
 		}
 		else

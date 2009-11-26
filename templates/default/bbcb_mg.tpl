@@ -24,7 +24,7 @@ function openAllSmiles()
 <tr>
 	<td width="100%" align="left" nowrap="nowrap">
 		&nbsp;
-		<select style="height:18px;" name="ft" onChange="BBCft();this.selectedIndex=0;" onmouseover="helpline('ft')">
+		<select style="height: 18px;" name="ft" onChange="BBCft(); this.selectedIndex=0;" onmouseover="helpline('ft')">
 			<option value="" class="genmed" style="font-family:Verdana;">{L_FONT_TYPE}</option>
 			<option value="Arial" class="genmed" style="font-family:Arial;">{L_FONT_ARIAL}</option>
 			<option value="Comic Sans MS" class="genmed" style="font-family:'Comic Sans MS';">{L_FONT_COMIC_SANS_MS}</option>
@@ -43,7 +43,7 @@ function openAllSmiles()
 			<option value="Wingdings" class="genmed" style="font-family:Wingdings;">{L_FONT_WINGDINGS}</option>
 		</select>
 		&nbsp;
-		<select style="height:18px;" name="fs" onChange="BBCfs();this.selectedIndex=0;" onmouseover="helpline('fs')">
+		<select style="height: 18px;" name="fs" onChange="BBCfs(); this.selectedIndex=0;" onmouseover="helpline('fs')">
 			<option value="" selected class="genmed" style="color:{T_FONTCOLOR1}">{L_FONT_SIZE}</option>
 			<option value="8" class="genmed" style="font-size:8px;">{L_FONT_TINY}</option>
 			<option value="10" class="genmed" style="font-size:10px;">{L_FONT_SMALL}</option>
@@ -53,7 +53,7 @@ function openAllSmiles()
 			<option value="24" class="genmed" style="font-size:24px;">{L_FONT_XL}</option>
 		</select>
 		&nbsp;
-		<select style="height:18px;" name="fc" onChange="BBCfc();this.selectedIndex=0;" onmouseover="helpline('fc')">
+		<select style="height: 18px;" name="fc" onChange="BBCfc(); this.selectedIndex=0;" onmouseover="helpline('fc')">
 			<option value="" class="genmed">{L_FONT_COLOR}</option>
 			<option style="color:brown;" value="brown" class="genmed">{L_COLOR_BROWN}</option>
 			<option style="color:chocolate;" value="chocolate" class="genmed">{L_COLOR_CHOCOLATE}</option>

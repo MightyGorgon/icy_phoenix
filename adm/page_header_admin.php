@@ -68,17 +68,8 @@ if ($config['gzip_compress'])
 $template->set_filenames(array('header' => ADM_TPL . 'page_header.tpl'));
 
 // Mighty Gorgon - AJAX Features - Begin
-if ($config['ajax_features'] == true)
-{
-	$template->assign_block_vars('switch_ajax_features', array());
-	$ajax_blur = '';
-	$ajax_user_check = 'onkeyup="AJAXUsernameSearch(this.value, 0);"';
-}
-else
-{
-	$ajax_blur = '';
-	$ajax_user_check = '';
-}
+$ajax_blur = '';
+$ajax_user_check = $config['ajax_features'] ? 'onkeyup="AJAXUsernameSearch(this.value, 0);"' : '';
 // Mighty Gorgon - AJAX Features - End
 
 if(is_array($css_style_include))

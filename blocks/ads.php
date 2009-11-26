@@ -91,15 +91,15 @@ if(!function_exists('cms_block_ads'))
 			}
 		}
 
-			$ads_counter = sizeof($ads_blocks);
-			if ($ads_counter > 0)
-			{
-				$microtime = explode(' ', microtime());
-				$ads_seed = (intval($microtime[0] * 100000) % $ads_counter);
-				$ads_content = $ads_blocks[$ads_seed];
-			}
+		$ads_counter = sizeof($ads_blocks);
+		if ($ads_counter > 0)
+		{
+			$microtime = explode(' ', microtime());
+			$ads_seed = (intval($microtime[0] * 100000) % $ads_counter);
+			$ads_content = $ads_blocks[$ads_seed];
+		}
 
-			$template->assign_vars(array(
+		$template->assign_vars(array(
 			'ADS_CONTENT' => $ads_content,
 			)
 		);

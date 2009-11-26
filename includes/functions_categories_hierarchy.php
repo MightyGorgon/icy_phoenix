@@ -1216,7 +1216,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 				if(!$data['tree.unread_topics'] && !$sub)
 				{
-					if(!in_array($forum_id, $unread['always_read']['forums']))
+					if(!in_array($forum_id, $unread['always_read']['forums']) && is_array($unread['always_read']['forums']))
 					{
 						$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . '&amp;always_read=set') . '"><img src="' . $folder_image . '" alt="' . $lang['upi2db_always_read_forum']. '" title="' . $lang['upi2db_always_read_forum'] . '" /></a>';
 					}

@@ -27,6 +27,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'Title_ads' => 'Ads',
+	'Title_ads_tla' => 'Ads',
 	'Title_album' => 'Album',
 	'Title_birthdays' => 'Birthdays',
 	'Title_center_downloads' => 'Downloads',
@@ -350,6 +351,10 @@ $lang = array_merge($lang, array(
 	'cms_var_md_search_option_text_explain' => 'Search field description',
 	'cms_var_md_show_avatars' => 'Show Avatars',
 	'cms_var_md_show_avatars_explain' => '',
+	'cms_var_md_tla_inventory_key' => 'Text Link Ads Inventory Key',
+	'cms_var_md_tla_inventory_key_explain' => 'Insert the inventory key for this page',
+	'cms_var_md_tla_xml_filename' => 'Text Link Ads XML Filename',
+	'cms_var_md_tla_xml_filename_explain' => 'Insert the full XML filename which should be located in <b>files/</b> folder (example: <i>local_XXXXXX.xml</i>)',
 	'cms_var_md_total_articles' => 'Number of Recent Articles',
 	'cms_var_md_total_articles_explain' => 'Number of articles shown',
 	'cms_var_md_total_poster' => 'Number Of Top Posters',

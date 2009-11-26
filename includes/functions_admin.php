@@ -21,6 +21,15 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
+* Generate back link for acp pages
+*/
+function adm_back_link($u_action)
+{
+	global $lang;
+	return '<br /><br /><a href="' . $u_action . '">&laquo; ' . $lang['BACK_TO_PREV'] . '</a>';
+}
+
+/**
  * Function needed to fix config values before passing them to DB
 */
 function fix_config_values($config_name, $config_value)

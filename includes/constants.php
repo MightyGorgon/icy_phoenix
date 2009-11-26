@@ -390,6 +390,7 @@ define('ALBUM_RATE_TABLE', $table_prefix . 'album_rate');
 define('AUTH_ACCESS_TABLE', $table_prefix . 'auth_access');
 define('AUTOLINKS', $table_prefix . 'autolinks');
 define('BANLIST_TABLE', $table_prefix . 'banlist');
+define('BBCODES_TABLE', $table_prefix . 'bbcodes');
 define('BOOKMARK_TABLE', $table_prefix . 'bookmarks');
 define('BOTS_TABLE', $table_prefix . 'bots');
 define('CAPTCHA_CONFIG_TABLE', $table_prefix . 'captcha_config');
