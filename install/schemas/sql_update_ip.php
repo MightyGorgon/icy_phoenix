@@ -3715,6 +3715,8 @@ if (substr($mode, 0, 6) == 'update')
 			KEY display_on_post (display_on_posting)
 		)";
 
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ajax_shoutbox` ADD `shout_room` VARCHAR(255) NOT NULL DEFAULT ''";
+
 		/* Updating from IP 1.3.4.57 */
 		case '1.3.4.57':
 

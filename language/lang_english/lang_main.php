@@ -2259,6 +2259,11 @@ $lang = array_merge($lang, array(
 	'SQL_ERROR_OCCURRED' => 'An SQL error occurred while fetching this page. Please contact the Site Administrator if this problem persists.',
 
 	'PLUGIN_DISABLED' => 'This plugin is currently disabled.',
+
+	'AJAX_SHOUTBOX' => 'Chat',
+	'AJAX_SHOUTBOX_PVT' => 'Private Chat',
+	'AJAX_SHOUTBOX_PVT_LINK' => 'Direct chat with this user',
+
 	)
 );
 

@@ -36,6 +36,17 @@ if(($config['shout_allow_guest'] == 0) && !$userdata['session_logged_in'])
 	message_die(GENERAL_ERROR, $lang['Shoutbox_no_auth']);
 }
 
+$chat_room = request_var('chat_room', '');
+$chat_room = preg_replace('/[^0-9|]*/', '', trim($chat_room));
+$chat_room_users = array();
+$chat_room_users = explode('|', $chat_room);
+$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
+if(($userdata['user_level'] != ADMIN) && !empty($chat_room) && !in_array($userdata['user_id'], $chat_room_users))
+{
+	message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+}
+define('AJAX_CHAT_ROOM', true);
+
 // Show shoutbox with header and footer if the user didn't request anything else
 if (empty($mode))
 {
@@ -96,6 +107,7 @@ else
 
 	$template->assign_block_vars('view_shoutbox', array(
 		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+		'CHAT_ROOM' => $chat_room,
 		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
@@ -103,8 +115,9 @@ else
 	$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 	$start = ($start < 0) ? 0 : $start;
 	// Make Pagination and collect some extra data
-	$sql = 'SELECT COUNT(*) as stored_shouts, MAX(shout_id) as total_shouts
-			FROM ' . AJAX_SHOUTBOX_TABLE;
+	$sql = 'SELECT COUNT(s.shout_id) as stored_shouts, MAX(s.shout_id) as total_shouts
+					FROM ' . AJAX_SHOUTBOX_TABLE . ' s
+					WHERE ' . $chat_room_sql;
 	$result = $db->sql_query($sql);
 
 	$num_items = $db->sql_fetchrow($result);
@@ -120,21 +133,24 @@ else
 	}
 
 	// Get my shouts
-	$sql = "SELECT COUNT(*) as count
-			FROM " . AJAX_SHOUTBOX_TABLE . "
-			WHERE user_id = " . $userdata['user_id'];
+	$sql = "SELECT COUNT(s.shout_id) as count
+			FROM " . AJAX_SHOUTBOX_TABLE . " s
+			WHERE s.user_id = " . $userdata['user_id'] . "
+				AND " . $chat_room_sql;
 	$result = $db->sql_query($sql);
 	$myshouts = $db->sql_fetchrow($result);
 
 	// Get the shouts count for the last 24 hours
 	$yesterday = time() - (24 * 60 * 60);
-	$sql = "SELECT COUNT(*) as count
-			FROM " . AJAX_SHOUTBOX_TABLE . "
-			WHERE shout_time >= " . $yesterday;
+	$sql = "SELECT COUNT(s.shout_id) as count
+			FROM " . AJAX_SHOUTBOX_TABLE . " s
+			WHERE s.shout_time >= " . $yesterday . "
+				AND " . $chat_room_sql;
 	$result = $db->sql_query($sql);
 	$today = $db->sql_fetchrow($result);
 
 	$template->assign_vars(array(
+		'CHAT_ROOM' => $chat_room,
 		'U_ACTION' => append_sid('ajax_shoutbox.' . PHP_EXT . '?act=del'),
 		'L_AUTHOR' => $lang['Author'],
 		'L_SHOUTS' => $lang['Shouts'],
@@ -206,7 +222,8 @@ else
 	$sql = "SELECT COUNT(*) AS user_shouts, s.user_id, u.username, u.user_color
 			FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
 			WHERE s.user_id != " . ANONYMOUS . "
-			AND u.user_id = s.user_id
+				AND " . $chat_room_sql . "
+				AND u.user_id = s.user_id
 			GROUP BY u.user_id
 			ORDER BY user_shouts DESC
 			LIMIT 10";
@@ -225,18 +242,20 @@ else
 	// Gets the shouts for display
 	if (!empty($_GET['full']))
 	{
-		$sql = "SELECT sb.*, u.username, u.user_color
-				FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
-				WHERE sb.user_id = u.user_id
-				ORDER BY sb.shout_id ASC";
+		$sql = "SELECT s.*, u.username, u.user_color
+				FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
+				WHERE s.user_id = u.user_id
+					AND " . $chat_room_sql . "
+				ORDER BY s.shout_id ASC";
 	}
 	else
 	{
-		$sql = "SELECT sb.*, u.username, u.user_color
-				FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
-				WHERE sb.user_id = u.user_id
-				ORDER BY sb.shout_id DESC
-				LIMIT  " . $start . ", " . $config['posts_per_page'];
+		$sql = "SELECT s.*, u.username, u.user_color
+				FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
+				WHERE s.user_id = u.user_id
+					AND " . $chat_room_sql . "
+				ORDER BY s.shout_id DESC
+				LIMIT " . $start . ", " . $config['posts_per_page'];
 	}
 
 	$results = $db->sql_query($sql);

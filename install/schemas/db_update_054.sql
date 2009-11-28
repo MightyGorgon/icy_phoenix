@@ -146,6 +146,7 @@ CREATE TABLE `phpbb_bbcodes` (
 	KEY display_on_post (display_on_posting)
 );
 
+ALTER TABLE `phpbb_ajax_shoutbox` ADD `shout_room` VARCHAR(255) NOT NULL DEFAULT '';
 
 
 

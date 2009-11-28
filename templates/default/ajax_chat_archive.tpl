@@ -85,7 +85,7 @@ function handlehResponse()
 									if (field != undefined)
 									{
 										arr[field] = sibl2.data;
-										if ( (arr['error_status'] == 1) && (field == 'error_msg') )
+										if ((arr['error_status'] == 1) && (field == 'error_msg'))
 										{
 											alert(arr['error_msg']);
 											return false;

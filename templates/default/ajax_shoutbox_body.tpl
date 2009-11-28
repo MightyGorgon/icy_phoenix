@@ -40,7 +40,7 @@
 					<span class="topiclink">{L_USERNAME}:&nbsp;</span><input type="text" size="12" maxlength="30" name="name" id="name" class="post" onblur="checkName();" />&nbsp;&nbsp;
 					<!-- END guest_shouter -->
 					<span class="topiclink">{L_MESSAGE}:&nbsp;</span><input type="text" size="52" maxlength="1000" name="chatbarText" id="chatbarText" class="post" onblur="checkStatus('');" onfocus="checkStatus('active');" />
-					<input type="submit" class="button" id="submit" name="submit" value="{L_SUMBIT}" />
+					<input type="submit" class="mainoption" id="submit" name="submit" value="{L_SUMBIT}" />
 				</form>
 			</td>
 		</tr>

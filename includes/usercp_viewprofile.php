@@ -555,6 +555,7 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yim_img,
 	'YIM' => $yim,
 	'U_YIM' => $yim_url,
+	'U_AJAX_SHOUTBOX_PVT_LINK' => ($userdata['session_logged_in'] ? append_sid(CMS_PAGE_AJAX_CHAT . '?chat_room=' . (min($userdata['user_id'], $profiledata['user_id']) . '|' . max($userdata['user_id'], $profiledata['user_id']))) : '#'),
 
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,

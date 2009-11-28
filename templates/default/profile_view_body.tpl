@@ -78,6 +78,16 @@
 				<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 					<tr><th colspan="2"><span class="genmed"><b>{L_INVISION_COMMUNICATE}</b></span></th></tr>
 					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{L_PM}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed">{PM_IMG}</span></td>
+					</tr>
+					<!-- IF S_LOGGED_IN -->
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{L_AJAX_SHOUTBOX_PVT}</span></b></td>
+						<td class="row1 post-buttons"><span class="gensmall"><a href="{U_AJAX_SHOUTBOX_PVT_LINK}" class="gensmall">{L_AJAX_SHOUTBOX_PVT_LINK}</a></span></td>
+					</tr>
+					<!-- ENDIF -->
+					<tr>
 						<td width="33%" class="row2" valign="top"><b><span class="genmed">{L_EMAIL_ADDRESS}</span></b></td>
 						<td width="64%" class="row1 post-buttons"><span class="genmed">{EMAIL_IMG}</span></td>
 					</tr>
@@ -100,10 +110,6 @@
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_SKYPE}</span></b></td>
 						<td class="row1 post-buttons"><span class="genmed">{SKYPE_IMG}</span></td>
-					</tr>
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_PM}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{PM_IMG}</span></td>
 					</tr>
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_PHONE}</span></b></td>

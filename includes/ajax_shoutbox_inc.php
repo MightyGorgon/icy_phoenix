@@ -34,6 +34,20 @@ if (!empty($_POST['act']) || !empty($_GET['act']))
 	$action = (!empty($_POST['act'])) ? htmlspecialchars($_POST['act']) : htmlspecialchars($_GET['act']);
 }
 
+if (!defined('AJAX_CHAT_ROOM'))
+{
+	$chat_room = request_var('chat_room', '');
+	$chat_room = preg_replace('/[^0-9|]*/', '', trim($chat_room));
+	$chat_room_users = array();
+	$chat_room_users = explode('|', $chat_room);
+	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
+	if(($userdata['user_level'] != ADMIN) && !empty($chat_room) && !in_array($userdata['user_id'], $chat_room_users))
+	{
+		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+	}
+	define('AJAX_CHAT_ROOM', true);
+}
+
 if($action)
 {
 	define('AJAX_HEADERS', true);
@@ -113,11 +127,12 @@ if($action)
 			$limit_sql = " LIMIT " . $config['display_shouts'];
 		}
 
-		$sql = "SELECT sb.*, u.username, u.user_active, u.user_color
-				FROM " . AJAX_SHOUTBOX_TABLE . " sb, " . USERS_TABLE . " u
-				WHERE sb.shout_id > " . $lastID . "
-					AND sb.user_id = u.user_id
-				ORDER BY sb.shout_id DESC" . $limit_sql;
+		$sql = "SELECT s.*, u.username, u.user_active, u.user_color
+				FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
+				WHERE s.shout_id > " . $lastID . "
+					AND s.user_id = u.user_id
+					AND " . $chat_room_sql . "
+				ORDER BY s.shout_id DESC" . $limit_sql;
 		$results = $db->sql_query($sql);
 		$row = $db->sql_fetchrowset($results);
 
@@ -194,9 +209,9 @@ if($action)
 		$shout_time = time();
 
 		// Flood Control
-		$sql = "SELECT MAX(shout_time) AS last_shout
-				FROM " . AJAX_SHOUTBOX_TABLE . "
-				WHERE shouter_ip = '" . $user_ip . "'";
+		$sql = "SELECT MAX(s.shout_time) AS last_shout
+				FROM " . AJAX_SHOUTBOX_TABLE . " s
+				WHERE s.shouter_ip = '" . $user_ip . "'";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -280,7 +295,7 @@ if($action)
 		if ($message != '')
 		{
 			// Add new data
-			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time) VALUES (" . $userdata['user_id'] . ", '" . $shouter . "', '" . $message . "', '" . $user_ip . "', " . $shout_time . ")";
+			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $userdata['user_id'] . ", '" . $shouter . "', '" . $message . "', '" . $user_ip . "', " . $shout_time . ", '" . $chat_room . "')";
 
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
@@ -300,9 +315,10 @@ if($action)
 			{
 				$limit = $config['stored_shouts'] - 1;
 				// Keep the database with the selected number of entrys.
-				$sql = "SELECT shout_id
-						FROM " . AJAX_SHOUTBOX_TABLE . "
-						ORDER BY shout_id DESC
+				$sql = "SELECT s.shout_id
+						FROM " . AJAX_SHOUTBOX_TABLE . " s
+							AND " . $chat_room_sql . "
+						ORDER BY s.shout_id DESC
 						LIMIT " . $limit . ", 1";
 				$results = $db->sql_query($sql);
 				$row = $db->sql_fetchrowset($results);
@@ -311,8 +327,7 @@ if($action)
 				if ($id)
 				{
 					// Delete all message prior to a certain id
-					$sql = "DELETE FROM " . AJAX_SHOUTBOX_TABLE . "
-							WHERE shout_id < " . $id;
+					$sql = "DELETE FROM " . AJAX_SHOUTBOX_TABLE . " WHERE shout_id < " . $id;
 					$results = $db->sql_query($sql);
 				}
 			}
@@ -330,8 +345,7 @@ if($action)
 		{
 			$shout_id = intval($_POST['sh']);
 
-			$sql = 'DELETE FROM ' . AJAX_SHOUTBOX_TABLE . '
-					WHERE shout_id =' . $shout_id;
+			$sql = 'DELETE FROM ' . AJAX_SHOUTBOX_TABLE . ' WHERE shout_id =' . $shout_id;
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
@@ -399,6 +413,7 @@ if($config['shout_allow_guest'] > 0)
 		'TABLE_WIDTH' => $shoutbox_table_width,
 		'TABLE_HEIGHT' => $shoutbox_table_height,
 		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+		'CHAT_ROOM' => $chat_room,
 		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
@@ -434,6 +449,7 @@ else
 			'TABLE_WIDTH' => $shoutbox_table_width,
 			'TABLE_HEIGHT' => $shoutbox_table_height,
 			'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+			'CHAT_ROOM' => $chat_room,
 			'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 			)
 		);

@@ -8,6 +8,7 @@
 var current_class = 'row2';
 var counter = 0;
 var ChatActionurl = "{view_shoutbox.U_ACTION}";
+var ChatRoom = "{view_shoutbox.CHAT_ROOM}";
 var refresh_time = {view_shoutbox.REFRESH_TIME} * 1;
 var sendTimeout, receiveTimeout, cssRules, row1_color, row2_color, update_online;
 var lastID = -1; //initial value will be replaced by the latest known id
@@ -73,7 +74,7 @@ function get_colors()
 		prefix = 'td.';
 	}
 
-	for (x=0; x < theRules.length; x++)
+	for (x = 0; x < theRules.length; x++)
 	{
 		if(theRules[x].selectorText == (prefix + 'row1'))
 		{
@@ -104,7 +105,7 @@ function ajaxTimeout(obj)
 	}
 
 	// Abort it to try again later
-	doAbort=1;  //zz set to 1 so the handleResponse will just exit
+	doAbort = 1;  //zz set to 1 so the handleResponse will just exit
 	xhr.abort();
 
 	// NEW - BEGIN
@@ -127,9 +128,9 @@ function ajaxTimeout(obj)
 // Initiates the first data query
 function receiveChatText()
 {
-	if ( (httpReceiveChat.readyState == 4) || (httpReceiveChat.readyState == 0) )
+	if ((httpReceiveChat.readyState == 4) || (httpReceiveChat.readyState == 0))
 	{
-		var param = 'lastID=' + lastID + '&act=read&rand=' + Math.floor(Math.random() * 1000000);
+		var param = 'lastID=' + lastID + '&act=read&chat_room=' + ChatRoom + '&rand=' + Math.floor(Math.random() * 1000000);
 		if (rc == 0)
 		{
 			param = param + '&su=1';
@@ -176,7 +177,7 @@ function handlehResponse(obj)
 		doAbort = sendDoAbort;
 	}
 
-	if ( (doAbort == 0) && (obj.readyState == 4) )
+	if ((doAbort == 0) && (obj.readyState == 4))
 	{
 		// Prevent Javascript errors when request fails
 		try
@@ -222,7 +223,7 @@ function handlehResponse(obj)
 										if (field != undefined)
 										{
 											arr[field] = sibl2.data;
-											if ( (arr['error_status'] == 1) && (field == 'error_msg') )
+											if ((arr['error_status'] == 1) && (field == 'error_msg'))
 											{
 												alert(arr['error_msg']);
 												return false;
@@ -233,7 +234,7 @@ function handlehResponse(obj)
 							}
 						}
 						// Add Content
-						if ( (node.tagName == 'shout') && (arr['id'] > lastID) )
+						if ((node.tagName == 'shout') && (arr['id'] > lastID))
 						{
 							//var shouter = arr['shouter'];
 							var shouter = (arr['shouter_link'] != -1) ? '<a href="' + arr['shouter_link'] + '" ' + arr['shouter_color'] + '>' + arr['shouter'] + '<\/a>' : arr['shouter'];
@@ -246,7 +247,7 @@ function handlehResponse(obj)
 							insertNewContent(arr['id'], shouter, message, arr['date'], lastID);
 						}
 						// Online List
-						if ( (node.tagName == 'online') && (update_online == true) )
+						if ((node.tagName == 'online') && (update_online == true))
 						{
 							updating_s = 1;
 							if (array_search(arr['username']) == false)
@@ -260,7 +261,7 @@ function handlehResponse(obj)
 							}
 							arr['link_style'] = '';
 						}
-						if ( (node.tagName == 'onstats') && (update_online == true) )
+						if ((node.tagName == 'onstats') && (update_online == true))
 						{
 							var on_total = arr['total'];
 							var on_guests = arr['guests'];
@@ -285,7 +286,7 @@ function handlehResponse(obj)
 				}
 				setTimeout('receiveChatText();', refresh_time);
 				// Only update the online list when is loaded.
-				if ( (update_online == true) && (updating_s == 1) )
+				if ((update_online == true) && (updating_s == 1))
 				{
 					updateOnline();
 				}
@@ -459,7 +460,7 @@ function deleteShout(shout_id)
 function sendComment()
 {
 	currentChatText = encodeURIComponent(document.forms['chatForm'].elements['chatbarText'].value);
-	if ( (currentChatText != '') && ( (httpSendChat.readyState == 4) || (httpSendChat.readyState == 0) ) )
+	if ((currentChatText != '') && ((httpSendChat.readyState == 4) || (httpSendChat.readyState == 0)))
 	{
 		if(document.forms['chatForm'].elements['name'])
 		{
@@ -471,13 +472,13 @@ function sendComment()
 			// The server will see if the user is logged in or not.
 			currentName = "e";
 		}
-		param = 'act=add&nm=' + currentName + '&co=' + currentChatText;
+		param = 'act=add&chat_room=' + ChatRoom + '&nm=' + currentName + '&co=' + currentChatText;
 		httpSendChat.open("POST", ChatActionurl, true);
 		httpSendChat.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		httpSendChat.onreadystatechange = new Function("handlehResponse(httpSendChat)");
 		// Timeout Prevention
 		sendTimeout = setTimeout("ajaxTimeout(3);", TIMEOUT);
-		sendDoAbort=0;
+		sendDoAbort = 0;
 		httpSendChat.send(param);
 
 		// Disable the submit button
@@ -494,7 +495,7 @@ function checkStatus(focusState)
 {
 	currentChatText = document.forms['chatForm'].elements['chatbarText'];
 	oSubmit = document.forms['chatForm'].elements['submit'];
-	if ( (currentChatText.value != '') || (focusState == 'active') )
+	if ((currentChatText.value != '') || (focusState == 'active'))
 	{
 		oSubmit.disabled = false;
 	}

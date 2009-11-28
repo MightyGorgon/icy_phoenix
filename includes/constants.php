@@ -88,6 +88,7 @@ define('CMS_PAGE_STATISTICS', 'statistics.' . PHP_EXT);
 define('CMS_PAGE_CALENDAR', 'calendar.' . PHP_EXT);
 define('CMS_PAGE_RECENT', 'recent.' . PHP_EXT);
 define('CMS_PAGE_REFERRERS', 'referrers.' . PHP_EXT);
+define('CMS_PAGE_AJAX_CHAT', 'ajax_chat.' . PHP_EXT);
 define('CMS_PAGE_SHOUTBOX', 'shoutbox_max.' . PHP_EXT);
 define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
 define('CMS_PAGE_CONTACT_US', 'contact_us.' . PHP_EXT);

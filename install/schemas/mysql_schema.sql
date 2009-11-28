@@ -2447,6 +2447,7 @@ CREATE TABLE phpbb_ajax_shoutbox (
 	shout_text TEXT NOT NULL,
 	shouter_ip VARCHAR(8) NOT NULL DEFAULT '',
 	shout_time INT(11) NOT NULL,
+	shout_room VARCHAR(255) NOT NULL DEFAULT '',
 	PRIMARY KEY ( shout_id )
 );
 
