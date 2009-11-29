@@ -18,7 +18,6 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $common_cms_template = IP_ROOT_PATH . 'templates/common/cms/';
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
-define('CMS_PAGE', 'cms.' . PHP_EXT);
 $js_temp = array('js/cms.js', 'scriptaculous/unittest.js');
 
 if(is_array($js_include))
@@ -62,17 +61,16 @@ $preview_block = isset($_POST['preview']) ? true : false;
 
 $cms_ajax = request_var('cms_ajax', '');
 $cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
-$cms_ajax_new = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
-if (($cms_ajax_new && ($cms_ajax == 'false')) || (!$cms_ajax_new && ($cms_ajax == 'true')))
+$cms_ajax = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
+if (($cms_ajax && ($_COOKIE['cms_ajax'] != 'true')) || (!$cms_ajax && ($_COOKIE['cms_ajax'] != 'false')))
 {
-	@setcookie('cms_ajax', ($cms_ajax_new ? 'true' : 'false'), time() + 31536000);
+	@setcookie('cms_ajax', ($cms_ajax ? 'true' : 'false'), time() + 31536000);
 }
-$cms_ajax = $cms_ajax_new;
 $config['cms_style'] = $cms_ajax ? 1 : 0;
 $cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
 $cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
 $template->assign_vars(array(
-	'U_CMS_AJAX_SWITCH' => append_sid(CMS_PAGE . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
+	'U_CMS_AJAX_SWITCH' => append_sid(CMS_PAGE_CMS . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
 	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
 	)
 );
@@ -115,17 +113,17 @@ if(isset($_POST['block_reset']))
 {
 	if ($ls_id == false)
 	{
-		redirect(append_sid(CMS_PAGE . '?mode=blocks&action=list&l_id=' . $l_id, true));
+		redirect(append_sid(CMS_PAGE_CMS . '?mode=blocks&action=list&l_id=' . $l_id, true));
 	}
 	else
 	{
-		redirect(append_sid(CMS_PAGE . '?mode=blocks&action=list&ls_id=' . $ls_id, true));
+		redirect(append_sid(CMS_PAGE_CMS . '?mode=blocks&action=list&ls_id=' . $ls_id, true));
 	}
 }
 
 if(isset($_POST['cancel']))
 {
-	redirect(append_sid(CMS_PAGE, true));
+	redirect(append_sid(CMS_PAGE_CMS, true));
 }
 
 if(isset($_POST['hascontent']))
@@ -579,7 +577,7 @@ if(($mode == 'blocks'))
 			'NO_BACKGROUND' => (!$b_background) ? 'checked="checked"' : '',
 			'GROUP' => $group,
 
-			'S_BLOCKS_ACTION' => append_sid(CMS_PAGE . $s_append_url),
+			'S_BLOCKS_ACTION' => append_sid(CMS_PAGE_CMS . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -819,7 +817,7 @@ if(($mode == 'blocks'))
 			}
 		}
 		fix_weight_blocks($id_var_value, $table_name);
-		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
+		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=blocks&amp;' . $id_var_name . '=' . $redirect_l_id) . '">', '</a>') . '<br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	elseif($action == 'delete')
@@ -833,7 +831,7 @@ if(($mode == 'blocks'))
 				'MESSAGE_TITLE' => $lang['Confirm'],
 				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
 
-				'S_CONFIRM_ACTION' => append_sid(CMS_PAGE . $s_append_url),
+				'S_CONFIRM_ACTION' => append_sid(CMS_PAGE_CMS . $s_append_url),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -853,7 +851,7 @@ if(($mode == 'blocks'))
 					$redirect_action = '&amp;action=list';
 				}
 
-				$message = $lang['Block_removed'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value . $redirect_action) . '">', '</a>') . '<br />';
+				$message = $lang['Block_removed'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value . $redirect_action) . '">', '</a>') . '<br />';
 				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
@@ -923,7 +921,7 @@ if(($mode == 'blocks'))
 				}
 			}
 			fix_weight_blocks($id_var_value, $table_name);
-			$message = '<br /><br />' . $lang['Blocks_duplicated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value) . '">', '</a>') . '<br />';
+			$message = '<br /><br />' . $lang['Blocks_duplicated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=blocks&amp;' . $id_var_name . '=' . $id_var_value) . '">', '</a>') . '<br />';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 		else
@@ -1020,9 +1018,9 @@ if(($mode == 'blocks'))
 				'LAYOUT_NAME' => $l_name,
 				'PAGE_URL' => $page_url,
 				'PAGE' => strval($id_var_value),
-				'U_LAYOUT_EDIT' => (($block_layout_field == 'layout') ? append_sid(CMS_PAGE . '?mode=layouts&amp;action=edit' . '&amp;' . $id_var_name . '=' . $id_var_value) : ''),
+				'U_LAYOUT_EDIT' => (($block_layout_field == 'layout') ? append_sid(CMS_PAGE_CMS . '?mode=layouts&amp;action=edit' . '&amp;' . $id_var_name . '=' . $id_var_value) : ''),
 
-				'S_BLOCKS_ACTION' => append_sid(CMS_PAGE),
+				'S_BLOCKS_ACTION' => append_sid(CMS_PAGE_CMS),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -1091,10 +1089,10 @@ if(($mode == 'blocks'))
 					'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
 					'VIEW' => $b_view,
 
-					'U_EDIT' => append_sid(CMS_PAGE . '?mode=blocks&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-					'U_DELETE' => append_sid(CMS_PAGE . '?mode=blocks&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-					'U_MOVE_UP' => append_sid(CMS_PAGE . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-					'U_MOVE_DOWN' => append_sid(CMS_PAGE . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
+					'U_EDIT' => append_sid(CMS_PAGE_CMS . '?mode=blocks&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+					'U_DELETE' => append_sid(CMS_PAGE_CMS . '?mode=blocks&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+					'U_MOVE_UP' => append_sid(CMS_PAGE_CMS . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
+					'U_MOVE_DOWN' => append_sid(CMS_PAGE_CMS . '?mode=blocks' . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
 					)
 				);
 			}
@@ -1146,7 +1144,7 @@ if(($mode == 'blocks'))
 						}
 					}
 				}
-				redirect(append_sid(CMS_PAGE . '?mode=blocks&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
+				redirect(append_sid(CMS_PAGE_CMS . '?mode=blocks&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
 			}
 			else
 			{
@@ -1164,7 +1162,7 @@ if(($mode == 'blocks'))
 						$result = $db->sql_query($sql);
 					}
 					fix_weight_blocks($id_var_value, $table_name);
-					$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
+					$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
 					message_die(GENERAL_MESSAGE, $message);
 				}
 			}
@@ -1288,9 +1286,9 @@ if(($mode == 'blocks'))
 			'LAYOUT_NAME' => $l_name,
 			'PAGE_URL' => $page_url,
 			'PAGE' => strval($id_var_value),
-			'U_LAYOUT_EDIT' => (($block_layout_field == 'layout') ? append_sid(CMS_PAGE . '?mode=layouts&amp;action=edit' . '&amp;' . $id_var_name . '=' . $id_var_value) : ''),
+			'U_LAYOUT_EDIT' => (($block_layout_field == 'layout') ? append_sid(CMS_PAGE_CMS . '?mode=layouts&amp;action=edit' . '&amp;' . $id_var_name . '=' . $id_var_value) : ''),
 
-			'S_BLOCKS_ACTION' => append_sid(CMS_PAGE),
+			'S_BLOCKS_ACTION' => append_sid(CMS_PAGE_CMS),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1523,10 +1521,10 @@ if(($mode == 'blocks'))
 								'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
 								'VIEW' => $b_view,
 
-								'U_EDIT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-								'U_DELETE' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-								'U_MOVE_UP' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-								'U_MOVE_DOWN' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
+								'U_EDIT' => append_sid(CMS_PAGE_CMS . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+								'U_DELETE' => append_sid(CMS_PAGE_CMS . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+								'U_MOVE_UP' => append_sid(CMS_PAGE_CMS . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
+								'U_MOVE_DOWN' => append_sid(CMS_PAGE_CMS . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
 								)
 							);
 						}
@@ -1732,7 +1730,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 			'NOT_PAGE_NAV' => (empty($l_info['page_nav'])) ? 'checked="checked"' : '',
 
 			'S_LAYOUT_SPECIAL' => $is_layout_special,
-			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE . $s_append_url),
+			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE_CMS . $s_append_url),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -1958,8 +1956,8 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 			}
 		}
 
-		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode_layout_name) . '">', '</a>');
-		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=blocks&amp;' . $id_var_name . '=' . (!empty($layout_id) ? $layout_id : $id_var_value)) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=' . $mode_layout_name) . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=blocks&amp;' . $id_var_name . '=' . (!empty($layout_id) ? $layout_id : $id_var_value)) . '">', '</a>');
 		$message .= '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -1990,7 +1988,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				'MESSAGE_TITLE' => $lang['Confirm'],
 				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
 
-				'S_CONFIRM_ACTION' => append_sid(CMS_PAGE . $s_append_url),
+				'S_CONFIRM_ACTION' => append_sid(CMS_PAGE_CMS . $s_append_url),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -2027,7 +2025,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				message_die(GENERAL_MESSAGE, $lang['No_layout_selected']);
 			}
 
-			$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode_layout_name) . '">', '</a>') . '<br /><br />';
+			$message = $lang['Layout_removed'] . '<br /><br />' . sprintf($lang['Click_return_layoutadmin'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=' . $mode_layout_name) . '">', '</a>') . '<br /><br />';
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -2055,7 +2053,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				$sql = "UPDATE " . $table_name . " SET view = " . $view_value . ", global_blocks = " . $gb_value . ", page_nav = " . $bc_value . " WHERE " . $field_name . " = " . $l_rows[$i][$field_name];
 				$result = $db->sql_query($sql);
 			}
-			redirect(append_sid(CMS_PAGE . '?mode=' . $mode_layout_name . '&updated=true'));
+			redirect(append_sid(CMS_PAGE_CMS . '?mode=' . $mode_layout_name . '&updated=true'));
 		}
 
 		$template_to_parse = CMS_TPL . 'cms_layout_list_body.tpl';
@@ -2086,7 +2084,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 
 			'S_LAYOUT_SPECIAL' => $is_layout_special,
 
-			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE),
+			'S_LAYOUT_ACTION' => append_sid(CMS_PAGE_CMS),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -2149,9 +2147,9 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				'BC_CHECKED' => ($l_rows[$i]['page_nav']) ? ' checked="checked"' : '',
 
 				'U_PREVIEW_LAYOUT' => $layout_preview,
-				'U_EDIT_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $layout_id . '&amp;action=edit'),
-				'U_DELETE_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $layout_id . '&amp;action=delete'),
-				'U_LAYOUT' => append_sid(CMS_PAGE . '?mode=' . $mode_blocks_name . '&amp;' . $id_var_name . '=' . $layout_id)
+				'U_EDIT_LAYOUT' => append_sid(CMS_PAGE_CMS . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $layout_id . '&amp;action=edit'),
+				'U_DELETE_LAYOUT' => append_sid(CMS_PAGE_CMS . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $layout_id . '&amp;action=delete'),
+				'U_LAYOUT' => append_sid(CMS_PAGE_CMS . '?mode=' . $mode_blocks_name . '&amp;' . $id_var_name . '=' . $layout_id)
 				)
 			);
 		}
@@ -2217,12 +2215,12 @@ if($mode == 'config')
 
 	if(isset($_POST['save']))
 	{
-		$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid(CMS_PAGE . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid(CMS_PAGE) . '">', '</a>') . '<br /><br />';
+		$message = $lang['CMS_Config_updated'] . '<br /><br />' . sprintf($lang['CMS_Click_return_config'], '<a href="' . append_sid(CMS_PAGE_CMS . '?mode=config') . '">', '</a>') . '<br /><br />' . sprintf($lang['CMS_Click_return_cms'], '<a href="' . append_sid(CMS_PAGE_CMS) . '">', '</a>') . '<br /><br />';
 		message_die(GENERAL_MESSAGE, $message);
 	}
 
 	$template->assign_vars(array(
-		'S_CONFIG_ACTION' => append_sid(CMS_PAGE),
+		'S_CONFIG_ACTION' => append_sid(CMS_PAGE_CMS),
 		'L_CONFIGURATION_TITLE' => $lang['CMS_CONFIG'],
 		'L_CONFIGURATION_EXPLAIN' => $lang['Portal_Explain'],
 		'L_GENERAL_CONFIG' => $lang['Portal_General_Config'],
@@ -2253,7 +2251,7 @@ if (($mode == false))
 		'L_DELETE' => $lang['CSM_Delete'],
 		'L_PREVIEW' => $lang['CMS_Preview'],
 		'L_LAYOUT_ADD' => $lang['Layout_Add'],
-		'S_LAYOUT_ACTION' => append_sid(CMS_PAGE),
+		'S_LAYOUT_ACTION' => append_sid(CMS_PAGE_CMS),
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);

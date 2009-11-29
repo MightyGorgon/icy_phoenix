@@ -64,6 +64,7 @@ define('UPI2DB_MAX_UNREAD_POSTS', 2500); // Maximum amount of stored unread mess
 define('UPI2DB_RESYNC_TIME', 30); // Seconds needed to refresh UPI2DB data...
 
 // Mighty Gorgon - Constants Pages And Paths - BEGIN
+define('CMS_PAGE_CMS', 'cms.' . PHP_EXT);
 define('CMS_PAGE_LOGIN', 'login_ip.' . PHP_EXT);
 define('CMS_PAGE_HOME', 'index.' . PHP_EXT);
 define('CMS_PAGE_FORUM', 'forum.' . PHP_EXT);
