@@ -29,6 +29,12 @@
 	margin-bottom: 10px;
 }
 
+.post-text-chat {
+	height: auto !important; /* modern browsers */
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+}
+
 .post-text-hide-flow {
 	width: 660px;
 }

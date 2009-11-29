@@ -389,6 +389,7 @@ $lang = array_merge($lang, array(
 
 	'INVALID_BLOCKS' => 'Invalid blocks position',
 
+	'CMS_BLOCK_PAGE' => 'Add / Edit Block',
 	'CMS_BLOCK_CONFIG' => 'Block Configuration',
 	'CMS_BLOCK_CONFIG_EDIT' => 'Edit Configuration',
 	'CMS_BLOCK_CONFIG_NO_VARS' => 'No block variables',

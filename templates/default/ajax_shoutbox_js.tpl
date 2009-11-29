@@ -1,8 +1,23 @@
 <!-- BEGIN view_shoutbox -->
+<!-- SOUND - BEGIN -->
+<span id="notify" style="height: 0px; font-size: 0px; float: right;"></span>
+<script type="text/javascript">
+// <![CDATA[
+var soundfile = "notify.wav";
+
+function playsound(soundfile)
+{
+	document.getElementById("notify").innerHTML = '<embed src="' + soundfile + '" autostart="true" loop="false" hidden="true" />';
+}
+// ]]>
+</script>
+<!-- SOUND - END -->
+
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/fat.js"></script>
 <script type="text/javascript">
 // <![CDATA[
-// Based in the  XHTML live Chat (http://www.plasticshore.com)
+
+// Based in the XHTML live Chat (http://www.plasticshore.com)
 // This script is published under a creative commons license
 // license: http://creativecommons.org/licenses/by-nc-sa/2.0/
 var current_class = 'row2';
@@ -13,7 +28,6 @@ var refresh_time = {view_shoutbox.REFRESH_TIME} * 1;
 var sendTimeout, receiveTimeout, cssRules, row1_color, row2_color, update_online;
 var lastID = -1; //initial value will be replaced by the latest known id
 
-// NEW - BEGIN
 var receiveDoAbort = 0;
 var sendDoAbort = 0;
 // Timeout time for XML Requests
@@ -21,7 +35,6 @@ var TIMEOUT = 6000;
 // Has to do with the session updates
 var rc = 0;
 var su = (parseInt(30000 / refresh_time) - 2);
-// NEW - END
 
 <!-- BEGIN onload -->
 var oldonload = window.onload;
@@ -244,7 +257,8 @@ function handlehResponse(obj)
 							//message = message.replace(/www\./g, 'http://www.');
 							//message = message.replace(/http:\/\/http:\/\//g, 'http://');
 							//alert(message);
-							insertNewContent(arr['id'], shouter, message, arr['date'], lastID);
+							insertNewContent(arr['id'], arr['shouter_id'], shouter, message, arr['date'], lastID);
+							playsound(soundfile);
 						}
 						// Online List
 						if ((node.tagName == 'online') && (update_online == true))
@@ -323,7 +337,7 @@ function indicator_switch(state)
 }
 
 // Lets put the shouts to the table
-function insertNewContent(liId, liName, liText, liTime, last_id)
+function insertNewContent(liId, liShouterId, liName, liText, liTime, last_id)
 {
 	// Row Id
 	var id = 'row_' + counter;
@@ -363,7 +377,7 @@ function insertNewContent(liId, liName, liText, liTime, last_id)
 	<!-- END user_is_admin -->
 
 	//newCell2.innerHTML = '<div class="post-text post-text-hide-flow">' + liText + '<\/div>';
-	newCell2.innerHTML = '<div class="post-text post-text-hide-flow">' + '<b>' + liName + '<\/b>' + ': ' + liText + '<\/div>';
+	newCell2.innerHTML = '<div class="post-text post-text-hide-flow post-text-chat">' + '<b>' + liName + '<\/b>' + ': ' + liText + '<\/div>';
 
 	<!-- BEGIN user_is_admin -->
 	var newCell3 = newRow.insertCell(2);
@@ -557,11 +571,12 @@ function getHTTPObject()
 	}
 	return xmlhttp;
 }
+// ]]>
 </script>
 
-<!-- ONLINE BLOCK - BEGIN -->
+<!-- ONLINE BLOCK - START -->
 <script type="text/javascript">
-<!--
+// <![CDATA[
 var displayed = new Array();
 // Array to store the users online from the XmlRquest
 var dbonline = new Array();
@@ -664,7 +679,6 @@ function updateOnline()
 			if (dbonline[y]['style'] != '')
 			{
 				style = dbonline[y]['style'];
-				//bb = '&nbsp;&#8226;&nbsp;';
 				bb = '';
 				be = '';
 			}
@@ -680,6 +694,8 @@ function updateOnline()
 			{
 				be = ', ';
 			}
+			// Not working...
+			//bb = '&nbsp;&#8226;&nbsp;';
 
 			//li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="postlink" target="_blank"' + style + '>' + dbonline[y]['username'] + '<\/a>' + be;
 			li.innerHTML = bb + '<a href="' + dbonline[y]['link'] + '" class="gensmall" target="_blank"' + dbonline[y]['style'] + '>' + dbonline[y]['username'] + '<\/a>' + be;
@@ -691,7 +707,6 @@ function updateOnline()
 	// Reset the dbonline array
 	dbonline.length = 0;
 }
-//-->
 // ]]>
 </script>
 <!-- ONLINE BLOCK - END -->

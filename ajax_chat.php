@@ -190,7 +190,7 @@ else
 	$result = $db->sql_query($sql);
 	while($online = $db->sql_fetchrow($result))
 	{
-		if($user_id != ANONYMOUS)
+		if($online['user_id'] != ANONYMOUS)
 		{
 			$username = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active']);
 			$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);

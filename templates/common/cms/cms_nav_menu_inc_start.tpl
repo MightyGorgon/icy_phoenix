@@ -42,10 +42,12 @@
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 						<td class="genmed" align="left"><a href="{U_CMS_CUSTOM_PAGES}">{L_CMS_CUSTOM_PAGES}</a></td>
 					</tr>
+					<!--
 					<tr>
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 						<td class="genmed" align="left"><a href="{U_CMS_CUSTOM_PAGES_ADV}">{L_CMS_CUSTOM_PAGES_ADV}</a></td>
 					</tr>
+					-->
 					<tr>
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 						<td class="genmed" align="left"><a href="{U_CMS_MENU}">{L_CMS_MENU_PAGE}</a></td>

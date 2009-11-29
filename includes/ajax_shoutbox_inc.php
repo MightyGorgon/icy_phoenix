@@ -77,10 +77,14 @@ if($action)
 		if(isset($_POST['su']))
 		{
 			update_session($error_msg);
+
+			// Only get session data if the user was online SESSION_REFRESH seconds ago
+			$time_ago = time() - SESSION_REFRESH;
+
 			// Read session data for update
 			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
 			FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-			WHERE s.session_time >= " . (time() - SESSION_REFRESH) . "
+			WHERE s.session_time >= " . $time_ago . "
 				AND s.session_user_id = u.user_id
 			ORDER BY case u.user_level when 0 then 10 else u.user_level end";
 			$result = $db->sql_query($sql);
@@ -193,6 +197,7 @@ if($action)
 			$template->assign_block_vars('shouts', array(
 				'ID' => $id,
 				'SHOUTER' => $shouter,
+				'SHOUTER_ID' => $row[$x]['user_id'],
 				'SHOUTER_COLOR' => $shouter_color,
 				'SHOUTER_LINK' => $shouter_link,
 				'MESSAGE' => $message,

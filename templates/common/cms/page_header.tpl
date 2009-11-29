@@ -23,6 +23,7 @@
 </head>
 <body id="cms" onload="PreloadFlag=true;">
 <!-- IF S_CMS_AUTH -->
+
 <div class="main-header">
 	<div class="chromestyle" id="chromemenu">
 		<ul>
@@ -37,7 +38,7 @@
 		<a href="{U_CMS_GLOBAL_BLOCKS}">&nbsp;<img src="images/cms/menu/cms_blocks.png" alt="" />&nbsp;{L_CMS_GLOBAL_BLOCKS}</a>
 		<a href="{U_CMS_STANDARD_PAGES}">&nbsp;<img src="images/cms/menu/cms_standard_pages.png" alt="" />&nbsp;{L_CMS_STANDARD_PAGES}</a>
 		<a href="{U_CMS_CUSTOM_PAGES}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES}</a>
-		<a href="{U_CMS_CUSTOM_PAGES_ADV}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES_ADV}</a>
+		<!-- <a href="{U_CMS_CUSTOM_PAGES_ADV}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES_ADV}</a> -->
 		<a href="{U_CMS_MENU}">&nbsp;<img src="images/cms/menu/cms_menu.png" alt="" />&nbsp;{L_CMS_MENU_PAGE}</a>
 	</div>
 

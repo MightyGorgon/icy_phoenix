@@ -47,7 +47,7 @@ setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
 
 $cms_type = 'cms_standard';
 
-$mode_array = array('blocks', 'blocks_adv', 'config', 'layouts', 'layouts_adv', 'layouts_special', 'smilies');
+$mode_array = array('blocks', 'config', 'layouts', 'layouts_special', 'smilies');
 $mode = request_var('mode', '');
 $mode = (in_array($mode, $mode_array) ? $mode : false);
 
@@ -59,6 +59,18 @@ $action = (isset($_POST['action_duplicate']) ? 'duplicate' : $action);
 $action = (in_array($action, $action_array) ? $action : false);
 
 $preview_block = isset($_POST['preview']) ? true : false;
+
+$cms_ajax = request_var('cms_ajax', '');
+$cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
+$cms_ajax_new = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
+if (($cms_ajax_new && ($cms_ajax == 'false')) || (!$cms_ajax_new && ($cms_ajax == 'true')))
+{
+	@setcookie('cms_ajax', ($cms_ajax_new ? 'true' : 'false'), time() + 31536000);
+}
+$cms_ajax = $cms_ajax_new;
+$config['cms_style'] = $cms_ajax ? 1 : 0;
+$cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
+$cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
 
 $ls_id = (isset($_GET['ls_id']) ? intval($_GET['ls_id']) : (isset($_POST['ls_id']) ? intval($_POST['ls_id']) : false));
 $ls_id = ($ls_id < 0) ? false : $ls_id;
@@ -141,7 +153,7 @@ else
 	$template->assign_block_vars('cms_dock_off', array());
 }
 
-if(($mode == 'blocks') || ($mode == 'blocks_adv'))
+if(($mode == 'blocks'))
 {
 	$blocks_dir = IP_ROOT_PATH . 'blocks/';
 	$blocks_prefix = '';
@@ -245,18 +257,17 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$options_langs_array[] = $block_file . (!empty($lang['cms_block_' . $block_file]) ? ('&nbsp;[' . $lang['cms_block_' . $block_file] . ']') : '');
 		}
 
-		// AJAX Replace - BEGIN
-		//$block_content_file_old = $b_info['blockfile'];
-		$block_content_file = $b_info['blockfile'];
-		// AJAX Replace - END
+		$block_content_file_old = $b_info['blockfile'];
+		if($cms_ajax)
+		{
+			$block_content_file = $b_info['blockfile'];
+		}
 		$b_info['blockfile'] = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : $b_info['blockfile'];
 
 		$select_name = 'blockfile';
 		$default = $b_info['blockfile'];
-		// AJAX Replace - BEGIN
-		//$select_js = '';
-		$select_js = ' id="blockfile" onchange="javascript:ajaxpage(\'cms_ajax.php\', \'?mode=block_config&amp;blockfile=\'+this.form.blockfile.options[this.form.blockfile.selectedIndex].value, \'block_config\');"';
-		// AJAX Replace - END
+
+		$select_js = ($cms_ajax) ? ' id="blockfile" onchange="javascript:ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=\'+this.form.blockfile.options[this.form.blockfile.selectedIndex].value, \'block_config\');"' : '';
 		$blockfile = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
 		$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : $b_info['view'];
@@ -301,130 +312,144 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			}
 		}
 
-		// AJAX Replace - BEGIN
-		/*
-		if($block_text == true)
+
+		if ($cms_ajax)
 		{
-			$template_to_parse = CMS_TPL . 'cms_block_edit_text_body.tpl';
-			$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_02']);
-			//generate_smilies('inline');
-			$s_hidden_fields .= '<input type="hidden" name="blockfile" value="" />';
+			$template_to_parse = CMS_TPL . 'ajax/cms_ajax_block_content_body.tpl';
 			$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
-			$s_hidden_fields .= '<input type="hidden" name="title" value="' . htmlspecialchars($b_title) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="bposition" value="' . $position['block'] . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="active" value="' . $b_active . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="local" value="' . $b_local . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="titlebar" value="' . $b_titlebar . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="border" value="' . $b_border . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="background" value="' . $b_background . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_view . '" />';
-			$s_hidden_fields .= $b_group_hidden;
 		}
-		elseif($block_content != false)
+		else
 		{
-			$template_to_parse = CMS_TPL . 'cms_block_edit_body.tpl';
-			$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_02']);
-			$s_hidden_fields .= '<input type="hidden" name="blockfile" value="' . $block_content_file . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="message" value="" />';
-			$s_hidden_fields .= '<input type="hidden" name="type" value="0" />';
-			$s_hidden_fields .= '<input type="hidden" name="title" value="' . htmlspecialchars($b_title) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="bposition" value="' . $position['block'] . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="active" value="' . $b_active . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="local" value="' . $b_local . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="titlebar" value="' . $b_titlebar . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="border" value="' . $b_border . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="background" value="' . $b_background . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_view . '" />';
-			$s_hidden_fields .= $b_group_hidden;
-
-			if (($b_id > 0) && ($block_content_file == $block_content_file_old))
+			if($block_text == true)
 			{
-				$sql = "SELECT * FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
-									WHERE c.bid = '" . $b_id . "'
-										AND bv.bid = '" . $b_id . "'
-										AND c.config_name = bv.config_name
-									ORDER BY c.id";
-				$result = $db->sql_query($sql);
-
-				$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
-				$rows_counter = 0;
-				while($row = $db->sql_fetchrow($result))
-				{
-					$cms_field = array();
-					$cms_field = create_cms_field($row);
-
-					$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
-
-					if($cms_field[$row['config_name']]['type'] == '4')
-					{
-						$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
-					}
-					else
-					{
-						$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
-					}
-
-					$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
-
-					$template->assign_block_vars('cms_block', array(
-						'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-						'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
-						'FIELD' => $cms_field[$row['config_name']]['output']
-						)
-					);
-					$rows_counter++;
-				}
-
-				if ($rows_counter == 0)
-				{
-					$template->assign_block_vars('cms_no_bv', array(
-						'L_NO_BV' => $lang['No_bv_selected'],
-						)
-					);
-				}
-				$db->sql_freeresult($result);
+				$template_to_parse = CMS_TPL . 'cms_block_edit_text_body.tpl';
+				$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_02']);
+				//generate_smilies('inline');
+				$s_hidden_fields .= '<input type="hidden" name="blockfile" value="" />';
+				$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
+				$s_hidden_fields .= '<input type="hidden" name="title" value="' . htmlspecialchars($b_title) . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="bposition" value="' . $position['block'] . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="active" value="' . $b_active . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="local" value="' . $b_local . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="titlebar" value="' . $b_titlebar . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="border" value="' . $b_border . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="background" value="' . $b_background . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_view . '" />';
+				$s_hidden_fields .= $b_group_hidden;
 			}
-			else
+			elseif($block_content != false)
 			{
-				if(file_exists($blocks_dir . $block_content_file . '.cfg'))
+				$template_to_parse = CMS_TPL . 'cms_block_edit_body.tpl';
+				$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_02']);
+				$s_hidden_fields .= '<input type="hidden" name="blockfile" value="' . $block_content_file . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="message" value="" />';
+				$s_hidden_fields .= '<input type="hidden" name="type" value="0" />';
+				$s_hidden_fields .= '<input type="hidden" name="title" value="' . htmlspecialchars($b_title) . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="bposition" value="' . $position['block'] . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="active" value="' . $b_active . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="local" value="' . $b_local . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="titlebar" value="' . $b_titlebar . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="border" value="' . $b_border . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="background" value="' . $b_background . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_view . '" />';
+				$s_hidden_fields .= $b_group_hidden;
+
+				if (($b_id > 0) && ($block_content_file == $block_content_file_old))
 				{
-					$block_count_variables = 0;
-					include($blocks_dir . $block_content_file . '.cfg');
-					if ($block_count_variables > 0)
+					$sql = "SELECT * FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
+										WHERE c.bid = '" . $b_id . "'
+											AND bv.bid = '" . $b_id . "'
+											AND c.config_name = bv.config_name
+										ORDER BY c.id";
+					$result = $db->sql_query($sql);
+
+					$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
+					$rows_counter = 0;
+					while($row = $db->sql_fetchrow($result))
 					{
-						for($i = 0; $i < $block_count_variables; $i++)
+						$cms_field = array();
+						$cms_field = create_cms_field($row);
+
+						$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
+
+						if($cms_field[$row['config_name']]['type'] == '4')
 						{
-							$row = array(
-								'config_name' => $block_variables[$i][2],
-								'config_value' => $block_variables[$i][7],
-								'label' => $block_variables[$i][0],
-								'sub_label' => $block_variables[$i][1],
-								'field_options' => $block_variables[$i][3],
-								'field_values' => $block_variables[$i][4],
-								'type' => $block_variables[$i][5],
-								'block' => $block_variables[$i][6],
-							);
+							$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
+						}
+						else
+						{
+							$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
+						}
 
-							$cms_field = array();
-							$cms_field = create_cms_field($row);
+						$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
 
-							$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
+						$template->assign_block_vars('cms_block', array(
+							'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
+							'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
+							'FIELD' => $cms_field[$row['config_name']]['output']
+							)
+						);
+						$rows_counter++;
+					}
 
-							if($cms_field[$row['config_name']]['type'] == '4')
+					if ($rows_counter == 0)
+					{
+						$template->assign_block_vars('cms_no_bv', array(
+							'L_NO_BV' => $lang['No_bv_selected'],
+							)
+						);
+					}
+					$db->sql_freeresult($result);
+				}
+				else
+				{
+					if(file_exists($blocks_dir . $block_content_file . '.cfg'))
+					{
+						$block_count_variables = 0;
+						include($blocks_dir . $block_content_file . '.cfg');
+						if ($block_count_variables > 0)
+						{
+							for($i = 0; $i < $block_count_variables; $i++)
 							{
-								$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
-							}
-							else
-							{
-								$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
-							}
+								$row = array(
+									'config_name' => $block_variables[$i][2],
+									'config_value' => $block_variables[$i][7],
+									'label' => $block_variables[$i][0],
+									'sub_label' => $block_variables[$i][1],
+									'field_options' => $block_variables[$i][3],
+									'field_values' => $block_variables[$i][4],
+									'type' => $block_variables[$i][5],
+									'block' => $block_variables[$i][6],
+								);
 
-							$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
+								$cms_field = array();
+								$cms_field = create_cms_field($row);
 
-							$template->assign_block_vars('cms_block', array(
-								'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-								'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
-								'FIELD' => $cms_field[$row['config_name']]['output']
+								$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
+
+								if($cms_field[$row['config_name']]['type'] == '4')
+								{
+									$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
+								}
+								else
+								{
+									$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
+								}
+
+								$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
+
+								$template->assign_block_vars('cms_block', array(
+									'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
+									'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
+									'FIELD' => $cms_field[$row['config_name']]['output']
+									)
+								);
+							}
+						}
+						else
+						{
+							$template->assign_block_vars('cms_no_bv', array(
+								'L_NO_BV' => $lang['No_bv_selected'],
 								)
 							);
 						}
@@ -437,29 +462,17 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 						);
 					}
 				}
-				else
-				{
-					$template->assign_block_vars('cms_no_bv', array(
-						'L_NO_BV' => $lang['No_bv_selected'],
-						)
-					);
-				}
+			}
+			else
+			{
+				$template_to_parse = CMS_TPL . 'cms_block_content_body.tpl';
+				$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_01']);
+				//$s_hidden_fields .= '<input type="hidden" name="message" value="' . $message . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="message" value="' . htmlspecialchars($message) . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="type" value="' . $b_type . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
 			}
 		}
-		else
-		{
-			$template_to_parse = CMS_TPL . 'cms_block_content_body.tpl';
-			$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_01']);
-			//$s_hidden_fields .= '<input type="hidden" name="message" value="' . $message . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="message" value="' . htmlspecialchars($message) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="type" value="' . $b_type . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
-		}
-		*/
-		$template_to_parse = CMS_TPL . 'cms_block_content_body.tpl';
-		$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_01']);
-		$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
-		// AJAX Replace - END
 
 		if ($preview_block == true)
 		{
@@ -485,32 +498,33 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			);
 		}
 
-		// AJAX Replace - BEGIN
-		if ($block_content_file)
+		if($cms_ajax)
 		{
-			$sql = "SELECT count(*) count_fields FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
-								WHERE c.bid = '" . $b_id . "'
-									AND bv.bid = '" . $b_id . "'
-									AND c.config_name = bv.config_name
-								ORDER BY c.id";
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
-
-			if ($row['count_fields'] > 0)
+			if ($block_content_file)
 			{
-				$block_config = '<a href="#" onclick="ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=' . $block_content_file . '&amp;action=edit&amp;b_id=' . $b_id . '&amp;b_type=' . $b_type . '\', \'block_config\'); return false;">' . $lang['CMS_BLOCK_CONFIG_EDIT'] . '</a>';
+				$sql = "SELECT count(*) count_fields FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
+									WHERE c.bid = '" . $b_id . "'
+										AND bv.bid = '" . $b_id . "'
+										AND c.config_name = bv.config_name
+									ORDER BY c.id";
+				$result = $db->sql_query($sql);
+				$row = $db->sql_fetchrow($result);
+				$db->sql_freeresult($result);
+
+				if ($row['count_fields'] > 0)
+				{
+					$block_config = '<a href="#" onclick="ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=' . $block_content_file . '&amp;action=edit&amp;b_id=' . $b_id . '&amp;b_type=' . $b_type . '\', \'block_config\'); return false;">' . $lang['CMS_BLOCK_CONFIG_EDIT'] . '</a>';
+				}
+				else
+				{
+					$block_config = $lang['CMS_BLOCK_CONFIG_NO_VARS'];
+				}
 			}
 			else
 			{
-				$block_config = $lang['CMS_BLOCK_CONFIG_NO_VARS'];
+				$block_config = '<a href="#" onclick="ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=' . $block_content_file . '&amp;action=edit&amp;b_id=' . $b_id . '&amp;b_type=' . $b_type . '\', \'block_config\'); return false;">' . $lang['CMS_BLOCK_CONFIG_EDIT'] . '</a>';
 			}
 		}
-		else
-		{
-			$block_config = '<a href="#" onclick="ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=' . $block_content_file . '&amp;action=edit&amp;b_id=' . $b_id . '&amp;b_type=' . $b_type . '\', \'block_config\'); return false;">' . $lang['CMS_BLOCK_CONFIG_EDIT'] . '</a>';
-		}
-		// AJAX Replace - END
 
 		$template->assign_vars(array(
 			'L_BLOCKS_TITLE' => $lang['Blocks_Title'],
@@ -653,7 +667,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 		{
 			$message = $lang['Block_updated'];
 
-			if ($is_config)
+			if ($is_config || !$cms_ajax)
 			{
 				$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
 					SET
@@ -1101,24 +1115,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				$action_append = '';
 			}
 
-			if (($mode == 'blocks') || ($action == 'editglobal'))
-			{
-				$b_rows = get_blocks_from_layouts(CMS_BLOCKS_TABLE, $block_layout_field, $l_id_list, $sql_no_gb);
-				$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
-
-				for($i = 0; $i < $b_count; $i++)
-				{
-					$b_active = empty($blocks_upd) ? 0 : (in_array($b_rows[$i]['bid'], $blocks_upd) ? 1 : 0);
-					$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
-									SET active = '" . $b_active . "'
-									WHERE bid = '" . $b_rows[$i]['bid'] . "'";
-					$result = $db->sql_query($sql);
-				}
-				fix_weight_blocks($id_var_value, $table_name);
-				$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
-				message_die(GENERAL_MESSAGE, $message);
-			}
-			else
+			if ($cms_ajax)
 			{
 				$sql = "SELECT bposition FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = " . $l_id_list . "";
 				$result = $db->sql_query($sql);
@@ -1143,11 +1140,31 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 						}
 					}
 				}
-				redirect(append_sid(CMS_PAGE . '?mode=blocks_adv&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
+				redirect(append_sid(CMS_PAGE . '?mode=blocks&' . $id_var_name . '=' . $id_var_value . '&updated=true'));
+			}
+			else
+			{
+				if (($mode == 'blocks') || ($action == 'editglobal'))
+				{
+					$b_rows = get_blocks_from_layouts(CMS_BLOCKS_TABLE, $block_layout_field, $l_id_list, $sql_no_gb);
+					$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
+
+					for($i = 0; $i < $b_count; $i++)
+					{
+						$b_active = empty($blocks_upd) ? 0 : (in_array($b_rows[$i]['bid'], $blocks_upd) ? 1 : 0);
+						$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
+										SET active = '" . $b_active . "'
+										WHERE bid = '" . $b_rows[$i]['bid'] . "'";
+						$result = $db->sql_query($sql);
+					}
+					fix_weight_blocks($id_var_value, $table_name);
+					$message = '<br /><br />' . $lang['Blocks_updated'] . '<br /><br />' . sprintf($lang['Click_return_blocksadmin'], '<a href="' . append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;' . $id_var_name . '=' . $id_var_value . $action_append) . '">', '</a>') . '<br />';
+					message_die(GENERAL_MESSAGE, $message);
+				}
 			}
 		}
 
-		$template_file = ($mode == 'blocks') ? 'cms_blocks_list_body.tpl' : 'cms_blocks_adv_list_body.tpl';
+		$template_file = ($cms_ajax) ? 'ajax/cms_ajax_blocks_list_body.tpl' : 'cms_blocks_list_body.tpl';
 		$template_to_parse = CMS_TPL . $template_file;
 		$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Title']);
 
@@ -1229,7 +1246,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			$template->assign_block_vars('duplicate_switch', array());
 		}
 
-		if (($mode == 'blocks_adv') && ($is_updated == true))
+		if (($cms_ajax) && ($is_updated == true))
 		{
 			$template->assign_block_vars('blocks_updated', array());
 		}
@@ -1272,117 +1289,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 			)
 		);
 
-		if (($mode == 'blocks') || ($action == 'editglobal'))
-		{
-			$is_auth = get_layout_edit_auth($table_name, $field_name, $id_var_value);
-			if (!$is_auth)
-			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-			}
-
-			$b_rows = get_blocks_from_layouts(CMS_BLOCKS_TABLE, $block_layout_field, $l_id_list, '');
-			$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
-
-			// Reassign $l_id_list
-			if ($id_var_name == 'l_id')
-			{
-				$l_id_list = $id_var_value . "', '0";
-			}
-			else
-			{
-				$l_id_list = '0';
-			}
-
-			$position = get_blocks_positions_layout(CMS_BLOCK_POSITION_TABLE, $l_id_list);
-
-			if ($b_count > 0)
-			{
-				$else_counter = 0;
-				for($i = 0; $i < $b_count; $i++)
-				{
-					if (($b_rows[$i]['layout_special'] != 0) && ($action == 'editglobal'))
-					{
-					}
-					else
-					{
-						$b_id = $b_rows[$i]['bid'];
-						$b_weight = $b_rows[$i]['weight'];
-						$b_position = $b_rows[$i]['bposition'];
-						$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $row['pkey'];
-
-						$row_class = (!($else_counter % 2)) ? $theme['td_class2'] : $theme['td_class1'];
-						$else_counter++;
-
-						switch ($b_rows[$i]['view'])
-						{
-							case '0':
-								$b_view = $lang['B_All'];
-								break;
-							case '1':
-								$b_view = $lang['B_Guests'];
-								break;
-							case '2':
-								$b_view = $lang['B_Reg'];
-								break;
-							case '3':
-								$b_view = $lang['B_Mod'];
-								break;
-							case '4':
-								$b_view = $lang['B_Admin'];
-								break;
-						}
-
-						if(!empty($b_rows[$i]['groups']))
-						{
-							$groups = get_groups_names($b_rows[$i]['groups']);
-						}
-						else
-						{
-							$groups = $lang['B_All'];
-						}
-
-						if (($l_id == 0) && ($id_var_name == 'l_id'))
-						{
-							$redirect_action = '&amp;action=editglobal';
-						}
-						else
-						{
-							$redirect_action = '&amp;action=list';
-						}
-
-						$template->assign_block_vars('blocks', array(
-							'ROW_CLASS' => $row_class,
-							'TITLE' => stripslashes(trim($b_rows[$i]['title'])),
-							'BLOCK_CB_ID' => $b_rows[$i]['bid'],
-							//'POSITION' => $position[$b_position],
-							'POSITION' => $b_position_l,
-							'L_POSITION' => $b_position_l,
-							'ACTIVE' => ($b_rows[$i]['active']) ? $lang['Yes'] : $lang['No'],
-							'BLOCK_CHECKED' => ($b_rows[$i]['active']) ? ' checked="checked"' : '',
-							'TYPE' => (empty($b_rows[$i]['blockfile'])) ? (($b_rows[$i]['type']) ? $lang['B_BBCode'] : $lang['B_HTML']) : '&nbsp;',
-							'BORDER' => ($b_rows[$i]['border']) ? $lang['Yes'] : $lang['No'],
-							'TITLEBAR' => ($b_rows[$i]['titlebar']) ? $lang['Yes'] : $lang['No'],
-							'LOCAL' => ($b_rows[$i]['local']) ? $lang['Yes'] : $lang['No'],
-							'BACKGROUND' => ($b_rows[$i]['background']) ? $lang['Yes'] : $lang['No'],
-							'GROUPS' => $groups,
-							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
-							'VIEW' => $b_view,
-
-							'U_EDIT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-							'U_DELETE' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
-							'U_MOVE_UP' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-							'U_MOVE_DOWN' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
-							)
-						);
-					}
-				}
-			}
-			else
-			{
-				$template->assign_var('S_NO_BLOCKS', true);
-			}
-		}
-		else
+		if($cms_ajax)
 		{
 			$sql = "SELECT bposition, pkey FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = " . $id_var_value . "";
 			$result = $db->sql_query($sql);
@@ -1512,6 +1419,119 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 				)
 			);
 		}
+		else
+		{
+			if (($mode == 'blocks') || ($action == 'editglobal'))
+			{
+				$is_auth = get_layout_edit_auth($table_name, $field_name, $id_var_value);
+				if (!$is_auth)
+				{
+					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+				}
+
+				$b_rows = get_blocks_from_layouts(CMS_BLOCKS_TABLE, $block_layout_field, $l_id_list, '');
+				$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
+
+				// Reassign $l_id_list
+				if ($id_var_name == 'l_id')
+				{
+					$l_id_list = $id_var_value . "', '0";
+				}
+				else
+				{
+					$l_id_list = '0';
+				}
+
+				$position = get_blocks_positions_layout(CMS_BLOCK_POSITION_TABLE, $l_id_list);
+
+				if ($b_count > 0)
+				{
+					$else_counter = 0;
+					for($i = 0; $i < $b_count; $i++)
+					{
+						if (($b_rows[$i]['layout_special'] != 0) && ($action == 'editglobal'))
+						{
+						}
+						else
+						{
+							$b_id = $b_rows[$i]['bid'];
+							$b_weight = $b_rows[$i]['weight'];
+							$b_position = $b_rows[$i]['bposition'];
+							$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $row['pkey'];
+
+							$row_class = (!($else_counter % 2)) ? $theme['td_class2'] : $theme['td_class1'];
+							$else_counter++;
+
+							switch ($b_rows[$i]['view'])
+							{
+								case '0':
+									$b_view = $lang['B_All'];
+									break;
+								case '1':
+									$b_view = $lang['B_Guests'];
+									break;
+								case '2':
+									$b_view = $lang['B_Reg'];
+									break;
+								case '3':
+									$b_view = $lang['B_Mod'];
+									break;
+								case '4':
+									$b_view = $lang['B_Admin'];
+									break;
+							}
+
+							if(!empty($b_rows[$i]['groups']))
+							{
+								$groups = get_groups_names($b_rows[$i]['groups']);
+							}
+							else
+							{
+								$groups = $lang['B_All'];
+							}
+
+							if (($l_id == 0) && ($id_var_name == 'l_id'))
+							{
+								$redirect_action = '&amp;action=editglobal';
+							}
+							else
+							{
+								$redirect_action = '&amp;action=list';
+							}
+
+							$template->assign_block_vars('blocks', array(
+								'ROW_CLASS' => $row_class,
+								'TITLE' => stripslashes(trim($b_rows[$i]['title'])),
+								'BLOCK_CB_ID' => $b_rows[$i]['bid'],
+								//'POSITION' => $position[$b_position],
+								'POSITION' => $b_position_l,
+								'L_POSITION' => $b_position_l,
+								'ACTIVE' => ($b_rows[$i]['active']) ? $lang['Yes'] : $lang['No'],
+								'BLOCK_CHECKED' => ($b_rows[$i]['active']) ? ' checked="checked"' : '',
+								'TYPE' => (empty($b_rows[$i]['blockfile'])) ? (($b_rows[$i]['type']) ? $lang['B_BBCode'] : $lang['B_HTML']) : '&nbsp;',
+								'BORDER' => ($b_rows[$i]['border']) ? $lang['Yes'] : $lang['No'],
+								'TITLEBAR' => ($b_rows[$i]['titlebar']) ? $lang['Yes'] : $lang['No'],
+								'LOCAL' => ($b_rows[$i]['local']) ? $lang['Yes'] : $lang['No'],
+								'BACKGROUND' => ($b_rows[$i]['background']) ? $lang['Yes'] : $lang['No'],
+								'GROUPS' => $groups,
+								'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_Text'] : $lang['B_File'],
+								'VIEW' => $b_view,
+
+								'U_EDIT' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=edit&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+								'U_DELETE' => append_sid(CMS_PAGE . '?mode=' . $mode . '&amp;action=delete&amp;' . $id_var_name . '=' . $id_var_value . '&amp;b_id=' . $b_id),
+								'U_MOVE_UP' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
+								'U_MOVE_DOWN' => append_sid(CMS_PAGE . '?mode=' . $mode . $redirect_action . '&amp;' . $id_var_name . '=' . $id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
+								)
+							);
+						}
+					}
+				}
+				else
+				{
+					$template->assign_var('S_NO_BLOCKS', true);
+				}
+			}
+		}
 	}
 	else
 	{
@@ -1519,7 +1539,7 @@ if(($mode == 'blocks') || ($mode == 'blocks_adv'))
 	}
 }
 
-if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_adv'))
+if (($mode == 'layouts_special') || ($mode == 'layouts'))
 {
 	$id_var_name = 'l_id';
 	$id_var_value = $l_id;
@@ -1540,10 +1560,12 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 		$mode_blocks_name = 'blocks';
 		$is_layout_special = true;
 	}
+	/*
 	elseif ($mode == 'layouts_adv')
 	{
 		$mode_blocks_name = 'blocks_adv';
 	}
+	*/
 
 	$s_hidden_fields = '';
 	$s_append_url = '';
@@ -1551,6 +1573,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 	$s_append_url .= '?mode=' . $mode;
 	$s_hidden_fields .= '<input type="hidden" name="action" value="' . $action . '" />';
 	$s_append_url .= '&amp;action=' . $action;
+
 	if($id_var_value != false)
 	{
 		$s_hidden_fields .= '<input type="hidden" name="' . $id_var_name . '" value="' . $id_var_value . '" />';
@@ -1563,7 +1586,8 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 
 	if(($action == 'edit') || ($action == 'add'))
 	{
-		$template_to_parse = CMS_TPL . 'cms_layout_edit_body.tpl';
+		$template_file = ($cms_ajax) ? 'ajax/cms_ajax_layout_edit_body.tpl' : 'cms_layout_edit_body.tpl';
+		$template_to_parse = CMS_TPL . $template_file;
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Pages']);
 
 		$l_info = array();
@@ -1603,16 +1627,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 			$template_name = 'default';
 			$template_dir = IP_ROOT_PATH . '/templates/' . $template_name . '/layout';
 
-			if ($mode == 'layouts')
-			{
-				$template->assign_var('S_LAYOUT_ADV', false);
-				$layout_details = get_layouts_details_select($template_dir, '.tpl');
-				$template->assign_vars(array(
-					'TEMPLATE' => $layout_details,
-					)
-				);
-			}
-			else
+			if ($cms_ajax)
 			{
 				$template->assign_var('S_LAYOUT_ADV', true);
 				$layout_details = get_layouts_details($template_dir, '.tpl', $common_cms_template, 'template', $cms_type);
@@ -1624,6 +1639,15 @@ if (($mode == 'layouts_special') || ($mode == 'layouts') || ($mode == 'layouts_a
 						)
 					);
 				}
+			}
+			else
+			{
+				$template->assign_var('S_LAYOUT_ADV', false);
+				$layout_details = get_layouts_details_select($template_dir, '.tpl');
+				$template->assign_vars(array(
+					'TEMPLATE' => $layout_details,
+					)
+				);
 			}
 
 			$select_name = 'view';

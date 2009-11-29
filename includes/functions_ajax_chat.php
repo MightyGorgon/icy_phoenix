@@ -84,16 +84,15 @@ function pseudo_die($error, $error_msg)
 // Update and return Shoutbox sessions data
 function update_session(&$error_msg)
 {
-	global $db, $userdata, $user_ip;
+	global $db, $cache, $userdata, $lang, $user_ip;
 	$guest_sql = '';
 	$online_counter = 0;
 	$reg_online_counter = 0;
 	$guest_online_counter = 0;
 
-	// First clean old data... so we should have a better optimized table...
+	// First clean old data... so we should have a light table...
 	$clean_time = time() - 86400;
-	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-			WHERE session_time < " . $clean_time;
+	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " WHERE session_time < " . $clean_time;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -136,8 +135,8 @@ function update_session(&$error_msg)
 	else
 	{
 		$current_session_id = get_ajax_chat_max_session_id() + 1;
-		$sql = "INSERT INTO " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-				(session_id, session_user_id, session_ip, session_start, session_time) VALUES (" . $current_session_id . ", " . $userdata['user_id'] . ", '" . $user_ip . "', " . time() . ", " . time() . ")";
+		$sql = "INSERT INTO " . AJAX_SHOUTBOX_SESSIONS_TABLE . " (session_id, session_user_id, session_username, session_ip, session_start, session_time)
+			VALUES (" . $current_session_id . ", " . $userdata['user_id'] . ", '" . ($userdata['session_logged_in'] ? $userdata['username'] : '') . "', '" . $user_ip . "', " . time() . ", " . time() . ")";
 	}
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -163,7 +162,7 @@ function update_session(&$error_msg)
 // Get max session_id
 function get_ajax_chat_max_session_id()
 {
-	global $db;
+	global $db, $cache;
 	$sql = 'SELECT MAX(session_id) AS max_session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE;
 	$db->sql_return_on_error(true);
@@ -174,7 +173,7 @@ function get_ajax_chat_max_session_id()
 		$error_msg = 'Can\'t read shoutbox session data';
 	}
 
-	if($row = $db->sql_fetchrow($results))
+	if($row = $db->sql_fetchrow($result))
 	{
 		return (int) $row['max_session_id'];
 	}

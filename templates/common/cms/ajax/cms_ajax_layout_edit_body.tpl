@@ -1,8 +1,4 @@
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_header_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_header.tpl -->
-<!-- ENDIF -->
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
@@ -19,6 +15,26 @@
 <tr>
 	<td class="row1" style="padding:0px" valign="top">
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+		<!-- IF not S_LAYOUT_SPECIAL -->
+		<!-- IF S_LAYOUT_ADV -->
+		<tr>
+			<td class="row1" colspan="2" style="text-align:center">
+				<table class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<!-- BEGIN layouts -->
+					<td class="row1" style="text-align:center">{layouts.LAYOUT_IMG}</td>
+					<!-- END layouts -->
+				</tr>
+				<tr>
+					<!-- BEGIN layouts -->
+					<td class="row1" style="text-align:center">{layouts.LAYOUT_RADIO}</td>
+					<!-- END layouts -->
+				</tr>
+				</table>
+			</td>
+		</tr>
+		<!-- ENDIF -->
+		<!-- ENDIF -->
 		<tr>
 			<td class="row1">{L_LAYOUT_NAME}</td>
 			<td class="row2"><input type="text" maxlength="100" size="30" name="name" value="{NAME}" class="post" /></td>
@@ -82,8 +98,4 @@
 </table>
 </form>
 
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->
-<!-- ENDIF -->

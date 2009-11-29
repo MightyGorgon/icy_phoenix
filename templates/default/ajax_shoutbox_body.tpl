@@ -54,7 +54,7 @@
 		<tr>
 			<td class="row1 row-center">
 				<div class="shouts">
-					<table class="forumline" id="outputList" width="100%" align="center" cellspacing="0" cellpadding="0">
+					<table id="outputList" class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0">
 
 					</table>
 					<br style="clear: both;" />

@@ -8,6 +8,7 @@
 	<shout>
 		<id>{shouts.ID}</id>
 		<shouter>{shouts.SHOUTER}</shouter>
+		<shouter_id>{shouts.SHOUTER_ID}</shouter_id>
 		<shouter_link>{shouts.SHOUTER_LINK}</shouter_link>
 		<shouter_color>{shouts.SHOUTER_COLOR}</shouter_color>
 		<msg>{shouts.MESSAGE}</msg>
@@ -16,8 +17,8 @@
 	<!-- END shouts -->
 	<!-- BEGIN online_list -->
 	<online>
-		<username>{online_list.USER}</username>
 		<user_id>{online_list.USER_ID}</user_id>
+		<username>{online_list.USER}</username>
 		<user_link>{online_list.LINK}</user_link>
 		<link_style>{online_list.LINK_STYLE}</link_style>
 	</online>

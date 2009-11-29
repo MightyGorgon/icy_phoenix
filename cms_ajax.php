@@ -63,7 +63,8 @@ if ($blockfile == '')
 	{
 		$b_info = get_block_info(CMS_BLOCKS_TABLE, $b_id);
 		$b_type = $b_info['type'];
-		$b_content = htmlspecialchars(stripslashes(trim($b_info['content'])));
+		$b_content = htmlentities(stripslashes(trim($b_info['content'])));
+		//$b_content = htmlspecialchars(stripslashes(trim($b_info['content'])));
 		//$b_content = $b_info['content'];
 	}
 
@@ -78,11 +79,11 @@ if ($blockfile == '')
 		)
 	);
 
-	$template_to_parse = CMS_TPL . 'cms_ajax_block_edit_text_body.tpl';
+	$template_to_parse = CMS_TPL . 'ajax/cms_ajax_block_edit_text_body.tpl';
 }
 else
 {
-	$template_to_parse = CMS_TPL . 'cms_ajax_block_edit_body.tpl';
+	$template_to_parse = CMS_TPL . 'ajax/cms_ajax_block_edit_body.tpl';
 
 	if (($action == 'edit') && $b_id)
 	{

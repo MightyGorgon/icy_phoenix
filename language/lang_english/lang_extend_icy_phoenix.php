@@ -98,8 +98,8 @@ if ($lang_extend_admin)
 
 		'IP_cms_dock' => 'Show Apple style Dock in CMS',
 
-		'IP_cms_style' => 'CMS Modern Style',
-		'IP_cms_style_explain' => 'Modern Style for CMS consists in a modern layout with top transparent menu, while classic style has side menu',
+		'IP_cms_style' => 'Enable AJAX in CMS',
+		'IP_cms_style_explain' => 'Enabling this option will enable AJAX features in CMS by default',
 
 		'IP_split_ga_ann_sticky' => 'Split Topic by Type',
 		'IP_split_ga_ann_sticky_explain' => 'Here you can choose a way to split Topics by Type on the viewforum page',
