@@ -32,6 +32,10 @@
 					<table class="forumlinenb" style="border-width:0px;" width="100%" cellspacing="0" cellpadding="2" border="0">
 					<tr>
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
+						<td class="genmed" align="left"><a href="{U_CMS_AJAX_SWITCH}">{L_CMS_AJAX_SWITCH}</a></td>
+					</tr>
+					<tr>
+						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 						<td class="genmed" align="left"><a href="{U_CMS_GLOBAL_BLOCKS}">{L_CMS_GLOBAL_BLOCKS}</a></td>
 					</tr>
 					<tr>

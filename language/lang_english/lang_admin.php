@@ -2071,6 +2071,7 @@ $lang = array_merge($lang, array(
 	'MG_SW_No_Right_Click' => 'Block Right Click',
 
 	'Click_return_config_mg' => 'Click %sHere%s to return to Icy Phoenix Settings',
+// ####################### [ Icy Phoenix Options END ] #######################
 	)
 );
 
@@ -2082,8 +2083,6 @@ $lang['privmsgs_subject'] = $lang['Subject'];
 $lang['privmsgs_from_userid'] = $lang['From'];
 $lang['privmsgs_to_userid'] = $lang['To'];
 $lang['privmsgs_type'] = $lang['PM_Type'];
-
-// ####################### [ Icy Phoenix Options END ] #######################
 
 // ####################### [ Icy Phoenix Navigation BEGIN ] #######################
 // Use numbers to sort the ACP Navigation menu

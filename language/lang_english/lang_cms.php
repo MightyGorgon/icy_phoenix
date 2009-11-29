@@ -68,8 +68,9 @@ $lang = array_merge($lang, array(
 	'Blocks_Title' => 'Blocks Management',
 	'Blocks_Explain' => 'Add, edit, delete and move blocks for each available site page. A block template must exist for every block file added. If you want to add a text only block (with BBCodes or HTML) you should not choose any block file and then you\'ll be redirected to the editor page. Blocks creation/edit setup is split among two pages: the first where you will be able to choose the general settings for the block, and a second page where you will be able to set the block specific variables.',
 	'Blocks_Duplicate_Explain' => 'Duplicate blocks from other layouts. Only blocks compatible with selected layout will be shown. To duplicate blocks you have just to tick the box for each block you want to add to the current template and then click the button "Duplicate Blocks" located at page bottom.',
-	'Blocks_Creation_01' => 'Add/Edit Block Page 1 of 2',
-	'Blocks_Creation_02' => 'Add/Edit Block Page 2 of 2',
+	'Blocks_Creation' => 'Add / Edit Block',
+	'Blocks_Creation_01' => 'Add / Edit Block Page 1 of 2',
+	'Blocks_Creation_02' => 'Add / Edit Block Page 2 of 2',
 	'CMS_STANDARD_PAGES' => 'Standard Pages',
 	'CMS_CUSTOM_PAGES' => 'CMS Pages',
 	'CMS_CUSTOM_PAGES_ADV' => 'CMS Pages ADV',
@@ -393,6 +394,8 @@ $lang = array_merge($lang, array(
 	'CMS_BLOCK_CONFIG' => 'Block Configuration',
 	'CMS_BLOCK_CONFIG_EDIT' => 'Edit Configuration',
 	'CMS_BLOCK_CONFIG_NO_VARS' => 'No block variables',
+	'CMS_AJAX_ENABLE' => 'Enable AJAX',
+	'CMS_AJAX_DISABLE' => 'Disable AJAX',
 // CMS - ADV - END
 	)
 );

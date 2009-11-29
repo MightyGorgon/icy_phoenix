@@ -35,6 +35,7 @@
 	</div>
 
 	<div id="dropmenu_cms_management" class="dropmenudiv">
+		<a href="{U_CMS_AJAX_SWITCH}">&nbsp;<img src="images/cms/menu/cms_pages_permissions.png" alt="" />&nbsp;{L_CMS_AJAX_SWITCH}</a>
 		<a href="{U_CMS_GLOBAL_BLOCKS}">&nbsp;<img src="images/cms/menu/cms_blocks.png" alt="" />&nbsp;{L_CMS_GLOBAL_BLOCKS}</a>
 		<a href="{U_CMS_STANDARD_PAGES}">&nbsp;<img src="images/cms/menu/cms_standard_pages.png" alt="" />&nbsp;{L_CMS_STANDARD_PAGES}</a>
 		<a href="{U_CMS_CUSTOM_PAGES}">&nbsp;<img src="images/cms/menu/cms_custom_pages.png" alt="" />&nbsp;{L_CMS_CUSTOM_PAGES}</a>

@@ -71,6 +71,11 @@ $cms_ajax = $cms_ajax_new;
 $config['cms_style'] = $cms_ajax ? 1 : 0;
 $cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
 $cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
+$template->assign_vars(array(
+	'U_CMS_AJAX_SWITCH' => append_sid(CMS_PAGE . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
+	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
+	)
+);
 
 $ls_id = (isset($_GET['ls_id']) ? intval($_GET['ls_id']) : (isset($_POST['ls_id']) ? intval($_POST['ls_id']) : false));
 $ls_id = ($ls_id < 0) ? false : $ls_id;
@@ -316,6 +321,7 @@ if(($mode == 'blocks'))
 		if ($cms_ajax)
 		{
 			$template_to_parse = CMS_TPL . 'ajax/cms_ajax_block_content_body.tpl';
+			$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_BLOCK_PAGE']);
 			$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
 		}
 		else

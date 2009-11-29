@@ -2273,7 +2273,6 @@ $lang['NO'] = $lang['No'];
 $lang['HL_File_Error'] = $lang['Error_File_Opening'];
 
 $lang['Prune_commands'] = array();
-
 // here you can make more entries if needed
 $lang['Prune_commands'][0] = 'Prune non-posting users';
 $lang['Prune_explain'][0] = 'Who have never posted, <b>excluding</b> new users from the past %d days';
@@ -2412,14 +2411,10 @@ $lang['datetime']['Oct'] = $lang['datetime']['OCT'];
 $lang['datetime']['Nov'] = $lang['datetime']['NOV'];
 $lang['datetime']['Dec'] = $lang['datetime']['DEC'];
 
-// NOTE: Please do not translate the following 4 lines!
-// They are automatically translated into your language
 $lang['day_short'] = array($lang['datetime']['Sun'], $lang['datetime']['Mon'], $lang['datetime']['Tue'], $lang['datetime']['Wed'], $lang['datetime']['Thu'], $lang['datetime']['Fri'], $lang['datetime']['Sat']);
 $lang['day_long'] = array($lang['datetime']['Sunday'], $lang['datetime']['Monday'], $lang['datetime']['Tuesday'], $lang['datetime']['Wednesday'], $lang['datetime']['Thursday'], $lang['datetime']['Friday'], $lang['datetime']['Saturday']);
 $lang['month_short'] = array($lang['datetime']['JAN'], $lang['datetime']['FEB'], $lang['datetime']['MAR'], $lang['datetime']['APR'], $lang['datetime']['MAY'], $lang['datetime']['JUN'], $lang['datetime']['JUL'], $lang['datetime']['AUG'], $lang['datetime']['SEP'], $lang['datetime']['OCT'], $lang['datetime']['NOV'], $lang['datetime']['DEC']);
 $lang['month_long'] = array($lang['datetime']['January'], $lang['datetime']['February'], $lang['datetime']['March'], $lang['datetime']['April'], $lang['datetime']['May'], $lang['datetime']['June'], $lang['datetime']['July'], $lang['datetime']['August'], $lang['datetime']['September'], $lang['datetime']['October'], $lang['datetime']['November'], $lang['datetime']['December']);
-
-//$lang[''] = '';
 
 //====================================================
 // Do not insert anything below this line

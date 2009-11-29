@@ -24,8 +24,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
+setup_extra_lang(array('lang_cms', 'lang_dyn_menu'));
 
 $access_allowed = get_cms_access_auth('cms_menu');
 
@@ -39,74 +38,46 @@ if (!$userdata['session_admin'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cms_menu.' . PHP_EXT . '&admin=1', true));
 }
 
-if(!empty($_GET['mode']) || !empty($_POST['mode']))
-{
-	$mode = isset($_GET['mode']) ? $_GET['mode'] : $_POST['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
-{
-	$mode = false;
-}
+$mode_array = array('menu_item', 'menu_block', 'menu_list');
+$mode = request_var('mode', '');
+$mode = (in_array($mode, $mode_array) ? $mode : false);
 
 if(isset($_POST['action_update']))
 {
 	$mode = 'menu_block';
 }
 
-if(!empty($_GET['action']) || !empty($_POST['action']))
-{
-	$action = isset($_GET['action']) ? $_GET['action'] : $_POST['action'];
-	$action = htmlspecialchars($action);
-}
-else
-{
-	$action = false;
-}
+$item_type = request_var('item_type', '');
+$item_type = empty($item_type) ? false : $item_type;
+$item_type = isset($_POST['add_cat']) ? 'category_item' : $item_type;
+$item_type = htmlspecialchars($item_type);
 
-if(!empty($_GET['item_type']) || !empty($_POST['item_type']))
-{
-	$item_type = isset($_GET['item_type']) ? $_GET['item_type'] : $_POST['item_type'];
-	$item_type = htmlspecialchars($item_type);
-}
-else
-{
-	$item_type = false;
-}
+$action_array = array('add', 'delete', 'edit', 'list', 'save');
+$action = request_var('action', '');
+$action = (isset($_POST['add']) ? 'add' : $action);
+$action = (isset($_POST['save']) ? 'save' : $action);
+$action = (isset($_POST['add_cat']) ? 'add' : $action);
+$action = (in_array($action, $action_array) ? $action : false);
 
-if(isset($_POST['save']))
+$cms_ajax = request_var('cms_ajax', '');
+$cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
+$cms_ajax_new = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
+if (($cms_ajax_new && ($cms_ajax == 'false')) || (!$cms_ajax_new && ($cms_ajax == 'true')))
 {
-	$action = 'save';
+	@setcookie('cms_ajax', ($cms_ajax_new ? 'true' : 'false'), time() + 31536000);
 }
+$cms_ajax = $cms_ajax_new;
+$config['cms_style'] = $cms_ajax ? 1 : 0;
+$cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
+$cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
+$template->assign_vars(array(
+	'U_CMS_AJAX_SWITCH' => append_sid(CMS_PAGE . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
+	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
+	)
+);
 
-if(isset($_POST['add']))
-{
-	$action = 'add';
-}
-
-if(isset($_POST['add_cat']))
-{
-	$action = 'add';
-	$item_type = 'category_item';
-}
-
-if(!empty($_GET['mi_id']) || !empty($_POST['mi_id']))
-{
-	$mi_id = isset($_GET['mi_id']) ? intval($_GET['mi_id']) : intval($_POST['mi_id']);
-}
-else
-{
-	$mi_id = false;
-}
-
-if(!empty($_GET['m_id']) || !empty($_POST['m_id']))
-{
-	$m_id = isset($_GET['m_id']) ? intval($_GET['m_id']) : intval($_POST['m_id']);
-}
-else
-{
-	$m_id = false;
-}
+$mi_id = (isset($_GET['mi_id']) ? intval($_GET['mi_id']) : (isset($_POST['mi_id']) ? intval($_POST['mi_id']) : false));
+$m_id = (isset($_GET['m_id']) ? intval($_GET['m_id']) : (isset($_POST['m_id']) ? intval($_POST['m_id']) : false));
 
 if(isset($_POST['cancel']) || isset($_POST['reset']))
 {
