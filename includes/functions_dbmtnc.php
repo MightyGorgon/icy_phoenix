@@ -111,6 +111,7 @@ $tables = array(
 	'pa_license',
 	'pa_mirrors',
 	'pa_votes',
+	'plugins',
 	'posts',
 	'privmsgs',
 	'privmsgs_archive',
@@ -160,7 +161,7 @@ $tables = array(
 	'zebra'
 );
 
-if (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED)
+if (!empty($config['plugins']['activity']['enabled']))
 {
 	$tables = array_merge($tables, array(
 		'ina_ban',

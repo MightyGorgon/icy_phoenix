@@ -8,7 +8,8 @@
 <tr>
 	<td class="row2" valign="top">&nbsp;</td>
 	<td class="row1">
-		<span class="genmed"><b>{cashrow.CASH_AMOUNT}</b>
+		<span class="genmed">
+		<!-- IF cashrow.CASH_AMOUNT --><b>{cashrow.CASH_AMOUNT}</b><!-- ENDIF -->
 		<!-- BEGIN cashlinks -->
 		[ <a href="{switch_cashlinkson.cashlinks.U_LINK}">{switch_cashlinkson.cashlinks.L_NAME}</a> ]
 		<!-- END cashlinks -->

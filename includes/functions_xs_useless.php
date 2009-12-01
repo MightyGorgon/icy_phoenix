@@ -55,12 +55,14 @@ function smilies_news($message)
 		$sql = "SELECT code, smile_url FROM " . SMILIES_TABLE . " ORDER BY smilies_order";
 		$result = $db->sql_query($sql, 0, 'smileys_');
 
+		$host = extract_current_hostname();
+
 		$orig = array();
 		$repl = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($row['code'], "/") . "(?=.\W|\W.|\W$)/";
-			$repl[] = '<img src="http://' . $_SERVER['HTTP_HOST'] . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'] . '" alt="" />';
+			$repl[] = '<img src="http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'] . '" alt="" />';
 		}
 	}
 

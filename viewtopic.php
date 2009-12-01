@@ -62,9 +62,9 @@ $page_number = ($page_number < 1) ? false : $page_number;
 $start = (!$page_number) ? $start : (($page_number * $config['posts_per_page']) - $config['posts_per_page']);
 
 // Activity - BEGIN
-if (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED)
+if (!empty($config['plugins']['activity']['enabled']))
 {
-	include_once(IP_ROOT_PATH . ACTIVITY_PLUGIN_PATH . 'common.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'common.' . PHP_EXT);
 	$q = "SELECT * FROM " . INA_HOF;
 	$r = $db->sql_query($q);
 	$hof_data = $db->sql_fetchrowset($r);
@@ -586,7 +586,7 @@ else
 }
 
 // Activity - BEGIN
-if (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED && !$userdata['is_bot'])
+if (!empty($config['plugins']['activity']['enabled']) && !$userdata['is_bot'])
 {
 	$activity_sql = ', u.user_trophies, u.ina_char_name';
 }
@@ -613,7 +613,7 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_posts,
 	LIMIT " . $start . ", " . $config['posts_per_page'];
 
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+if (!empty($config['plugins']['cash']['enabled']))
 {
 	$cm_viewtopic->generate_columns($template, $forum_id, $sql);
 }
@@ -1433,7 +1433,7 @@ $this_year = create_date('Y', time(), $config['board_timezone']);
 $this_date = create_date('md', time(), $config['board_timezone']);
 
 // Mighty Gorgon - Feedbacks - BEGIN
-if (defined('FEEDBACKS_PLUGIN_ENABLED') && FEEDBACKS_PLUGIN_ENABLED)
+if (!empty($config['plugins']['feedbacks']['enabled']))
 {
 	define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
 	include_once(MG_ROOT_PATH . 'includes/functions_feedbacks.' . PHP_EXT);
@@ -2200,7 +2200,7 @@ for($i = 0; $i < $total_posts; $i++)
 	// Mighty Gorgon - Feedbacks - BEGIN
 	$feedbacks_received = '';
 	$feedback_add = '';
-	if (defined('FEEDBACKS_PLUGIN_ENABLED') && FEEDBACKS_PLUGIN_ENABLED && !$feedback_disabled)
+	if (!empty($config['plugins']['feedbacks']['enabled']) && !$feedback_disabled)
 	{
 		$feedbacks_details = get_user_feedbacks_received($postrow[$i]['user_id']);
 		if ($feedbacks_details['feedbacks_count'] > 0)
@@ -2261,7 +2261,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'POSTER_LANG' => $poster_lang,
 
 		// Activity - BEGIN
-		'POSTER_TROPHY' => (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED ? Amod_Build_Topics($hof_data, $postrow[$i]['user_id'], $postrow[$i]['user_trophies'], $postrow[$i]['username'], $postrow[$i]['ina_char_name']) : ''),
+		'POSTER_TROPHY' => (!empty($config['plugins']['activity']['enabled']) ? Amod_Build_Topics($hof_data, $postrow[$i]['user_id'], $postrow[$i]['user_trophies'], $postrow[$i]['username'], $postrow[$i]['ina_char_name']) : ''),
 		// Activity - END
 
 		'MINI_POST_IMG' => $mini_post_img,
@@ -2346,7 +2346,7 @@ for($i = 0; $i < $total_posts; $i++)
 	);
 
 	// MG Cash MOD For IP - BEGIN
-	if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+	if (!empty($config['plugins']['cash']['enabled']))
 	{
 		$cm_viewtopic->post_vars($postrow[$i], $userdata, $forum_id);
 	}

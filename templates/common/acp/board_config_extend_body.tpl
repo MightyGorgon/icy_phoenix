@@ -20,11 +20,9 @@
 		<!-- BEGIN sub -->
 		<hr />
 		<table class="empty-table" width="100%" align="left" cellspacing="0" cellpadding="0" border="0">
-			<!-- BEGIN row -->
-			<tr>
-				<td align="left" class="{menu.mod.sub.row.CLASS}" nowrap="nowrap"><span class="genmed">&nbsp;{NAV_SEP}<a href="{menu.mod.sub.row.U_MOD}" class="genmed">{menu.mod.sub.row.L_MOD}</a>&nbsp;&nbsp;</span></td>
-			</tr>
-			<!-- END row -->
+		<!-- BEGIN row -->
+		<tr><td align="left" class="{menu.mod.sub.row.CLASS}" nowrap="nowrap"><span class="genmed">&nbsp;{NAV_SEP}<a href="{menu.mod.sub.row.U_MOD}" class="genmed">{menu.mod.sub.row.L_MOD}</a>&nbsp;&nbsp;</span></td></tr>
+		<!-- END row -->
 		</table>
 		<!-- END sub -->
 	</td>

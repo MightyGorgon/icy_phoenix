@@ -16,7 +16,7 @@
 */
 
 // CTracker_Ignore: File checked by human
-if (!defined('CASH_PLUGIN_ENABLED') || (defined('CASH_PLUGIN_ENABLED') && !CASH_PLUGIN_ENABLED))
+if (empty($config['plugins']['cash']['enabled']))
 {
 	return;
 }
@@ -57,7 +57,7 @@ if (!empty($navbar) && defined('IN_ICYPHOENIX'))
 	$menu = array();
 	if (!defined('CASH_INCLUDE'))
 	{
-		message_die(GENERAL_ERROR, 'To enable Cash Mod open <b>includes/constants.php</b> and check this line: <b>//define(\'CASH_PLUGIN_ENABLED\', true);</b>.<br /><br />Make sure the value is set to <b>true</b>');
+		message_die(GENERAL_ERROR, 'Cash Mod disabled, enable it in ACP &raquo; Plugins');
 	}
 	admin_menu($menu);
 
@@ -137,9 +137,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if (!defined('CASH_PLUGIN_ENABLED') || (defined('CASH_PLUGIN_ENABLED') && !CASH_PLUGIN_ENABLED))
+if (empty($config['plugins']['cash']['enabled']))
 {
-	message_die(GENERAL_ERROR, 'To enable Cash Mod open <b>includes/constants.php</b> and decomment this line: <b>//define(\'CASH_PLUGIN_ENABLED\', true);</b>.<br /><br />To decomment the line just remove the double slashes //');
+	message_die(GENERAL_ERROR, 'Cash Mod disabled, enable it in ACP &raquo; Plugins');
 }
 
 /*

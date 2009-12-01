@@ -25,7 +25,7 @@ require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_mg_log_admin.' . PHP_EXT);
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
+setup_extra_lang(array('lang_admin_pafiledb'));
 
 // Generate relevant output
 if(isset($_GET['pane']) && ($_GET['pane'] == 'left'))

@@ -84,7 +84,7 @@
 					<!-- IF S_LOGGED_IN -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_AJAX_SHOUTBOX_PVT}</span></b></td>
-						<td class="row1 post-buttons"><span class="gensmall"><a href="{U_AJAX_SHOUTBOX_PVT_LINK}" class="gensmall">{L_AJAX_SHOUTBOX_PVT_LINK}</a></span></td>
+						<td class="row1 post-buttons"><span class="gensmall"><a href="#" class="gensmall" onclick="window.open('{U_AJAX_SHOUTBOX_PVT_LINK}', '_chat', 'width=720,height=600,resizable=yes'); return false;">{L_AJAX_SHOUTBOX_PVT_LINK}</a></span></td>
 					</tr>
 					<!-- ENDIF -->
 					<tr>

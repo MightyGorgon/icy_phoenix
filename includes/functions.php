@@ -123,6 +123,61 @@ function extract_current_page($root_path)
 }
 
 /**
+* Get valid hostname/port. HTTP_HOST is used, SERVER_NAME if HTTP_HOST not present.
+* function backported from phpBB3 - Olympus
+*/
+function extract_current_hostname()
+{
+	global $config;
+
+	// Get hostname
+	$host = (!empty($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : ((!empty($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : getenv('SERVER_NAME'));
+
+	// Should be a string and lowered
+	$host = (string) strtolower($host);
+
+	// If host is equal the cookie domain or the server name (if config is set), then we assume it is valid
+	if ((isset($config['cookie_domain']) && ($host === $config['cookie_domain'])) || (isset($config['server_name']) && ($host === $config['server_name'])))
+	{
+		return $host;
+	}
+
+	// Is the host actually a IP? If so, we use the IP... (IPv4)
+	if (long2ip(ip2long($host)) === $host)
+	{
+		return $host;
+	}
+
+	// Now return the hostname (this also removes any port definition). The http:// is prepended to construct a valid URL, hosts never have a scheme assigned
+	$host = @parse_url('http://' . $host);
+	$host = (!empty($host['host'])) ? $host['host'] : '';
+
+	// Remove any portions not removed by parse_url (#)
+	$host = str_replace('#', '', $host);
+
+	// If, by any means, the host is now empty, we will use a "best approach" way to guess one
+	if (empty($host))
+	{
+		if (!empty($config['server_name']))
+		{
+			$host = $config['server_name'];
+		}
+		else if (!empty($config['cookie_domain']))
+		{
+			$host = (strpos($config['cookie_domain'], '.') === 0) ? substr($config['cookie_domain'], 1) : $config['cookie_domain'];
+		}
+		else
+		{
+			// Set to OS hostname or localhost
+			$host = (function_exists('php_uname')) ? php_uname('n') : 'localhost';
+		}
+	}
+
+	// It may be still no valid host, but for sure only a hostname (we may further expand on the cookie domain... if set)
+	return $host;
+}
+
+/**
 * Set variable, used by {@link request_var the request_var function}
 * function backported from phpBB3 - Olympus
 * @access private
@@ -1454,7 +1509,7 @@ function setup_basic_lang()
 			'lang_main_cback_ctracker',
 		);
 
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED && defined('IN_CASHMOD'))
+		if (!empty($config['plugins']['cash']['enabled']) && defined('IN_CASHMOD'))
 		{
 			$lang_files = array_merge($lang_files, array('lang_cash'));
 		}
@@ -3258,7 +3313,7 @@ function page_header($title = '', $parse_template = false)
 		$s_last_visit = create_date($config['default_dateformat'], $userdata['user_lastvisit'], $config['board_timezone']);
 
 		// DOWNLOADS ADV - BEGIN
-		//@include(IP_ROOT_PATH . DL_PLUGIN_PATH . 'dl_page_header_inc.' . PHP_EXT);
+		//@include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['downloads']['dir'] . 'includes/dl_page_header_inc.' . PHP_EXT);
 		// DOWNLOADS ADV - END
 
 		// Obtain number of new private messages
@@ -3755,7 +3810,7 @@ function page_header($title = '', $parse_template = false)
 			/*
 			'L_WHOSONLINE_GAMES' => '<a href="'. append_sid('activity.' . PHP_EXT) .'"><span style="color:#'. str_replace('#', '', $config['ina_online_list_color']) . ';">' . $config['ina_online_list_text'] . '</span></a>',
 			*/
-			'P_ACTIVITY_MOD_PATH' => ACTIVITY_PLUGIN_PATH,
+			'P_ACTIVITY_MOD_PATH' => PLUGINS_PATH . $config['plugins']['activity']['dir'],
 			'U_ACTIVITY' => append_sid('activity.' . PHP_EXT),
 			'L_ACTIVITY' => $lang['Activity'],
 			// Activity - END

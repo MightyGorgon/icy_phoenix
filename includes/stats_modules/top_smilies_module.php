@@ -135,6 +135,8 @@ if (!$statistics->result_cache_used)
 	$template->_tpldata['stats_row.'] = array();
 	//reset($template->_tpldata['stats_row.']);
 
+	$host = extract_current_hostname();
+
 	for ($i = 0; $i < $limit; $i++)
 	{
 		$class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
@@ -150,7 +152,7 @@ if (!$statistics->result_cache_used)
 				'USES' => $all_smilies[$i]['count'],
 				'PERCENTAGE' => $statistics->percentage,
 				'BAR' => $statistics->bar_percent,
-				'URL' => '<img src="http://' . $_SERVER['HTTP_HOST'] . $config['script_path'] . $config['smilies_path'] . '/' . $all_smilies[$i]['smile_url'] . '" alt="' . $all_smilies[$i]['smile_url'] . '" />'
+				'URL' => '<img src="http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $all_smilies[$i]['smile_url'] . '" alt="' . $all_smilies[$i]['smile_url'] . '" />'
 				)
 			);
 		}

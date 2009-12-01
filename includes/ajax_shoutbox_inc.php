@@ -489,6 +489,7 @@ if ($shoutbox_template_parse)
 {
 	// We're Out of PhpBB so call the Simple header and parser
 	$gen_simple_header = true;
+	$template->assign_var('S_POPUP', true);
 	full_page_generation('ajax_shoutbox_body.tpl', $lang['Ajax_Chat'], '', '');
 }
 else

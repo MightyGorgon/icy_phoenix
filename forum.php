@@ -27,9 +27,9 @@ init_userprefs($userdata);
 // End session management
 
 // Activity - BEGIN
-if (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED)
+if (!empty($config['plugins']['activity']['enabled']))
 {
-	include(IP_ROOT_PATH . ACTIVITY_PLUGIN_PATH . 'includes/functions_amod_index.' . PHP_EXT);
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'includes/functions_amod_index.' . PHP_EXT);
 }
 // Activity - END
 

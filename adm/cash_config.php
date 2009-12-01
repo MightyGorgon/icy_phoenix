@@ -23,6 +23,11 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
+if (empty($config['plugins']['cash']['enabled']))
+{
+	message_die(GENERAL_MESSAGE, 'PLUGIN_DISABLED');
+}
+
 if ($config['cash_adminnavbar'])
 {
 	$navbar = 1;
@@ -38,14 +43,16 @@ $reset_navbar = "";
 $sql = "SELECT * FROM " . CONFIG_TABLE;
 $result = $db->sql_query($sql);
 
-$allowed_array = array('cash_disable' => true,
-						'cash_adminbig' => true,
-						'cash_adminnavbar' => true,
-						'cash_display_after_posts' => true,
-						'cash_post_message' => true,
-						'cash_disable_spam_num' => true,
-						'cash_disable_spam_time' => true,
-						'cash_disable_spam_message' => true);
+$allowed_array = array(
+	'cash_disable' => true,
+	'cash_adminbig' => true,
+	'cash_adminnavbar' => true,
+	'cash_display_after_posts' => true,
+	'cash_post_message' => true,
+	'cash_disable_spam_num' => true,
+	'cash_disable_spam_time' => true,
+	'cash_disable_spam_message' => true
+);
 while ($row = $db->sql_fetchrow($result))
 {
 	$config_name = $row['config_name'];

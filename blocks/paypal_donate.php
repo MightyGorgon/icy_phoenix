@@ -25,7 +25,7 @@ if(!function_exists('cms_block_paypal_donate'))
 	{
 		global $db, $cache, $config, $template, $lang, $table_prefix, $block_id, $cms_config_vars;
 
-		if (!defined('DONATIONS_PLUGIN_ENABLED') || (defined('DONATIONS_PLUGIN_ENABLED') && !DONATIONS_PLUGIN_ENABLED))
+		if (empty($config['plugins']['donations']['enabled']))
 		{
 			$cms_config_vars['md_paypal_total_donors'][$block_id] = false;
 			$cms_config_vars['md_paypal_total_amount'][$block_id] = false;

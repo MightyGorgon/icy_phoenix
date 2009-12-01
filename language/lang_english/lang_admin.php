@@ -268,12 +268,12 @@ $lang = array_merge($lang, array(
 	'Acc_User' => 'User',
 	'Acc_Admin' => 'Admin',
 
-	'Abilities_settings' => 'User and Forum Basic Settings',
+	'Abilities_settings' => 'User and Site Basic Settings',
 	'Max_poll_options' => 'Max number of poll options',
 	'Flood_Interval' => 'Flood Interval',
 	'Flood_Interval_explain' => 'Number of seconds a user must wait between posts',
-	'Board_email_form' => 'User email via board',
-	'Board_email_form_explain' => 'Users send email to each other via this board',
+	'Board_email_form' => 'User email via site',
+	'Board_email_form_explain' => 'Users send email to each other via this site',
 	'Topics_per_page' => 'Topics Per Page',
 	'Posts_per_page' => 'Posts Per Page',
 	'Hot_threshold' => 'Posts for Popular Threshold',
@@ -2024,6 +2024,18 @@ $lang = array_merge($lang, array(
 <b>COLOR</b> &raquo; A HTML colour, can be either in the numeric form <samp>#ff1234</samp> or a <a href="http://www.w3.org/TR/CSS21/syndata.html#value-def-color">CSS colour keyword</a> such as <samp>fuchsia</samp> or <samp>InactiveBorder</samp>',
 	// Custom BBCodes - END
 
+	// PLUGINS - BEGIN
+	'PLUGINS' => 'Plugins',
+	'PLUGINS_EXPLAIN' => 'In this section you can enable or disable Icy Phoenix Plugins',
+	'PLUGINS_FOLDER' => 'Folder',
+	'PLUGINS_NAME' => 'Name',
+	'PLUGINS_DESCRIPTION' => 'Description',
+	'PLUGINS_UPDATE_CONFIG' => 'Update Configuration',
+	'PLUGINS_CONFIG_UPDATED' => 'Plugins configuration updated successfully. Please note that you need to reload ACP (F5) to update modules.',
+	'PLUGINS_RETURN_CLICK' => 'Click %sHere%s to return to Plugins',
+	'PLUGINS_NO_PLUGINS' => 'No Plugins to be configured',
+	// PLUGINS - END
+
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'MG_Configuration' => 'Icy Phoenix Settings',
 	'MG_Configuration_Explain' => '<em><b>Advanced Icy Phoenix Settings</b></em>',
@@ -2151,15 +2163,9 @@ $lang['150_DB_Maintenance'] = 'Database Maintenance'; // admin_db_maintenance.ph
 $lang['170_db_update_generator'] = 'DB Update Generator'; // admin_db_generator.php
 $lang['180_msqd'] = 'MySQLDumper'; // admin_msqd.php
 
-// IM Portal
-$lang['1500_IM_Portal'] = 'Portal'; // admin_blocks.php, admin_blocks_pos.php, admin_blocks_var.php, admin_clear_cache.php, admin_layout.php, admin_portal.php
-$lang['100_Portal_Configuration'] = 'Portal Configuration'; // admin_portal.php
-$lang['110_Page_Management'] = 'Page Management'; // admin_layout.php
-$lang['115_Page_Management'] = 'Custom Page Management'; // admin_layout_cp.php
-$lang['120_Blocks_Management'] = 'Block Management'; // admin_blocks.php
-$lang['130_Blocks_Position_Tag'] = 'Block Position Tag'; // admin_blocks_pos.php
-$lang['140_Blocks_Variables'] = 'Block Variables'; // admin_blocks_var.php
-$lang['150_Delete_Cache_Files'] = 'Delete Cache Files'; // admin_clear_cache.php
+// Plugins
+$lang['1500_Plugins'] = 'Plugins'; // admin_plugins.php
+$lang['100_Plugins_Modules'] = 'Plugins Modules'; // admin_plugins.php
 
 // News
 $lang['1600_News_Admin'] = 'News'; // admin_news.php, admin_news_cats.php, admin_xs_news.php, admin_xs_news_xml.php

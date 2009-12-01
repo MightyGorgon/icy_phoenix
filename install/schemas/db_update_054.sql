@@ -148,6 +148,13 @@ CREATE TABLE `phpbb_bbcodes` (
 
 ALTER TABLE `phpbb_ajax_shoutbox` ADD `shout_room` VARCHAR(255) NOT NULL DEFAULT '';
 
+CREATE TABLE phpbb_plugins (
+	plugin_name VARCHAR(255) NOT NULL DEFAULT '',
+	plugin_dir VARCHAR(255) NOT NULL DEFAULT '',
+	plugin_enabled tinyint(2) NOT NULL DEFAULT 0,
+	PRIMARY KEY (plugin_name)
+);
+
 
 
 ########################################

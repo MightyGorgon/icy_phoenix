@@ -389,6 +389,32 @@ class ip_cache extends acm
 		return $ranks;
 	}
 
+	/*
+	* Get plugins config values
+	*/
+	function obtain_plugins_config($from_cache = false)
+	{
+		global $db;
+
+		if (($config = $this->get('config_plugins')) === false)
+		{
+			$config = array();
+
+			$sql = "SELECT * FROM " . PLUGINS_TABLE . " ORDER BY plugin_name";
+			$result = $from_cache ? $db->sql_query($sql, 0, 'config_plugins_') : $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$config[$row['plugin_name']] = $row;
+			}
+			$db->sql_freeresult($result);
+
+			$this->put('config_plugins', $config);
+		}
+
+		return $config;
+	}
+
 	/**
 	* Get today visitors
 	*/

@@ -81,7 +81,7 @@ $users_per_page = ((!$users_per_page || ($users_per_page < 0) || ($users_per_pag
 // Mighty Gorgon - Power Memberlist - END
 
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+if (!empty($config['plugins']['cash']['enabled']))
 {
 	$cm_memberlist->droplists($mode_types_text, $mode_types);
 }
@@ -176,7 +176,7 @@ $sql_style = false;
 
 $cash_condition = false;
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+if (!empty($config['plugins']['cash']['enabled']))
 {
 	switch($mode)
 	{
@@ -284,7 +284,7 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level,
 		ORDER BY $order_by";
 
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+if (!empty($config['plugins']['cash']['enabled']))
 {
 	$cm_memberlist->generate_columns($template, $sql, 8);
 }
@@ -522,7 +522,7 @@ if ($row = $db->sql_fetchrow($result))
 			)
 		);
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$cm_memberlist->listing($template, $row);
 		}

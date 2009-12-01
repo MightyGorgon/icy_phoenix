@@ -144,8 +144,8 @@ else
 @date_default_timezone_set(@date_default_timezone_get());
 
 // CrackerTracker v5.x
-// Uncomment the following define to disable CT GET and POST parsing.
-//define('GLOBAL_CTRACKER_DISABLED', true);
+// Comment the following define to enable CT GET and POST parsing.
+define('GLOBAL_CTRACKER_DISABLED', true);
 if(defined('IN_ADMIN') || defined('IN_CMS') || defined('CTRACKER_DISABLED') || defined('GLOBAL_CTRACKER_DISABLED'))
 {
 	$ct_rules = array();
@@ -294,13 +294,6 @@ unset($message);
 unset($highlight);
 unset($sql);
 
-// MG Cash MOD For IP - BEGIN
-if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED && defined('IN_CASHMOD'))
-{
-	include(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
-}
-// MG Cash MOD For IP - END
-
 //
 // Obtain and encode users IP
 //
@@ -350,6 +343,19 @@ if (!defined('SKIP_CMS_CONFIG') && !defined('IN_ADMIN') && !defined('IN_CMS'))
 	$cms_config_layouts = $cache->obtain_cms_layouts_config();
 }
 // CMS Pages Config - END
+
+foreach ($cache->obtain_plugins_config() as $k => $plugin)
+{
+	$config['plugins'][$k]['enabled'] = !empty($plugin['plugin_enabled']) ? true : false;
+	$config['plugins'][$k]['dir'] = !empty($plugin['plugin_dir']) ? ($plugin['plugin_dir'] . '/') : '';
+}
+
+// MG Cash MOD For IP - BEGIN
+if (!empty($config['plugins']['cash']['enabled']) && defined('IN_CASHMOD'))
+{
+	include(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
+}
+// MG Cash MOD For IP - END
 
 include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);
 

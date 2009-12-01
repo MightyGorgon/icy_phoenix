@@ -460,10 +460,10 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	add_search_words('single', $post_id, stripslashes($post_message), stripslashes($post_subject));
 
 	// DOWNLOADS - BEGIN
-	if (defined('DL_PLUGIN_ENABLED') && DL_PLUGIN_ENABLED)
+	if (!empty($config['plugins']['downloads']['enabled']))
 	{
-		setup_extra_lang(array('lang_downloads'), IP_ROOT_PATH . DL_PLUGIN_PATH . 'language/');
-		include(IP_ROOT_PATH . DL_PLUGIN_PATH . 'classes/class_dlmod.' . PHP_EXT);
+		setup_extra_lang(array('lang_downloads'), IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['downloads']['dir'] . 'language/');
+		include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['downloads']['dir'] . 'classes/class_dlmod.' . PHP_EXT);
 		$dl_mod = new dlmod();
 		$dl_config = $dl_mod->get_config();
 
@@ -559,7 +559,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$cash_string = '';
 	// MG Cash MOD For IP - BEGIN
-	if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+	if (!empty($config['plugins']['cash']['enabled']))
 	{
 		$cash_message = $GLOBALS['cm_posting']->update_post($mode, $post_data, $forum_id, $topic_id, $post_id, $topic_type, $post_username, $post_message);
 		$cash_string = '<br />' . $cash_message;
@@ -782,7 +782,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	if ($mode != 'poll_delete')
 	{
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$GLOBALS['cm_posting']->update_delete($mode, $post_data, $forum_id, $topic_id, $post_id);
 		}
@@ -1432,6 +1432,8 @@ function generate_smilies($mode)
 			$row = 0;
 			$col = 0;
 
+			$host = extract_current_hostname();
+
 			for($i = $smiley_start; $i < $smiley_stop; $i++)
 			{
 				if (!$col)
@@ -1447,7 +1449,7 @@ function generate_smilies($mode)
 				}
 				$parsing_template = array(
 					'SMILEY_CODE' => $rowset[$i]['code'],
-					'SMILEY_IMG' => 'http://' . $_SERVER['HTTP_HOST'] . $config['script_path'] . $config['smilies_path'] . '/' . $rowset[$i]['smile_url'],
+					'SMILEY_IMG' => 'http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $rowset[$i]['smile_url'],
 					'SMILEY_DESC' => $rowset[$i]['emoticon']
 				);
 				if (defined('IN_PA_POSTING'))

@@ -43,7 +43,7 @@ function add_username(selected_username)
 		<input type="text" class="post" name="username" id="username" maxlength="50" size="20" {S_AJAX_USER_CHECK} />&nbsp;
 		<span id="username_list" style="display: none;">&nbsp;<span id="username_select">&nbsp;</span></span>
 		<input type="button" value="{L_ADD_MEMBER}" class="mainoption" onclick="add_username(this.form.username.value);return false;" />&nbsp;
-		<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes'); return false;" /><br /><br />
+		<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}', '_search', 'width=400,height=250,resizable=yes'); return false;" /><br /><br />
 		<textarea name="add" rows="5" cols="30">{USERNAMES}</textarea><br />
 	</td>
 </tr>

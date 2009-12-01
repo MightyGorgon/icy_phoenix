@@ -1539,7 +1539,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				$emailer->reset();
 			}
 			// MG Cash MOD For IP - BEGIN
-			if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+			if (!empty($config['plugins']['cash']['enabled']))
 			{
 				$pmer = new cash_user($userdata['user_id'],$userdata);
 				$pmer->give_pm_amount();

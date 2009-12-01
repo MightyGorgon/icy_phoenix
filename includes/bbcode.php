@@ -93,22 +93,6 @@ $text = autolink_text($text, $forum_id);
 // If included via function we need to make sure to have the requested globals...
 global $db, $cache, $config, $lang;
 
-if (function_exists('create_server_url'))
-{
-	$server_url = create_server_url();
-}
-else
-{
-	$server_url = 'http://' . $_SERVER['HTTP_HOST'] . $config['script_path'];
-}
-$smileys_path = $server_url . $config['smilies_path'] . '/';
-
-define('BBCODE_UID_LEN', 10);
-define('BBCODE_NOSMILIES_START', '<!-- no smilies start -->');
-define('BBCODE_NOSMILIES_END', '<!-- no smilies end -->');
-define('BBCODE_SMILIES_PATH', $smileys_path);
-define('AUTOURL', time());
-
 // To use this file outside Icy Phoenix you need to comment the define below and remove the check on top of the file.
 define('IS_ICYPHOENIX', true);
 if(defined('IS_ICYPHOENIX'))
@@ -161,6 +145,24 @@ $urls_local = array(
 	'http://www.' . $config['server_name'] . $config['script_path'],
 	'http://' . $config['server_name'] . $config['script_path']
 );
+
+if (function_exists('create_server_url'))
+{
+	$server_url = create_server_url();
+}
+else
+{
+	$host = getenv('HTTP_HOST');
+	$host = (!empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (!empty($host) ? $host : $config['server_name']));
+	$server_url = 'http://' . $host . $config['script_path'];
+}
+$smileys_path = $server_url . $config['smilies_path'] . '/';
+
+define('BBCODE_UID_LEN', 10);
+define('BBCODE_NOSMILIES_START', '<!-- no smilies start -->');
+define('BBCODE_NOSMILIES_END', '<!-- no smilies end -->');
+define('BBCODE_SMILIES_PATH', $smileys_path);
+define('AUTOURL', time());
 
 if (function_exists('create_server_url'))
 {
@@ -2205,7 +2207,7 @@ class bbcode
 				$opacity = '100';
 			}
 			$opacity_dec = $opacity / 100;
-			$html = '<div style="display: inline; width: 100%; -moz-opacity: ' . $opacity_dec . '; opacity: ' . $opacity_dec . '; -khtml-opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ');" onmouseout="fade2(this,' . $opacity . ');" onmouseover="fade2(this,100);">';
+			$html = '<div style="display: inline; width: 100%; opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ');" onmouseout="fade2(this,' . $opacity . ');" onmouseover="fade2(this,100);">';
 			return array(
 				'valid' => true,
 				'start' => $html,
@@ -2233,7 +2235,7 @@ class bbcode
 				$opacity = '100';
 			}
 			$opacity_dec = $opacity / 100;
-			$html = '<div style="display: inline; height: 1; -moz-opacity: ' . $opacity_dec . '; opacity: ' . $opacity_dec . '; -khtml-opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ',FinishOpacity=0,Style=1,StartX=0,FinishX=100%);">';
+			$html = '<div style="display: inline; height: 1; opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ',FinishOpacity=0,Style=1,StartX=0,FinishX=100%);">';
 			//$html = '<div style="display:inline;height:1;filter:Alpha(Opacity=' . $opacity . ',FinishOpacity=0,Style=1,StartX=0,FinishX=100%);">';
 			return array(
 				'valid' => true,
@@ -4095,13 +4097,15 @@ if (defined('SMILIES_TABLE'))
 		$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " GROUP BY smile_url ORDER BY smilies_order LIMIT " . $max_smilies;
 		$result = $db->sql_query($sql, 0, 'smileys_');
 
+		$host = extract_current_hostname();
+
 		$orig = array();
 		$repl = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$parsing_template = array(
 				'CODE' => $row['code'],
-				'URL' => 'http://' . $_SERVER['HTTP_HOST'] . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'],
+				'URL' => 'http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'],
 				'DESC' => htmlspecialchars($row['emoticon'])
 			);
 			if (defined('IN_PA_POSTING'))

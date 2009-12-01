@@ -1280,6 +1280,20 @@ CREATE TABLE `phpbb_pa_votes` (
 
 ## --------------------------------------------------------
 
+## `phpbb_plugins`
+
+CREATE TABLE phpbb_plugins (
+	plugin_name VARCHAR(255) NOT NULL DEFAULT '',
+	plugin_dir VARCHAR(255) NOT NULL DEFAULT '',
+	plugin_enabled tinyint(2) NOT NULL DEFAULT 0,
+	PRIMARY KEY (plugin_name)
+);
+
+## `phpbb_plugins`
+
+
+## --------------------------------------------------------
+
 ## `phpbb_posts`
 
 CREATE TABLE `phpbb_posts` (

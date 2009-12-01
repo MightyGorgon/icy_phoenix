@@ -3717,6 +3717,13 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "ajax_shoutbox` ADD `shout_room` VARCHAR(255) NOT NULL DEFAULT ''";
 
+		$sql[] = "CREATE TABLE `" . $table_prefix . "plugins` (
+			plugin_name VARCHAR(255) NOT NULL DEFAULT '',
+			plugin_dir VARCHAR(255) NOT NULL DEFAULT '',
+			plugin_enabled tinyint(2) NOT NULL DEFAULT 0,
+			PRIMARY KEY (plugin_name)
+		)";
+
 		/* Updating from IP 1.3.4.57 */
 		case '1.3.4.57':
 

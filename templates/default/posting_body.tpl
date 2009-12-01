@@ -80,7 +80,7 @@ function attach_rules(forum_id)
 <!-- BEGIN switch_privmsg -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_USERNAME}</b></span></td>
-	<td class="row2"><span class="genmed"><input type="text" class="post" name="username" maxlength="25" size="25" tabindex="1" value="{USERNAME}" {S_AJAX_PM_USER_CHECK} /><span id="pm_username_select">&nbsp;</span>&nbsp;<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=200,resizable=yes');return false;" /></span></td>
+	<td class="row2"><span class="genmed"><input type="text" class="post" name="username" maxlength="25" size="25" tabindex="1" value="{USERNAME}" {S_AJAX_PM_USER_CHECK} /><span id="pm_username_select">&nbsp;</span>&nbsp;<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}', '_search', 'width=400,height=200,resizable=yes'); return false;" /></span></td>
 </tr>
 <tr id="pm_username_error_tbl" style="display: none;">
 	<td class="row1">&nbsp;</td>

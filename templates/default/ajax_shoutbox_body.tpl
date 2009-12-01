@@ -1,3 +1,7 @@
+<!-- IF S_POPUP -->
+<!-- INCLUDE simple_header.tpl -->
+<!-- ENDIF -->
+
 <!-- INCLUDE ajax_shoutbox_js.tpl -->
 
 <!-- BEGIN view_shoutbox -->
@@ -78,3 +82,7 @@
 </div>
 <!-- <div id="s1"></div> -->
 <!-- END view_shoutbox -->
+
+<!-- IF S_POPUP -->
+<!-- INCLUDE simple_footer.tpl -->
+<!-- ENDIF -->

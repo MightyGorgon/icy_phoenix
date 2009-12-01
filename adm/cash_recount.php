@@ -24,6 +24,11 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
+if (empty($config['plugins']['cash']['enabled']))
+{
+	message_die(GENERAL_MESSAGE, 'PLUGIN_DISABLED');
+}
+
 if (isset($_POST['cancel']) || empty($_POST['confirm']))
 {
 	message_die(GENERAL_MESSAGE, '<br />' . sprintf($lang['Click_return_cash_reset'], '<a href="' . append_sid('cash_reset.' . PHP_EXT) . '">', '</a>') . '<br /><br />');

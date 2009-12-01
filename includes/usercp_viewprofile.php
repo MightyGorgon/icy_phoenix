@@ -395,9 +395,9 @@ $flag = (!empty($profiledata['user_from_flag'])) ? '<img src="images/flags/' . $
 $location .= '&nbsp;' . $flag ;
 
 // Activity - BEGIN
-if (defined('ACTIVITY_PLUGIN_ENABLED') && ACTIVITY_PLUGIN_ENABLED)
+if (!empty($config['plugins']['activity']['enabled']))
 {
-	include_once(IP_ROOT_PATH . ACTIVITY_PLUGIN_PATH . 'common.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'common.' . PHP_EXT);
 	unset($trophy_count, $trophy_holder, $trophy);
 	if (($config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
 	{
@@ -465,7 +465,7 @@ else
 display_upload_attach_box_limits($profiledata['user_id']);
 
 // Mighty Gorgon - Feedbacks - BEGIN
-if (defined('FEEDBACKS_PLUGIN_ENABLED') && FEEDBACKS_PLUGIN_ENABLED)
+if (!empty($config['plugins']['feedbacks']['enabled']))
 {
 	define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
 	include_once(MG_ROOT_PATH . 'includes/functions_feedbacks.' . PHP_EXT);
@@ -555,7 +555,7 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yim_img,
 	'YIM' => $yim,
 	'U_YIM' => $yim_url,
-	'U_AJAX_SHOUTBOX_PVT_LINK' => ($userdata['session_logged_in'] ? append_sid(CMS_PAGE_AJAX_CHAT . '?chat_room=' . (min($userdata['user_id'], $profiledata['user_id']) . '|' . max($userdata['user_id'], $profiledata['user_id']))) : '#'),
+	'U_AJAX_SHOUTBOX_PVT_LINK' => ($userdata['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($userdata['user_id'], $profiledata['user_id']) . '|' . max($userdata['user_id'], $profiledata['user_id']))) : '#'),
 
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,
@@ -1042,7 +1042,7 @@ $template->assign_vars(array(
 //End Quick Administrator User Options and Information MOD
 include(IP_ROOT_PATH . 'includes/bb_usage_stats.' . PHP_EXT);
 // MG Cash MOD For IP - BEGIN
-if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+if (!empty($config['plugins']['cash']['enabled']))
 {
 	$cm_viewprofile->post_vars($template, $profiledata, $userdata);
 }

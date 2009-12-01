@@ -20,6 +20,7 @@ $acp_icon['1100_General'] = '../images/menu/acp.png';
 $acp_icon['1200_Forums'] = '../images/menu/edit.png';
 $acp_icon['1300_Extreme_Styles'] = '../images/menu/palette.png';
 $acp_icon['1400_DB_Maintenance'] = '../images/menu/db_status.png';
+$acp_icon['1500_Plugins'] = '../images/menu/main.png';
 $acp_icon['1600_News_Admin'] = '../images/menu/newspaper.png';
 $acp_icon['1610_Users'] = '../images/menu/users.png';
 $acp_icon['1620_Groups'] = '../images/menu/group.png';

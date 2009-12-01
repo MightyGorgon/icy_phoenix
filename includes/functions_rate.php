@@ -202,7 +202,7 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 		$result = $db->sql_query($sql);
 
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$message .= '<br />' . $GLOBALS['cm_posting']->cash_update_thanks($topic_starter_check['topic_poster']);
 		}

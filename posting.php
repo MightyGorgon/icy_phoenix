@@ -331,7 +331,7 @@ switch ($mode)
 
 		$cash_sql = '';
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$cash_sql = ', t.topic_poster';
 		}
@@ -354,7 +354,7 @@ switch ($mode)
 		}
 
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$temp = $submit;
 			$submit = !(!$submit || (isset($config['cash_disable']) && !$config['cash_disable'] && (($mode == 'editpost') || ($mode == 'delete'))));
@@ -365,7 +365,7 @@ switch ($mode)
 		$from_sql = (!$submit) ? ", " . USERS_TABLE . " u" : '';
 		$where_sql = (!$submit) ? "AND u.user_id = p.poster_id" : '';
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$submit = $temp;
 			unset($temp);
@@ -455,7 +455,7 @@ if ($result && $post_info)
 		$topic_id = $post_info['topic_id'];
 		$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$post_data['post_text'] = (($mode == 'editpost') || ($mode == 'delete')) ? $post_info['post_text'] : '';
 		}
@@ -569,7 +569,7 @@ if ($result && $post_info)
 		}
 
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$post_data['topic_poster'] = ($mode == 'reply') ? $post_info['topic_poster'] : 0;
 		}
@@ -884,7 +884,7 @@ elseif ($mode == 'thank')
 		$result = $db->sql_query($sql);
 		$message = $lang['thanks_add'];
 		// MG Cash MOD For IP - BEGIN
-		if (defined('CASH_PLUGIN_ENABLED') && CASH_PLUGIN_ENABLED)
+		if (!empty($config['plugins']['cash']['enabled']))
 		{
 			$message .= '<br />' . $GLOBALS['cm_posting']->cash_update_thanks($topic_starter_check['topic_poster']);
 		}

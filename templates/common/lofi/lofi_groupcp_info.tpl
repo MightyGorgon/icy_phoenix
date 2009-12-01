@@ -105,7 +105,7 @@
 				<span class="genmed">
 					<input type="text"  class="post" name="username" maxlength="50" size="20" />&nbsp;
 					<input type="submit" name="add" value="{L_ADD_MEMBER}" class="mainoption" />&nbsp;
-					<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');return false;" />
+					<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}', '_search', 'width=400,height=250,resizable=yes');return false;" />
 				</span>
 				<br /><br />
 				<!-- END switch_mod_option -->

@@ -10,7 +10,7 @@
 	<td class="row2" style="width:350px;">
 		<input class="post" type="text" class="post" name="username" value="{username_row.USERNAME}" maxlength="50" size="20" />
 		<input type="hidden" name="mode" value="edit" />
-		<input type="button" name="usersubmit" value="{username_row.L_FIND_USERNAME}" class="liteoption" onclick="window.open('{username_row.U_SEARCH_USER}','_phpbbsearch','width=400,height=250,resizable=yes');" />
+		<input type="button" name="usersubmit" value="{username_row.L_FIND_USERNAME}" class="liteoption" onclick="window.open('{username_row.U_SEARCH_USER}', '_search', 'width=400,height=250,resizable=yes');" />
 	</td>
 </tr>
 <!-- END username_row -->

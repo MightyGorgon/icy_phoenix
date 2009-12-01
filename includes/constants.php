@@ -64,6 +64,7 @@ define('UPI2DB_MAX_UNREAD_POSTS', 2500); // Maximum amount of stored unread mess
 define('UPI2DB_RESYNC_TIME', 30); // Seconds needed to refresh UPI2DB data...
 
 // Mighty Gorgon - Constants Pages And Paths - BEGIN
+// Pages
 define('CMS_PAGE_CMS', 'cms.' . PHP_EXT);
 define('CMS_PAGE_LOGIN', 'login_ip.' . PHP_EXT);
 define('CMS_PAGE_HOME', 'index.' . PHP_EXT);
@@ -95,17 +96,7 @@ define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
 define('CMS_PAGE_CONTACT_US', 'contact_us.' . PHP_EXT);
 define('CMS_PAGE_CREDITS', 'credits.' . PHP_EXT);
 define('CMS_PAGE_TAGS', 'tags.' . PHP_EXT);
-// OLD DEFAULT PAGES - BEGIN
-// Left here for backward compatibility... few constants won't waste too much memory!!!
-define('LOGIN_MG', CMS_PAGE_LOGIN);
-define('PORTAL_MG', CMS_PAGE_HOME);
-define('FORUM_MG', CMS_PAGE_FORUM);
-define('VIEWFORUM_MG', CMS_PAGE_VIEWFORUM);
-define('VIEWTOPIC_MG', CMS_PAGE_VIEWTOPIC);
-define('PROFILE_MG', CMS_PAGE_PROFILE);
-define('POSTING_MG', CMS_PAGE_POSTING);
-define('SEARCH_MG', CMS_PAGE_SEARCH);
-// OLD DEFAULT PAGES - END
+// Paths
 define('ADM', 'adm');
 define('COMMON_TPL', '../common/');
 define('ADM_TPL', COMMON_TPL . 'acp/');
@@ -126,6 +117,7 @@ define('POSTS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'posts/');
 define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
 define('TOPICS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'topics/');
 define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
+define('PLUGINS_PATH', 'plugins/');
 define('BACKUP_PATH', 'backup/');
 define('TPL_EXTENSION', 'tpl');
 define('UPI2DB_PATH', IP_ROOT_PATH . 'includes/upi2db/');
@@ -140,22 +132,6 @@ define('ALBUM_FILES_PATH', 'files/album/');
 //define('ALBUM_FILES_PATH', 'album_mod/upload/');
 include_once(ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
 // Mighty Gorgon - FAP - END
-
-// Mighty Gorgon - PLUGINS - BEGIN
-// Please note that you need to have these plugins downloaded and installed to make them work... do not enable them if you don't have the files, or you may have errors.
-define('PLUGINS_PATH', 'plugins/');
-// Downloads
-define('DL_PLUGIN_ENABLED', false); // Allowed values => true / false
-define('DL_PLUGIN_PATH', PLUGINS_PATH . 'downloads/');
-// Knowledge Base
-define('KB_PLUGIN_ENABLED', false); // Allowed values => true / false
-define('KB_PLUGIN_PATH', PLUGINS_PATH . 'kb/');
-// Activity
-define('ACTIVITY_PLUGIN_ENABLED', false); // Allowed values => true / false
-define('ACTIVITY_PLUGIN_PATH', PLUGINS_PATH . 'activity/');
-// Cash
-define('CASH_PLUGIN_ENABLED', false); // Allowed values => true / false
-// Mighty Gorgon - PLUGINS - END
 
 // CHMOD permissions
 @define('CHMOD_ALL', 7);
@@ -421,6 +397,7 @@ define('LOGS_TABLE', $table_prefix . 'logs');
 define('MODULES_TABLE', $table_prefix . 'stats_modules');
 define('NEWS_TABLE', $table_prefix . 'news');
 define('NOTES_ADMIN_TABLE',$table_prefix . 'notes');
+define('PLUGINS_TABLE', $table_prefix . 'plugins');
 define('POSTS_TABLE', $table_prefix . 'posts');
 define('PRIVMSGS_TABLE', $table_prefix . 'privmsgs');
 define('PROFILE_FIELDS_TABLE', $table_prefix . 'profile_fields');
