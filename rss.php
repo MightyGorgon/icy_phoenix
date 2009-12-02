@@ -135,7 +135,7 @@ $sql_forum_where = !empty($forum_id) ? (' AND f.forum_id = ' . $forum_id) : ' ';
 $sql_topic_view = !empty($topic_id) ? (' AND t.topic_id = ' . $topic_id) : '';
 $sql_topics_only_where = ($display == 'topics') ? ' AND p.post_id = t.topic_first_post_id' : '';
 
-$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT'];
+$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
 
 // BEGIN Session management
 // Check user

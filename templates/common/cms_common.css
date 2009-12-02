@@ -95,8 +95,7 @@
 	z-index: 100;
 	background-color: #eafadc;
 	filter: alpha(opacity=90);
-	opacity: .90;
-	-moz-opacity: .90;
+	opacity: 0.90;
 	width: 200px;
 	visibility: hidden;
 }

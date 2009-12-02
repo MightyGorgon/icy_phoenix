@@ -482,12 +482,11 @@ if(($mode == 'blocks'))
 		{
 			if ($b_type == true)
 			{
-				$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
-				//$bbcode->allow_html = true;
+				$preview_message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
 				$bbcode->allow_html = false;
 				$bbcode->allow_bbcode = true;
 				$bbcode->allow_smilies = true;
-				$preview_message = $bbcode->parse($message);
+				$preview_message = $bbcode->parse($preview_message);
 			}
 			else
 			{

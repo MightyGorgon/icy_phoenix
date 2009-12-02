@@ -6,8 +6,6 @@
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
-<!-- INCLUDE ../common/cms/cms_ajax_block_bbcb_mg_js.tpl -->
-
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_01}" title="{L_BLOCKS_PAGE_01}" /></td>

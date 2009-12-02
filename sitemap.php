@@ -49,14 +49,7 @@ if (@file_exists($cache_data_file) && empty($cache_refresh))
 	}
 }
 
-if(strpos($useragent, 'MSIE'))
-{
-	$encoding_charset = $lang['ENCODING'];
-}
-else
-{
-	$encoding_charset = $lang['ENCODING_ALT'];
-}
+$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
 
 // GZip - BEGIN
 $do_gzip_compress = true;

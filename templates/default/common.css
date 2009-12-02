@@ -147,10 +147,10 @@ hr.dashed {
 }
 
 /* IMG Fading - BEGIN */
-.imgfade{-moz-opacity: 0.80; margin-left: 3px;}
-.imgfull{-moz-opacity: 1; margin-left: 3px;}
-.imgfade_nm{-moz-opacity: 0.80;}
-.imgfull_nm{-moz-opacity: 1;}
+.imgfade{opacity: 0.80; margin-left: 3px;}
+.imgfull{opacity: 1; margin-left: 3px;}
+.imgfade_nm{opacity: 0.80;}
+.imgfull_nm{opacity: 1;}
 /* IMG Fading - END */
 
 .extra-top-padding { }

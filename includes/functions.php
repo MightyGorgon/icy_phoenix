@@ -4836,12 +4836,16 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			)
 		);
 
-		$template->pparse('message_body');
+		if (!defined('IN_CMS'))
+		{
+			$template->pparse('message_body');
+		}
 
 		if (!defined('IN_ADMIN'))
 		{
+			$template_to_parse = defined('IN_CMS') ? 'message_body' : '';
 			$parse_template = defined('IN_CMS') ? false : true;
-			page_footer(true, '', $parse_template);
+			page_footer(true, $template_to_parse, $parse_template);
 		}
 		else
 		{

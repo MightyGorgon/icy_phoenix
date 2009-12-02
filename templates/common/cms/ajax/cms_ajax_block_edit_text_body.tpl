@@ -1,3 +1,5 @@
+<!-- INCLUDE ../common/cms/ajax/page_header_ajax.tpl -->
+
 <!-- BEGIN block_preview -->
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 	<tr><td class="row-header"><span>{L_PREVIEW}</span></td></tr>
@@ -26,4 +28,4 @@
 </tr>
 </table>
 
-
+<!-- INCLUDE ../common/cms/ajax/page_footer_ajax.tpl -->

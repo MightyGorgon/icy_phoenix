@@ -322,8 +322,7 @@ class ip_cms
 					if($block_info[$b_counter]['type'] == true)
 					{
 						@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-						$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
-						//$bbcode->allow_html = true;
+						//$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
 						$bbcode->allow_html = false;
 						$bbcode->allow_bbcode = true;
 						$bbcode->allow_smilies = true;

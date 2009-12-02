@@ -384,12 +384,13 @@ class files_management
 	{
 		$tmp_paths = array();
 		$tmp_paths = explode('/', $path);
-		$skip_sub_folder = false;
+		$recursive_path = '';
 		for ($i = 0; $i < sizeof($tmp_paths); $i++)
 		{
-			if (!is_dir($tmp_paths[$i]))
+			$recursive_path = (!empty($recursive_path) ? ($recursive_path . '/') : '') . $tmp_paths[$i];
+			if (!is_dir($recursive_path))
 			{
-				@mkdir($tmp_paths[$i], $chmod);
+				@mkdir($recursive_path, $chmod);
 			}
 		}
 		return true;

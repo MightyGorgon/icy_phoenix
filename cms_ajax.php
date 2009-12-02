@@ -32,6 +32,15 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
 
+// Define constant to keep page_header.php from sending headers
+define('AJAX_HEADERS', true);
+$useragent = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT'));
+$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
+
+// Send AJAX headers - this is to prevent browsers from caching possible error pages
+AJAX_headers();
+header('Content-Type: text/html; charset=' . $encoding_charset);
+
 $mode_array = array('block_config');
 $mode = request_var('mode', '');
 $mode = (in_array($mode, $mode_array) ? $mode : false);
@@ -63,8 +72,15 @@ if ($blockfile == '')
 	{
 		$b_info = get_block_info(CMS_BLOCKS_TABLE, $b_id);
 		$b_type = $b_info['type'];
-		$b_content = htmlentities(stripslashes(trim($b_info['content'])));
-		//$b_content = htmlspecialchars(stripslashes(trim($b_info['content'])));
+		$b_content = stripslashes(trim($b_info['content']));
+		/*
+		$html_find = array('€', '&euro;', '&#8364;');
+		$html_replace = array('&#8364;', '&euro;', '&euro;');
+		$b_content = str_replace($html_find, $html_replace, $b_content);
+		*/
+		$b_content = utf8_encode(htmlspecialchars($b_content));
+		//$b_content = htmlentities($b_content, ENT_COMPAT, $encoding_charset);
+		//$b_content = htmlspecialchars($b_content);
 		//$b_content = $b_info['content'];
 	}
 
