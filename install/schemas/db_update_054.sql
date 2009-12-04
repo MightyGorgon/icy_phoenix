@@ -96,7 +96,8 @@ CREATE TABLE `phpbb_topics_tags_match` (
 INSERT INTO `phpbb_config`
 SELECT x.config_name, x.config_value
 FROM `phpbb_xs_news_cfg` x;
-RENAME TABLE `phpbb_xs_news_cfg` TO `_old_phpbb_xs_news_cfg`";
+
+RENAME TABLE `phpbb_xs_news_cfg` TO `_old_phpbb_xs_news_cfg`;
 
 ALTER TABLE `phpbb_ina_scores` ADD `user_plays` int(6) default '0' AFTER `score`;
 ALTER TABLE `phpbb_ina_scores` ADD `play_time` int(11) default '0' AFTER `user_plays`;
@@ -186,4 +187,4 @@ UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = '
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.3.3.56' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.5.58' WHERE config_name = 'ip_version';

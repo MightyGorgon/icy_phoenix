@@ -127,7 +127,10 @@ if ($mode == 'view')
 	//<!-- BEGIN Unread Post Information to Database Mod -->
 	if($userdata['upi2db_access'])
 	{
-		$unread = unread();
+		if (empty($unread))
+		{
+			$unread = unread();
+		}
 		$count_new_posts = sizeof($unread['new_posts']);
 		$count_edit_posts = sizeof($unread['edit_posts']);
 		$count_always_read = sizeof($unread['always_read']['topics']);

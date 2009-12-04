@@ -136,7 +136,7 @@ if(!function_exists(unread))
 {
 	function unread()
 	{
-		global $config, $userdata, $db;
+		global $db, $cache, $config, $userdata;
 
 		if(!$userdata['session_logged_in'])
 		{
@@ -439,7 +439,7 @@ if(!function_exists(mark_post_viewtopic))
 	{
 		global $config, $userdata, $lang, $images;
 
-		if(!in_array($forum_id, $unread['always_read']['forums']) && !in_array($topic_id, $unread['always_read']['topics']) && $post_time_max > $except_time)
+		if(is_array($unread['always_read']['forums']) && !in_array($forum_id, $unread['always_read']['forums']) && !in_array($topic_id, $unread['always_read']['topics']) && ($post_time_max > $except_time))
 		{
 			$mark_topic_unread_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;tt=' . $topic_type . '&amp;do=mark_unread');
 			$mark_topic_unread = '<a href="' . $mark_topic_unread_url . '"><img src="' . $images['unread_img'] . '" alt="' . $lang['upi2db_mark_post_unread'] . '" title="' . $lang['upi2db_mark_post_unread'] . '" /></a>';
@@ -568,7 +568,7 @@ if(!function_exists(viewtopic_calc_unread))
 	{
 		global $config, $userdata, $lang, $images;
 
-		if ((in_array($post_id, $unread['edit_posts']) || in_array($post_id, $unread['new_posts']) || in_array($post_id, $unread['mark_posts'])) && !in_array($forum_id, $unread['always_read']['forums']))
+		if (is_array($unread['always_read']['forums']) && (in_array($post_id, $unread['edit_posts']) || in_array($post_id, $unread['new_posts']) || in_array($post_id, $unread['mark_posts'])) && !in_array($forum_id, $unread['always_read']['forums']))
 		{
 			$mini_post_img = $images['icon_minipost_new'];
 			$mini_post_alt = $lang['New_post'];

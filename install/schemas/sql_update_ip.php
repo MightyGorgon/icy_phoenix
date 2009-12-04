@@ -59,6 +59,7 @@ switch ($req_version)
 	case '13356': $current_ip_version = '1.3.3.56'; break;
 	case '13457': $current_ip_version = '1.3.4.57'; break;
 	case '13558': $current_ip_version = '1.3.5.58'; break;
+	case '13659': $current_ip_version = '1.3.6.59'; break;
 }
 
 // Icy Phoenix Part...
@@ -3729,6 +3730,9 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.5.58 */
 		case '1.3.5.58':
+
+		/* Updating from IP 1.3.6.59 */
+		case '1.3.6.59':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

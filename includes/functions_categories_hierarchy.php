@@ -387,11 +387,15 @@ function read_tree($force = false)
 {
 
 	global $db, $config, $userdata, $tree;
+	global $unread;
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if($userdata['upi2db_access'])
 	{
-		$unread = unread();
+		if (empty($unread))
+		{
+			$unread = unread();
+		}
 	}
 //<!-- END Unread Post Information to Database Mod -->
 
@@ -406,6 +410,10 @@ function read_tree($force = false)
 	{
 		$cache_included = false;
 		$cache_file = MAIN_CACHE_FOLDER . CACHE_TREE_FILE;
+		if (!file_exists($cache_file))
+		{
+			cache_tree(true);
+		}
 		@include($cache_file);
 		if (!$cache_included || empty($tree) || $force)
 		{
@@ -1216,7 +1224,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 				if(!$data['tree.unread_topics'] && !$sub)
 				{
-					if(!in_array($forum_id, $unread['always_read']['forums']) && is_array($unread['always_read']['forums']))
+					if(is_array($unread['always_read']['forums']) && !in_array($forum_id, $unread['always_read']['forums']))
 					{
 						$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . '&amp;always_read=set') . '"><img src="' . $folder_image . '" alt="' . $lang['upi2db_always_read_forum']. '" title="' . $lang['upi2db_always_read_forum'] . '" /></a>';
 					}

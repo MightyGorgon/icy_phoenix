@@ -84,7 +84,10 @@ if($userdata['upi2db_access'])
 		}
 	}
 
-	$unread = unread();
+	if (empty($unread))
+	{
+		$unread = unread();
+	}
 
 	if($always_read || $do || ($mar && !empty($mar_topic_id)))
 	{

@@ -464,8 +464,9 @@ function ip_utf8_decode($string)
 // Initialise user settings on page load
 function init_userprefs($userdata)
 {
-	global $cache, $db, $template, $theme, $images, $lang, $config, $nav_separator;
+	global $db, $cache, $template, $theme, $images, $lang, $config, $nav_separator;
 	global $tree;
+	global $unread;
 
 	// Get all the mods settings
 	setup_mods();
@@ -588,6 +589,17 @@ function init_userprefs($userdata)
 	}
 
 	$theme = setup_style($config['default_style'], $current_default_style);
+
+	//<!-- BEGIN Unread Post Information to Database Mod -->
+	$unread = array();
+	if (!defined('IN_CMS') && $userdata['upi2db_access'])
+	{
+		if (empty($unread))
+		{
+			$unread = unread();
+		}
+	}
+	//<!-- END Unread Post Information to Database Mod -->
 
 	return;
 }
@@ -2209,7 +2221,7 @@ function checkFlag($flags, $flag)
 //--------------------------------------------------------------------------------------------------
 function board_stats()
 {
-	global $db, $config;
+	global $db, $cache, $config;
 
 	$config_updated = false;
 	// max users
@@ -3011,6 +3023,8 @@ function page_header($title = '', $parse_template = false)
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $css_include, $css_style_include, $js_include;
+	global $forum_id, $topic_id;
+	global $unread;
 
 	if (defined('HEADER_INC'))
 	{
@@ -3453,7 +3467,6 @@ function page_header($title = '', $parse_template = false)
 		$u_display_new = array();
 		if($userdata['upi2db_access'])
 		{
-			$unread = unread();
 			$u_display_new = index_display_new($unread);
 			$template->assign_block_vars('switch_upi2db_on', array());
 			$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? ('<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n" . 'alert ("' . $lang['upi2db_first_use_txt'] . '");' . "\n" . '// ]]>' . "\n" . '</script>') : '';
@@ -3697,10 +3710,6 @@ function page_header($title = '', $parse_template = false)
 			'AC_LIST' => $ac_username_lists,
 			'RECORD_USERS' => sprintf($lang['Record_online_users'], $config['record_online_users'], create_date($config['default_dateformat'], $config['record_online_date'], $config['board_timezone'])),
 
-		//<!-- BEGIN Unread Post Information to Database Mod -->
-			'UPI2DB_FIRST_USE' => $upi2db_first_use,
-		//<!-- END Unread Post Information to Database Mod -->
-
 			'TOP_HTML_BLOCK' => $top_html_block_text,
 			'HEADER_BANNER_CODE' => $header_banner_text,
 			'NAV_MENU_ADS_TOP' => $nav_menu_ads_top,
@@ -3826,6 +3835,10 @@ function page_header($title = '', $parse_template = false)
 		'NAV_LINKS' => $nav_links_html,
 
 		'U_LOGIN_LOGOUT' => append_sid(IP_ROOT_PATH . $u_login_logout),
+
+		//<!-- BEGIN Unread Post Information to Database Mod -->
+		'UPI2DB_FIRST_USE' => $upi2db_first_use,
+		//<!-- END Unread Post Information to Database Mod -->
 
 		'L_PAGE_TITLE' => $meta_content['page_title_clean'],
 		'PAGE_TITLE' => ($config['page_title_simple'] ? $meta_content['page_title_clean'] : $meta_content['page_title']),
@@ -4076,6 +4089,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $css_include, $css_style_include, $js_include;
 	global $cms_acp_url;
+	global $unread;
 
 	if (!defined('IN_CMS'))
 	{

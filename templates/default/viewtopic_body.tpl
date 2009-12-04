@@ -21,7 +21,7 @@ function post_time_edit(url)
 <tr>
 	<td align="left" valign="bottom">
 		<div class="topic-title-hide-flow-header"><h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2></div><br />
-		<!-- IF S_TOPIC_TAGS -->
+		<!-- IF S_TOPIC_TAGS and TOPIC_TAGS -->
 		<div><span class="gensmall"><b>{L_TOPIC_TAGS}</b>:&nbsp;{TOPIC_TAGS}</span></div><br />
 		<!-- ENDIF -->
 		<!-- IF not S_BOT -->
