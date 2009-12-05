@@ -125,13 +125,7 @@ else
 				" . $sql_news . "
 		ORDER BY " . $sql_sort . "
 		LIMIT " . $news_items;
-	$db->sql_return_on_error(true);
 	$result = ($news_recent ? $db->sql_query($sql, 0, 'posts_flash_', POSTS_CACHE_FOLDER) : $db->sql_query($sql));
-	$db->sql_return_on_error(false);
-	if (!$result)
-	{
-		die('Error');
-	}
 
 	$xml_content = '';
 	while($row = $db->sql_fetchrow($result))
