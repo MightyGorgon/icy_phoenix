@@ -1085,7 +1085,7 @@ if($total_topics)
 			if ($userdata['session_logged_in'] && !$userdata['is_bot'])
 			{
 				$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
-						WHERE topic_id = $topic_id
+						WHERE topic_id = " . $topic_id . "
 						AND registration_user_id = " . $userdata['user_id'];
 				$result = $db->sql_query($sql);
 
@@ -1094,15 +1094,15 @@ if($total_topics)
 					$status = $regrow['registration_status'];
 					if ($status == REG_OPTION1)
 					{
-						$reg_user_own_reg .= '<span class="text_green">&bull;</span>';
+						$reg_user_own_reg = '<span class="text_green">&bull;</span>';
 					}
 					elseif ($status == REG_OPTION2)
 					{
-						$reg_user_own_reg .= '<span class="text_blue">&bull;</span>';
+						$reg_user_own_reg = '<span class="text_blue">&bull;</span>';
 					}
 					elseif ($status == REG_OPTION3)
 					{
-						$reg_user_own_reg .= '<span class="text_red">&bull;</span>';
+						$reg_user_own_reg = '<span class="text_red">&bull;</span>';
 					}
 				}
 
