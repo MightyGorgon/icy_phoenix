@@ -42,9 +42,11 @@ else
 	message_die(GENERAL_MESSAGE, 'No pics specified');
 }
 
+// I have prefixed an underscore to the image thumbnail name because this thumb should remain small and it is not using the mid size like the standard posted_img_thumbnail
+// Without that prefix thumbnails with different size will get mixed
 $pic_filename = $tmp_split[1];
 $pic_fullpath = POSTED_IMAGES_PATH . $pic_user_id . '/' . $pic_filename;
-$pic_thumbnail = 'thumb_' . $pic_filename;
+$pic_thumbnail = '_thumb_' . $pic_filename;
 $pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $pic_thumbnail;
 $file_part = explode('.', strtolower($pic_filename));
 $pic_filetype = $file_part[sizeof($file_part) - 1];
@@ -56,7 +58,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 	$pic_thumbnail_path = POSTED_IMAGES_THUMBS_PATH . $pic_user_id . '/';
 	if (is_dir($pic_thumbnail_path))
 	{
-		$pic_thumbnail = $pic_filename;
+		$pic_thumbnail = '_' . $pic_filename;
 		$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
 	}
 	else
@@ -64,7 +66,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 		$dir_creation = @mkdir($pic_thumbnail_path, 0777);
 		if ($dir_creation == true)
 		{
-			$pic_thumbnail = $pic_filename;
+			$pic_thumbnail = '_' . $pic_filename;
 			$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
 		}
 	}
