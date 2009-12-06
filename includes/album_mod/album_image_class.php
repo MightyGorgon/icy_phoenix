@@ -173,7 +173,7 @@ class ImgObj
 		}
 		header('Content-type: ' . $this->ImageMimeType());
 		header('Content-Length: ' . $this->ImageFilesize());
-		header('Content-Disposition: filename=' . $pic_prefix . preg_replace('/[^A-Za-z0-9]*/', '_', $pic_name) . $pic_suffix . '.' . $pic_filetype);
+		header('Content-Disposition: filename=' . $pic_prefix . preg_replace('/[^A-Za-z0-9]+/', '_', $pic_name) . $pic_suffix . '.' . $pic_filetype);
 		switch ($this->ImageTypeNo()){
 			case IMG_GIF:
 				imagegif($this->ImageID);
@@ -209,7 +209,7 @@ class ImgObj
 			return false;
 		}
 		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_prefix . preg_replace('/[^A-Za-z0-9]*/', '_', $pic_name) . $pic_suffix . '.' . $pic_filetype);
+		header('Content-Disposition: filename=' . $pic_prefix . preg_replace('/[^A-Za-z0-9]+/', '_', $pic_name) . $pic_suffix . '.' . $pic_filetype);
 		if ($jpg_quality == false)
 		{
 			imagejpeg($this->ImageID);

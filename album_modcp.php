@@ -935,7 +935,7 @@ else
 				$pic_new_filename = $pic_extra_path . $pic_filename;
 				$pic_fullpath = $pic_base_path . $pic_new_filename;
 				$pic_title = $picrow[$i]['pic_title'];
-				$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
+				$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 				$pic_thumbnail = '';
 
 				if (USERS_SUBFOLDERS_ALBUM == true)

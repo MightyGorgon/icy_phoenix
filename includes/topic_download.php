@@ -89,7 +89,7 @@ if (!$is_auth_read['auth_read'])
 	$disp_folder = 'Download';
 }
 
-$filename = $config['sitename'] . '_' . (preg_replace('/[^A-Za-z0-9]*/', '_', $post_subject)) . '_' . $disp_folder . '_' . gmdate('Ymd') . '.txt';
+$filename = $config['sitename'] . '_' . (preg_replace('/[^A-Za-z0-9]+/', '_', $post_subject)) . '_' . $disp_folder . '_' . gmdate('Ymd') . '.txt';
 header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 header('Content-Disposition: attachment;filename="' . $filename . '"');
 header('Content-Transfer-Encoding: plain/text');

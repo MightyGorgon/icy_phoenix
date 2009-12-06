@@ -992,7 +992,7 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 			$pic_info['thumbnail_new_' . $cp . '_f_fullpath'] = $pic_info['base_t_' . $cp . '_path'] . 'full_' . $pic_info['thumbnail_new'];
 		}
 	}
-	$pic_info['title_reg'] = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_info['title']);
+	$pic_info['title_reg'] = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_info['title']);
 
 	if (USERS_SUBFOLDERS_ALBUM == true)
 	{

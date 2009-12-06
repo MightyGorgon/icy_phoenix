@@ -730,7 +730,7 @@ class bbcode
 						$user_dir = '';
 						$users_images_path = str_replace('http://', '', str_replace('https://', '', $server_url . str_replace(IP_ROOT_PATH, '', POSTED_IMAGES_PATH)));
 						$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-						$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
+						$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 						$pic_thumbnail = 'mid_' . md5($pic_id) . '_' . $pic_filename;
 						if (strpos($pic_id, $users_images_path) !== false)
 						{

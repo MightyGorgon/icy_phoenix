@@ -1049,7 +1049,7 @@ elseif ($download && $mark_list)
 			$i++;
 		}
 		$filename = $config['sitename'] . '_' . $disp_folder . '_' . gmdate('Ymd');
-		$filename = preg_replace('/[^A-Za-z0-9]*/', '_', strtolower($filename)) . '.txt';
+		$filename = preg_replace('/[^A-Za-z0-9]+/', '_', strtolower($filename)) . '.txt';
 		header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 		header('Content-Disposition: attachment;filename=' . $filename);
 		header('Content-Transfer-Encoding: plain/text');

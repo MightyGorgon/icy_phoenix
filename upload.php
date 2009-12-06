@@ -55,11 +55,11 @@ if(isset($_FILES['userfile']))
 
 	if ($userdata['user_id'] < 0)
 	{
-		$filename = 'guest_' . preg_replace('/[^a-z0-9]*/', '_', $filename);
+		$filename = 'guest_' . preg_replace('/[^a-z0-9]+/', '_', $filename);
 	}
 	else
 	{
-		$filename = preg_replace('/[^a-z0-9]*/', '_', $filename);
+		$filename = preg_replace('/[^a-z0-9]+/', '_', $filename);
 		if (USERS_SUBFOLDERS_IMG == true)
 		{
 			if (is_dir($upload_dir . $userdata['user_id']))

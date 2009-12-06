@@ -1737,7 +1737,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 	elseif($action == 'save')
 	{
 		$l_name = (isset($_POST['name'])) ? trim($_POST['name']) : '';
-		$l_page_id = (isset($_POST['page_id']) ? (preg_replace('/[^A-Za-z0-9_]*/', '', strtolower(htmlspecialchars(trim($_POST['page_id']))))) : '');
+		$l_page_id = (isset($_POST['page_id']) ? (preg_replace('/[^A-Za-z0-9_]+/', '', strtolower(htmlspecialchars(trim($_POST['page_id']))))) : '');
 		$l_locked = (isset($_POST['locked'])) ? intval($_POST['locked']) : 0;
 		$l_filename = (isset($_POST['filename'])) ? htmlspecialchars(trim($_POST['filename'])) : '';
 		$l_filename_old = (isset($_POST['filename_old'])) ? htmlspecialchars(trim($_POST['filename_old'])) : '';
@@ -1791,7 +1791,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 
 					if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
 					{
-						$l_filename = preg_replace('/[^A-Za-z0-9_]*/', '', substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
+						$l_filename = preg_replace('/[^A-Za-z0-9_]+/', '', substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
 						if (file_exists($l_filename))
 						{
 							message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);
@@ -1902,7 +1902,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				}
 				if (substr($l_filename, strlen($l_filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT))
 				{
-					$l_filename = preg_replace('/[^A-Za-z0-9_]*/', '', substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
+					$l_filename = preg_replace('/[^A-Za-z0-9_]+/', '', substr(strtolower($l_filename), 0, strlen($l_filename) - (strlen(PHP_EXT) + 1))) . ('.' . PHP_EXT);
 					if (file_exists($l_filename))
 					{
 						message_die(GENERAL_MESSAGE, $lang['CMS_FileAlreadyExists']);

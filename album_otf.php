@@ -154,7 +154,7 @@ $s_categories .= '</select>';
 
 $s_colspan = 0;
 
-$pic_cat_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_cat);
+$pic_cat_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_cat);
 $js_include = '';
 $js_images_list = '';
 /*

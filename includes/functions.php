@@ -824,7 +824,7 @@ function phpbb_clean_username($username)
 */
 function ip_clean_username($username)
 {
-	$username = preg_replace('/[^A-Za-z0-9&\-_]*/', '', trim($username));
+	$username = preg_replace('/[^A-Za-z0-9&\-_]+/', '', trim($username));
 	return $username;
 }
 

@@ -69,8 +69,8 @@ if ($view == 'username')
 }
 else if ($view == 'attachments')
 {
-	$mode_types_text = array($lang['Sort_Filename'], $lang['Sort_Comment'], $lang['Sort_Extension'], $lang['Sort_Size'], $lang['Sort_Downloads'], $lang['Sort_Posttime'], /*$lang['Sort_Posts']*/);
-	$mode_types = array('real_filename', 'comment', 'extension', 'filesize', 'downloads', 'post_time'/*, 'posts'*/);
+	$mode_types_text = array($lang['Sort_Filename'], $lang['Sort_Comment'], $lang['Sort_Extension'], $lang['Sort_Size'], $lang['Sort_Downloads'], $lang['Sort_Posttime'], /* $lang['Sort_Posts'] */);
+	$mode_types = array('real_filename', 'comment', 'extension', 'filesize', 'downloads', 'post_time' /* , 'posts' */);
 
 	if (!$mode)
 	{
@@ -80,8 +80,8 @@ else if ($view == 'attachments')
 }
 else if ($view == 'search')
 {
-	$mode_types_text = array($lang['Sort_Filename'], $lang['Sort_Comment'], $lang['Sort_Extension'], $lang['Sort_Size'], $lang['Sort_Downloads'], $lang['Sort_Posttime'], /*$lang['Sort_Posts']*/);
-	$mode_types = array('real_filename', 'comment', 'extension', 'filesize', 'downloads', 'post_time'/*, 'posts'*/);
+	$mode_types_text = array($lang['Sort_Filename'], $lang['Sort_Comment'], $lang['Sort_Extension'], $lang['Sort_Size'], $lang['Sort_Downloads'], $lang['Sort_Posttime'], /* $lang['Sort_Posts'] */);
+	$mode_types = array('real_filename', 'comment', 'extension', 'filesize', 'downloads', 'post_time' /* , 'posts'*/);
 
 	$sort_order = 'DESC';
 }

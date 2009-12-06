@@ -49,7 +49,7 @@ $pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $pic_thumbnail;
 $file_part = explode('.', strtolower($pic_filename));
 $pic_filetype = $file_part[sizeof($file_part) - 1];
 $pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
+$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 
 if (USERS_SUBFOLDERS_IMG == true)
 {

@@ -37,7 +37,7 @@ if (!empty($_POST['act']) || !empty($_GET['act']))
 if (!defined('AJAX_CHAT_ROOM'))
 {
 	$chat_room = request_var('chat_room', '');
-	$chat_room = preg_replace('/[^0-9|]*/', '', trim($chat_room));
+	$chat_room = preg_replace('/[^0-9|]+/', '', trim($chat_room));
 	$chat_room_users = array();
 	$chat_room_users = explode('|', $chat_room);
 	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";

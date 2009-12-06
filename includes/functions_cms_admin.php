@@ -783,7 +783,7 @@ function create_cms_field($config_array)
 			$i = 0;
 			while ($options[$i])
 			{
-				$tmp_option_val = preg_replace('/[^A-Za-z0-9]*/', '_', $options[$i]);
+				$tmp_option_val = preg_replace('/[^A-Za-z0-9]+/', '_', $options[$i]);
 				$options[$i] = !empty($lang['cms_option_' . $tmp_option_val]) ? $lang['cms_option_' . $tmp_option_val] : $options[$i];
 				$values[$i] = !empty($lang['cms_value_' . $tmp_option_val]) ? $lang['cms_value_' . $tmp_option_val] : $values[$i];
 				$selected = ($cms_field[$config_array['config_name']]['value'] == trim($values[$i])) ? 'selected' : '';
@@ -799,7 +799,7 @@ function create_cms_field($config_array)
 			$i = 0;
 			while ($options[$i])
 			{
-				$tmp_option_val = preg_replace('/[^A-Za-z0-9]*/', '_', $options[$i]);
+				$tmp_option_val = preg_replace('/[^A-Za-z0-9]+/', '_', $options[$i]);
 				$options[$i] = !empty($lang['cms_option_' . $tmp_option_val]) ? $lang['cms_option_' . $tmp_option_val] : $options[$i];
 				$values[$i] = !empty($lang['cms_value_' . $tmp_option_val]) ? $lang['cms_value_' . $tmp_option_val] : $values[$i];
 				$checked = ($cms_field[$config_array['config_name']]['value'] == trim($values[$i])) ? 'checked="checked"' : '';

@@ -79,13 +79,13 @@ if (!in_array($pic_filetype, $thumb_ext_array))
 	$pic_filetype = strtolower($pic_size['type']);
 
 	$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-	$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
+	$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 	$pic_thumbnail = $pic_thumbnail_prefix . '.' . $pic_filetype;
 }
 else
 {
 	$pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
-	$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
+	$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 	$pic_thumbnail = $pic_thumbnail_prefix . '_' . $pic_filename;
 }
 

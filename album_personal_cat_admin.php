@@ -666,7 +666,7 @@ else
 					$pic_new_filename = $pic_extra_path . $pic_filename;
 					$pic_fullpath = $pic_base_path . $pic_new_filename;
 					$pic_title = $picrow[$i]['pic_title'];
-					$pic_title_reg = preg_replace('/[^A-Za-z0-9]*/', '_', $pic_title);
+					$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 					$pic_thumbnail = $picrow[$i]['pic_thumbnail'];
 					$pic_thumbnail_fullpath = IP_ROOT_PATH . ALBUM_CACHE_PATH . $pic_thumbnail;
 

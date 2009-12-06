@@ -56,7 +56,7 @@ if ($result !== false)
 {
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$exclude_list .= (($exclude_list != '') ? ', ' : '') . "'" . trim(preg_replace('/[^A-Za-z0-9]*/', '', $row['code'])) . "'";
+		$exclude_list .= (($exclude_list != '') ? ', ' : '') . "'" . trim(preg_replace('/[^A-Za-z0-9]+/', '', $row['code'])) . "'";
 	}
 	$db->sql_freeresult($result);
 }
