@@ -17,21 +17,7 @@
 <!-- INCLUDE overall_inc_header_js.tpl -->
 
 <!-- IF S_XMAS_FX -->
-<script type="text/javascript">
-<!--
-//Edit the next few lines to suit your page. Recommended values are:
-//numFlakes = 10; downSpeed = 0.01; lrFlakes = 10;
-var pictureSrc = '{FULL_SITE_PATH}images/xmas/snfl_01.gif'; //the location of the snowflakes
-var pictureWidth = 10;            //the width of the snowflakes
-var pictureHeight = 12;           //the height of the snowflakes
-var numFlakes = 20;               //the number of snowflakes
-var downSpeed = 0.01;             //the falling speed of snowflakes (portion of screen per 100 ms)
-var lrFlakes = 10;                //the speed that the snowflakes should swing from side to side
-																	//relative to distance fallen (swing increases with fewer
-																	//snowflakes to fill available space)
-//-->
-</script>
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/snow_fx.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/snowstorm.js"></script>
 <!-- ENDIF -->
 
 <!-- BEGIN switch_new_download -->

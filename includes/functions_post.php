@@ -699,7 +699,26 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		}
 		// Disable Post count - END
 
-		update_poster_details($topic_id, $post_id, $user_id);
+		if ($mode == 'delete')
+		{
+			/*
+			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, p.post_id, p.poster_id
+					FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p
+					WHERE t.topic_id = " . $topic_id . "
+						AND p.topic_id = " . $topic_id . "
+					ORDER BY p.post_time DESC
+					LIMIT 1";
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+
+			update_poster_details($row['topic_id'], $row['post_id'], $row['poster_id']);
+			*/
+		}
+		else
+		{
+			update_poster_details($topic_id, $post_id, $user_id);
+		}
 
 		if ($postcount)
 		{

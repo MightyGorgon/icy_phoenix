@@ -32,17 +32,28 @@ class files_management
 		'x' 	 Create and open for writing only; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
 		'x+' 	 Create and open for reading and writing; place the file pointer at the beginning of the file. If the file already exists, the fopen() call will fail by returning FALSE and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
 		*/
-		$fp = fopen($file_filename, 'w');
+		$fp = @fopen($file_filename, 'w');
 		@flock($fp, LOCK_EX);
 		@fwrite($fp, $file_content);
 		@flock($fp, LOCK_UN);
 		@fclose($fp);
-		chmod($file_filename, 0777);
+		@chmod($file_filename, 0777);
 		return true;
 	}
 
 	/*
-	* get_file_details
+	* Remove trailing slashes from path
+	*/
+	function remove_trailing_slashes($dir)
+	{
+		while(substr($dir, -1, 1) == '/')
+		{
+			$dir = substr($dir, 0, -1);
+		}
+		return $dir;
+	}
+
+	/*
 	* Get File Details: name, extension
 	*/
 	function get_file_details($file_name)
@@ -112,44 +123,45 @@ class files_management
 		return $parent_subfolder;
 	}
 
-	function create_files_list_full($mode, $path, $extensions = '')
+	function create_files_list_full($mode, $path, $include_types = false, $exclude_types = true)
 	{
+		$path = $this->remove_trailing_slashes($path);
+		$include_types = empty($include_types) ? false : (is_array($include_types) ? $include_types : explode(',', $include_types));
+		$exclude_types = empty($exclude_types) ? false : (is_array($exclude_types) ? $exclude_types : explode(',', $exclude_types));
+		//$exclude_types = array('ace', 'bak', 'bmp', 'css', 'gif', 'hl', 'htc', 'htm', 'html', 'ico', 'jar', 'jpeg', 'jpg', 'js', 'pak', 'png', 'rar', 'sql', 'swf', 'tpl', 'ttf', 'txt', 'wmv', 'zip');
+
 		$directory = @opendir($path);
 		$files_list = array();
 
-		while (@$file = readdir($directory))
+		while (@$file = @readdir($directory))
 		{
+			$process_file = false;
 			if (!in_array($file, array('.', '..')))
 			{
-				$is_dir = (is_dir($path . '/' . $file)) ? true : false;
-
-				$temp_path = str_replace('//', '/', ($path . '/' . $file));
-
+				$is_dir = (@is_dir($path . '/' . $file)) ? true : false;
+				$temp_path = $path . '/' . $file;
 				$file_details = $this->get_file_details($temp_path);
 				$file_title = $file_details['name'];
 				$file_type = strtolower($file_details['ext']);
 
-				$process_file = false;
-				if ($extensions == '')
+				if (empty($include_types) && empty($exclude_types))
 				{
-					$file_exclusions_array = array();
-					//$file_exclusions_array = array('ace', 'bak', 'bmp', 'css', 'gif', 'hl', 'htc', 'htm', 'html', 'ico', 'jar', 'jpeg', 'jpg', 'js', 'pak', 'png', 'rar', 'sql', 'swf', 'tpl', 'ttf', 'txt', 'wmv', 'zip');
-					if (!in_array($file_type, $file_exclusions_array))
-					{
-						$process_file = true;
-					}
+					$process_file = true;
+				}
+				elseif (empty($include_types) && !empty($exclude_types))
+				{
+					$process_file = !in_array($file_type, $exclude_types) ? true : false;
+				}
+				elseif (!empty($include_types) && empty($exclude_types))
+				{
+					$process_file = in_array($file_type, $include_types) ? true : false;
 				}
 				else
 				{
-					$file_inclusions_array = array();
-					$file_inclusions_array = explode(',', $extensions);
-					if (in_array($file_type, $file_inclusions_array))
-					{
-						$process_file = true;
-					}
+					$process_file = (in_array($file_type, $include_types) && !in_array($file_type, $exclude_types)) ? true : false;
 				}
 
-				if ($process_file == true)
+				if ($process_file)
 				{
 					$files_list[] = $temp_path;
 				}
@@ -157,7 +169,7 @@ class files_management
 				// Directory found, so recall this function
 				if ($is_dir && ($mode == 'full'))
 				{
-					$files_list = array_merge($files_list, $this->create_files_list_full($mode, $path . '/' . $file, $extensions));
+					$files_list = array_merge($files_list, $this->create_files_list_full($mode, $path . '/' . $file, $include_types, $exclude_types));
 				}
 			}
 		}
@@ -175,17 +187,16 @@ class files_management
 			exit;
 		}
 
+		$dir = $this->remove_trailing_slashes($dir);
 		$directory = @opendir($dir);
 		$files_list = array();
 
-		while (@$file = readdir($directory))
+		while (@$file = @readdir($directory))
 		{
 			if (!in_array($file, array('.', '..')))
 			{
-				$is_dir = (is_dir($dir . '/' . $file)) ? true : false;
-
-				$temp_path = str_replace('//', '/', ($dir . '/' . $file));
-
+				$is_dir = (@is_dir($dir . '/' . $file)) ? true : false;
+				$temp_path = $dir . '/' . $file;
 				if (!$is_dir || ($is_dir && $list_subdirs))
 				{
 					$files_list[] = $temp_path;
@@ -213,14 +224,15 @@ class files_management
 			exit;
 		}
 
+		$dir = $this->remove_trailing_slashes($dir);
 		$directory = @opendir($dir);
 		$dirs_list = array();
 
-		while (@$file = readdir($directory))
+		while (@$file = @readdir($directory))
 		{
 			if (!in_array($file, array('.', '..')))
 			{
-				if (is_dir($dir . '/' . $file))
+				if (@is_dir($dir . '/' . $file))
 				{
 					$dirs_list[$file] = $dir . '/' . $file;
 					if ($list_subdirs == true)
@@ -284,20 +296,21 @@ class files_management
 
 	function list_files($source_folder)
 	{
+		$source_folder = $this->remove_trailing_slashes($source_folder);
 		$directory = @opendir($source_folder);
 		$files_list = array();
-		while (@$file = readdir($directory))
+		while (@$file = @readdir($directory))
 		{
 			$full_path_file = $source_folder . '/' . $file;
 			if (!in_array($file, array('.', '..')))
 			{
-				if (is_dir($source_folder . '/' . $file))
+				if (@is_dir($source_folder . '/' . $file))
 				{
 					$files_list = array_merge($files_list, $this->list_files($full_path_file));
 				}
 				else
 				{
-					$files_list[] = str_replace('//', '/', ($full_path_file));
+					$files_list[] = $full_path_file;
 				}
 			}
 		}
@@ -308,14 +321,15 @@ class files_management
 
 	function list_files_type($source_folder, $extension)
 	{
+		$source_folder = $this->remove_trailing_slashes($source_folder);
 		$directory = @opendir($source_folder);
 		$files_list = array();
-		while (@$file = readdir($directory))
+		while (@$file = @readdir($directory))
 		{
 			$full_path_file = $source_folder . '/' . $file;
 			if (!in_array($file, array('.', '..')))
 			{
-				if (is_dir($source_folder . '/' . $file))
+				if (@is_dir($source_folder . '/' . $file))
 				{
 					$files_list = array_merge($files_list, $this->list_files_type($full_path_file, $extension));
 				}
@@ -324,7 +338,7 @@ class files_management
 					$file_details = $this->get_file_details($full_path_file);
 					if ($file_details['ext'] == $extension)
 					{
-						$files_list[] = str_replace('//', '/', ($full_path_file));
+						$files_list[] = $full_path_file;
 					}
 				}
 			}
@@ -341,15 +355,17 @@ class files_management
 	*/
 	function duplicate_folder($source_folder, $target_folder, $extensions, $duplicate_subfolder = true)
 	{
+		$source_folder = $this->remove_trailing_slashes($source_folder);
+		$target_folder = $this->remove_trailing_slashes($target_folder);
 		$new_source_folder = $source_folder;
 		$new_target_folder = $target_folder;
 		$directory = @opendir($source_folder);
-		while (@$file = readdir($directory))
+		while (@$file = @readdir($directory))
 		{
 			$full_path_file = $source_folder . '/' . $file;
 			if (!in_array($file, array('.', '..')))
 			{
-				if (is_dir($full_path_file))
+				if (@is_dir($full_path_file))
 				{
 					if ($duplicate_subfolder == true)
 					{
@@ -362,14 +378,14 @@ class files_management
 				}
 				else
 				{
-					if (!is_dir($target_folder))
+					if (!@is_dir($target_folder))
 					{
 						@mkdir($target_folder, 0777);
 					}
 					$current_file_extension = $this->get_file_extension($file);
 					if (empty($extensions) || (!is_array($extensions) && ($current_file_extension == $extensions)) || (is_array($extensions) && in_array($current_file_extension, $extensions)))
 					{
-						if (file_exists($target_folder . '/' . $file))
+						if (@file_exists($target_folder . '/' . $file))
 						{
 							@unlink($target_folder . '/' . $file);
 						}
@@ -387,39 +403,97 @@ class files_management
 		$recursive_path = '';
 		for ($i = 0; $i < sizeof($tmp_paths); $i++)
 		{
-			$recursive_path = (!empty($recursive_path) ? ($recursive_path . '/') : '') . $tmp_paths[$i];
-			if (!is_dir($recursive_path))
+			if (!empty($tmp_paths[$i]))
 			{
-				@mkdir($recursive_path, $chmod);
+				$recursive_path = (!empty($recursive_path) ? ($recursive_path . '/') : '') . $tmp_paths[$i];
+				if (!@is_dir($recursive_path))
+				{
+					@mkdir($recursive_path, $chmod);
+				}
 			}
 		}
 		return true;
 	}
 
-	function clear_dir($dir)
+	function remove_files($dir, $include_types = false, $exclude_types = false)
 	{
+		$dir = $this->remove_trailing_slashes($dir);
+		$include_types = empty($include_types) ? false : (is_array($include_types) ? $include_types : explode(',', $include_types));
+		$exclude_types = empty($exclude_types) ? false : (is_array($exclude_types) ? $exclude_types : explode(',', $exclude_types));
+
 		$res = @opendir($dir);
 		if($res === false) return;
-		while(($file = readdir($res)) !== false)
+		while(($file = @readdir($res)) !== false)
 		{
+			$remove_file = false;
 			if(($file !== '.') && ($file !== '..'))
 			{
-				if(is_dir($dir . '/' . $file))
+				$file_full_path = $dir . '/' . $file;
+				if(!@is_dir($file_full_path) && !@is_link($file_full_path))
 				{
-					$this->clear_dir($dir . '/' . $file);
-					rmdir($dir . '/' . $file);
-				}
-				else
-				{
-					unlink($dir . '/' . $file);
+					$current_file_extension = $this->get_file_extension($file_full_path);
+					if (empty($include_types) && empty($exclude_types))
+					{
+						$remove_file = true;
+					}
+					else
+					{
+						if (!empty($include_types) && !empty($exclude_types))
+						{
+							if (in_array($current_file_extension, $include_types) && !in_array($current_file_extension, $exclude_types))
+							{
+								$remove_file = true;
+							}
+						}
+						else
+						{
+							if (!$remove_file && !empty($include_types) && in_array($current_file_extension, $include_types))
+							{
+								$remove_file = true;
+							}
+							if (!$remove_file && !empty($exclude_types) && !in_array($current_file_extension, $exclude_types))
+							{
+								$remove_file = true;
+							}
+						}
+					}
+
+					if ($remove_file)
+					{
+						@unlink($file_full_path);
+					}
 				}
 			}
 		}
-		closedir($res);
+		@closedir($res);
 	}
 
-	function empty_data_folder($folder_path)
+	function clear_dir($dir)
 	{
+		$dir = $this->remove_trailing_slashes($dir);
+		$res = @opendir($dir);
+		if($res === false) return;
+		while(($file = @readdir($res)) !== false)
+		{
+			if(($file !== '.') && ($file !== '..'))
+			{
+				if(@is_dir($dir . '/' . $file))
+				{
+					$this->clear_dir($dir . '/' . $file);
+					@rmdir($dir . '/' . $file);
+				}
+				else
+				{
+					@unlink($dir . '/' . $file);
+				}
+			}
+		}
+		@closedir($res);
+	}
+
+	function empty_data_folder($dir)
+	{
+		$dir = $this->remove_trailing_slashes($dir);
 		$skip_files = array(
 			'.',
 			'..',
@@ -427,47 +501,48 @@ class files_management
 			'index.html',
 		);
 
-		$dir = $folder_path;
+		$dir = $this->remove_trailing_slashes($dir);
 		$res = @opendir($dir);
-		while(@$file = readdir($res))
+		while(@$file = @readdir($res))
 		{
 			if (!in_array($file, $skip_files))
 			{
 				$res2 = @unlink($dir . '/' . $file);
 			}
 		}
-		closedir($res);
+		@closedir($res);
 		return true;
 	}
 
 	function compare_files($source_path, $target_path)
 	{
-		if (is_dir($source_path) || !file_exists($target_path))
+		if (@is_dir($source_path) || !@file_exists($target_path))
 		{
 			return false;
 		}
 
-		$fs01 = filesize($source_path);
-		$fs02 = filesize($target_path);
+		$fs01 = @filesize($source_path);
+		$fs02 = @filesize($target_path);
 		//die("$fs01 - $fs02");
 
-		$ft01 = filemtime($source_path);
-		$ft02 = filemtime($target_path);
+		$ft01 = @filemtime($source_path);
+		$ft02 = @filemtime($target_path);
 		//die("$ft01 - $ft02");
 
 		if (($fs01 == $fs02) && ($ft01 == $ft02))
 		{
-			unlink($target_path);
+			@unlink($target_path);
 			return true;
 		}
 		return false;
 	}
 
+/*
 	function scan_file_inc($file_path)
 	{
 		$format = true;
 		$lines_output = array();
-		if(is_dir($file_path))
+		if(@is_dir($file_path))
 		{
 			return $lines_output;
 		}
@@ -530,13 +605,6 @@ class files_management
 				$to_output = false;
 			}
 
-			/*
-			if(preg_match('/ip_root_path/', $scanline))
-			{
-				$to_output = false;
-			}
-			*/
-
 			if(preg_match('/\(\'includes\/page_header/', $scanline))
 			{
 				$to_output = false;
@@ -579,7 +647,9 @@ class files_management
 		}
 		return $lines_output;
 	}
+*/
 
+/*
 	function scan_file_css($file_path)
 	{
 		$lines_output = array();
@@ -685,6 +755,7 @@ class files_management
 
 		return $clean_string;
 	}
+*/
 
 	// usage: $result = gzcompressfile('my_data.sql');
 	function gzcompressfile($source, $level = false)
@@ -694,13 +765,13 @@ class files_management
 		$error = false;
 		if($fp_out = gzopen($dest, $mode))
 		{
-			if($fp_in = fopen($source, 'rb'))
+			if($fp_in = @fopen($source, 'rb'))
 			{
-				while(!feof($fp_in))
+				while(!@feof($fp_in))
 				{
-					gzwrite($fp_out, fread($fp_in, 1024 * 512));
+					gzwrite($fp_out, @fread($fp_in, 1024 * 512));
 				}
-				fclose($fp_in);
+				@fclose($fp_in);
 			}
 			else
 			{
@@ -747,7 +818,7 @@ class files_management
 	function ip_chmod($filename, $perms = CHMOD_READ)
 	{
 		// Return if the file no longer exists.
-		if (!file_exists($filename))
+		if (!@file_exists($filename))
 		{
 			return false;
 		}
@@ -812,7 +883,7 @@ class files_management
 
 		// Owner always has read/write permission
 		$owner = CHMOD_READ | CHMOD_WRITE;
-		if (is_dir($filename))
+		if (@is_dir($filename))
 		{
 			$owner |= CHMOD_EXECUTE;
 
