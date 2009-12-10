@@ -242,7 +242,7 @@ function make_topic_select($box_name, $forum_id)
 // Synchronise functions for forums/topics
 function sync($type, $id = false)
 {
-	global $db;
+	global $db, $cache;
 
 	switch($type)
 	{
@@ -256,11 +256,11 @@ function sync($type, $id = false)
 			}
 			$db->sql_freeresult($result);
 
-		$sql = "UPDATE " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . USERS_TABLE . " u
-			SET f.forum_last_topic_id = p.topic_id, f.forum_last_poster_id = p.poster_id, f.forum_last_post_subject = t.topic_title, f.forum_last_post_time = p.post_time, f.forum_last_poster_name = u.username, f.forum_last_poster_color = u.user_color
-			WHERE f.forum_last_post_id = p.post_id
-				AND t.topic_id = p.topic_id
-				AND p.poster_id = u.user_id";
+			$sql = "UPDATE " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . USERS_TABLE . " u
+				SET f.forum_last_topic_id = p.topic_id, f.forum_last_poster_id = p.poster_id, f.forum_last_post_subject = t.topic_title, f.forum_last_post_time = p.post_time, f.forum_last_poster_name = u.username, f.forum_last_poster_color = u.user_color
+				WHERE f.forum_last_post_id = p.post_id
+					AND t.topic_id = p.topic_id
+					AND p.poster_id = u.user_id";
 			$result = $db->sql_query($sql);
 
 			break;

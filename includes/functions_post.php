@@ -590,6 +590,49 @@ function save_draft($draft_id, $user_id, $forum_id, $topic_id, $subject, $messag
 }
 
 /*
+* Get first and last post id for a topic
+*/
+function get_first_last_post_id($topic_id)
+{
+	global $db, $config;
+
+	$topic_data = array();
+
+	$sql = "SELECT MAX(post_id) AS last_post_id, MIN(post_id) AS first_post_id, COUNT(post_id) AS replies
+		FROM " . POSTS_TABLE . "
+		WHERE topic_id = " . $topic_id;
+	$result = $db->sql_query($sql);
+	if ($row = $db->sql_fetchrow($result))
+	{
+		$topic_data = $row;
+	}
+
+	return $topic_data;
+}
+
+/*
+* Get forum last post id
+*/
+function get_forum_last_post_id($forum_id)
+{
+	global $db, $config;
+
+	$last_post_id = 0;
+
+	$sql = "SELECT MAX(post_id) AS last_post_id
+		FROM " . POSTS_TABLE . "
+		WHERE forum_id = " . $forum_id;
+	$result = $db->sql_query($sql);
+
+	if ($row = $db->sql_fetchrow($result))
+	{
+		$last_post_id = $row['last_post_id'];
+	}
+
+	return $last_post_id;
+}
+
+/*
 * Update post stats and details
 */
 function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$user_id)
@@ -614,41 +657,28 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 			{
 
 				$topic_update_sql .= 'topic_replies = topic_replies - 1';
-
-				$sql = "SELECT MAX(post_id) AS last_post_id
-					FROM " . POSTS_TABLE . "
-					WHERE topic_id = $topic_id";
-				$result = $db->sql_query($sql);
-
-				if ($row = $db->sql_fetchrow($result))
+				$topic_data = get_first_last_post_id($topic_id);
+				if (!empty($topic_data['last_post_id']))
 				{
-					$topic_update_sql .= ', topic_last_post_id = ' . $row['last_post_id'];
+					$topic_update_sql .= ', topic_last_post_id = ' . $topic_data['last_post_id'];
 				}
 			}
 
 			if ($post_data['last_topic'])
 			{
-				$sql = "SELECT MAX(post_id) AS last_post_id
-					FROM " . POSTS_TABLE . "
-					WHERE forum_id = $forum_id";
-				$result = $db->sql_query($sql);
-
-				if ($row = $db->sql_fetchrow($result))
+				$last_post_id = get_forum_last_post_id($forum_id);
+				if (!empty($last_post_id))
 				{
-					$forum_update_sql .= ($row['last_post_id']) ? ', forum_last_post_id = ' . $row['last_post_id'] : ', forum_last_post_id = 0';
+					$forum_update_sql .= ($row['last_post_id']) ? ', forum_last_post_id = ' . $last_post_id : ', forum_last_post_id = 0';
 				}
 			}
 		}
 		elseif ($post_data['first_post'])
 		{
-			$sql = "SELECT MIN(post_id) AS first_post_id
-				FROM " . POSTS_TABLE . "
-				WHERE topic_id = $topic_id";
-			$result = $db->sql_query($sql);
-
-			if ($row = $db->sql_fetchrow($result))
+			$topic_data = get_first_last_post_id($topic_id);
+			if (!empty($topic_data['first_post_id']))
 			{
-				$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $row['first_post_id'];
+				$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $topic_data['first_post_id'];
 			}
 		}
 		else
@@ -699,26 +729,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		}
 		// Disable Post count - END
 
-		if ($mode == 'delete')
-		{
-			/*
-			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, p.post_id, p.poster_id
-					FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p
-					WHERE t.topic_id = " . $topic_id . "
-						AND p.topic_id = " . $topic_id . "
-					ORDER BY p.post_time DESC
-					LIMIT 1";
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
-
-			update_poster_details($row['topic_id'], $row['post_id'], $row['poster_id']);
-			*/
-		}
-		else
-		{
-			update_poster_details($topic_id, $post_id, $user_id);
-		}
+		sync_topic_details($topic_id, $forum_id, false, false);
 
 		if ($postcount)
 		{
@@ -786,6 +797,55 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		empty_cache_folders(FORUMS_CACHE_FOLDER);
 		board_stats();
 		cache_tree(true);
+	}
+
+	return;
+}
+
+/*
+* Synchronize topic details
+*/
+function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_all_data = false)
+{
+	global $db, $cache;
+
+	if (!$all_data_only)
+	{
+		$last_post_id = get_forum_last_post_id($forum_id);
+		$topic_data = get_first_last_post_id($topic_id);
+
+		if (empty($last_post_id) || empty($topic_data['first_post_id']) || empty($topic_data['last_post_id']))
+		{
+			return false;
+		}
+
+		$sql = "UPDATE " . TOPICS_TABLE . " t
+			SET t.topic_first_post_id = " . $topic_data['first_post_id'] . ", t.topic_last_post_id = " . $topic_data['last_post_id'] . ", t.topic_replies = " . $topic_data['replies'] . "
+			WHERE t.topic_id = " . $topic_id;
+		$db->sql_query($sql);
+
+		$sql = "UPDATE " . FORUMS_TABLE . " f
+			SET f.forum_last_post_id = " . $last_post_id . "
+			WHERE f.forum_id = " . $forum_id;
+		$db->sql_query($sql);
+	}
+
+	if (!$skip_all_data)
+	{
+		$sql = "UPDATE " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
+			SET t.topic_first_post_id = p.post_id, t.topic_first_post_time = p.post_time, t.topic_first_poster_id = p.poster_id, t.topic_first_poster_name = u.username, t.topic_first_poster_color = u.user_color, t.topic_last_post_id = p2.post_id, t.topic_last_post_time = p2.post_time, t.topic_last_poster_id = p2.poster_id, t.topic_last_poster_name = u2.username, t.topic_last_poster_color = u2.user_color
+			WHERE t.topic_first_post_id = p.post_id
+				AND p.poster_id = u.user_id
+				AND t.topic_last_post_id = p2.post_id
+				AND p2.poster_id = u2.user_id";
+		$db->sql_query($sql);
+
+		$sql = "UPDATE " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . USERS_TABLE . " u
+			SET f.forum_last_topic_id = p.topic_id, f.forum_last_poster_id = p.poster_id, f.forum_last_post_subject = t.topic_title, f.forum_last_post_time = p.post_time, f.forum_last_poster_name = u.username, f.forum_last_poster_color = u.user_color
+			WHERE f.forum_last_post_id = p.post_id
+				AND t.topic_id = p.topic_id
+				AND p.poster_id = u.user_id";
+		$result = $db->sql_query($sql);
 	}
 
 	return;
@@ -1761,42 +1821,6 @@ function change_poster_id($post_id, $poster_name)
 			$result = $db->sql_query($sql);
 		}
 	}
-
-	return true;
-}
-
-/*
-* Update poster details when posting
-*/
-function update_poster_details($topic_id, $post_id, $poster_id)
-{
-	global $db;
-
-	$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.topic_desc, t.forum_id, t.topic_poster, p.post_id, p.post_time
-			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p
-			WHERE t.topic_id = " . $topic_id . "
-				AND p.post_id = " . $post_id;
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-	$topic_title = $row['topic_title'];
-	$post_time = $row['post_time'];
-
-	$sql = user_color_sql($poster_id);
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-	$username = $row['username'];
-	$user_color = $row['user_color'];
-
-	$sql = "UPDATE " . TOPICS_TABLE . " SET topic_first_poster_id = " . $poster_id . ", topic_first_poster_name = '" . $db->sql_escape($username) . "', topic_first_poster_color = '" . $db->sql_escape($user_color) . "', topic_first_post_time = " . $post_time . " WHERE topic_id = " . $topic_id . " AND topic_first_post_id = " . $post_id;
-	$result = $db->sql_query($sql);
-
-	$sql = "UPDATE " . TOPICS_TABLE . " SET topic_last_poster_id = " . $poster_id . ", topic_last_poster_name = '" . $db->sql_escape($username) . "', topic_last_poster_color = '" . $db->sql_escape($user_color) . "', topic_last_post_time = " . $post_time . " WHERE topic_id = " . $topic_id . " AND topic_last_post_id = " . $post_id;
-	$result = $db->sql_query($sql);
-
-	$sql = "UPDATE " . FORUMS_TABLE . " SET forum_last_topic_id = " . $topic_id . ", forum_last_poster_id = " . $poster_id . ", forum_last_poster_name = '" . $db->sql_escape($username) . "', forum_last_poster_color = '" . $db->sql_escape($user_color) . "', forum_last_post_subject = '" . $db->sql_escape($topic_title) . "', forum_last_post_time = " . $post_time . " WHERE forum_last_post_id = " . $post_id;
-	$result = $db->sql_query($sql);
 
 	return true;
 }
