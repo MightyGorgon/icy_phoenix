@@ -284,8 +284,8 @@
 	<td class="row1 row-center" valign="middle" rowspan="3"><img src="images/sudoku.gif" alt="{WHO_IS_ONLINE}" title="{WHO_IS_ONLINE}" /></td>
 	<td class="row1"><span class="gensmall">{SUDOKU_GAME_STATS}</span></td>
 </tr>
-<tr><td class="row1" colspan="2"><div class="gensmall">{TOTAL_USERS_ONLINE} &nbsp; <br />{TODAY_USER_LIST}</div></td></tr>
-<tr><td class="row1" colspan="2"><span class="gensmall">{LOGGED_IN_USER_LIST} {ACTIVE_USER_LIST}</span></td></tr>
+<tr><td class="row1" colspan="2"><div class="gensmall">{L_TOTAL_USERS_ONLINE}<br />{L_TODAY_USER_LIST}</div></td></tr>
+<tr><td class="row1" colspan="2"><span class="gensmall">{L_LOGGED_IN_USER_LIST}&nbsp;{L_ACTIVE_USER_LIST}</span></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <center><span class="copyright">{SUDOKU_VERSION}</span></center>

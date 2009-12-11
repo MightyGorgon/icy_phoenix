@@ -28,7 +28,8 @@ init_userprefs($userdata);
 // End session management
 
 // Get language Variables and page specific functions
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_sudoku.' . PHP_EXT);
+setup_extra_lang(array('lang_sudoku'));
+
 include_once(IP_ROOT_PATH . 'includes/functions_sudoku.' . PHP_EXT);
 
  // Make sure the player is registered
@@ -661,13 +662,14 @@ $template->assign_vars(array(
 	'THESE_POINTS_VALUE' => number_format($curr_points),
 	'GAME_INFO' => sprintf($lang['sudoku_game_info'], $pack,$num,$v_level),
 	'WHO_IS_ONLINE' => $lang['sudoku_who_is_online'],
-	'TOTAL_USERS_ONLINE' => sprintf($lang['sudoku_total_online'], number_format($s_users_online_today)),
-	'LOGGED_IN_USER_LIST' => $lang['sudoku_logged_in_list'],
 	'ONLINE_EXPLAIN' => $lang['sudoku_online_explain'],
 	'SUDOKU_GAME_STATS' => sprintf($lang['sudoku_game_stats'], number_format($alltime_players), number_format($alltime_played)),
-	'TODAY_USER_LIST' => $s_users_today_disp,
-	'ACTIVE_USER_LIST' => $s_users_active_disp,
 	'BUY_NUMBER' => '<a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=buy&amp;p=' . $pack . '&amp;n=' . $num) . '" class="nav">' . $lang['sudoku_buy_number'] . '</a>',
+
+	'L_TOTAL_USERS_ONLINE' => sprintf($lang['sudoku_total_online'], number_format($s_users_online_today)),
+	'L_LOGGED_IN_USER_LIST' => $lang['sudoku_logged_in_list'],
+	'L_TODAY_USER_LIST' => $s_users_today_disp,
+	'L_ACTIVE_USER_LIST' => $s_users_active_disp,
 	)
 );
 

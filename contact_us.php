@@ -206,11 +206,13 @@ if (isset($_POST['submit']))
 
 	if (!$error)
 	{
+		/*
 		$mtimetemp = time() + 240;
 		$sql = "UPDATE " . USERS_TABLE . "
 			SET ct_mailcount = " . $mtimetemp . "
 			WHERE user_id = " . $userdata['user_id'];
 		$db->sql_query($sql);
+		*/
 		// CrackerTracker v5.x
 		$new_mailtime = time() + $ctracker_config->settings['massmail_time'] * 60;
 		$sql = 'UPDATE ' . USERS_TABLE . '

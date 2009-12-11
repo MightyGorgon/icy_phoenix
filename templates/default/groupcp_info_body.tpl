@@ -1,5 +1,3 @@
-<!-- INCLUDE overall_header.tpl -->
-
 <!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- ENDIF -->
@@ -146,5 +144,3 @@
 </form>
 
 <table width="100%" cellspacing="2" border="0" align="center"><tr><td valign="top" align="right">{JUMPBOX}</td></tr></table>
-
-<!-- INCLUDE overall_footer.tpl -->

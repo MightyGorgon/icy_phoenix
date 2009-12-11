@@ -1,5 +1,3 @@
-<!-- INCLUDE overall_header.tpl -->
-
 <!-- INCLUDE pa_links.tpl -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row-header"><span>{LE_NAME}</span></td></tr>

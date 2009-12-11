@@ -325,9 +325,9 @@ else
 	$template->assign_vars(array(
 		'S_CONTENT_ENCODING' => $lang['ENCODING'],
 		'BOARD_URL' => $index_url,
-		'BOARD_TITLE' => htmlspecialchars(undo_htmlspecialchars($site_name)),
+		'BOARD_TITLE' => htmlspecialchars(undo_htmlspecialchars(strip_tags($site_name))),
 		'PROGRAM' => $ProgName,
-		'BOARD_DESCRIPTION' => htmlspecialchars(undo_htmlspecialchars($site_description)),
+		'BOARD_DESCRIPTION' => htmlspecialchars(undo_htmlspecialchars(strip_tags($site_description))),
 		'BOARD_MANAGING_EDITOR' => $config['board_email'],
 		'BOARD_WEBMASTER' => $config['board_email'],
 		'BUILD_DATE' => gmdate('D, d M Y H:i:s') . ' GMT',

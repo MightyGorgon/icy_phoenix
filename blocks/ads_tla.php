@@ -26,15 +26,15 @@ if(!function_exists('cms_block_ads_tla'))
 	{
 		global $db, $cache, $config, $template, $images, $userdata, $lang, $block_id, $cms_config_vars;
 
-		$ads_content = tla_ads($cms_config_vars['md_tla_xml_filename'][$block_id], $cms_config_vars['md_tla_inventory_key'][$block_id]);
+		$ads_content = tla_ads($cms_config_vars['md_tla_xml_filename'][$block_id], $cms_config_vars['md_tla_inventory_key'][$block_id], $cms_config_vars['md_tla_display'][$block_id]);
 
 		$template->assign_vars(array(
-			'ADS_CONTENT' => $ads_content,
+			'ADS_CONTENT' => (empty($ads_content) ? '&nbsp;' : $ads_content),
 			)
 		);
 	}
 
-	function tla_ads($xml_filename, $inventory_key)
+	function tla_ads($xml_filename, $inventory_key, $box_type)
 	{
 		// Examples
 		/*
@@ -71,13 +71,18 @@ if(!function_exists('cms_block_ads_tla'))
 
 		if (is_array($arr_xml))
 		{
-			$ads_content .= "\n<ul>\n";
+			$ads_count = 0;
+			$ads_content .= empty($box_type) ? "\n<ul>\n" : '';
 			for ($i = 0; $i < count($arr_xml['URL']); $i++)
 			{
-				if(isset($arr_xml['PostID'][$i]) && $arr_xml['PostID'][$i] > 0) continue;
-				$ads_content .= "<li>" . $arr_xml['BeforeText'][$i] . " <a href=\"" . $arr_xml['URL'][$i] . "\">" . $arr_xml['Text'][$i] . "</a> " . $arr_xml['AfterText'][$i] . "</li>\n";
+				if(isset($arr_xml['PostID'][$i]) && ($arr_xml['PostID'][$i] > 0))
+				{
+					continue;
+				}
+				$ads_content .= (empty($box_type) ? '<li>' : ($ads_count > 0 ? '&nbsp;&nbsp;&bull;&nbsp;&nbsp;' : '')) . $arr_xml['BeforeText'][$i] . '<a href="' . $arr_xml['URL'][$i] . '">' . $arr_xml['Text'][$i] . '</a> ' . $arr_xml['AfterText'][$i] . (empty($box_type) ? ('</li>' . "\n") : '');
+				$ads_count++;
 			}
-			$ads_content .= "</ul>";
+			$ads_content .= empty($box_type) ? "\n</ul>\n" : '';
 		}
 
 		return $ads_content;

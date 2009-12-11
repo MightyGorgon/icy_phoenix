@@ -89,7 +89,7 @@ $template->assign_vars(array(
 );
 
 //$template->assign_block_vars('google_ad', array());
-copyright_nivisec($meta_content['page_title'], '2003');
+//copyright_nivisec($meta_content['page_title'], '2003');
 full_page_generation('credits_display.tpl', $lang['Hacks_List'], '', '');
 
 ?>

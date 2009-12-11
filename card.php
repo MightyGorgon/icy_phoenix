@@ -48,14 +48,14 @@ $post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
 // check that we have all what is needed to know
 if (!($post_id + $user_id))
 {
-	message_die(GENERAL_ERROR, "No user/post specified", "", __LINE__, __FILE__,'post_id="'.$post_id.'", user_id="'.$user_id.'"');
+	message_die(GENERAL_ERROR, "No user/post specified", "", __LINE__, __FILE__, 'post_id="' . $post_id . '", user_id="' . $user_id . '"');
 }
 if (empty($mode))
 {
-	message_die(GENERAL_ERROR, "No action specified", "", __LINE__, __FILE__,'mode="'.$mode.'"');
+	message_die(GENERAL_ERROR, "No action specified", "", __LINE__, __FILE__, 'mode="' . $mode . '"');
 }
 
-$sql = 'SELECT DISTINCT forum_id, poster_id, post_bluecard FROM ' . POSTS_TABLE . ' WHERE post_id = "'.$post_id.'"';
+$sql = 'SELECT DISTINCT forum_id, poster_id, post_bluecard FROM ' . POSTS_TABLE . ' WHERE post_id = "' . $post_id . '"';
 $result = $db->sql_query($sql);
 $result = $db->sql_fetchrow($result);
 $blue_card = $result['post_bluecard'];
@@ -80,9 +80,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-//
 // Start auth check
-//
 $is_auth = array();
 $is_auth = auth(AUTH_ALL, $forum_id, $userdata);
 
@@ -130,27 +128,57 @@ elseif ($mode == 'report')
 	$sql = 'UPDATE ' . POSTS_TABLE . ' SET post_bluecard = "' . $blue_card . '" WHERE post_id = "' . $post_id . '"';
 	$result = $db->sql_query($sql);
 
-	//
 	// Obtain list of moderators of this forum
-	$sql = "SELECT g.group_name, u.username, u.user_email, u.user_lang
+	$sql = "SELECT u.user_id, u.username, u.user_email, u.user_lang
 		FROM " . AUTH_ACCESS_TABLE . " aa,  " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g, " . USERS_TABLE . " u
-		WHERE aa.forum_id = $forum_id AND aa.auth_mod = " . TRUE . "
-		AND ug.group_id = aa.group_id AND g.group_id = aa.group_id AND u.user_id = ug.user_id";
-	$result_mods = $db->sql_query($sql);
-	$total_mods = $db->sql_numrows($result_mods);
-	$i = 0;
-	if (!$total_mods)
+		WHERE aa.forum_id = $forum_id
+			AND aa.auth_mod = " . TRUE . "
+			AND ug.group_id = aa.group_id
+			AND g.group_id = aa.group_id
+			AND u.user_id = ug.user_id";
+	$result = $db->sql_query($sql);
+	$total_mods = $db->sql_numrows($result);
+	$mods_rowset = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	// Obtain list of moderators of this forum
+	$sql = "SELECT u.user_id, u.username, u.user_email, u.user_lang
+		FROM " . USERS_TABLE . " u
+		WHERE u.user_level = '" . ADMIN . "'
+			OR  u.user_level = '" . JUNIOR_ADMIN . "'";
+	$result = $db->sql_query($sql);
+	$total_admins = $db->sql_numrows($result);
+	$admins_rowset = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	$temp_recipients = array_merge($mods_rowset, $admins_rowset);
+	$report_recipients = array();
+	$report_recipients_ids = array();
+	$total_recipients = 0;
+	foreach ($temp_recipients as $recipient)
 	{
-		message_die(GENERAL_MESSAGE, $lang['No_moderators'].'<br /><br />');
+		if (!isset($report_recipients_ids[$recipient['user_id']]))
+		{
+			$report_recipients[] = $recipient;
+			$report_recipients_ids[$recipient['user_id']] = $recipient['user_id'];
+			$total_recipients++;
+		}
 	}
-	(($config['report_forum'])? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL .'=' . $allready_reported : 'newtopic&amp' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id). '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>');
-	if (($blue_card >= $config['bluecard_limit_2'] && (!(($blue_card-$config['bluecard_limit_2']) % $config['bluecard_limit']))) || ($blue_card == $config['bluecard_limit_2']))
+
+	if (empty($total_recipients))
 	{
-		$mods_rowset = $db->sql_fetchrowset($result_mods);
+		message_die(GENERAL_MESSAGE, $lang['No_moderators'] . '<br /><br />');
+	}
+
+	(($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>');
+
+	$i = 0;
+	if (($blue_card >= $config['bluecard_limit_2'] && (!(($blue_card - $config['bluecard_limit_2']) % $config['bluecard_limit']))) || ($blue_card == $config['bluecard_limit_2']))
+	{
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$server_url = create_server_url();
 		$viewtopic_server_url = $server_url . CMS_PAGE_VIEWTOPIC;
-		while ($i < $total_mods)
+		while ($i < $total_recipients)
 		{
 			$emailer = new emailer($config['smtp_delivery']);
 
@@ -159,8 +187,8 @@ elseif ($mode == 'report')
 			$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
 			$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
 
-			$emailer->use_template('repport_post', (file_exists(IP_ROOT_PATH . 'language/lang_' . $mods_rowset[$i]['user_lang'] . '/email/html/repport_post.tpl')) ? $mods_rowset[$i]['user_lang'] : 'english');
-			$emailer->email_address($mods_rowset[$i]['user_email']);
+			$emailer->use_template('repport_post', (file_exists(IP_ROOT_PATH . 'language/lang_' . $report_recipients[$i]['user_lang'] . '/email/html/repport_post.tpl')) ? $report_recipients[$i]['user_lang'] : 'english');
+			$emailer->email_address($report_recipients[$i]['user_email']);
 			$emailer->from($config['board_email']);
 			$emailer->replyto($config['board_email']);
 			$emailer->extra_headers($email_headers);
@@ -173,13 +201,15 @@ elseif ($mode == 'report')
 				'USER' => '"' . $userdata['username'] . '"',
 				'NUMBER_OF_REPPORTS' => $blue_card,
 				'SITENAME' => $config['sitename'],
-				'BOARD_EMAIL' => $config['board_email']));
+				'BOARD_EMAIL' => $config['board_email']
+				)
+			);
 			$emailer->send();
 			$emailer->reset();
 			$i++;
 		}
 	}
-	message_die(GENERAL_MESSAGE, (($total_mods) ? sprintf($lang['Post_repported'], $total_mods) : $lang['Post_repported_1']) . '<br /><br />' . (($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>'));
+	message_die(GENERAL_MESSAGE, (($total_mods) ? sprintf($lang['Post_reported'], $total_mods) : $lang['Post_reported_1']) . '<br /><br />' . (($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>'));
 }
 elseif ($mode == 'unban')
 {
