@@ -38,6 +38,11 @@ if (!$userdata['session_admin'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cms_menu.' . PHP_EXT . '&admin=1', true));
 }
 
+if (!empty($_REQUEST['mode']) && ($_POST['mode'] != $_GET['mode']))
+{
+	$_REQUEST['mode'] = $_GET['mode'];
+	$_POST['mode'] = $_GET['mode'];
+}
 $mode_array = array('menu_item', 'menu_block', 'menu_list');
 $mode = request_var('mode', '');
 $mode = (in_array($mode, $mode_array) ? $mode : false);
@@ -52,6 +57,11 @@ $item_type = empty($item_type) ? false : $item_type;
 $item_type = isset($_POST['add_cat']) ? 'category_item' : $item_type;
 $item_type = htmlspecialchars($item_type);
 
+if (!empty($_REQUEST['action']) && ($_POST['action'] != $_GET['action']))
+{
+	$_REQUEST['action'] = $_GET['action'];
+	$_POST['action'] = $_GET['action'];
+}
 $action_array = array('add', 'delete', 'edit', 'list', 'save');
 $action = request_var('action', '');
 $action = (isset($_POST['add']) ? 'add' : $action);

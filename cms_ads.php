@@ -61,6 +61,11 @@ $ad_active_lang_array = array($lang['Yes'], $lang['No']);
 $ad_format_array = array(1, 0);
 $ad_format_lang_array = array($lang['BBCode'], $lang['HTML']);
 
+if (!empty($_REQUEST['mode']) && ($_POST['mode'] != $_GET['mode']))
+{
+	$_REQUEST['mode'] = $_GET['mode'];
+	$_POST['mode'] = $_GET['mode'];
+}
 $mode_array = array('add', 'delete', 'save', 'update');
 $mode = request_var('mode', '');
 $mode = (in_array($mode, $mode_array) ? $mode : '');
