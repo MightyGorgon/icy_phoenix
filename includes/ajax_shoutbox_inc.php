@@ -56,7 +56,7 @@ if($action)
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Pragma: no-cache');
-	header('Content-type: text/xml; charset=utf-8');
+	header('Content-type: text/xml; charset=UTF-8');
 
 	// Define the XML Template
 	$template->set_filenames(array('xml' => 'ajax_shoutbox_xml.tpl'));

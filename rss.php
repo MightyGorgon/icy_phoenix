@@ -136,6 +136,7 @@ $sql_topic_view = !empty($topic_id) ? (' AND t.topic_id = ' . $topic_id) : '';
 $sql_topics_only_where = ($display == 'topics') ? ' AND p.post_id = t.topic_first_post_id' : '';
 
 $encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
+$encoding_charset = !empty($encoding_charset) ? $encoding_charset : 'UTF-8';
 
 // BEGIN Session management
 // Check user

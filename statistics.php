@@ -46,6 +46,10 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
+$meta_content['page_title'] = $lang['Statistics_title'];
+page_header($lang['Statistics_title'], true);
+$template->set_filenames(array('body' => 'statistics.tpl'));
+
 $__module_rows = get_module_list_from_db();
 $__stat_module_data = get_module_data_from_db();
 $return_limit = $__stats_config['return_limit'];
@@ -170,6 +174,6 @@ $template->assign_vars(array(
 
 $template->assign_block_vars('main_bottom',array());
 
-full_page_generation('statistics.tpl', $lang['Statistics_title'], '', '');
+page_footer(true, 'body', true);
 
 ?>

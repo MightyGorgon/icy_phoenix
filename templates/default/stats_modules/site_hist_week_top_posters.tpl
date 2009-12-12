@@ -9,7 +9,7 @@
 <!-- BEGIN stats_row -->
 <tr class="{stats_row.CLASS}h">
 	<td class="{stats_row.CLASS} row-center" style="background: none;" width="10%"><span class="gen">{stats_row.RANK}</span></td>
-	<td class="{stats_row.CLASS}" style="background: none;" width="10%"><span class="gen"><a href="{stats_row.URL}">{stats_row.USERNAME}</a></span></td>
+	<td class="{stats_row.CLASS}" style="background: none;" width="10%"><span class="gen">{stats_row.USERNAME}</span></td>
 	<td class="{stats_row.CLASS} row-center" style="background: none;" width="10%"><span class="gen">{stats_row.POSTS}</span></td>
 	<td class="{stats_row.CLASS} row-center" style="background: none;" width="10%"><span class="gen">{stats_row.PERCENTAGE}%</span></td>
 	<td class="{stats_row.CLASS}" style="background: none;" width="50%"><table cellspacing="0" cellpadding="0" border="0" align="left"><tr><td width="1%" nowrap="nowrap"><img src="<!-- IF stats_row.PERCENTAGE > 66 -->{G_LEFT_GRAPH_IMAGE}<!-- ELSEIF stats_row.PERCENTAGE > 33 -->{B_LEFT_GRAPH_IMAGE}<!-- ELSE -->{R_LEFT_GRAPH_IMAGE}<!-- ENDIF -->" height="13" alt="" /><img src="<!-- IF stats_row.PERCENTAGE > 66 -->{G_GRAPH_IMAGE}<!-- ELSEIF stats_row.PERCENTAGE > 33 -->{B_GRAPH_IMAGE}<!-- ELSE -->{R_GRAPH_IMAGE}<!-- ENDIF -->" width="{stats_row.BAR}%" height="13" alt="{stats_row.PERCENTAGE}%" /><img src="<!-- IF stats_row.PERCENTAGE > 66 -->{G_RIGHT_GRAPH_IMAGE}<!-- ELSEIF stats_row.PERCENTAGE > 33 -->{B_RIGHT_GRAPH_IMAGE}<!-- ELSE -->{R_RIGHT_GRAPH_IMAGE}<!-- ENDIF -->" height="13" alt="" /></td></tr></table></td>

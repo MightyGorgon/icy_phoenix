@@ -84,6 +84,7 @@ if(!function_exists('cms_block_ads_tla'))
 			}
 			$ads_content .= empty($box_type) ? "\n</ul>\n" : '';
 		}
+		$ads_content = empty($box_type) ? $ads_content : ('<div class="gensmall" style="text-align: center;">' . $ads_content . '</div>');
 
 		return $ads_content;
 	}

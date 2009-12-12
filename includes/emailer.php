@@ -245,14 +245,15 @@ class emailer
 			$this->subject = (($this->subject != '') ? $this->subject : 'No Subject');
 		}
 
+		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 		if (preg_match('#^(Charset:(.*?))$#m', $this->msg, $match))
 		{
-			$this->encoding = (trim($match[2]) != '') ? trim($match[2]) : trim($lang['ENCODING']);
+			$this->encoding = (trim($match[2]) != '') ? trim($match[2]) : trim($encoding_charset);
 			$drop_header .= '[\r\n]*?' . preg_quote($match[1], '#');
 		}
 		else
 		{
-			$this->encoding = trim($lang['ENCODING']);
+			$this->encoding = trim($encoding_charset);
 		}
 
 		if ($drop_header != '')
@@ -346,9 +347,10 @@ class emailer
 	function attachFile($filename, $mimetype = "application/octet-stream", $szFromAddress, $szFilenameToDisplay)
 	{
 		global $lang;
+		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 		$mime_boundary = "--==================_846811060==_";
 
-		$this->msg = '--' . $mime_boundary . "\nContent-Type: text/html;\n\tcharset=\"" . $lang['ENCODING'] . "\"\n\n" . $this->msg;
+		$this->msg = '--' . $mime_boundary . "\nContent-Type: text/html;\n\tcharset=\"" . $encoding_charset . "\"\n\n" . $this->msg;
 
 		if ($mime_filename)
 		{

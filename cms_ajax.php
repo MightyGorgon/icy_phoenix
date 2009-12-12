@@ -36,6 +36,7 @@ setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
 define('AJAX_HEADERS', true);
 $useragent = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT'));
 $encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
+$encoding_charset = !empty($encoding_charset) ? $encoding_charset : 'UTF-8';
 
 // Send AJAX headers - this is to prevent browsers from caching possible error pages
 AJAX_headers();

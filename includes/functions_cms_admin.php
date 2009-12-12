@@ -252,8 +252,8 @@ function count_blocks_in_layout($table_name, $l_id_list, $is_special = false, $o
 function get_blocks_files_list($blocks_dir, $blocks_prefix)
 {
 	$blocks_array = array();
-	$blocks = opendir($blocks_dir);
-	while ($file = readdir($blocks))
+	$blocks = @opendir($blocks_dir);
+	while ($file = @readdir($blocks))
 	{
 		$ext = substr(strrchr($file, '.'), 1);
 		if ((substr($file, 0, strlen($blocks_prefix)) == $blocks_prefix) && ($ext == PHP_EXT))
@@ -261,6 +261,7 @@ function get_blocks_files_list($blocks_dir, $blocks_prefix)
 			$blocks_array[] = substr(substr($file, strlen($blocks_prefix)), 0, (strlen($ext) * -1) - 1);
 		}
 	}
+	@closedir($blocks_dir);
 	sort($blocks_array);
 
 	return $blocks_array;
@@ -275,8 +276,8 @@ function get_layouts_details($layout_dir, $layout_extension, $common_cms_templat
 
 	$layout_details = array();
 	$num_layout = 0;
-	$layouts = opendir($layout_dir);
-	while ($file = readdir($layouts))
+	$layouts = @opendir($layout_dir);
+	while ($file = @readdir($layouts))
 	{
 		$pos = strpos($file, $layout_extension);
 		if (($pos !== false) && ($file != 'index.html'))
@@ -300,6 +301,7 @@ function get_layouts_details($layout_dir, $layout_extension, $common_cms_templat
 			$num_layout++;
 		}
 	}
+	@closedir($layout_dir);
 	return $layout_details;
 }
 
@@ -310,21 +312,24 @@ function get_layouts_details_select($layout_dir, $layout_extension)
 {
 	global $l_info;
 
-	$layout_details = '';
-	$layouts = opendir($layout_dir);
-	while ($file = readdir($layouts))
+	$layouts_array = array();
+	$layouts = @opendir($layout_dir);
+	while ($file = @readdir($layouts))
 	{
 		$pos = strpos($file, $layout_extension);
 		if (($pos !== false) && ($file != 'index.html'))
 		{
-			$layout_details .= '<option value="' . $file .'" ';
-			if(!empty($l_info) && ($l_info['template'] == $file))
-			{
-				$layout_details .= 'selected="selected"';
-			}
-			$layout_details .= '>' . $file . '</option>';
+			$layouts_array[] = $file;
 		}
 	}
+	@closedir($layout_dir);
+
+	$layout_details = '';
+	foreach ($layouts_array as $k => $v)
+	{
+		$layout_details .= '<option value="' . $v .'" ' . ((!empty($l_info) && ($l_info['template'] == $v)) ? 'selected="selected"' : '') . '>' . $v . '</option>';
+	}
+
 	return $layout_details;
 }
 

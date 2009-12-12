@@ -961,11 +961,12 @@ class ip_page
 	function page_header($page_title, $content, $form_action = false, $write_form = true, $extra_css = false, $extra_js = false, $meta_refresh = '')
 	{
 		global $lang;
+		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 
 		echo('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n");
 		echo('<html>' . "\n");
 		echo('<head>' . "\n");
-		echo('	<meta http-equiv="Content-Type" content="text/html; charset=' . $lang['ENCODING'] . '" />' . "\n");
+		echo('	<meta http-equiv="Content-Type" content="text/html; charset=' . $encoding_charset . '" />' . "\n");
 		echo('	<meta http-equiv="content-style-type" content="text/css" />' . "\n");
 		echo('	<meta name="author" content="Icy Phoenix Team" />' . "\n");
 		if ($meta_refresh != '')

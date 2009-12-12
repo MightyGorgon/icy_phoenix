@@ -2034,26 +2034,28 @@ else
 
 	// Flag Start
 	// Query to get the list of flags
-	$sql = "SELECT * FROM " . FLAG_TABLE . " ORDER BY flag_id";
+	$sql = "SELECT * FROM " . FLAG_TABLE . " ORDER BY flag_name";
 	$flags_result = $db->sql_query($sql, 0, 'flags_');
-	$flag_row = $db->sql_fetchrowset($ranksresult);
-	$num_flags = $db->sql_numrows($ranksresult) ;
+	$flag_row = $db->sql_fetchrowset($flags_result);
+	$num_flags = sizeof($flag_row);
+	$db->sql_freeresult($flags_result);
 
 	// Build the html select statement
 	$flag_start_image = 'blank.gif' ;
-	$selected = (isset($user_flag)) ? '' : ' selected="selected"';
+	$selected = (!empty($user_flag)) ? '' : ' selected="selected"';
 	$flag_select = '<select name="user_flag" onChange="document.images[\'user_flag\'].src = \'images/flags/\' + this.value;" >';
 	$flag_select .= '<option value="blank.gif"' . $selected . '>' . $lang['Select_Country'] . '</option>';
 	for ($i = 0; $i < $num_flags; $i++)
 	{
 		$flag_name = $flag_row[$i]['flag_name'];
 		$flag_image = $flag_row[$i]['flag_image'];
-		$selected = (isset($user_flag)) ? (($user_flag == $flag_image) ? 'selected="selected"' : '') : '' ;
-		$flag_select .= "\t" . '<option value="' . $flag_image . '"' . $selected . '>' . $flag_name . '</option>';
-		if (isset($user_flag) && ($user_flag == $flag_image))
+		$selected = '';
+		if (!empty($user_flag) && ($user_flag == $flag_image))
 		{
-			$flag_start_image = $flag_image ;
+			$selected = ' selected="selected"';
+			$flag_start_image = $flag_image;
 		}
+		$flag_select .= '<option value="' . $flag_image . '"' . $selected . '>' . $flag_name . '</option>';
 	}
 	$flag_select .= '</select>';
 	// Flag End

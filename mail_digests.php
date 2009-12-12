@@ -508,16 +508,15 @@ while ($row = $db->sql_fetchrow($result))
 
 		$digest_emailer->extra_headers('From: ' . $lang['digest_from_text_name'] . ' <' . $lang['digest_from_email_address'] . '>' . "\n");
 
+		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 		if ($html)
 		{
 			$digest_emailer->extra_headers('MIME-Version: 1.0');
-			//$digest_emailer->extra_headers('Content-type: text/html; charset=iso-8859-1');
-			$digest_emailer->extra_headers('Content-type: text/html; charset=' . $lang['ENCODING']);
+			$digest_emailer->extra_headers('Content-type: text/html; charset=' . $encoding_charset);
 		}
 		else
 		{
-			//$digest_emailer->extra_headers('Content-Type: text/plain; charset=us-ascii');
-			$digest_emailer->extra_headers('Content-Type: text/plain; charset=' . $lang['ENCODING']);
+			$digest_emailer->extra_headers('Content-Type: text/plain; charset=' . $encoding_charset);
 		}
 
 		$digest_emailer->email_address($to);

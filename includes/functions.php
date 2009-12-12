@@ -1299,10 +1299,11 @@ function redirect($url, $return = false)
 	{
 		header('Refresh: 0; URL=' . $url);
 
+		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
 		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">';
 		echo '<head>';
-		echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
+		echo '<meta http-equiv="content-type" content="text/html; charset=' . $encoding_charset . '" />';
 		echo '<meta http-equiv="refresh" content="0; url=' . str_replace('&', '&amp;', $url) . '" />';
 		echo '<title>' . $lang['Redirect'] . '</title>';
 		echo '</head>';
@@ -3101,6 +3102,7 @@ function page_header($title = '', $parse_template = false)
 	$phpbb_meta .= '<meta name="description" content="' . str_replace('"', '', $meta_content['description']) . '" />' . "\n";
 	$phpbb_meta .= '<meta name="keywords" content="' . str_replace('"', '', $meta_content['keywords']) . '" />' . "\n";
 	$phpbb_meta .= '<meta name="category" content="general" />' . "\n";
+	$phpbb_meta .= '<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />' . "\n";
 
 	if (defined('IN_ADMIN') || defined('IN_CMS') || defined('IN_SEARCH') || defined('IN_POSTING'))
 	{
@@ -4059,8 +4061,8 @@ function page_header($title = '', $parse_template = false)
 	if (!defined('AJAX_HEADERS'))
 	{
 		// application/xhtml+xml not used because of IE
-		$header_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'utf8';
-		header('Content-type: text/html; charset=' . $header_lang);
+		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
+		header('Content-type: text/html; charset=' . $encoding_charset);
 		header('Cache-Control: private, no-cache="set-cookie"');
 		header('Expires: 0');
 		header('Pragma: no-cache');
@@ -4546,10 +4548,13 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 */
 function html_message($msg_title, $msg_text, $return_url)
 {
+	global $lang;
+	$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
+
 	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
 	echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">';
 	echo '<head>';
-	echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
+	echo '<meta http-equiv="content-type" content="text/html; charset=' . $encoding_charset . '" />';
 	echo '<title>' . $msg_title . '</title>';
 	echo '<style type="text/css">';
 	echo "\n" . '/* <![CDATA[ */' . "\n";

@@ -413,11 +413,12 @@ function pa_redirect($file_url)
 	if (@preg_match('#Microsoft|WebSTAR|Xitami#', getenv('SERVER_SOFTWARE')))
 	{
 		header('Refresh: 0; URL=' . $url);
+		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
 		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">';
 		echo '<head>';
-		echo '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
+		echo '<meta http-equiv="content-type" content="text/html; charset=' . $encoding_charset . '" />';
 		echo '<meta http-equiv="refresh" content="0; url=' . str_replace('&', '&amp;', $file_url) . '" />';
 		echo '<title>' . $lang['Redirect'] . '</title>';
 		echo '</head>';

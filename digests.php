@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		$sql = 'SELECT f.forum_id, f.forum_name, c.forum_order AS cat_order, f.forum_order
 			FROM ' . FORUMS_TABLE . ' f, ' . FORUMS_TABLE . ' c
 			WHERE f.parent_id = c.forum_id
-				AND auth_read IN (' . AUTH_ALL. ',' . AUTH_REG .')
+				AND f.auth_read IN (' . AUTH_ALL. ',' . AUTH_REG .')
 			ORDER BY c.forum_order, f.forum_order';
 		$result = $db->sql_query($sql);
 
