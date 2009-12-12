@@ -381,7 +381,7 @@ elseif ($mode == 'read')
 
 		if ($sent_info = $db->sql_fetchrow($result))
 		{
-			if ($config['max_sentbox_privmsgs'] && $sent_info['sent_items'] >= $config['max_sentbox_privmsgs'])
+			if ($config['max_sentbox_privmsgs'] && ($sent_info['sent_items'] >= $config['max_sentbox_privmsgs']))
 			{
 				$sql = "SELECT privmsgs_id FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_type = " . PRIVMSGS_SENT_MAIL . "
@@ -391,9 +391,12 @@ elseif ($mode == 'read')
 				$old_privmsgs_id = $db->sql_fetchrow($result);
 				$old_privmsgs_id = $old_privmsgs_id['privmsgs_id'];
 
-				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
-					WHERE privmsgs_id = $old_privmsgs_id";
-				$result = $db->sql_query($sql);
+				if (!empty($old_privmsgs_id))
+				{
+					$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
+						WHERE privmsgs_id = " . $old_privmsgs_id;
+					$result = $db->sql_query($sql);
+				}
 			}
 		}
 
