@@ -79,6 +79,11 @@ if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_ur
 	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
+if (empty($bbcode) || !class_exists('bbcode'))
+{
+	include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+}
+
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
 @ini_set('memory_limit', $mem_limit);
