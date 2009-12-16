@@ -80,6 +80,8 @@ if($can_reply)
 
 <div class="nav"><a href="{U_INDEX}">{L_INDEX}</a>{NAV_CAT_DESC}</div><br />
 
+<h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2>
+
 <div class="index">
 	<div class="bottom">
 		<div class="bottom-left"><a href="{U_POST_REPLY_TOPIC}" class="nav">{L_POST_REPLY_TOPIC}</a> {LOFI_QUICK_REPLY}</div>

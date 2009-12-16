@@ -46,7 +46,7 @@ setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
 
 $cms_type = 'cms_standard';
 
-if (!empty($_REQUEST['mode']) && ($_POST['mode'] != $_GET['mode']))
+if (!empty($_REQUEST['mode']) && !empty($_GET['mode']) && ($_POST['mode'] != $_GET['mode']))
 {
 	$_REQUEST['mode'] = $_GET['mode'];
 	$_POST['mode'] = $_GET['mode'];
@@ -55,7 +55,7 @@ $mode_array = array('blocks', 'config', 'layouts', 'layouts_special', 'smilies')
 $mode = request_var('mode', '');
 $mode = (in_array($mode, $mode_array) ? $mode : false);
 
-if (!empty($_REQUEST['action']) && ($_POST['action'] != $_GET['action']))
+if (!empty($_REQUEST['action']) && !empty($_GET['action']) && ($_POST['action'] != $_GET['action']))
 {
 	$_REQUEST['action'] = $_GET['action'];
 	$_POST['action'] = $_GET['action'];

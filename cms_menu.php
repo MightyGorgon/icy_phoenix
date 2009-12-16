@@ -38,7 +38,7 @@ if (!$userdata['session_admin'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cms_menu.' . PHP_EXT . '&admin=1', true));
 }
 
-if (!empty($_REQUEST['mode']) && ($_POST['mode'] != $_GET['mode']))
+if (!empty($_REQUEST['mode']) && !empty($_GET['mode']) && ($_POST['mode'] != $_GET['mode']))
 {
 	$_REQUEST['mode'] = $_GET['mode'];
 	$_POST['mode'] = $_GET['mode'];
@@ -57,7 +57,7 @@ $item_type = empty($item_type) ? false : $item_type;
 $item_type = isset($_POST['add_cat']) ? 'category_item' : $item_type;
 $item_type = htmlspecialchars($item_type);
 
-if (!empty($_REQUEST['action']) && ($_POST['action'] != $_GET['action']))
+if (!empty($_REQUEST['action']) && !empty($_GET['action']) && ($_POST['action'] != $_GET['action']))
 {
 	$_REQUEST['action'] = $_GET['action'];
 	$_POST['action'] = $_GET['action'];

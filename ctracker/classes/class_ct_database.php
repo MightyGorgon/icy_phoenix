@@ -389,9 +389,8 @@ class ct_database
 
 		if ($user_id != $userdata['user_id'])
 		{
-			include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
-
-			if ($user_id == CT_FIRST_ADMIN_UID)
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+			if ($user_id == $founder_id)
 			{
 				message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_1stadmin']);
 			}

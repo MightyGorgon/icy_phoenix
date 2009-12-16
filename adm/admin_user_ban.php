@@ -141,19 +141,21 @@ if ( isset($_POST['submit']) )
 	}
 
 	$email_list = array();
-	if ( isset($_POST['ban_email']) )
+	if (isset($_POST['ban_email']))
 	{
 		// CrackerTracker v5.x
-		if ( !empty($_POST['ban_email']) )
+		if (!empty($_POST['ban_email']))
 		{
 			include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
-			$temp_userdata = get_userdata(CT_FIRST_ADMIN_UID, false);
-			if( !$temp_userdata )
+
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+			$temp_userdata = get_userdata($founder_id, false);
+			if(!$temp_userdata)
 			{
-				message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+				message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 			}
 
-			if ( $temp_userdata['user_email'] == $_POST['ban_email'] )
+			if ($temp_userdata['user_email'] == $_POST['ban_email'])
 			{
 				message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_1stadmin']);
 			}

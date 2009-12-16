@@ -1048,6 +1048,6 @@ if (!empty($config['plugins']['cash']['enabled']))
 }
 // MG Cash MOD For IP - END
 
-full_page_generation('profile_view_body.tpl', $lang['Viewing_profile'], '', '');
+full_page_generation('profile_view_body.tpl', htmlspecialchars($profiledata['username']), '', '');
 
 ?>

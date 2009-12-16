@@ -25,6 +25,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 @include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
 $class_topics = new class_topics();
@@ -606,6 +607,7 @@ switch($mode)
 
 				empty_cache_folders(POSTS_CACHE_FOLDER);
 				empty_cache_folders(FORUMS_CACHE_FOLDER);
+				sync_topic_details(0, 0, true, false);
 				sync('forum', $new_forum_id);
 				sync('forum', $old_forum_id);
 				$message = ((sizeof($topics) == '1') ? sprintf($lang['Mod_CP_topic_moved'], find_names($old_forum_id), find_names($new_forum_id)) : sprintf($lang['Mod_CP_topics_moved'], find_names($old_forum_id), find_names($new_forum_id))) .'<br /><br />';
