@@ -102,6 +102,22 @@ $config_fields = array(
 			),
 		),
 
+	'display_tags_box' => array(
+		'lang_key' => 'IP_display_tags_box',
+		'explain' => 'IP_display_tags_box_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
+	'allow_moderators_edit_tags' => array(
+		'lang_key' => 'IP_allow_moderators_edit_tags',
+		'explain' => 'IP_allow_moderators_edit_tags_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => $list_yes_no,
+		),
+
 	'word_graph_max_words' => array(
 		'lang_key' => 'IP_word_graph_max_words',
 		'explain' => 'IP_word_graph_max_words_explain',
@@ -123,6 +139,17 @@ $config_fields = array(
 		'type' => 'LIST_RADIO',
 		'default' => 'Yes',
 		'values' => $list_yes_no,
+		),
+
+	'forum_tags_type' => array(
+		'lang_key' => 'IP_forum_tags_type',
+		'explain' => 'IP_forum_tags_type_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 'No',
+		'values' => array(
+			'IP_forum_tags_type_tags' => '0',
+			'IP_forum_tags_type_wordgraph' => '1',
+			),
 		),
 
 	'similar_topics' => array(

@@ -215,10 +215,10 @@ if ($lang_extend_admin)
 		'IP_no_bump_explain' => 'Enabling this option last posters won\'t be able to post within 24 hours from their last post unless someone else has posted a reply (never applies to admins)',
 		'MODS_ALLOWED' => 'Moderators Can Posts',
 
-		'IP_display_tags_box' => 'Display Topics Tags',
+		'IP_display_tags_box' => 'TAGS :: Display Topics Tags',
 		'IP_display_tags_box_explain' => 'Enabling this option will enable Topics Tags (tags could be used for indexing purpose): tags could be inserted / edited only by administrators (or moderators if you enable the switch below) to avoid spam',
 
-		'IP_allow_moderators_edit_tags' => 'Allow Moderators To Edit Tags',
+		'IP_allow_moderators_edit_tags' => 'TAGS :: Allow Moderators To Edit Tags',
 		'IP_allow_moderators_edit_tags_explain' => 'Enabling this option will allow Moderators to edit Topics Tags',
 
 		'IP_show_topic_description' => 'Enable Topic Description',
@@ -379,8 +379,7 @@ if ($lang_extend_admin)
 		'IP_sitemap_new_first' => 'New posts first',
 		'IP_sitemap_old_first' => 'Old posts first',
 
-		'Word_graph' => 'TAGS',
-
+//Tags
 		'IP_word_graph_max_words' => 'TAGS :: Maximum Words',
 		'IP_word_graph_max_words_explain' => 'Select the maximum number of words to display. A higher number could affect server load. The recommended number is 250.',
 
@@ -389,6 +388,11 @@ if ($lang_extend_admin)
 
 		'IP_forum_wordgraph' => 'TAGS :: Forum Tags (Global Switch)',
 		'IP_forum_wordgraph_explain' => 'This feature will enable a forum based tags table at the bottom of each forum. You will need also to enable single forums in Forums Management section.',
+
+		'IP_forum_tags_type' => 'TAGS :: Forum Tags Type',
+		'IP_forum_tags_type_explain' => 'You can choose whether to display Wordgraph (word taken from search tables) or Tags (tags specified in topics)',
+		'IP_forum_tags_type_tags' => 'Tags',
+		'IP_forum_tags_type_wordgraph' => 'Wordgraph',
 
 		'Similar_topics' => 'Similar Topics',
 		'Similar_topics_explain' => 'Configure search of similar topics.',

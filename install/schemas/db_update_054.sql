@@ -161,6 +161,7 @@ CREATE TABLE phpbb_plugins (
 ########################################
 ##              BUILD 058             ##
 ########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('forum_tags_type', '0');
 
 
 

@@ -95,23 +95,34 @@ class class_topics_tags
 	/*
 	* Update tag entry
 	*/
-	function update_tag_entry($tag_id)
+	function update_tag_entry($tag_ids_array, $remove_zero_tags = false)
 	{
 		global $db, $lang;
 
-		$tag_count = 0;
-		$sql = "SELECT COUNT(tag_id) as tag_count FROM " . TOPICS_TAGS_MATCH_TABLE . " WHERE tag_id = " . $tag_id;
-		$result = $db->sql_query($sql);
-		if ($row = $db->sql_fetchrow($result))
+		if (!is_array($tag_ids_array))
 		{
-			$tag_count = $row['tag_count'];
-			$db->sql_freeresult($result);
+			$tag_ids_array = array($tag_ids_array);
 		}
 
-		$sql = "UPDATE " . TOPICS_TAGS_LIST_TABLE . " SET tag_count = " . $tag_count . " WHERE tag_id = " . $tag_id;
-		$db->sql_query($sql);
+		for ($i = 0; $i < sizeof($tag_ids_array); $i++)
+		{
+			$tag_count = 0;
+			$sql = "SELECT COUNT(tag_id) as tag_count FROM " . TOPICS_TAGS_MATCH_TABLE . " WHERE tag_id = " . $tag_ids_array[$i];
+			$result = $db->sql_query($sql);
+			if ($row = $db->sql_fetchrow($result))
+			{
+				$tag_count = $row['tag_count'];
+				$db->sql_freeresult($result);
+			}
 
-		$this->remove_zero_tags();
+			$sql = "UPDATE " . TOPICS_TAGS_LIST_TABLE . " SET tag_count = " . $tag_count . " WHERE tag_id = " . $tag_ids_array[$i];
+			$db->sql_query($sql);
+		}
+
+		if ($remove_zero_tags)
+		{
+			$this->remove_zero_tags();
+		}
 
 		return $tag_id;
 	}
@@ -171,10 +182,11 @@ class class_topics_tags
 				$db->sql_query($sql);
 				if (!$tag_created)
 				{
-					$tag_id = $this->update_tag_entry($tag_id);
+					$tag_id = $this->update_tag_entry($tag_id, false);
 				}
 			}
 		}
+		$this->remove_zero_tags();
 
 		return true;
 	}
@@ -356,9 +368,10 @@ class class_topics_tags
 				$tag_id = $row['tag_id'];
 				$tags_ids_array = array($tag_id);
 				$this->remove_tag_from_match($tags_ids_array, $topic_id);
-				$tag_id = $this->update_tag_entry($tag_id);
+				$tag_id = $this->update_tag_entry($tag_id, false);
 			}
 		}
+		$this->remove_zero_tags();
 
 		return true;
 	}
@@ -383,9 +396,10 @@ class class_topics_tags
 				$tag_id = $row['tag_id'];
 				$tags_ids_array = array($tag_id);
 				$this->remove_tag_from_match($tags_ids_array, $topic_id);
-				$tag_id = $this->update_tag_entry($tag_id);
+				$tag_id = $this->update_tag_entry($tag_id, false);
 			}
 		}
+		$this->remove_zero_tags();
 
 		return true;
 	}
