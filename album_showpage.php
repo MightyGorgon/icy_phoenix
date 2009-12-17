@@ -668,7 +668,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				$commentrow[$i]['comment_text'] = strtr($commentrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
 
 				$commentrow[$i]['comment_text'] = $bbcode->acronym_pass($commentrow[$i]['comment_text']);
-				$commentrow[$i]['comment_text'] = autolink_text($commentrow[$i]['comment_text'], '999999');
+				$commentrow[$i]['comment_text'] = $bbcode->autolink_text($commentrow[$i]['comment_text'], '999999');
 
 				$user_sig = ($config['allow_sig']) ? trim($commentrow[$i]['user_sig']) : '';
 				if($user_sig != '')

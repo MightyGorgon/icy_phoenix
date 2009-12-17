@@ -411,6 +411,7 @@ else
 	$message = 'Error in card.php file';
 }
 
+$cache->destroy_datafiles(array('_ranks'), MAIN_CACHE_FOLDER, 'data', false);
 $db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
 $message .= ($post_id != '-1') ? '<br /><br />' . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>') : '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM). '">', '</a>');

@@ -95,7 +95,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$shout = (preg_match("/<a/", $shout)) ? str_replace("\">" , "\" target=\"_top\">", $shout) : $shout;
 
 	$shout = $bbcode->acronym_pass($shout);
-	$shout = autolink_text($shout, '999999');
+	$shout = $bbcode->autolink_text($shout, '999999');
 
 	$template->assign_block_vars('shoutrow', array(
 		'ROW_CLASS' => $row_class,

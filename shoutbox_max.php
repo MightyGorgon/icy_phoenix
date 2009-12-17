@@ -149,7 +149,7 @@ if ($refresh || $preview)
 			$preview_message = $bbcode->parse($preview_message);
 
 			$preview_message = $bbcode->acronym_pass($preview_message);
-			$preview_message = autolink_text($preview_message, '999999');
+			$preview_message = $bbcode->autolink_text($preview_message, '999999');
 
 			$preview_message = str_replace("\n", '<br />', $preview_message);
 			$template->set_filenames(array('preview' => 'posting_preview.tpl'));
@@ -518,7 +518,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$shout = str_replace("\n", "\n<br />\n", $shout);
 
 	$shout = $bbcode->acronym_pass($shout);
-	$shout = autolink_text($shout, '999999');
+	$shout = $bbcode->autolink_text($shout, '999999');
 
 	if ($is_auth['auth_mod'] && $is_auth['auth_delete'])
 	{

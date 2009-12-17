@@ -1431,7 +1431,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		if($acro_auto_on == true)
 		{
 			$preview_message = $bbcode->acronym_pass($preview_message);
-			$preview_message = autolink_text($preview_message, '999999');
+			$preview_message = $bbcode->autolink_text($preview_message, '999999');
 		}
 		//$preview_message = kb_word_wrap_pass($preview_message);
 		// End Autolinks For phpBB Mod

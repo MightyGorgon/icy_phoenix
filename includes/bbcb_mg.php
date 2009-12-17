@@ -377,6 +377,10 @@ else
 
 if (defined('BBCB_MG_SMALL'))
 {
+	if (!function_exists('generate_smilies_row'))
+	{
+		include_once(IP_ROOT_PATH . 'includes/functions_bbcode.' . PHP_EXT);
+	}
 	generate_smilies_row();
 }
 

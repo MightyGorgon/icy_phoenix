@@ -62,7 +62,7 @@ if(!strlen($code_text))
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
 
-$code_text = undo_htmlspecialchars($code_text, true);
+$code_text = $bbcode->undo_htmlspecialchars($code_text, true);
 
 if(empty($code_filename))
 {

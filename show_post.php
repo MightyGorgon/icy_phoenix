@@ -338,7 +338,7 @@ if ($row = $db->sql_fetchrow($result))
 		if ($row['enable_autolinks_acronyms'])
 		{
 			$message = $bbcode->acronym_pass($message);
-			$message = autolink_text($message, $forum_id);
+			$message = $bbcode->autolink_text($message, $forum_id);
 		}
 
 		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))

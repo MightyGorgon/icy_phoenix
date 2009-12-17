@@ -171,7 +171,7 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 			if ($row['enable_autolinks_acronyms'])
 			{
 				$message = $bbcode->acronym_pass($message);
-				$message = autolink_text($message, $forum_id);
+				$message = $bbcode->autolink_text($message, $forum_id);
 			}
 			//$message = kb_word_wrap_pass ($message);
 			if (!empty($topic_calendar_time) && ($topic_first_post_id == $row['post_id']))

@@ -746,7 +746,7 @@ class NewsModule
 			if ($enable_autolinks_acronyms)
 			{
 				$text = $bbcode->acronym_pass($text);
-				$text = autolink_text($text, '999999');
+				$text = $bbcode->autolink_text($text, '999999');
 			}
 		}
 		else

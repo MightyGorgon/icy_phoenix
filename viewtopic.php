@@ -734,7 +734,7 @@ $nav_links['up'] = array(
 );
 //SEO TOOLKIT END
 
-$is_this_locked = ($forum_topic_data['forum_status'] == FORUM_LOCKED || $forum_topic_data['topic_status'] == TOPIC_LOCKED) ? true : false;
+$is_this_locked = (($forum_topic_data['forum_status'] == FORUM_LOCKED) || ($forum_topic_data['topic_status'] == TOPIC_LOCKED)) ? true : false;
 $reply_img = $is_this_locked ? $images['reply_locked'] : $images['reply_new'];
 $reply_alt = $is_this_locked ? $lang['Topic_locked'] : $lang['Reply_to_topic'];
 $post_img = ($forum_topic_data['forum_status'] == FORUM_LOCKED) ? $images['post_locked'] : $images['post_new'];
@@ -1840,7 +1840,7 @@ for($i = 0; $i < $total_posts; $i++)
 					break;
 				}
 			}
-			if (($user_warnings > $config['max_user_bancard']) || ($is_banned == true))
+			if (($user_warnings > $config['max_user_bancard']) || $is_banned)
 			{
 				$card_img = '<img src="' . $images['icon_r_cards'] . '" alt="' . $lang['Banned'] . '" title="' . $lang['Banned'] . '">';
 			}
@@ -2102,7 +2102,7 @@ for($i = 0; $i < $total_posts; $i++)
 	if ($postrow[$i]['enable_autolinks_acronyms'])
 	{
 		$message = $bbcode->acronym_pass($message);
-		$message = autolink_text($message, $forum_id);
+		$message = $bbcode->autolink_text($message, $forum_id);
 	}
 	//Acronyms, AutoLinks - END
 
@@ -2534,7 +2534,14 @@ $template->assign_vars(array(
 	)
 );
 
-generate_smilies_row();
+if($can_reply)
+{
+	if (!function_exists('generate_smilies_row'))
+	{
+		include_once(IP_ROOT_PATH . 'includes/functions_bbcode.' . PHP_EXT);
+	}
+	generate_smilies_row();
+}
 
 full_page_generation($template_to_parse, $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 

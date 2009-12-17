@@ -84,7 +84,7 @@ Acronyms, Autolinks
 =================================
 
 $text = $bbcode->acronym_pass($text);
-$text = autolink_text($text, $forum_id);
+$text = $bbcode->autolink_text($text, $forum_id);
 ====================
 
 
@@ -168,6 +168,9 @@ if (function_exists('create_server_url'))
 {
 	array_merge(array(create_server_url()), $urls_local);
 }
+
+// Need to initialize the random numbers only ONCE
+mt_srand((double) microtime() * 1000000);
 
 class bbcode
 {
@@ -945,6 +948,10 @@ class bbcode
 			{
 				if ($tag === 'attachment')
 				{
+					if (!function_exists('get_attachment_details'))
+					{
+						include_once(IP_ROOT_PATH . 'includes/functions_bbcode.' . PHP_EXT);
+					}
 					$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
 					$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $userdata);
 					$attachment_details = get_attachment_details($params['id']);
@@ -955,6 +962,10 @@ class bbcode
 				}
 				else
 				{
+					if (!function_exists('get_download_details'))
+					{
+						include_once(IP_ROOT_PATH . 'includes/functions_bbcode.' . PHP_EXT);
+					}
 					$attachment_details = get_download_details($params['id']);
 					$errored = ($attachment_details == false) ? true : false;
 				}
@@ -3322,19 +3333,19 @@ class bbcode
 				$id ? ':' . $id : '',
 				'code:1]',
 				'list:o]',
-				);
+			);
 			$replace = array(
 				'',
 				'code]',
 				'list]',
-				);
+			);
 			$text = str_replace($search, $replace, $text);
 			// We need this after having removed bbcode_uid... but don't know why
-			$text = undo_htmlspecialchars($text);
+			$text = $this->undo_htmlspecialchars($text);
 			/*
 			if($id)
 			{
-				$text = undo_htmlspecialchars($text);
+				$text = $this->undo_htmlspecialchars($text);
 			}
 			*/
 		}
@@ -3779,6 +3790,43 @@ class bbcode
 	}
 
 	/*
+	* Undo HTML special chars
+	*/
+	function undo_htmlspecialchars($input, $full_undo = false)
+	{
+		if($full_undo)
+		{
+			$input = str_replace('&nbsp;', '', $input);
+		}
+		$input = preg_replace("/&gt;/i", ">", $input);
+		$input = preg_replace("/&lt;/i", "<", $input);
+		$input = preg_replace("/&quot;/i", "\"", $input);
+		$input = preg_replace("/&amp;/i", "&", $input);
+
+		if($full_undo)
+		{
+			if(preg_match_all('/&\#([0-9]+);/', $input, $matches) && sizeof($matches))
+			{
+				$list = array();
+				for($i = 0; $i < sizeof($matches[1]); $i++)
+				{
+					$list[$matches[1][$i]] = true;
+				}
+				$search = array();
+				$replace = array();
+				foreach($list as $var => $value)
+				{
+					$search[] = '&#' . $var . ';';
+					$replace[] = chr($var);
+				}
+				$input = str_replace($search, $replace, $input);
+			}
+		}
+
+		return $input;
+	}
+
+	/*
 	* This function will strip common BBCodes tags, but some of them will be left there (such as CODE or QUOTE)
 	*/
 	function bbcode_killer($text, $id = false)
@@ -4000,6 +4048,147 @@ class bbcode
 		return $text;
 	}
 
+	// Autolinks - BEGIN
+	//
+	// Obtain list of autolink words and build preg style replacement arrays for use by the calling script, note that the vars are passed as references this just makes it easier to return both sets of arrays
+	//
+	function obtain_autolinks_list($forum_id)
+	{
+		global $db;
+
+		$where = ($forum_id) ? ' WHERE link_forum = 0 OR link_forum IN (' . $forum_id . ')' : ' WHERE link_forum = -1';
+		$sql = "SELECT * FROM " . AUTOLINKS . $where;
+		$result = $db->sql_query($sql, 0, 'autolinks_', TOPICS_CACHE_FOLDER);
+
+		$autolinks = array();
+		while($row = $db->sql_fetchrow($result))
+		{
+			// Munge word boundaries to stop autolinks from linking to
+			// themselves or other autolinks in step 2 in the function below.
+			$row['link_url'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_url']);
+			$row['link_comment'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_comment']);
+
+			if($row['link_style'])
+			{
+				$row['link_style'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_style']);
+				$style = ' style="' . htmlspecialchars($row['link_style']) . '" ';
+			}
+			else
+			{
+				$style = ' ';
+			}
+			$autolinks['match'][] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/'). ')(?![\/\w@:-])(?!\.\w)/i';
+			if($row['link_int'])
+			{
+				$autolinks['replace'][] = '<a href="' . append_sid(htmlspecialchars($row['link_url'])) . '" target="_self"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
+			}
+			else
+			{
+				$autolinks['replace'][] = '<a href="' . htmlspecialchars($row['link_url']) . '" target="_blank"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
+			}
+		}
+		$db->sql_freeresult($result);
+
+		return $autolinks;
+	}
+
+	/**
+	* Autolinks
+	* Original Author - Jim McDonald - Edited by Mighty Gorgon
+	*/
+	function autolink_text($text, $forum_id = '')
+	{
+		static $autolinks;
+
+		if (empty($text))
+		{
+			return $text;
+		}
+
+		if (!isset($autolinks) || !is_array($autolinks))
+		{
+			$autolinks = $this->obtain_autolinks_list($forum_id);
+		}
+
+		if (sizeof($autolinks))
+		{
+			global $config;
+			// Step 1 - move all tags out of the text and replace them with placeholders
+			preg_match_all('/(<a\s+.*?\/a>|<[^>]+>)/i', $text, $matches);
+			$matchnum = sizeof($matches[1]);
+			for($i = 0; $i < $matchnum; $i++)
+			{
+				$text = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', "ALPLACEHOLDER{$i}PH", $text, 1);
+			}
+
+			// Step 2 - s/r of the remaining text
+			if($config['autolink_first'])
+			{
+				$text = preg_replace($autolinks['match'], $autolinks['replace'], $text, 1);
+			}
+			else
+			{
+				$text = preg_replace($autolinks['match'], $autolinks['replace'], $text);
+			}
+
+			// Step 3 - replace the spaces we munged in step 1
+			$text = preg_replace('/ALSPACEHOLDER/', '', $text);
+
+			// Step 4 - replace the HTML tags that we removed in step 1
+			for($i = 0; $i < $matchnum; $i++)
+			{
+				$text = preg_replace("/ALPLACEHOLDER{$i}PH/", $matches[1][$i], $text, 1);
+			}
+		}
+
+		return $text;
+	}
+	// Autolinks - END
+
+	/*
+	* Generate bbcode uid
+	*/
+	function make_bbcode_uid()
+	{
+		// Unique ID for this message..
+		$uid = unique_id();
+		$uid = substr($uid, 0, BBCODE_UID_LEN);
+		return $uid;
+	}
+
+	/*
+	* Make a link clickable
+	*/
+	function make_clickable($text)
+	{
+		$text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1:", $text);
+		$text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1&#058;", $text);
+
+		// pad it with a space so we can match things at the start of the 1st line.
+		$ret = ' ' . $text;
+
+		// matches an "xxxx://yyyy" URL at the start of a line, or after a space.
+		// xxxx can only be alpha characters.
+		// yyyy is anything up to the first space, newline, comma, double quote or <
+		$ret = preg_replace("#(^|[\n ])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
+
+		// matches a "www|ftp.xxxx.yyyy[/zzzz]" kinda lazy URL thing
+		// Must contain at least 2 dots. xxxx contains either alphanum, or "-"
+		// zzzz is optional.. will contain everything up to the first space, newline,
+		// comma, double quote or <.
+		$ret = preg_replace("#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
+
+
+		// matches an email@domain type address at the start of a line, or after a space.
+		// Note: Only the followed chars are valid; alphanums, "-", "_" and or ".".
+		$ret = preg_replace("#(^|[\n ])([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $ret);
+
+		// Remove our padding..
+		$ret = substr($ret, 1);
+
+		return($ret);
+	}
+
 }
 
 $bbcode = new bbcode();
@@ -4008,420 +4197,6 @@ if (defined('SMILIES_TABLE'))
 {
 	$bbcode->allowed_smilies = array();
 	$bbcode->allowed_smilies = $cache->obtain_smileys(false);
-}
-
-// Need to initialize the random numbers only ONCE
-mt_srand((double) microtime() * 1000000);
-
-/**
-* For display of custom parsed text on user-facing pages
-* Expects $text to be the value directly from the database (stored value)
-*/
-function generate_text_for_display($text, $only_smileys = false, $censor = true, $acro_autolinks = false, $forum_id = '999999')
-{
-	global $bbcode, $config, $userdata;
-
-	if (empty($text))
-	{
-		return '';
-	}
-
-	if (defined('IS_ICYPHOENIX') && $censor)
-	{
-		$text = censor_text($text);
-	}
-
-	if (!class_exists('bbcode'))
-	{
-		include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-	}
-
-	if (empty($bbcode))
-	{
-		$bbcode = new bbcode();
-		if (!$userdata['session_logged_in'])
-		{
-			$userdata['user_allowhtml'] = $config['allow_html'] ? true : false;
-			$userdata['user_allowbbcode'] = $config['allow_bbcode'] ? true : false;
-			$userdata['user_allowsmile'] = $config['allow_smilies'] ? true : false;
-		}
-		$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
-		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
-	}
-
-	if ($only_smileys)
-	{
-		$text = $bbcode->parse_only_smilies($text);
-	}
-	else
-	{
-		$text = $bbcode->parse($text);
-		if (defined('IS_ICYPHOENIX') && $acro_autolinks)
-		{
-			$text = $bbcode->acronym_pass($text);
-			$text = autolink_text($text, $forum_id);
-		}
-	}
-
-	return $text;
-}
-
-/*
-* Generate bbcode uid
-*/
-function make_bbcode_uid()
-{
-	// Unique ID for this message..
-	$uid = unique_id();
-	$uid = substr($uid, 0, BBCODE_UID_LEN);
-	return $uid;
-}
-
-/*
-* Generate a single row of smileys
-* Moved here from functions_post to optimize viewtopic and remove the full include of functions_post
-*/
-if (defined('SMILIES_TABLE'))
-{
-	function generate_smilies_row()
-	{
-		global $db, $cache, $config, $template;
-		if (defined('IN_PA_POSTING'))
-		{
-			global $pafiledb_template;
-		}
-
-		$max_smilies = (!empty($config['smilie_single_row']) ? intval($config['smilie_single_row']) : 20);
-
-		$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " GROUP BY smile_url ORDER BY smilies_order LIMIT " . $max_smilies;
-		$result = $db->sql_query($sql, 0, 'smileys_');
-
-		$host = extract_current_hostname();
-
-		$orig = array();
-		$repl = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$parsing_template = array(
-				'CODE' => $row['code'],
-				'URL' => 'http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'],
-				'DESC' => htmlspecialchars($row['emoticon'])
-			);
-			if (defined('IN_PA_POSTING'))
-			{
-				$pafiledb_template->assign_block_vars('smilies', $parsing_template);
-			}
-			else
-			{
-				$template->assign_block_vars('smilies', $parsing_template);
-			}
-		}
-		$db->sql_freeresult($result);
-	}
-}
-
-/*
-* Undo HTML special chars
-*/
-function undo_htmlspecialchars($input, $full_undo = false)
-{
-	if($full_undo)
-	{
-		$input = str_replace('&nbsp;', '', $input);
-	}
-	$input = preg_replace("/&gt;/i", ">", $input);
-	$input = preg_replace("/&lt;/i", "<", $input);
-	$input = preg_replace("/&quot;/i", "\"", $input);
-	$input = preg_replace("/&amp;/i", "&", $input);
-
-	if($full_undo)
-	{
-		if(preg_match_all('/&\#([0-9]+);/', $input, $matches) && sizeof($matches))
-		{
-			$list = array();
-			for($i = 0; $i < sizeof($matches[1]); $i++)
-			{
-				$list[$matches[1][$i]] = true;
-			}
-			$search = array();
-			$replace = array();
-			foreach($list as $var => $value)
-			{
-				$search[] = '&#' . $var . ';';
-				$replace[] = chr($var);
-			}
-			$input = str_replace($search, $replace, $input);
-		}
-	}
-
-	return $input;
-}
-
-/*
-* Make a link clickable
-*/
-function make_clickable($text)
-{
-	$text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1:", $text);
-	$text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1&#058;", $text);
-
-	// pad it with a space so we can match things at the start of the 1st line.
-	$ret = ' ' . $text;
-
-	// matches an "xxxx://yyyy" URL at the start of a line, or after a space.
-	// xxxx can only be alpha characters.
-	// yyyy is anything up to the first space, newline, comma, double quote or <
-	$ret = preg_replace("#(^|[\n ])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
-
-	// matches a "www|ftp.xxxx.yyyy[/zzzz]" kinda lazy URL thing
-	// Must contain at least 2 dots. xxxx contains either alphanum, or "-"
-	// zzzz is optional.. will contain everything up to the first space, newline,
-	// comma, double quote or <.
-	$ret = preg_replace("#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
-
-
-	// matches an email@domain type address at the start of a line, or after a space.
-	// Note: Only the followed chars are valid; alphanums, "-", "_" and or ".".
-	$ret = preg_replace("#(^|[\n ])([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $ret);
-
-	// Remove our padding..
-	$ret = substr($ret, 1);
-
-	return($ret);
-}
-
-// Autolinks - BEGIN
-//
-// Obtain list of autolink words and build preg style replacement arrays for use by the calling script, note that the vars are passed as references this just makes it easier to return both sets of arrays
-//
-function obtain_autolinks_list($forum_id)
-{
-	global $db;
-
-	$where = ($forum_id) ? ' WHERE link_forum = 0 OR link_forum IN (' . $forum_id . ')' : ' WHERE link_forum = -1';
-	$sql = "SELECT * FROM " . AUTOLINKS . $where;
-	$result = $db->sql_query($sql, 0, 'autolinks_', TOPICS_CACHE_FOLDER);
-
-	$autolinks = array();
-	while($row = $db->sql_fetchrow($result))
-	{
-		// Munge word boundaries to stop autolinks from linking to
-		// themselves or other autolinks in step 2 in the function below.
-		$row['link_url'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_url']);
-		$row['link_comment'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_comment']);
-
-		if($row['link_style'])
-		{
-			$row['link_style'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_style']);
-			$style = ' style="' . htmlspecialchars($row['link_style']) . '" ';
-		}
-		else
-		{
-			$style = ' ';
-		}
-		$autolinks['match'][] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/'). ')(?![\/\w@:-])(?!\.\w)/i';
-		if($row['link_int'])
-		{
-			$autolinks['replace'][] = '<a href="' . append_sid(htmlspecialchars($row['link_url'])) . '" target="_self"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
-		}
-		else
-		{
-			$autolinks['replace'][] = '<a href="' . htmlspecialchars($row['link_url']) . '" target="_blank"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
-		}
-	}
-	$db->sql_freeresult($result);
-
-	return $autolinks;
-}
-
-/**
-* Autolinks
-* Original Author - Jim McDonald - Edited by Mighty Gorgon
-*/
-function autolink_text($text, $forum_id = '')
-{
-	static $autolinks;
-
-	if (empty($text))
-	{
-		return $text;
-	}
-
-	if (!isset($autolinks) || !is_array($autolinks))
-	{
-		$autolinks = obtain_autolinks_list($forum_id);
-	}
-
-	if (sizeof($autolinks))
-	{
-		global $config;
-		// Step 1 - move all tags out of the text and replace them with placeholders
-		preg_match_all('/(<a\s+.*?\/a>|<[^>]+>)/i', $text, $matches);
-		$matchnum = sizeof($matches[1]);
-		for($i = 0; $i < $matchnum; $i++)
-		{
-			$text = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', "ALPLACEHOLDER{$i}PH", $text, 1);
-		}
-
-		// Step 2 - s/r of the remaining text
-		if($config['autolink_first'])
-		{
-			$text = preg_replace($autolinks['match'], $autolinks['replace'], $text, 1);
-		}
-		else
-		{
-			$text = preg_replace($autolinks['match'], $autolinks['replace'], $text);
-		}
-
-		// Step 3 - replace the spaces we munged in step 1
-		$text = preg_replace('/ALSPACEHOLDER/', '', $text);
-
-		// Step 4 - replace the HTML tags that we removed in step 1
-		for($i = 0; $i < $matchnum; $i++)
-		{
-			$text = preg_replace("/ALPLACEHOLDER{$i}PH/", $matches[1][$i], $text, 1);
-		}
-	}
-
-	return $text;
-}
-// Autolinks - END
-
-/*
-* Get attachment details
-*/
-function get_attachment_details($attach_id)
-{
-	global $db;
-	$sql = "SELECT a.*, d.*, s.*, p.forum_id
-		FROM " . ATTACHMENTS_TABLE . " a, " . ATTACHMENTS_DESC_TABLE . " d, " . ATTACHMENTS_STATS_TABLE . " s, " . POSTS_TABLE . " p
-		WHERE a.attach_id = " . $attach_id . "
-			AND d.attach_id = a.attach_id
-			AND s.attach_id = a.attach_id
-			AND a.post_id > 0
-			AND p.post_id = a.post_id
-		LIMIT 1";
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$db->sql_freeresult($result);
-		return $row;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-/*
-* Get download details
-*/
-function get_download_details($file_id)
-{
-	global $db, $userdata;
-	$sql = "SELECT f.*, c.*
-		FROM " . PA_FILES_TABLE . " f, " . PA_CATEGORY_TABLE . " c
-		WHERE file_id = " . $file_id . "
-			AND file_approved = '1'
-			AND c.cat_id = f.file_catid
-		LIMIT 1";
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$db->sql_freeresult($result);
-		$allowed = false;
-		if (($row['auth_view_file'] == AUTH_ALL) || ($userdata['user_level'] == ADMIN))
-		{
-			$allowed = true;
-		}
-		elseif (($row['auth_view_file'] == AUTH_REG) && $userdata['session_logged_in'])
-		{
-			$allowed = true;
-		}
-		return ($allowed ? $row : false);
-	}
-	else
-	{
-		return false;
-	}
-}
-
-/*
-* This function turns HTML into text... strips tags, comments spanning multiple lines including CDATA, and anything else that gets in it's way.
-*/
-function html2txt($document)
-{
-	$search = array(
-						'@<script[^>]*?>.*?</script>@si',	// Strip out javascript
-						'@<[\/\!]*?[^<>]*?>@si',					// Strip out HTML tags
-						'@<style[^>]*?>.*?</style>@siU',	// Strip style tags properly
-						'@<![\s\S]*?--[ \t\n\r]*>@'				// Strip multi-line comments including CDATA
-					);
-	$text = preg_replace($search, '', $document);
-	return $text;
-}
-
-/*
-* Convert newline to paragraph
-*/
-function nl2any($text, $tag = 'p', $feed = '')
-{
-	// making tags
-	$start_tag = "<$tag" . ($feed ? ' ' . $feed : '') . '>';
-	$end_tag = "</$tag>";
-
-	// exploding string to lines
-	$lines = preg_split('`[\n\r]+`', trim($text));
-
-	// making new string
-	$string = '';
-	foreach($lines as $line)
-	$string .= "$start_tag$line$end_tag\n";
-
-	return $string;
-}
-
-/*
-* Convert paragraphs to newline
-*/
-function any2nl($text, $tag = 'p')
-{
-	//exploding
-	preg_match_all("`<" . $tag . "[^>]*>(.*)</" . $tag . ">`Ui", $text, $results);
-	// reimploding without tags
-	return implode("\n", array_filter($results[1]));
-}
-
-/*
-* Convert BR to newline
-*/
-function br2nl($text, $remove_linebreaks = false)
-{
-	if ($remove_linebreaks)
-	{
-		$text = preg_replace("/(\r\n|\n|\r)/", "", $text);
-	}
-	return preg_replace("=<br */?>=i", "\n", $text);
-}
-
-/*
-* Convert newline to BR
-*/
-function nl2br_mg($text)
-{
-	/*
-	$text = preg_replace("/\r\n/", "\n", $text);
-	$text = str_replace('<br />', "\n", $text);
-	*/
-	$text = preg_replace(array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/"), array("\r\n", "\r\n", "<br />\r\n"), $text);
-	return $text;
 }
 
 ?>

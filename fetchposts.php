@@ -242,7 +242,7 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 			if ($posts[$i]['enable_autolinks_acronyms'])
 			{
 				$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
-				$posts[$i]['post_text'] = autolink_text($posts[$i]['post_text'], '999999');
+				$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
 			}
 			//Acronyms, AutoLinks - END
 			$i++;

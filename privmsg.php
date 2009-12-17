@@ -698,7 +698,7 @@ elseif ($mode == 'read')
 	if ($privmsg['privmsgs_enable_autolinks_acronyms'])
 	{
 		$private_message = $bbcode->acronym_pass($private_message);
-		$private_message = autolink_text($private_message, '999999');
+		$private_message = $bbcode->autolink_text($private_message, '999999');
 	}
 	//Acronyms, AutoLinks -END
 
@@ -1772,7 +1772,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		if($acro_auto_on)
 		{
 			$preview_message = $bbcode->acronym_pass($preview_message);
-			$preview_message = autolink_text($preview_message, '999999');
+			$preview_message = $bbcode->autolink_text($preview_message, '999999');
 		}
 		//$preview_message = kb_word_wrap_pass($preview_message);
 		$s_hidden_fields = '<input type="hidden" name="folder" value="' . $folder . '" />';
@@ -1902,7 +1902,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	if ($row['privmsgs_enable_autolinks_acronyms'])
 	{
 		$prv_msg_review = $bbcode->acronym_pass($prv_msg_review);
-		$prv_msg_review = autolink_text($prv_msg_review, '999999');
+		$prv_msg_review = $bbcode->autolink_text($prv_msg_review, '999999');
 	}
 
 	$prv_msg_review = censor_text($prv_msg_review);

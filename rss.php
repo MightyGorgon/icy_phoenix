@@ -326,9 +326,9 @@ else
 	$template->assign_vars(array(
 		'S_CONTENT_ENCODING' => $lang['ENCODING'],
 		'BOARD_URL' => $index_url,
-		'BOARD_TITLE' => htmlspecialchars(undo_htmlspecialchars(strip_tags($site_name))),
+		'BOARD_TITLE' => htmlspecialchars($bbcode->undo_htmlspecialchars(strip_tags($site_name))),
 		'PROGRAM' => $ProgName,
-		'BOARD_DESCRIPTION' => htmlspecialchars(undo_htmlspecialchars(strip_tags($site_description))),
+		'BOARD_DESCRIPTION' => htmlspecialchars($bbcode->undo_htmlspecialchars(strip_tags($site_description))),
 		'BOARD_MANAGING_EDITOR' => $config['board_email'],
 		'BOARD_WEBMASTER' => $config['board_email'],
 		'BUILD_DATE' => gmdate('D, d M Y H:i:s') . ' GMT',
@@ -420,7 +420,7 @@ else
 				// $author0 = $post['post_username'];
 				$author= $post['post_username'];
 			}
-			$author = make_clickable($author);
+			$author = $bbcode->make_clickable($author);
 			// Assign "item" variables to template
 			$topic_title = utf8_encode($topic_title);
 			$post_subject = utf8_encode($post_subject);
@@ -435,7 +435,7 @@ else
 				'UTF_TIME' => RSSTimeFormat($post['post_time'],$userdata['user_timezone']),
 
 				'FORUM_NAME' => $post['forum_name'],
-				'TOPIC_TITLE' => undo_htmlspecialchars($topic_title),
+				'TOPIC_TITLE' => $bbcode->undo_htmlspecialchars($topic_title),
 
 				'AUTHOR' => $author,
 				'POST_TIME' => create_date($config['default_dateformat'], $post['post_time'], $config['board_timezone']) . ' (GMT ' . $config['board_timezone'] . ')',

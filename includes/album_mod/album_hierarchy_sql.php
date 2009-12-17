@@ -1929,7 +1929,7 @@ function album_build_last_comments_info($cats)
 			$commentsrow[$i]['comment_text'] = strtr($commentsrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
 
 			$commentsrow[$i]['comment_text'] = $bbcode->acronym_pass($commentsrow[$i]['comment_text']);
-			$commentsrow[$i]['comment_text'] = autolink_text($commentsrow[$i]['comment_text'], '999999');
+			$commentsrow[$i]['comment_text'] = $bbcode->autolink_text($commentsrow[$i]['comment_text'], '999999');
 
 			$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id']));
 			$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id']));
