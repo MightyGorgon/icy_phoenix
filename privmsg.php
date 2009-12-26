@@ -596,6 +596,10 @@ elseif ($mode == 'read')
 	$user_id_from = $privmsg['user_id_1'];
 	$username_to = colorize_username($privmsg['user_id_2'], $privmsg['username_2'], $privmsg['user_color_2'], $privmsg['user_active_2']);
 	$user_id_to = $privmsg['user_id_2'];
+
+	// Needed for attachments... do not remove!
+	$template_to_parse = 'privmsgs_read_body.tpl';
+	$template->set_filenames(array('body' => $template_to_parse));
 	init_display_pm_attachments($privmsg['privmsgs_attachment']);
 
 	$post_date = create_date_ip($config['default_dateformat'], $privmsg['privmsgs_date'], $config['board_timezone']);
@@ -786,7 +790,7 @@ elseif ($mode == 'read')
 		)
 	);
 
-	full_page_generation('privmsgs_read_body.tpl', $lang['Read_pm'], '', '');
+	full_page_generation($template_to_parse, $lang['Read_pm'], '', '');
 }
 elseif (($delete && $mark_list) || $delete_all)
 {

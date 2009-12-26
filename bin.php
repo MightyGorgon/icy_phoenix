@@ -22,6 +22,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
+include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+$mcp_topic = new class_mcp_topic();
+
 @include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
 $class_topics = new class_topics();
 
@@ -110,7 +113,7 @@ if ($confirm)
 {
 	if (($config['bin_forum'] == 0) || (empty($_POST['topic_id_list']) && empty($topic_id)))
 	{
-		$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+		$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 		$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
 		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
@@ -120,77 +123,10 @@ if ($confirm)
 	}
 	else
 	{
-		// Define bin forum
-		$new_forum_id = intval($config['bin_forum']);
-		$old_forum_id = $forum_id;
+		$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 
-		if ($new_forum_id != $old_forum_id)
+		if($mcp_topic->topic_recycle($topics, $forum_id))
 		{
-			$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
-
-			$topic_list = '';
-			for($i = 0; $i < sizeof($topics); $i++)
-			{
-				$topic_list .= (($topic_list != '') ? ', ' : '') . intval($topics[$i]);
-			}
-
-			$sql = "SELECT *
-				FROM " . TOPICS_TABLE . "
-				WHERE topic_id IN ($topic_list)
-					AND forum_id = $old_forum_id
-					AND topic_status <> " . TOPIC_MOVED;
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrowset($result);
-			$db->sql_freeresult($result);
-
-			$db->sql_transaction('begin');
-
-			for($i = 0; $i < sizeof($row); $i++)
-			{
-				$topic_id = $row[$i]['topic_id'];
-
-				if (isset($_POST['move_leave_shadow']))
-				{
-					// Insert topic in the old forum that indicates that the forum has moved.
-					$sql = "INSERT INTO " . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_status, topic_type, topic_vote, topic_views, topic_replies, topic_first_post_id, topic_last_post_id, topic_moved_id)
-						VALUES ($old_forum_id, '" . addslashes(str_replace("\'", "''", $row[$i]['topic_title'])) . "', '" . str_replace("\'", "''", $row[$i]['topic_poster']) . "', " . $row[$i]['topic_time'] . ", " . TOPIC_MOVED . ", " . POST_NORMAL . ", " . $row[$i]['topic_vote'] . ", " . $row[$i]['topic_views'] . ", " . $row[$i]['topic_replies'] . ", " . $row[$i]['topic_first_post_id'] . ", " . $row[$i]['topic_last_post_id'] . ", $topic_id)";
-					$result = $db->sql_query($sql);
-				}
-
-				$sql = "UPDATE " . TOPICS_TABLE . "
-					SET forum_id = " . $new_forum_id . "
-					WHERE topic_id = " . $topic_id;
-				$result = $db->sql_query($sql);
-
-				$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id = " . $topic_id;
-				$result = $db->sql_query($sql);
-
-//<!-- BEGIN Unread Post Information to Database Mod -->
-				$sql = "UPDATE " . UPI2DB_LAST_POSTS_TABLE . "
-					SET forum_id = " . $new_forum_id . "
-					WHERE topic_id = " . $topic_id;
-				$result = $db->sql_query($sql);
-
-				$sql = "UPDATE " . UPI2DB_UNREAD_POSTS_TABLE . "
-					SET forum_id = " . $new_forum_id . "
-					WHERE topic_id = " . $topic_id;
-				$result = $db->sql_query($sql);
-//<!-- BEGIN Unread Post Information to Database Mod -->
-
-				$sql = "UPDATE " . POSTS_TABLE . "
-					SET forum_id = " . $new_forum_id . "
-					WHERE topic_id = " . $topic_id;
-				$result = $db->sql_query($sql);
-			}
-
-			$db->sql_transaction('commit');
-
-			// Sync the forum indexes
-			empty_cache_folders(POSTS_CACHE_FOLDER);
-			empty_cache_folders(FORUMS_CACHE_FOLDER);
-			sync('forum', $new_forum_id);
-			sync('forum', $old_forum_id);
-
 			$message = $lang['Topics_Moved_bin'];
 		}
 		else
@@ -201,7 +137,7 @@ if ($confirm)
 		$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
 		$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
 
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
 
 		meta_refresh(3, $redirect_url);
 

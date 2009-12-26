@@ -938,6 +938,46 @@ class files_management
 
 		return $result;
 	}
+
+	/**
+	* Recursive CHMOD re-set for files that cannot be handled via FTP because of different owner
+	*/
+	function rchmod($parent, $dmod, $fmod)
+	{
+		if (@is_dir($parent))
+		{
+			$old = @umask(0000);
+			@chmod($parent, $dmod);
+			@umask($old);
+			if ($handle = @opendir($parent))
+			{
+				while (($file = @readdir($handle)) !== false)
+				{
+					if (($file === '.') || ($file === '..'))
+					{
+						continue;
+					}
+					elseif (@is_dir($parent . '/' . $file))
+					{
+						$this->rchmod($parent . '/' . $file, $dmod, $fmod);
+					}
+					else
+					{
+						$old = @umask(0000);
+						@chmod($parent . '/' . $file, $fmod);
+						@umask($old);
+					}
+				}
+				@closedir($handle);
+			}
+		}
+		else
+		{
+			$old = @umask(0000);
+			@chmod($parent, $fmod);
+			@umask($old);
+		}
+	}
 }
 
 ?>

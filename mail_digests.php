@@ -81,7 +81,7 @@ if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_ur
 
 if (empty($bbcode) || !class_exists('bbcode'))
 {
-	include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 }
 
 @set_time_limit(0);

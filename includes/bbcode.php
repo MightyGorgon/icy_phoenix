@@ -261,6 +261,7 @@ class bbcode
 		'stream'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'emff'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'mp3'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'vimeo'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'youtube'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 		'googlevideo'	=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
@@ -2072,8 +2073,8 @@ class bbcode
 		// Added by Tom XS2 Build 054
 		if ($config['switch_bbcb_active_content'] == 1)
 		{
-			// FLASH, SWF, FLV, VIDEO, REAL, QUICK, STREAM, EMFF, YOUTUBE, GOOGLEVIDEO
-			if(($tag === 'flash') || ($tag === 'swf') || ($tag === 'flv') || ($tag === 'video') || ($tag === 'ram') || ($tag === 'quick') || ($tag === 'stream') || ($tag === 'emff') || ($tag === 'mp3') || ($tag === 'youtube') || ($tag === 'googlevideo'))
+			// FLASH, SWF, FLV, VIDEO, REAL, QUICK, STREAM, EMFF, VIMEO, YOUTUBE, GOOGLEVIDEO
+			if(($tag === 'flash') || ($tag === 'swf') || ($tag === 'flv') || ($tag === 'video') || ($tag === 'ram') || ($tag === 'quick') || ($tag === 'stream') || ($tag === 'emff') || ($tag === 'mp3') || ($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo'))
 			{
 				if($this->is_sig && !$config['allow_all_bbcode'])
 				{
@@ -2087,11 +2088,13 @@ class bbcode
 				$width_array = array('320', '425', '400', '480', '540', '640');
 				$height_array = array('240', '350', '300', '360', '420', '480', '385');
 
-				$default_width = ((($tag === 'youtube') || ($tag === 'googlevideo')) ? '425' : '320');
+				// 4/3 YouTube width and height: 425x350
+				// 16/9 YouTube width and height: 640x385
+				$default_width = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? '640' : '320');
 				$width = (isset($item['params']['width']) ? intval($item['params']['width']) : $default_width);
 				$width = ((($width > 10) && ($width < 641)) ? $width : $default_width);
 
-				$default_width = ((($tag === 'youtube') || ($tag === 'googlevideo')) ? '350' : '240');
+				$default_width = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? '385' : '240');
 				$height = (isset($item['params']['height']) ? intval($item['params']['height']) : $default_height);
 				$height = ((($height > 10) && ($height < 481)) ? $height : $default_height);
 
@@ -2123,6 +2126,12 @@ class bbcode
 				{
 					$html = '<object data="emff_player.swf" type="application/x-shockwave-flash" width="200" height="55" align="top" ><param name="FlashVars" value="src=' . $content . '" /><param name="movie" value="emff_player.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#f8f8f8" /></object>';
 				}
+				elseif ($tag === 'vimeo')
+				{
+					$width = in_array($width, $width_array) ? $width : '640';
+					$height = in_array($height, $height_array) ? $height : '385';
+					$html = '<object type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" data="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '"><param name="quality" value="best" /><param name="allowfullscreen" value="true" /><param name="scale" value="showAll" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" /></object><br /><a href="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" target="_blank">Link</a><br />';
+				}
 				elseif ($tag === 'youtube')
 				{
 					$color_append = '';
@@ -2132,14 +2141,14 @@ class bbcode
 						$color_append .= ($color_2 ? ('&amp;color2=0x' . str_replace('#', '', $color_2)) : '');
 					}
 
-					$width = in_array($width, $width_array) ? $width : '425';
-					$height = in_array($height, $height_array) ? $height : '350';
+					$width = in_array($width, $width_array) ? $width : '640';
+					$height = in_array($height, $height_array) ? $height : '385';
 					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $content . $color_append . '" /><embed src="http://www.youtube.com/v/' . $content . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object><br /><a href="http://youtube.com/watch?v=' . $content . $color_append . '" target="_blank">Link</a><br />';
 				}
 				elseif ($tag === 'googlevideo')
 				{
-					$width = in_array($width, $width_array) ? $width : '425';
-					$height = in_array($height, $height_array) ? $height : '350';
+					$width = in_array($width, $width_array) ? $width : '640';
+					$height = in_array($height, $height_array) ? $height : '385';
 					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:' . $width . 'px; height:' . $height . 'px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
 				}
 				return array(

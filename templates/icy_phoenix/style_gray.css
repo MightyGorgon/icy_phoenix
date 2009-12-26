@@ -399,7 +399,7 @@ hr {
 }
 
 .catBottom, .cat, .catLeft, .catRight {
-	background: White url('images/gray/bg_catbottom.gif') top left repeat-x;
+	background: #ffffff url('images/gray/bg_catbottom.gif') top left repeat-x;
 	text-align: center;
 	border: solid 1px #ffffff;
 	border-right-color: #dddddd;

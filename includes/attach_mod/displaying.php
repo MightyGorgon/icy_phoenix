@@ -295,7 +295,7 @@ function display_assign_link($post_id)
 
 	$image = 'templates/subSilver/images/icon_mini_message.gif';
 
-	if ( (intval($attach_config['disable_mod'])) || (!( ($is_auth['auth_download']) && ($is_auth['auth_view']))) )
+	if ((intval($attach_config['disable_mod'])) || (!(($is_auth['auth_download']) && ($is_auth['auth_view']))))
 	{
 		return ('');
 	}
@@ -319,14 +319,14 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 	{
 		$switch_attachment = $forum_row['topic_attachment'];
 	}
-	if ( !empty($article) && ($switch_attachment == '') )
+	if (!empty($article) && ($switch_attachment == ''))
 	{
 		$switch_attachment = $article['topic_attachment'];
 	}
 
-	if ( sizeof($article) == 0 )
+	if (sizeof($article) == 0)
 	{
-		if ( (intval($switch_attachment) == 0) || intval($attach_config['disable_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])) )
+		if ((intval($switch_attachment) == 0) || intval($attach_config['disable_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])))
 		{
 			return;
 		}
@@ -334,7 +334,7 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 
 	$post_id_array = array();
 
-	if ( sizeof($article) == 0 )
+	if (sizeof($article) == 0)
 	{
 		for ($i = 0; $i < $total_posts; $i++)
 		{
@@ -810,7 +810,7 @@ function display_attachments($post_id, $type = 'postrow')
 		}
 
 		$filesize = $attachments['_' . $post_id][$i]['filesize'];
-		$size_lang = ($filesize >= 1048576) ? $lang['MB'] : ( ($filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
+		$size_lang = ($filesize >= 1048576) ? $lang['MB'] : (($filesize >= 1024) ? $lang['KB'] : $lang['Bytes']);
 
 		if ($filesize >= 1048576)
 		{
@@ -931,11 +931,11 @@ function display_attachments($post_id, $type = 'postrow')
 				}
 				$max_image_width = intval($config['liw_max_width']);
 
-				$server_protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
+				$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 				$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
-				$server_port = ( $config['server_port'] <> 80 ) ? ':' . trim($config['server_port']) : '';
+				$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
 				$script_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['script_path']));
-				$script_name = ( $script_name == '' ) ? $script_name : '/' . $script_name;
+				$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
 
 				if (($max_image_width != 0) && ($config['liw_attach_enabled'] == 1) && !isset($username_from))
 				{
@@ -945,7 +945,7 @@ function display_attachments($post_id, $type = 'postrow')
 					}
 					list($image_width, $image_height) = liw_get_dimensions($server_protocol . $server_name . $server_port . $script_name . '/' . $img_source, $post_id);
 
-					if ($image_width && ($image_width > $max_image_width) || empty($image_width) || empty($image_height) )
+					if ($image_width && ($image_width > $max_image_width) || empty($image_width) || empty($image_height))
 					{
 						$img_code = generate_liw_img_popup($img_source, $image_width, $image_height, $max_image_width);
 					}
@@ -1077,7 +1077,7 @@ function display_attachments($post_id, $type = 'postrow')
 
 			if ($link)
 			{
-				$target_blank = 'target="_blank"'; //( (intval($display_categories[$attachments['_' . $post_id][$i]['extension']]) == IMAGE_CAT) ) ? 'target="_blank"' : '';
+				$target_blank = 'target="_blank"'; //((intval($display_categories[$attachments['_' . $post_id][$i]['extension']]) == IMAGE_CAT)) ? 'target="_blank"' : '';
 
 				// display attachment
 				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($userdata['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
