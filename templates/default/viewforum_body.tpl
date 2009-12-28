@@ -16,7 +16,7 @@
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td align="left" valign="bottom" width="65%">
+	<td align="left" valign="bottom" width="60%">
 		<span class="gensmall">{L_MODERATOR}:&nbsp;{MODERATORS}</span><br /><!-- IF not S_BOT --><span class="gensmall">{TOTAL_USERS_ONLINE}&nbsp;</span><br /><span class="gensmall">{LOGGED_IN_USER_LIST}&nbsp;</span><br /><span class="gensmall">{BOT_LIST}&nbsp;</span><br /><!-- ENDIF -->
 	</td>
 	<td align="right" valign="bottom" rowspan="2">

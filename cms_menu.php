@@ -1069,7 +1069,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 		$result = $db->sql_query($sql);
 
 		$template_to_parse = CMS_TPL . 'cms_menu_list_body.tpl';
-		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_Menu_Page']);
+		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_MENU_PAGE']);
 
 		$menu_item = array();
 		while ($menu_item = $db->sql_fetchrow($result))

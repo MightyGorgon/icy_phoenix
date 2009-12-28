@@ -13,23 +13,13 @@
 </tr>
 <!-- BEGIN reg_user_row -->
 <tr>
-	<td width="35%" class="row1h" onclick="window.location.href='{reg_user_row.U_USER_PROFILE}'">
-		{reg_user_row.USERNAME}&nbsp;{reg_user_row.USER_OS_IMG}&nbsp;{reg_user_row.USER_BROWSER_IMG}
-	</td>
-	<td width="25%" nowrap="nowrap" class="row2 row-center">
-		<span class="genmed">{reg_user_row.LASTUPDATE}</span>
-	</td>
-	<td width="40%" class="row3h" onclick="window.location.href='{reg_user_row.U_FORUM_LOCATION}'">
-		<span class="gen">
-			<a href="{reg_user_row.U_FORUM_LOCATION}">{reg_user_row.FORUM_LOCATION}</a>
-		</span>
-	</td>
+	<td width="35%" class="{reg_user_row.ROW_CLASS}h" onclick="window.location.href='{reg_user_row.U_USER_PROFILE}'">{reg_user_row.USERNAME}&nbsp;{reg_user_row.USER_OS_IMG}&nbsp;{reg_user_row.USER_BROWSER_IMG}</td>
+	<td width="25%" nowrap="nowrap" class="{reg_user_row.ROW_CLASS} row-center"><span class="genmed">{reg_user_row.LASTUPDATE}</span></td>
+	<td width="40%" class="{reg_user_row.ROW_CLASS}h" onclick="window.location.href='{reg_user_row.U_FORUM_LOCATION}'"><span class="gen"><a href="{reg_user_row.U_FORUM_LOCATION}">{reg_user_row.FORUM_LOCATION}</a></span></td>
 </tr>
 <!-- BEGIN switch_user_admin_or_mod -->
 <tr>
-	<td width="100%" class="{reg_user_row.ROW_CLASS}" colspan="3">
-		<span class="genmed">{L_IP}:&nbsp;<a href="{reg_user_row.U_HOSTNAME_LOOKUP}">{reg_user_row.IP}</a>&nbsp;&#187;&nbsp;<a href="{reg_user_row.U_WHOIS}" target="_blank">{L_WHOIS}</a>&nbsp;||&nbsp;{L_BROWSER}:&nbsp;{reg_user_row.USER_AGENT}</span>
-	</td>
+	<td width="100%" class="{reg_user_row.ROW_CLASS}" colspan="3"><span class="gensmall">{L_IP}:&nbsp;<a href="{reg_user_row.U_HOSTNAME_LOOKUP}">{reg_user_row.IP}</a>&nbsp;&#187;&nbsp;<a href="{reg_user_row.U_WHOIS}" target="_blank">{L_WHOIS}</a>&nbsp;||&nbsp;{L_BROWSER}:&nbsp;{reg_user_row.USER_AGENT}</span></td>
 </tr>
 <!-- END switch_user_admin_or_mod -->
 <!-- END reg_user_row -->
@@ -37,17 +27,13 @@
 <tr><td class="row1" colspan="3"><span class="gen">{TOTAL_GUEST_USERS_ONLINE}</span></td></tr>
 <!-- BEGIN guest_user_row -->
 <tr>
-	<td width="35%" class="row1h"><span class="genmed">{guest_user_row.USERNAME}&nbsp;{guest_user_row.USER_OS_IMG}&nbsp;{guest_user_row.USER_BROWSER_IMG}</span></td>
-	<td width="25%" nowrap="nowrap" class="row2 row-center"><span class="genmed">{guest_user_row.LASTUPDATE}</span></td>
-	<td width="40%" class="row3h" onclick="window.location.href='{guest_user_row.U_FORUM_LOCATION}'">
-		<span class="gen"><a href="{guest_user_row.U_FORUM_LOCATION}">{guest_user_row.FORUM_LOCATION}</a></span>
-	</td>
+	<td width="35%" class="{guest_user_row.ROW_CLASS}h"><span class="genmed">{guest_user_row.USERNAME}&nbsp;{guest_user_row.USER_OS_IMG}&nbsp;{guest_user_row.USER_BROWSER_IMG}</span></td>
+	<td width="25%" nowrap="nowrap" class="{guest_user_row.ROW_CLASS} row-center"><span class="genmed">{guest_user_row.LASTUPDATE}</span></td>
+	<td width="40%" class="{guest_user_row.ROW_CLASS}h" onclick="window.location.href='{guest_user_row.U_FORUM_LOCATION}'"><span class="gen"><a href="{guest_user_row.U_FORUM_LOCATION}">{guest_user_row.FORUM_LOCATION}</a></span></td>
 </tr>
 <!-- BEGIN switch_user_admin_or_mod -->
 <tr>
-	<td width="100%" class="{guest_user_row.ROW_CLASS}" colspan="3">
-		<span class="gensmall">{L_IP}:&nbsp;<a href="{guest_user_row.U_HOSTNAME_LOOKUP}">{guest_user_row.IP}</a>&nbsp;&#187;&nbsp;<a href="{guest_user_row.U_WHOIS}" target="_blank">{L_WHOIS}</a>&nbsp;||&nbsp;{L_BROWSER}:&nbsp;{guest_user_row.USER_AGENT}</span>
-	</td>
+	<td width="100%" class="{guest_user_row.ROW_CLASS}" colspan="3"><span class="gensmall">{L_IP}:&nbsp;<a href="{guest_user_row.U_HOSTNAME_LOOKUP}">{guest_user_row.IP}</a>&nbsp;&#187;&nbsp;<a href="{guest_user_row.U_WHOIS}" target="_blank">{L_WHOIS}</a>&nbsp;||&nbsp;{L_BROWSER}:&nbsp;{guest_user_row.USER_AGENT}</span></td>
 </tr>
 <!-- END switch_user_admin_or_mod -->
 <!-- END guest_user_row -->

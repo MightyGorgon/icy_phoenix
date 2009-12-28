@@ -56,7 +56,7 @@ $l_online_users = '';
 
 $any_char = chr(0) . '%';
 $one_char = chr(0) . '_';
-if (!empty($topic_id))
+if (!empty($topic_id) && !defined('IN_VIEWFORUM'))
 {
 	$user_forum_sql = ' AND s.session_page ' . $db->sql_like_expression("{$any_char}_t_={$topic_id}x{$any_char}");
 }
@@ -82,11 +82,12 @@ $userlist_visible = array();
 $tmp_bots_array = array();
 
 $prev_user_id = 0;
-$prev_user_ip = $prev_session_ip = '';
+$prev_user_ip = '';
+$prev_session_ip = '';
 while($row = $db->sql_fetchrow($result))
 {
 
-	// User is logged in and therefor not a guest
+	// User is logged in and therefore not a guest
 	if ($row['session_logged_in'])
 	{
 		// Skip multiple sessions for one user
