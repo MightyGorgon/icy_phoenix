@@ -411,30 +411,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		}
 
 		// generate list of page for the topic
-		$goto_page = '';
-		if(($replies + 1) > $config['posts_per_page'])
-		{
-			$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
-			$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />' . $lang['Goto_page'] . ': ';
-			$times = 1;
-			for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
-			{
-				$goto_page .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . "?" . POST_TOPIC_URL . "=" . $topic_id . "&amp;start=$j") . '">' . $times . '</a>';
-				if($times == 1 && $total_pages > 4)
-				{
-					$goto_page .= ' ... ';
-					$times = $total_pages - 3;
-					$j += ($total_pages - 4) * $config['posts_per_page'];
-				}
-				else if ($times < $total_pages)
-				{
-					//$goto_page .= ', ';
-					$goto_page .= ' ';
-				}
-				$times++;
-			}
-			$goto_page .= ' ] ';
-		}
+		$topic_pagination = generate_topic_pagination($forum_id, $topic_id, $replies);
 
 		$topic_author = '';
 		$first_post_time = '';
@@ -669,7 +646,8 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			'TOPIC_FOLDER_IMG' => $folder_image,
 			'TOPIC_AUTHOR' => $topic_author,
 			'TOPIC_DESCRIPTION' => $topic_desc,
-			'GOTO_PAGE' => !empty($goto_page) ? '<br />' . $goto_page : '',
+			'GOTO_PAGE' => $topic_pagination['base'],
+			'GOTO_PAGE_FULL' => $topic_pagination['full'],
 			'TOPIC_NAV_TREE' => !empty($nav_tree) ? (empty($goto_page) ? '<br />' : '') . $nav_tree : '',
 			'REPLIES' => $replies,
 			'NEWEST_POST_IMG' => $newest_post_img,

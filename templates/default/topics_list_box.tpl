@@ -70,7 +70,7 @@ function check_uncheck_all_{topics_list_box.row.header_table.BOX_ID}()
 			<a href="{topics_list_box.row.U_VIEW_TOPIC}">{topics_list_box.row.TOPIC_TITLE}</a>
 		</span>
 		<span class="gensmall">&nbsp;&nbsp;{topics_list_box.row.TOPIC_ANNOUNCES_DATES}{topics_list_box.row.TOPIC_CALENDAR_DATES}</span>
-		<span class="gensmall">{topics_list_box.row.GOTO_PAGE}</span>
+		{topics_list_box.row.GOTO_PAGE_FULL}
 		<span class="gensmall">
 			<!-- BEGIN nav_tree -->
 			{topics_list_box.row.TOPIC_NAV_TREE}

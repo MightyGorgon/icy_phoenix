@@ -311,35 +311,7 @@ for($i = 0; $i < sizeof($line); $i++)
 	$topic_id = $topic_link['topic_id'];
 	$topic_id_append = $topic_link['topic_id_append'];
 
-	if(($replies + 1) > $config['posts_per_page'])
-	{
-		$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
-		$goto_page_prefix = ' [';
-		$goto_page = ' <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;';
-		$times = '1';
-		for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
-		{
-			$goto_page .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '" title="' . $lang['Goto_page'] . ' ' . $times . '"><b>' . $times . '</b></a>';
-			if(($times == '1') && ($total_pages > '4'))
-			{
-				$goto_page .= ' ... ';
-				$times = $total_pages - 3;
-				$j += ($total_pages - 4) * $config['posts_per_page'];
-			}
-			elseif($times < $total_pages)
-			{
-				//$goto_page .= ', ';
-				$goto_page .= ' ';
-			}
-			$times++;
-		}
-		$goto_page_suffix = ' ]';
-		$goto_page .= ' ';
-	}
-	else
-	{
-		$goto_page = '';
-	}
+	$topic_pagination = generate_topic_pagination($forum_id, $topic_id, $replies);
 
 	$first_time = create_date_ip($lang['DATE_FORMAT_VF'], $line[$i]['topic_time'], $config['board_timezone'], true);
 	// Old format
@@ -384,8 +356,8 @@ for($i = 0; $i < sizeof($line); $i++)
 		'NEWEST_POST_IMG' => $topic_link['newest_post_img'],
 		'L_NEWS' => $news_label,
 		'TOPIC_ATTACHMENT_IMG' => topic_attachment_image($line[$i]['topic_attachment']),
-		'GOTO_PAGE' => (($goto_page == '') ? '' : ('<span class="gotopage">' . $goto_page . '</span>')),
-		'GOTO_PAGE_FULL' => (($goto_page == '') ? '' : ('<span class="gotopage">' . $goto_page_prefix . ' ' . $lang['Goto_page'] . $goto_page . $goto_page_suffix . '</span>')),
+		'GOTO_PAGE' => $topic_pagination['base'],
+		'GOTO_PAGE_FULL' => $topic_pagination['full'],
 		'L_VIEWS' => $lang['Views'],
 		'VIEWS' => $views,
 

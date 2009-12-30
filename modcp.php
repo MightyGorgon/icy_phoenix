@@ -1127,34 +1127,7 @@ switch($mode)
 			}
 			$topic_id_append = $topic_link['topic_id_append'];
 
-			if(($replies + 1) > $config['posts_per_page'])
-			{
-				$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
-				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
-
-				$times = 1;
-				for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
-				{
-					$goto_page .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
-					if(($times == 1) && ($total_pages > 4))
-					{
-						$goto_page .= ' ... ';
-						$times = $total_pages - 3;
-						$j += ($total_pages - 4) * $config['posts_per_page'];
-					}
-					elseif ($times < $total_pages)
-					{
-						//$goto_page .= ', ';
-						$goto_page .= ' ';
-					}
-					$times++;
-				}
-				$goto_page .= ' ] ';
-			}
-			else
-			{
-				$goto_page = '';
-			}
+			$topic_pagination = generate_topic_pagination($forum_id, $topic_id, $replies);
 
 			$first_post_time = create_date_ip($config['default_dateformat'], $topic_rowset[$i]['topic_time'], $config['board_timezone']);
 			//$first_post_author = ($topic_rowset[$i]['topic_starter_id'] == ANONYMOUS) ? (($topic_rowset[$i]['topic_starter_guest'] != '') ? $topic_rowset[$i]['topic_starter_guest'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['topic_starter_id']) . '">' . $topic_rowset[$i]['topic_starter'] . '</a> ';
@@ -1184,7 +1157,8 @@ switch($mode)
 				'TOPIC_CLASS' => (!empty($topic_link['class_new']) ? ('topiclink' . $topic_link['class_new']) : $topic_link['class']),
 				'CLASS_NEW' => $topic_link['class_new'],
 				'NEWEST_POST_IMG' => $topic_link['newest_post_img'],
-				'GOTO_PAGE' => (($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>'),
+				'GOTO_PAGE' => $topic_pagination['base'],
+				'GOTO_PAGE_FULL' => $topic_pagination['full'],
 				'REPLIES' => $replies,
 				'VIEWS' => $topic_rowset[$i]['topic_views'],
 				'FIRST_POST_URL' => $first_post_url,

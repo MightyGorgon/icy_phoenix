@@ -698,7 +698,7 @@ function slowhigh(which2)
 	imgobj = which2;
 	browserdetect = which2.filters ? "ie" : ( (typeof which2.style.MozOpacity == "string") ? "mozilla" : "");
 	instantset(baseopacity);
-	highlighting=setInterval("gradualfade(imgobj)", 50);
+	highlighting = setInterval("gradualfade(imgobj)", 50);
 }
 
 function slowlow(which2)
@@ -829,7 +829,7 @@ function ob(id)
 }
 
 // Fade
-Array.prototype.inArray=function(str)
+Array.prototype.inArray = function(str)
 {//on modifie l'objet Array
 	for(i = 0; i < this.length; i++)
 	{

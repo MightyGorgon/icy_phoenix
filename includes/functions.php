@@ -2090,6 +2090,54 @@ function generate_pagination($base_url, $num_items, $per_page, $start_item, $add
 }
 
 /**
+* Generate topic pagination
+*/
+function generate_topic_pagination($forum_id, $topic_id, $replies, $per_page = 0)
+{
+	global $config, $template, $images, $lang;
+
+	$per_page = (!empty($per_page) && intval($per_page)) ? intval($per_page) : $config['posts_per_page'];
+	$topic_pagination = array();
+	$topic_pagination['base'] = '';
+	$topic_pagination['full'] = '';
+
+	$url_append = '';
+	$url_append .= (empty($url_append) ? '' : '&amp;') . ((!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : ''));
+	$url_append .= (empty($url_append) ? '' : '&amp;') . ((!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : ''));
+
+	if(($replies + 1) > $per_page)
+	{
+		$total_pages = ceil(($replies + 1) / $per_page);
+		$goto_page_prefix = ' [';
+		$goto_page = ' <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;';
+		$times = '1';
+		for($j = 0; $j < $replies + 1; $j += $per_page)
+		{
+			$goto_page .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $url_append . '&amp;start=' . $j) . '" title="' . $lang['Goto_page'] . ' ' . $times . '"><b>' . $times . '</b></a>';
+			if(($times == 1) && ($total_pages > 4))
+			{
+				$goto_page .= ' ... ';
+				$times = $total_pages - 3;
+				$j += ($total_pages - 4) * $per_page;
+			}
+			elseif($times < $total_pages)
+			{
+				//$goto_page .= ', ';
+				$goto_page .= ' ';
+			}
+			$times++;
+		}
+		$goto_page_suffix = ' ]';
+		$goto_page .= ' ';
+
+		$topic_pagination['base'] = '<span class="gotopage">' . $goto_page . '</span>';
+		$topic_pagination['full'] = '<span class="gotopage">' . $goto_page_prefix . ' ' . $lang['Goto_page'] . $goto_page . $goto_page_suffix . '</span>';
+	}
+
+	return $topic_pagination;
+}
+
+/**
 * Generate full pagination with template
 */
 function generate_full_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text = true, $start = 'start')

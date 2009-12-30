@@ -132,34 +132,8 @@ if ($watch_count > 0)
 
 			$topic_link = $class_topics->build_topic_icon_link($watch_rows[$i]['forum_id'], $watch_rows[$i]['topic_id'], $watch_rows[$i]['topic_type'], $watch_rows[$i]['topic_reg'], $watch_rows[$i]['topic_replies'], $watch_rows[$i]['news_id'], $watch_rows[$i]['topic_vote'], $watch_rows[$i]['topic_status'], $watch_rows[$i]['topic_moved_id'], $watch_rows[$i]['post_time'], $user_replied, $replies, $unread);
 
-			if(($replies + 1) > $config['posts_per_page'])
-			{
-				$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
-				$goto_page = ' [ <img src="' . $images['icon_gotopost'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
+			$topic_pagination = generate_topic_pagination($forum_id, $topic_id, $replies);
 
-				$times = 1;
-				for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
-				{
-					$goto_page .= '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '"><b>' . $times . '</b></a>';
-					if($times == 1 && $total_pages > 4)
-					{
-						$goto_page .= ' ... ';
-						$times = $total_pages - 3;
-						$j += ($total_pages - 4) * $config['posts_per_page'];
-					}
-					elseif ($times < $total_pages)
-					{
-						//$goto_page .= ', ';
-						$goto_page .= ' ';
-					}
-					$times++;
-				}
-				$goto_page .= ' ] ';
-			}
-			else
-			{
-				$goto_page = '';
-			}
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 			$template->assign_block_vars('topic_watch_row', array(
 				'ROW_CLASS' => $row_class,
@@ -185,7 +159,8 @@ if ($watch_count > 0)
 				'FORUM_NAME' => $watch_rows[$i]['forum_name'],
 				'TOPIC_POSTER' => $topic_poster,
 				'LAST_POSTER' => $last_poster,
-				'GOTO_PAGE' => (($goto_page == '') ? '' : '<span class="gotopage">' . $goto_page . '</span>'),
+				'GOTO_PAGE' => $topic_pagination['base'],
+				'GOTO_PAGE_FULL' => $topic_pagination['full'],
 
 				'U_VIEW_FORUM' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWFORUM . '?' . $forum_id_append),
 				'U_VIEW_TOPIC' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append),

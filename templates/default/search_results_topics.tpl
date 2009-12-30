@@ -34,9 +34,7 @@ function select_switch(status)
 	</td>
 	<td class="row1h{searchresults.CLASS_NEW} row-forum" onclick="window.location.href='{searchresults.U_VIEW_TOPIC}'">
 		<div class="topic-title-hide-flow"><span class="topiclink{searchresults.CLASS_NEW}">{searchresults.NEWEST_POST_IMG}{searchresults.TOPIC_TYPE}<a href="{searchresults.U_VIEW_TOPIC}" class="{searchresults.TOPIC_CLASS}">{searchresults.TOPIC_TITLE}</a></span> <!-- BEGIN display_reg -->[{searchresults.REG_OPTIONS}]&nbsp;{searchresults.REG_USER_OWN_REG}<!-- END display_reg --></div>
-		<!-- IF searchresults.GOTO_PAGE -->
-		<br /><span class="gotopage">{searchresults.GOTO_PAGE}</span>
-		<!-- ENDIF -->
+		{searchresults.GOTO_PAGE_FULL}
 	</td>
 	<td class="row1 row-center-small">{searchresults.REPLIES}</td>
 	<td class="row2 row-center-small">{searchresults.TOPIC_AUTHOR}</td>

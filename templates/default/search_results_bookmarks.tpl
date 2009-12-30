@@ -22,9 +22,7 @@
 	</td>
 	<td class="row1h row-forum" onclick="window.location.href='{searchresults.U_VIEW_TOPIC}'">
 		<span class="topiclink">{searchresults.NEWEST_POST_IMG}{searchresults.TOPIC_TYPE}<a href="{searchresults.U_VIEW_TOPIC}" class="topiclink">{searchresults.TOPIC_TITLE}</a></span>
-		<!-- IF searchresults.GOTO_PAGE -->
-		<span class="gotopage">{searchresults.GOTO_PAGE}</span>
-		<!-- ENDIF -->
+		{searchresults.GOTO_PAGE_FULL}
 	</td>
 	<td class="row2 row-center-small">{searchresults.TOPIC_AUTHOR}</td>
 	<td class="row1 row-center-small">{searchresults.REPLIES}</td>

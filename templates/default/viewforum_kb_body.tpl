@@ -51,7 +51,7 @@
 		<!-- BEGIN switch_topic_desc -->
 		<span class="gensmall">&nbsp;{topicrow.switch_topic_desc.TOPIC_DESCRIPTION}</span><br />
 		<!-- END switch_topic_desc -->
-		<span class="gotopage">{topicrow.GOTO_PAGE}</span>
+		{topicrow.GOTO_PAGE_FULL}
 	</td>
 	<td class="row3 row-center-small" style="padding-left: 2px; padding-right: 2px;" nowrap="nowrap">{topicrow.TOPIC_AUTHOR}</td>
 	<td class="row3 row-center-small" style="padding-top: 0;" nowrap="nowrap">{topicrow.LAST_POST_TIME}</td>

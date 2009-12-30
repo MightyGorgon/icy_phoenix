@@ -1729,34 +1729,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 				// Event Registration - END
 
-				if (($replies + 1) > $config['posts_per_page'])
-				{
-					$total_pages = ceil(($replies + 1) / $config['posts_per_page']);
-					$goto_page = ' [ <img src="' . $images['icon_gotopage'] . '" alt="' . $lang['Goto_page'] . '" title="' . $lang['Goto_page'] . '" />&nbsp;' . $lang['Goto_page'] . ': ';
-
-					$times = 1;
-					for($j = 0; $j < $replies + 1; $j += $config['posts_per_page'])
-					{
-						$goto_page .= '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $j) . '">' . $times . '</a>';
-						if (($times == 1) && ($total_pages > 4))
-						{
-							$goto_page .= ' ... ';
-							$times = $total_pages - 3;
-							$j += ($total_pages - 4) * $config['posts_per_page'];
-						}
-						elseif ($times < $total_pages)
-						{
-							//$goto_page .= ', ';
-							$goto_page .= ' ';
-						}
-						$times++;
-					}
-					$goto_page .= ' ] ';
-				}
-				else
-				{
-					$goto_page = '';
-				}
+				$topic_pagination = generate_topic_pagination($forum_id, $topic_id, $replies);
 
 				if ($searchset[$i]['user_id'] != ANONYMOUS)
 				{
@@ -1846,7 +1819,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'REG_USER_OWN_REG' => $reg_user_own_reg,
 					// Event Registration - END
 
-					'GOTO_PAGE' => $goto_page,
+					'GOTO_PAGE' => $topic_pagination['base'],
+					'GOTO_PAGE_FULL' => $topic_pagination['full'],
 					'REPLIES' => $replies,
 					'VIEWS' => $views,
 					'FIRST_POST_TIME' => $first_post_time,
