@@ -373,7 +373,7 @@ if ($no_personal_gallery == false)
 	$auth_list = album_build_auth_list($album_user_id, $cat_id);
 
 	//if((album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) == true) && ($is_root_cat) && (!$has_sub_cats && !$has_parent_cats))
-	if((album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) == true) && ((($is_root_cat) && ($row['count'] > 0)) || (!$is_root_cat)))
+	if((album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES) == true) && ((($is_root_cat) && ($row['count'] >= 0)) || (!$is_root_cat)))
 	{
 		$template->assign_block_vars('manage_personal_gal_folders', array());
 	}

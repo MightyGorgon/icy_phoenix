@@ -15,7 +15,7 @@
 		<!-- END ranks_no_special -->
 		<!-- BEGIN ranks_special -->
 		<tr>
-			<td class="row1 row-center"><img src="{ranks_special.IMAGE}" alt="{ranks_special.RANK}" title="{ranks_special.RANK}" border="0"><br /><span class="gensmall"><b>{ranks_special.RANK_SPECIAL_DES}</b></span></td>
+			<td class="row1 row-center"><img src="{ranks_special.IMAGE}" alt="{ranks_special.RANK}" title="{ranks_special.RANK}" border="0" /><br /><span class="gensmall"><b>{ranks_special.RANK_SPECIAL_DES}</b></span></td>
 			<td class="row1 row-center"><span class="genmed"><b>{ranks_special.RANK}</b></span></td>
 		</tr>
 		<!-- END ranks_special -->
@@ -38,7 +38,7 @@
 		<tr>
 			<td class="row1 row-center">
 				<!-- BEGIN switch_image -->
-				<img src="{ranks_normal.switch_image.IMAGE}" alt="{ranks_normal.switch_image.RANK}" title="{ranks_normal.switch_image.RANK}" border="0"><br />
+				<img src="{ranks_normal.switch_image.IMAGE}" alt="{ranks_normal.switch_image.RANK}" title="{ranks_normal.switch_image.RANK}" border="0" /><br />
 				<!-- END switch_image -->
 				<span class="gensmall"><b>{ranks_normal.RANK_SPECIAL_DES}</b></span>
 			</td>
