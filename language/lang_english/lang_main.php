@@ -43,7 +43,7 @@ $lang['BBC_IP_CREDITS_STATIC'] = '
 <b><i>Junior Developer</i></b><br />
 <br />
 <br />
-<span style="color: #ff5500;"><b>hpl</b></span><br />
+<span style="color: #ff5500;"><b>KasLimon</b></span><br />
 <b><i>Junior Developer</i></b><br />
 <br />
 <br />
