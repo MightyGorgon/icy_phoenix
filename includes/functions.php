@@ -3324,6 +3324,9 @@ function page_header($title = '', $parse_template = false)
 
 	// Mighty Gorgon - Advanced Switches - BEGIN
 
+	$new_pm_switch = false;
+	$new_private_chat_switch = false;
+
 	// LOGGED IN CHECK - BEGIN
 	if (!$userdata['session_logged_in'])
 	{
@@ -3363,6 +3366,9 @@ function page_header($title = '', $parse_template = false)
 		$l_privmsgs_text = $lang['Login_check_pm'];
 		$l_privmsgs_text_unread = '';
 		$s_privmsg_new = 0;
+
+		$icon_private_chat = $images['private_chat'];
+		$u_private_chat = '#';
 	}
 	else
 	{
@@ -3437,6 +3443,7 @@ function page_header($title = '', $parse_template = false)
 
 			if ($userdata['user_new_privmsg'] && !$config['privmsg_disable'])
 			{
+				$new_pm_switch = true;
 				$l_message_new = ($userdata['user_new_privmsg'] == 1) ? $lang['New_pm'] : $lang['New_pms'];
 				$l_privmsgs_text = sprintf($l_message_new, $userdata['user_new_privmsg']);
 
@@ -3460,6 +3467,14 @@ function page_header($title = '', $parse_template = false)
 				$l_privmsgs_text = $lang['No_new_pm'];
 				$s_privmsg_new = 0;
 				$icon_pm = $images['pm_no_new_msg'];
+			}
+
+			$icon_private_chat = $images['private_chat'];
+			if (!empty($userdata['user_private_chat_alert']))
+			{
+				$new_private_chat_switch = true;
+				$icon_private_chat = $images['private_chat_alert'];
+				$u_private_chat = append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . $userdata['user_private_chat_alert']);
 			}
 
 			if ($userdata['user_unread_privmsg'])
@@ -3901,6 +3916,11 @@ function page_header($title = '', $parse_template = false)
 		'PRIVATE_MESSAGE_INFO_UNREAD' => $l_privmsgs_text_unread,
 		'PRIVATE_MESSAGE_NEW_FLAG' => $s_privmsg_new,
 		'PRIVMSG_IMG' => $icon_pm,
+		'NEW_PM_SWITCH' => $new_pm_switch,
+
+		'PRIVATE_CHAT_IMG' => $icon_private_chat,
+		'U_PRIVATE_CHAT' => $u_private_chat,
+		'NEW_PRIVATE_CHAT_SWITCH' => $new_private_chat_switch,
 
 		'L_USERNAME' => $lang['Username'],
 		'L_PASSWORD' => $lang['Password'],

@@ -162,6 +162,7 @@ CREATE TABLE phpbb_plugins (
 ##              BUILD 058             ##
 ########################################
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('forum_tags_type', '0');
+ALTER TABLE `phpbb_users` ADD `user_private_chat_alert` VARCHAR(255) NOT NULL AFTER `user_last_privmsg`;
 
 
 

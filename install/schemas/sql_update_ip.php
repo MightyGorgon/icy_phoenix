@@ -3728,6 +3728,7 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.4.57 */
 		case '1.3.4.57':
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('forum_tags_type', '0')";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_private_chat_alert` VARCHAR(255) NOT NULL AFTER `user_last_privmsg`";
 
 		/* Updating from IP 1.3.5.58 */
 		case '1.3.5.58':

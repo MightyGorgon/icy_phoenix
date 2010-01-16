@@ -29,7 +29,10 @@
 
 <tr>
 	<td colspan="3" id="content">
-	<!-- IF S_LOGGED_IN --><div class="popup{PRIVMSG_IMG}"><a href="{FULL_SITE_PATH}{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a></div><!-- ENDIF -->
+	<!-- IF S_LOGGED_IN -->
+	<!-- IF NEW_PM_SWITCH --><div class="popup{PRIVMSG_IMG}"><a href="{FULL_SITE_PATH}{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a></div><!-- ENDIF -->
+	<!-- IF NEW_PRIVATE_CHAT_SWITCH --><div class="popup{PRIVATE_CHAT_IMG}"><a href="#" class="gensmall" onclick="window.open('{U_PRIVATE_CHAT}', '_chat', 'width=720,height=600,resizable=yes'); return false;">{L_AJAX_SHOUTBOX_PVT_ALERT}</a></div><!-- ENDIF -->
+	<!-- ENDIF -->
 	<!-- BEGIN switch_admin_disable_board -->
 	<table width="100%" align="center" cellspacing="0" cellpadding="10" border="0">
 	<tr><td align="center" class="forumline-no"><div class="genmed"><div class="topic_ann">{L_BOARD_DISABLE}</div></div></td></tr>

@@ -34,18 +34,21 @@ if (!empty($_POST['act']) || !empty($_GET['act']))
 	$action = (!empty($_POST['act'])) ? htmlspecialchars($_POST['act']) : htmlspecialchars($_GET['act']);
 }
 
+$private_chat = false;
 if (!defined('AJAX_CHAT_ROOM'))
 {
 	$chat_room = request_var('chat_room', '');
 	$chat_room = preg_replace('/[^0-9|]+/', '', trim($chat_room));
 	$chat_room_users = array();
 	$chat_room_users = explode('|', $chat_room);
+	$chat_room_users_count = sizeof($chat_room_users);
 	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
 	if(($userdata['user_level'] != ADMIN) && !empty($chat_room) && !in_array($userdata['user_id'], $chat_room_users))
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 	}
 	define('AJAX_CHAT_ROOM', true);
+	$private_chat = true;
 }
 
 if($action)
@@ -63,6 +66,13 @@ if($action)
 
 	$error = AJAX_SHOUTBOX_NO_ERROR;
 	$error_msg = '';
+
+	// Delete alert for poster if present
+	if ($private_chat && !empty($userdata['user_private_chat_alert']))
+	{
+		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '0' WHERE user_id = " . $userdata['user_id'];
+		$db->sql_query($sql);
+	}
 
 	// Code for getting data
 	if($action == 'read')
@@ -231,6 +241,32 @@ if($action)
 					pseudo_die(SHOUTBOX_ERROR, $lang['Shoutbox_flooderror']);
 				}
 			}
+		}
+
+		// Alert other users that somebody is willing to chat with them
+		if ($private_chat)
+		{
+			// It omits users that have been active for the last 5 minutes (300 seconds)
+			$sql = "SELECT session_user_id
+					FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+					WHERE " . $db->sql_in_set('session_user_id', $chat_room_users) . "
+						AND session_time < " . (time() - 300) . "
+					ORDER BY session_user_id ASC";
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrowset($result);
+			$db->sql_freeresult($result);
+
+			$alert_users_array = array();
+			foreach ($chat_room_users as $chat_room_user)
+			{
+				if (($chat_room_user != $userdata['user_id']) && !in_array($chat_room_user, $row))
+				{
+					$alert_users_array[] = $chat_room_user;
+				}
+			}
+
+			$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '" . $chat_room . "' WHERE " . $db->sql_in_set('user_id', $alert_users_array);
+			$db->sql_query($sql);
 		}
 
 		// Some weird conversion of the data inputed

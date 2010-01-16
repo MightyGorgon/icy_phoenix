@@ -2029,6 +2029,7 @@ CREATE TABLE `phpbb_users` (
 	`user_new_privmsg` smallint(5) unsigned NOT NULL DEFAULT '0',
 	`user_unread_privmsg` smallint(5) unsigned NOT NULL DEFAULT '0',
 	`user_last_privmsg` int(11) NOT NULL DEFAULT '0',
+	`user_private_chat_alert` varchar(255) NOT NULL DEFAULT '0',
 	`user_emailtime` int(11) DEFAULT NULL,
 	`user_viewemail` tinyint(1) DEFAULT NULL,
 	`user_profile_view_popup` tinyint(1) DEFAULT '0',
