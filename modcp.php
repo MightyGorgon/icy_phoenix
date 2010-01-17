@@ -429,7 +429,7 @@ switch($mode)
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
 
-			message_die(GENERAL_MESSAGE, $message .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>'));
+			message_die(GENERAL_MESSAGE, $message .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>'));
 		}
 		else
 		{
