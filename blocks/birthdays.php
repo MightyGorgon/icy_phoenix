@@ -33,8 +33,8 @@ if(!function_exists('cms_block_birthdays'))
 
 		$template->assign_vars(array(
 			'BIRTHDAY_IMG' => $images['birthday_image'],
-			'L_WHOSBIRTHDAY_WEEK' => ($config['birthday_check_day'] > 1) ? sprintf((($birthdays_list['xdays']) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $config['birthday_check_day']) . $birthdays_list['xdays'] : '',
-			'L_WHOSBIRTHDAY_TODAY' => ($config['birthday_check_day']) ? ($birthdays_list['today']) ? $lang['Birthday_today'] . $birthdays_list['today'] : $lang['Nobirthday_today'] : ''
+			'L_WHOSBIRTHDAY_WEEK' => ($config['birthday_check_day'] >= 1) ? sprintf((($birthdays_list['xdays']) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $config['birthday_check_day']) . $birthdays_list['xdays'] : '',
+			'L_WHOSBIRTHDAY_TODAY' => ($birthdays_list['today']) ? $lang['Birthday_today'] . $birthdays_list['today'] : $lang['Nobirthday_today']
 			)
 		);
 	}

@@ -28,7 +28,7 @@ function checkForm(formObj) {
 //-->
 </script>
 
-<form action="{S_POST_ACTION}" method="post" name="post" onSubmit="return checkForm(this)">
+<form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this)">
 
 <!-- BEGIN delete_account -->
 {IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">

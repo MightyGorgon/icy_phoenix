@@ -123,7 +123,7 @@ if(GetCookie(tmp) == '2')
 {IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('birthday','birthday_h','birthday');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_BIRTHDAYS}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" rowspan="2" width="95" valign="middle"><div class="center-block"><img src="{BIRTHDAY_IMG}" alt="" /></div></td>
-	<td class="row1"><span class="gensmall">{L_WHOSBIRTHDAY_TODAY}<br />{L_WHOSBIRTHDAY_WEEK}<br /></span></td>
+	<td class="row1"><span class="gensmall">{L_WHOSBIRTHDAY_TODAY}</span><br /><!-- IF L_WHOSBIRTHDAY_WEEK --><span class="gensmall">{L_WHOSBIRTHDAY_WEEK}</span><br /><!-- ENDIF --></td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>

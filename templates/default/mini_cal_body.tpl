@@ -20,8 +20,7 @@
 	</tr>
 	<!-- END mini_cal_row -->
 
-	<tr><td colspan="7" class="row1" align="left"><span class="gensmall">{L_WHOSBIRTHDAY_TODAY}</span></td></tr>
-	<tr><td colspan="7" class="row1" align="left"><span class="gensmall">{L_WHOSBIRTHDAY_WEEK}</span></td></tr>
+	<tr><td colspan="7" class="row1" align="left"><span class="gensmall">{L_WHOSBIRTHDAY_TODAY}</span><!-- IF L_WHOSBIRTHDAY_WEEK --><br /><span class="gensmall">{L_WHOSBIRTHDAY_WEEK}</span><!-- ENDIF --></td></tr>
 
 	<!-- BEGIN switch_mini_cal_events -->
 	<tr><th colspan="7" height="28"><span class="cattitle">{L_MINI_CAL_EVENTS}</span></th></tr>

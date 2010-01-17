@@ -35,7 +35,6 @@ if (empty($lang) || !is_array($lang))
 $lang['BBC_IP_CREDITS_STATIC'] = '
 <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="http://www.icyphoenix.com/images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br />
 <span style="color: #dd2222;"><b>Mighty Gorgon</b></span>&nbsp;<i>(Luca Libralato)</i><br />
-<br />
 <b><i>Developer</i></b><br />
 <br />
 <br />
@@ -47,13 +46,10 @@ $lang['BBC_IP_CREDITS_STATIC'] = '
 <b><i>Junior Developer</i></b><br />
 <br />
 <br />
-<span style="color: #dd2222;"><b>Bicet</b></span><br />
-<b><i>phpBB XS Developer</i></b><br />
-<br />
-<br />
 <b><i>Valued Contributors</i></b><br />
 <span style="color: #228822;"><b>Andrea75</b></span><br />
 <span style="color: #dd2222;"><b>Artie</b></span><br />
+<span style="color: #dd2222;"><b>Bicet</b></span>&nbsp;<i>(phpBB XS Developer)</i><br />
 <span style="color: #0000bb;"><b>brandsrus</b></span><br />
 <span style="color: #228822;"><b>buldo</b></span><br />
 <span style="color: #228822;"><b>casimedicos</b></span><br />

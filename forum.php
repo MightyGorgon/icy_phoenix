@@ -200,7 +200,7 @@ if (($config['display_viewonline'] == 2) || (($viewcat < 0) && ($config['display
 	// Last Visit - END
 
 	// Birthday Box - BEGIN
-	if ($config['index_birthday'] && ($config['birthday_check_day'] > 0))
+	if ($config['index_birthday'])
 	{
 		$template->assign_vars(array('S_BIRTHDAYS' => true));
 		$birthdays_list = array();
@@ -346,7 +346,7 @@ $template->assign_vars(array(
 	// End add - Last visit MOD
 	// Start add - Birthday MOD
 	'L_WHOSBIRTHDAY_WEEK' => ($config['birthday_check_day'] >= 1) ? sprintf((($birthdays_list['xdays']) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $config['birthday_check_day']) . $birthdays_list['xdays'] : '',
-	'L_WHOSBIRTHDAY_TODAY' => ($config['birthday_check_day']) ? ($birthdays_list['today']) ? $lang['Birthday_today'] . $birthdays_list['today'] : $lang['Nobirthday_today'] : '',
+	'L_WHOSBIRTHDAY_TODAY' => ($birthdays_list['today']) ? $lang['Birthday_today'] . $birthdays_list['today'] : $lang['Nobirthday_today'],
 	// End add - Birthday MOD
 	'L_FORUM' => $lang['Forum'],
 	'L_TOPICS' => $lang['Topics'],

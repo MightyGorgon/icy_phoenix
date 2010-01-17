@@ -124,13 +124,6 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-if (isset($search_mode) && ($search_mode == 'bookmarks'))
-{
-	// TO DO: force to false, and decide if we would like to overwrite it with Profile Global Blocks settings...
-	//$cms_page['global_blocks'] = (!empty($cms_config_layouts['profile']['global_blocks']) ? true : false);
-	$cms_page['global_blocks'] = false;
-}
-
 // Define initial vars
 if (isset($_POST['mode']) || isset($_GET['mode']))
 {
@@ -165,6 +158,13 @@ else
 
 $search_id = (isset($_GET['search_id'])) ? $_GET['search_id'] : '';
 $search_mode = !empty($search_mode) ? $search_mode : $search_id;
+
+if (isset($search_mode) && ($search_mode == 'bookmarks'))
+{
+	// TO DO: force to false, and decide if we would like to overwrite it with Profile Global Blocks settings...
+	//$cms_page['global_blocks'] = (!empty($cms_config_layouts['profile']['global_blocks']) ? true : false);
+	$cms_page['global_blocks'] = false;
+}
 
 if (isset($_POST['show_results']) || isset($_GET['show_results']))
 {
