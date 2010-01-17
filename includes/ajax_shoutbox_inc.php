@@ -265,8 +265,11 @@ if($action)
 				}
 			}
 
-			$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '" . $chat_room . "' WHERE " . $db->sql_in_set('user_id', $alert_users_array);
-			$db->sql_query($sql);
+			if (sizeof($alert_users_array) > 0)
+			{
+				$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '" . $chat_room . "' WHERE " . $db->sql_in_set('user_id', $alert_users_array);
+				$db->sql_query($sql);
+			}
 		}
 
 		// Some weird conversion of the data inputed
