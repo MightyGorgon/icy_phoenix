@@ -1398,7 +1398,7 @@ if ($show_thanks)
 		// Get thanks date
 		$thanks_date[$i] = create_date_ip($timeformat, $thanksrow[$i]['thanks_time'], $config['board_timezone'], true);
 		// Make thanker profile link
-		$thanks .= '<span class="gensmall">' . (($thanks != '') ? ', ' : '') . colorize_username($thanksrow[$i]['user_id'], $thanksrow[$i]['username'], $thanksrow[$i]['user_color'], $thanksrow[$i]['user_active']) . ' (' . $thanks_date[$i] . ')</span>';
+		$thanks .= (($thanks != '') ? ', ' : '') . colorize_username($thanksrow[$i]['user_id'], $thanksrow[$i]['username'], $thanksrow[$i]['user_color'], $thanksrow[$i]['user_active']) . ' (' . $thanks_date[$i] . ')';
 	}
 
 	$sql = "SELECT t.topic_poster, u.user_id, u.username, u.user_active, u.user_color

@@ -657,7 +657,7 @@ switch($mode)
 			$topic_subject = trim(htmlspecialchars($_POST['subject']));
 			if(empty($topic_subject))
 			{
-			message_die(GENERAL_MESSAGE, $lang['Empty_subject']);
+				message_die(GENERAL_MESSAGE, $lang['Empty_subject']);
 			}
 
 			$new_topic_id = $mcp_topic->topic_split($posts, $forum_id, $fid, $topic_id, $split_beyond, $topic_subject);

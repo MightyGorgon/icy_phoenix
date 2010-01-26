@@ -305,7 +305,7 @@ option {
 }
 
 /* inputs - fixing height and padding */
-* html input.mainoption, * html input.altoption, * html input.liteoption { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle;}
+* html input.mainoption, * html input.altoption, * html input.liteoption { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
 input.mainoption, input.altoption, input.liteoption { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
 input.post { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
 * html input.jumpbox { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
@@ -473,11 +473,11 @@ ul.sitemap li ul li {
 }
 
 /* ## ChromeStyle ## DropDown Menu ## */
-.chromestyle{
+.chromestyle {
 	font-weight: bold;
 }
 
-.chromestyle:after{ /*Add margin between menu and rest of content in Firefox*/
+.chromestyle:after { /*Add margin between menu and rest of content in Firefox*/
 	content: ".";
 	display: block;
 	height: 0;
@@ -485,19 +485,19 @@ ul.sitemap li ul li {
 	visibility: hidden;
 }
 
-.chromestyle ul{
+.chromestyle ul {
 	width: 100%;
 	padding: 2px 0;
 	margin: 0;
 	text-align: center; /*set value to "left", "center", or "right"*/
 }
 
-.chromestyle ul li{
+.chromestyle ul li {
 	display: inline;
 	vertical-align: middle;
 }
 
-.chromestyle ul li a{
+.chromestyle ul li a {
 	padding: 0px 7px;
 	margin: 0;
 	text-decoration: none;
@@ -505,21 +505,21 @@ ul.sitemap li ul li {
 	/*border-right: 1px solid #dadada;*/
 }
 
-.chromestyle ul li a:hover{
+.chromestyle ul li a:hover {
 	color: #dd2222;
 }
 
 /*
-.chromestyle ul li a:hover{
+.chromestyle ul li a:hover {
 	background: url(images/ice/bg_th.gif) top repeat-x;
 }
 
-.chromestyle ul li a[rel]:after{
+.chromestyle ul li a[rel]:after {
 content: " " url(downimage.gif);
 }
 */
 
-.dropmenudiv{
+.dropmenudiv {
 	position: absolute;
 	text-align: left;
 	vertical-align: middle;
@@ -533,7 +533,7 @@ content: " " url(downimage.gif);
 	background-color: #f8f8f8;
 }
 
-.dropmenudiv a{
+.dropmenudiv a {
 	display: block;
 	text-indent: 2px;
 	/*border-bottom: 1px solid #333333;*/ /*THEME CHANGE HERE*/
@@ -542,11 +542,11 @@ content: " " url(downimage.gif);
 	font-weight: bold;
 }
 
-* html .dropmenudiv a{ /*IE only hack*/
+* html .dropmenudiv a { /*IE only hack*/
 	width: 100%;
 }
 
-.dropmenudiv a:hover{ /*THEME CHANGE HERE*/
+.dropmenudiv a:hover { /*THEME CHANGE HERE*/
 	/* background: #f0f0f0 url(images/ice/bg_row_hover.gif) bottom right no-repeat; */
 	background-color: #f0f0f0;
 }

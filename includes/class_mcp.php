@@ -262,22 +262,22 @@ class class_mcp_topic
 	{
 		global $db, $cache, $lang, $is_auth;
 
-		if($status == 'sticky' && !$is_auth['auth_sticky'])
+		if(($status == 'sticky') && !$is_auth['auth_sticky'])
 		{
 			$message = sprintf($lang['Sorry_auth_sticky'], $is_auth['auth_sticky_type']);
 			message_die(GENERAL_MESSAGE, $message);
 		}
-		if($status == 'announce' && !$is_auth['auth_announce'])
+		if(($status == 'announce') && !$is_auth['auth_announce'])
 		{
 			$message = sprintf($lang['Sorry_auth_announce'], $is_auth['auth_announce_type']);
 			message_die(GENERAL_MESSAGE, $message);
 		}
-		if($status == 'super_announce' && !$is_auth['auth_globalannounce'])
+		if(($status == 'super_announce') && !$is_auth['auth_globalannounce'])
 		{
 			$message = sprintf($lang['Sorry_auth_announce'], $is_auth['auth_announce_type']);
 			message_die(GENERAL_MESSAGE, $message);
 		}
-		if(empty($_POST['topic_id_list']) && empty($topic_id))
+		if(empty($_POST['topic_id_list']) && empty($topics))
 		{
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}

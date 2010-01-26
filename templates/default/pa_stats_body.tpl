@@ -22,7 +22,6 @@
 				</tr>
 				</table>
 			</td>
-
 			<td align="center"><span class="gen">[ {downloads_os.OS_OPTION_RESULT} ]</span></td>
 		</tr>
 		<!-- END downloads_os -->
@@ -36,7 +35,7 @@
 				<td class="row1" align="left" width="50%">
 					<table cellspacing="0" cellpadding="0" border="0" align="left">
 					<tr>
-						<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="13" /><img src="{downloads_os.OS_OPTION_IMG}" width="{downloads_os.OS_OPTION_IMG_WIDTH}%" height="13" alt="{downloads_os.OS_OPTION_IMG_WIDTH}" /><img src="{U_VOTE_RCAP}" height="13" alt="" /></td>
+						<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" alt="" /><img src="{downloads_os.OS_OPTION_IMG}" width="{downloads_os.OS_OPTION_IMG_WIDTH}%" alt="{downloads_os.OS_OPTION_IMG_WIDTH}" /><img src="{U_VOTE_RCAP}" alt="" /></td>
 					</tr>
 					</table>
 				</td>
@@ -56,7 +55,7 @@
 			<td class="row1" align="left" width="50%">
 				<table cellspacing="0" cellpadding="0" border="0" align="left">
 				<tr>
-					<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="13" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" height="13" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" height="13" alt="" /></td>
+					<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" alt="" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" alt="" /></td>
 				</tr>
 				</table>
 			</td>
@@ -74,7 +73,7 @@
 			<td class="row1" width="50%">
 				<table cellspacing="0" cellpadding="0" border="0" align="left">
 				<tr>
-					<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" height="13" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" height="13" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" height="13" alt="" /></td>
+					<td width="1%" nowrap="nowrap"><img src="{U_VOTE_LCAP}" alt="" /><img src="{downloads_b.B_OPTION_IMG}" width="{downloads_b.B_OPTION_IMG_WIDTH}%" alt="{downloads_b.B_OPTION_RESULT}" /><img src="{U_VOTE_RCAP}" alt="" /></td>
 				</tr>
 				</table>
 			</td>

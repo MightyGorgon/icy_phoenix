@@ -987,7 +987,7 @@ function create_cat()
 
 	if (!$cat_created)
 	{
-		// Höchten Wert von cat_order ermitteln
+		// Identify the highest value of cat_order
 		$sql = 'SELECT MAX(forum_id) AS forum_id, MAX(forum_order) AS forum_order
 			FROM ' . FORUMS_TABLE;
 		$db->sql_return_on_error(true);
@@ -1032,7 +1032,7 @@ function create_forum()
 
 	if (!$forum_created)
 	{
-		// Höchten Wert von forum_id ermitteln
+		// Identify the highest value of forum_id
 		$sql = 'SELECT MAX(forum_id) AS forum_id
 						FROM ' . FORUMS_TABLE;
 		$db->sql_return_on_error(true);
@@ -1049,7 +1049,7 @@ function create_forum()
 			throw_error("Couldn't get forum data!", __LINE__, __FILE__, $sql);
 		}
 		$next_forum_id = $row['forum_id'] + 1;
-		// Höchten Wert von forum_order ermitteln
+		// Identify the highest value of forum_order
 		$sql = 'SELECT MAX(forum_order) AS forum_order
 				FROM ' . FORUMS_TABLE;
 		$db->sql_return_on_error(true);

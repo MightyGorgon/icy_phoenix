@@ -255,7 +255,7 @@ else
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$jr_admin_row = jr_admin_get_user_info($row['user_id']);
-		$module_count = (!empty($jr_admin_row['user_jr_admin'])) ? count(explode(EXPLODE_SEPERATOR_CHAR, $jr_admin_row['user_jr_admin'])) : 0;
+		$module_count = (!empty($jr_admin_row['user_jr_admin'])) ? sizeof(explode(EXPLODE_SEPERATOR_CHAR, $jr_admin_row['user_jr_admin'])) : 0;
 		$block_text = 'userrow';
 
 		$template->assign_block_vars($block_text, array(

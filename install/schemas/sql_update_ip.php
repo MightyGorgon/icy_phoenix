@@ -3582,6 +3582,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.1.54 */
 		case '1.3.1.54':
+		define('FIX_FORUMS', true);
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('forum_limit_edit_time_interval', '1440')";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` CHANGE `cat_id` `parent_id` mediumint(8) UNSIGNED NOT NULL DEFAULT '0'";

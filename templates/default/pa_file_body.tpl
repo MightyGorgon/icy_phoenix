@@ -57,7 +57,7 @@
 	</tr>
 	<tr>
 	<td class="row2" valign="middle"><span class="genmed">{L_RATING}:</span></td>
-	<td class="row1" colspan="2"><span class="postdetails"><img src="images/rates/rate_{RATING}.png" /></td>
+	<td class="row1" colspan="2"><span class="postdetails"><img src="images/rates/rate_{RATING}.png" alt="" /></td>
 	</tr>
 	<tr>
 	<td class="row2" valign="middle"><span class="genmed">{L_DLS}:</span></td>

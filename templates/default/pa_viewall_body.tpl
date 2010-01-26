@@ -15,23 +15,23 @@
 
 <!-- BEGIN file_rows -->
 <tr>
-	<td class="row1 row-center" width="30"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" border="0" border="0"></a></td>
+	<td class="row1 row-center" width="30"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" alt="" /></a></td>
 	<td class="row1h{file_rows.XS_NEW} row-forum" onclick="window.location.href='{file_rows.U_FILE}'" width="35%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span>&nbsp;
 	<!-- IF file_rows.IS_NEW_FILE -->
-	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}"> -->
+	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}" /> -->
 	<!-- ENDIF -->
 	<br /><span class="genmed">{file_rows.FILE_DESC}</span></td>
 	<td class="row1h{file_rows.XS_NEW} row-forum" onclick="window.location.href='{file_rows.U_CAT}'"><span class="forumlink"><a href="{file_rows.U_CAT}" class="forumlink{file_rows.XS_NEW}">{file_rows.CAT_NAME}</a></span>&nbsp;</td>
 
 	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{file_rows.DATE}</td>
 	<td class="row2 row-center"><span class="postdetails">{file_rows.FILE_DLS}</td>
-	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" /></td>
+	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" alt="" /></td>
 	<td class="row2 row-center" align="center" valign="middle">
 	<!-- IF file_rows.HAS_SCREENSHOTS -->
 		<!-- IF file_rows.SS_AS_LINK -->
-		<a href="{file_rows.FILE_SCREENSHOT}" class="topiclink" target="_blank"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}"></a>
+		<a href="{file_rows.FILE_SCREENSHOT}" class="topiclink" target="_blank"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}" /></a>
 		<!-- ELSE -->
-		<a href="javascript:mpFoto('{file_rows.FILE_SCREENSHOT}')" class="topiclink"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}"></a>
+		<a href="javascript:mpFoto('{file_rows.FILE_SCREENSHOT}')" class="topiclink"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}" /></a>
 		<!-- ENDIF -->
 	<!-- ELSE -->
 	&nbsp;

@@ -86,7 +86,7 @@ if ($mode == 'config')
 				SET config_value =" . $var_value . "
 				WHERE config_name ='" . $configs_name[$i] . "'";
 				$result = $db->sql_query($sql);
-				$admin_message .= '<br />' . $lang['Update'] . ":&nbsp;&nbsp;&nbsp;" . $configs_desc[$i];
+				$admin_message .= '<br />' . $lang['Update'] . ':&nbsp;&nbsp;&nbsp;' . $configs_desc[$i];
 				$config[$configs_name[$i]] = $var_value;
 			}
 		}

@@ -540,7 +540,6 @@ ul#nav li.activelink a, ul#nav li.activelink a:hover {
 }
 
 .nav-links-left {
-	position: relative;
 	float: left;
 	text-align: left;
 }

@@ -18,6 +18,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 class class_plugins
 {
+
 	/*
 	* Get plugins list
 	*/
@@ -98,6 +99,7 @@ class class_plugins
 			//$db->clear_cache('config_plugins_');
 		}
 	}
+
 }
 
 ?>

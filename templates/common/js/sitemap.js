@@ -5,13 +5,13 @@ if(window.addEventListener)
 }
 else
 {
-	window.attachEvent('onload', function(){
+	window.attachEvent('onload', function() {
 		sitemap();
 		readPrefs();
 		})
 }
 
-//			:::		START MAKE SITEMAP INTERACTIVE	:::
+// ::: START MAKE SITEMAP INTERACTIVE :::
 
 function sitemap()
 {
@@ -38,9 +38,9 @@ function sitemap()
 				var li = a[z].parentNode;
 				// creates maximise.gif element
 				var img = document.createElement('img');
-					img.className = 'icon';
-					img.src = 'templates/common/images/maximise.gif';
-					img.style.verticalAlign = 'middle';
+				img.className = 'icon';
+				img.src = 'templates/common/images/maximise.gif';
+				img.style.verticalAlign = 'middle';
 
 				li.insertBefore(img, a[z]);
 				// set style
@@ -69,40 +69,42 @@ function sitemap()
 				}
 			}
 		}
-
 	}
 
 	for(x = 0; x < h.length; x++)
 	{
-		// assign unique IDS to each h2 element
-		h[x].id = 'h2' + x;
-		h[x].className = 'maximise';
-
-		// make h2 element show/hide unordered list when clicked
-		h[x].onclick = function()
+		if((h[x].className == 'sitemap') || (h[x].className == 'maximise') || (h[x].className == 'minimise'))
 		{
-			var ul = this.nextSibling;
+			// assign unique IDS to each h2 element
+			h[x].id = 'h2' + x;
+			h[x].className = 'maximise';
 
-			while (ul.nodeType != 1)
+			// make h2 element show/hide unordered list when clicked
+			h[x].onclick = function()
 			{
-				ul = ul.nextSibling;
+				var ul = this.nextSibling;
+
+				while (ul.nodeType != 1)
+				{
+					ul = ul.nextSibling;
+				}
+
+				var ulStatus = (ul.style.display == 'none') ? 'block' : 'none';
+
+				ul.style.display = ulStatus;
+				var hStatus = (ulStatus == 'block') ? 'minimise' : 'maximise';
+				this.className = hStatus;
+
+				// set cookie
+				return writePrefs(this.id,ulStatus);
 			}
-
-			var ulStatus = (ul.style.display == 'none') ? 'block' : 'none';
-
-			ul.style.display = ulStatus;
-			var hStatus = (ulStatus == 'block') ? 'minimise' : 'maximise';
-			this.className = hStatus;
-
-			// set cookie
-			return writePrefs(this.id,ulStatus);
 		}
 	}
 }
 
-//			:::		END MAKE SITEMAP INTERACTIVE	:::
+// ::: END MAKE SITEMAP INTERACTIVE :::
 
-//			:::		START WRITE HIDE/SHOW COOKIE :::
+// ::: START WRITE HIDE/SHOW COOKIE :::
 
 function writePrefs(section,tf)
 {
@@ -128,9 +130,9 @@ function writePrefs(section,tf)
 	document.cookie= section + " = " + tf + "; expires=" + expires.toGMTString();
 }
 
-//			::: END WRITE HIDE/SHOW COOKIE :::
+// ::: END WRITE HIDE/SHOW COOKIE :::
 
-//			::: START READ HIDE/SHOW COOKIE :::
+// ::: START READ HIDE/SHOW COOKIE :::
 
 function readPrefs()
 {
@@ -138,42 +140,45 @@ function readPrefs()
 	var h = document.getElementsByTagName('h2');
 
 	// check cookie for hide/show preferences
-	for(i=0; i<h.length; i++)
+	for(i = 0; i < h.length; i++)
 	{
-		// gets the element after the h2 heading
-		var ul = h[i].nextSibling;
-		h[i].id = 'h2' + i;
-
-		// makes sure ul is an element, not a blank space or carriage return
-		while (ul.nodeType != 1)
+		if((h[i].className == 'sitemap') || (h[i].className == 'maximise') || (h[i].className == 'minimise'))
 		{
-			ul = ul.nextSibling;
-		}
+			// gets the element after the h2 heading
+			var ul = h[i].nextSibling;
+			h[i].id = 'h2' + i;
 
-		var cookieName = 'h2' + i;
-
-		if (document.cookie.length > 0)
-		{
-			var begin = document.cookie.indexOf(cookieName+"=");
-			if (begin != -1)
+			// makes sure ul is an element, not a blank space or carriage return
+			while (ul.nodeType != 1)
 			{
-				begin += cookieName.length+1;
-				var end = document.cookie.indexOf(";", begin);
+				ul = ul.nextSibling;
+			}
 
-				if (end == -1) end = document.cookie.length;
+			var cookieName = 'h2' + i;
 
-				// gets display status from cookie
-				var secValue = unescape(document.cookie.substring(begin, end));
+			if (document.cookie.length > 0)
+			{
+				var begin = document.cookie.indexOf(cookieName+"=");
+				if (begin != -1)
+				{
+					begin += cookieName.length+1;
+					var end = document.cookie.indexOf(";", begin);
 
-				// sets dispaly status to equal that which was in the cookie
-				var secStatus = (secValue == 'none') ? 'none' : 'block';
-				var h2Img = (secValue == 'none') ? 'maximise' : 'minimise';
+					if (end == -1) end = document.cookie.length;
 
-				document.getElementById(cookieName).className = h2Img;
-				ul.style.display = secStatus;
+					// gets display status from cookie
+					var secValue = unescape(document.cookie.substring(begin, end));
+
+					// sets dispaly status to equal that which was in the cookie
+					var secStatus = (secValue == 'none') ? 'none' : 'block';
+					var h2Img = (secValue == 'none') ? 'maximise' : 'minimise';
+
+					document.getElementById(cookieName).className = h2Img;
+					ul.style.display = secStatus;
+				}
 			}
 		}
 	}
 }
 
-//			::: END READ HIDE/SHOW COOKIE :::
+// ::: END READ HIDE/SHOW COOKIE :::

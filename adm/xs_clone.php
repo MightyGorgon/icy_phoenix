@@ -136,7 +136,7 @@ if(!empty($_POST['clone_tpl']) && !defined('DEMO_MODE'))
 	$vars = array('clone_tpl', 'clone_style_name', 'total');
 	$count = 0;
 	$list = array();
-	for($i=0; $i<$total; $i++)
+	for($i = 0; $i<$total; $i++)
 	{
 		$vars[] = 'clone_style_id_'.$i;
 		$vars[] = 'clone_style_'.$i;

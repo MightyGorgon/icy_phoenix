@@ -841,13 +841,13 @@ Array.prototype.inArray = function(str)
 return -1;
 }
 
-//On modifie l'objet String
+// On modifie l'objet String
 String.prototype.exist = function()
 {
 	return (this == "undefined" ? false : true);
 };
 
-//Opacité
+// Opacity
 function setOpacity(id, alpha, isObj)
 {
 	if(!dom)

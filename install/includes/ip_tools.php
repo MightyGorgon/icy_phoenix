@@ -565,6 +565,11 @@ switch ($mode_test)
 				$sql_results_ok .= '<li>' . $sql[$i] . '<br /> +++ <span style="color:' . $page_framework->color_ok . ';"><b>' . $lang['Successful'] . '</b></span><br /><br /></li>' . "\n";
 			}
 		}
+		if (defined('FIX_FORUMS') && FIX_FORUMS)
+		{
+			$page_framework->convert_forums();
+			empty_cache_folders();
+		}
 		$page_framework->table_begin($lang['IcyPhoenix'] . ' - ' . $lang['UpdateInProgress'], 'row-post');
 		echo('<div class="post-text">' . "\n");
 		echo('<b>' . $lang['DBUpdate_Errors'] . ':</b><br />' . "\n");

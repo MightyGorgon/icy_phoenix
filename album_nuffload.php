@@ -70,7 +70,7 @@ if (isset($_REQUEST['psid']))
 	{
 		$qstr = "";
 		$key_names = array_keys($_GET);
-		for($a=0;$a< sizeof($key_names);$a++)
+		for($a = 0; $a < sizeof($key_names); $a++)
 		{
 			$qstr .= "&" . $key_names[$a] . "=" . $_GET[$key_names[$a]];
 		}

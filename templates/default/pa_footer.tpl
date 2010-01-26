@@ -1,4 +1,4 @@
-<form method="get" name="jumpbox" action="{S_JUMPBOX_ACTION}" onSubmit="if(document.jumpbox.cat_id.value == -1){return false;}">
+<form method="get" name="jumpbox" action="{S_JUMPBOX_ACTION}" onsubmit="if(document.jumpbox.cat_id.value == -1){return false;}">
 <table class="empty-table" width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
 <tr>
 	<td align="left" valign="top">

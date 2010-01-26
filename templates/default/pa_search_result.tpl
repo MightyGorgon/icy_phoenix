@@ -22,7 +22,7 @@
 	<td class="row1 row-center" align="center" valign="middle"><span class="name">{searchresults.FILE_SUBMITER}</span></td>
 	<td class="row2 row-center" align="center" valign="middle"><span class="postdetails">{searchresults.DATE}</span></td>
 	<td class="row1 row-center" align="center" valign="middle"><span class="postdetails">{searchresults.DOWNLOADS}</span></td>
-	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{searchresults.RATING}.png" /></td>
+	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{searchresults.RATING}.png" alt="" /></td>
 </tr>
 <!-- END searchresults -->
 <tr><td class="cat" colspan="7">&nbsp;</td></tr>

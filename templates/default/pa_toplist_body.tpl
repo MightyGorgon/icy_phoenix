@@ -20,7 +20,7 @@
 	<td colspan="7" class="row1 row-center">
 	<span class="gen">
 	<!-- BEGIN files_date -->
-	<strong><big>&middot;</big></strong> <a href="{files_date.U_DATES}">{files_date.DATES}</a>&nbsp({files_date.TOTAL_DOWNLOADS})<br />
+	<strong><big>&middot;</big></strong> <a href="{files_date.U_DATES}">{files_date.DATES}</a>&nbsp;({files_date.TOTAL_DOWNLOADS})<br />
 	<!-- END files_date -->
 	</span>
 	</td>
@@ -57,17 +57,16 @@
 
 	<td class="row1h{files_row.XS_NEW} row-forum" onclick="window.location.href='{files_row.U_FILE}'" width="60%"><span class="forumlink"><a href="{files_row.U_FILE}" class="forumlink{files_row.XS_NEW}">{files_row.FILE_NAME}</a></span>&nbsp;
 	<!-- IF file_rows.IS_NEW_FILE -->
-	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}"> -->
+	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}" /> -->
 	<!-- ENDIF -->
 	<br /><span class="genmed">{files_row.FILE_DESC}</span></td>
 	<td class="row1 row-center"><span class="name">{files_row.FILE_SUBMITER}</span></td>
 	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{files_row.DATE}</td>
 	<td class="row2 row-center"><span class="postdetails">{files_row.DOWNLOADS}</td>
-	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{files_row.RATING}.png" /></td>
+	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{files_row.RATING}.png" alt="" /></td>
 </tr>
 	<!-- END files_row -->
-<tr><td colspan="7" class="cat" align="center">&nbsp </td></tr>
+<tr><td colspan="7" class="cat" align="center">&nbsp;</td></tr>
 <!-- ENDIF -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-<table border="0" cellspacing="0" cellpadding="0" class="tbl"><tr><td class="tbll"><img src="{SPACER}" alt="" width="8" height="4" /></td><td class="tblbot"><img src="{SPACER}" alt="" width="8" height="4" /></td><td class="tblr"><img src="{SPACER}" alt="" width="8" height="4" /></td></tr></table>
 <!-- INCLUDE pa_footer.tpl -->

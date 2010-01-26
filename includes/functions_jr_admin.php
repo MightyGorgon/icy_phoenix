@@ -459,7 +459,7 @@ function jr_admin_make_info_box()
 {
 	global $template, $lang, $module, $userdata, $config;
 
-	/* Debug? Changes the status stnading of ADMIN!!!  You are warned */
+	/* Debug? Changes the status standing of ADMIN!!! You are warned */
 	$debug = false;
 
 	if (($userdata['user_level'] != ADMIN) || $debug)
