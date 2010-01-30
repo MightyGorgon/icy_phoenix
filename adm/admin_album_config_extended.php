@@ -25,7 +25,7 @@ if (!defined('IN_ADMIN'))
 //------------------------------------------------------------------------
 // setup the link to this phpbb ACP 'module'
 //------------------------------------------------------------------------
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['2200_Photo_Album']['110_Album_Config'] = $filename;

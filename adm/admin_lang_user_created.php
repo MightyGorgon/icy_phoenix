@@ -13,7 +13,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1000_Configuration']['125_Language'] = $file;

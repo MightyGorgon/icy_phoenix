@@ -17,7 +17,7 @@
 
 define('IN_ICYPHOENIX', true);
 
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['2000_Downloads']['110_Cat_manage_title'] = $file;

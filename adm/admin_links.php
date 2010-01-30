@@ -20,7 +20,7 @@
 define('IN_ICYPHOENIX', true);
 
 // Admin Panel
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['2100_Links']['120_Add_new'] = $filename . '?mode=add';

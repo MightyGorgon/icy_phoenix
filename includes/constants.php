@@ -177,6 +177,7 @@ define('AUTH_JADMIN', 4);
 define('AUTH_ADMIN', 5);
 define('AUTH_MAIN_ADMIN', 6);
 define('AUTH_FOUNDER', 7);
+define('AUTH_OWNER', 8);
 // Self AUTH - BEGIN
 define('AUTH_SELF', 9);
 // Self AUTH - END

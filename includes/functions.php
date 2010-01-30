@@ -4114,7 +4114,7 @@ function page_header($title = '', $parse_template = false)
 		}
 	}
 
-	if (($userdata['user_level'] != ADMIN) && $config['board_disable'] && !defined('IN_ADMIN') && !defined('IN_LOGIN'))
+	if (($userdata['user_level'] != ADMIN) && $config['board_disable'] && !defined('HAS_DIED') && !defined('IN_ADMIN') && !defined('IN_LOGIN'))
 	{
 		if($config['board_disable_mess_st'])
 		{
@@ -4142,6 +4142,8 @@ function page_header($title = '', $parse_template = false)
 		$template->set_filenames(array('overall_header' => $header_tpl));
 		$template->pparse('overall_header');
 	}
+
+	define('HEADER_INC_COMPLETED', true);
 
 	return;
 }
@@ -4799,6 +4801,18 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		}
 	}
 
+	if (!defined('IN_ADMIN') && !defined('IN_CMS') && !defined('HEADER_INC_COMPLETED') && ($msg_code != CRITICAL_ERROR))
+	{
+		if (!defined('TPL_HAS_DIED'))
+		{
+			$template->assign_var('HAS_DIED', true);
+			define('TPL_HAS_DIED', true);
+		}
+		$header_tpl = empty($gen_simple_header) ? 'overall_header.tpl' : 'simple_header.tpl';
+		$template->set_filenames(array('overall_header' => $header_tpl));
+		$template->pparse('overall_header');
+	}
+
 	switch($msg_code)
 	{
 		case GENERAL_MESSAGE:
@@ -4891,12 +4905,6 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 	if ($msg_code != CRITICAL_ERROR)
 	{
-		// If we have already defined the var in header, let's output it in footer as well
-		if(defined('TPL_HAS_DIED'))
-		{
-			$template->assign_var('HAS_DIED', true);
-		}
-
 		if (!empty($lang[$msg_text]))
 		{
 			$msg_text = $lang[$msg_text];
@@ -4917,7 +4925,6 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 		//echo('<br />' . htmlspecialchars($template->vars['META']));
 		$template->assign_vars(array(
-			'HAS_DIED' => true,
 			'MESSAGE_TITLE' => $msg_title,
 			'MESSAGE_TEXT' => $msg_text
 			)
@@ -4926,6 +4933,12 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		if (!defined('IN_CMS'))
 		{
 			$template->pparse('message_body');
+		}
+
+		// If we have already defined the var in header, let's output it in footer as well
+		if(defined('TPL_HAS_DIED'))
+		{
+			$template->assign_var('HAS_DIED', true);
 		}
 
 		if (!defined('IN_ADMIN'))

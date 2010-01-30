@@ -20,7 +20,7 @@ if (!empty($setmodules))
 	return;
 }
 
-// Let's set the root dir for phpBB
+// Load default Header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
@@ -40,18 +40,18 @@ $start = ($start < 0) ? 0 : $start;
 
 $template->set_filenames(array('body' => ADM_TPL . 'google_bot_detector_body.tpl'));
 
-$sql = "SELECT * FROM " .GOOGLE_BOT_DETECTOR_TABLE ." ORDER BY detect_time DESC";
+$sql = "SELECT * FROM " . GOOGLE_BOT_DETECTOR_TABLE ." ORDER BY detect_time DESC";
 $result = $db->sql_query($sql);
 $total_row = $db->sql_numrows($result);
 
 if (isset($total_row))
 {
-	$pagination = generate_pagination(append_sid('admin_google_bot_detector.' . PHP_EXT), $total_row, $config['posts_per_page'], $start).'&nbsp;';
+	$pagination = generate_pagination(append_sid('admin_google_bot_detector.' . PHP_EXT), $total_row, $config['posts_per_page'], $start) . '&nbsp;';
 }
 
 $db->sql_freeresult($result);
 
-$sql .= " LIMIT " .$start .", " .$config['posts_per_page'];
+$sql .= " LIMIT " . $start . ", " . $config['posts_per_page'];
 $result = $db->sql_query($sql);
 
 if ($row = $db->sql_fetchrow($result))

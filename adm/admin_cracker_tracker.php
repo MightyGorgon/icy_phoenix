@@ -39,7 +39,7 @@ define('CTRACKER_ACP', true);
  */
 
 // Generate the Modules we need
-if( !empty($setmodules) )
+if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['ctracker_module_category']['ctracker_module_1']  = $filename . '?modu=1';

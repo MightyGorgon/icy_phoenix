@@ -131,7 +131,7 @@ if (!empty($setmodules) && defined('IN_ICYPHOENIX'))
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
-// Let's set the root dir for phpBB
+// Load default Header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
